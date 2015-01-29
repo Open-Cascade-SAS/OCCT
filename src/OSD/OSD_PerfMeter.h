@@ -65,8 +65,8 @@
  * @def PERF_PRINT_ALL
  * Prints all existing meters which have been entered at least once and resets them.
  */
-#define PERF_PRINT_ALL { \
-  perf_print_all_meters(); \
+#define PERF_PRINT_ALL() { \
+  perf_print_all_meters(1); \
 }
 
 #else
@@ -74,7 +74,7 @@
   #define PERF_START_METER(_m_name)
   #define PERF_STOP_METER(_m_name)
   #define PERF_CLOSE_METER(_m_name)
-  #define PERF_PRINT_ALL
+  #define PERF_PRINT_ALL()
 #endif
 
 /**
@@ -143,9 +143,18 @@ Standard_EXPORTEXTERNC void perf_close_imeter (const int theMeterId);
 
 /**
  * Prints on stdout the cumulated time and the number of enters for each alive meter which have the number of enters > 0.
+ * Resets all meters if reset is non-null.
+ */
+Standard_EXPORTEXTERNC void perf_print_all_meters (int reset);
+
+/**
+ * Prints to supplied string buffer the cumulated time and the number of enters 
+ * for each alive meter with the number of enters > 0.
+ * If buffer length is not sufficient, data of some meters may be lost.
+ * It is recommended to reserve 256 bytes per meter, 25600 bytes should fit all.
  * Resets all meters.
  */
-Standard_EXPORTEXTERNC void perf_print_all_meters (void);
+Standard_EXPORTEXTERNC void perf_sprint_all_meters (char *buffer, int length, int reset);
 
 /**
  * Deletes all meters and frees memory.
@@ -154,7 +163,7 @@ Standard_EXPORTEXTERNC void perf_destroy_all_meters (void);
 
 /**
  * ATTENTION!!!
- * This func calls both perf_print_all_meters() and perf_destroy_all_meters()
+ * This func calls perf_print_all_meters() and perf_destroy_all_meters()
  * and is called automatically at the end of a program via system call atexit().
  */
 Standard_EXPORTEXTERNC void perf_print_and_destroy (void);

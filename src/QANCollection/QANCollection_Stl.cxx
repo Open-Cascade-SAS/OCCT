@@ -947,7 +947,7 @@ static Standard_Integer QANTestStlIterators (
 //purpose  :
 //=======================================================================
 template<class CollectionType, class StlType>
-void TestPerformanceRandomIterator()
+void TestPerformanceRandomIterator(Draw_Interpretor& di)
 {
   OSD_Timer aTimer;
 
@@ -986,12 +986,12 @@ void TestPerformanceRandomIterator()
 
     Standard_Real aOccTime = aTimer.ElapsedTime();
 
-    std::cout << aSize << "\t" << aStlTime << "\t" <<
-      aOccTime << "\t" << aOccTime / aStlTime << std::endl;
+    di << aSize << "\t" << aStlTime << "\t" <<
+      aOccTime << "\t" << aOccTime / aStlTime << "\n";
 
     // check that result is the same
     if ( ! std::equal (aVector->begin(), aVector->end(), aCollec->begin()) )
-      std::cout << "Error: sequences are not the same at the end!" << std::endl;
+      di << "Error: sequences are not the same at the end!" << "\n";
 
     delete aVector;
     delete aCollec;
@@ -1003,7 +1003,7 @@ void TestPerformanceRandomIterator()
 //purpose  :
 //=======================================================================
 template<class CollectionType, class StlType>
-void TestPerformanceForwardIterator()
+void TestPerformanceForwardIterator(Draw_Interpretor& di)
 {
   OSD_Timer aTimer;
 
@@ -1038,12 +1038,12 @@ void TestPerformanceForwardIterator()
 
     Standard_Real aOccTime = aTimer.ElapsedTime();
 
-    std::cout << aSize << "\t" << aStlTime << "\t" <<
-      aOccTime << "\t" << aOccTime / aStlTime << std::endl;
+    di << aSize << "\t" << aStlTime << "\t" <<
+      aOccTime << "\t" << aOccTime / aStlTime << "\n";
 
     // check that result is the same
     if ( ! std::equal (aVector->begin(), aVector->end(), aCollec->begin()) )
-      std::cout << "Error: sequences are not the same at the end!" << std::endl;
+      di << "Error: sequences are not the same at the end!" << "\n";
 
     delete aVector;
     delete aCollec;
@@ -1055,7 +1055,7 @@ void TestPerformanceForwardIterator()
 //purpose  :
 //=======================================================================
 template<class CollectionType, class StlType>
-void TestPerformanceBidirIterator()
+void TestPerformanceBidirIterator(Draw_Interpretor& di)
 {
   OSD_Timer aTimer;
 
@@ -1090,12 +1090,12 @@ void TestPerformanceBidirIterator()
 
     Standard_Real aOccTime = aTimer.ElapsedTime();
 
-    std::cout << aSize << "\t" << aStlTime << "\t" <<
-      aOccTime << "\t" << aOccTime / aStlTime << std::endl;
+    di << aSize << "\t" << aStlTime << "\t" <<
+      aOccTime << "\t" << aOccTime / aStlTime << "\n";
 
     // check that result is the same
     if ( ! std::equal (aVector->begin(), aVector->end(), aCollec->begin()) )
-      std::cout << "Error: sequences are not the same at the end!" << std::endl;
+      di << "Error: sequences are not the same at the end!" << "\n";
 
     delete aVector;
     delete aCollec;
@@ -1107,7 +1107,7 @@ void TestPerformanceBidirIterator()
 //purpose  :
 //=======================================================================
 template<class CollectionType, class T>
-void TestPerformanceMapAccess()
+void TestPerformanceMapAccess(Draw_Interpretor& di)
 {
   OSD_Timer aTimer;
 
@@ -1166,8 +1166,8 @@ void TestPerformanceMapAccess()
 
     if (aResult)
     {
-      std::cout << aSize << "\t" << aStlTime << "\t" <<
-        aOccTime << "\t" << (aStlTime > 1e-16 ? aOccTime / aStlTime : -1) << std::endl;
+      di << aSize << "\t" << aStlTime << "\t" <<
+        aOccTime << "\t" << (aStlTime > 1e-16 ? aOccTime / aStlTime : -1) << "\n";
     }
 
     delete aCollec;
@@ -1178,42 +1178,37 @@ void TestPerformanceMapAccess()
 //function : QANTestNCollectionPerformance
 //purpose  :
 //=======================================================================
-static Standard_Integer QANTestNCollectionPerformance (
-  Draw_Interpretor& /*theInterpretor*/, Standard_Integer, const char**)
+static Standard_Integer QANTestNCollectionPerformance (Draw_Interpretor& di, Standard_Integer, const char**)
 {
-  std::cout.precision (8);
+  di << "Testing performance (Size | STL time | OCCT time | STL/OCCT boost)" << "\n";
 
-  std::cout << "Testing performance (Size | STL time | OCCT time | STL/OCCT boost)\n";
+  di << "\n" << "std::vector vs NCollection_Array1 (sort):" << "\n\n";
+  TestPerformanceRandomIterator<NCollection_Array1<double>, std::vector<double> >(di);
+  
+  di << "\n" << "std::vector vs NCollection_Vector (sort):" << "\n\n";
+  TestPerformanceRandomIterator<NCollection_Vector<double>, std::vector<double> >(di);
+  
+  di << "\n" << "std::vector vs NCollection_Array1 (replace):" << "\n\n";
+  TestPerformanceForwardIterator<NCollection_Array1<double>, std::vector<double> >(di);
+  
+  di << "\n" << "std::vector vs NCollection_Vector (replace):" << "\n\n";
+  TestPerformanceForwardIterator<NCollection_Vector<double>, std::vector<double> >(di);
 
-  std::cout << std::endl << "std::vector vs NCollection_Array1 (sort):\n" << std::endl;
-  TestPerformanceRandomIterator<NCollection_Array1<double>, std::vector<double> >();
+  di << "\n" << "std::list vs NCollection_List (replace):" << "\n\n";
+  TestPerformanceForwardIterator<NCollection_List<double>, std::list<double> >(di);
 
-  std::cout << std::endl << "std::vector vs NCollection_Vector (sort):\n" << std::endl;
-  TestPerformanceRandomIterator<NCollection_Vector<double>, std::vector<double> >();
+  di << "\n" << "std::list vs NCollection_Sequence (replace):" << "\n\n";
+  TestPerformanceForwardIterator<NCollection_Sequence<double>, std::list<double> >(di);
 
-  std::cout << std::endl << "std::vector vs NCollection_Array1 (replace):\n" << std::endl;
-  TestPerformanceForwardIterator<NCollection_Array1<double>, std::vector<double> >();
+  di << "\n" << "std::list vs NCollection_Sequence (reverse):" << "\n\n";
+  TestPerformanceBidirIterator<NCollection_Sequence<double>, std::list<double> >(di);
 
-  std::cout << std::endl << "std::vector vs NCollection_Vector (replace):\n" << std::endl;
-  TestPerformanceForwardIterator<NCollection_Vector<double>, std::vector<double> >();
+  di << "\n" << "std::set vs NCollection_Map (search):" << "\n\n";
+  TestPerformanceMapAccess<NCollection_Map<int>, int>(di);
 
-  std::cout << std::endl << "std::list vs NCollection_List (replace):\n" << std::endl;
-  TestPerformanceForwardIterator<NCollection_List<double>, std::list<double> >();
-
-  std::cout << std::endl << "std::list vs NCollection_Sequence (replace):\n" << std::endl;
-  TestPerformanceForwardIterator<NCollection_Sequence<double>, std::list<double> >();
-
-  std::cout << std::endl << "std::list vs NCollection_Sequence (reverse):\n" << std::endl;
-  TestPerformanceBidirIterator<NCollection_Sequence<double>, std::list<double> >();
-
-  std::cout << std::endl << "std::set vs NCollection_Map (search):\n" << std::endl;
-  TestPerformanceMapAccess<NCollection_Map<int>, int>();
-
-  std::cout << std::endl << "std::set vs NCollection_IndexedMap (search):\n" << std::endl;
-  TestPerformanceMapAccess<NCollection_IndexedMap<int>, int>();
-
-  std::cout.unsetf (std::ios::floatfield);
-
+  di << "\n" << "std::set vs NCollection_IndexedMap (search):" << "\n\n";
+  TestPerformanceMapAccess<NCollection_IndexedMap<int>, int>(di);
+  
   return 0;
 }
 

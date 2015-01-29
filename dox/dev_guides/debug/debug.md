@@ -270,3 +270,20 @@ Handle_TCollection_HAsciiString {
 ~~~~~
 
 In Visual Studio 2012 and later, visualizers can be put in a separate file in subdirectory *Visualizers*. See file *occt.natvis* for example.
+
+@section occt_debug_perf Performance measurement tools
+
+It is recommended to use specialized performance analysis tools to profile OCCT and application code.
+However, when such tools are not available or cannot be used for some reason, tools provided by OCD package can be used: see low-level C functions and macros defined OSD_PerfMeter.h, and OSD_PerfMeter class.
+
+This tool maintains an array of 100 global performance counters that can be started and stopped independently.
+Adding performance counter to a function of interest allows to get statistics on number of calls and total execution time of the function.
+In C++ code, this can be achieved by creating local variable OSD_PerfMeter in each block of code to be measured.
+In C or Fortran code, use functions perf_start_meter and perf_stop_meter to start and stop the counter.
+Note that this instrumentation is intended to be removed when profiling is completed.
+Macros provided in OSD_PerfMeter.h can be used to keep instrumentation code permanently, but enable it only when macro PERF_ENABLE_METERS is defined.
+Each counter has its name shown when the collected statistics are printed.
+
+In DRAW, use command dperf to prints all performance statistics.
+
+Note that performance counters are not thread-safe.

@@ -218,18 +218,36 @@ int perf_get_meter (const char  * const MeterName,
 Function :      perf_print_all_meters
 Purpose  :      Prints on stdout the cumulated time and the number of
                 enters for each meter in MeterTable;
-                resets all meters
-Output   :      none
-Returns  :      none
+                resets all meters if reset is non-null
 ======================================================================*/
-void perf_print_all_meters (void)
+void perf_print_all_meters (int reset)
 {
+  char buffer[MAX_METERS * 256];
+  perf_sprint_all_meters (buffer, MAX_METERS * 256, reset);
+  printf ("%s", buffer);
+}
+
+/*======================================================================
+Function :      perf_print_all_meters
+Purpose  :      Prints to string buffer the cumulated time and the number of
+                enters for each meter in MeterTable;
+                resets all meters if reset is non-null
+======================================================================*/
+void perf_sprint_all_meters (char *buffer, int length, int reset)
+{
+  char string[256];
+
   int i;
   for (i=0; i<nb_meters; i++) {
     const t_TimeCounter * const ptc = &MeterTable[i];
     if (ptc && ptc->nb_enter) {
-      printf ("          Perf meter results               :"
-              "   enters  seconds  \xe6sec/enter\n");
+      int n = sprintf (string, "          Perf meter results               :   enters  seconds  sec/enter\n");
+      if (n < length)
+      {
+        memcpy (buffer, string, n);
+        buffer += n;
+        length -= n;
+      }
       break;
     }
   }
@@ -240,18 +258,29 @@ void perf_print_all_meters (void)
     if (ptc && ptc->nb_enter) {
       const double secs = ptc->cumul_time;
 
+      int n = 0;
       if (ptc->start_time)
-        printf ("Warning : meter %s has not been stopped\n", ptc->name);
+        n = sprintf (string, "Warning : meter %42s has not been stopped\n", ptc->name);
 
-      printf ("%-42s : %7d %8.2f %10.2f\n",
-              ptc->name, ptc->nb_enter, secs,
-              (secs>0. ? 1000000 * secs/ptc->nb_enter : 0.));
+      n += sprintf (string + n, "%-42s : %7d %8.2f %10.2f\n",
+                    ptc->name, ptc->nb_enter, secs,
+                    (secs>0. ? 1000000 * secs/ptc->nb_enter : 0.));
+      if (n < length)
+      {
+        memcpy (buffer, string, n);
+        buffer += n;
+        length -= n;
+      }
 
-      ptc->cumul_time = 0;
-      ptc->start_time = 0;
-      ptc->nb_enter   = 0;
+      if (reset)
+      {
+        ptc->cumul_time = 0;
+        ptc->start_time = 0;
+        ptc->nb_enter   = 0;
+      }
     }
   }
+  *buffer = '\0';
 }
 
 /*======================================================================
@@ -261,17 +290,7 @@ Returns  :      none
 ======================================================================*/
 void perf_close_meter (const char * const MeterName)
 {
-  const int ic = find_meter (MeterName);
-  if (ic >= 0 && MeterTable[ic].nb_enter) {
-    t_TimeCounter * const ptc = &MeterTable[ic];
-    if (ptc->start_time)
-      printf ("  ===> Warning : meter %s has not been stopped\n", ptc->name);
-    printf ("  ===> [%s] : %d enters, %9.3f seconds\n",
-            ptc->name, ptc->nb_enter, ptc->cumul_time);
-    ptc->cumul_time = 0;
-    ptc->start_time = 0;
-    ptc->nb_enter   = 0;
-  }
+  perf_close_imeter (find_meter (MeterName));
 }
 
 /*======================================================================
@@ -311,7 +330,7 @@ void perf_destroy_all_meters (void)
 
 void perf_print_and_destroy (void)
 {
-  perf_print_all_meters ();
+  perf_print_all_meters (0);
   perf_destroy_all_meters ();
 }
 

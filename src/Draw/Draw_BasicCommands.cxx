@@ -32,6 +32,7 @@
 #include <OSD_Chronometer.hxx>
 #include <OSD.hxx>
 #include <OSD_Exception_CTRL_BREAK.hxx>
+#include <OSD_PerfMeter.h>
 
 #ifdef _WIN32
 
@@ -722,6 +723,21 @@ static int dmeminfo (Draw_Interpretor& theDI,
 }
 
 //==============================================================================
+//function : dperf
+//purpose  :
+//==============================================================================
+
+static int dperf (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  // reset if argument is provided and it is not '0'
+  int reset = (theArgNb > 1 ? theArgVec[1][0] != '0' && theArgVec[1][0] != '\0' : 0);
+  char buffer[25600];
+  perf_sprint_all_meters (buffer, 25600 - 1, reset);
+  theDI << buffer;
+  return 0;
+}
+
+//==============================================================================
 //function : dtracelevel
 //purpose  :
 //==============================================================================
@@ -843,6 +859,8 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
     "meminfo [virt|v] [heap|h] [wset|w] [wsetpeak] [swap] [swappeak] [private]"
     " : memory counters for this process",
 	  __FILE__, dmeminfo, g);
+  theCommands.Add("dperf","dperf [reset] -- show performance counters, reset if argument is provided",
+		  __FILE__,dperf,g);
 
   // Logging commands; note that their names are hard-coded in the code
   // of Draw_Interpretor, thus should not be changed without update of that code!

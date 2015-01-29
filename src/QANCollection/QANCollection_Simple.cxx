@@ -30,9 +30,11 @@ typedef NCollection_Sequence<gp_Pnt> MySequence;
 
 const Standard_Integer REPEAT = 100;
 
-void printAllMeters ()
+static void printAllMeters (Draw_Interpretor& theDI)
 {
-  PERF_PRINT_ALL
+  char buffer[25600];
+  perf_sprint_all_meters (buffer, 25600 - 1, 1);
+  theDI << buffer;
 }
 
 static void createArray (TColgp_Array1OfPnt& anArrPnt)
@@ -132,7 +134,7 @@ static void assignArray (MyArray1& aDest, const MyArray1& aSrc)
   }
 }
 
-static void checkArray (const Standard_Boolean isNewColl)
+static void checkArray (Draw_Interpretor& theDI, const Standard_Boolean isNewColl)
 {
   if (isNewColl) {
     MyArray1 anArrPnt (1, 100000), anArrPnt1 (1, 100000);
@@ -144,10 +146,11 @@ static void checkArray (const Standard_Boolean isNewColl)
     createArray (anArrPnt);
     assignArray (anArrPnt1, anArrPnt);
   }
-  printAllMeters ();
+  printAllMeters (theDI);
 }
 
-static void checkSequence (const Standard_Boolean isNewColl,
+static void checkSequence (Draw_Interpretor& theDI, 
+                           const Standard_Boolean isNewColl,
                            const Standard_Boolean isIncr)
 {
   if (isNewColl) {
@@ -165,7 +168,7 @@ static void checkSequence (const Standard_Boolean isNewColl,
     createSequence (aSeqPnt);
     assignSequence (aSeqPnt1, aSeqPnt);
   }
-  printAllMeters ();
+  printAllMeters (theDI);
 }
 
 //=======================================================================
@@ -183,7 +186,7 @@ static Standard_Integer QANColCheckArray1(Draw_Interpretor& di, Standard_Integer
   if (argc > 1) {
     if (strcmp (argv[1], "-n") == 0) isNewColl = Standard_True;
   }
-  checkArray (isNewColl);
+  checkArray (di, isNewColl);
   return 0;
 }
 
@@ -207,7 +210,7 @@ static Standard_Integer QANColCheckSequence(Draw_Interpretor& di, Standard_Integ
       isIncr = Standard_True;
     }
   }
-  checkSequence (isNewColl, isIncr);
+  checkSequence (di, isNewColl, isIncr);
   return 0;
 }
 

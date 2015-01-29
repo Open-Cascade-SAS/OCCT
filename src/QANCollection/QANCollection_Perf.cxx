@@ -89,8 +89,16 @@ DEFINE_SEQUENCE(QANCollection_SequencePerf,QANCollection_BaseColPerf,ItemType)
 DEFINE_HSEQUENCE(QANCollection_HSequencePerf,QANCollection_SequencePerf)
 IMPLEMENT_HSEQUENCE(QANCollection_HSequencePerf)
 
+static void printAllMeters (Draw_Interpretor& theDI)
+{
+  char buffer[25600];
+  perf_sprint_all_meters (buffer, 25600 - 1, 1);
+  theDI << buffer;
+}
+
 // ===================== Test perform of Array1 type ==========================
-static void CompArray1 (const Standard_Integer theRep,
+static void CompArray1 (Draw_Interpretor& theDI,
+                        const Standard_Integer theRep,
                         const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -169,11 +177,12 @@ static void CompArray1 (const Standard_Integer theRep,
       ////////////////////////////////aTOper.Stop();
       PERF_STOP_METER("TCollection_Array1 operator=")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of Array2 type ==========================
-static void CompArray2 (const Standard_Integer theRep,
+static void CompArray2 (Draw_Interpretor& theDI,
+                        const Standard_Integer theRep,
                         const Standard_Integer theSize)
 {
   Standard_Integer i,j,k;
@@ -256,11 +265,12 @@ static void CompArray2 (const Standard_Integer theRep,
       ////////////////////////////////aTOper.Stop();
       PERF_STOP_METER("TCollection_Array2 operator=")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of List type ==========================
-static void CompList (const Standard_Integer theRep,
+static void CompList (Draw_Interpretor& theDI,
+                      const Standard_Integer theRep,
                       const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -327,11 +337,12 @@ static void CompList (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_List clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of Sequence type ==========================
-static void CompSequence (const Standard_Integer theRep,
+static void CompSequence (Draw_Interpretor& theDI,
+                          const Standard_Integer theRep,
                           const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -420,11 +431,12 @@ static void CompSequence (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Sequence clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of Map type ==========================
-static void CompMap (const Standard_Integer theRep,
+static void CompMap (Draw_Interpretor& theDI,
+                     const Standard_Integer theRep,
                      const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -513,11 +525,12 @@ static void CompMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Map clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of DataMap type ==========================
-static void CompDataMap (const Standard_Integer theRep,
+static void CompDataMap (Draw_Interpretor& theDI,
+                         const Standard_Integer theRep,
                          const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -608,11 +621,12 @@ static void CompDataMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_DataMap clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of DoubleMap type ==========================
-static void CompDoubleMap (const Standard_Integer theRep,
+static void CompDoubleMap (Draw_Interpretor& theDI,
+                           const Standard_Integer theRep,
                            const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -718,14 +732,15 @@ static void CompDoubleMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_DoubleMap clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
   if (iFail1 || iFail2)
     cout << "Warning : N map failed " << iFail1 << " times, T map - " << 
       iFail2 << endl;
 }
 
 // ===================== Test perform of IndexedMap type ==========================
-static void CompIndexedMap (const Standard_Integer theRep,
+static void CompIndexedMap (Draw_Interpretor& theDI,
+                            const Standard_Integer theRep,
                             const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -815,11 +830,12 @@ static void CompIndexedMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_IndexedMap clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of IndexedDataMap type ==========================
-static void CompIndexedDataMap (const Standard_Integer theRep,
+static void CompIndexedDataMap (Draw_Interpretor& theDI,
+                                const Standard_Integer theRep,
                                 const Standard_Integer theSize)
 {
   Standard_Integer i,j;
@@ -911,11 +927,13 @@ static void CompIndexedDataMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_IndexedDataMap clearing")
     }
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 // ===================== Test perform of SparseArray type ==========================
-static void CompSparseArray (const Standard_Integer theRep, const Standard_Integer theSize)
+static void CompSparseArray (Draw_Interpretor& theDI,
+                             const Standard_Integer theRep, 
+                             const Standard_Integer theSize)
 {
   Standard_Integer i,j;
   for (i=0; i<theRep; i++)
@@ -968,7 +986,7 @@ static void CompSparseArray (const Standard_Integer theRep, const Standard_Integ
       
     }
 
-  PERF_PRINT_ALL
+  printAllMeters(theDI);
 }
 
 //=======================================================================
@@ -1005,7 +1023,7 @@ static Standard_Integer QANColPerfArray1(Draw_Interpretor& di, Standard_Integer 
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompArray1(Repeat,Size);
+  CompArray1 (di, Repeat, Size);
   return 0;
 }
 
@@ -1019,7 +1037,7 @@ static Standard_Integer QANColPerfArray2(Draw_Interpretor& di, Standard_Integer 
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompArray2(Repeat,Size);
+  CompArray2 (di, Repeat, Size);
   return 0;
 }
 
@@ -1033,7 +1051,7 @@ static Standard_Integer QANColPerfList(Draw_Interpretor& di, Standard_Integer ar
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompList(Repeat,Size);
+  CompList (di, Repeat, Size);
   return 0;
 }
 
@@ -1047,7 +1065,7 @@ static Standard_Integer QANColPerfSequence(Draw_Interpretor& di, Standard_Intege
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompSequence(Repeat,Size);
+  CompSequence (di, Repeat, Size);
   return 0;
 }
 
@@ -1061,7 +1079,7 @@ static Standard_Integer QANColPerfMap(Draw_Interpretor& di, Standard_Integer arg
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompMap(Repeat,Size);
+  CompMap (di, Repeat, Size);
   return 0;
 }
 
@@ -1075,7 +1093,7 @@ static Standard_Integer QANColPerfDataMap(Draw_Interpretor& di, Standard_Integer
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompDataMap(Repeat,Size);
+  CompDataMap (di, Repeat, Size);
   return 0;
 }
 
@@ -1089,7 +1107,7 @@ static Standard_Integer QANColPerfDoubleMap(Draw_Interpretor& di, Standard_Integ
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompDoubleMap(Repeat,Size);
+  CompDoubleMap (di, Repeat, Size);
   return 0;
 }
 
@@ -1103,7 +1121,7 @@ static Standard_Integer QANColPerfIndexedMap(Draw_Interpretor& di, Standard_Inte
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompIndexedMap(Repeat,Size);
+  CompIndexedMap (di, Repeat, Size);
   return 0;
 }
 
@@ -1117,7 +1135,7 @@ static Standard_Integer QANColPerfIndexedDataMap(Draw_Interpretor& di, Standard_
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompIndexedDataMap(Repeat,Size);
+  CompIndexedDataMap (di, Repeat, Size);
   return 0;
 }
 
@@ -1131,7 +1149,7 @@ static Standard_Integer QANColCheckSparseArray(Draw_Interpretor& di, Standard_In
   if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
     return 1;
   }
-  CompSparseArray(Repeat,Size);
+  CompSparseArray (di, Repeat, Size);
   return 0;
 }
 
