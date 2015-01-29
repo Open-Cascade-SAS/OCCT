@@ -215,6 +215,7 @@ static void MakeOffset
  BRepFill_IndexedDataMapOfOrientedShapeListOfShape& Map,
  const Handle(Geom_Plane)&                   RefPlane,
  const Standard_Boolean                      IsOpenResult,
+ const GeomAbs_JoinType                      theJoinType,
  const TopoDS_Vertex *                       Ends);
 
 //=======================================================================
@@ -255,24 +256,31 @@ static Standard_Boolean KPartCircle
       IsOpenResult)
   {
     Standard_Real anOffset = myOffset;
-    if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
     
     Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(E, mySpine, f, l);
     Handle(Geom2dAdaptor_HCurve) AHC = new Geom2dAdaptor_HCurve(aPCurve, f, l);
     Handle(Geom2d_Curve) OC;
     if (AHC->GetType() == GeomAbs_Line)
     {
+      if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
       Adaptor3d_OffsetCurve Off(AHC,anOffset);
       OC = new Geom2d_Line(Off.Line());
     }
     else if (AHC->GetType() == GeomAbs_Circle)
     {
+      if (E.Orientation() == TopAbs_FORWARD) anOffset *= -1;
       gp_Circ2d theCirc = AHC->Circle();
-      if (anOffset < 0. || Abs(anOffset) < theCirc.Radius())
-        OC = new Geom2d_Circle (theCirc.Position(), theCirc.Radius() - anOffset);
+      if (anOffset > 0. || Abs(anOffset) < theCirc.Radius())
+        OC = new Geom2d_Circle (theCirc.Position(), theCirc.Radius() + anOffset);
+      else
+      {
+        myIsDone = Standard_False;
+        return Standard_False;
+      }
     }
     else
     {
+      if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
       Handle(Geom2d_TrimmedCurve) G2dT = new Geom2d_TrimmedCurve(aPCurve, f, l);
       OC = new Geom2d_OffsetCurve( G2dT, anOffset);
     }
@@ -790,7 +798,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
       }
       else {
 	MakeOffset (TopoDS::Edge(SE),myWorkSpine,myOffset,myMap,RefPlane,
-                    myIsOpenResult, Ends);
+                    myIsOpenResult, myJoinType, Ends);
 	PE = SE;
       }
     }
@@ -1941,6 +1949,7 @@ void MakeOffset (const TopoDS_Edge&        E,
 		       BRepFill_IndexedDataMapOfOrientedShapeListOfShape& Map,
 		 const Handle(Geom_Plane)& RefPlane,
                  const Standard_Boolean    IsOpenResult,
+                 const GeomAbs_JoinType    theJoinType,
                  const TopoDS_Vertex *     Ends)
 {
   Standard_Real f,l;
@@ -1984,11 +1993,31 @@ void MakeOffset (const TopoDS_Edge&        E,
       Handle(Geom2d_Circle) CC = new Geom2d_Circle(Off.Circle());      
 
       Standard_Real Delta = 2*M_PI - l + f;
-      if (ToExtendFirstPar)
-        f -= 0.2*Delta;
-      if (ToExtendLastPar)
-        l += 0.2*Delta;
-
+      if (theJoinType == GeomAbs_Arc)
+      {
+        if (ToExtendFirstPar)
+          f -= 0.2*Delta;
+        if (ToExtendLastPar)
+          l += 0.2*Delta;
+      }
+      else //GeomAbs_Intersection
+      {
+        if (ToExtendFirstPar && ToExtendLastPar)
+        {
+          Standard_Real old_l = l;
+          f = old_l + Delta/2.;
+          l = f + 2*M_PI;
+        }
+        else if (ToExtendFirstPar)
+        {
+          f = l;
+          l = f + 2*M_PI;
+        }
+        else if (ToExtendLastPar)
+        {
+          l = f + 2*M_PI;
+        }
+      }
       G2dOC = new Geom2d_TrimmedCurve(CC,f,l);
     }
   }
@@ -1999,9 +2028,19 @@ void MakeOffset (const TopoDS_Edge&        E,
     Handle(Geom2d_Line)       CC = new Geom2d_Line(Off.Line());
     Standard_Real Delta = (l - f);
     if (ToExtendFirstPar)
-      f -= Delta;
+    {
+      if (theJoinType == GeomAbs_Arc)
+        f -= Delta;
+      else //GeomAbs_Intersection
+        f = -Precision::Infinite();
+    }
     if (ToExtendLastPar)
-      l += Delta;
+    {
+      if (theJoinType == GeomAbs_Arc)
+        l += Delta;
+      else //GeomAbs_Intersection
+        l = Precision::Infinite();
+    }
     G2dOC = new Geom2d_TrimmedCurve(CC,f,l);
   }
   else {
