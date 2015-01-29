@@ -276,21 +276,21 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
-    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "scale")) {
-      if (myIsTransform)
-        aStatus = Scene().ReadXYZ (theBuffer, aScale,
-                                   Standard_False, Standard_True);
-      else {
-        aStatus = VrmlData_VrmlFormatError;
-        break;
-      }
-    } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "scaleOrientation"))
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "scaleOrientation"))
       if (myIsTransform) {
         if (OK(aStatus, Scene().ReadXYZ (theBuffer, aScaleAxis,
                                          Standard_False, Standard_False)))
           aStatus = Scene().ReadReal (theBuffer, aScaleAngle,
                                       Standard_False, Standard_False);
       } else {
+        aStatus = VrmlData_VrmlFormatError;
+        break;
+      }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "scale"))
+      if (myIsTransform)
+        aStatus = Scene().ReadXYZ (theBuffer, aScale,
+                                   Standard_False, Standard_True);
+      else {
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
