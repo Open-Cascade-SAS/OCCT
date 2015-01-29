@@ -292,6 +292,12 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
     return myTextureBound;
   }
 
+  const Handle(OpenGl_Sampler)& aSampler = myGlContext->TextureSampler();
+  if (!aSampler.IsNull())
+  {
+    aSampler->Unbind (*myGlContext);
+  }
+
 #if !defined(GL_ES_VERSION_2_0)
   // reset texture matrix because some code may expect it is identity
   GLint aMatrixMode = GL_TEXTURE;
