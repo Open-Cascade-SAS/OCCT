@@ -1832,13 +1832,16 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   }
 
   const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = myRaytraceGeometry.BVH();
-
-  aResult &= mySceneNodeInfoTexture->SubData (myGlContext, 0, aBVH->Length(),
-    reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
-  aResult &= mySceneMinPointTexture->SubData (myGlContext, 0, aBVH->Length(),
-    reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
-  aResult &= mySceneMaxPointTexture->SubData (myGlContext, 0, aBVH->Length(),
-    reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
+  const Standard_Integer aBvhLength = aBVH->Length();
+  if (aBvhLength > 0)
+  {
+    aResult &= mySceneNodeInfoTexture->SubData (myGlContext, 0, aBVH->Length(),
+      reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
+    aResult &= mySceneMinPointTexture->SubData (myGlContext, 0, aBVH->Length(),
+      reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
+    aResult &= mySceneMaxPointTexture->SubData (myGlContext, 0, aBVH->Length(),
+      reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
+  }
 
   for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
