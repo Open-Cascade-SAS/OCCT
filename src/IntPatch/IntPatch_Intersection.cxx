@@ -29,6 +29,220 @@
 #define DEBUG 0 
 static const Standard_Integer aNbPointsInALine = 200;
 
+//=======================================================================
+//function : IsSeamOrBound
+//purpose  : Returns TRUE if point thePt1 lies in seam-edge
+//            (if it exists) or surface boundaries;
+//=======================================================================
+static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePt1,
+                                      const Standard_Real theU1Period,
+                                      const Standard_Real theU2Period,
+                                      const Standard_Real theV1Period,
+                                      const Standard_Real theV2Period,
+                                      const Standard_Real theUfSurf1,
+                                      const Standard_Real theUlSurf1,
+                                      const Standard_Real theVfSurf1,
+                                      const Standard_Real theVlSurf1,
+                                      const Standard_Real theUfSurf2,
+                                      const Standard_Real theUlSurf2,
+                                      const Standard_Real theVfSurf2,
+                                      const Standard_Real theVlSurf2)
+{
+  Standard_Real aU11 = 0.0, aU12 = 0.0, aV11 = 0.0, aV12 = 0.0;
+  thePt1.Parameters(aU11, aV11, aU12, aV12);
+
+  Standard_Boolean aCond = Standard_False;
+  aCond = aCond || (!IsEqual(theU1Period, 0.0) &&
+                    IsEqual(fmod(aU11, theU1Period), 0.0));
+
+  aCond = aCond || (!IsEqual(theU2Period, 0.0) &&
+                    IsEqual(fmod(aU12, theU2Period), 0.0));
+
+  aCond = aCond || (!IsEqual(theV1Period, 0.0) &&
+                    IsEqual(fmod(aV11, theV1Period), 0.0));
+
+  aCond = aCond || (!IsEqual(theV2Period, 0.0) &&
+                    IsEqual(fmod(aV12, theV2Period), 0.0));
+
+  return  aCond ||
+          IsEqual(aU11, theUfSurf1) || IsEqual(aU11, theUlSurf1) ||
+          IsEqual(aU12, theUfSurf2) || IsEqual(aU12, theUlSurf2) ||
+          IsEqual(aV11, theVfSurf1) || IsEqual(aV11, theVlSurf1) ||
+          IsEqual(aV12, theVfSurf2) || IsEqual(aV12, theVlSurf2);
+}
+
+//=======================================================================
+//function : JoinWLines
+//purpose  : joins all WLines from theSlin to one if it is possible and
+//            records the result into theSlin again.
+//            Lines will be kept to be splitted if:
+//              a) they are separated (has no common points);
+//              b) resulted line (after joining) go through
+//                 seam-edges or surface boundaries.
+//
+//          In addition, if points in theSPnt lies at least in one of 
+//          the line in theSlin, this point will be deleted.
+//=======================================================================
+static void JoinWLines(IntPatch_SequenceOfLine& theSlin,
+                IntPatch_SequenceOfPoint& theSPnt,
+                const Standard_Real theTol3D,
+                const Standard_Real theU1Period,
+                const Standard_Real theU2Period,
+                const Standard_Real theV1Period,
+                const Standard_Real theV2Period,
+                const Standard_Real theUfSurf1,
+                const Standard_Real theUlSurf1,
+                const Standard_Real theVfSurf1,
+                const Standard_Real theVlSurf1,
+                const Standard_Real theUfSurf2,
+                const Standard_Real theUlSurf2,
+                const Standard_Real theVfSurf2,
+                const Standard_Real theVlSurf2)
+{
+  if(theSlin.Length() == 0)
+    return;
+
+  for(Standard_Integer aNumOfLine1 = 1; aNumOfLine1 <= theSlin.Length(); aNumOfLine1++)
+  {
+    const Handle(IntPatch_WLine)& aWLine1 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine1));
+
+    if(aWLine1.IsNull())
+    {//We must have failure to join not-point-lines
+      return;
+    }
+
+    const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
+    const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+    const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+
+    for(Standard_Integer aNPt = 1; aNPt <= theSPnt.Length(); aNPt++)
+    {
+      const IntSurf_PntOn2S aPntCur = theSPnt.Value(aNPt).PntOn2S();
+
+      if( aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
+        aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
+      {
+        theSPnt.Remove(aNPt);
+        aNPt--;
+      }
+    }
+
+    Standard_Boolean hasBeenRemoved = Standard_False;
+    for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
+    {
+      const Handle(IntPatch_WLine)& aWLine2 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine2));
+
+      const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
+      const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
+
+      const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+      const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+
+      const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
+      const IntSurf_PntOn2S& aPntLWL2 = aWLine2->Point(aNbPntsWL2);
+
+      if(aPntFWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      {
+        if(!IsSeamOrBound(aPntFWL1, theU1Period, theU2Period,
+                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
+                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
+                          theVfSurf2, theVlSurf2))
+        {
+          aWLine1->ClearVertexes();
+          for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+          {
+            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+            aWLine1->Curve()->InsertBefore(1, aPt);
+          }
+
+          aWLine1->ComputeVertexParameters(theTol3D);
+
+          theSlin.Remove(aNumOfLine2);
+          aNumOfLine2--;
+          hasBeenRemoved = Standard_True;
+
+          continue;
+        }
+      }
+
+      if(aPntFWL1.IsSame(aPntLWL2, Precision::Confusion()))
+      {
+        if(!IsSeamOrBound(aPntFWL1, theU1Period, theU2Period,
+                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
+                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
+                          theVfSurf2, theVlSurf2))
+        {
+          aWLine1->ClearVertexes();
+          for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+          {
+            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+            aWLine1->Curve()->InsertBefore(1, aPt);
+          }
+
+          aWLine1->ComputeVertexParameters(theTol3D);
+
+          theSlin.Remove(aNumOfLine2);
+          aNumOfLine2--;
+          hasBeenRemoved = Standard_True;
+
+          continue;
+        }
+      }
+
+      if(aPntLWL1.IsSame(aPntFWL2, Precision::Confusion()))
+      {
+        if(!IsSeamOrBound(aPntLWL1, theU1Period, theU2Period,
+                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
+                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
+                          theVfSurf2, theVlSurf2))
+        {
+          aWLine1->ClearVertexes();
+          for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+          {
+            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+            aWLine1->Curve()->Add(aPt);
+          }
+
+          aWLine1->ComputeVertexParameters(theTol3D);
+
+          theSlin.Remove(aNumOfLine2);
+          aNumOfLine2--;
+          hasBeenRemoved = Standard_True;
+
+          continue;
+        }
+      }
+
+      if(aPntLWL1.IsSame(aPntLWL2, Precision::Confusion()))
+      {
+        if(!IsSeamOrBound(aPntLWL1, theU1Period, theU2Period,
+                          theV1Period, theV2Period, theUfSurf1, theUlSurf1,
+                          theVfSurf1, theVlSurf1, theUfSurf2, theUlSurf2,
+                          theVfSurf2, theVlSurf2))
+        {
+          aWLine1->ClearVertexes();
+          for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+          {
+            const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+            aWLine1->Curve()->Add(aPt);
+          }
+
+          aWLine1->ComputeVertexParameters(theTol3D);
+
+          theSlin.Remove(aNumOfLine2);
+          aNumOfLine2--;
+          hasBeenRemoved = Standard_True;
+
+          continue;
+        }
+      }
+    }
+
+    if(hasBeenRemoved)
+      aNumOfLine1--;
+  }
+}
+
 //======================================================================
 // function: SequenceOfLine
 //======================================================================
@@ -1513,6 +1727,16 @@ void IntPatch_Intersection::
           const IntPatch_Point& aPoint = anInt.Point(aPID);
           spnt.Append(aPoint);
         }
+
+        JoinWLines( slin, spnt, theTolTang,
+                    theS1->IsUPeriodic()? theS1->UPeriod() : 0.0,
+                    theS2->IsUPeriodic()? theS2->UPeriod() : 0.0,
+                    theS1->IsVPeriodic()? theS1->VPeriod() : 0.0,
+                    theS2->IsVPeriodic()? theS2->VPeriod() : 0.0,
+                    theS1->FirstUParameter(), theS1->LastUParameter(),
+                    theS1->FirstVParameter(), theS1->LastVParameter(),
+                    theS2->FirstUParameter(), theS2->LastUParameter(),
+                    theS2->FirstVParameter(), theS2->LastVParameter());
       }
     }
   }

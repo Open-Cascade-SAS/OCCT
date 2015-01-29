@@ -3770,7 +3770,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
               bCheckAngle1 = Standard_True;
               aNewVec = gp_Vec2d(gp_Pnt2d(nU1, nV1), gp_Pnt2d(anewU, anewV));
 
-              if(aNewVec.SquareMagnitude() < (gp::Resolution() * gp::Resolution())) {
+              if(aNewVec.SquareMagnitude() < gp::Resolution()) {
                 aNewP.SetValue((surfit == 0), anewU, anewV);
                 bCheckAngle1 = Standard_False;
               }
@@ -3779,7 +3779,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
               bCheckAngle2 = Standard_True;
               aNewVec = gp_Vec2d(gp_Pnt2d(nU1, nV1), gp_Pnt2d(U, V));
 
-              if(aNewVec.SquareMagnitude() < (gp::Resolution() * gp::Resolution())) {
+              if(aNewVec.SquareMagnitude() < gp::Resolution()) {
                 bCheckAngle2 = Standard_False;
               }
             }
@@ -3799,7 +3799,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
                   aPrevNeighbourPoint.ParametersOnS2(nU2, nV2);
                 gp_Vec2d aVecOld(gp_Pnt2d(nU2, nV2), gp_Pnt2d(nU1, nV1));
 
-                if(aVecOld.SquareMagnitude() <= (gp::Resolution() * gp::Resolution())) {
+                if(aVecOld.SquareMagnitude() <= gp::Resolution()) {
                   continue;
                 }
                 else {
@@ -3916,7 +3916,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
               ap2.SetX(nU2);
               ap2.SetY(nV2);
 
-              if(ap1.SquareDistance(ap2) > (gp::Resolution() * gp::Resolution())) {
+              if(ap1.SquareDistance(ap2) > gp::Resolution()) {
                 break;
               }
             }  
