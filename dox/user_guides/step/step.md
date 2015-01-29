@@ -3,15 +3,69 @@ STEP processor  {#occt_user_guides__step}
 
 @tableofcontents
 
-@section occt_step_1 Overview
+@section occt_step_1 Introduction
 
-This manual is intended to provide technical documentation on the Open CASCADE Technology (**OCCT**) STEP processor and to help Open CASCADE Technology users with the use of the STEP processor (to read and write STEP files). STEP files conforming to AP 214, AP 203 and partially AP 209 can be read. STEP files that are produced by this interface conform to STEP AP 214 or AP 203, according to the user option. 
+STEP is more and more widely used to exchange data between various software, involved in CAD, PDM, Analysis, etc... STEP is far more than an "exchange standard" : it provides a technology and a set of methodologies to describe the data to exchange in a modular and upgradeable way. Regarding OCCT, this mostly applies to CAD data but it is not a limitation, other kinds of data for specific applications can be addressed too.
+
+@figure{/user_guides/step/images/step_image002.png, "Image imported from STEP"}
+
+Open Cascade allows its users to employ STEP in the following domains:
+* Exchange of data for technical applications, following the state-of-the-art definitions and rules;
+* Extension of case coverage, according to specific needs or to the evolution of general business uses;
+* Expertise in data architecture of an application, to get experience from STEP definitions and make easier the mapping to them, for a better interoperability with outer world.
+
+This manual is intended to provide technical documentation on the Open CASCADE Technology (**OCCT**) STEP processor and to help Open CASCADE Technology users with the use of the STEP processor (to read and write STEP files). 
 
 Only geometrical, topological STEP entities (shapes) and assembly structures are translated by the basic translator described in sections 2 to 6. Data that cannot be translated on this level are also loaded from a STEP file and can be translated later. XDE STEP translator (see section 7 <a href="#occt_step_7">Reading from and writing to XDE</a>) translates names, colors, layers, validation properties and other data associated with shapes and assemblies into XDE document. 
 
 File translation is performed in the programming mode, via C++ calls. 
 
+@ref occt_user_guides__shape_healing "Shape Healing" toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to STEP translator using the same API, only the names of API packages change.
+
 For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin. 
+
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
+
+@subsection occt_step_1_1 STEP Exchanges in Open Cascade technology
+
+Beyond the upper level API, which is fitted for an easy end-use, the STEP exchange functions enter in the general frame of Exchanges in Open Cascade, adapted for STEP:
+
+* Specific packages for Data definition and checking;
+* Physical Access supported by Drivers (Part 21 file access is embedded);
+* Conversion to/from Open Cascade or applicative data supported by drivers (OCC-BREP and XDE ard basically provided);
+* Tools for analysis, filtering, etc... including DRAW commands.
+
+These modules share common architecture and capabilities with other exchange modules of Open Cascade, like Shape Healing. Also, built-in Viewer and Converter (as Plugin for Netscape, Internet Explorer ..), are based on the same technology.
+
+In addition, Open Cascade provides tools to process models described using STEP: to reflect EXPRESS descriptions, to read, write and check data, to analyze the whole models ... Their key features are:
+
+* Modularity by sets of data types, which can be hierarchized to reflect the original modularity describing the resources and application protocols;
+* Implementation as CDL/C++ classes, providing comprehensive access to their members;
+* Early binding is basically used, providing good performance, easy installation and use as well as the capability to support non-compiled descriptions.
+
+This provides a natural way to deal with non-supported protocols when they share common definitions, as for geometry, which can then be exploited. The common frame, as the already supported data types, give a good foundation to go towards new uses of STEP, either on data definition (protocols from ISO or from industrial consortia) or on mapping with applicative data.
+
+
+@subsection occt_step_1_2 STEP Interface
+
+The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 (Conformance Class 2 both CD and DIS versions of schema) and translates them to Open CASCADE Technology models. STEP Application Protocol 203 is also supported.
+
+The STEP interface also translates OCCT models to STEP files. STEP files that are produced by this interface conform to STEP AP 203 or AP 214 (Conformance Class 2, either CD or DIS version of the schema) depending on the user's option.
+
+Basic interface reads and writes geometrical, topological STEP data and assembly structures. 
+
+The interface is able to translate one entity, a group of entities or a whole file.
+
+Other kinds of data such as colors, validation properties, layers, names and the structure of assemblies can be read or written with the help of XDE tools - <i> STEPCAFControl_Reader</i> and <i> STEPCAFControl_Writer</i>. 
+
+To choose a translation mode when exporting to a STEP format, use <i> STEPControl_STEPModelType</i>.
+
+There is a set of parameters that concern the translation and can be set before the beginning of the translation.
+
+Please, note:
+* a STEP model is a STEP file that has been loaded into memory;
+* all references to shapes indicate OCCT shapes unless otherwise explicitly stated;
+* a root entity is the highest level entity of any given type, i.e. an entity that is not referenced by any other one.
 
 @section occt_step_2 Reading STEP
 @subsection occt_step_2_1 Procedure

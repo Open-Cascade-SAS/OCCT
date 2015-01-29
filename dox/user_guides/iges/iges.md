@@ -5,10 +5,19 @@ IGES Support  {#occt_user_guides__iges}
 
 @section occt_iges_1 Introduction
 
+The IGES interface reads IGES files and translates them to Open CASCADE Technology models. The interface is able to translate one entity, a group of entities or a whole file. Before beginning a translation, you can set a range of parameters to manage the translation process. If you like, you can also check file consistency before translation. The IGES interface also translates OCCT models to IGES files. 
 
-This manual explains how  to convert an IGES file to an Open CASCADE Technology (**OCCT**) shape and  vice versa. It provides basic documentation on conversion. For advanced  information on conversion, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a> 
+Other kinds of data such as colors and names can be read or written with the help of XDE tools <i> IGESCAFControl_Reader</i> and <i> IGESCAFControl_Writer</i>. 
 
-IGES files up to and  including IGES version 5.3 can be read. IGES files that are produced by this  interface conform to IGES version 5.3 (Initial Graphics Exchange Specification,  IGES 5.3. ANS US PRO/IPO-100-1996). 
+Please, note:
+
+  * an IGES model is an IGES file that has been loaded into memory.
+  * an IGES entity is an entity in the IGES normal sense.
+  * a root entity is the highest level entity of any given type, e.g. type 144 for surfaces and type 186 for solids. Roots are not referenced by other entities.
+
+This manual mainly explains how  to convert an IGES file to an Open CASCADE Technology (**OCCT**) shape and  vice versa. It provides basic documentation on conversion. For advanced  information on conversion, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a> 
+
+IGES files produced in accordance with IGES standard versions up to and including version 5.3 can be read. IGES files that are produced by this  interface conform to IGES version 5.3 (Initial Graphics Exchange Specification,  IGES 5.3. ANS US PRO/IPO-100-1996). 
 
 This manual principally  deals with two OCCT classes: 
   * The Reader class, which loads  IGES files and translates their contents to OCCT shapes,
@@ -17,6 +26,8 @@ This manual principally  deals with two OCCT classes:
 File translation is  performed in the programming mode, via C++ calls, and the resulting OCCT  objects are shapes. 
 
 All definitions in IGES  version 5.3 are recognized but only 3D geometric entities are translated. When  the processor encounters data, which is not translated, it ignores it and  writes a message identifying the types of data, which was not handled. This  message can be written either to a log file or to screen output. 
+
+@ref occt_user_guides__shape_healing "Shape Healing" toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
 
 @section occt_iges_2 Reading IGES
 @subsection occt_iges_2_1 Procedure

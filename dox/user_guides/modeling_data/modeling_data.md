@@ -5,24 +5,37 @@ Modeling Data {#occt_user_guides__modeling_data}
 
 @section occt_modat_0 Introduction
 
-Modeling Data supplies data structures to represent 2D and 3D geometric models. This manual explains how to use Modeling Data. For advanced information on modeling data, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>     
+Modeling Data supplies data structures to represent 2D and 3D geometric models. 
+
+This manual explains how to use Modeling Data. For advanced information on modeling data, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>.     
 
 @section occt_modat_1 Geometry Utilities
 
 Geometry Utilities provide the following services: 
   * Creation of shapes by interpolation and approximation 
   * Direct construction of shapes 
-  * Conversion of curves and surfaces to Bspline curves and surfaces 
+  * Conversion of curves and surfaces to BSpline curves and surfaces 
   * Computation of the coordinates of points on 2D and 3D curves 
   * Calculation of extrema between shapes. 
 
 @subsection occt_modat_1_1 Interpolations and Approximations
 
-In modeling, it is often required to approximate or interpolate points into curves and surfaces. In interpolation, the process is complete when the curve or surface passes through all the points; in approximation, when it is as close to these points as possible. This component provides both high and low level services to approximate or interpolate points into curves and surfaces. The lower level services allow performing parallel approximation of groups of points into groups of Bezier or B-spline curves. 
+In modeling, it is often required to approximate or interpolate points into curves and surfaces. In interpolation, the process is complete when the curve or surface passes through all the points; in approximation, when it is as close to these points as possible.
+
+Approximation of Curves and Surfaces groups together a variety of functions used in 2D and 3D geometry for:
+  * the interpolation of a set of 2D points using a 2D BSpline or Bezier curve;
+  * the approximation of a set of 2D points using a 2D BSpline or Bezier curve;
+  * the interpolation of a set of 3D points using a 3D BSpline or Bezier curve, or a BSpline surface;
+  * the approximation of a set of 3D points using a 3D BSpline or Bezier curve, or a BSpline surface.
+
+You can program approximations in two ways:
+
+  * Using high-level functions, designed to provide a simple method for obtaining approximations with minimal programming,
+  * Using low-level functions, designed for users requiring more control over the approximations.
 
 @subsubsection occt_modat_1_1_1 Analysis of a set of points
 
-The class *PEquation* from  *GProp* package allows analyzng a collection or cloud of points and verifying if they are coincident, collinear or coplanar within a given precision. If they are, the algorithm computes the mean point, the mean line or the mean plane of the points. If they are not, the algorithm computes the minimal box, which includes all the points. 
+The class *PEquation* from  *GProp* package allows analyzing a collection or cloud of points and verifying if they are coincident, collinear or coplanar within a given precision. If they are, the algorithm computes the mean point, the mean line or the mean plane of the points. If they are not, the algorithm computes the minimal box, which includes all the points. 
 
 @subsubsection occt_modat_1_1_2 Basic Interpolation and Approximation
 
@@ -78,6 +91,15 @@ The class **PointsToBSplineSurface** from GeomAPI package allows building a BSpl
 
 Packages *AppDef* and *AppParCurves* provide low-level functions, allowing more control over the approximations.
 
+The low-level functions provide a second API with functions to:
+  * Define compulsory tangents for an approximation. These tangents have origins and extremities.
+  * Approximate a set of curves in parallel to respect identical parameterization.
+  * Smooth approximations. This is to produce a faired curve.
+
+You can also find functions to compute:
+  * The minimal box which includes a set of points
+  * The mean plane, line or point of a set of coplanar, collinear or coincident points.
+
 #### Approximation by multiple point constraints
 
 *AppDef* package provides low-level tools to allow parallel approximation of groups of points into Bezier or B-Spline curves using multiple point constraints. 
@@ -86,7 +108,7 @@ The following low level services are provided:
 
 * Definition of an array of point constraints:
 
-  The class *MultiLine* allows defining a given number of multipoint constraints in order to build the multi-line, multiple lines passing through ordered multiple point constraints. 
+  The class *MultiLine* allows defining a given number of multi-point constraints in order to build the multi-line, multiple lines passing through ordered multiple point constraints. 
 
   @image html /user_guides/modeling_data/images/modeling_data_image004.png "Definition of a MultiLine using Multiple Point Constraints"
   @image latex /user_guides/modeling_data/images/modeling_data_image004.png "Definition of a MultiLine using Multiple Point Constraints"
@@ -98,7 +120,7 @@ The following low level services are provided:
 
 * Definition of a set of point constraints:
 
-  The class **MultiPointConstraint** allows defining a multiple point constraint and  computing the approximation of sets of points to several curves. 
+  The class *MultiPointConstraint* allows defining a multiple point constraint and  computing the approximation of sets of points to several curves. 
 
 * Computation of an approximation of a Bezier curve from a set of points: 
 
@@ -106,7 +128,7 @@ The following low level services are provided:
 
 * Computation of an approximation of a BSpline curve from a set of points: 
 
-The class **BSplineCompute** allows making an approximation of a set of points to a BSpline curve. 
+  The class *BSplineCompute* allows making an approximation of a set of points to a BSpline curve. 
 
 * Definition of Variational Criteria:
 
@@ -138,12 +160,47 @@ The class *MultiBSpCurve* allows defining the approximation of a multi-line made
 * Definition of points making up a set of point constraints
 
 The class *MultiPoint* allows defining groups of 2D or 3D points making up a multi-line. 
+  
+#### Example: How to approximate a curve with respect to tangency
+
+To approximate a curve with respect to tangency, follow these steps:
+
+  1. Create an object of type <i> AppDef_MultiPointConstraints</i> from the set of points to approximate and use the method <i> SetTang </i>to set the tangency vectors.
+  2. Create an object of type <i> AppDef_MultiLine </i>from the <i> AppDef_MultiPointConstraint</i>.
+  3. Use <i> AppDef_BSplineCompute</i>, which instantiates <i>Approx_BSplineComputeLine</i> to perform the approximation.
 
 @subsection occt_modat_1_2 Direct Construction
 
 Direct Construction methods from *gce*, *GC* and *GCE2d* packages provide simplified algorithms to build elementary geometric entities such as lines, circles and curves. They complement the reference definitions provided by the *gp*, *Geom* and *Geom2d* packages. 
 
+The algorithms implemented by <i> gce</i>, <i> GCE2d</i> and <i> GC</i> packages are simple: there is no creation of objects defined by advanced positional constraints (for more information on this subject, see *Geom2dGcc* and *GccAna*, which describe geometry by constraints).
+
 For example, to construct a circle from a point and a radius using the *gp* package, it is necessary to construct axis *Ax2d* before creating the circle. If *gce* package is used, and *Ox* is taken for the axis, it is possible to create a circle directly from a point and a radius. 
+
+Another example is the class <i>gce_MakeCirc</i> providing a framework for defining eight problems encountered in the geometric construction of circles and implementing the eight related construction algorithms.
+
+The object created (or implemented) is an algorithm which can be consulted to find out, in particular:
+
+  * its result, which is a <i>gp_Circ</i>, and
+  * its status. Here, the status indicates whether or not the construction was successful.
+
+If it was unsuccessful, the status gives the reason for the failure.
+
+~~~~
+    gp_Pnt P1 (0.,0.,0.);
+    gp_Pnt P2 (0.,10.,0.);
+    gp_Pnt P3 (10.,0.,0.);
+    gce_MakeCirc MC (P1,P2,P3);
+    if (MC.IsDone()) {
+		const gp_Circ& C = MC.Value();
+    }
+~~~~
+
+In addition, <i> gce</i>, <i> GCE2d</i> and <i> GC</i> each have a <i>Root</i> class. This class is the root of  all classes in the package, which return a status. The returned status (successful
+construction or construction error) is described by the enumeration <i>gce_ErrorType</i>.
+
+Note, that classes, which construct geometric transformations do not return a status, and therefore do not inherit from *Root*.
+
 
 @subsubsection occt_modat_1_2_1 Non-persistent entities
 
@@ -245,15 +302,51 @@ The following classes return objects of type *TrimmedCurve* from *Geom*:
 
 @subsection occt_modat_1_3 Conversion to and from BSplines
 
-The following algorithms to convert geometric curves or surfaces into their BSpline or Bezier equivalents are provided by *GeomConvert*, *Geom2dConvert* and *Convert* packages: 
-- Conversion of a conic into a rational BSpline. 
-- Conversion of an elementary surface into a rational Bspline. 
-- Conversion of a BSpline or Bezier curve into two or more Bezier curves or surfaces. 
-- Conversion of a BSpline curve or surface into two or more BSplinecurves or surfaces with constraints on continuity. 
-- Conversion of a set of joining Bezier curves into a BSplinecurve. 
-- Conversion of a polynomial representation into a BSpline curve. 
+The Conversion to and from BSplines component has two distinct purposes:
+  * Firstly, it provides a homogeneous formulation which can be used to describe any curve or surface. 
+  This is useful for writing algorithms for a single data structure model. 
+  The BSpline formulation can be used to represent most basic geometric objects provided 
+  by the components which describe geometric data structures ("Fundamental Geometry Types", "2D Geometry Types" and "3D Geometry Types" components).
+  * Secondly, it can be used to divide a BSpline curve or surface into a series of curves or surfaces, 
+  thereby providing a higher degree of continuity. This is useful for writing algorithms 
+  which require a specific degree of continuity in the objects to which they are applied. 
+  Discontinuities are situated on the boundaries of objects only.
+
+The "Conversion to and from BSplines" component is composed of three packages.
+
+The <i> Convert </i> package provides algorithms to convert the following into a BSpline curve or surface:
+
+  * a bounded curve based on an elementary 2D curve (line, circle or conic) from the <i> gp </i> package,
+  * a bounded surface based on an elementary surface (cylinder, cone, sphere or torus) from the <i> gp</i> package,
+  * a series of adjacent 2D or 3D Bezier curves defined by their poles.
+
+These algorithms compute the data needed to define the resulting BSpline curve or surface. 
+This elementary data (degrees, periodic characteristics, poles and weights, knots and multiplicities) 
+may then be used directly in an algorithm, or can be used to construct the curve or the surface 
+by calling the appropriate constructor provided by the classes <i>Geom2d_BSplineCurve, Geom_BSplineCurve </i> or <i>Geom_BSplineSurface</i>.
+
+The <i>Geom2dConvert</i> package provides the following:
+
+  * a global function which is used to construct a BSpline curve from a bounded curve based on a 2D curve from the Geom2d package,
+  * a splitting algorithm which computes the points at which a 2D BSpline curve should be cut in order to obtain arcs with the same degree of continuity,
+  * global functions used to construct the BSpline curves created by this splitting algorithm, or by other types of segmentation of the BSpline curve,
+  * an algorithm which converts a 2D BSpline curve into a series of adjacent Bezier curves.
+
+The <i> GeomConvert</i> package also provides the following:
+
+  * a global function used to construct a BSpline curve from a bounded curve based on a curve from the Geom package,
+  * a splitting algorithm, which computes the points at which a BSpline curve should be cut in order to obtain arcs with the same degree of continuity,
+  * global functions to construct BSpline curves created by this splitting algorithm, or by other types of BSpline curve segmentation,
+  * an algorithm, which converts a BSpline curve into a series of adjacent Bezier curves,
+  * a global function to construct a BSpline surface from a bounded surface based on a surface from the Geom package,
+  * a splitting algorithm, which determines the curves along which a BSpline surface should be cut in order to obtain patches with the same degree of continuity,
+  * global functions to construct BSpline surfaces created by this splitting algorithm, or by other types of BSpline surface segmentation,
+  * an algorithm, which converts a BSpline surface into a series of adjacent Bezier surfaces,
+  * an algorithm, which converts a grid of adjacent Bezier surfaces into a BSpline surface.
 
 @subsection occt_modat_1_4 Points on Curves
+
+The Points on Curves component comprises high level functions providing an API for complex algorithms that compute points on a 2D or 3D curve.
 
 The following characteristic points exist on parameterized curves in 3d space: 
 - points equally spaced on a curve, 
@@ -266,7 +359,6 @@ The following characteristic points exist on parameterized curves in 3d space:
 - *UniformDeflection* calculates a set of points at maximum constant deflection between the curve and the polygon that results from the computed points. 
 
 ### Example: Visualizing a curve. 
-
 
 Let us take an adapted curve **C**, i.e. an object which is an interface between the services provided by either a 2D curve from the package Geom2d (in case of an Adaptor_Curve2d curve) or a 3D curve from the package Geom (in case of an Adaptor_Curve curve), and the services required on the curve by the computation algorithm. The adapted curve is created in the following way: 
 
@@ -312,23 +404,30 @@ These packages calculate the extrema of distance between:
 - a curve and a surface, 
 - two surfaces. 
 
-@subsubsection occt_modat_1_5_1 Extrema between Curves
+### Extrema between Curves
 
 The *Geom2dAPI_ExtremaCurveCurve* class allows calculation of all extrema between two 2D geometric curves. Extrema are the lengths of the segments orthogonal to two curves. 
 
 The *GeomAPI_ExtremaCurveCurve* class allows calculation of all extrema between two 3D geometric curves. Extrema are the lengths of the segments orthogonal to two curves. 
 
-@subsubsection occt_modat_1_5_2 Extrema between Curve and Surface
+### Extrema between Curve and Surface
 
 The *GeomAPI_ExtremaCurveSurface* class allows calculation of all  extrema between a 3D curve and a surface. Extrema are the lengths of the segments orthogonal to the curve and the surface. 
 
-@subsubsection occt_modat_1_5_3 Extrema between Surfaces
+### Extrema between Surfaces
 
 The *GeomAPI_ExtremaSurfaceSurface* class allows calculation of all extrema between two surfaces. Extrema are the lengths of the segments orthogonal to two surfaces. 
 
 @section occt_modat_2 2D Geometry
 
-*Geom2d* package defines geometric objects in 2dspace. All  geometric entities are STEP processed. The objects are non-persistent and are handled by reference. The following objects are available: 
+*Geom2d* package defines geometric objects in 2dspace. All geometric entities are STEP processed. The objects are non-persistent and are handled by reference.
+
+In particular, <i>Geom2d</i> package provides classes for:
+* description of points, vectors and curves,
+* their positioning in the plane using coordinate systems,
+* their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
+
+The following objects are available: 
 - point, 
 - Cartesian point, 
 - vector,
@@ -337,9 +436,9 @@ The *GeomAPI_ExtremaSurfaceSurface* class allows calculation of all extrema betw
 - axis, 
 - curve,
 - line, 
-- conic: circle, ellipse, hyperbola, pparabola, 
-- rounded curve: trimmed curve, NURBS curve, Bezier curve. 
-- offset curve
+- conic: circle, ellipse, hyperbola, parabola, 
+- rounded curve: trimmed curve, NURBS curve, Bezier curve, 
+- offset curve.
 
 Before creating a geometric object, it is necessary to decide how the object is handled. 
 The objects provided by *Geom2d* package are handled by reference rather than by value. Copying an instance copies the handle, not the object, so that a change to one instance is reflected in each occurrence of it. 
@@ -347,9 +446,45 @@ If a set of object instances is needed rather than a  single object instance,  *
 - handled by reference and 
 - handled by value. 
 
+The key characteristic of <i> Geom2d </i> curves is that they are parameterized. 
+Each class provides functions to work with the parametric equation of the curve, 
+and, in particular, to compute the point of parameter u on a curve and the derivative vectors of order 1, 2.., N at this point.
+
+As a consequence of the parameterization, a <i> Geom2d </i> curve is naturally oriented.
+
+Parameterization and orientation differentiate elementary <i>Geom2d </i>curves from their
+equivalent as provided by <i> gp</i> package. <i>  Geom2d</i> package provides conversion
+functions to transform a <i> Geom2d</i> object into a <i> gp</i> object, and vice-versa, when this is possible.
+
+Moreover, <i> Geom2d</i> package provides more complex curves, including Bezier curves,
+BSpline curves, trimmed curves and offset curves.
+
+<i> Geom2d </i> objects are organized according to an inheritance structure over several levels.
+
+Thus, an ellipse (specific class <i> Geom2d_Ellipse</i>) is also a conical curve and inherits from the abstract class <i> Geom2d_Conic</i>, while a Bezier curve (concrete class <i> Geom2d_BezierCurve</i>) is also a bounded curve and inherits from the abstract class <i> Geom2d_BoundedCurve</i>; both these examples are also curves (abstract class <i>Geom2d_Curve</i>). Curves, points and vectors inherit from the abstract class <i> Geom2d_Geometry,</i> which describes the properties common to any geometric object from the <i>Geom2d</i> package.
+
+This inheritance structure is open and it is possible to describe new objects, which inherit from those provided in the <i>Geom2d</i> package, provided that they respect the behavior of the classes from which they are to inherit.
+
+Finally, <i> Geom2d</i> objects can be shared within more complex data structures. This is why they are used within topological data structures, for example.
+
+<i>Geom2d</i>package uses the services of the <i> gp</i> package to:
+  * implement elementary algebraic calculus and basic analytic geometry,
+  * describe geometric transformations which can be applied to <i> Geom2d</i> objects,
+  * describe the elementary data structures of <i>Geom2d</i> objects.
+
+However, the <i> Geom2d</i> package essentially provides data structures and not algorithms.
+You can refer to the <i> GCE2d </i> package to find more evolved construction algorithms for <i> Geom2d </i> objects.
+
 @section occt_modat_3 3D Geometry
 
-The *Geom* package defines geometric objects in 3d space and contains all basic geometric transformations, such as identity, rotation, translation, mirroring, scale transformations, combinations of transformations, etc. as well as special functions depending on the reference definition of the geometric object (e.g. addition of a control point on a B-Spline curve,modification of a curve, etc.). All geometrical entities are STEP processed. The following non-persistent and reference-handled objects are available: 
+The *Geom* package defines geometric objects in 3d space and contains all basic geometric transformations, such as identity, rotation, translation, mirroring, scale transformations, combinations of transformations, etc. as well as special functions depending on the reference definition of the geometric object (e.g. addition of a control point on a B-Spline curve,modification of a curve, etc.). All geometrical entities are STEP processed. 
+
+In particular, it provides classes for:
+ * description of points, vectors, curves and surfaces,
+ * their positioning in 3D space using axis or coordinate systems, and
+ * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
+
+The following non-persistent and reference-handled objects are available: 
 - Point 
 - Cartesian point 
 - Vector
@@ -366,13 +501,125 @@ The *Geom* package defines geometric objects in 3d space and contains all basic 
 - Swept surface: surface of linear extrusion, surface of revolution
 - Offset surface. 
 
+The key characteristic of *Geom* curves and surfaces is that they are parameterized.
+Each class provides functions to work with the parametric equation of the curve or
+surface, and, in particular, to compute:
+   * the point of parameter u on a curve, or
+   * the point of parameters (u, v) on a surface.
+together with the derivative vectors of order 1, 2, ... N at this point.
+
+As a consequence of this parameterization, a Geom curve or surface is naturally oriented.
+
+Parameterization and orientation differentiate elementary Geom curves and surfaces from the classes of the same (or similar) names found in <i> gp</i> package. 
+<i>Geom</i> package also provides conversion functions to transform a Geom object into a <i> gp</i> object, and vice-versa, when such transformation is possible.
+
+Moreover, <i> Geom </i>package provides more complex curves and surfaces, including:
+  * Bezier and BSpline curves and surfaces,
+  * swept surfaces, for example surfaces of revolution and surfaces of linear extrusion,
+  * trimmed curves and surfaces, and
+  * offset curves and surfaces.
+
+Geom objects are organized according to an inheritance structure over several levels.
+Thus, a sphere (concrete class <i> Geom_SphericalSurface</i>) is also an elementary surface and inherits from the abstract class <i> Geom_ElementarySurface</i>, while a Bezier surface (concrete class <i> Geom_BezierSurface</i>) is also a bounded surface and inherits from the abstract class <i> Geom_BoundedSurface</i>; both these examples are also surfaces (abstract class <i> Geom_Surface</i>). Curves, points and vectors inherit from the abstract class <i> Geom_Geometry,</i> which describes the properties common to any geometric object from the <i>Geom</i> package.
+
+This inheritance structure is open and it is possible to describe new objects, which inherit from those provided in the Geom package, on the condition that they respect the behavior of the classes from which they are to inherit.
+
+Finally, Geom objects can be shared within more complex data structures. This is why they are used within topological data structures, for example.
+
 If a set of object instances is needed rather than a  single object instance,  *TColGeom* package can be used. This package provides  instantiations of one- and two-dimensional arrays and sequences for curves from *Geom* package. All objects are available in two versions: 
 - handled by reference and 
 - handled by value. 
 
-@subsection occt_modat_4 Local Properties of Curves and Surfaces
+The <i> Geom</i> package uses the services of the <i> gp</i> package to:
+  * implement elementary algebraic calculus and basic analytic geometry,
+  * describe geometric transformations which can be applied to Geom objects,
+  * describe the elementary data structures of Geom objects.
 
-Packages **GeomLProp**, **Geom2dLProp**  provide algorithms calculating the local properties of curves and surfaces
+However, the Geom package essentially provides data structures, not algorithms.
+
+You can refer to the <i> GC</i> package to find more evolved construction algorithms for
+Geom objects.
+
+@section occt_modat_4 Properties of Shapes
+
+@subsection occt_modat_4_1 Local Properties of Shapes
+
+<i>BRepLProp</i> package provides the Local Properties of Shapes component, 
+which contains algorithms computing various local properties on edges and faces in a BRep model.
+
+The local properties which may be queried are:
+
+  * for a point of parameter u on a curve which supports an edge :
+    * the point,
+    * the derivative vectors, up to the third degree,
+    * the tangent vector,
+    * the normal,
+    * the curvature, and the center of curvature;
+  * for a point of parameter (u, v) on a surface which supports a face :
+    * the point,
+    * the derivative vectors, up to the second degree,
+    * the tangent vectors to the u and v isoparametric curves,
+    * the normal vector,
+    * the minimum or maximum curvature, and the corresponding directions of curvature;
+  * the degree of continuity of a curve which supports an edge, built by the concatenation of two other edges, at their junction point.
+
+Analyzed edges and faces are described as <i> BRepAdaptor</i> curves and surfaces, 
+which provide shapes with an interface for the description of their geometric support. 
+The base point for local properties is defined by its u parameter value on a curve, or its (u, v) parameter values on a surface.
+
+@subsection occt_modat_4_2 Local Properties of Curves and Surfaces
+
+The "Local Properties of Curves and Surfaces" component provides algorithms for computing various local properties on a Geom curve (in 2D or 3D space) or a surface. It is composed of:
+
+  * <i> Geom2dLProp</i> package, which allows computing Derivative and Tangent vectors (normal and curvature) of a parametric point on a 2D curve;
+  * <i> GeomLProp </i> package, which provides local properties on 3D curves and surfaces
+  * <i> LProp </i> package, which provides an enumeration used to characterize a particular point on a 2D curve.
+
+Curves are either <i> Geom_Curve </i> curves (in 3D space) or <i> Geom2d_Curve </i> curves (in the plane). 
+Surfaces are <i> Geom_Surface </i> surfaces. The point on which local properties are calculated 
+is defined by its u parameter value on a curve, and its (u,v) parameter values on a surface.
+
+It is possible to query the same local properties for points as mentioned above, and additionally for 2D curves:
+
+  * the points corresponding to a minimum or a maximum of curvature;
+  * the inflection points.
+  
+  
+#### Example: How to check the surface concavity
+
+To check the concavity of a surface, proceed as follows:
+
+  1. Sample the surface and compute at each point the Gaussian curvature.
+  2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
+  3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
+  
+@subsection occt_modat_4_3 Global Properties of Shapes
+
+The Global Properties of Shapes component provides algorithms for computing the global 
+properties of a composite geometric system in 3D space, and frameworks to query the computed results.
+
+The global properties computed for a system are :
+  * mass,
+  * mass center,
+  * matrix of inertia,
+  * moment about an axis,
+  * radius of gyration about an axis,
+  * principal properties of inertia such as principal axis, principal moments, and principal radius of gyration.
+
+Geometric systems are generally defined as shapes. Depending on the way they are analyzed, these shapes will give properties of:
+
+  * lines induced from the edges of the shape,
+  * surfaces induced from the faces of the shape, or
+  * volumes induced from the solid bounded by the shape.
+
+The global properties of several systems may be brought together to give the global properties of the system composed of the sum of all individual systems.
+
+The Global Properties of Shapes component is composed of:
+* seven functions for computing global properties of a shape: one function for lines, two functions for surfaces and four functions for volumes. The choice of functions depends on input parameters and algorithms used for computation (<i>BRepGProp</i> global functions),
+* a framework for computing global properties for a set of points (<i>GProp_PGProps</i>),
+* a general framework to bring together the global properties retained by several more elementary frameworks, and provide a general programming interface to consult computed global properties.
+
+Packages *GeomLProp* and *Geom2dLProp*  provide algorithms calculating the local properties of curves and surfaces
 
 A curve (for one parameter) has the following local properties: 
 - Point 
@@ -401,24 +648,77 @@ The following methods are available:
 
 Note that the B-spline curve and surface are accepted but they are not cut into pieces of the desired continuity. It is the global continuity, which is seen. 
 
+@subsection occt_modat_5 Adaptors for Curves and Surfaces
+
+Some Open CASCADE Technology general algorithms may work theoretically on numerous types of curves or surfaces. 
+
+To do this, they simply get the services required of the analyzed  curve or surface through an interface so as to a single API,  whatever the type of curve or surface. These interfaces are called adaptors.
+
+For example, <i> Adaptor3d_Curve </i> is the abstract class which provides  the required services by an algorithm which uses any 3d curve.
+
+<i> GeomAdaptor </i> package provides interfaces:
+  * On a Geom curve;
+  * On a curve lying on a Geom surface;
+  * On a Geom surface;
+
+<i> Geom2dAdaptor</i> package provides interfaces :
+  * On a <i>Geom2d</i> curve.
+
+<i> BRepAdaptor </i> package provides interfaces:
+  * On a Face
+  * On an Edge
+
+When you write an algorithm which operates on geometric objects, use <i> Adaptor3d</i> (or <i> Adaptor2d</i>) objects. 
+
+As a result, you can use the algorithm with any kind of object, if you provide for this object an interface derived from *Adaptor3d* or *Adaptor2d*.
+These interfaces are easy to use: simply create an adapted curve or surface from a *Geom2d* curve, and then use this adapted curve as an argument for the algorithm? which requires it.
+
 
 @section occt_modat_5 Topology
 
-Open CASCADE Technology Topology allows accessing and manipulating objects data without dealing with their 2D or 3D representations. Whereas OCCT Geometry provides a description of objects in terms of coordinates or parametric values, Topology describes data structures of objects in parametric space. These descriptions use location in and restriction of parts of this space. 
+OCCT Topology allows accessing and manipulating data of objects  without dealing with their 2D or 3D representations. Whereas OCCT Geometry provides a description of objects in terms of coordinates or parametric values, Topology describes data structures of objects in parametric space. These descriptions use location in and restriction of parts of this space. 
 
-To provide its descriptions, OCCT abstract topology offers the following services: 
-- Keeping track of Location of shapes 
-- Naming shapes, sub-shapes, their orientations and states 
-- Manipulating shapes and sub-shapes 
-- Exploring topological data structures 
-- Using lists and maps of shapes 
+Topological library allows you to build pure topological data structures. Topology defines relationships between simple geometric entities. In this way, you can model complex shapes as assemblies of simpler entities. Due to a built-in non-manifold (or mixed-dimensional) feature, you can build models mixing:
+  * 0D entities such as points; 
+  * 1D entities such as curves; 
+  * 2D entities such as surfaces; 
+  * 3D entities such as volumes. 
 
+You can, for example, represent a single object made of several distinct bodies containing embedded curves and surfaces connected or non-connected to an outer boundary.
+
+Abstract topological data structure describes a basic entity - a shape, which can be divided into the following component topologies:
+  * Vertex - a zero-dimensional shape corresponding to a point in geometry; 
+  * Edge - a shape corresponding to a curve, and bound by a vertex at each extremity;
+  * Wire - a sequence of edges connected by their vertices; 
+  * Face - part of a plane (in 2D geometry) or a surface (in 3D geometry) bounded by a closed wire;
+  * Shell - a collection of faces connected by some edges of their wire boundaries; 
+  * Solid - a part of 3D space bound by a shell; 
+  * Compound solid - a collection of solids. 
+
+The wire and the solid can be either infinite or closed.
+
+A face with 3D underlying geometry may also refer to a collection of connected triangles that approximate the underlying surface. The surfaces can be undefined leaving the faces represented by triangles only. If so, the model is purely polyhedral.
+
+Topology defines the relationship between simple geometric entities, which can thus be linked together to represent complex shapes.
+
+Abstract Topology is provided by six packages. 
+The first three packages describe the topological data structure used in Open CASCADE Technology:
+
+  * <i> TopAbs</i> package provides general resources for topology-driven applications. It contains enumerations that are used to describe basic topological notions: topological shape, orientation and state. It also provides methods to manage these enumerations.
+  * <i> TopLoc </i>package provides resources to handle 3D local coordinate systems: <i> Datum3D</i>and <i> Location</i>. <i> Datum3D</i> describes an elementary coordinate system, while <i> Location</i> comprises a series of elementary coordinate systems.
+  * <i> TopoDS</i> package describes classes to model and build data structures that are purely topological.
+
+Three additional packages provide tools to access and manipulate this abstract topology:
+
+  * <i> TopTools</i> package provides basic tools to use on topological data structures.
+  * <i> TopExp</i> package provides classes to explore and manipulate the topological data structures described in the TopoDS package.
+  * <i> BRepTools </i> package provides classes to explore, manipulate, read and write BRep data structures. These more complex data structures combine topological descriptions with additional geometric information, and include rules for evaluating equivalence of different possible representations of the same object, for example, a point.
 
 @subsection occt_modat_5_1  Shape Location
 
 A local coordinate system can be viewed as either of the following: 
-- A right-handed trihedron with an origin and three orthonormal vectors. The **gp_Ax2** package corresponds to this definition. 
-- A transformation of a +1 determinant, allowing the transformation of coordinates between local and global references frames. This corresponds to the **gp_Trsf**. 
+- A right-handed trihedron with an origin and three orthonormal vectors. The *gp_Ax2* package corresponds to this definition. 
+- A transformation of a +1 determinant, allowing the transformation of coordinates between local and global references frames. This corresponds to the *gp_Trsf*. 
 
 *TopLoc* package distinguishes two notions: 
 - *TopLoc_Datum3D* class provides the elementary reference coordinate, represented by a right-handed orthonormal system of axes or by a right-handed unitary transformation. 
@@ -439,21 +739,19 @@ C4 = R1  * C2
 
 **NOTE** C3 and C4 are equal because they are both R1 * R2 * R3.  
 
-The TopLoc package is chiefly targeted at the topological data structure, but it can be used for other purposes. 
+The *TopLoc* package is chiefly targeted at the topological data structure, but it can be used for other purposes. 
 
 Change of coordinates
 ---------------------
 
 *TopLoc_Datum3D* class represents a change of elementary coordinates. Such changes must be shared so this class inherits from *MMgt_TShared*. The coordinate is represented by a transformation *gp_Trsfpackage*. This transformation has no scaling factor. 
 
-
 @subsection occt_modat_5_2 Naming shapes, sub-shapes, their orientation and state
 
 The **TopAbs** package provides general enumerations describing the basic concepts of topology and methods to handle these enumerations. It contains no classes. This package has been separated from the rest of the topology because the notions it contains are sufficiently general to be used by all topological tools. This avoids redefinition of enumerations by remaining independent of modeling resources. The TopAbs package defines three notions: 
-- Topological type (TopAbs_ShapeEnum) 
-- Orietation (TopAbs_Orientation) 
-- StateTopAbs_State) 
-
+- **Type** *TopAbs_ShapeEnum*;
+- **Orientation** *TopAbs_Orientation* ;
+- **State** *StateTopAbs_State* 
 
 @subsubsection occt_modat_5_2_1 Topological types
 
@@ -920,7 +1218,7 @@ Below is the auxiliary function, which copies the element of rank *i* from the m
 
 @subsubsection occt_modat_5_5_1 Wire Explorer
 
-BRepTools_WireExplorer class can access edges of a wire in their order of connection. 
+*BRepTools_WireExplorer* class can access edges of a wire in their order of connection. 
 
 For example, in the wire in the image we want to recuperate the edges in the order {e1, e2, e3,e4, e5} :
 
@@ -938,3 +1236,5 @@ For example, in the wire in the image we want to recuperate the edges in the ord
     One(Ex.CurrentVertex()); 
   } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+

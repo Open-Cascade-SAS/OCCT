@@ -11,6 +11,22 @@ General Fuse Algorithm is also a basis of the Partition Algorithm (PA) implement
 
 General Fuse Algorithm has a history-based architecture designed to allow using OCAF naming functionality.
 The architecture of General Fuse Algorithm is expandable, that allows creating new algorithms basing on it.
+
+@section occt_algorithms_1_1 Difference between Old and New Boolean Operations
+
+In OCCT there exist two libraries providing Boolean Operations: 
+  * Old Boolean Operations (BOA) provided by <i>BRepAlgo</i> package designed and developed in Open CASCADE 6x in 2000; its architecture and content are out of date.
+  * New Boolean Operations (NBOA) provided by <i>BRepAlgoAPI</i> package designed and developed in 2001 and completely revised in 2013.
+
+New Boolean Operations provide the following major benefits:
+
+  * The NBOA have an expandable architecture of inner sub-algorithms, which  allows to create specific algorithms for the Customers using existing inner sub-algorithms as root algorithms and to reduce the time for the development. 
+  * The architecture of inner sub-algorithms of NBOA provides their reusability with maximal independence from the environment of NBOA. The fact allows to create specific algorithms for the Customers using these sub-algorithms as they are or as root classes and thus to reduce the time for the development. 
+  * The architecture of NBOA is history-based. The implementation of NBOA internally sets up a correspondence between any sub-shape of the argument and its image in the result. The history is not imposed and thus it is not error-prone as it was in BOA. The fact allows direct and safely usage of the algorithm in parametric modeling.   
+  * NBOA provide a general algorithm. It correctly processes without using the workarounds even the cases that cannot be properly processed by BOA.
+  * The implementation of NBOA is based on NCollection classes. The usage of opportunities given by local memory allocators ( <i> NCollection_IncAllocator</i>) allows improving memory management and saving memory resources. 
+  * NBOA use modern algorithms of OCC as auxiliary tools. For e.g. the algorithm of unbalanced binary tree of overlapped bounding boxes <i> NCollection_UBTree</i>. The usage of the algorithm allows to improve the performance of NBOA if there is a big number of sub-shapes in the arguments.
+
   
 @section occt_algorithms_2 Overview 
 

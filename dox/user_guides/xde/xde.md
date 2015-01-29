@@ -3,37 +3,29 @@
 
 @tableofcontents
 
-@section occt_xde_1_ Introduction
-@subsection occt_xde_1_1 Overview of the Extended Data Exchange (XDE)
+@section occt_xde_1 Introduction
+
 This manual explains how to use the Extended Data Exchange (XDE). It provides basic documentation on setting up and using XDE. For advanced information on XDE and its applications, see our offerings  at <a href="http://www.opencascade.com/services/support/">on our web site</a>. 
 
-Based on document architecture, XDE allows processing of various types of data to and from external files. 
+The Extended Data Exchange (XDE) module allows extending the scope of exchange by translating  additional data attached to geometric BREP data, thereby improving the interoperability with external software. 
 
-XDE is available for users of Open CASCADE Technology on all supported platforms (Linux, Windows).
- 
-@subsubsection occt_xde_1_1_1 Prerequisite
-The Extended Data Exchange (XDE) component requires Advanced Shape Healing for operation. 
+Data types such as colors, layers, assembly descriptions and validation properties (i.e. center of gravity, etc.) are supported. These data are stored together with shapes in an XCAF document. It is also possible to add a new types of data taking the existing tools as prototypes.
 
-@subsubsection occt_xde_1_1_2 Environment variables
-To use XDE you have to set the environment variables properly. Make sure that two important environment variables are set as follows: 
-  * *CSF_PluginDefaults* points to sources of  <i>\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)</i>.
-  * *CSF_XCAFDefaults* points to sources of <i>\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)</i>.
-@subsubsection occt_xde_1_1_3 Basic terms
+Finally, the XDE provides reader and writer tools for reading and writing the data supported by XCAF to and from IGES and STEP files. 
+
+@figure{/user_guides/xde/images/646_xde_11_400.png,"Shape imported using XDE"}
+
+The XDE component requires @ref occt_user_guides__shape_healing "Shape Healing" toolkit for operation. 
+
+@subsection occt_xde_1_1 Basic terms
+
 For better understanding of XDE, certain key terms are defined: 
 * **Shape** - a standalone shape, which does not belong to the assembly structure.
 * **Instance** - a replication of another shape with a location that can be the same location or a different one.
 * **Assembly** - a construction that is either a root or a sub-assembly. 
-@subsubsection occt_xde_1_1_4 XDE Data Types
-The following types of data are currently supported: 
-  * assemblies
-  * validation properties
-  * names
-  * colors
-  * layers
-It is also possible to add new types of data by using tools as prototypes. This makes XDE a basically extensible framework. 
 
-In addition, XDE provides reading and writing tools to read and write the data supported by STEP and IGES files. 
-@subsubsection occt_xde_1_1_5 XDE Organization
+@subsection occt_xde_1_2 XDE Organization
+
 The basis of XDE, called XCAF, is a framework based on OCAF (Open CASCADE Technology Application Framework) and is intended to be used with assemblies and with various kinds of attached data (attributes). Attributes can be Individual attributes for a shape, specifying some characteristics of a shape, or they can be Grouping attributes, specifying that a shape belongs to a given group whose definition is specified apart from the shapes. 
 
 XDE works in an OCAF document with a specific organization defined in a dedicated XCAF module. This organization is used by various functions of XDE to exchange standardized data other than shapes and geometry. 
@@ -43,7 +35,7 @@ The Assembly Structure and attributes assigned to shapes are stored in the OCAF 
 Basic elements used by XDE are introduced in the XCAF sub-module by the package XCAFDoc. These elements consist in descriptions of commonly used data structures (apart from the shapes themselves) in normalized data exchanges. They are not attached to specific applications and do not bring specific semantics, but are structured according to the use and needs of data exchanges. 
 The Document used by XDE usually starts as a *TDocStd_Document*. 
 
-@subsubsection occt_xde_1_1_6 Assemblies
+@subsection occt_xde_1_3 Assemblies
 XDE supports assemblies by separating shape definitions and their locations. Shapes are simple OCAF objects without a location definition. An assembly consists of several components. Each of these components references one and the same specified shape with different locations. All this provides an increased flexibility in working on multi-level assemblies. 
 
 For example, a mechanical assembly can be defined as follows: 
@@ -57,17 +49,15 @@ For example, a mechanical assembly can be defined as follows:
 
 XDE defines the specific organization of the assembly content. Shapes are stored on sub-labels of label 0:1:1. There can be one or more roots (called free shapes) whether they are true trees or simple shapes. A shape can be considered to be an Assembly (such as AS1 under 0:1:1:1 in Figure1) if it is defined with Components (sub-shapes, located or not). 
 
-*XCAFDoc_ShapeTool* is a tool that allows you to manage the Shape section of the XCAF document. This tool is implemented as an attribute and located at the root label of the shape section. 
+*XCAFDoc_ShapeTool* is a tool that allows managing the Shape section of the XCAF document. This tool is implemented as an attribute and located at the root label of the shape section. 
 
-@subsubsection occt_xde_1_1_7 Validation Properties
+@subsection occt_xde_1_4 Validation Properties
 Validation properties are geometric characteristics of Shapes (volume, centroid, surface area) written to STEP files by the sending system. These characteristics are read by the receiving system to validate the quality of the translation. This is done by comparing the values computed by the original system with the same values computed by the receiving system on the resulting model. 
 
 Advanced Data Exchange supports both reading and writing of validation properties, and provides a tool to check them. 
 
 @image html /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
 @image latex /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
-
-
 
 Check logs contain deviations of computed values from the values stored in a STEP file. A typical example appears as follows: 
 
@@ -90,31 +80,41 @@ Check logs contain deviations of computed values from the values stored in a STE
 
 In our example, it can be seen that no errors were detected for either area, volume or positioning data. 
 
-@subsubsection occt_xde_1_1_8 Names
+@subsection occt_xde_1_5 Names
+
 XDE supports reading and writing the names of shapes to and from IGES and STEP file formats. This functionality can be switched off if you do not need this type of data, thereby reducing the size of the document. 
-@subsubsection occt_xde_1_1_9 Colors and Layers
+
+@figure{/user_guides/xde/images/614_xde_04_400.png, "Instance Names"}
+
+@subsection occt_xde_1_6 Colors and Layers
 XDE can read and write colors and layers assigned to shapes or their subparts (down to the level of faces and edges) to and from both IGES and STEP formats. Three types of colors are defined in the enumeration *XCAFDoc_ColorType*: 
   * generic color <i>(XCAFDoc_ColorGen)</i>
   * surface color <i>(XCAFDoc_ColorSurf)</i>
   * curve color <i>(XCAFDoc_ColorCurv)</i>
-
-	@image html /user_guides/xde/images/xde_image006.png "Colors and Layers" 
-    @image latex /user_guides/xde/images/xde_image006.png "Colors and Layers" 
-
+  
+ @figure{/user_guides/xde/images/xde_image006.png, "Colors and Layers"}
 
 
-@section occt_xde_2_ Basic Concepts
-@subsection occt_xde_2_1 Overview
+@section occt_xde_2 Working with XDE
+
+@subsection occt_xde_2_1 Getting started
+
 As explained in the last chapter, XDE uses *TDocStd_Documents* as a starting point. The general purpose of XDE is: 
-  * Checking if an existing document is fit for XDE
-  * Getting an application and initialized document
-  * Initializing a document to fit it for XDE
-  * Adding, setting and finding data
-  * Querying and managing shapes
-  * Attaching properties to shapes
-The Document used by XDE usually starts as a TDocStd_Document. 
+  * Checking if an existing document is fit for XDE;
+  * Getting an application and initialized document;
+  * Initializing a document to fit it for XDE;
+  * Adding, setting and finding data;
+  * Querying and managing shapes;
+  * Attaching properties to shapes.
+  
+The Document used by XDE usually starts as a *TDocStd_Document*. 
 
-@subsubsection occt_xde_2_1_1 General Check
+@subsubsection occt_xde_2_1_1 Environment variables
+To use XDE you have to set the environment variables properly. Make sure that two important environment variables are set as follows: 
+  * *CSF_PluginDefaults* points to sources of  <i>\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)</i>.
+  * *CSF_XCAFDefaults* points to sources of <i>\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)</i>.
+
+@subsubsection occt_xde_2_1_2 General Check
 Before working with shapes, properties, and other types of information, the global organization of an XDE Document can be queried or completed to determine if an existing Document is actually structured for use with XDE. 
 
 To find out if an existing *TDocStd_Document* is suitable for XDE, use: 
@@ -124,13 +124,14 @@ if ( XCAFDoc_DocumentTool::IsXCAFDocument (doc) ) { .. yes .. }
 ~~~~~
 If the Document is suitable for XDE, you can perform operations and queries explained in this guide. However, if a Document is not fully structured for XDE, it must be initialized. 
 
-@subsubsection occt_xde_2_1_2 Get an Application or an Initialized Document
+@subsubsection occt_xde_2_1_3 Get an Application or an Initialized Document
 If you want to retrieve an existing application or an existing document (known to be correctly structured for XDE), use: 
 ~~~~~
 Handle(TDocStd_Document) aDoc; 
 Handle(XCAFApp_Application) anApp = XCAFApp_Application::GetApplication(); 
 anApp->NewDocument(;MDTV-XCAF;,aDoc); 
 ~~~~~
+
 @subsection occt_xde_2_2 Shapes and Assemblies
 
 @subsubsection occt_xde_2_2_1 Initialize an XDE Document (Shapes)
@@ -478,10 +479,21 @@ Standard_Real volume ...;
 // value previously computed for the volume 
 XCAFDoc_Volume::Set ( aLabel, volume ); 
 ~~~~~
-@subsection occt_xde_2_6 Colors
+@subsection occt_xde_2_6 Colors and Layers
+
+XDE can read and write colors and layers assigned to shapes or their subparts (down to level of faces and edges) to and from both IGES and STEP formats. 
+
+@figure{/user_guides/xde/images/239_xde_12_400.png,"Motor Head"}
+
 In an XDE document, colors are managed by the class *XCAFDoc_ColorTool*. This is done with the same principles as for ShapeTool with Shapes, and with the same capability of having a tool on the Main Label, or on any sub-label. The Property itself is defined as an *XCAFDoc_Color*, sub-class of *TDF_Attribute*.
  
-Colors are stored in a child of the starting document label: it is the second level (0.1.2), while Shapes are at the first level. Each color then corresponds to a dedicated label, the property itself is a Quantity_Color, which has a name and value for Red, Green, Blue. A Color may be attached to Surfaces (flat colors) or to Curves (wireframe colors), or to both. A Color may be attached to a sub-shape. In such a case, the sub-shape (and its own sub-shapes) takes its own Color as a priority. 
+Colors are stored in a child of the starting document label: it is the second level (0.1.2), while Shapes are at the first level. Each color then corresponds to a dedicated label, the property itself is a Quantity_Color, which has a name and value for Red, Green, Blue. A Color may be attached to Surfaces (flat colors) or to Curves (wireframe colors), or to both. A Color may be attached to a sub-shape. In such a case, the sub-shape (and its own sub-shapes) takes its own Color as a priority.
+
+Layers are handled using the same principles as Colors. In all operations described below you can simply replace **Color** with **Layer** when dealing with Layers. Layers are supported by the class *XCAFDoc_LayerTool*. 
+
+The class of the property is *XCAFDoc_Layer*, sub-class of *TDF_Attribute* while its definition is a *TCollection_ExtendedString*. Integers are generally used when dealing with Layers. The general cases are: 
+  * IGES has *LevelList* as a list of Layer Numbers (not often used)
+  * STEP identifies a Layer (not by a Number, but by a String), to be more general.
 
 Colors and Shapes are related to by Tree Nodes. 
 
@@ -595,11 +607,7 @@ To remove a Color and all the references to it (so that the related shapes will 
 ~~~~~
 myColors->RemoveColor(ColLabel); 
 ~~~~~
-@subsection occt_xde_2_7 Layers
-Layers are handled using the same principles as for Colors. Simply replace **Color** with **Layer** when dealing with Layers. Layers are supported by the class *XCAFDoc_LayerTool*. 
-The class of the property is *XCAFDoc_Layer*, sub-class of *TDF_Attribute* while its definition is a *TCollection_ExtendedString*. Integers are generally used when dealing with Layers. The general cases are: 
-  * IGES has *LevelList* as a list of Layer Numbers (not often used)
-  * STEP identifies a Layer (not by a Number, but by a String), to be more general.
+
   
 @subsection occt_xde_2_8 Reading and Writing STEP or IGES
 Note that saving and restoring the document itself are standard OCAF operations. As the various previously described definitions enter into this frame, they will not be explained any further. 

@@ -5,21 +5,21 @@ Foundation Classes  {#occt_user_guides__foundation_classes}
 
 @section occt_fcug_1 Introduction
 
-@subsection occt_fcug_1_1 Foundation Classes Overview
+This manual explains how to use Open CASCADE Technology (**OCCT**)  Foundation Classes. It provides basic documentation on foundation classes. For  advanced information on foundation classes and their applications, see the offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>.
+   
+Foundation Classes provide a variety of general-purpose  services such as automated dynamic memory management (manipulation of objects  by handle), collections, exception handling, genericity by down-casting and  plug-in creation. 
 
-This manual explains how to use Open CASCADE Technology (**OCCT**)  Foundation Classes. It provides basic documentation on foundation classes. For  advanced information on foundation classes and their applications, see our  offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>   
-Foundation Classes provide a variety of general-purpose  services such as automated dynamic memory management (manipulation of objects  by handle), collections, exception handling, genericity by downcasting and  plug-in creation. 
 Foundation Classes include the following: 
 
 ### Root Classes
 Root classes are the basic data types and classes on which all the  other classes are built. They provide: 
   * fundamental types such as Boolean, Character, Integer or Real,
-  * safe handling of dynamically created objects, ensuring automatic  deletion of unreferenced objects (see the Standard_Transient class),
+  * safe handling of dynamically created objects, ensuring automatic  deletion of unreferenced objects (see  *Standard_Transient* class),
   * configurable optimized memory manager increasing the performance  of applications that intensively use dynamically created objects,
   * extended run-time type information (RTTI) mechanism facilitating  the creation of complex programs,
   * management of exceptions,
   * encapsulation of C++ streams.
-Root classes are mainly implemented in the *Standard* and  *MMgt* packages. 
+Root classes are mainly implemented in *Standard* and  *MMgt* packages. 
 
 ### Strings
 Strings are classes that handle dynamically sized sequences  of characters based on both ASCII (normal 8-bit character type) and Unicode  (16-bit character type).  
@@ -38,7 +38,6 @@ Collections are implemented in the *TCollection* and *NCollection* packages.
 The *TColStd* package provides frequently used  instantiations of generic classes from the *TCollection* package with  objects from the *Standard* package or strings from the *TCollection* package. 
 
 ### Vectors and Matrices
-
 
 These classes provide commonly used mathematical algorithms  and basic calculations (addition, multiplication, transposition, inversion,  etc.) involving vectors and matrices. 
 
@@ -82,25 +81,27 @@ These are various classes supporting date and time  information and fundamental 
 ### Application services
 
 Foundation Classes also include implementation of several  low-level services that facilitate the creation of customizable and  user-friendly applications with Open CASCADE Technology. These include: 
-  * Unit conversion tools, providing a uniform mechanism for dealing  with quantities and associated physical units: check unit compatibility,  perform conversions of values between different units and so on (see package  *UnitsAPI*).
-  * Basic interpreter of expressions that facilitates the creation of  customized scripting tools, generic definition of expressions and so on (see  package *ExprIntrp*)
-  * Tools for dealing with configuration resource files (see package  *Resource*) and customizable message files (see package *Message*), making it easy  to provide a multi-language support in applications
+  * Unit conversion tools, providing a uniform mechanism for dealing  with quantities and associated physical units: check unit compatibility,  perform conversions of values between different units and so on (see package  *UnitsAPI*);
+  * Basic interpreter of expressions that facilitates the creation of  customized scripting tools, generic definition of expressions and so on (see  package *ExprIntrp*);
+  * Tools for dealing with configuration resource files (see package  *Resource*) and customizable message files (see package *Message*), making it easy  to provide a multi-language support in applications;
   * Progress indication and user break interfaces, giving a  possibility even for low-level algorithms to communicate with the user in a  universal and convenient way.
+  
+
+@section occt_fcug_2 Basics
+This chapter deals with basic services such as library organization, persistence, data types, memory management,  programming with handles, exception handling, genericity by downcasting and plug-in creation. 
 
 
-@subsection occt_fcug_1_2 Fundamental Concepts
-An object-oriented language structures a system around data  types rather than around the actions carried out on this data. In this context,  an **object** is an **instance** of a data type and its definition  determines how it can be used. Each data type is implemented by one or more  classes, which make up the basic elements of the system. 
+@subsection occt_fcug_2_a Library organization
 
-In Open CASCADE Technology the  classes are usually defined using CDL (CASCADE Definition Language) that  provides a certain level of abstraction from pure C++ constructs and ensures a definite  level of similarity in the implementation of classes. See *CDL User’s Guide*  for more details. 
+This chapter introduces some basic concepts, which are used not only in Foundation Classes, but  throughout the whole OCCT library. 
 
-This chapter introduces some basic concepts most of which  are directly supported by CDL and used not only in Foundation Classes, but  throughout the whole OCCT library. 
+@subsubsection occt_fcug_2_a_1 Modules  and toolkits
 
-@subsubsection occt_fcug_1_2_1 Modules  and toolkits
 The whole OCCT library is organized in a set of modules. The  first module, providing most basic services and used by all other modules, is  called Foundation Classes and described by this manual. 
 
 Every module consists primarily of one or several toolkits  (though it can also contain executables, resource units etc.). Physically a toolkit  is represented by a shared library (e.g. .so or .dll). The toolkit is built  from one or several packages. 
 
-@subsubsection occt_fcug_1_2_2 Packages
+@subsubsection occt_fcug_2_a_2 Packages
 A **package** groups together a number of classes which  have semantic links. For example, a geometry package would contain Point, Line,  and Circle classes. A package can also contain enumerations, exceptions and  package methods (functions). In practice, a class name is prefixed with the  name of its package e.g.  
 *Geom_Circle*. 
 Data types described in a package may include one or  more of the following data types: 
@@ -118,19 +119,18 @@ Inside a package, two data types cannot bear the same  name.
 * **Instance method** Operates on the  instance which owns it. 
 * **Class  method** Does not work on individual  instances, only on the class itself. 
 
-@subsubsection occt_fcug_1_2_3 Classes
+@subsubsection occt_fcug_2_a_3 Classes
 The fundamental software component in object-oriented software  development is the class. A class is the implementation of a **data type**.  It defines its **behavior** (the services offered by its functions) and its **representation** (the data structure of the class – the fields, which store its data). 
 
-#### Categories of Classes
 Classes fall into three categories: 
-  * Ordinary classes.
-  * Deferred classes. A **deferred class** cannot be instantiated. The purpose  of having such classes is to have a given behavior shared by a hierarchy of  classes and dependent on the implementation of the descendants. This is a way  of guaranteeing a certain base of inherited behavior common to all the classes  based on a particular deferred class. The C++ equivalent of a deferred CDL  class is an abstract class. 
-  * Generic classes. A **generic class** offers a set of functional behaviors  to manipulate other data types. Instantiation of a generic class requires that  a data type is given for its argument(s). The generic classes in CDL perform  the same mission as template classes in C++.
+* Ordinary classes.
+* Deferred classes. A **deferred class** cannot be instantiated. The purpose  of having such classes is to have a given behavior shared by a hierarchy of  classes and dependent on the implementation of the descendants. This is a way  of guaranteeing a certain base of inherited behavior common to all the classes  based on a particular deferred class. The C++ equivalent of a deferred CDL  class is an abstract class. 
+* Generic classes. A **generic class** offers a set of functional behaviors  to manipulate other data types. Instantiation of a generic class requires that  a data type is given for its argument(s). The generic classes in CDL perform  the same mission as template classes in C++.
   
-@subsubsection occt_fcug_1_2_4 Genericity
+@subsubsection occt_fcug_2_a_4 Generic Classes 
 Generic classes are implemented in two steps. First you  declare the generic class to establish the model, then you instantiate this  class by giving information about the generic types. 
 
-#### Declaring a Generic  Class
+#### Declaring a Generic Class
 
 The generic classes in Open CASCADE Technology are similar  by their intent to C++ templates with explicit instantiation. 
 A generic class is declared in CDL as operating on data  items of non-fixed types which are declared as arguments of the generic class.  It is possible to put a restriction on these data types to be of subtype of  some definite class. Definition of the generic class does not create new class  type in C++ terms; it only defines a pattern for generation (instantiation) of  the real classes.
@@ -157,15 +157,27 @@ class MapOfReal instantiates Map from TCollection  (Real,MapRealHasher);
 This declaration in *TColStd* defines not only class  *TColStd_MapOfReal*, but also class *TColStd_MapIteratorOfMapOfReal*, which is  instantiated from nested class *MapIterator* of the generic class  *TCollection_Map*. Note that instantiation of the nested class is separate class,  it is not nested class to the instantiation of the main class. 
 **Nested classes**, even though they are described as  non-generic classes, are generic by construction being inside the class they  are a member of. 
 
-@subsubsection occt_fcug_1_2_5 Inheritance
+@subsubsection occt_fcug_2_a_5 Inheritance
 The purpose of inheritance is to reduce the development  workload. The inheritance mechanism allows a new class to be declared already  containing the characteristics of an existing class. This new class can then be  rapidly specialized for the task in hand. This avoids the necessity of  developing each component “from scratch”. 
 For example, having already developed a class *BankAccount* you  could quickly specialize new classes: *SavingsAccount, LongTermDepositAccount,  MoneyMarketAccount, RevolvingCreditAccount*, etc.... 
 
-The corollary of this is that when two or more classes  inherit from a parent (or ancestor) class, all these classes guarantee as a  minimum the behavior of their parent (or ancestor). For example, if the parent  class BankAccount contains the method Print which tells it to print itself out,  then all its descendent classes guarantee to offer the same service. 
+The corollary of this is that when two or more classes  inherit from a parent (or ancestor) class, all these classes guarantee as a  minimum the behavior of their parent (or ancestor). For example, if the parent  class BankAccount contains the method Print which tells it to print itself out,  then all its descendant classes guarantee to offer the same service. 
 
-One way of ensuring the use of inheritance is to declare  classes at the top of a hierarchy as being **deferred**. In such classes,  the methods are not implemented. This forces the user to create a new class  which redefines the methods. This is a way of guaranteeing a certain minimum of  behavior among descendent classes. 
+One way of ensuring the use of inheritance is to declare  classes at the top of a hierarchy as being **deferred**. In such classes,  the methods are not implemented. This forces the user to create a new class  which redefines the methods. This is a way of guaranteeing a certain minimum of  behavior among descendant classes. 
 
-@subsubsection occt_fcug_1_2_6 Categories  of Data Types
+@subsection occt_fcug_2_b Persistence  and Data Schema
+The data schema is the structure used by an application to  store its data. Data schemas consist of persistent classes. 
+
+An object is called **persistent** if it can be  permanently stored. Thus, the object can be reused at a later date by the  application, which created it, or by another application.
+ 
+In order for an object to be persistent for CDL, its type  must be declared as inheriting from the class *Standard_Persistent* or have a  parent class inheriting from the *Standard_Persistent* class. Note that classes  inheriting from *Standard_Persistent* are handled by a reference. 
+
+Objects instantiated from classes which inherit from the  Standard_Storable class cannot themselves be stored individually, but they can  be stored as fields of an object which inherits from *Standard_Persistent*. Note  that objects inheriting from *Standard_Storable* are handled by a value. 
+
+@subsection occt_fcug_2_1 Data Types
+
+An object-oriented language structures a system around data types rather than around the actions carried out on this data. In this context,  an **object** is an **instance** of a data type and its definition  determines how it can be used. Each data type is implemented by one or more  classes, which make up the basic elements of the system. 
+
 The data types in Open CASCADE Technology fall into two  categories: 
   * Data types manipulated by handle (or reference)
   * Data types manipulated by value
@@ -186,24 +198,10 @@ Handle(myClass)  m = new myClass;
 
 In Open CASCADE Technology, the  Handles are specific classes that are used to safely manipulate objects  allocated in the dynamic memory by reference, providing reference counting  mechanism and automatic destruction of the object when it is not referenced. 
 
-@subsubsection occt_fcug_1_2_7 Exceptions
-The behavior of any object is implemented by the methods,  which were defined in its class declaration. The definition of these methods  includes not only their signature (their programming interface) but also their  domain of validity.  
 
-This domain is expressed by **exceptions**. Exceptions  are raised under various error conditions. This mechanism is a safeguard of  software quality. 
 
-@subsubsection occt_fcug_1_2_8 Persistence  and Data Schema
-The data schema is the structure used by an application to  store its data. Data schemas consist of persistent classes. 
-
-An object is called **persistent** if it can be  permanently stored. Thus, the object can be reused at a later date by the  application, which created it, or by another application.
- 
-In order for an object to be persistent for CDL, its type  must be declared as inheriting from the class *Standard_Persistent* or have a  parent class inheriting from the *Standard_Persistent* class. Note that classes  inheriting from *Standard_Persistent* are handled by a reference. 
-
-Objects instantiated from classes which inherit from the  Standard_Storable class cannot themselves be stored individually, but they can  be stored as fields of an object which inherits from *Standard_Persistent*. Note  that objects inheriting from *Standard_Storable* are handled by a value. 
-
-@section occt_fcug_2 Basics
-This chapter deals with basic services such as memory management,  programming with handles, primitive types, exception handling, genericity by  downcasting and plug-in creation. 
-@subsection occt_fcug_2_1 Data Types
 @subsubsection occt_fcug_2_1_1 Primitive Types
+
 The primitive types are predefined in the language and they  are **manipulated by value**. 
 Some of these primitives inherit from the **Storable** class.  This means they can be used in the implementation of persistent objects, either  contained in entities declared within the methods of the object, or they form  part of the internal representation of the object. 
 
@@ -237,7 +235,6 @@ The table below presents the equivalence existing between  C++ fundamental types
 
 \* The types with asterisk are pointers. 
 
-
 **Reminder of the classes listed above:** 
 
 * **Standard_Integer** : fundamental type representing 32-bit integers yielding  negative, positive or null values. *Integer* is implemented as a *typedef* of the C++ *int* fundamental type. As such, the algebraic operations  +, -, *, / as well as the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on it. 
@@ -270,7 +267,7 @@ There are two categories of types which are manipulated by  handle:
 @image html /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
 @image latex /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
   
-@subsubsection occt_fcug_2_1_4 Summary of properties
+@subsubsection occt_fcug_2_1_4 When is it necessary to use a handle?
 
 The following table summarizes how various data types are handled and stored.
 
@@ -279,9 +276,26 @@ The following table summarizes how various data types are handled and stored.
 | storable |     Persistent	| Primitive, Storable (if nested in a persistent class)|
 |temporary | Transient	| Other |
 
+When you design an object, it can be difficult to choose how to manipulate that
+object: by value or by handle. The following ideas can help you to make up your mind: 
+
+* If your object may have a long lifetime within the application and you want to make multiple 
+references to it, it would be preferable to manipulate this object with a handle. The memory for the 
+object will be allocated on the heap. The handle which points to that memory is a light object which 
+can be rapidly passed in argument. This avoids the penalty of copying a large object. 
+* If your object will have a limited lifetime, for example, used within a single algorithm, it would 
+be preferable to manipulate this object by value, non-regarding its size, because this object is 
+allocated on the stack and the allocation and de-allocation of memory is extremely rapid, which 
+avoids the implicit calls to *new* and *delete* occasioned by allocation on the heap.
+* Finally, if an object will be created only once during, but will exist throughout the lifetime of 
+the application, the best choice may be a class manipulated by handle or a value declared as a 
+global variable. 
+
 
 @subsection occt_fcug_2_2 Programming with Handles
+
 @subsubsection occt_fcug_2_2_1 Handle Definition
+
 A handle may be compared with a C++ pointer. Several handles  can reference the same object. Also, a single handle may reference several  objects, but only one at a time. To have access to the object it refers to, the  handle must be de-referenced just as with a C++ pointer. 
 
 Transient and Persistent classes may be manipulated either  with handles or with values. Handles which reference non-persistent objects are  called non-storable handles; therefore, a persistent object cannot contain a  non-storable handle.  
@@ -315,10 +329,8 @@ To initialize a handle, either a new object should be  created or the value of a
 
 @subsubsection occt_fcug_2_2_2 Type Management
 
-#### General
-
-
 Open CASCADE Technology provides a means to describe the hierarchy  of data types in a generic way, with a possibility to check the exact type of  the given object at run-time (similarly to C++ RTTI). For every class type  derived from *Standard_Transient*, CDL extractor creates a code instantiating single  instance of the class *Standard_Type* (type descriptor) that holds information on  that type: its name and list of ancestor types. 
+
 That instance (actually, a handle on it) is returned by the  virtual method *DynamicType()* of the class derived from *Standard_Transient*. The  other virtual method *IsKind()* provides a means to check whether a given object  has specified type or inherits it. 
 
 In order to refer to the type descriptor object for a given  class type, use macros *STANDARD_TYPE()* with argument being a name of the class. 
@@ -340,7 +352,6 @@ p1 = p2;  // OK,  the types are compatible
 The compiler sees p1 as a handle to *Point* though the  actual object referenced by *p1* is of the *CartesianPoint* type. 
 
 #### Explicit Type Conversion
-
 
 According to the rule of type conformity, it is always  possible to go up the class hierarchy through successive assignments of  handles. On the other hand, assignment does not authorize you to go down the  hierarchy. Consequently, an explicit type conversion of handles is required. 
 
@@ -396,6 +407,7 @@ else {
 ~~~~~
 
 @subsubsection occt_fcug_2_2_3 Using  Handles to Create Objects
+
 To create an object which is manipulated by handle, declare  the handle and initialize it with the standard C++ **new** operator,  immediately followed by a call to the constructor. The constructor can be any  of those specified in the source of the class from which the object is  instanced. 
 
 ~~~~~
@@ -444,7 +456,8 @@ n = Geom_BezierCurve::MaxDegree();
 ~~~~~
 
 @subsubsection occt_fcug_2_2_5 Handle deallocation
-Before you delete an object, you must ensure it is no longer  referenced. To reduce the programming load related to this management of object  life, the delete function in Open CASCADE Technology is secured by a **reference  counter** of classes manipulated by handle. A handle automatically deletes an object when it is no  longer referenced. Normally you never call the delete operator explicitly on  instances of subclasses of *Standard_Transient*. 
+
+Before you delete an object, you must ensure it is no longer  referenced. To reduce the programming load related to this management of object  life, the delete function in Open CASCADE Technology is secured by a **reference counter** of classes manipulated by handle. A handle automatically deletes an object when it is no  longer referenced. Normally you never call the delete operator explicitly on  instances of subclasses of *Standard_Transient*. 
 
 When a new handle to the same object is created, the  reference counter is incremented. When the handle is destroyed, nullified, or  reassigned to another object, that counter is decremented. The object is  automatically deleted by the handle when reference counter becomes 0. 
 
@@ -471,25 +484,38 @@ Handle (TColStd_HSequenceOfInteger) H1 = new TColStd_HSequenceOfInteger;
 // Here, H1 has no reference and the referred TColStd_HSequenceOfInteger object is deleted. 
 ~~~~~
 
-#### Cycles
+You can easily cast a reference to the handle object to <i> void* </i> by defining the following:
 
-Cycles appear if two or more objects reference each other by  handles (stored as fields). In this condition automatic destruction will not  work. 
+~~~~
+    void *pointer;
+    Handle(Some_class) aHandle;
+    // Here only a pointer will be copied
+    Pointer = &aHandle;
+    // Here the Handle object will be copied
+    aHandle = * (Handle(Some_Class) *)pointer;
+~~~~
+
+
+@subsubsection occt_fcug_2_2_6  Cycles
+
+Cycles appear if two or more objects reference each other by  handles (stored as fields). In this condition automatic destruction will not work. 
 
 Consider for example a graph, whose objects (primitives)  have to know the graph object to which they belong, i.e. a primitive must have  a reference to complete graph object. If both primitives and the graph are  manipulated by handle and they refer to each other by keeping a handle as a  field, the cycle appears.  
+
 The graph object will not be deleted when the last handle to  it is destructed in the application, since there are handles to it stored  inside its own data structure (primitives). 
 
 There are two approaches how to avoid such situation: 
   * Use C++ pointer for one kind of references, e.g. from a primitive  to the graph
   * Nullify one set of handles (e.g. handles to a graph in  primitives) when a graph object needs to be destroyed
   
-@subsubsection occt_fcug_2_2_6 Creating  Transient Classes without CDL
+@subsubsection occt_fcug_2_2_7 Creating  Transient Classes without CDL
 
 Though generation of Handle class and related C++ code is  normally performed by CDL extractor, it is also possible to define a class managed  by handle without CDL. To facilitate that, several macros are provided in the  file Standard_DefineHandle.hxx: 
 
 * **DEFINE_STANDARD_HANDLE(class_name,ancestor_name)** - declares Handle class  for a class *class_name* that inherits class *ancestor_name* (for  instance, *Standard_Transient*). This macro should be put in a header file; the  declaration of the handle to a base class must be available (usually put before  or after the declaration of the class *class_name*, or into a separate  header file).  
 * **IMPLEMENT_STANDARD_HANDLE(class_name,ancestor_name)** - implements method  *DownCast()* of the *Handle* class. Should be located in a C++ file (normally the  file where methods of the class *class_name* are implemented). 
 * **DEFINE_STANDARD_RTTI(class_name)** - declares methods required for  RTTI in the class *class_name* declaration; should be in public: section. 
-* **IMPLEMENT_STANDARD_RTTIEXT(class_name,ancestor_name)** - implements above methods. Usually  put into the C++ file implementing class class_name. 
+* **IMPLEMENT_STANDARD_RTTIEXT(class_name,ancestor_name)** - implements above methods. Usually  put into the C++ file implementing class *class_name*. 
 Note that it is important to ensure correctness of macro  arguments, especially the ancestor name, otherwise the definition may be  inconsistent (no compiler warnings will be issued in case of mistake). 
 
 In *Appli_ExtSurface.hxx* file:
@@ -511,21 +537,118 @@ IMPLEMENT_STANDARD_HANDLE(Appli_ExtSurface,Geom_Surface)
 IMPLEMENT_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
 ~~~~~
 
+#### Example
 
-@subsection occt_fcug_2_3 Memory  Management in Open CASCADE Technology
-In the course of a work session, geometric modeling  applications create and delete a considerable number of C++ objects allocated  in the dynamic memory (heap). In this context, performance of standard  functions for allocating and deallocating memory may be not sufficient. For  this reason, Open CASCADE Technology employs a specialized memory manager  implemented in the Standard package. 
+The following example shows how to define a class <i> SamplePoint </i> manipulated by handle.
 
-@subsubsection occt_fcug_2_3_1. Usage
-To use the Open CASCADE Technology memory manager to  allocate memory in a C code, just use method *Standard::Allocate()* instead of  *malloc()* and method *Standard::Free()* instead of *free()*. In addition, method *Standard::Reallocate()* is provided to replace C function *realloc()*. 
+First you need to define *Sample_Point.hxx* :
+
+~~~~
+
+    #ifndef _Sample_Point_HeaderFile
+    #define _Sample_Point_HeaderFile
+    #ifndef _Standard_Macro_HeaderFile
+    #include <Standard_Macro.hxx>
+    #endif
+    #include <MMgt_TShared.hxx>
+    #include <Standard_DefineHandle.hxx>
+    // Handle definition
+    //
+
+    DEFINE_STANDARD_HANDLE(Sample_Point,MMgt_TShared)
+    class Sample_Point: public MMgt_TShared {
+    public:
+    Sample_Point();
+    Sample_Point(const Standard_Real, const
+    Standard_Real);
+    void SetX(const Standard_Real x) {
+    myX = x;
+    }
+    void SetY(const Standard_Real y) {
+    myY = y;
+    }
+    Standard_Real X() const {
+    return myX;
+    }
+    Standard_Real Y() const {
+    return myY;
+    }
+    // some methods like DynamicType() or
+    IsKind()
+    //
+    DEFINE_STANDARD_RTTI(Sample_Point)
+    private:
+    Standard_Real myX;
+    Standard_Real myY;
+    };
+    #endif
+
+~~~~
+
+Then you need to define *Sample_Point.cxx* :
+
+~~~~
+
+    #include <Sample_Point.hxx>
+
+    // Implementation of Handle and type mgt
+
+    IMPLEMENT_STANDARD_HANDLE(Sample_Point,MMgt_TShared)
+    IMPLEMENT_STANDARD_RTTI(Sample_Point,MMgt_TShared)
+
+    // For ancestors, we add a IMPLEMENT_STANDARD_SUPERTYPE and
+    // a IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY  macro.
+    // We must respect the order: from the direct ancestor class to the base class.
+
+    IMPLEMENT_STANDARD_TYPE(Sample_Point)
+    IMPLEMENT_STANDARD_SUPERTYPE(MMgt_TShared)
+    IMPLEMENT_STANDARD_SUPERTYPE(Standard_Transient)
+    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY()
+    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(MMgt_TShared)
+    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_ENTRY(Standard_Transient)
+    IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_END()
+    IMPLEMENT_STANDARD_TYPE_END(Sample_Point)
+
+   // Constructors implementation
+
+    Sample_Point::Sample_Point(const
+    Standard_Real x, const Standard_Real y)
+    {
+    myX = x;
+    myY = y;
+    }
+    Sample_Point::Sample_Point()
+    {
+    myX = 0.0;
+    myY = 0.0;
+    }
+~~~~
+
+
+@subsection occt_fcug_2_3 Memory Management 
+
+In a work session, geometric modeling  applications create and delete a considerable number of C++ objects allocated  in the dynamic memory (heap). In this context, performance of standard  functions for allocating and deallocating memory may be not sufficient. For this reason, Open CASCADE Technology employs a specialized memory manager implemented in the *Standard* package. 
+
+The Memory Manager is based on the following principles:
+
+* small memory arrays are grouped into clusters and then recycled (clusters are never released to the system),
+* large arrays are allocated and de-allocated through the standard functions of the system (the arrays are released to system when they are no longer used).
+
+As a general rule, it is advisable to allocate memory through significant blocks. In this way, the user can work with blocks of contiguous data and it facilitates memory page manager processing.
+
+@subsubsection occt_fcug_2_3_1 Usage of Memory Manager
+
+To  allocate memory in a C code with Open CASCADE Technology memory manager, simply use method *Standard::Allocate()* instead of  *malloc()* and method *Standard::Free()* instead of *free()*. In addition, method *Standard::Reallocate()* is provided to replace C function *realloc()*. 
 
 In C++, operators *new()* and *delete()* for a class may be  defined so as to allocate memory using *Standard::Allocate()* and free it using  *Standard::Free()*. In that case all objects of that class and all inherited  classes will be allocated using the OCCT memory manager. 
 
 CDL extractor defines *new()* and *delete()* in this way for all  classes declared with CDL. Thus all OCCT classes (apart from a few exceptions)  are allocated using the OCCT memory manager. 
 Since operators *new()* and *delete()* are inherited, this is  also true for any class derived from an OCCT class, for instance, for all  classes derived from *Standard_Transient*. 
 
-**Note** that it is possible (though not  recommended unless really unavoidable) to redefine *new()* and *delete()* functions  for some class inheriting Standard_Transient. If that is done, the method  *Delete()* should be also redefined to apply operator *delete* to *this*  pointer. This will ensure that appropriate *delete()* function will be called,  even if the object is manipulated by a handle to a base class.
+**Note** that it is possible (though not  recommended unless really unavoidable) to redefine *new()* and *delete()* functions  for a class inheriting *Standard_Transient*. If that is done, the method  *Delete()* should be also redefined to apply operator *delete* to this pointer. This will ensure that appropriate *delete()* function will be called,  even if the object is manipulated by a handle to a base class.
 
-@subsubsection occt_fcug_2_3_2 Configuring  the memory manager
+@subsubsection occt_fcug_2_3_2 How to configure the Memory Manager
+
 The OCCT memory manager may be configured to apply different  optimization techniques to different memory blocks (depending on their size),  or even to avoid any optimization and use C functions *malloc()* and *free()*  directly. 
 The configuration is defined by numeric values of the  following environment variables: 
   * *MMGT_OPT*: if set to 0 (default) every memory block is allocated  in C memory heap directly (via *malloc()* and *free()* functions). In this case,  all other options except for *MMGT_CLEAR* are ignored; if set to 1 the memory manager  performs optimizations as described below; if set to 2, Intel ® TBB optimized  memory manager is used.
@@ -535,7 +658,8 @@ The configuration is defined by numeric values of the  following environment var
   * *MMGT_THRESHOLD*: defines the maximal size of blocks that are  recycled internally instead of being returned to the heap. Default is 40000.
   * *MMGT_MMAP*: when set to 1 (default), large memory blocks are  allocated using memory mapping functions of the operating system; if set to 0,  they will be allocated in the C heap by *malloc()*.
 
-@subsubsection occt_fcug_2_3_3 Implementation  details
+@subsubsection occt_fcug_2_3_3 Optimization Techniques
+
 When *MMGT_OPT* is set to 1, the following optimization  techniques are used: 
   * Small blocks with a size less than *MMGT_CELLSIZE*, are not  allocated separately. Instead, a large pools of memory are allocated (the size  of each pool is *MMGT_NBPAGES* pages). Every new memory block is arranged in a  spare place of the current pool. When the current memory pool is completely  occupied, the next one is allocated, and so on.
   
@@ -547,15 +671,15 @@ However, unlike small blocks, the  recycled medium blocks contained in the free 
 
   * Large blocks with a size greater than *MMGT_THRESHOLD*, including  memory pools used for small blocks, are allocated depending on the value of  *MMGT_MMAP*: if it is 0, these blocks are allocated in the C heap; otherwise they  are allocated using operating-system specific functions managing memory mapped  files. Large blocks are returned to the  system immediately when *Standard::Free()* is called. 
 
-#### Benefits and drawbacks
+@subsubsection occt_fcug_2_3_4 Benefits and drawbacks
 
 The major benefit of the OCCT memory manager is explained  by its recycling of small and medium blocks that makes an application work much  faster when it constantly allocates and frees multiple memory blocks of similar  sizes. In practical situations, the real gain on the application performance  may be up to 50%. 
 
-The associated drawback is that recycled memory is not  returned to the operating system during program execution. This may lead to  considerable memory consumption and even be misinterpreted as a memory leak. To  minimize this effect, the method Standard::Purge() shall be called after the completion  of memory-intensive operations. 
+The associated drawback is that recycled memory is not  returned to the operating system during program execution. This may lead to  considerable memory consumption and even be misinterpreted as a memory leak. To  minimize this effect it is necessary to call the method *Standard::Purge* after the completion  of memory-intensive operations. 
+
 The overhead expenses induced by the OCCT memory manager  are: 
-  * size of every allocated memory block is rounded up to 8 bytes  (when MMGT_OPT is 0 (default), the rounding is defined by the CRT; the typical  value for 32-bit platforms is 4 bytes)
-  * additional 4 bytes (or 8 on 64-bit platforms) are allocated in  the beginning of every memory block to hold its size (or address of the next  free memory block when recycled in free list) only when MMGT_OPT is 1
-  
+  * size of every allocated memory block is rounded up to 8 bytes  (when *MMGT_OPT* is 0 (default), the rounding is defined by the CRT; the typical  value for 32-bit platforms is 4 bytes)
+  * additional 4 bytes (or 8 on 64-bit platforms) are allocated in  the beginning of every memory block to hold its size (or address of the next  free memory block when recycled in free list) only when *MMGT_OPT* is 1.
   
 Note that these overheads may be greater or less than  overheads induced by the C heap memory manager, so overall memory consumption  may be greater in either optimized or standard modes, depending on  circumstances. 
 
@@ -564,12 +688,19 @@ As a general rule, it is advisable to allocate memory  through significant block
 OCCT memory manager uses mutex to lock access to free lists, therefore it may have less  performance than non-optimized mode in situations when different threads often  make simultaneous calls to the memory manager.
 The reason is that modern  implementations of *malloc()* and *free()* employ several allocation arenas and  thus avoid delays waiting mutex release, which are possible in such situations. 
 
-@subsection occt_fcug_2_4 Exception  Handling
+@subsection occt_fcug_2_4 Exceptions 
+
+@subsubsection occt_fcug_2_4_1 Introduction 
+
+The behavior of any object is implemented by the methods,  which were defined in its class declaration. The definition of these methods  includes not only their signature (their programming interface) but also their domain of validity.  
+
+This domain is expressed by **exceptions**. Exceptions  are raised under various error conditions to protect software quality. 
+
 Exception handling provides a means of transferring control  from a given point in a program being executed to an **exception handler** associated  with another point previously executed. 
 
 A method may raise an exception which interrupts its normal  execution and transfers control to the handler catching this exception. 
 
-Open CASCADE Technology provides a hierarchy of exception  classes with a root class being class Standard_Failure from the Standard  package. The CDL extractor generates exception classes with standardized  interface. 
+A hierarchy of commonly used exception classes is provided. The root class is *Standard_Failure* from the *Standard* package.  So each exception inherits from *Standard_Failure* either directly or by inheriting from another exception. Exception classes list all  exceptions, which can be raised by any OCCT function. 
 
 Open CASCADE Technology also provides  support for converting system signals (such as access violation or division by  zero) to exceptions, so that such situations can be safely handled with the  same uniform approach. 
  
@@ -577,7 +708,7 @@ However, in order to support this functionality on various  platforms, some spec
 
 The following paragraphs describe recommended approaches for  using exceptions when working with Open CASCADE Technology.  
 
-@subsubsection occt_fcug_2_4_1 Raising  an Exception
+@subsubsection occt_fcug_2_4_2 Raising  an Exception
 
 #### “C++ like” Syntax
 
@@ -648,7 +779,7 @@ Item  TCollection_Array1::Value (const Standard_Integer&index) const
 }
 ~~~~~
 
-@subsubsection occt_fcug_2_4_2 Handling  an Exception
+@subsubsection occt_fcug_2_4_3 Handling  an Exception
 
 When an exception is raised, control is transferred to the  nearest handler of a given type in the call stack, that is: 
   * the handler whose try block was most recently entered and not yet  exited,
@@ -736,31 +867,31 @@ Normally this method is called in the beginning of the  main() function. It inst
 
 In order to actually convert signals to exceptions, macro *OCC_CATCH_SIGNALS* needs to be inserted in the source code. The typical place where  this macro is put is beginning of the *try{}* block which catches such exceptions.   
 
-@subsubsection occt_fcug_2_4_3 Implementation  details
+@subsubsection occt_fcug_2_4_4 Implementation on various platforms. 
 
 The exception handling mechanism in Open CASCADE Technology  is implemented in different ways depending on the preprocessor macros *NO_CXX_EXCEPTIONS*  and *OCC_CONVERT_SIGNALS*, which shall be consistently defined by compilation  procedures for both Open CASCADE Technology and user applications: 
 
-1. On  Windows and DEC, these macros are not defined by default, and normal C++  exceptions are used in all cases, including throwing from signal handler. Thus the  behavior is as expected in C++. 
+1. On  Windows, these macros are not defined by default, and normal C++  exceptions are used in all cases, including throwing from signal handler. Thus the  behavior is as expected in C++. 
 
-2. On  SUN and Linux, macro *OCC_CONVERT_SIGNALS* is defined by default. The C++  exception mechanism is used for catching exceptions and for throwing them from  normal code. Since it is not possible to throw C++ exception from system signal  handler function, that function makes a long jump to the nearest (in the  execution stack) invocation of macro *OCC_CATCH_SIGNALS*, and only there the C++  exception gets actually thrown. The macro *OCC_CATCH_SIGNALS* is defined in the  file *Standard_ErrorHandler.hxx*. Therefore, including this file is necessary for  successful compilation of a code containing this macro. 
+2. On  Linux, macro *OCC_CONVERT_SIGNALS* is defined by default. The C++  exception mechanism is used for catching exceptions and for throwing them from  normal code. Since it is not possible to throw C++ exception from system signal  handler function, that function makes a long jump to the nearest (in the  execution stack) invocation of macro *OCC_CATCH_SIGNALS*, and only there the C++  exception gets actually thrown. The macro *OCC_CATCH_SIGNALS* is defined in the  file *Standard_ErrorHandler.hxx*. Therefore, including this file is necessary for  successful compilation of a code containing this macro. 
 
    This mode differs from standard  C++ exception handling only for signals:
  
    * macro *OCC_CATCH_SIGNALS* is necessary (besides call to  *OSD::SetSignal()* described above) for conversion of signals into exceptions;
    * the destructors for automatic C++ objects created in the code  after that macro and till the place where signal is raised will not be called in  case of signal, since no C++ stack unwinding is performed by long jump.
 
-3. On  SUN and Linux Open CASCADE Technology can also be compiled in compatibility  mode (which was default till Open CASCADE Technology 6.1.0). In that case macro  *NO_CXX_EXCEPTIONS* is defined and the C++ exceptions are simulated with C long  jumps. As a consequence, the behavior is slightly different from that expected  in the C++ standard.  
+3. On  Linux Open CASCADE Technology can also be compiled in compatibility  mode. In that case macro  *NO_CXX_EXCEPTIONS* is defined and the C++ exceptions are simulated with C long  jumps. As a consequence, the behavior is slightly different from that expected  in the C++ standard.  
 
-While exception handling with  NO_CXX_EXCEPTIONS is very similar to C++ by syntax, it has a number of  peculiarities that should be taken into account: 
+While exception handling with  *NO_CXX_EXCEPTIONS* is very similar to C++ by syntax, it has a number of  peculiarities that should be taken into account: 
 
 * try and catch are actually macros defined in the file *Standard_ErrorHandler.hxx*. Therefore, including this file is necessary for  handling OCCT exceptions;
 * due to being a macro, catch cannot contain a declaration of the  exception object after its type; only type is allowed in the catch statement.  Use method *Standard_Failure::Caught()* to access an exception object;
 * catch macro may conflict with some STL classes that might use  catch(...) statements in their header files. So STL headers should not be  included after *Standard_ErrorHandler.hxx*;
 * Open CASCADE Technology try/catch block will not handle normal  C++ exceptions; however this can be achieved using special workarounds;
-* the try macro defines a C++ object that holds an entry point in the  exception handler. Therefore if exception is raised by code located immediately  after the try/catch block but on the same nesting level as *try*, it may  be handled by that *catch*. This may lead to unexpected behavior,  including infinite loop. To avoid that, always surround the try/catch block in \{\} braces;
-* the destructors of the C++ objects allocated on the stack after  handler initialization are not called by exception raising.
+* the try macro defines a C++ object that holds an entry point in the  exception handler. Therefore if exception is raised by code located immediately  after the try/catch block but on the same nesting level as *try*, it may  be handled by that *catch*. This may lead to unexpected behavior,  including infinite loop. To avoid that, always surround the try/catch block with curved brackets;
+* the destructors of C++ objects allocated on the stack after  handler initialization are not called by exception raising.
 
-In general, for writing platform-independent code it is recommended  to insert macros *OCC_CATCH_SIGNALS* in try \{\} blocks or other code where signals  may happen. For compatibility with previous versions of Open CASCADE Technology  the limitations described above for *NO_CXX_EXCEPTIONS* shall be assumed. 
+In general, for writing platform-independent code it is recommended  to insert macros *OCC_CATCH_SIGNALS* in try {} blocks or other code where signals  may happen. For compatibility with previous versions of Open CASCADE Technology  the limitations described above for *NO_CXX_EXCEPTIONS* shall be assumed. 
 
 @subsection occt_fcug_2_5 Plug-In  Management
 
@@ -780,9 +911,9 @@ Once it has been loaded, the call to the services provided  by the plug-in is di
 #### C++ Plug-In  Implementation
 
 The C++ plug-in implements a service as an object with  functions defined in an abstract class (this abstract class and its parent  classes with the GUID are the only information about the plug-in implemented in  the client application). The plug-in consists of a sharable library including a  method named Factory which  creates the C++ object (the client cannot instantiate this object because the  plug-in implementation is not visible). 
-Foundation classes provide in the package **Plugin** a  method named Load(), which enables the client to access the required service  through a library.  
+Foundation classes provide in the package *Plugin* a  method named *Load()*, which enables the client to access the required service  through a library.  
 
-That method reads the information regarding available  plug-ins and their locations from the resource file Plugin found by environment  variable CSF_PluginDefaults:
+That method reads the information regarding available  plug-ins and their locations from the resource file *Plugin* found by environment  variable *CSF_PluginDefaults*:
 
 ~~~~~ 
 $CSF_PluginDefaults/.Plugin 
@@ -904,7 +1035,7 @@ Handle(Standard_Transient)  FAFactory::Factory(const Standard_GUID& aGUID)
 
 #### Without using the Software  Factory
 
-To create a factory without using the Software Factory,  define a *dll* project under Windows or a library under UNIX by using a  source file as specified above. The *FAFactory* class is implemented as  follows: 
+To create a factory without using the Software Factory,  define a *dll* project under Windows or a library under UNIX by using a  source file as specified above. The *FAFactory* class is implemented as follows: 
 
 ~~~~~
 #include <Handle_Standard_Transient.hxx>
@@ -920,7 +1051,7 @@ public:
 ~~~~~
 
 
-@section occt_fcug_3 Collections,  Strings and Unit Conversion
+@section occt_fcug_3 Collections,  Strings, Quantities and Unit Conversion
 
 @subsection occt_fcug_3_1 Collections
 
@@ -928,17 +1059,34 @@ public:
 
 The **Collections** component contains the classes that  handle dynamically sized aggregates of data. They include a wide range of  collections such as arrays, lists and maps. 
 
-Collections classes are *generic*, that is, they can  hold a variety of objects which do not necessarily inherit from a unique root  class. When you need to use a collection of a given type of object you must *instantiate* it for this specific type of element. Once this declaration is compiled,  all the functions available on the generic collection are available on your *instantiated  class*. 
+Collections classes are *generic* (C++ template-like), that is, they define  a structure and algorithms allowing to hold a variety of objects which do not  necessarily inherit from a unique root class (similarly to C++ templates). 
+
+When you need to use a collection of a given type of object you must *instantiate* it for this specific type of element. Once this declaration is compiled,  all the functions available on the generic collection are available on your *instantiated  class*. 
+
 However, note that: 
   * Each collection directly used as an argument in OCCT public  syntax is instantiated in an OCCT component.
   * The *TColStd* package (**Collections of Standard Objects** component)  provides numerous instantiations of these generic collections with objects from  the **Standard** package or from the **Strings** component.
 The **Collections** component provides a wide range of  generic collections: 
   * **Arrays** are generally used for a quick access to the item,  however an array is a fixed sized aggregate.
   * **Sequences** are variable-sized structures, they avoid the  use of large and quasi-empty arrays. A sequence item is longer to access  than an array item: only an exploration in sequence is effective (but sequences  are not adapted for numerous explorations). Arrays and sequences are commonly  used as data structures for more complex objects.
-  * On the other hand, **maps** are dynamic structures where the  size is constantly adapted to the number of inserted items and the access time  for an item is effective. Maps structures are commonly used in cases of  numerous explorations: they are typically internal data structures for complex  algorithms. **Sets** generate the same results as maps but computation time  is considerable.
-  * **Lists, queues** and **stacks** are minor structures  similar to sequences but with other exploration algorithms.
+  * **Maps** are dynamic structures, where the size is constantly adapted to the number of inserted items and access to an item is the fastest. Maps structures are commonly used in cases of numerous explorations: they are typically internal data structures for complex algorithms.
+  * **Lists** are similar to sequences but have different algorithms to explore them. 
+  * Specific iterators for sequences and maps. 
   
 Most collections follow value semantics: their  instances are the actual collections, not **handles** to a collection. Only  arrays and sequences may also be manipulated by handle, and therefore shared. 
+
+Each collection directly used as an argument in Open CASCADE Technology public syntax
+is instantiated in an OCCT component using the corresponding generic class in package
+<i> TCollection</i>, by means of compiling the CDL declaration of the instance. 
+Thus OCCT generic classes require compilation of definitions in the CDL language and therefore
+can only be instantiated in WOK.
+
+If you do not use CDL in your project (CDL compilation under WOK is necessary
+to instantiate any generic Collection from package <i>TCollection</i>), then you should
+use the Collections defined in <i> NCollection</i> package. It contains definitions of the
+same generic collection classes described above, but in a form of C++ templates.
+Therefore, to instantiate any collection type no additional support is required beyond
+the ANSI C++ compiler.
 
 @subsubsection occt_fcug_3_1_2 Generic general-purpose Aggregates
 
@@ -1058,7 +1206,6 @@ Use a *StackIterator* iterator to explore a *Stack* structure.
 Maps are dynamically extended data structures where data is  quickly accessed with a key. *TCollection_BasicMap* is a root class for maps. 
 
 #### General properties of maps
-
 
 Map items may contain complex non-unitary data, thus it can be difficult to manage them with an array. The map allows a data structure to be  indexed by complex data. 
 
@@ -1583,9 +1730,15 @@ As one possible choice, the class *NCollection_IncAllocator* is included. Unlike
 
 @subsection occt_fcug_3_4 Strings
 
-The **Strings** component provides services to manipulate  character strings.  
-**Strings** are classes that handle dynamically sized  sequences of characters based on both ASCII (normal 8-bit character type) and  Unicode (16-bit character type). They provide editing operations with built-in  memory management which make the relative objects easier to use than ordinary  character arrays. 
-*Strings* may also be manipulated by *handle*, and  therefore shared. 
+Strings are classes that handle dynamically sized sequences of characters based on
+ASCII/Unicode UTF-8 (normal 8-bit character type) and UTF-16/UCS-2 (16-bit character type). They provide editing operations with built-in memory management which make the relative objects easier to use than ordinary character arrays.
+
+String classes provide the following services to manipulate character strings:
+ * Editing operations on string objects, using a built-in string manager 
+ * Handling of dynamically-sized sequences of characters 
+ * Conversion from/to ASCII and UTF-8 strings. 
+
+Strings may also be manipulated by handles and therefore shared.
 
 @subsubsection occt_fcug_3_4_1 Examples
 
@@ -1620,7 +1773,27 @@ A variable-length sequence of extended; (UNICODE)  characters (16-bit character 
 
 *Resource_Unicode* provides functions to convert a non-ASCII *C string* given  in ANSI, EUC, GB or SJIS format, to a Unicode string of extended characters, and vice  versa. 
 
-@subsection occt_fcug_3_5 Unit Conversion
+@subsection occt_fcug_3_5 Quantities
+
+Quantities are various classes supporting date and time information and fundamental types representing most physical quantities such as  length, area, volume, mass, density, weight, temperature, pressure etc. 
+
+Quantity classes provide the following services:
+  * Definition of primitive types representing most of mathematical and physical quantities;
+  * Unit conversion tools providing a uniform mechanism for dealing  with quantities and associated physical units: check unit compatibility, perform conversions of values between different units, etc. (see package  *UnitsAPI*)    
+  * Resources to manage time information such as dates and time periods 
+  * Resources to manage color definition 
+
+A mathematical quantity is characterized by the name and the value (real).
+
+A physical quantity is characterized by the name, the value (real) and the unit. The unit may be either an international unit complying with the International Unit System (SI) or a user defined unit. The unit is managed by the physical quantity user.
+
+The fact that both physical and mathematical quantities are manipulated as real values means that :
+  * They are defined as aliases of real values, so all functions provided by the <i>Standard_Real</i> class are available on each quantity.
+  * It is possible to mix several physical quantities in a mathematical or physical formula involving real values.
+
+<i>Quantity</i> package includes all commonly used basic physical quantities. 
+
+@subsection occt_fcug_3_6 Unit Conversion
 
 The *UnitsAPI* global functions are used to convert a  value from any unit into another unit. Conversion is executed among three unit  systems: 
   * the **SI System**,
@@ -1636,15 +1809,32 @@ A physical quantity is defined by a string (example:  LENGTH).
 
 
 @section occt_occt_fcug_4 Math Primitives and Algorithms
+
 @subsection occt_occt_fcug_4_1 Overview
+
 Math primitives and algorithms available in Open CASCADE  Technology include: 
   * Vectors and matrices
   * Geometric primitives
   * Math algorithms
   
 @subsection occt_occt_fcug_4_2 Vectors and Matrices
-The Vectors and Matrices component provides a C++  implementation of the fundamental types Matrix and Vector, currently used to  define more complex data structures. The Vector and Matrix classes support  vectors and matrices of real values with standard operations such as addition,  multiplication, transposition, inversion etc. 
-Vectors and matrices have arbitrary ranges which must be  defined at declaration time and cannot be changed after declaration. 
+
+The Vectors and Matrices component provides a C++  implementation of the fundamental types *Vector* and *Matrix*, which are regularly used to define more complex data structures. 
+
+The <i> Vector</i> and <i> Matrix </i> classes provide commonly used mathematical algorithms which
+include:
+
+  * Basic calculations involving vectors and matrices; 
+  * Computation of eigenvalues and eigenvectors of a square matrix; 
+  * Solvers for a set of linear algebraic equations; 
+  * Algorithms to find the roots of a set of non-linear equations; 
+  * Algorithms to find the minimum function of one or more independent variables. 
+
+These classes also provide a data structure to represent any expression,
+relation, or function used in mathematics, including the assignment of variables.
+
+Vectors and matrices have arbitrary ranges which must be defined at declaration time
+and cannot be changed after declaration.
 
 ~~~~~
 math_Vector  v(1, 3); 
@@ -1694,26 +1884,38 @@ v1(0) = 2.0;
 ~~~~~~
 
 @subsection occt_occt_fcug_4_3 Primitive Geometric Types
-Before creating a geometric object, you must decide whether  you are in a 2d or in a 3d context and how you want to handle the object. 
-The *gp* package offers classes for both 2d and 3d  objects which are handled by value rather than by reference. When this sort of  object is copied, it is copied entirely. Changes in one instance will not be  reflected in another. 
+
+Open CASCADE Technology primitive geometric types are a  STEP-compliant implementation of basic geometric and algebraic entities.  
+They provide: 
+  * Descriptions of primitive geometric shapes, such as:
+	  * Points; 
+	  * Vectors; 
+	  * Lines; 
+	  * Circles and conics; 
+	  * Planes and elementary surfaces;
+  * Positioning of these shapes in space or in a plane by means of an axis or a coordinate system;
+  * Definition and application of geometric transformations to these shapes:
+	  * Translations; 
+	  * Rotations; 
+	  * Symmetries; 
+	  * Scaling transformations; 
+	  * Composed transformations;
+  * Tools (coordinates and matrices) for algebraic computation.
+  
+All these functions are provided by geometric processor package <i> gp</i>. Its classes for 2d and 3d objects are handled by value rather than by reference. When this sort of object is copied, it is copied entirely. Changes in one instance will not be  reflected in another. 
+
 The *gp* package defines the basic non-persistent  geometric entities used for algebraic calculation and basic analytical geometry  in 2d & 3d space. It also provides basic transformations such as identity,  rotation, translation, mirroring, scale transformations, combinations of  transformations, etc. Entities are handled by value.  
-The available geometric entities are: 
-  * 2d & 3d Cartesian coordinates (x, y, z)
-  * Matrices
-  * Cartesian points
-  * Vector
-  * Direction
-  * Axis
-  * Line
-  * Circle
-  * Ellipse
-  * Hyperbola
-  * Parabola
-  * Plane
-  * Infinite cylindrical surface
-  * Spherical surface
-  * Toroidal surface
-  * Conical surface.
+
+Please, note that <i> gp</i> curves and surfaces are analytic: there is no parameterization and no orientation on <i>gp</i> entities, i.e. these entities do not provide functions which work with these properties. 
+
+If you need, you may use more evolved data structures provided by <i> Geom</i> (in 3D space) and <i> Geom2d</i> (in the plane). However, the definition of <i> gp</i> entities is identical to the one of equivalent <i> Geom</i> and <i> Geom2d</i> entities, and they are located in the plane or in space with the same kind of positioning systems. They implicitly contain the orientation, which they express on the <i> Geom </i> and <i> Geom2d </i> entities, and they induce the definition of their parameterization.
+
+Therefore, it is easy to give an implicit parameterization to <i> gp</i> curves and surfaces, which is the parametrization of the equivalent <i> Geom</i> or <i> Geom2d</i> entity. This property is particularly useful when computing projections or intersections, or for operations involving complex algorithms where it is particularly important to manipulate the simplest data structures, i.e. those of <i> gp</i>. Thus,  <i> ElCLib</i> and <i> ElSLib</i> packages provide functions to compute:
+  * the point of parameter u on a 2D or 3D gp curve,
+  * the point of parameter (u,v) on a gp elementary surface, and
+  * any derivative vector at this point.
+
+Note: the <i> gp</i> entities cannot be shared when they are inside more complex data structures. 
   
 @subsection occt_occt_fcug_4_4 Collections of Primitive Geometric Types
 

@@ -5,9 +5,35 @@ Shape Healing  {#occt_user_guides__shape_healing}
 
 @section occt_shg_1 Overview
 
+@subsection occt_shg_1_1 Introduction
+
 This manual explains how to use Shape Healing. It provides basic documentation on its operation. For advanced information on Shape Healing and its applications, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>  
 
 The **Shape Healing** toolkit provides a set of tools to work on the geometry and topology of Open CASCADE Technology (**OCCT**) shapes. Shape Healing adapts shapes so as to make them as appropriate for use by Open CASCADE Technology as possible. 
+
+@subsection occt_shg_1_2 Examples of use
+
+Here are a few examples of typical problems with illustrations of how Shape Healing deals with them:
+
+#### Face with missing seam edge
+
+The problem: Face on a periodical surface is limited by wires which make a full trip around the surface. These wires are closed in 3d but not closed in parametric space of the surface. This is not valid in Open CASCADE.
+The solution: Shape Healing fixes this face by inserting seam edge which combines two open wires and thus closes the parametric space. Note that internal wires are processed correctly.
+
+#### Wrong orientation of wires
+The problem: Wires on face have incorrect orientation, so that interior and outer parts of the face are mixed.
+The solution: Shape Healing recovers correct orientation of wires.
+
+#### Self-intersecting wire
+The problem: Face is invalid because its boundary wire has self-intersection (on two adjacent edges)
+The solution: Shape Healing cuts intersecting edges at intersection points thus making boundary valid.
+
+#### Lacking edge
+The problem: There is a gap between two edges in the wire, so that wire is not closed
+The solution: Shape Healing closes a gap by inserting lacking edge.
+
+@subsection occt_shg_1_3 Toolkit Structure
+
 **Shape Healing** currently includes several packages that are designed to help you to: 
   *  analyze shape characteristics and, in particular, identify shapes that do not comply with Open CASCADE Technology validity rules 
   *  fix some of the problems shapes may have 
@@ -28,7 +54,7 @@ Message management is used for creating messages, filling them with various para
 
 Tools responsible for analysis, fixing and upgrading of shapes can give the information about how these operations were performed. This information can be obtained by the user with the help of mechanism of status querying. 
 
-@subsection occt_shg_1_1 Querying the statuses
+@subsection occt_shg_1_4 Querying the statuses
 
 Each fixing and upgrading tool has its own status, which is reset when their methods are called. The status can contain several flags, which give the information about how the method was performed. For exploring the statuses, a set of methods named *Status...()* is provided. These methods accept enumeration *ShapeExtend_Status* and return True if the status has the corresponding flag set. The meaning of flags for each method is described below. 
 

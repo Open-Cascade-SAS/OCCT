@@ -25,6 +25,15 @@ OCAF White-Paper {#occt_user_guides__ocaf_wp}
  
   By providing architectural guidance and ready-to-use solutions to these issues, 
   OCAF helps you to develop your application significantly faster: you concentrate on the application's functionality.  
+  
+  As you use the architecture provided by OCAF, the design  of your application is made easy:  as the application developer you can concentrate on the functionality instead of the underlying mechanisms required to support it.  
+ 
+  Also, thanks to the coupling with the other Open CASCADE Technology modules, 
+  your application can rapidly be prototyped. In addition, the final application 
+  can be developed by industrializing the prototype — you don't need to restart the development from scratch.  
+ 
+  Last but not least, you base your application on an Open Source component: 
+  this guarantees the long-term usefulness of your development.   
  
 @subsection ocaf_wp_1_2 Overview of the Architecture
  
@@ -73,7 +82,7 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   If you need application specific data not provided with  OCAF, for example, 
   to incorporate a finite element model in the data structure,  
   you define a new attribute class containing the mesh, 
-  and you include its persistent homolog in a new file format.  
+  and you include its persistent homologue in a new file format.  
    
   Once you have implemented the commands which create and modify the data structure 
   according to your specification, OCAF provides you, without any additional programming:  
@@ -91,19 +100,99 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
  
   You can also implement the user interface in the Java language using 
   the Swing-based Java Application Desktop component (JAD)  provided with OCAF.  
- 
-@subsection ocaf_wp_1_4 Benefits  of OCAF
+  
+@subsection ocaf_wp_1_4 An example of OCAF usage
 
-  As you use the architecture provided by OCAF, the design  of your application is made easy: 
-  the application developer concentrates on the functionality 
-  instead of the underlying mechanisms required to support this functionality.  
+To create a useful OCAF-based application, it is necessary to redefine two deferred methods: <i> Formats</i> and <i> ResourcesName</i>
+
+In the <i> Formats </i> method, add the format of the documents, which need to be read by the application and may have been built in other applications.
+
+For example:
+
+~~~~
+    void myApplication::Formats(TColStd_SequenceOfExtendedString& Formats)
+    {
+      Formats.Append(TCollection_ExtendedString ("OCAF-myApplication"));
+    }
+~~~~
+
+In the <i> ResourcesName</i> method, you only define the name of the resource file. This
+file contains several definitions for the saving and opening mechanisms associated
+with each format and calling of the plug-in file.
+
+~~~~
+    Standard_CString myApplication::ResourcesName()
+    {
+      return Standard_CString ("Resources");
+    }
+~~~~
+
+To obtain the saving and opening mechanisms, it is necessary to set two environment variables: <i> CSF_PluginDefaults</i>, which defines the path of the plug-in file, and <i> CSF_ResourcesDefault</i>, which defines the resource file:
+
+~~~~
+    SetEnvironmentVariable ( "CSF_ResourcesDefaults",myDirectory);
+    SetEnvironmentVariable ( "CSF_PluginDefaults",myDirectory);
+~~~~
+
+The plugin and the resource files of the application will be located in <i> myDirector</i>.
+The name of the plugin file must be <i>Plugin</i>.
+
+### Resource File
+
+The resource file describes the documents (type and extension) and 
+the type of data that the application can manipulate 
+by identifying the storage and retrieval drivers appropriate for this data.
+
+Each driver is unique and identified by a GUID generated, for example, with the <i> uuidgen </i> tool in Windows.
+
+Five drivers are required to use all standard attributes provided within OCAF:
+
+  * the schema driver (ad696002-5b34-11d1-b5ba-00a0c9064368)
+  * the document storage driver (ad696000-5b34-11d1-b5ba-00a0c9064368)
+  * the document retrieval driver (ad696001-5b34-11d1-b5ba-00a0c9064368)
+  * the attribute storage driver (47b0b826-d931-11d1-b5da-00a0c9064368)
+  * the attribute retrieval driver (47b0b827-d931-11d1-b5da-00a0c9064368)
+
+These drivers are provided as plug-ins and are located in the <i> PappStdPlugin</i> library.
+
+
+For example, this is a resource file, which declares a new model document OCAF-MyApplication:
+
+~~~~
+formatlist:OCAF-MyApplication
+OCAF-MyApplication.Description: MyApplication Document Version 1.0
+OCAF-MyApplication.FileExtension: sta
+OCAF-MyApplication.StoragePlugin: ad696000-5b34-11d1-b5ba-00a0c9064368
+OCAF-MyApplication.RetrievalPlugin: ad696001-5b34-11d1-b5ba-00a0c9064368
+OCAF-MyApplicationSchema: ad696002-5b34-11d1-b5ba-00a0c9064368
+OCAF-MyApplication.AttributeStoragePlugin: 47b0b826-d931-11d1-b5da-00a0c9064368
+OCAF-MyApplication.AttributeRetrievalPlugin: 47b0b827-d931-11d1-b5da-00a0c9064368
+~~~~
  
-  Also, thanks to the coupling with the other Open CASCADE Technology modules, 
-  your application can rapidly be prototyped. In addition, the final application 
-  can be developed by industrializing the prototype — you don't need to restart the development from scratch.  
- 
-  Last but not least, you base your application on an Open Source component: 
-  this guarantees the long-term usefulness of your development.  
+  
+### Plugin File
+
+The plugin file describes the list of required plug-ins to run the application and the
+libraries in which plug-ins are located.
+
+You need at least the <i> FWOSPlugin</i> and the plug-in drivers to run an OCAF application.
+
+The syntax of each item is <i> Identification.Location Library_Name, </i> where:
+* Identification is GUID.
+* Location defines the location of the Identification (where its definition is found).
+* Library_Name is the name (and path to) the library, where the plug-in is located.
+
+For example, this is a Plugin file:
+
+~~~~
+a148e300-5740-11d1-a904-080036aaa103.Location: FWOSPlugin
+! base document drivers plugin
+ad696000-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
+ad696001-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
+ad696002-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
+47b0b826-d931-11d1-b5da-00a0c9064368.Location: PAppStdPlugin
+47b0b827-d931-11d1-b5da-00a0c9064368.Location: PAppStdPlugin
+~~~~
  
 @section ocaf_wp_2 A Look Inside OCAF
 
@@ -290,27 +379,17 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
 
 @subsection ocaf_wp_2_3 Persistent  Data Storage
 
-  In OCAF, persistence, that is, the mechanism used to  save a document in a file, 
-  is based on an explicit formal description of the  data saved.  
+@subsubsection ocaf_wp_2_3_1 Introduction
+
+In OCAF, persistence, that is, the mechanism used to  save a document in a file, is based on an explicit formal description of the  data saved.  
  
-  When you open a document, the application reads the corresponding file 
-  and first creates a memory representation of it. 
-  This representation is then converted to the application data model — 
-  the OCAF-based data structure the application operates on. 
-  The file's memory representation  consists of objects defined by classes known as persistent. 
-  The persistent  classes needed by an application to save its documents make the application's data schema.
-  This schema defines the way the data are organized in the file — the format of the data. 
-  In other words, the file is simply an ASCII dump of the  persistent data defined by the schema, 
-  the persistent data being created from  the application data model during the save process.  
-   
-  Only canonical information is saved. As a matter of  fact, 
-  the application data model usually contains additional data to optimize  processing. 
-  For example, the persistent Bézier curve is defined by its poles, whereas 
-  its data model equivalent also contains coefficients used to compute a point at a given parameter. 
-  The additional data is calculated when the document is opened.  
- 
-  The major advantages of this approach are the following:  
+When you open a document, the application reads the corresponding file and first creates a memory representation of it. This representation is then converted to the application data model —  the OCAF-based data structure the application operates on. The file's memory representation  consists of objects defined by classes known as persistent. 
   
+The persistent  classes needed by an application to save its documents make the application's data schema. This schema defines the way the data are organized in the file — the format of the data. In other words, the file is simply an ASCII dump of the  persistent data defined by the schema, the persistent data being created from  the application data model during the save process.  
+   
+Only canonical information is saved. As a matter of  fact, the application data model usually contains additional data to optimize  processing. For example, the persistent Bézier curve is defined by its poles, whereas its data model equivalent also contains coefficients used to compute a point at a given parameter.  The additional data is calculated when the document is opened.  
+ 
+The major advantages of this approach are the following:  
   * Providing  that the data format is published, files created by OCAF-based applications 
    can be read without needing a runtime of the application (openness)
   * Although the  persistence approach makes the data format more stable, 
@@ -329,4 +408,214 @@ Applications using compound documents extensively (saving data in many files lin
 
 In order to ease the delegation of document management to a data management application, OCAF encapsulates the file management functions in a driver (the meta-data driver). You have to implement this driver for your application to communicate with the data management system of your choice.
 
-  
+ 
+@subsubsection ocaf_wp_2_3_2 Schemes of Persistence
+
+There are three schemes of persistence, which you can use to store and retrieve OCAF data (documents):
+
+  * <i> Standard</i> persistence schema, compatible with previous OCAF applications
+  * <i> XmlOcaf</i> persistence, allowing the storage of all OCAF data in XML form
+  * <i> BinOcaf</i> persistence, allowing the storage of all OCAF data in binary format form
+
+
+All schemes are independent of each other, but they guarantee that the standard OCAF
+attributes stored and retrieved by one schema will be storable and retrievable by
+the other. Therefore in any OCAF application you can use any persistence schema or
+even all three of them. The choice is made depending on the *Format* string of stored OCAF documents
+or automatically by the file header data - on retrieval.
+
+Persistent data storage in OCAF using the <i> Standard</i> package is presented in: 
+
+  * Basic Data Storage 
+  * Persistent Collections 
+
+Persistent storage of shapes is presented in the following chapters:
+
+  * Persistent Geometry 
+  * Persistent Topology 
+
+Finally, information about opening and saving persistent data is presented in Standard
+Documents. 
+
+@subsubsection ocaf_wp_2_3_3 Basic Data Storage
+
+Normally, all data structures provided by Open CASCADE Technology are run-time structures,
+in other words, transient data. As transient data, they exist only while an application
+is running and are not stored permanently. However, the Data Storage module provides
+resources, which enable an application to store data on disk as persistent data.
+
+Data storage services also provide libraries of persistent classes and translation
+functions needed to translate data from transient to persistent state and vice-versa.
+
+#### Libraries of persistent classes
+
+Libraries of persistent classes are extensible libraries of elementary classes you
+use to define the database schema of your application. They include:
+* Unicode (8-bit or 16-bit character type) strings 
+* Collections of any kind of persistent data such as arrays.
+
+All persistent classes are derived from the \b Persistent base class, which defines
+a unique way of creating and handling persistent objects. You create new persistent
+classes by inheriting from this base class.
+
+#### Translation Functions
+
+Translation functions allow you to convert persistent objects to transient ones and
+vice-versa. These translation functions are used to build Storage and Retrieval drivers
+of an application.
+
+For each class of 2D and 3D geometric types, and for the general shape class in the
+topological data structure library, there are corresponding persistent class libraries,
+which allow you to translate your data with ease.
+
+#### Creation of Persistent Classes
+
+If you use Unix platforms as well as WOK and CDL, you can create your own persistent
+classes. In this case, data storage is achieved by implementing *Storage* and *Retrieval*
+drivers.
+
+The <i> Storage </i> package is used to write and read persistent objects. 
+These objects are read and written by a retrieval or storage algorithm 
+(<i> Storage_Schema </i>object) in a container (disk, memory, network ...). 
+Drivers (<i> FSD_File</i> objects) assign a physical container for data to be stored or retrieved.
+
+The standard procedure for an application in reading a container is as follows:
+
+* open the driver in reading mode,
+* call the Read function from the schema, setting the driver as a parameter. This function returns an instance of the <i> Storage_Data </i> class which contains the data being read,
+* close the driver.
+
+The standard procedure for an application in writing a container is as follows:
+
+* open the driver in writing mode,
+* create an instance of the <i> Storage_Data </i> class, then add the persistent data to write with the function <i> AddRoot</i>,
+* call the function <i> Write </i> from the schema, setting the driver and the <i> Storage_Data </i> instance as parameters,
+* close the driver.
+
+@subsubsection ocaf_wp_2_3_4 Persistent Collections
+
+Persistent collections are classes which handle dynamically sized collections of data that can be stored in the database. These collections provide three categories of service:
+
+  * persistent strings,
+  * generic arrays of data, 
+  * commonly used instantiations of arrays.
+
+Persistent strings are concrete classes that handle sequences of characters based
+on both ASCII (normal 8-bit) and Unicode (16-bit) character sets.
+
+Arrays are generic classes, that is, they can hold a variety of objects not necessarily inheriting from a unique root class. These arrays can be instantiated with any kind of storable or persistent object, and then inserted into the persistent data model of a user application.
+
+The purpose of these data collections is simply to convert transient data into its persistent equivalent so that it can be stored in the database. To this end, the collections are used to create the persistent data model and assure the link with the database. They do not provide editing or query capabilities because it is more efficient, within the operative data model of the application, to work with transient data structures (from the <i> TCollection</i> package).
+
+For this reason:
+
+  * the persistent strings only provide constructors and functions to convert between transient and persistent strings, and
+  * the persistent data collections are limited to arrays. In other words, <i> PCollection</i> does not include sequences, lists, and so on (unlike <i> TCollection</i>).
+
+Persistent string and array classes are found in the <i> PCollection</i> package. In addition, <i> PColStd</i> package provides standard, and frequently used, instantiations of persistent arrays, for very simple objects.
+
+@subsubsection ocaf_wp_2_3_5 Persistent Geometry
+
+The Persistent Geometry component describes geometric data structures which can be stored in the database. These packages provide a way to convert data from the transient "world" to the persistent "world".
+
+Persistent Geometry consists of a set of atomic data models parallel to the geometric data structures described in the geometry packages. Geometric data models, independent of each other, can appear within the data model of any application. The system provides the means to convert each atomic transient data model into a persistent one, but it does not provide a way for these data models to share data.
+
+Consequently, you can create a data model using these components, store data in, and retrieve it from a file or a database, using the geometric components provided in the transient and persistent "worlds". In other words, you customize the system by declaring your own objects, and the conversion of the geometric components from persistent to transient and vice versa is automatically managed for you by the system.
+
+However, these simple objects cannot be shared within a more complex data model. To allow data to be shared, you must provide additional tools.
+
+Persistent Geometry is provided by several packages.
+
+The <i> PGeom</i> package describes geometric persistent objects in 3D space, such as points,
+vectors, positioning systems, curves and surfaces.
+
+These objects are persistent versions of those provided by the <i> Geom</i> package: for
+each type of transient object provided by Geom there is a corresponding type of persistent
+object in the <i>PGeom</i> package. In particular the inheritance structure is parallel.
+
+However the <i> PGeom </i>package does not provide any functions to construct, edit or access
+the persistent objects. Instead the objects are manipulated as follows:
+
+  * Persistent objects are constructed by converting the equivalent transient <i> Geom </i> objects. To do this you use the <i>MgtGeom::Translate</i> function.
+  * Persistent objects created in this way are used to build persistent data structures that are then stored in a file or database.
+  * When these objects are retrieved from the file or database, they are converted back into the corresponding transient objects from the Geom package. To do this, you use <i>MgtGeom::Translate</i> function.
+
+In other words, you always edit or query transient data structures within the transient
+data model supplied by the session.
+Consequently, the documentation for the <i> PGeom </i> package consists simply of a list of available objects.
+
+The <i> PGeom2d </i> package describes persistent geometric objects in 2D space, such as points,
+vectors, positioning systems and curves. This package provides the same type of services
+as the <i> PGeom</i> package, but for the 2D geometric objects provided by the <i> Geom2d</i> package.
+Conversions are provided by the <i>MgtGeom::Translate</i> function.
+
+~~~~
+//Create a coordinate system
+Handle(Geom_Axis2Placement) aSys;
+
+
+//Create a persistent coordinate PTopoDS_HShape.cdlsystem
+Handle(PGeom_Axis2placement)
+	aPSys = MgtGeom::Translate(aSys);
+
+//Restore a transient coordinate system
+Handle(PGeom_Axis2Placement) aPSys;
+
+Handle(Geom_Axis2Placement)
+	aSys = MgtGeom::Translate(aPSys);
+~~~~
+
+
+@subsubsection ocaf_wp_2_3_6 Persistent Topology
+
+The Persistent Topology component describes topological data structures which can be stored in the database. These packages provide a way to convert data from the transient "world" to the persistent "world".
+
+Persistent Topology is based on the BRep concrete data model provided by the topology packages. Unlike the components of the Persistent Geometry package, topological components can be fully shared within a single model, as well as between several models.
+
+Each topological component is considered to be a shape: a <i> TopoDS_Shape</i> object. The system's capacity to convert a transient shape into a persistent shape and vice-versa applies to all objects, irrespective of their complexity: vertex, edge, wire, face, shell, solid, and so on.
+
+When a user creates a data model using BRep shapes, he uses the conversion functions that the system provides to store the data in, and retrieve it from the database. The data can also be shared.
+
+Persistent Topology is provided by several packages.
+
+The <i> PTopoDS</i> package describes the persistent data model associated with any BRep shape; it is the persistent version of any shape of type <i> TopoDS_Shape</i>. As is the case for persistent geometric models, this data structure is never edited or queried, it is simply stored in or retrieved from the database. It is created or converted by the <i>MgtBRep::Translate</i> function.
+
+The <i> MgtBRepAbs</i> and <i> PTColStd </i> packages provide tools used by the conversion functions of topological objects.
+
+~~~~
+//Create a shape
+TopoDS_Shape aShape;
+
+//Create a persistent shape
+PtColStd_DoubleTransientPersistentMap aMap;
+
+Handle(PTopoDS_HShape) aPShape =
+	aMap.Bind2(MgtBRep::Translate
+		aShape,aMap,MgtBRepAbs_WithTriangle));
+
+aPShape.Nullify();
+
+//Restore a transient shape
+Handle(PTopoDS_HShape) aPShape;
+
+Handle(TopoDS_HShape) aShape =
+	aMap.Bind1(MgtBRep::Translate
+		(aPShape,aMap,MgtBRepAbs_WithTriangle));
+
+aShape.Nullify();
+~~~~
+
+@subsubsection ocaf_wp_2_3_7 Standard Documents
+
+Standard documents offer you a ready-to-use document containing a TDF-based data
+structure. The documents themselves are contained in a class inheriting from <i> TDocStd_Application</i>
+which manages creation, storage and retrieval of documents.
+
+You can implement undo and redo in your document, and refer from the data framework
+of one document to that of another one. This is done by means of external link attributes,
+which store the path and the entry of external links. To sum up, standard documents
+alone provide access to the data framework. They also allow you to:
+* Update external links;
+* Manage the saving and opening of data;
+* Manage undo/redo functionality.
+ 

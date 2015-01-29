@@ -145,7 +145,6 @@ Documents offer access to the data framework and manage the following items:
 @subsubsection occt_ocaf_2_3_2 Shape attribute
 
 The shape attribute implements the functionality of the OCCT topology manipulation: 
-
   * reference to the shapes
   * tracking of shape evolution
 
@@ -163,6 +162,7 @@ Where the document manages the notification of changes, a function manages propa
 
 @image html /user_guides/ocaf/images/ocaf_image008.png "Document structure"
 @image latex /user_guides/ocaf/images/ocaf_image008.png "Document structure"
+
 
 @section occt_ocaf_3 Data Framework Services
 
@@ -416,11 +416,11 @@ If you use a standard file format and you want your new attributes to be stored 
 If you use the XML format, do the following: 
   1. Create a new package with the name Xml[package name] (for example *XmlMyAttributePackage*) containing  class *XmlMyAttributePackage_MyAttributeDriver*. The new class inherits *XmlMDF_ADriver* class and contains the translation functionality: from transient to persistent and vice versa (see the realization of the standard attributes in the packages *XmlMDataStd*, for example). Add package method AddDrivers which adds your class to a driver table (see below).
   2. Create a new package (or do it in the current one) with two package methods: 
-	  * Factory, which loads the document storage and retrieval drivers; and 
-	  * AttributeDrivers, which calls the methods AddDrivers for all packages responsible for persistence of the document.
+	  * *Factory*, which loads the document storage and retrieval drivers; and 
+	  * *AttributeDrivers*, which calls the methods AddDrivers for all packages responsible for persistence of the document.
   3. Create a plug-in implemented as an executable (see example *XmlPlugin*). It calls a macro PLUGIN with the package name where you implemented the method Factory.
 If you use the binary format, do the following: 
-  1. Create a new package with name Bin[package name] (for example *BinMyAttributePackage*) containing a class *BinMyAttributePackage_MyAttributeDriver*. The new class inherits *BinMDF_ADriver* class and contains the translation functionality: from transient to persistent and vice versa (see the realization of the standard attributes in the packages *BinMDataStd*, for example). Add package method *AddDrivers*, which adds your class to a driver table (see below).
+  1. Create a new package with name <i> Bin[package name] </i> (for example *BinMyAttributePackage*) containing a class *BinMyAttributePackage_MyAttributeDriver*. The new class inherits *BinMDF_ADriver* class and contains the translation functionality: from transient to persistent and vice versa (see the realization of the standard attributes in the packages *BinMDataStd*, for example). Add package method *AddDrivers*, which adds your class to a driver table.
   2. Create a new package (or do it in the current one) with two package methods: 
 	  * Factory, which loads the document storage and retrieval drivers; and 
 	  * AttributeDrivers, which calls the methods AddDrivers for all packages responsible for persistence of the document.
@@ -439,23 +439,23 @@ Let’s study the implementation of the same data type in both ways by the examp
 1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the <a href="#occt_ocaf_11">Samples</a>. 
 
 2. The second way: creation of a new data type by means of combination of standard attributes. Depending on the type of transformation it may be kept in data framework by different standard attributes. For example, a translation is defined by two points. Therefore the data tree for translation looks like this: 
-  * Type of transformation (gp_Translation) as TDataStd_Integer;
-  * First point as TDataStd_RealArray (three values: X1, Y1 and Z1);
-  * Second point as TDataStd_RealArray (three values: X2, Y2 and Z2).
+  * Type of transformation <i>(gp_Translation)</i> as *TDataStd_Integer*;
+  * First point as *TDataStd_RealArray* (three values: X1, Y1 and Z1);
+  * Second point as *TDataStd_RealArray* (three values: X2, Y2 and Z2).
 
 @image html /user_guides/ocaf/images/ocaf_image010.png "Data tree for translation"
 @image latex /user_guides/ocaf/images/ocaf_image010.png "Data tree for translation"
 
 If the type of transformation is changed to rotation, the data tree looks like this: 
-  * Type of transformation (gp_Rotation) as TDataStd_Integer;
-  * Point of axis of rotation as TDataStd_RealArray (three values: X, Y and Z);
-  * Axis of rotation as TDataStd_RealArray (three values: DX, DY and DZ);
-  * Angle of rotation as TDataStd_Real.
+  * Type of transformation <i>(gp_Rotation)</i> as *TDataStd_Integer*;
+  * Point of axis of rotation as *TDataStd_RealArray* (three values: X, Y and Z);
+  * Axis of rotation as *TDataStd_RealArray* (three values: DX, DY and DZ);
+  * Angle of rotation as *TDataStd_Real*.
 
 @image html /user_guides/ocaf/images/ocaf_image011.png "Data tree for rotation"
 @image latex /user_guides/ocaf/images/ocaf_image011.png "Data tree for rotation"
 
-The attribute TDataStd_UAttribute with the chosen unique GUID identifies the data type. The interface class initialized by the label of this attribute allows access to the data container (type of transformation and the data of transformation according to the type). 
+The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the data type. The interface class initialized by the label of this attribute allows access to the data container (type of transformation and the data of transformation according to the type). 
 
   
 @section occt_ocaf_4_ Standard Document Services
@@ -464,7 +464,7 @@ The attribute TDataStd_UAttribute with the chosen unique GUID identifies the dat
 
 Standard documents offer ready-to-use documents containing a TDF-based data framework. Each document can contain only one framework. 
 
-The documents themselves are contained in the instantiation of a class inheriting from TDocStd_Application. This application manages the creation, storage and retrieval of documents. 
+The documents themselves are contained in the instantiation of a class inheriting from *TDocStd_Application*. This application manages the creation, storage and retrieval of documents. 
 
 You can implement undo and redo in your document, and refer from the data framework of one document to that of another one. This is done by means of external link attributes, which store the path and the entry of external links. 
 
@@ -577,20 +577,57 @@ setenv CSF_NewFormatDefaults MyApplicationPath/MyResources
 
 Once these steps are taken you may run your application, create documents and Save/Open them. These resource files already exist in the OCAF (format "Standard"). 
 
-If you use your specific attributes from packages, for example, P-, M- and TMyAttributePackage, see "Specific attribute creation" on page 20; you must take some additional steps for the new plugin implementation: 
+If you use your specific attributes from packages, for example, <i>P-, M-</i> and *TMyAttributePackage*  (see @ref occt_ocaf_3_4_6  "Specific attribute creation") you must take some additional steps for the new plugin implementation: 
 
-1. Add our "P" package to the standard schema. You can get an already existing (in Open CASCADE Technology sources) schema from StdSchema unit and add your package string to the cdl-file: "package  PMyAttributePackage".
-2. Next step consists of implementation of an executable, which will connect our documents to our application and open/save them. Copy the package PAppStdPlugin and change its name to MyTheBestApplicationPlugin. In the PLUGIN macros type the name of your factory which will be defined in the next step.
-3. Factory is a method, which returns drivers (standard drivers and our defined drivers from the "M" package) by a GUID. Copy the package where the standard factory is defined (it is PAppStd in the OCAF sources). Change its name to MyTheBestSchemaLocation. The Factory() method of the PappStd package checks the GUID set as its argument and returns the corresponding table of drivers. Set two new GUIDs for your determined storage and retrieval drivers. Append two "if" declarations inside the Factory() method which should check whether the set GUID coincides with GUIDs defined by the Factory() method as far as our storage and retrieval drivers are concerned. If the GUID coincides with one of them, the method should return a table of storage or retrieval drivers respectively.
-4. Recompile all. Add the strings with GUIDs – in accordance with your plugin library GUID - to the "Plugin" file.
+1. Add our *P* package to the standard schema. You can get an already existing (in Open CASCADE Technology sources) schema from *StdSchema* unit and add your package string to the cdl-file: package  *PMyAttributePackage*.
+2. The next step consists in the implementation of an executable, which will connect our documents to our application and open/save them. Copy the package *PAppStdPlugin* and change its name to *MyTheBestApplicationPlugin*. In the *PLUGIN* macros type the name of your factory, which will be defined at the next step.
+3. *Factory* is a method, which returns drivers (standard drivers and our defined drivers from the *M* package) by a GUID. Copy the package to the location, where the standard factory is defined (it is PAppStd in the OCAF sources). Change its name to *MyTheBestSchemaLocation*. The *Factory()* method of the *PappStd* package checks the GUID set as its argument and returns the corresponding table of drivers. Set two new GUIDs for your determined storage and retrieval drivers. Append two *if* declarations inside the *Factory()* method, which should check whether the set GUID coincides with GUIDs defined by the *Factory()* method as far as our storage and retrieval drivers are concerned. If the GUID coincides with one of them, the method should return a table of storage or retrieval drivers respectively.
+4. Recompile all and add the strings with GUIDs  to the *Plugin* file in accordance with your plugin library GUID.
 
 @subsubsection occt_ocaf_4_3_4 Opening the document from a file
 
-To open the document from a file where it has been previously saved, you use TDocStd_Application::Open as in the example below. The arguments are the path of the file and the document saved in this file. 
+To open the document from a file where it has been previously saved, you can use *TDocStd_Application::Open* as in the example below. The arguments are the path of the file and the document saved in this file. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 app->Open("/tmp/example.caf", doc); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@subsubsection occt_ocaf_4_3_5 Cutting, copying and pasting inside a document
+
+To cut, copy and paste inside a document, use the class *TDF_CopyLabel*.
+
+In fact, you must define a *Label*, which contains the temporary value of a cut or 
+copy operation (say, in <i> Lab_Clipboard</i>). You must also define two other labels:
+
+* The data container (e.g. <i> Lab_source</i>)
+* The destination of the copy (e.g. <i> Lab_ Target</i> )
+
+~~~~
+    Copy = copy (Lab_Source => Lab_Clipboard)
+    Cut = copy + Lab_Source.ForgetAll() // command clear the contents of LabelSource.
+    Paste = copy (Lab_Clipboard => Lab_target)
+~~~~
+
+So we need a tool to copy all (or a part) of the content of a label and its sub-label,
+to another place defined by a label.
+
+~~~~
+    TDF_CopyLabel aCopy;
+    TDF_IDFilter aFilter (Standard_False);
+
+    //Don't copy TDataStd_TreeNode attribute
+
+     aFilter.Ignore(TDataStd_TreeNode::GetDefaultTreeID());
+     aCopy.Load(aSource, aTarget); aCopy.UseFilter(aFilter); aCopy.Perform();
+
+    // copy the data structure to clipboard 
+
+    return aCopy.IsDone(); }
+~~~~
+
+The filter is used to forbid copying a specified type of attribute. 
+
+You can also have a look at the class *TDF_Closure*, which can be useful to determine the dependencies of the part you want to cut from the document.
 
 @subsection occt_ocaf_4_4 External Links
 
@@ -605,7 +642,7 @@ Note that documents can be copied with or without a possibility of updating an e
 
 #### With the possibility of updating it later
 
-To copy a document with a possibility of updating it later, you use TDocStd_XLinkTool::CopyWithLink. 
+To copy a document with a possibility of updating it later, you use *TDocStd_XLinkTool::CopyWithLink*. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 Handle(TDocStd_Document) doc1; 
@@ -620,7 +657,7 @@ XLinkTool.CopyWithLink(target,source);
 
 Now the target document has a copy of the source document. The copy also has a link in order to update the content of the copy if the original changes. 
 
-In the example below, something has changed in the source document. As a result, you need to update the copy in the target document. This copy is passed to TDocStd_XLinkTool::UpdateLink as the argument *target*. 
+In the example below, something has changed in the source document. As a result, you need to update the copy in the target document. This copy is passed to *TDocStd_XLinkTool::UpdateLink* as the argument *target*. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 XLinkTool.UpdateLink(target); 
@@ -628,7 +665,7 @@ XLinkTool.UpdateLink(target);
 
 #### Without any link between the copy and the original
 
-You can also create a copy of the document with no link between the original and the copy. The syntax to use this option is TDocStd_XLinkTool::Copy; the copied document is again represented by the argument *target*, and the original – by *source.* 
+You can also create a copy of the document with no link between the original and the copy. The syntax to use this option is *TDocStd_XLinkTool::Copy*. The copied document is again represented by the argument *target*, and the original – by *source.* 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 XLinkTool.Copy(target, source); 
@@ -639,24 +676,27 @@ XLinkTool.Copy(target, source);
 @section occt_ocaf_5_ OCAF Shape Attributes
 @subsection occt_ocaf_5_1 Overview
 
-OCAF shape attributes are used for topology objects and their evolution access. All topological objects are stored in one TNaming_UsedShapes attribute at the root label of the data framework. This attribute contains a map with all topological shapes used in a given document. 
+A topological attribute can be seen as a hook into the topological structure. It is possible to attach data to define references to it.
 
-The user can add the TNaming_NamedShape attribute to other labels. This attribute contains references (hooks) to shapes from the TNaming_UsedShapes attribute and an evolution of these shapes. The TNaming_NamedShape attribute contains a set of pairs of hooks: to the *Old* shape and to a *New* shape (see the following figure). It allows not only to get the topological shapes by the labels, but also to trace the evolution of the shapes and to correctly update dependent shapes by the changed one. 
+OCAF shape attributes are used for topology objects and their evolution access. All topological objects are stored in one *TNaming_UsedShapes* attribute at the root label of the data framework. This attribute contains a map with all topological shapes used in a given document. 
+
+The user can add the *TNaming_NamedShape* attribute to other labels. This attribute contains references (hooks) to shapes from the *TNaming_UsedShapes* attribute and an evolution of these shapes. The *TNaming_NamedShape* attribute contains a set of pairs of hooks: to the *Old* shape and to a *New* shape (see the following figure). It allows not only to get the topological shapes by the labels, but also to trace the evolution of the shapes and to correctly update dependent shapes by the changed one. 
 
 If a shape is newly created, then the old shape of a corresponding named shape is an empty shape. If a shape is deleted, then the new shape in this named shape is empty. 
 
 @image html /user_guides/ocaf/images/ocaf_image013.png
 @image latex /user_guides/ocaf/images/ocaf_image013.png
 
+### Shape attributes in data framework. 
+
 Different algorithms may dispose sub-shapes of the result shape at the individual labels depending on whether it is necessary to do so: 
 
 * If a sub-shape must have some extra attributes (material of each face or color of each edge). In this case a specific sub-shape is placed to a separate label (usually to a sub-label of the result shape label) with all attributes of this sub-shape.
 * If the topological naming algorithm is needed, a necessary and sufficient set of sub-shapes is placed to child labels of the result shape label. As usual, for a basic solid and closed shells, all faces of the shape are disposed.
 
+*TNaming_NamedShape* may contain a few pairs of hooks with the same evolution. In this case the topology shape, which belongs to the named shape is a compound of new shapes. 
 
-TNaming_NamedShape may contain a few pairs of hooks with the same evolution. In this case the topology shape, which belongs to the named shape is a compound of new shapes. 
-
-Consider the following example. Two boxes (solids) are fused into one solid (the result one). Initially each box was placed to the result label as a named shape, which has evolution PRIMITIVE and refers to the corresponding shape of the TNaming_UsedShapes map. The box result label has a material attribute and six child labels containing named shapes of Box faces. 
+Consider the following example. Two boxes (solids) are fused into one solid (the result one). Initially each box was placed to the result label as a named shape, which has evolution PRIMITIVE and refers to the corresponding shape of the *TNaming_UsedShapes* map. The box result label has a material attribute and six child labels containing named shapes of Box faces. 
 
 @image html /user_guides/ocaf/images/ocaf_image014.png "Resulting box"
 @image latex /user_guides/ocaf/images/ocaf_image014.png "Resulting box"
@@ -670,8 +710,8 @@ Named shapes, which contain information about modified faces, belong to the fuse
 
 This is necessary and sufficient information for the functionality of the right naming mechanism: any sub-shape of the result can be identified unambiguously by name type and set of labels, which contain named shapes: 
 
-  * face F1’ as a modification of F11  face
-  * face F1’’ as generation of F12 face
+  * face F1’ as a modification of face F11  
+  * face F1’’ as generation of face F12 
   * edges as an intersection of two contiguous faces
   * vertices as an intersection of three contiguous faces
 
@@ -684,19 +724,18 @@ After any modification of source boxes the application must automatically rebuil
 When using TNaming_NamedShape to create attributes, the following fields of an attribute are filled: 
 
 * A list of shapes called the "old" and the "new" shapes A new shape is recomputed as the value of the named shape. The meaning of this pair depends on the type of evolution.
-* The type of evolution: a term of the TNaming_Evolution enumeration:
-* PRIMITIVE – newly created topology, with no previous history
-* GENERATED – as usual, this evolution of a  named shape means, that the new shape is created from a low-level old shape ( a prism face from an edge, for example )
-* MODIFY – the new shape is a modified old shape
-* DELETE – the new shape is empty; the named shape with this evolution just indicates that the old shape topology is deleted from the model
-* SELECTED – a named shape with this evolution has no effect on the history of the topology; it is 
-used for the selected shapes that are placed to the separate label 
+* The type of evolution, which is a term of the *TNaming_Evolution* enumeration used for the selected shapes that are placed to the separate label: 
+	* PRIMITIVE – newly created topology, with no previous history;
+	* GENERATED – as usual, this evolution of a  named shape means, that the new shape is created from a low-level old shape ( a prism face from an edge, for example );
+	* MODIFY – the new shape is a modified old shape;
+	* DELETE – the new shape is empty; the named shape with this evolution just indicates that the old shape topology is deleted from the model;
+	* SELECTED – a named shape with this evolution has no effect on the history of the topology.
 
 Only pairs of shapes with equal evolution can be stored in one named shape. 
 
 @subsubsection occt_ocaf_5_2_2 Using naming resources
 
-The class TNaming_Builder allows you to create a named shape attribute. It has a label of a future attribute as an argument of the constructor. Respective methods are used for the evolution and setting of shape pairs. If for the same TNaming_Builder object a lot of pairs of shapes with the same evolution are given, then these pairs would be placed in the resulting named shape. After the creation of a new object of the TNaming_Builder class, an empty named shape is created at the given label. 
+The class *TNaming_Builder* allows you to create a named shape attribute. It has a label of a future attribute as an argument of the constructor. Respective methods are used for the evolution and setting of shape pairs. If for the same TNaming_Builder object a lot of pairs of shapes with the same evolution are given, then these pairs would be placed in the resulting named shape. After the creation of a new object of the TNaming_Builder class, an empty named shape is created at the given label. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 // a new empty named shape is created at "label" 
@@ -710,15 +749,14 @@ Handle(TNaming_NamedShape) ns = builder.NamedShape();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @subsubsection occt_ocaf_5_2_3 Reading the contents of a named shape attribute
 
-You can use TNaming_NamedShape class to get evolution of this named shape (method TNaming_NamedShape::Evolution()) and "value" of the named shape – compound of new shapes of all pairs of this named shape (method TNaming_NamedShape::Get()). 
+You can use the method <i>TNaming_NamedShape::Evolution()</i> to get the evolution of this named shape and the method <i>TNaming_NamedShape::Get()</i> to get a compound of new shapes of all pairs of this named shape.
   
 More detailed information about the contents of the named shape or about the modification history of a topology can be obtained with the following: 
-
-* TNaming_Tool provides a common high-level functionality for access to the named shapes contents:
-* GetShape(Handle(TNaming_NamedShape)) method returns a compound of new shapes of the given named shape
-* CurrentShape(Handle(TNaming_NamedShape)) method returns a compound of the shapes – last modifications ( latest versions ) of the shapes from the given named shape
-* NamedShape(TopoDS_Shape,TDF_Label) method returns a named shape, which contains a given shape as a new shape. Given label is any label from the data framework – it just gives access to it
-* TNaming_Iterator given access to the named shape hooks pairs.
+* *TNaming_Tool* provides a common high-level functionality for access to the named shapes contents:
+	* The method <i>GetShape(Handle(TNaming_NamedShape)) </i>  returns a compound of new shapes of the given named shape;
+	* The method <i>CurrentShape(Handle(TNaming_NamedShape))</i>  returns a compound of the shapes, which are latest versions of the shapes from the given named shape;
+	* The method <i>NamedShape(TopoDS_Shape,TDF_Label) </i> returns a named shape, which contains a given shape as a new shape. A given label is any label from the data framework – it just gives access to it.
+* *TNaming_Iterator* gives access to the named shape and hooks pairs.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 // create an iterator for a named shape 
@@ -739,7 +777,7 @@ iter.Next();
 
 @subsubsection occt_ocaf_5_2_4 Selection Mechanism
 
-One of user interfaces for topological naming resources is the TNaming_Selector class. You can use this class to: 
+One of user interfaces for topological naming resources is the *TNaming_Selector* class. You can use this class to: 
 
   * Store a selected shape on a label
   * Access the named shape
@@ -747,13 +785,13 @@ One of user interfaces for topological naming resources is the TNaming_Selector 
 
 Selector places a new named shape with evolution SELECTED to the given label. By the given context shape (main shape, which contains a selected sub-shape), its evolution and naming structure the selector creates a "name" of the selected shape – unique description how to find a selected topology. 
 
-After any modification of a context shape and updating of the corresponding naming structure, you must call the TNaming_Selector::Solve method. If the naming structure is right, then the selector automatically updates the selected shape in the corresponding named shape, else it fails. 
+After any modification of a context shape and updating of the corresponding naming structure, you must call the method *TNaming_Selector::Solve*. If the naming structure is correct, the selector automatically updates the selected shape in the corresponding named shape, else it fails. 
 
 @subsubsection occt_ocaf_5_2_5 Exploring shape evolution
 
-The class TNaming_Tool provides a toolkit to read current data contained in the attribute. 
+The class *TNaming_Tool* provides a toolkit to read current data contained in the attribute. 
 
-If you need to create a topological attribute for existing data, use the method NamedShape. 
+If you need to create a topological attribute for existing data, use the method *NamedShape*. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 class MyPkg_MyClass 
@@ -773,65 +811,62 @@ Standard_Boolean CafTest_MyClass::SameEdge (const Handle(CafTest_Line)& L1, cons
 
 @subsection occt_ocaf_6_1 Overview
 
-There are several ready-to-use attributes, which allow creating and modifying attributes for many basic data types. They are available in the packages TDataStd, TDataXtd and TDF. Each attribute belongs to one of four types: 
+Standard attributes are ready-to-use attributes, which allow creating and modifying attributes for many basic data types. They are available in the packages *TDataStd, TDataXtd* and *TDF*. Each attribute belongs to one of four types: 
 
-  * Geometric attributes
-  * General attributes
-  * Relationship attributes
-  * Auxiliary attributes
+  * Geometric attributes;
+  * General attributes;
+  * Relationship attributes;
+  * Auxiliary attributes.
 
 ### Geometric attributes
 
-
-  * Axis – simply identifies, that the concerned TNaming_NamedShape attribute with an axis shape inside belongs to the same label 
-  * Constraint – contains information about a constraint between geometries: used geometry attributes, type, value (if exists), plane (if exists), "is reversed", "is inverted" and "is verified" flags
-  * Geometry – simply identifies, that the concerned TNaming_NamedShape attribute with a specified-type geometry belongs to the same label 
-  * Plane – simply identifies, that the concerned TNaming_NamedShape attribute with a plane shape inside belongs to the same label 
-  * Point – simply identifies, that the concerned TNaming_NamedShape attribute with a  point shape inside belongs to the same label 
-  * Shape – simply identifies, that the concerned TNaming_NamedShape attribute belongs to the same label
-  * PatternStd  – identifies one of five available pattern models (linear, circular, rectangular, circular rectangular and mirror)
-  * Position – identifies the position in 3d global space
+  * **Axis** – simply identifies, that the concerned *TNaming_NamedShape* attribute with an axis shape inside belongs to the same label; 
+  * **Constraint** – contains information about a constraint between geometries: used geometry attributes, type, value (if exists), plane (if exists), "is reversed", "is inverted" and "is verified" flags;
+  * **Geometry** – simply identifies, that the concerned *TNaming_NamedShape* attribute with a specified-type geometry belongs to the same label; 
+  * **Plane** – simply identifies, that the concerned *TNaming_NamedShape* attribute with a plane shape inside belongs to the same label;
+  * **Point** – simply identifies, that the concerned *TNaming_NamedShape* attribute with a  point shape inside belongs to the same label;
+  * **Shape** – simply identifies, that the concerned *TNaming_NamedShape* attribute belongs to the same label;
+  * **PatternStd**  – identifies one of five available pattern models (linear, circular, rectangular, circular rectangular and mirror);
+  * **Position** – identifies the position in 3d global space.
 
 ### General attributes
 
-
-  * AsciiString – contains AsciiString value
-  * BooleanArray – contains an array of Boolean
-  * BooleanList – contains a list of Boolean
-  * ByteArray – contains an array of Byte (unsigned char) values
-  * Comment – contains a string – some comment for a given label (or attribute)
-  * Expression – contains an expression string and a list of used variables attributes
-  * ExtStringArray – contains an array of ExtendedString values
-  * ExtStringList – contains a list of ExtendedString values
-  * Integer – contains an integer value
-  * IntegerArray – contains an array of  integer values
-  * IntegerList – contains a list of integer values
-  * IntPackedMap – contains a packed map of integers
-  * Name – contains a string – some name of a given label (or attribute)
-  * NamedData – may contain up to 6 of the following named data sets (vocabularies): DataMapOfStringInteger, DataMapOfStringReal, DataMapOfStringString, DataMapOfStringByte, DataMapOfStringHArray1OfInteger, DataMapOfStringHArray1OfReal
-  * NoteBook – contains a NoteBook object attribute
-  * Real – contains a real value
-  * RealArray – contains an array of  real values
-  * RealList    – contains a list of real values
-  * Relation – contains a relation string and a list of used variables attributes
-  * Tick – defines a boolean attribute
-  * Variable – simply identifies, that a variable belongs to this label; contains the "is constraint" flag and a string of used units ("mm", "m"...)
-  * UAttribute – attribute with a user-defined GUID. As a rule, this attribute is used as a marker, which is independent of attributes at the same label (note, that attributes with the same GUIDs can not belong to the same label)
+  * **AsciiString** – contains AsciiString value;
+  * **BooleanArray** – contains an array of Boolean;
+  * **BooleanList** – contains a list of Boolean;
+  * **ByteArray** – contains an array of Byte (unsigned char) values;
+  * **Comment** – contains a string – some comment for a given label (or attribute);
+  * **Expression** – contains an expression string and a list of used variables attributes;
+  * **ExtStringArray** – contains an array of *ExtendedString* values;
+  * **ExtStringList** – contains a list of *ExtendedString* values;
+  * **Integer** – contains an integer value;
+  * **IntegerArray** – contains an array of integer values;
+  * **IntegerList** – contains a list of integer values;
+  * **IntPackedMap** – contains a packed map of integers;
+  * **Name** – contains a string – some name of a given label (or attribute);
+  * **NamedData** – may contain up to 6 of the following named data sets (vocabularies): *DataMapOfStringInteger, DataMapOfStringReal, DataMapOfStringString, DataMapOfStringByte, DataMapOfStringHArray1OfInteger* or *DataMapOfStringHArray1OfReal*;
+  * **NoteBook** – contains a *NoteBook* object attribute;
+  * **Real** – contains a real value;
+  * **RealArray** – contains an array of  real values;
+  * **RealList**    – contains a list of real values;
+  * **Relation** – contains a relation string and a list of used variables attributes;
+  * **Tick** – defines a boolean attribute;
+  * **Variable** – simply identifies, that a variable belongs to this label; contains the flag *is constraint* and a string of used units ("mm", "m"...);
+  * **UAttribute** – attribute with a user-defined GUID. As a rule, this attribute is used as a marker, which is independent of attributes at the same label (note, that attributes with the same GUIDs can not belong to the same label).
   
 ### Relationship attributes 
 
-
-  * Reference – contains reference to the label of its own data framework
-  * ReferenceArray – contains an array of references
-  * ReferenceList – contains a list of references
-  * TreeNode – this attribute allows to create an internal tree in the data framework; this tree consists of nodes with the specified tree ID; each node contains references to the father, previous brother, next brother, first child nodes and tree ID.
+  * **Reference** – contains reference to the label of its own data framework;
+  * **ReferenceArray** – contains an array of references;
+  * **ReferenceList** – contains a list of references;
+  * **TreeNode** – this attribute allows to create an internal tree in the data framework; this tree consists of nodes with the specified tree ID; each node contains references to the father, previous brother, next brother, first child nodes and tree ID.
 
 ### Auxiliary attributes
 
-  * Directory – hi-level tool attribute for sub-labels management
-  * TagSource – this attribute is used for creation of new children: it stores the tag of the last-created child of the label and gives access to the new child label creation functionality.
+  * **Directory** – high-level tool attribute for sub-labels management;
+  * **TagSource** – this attribute is used for creation of new children: it stores the tag of the last-created child of the label and gives access to the new child label creation functionality.
 
-All of these attributes inherit class TDF_Attribute, so, each attribute has its own GUID and standard methods for attribute creation, manipulation, getting access to the data framework. 
+All attributes inherit class *TDF_Attribute*, so, each attribute has its own GUID and standard methods for attribute creation, manipulation, getting access to the data framework. 
 
 
 @subsection occt_ocaf_6_2 Services common to all attributes
@@ -839,9 +874,15 @@ All of these attributes inherit class TDF_Attribute, so, each attribute has its 
 @subsubsection occt_ocaf_6_2_1 Accessing GUIDs
 
 To access the GUID of an attribute, you can use two methods: 
-
-  * Method *GetID* is the static method of a class. It returns the GUID of any attribute, which is an object of a specified class (for example, TDataStd_Integer returns the GUID of an integer attribute). Only two classes from the list of standard attributes do not support these methods: TDataStd_TreeNode and TDataStd_Uattribute, because the GUIDs of these attributes are variable.
+  * Method *GetID* is the static method of a class. It returns the GUID of any attribute, which is an object of a specified class (for example, *TDataStd_Integer* returns the GUID of an integer attribute). Only two classes from the list of standard attributes do not support these methods: *TDataStd_TreeNode* and *TDataStd_Uattribute*, because the GUIDs of these attributes are variable.
   * Method *ID* is the method of an object of an attribute class. It returns the GUID of this attribute. Absolutely all attributes have this method: only by this identifier you can discern the type of an attribute.
+  
+To find an attribute attached to a specific label, you use the GUID of the attribute type you are looking for. This information can be found using the method  <i> GetID</i> and the method <i> Find</i> for the label as follows:
+
+~~~~
+    Standard_GUID anID = MyAttributeClass::GetID();
+    Standard_Boolean HasAttribute = aLabel.Find(anID,anAttribute);
+~~~~
 
 @subsubsection occt_ocaf_6_2_2 Conventional Interface of Standard Attributes
 
@@ -855,15 +896,15 @@ It is usual to create standard named methods for the attributes:
 
 @subsection occt_ocaf_7_1 Overview
 
-Standard visualization attributes implement the Application Interactive Services (see Open CASCADE Technology Visualization User’s Guide) in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
+Standard visualization attributes implement the Application Interactive Services (see @ref occt_user_guides__visualization "Visualization User's Guide"). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
 
 @subsection occt_ocaf_7_2 Services provided
 
 @subsubsection occt_ocaf_7_2_1 Defining an interactive viewer attribute
 
-The class TPrsStd_AISViewer allows you to define an interactive viewer attribute. There may be only one such attribute per one data framework and it is always placed to the root label. So, it could be set or found by any label ("access label") of the data framework. Nevertheless the default architecture can be easily extended and the user can manage several Viewers per one framework by himself. 
+The class *TPrsStd_AISViewer* allows you to define an interactive viewer attribute. There may be only one such attribute per one data framework and it is always placed to the root label. So, it could be set or found by any label ("access label") of the data framework. Nevertheless the default architecture can be easily extended and the user can manage several Viewers per one framework by himself. 
 
-To initialize the AIS viewer as in the example below, use method Find. 
+To initialize the AIS viewer as in the example below, use method *Find*. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 // "access" is any label of the data framework 
@@ -872,13 +913,13 @@ Handle(TPrsStd_AISViewer) viewer = TPrsStd_AISViewer::Find(access)
 
 @subsection occt_ocaf_7_2_2 Defining a presentation attribute
 
-The class TPrsStd_AISPresentation allows you to define the visual presentation of document labels contents. In addition to various visual fields (color, material, transparency, "isDisplayed", etc.), this attribute contains its driver GUID. This GUID defines the functionality, which will update the presentation every time when needed. 
+The class *TPrsStd_AISPresentation* allows you to define the visual presentation of document labels contents. In addition to various visual fields (color, material, transparency, *isDisplayed*, etc.), this attribute contains its driver GUID. This GUID defines the functionality, which will update the presentation every time when needed. 
 
 @subsubsection occt_ocaf_7_2_3 Creating your own driver
 
 The abstract class TPrsStd_Driver allows you to define your own driver classes. Simply redefine the Update method in your new class, which will rebuild the presentation. 
 
-If your driver is placed to the driver table with the unique driver GUID, then every time the viewer updates presentations with a GUID identical to your driver’s GUID, the Update method of your driver for these presentations must be called: 
+If your driver is placed to the driver table with the unique driver GUID, then every time the viewer updates presentations with a GUID identical to your driver’s GUID, the *Update* method of your driver for these presentations must be called: 
 @image html /user_guides/ocaf/images/ocaf_image016.png
 @image latex /user_guides/ocaf/images/ocaf_image016.png
 
@@ -886,9 +927,9 @@ As usual, the GUID of a driver and the GUID of a displayed attribute are the sam
 
 @subsubsection occt_ocaf_7_2_4 Using a container for drivers
 
-You frequently need a container for different presentation drivers. The class TPrsStd_DriverTable provides this service. You can add a driver to the table, see if one is successfully added, and fill it with standard drivers. 
+You frequently need a container for different presentation drivers. The class *TPrsStd_DriverTable* provides this service. You can add a driver to the table, see if one is successfully added, and fill it with standard drivers. 
 
-To fill a driver table with standard drivers, first initialize the AIS viewer as in the example above, and then pass the return value of the method InitStandardDrivers to the driver table returned by the method Get. Then attach a TNaming_NamedShape to a label and set the named shape in the presentation attribute using the method Set. Then attach the presentation attribute to the named shape attribute, and the AIS_InteractiveObject, which the presentation attribute contains, will initialize its drivers for the named shape. This can be seen in the example below. 
+To fill a driver table with standard drivers, first initialize the AIS viewer as in the example above, and then pass the return value of the method *InitStandardDrivers* to the driver table returned by the method *Get*. Then attach a *TNaming_NamedShape* to a label and set the named shape in the presentation attribute using the method *Set*. Then attach the presentation attribute to the named shape attribute, and the *AIS_InteractiveObject*, which the presentation attribute contains, will initialize its drivers for the named shape. This can be seen in the example below. 
 
 **Example** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -906,21 +947,23 @@ When you edit any application model, you have to regenerate the model by propaga
 
 Take, for example, the case of a modeling sequence made up of a box with the application of a fillet on one of its edges. If you change the height of the box, the fillet will need to be regenerated as well. 
 
+See the white paper @ref occt_user_guides__ocaf_functionmechanism_wp "Application Framework Function Mechanism" for more information.
+ 
 @subsection occt_ocaf_8_1 Finding functions, their owners and roots
 
-The class TFunction_Function is an attribute, which stores a link to a function driver in the data framework. In the static table TFunction_DriverTable correspondence links between function attributes and drivers are stored. 
+The class *TFunction_Function* is an attribute, which stores a link to a function driver in the data framework. In the static table *TFunction_DriverTable* correspondence links between function attributes and drivers are stored. 
 
-You can write your function attribute, a driver for such attribute (which updates the function result in accordance to a given map of changed labels), and set your driver with the GUID to the driver table. 
+You can write your function attribute, a driver for such attribute, which updates the function result in accordance to a given map of changed labels, and set your driver with the GUID to the driver table. 
 
-Then the solver algorithm of a data model can find the Function attribute on a corresponding label and call the Execute driver method to update the result of the function. 
+Then the solver algorithm of a data model can find the *Function* attribute on a corresponding label and call the *Execute* driver method to update the result of the function. 
 
 @subsection occt_ocaf_8_2 Storing and accessing information about function status
 
-For updating algorithm optimization, each function driver has access to the TFunction_Logbook object that is a container for a set of touched, impacted and valid labels. Using this object a driver gets to know which arguments of the function were modified. 
+For updating algorithm optimization, each function driver has access to the *TFunction_Logbook* object that is a container for a set of touched, impacted and valid labels. Using this object a driver gets to know which arguments of the function were modified. 
 
 @subsection occt_ocaf_8_3 Propagating modifications
 
-An application must implement its functions, function drivers and the common solver for parametric model creation. For example, check the following model (see the following illustration): 
+An application must implement its functions, function drivers and the common solver for parametric model creation. For example, check the following model: 
 
 @image html /user_guides/ocaf/images/ocaf_image017.png
 @image latex /user_guides/ocaf/images/ocaf_image017.png
@@ -948,29 +991,29 @@ Writing and reading XML files in OCCT is provided by LDOM package, which constit
 of XML OCAF persistence, which is the optional component provided on top of Open CASCADE Technology.
 
 The Light DOM (LDOM) package contains classes maintaining a data structure whose main principles conform to W3C DOM Level 1 Recommendations. The purpose of these classes as required by XML OCAF persistence schema is to: 
-* Maintain a tree structure of objects in memory representing the XML document. The root of the structure is an object of the LDOM_Document type. This object contains all the data corresponding to a given XML document and contains one object of the LDOM_Element type named "document element". The document element contains other LDOM_Element objects forming a tree. Other types of nodes (LDOM_Attr, LDOM_Text, LDOM_Comment, LDOM_CDATASection) represent the corresponding XML types and serve as branches of the tree of elements. 
-* Provide class LDOM_Parser to read XML files and convert them to LDOM_Document objects.
-* Provide class LDOM_XmlWriter to convert LDOM_Document to a character stream in XML format and store it in file. 
+* Maintain a tree structure of objects in memory representing the XML document. The root of the structure is an object of the *LDOM_Document* type. This object contains all the data corresponding to a given XML document and contains one object of the *LDOM_Element* type named "document element". The document element contains other *LDOM_Element* objects forming a tree. Other types of nodes: *LDOM_Attr, LDOM_Text, LDOM_Comment* and *LDOM_CDATASection* - represent the corresponding XML types and serve as branches of the tree of elements. 
+* Provide class *LDOM_Parser* to read XML files and convert them to *LDOM_Document* objects.
+* Provide class *LDOM_XmlWriter* to convert *LDOM_Document* to a character stream in XML format and store it in file. 
 
 This package covers the functionality provided by numerous products known as "DOM parsers". Unlike most of them, LDOM was specifically developed to meet the following requirements: 
 * To minimize the virtual memory allocated by DOM data structures. In average, the amount of memory of LDOM is the same as the XML file size (UTF-8). 
 * To minimize the time required for parsing and formatting XML, as well as for access to DOM data structures. 
 
 Both these requirements are important when XML files are processed by applications if these files are relatively large (occupying megabytes and even hundreds of megabytes). To meet the requirements, some limitations were imposed on the DOM Level 1 specification; these limitations are insignificant in applications like OCAF. Some of these limitations can be overridden in the course of future developments. The main limitations are:
-* No Unicode support as well as various other encodings; only ASCII strings are used in DOM/XML. Note: There is a data type TCollection_ExtendedString for wide character data. This type is supported by LDOM_String as a sequence of numbers. 
-* Some superfluous methods are deleted: getPreviousSibling, getParentNode, etc. 
+* No Unicode support as well as various other encodings; only ASCII strings are used in DOM/XML. Note: There is a data type *TCollection_ExtendedString* for wide character data. This type is supported by *LDOM_String* as a sequence of numbers. 
+* Some superfluous methods are deleted: *getPreviousSibling, getParentNode,* etc. 
 * No resolution of XML Entities of any kind 
 * No support for DTD: the parser just checks for observance of general XML rules and never validates documents. 
-* Only 5 available types of DOM nodes: LDOM_Element, LDOM_Attr, LDOM_Text, LDOM_Comment, LDOM_CDATASection. 
+* Only 5 available types of DOM nodes: *LDOM_Element, LDOM_Attr, LDOM_Text, LDOM_Comment* and *LDOM_CDATASection*. 
 * No support of Namespaces; prefixed names are used instead of qualified names. 
-* No support of the interface DOMException (no exception when attempting to remove a non-existing node). 
+* No support of the interface *DOMException* (no exception when attempting to remove a non-existing node). 
 
 LDOM is dependent on Kernel OCCT classes only. Therefore, it can be used outside OCAF persistence in various algorithms where DOM/XML support may be required. 
 
 @subsection occt_ocaf_9_1 Document Drivers
 
 The drivers for document storage and retrieval  manage  conversion between a transient OCAF
-Document in memory and its persistent reflection in a container (disk, memory, network ...). For XML Persistence, they are defined in the package XmlDrivers. 
+Document in memory and its persistent reflection in a container (disk, memory, network). For XML Persistence, they are defined in the package XmlDrivers. 
 
 The main methods (entry points) of these drivers are: 
 * *Write()* - for a storage driver; 
@@ -1089,15 +1132,14 @@ Both the XML format and the XML OCAF persistence code are extensible in the sens
 * **Child** - a label created from another label, which by definition, is the father label. 
 * **Compound document** - a set of interdependent documents, linked to each other by means of external references. These references provide the associativity of data. 
 * **Data framework** - a tree-like data structure which in OCAF, is a tree of labels with data attached to them in the form of attributes. This tree of labels is accessible through the services of the *TDocStd_Document* class. 
-* *Document* - a container for a data framework which grants access to the data, and is, in its turn, contained  by an application. A document also allows you to: 
+* **Document** - a container for a data framework which grants access to the data, and is, in its turn, contained  by an application. A document also allows you to: 
 	* Manage modifications, providing Undo and Redo functions 
 	* Manage command transactions 
 	* Update external links 
 	* Manage save and restore options 
 	* Store the names of software extensions. 
 * **Driver** - an abstract class, which defines the communications protocol with a system. 
-* **Entry** - an ASCII character string containing the tag list of a label. 
-
+* **Entry** - an ASCII character string containing the tag list of a label. For example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 0:3:24:7:2:7 
@@ -1113,7 +1155,7 @@ To store these references properly, a label must also contain an external link a
 
 In C++, the application behavior is implemented in virtual functions redefined in these derived classes. This is known as overriding. 
 
-* **GUID** - Global Universal ID. A string of 37 characters intended to uniquely identify an object. 
+* **GUID** - Global Universal ID. A string of 37 characters intended to uniquely identify an object. For example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 2a96b602-ec8b-11d0-bee7-080009dc3333 
