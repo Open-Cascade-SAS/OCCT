@@ -1,0 +1,37 @@
+puts "========="
+puts "OCC25631"
+puts "========="
+puts ""
+#####################################################################
+## Bounding box is too big for the face.
+#####################################################################
+
+restore [locate_data_file bug25631_fbx.brep] sh1
+
+set rr [bounding sh1]
+regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $rr full v1_x v1_y v1_z v2_x v2_y v2_z
+
+set tol_abs 1.0e-4
+set tol_rel 0.0001
+
+set expected_v1_x 102.04999989999993
+checkreal "v1_x" ${v1_x} ${expected_v1_x} ${tol_abs} ${tol_rel}
+
+set expected_v1_y -12.576503364721431
+checkreal "v1_y" ${v1_y} ${expected_v1_y} ${tol_abs} ${tol_rel}
+
+set expected_v1_z -12.267407382031644
+checkreal "v1_z" ${v1_z} ${expected_v1_z} ${tol_abs} ${tol_rel}
+
+set expected_v2_x 145.65000009999983
+checkreal "v2_x" ${v2_x} ${expected_v2_x} ${tol_abs} ${tol_rel}
+
+set expected_v2_y 1.0883692081680807
+checkreal "v2_y" ${v2_y} ${expected_v2_y} ${tol_abs} ${tol_rel}
+
+set expected_v2_z 1.4146362604116396
+checkreal "v2_z" ${v2_z} ${expected_v2_z} ${tol_abs} ${tol_rel}
+
+smallview
+fit
+set only_screen_axo 1
