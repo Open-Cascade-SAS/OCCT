@@ -39,27 +39,31 @@ is
     Create returns ReShape from BRepTools;
     	---Purpose: Returns an empty Reshape
 
-    Clear (me: mutable);
+    Clear (me: mutable) is virtual;
     	---Purpose: Clears all substitutions requests
 
     Remove (me: mutable; shape: Shape from TopoDS;
-    	    oriented: Boolean = Standard_False);
+    	    oriented: Boolean = Standard_False)
+	is virtual;
     	---Purpose: Sets a request to Remove a Shape
     	--          If <oriented> is True, only for a shape with the SAME
     	--          orientation. Else, whatever the orientation
 
     Replace (me: mutable; shape, newshape: Shape from TopoDS;
-    	     oriented: Boolean = Standard_False);
+    	     oriented: Boolean = Standard_False)
+	is virtual;
     	---Purpose: Sets a request to Replace a Shape by a new one
     	--          If <oriented> is True, only if the orientation is the same
     	--          Else, whatever the orientation, and the new shape takes the
     	--          same orientation as <newshape> if the replaced one has the
     	--          same as <shape>, else it is reversed
 
-    IsRecorded (me; shape: Shape from TopoDS) returns Boolean;
+    IsRecorded (me; shape: Shape from TopoDS)
+	returns Boolean is virtual;
 	---Purpose: Tells if a shape is recorded for Replace/Remove
 
-    Value (me; shape: Shape from TopoDS) returns Shape from TopoDS;
+    Value (me; shape: Shape from TopoDS)
+	returns Shape from TopoDS is virtual;
     	---Purpose: Returns the new value for an individual shape
     	--          If not recorded, returns the original shape itself
     	--          If to be Removed, returns a Null Shape
@@ -107,12 +111,14 @@ is
 	--          If incompatible shape type is encountered, it is ignored
 	--          and flag FAIL1 is set in Status.
     
-    ModeConsiderLocation(me: mutable) returns Boolean;
+    ModeConsiderLocation(me: mutable)
+	returns Boolean is virtual;
     ---C++: return &
     ---Purpose:Returns (modifiable) the flag which defines whether Location of shape take into account
     --         during replacing shapes.
 
-    ModeConsiderOrientation(me: mutable) returns Boolean;
+    ModeConsiderOrientation(me: mutable)
+	returns Boolean is virtual;
     ---C++: return &
     ---Purpose:Returns (modifiable) the flag which defines whether Orientation of shape take into account
     --         during replacing shapes.

@@ -81,7 +81,7 @@ is
 	--          the map directly for the shape, if True and status > 0 then
 	--          recursively searches for the last status and new shape.
 
-    Status (me; status: Status from ShapeExtend) returns Boolean;
+    Status (me; status: Status from ShapeExtend) returns Boolean is virtual;
     	---Purpose: Queries the status of last call to Apply(shape,enum)
     	--          OK   : no (sub)shapes replaced or removed
     	--          DONE1: source (starting) shape replaced
