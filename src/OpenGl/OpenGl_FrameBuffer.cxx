@@ -20,22 +20,6 @@
 IMPLEMENT_STANDARD_HANDLE (OpenGl_FrameBuffer, OpenGl_Resource)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_Resource)
 
-static inline bool isOddNumber (const GLsizei theNumber)
-{
-  return theNumber & 0x01;
-}
-
-static inline GLsizei getEvenNumber (const GLsizei theNumber)
-{
-  return isOddNumber (theNumber) ? (theNumber + 1) : theNumber;
-}
-
-//! Notice - 0 is not power of two here
-static inline bool isPowerOfTwo (const GLsizei theNumber)
-{
-  return !(theNumber & (theNumber - 1));
-}
-
 // =======================================================================
 // function : OpenGl_FrameBuffer
 // purpose  :
@@ -174,6 +158,24 @@ void OpenGl_FrameBuffer::ChangeViewport (const GLsizei theVPSizeX,
 void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
+}
+
+// =======================================================================
+// function : BindDrawBuffer
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::BindDrawBuffer (const Handle(OpenGl_Context)& theGlCtx)
+{
+  theGlCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myGlFBufferId);
+}
+
+// =======================================================================
+// function : BindReadBuffer
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::BindReadBuffer (const Handle(OpenGl_Context)& theGlCtx)
+{
+  theGlCtx->arbFBO->glBindFramebuffer (GL_READ_FRAMEBUFFER, myGlFBufferId);
 }
 
 // =======================================================================

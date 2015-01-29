@@ -155,6 +155,10 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     return Standard_False;
   }
 
+  TCollection_AsciiString aHeader = !myProxy.IsNull() && !myProxy->Header().IsEmpty()
+                                  ? (myProxy->Header() + "\n")
+                                  : TCollection_AsciiString();
+
   TCollection_AsciiString aDeclarations;
   aDeclFile.Open (OSD_ReadOnly, OSD_Protection());
   aDeclFile.Read (aDeclarations, (int)aDeclFile.Size());
@@ -216,7 +220,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     {
       case Graphic3d_TOS_VERTEX:
       {
-        aSource = TCollection_AsciiString ("#define VERTEX_SHADER\n") + aSource;
+        aSource = aHeader + TCollection_AsciiString ("#define VERTEX_SHADER\n") + aSource;
         break;
       }
       case Graphic3d_TOS_FRAGMENT:
@@ -225,7 +229,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
         TCollection_AsciiString aPrefix (theCtx->hasHighp
                                        ? "precision highp float;\n"
                                        : "precision mediump float;\n");
-        aSource = aPrefix + aSource;
+        aSource = aHeader + aPrefix + aSource;
       #endif
         break;
       }
@@ -644,7 +648,7 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttributeName (const Handle(OpenGl_Con
   theCtx->core20fwd->glBindAttribLocation (myProgramID, theIndex, theName);
   return Standard_True;
 }
-  
+
 // =======================================================================
 // function : SetAttribute
 // purpose  :

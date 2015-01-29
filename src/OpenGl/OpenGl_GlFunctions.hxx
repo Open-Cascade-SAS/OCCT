@@ -95,6 +95,9 @@
   #define GL_UNSIGNED_INT_24_8              0x84FA
   #define GL_DEPTH24_STENCIL8               0x88F0
 
+  #define GL_READ_FRAMEBUFFER               0x8CA8
+  #define GL_DRAW_FRAMEBUFFER               0x8CA9
+
   // GL_EXT_texture_filter_anisotropic
   #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
   #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
@@ -687,6 +690,11 @@ public: //! @name OpenGL ES 2.0
   {
     ::glVertexAttribPointer (index, size, type, normalized, stride, pointer);
   }
+
+public: //! @name OpenGL ES 3.0
+
+  typedef void (*glBlitFramebuffer_t)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+  glBlitFramebuffer_t glBlitFramebuffer;
 
 #else // OpenGL ES vs. desktop
 

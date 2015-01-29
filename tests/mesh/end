@@ -190,6 +190,7 @@ if { [info exists test_image ] == 0 } {
 }
 
 if { [string compare $command "shading"] == 0 } {
+    vglinfo
     vdump $imagedir/${test_image}.png
 } else {
     isos 0

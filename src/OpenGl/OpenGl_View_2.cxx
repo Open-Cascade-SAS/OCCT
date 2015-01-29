@@ -306,8 +306,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     myBVHSelector.SetViewVolume (myCamera);
   }
 
-  const Handle(OpenGl_ShaderManager) aManager   = aContext->ShaderManager();
-  const Standard_Boolean             isSameView = aManager->IsSameView (this); // force camera state update when needed
+  const Handle(OpenGl_ShaderManager)& aManager   = aContext->ShaderManager();
+  const Standard_Boolean              isSameView = aManager->IsSameView (this); // force camera state update when needed
   if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
   {
     aManager->UpdateLightSourceStateTo (&myLights);

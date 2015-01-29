@@ -92,8 +92,14 @@ public:
   Standard_EXPORT void ChangeViewport (const GLsizei theVPSizeX,
                                        const GLsizei theVPSizeY);
 
-  //! Bind frame buffer (to render into the texture).
+  //! Bind frame buffer for drawing and reading (to render into the texture).
   Standard_EXPORT virtual void BindBuffer (const Handle(OpenGl_Context)& theGlCtx);
+
+  //! Bind frame buffer for drawing GL_DRAW_FRAMEBUFFER (to render into the texture).
+  Standard_EXPORT virtual void BindDrawBuffer (const Handle(OpenGl_Context)& theGlCtx);
+
+  //! Bind frame buffer for reading GL_READ_FRAMEBUFFER
+  Standard_EXPORT virtual void BindReadBuffer (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Unbind frame buffer.
   Standard_EXPORT virtual void UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx);

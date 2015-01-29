@@ -61,6 +61,18 @@ public:
   //! Returns unique ID used to manage resource in graphic driver.
   const TCollection_AsciiString& GetId() const { return myID; }
 
+  //! Returns GLSL header (version code and extensions).
+  const TCollection_AsciiString& Header() const { return myHeader; }
+
+  //! Setup GLSL header containing language version code and used extensions.
+  //! Will be prepended to the very beginning of the source code.
+  //! Example:
+  //! @code
+  //!   #version 300 es
+  //!   #extension GL_ARB_bindless_texture : require
+  //! @endcode
+  void SetHeader (const TCollection_AsciiString& theHeader) { myHeader = theHeader; }
+
   //! Attaches shader object to the program object.
   Standard_EXPORT Standard_Boolean AttachShader (const Handle(Graphic3d_ShaderObject)& theShader);
 
@@ -96,6 +108,7 @@ private:
   TCollection_AsciiString      myID;            //!< The unique identifier of program object.
   Graphic3d_ShaderObjectList   myShaderObjects; //!< the list of attached shader objects.
   Graphic3d_ShaderVariableList myVariables;     //!< the list of custom uniform variables.
+  TCollection_AsciiString      myHeader;        //!< GLSL header with version code and used extensions
 
 };
 

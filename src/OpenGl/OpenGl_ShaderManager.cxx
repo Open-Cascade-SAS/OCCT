@@ -234,6 +234,7 @@ void OpenGl_ShaderManager::clear()
   myFlatPrograms = OpenGl_SetOfShaderPrograms();
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
+  myBlitProgram.Nullify();
   switchLightPrograms();
 }
 
@@ -1027,6 +1028,69 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
     myFontProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return Standard_False;
   }
+  return Standard_True;
+}
+
+// =======================================================================
+// function : prepareStdProgramFboBlit
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
+{
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  TCollection_AsciiString aSrcVert =
+      EOL"THE_SHADER_OUT vec2 TexCoord;"
+      EOL"void main()"
+      EOL"{"
+      EOL"  TexCoord    = occVertex.zw;"
+      EOL"  gl_Position = vec4(occVertex.x, occVertex.y, 0.0, 1.0);"
+      EOL"}";
+
+  TCollection_AsciiString aSrcFrag =
+      EOL"uniform sampler2D uColorSampler;"
+      EOL"uniform sampler2D uDepthSampler;"
+      EOL
+      EOL"THE_SHADER_IN vec2 TexCoord;"
+      EOL
+      EOL"void main()"
+      EOL"{"
+      EOL"  gl_FragDepth = occTexture2D (uDepthSampler, TexCoord).r;"
+      EOL"  occFragColor = occTexture2D (uColorSampler, TexCoord);"
+      EOL"}";
+
+#if defined(GL_ES_VERSION_2_0)
+  if (myContext->IsGlGreaterEqual (3, 0))
+  {
+    aProgramSrc->SetHeader ("#version 300 es");
+  }
+  else
+  {
+    // there is no way to draw into depth buffer
+    aSrcFrag =
+      EOL"uniform sampler2D uColorSampler;"
+      EOL
+      EOL"THE_SHADER_IN vec2 TexCoord;"
+      EOL
+      EOL"void main()"
+      EOL"{"
+      EOL"  occFragColor = occTexture2D (uColorSampler, TexCoord);"
+      EOL"}";
+  }
+#endif
+
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, myBlitProgram))
+  {
+    myBlitProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return Standard_False;
+  }
+
+  myContext->BindProgram (myBlitProgram);
+  myBlitProgram->SetSampler (myContext, "uColorSampler", 0);
+  myBlitProgram->SetSampler (myContext, "uDepthSampler", 1);
+  myContext->BindProgram (NULL);
   return Standard_True;
 }
 

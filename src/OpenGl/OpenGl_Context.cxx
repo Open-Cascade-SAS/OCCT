@@ -95,6 +95,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   arbIns (NULL),
   arbDbg (NULL),
   arbFBO (NULL),
+  arbFBOBlit (NULL),
   extGS  (NULL),
   extBgra(Standard_False),
   extAnis(Standard_False),
@@ -877,6 +878,7 @@ void OpenGl_Context::init()
   arbIns     = NULL;
   arbDbg     = NULL;
   arbFBO     = NULL;
+  arbFBOBlit = NULL;
   extGS      = NULL;
 
 #if defined(GL_ES_VERSION_2_0)
@@ -902,7 +904,12 @@ void OpenGl_Context::init()
     core20    = (OpenGl_GlCore20*    )(&(*myFuncs));
     core20fwd = (OpenGl_GlCore20Fwd* )(&(*myFuncs));
     core15fwd = (OpenGl_GlCore15Fwd* )(&(*myFuncs));
-    arbFBO    = (OpenGl_ArbFBO* )(&(*myFuncs));
+    arbFBO    = (OpenGl_ArbFBO*      )(&(*myFuncs));
+  }
+  if (IsGlGreaterEqual (3, 0)
+   && FindProc ("glBlitFramebuffer", myFuncs->glBlitFramebuffer))
+  {
+    arbFBOBlit = (OpenGl_ArbFBOBlit* )(&(*myFuncs));
   }
 
   hasHighp = CheckExtension ("OES_fragment_precision_high");
@@ -1762,7 +1769,8 @@ void OpenGl_Context::init()
   // initialize FBO extension (ARB)
   if (hasFBO)
   {
-    arbFBO = (OpenGl_ArbFBO* )(&(*myFuncs));
+    arbFBO     = (OpenGl_ArbFBO*     )(&(*myFuncs));
+    arbFBOBlit = (OpenGl_ArbFBOBlit* )(&(*myFuncs));
     extPDS = Standard_True; // extension for EXT, but part of ARB
   }
 

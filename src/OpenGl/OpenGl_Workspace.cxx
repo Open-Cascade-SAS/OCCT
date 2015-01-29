@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_GlCore15.hxx>
+#include <OpenGl_ArbFBO.hxx>
 
 #include <InterfaceGraphic.hxx>
 
@@ -26,6 +27,7 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Sampler.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Utils.hxx>
 #include <OpenGl_View.hxx>
@@ -179,6 +181,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   PolygonOffset_applied (THE_DEFAULT_POFFSET)
 {
   myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+  myResultFBO = new OpenGl_FrameBuffer();
 
   if (!myGlContext->GetResource ("OpenGl_LineAttributes", myLineAttribs))
   {
@@ -232,6 +235,16 @@ OpenGl_Workspace::~OpenGl_Workspace()
   {
     myLineAttribs.Nullify();
     myGlContext->ReleaseResource ("OpenGl_LineAttributes", Standard_True);
+  }
+
+  if (!myResultFBO.IsNull())
+  {
+    myResultFBO->Release (myGlContext.operator->());
+    myResultFBO.Nullify();
+  }
+  if (myFullScreenQuad.IsValid())
+  {
+    myFullScreenQuad.Release (myGlContext.operator->());
   }
 
   ReleaseRaytraceResources();
@@ -655,6 +668,22 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     aGlCtx->core11fwd->glViewport (0, 0, myWidth, myHeight);
   }
 
+  Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
+  Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
+
+  if (myResultFBO->GetVPSizeX() != aSizeX
+   || myResultFBO->GetVPSizeY() != aSizeY)
+  {
+    myResultFBO->Init (aGlCtx, aSizeX, aSizeY);
+  }
+  if (myResultFBO->IsValid())
+  {
+    myResultFBO->SetupViewport (aGlCtx);
+  }
+
+  const Standard_Boolean isImmediate = myView->HasImmediateStructures()
+                                    || myResultFBO->IsValid();
+
   myToRedrawGL = Standard_True;
   if (theCView.RenderParams.Method == Graphic3d_RM_RAYTRACING
    && myComputeInitStatus != OpenGl_RT_FAIL)
@@ -667,9 +696,6 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       Handle(OpenGl_RenderFilter) aRenderFilter = GetRenderFilter();
       myRaytraceFilter->SetPrevRenderFilter (aRenderFilter);
       SetRenderFilter (myRaytraceFilter);
-
-      Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
-      Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
 
       if (myOpenGlFBO.IsNull())
       {
@@ -690,13 +716,13 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       redraw1 (theCView, anEmptyCLayer, anEmptyCLayer, 0);
       myOpenGlFBO->UnbindBuffer (aGlCtx);
 
-      const Standard_Boolean isImmediate = myView->HasImmediateStructures();
       Raytrace (theCView, aSizeX, aSizeY, isImmediate ? 0 : toSwap,
-                theCOverLayer, theCUnderLayer, aFrameBuffer);
+                theCOverLayer, theCUnderLayer,
+                myResultFBO->IsValid() ? myResultFBO.operator->() : aFrameBuffer);
 
       if (isImmediate)
       {
-        RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True);
+        RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True, aFrameBuffer);
       }
 
       SetRenderFilter (aRenderFilter);
@@ -708,16 +734,19 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   if (myToRedrawGL)
   {
     // draw entire frame using normal OpenGL pipeline
-    if (aFrameBuffer != NULL)
+    if (myResultFBO->IsValid())
+    {
+      myResultFBO->BindBuffer (aGlCtx);
+    }
+    else if (aFrameBuffer != NULL)
     {
       aFrameBuffer->BindBuffer (aGlCtx);
     }
 
-    const Standard_Boolean isImmediate = myView->HasImmediateStructures();
     redraw1 (theCView, theCUnderLayer, theCOverLayer, isImmediate ? 0 : toSwap);
     if (isImmediate)
     {
-      RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True);
+      RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True, aFrameBuffer);
     }
 
     theCView.WasRedrawnGL = Standard_True;
@@ -902,7 +931,8 @@ void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
 void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
                                         const Aspect_CLayer2d& theCUnderLayer,
                                         const Aspect_CLayer2d& theCOverLayer,
-                                        const Standard_Boolean theToForce)
+                                        const Standard_Boolean theToForce,
+                                        OpenGl_FrameBuffer*    theTargetFBO)
 {
   if (!Activate())
   {
@@ -913,7 +943,8 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
 #if !defined(GL_ES_VERSION_2_0)
   glGetBooleanv (GL_DOUBLEBUFFER, &isDoubleBuffer);
 #endif
-  if (!myView->HasImmediateStructures())
+  if (!myView->HasImmediateStructures()
+   && !myResultFBO->IsValid())
   {
     if (theToForce
      || !myIsImmediateDrawn)
@@ -935,7 +966,94 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     return;
   }
 
-  if (isDoubleBuffer && myTransientDrawToFront)
+  if (myResultFBO->IsValid()
+   && myGlContext->IsRender())
+  {
+    if (!myBackBufferRestored)
+    {
+      Redraw (theCView, theCUnderLayer, theCOverLayer);
+      return;
+    }
+
+    // clear destination before blitting
+    if (theTargetFBO != NULL)
+    {
+      theTargetFBO->BindBuffer (myGlContext);
+    }
+    else
+    {
+      myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+    }
+  #if !defined(GL_ES_VERSION_2_0)
+    myGlContext->core20fwd->glClearDepth  (1.0);
+  #else
+    myGlContext->core20fwd->glClearDepthf (1.0f);
+  #endif
+    myGlContext->core20fwd->glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+  /*#if !defined(GL_ES_VERSION_2_0)
+    if (myGlContext->arbFBOBlit != NULL)
+    {
+      myResultFBO->BindReadBuffer (myGlContext);
+      if (theTargetFBO != NULL)
+      {
+        theTargetFBO->BindDrawBuffer (myGlContext);
+      }
+      else
+      {
+        myGlContext->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+      }
+      // we don't copy stencil buffer here... does it matter for performance?
+      myGlContext->arbFBOBlit->glBlitFramebuffer (0, 0, myResultFBO->GetVPSizeX(), myResultFBO->GetVPSizeY(),
+                                                  0, 0, myResultFBO->GetVPSizeX(), myResultFBO->GetVPSizeY(),
+                                                  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+      if (theTargetFBO != NULL)
+      {
+        theTargetFBO->BindBuffer (myGlContext);
+      }
+      else
+      {
+        myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+      }
+    }
+    else
+  #endif*/
+    {
+      myGlContext->core20fwd->glDepthFunc (GL_ALWAYS);
+      myGlContext->core20fwd->glDepthMask (GL_TRUE);
+      myGlContext->core20fwd->glEnable (GL_DEPTH_TEST);
+
+      DisableTexture();
+      if (!myFullScreenQuad.IsValid())
+      {
+        OpenGl_Vec4 aQuad[4] =
+        {
+          OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 0.0f),
+          OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 1.0f),
+          OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 0.0f),
+          OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 1.0f)
+        };
+        myFullScreenQuad.Init (myGlContext, 4, 4, aQuad[0].GetData());
+      }
+
+      const Handle(OpenGl_ShaderManager)& aManager = myGlContext->ShaderManager();
+      if (myFullScreenQuad.IsValid()
+       && aManager->BindFboBlitProgram())
+      {
+        myResultFBO->ColorTexture()       ->Bind   (myGlContext, GL_TEXTURE0 + 0);
+        myResultFBO->DepthStencilTexture()->Bind   (myGlContext, GL_TEXTURE0 + 1);
+        myFullScreenQuad.BindVertexAttrib (myGlContext, 0);
+
+        myGlContext->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+        myFullScreenQuad.UnbindVertexAttrib (myGlContext, 0);
+        myResultFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
+        myResultFBO->ColorTexture()       ->Unbind (myGlContext, GL_TEXTURE0 + 0);
+      }
+    }
+  }
+  else if (isDoubleBuffer && myTransientDrawToFront)
   {
     if (!myBackBufferRestored)
     {
@@ -994,7 +1112,16 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     aStructure->Render (aWS);
   }
 
-  if (isDoubleBuffer && myTransientDrawToFront)
+  if (myResultFBO->IsValid())
+  {
+    if (theTargetFBO == NULL
+    &&  myGlContext->IsRender()
+    && !myGlContext->caps->buffersNoSwap)
+    {
+      myGlContext->SwapBuffers();
+    }
+  }
+  else if (isDoubleBuffer && myTransientDrawToFront)
   {
     glFlush();
     MakeBackBufCurrent();

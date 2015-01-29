@@ -145,6 +145,17 @@ public:
     return bindProgramWithState (myFontProgram, theAspect);
   }
 
+  //! Bind program for FBO blit operation.
+  Standard_Boolean BindFboBlitProgram()
+  {
+    if (myBlitProgram.IsNull())
+    {
+      prepareStdProgramFboBlit();
+    }
+    return !myBlitProgram.IsNull()
+         && myContext->BindProgram (myBlitProgram);
+  }
+
 public:
 
   //! Returns current state of OCCT light sources.
@@ -292,6 +303,9 @@ protected:
   //! Prepare standard GLSL program for textured font.
   Standard_EXPORT Standard_Boolean prepareStdProgramFont();
 
+  //! Prepare standard GLSL program for FBO blit operation.
+  Standard_EXPORT Standard_Boolean prepareStdProgramFboBlit();
+
   //! Prepare standard GLSL program without lighting.
   Standard_EXPORT Standard_Boolean prepareStdProgramFlat (Handle(OpenGl_ShaderProgram)& theProgram,
                                                           const Standard_Integer        theBits);
@@ -331,6 +345,7 @@ protected:
   Handle(OpenGl_SetOfShaderPrograms) myLightPrograms;      //!< pointer to active lighting programs matrix
   OpenGl_SetOfShaderPrograms         myFlatPrograms;       //!< programs matrix without  lighting
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
+  Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on shading model and lights configuration
 
   OpenGl_Context*                    myContext;            //!< OpenGL context

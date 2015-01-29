@@ -18,12 +18,31 @@
 #define THE_MAX_LIGHTS      8
 #define THE_MAX_CLIP_PLANES 8
 
+// compatibility macros
+#if (__VERSION__ >= 130)
+  #define THE_ATTRIBUTE  in
+  #define THE_SHADER_IN  in
+  #define THE_SHADER_OUT out
+  #define THE_OUT        out
+  #define occTexture2D   texture
+#else
+  #define THE_ATTRIBUTE  attribute
+  #define THE_SHADER_IN  varying
+  #define THE_SHADER_OUT varying
+  #define THE_OUT
+  #define occTexture2D   texture2D
+#endif
+
 // Vertex attributes
 #ifdef VERTEX_SHADER
-  attribute vec4 occVertex;
-  attribute vec3 occNormal;
-  attribute vec4 occTexCoord;
-  attribute vec4 occVertColor;
+  THE_ATTRIBUTE vec4 occVertex;
+  THE_ATTRIBUTE vec3 occNormal;
+  THE_ATTRIBUTE vec4 occTexCoord;
+  THE_ATTRIBUTE vec4 occVertColor;
+#elif (__VERSION__ >= 130)
+  out vec4 occFragColor;
+#else
+  #define occFragColor gl_FragColor
 #endif
 
 // Matrix state

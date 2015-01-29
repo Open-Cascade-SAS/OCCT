@@ -45,6 +45,7 @@ struct OpenGl_ArbTBO;
 struct OpenGl_ArbIns;
 struct OpenGl_ArbDbg;
 struct OpenGl_ArbFBO;
+struct OpenGl_ArbFBOBlit;
 struct OpenGl_ExtGS;
 struct OpenGl_ArbTexBindless;
 
@@ -522,6 +523,7 @@ public: //! @name extensions
   OpenGl_ArbIns*         arbIns;         //!< GL_ARB_draw_instanced
   OpenGl_ArbDbg*         arbDbg;         //!< GL_ARB_debug_output
   OpenGl_ArbFBO*         arbFBO;         //!< GL_ARB_framebuffer_object
+  OpenGl_ArbFBOBlit*     arbFBOBlit;     //!< glBlitFramebuffer function, moved out from OpenGl_ArbFBO structure for compatibility with OpenGL ES 2.0
   OpenGl_ExtGS*          extGS;          //!< GL_EXT_geometry_shader4
   Standard_Boolean       extBgra;        //!< GL_EXT_bgra or GL_EXT_texture_format_BGRA8888 on OpenGL ES
   Standard_Boolean       extAnis;        //!< GL_EXT_texture_filter_anisotropic

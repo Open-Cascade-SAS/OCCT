@@ -1,3 +1,4 @@
+vglinfo
 vdump $imagedir/${test_image}.png
 
 puts ""
