@@ -235,11 +235,20 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
   Standard_Real f = 0.,l = 0.;
+  Standard_Boolean rangeFound = Standard_False;
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if ( !GC.IsNull() ) {
-      GC->Range(f,l);
+      if (GC->IsCurve3D()) {
+        GC->Range(f,l);
+        Standard_Boolean undefined = (Precision::IsPositiveInfinite(l) ||
+                                      Precision::IsNegativeInfinite(f));
+          
+        if (!undefined) {
+          rangeFound = Standard_True;
+        }
+      }
       Standard_Boolean iscos = GC->IsCurveOnSurface(S,L);
       if (iscos) break;
     }
@@ -257,7 +266,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
     Handle(BRep_CurveOnClosedSurface) COS =
       new BRep_CurveOnClosedSurface(C1,C2,S,L,GeomAbs_C0);
     // test if there is already a range
-    if (!GC.IsNull()) {
+    if (rangeFound) {
       COS->SetRange(f,l);
     }
     lcr.Append(COS);
@@ -282,11 +291,20 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
   Standard_Real f = 0.,l = 0.;
+  Standard_Boolean rangeFound = Standard_False;
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if ( !GC.IsNull() ) {
-      GC->Range(f,l);
+      if (GC->IsCurve3D()) {
+        GC->Range(f,l);
+        Standard_Boolean undefined = (Precision::IsPositiveInfinite(l) ||
+                                      Precision::IsNegativeInfinite(f));
+          
+        if (!undefined) {
+          rangeFound = Standard_True;
+        }
+      }
       Standard_Boolean iscos = GC->IsCurveOnSurface(S,L);
       if (iscos) break;
     }
@@ -304,7 +322,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
     Handle(BRep_CurveOnClosedSurface) COS =
       new BRep_CurveOnClosedSurface(C1,C2,S,L,GeomAbs_C0);
     // test if there is already a range
-    if (!GC.IsNull()) {
+    if (rangeFound) {
       COS->SetRange(f,l);
     }
     COS->SetUVPoints2(Pf,Pl);
