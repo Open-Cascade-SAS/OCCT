@@ -1,4 +1,3 @@
-BOPCol_Array1.hxx
 BOPCol_DataMapOfShapeInteger.hxx
 BOPCol_DataMapOfShapeReal.hxx
 BOPCol_MapOfInteger.hxx
@@ -14,7 +13,6 @@ BOPCol_ListOfShape.hxx
 BOPCol_DataMapOfShapeAddress.hxx
 BOPCol_DataMapOfTransientAddress.hxx
 BOPCol_PListOfInteger.hxx
-BOPCol_VectorOfInteger.hxx
 BOPCol_MapOfShape.hxx
 BOPCol_DataMapOfShapeShape.hxx
 BOPCol_DataMapOfShapeListOfShape.hxx

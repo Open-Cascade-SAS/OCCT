@@ -15,7 +15,7 @@
 #ifndef  BOPTest_Chronometer_HeaderFile
 #define  BOPTest_Chronometer_HeaderFile
 //
-#include <OSD_Chronometer.hxx>
+#include <OSD_Timer.hxx>
 //=======================================================================
 //class    : BOPTest_Chronometer
 //purpose  : 
@@ -35,7 +35,7 @@ class BOPTest_Chronometer {
   //
   void Stop() {
     myChronometer.Stop();
-    myChronometer.Show(myTime);
+    myTime=myChronometer.ElapsedTime();
   }
   //
   double Time() const{
@@ -43,7 +43,7 @@ class BOPTest_Chronometer {
   };
   //
  protected:
-  OSD_Chronometer myChronometer;
+  OSD_Timer myChronometer;
   double myTime;
 };
 

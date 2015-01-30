@@ -44,7 +44,7 @@
   void BOPAlgo_PaveFiller::PerformVV() 
 {
   Standard_Boolean bWithSubShape;
-  Standard_Integer n1, n2, iFlag, nX, n, aSize, i, j, iX, k, aNbBlocks;
+  Standard_Integer n1, n2, iFlag, nX, n, aSize, i, j, k, aNbBlocks;
   Handle(NCollection_IncAllocator) aAllocator;
   BOPCol_DataMapIteratorOfDataMapOfIntegerListOfInteger aItMILI;
   BOPCol_ListIteratorOfListOfInteger aItLI, aItLI2;
@@ -62,9 +62,7 @@
   aSIn.SetShapeType(TopAbs_VERTEX);
   
   BOPDS_VectorOfInterfVV& aVVs=myDS->InterfVV();
-  aVVs.SetStartSize(aSize);
   aVVs.SetIncrement(aSize);
-  aVVs.Init();
   //
   //-----------------------------------------------------scope f
   aAllocator=new NCollection_IncAllocator();
@@ -123,8 +121,8 @@
           n2=aItLI2.Value();
           //
           myDS->AddInterf(n1, n2);
-          iX=aVVs.Append()-1;
-          BOPDS_InterfVV& aVV=aVVs(iX);
+          BOPDS_InterfVV& aVV=aVVs.Append1();
+          //
           aVV.SetIndices(n1, n2);
           aVV.SetIndexNew(n);
         }

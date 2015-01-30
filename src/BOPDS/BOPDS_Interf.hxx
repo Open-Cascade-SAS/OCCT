@@ -496,26 +496,10 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
       myTangentFaces(Standard_False),
       myTolR3D(1.e-7),
       myTolR2D(1.e-7),
-      myCurves(myAllocator),
-      myPoints(myAllocator) {
+      myCurves(0, myAllocator),
+      myPoints(0, myAllocator) 
+  {
   }
-  //
-  /**
-   *  Constructor
-   * @param theAllocator
-   *   allocator to manage the memory
-   */
-  /*
-  BOPDS_InterfFF(const Handle(NCollection_BaseAllocator)& theAllocator)
-    : 
-      BOPDS_Interf(theAllocator),
-      myTangentFaces(Standard_False),
-      myTolR3D(1.e-7),
-      myTolR2D(1.e-7),
-      myCurves(myAllocator),
-      myPoints(myAllocator) {
-  }
-  */
   //
   /**
    *  Destructor
@@ -530,8 +514,17 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
    * @param theNbPoints
    *   number of intersection points
    */
+  
   void Init(const Standard_Integer theNbCurves,
             const Standard_Integer theNbPoints) {
+    //modified by NIZNHY-PKV Mon Jan 26 09:01:06 2015f
+    if (theNbCurves>0) {
+      myCurves.SetIncrement(theNbCurves);
+    }
+    if (theNbPoints>0) {
+      myPoints.SetIncrement(theNbPoints);
+    }
+    /*
     if (theNbCurves>0) {
       myCurves.SetStartSize(theNbCurves);
       myCurves.SetIncrement(theNbCurves);
@@ -542,6 +535,8 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
       myPoints.SetIncrement(theNbPoints);
       myPoints.Init();
     }
+    */
+    //modified by NIZNHY-PKV Mon Jan 26 09:01:12 2015t
   }
   /**
    * Modifier

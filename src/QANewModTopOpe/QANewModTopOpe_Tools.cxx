@@ -453,6 +453,11 @@ Standard_Boolean QANewModTopOpe_Tools::EdgeSectionAncestors(const BOPAlgo_PPaveF
   nb = pDS->NbSourceShapes();
 
   nE = pDS->Index(theEdge);
+  //
+  if (nE<0) {
+    return Standard_False;
+  }
+  //
   const BOPDS_ListOfPaveBlock& aLPB1 = pDS->PaveBlocks(nE);
   if (!aLPB1.Extent()) {
     return Standard_False;

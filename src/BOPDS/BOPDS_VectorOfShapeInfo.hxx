@@ -15,13 +15,9 @@
 #ifndef BOPDS_VectorOfShapeInfo_HeaderFile
 #define BOPDS_VectorOfShapeInfo_HeaderFile
 
-#include <BOPCol_Array1.hxx>
+#include <BOPCol_NCVector.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 
-#define BOPCol_Array1_Use_Allocator
-
-typedef BOPCol_Array1<BOPDS_ShapeInfo> BOPDS_VectorOfShapeInfo;
-
-#undef BOPCol_Array1_Use_Allocator
+typedef BOPCol_NCVector<BOPDS_ShapeInfo> BOPDS_VectorOfShapeInfo;
 
 #endif

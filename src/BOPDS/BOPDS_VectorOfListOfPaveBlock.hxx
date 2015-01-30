@@ -15,14 +15,10 @@
 #ifndef BOPDS_VectorOfListOfPaveBlock_HeaderFile
 #define BOPDS_VectorOfListOfPaveBlock_HeaderFile
 
-#include <BOPCol_Array1.hxx>
+#include <BOPCol_NCVector.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 
-#define BOPCol_Array1_Use_Allocator
-
-typedef BOPCol_Array1<BOPDS_ListOfPaveBlock> BOPDS_VectorOfListOfPaveBlock;
-
-#undef BOPCol_Array1_Use_Allocator
+typedef BOPCol_NCVector<BOPDS_ListOfPaveBlock> BOPDS_VectorOfListOfPaveBlock;
 
 #endif

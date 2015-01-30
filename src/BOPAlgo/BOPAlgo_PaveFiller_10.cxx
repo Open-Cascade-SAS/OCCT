@@ -39,7 +39,7 @@
 void BOPAlgo_PaveFiller::PerformVZ()
 {
   Standard_Boolean bJustAdd;
-  Standard_Integer iSize, nV, nZ, i;
+  Standard_Integer iSize, nV, nZ;
   Standard_Real aTol;
   gp_Pnt aPV;
   TopAbs_State aState;
@@ -53,9 +53,7 @@ void BOPAlgo_PaveFiller::PerformVZ()
   }
   //
   BOPDS_VectorOfInterfVZ& aVZs=myDS->InterfVZ();
-  aVZs.SetStartSize(iSize);
   aVZs.SetIncrement(iSize);
-  aVZs.Init();
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nV, nZ, bJustAdd);
@@ -78,8 +76,7 @@ void BOPAlgo_PaveFiller::PerformVZ()
     //
     aState=aSC.State();
     if (aState==TopAbs_IN)  {
-      i=aVZs.Append()-1;
-      BOPDS_InterfVZ& aVZ=aVZs(i);
+      BOPDS_InterfVZ& aVZ=aVZs.Append1();
       aVZ.SetIndices(nV, nZ);
       //
       myDS->AddInterf(nV, nZ);
@@ -92,8 +89,8 @@ void BOPAlgo_PaveFiller::PerformVZ()
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformEZ()
 {
-   Standard_Boolean bJustAdd, bHasInterf;
-  Standard_Integer iSize, nE, nZ, i;
+  Standard_Boolean bJustAdd, bHasInterf;
+  Standard_Integer iSize, nE, nZ;
   //
   myErrorStatus=0;
   //
@@ -104,9 +101,7 @@ void BOPAlgo_PaveFiller::PerformEZ()
   }
   //
   BOPDS_VectorOfInterfEZ& aEZs=myDS->InterfEZ();
-  aEZs.SetStartSize(iSize);
   aEZs.SetIncrement(iSize);
-  aEZs.Init();
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nE, nZ, bJustAdd);
@@ -124,8 +119,7 @@ void BOPAlgo_PaveFiller::PerformEZ()
       continue;
     }
     //
-    i=aEZs.Append()-1;
-    BOPDS_InterfEZ& aEZ=aEZs(i);
+    BOPDS_InterfEZ& aEZ=aEZs.Append1();
     aEZ.SetIndices(nE, nZ);
     //
     myDS->AddInterf(nE, nZ);
@@ -138,7 +132,7 @@ void BOPAlgo_PaveFiller::PerformEZ()
 void BOPAlgo_PaveFiller::PerformFZ()
 {
   Standard_Boolean bJustAdd, bHasInterf;
-  Standard_Integer iSize, nF, nZ, i;
+  Standard_Integer iSize, nF, nZ;
   //
   myErrorStatus=0;
   //
@@ -149,9 +143,7 @@ void BOPAlgo_PaveFiller::PerformFZ()
   }
   //
   BOPDS_VectorOfInterfFZ& aFZs=myDS->InterfFZ();
-  aFZs.SetStartSize(iSize);
   aFZs.SetIncrement(iSize);
-  aFZs.Init();
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nF, nZ, bJustAdd);
@@ -169,8 +161,7 @@ void BOPAlgo_PaveFiller::PerformFZ()
       continue;
     }
     //
-    i=aFZs.Append()-1;
-    BOPDS_InterfFZ& aFZ=aFZs(i);
+    BOPDS_InterfFZ& aFZ=aFZs.Append1();
     aFZ.SetIndices(nF, nZ);
     //
     myDS->AddInterf(nF, nZ);
@@ -183,7 +174,7 @@ void BOPAlgo_PaveFiller::PerformFZ()
 void BOPAlgo_PaveFiller::PerformZZ()
 {
   Standard_Boolean bJustAdd, bHasInterf, bFlag;
-  Standard_Integer iSize, nZ1, nZ, i;
+  Standard_Integer iSize, nZ1, nZ;
   //
   myErrorStatus=0;
   //
@@ -194,9 +185,7 @@ void BOPAlgo_PaveFiller::PerformZZ()
   }
   //
   BOPDS_VectorOfInterfZZ& aZZs=myDS->InterfZZ();
-  aZZs.SetStartSize(iSize);
   aZZs.SetIncrement(iSize);
-  aZZs.Init();
   //
   bFlag=Standard_False;
   //
@@ -214,8 +203,7 @@ void BOPAlgo_PaveFiller::PerformZZ()
       continue; 
     }
     //
-    i=aZZs.Append()-1;
-    BOPDS_InterfZZ& aZZ=aZZs(i);
+    BOPDS_InterfZZ& aZZ=aZZs.Append1();
     aZZ.SetIndices(nZ1, nZ);
     //
     myDS->AddInterf(nZ1, nZ);

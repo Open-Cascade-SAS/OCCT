@@ -15,12 +15,9 @@
 #ifndef BOPDS_VectorOfInterfEF_HeaderFile
 #define BOPDS_VectorOfInterfEF_HeaderFile
 
-#include <BOPCol_Array1.hxx>
+#include <BOPCol_NCVector.hxx>
 #include <BOPDS_Interf.hxx>
 
-#define BOPCol_Array1_Use_Allocator
-typedef BOPCol_Array1<BOPDS_InterfEF> BOPDS_VectorOfInterfEF;
-#undef BOPCol_Array1_Use_Allocator
-
+typedef BOPCol_NCVector<BOPDS_InterfEF> BOPDS_VectorOfInterfEF;
 
 #endif

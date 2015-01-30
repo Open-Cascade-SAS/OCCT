@@ -15,13 +15,9 @@
 #ifndef BOPDS_VectorOfListOfPassKeyBoolean_HeaderFile
 #define BOPDS_VectorOfListOfPassKeyBoolean_HeaderFile
 
-#include <BOPCol_Array1.hxx>
+#include <BOPCol_NCVector.hxx>
 #include <BOPDS_ListOfPassKeyBoolean.hxx>
 
-#define BOPCol_Array1_Use_Allocator
-
-typedef BOPCol_Array1<BOPDS_ListOfPassKeyBoolean> BOPDS_VectorOfListOfPassKeyBoolean;
-
-#undef BOPCol_Array1_Use_Allocator
+typedef BOPCol_NCVector<BOPDS_ListOfPassKeyBoolean> BOPDS_VectorOfListOfPassKeyBoolean;
 
 #endif

@@ -91,24 +91,24 @@ BOPDS_DS::BOPDS_DS()
 :
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myArguments(myAllocator),
-  myRanges(myAllocator),
-  myLines(myAllocator),
+  myRanges(0,myAllocator),
+  myLines(0, myAllocator), 
   myMapShapeIndex(100, myAllocator),
-  myPaveBlocksPool(myAllocator),
+  myPaveBlocksPool(0,myAllocator),
   myMapPBCB(100, myAllocator),
-  myFaceInfoPool(myAllocator),
+  myFaceInfoPool(0, myAllocator),
   myShapesSD(100, myAllocator),
   myInterfTB(100, myAllocator),
-  myInterfVV(myAllocator),
-  myInterfVE(myAllocator),
-  myInterfVF(myAllocator),
-  myInterfEE(myAllocator),
-  myInterfEF(myAllocator),
-  myInterfFF(myAllocator),
-  myInterfVZ(myAllocator),
-  myInterfEZ(myAllocator),
-  myInterfFZ(myAllocator),
-  myInterfZZ(myAllocator),
+  myInterfVV(0, myAllocator),
+  myInterfVE(0, myAllocator),
+  myInterfVF(0, myAllocator),
+  myInterfEE(0, myAllocator),
+  myInterfEF(0, myAllocator),
+  myInterfFF(0, myAllocator),
+  myInterfVZ(0, myAllocator),
+  myInterfEZ(0, myAllocator),
+  myInterfFZ(0, myAllocator),
+  myInterfZZ(0, myAllocator),
   myFuzzyValue(0.),
   myToleranceMap(100, myAllocator)
 {
@@ -123,24 +123,24 @@ BOPDS_DS::BOPDS_DS(const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   myAllocator(theAllocator),
   myArguments(myAllocator),
-  myRanges(myAllocator),
-  myLines(myAllocator),
+  myRanges(0, myAllocator),
+  myLines(0, myAllocator),
   myMapShapeIndex(100, myAllocator),
-  myPaveBlocksPool(myAllocator),
+  myPaveBlocksPool(0, myAllocator),
   myMapPBCB(100, myAllocator),
-  myFaceInfoPool(myAllocator),
+  myFaceInfoPool(0, myAllocator),
   myShapesSD(100, myAllocator),
   myInterfTB(100, myAllocator),
-  myInterfVV(myAllocator),
-  myInterfVE(myAllocator),
-  myInterfVF(myAllocator),
-  myInterfEE(myAllocator),
-  myInterfEF(myAllocator),
-  myInterfFF(myAllocator),
-  myInterfVZ(myAllocator),
-  myInterfEZ(myAllocator),
-  myInterfFZ(myAllocator),
-  myInterfZZ(myAllocator),
+  myInterfVV(0, myAllocator),
+  myInterfVE(0, myAllocator),
+  myInterfVF(0, myAllocator),
+  myInterfEE(0, myAllocator),
+  myInterfEF(0, myAllocator),
+  myInterfFF(0, myAllocator),
+  myInterfVZ(0, myAllocator),
+  myInterfEZ(0, myAllocator),
+  myInterfFZ(0, myAllocator),
+  myInterfZZ(0, myAllocator),
   myFuzzyValue(0.),
   myToleranceMap(100, myAllocator)
 {
@@ -277,8 +277,9 @@ Standard_Integer BOPDS_DS::Append(const BOPDS_ShapeInfo& theSI)
 {
   Standard_Integer iX;
   //
-  iX=myLines.Append()-1;
-  myLines(iX)=theSI;
+  myLines.Append1()=theSI;
+  iX=myLines.Extent()-1;
+  //
   return iX;
 }
 //=======================================================================
@@ -289,8 +290,8 @@ Standard_Integer BOPDS_DS::Append(const TopoDS_Shape& theS)
 {
   Standard_Integer iX;
   //
-  iX=myLines.Append()-1;
-  myLines(iX).SetShape(theS);
+  myLines.Append1().SetShape(theS);
+  iX=myLines.Extent()-1;
   return iX;
 }
 //=======================================================================
@@ -320,6 +321,7 @@ BOPDS_ShapeInfo& BOPDS_DS::ChangeShapeInfo(const Standard_Integer theI)
 //=======================================================================
 const TopoDS_Shape& BOPDS_DS::Shape(const Standard_Integer theI)const
 {
+  
   const TopoDS_Shape& aS=ShapeInfo(theI).Shape();
   return aS;
 }
@@ -360,8 +362,7 @@ void BOPDS_DS::Init()
     return;
   }
   //
-  myRanges.SetStartSize(aNb);
-  myRanges.Init();
+  myRanges.SetIncrement(aNb);
   //
   aIt.Initialize(myArguments);
   for (; aIt.More(); aIt.Next()) {
@@ -379,10 +380,7 @@ void BOPDS_DS::Init()
     aNbS=aNbS+aNbSx;
   }
   //
-  myLines.SetStartSize(2*aNbS);
-  myLines.SetIncrement(aNbS);
-  myLines.Init();
-  //
+  myLines.SetIncrement(2*aNbS);
   //-----------------------------------------------------scope_1 f
   aAllocator=new NCollection_IncAllocator();
   //
@@ -651,17 +649,10 @@ void BOPDS_DS::Init()
   aMI.Clear();
   aAllocator.Nullify();
   //-----------------------------------------------------scope_1 t
-  //
   // 3 myPaveBlocksPool
-  myPaveBlocksPool.SetStartSize(aNbE);
-  myPaveBlocksPool.SetIncrement(aNbE);
-  myPaveBlocksPool.Init();
-  //
   // 4. myFaceInfoPool
-  myFaceInfoPool.SetStartSize(aNbF);
+  myPaveBlocksPool.SetIncrement(aNbE);
   myFaceInfoPool.SetIncrement(aNbF);
-  myFaceInfoPool.Init();
-  //
 }
 //=======================================================================
 //function : InitShape
@@ -934,8 +925,8 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
     }
   }
   //
-  iRef = myPaveBlocksPool.Append() - 1;
-  BOPDS_ListOfPaveBlock &aLPB=myPaveBlocksPool(iRef);
+  BOPDS_ListOfPaveBlock &aLPB=myPaveBlocksPool.Append1();
+  iRef=myPaveBlocksPool.Extent()-1;
   //
   aPB->Update(aLPB, Standard_False);
   aSI.SetReference(iRef);
@@ -1265,8 +1256,8 @@ void BOPDS_DS::InitFaceInfo(const Standard_Integer theI)
   Standard_Integer iRef;
   //
   BOPDS_ShapeInfo& aSI=ChangeShapeInfo(theI);
-  iRef=myFaceInfoPool.Append()-1;
-  BOPDS_FaceInfo &aFI=myFaceInfoPool(iRef);
+  BOPDS_FaceInfo &aFI=myFaceInfoPool.Append1();
+  iRef=myFaceInfoPool.Extent()-1;
   aSI.SetReference(iRef);
   //
   aFI.SetIndex(theI);

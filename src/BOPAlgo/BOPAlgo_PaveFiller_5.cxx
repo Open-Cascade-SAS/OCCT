@@ -169,9 +169,7 @@ void BOPAlgo_PaveFiller::PerformEF()
   aDeflection=0.01;
   //
   BOPDS_VectorOfInterfEF& aEFs=myDS->InterfEF();
-  aEFs.SetStartSize(iSize);
   aEFs.SetIncrement(iSize);
-  aEFs.Init();
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nE, nF, bJustAdd);
@@ -297,10 +295,10 @@ void BOPAlgo_PaveFiller::PerformEF()
             bV[0]=CheckFacePaves(nV[0], aMIFOn, aMIFIn);
             bV[1]=CheckFacePaves(nV[1], aMIFOn, aMIFIn);
             if (bV[0] && bV[1]) {
-              iX=aEFs.Append()-1;
               IntTools_CommonPrt aCP = aCPart;
               aCP.SetType(TopAbs_EDGE);
-              BOPDS_InterfEF& aEF=aEFs(iX);
+              BOPDS_InterfEF& aEF=aEFs.Append1();
+              iX=aEFs.Extent()-1;
               aEF.SetIndices(nE, nF);
               aEF.SetCommonPart(aCP);
               myDS->AddInterf(nE, nF);
@@ -344,8 +342,8 @@ void BOPAlgo_PaveFiller::PerformEF()
             //
             aMIEFC.Add(nF);
             // 1
-            iX=aEFs.Append()-1;
-            BOPDS_InterfEF& aEF=aEFs(iX);
+            BOPDS_InterfEF& aEF=aEFs.Append1();
+            iX=aEFs.Extent()-1;
             aEF.SetIndices(nE, nF);
             aEF.SetCommonPart(aCPart);
             // 2
@@ -363,8 +361,8 @@ void BOPAlgo_PaveFiller::PerformEF()
           aMIEFC.Add(nF);
           //
           // 1
-          iX=aEFs.Append()-1;
-          BOPDS_InterfEF& aEF=aEFs(iX);
+          BOPDS_InterfEF& aEF=aEFs.Append1();
+          iX=aEFs.Extent()-1;
           aEF.SetIndices(nE, nF);
           //
           bV[0]=CheckFacePaves(nV[0], aMIFOn, aMIFIn);
@@ -637,16 +635,11 @@ Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF
   gp_Pnt2d aP2d(U, V);
   bRet = myContext->IsPointInFace (aF, aP2d);
   if (bRet) {
-    Standard_Integer i;
+    //Standard_Integer i;
     BRep_Builder aBB;
     //
     BOPDS_VectorOfInterfVF& aVFs=myDS->InterfVF();
-    if (aVFs.Extent() == 0) {
-      aVFs.Init();
-    }
-    //
-    i=aVFs.Append()-1;
-    BOPDS_InterfVF& aVF=aVFs(i);
+    BOPDS_InterfVF& aVF=aVFs.Append1();
     aVF.SetIndices(nV, nF);
     aVF.SetUV(U, V);
     //

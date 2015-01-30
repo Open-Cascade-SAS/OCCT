@@ -84,11 +84,16 @@ BOPDS_Iterator::BOPDS_Iterator()
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myRunParallel(Standard_False)
 {
+  Standard_Integer i, aNb;
+  //
   myDS=NULL; 
   myLength=0;
   //
-  myLists.SetStartSize(BOPDS_DS::NbInterfTypes());
-  myLists.Init();
+  aNb=BOPDS_DS::NbInterfTypes();
+  myLists.SetIncrement(aNb);
+  for (i=0; i<aNb; ++i) {
+    myLists.Append1();
+  }
 }
 //=======================================================================
 //function : 
@@ -98,14 +103,19 @@ BOPDS_Iterator::BOPDS_Iterator
   (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   myAllocator(theAllocator),
-  myLists(theAllocator),
+  myLists(0, theAllocator),
   myRunParallel(Standard_False)
 {
+  Standard_Integer i, aNb;
+  //
   myDS=NULL; 
   myLength=0;
   //
-  myLists.SetStartSize(BOPDS_DS::NbInterfTypes());
-  myLists.Init();
+  aNb=BOPDS_DS::NbInterfTypes();
+  myLists.SetIncrement(aNb);
+  for (i=0; i<aNb; ++i) {
+    myLists.Append1();
+  }
 }
 //=======================================================================
 //function : ~

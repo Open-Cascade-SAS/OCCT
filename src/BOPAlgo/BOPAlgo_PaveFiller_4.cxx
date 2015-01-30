@@ -143,7 +143,7 @@ typedef BOPCol_TBBContextCnt
 void BOPAlgo_PaveFiller::PerformVF()
 {
   Standard_Boolean bJustAdd;
-  Standard_Integer iSize, nV, nF, nVSD, iFlag, nVx, i, aNbVF, k;
+  Standard_Integer iSize, nV, nF, nVSD, iFlag, nVx, aNbVF, k;
   Standard_Real aT1, aT2, aTolF, aTolV;
   BRep_Builder aBB;
   BOPAlgo_VectorOfVertexFace aVVF; 
@@ -155,9 +155,7 @@ void BOPAlgo_PaveFiller::PerformVF()
   if (iSize) {
     //
     BOPDS_VectorOfInterfVF& aVFs=myDS->InterfVF();
-    aVFs.SetStartSize(iSize);
     aVFs.SetIncrement(iSize);
-    aVFs.Init();
     //
     for (; myIterator->More(); myIterator->Next()) {
       myIterator->Value(nV, nF, bJustAdd);
@@ -214,8 +212,7 @@ void BOPAlgo_PaveFiller::PerformVF()
       const TopoDS_Vertex& aV=aVertexFace.Vertex();
       const TopoDS_Face& aF=aVertexFace.Face();
       // 1
-      i=aVFs.Append()-1;
-      BOPDS_InterfVF& aVF=aVFs(i);
+      BOPDS_InterfVF& aVF=aVFs.Append1();
       aVF.SetIndices(nVx, nF);
       aVF.SetUV(aT1, aT2);
       // 2
@@ -238,9 +235,7 @@ void BOPAlgo_PaveFiller::PerformVF()
   else {
     iSize=10;
     BOPDS_VectorOfInterfVF& aVFs=myDS->InterfVF();
-    aVFs.SetStartSize(iSize);
     aVFs.SetIncrement(iSize);
-    aVFs.Init();
   }
   //
   TreatVerticesEE();
@@ -251,7 +246,7 @@ void BOPAlgo_PaveFiller::PerformVF()
 //=======================================================================
 void BOPAlgo_PaveFiller::TreatVerticesEE()
 {
-  Standard_Integer i, aNbS, aNbEEs, nF, nV, iFlag;
+  Standard_Integer i, aNbS,aNbEEs, nF, nV, iFlag;
   Standard_Real aT1, aT2;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   Handle(NCollection_IncAllocator) aAllocator;
@@ -315,8 +310,8 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
       iFlag=myContext->ComputeVF(aV, aF, aT1, aT2);
       if (!iFlag) {
         // 1
-        i=aVFs.Append()-1;
-        BOPDS_InterfVF& aVF=aVFs(i);
+        BOPDS_InterfVF& aVF=aVFs.Append1();
+        i=aVFs.Extent()-1;
         aVF.SetIndices(nV, nF);
         aVF.SetUV(aT1, aT2);
         // 2

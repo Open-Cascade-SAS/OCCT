@@ -298,9 +298,7 @@ void BOPAlgo_PaveFiller::PerformEE()
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);
   //
   BOPDS_VectorOfInterfEE& aEEs=myDS->InterfEE();
-  aEEs.SetStartSize(iSize);
   aEEs.SetIncrement(iSize);
-  aEEs.Init();
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nE1, nE2, bJustAdd);
@@ -489,10 +487,10 @@ void BOPAlgo_PaveFiller::PerformEE()
               continue;
             }
           }
-          
+          //
           // 1
-          iX=aEEs.Append()-1;
-          BOPDS_InterfEE& aEE=aEEs(iX);
+          BOPDS_InterfEE& aEE=aEEs.Append1();
+          iX=aEEs.Extent()-1;
           aEE.SetIndices(nE1, nE2);
           aEE.SetCommonPart(aCPart);
           // 2
@@ -517,8 +515,8 @@ void BOPAlgo_PaveFiller::PerformEE()
             break;
           }
           // 1
-          iX=aEEs.Append()-1;
-          BOPDS_InterfEE& aEE=aEEs(iX);
+          BOPDS_InterfEE& aEE=aEEs.Append1();
+          iX=aEEs.Extent()-1;
           aEE.SetIndices(nE1, nE2);
           aEE.SetCommonPart(aCPart);
           // 2
@@ -911,7 +909,7 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
   aNbPnt = aProjector.NbPoints();
   if (aNbPnt) {
     Standard_Real aT, aDist;
-    Standard_Integer i;
+    //Standard_Integer i;
     BRep_Builder aBB;
     BOPDS_Pave aPave;
     //
@@ -919,12 +917,7 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
     aT=aProjector.LowerDistanceParameter();
     //
     BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
-    if (aVEs.Extent() == 0) {
-      aVEs.Init();
-    }
-    //
-    i=aVEs.Append()-1;
-    BOPDS_InterfVE& aVE=aVEs(i);
+    BOPDS_InterfVE& aVE=aVEs.Append1();
     aVE.SetIndices(nV, nE);
     aVE.SetParameter(aT);
     //

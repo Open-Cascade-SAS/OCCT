@@ -200,6 +200,14 @@ public: //! @name public API
 
   //! Empty the vector of its objects
   Standard_EXPORT void Clear();
+  // to set the size of increment dynamically
+  void SetIncrement(const Standard_Integer aIncrement) {
+    if (aIncrement > 0) {
+      if (!myIncrement) {
+        myIncrement=aIncrement;
+      }
+    }
+  }
 
 protected: //! @name Protected fields
 

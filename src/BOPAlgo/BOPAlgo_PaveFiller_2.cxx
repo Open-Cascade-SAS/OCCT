@@ -136,7 +136,7 @@ typedef BOPCol_TBBContextCnt
 void BOPAlgo_PaveFiller::PerformVE()
 {
   Standard_Boolean bJustAdd;
-  Standard_Integer iSize, nV, nE, nVSD, iFlag, nVx, i, k, aNbVE;;
+  Standard_Integer iSize, nV, nE, nVSD, iFlag, nVx,  k, aNbVE;
   Standard_Real aT, aTolE, aTolV;
   BOPDS_Pave aPave;
   BOPDS_PassKey aPK;
@@ -153,9 +153,7 @@ void BOPAlgo_PaveFiller::PerformVE()
   }
   //
   BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
-  aVEs.SetStartSize(iSize);
   aVEs.SetIncrement(iSize);
-  aVEs.Init();
   //
   for (; myIterator->More(); myIterator->Next()) {
     myIterator->Value(nV, nE, bJustAdd);
@@ -213,8 +211,7 @@ void BOPAlgo_PaveFiller::PerformVE()
       const TopoDS_Vertex& aV=aVESolver.Vertex();
       const TopoDS_Edge& aE=aVESolver.Edge();
       // 1
-      i=aVEs.Append()-1;
-      BOPDS_InterfVE& aVE=aVEs(i);
+      BOPDS_InterfVE& aVE=aVEs.Append1();
       aVE.SetIndices(nV, nE);
       aVE.SetParameter(aT);
       // 2

@@ -195,7 +195,7 @@ void BOPAlgo_PaveFiller::PerformFF()
   //
   Standard_Boolean bJustAdd, bApp, bCompC2D1, bCompC2D2, bIsDone;
   Standard_Boolean bToSplit, bTangentFaces;
-  Standard_Integer nF1, nF2, aNbCurves, aNbPoints, iX, i, iP, iC, aNbLP;
+  Standard_Integer nF1, nF2, aNbCurves, aNbPoints, i, aNbLP;
   Standard_Integer aNbFaceFace, k;
   Standard_Real aApproxTol, aTolR3D, aTolR2D, aTolFF;
   BRepAdaptor_Surface aBAS1, aBAS2;
@@ -203,9 +203,7 @@ void BOPAlgo_PaveFiller::PerformFF()
   BOPAlgo_VectorOfFaceFace aVFaceFace;
   //
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
-  aFFs.SetStartSize(iSize);
   aFFs.SetIncrement(iSize);
-  aFFs.Init();
   //
   bApp=mySectionAttribute.Approximation();
   bCompC2D1=mySectionAttribute.PCurveOnS1();
@@ -241,8 +239,7 @@ void BOPAlgo_PaveFiller::PerformFF()
       bToIntersect = CheckPlanes(nF1, nF2);
       if (!bToIntersect) {
         myDS->AddInterf(nF1, nF2);
-        iX=aFFs.Append()-1;
-        BOPDS_InterfFF& aFF=aFFs(iX);
+        BOPDS_InterfFF& aFF=aFFs.Append1();
         aFF.SetIndices(nF1, nF2);
         aFF.Init(0, 0);
         continue;
@@ -304,8 +301,7 @@ void BOPAlgo_PaveFiller::PerformFF()
         myDS->AddInterf(nF1, nF2);
       } 
       //
-      iX=aFFs.Append()-1;
-      BOPDS_InterfFF& aFF=aFFs(iX);
+      BOPDS_InterfFF& aFF=aFFs.Append1();
       aFF.SetIndices(nF1, nF2);
       //
       aFF.SetTolR3D(aTolR3D);
@@ -324,8 +320,7 @@ void BOPAlgo_PaveFiller::PerformFF()
         const Handle(Geom_Curve)& aC3D= aIC.Curve();
         bValid=IntTools_Tools::CheckCurve(aC3D, aTolR3D, aBox);
         if (bValid) {
-          iC=aVNC.Append()-1;
-          BOPDS_Curve& aNC=aVNC(iC);
+          BOPDS_Curve& aNC=aVNC.Append1();
           aNC.SetCurve(aIC);
           aNC.SetBox(aBox);
         }
@@ -337,15 +332,13 @@ void BOPAlgo_PaveFiller::PerformFF()
         const IntTools_PntOn2Faces& aPi=aPntsX(i);
         const gp_Pnt& aP=aPi.P1().Pnt();
         //
-        iP=aVNP.Append()-1;
-        BOPDS_Point& aNP=aVNP(iP);
+        BOPDS_Point& aNP=aVNP.Append1();
         aNP.SetPnt(aP);
       }
     //}// if (aNbCs || aNbPs)
     }// if (bIsDone) {
     else {// 904/L1
-      iX=aFFs.Append()-1;
-      BOPDS_InterfFF& aFF=aFFs(iX);
+      BOPDS_InterfFF& aFF=aFFs.Append1();
       aFF.SetIndices(nF1, nF2);
       aNbCurves=0;
       aNbPoints=0;
@@ -2050,9 +2043,10 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
      BOPCol_DataMapOfShapeInteger& aMVI,
      BOPDS_VectorOfCurve& aVC) 
 {
-  Standard_Integer nV1, nV2;
+  Standard_Integer nV1, nV2, iC;
   //
-  Standard_Integer iC=aVC.Append()-1;
+  aVC.Append1();
+  iC=aVC.Extent()-1;
   BOPDS_ListOfPaveBlock& aLPBC = aVC(iC).ChangePaveBlocks();
   aLPBC.Append(aPB);
   //
