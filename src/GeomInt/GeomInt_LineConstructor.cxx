@@ -788,7 +788,7 @@ void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
       aT=pVtx[1].Value()+aTwoPI;
       pVtx[aNbVtx-1].SetValue(aT);
       //
-      for(i=0; i<aNbVtx; ++i) { 
+      for(i=0; i<aNbVtx - 1; ++i) { 
         aT=pVtx[i+1].Value();
         pVtx[i].SetValue(aT);
       }

@@ -481,8 +481,9 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     new_par.Append(lcons);
     New_NCONTROL = new_par.Length() - 1;
-    //simple protection if New_NCONTROL > allocated elements in array
-    if (New_NCONTROL > aMaxArraySize) {
+    // Simple protection if New_NCONTROL > allocated elements in array but one
+    // aMaxArraySize - 1 index may be filled after projection.
+    if (New_NCONTROL > aMaxArraySize - 1) {
       mySameParameter = Standard_False;
       return;
     }
