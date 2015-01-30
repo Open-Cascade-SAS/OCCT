@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC25632"
+puts "============"
+puts ""
+#######################################################################
+# IGES writer looses face orientation
+#######################################################################
+
+plane p 0 0 0 0 0 1 1 0 0
+mkface face p 0 100 0 100
+
+smallview
+donly face
+
+nurbsconvert r face
+mksurface s r
+
+mkface f s 10 20 30 40
+
+treverse f
+normals f 100
+
+xwd ${imagedir}/${test_image}_1.png
+
+testwriteiges ${imagedir}/f_2.igs f
+testreadiges ${imagedir}/f_2.igs ff
+
+donly ff
+
+normals ff 100
+
+xwd ${imagedir}/${test_image}_2.png
