@@ -270,13 +270,7 @@ is
     	    -- sequence used as a field by this sequence, in order to modify it.
 	    ---C++: return &
 	    ---C++: inline
-  
-        ShallowCopy(me) returns like me;
-            ---Purpose: function call  
-	    ---C++: function call 
 
-        -- IsSameState (me; other : like me)  returns Boolean;
-   
 fields 
   mySequence : TheSequence;
 end;
