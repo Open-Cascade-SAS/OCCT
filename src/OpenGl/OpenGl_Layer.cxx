@@ -207,8 +207,7 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
        && isRightChildIn)
       {
         aNode = myBVHIsLeftChildQueuedFirst ? aLeftChildIdx : aRightChildIdx;
-        ++aHead;
-        aStack[aHead] = myBVHIsLeftChildQueuedFirst ? aRightChildIdx : aLeftChildIdx;
+        aStack[++aHead] = myBVHIsLeftChildQueuedFirst ? aRightChildIdx : aLeftChildIdx;
         myBVHIsLeftChildQueuedFirst = !myBVHIsLeftChildQueuedFirst;
       }
       else if (isLeftChildIn
@@ -223,25 +222,19 @@ void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
           return;
         }
 
-        aNode = aStack[aHead];
-        --aHead;
+        aNode = aStack[aHead--];
       }
     }
     else
     {
-      if (theSelector.Intersect (aBVHTree->MinPoint (aNode),
-                                 aBVHTree->MaxPoint (aNode)))
+      Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
+      myBVHPrimitives.GetStructureById (aIdx)->MarkAsNotCulled();
+      if (aHead < 0)
       {
-        Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
-        myBVHPrimitives.GetStructureById (aIdx)->MarkAsNotCulled();
-        if (aHead < 0)
-        {
-          return;
-        }
-
-        aNode = aStack[aHead];
-        --aHead;
+        return;
       }
+
+      aNode = aStack[aHead--];
     }
   }
 }

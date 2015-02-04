@@ -13,45 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <limits>
+
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_BVHClipPrimitiveSet.hxx>
-
-#include <vector>
-#include <algorithm>
-
-// =======================================================================
-// function : DotProduct
-// purpose  : Calculates a dot product of 4-dimensional vectors in homogeneous coordinates
-// =======================================================================
-static Standard_ShortReal DotProduct (const OpenGl_Vec4& theA,
-                                      const OpenGl_Vec4& theB)
-{
-  return theA.x() * theB.x() + theA.y() * theB.y() + theA.z() * theB.z();
-}
-
-// =======================================================================
-// function : BinarySign
-// purpose  :
-// =======================================================================
-static OpenGl_Vec4 BinarySign (const OpenGl_Vec4& theVec)
-{
-  return OpenGl_Vec4 (theVec.x() > 0.0f ? 1.0f : 0.0f,
-                      theVec.y() > 0.0f ? 1.0f : 0.0f,
-                      theVec.z() > 0.0f ? 1.0f : 0.0f,
-                      theVec.w() > 0.0f ? 1.0f : 0.0f);
-}
-
-// =======================================================================
-// function : InversedBinarySign
-// purpose  :
-// =======================================================================
-static OpenGl_Vec4 InversedBinarySign (const OpenGl_Vec4& theVec)
-{
-  return OpenGl_Vec4 (theVec.x() > 0.0f ? 0.0f : 1.0f,
-                      theVec.y() > 0.0f ? 0.0f : 1.0f,
-                      theVec.z() > 0.0f ? 0.0f : 1.0f,
-                      theVec.w() > 0.0f ? 0.0f : 1.0f);
-}
 
 // =======================================================================
 // function : OpenGl_BVHTreeSelector
@@ -182,35 +147,37 @@ Standard_ShortReal OpenGl_BVHTreeSelector::SignedPlanePointDistance (const OpenG
 // =======================================================================
 void OpenGl_BVHTreeSelector::CacheClipPtsProjections()
 {
-  Standard_ShortReal aProjectedVerts[ClipVerticesNB];
-  for (Standard_Integer aPlaneIter = 0; aPlaneIter < PlanesNB; ++aPlaneIter)
+  const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
+  for (Standard_Integer aPlaneIter = 0; aPlaneIter < 5; aPlaneIter += anIncFactor)
   {
     const OpenGl_Vec4 aPlane = myClipPlanes[aPlaneIter];
+    Standard_ShortReal aMaxProj = -std::numeric_limits<Standard_ShortReal>::max();
+    Standard_ShortReal aMinProj =  std::numeric_limits<Standard_ShortReal>::max();
     for (Standard_Integer aCornerIter = 0; aCornerIter < ClipVerticesNB; ++aCornerIter)
     {
-      Standard_ShortReal aProjection = DotProduct (aPlane, myClipVerts[aCornerIter]);
-      aProjectedVerts[aCornerIter] = aProjection;
+      Standard_ShortReal aProjection = aPlane.x() * myClipVerts[aCornerIter].x() +
+                                       aPlane.y() * myClipVerts[aCornerIter].y() +
+                                       aPlane.z() * myClipVerts[aCornerIter].z();
+      aMaxProj = Max (aProjection, aMaxProj);
+      aMinProj = Min (aProjection, aMinProj);
     }
-    myMaxClipProjectionPts[aPlaneIter] = *std::max_element (aProjectedVerts, aProjectedVerts + ClipVerticesNB);
-    myMinClipProjectionPts[aPlaneIter] = *std::min_element (aProjectedVerts, aProjectedVerts + ClipVerticesNB);
+    myMaxClipProjectionPts[aPlaneIter] = aMaxProj;
+    myMinClipProjectionPts[aPlaneIter] = aMinProj;
   }
-
-  OpenGl_Vec4 aDimensions[3] =
-  {
-    OpenGl_Vec4 (1.0f, 0.0f, 0.0f, 1.0f),
-    OpenGl_Vec4 (0.0f, 1.0f, 0.0f, 1.0f),
-    OpenGl_Vec4 (0.0f, 0.0f, 1.0f, 1.0f)
-  };
 
   for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
   {
+    Standard_ShortReal aMaxProj = -std::numeric_limits<Standard_ShortReal>::max();
+    Standard_ShortReal aMinProj =  std::numeric_limits<Standard_ShortReal>::max();
     for (Standard_Integer aCornerIter = 0; aCornerIter < ClipVerticesNB; ++aCornerIter)
     {
-      Standard_ShortReal aProjection = DotProduct (aDimensions[aDim], myClipVerts[aCornerIter]);
-      aProjectedVerts[aCornerIter] = aProjection;
+      Standard_ShortReal aProjection = aDim == 0 ? myClipVerts[aCornerIter].x()
+        : (aDim == 1 ? myClipVerts[aCornerIter].y() : myClipVerts[aCornerIter].z());
+      aMaxProj = Max (aProjection, aMaxProj);
+      aMinProj = Min (aProjection, aMinProj);
     }
-    myMaxOrthoProjectionPts[aDim] = *std::max_element (aProjectedVerts, aProjectedVerts + ClipVerticesNB);
-    myMinOrthoProjectionPts[aDim] = *std::min_element (aProjectedVerts, aProjectedVerts + ClipVerticesNB);
+    myMaxOrthoProjectionPts[aDim] = aMaxProj;
+    myMinOrthoProjectionPts[aDim] = aMinProj;
   }
 }
 
@@ -225,59 +192,47 @@ Standard_Boolean OpenGl_BVHTreeSelector::Intersect (const OpenGl_Vec4& theMinPt,
   //    |_ E0
   //   /
   //    E2
-  const OpenGl_Vec4  aShiftedBoxMax  = theMaxPt - theMinPt;
-  Standard_ShortReal aBoxProjMax     = 0.0f, aBoxProjMin     = 0.0f;
-  Standard_ShortReal aFrustumProjMax = 0.0f, aFrustumProjMin = 0.0f;
 
   // E0 test
-  aBoxProjMax = aShiftedBoxMax.x();
-  aFrustumProjMax = myMaxOrthoProjectionPts[0] - DotProduct (OpenGl_Vec4 (1.0f, 0.0f, 0.0f, 1.0f), theMinPt);
-  aFrustumProjMin = myMinOrthoProjectionPts[0] - DotProduct (OpenGl_Vec4 (1.0f, 0.0f, 0.0f, 1.0f), theMinPt);
-  if (aBoxProjMin > aFrustumProjMax
-   || aBoxProjMax < aFrustumProjMin)
+  if (theMinPt.x() > myMaxOrthoProjectionPts[0]
+   || theMaxPt.x() < myMinOrthoProjectionPts[0])
   {
     return Standard_False;
   }
 
   // E1 test
-  aBoxProjMax = aShiftedBoxMax.y();
-  aFrustumProjMax = myMaxOrthoProjectionPts[1] - DotProduct (OpenGl_Vec4 (0.0f, 1.0f, 0.0f, 1.0f), theMinPt);
-  aFrustumProjMin = myMinOrthoProjectionPts[1] - DotProduct (OpenGl_Vec4 (0.0f, 1.0f, 0.0f, 1.0f), theMinPt);
-  if (aBoxProjMin > aFrustumProjMax
-   || aBoxProjMax < aFrustumProjMin)
+  if (theMinPt.y() > myMaxOrthoProjectionPts[1]
+   || theMaxPt.y() < myMinOrthoProjectionPts[1])
   {
     return Standard_False;
   }
 
   // E2 test
-  aBoxProjMax = aShiftedBoxMax.z();
-  aFrustumProjMax = myMaxOrthoProjectionPts[2] - DotProduct (OpenGl_Vec4 (0.0f, 0.0f, 1.0f, 1.0f), theMinPt);
-  aFrustumProjMin = myMinOrthoProjectionPts[2] - DotProduct (OpenGl_Vec4 (0.0f, 0.0f, 1.0f, 1.0f), theMinPt);
-  if (aBoxProjMin > aFrustumProjMax
-   || aBoxProjMax < aFrustumProjMin)
+  if (theMinPt.z() > myMaxOrthoProjectionPts[2]
+   || theMaxPt.z() < myMinOrthoProjectionPts[2])
   {
     return Standard_False;
   }
 
+  Standard_ShortReal aBoxProjMax = 0.0f, aBoxProjMin = 0.0f;
   const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
   for (Standard_Integer aPlaneIter = 0; aPlaneIter < 5; aPlaneIter += anIncFactor)
   {
     OpenGl_Vec4 aPlane = myClipPlanes[aPlaneIter];
-    OpenGl_Vec4 aPt1 (0.0f), aPt2 (0.0f);
-    aPt1 = BinarySign (aPlane) * aShiftedBoxMax;
-    aBoxProjMax = DotProduct (aPlane, aPt1);
-    aFrustumProjMax = myMaxClipProjectionPts[aPlaneIter] - DotProduct (aPlane, theMinPt);
-    aFrustumProjMin = myMinClipProjectionPts[aPlaneIter] - DotProduct (aPlane, theMinPt);
-    if (aFrustumProjMin < aBoxProjMax
-     && aBoxProjMax < aFrustumProjMax)
+    aBoxProjMax = (aPlane.x() > 0.f ? (aPlane.x() * theMaxPt.x()) : aPlane.x() * theMinPt.x()) +
+                  (aPlane.y() > 0.f ? (aPlane.y() * theMaxPt.y()) : aPlane.y() * theMinPt.y()) +
+                  (aPlane.z() > 0.f ? (aPlane.z() * theMaxPt.z()) : aPlane.z() * theMinPt.z());
+    if (aBoxProjMax > myMinClipProjectionPts[aPlaneIter]
+     && aBoxProjMax < myMaxClipProjectionPts[aPlaneIter])
     {
       continue;
     }
 
-    aPt2 = InversedBinarySign (aPlane) * aShiftedBoxMax;
-    aBoxProjMin = DotProduct (aPlane, aPt2);
-    if (aBoxProjMin > aFrustumProjMax
-     || aBoxProjMax < aFrustumProjMin)
+    aBoxProjMin = (aPlane.x() < 0.f ? aPlane.x() * theMaxPt.x() : aPlane.x() * theMinPt.x()) +
+                  (aPlane.y() < 0.f ? aPlane.y() * theMaxPt.y() : aPlane.y() * theMinPt.y()) +
+                  (aPlane.z() < 0.f ? aPlane.z() * theMaxPt.z() : aPlane.z() * theMinPt.z());
+    if (aBoxProjMin > myMaxClipProjectionPts[aPlaneIter]
+     || aBoxProjMax < myMinClipProjectionPts[aPlaneIter])
     {
       return Standard_False;
     }
