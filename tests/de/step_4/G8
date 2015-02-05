@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 
 
 set filename bm4_sd_seal_b.stp
@@ -10,7 +9,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 146  ( 11 )  Summary  = 146  ( 11 
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 540  ( 540 )   Summary  = 2968  ( 2968 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 540  ( 540 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1202  ( 1202 )
-TOLERANCE   : MaxTol   = 6.82509241e-006  ( 6.825090868e-006 )  AvgTol   =  8.413455292e-007  (  8.416840454e-007 )
+TOLERANCE   : MaxTol   = 6.82509241e-006  ( 0.0002065359589 )  AvgTol   =  8.53535451e-007  (  7.209454306e-006 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

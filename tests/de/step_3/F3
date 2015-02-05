@@ -1,8 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
-puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
-puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 Debian60-64: Error : 2 differences with reference data found :" 
 
 set LinuxDiff 2
@@ -12,8 +9,8 @@ set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 283  ( 203 )  Summary  = 283  ( 203 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 863  ( 862 )   Summary  = 5609  ( 5611 )
-STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 863  ( 862 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2370  ( 2375 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 862  ( 862 )   Summary  = 5603  ( 5611 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 862  ( 862 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2367  ( 2375 )
 TOLERANCE   : MaxTol   =   0.2981250817  (   0.1424276318 )  AvgTol   =  0.001247316194  (  0.000646415041 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )

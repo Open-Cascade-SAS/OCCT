@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
@@ -12,8 +11,8 @@ set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 480 )  Warnings = 322  ( 4629 )  Summary  = 322  ( 5109 )
 CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   Summary  = 60881  ( 60890 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   FreeWire = 1612  ( 1613 )   FreeEdge  = 16359 ( 16359 )   SharedEdge = 22931  ( 22935 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   Summary  = 60876  ( 60888 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   FreeWire = 1612  ( 1613 )   FreeEdge  = 16359 ( 16359 )   SharedEdge = 22927  ( 22933 )
 TOLERANCE   : MaxTol   =   0.6032674714  (   0.6032674714 )  AvgTol   =  0.001483351096  (   0.00148733059 )
 LABELS      : N0Labels = 4  ( 7 )  N1Labels = 11017  ( 17868 )  N2Labels = 0  ( 0 )   TotalLabels = 11021  ( 17875 )   NameLabels = 10620  ( 13085 )   ColorLabels = 11018  ( 17867 )   LayerLabels = 10517  ( 17715 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )

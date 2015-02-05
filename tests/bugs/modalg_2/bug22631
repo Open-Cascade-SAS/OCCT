@@ -15,14 +15,14 @@ testreadstep [locate_data_file OCC22145.stp] result
 set square 205444
 
 set nb_v_good 3344
-set nb_e_good 4685
+set nb_e_good 4679
 set nb_w_good 1943
 set nb_f_good 1943
 set nb_sh_good 1
 set nb_sol_good 1
 set nb_compsol_good 0
 set nb_compound_good 2
-set nb_shape_good 11919
+set nb_shape_good 11913
 
 vinit
 tclean result

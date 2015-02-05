@@ -7,7 +7,7 @@ set filename UKI60591.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 6 )  Warnings = 16  ( 35 )  Summary  = 16  ( 41 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 27  ( 27 )  Face     = 183  ( 183 )   Summary  = 1491  ( 1486 )
 STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 27  ( 27 )  Face     = 183  ( 183 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 623  ( 622 )
 TOLERANCE   : MaxTol   =   0.2224706003  (   0.2224706003 )  AvgTol   =  0.003966127058  (  0.003995856355 )

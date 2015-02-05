@@ -9,10 +9,10 @@ set filename r76sy.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 1  ( 4 )  Warnings = 68  ( 103 )  Summary  = 69  ( 107 )
-CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 2  ( 0 )  Faces    = 2  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 23  ( 23 )  Shell    = 46  ( 47 )  Face     = 193  ( 194 )   Summary  = 1329  ( 1357 )
 STATSHAPE   : Solid    = 23  ( 23 )  Shell    = 46  ( 47 )  Face     = 193  ( 194 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 494  ( 504 )
-TOLERANCE   : MaxTol   =   0.0205434719  (   0.0293421419 )  AvgTol   =  0.0005051439412  (  0.001018331812 )
+TOLERANCE   : MaxTol   =   0.0205434719  (   0.0293421419 )  AvgTol   =  0.0005065999101  (   0.00138068504 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 67  ( 67 )  N2Labels = 0  ( 0 )   TotalLabels = 70  ( 70 )   NameLabels = 5  ( 5 )   ColorLabels = 46  ( 45 )   LayerLabels = 42  ( 45 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

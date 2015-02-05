@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 
 
 set filename bm4_id_punch_a.stp
@@ -10,7 +9,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 24  ( 20 )  Summary  = 24  ( 20 )
 CHECKSHAPE  : Wires    = 4  ( 4 )  Faces    = 4  ( 4 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 182  ( 182 )   Summary  = 1260  ( 1253 )
 STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 182  ( 182 )   FreeWire = 0  ( 0 )   FreeEdge  = 6 ( 6 )   SharedEdge = 508  ( 508 )
-TOLERANCE   : MaxTol   = 0.007713500664  ( 0.007713500658 )  AvgTol   =  0.0007455576952  (  0.0007455867855 )
+TOLERANCE   : MaxTol   = 0.007713500664  (  0.00997839292 )  AvgTol   =  0.0007764946067  (  0.0009476325736 )
 LABELS      : N0Labels = 7  ( 7 )  N1Labels = 6  ( 6 )  N2Labels = 0  ( 0 )   TotalLabels = 13  ( 13 )   NameLabels = 13  ( 13 )   ColorLabels = 4  ( 4 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

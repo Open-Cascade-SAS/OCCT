@@ -875,21 +875,53 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d &p2dPrev,
   case GeomAbs_SurfaceOfRevolution :
   case GeomAbs_OffsetSurface :
 
-//    if ( ! mySurf->Continuity() == GeomAbs_C0 ) //: S4030: fix on BUC40132 8355 & PRO7978 1987: SI because of bad data
     {
+      if (surftype == GeomAbs_BSplineSurface)
+      {
+        Handle(Geom_BSplineSurface) aBSpline =  SurfAdapt.BSpline();
+
+        //Check near to knot position ~ near to C0 points on U isoline.
+        if ( SurfAdapt.UContinuity() == GeomAbs_C0 )
+        {
+          Standard_Integer aMinIndex = aBSpline->FirstUKnotIndex();
+          Standard_Integer aMaxIndex = aBSpline->LastUKnotIndex();
+          for (Standard_Integer anIdx = aMinIndex; anIdx <= aMaxIndex; ++anIdx)
+          {
+            Standard_Real aKnot = aBSpline->UKnot(anIdx);
+            if (Abs (aKnot - p2dPrev.X()) < Precision::Confusion())
+              return ValueOfUV ( P3D, preci );
+          }
+        }
+
+        //Check near to knot position ~ near to C0 points on U isoline.
+        if ( SurfAdapt.VContinuity() == GeomAbs_C0 )
+        {
+          Standard_Integer aMinIndex = aBSpline->FirstVKnotIndex();
+          Standard_Integer aMaxIndex = aBSpline->LastVKnotIndex();
+          for (Standard_Integer anIdx = aMinIndex; anIdx <= aMaxIndex; ++anIdx)
+          {
+            Standard_Real aKnot = aBSpline->VKnot(anIdx);
+            if (Abs (aKnot - p2dPrev.Y()) < Precision::Confusion())
+              return ValueOfUV ( P3D, preci );
+          }
+        }
+      }
+
       gp_Pnt2d sol;
       Standard_Boolean res = SurfaceNewton(p2dPrev,P3D,preci,sol);
-      if ( res ) {
-	Standard_Real gap = P3D.Distance ( Value(sol) );
-	if ( res ==2 || //:q6 abv 19 Mar 99: protect against strange attractors
-	     (maxpreci > 0. && gap - maxpreci > Precision::Confusion()) ) { //:q1: check with maxpreci
-	  Standard_Real U = sol.X(), V = sol.Y();
-	  myGap = UVFromIso ( P3D, preci, U, V );
-//	  gp_Pnt2d p = ValueOfUV ( P3D, preci );
-	  if ( gap >= myGap ) return gp_Pnt2d ( U, V );
-	}
-	myGap = gap;
-	return sol;
+      if ( res )
+      {
+        Standard_Real gap = P3D.Distance ( Value(sol) );
+        if ( res == 2 || //:q6 abv 19 Mar 99: protect against strange attractors
+          ( maxpreci > 0. && gap - maxpreci > Precision::Confusion()) ) 
+        { //:q1: check with maxpreci
+          Standard_Real U = sol.X(), V = sol.Y();
+          myGap = UVFromIso ( P3D, preci, U, V );
+          //	  gp_Pnt2d p = ValueOfUV ( P3D, preci );
+          if ( gap >= myGap ) return gp_Pnt2d ( U, V );
+        }
+        myGap = gap;
+        return sol;
       }
     }
     break;

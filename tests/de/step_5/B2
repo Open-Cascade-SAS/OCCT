@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 
 
 set filename tr10_r0601_id.stp
@@ -10,7 +9,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 220  ( 206 )  Summary  = 220  ( 20
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 1327  ( 1327 )   Summary  = 9260  ( 9174 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 1327  ( 1327 )   FreeWire = 0  ( 0 )   FreeEdge  = 84 ( 84 )   SharedEdge = 3872  ( 3871 )
-TOLERANCE   : MaxTol   =   0.0796871773  (  0.07968717732 )  AvgTol   =  0.0006261194411  (  0.0006235910117 )
+TOLERANCE   : MaxTol   =   0.0796871773  (  0.07968717732 )  AvgTol   =  0.0006764981779  (  0.001240885709 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 3707  ( 3707 )  N2Labels = 0  ( 0 )   TotalLabels = 3710  ( 3710 )   NameLabels = 5  ( 5 )   ColorLabels = 3706  ( 3706 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 8  ( 8 )

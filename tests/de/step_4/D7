@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 
 
 set filename r65b-pe.stp
@@ -10,7 +9,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 4 )  Summary  = 14  ( 4 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 676  ( 676 )   Summary  = 4405  ( 4405 )
 STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 676  ( 676 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1789  ( 1789 )
-TOLERANCE   : MaxTol   = 0.0006316631238  ( 0.0006316631238 )  AvgTol   =  1.900834081e-005  (  1.900839893e-005 )
+TOLERANCE   : MaxTol   = 0.002842802207  (  0.01045213326 )  AvgTol   =  9.202667589e-005  (  0.001200450607 )
 LABELS      : N0Labels = 5  ( 5 )  N1Labels = 680  ( 680 )  N2Labels = 0  ( 0 )   TotalLabels = 685  ( 685 )   NameLabels = 9  ( 9 )   ColorLabels = 0  ( 0 )   LayerLabels = 676  ( 676 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

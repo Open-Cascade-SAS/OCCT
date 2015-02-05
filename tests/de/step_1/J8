@@ -8,7 +8,7 @@ set filename bm1_sy_lever.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 11  ( 9 )  Summary  = 11  ( 9 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 99  ( 99 )   Summary  = 655  ( 656 )
 STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 99  ( 99 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 266  ( 266 )
 TOLERANCE   : MaxTol   =    3.000180002  (    3.000180002 )  AvgTol   =    0.1203601833  (    0.1203606739 )

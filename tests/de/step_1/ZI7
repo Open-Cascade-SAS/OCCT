@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 
 
 set filename PRO9245.stp
@@ -10,7 +9,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 2 )  Summary  = 4  ( 2 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 12  ( 12 )  Face     = 12  ( 12 )   Summary  = 136  ( 136 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 12  ( 12 )  Face     = 12  ( 12 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 49  ( 49 )
-TOLERANCE   : MaxTol   = 0.0009846163783  ( 0.0009846163783 )  AvgTol   =  7.79898348e-005  (  7.798983564e-005 )
+TOLERANCE   : MaxTol   = 0.0009846163783  (  0.09817574823 )  AvgTol   =  7.811513437e-005  (  0.005635227301 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

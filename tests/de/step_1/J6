@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 
 set LinuxDiff 2
 set LinuxFaulties {STATSHAPE}
@@ -8,9 +7,9 @@ set filename bm1_pe_t4.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 2 )  Warnings = 19  ( 27 )  Summary  = 19  ( 29 )
-CHECKSHAPE  : Wires    = 2  ( 3 )  Faces    = 2  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 13  ( 12 )  Face     = 16  ( 15 )   Summary  = 154  ( 151 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 13  ( 12 )  Face     = 16  ( 15 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 59  ( 60 )
+CHECKSHAPE  : Wires    = 2  ( 3 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 12  ( 12 )  Face     = 15  ( 15 )   Summary  = 151  ( 151 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 12  ( 12 )  Face     = 15  ( 15 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 59  ( 60 )
 TOLERANCE   : MaxTol   =    1562.051497  (    1562.051497 )  AvgTol   =     192.5735494  (     206.7634854 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )

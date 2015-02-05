@@ -1,7 +1,7 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
-puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO 0025623 ALL: CHECKSHAPE : Faulty" 
 
 set LinuxDiff 3
 set filename Amino_172448-65210.igs
@@ -9,9 +9,9 @@ set filename Amino_172448-65210.igs
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 56  ( 12 )  Summary  = 56  ( 12 )
-CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2346  ( 1106 )   Summary  = 59781  ( 25969 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2346  ( 2342 )   FreeWire = 2328  ( 2328 )   FreeEdge  = 14016 ( 14016 )   SharedEdge = 24556  ( 10687 )
+CHECKSHAPE  : Wires    = 2  ( 1 )  Faces    = 2  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2342  ( 1106 )   Summary  = 59777  ( 25969 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2342  ( 2342 )   FreeWire = 2328  ( 2328 )   FreeEdge  = 14016 ( 14016 )   SharedEdge = 24558  ( 10687 )
 TOLERANCE   : MaxTol   =   0.9711309062  (   0.9711309063 )  AvgTol   =   0.01916076754  (   0.01948753951 )
 LABELS      : N0Labels = 250  ( 250 )  N1Labels = 2268  ( 3205 )  N2Labels = 0  ( 0 )   TotalLabels = 2518  ( 3455 )   NameLabels = 2518  ( 3453 )   ColorLabels = 2512  ( 3449 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )

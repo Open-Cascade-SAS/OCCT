@@ -307,7 +307,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
   c2d = InterpolatePCurve (nbPini, thePnts2d, theParams2d, c3d);
 //  c2d = ApproximatePCurve (nbPini, thePnts2d, theParams2d, c3d);
 //  Faut-il aussi reprendre la C3D ?
-
   myStatus |= ShapeExtend::EncodeStatus (c2d.IsNull() ? ShapeExtend_FAIL1 : ShapeExtend_DONE2);
   return Status (ShapeExtend_DONE);
 }
@@ -463,19 +462,211 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
   return result;
 }
 
+ //! Fix possible period jump and handle walking period parameter.
+ static Standard_Boolean fixPeriodictyTroubles(gp_Pnt2d *thePnt, // pointer to gp_Pnt2d[4] beginning
+                                               Standard_Integer theIdx, // Index of objective coord: 1 ~ X, 2 ~ Y
+                                               Standard_Real thePeriod) // Period on objective coord
+ {
+   Standard_Integer i;
+
+   Standard_Boolean isNeedToFix = Standard_True;
+   for (i = 0; i < 3; i++)
+   {
+     Standard_Real aDiff = Abs (thePnt[i].Coord(theIdx) - thePnt[i + 1].Coord(theIdx));
+     if ( aDiff > Precision::PConfusion() && 
+          aDiff < thePeriod - Precision::PConfusion())
+     {
+       // Walk over period coord -> not walking on another isoline in parameter space.
+       isNeedToFix = Standard_False; 
+     }
+   }
+
+   if (isNeedToFix)
+   {
+     // Walking on isoline on another parameter. Fix period paramter to obtained minimum.
+     Standard_Real aFixParam = Min (thePnt[0].Coord(theIdx), thePnt[3].Coord(theIdx));
+     for(i = 0; i < 4; i++)
+       thePnt[i].SetCoord(theIdx, aFixParam);
+   }
+
+   // Fix possible period jump on first point.
+   if ( Abs(thePnt[0].Coord(theIdx) - thePnt[1].Coord(theIdx) ) >  thePeriod / 2.01)
+   {
+     Standard_Real aMult = thePnt[0].Coord(theIdx) < thePnt[1].Coord(theIdx) ? 1.0 : -1.0;
+     Standard_Real aNewParam = thePnt[0].Coord(theIdx) + aMult * thePeriod;
+     thePnt[0].SetCoord(theIdx, aNewParam);
+     return Standard_False;
+   }
+
+   // Fix possible period jump on last point.
+   if ( Abs(thePnt[2].Coord(theIdx) - thePnt[3].Coord(theIdx) ) >  thePeriod / 2.01)
+   {
+     Standard_Real aMult = thePnt[3].Coord(theIdx) < thePnt[2].Coord(theIdx) ? 1.0 : -1.0;
+     Standard_Real aNewParam = thePnt[3].Coord(theIdx) + aMult * thePeriod;
+     thePnt[3].SetCoord(theIdx, aNewParam);
+     return Standard_False;
+   }
+
+   return Standard_True;
+ }
+
+//=======================================================================
+//function : getLine
+//purpose  : 
+//=======================================================================
+
+ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::getLine(
+   const TColgp_Array1OfPnt& thepoints,
+   const TColStd_Array1OfReal& theparams,
+   TColgp_Array1OfPnt2d& thePnt2ds,
+   Standard_Real theTol,
+   Standard_Boolean &isRecompute) const 
+ {
+   Standard_Integer nb =  thepoints.Length();
+   gp_Pnt aP[4];
+   aP[0] = thepoints(1);
+   aP[1] = thepoints(2);
+   aP[2] = thepoints(nb - 1);
+   aP[3] = thepoints(nb);
+   gp_Pnt2d aP2d[4];
+   Standard_Integer i = 0;
+
+   Standard_Real aTol2 = theTol * theTol;
+   Standard_Boolean isPeriodicU = mySurf->Surface()->IsUPeriodic();
+   Standard_Boolean isPeriodicV = mySurf->Surface()->IsVPeriodic();
+
+   // Workaround:
+   // Protection against bad "tolerance" shapes.
+   if (aTol2 > 1.0)
+   {
+     theTol = Precision::Confusion();
+     aTol2 = theTol * theTol;
+   }
+   Standard_Real anOldTol2 = aTol2;
+
+   // project first and last points
+   for( ; i < 4; i +=3)
+   {
+     Standard_Integer j;
+     for ( j=0; j < myNbCashe; j++ ) 
+       if ( myCashe3d[j].SquareDistance (aP[i] ) < aTol2)
+       {
+         aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, 
+           theTol);
+         break;
+       }
+       if ( j >= myNbCashe )
+         aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
+
+       Standard_Real aDist = mySurf->Gap();
+       Standard_Real aCurDist = aDist * aDist;
+       if( aTol2 < aDist * aDist)
+         aTol2 = aCurDist;
+   }
+
+   if ( isPeriodicU || isPeriodicV )
+   {
+     // Compute second and last but one c2d points.
+     for(i = 1; i < 3; i++)
+     {
+       Standard_Integer j;
+       for ( j=0; j < myNbCashe; j++ ) 
+         if ( myCashe3d[j].SquareDistance (aP[i] ) < aTol2)
+         {
+           aP2d[i] = mySurf->NextValueOfUV (myCashe2d[j], aP[i], theTol, theTol);
+           break;
+         }
+         if ( j >= myNbCashe )
+           aP2d[i] = mySurf->ValueOfUV(aP[i], theTol);
+
+         Standard_Real aDist = mySurf->Gap();
+         Standard_Real aCurDist = aDist * aDist;
+         if( aTol2 < aDist * aDist)
+           aTol2 = aCurDist;
+     }
+
+     if (isPeriodicU)
+     {
+       isRecompute = fixPeriodictyTroubles(&aP2d[0], 1 /* X Coord */, mySurf->Surface()->UPeriod());
+     }
+
+     if (isPeriodicV)
+     {
+       isRecompute = fixPeriodictyTroubles(&aP2d[0], 2 /* Y Coord */, mySurf->Surface()->VPeriod());
+     }
+   }
+
+   thePnt2ds.SetValue(1, aP2d[0]);
+   thePnt2ds.SetValue(nb, aP2d[3]);
+
+   // Restore old tolerance in 2d space to avoid big gap cases.
+   aTol2 = anOldTol2;
+   // Check that straight line in 2d with parameterisation as in 3d will fit 
+   // fit 3d curve at all points.
+   Standard_Real dPar = theparams(nb) - theparams(1);
+   if ( Abs(dPar) < Precision::PConfusion() )
+     return 0;
+   gp_Vec2d aVec0 (aP2d[0], aP2d[3]);
+   gp_Vec2d aVec = aVec0 / dPar;
+   Standard_Real aFirstPointDist = mySurf->Surface()->Value(aP2d[0].X(), aP2d[0].Y()). 
+                                   SquareDistance(thepoints(1));
+   for(i = 2; i <  nb; i++)
+   {
+     gp_XY aCurPoint = aP2d[0].XY() + aVec.XY() * (theparams(i) - theparams(1));
+     gp_Pnt aCurP;
+     mySurf->Surface()->D0(aCurPoint.X(), aCurPoint.Y(), aCurP);
+     Standard_Real aDist1 = aCurP.SquareDistance(thepoints(i));
+
+     if(Abs (aFirstPointDist - aDist1) > aTol2)
+       return 0;
+   }
+
+   // check if pcurve can be represented by Geom2d_Line (parameterised by length)
+   Standard_Real aLLength = aVec0.Magnitude();
+   if ( Abs (aLLength - dPar) <= Precision::PConfusion() )
+   {
+     gp_XY aDirL = aVec0.XY() / aLLength;
+     gp_Pnt2d aPL (aP2d[0].XY() - theparams(1) * aDirL);
+     return new Geom2d_Line (aPL, gp_Dir2d(aDirL));
+   }
+
+   // create straight bspline
+   TColgp_Array1OfPnt2d aPoles(1, 2);
+   aPoles(1) = aP2d[0];
+   aPoles(2) = aP2d[3];
+
+   TColStd_Array1OfReal aKnots(1,2);
+   aKnots(1) = theparams(1);
+   aKnots(2) = theparams(theparams.Length());
+
+   TColStd_Array1OfInteger aMults(1,2);
+   aMults(1) = 2;
+   aMults(2) = 2;
+   Standard_Integer aDegree = 1;
+   Handle(Geom2d_BSplineCurve) abspl2d =
+     new Geom2d_BSplineCurve (aPoles, aKnots, aMults, aDegree);
+   return abspl2d;
+ }
+
 //=======================================================================
 //function : ApproxPCurve
 //purpose  : 
 //=======================================================================
 
- Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standard_Integer nbrPnt,
+  Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::ApproxPCurve(const Standard_Integer nbrPnt,
 								     const TColgp_Array1OfPnt& points,
 								     const TColStd_Array1OfReal& params,
 								     TColgp_Array1OfPnt2d& pnt2d,
 								     Handle(Geom2d_Curve)& c2d) 
 {
-  Standard_Boolean isDone = Standard_True;
-  
+  // for performance, first try to handle typical case when pcurve is straight
+  Standard_Boolean isRecompute = Standard_False;
+  c2d = getLine(points, params, pnt2d, myPreci, isRecompute);
+  if(!c2d.IsNull())
+  {
+    return Standard_True;
+  }
+    Standard_Boolean isDone = Standard_True;
   // test if the curve 3d is a boundary of the surface 
   // (only for Bezier or BSpline surface)
   
@@ -628,17 +819,29 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
       if     ( (i == 1)      && p1OnIso)  p2d = valueP1;
       else if( (i == nbrPnt) && p2OnIso)  p2d = valueP2;
       else  {// general case (not an iso)  mais attention aux singularites !
-	if ( ii==1 ) {
-	  //:q9 abv 23 Mar 99: use cashe as 1st approach
-	  Standard_Integer j; // svv #1
-	  for ( j=0; j < myNbCashe; j++ ) 
-	    if ( myCashe3d[j].SquareDistance ( p3d ) < myPreci*myPreci ) {
-	      p2d = mySurf->NextValueOfUV (myCashe2d[j], p3d, myPreci, 
-					   Precision::Confusion()+gap);
-	      break;
-	    }
-	  if ( j >= myNbCashe ) p2d = mySurf->ValueOfUV(p3d, myPreci); 
-	}
+        // first and last points are already computed by getLine()
+        if ( (i == 1 || i == nbrPnt))
+        {
+          if (!isRecompute)
+          {
+            p2d = pnt2d(i);
+            gap = mySurf->Gap();
+            continue;
+          }
+          else
+          {
+            //:q9 abv 23 Mar 99: use cashe as 1st approach
+            Standard_Integer j; // svv #1
+            for ( j=0; j < myNbCashe; j++ ) 
+              if ( myCashe3d[j].SquareDistance ( p3d ) < myPreci*myPreci )
+              {
+                p2d = mySurf->NextValueOfUV (myCashe2d[j], p3d, myPreci, 
+                  Precision::Confusion()+gap);
+                break;
+              }
+              if ( j >= myNbCashe ) p2d = mySurf->ValueOfUV(p3d, myPreci);
+          }
+        }
         else {
           p2d = mySurf->NextValueOfUV (p2d, p3d, myPreci, //:S4030: optimizing
                                        Precision::Confusion()+1000*gap); //:q1
@@ -964,21 +1167,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
     myCashe2d[1] = pnt2d(1);
     myCashe2d[0] = pnt2d(nbrPnt);
   }
-  
-  if (isoParam && isoPar2d3d) {
-    
-    // create directly isoparametrics (PCurve)
-    
-    gp_Vec2d aVec2d(valueP1, valueP2);
-    gp_Dir2d aDir2d(aVec2d);
-    gp_Pnt2d P0;
-    
-    if (isoTypeU) P0.SetCoord(valueP1.X(), valueP1.Y() - params(1)*aDir2d.Y());
-    else          P0.SetCoord(valueP1.X() - params(1)*aDir2d.X(), valueP1.Y());
-    
-    c2d = new Geom2d_Line(P0, aDir2d);
-  }
-
   return isDone;
 }
 
@@ -1432,7 +1620,7 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(cons
     if (mp[0] > 0 && 
 	( ! p1OnIso || currd2[0] < mind2[0] ) ) {
       p1OnIso = Standard_True;
-      mind2[0] = currd2[0];
+      mind2[0] = currd2[0]; // LP2.stp #105899: FLT_INVALID_OPERATION on Windows 7 VC 9 Release mode on the whole file 
       if (isoU) valueP1.SetCoord(isoVal, tp[0]);
       else      valueP1.SetCoord(tp[0], isoVal);
     }

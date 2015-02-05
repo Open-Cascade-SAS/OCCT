@@ -210,6 +210,18 @@ is
     	    	    	   pout      : out Array1OfReal from TColStd)
     returns Boolean is private;
 
+    getLine(me ;  points    : Array1OfPnt from TColgp;
+            params    : Array1OfReal from TColStd;
+            points2d: out Array1OfPnt2d from TColgp;
+            theTol : Real;
+            IsRecompute: in out Boolean) returns Curve from Geom2d is protected;
+    ---Purpose: Try to approximate 3D curve by Geom2d_Line 
+    --         or Geom2d_BsplineCurve with degree 1 with specified tolerance.
+    --         points - points obtained from 3d curve.
+    --         params - parameters corresponding points on 3d curves
+    --         points2d - 2d points lies on line in parametric space
+    --         theTol - tolerance used for compare initial points 3d and
+    --         3d points obtained from line lying in parameric space of surface
 
 fields
 

@@ -4,7 +4,7 @@ set filename bm1_ie_t4.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 15  ( 15 )  Face     = 16  ( 16 )   Summary  = 173  ( 173 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 15  ( 15 )  Face     = 16  ( 16 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 62  ( 62 )
 TOLERANCE   : MaxTol   = 0.005727453836  ( 0.005727453946 )  AvgTol   =  0.001247002689  (  0.001247002697 )

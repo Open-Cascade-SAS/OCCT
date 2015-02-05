@@ -5,6 +5,7 @@ puts ""
 ##################################################
 # Improve FixShape to correct case of touching wires
 ##################################################
+puts "TODO CR22598 ALL: Faulty shapes in variables faulty_1 to faulty_" 
 
 pload XDE
 

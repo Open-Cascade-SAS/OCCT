@@ -491,18 +491,6 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
 
 //    step = 2;
 
-    // adding by skl 28.03.2003 for usung Line instead of BSpline
-    Standard_Real fp=0.,lp=0.;
-    Standard_Boolean isLine=Standard_False;
-    if(c2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-      Handle(Geom2d_TrimmedCurve) tc = Handle(Geom2d_TrimmedCurve)::DownCast(c2d);
-      if(tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line))) {
-        fp = tc->FirstParameter();
-        lp = tc->LastParameter();
-        isLine = Standard_True;
-      }
-    }
-
     if (isSeam) {
       // On ne sait pas laquelle est Forward. Au PIF. La geometrie Forward
       // sera mise a jour dans ComputeWire
@@ -536,12 +524,6 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
     }
     else {
       B.UpdateEdge (edge,c2d,surf,location, 0.); //#82 rln 16.03.99: preci
-    }
-
-    if ( isLine ) {
-      B.Range(edge,surf,location,fp,lp);
-      B.SameParameter(edge,Standard_False);
-      B.SameRange(edge,Standard_False);
     }
 
     //  Conclusion
