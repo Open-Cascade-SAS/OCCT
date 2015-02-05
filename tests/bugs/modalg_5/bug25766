@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC25766"
+puts "========"
+puts ""
+########################################################################################
+# Exception is raised during building section using BRepAlgo_Section on attached faces
+########################################################################################
+
+restore [locate_data_file OCC25766_surface1.brep] b1
+restore [locate_data_file OCC25766_surface2.brep] b2
+section r b1 b2

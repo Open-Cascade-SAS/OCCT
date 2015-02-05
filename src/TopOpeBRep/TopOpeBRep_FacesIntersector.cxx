@@ -1167,38 +1167,25 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(IntPatch_SequenceOfLine&   
   Standard_Real Fp = 0., Lp = 0.;
 
 
-  if( WLineRank == 1 )
-    {
-      Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
-      Standard_Integer arcnumber = GetArc(theSlin,WLineRank,theSurface1,theDomain1,theSurface2,testPoint,TolVrtx,aLineOn2S,Fp,Lp);
-
-      if( arcnumber == 0 )
-	return;
-     
-      Handle(IntPatch_WLine) anWLine = NULL;
-      anWLine = GetMergedWLineOnRestriction(theSlin,TolVrtx,aLineOn2S);
-#ifdef OCCT_DEBUG
-	  cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction S1 to WLine ***" << endl;
+  Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
+  //
+  Standard_Integer arcnumber = (WLineRank == 1) ?
+      GetArc(theSlin,WLineRank,theSurface1,theDomain1,theSurface2,testPoint,TolVrtx,aLineOn2S,Fp,Lp) :
+      GetArc(theSlin,WLineRank,theSurface2,theDomain2,theSurface1,testPoint,TolVrtx,aLineOn2S,Fp,Lp);
+  //    
+  if (arcnumber == 0) {
+    return;
+  }
+  //
+  Handle(IntPatch_WLine) anWLine = GetMergedWLineOnRestriction(theSlin,TolVrtx,aLineOn2S);
+  if (!anWLine.IsNull()) {
+    theSlin.Clear();
+    theSlin.Append(anWLine);
+#ifdef DEB
+    cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction " 
+         << ((WLineRank == 1) ? "S1" : "S2") << " to WLine***" << endl;
 #endif
-      theSlin.Clear();
-      theSlin.Append(anWLine);
-    }
-  else
-    {
-      Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
-      Standard_Integer arcnumber = GetArc(theSlin,WLineRank,theSurface2,theDomain2,theSurface1,testPoint,TolVrtx,aLineOn2S,Fp,Lp);
-      
-      if( arcnumber == 0 )
-	return;
-
-      Handle(IntPatch_WLine) anWLine = NULL;
-      anWLine = GetMergedWLineOnRestriction(theSlin,TolVrtx,aLineOn2S);
-#ifdef OCCT_DEBUG
-	  cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction S2 to WLine***" << endl;
-#endif
-      theSlin.Clear();
-      theSlin.Append(anWLine);
-    }
+  }
 }
 
 //=========================================================================================
@@ -1498,6 +1485,11 @@ static Handle(IntPatch_WLine) GetMergedWLineOnRestriction(IntPatch_SequenceOfLin
 									   const Standard_Real&               theVrtxTol,
 									   const Handle(IntSurf_LineOn2S)&    theLineOn2S)
 {
+  Handle(IntPatch_WLine) mWLine;
+  if (theLineOn2S->NbPoints() == 0) {
+    return mWLine;
+  }
+  //
   IntSurf_TypeTrans trans1 = IntSurf_Undecided;
   IntSurf_TypeTrans trans2 = IntSurf_Undecided;
   Standard_Integer i = 0;
@@ -1515,7 +1507,7 @@ static Handle(IntPatch_WLine) GetMergedWLineOnRestriction(IntPatch_SequenceOfLin
 	trans2 = aWLine->TransitionOnS2();
     }
 
-  Handle(IntPatch_WLine) mWLine = new IntPatch_WLine(theLineOn2S, Standard_False, trans1, trans2);
+  mWLine = new IntPatch_WLine(theLineOn2S, Standard_False, trans1, trans2);
 
   Standard_Integer NbPnts = mWLine->NbPnts();
   IntPatch_Point aFirstVertex, aLastVertex;
