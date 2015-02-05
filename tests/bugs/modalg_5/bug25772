@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC24154"
+puts "============"
+puts ""
+######################################################
+# Wrong result of CUT operation
+######################################################
+
+restore [locate_data_file pl1.brep] pl
+restore [locate_data_file selected_holes.brep] hl
+
+bcut result pl hl
+
+checkshape result
+
+# Analysis of "nbshapes res"
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+
+smallview
+donly result
+fit
+set only_screen_axo 1
