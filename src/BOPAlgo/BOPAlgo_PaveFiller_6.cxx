@@ -69,7 +69,7 @@
 #include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPCol_DataMapOfIntegerReal.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
@@ -168,11 +168,11 @@ class BOPAlgo_FaceFace :
 typedef BOPCol_NCVector
   <BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_FaceFace,
   BOPAlgo_VectorOfFaceFace> BOPAlgo_FaceFaceFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_FaceFaceFunctor,
   BOPAlgo_VectorOfFaceFace> BOPAlgo_FaceFaceCnt;
 /////////////////////////////////////////////////////////////////////////

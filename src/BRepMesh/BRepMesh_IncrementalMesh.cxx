@@ -16,6 +16,7 @@
 
 #include <BRepMesh_IncrementalMesh.hxx>
 
+#include <OSD_Parallel.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 
@@ -51,11 +52,6 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 #include <GCPnts_TangentialDeflection.hxx>
-
-#ifdef HAVE_TBB
-  // paralleling using Intel TBB
-  #include <tbb/parallel_for_each.h>
-#endif
 
 namespace
 {
@@ -223,19 +219,7 @@ void BRepMesh_IncrementalMesh::update()
     update(aFaceIt.Value());
 
   // Mesh faces
-#ifdef HAVE_TBB
-  if (myInParallel)
-  {
-    tbb::parallel_for_each(myFaces.begin(), myFaces.end(), *myMesh);
-  }
-  else
-  {
-#endif
-    for (aFaceIt.Init(myFaces); aFaceIt.More(); aFaceIt.Next())
-      myMesh->Process(aFaceIt.Value());
-#ifdef HAVE_TBB
-  }
-#endif
+  OSD_Parallel::ForEach(myFaces.begin(), myFaces.end(), *myMesh, !myInParallel);
 
   commit();
   clear();
@@ -577,12 +561,7 @@ Standard_Integer BRepMesh_IncrementalMesh::Discret(
 //=======================================================================
 Standard_Boolean BRepMesh_IncrementalMesh::IsParallelDefault()
 {
-#ifdef HAVE_TBB
   return IS_IN_PARALLEL;
-#else
-  // no alternative parallelization yet - flag has no meaning
-  return Standard_False;
-#endif
 }
 
 //=======================================================================

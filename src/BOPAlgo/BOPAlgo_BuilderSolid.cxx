@@ -62,7 +62,7 @@
 #include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 //
 #include <BOPTools.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
@@ -247,13 +247,13 @@ class BOPAlgo_FaceSolid : public BOPAlgo_Algo {
 typedef BOPCol_NCVector
   <BOPAlgo_FaceSolid> BOPAlgo_VectorOfFaceSolid; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_FaceSolid,
   BOPAlgo_VectorOfFaceSolid,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_FaceSolidFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_FaceSolidFunctor,
   BOPAlgo_VectorOfFaceSolid,
   Handle(IntTools_Context)> BOPAlgo_FaceSolidCnt;

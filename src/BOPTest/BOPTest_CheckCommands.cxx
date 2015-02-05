@@ -41,10 +41,9 @@
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
 #include <BOPAlgo_CheckResult.hxx>
-
 #include <BOPTools_AlgoTools.hxx>
 
-#include <BOPTest_Chronometer.hxx>
+#include <OSD_Timer.hxx>
 #include <BOPTest_Objects.hxx>
 
 //
@@ -204,7 +203,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
     if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
     }
-  }
+      }
   //
   //aLevel = (n==3) ? Draw::Atoi(a[2]) : aNbInterfTypes-1;
   //-------------------------------------------------------------------
@@ -218,7 +217,6 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   BOPAlgo_CheckerSI aChecker;
   BOPCol_ListOfShape aLS;
   BOPDS_MapIteratorMapOfPassKey aItMPK;
-  BOPTest_Chronometer aChrono;
   //
   if (aLevel < (aNbInterfTypes-1)) {
     di << "Info:\nThe level of check is set to " 
@@ -239,11 +237,13 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   aChecker.SetRunParallel(bRunParallel);
   aChecker.SetFuzzyValue(aTol);
   //
-  aChrono.Start();
+  OSD_Timer aTimer;
+  aTimer.Start();
   //
   aChecker.Perform();
   //
-  aChrono.Stop();
+  aTimer.Stop();
+  aTimer.Show();
   //
   iErr=aChecker.ErrorStatus();
   //
@@ -316,11 +316,9 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   if (!iCnt) {
     di << " This shape seems to be OK." << "\n";
   }
-  if (bShowTime) {
-    Standard_Real aTime;
-    //
-    aTime=aChrono.Time();
-    Sprintf(buf, "  Tps: %7.2lf\n", aTime);
+  if (bShowTime)
+  {
+    Sprintf(buf, "  Tps: %7.2lf\n", aTimer.ElapsedTime());
     di << buf;
   }
   return 0;
@@ -924,7 +922,7 @@ Standard_Integer xdistef(Draw_Interpretor& di,
                          Standard_Integer n,
                          const char** a)
 {
-  if(n < 3) { 
+  if(n < 3) {
     di << "use xdistef edge face\n";
     return 1;
   }

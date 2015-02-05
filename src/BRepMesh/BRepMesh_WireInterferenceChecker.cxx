@@ -20,7 +20,6 @@
 // TODO: remove this variable after implementation of LoopChecker2d.
 static const Standard_Real MIN_LOOP_S = 2 * M_PI * 2.E-5;
 
-#ifdef HAVE_TBB
 //=======================================================================
 //function : Constructor
 //purpose  :
@@ -40,30 +39,6 @@ BRepMesh_WireInterferenceChecker::BRepMesh_WireInterferenceChecker(
 //purpose  : 
 //=======================================================================
 void BRepMesh_WireInterferenceChecker::operator ()(
-  const tbb::blocked_range<Standard_Integer>& theWireRange) const
-{
-  for (Standard_Integer i = theWireRange.begin(); i != theWireRange.end(); ++i)
-    this->operator ()(i);
-}
-#else
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-BRepMesh_WireInterferenceChecker::BRepMesh_WireInterferenceChecker(
-  const BRepMesh::Array1OfSegmentsTree& theWires,
-  BRepMesh_Status*                      theStatus)
-: myWires (theWires),
-  myStatus(theStatus)
-{
-}
-#endif
-
-//=======================================================================
-//function : Checker's body
-//purpose  : 
-//=======================================================================
-void BRepMesh_WireInterferenceChecker::operator ()(
   const Standard_Integer& theWireId) const
 {
   if (*myStatus == BRepMesh_SelfIntersectingWire)
@@ -75,11 +50,9 @@ void BRepMesh_WireInterferenceChecker::operator ()(
 
   for (Standard_Integer aWireIt = theWireId; aWireIt <= myWires.Upper(); ++aWireIt)
   {
-#ifdef HAVE_TBB
-    // Break execution in case if flag was raised by another thread
+    // Break execution in case if flag was raised by another thread.
     if (*myStatus == BRepMesh_SelfIntersectingWire)
       return;
-#endif
 
     const Standard_Boolean isSelfIntCheck = (aWireIt == theWireId);
     const BRepMesh::SegmentsTree& aWireSegTree2 = 
@@ -93,11 +66,9 @@ void BRepMesh_WireInterferenceChecker::operator ()(
     Standard_Integer aSegmentId1 = aWireSegments1->Lower();
     for (; aSegmentId1 <= aWireSegments1->Upper(); ++aSegmentId1)
     {
-#ifdef HAVE_TBB
       // Break execution in case if flag was raised by another thread
       if (*myStatus == BRepMesh_SelfIntersectingWire)
         return;
-#endif
 
       aSelector.Clear();
       aSelector.SetBox(aWireBoxTree1->FindNode(aSegmentId1).Bnd());
@@ -112,11 +83,9 @@ void BRepMesh_WireInterferenceChecker::operator ()(
       const Standard_Integer aSelectedNb = aSelector.IndicesNb();
       for (Standard_Integer aBndIt = 0; aBndIt < aSelectedNb; ++aBndIt)
       {
-#ifdef HAVE_TBB
         // Break execution in case if flag was raised by another thread
         if (*myStatus == BRepMesh_SelfIntersectingWire)
           return;
-#endif
 
         const Standard_Integer aSegmentId2 = aSelected(aBndIt);
         const BRepMesh::Segment& aSegment2 = aWireSegments2->Value(aSegmentId2);
@@ -154,10 +123,9 @@ void BRepMesh_WireInterferenceChecker::operator ()(
               continue;
           }
 
-#ifdef HAVE_TBB
           Standard_Mutex::Sentry aSentry(myMutex);
-#endif
           *myStatus = BRepMesh_SelfIntersectingWire;
+
           return;
         }
       }

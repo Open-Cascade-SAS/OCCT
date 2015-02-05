@@ -80,7 +80,7 @@
 #include <IntTools_Tools.hxx>
 //
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BRepLib_CheckCurveOnSurface.hxx>
 
 static 
@@ -158,11 +158,11 @@ class BOPTools_CPC {
 //=======================================================================
 typedef BOPCol_NCVector<BOPTools_CPC> BOPTools_VectorOfCPC; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPTools_CPC,
   BOPTools_VectorOfCPC> BOPTools_CPCFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPTools_CPCFunctor,
   BOPTools_VectorOfCPC> BOPTools_CPCCnt;
 //
@@ -192,11 +192,11 @@ class BOPTools_CWT {
 //=======================================================================
 typedef BOPCol_NCVector<BOPTools_CWT> BOPTools_VectorOfCWT; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPTools_CWT,
   BOPTools_VectorOfCWT> BOPTools_CWTFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPTools_CWTFunctor,
   BOPTools_VectorOfCWT> BOPTools_CWTCnt;
 //
@@ -237,11 +237,11 @@ class BOPTools_CDT {
 //=======================================================================
 typedef BOPCol_NCVector<BOPTools_CDT> BOPTools_VectorOfCDT; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPTools_CDT,
   BOPTools_VectorOfCDT> BOPTools_CDTFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPTools_CDTFunctor,
   BOPTools_VectorOfCDT> BOPTools_CDTCnt;
 //
@@ -272,11 +272,11 @@ class BOPTools_CVT {
 //=======================================================================
 typedef BOPCol_NCVector<BOPTools_CVT> BOPTools_VectorOfCVT; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPTools_CVT,
   BOPTools_VectorOfCVT> BOPTools_CVTFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPTools_CVTFunctor,
   BOPTools_VectorOfCVT> BOPTools_CVTCnt;
 //
@@ -306,17 +306,17 @@ class BOPTools_CET {
 //=======================================================================
 typedef BOPCol_NCVector<BOPTools_CET> BOPTools_VectorOfCET; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPTools_CET,
   BOPTools_VectorOfCET> BOPTools_CETFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPTools_CETFunctor,
   BOPTools_VectorOfCET> BOPTools_CETCnt;
 //
 //
 //=======================================================================
-//
+  //
 //=======================================================================
 // Function : CorrectTolerances
 // purpose : 
@@ -1063,6 +1063,6 @@ Standard_Boolean BOPTools_AlgoTools::ComputeTolerance
   //
   theMaxDist = aCS.MaxDistance();
   theMaxPar  = aCS.MaxParameter();
-  //
+    //
   return Standard_True;
 }

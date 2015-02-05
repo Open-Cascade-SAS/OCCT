@@ -21,7 +21,7 @@
 
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_MapOfInteger.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_PaveBlock.hxx>
@@ -75,13 +75,13 @@ class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange {
 typedef BOPCol_NCVector
   <BOPAlgo_ShrunkRange> BOPAlgo_VectorOfShrunkRange; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_ShrunkRange,
   BOPAlgo_VectorOfShrunkRange,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_ShrunkRangeFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_ShrunkRangeFunctor,
   BOPAlgo_VectorOfShrunkRange,
   Handle(IntTools_Context)> BOPAlgo_ShrunkRangeCnt;

@@ -39,8 +39,9 @@
 #include <cstdio>
 #include <cmath>
 #include <iostream>
-#include <OSD_PerfMeter.hxx>
 #include <OSD_Timer.hxx>
+#include <OSD_Parallel.hxx>
+#include <OSD_PerfMeter.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepAlgo_Cut.hxx>
@@ -157,32 +158,23 @@ static Standard_Integer OCC23237 (Draw_Interpretor& di, Standard_Integer /*argc*
   return 0;
 }
 
-#ifdef HAVE_TBB
-
-#include <tbb/blocked_range.h>
-#include <tbb/parallel_for.h>
-
 class IncrementerDecrementer
 {
 public:
     IncrementerDecrementer (Standard_Integer* theVal, Standard_Boolean thePositive) : myVal (theVal), myPositive (thePositive)
     {}
-    void operator() (const tbb::blocked_range<size_t>& r) const
+    void operator() (const size_t) const
     {
-        if (myPositive)
-            for (size_t i = r.begin(); i != r.end(); ++i)
-                Standard_Atomic_Increment (myVal);
-        else
-            for (size_t i = r.begin(); i != r.end(); ++i)
-                Standard_Atomic_Decrement (myVal);
+      if ( myPositive )
+        Standard_Atomic_Increment(myVal);
+      else
+        Standard_Atomic_Decrement(myVal);
     }
 private:
     Standard_Integer*   myVal;
-    Standard_Boolean   myPositive;
+    Standard_Boolean    myPositive;
 };
-#endif
 
-#ifdef HAVE_TBB
 static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
   int aSum = 0;
@@ -200,25 +192,15 @@ static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*
   const int N = 1 << 24; //big enough to ensure concurrency
 
   //increment
-  tbb::parallel_for (tbb::blocked_range<size_t> (0, N), IncrementerDecrementer (&aSum, true));
+  OSD_Parallel::For(0, N, IncrementerDecrementer (&aSum, true));
   QCOMPARE (aSum, N);
 
   //decrement
-  tbb::parallel_for (tbb::blocked_range<size_t> (0, N), IncrementerDecrementer (&aSum, false));
+  OSD_Parallel::For(0, N, IncrementerDecrementer (&aSum, false));
   QCOMPARE (aSum, 0);
 
   return 0;
 }
-
-#else /* HAVE_TBB */
-
-static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char **argv)
-{
-  di << "Test skipped: command " << argv[0] << " requires TBB library\n";
-  return 0;
-}
-
-#endif /* HAVE_TBB */
 
 #include <TDocStd_Application.hxx>
 #include <XCAFApp_Application.hxx>
@@ -2902,6 +2884,92 @@ static Standard_Integer OCC25340 (Draw_Interpretor& /*theDI*/,
   return 0;
 }
 
+//=======================================================================
+//function : OCC24826
+//purpose  :
+//=======================================================================
+class ParallelTest_Saxpy
+{
+public:
+  typedef NCollection_Array1<Standard_Real> Vector;
+
+  //! Constructor
+  ParallelTest_Saxpy(const Vector& theX, Vector& theY, Standard_Real theScalar)
+  : myX(theX),
+    myY(theY),
+    myScalar(theScalar)
+  {
+  }
+
+  //! Dummy calculation
+  void operator() (const Standard_Integer theIndex) const
+  {
+    myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex);
+  }
+
+private:
+  ParallelTest_Saxpy( const ParallelTest_Saxpy& );
+  ParallelTest_Saxpy& operator =( ParallelTest_Saxpy& );
+
+private:
+  const Vector&       myX;
+  Vector&             myY;
+  const Standard_Real myScalar;
+};
+
+//---------------------------------------------------------------------
+static Standard_Integer OCC24826(Draw_Interpretor& theDI,
+                                 Standard_Integer  trheArgc,
+                                 const char**      theArgv)
+{
+  if ( trheArgc != 2 )
+  {
+    theDI << "Usage: "
+          << theArgv[0]
+          << " vec_length\n";
+    return 1;
+  }
+
+  // Generate data;
+  Standard_Integer aLength = Draw::Atoi(theArgv[1]);
+
+  NCollection_Array1<Standard_Real> aX (0, aLength - 1);
+  NCollection_Array1<Standard_Real> anY(0, aLength - 1);
+
+  for ( Standard_Integer i = 0; i < aLength; ++i )
+  {
+    aX(i) = anY(i) = (Standard_Real) i;
+  }
+
+  OSD_Timer aTimer;
+
+  aTimer.Start();
+
+  //! Serial proccesing
+  for ( Standard_Integer i = 0; i < aLength; ++i )
+  {
+    anY(i) = 1e-6 * aX(i) + anY(i);
+  }
+
+  aTimer.Stop();
+  cout << "Processing time (sequential mode):\n";
+  aTimer.Show();
+
+  const ParallelTest_Saxpy aFunctor(aX, anY, 1e-6);
+
+  aTimer.Reset();
+  aTimer.Start();
+
+  // Parallel processing
+  OSD_Parallel::For(0, aLength, aFunctor);
+
+  aTimer.Stop();
+  cout << "Processing time (parallel mode):\n";
+  aTimer.Show();
+
+  return 0;
+}
+
 /*****************************************************************************/
 
 #include <GeomAPI_IntSS.hxx>
@@ -3328,6 +3396,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC24925, group);
   theCommands.Add ("OCC23010", "OCC23010 STEP_file", __FILE__, OCC23010, group);
   theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
+  theCommands.Add ("OCC24826,", "This test performs simple saxpy test.\n Usage: OCC24826 length", __FILE__, OCC24826, group);
   theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);
   theCommands.Add ("OCC25202", "OCC25202 res shape numF1 face1 numF2 face2", __FILE__, OCC25202, group);
   theCommands.Add ("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);

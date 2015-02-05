@@ -52,7 +52,7 @@
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_DataMapOfIntegerShape.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 //
 #include <IntTools_Context.hxx>
 //
@@ -84,11 +84,11 @@ static
 typedef BOPCol_NCVector
   <BOPAlgo_BuilderSolid> BOPAlgo_VectorOfBuilderSolid;
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_BuilderSolid,
   BOPAlgo_VectorOfBuilderSolid> BOPAlgo_BuilderSolidFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_BuilderSolidFunctor,
   BOPAlgo_VectorOfBuilderSolid> BOPAlgo_BuilderSolidCnt;
 //

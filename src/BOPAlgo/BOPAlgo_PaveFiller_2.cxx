@@ -22,7 +22,7 @@
 #include <BRep_Tool.hxx>
 
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 
 #include <IntTools_Context.hxx>
 
@@ -118,13 +118,13 @@ class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
 typedef BOPCol_NCVector
   <BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_VertexEdge,
   BOPAlgo_VectorOfVertexEdge,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_VertexEdgeFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_VertexEdgeFunctor,
   BOPAlgo_VectorOfVertexEdge,
   Handle(IntTools_Context)> BOPAlgo_VertexEdgeCnt;

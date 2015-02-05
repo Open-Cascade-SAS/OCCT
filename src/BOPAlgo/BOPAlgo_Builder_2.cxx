@@ -36,7 +36,7 @@
 #include <BOPCol_DataMapOfIntegerListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 //
 #include <IntTools_Context.hxx>
 //
@@ -138,13 +138,13 @@ class BOPAlgo_PairOfShapeBoolean : public BOPAlgo_Algo {
 typedef BOPCol_NCVector<BOPAlgo_PairOfShapeBoolean> \
   BOPAlgo_VectorOfPairOfShapeBoolean;
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_PairOfShapeBoolean,
   BOPAlgo_VectorOfPairOfShapeBoolean,
   Handle(IntTools_Context), 
   IntTools_Context> BOPCol_BuilderSDFaceFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPCol_BuilderSDFaceFunctor,
   BOPAlgo_VectorOfPairOfShapeBoolean,
   Handle(IntTools_Context)> BOPAlgo_BuilderSDFaceCnt;
@@ -154,11 +154,11 @@ typedef BOPCol_TBBContextCnt
 //
 typedef BOPCol_NCVector<BOPAlgo_BuilderFace> BOPAlgo_VectorOfBuilderFace;
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_BuilderFace,
   BOPAlgo_VectorOfBuilderFace> BOPAlgo_BuilderFaceFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_BuilderFaceFunctor,
   BOPAlgo_VectorOfBuilderFace> BOPAlgo_BuilderFaceCnt;
 //
@@ -223,13 +223,13 @@ class BOPAlgo_VFI : public BOPAlgo_Algo {
 //
 typedef BOPCol_NCVector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_VFI,
   BOPAlgo_VectorOfVFI,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_VFIFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_VFIFunctor,
   BOPAlgo_VectorOfVFI,
   Handle(IntTools_Context)> BOPAlgo_VFICnt;

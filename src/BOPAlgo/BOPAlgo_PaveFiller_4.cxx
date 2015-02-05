@@ -27,7 +27,7 @@
 //
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 //
 #include <IntTools_Context.hxx>
 //
@@ -125,13 +125,13 @@ class BOPAlgo_VertexFace : public BOPAlgo_Algo {
 typedef BOPCol_NCVector<BOPAlgo_VertexFace>
   BOPAlgo_VectorOfVertexFace; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_VertexFace,
   BOPAlgo_VectorOfVertexFace,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_VertexFaceFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_VertexFaceFunctor,
   BOPAlgo_VectorOfVertexFace,
   Handle(IntTools_Context)> BOPAlgo_VertexFaceCnt;

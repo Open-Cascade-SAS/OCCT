@@ -26,20 +26,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Assert.hxx>
 #include <OSD_Timer.hxx>
-
-#ifdef HAVE_TBB
-  // On Windows, function TryEnterCriticalSection has appeared in Windows NT
-  // and is surrounded by #ifdef in MS VC++ 7.1 headers.
-  // Thus to use it we need to define appropriate macro saying that we will
-  // run on Windows NT 4.0 at least
-  #if ((defined(_WIN32) || defined(__WIN32__)) && !defined(_WIN32_WINNT))
-    #define _WIN32_WINNT 0x0501
-  #endif
-
-  #include <tbb/tbb.h>
-  #include <tbb/parallel_for.h>
-#endif
-
+#include <OSD_Parallel.hxx>
 #include <algorithm>
 #include <list>
 #include <set>
@@ -343,8 +330,6 @@ Standard_Boolean TestSort()
   return aResult;
 }
 
-#ifdef HAVE_TBB
-
 template <typename T>
 struct Invoker
 {
@@ -355,19 +340,19 @@ struct Invoker
 };
 
 //=======================================================================
-//function : TestTBB
+//function : TestParallel
 //purpose  :
 //=======================================================================
 template<class CollectionType, class StlType>
-Standard_Boolean TestTBB()
+Standard_Boolean TestParallel()
 {
   StlType* aVector (NULL);
   CollectionType* aCollec (NULL);
 
   CollectionFiller<CollectionType, StlType>::Perform (&aVector, &aCollec);
 
-  tbb::parallel_for_each (aVector->begin(), aVector->end(), Invoker<typename StlType::value_type>());
-  tbb::parallel_for_each (aCollec->begin(), aCollec->end(), Invoker<typename CollectionType::value_type>());
+  OSD_Parallel::ForEach(aVector->begin(), aVector->end(), Invoker<typename StlType::value_type>());
+  OSD_Parallel::ForEach(aCollec->begin(), aCollec->end(), Invoker<typename CollectionType::value_type>());
 
   typename StlType::iterator aVecIter = aVector->begin();
   typename CollectionType::iterator aColIter = aCollec->begin();
@@ -392,18 +377,18 @@ Standard_Boolean TestTBB()
 }
 
 //=======================================================================
-//function : TestDataMapTBB
+//function : TestDataMapParallel
 //purpose  :
 //=======================================================================
 template<class CollectionType, class T>
-Standard_Boolean TestDataMapTBB()
+Standard_Boolean TestDataMapParallel()
 {
   CollectionType* aCollec1 (NULL);
   CollectionType* aCollec2 (NULL);
 
   MapFiller<CollectionType, T>::Perform (&aCollec1, &aCollec2);
 
-  tbb::parallel_for_each (aCollec1->begin(), aCollec1->end(), Invoker<T>());
+  OSD_Parallel::ForEach(aCollec1->begin(), aCollec1->end(), Invoker<T>());
 
   // create OCCT-style iterator
   typename CollectionType::Iterator aOccIter (*aCollec2);
@@ -429,8 +414,6 @@ Standard_Boolean TestDataMapTBB()
 
   return aResult;
 }
-
-#endif
 
 //=======================================================================
 //function : TestMapIteration
@@ -605,17 +588,13 @@ static Standard_Integer QANListStlIterator (Draw_Interpretor&, Standard_Integer,
   std::cout << "NCollection_List<double> Replace:               " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-#ifdef HAVE_TBB
-
-  aResult = TestTBB<NCollection_List<int>, std::list<int> >();
-  std::cout << "NCollection_List<int> TBB:                      " <<
+  aResult = TestParallel< NCollection_List<int>, std::list<int> >();
+  std::cout << "NCollection_List<int> Parallel:                 " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-  aResult = TestTBB<NCollection_List<double>, std::list<double> >();
-  std::cout << "NCollection_List<double> TBB:                   " <<
+  aResult = TestParallel<NCollection_List<double>, std::list<double> >();
+  std::cout << "NCollection_List<double> Parallel:              " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
-
-#endif
 
   return 0;
 }
@@ -682,17 +661,13 @@ static Standard_Integer QANDataMapStlIterator (Draw_Interpretor&, Standard_Integ
   std::cout << "NCollection_DataMap<double> Iteration:          " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-#ifdef HAVE_TBB
-  
-  aResult = TestDataMapTBB<NCollection_DataMap<Standard_Integer, Standard_Integer>, Standard_Integer>();
-  std::cout << "NCollection_DataMap<int> TBB:                   " <<
+  aResult = TestDataMapParallel<NCollection_DataMap<Standard_Integer, Standard_Integer>, Standard_Integer>();
+  std::cout << "NCollection_DataMap<int> Parallel:              " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-  aResult = TestDataMapTBB<NCollection_DataMap<Standard_Real, Standard_Real>, Standard_Real>();
-  std::cout << "NCollection_DataMap<double> TBB:                " <<
+  aResult = TestDataMapParallel<NCollection_DataMap<Standard_Real, Standard_Real>, Standard_Real>();
+  std::cout << "NCollection_DataMap<double> Parallel:           " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
-
-#endif
 
   return 0;
 }
@@ -716,17 +691,13 @@ static Standard_Integer QANIndexedDataMapStlIterator (Draw_Interpretor&, Standar
   std::cout << "NCollection_IndexedDataMap<double> Iteration:   " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-#ifdef HAVE_TBB
-
-  aResult = TestDataMapTBB<NCollection_IndexedDataMap<Standard_Integer, Standard_Integer>, Standard_Integer>();
-  std::cout << "NCollection_IndexedDataMap<int> TBB:            " <<
+  aResult = TestDataMapParallel<NCollection_IndexedDataMap<Standard_Integer, Standard_Integer>, Standard_Integer>();
+  std::cout << "NCollection_IndexedDataMap<int> Parallel:       " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-  aResult = TestDataMapTBB<NCollection_IndexedDataMap<Standard_Real, Standard_Real>, Standard_Real>();
-  std::cout << "NCollection_IndexedDataMap<double> TBB:         " <<
+  aResult = TestDataMapParallel<NCollection_IndexedDataMap<Standard_Real, Standard_Real>, Standard_Real>();
+  std::cout << "NCollection_IndexedDataMap<double> Parallel:    " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
-
-#endif
 
   return 0;
 }
@@ -774,17 +745,13 @@ static Standard_Integer QANSequenceStlIterator (Draw_Interpretor&, Standard_Inte
   std::cout << "NCollection_Sequence<double> Reverse:           " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-#ifdef HAVE_TBB
-
-  aResult = TestTBB<NCollection_Sequence<int>, std::list<int> >();
-  std::cout << "NCollection_Sequence<int> TBB:                  " <<
+  aResult = TestParallel<NCollection_Sequence<int>, std::list<int> >();
+  std::cout << "NCollection_Sequence<int> Parallel:             " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-  aResult = TestTBB<NCollection_Sequence<double>, std::list<double> >();
-  std::cout << "NCollection_Sequence<double> TBB:               " <<
+  aResult = TestParallel<NCollection_Sequence<double>, std::list<double> >();
+  std::cout << "NCollection_Sequence<double> Parallel:          " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
-
-#endif
 
   return 0;
 }
@@ -841,17 +808,13 @@ static Standard_Integer QANVectorStlIterator (Draw_Interpretor&, Standard_Intege
   std::cout << "NCollection_Vector<double> Sort:                " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-#ifdef HAVE_TBB
-
-  aResult = TestTBB<NCollection_Vector<int>, std::vector<int> >();
-  std::cout << "NCollection_Vector<int> TBB:                    " <<
+  aResult = TestParallel<NCollection_Vector<int>, std::vector<int> >();
+  std::cout << "NCollection_Vector<int> Parallel:               " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-  aResult = TestTBB<NCollection_Vector<double>, std::vector<double> >();
-  std::cout << "NCollection_Vector<double> TBB:                 " <<
+  aResult = TestParallel<NCollection_Vector<double>, std::vector<double> >();
+  std::cout << "NCollection_Vector<double> Parallel:            " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
-
-#endif
 
   return 0;
 }
@@ -908,17 +871,13 @@ static Standard_Integer QANArray1StlIterator (Draw_Interpretor&, Standard_Intege
   std::cout << "NCollection_Array1<double> Sort:                " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-#ifdef HAVE_TBB
-
-  aResult = TestTBB<NCollection_Array1<int>, std::vector<int> >();
-  std::cout << "NCollection_Array1<int> TBB:                    " <<
+  aResult = TestParallel<NCollection_Array1<int>, std::vector<int> >();
+  std::cout << "NCollection_Array1<int> Parallel:               " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
 
-  aResult = TestTBB<NCollection_Array1<double>, std::vector<double> >();
-  std::cout << "NCollection_Array1<double> TBB:                 " <<
+  aResult = TestParallel<NCollection_Array1<double>, std::vector<double> >();
+  std::cout << "NCollection_Array1<double> Parallel:            " <<
     (aResult ? "SUCCESS" : "FAIL") << std::endl;
-
-#endif
 
   return 0;
 }

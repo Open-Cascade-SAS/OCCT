@@ -62,6 +62,8 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <OSD_Parallel.hxx>
+
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -70,11 +72,6 @@
 #include <BRep_PointRepresentation.hxx>
 
 #include <vector>
-
-#ifdef HAVE_TBB
-  // paralleling using Intel TBB
-  #include <tbb/parallel_for_each.h>
-#endif
 
 #define UVDEFLECTION 1.e-05
 
@@ -176,20 +173,7 @@ void BRepMesh_FastDiscret::Perform(const TopoDS_Shape& theShape)
     aFaces.push_back(aFace);
   }
 
-#ifdef HAVE_TBB
-  if ( myInParallel )
-  {
-    tbb::parallel_for_each(aFaces.begin(), aFaces.end(), *this);
-  }
-  else
-  {
-#endif
-    std::vector<TopoDS_Face>::const_iterator anIt(aFaces.begin());
-    for (; anIt != aFaces.end(); anIt++)
-      Process(*anIt);
-#ifdef HAVE_TBB
-  }
-#endif
+  OSD_Parallel::ForEach(aFaces.begin(), aFaces.end(), *this, !myInParallel);
 }
 
 

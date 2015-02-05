@@ -38,7 +38,7 @@
 //
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 //
 #include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
@@ -119,13 +119,13 @@ class BOPAlgo_EdgeFace :
 //=======================================================================
 typedef BOPCol_NCVector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_EdgeFace,
   BOPAlgo_VectorOfEdgeFace,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_EdgeFaceFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_EdgeFaceFunctor,
   BOPAlgo_VectorOfEdgeFace,
   Handle(IntTools_Context)> BOPAlgo_EdgeFaceCnt;

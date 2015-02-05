@@ -30,12 +30,8 @@
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_Classifier.hxx>
 #include <BRepMesh_WireInterferenceChecker.hxx>
+#include <OSD_Parallel.hxx>
 
-#ifdef HAVE_TBB
-  // paralleling using Intel TBB
-  #include <tbb/parallel_for.h>
-  #include <tbb/blocked_range.h>
-#endif
 
 //=======================================================================
 //function : Selector::Constructor
@@ -196,27 +192,18 @@ void BRepMesh_WireChecker::ReCompute(BRepMesh::HClassifier& theClassifier)
   BRepMesh::Array1OfSegmentsTree aWiresBiPoints(1, aNbWires);
   fillSegmentsTree(aDWires, aWiresBiPoints);
 
-#ifdef HAVE_TBB
-  Standard_Mutex aWireMutex;
-  BRepMesh_WireInterferenceChecker aIntChecker(aWiresBiPoints, 
-    &myStatus, &aWireMutex);
-
   if (myIsInParallel && aNbWires > 1)
   {
-    // check wires in parallel threads using TBB
-    tbb::parallel_for(tbb::blocked_range<Standard_Integer>(1, aNbWires + 1), 
-      aIntChecker);
+    // Check wires in parallel threads.
+    Standard_Mutex aWireMutex;
+    BRepMesh_WireInterferenceChecker aIntChecker(aWiresBiPoints, &myStatus, &aWireMutex);
+    OSD_Parallel::For(1, aNbWires + 1, aIntChecker);
   }
   else
   {
-#else
     BRepMesh_WireInterferenceChecker aIntChecker(aWiresBiPoints, &myStatus);
-#endif
-    for (Standard_Integer i = 1; i <= aNbWires; ++i)
-      aIntChecker(i);
-#ifdef HAVE_TBB
+    OSD_Parallel::For(1, aNbWires + 1, aIntChecker, Standard_True);
   }
-#endif
 
   if (myStatus == BRepMesh_SelfIntersectingWire)
     return;

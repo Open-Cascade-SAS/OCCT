@@ -28,7 +28,7 @@
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BOPCol_NCVector.hxx>
 
 #include <BOPTools.hxx>
@@ -262,56 +262,47 @@ typedef BOPCol_NCVector<BOPTools_ConnexityBlock> \
 //class    : WireSplitterFunctor
 //purpose  : 
 //=======================================================================
-class BOPAlgo_WireSplitterFunctor {
- protected:
+class BOPAlgo_WireSplitterFunctor
+{
+protected:
   TopoDS_Face myFace;
   BOPTools_VectorOfConnexityBlock* myPVCB;
-  //
- public:
+
+public:
   //
   BOPAlgo_WireSplitterFunctor(const TopoDS_Face& aF,
-			      BOPTools_VectorOfConnexityBlock& aVCB) 
-    : myFace(aF), myPVCB(&aVCB) {
+                              BOPTools_VectorOfConnexityBlock& aVCB)
+  : myFace(aF), myPVCB(&aVCB)
+  {
   }
   //
-  void operator()( const flexible_range<Standard_Size>& aBR ) const{
-    Standard_Size i, iBeg, iEnd;
-    //
-    BOPTools_VectorOfConnexityBlock& aVCB=*myPVCB;
-    //
-    iBeg=aBR.begin();
-    iEnd=aBR.end();
-    for(i=iBeg; i!=iEnd; ++i) {
-      BOPTools_ConnexityBlock& aCB=aVCB((Standard_Integer)i);
-      //
-      BOPAlgo_WireSplitter::SplitBlock(myFace, aCB);
-    }
+  void operator()( const Standard_Integer& theIndex ) const
+  {
+    BOPTools_VectorOfConnexityBlock& aVCB = *myPVCB;
+    BOPTools_ConnexityBlock& aCB = aVCB(theIndex);
+    BOPAlgo_WireSplitter::SplitBlock(myFace, aCB);
   }
 };
 //=======================================================================
 //class    : BOPAlgo_WireSplitterCnt
 //purpose  : 
 //=======================================================================
-class BOPAlgo_WireSplitterCnt {
- public:
+class BOPAlgo_WireSplitterCnt
+{
+public:
   //-------------------------------
   // Perform
   Standard_EXPORT 
-    static void Perform(const Standard_Boolean bRunParallel,
-			const TopoDS_Face& aF, 
-			BOPTools_VectorOfConnexityBlock& aVCB) {
+  static void Perform(const Standard_Boolean bRunParallel,
+                      const TopoDS_Face& aF,
+                      BOPTools_VectorOfConnexityBlock& aVCB)
+  {
     //
     BOPAlgo_WireSplitterFunctor aWSF(aF, aVCB);
-    Standard_Size aNbVCB=aVCB.Extent();
+    Standard_Size aNbVCB = aVCB.Extent();
     //
-    if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Size>(0,aNbVCB), aWSF);
-    }
-    else {
-      aWSF.operator()(flexible_range<Standard_Size>(0,aNbVCB));
-    }
+    OSD_Parallel::For(0, aNbVCB, aWSF, !bRunParallel);
   }
-  //
 };
 //=======================================================================
 //function : MakeWires

@@ -25,7 +25,7 @@
 #include <BRep_Builder.hxx>
 #include <TopExp_Explorer.hxx>
 //
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_MapOfOrientedShape.hxx>
@@ -77,11 +77,11 @@ class BOPAlgo_CBK {
 typedef BOPCol_NCVector
   <BOPAlgo_CBK> BOPAlgo_VectorOfCBK; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_CBK,
   BOPAlgo_VectorOfCBK> BOPAlgo_CBKFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_CBKFunctor,
   BOPAlgo_VectorOfCBK> BOPAlgo_CBKCnt;
 //

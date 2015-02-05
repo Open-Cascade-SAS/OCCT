@@ -83,7 +83,6 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
     __FILE__, mpparallel, g);
   theCommands.Add("triarea","shape [eps]  (computes triangles and surface area)",__FILE__, triarea, g);
   theCommands.Add("tricheck", "shape   (checks triangulation of shape)", __FILE__, tricheck, g);
-  
 }
 
 //=======================================================================

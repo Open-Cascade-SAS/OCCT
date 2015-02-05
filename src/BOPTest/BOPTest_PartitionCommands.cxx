@@ -35,7 +35,7 @@
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
 
-#include <BOPTest_Chronometer.hxx>
+#include <OSD_Timer.hxx>
 
 static Standard_Integer bfillds  (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bbuild   (Draw_Interpretor&, Standard_Integer, const char**);
@@ -76,8 +76,6 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   Standard_Real aTol;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfShape aLC;
-  BOPTest_Chronometer aChrono;
-  
   BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aNbS=aLS.Extent();
   if (!aNbS) {
@@ -94,7 +92,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
     if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
     }
-  }
+    }
   //
   BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
   //
@@ -107,7 +105,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aIt.Initialize(aLT);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-    aLC.Append(aS);
+     aLC.Append(aS);
   }
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
@@ -116,7 +114,8 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aPF.SetRunParallel(bRunParallel);
   aPF.SetFuzzyValue(aTol);
   //
-  aChrono.Start();
+  OSD_Timer aTimer;
+  aTimer.Start();
   //
   aPF.Perform();
   iErr=aPF.ErrorStatus();
@@ -126,13 +125,12 @@ Standard_Integer bfillds(Draw_Interpretor& di,
     return 0;
   }
   //
-  aChrono.Stop();
+  aTimer.Stop();
+  aTimer.Show();
   //
-  if (bShowTime) {
-    Standard_Real aTime;
-    //
-    aTime=aChrono.Time();
-    Sprintf(buf, "  Tps: %7.2lf\n", aTime);
+  if (bShowTime)
+  {
+    Sprintf(buf, "  Tps: %7.2lf\n", aTimer.ElapsedTime());
     di << buf;
   }
   //
@@ -160,8 +158,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   char buf[128];
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer i, iErr;
-  
-  BOPTest_Chronometer aChrono;
+
   BOPCol_ListIteratorOfListOfShape aIt;
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
@@ -193,7 +190,8 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   aBuilder.SetRunParallel(bRunParallel);
   //
   //
-  aChrono.Start();
+  OSD_Timer aTimer;
+  aTimer.Start();
   //
   aBuilder.PerformWithFiller(aPF); 
   iErr=aBuilder.ErrorStatus();
@@ -203,13 +201,12 @@ Standard_Integer bbuild(Draw_Interpretor& di,
     return 0;
   }
   //
-  aChrono.Stop();
+  aTimer.Stop();
+  aTimer.Show();
   //
-  if (bShowTime) {
-    Standard_Real aTime;
-    //
-    aTime=aChrono.Time();
-    Sprintf(buf, "  Tps: %7.2lf\n", aTime);
+  if (bShowTime)
+  {
+    Sprintf(buf, "  Tps: %7.2lf\n", aTimer.ElapsedTime());
     di << buf;
   }
   //
@@ -246,7 +243,6 @@ Standard_Integer bbop(Draw_Interpretor& di,
   Standard_Integer iErr, iOp, i;
   BOPAlgo_Operation aOp;
   BOPCol_ListIteratorOfListOfShape aIt; 
-  BOPTest_Chronometer aChrono;
   //
   iOp=Draw::Atoi(a[2]);
   if (iOp<0 || iOp>4) {
@@ -306,7 +302,8 @@ Standard_Integer bbop(Draw_Interpretor& di,
   //
   pBuilder->SetRunParallel(bRunParallel);
   //
-  aChrono.Start();
+  OSD_Timer aTimer;
+  aTimer.Start();
   //
   pBuilder->PerformWithFiller(aPF);
   iErr=pBuilder->ErrorStatus();
@@ -316,13 +313,11 @@ Standard_Integer bbop(Draw_Interpretor& di,
     return 0;
   }
   //
-  aChrono.Stop();
+  aTimer.Stop();
+  aTimer.Show();
   //
   if (bShowTime) {
-    Standard_Real aTime;
-    //
-    aTime=aChrono.Time();
-    Sprintf(buf, "  Tps: %7.2lf\n", aTime);
+    Sprintf(buf, "  Tps: %7.2lf\n", aTimer.ElapsedTime());
     di << buf;
   }
   //

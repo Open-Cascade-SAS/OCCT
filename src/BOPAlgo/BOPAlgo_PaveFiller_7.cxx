@@ -41,7 +41,7 @@
 #include <Geom2d_Curve.hxx>
 
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BOPCol_MapOfShape.hxx>
 
 #include <BOPDS_VectorOfListOfPaveBlock.hxx>
@@ -153,11 +153,11 @@ class BOPAlgo_SplitEdge : public BOPAlgo_Algo  {
 typedef BOPCol_NCVector
   <BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_SplitEdge,
   BOPAlgo_VectorOfSplitEdge> BOPAlgo_SplitEdgeFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_SplitEdgeFunctor,
   BOPAlgo_VectorOfSplitEdge> BOPAlgo_SplitEdgeCnt;
 //
@@ -220,11 +220,11 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
 typedef BOPCol_NCVector
   <BOPAlgo_MPC> BOPAlgo_VectorOfMPC; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_MPC,
   BOPAlgo_VectorOfMPC> BOPAlgo_MPCFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_MPCFunctor,
   BOPAlgo_VectorOfMPC> BOPAlgo_MPCCnt;
 //
@@ -260,11 +260,11 @@ class BOPAlgo_BPC {
 typedef BOPCol_NCVector
   <BOPAlgo_BPC> BOPAlgo_VectorOfBPC; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_BPC,
   BOPAlgo_VectorOfBPC> BOPAlgo_BPCFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_BPCFunctor,
   BOPAlgo_VectorOfBPC> BOPAlgo_BPCCnt;
 //

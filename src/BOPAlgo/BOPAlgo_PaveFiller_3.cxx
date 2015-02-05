@@ -47,7 +47,7 @@
 #include <BOPCol_IndexedDataMapOfShapeBox.hxx>
 #include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 //
 #include <IntTools_Context.hxx>
 #include <IntTools_ShrunkRange.hxx>
@@ -116,11 +116,11 @@ class BOPAlgo_EdgeEdge :
 typedef BOPCol_NCVector
   <BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_EdgeEdge,
   BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_EdgeEdgeFunctor,
   BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeCnt;
 //
@@ -163,11 +163,11 @@ class BOPAlgo_TNV : public BOPCol_BoxBndTreeSelector{
 typedef BOPCol_NCVector
   <BOPAlgo_TNV> BOPAlgo_VectorOfTNV; 
 //
-typedef BOPCol_TBBFunctor 
+typedef BOPCol_Functor 
   <BOPAlgo_TNV,
   BOPAlgo_VectorOfTNV> BOPAlgo_TNVFunctor;
 //
-typedef BOPCol_TBBCnt 
+typedef BOPCol_Cnt 
   <BOPAlgo_TNVFunctor,
   BOPAlgo_VectorOfTNV> BOPAlgo_TNVCnt;
 /////////////////////////////////////////////////////////////////////////
@@ -254,13 +254,13 @@ class BOPAlgo_PVE {
 typedef BOPCol_NCVector
   <BOPAlgo_PVE> BOPAlgo_VectorOfPVE; 
 //
-typedef BOPCol_TBBContextFunctor 
+typedef BOPCol_ContextFunctor 
   <BOPAlgo_PVE,
   BOPAlgo_VectorOfPVE,
   Handle(IntTools_Context), 
   IntTools_Context> BOPAlgo_PVEFunctor;
 //
-typedef BOPCol_TBBContextCnt 
+typedef BOPCol_ContextCnt 
   <BOPAlgo_PVEFunctor,
   BOPAlgo_VectorOfPVE,
   Handle(IntTools_Context)> BOPAlgo_PVECnt;

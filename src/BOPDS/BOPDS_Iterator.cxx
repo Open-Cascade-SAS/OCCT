@@ -25,7 +25,7 @@
 #include <TopoDS_Shape.hxx>
 //
 #include <BOPCol_NCVector.hxx>
-#include <BOPCol_TBB.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BOPCol_BoxBndTree.hxx>
 //
 #include <BOPDS_IndexRange.hxx>
@@ -70,8 +70,8 @@ class BOPDS_TSR : public BOPCol_BoxBndTreeSelector{
 //
 //=======================================================================
 typedef BOPCol_NCVector <BOPDS_TSR> BOPDS_VectorOfTSR; 
-typedef BOPCol_TBBFunctor <BOPDS_TSR,BOPDS_VectorOfTSR> BOPDS_TSRFunctor;
-typedef BOPCol_TBBCnt <BOPDS_TSRFunctor, BOPDS_VectorOfTSR> BOPDS_TSRCnt;
+typedef BOPCol_Functor <BOPDS_TSR,BOPDS_VectorOfTSR> BOPDS_TSRFunctor;
+typedef BOPCol_Cnt <BOPDS_TSRFunctor, BOPDS_VectorOfTSR> BOPDS_TSRCnt;
 /////////////////////////////////////////////////////////////////////////
 
 
