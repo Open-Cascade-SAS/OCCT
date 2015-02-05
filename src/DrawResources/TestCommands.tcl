@@ -31,27 +31,94 @@ set _test_case_regexp {^CASE\s+([\w.-]+)\s+([\w.-]+)\s+([\w.-]+)\s*:\s*([\w]+)(.
 # Basic command to run indicated test case in DRAW
 help test {
   Run specified test case
-  Use: test group grid casename [echo=0]
-  - If echo is set to 0 (default), log is stored in memory and only summary
-    is output (the log can be obtained with command "dlog get")
-  - If echo is set to 1 or "-echo", all commands and results are echoed 
-    immediately, but log is not saved and summary is not produced
+  Use: test group grid casename [options...]
+  Allowed options are:
+  -echo: all commands and results are echoed immediately,
+         but log is not saved and summary is not produced
+         It is also possible to use "1" instead of "-echo"
+         If echo is OFF, log is stored in memory and only summary
+         is output (the log can be obtained with command "dlog get")
+  -outfile filename: set log file (should be non-existing),
+         it is possible to save log file in text file or
+         in html file(with snapshot), for that "filename"
+         should have ".html" extension
+  -overwrite: force writing log in existing file
+  -beep: play sound signal at the end of the test
 }
-proc test {group grid casename {echo 0}} {
+proc test {group grid casename {args {}}} {
+    # set default values of arguments
+    set echo 0
+    set logfile ""
+    set overwrite 0
+    set signal 0
+
     # get test case paths (will raise error if input is invalid)
     _get_test $group $grid $casename dir gridname casefile
 
-    # if echo specified as "-echo", convert it to bool
-    if { "$echo" == "-echo" } { set echo t }
+    # check arguments
+    for {set narg 0} {$narg < [llength $args]} {incr narg} {
+        set arg [lindex $args $narg]
+
+        # if echo specified as "-echo", convert it to bool
+        if { $arg == "-echo" || $arg == "1" } {
+          set echo t
+          continue
+        }
+
+        # output log file
+        if { $arg == "-outfile" } {
+          incr narg
+          if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
+            set logfile [lindex $args $narg]
+          } else {
+            error "Option -outfile requires argument"
+          }
+          continue
+        }
+
+        # allow overwrite existing log
+        if { $arg == "-overwrite" } {
+          set overwrite 1
+          continue
+        }
+
+        # sound signal at the end of the test
+        if { $arg == "-beep" } {
+          set signal t
+          continue
+        }
+
+        # unsupported option
+        error "Error: unsupported option \"$arg\""
+    }
 
     # run test
     uplevel _run_test $dir $group $gridname $casefile $echo 
 
     # check log
-    if { ! $echo } {
-        _check_log $dir $group $gridname $casename [dlog get]
+    if { !$echo } {
+        _check_log $dir $group $gridname $casename [dlog get] summary html_log
+
+        # create log file
+        if { ! $overwrite && [file isfile $logfile] } {
+            error "Error: Specified log file \"$logfile\" exists; please remove it before running test or use -overwrite option"
+        }
+        if {$logfile != ""} {
+          if {[file extension $logfile] == ".html"} {
+            if {[regexp {vdump ([^\s\n]+)} $html_log dump snapshot]} {
+              catch {file copy -force $snapshot [file rootname $logfile][file extension $snapshot]}
+            }
+            _log_html $logfile $html_log "Test $group $grid $casename"
+          } else {
+            _log_save $logfile "[dlog get]\n$summary" "Test $group $grid $casename"
+          }
+        }
     }
 
+    # play sound signal at the end of test
+    if {$signal} {
+      puts "\7\7\7\7"
+    }
     return
 }
 
@@ -65,6 +132,7 @@ help testgrid {
   -outdir dirname: set log directory (should be empty or non-existing)
   -overwrite: force writing logs in existing non-empty directory
   -xml filename: write XML report for Jenkins (in JUnit-like format)
+  -beep: play sound signal at the end of the tests
   Groups, grids, and test cases to be executed can be specified by list of file 
   masks, separated by spaces or comma; default is all (*).
 }
@@ -87,6 +155,7 @@ proc testgrid {args} {
     set logdir ""
     set overwrite 0
     set xmlfile ""
+    set signal 0
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
 	set arg [lindex $args $narg]
 
@@ -138,6 +207,12 @@ proc testgrid {args} {
 	    if { $xmlfile == "" } {
 		set xmlfile TESTS-summary.xml
 	    }
+	    continue
+	}
+
+	# sound signal at the end of the test
+	if { $arg == "-beep" } {
+	    set signal t
 	    continue
 	}
 
@@ -288,6 +363,8 @@ proc testgrid {args} {
     }
     if { [llength $tests_list] < 1 } {
 	error "Error: no tests are found, check you input arguments and variable CSF_TestScriptsPath!"
+    } else {
+      puts "Running tests (total [llength $tests_list] test cases)..."
     }
 
     ######################################################
@@ -438,7 +515,10 @@ proc testgrid {args} {
 	_log_xml_summary $logdir $xmlfile $log 0
 	puts "XML summary is saved to $xmlfile"
     }
-
+    # play sound signal at the end of test
+    if {$signal} {
+      puts "\7\7\7\7"
+    }
     return
 }
 
@@ -864,7 +944,7 @@ proc _run_test {scriptsdir group gridname casefile echo} {
     # start timer
     uplevel dchrono _timer reset
     uplevel dchrono _timer start
-    catch {uplevel meminfo w} membase
+    catch {uplevel meminfo h} membase
 
     # enable commands logging; switch to old-style mode if dlog command is not present
     set dlog_exists 1
@@ -961,7 +1041,7 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 
     # add memory and timing info
     set stats ""
-    if { ! [catch {uplevel meminfo w} memuse] } {
+    if { ! [catch {uplevel meminfo h} memuse] } {
         set stats "MEMORY DELTA: [expr ($memuse - $membase) / 1024] KiB\n"
     }
     uplevel dchrono _timer stop
@@ -1784,7 +1864,9 @@ proc _log_html_diff {file log dir1 dir2} {
     
     # print header
     puts $fd "<html><head><title>Diff $dir1 vs. $dir2</title></head><body>"
-    puts $fd "<h1>Comparison of test results: $dir1 vs. $dir2</h1>"
+    puts $fd "<h1>Comparison of test results:</h1>"
+    puts $fd "<h2>Version A - $dir1</h2>"
+    puts $fd "<h2>Version B - $dir2</h2>"
 
     # print log body, trying to add HTML links to script files on lines like
     # "Executing <filename>..."
@@ -1808,7 +1890,7 @@ proc _log_html_diff {file log dir1 dir2} {
                 set imgd "N/A"
             }
 
-            puts $fd "<table><tr><th>[file tail $dir1]</th><th>[file tail $dir2]</th><th>Different pixels</th></tr>"
+            puts $fd "<table><tr><th><abbr title=\"$dir1\">Version A</abbr></th><th><abbr title=\"$dir2\">Version B</abbr></th><th>Different pixels</th></tr>"
             puts $fd "<tr><td>$img1</td><td>$img2</td><td>$imgd</td></tr></table>"
         }
     }
