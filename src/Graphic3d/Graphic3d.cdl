@@ -344,6 +344,11 @@ is
     -- - RM_RASTERIZATION: enables OpenGL rasterization mode;
     -- - RM_RAYTRACING: enables GPU ray-tracing mode.
 
+    enumeration TypeOfBackground is
+      TOB_NONE, TOB_GRADIENT, TOB_TEXTURE
+    end TypeOfBackground;
+     ---Purpose: Describes type of view background.
+
     ---------------------------
     -- Category: Imported types
     ---------------------------

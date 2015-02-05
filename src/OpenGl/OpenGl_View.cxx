@@ -35,8 +35,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,MMgt_TShared)
 
 /*----------------------------------------------------------------------*/
 
-static const OPENGL_BG_TEXTURE myDefaultBgTexture = { 0, 0, 0, Aspect_FM_CENTERED };
-static const OPENGL_BG_GRADIENT myDefaultBgGradient = { {{ 0.F, 0.F, 0.F, 1.F }}, {{ 0.F, 0.F, 0.F, 1.F }}, Aspect_GFM_NONE };
 static const Tmatrix3 myDefaultMatrix = { { 1.F, 0.F, 0.F, 0.F }, { 0.F, 1.F, 0.F, 0.F }, { 0.F, 0.F, 1.F, 0.F }, { 0.F, 0.F, 0.F, 1.F } };
 static const OPENGL_ZCLIP myDefaultZClip = { { Standard_True, 0.F }, { Standard_True, 1.F } };
 
@@ -56,8 +54,6 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
                           OpenGl_StateCounter*       theCounter)
 : mySurfaceDetail(Visual3d_TOD_ALL),
   myBackfacing(0),
-  myBgTexture(myDefaultBgTexture),
-  myBgGradient(myDefaultBgGradient),
   //shield_indicator = TOn,
   //shield_colour = { { 0.F, 0.F, 0.F, 1.F } },
   //border_indicator = TOff,
@@ -76,19 +72,25 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myProjectionState (0),
   myModelViewState (0),
   myStateCounter (theCounter),
-  myLastLightSourceState (0, 0)
+  myLastLightSourceState (0, 0),
+  myModificationState (1), // initial state
+  myTextureParams   (new OpenGl_AspectFace()),
+  myBgGradientArray (new OpenGl_BackgroundArray (Graphic3d_TOB_GRADIENT)),
+  myBgTextureArray  (new OpenGl_BackgroundArray (Graphic3d_TOB_TEXTURE))
 {
   myCurrLightSourceState = myStateCounter->Increment();
-  myModificationState = 1; // initial state
 }
 
 /*----------------------------------------------------------------------*/
 
-OpenGl_View::~OpenGl_View ()
+OpenGl_View::~OpenGl_View()
 {
   ReleaseGlResources (NULL); // ensure ReleaseGlResources() was called within valid context
   OpenGl_Element::Destroy (NULL, myTrihedron);
   OpenGl_Element::Destroy (NULL, myGraduatedTrihedron);
+  OpenGl_Element::Destroy (NULL, myBgGradientArray);
+  OpenGl_Element::Destroy (NULL, myBgTextureArray);
+  OpenGl_Element::Destroy (NULL, myTextureParams);
 }
 
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
@@ -107,10 +109,18 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
     theCtx->DelayedRelease (myTextureEnv);
     myTextureEnv.Nullify();
   }
-  if (myBgTexture.TexId != 0)
+
+  if (myTextureParams != NULL)
   {
-    glDeleteTextures (1, (GLuint*)&(myBgTexture.TexId));
-    myBgTexture.TexId = 0;
+    myTextureParams->Release (theCtx.operator->());
+  }
+  if (myBgGradientArray != NULL)
+  {
+    myBgGradientArray->Release (theCtx.operator->());
+  }
+  if (myBgTextureArray != NULL)
+  {
+    myBgTextureArray->Release (theCtx.operator->());
   }
 }
 

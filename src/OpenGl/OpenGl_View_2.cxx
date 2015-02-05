@@ -19,6 +19,8 @@
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_tgl_funcs.hxx>
 
+#include <Graphic3d_TextureParams.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Visual3d_Layer.hxx>
 
@@ -31,6 +33,7 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
+#include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -160,200 +163,88 @@ static void bindLight (const OpenGl_Light&             theLight,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::DrawBackground (OpenGl_Workspace& theWorkspace)
+void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 {
-#if !defined(GL_ES_VERSION_2_0)
-  if ( (theWorkspace.NamedStatus & OPENGL_NS_WHITEBACK) == 0 &&
-       ( myBgTexture.TexId != 0 || myBgGradient.type != Aspect_GFM_NONE ) )
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+
+  if ((theWorkspace->NamedStatus & OPENGL_NS_WHITEBACK) != 0 // no background
+    || (!myBgTextureArray->IsDefined()                       // no texture
+     && !myBgGradientArray->IsDefined()))                    // no gradient
   {
-    const Standard_Integer aViewWidth = theWorkspace.Width();
-    const Standard_Integer aViewHeight = theWorkspace.Height();
-
-    glPushAttrib( GL_ENABLE_BIT | GL_TEXTURE_BIT );
-
-    const Handle(OpenGl_Context)& aContext = theWorkspace.GetGlContext();
-
-    aContext->WorldViewState.Push();
-    aContext->ProjectionState.Push();
-
-    aContext->WorldViewState.SetIdentity();
-    aContext->ProjectionState.SetIdentity();
-
-    aContext->ApplyProjectionMatrix();
-    aContext->ApplyWorldViewMatrix();
-
-    if ( glIsEnabled( GL_DEPTH_TEST ) )
-      glDisable( GL_DEPTH_TEST ); //push GL_ENABLE_BIT
-
-    // drawing bg gradient if:
-    // - gradient fill type is not Aspect_GFM_NONE and
-    // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
-    if ( ( myBgGradient.type != Aspect_GFM_NONE ) &&
-      ( myBgTexture.TexId == 0 || myBgTexture.Style == Aspect_FM_CENTERED ||
-      myBgTexture.Style == Aspect_FM_NONE ) )
-    {
-      Tfloat* corner1 = 0;/* -1,-1*/
-      Tfloat* corner2 = 0;/*  1,-1*/
-      Tfloat* corner3 = 0;/*  1, 1*/
-      Tfloat* corner4 = 0;/* -1, 1*/
-      Tfloat dcorner1[3];
-      Tfloat dcorner2[3];
-
-      switch( myBgGradient.type )
-      {
-      case Aspect_GFM_HOR:
-        corner1 = myBgGradient.color1.rgb;
-        corner2 = myBgGradient.color2.rgb;
-        corner3 = myBgGradient.color2.rgb;
-        corner4 = myBgGradient.color1.rgb;
-        break;
-      case Aspect_GFM_VER:
-        corner1 = myBgGradient.color2.rgb;
-        corner2 = myBgGradient.color2.rgb;
-        corner3 = myBgGradient.color1.rgb;
-        corner4 = myBgGradient.color1.rgb;
-        break;
-      case Aspect_GFM_DIAG1:
-        corner2 = myBgGradient.color2.rgb;
-        corner4 = myBgGradient.color1.rgb;
-        dcorner1 [0] = dcorner2[0] = 0.5F * (corner2[0] + corner4[0]);
-        dcorner1 [1] = dcorner2[1] = 0.5F * (corner2[1] + corner4[1]);
-        dcorner1 [2] = dcorner2[2] = 0.5F * (corner2[2] + corner4[2]);
-        corner1 = dcorner1;
-        corner3 = dcorner2;
-        break;
-      case Aspect_GFM_DIAG2:
-        corner1 = myBgGradient.color2.rgb;
-        corner3 = myBgGradient.color1.rgb;
-        dcorner1 [0] = dcorner2[0] = 0.5F * (corner1[0] + corner3[0]);
-        dcorner1 [1] = dcorner2[1] = 0.5F * (corner1[1] + corner3[1]);
-        dcorner1 [2] = dcorner2[2] = 0.5F * (corner1[2] + corner3[2]);
-        corner2 = dcorner1;
-        corner4 = dcorner2;
-        break;
-      case Aspect_GFM_CORNER1:
-        corner1 = myBgGradient.color2.rgb;
-        corner2 = myBgGradient.color2.rgb;
-        corner3 = myBgGradient.color2.rgb;
-        corner4 = myBgGradient.color1.rgb;
-        break;
-      case Aspect_GFM_CORNER2:
-        corner1 = myBgGradient.color2.rgb;
-        corner2 = myBgGradient.color2.rgb;
-        corner3 = myBgGradient.color1.rgb;
-        corner4 = myBgGradient.color2.rgb;
-        break;
-      case Aspect_GFM_CORNER3:
-        corner1 = myBgGradient.color2.rgb;
-        corner2 = myBgGradient.color1.rgb;
-        corner3 = myBgGradient.color2.rgb;
-        corner4 = myBgGradient.color2.rgb;
-        break;
-      case Aspect_GFM_CORNER4:
-        corner1 = myBgGradient.color1.rgb;
-        corner2 = myBgGradient.color2.rgb;
-        corner3 = myBgGradient.color2.rgb;
-        corner4 = myBgGradient.color2.rgb;
-        break;
-      default:
-        //printf("gradient background type not right\n");
-        break;
-      }
-
-      // Save GL parameters
-      glDisable( GL_LIGHTING ); //push GL_ENABLE_BIT
-
-      GLint curSM;
-      glGetIntegerv( GL_SHADE_MODEL, &curSM );
-      if ( curSM != GL_SMOOTH )
-        glShadeModel( GL_SMOOTH ); //push GL_LIGHTING_BIT
-
-      glBegin(GL_TRIANGLE_FAN);
-      if( myBgGradient.type != Aspect_GFM_CORNER1 && myBgGradient.type != Aspect_GFM_CORNER3 )
-      {
-        glColor3f(corner1[0],corner1[1],corner1[2]); glVertex2f(-1.,-1.);
-        glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
-        glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
-        glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
-      }
-      else //if ( myBgGradient.type == Aspect_GFM_CORNER1 || myBgGradient.type == Aspect_GFM_CORNER3 )
-      {
-        glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
-        glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
-        glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
-        glColor3f(corner1[0],corner1[1],corner1[2]); glVertex2f(-1.,-1.);
-      }
-      glEnd();
-
-      // Restore GL parameters
-      if ( curSM != GL_SMOOTH )
-        glShadeModel( curSM );
-    }
-    // drawing bg image if:
-    // - it is defined and
-    // - fill type is not Aspect_FM_NONE
-    if ( myBgTexture.TexId != 0 && myBgTexture.Style != Aspect_FM_NONE )
-    {
-      GLfloat texX_range = 1.F; // texture <s> coordinate
-      GLfloat texY_range = 1.F; // texture <t> coordinate
-
-      // Set up for stretching or tiling
-      GLfloat x_offset, y_offset;
-      if ( myBgTexture.Style == Aspect_FM_CENTERED )
-      {
-        x_offset = (GLfloat)myBgTexture.Width / (GLfloat)aViewWidth;
-        y_offset = (GLfloat)myBgTexture.Height / (GLfloat)aViewHeight;
-      }
-      else
-      {
-        x_offset = 1.F;
-        y_offset = 1.F;
-        if ( myBgTexture.Style == Aspect_FM_TILED )
-        {
-          texX_range = (GLfloat)aViewWidth / (GLfloat)myBgTexture.Width;
-          texY_range = (GLfloat)aViewHeight / (GLfloat)myBgTexture.Height;
-        }
-      }
-
-      // OCCT issue 0023000: Improve the way the gradient and textured
-      // background is managed in 3d viewer (note 0020339)
-      // Setting this coefficient to -1.F allows to tile textures relatively
-      // to the top-left corner of the view (value 1.F corresponds to the
-      // initial behaviour - tiling from the bottom-left corner)
-      GLfloat aCoef = -1.F;
-
-      glEnable( GL_TEXTURE_2D ); //push GL_ENABLE_BIT
-      glBindTexture( GL_TEXTURE_2D, myBgTexture.TexId ); //push GL_TEXTURE_BIT
-
-      glDisable( GL_BLEND ); //push GL_ENABLE_BIT
-
-      glColor3fv (theWorkspace.BackgroundColor().rgb);
-      glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); //push GL_TEXTURE_BIT
-
-      // Note that texture is mapped using GL_REPEAT wrapping mode so integer part
-      // is simply ignored, and negative multiplier is here for convenience only
-      // and does not result e.g. in texture mirroring
-      glBegin( GL_QUADS );
-      glTexCoord2f(0.F, 0.F); glVertex2f( -x_offset, -aCoef * y_offset );
-      glTexCoord2f(texX_range, 0.F); glVertex2f( x_offset, -aCoef * y_offset );
-      glTexCoord2f(texX_range, aCoef * texY_range); glVertex2f( x_offset, aCoef * y_offset );
-      glTexCoord2f(0.F, aCoef * texY_range); glVertex2f( -x_offset, aCoef * y_offset );
-      glEnd();
-    }
-
-    aContext->WorldViewState.Pop();
-    aContext->ProjectionState.Pop();
-
-    aContext->ApplyProjectionMatrix();
-
-    glPopAttrib(); //GL_ENABLE_BIT | GL_TEXTURE_BIT
-
-    if (theWorkspace.UseZBuffer())
-    {
-      glEnable (GL_DEPTH_TEST);
-    }
+    return;
   }
-#endif
+
+  aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
+
+  aCtx->WorldViewState.Push();
+  aCtx->ProjectionState.Push();
+  aCtx->WorldViewState.SetIdentity();
+  aCtx->ProjectionState.SetIdentity();
+  aCtx->ApplyProjectionMatrix();
+  aCtx->ApplyWorldViewMatrix();
+
+  // Drawing background gradient if:
+  // - gradient fill type is not Aspect_GFM_NONE and
+  // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
+  if (myBgGradientArray->IsDefined()
+    && (!myBgTextureArray->IsDefined()
+      || myBgTextureArray->TextureFillMethod() == Aspect_FM_CENTERED
+      || myBgTextureArray->TextureFillMethod() == Aspect_FM_NONE))
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    GLint aShadingModelOld = GL_SMOOTH;
+    if (aCtx->core11 != NULL)
+    {
+      aCtx->core11fwd->glDisable (GL_LIGHTING);
+      aCtx->core11fwd->glGetIntegerv (GL_SHADE_MODEL, &aShadingModelOld);
+      aCtx->core11->glShadeModel (GL_SMOOTH);
+    }
+  #endif
+
+    if (myBgGradientArray->IsDataChanged())
+    {
+      myBgGradientArray->Init (theWorkspace);
+    }
+
+    myBgGradientArray->Render (theWorkspace);
+
+  #if !defined(GL_ES_VERSION_2_0)
+    if (aCtx->core11 != NULL)
+    {
+      aCtx->core11->glShadeModel (aShadingModelOld);
+    }
+  #endif
+  }
+
+  // Drawing background image if it is defined
+  // (texture is defined and fill type is not Aspect_FM_NONE)
+  if (myBgTextureArray->IsDefined()
+   && myTextureParams->DoTextureMap())
+  {
+    aCtx->core11fwd->glDisable (GL_BLEND);
+
+    const OpenGl_AspectFace* anOldAspectFace = theWorkspace->SetAspectFace (myTextureParams);
+
+    if (myBgTextureArray->IsDataChanged()
+     || myBgTextureArray->IsViewSizeChanged (theWorkspace))
+    {
+      myBgTextureArray->Init (theWorkspace);
+    }
+
+    myBgTextureArray->Render (theWorkspace);
+
+    // restore aspects
+    theWorkspace->SetAspectFace (anOldAspectFace);
+  }
+
+  aCtx->WorldViewState.Pop();
+  aCtx->ProjectionState.Pop();
+  aCtx->ApplyProjectionMatrix();
+
+  if (theWorkspace->UseZBuffer())
+  {
+    aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
+  }
 }
 
 /*----------------------------------------------------------------------*/
@@ -452,7 +343,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   if (theWorkspace->ToRedrawGL()
   && !theToDrawImmediate)
   {
-    DrawBackground (*theWorkspace);
+    DrawBackground (theWorkspace);
   }
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -895,116 +786,58 @@ void OpenGl_View::RedrawTrihedron (const Handle(OpenGl_Workspace) &theWorkspace)
 void OpenGl_View::CreateBackgroundTexture (const Standard_CString  theFilePath,
                                            const Aspect_FillMethod theFillStyle)
 {
-  if (myBgTexture.TexId != 0)
+  // Prepare aspect for texture storage
+  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+  Handle(Graphic3d_Texture2Dmanual) aTextureMap = new Graphic3d_Texture2Dmanual (TCollection_AsciiString (theFilePath));
+  aTextureMap->EnableRepeat();
+  aTextureMap->DisableModulate();
+  aTextureMap->GetParams()->SetGenMode (Graphic3d_TOTM_MANUAL,
+                                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
+                                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+  anAspect->SetTextureMap (aTextureMap);
+  anAspect->SetInteriorStyle (Aspect_IS_SOLID);
+  // Enable texture mapping
+  if (aTextureMap->IsDone())
   {
-    // delete existing texture
-    glDeleteTextures (1, (GLuint* )&(myBgTexture.TexId));
-    myBgTexture.TexId = 0;
-  }
-
-  // load image from file
-  Image_AlienPixMap anImageLoaded;
-  if (!anImageLoaded.Load (theFilePath))
-  {
-    return;
-  }
-
-  Image_PixMap anImage;
-  if (anImageLoaded.RowExtraBytes() == 0 &&
-      (anImageLoaded.Format() == Image_PixMap::ImgRGB
-    || anImageLoaded.Format() == Image_PixMap::ImgRGB32
-    || anImageLoaded.Format() == Image_PixMap::ImgRGBA))
-  {
-    anImage.InitWrapper (anImageLoaded.Format(), anImageLoaded.ChangeData(),
-                         anImageLoaded.SizeX(), anImageLoaded.SizeY(), anImageLoaded.SizeRowBytes());
+    anAspect->SetTextureMapOn();
   }
   else
   {
-    // convert image to RGB format
-    if (!anImage.InitTrash (Image_PixMap::ImgRGB, anImageLoaded.SizeX(), anImageLoaded.SizeY()))
-    {
-      return;
-    }
+    anAspect->SetTextureMapOff();
+    return;
 
-    anImage.SetTopDown (false);
-    Quantity_Color aSrcColor;
-    for (Standard_Size aRow = 0; aRow < anImage.SizeY(); ++aRow)
-    {
-      for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
-      {
-        aSrcColor = anImageLoaded.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
-        Image_ColorRGB& aColor = anImage.ChangeValue<Image_ColorRGB> (aRow, aCol);
-        aColor.r() = Standard_Byte(255.0 * aSrcColor.Red());
-        aColor.g() = Standard_Byte(255.0 * aSrcColor.Green());
-        aColor.b() = Standard_Byte(255.0 * aSrcColor.Blue());
-      }
-    }
-    anImageLoaded.Clear();
   }
 
-  // create MipMapped texture
-  glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+  // Set texture parameters
+  myTextureParams->SetAspect (anAspect);
 
-  GLuint aTextureId = 0;
-  glGenTextures (1, &aTextureId);
-  glBindTexture (GL_TEXTURE_2D, aTextureId);
-
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_REPEAT);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_REPEAT);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-
-  const GLenum aDataFormat = (anImage.Format() == Image_PixMap::ImgRGB) ? GL_RGB : GL_RGBA;
-
-#if !defined(GL_ES_VERSION_2_0)
-  gluBuild2DMipmaps (GL_TEXTURE_2D, 3/*4*/,
-                     GLint(anImage.SizeX()), GLint(anImage.SizeY()),
-                     aDataFormat, GL_UNSIGNED_BYTE, anImage.Data());
-#endif
-
-  myBgTexture.TexId  = aTextureId;
-  myBgTexture.Width  = (Standard_Integer )anImage.SizeX();
-  myBgTexture.Height = (Standard_Integer )anImage.SizeY();
-  myBgTexture.Style  = theFillStyle;
+  myBgTextureArray->SetTextureParameters (theFillStyle);
 }
 
 /*----------------------------------------------------------------------*/
 
 //call_togl_set_bg_texture_style
-void OpenGl_View::SetBackgroundTextureStyle (const Aspect_FillMethod AFillStyle)
+void OpenGl_View::SetBackgroundTextureStyle (const Aspect_FillMethod theFillStyle)
 {
-  myBgTexture.Style = AFillStyle;
+  myBgTextureArray->SetTextureFillMethod (theFillStyle);
 }
 
 /*----------------------------------------------------------------------*/
 
 //call_togl_gradient_background
-void OpenGl_View::SetBackgroundGradient (const Quantity_Color& AColor1,
-                                        const Quantity_Color& AColor2,
-                                        const Aspect_GradientFillMethod AType)
+void OpenGl_View::SetBackgroundGradient (const Quantity_Color& theColor1,
+                                        const Quantity_Color& theColor2,
+                                        const Aspect_GradientFillMethod theType)
 {
-  Standard_Real R,G,B;
-  AColor1.Values( R, G, B, Quantity_TOC_RGB );
-  myBgGradient.color1.rgb[0] = ( Tfloat )R;
-  myBgGradient.color1.rgb[1] = ( Tfloat )G;
-  myBgGradient.color1.rgb[2] = ( Tfloat )B;
-  myBgGradient.color1.rgb[3] = 0.F;
-
-  AColor2.Values( R, G, B, Quantity_TOC_RGB );
-  myBgGradient.color2.rgb[0] = ( Tfloat )R;
-  myBgGradient.color2.rgb[1] = ( Tfloat )G;
-  myBgGradient.color2.rgb[2] = ( Tfloat )B;
-  myBgGradient.color2.rgb[3] = 0.F;
-
-  myBgGradient.type = AType;
+  myBgGradientArray->SetGradientParameters (theColor1, theColor2, theType);
 }
 
 /*----------------------------------------------------------------------*/
 
 //call_togl_set_gradient_type
-void OpenGl_View::SetBackgroundGradientType (const Aspect_GradientFillMethod AType)
+void OpenGl_View::SetBackgroundGradientType (const Aspect_GradientFillMethod theType)
 {
-  myBgGradient.type = AType;
+  myBgGradientArray->SetGradientFillMethod (theType);
 }
 
 //=======================================================================

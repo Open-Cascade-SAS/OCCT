@@ -2363,7 +2363,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   glClear (GL_COLOR_BUFFER_BIT);
 
-  myView->DrawBackground (*this);
+  myView->DrawBackground (this);
 
   myView->RedrawLayer2d (myPrintContext, this, theCView, theCUnderLayer);
 

@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC25475"
+puts "============"
+puts ""
+#######################################################################
+puts "Tests textured background"
+#######################################################################
+
+set aTextureFile [locate_data_file hatch_1.png]
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+set anImage4 $imagedir/${casename}_4.png
+
+pload VISUALIZATION
+vinit
+
+vsetbg $aTextureFile STRETCH
+vdump $anImage1
+
+vsetbg $aTextureFile NONE
+vsetbg $aTextureFile TILED
+vdump $anImage2
+
+vsetgradientbg 255 0 0 0 0 255 1
+vsetbg $aTextureFile CENTERED
+vdump $anImage3
+
+vsetbg $aTextureFile NONE
+vdump $anImage4

@@ -38,6 +38,8 @@
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 #include <Visual3d_TypeOfModel.hxx>
 
+#include <OpenGl_AspectFace.hxx>
+#include <OpenGl_BackgroundArray.hxx>
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_Light.hxx>
@@ -48,21 +50,6 @@
 #include <Handle_OpenGl_Workspace.hxx>
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
-
-struct OPENGL_BG_TEXTURE
-{
-  Tuint             TexId;
-  Tint              Width;
-  Tint              Height;
-  Aspect_FillMethod Style;
-};
-
-struct OPENGL_BG_GRADIENT
-{
-  TEL_COLOUR color1;
-  TEL_COLOUR color2;
-  Aspect_GradientFillMethod type;
-};
 
 struct OPENGL_ZCLIP
 {
@@ -171,7 +158,9 @@ class OpenGl_View : public MMgt_TShared
   void ChangePriority (const OpenGl_Structure* theStructure,
                        const Standard_Integer  theNewPriority);
 
-  void CreateBackgroundTexture (const Standard_CString AFileName, const Aspect_FillMethod AFillStyle);
+  void CreateBackgroundTexture (const Standard_CString AFileName,
+                                const Aspect_FillMethod AFillStyle);
+
   void SetBackgroundTextureStyle (const Aspect_FillMethod FillStyle);
   void SetBackgroundGradient (const Quantity_Color& AColor1, const Quantity_Color& AColor2, const Aspect_GradientFillMethod AType);
   void SetBackgroundGradientType (const Aspect_GradientFillMethod AType);
@@ -184,7 +173,7 @@ class OpenGl_View : public MMgt_TShared
                const Standard_Boolean               theToDrawImmediate);
 
 
-  void DrawBackground (OpenGl_Workspace& theWorkspace);
+  void DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Returns list of OpenGL Z-layers.
   const OpenGl_LayerList& LayerList() const { return myZLayers; }
@@ -249,9 +238,6 @@ protected:
   Visual3d_TypeOfSurfaceDetail  mySurfaceDetail;
   Standard_Integer              myBackfacing;
 
-  OPENGL_BG_TEXTURE  myBgTexture;
-  OPENGL_BG_GRADIENT myBgGradient;
-
   OPENGL_ZCLIP   myZClip;
 
   Graphic3d_SequenceOfHClipPlane myClipPlanes;
@@ -298,6 +284,12 @@ protected:
   OpenGl_BVHTreeSelector myBVHSelector;
 
   Standard_Size myModificationState;
+
+protected: //! @name Background parameters
+
+  OpenGl_AspectFace*      myTextureParams;   //!< Stores texture and its parameters for textured background
+  OpenGl_BackgroundArray* myBgGradientArray; //!< Primitive array for gradient background
+  OpenGl_BackgroundArray* myBgTextureArray;  //!< Primitive array for texture  background
 
 public:
 

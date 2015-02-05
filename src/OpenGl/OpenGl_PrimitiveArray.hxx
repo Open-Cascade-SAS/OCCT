@@ -69,17 +69,20 @@ public:
   //! Returns unique ID of primitive array. 
   const Standard_Size GetUID() const { return myUID; }
 
-private:
-
-  //! Initialize normal (OpenGL-provided) VBO
-  Standard_Boolean initNormalVbo (const Handle(OpenGl_Context)& theCtx) const;
+protected:
 
   //! VBO initialization procedures
   //! @param theCtx        bound GL context
   //! @param theToKeepData when true, myAttribs will not be nullified after VBO creation
-  Standard_Boolean buildVBO (const Handle(OpenGl_Context)& theCtx,
-                             const Standard_Boolean        theToKeepData) const;
-  void clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const;
+  Standard_EXPORT Standard_Boolean buildVBO (const Handle(OpenGl_Context)& theCtx,
+                                             const Standard_Boolean        theToKeepData) const;
+
+  Standard_EXPORT void clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const;
+
+private:
+
+  //! Initialize normal (OpenGL-provided) VBO
+  Standard_Boolean initNormalVbo (const Handle(OpenGl_Context)& theCtx) const;
 
   //! Main procedure to draw array
   void drawArray (const Handle(OpenGl_Workspace)& theWorkspace,

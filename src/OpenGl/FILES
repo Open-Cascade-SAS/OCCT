@@ -165,3 +165,5 @@ OpenGl_Disk.hxx
 OpenGl_Disk.cxx
 OpenGl_Sphere.hxx
 OpenGl_Sphere.cxx
+OpenGl_BackgroundArray.hxx
+OpenGl_BackgroundArray.cxx
