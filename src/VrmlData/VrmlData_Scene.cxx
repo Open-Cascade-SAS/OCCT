@@ -898,6 +898,8 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteArrIndex
             char * ptr = &buf[0];
             for (Standard_Integer i = 0; i < nVal; i++) {
               Sprintf (ptr, "%d,", arrVal[i]);
+              if (i == nVal - 1)
+                break;
               ptr = strchr (ptr, ',') + 1;
               if ((ptr - &buf[0]) > (ptrdiff_t)aLineLimit) {
                 WriteLine(buf);
