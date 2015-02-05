@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC24601"
+puts "============"
+puts ""
+#####################################################
+# Unwanted spheres shown after Step-Import
+#####################################################
+
+stepread [locate_data_file bug24601_216523_2_03.stp] a *
+tpcompound result
+
+set square 38563.2
+
+set nb_v_good 150
+set nb_e_good 228
+set nb_w_good 135
+set nb_f_good 105
+set nb_sh_good 2
+set nb_sol_good 2
+set nb_compsol_good 0
+set nb_compound_good 2
+set nb_shape_good 624
+
+set 3dviewer 1
