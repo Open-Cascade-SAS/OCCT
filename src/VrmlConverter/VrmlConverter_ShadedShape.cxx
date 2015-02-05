@@ -61,49 +61,6 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
                                      const TopoDS_Shape& aShape,
                                      const Handle(VrmlConverter_Drawer)& aDrawer )
   {
-
-  // here the triangulation is computed on the whole shape
-  //  if it does not yet exist
-
-
-    Standard_Real theRequestedDeflection;
-    if(aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)   // TOD_RELATIVE, TOD_ABSOLUTE
-      {
-	Bnd_Box box;
-	BRepBndLib::AddClose(aShape, box);
-
-	Standard_Real  Xmin, Xmax, Ymin, Ymax, Zmin, Zmax, diagonal;
-	box.Get( Xmin, Ymin, Zmin, Xmax, Ymax, Zmax );
-	if (!(box.IsOpenXmin() || box.IsOpenXmax() ||
-	      box.IsOpenYmin() || box.IsOpenYmax() ||
-	      box.IsOpenZmin() || box.IsOpenZmax()))
-	    {
-
-	    diagonal = Sqrt ((Xmax - Xmin)*( Xmax - Xmin) + ( Ymax - Ymin)*( Ymax - Ymin) + ( Zmax - Zmin)*( Zmax - Zmin));
-	    diagonal = Max(diagonal, Precision::Confusion());
-	    theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;      
-	  }
-	else
-	  {
-	    diagonal =1000000.;
-	    theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;  
-	  }
-//	cout << "diagonal = "<< diagonal << endl;
-//	cout << "theRequestedDeflection = "<< theRequestedDeflection << endl;
-
-      }
-    else 
-      {
-	theRequestedDeflection = aDrawer->MaximalChordialDeviation(); 
-      }
-
-    if (!BRepTools::Triangulation(aShape,theRequestedDeflection))
-    {
-      // computes and save the triangulation in the face.
-      BRepMesh_IncrementalMesh(aShape,theRequestedDeflection);
-    }
-  
-  
   Handle(Poly_Triangulation) T;
   TopLoc_Location theLocation;
   Standard_Integer i, j, k, decal, nnv, EI;

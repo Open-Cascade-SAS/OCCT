@@ -30,7 +30,7 @@
 #include <Vrml_Material.hxx>
 #include <Vrml_PointSet.hxx>
 #include <Precision.hxx>
-
+#include <Poly_PolygonOnTriangulation.hxx>
 
 //=========================================================================
 // function: Add
@@ -71,8 +71,8 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
       {
 	theRequestedDeflection = aDrawer->MaximalChordialDeviation(); 
       }
-//==
-    if (aDrawer->UIsoAspect()->Number() != 0 ||
+//== Is not used to reach the same wireframe representation with VRML#2.0
+    /*if (aDrawer->UIsoAspect()->Number() != 0 ||
 	aDrawer->VIsoAspect()->Number() != 0 ) {
 
       BRepAdaptor_Surface S;
@@ -142,7 +142,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	}
       }
     }
-  }
+  }*/
 
 //====
     Standard_Integer qnt=0;
@@ -150,6 +150,10 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
       {
 	qnt++;
       }
+
+  Handle(Poly_PolygonOnTriangulation) aPT;
+  Handle(Poly_Triangulation) aT;
+  TopLoc_Location aL;
 
 //   cout << "Quantity of Curves  = " << qnt << endl;
 
@@ -168,7 +172,11 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	    if (Tool.Neighbours() == 0) {
 	      if (Tool.HasCurve()) {
 		BRepAdaptor_Curve C(Tool.GetCurve());
-		VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
+    BRep_Tool::PolygonOnTriangulation(Tool.GetCurve(), aPT, aT, aL);
+    if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
+      VrmlConverter_DeflectionCurve::Add(anOStream, C, aPT->Parameters(), aPT->NbNodes(), aDrawer);
+    else
+      VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
 	      }
 	    }
 	  }
@@ -191,7 +199,11 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	    if (Tool.Neighbours() == 1) {
 	      if (Tool.HasCurve()) {
 		BRepAdaptor_Curve C(Tool.GetCurve());
-		VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
+    BRep_Tool::PolygonOnTriangulation(Tool.GetCurve(), aPT, aT, aL);
+    if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
+      VrmlConverter_DeflectionCurve::Add(anOStream, C, aPT->Parameters(), aPT->NbNodes(), aDrawer);
+    else
+      VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
 	      }
 	    }
 	  }
@@ -214,7 +226,11 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	  if (Tool.Neighbours() >= 2) {
 	    if (Tool.HasCurve()) {
 	      BRepAdaptor_Curve C(Tool.GetCurve());
-	      VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
+        BRep_Tool::PolygonOnTriangulation(Tool.GetCurve(), aPT, aT, aL);
+        if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
+          VrmlConverter_DeflectionCurve::Add(anOStream, C, aPT->Parameters(), aPT->NbNodes(), aDrawer);
+        else
+          VrmlConverter_DeflectionCurve::Add(anOStream, C, theRequestedDeflection, aDrawer);
 	    }
 	  }
 	}

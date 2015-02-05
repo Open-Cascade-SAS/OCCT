@@ -30,7 +30,8 @@ uses
  
     Length       from Quantity,
     Curve        from Adaptor3d,
-    Drawer       from VrmlConverter
+    Drawer       from VrmlConverter,
+	HArray1OfReal from TColStd
 
 is
 
@@ -88,6 +89,15 @@ is
     --          The aspect is the current aspect
     --          The drawing will be limited between the points of parameter
     --          U1 and U2.
+	
+	Add(myclass; anOStream: in out OStream from Standard; 
+    	    	 aCurve   : Curve          from Adaptor3d;
+                 aParams  : HArray1OfReal  from TColStd;
+				 aNbNodes : Integer;
+				 aDrawer  : Drawer         from VrmlConverter);
+		 
+    ---Purpose: adds to the OStream the drawing of the curve aCurve with  
+    --          the array of parameters to retrieve points on curve.
 
 
 end DeflectionCurve;

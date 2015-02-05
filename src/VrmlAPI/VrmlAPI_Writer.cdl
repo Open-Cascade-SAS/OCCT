@@ -81,9 +81,19 @@ is
     GetFreeBoundsMaterial(me) returns Material from Vrml;
     GetUnfreeBoundsMaterial(me) returns Material from Vrml;
     
-    Write(me; aShape : Shape from TopoDS; aFile : CString from Standard);
+    Write(me; aShape : Shape from TopoDS; aFile : CString from Standard; aVersion: Integer = 2);
     	---Purpose: Converts the shape aShape to
-    	-- VRML format and writes it to the file identified by aFile.
+    	-- VRML format of the passed version and writes it to the file identified by aFile.
+		
+	write_v1(me; aShape: Shape from TopoDS; aFileName: CString from Standard)
+	is protected;
+		---Purpose: Converts the shape aShape to VRML format of version 1.0 and writes it
+    	-- to the file identified by aFileName using default parameters.
+		
+	write_v2(me; aShape: Shape from TopoDS; aFileName: CString from Standard)
+	is protected;
+		---Purpose: Converts the shape aShape to VRML format of version 2.0 and writes it
+    	-- to the file identified by aFileName using default parameters.
         
 fields
     myRepresentation : RepresentationOfShape from VrmlAPI;

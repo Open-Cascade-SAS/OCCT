@@ -41,8 +41,8 @@ is
     class Writer;
     	---Purpose: With help of this class user can change parameters of writing.
     
-    Write(aShape: Shape from TopoDS; aFileName: CString from Standard);
-    	---Purpose: Converts the shape aShape to VRML format and writes it
+    Write(aShape: Shape from TopoDS; aFileName: CString from Standard; aVersion: Integer = 2);
+    	---Purpose: Converts the shape aShape to VRML format of the passed version and writes it
     	-- to the file identified by aFileName using default parameters.
     
 end VrmlAPI;

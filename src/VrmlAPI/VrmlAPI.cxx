@@ -17,7 +17,7 @@
 #include <VrmlAPI_Writer.hxx>
 #include <TopoDS_Shape.hxx>
 
-void VrmlAPI::Write(const TopoDS_Shape& aShape, const Standard_CString aFileName)  {
+void VrmlAPI::Write(const TopoDS_Shape& aShape, const Standard_CString aFileName, const Standard_Integer aVersion)  {
   VrmlAPI_Writer writer;
-  writer.Write(aShape, aFileName);
+  writer.Write(aShape, aFileName, aVersion);
 }

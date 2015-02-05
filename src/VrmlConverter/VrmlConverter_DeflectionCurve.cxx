@@ -76,6 +76,41 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 
 
 //==================================================================
+// function: PrintPoints
+// purpose:
+//==================================================================
+static void PrintPoints (Handle(TColgp_HArray1OfVec)& aHAV1,
+                         Handle(TColStd_HArray1OfInteger)& aHAI1,
+                         const Handle(VrmlConverter_Drawer)& aDrawer,
+                         Standard_OStream&             anOStream)
+{
+// creation of Vrml objects
+    Handle(VrmlConverter_LineAspect) LA = new VrmlConverter_LineAspect;
+    LA = aDrawer->LineAspect();
+
+// Separator 1 {
+    Vrml_Separator SE1;
+    SE1.Print(anOStream);
+// Material
+    if (LA->HasMaterial()){
+
+      Handle(Vrml_Material) M;
+      M = LA->Material();
+    
+      M->Print(anOStream);
+    }
+// Coordinate3
+    Handle(Vrml_Coordinate3)  C3 = new Vrml_Coordinate3(aHAV1);
+    C3->Print(anOStream);
+// IndexedLineSet
+    Vrml_IndexedLineSet  ILS;
+    ILS.SetCoordIndex(aHAI1);
+    ILS.Print(anOStream);
+// Separator 1 }
+    SE1.Print(anOStream);
+}
+
+//==================================================================
 // function: DrawCurve
 // purpose:
 //==================================================================
@@ -196,33 +231,10 @@ static void DrawCurve (Adaptor3d_Curve&          aCurve,
 
 
   if (key) {
-
-// creation of Vrml objects
-    Handle(VrmlConverter_LineAspect) LA = new VrmlConverter_LineAspect;
-    LA = aDrawer->LineAspect();
-
-// Separator 1 {
-    Vrml_Separator SE1;
-    SE1.Print(anOStream);
-// Material
-    if (LA->HasMaterial()){
-
-      Handle(Vrml_Material) M;
-      M = LA->Material();
-    
-      M->Print(anOStream);
-    }
-// Coordinate3
-    Handle(Vrml_Coordinate3)  C3 = new Vrml_Coordinate3(HAV1);
-    C3->Print(anOStream);
-// IndexedLineSet
-    Vrml_IndexedLineSet  ILS;
-    ILS.SetCoordIndex(HAI1);
-    ILS.Print(anOStream);
-// Separator 1 }
-    SE1.Print(anOStream);
+    PrintPoints(HAV1, HAI1, aDrawer, anOStream);
   }
 }
+
 //==================================================================
 // function: GetDeflection
 // purpose:
@@ -363,3 +375,38 @@ void VrmlConverter_DeflectionCurve::Add(Standard_OStream&    anOStream,
             U1 , U2, aDrawer, anOStream);
 }
 
+//==================================================================
+// function: Add
+// purpose: 6
+//==================================================================
+
+void VrmlConverter_DeflectionCurve::Add(Standard_OStream& anOStream,
+                                        const Adaptor3d_Curve& aCurve,
+                                        const Handle(TColStd_HArray1OfReal)& aParams,
+                                        const Standard_Integer aNbNodes,
+                                        const Handle(VrmlConverter_Drawer)& aDrawer)
+{
+  Handle(TColgp_HArray1OfVec) aHAV1 = new TColgp_HArray1OfVec(1, aNbNodes);
+  Handle(TColStd_HArray1OfInteger) aHAI1 = new TColStd_HArray1OfInteger(1, aNbNodes + 1);
+
+  Standard_Integer i;
+  gp_Pnt aPoint;
+  gp_Vec aVec;
+  for (i = 1; i<=aNbNodes; i++)
+  {
+    Standard_Real aParam = aParams->Value(aParams->Lower() + i - 1);
+    aPoint = aCurve.Value(aParam);
+    aVec.SetX(aPoint.X());
+    aVec.SetY(aPoint.Y());
+    aVec.SetZ(aPoint.Z());
+    aHAV1->SetValue(i, aVec);
+  }
+
+  for (i = aHAI1->Lower(); i < aHAI1->Upper(); i++)
+  {
+    aHAI1->SetValue(i,i-1);
+  }
+  aHAI1->SetValue(aHAI1->Upper(),-1);
+
+  PrintPoints(aHAV1, aHAI1, aDrawer, anOStream);
+}

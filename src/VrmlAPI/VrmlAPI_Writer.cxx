@@ -30,7 +30,15 @@
 #include <Vrml_Instancing.hxx>
 #include <Vrml_Separator.hxx>
 #include <VrmlConverter_WFDeflectionShape.hxx>
+#include <VrmlData_Scene.hxx>
+#include <VrmlData_ShapeConvert.hxx>
 #include <OSD_OpenFile.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <Poly_Triangulation.hxx>
+#include <BRep_Tool.hxx>
 
 VrmlAPI_Writer::VrmlAPI_Writer()
 {
@@ -212,7 +220,15 @@ Handle(Vrml_Material) VrmlAPI_Writer::GetUnfreeBoundsMaterial() const
   return myUnfreeBoundsMaterial;
 }
 
-void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFile) const
+void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFile, const Standard_Integer aVersion) const
+{
+  if (aVersion == 1)
+    write_v1(aShape, aFile);
+  else if (aVersion == 2)
+    write_v2(aShape, aFile);
+}
+
+void VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,const Standard_CString aFile) const
 {
   OSD_Path thePath(aFile);
   TCollection_AsciiString theFile;thePath.SystemName(theFile);
@@ -263,6 +279,26 @@ void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFi
   TopTools_Array1OfShape Shapes(1,1);
   Shapes.SetValue(1,aShape);
 
+  // Check shape tesselation
+  TopExp_Explorer anExp (aShape, TopAbs_FACE);
+  TopLoc_Location aLoc;
+  Standard_Boolean hasTriangles = Standard_False;
+  for (; anExp.More(); anExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (anExp.Current());
+    if (!aFace.IsNull()) 
+    {
+      Handle(Poly_Triangulation) aTri =
+        BRep_Tool::Triangulation (aFace, aLoc);
+
+      if (!aTri.IsNull())
+      {
+        hasTriangles = Standard_True;
+        break;
+      }
+    }
+  }
+
 //=========================================
 //----  Definition of data for Projector
 //=========================================
@@ -296,7 +332,7 @@ void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFi
   projector1->Add(outfile);
   Vrml_Separator S2;
   S2.Print(outfile); 
-  if (myRepresentation == VrmlAPI_ShadedRepresentation || myRepresentation == VrmlAPI_BothRepresentation)
+  if ( (myRepresentation == VrmlAPI_ShadedRepresentation || myRepresentation == VrmlAPI_BothRepresentation) && hasTriangles)
     {
       Vrml_Group Group1;
       Group1.Print(outfile);
@@ -318,3 +354,23 @@ void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFi
   S1.Print(outfile); 
 }
 
+void VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,const Standard_CString aFile) const
+{
+  Standard_Boolean anExtFace = Standard_False;
+  if(myRepresentation == VrmlAPI_ShadedRepresentation || myRepresentation == VrmlAPI_BothRepresentation) 
+    anExtFace = Standard_True;
+
+  Standard_Boolean anExtEdge = Standard_False;
+  if(myRepresentation == VrmlAPI_WireFrameRepresentation|| myRepresentation == VrmlAPI_BothRepresentation)
+    anExtEdge = Standard_True;
+
+  VrmlData_Scene aScene;
+  VrmlData_ShapeConvert aConv(aScene);
+  aConv.AddShape(aShape);
+  aConv.Convert(anExtFace, anExtEdge);
+
+  filebuf aFoc;
+  ostream outStream (&aFoc);
+  if (aFoc.open (aFile, ios::out))
+    outStream << aScene;
+}

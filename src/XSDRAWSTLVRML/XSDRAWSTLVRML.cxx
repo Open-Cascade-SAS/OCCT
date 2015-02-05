@@ -130,21 +130,41 @@ static Standard_Integer readstl
 static Standard_Integer writevrml
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc<3) di << "wrong number of parameters"    << "\n";
-  else {
-    TopoDS_Shape aShape = DBRep::Get(argv[1]);
-    //     VrmlAPI_Writer writer;
-    //     writer.SetTransparencyToMaterial(writer.GetFrontMaterial(),0.0);
-    //      Quantity_Color color;
-    //      color.SetValues(Quantity_NOC_GOLD);
-    //      Handle(Quantity_HArray1OfColor) Col = new Quantity_HArray1OfColor(1,1);
-    //      Col->SetValue(1,color);
-    //      writer.SetDiffuseColorToMaterial(writer.GetFrontMaterial(),Col);
-    //      writer.SetRepresentation(VrmlAPI_ShadedRepresentation);
-    //      writer.SetDeflection(0.01);
-    //      writer.Write(shape, argv[2]);
-    VrmlAPI::Write(aShape, argv[2]);
+  if (argc < 3 || argc > 5) 
+  {
+    di << "wrong number of parameters" << "\n";
+    return 0;
   }
+
+  TopoDS_Shape aShape = DBRep::Get(argv[1]);
+
+  // Get the optional parameters
+  Standard_Integer aVersion = 2;
+  Standard_Integer aType = 1;
+  if (argc >= 4)
+  {
+    aVersion = Draw::Atoi(argv[3]);
+    if (argc == 5)
+      aType = Draw::Atoi(argv[4]);
+  }
+
+  // Bound parameters
+  aVersion = Max(1, aVersion);
+  aVersion = Min(2, aVersion);
+  aType = Max(0, aType);
+  aType = Min(2, aType);
+
+  VrmlAPI_Writer writer;
+
+  switch (aType)
+  {
+  case 0: writer.SetRepresentation(VrmlAPI_ShadedRepresentation); break;
+  case 1: writer.SetRepresentation(VrmlAPI_WireFrameRepresentation); break;
+  case 2: writer.SetRepresentation(VrmlAPI_BothRepresentation); break;
+  }
+
+  writer.Write(aShape, argv[2], aVersion);
+
   return 0;
 }
 
@@ -231,45 +251,6 @@ static Standard_Integer loadvrml
   }
   return 0;
 }
-
-//=======================================================================
-//function : storevrml
-//purpose  :
-//=======================================================================
-
-static Standard_Integer storevrml
-(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc < 4) {
-    di << "wrong number of parameters"    << "\n";
-    di << "use: storevrml shape file defl type_of_conversion (0, 1, 2)"    << "\n";
-  }
-  else {
-    TopoDS_Shape aShape = DBRep::Get(argv[1]);
-    Standard_Real aDefl = Draw::Atof(argv[3]);
-    Standard_Integer aType = 1;
-    if(argc > 4) aType = Draw::Atoi(argv[4]);
-    aType = Max(0, aType);
-    aType = Min(2, aType);
-
-    Standard_Boolean anExtFace = Standard_False;
-    if(aType == 0 || aType == 2) anExtFace = Standard_True;
-    Standard_Boolean anExtEdge = Standard_False;
-    if(aType == 1 || aType == 2) anExtEdge = Standard_True;
-
-    VrmlData_Scene aScene;
-    VrmlData_ShapeConvert aConv(aScene);
-    aConv.AddShape(aShape);
-    aConv.Convert(anExtFace, anExtEdge, aDefl);
-
-    filebuf aFoc;
-    ostream outStream (&aFoc);
-    if (aFoc.open (argv[2], ios::out))
-      outStream << aScene;
-  }
-  return 0;
-}
-
 
 //-----------------------------------------------------------------------------
 static Standard_Integer createmesh
@@ -1226,12 +1207,11 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   const char* g = "XSTEP-STL/VRML";  // Step transfer file commands
   //XSDRAW::LoadDraw(theCommands);
 
-  theCommands.Add ("writevrml", "shape file",__FILE__,writevrml,g);
+  theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
   theCommands.Add ("tovrml",    "shape file",__FILE__, tovrml, g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",   "shape file",__FILE__,readstl,g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
-  theCommands.Add ("storevrml" , "shape file defl [type]",__FILE__,storevrml,g);
 
   theCommands.Add ("meshfromstl",     "creates MeshVS_Mesh from STL file",            __FILE__, createmesh,      g );
   theCommands.Add ("mesh3delem",      "creates 3d element mesh to test",              __FILE__, create3d,        g );
