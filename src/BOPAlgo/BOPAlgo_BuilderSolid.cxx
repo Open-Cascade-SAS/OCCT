@@ -480,7 +480,6 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   //=================================================
   //
   // 2. Post Treatment
-  Standard_Integer aNbFA;
   BRep_Builder aBB;
   BOPCol_MapOfOrientedShape AddedFacesMap;
   BOPCol_IndexedDataMapOfShapeListOfShape aEFMap;
@@ -519,8 +518,6 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   //
   aEFMap.Clear();
   AddedFacesMap.Clear();
-  //
-  aNbFA=myShapesToAvoid.Extent();
   //
   aItM.Initialize(myShapesToAvoid);
   for (; aItM.More(); aItM.Next()) {
@@ -570,7 +567,7 @@ void BOPAlgo_BuilderSolid::PerformLoops()
 void BOPAlgo_BuilderSolid::PerformAreas()
 {
   Standard_Boolean bIsGrowth, bIsHole;
-  Standard_Integer k,aNbHoles;
+  Standard_Integer k;
   BRep_Builder aBB; 
   BOPCol_ListIteratorOfListOfShape aItLS;
   BOPCol_ListOfShape aNewSolids, aHoleShells; 
@@ -669,7 +666,7 @@ void BOPAlgo_BuilderSolid::PerformAreas()
     aSelector.Clear();
     aSelector.SetBox(aBoxSolid);
     //
-    aNbHoles=aBBTree.Select(aSelector);
+    aBBTree.Select(aSelector);
     //
     const BOPCol_ListOfInteger& aLI=aSelector.Indices();
     //
@@ -767,7 +764,7 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
   }
   // 
   Standard_Boolean bIsInternalFace;
-  Standard_Integer k, aNbVFS, aNbSLF, aNbVFP, aNbF, aNbA;
+  Standard_Integer k, aNbVFS, aNbSLF, aNbVFP, aNbA;
   BRep_Builder aBB;
   TopoDS_Iterator aIt;
   TopExp_Explorer aExp;
@@ -856,7 +853,7 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
     aSelector.Clear();
     aSelector.SetBox(aBox);
     //
-    aNbF=aBBTree.Select(aSelector);
+    aBBTree.Select(aSelector);
     //
     const BOPCol_ListOfInteger& aLI=aSelector.Indices();
     aItLI.Initialize(aLI);

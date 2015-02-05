@@ -525,7 +525,6 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
   Standard_Boolean VminDegen = Standard_False;
   Standard_Boolean VmaxDegen = Standard_False;
   Standard_Boolean UisoDegen = Standard_False;
-  Standard_Boolean VisoDegen = Standard_False;
   gp_Pnt MinApex, MaxApex;
   Standard_Boolean HasSingularity = Standard_False;
   Standard_Real uf1, uf2, vf1, vf2, fpar, lpar;
@@ -552,9 +551,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
           gp_Pnt2d lp2d = aCurve->Value(lpar);
           if (Abs(fp2d.X() - lp2d.X()) <= Precision::PConfusion())
             UisoDegen = Standard_True;
-          else
-            VisoDegen = Standard_True;
-          
+
 	  if (DegEdges.Length() == 2)
 	    {
               if (UisoDegen)

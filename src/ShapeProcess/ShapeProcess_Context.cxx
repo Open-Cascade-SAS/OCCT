@@ -77,7 +77,7 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standa
   if ( ! sRC.IsNull() && ! name.IsEqual ( file ) ) sRC.Nullify();
   if ( ! sRC.IsNull() ) {
     struct stat buf;
-    if ( ! stat ( file, &buf ) && buf.st_mtime != mtime ) {
+    if ( ! stat ( file, &buf ) && (Standard_Time)buf.st_mtime != mtime ) {
       sRC.Nullify();
       mtime = buf.st_mtime;
     }

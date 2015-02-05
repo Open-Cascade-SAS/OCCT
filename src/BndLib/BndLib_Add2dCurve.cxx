@@ -530,14 +530,13 @@ Standard_Boolean BndLib_Box2dCurve::IsTypeBase
 void BndLib_Box2dCurve::PerformLineConic()
 {
   Standard_Integer i, iInf[2];
-  Standard_Real  aTb[2], aTinf;
+  Standard_Real  aTb[2];
   gp_Pnt2d aP2D;
   //
   myErrorStatus=0;
   //
   Bnd_Box2d& aBox2D=myBox;
   //
-  aTinf=Precision::Infinite();
   iInf[0]=0;
   iInf[1]=0;
   aTb[0]=myT1;

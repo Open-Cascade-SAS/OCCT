@@ -40,8 +40,7 @@ void  RWStepAP214_RWAutoDesignDocumentReference::ReadStep
 	// --- inherited field : source ---
 
 	Handle(TCollection_HAsciiString) asource;
-	Standard_Boolean stat2;
-	stat2 = data->ReadString (num,2,"source",ach,asource);
+	data->ReadString (num,2,"source",ach,asource);
 
 
         // --- own field : items ---

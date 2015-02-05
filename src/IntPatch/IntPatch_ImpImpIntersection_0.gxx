@@ -372,7 +372,7 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
   //
   Standard_Integer i,k;
   Standard_Integer linenumber;
-  Standard_Real paraint,currentparameter,tolerance;
+  Standard_Real paraint = 0.,currentparameter,tolerance;
   Standard_Real U1,V1,U2,V2;
   Standard_Boolean goon;
   

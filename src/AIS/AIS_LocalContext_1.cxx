@@ -567,8 +567,6 @@ void AIS_LocalContext::Unhilight (const Handle(SelectMgr_EntityOwner)& theOwner,
 //=======================================================================
 void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 {
-  Standard_Boolean updMain(Standard_False);
-
   Handle(AIS_Selection) Sel = AIS_Selection::Selection(mySelName.ToCString());
 #ifdef BUC60765
   if( Sel.IsNull() ) return;
@@ -601,13 +599,8 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 	if(BROwnr.IsNull() || !BROwnr->ComesFromDecomposition()){
 	  Handle(SelectMgr_SelectableObject) SO  = Ownr->Selectable();
 	  IO = *((Handle(AIS_InteractiveObject)*)&SO);
-	  updMain = Standard_True;
 	}
-	else
-	  updMain = Standard_True;
       }
-      else
-	updMain = Standard_True;
       Handle(SelectMgr_SelectableObject) SO = Ownr->Selectable();
       Standard_Integer HM = GetHiMod(*((Handle(AIS_InteractiveObject)*)&SO));
       if ( Ownr->IsAutoHilight() )
@@ -641,8 +634,6 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
 {
   myMainPM->ClearImmediateDraw();
-
-  Standard_Boolean updMain(Standard_False);
 
   Handle(AIS_Selection) Sel = AIS_Selection::Selection(mySelName.ToCString());
 #ifdef BUC60765
@@ -680,10 +671,7 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
 	  Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&SO);
 	  HM = GetHiMod(IO);
 #endif
-	  updMain = Standard_True;
 	}
-	else
-	  updMain = Standard_True;
       }
       Ownr->Unhilight(PM,HM);
     }
@@ -696,14 +684,8 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
       anIter1.Key()->ClearSelected();
   }
 
-  if(updateviewer){
-#ifdef BUC60774
+  if(updateviewer)
     myCTX->CurrentViewer()->Update();
-#else
-    if(updMain) myCTX->CurrentViewer()->Update();
-#endif
-  }
-  
 }
 
 //=======================================================================

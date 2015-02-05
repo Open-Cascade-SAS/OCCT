@@ -649,11 +649,10 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare (const Bnd_Box& theBox)
   //-- Rejection with the table of bits
   Standard_Boolean touch = Standard_True;
   touch = Standard_False;
-  Standard_Real _Xmin,_Ymin,_Zmin,_Xmax,_Ymax,_Zmax;
+  Standard_Real _Xmax,_Ymax,_Zmax;
   BSB_T3Bits* Map = (BSB_T3Bits *)TabBits;
   Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
   _Xmax=Map->Xmax; _Ymax=Map->Ymax; _Zmax=Map->Zmax;
-  _Xmin=Map->Xmin; _Ymin=Map->Ymin; _Zmin=Map->Zmin;
   theBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
   Standard_Integer i0,i1,j0,j1,k0,k1;
   if(xmin>Xmin) i0=(Standard_Integer )((xmin-Xmin)*deltaX)-1; else  i0=1;

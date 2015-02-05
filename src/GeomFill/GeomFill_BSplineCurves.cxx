@@ -538,8 +538,8 @@ void  GeomFill_BSplineCurves::Init
       IsOK = Standard_True;
     }
     
-    Standard_ConstructionError_Raise_if 
-      (!IsOK, " GeomFill_BSplineCurves: Courbes non jointives");
+    if(!IsOK)
+      Standard_OutOfRange::Raise("GeomFill_BSplineCurves: Courbes non jointives");
 
     Standard_Integer NbUPoles = CC1->NbPoles();
     Standard_Integer NbVPoles = CC2->NbPoles();

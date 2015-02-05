@@ -326,10 +326,6 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
     aEdgeSegments = new Graphic3d_ArrayOfSegments (aNbEdgePrimitives * 2);
   }
 
-  Standard_Integer howMany = 1;
-  if ( IsOverlapControl )
-    howMany = 2;
-
   TColStd_PackedMapOfInteger aCustomElements;
 
   Quantity_Color       anOldEdgeColor;

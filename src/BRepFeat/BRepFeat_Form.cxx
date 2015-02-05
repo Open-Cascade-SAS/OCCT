@@ -164,8 +164,6 @@ static void Descendants(const TopoDS_Shape&,
   TColGeom_SequenceOfCurve scur;
   Curves(scur);
 
-  Standard_Real locmin;
-  Standard_Real locmax;
   Standard_Real mf, Mf, mu, Mu;
 
   TopAbs_Orientation Orifuntil = TopAbs_INTERNAL;
@@ -193,9 +191,7 @@ static void Descendants(const TopoDS_Shape&,
   }
 
   {
-//  Find sens, locmin, locmax, FFrom, FUntil
-    locmin = RealFirst();
-    locmax = RealLast();
+//  Find sens, FFrom, FUntil
     for (Standard_Integer jj=1; jj<=scur.Length(); jj++) {
       if (ASI1.IsDone() && ASI2.IsDone()) {
         if (ASI1.NbPoints(jj) <= 0) {
@@ -208,19 +204,12 @@ static void Descendants(const TopoDS_Shape&,
         }
         mu = ASI2.Point(jj,1).Parameter();
         Mu = ASI2.Point(jj,ASI2.NbPoints(jj)).Parameter();
-        if (scur(jj)->IsPeriodic()) {
-          Standard_Real period = scur(jj)->Period();
-          locmin = mf;
-          locmax = ElCLib::InPeriod(Mu,locmin,locmin+period);
-        }
-        else {
+        if (!scur(jj)->IsPeriodic()) {
           Standard_Integer ku, kf;
           if (! (mu > Mf || mf > Mu)) { //overlapping intervals
             sens = 1;
             kf = 1;
             ku = ASI2.NbPoints(jj);
-            locmin = mf;
-            locmax = Max(Mf, Mu);
           }   
           else if (mu > Mf) {    
             if (sens == -1) {
@@ -231,8 +220,6 @@ static void Descendants(const TopoDS_Shape&,
             sens = 1;
             kf = 1;
             ku = ASI2.NbPoints(jj);
-            locmin = mf;
-            locmax = Mu;
           }
           else {
             if (sens == 1) {
@@ -243,8 +230,6 @@ static void Descendants(const TopoDS_Shape&,
             sens = -1;
             kf = ASI1.NbPoints(jj);
             ku = 1;
-            locmin = mu;
-            locmax = Mf;
           }
           if (Oriffrom == TopAbs_INTERNAL) {
             TopAbs_Orientation Oript = ASI1.Point(jj,kf).Orientation();
@@ -287,13 +272,9 @@ static void Descendants(const TopoDS_Shape&,
         Standard_Integer ku;
         if (sens == -1) {
           ku = 1;
-          locmax = -ASI2.Point(jj,ku).Parameter();
-          locmin = 0.;
         }
         else {
           ku = ASI2.NbPoints(jj);
-          locmin = 0;
-          locmax =  ASI2.Point(jj,ku).Parameter();
         }
         if (Orifuntil == TopAbs_INTERNAL && sens != 0) {
           TopAbs_Orientation Oript = ASI2.Point(jj,ku).Orientation();
@@ -307,8 +288,6 @@ static void Descendants(const TopoDS_Shape&,
         }
       }
       else { 
-        locmin = 0.;
-        locmax = RealLast();
         sens = 1;
         break;
       }

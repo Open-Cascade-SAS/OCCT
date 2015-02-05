@@ -593,7 +593,6 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   //xf
 
   Standard_Integer NbPasOKConseq=0;
-  Standard_Real pasMaxSV[4], aTmp;
   TColStd_Array1OfReal Param(1,4);
   IntImp_ConstIsoparametric ChoixIso;
   //xt
@@ -644,14 +643,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   //
   for (Standard_Integer i=1; i<=4; ++i)
   {
-    aTmp=ParDep(i);
     Param(i)=ParDep(i);
   }
   //-- reproduce steps uv connected to surfaces Caro1 and Caro2
   //-- pasuv[] and pasSav[] are modified during the marching
   for(Standard_Integer i = 0; i < 4; ++i)
   {
-    pasMaxSV[i] = pasSav[i] = pasuv[i] = pasInit[i]; 
+    pasSav[i] = pasuv[i] = pasInit[i];
   }
 
   //-- calculate the first solution point

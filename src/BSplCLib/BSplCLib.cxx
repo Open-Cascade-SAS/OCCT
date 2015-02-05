@@ -3020,14 +3020,16 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                            InterpolationMatrix,
                            UpperBandWidth,
                            LowerBandWidth) ;
-  Standard_OutOfRange_Raise_if (ErrorCode != 0, "BSplCLib::Interpolate") ;
+  if(ErrorCode)
+    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
 
   ErrorCode =
   BSplCLib::FactorBandedMatrix(InterpolationMatrix,
                            UpperBandWidth,
                            LowerBandWidth,
                            InversionProblem) ;
-  Standard_OutOfRange_Raise_if (ErrorCode != 0, "BSplCLib::Interpolate") ;
+  if(ErrorCode)
+    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
 
   ErrorCode  =
   BSplCLib::SolveBandedSystem(InterpolationMatrix,
@@ -3035,9 +3037,9 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                               LowerBandWidth,
 			      ArrayDimension,
                               Poles) ;
-
-  Standard_OutOfRange_Raise_if (ErrorCode != 0,"BSplCLib::Interpolate")  ;
-} 
+  if(ErrorCode)
+    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
+}
 
 //=======================================================================
 //function : Interpolate
@@ -3067,14 +3069,16 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
                            InterpolationMatrix,
                            UpperBandWidth,
                            LowerBandWidth) ;
-  Standard_OutOfRange_Raise_if (ErrorCode != 0, "BSplCLib::Interpolate") ;
+  if(ErrorCode)
+    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
 
   ErrorCode =
   BSplCLib::FactorBandedMatrix(InterpolationMatrix,
                            UpperBandWidth,
                            LowerBandWidth,
                            InversionProblem) ;
-  Standard_OutOfRange_Raise_if (ErrorCode != 0, "BSplCLib::Interpolate") ;
+  if(ErrorCode)
+    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
 
   ErrorCode  =
   BSplCLib::SolveBandedSystem(InterpolationMatrix,
@@ -3084,8 +3088,8 @@ void  BSplCLib::Interpolate(const Standard_Integer         Degree,
 			      ArrayDimension,
                               Poles,
 			      Weights) ;
-
-  Standard_OutOfRange_Raise_if (ErrorCode != 0,"BSplCLib::Interpolate")  ;
+  if(ErrorCode)
+    Standard_OutOfRange::Raise("BSplCLib::Interpolate");
 }
 
 //=======================================================================

@@ -198,9 +198,11 @@ static Standard_Integer WhatKindOfLine(OSD_File& aFile,
   }
   if (Pos == Line.Length())
     aToken2.Clear();
-  else
-    aToken2 = Line.SubString(Pos,Line.Length()-1);
-
+  else {
+    Line.Remove(1,Pos-1);
+    Line.Remove(Line.Length());
+    aToken2 = Line;
+  }
   if (Debug)
     cout << "'\t Value = '" << aToken2 << "'" << endl << flush;
   return RESOURCE;

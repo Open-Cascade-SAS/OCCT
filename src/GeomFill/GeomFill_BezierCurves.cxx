@@ -438,9 +438,9 @@ void  GeomFill_BezierCurves::Init(const Handle(Geom_BezierCurve)& C1,
       CC2->Reverse();
       IsOK = Standard_True;
     }
-    
-    Standard_ConstructionError_Raise_if 
-      (!IsOK, " GeomFill_BezierCurves: Courbes non jointives");
+
+    if(!IsOK)
+      Standard_OutOfRange::Raise("GeomFill_BezierCurves: Courbes non jointives");
 
     CC1->Poles(P1);
     CC2->Poles(P2);

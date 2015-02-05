@@ -822,11 +822,10 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 Standard_Real IntTools_FaceFace::ComputeTolerance()
 {
   Standard_Integer i, j, aNbLin;
-  Standard_Real aFirst, aLast, aD, aDMax, aT, aDelta;
+  Standard_Real aFirst, aLast, aD, aDMax, aT;
   Handle(Geom_Surface) aS1, aS2;
   //
   aDMax = 0;
-  aDelta = Precision::PConfusion();
   aNbLin = mySeqOfCurve.Length();
   //
   aS1 = myHS1->ChangeSurface().Surface();

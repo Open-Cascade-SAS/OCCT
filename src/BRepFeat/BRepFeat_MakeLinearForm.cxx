@@ -315,7 +315,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 #ifdef OCCT_DEBUG
     if (trc) cout << " Sliding" << endl;
 #endif
-    Standard_Boolean Sliding = Standard_False;
+    Sliding = Standard_False;
     Handle(Geom_Surface) s = BRep_Tool::Surface(FirstFace);
     if (s->DynamicType() == 
 	STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {

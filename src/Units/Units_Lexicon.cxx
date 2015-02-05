@@ -123,7 +123,7 @@ Standard_Boolean Units_Lexicon::UpToDate() const
   TCollection_AsciiString string = FileName();
 
   if(!stat(string.ToCString(),&buf)) {
-    if(thetime >= buf.st_ctime)
+    if(thetime >= (Standard_Time)buf.st_ctime)
       return Standard_True;
   }
 

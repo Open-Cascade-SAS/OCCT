@@ -192,7 +192,8 @@ private:
         mySameVertex(theSameVertex)
     {
     }
-
+    virtual ~TopoDSVExplorer() {
+    }
     const TopoDS_Vertex& Vertex() const
     {
       return myVertex;

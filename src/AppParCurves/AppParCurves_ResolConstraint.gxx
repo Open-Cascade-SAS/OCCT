@@ -75,7 +75,6 @@ AppParCurves_ResolConstraint::
   Standard_Integer myindex, Def = SCurv.NbPoles()-1;    
   Standard_Integer nb3d, nb2d, Npol= Def+1, Npol2 = 2*Npol;
   Standard_Real T1 = 0., T2 = 0., T3, Tmax, Daij;
-  Standard_Boolean Ok;
   gp_Vec V;
   gp_Vec2d V2d;
   gp_Pnt Poi;
@@ -281,13 +280,13 @@ AppParCurves_ResolConstraint::
         case 1: //T1 ~ T1x
         { 
           if (k <= nb3d) {
-            Ok = ToolLine::Tangency(SSP, Npt, tabV);
+            ToolLine::Tangency(SSP, Npt, tabV);
             V = tabV(k);
             T1 = V.X(); 
             IP = 3 * Npol;
           }
           else { 
-            Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+            ToolLine::Tangency(SSP, Npt, tabV2d);
             V2d = tabV2d(k-nb3d);
             T1 = V2d.X(); 
             IP = 2 * Npol;
@@ -298,12 +297,12 @@ AppParCurves_ResolConstraint::
         case 2: //T1 ~ T1y
         {
           if (k <= nb3d) {
-            Ok = ToolLine::Tangency(SSP, Npt, tabV);
+            ToolLine::Tangency(SSP, Npt, tabV);
             V = tabV(k);
             IP = 3 * Npol;
           }
           else { 
-            Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+            ToolLine::Tangency(SSP, Npt, tabV2d);
             V2d = tabV2d(k-nb3d);
             T1 = V2d.Y(); 
             IP = 2 * Npol;
@@ -313,7 +312,7 @@ AppParCurves_ResolConstraint::
         }
         case 3: //T1 ~ T1z
         {
-          Ok = ToolLine::Tangency(SSP, Npt, tabV);
+          ToolLine::Tangency(SSP, Npt, tabV);
           V = tabV(k);
           T1 = V.Z();
           IP = 3 * Npol;
@@ -328,12 +327,12 @@ AppParCurves_ResolConstraint::
         case 1: //T2 ~ T2x
         {
           if ((k+1) <= nb3d) { 
-            Ok = ToolLine::Tangency(SSP, Npt, tabV);
+            ToolLine::Tangency(SSP, Npt, tabV);
             V = tabV(k+1);
             T2 = V.X();
           }
           else { 
-            Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+            ToolLine::Tangency(SSP, Npt, tabV2d);
             V2d = tabV2d(k+1-nb3d);
             T2 = V2d.X();
           }
@@ -343,12 +342,12 @@ AppParCurves_ResolConstraint::
         case 2: //T2 ~ T2y
         {
           if ((k+1) <= nb3d) { 
-            Ok = ToolLine::Tangency(SSP, Npt, tabV);
+            ToolLine::Tangency(SSP, Npt, tabV);
             V = tabV(k+1);
             T2 = V.Y();
           }
           else { 
-            Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+            ToolLine::Tangency(SSP, Npt, tabV2d);
             V2d = tabV2d(k+1-nb3d);
             T2 = V2d.Y();
           }
@@ -357,7 +356,7 @@ AppParCurves_ResolConstraint::
         }
         case 3: //T2 ~ T2z
         {
-          Ok = ToolLine::Tangency(SSP, Npt, tabV);
+          ToolLine::Tangency(SSP, Npt, tabV);
           V = tabV(k+1);
           T2 = V.Z();
           addIndex_2 = 2 * Npol;
@@ -554,7 +553,6 @@ const math_Matrix& AppParCurves_ResolConstraint::
   Standard_Integer IP;
   Standard_Real Daij;
   Npol = Deg+1; Npol2 = 2*Npol;
-  Standard_Boolean Ok;
   TColStd_Array2OfInteger Ibont(1, NbCu, 1, IncTan);
   math_Matrix DeCInit(1, IncPass, 1, Npol);
   math_Vector DDA(1, Npol);
@@ -601,7 +599,7 @@ const math_Matrix& AppParCurves_ResolConstraint::
 	Npt = ITan(i);
 //	MultiPoint MPoint = ToolLine::Value(SSP, Npt);
 	// choix du maximum de tangence pour exprimer la colinearite:
-	Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	ToolLine::Tangency(SSP, Npt, tabV);
 	V = tabV(k);
 	V.Coord(T1, T2, T3);
 	Tmax = Abs(T1);
@@ -650,7 +648,7 @@ const math_Matrix& AppParCurves_ResolConstraint::
       for (i = 1; i <= IncTan; i++) {
 	Npt = ITan(i);
 	AppParCurves::SecondDerivativeBernstein(Parameters(Npt), DDA);
-	Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	ToolLine::Tangency(SSP, Npt, tabV2d);
 	V2d = tabV2d(k);
 	V2d.Coord(T1, T2);
 	Tmax = Abs(T1);
@@ -682,25 +680,25 @@ const math_Matrix& AppParCurves_ResolConstraint::
       Inc3 = Inc3 + 1;
       if (Ibont(k, i) == 1) {
 	if (k <= nb3d) {
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	  ToolLine::Tangency(SSP, Npt, tabV);
 	  V = tabV(k);
 	  T1 = V.X(); 
 	  IP = 3*Npol;
 	}
 	else { 
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	  ToolLine::Tangency(SSP, Npt, tabV2d);
 	  V2d = tabV2d(k);
 	  T1 = V2d.X(); 
 	  IP = 2*Npol;
 	}
 	if (Ibont(k+1, i) == 1) {  // Relations entre T1x et T2x:
 	  if ((k+1) <= nb3d) { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	    ToolLine::Tangency(SSP, Npt, tabV);
 	    V = tabV(k+1);
 	    T2 = V.X();
 	  }
 	  else { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	    ToolLine::Tangency(SSP, Npt, tabV2d);
 	    V2d = tabV2d(k+1);
 	    T2 = V2d.X();
 	  }
@@ -713,12 +711,12 @@ const math_Matrix& AppParCurves_ResolConstraint::
 	}
 	else if (Ibont(k+1, i) == 2) {  // Relations entre T1x et T2y:
 	  if ((k+1) <= nb3d) { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	    ToolLine::Tangency(SSP, Npt, tabV);
 	    V = tabV(k+1);
 	    T2 = V.Y();
 	  }
 	  else { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	    ToolLine::Tangency(SSP, Npt, tabV2d);
 	    V2d = tabV2d(k+1);
 	    T2 = V2d.Y();
 	  }
@@ -743,25 +741,25 @@ const math_Matrix& AppParCurves_ResolConstraint::
       }
       else if (Ibont(k,i) == 2) {  
 	if (k <= nb3d) { 
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	  ToolLine::Tangency(SSP, Npt, tabV);
 	  V = tabV(k);
 	  T1 = V.Y();
 	  IP = 3*Npol;
 	}
 	else { 
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	  ToolLine::Tangency(SSP, Npt, tabV2d);
 	  V2d = tabV2d(k);
 	  T1 = V2d.Y();
 	  IP = 2*Npol;
 	}
 	if (Ibont(k+1, i) == 1) {  // Relations entre T1y et T2x:
 	  if ((k+1) <= nb3d) { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	    ToolLine::Tangency(SSP, Npt, tabV);
 	    V = tabV(k+1);
 	    T2 = V.X();
 	  }
 	  else {
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	    ToolLine::Tangency(SSP, Npt, tabV2d);
 	    V2d = tabV2d(k+1);
 	    T2 = V2d.X();
 	  }
@@ -775,12 +773,12 @@ const math_Matrix& AppParCurves_ResolConstraint::
 	}
 	else if (Ibont(k+1, i) == 2) {  // Relations entre T1y et T2y:
 	  if ((k+1) <= nb3d) { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	    ToolLine::Tangency(SSP, Npt, tabV);
 	    V = tabV(k+1);
 	    T2 = V.Y();
 	  }
 	  else { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	    ToolLine::Tangency(SSP, Npt, tabV2d);
 	    V2d = tabV2d(k+1);
 	    T2 = V2d.Y();
 	  }
@@ -806,18 +804,18 @@ const math_Matrix& AppParCurves_ResolConstraint::
       }
 
       else {
-	Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	ToolLine::Tangency(SSP, Npt, tabV);
 	V = tabV(k);
 	T1 = V.Z();
 	IP = 3*Npol;
 	if (Ibont(k+1, i) == 1) {  // Relations entre T1z et T2x:
 	  if ((k+1) <= nb3d) { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	    ToolLine::Tangency(SSP, Npt, tabV);
 	    V = tabV(k+1);
 	    T2 = V.X();
 	  }
 	  else { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	    ToolLine::Tangency(SSP, Npt, tabV2d);
 	    V2d = tabV2d(k+1);
 	    T2 = V2d.X();
 	  }
@@ -831,12 +829,12 @@ const math_Matrix& AppParCurves_ResolConstraint::
 
 	else if (Ibont(k+1, i) == 2) {  // Relations entre T1z et T2y:   
 	  if ((k+1) <= nb3d) {
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	    ToolLine::Tangency(SSP, Npt, tabV);
 	    V = tabV(k+1);
 	    T2 = V.Y();
 	  }
 	  else { 
-	    Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	    ToolLine::Tangency(SSP, Npt, tabV2d);
 	    V2d = tabV2d(k+1);
 	    T2 = V2d.Y();
 	  }

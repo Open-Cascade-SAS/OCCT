@@ -1555,20 +1555,10 @@ Standard_Boolean BOPAlgo_PaveFiller::ExtendedTolerance
     return;
   }
   //
-  GeomAbs_SurfaceType aType1, aType2;
   Handle(Geom_Surface) aS1=BRep_Tool::Surface(aF1);
   Handle(Geom_Surface) aS2=BRep_Tool::Surface(aF2);
-  GeomAdaptor_Surface aGAS1(aS1);
-  GeomAdaptor_Surface aGAS2(aS2);
-  //
-  aType1=aGAS1.GetType();
-  aType2=aGAS2.GetType();
-  //
-  //if (aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
-  GeomAbs_CurveType aTypeC;
   //
   const IntTools_Curve& aIC=aNC.Curve();
-  aTypeC=aIC.Type();
   //if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
   Handle(Geom2d_Curve) aC2D[2];
   //

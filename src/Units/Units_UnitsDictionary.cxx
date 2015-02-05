@@ -317,7 +317,7 @@ Standard_Boolean Units_UnitsDictionary::UpToDate() const
   struct stat buf;
   TCollection_AsciiString string = thefilename->String();
   if(!stat(string.ToCString(),&buf)) {
-    if(thetime == buf.st_ctime) return Standard_True;
+    if(thetime == (Standard_Time)buf.st_ctime) return Standard_True;
   }
 
   return Standard_False;
