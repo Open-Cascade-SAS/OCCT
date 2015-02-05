@@ -108,16 +108,9 @@ static void Normal(const TopoDS_Face&  aFace,
   }
   
 }
-void StlTransfer::BuildIncrementalMesh (const TopoDS_Shape&  Shape,
-										const Standard_Real  Deflection,
-										const Standard_Boolean  InParallel,
+void StlTransfer::RetrieveMesh (const TopoDS_Shape&  Shape,
 										const Handle(StlMesh_Mesh)& Mesh)
 {
-  if (Deflection <= Precision::Confusion ()) {
-    Standard_ConstructionError::Raise ("StlTransfer::BuildIncrementalMesh");
-    }
-  
-  BRepMesh_IncrementalMesh aMesher(Shape, Deflection, Standard_False, 0.5, InParallel);
   for (TopExp_Explorer itf(Shape,TopAbs_FACE); itf.More(); itf.Next()) {
     TopoDS_Face face = TopoDS::Face(itf.Current());
     TopLoc_Location Loc, loc;
@@ -125,7 +118,7 @@ void StlTransfer::BuildIncrementalMesh (const TopoDS_Shape&  Shape,
     if (theTriangulation.IsNull()) continue; //Meshing was not done for this face!
     Poly_Array1OfTriangle theTriangles(1,theTriangulation->NbTriangles());
     theTriangles.Assign(theTriangulation->Triangles());
-    Mesh->AddDomain (Deflection);
+    Mesh->AddDomain (theTriangulation->Deflection());
     
     TColgp_Array1OfPnt thePoints(1, theTriangulation->NbNodes());
     thePoints.Assign(theTriangulation->Nodes());

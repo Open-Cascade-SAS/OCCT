@@ -12,6 +12,7 @@ set aFile $imagedir/bug23193_sample.stl
 
 vinit
 stepread [locate_data_file bug23193_sample.stp] a *
+incmesh a_1 1
 writestl a_1 ${aFile} 0
 
 meshfromstl m1 ${aFile}

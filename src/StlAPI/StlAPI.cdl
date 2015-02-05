@@ -25,12 +25,21 @@ uses
     StlMesh
      
 is 
+	enumeration ErrorStatus is 
+		---Purpose: Set of statuses to indicate a type of the error
+		-- occurred during data retrieving and writing operations.
+		StatusOK,
+		MeshIsEmpty,
+		CannotOpenFile
+
+    end ErrorStatus;
+
     class Writer; 
     class Reader; 
     
     Write(aShape      : in Shape from TopoDS;  
           aFile       : in CString from Standard;
-    	  aAsciiMode  : in Boolean from Standard = Standard_True);
+    	  aAsciiMode  : in Boolean from Standard = Standard_True) returns ErrorStatus from StlAPI;
 	  ---Purpose : Convert and write shape to STL format.
 	  --         file is written in binary if aAsciiMode is False
 	  --         otherwise it is written in Ascii (by default)

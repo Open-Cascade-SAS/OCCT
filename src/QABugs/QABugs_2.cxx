@@ -33,6 +33,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepAlgo_Section.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 
@@ -183,8 +184,8 @@ static Standard_Integer OCC1048 (Draw_Interpretor& di, Standard_Integer argc, co
 
   Standard_Real theDeflection = 0.006;
   Handle(StlMesh_Mesh) theStlMesh = new StlMesh_Mesh;
-  StlTransfer::BuildIncrementalMesh(aShape, theDeflection, Standard_False, theStlMesh);
-
+  BRepMesh_IncrementalMesh aMesh(aShape, theDeflection);
+  StlTransfer::RetrieveMesh(aShape, theStlMesh);
   Standard_Integer NBTRIANGLES = theStlMesh->NbTriangles();
   di<<"Info: Number of triangles = "<<NBTRIANGLES<<"\n";
 

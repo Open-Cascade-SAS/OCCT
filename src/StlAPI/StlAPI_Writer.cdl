@@ -21,34 +21,12 @@ class Writer from StlAPI
 
 uses
     Shape from TopoDS,
-    Mesh from StlMesh
+    Mesh from StlMesh,
+	ErrorStatus from StlAPI
 is
-    Create;
+	Create;
    	 ---Purpose: Creates a writer object with
-   	 -- default parameters: ASCIIMode, RelativeMode, SetCoefficent,
-   	 -- SetDeflection. These parameters may be modified. 
-
-    SetDeflection(me: in out; aDeflection : in Real from Standard);
-    	---Purpose: Sets the deflection of the meshing algorithm. 
-    	--    Deflection is used, only if relative mode is false
-
-    SetCoefficient(me: in out; aCoefficient : in Real from Standard);
-    	---Purpose: Sets the coeffiecient for computation of deflection through 
-    	--          relative size of shape. Default value = 0.001
-
-    RelativeMode(me: in out) returns Boolean;
-       	---C++: return &
-    	---Purpose: Returns the address to the
-    	-- flag defining the relative mode for writing the file.
-    	-- This address may be used to either read or change the flag.
-    	-- If the mode returns True (default value), the
-    	-- deflection is calculated from the relative size of the
-    	-- shape. If the mode returns False, the user defined deflection is used. 
-    	-- Example
-    	-- Read:
-    	-- Standard_Boolean val = Writer.RelativeMode( );
-    	-- Modify:
-    	-- Writer.RelativeMode( ) = Standard_True; 
+   	 -- default parameters: ASCIIMode.
         
     ASCIIMode(me: in out) returns Boolean;
       	---C++: return &
@@ -61,14 +39,11 @@ is
         
     Write(me         : in out; 
           aShape     : Shape from TopoDS; 
-          aFileName  : CString from Standard; 
-          InParallel : Boolean from Standard = Standard_False);
+          aFileName  : CString from Standard) returns ErrorStatus from StlAPI;
     	---Purpose: Converts a given shape to STL format and writes it to file with a given filename.
+		--- \return the error state.
     
 fields
-    theRelativeMode : Boolean from Standard;
     theASCIIMode    : Boolean from Standard;
-    theDeflection   : Real from Standard;
-    theCoefficient   : Real from Standard;
     theStlMesh      : Mesh from StlMesh;
 end Writer;

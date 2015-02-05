@@ -19,30 +19,10 @@
 #include <BRepBndLib.hxx>
 #include <OSD_Path.hxx>
 
-#define MAX2(X, Y)      (  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
-#define MAX3(X, Y, Z)   ( MAX2 ( MAX2(X,Y) , Z) )
-
 StlAPI_Writer::StlAPI_Writer()
 {
   theStlMesh = new StlMesh_Mesh;
   theASCIIMode = Standard_True;
-  theDeflection = 0.01;
-  theRelativeMode = Standard_True;
-  theCoefficient = 0.001;
-}
-
-void StlAPI_Writer::SetDeflection(const Standard_Real aDeflection) 
-{
-  theDeflection = aDeflection;
-}
-void StlAPI_Writer::SetCoefficient(const Standard_Real aCoefficient) 
-{
-  theCoefficient = aCoefficient;
-}
-
-Standard_Boolean& StlAPI_Writer::RelativeMode() 
-{
-  return theRelativeMode;
 }
 
 Standard_Boolean& StlAPI_Writer::ASCIIMode() 
@@ -50,23 +30,26 @@ Standard_Boolean& StlAPI_Writer::ASCIIMode()
   return theASCIIMode;
 }
 
-void StlAPI_Writer::Write(const TopoDS_Shape& theShape, const Standard_CString theFileName, const Standard_Boolean theInParallel) 
+StlAPI_ErrorStatus StlAPI_Writer::Write(const TopoDS_Shape& theShape, const Standard_CString theFileName)
 {
   OSD_Path aFile(theFileName);
-  if (theRelativeMode) {
-    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-    Bnd_Box Total;
-    BRepBndLib::Add(theShape, Total);
-    Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-    theDeflection = MAX3(aXmax-aXmin , aYmax-aYmin , aZmax-aZmin)*theCoefficient;
-  }
-  StlTransfer::BuildIncrementalMesh(theShape, theDeflection, theInParallel, theStlMesh);
+  StlTransfer::RetrieveMesh(theShape, theStlMesh);
+
+  if (theStlMesh.IsNull() || theStlMesh->IsEmpty())
+    return StlAPI_MeshIsEmpty;
+
   // Write the built mesh
+  Standard_Boolean wasFileOpened = Standard_False;
   if (theASCIIMode) {
-    RWStl::WriteAscii(theStlMesh, aFile);
+    wasFileOpened = RWStl::WriteAscii(theStlMesh, aFile);
     }  
   else {
-    RWStl::WriteBinary(theStlMesh, aFile);
+    wasFileOpened = RWStl::WriteBinary(theStlMesh, aFile);
     }
+
+  if (!wasFileOpened)
+    return StlAPI_CannotOpenFile;
+
+  return StlAPI_StatusOK;
 }
 

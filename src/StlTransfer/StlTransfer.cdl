@@ -17,11 +17,9 @@
 package StlTransfer 
 
 	---Purpose: The  package   Algorithm  for Meshing   implements
-	--          facilities to compute  the Mesh data-structure, as
-	--          defined in package StlMesh, from a shape of package
-	--          TopoDS.  The triangulation  is  computed  with the
-	--          Delaunay      algorithm   implemented in   package
-	--          BRepMesh.  The  result   is  stored  in  the  mesh
+	--          facilities to retrieve the Mesh data-structure from a shape of package
+	--          TopoDS.  The triangulation  should be computed before.  
+	--          The  result   is  stored  in  the  mesh
 	--          data-structure Mesh from package StlMesh.
 	--          
 
@@ -31,11 +29,9 @@ uses
     TopoDS
 
 is
-    BuildIncrementalMesh (Shape      : in      Shape from TopoDS; 
-    	       	    	  Deflection : in      Real  from Standard;
-    	       	    	  InParallel : in      Boolean from Standard;
-    	       	          Mesh       : Mesh  from StlMesh)
-     raises ConstructionError;
+    RetrieveMesh (Shape      : in      Shape from TopoDS; 
+    	       	  Mesh       : Mesh  from StlMesh);
+		---Purpose: Retrieve a Mesh data-structure from the Shape, convert and store it into the Mesh. 		  
 end StlTransfer;
 
 

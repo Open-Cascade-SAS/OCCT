@@ -1,0 +1,47 @@
+puts "=========="
+puts "OCC25357"
+puts "=========="
+puts ""
+#######################################################################################
+# STL writer does not check the given shape for existing triangulation and remeshes 
+# shape using BRepMesh in force mode
+#######################################################################################
+
+set aFile ${imagedir}/${test_image}.stl
+file delete -force ${aFile}
+
+set anASCIImode 0
+
+ptorus res 10 8
+incmesh res 0.5
+
+#decho off
+set LogBefore [trinfo res]
+#decho on
+
+writestl res ${aFile} ${anASCIImode}
+
+#decho off
+set LogAfter [trinfo res]
+#decho on
+
+set status 1
+if { ![file exists ${aFile}] } {
+  set status 0
+}
+
+# Check file size
+set filesize [ file size ${aFile} ]
+if { ${filesize} == 0 } {
+  set status 0
+}
+
+if { $LogBefore != $LogAfter } {
+  set status 0
+}
+
+if {$status == 1} {
+  puts "OK: STL writer check given shape"
+} else {
+  puts "Error: STL writer does not check given shape"
+}

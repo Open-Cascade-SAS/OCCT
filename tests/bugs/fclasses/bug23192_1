@@ -14,11 +14,11 @@ set aFile $imagedir/${test_image}.stl
 file delete ${aFile}
 
 set anASCIImode 1
-set InParallel 0
 
 box res 10 10 10
+incmesh res 0.1
 
-writestl res ${aFile} ${anASCIImode} ${InParallel}
+writestl res ${aFile} ${anASCIImode}
 catch {exec chmod 777 ${aFile}}
 
 if { [file exists ${aFile}] } {

@@ -25,10 +25,11 @@ if { [catch { readstl res_mesh $filepath } catch_result] } {
 
     set aFile $imagedir/${test_image}.stl
     catch {exec rm -f ${aFile}}
+     
+    incmesh res_mesh 0.1   
 
     set anASCIImode 0
-    set InParallel 1
-    writestl res_mesh ${aFile} ${anASCIImode} ${InParallel}
+    writestl res_mesh ${aFile} ${anASCIImode}
     catch {exec chmod 777 ${aFile}}
 
     readstl result ${aFile}

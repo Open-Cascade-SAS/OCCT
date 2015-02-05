@@ -92,21 +92,25 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
 static Standard_Integer writestl
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3 || argc > 5) {
+  if (argc < 3 || argc > 4) {
     di << "Use: " << argv[0]
-    << " shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]" << "\n";
+    << " shape file [ascii/binary (0/1) : 1 by default]" << "\n";
   } else {
     TopoDS_Shape aShape = DBRep::Get(argv[1]);
     Standard_Boolean isASCIIMode = Standard_False;
-    Standard_Boolean isInParallel = Standard_False;
-    if (argc > 3) {
+    if (argc == 4) {
       isASCIIMode = (Draw::Atoi(argv[3]) == 0);
-      if (argc > 4)
-        isInParallel = (Draw::Atoi(argv[4]) == 1);
     }
     StlAPI_Writer aWriter;
     aWriter.ASCIIMode() = isASCIIMode;
-    aWriter.Write (aShape, argv[2], isInParallel);
+    StlAPI_ErrorStatus aStatus = aWriter.Write (aShape, argv[2]);
+
+    switch (aStatus)
+    {
+    case StlAPI_MeshIsEmpty: di << "** Error **: Mesh is empty. Please, compute triangulation before."; break;
+    case StlAPI_CannotOpenFile: di << "** Error **: Cannot create/open a file with the passed name."; break;
+    case StlAPI_StatusOK: default: break;
+    }
   }
   return 0;
 }
