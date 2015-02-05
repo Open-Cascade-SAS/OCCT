@@ -250,20 +250,23 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 
     gp_Pnt2d P1,P2;
     Ex.Points(i,P1,P2);
-    di << "dist " << i << ": " << Ex.Distance(i) << " \n";
+    di << "dist " << i << ": " << Ex.Distance(i) << "  ";
     if (Ex.Distance(i) <= Precision::PConfusion()) {
       Handle(Draw_Marker2D) mark = new Draw_Marker2D( P1, Draw_X, Draw_vert); 
       dout << mark;
       dout.Flush();
+      Sprintf(name,"%s%d","ext_",i);
+      char* temp = name;
+      DrawTrSurf::Set(temp, P1);
+      di << name << "\n";
     }
     else {
       Handle(Geom2d_Line) L = new Geom2d_Line(P1,gp_Vec2d(P1,P2));
-      Handle(Geom2d_TrimmedCurve) CT = 
-	new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
+      Handle(Geom2d_TrimmedCurve) CT = new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
       Sprintf(name,"%s%d","ext_",i);
       char* temp = name; // portage WNT
       DrawTrSurf::Set(temp, CT);
-      di << name << " ";
+      di << name << "\n";
     }
   }
   if (i==1)

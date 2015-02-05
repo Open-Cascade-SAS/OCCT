@@ -23,6 +23,7 @@
 #include <math_Powell.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
+#include <Precision.hxx>
 
 
 //=======================================================================
@@ -194,9 +195,6 @@ void math_GlobOptMin::Perform()
 {
   Standard_Integer i;
 
-  // Compute initial values for myF, myY, myC.
-  computeInitialValues();
-
   // Compute parameters range
   Standard_Real minLength = RealLast();
   Standard_Real maxLength = RealFirst();
@@ -208,6 +206,18 @@ void math_GlobOptMin::Perform()
     if (currentLength > maxLength)
       maxLength = currentLength;
   }
+
+  if (minLength < Precision::PConfusion())
+  {
+    #ifdef OCCT_DEBUG
+    cout << "math_GlobOptMin::Perform(): Degenerated parameters space" << endl;
+    #endif
+
+    return;
+  }
+
+  // Compute initial values for myF, myY, myC.
+  computeInitialValues();
 
   myE1 = minLength * myTol;
   myE2 = maxLength * myTol;
@@ -293,7 +303,7 @@ void math_GlobOptMin::computeInitialValues()
   Standard_Integer i;
   math_Vector aCurrPnt(1, myN);
   math_Vector aBestPnt(1, myN);
-
+  math_Vector aParamStep(1, myN);
   Standard_Real aCurrVal = RealLast();
   Standard_Real aBestVal = RealLast();
 
@@ -324,21 +334,29 @@ void math_GlobOptMin::computeInitialValues()
   mySolCount++;
 
   // Lipschitz const approximation
-  Standard_Real aLipConst = 0.0, aPrevVal;
+  Standard_Real aLipConst = 0.0, aPrevValDiag, aPrevValProj;
   Standard_Integer aPntNb = 13;
-  myFunc->Value(myA, aPrevVal);
+  myFunc->Value(myA, aPrevValDiag);
+  aPrevValProj = aPrevValDiag;
   Standard_Real aStep = (myB - myA).Norm() / aPntNb;
+  aParamStep = (myB - myA) / aPntNb;
   for(i = 1; i <= aPntNb; i++)
   {
-    aCurrPnt = myA + (myB - myA) * i / (aPntNb - 1);
+    aCurrPnt = myA + aParamStep * i;
+
+    // Walk over diagonal.
     myFunc->Value(aCurrPnt, aCurrVal);
+    aLipConst = Max (Abs(aCurrVal - aPrevValDiag), aLipConst);
+    aPrevValDiag = aCurrVal;
 
-    if(Abs(aCurrVal - aPrevVal) / aStep > aLipConst)
-      aLipConst = Abs(aCurrVal - aPrevVal) / aStep;
-
-    aPrevVal = aCurrVal;
+    // Walk over diag in projected space aPnt(1) = myA(1) = const.
+    aCurrPnt(1) = myA(1);
+    myFunc->Value(aCurrPnt, aCurrVal);
+    aLipConst = Max (Abs(aCurrVal - aPrevValProj), aLipConst);
+    aPrevValProj = aCurrVal;
   }
-  aLipConst *= Sqrt(myN);
+
+  aLipConst *= Sqrt(myN) / aStep;
 
   if (aLipConst < myC * 0.1)
   {

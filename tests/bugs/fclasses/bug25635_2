@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC25635"
+puts "============"
+puts ""
+######################################################
+# Wrong result of 2D-extrema between two ellipsis
+######################################################
+
+circle c1 0 0 2
+circle c2 4 0 2
+
+set info [2dextrema c1 c2]
+
+#-1
+if { [regexp "dist 1: +(\[-0-9.+eE\]+) +ext_1" ${info}] } {
+  puts "OK: Good ext_1"
+} else {
+  puts "Error: Wrong ext_1"
+}
+
+if { [regexp "dist 2: +(\[-0-9.+eE\]+) +ext_2" ${info}] } {
+  puts "OK: Good ext_2"
+} else {
+  puts "Error: Wrong ext_2"
+}
+
+if { [regexp "dist 3: +(\[-0-9.+eE\]+) +ext_3" ${info}] } {
+  puts "OK: Good ext_3"
+} else {
+  puts "Error: Wrong ext_3"
+}
+
+if { [regexp "dist 4: +(\[-0-9.+eE\]+) +ext_4" ${info}] } {
+  puts "OK: Good ext_4"
+} else {
+  puts "Error: Wrong ext_4"
+}
+
+
+#-2
+set dump_list [dump ext_2]
+
+if { [regexp {Point 2d} ${dump_list}] } {
+  puts "OK: Good result of 2D-extrema between two circles"
+} else {
+  puts "Error: Wrong result of 2D-extrema between two circles"
+}

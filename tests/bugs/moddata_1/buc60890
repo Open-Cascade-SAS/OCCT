@@ -15,7 +15,7 @@ circle curve_2 5.3 -0.5 2
 
 set err [llength [2dextrema curve_1 curve_2]]
 
-if {$err == 6} {
+if {$err == 8} {
     puts "BUC60890 OK: Function 2dextrema works properly."
 } else {
     puts "Faulty BUC60890 : Function 2dextrema works wrongly."
