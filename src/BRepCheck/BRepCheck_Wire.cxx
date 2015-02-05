@@ -1551,7 +1551,8 @@ static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapVE,
     for (; itrc.More(); itrc.Next())
     {
       const TopoDS_Shape& Edge = itrc.Value();
-      mapE.Add(Edge);
+      if (!mapE.Contains(Edge)) 
+        mapE.Add(Edge);
 
       TopExp_Explorer ex(Edge, TopAbs_VERTEX);
       for (; ex.More(); ex.Next())
@@ -1567,7 +1568,10 @@ static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapVE,
           {
             const TopoDS_Shape& E = itl.Value();
             if (!Edge.IsSame(E) && !mapE.Contains(E))
+            {
+              mapE.Add(E);
               nextEdges.Append(E);
+            }
           }
         }
       }
