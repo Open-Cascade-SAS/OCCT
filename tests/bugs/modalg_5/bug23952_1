@@ -16,10 +16,4 @@ pload QAcommands
 restore [locate_data_file bug23952_trim-torus.draw] a
 
 set NbUPoles 18
-set info [OCC23952sweep $NbUPoles a]
-
-if { [regexp "theTargetNbUPoles: OK" $info] != 1 } {
-    puts "Error : Number of UPoles is incorrect"
-} else {
-    puts "OK: Number of UPoles is correct"
-}
+OCC23952sweep $NbUPoles a

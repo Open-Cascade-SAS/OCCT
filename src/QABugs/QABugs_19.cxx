@@ -377,102 +377,148 @@ static Standard_Integer OCC23774(Draw_Interpretor& di, Standard_Integer n, const
 #include <Geom_BSplineSurface.hxx>
 #include <Draw.hxx>
 #include <OSD_Thread.hxx>
-static void GeomConvertTest (Draw_Interpretor& di, Standard_Integer theTargetNbUPoles, Standard_CString theFileName)
-{
-	Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(theFileName);
-	GeomConvert_ApproxSurface aGAS (aSurf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
-	if (!aGAS.IsDone()) {
-		di << "ApproxSurface is not done!" << "\n";
-		return;
-	}
-	const Handle(Geom_BSplineSurface)& aBSurf = aGAS.Surface();
-	if (aBSurf.IsNull()) {
-		di << "BSplineSurface is not created!" << "\n";
-		return;
-	}
-	di << "Number of UPoles:" << aBSurf->NbUPoles() << "\n";
-	QCOMPARE (aBSurf->NbUPoles(), theTargetNbUPoles);
-}
 
-struct aData {
-	Draw_Interpretor* di;
-	Standard_Integer nbupoles;
-	Standard_CString filename;
+struct GeomConvertTest_Data
+{
+  Standard_Integer nbupoles;
+  Handle(Geom_Surface) surf;
 };
 
-Standard_EXPORT Standard_Address convert(Standard_Address data)
+static Standard_Address GeomConvertTest (Standard_Address data)
 {
-	aData* info = (aData*) data;
-	GeomConvertTest(*(info->di),info->nbupoles,info->filename);
-	return NULL;
+  GeomConvertTest_Data* info = (GeomConvertTest_Data*)data;
+
+  GeomConvert_ApproxSurface aGAS (info->surf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
+  if (!aGAS.IsDone()) {
+    cout << "Error: ApproxSurface is not done!" << endl;
+    return Standard_False;
+  }
+  const Handle(Geom_BSplineSurface)& aBSurf = aGAS.Surface();
+  if (aBSurf.IsNull()) {
+    cout << "Error: BSplineSurface is not created!" << endl;
+    return Standard_False;
+  }
+  cout << "Number of UPoles:" << aBSurf->NbUPoles();
+  if (aBSurf->NbUPoles() == info->nbupoles)
+  {
+    cout << ": OK" << endl;
+    return data; // any non-null pointer
+  }
+  else
+  {
+    cout << ": Error, must be " << info->nbupoles << endl;
+    return 0;
+  }
 }
 
 static Standard_Integer OCC23952sweep (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-	if (argc != 3) {
-		di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
-		return 1;
-	}
-	struct aData aStorage;
-	aStorage.di = &di;
-	aStorage.nbupoles = Draw::Atoi(argv[1]); 
-	aStorage.filename = argv[2];
+  if (argc != 3) {
+    cout << "Error: invalid number of arguments" << endl;
+    return 1;
+  }
 
-	OSD_Thread aThread1(convert);
-	aThread1.Run(&aStorage);
-	GeomConvertTest(di,aStorage.nbupoles,aStorage.filename);
-	cout << "result of thread: " << aThread1.Wait() << endl;
+  struct GeomConvertTest_Data aStorage;
+  aStorage.nbupoles = Draw::Atoi(argv[1]); 
+  aStorage.surf = DrawTrSurf::GetSurface(argv[2]);
+  if (aStorage.surf.IsNull())
+  {
+    cout << "Error: " << argv[2] << " is not a DRAW surface!" << endl;
+    return 0;
+  }
 
-	return 0;
+  // start conversion in several threads
+  const int NBTHREADS = 100;
+  OSD_Thread aThread[NBTHREADS];
+  for (int i=0; i < NBTHREADS; i++)
+  { 
+    aThread[i].SetFunction (GeomConvertTest);
+    if (!aThread[i].Run(&aStorage))
+      di << "Error: Cannot start thread << " << i << "\n";
+  }
+
+  // check results
+  for (int i=0; i < NBTHREADS; i++)
+  { 
+    Standard_Address aResult = 0;
+    if (!aThread[i].Wait(aResult))
+      di << "Error: Failed waiting for thread << " << i << "\n";
+    if (!aResult) 
+      di << "Error: wrong number of poles in thread " << i << "!\n";
+  }
+
+  return 0;
 }
 
 #include <GeomInt_IntSS.hxx>
-static void GeomIntSSTest (Draw_Interpretor& di, Standard_Integer theNbSol, Standard_CString theFileName1, Standard_CString theFileName2)
+
+struct GeomIntSSTest_Data
 {
-	Handle(Geom_Surface) aSurf1 = DrawTrSurf::GetSurface(theFileName1);
-	Handle(Geom_Surface) aSurf2 = DrawTrSurf::GetSurface(theFileName2);
-	GeomInt_IntSS anInter;
-	anInter.Perform(aSurf1, aSurf2, Precision::Confusion(), Standard_True);
-	if (!anInter.IsDone()) {
-		di << "An intersection is not done!" << "\n";
-		return;
-	}
-
-	di << "Number of Lines:" << anInter.NbLines() << "\n";
-	QCOMPARE (anInter.NbLines(), theNbSol);
-}
-
-struct aNewData {
-	Draw_Interpretor* di;
-	Standard_Integer nbsol;
-	Standard_CString filename1;
-	Standard_CString filename2;
+  Standard_Integer nbsol;
+  Handle(Geom_Surface) surf1, surf2;
 };
-Standard_EXPORT Standard_Address convert_inter(Standard_Address data)
+
+static Standard_Address GeomIntSSTest (Standard_Address data)
 {
-	aNewData* info = (aNewData*) data;
-	GeomIntSSTest(*(info->di),info->nbsol,info->filename1,info->filename2);
-	return NULL;
+  GeomIntSSTest_Data* info = (GeomIntSSTest_Data*)data;
+  GeomInt_IntSS anInter;
+  anInter.Perform (info->surf1, info->surf2, Precision::Confusion(), Standard_True);
+  if (!anInter.IsDone()) {
+    cout << "An intersection is not done!" << endl;
+    return 0;
+  }
+
+  cout << "Number of Lines:" << anInter.NbLines();
+  if (anInter.NbLines() == info->nbsol)
+  {
+    cout << ": OK" << endl;
+    return data; // any non-null pointer
+  }
+  else
+  {
+    cout << ": Error, must be " << info->nbsol << endl;
+    return 0;
+  }
 }
 
 static Standard_Integer OCC23952intersect (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-	if (argc != 4) {
-		di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
-		return 1;
-	}
-	struct aNewData aStorage;
-	aStorage.di = &di;
-	aStorage.nbsol = Draw::Atoi(argv[1]); 
-	aStorage.filename1 = argv[2];
-	aStorage.filename2 = argv[3];
+  if (argc != 4) {
+    cout << "Error: invalid number of arguments" << endl;
+    return 1;
+  }
 
-	OSD_Thread aThread1(convert_inter);
-	aThread1.Run(&aStorage);
-	GeomIntSSTest(di,aStorage.nbsol,aStorage.filename1,aStorage.filename2);
-	cout << "result of thread: " << aThread1.Wait() << endl;
+  struct GeomIntSSTest_Data aStorage;
+  aStorage.nbsol = Draw::Atoi(argv[1]); 
+  aStorage.surf1 = DrawTrSurf::GetSurface(argv[2]);
+  aStorage.surf2 = DrawTrSurf::GetSurface(argv[3]);
+  if (aStorage.surf1.IsNull() || aStorage.surf2.IsNull())
+  {
+    cout << "Error: Either " << argv[2] << " or " << argv[3] << " is not a DRAW surface!" << endl;
+    return 0;
+  }
 
-	return 0;
+  // start conversion in several threads
+  const int NBTHREADS = 100;
+  OSD_Thread aThread[NBTHREADS];
+  for (int i=0; i < NBTHREADS; i++)
+  { 
+    aThread[i].SetFunction (GeomIntSSTest);
+    if (!aThread[i].Run(&aStorage))
+      di << "Error: Cannot start thread << " << i << "\n";
+  }
+
+  // check results
+  for (int i=0; i < NBTHREADS; i++)
+  { 
+    Standard_Address aResult = 0;
+    if (!aThread[i].Wait(aResult))
+      di << "Error: Failed waiting for thread << " << i << "\n";
+    if (!aResult) 
+      di << "Error: wrong number of intersections in thread " << i << "!\n"; 
+  }
+
+  return 0;
 }
 
 #include <Geom_SurfaceOfRevolution.hxx> 
