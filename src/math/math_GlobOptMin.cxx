@@ -24,11 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 
-const Handle(Standard_Type)& STANDARD_TYPE(math_GlobOptMin)
-{
-  static Handle(Standard_Type) _atype = new Standard_Type ("math_GlobOptMin", sizeof (math_GlobOptMin));
-  return _atype;
-}
 
 //=======================================================================
 //function : math_GlobOptMin
@@ -48,7 +43,8 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myX(1, myN),
   myTmp(1, myN),
   myV(1, myN),
-  myMaxV(1, myN)
+  myMaxV(1, myN),
+  myExpandCoeff(1, myN)
 {
   Standard_Integer i;
 
@@ -69,6 +65,12 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   for(i = 1; i <= myN; i++)
   {
     myMaxV(i) = (myB(i) - myA(i)) / 3.0;
+  }
+
+  myExpandCoeff(1) = 1.0;
+  for(i = 2; i <= myN; i++)
+  {
+    myExpandCoeff(i) = (myB(i) - myA(i)) / (myB(i - 1) - myA(i - 1));
   }
 
   myTol = theDiscretizationTol;
@@ -104,6 +106,17 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
     myB(i) = theB(i);
   }
 
+  for(i = 1; i <= myN; i++)
+  {
+    myMaxV(i) = (myB(i) - myA(i)) / 3.0;
+  }
+
+  myExpandCoeff(1) = 1.0;
+  for(i = 2; i <= myN; i++)
+  {
+    myExpandCoeff(i) = (myB(i) - myA(i)) / (myB(i - 1) - myA(i - 1));
+  }
+
   myTol = theDiscretizationTol;
   mySameTol = theSameTol;
 
@@ -131,6 +144,12 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA,
   for(i = 1; i <= myN; i++)
   {
     myMaxV(i) = (myB(i) - myA(i)) / 3.0;
+  }
+
+  myExpandCoeff(1) = 1.0;
+  for(i = 2; i <= myN; i++)
+  {
+    myExpandCoeff(i) = (myB(i) - myA(i)) / (myB(i - 1) - myA(i - 1));
   }
 
   myDone = Standard_False;
@@ -340,9 +359,9 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
   Standard_Integer i;
   Standard_Real d; // Functional in moved point.
   Standard_Real val = RealLast(); // Local extrema computed in moved point.
-  Standard_Real stepBestValue = RealLast();
-  Standard_Real realStep = RealLast();
-  math_Vector stepBestPoint(1, myN);
+  Standard_Real aStepBestValue = RealLast();
+  Standard_Real aRealStep = 0.0;
+  math_Vector aStepBestPoint(1, myN);
   Standard_Boolean isInside = Standard_False;
   Standard_Real r;
 
@@ -356,52 +375,61 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
     {
       isInside = Standard_False;
       myFunc->Value(myX, d);
-      r = (d - myF) * myZ;
+      r = (d + myZ * myC * aRealStep - myF) * myZ;
       if(r > myE3)
       {
         isInside = computeLocalExtremum(myX, val, myTmp);
       }
-      stepBestValue = (isInside && (val < d))? val : d;
-      stepBestPoint = (isInside && (val < d))? myTmp : myX;
+      aStepBestValue = (isInside && (val < d))? val : d;
+      aStepBestPoint = (isInside && (val < d))? myTmp : myX;
 
       // Solutions are close to each other.
-      if (Abs(stepBestValue - myF) < mySameTol * 0.01)
+      if (Abs(aStepBestValue - myF) < mySameTol * 0.01)
       {
-        if (!isStored(stepBestPoint))
+        if (!isStored(aStepBestPoint))
         {
-          if ((stepBestValue - myF) * myZ > 0.0)
-            myF = stepBestValue;
+          if ((aStepBestValue - myF) * myZ > 0.0)
+            myF = aStepBestValue;
           for(i = 1; i <= myN; i++)
-            myY.Append(stepBestPoint(i));
+            myY.Append(aStepBestPoint(i));
           mySolCount++;
         }
       }
 
       // New best solution.
-      if ((stepBestValue - myF) * myZ > mySameTol * 0.01)
+      if ((aStepBestValue - myF) * myZ > mySameTol * 0.01)
       {
         mySolCount = 0;
-        myF = stepBestValue;
+        myF = aStepBestValue;
         myY.Clear();
         for(i = 1; i <= myN; i++)
-          myY.Append(stepBestPoint(i));
+          myY.Append(aStepBestPoint(i));
         mySolCount++;
       }
 
-      realStep = myE2 + Abs(myF - d) / myC;
-      myV(1) = Min(realStep, myMaxV(1));
+      aRealStep = myE2 + Abs(myF - d) / myC;
+      myV(1) = Min(aRealStep, myMaxV(1));
     }
     else
     {
       myV(j) = RealLast() / 2.0;
       computeGlobalExtremum(j - 1);
+
+      // Nullify steps on lower dimensions.
+      for(i = 1; i < j; i++)
+        myV(i) = 0.0;
     }
-    if ((j < myN) && (myV(j + 1) > realStep))
+    // Compute step in (j + 1) dimension according to scale.
+    if (j < myN)
     {
-      if (realStep > myMaxV(j + 1)) // Case of too big step.
-        myV(j + 1) = myMaxV(j + 1); 
-      else
-        myV(j + 1) = realStep;
+      Standard_Real aUpperDimStep =  myV(j) * myExpandCoeff(j + 1);
+      if (myV(j + 1) > aUpperDimStep)
+      {
+        if (aUpperDimStep > myMaxV(j + 1)) // Case of too big step.
+          myV(j + 1) = myMaxV(j + 1); 
+        else
+          myV(j + 1) = aUpperDimStep;
+      }
     }
   }
 }

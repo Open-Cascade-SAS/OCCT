@@ -29,15 +29,15 @@ class math_GlobOptMin
 public:
 
   Standard_EXPORT math_GlobOptMin(math_MultipleVarFunction* theFunc,
-                                 const math_Vector& theA,
-                                 const math_Vector& theB,
+                                 const math_Vector& theLowerBorder,
+                                 const math_Vector& theUpperBorder,
                                  const Standard_Real theC = 9,
                                  const Standard_Real theDiscretizationTol = 1.0e-2,
                                  const Standard_Real theSameTol = 1.0e-7);
 
   Standard_EXPORT void SetGlobalParams(math_MultipleVarFunction* theFunc,
-                                       const math_Vector& theA,
-                                       const math_Vector& theB,
+                                       const math_Vector& theLowerBorder,
+                                       const math_Vector& theUpperBorder,
                                        const Standard_Real theC = 9,
                                        const Standard_Real theDiscretizationTol = 1.0e-2,
                                        const Standard_Real theSameTol = 1.0e-7);
@@ -61,7 +61,7 @@ public:
   //! Return count of global extremas.
   Standard_EXPORT Standard_Integer NbExtrema();
 
-  //! Return solution i, 1 <= i <= NbExtrema.
+  //! Return solution theIndex, 1 <= theIndex <= NbExtrema.
   Standard_EXPORT void Points(const Standard_Integer theIndex, math_Vector& theSol);
 
   Standard_Boolean isDone();
@@ -75,15 +75,16 @@ private:
   void computeGlobalExtremum(Standard_Integer theIndex);
 
   //! Computes starting value / approximation:
-  // myF - initial best value.
-  // myY - initial best point.
-  // myC - approximation of Lipschitz constant.
-  // to imporve convergence speed.
+  //! myF - initial best value.
+  //! myY - initial best point.
+  //! myC - approximation of Lipschitz constant.
+  //! to imporve convergence speed.
   void computeInitialValues();
 
-  //! Check that myA <= pnt <= myB
+  //! Check that myA <= thePnt <= myB
   Standard_Boolean isInside(const math_Vector& thePnt);
 
+  //! Check presence of thePnt in GlobOpt sequence.
   Standard_Boolean isStored(const math_Vector &thePnt);
 
   // Input.
@@ -114,10 +115,9 @@ private:
   math_Vector myTmp; // Current modified solution.
   math_Vector myV; // Steps array.
   math_Vector myMaxV; // Max Steps array.
+  math_Vector myExpandCoeff; // Define expand coefficient between neighboring indiced dimensions.
 
   Standard_Real myF; // Current value of Global optimum.
 };
-
-const Handle(Standard_Type)& TYPE(math_GlobOptMin);
 
 #endif

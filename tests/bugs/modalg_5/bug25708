@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC25708"
+puts "========"
+puts ""
+###########################################################
+# GeomAPI_ExtremaCurveCurve does not return all intersection points in 6.8.0
+###########################################################
+
+set BugNumber OCC25708
+
+restore [locate_data_file bug25708_interror.brep] b
+
+explode b e
+
+mkcurve c1 b_1
+mkcurve c2 b_2
+
+set extrema_res [extrema c1 c2]
+set extrema_length [llength ${extrema_res} ]
+
+if {${extrema_length} != 2 } {
+   puts "Error: GeomAPI_ExtremaCurveCurve does not return all intersection points"
+} else {
+   puts "OK: GeomAPI_ExtremaCurveCurve return all intersection points"
+
+# Distance check
+
+   set info [dump ext_1]
+   regexp "Parameters : 0 +(\[-0-9*\.+eE\]+)" $info full extLength1
+   if {${extLength1} > 1e-14 } {
+     puts "1. Error: bad distance points obtained"
+   } else {
+     puts "1. OK: good distance between obtained points "
+   }
+
+   set info [dump ext_2]
+   regexp "Parameters : 0 +(\[-0-9*\.+eE\]+)" $info full extLength2
+   if {${extLength2} > 1e-14 } {
+     puts "2. Error: bad distance points obtained"
+   } else {
+     puts "2. OK: good distance between obtained points "
+   }
+
+}
