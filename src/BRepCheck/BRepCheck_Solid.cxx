@@ -197,7 +197,7 @@ void BRepCheck_Solid::Minimum()
   myMin = Standard_True;
   //
   Standard_Boolean bFound, bIsHole, bFlag;
-  Standard_Integer i, j, aNbVTS, aNbVTS1;
+  Standard_Integer i, j, aNbVTS, aNbVTS1, iCntSh, iCntShInt;
   TopoDS_Solid aZ;
   TopoDS_Iterator aIt, aItF;
   TopoDS_Builder aBB;
@@ -228,6 +228,8 @@ void BRepCheck_Solid::Minimum()
   // 2. 
   //    - Too many growths,
   //    - There is smt of the solid that is out of solid
+  iCntSh=0;
+  iCntShInt=0;
   aIt.Initialize(myShape);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
@@ -254,8 +256,11 @@ void BRepCheck_Solid::Minimum()
       }
     }
     if (bFound) {
+      ++iCntShInt;
       continue;
     }
+    //
+    ++iCntSh;
     //
     // Skip not closed shells
     if (!BRep_Tool::IsClosed(aSh)) {
@@ -270,6 +275,12 @@ void BRepCheck_Solid::Minimum()
     aTS.SetSolid(aZ);
     aVTS.Append(aTS);
   }//for (; aIt.More(); aIt.Next()) {
+  //
+  if (!iCntSh && iCntShInt) {
+    // all shells in the solid are internal
+    BRepCheck::Add(myMap(myShape), 
+                   BRepCheck_BadOrientationOfSubshape);
+  }
   //
   aNbVTS=aVTS.Size();
   if (aNbVTS<2) {

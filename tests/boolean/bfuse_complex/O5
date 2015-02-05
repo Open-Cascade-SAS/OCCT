@@ -1,3 +1,5 @@
+puts "TODO OCC25735 ALL: Faulty shapes in variables faulty_1 to"
+
 restore [locate_data_file CTO908_topo104-o1.brep] wheel
 restore [locate_data_file CTO908_topo104-o2.brep] jante
 
