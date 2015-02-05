@@ -157,8 +157,6 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
 
   Standard_Real aDeflection = Prs3d::GetDeflection(theShape, theDrawer);
 
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
-
   Prs3d_NListOfSequenceOfPnt anUIsoCurves;
   Prs3d_NListOfSequenceOfPnt aVIsoCurves;
   Prs3d_NListOfSequenceOfPnt aWireCurves;
@@ -424,7 +422,6 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
   if (theDrawer->WireDraw())
   {
     // Wire (without any neighbour)
-    aGroup->SetPrimitivesAspect (theDrawer->WireAspect()->Aspect());
     for (anIt.Initialize(aLWire); anIt.More(); anIt.Next())
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge (anIt.Value());

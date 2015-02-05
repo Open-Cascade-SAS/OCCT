@@ -127,17 +127,16 @@ static Standard_Boolean FindLimits(const Adaptor3d_Curve& aCurve,
 
 
 //==================================================================
-// function: DrawCurve
+// function: drawCurve
 // purpose:
 //==================================================================
-static void DrawCurve (Adaptor3d_Curve&              aCurve,
-                       const Handle(Graphic3d_Group) aGroup,
+static void drawCurve (Adaptor3d_Curve&              aCurve,
+                       const Handle(Graphic3d_Group)& aGroup,
                        const Quantity_Length         TheDeflection,
                        const Standard_Real           anAngle,
                        const Standard_Real           U1,
                        const Standard_Real           U2,
-                       TColgp_SequenceOfPnt&         Points,
-                       const Standard_Boolean drawCurve)
+                       TColgp_SequenceOfPnt&         Points)
 {
   switch (aCurve.GetType())
   {
@@ -147,7 +146,7 @@ static void DrawCurve (Adaptor3d_Curve&              aCurve,
       gp_Pnt p2 = aCurve.Value(U2);
       Points.Append(p1);
       Points.Append(p2);
-      if(drawCurve)
+      if (!aGroup.IsNull())
       {
         Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
         aPrims->AddVertex(p1);
@@ -187,17 +186,21 @@ static void DrawCurve (Adaptor3d_Curve&              aCurve,
       }
 
       Handle(Graphic3d_ArrayOfPolylines) aPrims;
-      if(drawCurve)
+      if (!aGroup.IsNull())
         aPrims = new Graphic3d_ArrayOfPolylines(SeqP.Length());
       
       for (i = 1; i <= SeqP.Length(); i++) { 
         const gp_Pnt& p = SeqP.Value(i);
         Points.Append(p);
-        if(drawCurve)
+        if (!aGroup.IsNull())
+        {
           aPrims->AddVertex(p);
+        }
       }
-      if(drawCurve)
-        aGroup->AddPrimitiveArray(aPrims);
+      if (!aGroup.IsNull())
+      {
+        aGroup->AddPrimitiveArray (aPrims);
+      }
     }
   }
 }
@@ -285,7 +288,7 @@ static Standard_Boolean MatchCurve (
 void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
                                   Adaptor3d_Curve&                   aCurve,
                                   const Handle (Prs3d_Drawer)&       aDrawer,
-                                  const Standard_Boolean drawCurve)
+                                  const Standard_Boolean theToDrawCurve)
 {
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
@@ -293,11 +296,17 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   if (FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
   {
     TColgp_SequenceOfPnt Points;
-    DrawCurve(aCurve,
-              Prs3d_Root::CurrentGroup(aPresentation),
+    Handle(Graphic3d_Group) aGroup;
+    if (theToDrawCurve)
+    {
+      aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+    }
+
+    drawCurve(aCurve,
+              aGroup,
               GetDeflection(aCurve, V1, V2, aDrawer),
               aDrawer->DeviationAngle(),
-              V1, V2, Points, drawCurve);
+              V1, V2, Points);
 
     if (aDrawer->LineArrowDraw()) {
       gp_Pnt Location;
@@ -322,9 +331,14 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
                                   const Standard_Real                U1,
                                   const Standard_Real                U2,
                                   const Handle (Prs3d_Drawer)&       aDrawer,
-                                  const Standard_Boolean drawCurve)
+                                  const Standard_Boolean theToDrawCurve)
 {
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  Handle(Graphic3d_Group) aGroup;
+  if (theToDrawCurve)
+  {
+    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+    aGroup->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  }
 
   Standard_Real V1 = U1;
   Standard_Real V2 = U2;  
@@ -333,11 +347,11 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   if (Precision::IsPositiveInfinite(V2)) V2 = aDrawer->MaximalParameterValue();
 
   TColgp_SequenceOfPnt Points;
-  DrawCurve(aCurve,
-            Prs3d_Root::CurrentGroup(aPresentation),
+  drawCurve(aCurve,
+            aGroup,
             GetDeflection(aCurve, V1, V2, aDrawer),
             aDrawer->DeviationAngle(),
-            V1 , V2, Points, drawCurve);
+            V1 , V2, Points);
 
   if (aDrawer->LineArrowDraw()) {
     gp_Pnt Location;
@@ -362,10 +376,15 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
                                   const Standard_Real                aDeflection,
                                   TColgp_SequenceOfPnt&              Points,
                                   const Standard_Real                anAngle,
-                                  const Standard_Boolean drawCurve)
+                                  const Standard_Boolean theToDrawCurve)
 {
-  DrawCurve(aCurve, Prs3d_Root::CurrentGroup(aPresentation),
-            aDeflection, anAngle, U1, U2, Points, drawCurve);
+  Handle(Graphic3d_Group) aGroup;
+  if (theToDrawCurve)
+  {
+    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+  }
+
+  drawCurve (aCurve, aGroup, aDeflection, anAngle, U1, U2, Points);
 }
 
 //==================================================================
@@ -377,15 +396,22 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
                                   const Standard_Real                aDeflection,
                                   const Standard_Real                aLimit,
                                   const Standard_Real                anAngle,
-                                  const Standard_Boolean drawCurve) 
+                                  const Standard_Boolean theToDrawCurve)
 {
   Standard_Real V1, V2;
-  if (FindLimits(aCurve, aLimit, V1, V2))
+  if (!FindLimits(aCurve, aLimit, V1, V2))
   {
-    TColgp_SequenceOfPnt Points;
-    DrawCurve(aCurve, Prs3d_Root::CurrentGroup(aPresentation),
-              aDeflection, anAngle, V1, V2, Points, drawCurve);
+    return;
   }
+
+  Handle(Graphic3d_Group) aGroup;
+  if (theToDrawCurve)
+  {
+    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+  }
+
+  TColgp_SequenceOfPnt Points;
+  drawCurve (aCurve, aGroup, aDeflection, anAngle, V1, V2, Points);
 }
 
 
@@ -398,12 +424,20 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
                                   const Standard_Real                aDeflection,
                                   const Handle(Prs3d_Drawer)&        aDrawer,
                                   TColgp_SequenceOfPnt&              Points,
-                                  const Standard_Boolean drawCurve) 
+                                  const Standard_Boolean theToDrawCurve)
 {
   Standard_Real V1, V2;
-  if (FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
-    DrawCurve(aCurve, Prs3d_Root::CurrentGroup(aPresentation),
-              aDeflection, aDrawer->DeviationAngle(), V1, V2, Points, drawCurve);
+  if (!FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2))
+  {
+    return;
+  }
+
+  Handle(Graphic3d_Group) aGroup;
+  if (theToDrawCurve)
+  {
+    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+  }
+  drawCurve (aCurve, aGroup, aDeflection, aDrawer->DeviationAngle(), V1, V2, Points);
 }
 
 

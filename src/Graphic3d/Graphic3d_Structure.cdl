@@ -853,8 +853,7 @@ is
 	---Purpose: Returns the identification number of the structure <me>.
 	---Category: Private methods
 
-  minMaxCoord (me;
-               theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
+  minMaxCoord (me)
     returns BndBox4f from Graphic3d
   is static private;
   ---Purpose: Returns the extreme coordinates found in the structure <me> without transformation applied.

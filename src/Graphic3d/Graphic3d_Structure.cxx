@@ -1749,21 +1749,12 @@ Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager() const
 //function : minMaxCoord
 //purpose  :
 //=============================================================================
-Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord (const Standard_Boolean theToIgnoreInfiniteFlag) const
+Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord() const
 {
   Graphic3d_BndBox4f aBnd;
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
-    if (!theToIgnoreInfiniteFlag)
-    {
-      aBnd.Combine (aGroupIter.Value()->BoundingBox());
-    }
-    else
-    {
-      Graphic3d_BndBox4f aValidBnd (aGroupIter.Value()->BoundingBox().CornerMin(),
-                                    aGroupIter.Value()->BoundingBox().CornerMax());
-      aBnd.Combine (aValidBnd);
-    }
+    aBnd.Combine (aGroupIter.Value()->BoundingBox());
   }
   return aBnd;
 }
@@ -1775,7 +1766,7 @@ Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord (const Standard_Boolean theT
 void Graphic3d_Structure::getBox (Graphic3d_BndBox4d&    theBox,
                                   const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  Graphic3d_BndBox4f aBoxF = minMaxCoord (theToIgnoreInfiniteFlag);
+  Graphic3d_BndBox4f aBoxF = minMaxCoord();
   if (aBoxF.IsValid())
   {
     theBox = Graphic3d_BndBox4d (Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMin().x(),

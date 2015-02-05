@@ -1,0 +1,28 @@
+puts "========="
+puts "CR25768"
+puts "========="
+puts ""
+###########################################################################################
+# Visualization, Graphic3d_Structure - do not use invalid bounding boxes of empty groups
+###########################################################################################
+box b 100 0 0 2 1 1
+vinit View1
+vclear
+vaxo
+vsetdispmode 0
+vdisplay b
+vfit
+vzoom 0.1
+vbounding b
+
+set x_coord 115
+set y_coord 153
+checkcolor $x_coord $y_coord 0 0 0
+
+if { $stat != 1 } {
+  puts "Error: invalid broken bounding boxes"
+} else {
+  puts "OK: valid boundong box"
+}
+
+set only_screen 1
