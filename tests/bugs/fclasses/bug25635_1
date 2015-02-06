@@ -11,13 +11,13 @@ ellipse c2 4 0 2 1
 
 set info [2dextrema c1 c2]
 
-set tol_abs 1.e-4
+set tol_abs 1.e-5
 set tol_rel 0.01
 
 #-1
 regexp "dist 1: +(\[-0-9.+eE\]+)" ${info} full dist_1
 
-set expected_dist_1 7.9e-09
+set expected_dist_1 0.
 checkreal "Distance" ${dist_1} ${expected_dist_1} ${tol_abs} ${tol_rel}
 
 #-2
@@ -30,17 +30,17 @@ regexp { *Axis *:([-0-9.+eE]+), *([-0-9.+eE]+) } ${dump_list} full AxisX AxisY
 set expected_Parameter1 0.
 checkreal "Parameter1" ${Parameter1} ${expected_Parameter1} ${tol_abs} ${tol_rel}
 
-set expected_Parameter2 7.94518140168066e-09
+set expected_Parameter2 0.
 checkreal "Parameter2" ${Parameter2} ${expected_Parameter2} ${tol_abs} ${tol_rel}
 
-set expected_OriginX 1.99999999602741
+set expected_OriginX 2.
 checkreal "OriginX" ${OriginX} ${expected_OriginX} ${tol_abs} ${tol_rel}
 
-set expected_OriginY -6.30284903027441e-05 
+set expected_OriginY -6.e-05 
 checkreal "OriginY" ${OriginY} ${expected_OriginY} ${tol_abs} ${tol_rel}
 
 set expected_AxisX 1.
 checkreal "AxisX" ${AxisX} ${expected_AxisX} ${tol_abs} ${tol_rel}
 
-set expected_AxisY -9.65456920683062e-09 
+set expected_AxisY 0.
 checkreal "AxisY" ${AxisY} ${expected_AxisY} ${tol_abs} ${tol_rel}

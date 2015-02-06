@@ -299,7 +299,7 @@ public:
   {
     //
     BOPAlgo_WireSplitterFunctor aWSF(aF, aVCB);
-    Standard_Size aNbVCB = aVCB.Extent();
+    Standard_Integer aNbVCB = aVCB.Extent();
     //
     OSD_Parallel::For(0, aNbVCB, aWSF, !bRunParallel);
   }
