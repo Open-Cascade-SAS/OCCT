@@ -759,6 +759,7 @@ void OpenGl_Window::Init()
   myHeight = aNewHeight;
 #endif
 
+  glDisable (GL_DITHER);
   glDisable (GL_SCISSOR_TEST);
   glViewport (0, 0, myWidth, myHeight);
 #if !defined(GL_ES_VERSION_2_0)
@@ -793,6 +794,7 @@ void OpenGl_Window::DisableFeatures() const
   * (Omit as much of this as possible, when you know in advance
   * that the OpenGL state will already be set correctly.)
   */
+  glDisable(GL_DITHER);
   glDisable(GL_BLEND);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_TEXTURE_2D);
