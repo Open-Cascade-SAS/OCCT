@@ -9,6 +9,7 @@ set BugNumber OCC23227
 box b 1 2 3
 vinit View1
 vclear
+vaxo
 vdisplay b
 vsetdispmode 1
 vfit
@@ -29,7 +30,7 @@ if { ${llength_vfeedback1} < 36 || ${llength_vfeedback2} < 36 || ${IndexTriangle
 } else {
   set Triangles1 [lindex ${vfeedback1} ${IndexTriangles1}+1]
   set Triangles2 [lindex ${vfeedback2} ${IndexTriangles1}+1]
-  if { ${Triangles1} == 6 && ${Triangles2} == 0 } {
+  if { ${Triangles1} != 0 && ${Triangles2} == 0 } {
     puts "OK ${BugNumber}"
   } else {
     puts "Faulty ${BugNumber}"

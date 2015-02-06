@@ -1,29 +1,33 @@
 puts "============"
 puts "OCC10781"
+puts "MeshVS is not sensitive to width of edges"
 puts "============"
 puts ""
-#######################################################################
-# MeshVS is not sensitive to width of edges
-#######################################################################
 
 set BugNumber OCC10781
 
 pload XDE
 
-vinit
+vinit View1
+vclear
+vaxo
 
 meshfromstl m [locate_data_file OMF6391_box.stl]
 
-set x_coord 210
-set y_coord 280
+set aCoordX 206
+set aCoordY 280
 
-vmoveto $x_coord $y_coord
+vmoveto $aCoordX $aCoordY
 
-checkcolor $x_coord $y_coord 0 0 0
+set aColor1px [vreadpixel $aCoordX $aCoordY rgb name]
+if { "$aColor1px" != "BLACK" } {
+  puts "Error: BLACK color is expected at pixel ${aCoordX}x${aCoordY}"
+}
 
-mesh_edge_width m 20
-puts "\nSet big mesh edge width"
-
-checkcolor $x_coord $y_coord 1 1 0
+mesh_edge_width m 6
+set aColor5px [vreadpixel $aCoordX $aCoordY rgb name]
+if { "$aColor5px" == "BLACK" } {
+  puts "Error: YELLOW color is expected at pixel ${aCoordX}x${aCoordY}"
+}
 
 set only_screen 1
