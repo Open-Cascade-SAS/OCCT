@@ -11,7 +11,7 @@ ellipse c2 4 0 2 1
 
 set info [2dextrema c1 c2]
 
-set tol_abs 1.e-7
+set tol_abs 1.e-4
 set tol_rel 0.01
 
 #-1
