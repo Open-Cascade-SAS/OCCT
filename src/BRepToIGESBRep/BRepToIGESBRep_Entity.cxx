@@ -869,6 +869,11 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   for (Ex.Init(start, TopAbs_WIRE, TopAbs_FACE); Ex.More(); Ex.Next()) {
     TopoDS_Wire S = TopoDS::Wire(Ex.Current());
     AddWarning(S," a Wire alone is not an IGESBRep entity : no Transfer");
+
+    BRepToIGES_BRWire BW(*this);
+    BW.SetModel(GetModel());
+    IShape = BW.TransferWire(S);
+    if (!IShape.IsNull()) Seq->Append(IShape);
   }
 
 
@@ -876,6 +881,11 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   for (Ex.Init(start, TopAbs_EDGE, TopAbs_WIRE); Ex.More(); Ex.Next()) {
     TopoDS_Edge S = TopoDS::Edge(Ex.Current());
     AddWarning(S," a Edge alone is not an IGESBRep entity : no Transfer");
+
+    BRepToIGES_BRWire BW(*this);
+    BW.SetModel(GetModel());
+    IShape = BW.TransferEdge(S, Standard_False);
+    if (!IShape.IsNull()) Seq->Append(IShape);
   }
 
 
@@ -883,27 +893,27 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next()) {
     TopoDS_Vertex S = TopoDS::Vertex(Ex.Current());
     AddWarning(S," a Vertex alone is not an IGESBRep entity : no Transfer");
+
+    BRepToIGES_BRWire BW(*this);
+    BW.SetModel(GetModel());
+    IShape = BW.TransferVertex(S);
+    if (!IShape.IsNull()) Seq->Append(IShape);
   }
 
   // construct the group
   Standard_Integer nbshapes = Seq->Length();
-  Handle(IGESData_HArray1OfIGESEntity) Tab;
-  if (nbshapes > 1) {
-    Tab =  new IGESData_HArray1OfIGESEntity(1,nbshapes);
+  if (nbshapes > 0) {
+    Handle(IGESData_HArray1OfIGESEntity) Tab =
+      new IGESData_HArray1OfIGESEntity(1,nbshapes);
     for (Standard_Integer itab = 1; itab <= nbshapes; itab++) {
       Handle(IGESData_IGESEntity) item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));
       Tab->SetValue(itab,item);
     }
-  }
-  
-  if (nbshapes == 1) {
-    res = IShape;
-  }
-  else if(nbshapes > 1) {
+
     Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     res = IGroup;
-  }
+  }  
 
   SetShapeResult ( start, res );
 

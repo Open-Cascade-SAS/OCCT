@@ -169,14 +169,15 @@ proc checknbshapes { res nbshapes_expected_s count_locations message} {
 
     set EntityList {VERTEX EDGE WIRE FACE SHELL SOLID COMPSOLID COMPOUND SHAPE}
 
+    puts "Checking $message"
     foreach Entity ${EntityList} {
        set expr_string "${Entity} +: +(\[-0-9.+eE\]+)"
        if { [regexp "${expr_string}" ${nbshapes_expected_s} full nb_entity1] > 0 } {
        	  if { [regexp "${expr_string}" ${nb_info} full nb_entity2] > 0 } {
     	     if { ${nb_entity2} != ${nb_entity1} } {
-             	puts "Error : ${message} is WRONG because number of ${Entity} entities is ${nb_entity2} while ${nb_entity1} is expected"
+             	puts "Error: number of ${Entity} entities is wrong: ${nb_entity2} while ${nb_entity1} is expected"
     	     } else {
-             	puts "OK : ${message} is GOOD because number of ${Entity} entities is equal to number of expected ${Entity} entities"
+             	puts "OK: number of ${Entity} entities is as expected: ${nb_entity2}"
     	     }
        	  }
        }
