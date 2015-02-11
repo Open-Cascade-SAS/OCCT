@@ -1,0 +1,104 @@
+puts "========"
+puts "OCC25782"
+puts "========"
+puts ""
+######################################################
+# The result of intersection between two cylinders is incorrect
+# Algorithm must find one curves only
+######################################################
+
+set GoodNbCurv 1
+
+restore [locate_data_file bug25782_fz19.brep] b1
+restore [locate_data_file bug25782_fz53.brep] b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+intersect res s1 s2
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  
+  copy res res_1
+}
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    dlog reset
+    dlog on
+    xdistcs res_$ic s1 0 100 10
+    set Log1 [dlog get]
+    set List1 [split ${Log1} {TD= \t\n}]
+    set Tolerance 1.0e-7
+    set Limit_Tol 1.0e-7
+    set D_good 0.
+    checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+    
+    dlog reset
+    dlog on
+    xdistcs res_$ic s2 0 100 10
+    set Log1 [dlog get]
+    set List1 [split ${Log1} {TD= \t\n}]
+    set Tolerance 1.0e-7
+    set Limit_Tol 1.0e-7
+    set D_good 0.
+    checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+    
+    incr ic
+  }
+}
+  
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curves Number is bad!"
+}
+
+set log [bopcurves b1 b2]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+set MaxTol 1.e-7
+if {${Toler} > ${MaxTol}} {
+   puts "Error: Tolerance is too big!"
+}
+
+if {$NbCurv != $GoodNbCurv} {
+  puts "Error: Curves Number is bad!"
+}
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i U1 U2
+  
+  if {[dval U2-U1] < 1.0e-9} {
+    puts "Error: Wrong curve's range!"
+  }
+
+  dlog reset
+  dlog on
+  xdistcs c_$i s1 U1 U2 10
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+
+  dlog reset
+  dlog on
+  xdistcs c_$i s2 U1 U2 10
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+}

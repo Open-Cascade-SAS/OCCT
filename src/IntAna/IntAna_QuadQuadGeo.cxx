@@ -977,6 +977,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
       gp_Dir DirCyl = Cyl1.Position().Direction();
       Standard_Real ProjP2OnDirCyl1=gp_Vec(DirCyl).Dot(gp_Vec(P1,P2t));
       
+      //P2 is a projection the location of the 2nd cylinder on the base
+      //of the 1st cylinder
       P2.SetCoord(P2t.X() - ProjP2OnDirCyl1*DirCyl.X(),
                   P2t.Y() - ProjP2OnDirCyl1*DirCyl.Y(),
                   P2t.Z() - ProjP2OnDirCyl1*DirCyl.Z());
@@ -987,7 +989,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
         typeres=IntAna_Empty;
         nbint=0;
       }
-      else if(DistA1A2>(R1pR2))
+      else if((R1pR2 - DistA1A2) <= RealSmall())
       {
         //-- 1 Tangent line -------------------------------------OK
         typeres=IntAna_Line;
@@ -1005,32 +1007,85 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
         typeres=IntAna_Line;
         nbint=2;
         dir1=DirCyl;
-        gp_Vec P1P2(P1,P2);
-        gp_Dir DirA1A2=gp_Dir(P1P2);
-        gp_Dir Ortho_dir1_P1P2 = dir1.Crossed(DirA1A2);
         dir2=dir1;
-        Standard_Real Alpha=0.5*(R1*R1-R2*R2+DistA1A2*DistA1A2)/(DistA1A2);       
 
-        //Standard_Real Beta = Sqrt(R1*R1-Alpha*Alpha);
-        Standard_Real anSqrtArg = R1*R1-Alpha*Alpha;
-        Standard_Real Beta = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
+        const Standard_Real aR1R1 = R1*R1;
+
+        /*
+                      P1
+                      o
+                    * | *
+                  * O1|   *
+              A o-----o-----o B
+                  *   |   *
+                    * | *
+                      o
+                      P2
+
+          Two cylinders have axes collinear. Therefore, problem can be reformulated as
+          to find intersection point of two circles (the bases of the cylinders) on
+          the plane: 1st circle has center P1 and radius R1 (the radius of the
+          1st cylinder) and 2nd circle has center P2 and radius R2 (the radius of the
+          2nd cylinder). The plane is the base of the 1st cylinder. Points A and B
+          are intersection point of these circles. Distance P1P2 is equal to DistA1A2.
+          O1 is the intersection point of P1P2 and AB segments.
+
+          At that, if distance AB < Tol we consider that the circles are tangent and
+          has only one intersection point.
+
+            AB = 2*R1*sin(angle AP1P2).
+          Accordingly, 
+            AB^2 < Tol^2 => 4*R1*R1*sin(angle AP1P2)^2 < Tol*Tol.
+        */
+
         
-        if((Beta+Beta)<Tol)
+        //Cosine and Square of Sine of the A-P1-P2 angle
+        const Standard_Real aCos = 0.5*(aR1R1-R2*R2+DistA1A2*DistA1A2)/(R1*DistA1A2);
+        const Standard_Real aSin2 = 1-aCos*aCos;
+
+        const Standard_Boolean isTangent =((4.0*aR1R1*aSin2) < Tol*Tol);
+
+        //Normalized vector P1P2
+        const gp_Vec DirA1A2((P2.XYZ() - P1.XYZ())/DistA1A2); 
+
+        if(isTangent)
         {
+          //Intercept the segment from P1 point along P1P2 direction
+          //and having |P1O1| length 
           nbint=1;
-          pt1.SetCoord( P1.X() + Alpha*DirA1A2.X()
-                       ,P1.Y() + Alpha*DirA1A2.Y()
-                       ,P1.Z() + Alpha*DirA1A2.Z());
+          pt1.SetXYZ(P1.XYZ() + DirA1A2.XYZ()*R1*aCos);
         }
         else
-        { 
-          pt1.SetCoord( P1.X() + Alpha*DirA1A2.X() + Beta*Ortho_dir1_P1P2.X(),
-                        P1.Y() + Alpha*DirA1A2.Y() + Beta*Ortho_dir1_P1P2.Y(),
-                        P1.Z() + Alpha*DirA1A2.Z() + Beta*Ortho_dir1_P1P2.Z());
-          
-          pt2.SetCoord( P1.X() + Alpha*DirA1A2.X() - Beta*Ortho_dir1_P1P2.X(),
-                        P1.Y() + Alpha*DirA1A2.Y() - Beta*Ortho_dir1_P1P2.Y(),
-                        P1.Z() + Alpha*DirA1A2.Z() - Beta*Ortho_dir1_P1P2.Z());
+        {
+          //Sine of the A-P1-P2 angle (if aSin2 < 0 then isTangent == TRUE =>
+          //go to another branch)
+          const Standard_Real aSin = sqrt(aSin2);
+
+          //1. Rotate P1P2 to the angle A-P1-P2 relative to P1
+          //(clockwise and anticlockwise for getting
+          //two intersection points).
+          //2. Intercept the segment from P1 along direction,
+          //determined in the preview paragraph and having R1 length
+          const gp_Dir  &aXDir = Cyl1.Position().XDirection(),
+                        &aYDir = Cyl1.Position().YDirection();
+          const gp_Vec  aR1Xdir = R1*aXDir.XYZ(),
+                        aR1Ydir = R1*aYDir.XYZ();
+
+          //Source 2D-coordinates of the P1P2 vector normalized
+          //in coordinate system, based on the X- and Y-directions
+          //of the 1st cylinder in the plane of the 1st cylinder base
+          //(P1 is the origin of the coordinate system).
+          const Standard_Real aDx = DirA1A2.Dot(aXDir),
+                              aDy = DirA1A2.Dot(aYDir);
+
+          //New coordinate (after rotation) of the P1P2 vector normalized.
+          Standard_Real aNewDx = aDx*aCos - aDy*aSin,
+                        aNewDy = aDy*aCos + aDx*aSin;
+          pt1.SetXYZ(P1.XYZ() + aNewDx*aR1Xdir.XYZ() + aNewDy*aR1Ydir.XYZ());
+
+          aNewDx = aDx*aCos + aDy*aSin;
+          aNewDy = aDy*aCos - aDx*aSin;
+          pt2.SetXYZ(P1.XYZ() + aNewDx*aR1Xdir.XYZ() + aNewDy*aR1Ydir.XYZ());
         }
       }
       else if(DistA1A2>(RmR-Tol))
