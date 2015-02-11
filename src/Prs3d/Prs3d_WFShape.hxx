@@ -105,7 +105,6 @@ public:
 private:
 
   static Standard_Boolean AddPolygon (const TopoDS_Edge&    theEdge,
-                                      const Standard_Real   theDeflection,
                                       TColgp_SequenceOfPnt& thePoints);
 
 private:

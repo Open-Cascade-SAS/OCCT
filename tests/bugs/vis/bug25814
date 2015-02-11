@@ -1,0 +1,43 @@
+puts "============"
+puts "CR25814"
+puts "Check that the discretization of the sub-shape is identical in shaded and wireframe modes"
+puts "if the whole shape was already displayed"
+puts "============"
+puts ""
+
+set aSubShapeTriang $imagedir/${casename}_subshape_triangulation.png
+set aShapeTriang $imagedir/${casename}_shape_triangulation.png
+set aDiff $imagedir/${casename}_diff.png
+
+pcylinder c 100 350
+explode c f
+
+vinit View1 w=900 h=900
+vclear
+vsetdispmode 1
+
+vdisplay c_3
+vfit
+vzoom 4
+vtranslateview 70 20 0
+vmoveto 200 200
+vdump $aSubShapeTriang
+
+vclear
+tclean c_3
+
+vdisplay c
+vfit
+vclear
+
+vdisplay c_3
+vfit
+vzoom 4
+vtranslateview 70 20 0
+vmoveto 200 200
+vdump $aShapeTriang
+
+set aDiffRes [diffimage $aSubShapeTriang $aShapeTriang 0.1 0 0 $aDiff]
+if {$aDiffRes != 0} {
+  puts "ERROR : Test failed: there is a difference between images. Discretization of the sub-shape in wireframe mode is incorrect"
+}

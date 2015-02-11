@@ -67,35 +67,29 @@ namespace
 // purpose :
 // =========================================================================
 Standard_Boolean Prs3d_WFShape::AddPolygon (const TopoDS_Edge&    theEdge,
-                                            const Standard_Real   theDeflection,
                                             TColgp_SequenceOfPnt& thePoints)
 {
   TopLoc_Location aLocation;
-  Standard_Real aFirst, aLast;
-  Handle(Geom_Curve)     aCurve3d = BRep_Tool::Curve     (theEdge, aFirst, aLast);
   Handle(Poly_Polygon3D) aPolygon = BRep_Tool::Polygon3D (theEdge, aLocation);
   if (!aPolygon.IsNull())
   {
-    if ((aPolygon->Deflection() <= theDeflection) || aCurve3d.IsNull())
+    const TColgp_Array1OfPnt& aPoints = aPolygon->Nodes();
+    Standard_Integer anIndex = aPoints.Lower();
+    if (aLocation.IsIdentity())
     {
-      const TColgp_Array1OfPnt& aPoints = aPolygon->Nodes();
-      Standard_Integer anIndex = aPoints.Lower();
-      if (aLocation.IsIdentity())
+      for (; anIndex <= aPoints.Upper(); ++anIndex)
       {
-        for (; anIndex <= aPoints.Upper(); ++anIndex)
-        {
-          thePoints.Append (aPoints.Value (anIndex));
-        }
+        thePoints.Append (aPoints.Value (anIndex));
       }
-      else
-      {
-        for (; anIndex <= aPoints.Upper(); ++anIndex)
-        {
-          thePoints.Append (aPoints.Value (anIndex).Transformed (aLocation));
-        }
-      }
-      return Standard_True;
     }
+    else
+    {
+      for (; anIndex <= aPoints.Upper(); ++anIndex)
+      {
+        thePoints.Append (aPoints.Value (anIndex).Transformed (aLocation));
+      }
+    }
+    return Standard_True;
   }
 
   Handle(Poly_Triangulation)          aTriangulation;
@@ -103,28 +97,25 @@ Standard_Boolean Prs3d_WFShape::AddPolygon (const TopoDS_Edge&    theEdge,
   BRep_Tool::PolygonOnTriangulation (theEdge, aHIndices, aTriangulation, aLocation);
   if (!aHIndices.IsNull())
   {
-    if ((aHIndices->Deflection() <= theDeflection) || aCurve3d.IsNull())
-    {
-      const TColStd_Array1OfInteger& anIndices = aHIndices->Nodes();
-      const TColgp_Array1OfPnt&      aNodes    = aTriangulation->Nodes();
+    const TColStd_Array1OfInteger& anIndices = aHIndices->Nodes();
+    const TColgp_Array1OfPnt&      aNodes    = aTriangulation->Nodes();
 
-      Standard_Integer anIndex = anIndices.Lower();
-      if (aLocation.IsIdentity())
+    Standard_Integer anIndex = anIndices.Lower();
+    if (aLocation.IsIdentity())
+    {
+      for (; anIndex <= anIndices.Upper(); ++anIndex)
       {
-        for (; anIndex <= anIndices.Upper(); ++anIndex)
-        {
-          thePoints.Append (aNodes (anIndices (anIndex)));
-        }
+        thePoints.Append (aNodes (anIndices (anIndex)));
       }
-      else
-      {
-        for (; anIndex <= anIndices.Upper(); ++anIndex)
-        {
-          thePoints.Append (aNodes (anIndices (anIndex)).Transformed (aLocation));
-        }
-      }
-      return Standard_True;
     }
+    else
+    {
+      for (; anIndex <= anIndices.Upper(); ++anIndex)
+      {
+        thePoints.Append (aNodes (anIndices (anIndex)).Transformed (aLocation));
+      }
+    }
+    return Standard_True;
   }
   return Standard_False;
 }
@@ -429,7 +420,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
       {
         OCC_CATCH_SIGNALS
         const Handle(TColgp_HSequenceOfPnt)& aPoints = new TColgp_HSequenceOfPnt;
-        if (!AddPolygon (anEdge, aDeflection, aPoints->ChangeSequence()))
+        if (!AddPolygon (anEdge, aPoints->ChangeSequence()))
         {
           if (BRep_Tool::IsGeometric (anEdge))
           {
@@ -465,7 +456,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
         {
           OCC_CATCH_SIGNALS
           const Handle(TColgp_HSequenceOfPnt)& aPoints = new TColgp_HSequenceOfPnt;
-          if (!AddPolygon (anEdge, aDeflection, aPoints->ChangeSequence()))
+          if (!AddPolygon (anEdge, aPoints->ChangeSequence()))
           {
             if (BRep_Tool::IsGeometric (anEdge))
             {
@@ -500,7 +491,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
       {
         OCC_CATCH_SIGNALS
         const Handle(TColgp_HSequenceOfPnt)& aPoints = new TColgp_HSequenceOfPnt;
-        if (!AddPolygon (anEdge, aDeflection, aPoints->ChangeSequence()))
+        if (!AddPolygon (anEdge, aPoints->ChangeSequence()))
         {
           if (BRep_Tool::IsGeometric (anEdge))
           {
