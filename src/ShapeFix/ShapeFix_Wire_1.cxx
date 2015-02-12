@@ -290,6 +290,9 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 
   if (convert) 
   {
+    // Check that gap satisfies the precision - in this case no convertation produced
+    if (cpnt1.Distance(vpnt) < preci && cpnt2.Distance(vpnt) < preci)
+      return Standard_False;
 
     Handle(Geom_BSplineCurve) bsp1, bsp2;
     Handle(Geom_Curve) c;

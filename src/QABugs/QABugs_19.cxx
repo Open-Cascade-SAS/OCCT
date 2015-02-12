@@ -3389,6 +3389,168 @@ static Standard_Integer OCC25547(
   return 0;
 }
 
+#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <OSD.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <ShapeExtend_Status.hxx>
+#ifdef WNT
+#define EXCEPTION ...
+#else
+#define EXCEPTION Standard_Failure
+#endif
+
+static ShapeExtend_Status getStatusGap(const Handle(ShapeFix_Wire)&   theFix,
+                                       const Standard_Boolean theIs3d)
+{
+	for (Standard_Integer i=ShapeExtend_OK; i<=ShapeExtend_FAIL; i++)
+	{
+		Standard_Boolean isFound;
+		if (theIs3d)
+			isFound = theFix->StatusGaps3d( (ShapeExtend_Status) i );
+		else
+			isFound = theFix->StatusGaps2d( (ShapeExtend_Status) i );
+		if (isFound) return ShapeExtend_Status(i);
+	}
+	return ShapeExtend_OK;
+}
+
+//===================
+//function : OCC24881
+//purpose  : 
+//===================
+static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , const char** a)
+{
+  if (narg < 2) {
+    di<<"Usage: "<<a[0]<<" invalid number of arguments"<<"\n";
+    return 1;
+  }
+//    cout <<"FileName1: " << argv[1] <<endl;
+
+  TopoDS_Shape aShape = DBRep::Get (a[1]);
+
+    OSD::SetSignal();
+    Handle(ShapeFix_Wire) aWireFix = new ShapeFix_Wire;
+
+    // map FixStatus - NbSuchStatuses
+    TColStd_DataMapOfIntegerInteger aStatusNbDMap;
+    Standard_Integer nbFixed=0, nbOk=0;
+
+//Begin: STEP 7
+    ShapeExtend_Status aStatus=ShapeExtend_OK;
+    try {
+	TopExp_Explorer aFaceExplorer(aShape, TopAbs_FACE);
+	for (; aFaceExplorer.More(); aFaceExplorer.Next())
+	{
+		TopoDS_Shape aFace = aFaceExplorer.Current();
+		// loop on wires
+		TopoDS_Iterator aWireItr(aFace);
+		for (; aWireItr.More(); aWireItr.Next() )
+		{
+			Standard_Boolean wasOk = Standard_False;
+			TopoDS_Wire aSrcWire = TopoDS::Wire(aWireItr.Value());
+
+			aWireFix->Load (aSrcWire);
+			aWireFix->SetFace (TopoDS::Face(aFace));
+			aWireFix->FixReorder(); //correct order is a prerequisite
+			// fix 3d
+			if (!aWireFix->FixGaps3d())
+			{
+				// not fixed, why?
+				aStatus = getStatusGap(aWireFix, Standard_True);
+				if (aStatus == ShapeExtend_OK)
+					wasOk = Standard_True;
+				else
+				{
+					// keep 3d fail status
+					if (aStatusNbDMap.IsBound (aStatus))
+						aStatusNbDMap(aStatus)++;
+					else
+						aStatusNbDMap.Bind(aStatus,1);
+					continue;
+				}
+			}
+
+			// fix 2d
+			if (aWireFix->FixGaps2d())
+				nbFixed++;
+			else
+			{
+				aStatus = getStatusGap(aWireFix, Standard_False);
+				if (aStatus == ShapeExtend_OK)
+				{
+					if (wasOk)
+					{
+						nbOk++;
+						continue;
+					}
+					else
+						nbFixed++;
+				}
+				else
+				{
+					// keep 2d fail status
+					Standard_Integer aStatus2d = aStatus + ShapeExtend_FAIL;
+					if (aStatusNbDMap.IsBound (aStatus2d))
+						aStatusNbDMap(aStatus2d)++;
+					else
+						aStatusNbDMap.Bind(aStatus2d,1);
+					continue;
+				}
+			}
+		}
+	}
+//End: STEP 7
+     } catch (EXCEPTION) {
+       di << "Exception is raised = " <<aStatus << "\n";
+       return 1;
+
+     }
+// report what is done
+
+	if (nbFixed)
+	{
+		di <<"Fix_FillGaps_Fixed: nbFixed = "<<nbFixed <<"\n";
+
+	}    
+	if (nbOk)
+	{
+		di << "Fix_FillGaps_NothingToDo" <<"\n";
+
+	}
+	TColStd_DataMapIteratorOfDataMapOfIntegerInteger aStatusItr(aStatusNbDMap);
+	for (; aStatusItr.More(); aStatusItr.Next()) 
+	{
+		switch ((ShapeExtend_Status) aStatusItr.Key()) 
+		{
+			// treat 3d status
+			case ShapeExtend_FAIL1:
+			di <<"Fix_FillGaps_3dNoCurveFail, nb failed = ";
+			break;
+			case ShapeExtend_FAIL2:
+			di <<"Fix_FillGaps_3dSomeGapsFail, nb failed = ";
+			break;
+			default:
+			// treat 2d status
+			switch ((ShapeExtend_Status) (aStatusItr.Key() - ShapeExtend_FAIL)) 
+			{
+				case ShapeExtend_FAIL1:
+				di <<"Fix_FillGaps_2dNoPCurveFail, nb failed = ";
+				break;
+				case ShapeExtend_FAIL2:
+				di <<"Fix_FillGaps_2dSomeGapsFail, nb failed = ";
+				break;
+				default:
+				break;
+			}
+		}
+		di <<aStatusItr.Value()<< "\n";
+	}
+	di << ("__________________________________") <<"\n";
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3456,5 +3618,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "\t\tTopLoc_Location::Transformation()",
                    __FILE__, OCC25545, group);
   theCommands.Add ("OCC25547", "OCC25547", __FILE__, OCC25547, group);
+  theCommands.Add ("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
   return;
 }

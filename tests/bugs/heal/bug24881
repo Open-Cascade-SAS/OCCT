@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC24881"
+puts "========"
+puts ""
+##################################################################
+# Wrong status returned by ShapeFix_Wire::FixGaps3d () operation
+##################################################################
+
+pload QAcommands
+
+box b 100 200 300
+
+set bug_info [OCC24881 b]
+
+if {[lindex $bug_info 0] != "Fix_FillGaps_NothingToDo"} {
+  puts "ERROR: OCC24881 is reproduced. Status is [lindex $bug_info 0]"
+}
