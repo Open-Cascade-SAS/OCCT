@@ -2129,7 +2129,7 @@ void V3d_View::Gravity (Standard_Real& theX,
     }
 
     Bnd_Box aBox = aStruct->MinMaxValues();
-    if (aBox.IsVoid())
+    if (aBox.IsVoid() || aStruct->IsInfinite())
     {
       continue;
     }
@@ -2170,7 +2170,7 @@ void V3d_View::Gravity (Standard_Real& theX,
       }
 
       Bnd_Box aBox = aStruct->MinMaxValues();
-      if (aBox.IsVoid())
+      if (aBox.IsVoid() || aStruct->IsInfinite())
       {
         continue;
       }
