@@ -126,7 +126,6 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   }
   //
   aTimer.Stop();
-  aTimer.Show();
   //
   if (bShowTime)
   {
@@ -202,7 +201,6 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   }
   //
   aTimer.Stop();
-  aTimer.Show();
   //
   if (bShowTime)
   {
@@ -314,7 +312,6 @@ Standard_Integer bbop(Draw_Interpretor& di,
   }
   //
   aTimer.Stop();
-  aTimer.Show();
   //
   if (bShowTime) {
     Sprintf(buf, "  Tps: %7.2lf\n", aTimer.ElapsedTime());

@@ -243,7 +243,6 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   aChecker.Perform();
   //
   aTimer.Stop();
-  aTimer.Show();
   //
   iErr=aChecker.ErrorStatus();
   //
