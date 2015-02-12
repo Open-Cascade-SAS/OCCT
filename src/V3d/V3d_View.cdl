@@ -1337,7 +1337,7 @@ is
         --          the objects contained in the view
         is static private;
 
-        Gravity ( me; X,Y,Z : out Coordinate ) returns Integer
+        Gravity ( me; X,Y,Z : out Coordinate )
         ---Purpose: Returns the Objects number and the gravity center
         --          of ALL viewable points in the view
         is static private;

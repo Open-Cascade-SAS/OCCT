@@ -2950,22 +2950,84 @@ static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
 //purpose  : Camera Rotating
 //==============================================================================
 
-static int VRotate( Draw_Interpretor& di, Standard_Integer argc, const char** argv ) {
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-  if ( V3dView.IsNull() ) {
+static int VRotate (Draw_Interpretor& /*theDi*/, Standard_Integer theArgNb, const char** theArgVec)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cout << "No active view!\n";
     return 1;
   }
 
-  if ( argc == 4 ) {
-    V3dView->Rotate( Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]) );
-    return 0;
-  } else if ( argc == 7 ) {
-    V3dView->Rotate( Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Draw::Atof(argv[6]) );
-    return 0;
-  } else {
-    di << argv[0] << " Invalid number of arguments" << "\n";
-    return 1;
+  Standard_Boolean hasFlags = Standard_False;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    Standard_CString        anArg (theArgVec[anArgIter]);
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase();
+    if (aFlag == "-mousestart"
+     || aFlag == "-mousefrom")
+    {
+      hasFlags = Standard_True;
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      Standard_Integer anX = Draw::Atoi (theArgVec[++anArgIter]);
+      Standard_Integer anY = Draw::Atoi (theArgVec[++anArgIter]);
+      aView->StartRotation (anX, anY);
+    }
+    else if (aFlag == "-mousemove")
+    {
+      hasFlags = Standard_True;
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      Standard_Integer anX = Draw::Atoi (theArgVec[++anArgIter]);
+      Standard_Integer anY = Draw::Atoi (theArgVec[++anArgIter]);
+      aView->Rotation (anX, anY);
+    }
+    else if (theArgNb != 4
+          && theArgNb != 7)
+    {
+      std::cout << "Error: wrong syntax at '" << anArg << "'\n";
+      return 1;
+    }
   }
+
+  if (hasFlags)
+  {
+    return 0;
+  }
+  else if (theArgNb == 4)
+  {
+    Standard_Real anAX = Draw::Atof (theArgVec[1]);
+    Standard_Real anAY = Draw::Atof (theArgVec[2]);
+    Standard_Real anAZ = Draw::Atof (theArgVec[3]);
+    aView->Rotate (anAX, anAY, anAZ);
+    return 0;
+  }
+  else if (theArgNb == 7)
+  {
+    Standard_Real anAX = Draw::Atof (theArgVec[1]);
+    Standard_Real anAY = Draw::Atof (theArgVec[2]);
+    Standard_Real anAZ = Draw::Atof (theArgVec[3]);
+
+    Standard_Real anX = Draw::Atof (theArgVec[4]);
+    Standard_Real anY = Draw::Atof (theArgVec[5]);
+    Standard_Real anZ = Draw::Atof (theArgVec[6]);
+
+    aView->Rotate (anAX, anAY, anAZ, anX, anY, anZ);
+    return 0;
+  }
+
+  std::cout << "Error: Invalid number of arguments\n";
+  return 1;
 }
 
 //==============================================================================
@@ -7249,7 +7311,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : Displays a V3d_ZBUFFER'ed or V3d_WIREFRAME'd trihedron",
     __FILE__,VTestZBuffTrihedron,group);
   theCommands.Add("vrotate",
-    "vrotate         : vrotate AX AY AZ [X Y Z]",
+    "vrotate [[-mouseStart X Y] [-mouseMove X Y]]|[AX AY AZ [X Y Z]]"
+    "\n                : Option -mouseStart starts rotation according to the mouse position"
+    "\n                : Option -mouseMove continues rotation with angle computed"
+    "\n                : from last and new mouse position."
+    "\n                : vrotate AX AY AZ [X Y Z]",
     __FILE__,VRotate,group);
   theCommands.Add("vzoom",
     "vzoom           : vzoom coef",

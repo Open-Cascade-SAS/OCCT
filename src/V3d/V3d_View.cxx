@@ -151,6 +151,11 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 
 #define DEUXPI (2. * M_PI)
 
+namespace
+{
+  static const Standard_Integer THE_NB_BOUND_POINTS = 8;
+}
+
 //=============================================================================
 //function : Constructor
 //purpose  :
@@ -2090,61 +2095,112 @@ Standard_Integer V3d_View::MinMax(Standard_Real& Xmin,
 //function : Gravity
 //purpose  :
 //=======================================================================
-Standard_Integer V3d_View::Gravity(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const
+void V3d_View::Gravity (Standard_Real& theX,
+                        Standard_Real& theY,
+                        Standard_Real& theZ) const
 {
-  Standard_Real Xmin,Ymin,Zmin,Xmax,Ymax,Zmax;
-  Standard_Integer Nstruct,Npoint ;
-  Graphic3d_MapOfStructure MySetOfStructures;
+  Graphic3d_MapOfStructure aSetOfStructures;
+  MyView->DisplayedStructures (aSetOfStructures);
 
-  MyView->DisplayedStructures (MySetOfStructures);
-  Nstruct = MySetOfStructures.Extent() ;
-
-  Graphic3d_MapIteratorOfMapOfStructure MyIterator(MySetOfStructures) ;
-
-  Npoint = 0 ; X = Y = Z = 0. ;
-  for (; MyIterator.More(); MyIterator.Next())
+  Standard_Boolean hasSelection = Standard_False;
+  for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (aSetOfStructures);
+       aStructIter.More(); aStructIter.Next())
   {
-    const Handle(Graphic3d_Structure)& aStruct = MyIterator.Key();
-    if (!aStruct->IsEmpty())
+    if (aStructIter.Key()->IsHighlighted()
+     && aStructIter.Key()->IsVisible())
     {
-      Bnd_Box aBox = aStruct->MinMaxValues();
+      hasSelection = Standard_True;
+      break;
+    }
+  }
 
-      // Check bounding box for validness
+  Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+  Standard_Integer aNbPoints = 0;
+  gp_XYZ aResult (0.0, 0.0, 0.0);
+  for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (aSetOfStructures);
+       aStructIter.More(); aStructIter.Next())
+  {
+    const Handle(Graphic3d_Structure)& aStruct = aStructIter.Key();
+    if (!aStruct->IsVisible()
+    || (hasSelection && !aStruct->IsHighlighted())
+    ||  aStruct->IsEmpty())
+    {
+      continue;
+    }
+
+    Bnd_Box aBox = aStruct->MinMaxValues();
+    if (aBox.IsVoid())
+    {
+      continue;
+    }
+
+    // use camera projection to find gravity point
+    aBox.Get (Xmin, Ymin, Zmin,
+              Xmax, Ymax, Zmax);
+    gp_Pnt aPnts[THE_NB_BOUND_POINTS] =
+    {
+      gp_Pnt (Xmin, Ymin, Zmin), gp_Pnt (Xmin, Ymin, Zmax),
+      gp_Pnt (Xmin, Ymax, Zmin), gp_Pnt (Xmin, Ymax, Zmax),
+      gp_Pnt (Xmax, Ymin, Zmin), gp_Pnt (Xmax, Ymin, Zmax),
+      gp_Pnt (Xmax, Ymax, Zmin), gp_Pnt (Xmax, Ymax, Zmax)
+    };
+
+    for (Standard_Integer aPntIt = 0; aPntIt < THE_NB_BOUND_POINTS; ++aPntIt)
+    {
+      const gp_Pnt& aBndPnt    = aPnts[aPntIt];
+      const gp_Pnt  aProjected = myCamera->Project (aBndPnt);
+      if (Abs (aProjected.X()) <= 1.0
+       && Abs (aProjected.Y()) <= 1.0)
+      {
+        aResult += aBndPnt.XYZ();
+        ++aNbPoints;
+      }
+    }
+  }
+
+  if (aNbPoints == 0)
+  {
+    for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (aSetOfStructures);
+         aStructIter.More(); aStructIter.Next())
+    {
+      const Handle(Graphic3d_Structure)& aStruct = aStructIter.Key();
+      if (aStruct->IsEmpty())
+      {
+        continue;
+      }
+
+      Bnd_Box aBox = aStruct->MinMaxValues();
       if (aBox.IsVoid())
       {
         continue;
       }
 
-      // use camera projection to find gravity point
-      aBox.Get (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
-      gp_Pnt aPnts[8] = { 
+      aBox.Get (Xmin, Ymin, Zmin,
+                Xmax, Ymax, Zmax);
+      gp_Pnt aPnts[THE_NB_BOUND_POINTS] =
+      {
         gp_Pnt (Xmin, Ymin, Zmin), gp_Pnt (Xmin, Ymin, Zmax),
         gp_Pnt (Xmin, Ymax, Zmin), gp_Pnt (Xmin, Ymax, Zmax),
         gp_Pnt (Xmax, Ymin, Zmin), gp_Pnt (Xmax, Ymin, Zmax),
-        gp_Pnt (Xmax, Ymax, Zmin), gp_Pnt (Xmax, Ymax, Zmax) };
+        gp_Pnt (Xmax, Ymax, Zmin), gp_Pnt (Xmax, Ymax, Zmax)
+      };
 
-      for (Standard_Integer aPntIt = 0; aPntIt < 8; ++aPntIt)
+      for (Standard_Integer aPntIt = 0; aPntIt < THE_NB_BOUND_POINTS; ++aPntIt)
       {
         const gp_Pnt& aBndPnt = aPnts[aPntIt];
-
-        gp_Pnt aProjected = myCamera->Project (aBndPnt);
-        const Standard_Real& U = aProjected.X();
-        const Standard_Real& V = aProjected.Y();
-        if (Abs(U) <= 1.0 && Abs(V) <= 1.0)
-        {
-          Npoint++;
-          X += aBndPnt.X();
-          Y += aBndPnt.Y();
-          Z += aBndPnt.Z();
-        }
+        aResult += aBndPnt.XYZ();
+        ++aNbPoints;
       }
     }
   }
-  if( Npoint > 0 ) {
-    X /= Npoint ; Y /= Npoint ; Z /= Npoint ;
-  }
 
-  return Nstruct ;
+  if (aNbPoints > 0)
+  {
+    aResult /= aNbPoints;
+  }
+  theX = aResult.X();
+  theY = aResult.Y();
+  theZ = aResult.Z();
 }
 
 //=======================================================================
