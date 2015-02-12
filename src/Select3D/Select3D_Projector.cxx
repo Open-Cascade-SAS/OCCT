@@ -107,6 +107,8 @@ namespace
 Select3D_Projector::Select3D_Projector (const Handle(V3d_View)& theView)
 : myPersp (Standard_False),
   myFocus (0.0),
+  myZNear (0.0),
+  myZFar (10.0),
   myType (-1)
 {
   SetView (theView);
@@ -119,6 +121,8 @@ Select3D_Projector::Select3D_Projector (const Handle(V3d_View)& theView)
 Select3D_Projector::Select3D_Projector()
 : myPersp (Standard_False),
   myFocus (0.0),
+  myZNear (0.0),
+  myZFar (10.0),
   myType (-1)
 {
   Scaled();
@@ -131,6 +135,8 @@ Select3D_Projector::Select3D_Projector()
 Select3D_Projector::Select3D_Projector (const gp_Ax2& theCS)
 : myPersp (Standard_False),
   myFocus (0.0),
+  myZNear (0.0),
+  myZFar (10.0),
   myType (-1)
 {
   myScaledTrsf.SetTransformation (theCS);
@@ -145,6 +151,8 @@ Select3D_Projector::Select3D_Projector (const gp_Ax2& theCS)
 Select3D_Projector::Select3D_Projector (const gp_Ax2& theCS, const Standard_Real theFocus)
 : myPersp (Standard_True),
   myFocus (theFocus),
+  myZNear (0.0),
+  myZFar (10.0),
   myType (-1)
 {
   myScaledTrsf.SetTransformation (theCS);
@@ -163,6 +171,8 @@ Select3D_Projector::Select3D_Projector (const gp_Trsf& theViewTrsf,
   myFocus (theFocus),
   myGTrsf (theViewTrsf),
   myScaledTrsf (theViewTrsf),
+  myZNear (0.0),
+  myZFar (10.0),
   myType (-1)
 {
   Scaled();
@@ -179,6 +189,8 @@ Select3D_Projector::Select3D_Projector (const gp_GTrsf& theViewTrsf,
   myFocus (theFocus),
   myGTrsf (theViewTrsf),
   myScaledTrsf (theViewTrsf.Trsf()),
+  myZNear (0.0),
+  myZFar (10.0),
   myType (-1)
 {
   Scaled();
@@ -189,12 +201,14 @@ Select3D_Projector::Select3D_Projector (const gp_GTrsf& theViewTrsf,
 //purpose  :
 //=======================================================================
 Select3D_Projector::Select3D_Projector (const Graphic3d_Mat4d& theViewTrsf,
-                                        const Graphic3d_Mat4d& theProjTrsf)
+                                        const Graphic3d_Mat4d& theProjTrsf,
+                                        const Standard_Real theZNear,
+                                        const Standard_Real theZFar)
 : myPersp (Standard_False),
   myFocus (0.0),
   myType (-1)
 {
-  Set (theViewTrsf, theProjTrsf);
+  Set (theViewTrsf, theProjTrsf, theZNear, theZFar);
 }
 
 //=======================================================================
@@ -217,7 +231,9 @@ void Select3D_Projector::Set (const gp_Trsf& theViewTrsf,
 //purpose  :
 //=======================================================================
 void Select3D_Projector::Set (const Graphic3d_Mat4d& theViewTrsf,
-                              const Graphic3d_Mat4d& theProjTrsf)
+                              const Graphic3d_Mat4d& theProjTrsf,
+                              const Standard_Real theZNear,
+                              const Standard_Real theZFar)
 {
   // Copy elements corresponding to common view-transformation
   for (Standard_Integer aRowIt = 0; aRowIt < 3; ++aRowIt)
@@ -239,6 +255,8 @@ void Select3D_Projector::Set (const Graphic3d_Mat4d& theViewTrsf,
   myPersp    = Standard_False;
   myFocus    = 0.0;
   myProjTrsf = theProjTrsf;
+  myZNear    = theZNear;
+  myZFar     = theZFar;
   Scaled();
 }
 
@@ -258,7 +276,10 @@ void Select3D_Projector::SetView (const Handle(V3d_View)& theView)
   aScale.ChangeValue (2, 2) = aFrameScale.Z();
   Graphic3d_Mat4d aScaledProjTrsf = aScale * aProjTrsf;
 
-  Set (aViewTrsf, aScaledProjTrsf);
+  Set (aViewTrsf,
+       aScaledProjTrsf,
+       theView->Camera()->ZNear(),
+       theView->Camera()->ZFar());
 }
 
 //=======================================================================
@@ -454,8 +475,8 @@ gp_Lin Select3D_Projector::Shoot (const Standard_Real theX, const Standard_Real 
       return gp_Lin();
     }
 
-    Graphic3d_Vec4d aVPnt1 = aProjInv * Graphic3d_Vec4d (theX, theY,  0.0, 1.0);
-    Graphic3d_Vec4d aVPnt2 = aProjInv * Graphic3d_Vec4d (theX, theY, 10.0, 1.0);
+    Graphic3d_Vec4d aVPnt1 = aProjInv * Graphic3d_Vec4d (theX, theY, myZNear, 1.0);
+    Graphic3d_Vec4d aVPnt2 = aProjInv * Graphic3d_Vec4d (theX, theY, myZFar, 1.0);
     aVPnt1 /= aVPnt1.w();
     aVPnt2 /= aVPnt2.w();
 

@@ -127,9 +127,13 @@ is
     returns Projector from Select3D;
 
     Create (theViewTrsf : Mat4d from Graphic3d;
-            theProjTrsf : Mat4d from Graphic3d)
+            theProjTrsf : Mat4d from Graphic3d;
+            theZNear    : Real from Standard = 0.0;
+            theZFar     : Real from Standard = 10.0)
     ---Purpose: Builds the Projector from the passed model-view <theViewTrsf>
-    -- and projection <theProjTrsf> transformation matrices.
+    -- and projection <theProjTrsf> transformation matrices. Parameters <theZNear>
+    -- and <theZFar> are passed to define view frustum depth for further projection
+    -- line computation using perspective projection.
     returns Projector from Select3D;
 
     Set (me : mutable;
@@ -140,7 +144,9 @@ is
 
     Set (me : mutable;
          theViewTrsf : Mat4d from Graphic3d;
-         theProjTrsf : Mat4d from Graphic3d);
+         theProjTrsf : Mat4d from Graphic3d;
+         theZNear    : Real from Standard;
+         theZFar     : Real from Standard);
     ---Purpose: Sets new parameters for the Projector.
 
     SetView (me : mutable;
@@ -245,5 +251,7 @@ fields
     myInvTrsf    : GTrsf   from gp is protected;
     myScaledTrsf : Trsf    from gp is protected;
     myProjTrsf   : Mat4d   from Graphic3d is protected;
+    myZNear      : Real    from Standard is protected;
+    myZFar       : Real    from Standard is protected;
 
 end Projector;

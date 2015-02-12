@@ -475,7 +475,10 @@ Standard_Boolean StdSelect_ViewerSelector3d::UpdateProj (const Handle(V3d_View)&
       aScaledProj.ChangeValue (2, 2) = aViewDimensions.Z();
       Graphic3d_Mat4d aScaledProjMatrix = aScaledProj * aProjMatrix;
 
-      myProjector = new Select3D_Projector (aMVMatrix, aScaledProjMatrix);
+      Standard_Real aZNear = theView->Camera()->ZNear();
+      Standard_Real aZFar  = theView->Camera()->ZFar();
+
+      myProjector = new Select3D_Projector (aMVMatrix, aScaledProjMatrix, aZNear, aZFar);
     }
   }
 
