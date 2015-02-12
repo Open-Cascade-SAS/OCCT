@@ -2342,9 +2342,6 @@ void BiTgte_Blend::ComputeShape()
   
   BRep_Builder B;
 
-#ifdef DRAW
-  Standard_Integer NbNT = 1;
-#endif
 
   // Maj of the Map of created.
   // Update edges that do not change in the resulting shape 

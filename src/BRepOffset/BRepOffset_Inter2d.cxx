@@ -83,7 +83,7 @@
 
 #ifdef DRAW 
 #include <DBRep.hxx>
-Standard_IMPORT extern Standard_Boolean AffichInt2d;
+Standard_Boolean Inter2dAffichInt2d;
 static Standard_Integer NbF2d = 0;
 static Standard_Integer NbE2d = 0;
 static Standard_Integer NbNewVertices  = 0;
@@ -245,7 +245,7 @@ static void  Store (const TopoDS_Edge&       E1,
     }
     
 #ifdef DRAW
-   if (AffichInt2d) {	  
+   if (Inter2dAffichInt2d) {	  
      if (!OnE1 && !OnE2) {
        char name[256];
        sprintf(name,"VV_%d",NbNewVertices++);	
@@ -272,7 +272,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 		      Standard_Boolean                WithOri)
 {
 #ifdef DRAW
-  if (AffichInt2d) {
+  if (Inter2dAffichInt2d) {
     char name[256];
     sprintf(name,"E2d_%d_%d",NbF2d,NbE2d++);
     DBRep::Set(name,E1);
@@ -543,7 +543,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 			 gp_Pnt&                         Pref)
 {
 #ifdef DRAW
-  if (AffichInt2d) {
+  if (Inter2dAffichInt2d) {
     char name[256];
     sprintf(name,"E2d_%d_%d",NbF2d,NbE2d++);
     DBRep::Set(name,E1);

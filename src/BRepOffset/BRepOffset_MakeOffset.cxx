@@ -129,6 +129,9 @@
   Standard_Boolean ChronBuild  = Standard_False;
   Standard_Integer NbAE        = 0;
   Standard_Integer NbAF        = 0;  
+  Standard_Integer NVP        = 0;  
+  Standard_Integer NVM        = 0;  
+  Standard_Integer NVN        = 0;  
   static OSD_Chronometer  Clock;
   char name[100];
 
