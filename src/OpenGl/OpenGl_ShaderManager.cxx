@@ -843,7 +843,9 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
       continue;
     }
 
-    aParams.Init (anIndex == 0 ? theAspect->IntFront() : theAspect->IntBack());
+    aParams.Init (anIndex == 0 || theAspect->DistinguishingMode() != TOn
+                ? theAspect->IntFront()
+                : theAspect->IntBack());
     theProgram->SetUniform (theCtx, aLoc, OpenGl_Material::NbOfVec4(),
                             aParams.Packed());
   }

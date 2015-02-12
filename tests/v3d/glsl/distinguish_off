@@ -1,0 +1,38 @@
+puts "========"
+puts "0025822: Visualization, TKOpenGl - front material should be used instead of back material within distinguish mode turned off"
+puts "========"
+
+pload MODELING OCAF XDE
+box b 10 10 10
+vclear
+vclose all
+catch { Close D }
+NewDocument D MDTV-XCAF
+XAddShape D b
+XSetColor D b 0 0 1
+explode b f
+XSetColor D b_1 1 0 0
+
+XShow D
+vviewparams -proj 1 0.1 0.1
+vfit
+vsetdispmode 1
+
+catch { vclipplane delete pln }
+vclipplane create pln
+vclipplane set pln view Driver1/Document_D/View1
+vclipplane change pln equation -1 0 0 5
+
+# FFP on, pixel is RED3, which is expected
+vcaps -ffp 1
+set aColorFfp [vreadpixel 200 200 rgb name]
+if { "$aColorFfp" != "RED3" } {
+  puts "Error: RED3 color is expected at the back side (FFP)"
+}
+
+# GLSL on, pixel should has the same color RED3, but actual color is KHAKI1
+vcaps -ffp 0
+set aColorGlsl [vreadpixel 200 200 rgb name]
+if { "$aColorGlsl" != "RED3" } {
+  puts "Error: RED3 color is expected at the back side (GLSL)"
+}
