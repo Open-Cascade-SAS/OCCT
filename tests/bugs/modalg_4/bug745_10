@@ -20,5 +20,5 @@ if { [regexp {WIRE} $list] == 0 } {
 
 renamevar result_1 result
 
-set length 320.442
+set length 307.876
 set 2dviewer 1

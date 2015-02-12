@@ -742,7 +742,7 @@ Standard_Integer BOPTools_AlgoTools3D::PointInFace
    Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
-  Standard_Integer iErr, aIx, aNbDomains;
+  Standard_Integer iErr, aIx = 0, aNbDomains = 0;
   Standard_Real aUMin, aUMax, aVMin, aVMax;
   Standard_Real aVx = 0., aUx, aV1, aV2;
   gp_Dir2d aD2D (0., 1.);
@@ -764,24 +764,36 @@ Standard_Integer BOPTools_AlgoTools3D::PointInFace
   BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
   //
   aUx=IntTools_Tools::IntermediatePoint(aUMin, aUMax);
-  aP2D.SetCoord(aUx, 0.);
-  aL2D=new Geom2d_Line (aP2D, aD2D);
-  Geom2dAdaptor_Curve aHCur(aL2D);
-  //
-  aIx=aHatcher.AddHatching(aHCur) ;
-  //
-  aHatcher.Trim();
-  bIsDone=aHatcher.TrimDone(aIx);
-  if (!bIsDone) {
-    iErr=1;
-    return iErr;
-  }
-  //
-  aHatcher.ComputeDomains(aIx);
-  bIsDone=aHatcher.IsDone(aIx);
-  if (!bIsDone) {
-    iErr=2;
-    return iErr;
+  Standard_Integer i;
+  for(i = 1; i <= 2; ++i)
+  {
+    aP2D.SetCoord(aUx, 0.);
+    aL2D=new Geom2d_Line (aP2D, aD2D);
+    Geom2dAdaptor_Curve aHCur(aL2D);
+    //
+    aIx=aHatcher.AddHatching(aHCur) ;
+    //
+    aHatcher.Trim(aIx);
+    bIsDone=aHatcher.TrimDone(aIx);
+    if (!bIsDone) {
+      iErr=1;
+      return iErr;
+    }
+    //
+    if(aHatcher.NbPoints(aIx) > 1)
+    {
+      aHatcher.ComputeDomains(aIx);
+      bIsDone=aHatcher.IsDone(aIx);
+      if (!bIsDone) {
+        iErr=2;
+        return iErr;
+      }
+      break;
+    }
+    else
+    {
+      aUx = aUMax - (aUx - aUMin);
+    }
   }
   //
   aNbDomains=aHatcher.NbDomains(aIx);

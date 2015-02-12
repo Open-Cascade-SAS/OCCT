@@ -780,7 +780,13 @@ static void SetEdgeTol(const TopoDS_Edge& E,
     gp_Pnt Pc3d = HC->Value(u);
     gp_Pnt2d p2d = pc->Value(u);
     gp_Pnt Pcons = ElSLib::Value(p2d.X(),p2d.Y(),pln);
+    Standard_Real eps = Max(Pc3d.XYZ().SquareModulus(), Pcons.XYZ().SquareModulus());
+    eps = Epsilon(eps);
     Standard_Real temp = Pc3d.SquareDistance(Pcons);
+    if(temp <= eps)
+    {
+      temp = 0.;
+    }
     if(temp > d2) d2 = temp;
   }
   d2 = 1.5*sqrt(d2);

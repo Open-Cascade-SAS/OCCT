@@ -4,7 +4,7 @@ mkplane cont cont
 nexplode cyl F
 
 ttranslate cont 0 0 -100
-featdprism cyl cont cont 10 0 1
+featdprism cyl cont cont -10 0 1
 featperform dprism result
 
 set square 83382.4

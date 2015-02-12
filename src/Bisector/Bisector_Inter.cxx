@@ -33,12 +33,14 @@
 #include <Precision.hxx>
 #include <math_BissecNewton.hxx>
 #include <ElCLib.hxx>
-
+#ifdef OCCT_DEBUG
+//#define DRAW
 #ifdef DRAW
-#include <Draw_Appli.hxx>
-#include <DrawTrSurf_Curve2d.hxx>
-#include <Draw_Marker2D.hxx>
+#include <DrawTrSurf.hxx>
+static char name[100];
 static Standard_Boolean Affich = Standard_False;
+static Standard_Integer nbint = 0;
+#endif
 #endif
 
 //===================================================================================
@@ -172,14 +174,14 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
 			  PMax,UMax,D2.LastTolerance());
 
       if ((IB2 == 1                   && Bis2->IsExtendAtStart()) || 
-	  (IB2 == Bis1->NbIntervals() && Bis2->IsExtendAtEnd())    ){
-	//--------------------------------------------------------
-	// Part corresponding to an extension is a segment.	
-	//--------------------------------------------------------
-	SBis2 [IB2] = ConstructSegment (PMin,PMax,UMin,UMax);
+	       (IB2 == Bis1->NbIntervals() && Bis2->IsExtendAtEnd())    ){
+          //--------------------------------------------------------
+          // Part corresponding to an extension is a segment.	
+          //--------------------------------------------------------
+        SBis2 [IB2] = ConstructSegment (PMin,PMax,UMin,UMax);
       }
       else {
-	SBis2 [IB2] = Bis2;
+	      SBis2 [IB2] = Bis2;
       }
       NB2++;
     }
@@ -269,11 +271,11 @@ void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)&    CBis1,
 
     if (Type1 == STANDARD_TYPE(Geom2d_Line) && Type2 != STANDARD_TYPE(Geom2d_Line)) {
       TestBound(Handle(Geom2d_Line)::DownCast(Bis1),
-		D1,Bis2,D2,TolConf,Standard_False);
+		                   D1,Bis2,D2,TolConf,Standard_False);
     }
     else if (Type2 == STANDARD_TYPE(Geom2d_Line)&& Type1 != STANDARD_TYPE(Geom2d_Line)) {
       TestBound(Handle(Geom2d_Line)::DownCast(Bis2),
-		D2,Bis1,D1,TolConf,Standard_True);
+		                   D2,Bis1,D1,TolConf,Standard_True);
     }
     Geom2dInt_GInter Intersect;
     Geom2dAdaptor_Curve ABis1(Bis1);
@@ -285,21 +287,17 @@ void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)&    CBis1,
 
 #ifdef DRAW
   if (Affich) {
-    Handle(DrawTrSurf_Curve2d) dr;
-    Draw_Color                 Couleur = Draw_bleu;
-    
-    dr = new DrawTrSurf_Curve2d(Bis1,Couleur,100);
-    dout << dr;
-    dr = new DrawTrSurf_Curve2d(Bis2,Couleur,100);
-    dout << dr;
-    if (IsDone() && !IsEmpty()) {
+    sprintf( name, "i1_%d", ++nbint);
+    DrawTrSurf::Set(name, Bis1);
+    sprintf( name, "i2_%d", nbint);
+    DrawTrSurf::Set(name, Bis2);
+   if (IsDone() && !IsEmpty()) {
       for (Standard_Integer k = 1; k <= NbPoints(); k++) {
-	gp_Pnt2d P =  Point(k).Value();
-	Handle(Draw_Marker2D) drp  = new Draw_Marker2D(P,Draw_Plus,Draw_vert); 
-	dout << drp;
+	      gp_Pnt2d P =  Point(k).Value();
+        sprintf( name, "ip_%d_%d", nbint, k);
+	      DrawTrSurf::Set(name, P); 
       }
     }
-    dout.Flush();
   }
 #endif  
 }

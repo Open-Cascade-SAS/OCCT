@@ -42,6 +42,6 @@ if { [catch { mkoffset result a_1 1 5 } status] } {
             }
         }
     }
-    set length 0
+    set length 8577.24
     set 2dviewer 0
 }

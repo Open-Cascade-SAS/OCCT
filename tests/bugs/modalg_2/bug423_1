@@ -15,7 +15,7 @@ mkplane cont cont
 nexplode cyl F
 
 ttranslate cont 0 200 0
-featdprism cyl cont cont 10 1 1
+featdprism cyl cont cont -10 1 1
 
 if [catch {featperformval dprism result 55 cyl_3 } catch_result] {
     puts "Faulty OCC423 (case 1): function FEATPERFORMVAL works wrongly"

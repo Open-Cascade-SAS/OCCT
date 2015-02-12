@@ -203,13 +203,14 @@ void IntCurve_ExactIntersectionPoint::MathPerform(void)
     ,ToleranceVector
     ,BInfVector
     ,BSupVector
-    ,50);
+    ,60);
 
   if(Fct.IsDone()) { 
     Fct.Root(Root); nbroots = 1; 
     math_Vector XY(1,2);
     FctDist.Value(Root,XY);
     Standard_Real dist2 = ((XY(1)*XY(1)+XY(2)*XY(2)));
+
     if(dist2 > myTol) 
     {
       nbroots = 0;

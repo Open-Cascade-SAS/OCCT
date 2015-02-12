@@ -19,7 +19,7 @@
 #include <Precision.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <math_Gauss.hxx>
+#include <math_Jacobi.hxx>
 
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
@@ -45,6 +45,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 
 #include <GeomLib.hxx>
 #include <Geom2d_Curve.hxx>
@@ -58,7 +60,7 @@
 //purpose  : 
 //=======================================================================
 static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
-  const Handle(Geom_Plane)& thePlane)
+			      const Handle(Geom_Plane)& thePlane)
 {
   Standard_Real dfMaxDist=0.;
   Standard_Real a,b,c,d, dist;
@@ -79,9 +81,9 @@ static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
 //           the first vertex of theEdge2 in parametric space of theFace
 //=======================================================================
 inline static Standard_Boolean Is2DConnected(const TopoDS_Edge& theEdge1,
-  const TopoDS_Edge& theEdge2,
-  const Handle(Geom_Surface)& theSurface,
-  const TopLoc_Location& theLocation)
+					     const TopoDS_Edge& theEdge2,
+					     const Handle(Geom_Surface)& theSurface,
+					     const TopLoc_Location& theLocation)
 {
   Standard_Real f,l;
   //TopLoc_Location aLoc;
@@ -110,8 +112,8 @@ inline static Standard_Boolean Is2DConnected(const TopoDS_Edge& theEdge1,
 //=======================================================================
 
 static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
-  const Handle(Geom_Surface)& theSurface,
-  const TopLoc_Location& theLocation)
+                                   const Handle(Geom_Surface)& theSurface,
+				   const TopLoc_Location& theLocation)
 {
   try
   {
@@ -164,9 +166,9 @@ BRepLib_FindSurface::BRepLib_FindSurface()
 //purpose  : 
 //=======================================================================
 BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape&    S, 
-  const Standard_Real    Tol,
-  const Standard_Boolean OnlyPlane,
-  const Standard_Boolean OnlyClosed)
+					 const Standard_Real    Tol,
+					 const Standard_Boolean OnlyPlane,
+                                         const Standard_Boolean OnlyClosed)
 {
   Init(S,Tol,OnlyPlane,OnlyClosed);
 }
@@ -175,9 +177,9 @@ BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape&    S,
 //purpose  : 
 //=======================================================================
 void BRepLib_FindSurface::Init(const TopoDS_Shape&    S, 
-  const Standard_Real    Tol,
-  const Standard_Boolean OnlyPlane,
-  const Standard_Boolean OnlyClosed)
+			                         const Standard_Real    Tol,
+			                         const Standard_Boolean OnlyPlane,
+                               const Standard_Boolean OnlyClosed)
 {
   myTolerance = Tol;
   myTolReached = 0.;
@@ -331,27 +333,15 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
           continue;
         else
         {
-          const Standard_Integer aNbPolMax = 200;
-          Standard_Integer incr = 1;
-          if(iNbPol > aNbPolMax)
-          {
-            Standard_Integer nb = iNbPol;
-            while(nb > aNbPolMax)
-            {
-              incr++;
-              nb = (iNbPol-1) / incr;
-            }
-          }
           Handle(TColgp_HArray1OfPnt) aPoles = new (TColgp_HArray1OfPnt) (1, iNbPol);
           GC->Poles(aPoles->ChangeArray1());
           gp_Pnt aPolePrev = aPoles->Value(1), aPoleNext;
           Standard_Real dfDistPrev = 0., dfDistNext;
-          Standard_Integer iPol;
-          for (iPol = 1; iPol <= iNbPol; iPol += incr)
+          for (Standard_Integer iPol=1; iPol<=iNbPol; iPol++)
           {
-            if (iPol <= iNbPol - incr)
+            if (iPol<iNbPol)
             {
-              aPoleNext = aPoles->Value(iPol+incr);
+              aPoleNext = aPoles->Value(iPol+1);
               dfDistNext = aPolePrev.Distance(aPoleNext);
             }
             else
@@ -436,50 +426,115 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     aMat(1,1)+=w*p.X()*p.X(); 
     aMat(1,2)+=w*p.X()*p.Y(); 
     aMat(1,3)+=w*p.X()*p.Z();
-    aMat(2,1)+=w*p.Y()*p.X();  
+    //  
     aMat(2,2)+=w*p.Y()*p.Y();  
     aMat(2,3)+=w*p.Y()*p.Z();
-    aMat(3,1)+=w*p.Z()*p.X();  
-    aMat(3,2)+=w*p.Z()*p.Y(); 
+    //  
     aMat(3,3)+=w*p.Z()*p.Z();
-    aVec(1) -= w*p.X();
-    aVec(2) -= w*p.Y();
-    aVec(3) -= w*p.Z();
   }
-
-  // Solve the system of equations to get plane coefficients
-  math_Gauss aSolver(aMat);
-  Standard_Boolean isSolved = aSolver.IsDone();
+  aMat(2,1) = aMat(1,2);
+  aMat(3,1) = aMat(1,3);
+  aMat(3,2) = aMat(2,3);
+  //
+  math_Jacobi anEignval(aMat);
+  math_Vector anEVals(1,3);
+  Standard_Boolean isSolved = anEignval.IsDone();
+  Standard_Integer isol = 0;
+  if(isSolved)
+  {
+    anEVals = anEignval.Values();
+    //We need vector with eigenvalue ~ 0.
+    Standard_Real anEMin = RealLast();
+    Standard_Real anEMax = -anEMin;
+    for(i = 1; i <= 3; ++i)
+    {
+      Standard_Real anE = Abs(anEVals(i));
+      if(anEMin > anE)
+      {
+        anEMin = anE;
+        isol = i;
+      }
+      if(anEMax < anE)
+      {
+        anEMax = anE;
+      }
+    }
+    
+    if(isol == 0)
+    {
+      isSolved = Standard_False;
+    }
+    else
+    {
+      Standard_Real eps = Epsilon(anEMax);
+      if(anEMin <= eps)
+      {
+        anEignval.Vector(isol, aVec);
+      }
+      else
+      {
+        //try using vector product of other axes
+        Standard_Integer ind[2] = {0,0};
+        for(i = 1; i <= 3; ++i)
+        {
+          if(i == isol)
+          {
+            continue;
+          }
+          if(ind[0] == 0)
+          {
+            ind[0] = i;
+            continue;
+          }
+          if(ind[1] == 0)
+          {
+            ind[1] = i;
+            continue;
+          }
+        }
+        math_Vector aVec1(1, 3, 0.), aVec2(1, 3, 0.);
+        anEignval.Vector(ind[0], aVec1);
+        anEignval.Vector(ind[1], aVec2);
+        gp_Vec aV1(aVec1(1), aVec1(2), aVec1(3));
+        gp_Vec aV2(aVec2(1), aVec2(2), aVec2(3));
+        gp_Vec aN = aV1^ aV2;
+        aVec(1) = aN.X();
+        aVec(2) = aN.Y();
+        aVec(3) = aN.Z();
+      }
+      if (aVec.Norm2() < gp::Resolution()) {
+        isSolved = Standard_False;
+      }
+    }
+  }
+    
   //
   //  let us be more tolerant (occ415)
   Standard_Real dfDist = RealLast();
   Handle(Geom_Plane) aPlane;
   //
   if (isSolved)  {
-    aSolver.Solve(aVec);
-    if (aVec.Norm2()<gp::Resolution()) {
-      isSolved = Standard_False;
-    }
-  }
-  //
-  if (isSolved)  {
-    aPlane = new Geom_Plane(aBaryCenter,gp_Dir(aVec(1),aVec(2),aVec(3)));
+    //Plane normal can have two directions, direction is chosen
+    //according to direction of eigenvector
+    gp_Vec anN(aVec(1), aVec(2), aVec(3));
+    aPlane = new Geom_Plane(aBaryCenter,anN);
     dfDist = Controle (aPoints, aPlane);
   }
   //
   if (!isSolved || myTolerance < dfDist)  {
     gp_Pnt aFirstPnt=aPoints(1);
     for (iPoint=2; iPoint<=aPoints.Length(); iPoint++)  {
-      const gp_Pnt& aNextPnt = aPoints(iPoint); 
-      gp_Vec aDir(aFirstPnt, aNextPnt);
+      gp_Vec aDir(aFirstPnt,aPoints(iPoint));
       Standard_Real dfSide=aDir.Magnitude();
       if (dfSide<myTolerance) {
         continue; // degeneration
       }
       for (Standard_Integer iP1=iPoint+1; iP1<=aPoints.Length(); iP1++) {
-        gp_Vec aCross = gp_Vec(aFirstPnt,aPoints(iP1)) ^ aDir ;
+
+       	gp_Vec aCross = gp_Vec(aFirstPnt,aPoints(iP1)) ^ aDir ;
+
         if (aCross.Magnitude() > dfSide*myTolerance) {
-          Handle(Geom_Plane) aPlane2 = new Geom_Plane(aFirstPnt, aCross);
+          Handle(Geom_Plane) aPlane2 = new Geom_Plane(aBaryCenter, aCross);
           Standard_Real dfDist2 = Controle (aPoints, aPlane2);
           if (dfDist2 < myTolerance)  {
             myTolReached = dfDist2;
@@ -504,6 +559,23 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     //myTolReached = dfDist;
     //XXt
     mySurface = aPlane;
+    //If S is wire, try to orient surface according to orientation of wire.
+    if(S.ShapeType() == TopAbs_WIRE && S.Closed())
+    {
+       //
+      TopoDS_Wire aW = TopoDS::Wire(S);
+      TopoDS_Face aTmpFace = BRepLib_MakeFace(mySurface, Precision::Confusion());
+      BRep_Builder BB;
+      BB.Add(aTmpFace, aW);
+      BRepTopAdaptor_FClass2d FClass(aTmpFace, 0.);
+      if ( FClass.PerformInfinitePoint() == TopAbs_IN ) 
+      {
+        gp_Dir aN = aPlane->Position().Direction();
+        aN.Reverse();
+        mySurface = new Geom_Plane(aPlane->Position().Location(), aN);
+      }
+
+    }
   }
   //XXf
   myTolReached = dfDist;

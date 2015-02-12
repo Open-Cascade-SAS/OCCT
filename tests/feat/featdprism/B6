@@ -10,7 +10,7 @@ ttranslate cont 0 200 0
 #
 mksurface surf cyl_3
 mkface face surf
-featdprism cyl cont cont 10 1 1
+featdprism cyl cont cont -10 1 1
 featperformval dprism result 55 face
 
 set square 99444.8

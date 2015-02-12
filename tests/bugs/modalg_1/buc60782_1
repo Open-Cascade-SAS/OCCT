@@ -31,9 +31,10 @@ if { [regexp {OK} $che ] != 1} {
 	renamevar a result
     } else {
 	puts "OK BUC60782: offset is created"
-	tpcompound result
-    }
+	compound result_1 a result
+        
+    }    
 }
 
-set square 0
+set square 4.24716e+006
 set 2dviewer 0

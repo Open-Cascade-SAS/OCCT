@@ -18,9 +18,9 @@ explode p f
 mksurface ss1 p_1
 mksurface ss2 p_2
 mksurface ss3 p_3
-offset o1 ss1 0.1
-offset o2 ss2 0.1
-offset o3 ss3 0.1
+offset o1 ss1 -0.1
+offset o2 ss2 -0.1
+offset o3 ss3 -0.1
 
 mkface res o2
 set info [sprops res]

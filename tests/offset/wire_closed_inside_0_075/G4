@@ -5,8 +5,8 @@ puts "TODO ?OCC23748 ALL: Error: Offset is not done."
 
 restore [locate_data_file offset_wire_081.brep] s
 
-set length 0
-set nbsh_v 0
-set nbsh_e 0
-set nbsh_w 0
+set length 428.734
+set nbsh_v 18
+set nbsh_e 18
+set nbsh_w 2
 

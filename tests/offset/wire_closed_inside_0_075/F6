@@ -2,11 +2,12 @@ puts "TODO ?OCC23068 ALL: Error : The offset cannot be built."
 puts "TODO ?OCC23068 ALL: An exception was caught"
 puts "TODO ?OCC23068 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO ?OCC23748 ALL: Error: Offset is not done."
+#puts "TODO ALL: Error : big tolerance of shape result"
 
 restore [locate_data_file offset_wire_066.brep] s
 
-set length 0
-set nbsh_v 0
-set nbsh_e 0
-set nbsh_w 0
+set length 45.4428
+set nbsh_v 52
+set nbsh_e 52
+set nbsh_w 1
 

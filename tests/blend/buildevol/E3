@@ -8,7 +8,7 @@ tscale s 0 0 0 SCALE1
 fsameparameter s SCALE1*1.e-7
 explode s E
 mkevol result s
-updatevol s_6 0 1*SCALE1 1 2*SCALE1 2 1*SCALE1
+updatevol s_5 0 1*SCALE1 1 2*SCALE1 2 1*SCALE1
 buildevol
 
 set square 81299.7

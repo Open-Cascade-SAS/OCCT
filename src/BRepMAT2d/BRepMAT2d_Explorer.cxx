@@ -39,14 +39,27 @@
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
-
+#include <GeomAbs_CurveType.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <GCE2d_MakeArcOfCircle.hxx>
+#include <GCE2d_MakeSegment.hxx> 
+//
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:14 2002 Begin
 static TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,
-			    const TopoDS_Face          &theFace,
-			    const TopoDS_Vertex        &theVFirst,
-			    const TopoDS_Vertex        &theVLast);
+  const TopoDS_Face          &theFace,
+  const TopoDS_Vertex        &theVFirst,
+  const TopoDS_Vertex        &theVLast);
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:16 2002 End
-
+//
+static GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d);
+static void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
+                           const Standard_Boolean isFirst);
+//
 //=======================================================================
 //function : BRepMAT2d_Explorer
 //purpose  : 
@@ -79,7 +92,7 @@ void BRepMAT2d_Explorer::Perform(const TopoDS_Face& aFace)
   TopoDS_Face  F = TopoDS::Face(aFace);
   F.Orientation(TopAbs_FORWARD);
   TopExp_Explorer Exp (F,TopAbs_WIRE);
-//  Modified by Sergey KHROMOV - Tue Nov 26 16:10:37 2002 Begin
+  //  Modified by Sergey KHROMOV - Tue Nov 26 16:10:37 2002 Begin
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(F);
   TopoDS_Face          aNewF = BRepBuilderAPI_MakeFace(aSurf, Precision::Confusion());
 
@@ -91,8 +104,8 @@ void BRepMAT2d_Explorer::Perform(const TopoDS_Face& aFace)
   BRepLib::BuildCurves3d(aNewF);
 
   myModifShapes.Add(aFace, aNewF);
-//   CheckConnection();
-//  Modified by Sergey KHROMOV - Tue Nov 26 16:10:38 2002 End
+  //   CheckConnection();
+  //  Modified by Sergey KHROMOV - Tue Nov 26 16:10:38 2002 End
 }
 
 //=======================================================================
@@ -101,43 +114,43 @@ void BRepMAT2d_Explorer::Perform(const TopoDS_Face& aFace)
 //=======================================================================
 
 void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
-			     const TopoDS_Face& aFace,
-			           TopoDS_Face& aNewFace)
+  const TopoDS_Face& aFace,
+  TopoDS_Face& aNewFace)
 {  
-//  Modified by Sergey KHROMOV - Tue Nov 26 14:25:46 2002 Begin
-// This method is totally rewroted to include check
-// of connection and creation of a new spine.
+  //  Modified by Sergey KHROMOV - Tue Nov 26 14:25:46 2002 Begin
+  // This method is totally rewroted to include check
+  // of connection and creation of a new spine.
   NewContour();
   myIsClosed(currentContour) = (Spine.Closed()) ? Standard_True : Standard_False;
 
-//  Modified by skv - Wed Jun 23 12:23:01 2004 Integration Begin
-//  Taking into account side of bisecting loci construction.
-//   TopoDS_Wire                         aWFwd = TopoDS::Wire(Spine.Oriented(TopAbs_FORWARD));
-//   BRepTools_WireExplorer              anExp(aWFwd, aFace);
+  //  Modified by skv - Wed Jun 23 12:23:01 2004 Integration Begin
+  //  Taking into account side of bisecting loci construction.
+  //   TopoDS_Wire                         aWFwd = TopoDS::Wire(Spine.Oriented(TopAbs_FORWARD));
+  //   BRepTools_WireExplorer              anExp(aWFwd, aFace);
   BRepTools_WireExplorer              anExp(Spine, aFace);
-//  Modified by skv - Wed Jun 23 12:23:02 2004 Integration End
+  //  Modified by skv - Wed Jun 23 12:23:02 2004 Integration End
   TopTools_IndexedDataMapOfShapeShape anOldNewE;
 
   if (!anExp.More())
     return;
 
   TopoDS_Edge                 aFirstEdge = anExp.Current();
+  TopoDS_Edge                 aPrevEdge = aFirstEdge;
   Standard_Real               UFirst,ULast, aD;
-  Handle(Geom2d_BSplineCurve) BCurve;
   Handle(Geom2d_Curve)        C2d;
   Handle(Geom2d_TrimmedCurve) CT2d;
   Handle(Geom2d_TrimmedCurve) aFirstCurve;
   gp_Pnt2d                    aPFirst;
   gp_Pnt2d                    aPLast;
   gp_Pnt2d                    aPCurFirst;
-//  Modified by skv - Mon Jul 11 19:00:25 2005 Integration Begin
-//  Set the confusion tolerance in accordance with the further algo
-//   Standard_Real               aTolConf   = Precision::Confusion();
+  //  Modified by skv - Mon Jul 11 19:00:25 2005 Integration Begin
+  //  Set the confusion tolerance in accordance with the further algo
+  //   Standard_Real               aTolConf   = Precision::Confusion();
   Standard_Real               aTolConf   = 1.e-8;
-//  Modified by skv - Mon Jul 11 19:00:25 2005 Integration End
+  //  Modified by skv - Mon Jul 11 19:00:25 2005 Integration End
   Standard_Boolean            isModif    = Standard_False;
 
-// Treatment of the first edge of a wire.
+  // Treatment of the first edge of a wire.
   anOldNewE.Add(aFirstEdge, aFirstEdge);
   C2d  = BRep_Tool::CurveOnSurface (aFirstEdge, aFace, UFirst, ULast);
   CT2d = new Geom2d_TrimmedCurve(C2d,UFirst,ULast);
@@ -152,7 +165,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   aFirstCurve = CT2d;
   anExp.Next();
 
-// Treatment of the next edges:
+  // Treatment of the next edges:
   for (; anExp.More(); anExp.Next()) {
     TopoDS_Edge  anEdge = anExp.Current();
 
@@ -175,64 +188,111 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
       //             code should be rewritten.
       isModif = Standard_True;
       //
-      //modified by NIZNHY-PKV Tue Aug  7 09:14:03 2007f
-      //BCurve = Geom2dConvert::CurveToBSplineCurve(CT2d);
-      BCurve=Geom2dConvert::CurveToBSplineCurve(CT2d, Convert_QuasiAngular);
-      //modified by NIZNHY-PKV Tue Aug  7 09:14:07 2007t
-      
-      BCurve->SetPole(1, aPLast);
-      CT2d = new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
-				             BCurve->LastParameter());
+      Standard_Integer aNbC = theCurves.Value(currentContour).Length();
+      Handle(Geom2d_BoundedCurve) CPrev = 
+        Handle(Geom2d_BoundedCurve)::DownCast(theCurves.ChangeValue(currentContour).ChangeValue(aNbC));
+      //
+      GeomAbs_CurveType TCPrev = GetCurveType(CPrev);
+      GeomAbs_CurveType TCCurr = GetCurveType(CT2d);
+      //
+      if(TCCurr <= TCPrev)
+      {
+        AdjustCurveEnd(CT2d, aPLast, Standard_True);
+        // Creation of new edge.
+        TopoDS_Edge aNewEdge;
+        TopoDS_Vertex aVf = TopExp::FirstVertex(anEdge);
+        TopoDS_Vertex aVl = TopExp::LastVertex(anEdge);
 
-      // Creation of new edge.
-      TopoDS_Edge aNewEdge;
-      TopoDS_Vertex aVf = TopExp::FirstVertex(anEdge);
-      TopoDS_Vertex aVl = TopExp::LastVertex(anEdge);
+        if (anEdge.Orientation() == TopAbs_FORWARD)
+          aNewEdge = MakeEdge(CT2d, aNewFace, aVf, aVl);
+        else 
+          aNewEdge = MakeEdge(CT2d->Reversed(), aNewFace, aVf, aVl);
 
-      if (anEdge.Orientation() == TopAbs_FORWARD)
-	aNewEdge = MakeEdge(CT2d, aNewFace, aVf, aVl);
-      else 
-	aNewEdge = MakeEdge(CT2d->Reversed(), aNewFace, aVf, aVl);
+        aNewEdge.Orientation(anEdge.Orientation());
 
-      aNewEdge.Orientation(anEdge.Orientation());
+        anOldNewE.ChangeFromKey(anEdge) = aNewEdge;
+      }
+      else
+      {
+        gp_Pnt2d aP = CT2d->Value(CT2d->FirstParameter());
+        AdjustCurveEnd(CPrev, aP, Standard_False);
+        theCurves.ChangeValue(currentContour).ChangeValue(aNbC) = CPrev;
+        //Change previous edge
+        TopoDS_Edge aNewEdge;
+        TopoDS_Vertex aVf = TopExp::FirstVertex(aPrevEdge);
+        TopoDS_Vertex aVl = TopExp::LastVertex(aPrevEdge);
 
-      anOldNewE.ChangeFromKey(anEdge) = aNewEdge;
+        if (aPrevEdge.Orientation() == TopAbs_FORWARD)
+          aNewEdge = MakeEdge(CPrev, aNewFace, aVf, aVl);
+        else 
+          aNewEdge = MakeEdge(CPrev->Reversed(), aNewFace, aVf, aVl);
+
+        aNewEdge.Orientation(aPrevEdge.Orientation());
+
+        anOldNewE.ChangeFromKey(aPrevEdge) = aNewEdge;
+        
+      }
+
     }
 
     aPLast = CT2d->Value(CT2d->LastParameter());
     Add(CT2d);
+    aPrevEdge = anEdge;
   }
 
   // Check of the distance between the first and the last point of wire
   // if the wire is closed.
-    if (myIsClosed(currentContour) && aPLast.Distance(aPFirst) > aTolConf) {
-      isModif = Standard_True;
+  if (myIsClosed(currentContour) && aPLast.Distance(aPFirst) > aTolConf) {
+    isModif = Standard_True;
 
-      
-      //modified by NIZNHY-PKV Tue Aug  7 09:20:08 2007f
-      //Handle(Geom2d_BSplineCurve)
-      //BCurve = Geom2dConvert::CurveToBSplineCurve(aFirstCurve);
-      BCurve = Geom2dConvert::CurveToBSplineCurve(aFirstCurve, Convert_QuasiAngular);
-      //modified by NIZNHY-PKV Tue Aug  7 09:20:11 2007t
-
-      BCurve->SetPole(1, aPLast);
-      aFirstCurve = new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
-				                    BCurve->LastParameter());
+      //
+    Standard_Integer aNbC = theCurves.Value(currentContour).Length();
+    Handle(Geom2d_BoundedCurve) CPrev = 
+        Handle(Geom2d_BoundedCurve)::DownCast(theCurves.ChangeValue(currentContour).ChangeValue(aNbC));
+      //
+    GeomAbs_CurveType TCPrev = GetCurveType(CPrev);
+    GeomAbs_CurveType TCCurr = GetCurveType(aFirstCurve);
+    //
+    if(TCCurr <= TCPrev)
+    {
+      AdjustCurveEnd(aFirstCurve, aPLast, Standard_True);
       theCurves.ChangeValue(currentContour).ChangeValue(1) = aFirstCurve;
-
-      // Creation of new first edge.
+      // Creation of new edge.
       TopoDS_Edge aNewEdge;
       TopoDS_Vertex aVf = TopExp::FirstVertex(aFirstEdge);
       TopoDS_Vertex aVl = TopExp::LastVertex(aFirstEdge);
 
       if (aFirstEdge.Orientation() == TopAbs_FORWARD)
-	aNewEdge = MakeEdge(aFirstCurve, aNewFace, aVf, aVl);
+        aNewEdge = MakeEdge(aFirstCurve, aNewFace, aVf, aVl);
       else 
-	aNewEdge = MakeEdge(aFirstCurve->Reversed(), aNewFace, aVf, aVl);
+        aNewEdge = MakeEdge(aFirstCurve->Reversed(), aNewFace, aVf, aVl);
 
       aNewEdge.Orientation(aFirstEdge.Orientation());
+
       anOldNewE.ChangeFromKey(aFirstEdge) = aNewEdge;
     }
+    else
+    {
+      gp_Pnt2d aP = aFirstCurve->Value(aFirstCurve->FirstParameter());
+      AdjustCurveEnd(CPrev, aP, Standard_False);
+      theCurves.ChangeValue(currentContour).ChangeValue(aNbC) = CPrev;
+      //Change previous edge
+      TopoDS_Edge aNewEdge;
+      TopoDS_Vertex aVf = TopExp::FirstVertex(aPrevEdge);
+      TopoDS_Vertex aVl = TopExp::LastVertex(aPrevEdge);
+
+      if (aPrevEdge.Orientation() == TopAbs_FORWARD)
+        aNewEdge = MakeEdge(CPrev, aNewFace, aVf, aVl);
+      else 
+        aNewEdge = MakeEdge(CPrev->Reversed(), aNewFace, aVf, aVl);
+
+      aNewEdge.Orientation(aPrevEdge.Orientation());
+
+      anOldNewE.ChangeFromKey(aPrevEdge) = aNewEdge;
+
+    }
+
+  }
 
   TopoDS_Wire  aNewWire;
   BRep_Builder aBuilder;
@@ -263,7 +323,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     aNewWire = Spine;
 
   aBuilder.Add(aNewFace, aNewWire);
-//  Modified by Sergey KHROMOV - Tue Nov 26 14:25:53 2002 End
+  //  Modified by Sergey KHROMOV - Tue Nov 26 14:25:53 2002 End
 }
 
 //=======================================================================
@@ -302,10 +362,10 @@ void BRepMAT2d_Explorer::Clear()
 {  
   theCurves.Clear() ;
   currentContour = 0;
-//  Modified by Sergey KHROMOV - Wed Mar  6 16:07:55 2002 Begin
+  //  Modified by Sergey KHROMOV - Wed Mar  6 16:07:55 2002 Begin
   myIsClosed.Clear();
   myModifShapes.Clear();
-//  Modified by Sergey KHROMOV - Wed Mar  6 16:07:55 2002 End
+  //  Modified by Sergey KHROMOV - Wed Mar  6 16:07:55 2002 End
 }
 
 
@@ -318,9 +378,9 @@ void BRepMAT2d_Explorer::NewContour()
 {  
   TColGeom2d_SequenceOfCurve Contour;
   theCurves.Append(Contour);
-//  Modified by Sergey KHROMOV - Wed Mar  6 16:12:05 2002 Begin
+  //  Modified by Sergey KHROMOV - Wed Mar  6 16:12:05 2002 Begin
   myIsClosed.Append(Standard_False);
-//  Modified by Sergey KHROMOV - Wed Mar  6 16:12:05 2002 End
+  //  Modified by Sergey KHROMOV - Wed Mar  6 16:12:05 2002 End
   currentContour ++ ;
 }
 
@@ -353,7 +413,7 @@ Standard_Integer BRepMAT2d_Explorer::NumberOfContours() const
 
 Standard_Integer BRepMAT2d_Explorer::NumberOfCurves
   (const Standard_Integer IndexContour)
-const 
+  const 
 {  
   return theCurves.Value(IndexContour).Length();
 }
@@ -421,7 +481,7 @@ TopoDS_Shape BRepMAT2d_Explorer::Shape() const
 
 const TColGeom2d_SequenceOfCurve& BRepMAT2d_Explorer::Contour
   (const Standard_Integer IC)
-const
+  const
 {
   return theCurves.Value(IC);
 }
@@ -434,7 +494,7 @@ const
 //=======================================================================
 
 Standard_Boolean BRepMAT2d_Explorer::IsModified
-                                     (const TopoDS_Shape &aShape) const
+  (const TopoDS_Shape &aShape) const
 {
   if (myModifShapes.Contains(aShape)) {
     const TopoDS_Shape     &aNewShape = myModifShapes.FindFromKey(aShape);
@@ -452,7 +512,7 @@ Standard_Boolean BRepMAT2d_Explorer::IsModified
 //=======================================================================
 
 TopoDS_Shape BRepMAT2d_Explorer::ModifiedShape
-                                     (const TopoDS_Shape &aShape) const
+  (const TopoDS_Shape &aShape) const
 {
   if (myModifShapes.Contains(aShape)) {
     const TopoDS_Shape &aNewShape = myModifShapes.FindFromKey(aShape);
@@ -479,9 +539,9 @@ const TColStd_SequenceOfBoolean &BRepMAT2d_Explorer::GetIsClosed() const
 //=======================================================================
 
 TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,
-		     const TopoDS_Face          &theFace,
-		     const TopoDS_Vertex        &theVFirst,
-		     const TopoDS_Vertex        &theVLast)
+  const TopoDS_Face          &theFace,
+  const TopoDS_Vertex        &theVFirst,
+  const TopoDS_Vertex        &theVLast)
 {
   TopoDS_Edge   aNewEdge;
   BRep_Builder  aBuilder;
@@ -498,3 +558,85 @@ TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,
   return aNewEdge;
 }
 //  Modified by Sergey KHROMOV - Wed Mar  6 17:40:14 2002 End
+//
+//=======================================================================
+//function : GetCurveType
+//purpose  : Get curve type.
+//=======================================================================
+
+GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d)
+{
+  GeomAbs_CurveType aTypeCurve = GeomAbs_OtherCurve;
+  Handle(Standard_Type) TheType = theC2d->DynamicType();
+  if ( TheType == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
+    TheType = (*((Handle(Geom2d_TrimmedCurve)*)&theC2d))->BasisCurve()->DynamicType();
+  }
+
+  if ( TheType ==  STANDARD_TYPE(Geom2d_Circle)) {
+    aTypeCurve = GeomAbs_Circle;
+  }
+  else if ( TheType ==STANDARD_TYPE(Geom2d_Line)) {
+    aTypeCurve = GeomAbs_Line;
+  }
+  else if ( TheType == STANDARD_TYPE(Geom2d_Ellipse)) {
+    aTypeCurve = GeomAbs_Ellipse;
+  }
+  else if ( TheType == STANDARD_TYPE(Geom2d_Parabola)) {
+    aTypeCurve = GeomAbs_Parabola;
+  }
+  else if ( TheType == STANDARD_TYPE(Geom2d_Hyperbola)) {
+    aTypeCurve = GeomAbs_Hyperbola;
+  }
+  else if ( TheType == STANDARD_TYPE(Geom2d_BezierCurve)) {
+    aTypeCurve = GeomAbs_BezierCurve;
+  }
+  else if ( TheType == STANDARD_TYPE(Geom2d_BSplineCurve)) {
+    aTypeCurve = GeomAbs_BSplineCurve;
+  }
+  else {
+    aTypeCurve = GeomAbs_OtherCurve;
+  }
+  return aTypeCurve;    
+}
+//=======================================================================
+//function : AdjustCurveEnd
+//purpose  : 
+//=======================================================================
+void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
+                           const Standard_Boolean isFirst)
+{
+  GeomAbs_CurveType aType = GetCurveType(theC2d);
+  if(aType == GeomAbs_Line)
+  {
+    //create new line
+    if(isFirst)
+    {
+      gp_Pnt2d aP = theC2d->Value(theC2d->LastParameter());
+      theC2d = GCE2d_MakeSegment(theP, aP);
+    }
+    else
+    {
+      gp_Pnt2d aP = theC2d->Value(theC2d->FirstParameter());
+      theC2d = GCE2d_MakeSegment(aP, theP);
+    }
+  }
+  else
+  {
+    //Convert to BSpline and adjust first pole
+    Handle(Geom2d_BSplineCurve) BCurve = 
+      Geom2dConvert::CurveToBSplineCurve(theC2d, Convert_QuasiAngular);
+    if(isFirst)
+    {
+      BCurve->SetPole(1, theP);
+      theC2d = new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
+                                               BCurve->LastParameter());
+    }
+    else
+    {
+      BCurve->SetPole(BCurve->NbPoles(), theP);
+      theC2d = new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
+                                               BCurve->LastParameter());
+    }
+  }
+
+}

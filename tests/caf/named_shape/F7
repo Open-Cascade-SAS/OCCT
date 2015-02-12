@@ -54,7 +54,7 @@ GetShape D $Lin2:1:2 L1;
 #3 Prism 
 NewCommand D
 AddDriver D Prism Box PTxyz
-set Prism [AddPrism D $Lin2 300 0]
+set Prism [AddPrism D $Lin2 300 1]
 ComputeFun D $Prism:1
 GetShape D $Prism:1:2 Pr
 GetReference D $Prism;			## check is reference set 

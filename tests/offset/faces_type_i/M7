@@ -7,6 +7,6 @@ polyline profile 0 0 0  10 0 0  5 0 5  0 0 0
 mkplane profile profile
 pipe s w profile
 
-OFFSETSHAPE -1 {s_2 s_3} $calcul $type
+OFFSETSHAPE -1 {s_2 s_4} $calcul $type
 
 set volume 259.68

@@ -4,6 +4,7 @@
 #ttranslate s1 s2 5 5 0
 #cut s s1 s2
 #save s CFI_i1234fis.rle 
+puts "TODO ?OCC24255 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 
 restore [locate_data_file CFI_i1234fis.rle] s
 tscale s 0 0 0 SCALE1

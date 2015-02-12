@@ -1,8 +1,7 @@
-puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
 restore [locate_data_file offset_wire_089.brep] s
 
-set length 953.42
-set nbsh_v 20
-set nbsh_e 20
+set length 746.196
+set nbsh_v 17
+set nbsh_e 17
 set nbsh_w 1
 

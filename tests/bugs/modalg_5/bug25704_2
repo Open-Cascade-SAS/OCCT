@@ -15,7 +15,7 @@ if [catch { mkoffset resoffset a 1 -3. } ] {
 } else {
   renamevar resoffset_1 result
 
-  set length 81.6814
+  set length 43.9823
 
   set nb_v_good 1
   set nb_e_good 1

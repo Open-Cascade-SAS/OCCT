@@ -17,17 +17,17 @@ if [catch { mkoffset resoffset pp 1 -1. i } ] {
 } else {
   renamevar resoffset_1 result
 
-  set length 32
+  set length 42
 
-  set nb_v_good 5
-  set nb_e_good 5
+  set nb_v_good 6
+  set nb_e_good 7
   set nb_w_good 1
   set nb_f_good 0
   set nb_sh_good 0
   set nb_sol_good 0
   set nb_compsol_good 0
   set nb_compound_good 0
-  set nb_shape_good 11
+  set nb_shape_good 14
 
   display result
   fit

@@ -5,7 +5,7 @@ nexplode cyl F
 
 ttranslate cont 0 0 -100
 ttranslate cont 0 200 0
-featdprism cyl cont cont 10 1 1
+featdprism cyl cont cont -10 1 1
 featperformval dprism result 100
 
-set square 108523
+set square  103687

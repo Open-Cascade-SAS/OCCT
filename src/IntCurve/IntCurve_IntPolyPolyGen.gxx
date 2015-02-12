@@ -45,6 +45,8 @@
 #include <math_FunctionSetRoot.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
 #include <NCollection_Handle.hxx>
+#include <Bnd_Box2d.hxx>
+#include <Precision.hxx>
 
 //======================================================================
 
@@ -58,7 +60,12 @@
 //----------------------------------------------------------------------
 
 
-
+void GetIntersection(const TheCurve& theC1, const Standard_Real theT1f, const Standard_Real theT1l,
+                     const TheCurve& theC2, const Standard_Real theT2f, const Standard_Real theT2l, 
+                     const Standard_Real theTolConf,
+                     const Standard_Integer theMaxCount,
+                     IntRes2d_IntersectionPoint& thePInt, Standard_Real& theDist,
+                     Standard_Integer& theCount);
 
 
 Standard_Boolean HeadOrEndPoint( const IntRes2d_Domain& D1
@@ -787,10 +794,30 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(
     //--------------------------------------------------------------------
     //-- On verifie que le point trouve est bien une racine
     //--------------------------------------------------------------------
+
     EIP.Roots(U,V);
     TheCurveTool::D1(C1,U,P1,Tan1);
     TheCurveTool::D1(C2,V,P2,Tan2);
     Standard_Real Dist = P1.Distance(P2);
+    if(EIP.NbRoots() == 0 && Dist > TolConf)
+    {
+      IntRes2d_Transition aTrans;
+      IntRes2d_IntersectionPoint aPInt(P1, U, V, aTrans, aTrans, Standard_False);
+      Standard_Real aT1f, aT1l, aT2f, aT2l;
+      aT1f= thePoly1.ApproxParamOnCurve(SegIndex1, 0.0); 
+      aT1l= thePoly1.ApproxParamOnCurve(SegIndex1, 1.0); 
+      aT2f= thePoly2.ApproxParamOnCurve(SegIndex2, 0.0); 
+      aT2l= thePoly2.ApproxParamOnCurve(SegIndex2, 1.0); 
+      //
+      Standard_Integer aMaxCount = 16, aCount = 0;
+      GetIntersection(C1, aT1f, aT1l, C2, aT2f, aT2l, TolConf, aMaxCount, 
+                      aPInt, Dist, aCount); 
+      U = aPInt.ParamOnFirst();
+      V = aPInt.ParamOnSecond();
+      TheCurveTool::D1(C1,U,P1,Tan1);
+      TheCurveTool::D1(C2,V,P2,Tan2);
+      Dist = P1.Distance(P2);
+    }
     //-----------------------------------------------------------------
     //-- On verifie que le point (u,v) n existe pas deja 
     //--
@@ -1031,3 +1058,130 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(
  return Standard_True;
 }
 
+//======================================================================
+//  GetIntersection
+//======================================================================
+
+void GetIntersection(const TheCurve& theC1, const Standard_Real theT1f, const Standard_Real theT1l,
+                     const TheCurve& theC2, const Standard_Real theT2f, const Standard_Real theT2l, 
+                     const Standard_Real theTolConf,
+                     const Standard_Integer theMaxCount,
+                     IntRes2d_IntersectionPoint& thePInt, Standard_Real& theDist,
+                     Standard_Integer& theCount)
+{
+  theCount++;
+  //
+  Standard_Real aTol2 = theTolConf*theTolConf;
+  Standard_Real aPTol1 = Max(100.*Epsilon(Max(Abs(theT1f), Abs(theT1l))), Precision::PConfusion());
+  Standard_Real aPTol2 = Max(100.*Epsilon(Max(Abs(theT2f), Abs(theT2l))), Precision::PConfusion());
+  gp_Pnt2d aP1f, aP1l, aP2f, aP2l;
+  Bnd_Box2d aB1, aB2;
+  //
+  TheCurveTool::D0(theC1, theT1f, aP1f);
+  TheCurveTool::D0(theC1, theT1l, aP1l);
+  aB1.Add(aP1f);
+  aB1.Add(aP1l);
+  aB1.Enlarge(theTolConf);
+  //
+  TheCurveTool::D0(theC2, theT2f, aP2f);
+  TheCurveTool::D0(theC2, theT2l, aP2l);
+  aB2.Add(aP2f);
+  aB2.Add(aP2l);
+  aB2.Enlarge(theTolConf);
+  //
+  if(aB1.IsOut(aB2))
+  {
+    theCount--;
+    return;
+  }
+  //
+  Standard_Boolean isSmall1 = (theT1l - theT1f) <= aPTol1 || aP1f.SquareDistance(aP1l) / 4. <= aTol2;
+  Standard_Boolean isSmall2 = (theT2l - theT2f) <= aPTol2 || aP2f.SquareDistance(aP2l) / 4. <= aTol2;
+
+  if((isSmall1 && isSmall2) || (theCount > theMaxCount))
+  {
+    //Seems to be intersection
+    //Simple treatment of segment intersection
+    gp_XY aPnts1[3] = {aP1f.XY(), (aP1f.XY() + aP1l.XY()) / 2., aP1l.XY()};
+    gp_XY aPnts2[3] = {aP2f.XY(), (aP2f.XY() + aP2l.XY()) / 2., aP2l.XY()};
+    Standard_Integer i, j, imin = -1, jmin = -1;
+    Standard_Real dmin = RealLast(), d;
+    for(i = 0; i < 3; i++)
+    {
+      for(j = 0; j < 3; j++)
+      {
+        d = (aPnts1[i] - aPnts2[j]).SquareModulus();
+        if(d < dmin)
+        {
+          dmin=d;
+          imin = i;
+          jmin = j;
+        }
+      }
+    }
+    //
+    dmin = Sqrt(dmin);
+    if(theDist > dmin)
+    {
+      theDist = dmin;
+      //
+      Standard_Real t1;
+      if(imin == 0)
+      {
+        t1 = theT1f;
+      }
+      else if(imin == 1)
+      {
+        t1 = (theT1f + theT1l) / 2.;
+      }
+      else
+      {
+        t1 = theT1l;
+      }
+      //
+      Standard_Real t2;
+      if(jmin == 0)
+      {
+        t2 = theT2f;
+      }
+      else if(jmin == 1)
+      {
+        t2 = (theT2f + theT2l) / 2.;
+      }
+      else
+      {
+        t2 = theT2l;
+      }
+      //
+      gp_Pnt2d aPint((aPnts1[imin] + aPnts2[jmin])/2.);
+      //
+      IntRes2d_Transition aTrans1, aTrans2;
+      thePInt.SetValues(aPint, t1, t2, aTrans1, aTrans2, Standard_False);
+    }
+    theCount--;
+    return;
+  }
+
+  if(isSmall1)
+  {
+    Standard_Real aT2m = (theT2l + theT2f) / 2.;
+    GetIntersection(theC1, theT1f, theT1l, theC2, theT2f, aT2m, theTolConf, theMaxCount, thePInt, theDist, theCount);
+    GetIntersection(theC1, theT1f, theT1l, theC2, aT2m, theT2l, theTolConf, theMaxCount, thePInt, theDist, theCount);
+  }
+  else if(isSmall2)
+  {
+    Standard_Real aT1m = (theT1l + theT1f) / 2.;
+    GetIntersection(theC1, theT1f, aT1m, theC2, theT2f, theT2l, theTolConf, theMaxCount, thePInt, theDist, theCount);
+    GetIntersection(theC1, aT1m, theT1l, theC2, theT2f, theT2l, theTolConf, theMaxCount, thePInt, theDist, theCount);
+  }
+  else
+  {
+    Standard_Real aT1m = (theT1l + theT1f) / 2.;
+    Standard_Real aT2m = (theT2l + theT2f) / 2.;
+    GetIntersection(theC1, theT1f, aT1m, theC2, theT2f, aT2m, theTolConf, theMaxCount, thePInt, theDist, theCount);
+    GetIntersection(theC1, theT1f, aT1m, theC2, aT2m, theT2l, theTolConf, theMaxCount, thePInt, theDist, theCount);
+    GetIntersection(theC1, aT1m, theT1l, theC2, theT2f, aT2m, theTolConf, theMaxCount, thePInt, theDist, theCount);
+    GetIntersection(theC1, aT1m, theT1l, theC2, aT2m, theT2l, theTolConf, theMaxCount, thePInt, theDist, theCount);
+  }
+
+}

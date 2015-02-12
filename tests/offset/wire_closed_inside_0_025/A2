@@ -1,12 +1,12 @@
-puts "TODO ?OCC23068 ALL: An exception was caught"
-puts "TODO ?OCC23068 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO ?OCC23748 ALL: Error: Offset is not done."
-puts "TODO ?OCC23068 ALL: Error : The offset cannot be built."
+#puts "TODO ?OCC23068 ALL: An exception was caught"
+#puts "TODO ?OCC23068 ALL: \\*\\* Exception \\*\\*.*"
+#puts "TODO ?OCC23748 ALL: Error: Offset is not done."
+#puts "TODO ?OCC23068 ALL: Error : The offset cannot be built."
 
 restore [locate_data_file offset_wire_003.brep] s
 
-set length 0
-set nbsh_v 0
-set nbsh_e 0
-set nbsh_w 0
+set length 787.515
+set nbsh_v 78
+set nbsh_e 78
+set nbsh_w 1
 

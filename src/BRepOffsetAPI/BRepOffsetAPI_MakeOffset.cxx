@@ -36,6 +36,10 @@
 #include <TopoDS_Wire.hxx>
 
 #include <StdFail_NotDone.hxx>
+#ifdef OCCT_DEBUG
+#include <BRepTools.hxx>
+static Standard_Boolean AffichSpine = Standard_False;
+#endif
 
 //=======================================================================
 //function : BRepOffsetAPI_MakeOffset
@@ -183,8 +187,20 @@ static void BuildDomains(TopoDS_Face&               myFace,
     StdFail_NotDone::Raise ("BRepOffsetAPI_MakeOffset : Build Domains");
   }
   TopTools_ListOfShape Faces;
+#ifdef OCCT_DEBUG
+  Standard_Integer ns = 0;
+#endif
   for (; FR.More(); FR.Next()) {
     Faces.Append(FR.Current());
+#ifdef OCCT_DEBUG
+    if(AffichSpine)
+    {
+      char name[32];
+      ns++;
+      sprintf(name, "FR%d",ns);
+      BRepTools::Write(FR.Current(), name);
+    }
+#endif
   }
 
   //===========================================
