@@ -2,7 +2,7 @@
 set filename bm1_sy_fuel.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 3 )  Warnings = 0  ( 2 )  Summary  = 0  ( 5 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 6 )  Summary  = 4  ( 6 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 6  ( 6 )  Face     = 6  ( 6 )   Summary  = 84  ( 79 )

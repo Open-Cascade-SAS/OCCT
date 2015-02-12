@@ -5,12 +5,12 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 set filename trj5_pm3-ac-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 20  ( 31 )  Summary  = 20  ( 31 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 49  ( 49 )  Shell    = 49  ( 49 )  Face     = 615  ( 615 )   Summary  = 4330  ( 4234 )
 STATSHAPE   : Solid    = 88  ( 88 )  Shell    = 88  ( 88 )  Face     = 1079  ( 1079 )   FreeWire = 0  ( 0 )   FreeEdge  = 96 ( 96 )   SharedEdge = 1611  ( 1611 )
-TOLERANCE   : MaxTol   = 0.007650852625  (  0.00792935897 )  AvgTol   =  8.776936133e-005  (  8.913893466e-005 )
+TOLERANCE   : MaxTol   = 0.007650852625  (  0.00792935897 )  AvgTol   =  8.776936133e-05  (  8.913893466e-05 )
 LABELS      : N0Labels = 78  ( 78 )  N1Labels = 196  ( 202 )  N2Labels = 0  ( 0 )   TotalLabels = 274  ( 280 )   NameLabels = 178  ( 178 )   ColorLabels = 145  ( 145 )   LayerLabels = 145  ( 151 )
 PROPS       : Centroid = 74  ( 74 )  Volume   = 74  ( 74 )  Area     = 74  ( 74 )
 NCOLORS     : NColors  = 16  ( 16 )

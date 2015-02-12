@@ -3,10 +3,11 @@ puts "TODO CR23096 ALL: TPSTAT : Faulty"
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
+
 set filename trj3_s1-db-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 18 )  Warnings = 0  ( 0 )  Summary  = 0  ( 18 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 36  ( 12 )  Summary  = 36  ( 12 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 152  ( 152 )   Summary  = 998  ( 998 )

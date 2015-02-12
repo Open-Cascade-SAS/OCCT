@@ -7,12 +7,12 @@ puts "TODO CR23096 ALL: LAYERS : Faulty"
 set filename So5571b.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 139 )  Summary  = 0  ( 139 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   Summary  = 39929  ( 39929 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 139  ( 139 )   FreeEdge  = 19825 ( 19825 )   SharedEdge = 19825  ( 19825 )
-TOLERANCE   : MaxTol   = 1.000100004e-007  ( 1.000100004e-007 )  AvgTol   =  1.000000175e-007  (  1.000000178e-007 )
+TOLERANCE   : MaxTol   = 1.000100004e-07  ( 1.000100004e-07 )  AvgTol   =  1.000000175e-07  (  1.000000178e-07 )
 LABELS      : N0Labels = 139  ( 139 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 139  ( 139 )   NameLabels = 139  ( 139 )   ColorLabels = 0  ( 139 )   LayerLabels = 0  ( 139 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 1 )

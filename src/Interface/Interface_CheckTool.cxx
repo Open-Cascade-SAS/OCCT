@@ -267,18 +267,18 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList ()
     try {
       OCC_CATCH_SIGNALS
       for (i = n0; i <= nb; i ++) {
-	ach->Clear();
-	ent = model->Value(i);
-	ach->SetEntity(ent);
-	if (model->IsReportEntity(i)) {
-	  ach = model->ReportEntity(i)->Check();  // INCLUT Unknown
-	  if (ach->HasFailed())      // FAIL : pas de Check semantique
-	    {  res.Add(ach,i);  thestat |= 12;  continue;  }
-	}
-	if (!model->HasSemanticChecks()) FillCheck(ent,theshare,ach);
-	else ach->GetMessages (model->Check (i,Standard_False));
-	if (ach->HasFailed() || ach->HasWarnings())
-	  { res.Add(ach,i); if (ach->HasFailed())  thestat |= 12; }
+        ach->Clear();
+        ent = model->Value(i);
+        ach->SetEntity(ent);
+        if (model->IsReportEntity(i)) {
+          ach = model->ReportEntity(i)->Check();  // INCLUT Unknown
+          if (ach->HasFailed())      // FAIL : pas de Check semantique
+          {  res.Add(ach,i);  ach = new Interface_Check;  thestat |= 12;  continue;  }
+        }
+        if (!model->HasSemanticChecks()) FillCheck(ent,theshare,ach);
+        else ach->GetMessages (model->Check (i,Standard_False));
+        if (ach->HasFailed() || ach->HasWarnings())
+        { res.Add(ach,i);  ach = new Interface_Check;  if (ach->HasFailed())  thestat |= 12; }
       }
       n0 = nb+1;
     }

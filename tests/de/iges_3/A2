@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
@@ -9,7 +10,7 @@ set LinuxDiff 5
 set filename UKI60094.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 2  ( 0 )  Warnings = 0  ( 0 )  Summary  = 2  ( 0 )
 TPSTAT      : Faulties = 4  ( 33 )  Warnings = 125  ( 319 )  Summary  = 129  ( 352 )
 CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 2  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 420  ( 159 )   Summary  = 7849  ( 4452 )

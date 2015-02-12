@@ -2,7 +2,7 @@
 set filename BUC61003-4.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 230 )  Warnings = 0  ( 0 )  Summary  = 0  ( 230 )
+DATA        : Faulties = 0  ( 232 )  Warnings = 0  ( 681 )  Summary  = 0  ( 913 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 22  ( 22 )  Summary  = 22  ( 22 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 350  ( 350 )   Summary  = 2203  ( 2203 )

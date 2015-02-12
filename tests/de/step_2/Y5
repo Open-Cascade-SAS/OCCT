@@ -6,7 +6,7 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 set filename BUC60810.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 9 )  Warnings = 0  ( 0 )  Summary  = 0  ( 9 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 77  ( 39 )  Summary  = 77  ( 39 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 10  ( 10 )  Shell    = 12  ( 12 )  Face     = 269  ( 269 )   Summary  = 1638  ( 1636 )

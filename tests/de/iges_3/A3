@@ -1,23 +1,21 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
-
-puts "TODO CR25275 DEBUG_OCC24121 Debian60-64: Error : 1 differences with reference data found :" 
-
 set LinuxDiff 1
 set filename UKI60107-6.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 477 )  Warnings = 0  ( 0 )  Summary  = 0  ( 477 )
+DATA        : Faulties = 1  ( 0 )  Warnings = 0  ( 239 )  Summary  = 1  ( 239 )
 TPSTAT      : Faulties = 2  ( 0 )  Warnings = 15  ( 316 )  Summary  = 17  ( 316 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 79  ( 79 )   Summary  = 3800  ( 3951 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 79  ( 79 )   FreeWire = 79  ( 230 )   FreeEdge  = 865 ( 865 )   SharedEdge = 1481  ( 1481 )
-TOLERANCE   : MaxTol   =  0.06847151249  (   0.8635005927 )  AvgTol   =  0.001337103007  (  0.003525405269 )
+TOLERANCE   : MaxTol   =  0.06847151261  (   0.8635005927 )  AvgTol   =   0.00133710651  (  0.003525405269 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 596  ( 1119 )  N2Labels = 0  ( 0 )   TotalLabels = 597  ( 1120 )   NameLabels = 597  ( 745 )   ColorLabels = 596  ( 1119 )   LayerLabels = 577  ( 1100 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 7 )

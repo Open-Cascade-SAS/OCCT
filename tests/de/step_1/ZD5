@@ -2,12 +2,12 @@
 set filename ass-test1.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 85 )  Warnings = 0  ( 0 )  Summary  = 0  ( 85 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 41  ( 41 )   Summary  = 272  ( 272 )
 STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 223  ( 223 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 111  ( 111 )
-TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 9  ( 9 )  N2Labels = 0  ( 0 )   TotalLabels = 12  ( 12 )   NameLabels = 12  ( 12 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

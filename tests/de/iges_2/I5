@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
@@ -6,12 +7,12 @@ puts "TODO CR23096 ALL: COLORS : Faulty"
 set filename ims013.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 19  ( 0 )  Warnings = 0  ( 0 )  Summary  = 19  ( 0 )
 TPSTAT      : Faulties = 38  ( 160 )  Warnings = 0  ( 780 )  Summary  = 38  ( 940 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 854  ( 702 )   Summary  = 25375  ( 23837 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 854  ( 854 )   FreeWire = 9  ( 31 )   FreeEdge  = 3865 ( 3865 )   SharedEdge = 9820  ( 9202 )
-TOLERANCE   : MaxTol   =   0.9589015104  (   0.9589015104 )  AvgTol   =   0.01827504091  (   0.01834335655 )
+TOLERANCE   : MaxTol   =   0.9589015104  (   0.9589015104 )  AvgTol   =   0.01827507861  (   0.01834335655 )
 LABELS      : N0Labels = 33  ( 33 )  N1Labels = 4502  ( 6695 )  N2Labels = 0  ( 0 )   TotalLabels = 4535  ( 6728 )   NameLabels = 4535  ( 4624 )   ColorLabels = 4522  ( 6715 )   LayerLabels = 4281  ( 6430 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 8  ( 9 )

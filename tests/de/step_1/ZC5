@@ -2,7 +2,7 @@
 set filename ro2.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 14 )  Summary  = 14  ( 14 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 2  ( 2 )  Face     = 16  ( 16 )   Summary  = 83  ( 83 )

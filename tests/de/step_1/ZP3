@@ -2,12 +2,12 @@
 set filename tr9_asd-db.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 52 )  Warnings = 0  ( 0 )  Summary  = 0  ( 52 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   Summary  = 49  ( 37 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 0  ( 0 )   FreeEdge  = 12 ( 12 )   SharedEdge = 12  ( 12 )
-TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 12  ( 12 )  N2Labels = 0  ( 0 )   TotalLabels = 13  ( 13 )   NameLabels = 1  ( 1 )   ColorLabels = 12  ( 12 )   LayerLabels = 12  ( 12 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

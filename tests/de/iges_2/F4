@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
@@ -6,7 +7,7 @@ set LinuxDiff 2
 set filename buc60894.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 15  ( 0 )  Warnings = 0  ( 0 )  Summary  = 15  ( 0 )
 TPSTAT      : Faulties = 30  ( 36 )  Warnings = 559  ( 1854 )  Summary  = 589  ( 1890 )
 CHECKSHAPE  : Wires    = 5  ( 6 )  Faces    = 5  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3499  ( 3499 )   Summary  = 43148  ( 43109 )

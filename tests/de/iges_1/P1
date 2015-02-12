@@ -5,12 +5,12 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 set filename USA60023-6.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
 TPSTAT      : Faulties = 0  ( 44 )  Warnings = 0  ( 24 )  Summary  = 0  ( 68 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   Summary  = 9878  ( 9879 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 17  ( 17 )   FreeEdge  = 3356 ( 3356 )   SharedEdge = 3356  ( 3356 )
-TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
 LABELS      : N0Labels = 2998  ( 2998 )  N1Labels = 195  ( 202 )  N2Labels = 0  ( 0 )   TotalLabels = 3193  ( 3200 )   NameLabels = 2998  ( 2998 )   ColorLabels = 2187  ( 2225 )   LayerLabels = 3162  ( 3184 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )

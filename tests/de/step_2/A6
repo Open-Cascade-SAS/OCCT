@@ -5,7 +5,7 @@ puts "TODO CR23096 ALL: NBSHAPES : Faulty"
 set filename t3d_opt.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 84 )  Warnings = 0  ( 0 )  Summary  = 0  ( 84 )
+DATA        : Faulties = 0  ( 126 )  Warnings = 0  ( 210 )  Summary  = 0  ( 336 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 85 )  Summary  = 4  ( 85 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 34  ( 34 )  Shell    = 34  ( 34 )  Face     = 254  ( 254 )   Summary  = 1477  ( 1508 )

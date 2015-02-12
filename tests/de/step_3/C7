@@ -6,7 +6,7 @@ puts "TODO CR23096 ALL: STATSHAPE : Faulty"
 set filename bm1_db_exhaust.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 9  ( 6 )  Summary  = 9  ( 6 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 11  ( 3 )  Face     = 48  ( 48 )   Summary  = 891  ( 868 )

@@ -7,7 +7,7 @@ puts "TODO CR23096 ALL: COLORS : Faulty"
 set filename totale.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
+DATA        : Faulties = 0  ( 7 )  Warnings = 0  ( 1 )  Summary  = 0  ( 8 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 357  ( 599 )  Summary  = 357  ( 599 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 926  ( 926 )   Summary  = 11269  ( 11272 )

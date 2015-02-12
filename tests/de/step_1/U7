@@ -2,7 +2,7 @@
 set filename trj3_s1-ac-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 21 )  Warnings = 0  ( 0 )  Summary  = 0  ( 21 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 4 )  Summary  = 4  ( 4 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 100  ( 100 )   Summary  = 647  ( 647 )

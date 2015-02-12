@@ -6,12 +6,12 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 set filename trj7_c2-ac-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 10 )  Warnings = 0  ( 0 )  Summary  = 0  ( 10 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 0 )  Face     = 1  ( 1 )   Summary  = 16  ( 16 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 0 )  Face     = 1  ( 1 )   FreeWire = 0  ( 0 )   FreeEdge  = 1 ( 1 )   SharedEdge = 5  ( 5 )
-TOLERANCE   : MaxTol   =         1e-007  ( 1.000100004e-007 )  AvgTol   =          1e-007  (  1.000012501e-007 )
+TOLERANCE   : MaxTol   =          1e-07  ( 1.000100004e-07 )  AvgTol   =           1e-07  (  1.000012501e-07 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 3  ( 4 )  N2Labels = 0  ( 0 )   TotalLabels = 6  ( 7 )   NameLabels = 5  ( 5 )   ColorLabels = 2  ( 2 )   LayerLabels = 2  ( 2 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 1  ( 1 )
 NCOLORS     : NColors  = 2  ( 2 )

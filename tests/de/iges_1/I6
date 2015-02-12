@@ -5,7 +5,7 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 set filename BUC61004-2.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
 TPSTAT      : Faulties = 0  ( 1 )  Warnings = 8  ( 427 )  Summary  = 8  ( 428 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 180  ( 180 )   Summary  = 19884  ( 19884 )

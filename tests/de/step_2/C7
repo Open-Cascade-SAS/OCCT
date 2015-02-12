@@ -5,12 +5,12 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 set filename r0401_sd.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 740 )  Warnings = 0  ( 0 )  Summary  = 0  ( 740 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 4  ( 4 )  Face     = 234  ( 234 )   Summary  = 2951  ( 2581 )
 STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 4  ( 4 )  Face     = 234  ( 234 )   FreeWire = 0  ( 0 )   FreeEdge  = 370 ( 370 )   SharedEdge = 957  ( 957 )
-TOLERANCE   : MaxTol   = 7.686750629e-007  ( 7.686674478e-007 )  AvgTol   =  1.10062468e-007  (  1.100624453e-007 )
+TOLERANCE   : MaxTol   = 7.686750629e-07  ( 7.686674478e-07 )  AvgTol   =  1.10062468e-07  (  1.100624453e-07 )
 LABELS      : N0Labels = 5  ( 5 )  N1Labels = 385  ( 15 )  N2Labels = 0  ( 0 )   TotalLabels = 390  ( 20 )   NameLabels = 9  ( 9 )   ColorLabels = 384  ( 15 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )

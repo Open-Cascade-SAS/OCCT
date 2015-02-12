@@ -5,12 +5,12 @@ puts "TODO CR23096 ALL: NBSHAPES : Faulty"
 set filename PRO9240.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 6 )  Warnings = 0  ( 0 )  Summary  = 0  ( 6 )
+DATA        : Faulties = 0  ( 30 )  Warnings = 0  ( 0 )  Summary  = 0  ( 30 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 51 )  Summary  = 14  ( 51 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 7  ( 7 )  Shell    = 7  ( 7 )  Face     = 35  ( 35 )   Summary  = 200  ( 204 )
 STATSHAPE   : Solid    = 7  ( 7 )  Shell    = 7  ( 7 )  Face     = 35  ( 35 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 73  ( 77 )
-TOLERANCE   : MaxTol   = 1.923934361e-006  ( 1.923934702e-006 )  AvgTol   =  8.837706424e-007  (  8.927244379e-007 )
+TOLERANCE   : MaxTol   = 1.923934361e-06  ( 1.923934702e-06 )  AvgTol   =  8.837706424e-07  (  8.927244379e-07 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

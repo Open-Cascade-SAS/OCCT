@@ -2,12 +2,12 @@
 set filename trj5_d3-pe-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 27 )  Warnings = 0  ( 0 )  Summary  = 0  ( 27 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 9  ( 9 )   Summary  = 55  ( 55 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 9  ( 9 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 21  ( 21 )
-TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

@@ -2,12 +2,12 @@
 set filename PRO10360.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 6 )  Warnings = 0  ( 0 )  Summary  = 0  ( 6 )
+DATA        : Faulties = 0  ( 30 )  Warnings = 0  ( 0 )  Summary  = 0  ( 30 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 9  ( 45 )  Summary  = 9  ( 45 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 6  ( 6 )  Face     = 78  ( 78 )   Summary  = 468  ( 468 )
 STATSHAPE   : Solid    = 5  ( 5 )  Shell    = 6  ( 6 )  Face     = 78  ( 78 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 179  ( 179 )
-TOLERANCE   : MaxTol   = 1.742202567e-005  ( 0.0003632648967 )  AvgTol   =  9.910714408e-007  (  6.746245548e-006 )
+TOLERANCE   : MaxTol   = 1.742202567e-05  ( 0.0003632648967 )  AvgTol   =  9.91071441e-07  (  6.746245548e-06 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

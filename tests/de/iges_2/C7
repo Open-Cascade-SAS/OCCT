@@ -6,7 +6,7 @@ puts "TODO CR23096 ALL: LAYERS : Faulty"
 set filename Rich.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 29 )  Warnings = 0  ( 2 )  Summary  = 0  ( 31 )
+DATA        : Faulties = 1  ( 126 )  Warnings = 0  ( 7 )  Summary  = 1  ( 133 )
 TPSTAT      : Faulties = 2  ( 212 )  Warnings = 6  ( 559 )  Summary  = 8  ( 771 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9  ( 9 )   Summary  = 20802  ( 16067 )

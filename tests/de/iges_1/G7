@@ -2,12 +2,12 @@
 set filename frame.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 5003 )  Warnings = 0  ( 0 )  Summary  = 0  ( 5003 )
+DATA        : Faulties = 0  ( 9875 )  Warnings = 0  ( 2629 )  Summary  = 0  ( 12504 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   Summary  = 2830  ( 2830 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 0  ( 0 )   FreeEdge  = 944 ( 944 )   SharedEdge = 944  ( 944 )
-TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
 LABELS      : N0Labels = 944  ( 944 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 944  ( 944 )   NameLabels = 944  ( 944 )   ColorLabels = 944  ( 944 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

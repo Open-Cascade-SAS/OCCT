@@ -2,7 +2,7 @@
 set filename ec_exhaust-A.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 12 )  Warnings = 0  ( 0 )  Summary  = 0  ( 12 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 46  ( 46 )   Summary  = 267  ( 267 )

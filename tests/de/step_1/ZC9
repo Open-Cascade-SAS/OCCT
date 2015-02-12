@@ -6,12 +6,12 @@ set ProductMode OFF
 set filename BUC60809.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 51  ( 9 )  Summary  = 51  ( 9 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 15  ( 15 )  Shell    = 16  ( 16 )  Face     = 159  ( 159 )   Summary  = 890  ( 890 )
 STATSHAPE   : Solid    = 15  ( 15 )  Shell    = 16  ( 16 )  Face     = 159  ( 159 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 342  ( 342 )
-TOLERANCE   : MaxTol   = 7.482128955e-007  (         1e-005 )  AvgTol   =  1.53886857e-007  (  5.228475349e-007 )
+TOLERANCE   : MaxTol   = 7.482128955e-07  (          1e-05 )  AvgTol   =  1.53886857e-07  (  5.228475349e-07 )
 LABELS      : N0Labels = 15  ( 15 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 15  ( 15 )   NameLabels = 15  ( 15 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

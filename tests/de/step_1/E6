@@ -1,9 +1,8 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-
 set filename trj4_s1-ai-214.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 54 )  Warnings = 0  ( 0 )  Summary  = 0  ( 54 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 51 )  Summary  = 2  ( 51 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 10  ( 10 )  Face     = 108  ( 108 )   Summary  = 603  ( 603 )
