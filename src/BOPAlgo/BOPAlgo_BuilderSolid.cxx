@@ -20,6 +20,7 @@
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_UBTreeFiller.hxx>
+#include <NCollection_IncAllocator.hxx>
 //
 #include <gp_Pnt2d.hxx>
 #include <gp_Pln.hxx>
@@ -72,6 +73,7 @@
 #include <IntTools_Context.hxx>
 //
 #include <BOPAlgo_ShellSplitter.hxx>
+
 
 static
   Standard_Boolean IsGrowthShell(const TopoDS_Shape& ,
@@ -450,10 +452,13 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   BOPCol_ListIteratorOfListOfShape aIt;
   TopoDS_Iterator aItS;
   BOPCol_MapIteratorOfMapOfOrientedShape aItM;
-  BOPAlgo_ShellSplitter aSSp;
+  Handle(NCollection_BaseAllocator) aAlr;
   // 
   myErrorStatus=0;
   myLoops.Clear();
+  //
+  aAlr=new NCollection_IncAllocator();
+  BOPAlgo_ShellSplitter aSSp(aAlr);
   //
   // 1. Shells Usual
   aIt.Initialize (myShapes);
@@ -535,17 +540,18 @@ void BOPAlgo_BuilderSolid::PerformLoops()
     }
     //
     // make a new shell
+    TopExp_Explorer aExp;
     TopoDS_Shell aShell;
     aBB.MakeShell(aShell);
     aBB.Add(aShell, aFF);
     //
-    TopoDS_Iterator aItAddedF (aShell);
-    for (; aItAddedF.More(); aItAddedF.Next()) {
-      const TopoDS_Face& aF = (*(TopoDS_Face*)(&aItAddedF.Value()));
+    aItS.Initialize(aShell);
+    for (; aItS.More(); aItS.Next()) {
+      const TopoDS_Face& aF = (*(TopoDS_Face*)(&aItS.Value()));
       //
-      TopExp_Explorer aEdgeExp(aF, TopAbs_EDGE);
-      for (; aEdgeExp.More(); aEdgeExp.Next()) {
-        const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aEdgeExp.Current()));
+      aExp.Init(aF, TopAbs_EDGE);
+      for (; aExp.More(); aExp.Next()) {
+        const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aExp.Current()));
         const BOPCol_ListOfShape& aLF=aEFMap.FindFromKey(aE);
         aIt.Initialize(aLF);
         for (; aIt.More(); aIt.Next()) { 

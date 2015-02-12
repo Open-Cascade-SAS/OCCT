@@ -14,7 +14,6 @@
 
 // File: BOPAlgo_ShellSplitter.cxx
 // Created: Thu Jan 16 08:33:50 2014
-// <pkv@PETREX>
 
 #include <BOPAlgo_ShellSplitter.ixx>
 //
@@ -45,6 +44,12 @@ static
 //
 static
   void RefineShell(TopoDS_Shell& theShell);
+//
+static
+  void MapEdgesAndFaces
+  (const TopoDS_Shape& aF,
+   BOPCol_IndexedDataMapOfShapeListOfShape& aMEF,
+   const Handle(NCollection_BaseAllocator)& theAllocator);
 
 //=======================================================================
 //class    : BOPAlgo_CBK
@@ -165,7 +170,7 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
   Standard_Boolean bRegular;
   Standard_Integer i, j, aNbE, aNbES, aNbEP, k, aNbCB;
   TopoDS_Shape aFR;
-  TopExp_Explorer aExpF;
+  TopoDS_Iterator aItF, aItW;
   BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, myAllocator);
   BOPCol_IndexedMapOfShape aMEP(100, myAllocator);
   BOPCol_IndexedMapOfShape aMFC(100, myAllocator);
@@ -185,10 +190,7 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
     const TopoDS_Shape& aSE=aIt.Value();
     if (!aMEP.Contains(aSE)) {
       aMEP.Add(aSE);
-      BOPTools::MapShapesAndAncestors(aSE, 
-                                      TopAbs_EDGE, 
-                                      TopAbs_FACE, 
-                                      aMEF);
+      MapEdgesAndFaces(aSE, aMEF, myAllocator);
     }
     else {
       aMER.Add(aSE);
@@ -226,12 +228,26 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
         for (; aIt.More(); aIt.Next()) {
           const TopoDS_Shape& aF=aIt.Value();
           if (aMFC.Add(aF)) {
-            aExpF.Init(aF, TopAbs_EDGE);
-            for (; aExpF.More(); aExpF.Next()) {
-              const TopoDS_Shape& aEF=aExpF.Current();
-              if (aMES.Add(aEF)) {
-                aMEAdd.Add(aEF);
+            aItF.Initialize(aF);
+            while (aItF.More()) {
+              const TopoDS_Shape& aW=aItF.Value();  
+              if (aW.ShapeType()!=TopAbs_WIRE) {
+                aItF.Next();
+                continue;
               }
+              //
+              aItW.Initialize(aW);
+              while (aItW.More()) {
+                const TopoDS_Shape& aEF=aItW.Value();  
+                //
+                if (aMES.Add(aEF)) {
+                  aMEAdd.Add(aEF);
+                }
+                //
+                aItW.Next();
+              }
+              //
+              aItF.Next();
             }
           }
         }
@@ -274,10 +290,7 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
       }
       //
       if (bRegular) {
-        BOPTools::MapShapesAndAncestors(aFR,
-                                        TopAbs_EDGE, 
-                                        TopAbs_FACE, 
-                                        aMEFR);
+        MapEdgesAndFaces(aFR, aMEFR, myAllocator);
       }
     }
     //
@@ -555,7 +568,6 @@ void RefineShell(TopoDS_Shell& theShell)
     aBB.Remove(theShell, aFB);
   }
 }
-
 //=======================================================================
 //function : MakeShells
 //purpose  : 
@@ -621,5 +633,45 @@ void MakeShell(const BOPCol_ListOfShape& aLS,
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aF=aIt.Value();
     aBB.Add(aShell, aF);
+  }
+}
+//=======================================================================
+// function: MapEdgesAndFaces
+// purpose: 
+//=======================================================================
+void MapEdgesAndFaces
+  (const TopoDS_Shape& aF,
+   BOPCol_IndexedDataMapOfShapeListOfShape& aMEF,
+   const Handle(NCollection_BaseAllocator)& theAllocator)
+{
+  TopoDS_Iterator aItF, aItW;
+  //
+  aItF.Initialize(aF);
+  while (aItF.More()) {
+    const TopoDS_Shape& aW=aItF.Value();  
+    if (aW.ShapeType()!=TopAbs_WIRE) {
+      aItF.Next();
+      continue;
+    }
+    //
+    aItW.Initialize(aW);
+    while (aItW.More()) {
+      const TopoDS_Shape& aE=aItW.Value();  
+      //
+      if (aMEF.Contains(aE)) {
+        BOPCol_ListOfShape& aLF=aMEF.ChangeFromKey(aE);
+        aLF.Append(aF);
+      }
+      else {
+        BOPCol_ListOfShape aLS(theAllocator);
+        //
+        aLS.Append(aF);
+        aMEF.Add(aE, aLS);
+      }
+      //
+      aItW.Next();
+    }
+    //
+    aItF.Next();
   }
 }

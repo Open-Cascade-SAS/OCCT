@@ -20,8 +20,8 @@
 //function : MapShapes
 //purpose  : 
 //=======================================================================
-  void BOPTools::MapShapes(const TopoDS_Shape& S,
-                           BOPCol_MapOfShape& M)
+void BOPTools::MapShapes(const TopoDS_Shape& S,
+                         BOPCol_MapOfShape& M)
 {
   M.Add(S);
   TopoDS_Iterator It(S);
@@ -36,8 +36,8 @@
 //function : MapShapes
 //purpose  : 
 //=======================================================================
-  void BOPTools::MapShapes(const TopoDS_Shape& S,
-                           BOPCol_IndexedMapOfShape& M)
+void BOPTools::MapShapes(const TopoDS_Shape& S,
+                         BOPCol_IndexedMapOfShape& M)
 {
   M.Add(S);
   TopoDS_Iterator It(S);
@@ -51,9 +51,9 @@
 //function : MapShapes
 //purpose  : 
 //=======================================================================
-  void BOPTools::MapShapes(const TopoDS_Shape& S,
-                           const TopAbs_ShapeEnum T,
-                           BOPCol_IndexedMapOfShape& M)
+void BOPTools::MapShapes(const TopoDS_Shape& S,
+                         const TopAbs_ShapeEnum T,
+                         BOPCol_IndexedMapOfShape& M)
 {
   TopExp_Explorer Ex(S,T);
   while (Ex.More()) {
@@ -61,40 +61,46 @@
     Ex.Next();
   }
 }
-
-
-
 //=======================================================================
 //function : MapShapesAndAncestors
 //purpose  : 
 //=======================================================================
-  void BOPTools::MapShapesAndAncestors(const TopoDS_Shape& S, 
-                                       const TopAbs_ShapeEnum TS, 
-                                       const TopAbs_ShapeEnum TA, 
-                                       BOPCol_IndexedDataMapOfShapeListOfShape& M)
+void BOPTools::MapShapesAndAncestors
+  (const TopoDS_Shape& S, 
+   const TopAbs_ShapeEnum TS, 
+   const TopAbs_ShapeEnum TA, 
+   BOPCol_IndexedDataMapOfShapeListOfShape& aMEF)
 {
-  BOPCol_ListOfShape empty;
-  
+  TopExp_Explorer aExS, aExA;
+  //
   // visit ancestors
-  TopExp_Explorer exa(S,TA);
-  while (exa.More()) {
+  aExA.Init(S, TA);
+  while (aExA.More()) {
     // visit shapes
-    const TopoDS_Shape& anc = exa.Current();
-    TopExp_Explorer exs(anc,TS);
-    while (exs.More()) {
-      Standard_Integer index = M.FindIndex(exs.Current());
-      if (index == 0) index = M.Add(exs.Current(),empty);
-      M(index).Append(anc);
-      exs.Next();
+    const TopoDS_Shape& aF = aExA.Current();
+    //
+    aExS.Init(aF, TS);
+    while (aExS.More()) {
+      const TopoDS_Shape& aE= aExS.Current();
+      if (aMEF.Contains(aE)) {
+        aMEF.ChangeFromKey(aE).Append(aF);
+      }
+      else {
+        BOPCol_ListOfShape aLS;
+        aLS.Append(aF);
+        aMEF.Add(aE, aLS);
+      }
+      aExS.Next();
     }
-    exa.Next();
+    aExA.Next();
   }
-  
+  //
   // visit shapes not under ancestors
-  TopExp_Explorer ex(S,TS,TA);
-  while (ex.More()) {
-    Standard_Integer index = M.FindIndex(ex.Current());
-    if (index == 0) index = M.Add(ex.Current(),empty);
-    ex.Next();
+  aExS.Init(S, TS, TA);
+  while (aExS.More()) {
+    const TopoDS_Shape& aE=aExS.Current();
+    BOPCol_ListOfShape aLS;
+    aMEF.Add(aE, aLS);
+    aExS.Next();
   }
 }
