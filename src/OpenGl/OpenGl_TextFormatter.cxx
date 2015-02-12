@@ -181,19 +181,19 @@ void OpenGl_TextFormatter::Result (NCollection_Vector<GLuint>& theTextures,
 
     // apply floor on position to avoid blurring issues
     // due to cross-pixel coordinates
-    aVerts.Append (floor(aRect.BottomLeft (aVec)));
-    aVerts.Append (floor(aRect.TopLeft    (aVec)));
     aVerts.Append (floor(aRect.TopRight   (aVec)));
-    aTCrds.Append (aRectUV.BottomLeft (aVec));
-    aTCrds.Append (aRectUV.TopLeft    (aVec));
+    aVerts.Append (floor(aRect.TopLeft    (aVec)));
+    aVerts.Append (floor(aRect.BottomLeft (aVec)));
     aTCrds.Append (aRectUV.TopRight   (aVec));
+    aTCrds.Append (aRectUV.TopLeft    (aVec));
+    aTCrds.Append (aRectUV.BottomLeft (aVec));
 
-    aVerts.Append (floor(aRect.BottomLeft  (aVec)));
-    aVerts.Append (floor(aRect.TopRight    (aVec)));
     aVerts.Append (floor(aRect.BottomRight (aVec)));
-    aTCrds.Append (aRectUV.BottomLeft  (aVec));
-    aTCrds.Append (aRectUV.TopRight    (aVec));
+    aVerts.Append (floor(aRect.TopRight    (aVec)));
+    aVerts.Append (floor(aRect.BottomLeft  (aVec)));
     aTCrds.Append (aRectUV.BottomRight (aVec));
+    aTCrds.Append (aRectUV.TopRight    (aVec));
+    aTCrds.Append (aRectUV.BottomLeft  (aVec));
   }
 }
 

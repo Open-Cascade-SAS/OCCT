@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC25732"
+puts "========"
+puts ""
+#########################################################################################
+# Visualization, TKOpenGl - back face culling should not affect textured font rendering
+#########################################################################################
+
+box b 1 2 3
+explode b F
+
+vinit
+vsetdispmode 1
+
+vdisplay b_1 b_2
+vfit
+
+vdrawtext "SAMPLE TEXT" 1 0 3 255 0 0 0 0 0 0 30 1
+
+set bug_info [vreadpixel 260 137 rgb name]
+if {$bug_info != "RED"} {
+  puts "ERROR: OCC25732 is reproduced. Text is missed."
+}
+
+set only_screen 1
