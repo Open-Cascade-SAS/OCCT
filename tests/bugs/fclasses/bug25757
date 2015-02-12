@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC25757"
+puts "========"
+puts ""
+##############################################
+# distmini returns wrong solution for ellipse/vertex
+##############################################
+
+restore [locate_data_file bug25757_ellipse.brep] ellipse
+
+vertex vertex1 7.32050807568877 3.999999999999999 10.0
+vertex vertex2 7.32050807568877 3.99999999999999 10.0
+
+distmini dv1 vertex1 ellipse
+set dist1 [dval dv1_val]
+puts "vertex1 distance = ${dist1}"
+
+distmini dv2 vertex2 ellipse
+set dist2 [dval dv2_val]
+puts "vertex2 distance = ${dist2}"
+
+set tol_abs_dist 1.0e-12
+set tol_rel_dist 1.0e-2
+
+set expected_dist1 0.0
+set expected_dist2 0.0
+
+checkreal "Distance 1" ${dist1} ${expected_dist1} ${tol_abs_dist} ${tol_rel_dist}
+checkreal "Distance 2" ${dist2} ${expected_dist2} ${tol_abs_dist} ${tol_rel_dist}
