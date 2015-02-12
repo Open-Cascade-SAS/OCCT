@@ -187,7 +187,7 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   // - gradient fill type is not Aspect_GFM_NONE and
   // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
   if (myBgGradientArray->IsDefined()
-    && (!myBgTextureArray->IsDefined()
+    && (!myTextureParams->DoTextureMap()
       || myBgTextureArray->TextureFillMethod() == Aspect_FM_CENTERED
       || myBgTextureArray->TextureFillMethod() == Aspect_FM_NONE))
   {

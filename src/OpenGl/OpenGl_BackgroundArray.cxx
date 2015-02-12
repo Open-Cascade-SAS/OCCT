@@ -34,7 +34,7 @@ OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground
   Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
   myAttribs = new Graphic3d_Buffer (anAlloc);
 
-  myDrawMode = Graphic3d_TOPA_TRIANGLESTRIPS;
+  myDrawMode = GL_TRIANGLE_STRIP;
 
   myGradientParams.color1 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.color2 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
@@ -196,9 +196,9 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
 
   OpenGl_Vec2 aVertices[4] =
   {
-    OpenGl_Vec2(-1.0f, -1.0f),
     OpenGl_Vec2( 1.0f, -1.0f),
     OpenGl_Vec2( 1.0f,  1.0f),
+    OpenGl_Vec2(-1.0f, -1.0f),
     OpenGl_Vec2(-1.0f,  1.0f)
   };
 
@@ -210,59 +210,56 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
   {
     case Aspect_GFM_HOR:
     {
-      aCorners[0] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
       aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
       aCorners[3] = myGradientParams.color1.xyz().ChangeData();
       break;
     }
     case Aspect_GFM_VER:
     {
       aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
       aCorners[3] = myGradientParams.color1.xyz().ChangeData();
       break;
     }
     case Aspect_GFM_DIAG1:
     {
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
       aCorners[3] = myGradientParams.color1.xyz().ChangeData();
-      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[1][0] + aCorners[3][0]);
-      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[1][1] + aCorners[3][1]);
-      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[1][2] + aCorners[3][2]);
-      aCorners[0] = aDiagCorner1;
+      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[0][0] + aCorners[3][0]);
+      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[0][1] + aCorners[3][1]);
+      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[0][2] + aCorners[3][2]);
+      aCorners[1] = aDiagCorner1;
       aCorners[2] = aDiagCorner2;
       break;
     }
     case Aspect_GFM_DIAG2:
     {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
-      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[0][0] + aCorners[2][0]);
-      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[0][1] + aCorners[2][1]);
-      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[0][2] + aCorners[2][2]);
-      aCorners[1] = aDiagCorner1;
+      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
+      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[1][0] + aCorners[2][0]);
+      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[1][1] + aCorners[2][1]);
+      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[1][2] + aCorners[2][2]);
+      aCorners[0] = aDiagCorner1;
       aCorners[3] = aDiagCorner2;
       break;
     }
     case Aspect_GFM_CORNER1:
     {
+      aVertices[0] = OpenGl_Vec2( 1.0f,  1.0f);
+      aVertices[1] = OpenGl_Vec2(-1.0f,  1.0f);
+      aVertices[2] = OpenGl_Vec2( 1.0f, -1.0f);
+      aVertices[3] = OpenGl_Vec2(-1.0f, -1.0f);
+
       aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[1] = myGradientParams.color1.xyz().ChangeData();
       aCorners[2] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[3] = myGradientParams.color1.xyz().ChangeData();
-      break;
-    }
-    case Aspect_GFM_CORNER2:
-    {
-      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
       aCorners[3] = myGradientParams.color2.xyz().ChangeData();
       break;
     }
-    case Aspect_GFM_CORNER3:
+    case Aspect_GFM_CORNER2:
     {
       aCorners[0] = myGradientParams.color2.xyz().ChangeData();
       aCorners[1] = myGradientParams.color1.xyz().ChangeData();
@@ -270,11 +267,24 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
       aCorners[3] = myGradientParams.color2.xyz().ChangeData();
       break;
     }
+    case Aspect_GFM_CORNER3:
+    {
+      aVertices[0] = OpenGl_Vec2( 1.0f,  1.0f);
+      aVertices[1] = OpenGl_Vec2(-1.0f,  1.0f);
+      aVertices[2] = OpenGl_Vec2( 1.0f, -1.0f);
+      aVertices[3] = OpenGl_Vec2(-1.0f, -1.0f);
+
+      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[1] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[3] = myGradientParams.color2.xyz().ChangeData();
+      break;
+    }
     case Aspect_GFM_CORNER4:
     {
-      aCorners[0] = myGradientParams.color1.xyz().ChangeData();
+      aCorners[0] = myGradientParams.color2.xyz().ChangeData();
       aCorners[1] = myGradientParams.color2.xyz().ChangeData();
-      aCorners[2] = myGradientParams.color2.xyz().ChangeData();
+      aCorners[2] = myGradientParams.color1.xyz().ChangeData();
       aCorners[3] = myGradientParams.color2.xyz().ChangeData();
       break;
     }
@@ -284,30 +294,13 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray()
     }
   }
 
-  if (myGradientParams.type != Aspect_GFM_CORNER1
-   && myGradientParams.type != Aspect_GFM_CORNER3)
+  for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
   {
-    for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
-    {
-      OpenGl_Vec2* aVertData  = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (anIt));
-      *aVertData = aVertices[anIt];
+    OpenGl_Vec2* aVertData  = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (anIt));
+    *aVertData = aVertices[anIt];
 
-      OpenGl_Vec3* aColorData = reinterpret_cast<OpenGl_Vec3* >(myAttribs->changeValue (anIt) + myAttribs->AttributeOffset (1));
-      *aColorData = OpenGl_Vec3(aCorners[anIt][0], aCorners[anIt][1], aCorners[anIt][2]);
-    }
-  }
-  else //if (myGradientParams.type == Aspect_GFM_CORNER1 || myGradientParams.type == Aspect_GFM_CORNER3)
-  {
-    for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
-    {
-      // Indices should be in sequence 1, 2, 3, 0
-      Standard_Integer anIndex = (anIt + 1) % 4;
-      OpenGl_Vec2* aVertData  = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (anIt));
-      *aVertData = aVertices[anIndex];
-
-      OpenGl_Vec3* aColorData = reinterpret_cast<OpenGl_Vec3* >(myAttribs->changeValue (anIt) + myAttribs->AttributeOffset (1));
-      *aColorData = OpenGl_Vec3(aCorners[anIndex][0], aCorners[anIndex][1], aCorners[anIndex][2]);
-    }
+    OpenGl_Vec3* aColorData = reinterpret_cast<OpenGl_Vec3* >(myAttribs->changeValue (anIt) + myAttribs->AttributeOffset (1));
+    *aColorData = OpenGl_Vec3(aCorners[anIt][0], aCorners[anIt][1], aCorners[anIt][2]);
   }
 
   return Standard_True;
@@ -362,17 +355,18 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
   // is simply ignored, and negative multiplier is here for convenience only
   // and does not result e.g. in texture mirroring
 
-  OpenGl_Vec2* aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (0));
-  aData[0] = OpenGl_Vec2 (-anOffsetX, -aCoef * anOffsetY);
-  aData[1] = OpenGl_Vec2 (0.0f, 0.0f);
 
-  aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (1));
+  OpenGl_Vec2* aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (0));
   aData[0] = OpenGl_Vec2 (anOffsetX, -aCoef * anOffsetY);
   aData[1] = OpenGl_Vec2 (aTexRangeX, 0.0f);
 
-  aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (2));
+  aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (1));
   aData[0] = OpenGl_Vec2 (anOffsetX,  aCoef * anOffsetY);
   aData[1] = OpenGl_Vec2 (aTexRangeX, aCoef * aTexRangeY);
+
+  aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (2));
+  aData[0] = OpenGl_Vec2 (-anOffsetX, -aCoef * anOffsetY);
+  aData[1] = OpenGl_Vec2 (0.0f, 0.0f);
 
   aData = reinterpret_cast<OpenGl_Vec2* >(myAttribs->changeValue (3));
   aData[0] = OpenGl_Vec2 (-anOffsetX, aCoef * anOffsetY);
