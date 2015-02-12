@@ -361,9 +361,9 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       // Check whether two objects have intersection points
       IntAna_Quadric aCylQuad(S);
       IntAna_IntConicQuad aCircCylInter(C, aCylQuad);
-      Standard_Integer aNbInter = aCircCylInter.NbPoints();
-      if (!aCircCylInter.IsDone())
-        aNbInter = 0;
+      Standard_Integer aNbInter = 0;
+      if (aCircCylInter.IsDone())
+        aNbInter = aCircCylInter.NbPoints();
 
       // Compute the extremas.
       myNbExt  =     2*aNbExt + aNbInter;
