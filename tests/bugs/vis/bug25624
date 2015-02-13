@@ -27,3 +27,5 @@ checkcolor 170 10 0.8 0.8 0.8
 # check if the farthest box is displayed
 # without any highlighting
 checkcolor 210 184 1 1 0
+
+set only_screen 1

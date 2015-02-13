@@ -6,8 +6,8 @@ puts ""
 # Wrong result of CUT operation
 ######################################################
 
-restore [locate_data_file pl1.brep] pl
-restore [locate_data_file selected_holes.brep] hl
+restore [locate_data_file bug25002_pl1.brep] pl
+restore [locate_data_file bug25002_selected_holes.brep] hl
 
 bcut result pl hl
 
