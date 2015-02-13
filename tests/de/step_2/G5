@@ -3,7 +3,7 @@ set filename Inventor_iPartExample.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
+TPSTAT      : Faulties = 0  ( 16 )  Warnings = 0  ( 0 )  Summary  = 0  ( 16 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 517  ( 517 )   Summary  = 3521  ( 3521 )
 STATSHAPE   : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 517  ( 517 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1464  ( 1464 )

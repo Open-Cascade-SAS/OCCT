@@ -89,6 +89,7 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 #include <ElCLib.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 // ============================================================================
 // Method  : RemoveSinglePCurve
@@ -319,10 +320,24 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 //    }
     Handle(Geom_Curve) C1;
     if (!C.IsNull()) {
-      C1 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C));
-      if (C1.IsNull()) {
-        if (StepToGeom_MakeCurve::Convert(C,C1))
-          TP->BindTransient (C,C1);
+      try
+      {
+        OCC_CATCH_SIGNALS
+        C1 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C));
+        if (C1.IsNull()) {
+          if (StepToGeom_MakeCurve::Convert(C,C1))
+            TP->BindTransient (C,C1);
+          else
+            TP->AddWarning(C,"Could not convert a curve. Curve definition is incorrect");
+        }
+      }
+      catch (Standard_Failure)
+      {
+        TP->AddFail(C,"Exeption was raised. Curve geometry definition is incorrect");
+#ifdef OCCT_DEBUG
+  cout << "Warning: StepToTopoDS_TranslateEdgeLoop: Exception: ";
+  Standard_Failure::Caught()->Print(cout); cout << endl;
+#endif
       }
     }
 
