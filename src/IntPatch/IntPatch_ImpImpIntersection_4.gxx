@@ -1019,7 +1019,10 @@ static Standard_Boolean SearchOnVBounds(const SearchBoundType theSBType,
 
 //=======================================================================
 //function : InscribePoint
-//purpose  : If theFlForce==TRUE theUGiven will be adjasted forceful.
+//purpose  : If theFlForce==TRUE theUGiven will be changed forcefully
+//            even if theUGiven is already inscibed in the boundary
+//            (if it is possible; i.e. if new theUGiven is inscribed
+//            in the boundary, too).
 //=======================================================================
 static Standard_Boolean InscribePoint(const Standard_Real theUfTarget,
                                       const Standard_Real theUlTarget,
@@ -1960,38 +1963,70 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
           if(aNbPntsWL == 0)
           {//the line has not contained any points yet
-            if(((aUSurf2l - aUSurf2f) >= aPeriod) && 
+            if(((aUSurf2f + aPeriod - aUSurf2l) <= 2.0*theTol2D) && 
                 ((Abs(aU2[i] - aUSurf2f) < theTol2D) ||
                   (Abs(aU2[i]-aUSurf2l) < theTol2D)))
             {
-              const Standard_Real anU1Temp = anU1 + aStepMin;
-              Standard_Real anArgTemp = anEquationCoeffs.mB * 
-                                        cos(anU1Temp - anEquationCoeffs.mFI1) +
-                                        anEquationCoeffs.mC;
+              //In this case aU2[i] can have two values: current aU2[i] or
+              //aU2[i] +/- aPeriod. It is necessary to choose correct value.
 
-              if(aNulValue > 1.0 - anArgTemp)
-                anArgTemp = 1.0;
+              // U2(U1) = FI2 + anArccosFactor*acos(B*cos(U1 - FI1) + C);
+              //Accordingly,
+              //Func. U2(X1) = FI2 + X1;
+              //Func. X1(X2) = anArccosFactor*X2;
+              //Func. X2(X3) = acos(X3);
+              //Func. X3(X4) = B*X4 + C;
+              //Func. X4(U1) = cos(U1 - FI1).
+              //
+              //Consequently,
+              //U2(X1) is always increasing.
+              //X1(X2) is increasing if anArccosFactor > 0.0 and
+              //is decreasing otherwise.
+              //X2(X3) is always decreasing.
+              //Therefore, U2(X3) is decreasing if anArccosFactor > 0.0 and
+              //is increasing otherwise.
+              //X3(X4) is increasing if B > 0 and is decreasing otherwise.
+              //X4(U1) is increasing if U1 - FI1 in [PI, 2*PI) and
+              //is decreasing U1 - FI1 in [0, PI) or if (U1 - FI1 == 2PI).
+              //After that, we can predict behaviour of U2(U1) function:
+              //if it is increasing or decreasing.
+              Standard_Real aU1Temp = anU1 - anEquationCoeffs.mFI1;
+              InscribePoint(0, aPeriod, aU1Temp, 0.0, aPeriod, Standard_False);
+              
+              Standard_Boolean isIncreasing = Standard_True;
 
-              if(anArgTemp + 1.0 < aNulValue)
-                anArgTemp = -1.0;
-
-              Standard_Real aU2Temp = anEquationCoeffs.mFI2 +
-                                      anArccosFactor[i]*acos(anArgTemp);
-
-              InscribePoint(aUSurf2f, aUSurf2l, aU2Temp, theTol2D, aPeriod, Standard_False);
-
-              if(2.0*Abs(aU2Temp - aU2[i]) > aPeriod)
+              if(((M_PI - aU1Temp) < RealSmall()) && (aU1Temp < aPeriod))
               {
-                if(aU2Temp > aU2[i])
-                  aU2[i] += aPeriod;
-                else
-                  aU2[i] -= aPeriod;
+                isIncreasing = Standard_False;
+              }
+
+              if(anEquationCoeffs.mB < 0.0)
+              {
+                isIncreasing = !isIncreasing;
+              }
+
+              if(anArccosFactor[i] < 0.0)
+              {
+                isIncreasing = !isIncreasing;
+              }
+              
+              //If U2(U1) is increasing and U2 is considered to be equal aUSurf2l
+              //then after the next step (when U1 will be increased) U2 will be
+              //increased too. And we will go out of surface boundary.
+              //Therefore, If U2(U1) is increasing then U2 must be equal aUSurf2f.
+              //Analogically, if U2(U1) is decreasing.
+              if(isIncreasing)
+              {
+                aU2[i] = aUSurf2f;
+              }
+              else
+              {
+                aU2[i] = aUSurf2l;
               }
             }
           }
-
-          if(aNbPntsWL > 0)
-          {
+          else
+          {//aNbPntsWL > 0
             if(((aUSurf2l - aUSurf2f) >= aPeriod) && 
                 ((Abs(aU2[i] - aUSurf2f) < theTol2D) ||
                   (Abs(aU2[i]-aUSurf2l) < theTol2D)))
@@ -2012,8 +2047,10 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
             }
           }
 
-          if(aWLFindStatus[i] == WLFStatus_Broken)
-          {
+          if( (aWLFindStatus[i] == WLFStatus_Broken) ||
+              (aWLFindStatus[i] == WLFStatus_Absent))
+          {//Begin and end of WLine must be on boundary point
+           //or on seam-edge strictly (if it is possible).
             if(Abs(aU2[i]) <= theTol2D)
               aU2[i] = 0.0;
             else if(Abs(aU2[i] - aPeriod) <= theTol2D)

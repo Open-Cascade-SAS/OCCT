@@ -385,7 +385,9 @@ void BRepLib_CheckCurveOnSurface::Compute
     aValue = theMaxDist;
     aParam = theMaxPar;
     aBP = theMaxPar - aMinDelta;
-    MinComputing(aFunc, aFirst, aBP, anEpsilonRange, theMaxDist, theMaxPar);
+
+    if((aBP - aFirst) > Precision::PConfusion())
+      MinComputing(aFunc, aFirst, aBP, anEpsilonRange, theMaxDist, theMaxPar);
     //
     if(theMaxDist < aValue) {
       aLast = aBP;
@@ -399,7 +401,9 @@ void BRepLib_CheckCurveOnSurface::Compute
     //
     if(!aStatus) {
       aBP = theMaxPar + aMinDelta;
-      MinComputing(aFunc, aBP, aLast, 1.0e-3, theMaxDist, theMaxPar);
+
+      if((aLast - aBP) > Precision::PConfusion())
+        MinComputing(aFunc, aBP, aLast, 1.0e-3, theMaxDist, theMaxPar);
       //
       if(theMaxDist < aValue) {
         aFirst = aBP;

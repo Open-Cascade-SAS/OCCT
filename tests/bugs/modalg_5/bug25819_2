@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC25819"
+puts "============"
+puts ""
+######################################################
+# Bad result of BOP cut on valid shapes
+######################################################
+
+restore [locate_data_file bug25819_2_BodyA.brep] a
+restore [locate_data_file bug25819_2_BodyB.brep] b
+
+bcut result a b
+
+set square 268575
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 8
+ EDGE      : 12
+ WIRE      : 6
+ FACE      : 5
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 34
+"
+checknbshapes result ${nbshapes_expected} 1 "Result of BOP cut"
+
+set 2dviewer 1
