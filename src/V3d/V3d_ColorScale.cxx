@@ -31,9 +31,9 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <Font_NameOfFont.hxx>
 
-V3d_ColorScale::V3d_ColorScale( const Handle(V3d_LayerMgr)& aMgr )
+V3d_ColorScale::V3d_ColorScale (const Handle(V3d_LayerMgr)& theMgr)
 : Aspect_ColorScale(),
-myLayerMgr( aMgr.operator->() ),
+myLayerMgr( theMgr.operator->() ),
 myDisplay( Standard_False )
 {
 }
@@ -60,94 +60,94 @@ void V3d_ColorScale::UpdateColorScale()
   myLayerMgr->Compute();
 }
 
-void V3d_ColorScale::PaintRect( const Standard_Integer X, const Standard_Integer Y,
-                                const Standard_Integer W, const Standard_Integer H,
-                                const Quantity_Color& aColor, const Standard_Boolean aFilled )
+void V3d_ColorScale::PaintRect (const Standard_Integer theX, const Standard_Integer theY,
+                                const Standard_Integer theWidth, const Standard_Integer theHeight,
+                                const Quantity_Color& theColor, const Standard_Boolean theFilled)
 {
   const Handle(Visual3d_Layer) &theLayer = myLayerMgr->Overlay();
-  if ( theLayer.IsNull() )
+  if (theLayer.IsNull())
     return;
 
-  theLayer->SetColor( aColor );
-  if ( aFilled )
-    theLayer->DrawRectangle( X, Y, W, H );
+  theLayer->SetColor (theColor);
+  if (theFilled)
+    theLayer->DrawRectangle (theX, theY, theWidth, theHeight);
   else {
     theLayer->SetLineAttributes( Aspect_TOL_SOLID, 0.5 );
     theLayer->BeginPolyline();
-    theLayer->AddVertex( X, Y, Standard_False );
-    theLayer->AddVertex( X, Y + H, Standard_True );
-    theLayer->AddVertex( X + W, Y + H, Standard_True );
-    theLayer->AddVertex( X + W, Y, Standard_True );
-    theLayer->AddVertex( X, Y, Standard_True );
+    theLayer->AddVertex (theX, theY, Standard_False);
+    theLayer->AddVertex (theX, theY + theHeight, Standard_True);
+    theLayer->AddVertex (theX + theWidth, theY + theHeight, Standard_True);
+    theLayer->AddVertex (theX + theWidth, theY, Standard_True);
+    theLayer->AddVertex (theX, theY, Standard_True);
     theLayer->ClosePrimitive();
   }
 }
 
-void V3d_ColorScale::PaintText( const TCollection_ExtendedString& aText,
-                                const Standard_Integer X, const Standard_Integer Y,
-                                const Quantity_Color& aColor )
+void V3d_ColorScale::PaintText (const TCollection_ExtendedString& theText,
+                                const Standard_Integer theX, const Standard_Integer theY,
+                                const Quantity_Color& theColor)
 {
   const Handle(Visual3d_Layer) &theLayer = myLayerMgr->Overlay();
-  if ( theLayer.IsNull() )
+  if (theLayer.IsNull())
     return;
 
-  theLayer->SetColor( aColor );
-  theLayer->SetTextAttributes( Font_NOF_ASCII_MONO, Aspect_TODT_NORMAL, aColor );
-  TCollection_AsciiString theText( aText.ToExtString(), '?' );
+  theLayer->SetColor (theColor);
+  theLayer->SetTextAttributes (Font_NOF_ASCII_MONO, Aspect_TODT_NORMAL, theColor);
+  TCollection_AsciiString aText (theText.ToExtString(), '?');
   Standard_Integer aTextH = GetTextHeight();
   Standard_Integer aWidth, anAscent, aDescent;
-  TextSize(aText, aTextH, aWidth, anAscent, aDescent);
-  theLayer->DrawText( theText.ToCString(), X, Y + anAscent, aTextH);
+  TextSize (theText, aTextH, aWidth, anAscent, aDescent);
+  theLayer->DrawText (aText.ToCString(), theX, theY + anAscent, aTextH);
 }
 
-Standard_Integer V3d_ColorScale::TextWidth( const TCollection_ExtendedString& aText ) const
+Standard_Integer V3d_ColorScale::TextWidth (const TCollection_ExtendedString& theText) const
 {
   Standard_Integer aWidth, anAscent, aDescent;
-  TextSize(aText, GetTextHeight(), aWidth, anAscent, aDescent);
+  TextSize (theText, GetTextHeight(), aWidth, anAscent, aDescent);
   return aWidth;
 }
 
-Standard_Integer V3d_ColorScale::TextHeight( const TCollection_ExtendedString& aText ) const
+Standard_Integer V3d_ColorScale::TextHeight (const TCollection_ExtendedString& theText) const
 {
   Standard_Integer aWidth, anAscent, aDescent;
-  TextSize(aText, GetTextHeight(), aWidth, anAscent, aDescent);
+  TextSize (theText, GetTextHeight(), aWidth, anAscent, aDescent);
   return anAscent+aDescent;
 }
 
-void V3d_ColorScale::TextSize (const TCollection_ExtendedString& AText,  const Standard_Integer AHeight, Standard_Integer& AWidth, Standard_Integer& AnAscent, Standard_Integer& ADescent) const 
+void V3d_ColorScale::TextSize (const TCollection_ExtendedString& theText,  const Standard_Integer theHeight, Standard_Integer& theWidth, Standard_Integer& theAscent, Standard_Integer& theDescent) const
 {
   const Handle(Visual3d_Layer) &theLayer = myLayerMgr->Overlay();
-  if ( !theLayer.IsNull() ) {
+  if (!theLayer.IsNull()) {
     Standard_Real aWidth, anAscent, aDescent;
-    TCollection_AsciiString theText( AText.ToExtString(), '?' );
-    theLayer->TextSize(theText.ToCString(),AHeight,aWidth,anAscent,aDescent);
-    AWidth = (Standard_Integer)aWidth;
-    AnAscent = (Standard_Integer)anAscent;
-    ADescent = (Standard_Integer)aDescent;
+    TCollection_AsciiString aText (theText.ToExtString(), '?');
+    theLayer->TextSize (aText.ToCString(),theHeight,aWidth,anAscent,aDescent);
+    theWidth = (Standard_Integer)aWidth;
+    theAscent = (Standard_Integer)anAscent;
+    theDescent = (Standard_Integer)aDescent;
   } 
   else {
-    AWidth=AnAscent=ADescent=0;
+    theWidth=theAscent=theDescent=0;
   }
 }
 
 void V3d_ColorScale::DrawScale ()
 {
   const Handle(V3d_View) &theView = myLayerMgr->View();
-  if ( theView.IsNull() )
+  if (theView.IsNull())
     return;
 
   const Handle(Aspect_Window) &theWin = theView->Window();
-  if ( theWin.IsNull() )
+  if (theWin.IsNull())
     return;
 
   Standard_Integer WinWidth( 0 ), WinHeight( 0 );
-  theWin->Size( WinWidth, WinHeight );
+  theWin->Size (WinWidth, WinHeight);
 
-  const Standard_Integer X = RealToInt(GetXPosition() * WinWidth);
-  const Standard_Integer Y = RealToInt(GetYPosition() * WinHeight);
+  const Standard_Integer X = RealToInt (GetXPosition() * WinWidth);
+  const Standard_Integer Y = RealToInt (GetYPosition() * WinHeight);
 
-  const Standard_Integer W = RealToInt(GetWidth() * WinWidth);
-  const Standard_Integer H = RealToInt(GetHeight() * WinHeight);
+  const Standard_Integer W = RealToInt (GetWidth() * WinWidth);
+  const Standard_Integer H = RealToInt (GetHeight() * WinHeight);
 
-  Aspect_ColorScale::DrawScale( theView->BackgroundColor(), X, Y, W, H );
+  Aspect_ColorScale::DrawScale (theView->BackgroundColor(), X, Y, W, H);
 }

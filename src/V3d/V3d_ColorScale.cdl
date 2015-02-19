@@ -29,7 +29,7 @@ is
 
        ---Category: Public
 
-       Create(aMgr : LayerMgr from V3d)
+       Create(theMgr : LayerMgr from V3d)
        returns ColorScale from V3d;
        ---Purpose: Returns returns ColorScale from V3d.
     
@@ -57,30 +57,30 @@ is
        --returns Boolean from Standard
        --is redefined protected;
 
-       PaintRect(me : mutable; X, Y, W, H : Integer from Standard;
-                               aColor     : Color from Quantity;
-                               aFilled    : Boolean from Standard = Standard_False)
+       PaintRect(me : mutable; theX, theY, theWidth, theHeight : Integer from Standard;
+                               theColor     : Color from Quantity;
+                               theFilled    : Boolean from Standard = Standard_False)
        is redefined;
 
-       PaintText(me : mutable; aText  : ExtendedString from TCollection;
-                               X, Y   : Integer from Standard;
-                               aColor : Color from Quantity)
+       PaintText(me : mutable; theText  : ExtendedString from TCollection;
+                               theX, theY   : Integer from Standard;
+                               theColor : Color from Quantity)
        is redefined;
 
-       TextWidth(me; aText : ExtendedString from TCollection)
+       TextWidth(me; theText : ExtendedString from TCollection)
        returns Integer from Standard
        is redefined;
 
-       TextHeight(me; aText : ExtendedString from TCollection)
+       TextHeight(me; theText : ExtendedString from TCollection)
        returns Integer from Standard
        is redefined;
 
        TextSize( me;
-                AText    : ExtendedString from TCollection;
-                AHeight  : Integer from Standard;
-                AWidth   : in out Integer from Standard;
-                AnAscent : in out Integer from Standard;
-                ADescent : in out Integer from Standard );
+                theText    : ExtendedString from TCollection;
+                theHeight  : Integer from Standard;
+                theWidth   : in out Integer from Standard;
+                theAscent : in out Integer from Standard;
+                theDescent : in out Integer from Standard );
 
        DrawScale(me : mutable);
 

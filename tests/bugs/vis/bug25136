@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC25136"
+puts "Display customized colorscale."
+puts "============"
+puts ""
+
+vinit View1
+vclear
+vaxo
+
+# create default color scale
+vcolorscale -demo
+vdump ${imagedir}/${casename}_1.png
+
+# reduce color scale range and number of intervals
+vcolorscale -range 0 20 5
+vdump ${imagedir}/${casename}_2.png
+
+# set user-defined colors and labels for color scale
+vcolorscale -colors white 0 0 1 green 1 0 0 1 1 1 -labels start 1 2 3 4 end
+vdump ${imagedir}/${casename}_3.png
+
+# change colors of first and last intervals
+vcolorscale -color 0 0.42 0.35 0.8
+vcolorscale -color 4 pink
+
+# change last label
+vcolorscale -label 5 "last"
+
+# set a title for color scale
+vcolorscale -title "My color scale"
+vdump ${imagedir}/${casename}_4.png

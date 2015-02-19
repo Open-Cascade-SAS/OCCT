@@ -3,20 +3,7 @@ puts "OCC21091"
 puts "OCC21450"
 puts "============"
 puts ""
-###### vcolorscale: vcolorscale [RangeMin RangeMax Intervals HeightFont Position X Y]: draw color scale
-###### RangeMin - min of color scale number range
-###### RangeMax - max of color scale number range
-###### Intervals - number of color scale segments
-###### HeightFont - height of font
-###### Position - Defines position for color scale labels 
-############### 0 - NONE
-############### 1 - LEFT
-############### 2 - RIGHT
-############### 3 - CENTER
-###### X,Y - coordinates of color scale
 
-vinit
-vcolorscale 10 20 100 16 2 0 0
+vinit View1
+vcolorscale -range 10 20 100 -font 16 -textpos right -xy 0 0
 set only_screen 0
-
-

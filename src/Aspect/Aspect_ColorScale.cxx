@@ -58,10 +58,10 @@ Standard_Real Aspect_ColorScale::GetMax() const
   return myMax;
 }
 
-void Aspect_ColorScale::GetRange( Standard_Real& aMin, Standard_Real& aMax ) const
+void Aspect_ColorScale::GetRange (Standard_Real& theMin, Standard_Real& theMax) const
 {
-  aMin = myMin;
-  aMax = myMax;
+  theMin = myMin;
+  theMax = myMax;
 }
 
 Aspect_TypeOfColorScaleData Aspect_ColorScale::GetLabelType() const
@@ -89,34 +89,53 @@ TCollection_AsciiString Aspect_ColorScale::GetFormat() const
   return myFormat;
 }
 
-TCollection_ExtendedString Aspect_ColorScale::GetLabel( const Standard_Integer anIndex ) const
+TCollection_ExtendedString Aspect_ColorScale::GetLabel (const Standard_Integer theIndex) const
 {
-  TCollection_ExtendedString aLabel;
-  if ( anIndex >= 0 && anIndex < myLabels.Length() )
-    aLabel = myLabels.Value( anIndex + 1 );
-  return aLabel;
+  if (GetLabelType() == Aspect_TOCSD_USER)
+  {
+    if (theIndex < 0
+     || theIndex >= myLabels.Length())
+    {
+      return "";
+    }
+
+    return myLabels.Value (theIndex + 1);
+  }
+
+  const Standard_Real           aVal    = GetNumber (theIndex);
+  const TCollection_AsciiString aFormat = Format();
+  Standard_Character aBuf[1024];
+  sprintf (aBuf, aFormat.ToCString(), aVal);
+  return TCollection_ExtendedString (aBuf);
 }
 
-Quantity_Color Aspect_ColorScale::GetColor( const Standard_Integer anIndex ) const
+Quantity_Color Aspect_ColorScale::GetColor (const Standard_Integer theIndex) const
 {
-  Quantity_Color aColor;
-  if ( anIndex >= 0 && anIndex < myColors.Length() )
-    aColor = myColors.Value( anIndex + 1 );
-  return aColor;
+  if (GetColorType() == Aspect_TOCSD_USER)
+  {
+    if (theIndex < 0
+     || theIndex >= myColors.Length())
+    {
+      return Quantity_Color();
+    }
+
+    return myColors.Value (theIndex + 1);
+  }
+  return Quantity_Color (HueFromValue (theIndex, 0, GetNumberOfIntervals() - 1), 1.0, 1.0, Quantity_TOC_HLS);
 }
 
-void Aspect_ColorScale::GetLabels( TColStd_SequenceOfExtendedString& aLabels ) const
+void Aspect_ColorScale::GetLabels (TColStd_SequenceOfExtendedString& theLabels) const
 {
-  aLabels.Clear();
-  for ( Standard_Integer i = 1; i <= myLabels.Length(); i++ )
-    aLabels.Append( myLabels.Value( i ) );
+  theLabels.Clear();
+  for (Standard_Integer i = 1; i <= myLabels.Length(); i++)
+    theLabels.Append (myLabels.Value (i));
 }
 
-void Aspect_ColorScale::GetColors( Aspect_SequenceOfColor& aColors ) const
+void Aspect_ColorScale::GetColors (Aspect_SequenceOfColor& theColors) const
 {
-  aColors.Clear();
-  for ( Standard_Integer i = 1; i <= myColors.Length(); i++ )
-    aColors.Append( myColors.Value( i ) );
+  theColors.Clear();
+  for (Standard_Integer i = 1; i <= myColors.Length(); i++)
+    theColors.Append (myColors.Value (i));
 }
 
 Aspect_TypeOfColorScalePosition Aspect_ColorScale::GetLabelPosition() const
@@ -139,164 +158,164 @@ Standard_Boolean Aspect_ColorScale::IsLabelAtBorder() const
   return myAtBorder;
 }
 
-void Aspect_ColorScale::SetMin( const Standard_Real aMin )
+void Aspect_ColorScale::SetMin (const Standard_Real theMin)
 {
-  SetRange( aMin, GetMax() );
+  SetRange (theMin, GetMax());
 }
 
-void Aspect_ColorScale::SetMax( const Standard_Real aMax )
+void Aspect_ColorScale::SetMax (const Standard_Real theMax)
 {
-  SetRange( GetMin(), aMax );
+  SetRange (GetMin(), theMax);
 }
 
-void Aspect_ColorScale::SetRange( const Standard_Real aMin, const Standard_Real aMax )
+void Aspect_ColorScale::SetRange (const Standard_Real theMin, const Standard_Real theMax)
 {
-  if ( myMin == aMin && myMax == aMax )
+  if (myMin == theMin && myMax == theMax)
     return;
  
-  myMin = Min( aMin, aMax );
-  myMax = Max( aMin, aMax );
+  myMin = Min( theMin, theMax );
+  myMax = Max( theMin, theMax );
 
-  if ( GetColorType() == Aspect_TOCSD_AUTO )
+  if (GetColorType() == Aspect_TOCSD_AUTO)
     UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetLabelType( const Aspect_TypeOfColorScaleData aType )
+void Aspect_ColorScale::SetLabelType (const Aspect_TypeOfColorScaleData theType)
 {
-  if ( myLabelType == aType )
+  if (myLabelType == theType)
     return;
 
-  myLabelType = aType;
+  myLabelType = theType;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetColorType( const Aspect_TypeOfColorScaleData aType )
+void Aspect_ColorScale::SetColorType (const Aspect_TypeOfColorScaleData theType)
 {
-  if ( myColorType == aType )
+  if (myColorType == theType)
     return;
 
-  myColorType = aType;
+  myColorType = theType;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetNumberOfIntervals( const Standard_Integer aNum )
+void Aspect_ColorScale::SetNumberOfIntervals (const Standard_Integer theNum)
 {
-  if ( myInterval == aNum || aNum < 1 )
+  if (myInterval == theNum || theNum < 1)
     return;
 
-  myInterval = aNum;
+  myInterval = theNum;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetTitle( const TCollection_ExtendedString& aTitle )
+void Aspect_ColorScale::SetTitle (const TCollection_ExtendedString& theTitle)
 {
-  if ( myTitle == aTitle )
+  if (myTitle == theTitle)
     return;
 
-  myTitle = aTitle;
+  myTitle = theTitle;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetFormat( const TCollection_AsciiString& aFormat )
+void Aspect_ColorScale::SetFormat (const TCollection_AsciiString& theFormat)
 {
-  if ( myFormat == aFormat )
+  if (myFormat == theFormat)
     return;
 
-  myFormat = aFormat;
-  if ( GetLabelType() == Aspect_TOCSD_AUTO )
+  myFormat = theFormat;
+  if (GetLabelType() == Aspect_TOCSD_AUTO)
     UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetLabel( const TCollection_ExtendedString& aLabel, const Standard_Integer anIndex )
+void Aspect_ColorScale::SetLabel (const TCollection_ExtendedString& theLabel, const Standard_Integer theIndex)
 {
   Standard_Boolean changed = Standard_False;
-  Standard_Integer i = anIndex < 1 ? myLabels.Length() + 1 : anIndex;
-  if ( i <= myLabels.Length() ) {
-    changed = myLabels.Value( i ) != aLabel;
-    myLabels.SetValue( i, aLabel );
+  Standard_Integer i = theIndex < 0 ? myLabels.Length() + 1 : theIndex + 1;
+  if (i <= myLabels.Length()) {
+    changed = myLabels.Value (i) != theLabel;
+    myLabels.SetValue (i, theLabel);
   }
   else {
     changed = Standard_True;
-    while ( i > myLabels.Length() )
-      myLabels.Append( TCollection_ExtendedString() );
-    myLabels.SetValue( i, aLabel );
+    while (i > myLabels.Length())
+      myLabels.Append (TCollection_ExtendedString());
+    myLabels.SetValue (i, theLabel);
   }
-  if ( changed )
+  if (changed)
     UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetColor(const Quantity_Color& aColor, const Standard_Integer anIndex )
+void Aspect_ColorScale::SetColor (const Quantity_Color& theColor, const Standard_Integer theIndex)
 {
   Standard_Boolean changed = Standard_False;
-  Standard_Integer i = anIndex < 1 ? myLabels.Length() + 1 : anIndex;
-  if ( i <= myColors.Length() ) {
-    changed = myColors.Value( i ) != aColor;
-    myColors.SetValue( i, aColor );
+  Standard_Integer i = theIndex < 0 ? myColors.Length() + 1 : theIndex + 1;
+  if (i <= myColors.Length()) {
+    changed = myColors.Value (i) != theColor;
+    myColors.SetValue (i, theColor);
   }
   else {
     changed = Standard_True;
     while ( i > myColors.Length() )
-      myColors.Append( Quantity_Color() );
-    myColors.SetValue( i, aColor );
+      myColors.Append (Quantity_Color());
+    myColors.SetValue (i, theColor);
   }
-  if ( changed )
+  if (changed)
     UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetLabels( const TColStd_SequenceOfExtendedString& aSeq )
+void Aspect_ColorScale::SetLabels (const TColStd_SequenceOfExtendedString& theSeq)
 {
   myLabels.Clear();
-  for ( Standard_Integer i = 1; i <= aSeq.Length(); i++ )
-    myLabels.Append( aSeq.Value( i ) );
+  for (Standard_Integer i = 1; i <= theSeq.Length(); i++)
+    myLabels.Append (theSeq.Value (i));
 }
 
-void Aspect_ColorScale::SetColors( const Aspect_SequenceOfColor& aSeq )
+void Aspect_ColorScale::SetColors (const Aspect_SequenceOfColor& theSeq)
 {
   myColors.Clear();
-  for ( Standard_Integer i = 1; i <= aSeq.Length(); i++ )
-    myColors.Append( aSeq.Value( i ) );
+  for (Standard_Integer i = 1; i <= theSeq.Length(); i++)
+    myColors.Append (theSeq.Value (i));
 }
 
-void Aspect_ColorScale::SetLabelPosition( const Aspect_TypeOfColorScalePosition aPos )
+void Aspect_ColorScale::SetLabelPosition (const Aspect_TypeOfColorScalePosition thePos)
 {
-  if ( myLabelPos == aPos )
+  if (myLabelPos == thePos)
     return;
 
-  myLabelPos = aPos;
+  myLabelPos = thePos;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetTitlePosition( const Aspect_TypeOfColorScalePosition aPos )
+void Aspect_ColorScale::SetTitlePosition (const Aspect_TypeOfColorScalePosition thePos)
 {
-  if ( myTitlePos == aPos )
+  if (myTitlePos == thePos)
     return;
 
-  myTitlePos = aPos;
+  myTitlePos = thePos;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetReversed( const Standard_Boolean aReverse )
+void Aspect_ColorScale::SetReversed (const Standard_Boolean theReverse)
 {
-  if ( myReversed == aReverse )
+  if (myReversed == theReverse)
     return;
 
-  myReversed = aReverse;
+  myReversed = theReverse;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetLabelAtBorder( const Standard_Boolean anOn )
+void Aspect_ColorScale::SetLabelAtBorder (const Standard_Boolean theOn)
 {
-  if ( myAtBorder == anOn )
+  if (myAtBorder == theOn)
     return;
 
-  myAtBorder = anOn;
+  myAtBorder = theOn;
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::GetPosition( Standard_Real& aX, Standard_Real& aY ) const
+void Aspect_ColorScale::GetPosition (Standard_Real& theX, Standard_Real& theY) const
 {
-  aX = myXPos;
-  aY = myYPos;
+  theX = myXPos;
+  theY = myYPos;
 }
 
 Standard_Real Aspect_ColorScale::GetXPosition() const
@@ -309,31 +328,31 @@ Standard_Real Aspect_ColorScale::GetYPosition() const
   return myYPos;
 }
 
-void Aspect_ColorScale::SetPosition( const Standard_Real aX, const Standard_Real aY )
+void Aspect_ColorScale::SetPosition (const Standard_Real theX, const Standard_Real theY)
 {
-  if ( myXPos == aX && myYPos == aY )
+  if (myXPos == theX && myYPos == theY)
     return;
 
-  myXPos = aX;
-  myYPos = aY;
+  myXPos = theX;
+  myYPos = theY;
 
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetXPosition( const Standard_Real aX )
+void Aspect_ColorScale::SetXPosition (const Standard_Real theX)
 {
-  SetPosition( aX, GetYPosition() );
+  SetPosition (theX, GetYPosition());
 }
 
-void Aspect_ColorScale::SetYPosition( const Standard_Real aY )
+void Aspect_ColorScale::SetYPosition (const Standard_Real theY)
 {
-  SetPosition( GetXPosition(), aY );
+  SetPosition (GetXPosition(), theY);
 }
 
-void Aspect_ColorScale::GetSize( Standard_Real& aWidth, Standard_Real& aHeight ) const
+void Aspect_ColorScale::GetSize (Standard_Real& theWidth, Standard_Real& theHeight) const
 {
-  aWidth = myWidth;
-  aHeight = myHeight;
+  theWidth = myWidth;
+  theHeight = myHeight;
 }
 
 Standard_Real Aspect_ColorScale::GetWidth() const
@@ -346,39 +365,39 @@ Standard_Real Aspect_ColorScale::GetHeight() const
   return myHeight;
 }
 
-void Aspect_ColorScale::SetSize( const Standard_Real aWidth, const Standard_Real aHeight )
+void Aspect_ColorScale::SetSize (const Standard_Real theWidth, const Standard_Real theHeight)
 {
-  if ( myWidth == aWidth && myHeight == aHeight )
+  if (myWidth == theWidth && myHeight == theHeight)
     return;
 
-  myWidth = aWidth;
-  myHeight = aHeight;
+  myWidth = theWidth;
+  myHeight = theHeight;
 
   UpdateColorScale();
 }
 
-void Aspect_ColorScale::SetWidth( const Standard_Real aWidth )
+void Aspect_ColorScale::SetWidth (const Standard_Real theWidth)
 {
-  SetSize( aWidth, GetHeight() );
+  SetSize (theWidth, GetHeight());
 }
 
-void Aspect_ColorScale::SetHeight( const Standard_Real aHeight )
+void Aspect_ColorScale::SetHeight (const Standard_Real theHeight)
 {
-  SetSize( GetWidth(), aHeight );
+  SetSize (GetWidth(), theHeight);
 }
 
-void Aspect_ColorScale::SizeHint( Standard_Integer& aWidth, Standard_Integer& aHeight ) const
+void Aspect_ColorScale::SizeHint (Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
   Standard_Integer num = GetNumberOfIntervals();
 
   Standard_Integer spacer = 5;
   Standard_Integer textWidth = 0;
-  Standard_Integer textHeight = TextHeight( "" );
+  Standard_Integer textHeight = TextHeight ("");
   Standard_Integer colorWidth = 20;
 
-  if ( GetLabelPosition() != Aspect_TOCSP_NONE )
-    for ( Standard_Integer idx = 0; idx < num; idx++ )
-      textWidth = Max( textWidth, TextWidth( GetCurrentLabel( idx + 1 ) ) );
+  if (GetLabelPosition() != Aspect_TOCSP_NONE)
+    for (Standard_Integer idx = 0; idx < num; idx++)
+      textWidth = Max (textWidth, TextWidth (GetLabel (idx + 1)));
 
   Standard_Integer scaleWidth = 0;
   Standard_Integer scaleHeight = 0;
@@ -386,29 +405,29 @@ void Aspect_ColorScale::SizeHint( Standard_Integer& aWidth, Standard_Integer& aH
   Standard_Integer titleWidth = 0;
   Standard_Integer titleHeight = 0;
 
-  if ( IsLabelAtBorder() ) {
+  if (IsLabelAtBorder()) {
     num++;
-    if ( GetTitle().Length() )
+    if (GetTitle().Length())
       titleHeight += 10;
   }
 
   scaleWidth = colorWidth + textWidth + ( textWidth ? 3 : 2 ) * spacer;
   scaleHeight = (Standard_Integer)( 1.5 * ( num + 1 ) * textHeight );
   
-  if ( GetTitle().Length() ) {
-    titleHeight = TextHeight( GetTitle() ) + spacer;
-    titleWidth =  TextWidth( GetTitle() ) + 10;
+  if (GetTitle().Length()) {
+    titleHeight = TextHeight (GetTitle()) + spacer;
+    titleWidth =  TextWidth (GetTitle()) + 10;
   }
 
-  aWidth = Max( titleWidth, scaleWidth );
-  aHeight = scaleHeight + titleHeight;
+  theWidth = Max (titleWidth, scaleWidth);
+  theHeight = scaleHeight + titleHeight;
 }
 
-void Aspect_ColorScale::DrawScale( const Quantity_Color& aBgColor,
-				      const Standard_Integer X, const Standard_Integer Y,
-				      const Standard_Integer W, const Standard_Integer H )
+void Aspect_ColorScale::DrawScale ( const Quantity_Color& theBgColor,
+				      const Standard_Integer theX, const Standard_Integer theY,
+				      const Standard_Integer theWidth, const Standard_Integer theHeight)
 {
-  if ( !BeginPaint() )
+  if (!BeginPaint())
     return;
 
   Standard_Integer num = GetNumberOfIntervals();
@@ -416,7 +435,7 @@ void Aspect_ColorScale::DrawScale( const Quantity_Color& aBgColor,
 
   Standard_Integer spacer = 5;
   Standard_Integer textWidth = 0;
-  Standard_Integer textHeight = TextHeight( "" );
+  Standard_Integer textHeight = TextHeight ("");
 
   Standard_Boolean drawLabel = GetLabelPosition() != Aspect_TOCSP_NONE;
 
@@ -424,79 +443,79 @@ void Aspect_ColorScale::DrawScale( const Quantity_Color& aBgColor,
 
   Standard_Integer titleHeight = 0;
 
-  Standard_Integer aGray = (Standard_Integer)(255 * ( aBgColor.Red() * 11 + aBgColor.Green() * 16 + aBgColor.Blue() * 5 ) / 32);
-  Quantity_Color aFgColor( aGray < 128 ? Quantity_NOC_WHITE : Quantity_NOC_BLACK );
+  Standard_Integer aGray = (Standard_Integer)(255 * ( theBgColor.Red() * 11 + theBgColor.Green() * 16 + theBgColor.Blue() * 5 ) / 32);
+  Quantity_Color aFgColor (aGray < 128 ? Quantity_NOC_WHITE : Quantity_NOC_BLACK);
 
   // Draw title
-  if ( aTitle.Length() ) {
-    titleHeight = TextHeight( aTitle ) + 2 * spacer;
-    PaintText( aTitle, X + spacer, Y + spacer, aFgColor );
+  if (aTitle.Length()) {
+    titleHeight = TextHeight (aTitle) + 2 * spacer;
+    PaintText (aTitle, theX + spacer, theY + spacer, aFgColor);
   }
 
   Standard_Boolean reverse = IsReversed();
 
   Aspect_SequenceOfColor colors;
   TColStd_SequenceOfExtendedString labels;
-  for ( int idx = 0; idx < num; idx++ ) {
-    if ( reverse ) {
-      colors.Append( GetCurrentColor( idx ) );
-      labels.Append( GetCurrentLabel( idx ) );
+  for (int idx = 0; idx < num; idx++) {
+    if (reverse) {
+      colors.Append (GetColor (idx));
+      labels.Append (GetLabel (idx));
     }
     else {
-      colors.Prepend( GetCurrentColor( idx ) );
-      labels.Prepend( GetCurrentLabel( idx ) );
+      colors.Prepend (GetColor (idx));
+      labels.Prepend (GetLabel (idx));
     }
   }
 
-  if ( IsLabelAtBorder() ) {
-    if ( reverse )
-      labels.Append( GetCurrentLabel( num ) );
+  if (IsLabelAtBorder()) {
+    if (reverse)
+      labels.Append (GetLabel (num));
     else
-      labels.Prepend( GetCurrentLabel( num ) );
+      labels.Prepend (GetLabel (num));
   }
 
-  if ( drawLabel )
-    for ( Standard_Integer i = 1; i <= labels.Length(); i++ )
-      textWidth = Max( textWidth, TextWidth( labels.Value( i ) ) );
+  if (drawLabel)
+    for (Standard_Integer i = 1; i <= labels.Length(); i++)
+      textWidth = Max (textWidth, TextWidth (labels.Value (i)));
 
   Standard_Integer lab = labels.Length();
 
-  Standard_Real spc = ( H - ( ( Min( lab, 2 ) + Abs( lab - num - 1 ) ) * textHeight ) - titleHeight );
-  Standard_Real val = spc != 0 ? 1.0 * ( lab - Min( lab, 2 ) ) * textHeight / spc : 0;
+  Standard_Real spc = ( theHeight - ( ( Min (lab, 2) + Abs (lab - num - 1) ) * textHeight ) - titleHeight );
+  Standard_Real val = spc != 0 ? 1.0 * ( lab - Min (lab, 1) ) * textHeight / spc : 0;
   Standard_Real iPart;
-  Standard_Real fPart = modf( val, &iPart );
+  Standard_Real fPart = modf (val, &iPart);
   Standard_Integer filter = (Standard_Integer)iPart + ( fPart != 0 ? 1 : 0 );
 
-  Standard_Real step = 1.0 * ( H - ( lab - num + Abs( lab - num - 1 ) ) * textHeight - titleHeight ) / num;
+  Standard_Real step = 1.0 * ( theHeight - ( lab - num + Abs (lab - num - 1) ) * textHeight - titleHeight ) / num;
 
   Standard_Integer ascent = 0;
-  Standard_Integer colorWidth = Max( 5, Min( 20, W - textWidth - 3 * spacer ) );
-  if ( labPos == Aspect_TOCSP_CENTER || !drawLabel )
-    colorWidth = W - 2 * spacer;
+  Standard_Integer colorWidth = Max (5, Min (20, theWidth - textWidth - 3 * spacer));
+  if (labPos == Aspect_TOCSP_CENTER || !drawLabel)
+    colorWidth = theWidth - 2 * spacer;
 
   // Draw colors
-  Standard_Integer x = X + spacer;
-  if ( labPos == Aspect_TOCSP_LEFT )
+  Standard_Integer x = theX + spacer;
+  if (labPos == Aspect_TOCSP_LEFT)
     x += textWidth + ( textWidth ? 1 : 0 ) * spacer;
 
-  Standard_Real offset = 1.0 * textHeight / 2 * ( lab - num + Abs( lab - num - 1 ) ) + titleHeight;
-  for ( Standard_Integer ci = 1; ci <= colors.Length() && step > 0; ci++ ) {
-    Standard_Integer y = (Standard_Integer)( Y + ( ci - 1 )* step + offset );
-    Standard_Integer h = (Standard_Integer)( Y + ( ci ) * step + offset ) - y;
-    PaintRect( x, y, colorWidth, h, colors.Value( ci ), Standard_True );
+  Standard_Real offset = 1.0 * textHeight / 2 * ( lab - num + Abs (lab - num - 1) ) + titleHeight;
+  for (Standard_Integer ci = 1; ci <= colors.Length() && step > 0; ci++ ) {
+    Standard_Integer y = (Standard_Integer)( theY + ( ci - 1 )* step + offset);
+    Standard_Integer h = (Standard_Integer)( theY + ( ci ) * step + offset ) - y;
+    PaintRect (x, y, colorWidth, h, colors.Value (ci), Standard_True);
   }
 
-  if ( step > 0 )
-    PaintRect( x - 1, (Standard_Integer)(Y + offset - 1), colorWidth + 2, (Standard_Integer)(colors.Length() * step + 2), aFgColor );
+  if (step > 0)
+    PaintRect (x - 1, (Standard_Integer)(theY + offset - 1), colorWidth + 2, (Standard_Integer)(colors.Length() * step + 2), aFgColor);
 
   // Draw labels
-  offset = 1.0 * Abs( lab - num - 1 ) * ( step - textHeight ) / 2 + 1.0 * Abs( lab - num - 1 ) * textHeight / 2;
+  offset = 1.0 * Abs (lab - num - 1) * ( step - textHeight ) / 2 + 1.0 * Abs (lab - num - 1) * textHeight / 2;
   offset += titleHeight;
-  if ( drawLabel && labels.Length() && filter > 0 ) {
+  if (drawLabel && labels.Length() && filter > 0) {
     Standard_Integer i1 = 0;
     Standard_Integer i2 = lab - 1;
-    Standard_Integer last1( i1 ), last2( i2 );
-    x = X + spacer;
+    Standard_Integer last1 (i1), last2 (i2);
+    x = theX + spacer;
     switch ( labPos ) {
     case Aspect_TOCSP_NONE:
     case Aspect_TOCSP_LEFT:
@@ -508,30 +527,30 @@ void Aspect_ColorScale::DrawScale( const Quantity_Color& aBgColor,
       x += colorWidth + spacer;
       break;
     }
-    while ( i2 - i1 >= filter || ( i2 == 0 && i1 == 0 ) ) {
+    while (i2 - i1 >= filter || ( i2 == 0 && i1 == 0 )) {
       Standard_Integer pos1 = i1;
       Standard_Integer pos2 = lab - 1 - i2;
-      if ( filter && !( pos1 % filter ) ) {
-	PaintText( labels.Value( i1 + 1 ), x, (Standard_Integer)( Y + i1 * step + ascent + offset ), aFgColor );
-	last1 = i1;
+      if (filter && !( pos1 % filter )) {
+        PaintText (labels.Value (i1 + 1), x, (Standard_Integer)( theY + i1 * step + ascent + offset ), aFgColor);
+        last1 = i1;
       }
-      if ( filter && !( pos2 % filter ) ) {
-	PaintText( labels.Value( i2 + 1 ), x, (Standard_Integer)( Y + i2 * step + ascent + offset ), aFgColor );
-	last2 = i2;
+      if (filter && !( pos2 % filter )) {
+        PaintText (labels.Value (i2 + 1), x, (Standard_Integer)( theY + i2 * step + ascent + offset ), aFgColor);
+        last2 = i2;
       }
       i1++;
       i2--;
     }
     Standard_Integer pos = i1;
     Standard_Integer i0 = -1;
-    while ( pos <= i2 && i0 == -1 ) {
-      if ( filter && !( pos % filter ) && Abs( pos - last1 ) >= filter && Abs( pos - last2 ) >= filter )
-	i0 = pos;
+    while (pos <= i2 && i0 == -1) {
+      if (filter && !( pos % filter ) && Abs (pos - last1) >= filter && Abs (pos - last2) >= filter)
+        i0 = pos;
       pos++;
     }
 
-    if ( i0 != -1 )
-      PaintText( labels.Value( i0 + 1 ), x, (Standard_Integer)( Y + i0 * step + ascent + offset ), aFgColor );
+    if (i0 != -1)
+      PaintText (labels.Value (i0 + 1), x, (Standard_Integer)( theY + i0 * step + ascent + offset ), aFgColor);
   }
 
   EndPaint();
@@ -556,50 +575,24 @@ TCollection_AsciiString Aspect_ColorScale::Format() const
   return GetFormat();
 }
 
-TCollection_ExtendedString Aspect_ColorScale::GetCurrentLabel( const Standard_Integer anIndex ) const
-{
-  TCollection_ExtendedString aLabel;
-  if ( GetLabelType() == Aspect_TOCSD_USER )
-    aLabel = GetLabel( anIndex );
-  else {
-    Standard_Real val = GetNumber( anIndex );
-    Standard_Character buf[1024];
-    TCollection_AsciiString aFormat = Format();
-    sprintf( buf, aFormat.ToCString(), val );
-    aLabel = TCollection_ExtendedString( buf );
-  }
-
-  return aLabel;
-}
-
-Quantity_Color Aspect_ColorScale::GetCurrentColor( const Standard_Integer anIndex ) const
-{
-  Quantity_Color aColor;
-  if ( GetColorType() == Aspect_TOCSD_USER )
-    aColor = GetColor( anIndex );
-  else
-    aColor = Quantity_Color( HueFromValue( anIndex, 0, GetNumberOfIntervals() - 1 ), 1.0, 1.0, Quantity_TOC_HLS );
-  return aColor;
-}
-
-Standard_Real Aspect_ColorScale::GetNumber( const Standard_Integer anIndex ) const
+Standard_Real Aspect_ColorScale::GetNumber (const Standard_Integer theIndex) const
 {
   Standard_Real aNum = 0;
-  if ( GetNumberOfIntervals() > 0 )
-    aNum = GetMin() + anIndex * ( Abs( GetMax() - GetMin() ) / GetNumberOfIntervals() );
+  if (GetNumberOfIntervals() > 0)
+    aNum = GetMin() + theIndex * ( Abs (GetMax() - GetMin()) / GetNumberOfIntervals() );
   return aNum;
 }
 
-Standard_Integer Aspect_ColorScale::HueFromValue( const Standard_Integer aValue,
-                                                  const Standard_Integer aMin, const Standard_Integer aMax )
+Standard_Integer Aspect_ColorScale::HueFromValue (const Standard_Integer theValue,
+                                                  const Standard_Integer theMin, const Standard_Integer theMax)
 {
-  Standard_Integer minLimit( 0 ), maxLimit( 230 );
+  Standard_Integer minLimit (0), maxLimit (230);
 
   Standard_Integer aHue = maxLimit;
-  if ( aMin != aMax )
-    aHue = (Standard_Integer)( maxLimit - ( maxLimit - minLimit ) * ( aValue - aMin ) / ( aMax - aMin ) );
+  if (theMin != theMax)
+    aHue = (Standard_Integer)( maxLimit - ( maxLimit - minLimit ) * ( theValue - theMin ) / ( theMax - theMin ) );
 
-  aHue = Min( Max( minLimit, aHue ), maxLimit );
+  aHue = Min (Max (minLimit, aHue), maxLimit);
 
   return aHue;
 }
@@ -608,41 +601,37 @@ Standard_Integer  Aspect_ColorScale::GetTextHeight() const {
   return myTextHeight;
 }
 
-void Aspect_ColorScale::SetTextHeight(const Standard_Integer aHeigh) {
-  myTextHeight = aHeigh;
+void Aspect_ColorScale::SetTextHeight (const Standard_Integer theHeight) {
+  myTextHeight = theHeight;
   UpdateColorScale ();
 }
 
 
-Standard_Boolean Aspect_ColorScale::FindColor( const Standard_Real aValue, 
-                                               Quantity_Color& aColor ) const
+Standard_Boolean Aspect_ColorScale::FindColor (const Standard_Real theValue,
+                                               Quantity_Color& theColor) const
 {
-  return FindColor( aValue, myMin, myMax, myInterval, aColor );
+  return FindColor (theValue, myMin, myMax, myInterval, theColor);
 }
 
 
-Standard_Boolean Aspect_ColorScale::FindColor( const Standard_Real aValue, 
-                                               const Standard_Real aMin,
-                                               const Standard_Real aMax,
-                                               const Standard_Integer ColorsCount,
-                                               Quantity_Color& aColor )
+Standard_Boolean Aspect_ColorScale::FindColor (const Standard_Real theValue,
+                                               const Standard_Real theMin,
+                                               const Standard_Real theMax,
+                                               const Standard_Integer theColorsCount,
+                                               Quantity_Color& theColor)
 {
-  if( aValue<aMin || aValue>aMax || aMax<aMin )
+  if(theValue<theMin || theValue>theMax || theMax<theMin)
     return Standard_False;
 
   else
   {
     Standard_Real IntervNumber = 0;
-    if( aValue<aMin )
-      IntervNumber = 0;
-    else if( aValue>aMax )
-      IntervNumber = ColorsCount-1;
-    else if( Abs( aMax-aMin ) > Precision::Approximation() )
-      IntervNumber = Ceiling( Standard_Real( ColorsCount ) * ( aValue - aMin ) / ( aMax - aMin ) );
+    if(Abs (theMax-theMin) > Precision::Approximation())
+      IntervNumber = Floor (Standard_Real( theColorsCount ) * ( theValue - theMin ) / ( theMax - theMin ));
 
-    Standard_Integer Interv = Standard_Integer( IntervNumber );
+    Standard_Integer Interv = Standard_Integer (IntervNumber);
 
-    aColor = Quantity_Color( HueFromValue( Interv, 0, ColorsCount - 1 ), 1.0, 1.0, Quantity_TOC_HLS );
+    theColor = Quantity_Color (HueFromValue (Interv, 0, theColorsCount - 1), 1.0, 1.0, Quantity_TOC_HLS);
 
     return Standard_True;
   } 

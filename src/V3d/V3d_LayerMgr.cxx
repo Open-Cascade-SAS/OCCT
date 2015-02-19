@@ -50,6 +50,8 @@ void V3d_LayerMgr::Resized()
 
 void V3d_LayerMgr::ColorScaleDisplay()
 {
+  if (ColorScaleIsDisplayed())
+    return;
   ColorScale();
   myColorScale->Display();
   myOverlay->AddLayerItem( myColorScaleLayerItem );

@@ -29,15 +29,15 @@ is
 
 	---Category: Public
 
-       FindColor( me; Value : Real from Standard; 
-                      Color : in out Color from Quantity ) returns Boolean from Standard;
+       FindColor( me; theValue : Real from Standard;
+                      theColor : in out Color from Quantity ) returns Boolean from Standard;
        ---Purpose: Calculate color according passed value; returns true if value is in range or false, if isn't
 
 
-       FindColor( myclass; Value : Real from Standard;
-                           Min, Max : Real from Standard;
-                           ColorsCount : Integer from Standard;
-                           Color : in out Color from Quantity ) returns Boolean from Standard;
+       FindColor( myclass; theValue : Real from Standard;
+                           theMin, theMax : Real from Standard;
+                           theColorsCount : Integer from Standard;
+                           theColor : in out Color from Quantity ) returns Boolean from Standard;
 
        GetMin(me)
        returns Real from Standard;
@@ -47,8 +47,8 @@ is
        returns Real from Standard;
        ---Purpose: Returns maximal value of color scale;
 
-       GetRange(me; aMin : in out Real from Standard;
-                    aMax : in out Real from Standard);
+       GetRange(me; theMin : in out Real from Standard;
+                    theMax : in out Real from Standard);
        ---Purpose: Returns minimal and maximal values of color scale;
 
        GetLabelType(me)
@@ -77,20 +77,20 @@ is
        --         The same like format for function printf().
        --         Used if GetLabelType() is TOCSD_AUTO;
 
-	GetLabel(me; anIndex : Integer from Standard)
+	GetLabel(me; theIndex : Integer from Standard)
        returns ExtendedString from TCollection;
        ---Purpose: Returns the user specified label with index <anIndex>.
        --         Returns empty string if label not defined.
 
-	GetColor(me; anIndex : Integer from Standard)
+	GetColor(me; theIndex : Integer from Standard)
        returns Color from Quantity;
        ---Purpose: Returns the user specified color from color map with index <anIndex>.
        --         Returns default color if index out of range in color map.
 
-       GetLabels(me; aLabels : in out SequenceOfExtendedString from TColStd);
+       GetLabels(me; theLabels : in out SequenceOfExtendedString from TColStd);
        ---Purpose: Returns the user specified labels.
 
-       GetColors(me; aColors : in out SequenceOfColor from Aspect);
+       GetColors(me; theColors : in out SequenceOfColor from Aspect);
        ---Purpose: Returns the user specified colors.
 
        GetLabelPosition(me)
@@ -109,66 +109,66 @@ is
        returns Boolean from Standard;
 	---Purpose: Returns true if the labels placed at border of color filled rectangles.
 
-       SetMin(me : mutable; aMin : Real from Standard);
+       SetMin(me : mutable; theMin : Real from Standard);
        ---Purpose: Sets the minimal value of color scale.
 
-       SetMax(me : mutable; aMax : Real from Standard);
+       SetMax(me : mutable; theMax : Real from Standard);
        ---Purpose: Sets the maximal value of color scale.
 
-       SetRange(me : mutable; aMin : Real from Standard;
-                              aMax : Real from Standard);
+       SetRange(me : mutable; theMin : Real from Standard;
+                              theMax : Real from Standard);
        ---Purpose: Sets the minimal and maximal value of color scale.
 
-       SetLabelType(me : mutable; aType : TypeOfColorScaleData from Aspect);
+       SetLabelType(me : mutable; theType : TypeOfColorScaleData from Aspect);
        ---Purpose: Sets the type of labels.
        --         Aspect_TOCSD_AUTO - labels as boundary values for intervals
        --         Aspect_TOCSD_USER - user specified label is used
 
-       SetColorType(me : mutable; aType : TypeOfColorScaleData from Aspect);
+       SetColorType(me : mutable; theType : TypeOfColorScaleData from Aspect);
        ---Purpose: Sets the type of colors.
        --         Aspect_TOCSD_AUTO - value between Red and Blue
        --         Aspect_TOCSD_USER - user specified color from color map
 
-       SetNumberOfIntervals(me : mutable; aNum : Integer from Standard);
+       SetNumberOfIntervals(me : mutable; theNum : Integer from Standard);
        ---Purpose: Sets the number of color scale intervals.
 
-       SetTitle(me : mutable; aTitle : ExtendedString from TCollection);
+       SetTitle(me : mutable; theTitle : ExtendedString from TCollection);
        ---Purpose: Sets the color scale title string.
 
-       SetFormat(me : mutable; aFormat : AsciiString from TCollection);
+       SetFormat(me : mutable; theFormat : AsciiString from TCollection);
        ---Purpose: Sets the color scale auto label format specification.
 
-       SetLabel(me : mutable; aLabel  : ExtendedString from TCollection;
+       SetLabel(me : mutable; theLabel  : ExtendedString from TCollection;
                               anIndex : Integer from Standard = -1);
        ---Purpose: Sets the color scale label at index. Index started from 1.
 
-       SetColor(me : mutable; aColor  : Color from Quantity;
-                              anIndex : Integer from Standard = -1);
+       SetColor(me : mutable; theColor  : Color from Quantity;
+                              theIndex : Integer from Standard = -1);
        ---Purpose: Sets the color scale color at index. Index started from 1.
 
-       SetLabels(me : mutable; aSeq : SequenceOfExtendedString from TColStd);
+       SetLabels(me : mutable; theSeq : SequenceOfExtendedString from TColStd);
        ---Purpose: Sets the color scale labels.
 
-       SetColors(me : mutable; aSeq : SequenceOfColor from Aspect);
+       SetColors(me : mutable; theSeq : SequenceOfColor from Aspect);
        ---Purpose: Sets the color scale colors.
 
-       SetLabelPosition(me : mutable; aPos : TypeOfColorScalePosition from Aspect);
+       SetLabelPosition(me : mutable; thePos : TypeOfColorScalePosition from Aspect);
        ---Purpose: Sets the color scale labels position concerning color filled rectangles.
 
-       SetTitlePosition(me : mutable; aPos : TypeOfColorScalePosition from Aspect);
+       SetTitlePosition(me : mutable; thePos : TypeOfColorScalePosition from Aspect);
        ---Purpose: Sets the color scale title position.
 
-	SetReversed(me : mutable; aReverse : Boolean from Standard);
+	SetReversed(me : mutable; theReverse : Boolean from Standard);
 	---Purpose: Sets true if the labels and colors used in reversed order.
 
-	SetLabelAtBorder(me : mutable; anOn : Boolean from Standard);
+	SetLabelAtBorder(me : mutable; theOn : Boolean from Standard);
 	---Purpose: Sets true if the labels placed at border of color filled rectangles.
 
        --- Size and position management
        --- Size and position are values relative to view size (between 0 and 1)
 
-       GetSize(me; aWidth  : in out Real from Standard;
-                   aHeight : in out Real from Standard);
+       GetSize(me; theWidth  : in out Real from Standard;
+                   theHeight : in out Real from Standard);
 	---Purpose: Returns the size of color scale.
 
        GetWidth(me)
@@ -179,18 +179,18 @@ is
        returns Real from Standard;
 	---Purpose: Returns the height of color scale.
 
-       SetSize(me : mutable; aWidth  : Real from Standard;
-                             aHeight : Real from Standard);
+       SetSize(me : mutable; theWidth  : Real from Standard;
+                             theHeight : Real from Standard);
 	---Purpose: Sets the size of color scale.
 
-       SetWidth(me : mutable; aWidth : Real from Standard);
+       SetWidth(me : mutable; theWidth : Real from Standard);
 	---Purpose: Sets the width of color scale.
 
-       SetHeight(me : mutable; aHeight : Real from Standard);
+       SetHeight(me : mutable; theHeight : Real from Standard);
 	---Purpose: Sets the height of color scale.
 
-       GetPosition(me; aX : in out Real from Standard;
-                       aY : in out Real from Standard);
+       GetPosition(me; theX : in out Real from Standard;
+                       theY : in out Real from Standard);
 	---Purpose: Returns the position of color scale.
 
        GetXPosition(me)
@@ -201,21 +201,22 @@ is
        returns Real from Standard;
 	---Purpose: Returns the height of color scale.
 
-       SetPosition(me : mutable; aX : Real from Standard;
-                                 aY : Real from Standard);
+       SetPosition(me : mutable; theX : Real from Standard;
+                                 theY : Real from Standard);
 	---Purpose: Sets the position of color scale.
 
-       SetXPosition(me : mutable; aX : Real from Standard);
+       SetXPosition(me : mutable; theX : Real from Standard);
 	---Purpose: Sets the X position of color scale.
 
-       SetYPosition(me : mutable; aY : Real from Standard);
+       SetYPosition(me : mutable; theY : Real from Standard);
 	---Purpose: Sets the Y position of color scale.
 
 	GetTextHeight(me)
 	returns Integer from Standard;
-	
-	SetTextHeight(me: mutable; aHeigh :  Integer from Standard);
+ ---Purpose: Returns the height of text of color scale.
 
+	SetTextHeight(me: mutable; theHeight :  Integer from Standard);
+ ---Purpose: Sets the height of text of color scale.
 
 	---Category: Protected
 
@@ -223,17 +224,29 @@ is
 	Initialize
        returns ColorScale from Aspect
        is protected;
+	---Purpose: Default constructor.
 
-       SizeHint(me; aWidth  : in out Integer from Standard;
-                    aHeight : in out Integer from Standard)
+       SizeHint(me; theWidth  : in out Integer from Standard;
+                    theHeight : in out Integer from Standard)
        is protected;
+	---Purpose: Returns the size of color scale.
+    -- @param theWidth [out] the width of color scale.
+    -- @param theHeight [out] the height of color scale.
+
 
        UpdateColorScale(me : mutable)
        is virtual protected;
+	---Purpose: updates color scale parameters.
 
-       DrawScale(me : mutable; aBgColor : Color from Quantity;
-                      X, Y, W, H : Integer from Standard)
+       DrawScale(me : mutable; theBgColor : Color from Quantity;
+                      theX, theY, theWidth, theHeight : Integer from Standard)
        is protected;
+	---Purpose: Draws color scale.
+    -- @param theBgColor [in] background color
+    -- @param theX [in] the X coordinate of color scale position.
+    -- @param theY [in] the Y coordinate of color scale position.
+    -- @param theWidth [in] the width of color scale.
+    -- @param theHeight [in] the height of color scale.
 
 	BeginPaint(me : mutable)
        returns Boolean from Standard
@@ -243,47 +256,61 @@ is
        returns Boolean from Standard
        is virtual protected;
 
-       PaintRect(me : mutable; X, Y, W, H : Integer from Standard;
-                               aColor     : Color from Quantity;
-                               aFilled    : Boolean from Standard = Standard_False)
+       PaintRect(me : mutable; theX, theY, theWidth, theHeight : Integer from Standard;
+                               theColor     : Color from Quantity;
+                               theFilled    : Boolean from Standard = Standard_False)
        is deferred;
+    ---Purpose: Draws a rectangle.
+    -- @param theX [in] the X coordinate of rectangle position.
+    -- @param theY [in] the Y coordinate of rectangle position.
+    -- @param theWidth [in] the width of rectangle.
+    -- @param theHeight [in] the height of rectangle.
+    -- @param theColor [in] the color of rectangle.
+    -- @param theFilled [in] defines if rectangle must be filled.
 
-	PaintText(me : mutable; aText : ExtendedString from TCollection;
-                               X, Y : Integer from Standard;
-                               aColor : Color from Quantity)
+	PaintText(me : mutable; theText : ExtendedString from TCollection;
+                               theX, theY : Integer from Standard;
+                               theColor : Color from Quantity)
        is deferred;
+    ---Purpose: Draws a text.
+    -- @param theText [in] the text to draw.
+    -- @param theX [in] the X coordinate of text position.
+    -- @param theY [in] the Y coordinate of text position.
+    -- @param theColor [in] the color of text.
 
-	TextWidth(me; aText : ExtendedString from TCollection)
+	TextWidth(me; theText : ExtendedString from TCollection)
        returns Integer from Standard
        is deferred;
+    ---Purpose: Returns the width of text.
+    -- @param theText [in] the text of which to calculate width.
 
-	TextHeight(me; aText : ExtendedString from TCollection)
+	TextHeight(me; theText : ExtendedString from TCollection)
        returns Integer from Standard
        is deferred;
+    ---Purpose: Returns the height of text.
+    -- @param theText [in] the text of which to calculate height.
 
 	---Category: Private
 
        Format(me)
        returns AsciiString from TCollection
        is private;
+    ---Purpose: Returns the format of text.
 
-       GetCurrentLabel(me; anIndex : Integer from Standard)
-       returns ExtendedString from TCollection
-       is private;
-
-       GetCurrentColor(me; anIndex : Integer from Standard)
-       returns Color from Quantity
-       is private;
-
-       GetNumber(me; anIndex : Integer from Standard)
+       GetNumber(me; theIndex : Integer from Standard)
        returns Real from Standard
        is private;
+    ---Purpose: Returns the value of given interval.
 
-       HueFromValue(myclass; aValue : Integer from Standard;
-                             aMin   : Integer from Standard;
-                             aMax   : Integer from Standard)
+       HueFromValue(myclass; theValue : Integer from Standard;
+                             theMin   : Integer from Standard;
+                             theMax   : Integer from Standard)
        returns Integer from Standard
        is private;
+    ---Purpose: Returns the color's hue for the given value in the given interval.
+    -- @param theValue [in] the current value of interval.
+    -- @param theMin [in] the min value of interval.
+    -- @param theMax [in] the max value of interval.
 
 fields
 
