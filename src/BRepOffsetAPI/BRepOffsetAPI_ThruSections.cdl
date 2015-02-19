@@ -101,6 +101,9 @@ is
     
     CheckCompatibility(me: in out;  
                        check : Boolean from Standard = Standard_True);
+    	---Purpose: Sets/unsets the option to
+    	--          compute origin and orientation on wires to avoid twisted results
+    	--          and update wires to have same number of edges.
     
     SetSmoothing(me: in out; UseSmoothing : Boolean  from  Standard)
     ---Purpose: Define the approximation algorithm  
