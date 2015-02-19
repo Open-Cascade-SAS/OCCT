@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC25823"
+puts "================"
+puts ""
+#######################################################################################
+# Self Intersecting wire translated from STEP file
+#######################################################################################
+
+set BugNumber OCC25823
+
+set aFile [locate_data_file bug25823_280612.stp]
+stepread $aFile a *
+set aLog [checkshape a_1]
+
+if {$aLog == "This shape seems to be valid" } {
+  puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}
+
+smallview
+fit
+set only_screen_axo 1

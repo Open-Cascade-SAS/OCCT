@@ -1287,7 +1287,8 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
       // get bounding box of pcurve
       ShapeAnalysis_Curve sac;
       Bnd_Box2d box;
-      sac.FillBndBox ( c2d, f, l, 11, Standard_True, box );
+      const Standard_Integer aNbPoints = 41;
+      sac.FillBndBox ( c2d, f, l, aNbPoints, Standard_True, box );
       Standard_Real umin, vmin, umax, vmax;
       box.Get ( umin, vmin, umax, vmax );
         
