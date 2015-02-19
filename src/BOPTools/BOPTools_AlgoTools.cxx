@@ -813,7 +813,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff
 {
   Standard_Boolean bRet;
   Standard_Real aT, aT1, aT2, aAngle, aTwoPI, aAngleMin, aDt3D;
-  Standard_Real aUmin, aUsup, aVmin, aVsup;
+  Standard_Real aUmin, aUsup, aVmin, aVsup, aPA;
   gp_Pnt aPn1, aPn2, aPx;
   gp_Dir aDN1, aDN2, aDBF, aDBF2, aDTF;
   gp_Vec aVTgt;
@@ -823,6 +823,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff
   BOPTools_ListIteratorOfListOfCoupleOfShape aIt;
   GeomAPI_ProjectPointOnSurf aProjPL;
   //
+  aPA=Precision::Angular();
   aAngleMin=100.;
   aTwoPI=M_PI+M_PI;
   aC3D =BRep_Tool::Curve(theE1, aT1, aT2);
@@ -860,13 +861,18 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff
       aAngle=aTwoPI+aAngle;
     }
     //
-    if (aAngle<Precision::Angular()) {
+    if (aAngle<aPA) {
       if (aF2==theF1) {
         aAngle=M_PI;
       }
       else if (aF2.IsSame(theF1)) {
         aAngle=aTwoPI;
       }
+    }
+    //
+    if (fabs(aAngle-aAngleMin)<aPA) {
+      // the minimal angle can not be found
+      bRet=Standard_False; 
     }
     //
     if (aAngle<aAngleMin){
