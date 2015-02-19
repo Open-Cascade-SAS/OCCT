@@ -452,7 +452,7 @@ If the test cannot be implemented using available DRAW commands, consider the fo
 * Otherwise the new command implementing the actions needed for this particular test should be added in *QABugs* package. The command name should be formed by the Mantis issue ID prefixed by *bug*, e.g. *bug12345*.
 
 Note that a DRAW command is expected to return 0 in case of a normal completion, and 1 (Tcl exception) if it is incorrectly used (e.g. a wrong number of input arguments). Thus if the new command needs to report a test error, this should be done by outputting an appropriate error message rather than by returning a non-zero value.
-
+Also file names must not be encoded in DRAW command but in script, and passed to DRAW command as argument.
 
 @subsection testmanual_3_4 Script Implementation
 

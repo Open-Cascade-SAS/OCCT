@@ -8,7 +8,10 @@ puts ""
 
 pload QAcommands
 
-set info [OCC24931]
+set FilePath ${imagedir}/bug24931_testdocument.xml
+
+file delete -force ${FilePath}
+set info [OCC24931 ${FilePath}]
 
 if { [regexp "OK" $info] != 1 } {
   puts "Error: Stack is overflow"

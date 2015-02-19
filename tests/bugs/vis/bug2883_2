@@ -6,6 +6,12 @@ puts ""
 # It is impossible to set material, color and transparency to compound
 ########################################################################
 
+set FilePath_v1 ${imagedir}/bug2883_2_v1.png
+set FilePath_v2 ${imagedir}/bug2883_2_v2.png
+
+file delete -force ${FilePath_v1}
+file delete -force ${FilePath_v2}
+
 box b1 0 0 0 1 2 3
 box b2 4 0 0 3 1 2
 vinit drv1/v1/v1
@@ -18,10 +24,10 @@ vdisplay b1 b2
 vfit
 vsetcolor b1 RED
 vactivate drv1/v1/v1
-vdump v1.png
+vdump ${FilePath_v1}
 vactivate drv1/v2/v1
-vdump v2.png
-set info [diffimage v1.png v2.png 0 0 0]
+vdump ${FilePath_v2}
+set info [diffimage ${FilePath_v1} ${FilePath_v2} 0 0 0]
 if { $info != 0 } {
   puts "Error: images v1 and v2 are different"
 } else {

@@ -1802,7 +1802,7 @@ struct QABugs_NHandleClass
 #include <STEPCAFControl_Writer.hxx>
 static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  if (argc != 1) {
+  if (argc != 2) {
     di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
     return 1;
   }
@@ -1824,7 +1824,7 @@ static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  writer.Write("test_box.step");
+  writer.Write(argv[1]);
   return 0;
 }
 
@@ -2247,11 +2247,11 @@ static TopoDS_Shape CreateTestShape (int& theShapeNb)
 #include <TNaming_Builder.hxx>
 static Standard_Integer OCC24931 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc != 1) {
+  if (argc != 2) {
     di << "Usage: " << argv[0] << " invalid number of arguments"<<"\n";
     return 1;
   }
-  TCollection_ExtendedString aFileName ("testdocument.xml");
+  TCollection_ExtendedString aFileName (argv[1]);
   PCDM_StoreStatus aSStatus  = PCDM_SS_Failure;
 
   Handle(TDocStd_Application) anApp = new AppStd_Application;
@@ -3593,8 +3593,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   theCommands.Add ("OCC24834", "OCC24834", __FILE__, OCC24834, group);
   theCommands.Add ("OCC24889", "OCC24889", __FILE__, OCC24889, group);
-  theCommands.Add ("OCC23951", "OCC23951", __FILE__, OCC23951, group);
-  theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
+  theCommands.Add ("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
+  theCommands.Add ("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
   theCommands.Add ("OCC24945", "OCC24945", __FILE__, OCC24945, group);
   theCommands.Add ("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
   theCommands.Add ("OCC25004", "OCC25004", __FILE__, OCC25004, group);
