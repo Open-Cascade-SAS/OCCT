@@ -127,6 +127,8 @@ namespace BRepMesh
   typedef NCollection_Handle<DMapOfVertexInteger>                                                   HDMapOfVertexInteger;
   typedef NCollection_Handle<DMapOfIntegerListOfXY>                                                 HDMapOfIntegerListOfXY;
   typedef NCollection_Handle<BRepMesh_VertexTool>                                                   HVertexTool;
+  typedef NCollection_Handle<SequenceOfBndB2d>                                                      HSequenceOfBndB2d;
+  typedef NCollection_Handle<SequenceOfInteger>                                                     HSequenceOfInteger;
 
   //! Other data structures
   typedef std::pair<HArray1OfSegments, HBndBox2dTree>                                               SegmentsTree;

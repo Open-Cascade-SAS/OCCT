@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC25806"
+puts "========"
+puts ""
+#################################
+# Stack overflow during meshing
+#################################
+
+restore [locate_data_file OCC25806_shape_1040739_1.brep] a
+set bug_info [incmesh a 0.001]
+if {[lindex $bug_info 6] != "NoError"} {
+  puts "ERROR: OCC25806 is reproduced. Errors during meshing."
+}
+
