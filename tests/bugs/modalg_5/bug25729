@@ -8,7 +8,7 @@ puts ""
 
 restore [locate_data_file bug25729_source_shape.brep] s
 
-offsetparameter 1.e-7 i i
+offsetparameter 1.e-7 c i
 offsetload s 0.14
 offsetperform result
 
