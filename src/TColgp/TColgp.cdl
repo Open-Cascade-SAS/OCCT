@@ -169,6 +169,8 @@ is
     	instantiates Sequence  from TCollection (Vec from gp);
   class SequenceOfXYZ
     	instantiates Sequence  from TCollection (XYZ from gp);
+  class SequenceOfAx1
+    	instantiates Sequence  from TCollection (Ax1 from gp);
 
 
     -- HSequences of 3D objects.

@@ -312,6 +312,16 @@ void ChFiDS_ElSpine::SetLastPointAndTgt(const gp_Pnt& P,
 }
 
 //=======================================================================
+//function : AddVertexWithTangent
+//purpose  : 
+//=======================================================================
+
+void ChFiDS_ElSpine::AddVertexWithTangent(const gp_Ax1& anAx1)
+{
+  VerticesWithTangents.Append(anAx1);
+}
+
+//=======================================================================
 //function : FirstPointAndTgt
 //purpose  : 
 //=======================================================================
@@ -333,6 +343,26 @@ void ChFiDS_ElSpine::LastPointAndTgt(gp_Pnt& P,
 {
   P = ptlast;
   T = tglast;
+}
+
+//=======================================================================
+//function : NbVertices
+//purpose  : 
+//=======================================================================
+
+Standard_Integer ChFiDS_ElSpine::NbVertices() const
+{
+  return VerticesWithTangents.Length();
+}
+
+//=======================================================================
+//function : VertexWithTangent
+//purpose  : 
+//=======================================================================
+
+const gp_Ax1& ChFiDS_ElSpine::VertexWithTangent(const Standard_Integer Index) const
+{
+  return VerticesWithTangents(Index);
 }
 
 //=======================================================================

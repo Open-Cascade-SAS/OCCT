@@ -15,6 +15,11 @@
 #include <Standard_DomainError.hxx>
 #include <gp_Vec2d.hxx>
 
+inline void Blend_Point::SetParameter(const Standard_Real Param)
+{
+  prm = Param;
+}
+
 inline const gp_Pnt& Blend_Point::PointOnS1 () const
 {
   return pt1;

@@ -160,6 +160,11 @@ is
 	     PC1,PC2       : Real from Standard);
     ---Purpose: Creates a point on two curves.
 	
+    SetParameter(me            : in out;
+    	     	 Param         : Real from Standard);
+    ---C++: inline
+    ---Purpose: Changes parameter on existing point
+	     
     Parameter(me)
     returns Real from Standard
     ---C++: inline

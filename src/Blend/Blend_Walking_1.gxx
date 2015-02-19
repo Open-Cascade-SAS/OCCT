@@ -15,8 +15,10 @@
 Blend_Walking::Blend_Walking(const TheSurface& Surf1,
 			     const TheSurface& Surf2,
 			     const Handle(TheTopolTool)& Domain1,
-			     const Handle(TheTopolTool)& Domain2):
+			     const Handle(TheTopolTool)& Domain2,
+                             const Handle(ChFiDS_HElSpine)& HGuide):
        sol(1,4),surf1(Surf1),surf2(Surf2),
+       ToCorrectOnRst1(Standard_False),ToCorrectOnRst2(Standard_False),
        done(Standard_False),
        clasonS1(Standard_True),clasonS2(Standard_True),
        check2d(Standard_True),check(Standard_True),
@@ -26,7 +28,8 @@ Blend_Walking::Blend_Walking(const TheSurface& Surf1,
   domain1 = Domain1;
   domain2 = Domain2;
   recdomain1 = Domain1;
-  recdomain2 = Domain2;  
+  recdomain2 = Domain2;
+  hguide = HGuide;
 }
 
 void Blend_Walking::SetDomainsToRecadre(const Handle(TheTopolTool)& Domain1,
@@ -56,7 +59,6 @@ void Blend_Walking::AddSingularPoint(const Blend_Point& P)
 
 void Blend_Walking::Perform(Blend_Function& Func,
 			    Blend_FuncInv& FuncInv,
-                            const Handle(ChFiDS_HElSpine)& HGuide,
 			    const Standard_Real Pdep,   
 			    const Standard_Real Pmax,
 			    const Standard_Real MaxStep,
@@ -135,6 +137,9 @@ void Blend_Walking::Perform(Blend_Function& Func,
   nbcomputedsection = 1;
 #endif
   // Mettre a jour la ligne.
+  //Correct first parameter if needed
+  if (ToCorrectOnRst1 || ToCorrectOnRst2)
+    previousP.SetParameter(CorrectedParam);
   line->Append(previousP);
 
   if(doextremities){
@@ -155,7 +160,7 @@ void Blend_Walking::Perform(Blend_Function& Func,
     }
   }
 
-  InternalPerform(Func,FuncInv,HGuide,Pmax);
+  InternalPerform(Func,FuncInv,Pmax);
 
   done = Standard_True;
 }
@@ -255,6 +260,8 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
   Standard_Boolean Isvtx1 = Standard_False, Isvtx2 = Standard_False;
   TheVertex Vtx1, Vtx2;
   gp_Pnt2d p2d;
+  Standard_Real CorrectedU = 0., CorrectedV = 0.;
+  gp_Pnt CorrectedPnt;
 
   Func.GetTolerance(tolerance, tolesp);
   Func.GetBounds(infbound, supbound);
@@ -358,6 +365,10 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
     ParSol(2) = p2d.Y();
     ParSol(3) = solrst1(3);
     ParSol(4) = solrst1(4);
+    gp_Pnt thePntOnRst = TheSurfaceTool::Value(surf1,ParSol(1),ParSol(2));
+    if (CorrectExtremityOnOneRst(1, ParSol(3), ParSol(4), param, thePntOnRst,
+                                 CorrectedU,CorrectedV,CorrectedPnt,CorrectedParam))
+      ToCorrectOnRst1 = Standard_True;
   }
   else
   { //if (recad2) {
@@ -377,6 +388,10 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
     ParSol(2) = solrst2(4);
     ParSol(3) = p2d.X();
     ParSol(4) = p2d.Y();
+    gp_Pnt thePntOnRst = TheSurfaceTool::Value(surf2,ParSol(3),ParSol(4));
+    if (CorrectExtremityOnOneRst(2, ParSol(1), ParSol(2), param, thePntOnRst,
+                                 CorrectedU,CorrectedV,CorrectedPnt,CorrectedParam))
+      ToCorrectOnRst2 = Standard_True;
   }
 
   Psol = param;
@@ -387,26 +402,32 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
   {
   case Blend_OnRst1:
     {
-      #ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(surf1, surf2, sol, param, Func);
-        }
-      #endif
+#ifdef OCCT_DEBUG
+      if (Blend_GettraceDRAWSECT())
+      {
+        Drawsect(surf1, surf2, sol, param, Func);
+      }
+#endif
       MakeExtremity(Ext1, Standard_True, Index1, solrst1(1), Isvtx1, Vtx1);
-      Ext2.SetValue(previousP.PointOnS2(), sol(3), sol(4), tolesp);
+      if (ToCorrectOnRst1)
+        Ext2.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolesp);
+      else
+        Ext2.SetValue(previousP.PointOnS2(), sol(3), sol(4), tolesp);
     }
     break;
 
   case Blend_OnRst2:
     {
-      #ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(surf1, surf2, sol, param, Func);
-        }
-      #endif
-      Ext1.SetValue(previousP.PointOnS1(), sol(1), sol(2), tolesp);
+#ifdef OCCT_DEBUG
+      if (Blend_GettraceDRAWSECT())
+      {
+        Drawsect(surf1, surf2, sol, param, Func);
+      }
+#endif
+      if (ToCorrectOnRst2)
+        Ext1.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolesp);
+      else
+        Ext1.SetValue(previousP.PointOnS1(), sol(1), sol(2), tolesp);
       MakeExtremity(Ext2, Standard_False, Index2, solrst2(1), Isvtx2, Vtx2);
     }
     break;
@@ -462,8 +483,7 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
   previousP.ParametersOnS1(sol(1),sol(2));
   previousP.ParametersOnS2(sol(3),sol(4));
 
-  Handle(ChFiDS_HElSpine) anHGuide;
-  InternalPerform(Func,FuncInv,anHGuide,P);
+  InternalPerform(Func,FuncInv,P);
   return Standard_True;
 }
 
@@ -504,8 +524,7 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
   if(OnS1) clasonS1 = Standard_False;
   else clasonS2 = Standard_False;
 
-  Handle(ChFiDS_HElSpine) anHGuide;
-  InternalPerform(Func,FuncInv,anHGuide,P);
+  InternalPerform(Func,FuncInv,P);
 
   clasonS1 = Standard_True;
   clasonS2 = Standard_True;
@@ -551,8 +570,7 @@ Standard_Boolean Blend_Walking::Complete(Blend_Function& Func,
   previousP.ParametersOnS1(sol(1),sol(2));
   previousP.ParametersOnS2(sol(3),sol(4));
 
-  Handle(ChFiDS_HElSpine) anHGuide;
-  InternalPerform(Func,FuncInv,anHGuide,Pmin);
+  InternalPerform(Func,FuncInv,Pmin);
 
   iscomplete = Standard_True;
   return Standard_True;

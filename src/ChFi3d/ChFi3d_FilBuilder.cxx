@@ -1198,7 +1198,7 @@ Standard_Boolean ChFi3d_FilBuilder::PerformFirstSection
     BRepBlend_ConstRad Func(S1,S2,HGuide);
     Func.Set(fsp->Radius(),Choix);
     Func.Set(myShape);
-    BRepBlend_Walking TheWalk(S1,S2,I1,I2);
+    BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     return TheWalk.PerformFirstSection(Func,Par,SolDep,
 				       tolesp,TolGuide,Pos1,Pos2);
   }
@@ -1206,7 +1206,7 @@ Standard_Boolean ChFi3d_FilBuilder::PerformFirstSection
     BRepBlend_EvolRad Func(S1,S2,HGuide,fsp->Law(HGuide));
     Func.Set(Choix);
     Func.Set(myShape);
-    BRepBlend_Walking TheWalk(S1,S2,I1,I2);
+    BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     return TheWalk.PerformFirstSection(Func,Par,SolDep,
 				       tolesp,TolGuide,Pos1,Pos2);
   }

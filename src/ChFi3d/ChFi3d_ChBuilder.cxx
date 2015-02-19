@@ -1289,7 +1289,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     
     BRepBlend_Chamfer Func(S1,S2,HGuide);
     Func.Set(dis,dis,Choix);
-    BRepBlend_Walking TheWalk(S1,S2,I1,I2);
+    BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     
     //calculate an approximate starting solution
     gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
@@ -1346,7 +1346,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     
     BRepBlend_Chamfer Func(S1,S2,HGuide);
     Func.Set(dis1,dis2,Choix);
-    BRepBlend_Walking TheWalk(S1,S2,I1,I2);
+    BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     
     //calculate an approximate starting solution
     gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
@@ -1407,7 +1407,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     if (disonF1)  {
       BRepBlend_ChAsym Func(S1,S2,HGuide);
       Func.Set(dis1, angle, Ch);
-      BRepBlend_Walking TheWalk(S1,S2,I1,I2);
+      BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     
     //calculate an approximate starting solution
       gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
@@ -1469,7 +1469,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       Standard_Real Rtemp;
       BRepBlend_ChAsym Func(S2,S1,HGuide);
       Func.Set(dis1, angle, Ch);
-      BRepBlend_Walking TheWalk(S2,S1,I2,I1);
+      BRepBlend_Walking TheWalk(S2,S1,I2,I1,HGuide);
     
     //calculate an approximate starting solution
       gp_Vec TgF, TgL, tmp1, tmp2, d1gui;

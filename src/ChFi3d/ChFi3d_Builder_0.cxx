@@ -3954,6 +3954,16 @@ Standard_EXPORT
   const BRepAdaptor_Curve& edc = Spine->CurrentElementarySpine(IF);
   tolpared = edc.Resolution(tol);
   Cv = BRep_Tool::Curve(E, First, Last);
+  //Add vertex with tangent
+  if (ES.IsPeriodic())
+  {
+    Standard_Real ParForElSpine = (E.Orientation() == TopAbs_FORWARD)? First : Last;
+    gp_Pnt PntForElSpine;
+    gp_Vec DirForElSpine;
+    Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
+    ES.AddVertexWithTangent(gp_Ax1(PntForElSpine, DirForElSpine));
+  }
+  /////////////////////////
   urefdeb = Spine->FirstParameter(IF);
   checkdeb = (nwf > urefdeb);
   if(checkdeb) {
@@ -4080,6 +4090,13 @@ Standard_EXPORT
     }
     //
     Cv = BRep_Tool::Curve(E, First, Last);
+    //Add vertex with tangent
+    Standard_Real ParForElSpine = (E.Orientation() == TopAbs_FORWARD)? First : Last;
+    gp_Pnt PntForElSpine;
+    gp_Vec DirForElSpine;
+    Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
+    ES.AddVertexWithTangent(gp_Ax1(PntForElSpine, DirForElSpine));
+    /////////////////////////
     if(IEdge == IL) {
       Standard_Real ureffin = Spine->LastParameter(iloc);
       Standard_Boolean checkfin = (nwl < ureffin);

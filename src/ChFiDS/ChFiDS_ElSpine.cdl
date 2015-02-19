@@ -26,9 +26,11 @@ uses
     Elips        from gp,  
     Hypr         from gp,  
     Parab        from gp,   
+    Ax1          from gp,
     BezierCurve  from Geom,  
     BSplineCurve from Geom, 
     Array1OfReal from TColStd,
+    SequenceOfAx1 from TColgp,
     SurfData     from ChFiDS,
     Shape        from GeomAbs,
     CurveType    from GeomAbs,
@@ -116,9 +118,17 @@ is
 
     LastPointAndTgt(me; P : out Pnt from gp; T : out Vec from gp);
 
+    NbVertices(me) returns Integer from Standard;
+
+    VertexWithTangent(me; Index : Integer from Standard)
+    returns Ax1 from gp;
+    ---C++: return const &
+
     SetFirstPointAndTgt(me : in out; P : Pnt from gp; T : Vec from gp);
 
     SetLastPointAndTgt(me : in out; P : Pnt from gp; T : Vec from gp);
+    
+    AddVertexWithTangent(me : in out; anAx1 : Ax1 from gp);
 
     SetCurve(me : in out; C : Curve from Geom);
 
@@ -187,6 +197,7 @@ ptfirst   : Pnt      from gp;
 ptlast    : Pnt      from gp;
 tgfirst   : Vec      from gp;
 tglast    : Vec      from gp;
+VerticesWithTangents : SequenceOfAx1 from TColgp;
 
 previous  : SurfData from ChFiDS;
 next      : SurfData from ChFiDS; 

@@ -54,8 +54,9 @@ raises NotDone from StdFail
 
 is
 
-    Create(Surf1,Surf2: TheSurface; Domain1,Domain2: TheTopolTool)
-    
+    Create(Surf1,Surf2: TheSurface;
+    	   Domain1,Domain2: TheTopolTool;
+	   HGuide  : HElSpine from ChFiDS)
     returns Walking from Blend;
     
     
@@ -67,7 +68,6 @@ is
 
     Perform(me: in out; F       : in out Function from Blend;
                         FInv    : in out FuncInv  from Blend;
-			HGuide  : HElSpine from ChFiDS;
                         Pdep    : Real from Standard;
                         Pmax    : Real from Standard;
 			MaxStep : Real from Standard;
@@ -166,9 +166,20 @@ is
 
     InternalPerform (me: in out;F       : in out Function from Blend;
                                 FInv    : in out FuncInv  from Blend;
-			    	HGuide  : HElSpine from ChFiDS;
                                 Bound   : Real from Standard)
 			
+    is static private;
+
+    CorrectExtremityOnOneRst (me; IndexOfRst  : Integer from Standard;
+    	    	    	    	  theU        : Real from Standard;
+				  theV        : Real from Standard;
+				  theParam    : Real from Standard;
+				  thePntOnRst : Pnt from gp;
+				  NewU : out Real from Standard;
+				  NewV : out Real from Standard;
+				  NewPoint : out Pnt from gp;
+				  NewParam : out Real from Standard)
+    returns Boolean from Standard			
     is static private;
 
 
@@ -266,6 +277,10 @@ fields
     domain2      : TheTopolTool;
     recdomain1   : TheTopolTool;
     recdomain2   : TheTopolTool;
+    hguide       : HElSpine         from ChFiDS;
+    ToCorrectOnRst1 : Boolean from Standard;
+    ToCorrectOnRst2 : Boolean from Standard;
+    CorrectedParam  : Real    from Standard;
 
     tolesp       : Real             from Standard;
     tolgui       : Real             from Standard;
