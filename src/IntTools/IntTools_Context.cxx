@@ -553,6 +553,35 @@ Standard_Boolean IntTools_Context::IsPointInFace
   return Standard_True;
 }
 //=======================================================================
+//function : IsPointInFace
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntTools_Context::IsPointInFace
+  (const gp_Pnt& aP,
+   const TopoDS_Face& aF,
+   const Standard_Real aTol) 
+{
+  Standard_Boolean bIn;
+  Standard_Real aDist;
+  //
+  GeomAPI_ProjectPointOnSurf& aProjector=ProjPS(aF);
+  aProjector.Perform(aP);
+  //
+  bIn = aProjector.IsDone();
+  if (bIn) {
+    aDist = aProjector.LowerDistance();
+    if (aDist < aTol) {
+      Standard_Real U, V;
+      //
+      aProjector.LowerDistanceParameters(U, V);
+      gp_Pnt2d aP2D(U, V);
+      bIn = IsPointInFace(aF, aP2D);
+    }
+  }
+  //
+  return bIn;
+}
+//=======================================================================
 //function : IsPointInOnFace
 //purpose  : 
 //=======================================================================

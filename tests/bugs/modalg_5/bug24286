@@ -9,6 +9,8 @@ puts ""
 restore [locate_data_file bug24286_pipeFiss.brep] b1
 restore [locate_data_file bug24286_shellFiss.brep] b2
 
+bfuzzyvalue 5.e-6
+
 bclearobjects
 bcleartools
 baddobjects b1 b2

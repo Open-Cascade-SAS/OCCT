@@ -70,14 +70,15 @@
 
 static
   Standard_Boolean IsCoplanar (const BRepAdaptor_Curve&  ,
-          const BRepAdaptor_Surface& );
+                               const BRepAdaptor_Surface& );
 static
   Standard_Boolean IsRadius (const BRepAdaptor_Curve& aCurve ,
-        const BRepAdaptor_Surface& aSurface);
+                             const BRepAdaptor_Surface& aSurface,
+                             const Standard_Real aCriteria);
 static
   Standard_Integer AdaptiveDiscret (const Standard_Integer iDiscret,
-        const BRepAdaptor_Curve& aCurve ,
-        const BRepAdaptor_Surface& aSurface);
+                                    const BRepAdaptor_Curve& aCurve ,
+                                    const BRepAdaptor_Surface& aSurface);
 
 //=======================================================================
 //function : IntTools_EdgeFace::IntTools_EdgeFace
@@ -1309,14 +1310,14 @@ void IntTools_EdgeFace::Perform()
           if (bIsTouch) {
             aCP.SetType(TopAbs_VERTEX);
             aCP.SetVertexParameter1(aTx);
-            aCP.SetRange1 (aTx, aTx);
+            //aCP.SetRange1 (aTx, aTx);
           }
         }
-        if (aType==TopAbs_VERTEX) {
+        else if (aType==TopAbs_VERTEX) {
           bIsTouch=CheckTouchVertex (aCP, aTx);
           if (bIsTouch) {
             aCP.SetVertexParameter1(aTx);
-            aCP.SetRange1 (aTx, aTx);
+            //aCP.SetRange1 (aTx, aTx);
           }
         }
       }
@@ -1327,7 +1328,7 @@ void IntTools_EdgeFace::Perform()
     if (aCType==GeomAbs_Circle && aSType==GeomAbs_Plane) {
       Standard_Boolean bIsCoplanar, bIsRadius;
       bIsCoplanar=IsCoplanar(myC, myS);
-      bIsRadius=IsRadius(myC, myS);
+      bIsRadius=IsRadius(myC, myS, myCriteria);
       if (!bIsCoplanar && !bIsRadius) {
         for (i=1; i<=aNb; i++) {
           IntTools_CommonPrt& aCP=mySeqOfCommonPrts(i);
@@ -1337,7 +1338,14 @@ void IntTools_EdgeFace::Perform()
             if (bIsTouch) {
               aCP.SetType(TopAbs_VERTEX);
               aCP.SetVertexParameter1(aTx);
-              aCP.SetRange1 (aTx, aTx);
+              //aCP.SetRange1 (aTx, aTx);
+            }
+          }
+          else if (aType==TopAbs_VERTEX) {
+            bIsTouch=CheckTouchVertex (aCP, aTx);
+            if (bIsTouch) {
+              aCP.SetVertexParameter1(aTx);
+              //aCP.SetRange1 (aTx, aTx);
             }
           }
         }
@@ -1483,8 +1491,9 @@ Standard_Boolean IsCoplanar (const BRepAdaptor_Curve& aCurve ,
 //function :  IsRadius
 //purpose  : 
 //=======================================================================
-Standard_Boolean IsRadius (const BRepAdaptor_Curve& aCurve ,
-                           const BRepAdaptor_Surface& aSurface)
+Standard_Boolean IsRadius (const BRepAdaptor_Curve& aCurve,
+                           const BRepAdaptor_Surface& aSurface,
+                           const Standard_Real aCriteria)
 {
   Standard_Boolean bFlag=Standard_False;
 
@@ -1500,7 +1509,7 @@ Standard_Boolean IsRadius (const BRepAdaptor_Curve& aCurve ,
     Standard_Real aR=aCirc.Radius();
     gp_Pln aPln=aSurface.Plane();
     Standard_Real aD=aPln.Distance(aCenter);
-    if (fabs (aD-aR) < 1.e-7) {
+    if (fabs (aD-aR) < aCriteria) {
       return !bFlag;
     }
   }

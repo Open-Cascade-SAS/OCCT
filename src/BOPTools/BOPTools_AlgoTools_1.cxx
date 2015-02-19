@@ -617,7 +617,7 @@ Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
   gp_Pnt2d aP2D;
   //
   aDist = 0.;
-  aTol2d = Precision::Confusion();
+  aTol2d = 1.e-10;//Precision::Confusion();
   //
   const Handle(Geom2d_Curve)& aC2D1=
     BRep_Tool::CurveOnSurface(aE1, aF, aT11, aT12);
@@ -637,13 +637,13 @@ Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
     }
     aNbPnt = aInter.NbPoints();
     if (aNbPnt) {
-      aDist = Precision::Infinite();
+      aDist = -Precision::Infinite();
       for (j = 1; j <= aNbPnt; ++j) {
         aP2D = aInter.Point(j).Value();
         aS->D0(aP2D.X(), aP2D.Y(), aP);
         aD=aPV.SquareDistance(aP);
-        if (aD < aDist) {
-          aDist = aD;
+        if (aD > aDist) {
+          aDist = 1.01 * aD;
         }
       }
     }

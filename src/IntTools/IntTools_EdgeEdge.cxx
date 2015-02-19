@@ -48,11 +48,11 @@ static
   Standard_Real PointBoxDistance(const Bnd_Box& aB,
                                  const gp_Pnt& aP);
 static 
-  void SplitRangeOnSegments(const Standard_Real aT1, 
-                            const Standard_Real aT2,
-                            const Standard_Real theResolution,
-                            const Standard_Integer theNbSeg,
-                            IntTools_SequenceOfRanges& theSegments);
+  Standard_Integer SplitRangeOnSegments(const Standard_Real aT1, 
+                                        const Standard_Real aT2,
+                                        const Standard_Real theResolution,
+                                        const Standard_Integer theNbSeg,
+                                        IntTools_SequenceOfRanges& theSegments);
 static
  Standard_Integer DistPC(const Standard_Real aT1, 
                          const Handle(Geom_Curve)& theC1,
@@ -268,11 +268,9 @@ void IntTools_EdgeEdge::FindSolutions(IntTools_SequenceOfRanges& theRanges1,
   aNb1 = IsClosed(myGeom1, aT11, aT12, myTol1, myRes1) ? 2 : 1;
   aNb2 = 2;
   //
-  SplitRangeOnSegments(aT11, aT12, myRes1, aNb1, aSegments1);
-  SplitRangeOnSegments(aT21, aT22, myRes2, aNb2, aSegments2);
+  aNb1 = SplitRangeOnSegments(aT11, aT12, myRes1, aNb1, aSegments1);
+  aNb2 = SplitRangeOnSegments(aT21, aT22, myRes2, aNb2, aSegments2);
   //
-  aNb1 = aSegments1.Length();
-  aNb2 = aSegments2.Length();
   for (i = 1; i <= aNb1; ++i) {
     const IntTools_Range& aR1 = aSegments1(i);
     for (j = 1; j <= aNb2; ++j) {
@@ -433,8 +431,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   IntTools_Range aR2(aT21, aT22);
   BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
   //
-  SplitRangeOnSegments(aT11, aT12, myRes1, 3, aSegments1);
-  aNb1 = aSegments1.Length();
+  aNb1 = SplitRangeOnSegments(aT11, aT12, myRes1, 3, aSegments1);
   for (i = 1; i <= aNb1; ++i) {
     const IntTools_Range& aR1 = aSegments1(i);
     FindSolutions(aR1, aR2, aB2, theRanges1, theRanges2);
@@ -685,37 +682,64 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
                                          Standard_Real& aT2)
 {
   Standard_Integer i, aNbS, iErr;
-  Standard_Real aDMin, aD, aCrit, aRes1;
-  Standard_Real aT1x, aT2x, aT1p, aT2p;
-  GeomAPI_ProjectPointOnCurve aProj;
-  IntTools_SequenceOfRanges aSeg1;
+  Standard_Real aDMin, aD, aRes1, aSolCriteria, aTouchCriteria;
+  Standard_Real aT1A, aT1B, aT1Min, aT2Min;
+  Standard_Real aT1Im, aT2Im, aT1Touch;
+  GeomAPI_ProjectPointOnCurve aProjPC;
+  IntTools_SequenceOfRanges aRanges;
+  Standard_Boolean bTouch;
   //
-  aT1 = (aT11 + aT12) * .5;
-  aT2 = (aT21 + aT22) * .5;
-  //
-  aDMin = 100.;
-  aD = 100.;
-  aCrit = 0.;//1.e-16;
+  aDMin = Precision::Infinite();
+  aSolCriteria   = 5.e-16;
+  aTouchCriteria = 5.e-13;
+  bTouch = Standard_False;
+  aT1Touch = aT11;
   //
   aRes1 = Resolution(myCurve1.Curve().Curve(), 
                      myCurve1.GetType(), myResCoeff1, myTol);
   aNbS = 10;
-  SplitRangeOnSegments(aT11, aT12, 3*aRes1, aNbS, aSeg1);
-  aNbS = aSeg1.Length();
+  aNbS = SplitRangeOnSegments(aT11, aT12, 3*aRes1, aNbS, aRanges);
   //
-  aProj.Init(myGeom2, aT21, aT22);
+  aProjPC.Init(myGeom2, aT21, aT22);
+  //
+  aT1 = (aT11 + aT12) * 0.5;
+  iErr = DistPC(aT1, myGeom1, aSolCriteria, aProjPC, aD, aT2, -1);
+  if (iErr == 1) {
+    aT2 = (aT21 + aT22) * 0.5;
+  }
+  //
+  aT1Im = aT1;
+  aT2Im = aT2;
+  //
   for (i = 1; i <= aNbS; ++i) {
-    const IntTools_Range& aR1 = aSeg1(i);
-    aR1.Range(aT1x, aT2x);
+    const IntTools_Range& aR1 = aRanges(i);
+    aR1.Range(aT1A, aT1B);
     //
-    iErr = FindDistPC(aT1x, aT2x, myGeom1, aCrit, myPTol1,
-                      aProj, aD, aT1p, aT2p, Standard_False);
-    if (iErr != 1 && aD < aDMin) {
-      aT1 = aT1p;
-      aT2 = aT2p;
-      aDMin = aD;
-      if (aDMin <= aCrit) {
-        break;
+    aD = myTol;
+    iErr = FindDistPC(aT1A, aT1B, myGeom1, aSolCriteria, myPTol1,
+                      aProjPC, aD, aT1Min, aT2Min, Standard_False);
+    if (iErr != 1) {
+      if (aD < aDMin) {
+        aT1 = aT1Min;
+        aT2 = aT2Min;
+        aDMin = aD;
+      }
+      //
+      if (aD < aTouchCriteria) {
+        if (bTouch) {
+          aT1A = (aT1Touch + aT1Min) * 0.5;
+          iErr = DistPC(aT1A, myGeom1, aTouchCriteria, 
+                        aProjPC, aD, aT2Min, -1);
+          if (aD > aTouchCriteria) {
+            aT1 = aT1Im;
+            aT2 = aT2Im;
+            break;
+          }
+        }
+        else {
+          aT1Touch = aT1Min;
+          bTouch = Standard_True;
+        }
       }
     }
   }
@@ -920,13 +944,14 @@ Standard_Boolean IntTools_EdgeEdge::IsIntersection(const Standard_Real aT11,
     //
     if (((anAngle1 < anAngleCriteria) || ((M_PI - anAngle1) < anAngleCriteria)) ||
         ((anAngle2 < anAngleCriteria) || ((M_PI - anAngle2) < anAngleCriteria))) {
-      GeomAPI_ProjectPointOnCurve aProj;
+      GeomAPI_ProjectPointOnCurve aProjPC;
       Standard_Integer iErr;
-      Standard_Real aD, aT1p, aT2p;
+      Standard_Real aD, aT1Min, aT2Min;
       //
-      aD = 100.;
-      aProj.Init(myGeom2, aT21, aT22);
-      iErr = FindDistPC(aT11, aT12, myGeom1, myTol, myRes1, aProj, aD, aT1p, aT2p, Standard_False);
+      aD = Precision::Infinite();
+      aProjPC.Init(myGeom2, aT21, aT22);
+      iErr = FindDistPC(aT11, aT12, myGeom1, myTol, myRes1, 
+                        aProjPC, aD, aT1Min, aT2Min, Standard_False);
       bRet = (iErr == 2);
     }
   }
@@ -947,7 +972,7 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
   Standard_Integer iErr, aNb, aNb1, i;
   Standard_Real aT1A, aT1B, aT1max, aT2max, aDmax;
   GeomAPI_ProjectPointOnCurve aProjPC;
-  IntTools_SequenceOfRanges aSeg1;
+  IntTools_SequenceOfRanges aRanges;
   //
   iErr  = 0;
   aDmax = -1.;
@@ -955,10 +980,9 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
   //
   // 1. Express evaluation
   aNb = 10; // Number of intervals on the curve #1
-  SplitRangeOnSegments(aT11, aT12, theCurveRes1, aNb, aSeg1);
-  aNb1 = aSeg1.Length();
+  aNb1 = SplitRangeOnSegments(aT11, aT12, theCurveRes1, aNb, aRanges);
   for (i = 1; i < aNb1; ++i) {
-    const IntTools_Range& aR1 = aSeg1(i);
+    const IntTools_Range& aR1 = aRanges(i);
     aR1.Range(aT1A, aT1B);
     //
     iErr = DistPC(aT1B, myGeom1, theCriteria, aProjPC, aDmax, aT2max);
@@ -967,7 +991,7 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
     }
   }
   //
-  // if the ranges in aSeg1 are less than theCurveRes1,
+  // if the ranges in aRanges are less than theCurveRes1,
   // there is no need to do step 2 (deep evaluation)
   if (aNb1 < aNb) {
     return iErr;
@@ -975,7 +999,7 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
   //
   // 2. Deep evaluation
   for (i = 2; i < aNb1; ++i) {
-    const IntTools_Range& aR1 = aSeg1(i);
+    const IntTools_Range& aR1 = aRanges(i);
     aR1.Range(aT1A, aT1B);
     //
     iErr = FindDistPC(aT1A, aT1B, myGeom1, theCriteria, theCurveRes1, 
@@ -1017,12 +1041,14 @@ Standard_Integer FindDistPC(const Standard_Real aT1A,
   aB = aT1B;
   //
   // check bounds
-  iErr = DistPC(aA, theC1, theCriteria, theProjPC, aYP, aT2P, aDmax, aT1max, aT2max, iC);
+  iErr = DistPC(aA, theC1, theCriteria, theProjPC, 
+                aYP, aT2P, aDmax, aT1max, aT2max, iC);
   if (iErr == 2) {
     return iErr;
   }
   //
-  iErr = DistPC(aB, theC1, theCriteria, theProjPC, aYL, aT2L, aDmax, aT1max, aT2max, iC);
+  iErr = DistPC(aB, theC1, theCriteria, theProjPC, 
+                aYL, aT2L, aDmax, aT1max, aT2max, iC);
   if (iErr == 2) {
     return iErr;
   }
@@ -1030,12 +1056,14 @@ Standard_Integer FindDistPC(const Standard_Real aT1A,
   aXP = aA + (aB - aA)*aGS;
   aXL = aB - (aB - aA)*aGS;
   //
-  iErr = DistPC(aXP, theC1, theCriteria, theProjPC, aYP, aT2P, aDmax, aT1max, aT2max, iC);
+  iErr = DistPC(aXP, theC1, theCriteria, theProjPC, 
+                aYP, aT2P, aDmax, aT1max, aT2max, iC);
   if (iErr) {
     return iErr;
   }
   //
-  iErr = DistPC(aXL, theC1, theCriteria, theProjPC, aYL, aT2L, aDmax, aT1max, aT2max, iC);
+  iErr = DistPC(aXL, theC1, theCriteria, theProjPC, 
+                aYL, aT2L, aDmax, aT1max, aT2max, iC);
   if (iErr) {
     return iErr;
   }
@@ -1046,20 +1074,25 @@ Standard_Integer FindDistPC(const Standard_Real aT1A,
       aXL = aXP;
       aYL = aYP;
       aXP = aA + (aB - aA)*aGS;
-      iErr = DistPC(aXP, theC1, theCriteria, theProjPC, aYP, aT2P, aDmax, aT1max, aT2max, iC);
-      if (iErr) {
-        return iErr;
-      }
+      iErr = DistPC(aXP, theC1, theCriteria, theProjPC, 
+                    aYP, aT2P, aDmax, aT1max, aT2max, iC);
     }
     else {
       aB = aXP;
       aXP = aXL;
       aYP = aYL;
       aXL = aB - (aB - aA)*aGS;
-      iErr = DistPC(aXL, theC1, theCriteria, theProjPC, aYL, aT2L, aDmax, aT1max, aT2max, iC);
-      if (iErr) {
-        return iErr;
+      iErr = DistPC(aXL, theC1, theCriteria, theProjPC, 
+                    aYL, aT2L, aDmax, aT1max, aT2max, iC);
+    }
+    //
+    if (iErr) {
+      if ((iErr == 2) && !bMaxDist) {
+        aXP = (aA + aB) * 0.5;
+        DistPC(aXP, theC1, theCriteria, theProjPC, 
+               aYP, aT2P, aDmax, aT1max, aT2max, iC);
       }
+      return iErr;
     }
     //
     if ((aB - aA) < theEps) {
@@ -1087,7 +1120,7 @@ Standard_Integer DistPC(const Standard_Real aT1,
   Standard_Integer iErr;
   //
   iErr = DistPC(aT1, theC1, theCriteria, theProjPC, aD, aT2, iC);
-  if (iErr) {
+  if (iErr == 1) {
     return iErr;
   }
   //
@@ -1137,16 +1170,16 @@ Standard_Integer DistPC(const Standard_Real aT1,
 //function : SplitRangeOnSegments
 //purpose  : 
 //=======================================================================
-void SplitRangeOnSegments(const Standard_Real aT1, 
-                          const Standard_Real aT2,
-                          const Standard_Real theResolution,
-                          const Standard_Integer theNbSeg,
-                          IntTools_SequenceOfRanges& theSegments)
+Standard_Integer SplitRangeOnSegments(const Standard_Real aT1, 
+                                      const Standard_Real aT2,
+                                      const Standard_Real theResolution,
+                                      const Standard_Integer theNbSeg,
+                                      IntTools_SequenceOfRanges& theSegments)
 {
   Standard_Real aDiff = aT2 - aT1;
   if (aDiff < theResolution || theNbSeg == 1) {
     theSegments.Append(IntTools_Range(aT1, aT2));
-    return;
+    return 1;
   }
   //
   Standard_Real aDt, aT1x, aT2x, aSeg;
@@ -1172,6 +1205,8 @@ void SplitRangeOnSegments(const Standard_Real aT1,
   //
   IntTools_Range aR(aT1x, aT2);
   theSegments.Append(aR);
+  //
+  return aNbSegments;
 }
 
 //=======================================================================

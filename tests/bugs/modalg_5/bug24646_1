@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC24646"
+puts "============"
+puts ""
+######################################################
+# Wrong result done by Boolean Operation algorithm
+######################################################
+
+restore [locate_data_file bug24646_b1.brep] b1
+restore [locate_data_file bug24646_b2.brep] b2
+
+bop b1 b2
+bopfuse result
+
+bopcheck result
+
+set square 8.76332e+06
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 88
+ EDGE      : 180
+ WIRE      : 86
+ FACE      : 86
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 443
+"
+checknbshapes result ${nbshapes_expected} 1 "Result done by Boolean Operation algorithm"
+
+set 2dviewer 1

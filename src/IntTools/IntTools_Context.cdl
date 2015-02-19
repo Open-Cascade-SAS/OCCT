@@ -188,7 +188,17 @@ is
     --- inside the boundaries of the face aF,
     --- otherwise returns false
     ---
-
+ 
+    IsPointInFace(me:mutable;    
+       aP3D :  Pnt   from  gp; 
+       aF   :  Face  from TopoDS; 
+       aTol :  Real from Standard) 
+    returns Boolean from Standard; 
+    ---Purpose:
+    --- Returns true if the point aP2D is
+    --- inside the boundaries of the face aF,
+    --- otherwise returns false
+    ---
     
     IsPointInOnFace(me:mutable;     
        aF   :  Face   from  TopoDS;

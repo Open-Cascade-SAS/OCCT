@@ -332,13 +332,14 @@ void BOPAlgo_PaveFiller::PerformEF()
             }
             //
             const gp_Pnt& aPnew = BRep_Tool::Pnt(aVnew);
-            if (!myContext->IsValidPointForFace(aPnew, 
-                                                aF, 
-                                                aTolE+aTolF)) {
+            Standard_Real aTolV = BRep_Tool::Tolerance(aVnew);
+            aTolV = Max(aTolV, Max(aTolE, aTolF));
+            //
+            if (!myContext->IsPointInFace(aPnew, aF, aTolV)) {
               continue;
             }
             //
-            aBB.UpdateVertex(aVnew, aTolE);
+            aBB.UpdateVertex(aVnew, aTolV);
             //
             aMIEFC.Add(nF);
             // 1
