@@ -62,7 +62,7 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds (const IVtk_IdType theId) const
 {
   IVtk_ShapeIdList aRes;
   // Get the sub-shape by the given id.
-  TopoDS_Shape aShape = mySubShapeIds.FindKey (theId);
+  TopoDS_Shape aShape = mySubShapeIds.FindKey ((Standard_Integer) theId);
   TopAbs_ShapeEnum aShapeType = aShape.ShapeType();
   if (aShapeType == TopAbs_VERTEX || aShapeType == TopAbs_EDGE ||
       aShapeType == TopAbs_FACE)
@@ -106,7 +106,7 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds (const IVtk_IdType theId) const
 //============================================================================
 const TopoDS_Shape& IVtkOCC_Shape::GetSubShape (const IVtk_IdType theId) const
 {
-  return mySubShapeIds.FindKey (theId);
+  return mySubShapeIds.FindKey ((Standard_Integer) theId);
 }
 
 //============================================================================
