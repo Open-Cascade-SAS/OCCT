@@ -1,6 +1,7 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 Debian60-64: CHECKSHAPE : Faulty" 
 
+# No checkape error on WNT in 64-bit only (after 22598 and issue 25797 was registered for that)
 
 set filename trj6_pm4-hc-214.stp
 
