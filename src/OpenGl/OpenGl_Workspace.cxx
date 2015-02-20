@@ -674,7 +674,12 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   if (myResultFBO->GetVPSizeX() != aSizeX
    || myResultFBO->GetVPSizeY() != aSizeY)
   {
-    myResultFBO->Init (aGlCtx, aSizeX, aSizeY);
+    // prepare FBOs containing main scene
+    // for further blitting and rendering immediate presentations on top
+    if (aGlCtx->core20fwd != NULL)
+    {
+      myResultFBO->Init (aGlCtx, aSizeX, aSizeY);
+    }
   }
   if (myResultFBO->IsValid())
   {
