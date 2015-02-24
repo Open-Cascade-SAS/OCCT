@@ -37,7 +37,6 @@
 #include <TopExp.hxx> 
 #include <TopExp_Explorer.hxx>
 
-#define OCC351
 #ifdef OCCT_DEBUG
 //#define MDTV_DEB_SC
 #ifdef OCCT_DEBUG_SC
@@ -768,7 +767,6 @@ void TNaming_Localizer::FindShapeContext (const Handle(TNaming_NamedShape)& NS,
     }
   }
 // end szy
-#ifdef OCC351
   if (!SC.IsNull()) {
     Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(SC,Father);
     if (!aNS.IsNull()) {
@@ -789,7 +787,6 @@ void TNaming_Localizer::FindShapeContext (const Handle(TNaming_NamedShape)& NS,
       }
     }
   }
-#endif
 
 }
 

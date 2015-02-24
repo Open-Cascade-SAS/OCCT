@@ -15,7 +15,6 @@
 -- commercial license or contractual agreement.
 
 -- Modified:    FMN - 24/12/97 -> Suppression GEOMLITE
---              CQO - 24/12/97 -> BUC50037
 --              stt:25-02-98; S3558: ajout IfManageStandardEvent
 --              stt:08-04-98; suppr IfManageStandardEvent
 --              CAL - 18/08/98 -> S3892. Ajout grilles 3d.
@@ -24,9 +23,6 @@
 --                               TypeOfTriedron* from Aspect(et pas V3d)
 --              CAL - 21/10/98 -> Speciale. Ajout methode Tumble.
 --              29-OCT-98 : DCB : Adding ScreenCopy () method.
---      GG - 10/11/99 : PRO19603 Adding Redraw( area ) method
---      GG - 15/12/99 : GER61351 Adding SetBackgroundColor()
---                   and    BackgroundColor() methods
 --      GG - 24/01/00 : -> Remove internal PixToRef() method, use Convert()
 --                method instead.
 --              -> Rename internal RefToPix() to Convert() method.
@@ -37,11 +33,6 @@
 --              -> Add method Dump()
 --      THA  - 17/08/00 Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
 --              -> Add Print method (works only under Windows).
---      GG  - IMP231100
---              -> Add IsActiveLight() & IsActivePlane() methods
---      SZV - IMP100701
---              -> Add ToPixMap() method
---              GG - RIC120302 Add NEW SetWindow method.
 --              SAV - 22/10/01
 --                              -> Add EnableDepthTest() & IsDepthTestEnabled().
 --              VSV - 28/05/02: ZBUFFER mode of Trihedron

@@ -22,7 +22,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopExp_Explorer.hxx>
 
-#define BUC60862
 //#define MDTV_DEB_INT
 //=======================================================================
 //function : TNaming_ShapesSet
@@ -51,7 +50,6 @@ TNaming_ShapesSet::TNaming_ShapesSet (const TopoDS_Shape&    CS,
   }
   else {
 
-#ifdef BUC60862
 // corrected by vro 13.09.00:
     if (Type > CS.ShapeType()) {
       for (TopExp_Explorer exp(CS,Type) ; exp.More(); exp.Next()) {
@@ -67,12 +65,6 @@ TNaming_ShapesSet::TNaming_ShapesSet (const TopoDS_Shape&    CS,
       Add(CS);
     }
 // end of correction by vro.
-#else
-    for (TopExp_Explorer exp(CS,Type) ; exp.More(); exp.Next()) {
-      Add(exp.Current());
-    }
-#endif
-
   }
 }
 

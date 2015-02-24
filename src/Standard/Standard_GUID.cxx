@@ -21,7 +21,6 @@
 #define Standard_GUID_SIZE_ALLOC Standard_GUID_SIZE+1
 
 //Fixes incorrect treatment of GUID given as a string with invalid format
-#define OCC669 
 
 //=======================================================================
 //function : Standard_GUID_MatchChar
@@ -35,9 +34,7 @@ Standard_Integer Standard_GUID_MatchChar(const Standard_CString buffer,
 
   while(*tmpbuffer != '\0' && *tmpbuffer != aChar) {tmpbuffer++; result++;}
 
-#ifdef OCC669
   if(*tmpbuffer == '\0') return -1; //The searched symbol wasn't found
-#endif 
 
   if (result >= 0) result++;
 
@@ -59,9 +56,7 @@ Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer,
     strtmp[pos] = '\0';
     my32b = (Standard_Integer) strtoul(strtmp, (char **)NULL, 16);
   }
-#ifdef OCC669
   else return NULL;
-#endif 
   return &tmpBuffer[pos+1];
 }
 //=======================================================================
@@ -80,9 +75,7 @@ Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter tmpBuffer,
     strtmp[pos] = '\0';
     my32b = (Standard_ExtCharacter) strtoul(strtmp, (char **)NULL, 16);
   }
-#ifdef OCC669
   else return NULL;
-#endif 
 //  cout << "V16 :" << hex(my32b) << endl;
   return &tmpBuffer[pos+1];
 }
@@ -185,11 +178,8 @@ Standard_GUID::Standard_GUID(const Standard_CString aGuid)
 {
   char* tmpBuffer =(char*) aGuid;
 
-#ifdef OCC669 
   if(!CheckGUIDFormat(tmpBuffer)) Standard_RangeError::Raise("Invalid format of GUID");
-#endif 
 
-#ifdef  OCC669
   if((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer,my32b)) == NULL) 
     Standard_RangeError::Raise("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b1)) == NULL) 
@@ -198,12 +188,6 @@ Standard_GUID::Standard_GUID(const Standard_CString aGuid)
     Standard_RangeError::Raise("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b3)) == NULL) 
     Standard_RangeError::Raise("Invalid format of GUID");
-#else
-  tmpBuffer = Standard_GUID_GetValue32(tmpBuffer,my32b);
-  tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b1);
-  tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b2);
-  tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b3);
-#endif 
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b1);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b2);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b3);
@@ -234,11 +218,8 @@ Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
 
   tmpBuffer[i] = '\0';
 
-#ifdef OCC669
   if(!CheckGUIDFormat(tmpBuffer)) Standard_RangeError::Raise("Invalid format of GUID");
-#endif 
 
-#ifdef  OCC669
   if((tmpBuffer = Standard_GUID_GetValue32(tmpBuffer,my32b)) == NULL) 
     Standard_RangeError::Raise("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b1)) == NULL) 
@@ -247,12 +228,6 @@ Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
     Standard_RangeError::Raise("Invalid format of GUID");
   if((tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b3)) == NULL) 
     Standard_RangeError::Raise("Invalid format of GUID");
-#else
-  tmpBuffer = Standard_GUID_GetValue32(tmpBuffer,my32b);
-  tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b1);
-  tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b2);
-  tmpBuffer = Standard_GUID_GetValue16(tmpBuffer,my16b3);
-#endif 
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b1);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b2);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b3);

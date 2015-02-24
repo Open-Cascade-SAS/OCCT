@@ -18,20 +18,8 @@
 --   rob : Dec 17 1997 -> Update Method Added + Use in Deviation Angle...
 --   rob : Feb 05 1998 -> UpdateOnlySelection, UpdateOnlyPrs
 --         Apr 02 1998 -> Select Methods has been added a boolean updateviewer.
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible i
---	    Quantity_Color instead the restricted NameOfColor.
---          Add SetCurrentFacingModel() methods
---   GG  : IMP140200 Add SetSelectedAspect() method
---   GG  : 25/05/00 BUC60688 Add SetSensitivity() methods 
 --   VSV : 22/05/01 Add Selection by polygon
 --   SAV :  Add DisplayFromCollector() method
---   ZSV : IMP160701 Add InitDetected(),MoreDetected(),NextDetected(),
---	   	         DetectedCurrentShape(),DetectedCurrentObject()
---			 methods
---   GG  : IMP051001 Add SetZDetection() and ZDetection() methods
---   SAV : OCC172 : Delete() redefined to remove selection objects from
---                  the static map.
---   SAN : OCC4895 22/03/04 High-level interface for controlling polygon offsets
 --   SLN : SetToHilightSelected method added
 
 

@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60915        //GG 05/06/01 Enable to compute the requested arrow size
-//                      if any in all dimensions.
-
 #include <AIS_ParallelRelation.ixx>
 
 #include <Standard_NotImplemented.hxx>
@@ -91,11 +88,7 @@ AIS_ParallelRelation::AIS_ParallelRelation(const TopoDS_Shape& aFShape,
   mySShape = aSShape;
   myPlane = aPlane;
   myAutomaticPosition = Standard_False;
-#ifdef BUC60915
   SetArrowSize( anArrowSize );
-#else
-  myArrowSize = anArrowSize;
-#endif
   myPosition = aPosition;
   mySymbolPrs = aSymbolPrs;
 }
@@ -296,17 +289,13 @@ void AIS_ParallelRelation::ComputeTwoEdgesParallel(const Handle(Prs3d_Presentati
 
   myDirAttach = l1.Direction();
   // size
-#ifdef BUC60915
   if( !myArrowSizeIsDefined ) {
-#endif
     Standard_Real arrSize1 (myArrowSize), arrSize2 (myArrowSize);
     if (!isInfinite1) arrSize1 = ptat11.Distance(ptat12)/50.;
     if (!isInfinite2) arrSize2 = ptat21.Distance(ptat22)/50.;
     myArrowSize = Max(myArrowSize,Max(arrSize1,arrSize2));
 //  myArrowSize = Min(myArrowSize,Min(arrSize1,arrSize2));
-#ifdef BUC60915
   }
-#endif
 
   if ( myAutomaticPosition )
     {    

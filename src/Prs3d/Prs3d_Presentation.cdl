@@ -14,9 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
--- Modified:	GG IMP020200 Add Transformation() method
-
-
 class Presentation from Prs3d inherits Structure from Graphic3d
 
     	---Purpose: Defines a presentation object which can be displayed,

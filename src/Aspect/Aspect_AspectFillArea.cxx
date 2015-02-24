@@ -52,8 +52,6 @@
 //	MyHatchStyle	:	HatchStyle;
 
 
-#define OCC1174  // SAV : 08/01/03 Added back face interior color
-
 //-Constructors
 
 //-Destructors
@@ -64,9 +62,7 @@ Aspect_AspectFillArea::Aspect_AspectFillArea () {
 
 	MyInteriorStyle	= Aspect_IS_EMPTY;
 	MyInteriorColor	= Quantity_NOC_CYAN1;
-#ifdef OCC1174
 	MyBackInteriorColor = Quantity_NOC_CYAN1;
-#endif
 	MyEdgeColor	= Quantity_NOC_WHITE;
 	MyEdgeType	= Aspect_TOL_SOLID;
 	MyEdgeWidth	= 1.0;
@@ -103,9 +99,7 @@ void Aspect_AspectFillArea::SetInteriorColor (const Quantity_Color& AColor) {
 
 void Aspect_AspectFillArea::SetBackInteriorColor( const Quantity_Color& color )
 {
-#ifdef OCC1174
   MyBackInteriorColor = color;
-#endif
 }
 
 void Aspect_AspectFillArea::SetEdgeColor (const Quantity_Color& AColor) {
@@ -156,9 +150,7 @@ void Aspect_AspectFillArea::Values (Aspect_InteriorStyle& AStyle, Quantity_Color
 
 	AStyle		= MyInteriorStyle;
 	AIntColor	= MyInteriorColor;
-#ifdef OCC1174
 	BackIntColor    = MyBackInteriorColor;
-#endif
 	AEdgeColor	= MyEdgeColor;
 	AType		= MyEdgeType;
 	AWidth		= MyEdgeWidth;

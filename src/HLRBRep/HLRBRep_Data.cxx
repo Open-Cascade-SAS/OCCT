@@ -16,8 +16,6 @@
 
 //#define No_Standard_OutOfRange
 
-#define OCC191 // jfa 26/02/2002 Bug of cone display
-
 #include <HLRBRep_Data.ixx>
 
 #include <StdFail_UndefinedDerivative.hxx>
@@ -830,9 +828,7 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	    mySLProps.SetParameters(pu,pv);
 	    gp_Pnt Pt;
 	    Pt = EC.Value3D(p);
-#ifdef OCC191
             if (mySLProps.IsNormalDefined())
-#endif
             {
               gp_Vec Nm = mySLProps.Normal();
               Pt.Transform(T);

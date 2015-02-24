@@ -14,36 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified:	Tue Oct 15 10:12:02 1996
-//              correction in BuildFilletEdge (PRO3529 : computation of dist)
-// Modified:	Tue Oct 22 09:23:11 1996
-//              correction in BuildFilletEdge (PRO5827 : computation of vec1)
-// Modified:	Tue Oct 22 09:23:11 1996
-//              new status in ComputeFillet for degenerated edges (PRO4896)
-// Modified:	Thu Dec  5 16:25:44 1996
-//              correction in BuildFilletEdge (PRO4896 : NewExtr1, NewExtr2)
-// Modified:	Tue Apr 22 16:25:44 1996
-//              correction in BuildFilletEdge (ID140047 : inside)
-// Modified:	Fri Oct 24 10:47:52 1997
-//              distinction point de tangence --> on arrete
-//                         point de rebroussement --> on continue
-//              (PRO10404 : Ve3, Ve4)
-// Modified:	Tue Oct 28 11:55:53 1997
-//              construction de filletEdge avec les parametres U1 et Vv1
-//              au lieu des vertex (PRO10434)
-// Modified:	Tue Apr  7 14:35:58 1998
-//              construction de filletEdge avec les parametres U1 et Vv1
-//              ET les vertex NewExtr1, NewExtr2 sinon pb sur qq aretes
-//              degenerees (GER60069 + controle de PRO10434)
-// Modified:	Mon Jun 22 13:32:25 1998
-//              verification de la validite des parametres (PRO13078 partiel)
-// Modified:	Fri Sep 25 09:38:04 1998
-//              status = ChFi2d_NotAuthorized si les aretes ne sont pas
-//              des droites ou des cercles; fonction IsLineOrCircle
-//              (BUC60288)
-
-
-
 #include <ChFi2d.hxx>
 #include <ChFi2d_Builder.ixx>
 

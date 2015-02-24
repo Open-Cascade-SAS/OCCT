@@ -38,19 +38,13 @@ Handle(TDF_Attribute) MDataStd_NameRetrievalDriver::NewEmpty() const
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
 
-#define BUGOCC425
-
 void MDataStd_NameRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,const Handle(TDF_Attribute)& Target,const Handle(MDF_RRelocationTable)& ) const
 {
   Handle(PDataStd_Name) S = Handle(PDataStd_Name)::DownCast (Source);
   Handle(TDataStd_Name) T = Handle(TDataStd_Name)::DownCast (Target);
-#ifdef BUGOCC425
   if(!S->Get().IsNull()) {
-#endif 
     TCollection_ExtendedString Name = (S->Get())->Convert ();
     T->Set (Name);
-#ifdef BUGOCC425
   }
-#endif 
 }
 

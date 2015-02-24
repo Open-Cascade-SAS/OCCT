@@ -16,7 +16,6 @@
 
 -- Update:      FDA Oct 15 1994
 --		ZOV - Mars 30 1998
---		GG IMP230300 Add SetColor() and Color() methods
 --              GG - 23/11/00 Add IsDisplayed() method
 
 

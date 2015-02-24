@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60876	//GG_050401 Enable to highlight something
-//			with a specific hilight mode
-
 #include <StdSelect_BRepOwner.ixx>
 #include <SelectBasics_EntityOwner.hxx>
 
@@ -64,11 +61,7 @@ Standard_Boolean StdSelect_BRepOwner::
 IsHilighted(const Handle(PrsMgr_PresentationManager)& PM,
 	    const Standard_Integer aMode) const 
 {
-#ifdef BUC60876
   Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-#else
-  Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
-#endif
   if(myPrsSh.IsNull())
     return PM->IsHighlighted(Selectable(),M);
   return PM->IsHighlighted(myPrsSh,M);
@@ -82,11 +75,7 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
 				  const Standard_Integer aMode)
 {
   
-#ifdef BUC60876
   Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-#else
-  Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
-#endif
   Handle(SelectMgr_SelectableObject) aSel = Selectable();
   if (myFromDecomposition)
   {
@@ -129,11 +118,7 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
 					   const Quantity_NameOfColor aCol,
 					   const Standard_Integer aMode)
 {
-#ifdef BUC60876
   Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-#else
-  Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
-#endif
   Handle(SelectMgr_SelectableObject) aSel = Selectable();
   if (myFromDecomposition)
   {
@@ -178,11 +163,7 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
 void StdSelect_BRepOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& PM,
 				    const Standard_Integer aMode)
 {
-#ifdef BUC60876
   Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-#else
-  Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
-#endif
   if(myPrsSh.IsNull() || !myFromDecomposition)
     PM->Unhighlight(Selectable(),M);
   else
@@ -192,11 +173,7 @@ void StdSelect_BRepOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& PM
 void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
 				const Standard_Integer aMode)
 {
-#ifdef BUC60876
   Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
-#else
-  Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
-#endif
   if (!myPrsSh.IsNull())
     PM->Clear(myPrsSh,M);
   myPrsSh.Nullify();

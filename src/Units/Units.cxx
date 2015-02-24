@@ -19,7 +19,6 @@
 // Modified     Mon Apr  7 16:52:40 1997 by Patrick BOSINCO
 //              Add Dimensions access methods
 
-#define PRO8619	//GG_160697
 //		Convertir correctement les unites translatees
 
 #include <stdlib.h>
@@ -282,11 +281,7 @@ Standard_Real Units::ToSI(const Standard_Real aData,
     lastdimension = token->Dimensions();
   }
   dim = lastdimension;
-#ifdef PRO8619
   return (aData + lastmove) * lastvalue;
-#else
-  return aData * lastvalue;
-#endif
 }
 
 
@@ -331,11 +326,7 @@ Standard_Real Units::FromSI(const Standard_Real aData,
     lastdimension = token->Dimensions();
   }
   dim = lastdimension;
-#ifdef PRO8619
   return (aData / lastvalue) - lastmove;
-#else
-  return aData / lastvalue;
-#endif
 }
 
 

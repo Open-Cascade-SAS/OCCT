@@ -14,8 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
--- Updated:     GG IMP230300 The color fields are moved in Aspect_Grid
-
 private class CircularGrid from V3d inherits CircularGrid from Aspect
 
 uses

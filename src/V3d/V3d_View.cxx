@@ -53,14 +53,7 @@ ne marche pas. Contournement en appelant WNT_Window::Size(Int,Int).
 06-10-98 : CAL ; Ajout d'un TIMER si CSF_GraphicTimer est definie.
 16-10-98 : CAL ; Retrait d'un TIMER si CSF_GraphicTimer est definie.
 06-11-98 : CAL ; PRO ?????. Probleme dans ZFitAll si un point dans la vue.
-13-06-98 : FMN ; PRO14896: Correction sur la gestion de la perspective (cf Programming Guinde)
 29-OCT-98 : DCB : Adding ScreenCopy () method.
-10-11-99 : GG ; PRO19603 Add Redraw( area ) method
-IMP130100 : GG
--> Don't increase too much the ZSize.
--> Initialize correctly the Z clipping and D cueing
-planes.
-IMP100701 : SZV ; Add ToPixMap() method
 
 REMARQUES :
 -----------
@@ -72,34 +65,6 @@ Don't forget that the matrices work in float and not in double.
 To solve the problem (for lack of a better solution) I make 2 passes.
 
 ************************************************************************/
-
-//GER61351  //GG_15/12/99 Add SetBackgroundColor() and BackgroundColor() methods
-
-
-#define IMP020300 //GG Don't use ZFitAll in during Rotation
-//      for perf improvment
-
-#define IMP210600 //GG Avoid to have infinite loop when call Rotation() method
-//      without call before StartRotation().
-//      This problem occurs when CTRL MB3 is maintain press betwwen 2 views.
-
-#define IMP250900 //GG Enable rotation around screen Z axis when
-//      rotation begin far the center of the screen.
-//      Thanks to Patrick REGINSTER (SAMTECH)
-//      GG 21/12/00 Due to a regression on the previous specifications
-//      this new functionnality is right now deactivated
-//      by default (see StartRotation(...,zRotationThreshold)
-//      method.
-
-#define BUC60952  //GG Enable to rotate around the view axis
-//      and the required view point
-
-#define IMP260302 //GG To avoid conflicting in Window destructor
-//      nullify this handle in Remove method
-
-#define OCC280          //SAV fix for FitAll problem in the perspective view.
-
-#define OCC1188         //SAV Added methods to set background image
 
 /*----------------------------------------------------------------------*/
 /*
@@ -583,10 +548,8 @@ void V3d_View::SetBackgroundImage( const Standard_CString FileName,
                                    const Aspect_FillMethod FillStyle,
                                    const Standard_Boolean update )
 {
-#ifdef OCC1188
   if( MyView->IsDefined() )
     MyView->SetBackgroundImage( FileName, FillStyle, update ) ;
-#endif
 }
 
 //=============================================================================
@@ -596,10 +559,8 @@ void V3d_View::SetBackgroundImage( const Standard_CString FileName,
 void V3d_View::SetBgImageStyle( const Aspect_FillMethod FillStyle,
                                 const Standard_Boolean update )
 {
-#ifdef OCC1188
   if( MyView->IsDefined() )
     MyView->SetBgImageStyle( FillStyle, update ) ;
-#endif
 }
 
 //=============================================================================
@@ -2725,9 +2686,7 @@ void V3d_View::FitAll(const Handle(Aspect_Window)& aWindow,
 //function : StartRotation
 //purpose  :
 //=============================================================================
-#ifdef IMP250900
 static Standard_Boolean zRotation = Standard_False;
-#endif
 void V3d_View::StartRotation(const Standard_Integer X,
                              const Standard_Integer Y,
                              const Quantity_Ratio zRotationThreshold)
@@ -2739,7 +2698,6 @@ void V3d_View::StartRotation(const Standard_Integer X,
   ry = Standard_Real(Convert(y));
   Gravity(gx,gy,gz);
   Rotate(0.,0.,0.,gx,gy,gz,Standard_True);
-#ifdef IMP250900
   zRotation = Standard_False;
   if( zRotationThreshold > 0. ) {
     Standard_Real dx = Abs(sx - rx/2.);
@@ -2748,7 +2706,6 @@ void V3d_View::StartRotation(const Standard_Integer X,
     Standard_Real dd = zRotationThreshold * (rx + ry)/2.;
     if( dx > dd || dy > dd ) zRotation = Standard_True;
   }
-#endif
 
 }
 
@@ -2759,13 +2716,10 @@ void V3d_View::StartRotation(const Standard_Integer X,
 void V3d_View::Rotation(const Standard_Integer X,
                         const Standard_Integer Y)
 {
-#ifdef IMP210600
   if( rx == 0. || ry == 0. ) {
     StartRotation(X,Y);
     return;
   }
-#endif
-#ifdef IMP250900
   Standard_Real dx=0.,dy=0.,dz=0.;
   if( zRotation ) {
     dz = atan2(Standard_Real(X)-rx/2., ry/2.-Standard_Real(Y)) -
@@ -2775,20 +2729,7 @@ void V3d_View::Rotation(const Standard_Integer X,
     dy = (sy - Standard_Real(Y)) * M_PI / ry;
   }
   Rotate(dx, dy, dz, gx, gy, gz, Standard_False);
-#else
-  Standard_Real dx = (Standard_Real(X - sx)) * M_PI;
-  Standard_Real dy = (Standard_Real(sy - Y)) * M_PI;
-  Rotate(dx/rx, dy/ry, 0., gx, gy, gz, Standard_False);
-#endif
-#ifdef IMP020300
   if( !myImmediateUpdate ) Update();
-#else
-  myImmediateUpdate = Standard_False;
-  Rotate(dx/rx, dy/ry, 0., gx, gy, gz, Standard_False);
-  ZFitAll (Zmargin);    //Don't do that, perf improvment
-  myImmediateUpdate = Standard_True;
-  ImmediateUpdate();
-#endif
 }
 
 //=============================================================================

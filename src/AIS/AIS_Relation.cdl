@@ -14,11 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
---				       the restricted NameOfColor.
---   GG  :  BUC60915 05/06/01 Enable to compute the requested arrow size if any
---	    in all dimensions, add a field myArrowSizeIsDefined.
-
 deferred class Relation from AIS inherits InteractiveObject from AIS
 
 	---Purpose: One of the four types of interactive object in

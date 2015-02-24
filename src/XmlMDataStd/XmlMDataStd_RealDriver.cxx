@@ -15,8 +15,6 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#define OCC6010 // vro 09.06.2004
-
 #include <stdio.h>
 #include <XmlMDataStd_RealDriver.ixx>
 #include <TDataStd_Real.hxx>
@@ -76,13 +74,9 @@ void XmlMDataStd_RealDriver::Paste (const Handle(TDF_Attribute)& theSource,
                                     XmlObjMgt_SRelocationTable&  ) const
 {
   Handle(TDataStd_Real) anInt = Handle(TDataStd_Real)::DownCast(theSource);
-#ifndef OCC6010
-  TCollection_AsciiString aValueStr (anInt->Get());
-#else
   char aValueChar[32];
   Sprintf(aValueChar, "%.17g", anInt->Get());
   TCollection_AsciiString aValueStr(aValueChar);
-#endif
   // No occurrence of '&', '<' and other irregular XML characters
   XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
 }

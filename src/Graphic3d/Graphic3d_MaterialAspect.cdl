@@ -18,11 +18,6 @@
 --        26-03-99 : FMN ; Compatibilite ascendante: Ajout methodes SetColor() et Color()
 --        09-04-99 : GG ; Compatibilite ascendante:
 --                         NameOfPhysicalMaterial disparait.
---        23-11-99 : GG : GER61351 Add Name() & Reset() methods
---	  IMP150200: GG : Add IsEqual() IsDifferent() methods.
---			  Add NumberOfMaterials() MaterialName() class methods
---	  IMP171201: GG : Add MaterialName(), SetMaterialName()
---			  instance methods and field MyRequestedMaterialName
 
 class MaterialAspect from Graphic3d
 

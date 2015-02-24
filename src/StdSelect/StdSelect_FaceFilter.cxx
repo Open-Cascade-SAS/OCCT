@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60576	//GG_5/10/99 Adds Cone to enum TypeOfFace
-
-
 #include <StdSelect_FaceFilter.ixx>
 #include <BRepAdaptor_Surface.hxx>
 #include <TopoDS_Face.hxx>
@@ -72,20 +69,12 @@ IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
   case StdSelect_Sphere: 
     {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
-#ifdef BUC60576
       return (surf.GetType() == GeomAbs_Sphere);      
-#else
-      return (surf.GetType() == GeomAbs_Cone);      
-#endif
     }
   case StdSelect_Torus: 
     {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
-#ifdef BUC60576
       return ( surf.GetType() == GeomAbs_Torus);      
-#else
-      return ( surf.GetType() == GeomAbs_Plane || surf.GetType() == GeomAbs_Cone);      
-#endif
     }
   case StdSelect_Revol: 
     {
@@ -93,20 +82,16 @@ IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
       return ( surf.GetType() == GeomAbs_Cylinder || 
 	       surf.GetType() == GeomAbs_Cone     ||
 	       surf.GetType() == GeomAbs_Torus    
-#ifdef BUC60576
 	       ||
 	       surf.GetType() == GeomAbs_Sphere	  || 
 	       surf.GetType() == GeomAbs_SurfaceOfRevolution 
-#endif
 	     ); 
     }
-#ifdef BUC60576
   case StdSelect_Cone: // waiting for the free cdl, it is used for Cone
     {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
       return (surf.GetType() == GeomAbs_Cone);      
     }
-#endif
   }
   return Standard_False;
 }

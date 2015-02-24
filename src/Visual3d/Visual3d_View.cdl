@@ -23,9 +23,6 @@
 --              22-09-98: BGN; S3989 (anciennement S3819)
 --                             TypeOfTriedron* from Aspect(et pas Visual3d)
 --		02-12-98: S4062. Ajout des layers.
---		13-09-99: GG; GER61454 Adds LightLimit() and PlaneLimit() methods
---		10-11-99: GG; Add PRO19603 Redraw( area ) method
---		14-01-00: GG; Add IMP140100 ViewManager() method
 --		THA  - 17/08/00 Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
 --				-> Add Print methods (works only under Windows).-
 --		GG - RIC120302 Add NEW SetWindow method.

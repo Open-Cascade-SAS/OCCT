@@ -35,7 +35,6 @@
 --              and derivated used for model presentation.
 --                       Required: enumeration TypeOfPrimitive;
 --                  imported PrimitiveArray; class PrimitiveList.
---      17-12-01 : GG ; IMP171201 : Add material name UserDefined
 --              Thanks to Stephane ROUTELOUS
 --              20-01-2009 : ABD Integration support of system fonts (using FTGL and FreeType)
 -- Objective    :   Specifications definitives

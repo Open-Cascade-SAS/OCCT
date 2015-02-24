@@ -31,17 +31,6 @@
 #include <TPrsStd_Driver.hxx>
 #include <TPrsStd_DriverTable.hxx>
 
-
-#define BUC60917
-#define BUC61050
-
-#define OCC1029
-#define OCC1030
-#define OCC1031
-#define OCC1032
-#define OCC1033
-#define OCC1034
-
 //=======================================================================
 //function : Set
 //purpose  : 
@@ -116,19 +105,15 @@ myTransparency(0.),
 myColor(Quantity_NOC_WHITE),
 myMaterial(Graphic3d_NOM_BRASS),
 myWidth(0.),
-#ifdef BUC61050
 myMode(0),
 mySelectionMode(0),
-#endif
 isDisplayed(Standard_False),
 hasOwnColor(Standard_False),
 hasOwnMaterial(Standard_False),
 hasOwnTransparency(Standard_False),
-hasOwnWidth(Standard_False)
-#ifdef BUC61050
-,hasOwnMode(Standard_False),
+hasOwnWidth(Standard_False),
+hasOwnMode(Standard_False),
 hasOwnSelectionMode(Standard_False)
-#endif
 {}
 
 
@@ -558,7 +543,6 @@ void TPrsStd_AISPresentation::UnsetMode()
   }
 }
 
-#ifdef BUC61050
 //=======================================================================
 //function : SelectionMode
 //purpose  : 
@@ -616,8 +600,6 @@ void TPrsStd_AISPresentation::UnsetSelectionMode()
     myAIS->UnsetSelectionMode();
   }
 }
-#endif
-
 
 //=======================================================================
 //function : ID
@@ -636,9 +618,7 @@ Handle(TDF_Attribute) TPrsStd_AISPresentation::BackupCopy() const
   copy->myTransparency = myTransparency;
   copy->myColor = myColor;
   copy->myMode= myMode;
-#ifdef BUC60917
   copy->myWidth= myWidth;
-#endif
   copy->myMaterial = myMaterial;
   copy->hasOwnColor = hasOwnColor;
   copy->hasOwnMaterial = hasOwnMaterial;
@@ -648,10 +628,8 @@ Handle(TDF_Attribute) TPrsStd_AISPresentation::BackupCopy() const
   copy->myAIS.Nullify();
   copy->isDisplayed = isDisplayed;
   copy->myDriverGUID = myDriverGUID;
-#ifdef BUC61050
   copy->mySelectionMode= mySelectionMode;
   copy->hasOwnSelectionMode = hasOwnSelectionMode;
-#endif
   return copy; 
 }
 
@@ -677,71 +655,39 @@ void TPrsStd_AISPresentation::Restore (const Handle(TDF_Attribute)& With)
 
   if(!with->HasOwnMaterial()) hasOwnMaterial = Standard_False;
   else { 
-#ifndef OCC1031
-    myMaterial = with->Material();
-#endif
     hasOwnMaterial = Standard_True;
   }
-#ifdef OCC1031
   myMaterial = with->Material();
-#endif
 
   if(!with->HasOwnColor()) hasOwnColor = Standard_False;
   else { 
-#ifndef OCC1030
-    myColor = with->Color(); 
-#endif
     hasOwnColor = Standard_True;
   }
-#ifdef OCC1030
   myColor = with->Color(); 
-#endif
 
   if(!with->HasOwnWidth()) hasOwnWidth = Standard_False;
   else { 
-#ifndef OCC1032
-    myWidth = with->Width();
-#endif
     hasOwnWidth = Standard_True;
   }
-#ifdef OCC1032
   myWidth = with->Width();
-#endif
 
  if(!with->HasOwnMode()) hasOwnMode = Standard_False;
   else { 
-#ifndef OCC1033
-    myMode = with->Mode();
-#endif
     hasOwnMode = Standard_True;
   }
-#ifdef OCC1033
   myMode = with->Mode();
-#endif
   
-#ifdef BUC61050
   if(!with->HasOwnSelectionMode()) hasOwnSelectionMode = Standard_False;
   else { 
-#ifndef OCC1034
-    mySelectionMode = with->SelectionMode();
-#endif
     hasOwnSelectionMode = Standard_True;
   }
-#ifdef OCC1034
   mySelectionMode = with->SelectionMode();
-#endif
-#endif
 
   if(!with->HasOwnTransparency()) hasOwnTransparency = Standard_False;
   else { 
-#ifndef OCC1029
-    myTransparency = with->Transparency();
-#endif
     hasOwnTransparency = Standard_True;
   }
-#ifdef OCC1029
   myTransparency = with->Transparency();
-#endif
 
   isDisplayed = with->IsDisplayed();
   myDriverGUID  = with->GetDriverGUID();
@@ -781,13 +727,11 @@ void TPrsStd_AISPresentation::Paste (const Handle(TDF_Attribute)& Into,
     into->hasOwnMode = Standard_True;
   }
 
-#ifdef BUC61050
  if(!hasOwnSelectionMode) into->hasOwnSelectionMode = Standard_False;
   else {
     into->mySelectionMode = mySelectionMode;
     into->hasOwnSelectionMode = Standard_True;
   }
-#endif
 
   if(!hasOwnTransparency) into->hasOwnTransparency = Standard_False;
   else {
@@ -971,13 +915,11 @@ void TPrsStd_AISPresentation::AISUpdate ()
            
     }
 
-#ifdef BUC61050
     if (hasOwnSelectionMode) { 
       if (myAIS->SelectionMode() != mySelectionMode ) {
 	myAIS->SetSelectionMode(mySelectionMode); 
       } 
     }
-#endif
 
   }
   

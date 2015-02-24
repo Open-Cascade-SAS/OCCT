@@ -29,8 +29,6 @@
 
 #include <BRep_Tool.hxx>
 
-#define OCC2932
-
 //=======================================================================
 //function : GetID
 //purpose  : 
@@ -67,7 +65,6 @@ Handle(TDataXtd_Point) TDataXtd_Point::Set (const TDF_Label& L, const gp_Pnt& P)
 { 
   Handle(TDataXtd_Point) A = Set (L);
 
-#ifdef OCC2932
   Handle(TNaming_NamedShape) aNS;
   if(L.FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
     if(!aNS->Get().IsNull())
@@ -80,7 +77,6 @@ Handle(TDataXtd_Point) TDataXtd_Point::Set (const TDF_Label& L, const gp_Pnt& P)
 	   return A;
        }
   }
-#endif
 
   TNaming_Builder B(L);
   B.Generated(BRepBuilderAPI_MakeVertex(P));

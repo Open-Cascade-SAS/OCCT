@@ -14,8 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
---				       the restricted NameOfColor.
 --Modified by   rob Wed 11 feb 98 : add Size Methods
 
 

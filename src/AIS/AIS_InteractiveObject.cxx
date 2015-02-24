@@ -16,18 +16,6 @@
 
 // Modified :   22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets 
 
-#define BUC60577        //GG_101099     Enable to compute correctly
-//                      transparency with more than one object in the view.
-
-#define GER61351	//GG_171199     Enable to set an object RGB color
-//			instead a restricted object NameOfColor. 
-//			Add SetCurrentFacingModel() method
-
-#define BUC60632	//GG 15/03/00 Add protection on SetDisplayMode()
-//			method, compute only authorized presentation.
-
-#define OCC708          //SAV unsetting transformation correctly
-
 #include <AIS_InteractiveObject.ixx>
 
 #include <Aspect_PolygonOffsetMode.hxx>
@@ -76,9 +64,7 @@ mystate(0)
 {
   Handle (AIS_InteractiveContext) Bid;
   myCTXPtr = Bid.operator->();
-#ifdef GER61351
   SetCurrentFacingModel();
-#endif
 }
 
 //=======================================================================
@@ -208,9 +194,7 @@ void AIS_InteractiveObject::ClearUsers()
 //=======================================================================
 void AIS_InteractiveObject::SetDisplayMode(const Standard_Integer aMode)
 {
-#ifdef BUC60632
   if( AcceptDisplayMode(aMode) )
-#endif
     myDisplayMode = aMode;
 }
   
@@ -230,7 +214,6 @@ void AIS_InteractiveObject::SetSelectionMode(const Standard_Integer aMode)
 //function : 
 //purpose  : 
 //=======================================================================
-#ifdef GER61351
 void AIS_InteractiveObject::SetCurrentFacingModel(const Aspect_TypeOfFacingModel aModel) {
   myCurrentFacingModel = aModel;
 }
@@ -243,7 +226,6 @@ void AIS_InteractiveObject::SetCurrentFacingModel(const Aspect_TypeOfFacingModel
 Aspect_TypeOfFacingModel AIS_InteractiveObject::CurrentFacingModel() const {
   return myCurrentFacingModel;
 }
-#endif
 
 //=======================================================================
 //function : SetColor
@@ -251,7 +233,6 @@ Aspect_TypeOfFacingModel AIS_InteractiveObject::CurrentFacingModel() const {
 //=======================================================================
 
 void AIS_InteractiveObject::SetColor(const Quantity_NameOfColor aColor)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aColor));
 }
@@ -262,7 +243,6 @@ void AIS_InteractiveObject::SetColor(const Quantity_NameOfColor aColor)
 //=======================================================================
 
 void AIS_InteractiveObject::SetColor(const Quantity_Color &aColor)
-#endif
 {
   myOwnColor = aColor;
   hasOwnColor = Standard_True;
@@ -313,9 +293,6 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfMaterial aName)
       myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
       
       myDrawer->ShadingAspect()->SetMaterial(aName);
-#ifndef BUC60577	//???
-      myDrawer->ShadingAspect()->SetColor(AIS_GraphicTool::GetInteriorColor(myDrawer->Link()));
-#endif
     }
   myOwnMaterial  = aName;
   hasOwnMaterial = Standard_True;
@@ -327,11 +304,7 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfMaterial aName)
 
 void AIS_InteractiveObject::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 {
-#ifdef BUC60577
   if( HasColor() || IsTransparent() || HasMaterial() )
-#else
-  if(hasOwnColor ||(myTransparency==0.0) || hasOwnMaterial )
-#endif
     {
       myDrawer->ShadingAspect()->SetMaterial(aMat);
     }
@@ -349,7 +322,6 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 //=======================================================================
 void AIS_InteractiveObject::UnsetMaterial()
 {
-#ifdef BUC60577
   if( !HasMaterial() ) return;
   if( HasColor() || IsTransparent()) {
     myDrawer->ShadingAspect()->SetMaterial(
@@ -357,13 +329,6 @@ void AIS_InteractiveObject::UnsetMaterial()
     if( HasColor() ) SetColor(myOwnColor);
     if( IsTransparent() ) SetTransparency(myTransparency);
   }
-#else
-  if(!hasOwnMaterial) return;
-  if(hasOwnColor ||(myTransparency==0.0))
-    {
-      myDrawer->ShadingAspect()->SetMaterial(AIS_GraphicTool::GetMaterial(myDrawer->Link()));
-    }
-#endif
   else{
     Handle(Prs3d_ShadingAspect) SA;
     myDrawer->SetShadingAspect(SA);
@@ -378,7 +343,6 @@ void AIS_InteractiveObject::UnsetMaterial()
 void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
 {
 
-#ifdef BUC60577                     // Back & Front material can be different !
 
   if(!HasColor() && !IsTransparent() && !HasMaterial() ) {
         myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
@@ -390,34 +354,6 @@ void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
   FMat.SetTransparency(aValue); BMat.SetTransparency(aValue);
   myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
   myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
-#else
-  if(aValue<0.0 || aValue>1.0) return;
-  
-  if(aValue<=0.05) 
-    {
-      UnsetTransparency();
-      return;
-    }
-  
-
-  if(hasOwnColor || hasOwnMaterial || myTransparency> 0.0)
-    {
-      Graphic3d_MaterialAspect Mat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-      Mat.SetTransparency(aValue);
-      myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(Mat);
-      myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(Mat);
-    }
-  else
-    {
-      myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-      if(!myDrawer->Link().IsNull())
-	myDrawer->ShadingAspect()->SetMaterial(AIS_GraphicTool::GetMaterial(myDrawer->Link()));
-      Graphic3d_MaterialAspect Mat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-      Mat.SetTransparency(aValue);
-      myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(Mat);
-      myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(Mat);
-    }
-#endif
   myTransparency = aValue;
 }
 
@@ -427,7 +363,6 @@ void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
 //=======================================================================
 void AIS_InteractiveObject::UnsetTransparency()
 {
-#ifdef BUC60577                     // Back & Front material can be different !
     if(HasColor() || HasMaterial() )
     {
       Graphic3d_MaterialAspect FMat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
@@ -436,16 +371,6 @@ void AIS_InteractiveObject::UnsetTransparency()
       myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
       myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
     }
-#else
-    if(hasOwnColor || hasOwnMaterial )
-    {
-      Graphic3d_MaterialAspect Mat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-      Mat.SetTransparency(0.0);
-//      myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(Mat);
-//      myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(Mat);
-       myDrawer->ShadingAspect()->SetMaterial(Mat);
-    }
-#endif
   else{
     Handle (Prs3d_ShadingAspect) SA;
     myDrawer->SetShadingAspect(SA);

@@ -13,10 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define IMP310300	//GG Don't raise in constructor when an HLS color
-//			is defined with hue sets to undefined (grey color)
-
-
 //-Version	
 
 //-Design	Declaration des variables specifiques aux couleurs
@@ -109,12 +105,8 @@ Quantity_Color::Quantity_Color (const Quantity_Parameter R1, const Quantity_Para
 		break;
 
 		case Quantity_TOC_HLS :
-#ifdef IMP310300
 			if ( (R1 < 0. && R1 != RGBHLS_H_UNDEFINED && R3 != 0.0)
 			  || (R1 > 360.) ||
-#else
-			if ( R1 < 0. || R1 > 359. ||
-#endif
 			     R2 < 0. || R2 > 1. ||
 			     R3 < 0. || R3 > 1. )
 				Standard_OutOfRange::Raise ("Color out");
@@ -192,11 +184,7 @@ void Quantity_Color::SetValues (const Quantity_Parameter R1, const Quantity_Para
 		break;
 
 		case Quantity_TOC_HLS :
-#ifdef IMP310300
 			if ( R1 < 0. || R1 > 360. ||
-#else
-			if ( R1 < 0. || R1 > 359. ||
-#endif
 			     R2 < 0. || R2 > 1. ||
 			     R3 < 0. || R3 > 1. )
 				Standard_OutOfRange::Raise ("Color out");
@@ -3797,15 +3785,7 @@ void call_hlsrgb (float h, float l, float s, float& r, float& g, float& b)
 	hcopy = h;
 	lmuls = l * s;
 
-#ifdef IMP310300
 	if (s == 0.0 && h == RGBHLS_H_UNDEFINED) {
-#else
-	if (s == 0.0) {
-	   if (h == RGBHLS_H_UNDEFINED)
-	      /* cas teinte indefinie */
-	      h = RGBHLS_H_UNDEFINED;
-	   else
-#endif
 	      /* cas achromatique */
 	      r = g = b = l;
 	}

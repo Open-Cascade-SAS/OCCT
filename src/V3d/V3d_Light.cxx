@@ -20,9 +20,6 @@
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
       00-09-92 : GG  ; Creation.
-      30-03-98 : ZOV ; PRO6774 (reconstruction of the class hierarchy and suppressing useless methods)
-      IMP230300: GG Add SetColor() and Color() methods
-      IMP231100: GG Add IsDisplayed() method
 
 ************************************************************************/
 

@@ -28,9 +28,6 @@
 
 #include <Standard_NoSuchObject.hxx>
 
-#define BUC60862
-
-#ifdef BUC60862
 #include <TNaming_Naming.hxx>
 #include <TNaming_ListOfNamedShape.hxx>
 #include <TDF_AttributeMap.hxx>
@@ -39,7 +36,6 @@
 #include <TDF_ChildIterator.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#endif
 
 //=======================================================================
 //function : LastModif 
@@ -555,7 +551,6 @@ void TNamingTool_Write (const TopoDS_Shape& S,
 #endif
 
 
-#ifdef BUC60862
 //=======================================================================
 //function : FindShape
 //purpose  : ANaming
@@ -677,4 +672,3 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
 #endif
       
 }
-#endif

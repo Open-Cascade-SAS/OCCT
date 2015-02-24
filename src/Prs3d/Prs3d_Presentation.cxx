@@ -14,8 +14,6 @@
 
 // Modified:     22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
 
-#define IMP020200       //GG Add Transformation() method
-
 #include <Prs3d_Presentation.ixx>
 #include <TColStd_Array2OfReal.hxx>
 #include <Graphic3d_Structure.hxx>
@@ -120,7 +118,6 @@ void Prs3d_Presentation::Transform(const Handle(Geom_Transformation)& aTransform
   SetTransform(Array, Graphic3d_TOC_REPLACE);
 }
 
-#ifdef IMP020200
 //=======================================================================
 //function : Transformation
 //purpose  : 
@@ -140,7 +137,6 @@ TColStd_Array2OfReal matrix(1,4,1,4);
 
   return gtrsf;
 }
-#endif
 
 //=======================================================================
 //function : Place

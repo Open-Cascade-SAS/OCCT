@@ -67,11 +67,7 @@
 
 #include <TNaming_NCollections.hxx>
 
-#define BUC60925
-#define OCC352
-
 #ifdef OCCT_DEBUG_DBGTOOLS_WRITE
-//#define OCC355
 #define MDTV_DEB
 #define MDTV_DEB_OR
 #define MDTV_DEB_UNN
@@ -392,8 +388,6 @@ static TopoDS_Shape MakeShape (const TopTools_MapOfShape& MS)
   return TopoDS_Shape();  
 }
 
-#ifdef OCC352
-
 //=======================================================================
 //function : ShapeWithType
 //purpose  : Tries to make shape with given type from the given shape
@@ -496,8 +490,6 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape     theShape,
   }
   return theShape;
 }
-
-#endif
 
 //=======================================================================
 //function : FindModifUntil
@@ -613,9 +605,7 @@ static Standard_Boolean ModifUntil (const TDF_Label&                  L,
 {
   TopTools_MapOfShape MS; 
   TDF_LabelMap Forbiden;
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); // fills Forbidden from Stop
 
 #ifdef OCCT_DEBUG_GEN  
@@ -662,9 +652,7 @@ static Standard_Boolean ConstShape (const TDF_Label&                  L,
 {
   TopTools_MapOfShape MS; 
   TDF_LabelMap Forbiden;
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden);
 
   TopoDS_Shape S;
@@ -711,9 +699,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 				      const Standard_Integer            Index)
 {
   if (Args.IsEmpty()) return Standard_False;
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
   TNaming_ListIteratorOfListOfNamedShape it(Args); 
   TopTools_MapOfShape MS; 
   TDF_LabelMap        Forbiden;
@@ -901,9 +887,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
 			       const TDF_Label&                  ContextLabel)
 {  
   if (Args.IsEmpty()) return Standard_False;
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
   // temporary solution for Orientation name
   Standard_Boolean isOr(Standard_True);
 /* not completed
@@ -1043,7 +1027,6 @@ static Standard_Boolean Union (const TDF_Label&                  L,
     else cout << "UNION: Shape is NOT found in Context" <<endl;
   }
 #endif
-#ifdef OCC352
   if(found) 
     B.Select(aCand, aCand);
   else {
@@ -1065,15 +1048,6 @@ static Standard_Boolean Union (const TDF_Label&                  L,
 #endif
     B.Select(aShape,aShape);
   }
-#else
-
-  for (TopTools_MapIteratorOfMapOfShape itM(S.Map()); itM.More(); itM.Next()) {
-    const TopoDS_Shape& S = itM.Key();
-    B.Select(S,S);
-  }
-
-#endif
-
   return Standard_True;
 }
 
@@ -1135,9 +1109,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
   // First argument : label of generation
   // Next arguments : generators.
 
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
 
   TDF_Label   LabelOfGeneration = Args.First()->Label();
 #ifdef OCCT_DEBUG_GEN
@@ -1341,9 +1313,7 @@ static Standard_Boolean Identity (const TDF_Label&                L,
   if (Args.Extent() > 2) {
     Standard_ConstructionError::Raise("TNaming_Name::Solve");
     }
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
   const Handle(TNaming_NamedShape)& A = Args.First();
   TopTools_MapOfShape MS;
   TDF_LabelMap        Forbiden;
@@ -1355,11 +1325,7 @@ static Standard_Boolean Identity (const TDF_Label&                L,
 #endif  
   TNaming_Builder B(L);
   for (TopTools_MapIteratorOfMapOfShape itM(MS); itM.More(); itM.Next()) {
-#ifdef OCC352
     const TopoDS_Shape& S = ShapeWithType(itM.Key(),ShapeType);
-#else
-    const TopoDS_Shape& S = itM.Key();
-#endif
 #ifdef OCCT_DEBUG_SOL2
     //TopAbs_Orientation Or = S.Orientation();
 #endif
@@ -1386,9 +1352,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   TNaming_Builder B(L); 
 
   TDF_LabelMap        Forbiden;
-#ifdef BUC60925
   if(!ValidArgs(Args)) return Standard_False;
-#endif
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); //all descendants of Stop (New shapes) are forbidden
   if (!Stop.IsNull())    Forbiden.Remove(Stop->Label());
   //----------------------------------------

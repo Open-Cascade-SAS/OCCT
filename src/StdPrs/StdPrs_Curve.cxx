@@ -16,7 +16,6 @@
 
 // Great zoom leads to non-coincidence of
 // a point and non-infinite lines passing throught this point:
-#define OCC64 
 
 #include <StdPrs_Curve.ixx>
 

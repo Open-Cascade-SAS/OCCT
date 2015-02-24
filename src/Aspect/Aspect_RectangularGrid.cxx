@@ -13,11 +13,6 @@
 
 // Modified	23/02/98 : FMN ; Remplacement PI par Standard_PI
 
-#define CSR577	//GG 25/09/00 Avoid to have unaccuracy coordinates computation
-//		when the grid is activated.
-
-#define xTRACE
-
 #include <Aspect_RectangularGrid.ixx>
 
 
@@ -100,20 +95,9 @@ void Aspect_RectangularGrid::Compute(const Quantity_Length X,
     Standard_Integer n2 = Standard_Integer ( Abs(D2)/myYStep + 0.5);
     Standard_Real offset1 = c1 + Standard_Real(n1) * Sign (myXStep , D1);
     Standard_Real offset2 = c2 + Standard_Real(n2) * Sign (myYStep , D2);
-#ifdef CSR577
     Standard_Real Delta = a1*b2 - b1*a2;
     gridX = ( offset2*a1 - offset1*a2) /Delta;
     gridY = ( offset2*b1 - offset1*b2) /Delta;
-#else
-    Standard_Real Delta = b1*a2 - a1*b2;
-    gridX = ( offset1*a2 - offset2*a1) /Delta;
-    gridY = ( offset1*b2 - offset2*b1) /Delta;
-#endif
-#ifdef TRACE
-    cout << "Aspect_RectangularGrid::Compute (" << Quantity_Length (X) << ", "
-         << Quantity_Length (Y) << ", " << Quantity_Length (gridX) << ", "
-         << Quantity_Length (gridY) << ")" << endl;
-#endif
 }
 
 Quantity_Length Aspect_RectangularGrid::XStep() const {
@@ -143,7 +127,6 @@ void Aspect_RectangularGrid::Init () {
 //  b2 = Sin (mySecondAngle + RotationAngle() + M_PI / 2.);
 //  c2 = XOrigin() * b2 - YOrigin() * a2;
 
-#ifdef CSR577
   Standard_Real angle1 = myFirstAngle + RotationAngle();
   Standard_Real angle2 = mySecondAngle + RotationAngle();
   if ( angle1 != 0. ) {
@@ -162,15 +145,6 @@ void Aspect_RectangularGrid::Init () {
   } else {
     a2 = -1.; b2 = 0.; c2 = YOrigin();
   }
-#else
-  a1 = -Sin (myFirstAngle + RotationAngle()); 
-  b1 = Cos (myFirstAngle + RotationAngle());
-  c1 = XOrigin() * b1 - YOrigin() * a1;
-
-  a2 = -Sin (mySecondAngle + RotationAngle() + M_PI / 2.); 
-  b2 = Cos (mySecondAngle + RotationAngle() + M_PI / 2.);
-  c2 = XOrigin() * b2 - YOrigin() * a2;
-#endif
 //-zov
 }
 

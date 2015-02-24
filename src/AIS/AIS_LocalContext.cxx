@@ -16,20 +16,6 @@
 
 //Modified by ROB : Traque des UpdateConversion intempestifs.
 
-#define BUC60688       //GG 25/05/00 Add SetSensitivity() methods.
-
-#define BUC60722        //GG_040900 Disable detection on an unviewable object
-
-#define IMP160701 	//SZV Add InitDetected(),MoreDetected(),NextDetected(),
-//                       DetectedCurrentShape(),DetectedCurrentObject()
-//                       methods
-
-#define ALE70590	//GG  Avoid raise especially under W2000-SP2
-//		when opening many local context due to a
-//		system error in the selection name computation routine.
-//		Many thanks to Philippe CARRET for the helpfull he has 
-//		give to accelerate the resolution of this problem.
-
 #include <AIS_LocalContext.ixx>
 #include <SelectMgr_OrFilter.hxx>
 #include <SelectMgr_CompositionFilter.hxx>
@@ -52,35 +38,15 @@
 #include <V3d_View.hxx>
 #include <Visual3d_View.hxx>
 
-#ifdef ALE70590
 #include <stdio.h>
-#else
-#include <Standard_SStream.hxx>
-#endif
 
 static TCollection_AsciiString AIS_Local_SelName(const Standard_Address address,
                                                  const Standard_Integer anIndex)
 {
 //  TCollection_AsciiString SelName;
-#ifdef ALE70590
   char string[100];
   sprintf(string,"%p_%d", address, anIndex);	// works under any system 
   TCollection_AsciiString SelName(string);
-#else
-  Standard_SStream stream;
-  stream<<address;	// something is wrong here using the SStream because
-//		the following access to rdbuf crash for an unknown reason 
-//		especially under W2000 with SP2 and sometime under WNT and W98.
-//		NOTE that stream is not ended by a NULL char and it's probably
-//		one of the reasons why this crash.
-//		In any case the resulting ascii string give a wrong and random
-//		name under WINDOWS !
-  TCollection_AsciiString SelName(stream.rdbuf()->str());
-//  SelName = TCollection_AsciiString("AIS_Local_");
-  TCollection_AsciiString theind(anIndex);
-  SelName += "_";
-  SelName += theind;
-#endif
   return SelName;
 }
 
@@ -109,10 +75,9 @@ myFilters(new SelectMgr_OrFilter()),
 myAutoHilight(Standard_True),
 mylastindex(0),
 mylastgood(0),
-myCurDetected(0)
-#ifdef IMP160701
-,myAISCurDetected(0)
-#endif
+myCurDetected(0),
+myAISCurDetected(0)
+
 {
   // bind self to AIS_InteractiveContext::myLocalContexts. Further, the
   // constructor executes logic that implies that the context is already

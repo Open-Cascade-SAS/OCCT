@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60915        //GG 05/06/01 Enable to compute the requested arrow size
-//                      if any in all dimensions.
-
 //=======================================================================
 //function : FirstShape
 //purpose  : 
@@ -160,9 +157,7 @@ inline Standard_Real AIS_Relation::ArrowSize() const
 inline void AIS_Relation::SetArrowSize(const Standard_Real anArrowSize)
 {
   myArrowSize = anArrowSize;
-#ifdef BUC60915
   myArrowSizeIsDefined = Standard_True;
-#endif
 }
 
 //=======================================================================

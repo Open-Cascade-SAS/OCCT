@@ -30,9 +30,6 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
-#define BUC60862
-#define OCC273
-#define OCC351
 
 //#define MDTV_DEB_SEL
 #ifdef OCCT_DEBUG_SEL
@@ -251,15 +248,11 @@ Standard_Boolean TNaming_Selector::IsIdentified (const TDF_Label& L,
     else {
       NS =   Ident.FeatureArg();
 
-#ifdef OCC273
       // mpv : external condition
       TDF_LabelMap Forbiden,Valid;
       TopTools_MapOfShape MS;
       TNaming_NamingTool::CurrentShape(Valid,Forbiden,NS,MS);
       return (MS.Contains(Selection) && MS.Extent() == 1);
-#else
-      return Standard_True;
-#endif
     }
   }
   else if(Ident.Type() == TNaming_GENERATION) {
@@ -372,7 +365,6 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   // namedshape with SELECTED Evolution
   //
   TNaming_Builder B (myLabel);
-#ifdef OCC351
   // mpv: if oldShape for selection is some shape from used map of shapes,
   //      then naming structure becomes more complex, can be cycles
   const TopoDS_Shape& aSelection = TNaming_Tool::CurrentShape(NS); //szy
@@ -388,9 +380,6 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
     B.Select(aSelection,aSelection); // type migration
   else
     B.Select(Selection,Selection);
-#else
-    B.Select(Selection,Context);
-#endif
   //
   // naming with IDENTITY NameType
   //
@@ -398,10 +387,8 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   N->ChangeName().Type(TNaming_IDENTITY);  
   N->ChangeName().Append(NS);
   N->ChangeName().Orientation(Selection.Orientation());
-#ifdef BUC60862
 // inserted by vro 06.09.00:
   N->ChangeName().ShapeType(Selection.ShapeType());
-#endif
 
   myLabel.AddAttribute(N);  
   return Standard_True; 

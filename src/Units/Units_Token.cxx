@@ -22,15 +22,12 @@
 //		due to inline use probably.
 //		See also Units_Token.lxx
 
-#define PRO8727	//GG_180697
 //		Mauvaise construction d'un token par copie
 //		plantatoire sur HP.
 
 #include <Units_Token.ixx>
 #include <TCollection_AsciiString.hxx>
 #include <Units_Operators.hxx>
-
-#define XTRACE 1
 
 //=======================================================================
 //function : Units_Token
@@ -43,10 +40,6 @@ Units_Token::Units_Token()
   themean=" ";
   thevalue=0.;
   thedimensions=new Units_Dimensions(0.,0.,0.,0.,0.,0.,0.,0.,0.);
-#ifdef TRACE
-  cout << " CREATES Token " << endl;
-  Dump(0,0);
-#endif
 }
 
 //=======================================================================
@@ -60,10 +53,6 @@ Units_Token::Units_Token(const Standard_CString aword)
   themean=" ";
   thevalue=0.;
   thedimensions=new Units_Dimensions(0.,0.,0.,0.,0.,0.,0.,0.,0.);
-#ifdef TRACE
-  cout << " CREATES Token " << endl;
-  Dump(0,0);
-#endif
 }
 
 //=======================================================================
@@ -78,10 +67,6 @@ Units_Token::Units_Token(const Standard_CString aword,
   themean=amean;
   thevalue=0.;
   thedimensions=new Units_Dimensions(0.,0.,0.,0.,0.,0.,0.,0.,0.);
-#ifdef TRACE
-  cout << " CREATES Token " << endl;
-  Dump(0,0);
-#endif
 }
 
 //=======================================================================
@@ -97,10 +82,6 @@ Units_Token::Units_Token(const Standard_CString aword,
   themean=amean;
   thevalue=avalue;
   thedimensions=new Units_Dimensions(0.,0.,0.,0.,0.,0.,0.,0.,0.);
-#ifdef TRACE
-  cout << " CREATES Token " << endl;
-  Dump(0,0);
-#endif
 }
 
 //=======================================================================
@@ -128,10 +109,6 @@ Units_Token::Units_Token(const Standard_CString aword,
                                          adimensions->LuminousIntensity(),
                                          adimensions->PlaneAngle(),
                                          adimensions->SolidAngle());
-#ifdef TRACE
-  cout << " CREATES Token " << endl;
-  Dump(0,0);
-#endif
 }
 
 //=======================================================================
@@ -141,13 +118,9 @@ Units_Token::Units_Token(const Standard_CString aword,
 
 Handle(Units_Token) Units_Token::Creates() const
 {
-#ifdef PRO8727
   TCollection_AsciiString word = Word();
   TCollection_AsciiString mean = Mean();
   return new Units_Token(word.ToCString(),mean.ToCString(),Value(),Dimensions());
-#else
-  return new Units_Token(*this);
-#endif
 }
 
 //=======================================================================
@@ -552,8 +525,4 @@ Standard_Boolean operator >=(const Handle(Units_Token)& atoken1,const Handle(Uni
 
 void Units_Token::Destroy () {
 
-#ifdef TRACE
- cout << " DESTROIES Token" << endl;
- Dump(0,0);
-#endif
 }

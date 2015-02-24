@@ -17,7 +17,6 @@
 #include <TDataStd_RealArray.ixx>
 #include <TDataStd_DeltaOnModificationOfRealArray.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
-#define OCC2932
 
 //=======================================================================
 //function : GetID
@@ -155,7 +154,6 @@ void TDataStd_RealArray::ChangeArray(const Handle(TColStd_HArray1OfReal)& newArr
   Standard_Boolean aDimEqual = Standard_False;
   Standard_Integer i;
 
-#ifdef OCC2932
   if (Lower() == aLower && Upper() == anUpper ) {
     aDimEqual = Standard_True;
     Standard_Boolean isEqual = Standard_True;
@@ -170,7 +168,6 @@ void TDataStd_RealArray::ChangeArray(const Handle(TColStd_HArray1OfReal)& newArr
 	return;
     }
   }
-#endif
 
   Backup();
 

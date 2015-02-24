@@ -31,10 +31,6 @@
 
 ************************************************************************/
 
-#define BUC60572	//GG 03-08-99 Move Zcueing and Zclipping front & back planes
-//                  coherence checking in Visual3d_View::SetContext()
-
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
@@ -134,13 +130,6 @@ void Visual3d_ContextView::SetFrontZClippingOff () {
 
 void Visual3d_ContextView::SetZClippingFrontPlane (const Standard_Real AFront) {
 
-#ifndef BUC60572
-	if ( (FrontZclippingIsActive) && (BackZclippingIsActive) &&
-					(MyZclippingBackPlane >= AFront) )
-		Visual3d_ZClippingDefinitionError::Raise
-			("Bad value for ZClippingFrontPlane");
-#endif
-
 	MyZclippingFrontPlane	= Standard_ShortReal (AFront);
 
 }
@@ -152,12 +141,6 @@ Standard_Real Visual3d_ContextView::ZClippingFrontPlane () const {
 }
 
 void Visual3d_ContextView::SetDepthCueingFrontPlane (const Standard_Real AFront) {
-
-#ifndef BUC60572
-	if ( (ZcueingIsActive) && (MyDepthCueingBackPlane >= AFront) )
-		Visual3d_DepthCueingDefinitionError::Raise
-			("Bad value for DepthCueingFrontPlane");
-#endif
 
 	MyDepthCueingFrontPlane	= Standard_ShortReal (AFront);
 
@@ -171,13 +154,6 @@ Standard_Real Visual3d_ContextView::DepthCueingFrontPlane () const {
 
 void Visual3d_ContextView::SetZClippingBackPlane (const Standard_Real ABack) {
 
-#ifndef BUC60572
-	if ( (FrontZclippingIsActive) && (FrontZclippingIsActive) &&
-					(MyZclippingFrontPlane <= ABack) )
-		Visual3d_ZClippingDefinitionError::Raise
-			("Bad value for ZClippingBackPlane");
-#endif
-
 	MyZclippingBackPlane	= Standard_ShortReal (ABack);
 
 }
@@ -189,12 +165,6 @@ Standard_Real Visual3d_ContextView::ZClippingBackPlane () const {
 }
 
 void Visual3d_ContextView::SetDepthCueingBackPlane (const Standard_Real ABack) {
-
-#ifndef BUC60572
-	if ( (ZcueingIsActive) && (MyDepthCueingFrontPlane <= ABack) )
-		Visual3d_DepthCueingDefinitionError::Raise
-			("Bad value for DepthCueingBackPlane");
-#endif
 
 	MyDepthCueingBackPlane	= Standard_ShortReal (ABack);
 

@@ -17,8 +17,6 @@
 #include <TDataStd_IntegerArray.ixx>
 #include <TDataStd_DeltaOnModificationOfIntArray.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
-#define OCC925
-#define OCC2932
 
 //=======================================================================
 //function : GetID
@@ -48,9 +46,7 @@ TDataStd_IntegerArray::TDataStd_IntegerArray()
 void TDataStd_IntegerArray::Init(const Standard_Integer lower,
                                  const Standard_Integer upper)
 {
-#ifdef OCC925
   Backup();
-#endif
   myValue = new TColStd_HArray1OfInteger(lower, upper, 0);
 }
 
@@ -155,7 +151,6 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
   Standard_Integer anUpper   = newArray->Upper();
   Standard_Boolean aDimEqual = Standard_False;
   Standard_Integer i;
-#ifdef OCC2932
 
   if(Lower() == aLower && Upper() == anUpper ) {
     aDimEqual = Standard_True;
@@ -171,7 +166,6 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
 	return;
     }
   }
-#endif
   
   Backup();
 // Handles of myValue of current and backuped attributes will be different!

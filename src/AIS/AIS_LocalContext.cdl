@@ -21,13 +21,6 @@
 --              Modifications in Management of hilight of detected entities
 --              VTN 23/11/99 BUC60614 Avoid to crash because
 --              myStdFilters array is too short.
---   GG  : BUC60688 25/05/00 Add SetSensitivity() methods
---   GG  : IMP150501 Remove oboslete method DragTo
---              (See AIS_InteractiveContext)
---   ZSV : IMP160701 Add InitDetected(),MoreDetected(),NextDetected(),
---                       DetectedCurrentShape(),DetectedCurrentObject()
---                       methods
-
 
 class LocalContext from AIS inherits TShared from MMgt
 

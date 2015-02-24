@@ -14,8 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define OCC218
-
 inline AIS_KindOfInteractive AIS_PlaneTrihedron::Type() const 
 {return AIS_KOI_Datum;}
 
@@ -26,15 +24,11 @@ inline Standard_Integer AIS_PlaneTrihedron::Signature() const
 
 inline void AIS_PlaneTrihedron::SetXLabel(const TCollection_AsciiString& aLabel)
 {
-#ifdef OCC218
   myXLabel = aLabel;
-#endif
 }
 
 
 inline void AIS_PlaneTrihedron::SetYLabel(const TCollection_AsciiString& aLabel)
 {
-#ifdef OCC218
   myYLabel = aLabel;
-#endif
 }

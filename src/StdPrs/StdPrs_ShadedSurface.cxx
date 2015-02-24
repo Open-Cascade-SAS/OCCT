@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define G005    //ATS,GG 04/01/01 Use PrimitiveArray instead Sets of primitives
-//              for performance improvment
-
 #include <StdPrs_ShadedSurface.ixx>
 
 #include <Graphic3d_ArrayOfTriangleStrips.hxx>

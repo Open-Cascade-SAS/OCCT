@@ -27,7 +27,6 @@
  
 ************************************************************************/
 
-#define IMP240300	//GG 
 //			-> Remove the grid plane axis when it is requested.
 //			-> Redraw the privilegied grid plane after any change
 
@@ -52,12 +51,6 @@
  * Static variable
  */
 
-#define LOPTIM
-#ifndef LOPTIM
-static TCollection_AsciiString XLetter("X");
-static TCollection_AsciiString YLetter("Y");
-static TCollection_AsciiString ZLetter("Z");
-#else 
 static TCollection_AsciiString _XLetter() {
     static TCollection_AsciiString XLetter("X");
 return XLetter;
@@ -75,8 +68,6 @@ static TCollection_AsciiString _ZLetter() {
 return ZLetter;
 }
 #define ZLetter _ZLetter()
-
-#endif // LOPTIM
 
 /*----------------------------------------------------------------------*/
 

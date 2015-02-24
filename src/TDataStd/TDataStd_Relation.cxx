@@ -19,8 +19,6 @@
 #include <TDataStd_Variable.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 
-#define OCC387
-
 //=======================================================================
 //function : GetID
 //purpose  : 
@@ -76,9 +74,7 @@ void TDataStd_Relation::SetRelation(const TCollection_ExtendedString& R)
   // OCC2932 correction
   if(myRelation == R) return;
 
-#ifdef OCC387
   Backup();
-#endif
   myRelation = R;
 }
 

@@ -42,7 +42,6 @@ static Standard_Boolean Affich     = Standard_False;
 static Standard_Integer NbSECTIONS = 0;
 #endif
 
-//#define GF_DEB
 //=======================================================================
 //function : GeomFill_SweepSectionGenerator
 //purpose  : 

@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60915        //GG 05/06/01 Enable to compute the requested arrow size
-//                      if any in all dimensions.
-
 #include <Standard_NotImplemented.hxx>
 
 #include <AIS_Chamf3dDimension.ixx>
@@ -95,11 +92,7 @@ AIS_Chamf3dDimension::AIS_Chamf3dDimension(const TopoDS_Shape& aFShape,
   myText = aText;
   myPosition = aPosition;
   mySymbolPrs = aSymbolPrs;
-#ifdef BUC60915
   SetArrowSize( anArrowSize );
-#else
-  myArrowSize = anArrowSize;
-#endif
   myAutomaticPosition = Standard_False;
 }
 
@@ -172,9 +165,7 @@ void AIS_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
   //Calcul de la boite englobante du component pour
   //determiner la taille de la fleche
   //-------------------------------------------------
-#ifdef BUC60915
   if( !myArrowSizeIsDefined ) {
-#endif
     Standard_Real arrsize = myArrowSize;
     if ( (myVal/4) < arrsize)
       arrsize = myVal/4;
@@ -182,13 +173,9 @@ void AIS_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
       arrsize = 30.;
     else if (arrsize < 8.)
       arrsize = 8.;
-#ifdef BUC60915
     myArrowSize = arrsize;
   }
   arr->SetLength(myArrowSize);
-#else
-  arr->SetLength(arrsize);
-#endif
   
   //Calcul de la presentation
   DsgPrs_Chamf2dPresentation::Add(aPresentation,

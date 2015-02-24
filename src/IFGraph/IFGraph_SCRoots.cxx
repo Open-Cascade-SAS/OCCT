@@ -17,9 +17,6 @@
 #include <IFGraph_ExternalSources.hxx>
 #include <Standard_Transient.hxx>
 
-//#define PRINTDEB
-
-
 IFGraph_SCRoots::IFGraph_SCRoots
   (const Interface_Graph& agraph, const Standard_Boolean whole)
       : IFGraph_StrongComponants (agraph,whole)    {  }

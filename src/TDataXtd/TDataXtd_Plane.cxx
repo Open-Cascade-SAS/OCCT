@@ -30,8 +30,6 @@
 #include <Geom_Plane.hxx>
 #include <GeomLib_IsPlanarSurface.hxx>
 
-#define OCC2932
-
 //=======================================================================
 //function : GetID
 //purpose  : 
@@ -70,7 +68,6 @@ Handle(TDataXtd_Plane) TDataXtd_Plane::Set (const TDF_Label& L, const gp_Pln& P)
 { 
   Handle(TDataXtd_Plane) A = Set (L);
 
-#ifdef OCC2932
   Handle(TNaming_NamedShape) aNS;
   if(L.FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
     if(!aNS->Get().IsNull())
@@ -94,7 +91,6 @@ Handle(TDataXtd_Plane) TDataXtd_Plane::Set (const TDF_Label& L, const gp_Pln& P)
 	 }
        }
   }
-#endif
 
   TNaming_Builder B(L);
   B.Generated(BRepBuilderAPI_MakeFace(P));

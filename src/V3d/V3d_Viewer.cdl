@@ -16,12 +16,6 @@
 
 -- Modified FMN - 02/02/98 -> Specifique UNIX
 --          CAL - 16/07/98 -> S3892. Ajout grilles 3d.
---          GG  - 15/12/99 -> GER61351 Add SetDefaultBackgroundColor()
---                                     and DefaultBackgroundColor() methods
---          GG  - 20/01/00 -> IMP200100 Add GridDrawMode() method
---          GG  - 24/01/00 -> IMP240100 Add SetGridEcho() methods
---                                      Add GridEcho() method.
---                                      Add ShowGridEcho() private method
 --          SAV - 26/11/02 -> Add new field to store grid echo aspect
 
 class Viewer from V3d inherits TShared from MMgt

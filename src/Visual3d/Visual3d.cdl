@@ -24,7 +24,6 @@
 --                               TypeOfTriedronPosition.
 --              22-09-98; BGN: S3989 (anciennement S3819): report
 --                             dans Aspect des TypeOfTriedron*
---      14-01-00; GG : IMP140100 Add ViewManager pointer
 -- Purpose: Specifications definitives
 
 package Visual3d

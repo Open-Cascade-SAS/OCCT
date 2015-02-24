@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60915        //GG 05/06/01 Enable to compute the requested arrow size
-//                      if any in all dimensions.
-
 #include <Standard_NotImplemented.hxx>
 
 #include <AIS_SymmetricRelation.ixx>
@@ -498,9 +495,7 @@ void AIS_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presenta
     mySAttach = ElCLib::Value(ElCLib::Parameter(line2,myFAttach),line2);
   }
 
-#ifdef BUC60915
   if( !myArrowSizeIsDefined )
-#endif
     myArrowSize = myFAttach.Distance(mySAttach)/50.;
   //----------------------------------------------------
  
@@ -599,9 +594,7 @@ void AIS_SymmetricRelation::ComputeTwoVerticesSymmetric(const Handle(Prs3d_Prese
   AIS::ComputeGeometry(TopoDS::Vertex(myFShape), myFAttach, myPlane, isOnPlane1);
   AIS::ComputeGeometry(TopoDS::Vertex(mySShape), mySAttach, myPlane, isOnPlane2);
 
-#ifdef BUC60915
   if( !myArrowSizeIsDefined )
-#endif
     myArrowSize = myFAttach.Distance(mySAttach)/50.;
   
   if (isOnPlane1 && isOnPlane2)

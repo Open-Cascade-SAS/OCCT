@@ -17,8 +17,6 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_NotImplemented.hxx>
 
-#define BUGOCC425
-
 #ifdef OBJS
 #include <Standard_Persistent.hxx>
 
@@ -48,9 +46,7 @@ DBC_VArray::DBC_VArray() : DBC_BaseArray()
 
 DBC_VArray::DBC_VArray(const Standard_Integer Size) : DBC_BaseArray(Size)
 {
-#ifdef BUGOCC425
   if(Size > 0) {
-#endif  
 #ifdef CSFDB
     myData = (DBC_VArrayTNode*)Standard::Allocate(Size * sizeof(DBC_VArrayTNode));
     DBC_VArrayTNode* ptrtmp = (DBC_VArrayTNode*)myData;
@@ -66,7 +62,6 @@ DBC_VArray::DBC_VArray(const Standard_Integer Size) : DBC_BaseArray(Size)
     myData = new (os_segment::of(this),DBC_VArrayNode::get_os_typespec(),Size) DBC_VArrayNode[Size];
 #endif
 
-#ifdef BUGOCC425
     } else {
 #ifdef CSFDB
       myData = 0L;
@@ -75,7 +70,6 @@ DBC_VArray::DBC_VArray(const Standard_Integer Size) : DBC_BaseArray(Size)
       myData = NULL;
 #endif
     }
-#endif  
 }
 
 DBC_VArray::DBC_VArray(const DBC_VArray& Varray) : DBC_BaseArray(Varray)
@@ -281,11 +275,7 @@ void DBC_VArray::SetValue(const Standard_Integer Index, const Item& Value)
 void DBC_VArray::Destroy()
 {
 #ifdef CSFDB
-#ifdef BUGOCC425
   if (myData && mySize > 0) {
-#else
-  if (myData) {
-#endif 
     DBC_VArrayTNode* ptrtmp = (DBC_VArrayTNode*)myData;
     for(Standard_Integer i = 0; i < mySize; i++) {
       ptrtmp->DBC_VArrayTNode::~DBC_VArrayTNode();

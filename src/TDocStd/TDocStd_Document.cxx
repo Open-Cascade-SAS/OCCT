@@ -51,8 +51,6 @@ theList.Remove(it);
 
 #undef DEB_DELTA
 
-#define BUC60836
-
 #define SRN_DELTA_COMPACT
 
 //=======================================================================
@@ -576,9 +574,7 @@ Standard_Boolean TDocStd_Document::Undo()
     cout<<"DF before Undo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
     Handle(TDF_Delta) D = myData->Undo(myUndos.Last(),Standard_True);
-#ifdef BUC60836 
     D->SetName(myUndos.Last()->Name());
-#endif
 #ifdef OCCT_DEBUG_DELTA
     cout<<"DF after Undo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
@@ -637,9 +633,7 @@ Standard_Boolean TDocStd_Document::Redo()
     cout<<"DF before Redo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
     Handle(TDF_Delta) D = myData->Undo(myRedos.First(),Standard_True);
-#ifdef BUC60836
     D->SetName(myRedos.First()->Name());
-#endif
 #ifdef OCCT_DEBUG_DELTA
     cout<<"DF after Redo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif

@@ -14,9 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
---				       the restricted NameOfColor.
-
 class Line from AIS inherits InteractiveObject from AIS
 
 	---Purpose: Constructs line datums to be used in construction of

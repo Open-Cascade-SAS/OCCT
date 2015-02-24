@@ -25,11 +25,8 @@
 
 ************************************************************************/
 
-#define GER61454	//GG 13-09-99 Activates model clipping planes
 //		Use myView->PlaneLimit() instead Visual3d_ClipPlane::Limit()
 //		Use myView->LightLimit() instead Visual3d_Light::Limit()
-
-
 
 /*----------------------------------------------------------------------*/
 /*
@@ -46,13 +43,8 @@
 void V3d_View::SetLightOn( const Handle(V3d_Light)& TheLight ) {
 
   if( !MyActiveLights.Contains(TheLight)){
-#ifdef GER61454
     V3d_BadValue_Raise_if( MyActiveLights.Extent() >= MyView->LightLimit(),
 			  "too many lights");
-#else
-//    V3d_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
-//			  "too many lights");
-#endif
     MyActiveLights.Append(TheLight) ;
     MyViewContext.SetLightOn(TheLight->Light());
     MyView->SetContext(MyViewContext);
@@ -114,12 +106,7 @@ Handle(V3d_Light) V3d_View::ActiveLight() const {
 
 Standard_Boolean V3d_View::IfMoreLights() const {
 
-#ifdef GER61454
         return MyActiveLights.Extent() < MyView->LightLimit();
-#else
-//	return MyActiveLights.Extent() < Visual3d_Light::Limit();
-	return MyActiveLights.Extent();
-#endif
 }
 
 //=======================================================================

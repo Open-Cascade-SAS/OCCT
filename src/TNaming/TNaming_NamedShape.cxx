@@ -48,7 +48,6 @@
 #include <Standard.hxx>
 #include <TNaming_CopyShape.hxx>
 
-#define BUC60921   //SRN 15/05/01 : Fixes the memory leak due to pointer to RefShape is not deleted
 //#define MDTV_DEB_HASL
 //=======================================================================
 //function : GetID
@@ -190,14 +189,12 @@ static void RemoveNode(Standard_Boolean                   MapExist ,
         // le shape disparait
         if (MapExist)
           M.UnBind(pos->Shape());
-        //#ifdef BUC60921
         N->myOld = 0L;
         if(pos != N->myNew)
         {
           delete pos;
           pos = 0L;
         }
-        //#endif 
       }
     }
     else {

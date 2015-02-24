@@ -23,10 +23,6 @@
 --                               ->Insert Locations Methods...
 --              Rob (16/12/97) -> Get the list of modes to be updated
 --                             -> Flags all the Prs to be updated...                 
---              GG IMP020200   -> Presentations() method become protected
---                              and no more private.
---              SAN (22/03/04) -> OCC4895 High-level interface for controlling 
---                              polygon offsets: Fill() made protected virtual.
 
 deferred class PresentableObject from PrsMgr inherits TShared from MMgt
 

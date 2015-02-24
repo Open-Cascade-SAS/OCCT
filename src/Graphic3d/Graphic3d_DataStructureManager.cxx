@@ -13,9 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define XTRACE
-#define XDESTROY
-
 //              11/97 ; CAL : retrait des DataStructure
 
 
@@ -46,9 +43,5 @@ Graphic3d_DataStructureManager::Graphic3d_DataStructureManager () {
 //-Destructors
 
 void Graphic3d_DataStructureManager::Destroy () {
-
-#ifdef DESTROY
-	cout << "Graphic3d_DataStructureManager::Destroy ()\n";
-#endif
 
 }

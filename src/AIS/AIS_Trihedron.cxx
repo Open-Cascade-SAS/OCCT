@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
-
-#define IMP120100	// GG Add SetTextColor() and SetArrowColor() methods
-
 #include <AIS_Trihedron.ixx>
 #include <DsgPrs_DatumPrs.hxx>
 #include <SelectBasics_EntityOwner.hxx>
@@ -63,11 +59,9 @@
 //=======================================================================
 AIS_Trihedron::AIS_Trihedron(const Handle(Geom_Axis2Placement)& aComponent):
 myComponent(aComponent),
-myHasOwnSize(Standard_False)
-#ifdef IMP120100
-,myHasOwnTextColor(Standard_False)
-,myHasOwnArrowColor(Standard_False)
-#endif
+myHasOwnSize(Standard_False),
+myHasOwnTextColor(Standard_False),
+myHasOwnArrowColor(Standard_False)
 
 {  LoadSubObjects();}
 
@@ -452,7 +446,6 @@ void AIS_Trihedron::SetColor(const Quantity_Color &aCol)
 //purpose  : 
 //=======================================================================
 
-#ifdef IMP120100
 void AIS_Trihedron::SetTextColor(const Quantity_NameOfColor aCol)
 {
   myHasOwnTextColor = Standard_True;
@@ -512,7 +505,6 @@ Quantity_NameOfColor AIS_Trihedron::ArrowColor() const {
 
   return myOwnArrowColor;
 }
-#endif
 
 
 //=======================================================================
@@ -588,7 +580,6 @@ void AIS_Trihedron::UnsetColor()
   myDrawer->DatumAspect()->FirstAxisAspect()->SetColor(myOwnColor);
   myDrawer->DatumAspect()->SecondAxisAspect()->SetColor(myOwnColor);
   myDrawer->DatumAspect()->ThirdAxisAspect()->SetColor(myOwnColor);
-#ifdef IMP120100
   if( HasTextColor() ) {
     SetTextColor(myOwnColor.Name());
     myHasOwnTextColor = Standard_False;
@@ -597,7 +588,6 @@ void AIS_Trihedron::UnsetColor()
     SetArrowColor(myOwnColor.Name());
     myHasOwnArrowColor = Standard_False;
   }
-#endif
   
 }
 

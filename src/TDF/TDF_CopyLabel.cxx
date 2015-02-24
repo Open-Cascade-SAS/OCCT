@@ -36,7 +36,6 @@
 // Therefore, these attributes shouldn't be considered by the COPY mechanism and
 // the label should be considered as a self-contained.
 // Correction of the bug consists of ignoring the attributes not involved by the COPY operation.
-#define BUC60813 
 
 //=======================================================================
 //function : TDF_CopyLabel
@@ -162,11 +161,7 @@ void TDF_CopyLabel::Perform()
 {
   myIsDone = Standard_False;
   if(mySL.Data()->Root().IsDifferent(myTL.Data()->Root()) && //TDF_Data is not the same
-#ifdef BUC60813
      !TDF_Tool::IsSelfContained(mySL, myFilter)) return;               //source label isn't self-contained
-#else
-     !TDF_Tool::IsSelfContained(mySL)) return;
-#endif
   else {
 #ifdef OCCT_DEBUG
     cout << "THE SAME Data" <<endl;

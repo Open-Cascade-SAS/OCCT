@@ -125,10 +125,6 @@ myZLayerGenId (1, IntegerLast())
 
 void Visual3d_ViewManager::Destroy () {
 
-#ifdef DESTROY
-	cout << "Visual3d_ViewManager::Destroy (" << MyId << ")\n" << flush;
-#endif
-
 	Remove ();
 }
 
@@ -136,18 +132,9 @@ void Visual3d_ViewManager::Destroy () {
 
 void Visual3d_ViewManager::Remove () {
 
-#ifdef DESTROY
-	cout << "Visual3d_ViewManager::Remove (" << MyId << ")\n" << flush;
-#endif
-
 	//
 	// Destroy all defined views
 	//
-
-#ifdef DESTROY
-	cout << "The Manager " << MyId << " have " << Length << " defined views\n";
-	cout << flush;
-#endif
 
   // clear all structures whilst views are alive for correct GPU memory management
   MyDisplayedStructure.Clear();
@@ -159,14 +146,6 @@ void Visual3d_ViewManager::Remove () {
 
 void Visual3d_ViewManager::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AStructure, const Standard_Integer OldPriority, const Standard_Integer NewPriority)
 {
-
-#ifdef TRACE
-  cout << "Visual3d_ViewManager::ChangeDisplayPriority ("
-    << AStructure->Identification ()
-    << ", " << OldPriority << ", " << NewPriority << ")\n";
-  cout << flush;
-#endif
-
   //
   // Change structure priority in all defined views
   //
@@ -604,27 +583,10 @@ Standard_Boolean Visual3d_ViewManager::ZBufferAuto () const
 }
 
 void Visual3d_ViewManager::SetLayer (const Handle(Visual3d_Layer)& ALayer) {
-
-#ifdef TRACE_LAYER
-	cout << "Visual3d_ViewManager::SetLayer\n" << flush;
-#endif
-
 	if (ALayer->Type () == Aspect_TOL_OVERLAY) {
-#ifdef TRACE_LAYER
-		if (MyOverLayer.IsNull ())
-			cout << "MyOverLayer is defined" << endl;
-		else
-			cout << "MyOverLayer is redefined" << endl;
-#endif
 		MyOverLayer = ALayer;
 	}
 	else {
-#ifdef TRACE_LAYER
-		if (MyUnderLayer.IsNull ())
-			cout << "MyUnderLayer is defined" << endl;
-		else
-			cout << "MyUnderLayer is redefined" << endl;
-#endif
 		MyUnderLayer = ALayer;
 	}
 

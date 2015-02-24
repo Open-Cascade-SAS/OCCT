@@ -24,7 +24,6 @@
 #include <TNaming_Tool.hxx>
 #include <TNaming.hxx>
 
-#define OCC2932
 //=======================================================================
 //function : Find
 //purpose  : 
@@ -78,14 +77,12 @@ Handle(TDataXtd_Shape) TDataXtd_Shape::Set (const TDF_Label& label, const TopoDS
     A = TDataXtd_Shape::New (label);
   }  
 
-#ifdef OCC2932
   Handle(TNaming_NamedShape) aNS;
   if(label.FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
     if(!aNS->Get().IsNull())
       if(aNS->Get() == shape)
 	return A;
   }
-#endif
 
   TNaming_Builder B(label);
   B.Generated(shape);

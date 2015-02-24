@@ -14,14 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible 
---              Quantity_Color instead the restricted NameOfColor.
---          Add SetCurrentFacingModel() methods
---   GG :   IMP140100 Add HasPresentation() and Presentation() methods
---                    Add SetAspect() method
---   SAN :  OCC4895 22/03/04 High-level interface for controlling polygon offsets
-
-
 deferred class InteractiveObject from AIS inherits SelectableObject from SelectMgr
 
         ---Purpose: 
@@ -607,7 +599,6 @@ fields
 
     myDrawer            : Drawer  from AIS is protected ;
     myTransparency      : Real    from Standard is protected;
- -- GER61351   myOwnColor          : NameOfColor from Quantity is protected;
     myOwnColor          : Color from Quantity is protected;
     myOwnMaterial       : NameOfMaterial from Graphic3d is protected;
     ---myOwnMaterial       : NameOfPhysicalMaterial from Graphic3d is protected;

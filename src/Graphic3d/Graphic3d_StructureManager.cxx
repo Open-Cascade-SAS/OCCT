@@ -13,10 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define XTRACE
-
-
-
 //-Version      
 
 //-Design       Declaration of variables specific to managers
@@ -97,11 +93,6 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
 
 void Graphic3d_StructureManager::Destroy () {
 
-#ifdef TRACE
-        cout << "Graphic3d_StructureManager::Destroy (" << MyId << ")\n";
-        cout << flush;
-#endif
-
         MyDisplayedStructure.Clear ();
         MyHighlightedStructure.Clear ();
         StructureManager_ArrayId[MyId]  = 0;
@@ -181,10 +172,6 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_StructureManager::FillArea3dAspect 
 
 void Graphic3d_StructureManager::Remove (const Standard_Integer AnId) {
 
-#ifdef TRACE
-        cout << "Graphic3d_StructureManager::Remove " << AnId << "\n" << flush;
-#endif
-
         MyStructGenId.Free (AnId);
 
 }
@@ -223,11 +210,6 @@ void Graphic3d_StructureManager::HighlightedStructures (Graphic3d_MapOfStructure
 Standard_Integer Graphic3d_StructureManager::NewIdentification () {
 
 Standard_Integer Id     = MyStructGenId.Next ();
-
-#ifdef TRACE
-        cout << "Graphic3d_StructureManager::NewIdentification " << Id << "\n";
-        cout << flush;
-#endif
 
         return Id;
 

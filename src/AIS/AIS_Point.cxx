@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
-
 #include <AIS_Point.ixx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -130,13 +127,11 @@ void AIS_Point::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 //=======================================================================
 
 void AIS_Point::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_Point::SetColor(const Quantity_Color &aCol)
-#endif
 {
   hasOwnColor=Standard_True;
   myOwnColor=aCol;
@@ -218,11 +213,7 @@ void AIS_Point::UpdatePointValues()
     myDrawer->PointAspect().Nullify();
     return;
   }
-#ifdef GER61351
   Quantity_Color aCol;
-#else
-  Quantity_NameOfColor aCol;
-#endif 
   Quantity_Color QCO;
   Aspect_TypeOfMarker  aTOM;
   Standard_Real        aScale;

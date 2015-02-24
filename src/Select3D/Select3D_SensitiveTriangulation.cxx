@@ -18,9 +18,6 @@
 //                                      fix bug on Compute Depth (don't forget
 //                                      Location...)
 
-#define BUC60858	//GG 27/03/01 Avoid to crash when selecting
-//			a triangle containing confused or aligned points.
-
 #include <Select3D_SensitiveTriangulation.ixx>
 #include <gp_Pnt2d.hxx>
 #include <Poly.hxx>
@@ -554,12 +551,10 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& thePic
     SingularCase = (SingularCase == -1) ? 1 : 2;
   }
 
-#ifdef BUC60858
   if (Vtr[2].SquareMagnitude() <= Precision::Confusion())
   {
     if( SingularCase < 0 ) SingularCase = 1;
   }
-#endif
 
   // 3 pts mixed...
   if (SingularCase ==2)

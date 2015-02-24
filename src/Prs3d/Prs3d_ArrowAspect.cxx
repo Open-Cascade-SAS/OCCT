@@ -12,28 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define IMP120100	//GG 01/01/00 Add SetColor() methods
-
 #include <Prs3d_ArrowAspect.ixx>
 
 Prs3d_ArrowAspect::Prs3d_ArrowAspect () 
      : myAngle(M_PI/180.*10), myLength(1.) {
-#ifdef IMP120100
   myArrowAspect = 
 	new Graphic3d_AspectLine3d (
 		Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0);
-#endif
 }
 
 
 Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Quantity_PlaneAngle anAngle,
 				      const Quantity_Length aLength) 
      : myAngle(anAngle), myLength(aLength) {
-#ifdef IMP120100
   myArrowAspect = 
 	new Graphic3d_AspectLine3d (
 		Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0);
-#endif
 }
 
 void Prs3d_ArrowAspect::SetAngle ( const Quantity_PlaneAngle anAngle) {
@@ -55,7 +49,6 @@ Quantity_Length Prs3d_ArrowAspect::Length () const
 return myLength;
 }
 
-#ifdef IMP120100
 void Prs3d_ArrowAspect::SetColor(const Quantity_Color &aColor) {
   myArrowAspect->SetColor(aColor);
 }
@@ -67,4 +60,3 @@ void Prs3d_ArrowAspect::SetColor(const Quantity_NameOfColor aColor) {
 Handle(Graphic3d_AspectLine3d) Prs3d_ArrowAspect::Aspect() const {
   return myArrowAspect;
 }
-#endif

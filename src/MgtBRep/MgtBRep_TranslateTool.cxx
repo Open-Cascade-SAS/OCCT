@@ -72,7 +72,6 @@
 // szy 23.01.2014 (bug 24565) correction for edge which has null 3d curve representation
 
 // Used for testing DownCast time
-#define MgtBRepSpeedDownCast
 
 #ifdef chrono
 #include <OSD_Timer.hxx>
@@ -97,12 +96,8 @@ Handle(PGeom_Curve) MgtBRep_TranslateTool::Translate
   Handle(PGeom_Curve) PP;
   if (!TP.IsNull()) {
     if (aMap.IsBound(TP)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TP);
       PP = (Handle(PGeom_Curve)&) aPers;
-#else
-      PP = Handle(PGeom_Curve)::DownCast(aMap.Find(TP));
-#endif
     }
     else {
       PP = MgtGeom::Translate(TP);
@@ -127,12 +122,8 @@ Handle(Geom_Curve) MgtBRep_TranslateTool::Translate
   Handle(Geom_Curve) TP;
   if (!PP.IsNull()) {
     if (aMap.IsBound(PP)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PP);
       TP = (Handle(Geom_Curve)&) aTrans;
-#else
-      TP = Handle(Geom_Curve)::DownCast(aMap.Find(PP));
-#endif
     }
     else {
       TP = MgtGeom::Translate(PP);
@@ -157,12 +148,8 @@ Handle(PGeom2d_Curve) MgtBRep_TranslateTool::Translate
   Handle(PGeom2d_Curve) PP;
   if (!TP.IsNull()) {
     if (aMap.IsBound(TP)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TP);
       PP = (Handle(PGeom2d_Curve)&) aPers;
-#else
-      PP = Handle(PGeom2d_Curve)::DownCast(aMap.Find(TP));
-#endif
     }
     else {
       PP = MgtGeom2d::Translate(TP);
@@ -187,12 +174,8 @@ Handle(Geom2d_Curve) MgtBRep_TranslateTool::Translate
   Handle(Geom2d_Curve) TP;
   if (!PP.IsNull()) {
     if (aMap.IsBound(PP)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PP);
       TP = (Handle(Geom2d_Curve)&) aTrans;
-#else
-      TP = Handle(Geom2d_Curve)::DownCast(aMap.Find(PP));
-#endif
     }
     else {
       TP = MgtGeom2d::Translate(PP);
@@ -217,12 +200,8 @@ Handle(PGeom_Surface) MgtBRep_TranslateTool::Translate
   Handle(PGeom_Surface) PP;
   if (!TP.IsNull()) {
     if (aMap.IsBound(TP)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TP);
       PP = (Handle(PGeom_Surface)&) aPers;
-#else
-      PP = Handle(PGeom_Surface)::DownCast(aMap.Find(TP));
-#endif
     }
     else {
       PP = MgtGeom::Translate(TP);
@@ -247,12 +226,8 @@ Handle(Geom_Surface) MgtBRep_TranslateTool::Translate
   Handle(Geom_Surface) TP;
   if (!PP.IsNull()) {
     if (aMap.IsBound(PP)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PP);
       TP = (Handle(Geom_Surface)&) aTrans;
-#else
-      TP = Handle(Geom_Surface)::DownCast(aMap.Find(PP));
-#endif
     }
     else {
       TP = MgtGeom::Translate(PP);
@@ -492,15 +467,10 @@ void  MgtBRep_TranslateTool::UpdateVertex
  const Handle(PTopoDS_HShape)& S2,
  PTColStd_TransientPersistentMap& aMap) const 
 {
-#ifdef MgtBRepSpeedDownCast
   Handle(TopoDS_TShape) aTransTShape = S1.TShape();
   Handle(BRep_TVertex)& TTV = (Handle(BRep_TVertex)&) aTransTShape;
   Handle(PTopoDS_TShape) aPersTShape = S2->TShape();
   Handle(PBRep_TVertex)& PTV = (Handle(PBRep_TVertex)&) aPersTShape;
-#else
-  Handle(BRep_TVertex)  TTV = Handle(BRep_TVertex)::DownCast(S1.TShape());
-  Handle(PBRep_TVertex) PTV = Handle(PBRep_TVertex)::DownCast(S2->TShape());
-#endif
 
   // Point
   PTV->Pnt(TTV->Pnt());
@@ -563,16 +533,11 @@ void MgtBRep_TranslateTool::UpdateVertex
  TopoDS_Shape& S2,
  PTColStd_PersistentTransientMap& aMap) const 
 {
-#ifdef MgtBRepSpeedDownCast
   Handle(PTopoDS_TShape) aPersTShape = S1->TShape();
   Handle(PBRep_TVertex)& PTV = (Handle(PBRep_TVertex)&) aPersTShape;
 
   Handle(TopoDS_TShape) aTransTShape = S2.TShape();
   Handle(BRep_TVertex)&  TTV = (Handle(BRep_TVertex)&) aTransTShape;
-#else
-  Handle(PBRep_TVertex) PTV = Handle(PBRep_TVertex)::DownCast(S1->TShape());
-  Handle(BRep_TVertex)  TTV = Handle(BRep_TVertex)::DownCast(S2.TShape());
-#endif
 
   // Point
   TTV->Pnt(PTV->Pnt());
@@ -638,16 +603,11 @@ MgtBRep_TranslateTool::UpdateEdge(const TopoDS_Shape& S1,
 				  const Handle(PTopoDS_HShape)& S2,
 				  PTColStd_TransientPersistentMap& aMap) const 
 {
-#ifdef MgtBRepSpeedDownCast
   Handle(TopoDS_TShape) aTransTShape = S1.TShape();
   Handle(BRep_TEdge)&  TTE = (Handle(BRep_TEdge)&) aTransTShape;
 
   Handle(PTopoDS_TShape) aPersTShape = S2->TShape();
   Handle(PBRep_TEdge)& PTE = (Handle(PBRep_TEdge)&) aPersTShape;
-#else
-  Handle(BRep_TEdge)  TTE = Handle(BRep_TEdge)::DownCast(S1.TShape());
-  Handle(PBRep_TEdge) PTE = Handle(PBRep_TEdge)::DownCast(S2->TShape());
-#endif
 
   // tolerance
   PTE->Tolerance(TTE->Tolerance());
@@ -833,16 +793,11 @@ MgtBRep_TranslateTool::UpdateEdge(const Handle(PTopoDS_HShape)& S1,
 				  TopoDS_Shape& S2,
 				  PTColStd_PersistentTransientMap& aMap) const 
 {
-#ifdef MgtBRepSpeedDownCast
   Handle(PTopoDS_TShape) aPersTShape = S1->TShape();
   Handle(PBRep_TEdge)& PTE = (Handle(PBRep_TEdge)&) aPersTShape;
 
   Handle(TopoDS_TShape) aTransTShape = S2.TShape();
   Handle(BRep_TEdge)&  TTE = (Handle(BRep_TEdge)&) aTransTShape;
-#else
-  Handle(PBRep_TEdge) PTE = Handle(PBRep_TEdge)::DownCast(S1->TShape());
-  Handle(BRep_TEdge)  TTE = Handle(BRep_TEdge)::DownCast(S2.TShape());
-#endif
 
   // tolerance
   TTE->Tolerance(PTE->Tolerance());
@@ -1014,16 +969,11 @@ MgtBRep_TranslateTool::UpdateFace(const TopoDS_Shape& S1,
 				  const Handle(PTopoDS_HShape)& S2,
 				  PTColStd_TransientPersistentMap& aMap) const 
 {
-#ifdef MgtBRepSpeedDownCast
   Handle(TopoDS_TShape) aTransTShape = S1.TShape();
   Handle(BRep_TFace)&  TTF = (Handle(BRep_TFace)&) aTransTShape;
 
   Handle(PTopoDS_TShape) aPersTShape = S2->TShape();
   Handle(PBRep_TFace)& PTF = (Handle(PBRep_TFace)&) aPersTShape;
-#else
-  Handle(BRep_TFace)  TTF = Handle(BRep_TFace)::DownCast(S1.TShape());
-  Handle(PBRep_TFace) PTF = Handle(PBRep_TFace)::DownCast(S2->TShape());
-#endif
 
   // natural restriction
   PTF->NaturalRestriction(TTF->NaturalRestriction());
@@ -1056,16 +1006,11 @@ MgtBRep_TranslateTool::UpdateFace(const Handle(PTopoDS_HShape)& S1,
 				  TopoDS_Shape& S2,
 				  PTColStd_PersistentTransientMap& aMap) const 
 {
-#ifdef MgtBRepSpeedDownCast
   Handle(PTopoDS_TShape) aPersTShape = S1->TShape();
   Handle(PBRep_TFace)& PTF = (Handle(PBRep_TFace)&) aPersTShape;
 
   Handle(TopoDS_TShape) aTransTShape = S2.TShape();
   Handle(BRep_TFace)&  TTF = (Handle(BRep_TFace)&) aTransTShape;
-#else
-  Handle(PBRep_TFace) PTF = Handle(PBRep_TFace)::DownCast(S1->TShape());
-  Handle(BRep_TFace)  TTF = Handle(BRep_TFace)::DownCast(S2.TShape());
-#endif
 
   // natural restriction
   TTF->NaturalRestriction(PTF->NaturalRestriction());

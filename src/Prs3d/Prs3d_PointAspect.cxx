@@ -12,18 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
-
 #include <Prs3d_PointAspect.ixx>
 
-#ifdef GER61351
 Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker aType,
 				  const Quantity_Color &aColor,
 				  const Standard_Real aScale) {
   myAspect = new Graphic3d_AspectMarker3d(aType,aColor,aScale);
 }
-#endif
 
 Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker aType,
 				  const Quantity_NameOfColor aColor,
@@ -42,11 +37,9 @@ Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color &aColor,
     (aColor,aWidth,aHeight,aTexture);
 }
 
-#ifdef GER61351
 void Prs3d_PointAspect::SetColor(const Quantity_Color &aColor) {
   myAspect->SetColor(aColor);
 }
-#endif
 
 void Prs3d_PointAspect::SetColor(const Quantity_NameOfColor aColor) {
   myAspect->SetColor(Quantity_Color(aColor));

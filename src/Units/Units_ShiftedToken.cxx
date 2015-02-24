@@ -17,8 +17,6 @@
 #include <Units_ShiftedToken.ixx>
 #include <TCollection_AsciiString.hxx>
 
-#define XTRACE 1
-
 //=======================================================================
 //function : Units_ShiftedToken
 //purpose  : 
@@ -32,10 +30,6 @@ Units_ShiftedToken::Units_ShiftedToken(const Standard_CString aword,
      : Units_Token(aword,amean,avalue,adimensions)
 {
   themove = amove;
-#ifdef TRACE
-  cout << " CREATES ShiftedToken " << endl;
-  Dump(0,0);
-#endif
 }
 
 //=======================================================================
@@ -95,8 +89,4 @@ void Units_ShiftedToken::Dump(const Standard_Integer ashift,
 
 void Units_ShiftedToken::Destroy () {
 
-#ifdef TRACE
-  cout << " DESTROIES ShiftedToken " << endl;
-  Dump(0,0);
-#endif
 }

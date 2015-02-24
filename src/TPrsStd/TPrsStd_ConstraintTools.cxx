@@ -91,8 +91,6 @@
 
 #include <TopTools_IndexedMapOfShape.hxx>
 
-#define BUC60846
-
 static Standard_Boolean CheckShapesPair(const TopoDS_Shape& , const TopoDS_Shape& ); //ota
 
 //=======================================================================

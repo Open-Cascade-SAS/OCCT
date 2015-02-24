@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60915        //GG 05/06/01 Enable to compute the requested arrow size
-//                      if any in all dimensions.
-
 #include <Standard_NotImplemented.hxx>
 
 #include <AIS_MaxRadiusDimension.ixx>
@@ -97,11 +94,7 @@ AIS_MaxRadiusDimension::AIS_MaxRadiusDimension(const TopoDS_Shape& aShape,
   mySymbolPrs = aSymbolPrs;
   myPosition = aPosition;
   myAutomaticPosition = Standard_False;
-#ifdef BUC60915
   SetArrowSize( anArrowSize );
-#else
-  myArrowSize = anArrowSize;
-#endif
 }
 
 //=======================================================================
@@ -167,19 +160,10 @@ void AIS_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)& aP
   Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   
   // size
-#ifdef BUC60915
   if( !myArrowSizeIsDefined ) {
     myArrowSize = Min(myArrowSize,myVal / 5.);
   }
   arr->SetLength(myArrowSize);
-#else
-  if (myVal / 5. > myArrowSize) {
-    arr->SetLength(myArrowSize);
-  }
-  else {
-    arr->SetLength(myVal / 5.);
-  }
-#endif
 
   Standard_Real U;//,V;
   gp_Pnt curPos, Center;
@@ -225,19 +209,10 @@ void AIS_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentation
   Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   
   // size
-#ifdef BUC60915
   if( !myArrowSizeIsDefined ) {
     myArrowSize = Min(myArrowSize,myVal / 5.);
   }
   arr->SetLength(myArrowSize);
-#else
-  if (myVal / 5. > myArrowSize) {
-    arr->SetLength(myArrowSize);
-  }
-  else {
-    arr->SetLength(myVal / 5.);
-  }
-#endif
   
   Standard_Real par;
   gp_Pnt curPos, Center;

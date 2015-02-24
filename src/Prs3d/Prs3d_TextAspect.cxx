@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define GER61351    //GG_171199     Enable to set an object RGB color
-//              instead a restricted object NameOfColor.
-
-
 #include <Prs3d_TextAspect.ixx>
 #include <Quantity_Color.hxx>
 #include <Font_NameOfFont.hxx>
@@ -36,11 +32,9 @@ Prs3d_TextAspect::Prs3d_TextAspect ()
                                              0.);
 }
 
-#ifdef GER61351
 void Prs3d_TextAspect::SetColor(const Quantity_Color &aColor) {
   myTextAspect->SetColor(aColor);
 }
-#endif
 
 void Prs3d_TextAspect::SetColor(const Quantity_NameOfColor aColor) {
   myTextAspect->SetColor(Quantity_Color(aColor));

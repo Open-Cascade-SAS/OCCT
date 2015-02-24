@@ -18,12 +18,6 @@
 #include <TDF_Label.hxx>
 #include <Standard_DomainError.hxx>
 
-// This bug concerns the method IsDescendant():
-#define BUC60817
-
-// This bug concerns the method BeforeForget() - Forget/Resume, Undo/Redo behaviour of the attribute
-#define BUC60844
-
 //=======================================================================
 //function : Find
 //purpose  : 
@@ -317,8 +311,6 @@ Standard_Boolean TDataStd_TreeNode::IsAscendant (const Handle(TDataStd_TreeNode)
 
 Standard_Boolean TDataStd_TreeNode::IsDescendant (const Handle(TDataStd_TreeNode)& ofTN) const
 {
-#ifdef BUC60817
-
   TDataStd_TreeNode* O = (TDataStd_TreeNode*) this;
   while (O->myFather != NULL)
   {
@@ -326,13 +318,6 @@ Standard_Boolean TDataStd_TreeNode::IsDescendant (const Handle(TDataStd_TreeNode
       return Standard_True;
     O = O->myFather;
   }
-
-#else
-  Handle(TDataStd_TreeNode) current;
-  for (current = this;  current = current->Father(); current->HasFather()) {
-    if (current == ofTN) return Standard_True;
-  }
-#endif
   return Standard_False;
 }
 
@@ -555,14 +540,10 @@ void TDataStd_TreeNode::AfterAddition() {
 //=======================================================================
 
 void TDataStd_TreeNode::BeforeForget() {
-#ifdef BUC60844  
   if (!IsBackuped()) {
     Remove();
     while (HasFirst()) First()->Remove();
   }
-#else
-  if (!IsBackuped()) Remove();
-#endif
 }
 
 //=======================================================================

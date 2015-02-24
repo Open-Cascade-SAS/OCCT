@@ -20,13 +20,8 @@
 #include <TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx>
 #include <TNaming_RefShape.hxx>
 #include <TNaming_PtrNode.hxx>
-#define BUC60862
 
-#ifdef BUC60862
 #include <TopoDS_Shape.hxx>
-#endif
-
-#define BUC60921      //SRN 15/05/01 : Fixes the memory leak due to pointer to RefShape is not deleted
 
 //=======================================================================
 //function : GetID
@@ -77,11 +72,7 @@ Handle(TDF_Attribute) TNaming_UsedShapes::BackupCopy() const
 
 void TNaming_UsedShapes::BeforeRemoval() 
 {
-#ifdef BUC60921
   Destroy();
-#else
-  myMap.Clear(); 
-#endif 
 }
 
 
@@ -157,7 +148,6 @@ void  TNaming_UsedShapes::Paste(const Handle(TDF_Attribute)&,
 
 Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 {
-#ifdef BUC60862
   anOS<<"The content of UsedShapes attribute:"<<endl;
   TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape itr(myMap);
   for (; itr.More(); itr.Next()) {
@@ -169,7 +159,6 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
     anOS << " Value_TShape = " <<itr.Value()->Shape().TShape()->This();    
     anOS<<endl;
   }
-#endif
   return anOS;
 }
 

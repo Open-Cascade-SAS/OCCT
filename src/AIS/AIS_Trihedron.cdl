@@ -15,11 +15,6 @@
 -- commercial license or contractual agreement.
 
 -- Modified by:  rob Wed Feb 11 -> Size of Trihedron
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
---				       the restricted NameOfColor.
---   GG  :  IMP120100 Add SetTextColor() methods.
---                        SetArrowColor() methods.
-
 
 class Trihedron from AIS inherits InteractiveObject from AIS
 

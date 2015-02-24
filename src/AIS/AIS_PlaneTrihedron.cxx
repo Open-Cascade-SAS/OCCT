@@ -14,18 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
-
-#define OCC218                  //SAV using DsgPrs_XYZAxisPresentation to draw axes.
 // + X/YAxis() returns AIS_Line instead of AIS_Axis
 // + (-1) selection mode token into account 
 // (SAMTECH specific)
 
-#ifdef OCC218
 #include <DsgPrs_XYZAxisPresentation.hxx>
 #include <AIS_Line.hxx>
 #include <Geom_Line.hxx>
-#endif
 
 #include <AIS_PlaneTrihedron.ixx>
 
@@ -54,8 +49,6 @@
 
 #include <Select3D_SensitiveFace.hxx>
 
-#define OCC10
-
 void  ExtremityPoints(TColgp_Array1OfPnt& PP,const Handle(Geom_Plane)& myPlane,const Handle(Prs3d_Drawer)& myDrawer);
 
 //=======================================================================
@@ -79,10 +72,8 @@ AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
   myShapes[1] = XAxis();
   myShapes[2] = YAxis();
 
-#ifdef OCC218
   myXLabel = TCollection_AsciiString( "X" );
   myYLabel = TCollection_AsciiString( "Y" );
-#endif
 }
 
 //=======================================================================
@@ -110,7 +101,6 @@ AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
 //function : XAxis
 //purpose  : 
 //=======================================================================
-#ifdef OCC218
 Handle(AIS_Line) AIS_PlaneTrihedron::XAxis() const 
 {
   Handle(Geom_Line) aGLine = new Geom_Line(myPlane->Pln().XAxis());
@@ -118,21 +108,11 @@ Handle(AIS_Line) AIS_PlaneTrihedron::XAxis() const
   aLine->SetColor(Quantity_NOC_ROYALBLUE1);
   return aLine;
 }
-#else
-Handle(AIS_Axis) AIS_PlaneTrihedron::XAxis() const 
-{
-  Handle(Geom_Axis1Placement) anAx1 = new Geom_Axis1Placement(myPlane->Pln().XAxis());
-  Handle(AIS_Axis) anAxis = new AIS_Axis (anAx1);
-  anAxis->SetTypeOfAxis(AIS_TOAX_XAxis);
-  return anAxis;
-}
-#endif
 
 //=======================================================================
 //function : YAxis
 //purpose  : 
 //=======================================================================
-#ifdef OCC218
 Handle(AIS_Line) AIS_PlaneTrihedron::YAxis() const 
 {
   Handle(Geom_Line) aGLine = new Geom_Line(myPlane->Pln().YAxis());
@@ -140,15 +120,6 @@ Handle(AIS_Line) AIS_PlaneTrihedron::YAxis() const
   aLine->SetColor(Quantity_NOC_ROYALBLUE1);
   return aLine;
 }
-#else
-Handle(AIS_Axis) AIS_PlaneTrihedron::YAxis() const 
-{
-  Handle(Geom_Axis1Placement) anAx1 = new Geom_Axis1Placement(myPlane->Pln().YAxis());
-  Handle(AIS_Axis) anAxis = new AIS_Axis (anAx1);
-  anAxis->SetTypeOfAxis(AIS_TOAX_YAxis);
-  return anAxis;
-}
-#endif
 
 //=======================================================================
 //function : Position
@@ -162,7 +133,6 @@ Handle(AIS_Point) AIS_PlaneTrihedron::Position() const
   return aPt;
 }
 
-#ifdef OCC10
 void AIS_PlaneTrihedron::SetLength(const Standard_Real theLength) {
   myDrawer->DatumAspect()->SetAxisLength(theLength, theLength, theLength);
   SetToUpdate();
@@ -171,7 +141,6 @@ void AIS_PlaneTrihedron::SetLength(const Standard_Real theLength) {
 Standard_Real AIS_PlaneTrihedron::GetLength() const {
   return myDrawer->DatumAspect()->FirstAxisLength();
 }
-#endif
 
 //=======================================================================
 //function : Compute
@@ -183,9 +152,6 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 {
   aPresentation->Clear();
   aPresentation->SetDisplayPriority(5);
-#ifndef OCC218
-  DsgPrs_DatumPrs::Add(aPresentation,myPlane->Position().Ax2(),myDrawer);
-#else
   // drawing axis in X direction
   gp_Pnt first, last;
   Standard_Real value = myDrawer->DatumAspect()->FirstAxisLength();
@@ -208,7 +174,6 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   last.SetCoord( xo + x * value, yo + y * value, zo + z * value );
   DsgPrs_XYZAxisPresentation::Add( aPresentation, myDrawer->DatumAspect()->FirstAxisAspect(), myDrawer->ArrowAspect(), myDrawer->TextAspect(), yDir, value, myYLabel.ToCString(), first, last );
 
-#endif
   aPresentation->SetInfiniteState (Standard_True);
 }
 
@@ -262,14 +227,12 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
       }
       break;
     }
-#ifdef OCC218
   case -1:
     {
       Prior = 5;
       aSelection->Clear();
       break;
     }
-#endif
   }
 }
 

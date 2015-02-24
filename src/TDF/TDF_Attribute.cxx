@@ -38,8 +38,6 @@
 
 #undef TDF_DATA_COMMIT_OPTIMIZED
 
-#define BUC60879
-
 //=======================================================================
 //function : TDF_Attribute
 //purpose  : Initializes fields.
@@ -224,14 +222,12 @@ Standard_Boolean TDF_Attribute::AfterRetrieval
 (const Standard_Boolean /*forceIt*/)
 { return Standard_True; }
 
-#ifdef BUC60879
 //=======================================================================
 //function : BeforeCommitTransaction
 //purpose  : 
 //=======================================================================
 
 void TDF_Attribute::BeforeCommitTransaction() {}
-#endif
 
 //=======================================================================
 //function : Backup

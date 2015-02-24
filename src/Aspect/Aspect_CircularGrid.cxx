@@ -13,14 +13,6 @@
 
 // Modified	23/02/98 : FMN ; Remplacement PI par Standard_PI
 
-#define CSR577  //GG 25/09/00 Avoid to have unaccuracy coordinates computation
-//              when the grid is activated.
-
-#define OCC192_193 // jfa 27/02/2002
-// for big rotation angles - error of negative values expression in round numbers
-
-#define xTRACE
-
 #include <Aspect_CircularGrid.ixx>
 #include <Aspect_Grid.hxx>
 #include <Standard_NumericError.hxx>
@@ -71,11 +63,6 @@ void Aspect_CircularGrid::Compute(const Quantity_Length X,
 			 Quantity_Length& gridX,
 			 Quantity_Length& gridY) const {
 
-#ifdef TRACE 
-  if( X == 0. || Y == 0. ) {
-      cout << " Aspect_CircularGrid" << endl;
-  }
-#endif
   Standard_Real xo = XOrigin();
   Standard_Real yo = YOrigin();
   Standard_Real d = Sqrt( (xo-X)*(xo-X) + (yo-Y)*(yo-Y) );
@@ -85,13 +72,8 @@ void Aspect_CircularGrid::Compute(const Quantity_Length X,
   Standard_Real a = ACos(cosinus);
   Standard_Real ra = RotationAngle();
   if ( Y < yo ) a = 2 * M_PI - a;
-#ifdef OCC192_193
   n = (Standard_Integer ) ((a-ra)/myAlpha + Sign(0.5, a-ra)) ;
-#else
-  n = (Standard_Integer ) ((a-ra)/myAlpha +0.5 ) ;
-#endif
 
-#ifdef CSR577
   Standard_Real cs=0,sn=0;
   Standard_Boolean done = Standard_False;
   Standard_Integer nmax = 2*myDivisionNumber;
@@ -139,18 +121,8 @@ void Aspect_CircularGrid::Compute(const Quantity_Length X,
     Standard_Real ang = ra + Standard_Real(n)*myAlpha;
     cs = Cos(ang); sn = Sin(ang);
   }
-#else
-  Standard_Real ang = RotationAngle()+ Standard_Real(n)*myAlpha;
-  Standard_Real cs = Cos(ang);
-  Standard_Real sn = Sin(ang);  
-#endif
   gridX = xo + cs * radius;
   gridY = yo + sn * radius;
-#ifdef TRACE
-    cout << "Aspect_CircularGrid::Compute (" << Quantity_Length (X) << ", "
-         << Quantity_Length (Y) << ", " << Quantity_Length (gridX) << ", "
-         << Quantity_Length (gridY) << ")" << endl;
-#endif
 }
 
 Quantity_Length Aspect_CircularGrid::RadiusStep() const {

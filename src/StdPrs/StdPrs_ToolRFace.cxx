@@ -18,9 +18,6 @@
 #include <TopoDS.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 
-
-#define OCC316
-
 //=======================================================================
 //function : StdPrs_ToolRFace
 //purpose  : 
@@ -100,9 +97,7 @@ void StdPrs_ToolRFace::Next()
 	BRep_Tool::CurveOnSurface(TopoDS::Edge(myExplorer.Current()),
 				  myFace,
 				  U1,U2);
-#ifdef OCC316
       if ( !C.IsNull() )
-#endif
 	DummyCurve.Load(C,U1,U2);
     }
   }

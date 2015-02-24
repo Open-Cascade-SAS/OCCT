@@ -41,8 +41,6 @@
 #undef DEB_DELTA_CREATION
 #undef TDF_DATA_COMMIT_OPTIMIZED
 
-#define BUC60879
-
 #ifdef OCCT_DEBUG_DELTA
 #define TDF_Data_DebugModified(ACTION) \
   cout<<"After "<<ACTION<<" #"<<myTransaction+1<<", DF "<<this<<" had "<<myNbTouchedAtt<<" attribute(s) touched. Time = "<<myTime<<endl; \
@@ -221,10 +219,8 @@ Standard_Integer TDF_Data::CommitTransaction
       itr1.Next();
       //      currentAtt = itr1.Value();
 
-#ifdef BUC60879
       // A callback:
       aPtrCurrentAtt->BeforeCommitTransaction();
-#endif
 
       backupAtt  = aPtrCurrentAtt->myBackup;
 

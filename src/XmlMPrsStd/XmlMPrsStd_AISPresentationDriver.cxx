@@ -19,8 +19,6 @@
 
 #include <TPrsStd_AISPresentation.hxx>
 
-#define OCC6010 // vro: 09.06.2004
-
 IMPLEMENT_DOMSTRING (GuidString,        "guid")
 IMPLEMENT_DOMSTRING (IsDisplayedString, "isdisplayed")
 IMPLEMENT_DOMSTRING (ColorString,       "color")
@@ -155,7 +153,6 @@ Standard_Boolean XmlMPrsStd_AISPresentationDriver::Paste
     aTPrs->UnsetWidth();
   }
 
-#ifdef OCC6010
   // mode
   aDOMStr = anElem.getAttribute(::ModeString());
   if (aDOMStr != NULL)
@@ -173,7 +170,6 @@ Standard_Boolean XmlMPrsStd_AISPresentationDriver::Paste
   {
     aTPrs->UnsetMode();
   }
-#endif
 
   return Standard_True;
 }

@@ -14,15 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
---				       the restricted NameOfColor.
---	     Redefines the Color(),Material(),Transparency() methods 
---	     for taking in acount the current facing model.
---   GG :   BUC60536 The compute methods must be defined "protected" 
---	and no more "private"
-
-
-
 class Shape from AIS inherits InteractiveObject from AIS
 
 	---Purpose: A framework to manage presentation and selection of shapes.

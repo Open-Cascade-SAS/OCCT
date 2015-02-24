@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//GER61351 //GG_171199     Enable to get an object RGB color instead a restricted object NameOfColor.
-
-
-
 #include <AIS_GraphicTool.ixx>
 
 

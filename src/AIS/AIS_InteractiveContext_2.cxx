@@ -14,8 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define IMP051001       //GG Adds SetZDetected() and ZDetected() methods
-
 #include <AIS_InteractiveContext.jxx>
 
 #include <AIS_LocalContext.hxx>
@@ -888,7 +886,6 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
   }
 }
 
-#ifdef IMP051001
 //=======================================================================
 //function : SetZDetection
 //purpose  : 
@@ -906,4 +903,3 @@ Standard_Boolean AIS_InteractiveContext::ZDetection() const
 {
   return myZDetectionFlag;
 }
-#endif

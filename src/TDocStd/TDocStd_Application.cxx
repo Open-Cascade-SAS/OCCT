@@ -30,15 +30,9 @@
 
 #include <CDM_MessageDriver.hxx>
 
-// The improvement concerns returning value of the methods Open(), Save() and SaveAs():
-#define BUC60867
-
 // TDocStd_Owner attribute have pointer of closed TDocStd_Document
-#define OCC159
 
-#ifdef OCC159
 #include <TDocStd_Owner.hxx>
-#endif
 
 //=======================================================================
 //function : TDocStd_Application
@@ -144,7 +138,6 @@ void TDocStd_Application::InitDocument(const Handle(TDocStd_Document)& /*aDoc*/)
 {
 }
 
-#ifdef OCC159
 //=======================================================================
 //function : Close
 //purpose  :
@@ -165,7 +158,6 @@ void TDocStd_Application::Close(const Handle(TDocStd_Document)& aDoc)
   aDoc->BeforeClose();
   CDF_Application::Close(aDoc);
 }
-#endif
 
 //=======================================================================
 //function : IsInSession
@@ -208,10 +200,8 @@ PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString& pa
   TCollection_ExtendedString file = tool.Name();
   file+=".";
   file+=tool.Extension();
-#ifdef BUC60867
   status = CanRetrieve(directory,file);
   if (status != PCDM_RS_OK) return status;
-#endif
   try {
     OCC_CATCH_SIGNALS
     Handle(TDocStd_Document) D =
@@ -250,7 +240,6 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,c
   file+=tool.Extension();
   D->Open(this);
   CDF_Store storer (D);
-#ifdef BUC60867
   if (!storer.SetFolder(directory))
   {
     TCollection_ExtendedString aMsg ("TDocStd_Application::SaveAs() - folder ");
@@ -260,7 +249,6 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,c
       MessageDriver()->Write(aMsg.ToExtString());
     return storer.StoreStatus(); //CDF_SS_Failure;
   }
-#endif
   storer.SetName (file);
   try {
     OCC_CATCH_SIGNALS
@@ -275,12 +263,10 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,c
   }
   if(storer.StoreStatus() == PCDM_SS_OK)
     D->SetSaved();
-#ifdef BUC60867
 #ifdef OCCT_DEBUG
   cout<<"TDocStd_Application::SaveAs(): The status = "<<storer.StoreStatus()<<endl;
 #endif
   return storer.StoreStatus();
-#endif
 }
 
 //=======================================================================
@@ -289,9 +275,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,c
 //=======================================================================
 
 PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
-#ifdef BUC60867
   PCDM_StoreStatus status = PCDM_SS_OK;
-#endif
   if (D->IsSaved()) {
     CDF_Store storer (D);
     try{
@@ -307,9 +291,7 @@ PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
     }
     if(storer.StoreStatus() == PCDM_SS_OK)
       D->SetSaved();
-#ifdef BUC60867
     status = storer.StoreStatus();
-#endif
   } else {
     if(!MessageDriver().IsNull()) {
       TCollection_ExtendedString aMsg("Document has not been saved yet");
@@ -317,12 +299,10 @@ PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
     }
     status = PCDM_SS_Failure;
   }
-#ifdef BUC60867
 #ifdef OCCT_DEBUG
   cout<<"TDocStd_Application::Save(): The status = "<<status<<endl;
 #endif
   return status;
-#endif
 }
 
 //=======================================================================

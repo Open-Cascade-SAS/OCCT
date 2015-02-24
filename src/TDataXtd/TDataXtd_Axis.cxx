@@ -33,8 +33,6 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-#define OCC2932
-
 //=======================================================================
 //function : GetID
 //purpose  : 
@@ -73,7 +71,6 @@ Handle(TDataXtd_Axis) TDataXtd_Axis::Set (const TDF_Label& L, const gp_Lin& line
 { 
   Handle(TDataXtd_Axis) A = Set (L);
 
-#ifdef OCC2932
   Handle(TNaming_NamedShape) aNS;
   if(L.FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
     if(!aNS->Get().IsNull())
@@ -93,7 +90,6 @@ Handle(TDataXtd_Axis) TDataXtd_Axis::Set (const TDF_Label& L, const gp_Lin& line
 	 }
        }
   }
-#endif
   TNaming_Builder B (L);
   B.Generated (BRepBuilderAPI_MakeEdge(line));
   return A;

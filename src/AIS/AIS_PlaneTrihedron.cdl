@@ -14,13 +14,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
---				       the restricted NameOfColor.
---   SAV : OCC218 06/03/02 : Added two fields and methods to be able to change 
---                           axes labels.
---                           X/YAxis() returns AIS_Line instead of AIS_Axis
---                           (SAMTECH specific)
-
 class PlaneTrihedron from AIS inherits InteractiveObject from AIS
 
     	---Purpose: To construct a selectable 2d axis system in a 3d

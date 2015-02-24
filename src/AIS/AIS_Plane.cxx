@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
-
 #include <AIS_Plane.ixx>
 
 #include <TColgp_Array1OfPnt.hxx>
@@ -449,13 +446,11 @@ Standard_Boolean AIS_Plane::Size(Standard_Real& X,Standard_Real& Y) const
 
 
 void AIS_Plane::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_Plane::SetColor(const Quantity_Color &aCol)
-#endif
 {
   // if the plane already has its proper size, there is an already created planeaspect 
 //  Standard_Boolean yenadeja = hasOwnColor || myHasOwnSize;

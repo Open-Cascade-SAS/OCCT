@@ -14,11 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//GER61351	//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
-
-#define BUC60915 	//GG 05/06/01 Enable to compute the requested arrow size 
-//			if any in all dimensions.
-
 #include <AIS.hxx>
 #include <Graphic3d_Group.hxx>
 
@@ -60,16 +55,12 @@ AIS_Relation::AIS_Relation(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation
 :AIS_InteractiveObject(aTypeOfPresentation3d),
  myVal(1.),
  myPosition(0.,0.,0.),
-#ifdef BUC60915
  myArrowSize( myVal / 10. ),
-#endif
  myAutomaticPosition(Standard_True),
  myExtShape(0),
  myFirstOffset(0.),mySecondOffset(0.),
- myIsSetBndBox( Standard_False )
-#ifdef BUC60915
- ,myArrowSizeIsDefined( Standard_False)
-#endif
+ myIsSetBndBox( Standard_False ),
+ myArrowSizeIsDefined( Standard_False)
 {
 }
 

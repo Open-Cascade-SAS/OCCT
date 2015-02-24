@@ -28,8 +28,6 @@
 #include <Poly_Array1OfTriangle.hxx>
 #include <PPoly_HArray1OfTriangle.hxx>
 
-#define MgtBRepSpeedDownCast
-
 //=======================================================================
 //function : ArrayCopy
 //purpose  : Copy the gp_Pnt
@@ -261,12 +259,8 @@ Handle(Poly_Triangulation) MgtPoly::Translate
   if (!PObj.IsNull()) {
     if (aMap.IsBound(PObj)) {
 
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PObj);
       TT = (Handle(Poly_Triangulation)&) aTrans;
-#else
-      TT = Handle(Poly_Triangulation)::DownCast(aMap.Find(PObj));
-#endif
     }
     else {              // translate and bind
       
@@ -313,12 +307,8 @@ Handle(PPoly_Triangulation) MgtPoly::Translate
   Handle(PPoly_Triangulation) PT;
   if (!TObj.IsNull()) {
     if (aMap.IsBound(TObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TObj);
       PT = (Handle(PPoly_Triangulation)&) aPers;
-#else
-      PT = Handle(PPoly_Triangulation)::DownCast(aMap.Find(TObj));
-#endif      
     }
     else {
       // myNodes
@@ -365,12 +355,8 @@ Handle(Poly_Polygon3D) MgtPoly::Translate
   Handle(Poly_Polygon3D) TP;
   if (!PObj.IsNull()) {
     if (aMap.IsBound(PObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PObj);
       TP = (Handle(Poly_Polygon3D)&) aTrans;
-#else
-      TP = Handle(Poly_Polygon3D)::DownCast(aMap.Find(PObj));
-#endif      
     }
     else {
 
@@ -406,12 +392,8 @@ Handle(PPoly_Polygon3D) MgtPoly::Translate
   Handle(PPoly_Polygon3D) PT;
   if (!TObj.IsNull()) {
     if (aMap.IsBound(TObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TObj);
       PT = (Handle(PPoly_Polygon3D)&) aPers;
-#else
-      PT = Handle(PPoly_Polygon3D)::DownCast(aMap.Find(TObj));
-#endif      
     }
     else {
       // myNodes
@@ -447,12 +429,8 @@ Handle(Poly_Polygon2D) MgtPoly::Translate
   Handle(Poly_Polygon2D) TP;
   if (!PObj.IsNull()) {
     if (aMap.IsBound(PObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PObj);
       TP = (Handle(Poly_Polygon2D)&) aTrans;
-#else
-      TP = Handle(Poly_Polygon2D)::DownCast(aMap.Find(PObj));
-#endif      
     }
     else {
       // myNodes
@@ -481,12 +459,8 @@ Handle(PPoly_Polygon2D) MgtPoly::Translate
   Handle(PPoly_Polygon2D) PT;
   if (!TObj.IsNull()) {
     if (aMap.IsBound(TObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TObj);
       PT = (Handle(PPoly_Polygon2D)&) aPers;
-#else
-      PT = Handle(PPoly_Polygon2D)::DownCast(aMap.Find(TObj));
-#endif      
     }
     else {
       // myNodes
@@ -516,12 +490,8 @@ Handle(Poly_PolygonOnTriangulation) MgtPoly::Translate
   Handle(Poly_PolygonOnTriangulation) TP;
   if (!PObj.IsNull()) {
     if (aMap.IsBound(PObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Transient) aTrans = aMap.Find(PObj);
       TP = (Handle(Poly_PolygonOnTriangulation)&) aTrans;
-#else
-      TP = Handle(Poly_PolygonOnTriangulation)::DownCast(aMap.Find(PObj));
-#endif      
     }
     else {
 
@@ -564,12 +534,8 @@ Handle(PPoly_PolygonOnTriangulation) MgtPoly::Translate
   Handle(PPoly_PolygonOnTriangulation) PT;
   if (!TObj.IsNull()) {
     if (aMap.IsBound(TObj)) {
-#ifdef MgtBRepSpeedDownCast
       Handle(Standard_Persistent) aPers = aMap.Find(TObj);
       PT = (Handle(PPoly_PolygonOnTriangulation)&) aPers;
-#else
-      PT = Handle(PPoly_PolygonOnTriangulation)::DownCast(aMap.Find(TObj));
-#endif      
     }
     else {
       // myNodes
