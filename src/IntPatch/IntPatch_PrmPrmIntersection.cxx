@@ -68,6 +68,46 @@ static void AddWLine(IntPatch_SequenceOfLine      &theLines,
                      const Handle(IntPatch_WLine) &theWLine,
                      const Standard_Real           Deflection);
 
+//=======================================================================
+//function : DublicateOfLinesProcessing
+//purpose  : Decides, if rejecting current line is necessary
+//=======================================================================
+static void DublicateOfLinesProcessing( const IntWalk_PWalking& thePW,
+                                        const Standard_Integer theWLID,
+                                        IntPatch_SequenceOfLine& theLines,
+                                        Standard_Boolean& theIsRejectReq)
+{
+  const Handle(IntPatch_WLine)& anExistWL =
+                      *((Handle(IntPatch_WLine)*)&theLines.Value(theWLID));
+  const Standard_Integer aNbPrevPoints = anExistWL->NbPnts();
+  const Standard_Integer aNbCurrPoints = thePW.NbPoints();
+
+  if(aNbPrevPoints < aNbCurrPoints)
+  {//Remove preview line
+    theLines.Remove(theWLID);
+    theIsRejectReq = Standard_False;
+  }
+  else if(aNbPrevPoints == aNbCurrPoints)
+  {
+    Standard_Real aLPrev = 0.0, aLCurr = 0.0;
+    for(Standard_Integer aNbPP = 1; aNbPP < aNbPrevPoints; aNbPP++)
+    {
+      const gp_Pnt  aP1prev(anExistWL->Point(aNbPP).Value()),
+        aP2prev(anExistWL->Point(aNbPP+1).Value());
+      const gp_Pnt  aP1curr(thePW.Value(aNbPP).Value()),
+        aP2curr(thePW.Value(aNbPP+1).Value());
+
+      aLPrev += aP1prev.Distance(aP2prev);
+      aLCurr += aP1curr.Distance(aP2curr);
+    }
+
+    if(aLPrev < aLCurr)
+    {//Remove preview line
+      theLines.Remove(theWLID);
+      theIsRejectReq = Standard_False;
+    }
+  }
+}
 
 //==================================================================================
 // function : 
@@ -331,6 +371,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                     }
                   }
 
+                  if(RejetLigne)
+                  {
+                    DublicateOfLinesProcessing(PW, ver, SLin, RejetLigne);
+                  }
+
                   if(!RejetLigne) { 
                     // Calculation transition
                     IntSurf_TypeTrans trans1,trans2;
@@ -469,6 +514,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                   if(Point3dFin.Distance(verPointFin.Value()) < TolTangency)
                     RejetLigne = Standard_True; 
                 }
+              }
+
+              if(RejetLigne)
+              {
+                DublicateOfLinesProcessing(PW, ver, SLin, RejetLigne);
               }
 
               if(!RejetLigne) { 
@@ -688,6 +738,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                     }
                   }
 
+                  if(RejetLigne)
+                  {
+                    DublicateOfLinesProcessing(PW, ver, SLin, RejetLigne);
+                  }
+
                   if(!RejetLigne) { 
                     IntSurf_TypeTrans trans1,trans2;
                     Standard_Real locu,locv;
@@ -854,6 +909,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                     if(Point3dFin.Distance(verPointFin.Value()) < TolTangency)
                       RejetLigne = Standard_True; 
                   }
+                }
+
+                if(RejetLigne)
+                {
+                  DublicateOfLinesProcessing(PW, ver, SLin, RejetLigne);
                 }
 
                 if(!RejetLigne)	{ 
@@ -1489,6 +1549,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                 if(Point3dFin.Distance(verPointFin.Value()) <= TolTangency)
                   RejetLigne = Standard_True; 
               }
+            }
+
+            if(RejetLigne)
+            {
+              DublicateOfLinesProcessing(PW, ver, SLin, RejetLigne);
             }
 
             if(!RejetLigne) {
@@ -2298,6 +2363,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
                     }// for( ver = 1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
                     //
 
+                    if(RejectLine)
+                    {
+                      DublicateOfLinesProcessing(PW, ver, SLin, RejectLine);
+                    }
+
                     if(!RejectLine)
                     {
                       IntSurf_TypeTrans trans1,trans2;
@@ -2854,6 +2924,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
                   RejetLigne = Standard_True; 
                 }
               }
+            }
+
+            if(RejetLigne)
+            {
+              DublicateOfLinesProcessing(PW, ver, SLin, RejetLigne);
             }
 
             if(!RejetLigne)
