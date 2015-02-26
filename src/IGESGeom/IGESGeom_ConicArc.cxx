@@ -256,9 +256,9 @@ IGESGeom_ConicArc::IGESGeom_ConicArc ()    {  }
     Standard_Real cos2t;
     Standard_Real auxil;
 
-    if (Abs(term2)<= eps && Abs(term1)<= eps) {
+    if (Abs(term1)< gp::Resolution()) {
       cos2t = 1.;
-      auxil = 0.;
+      auxil = term2;
     }
     else {
       Standard_Real t2d = term2/term1; //skl 28.12.2001

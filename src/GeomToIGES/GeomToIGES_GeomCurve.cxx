@@ -625,8 +625,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve
   Build.EvalXYZ((start->Value(U1)).XYZ(), Xs, Ys, Zs);
   Build.EvalXYZ((start->Value(U2)).XYZ(), Xe, Ye, Ze);
   gp_Elips2d E2d = gp_Elips2d(gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()),
-			      (start->MajorRadius()), 
-			      (start->MinorRadius()));
+			      (start->MajorRadius() / GetUnit()), 
+			      (start->MinorRadius() / GetUnit()));
   Standard_Real A, B, C, D, E, F;
   E2d.Coefficients(A, C, B, D, E, F);//#59 rln 29.12.98 PRO17015 face 67
                                      //gp_Elips2d returns 0.5*K not K 
@@ -687,8 +687,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve
   Build.EvalXYZ((start->Value(U1)).XYZ(), Xs, Ys, Zs);
   Build.EvalXYZ((start->Value(U2)).XYZ(), Xe, Ye, Ze);
   gp_Hypr2d H2d = gp_Hypr2d (gp_Ax22d(gp::Origin2d(), gp::DX2d(), gp::DY2d()),
-			     (start->MajorRadius()), 
-			     (start->MinorRadius()));
+			     (start->MajorRadius() / GetUnit()), 
+			     (start->MinorRadius() / GetUnit()));
   Standard_Real A, B, C, D, E, F;
   H2d.Coefficients(A, C, B, D, E, F);
 

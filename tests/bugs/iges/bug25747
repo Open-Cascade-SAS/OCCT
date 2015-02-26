@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC25747"
+puts "========"
+puts ""
+######################################
+# Bad IGES file after import and export with different units
+######################################
+
+catch {exec rm ${imagedir}/OCC25747.igs}
+
+# default OCCT unit for reading
+param xstep.cascade.unit MM
+
+param write.iges.unit M
+param write.iges.brep.mode 1
+
+# good IGES file
+ReadIges D [locate_data_file bug25747_pencil.igs]
+
+XShow D
+vtop
+vfit
+vsetdispmode 1
+vdump ${imagedir}/${casename}_1.png
+
+WriteIges D ${imagedir}/OCC25747.igs
+
+# bad IGES file after export
+ReadIges T ${imagedir}/OCC25747.igs
+
+XShow T
+vtop
+vfit
+vsetdispmode 1
+vdump ${imagedir}/${casename}_2.png
+
+# Check image
+set y 205.
+
+checkcolor  20 $y 0.0588 0.0588 0.8
+checkcolor 210 $y 0.5058 0.5764 0.0588
+checkcolor 330 $y 0.0588 0.0588 0.8
+checkcolor 360 $y 0.6862 0.4039 0.3333
+checkcolor 400 $y 0.1215 0.1215 0.7529
