@@ -76,14 +76,14 @@ is
 	---Purpose: 
 	---C++: inline
     
-    NbIntervals(myclass; C : in out Curve from BRepAdaptor;
+    NbIntervals(myclass; C : Curve from BRepAdaptor;
                          S : Shape from GeomAbs)
     returns Integer from Standard;
 	---Purpose: Returns  the number  of  intervals for  continuity
 	--          <S>. May be one if Continuity(myclass) >= <S>
 	---C++: inline
     
-    Intervals(myclass; C : in out Curve        from BRepAdaptor;
+    Intervals(myclass; C : Curve        from BRepAdaptor;
                        T : in out Array1OfReal from TColStd; 
     	               S :        Shape        from GeomAbs)
 	---Purpose: Stores in <T> the  parameters bounding the intervals

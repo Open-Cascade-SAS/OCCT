@@ -100,12 +100,12 @@ is
     Continuity(me) returns Shape from GeomAbs
     is redefined static;
     
-    NbIntervals(me: in out; S : Shape from GeomAbs) returns Integer
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer
 	---Purpose: Returns  the number  of  intervals for  continuity
 	--          <S>. May be one if Continuity(me) >= <S>
     is redefined static;
     
-    Intervals(me:in out; T : in out Array1OfReal from TColStd; 
+    Intervals(me; T : in out Array1OfReal from TColStd; 
     	          S : Shape from GeomAbs)
 	---Purpose: Stores in <T> the  parameters bounding the intervals
 	--          of continuity <S>.

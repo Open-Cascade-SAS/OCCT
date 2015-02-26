@@ -204,7 +204,7 @@ GeomAbs_Shape GeomAdaptor_Curve::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) 
+Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 {
   Standard_Integer myNbIntervals = 1;
   Standard_Integer NbSplit;
@@ -324,7 +324,7 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S)
 //=======================================================================
 
 void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
-				  const GeomAbs_Shape S   )  
+                                  const GeomAbs_Shape S   ) const
 {
   Standard_Integer myNbIntervals = 1;
   Standard_Integer NbSplit;

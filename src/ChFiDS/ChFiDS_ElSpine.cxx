@@ -88,7 +88,7 @@ GeomAbs_Shape ChFiDS_ElSpine::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer ChFiDS_ElSpine::NbIntervals(const GeomAbs_Shape S) 
+Standard_Integer ChFiDS_ElSpine::NbIntervals(const GeomAbs_Shape S) const
 {
   return curve.NbIntervals(S);
 }
@@ -98,7 +98,7 @@ Standard_Integer ChFiDS_ElSpine::NbIntervals(const GeomAbs_Shape S)
 //purpose  : 
 //=======================================================================
 
-void ChFiDS_ElSpine::Intervals(TColStd_Array1OfReal& T,const GeomAbs_Shape S) 
+void ChFiDS_ElSpine::Intervals(TColStd_Array1OfReal& T,const GeomAbs_Shape S) const
 {
   curve.Intervals(T,S);
 }

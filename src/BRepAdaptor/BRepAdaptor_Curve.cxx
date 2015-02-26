@@ -236,7 +236,7 @@ GeomAbs_Shape BRepAdaptor_Curve::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer BRepAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) 
+Standard_Integer BRepAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
 {
   if (myConSurf.IsNull()) {
     return myCurve.NbIntervals(S);
@@ -252,7 +252,7 @@ Standard_Integer BRepAdaptor_Curve::NbIntervals(const GeomAbs_Shape S)
 //=======================================================================
 
 void BRepAdaptor_Curve::Intervals(TColStd_Array1OfReal& T, 
-				  const GeomAbs_Shape S)  
+                                  const GeomAbs_Shape S) const
 {
   if (myConSurf.IsNull()) {
     myCurve.Intervals(T, S);

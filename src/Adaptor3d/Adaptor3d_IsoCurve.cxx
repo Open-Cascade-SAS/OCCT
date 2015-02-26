@@ -229,7 +229,7 @@ GeomAbs_Shape Adaptor3d_IsoCurve::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S)  
+Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   if (myIso == GeomAbs_NoneIso) Standard_NoSuchObject::Raise();
   Standard_Boolean UIso =  (myIso == GeomAbs_IsoU);
@@ -260,7 +260,7 @@ Standard_Integer Adaptor3d_IsoCurve::NbIntervals(const GeomAbs_Shape S)
 //=======================================================================
 
 void Adaptor3d_IsoCurve::Intervals(TColStd_Array1OfReal& TI,
-				 const GeomAbs_Shape S)  
+                                   const GeomAbs_Shape S) const
 {
   if (myIso == GeomAbs_NoneIso) Standard_NoSuchObject::Raise();
   Standard_Boolean UIso =  (myIso == GeomAbs_IsoU);

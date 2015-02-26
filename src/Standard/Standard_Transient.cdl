@@ -35,12 +35,6 @@ is
     	    ---C++: alias "Standard_Transient(const Standard_Transient&) : count(0) {}"
     	    ---C++: alias "Standard_Transient& operator= (const Standard_Transient&) { return *this; }"
 
-	HashCode (me; Upper : Integer ) returns Integer is virtual;
-	    ---Purpose: Returns a hashed value denoting <me>. This value is in
-	    --         the range 1..<Upper>.
-	    ---C++:  function call
-	    ---Level: Advanced
-
         Delete(me) is  virtual;
             ---Purpose: Memory deallocator for transient classes
             ---Level: Advanced

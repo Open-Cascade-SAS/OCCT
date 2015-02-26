@@ -943,7 +943,7 @@ GeomAbs_Shape ProjLib_ProjectOnPlane::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer ProjLib_ProjectOnPlane::NbIntervals(const GeomAbs_Shape S) 
+Standard_Integer ProjLib_ProjectOnPlane::NbIntervals(const GeomAbs_Shape S) const
 {
   return myCurve->NbIntervals(S) ;
 }
@@ -955,7 +955,7 @@ Standard_Integer ProjLib_ProjectOnPlane::NbIntervals(const GeomAbs_Shape S)
 //=======================================================================
 
 void ProjLib_ProjectOnPlane::Intervals(TColStd_Array1OfReal& T, 
-				       const GeomAbs_Shape S) 
+                                       const GeomAbs_Shape S) const
 {
   myCurve->Intervals(T,S) ;
 }

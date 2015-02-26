@@ -107,8 +107,7 @@ inline GeomAbs_Shape  HLRBRep_Curve::Continuity() const
 //purpose  : 
 //=======================================================================
 
-inline Standard_Integer  HLRBRep_Curve::NbIntervals
-  (const GeomAbs_Shape S)  
+inline Standard_Integer  HLRBRep_Curve::NbIntervals (const GeomAbs_Shape S) const
 { return HLRBRep_BCurveTool::NbIntervals(myCurve,S); }
 
 //=======================================================================
@@ -117,7 +116,7 @@ inline Standard_Integer  HLRBRep_Curve::NbIntervals
 //=======================================================================
 
 inline void HLRBRep_Curve::Intervals(TColStd_Array1OfReal& Tab,
-				     const GeomAbs_Shape Sh) 
+                                     const GeomAbs_Shape Sh) const
 { HLRBRep_BCurveTool::Intervals(myCurve,Tab,Sh); }
 
 

@@ -27,7 +27,7 @@
   // part of C++11 standard
   #define Standard_OVERRIDE override
 #elif defined(_MSC_VER) && (_MSC_VER >= 1700)
-  // MSVC extension since VS2005
+  // MSVC extension since VS2012
   #define Standard_OVERRIDE override
 #else
   #define Standard_OVERRIDE

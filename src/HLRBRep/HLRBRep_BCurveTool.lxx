@@ -57,8 +57,8 @@ HLRBRep_BCurveTool::Continuity (const BRepAdaptor_Curve& C)
 //=======================================================================
 
 inline Standard_Integer
-HLRBRep_BCurveTool::NbIntervals(BRepAdaptor_Curve& C,
-				const GeomAbs_Shape Sh)
+HLRBRep_BCurveTool::NbIntervals(const BRepAdaptor_Curve& C,
+                                const GeomAbs_Shape Sh)
 { return(C.NbIntervals(Sh)); }
 
 //=======================================================================
@@ -67,9 +67,9 @@ HLRBRep_BCurveTool::NbIntervals(BRepAdaptor_Curve& C,
 //=======================================================================
 
 inline void
-HLRBRep_BCurveTool::Intervals(BRepAdaptor_Curve& C,
-			      TColStd_Array1OfReal& Tab,
-			      const GeomAbs_Shape Sh)
+HLRBRep_BCurveTool::Intervals(const BRepAdaptor_Curve& C,
+                              TColStd_Array1OfReal& Tab,
+                              const GeomAbs_Shape Sh)
 { C.Intervals(Tab,Sh); }
 
 //=======================================================================

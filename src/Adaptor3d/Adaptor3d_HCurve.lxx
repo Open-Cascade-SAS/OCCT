@@ -48,9 +48,9 @@ inline Standard_Real Adaptor3d_HCurve::FirstParameter() const
 //purpose  : 
 //=======================================================================
 
- inline Standard_Integer Adaptor3d_HCurve::NbIntervals(const GeomAbs_Shape S)  
+ inline Standard_Integer Adaptor3d_HCurve::NbIntervals(const GeomAbs_Shape S) const
 {
-  return GetCurve().NbIntervals(S);
+  return Curve().NbIntervals(S);
 }
 
 //=======================================================================
@@ -59,9 +59,9 @@ inline Standard_Real Adaptor3d_HCurve::FirstParameter() const
 //=======================================================================
 
  inline void Adaptor3d_HCurve::Intervals(TColStd_Array1OfReal& T,
-				       const GeomAbs_Shape S)  
+                                         const GeomAbs_Shape S) const
 {
-  GetCurve().Intervals(T,S);
+  Curve().Intervals(T,S);
 }
 
 //=======================================================================

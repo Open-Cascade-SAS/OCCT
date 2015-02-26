@@ -85,10 +85,10 @@ is
     Continuity(me) returns Shape from GeomAbs ;
 	---C++: inline
     
-    NbIntervals(me: mutable; S : Shape from GeomAbs) returns Integer;
+    NbIntervals(me; S : Shape from GeomAbs) returns Integer;
 	---C++: inline
     
-    Intervals(me: mutable; T : in out Array1OfReal from TColStd; 
+    Intervals(me; T : in out Array1OfReal from TColStd; 
     	          S : Shape from GeomAbs)
 	---Purpose: Stores in <T> the  parameters bounding the intervals
 	--          of continuity <S>.

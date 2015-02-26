@@ -38,7 +38,7 @@ void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
   return myHCurve->LastParameter();
 }
 
- Standard_Integer GeomFill_SnglrFunc::NbIntervals(const GeomAbs_Shape S) 
+ Standard_Integer GeomFill_SnglrFunc::NbIntervals(const GeomAbs_Shape S) const
 {
   GeomAbs_Shape HCS=GeomAbs_C0;
   switch(S) {
@@ -50,7 +50,7 @@ void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
   return myHCurve->NbIntervals(HCS);
 }
 
- void GeomFill_SnglrFunc::Intervals(TColStd_Array1OfReal& T,const GeomAbs_Shape S) 
+ void GeomFill_SnglrFunc::Intervals(TColStd_Array1OfReal& T,const GeomAbs_Shape S) const
 {
   GeomAbs_Shape HCS=GeomAbs_C0;
   switch(S) {

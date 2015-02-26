@@ -812,8 +812,7 @@ static void AddIntervals (const Handle(TColStd_HSequenceOfReal)& theParameters,
 //purpose  : 
 //=======================================================================
 
-Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals
-(const GeomAbs_Shape S)
+Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals (const GeomAbs_Shape S) const
 {
   if(S == myIntCont && !myIntervals.IsNull())
     return myIntervals->Length()-1;
@@ -838,10 +837,10 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals
   // sorted sequence of parameters defining continuity intervals;
   // started with own intervals of curve and completed by 
   // additional points coming from surface discontinuities
-  myIntervals = new TColStd_HSequenceOfReal;
+  Handle(TColStd_HSequenceOfReal) aIntervals = new TColStd_HSequenceOfReal;
   for (Standard_Integer i = 1; i <= nc + 1; i++)
   {
-    myIntervals->Append(TabC(i));
+    aIntervals->Append(TabC(i));
   }
  
   if (nu>1)
@@ -852,7 +851,7 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals
       U = TabU.Value(iu);
       Adaptor3d_InterFunc Func(myCurve,U,1);
       math_FunctionRoots Resol(Func,Tdeb,Tfin,NbSample,Tol,Tol,Tol,0.);
-      AddIntervals (myIntervals, Resol, Tol);
+      AddIntervals (aIntervals, Resol, Tol);
     }
   }
   if (nv>1)
@@ -863,17 +862,18 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals
       V = TabV.Value(iv);
       Adaptor3d_InterFunc Func(myCurve,V,2);
       math_FunctionRoots Resol(Func,Tdeb,Tfin,NbSample,Tol,Tol,Tol,0.);
-      AddIntervals (myIntervals, Resol, Tol);
+      AddIntervals (aIntervals, Resol, Tol);
     }
   }
 
   // for case intervals==1 and first point == last point SequenceOfReal
   // contains only one value, therefore it is necessary to add second
-  // value into myIntervals which will be equal first value.
-  if (myIntervals->Length() == 1)
-    myIntervals->Append (myIntervals->Value(1));
+  // value into aIntervals which will be equal first value.
+  if (aIntervals->Length() == 1)
+    aIntervals->Append (aIntervals->Value(1));
 
-  myIntCont = S;
+  const_cast<Adaptor3d_CurveOnSurface*>(this)->myIntervals = aIntervals;
+  const_cast<Adaptor3d_CurveOnSurface*>(this)->myIntCont = S;
   return myIntervals->Length() - 1;
 }
 
@@ -883,7 +883,7 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals
 //=======================================================================
 
 void Adaptor3d_CurveOnSurface::Intervals(TColStd_Array1OfReal& T,
-				       const GeomAbs_Shape S)  
+                                         const GeomAbs_Shape S) const
 {
   NbIntervals(S);
   Standard_ASSERT_RAISE (T.Length() == myIntervals->Length(), "Error: Wrong size of array buffer in call to Adaptor3d_CurveOnSurface::Intervals");

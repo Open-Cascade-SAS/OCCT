@@ -267,9 +267,9 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   points    .Append (CurrentPoint);
 
   // Used to detect "isLine" current bspline and in Du computation in general handling.
-  Standard_Integer NbInterv = const_cast<TheCurve*>(&C)->NbIntervals(GeomAbs_CN);
+  Standard_Integer NbInterv = C.NbIntervals(GeomAbs_CN);
   TColStd_Array1OfReal Intervs(1, NbInterv+1);
-  const_cast<TheCurve*>(&C)->Intervals(Intervs, GeomAbs_CN);
+  C.Intervals(Intervs, GeomAbs_CN);
 
   if (NotDone) {
     //C'est soit une droite, soit une singularite :

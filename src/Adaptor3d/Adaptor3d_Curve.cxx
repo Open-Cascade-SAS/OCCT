@@ -67,8 +67,7 @@ GeomAbs_Shape Adaptor3d_Curve::Continuity() const
 //purpose  : 
 //=======================================================================
 
-//Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape S) const 
-Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape ) 
+Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape ) const
 {
   Standard_NotImplemented::Raise("Adaptor3d_Curve::NbIntervals");
   return 0;
@@ -80,8 +79,7 @@ Standard_Integer Adaptor3d_Curve::NbIntervals(const GeomAbs_Shape )
 //purpose  : 
 //=======================================================================
 
-//void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const 
-void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal& , const GeomAbs_Shape )  
+void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal& , const GeomAbs_Shape ) const
 {
   Standard_NotImplemented::Raise("Adaptor3d_Curve::Intervals");
 }

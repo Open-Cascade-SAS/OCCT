@@ -226,7 +226,7 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
   return myCurves->Value(1).Continuity();
 }
 
- Standard_Integer BRepAdaptor_CompCurve::NbIntervals(const GeomAbs_Shape S)
+ Standard_Integer BRepAdaptor_CompCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   Standard_Integer NbInt, ii;
   for (ii=1, NbInt=0; ii<=myCurves->Length(); ii++)
@@ -236,7 +236,7 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 }
 
  void BRepAdaptor_CompCurve::Intervals(TColStd_Array1OfReal& T,
-				       const GeomAbs_Shape S)
+                                       const GeomAbs_Shape S) const
 {
   Standard_Integer ii, jj, kk, n;
   Standard_Real f, F, delta;
