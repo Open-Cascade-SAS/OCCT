@@ -33,15 +33,22 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
+#include <algorithm>
+
 #include <Precision.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom2dAdaptor.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -191,7 +198,6 @@ static Standard_Integer NbSurfIntervals(const Handle(GeomAdaptor_HSurface)& GAS,
 //function : Perform
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curve)& c3d,
                                                                 const Standard_Real First,
                                                                 const Standard_Real Last,
@@ -208,7 +214,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
     myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL1);
     return Standard_False;
   }
-
 //  Projection Analytique
   Handle(Geom_Curve) crv3dtrim = c3d;
   if ( ! c3d->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) )
@@ -252,15 +257,77 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
 //    $$$$    end :92 (big BSplineCurve C0)
   
   // this number should be "parametric dependent"
-  TColgp_Array1OfPnt   points(1, nbPini);
+  TColgp_Array1OfPnt points(1, nbPini);
   TColStd_Array1OfReal params(1, nbPini);
-
-  Standard_Integer iPnt;
+  NCollection_Sequence<Standard_Real> aKnotCoeffs;
   gp_Pnt p3d;
+  Standard_Integer iPnt;
+
+  // In case of bspline compute parametrization speed on each 
+  // knot interval inside [aFirstParam, aLastParam].
+  // If quotient = (MaxSpeed / MinSpeed) >= aMaxQuotientCoeff then
+  // use PerformByProjLib algorithm.
+  if(!bspl.IsNull())
+  {
+    Standard_Integer aNbIntPnts = NCONTROL;
+    Standard_Real aFirstParam = First; // First parameter of current interval.
+    Standard_Real aLastParam = Last; // Last parameter of current interval.
+
+    // First index computation.
+    Standard_Integer anIdx = 1;
+    for(; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
+    {
+      if(bspl->Knot(anIdx) > First)
+      {
+        break;
+      }
+    }
+
+    for(; anIdx <= bspl->NbKnots() && aFirstParam < Last; anIdx++)
+    {
+      // Fill current knot interval.
+      aLastParam = Min(Last, bspl->Knot(anIdx));
+      Standard_Real aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
+      Standard_Integer anIntIdx;
+      gp_Pnt p3d1, p3d2;
+      Standard_Real aLength3d = 0.0;
+      for(anIntIdx = 0; anIntIdx < aNbIntPnts - 1; anIntIdx++)
+      {
+        // Start filling from first point.
+        Standard_Real aParam1 = aFirstParam + aStep * anIntIdx;
+        Standard_Real aParam2 = aFirstParam + aStep * (anIntIdx + 1);
+        c3d->D0 (aParam1, p3d1);
+        c3d->D0 (aParam2, p3d2);
+        aLength3d += p3d2.Distance(p3d1);
+      }
+      aKnotCoeffs.Append(aLength3d / (aLastParam - aFirstParam));
+      aFirstParam = aLastParam;
+    }
+
+    Standard_Real anEvenlyCoeff = 0;
+    if (aKnotCoeffs.Size() > 0)
+    {
+      anEvenlyCoeff = *std::max_element(aKnotCoeffs.begin(), aKnotCoeffs.end()) / 
+                      *std::min_element(aKnotCoeffs.begin(), aKnotCoeffs.end());
+    }
+
+    const Standard_Real aMaxQuotientCoeff = 1500.0;
+    if (anEvenlyCoeff > aMaxQuotientCoeff)
+    {
+      PerformByProjLib(c3d, First, Last, c2d);
+      // PerformByProjLib fail detection:
+      if (!c2d.IsNull())
+      {
+        return Status (ShapeExtend_DONE);
+      }
+    }
+  }
+
   Standard_Real deltaT, t;
   deltaT = (Last - First) / (nbPini-1);
   nbrPnt = nbPini;
-  for (iPnt = 1; iPnt <= nbPini; iPnt ++) {
+  for (iPnt = 1; iPnt <= nbPini; iPnt ++)
+  {
     if      (iPnt == 1)      t = First;
     else if (iPnt == nbPini) t = Last;
     else                     t = First + (iPnt - 1) * deltaT;
@@ -270,8 +337,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
     params(iPnt) = t;
   }
 
-//  CALCUL par approximation
-
+  //  CALCUL par approximation
   TColgp_Array1OfPnt2d pnt2d(1, nbrPnt);
   ApproxPCurve (nbrPnt,points,params,pnt2d,c2d); //szv#4:S4163:12Mar99 OK not needed
   if (!c2d.IsNull()) {
@@ -320,9 +386,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
 									const Standard_Real First,
 									const Standard_Real Last,
 									Handle(Geom2d_Curve)& c2d,
-									const GeomAbs_Shape continuity,
-									const Standard_Integer maxdeg,
-									const Standard_Integer nbinterval)
+									const GeomAbs_Shape /*continuity*/,
+									const Standard_Integer /*maxdeg */,
+									const Standard_Integer /*nbinterval */)
 {
   //Standard_Boolean OK = Standard_True; //szv#4:S4163:12Mar99 unused
   c2d.Nullify();
@@ -331,51 +397,53 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     return Standard_False;
   }
    
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
     Handle(GeomAdaptor_HSurface) GAS = mySurf->Adaptor3d();
-    Standard_Real URes = GAS->ChangeSurface().UResolution ( myPreci );
-    Standard_Real VRes = GAS->ChangeSurface().VResolution ( myPreci );
     Handle(GeomAdaptor_HCurve) GAC = new GeomAdaptor_HCurve (c3d,First,Last);
-    ProjLib_CompProjectedCurve Projector ( GAS, GAC, URes, VRes );
-     
-    Standard_Real ubeg, ufin;
-    Standard_Integer nbSol = Projector.NbCurves();
-    if (nbSol==1) {
-      Projector.Bounds(1, ubeg, ufin);
-      if((ubeg<=First)&&(ufin>=Last)) {
-	Standard_Integer nbintervals = ( nbinterval < 1 ? 
-					NbSurfIntervals(GAS, GeomAbs_C3)+GAC->NbIntervals(GeomAbs_C3)+2:
-					nbinterval);
-	Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve();
-	HProjector->Set(Projector);
-	Handle(Adaptor2d_HCurve2d) HPCur = HProjector;
-	Approx_CurveOnSurface appr(HPCur, GAS, First, Last, myPreci,
-				   continuity, maxdeg,
-				   nbintervals,
-				   Standard_False, Standard_True);
-	if ( appr.IsDone() )
-	  c2d = appr.Curve2d();
-      }
-#ifdef OCCT_DEBUG
-      else
-	cout<<"Warning: ProjLib cutting pcurve "<< First << " -> " << ubeg <<" ; "<< Last << " -> " << ufin << endl;
-#endif     
+    ProjLib_ProjectedCurve Projector(GAS, GAC);
+
+    switch (Projector.GetType())
+    {
+    case GeomAbs_Line : 
+      c2d = new Geom2d_Line(Projector.Line()); 
+      break;
+    case GeomAbs_Circle : 
+      c2d = new Geom2d_Circle(Projector.Circle());
+      break;
+    case GeomAbs_Ellipse :
+      c2d = new Geom2d_Ellipse(Projector.Ellipse());
+      break;
+    case GeomAbs_Parabola : 
+      c2d = new Geom2d_Parabola(Projector.Parabola()); 
+      break;
+    case GeomAbs_Hyperbola : 
+      c2d = new Geom2d_Hyperbola(Projector.Hyperbola()); 
+      break;
+    case GeomAbs_BSplineCurve :
+      c2d = Projector.BSpline();
+      break;
+    case GeomAbs_BezierCurve :
+    case GeomAbs_OtherCurve :
+      // Not possible, handling added to avoid gcc warning.
+      break;
     }
-#ifdef OCCT_DEBUG
-    else cout<<"Warning: ProjLib "<< nbSol << " curves in ProjLib"<<endl;
-#endif
-    if(c2d.IsNull()) {
+
+    if(c2d.IsNull())
+    {
       myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
       return Standard_False;
     }
-    else {
+    else 
+    {
       myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1);
       return Standard_True;
     }
     
   }
-  catch(Standard_Failure) {
+  catch(Standard_Failure)
+  {
 #ifdef OCCT_DEBUG
     cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(): Exception: ";
     Standard_Failure::Caught()->Print(cout); cout << endl;
