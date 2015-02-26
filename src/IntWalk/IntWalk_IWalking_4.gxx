@@ -19,7 +19,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 					const ThePOPIterator& Pnts1,
 					const ThePOLIterator& Pnts2,
 					TheIWFunction& Func,
-                                        Standard_Boolean& Rajout ) 
+                                        Standard_Boolean& Rajout )
 // *********** Processing of closed line **********************
 //
 // for any interior non-processed point 
@@ -41,7 +41,6 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 //
 // ******************************************************************** 
 {
-
   Standard_Integer I,N = 0;
   Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
   math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2);
@@ -62,7 +61,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 
   Standard_Integer StepSign;
   
-  IntWalk_StatusDeflection Status,StatusPrecedent;
+  IntWalk_StatusDeflection Status = IntWalk_OK, StatusPrecedent;
   Standard_Integer NbDivision ;   // number of divisions of step 
   // during calculation of  1 section
 
@@ -77,6 +76,47 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
   
   math_FunctionSetRoot Rsnld(Func,tolerance);
   Standard_Integer nbLoop = Pnts2.Length();
+
+  // Check borders for degeneracy:
+  math_Matrix D(1,1,1,2);
+  const Standard_Integer aNbSamplePnt = 10;
+  Standard_Boolean isLeftDegeneratedBorder[2] = {Standard_True, Standard_True};
+  Standard_Boolean isRightDegeneratedBorder[2] = {Standard_True, Standard_True};
+  math_Vector aStep(1,2);
+  aStep = (BornSup - BornInf) / (aNbSamplePnt - 1);
+  for(Standard_Integer aBorderIdx = 1; aBorderIdx <= 2; aBorderIdx++)
+  {
+    Standard_Integer aChangeIdx = aBorderIdx == 2? 1 : 2;
+    math_Vector UV(1,2);
+
+    // Left border.
+    UV(aBorderIdx) = BornInf(aBorderIdx);
+    for(Standard_Integer aParamIdx = 0; aParamIdx < aNbSamplePnt; aParamIdx++)
+    {
+      Standard_Real aParam = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
+      UV(aChangeIdx) = aParam;
+      Func.Derivatives(UV, D);
+      if ( Abs(D(1, aChangeIdx) ) > Precision::Confusion())
+      {
+        isLeftDegeneratedBorder[aBorderIdx - 1] = Standard_False;
+        break;
+      }
+    }
+
+    // Right border.
+    UV(aBorderIdx) = BornSup(aBorderIdx);
+    for(Standard_Integer aParamIdx = 0; aParamIdx < aNbSamplePnt; aParamIdx++)
+    {
+      Standard_Real aParam = BornInf(aChangeIdx) + aParamIdx * aStep(aChangeIdx);
+      UV(aChangeIdx) = aParam;
+      Func.Derivatives(UV, D);
+      if ( Abs(D(1, aChangeIdx) ) > Precision::Confusion())
+      {
+        isRightDegeneratedBorder[aBorderIdx - 1] = Standard_False;
+        break;
+      }
+    }
+  }
 
   for (I = 1;I<=nbLoop;I++) {
     if (wd2[I].etat > 12)
@@ -151,6 +191,46 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
           }
           else { // there is a solution
             Rsnld.Root(Uvap);
+
+            // Avoid unitialized memory access.
+            if (CurrentLine->NbPoints() > 2)
+            {
+              for(Standard_Integer aCoordIdx = 1; aCoordIdx <= 2; aCoordIdx++)
+              {
+                // Check degenerated cases and fix if possible.
+                if ( ( isLeftDegeneratedBorder[aCoordIdx - 1]
+                && Abs (Uvap(aCoordIdx) - BornInf(aCoordIdx)) < Precision::PConfusion())||
+                  (isRightDegeneratedBorder[aCoordIdx - 1]
+                && Abs (Uvap(aCoordIdx) - BornSup(aCoordIdx)) < Precision::PConfusion()) )
+                {
+                  Standard_Real uvprev[2], uv[2];
+                  if (!reversed)
+                  {
+                    CurrentLine->Value(CurrentLine->NbPoints() - 1).ParametersOnS2(uvprev[0], uvprev[1]);
+                    CurrentLine->Value(CurrentLine->NbPoints()).ParametersOnS2(uv[0], uv[1]);
+                  }
+                  else
+                  {
+                    CurrentLine->Value(CurrentLine->NbPoints() - 1).ParametersOnS1(uvprev[0], uvprev[1]);
+                    CurrentLine->Value(CurrentLine->NbPoints()).ParametersOnS1(uv[0], uv[1]);
+                  }
+
+                  Standard_Real aScaleCoeff = 0.0;
+
+                  // Avoid finite cycle which lead to stop computing iline.
+                  if (Status != IntWalk_PasTropGrand)
+                  {
+                    // Make linear extrapolation.
+                    if ( Abs(uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) > gp::Resolution())
+                      aScaleCoeff = Abs ((Uvap(aCoordIdx) - uv[aCoordIdx - 1])
+                                      /  (uv[aCoordIdx - 1] - uvprev[aCoordIdx - 1]) );
+                    Standard_Integer aFixIdx =  aCoordIdx == 1? 2 : 1; // Fixing index;
+                    Uvap(aFixIdx) = uv[aFixIdx - 1] + (uv[aFixIdx - 1] - uvprev[aFixIdx - 1]) * aScaleCoeff;
+                  }
+                }
+              }
+            }
+
             Arrive = TestArretPassage(Umult,Vmult,Uvap,I,Ipass);
             if (Arrive) {//reset proper parameter to test the arrow.
               Psol = CurrentLine->Value(1);
@@ -347,9 +427,3 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
     } //end of processing of start point
   } //end of all start points
 }
-
-
-
-
-
-
