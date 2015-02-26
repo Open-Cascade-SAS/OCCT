@@ -534,6 +534,20 @@ void BOPAlgo_PaveFiller::PerformEE()
   //=========================================
   // post treatment
   //=========================================
+  {
+    Standard_Integer aNbV;
+    Handle(BOPDS_PaveBlock) aPB1, aPB2;
+    //
+    aNbV=aMVCPB.Extent();
+    for (i=1; i<=aNbV; ++i) {
+      const BOPDS_CoupleOfPaveBlocks& aCPB=aMVCPB.FindFromIndex(i);
+      aCPB.PaveBlocks(aPB1, aPB2); 
+      //
+      aMPBToUpdate.Remove(aPB1);
+      aMPBToUpdate.Remove(aPB2);
+    }
+  }
+  //
   aItPB.Initialize(aMPBToUpdate);
   for (; aItPB.More(); aItPB.Next()) {
     Handle(BOPDS_PaveBlock) aPB=aItPB.Value();
@@ -917,6 +931,7 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
     aT=aProjector.LowerDistanceParameter();
     //
     BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
+    aVEs.SetIncrement(10);
     BOPDS_InterfVE& aVE=aVEs.Append1();
     aVE.SetIndices(nV, nE);
     aVE.SetParameter(aT);

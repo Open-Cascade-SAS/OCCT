@@ -640,6 +640,7 @@ Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF
     BRep_Builder aBB;
     //
     BOPDS_VectorOfInterfVF& aVFs=myDS->InterfVF();
+    aVFs.SetIncrement(10);
     BOPDS_InterfVF& aVF=aVFs.Append1();
     aVF.SetIndices(nV, nF);
     aVF.SetUV(U, V);

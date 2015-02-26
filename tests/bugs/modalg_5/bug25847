@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC25847"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by General Fuse operator.
+###############################
+
+restore [locate_data_file bug25847_face_96.brep ] b1
+restore [locate_data_file bug25847_face_294.brep] b2
+restore [locate_data_file bug25847_face_533.brep] b3
+restore [locate_data_file bug25847_face_535.brep] b4
+
+bclearobjects
+bcleartools
+baddobjects b1 b2 b3 b4
+ 
+bfillds
+bbuild result
+
+set square 3912.59
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 100
+ EDGE      : 108
+ WIRE      : 10
+ FACE      : 9
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 228
+"
+checknbshapes result ${nbshapes_expected} 1 "Result obtained by General Fuse operator"
+
+set 3dviewer 1
