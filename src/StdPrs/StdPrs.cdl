@@ -35,6 +35,7 @@ uses
 	TopoDS,
 	TopExp,
   TopAbs,
+  BRep,
 	BRepTools,
 	Bnd,
   TColStd,
@@ -48,6 +49,17 @@ uses
 	Graphic3d
 
 is
+
+   enumeration Volume is
+     Volume_Autodetection,
+     Volume_Closed,
+     Volume_Opened
+   end Volume;
+   ---Purpose: defines the way how to interpret input shapes
+   --          Volume_Autodetection to perform Autodetection (would split input shape into two groups)
+   --          Volume_Closed as Closed volumes (to activate back-face culling and capping plane algorithms)
+   --          Volume_Opened as Open volumes (shells or solids with holes)
+
    class ToolPoint;
    class ToolVertex;
    class ToolRFace;

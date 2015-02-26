@@ -1,6 +1,6 @@
 # Sample demonstrating assignment of colors to faces in XDE
 
-#Category: Data Exchange
+#Category: XDE
 #Title: Assignment of colors to faces
 
 pload MODELING VISUALIZATION OCAF XDE

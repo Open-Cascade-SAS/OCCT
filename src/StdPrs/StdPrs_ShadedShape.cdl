@@ -24,7 +24,10 @@ uses
   Presentation from Prs3d,
   Drawer       from Prs3d,
   Shape        from TopoDS,
-  Pnt2d        from gp
+  Pnt2d        from gp,
+  Builder      from BRep,
+  Compound     from TopoDS,
+  Volume       from StdPrs
 
 is
 
@@ -32,9 +35,11 @@ is
        thePresentation    : Presentation from Prs3d;
        theShape           : Shape        from TopoDS;
        theDrawer          : Drawer       from Prs3d;
-       theToExploreSolids : Boolean from Standard = Standard_True);
+       theVolume          : Volume       from StdPrs = StdPrs_Volume_Autodetection);
   ---Purpose: Shades <theShape>.
-  -- @param theToExploreSolids when set to true, explodes compound into two groups - with closed Solids and open Shells
+  -- @param theVolumeType defines the way how to interpret input shapes - as Closed volumes (to activate back-face 
+  --                      culling and capping plane algorithms), as Open volumes (shells or solids with holes)
+  --                      or to perform Autodetection (would split input shape into two groups)
 
   Add (myclass;
        thePresentation    : Presentation from Prs3d;
@@ -44,13 +49,24 @@ is
        theUVOrigin        : Pnt2d        from gp;
        theUVRepeat        : Pnt2d        from gp;
        theUVScale         : Pnt2d        from gp;
-       theToExploreSolids : Boolean from Standard = Standard_True);
+       theVolume          : Volume       from StdPrs = StdPrs_Volume_Autodetection);
   ---Purpose: Shades <theShape> with texture coordinates.
-  -- @param theToExploreSolids when set to true, explodes compound into two groups - with closed Solids and open Shells
+  -- @param theVolumeType defines the way how to interpret input shapes - as Closed volumes (to activate back-face 
+  --                      culling and capping plane algorithms), as Open volumes (shells or solids with holes)
+  --                      or to perform Autodetection (would split input shape into two groups)
 
   Tessellate (myclass;
               theShape  : Shape  from TopoDS;
               theDrawer : Drawer from Prs3d);
   ---Purpose: Validates triangulation within the shape and performs tessellation if necessary.
+
+  ExploreSolids (myclass;
+                 theShape            : Shape  from TopoDS;
+                 theBuilder          : Builder from BRep;
+                 theClosed           : out Compound from TopoDS;
+                 theOpened           : out Compound from TopoDS;
+                 theIgnore1DSubShape : Boolean from Standard);
+  ---Purpose: Searches closed and unclosed subshapes in shape structure and puts them
+  --          into two compounds for separate processing of closed and unclosed sub-shapes
 
 end ShadedShape;

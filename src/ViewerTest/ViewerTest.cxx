@@ -1377,6 +1377,9 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
 //! Auxiliary structure for VAspects
 struct ViewerTest_AspectsChangeSet
 {
+  Standard_Integer         ToSetVisibility;
+  Standard_Integer         Visibility;
+
   Standard_Integer         ToSetColor;
   Quantity_Color           Color;
 
@@ -1394,7 +1397,9 @@ struct ViewerTest_AspectsChangeSet
 
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
-  : ToSetColor        (0),
+  : ToSetVisibility   (0),
+    Visibility        (1),
+    ToSetColor        (0),
     Color             (DEFAULT_COLOR),
     ToSetLineWidth    (0),
     LineWidth         (1.0),
@@ -1406,7 +1411,8 @@ struct ViewerTest_AspectsChangeSet
   //! @return true if no changes have been requested
   Standard_Boolean IsEmpty() const
   {
-    return ToSetLineWidth    == 0
+    return ToSetVisibility   == 0
+        && ToSetLineWidth    == 0
         && ToSetTransparency == 0
         && ToSetColor        == 0
         && ToSetMaterial     == 0;
@@ -1416,6 +1422,11 @@ struct ViewerTest_AspectsChangeSet
   Standard_Boolean Validate (const Standard_Boolean theIsSubPart) const
   {
     Standard_Boolean isOk = Standard_True;
+    if (Visibility != 0 && Visibility != 1)
+    {
+      std::cout << "Error: the visibility should be equal to 0 or 1 (0 - invisible; 1 - visible) (specified " << Visibility << ")\n";
+      isOk = Standard_False;
+    }
     if (LineWidth <= 0.0
      || LineWidth >  10.0)
     {
@@ -1640,6 +1651,18 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         aChangeSet->Transparency = 0.0;
       }
     }
+    else if (anArg == "-setvis"
+          || anArg == "-setvisibility")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+
+      aChangeSet->ToSetVisibility = 1;
+      aChangeSet->Visibility = Draw::Atoi (theArgVec[anArgIter]);
+    }
     else if (anArg == "-setalpha")
     {
       if (++anArgIter >= theArgNb)
@@ -1782,6 +1805,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     }
     else if (anArg == "-unset")
     {
+      aChangeSet->ToSetVisibility = 1;
+      aChangeSet->Visibility = 1;
       aChangeSet->ToSetLineWidth = -1;
       aChangeSet->LineWidth = 1.0;
       aChangeSet->ToSetTransparency = -1;
@@ -1819,7 +1844,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     Handle(AIS_InteractiveObject)  aPrs  = aPrsIter.Current();
     Handle(AIS_ColoredShape) aColoredPrs;
     Standard_Boolean toDisplay = Standard_False;
-    if (aChanges.Length() > 1)
+    if (aChanges.Length() > 1 || aChangeSet->ToSetVisibility == 1)
     {
       Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aPrs);
       if (aShapePrs.IsNull())
@@ -1844,7 +1869,12 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     {
       NCollection_Sequence<ViewerTest_AspectsChangeSet>::Iterator aChangesIter (aChanges);
       aChangeSet = &aChangesIter.ChangeValue();
-      if (aChangeSet->ToSetMaterial == 1)
+      if (aChangeSet->ToSetVisibility == 1)
+      {
+        Handle(AIS_ColoredDrawer) aColDrawer = aColoredPrs->CustomAspects (aColoredPrs->Shape());
+        aColDrawer->SetHidden (aChangeSet->Visibility == 0);
+      }
+      else if (aChangeSet->ToSetMaterial == 1)
       {
         aCtx->SetMaterial (aPrs, aChangeSet->Material, Standard_False);
       }
@@ -1884,6 +1914,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
              aSubShapeIter.More(); aSubShapeIter.Next())
         {
           const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
+          if (aChangeSet->ToSetVisibility == 1)
+          {
+            Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
+            aCurColDrawer->SetHidden (aChangeSet->Visibility == 0);
+          }
           if (aChangeSet->ToSetColor == 1)
           {
             aColoredPrs->SetCustomColor (aSubShape, aChangeSet->Color);
@@ -4625,6 +4660,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vaspects",
               "vaspects [-noupdate|-update] [name1 [name2 [...]]]"
+      "\n\t\t:          [-setvisibility 0|1]"
       "\n\t\t:          [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]"
       "\n\t\t:          [-setmaterial MatName] [-unsetmaterial]"
       "\n\t\t:          [-settransparency Transp] [-unsettransparency]"

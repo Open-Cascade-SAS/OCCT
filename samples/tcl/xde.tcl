@@ -1,7 +1,7 @@
 # Simple sample demonstrating work with assemblies in XDE, and assignment of 
 # names and colors to components vs. instances
 
-#Category: Application Framework
+#Category: XDE
 #Title: Work with assemblies, colors etc. in XDE
 
 pload MODELING

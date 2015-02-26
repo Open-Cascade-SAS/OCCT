@@ -1,10 +1,10 @@
-#Category: Demos
-#Title: Dimensions in 3d viewer
-
 # Dimensions demo
 #
 # It shows capability of OCC to create different kinds
 # of dimensions (linear and angular) with 2D or 3D text.
+
+#Category: Visualization
+#Title: Dimensions in 3d viewer
 
 set aTopLoc [locate_data_file occ/Top.brep]
 set aBotLoc [locate_data_file occ/Bottom.brep]

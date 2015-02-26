@@ -23,6 +23,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <TopoDS_Compound.hxx>
+#include <StdPrs_Volume.hxx>
 
 //! Customizable properties.
 class AIS_ColoredDrawer : public AIS_Drawer
@@ -136,6 +137,37 @@ protected:
   Standard_EXPORT static void dispatchColors (const TopoDS_Shape&        theBaseShape,
                                               const DataMapOfShapeColor& theKeyshapeColorMap,
                                               DataMapOfShapeCompd*       theTypeKeyshapeDrawshapeArray);
+
+protected:
+
+  //! Add shape to presentation
+  //! @param thePrs         the presentation
+  //! @param theDispatched  the shapes map with unique attributes
+  //! @param theMode        display mode
+  //! @param theVolume      how to interpret theDispatched shapes - as Closed volumes, as Open volumes
+  //!                       or to perform Autodetection
+  Standard_EXPORT void addShapesWithCustomProps (const Handle(Prs3d_Presentation)& thePrs,
+                                                 DataMapOfShapeCompd*              theDispatched,
+                                                 const Standard_Integer            theMode,
+                                                 const StdPrs_Volume               theVolume);
+
+  //! Check all shapes from myShapeColorsfor visibility
+  Standard_EXPORT Standard_Boolean isShapeEntirelyVisible() const;
+
+  //! Check a shape with unique attributes for visibility of all 2d subshape
+  Standard_EXPORT Standard_Boolean isShapeEntirelyVisible (DataMapOfShapeCompd* theDispatched) const;
+
+  //! Resolve (parse) theKeyShape into subshapes, search in they for theBaseShape,
+  //! bind all resolved subshapes with theOriginKeyShape and store all binds in theSubshapeKeyshapeMap
+  //! @param theSubshapeKeyshapeMap        shapes map: resolved and found theBaseShape subshape -> theOriginKeyShape 
+  //! @param theBaseShape                  a shape to be sought
+  //! @param theBaseKey                    a shape to be resolved (parse) into smaller (in topological sense)
+  //!                                      subshapes for new bind cycle
+  //! @param theOriginKeyShape             the key to be used for undetailed shapes (default colors)
+  Standard_EXPORT static void bindSubShapes (DataMapOfShapeShape& theSubshapeKeyshapeMap,
+                                             const TopoDS_Shape&  theBaseShape,
+                                             const TopoDS_Shape&  theKeyShape,
+                                             const TopoDS_Shape&  theOriginKeyShape);
 
 protected:
 
