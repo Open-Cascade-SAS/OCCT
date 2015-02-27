@@ -39,6 +39,18 @@ if { [string compare $tcl_platform(platform) "windows"] != 0 } {
                       0.20619280354776386
                       0.21983563611646603
                     }
+  if { [regexp {64} [dversion]] } {
+   set check_values  { 1.5
+                      5.2
+                      5.7
+                      5.7
+                      1.7
+                      1.3
+                      1.6
+                      0.4
+                      0.4
+                    }
+ }
 }
 set index 0
 foreach key $keys {

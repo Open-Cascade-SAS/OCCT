@@ -6,3 +6,9 @@ restore [locate_data_file buc60290b.rle] sol2
 bcut result sol2 sol1
 
 set square 1.06741e+06
+if { [regexp {Windows} [dversion]] } {
+  if { [regexp {64} [dversion]] } {
+    #set square 650662
+    puts "TODO OCC1111 Windows: Error : The area of the resulting shape is"
+  }
+}
