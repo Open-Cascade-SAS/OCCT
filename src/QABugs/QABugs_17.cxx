@@ -1311,8 +1311,8 @@ static Standard_Integer OCC1188 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#include <AIS_Drawer.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 //=======================================================================
 //function : OCC1174_1
@@ -1326,44 +1326,47 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
     return 1;
   }
 
-  Handle(AIS_InteractiveContext) AISContext = ViewerTest::GetAISContext();
-  if(AISContext.IsNull()) 
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if(anAISContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
 
-  TopoDS_Shape sh = DBRep::Get(argv[1]);
+  TopoDS_Shape aShape = DBRep::Get(argv[1]);
 
-  Handle(AIS_Shape) ais = new AIS_Shape(sh);
+  Handle(AIS_Shape) anAisIO = new AIS_Shape(aShape);
 
-  Quantity_Color colf(0.0, 0.4, 0.0, Quantity_TOC_RGB);
-  Quantity_Color colb(0.0, 0.0, 0.6, Quantity_TOC_RGB);
+  Quantity_Color aColF(0.0, 0.4, 0.0, Quantity_TOC_RGB);
+  Quantity_Color aColB(0.0, 0.0, 0.6, Quantity_TOC_RGB);
 
-  Handle(Prs3d_ShadingAspect) sa = ais->Attributes()->ShadingAspect();
+  Handle(Prs3d_Drawer) aDrawer = anAisIO->Attributes();
+  Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
 
-  Graphic3d_MaterialAspect front = sa->Material(Aspect_TOFM_FRONT_SIDE);
-  front.SetAmbientColor(colf);
-  front.SetDiffuseColor(colf);
-  front.SetSpecularColor(colf);
-  front.SetEmissiveColor(colf);
-  front.SetTransparency(0.0);
-  sa->SetMaterial(front,Aspect_TOFM_FRONT_SIDE);
+  Graphic3d_MaterialAspect aFront = aShadingAspect->Material(Aspect_TOFM_FRONT_SIDE);
+  aFront.SetAmbientColor(aColF);
+  aFront.SetDiffuseColor(aColF);
+  aFront.SetSpecularColor(aColF);
+  aFront.SetEmissiveColor(aColF);
+  aFront.SetTransparency(0.0);
+  aShadingAspect->SetMaterial(aFront,Aspect_TOFM_FRONT_SIDE);
 
-  Graphic3d_MaterialAspect back = sa->Material(Aspect_TOFM_BACK_SIDE);
-  back.SetAmbientColor(colb);
-  back.SetDiffuseColor(colb);
-  back.SetSpecularColor(colb);
-  back.SetEmissiveColor(colb);
-  back.SetTransparency(0.0);
-  sa->SetMaterial(back,Aspect_TOFM_BACK_SIDE);
+  Graphic3d_MaterialAspect aBack = aShadingAspect->Material(Aspect_TOFM_BACK_SIDE);
+  aBack.SetAmbientColor(aColB);
+  aBack.SetDiffuseColor(aColB);
+  aBack.SetSpecularColor(aColB);
+  aBack.SetEmissiveColor(aColB);
+  aBack.SetTransparency(0.0);
+  aShadingAspect->SetMaterial(aBack,Aspect_TOFM_BACK_SIDE);
 
-  AISContext->Display(ais,1,0);
+  aDrawer->SetShadingAspect (aShadingAspect);
+
+  anAISContext->Display(anAisIO, 1, 0);
 
   Standard_Real r, g, b; 
-  sa->Color(Aspect_TOFM_FRONT_SIDE).Values(r,g,b, Quantity_TOC_RGB);
+  aShadingAspect->Color(Aspect_TOFM_FRONT_SIDE).Values(r,g,b, Quantity_TOC_RGB);
   di << "Info: color on front side (" << r << "," << g << "," << b << ")\n";
-  sa->Color(Aspect_TOFM_BACK_SIDE).Values(r,g,b, Quantity_TOC_RGB);
+  aShadingAspect->Color(Aspect_TOFM_BACK_SIDE).Values(r,g,b, Quantity_TOC_RGB);
   di << "Info: color on back side (" << r << "," << g << "," << b << ")\n";
 
   return 0;

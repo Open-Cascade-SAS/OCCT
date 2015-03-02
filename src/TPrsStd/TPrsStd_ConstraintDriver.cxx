@@ -20,7 +20,6 @@
 #include <Standard_GUID.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataXtd_Position.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Relation.hxx>
 

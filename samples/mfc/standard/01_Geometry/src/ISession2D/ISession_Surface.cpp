@@ -39,7 +39,7 @@ void ISession_Surface::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPr
     GeomAdaptor_Surface anAdaptorSurface(mySurface);
     Handle(GeomAdaptor_HSurface) anAdaptorHSurface = new GeomAdaptor_HSurface(mySurface);
 
-    Handle(AIS_Drawer) aDrawer = new AIS_Drawer();
+    Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
     aDrawer->LineAspect()->SetColor(Quantity_NOC_YELLOW3);
 
     switch (aMode)

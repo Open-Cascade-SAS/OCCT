@@ -16,7 +16,7 @@
 #ifndef _AIS_ColoredShape_HeaderFile
 #define _AIS_ColoredShape_HeaderFile
 
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <AIS_Shape.hxx>
 
 #include <NCollection_DataMap.hxx>
@@ -26,11 +26,11 @@
 #include <StdPrs_Volume.hxx>
 
 //! Customizable properties.
-class AIS_ColoredDrawer : public AIS_Drawer
+class AIS_ColoredDrawer : public Prs3d_Drawer
 {
 public:
 
-  AIS_ColoredDrawer (const Handle(AIS_Drawer)& theLink)
+  AIS_ColoredDrawer (const Handle(Prs3d_Drawer)& theLink)
   : myIsHidden    (Standard_False),
     myHasOwnColor (Standard_False),
     myHasOwnWidth (Standard_False)
@@ -58,7 +58,7 @@ public:
 
 };
 
-DEFINE_STANDARD_HANDLE(AIS_ColoredDrawer, AIS_Drawer)
+DEFINE_STANDARD_HANDLE(AIS_ColoredDrawer, Prs3d_Drawer)
 
 //! Presentation of the shape with customizable sub-shapes properties.
 class AIS_ColoredShape : public AIS_Shape

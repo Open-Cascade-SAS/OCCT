@@ -31,7 +31,7 @@
 #include <V3d_PositionalLight.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_SpotLight.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2D.hxx>

@@ -45,7 +45,6 @@
 AIS_InteractiveObject::
 AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
 SelectMgr_SelectableObject(aTypeOfPresentation3d),
-myDrawer(new AIS_Drawer()),
 myTransparency(0.),
 myOwnColor(Quantity_NOC_WHITE),
 myOwnMaterial(Graphic3d_NOM_DEFAULT),
@@ -130,12 +129,6 @@ void AIS_InteractiveObject::SetContext(const Handle(AIS_InteractiveContext)& aCt
   myCTXPtr = aCtx.operator->();
   if( aCtx.IsNull())
     return;
-  if (myDrawer.IsNull()) {
-    myDrawer = new AIS_Drawer;
-#ifdef OCCT_DEBUG
-    cout << "AIS_InteractiveObject::SetContext DRAWER NUL!" << endl;
-#endif
-  }
   myDrawer->Link(aCtx->DefaultDrawer());
 }
 
@@ -285,15 +278,14 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfMaterial aName)
 //void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfPhysicalMaterial aName)
 {
   if( HasColor() || IsTransparent() || HasMaterial() )
-    {
-      myDrawer->ShadingAspect()->SetMaterial(aName);
-    }
-  else 
-    {
-      myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-      
-      myDrawer->ShadingAspect()->SetMaterial(aName);
-    }
+  {
+    myDrawer->ShadingAspect()->SetMaterial(aName);
+  }
+  else
+  {
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+    myDrawer->ShadingAspect()->SetMaterial(aName);
+  }
   myOwnMaterial  = aName;
   hasOwnMaterial = Standard_True;
 }
@@ -304,17 +296,16 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfMaterial aName)
 
 void AIS_InteractiveObject::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 {
-  if( HasColor() || IsTransparent() || HasMaterial() )
-    {
-      myDrawer->ShadingAspect()->SetMaterial(aMat);
-    }
-  else 
-    {
-      myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-      myDrawer->ShadingAspect()->SetMaterial(aMat);
-    }
+  if (HasColor() || IsTransparent() || HasMaterial())
+  {
+    myDrawer->ShadingAspect()->SetMaterial(aMat);
+  }
+  else
+  {
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+    myDrawer->ShadingAspect()->SetMaterial(aMat);
+  }
   hasOwnMaterial = Standard_True;
-  
 }
 //=======================================================================
 //function : 
@@ -323,11 +314,14 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 void AIS_InteractiveObject::UnsetMaterial()
 {
   if( !HasMaterial() ) return;
-  if( HasColor() || IsTransparent()) {
-    myDrawer->ShadingAspect()->SetMaterial(
-		AIS_GraphicTool::GetMaterial(myDrawer->Link()));
-    if( HasColor() ) SetColor(myOwnColor);
-    if( IsTransparent() ) SetTransparency(myTransparency);
+  if (HasColor() || IsTransparent())
+  {
+    if(myDrawer->HasLink())
+    {
+      myDrawer->ShadingAspect()->SetMaterial (AIS_GraphicTool::GetMaterial (myDrawer->Link()));
+    }
+    if (HasColor()) SetColor (myOwnColor);
+    if (IsTransparent()) SetTransparency (myTransparency);
   }
   else{
     Handle(Prs3d_ShadingAspect) SA;
@@ -342,12 +336,11 @@ void AIS_InteractiveObject::UnsetMaterial()
 //=======================================================================
 void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
 {
-
-
-  if(!HasColor() && !IsTransparent() && !HasMaterial() ) {
-        myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-      if(!myDrawer->Link().IsNull())
-        myDrawer->ShadingAspect()->SetMaterial(AIS_GraphicTool::GetMaterial(myDrawer->Link()));
+  if(!HasColor() && !IsTransparent() && !HasMaterial())
+  {
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+    if(myDrawer->HasLink())
+      myDrawer->ShadingAspect()->SetMaterial(AIS_GraphicTool::GetMaterial(myDrawer->Link()));
   }
   Graphic3d_MaterialAspect FMat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
   Graphic3d_MaterialAspect BMat = myDrawer->ShadingAspect()->Aspect()->BackMaterial();
@@ -363,14 +356,14 @@ void AIS_InteractiveObject::SetTransparency(const Standard_Real aValue)
 //=======================================================================
 void AIS_InteractiveObject::UnsetTransparency()
 {
-    if(HasColor() || HasMaterial() )
-    {
-      Graphic3d_MaterialAspect FMat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
-      Graphic3d_MaterialAspect BMat = myDrawer->ShadingAspect()->Aspect()->BackMaterial();
-      FMat.SetTransparency(0.); BMat.SetTransparency(0.);
-      myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
-      myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
-    }
+  if(HasColor() || HasMaterial() )
+  {
+    Graphic3d_MaterialAspect FMat = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
+    Graphic3d_MaterialAspect BMat = myDrawer->ShadingAspect()->Aspect()->BackMaterial();
+    FMat.SetTransparency(0.); BMat.SetTransparency(0.);
+    myDrawer->ShadingAspect()->Aspect()->SetFrontMaterial(FMat);
+    myDrawer->ShadingAspect()->Aspect()->SetBackMaterial(BMat);
+  }
   else{
     Handle (Prs3d_ShadingAspect) SA;
     myDrawer->SetShadingAspect(SA);
@@ -389,24 +382,13 @@ Standard_Real AIS_InteractiveObject::Transparency() const
 }
 
 //=======================================================================
-//function : SetAttributes
-//purpose  : 
-//=======================================================================
-
-void AIS_InteractiveObject::SetAttributes(const Handle(AIS_Drawer)& aDrawer)
-{myDrawer = aDrawer;}
-
-
-//=======================================================================
 //function : UnsetAttributes
 //purpose  : 
 //=======================================================================
 void AIS_InteractiveObject::UnsetAttributes()
 {
-  Handle(AIS_Drawer) dr = new AIS_Drawer();
-  if(myDrawer->HasLink())
-    dr->Link(myDrawer->Link());
-  myDrawer       = dr;
+  SelectMgr_SelectableObject::UnsetAttributes();
+
   hasOwnColor    = Standard_False;
   hasOwnMaterial = Standard_False;
   myOwnWidth     = 0.0;
@@ -588,7 +570,7 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
 Standard_Boolean AIS_InteractiveObject::HasPolygonOffsets() const
 {
   return !( myDrawer->ShadingAspect().IsNull() || 
-          ( !myDrawer->Link().IsNull() && 
+          ( myDrawer->HasLink() &&
           myDrawer->ShadingAspect() == myDrawer->Link()->ShadingAspect() ) );
 }
 

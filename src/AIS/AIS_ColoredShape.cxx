@@ -25,6 +25,7 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Precision.hxx>
+#include <Prs3d.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -41,8 +42,8 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_ColoredDrawer, AIS_Drawer)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredDrawer, AIS_Drawer)
+IMPLEMENT_STANDARD_HANDLE (AIS_ColoredDrawer, Prs3d_Drawer)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredDrawer, Prs3d_Drawer)
 
 IMPLEMENT_STANDARD_HANDLE (AIS_ColoredShape, AIS_Shape)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredShape, AIS_Shape)
@@ -203,15 +204,15 @@ void AIS_ColoredShape::SetColor (const Quantity_Color&  theColor)
       continue;
     }
 
-    if (aDrawer->HasShadingAspect())
+    if (aDrawer->HasOwnShadingAspect())
     {
       aDrawer->ShadingAspect()->SetColor (theColor, myCurrentFacingModel);
     }
-    if (aDrawer->HasLineAspect())
+    if (aDrawer->HasOwnLineAspect())
     {
       aDrawer->LineAspect()->SetColor (theColor);
     }
-    if (aDrawer->HasWireAspect())
+    if (aDrawer->HasOwnWireAspect())
     {
       aDrawer->WireAspect()->SetColor (theColor);
     }
@@ -237,11 +238,11 @@ void AIS_ColoredShape::SetWidth (const Standard_Real    theLineWidth)
       continue;
     }
 
-    if (aDrawer->HasLineAspect())
+    if (aDrawer->HasOwnLineAspect())
     {
       aDrawer->LineAspect()->SetWidth (theLineWidth);
     }
-    if (aDrawer->HasWireAspect())
+    if (aDrawer->HasOwnWireAspect())
     {
       aDrawer->WireAspect()->SetWidth (theLineWidth);
     }
@@ -261,8 +262,8 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
   LoadRecomputable (AIS_Shaded);
   for (DataMapOfShapeColor::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
   {
-    const Handle(AIS_Drawer)& aDrawer = anIter.Value();
-    if (aDrawer->HasShadingAspect())
+    const Handle(Prs3d_Drawer)& aDrawer = anIter.Value();
+    if (aDrawer->HasOwnShadingAspect())
     {
       aDrawer->ShadingAspect()->SetTransparency (theValue, myCurrentFacingModel);
     }
@@ -284,7 +285,7 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
   {
     const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
     //if (aDrawer->HasOwnMaterial()) continue;
-    if (aDrawer->HasShadingAspect())
+    if (aDrawer->HasOwnShadingAspect())
     {
       setMaterial (aDrawer, theMaterial, aDrawer->HasOwnColor(), Standard_False); // aDrawer->IsTransparent()
     }
@@ -377,7 +378,7 @@ void AIS_ColoredShape::addShapesWithCustomProps (const Handle(Prs3d_Presentation
     {
       const TopoDS_Shape&    aShapeKey  = aMapIter.Key();   // key shape with detailed color or a base shape
       const TopoDS_Compound& aShapeDraw = aMapIter.Value(); // compound of subshapes with <aShType> type
-      Handle(AIS_Drawer)     aDrawer;
+      Handle(Prs3d_Drawer) aDrawer;
       if (myShapeColors.Find (aShapeKey, aCustomDrawer))
       {
         aDrawer = aCustomDrawer;

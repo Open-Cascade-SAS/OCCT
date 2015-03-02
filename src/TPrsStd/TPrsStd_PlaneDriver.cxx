@@ -18,7 +18,6 @@
 //#include <TDataStd_Datum.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <AIS_Plane.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>

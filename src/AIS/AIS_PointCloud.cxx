@@ -15,11 +15,11 @@
 
 #include <AIS_PointCloud.hxx>
 
-#include <AIS_Drawer.hxx>
 #include <AIS_GraphicTool.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
@@ -153,15 +153,21 @@ void AIS_PointCloud::SetColor (const Quantity_Color& theColor)
 {
   AIS_InteractiveObject::SetColor(theColor);
 
-  if (!myDrawer->HasPointAspect())
+  if (!myDrawer->HasOwnPointAspect())
   {
     myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, theColor, 1.0));
-    *myDrawer->PointAspect()->Aspect() = *myDrawer->Link()->PointAspect()->Aspect();
+    if (myDrawer->HasLink())
+    {
+      *myDrawer->PointAspect()->Aspect() = *myDrawer->Link()->PointAspect()->Aspect();
+    }
   }
-  if (!myDrawer->HasShadingAspect())
+  if (!myDrawer->HasOwnShadingAspect())
   {
     myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
+    if (myDrawer->HasLink())
+    {
+      *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
+    }
   }
 
   // Override color
@@ -220,20 +226,32 @@ void AIS_PointCloud::UnsetColor()
   }
   else
   {
-    Quantity_Color      aColor;
+    Quantity_Color      aColor = Quantity_NOC_YELLOW;
     Aspect_TypeOfMarker aType  = Aspect_TOM_POINT;
     Standard_Real       aScale = 1.0;
-    myDrawer->Link()->PointAspect()->Aspect()->Values (aColor, aType, aScale);
+    if (myDrawer->HasLink())
+    {
+      myDrawer->Link()->PointAspect()->Aspect()->Values (aColor, aType, aScale);
+    }
     myDrawer->PointAspect()->SetColor (aColor);
   }
 
   if (HasMaterial()
    || IsTransparent())
   {
-    Graphic3d_MaterialAspect aMat = AIS_GraphicTool::GetMaterial (HasMaterial() ? myDrawer : myDrawer->Link());
+    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
+    Graphic3d_MaterialAspect aMat = aDefaultMat;
+    if (HasMaterial() || myDrawer->HasLink())
+    {
+      aMat = AIS_GraphicTool::GetMaterial (HasMaterial() ? myDrawer : myDrawer->Link());
+    }
     if (HasMaterial())
     {
-      Quantity_Color aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
+      Quantity_Color aColor = aDefaultMat.AmbientColor();
+      if (myDrawer->HasLink())
+      {
+        aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
+      }
       aMat.SetColor (aColor);
     }
     if (IsTransparent())
@@ -298,10 +316,13 @@ void AIS_PointCloud::SetMaterial (const Graphic3d_NameOfMaterial theMatName)
 //=======================================================================
 void AIS_PointCloud::SetMaterial (const Graphic3d_MaterialAspect& theMat)
 {
-  if (!myDrawer->HasShadingAspect())
+  if (!myDrawer->HasOwnShadingAspect())
   {
     myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
+    if (myDrawer->HasLink())
+    {
+      *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
+    }
   }
   hasOwnMaterial = Standard_True;
 
@@ -350,7 +371,10 @@ void AIS_PointCloud::UnsetMaterial()
   if (HasColor()
    || IsTransparent())
   {
-    myDrawer->ShadingAspect()->SetMaterial (myDrawer->Link()->ShadingAspect()->Material (myCurrentFacingModel),
+    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
+    myDrawer->ShadingAspect()->SetMaterial (myDrawer->HasLink() ?
+                                            myDrawer->Link()->ShadingAspect()->Material (myCurrentFacingModel) :
+                                            aDefaultMat,
                                             myCurrentFacingModel);
     if (HasColor())
     {
@@ -408,7 +432,7 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
       }
 
       Handle(Graphic3d_AspectMarker3d) aMarkerAspect = myDrawer->PointAspect()->Aspect();
-      if (!myDrawer->HasPointAspect())
+      if (!myDrawer->HasOwnPointAspect())
       {
         aMarkerAspect->SetType (Aspect_TOM_POINT);
       }

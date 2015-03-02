@@ -7,7 +7,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <StdPrs_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 
 

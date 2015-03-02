@@ -27,7 +27,6 @@
 #include <TopoDS.hxx>
 #include <Geom_Circle.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <AIS_Drawer.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <Quantity_Color.hxx>
 #include <AIS_GraphicTool.hxx>
@@ -128,10 +127,12 @@ void AIS_Circle::SetColor(const Quantity_Color &aCol)
   hasOwnColor=Standard_True;
   myOwnColor=aCol;
 
-  Standard_Real WW = HasWidth()? myOwnWidth:
-                                 AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line);
+  Standard_Real WW = HasWidth() ? myOwnWidth :
+                                  myDrawer->HasLink() ?
+                                  AIS_GraphicTool::GetLineWidth (myDrawer->Link(), AIS_TOA_Line) :
+                                  1.;
 
-  if (!myDrawer->HasLineAspect ())
+  if (!myDrawer->HasOwnLineAspect ())
     myDrawer->SetLineAspect (new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
   else
     myDrawer->LineAspect()->SetColor(aCol);
@@ -147,10 +148,10 @@ void AIS_Circle::SetWidth(const Standard_Real aValue)
 {
   myOwnWidth=aValue;
 
-  if (!myDrawer->HasLineAspect ()) {
-    Quantity_Color CC;
+  if (!myDrawer->HasOwnLineAspect ()) {
+    Quantity_Color CC = Quantity_NOC_YELLOW;
     if( HasColor() ) CC = myOwnColor;
-    else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
+    else if(myDrawer->HasLink()) AIS_GraphicTool::GetLineColor (myDrawer->Link(), AIS_TOA_Line, CC);
     myDrawer->SetLineAspect (new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,aValue));
   } else
     myDrawer->LineAspect()->SetWidth(aValue);
@@ -169,9 +170,9 @@ void AIS_Circle::UnsetColor()
 
   if (!HasWidth()) myDrawer->SetLineAspect(NullAsp);
   else{
-    Quantity_Color CC;
+    Quantity_Color CC = Quantity_NOC_YELLOW;;
     if( HasColor() ) CC = myOwnColor;
-    else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
+    else if (myDrawer->HasLink()) AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
     myDrawer->LineAspect()->SetColor(CC);
     myOwnColor = CC;
   }
@@ -187,7 +188,7 @@ void AIS_Circle::UnsetWidth()
 
   if (!HasColor()) myDrawer->SetLineAspect(NullAsp);
   else{
-   Standard_Real WW = AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line);
+   Standard_Real WW = myDrawer->HasLink() ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line) : 1.;
    myDrawer->LineAspect()->SetWidth(WW);
    myOwnWidth = WW;
   }

@@ -57,7 +57,6 @@
 #include <gp_Vec.hxx>
 
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 
 #include <Precision.hxx>
 #include <DsgPrs_EllipseRadiusPresentation.hxx>

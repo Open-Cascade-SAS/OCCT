@@ -43,7 +43,6 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <AIS_Drawer.hxx>
 #include <UnitsAPI.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 

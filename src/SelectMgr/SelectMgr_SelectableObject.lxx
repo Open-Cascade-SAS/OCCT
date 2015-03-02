@@ -25,4 +25,7 @@ inline const Handle(SelectMgr_Selection)& SelectMgr_SelectableObject::
 CurrentSelection() const
 {return myselections(mycurrent);}
 
+inline const Handle(Prs3d_Drawer)& SelectMgr_SelectableObject::
+Attributes() const
+{return myDrawer;}
 

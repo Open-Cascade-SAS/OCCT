@@ -15,7 +15,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 
 #include "DsgPrs_LengthPresentation.hxx"
 #include "Prs3d_ArrowAspect.hxx"
-#include "AIS_Drawer.hxx"
+#include "Prs3d_Drawer.hxx"
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////

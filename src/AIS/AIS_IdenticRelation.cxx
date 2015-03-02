@@ -20,7 +20,6 @@
 
 #include <AIS.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_Drawer.hxx>
 
 #include <BRep_Tool.hxx>
 

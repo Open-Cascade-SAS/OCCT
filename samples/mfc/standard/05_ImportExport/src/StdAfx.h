@@ -41,7 +41,6 @@
 #include <Standard_ShortReal.hxx>
 #pragma warning(  default : 4244 )        // Issue warning 4244
 
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -90,6 +89,7 @@
 #include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Text.hxx>

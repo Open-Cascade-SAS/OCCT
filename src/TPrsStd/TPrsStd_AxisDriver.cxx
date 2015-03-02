@@ -17,7 +17,6 @@
 #include <TDataXtd_Axis.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <AIS_Axis.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Geom_Line.hxx>
 #include <gp_Lin.hxx>

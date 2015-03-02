@@ -19,7 +19,6 @@
 #include <AIS_OffsetDimension.ixx>
 
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRep_Tool.hxx>

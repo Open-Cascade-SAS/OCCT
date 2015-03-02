@@ -41,7 +41,6 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_Plane.hxx>
 #include <AIS_Axis.hxx>
 #include <AIS_Point.hxx>
@@ -118,7 +117,7 @@ void AIS_Trihedron::SetLocalTransformation (const gp_Trsf& theTransformation)
 void AIS_Trihedron::SetSize(const Standard_Real aValue)
 {
   myHasOwnSize = Standard_True;
-  if(!myDrawer->HasDatumAspect()){
+  if(!myDrawer->HasOwnDatumAspect()){
     Handle (Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
     myDrawer->SetDatumAspect(DA);
   }
@@ -146,13 +145,16 @@ void AIS_Trihedron::UnsetSize()
   
   myHasOwnSize = Standard_False;
   if(hasOwnColor){
-    const Handle(Prs3d_DatumAspect)& DA = myDrawer->Link()->DatumAspect();
+    const Handle(Prs3d_DatumAspect) DA =
+      myDrawer->HasLink() ? myDrawer->Link()->DatumAspect() : new Prs3d_DatumAspect();
     myDrawer->DatumAspect()->SetAxisLength(DA->FirstAxisLength(),
 					   DA->SecondAxisLength(),
 					   DA->ThirdAxisLength());
   }
   else
-    myDrawer->DatumAspect().Nullify();
+  {
+    myDrawer->SetDatumAspect (Handle(Prs3d_DatumAspect)());
+  }
   Update();
   UpdateSelection();
 
@@ -165,15 +167,7 @@ void AIS_Trihedron::UnsetSize()
 
 Standard_Real AIS_Trihedron::Size() const 
 {
-  if(myDrawer->HasDatumAspect()){
-    myDrawer->Link()->DatumAspect(); // ? to ensure that myDrawer->myLink is not null for next call ?
-    return myDrawer->DatumAspect()->FirstAxisLength();
-  }
-  else
-    //return the Defaut value
-    return 100. ;
-    
-
+  return myDrawer->DatumAspect()->FirstAxisLength();
 }
 
 //=======================================================================
@@ -363,7 +357,7 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
         {
           // update AIS_Axis for selection
           Handle(AIS_Axis) anAxis = Handle(AIS_Axis)::DownCast(myShapes[anIdx]);
-          Handle(AIS_Drawer) aDrawer = anAxis->Attributes();
+          Handle(Prs3d_Drawer) aDrawer = anAxis->Attributes();
           Handle(Prs3d_DatumAspect) aDatum = myDrawer->DatumAspect();
           aDrawer->DatumAspect()->SetAxisLength (aDatum->FirstAxisLength(),
                                                  aDatum->SecondAxisLength(),
@@ -427,7 +421,7 @@ void AIS_Trihedron::SetColor(const Quantity_Color &aCol)
   hasOwnColor=Standard_True;
   myOwnColor = aCol;
   
-  if(!myDrawer->HasDatumAspect()){
+  if(!myDrawer->HasOwnDatumAspect()){
     Handle (Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
     
     DA->SetAxisLength(myDrawer->DatumAspect()->FirstAxisLength(),
@@ -451,7 +445,7 @@ void AIS_Trihedron::SetTextColor(const Quantity_NameOfColor aCol)
   myHasOwnTextColor = Standard_True;
   myOwnTextColor = aCol;
   
-  if(!myDrawer->HasDatumAspect()){
+  if(!myDrawer->HasOwnDatumAspect()){
     Handle (Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
     
     DA->SetAxisLength(myDrawer->DatumAspect()->FirstAxisLength(),
@@ -469,7 +463,7 @@ void AIS_Trihedron::SetArrowColor(const Quantity_NameOfColor aCol)
   myHasOwnArrowColor = Standard_True;
   myOwnArrowColor = aCol;
   
-  if(!myDrawer->HasDatumAspect()){
+  if(!myDrawer->HasOwnDatumAspect()){
     Handle (Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
     
     DA->SetAxisLength(myDrawer->DatumAspect()->FirstAxisLength(),

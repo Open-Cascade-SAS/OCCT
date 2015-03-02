@@ -35,7 +35,7 @@ void ISession_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPres
                              const Standard_Integer aMode)
 {
     GeomAdaptor_Curve anAdaptorCurve(myCurve);
-    Handle(AIS_Drawer) aDrawer = new AIS_Drawer();
+    Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
     aDrawer->LineAspect()->SetColor(Quantity_NOC_RED);
 
     switch (aMode)

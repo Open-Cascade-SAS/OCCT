@@ -29,7 +29,6 @@
 #include <StdPrs_Point.hxx>
 #include <Geom_Point.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
-#include <AIS_Drawer.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 //=======================================================================
@@ -209,8 +208,9 @@ AcceptDisplayMode(const Standard_Integer aMode) const
 void AIS_Point::UpdatePointValues()
 {
 
-  if(!hasOwnColor && myOwnWidth==0.0 && !myHasTOM){
-    myDrawer->PointAspect().Nullify();
+  if(!hasOwnColor && myOwnWidth==0.0 && !myHasTOM)
+  {
+    myDrawer->SetPointAspect (Handle(Prs3d_PointAspect)());
     return;
   }
   Quantity_Color aCol;
@@ -232,7 +232,7 @@ void AIS_Point::UpdatePointValues()
   if(myHasTOM) aTOM = myTOM;
   
   
-  if(myDrawer->HasPointAspect()){
+  if(myDrawer->HasOwnPointAspect()){
     // CLE
     // const Handle(Prs3d_PointAspect) PA =  myDrawer->PointAspect();
     Handle(Prs3d_PointAspect) PA =  myDrawer->PointAspect();

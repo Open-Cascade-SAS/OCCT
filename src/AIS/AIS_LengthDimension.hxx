@@ -16,13 +16,13 @@
 
 #include <AIS.hxx>
 #include <AIS_Dimension.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_KindOfDimension.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Transformation.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
@@ -44,7 +44,6 @@ class Prs3d_Presentation;
 class Prs3d_Projector;
 class Geom_Transformation;
 class SelectMgr_Selection;
-class AIS_Drawer;
 class Bnd_Box;
 class gp_Dir;
 class TopoDS_Vertex;

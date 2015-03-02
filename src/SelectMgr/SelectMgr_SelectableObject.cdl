@@ -33,6 +33,7 @@ uses
     Selection             from SelectMgr,
     SequenceOfSelection   from SelectMgr,
     TypeOfPresentation3d  from PrsMgr,
+    Drawer                from Prs3d,
     Presentation          from Prs3d,
     PresentationManager   from PrsMgr,
     PresentationManager3d from PrsMgr,
@@ -186,9 +187,21 @@ is
    ---Purpose: Set Z layer ID and update all presentations of the selectable object.
    -- The layers mechanism allows drawing objects in higher layers in overlay of objects in lower layers.
 
+    SetAttributes(me:mutable; theDrawer: Drawer from Prs3d) is virtual;
+    	---Purpose: Initializes the drawing tool theDrawer.
+    
+    Attributes(me) returns any Drawer from Prs3d;
+    	---C++: return const&
+    	---C++:  inline
+    	---Purpose: Returns the attributes settings.
+        
+    UnsetAttributes(me:mutable) is virtual;
+	---Purpose: Clears settings provided by the drawing tool theDrawer.
+
 fields
 
     myselections        : SequenceOfSelection is protected;
+    myDrawer            : Drawer from Prs3d is protected;
     mycurrent           : Integer;
     myAutoHilight       : Boolean from Standard;
 

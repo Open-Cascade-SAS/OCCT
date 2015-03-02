@@ -72,7 +72,6 @@
 # pragma comment (lib,"TKernel.lib")
 */
 
-#include <AIS_Drawer.hxx>
 #include <AIS_Circle.hxx>
 #include <AIS_Line.hxx>
 #include <AIS_InteractiveContext.hxx>
@@ -121,6 +120,7 @@
 #include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>

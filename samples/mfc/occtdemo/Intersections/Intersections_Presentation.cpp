@@ -21,7 +21,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax2.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 
 

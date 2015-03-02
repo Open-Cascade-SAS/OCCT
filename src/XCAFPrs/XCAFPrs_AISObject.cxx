@@ -21,7 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Handle_AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -209,46 +209,67 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
 //function : SetColors
 //purpose  :
 //=======================================================================
-void XCAFPrs_AISObject::SetColors (const Handle(AIS_Drawer)& theDrawer,
-                                   const Quantity_Color&     theColorCurv,
-                                   const Quantity_Color&     theColorSurf)
+void XCAFPrs_AISObject::SetColors (const Handle(Prs3d_Drawer)& theDrawer,
+                                   const Quantity_Color&       theColorCurv,
+                                   const Quantity_Color&       theColorSurf)
 {
-  if (!theDrawer->HasShadingAspect())
+  if (!theDrawer->HasOwnShadingAspect())
   {
     theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
+    }
   }
-  if (!theDrawer->HasLineAspect())
+  if (!theDrawer->HasOwnLineAspect())
   {
     theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
+    }
   }
-  if (!theDrawer->HasWireAspect())
+  if (!theDrawer->HasOwnWireAspect())
   {
     theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
+    }
   }
-  if (!theDrawer->HasUIsoAspect())
+  if (!theDrawer->HasOwnUIsoAspect())
   {
     theDrawer->SetUIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
-    *theDrawer->UIsoAspect()->Aspect() = *theDrawer->Link()->UIsoAspect()->Aspect();
-    theDrawer->UIsoAspect()->SetNumber (theDrawer->Link()->UIsoAspect()->Number());
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->UIsoAspect()->Aspect() = *theDrawer->Link()->UIsoAspect()->Aspect();
+      theDrawer->UIsoAspect()->SetNumber (theDrawer->Link()->UIsoAspect()->Number());
+    }
   }
-  if (!theDrawer->HasVIsoAspect())
+  if (!theDrawer->HasOwnVIsoAspect())
   {
     theDrawer->SetVIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
-    *theDrawer->VIsoAspect()->Aspect() = *theDrawer->Link()->VIsoAspect()->Aspect();
-    theDrawer->VIsoAspect()->SetNumber (theDrawer->Link()->VIsoAspect()->Number());
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->VIsoAspect()->Aspect() = *theDrawer->Link()->VIsoAspect()->Aspect();
+      theDrawer->VIsoAspect()->SetNumber (theDrawer->Link()->VIsoAspect()->Number());
+    }
   }
-  if (!theDrawer->HasFreeBoundaryAspect())
+  if (!theDrawer->HasOwnFreeBoundaryAspect())
   {
     theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
+    }
   }
-  if (!theDrawer->HasUnFreeBoundaryAspect())
+  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
   {
     theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
-    *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+    }
   }
 
   theDrawer->UnFreeBoundaryAspect()->SetColor (theColorCurv);

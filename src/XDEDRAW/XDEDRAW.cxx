@@ -89,8 +89,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_Drawer.hxx>
 #include <Aspect_TypeOfLine.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <TDocStd_Owner.hxx>
 #include <Geom_Axis2Placement.hxx>
@@ -953,7 +953,7 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
   }
 
   // get drawer
-  const Handle(AIS_Drawer)& aDrawer = anInteractive->Attributes ();
+  const Handle(Prs3d_Drawer)& aDrawer = anInteractive->Attributes ();
 
   // default attributes
   Quantity_Parameter aRed      = 0.0;

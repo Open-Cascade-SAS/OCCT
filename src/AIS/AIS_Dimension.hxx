@@ -23,12 +23,12 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <AIS_KindOfDimension.hxx>
 #include <AIS_KindOfSurface.hxx>
-#include <AIS_Drawer.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Pln.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_DimensionUnits.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>

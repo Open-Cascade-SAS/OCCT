@@ -328,8 +328,6 @@ is
     imported ColoredShape;
     imported TexturedShape;
 
-    class Drawer;
-    
     class InteractiveContext;
 
     class GraphicTool;
@@ -681,7 +679,7 @@ is
      
     
     ComputeProjEdgePresentation(aPres    : Presentation from Prs3d; 
-    	    	    	    	aDrawer  : Drawer       from AIS;        
+    	    	    	    	aDrawer  : Drawer       from Prs3d;
 			   	anEdge   : Edge                 from TopoDS;
 			    	ProjCurve: Curve                from Geom;
 			    	FirstP   : Pnt                  from gp;
@@ -692,7 +690,7 @@ is
 			    	aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT);
     
     ComputeProjVertexPresentation(aPres    : Presentation from Prs3d; 
-             	    	    	  aDrawer  : Drawer       from AIS;        
+             	    	    	  aDrawer  : Drawer       from Prs3d;
 			   	  aVertex  : Vertex               from TopoDS;
 			    	  ProjPoint: Pnt                  from gp;
        			    	  aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;

@@ -1390,18 +1390,18 @@ gp_Pnt AIS::NearestApex(const gp_Elips & elips,
 //purpose  : 
 //=======================================================================
 
-void AIS::ComputeProjEdgePresentation( const Handle( Prs3d_Presentation )& aPresentation,
-				       const Handle( AIS_Drawer )& aDrawer,
-				       const TopoDS_Edge& anEdge,
-				       const Handle( Geom_Curve )& ProjCurve,
-				       const gp_Pnt& FirstP,
-				       const gp_Pnt& LastP,
-				       const Quantity_NameOfColor aColor,
-				       const Standard_Real aWidth,
-				       const Aspect_TypeOfLine aProjTOL,
-				       const Aspect_TypeOfLine aCallTOL )
+void AIS::ComputeProjEdgePresentation (const Handle(Prs3d_Presentation)& aPresentation,
+                                       const Handle(Prs3d_Drawer)& aDrawer,
+                                       const TopoDS_Edge& anEdge,
+                                       const Handle(Geom_Curve)& ProjCurve,
+                                       const gp_Pnt& FirstP,
+                                       const gp_Pnt& LastP,
+                                       const Quantity_NameOfColor aColor,
+                                       const Standard_Real aWidth,
+                                       const Aspect_TypeOfLine aProjTOL,
+                                       const Aspect_TypeOfLine aCallTOL)
 {
-  if (!aDrawer->HasWireAspect()){
+  if (!aDrawer->HasOwnWireAspect()){
     aDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aProjTOL,2.));}
   else {
     // CLE
@@ -1493,16 +1493,16 @@ void AIS::ComputeProjEdgePresentation( const Handle( Prs3d_Presentation )& aPres
 //purpose  : 
 //=======================================================================
 
-void AIS::ComputeProjVertexPresentation( const Handle( Prs3d_Presentation )& aPresentation,
-				        const Handle( AIS_Drawer )& aDrawer,
-				        const TopoDS_Vertex& aVertex,
-				        const gp_Pnt& ProjPoint,
-				        const Quantity_NameOfColor aColor,
-				        const Standard_Real aWidth,
-				        const Aspect_TypeOfMarker aProjTOM,
-				        const Aspect_TypeOfLine aCallTOL ) 
+void AIS::ComputeProjVertexPresentation (const Handle( Prs3d_Presentation )& aPresentation,
+                                         const Handle( Prs3d_Drawer )& aDrawer,
+                                         const TopoDS_Vertex& aVertex,
+                                         const gp_Pnt& ProjPoint,
+                                         const Quantity_NameOfColor aColor,
+                                         const Standard_Real aWidth,
+                                         const Aspect_TypeOfMarker aProjTOM,
+                                         const Aspect_TypeOfLine aCallTOL)
 {
-  if (!aDrawer->HasPointAspect()){
+  if (!aDrawer->HasOwnPointAspect()){
     aDrawer->SetPointAspect(new Prs3d_PointAspect(aProjTOM, aColor,1));}
   else {
     // CLE
@@ -1516,7 +1516,7 @@ void AIS::ComputeProjVertexPresentation( const Handle( Prs3d_Presentation )& aPr
   // calculate the projection
   StdPrs_Point::Add(aPresentation, new Geom_CartesianPoint(ProjPoint), aDrawer);
 
-  if (!aDrawer->HasWireAspect()){
+  if (!aDrawer->HasOwnWireAspect()){
     aDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aCallTOL,2.));}
   else {
     // CLE

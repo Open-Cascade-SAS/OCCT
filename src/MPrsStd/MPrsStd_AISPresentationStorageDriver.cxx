@@ -21,7 +21,6 @@
 #include <TPrsStd_AISPresentation.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_Drawer.hxx>
 #include <V3d_Viewer.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <PCollection_HExtendedString.hxx>

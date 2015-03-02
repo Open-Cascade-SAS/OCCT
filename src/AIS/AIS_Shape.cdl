@@ -34,7 +34,7 @@ class Shape from AIS inherits InteractiveObject from AIS
     	-- an inheriting shape class. These services allow you to
     	-- select one type of shape interactive object for higher
     	-- precision drawing. When you do this, the
-    	-- AIS_Drawer::IsOwn... functions corresponding to the
+    	-- Prs3d_Drawer::IsOwn... functions corresponding to the
     	-- above deviation angle and coefficient functions return
     	-- true indicating that there is a local setting available
     	-- for the specific object.
@@ -52,7 +52,6 @@ uses
     Projector             from Prs3d,
     PresentationManager3d from PrsMgr,
     Selection             from SelectMgr,
-    Drawer                from AIS,
     KindOfInteractive     from AIS,
     Transformation        from Geom,
     Drawer                from Prs3d,
@@ -99,7 +98,7 @@ uses
     	---Purpose: Sets a local value for deviation coefficient for this specific shape.
 
     SetOwnHLRDeviationCoefficient(me: mutable; aCoefficient : Real from Standard) ;  
-    	---Purpose: sets myOwnHLRDeviationCoefficient field in AIS_Drawer &
+    	---Purpose: sets myOwnHLRDeviationCoefficient field in Prs3d_Drawer &
     	--          recomputes presentation 
         
     SetAngleAndDeviation(me:     mutable; anAngle: Real from Standard) ;  
@@ -110,7 +109,7 @@ uses
     	---Purpose: gives back the angle initial value put by the User.
     
     SetOwnDeviationAngle(me: mutable; anAngle: Real from Standard) ;  
-    	---Purpose: sets myOwnDeviationAngle field in AIS_Drawer & recomputes presentation
+    	---Purpose: sets myOwnDeviationAngle field in Prs3d_Drawer & recomputes presentation
     
     
     SetHLRAngleAndDeviation(me:     mutable; anAngle: Real from Standard) ;  
@@ -118,7 +117,7 @@ uses
     	--   and set the values stored in myDrawer for with these that become local to the shape
 
     SetOwnHLRDeviationAngle(me: mutable; anAngle: Real from Standard) ;  
-    	---Purpose: sets myOwnHLRDeviationAngle field in AIS_Drawer & recomputes presentation
+    	---Purpose: sets myOwnHLRDeviationAngle field in Prs3d_Drawer & recomputes presentation
     
 
     OwnDeviationCoefficient(me; aCoefficient : out Real from Standard ;
@@ -194,16 +193,16 @@ uses
     	---Purpose: Sets the color aColor in the reconstructed
     	-- compound shape. Acts via the Drawer methods below on the appearance of:
     	-- -   free boundaries:
-    	--   AIS_Drawer_FreeBoundaryAspect,
-    	-- -   isos: AIS_Drawer_UIsoAspect,
-    	--   AIS_Drawer_VIsoAspect,
+    	--   Prs3d_Drawer_FreeBoundaryAspect,
+    	-- -   isos: Prs3d_Drawer_UIsoAspect,
+    	--   Prs3dDrawer_VIsoAspect,
     	-- -   shared boundaries:
-    	--   AIS_Drawer_UnFreeBoundaryAspect,
-    	-- -   shading: AIS_Drawer_ShadingAspect,
+    	--   Prs3d_Drawer_UnFreeBoundaryAspect,
+    	-- -   shading: Prs3d_Drawer_ShadingAspect,
     	-- -   visible line color in hidden line mode:
-    	--   AIS_Drawer_SeenLineAspect
+    	--   Prs3d_Drawer_SeenLineAspect
     	-- -   hidden line color in hidden line mode:
-    	--   AIS_Drawer_HiddenLineAspect.
+    	--   Prs3d_Drawer_HiddenLineAspect.
         
     SetColor(me:mutable;aColor:Color from Quantity) 
     is redefined virtual;
@@ -283,22 +282,22 @@ uses
     	    ashape               : Shape from TopoDS) is static private;
 
     setColor (me;
-              theDrawer : Drawer from AIS;
+              theDrawer : Drawer from Prs3d;
               theColor  : Color  from Quantity)
     is protected;
 
     setWidth (me;
-              theDrawer : Drawer from AIS;
+              theDrawer : Drawer from Prs3d;
               theWidth  : Real   from Standard)
     is protected;
 
     setTransparency (me;
-                     theDrawer : Drawer from AIS;
+                     theDrawer : Drawer from Prs3d;
                      theValue  : Real   from Standard)
     is protected;
 
     setMaterial (me;
-                 theDrawer       : Drawer from AIS;
+                 theDrawer       : Drawer from Prs3d;
                  theMaterial     : MaterialAspect from Graphic3d;
                  theToKeepColor  : Boolean from Standard;
                  theToKeepTransp : Boolean from Standard)

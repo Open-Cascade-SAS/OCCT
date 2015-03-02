@@ -17,7 +17,6 @@
 #include <AIS_AngleDimension.hxx>
 
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>

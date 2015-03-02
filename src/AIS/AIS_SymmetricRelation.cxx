@@ -18,7 +18,6 @@
 
 #include <AIS_SymmetricRelation.ixx>
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 
 #include <gce_MakeLin.hxx>
 #include <SelectMgr_EntityOwner.hxx>

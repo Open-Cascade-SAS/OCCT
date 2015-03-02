@@ -32,7 +32,6 @@
 #include <gp_Ax2.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <AIS_Drawer.hxx>
 #include <DsgPrs_XYZAxisPresentation.hxx>
 #include <UnitsAPI.hxx>
 

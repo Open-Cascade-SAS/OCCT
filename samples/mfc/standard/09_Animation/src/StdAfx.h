@@ -117,7 +117,6 @@ enum CurrentAction3d {
 */
 
  
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
@@ -155,6 +154,7 @@ enum CurrentAction3d {
 #include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Text.hxx>

@@ -2131,7 +2131,7 @@ void AIS_InteractiveContext::SetSelectedAspect (const Handle(Prs3d_BasicAspect)&
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetLocalAttributes (const Handle(AIS_InteractiveObject)& theIObj,
-                                                 const Handle(AIS_Drawer)&            theDrawer,
+                                                 const Handle(Prs3d_Drawer)&          theDrawer,
                                                  const Standard_Boolean               theToUpdateViewer)
 {
   if (theIObj.IsNull())

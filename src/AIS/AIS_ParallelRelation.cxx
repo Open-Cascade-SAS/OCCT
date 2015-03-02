@@ -31,7 +31,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 
 #include <SelectMgr_EntityOwner.hxx>
 #include <Select3D_SensitiveSegment.hxx>

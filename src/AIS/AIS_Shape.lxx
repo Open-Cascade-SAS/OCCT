@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 
 inline void AIS_Shape::Set(const TopoDS_Shape& ashap)
 {

@@ -38,7 +38,8 @@ uses
     TDataXtd,
     Geom,
     TopoDS,
-    gp
+    gp,
+    Prs3d
     
     
 is

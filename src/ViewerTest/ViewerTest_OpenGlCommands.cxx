@@ -15,7 +15,6 @@
 
 #include <ViewerTest.hxx>
 
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Draw.hxx>
@@ -34,6 +33,7 @@
 #include <OpenGl_Workspace.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>

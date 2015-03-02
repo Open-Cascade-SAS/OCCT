@@ -43,7 +43,7 @@ uses GUID                 from Standard,
      NameOfColor          from Quantity,
      PlaneAngle           from Quantity,
      NameOfMaterial       from Graphic3d,
-     Drawer               from AIS
+     Drawer               from Prs3d
 is
 
     GetID (myclass) returns GUID from Standard;

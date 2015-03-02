@@ -16,7 +16,6 @@
 
 #include <OpenGl_GlCore20.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
@@ -73,6 +72,7 @@
 #include <NCollection_DataMap.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_Drawer.hxx>
 
 #ifdef WNT
 #undef DrawText

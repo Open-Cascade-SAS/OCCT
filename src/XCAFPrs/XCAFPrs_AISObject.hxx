@@ -36,9 +36,9 @@ protected:
                                          const Standard_Integer                      theMode);
 
   //! Set colors to drawer
-  Standard_EXPORT void SetColors (const Handle(AIS_Drawer)& theDrawer,
-                                  const Quantity_Color&     theColorCurv,
-                                  const Quantity_Color&     theColorSurf);
+  Standard_EXPORT void SetColors (const Handle(Prs3d_Drawer)& theDrawer,
+                                  const Quantity_Color&       theColorCurv,
+                                  const Quantity_Color&       theColorSurf);
 
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.

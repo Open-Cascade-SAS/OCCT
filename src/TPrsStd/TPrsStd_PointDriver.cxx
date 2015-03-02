@@ -18,7 +18,6 @@
 #include <TDataXtd_Geometry.hxx>
 //#include <TDataStd_Datum.hxx>
 #include <AIS_Point.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Geom_Point.hxx>
 #include <Geom_CartesianPoint.hxx>

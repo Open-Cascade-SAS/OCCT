@@ -99,7 +99,6 @@
 #include <Standard_Real.hxx>
 
 #include <AIS_Circle.hxx>
-#include <AIS_Drawer.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -128,6 +127,7 @@
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtPF.hxx>
 
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
@@ -2514,10 +2514,13 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresent
 
   aPresentation->Clear();
 
-  if (!myDrawer->HasTextAspect())
+  if (!myDrawer->HasOwnTextAspect())
   {
     myDrawer->SetTextAspect (new Prs3d_TextAspect());
-    *myDrawer->TextAspect()->Aspect() = *myDrawer->Link()->TextAspect()->Aspect();
+    if(myDrawer->HasLink())
+    {
+      *myDrawer->TextAspect()->Aspect() = *myDrawer->Link()->TextAspect()->Aspect();
+    }
   }
 
   Handle(Prs3d_TextAspect) asp = myDrawer->TextAspect();
@@ -3771,6 +3774,7 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
         continue;
       }
       anObject = new AIS_Shape (aTDShape);
+      aContext->Load (anObject);
       anObject->SetColor (ViewerTest::GetColorFromName (aColorName));
     }
 

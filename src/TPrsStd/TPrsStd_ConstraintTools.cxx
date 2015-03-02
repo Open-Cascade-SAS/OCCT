@@ -47,7 +47,6 @@
 #include <AIS_SymmetricRelation.hxx>
 #include <AIS_MidPointRelation.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_EqualRadiusRelation.hxx>
 #include <AIS_EqualDistanceRelation.hxx>
 #include <AIS_MinRadiusDimension.hxx> 
@@ -90,6 +89,7 @@
 #include <Standard_ErrorHandler.hxx>
 
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <Prs3d_Drawer.hxx>
 
 static Standard_Boolean CheckShapesPair(const TopoDS_Shape& , const TopoDS_Shape& ); //ota
 
@@ -312,7 +312,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
   Standard_Boolean isEdge      = Standard_False;
 
   Standard_Boolean SaveDrw = Standard_False;
-  Handle(AIS_Drawer) aDrawer;
+  Handle(Prs3d_Drawer) aDrawer;
   Handle(AIS_LengthDimension) aDim;
 
   if (!theAIS.IsNull())
@@ -1810,7 +1810,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
   Standard_Real val1;
   TCollection_ExtendedString txt;
   Handle(AIS_LengthDimension) ais;
-  //Handle(AIS_Drawer) aDrawer;
+  //Handle(Prs3d_Drawer) aDrawer;
 
   if (nbgeom == 1)
   {

@@ -23,6 +23,7 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
+#include <Prs3d_Drawer.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>
@@ -43,10 +44,11 @@ static Standard_Integer Search (const SelectMgr_SequenceOfSelection& seq,
 // Purpose :
 //==================================================
 
-SelectMgr_SelectableObject::SelectMgr_SelectableObject( const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):PrsMgr_PresentableObject(aTypeOfPresentation3d)
-{
-  myAutoHilight = Standard_True;
-}
+SelectMgr_SelectableObject::SelectMgr_SelectableObject( const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
+  PrsMgr_PresentableObject (aTypeOfPresentation3d),
+  myDrawer                 (new Prs3d_Drawer()),
+  myAutoHilight            (Standard_True)
+{}
 
 
 //==================================================
@@ -352,3 +354,27 @@ void SelectMgr_SelectableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
     }
   }
 }
+
+//=======================================================================
+//function : SetAttributes
+//purpose  : 
+//=======================================================================
+void SelectMgr_SelectableObject::SetAttributes (const Handle(Prs3d_Drawer)& theDrawer)
+{
+  myDrawer = theDrawer;
+}
+
+//=======================================================================
+//function : UnsetAttributes
+//purpose  : 
+//=======================================================================
+void SelectMgr_SelectableObject::UnsetAttributes()
+{
+  Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
+  if (myDrawer->HasLink())
+  {
+    aDrawer->Link (myDrawer->Link());
+  }
+  myDrawer = aDrawer;
+}
+

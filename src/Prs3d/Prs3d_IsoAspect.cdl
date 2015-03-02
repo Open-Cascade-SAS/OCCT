@@ -17,7 +17,7 @@
 class IsoAspect from Prs3d inherits LineAspect from Prs3d
     	---Purpose: A framework to define the display attributes of isoparameters.
     	-- This framework can be used to modify the default
-    	-- setting for isoparameters in AIS_Drawer.
+    	-- setting for isoparameters in Prs3d_Drawer.
         
 uses 
 

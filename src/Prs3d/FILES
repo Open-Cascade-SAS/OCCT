@@ -7,3 +7,5 @@ Prs3d_DimensionUnits.hxx
 Prs3d_DimensionUnits.cxx
 Prs3d_PresentationShadow.hxx
 Prs3d_PresentationShadow.cxx
+Prs3d_Drawer.hxx
+Prs3d_Drawer.cxx

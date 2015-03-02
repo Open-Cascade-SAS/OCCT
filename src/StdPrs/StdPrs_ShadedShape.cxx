@@ -544,7 +544,7 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
                     (theVolume == StdPrs_Volume_Closed ? Standard_True : Standard_False));
   }
 
-  if (theDrawer->IsFaceBoundaryDraw())
+  if (theDrawer->FaceBoundaryDraw())
   {
     computeFaceBoundaries (theShape, thePrs, theDrawer);
   }

@@ -17,7 +17,7 @@
 #include <Precision.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <AIS_Point.hxx>
 #include <Geom_CartesianPoint.hxx>

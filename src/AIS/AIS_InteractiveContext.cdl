@@ -99,7 +99,6 @@ uses
     MapOfInteractive      from AIS,
     InteractiveObject     from AIS,
     DisplayMode           from AIS,
-    Drawer                from AIS,
     NameOfMaterial        from Graphic3d,
     --NameOfPhysicalMaterial  from Graphic3d,
     Filter                from SelectMgr,
@@ -607,7 +606,7 @@ is
 
     SetLocalAttributes(me      : mutable; 
     	    	       aniobj  : InteractiveObject from AIS;
-    	    	       aDrawer : Drawer from AIS;
+    	    	       aDrawer : Drawer from Prs3d;
     	     updateviewer : Boolean from Standard = Standard_True); 
 --- Purpose:
 -- Sets the attributes of the interactive object aniobj by
@@ -946,7 +945,7 @@ is
 -- deviate from a tangent to a   curve. If this limit is
 -- reached, a new triangle is begun.
 -- This deviation is absolute and is set through
--- AIS_Drawer::SetMaximalChordialDeviation. The
+-- Prs3d_Drawer::SetMaximalChordialDeviation. The
 -- default value is 0.001.
 -- In drawing shapes, however, you are allowed to ask
 -- for a relative deviation. This deviation will be:

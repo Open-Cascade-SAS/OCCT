@@ -30,7 +30,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Line.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_TexturedShape.hxx>
 #include <Aspect_Grid.hxx>

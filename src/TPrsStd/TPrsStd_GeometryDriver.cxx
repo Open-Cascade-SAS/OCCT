@@ -27,7 +27,6 @@
 #include <AIS_Point.hxx>
 #include <AIS_Circle.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Lin.hxx>

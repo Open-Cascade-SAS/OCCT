@@ -89,7 +89,7 @@ void CAISNbrIsosDialog::OnDeltaposSpinaisisosv(NMHDR* pNMHDR, LRESULT* pResult)
 
 
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 
 void CAISNbrIsosDialog::UpdateIsos ()
 {
@@ -99,8 +99,8 @@ void CAISNbrIsosDialog::UpdateIsos ()
 	     myCurrentIC->MoreCurrent ();
 		 myCurrentIC->NextSelected ())
 	{	
-		Handle (AIS_InteractiveObject) CurObject;
-		Handle (AIS_Drawer) CurDrawer;
+		Handle(AIS_InteractiveObject) CurObject;
+		Handle(Prs3d_Drawer) CurDrawer;
 
 		
 		CurObject = myCurrentIC->Current();

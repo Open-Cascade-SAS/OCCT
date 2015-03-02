@@ -27,6 +27,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_TextureParams.hxx>
 
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -56,7 +57,6 @@
 #include <Graphic3d_TypeOfTextureMode.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <AIS_Drawer.hxx>
 #include <Quantity_Array1OfColor.hxx>
 #include <Aspect_SequenceOfColor.hxx>
 
@@ -438,12 +438,12 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
   if ( myUseTexture )
   {
-    Handle(AIS_Drawer) anAISDrawer =  myParentMesh->Attributes();
-    if ( anAISDrawer.IsNull() )
+    Handle(Prs3d_Drawer) aPrsDrawer =  myParentMesh->Attributes();
+    if ( aPrsDrawer.IsNull() )
       return;
 
-    anAISDrawer->SetShadingAspect( new Prs3d_ShadingAspect() );
-    anAsp = anAISDrawer->ShadingAspect()->Aspect();
+    aPrsDrawer->SetShadingAspect( new Prs3d_ShadingAspect() );
+    anAsp = aPrsDrawer->ShadingAspect()->Aspect();
     if ( anAsp.IsNull() )
       return;
 

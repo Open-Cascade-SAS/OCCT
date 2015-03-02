@@ -17,7 +17,7 @@
 #include <QABugs_MyText.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Prs3d_Text.hxx>
 #include <Select3D_SensitiveBox.hxx>

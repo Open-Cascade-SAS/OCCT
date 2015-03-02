@@ -84,7 +84,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Point.hxx>
-#include <AIS_Drawer.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_Window.hxx>
 #include <Aspect_Background.hxx>
@@ -216,6 +215,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ArrowAspect.hxx>

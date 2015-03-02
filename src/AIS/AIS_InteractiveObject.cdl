@@ -53,7 +53,6 @@ uses
     Box                  from Bnd,
     NameOfMaterial       from Graphic3d,
     MaterialAspect       from Graphic3d,
-    Drawer               from AIS,
     PToContext           from AIS,
     TypeOfPresentation3d from PrsMgr,
     InteractiveContext   from AIS,
@@ -485,16 +484,8 @@ is
         
     UnsetTransparency(me:mutable) is virtual;   
     	---Purpose: Removes the transparency setting. The object is opaque by default.
-    
-    SetAttributes(me:mutable; aDrawer: Drawer from AIS) is virtual; 
-    	---Purpose: Initializes the drawing tool aDrawer.
-    
-    Attributes(me) returns any Drawer from AIS;
-    	---C++: return const&
-    	---C++:  inline
-    	---Purpose: Returns the attributes settings.
-        
-    UnsetAttributes(me:mutable) is virtual;
+
+    UnsetAttributes(me:mutable) is redefined virtual;
 	---Purpose: Clears settings provided by the drawing tool aDrawer.
 
             ---Category: information about Prs to be recomputed
@@ -597,7 +588,6 @@ fields
 
     -- The Information Fields
 
-    myDrawer            : Drawer  from AIS is protected ;
     myTransparency      : Real    from Standard is protected;
     myOwnColor          : Color from Quantity is protected;
     myOwnMaterial       : NameOfMaterial from Graphic3d is protected;

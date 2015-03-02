@@ -18,7 +18,6 @@
 
 #include <PPrsStd_AISPresentation_1.hxx>
 #include <TPrsStd_AISPresentation.hxx>
-#include <AIS_Drawer.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <PCollection_HExtendedString.hxx>
 #include <Quantity_NameOfColor.hxx>

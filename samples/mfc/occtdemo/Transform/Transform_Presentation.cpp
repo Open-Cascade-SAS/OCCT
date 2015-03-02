@@ -12,7 +12,7 @@
 #include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -231,7 +231,7 @@ void Transform_Presentation::sample1()
   gp_Ax2 ax2(ax1Pnt.Translated(gp_Vec(0,0,70)),ax1Dir);
   Handle(Geom_Curve) aCirc = new Geom_TrimmedCurve(new Geom_Circle(ax2,20),0,angle);
   Handle(AIS_InteractiveObject) aICirc = drawCurve(aCirc,Quantity_NOC_WHITE,Standard_False);
-  Handle(AIS_Drawer) aDrawer = new AIS_Drawer;
+  Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer;
   aDrawer->Link()->SetLineArrowDraw(Standard_True);
   aDrawer->Link()->ArrowAspect()->SetLength(2);
   getAISContext()->SetLocalAttributes (aICirc, aDrawer);

@@ -39,7 +39,7 @@
 #include <Prs3d_ArrowAspect.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <ElCLib.hxx>
 //=======================================================================
 //function : AIS_EqualDistanceRelation
@@ -363,7 +363,7 @@ void AIS_EqualDistanceRelation::ComputeSelection( const Handle( SelectMgr_Select
 //purpose  : 
 //=======================================================================
 void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Presentation )& aPresentation,
-						      const Handle( AIS_Drawer )& aDrawer,
+						      const Handle( Prs3d_Drawer )& aDrawer,
 						      const Standard_Real ArrowSize,
 						      const TopoDS_Edge & FirstEdge,
 						      const TopoDS_Edge & SecondEdge,
@@ -591,7 +591,7 @@ void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Prese
 //=======================================================================
 
 void AIS_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d_Presentation )& aPresentation,
-							 const Handle( AIS_Drawer )& aDrawer,
+							 const Handle( Prs3d_Drawer )& aDrawer,
 							 const Standard_Real ArrowSize,
 							 const TopoDS_Vertex& FirstVertex,
 							 const TopoDS_Vertex& SecondVertex,
@@ -682,7 +682,7 @@ void AIS_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d_Pr
 //=======================================================================
 
 void AIS_EqualDistanceRelation::ComputeOneEdgeOneVertexLength( const Handle( Prs3d_Presentation )& aPresentation,
-							      const Handle( AIS_Drawer )& aDrawer,
+							      const Handle( Prs3d_Drawer )& aDrawer,
 							      const Standard_Real ArrowSize,
 							      const TopoDS_Shape & FirstShape,
 							      const TopoDS_Shape & SecondShape,

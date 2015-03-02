@@ -24,7 +24,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <TopLoc_Location.hxx>
 #include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>

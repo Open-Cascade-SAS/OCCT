@@ -15,7 +15,6 @@
 
 #include <AIS_TexturedShape.hxx>
 
-#include <AIS_Drawer.hxx>
 #include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepTools.hxx>
@@ -25,6 +24,7 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <Prs3d_Root.hxx>

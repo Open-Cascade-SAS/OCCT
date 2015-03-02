@@ -955,7 +955,7 @@ if(NbResults>0){                                          \n\
  DisplayPoint(aDoc,N,aString.ToCString(),false,0.5,0,-0.6);
 
  Handle(ISession_Surface) aSurface = new ISession_Surface(SP);
- Handle (AIS_Drawer) CurDrawer = aSurface->Attributes();
+ Handle(Prs3d_Drawer) CurDrawer = aSurface->Attributes();
  CurDrawer->UIsoAspect()->SetNumber(10);
  CurDrawer->VIsoAspect()->SetNumber(10);
  aDoc->GetAISContext()->SetLocalAttributes(aSurface, CurDrawer);

@@ -26,12 +26,12 @@ uses
     Shape from TopoDS,
     Plane from Geom,
     PresentationManager3d from PrsMgr,
+    Drawer from Prs3d,
     Presentation from Prs3d,
     Projector from Prs3d,
     Transformation        from Geom,
     Selection from SelectMgr,
     Pnt from gp,
-    Drawer from AIS,
     ExtendedString from TCollection,
     Edge from TopoDS,
     Vertex from TopoDS,
@@ -118,7 +118,7 @@ is
 -- ota -- begin
     ComputeTwoEdgesLength (myclass;
     	    	    	   aPresentation : Presentation   from Prs3d; 
-			   aDrawer       :         Drawer         from AIS; 
+			   aDrawer       :         Drawer         from Prs3d;
 			   ArrowSize     :         Real           from Standard;
 			   FirstEdge     :         Edge           from TopoDS;
 			   SecondEdge    :         Edge           from TopoDS;
@@ -138,7 +138,7 @@ is
 			            
     ComputeTwoVerticesLength(myclass; 
     	    	    	     aPresentation : Presentation   from Prs3d;
-			     aDrawer       :         Drawer         from AIS; 
+			     aDrawer       :         Drawer         from Prs3d;
 			     ArrowSize     :         Real           from Standard;
 			     FirstVertex   :         Vertex         from TopoDS;
 			     SecondVertex  :         Vertex         from TopoDS;
@@ -158,7 +158,7 @@ is
 			            
     ComputeOneEdgeOneVertexLength(myclass; 
     	    	    	          aPresentation : Presentation   from Prs3d;
-			          aDrawer       :         Drawer         from AIS; 
+			          aDrawer       :         Drawer         from Prs3d;
 			          ArrowSize     :         Real           from Standard;
 			          FirstShape    :         Shape          from TopoDS;
 			          SecondShape   :         Shape          from TopoDS;

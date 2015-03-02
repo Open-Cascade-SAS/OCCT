@@ -19,7 +19,6 @@
 
 #include <AIS_Relation.ixx>
 
-#include <AIS_Drawer.hxx>
 #include <AIS_GraphicTool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRep_Tool.hxx>
@@ -27,6 +26,7 @@
 #include <Geom_Line.hxx>
 #include <Geom_CartesianPoint.hxx>
 
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
@@ -81,7 +81,7 @@ void AIS_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)&
 					       const Aspect_TypeOfLine aProjTOL,
 					       const Aspect_TypeOfLine aCallTOL) const 
 {
-  if (!myDrawer->HasWireAspect()){
+  if (!myDrawer->HasOwnWireAspect()){
     myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aProjTOL,2.));}
   else {
     const Handle(Prs3d_LineAspect)& li = myDrawer->WireAspect();
@@ -171,7 +171,7 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
 						 const Aspect_TypeOfMarker aProjTOM,
 						 const Aspect_TypeOfLine aCallTOL) const 
 {
-  if (!myDrawer->HasPointAspect()){
+  if (!myDrawer->HasOwnPointAspect()){
     myDrawer->SetPointAspect(new Prs3d_PointAspect(aProjTOM, aColor,1));}
   else {
     const Handle(Prs3d_PointAspect)& pa = myDrawer->PointAspect();
@@ -182,7 +182,7 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
   // calcul du projete
   StdPrs_Point::Add(aPrs, new Geom_CartesianPoint(ProjPoint), myDrawer);
 
-  if (!myDrawer->HasWireAspect()){
+  if (!myDrawer->HasOwnWireAspect()){
     myDrawer->SetWireAspect(new Prs3d_LineAspect(aColor,aCallTOL,2.));}
   else {
     const Handle(Prs3d_LineAspect)& li = myDrawer->WireAspect();
@@ -213,16 +213,17 @@ void AIS_Relation::SetColor(const Quantity_Color &aCol)
 {
   if(hasOwnColor && myOwnColor==aCol) return;
 
-  if (!myDrawer->HasTextAspect()) myDrawer->SetTextAspect(new Prs3d_TextAspect());
+  if (!myDrawer->HasOwnTextAspect()) myDrawer->SetTextAspect(new Prs3d_TextAspect());
   hasOwnColor=Standard_True;
   myOwnColor=aCol;
   myDrawer->TextAspect()->SetColor(aCol);
 
-  Standard_Real WW = HasWidth()? Width():AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line);
-  if (!myDrawer->HasLineAspect()) {
+  Standard_Real WW = HasWidth()? Width(): myDrawer->HasLink() ?
+    AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line) : 1.;
+  if (!myDrawer->HasOwnLineAspect()) {
     myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
   }
-  if (!myDrawer->HasDimensionAspect()) {
+  if (!myDrawer->HasOwnDimensionAspect()) {
      myDrawer->SetDimensionAspect(new Prs3d_DimensionAspect);
   }
 
@@ -244,11 +245,14 @@ void AIS_Relation::UnsetColor()
   if (!hasOwnColor) return;
   hasOwnColor = Standard_False;
   const Handle(Prs3d_LineAspect)& LA = myDrawer->LineAspect();
-  Quantity_Color CC;
-  AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
+  Quantity_Color CC = Quantity_NOC_YELLOW;
+  if (myDrawer->HasLink())
+  {
+    AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
+    myDrawer->SetTextAspect(myDrawer->Link()->TextAspect());
+  }
   LA->SetColor(CC);
   myDrawer->DimensionAspect()->SetLineAspect(LA);
-  myDrawer->SetTextAspect(myDrawer->Link()->TextAspect());
 }
 
 //=======================================================================

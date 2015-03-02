@@ -197,7 +197,7 @@ void CViewer2dDoc::OnBUTTONTestLine()
       TopoDS_Face F = BRepBuilderAPI_MakeFace(W);
       Handle_AIS_Shape aRect = new AIS_Shape(F);
       //set attributes of boundaries
-      Handle(AIS_Drawer) aDrawer = new AIS_Drawer();
+      Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
       Handle(Prs3d_LineAspect) aLineAttrib = 
         new Prs3d_LineAspect(Quantity_NOC_YELLOW,
         (Aspect_TypeOfLine)(Aspect_TOL_SOLID+j),1);

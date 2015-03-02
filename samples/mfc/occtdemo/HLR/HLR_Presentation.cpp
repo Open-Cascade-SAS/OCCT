@@ -15,7 +15,7 @@
 #include <HLRBRep_PolyAlgo.hxx>
 #include <HLRBRep_PolyHLRToShape.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <BRepTools.hxx>
 #include <BRepMesh.hxx>
 #include <BRep_Builder.hxx>

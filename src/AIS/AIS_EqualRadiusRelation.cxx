@@ -32,7 +32,7 @@
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 
 //=======================================================================
 //function : AIS_EqualRadiusRelation

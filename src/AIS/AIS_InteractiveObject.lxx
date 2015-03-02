@@ -78,10 +78,6 @@ inline Graphic3d_NameOfMaterial AIS_InteractiveObject::Material() const
 //inline Graphic3d_NameOfPhysicalMaterial AIS_InteractiveObject::Material() const 
 {return myOwnMaterial;}
 
-inline const Handle(AIS_Drawer)& 
-AIS_InteractiveObject::Attributes() const 
-{return myDrawer;}
-
 inline Standard_Boolean AIS_InteractiveObject::HasHilightMode() const  
 {return myHilightMode!=-1;}
 

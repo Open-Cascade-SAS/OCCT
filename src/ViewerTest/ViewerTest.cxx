@@ -40,7 +40,6 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 #include <AIS_ColoredShape.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Trihedron.hxx>
@@ -58,8 +57,10 @@
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_TextureRoot.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
 #include <Select3D_SensitiveWire.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_BRepOwner.hxx>
@@ -90,8 +91,9 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
 #include <Graphic3d_NameOfMaterial.hxx>
 
-#define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
-#define DEFAULT_MATERIAL Graphic3d_NOM_BRASS
+#define DEFAULT_COLOR              Quantity_NOC_GOLDENROD
+#define DEFAULT_FREEBOUNDARY_COLOR Quantity_NOC_GREEN
+#define DEFAULT_MATERIAL           Graphic3d_NOM_BRASS
 
 //=======================================================================
 //function : GetColorFromName
@@ -594,7 +596,7 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
         const Handle(AIS_InteractiveObject) aShape =
         Handle(AIS_InteractiveObject)::DownCast (anObj);
-        Handle(AIS_Drawer) CurDrawer = aShape->Attributes();
+        Handle(Prs3d_Drawer) CurDrawer = aShape->Attributes();
         Handle(Prs3d_IsoAspect) aUIso = CurDrawer->UIsoAspect();
         Handle(Prs3d_IsoAspect) aVIso = CurDrawer->VIsoAspect();
 
@@ -1395,6 +1397,12 @@ struct ViewerTest_AspectsChangeSet
 
   NCollection_Sequence<TopoDS_Shape> SubShapes;
 
+  Standard_Integer         ToSetShowFreeBoundary;
+  Standard_Integer         ToSetFreeBoundaryWidth;
+  Standard_Real            FreeBoundaryWidth;
+  Standard_Integer         ToSetFreeBoundaryColor;
+  Quantity_Color           FreeBoundaryColor;
+
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
   : ToSetVisibility   (0),
@@ -1406,16 +1414,24 @@ struct ViewerTest_AspectsChangeSet
     ToSetTransparency (0),
     Transparency      (0.0),
     ToSetMaterial     (0),
-    Material (Graphic3d_NOM_DEFAULT) {}
+    Material          (Graphic3d_NOM_DEFAULT),
+    ToSetShowFreeBoundary  (0),
+    ToSetFreeBoundaryWidth (0),
+    FreeBoundaryWidth      (1.0),
+    ToSetFreeBoundaryColor (0),
+    FreeBoundaryColor      (DEFAULT_FREEBOUNDARY_COLOR) {}
 
   //! @return true if no changes have been requested
   Standard_Boolean IsEmpty() const
   {
-    return ToSetVisibility   == 0
-        && ToSetLineWidth    == 0
-        && ToSetTransparency == 0
-        && ToSetColor        == 0
-        && ToSetMaterial     == 0;
+    return ToSetVisibility        == 0
+        && ToSetLineWidth         == 0
+        && ToSetTransparency      == 0
+        && ToSetColor             == 0
+        && ToSetMaterial          == 0
+        && ToSetShowFreeBoundary  == 0
+        && ToSetFreeBoundaryColor == 0
+        && ToSetFreeBoundaryWidth == 0;
   }
 
   //! @return true if properties are valid
@@ -1451,6 +1467,12 @@ struct ViewerTest_AspectsChangeSet
       std::cout << "Error: unknown material " << MatName << ".\n";
       isOk = Standard_False;
     }
+    if (FreeBoundaryWidth <= 0.0
+     || FreeBoundaryWidth >  10.0)
+    {
+      std::cout << "Error: the free boundary width should be within [1; 10] range (specified " << FreeBoundaryWidth << ")\n";
+      isOk = Standard_False;
+    }
     return isOk;
   }
 
@@ -1474,6 +1496,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
   }
 
   Standard_Integer anArgIter = 1;
+  Standard_Boolean isDefaults = Standard_False;
   NCollection_Sequence<TCollection_AsciiString> aNames;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -1489,8 +1512,19 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     }
     else
     {
+      if (anArg == "-defaults")
+      {
+        isDefaults = Standard_True;
+        ++anArgIter;
+      }
       break;
     }
+  }
+
+  if (!aNames.IsEmpty() && isDefaults)
+  {
+    std::cout << "Error: wrong syntax. If -defaults is used there should not be any objects' names!\n";
+    return 1;
   }
 
   NCollection_Sequence<ViewerTest_AspectsChangeSet> aChanges;
@@ -1770,6 +1804,12 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     else if (anArg == "-subshape"
           || anArg == "-subshapes")
     {
+      if (isDefaults)
+      {
+        std::cout << "Error: wrong syntax. -subshapes can not be used together with -defaults call!\n";
+        return 1;
+      }
+
       if (aNames.IsEmpty())
       {
         std::cout << "Error: main objects should specified explicitly when -subshapes is used!\n";
@@ -1803,6 +1843,106 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         return 1;
       }
     }
+    else if (anArg == "-freeboundary"
+          || anArg == "-fb")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      aValue.LowerCase();
+      if (aValue == "on"
+       || aValue == "1")
+      {
+        aChangeSet->ToSetShowFreeBoundary = 1;
+      }
+      else if (aValue == "off"
+            || aValue == "0")
+      {
+        aChangeSet->ToSetShowFreeBoundary = -1;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-setfreeboundarywidth"
+          || anArg == "-setfbwidth")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetFreeBoundaryWidth = 1;
+      aChangeSet->FreeBoundaryWidth = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-unsetfreeboundarywidth"
+          || anArg == "-unsetfbwidth")
+    {
+      aChangeSet->ToSetFreeBoundaryWidth = -1;
+      aChangeSet->FreeBoundaryWidth = 1.0;
+    }
+    else if (anArg == "-setfreeboundarycolor"
+          || anArg == "-setfbcolor")
+    {
+      Standard_Integer aNbComps  = 0;
+      Standard_Integer aCompIter = anArgIter + 1;
+      for (; aCompIter < theArgNb; ++aCompIter, ++aNbComps)
+      {
+        if (theArgVec[aCompIter][0] == '-')
+        {
+          break;
+        }
+      }
+      switch (aNbComps)
+      {
+        case 1:
+        {
+          Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
+          Standard_CString     aName  = theArgVec[anArgIter + 1];
+          if (!Quantity_Color::ColorFromName (aName, aColor))
+          {
+            std::cout << "Error: unknown free boundary color name '" << aName << "'\n";
+            return 1;
+          }
+          aChangeSet->FreeBoundaryColor = aColor;
+          break;
+        }
+        case 3:
+        {
+          Graphic3d_Vec3d anRgb;
+          anRgb.x() = Draw::Atof (theArgVec[anArgIter + 1]);
+          anRgb.y() = Draw::Atof (theArgVec[anArgIter + 2]);
+          anRgb.z() = Draw::Atof (theArgVec[anArgIter + 3]);
+          if (anRgb.x() < 0.0 || anRgb.x() > 1.0
+           || anRgb.y() < 0.0 || anRgb.y() > 1.0
+           || anRgb.z() < 0.0 || anRgb.z() > 1.0)
+          {
+            std::cout << "Error: free boundary RGB color values should be within range 0..1!\n";
+            return 1;
+          }
+          aChangeSet->FreeBoundaryColor.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
+          break;
+        }
+        default:
+        {
+          std::cout << "Error: wrong syntax at " << anArg << "\n";
+          return 1;
+        }
+      }
+      aChangeSet->ToSetFreeBoundaryColor = 1;
+      anArgIter += aNbComps;
+    }
+    else if (anArg == "-unsetfreeboundarycolor"
+          || anArg == "-unsetfbcolor")
+    {
+      aChangeSet->ToSetFreeBoundaryColor = -1;
+      aChangeSet->FreeBoundaryColor = DEFAULT_FREEBOUNDARY_COLOR;
+    }
     else if (anArg == "-unset")
     {
       aChangeSet->ToSetVisibility = 1;
@@ -1815,6 +1955,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->Color = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial = -1;
       aChangeSet->Material = Graphic3d_NOM_DEFAULT;
+      aChangeSet->ToSetShowFreeBoundary = -1;
+      aChangeSet->ToSetFreeBoundaryColor = -1;
+      aChangeSet->FreeBoundaryColor = DEFAULT_FREEBOUNDARY_COLOR;
+      aChangeSet->ToSetFreeBoundaryWidth = -1;
+      aChangeSet->FreeBoundaryWidth = 1.0;
     }
     else
     {
@@ -1838,12 +1983,74 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
   {
     aCtx->CloseLocalContext();
   }
+
+  // special case for -defaults parameter.
+  // all changed values will be set to DefaultDrawer.
+  if (isDefaults)
+  {
+    const Handle(Prs3d_Drawer)& aDrawer = aCtx->DefaultDrawer();
+
+    if (aChangeSet->ToSetLineWidth != 0)
+    {
+      aDrawer->LineAspect()->SetWidth (aChangeSet->LineWidth);
+      aDrawer->WireAspect()->SetWidth (aChangeSet->LineWidth);
+      aDrawer->UnFreeBoundaryAspect()->SetWidth (aChangeSet->LineWidth);
+      aDrawer->SeenLineAspect()->SetWidth (aChangeSet->LineWidth);
+    }
+    if (aChangeSet->ToSetColor != 0)
+    {
+      aDrawer->ShadingAspect()->SetColor        (aChangeSet->Color);
+      aDrawer->LineAspect()->SetColor           (aChangeSet->Color);
+      aDrawer->UnFreeBoundaryAspect()->SetColor (aChangeSet->Color);
+      aDrawer->SeenLineAspect()->SetColor       (aChangeSet->Color);
+      aDrawer->WireAspect()->SetColor           (aChangeSet->Color);
+      aDrawer->PointAspect()->SetColor          (aChangeSet->Color);
+    }
+    if (aChangeSet->ToSetTransparency != 0)
+    {
+      aDrawer->ShadingAspect()->SetTransparency (aChangeSet->Transparency);
+    }
+    if (aChangeSet->ToSetMaterial != 0)
+    {
+      aDrawer->ShadingAspect()->SetMaterial (aChangeSet->Material);
+    }
+    if (aChangeSet->ToSetShowFreeBoundary == 1)
+    {
+      aDrawer->SetFreeBoundaryDraw (Standard_True);
+    }
+    else if (aChangeSet->ToSetShowFreeBoundary == -1)
+    {
+      aDrawer->SetFreeBoundaryDraw (Standard_False);
+    }
+    if (aChangeSet->ToSetFreeBoundaryWidth != 0)
+    {
+      aDrawer->FreeBoundaryAspect()->SetWidth (aChangeSet->FreeBoundaryWidth);
+    }
+    if (aChangeSet->ToSetFreeBoundaryColor != 0)
+    {
+      aDrawer->FreeBoundaryAspect()->SetColor (aChangeSet->FreeBoundaryColor);
+    }
+
+    // redisplay all objects in context
+    for (ViewTest_PrsIter aPrsIter (aNames); aPrsIter.More(); aPrsIter.Next())
+    {
+      Handle(AIS_InteractiveObject)  aPrs = aPrsIter.Current();
+      if (!aPrs.IsNull())
+      {
+        aCtx->Redisplay (aPrs, Standard_False);
+      }
+    }
+    return 0;
+  }
+
   for (ViewTest_PrsIter aPrsIter (aNames); aPrsIter.More(); aPrsIter.Next())
   {
-    const TCollection_AsciiString& aName = aPrsIter.CurrentName();
-    Handle(AIS_InteractiveObject)  aPrs  = aPrsIter.Current();
+    const TCollection_AsciiString& aName   = aPrsIter.CurrentName();
+    Handle(AIS_InteractiveObject)  aPrs    = aPrsIter.Current();
+    Handle(Prs3d_Drawer)           aDrawer = aPrs->Attributes();
     Handle(AIS_ColoredShape) aColoredPrs;
     Standard_Boolean toDisplay = Standard_False;
+    Standard_Boolean toRedisplay = Standard_False;
     if (aChanges.Length() > 1 || aChangeSet->ToSetVisibility == 1)
     {
       Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aPrs);
@@ -1906,6 +2113,37 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aCtx->UnsetWidth (aPrs, Standard_False);
       }
+      if (!aDrawer.IsNull())
+      {
+        if (aChangeSet->ToSetShowFreeBoundary == 1)
+        {
+          aDrawer->SetFreeBoundaryDraw (Standard_True);
+          toRedisplay = Standard_True;
+        }
+        else if (aChangeSet->ToSetShowFreeBoundary == -1)
+        {
+          aDrawer->SetFreeBoundaryDraw (Standard_False);
+          toRedisplay = Standard_True;
+        }
+        if (aChangeSet->ToSetFreeBoundaryWidth != 0)
+        {
+          Handle(Prs3d_LineAspect) aBoundaryAspect =
+              new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
+          *aBoundaryAspect->Aspect() = *aDrawer->FreeBoundaryAspect()->Aspect();
+          aBoundaryAspect->SetWidth (aChangeSet->FreeBoundaryWidth);
+          aDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
+          toRedisplay = Standard_True;
+        }
+        if (aChangeSet->ToSetFreeBoundaryColor != 0)
+        {
+          Handle(Prs3d_LineAspect) aBoundaryAspect =
+              new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
+          *aBoundaryAspect->Aspect() = *aDrawer->FreeBoundaryAspect()->Aspect();
+          aBoundaryAspect->SetColor (aChangeSet->FreeBoundaryColor);
+          aDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
+          toRedisplay = Standard_True;
+        }
+      }
 
       for (aChangesIter.Next(); aChangesIter.More(); aChangesIter.Next())
       {
@@ -1937,6 +2175,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       if (toDisplay)
       {
         aCtx->Display (aPrs, Standard_False);
+      }
+      if (toRedisplay)
+      {
+        aCtx->Redisplay (aPrs, Standard_False);
       }
       else if (!aColoredPrs.IsNull())
       {
@@ -4659,16 +4901,23 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VSubInt,group);
 
   theCommands.Add("vaspects",
-              "vaspects [-noupdate|-update] [name1 [name2 [...]]]"
+              "vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]"
       "\n\t\t:          [-setvisibility 0|1]"
       "\n\t\t:          [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]"
       "\n\t\t:          [-setmaterial MatName] [-unsetmaterial]"
       "\n\t\t:          [-settransparency Transp] [-unsettransparency]"
       "\n\t\t:          [-setwidth LineWidth] [-unsetwidth]"
+      "\n\t\t:          [-freeBoundary {off/on | 0/1}]"
+      "\n\t\t:          [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
+      "\n\t\t:          [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"
       "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
-      "\n\t\t: assigned to specified sub-shapes.",
+      "\n\t\t: assigned to specified sub-shapes."
+      "\n\t\t: When -defaults is specified than presentation properties will be"
+      "\n\t\t: assigned to all objects that have not their own specified properties"
+      "\n\t\t: and to all objects to be displayed in the future."
+      "\n\t\t: If -defaults is used there should not be any objects' names and -subshapes specifier.",
 		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetcolor",

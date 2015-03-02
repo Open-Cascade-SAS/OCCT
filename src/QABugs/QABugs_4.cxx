@@ -25,7 +25,7 @@
 
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <AIS_Drawer.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 
 //#include <AcisData_AcisModel.hxx>
@@ -47,7 +47,7 @@ static Standard_Integer BUC60738 (Draw_Interpretor& di, Standard_Integer /*argc*
   theAISShape->SetDisplayMode(1);
 
   //get the drawer
-  Handle(AIS_Drawer) theDrawer = theAISShape->Attributes();
+  Handle(Prs3d_Drawer) theDrawer = theAISShape->Attributes();
   Handle(Prs3d_ShadingAspect) theShadingAspect = theDrawer->ShadingAspect();
   Handle(Graphic3d_AspectFillArea3d) theAspectFillArea3d = theShadingAspect->Aspect();
 

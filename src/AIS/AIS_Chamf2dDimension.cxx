@@ -52,7 +52,6 @@
 #include <BRepTools_WireExplorer.hxx>
 
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
 
 #include <BRepAdaptor_Surface.hxx>
 #include <ProjLib.hxx>

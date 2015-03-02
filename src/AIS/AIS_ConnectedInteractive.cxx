@@ -33,7 +33,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <BRepTools.hxx>
 #include <Precision.hxx>
-#include <AIS_Drawer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_ProgramError.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
