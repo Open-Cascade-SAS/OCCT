@@ -612,8 +612,11 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
     //if(pm = strchr(vers,'\r'))
     //  *pm ='\0';
     
-    for (Standard_Size lv = (strlen(vers)- 1); lv > 1 && (vers[lv] == '\r' || vers[lv] == '\n') ;lv--) 
-      vers[lv] = '\0';
+    Standard_Size lv = strlen(vers);
+    if (lv > 0) {
+      for (lv--; lv > 0 && (vers[lv] == '\r' || vers[lv] == '\n') ;lv--) 
+        vers[lv] = '\0';
+    }
     
   } while ( ! IS.fail() && strcmp(vers,Version) && strcmp(vers,Version2) );
   if (IS.fail()) {
