@@ -398,7 +398,7 @@ void TNaming::Displace (const TDF_Label& L,
     }
   }
   for (TDF_ChildIterator ciL(L); ciL.More(); ciL.Next()) {
-    Displace (ciL.Value(),Loc);
+    Displace (ciL.Value(), Loc, WithOld);
   }
 }
 
