@@ -130,7 +130,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #if defined(HAVE_EGL)
   myDisplay  = (Aspect_Display          )EGL_NO_DISPLAY;
   myWindow   = (Aspect_Drawable         )EGL_NO_SURFACE;
-  myGContext = (Aspect_RenderingContext )EGL_NO_CONTEXT);
+  myGContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
 #elif defined(_WIN32)
   myWindow   = NULL;
   myWindowDC = NULL;
