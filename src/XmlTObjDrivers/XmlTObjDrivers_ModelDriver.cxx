@@ -106,6 +106,6 @@ void XmlTObjDrivers_ModelDriver::Paste
   // Store model GUID.
   Standard_PCharacter aPGuidString = new Standard_Character[256];
   aModel->GetGUID().ToCString( aPGuidString );
-  XmlObjMgt::SetExtendedString (Target, *aPGuidString);
+  XmlObjMgt::SetExtendedString (Target, aPGuidString);
   delete []aPGuidString;
 }
