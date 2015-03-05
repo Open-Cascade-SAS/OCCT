@@ -149,6 +149,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   myComputeInitStatus (OpenGl_RT_NONE),
   myIsRaytraceDataValid (Standard_False),
   myIsRaytraceWarnTextures (Standard_False),
+  myHasFboBlit (Standard_True),
   myViewModificationStatus (0),
   myLayersModificationStatus (0),
   //
@@ -677,44 +678,50 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   myIsCullingEnabled = theCView.IsCullingEnabled;
 
   // release pending GL resources
-  Handle(OpenGl_Context) aGlCtx = GetGlContext();
-  aGlCtx->ReleaseDelayed();
+  myGlContext->ReleaseDelayed();
 
   // fetch OpenGl context state
-  aGlCtx->FetchState();
+  myGlContext->FetchState();
 
-  Tint toSwap = (aGlCtx->IsRender() && !aGlCtx->caps->buffersNoSwap) ? 1 : 0; // swap buffers
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
   if (aFrameBuffer != NULL)
   {
-    aFrameBuffer->SetupViewport (aGlCtx);
-    toSwap = 0; // no need to swap buffers
+    aFrameBuffer->SetupViewport (myGlContext);
   }
   else
   {
-    aGlCtx->core11fwd->glViewport (0, 0, myWidth, myHeight);
+    myGlContext->core11fwd->glViewport (0, 0, myWidth, myHeight);
   }
+  bool toSwap = myGlContext->IsRender()
+            && !myGlContext->caps->buffersNoSwap
+            &&  aFrameBuffer == NULL;
 
   Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
   Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
 
-  if (myResultFBO->GetVPSizeX() != aSizeX
-   || myResultFBO->GetVPSizeY() != aSizeY)
+  if (myHasFboBlit
+   && myTransientDrawToFront)
   {
-    // prepare FBOs containing main scene
-    // for further blitting and rendering immediate presentations on top
-    if (aGlCtx->core20fwd != NULL)
+    if (myResultFBO->GetVPSizeX() != aSizeX
+     || myResultFBO->GetVPSizeY() != aSizeY)
     {
-      myResultFBO->Init (aGlCtx, aSizeX, aSizeY);
+      // prepare FBOs containing main scene
+      // for further blitting and rendering immediate presentations on top
+      if (myGlContext->core20fwd != NULL)
+      {
+        myResultFBO->Init (myGlContext, aSizeX, aSizeY);
+      }
+    }
+
+    if (myResultFBO->IsValid())
+    {
+      myResultFBO->SetupViewport (myGlContext);
     }
   }
-  if (myResultFBO->IsValid())
+  else
   {
-    myResultFBO->SetupViewport (aGlCtx);
+    myResultFBO->Release (myGlContext.operator->());
   }
-
-  const Standard_Boolean isImmediate = myView->HasImmediateStructures()
-                                    || myResultFBO->IsValid();
 
   myToRedrawGL = Standard_True;
   if (theCView.RenderParams.Method == Graphic3d_RM_RAYTRACING
@@ -736,7 +743,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       if (myOpenGlFBO->GetVPSizeX() != aSizeX
        || myOpenGlFBO->GetVPSizeY() != aSizeY)
       {
-        myOpenGlFBO->Init (aGlCtx, aSizeX, aSizeY);
+        myOpenGlFBO->Init (myGlContext, aSizeX, aSizeY);
       }
 
       // OverLayer and UnderLayer shouldn't be drawn by OpenGL.
@@ -744,17 +751,18 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       Aspect_CLayer2d anEmptyCLayer;
       anEmptyCLayer.ptrLayer = NULL;
 
-      myOpenGlFBO->BindBuffer (aGlCtx);
-      redraw1 (theCView, anEmptyCLayer, anEmptyCLayer, 0);
-      myOpenGlFBO->UnbindBuffer (aGlCtx);
+      myOpenGlFBO->BindBuffer (myGlContext);
+      redraw1 (theCView, anEmptyCLayer, anEmptyCLayer);
+      myOpenGlFBO->UnbindBuffer (myGlContext);
 
-      Raytrace (theCView, aSizeX, aSizeY, isImmediate ? 0 : toSwap,
+      Raytrace (theCView, aSizeX, aSizeY,
                 theCOverLayer, theCUnderLayer,
                 myResultFBO->IsValid() ? myResultFBO.operator->() : aFrameBuffer);
-
-      if (isImmediate)
+      myBackBufferRestored = Standard_True;
+      myIsImmediateDrawn   = Standard_False;
+      if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aFrameBuffer))
       {
-        RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True, aFrameBuffer);
+        toSwap = false;
       }
 
       SetRenderFilter (aRenderFilter);
@@ -768,17 +776,19 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     // draw entire frame using normal OpenGL pipeline
     if (myResultFBO->IsValid())
     {
-      myResultFBO->BindBuffer (aGlCtx);
+      myResultFBO->BindBuffer (myGlContext);
     }
     else if (aFrameBuffer != NULL)
     {
-      aFrameBuffer->BindBuffer (aGlCtx);
+      aFrameBuffer->BindBuffer (myGlContext);
     }
 
-    redraw1 (theCView, theCUnderLayer, theCOverLayer, isImmediate ? 0 : toSwap);
-    if (isImmediate)
+    redraw1 (theCView, theCUnderLayer, theCOverLayer);
+    myBackBufferRestored = Standard_True;
+    myIsImmediateDrawn   = Standard_False;
+    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aFrameBuffer))
     {
-      RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True, aFrameBuffer);
+      toSwap = false;
     }
 
     theCView.WasRedrawnGL = Standard_True;
@@ -786,9 +796,9 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 
   if (aFrameBuffer != NULL)
   {
-    aFrameBuffer->UnbindBuffer (aGlCtx);
+    aFrameBuffer->UnbindBuffer (myGlContext);
     // move back original viewport
-    aGlCtx->core11fwd->glViewport (0, 0, myWidth, myHeight);
+    myGlContext->core11fwd->glViewport (0, 0, myWidth, myHeight);
   }
 
 #if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)
@@ -809,8 +819,22 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   }
 #endif
 
+  // Swap the buffers
+  if (toSwap)
+  {
+    GetGlContext()->SwapBuffers();
+    if (!myResultFBO->IsValid())
+    {
+      myBackBufferRestored = Standard_False;
+    }
+  }
+  else
+  {
+    myGlContext->core11fwd->glFlush();
+  }
+
   // reset render mode state
-  aGlCtx->FetchState();
+  myGlContext->FetchState();
 }
 
 // =======================================================================
@@ -819,8 +843,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 // =======================================================================
 void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
                                 const Aspect_CLayer2d& theCUnderLayer,
-                                const Aspect_CLayer2d& theCOverLayer,
-                                const int              theToSwap)
+                                const Aspect_CLayer2d& theCOverLayer)
 {
   if (myView.IsNull())
   {
@@ -879,20 +902,6 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
 
   Handle(OpenGl_Workspace) aWS (this);
   myView->Render (myPrintContext, aWS, theCView, theCUnderLayer, theCOverLayer, Standard_False);
-
-  // swap the buffers
-  if (theToSwap)
-  {
-    GetGlContext()->SwapBuffers();
-    myBackBufferRestored = Standard_False;
-    myIsImmediateDrawn   = Standard_False;
-  }
-  else
-  {
-    glFlush(); //
-    myBackBufferRestored = Standard_True;//
-    myIsImmediateDrawn   = Standard_False;//
-  }
 }
 
 // =======================================================================
@@ -963,51 +972,49 @@ void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
 // =======================================================================
 void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
                                         const Aspect_CLayer2d& theCUnderLayer,
-                                        const Aspect_CLayer2d& theCOverLayer,
-                                        const Standard_Boolean theToForce,
-                                        OpenGl_FrameBuffer*    theTargetFBO)
+                                        const Aspect_CLayer2d& theCOverLayer)
 {
-  if (!Activate())
+  if (!myTransientDrawToFront
+   || !myBackBufferRestored
+   || (myGlContext->caps->buffersNoSwap && !myResultFBO->IsValid()))
+  {
+    Redraw (theCView, theCUnderLayer, theCOverLayer);
+    return;
+  }
+  else if (!Activate())
   {
     return;
   }
 
-  GLboolean isDoubleBuffer = GL_FALSE;
-#if !defined(GL_ES_VERSION_2_0)
-  glGetBooleanv (GL_DOUBLEBUFFER, &isDoubleBuffer);
-#endif
-  if (!myView->HasImmediateStructures()
-   && !myResultFBO->IsValid())
+  if (redrawImmediate (theCView, theCUnderLayer, theCOverLayer, NULL, Standard_True))
   {
-    if (theToForce
-     || !myIsImmediateDrawn)
-    {
-      myIsImmediateDrawn = Standard_False;
-      return;
-    }
-
-    if (myBackBufferRestored
-     && isDoubleBuffer)
-    {
-      copyBackToFront();
-      glFlush();
-    }
-    else
-    {
-      Redraw (theCView, theCUnderLayer, theCOverLayer);
-    }
-    return;
+    myGlContext->SwapBuffers();
   }
-
-  if (myResultFBO->IsValid()
-   && myGlContext->IsRender())
+  else
   {
-    if (!myBackBufferRestored)
-    {
-      Redraw (theCView, theCUnderLayer, theCOverLayer);
-      return;
-    }
+    myGlContext->core11fwd->glFlush();
+    MakeBackBufCurrent();
+  }
+}
 
+// =======================================================================
+// function : redrawImmediate
+// purpose  :
+// =======================================================================
+bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
+                                        const Aspect_CLayer2d& theCUnderLayer,
+                                        const Aspect_CLayer2d& theCOverLayer,
+                                        OpenGl_FrameBuffer*    theTargetFBO,
+                                        const Standard_Boolean theIsPartialUpdate)
+{
+  GLboolean toCopyBackToFront = GL_FALSE;
+  if (!myTransientDrawToFront)
+  {
+    myBackBufferRestored = Standard_False;
+  }
+  else if (myResultFBO->IsValid()
+        && myGlContext->IsRender())
+  {
     // clear destination before blitting
     if (theTargetFBO != NULL)
     {
@@ -1084,17 +1091,41 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
         myResultFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
         myResultFBO->ColorTexture()       ->Unbind (myGlContext, GL_TEXTURE0 + 0);
       }
+      else
+      {
+        TCollection_ExtendedString aMsg = TCollection_ExtendedString()
+          + "Error! FBO blitting has failed";
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                  GL_DEBUG_TYPE_ERROR_ARB,
+                                  0,
+                                  GL_DEBUG_SEVERITY_HIGH_ARB,
+                                  aMsg);
+        myHasFboBlit = Standard_False;
+        myResultFBO->Release (myGlContext.operator->());
+        return true;
+      }
     }
   }
-  else if (isDoubleBuffer && myTransientDrawToFront)
+  else if (theTargetFBO == NULL)
   {
-    if (!myBackBufferRestored)
+  #if !defined(GL_ES_VERSION_2_0)
+    myGlContext->core11fwd->glGetBooleanv (GL_DOUBLEBUFFER, &toCopyBackToFront);
+  #endif
+    if (toCopyBackToFront)
     {
-      Redraw (theCView, theCUnderLayer, theCOverLayer);
-      return;
+      if (!myView->HasImmediateStructures()
+       && !theIsPartialUpdate)
+      {
+        // prefer Swap Buffers within Redraw in compatibility mode (without FBO)
+        return true;
+      }
+      copyBackToFront();
+      MakeFrontBufCurrent();
     }
-    copyBackToFront();
-    MakeFrontBufCurrent();
+    else
+    {
+      myBackBufferRestored = Standard_False;
+    }
   }
   else
   {
@@ -1145,18 +1176,10 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     aStructure->Render (aWS);
   }
 
-  if (myResultFBO->IsValid())
+  if (toCopyBackToFront)
   {
-    if (theTargetFBO == NULL
-    &&  myGlContext->IsRender()
-    && !myGlContext->caps->buffersNoSwap)
-    {
-      myGlContext->SwapBuffers();
-    }
-  }
-  else if (isDoubleBuffer && myTransientDrawToFront)
-  {
-    glFlush();
     MakeBackBufCurrent();
+    return false;
   }
+  return true;
 }

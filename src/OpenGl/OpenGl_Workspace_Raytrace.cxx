@@ -2307,7 +2307,6 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
                                              const Standard_Integer theSizeX,
                                              const Standard_Integer theSizeY,
-                                             const Standard_Boolean theToSwap,
                                              const Aspect_CLayer2d& theCOverLayer,
                                              const Aspect_CLayer2d& theCUnderLayer,
                                              OpenGl_FrameBuffer*    theFrameBuffer)
@@ -2435,18 +2434,6 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   DisplayCallback (theCView, (aMode | OCC_PRE_OVERLAY));
   myView->RedrawLayer2d (myPrintContext, this, theCView, theCOverLayer);
   DisplayCallback (theCView, aMode);
-
-  // Swap the buffers
-  if (theToSwap)
-  {
-    GetGlContext()->SwapBuffers();
-    myBackBufferRestored = Standard_False;
-  }
-  else
-  {
-    glFlush();
-  }
-
   return Standard_True;
 }
 

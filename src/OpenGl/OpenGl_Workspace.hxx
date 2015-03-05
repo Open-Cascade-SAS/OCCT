@@ -159,9 +159,7 @@ public:
   Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
   void RedrawImmediate (const Graphic3d_CView& theCView,
                         const Aspect_CLayer2d& theCUnderLayer,
-                        const Aspect_CLayer2d& theCOverLayer,
-                        const Standard_Boolean theToForce = Standard_False,
-                        OpenGl_FrameBuffer*    theTargetFBO = NULL);
+                        const Aspect_CLayer2d& theCOverLayer);
 
   void Invalidate (const Graphic3d_CView& /*theCView*/)
   {
@@ -273,8 +271,21 @@ protected:
 
   void redraw1 (const Graphic3d_CView& theCView,
                 const Aspect_CLayer2d& theCUnderLayer,
-                const Aspect_CLayer2d& theCOverLayer,
-                const int              theToSwap);
+                const Aspect_CLayer2d& theCOverLayer);
+
+  //! Blit snapshot containing main scene (myResultFBO or BackBuffer)
+  //! into presentation buffer (myResultFBO->offscreen FBO or myResultFBO->BackBuffer or BackBuffer->FrontBuffer),
+  //! and redraw immediate structures on top.
+  //!
+  //! When scene caching is disabled (myTransientDrawToFront, no double buffer in window, etc.),
+  //! the first step (blitting) will be skipped.
+  //!
+  //! @return false if immediate structures has been rendered directly into FrontBuffer and Buffer Swap should not be called.
+  bool redrawImmediate (const Graphic3d_CView& theCView,
+                        const Aspect_CLayer2d& theCUnderLayer,
+                        const Aspect_CLayer2d& theCOverLayer,
+                        OpenGl_FrameBuffer*    theTargetFBO,
+                        const Standard_Boolean theIsPartialUpdate = Standard_False);
 
   void updateMaterial (const int theFlag);
 
@@ -560,7 +571,6 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean Raytrace (const Graphic3d_CView& theCView,
                              const Standard_Integer theSizeX,
                              const Standard_Integer theSizeY,
-                             const Standard_Boolean theToSwap,
                              const Aspect_CLayer2d& theCOverLayer,
                              const Aspect_CLayer2d& theCUnderLayer,
                              OpenGl_FrameBuffer*    theFrameBuffer);
@@ -637,6 +647,8 @@ protected: //! @name fields related to ray-tracing
 
   //! Framebuffer stores cached main presentation of the view (without presentation of immediate layers).
   Handle(OpenGl_FrameBuffer) myResultFBO;
+  //! Special flag which is invalidated when myResultFBO can not be blitted for some reason (e.g. driver bugs).
+  Standard_Boolean           myHasFboBlit;
 
   //! Vertices for full-screen quad rendering.
   OpenGl_VertexBuffer        myFullScreenQuad;

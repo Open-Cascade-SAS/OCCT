@@ -512,6 +512,13 @@ private:
   //! Wrapper to system function to retrieve GL function pointer by name.
   Standard_EXPORT void* findProc (const char* theFuncName);
 
+  //! Print error if not all functions have been exported by context for reported version.
+  //! Note that this will never happen when using GLX, since returned functions can not be validated.
+  //! @param theGlVerMajor the OpenGL major version with missing functions
+  //! @param theGlVerMinor the OpenGL minor version with missing functions
+  Standard_EXPORT void checkWrongVersion (const Standard_Integer theGlVerMajor,
+                                          const Standard_Integer theGlVerMinor);
+
   //! Private initialization function that should be called only once.
   Standard_EXPORT void init (const Standard_Boolean theIsCoreProfile);
 

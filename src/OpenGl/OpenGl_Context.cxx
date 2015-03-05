@@ -895,6 +895,30 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
 }
 
 // =======================================================================
+// function : checkWrongVersion
+// purpose  :
+// ======================================================================
+void OpenGl_Context::checkWrongVersion (const Standard_Integer theGlVerMajor,
+                                        const Standard_Integer theGlVerMinor)
+{
+  if (!IsGlGreaterEqual (theGlVerMajor, theGlVerMinor))
+  {
+    return;
+  }
+
+  TCollection_ExtendedString aMsg = TCollection_ExtendedString()
+    + "Error! OpenGL context reports version "
+    + myGlVerMajor  + "." + myGlVerMinor
+    + " but does not export required functions for "
+    + theGlVerMajor + "." + theGlVerMinor;
+  PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+               GL_DEBUG_TYPE_ERROR_ARB,
+               0,
+               GL_DEBUG_SEVERITY_HIGH_ARB,
+               aMsg);
+}
+
+// =======================================================================
 // function : init
 // purpose  :
 // =======================================================================
@@ -1898,24 +1922,28 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has12)
   {
+    checkWrongVersion (1, 2);
     myGlVerMajor = 1;
     myGlVerMinor = 1;
     return;
   }
   else if (!has13)
   {
+    checkWrongVersion (1, 3);
     myGlVerMajor = 1;
     myGlVerMinor = 2;
     return;
   }
   else if (!has14)
   {
+    checkWrongVersion (1, 4);
     myGlVerMajor = 1;
     myGlVerMinor = 3;
     return;
   }
   else if (!has15)
   {
+    checkWrongVersion (1, 5);
     myGlVerMajor = 1;
     myGlVerMinor = 4;
     return;
@@ -1928,6 +1956,26 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has20)
   {
+    checkWrongVersion (2, 0);
+    myGlVerMajor = 1;
+    myGlVerMinor = 5;
+    return;
+  }
+
+  const char* aGlslVer = (const char* )::glGetString (GL_SHADING_LANGUAGE_VERSION);
+  if (aGlslVer == NULL
+  || *aGlslVer == '\0')
+  {
+    // broken context has been detected
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
+      + "Error! OpenGL context reports version "
+      + myGlVerMajor  + "." + myGlVerMinor
+      + " but reports wrong GLSL version";
+    PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                 GL_DEBUG_TYPE_ERROR_ARB,
+                 0,
+                 GL_DEBUG_SEVERITY_HIGH_ARB,
+                 aMsg);
     myGlVerMajor = 1;
     myGlVerMinor = 5;
     return;
@@ -1941,6 +1989,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has21)
   {
+    checkWrongVersion (2, 1);
     myGlVerMajor = 2;
     myGlVerMinor = 0;
     return;
@@ -1948,6 +1997,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has30)
   {
+    checkWrongVersion (3, 0);
     myGlVerMajor = 2;
     myGlVerMinor = 1;
     return;
@@ -1955,6 +2005,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has31)
   {
+    checkWrongVersion (3, 1);
     myGlVerMajor = 3;
     myGlVerMinor = 0;
     return;
@@ -1964,6 +2015,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has32)
   {
+    checkWrongVersion (3, 2);
     myGlVerMajor = 3;
     myGlVerMinor = 1;
     return;
@@ -1980,6 +2032,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has33)
   {
+    checkWrongVersion (3, 3);
     myGlVerMajor = 3;
     myGlVerMinor = 2;
     return;
@@ -1996,6 +2049,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has40)
   {
+    checkWrongVersion (4, 0);
     myGlVerMajor = 3;
     myGlVerMinor = 3;
     return;
@@ -2004,6 +2058,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has41)
   {
+    checkWrongVersion (4, 1);
     myGlVerMajor = 4;
     myGlVerMinor = 0;
     return;
@@ -2016,6 +2071,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if(!has42)
   {
+    checkWrongVersion (4, 2);
     myGlVerMajor = 4;
     myGlVerMinor = 1;
     return;
@@ -2028,6 +2084,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has43)
   {
+    checkWrongVersion (4, 3);
     myGlVerMajor = 4;
     myGlVerMinor = 2;
     return;
@@ -2040,6 +2097,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (!has44)
   {
+    checkWrongVersion (4, 4);
     myGlVerMajor = 4;
     myGlVerMinor = 3;
     return;

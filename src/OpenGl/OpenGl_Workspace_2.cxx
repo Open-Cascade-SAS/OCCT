@@ -569,11 +569,15 @@ Standard_Boolean OpenGl_Workspace::Print
     myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
                               (GLfloat )aFrameHeight/viewHeight);
     aFrameBuffer->SetupViewport (GetGlContext());
-    redraw1 (ACView, ACUnderLayer, ACOverLayer, 0);
+    redraw1 (ACView, ACUnderLayer, ACOverLayer);
     if (!myTransientDrawToFront)
     {
       // render to FBO only if allowed to render to back buffer
-      RedrawImmediate (ACView, ACUnderLayer, ACOverLayer, Standard_True);
+      myBackBufferRestored = Standard_True;
+      myIsImmediateDrawn   = Standard_False;
+      redrawImmediate (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer);
+      myBackBufferRestored = Standard_False;
+      myIsImmediateDrawn   = Standard_False;
     }
     glReadPixels (0, 0, aFrameWidth, aFrameHeight,
                   GL_BGR_EXT, GL_UNSIGNED_BYTE, (GLvoid* )aViewBuffer);
@@ -680,11 +684,15 @@ Standard_Boolean OpenGl_Workspace::Print
 
         // draw to the offscreen buffer and capture the result
         aFrameBuffer->SetupViewport (GetGlContext());
-        redraw1 (ACView, ACUnderLayer, ACOverLayer, 0);
+        redraw1 (ACView, ACUnderLayer, ACOverLayer);
         if (!myTransientDrawToFront)
         {
           // render to FBO only if forces to render to back buffer
-          RedrawImmediate (ACView, ACUnderLayer, ACOverLayer, Standard_True);
+          myBackBufferRestored = Standard_True;
+          myIsImmediateDrawn   = Standard_False;
+          redrawImmediate (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer);
+          myBackBufferRestored = Standard_False;
+          myIsImmediateDrawn   = Standard_False;
         }
         glReadPixels (0, 0, aFrameWidth, aFrameHeight,
                       GL_BGR_EXT, GL_UNSIGNED_BYTE, (GLvoid* )aViewBuffer);
