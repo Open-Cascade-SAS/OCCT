@@ -40,6 +40,7 @@ typedef struct
   int reason;
   int wsID;
   int viewID;
+  bool IsCoreProfile;
   Handle(Standard_Transient) glContext;
 } Aspect_GraphicCallbackStruct;
 

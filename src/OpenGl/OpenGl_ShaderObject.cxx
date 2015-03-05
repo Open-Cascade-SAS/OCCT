@@ -56,7 +56,7 @@ Standard_Boolean OpenGl_ShaderObject::LoadSource (const Handle(OpenGl_Context)& 
   }
 
   const GLchar* aLines = theSource.ToCString();
-  theCtx->core20->glShaderSource (myShaderID, 1, &aLines, NULL);
+  theCtx->core20fwd->glShaderSource (myShaderID, 1, &aLines, NULL);
   return Standard_True;
 }
 
@@ -72,11 +72,11 @@ Standard_Boolean OpenGl_ShaderObject::Compile (const Handle(OpenGl_Context)& the
   }
 
   // Try to compile shader
-  theCtx->core20->glCompileShader (myShaderID);
+  theCtx->core20fwd->glCompileShader (myShaderID);
 
   // Check compile status
   GLint aStatus = GL_FALSE;
-  theCtx->core20->glGetShaderiv (myShaderID, GL_COMPILE_STATUS, &aStatus);
+  theCtx->core20fwd->glGetShaderiv (myShaderID, GL_COMPILE_STATUS, &aStatus);
   return aStatus != GL_FALSE;
 }
 
@@ -94,12 +94,12 @@ Standard_Boolean OpenGl_ShaderObject::FetchInfoLog (const Handle(OpenGl_Context)
 
   // Load information log of the compiler
   GLint aLength = 0;
-  theCtx->core20->glGetShaderiv (myShaderID, GL_INFO_LOG_LENGTH, &aLength);
+  theCtx->core20fwd->glGetShaderiv (myShaderID, GL_INFO_LOG_LENGTH, &aLength);
   if (aLength > 0)
   {
     GLchar* aLog = (GLchar*) alloca (aLength);
     memset (aLog, 0, aLength);
-    theCtx->core20->glGetShaderInfoLog (myShaderID, aLength, NULL, aLog);
+    theCtx->core20fwd->glGetShaderInfoLog (myShaderID, aLength, NULL, aLog);
     theLog = aLog;
   }
 
@@ -113,9 +113,9 @@ Standard_Boolean OpenGl_ShaderObject::FetchInfoLog (const Handle(OpenGl_Context)
 Standard_Boolean OpenGl_ShaderObject::Create (const Handle(OpenGl_Context)& theCtx)
 {
   if (myShaderID == NO_SHADER
-   && theCtx->core20 != NULL)
+   && theCtx->core20fwd != NULL)
   {
-    myShaderID = theCtx->core20->glCreateShader (myType);
+    myShaderID = theCtx->core20fwd->glCreateShader (myType);
   }
 
   return myShaderID != NO_SHADER;
@@ -135,10 +135,10 @@ void OpenGl_ShaderObject::Release (OpenGl_Context* theCtx)
   Standard_ASSERT_RETURN (theCtx != NULL,
     "OpenGl_ShaderObject destroyed without GL context! Possible GPU memory leakage...",);
 
-  if (theCtx->core20 != NULL
+  if (theCtx->core20fwd != NULL
    && theCtx->IsValid())
   {
-    theCtx->core20->glDeleteShader (myShaderID);
+    theCtx->core20fwd->glDeleteShader (myShaderID);
   }
   myShaderID = NO_SHADER;
 }

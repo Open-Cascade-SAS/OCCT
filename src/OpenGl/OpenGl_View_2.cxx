@@ -348,7 +348,10 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
 
 #if !defined(GL_ES_VERSION_2_0)
   // Switch off lighting by default
-  glDisable(GL_LIGHTING);
+  if (aContext->core11 != NULL)
+  {
+    glDisable(GL_LIGHTING);
+  }
 #endif
 
   // =================================
@@ -393,7 +396,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   // Apply Fog
-  if ( myFog.IsOn )
+  if (myFog.IsOn
+   && aContext->core11 != NULL)
   {
     Standard_Real aFogFrontConverted = (Standard_Real )myFog.Front + myCamera->Distance();
     if (myCamera->ZFar() < aFogFrontConverted)
@@ -421,12 +425,17 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     glFogfv(GL_FOG_COLOR, myFog.Color.rgb);
     glEnable(GL_FOG);
   }
-  else
-    glDisable(GL_FOG);
+  else if (aContext->core11 != NULL)
+  {
+    glDisable (GL_FOG);
+  }
 
   // Apply InteriorShadingMethod
-  aContext->core11->glShadeModel (myShadingModel == Visual3d_TOM_FACET
-                               || myShadingModel == Visual3d_TOM_NONE ? GL_FLAT : GL_SMOOTH);
+  if (aContext->core11 != NULL)
+  {
+    aContext->core11->glShadeModel (myShadingModel == Visual3d_TOM_FACET
+                                 || myShadingModel == Visual3d_TOM_NONE ? GL_FLAT : GL_SMOOTH);
+  }
 #endif
 
   aManager->SetShadingModel (myShadingModel);
@@ -583,8 +592,12 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
   if ( myZLayers.NbStructures() <= 0 )
     return;
 
+  const Handle(OpenGl_Context)& aCtx = AWorkspace->GetGlContext();
 #if !defined(GL_ES_VERSION_2_0)
-  glPushAttrib ( GL_DEPTH_BUFFER_BIT );
+  if (aCtx->core11 != NULL)
+  {
+    aCtx->core11->glPushAttrib (GL_DEPTH_BUFFER_BIT);
+  }
 #endif
 
   //TsmPushAttri(); /* save previous graphics context */
@@ -598,7 +611,10 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
     if ( !myAntiAliasing )
     {
     #if !defined(GL_ES_VERSION_2_0)
-      glDisable(GL_POINT_SMOOTH);
+      if (aCtx->core11 != NULL)
+      {
+        glDisable (GL_POINT_SMOOTH);
+      }
       glDisable(GL_LINE_SMOOTH);
       if( antiAliasingMode & 2 ) glDisable(GL_POLYGON_SMOOTH);
     #endif
@@ -608,7 +624,10 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
     else
     {
     #if !defined(GL_ES_VERSION_2_0)
-      glEnable(GL_POINT_SMOOTH);
+      if (aCtx->core11 != NULL)
+      {
+        glEnable(GL_POINT_SMOOTH);
+      }
       glEnable(GL_LINE_SMOOTH);
       if( antiAliasingMode & 2 ) glEnable(GL_POLYGON_SMOOTH);
     #endif
@@ -620,8 +639,10 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
   myZLayers.Render (AWorkspace, theToDrawImmediate);
 
 #if !defined(GL_ES_VERSION_2_0)
-  //TsmPopAttri(); /* restore previous graphics context; before update lights */
-  glPopAttrib();
+  if (aCtx->core11 != NULL)
+  {
+    aCtx->core11->glPopAttrib();
+  }
 #endif
 }
 
@@ -639,6 +660,10 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
    || ACLayer.ptrLayer->listIndex == 0) return;
 
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  if (aContext->core11 == NULL)
+  {
+    return;
+  }
 
   GLsizei dispWidth  = (GLsizei )ACLayer.viewport[0];
   GLsizei dispHeight = (GLsizei )ACLayer.viewport[1];
@@ -1050,6 +1075,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
 
 #if !defined(GL_ES_VERSION_2_0)
   // Apply Lights
+  if (aContext->core11 != NULL)
   {
     // setup lights
     Graphic3d_Vec4 anAmbientColor (THE_DEFAULT_AMBIENT[0],

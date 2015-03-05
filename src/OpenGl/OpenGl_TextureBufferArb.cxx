@@ -188,7 +188,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 void OpenGl_TextureBufferArb::BindTexture (const Handle(OpenGl_Context)& theGlCtx,
                                            const GLenum theTextureUnit) const
 {
-  theGlCtx->core20->glActiveTexture (theTextureUnit);
+  theGlCtx->core20fwd->glActiveTexture (theTextureUnit);
   glBindTexture (GetTarget(), myTextureId);
 }
 
@@ -199,6 +199,6 @@ void OpenGl_TextureBufferArb::BindTexture (const Handle(OpenGl_Context)& theGlCt
 void OpenGl_TextureBufferArb::UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
                                              const GLenum theTextureUnit) const
 {
-  theGlCtx->core20->glActiveTexture (theTextureUnit);
+  theGlCtx->core20fwd->glActiveTexture (theTextureUnit);
   glBindTexture (GetTarget(), NO_TEXTURE);
 }

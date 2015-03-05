@@ -27,6 +27,7 @@
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <Cocoa_LocalPool.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #include <OpenGL/CGLRenderers.h>
 
@@ -57,31 +58,72 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   Cocoa_LocalPool aLocalPool;
   //NSOpenGLContext* aGContext = (NSOpenGLContext* )theGContext;
 
-  const NSOpenGLPixelFormatAttribute aDummyAttrib = NSOpenGLPFACompliant;
-  NSOpenGLPixelFormatAttribute anAttribs[] = {
-    theCaps->contextStereo ? NSOpenGLPFAStereo : aDummyAttrib,
-    //NSOpenGLPFAColorSize,  32,
-    NSOpenGLPFADepthSize,    24,
-    NSOpenGLPFAStencilSize,  8,
-    NSOpenGLPFADoubleBuffer,
-    theCaps->contextNoAccel ? NSOpenGLPFARendererID : NSOpenGLPFAAccelerated,
-    theCaps->contextNoAccel ? (NSOpenGLPixelFormatAttribute )kCGLRendererGenericFloatID : 0,
-    0
-  };
-
   // all GL context within one OpenGl_GraphicDriver should be shared!
-  NSOpenGLContext*     aGLCtxShare = theShareCtx.IsNull() ? NULL : (NSOpenGLContext* )theShareCtx->myGContext;
-  NSOpenGLPixelFormat* aGLFormat   = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
-  NSOpenGLContext*     aGLContext  = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
-                                                                shareContext: aGLCtxShare];
-  if (aGLContext == NULL
-   && theCaps->contextStereo)
+  NSOpenGLContext* aGLCtxShare = theShareCtx.IsNull() ? NULL : (NSOpenGLContext* )theShareCtx->myGContext;
+  NSOpenGLContext* aGLContext  = NULL;
+
+  NSOpenGLPixelFormatAttribute anAttribs[32] = {};
+  Standard_Integer aLastAttrib = 0;
+  //anAttribs[aLastAttrib++] = NSOpenGLPFAColorSize;    anAttribs[aLastAttrib++] = 32,
+  anAttribs[aLastAttrib++] = NSOpenGLPFADepthSize;    anAttribs[aLastAttrib++] = 24;
+  anAttribs[aLastAttrib++] = NSOpenGLPFAStencilSize;  anAttribs[aLastAttrib++] = 8;
+  anAttribs[aLastAttrib++] = NSOpenGLPFADoubleBuffer;
+  if (theCaps->contextNoAccel)
   {
-    anAttribs[0] = aDummyAttrib;
-    aGLFormat    = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
-    aGLContext   = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
-                                              shareContext: aGLCtxShare];
+    anAttribs[aLastAttrib++] = NSOpenGLPFARendererID;
+    anAttribs[aLastAttrib++] = (NSOpenGLPixelFormatAttribute )kCGLRendererGenericFloatID;
   }
+  else
+  {
+    anAttribs[aLastAttrib++] = NSOpenGLPFAAccelerated;
+  }
+  anAttribs[aLastAttrib] = 0;
+  const Standard_Integer aLastMainAttrib = aLastAttrib;
+  Standard_Integer aTryCore   = 0;
+  Standard_Integer aTryStereo = 0;
+  for (aTryCore = 1; aTryCore >= 0; --aTryCore)
+  {
+    aLastAttrib = aLastMainAttrib;
+    if (aTryCore == 1)
+    {
+      if (theCaps->contextCompatible)
+      {
+        continue;
+      }
+
+      // supported since OS X 10.7+
+      anAttribs[aLastAttrib++] = 99;     // NSOpenGLPFAOpenGLProfile
+      anAttribs[aLastAttrib++] = 0x3200; // NSOpenGLProfileVersion3_2Core
+    }
+
+    for (aTryStereo = 1; aTryStereo >= 0; --aTryStereo)
+    {
+      if (aTryStereo == 1)
+      {
+        if (!theCaps->contextStereo)
+        {
+          continue;
+        }
+        anAttribs[aLastAttrib++] = NSOpenGLPFAStereo;
+      }
+
+      anAttribs[aLastAttrib] = 0;
+
+      NSOpenGLPixelFormat* aGLFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
+      aGLContext = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
+                                              shareContext: aGLCtxShare];
+      if (aGLContext != NULL)
+      {
+        break;
+      }
+    }
+
+    if (aGLContext != NULL)
+    {
+      break;
+    }
+  }
+
   if (aGLContext == NULL)
   {
     TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: NSOpenGLContext creation failed");
@@ -89,10 +131,23 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     return;
   }
 
+  if (aTryStereo == 0
+   && theCaps->contextStereo)
+  {
+    TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: QuadBuffer is unavailable!");
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_OTHER_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+  }
+  if (aTryCore == 0
+  && !theCaps->contextCompatible)
+  {
+    TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: core profile creation failed.");
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+  }
+
   NSView* aView = (NSView* )theCWindow.XWindow;
   [aGLContext setView: aView];
 
-  myGlContext->Init (aGLContext);
+  myGlContext->Init (aGLContext, aTryCore == 1);
   myGlContext->Share (theShareCtx);
   Init();
 }

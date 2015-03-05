@@ -383,7 +383,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
 
   // Bind custom shader program or generate default version
-  if (aCtx->IsGlGreaterEqual (2, 0))
+  if (aCtx->core20fwd != NULL)
   {
     aCtx->ShaderManager()->BindProgram (
       aTextAspect, aTextAspect->ShaderProgramRes (aCtx));

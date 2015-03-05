@@ -224,6 +224,11 @@ int NIS_View::MyCallback (Aspect_Drawable                /* Window ID */,
   if (callData->reason & OCC_REDRAW_ADDITIONAL_CALLBACKS)
     return 0;
 
+  if (callData->IsCoreProfile)
+  {
+    return 0; // not supported
+  }
+
   const Handle(NIS_View) thisView (static_cast<NIS_View *> (ptrData));
   NCollection_List<NIS_InteractiveContext *>::Iterator anIter;
 #ifdef CLIP

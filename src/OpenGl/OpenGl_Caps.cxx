@@ -41,6 +41,11 @@ OpenGl_Caps::OpenGl_Caps()
   contextDebug      (Standard_False),
 #endif
   contextNoAccel    (Standard_False),
+#if !defined(GL_ES_VERSION_2_0)
+  contextCompatible (Standard_True),
+#else
+  contextCompatible (Standard_False),
+#endif
   glslWarnings      (Standard_False)
 {
   //
@@ -60,6 +65,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;
   contextNoAccel    = theCopy.contextNoAccel;
+  contextCompatible = theCopy.contextCompatible;
   glslWarnings      = theCopy.glslWarnings;
   return *this;
 }

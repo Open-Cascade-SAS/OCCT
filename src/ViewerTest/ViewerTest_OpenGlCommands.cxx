@@ -451,9 +451,16 @@ static int VGlInfo (Draw_Interpretor& theDI,
 
   if (theArgNb <= 1)
   {
-    Standard_CString aDebugInfo = OpenGl_Context::CheckExtension ((const char* )glGetString (GL_EXTENSIONS),
-                                                                  "GL_ARB_debug_output")
-                                ? "  GLdebug     =  ON\n" : "";
+    Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->View()->GraphicDriver());
+    if (aDriver.IsNull())
+    {
+      std::cerr << "Error: view does not use OpenGL.\n";
+      return 1;
+    }
+    Handle(OpenGl_Context) aCtx = aDriver->GetSharedContext();
+    Standard_CString aDebugInfo = !aCtx.IsNull() && aCtx->IsDebugContext()
+                                ? "  GLdebug     =  ON\n"
+                                : "";
     theDI << "OpenGL info:\n"
           << "  GLvendor    = '" << (const char* )glGetString(GL_VENDOR)   << "'\n"
           << "  GLdevice    = '" << (const char* )glGetString(GL_RENDERER) << "'\n"

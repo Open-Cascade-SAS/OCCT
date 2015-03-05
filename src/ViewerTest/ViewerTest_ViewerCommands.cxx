@@ -4723,6 +4723,7 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "Sprites: " << (aCaps->pntSpritesDisable ? "0" : "1") << "\n";
     theDI << "SoftMode:" << (aCaps->contextNoAccel    ? "1" : "0") << "\n";
     theDI << "FFP:     " << (aCaps->ffpEnable         ? "1" : "0") << "\n";
+    theDI << "Compatible:" << (aCaps->contextCompatible ? "1" : "0") << "\n";
     return 0;
   }
 
@@ -4787,6 +4788,38 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->contextNoAccel = !toEnable;
+    }
+    else if (anArgCase == "-compat"
+          || anArgCase == "-compatprofile"
+          || anArgCase == "-compatible"
+          || anArgCase == "-compatibleprofile")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->contextCompatible = toEnable;
+      if (!aCaps->contextCompatible)
+      {
+        aCaps->ffpEnable = Standard_False;
+      }
+    }
+    else if (anArgCase == "-core"
+          || anArgCase == "-coreprofile")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->contextCompatible = !toEnable;
+      if (!aCaps->contextCompatible)
+      {
+        aCaps->ffpEnable = Standard_False;
+      }
     }
     else
     {
@@ -7828,15 +7861,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
             "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}]"
+    "\n\t\t:       [-compatibleContext {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
     "\n\t\t: Modify particular graphic driver options:"
     "\n\t\t:  FFP      - use fixed-function pipeline instead of"
     "\n\t\t:             built-in GLSL programs"
+    "\n\t\t:            (requires compatible profile)"
     "\n\t\t:  VBO      - use Vertex Buffer Object (copy vertex"
     "\n\t\t:             arrays to GPU memory)"
     "\n\t\t:  sprite   - use textured sprites instead of bitmaps"
-    "\n\t\t:  softMode - use software OpenGL implementation,"
-    "\n\t\t:             should be set BEFORE viewer creation"
+    "\n\t\t: Context creation options:"
+    "\n\t\t:  softMode          - software OpenGL implementation"
+    "\n\t\t:  compatibleProfile - backward-compatible profile"
     "\n\t\t: Unlike vrenderparams, these parameters control alternative"
     "\n\t\t: rendering paths producing the same visual result when"
     "\n\t\t: possible."

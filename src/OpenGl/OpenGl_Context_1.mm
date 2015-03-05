@@ -67,7 +67,7 @@ void OpenGl_Context::SwapBuffers()
 // function : Init
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Context::Init()
+Standard_Boolean OpenGl_Context::Init (const Standard_Boolean theIsCoreProfile)
 {
   if (myIsInitialized)
   {
@@ -80,7 +80,7 @@ Standard_Boolean OpenGl_Context::Init()
     return Standard_False;
   }
 
-  init();
+  init (theIsCoreProfile);
   myIsInitialized = Standard_True;
   return Standard_True;
 }

@@ -268,8 +268,7 @@ protected:
     }
     if (!theTexture.IsNull())
     {
-      // GL_RED to be handled
-      aBits |= theTexture->GetFormat() == GL_ALPHA ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
+      aBits |= theTexture->IsAlpha() ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
     }
     if (theHasVertColor)
     {

@@ -201,6 +201,19 @@ public:
     return myTextFormat;
   }
 
+  //! Return true for GL_RED and GL_ALPHA formats.
+  bool IsAlpha() const
+  {
+    return myIsAlpha;
+  }
+
+  //! Setup to interprete the format as Alpha by Shader Manager
+  //! (should be GL_ALPHA within compatible context or GL_RED otherwise).
+  void SetAlpha (const bool theValue)
+  {
+    myIsAlpha = theValue;
+  }
+
   //! Creates Texture id if not yet generated.
   //! Data should be initialized by another method.
   Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theCtx);
@@ -264,6 +277,7 @@ protected:
   GLsizei          mySizeY;      //!< texture height
   GLenum           myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
   Standard_Boolean myHasMipmaps; //!< flag indicates that texture was uploaded with mipmaps
+  bool             myIsAlpha;    //!< indicates alpha format
 
   Handle(Graphic3d_TextureParams) myParams; //!< texture parameters
 

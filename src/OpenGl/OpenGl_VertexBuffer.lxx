@@ -26,7 +26,10 @@ inline void OpenGl_VertexBuffer::bindAttribute (const Handle(OpenGl_Context)&   
   if (theCtx->ActiveProgram().IsNull())
   {
   #if !defined(GL_ES_VERSION_2_0)
-    bindFixed (theCtx, theAttribute, theNbComp, theDataType, theStride, theOffset);
+    if (theCtx->core11 != NULL)
+    {
+      bindFixed (theCtx, theAttribute, theNbComp, theDataType, theStride, theOffset);
+    }
   #endif
     return;
   }
@@ -93,7 +96,10 @@ inline void OpenGl_VertexBuffer::unbindAttribute (const Handle(OpenGl_Context)& 
   if (theCtx->ActiveProgram().IsNull())
   {
   #if !defined(GL_ES_VERSION_2_0)
-    unbindFixed (theCtx, theAttribute);
+    if (theCtx->core11 != NULL)
+    {
+      unbindFixed (theCtx, theAttribute);
+    }
   #endif
     return;
   }
@@ -103,7 +109,7 @@ inline void OpenGl_VertexBuffer::unbindAttribute (const Handle(OpenGl_Context)& 
 
 #if !defined(GL_ES_VERSION_2_0)
 // =======================================================================
-// function : unbindAttribute
+// function : unbindFixed
 // purpose  :
 // =======================================================================
 inline void OpenGl_VertexBuffer::unbindFixed (const Handle(OpenGl_Context)&   theCtx,

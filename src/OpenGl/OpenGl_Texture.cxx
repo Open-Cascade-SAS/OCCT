@@ -56,6 +56,7 @@ OpenGl_Texture::OpenGl_Texture (const Handle(Graphic3d_TextureParams)& theParams
   mySizeY (0),
   myTextFormat (GL_RGBA),
   myHasMipmaps (Standard_False),
+  myIsAlpha    (false),
   myParams     (theParams)
 {
   if (myParams.IsNull())
@@ -143,7 +144,7 @@ void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
 void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
                            const GLenum theTextureUnit) const
 {
-  if (theCtx->IsGlGreaterEqual (1, 5))
+  if (theCtx->core15fwd != NULL)
   {
     theCtx->core15fwd->glActiveTexture (theTextureUnit);
   }
@@ -157,7 +158,7 @@ void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
 void OpenGl_Texture::Unbind (const Handle(OpenGl_Context)& theCtx,
                              const GLenum theTextureUnit) const
 {
-  if (theCtx->IsGlGreaterEqual (1, 5))
+  if (theCtx->core15fwd != NULL)
   {
     theCtx->core15fwd->glActiveTexture (theTextureUnit);
   }
@@ -359,6 +360,17 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     Release (theCtx.operator->());
     return false;
   }
+
+  if (theImage != NULL)
+  {
+    myIsAlpha = theImage->Format() == Image_PixMap::ImgAlpha
+             || theImage->Format() == Image_PixMap::ImgAlphaF;
+  }
+  else
+  {
+    myIsAlpha = thePixelFormat == GL_ALPHA;
+  }
+
   myHasMipmaps             = Standard_False;
   myTextFormat             = thePixelFormat;
 #if !defined(GL_ES_VERSION_2_0)

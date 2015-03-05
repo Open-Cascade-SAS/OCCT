@@ -469,7 +469,7 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 #endif
 
-  if (aGlContext->IsGlGreaterEqual (2, 0))
+  if (aGlContext->core20fwd != NULL)
   {
     aGlContext->ShaderManager()->BindProgram (anAspect, NULL, Standard_False, Standard_False, anAspect->ShaderProgramRes (aGlContext));
   }
@@ -543,8 +543,11 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
     // Textured markers will be drawn with the point sprites
     aCtx->SetPointSize (anAspectMarker->MarkerSize());
   #if !defined(GL_ES_VERSION_2_0)
-    aCtx->core11fwd->glEnable (GL_ALPHA_TEST);
-    aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, 0.1f);
+    if (aCtx->core11 != NULL)
+    {
+      aCtx->core11fwd->glEnable (GL_ALPHA_TEST);
+      aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, 0.1f);
+    }
   #endif
 
     aCtx->core11fwd->glEnable (GL_BLEND);
@@ -554,7 +557,10 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 
     aCtx->core11fwd->glDisable (GL_BLEND);
   #if !defined(GL_ES_VERSION_2_0)
-    aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
+    if (aCtx->core11 != NULL)
+    {
+      aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
+    }
   #endif
     aCtx->SetPointSize (1.0f);
     return;
@@ -743,13 +749,16 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                  &&  myVboAttribs->HasNormalAttribute();
 #if !defined(GL_ES_VERSION_2_0)
   // manage FFP lighting
-  if (!isLightOn)
+  if (aCtx->core11 != NULL)
   {
-    glDisable (GL_LIGHTING);
-  }
-  else
-  {
-    glEnable (GL_LIGHTING);
+    if (!isLightOn)
+    {
+      glDisable (GL_LIGHTING);
+    }
+    else
+    {
+      glEnable (GL_LIGHTING);
+    }
   }
 #endif
   // Temporarily disable environment mapping
@@ -767,7 +776,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                       ?  myBounds->Colors
                                       :  NULL;
     const Standard_Boolean hasVertColor = hasColorAttrib && !toHilight;
-    if (aCtx->IsGlGreaterEqual (2, 0))
+    if (aCtx->core20fwd != NULL)
     {
       switch (myDrawMode)
       {

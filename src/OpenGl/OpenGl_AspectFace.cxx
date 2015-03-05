@@ -467,7 +467,7 @@ void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Context)&  
 void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Context)&          theCtx,
                                                 const Handle(Graphic3d_ShaderProgram)& theShader)
 {
-  if (!theCtx->IsGlGreaterEqual (2, 0))
+  if (theCtx->core20fwd == NULL)
   {
     return;
   }

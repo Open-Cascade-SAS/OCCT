@@ -552,6 +552,11 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
   }
 
 #if !defined(GL_ES_VERSION_2_0)
+  if (theGlCtx->core11 == NULL)
+  {
+    return;
+  }
+
   myLinestyleBase = theGlCtx->core11->glGenLists (5);
 
   // Line
@@ -592,15 +597,21 @@ void OpenGl_LineAttributes::SetTypeOfLine (const Aspect_TypeOfLine theType) cons
 #if !defined(GL_ES_VERSION_2_0)
   if (theType != Aspect_TOL_SOLID)
   {
-    glCallList ((GLuint )myLinestyleBase + (GLuint )theType);
-    glEnable (GL_LINE_STIPPLE);
+    if (myLinestyleBase != 0)
+    {
+      glCallList ((GLuint )myLinestyleBase + (GLuint )theType);
+      glEnable (GL_LINE_STIPPLE);
+    }
   #ifdef HAVE_GL2PS
     gl2psEnable (GL2PS_LINE_STIPPLE);
   #endif
   }
   else
   {
-    glDisable (GL_LINE_STIPPLE);
+    if (myLinestyleBase != 0)
+    {
+      glDisable (GL_LINE_STIPPLE);
+    }
   #ifdef HAVE_GL2PS
     gl2psDisable (GL2PS_LINE_STIPPLE);
   #endif

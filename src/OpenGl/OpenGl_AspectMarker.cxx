@@ -1641,7 +1641,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
   }
 
   if (!theCtx.IsNull()
-   &&  theCtx->IsGlGreaterEqual (2, 0)
+   &&  theCtx->core20fwd != NULL
    && !theCtx->caps->pntSpritesDisable)
   {
     // Creating texture resource for using it with point sprites
@@ -1910,7 +1910,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
 void OpenGl_AspectMarker::Resources::BuildShader (const Handle(OpenGl_Context)&          theCtx,
                                                   const Handle(Graphic3d_ShaderProgram)& theShader)
 {
-  if (!theCtx->IsGlGreaterEqual (2, 0))
+  if (theCtx->core20fwd == NULL)
   {
     return;
   }

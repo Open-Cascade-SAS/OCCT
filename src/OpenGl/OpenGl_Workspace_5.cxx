@@ -150,11 +150,14 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
   if (NamedStatus & OPENGL_NS_RESMAT)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    glMaterialfv (aFace, GL_AMBIENT,   myMatTmp.Ambient.GetData());
-    glMaterialfv (aFace, GL_DIFFUSE,   myMatTmp.Diffuse.GetData());
-    glMaterialfv (aFace, GL_SPECULAR,  myMatTmp.Specular.GetData());
-    glMaterialfv (aFace, GL_EMISSION,  myMatTmp.Emission.GetData());
-    glMaterialf  (aFace, GL_SHININESS, myMatTmp.Shine());
+    if (myGlContext->core11 != NULL)
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_AMBIENT,   myMatTmp.Ambient.GetData());
+      myGlContext->core11->glMaterialfv (aFace, GL_DIFFUSE,   myMatTmp.Diffuse.GetData());
+      myGlContext->core11->glMaterialfv (aFace, GL_SPECULAR,  myMatTmp.Specular.GetData());
+      myGlContext->core11->glMaterialfv (aFace, GL_EMISSION,  myMatTmp.Emission.GetData());
+      myGlContext->core11->glMaterialf  (aFace, GL_SHININESS, myMatTmp.Shine());
+    }
   #endif
 
     if (theFlag == TEL_FRONT_MATERIAL)
@@ -176,34 +179,37 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
                          ? myMatFront
                          : myMatBack;
 #if !defined(GL_ES_VERSION_2_0)
-  if (myMatTmp.Ambient.r() != anOld.Ambient.r()
-   || myMatTmp.Ambient.g() != anOld.Ambient.g()
-   || myMatTmp.Ambient.b() != anOld.Ambient.b())
+  if (myGlContext->core11 != NULL)
   {
-    glMaterialfv (aFace, GL_AMBIENT, myMatTmp.Ambient.GetData());
-  }
-  if (myMatTmp.Diffuse.r() != anOld.Diffuse.r()
-   || myMatTmp.Diffuse.g() != anOld.Diffuse.g()
-   || myMatTmp.Diffuse.b() != anOld.Diffuse.b()
-   || fabs (myMatTmp.Diffuse.a() - anOld.Diffuse.a()) > 0.01f)
-  {
-    glMaterialfv (aFace, GL_DIFFUSE, myMatTmp.Diffuse.GetData());
-  }
-  if (myMatTmp.Specular.r() != anOld.Specular.r()
-   || myMatTmp.Specular.g() != anOld.Specular.g()
-   || myMatTmp.Specular.b() != anOld.Specular.b())
-  {
-    glMaterialfv (aFace, GL_SPECULAR, myMatTmp.Specular.GetData());
-  }
-  if (myMatTmp.Emission.r() != anOld.Emission.r()
-   || myMatTmp.Emission.g() != anOld.Emission.g()
-   || myMatTmp.Emission.b() != anOld.Emission.b())
-  {
-    glMaterialfv (aFace, GL_EMISSION, myMatTmp.Emission.GetData());
-  }
-  if (myMatTmp.Shine() != anOld.Shine())
-  {
-    glMaterialf (aFace, GL_SHININESS, myMatTmp.Shine());
+    if (myMatTmp.Ambient.r() != anOld.Ambient.r()
+     || myMatTmp.Ambient.g() != anOld.Ambient.g()
+     || myMatTmp.Ambient.b() != anOld.Ambient.b())
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_AMBIENT, myMatTmp.Ambient.GetData());
+    }
+    if (myMatTmp.Diffuse.r() != anOld.Diffuse.r()
+     || myMatTmp.Diffuse.g() != anOld.Diffuse.g()
+     || myMatTmp.Diffuse.b() != anOld.Diffuse.b()
+     || fabs (myMatTmp.Diffuse.a() - anOld.Diffuse.a()) > 0.01f)
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_DIFFUSE, myMatTmp.Diffuse.GetData());
+    }
+    if (myMatTmp.Specular.r() != anOld.Specular.r()
+     || myMatTmp.Specular.g() != anOld.Specular.g()
+     || myMatTmp.Specular.b() != anOld.Specular.b())
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_SPECULAR, myMatTmp.Specular.GetData());
+    }
+    if (myMatTmp.Emission.r() != anOld.Emission.r()
+     || myMatTmp.Emission.g() != anOld.Emission.g()
+     || myMatTmp.Emission.b() != anOld.Emission.b())
+    {
+      myGlContext->core11->glMaterialfv (aFace, GL_EMISSION, myMatTmp.Emission.GetData());
+    }
+    if (myMatTmp.Shine() != anOld.Shine())
+    {
+      myGlContext->core11->glMaterialf (aFace, GL_SHININESS, myMatTmp.Shine());
+    }
   }
 #endif
   anOld = myMatTmp;
@@ -255,11 +261,7 @@ const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean Wi
 {
   if ( WithApply && (AspectLine_set != AspectLine_applied) )
   {
-    const GLfloat* anRgb = AspectLine_set->Color().rgb;
-  #if !defined(GL_ES_VERSION_2_0)
-    glColor3fv(anRgb);
-  #endif
-
+    myGlContext->SetColor4fv (*(const OpenGl_Vec4* )AspectLine_set->Color().rgb);
     if ( !AspectLine_applied || (AspectLine_set->Type() != AspectLine_applied->Type() ) )
     {
       myLineAttribs->SetTypeOfLine (AspectLine_set->Type());
@@ -357,7 +359,10 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
       case Aspect_IS_HIDDENLINE:
       {
         glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        glDisable (GL_POLYGON_STIPPLE);
+        if (myGlContext->core11 != NULL)
+        {
+          glDisable (GL_POLYGON_STIPPLE);
+        }
         break;
       }
       case Aspect_IS_POINT:

@@ -195,13 +195,17 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   // General initialization of the context
 
 #if !defined(GL_ES_VERSION_2_0)
-  // Eviter d'avoir les faces mal orientees en noir.
-  // Pourrait etre utiliser pour detecter les problemes d'orientation
-  glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+  if (myGlContext->core11 != NULL)
+  {
+    // Eviter d'avoir les faces mal orientees en noir.
+    // Pourrait etre utiliser pour detecter les problemes d'orientation
+    glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-  // Optimisation pour le Fog et l'antialiasing
-  glHint (GL_FOG_HINT,            GL_FASTEST);
-  glHint (GL_POINT_SMOOTH_HINT,   GL_FASTEST);
+    // Optimisation pour le Fog et l'antialiasing
+    glHint (GL_FOG_HINT,            GL_FASTEST);
+    glHint (GL_POINT_SMOOTH_HINT,   GL_FASTEST);
+  }
+
   glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
   glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
 #endif
@@ -274,6 +278,8 @@ Standard_Boolean OpenGl_Workspace::Activate()
 //=======================================================================
 void OpenGl_Workspace::ResetAppliedAspect()
 {
+  myGlContext->BindDefaultVao();
+
   NamedStatus           = !myTextureBound.IsNull() ? OPENGL_NS_TEXTURE : 0;
   HighlightColor        = &THE_WHITE_COLOR;
   AspectLine_set        = &myDefaultAspectLine;
@@ -314,11 +320,14 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
 
 #if !defined(GL_ES_VERSION_2_0)
   // reset texture matrix because some code may expect it is identity
-  GLint aMatrixMode = GL_TEXTURE;
-  glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
-  glMatrixMode (GL_TEXTURE);
-  glLoadIdentity();
-  glMatrixMode (aMatrixMode);
+  if (myGlContext->core11 != NULL)
+  {
+    GLint aMatrixMode = GL_TEXTURE;
+    glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
+    glMatrixMode (GL_TEXTURE);
+    glLoadIdentity();
+    glMatrixMode (aMatrixMode);
+  }
 #endif
 
   myTextureBound->Unbind (myGlContext);
@@ -327,28 +336,33 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
   #if !defined(GL_ES_VERSION_2_0)
     case GL_TEXTURE_1D:
     {
-
-      if (myTextureBound->GetParams()->GenMode() != GL_NONE)
+      if (myGlContext->core11 != NULL)
       {
-        glDisable (GL_TEXTURE_GEN_S);
+        if (myTextureBound->GetParams()->GenMode() != GL_NONE)
+        {
+          glDisable (GL_TEXTURE_GEN_S);
+        }
+        glDisable (GL_TEXTURE_1D);
       }
-      glDisable (GL_TEXTURE_1D);
       break;
     }
   #endif
     case GL_TEXTURE_2D:
     {
     #if !defined(GL_ES_VERSION_2_0)
-      if (myTextureBound->GetParams()->GenMode() != GL_NONE)
+      if (myGlContext->core11 != NULL)
       {
-        glDisable (GL_TEXTURE_GEN_S);
-        glDisable (GL_TEXTURE_GEN_T);
-        if (myTextureBound->GetParams()->GenMode() == Graphic3d_TOTM_SPRITE)
+        if (myTextureBound->GetParams()->GenMode() != GL_NONE)
         {
-          glDisable (GL_POINT_SPRITE);
+          glDisable (GL_TEXTURE_GEN_S);
+          glDisable (GL_TEXTURE_GEN_T);
+          if (myTextureBound->GetParams()->GenMode() == Graphic3d_TOTM_SPRITE)
+          {
+            glDisable (GL_POINT_SPRITE);
+          }
         }
+        glDisable (GL_TEXTURE_2D);
       }
-      glDisable (GL_TEXTURE_2D);
     #endif
       break;
     }
@@ -375,89 +389,92 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
 
 #if !defined(GL_ES_VERSION_2_0)
   GLint aMatrixMode = GL_TEXTURE;
-  glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
-
-  // setup texture matrix
-  glMatrixMode (GL_TEXTURE);
-  OpenGl_Mat4 aTextureMat;
-  const Graphic3d_Vec2& aScale = aParams->Scale();
-  const Graphic3d_Vec2& aTrans = aParams->Translation();
-  OpenGl_Utils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
-  OpenGl_Utils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
-  OpenGl_Utils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
-  glLoadMatrixf (aTextureMat);
-
-  GLint anEnvMode = GL_MODULATE; // lighting mode
-  if (!aParams->IsModulate())
+  if (myGlContext->core11 != NULL)
   {
-    anEnvMode = GL_DECAL;
-    if (theTexture->GetFormat() == GL_ALPHA
-     || theTexture->GetFormat() == GL_LUMINANCE)
-    {
-      anEnvMode = GL_REPLACE;
-    }
-  }
+    glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
 
-  // setup generation of texture coordinates
-  switch (aParams->GenMode())
-  {
-    case Graphic3d_TOTM_OBJECT:
+    // setup texture matrix
+    glMatrixMode (GL_TEXTURE);
+    OpenGl_Mat4 aTextureMat;
+    const Graphic3d_Vec2& aScale = aParams->Scale();
+    const Graphic3d_Vec2& aTrans = aParams->Translation();
+    OpenGl_Utils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
+    OpenGl_Utils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
+    OpenGl_Utils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
+    glLoadMatrixf (aTextureMat);
+
+    GLint anEnvMode = GL_MODULATE; // lighting mode
+    if (!aParams->IsModulate())
     {
-      glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-      glTexGenfv (GL_S, GL_OBJECT_PLANE,     aParams->GenPlaneS().GetData());
-      if (theTexture->GetTarget() != GL_TEXTURE_1D)
+      anEnvMode = GL_DECAL;
+      if (theTexture->GetFormat() == GL_ALPHA
+       || theTexture->GetFormat() == GL_LUMINANCE)
       {
-        glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-        glTexGenfv (GL_T, GL_OBJECT_PLANE,     aParams->GenPlaneT().GetData());
-      }
-      break;
-    }
-    case Graphic3d_TOTM_SPHERE:
-    {
-      glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-      if (theTexture->GetTarget() != GL_TEXTURE_1D)
-      {
-        glTexGeni (GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-      }
-      break;
-    }
-    case Graphic3d_TOTM_EYE:
-    {
-      myGlContext->WorldViewState.Push();
-
-      myGlContext->WorldViewState.SetIdentity();
-      myGlContext->ApplyWorldViewMatrix();
-
-      glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-      glTexGenfv (GL_S, GL_EYE_PLANE,        aParams->GenPlaneS().GetData());
-
-      if (theTexture->GetTarget() != GL_TEXTURE_1D)
-      {
-        glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-        glTexGenfv (GL_T, GL_EYE_PLANE,        aParams->GenPlaneT().GetData());
-      }
-
-      myGlContext->WorldViewState.Pop();
-
-      break;
-    }
-    case Graphic3d_TOTM_SPRITE:
-    {
-      if (GetGlContext()->core20 != NULL)
-      {
-        glEnable  (GL_POINT_SPRITE);
-        glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
         anEnvMode = GL_REPLACE;
-        GetGlContext()->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
       }
-      break;
     }
-    case Graphic3d_TOTM_MANUAL:
-    default: break;
-  }
 
-  // setup lighting
-  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
+    // setup generation of texture coordinates
+    switch (aParams->GenMode())
+    {
+      case Graphic3d_TOTM_OBJECT:
+      {
+        glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+        glTexGenfv (GL_S, GL_OBJECT_PLANE,     aParams->GenPlaneS().GetData());
+        if (theTexture->GetTarget() != GL_TEXTURE_1D)
+        {
+          glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+          glTexGenfv (GL_T, GL_OBJECT_PLANE,     aParams->GenPlaneT().GetData());
+        }
+        break;
+      }
+      case Graphic3d_TOTM_SPHERE:
+      {
+        glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+        if (theTexture->GetTarget() != GL_TEXTURE_1D)
+        {
+          glTexGeni (GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+        }
+        break;
+      }
+      case Graphic3d_TOTM_EYE:
+      {
+        myGlContext->WorldViewState.Push();
+
+        myGlContext->WorldViewState.SetIdentity();
+        myGlContext->ApplyWorldViewMatrix();
+
+        glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+        glTexGenfv (GL_S, GL_EYE_PLANE,        aParams->GenPlaneS().GetData());
+
+        if (theTexture->GetTarget() != GL_TEXTURE_1D)
+        {
+          glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+          glTexGenfv (GL_T, GL_EYE_PLANE,        aParams->GenPlaneT().GetData());
+        }
+
+        myGlContext->WorldViewState.Pop();
+
+        break;
+      }
+      case Graphic3d_TOTM_SPRITE:
+      {
+        if (GetGlContext()->core20fwd != NULL)
+        {
+          glEnable  (GL_POINT_SPRITE);
+          glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+          anEnvMode = GL_REPLACE;
+          GetGlContext()->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+        }
+        break;
+      }
+      case Graphic3d_TOTM_MANUAL:
+      default: break;
+    }
+
+    // setup lighting
+    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
+  }
 #endif
 
   // get active sampler object to override default texture parameters
@@ -569,23 +586,29 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   #if !defined(GL_ES_VERSION_2_0)
     case GL_TEXTURE_1D:
     {
-      if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
+      if (myGlContext->core11 != NULL)
       {
-        glEnable (GL_TEXTURE_GEN_S);
+        if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
+        {
+          glEnable (GL_TEXTURE_GEN_S);
+        }
+        glEnable (GL_TEXTURE_1D);
       }
-      glEnable (GL_TEXTURE_1D);
       break;
     }
   #endif
     case GL_TEXTURE_2D:
     {
     #if !defined(GL_ES_VERSION_2_0)
-      if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
+      if (myGlContext->core11 != NULL)
       {
-        glEnable (GL_TEXTURE_GEN_S);
-        glEnable (GL_TEXTURE_GEN_T);
+        if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
+        {
+          glEnable (GL_TEXTURE_GEN_S);
+          glEnable (GL_TEXTURE_GEN_T);
+        }
+        glEnable (GL_TEXTURE_2D);
       }
-      glEnable (GL_TEXTURE_2D);
     #endif
       break;
     }
@@ -593,7 +616,10 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  glMatrixMode (aMatrixMode); // turn back active matrix
+  if (myGlContext->core11 != NULL)
+  {
+    glMatrixMode (aMatrixMode); // turn back active matrix
+  }
 #endif
   theTexture->SetParams (aParams);
 }
@@ -924,9 +950,10 @@ void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
 
   Aspect_GraphicCallbackStruct aCallData;
   aCallData.reason    = theReason;
-  aCallData.glContext = GetGlContext();
+  aCallData.glContext = myGlContext;
   aCallData.wsID      = theCView.WsId;
   aCallData.viewID    = theCView.ViewId;
+  aCallData.IsCoreProfile = (myGlContext->core11 == NULL);
   theCView.GDisplayCB (theCView.DefWindow.XWindow, theCView.GClientData, &aCallData);
 }
 
