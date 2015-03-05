@@ -3,6 +3,7 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR25013 ALL: Error : 3 differences with reference data found" 
 
 
 set filename PRO18777-3.igs

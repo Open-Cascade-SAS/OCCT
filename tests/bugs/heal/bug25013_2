@@ -1,0 +1,14 @@
+puts "========="
+puts " OCC25013"
+puts "========="
+puts ""
+##################################################
+# ShapeFix_Wire tweaks for better results
+##################################################
+
+stepread [locate_data_file bug25013_25013face.stp] a *
+
+tpcompound result
+checkshape result
+
+set 2dviewer 1
