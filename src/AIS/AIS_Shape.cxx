@@ -165,13 +165,16 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
   }
   case 1:
     {
-      Standard_Real anAnglePrev, anAngleNew, aCoeffPrev, aCoeffNew;
-      Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle      (anAngleNew, anAnglePrev);
-      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(aCoeffNew,  aCoeffPrev);
-      if ((isOwnDeviationAngle       && Abs (anAngleNew - anAnglePrev) > Precision::Angular())
-       || (isOwnDeviationCoefficient && Abs (aCoeffNew  - aCoeffPrev)  > Precision::Confusion()))
+      if (myDrawer->IsAutoTriangulation())
       {
-        BRepTools::Clean (myshape);
+        Standard_Real anAnglePrev, anAngleNew, aCoeffPrev, aCoeffNew;
+        Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle      (anAngleNew, anAnglePrev);
+        Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(aCoeffNew,  aCoeffPrev);
+        if ((isOwnDeviationAngle       && Abs (anAngleNew - anAnglePrev) > Precision::Angular())
+         || (isOwnDeviationCoefficient && Abs (aCoeffNew  - aCoeffPrev)  > Precision::Confusion()))
+        {
+          BRepTools::Clean (myshape);
+        }
       }
 
       //shading only on face...
@@ -259,20 +262,18 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
   Aspect_TypeOfDeflection prevdef = defdrawer->TypeOfDeflection();
   defdrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
 
-// coefficients for calculation
-
-  Standard_Real prevangle, newangle ,prevcoeff,newcoeff ; 
-  Standard_Boolean isOwnHLRDeviationAngle = OwnHLRDeviationAngle(newangle,prevangle);
-  Standard_Boolean isOwnHLRDeviationCoefficient = OwnHLRDeviationCoefficient(newcoeff,prevcoeff);
-  if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnHLRDeviationAngle) ||
-      ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnHLRDeviationCoefficient)) {
-#ifdef OCCT_DEBUG
-      cout << "AIS_Shape : compute"<<endl;
-      cout << "newangle  : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
-      cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
-#endif
+  if (myDrawer->IsAutoTriangulation())
+  {
+    // coefficients for calculation
+    Standard_Real aPrevAngle, aNewAngle, aPrevCoeff, aNewCoeff;
+    Standard_Boolean isOwnHLRDeviationAngle = OwnHLRDeviationAngle (aNewAngle, aPrevAngle);
+    Standard_Boolean isOwnHLRDeviationCoefficient = OwnHLRDeviationCoefficient (aNewCoeff, aPrevCoeff);
+    if (((Abs (aNewAngle - aPrevAngle) > Precision::Angular()) && isOwnHLRDeviationAngle) ||
+        ((Abs (aNewCoeff - aPrevCoeff) > Precision::Confusion()) && isOwnHLRDeviationCoefficient))
+    {
       BRepTools::Clean(SH);
     }
+  }
   
   {
     try {
@@ -381,7 +382,6 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 // POP protection against crash in low layers
 
   Standard_Real aDeflection = Prs3d::GetDeflection(shape, myDrawer);
-  Standard_Boolean autoTriangulation = Standard_True;
   try {  
     OCC_CATCH_SIGNALS
     StdSelect_BRepSelectionTool::Load(aSelection,
@@ -390,7 +390,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                       TypOfSel,
                                       aDeflection,
                                       myDrawer->HLRAngle(),
-                                      autoTriangulation); 
+                                      myDrawer->IsAutoTriangulation());
   } catch ( Standard_Failure ) {
 //    cout << "a Shape should be incorrect : A Selection on the Bnd  is activated   "<<endl;
     if ( aMode == 0 ) {

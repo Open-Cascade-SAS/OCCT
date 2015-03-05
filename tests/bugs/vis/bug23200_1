@@ -1,0 +1,23 @@
+puts "============"
+puts "CR23200"
+puts "Check that the shape doesn't have a shading presentation"
+puts "due to its triangulation isn't computed in case of disabled auto triangulation feature."
+puts "But in this case the shape should have special wireframe presentation."
+puts "============"
+puts ""
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vdefaults -autoTriang off
+pcone c 0 5 10
+vdisplay c
+vfit
+
+set aColor [vreadpixel 200 77 rgb name]
+vdump $imagedir/${casename}_shape_pres.png
+
+if {"$aColor" != "GRAY75"} {
+  puts "Error: shading presentation of shape is incorrect"
+}

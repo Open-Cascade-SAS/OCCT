@@ -225,7 +225,8 @@ void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjec
       // process HLRAngle and HLRDeviationCoefficient()
       Standard_Real aPrevAngle = myDrawer->HLRAngle();
       Standard_Real aNewAngle = aDefaultDrawer->HLRAngle();
-      if (Abs (aNewAngle - aPrevAngle) > Precision::Angular())
+      if (myDrawer->IsAutoTriangulation() &&
+          Abs (aNewAngle - aPrevAngle) > Precision::Angular())
       {
         BRepTools::Clean (theShape);
       }

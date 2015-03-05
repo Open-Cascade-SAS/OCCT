@@ -7,7 +7,7 @@ puts "=================================="
 
 # set rough meshing parameters
 vinit
-vdefaults absDefl=10 devCoeff=0.1
+vdefaults -absDefl 10 -devCoeff 0.1
 
 puts "Displaying two equal cones, one with Phong shader"
 pcone p_gouraud 10 100 100

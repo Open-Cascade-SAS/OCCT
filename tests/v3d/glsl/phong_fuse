@@ -9,7 +9,7 @@ tclean f
 # draw box
 vinit View1
 vclear
-vdefaults absDefl=0.5
+vdefaults -absDefl 0.5
 vsetdispmode 1
 vaxo
 vdisplay f

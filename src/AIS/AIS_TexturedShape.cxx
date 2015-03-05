@@ -429,16 +429,20 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
     case AIS_Shaded:
     case 3: // texture mapping on triangulation
     {
-      Standard_Real prevangle;
-      Standard_Real newangle;
-      Standard_Real prevcoeff;
-      Standard_Real newcoeff;
+      if (myDrawer->IsAutoTriangulation())
+      {
+        Standard_Real aPrevAngle;
+        Standard_Real aNewAngle;
+        Standard_Real aPrevCoeff;
+        Standard_Real aNewCoeff;
 
-      Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle(newangle,prevangle);
-      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(newcoeff,prevcoeff);
-      if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnDeviationAngle) ||
-          ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnDeviationCoefficient)) {
-        BRepTools::Clean (myshape);
+        Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle (aNewAngle, aPrevAngle);
+        Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient (aNewCoeff,aPrevCoeff);
+        if (((Abs (aNewAngle - aPrevAngle) > Precision::Angular()) && isOwnDeviationAngle) ||
+            ((Abs (aNewCoeff - aPrevCoeff) > Precision::Confusion()) && isOwnDeviationCoefficient))
+        {
+          BRepTools::Clean (myshape);
+        }
       }
 
       if (myshape.ShapeType() > TopAbs_FACE)

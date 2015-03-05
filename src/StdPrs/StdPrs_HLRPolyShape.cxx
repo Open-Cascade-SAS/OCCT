@@ -64,9 +64,12 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   TColgp_SequenceOfPnt HiddenPnts;
   TColgp_SequenceOfPnt SeenPnts;
 
-  const Standard_Boolean rel = aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE;
-  Standard_Real def = rel? aDrawer->HLRDeviationCoefficient() : aDrawer->MaximalChordialDeviation();
-  BRepMesh_IncrementalMesh mesh(aShape, def, rel, aDrawer->HLRAngle());
+  if (aDrawer->IsAutoTriangulation())
+  {
+    const Standard_Boolean aRel = aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE;
+    Standard_Real aDef = aRel ? aDrawer->HLRDeviationCoefficient() : aDrawer->MaximalChordialDeviation();
+    BRepMesh_IncrementalMesh mesh(aShape, aDef, aRel, aDrawer->HLRAngle());
+  }
   
   Handle(HLRBRep_PolyAlgo) hider = new HLRBRep_PolyAlgo(aShape);
 

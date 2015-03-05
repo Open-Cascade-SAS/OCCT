@@ -6620,44 +6620,74 @@ static int VDefaults (Draw_Interpretor& theDi,
             << "AbsoluteDeflection: " << aDefParams->MaximalChordialDeviation() << "\n";
     }
     theDi << "AngularDeflection:  " << (180.0 * aDefParams->HLRAngle() / M_PI) << "\n";
+    theDi << "AutoTriangulation:  " << (aDefParams->IsAutoTriangulation() ? "on" : "off") << "\n";
     return 0;
   }
 
   for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
-    TCollection_AsciiString aKey, aValue;
-    if (!ViewerTest::SplitParameter (anArg, aKey, aValue)
-     || aValue.IsEmpty())
+    anArg.UpperCase();
+    if (anArg == "-ABSDEFL"
+     || anArg == "-ABSOLUTEDEFLECTION"
+     || anArg == "-DEFL"
+     || anArg == "-DEFLECTION")
     {
-      std::cerr << "Error, wrong syntax at: '" << anArg.ToCString() << "'!\n";
-      return 1;
-    }
-
-    aKey.UpperCase();
-    if (aKey == "ABSDEFL"
-     || aKey == "ABSOLUTEDEFLECTION"
-     || aKey == "DEFL"
-     || aKey == "DEFLECTION")
-    {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
       aDefParams->SetTypeOfDeflection         (Aspect_TOD_ABSOLUTE);
-      aDefParams->SetMaximalChordialDeviation (aValue.RealValue());
+      aDefParams->SetMaximalChordialDeviation (Draw::Atof (theArgVec[anArgIter]));
     }
-    else if (aKey == "RELDEFL"
-          || aKey == "RELATIVEDEFLECTION"
-          || aKey == "DEVCOEFF"
-          || aKey == "DEVIATIONCOEFF"
-          || aKey == "DEVIATIONCOEFFICIENT")
+    else if (anArg == "-RELDEFL"
+          || anArg == "-RELATIVEDEFLECTION"
+          || anArg == "-DEVCOEFF"
+          || anArg == "-DEVIATIONCOEFF"
+          || anArg == "-DEVIATIONCOEFFICIENT")
     {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
       aDefParams->SetTypeOfDeflection     (Aspect_TOD_RELATIVE);
-      aDefParams->SetDeviationCoefficient (aValue.RealValue());
+      aDefParams->SetDeviationCoefficient (Draw::Atof (theArgVec[anArgIter]));
     }
-    else if (aKey == "ANGDEFL"
-          || aKey == "ANGULARDEFL"
-          || aKey == "ANGULARDEFLECTION")
+    else if (anArg == "-ANGDEFL"
+          || anArg == "-ANGULARDEFL"
+          || anArg == "-ANGULARDEFLECTION")
     {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
       // currently HLRDeviationAngle is used instead of DeviationAngle in most places
-      aDefParams->SetHLRAngle (M_PI * aValue.RealValue() / 180.0);
+      aDefParams->SetHLRAngle (M_PI * Draw::Atof (theArgVec[anArgIter]) / 180.0);
+    }
+    if (anArg == "-AUTOTR"
+     || anArg == "-AUTOTRIANG"
+     || anArg == "-AUTOTRIANGULATION")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      aValue.LowerCase();
+      if (aValue == "on"
+       || aValue == "1")
+      {
+        aDefParams->SetAutoTriangulation (Standard_True);
+      }
+      else if (aValue == "off"
+            || aValue == "0")
+      {
+        aDefParams->SetAutoTriangulation (Standard_False);
+      }
     }
     else
     {
@@ -7969,8 +7999,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  this command sets texture details mode for the specified view.\n"
     , __FILE__, VSetTextureMode, group);
   theCommands.Add("vdefaults",
-    "vdefaults [absDefl=value] [devCoeff=value] [angDefl=value]",
-    __FILE__, VDefaults, group);
+               "vdefaults [-absDefl value]"
+       "\n\t\t:           [-devCoeff value]"
+       "\n\t\t:           [-angDefl value]"
+       "\n\t\t:           [-autoTriang {off/on | 0/1}]"
+    , __FILE__, VDefaults, group);
   theCommands.Add("vlight",
     "tool to manage light sources, without arguments shows list of lights."
     "\n    Main commands: "

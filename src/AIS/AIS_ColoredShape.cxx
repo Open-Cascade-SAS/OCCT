@@ -308,16 +308,19 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
 
   if (theMode == AIS_Shaded)
   {
-    // compute mesh for entire shape beforehand to ensure consistency and optimizations (parallelization)
-    Standard_Real anAnglePrev, anAngleNew, aCoeffPrev, aCoeffNew;
-    Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle      (anAngleNew, anAnglePrev);
-    Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(aCoeffNew,  aCoeffPrev);
-    if ((isOwnDeviationAngle       && Abs (anAngleNew - anAnglePrev) > Precision::Angular())
-     || (isOwnDeviationCoefficient && Abs (aCoeffNew  - aCoeffPrev)  > Precision::Confusion()))
+    if (myDrawer->IsAutoTriangulation())
     {
-      BRepTools::Clean (myshape);
+      // compute mesh for entire shape beforehand to ensure consistency and optimizations (parallelization)
+      Standard_Real anAnglePrev, anAngleNew, aCoeffPrev, aCoeffNew;
+      Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle      (anAngleNew, anAnglePrev);
+      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(aCoeffNew,  aCoeffPrev);
+      if ((isOwnDeviationAngle       && Abs (anAngleNew - anAnglePrev) > Precision::Angular())
+       || (isOwnDeviationCoefficient && Abs (aCoeffNew  - aCoeffPrev)  > Precision::Confusion()))
+      {
+        BRepTools::Clean (myshape);
+      }
+      StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
     }
-    StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
   }
 
   TopoDS_Compound anOpened, aClosed;

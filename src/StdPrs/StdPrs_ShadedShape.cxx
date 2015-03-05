@@ -33,6 +33,7 @@
 #include <Precision.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -40,6 +41,7 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <StdPrs_ToolShadedShape.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -102,6 +104,42 @@ namespace
     if (hasElement)
     {
       StdPrs_WFShape::Add (thePrs, aCompoundWF, theDrawer);
+    }
+  }
+
+  //! Computes special wireframe presentation for faces without triangulation.
+  void wireframeNoTriangFacesFromShape (const Handle(Prs3d_Presentation)& thePrs,
+                                        const TopoDS_Shape&               theShape,
+                                        const Handle(Prs3d_Drawer)&       theDrawer)
+  {
+    TopoDS_Compound aCompoundWF;
+    BRep_Builder aBuilder;
+    aBuilder.MakeCompound (aCompoundWF);
+    TopLoc_Location aLoc;
+    Standard_Boolean hasElement = Standard_False;
+
+    for (TopExp_Explorer aShapeIter(theShape, TopAbs_FACE); aShapeIter.More(); aShapeIter.Next())
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (aShapeIter.Current());
+      const Handle(Poly_Triangulation) aTriang = BRep_Tool::Triangulation (aFace, aLoc);
+      if (aTriang.IsNull())
+      {
+        hasElement = Standard_True;
+        aBuilder.Add (aCompoundWF, aFace);
+      }
+    }
+
+    if (hasElement)
+    {
+      Standard_Integer aPrevUIsoNb = theDrawer->UIsoAspect()->Number();
+      Standard_Integer aPrevVIsoNb = theDrawer->VIsoAspect()->Number();
+      theDrawer->UIsoAspect()->SetNumber (5);
+      theDrawer->VIsoAspect()->SetNumber (5);
+
+      StdPrs_WFDeflectionShape::Add (thePrs, aCompoundWF, theDrawer);
+
+      theDrawer->UIsoAspect()->SetNumber (aPrevUIsoNb);
+      theDrawer->VIsoAspect()->SetNumber (aPrevVIsoNb);
     }
   }
 
@@ -504,8 +542,15 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
   // add wireframe presentation for isolated edges and vertices
   wireframeFromShape (thePrs, theShape, theDrawer);
 
-  // Triangulation completeness is important for "open-closed" analysis - perform tessellation beforehand
-  Tessellate (theShape, theDrawer);
+  // Use automatic re-triangulation with deflection-check logic only if this feature is enable
+  if (theDrawer->IsAutoTriangulation())
+  {
+    // Triangulation completeness is important for "open-closed" analysis - perform tessellation beforehand
+    Tessellate (theShape, theDrawer);
+  }
+
+  // add special wireframe presentation for faces without triangulation
+  wireframeNoTriangFacesFromShape (thePrs, theShape, theDrawer);
 
   // The shape types listed below need advanced analysis as potentially containing
   // both closed and open parts. Solids are also included, because they might

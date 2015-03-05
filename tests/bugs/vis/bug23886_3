@@ -12,7 +12,7 @@ vinit
 vdisplay s
 vfit
 
-vdefaults angDefl=1
+vdefaults -angDefl 1
 
 vsetdispmode s 1
 vdump ${imagedir}/${casename}_1.png

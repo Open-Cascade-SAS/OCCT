@@ -50,6 +50,8 @@ Prs3d_Drawer::Prs3d_Drawer()
   myHasOwnHLRDeviationAngle       (Standard_False),
   myIsoOnPlane                    (Standard_False),
   myHasOwnIsoOnPlane              (Standard_False),
+  myIsAutoTriangulated            (Standard_True),
+  myHasOwnIsAutoTriangulated      (Standard_False),
 
   myHasOwnUIsoAspect          (Standard_False),
   myHasOwnVIsoAspect          (Standard_False),
@@ -227,6 +229,17 @@ void Prs3d_Drawer::SetHLRAngle (const Standard_Real theAngle)
   myPreviousHLRDeviationAngle = HLRAngle();
   myHLRAngle                  = theAngle;
   myHasOwnHLRDeviationAngle   = Standard_True;
+}
+
+// =======================================================================
+// function : SetAutoTriangulation
+// purpose  :
+// =======================================================================
+
+void Prs3d_Drawer::SetAutoTriangulation (const Standard_Boolean theIsEnabled)
+{
+  myHasOwnIsAutoTriangulated = Standard_True;
+  myIsAutoTriangulated       = theIsEnabled;
 }
 
 // =======================================================================
@@ -1027,6 +1040,7 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myHasOwnDeviationAngle          = Standard_False;
   myHasOwnHLRDeviationAngle       = Standard_False;
   myHasOwnIsoOnPlane              = Standard_False;
+  myHasOwnIsAutoTriangulated      = Standard_False;
   myHasOwnWireDraw                = Standard_False;
   myHasOwnShadingAspectGlobal     = Standard_False;
   myHasOwnLineArrowDraw           = Standard_False;

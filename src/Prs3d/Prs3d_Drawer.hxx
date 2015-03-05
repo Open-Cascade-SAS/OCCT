@@ -309,6 +309,23 @@ public:
          : 0.0;
   }
 
+  //! Sets IsAutoTriangulated on or off by setting the parameter theIsEnabled to true or false.
+  //! If this flag is True automatic re-triangulation with deflection-check logic will be applied.
+  //! Else this feature will be disable and triangulation is expected to be computed by application itself
+  //! and no shading presentation at all if unavailable.
+  Standard_EXPORT void SetAutoTriangulation (const Standard_Boolean theIsEnabled);
+
+  //! Returns True if automatic triangulation is enabled.
+  Standard_Boolean IsAutoTriangulation() const
+  {
+    return HasOwnIsAutoTriangulation() || myLink.IsNull()
+         ? myIsAutoTriangulated
+         : myLink->IsAutoTriangulation();
+  }
+
+  //! Returns true if the drawer has IsoOnPlane setting active.
+  Standard_Boolean HasOwnIsAutoTriangulation() const { return myHasOwnIsAutoTriangulated; }
+
   //! Defines the attributes which are used when drawing an
   //! U isoparametric curve of a face. Defines the number
   //! of U isoparametric curves to be drawn for a single face.
@@ -840,6 +857,8 @@ protected:
   Standard_Real                 myPreviousHLRDeviationAngle;
   Standard_Boolean              myIsoOnPlane;
   Standard_Boolean              myHasOwnIsoOnPlane;
+  Standard_Boolean              myIsAutoTriangulated;
+  Standard_Boolean              myHasOwnIsAutoTriangulated;
 
   Handle(Prs3d_IsoAspect)       myUIsoAspect;
   Standard_Boolean              myHasOwnUIsoAspect;
