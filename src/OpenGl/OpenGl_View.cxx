@@ -318,7 +318,7 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
                                           aModelMatrix,
                                           aProjMatrix,
                                           aViewport,
-                                          aWinZ,
+                                          aWinX,
                                           aWinY,
                                           aWinZ);
   }

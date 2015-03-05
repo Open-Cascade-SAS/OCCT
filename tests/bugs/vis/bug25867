@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25867"
+puts "============"
+puts ""
+#################################################################################
+puts "Visualization, TKOpenGl - fix misprint in transformation persistence math"
+#################################################################################
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+vinit
+box b1 -1 -1 -1 3 3 3
+box b2 4 4 4 30 20 20
+vdisplay b1 b2
+vsettransmode b2 2 0 0 0
+vfit
+vdump $anImage1
+
+vsettransmode b2 2 1 1 1
+vdump $anImage2
+
