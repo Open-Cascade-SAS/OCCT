@@ -1,0 +1,49 @@
+puts "============"
+puts "CR25540"
+puts "Check that the discretization of local selection,"
+puts "wireframe and shaded presentation of shape is identical."
+puts "============"
+puts ""
+
+vinit View1 w=912 h=912
+vclear
+
+# Create object in shaded mode
+vsetdispmode 1
+pcylinder p 1 100
+vdisplay p
+vfit
+
+# Setup field of view
+vrotate 1 1.5 0
+vfit
+vtranslateview 24 18.5 0
+vzoom 32
+vtranslateview -0.1 -0.6 0
+vzoom 2
+
+vdump $imagedir/${casename}_shaded_pres.png
+
+vmoveto 100 100
+vdump $imagedir/${casename}_h_pres.png
+
+# Activate the local selection by edges and hilight small circle edge.
+# It's discretization should coincide with discretization of whole shape hiligting.
+vsetam 2
+vmoveto 130 80
+vdump $imagedir/${casename}_local_h_pres.png
+
+vunsetam
+
+# Explode object on faces
+explode p F
+# Create colored shape: set another color to one face
+vaspects p -subshapes p_3 -setcolor RED
+
+vsetam 0
+vmoveto 100 100
+vdump $imagedir/${casename}_h_sub_pres.png
+
+vsetam 2
+vmoveto 130 80
+vdump $imagedir/${casename}_local_h_sub_pres.png

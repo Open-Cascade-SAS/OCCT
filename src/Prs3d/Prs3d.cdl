@@ -155,6 +155,8 @@ is
   --   deviation coefficient from theDrawer and the shape's bounding box;</li>
   -- <li><b>Aspect_TOD_ABSOLUTE</b>: the maximal chordial deviation from theDrawer is returned.</li>
   -- </ul>
+  -- In case of the type of deflection in theDrawer computed relative deflection for shape
+  -- is stored as absolute deflection. It is necessary to use it later on for sub-shapes.
   -- This function should always be used to compute the deflection value for building
   -- discrete representations of the shape (triangualtion, wireframe) to avoid incosistencies
   -- between different representations of the shape and undesirable visual artifacts.

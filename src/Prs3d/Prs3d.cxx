@@ -69,6 +69,9 @@ Standard_Real Prs3d::GetDeflection (const TopoDS_Shape&         theShape,
       Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
       aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
       aDeflection = MAX3 (aXmax-aXmin, aYmax-aYmin, aZmax-aZmin) * theDrawer->DeviationCoefficient() * 4.0;
+      // we store computed relative deflection of shape as absolute deviation coefficient
+      // in case relative type to use it later on for sub-shapes.
+      theDrawer->SetMaximalChordialDeviation (aDeflection);
     }
   }
   return aDeflection;

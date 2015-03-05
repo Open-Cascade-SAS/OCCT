@@ -47,8 +47,8 @@ puts "Clearing   (connected): [expr $aMemClear2 / (1024 * 1024)] MiB"
 
 set aRatio [expr $aMemClear2 / double($aMemClear1)]
 
-# check if the memory difference is greater than 10%
-if [expr $aRatio > 1.1] {
+# check if the memory difference is greater than 20%
+if [expr $aRatio > 1.2] {
     puts "Error : TEST FAILED"
 }
 

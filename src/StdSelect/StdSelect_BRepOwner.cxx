@@ -15,11 +15,10 @@
 // commercial license or contractual agreement.
 
 #include <StdSelect_BRepOwner.ixx>
-#include <SelectBasics_EntityOwner.hxx>
-
-#include <StdPrs_WFShape.hxx>
 
 #include <Graphic3d_StructureManager.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <SelectBasics_EntityOwner.hxx>
 
 //==================================================
 // Function: 
@@ -88,10 +87,21 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
         myPrsSh.Nullify();
     }
 
+    Handle(Prs3d_Drawer) aDrawer;
+    if (!aSel.IsNull())
+    {
+      aDrawer = aSel->HilightAttributes();
+    }
+    else
+    {
+      aDrawer = new Prs3d_Drawer();
+      SelectMgr_SelectableObject::InitDefaultHilightAttributes (aDrawer);
+    }
+
     // generate new presentable shape
     if (myPrsSh.IsNull())
     {
-      myPrsSh = new StdSelect_Shape (myShape);
+      myPrsSh = new StdSelect_Shape (myShape, aDrawer);
     }
     if (!aSel.IsNull())
     {
@@ -100,7 +110,6 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
 
     // highlight and set layer
     PM->Highlight (myPrsSh, M);
-
   }  
   else
   {
@@ -131,6 +140,17 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
         myPrsSh.Nullify();
     }
 
+    Handle(Prs3d_Drawer) aDrawer;
+    if (!aSel.IsNull())
+    {
+      aDrawer = aSel->HilightAttributes();
+    }
+    else
+    {
+      aDrawer = new Prs3d_Drawer();
+      SelectMgr_SelectableObject::InitDefaultHilightAttributes (aDrawer);
+    }
+
     // generate new presentable shape
     if(myPrsSh.IsNull())
     {
@@ -138,10 +158,10 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
       {
         TopLoc_Location lbid = Location() * myShape.Location();
         TopoDS_Shape ShBis = myShape.Located(lbid);
-        myPrsSh = new StdSelect_Shape(ShBis);
+        myPrsSh = new StdSelect_Shape(ShBis, aDrawer);
       }
       else
-        myPrsSh = new StdSelect_Shape(myShape);
+        myPrsSh = new StdSelect_Shape(myShape, aDrawer);
     }
     if (!aSel.IsNull())
     {

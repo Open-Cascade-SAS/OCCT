@@ -36,7 +36,6 @@
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_ToolShadedShape.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
-#include <StdPrs_WFShape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -321,6 +320,15 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       }
       StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
     }
+    // After this call if type of deflection is relative
+    // computed deflection coefficient is stored as absolute.
+    StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
+  }
+  else // WireFrame mode
+  {
+    // After this call if type of deflection is relative
+    // computed deflection coefficient is stored as absolute.
+    Prs3d::GetDeflection (myshape, myDrawer);
   }
 
   TopoDS_Compound anOpened, aClosed;
@@ -395,6 +403,12 @@ void AIS_ColoredShape::addShapesWithCustomProps (const Handle(Prs3d_Presentation
         aDrawer = myDrawer;
       }
 
+      // It is supposed that absolute deflection contains previously computed relative deflection
+      // (if deflection type is relative).
+      // In case of CustomDrawer it is taken from Link().
+      Aspect_TypeOfDeflection aPrevType = aDrawer->TypeOfDeflection();
+      aDrawer->SetTypeOfDeflection (Aspect_TOD_ABSOLUTE);
+
       // Draw each kind of subshapes and personal-colored shapes in a separate group
       // since it's necessary to set transparency/material for all subshapes
       // without affecting their unique colors
@@ -408,6 +422,7 @@ void AIS_ColoredShape::addShapesWithCustomProps (const Handle(Prs3d_Presentation
       {
         StdPrs_WFDeflectionShape::Add (thePrs, aShapeDraw, aDrawer);
       }
+      aDrawer->SetTypeOfDeflection (aPrevType);
     }
   }
 }

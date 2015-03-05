@@ -198,10 +198,25 @@ is
     UnsetAttributes(me:mutable) is virtual;
 	---Purpose: Clears settings provided by the drawing tool theDrawer.
 
+    SetHilightAttributes(me:mutable; theDrawer: Drawer from Prs3d) is virtual;
+    	---Purpose: Initializes the hilight drawing tool theDrawer.
+
+    HilightAttributes(me) returns any Drawer from Prs3d;
+    	---C++: return const&
+    	---C++:  inline
+    	---Purpose: Returns the hilight attributes settings.
+
+    UnsetHilightAttributes(me:mutable) is virtual;
+	---Purpose: Clears settings provided by the hilight drawing tool theDrawer.
+
+    InitDefaultHilightAttributes(myclass; theDrawer : Drawer from Prs3d);
+	---Purpose: Initializes theDrawer by default hilight settings.
+
 fields
 
     myselections        : SequenceOfSelection is protected;
     myDrawer            : Drawer from Prs3d is protected;
+    myHilightDrawer     : Drawer from Prs3d is protected;
     mycurrent           : Integer;
     myAutoHilight       : Boolean from Standard;
 

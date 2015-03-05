@@ -28,7 +28,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <AIS_LocalStatus.hxx>
-#include <StdPrs_WFShape.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>

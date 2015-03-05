@@ -24,6 +24,12 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Aspect_TypeOfMarker.hxx>
+#include <Prs3d_PlaneAspect.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>
@@ -47,8 +53,12 @@ static Standard_Integer Search (const SelectMgr_SequenceOfSelection& seq,
 SelectMgr_SelectableObject::SelectMgr_SelectableObject( const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
   PrsMgr_PresentableObject (aTypeOfPresentation3d),
   myDrawer                 (new Prs3d_Drawer()),
+  myHilightDrawer          (new Prs3d_Drawer()),
   myAutoHilight            (Standard_True)
-{}
+{
+  InitDefaultHilightAttributes (myHilightDrawer);
+  myHilightDrawer->Link (myDrawer);
+}
 
 
 //==================================================
@@ -378,3 +388,93 @@ void SelectMgr_SelectableObject::UnsetAttributes()
   myDrawer = aDrawer;
 }
 
+//=======================================================================
+//function : SetHilightAttributes
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::SetHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer)
+{
+  myHilightDrawer = theDrawer;
+}
+
+//=======================================================================
+//function : UnsetAttributes
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::UnsetHilightAttributes()
+{
+  Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
+  InitDefaultHilightAttributes (aDrawer);
+  aDrawer->Link (myDrawer);
+  myHilightDrawer = aDrawer;
+}
+
+//=======================================================================
+//function : InitDefaultHilightAttributes
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::InitDefaultHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer)
+{
+  if (!theDrawer->HasOwnPointAspect())
+  {
+    theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_BLACK, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->PointAspect()->Aspect() = *theDrawer->Link()->PointAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnLineAspect())
+  {
+    theDrawer->SetLineAspect  (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnWireAspect())
+  {
+    theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnPlaneAspect())
+  {
+    theDrawer->SetPlaneAspect (new Prs3d_PlaneAspect());
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->PlaneAspect()->EdgesAspect() = *theDrawer->Link()->PlaneAspect()->EdgesAspect();
+    }
+  }
+  if (!theDrawer->HasOwnFreeBoundaryAspect())
+  {
+    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
+  {
+    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+    }
+  }
+
+  theDrawer->WireAspect()->SetWidth(2.);
+  theDrawer->LineAspect()->SetWidth(2.);
+  theDrawer->PlaneAspect()->EdgesAspect()->SetWidth(2.);
+  theDrawer->FreeBoundaryAspect()->SetWidth(2.);
+  theDrawer->UnFreeBoundaryAspect()->SetWidth(2.);
+  theDrawer->PointAspect()->SetTypeOfMarker(Aspect_TOM_O_POINT);
+  theDrawer->PointAspect()->SetScale(2.);
+
+  // By default the hilight drawer has absolute type of deflection.
+  // It is supposed that absolute deflection is taken from Link().
+  // It is necessary to use for all sub-shapes identical coefficient
+  // computed in ::Compute() call for whole shape and stored in base drawer.
+  theDrawer->SetTypeOfDeflection (Aspect_TOD_ABSOLUTE);
+}

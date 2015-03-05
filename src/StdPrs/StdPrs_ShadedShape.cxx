@@ -74,7 +74,7 @@ namespace
     if (!aShapeIter.More())
     {
       // compound contains no shaded elements at all
-      StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
+      StdPrs_WFDeflectionShape::Add (thePrs, theShape, theDrawer);
       return;
     }
 
@@ -103,7 +103,7 @@ namespace
     }
     if (hasElement)
     {
-      StdPrs_WFShape::Add (thePrs, aCompoundWF, theDrawer);
+      StdPrs_WFDeflectionShape::Add (thePrs, aCompoundWF, theDrawer);
     }
   }
 

@@ -15,47 +15,35 @@
 // commercial license or contractual agreement.
 
 #include <StdSelect_Shape.ixx>
-#include <StdPrs_WFShape.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <Prs3d_PlaneAspect.hxx>
+
 #include <Prs3d_Drawer.hxx>
 #include <StdPrs_ShadedShape.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
-StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape& sh):
-       mysh(sh)
+StdSelect_Shape::StdSelect_Shape (const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer):
+  mysh     (theShape),
+  myDrawer (theDrawer)
 {}
-     
+
 void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/,
 			      const Handle(Prs3d_Presentation)& P,
 			      const Standard_Integer aMode)
 {
-  if(mysh.IsNull()) return;
-  
-  static Handle(Prs3d_Drawer) DRWR;
-  if(DRWR.IsNull()){
-    DRWR = new Prs3d_Drawer();
-    DRWR->WireAspect()->SetWidth(2);
-    DRWR->LineAspect()->SetWidth(2.);
-    DRWR->PlaneAspect()->EdgesAspect()->SetWidth(2.);
-    DRWR->FreeBoundaryAspect()->SetWidth(2.);
-    DRWR->UnFreeBoundaryAspect()->SetWidth(2.);
-    Standard_Integer I = 5;//pour tests...
-    DRWR->PointAspect()->SetTypeOfMarker((Aspect_TypeOfMarker)I);
-    DRWR->PointAspect()->SetScale(2.);
+  if(mysh.IsNull())
+  {
+    return;
   }
-  
+
   Standard_Boolean CanShade = (mysh.ShapeType()<5 || mysh.ShapeType()==8);
   if(aMode==1){
     if(CanShade)
-      StdPrs_ShadedShape::Add(P,mysh,DRWR);
+      StdPrs_ShadedShape::Add (P, mysh, myDrawer);
     else
-      StdPrs_WFShape::Add(P,mysh,DRWR);
+      StdPrs_WFDeflectionShape::Add (P, mysh, myDrawer);
   }
   else if (aMode==0)
-    StdPrs_WFShape::Add(P,mysh,DRWR);
+    StdPrs_WFDeflectionShape::Add (P, mysh, myDrawer);
 }
 
 void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector ,

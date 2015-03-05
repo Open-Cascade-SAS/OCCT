@@ -29,3 +29,6 @@ inline const Handle(Prs3d_Drawer)& SelectMgr_SelectableObject::
 Attributes() const
 {return myDrawer;}
 
+inline const Handle(Prs3d_Drawer)& SelectMgr_SelectableObject::
+HilightAttributes() const
+{return myHilightDrawer;}
