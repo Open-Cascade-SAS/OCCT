@@ -50,6 +50,8 @@ uses
 	AspectText3d		from Graphic3d,
 	Structure		from Graphic3d,
 	MapOfStructure		from Graphic3d,
+  MapOfObject       from Graphic3d,
+  ViewAffinity      from Graphic3d,
 	SequenceOfStructure	from Graphic3d,
     GraphicDriver    from Graphic3d
 
@@ -443,6 +445,19 @@ is
                        theStructures : MapOfStructure from Graphic3d);
   ---Purpose: Recomputes all structures from theStructures.
 
+  RegisterObject (me : mutable;
+                  theObject : Transient from Standard)
+  returns ViewAffinity from Graphic3d
+  is static;
+
+  UnregisterObject (me : mutable;
+                    theObject : Transient from Standard) is static;
+
+  ObjectAffinity (me;
+                  theObject : Transient from Standard)
+  returns ViewAffinity from Graphic3d
+  is static;
+
 --
 
 fields
@@ -473,6 +488,8 @@ fields
 	-- the displayed structures
 	MyDisplayedStructure	:	MapOfStructure from Graphic3d
 								is protected;
+
+  myRegisteredObjects : MapOfObject from Graphic3d is protected;
 
 	-- the highlighted structures
 	MyHighlightedStructure	:	MapOfStructure from Graphic3d

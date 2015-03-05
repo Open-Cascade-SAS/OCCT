@@ -81,7 +81,7 @@
 Visual3d_ViewManager::Visual3d_ViewManager (const Handle(Graphic3d_GraphicDriver)& theDriver):
 Graphic3d_StructureManager (theDriver),
 MyDefinedView (),
-MyViewGenId (View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*(Visual3d_ViewManager::CurrentId ()-1),View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*Visual3d_ViewManager::CurrentId ()-1),
+MyViewGenId (0, 31),
 MyZBufferAuto (Standard_False),
 myZLayerGenId (1, IntegerLast())
 {

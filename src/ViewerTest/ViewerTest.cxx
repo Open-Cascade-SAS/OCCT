@@ -2513,7 +2513,8 @@ int VErase (Draw_Interpretor& theDI,
   const Standard_Boolean toEraseAll = TCollection_AsciiString (theArgNb > 0 ? theArgVec[0] : "") == "veraseall";
 
   Standard_Integer anArgIter = 1;
-  Standard_Boolean toEraseLocal = Standard_False;
+  Standard_Boolean toEraseLocal  = Standard_False;
+  Standard_Boolean toEraseInView = Standard_False;
   TColStd_SequenceOfAsciiString aNamesOfEraseIO;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -2526,6 +2527,11 @@ int VErase (Draw_Interpretor& theDI,
     else if (anArgCase == "-local")
     {
       toEraseLocal = Standard_True;
+    }
+    else if (anArgCase == "-view"
+          || anArgCase == "-inview")
+    {
+      toEraseInView = Standard_True;
     }
     else
     {
@@ -2565,7 +2571,14 @@ int VErase (Draw_Interpretor& theDI,
       theDI << aName.ToCString() << " ";
       if (!anIO.IsNull())
       {
-        aCtx->Erase (anIO, Standard_False);
+        if (toEraseInView)
+        {
+          aCtx->SetViewAffinity (anIO, aView, Standard_False);
+        }
+        else
+        {
+          aCtx->Erase (anIO, Standard_False);
+        }
       }
       else
       {
@@ -2588,7 +2601,14 @@ int VErase (Draw_Interpretor& theDI,
        && aCtx->IsCurrent (anIO))
       {
         theDI << anIter.Key2().ToCString() << " ";
-        aCtx->Erase (anIO, Standard_False);
+        if (toEraseInView)
+        {
+          aCtx->SetViewAffinity (anIO, aView, Standard_False);
+        }
+        else
+        {
+          aCtx->Erase (anIO, Standard_False);
+        }
       }
     }
   }
@@ -2601,7 +2621,14 @@ int VErase (Draw_Interpretor& theDI,
       const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
       if (!anIO.IsNull())
       {
-        aCtx->Erase (anIO, Standard_False);
+        if (toEraseInView)
+        {
+          aCtx->SetViewAffinity (anIO, aView, Standard_False);
+        }
+        else
+        {
+          aCtx->Erase (anIO, Standard_False);
+        }
       }
       else
       {
@@ -3194,6 +3221,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   Standard_Boolean   toReDisplay    = Standard_False;
   TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
   AIS_DisplayStatus aDispStatus = AIS_DS_None;
+  Standard_Integer toDisplayInView = Standard_False;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString aName     = theArgVec[anArgIter];
@@ -3241,6 +3269,11 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       }
 
       aZLayer = aValue.IntegerValue();
+    }
+    else if (aNameCase == "-view"
+          || aNameCase == "-inview")
+    {
+      toDisplayInView = Standard_True;
     }
     else if (aNameCase == "-local")
     {
@@ -3305,6 +3338,14 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         aCtx->Display (aShape, aDispMode, aSelMode,
                        Standard_False, aShape->AcceptShapeDecomposition(),
                        aDispStatus);
+        if (toDisplayInView)
+        {
+          for (aCtx->CurrentViewer()->InitDefinedViews(); aCtx->CurrentViewer()->MoreDefinedViews(); aCtx->CurrentViewer()->NextDefinedViews())
+          {
+            aCtx->SetViewAffinity (aShape, aCtx->CurrentViewer()->DefinedView(), Standard_False);
+          }
+          aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
+        }
       }
       continue;
     }
@@ -3357,6 +3398,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         aCtx->Display (aShape, aDispMode, aSelMode,
                        Standard_False, aShape->AcceptShapeDecomposition(),
                        aDispStatus);
+        if (toDisplayInView)
+        {
+          aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
+        }
       }
     }
     else if (anObj->IsKind (STANDARD_TYPE (NIS_InteractiveObject)))

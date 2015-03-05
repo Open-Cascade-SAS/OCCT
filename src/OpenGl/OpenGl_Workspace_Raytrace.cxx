@@ -96,6 +96,11 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
           {
             continue;
           }
+          else if (!aStructure->ViewAffinity.IsNull()
+                && !aStructure->ViewAffinity->IsVisible (myViewId))
+          {
+            continue;
+          }
 
           for (OpenGl_Structure::GroupIterator aGroupIter (aStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
           {

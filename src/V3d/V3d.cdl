@@ -35,6 +35,7 @@ uses
         TColStd,
         Graphic3d,
         Visual3d,
+        SelectMgr,
         MMgt,
         TCollection,
         Quantity,

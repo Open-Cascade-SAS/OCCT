@@ -405,7 +405,8 @@ Standard_Boolean PrsMgr_PresentationManager::HasPresentation (const Handle(PrsMg
 // =======================================================================
 Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                                                       const Standard_Integer                  theMode,
-                                                                      const Standard_Boolean                  theToCreate) const
+                                                                      const Standard_Boolean                  theToCreate,
+                                                                      const Handle(PrsMgr_PresentableObject)& theSelObj) const
 {
   const PrsMgr_Presentations& aPrsList = thePrsObj->Presentations();
   for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
@@ -426,6 +427,7 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Hand
 
   Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation (this, thePrsObj);
   aPrs->SetZLayer (thePrsObj->ZLayer());
+  aPrs->Presentation()->CStructure()->ViewAffinity = myStructureManager->ObjectAffinity (!theSelObj.IsNull() ? theSelObj : thePrsObj);
   thePrsObj->Presentations().Append (PrsMgr_ModedPresentation (aPrs, theMode));
   thePrsObj->Fill (this, aPrs, theMode);
 
@@ -516,7 +518,8 @@ void PrsMgr_PresentationManager::Transform (const Handle(PrsMgr_PresentableObjec
 // =======================================================================
 void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                         const Quantity_NameOfColor              theColor,
-                                        const Standard_Integer                  theMode)
+                                        const Standard_Integer                  theMode,
+                                        const Handle(PrsMgr_PresentableObject)& theSelObj)
 {
   for (PrsMgr_ListOfPresentableObjectsIter anIter (thePrsObj->Children()); anIter.More(); anIter.Next())
   {
@@ -527,7 +530,7 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
     return;
   }
 
-  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode, Standard_True);
+  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode, Standard_True, theSelObj);
   if (aPrs->MustBeUpdated())
   {
     Update (thePrsObj, theMode);

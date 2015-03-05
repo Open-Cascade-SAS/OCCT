@@ -16,19 +16,49 @@
 
 #include <SelectMgr_Filter.hxx>
 #include <SelectMgr_ListIteratorOfListOfFilter.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+
+//=============================================================================
+//function : SelectMgr_OrFilter
+//purpose  :
+//=============================================================================
 SelectMgr_OrFilter::SelectMgr_OrFilter()
 {
 }
 
-
-Standard_Boolean SelectMgr_OrFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anobj) const 
+//=============================================================================
+//function : SetDisabledObjects
+//purpose  :
+//=============================================================================
+void SelectMgr_OrFilter::SetDisabledObjects (const Handle(Graphic3d_NMapOfTransient)& theObjects)
 {
+  myDisabledObjects = theObjects;
+}
 
-  if(myFilters.IsEmpty())
+//=============================================================================
+//function : IsOk
+//purpose  :
+//=============================================================================
+Standard_Boolean SelectMgr_OrFilter::IsOk (const Handle(SelectMgr_EntityOwner)& theObj) const
+{
+  const SelectMgr_SelectableObject* aSelectable = theObj->Selectable().operator->();
+  if (!myDisabledObjects.IsNull()
+    && myDisabledObjects->Contains (aSelectable))
+  {
+    return Standard_False;
+  }
+  else if (myFilters.IsEmpty())
+  {
     return Standard_True;
-  SelectMgr_ListIteratorOfListOfFilter it(myFilters);
-  for ( ; it.More();it.Next())
-    if(it.Value()->IsOk(anobj))
+  }
+
+  for (SelectMgr_ListIteratorOfListOfFilter aFilterIter (myFilters); aFilterIter.More(); aFilterIter.Next())
+  {
+    if (aFilterIter.Value()->IsOk (theObj))
+    {
       return Standard_True;
+    }
+  }
+
   return Standard_False;
 }

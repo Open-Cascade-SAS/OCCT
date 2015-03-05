@@ -53,6 +53,8 @@ Visual3d_View::Visual3d_View (const Handle(Visual3d_ViewManager)& theMgr)
   myAutoZFitScaleFactor (1.0),
   myStructuresUpdated   (Standard_True)
 {
+  myHiddenObjects = new Graphic3d_NMapOfTransient();
+
   MyCView.ViewId                  = theMgr->Identification (this);
   MyCView.Active                  = 0;
   MyCView.IsDeleted               = 0;
@@ -1735,10 +1737,16 @@ Bnd_Box Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
                                      const Standard_Boolean          theToIgnoreInfiniteFlag) const
 {
   Bnd_Box aResult;
+  const Standard_Integer aViewId = MyCView.ViewId;
   for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (theSet); aStructIter.More(); aStructIter.Next())
   {
     const Handle(Graphic3d_Structure)& aStructure = aStructIter.Key();
     if (!aStructIter.Value()->IsVisible())
+    {
+      continue;
+    }
+    else if (!aStructIter.Value()->CStructure()->ViewAffinity.IsNull()
+          && !aStructIter.Value()->CStructure()->ViewAffinity->IsVisible (aViewId))
     {
       continue;
     }
@@ -2689,4 +2697,22 @@ Standard_Boolean Visual3d_View::Print (const Handle(Visual3d_Layer)& theUnderLay
   return myGraphicDriver->Print (MyCView, anUnderCLayer, anOverCLayer,
                                  thePrintDC, theToShowBackground, theFilename,
                                  thePrintAlgorithm, theScaleFactor);
+}
+
+//=============================================================================
+//function : HiddenObjects
+//purpose  :
+//=============================================================================
+const Handle(Graphic3d_NMapOfTransient)& Visual3d_View::HiddenObjects() const
+{
+  return myHiddenObjects;
+}
+
+//=============================================================================
+//function : HiddenObjects
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_NMapOfTransient)& Visual3d_View::ChangeHiddenObjects()
+{
+  return myHiddenObjects;
 }

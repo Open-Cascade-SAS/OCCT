@@ -2010,6 +2010,19 @@ is
     ---Purpose: returns if possible,
     --          the first local context where the object is seen
 
+    SetViewAffinity (me           : mutable;
+                     theIObj      : InteractiveObject from AIS;
+                     theView      : View from V3d;
+                     theIsVisible : Boolean from Standard) is static;
+    ---Purpose: setup object visibility in specified view,
+    -- has no effect if object is not disaplyed in this context.
+
+    ObjectsForView (me;
+                    theListOfIO        : in out ListOfInteractive from AIS;
+                    theView            : View from V3d;
+                    theIsVisibleInView : Boolean from Standard;
+                    theStatus          : DisplayStatus from AIS = AIS_DS_None) is static;
+    ---Purpose: Query objects visible or hidden in specified view due to affinity mask.
 
     InitAttributes(me:mutable) is static private;
 

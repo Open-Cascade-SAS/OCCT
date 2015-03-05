@@ -149,14 +149,18 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
     }
 
     // highlight with color and set layer
-    PM->Color (myPrsSh, aCol, M);
+    PM->Color (myPrsSh, aCol, M, aSel);
   }
   else
   {
-    if(myPrsSh.IsNull())
-      PM->Color(aSel, aCol, M);
+    if (!myPrsSh.IsNull())
+    {
+      PM->Color (myPrsSh, aCol, M, aSel);
+    }
     else
-      PM->Color(myPrsSh,aCol,M);
+    {
+      PM->Color (aSel, aCol, M);
+    }
   }
 }
 

@@ -169,7 +169,8 @@ is
   Color (me           : mutable;
          thePrsObject : PresentableObject from PrsMgr;
          theColor     : NameOfColor from Quantity = Quantity_NOC_YELLOW;
-         theMode      : Integer from Standard = 0)
+         theMode      : Integer from Standard = 0;
+         theSelObj    : PresentableObject from PrsMgr = NULL)
   ---Purpose: Highlights the graphic object thePrsObject in the color theColor.
   -- thePrsObject has the display mode theMode;
   -- this has the default value of 0, that is, the wireframe display mode.
@@ -235,11 +236,13 @@ is
   Presentation (me;
                 thePrsObject : PresentableObject from PrsMgr;
                 theMode      : Integer from Standard = 0;
-                theToCreate  : Boolean from Standard = Standard_False)
+                theToCreate  : Boolean from Standard = Standard_False;
+                theSelObj    : PresentableObject from PrsMgr = NULL)
   returns Presentation from PrsMgr
   is static;
   ---Purpose: Returns the presentation Presentation of the presentable object thePrsObject in this framework.
   -- When theToCreate is true - automatically creates presentation for specified mode when not exist.
+  -- Optional argument theSelObj specifies parent decomposed object to inherit its view affinity.
 
   RemovePresentation (me           : mutable;
                       thePrsObject : PresentableObject from PrsMgr;

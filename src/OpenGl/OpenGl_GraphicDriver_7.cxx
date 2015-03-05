@@ -27,7 +27,7 @@ void OpenGl_GraphicDriver::ActivateView (const Graphic3d_CView& ACView)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (aCView)
-    aCView->WS->SetActiveView(aCView->View);
+    aCView->WS->SetActiveView(aCView->View, ACView.ViewId);
 }
 
 void OpenGl_GraphicDriver::AntiAliasing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)
@@ -77,7 +77,7 @@ void OpenGl_GraphicDriver::DeactivateView (const Graphic3d_CView& ACView)
   if (aCView)
   {
     const Handle(OpenGl_View) aDummyView;
-    aCView->WS->SetActiveView(aDummyView);
+    aCView->WS->SetActiveView (aDummyView, -1);
   }
 }
 
@@ -390,37 +390,40 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
 
 void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
 {
-  Handle(OpenGl_Context)   aCtx = GetSharedContext();
-  Handle(OpenGl_View)      aView;
-  Handle(OpenGl_Workspace) aWindow;
-  if (myMapOfWS.Find (theCView.WsId, aWindow))
+  Handle(OpenGl_Context) aCtx   = GetSharedContext();
+  OpenGl_CView*          aCView = (OpenGl_CView* )theCView.ptrView;
+  if (aCView == NULL
+   || aCView->View.IsNull()
+   || aCView->WS.IsNull())
   {
-    myMapOfWS.UnBind (theCView.WsId);
-  }
-  if (!aWindow.IsNull())
-  {
-    if (aWindow->GetGlContext()->MakeCurrent())
-    {
-      aCtx = aWindow->GetGlContext();
-    }
-    else
-    {
-      // try to hijack another context if any
-      const Handle(OpenGl_Context)& anOtherCtx = GetSharedContext();
-      if (!anOtherCtx.IsNull()
-       && anOtherCtx != aWindow->GetGlContext())
-      {
-        aCtx = anOtherCtx;
-        aCtx->MakeCurrent();
-      }
-    }
-  }
-  if (myMapOfView.Find (theCView.ViewId, aView))
-  {
-    aView->ReleaseGlResources (aCtx);
-    myMapOfView.UnBind (theCView.ViewId);
+    return;
   }
 
+  Handle(OpenGl_View)      aView   = aCView->View;
+  Handle(OpenGl_Workspace) aWindow = aCView->WS;
+  if (!myMapOfWS  .Remove (aWindow)
+   || !myMapOfView.Remove (aView))
+  {
+    return;
+  }
+
+  if (aWindow->GetGlContext()->MakeCurrent())
+  {
+    aCtx = aWindow->GetGlContext();
+  }
+  else
+  {
+    // try to hijack another context if any
+    const Handle(OpenGl_Context)& anOtherCtx = GetSharedContext();
+    if (!anOtherCtx.IsNull()
+      && anOtherCtx != aWindow->GetGlContext())
+    {
+      aCtx = anOtherCtx;
+      aCtx->MakeCurrent();
+    }
+  }
+
+  aView->ReleaseGlResources (aCtx);
   if (myMapOfWS.IsEmpty())
   {
     // The last view removed but some objects still present.
@@ -435,7 +438,6 @@ void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
     myDeviceLostFlag = !myMapOfStructure.IsEmpty();
   }
 
-  OpenGl_CView* aCView = (OpenGl_CView* )theCView.ptrView;
   delete aCView;
   ((Graphic3d_CView *)&theCView)->ptrView = NULL;
 
@@ -499,34 +501,30 @@ void OpenGl_GraphicDriver::InvalidateBVHData (Graphic3d_CView& theCView, const S
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
 {
   Handle(OpenGl_Context) aShareCtx = GetSharedContext();
-  if (myMapOfView.IsBound (theCView.ViewId))
+  OpenGl_CView*          aCView = (OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL
+   && myMapOfView.Contains (aCView->View))
   {
-    OpenGl_CView* aCView = (OpenGl_CView* )theCView.ptrView;
-    if (!myMapOfWS.IsBound (theCView.WsId)
-     || aCView == NULL)
-    {
-      return Standard_False;
-    }
-
-    Handle(OpenGl_Workspace) aWS = new OpenGl_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
+    Handle(OpenGl_Workspace) anOldWS = aCView->WS;
+    Handle(OpenGl_Workspace) aWS     = new OpenGl_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
     aCView->WS = aWS;
-    aWS->SetActiveView (aCView->View);
+    aWS->SetActiveView (aCView->View, theCView.ViewId);
 
-    myMapOfWS.UnBind (theCView.WsId);
-    myMapOfWS.Bind   (theCView.WsId, aWS);
+    myMapOfWS.Remove (anOldWS);
+    myMapOfWS.Add    (aWS);
     return Standard_True;
   }
 
   Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
   Handle(OpenGl_View)      aView     = new OpenGl_View (theCView.Context, &myStateCounter);
-  myMapOfWS  .Bind (theCView.WsId,   aWS);
-  myMapOfView.Bind (theCView.ViewId, aView);
+  myMapOfWS  .Add (aWS);
+  myMapOfView.Add (aView);
 
-  OpenGl_CView* aCView = new OpenGl_CView();
+  aCView = new OpenGl_CView();
   aCView->View = aView;
   aCView->WS   = aWS;
   theCView.ptrView = aCView;
-  aWS->SetActiveView (aCView->View);
+  aWS->SetActiveView (aCView->View, theCView.ViewId);
 
   return Standard_True;
 }

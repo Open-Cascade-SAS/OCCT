@@ -23,9 +23,10 @@ class OrFilter from SelectMgr inherits CompositionFilter from SelectMgr
     	-- This selects one or another type of sensitive entity.
 uses
 
-    Filter       from SelectMgr,
-    Transient    from Standard,
-    EntityOwner  from SelectMgr
+    Filter           from SelectMgr,
+    Transient        from Standard,
+    EntityOwner      from SelectMgr,
+    NMapOfTransient  from Graphic3d
 
 is
 
@@ -34,5 +35,13 @@ is
     	---Purpose: Constructs an empty or selection filter.
     IsOk(me; anobj : EntityOwner from SelectMgr)
     returns Boolean from Standard ;
+
+    SetDisabledObjects (me : mutable;
+                        theObjects : NMapOfTransient from Graphic3d) is static;
+    ---Purpose: Disable selection of specified objects.
+
+fields
+
+    myDisabledObjects : NMapOfTransient from Graphic3d;
 
 end OrFilter;

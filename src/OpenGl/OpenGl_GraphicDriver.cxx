@@ -110,7 +110,7 @@ OpenGl_GraphicDriver::~OpenGl_GraphicDriver()
 void OpenGl_GraphicDriver::ReleaseContext()
 {
   Handle(OpenGl_Context) aCtxShared;
-  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
+  for (NCollection_Map<Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
        aWindowIter.More(); aWindowIter.Next())
   {
     const Handle(OpenGl_Workspace)& aWindow = aWindowIter.ChangeValue();
@@ -126,7 +126,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
   {
     aCtxShared->MakeCurrent();
   }
-  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
        aViewIter.More(); aViewIter.Next())
   {
     const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
@@ -142,7 +142,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
   myTempText->Release (aCtxShared.operator->());
   myDeviceLostFlag = myDeviceLostFlag || !myMapOfStructure.IsEmpty();
 
-  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
+  for (NCollection_Map<Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
        aWindowIter.More(); aWindowIter.Next())
   {
     const Handle(OpenGl_Workspace)& aWindow = aWindowIter.ChangeValue();
@@ -373,7 +373,7 @@ const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext() const
     return TheNullGlCtx;
   }
 
-  NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIter (myMapOfWS);
+  NCollection_Map<Handle(OpenGl_Workspace)>::Iterator anIter (myMapOfWS);
   return anIter.Value()->GetGlContext();
 }
 

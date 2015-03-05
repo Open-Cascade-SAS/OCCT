@@ -348,8 +348,8 @@ private:
 #endif
 
   Handle(OpenGl_Caps)                                             myCaps;
-  NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      myMapOfView;
-  NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> myMapOfWS;
+  NCollection_Map<Handle(OpenGl_View)>                            myMapOfView;
+  NCollection_Map<Handle(OpenGl_Workspace)>                       myMapOfWS;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
   mutable Handle(OpenGl_PrinterContext)                           myPrintContext;
   OpenGl_UserDrawCallback_t                                       myUserDrawCallback;

@@ -154,6 +154,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   //
   myRaytraceFilter       (new OpenGl_RaytraceFilter()),
   myToRedrawGL           (Standard_True),
+  myViewId               (-1),
   myAntiAliasingMode     (3),
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),

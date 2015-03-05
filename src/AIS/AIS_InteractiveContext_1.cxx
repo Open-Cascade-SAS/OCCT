@@ -32,6 +32,7 @@
 #include <V3d_SpotLight.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_AmbientLight.hxx>
+#include <Visual3d_View.hxx>
 
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -71,7 +72,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   AIS_StatusOfDetection aStatus        = AIS_SOD_Nothing;
   Standard_Boolean      toUpdateViewer = Standard_False;
 
-  // allonzy
+  myFilters->SetDisabledObjects (theView->View()->HiddenObjects());
   myMainSel->Pick (theXPix, theYPix, theView);
 
   // filling of myAISDetectedSeq sequence storing information about detected AIS objects

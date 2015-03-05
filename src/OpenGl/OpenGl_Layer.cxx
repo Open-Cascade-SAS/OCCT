@@ -123,12 +123,18 @@ void OpenGl_Layer::InvalidateBVHData()
 void OpenGl_Layer::renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Standard_Integer aNbPriorities = myArray.Length();
+  const Standard_Integer aViewId       = theWorkspace->ActiveViewId();
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
     for (OpenGl_SequenceOfStructure::Iterator aStructIter (myArray (aPriorityIter)); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
       if (!aStruct->IsVisible())
+      {
+        continue;
+      }
+      else if (!aStruct->ViewAffinity.IsNull()
+            && !aStruct->ViewAffinity->IsVisible (aViewId))
       {
         continue;
       }
@@ -154,6 +160,7 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
   traverse (aSelector);
 
   const Standard_Integer aNbPriorities = myArray.Length();
+  const Standard_Integer aViewId       = theWorkspace->ActiveViewId();
   for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
   {
     for (OpenGl_SequenceOfStructure::Iterator aStructIter (myArray (aPriorityIter)); aStructIter.More(); aStructIter.Next())
@@ -161,6 +168,11 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
       const OpenGl_Structure* aStruct = aStructIter.Value();
       if (!aStruct->IsVisible()
         || aStruct->IsCulled())
+      {
+        continue;
+      }
+      else if (!aStruct->ViewAffinity.IsNull()
+            && !aStruct->ViewAffinity->IsVisible (aViewId))
       {
         continue;
       }

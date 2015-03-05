@@ -140,8 +140,16 @@ public:
   //! Destructor
   virtual ~OpenGl_Workspace();
 
-  void SetActiveView (const Handle(OpenGl_View)& theView) { myView = theView; }
-  const Handle(OpenGl_View)& ActiveView () const { return myView; }
+  void SetActiveView (const Handle(OpenGl_View)& theView,
+                      const Standard_Integer     theViewId)
+  {
+    myView   = theView;
+    myViewId = theViewId;
+  }
+
+  const Handle(OpenGl_View)& ActiveView() const { return myView; }
+
+  Standard_Integer ActiveViewId() const { return myViewId; }
 
   //! Redraw the window.
   void Redraw (const Graphic3d_CView& theCView,
@@ -658,6 +666,7 @@ protected: //! @name protected fields
   Handle(OpenGl_PrinterContext) myPrintContext;
   Handle(OpenGl_View)           myView;
   Handle(OpenGl_LineAttributes) myLineAttribs;
+  Standard_Integer       myViewId;
   Standard_Integer       myAntiAliasingMode;
   Standard_Boolean       myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
   Standard_Boolean       myBackBufferRestored;

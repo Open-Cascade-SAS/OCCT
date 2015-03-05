@@ -105,6 +105,7 @@ uses
     AsciiString             from TCollection,
     ExtendedString          from TCollection,
     CGraduatedTrihedron     from Graphic3d,
+    NMapOfTransient         from Graphic3d,
     TypeOfStructure         from Graphic3d,
 
     PixMap                  from Image,
@@ -1152,6 +1153,16 @@ is
     -- In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits on printing to laser printer).
     -- Notice however that results may differ a lot and do not contain some elements.
 
+    HiddenObjects (me) returns NMapOfTransient from Graphic3d is static;
+    ---C++: return const &
+    ---Level: Public
+    ---Purpose: Returns map of objects hidden within this specific view (not viewer-wise).
+
+    ChangeHiddenObjects (me : mutable) returns NMapOfTransient from Graphic3d is static;
+    ---C++: return &
+    ---Level: Public
+    ---Purpose: Returns map of objects hidden within this specific view (not viewer-wise).
+
 fields
 
   -- the ViewManager associated with the view
@@ -1192,6 +1203,8 @@ fields
   myAutoZFitScaleFactor   : Real from Standard;
 
   myStructuresUpdated     : Boolean from Standard;
+
+  myHiddenObjects : NMapOfTransient from Graphic3d;
 
 friends
 

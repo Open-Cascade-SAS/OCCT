@@ -289,3 +289,28 @@ void Graphic3d_StructureManager::RecomputeStructures (const Graphic3d_MapOfStruc
     aStruct->Compute();
   }
 }
+
+Handle(Graphic3d_ViewAffinity) Graphic3d_StructureManager::RegisterObject (const Handle(Standard_Transient)& theObject)
+{
+  Handle(Graphic3d_ViewAffinity) aResult;
+  if (myRegisteredObjects.Find (theObject.operator->(), aResult))
+  {
+    return aResult;
+  }
+
+  aResult = new Graphic3d_ViewAffinity();
+  myRegisteredObjects.Bind (theObject.operator->(), aResult);
+  return aResult;
+}
+
+void Graphic3d_StructureManager::UnregisterObject (const Handle(Standard_Transient)& theObject)
+{
+  myRegisteredObjects.UnBind (theObject.operator->());
+}
+
+Handle(Graphic3d_ViewAffinity) Graphic3d_StructureManager::ObjectAffinity (const Handle(Standard_Transient)& theObject) const
+{
+  Handle(Graphic3d_ViewAffinity) aResult;
+  myRegisteredObjects.Find (theObject.operator->(), aResult);
+  return aResult;
+}

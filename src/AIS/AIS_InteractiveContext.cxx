@@ -323,6 +323,35 @@ void AIS_InteractiveContext::ObjectsInside (AIS_ListOfInteractive&      theListO
 }
 
 //=======================================================================
+//function : ObjectsForView
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::ObjectsForView (AIS_ListOfInteractive&  theListOfIO,
+                                             const Handle(V3d_View)& theView,
+                                             const Standard_Boolean  theIsVisibleInView,
+                                             const AIS_DisplayStatus theStatus) const
+{
+  const Graphic3d_CView* aCView  = reinterpret_cast<const Graphic3d_CView* >(theView->View()->CView());
+  const Standard_Integer aViewId = aCView->ViewId;
+  for (AIS_DataMapIteratorOfDataMapOfIOStatus anObjIter (myObjects); anObjIter.More(); anObjIter.Next())
+  {
+    if (theStatus != AIS_DS_None
+     && anObjIter.Value()->GraphicStatus() != theStatus)
+    {
+      theListOfIO.Append (anObjIter.Key());
+      continue;
+    }
+
+    Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->Viewer()->ObjectAffinity (anObjIter.Key());
+    const Standard_Boolean isVisible = anAffinity->IsVisible (aViewId);
+    if (isVisible == theIsVisibleInView)
+    {
+      theListOfIO.Append (anObjIter.Key());
+    }
+  }
+}
+
+//=======================================================================
 //function : Display
 //purpose  :
 //=======================================================================
@@ -339,6 +368,33 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
 
   Display (theIObj, aDispMode, myIsAutoActivateSelMode ? aSelMode : -1,
            theToUpdateViewer, theIObj->AcceptShapeDecomposition());
+}
+
+//=======================================================================
+//function : SetViewAffinity
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::SetViewAffinity (const Handle(AIS_InteractiveObject)& theIObj,
+                                              const Handle(V3d_View)&              theView,
+                                              const Standard_Boolean               theIsVisible)
+{
+  if (theIObj.IsNull()
+  || !myObjects.IsBound (theIObj))
+  {
+    return;
+  }
+
+  Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->Viewer()->ObjectAffinity (theIObj);
+  const Graphic3d_CView* aCView = reinterpret_cast<const Graphic3d_CView* >(theView->View()->CView());
+  anAffinity->SetVisible (aCView->ViewId, theIsVisible == Standard_True);
+  if (theIsVisible)
+  {
+    theView->View()->ChangeHiddenObjects()->Remove (theIObj);
+  }
+  else
+  {
+    theView->View()->ChangeHiddenObjects()->Add (theIObj);
+  }
 }
 
 //=======================================================================
@@ -392,6 +448,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
   {
     Handle(AIS_GlobalStatus) aStatus = new AIS_GlobalStatus (AIS_DS_Displayed, theDispMode, theSelectionMode);
     myObjects.Bind   (theIObj, aStatus);
+    Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->Viewer()->RegisterObject (theIObj);
     myMainPM->Display(theIObj, theDispMode);
     if (theSelectionMode != -1)
     {
@@ -2355,6 +2412,11 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   mgrSelector->Remove (theIObj);
 
   myObjects.UnBind (theIObj);
+  myMainVwr->Viewer()->UnregisterObject (theIObj);
+  for (myMainVwr->InitDefinedViews(); myMainVwr->MoreDefinedViews(); myMainVwr->NextDefinedViews())
+  {
+    myMainVwr->DefinedView()->View()->ChangeHiddenObjects()->Remove (theIObj);
+  }
 
   if (theToUpdateviewer
    && aStatus->GraphicStatus() == AIS_DS_Displayed)
