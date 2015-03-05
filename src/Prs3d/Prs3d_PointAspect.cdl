@@ -50,6 +50,8 @@ is
              returns PointAspect from Prs3d;
     	---Purpose: defines only the urer defined marker point.
 
+    Create( theAspect : AspectMarker3d from Graphic3d )
+    returns PointAspect from Prs3d;
 	     
     SetColor (me: mutable; aColor: Color from Quantity) is static;
  
@@ -70,6 +72,8 @@ is
     
     Aspect(me) returns AspectMarker3d from Graphic3d 
     is static;
+
+    SetAspect( me: mutable; theAspect: AspectMarker3d from Graphic3d );
     
     GetTextureSize (me:mutable; AWidth     : out Integer from Standard;
 		    	    	    AHeight    : out Integer from Standard);

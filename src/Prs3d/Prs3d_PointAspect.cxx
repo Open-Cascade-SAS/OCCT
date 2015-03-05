@@ -37,9 +37,16 @@ Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color &aColor,
     (aColor,aWidth,aHeight,aTexture);
 }
 
+Prs3d_PointAspect::Prs3d_PointAspect( const Handle( Graphic3d_AspectMarker3d )& theAspect ) 
+{
+  myAspect = theAspect;
+}
+
+
 void Prs3d_PointAspect::SetColor(const Quantity_Color &aColor) {
   myAspect->SetColor(aColor);
 }
+
 
 void Prs3d_PointAspect::SetColor(const Quantity_NameOfColor aColor) {
   myAspect->SetColor(Quantity_Color(aColor));
@@ -55,6 +62,11 @@ void Prs3d_PointAspect::SetScale(const Standard_Real aScale){
 
 Handle (Graphic3d_AspectMarker3d) Prs3d_PointAspect::Aspect () const {
   return myAspect;
+}
+
+void Prs3d_PointAspect::SetAspect( const Handle( Graphic3d_AspectMarker3d )& theAspect ) 
+{
+  myAspect = theAspect;
 }
 
 void Prs3d_PointAspect::GetTextureSize(Standard_Integer& AWidth, Standard_Integer& AHeight)

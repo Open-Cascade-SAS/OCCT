@@ -33,6 +33,9 @@ is
     Create returns TextAspect from Prs3d;  
         --- Purpose: Constructs an empty framework for defining display attributes of text.   
 
+    Create( theAspect: AspectText3d from Graphic3d )
+    returns TextAspect from Prs3d;
+
     SetColor(me: mutable; aColor:  Color  from  Quantity);
  
     SetColor(me: mutable; aColor:  NameOfColor  from  Quantity);
@@ -100,6 +103,8 @@ is
         -- -   font
         -- -   height/width ratio, that is, the expansion factor, and
         -- -   space between characters.
+
+    SetAspect( me: mutable; theAspect: AspectText3d from Graphic3d );
     
 fields
     myTextAspect: AspectText3d  from  Graphic3d; 

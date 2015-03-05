@@ -49,6 +49,9 @@ is
 	    aType: TypeOfLine from Aspect;
     	    aWidth: Real from Standard)
 	    returns LineAspect from Prs3d;
+
+    Create( theAspect: AspectLine3d from Graphic3d )
+    returns LineAspect from Prs3d;
 	    
     SetColor (me: mutable; aColor: Color from Quantity) is static;
 
@@ -72,6 +75,8 @@ is
     is static;
     	--- Purpose: Returns the line aspect. This is defined as the set of
     	-- color, type and thickness attributes.
+
+    SetAspect( me: mutable; theAspect: AspectLine3d from Graphic3d );
             
 fields
 

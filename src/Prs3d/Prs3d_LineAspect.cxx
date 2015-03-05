@@ -28,6 +28,13 @@ Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_NameOfColor aColor,
     (Quantity_Color(aColor),aType,aWidth);
 }
 
+Prs3d_LineAspect::Prs3d_LineAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
+{
+  myAspect = theAspect;
+}
+
+
+
 void Prs3d_LineAspect::SetColor(const Quantity_Color &aColor) {
  myAspect->SetColor(aColor);
 }
@@ -46,4 +53,9 @@ void Prs3d_LineAspect::SetWidth(const Standard_Real aWidth){
 
 Handle (Graphic3d_AspectLine3d) Prs3d_LineAspect::Aspect () const {
   return myAspect;
+}
+
+void Prs3d_LineAspect::SetAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
+{
+  myAspect = theAspect;
 }

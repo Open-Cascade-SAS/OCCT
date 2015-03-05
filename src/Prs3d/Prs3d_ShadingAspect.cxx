@@ -38,6 +38,10 @@ Prs3d_ShadingAspect::Prs3d_ShadingAspect () {
 					     aMat);
 }
 
+Prs3d_ShadingAspect::Prs3d_ShadingAspect( const Handle( Graphic3d_AspectFillArea3d )& theAspect )
+{
+  myAspect = theAspect;
+}
 
 //=======================================================================
 //function : SetColor
@@ -171,12 +175,11 @@ Standard_Real aValue(0.);
 //purpose  : 
 //=======================================================================
 
-void Prs3d_ShadingAspect::SetAspect(const Handle(Graphic3d_AspectFillArea3d)& Asp)
+void Prs3d_ShadingAspect::SetAspect( const Handle( Graphic3d_AspectFillArea3d )& theAspect )
 {
-  myAspect=Asp;
+  myAspect = theAspect;
 }
 
 Handle (Graphic3d_AspectFillArea3d) Prs3d_ShadingAspect::Aspect () const {
   return myAspect;
 }
-

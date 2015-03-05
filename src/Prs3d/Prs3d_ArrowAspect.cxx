@@ -30,6 +30,12 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Quantity_PlaneAngle anAngle,
 		Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0);
 }
 
+Prs3d_ArrowAspect::Prs3d_ArrowAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
+  : myAngle(M_PI/180.*10), myLength(1.)
+{
+  myArrowAspect = theAspect;
+}
+
 void Prs3d_ArrowAspect::SetAngle ( const Quantity_PlaneAngle anAngle) {
   Prs3d_InvalidAngle_Raise_if ( anAngle <= 0.  ||
                               anAngle >= M_PI /2. , "");
@@ -49,6 +55,7 @@ Quantity_Length Prs3d_ArrowAspect::Length () const
 return myLength;
 }
 
+
 void Prs3d_ArrowAspect::SetColor(const Quantity_Color &aColor) {
   myArrowAspect->SetColor(aColor);
 }
@@ -60,3 +67,10 @@ void Prs3d_ArrowAspect::SetColor(const Quantity_NameOfColor aColor) {
 Handle(Graphic3d_AspectLine3d) Prs3d_ArrowAspect::Aspect() const {
   return myArrowAspect;
 }
+
+
+void Prs3d_ArrowAspect::SetAspect( const Handle( Graphic3d_AspectLine3d )& theAspect )
+{
+  myArrowAspect = theAspect;
+}
+

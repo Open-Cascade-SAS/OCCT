@@ -32,6 +32,17 @@ Prs3d_TextAspect::Prs3d_TextAspect ()
                                              0.);
 }
 
+Prs3d_TextAspect::Prs3d_TextAspect( const Handle( Graphic3d_AspectText3d )& theAspect )
+: myAngle(0.),
+  myHeight(16.),
+  myHorizontalJustification(Graphic3d_HTA_LEFT),
+  myVerticalJustification(Graphic3d_VTA_BOTTOM),
+  myOrientation(Graphic3d_TP_RIGHT)
+{
+  myTextAspect = theAspect;
+}
+
+
 void Prs3d_TextAspect::SetColor(const Quantity_Color &aColor) {
   myTextAspect->SetColor(aColor);
 }
@@ -86,4 +97,9 @@ Graphic3d_TextPath Prs3d_TextAspect::Orientation () const {return myOrientation;
 
 Handle(Graphic3d_AspectText3d) Prs3d_TextAspect::Aspect() const {
   return myTextAspect;
+}
+
+void Prs3d_TextAspect::SetAspect( const Handle( Graphic3d_AspectText3d )& theAspect )
+{
+  myTextAspect = theAspect;
 }

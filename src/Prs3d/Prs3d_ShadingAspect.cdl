@@ -35,6 +35,9 @@ is
     Create
     	---Purpose: Constructs an empty framework to display shading.
     returns ShadingAspect from Prs3d;
+
+    Create( theAspect: AspectFillArea3d from Graphic3d )
+    returns ShadingAspect from Prs3d;
     
     SetColor (me: mutable; aColor: Color from Quantity;
 				   aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)
@@ -61,9 +64,6 @@ is
     	--- Purpose: Change the polygons transparency value.
     	--  Warning : aValue must be in the range 0,1. 0 is the default (NO transparent)
 
-    SetAspect(me:mutable; Asp : AspectFillArea3d from Graphic3d);
-    	--- Purpose: Change the polygons aspect properties.
-
     Color (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
     returns Color from Quantity is static;
     	--- Purpose: Returns the polygons color.
@@ -80,6 +80,8 @@ is
 
     Aspect (me) returns AspectFillArea3d from Graphic3d;
     	--- Purpose: Returns the polygons aspect properties.
+
+    SetAspect( me: mutable; theAspect: AspectFillArea3d from Graphic3d );
     
 fields
 
