@@ -233,7 +233,6 @@ static Standard_Boolean KPartCircle
   BRepFill_IndexedDataMapOfOrientedShapeListOfShape& myMap,
   Standard_Boolean&    myIsDone)
 {
-  // The only contour which is a closed circle
   TopExp_Explorer exp(mySpine,TopAbs_EDGE);
   Standard_Integer NbEdges = 0;
   TopoDS_Edge      E;
@@ -263,13 +262,15 @@ static Standard_Boolean KPartCircle
     Handle(Geom2d_Curve) OC;
     if (AHC->GetType() == GeomAbs_Line)
     {
-      if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
+      if (E.Orientation() == TopAbs_REVERSED)
+        anOffset *= -1;
       Adaptor3d_OffsetCurve Off(AHC,anOffset);
       OC = new Geom2d_Line(Off.Line());
     }
     else if (AHC->GetType() == GeomAbs_Circle)
     {
-      if (E.Orientation() == TopAbs_FORWARD) anOffset *= -1;
+      if (E.Orientation() == TopAbs_FORWARD)
+        anOffset *= -1;
       gp_Circ2d theCirc = AHC->Circle();
       if (anOffset > 0. || Abs(anOffset) < theCirc.Radius())
         OC = new Geom2d_Circle (theCirc.Position(), theCirc.Radius() + anOffset);
@@ -281,7 +282,8 @@ static Standard_Boolean KPartCircle
     }
     else
     {
-      if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
+      if (E.Orientation() == TopAbs_FORWARD)
+        anOffset *= -1;
       Handle(Geom2d_TrimmedCurve) G2dT = new Geom2d_TrimmedCurve(aPCurve, f, l);
       OC = new Geom2d_OffsetCurve( G2dT, anOffset);
     }
