@@ -303,6 +303,12 @@ static
                                 const TopoDS_Face& theFace,
                                 const Handle(IntTools_Context)& theContext);
 
+static
+  void CorrectPlaneBoundaries(Standard_Real& aUmin,
+                              Standard_Real& aUmax, 
+                              Standard_Real& aVmin, 
+                              Standard_Real& aVmax);
+
 //=======================================================================
 //function : 
 //purpose  : 
@@ -503,7 +509,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 //function : Perform
 //purpose  : intersect surfaces of the faces
 //=======================================================================
-  void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
+void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
                                 const TopoDS_Face& aF2)
 {
   Standard_Boolean RestrictLine = Standard_False, hasCone = Standard_False;
@@ -573,24 +579,13 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 
   if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane)  {
     Standard_Real umin, umax, vmin, vmax;
-    Standard_Real dU, dV;
     //
     BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
-    dU=0.1*(umax-umin);
-    dV=0.1*(vmax-vmin);
-    umin=umin-dU;
-    umax=umax+dU;
-    vmin=vmin-dV;
-    vmax=vmax+dV;
+    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     //
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
-    dU=0.1*(umax-umin);
-    dV=0.1*(vmax-vmin);
-    umin=umin-dU;
-    umax=umax+dU;
-    vmin=vmin-dV;
-    vmax=vmax+dV;
+    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
     //
     Standard_Real TolAng = 1.e-8;
@@ -630,18 +625,10 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 
   if ((aType1==GeomAbs_Plane) && isFace2Quad)
   {
-    Standard_Real dU, dV;
-
-    // F1
     Standard_Real umin, umax, vmin, vmax;
-    BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
-
-    dU=0.1*(umax-umin);
-    dV=0.1*(vmax-vmin);
-    umin=umin-dU;
-    umax=umax+dU;
-    vmin=vmin-dV;
-    vmax=vmax+dV;
+    // F1
+    BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax); 
+    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     // F2
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
@@ -655,21 +642,14 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   }
   else if ((aType2==GeomAbs_Plane) && isFace1Quad)
   {
-    Standard_Real dU, dV;
-
-    //F1
     Standard_Real umin, umax, vmin, vmax;
+    //F1
     BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace1, (aTolF1 + aTolF2) * 2., umin, umax, vmin, vmax);
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     // F2
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
-    dU=0.1*(umax-umin);
-    dV=0.1*(vmax-vmin);
-    umin=umin-dU;
-    umax=umax+dU;
-    vmin=vmin-dV;
-    vmax=vmax+dV;
+    CorrectPlaneBoundaries(umin, umax, vmin, vmax);
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
     //
     if( aType1==GeomAbs_Cone ) {
@@ -4987,4 +4967,30 @@ Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
 }
   }
   return !bRet;
+}
+//=======================================================================
+//function : CorrectPlaneBoundaries
+//purpose  : 
+//=======================================================================
+ void CorrectPlaneBoundaries(Standard_Real& aUmin,
+                             Standard_Real& aUmax, 
+                             Standard_Real& aVmin, 
+                             Standard_Real& aVmax) 
+{
+  if (!(Precision::IsInfinite(aUmin) ||
+        Precision::IsInfinite(aUmax))) { 
+    Standard_Real dU;
+    //
+    dU=0.1*(aUmax-aUmin);
+    aUmin=aUmin-dU;
+    aUmax=aUmax+dU;
+  }
+  if (!(Precision::IsInfinite(aVmin) ||
+        Precision::IsInfinite(aVmax))) { 
+    Standard_Real dV;
+    //
+    dV=0.1*(aVmax-aVmin);
+    aVmin=aVmin-dV;
+    aVmax=aVmax+dV;
+  }
 }
