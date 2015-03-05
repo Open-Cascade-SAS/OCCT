@@ -3551,6 +3551,57 @@ static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , 
   return 0;
 }
 
+#include <IntTools_Context.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+
+//=======================================================================
+//function : xprojponf
+//purpose  : 
+//=======================================================================
+Standard_Integer xprojponf (Draw_Interpretor& di, 
+                            Standard_Integer n, 
+                            const char** a)
+{
+  if (n!=3) {
+    di<<" use xprojponf p f \n";
+    return 0;
+  }
+  // 
+  gp_Pnt aP, aPS;
+  TopoDS_Shape aS;
+  TopoDS_Face aF;
+  Handle(IntTools_Context) aCtx;
+  //
+  DrawTrSurf::GetPoint(a[1], aP);
+  aS=DBRep::Get(a[2]);
+  //
+  if (aS.IsNull()) {
+    di<<" null shape is not allowed\n";
+    return 0;
+  }
+  //
+  if (aS.ShapeType()!=TopAbs_FACE) {
+    di << a[2] << " not a face\n";
+    return 0;
+  }
+  //
+  aCtx=new IntTools_Context;
+  //
+  aF=TopoDS::Face(aS);
+  GeomAPI_ProjectPointOnSurf& aPPS=aCtx->ProjPS(aF);
+  //
+  aPPS.Perform(aP);
+  if (!aPPS.IsDone()) {
+    di<<" projection failed\n";
+    return 0;
+  }
+  //
+  aPS=aPPS.NearestPoint();
+  di<< " point px " << aPS.X() << " " << aPS.Y() << " " <<  aPS.Z() << "\n";
+  //
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3619,5 +3670,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC25545, group);
   theCommands.Add ("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   theCommands.Add ("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
+  theCommands.Add ("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   return;
 }
