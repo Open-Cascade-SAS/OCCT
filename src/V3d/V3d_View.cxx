@@ -2728,8 +2728,8 @@ void V3d_View::Rotation(const Standard_Integer X,
     dx = (Standard_Real(X) - sx) * M_PI / rx;
     dy = (sy - Standard_Real(Y)) * M_PI / ry;
   }
+
   Rotate(dx, dy, dz, gx, gy, gz, Standard_False);
-  if( !myImmediateUpdate ) Update();
 }
 
 //=============================================================================
