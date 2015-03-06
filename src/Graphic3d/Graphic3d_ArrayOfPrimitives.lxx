@@ -63,6 +63,11 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const gp_Pnt& th
   return AddVertex (theVertex.X(), theVertex.Y(), theVertex.Z());
 }
 
+inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Graphic3d_Vec3& theVertex)
+{
+  return AddVertex (theVertex.x(), theVertex.y(), theVertex.z());
+}
+
 inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Standard_Real theX,
                                                                 const Standard_Real theY,
                                                                 const Standard_Real theZ)

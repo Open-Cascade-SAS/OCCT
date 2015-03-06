@@ -69,6 +69,13 @@ public:
   //! Returns unique ID of primitive array. 
   const Standard_Size GetUID() const { return myUID; }
 
+  //! Initialize indices, attributes and bounds with new data.
+  void InitBuffers (const Handle(OpenGl_Context)&        theContext,
+                    const Graphic3d_TypeOfPrimitiveArray theType,
+                    const Handle(Graphic3d_IndexBuffer)& theIndices,
+                    const Handle(Graphic3d_Buffer)&      theAttribs,
+                    const Handle(Graphic3d_BoundBuffer)& theBounds);
+
 protected:
 
   //! VBO initialization procedures
@@ -94,6 +101,11 @@ private:
                   const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   void drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Sets OpenGL draw mode according to the input type of primitive array.
+  //! If buffer of attributes is empty, draw mode is set to NONE to avoid invalid array rendering.
+  //! @param theType type of primitive array.
+  void setDrawMode (const Graphic3d_TypeOfPrimitiveArray theType);
 
 protected:
 

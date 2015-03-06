@@ -23,6 +23,7 @@
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_NameOfTextureEnv.hxx>
+#include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TypeOfTextureFilter.hxx>
@@ -3646,103 +3647,328 @@ static int VColorScale (Draw_Interpretor& theDI,
 
 //==============================================================================
 //function : VGraduatedTrihedron
-//purpose  : Displays a graduated trihedron
+//purpose  : Displays or hides a graduated trihedron
 //==============================================================================
-
-static void AddMultibyteString (TCollection_ExtendedString &name, const char *arg)
+static Standard_Boolean GetColor (const TCollection_AsciiString& theValue,
+                                  Quantity_Color& theColor)
 {
-  const char *str = arg;
-  while (*str)
+  Quantity_NameOfColor aColorName;
+  TCollection_AsciiString aVal = theValue;
+  aVal.UpperCase();
+  if (!Quantity_Color::ColorFromName (aVal.ToCString(), aColorName))
   {
-    unsigned short c1 = *str++;
-    unsigned short c2 = *str++;
-    if (!c1 || !c2) break;
-    name += (Standard_ExtCharacter)((c1 << 8) | c2);
+    return Standard_False;
   }
+  theColor = Quantity_Color (aColorName);
+  return Standard_True;
 }
 
-static int VGraduatedTrihedron(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer theArgNum, const char** theArgs)
 {
-  // Check arguments
-  if (argc != 2 && argc < 5)
+  if (theArgNum < 2)
   {
-    di<<"Error: "<<argv[0]<<" - invalid number of arguments\n";
-    di<<"Usage: type help "<<argv[0]<<"\n";
-    return 1; //TCL_ERROR
+    std::cout << theArgs[0] << " error: wrong number of parameters. Type 'help"
+              << theArgs[0] <<"' for more information.\n";
+    return 1;  //TCL_ERROR
   }
 
-  Handle(V3d_View) aV3dView = ViewerTest::CurrentView();
-
-  // Create 3D view if it doesn't exist
-  if ( aV3dView.IsNull() )
+  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfArgs;
+  TCollection_AsciiString aParseKey;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgNum; ++anArgIt)
   {
-    ViewerTest::ViewerInit();
-    aV3dView = ViewerTest::CurrentView();
-    if( aV3dView.IsNull() )
+    TCollection_AsciiString anArg (theArgs [anArgIt]);
+
+    if (anArg.Value (1) == '-' && !anArg.IsRealValue())
     {
-      di << "Error: Cannot create a 3D view\n";
-      return 1; //TCL_ERROR
+      aParseKey = anArg;
+      aParseKey.Remove (1);
+      aParseKey.LowerCase();
+      aMapOfArgs.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
+      continue;
     }
+
+    if (aParseKey.IsEmpty())
+    {
+      continue;
+    }
+
+    aMapOfArgs(aParseKey)->Append (anArg);
   }
 
-  // Erase (==0) or display (!=0)
-  const int display = Draw::Atoi(argv[1]);
-
-  if (display)
+  // Check parameters
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfArgs);
+       aMapIt.More(); aMapIt.Next())
   {
-    // Text font
-    TCollection_AsciiString font;
-    if (argc < 6)
-      font.AssignCat("Courier");
-    else
-      font.AssignCat(argv[5]);
+    const TCollection_AsciiString& aKey = aMapIt.Key();
+    const Handle(TColStd_HSequenceOfAsciiString)& anArgs = aMapIt.Value();
 
-    // Text is multibyte
-    const Standard_Boolean isMultibyte = (argc < 7)? Standard_False : (Draw::Atoi(argv[6]) != 0);
-
-    // Set axis names
-    TCollection_ExtendedString xname, yname, zname;
-    if (argc >= 5)
+    // Bool key, without arguments
+    if ((aKey.IsEqual ("on") || aKey.IsEqual ("off"))
+        && anArgs->IsEmpty())
     {
-      if (isMultibyte)
-      {
-        AddMultibyteString(xname, argv[2]);
-        AddMultibyteString(yname, argv[3]);
-        AddMultibyteString(zname, argv[4]);
-      }
-      else
-      {
-        xname += argv[2];
-        yname += argv[3];
-        zname += argv[4];
-      }
-    }
-    else
-    {
-      xname += "X (mm)";
-      yname += "Y (mm)";
-      zname += "Z (mm)";
+      continue;
     }
 
-    aV3dView->GraduatedTrihedronDisplay(xname, yname, zname,
-                                        Standard_True/*xdrawname*/, Standard_True/*ydrawname*/, Standard_True/*zdrawname*/,
-                                        Standard_True/*xdrawvalues*/, Standard_True/*ydrawvalues*/, Standard_True/*zdrawvalues*/,
-                                        Standard_True/*drawgrid*/,
-                                        Standard_True/*drawaxes*/,
-                                        5/*nbx*/, 5/*nby*/, 5/*nbz*/,
-                                        10/*xoffset*/, 10/*yoffset*/, 10/*zoffset*/,
-                                        30/*xaxisoffset*/, 30/*yaxisoffset*/, 30/*zaxisoffset*/,
-                                        Standard_True/*xdrawtickmarks*/, Standard_True/*ydrawtickmarks*/, Standard_True/*zdrawtickmarks*/,
-                                        10/*xtickmarklength*/, 10/*ytickmarklength*/, 10/*ztickmarklength*/,
-                                        Quantity_NOC_WHITE/*gridcolor*/,
-                                        Quantity_NOC_RED/*xnamecolor*/,Quantity_NOC_GREEN/*ynamecolor*/,Quantity_NOC_BLUE1/*znamecolor*/,
-                                        Quantity_NOC_RED/*xcolor*/,Quantity_NOC_GREEN/*ycolor*/,Quantity_NOC_BLUE1/*zcolor*/,font);
+    // One argument
+    if ( (aKey.IsEqual ("xname") || aKey.IsEqual ("yname") || aKey.IsEqual ("zname"))
+          && anArgs->Length() == 1)
+    {
+      continue;
+    }
+
+    // On/off arguments
+    if ((aKey.IsEqual ("xdrawname") || aKey.IsEqual ("ydrawname") || aKey.IsEqual ("zdrawname")
+        || aKey.IsEqual ("xdrawticks") || aKey.IsEqual ("ydrawticks") || aKey.IsEqual ("zdrawticks")
+        || aKey.IsEqual ("xdrawvalues") || aKey.IsEqual ("ydrawvalues") || aKey.IsEqual ("zdrawvalues"))
+        && anArgs->Length() == 1 && (anArgs->Value(1).IsEqual ("on") || anArgs->Value(1).IsEqual ("off")))
+    {
+      continue;
+    }
+
+    // One string argument
+    if ( (aKey.IsEqual ("xnamecolor") || aKey.IsEqual ("ynamecolor") || aKey.IsEqual ("znamecolor")
+          || aKey.IsEqual ("xcolor") || aKey.IsEqual ("ycolor") || aKey.IsEqual ("zcolor"))
+          && anArgs->Length() == 1 && !anArgs->Value(1).IsIntegerValue() && !anArgs->Value(1).IsRealValue())
+    {
+      continue;
+    }
+
+    // One integer argument
+    if ( (aKey.IsEqual ("xticks") || aKey.IsEqual ("yticks") || aKey.IsEqual ("zticks")
+          || aKey.IsEqual ("xticklength") || aKey.IsEqual ("yticklength") || aKey.IsEqual ("zticklength")
+          || aKey.IsEqual ("xnameoffset") || aKey.IsEqual ("ynameoffset") || aKey.IsEqual ("znameoffset")
+          || aKey.IsEqual ("xvaluesoffset") || aKey.IsEqual ("yvaluesoffset") || aKey.IsEqual ("zvaluesoffset"))
+         && anArgs->Length() == 1 && anArgs->Value(1).IsIntegerValue())
+    {
+      continue;
+    }
+
+    // One real argument
+    if ( aKey.IsEqual ("arrowlength")
+         && anArgs->Length() == 1 && (anArgs->Value(1).IsIntegerValue() || anArgs->Value(1).IsRealValue()))
+    {
+      continue;
+    }
+
+    // Two string arguments
+    if ( (aKey.IsEqual ("namefont") || aKey.IsEqual ("valuesfont"))
+         && anArgs->Length() == 1 && !anArgs->Value(1).IsIntegerValue() && !anArgs->Value(1).IsRealValue())
+    {
+      continue;
+    }
+
+    TCollection_AsciiString aLowerKey;
+    aLowerKey  = "-";
+    aLowerKey += aKey;
+    aLowerKey.LowerCase();
+    std::cout << theArgs[0] << ": " << aLowerKey << " is unknown option, or the arguments are unacceptable.\n";
+    std::cout << "Type help for more information.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
+  {
+    std::cout << theArgs[0] << ": " << " please use 'vinit' command to initialize view.\n";
+    return 1;
+  }
+
+  Standard_Boolean toDisplay = Standard_True;
+  Quantity_Color aColor;
+  Graphic3d_GraduatedTrihedron aTrihedronData;
+  // Process parameters
+  Handle(TColStd_HSequenceOfAsciiString) aValues;
+  if (aMapOfArgs.Find ("off", aValues))
+  {
+    toDisplay = Standard_False;
+  }
+
+  // AXES NAMES
+  if (aMapOfArgs.Find ("xname", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetName (aValues->Value(1));
+  }
+  if (aMapOfArgs.Find ("yname", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetName (aValues->Value(1));
+  }
+  if (aMapOfArgs.Find ("zname", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetName (aValues->Value(1));
+  }
+  if (aMapOfArgs.Find ("xdrawname", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetToDrawName (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("ydrawname", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetToDrawName (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("zdrawname", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetToDrawName (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("xnameoffset", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetNameOffset (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("ynameoffset", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetNameOffset (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("znameoffset", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetNameOffset (aValues->Value(1).IntegerValue());
+  }
+
+  // COLORS
+  if (aMapOfArgs.Find ("xnamecolor", aValues))
+  {
+    if (!GetColor (aValues->Value(1), aColor))
+    {
+      std::cout << theArgs[0] << "error: -xnamecolor wrong color name.\n";
+      return 1;
+    }
+    aTrihedronData.ChangeXAxisAspect().SetNameColor (aColor);
+  }
+  if (aMapOfArgs.Find ("ynamecolor", aValues))
+  {
+    if (!GetColor (aValues->Value(1), aColor))
+    {
+      std::cout << theArgs[0] << "error: -ynamecolor wrong color name.\n";
+      return 1;
+    }
+    aTrihedronData.ChangeYAxisAspect().SetNameColor (aColor);
+  }
+  if (aMapOfArgs.Find ("znamecolor", aValues))
+  {
+    if (!GetColor (aValues->Value(1), aColor))
+    {
+      std::cout << theArgs[0] << "error: -znamecolor wrong color name.\n";
+      return 1;
+    }
+    aTrihedronData.ChangeZAxisAspect().SetNameColor (aColor);
+  }
+  if (aMapOfArgs.Find ("xcolor", aValues))
+  {
+    if (!GetColor (aValues->Value(1), aColor))
+    {
+      std::cout << theArgs[0] << "error: -xcolor wrong color name.\n";
+      return 1;
+    }
+    aTrihedronData.ChangeXAxisAspect().SetColor (aColor);
+  }
+  if (aMapOfArgs.Find ("ycolor", aValues))
+  {
+    if (!GetColor (aValues->Value(1), aColor))
+    {
+      std::cout << theArgs[0] << "error: -ycolor wrong color name.\n";
+      return 1;
+    }
+    aTrihedronData.ChangeYAxisAspect().SetColor (aColor);
+  }
+  if (aMapOfArgs.Find ("zcolor", aValues))
+  {
+    if (!GetColor (aValues->Value(1), aColor))
+    {
+      std::cout << theArgs[0] << "error: -zcolor wrong color name.\n";
+      return 1;
+    }
+    aTrihedronData.ChangeZAxisAspect().SetColor (aColor);
+  }
+
+  // TICKMARKS
+  if (aMapOfArgs.Find ("xticks", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetTickmarkNumber (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("yticks", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetTickmarkNumber (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("zticks", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetTickmarkNumber (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("xticklength", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetTickmarkLength (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("yticklength", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetTickmarkLength (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("zticklength", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetTickmarkLength (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("xdrawticks", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetToDrawTickmarks (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("ydrawticks", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetToDrawTickmarks (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("zdrawticks", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetToDrawTickmarks (aValues->Value(1).IsEqual ("on"));
+  }
+
+  // VALUES
+  if (aMapOfArgs.Find ("xdrawvalues", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetToDrawValues (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("ydrawvalues", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetToDrawValues (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("zdrawvalues", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetToDrawValues (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("xvaluesoffset", aValues))
+  {
+    aTrihedronData.ChangeXAxisAspect().SetValuesOffset (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("yvaluesoffset", aValues))
+  {
+    aTrihedronData.ChangeYAxisAspect().SetValuesOffset (aValues->Value(1).IntegerValue());
+  }
+  if (aMapOfArgs.Find ("zvaluesoffset", aValues))
+  {
+    aTrihedronData.ChangeZAxisAspect().SetValuesOffset (aValues->Value(1).IntegerValue());
+  }
+
+  // ARROWS
+  if (aMapOfArgs.Find ("arrowlength", aValues))
+  {
+    aTrihedronData.SetArrowLength ((Standard_ShortReal) aValues->Value(1).RealValue());
+  }
+
+  // FONTS
+  if (aMapOfArgs.Find ("namefont", aValues))
+  {
+    aTrihedronData.SetNamesFont (aValues->Value(1));
+  }
+  if (aMapOfArgs.Find ("valuesfont", aValues))
+  {
+    aTrihedronData.SetValuesFont (aValues->Value(1));
+  }
+
+  // The final step: display of erase trihedron
+  if (toDisplay)
+  {
+    ViewerTest::CurrentView()->GraduatedTrihedronDisplay (aTrihedronData);
   }
   else
-    aV3dView->GraduatedTrihedronErase();
+  {
+    ViewerTest::CurrentView()->GraduatedTrihedronErase();
+  }
 
   ViewerTest::GetAISContext()->UpdateCurrentViewer();
-  aV3dView->Redraw();
+  ViewerTest::CurrentView()->Redraw();
 
   return 0;
 }
@@ -7808,7 +8034,27 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "Available text positions: left, right, center, none;\n",
     __FILE__,VColorScale,group);
   theCommands.Add("vgraduatedtrihedron",
-    "vgraduatedtrihedron : 1/0 (display/erase) [Xname Yname Zname [Font [isMultibyte]]]",
+    "vgraduatedtrihedron : -on/-off [-xname Name] [-yname Name] [-zname Name] [-arrowlength Value]\n"
+    "\t[-namefont Name] [-valuesfont Name]\n"
+    "\t[-xdrawname on/off] [-ydrawname on/off] [-zdrawname on/off]\n"
+    "\t[-xnameoffset IntVal] [-ynameoffset IntVal] [-znameoffset IntVal]"
+    "\t[-xnamecolor Color] [-ynamecolor Color] [-znamecolor Color]\n"
+    "\t[-xdrawvalues on/off] [-ydrawvalues on/off] [-zdrawvalues on/off]\n"
+    "\t[-xvaluesoffset IntVal] [-yvaluesoffset IntVal] [-zvaluesoffset IntVal]"
+    "\t[-xcolor Color] [-ycolor Color] [-zcolor Color]\n"
+    "\t[-xdrawticks on/off] [-ydrawticks on/off] [-zdrawticks on/off]\n"
+    "\t[-xticks Number] [-yticks Number] [-zticks Number]\n"
+    "\t[-xticklength IntVal] [-yticklength IntVal] [-zticklength IntVal]\n"
+    " - Displays or erases graduated trihedron"
+    " - xname, yname, zname - names of axes, default: X, Y, Z\n"
+    " - namefont - font of axes names. Default: Arial\n"
+    " - xnameoffset, ynameoffset, znameoffset - offset of name from values or tickmarks or axis. Default: 30\n"
+    " - xnamecolor, ynamecolor, znamecolor - colors of axes names\n"
+    " - xvaluesoffset, yvaluesoffset, zvaluesoffset - offset of values from tickmarks or axis. Default: 10\n"
+    " - valuesfont - font of axes values. Default: Arial\n"
+    " - xcolor, ycolor, zcolor - color of axis and values\n"
+    " - xticks, yticks, xzicks - number of tickmark on axes. Default: 5\n"
+    " - xticklength, yticklength, xzicklength - length of tickmark on axes. Default: 10\n",
     __FILE__,VGraduatedTrihedron,group);
   theCommands.Add("vprintview" ,
     "vprintview : width height filename [algo=0] [tile_width tile_height] : Test print algorithm: algo = 0 - stretch, algo = 1 - tile",

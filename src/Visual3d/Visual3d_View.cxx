@@ -2084,14 +2084,18 @@ void Visual3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho theType)
 
 static void SetMinMaxValuesCallback (Visual3d_View* theView)
 {
+  Graphic3d_CView* aCView = (Graphic3d_CView* )(theView->CView());
   Bnd_Box aBox = theView->MinMaxValues();
   if (!aBox.IsVoid())
   {
     gp_Pnt aMin = aBox.CornerMin();
     gp_Pnt aMax = aBox.CornerMax();
+
+    Graphic3d_Vec3 aMinVec ((Standard_ShortReal )aMin.X(), (Standard_ShortReal )aMin.Y(), (Standard_ShortReal )aMin.Z());
+    Graphic3d_Vec3 aMaxVec ((Standard_ShortReal )aMax.X(), (Standard_ShortReal )aMax.Y(), (Standard_ShortReal )aMax.Z());
     const Handle(Graphic3d_GraphicDriver)& aDriver = theView->GraphicDriver();
-    aDriver->GraduatedTrihedronMinMaxValues ((Standard_ShortReal )aMin.X(), (Standard_ShortReal )aMin.Y(), (Standard_ShortReal )aMin.Z(),
-                                             (Standard_ShortReal )aMax.X(), (Standard_ShortReal )aMax.Y(), (Standard_ShortReal )aMax.Z());
+    aDriver->GraduatedTrihedronMinMaxValues (*aCView, aMinVec, aMaxVec);
+
   }
 }
 
@@ -2099,90 +2103,14 @@ static void SetMinMaxValuesCallback (Visual3d_View* theView)
 // function : GetGraduatedTrihedron
 // purpose  :
 // =======================================================================
-Standard_Boolean Visual3d_View::GetGraduatedTrihedron (TCollection_ExtendedString& theXName,
-                                                       TCollection_ExtendedString& theYName,
-                                                       TCollection_ExtendedString& theZName,
-                                                       Standard_Boolean&           theToDrawXName,
-                                                       Standard_Boolean&           theToDrawYName,
-                                                       Standard_Boolean&           theToDrawZName,
-                                                       Standard_Boolean&           theToDrawXValues,
-                                                       Standard_Boolean&           theToDrawYValues,
-                                                       Standard_Boolean&           theToDrawZValues,
-                                                       Standard_Boolean&           theToDrawGrid,
-                                                       Standard_Boolean&           theToDrawAxes,
-                                                       Standard_Integer&           theNbX,
-                                                       Standard_Integer&           theNbY,
-                                                       Standard_Integer&           theNbZ,
-                                                       Standard_Integer&           theXOffset,
-                                                       Standard_Integer&           theYOffset,
-                                                       Standard_Integer&           theZOffset,
-                                                       Standard_Integer&           theXAxisOffset,
-                                                       Standard_Integer&           theYAxisOffset,
-                                                       Standard_Integer&           theZAxisOffset,
-                                                       Standard_Boolean&           theToDrawXTickMarks,
-                                                       Standard_Boolean&           theToDrawYTickMarks,
-                                                       Standard_Boolean&           theToDrawZTickMarks,
-                                                       Standard_Integer&           theXTickMarkLength,
-                                                       Standard_Integer&           theYTickMarkLength,
-                                                       Standard_Integer&           theZTickMarkLength,
-                                                       Quantity_Color&             theGridColor,
-                                                       Quantity_Color&             theXNameColor,
-                                                       Quantity_Color&             theYNameColor,
-                                                       Quantity_Color&             theZNameColor,
-                                                       Quantity_Color&             theXColor,
-                                                       Quantity_Color&             theYColor,
-                                                       Quantity_Color&             theZColor,
-                                                       TCollection_AsciiString&    theFontOfNames,
-                                                       Font_FontAspect&            theStyleOfNames,
-                                                       Standard_Integer&           theSizeOfNames,
-                                                       TCollection_AsciiString&    theFontOfValues,
-                                                       Font_FontAspect&            theStyleOfValues,
-                                                       Standard_Integer&           theSizeOfValues) const
+Standard_Boolean Visual3d_View::GetGraduatedTrihedron (Graphic3d_GraduatedTrihedron& theTrihedronData) const
 {
-  if (!MyGTrihedron.ptrVisual3dView)
+  if (!myGTrihedron.PtrVisual3dView)
   {
     return Standard_False;
   }
 
-  theXName = MyGTrihedron.xname;
-  theYName = MyGTrihedron.yname;
-  theZName = MyGTrihedron.zname;
-  theToDrawXName   = MyGTrihedron.xdrawname;
-  theToDrawYName   = MyGTrihedron.ydrawname;
-  theToDrawZName   = MyGTrihedron.zdrawname;
-  theToDrawXValues = MyGTrihedron.xdrawvalues;
-  theToDrawYValues = MyGTrihedron.ydrawvalues;
-  theToDrawZValues = MyGTrihedron.zdrawvalues;
-  theToDrawGrid    = MyGTrihedron.drawgrid;
-  theToDrawAxes    = MyGTrihedron.drawaxes;
-  theNbX = MyGTrihedron.nbx;
-  theNbY = MyGTrihedron.nby;
-  theNbZ = MyGTrihedron.nbz;
-  theXOffset     = MyGTrihedron.xoffset;
-  theYOffset     = MyGTrihedron.yoffset;
-  theZOffset     = MyGTrihedron.zoffset;
-  theXAxisOffset = MyGTrihedron.xaxisoffset;
-  theYAxisOffset = MyGTrihedron.yaxisoffset;
-  theZAxisOffset = MyGTrihedron.zaxisoffset;
-  theToDrawXTickMarks = MyGTrihedron.xdrawtickmarks;
-  theToDrawYTickMarks = MyGTrihedron.ydrawtickmarks;
-  theToDrawZTickMarks = MyGTrihedron.zdrawtickmarks;
-  theXTickMarkLength  = MyGTrihedron.xtickmarklength;
-  theYTickMarkLength  = MyGTrihedron.ytickmarklength;
-  theZTickMarkLength  = MyGTrihedron.ztickmarklength;
-  theGridColor  = MyGTrihedron.gridcolor;
-  theXNameColor = MyGTrihedron.xnamecolor;
-  theYNameColor = MyGTrihedron.ynamecolor;
-  theZNameColor = MyGTrihedron.znamecolor;
-  theXColor     = MyGTrihedron.xcolor;
-  theYColor     = MyGTrihedron.ycolor;
-  theZColor     = MyGTrihedron.zcolor;
-  theFontOfNames   = MyGTrihedron.fontOfNames;
-  theStyleOfNames  = MyGTrihedron.styleOfNames;
-  theSizeOfNames   = MyGTrihedron.sizeOfNames;
-  theFontOfValues  = MyGTrihedron.fontOfValues;
-  theStyleOfValues = MyGTrihedron.styleOfValues;
-  theSizeOfValues  = MyGTrihedron.sizeOfValues;
+  theTrihedronData = myGTrihedron;
   return Standard_True;
 }
 
@@ -2190,89 +2118,14 @@ Standard_Boolean Visual3d_View::GetGraduatedTrihedron (TCollection_ExtendedStrin
 // function : GraduatedTrihedronDisplay
 // purpose  :
 // =======================================================================
-void Visual3d_View::GraduatedTrihedronDisplay (const TCollection_ExtendedString& theXName,
-                                               const TCollection_ExtendedString& theYName,
-                                               const TCollection_ExtendedString& theZName,
-                                               const Standard_Boolean theToDrawXName,
-                                               const Standard_Boolean theToDrawYName,
-                                               const Standard_Boolean theToDrawZName,
-                                               const Standard_Boolean theToDrawXValues,
-                                               const Standard_Boolean theToDrawYValues,
-                                               const Standard_Boolean theToDrawZValues,
-                                               const Standard_Boolean theToDrawGrid,
-                                               const Standard_Boolean theToDrawAxes,
-                                               const Standard_Integer theNbX,
-                                               const Standard_Integer theNbY,
-                                               const Standard_Integer theNbZ,
-                                               const Standard_Integer theXOffset,
-                                               const Standard_Integer theYOffset,
-                                               const Standard_Integer theZOffset,
-                                               const Standard_Integer theXAxisOffset,
-                                               const Standard_Integer theYAxisOffset,
-                                               const Standard_Integer theZAxisOffset,
-                                               const Standard_Boolean theToDrawXTickMarks,
-                                               const Standard_Boolean theToDrawYTickMarks,
-                                               const Standard_Boolean theToDrawZTickMarks,
-                                               const Standard_Integer theXTickMarkLength,
-                                               const Standard_Integer theYTickMarkLength,
-                                               const Standard_Integer theZTickMarkLength,
-                                               const Quantity_Color&  theGridColor,
-                                               const Quantity_Color&  theXNameColor,
-                                               const Quantity_Color&  theYNameColor,
-                                               const Quantity_Color&  theZNameColor,
-                                               const Quantity_Color&  theXColor,
-                                               const Quantity_Color&  theYColor,
-                                               const Quantity_Color&  theZColor,
-                                               const TCollection_AsciiString& theFontOfNames,
-                                               const Font_FontAspect  theStyleOfNames,
-                                               const Standard_Integer theSizeOfNames,
-                                               const TCollection_AsciiString& theFontOfValues,
-                                               const Font_FontAspect  theStyleOfValues,
-                                               const Standard_Integer theSizeOfValues)
+void Visual3d_View::GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData)
 {
-  MyGTrihedron.xname = theXName;
-  MyGTrihedron.yname = theYName;
-  MyGTrihedron.zname = theZName;
-  MyGTrihedron.xdrawname = theToDrawXName;
-  MyGTrihedron.ydrawname = theToDrawYName;
-  MyGTrihedron.zdrawname = theToDrawZName;
-  MyGTrihedron.xdrawvalues = theToDrawXValues;
-  MyGTrihedron.ydrawvalues = theToDrawYValues;
-  MyGTrihedron.zdrawvalues = theToDrawZValues;
-  MyGTrihedron.drawgrid = theToDrawGrid;
-  MyGTrihedron.drawaxes = theToDrawAxes;
-  MyGTrihedron.nbx = theNbX;
-  MyGTrihedron.nby = theNbY;
-  MyGTrihedron.nbz = theNbZ;
-  MyGTrihedron.xoffset = theXOffset;
-  MyGTrihedron.yoffset = theYOffset;
-  MyGTrihedron.zoffset = theZOffset;
-  MyGTrihedron.xaxisoffset = theXAxisOffset;
-  MyGTrihedron.yaxisoffset = theYAxisOffset;
-  MyGTrihedron.zaxisoffset = theZAxisOffset;
-  MyGTrihedron.xdrawtickmarks = theToDrawXTickMarks;
-  MyGTrihedron.ydrawtickmarks = theToDrawYTickMarks;
-  MyGTrihedron.zdrawtickmarks = theToDrawZTickMarks;
-  MyGTrihedron.xtickmarklength = theXTickMarkLength;
-  MyGTrihedron.ytickmarklength = theYTickMarkLength;
-  MyGTrihedron.ztickmarklength = theZTickMarkLength;
-  MyGTrihedron.gridcolor  = theGridColor;
-  MyGTrihedron.xnamecolor = theXNameColor;
-  MyGTrihedron.ynamecolor = theYNameColor;
-  MyGTrihedron.znamecolor = theZNameColor;
-  MyGTrihedron.xcolor = theXColor;
-  MyGTrihedron.ycolor = theYColor;
-  MyGTrihedron.zcolor = theZColor;
-  MyGTrihedron.fontOfNames   = theFontOfNames;
-  MyGTrihedron.styleOfNames  = theStyleOfNames;
-  MyGTrihedron.sizeOfNames   = theSizeOfNames;
-  MyGTrihedron.fontOfValues  = theFontOfValues;
-  MyGTrihedron.styleOfValues = theStyleOfValues;
-  MyGTrihedron.sizeOfValues  = theSizeOfValues;
+  myGTrihedron = theTrihedronData;
 
-  MyGTrihedron.ptrVisual3dView = this;
-  MyGTrihedron.cbCubicAxes     = SetMinMaxValuesCallback;
-  myGraphicDriver->GraduatedTrihedronDisplay (MyCView, MyGTrihedron);
+  myGTrihedron.PtrVisual3dView = this;
+  myGTrihedron.CubicAxesCallback = SetMinMaxValuesCallback;
+
+  myGraphicDriver->GraduatedTrihedronDisplay (MyCView, myGTrihedron);
 }
 
 // =======================================================================
@@ -2281,7 +2134,7 @@ void Visual3d_View::GraduatedTrihedronDisplay (const TCollection_ExtendedString&
 // =======================================================================
 void Visual3d_View::GraduatedTrihedronErase()
 {
-  MyGTrihedron.ptrVisual3dView = NULL;
+  myGTrihedron.PtrVisual3dView = NULL;
   myGraphicDriver->GraduatedTrihedronErase (MyCView);
 }
 

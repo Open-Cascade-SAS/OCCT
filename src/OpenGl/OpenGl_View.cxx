@@ -242,7 +242,7 @@ void OpenGl_View::TriedronErase (const Handle(OpenGl_Context)& theCtx)
 /*----------------------------------------------------------------------*/
 
 void OpenGl_View::GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&        theCtx,
-                                             const Graphic3d_CGraduatedTrihedron& theData)
+                                             const Graphic3d_GraduatedTrihedron& theData)
 {
   OpenGl_Element::Destroy (theCtx.operator->(), myGraduatedTrihedron);
   myGraduatedTrihedron = new OpenGl_GraduatedTrihedron (theData);

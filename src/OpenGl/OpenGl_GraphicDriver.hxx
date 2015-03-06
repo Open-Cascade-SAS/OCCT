@@ -46,7 +46,7 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Graphic3d_CUserDraw.hxx>
-#include <Graphic3d_CGraduatedTrihedron.hxx>
+#include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_SortType.hxx>
@@ -171,9 +171,28 @@ public:
   Standard_EXPORT void TriedronDisplay (const Graphic3d_CView& ACView, const Aspect_TypeOfTriedronPosition APosition = Aspect_TOTP_CENTER, const Quantity_NameOfColor AColor = Quantity_NOC_WHITE, const Standard_Real AScale = 0.02, const Standard_Boolean AsWireframe = Standard_True);
   Standard_EXPORT void TriedronErase (const Graphic3d_CView& ACView);
   Standard_EXPORT void TriedronEcho (const Graphic3d_CView& ACView, const Aspect_TypeOfTriedronEcho AType = Aspect_TOTE_NONE);
-  Standard_EXPORT void GraduatedTrihedronDisplay (const Graphic3d_CView& view, const Graphic3d_CGraduatedTrihedron& cubic);
-  Standard_EXPORT void GraduatedTrihedronErase (const Graphic3d_CView& view);
-  Standard_EXPORT void GraduatedTrihedronMinMaxValues (const Standard_ShortReal xmin, const Standard_ShortReal ymin, const Standard_ShortReal zmin, const Standard_ShortReal xmax, const Standard_ShortReal ymax, const Standard_ShortReal zmax);
+
+  //! Displays Graduated trihedron
+  //! @param theView [in] the graphic view
+  //! @param theCubic [in] Graduated Trihedon parameters.
+  //! @sa OpenGl_GraduatedTrihedron
+  //! @sa Graphic3d_GraduatedTrihedron
+  Standard_EXPORT void GraduatedTrihedronDisplay (const Graphic3d_CView& theView, const Graphic3d_GraduatedTrihedron& theCubic);
+
+  //! Erases Graduated Trihedron from the view.
+  //! theView [in] graphic view
+  //! @sa OpenGl_GraduatedTrihedron
+  Standard_EXPORT void GraduatedTrihedronErase (const Graphic3d_CView& theView);
+
+  //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron
+  //! stored in graphic view object. 
+  //! @param theView [in] current graphic view
+  //! @param theMin [in] the minimum point of scene.
+  //! @param theMax [in] the maximum point of scene.
+  //! @sa OpenGl_GraduatedTrihedron
+  Standard_EXPORT void GraduatedTrihedronMinMaxValues (const Graphic3d_CView& theView,
+                                                       const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax);
+
   Standard_EXPORT void Layer (Aspect_CLayer2d& ACLayer);
   Standard_EXPORT void RemoveLayer (const Aspect_CLayer2d& ACLayer);
   Standard_EXPORT void BeginLayer (const Aspect_CLayer2d& ACLayer);

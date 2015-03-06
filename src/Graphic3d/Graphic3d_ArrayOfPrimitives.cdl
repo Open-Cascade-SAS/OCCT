@@ -38,6 +38,7 @@ uses
     Buffer_Handle        from Graphic3d,
     BoundBuffer_Handle   from Graphic3d,
     IndexBuffer_Handle   from Graphic3d,
+    Vec3                 from Graphic3d,
     Color                from Quantity,
     Pnt                  from gp,
     Pnt2d                from gp,
@@ -87,6 +88,7 @@ is
     raises OutOfRange from Standard;
     -- if the actual vertex number is >= <maxVertexs>
     ---C++: inline
+    ---C++: alias "Standard_Integer AddVertex (const Graphic3d_Vec3& theVertex);"
 
     AddVertex( me:mutable;
                X,Y,Z: Real from Standard)

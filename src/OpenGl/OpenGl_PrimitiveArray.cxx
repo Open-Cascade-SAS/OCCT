@@ -624,49 +624,8 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*       
     // dummy index buffer?
     myIndices.Nullify();
   }
-  if (myAttribs.IsNull())
-  {
-    return;
-  }
 
-  switch (theType)
-  {
-    case Graphic3d_TOPA_POINTS:
-      myDrawMode = GL_POINTS;
-      break;
-    case Graphic3d_TOPA_POLYLINES:
-      myDrawMode = GL_LINE_STRIP;
-      break;
-    case Graphic3d_TOPA_SEGMENTS:
-      myDrawMode = GL_LINES;
-      break;
-    case Graphic3d_TOPA_TRIANGLES:
-      myDrawMode = GL_TRIANGLES;
-      break;
-    case Graphic3d_TOPA_TRIANGLESTRIPS:
-      myDrawMode = GL_TRIANGLE_STRIP;
-      break;
-    case Graphic3d_TOPA_TRIANGLEFANS:
-      myDrawMode = GL_TRIANGLE_FAN;
-      break;
-  #if !defined(GL_ES_VERSION_2_0)
-    case Graphic3d_TOPA_POLYGONS:
-      myDrawMode = GL_POLYGON;
-      break;
-    case Graphic3d_TOPA_QUADRANGLES:
-      myDrawMode = GL_QUADS;
-      break;
-    case Graphic3d_TOPA_QUADRANGLESTRIPS:
-      myDrawMode = GL_QUAD_STRIP;
-      break;
-  #else
-    case Graphic3d_TOPA_POLYGONS:
-    case Graphic3d_TOPA_QUADRANGLES:
-    case Graphic3d_TOPA_QUADRANGLESTRIPS:
-  #endif
-    case Graphic3d_TOPA_UNDEFINED:
-      break;
-  }
+  setDrawMode (theType);
 }
 
 // =======================================================================
@@ -835,3 +794,77 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 
   aCtx->BindProgram (NULL);
 }
+
+// =======================================================================
+// function : setDrawMode
+// purpose  :
+// =======================================================================
+void OpenGl_PrimitiveArray::setDrawMode (const Graphic3d_TypeOfPrimitiveArray theType)
+{
+  if (myAttribs.IsNull())
+  {
+    myDrawMode = DRAW_MODE_NONE;
+    return;
+  }
+
+  switch (theType)
+  {
+    case Graphic3d_TOPA_POINTS:
+      myDrawMode = GL_POINTS;
+      break;
+    case Graphic3d_TOPA_POLYLINES:
+      myDrawMode = GL_LINE_STRIP;
+      break;
+    case Graphic3d_TOPA_SEGMENTS:
+      myDrawMode = GL_LINES;
+      break;
+    case Graphic3d_TOPA_TRIANGLES:
+      myDrawMode = GL_TRIANGLES;
+      break;
+    case Graphic3d_TOPA_TRIANGLESTRIPS:
+      myDrawMode = GL_TRIANGLE_STRIP;
+      break;
+    case Graphic3d_TOPA_TRIANGLEFANS:
+      myDrawMode = GL_TRIANGLE_FAN;
+      break;
+  #if !defined(GL_ES_VERSION_2_0)
+    case Graphic3d_TOPA_POLYGONS:
+      myDrawMode = GL_POLYGON;
+      break;
+    case Graphic3d_TOPA_QUADRANGLES:
+      myDrawMode = GL_QUADS;
+      break;
+    case Graphic3d_TOPA_QUADRANGLESTRIPS:
+      myDrawMode = GL_QUAD_STRIP;
+      break;
+  #else
+    case Graphic3d_TOPA_POLYGONS:
+    case Graphic3d_TOPA_QUADRANGLES:
+    case Graphic3d_TOPA_QUADRANGLESTRIPS:
+  #endif
+    case Graphic3d_TOPA_UNDEFINED:
+      break;
+  }
+}
+
+// =======================================================================
+// function : InitBuffers
+// purpose  :
+// =======================================================================
+void OpenGl_PrimitiveArray::InitBuffers (const Handle(OpenGl_Context)&        theContext,
+                                         const Graphic3d_TypeOfPrimitiveArray theType,
+                                         const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                         const Handle(Graphic3d_Buffer)&      theAttribs,
+                                         const Handle(Graphic3d_BoundBuffer)& theBounds)
+{
+  // Release old graphic resources
+  Release (theContext.operator->());
+
+  myIndices = theIndices;
+  myAttribs = theAttribs;
+  myBounds = theBounds;
+
+  setDrawMode (theType);
+}
+
+

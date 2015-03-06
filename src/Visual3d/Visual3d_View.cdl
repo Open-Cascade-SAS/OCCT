@@ -104,7 +104,7 @@ uses
     FontAspect              from Font,
     AsciiString             from TCollection,
     ExtendedString          from TCollection,
-    CGraduatedTrihedron     from Graphic3d,
+    GraduatedTrihedron      from Graphic3d,
     NMapOfTransient         from Graphic3d,
     TypeOfStructure         from Graphic3d,
 
@@ -515,87 +515,13 @@ is
     ------------------------------------------
 
     GetGraduatedTrihedron(me;
-                          -- Names of axes --
-                          xname, yname, zname : out ExtendedString from TCollection;
-                          -- Draw names --
-                          xdrawname, ydrawname, zdrawname : out Boolean from Standard;
-                          -- Draw values --
-                          xdrawvalues, ydrawvalues, zdrawvalues : out Boolean from Standard;
-                          -- Draw grid --
-                          drawgrid : out Boolean from Standard;
-                          -- Draw axes --
-                          drawaxes : out Boolean from Standard;
-                          -- Number of splits along axes --
-                          nbx, nby, nbz : out Integer from Standard;
-                          -- Offset for drawing values --
-                          xoffset, yoffset, zoffset : out Integer from Standard;
-                          -- Offset for drawing names of axes --
-                          xaxisoffset, yaxisoffset, zaxisoffset : out Integer from Standard;
-                          -- Draw tickmarks --
-                          xdrawtickmarks, ydrawtickmarks, zdrawtickmarks : out Boolean from Standard;
-                          -- Length of tickmarks --
-                          xtickmarklength, ytickmarklength, ztickmarklength : out Integer from Standard;
-                          -- Grid color --
-                          gridcolor : out Color from Quantity;
-                          -- Colors of axis names --
-                          xnamecolor, ynamecolor, znamecolor : out Color from Quantity;
-                          -- Colors of axis and values --
-                          xcolor, ycolor, zcolor : out Color from Quantity;
-                          -- Name of font for names of axes --
-                          fontOfNames : out AsciiString from TCollection;
-                          -- Style of names of axes --
-                          styleOfNames : out FontAspect from Font;
-                          -- Size of names of axes --
-                          sizeOfNames : out Integer from Standard;
-                          -- Name of font for values --
-                          fontOfValues : out AsciiString from TCollection;
-                          -- Style of values --
-                          styleOfValues : out FontAspect from Font;
-                          -- Size of values --
-                          sizeOfValues : out Integer from Standard)
+                          theTrigedronData: out GraduatedTrihedron from Graphic3d)
     returns Boolean from Standard
     is static;
     ---Purpose: Returns data of a graduated trihedron if displayed (return value is True)
 
     GraduatedTrihedronDisplay(me : mutable;
-                              -- Names of axes --
-                              xname, yname, zname : ExtendedString from TCollection;
-                              -- Draw names --
-                              xdrawname, ydrawname, zdrawname : Boolean from Standard;
-                              -- Draw values --
-                              xdrawvalues, ydrawvalues, zdrawvalues : Boolean from Standard;
-                              -- Draw grid --
-                              drawgrid : Boolean from Standard;
-                              -- Draw axes --
-                              drawaxes : Boolean from Standard;
-                              -- Number of splits along axes --
-                              nbx, nby, nbz : Integer from Standard;
-                              -- Offset for drawing values --
-                              xoffset, yoffset, zoffset : Integer from Standard;
-                              -- Offset for drawing names of axes --
-                              xaxisoffset, yaxisoffset, zaxisoffset : Integer from Standard;
-                              -- Draw tickmarks --
-                              xdrawtickmarks, ydrawtickmarks, zdrawtickmarks : Boolean from Standard;
-                              -- Length of tickmarks --
-                              xtickmarklength, ytickmarklength, ztickmarklength : Integer from Standard;
-                              -- Grid color --
-                              gridcolor : Color from Quantity;
-                              -- Colors of axis names --
-                              xnamecolor, ynamecolor, znamecolor : Color from Quantity;
-                              -- Colors of axis and values --
-                              xcolor, ycolor, zcolor : Color from Quantity;
-                              -- Name of font for names of axes --
-                              fontOfNames : AsciiString from TCollection;
-                              -- Style of names of axes --
-                              styleOfNames : FontAspect from Font;
-                              -- Size of names of axes --
-                              sizeOfNames : Integer from Standard;
-                              -- Name of font for values --
-                              fontOfValues : AsciiString from TCollection;
-                              -- Style of values --
-                              styleOfValues : FontAspect from Font;
-                              -- Size of values --
-                              sizeOfValues : Integer from Standard)
+                              theTrigedronData: in GraduatedTrihedron from Graphic3d)
     ---Purpose: Displays a graduated trihedron.
     is static;
 
@@ -1195,7 +1121,7 @@ fields
   myStructsDisplayed    : MapOfStructure from Graphic3d;
   myImmediateStructures : MapOfStructure from Graphic3d;
 
-  MyGTrihedron     : CGraduatedTrihedron from Graphic3d;
+  myGTrihedron     : GraduatedTrihedron from Graphic3d;
 
   myDefaultCamera  : Camera_Handle from Graphic3d;
 

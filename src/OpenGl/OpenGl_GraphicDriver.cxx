@@ -606,7 +606,7 @@ void OpenGl_GraphicDriver::SetBgGradientStyle (const Graphic3d_CView&          t
 // purpose  :
 // =======================================================================
 void OpenGl_GraphicDriver::GraduatedTrihedronDisplay (const Graphic3d_CView&               theCView,
-                                                      const Graphic3d_CGraduatedTrihedron& theCubic)
+                                                      const Graphic3d_GraduatedTrihedron& theCubic)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
   if (aCView != NULL)
@@ -632,12 +632,13 @@ void OpenGl_GraphicDriver::GraduatedTrihedronErase (const Graphic3d_CView& theCV
 // function : GraduatedTrihedronMinMaxValues
 // purpose  :
 // =======================================================================
-void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Standard_ShortReal theMinX,
-                                                           const Standard_ShortReal theMinY,
-                                                           const Standard_ShortReal theMinZ,
-                                                           const Standard_ShortReal theMaxX,
-                                                           const Standard_ShortReal theMaxY,
-                                                           const Standard_ShortReal theMaxZ)
+void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Graphic3d_CView& theView,
+                                                           const Graphic3d_Vec3 theMin,
+                                                           const Graphic3d_Vec3 theMax)
 {
-  OpenGl_GraduatedTrihedron::SetMinMax (theMinX, theMinY, theMinZ, theMaxX, theMaxY, theMaxZ);
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theView.ptrView;
+  if (aCView != NULL)
+  {
+    aCView->View->GraduatedTrihedron()->SetMinMax (theMin, theMax);
+  }
 }

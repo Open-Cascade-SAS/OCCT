@@ -447,9 +447,9 @@ static Standard_Boolean OpenGl_Utils::Project (const T                          
   anOut.z() *= anOut.w();
 
   // Map x, y and z to range 0-1
-  anOut.x() = anOut.x() * 0.5 + 0.5;
-  anOut.y() = anOut.y() * 0.5 + 0.5;
-  anOut.z() = anOut.z() * 0.5 + 0.5;
+  anOut.x() = anOut.x() * static_cast<T> (0.5) + static_cast<T> (0.5);
+  anOut.y() = anOut.y() * static_cast<T> (0.5) + static_cast<T> (0.5);
+  anOut.z() = anOut.z() * static_cast<T> (0.5) + static_cast<T> (0.5);
 
   // Map x,y to viewport
   anOut.x() = anOut.x() * theViewport[2] + theViewport[0];

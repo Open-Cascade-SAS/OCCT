@@ -122,6 +122,7 @@ uses
         ExtendedString                    from TCollection,
         PrintAlgo                         from Aspect,
         ClipPlane_Handle                  from Graphic3d,
+        GraduatedTrihedron               from Graphic3d,
         SequenceOfHClipPlane              from Graphic3d,
         RenderingMode                     from Graphic3d,
         RenderingParams                   from Graphic3d,
@@ -458,110 +459,12 @@ is
         ---------------------------------
 
         GetGraduatedTrihedron(me;
-                              -- Names of axes --
-                              xname, yname, zname : out ExtendedString from TCollection;
-                              -- Draw names --
-                              xdrawname, ydrawname, zdrawname : out Boolean from Standard;
-                              -- Draw values --
-                              xdrawvalues, ydrawvalues, zdrawvalues : out Boolean from Standard;
-                              -- Draw grid --
-                              drawgrid : out Boolean from Standard;
-                              -- Draw axes --
-                              drawaxes : out Boolean from Standard;
-                              -- Number of splits along axes --
-                              nbx, nby, nbz : out Integer from Standard;
-                              -- Offset for drawing values --
-                              xoffset, yoffset, zoffset : out Integer from Standard;
-                              -- Offset for drawing names of axes --
-                              xaxisoffset, yaxisoffset, zaxisoffset : out Integer from Standard;
-                              -- Draw tickmarks --
-                              xdrawtickmarks, ydrawtickmarks, zdrawtickmarks : out Boolean from Standard;
-                              -- Length of tickmarks --
-                              xtickmarklength, ytickmarklength, ztickmarklength : out Integer from Standard;
-                              -- Grid color --
-                              gridcolor : out Color from Quantity;
-                              -- Colors of axis names --
-                              xnamecolor, ynamecolor, znamecolor : out Color from Quantity;
-                              -- Colors of axis and values --
-                              xcolor, ycolor, zcolor : out Color from Quantity;
-                              -- Name of font for names of axes --
-                              fontOfNames : out AsciiString from TCollection;
-                              -- Style of names of axes --
-                              styleOfNames : out FontAspect from Font;
-                              -- Size of names of axes --
-                              sizeOfNames : out Integer from Standard;
-                              -- Name of font for values --
-                              fontOfValues : out AsciiString from TCollection;
-                              -- Style of values --
-                              styleOfValues : out FontAspect from Font;
-                              -- Size of values --
-                              sizeOfValues : out Integer from Standard)
+                              theTrigedronData: out GraduatedTrihedron from Graphic3d)
         ---Purpose: Returns data of a graduated trihedron.
         is static;
 
         GraduatedTrihedronDisplay(me : mutable;
-                                  -- Names of axes --
-                                  xname : ExtendedString from TCollection = "X";
-                                  yname : ExtendedString from TCollection = "Y";
-                                  zname : ExtendedString from TCollection = "Z";
-                                  -- Draw names --
-                                  xdrawname : Boolean from Standard = Standard_True;
-                                  ydrawname : Boolean from Standard = Standard_True;
-                                  zdrawname : Boolean from Standard = Standard_True;
-                                  -- Draw values --
-                                  xdrawvalues : Boolean from Standard = Standard_True;
-                                  ydrawvalues : Boolean from Standard = Standard_True;
-                                  zdrawvalues : Boolean from Standard = Standard_True;
-                                  -- Draw grid --
-                                  drawgrid : Boolean from Standard = Standard_True;
-                                  -- Draw axes --
-                                  drawaxes : Boolean from Standard = Standard_True;
-                                  -- Number of splits along axes --
-                                  nbx : Integer from Standard = 3;
-                                  nby : Integer from Standard = 3;
-                                  nbz : Integer from Standard = 3;
-                                  -- Offset for drawing values --
-                                  xoffset : Integer from Standard = 10;
-                                  yoffset : Integer from Standard = 10;
-                                  zoffset : Integer from Standard = 10;
-                                  -- Offset for drawing names of axes --
-                                  xaxisoffset : Integer from Standard = 30;
-                                  yaxisoffset : Integer from Standard = 30;
-                                  zaxisoffset : Integer from Standard = 30;
-                                  -- Draw tickmarks --
-                                  xdrawtickmarks : Boolean from Standard = Standard_True;
-                                  ydrawtickmarks : Boolean from Standard = Standard_True;
-                                  zdrawtickmarks : Boolean from Standard = Standard_True;
-                                  -- Length of tickmarks --
-                                  xtickmarklength : Integer from Standard = 10;
-                                  ytickmarklength : Integer from Standard = 10;
-                                  ztickmarklength : Integer from Standard = 10;
-                                  -- Grid color --
-                                  gridcolor : Color from Quantity = Quantity_NOC_WHITE;
-                                  -- X name color --
-                                  xnamecolor : Color from Quantity = Quantity_NOC_RED;
-                                  -- Y name color --
-                                  ynamecolor : Color from Quantity = Quantity_NOC_GREEN;
-                                  -- Z name color --
-                                  znamecolor : Color from Quantity = Quantity_NOC_BLUE1;
-                                  -- X color of axis and values --
-                                  xcolor : Color from Quantity = Quantity_NOC_RED;
-                                  -- Y color of axis and values --
-                                  ycolor : Color from Quantity = Quantity_NOC_GREEN;
-                                  -- Z color of axis and values --
-                                  zcolor : Color from Quantity = Quantity_NOC_BLUE1;
-                                  -- Name of font for names of axes --
-                                  fontOfNames : AsciiString from TCollection = "Arial";
-                                  -- Style of names of axes --
-                                  styleOfNames : FontAspect from Font = Font_FA_Bold;
-                                  -- Size of names of axes --
-                                  sizeOfNames : Integer from Standard = 12;
-                                  -- Name of font for values --
-                                  fontOfValues : AsciiString from TCollection = "Arial";
-                                  -- Style of values --
-                                  styleOfValues : FontAspect from Font = Font_FA_Regular;
-                                  -- Size of values --
-                                  sizeOfValues : Integer from Standard = 12)
+                                  theTrigedronData: in GraduatedTrihedron from Graphic3d)
         ---Purpose: Displays a graduated trihedron.
         is static;
 

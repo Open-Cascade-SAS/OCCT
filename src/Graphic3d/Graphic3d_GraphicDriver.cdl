@@ -86,8 +86,9 @@ uses
     CUserDraw           from Graphic3d,
     NListOfHAsciiString from Graphic3d,
     FontAspect          from Font,
-    CGraduatedTrihedron from Graphic3d,
+    GraduatedTrihedron  from Graphic3d,
     ClipPlane           from Graphic3d,
+    Vec3                from Graphic3d,
     Ax2                 from gp
 
 raises
@@ -328,24 +329,26 @@ is
     ---------------------------------
 
     GraduatedTrihedronDisplay(me : mutable;
-                              view : CView from Graphic3d;
-                              cubic : CGraduatedTrihedron from Graphic3d)
+                              theView : CView from Graphic3d;
+                              theCubic : GraduatedTrihedron from Graphic3d)
     ---Purpose: call_togl_graduatedtrihedron_display
     is deferred;
 
     GraduatedTrihedronErase(me : mutable;
-                            view : CView from Graphic3d)
+                            theView : CView from Graphic3d)
     ---Purpose: call_togl_graduatedtrihedron_erase
     is deferred;
 
-    GraduatedTrihedronMinMaxValues(me : mutable;
-                                   xmin : ShortReal from Standard;
-                                   ymin : ShortReal from Standard;
-                                   zmin : ShortReal from Standard;
-                                   xmax : ShortReal from Standard;
-                                   ymax : ShortReal from Standard;
-                                   zmax : ShortReal from Standard)
-    ---Purpose: call_togl_graduatedtrihedron_minmaxvalues
+    GraduatedTrihedronMinMaxValues (me : mutable;
+                                    theView : CView from Graphic3d;
+                                    theMin : Vec3 from Graphic3d;
+                                    theMax : Vec3 from Graphic3d)
+    ---Purpose: Sets minimum and maximum points of scene bounding box for Graduated Trihedron
+    -- stored in graphic view object.
+    -- @param theView [in] current graphic view
+    -- @param theMin [in] the minimum point of scene.
+    -- @param theMax [in] the maximum point of scene.
+
     is deferred;
 
     ----------------------------------

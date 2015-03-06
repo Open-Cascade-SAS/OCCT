@@ -21,7 +21,7 @@ Graphic3d_CTexture.hxx
 Graphic3d_CLight.hxx
 Graphic3d_CUserDraw.hxx
 Graphic3d_CView.hxx
-Graphic3d_CGraduatedTrihedron.hxx
+Graphic3d_GraduatedTrihedron.hxx
 Graphic3d_ViewAffinity.hxx
 Graphic3d_ViewAffinity.cxx
 Graphic3d_MapOfObject.hxx

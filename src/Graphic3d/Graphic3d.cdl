@@ -405,7 +405,7 @@ is
     ---Purpose: Describes rendering parameters and effects.
     ---Category: Imported types
 
-    imported CGraduatedTrihedron;
+    imported GraduatedTrihedron;
     ---Category: Imported types
 
     imported ClipPlane;

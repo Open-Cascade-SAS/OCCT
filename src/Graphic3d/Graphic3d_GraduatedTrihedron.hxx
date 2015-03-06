@@ -1,0 +1,218 @@
+// Created on: 2011-03-06
+// Created by: Sergey ZERCHANINOV
+// Copyright (c) 2011-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _Graphic3d_GraduatedTrihedron_HeaderFile
+#define _Graphic3d_GraduatedTrihedron_HeaderFile
+
+#include <Font_FontAspect.hxx>
+#include <NCollection_Array1.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+
+class Visual3d_View;
+
+//! Class that stores style for one graduated trihedron axis such as colors, lengths and customization flags.
+//! It is used in Graphic3d_GraduatedTrihedron.
+class Graphic3d_AxisAspect
+{
+  public:
+
+    Graphic3d_AxisAspect (const TCollection_ExtendedString theName = "", const Quantity_Color theNameColor = Quantity_NOC_BLACK,
+                          const Quantity_Color theColor = Quantity_NOC_BLACK,
+                          const Standard_Integer theValuesOffset = 10, const Standard_Integer theNameOffset = 30,
+                          const Standard_Integer theTickmarkNumber = 5, const Standard_Integer theTickmarkLength = 10,
+                          const Standard_Boolean theToDrawName = Standard_True,
+                          const Standard_Boolean theToDrawValues = Standard_True,
+                          const Standard_Boolean theToDrawTickmarks = Standard_True)
+    : myName (theName),
+      myToDrawName (theToDrawName),
+      myToDrawTickmarks (theToDrawTickmarks),
+      myToDrawValues (theToDrawValues),
+      myNameColor (theNameColor),
+      myTickmarkNumber (theTickmarkNumber),
+      myTickmarkLength (theTickmarkLength),
+      myColor (theColor),
+      myValuesOffset (theValuesOffset),
+      myNameOffset (theNameOffset)
+    { }
+
+public:
+
+  void SetName (const TCollection_ExtendedString& theName) { myName = theName; }
+  const TCollection_ExtendedString& Name() const { return myName; }
+
+  const Standard_Boolean ToDrawName() const { return myToDrawName; }
+  void SetToDrawName (const Standard_Boolean theToDraw) { myToDrawName = theToDraw; }
+
+  const Standard_Boolean ToDrawTickmarks() const { return myToDrawTickmarks; }
+  void SetToDrawTickmarks (const Standard_Boolean theToDraw) { myToDrawTickmarks = theToDraw; }
+
+  const Standard_Boolean ToDrawValues() const { return myToDrawValues; }
+  void SetToDrawValues (const Standard_Boolean theToDraw) { myToDrawValues = theToDraw; }
+
+  const Quantity_Color& NameColor() const { return myNameColor; }
+  void SetNameColor (const Quantity_Color& theColor) { myNameColor = theColor; }
+
+  //! Color of axis and values
+  const Quantity_Color& Color() const { return myColor; }
+
+  //! Sets color of axis and values
+  void SetColor (const Quantity_Color& theColor) { myColor = theColor; }
+
+  const Standard_Integer TickmarkNumber() const { return myTickmarkNumber; }
+  void SetTickmarkNumber (const Standard_Integer theValue) { myTickmarkNumber = theValue; }
+
+  const Standard_Integer TickmarkLength() const { return myTickmarkLength; }
+  void SetTickmarkLength (const Standard_Integer theValue) { myTickmarkLength = theValue; }
+
+  const Standard_Integer ValuesOffset() const { return myValuesOffset; }
+  void SetValuesOffset (const Standard_Integer theValue) { myValuesOffset = theValue; }
+
+  const Standard_Integer NameOffset() const { return myNameOffset; }
+  void SetNameOffset (const Standard_Integer theValue) { myNameOffset = theValue; }
+
+protected:
+
+    TCollection_ExtendedString myName;
+
+    Standard_Boolean myToDrawName;
+    Standard_Boolean myToDrawTickmarks;
+    Standard_Boolean myToDrawValues;
+
+    Quantity_Color   myNameColor;
+
+    Standard_Integer myTickmarkNumber; //!< Number of splits along axes
+    Standard_Integer myTickmarkLength; //!< Length of tickmarks
+    Quantity_Color   myColor;          //!< Color of axis and values
+
+    Standard_Integer myValuesOffset;   //!< Offset for drawing values
+    Standard_Integer myNameOffset;     //!< Offset for drawing name of axis
+};
+
+//! Defines the class of a graduated trihedron.
+//! It contains main style parameters for implementation of graduated trihedron
+//! @sa OpenGl_GraduatedTrihedron
+class Graphic3d_GraduatedTrihedron
+{
+public:
+
+  typedef void (*MinMaxValuesCallback) (Visual3d_View*);
+
+public:
+
+  //! Default constructor
+  //! Constructs the default graduated trihedron with grid, X, Y, Z axes, and tickmarks
+  Graphic3d_GraduatedTrihedron (const TCollection_AsciiString& theNamesFont = "Arial",
+                                const Font_FontAspect& theNameStyle = Font_FA_Bold, const Standard_Integer theNamesSize = 12,
+                                const TCollection_AsciiString& theValuesFont = "Arial",
+                                const Font_FontAspect& theValuesStyle = Font_FA_Regular, const Standard_Integer theValuesSize = 12,
+                                const Standard_ShortReal theArrowLength = 30.0f, const Quantity_Color theGridColor = Quantity_NOC_WHITE,
+                                const Standard_Boolean theToDrawGrid = Standard_True, const Standard_Boolean theToDrawAxes = Standard_True)
+  : myNamesFont (theNamesFont),
+    myNamesStyle (theNameStyle),
+    myNamesSize (theNamesSize),
+    myValuesFont (theValuesFont),
+    myValuesStyle (theValuesStyle),
+    myValuesSize (theValuesSize),
+    myArrowLength (theArrowLength),
+    myGridColor (theGridColor),
+    myToDrawGrid (theToDrawGrid),
+    myToDrawAxes (theToDrawAxes),
+    myAxes(0, 2)
+  {
+    myAxes (0) = Graphic3d_AxisAspect ("X", Quantity_NOC_RED, Quantity_NOC_RED);
+    myAxes (1) = Graphic3d_AxisAspect ("Y", Quantity_NOC_GREEN, Quantity_NOC_GREEN);
+    myAxes (2) = Graphic3d_AxisAspect ("Z", Quantity_NOC_BLUE1, Quantity_NOC_BLUE1);
+    PtrVisual3dView = NULL;
+  }
+
+public:
+
+  Graphic3d_AxisAspect& ChangeXAxisAspect() { return myAxes(0); }
+  Graphic3d_AxisAspect& ChangeYAxisAspect() { return myAxes(1); }
+  Graphic3d_AxisAspect& ChangeZAxisAspect() { return myAxes(2); }
+
+  const Graphic3d_AxisAspect& XAxisAspect() const { return myAxes(0); }
+  const Graphic3d_AxisAspect& YAxisAspect() const { return myAxes(1); }
+  const Graphic3d_AxisAspect& ZAxisAspect() const { return myAxes(2); }
+
+  const Graphic3d_AxisAspect& AxisAspect (const Standard_Integer theIndex) const
+  {
+    Standard_OutOfRange_Raise_if (theIndex < 0 || theIndex > 2, "Graphic3d_GraduatedTrihedron::AxisAspect: theIndex is out of bounds [0,2].");
+    return myAxes (theIndex);
+  }
+
+  const Standard_ShortReal ArrowLength() const { return myArrowLength; }
+  void SetArrowLength (const Standard_ShortReal theValue) { myArrowLength = theValue; }
+
+  const Quantity_Color& GridColor() const { return myGridColor; }
+  void SetGridColor (const Quantity_Color& theColor) {myGridColor = theColor; }
+
+  const Standard_Boolean ToDrawGrid() const { return myToDrawGrid; }
+  void SetToDrawTickmarks (const Standard_Boolean theToDraw) { myToDrawGrid = theToDraw; }
+
+  const Standard_Boolean ToDrawAxes() const { return myToDrawAxes; }
+  void SetToDrawAxes (const Standard_Boolean theToDraw) { myToDrawAxes = theToDraw; }
+
+  const TCollection_AsciiString& NamesFont() const { return myNamesFont; }
+  void SetNamesFont (const TCollection_AsciiString& theFont) { myNamesFont = theFont; }
+
+  const Font_FontAspect& NamesFontAspect() const { return myNamesStyle; }
+  void SetNamesFontAspect (const Font_FontAspect& theAspect) { myNamesStyle = theAspect; }
+
+  const Standard_Integer NamesSize() const { return myNamesSize; }
+  void SetNamesSize (const Standard_Integer theValue) { myNamesSize = theValue; }
+
+  const TCollection_AsciiString& ValuesFont () const { return myValuesFont; }
+  void SetValuesFont (const TCollection_AsciiString& theFont) { myValuesFont = theFont; }
+
+  const Font_FontAspect& ValuesFontAspect() const { return myValuesStyle; }
+  void SetValuesFontAspect (const Font_FontAspect& theAspect) { myValuesStyle = theAspect; }
+
+  const Standard_Integer ValuesSize() const { return myValuesSize; }
+  void SetValuesSize (const Standard_Integer theValue) { myValuesSize = theValue; }
+
+public:
+
+  MinMaxValuesCallback CubicAxesCallback; //!< Callback function to define boundary box of displayed objects
+  Visual3d_View*       PtrVisual3dView;
+
+protected:
+
+  TCollection_AsciiString myNamesFont;  //!< Font name of names of axes: Courier, Arial, ...
+  Font_FontAspect         myNamesStyle; //!< Style of names of axes: OSD_FA_Regular, OSD_FA_Bold,..
+  Standard_Integer        myNamesSize;  //!< Size of names of axes: 8, 10,..
+
+protected:
+
+  TCollection_AsciiString myValuesFont;  //!< Font name of values: Courier, Arial, ...
+  Font_FontAspect         myValuesStyle; //!< Style of values: OSD_FA_Regular, OSD_FA_Bold, ...
+  Standard_Integer        myValuesSize;  //!< Size of values: 8, 10, 12, 14, ...
+
+protected:
+
+  Standard_ShortReal myArrowLength;
+  Quantity_Color     myGridColor;
+
+  Standard_Boolean   myToDrawGrid;
+  Standard_Boolean   myToDrawAxes;
+
+  NCollection_Array1<Graphic3d_AxisAspect> myAxes; //!< X, Y and Z axes parameters
+
+};
+#endif // Graphic3d_GraduatedTrihedron_HeaderFile

@@ -32,7 +32,7 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 
 #include <Graphic3d_CView.hxx>
-#include <Graphic3d_CGraduatedTrihedron.hxx>
+#include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
@@ -109,8 +109,9 @@ class OpenGl_View : public MMgt_TShared
                         const Standard_Boolean              theAsWireframe);
   void TriedronErase (const Handle(OpenGl_Context)& theCtx);
 
+  OpenGl_GraduatedTrihedron* GraduatedTrihedron() const { return myGraduatedTrihedron; }
   void GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&        theCtx,
-                                  const Graphic3d_CGraduatedTrihedron& theCubic);
+                                  const Graphic3d_GraduatedTrihedron& theCubic);
   void GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx);
 
   Standard_Real Height () const { return myCamera->ViewDimensions().X(); }
