@@ -23,7 +23,7 @@ The tests are organized in three levels:
   
 See <a href="#testmanual_5_1">Test Groups</a> for the current list of available test groups and grids.
 
-Some tests involve data files (typically CAD models) which are located separately and are not included with OCCT code. The archive with publicly available test data files should be downloaded and installed independently on OCCT sources (from http://dev.opencascade.org).
+Some tests involve data files (typically CAD models) which are located separately and are not included with OCCT code. The archive with publicly available test data files should be downloaded and installed independently on OCCT sources (see http://dev.opencascade.org).
 
 @subsection testmanual_1_2 Intended Use of Automatic Tests
 
@@ -44,7 +44,6 @@ The modifications made in the OCCT code and related test scripts should be inclu
 @subsubsection testmanual_1_3_1 Setup
 
 Before running tests, make sure to define environment variable *CSF_TestDataPath* pointing to the directory containing test data files. 
-(Publicly available data files can be downloaded from http://dev.opencascade.org separately from OCCT code.) 
 
 For this it is recommended to add a file *DrawAppliInit* in the directory which is current at the moment of starting DRAWEXE (normally it is OCCT root directory, <i>$CASROOT </i>). This file is evaluated automatically at the DRAW start. 
 
@@ -58,7 +57,7 @@ return ;# this is to avoid an echo of the last command above in cout
 Note that variable *CSF_TestDataPath* is set to default value at DRAW start, pointing at the folder <i>$CASROOT/data</i>. 
 In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and Mac OS X except that on non-Windows platforms colon ":" should be used as path separator instead of semicolon ";".
 
-All tests are run from DRAW command prompt (run *draw.tcl* or *draw.sh* to start it).
+All tests are run from DRAW command prompt (run *draw.bat* or *draw.sh* to start it).
 
 @subsubsection testmanual_1_3_2 Running Tests
 
@@ -102,7 +101,7 @@ Example:
 
 The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See <a href="#testmanual_3_5">Interpretation of test results</a> for details.
 
-The results and detailed logs of the tests are saved by default to a subdirectory of the current folder, whose name is generated automatically using the current date and time, prefixed by word <i>"results_"</i> and Git branch name (if Git is available and current sources are managed by Git).
+The results and detailed logs of the tests are saved by default to a new subdirectory of the subdirectory *results* in the current folder, whose name is generated automatically using the current date and time, prefixed by Git branch name (if Git is available and current sources are managed by Git).
 If necessary, a non-default output directory can be specified using option <i> –outdir</i> followed by a path to the directory. This directory should be new or empty; use option –overwrite to allow writing results in existing non-empty directory. 
 
 Example:
@@ -111,9 +110,7 @@ Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~~
 In the output directory, a cumulative HTML report summary.html provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
 
-Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command.
-
-For example: 
+Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
 
 ~~~~~
 Draw[3]> help testgrid
@@ -125,6 +122,7 @@ testgrid: Run all tests, or specified group, or one grid
     -outdir dirname: set log directory (should be empty or non-existing)
     -overwrite: force writing logs in existing non-empty directory
     -xml filename: write XML report for Jenkins (in JUnit-like format)
+    -beep: play sound signal at the end of the tests
     Groups, grids, and test cases to be executed can be specified by list of file 
     masks, separated by spaces or comma; default is all (*).
 ~~~~~
@@ -146,6 +144,28 @@ Note that normally an intermediate output of the script is not shown. The detail
 To see intermediate commands and their output during the test execution, add one more argument 
 <i>"echo"</i> at the end of the command line. Note that with this option the log is not collected and summary is not produced.
 
+Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
+
+~~~~~
+Draw[3]> help test
+test: Run specified test case
+ Use: test group grid casename [options...]
+ Allowed options are:
+ -echo: all commands and results are echoed immediately,
+        but log is not saved and summary is not produced
+        It is also possible to use "1" instead of "-echo"
+        If echo is OFF, log is stored in memory and only summary
+        is output (the log can be obtained with command "dlog get")
+ -outfile filename: set log file (should be non-existing),
+        it is possible to save log file in text file or
+        in html file(with snapshot), for that "filename"
+        should have ".html" extension
+ -overwrite: force writing log in existing file
+ -beep: play sound signal at the end of the test
+ -errors: show all lines from the log report that are recognized as errors
+        This key will be ignored if the "-echo" key is already set.
+~~~~~
+
 @subsubsection testmanual_1_3_4 Creating a New Test
 
 The detailed rules of creation of new tests are given in <a href="#testmanual_3">section 3</a>. The following short description covers the most typical situations:
@@ -166,6 +186,7 @@ Use prefix "bug" followed by Mantis issue ID and, if necessary, additional suffi
 Example:
 
 * Added files:
+
 ~~~~~
 git status –short
 A tests/bugs/heal/data/OCC210a.brep
@@ -284,7 +305,7 @@ The test group may contain *parse.rules* file. This file defines patterns used f
 
 Each line in the file should specify a status (single word), followed by a regular expression delimited by slashes (*/*) that will be matched against lines in the test output log to check if it corresponds to this status.
 
-The regular expressions support a subset of the Perl *re* syntax. See also <a href=http://perldoc.perl.org/perlre.html>Perl regular expressions</a>.
+The regular expressions support a subset of the Perl *re* syntax. See also <a href="http://perldoc.perl.org/perlre.html">Perl regular expressions</a>.
 
 The rest of the line can contain a comment message, which will be added to the test report when this status is detected.
 
@@ -353,7 +374,7 @@ Usually it executes a specific sequence of commands common for all tests in the 
 Example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-    vdump $logdir/${casename}.gif ;# makes a snap-shot of AIS viewer
+    vdump $imagedir/${casename}.png ;# makes a snap-shot of AIS viewer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @subsubsection testmanual_2_3_4 File "cases.list"
@@ -437,7 +458,9 @@ If the new test corresponds to a functionality already covered by the existing s
 
 It is advisable to make self-contained test scripts whenever possible, so as they could be used in environments where data files are not available. For that simple geometric objects and shapes can be created using DRAW commands in the test script itself.
 
-If the test requires a data file, it should be put to subdirectory *data* of the test grid. It is recommended to prefix the data file with the corresponding issue id prefixed by *bug*, e.g. *bug12345_face1.brep*, to avoid possible conflicts with names of existing data files. 
+If the test requires a data file, it should be put to directory listed in environment variable *CSF_TestDataPath*.
+Alternatively, it can be put to subdirectory *data* of the test grid. 
+It is recommended to prefix the data file with the corresponding issue id prefixed by *bug*, e.g. *bug12345_face1.brep*, to avoid possible conflicts with names of existing data files. 
 
 Note that when the test is integrated to the master branch, OCC team will move the data file to data files repository, so as to keep OCCT sources repository clean from data files.
 
@@ -498,15 +521,23 @@ Example:
 stepread [locate_data_file CAROSKI_COUPELLE.step] a *
 ~~~~~
 
-When the test needs to produce some snapshots or other artefacts, use Tcl variable *logdir* as the location where such files should be put. Command *testgrid* sets this variable to the subdirectory of the results folder corresponding to the grid. Command *test* sets it to <i>$CASROOT/tmp</i> unless it is already defined. Use Tcl variable *casename* to prefix all files produced by the test. This variable is set to the name of the test case.
+When the test needs to produce some snapshots or other artefacts, use Tcl variable *imagedir* as the location where such files should be put. 
+Command *testgrid* sets this variable to the subdirectory of the results folder corresponding to the grid. 
+Command *test* by default creates dedicated temporary directory in the system temporary folder (normally the one specified by environment variable *TempDir*, *TEMP*, or *TMP*) for each execution, and sets *imagedir* to that location. 
+However if variable *imagedir* is defined on top level of Tcl interpretor, command *test* will use it instead of creating a new directory.
+
+Use Tcl variable *casename* to prefix all files produced by the test. 
+This variable is set to the name of the test case.
+For the image file (snapshot) to be recognized by the test system (for inclusion in HTML log and differences), its name should start with name of the test case (use variable *casename*), optionally followed by underscore or dash and arbitrary suffix.
+The image format (defined by extension) should be *png*.
 
 Example:
 ~~~~~
-xwd $logdir/${casename}.png
+xwd $imagedir/${casename}.png
 vdisplay result; vfit
-vdump $logdir/${casename}-axo.png
+vdump $imagedir/${casename}-axo.png
 vfront; vfit
-vdump $logdir/${casename}-front.png
+vdump $imagedir/${casename}-front.png
 ~~~~~
 
 would produce:
@@ -518,10 +549,14 @@ A1-front.png
 
 Note that OCCT must be built with FreeImage support to be able to produce usable images.
 
+Other Tcl variables defined during the test execution are:
+- *groupname*: name of the test group
+- *gridname*: name of the test grid
+- *dirname*: path to the root directory of the current set of test scripts
+
 In order to ensure that the test works as expected in different environments, observe the following additional rules:
 * Avoid using external commands such as *grep, rm,* etc., as these commands can be absent on another system (e.g. on Windows); use facilities provided by Tcl instead.
 * Do not put call to *locate_data_file* in catch statement – this can prevent correct interpretation of the missing data file by the test system.
-
 
 @subsection testmanual_3_5 Interpretation of test results
 
@@ -1010,7 +1045,7 @@ for {set i 1} {$i < 100} {incr i} {
 
 @subsubsection testmanual_5_3_5 Visualization
 
-Take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. Note that this variable directs to the *log* directory if command *testgrid* is active, or to *tmp* subdirectory of the current folder if the test is run interactively.
+Take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. 
 
 ~~~~~
 vinit

@@ -5281,7 +5281,7 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
   theDI << aDiffColorsNb << "\n";
 
   // save image of difference
-  if (aDiffImagePath != NULL)
+  if (aDiffColorsNb >0 && aDiffImagePath != NULL)
   {
     aComparer.SaveDiffImage (aDiffImagePath);
   }

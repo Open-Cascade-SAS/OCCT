@@ -1,0 +1,7 @@
+# test for CPU sample
+source $env(CASROOT)/samples/tcl/cpu.tcl
+
+# make a snapshot
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

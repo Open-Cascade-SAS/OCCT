@@ -241,7 +241,7 @@ void perf_sprint_all_meters (char *buffer, int length, int reset)
   for (i=0; i<nb_meters; i++) {
     const t_TimeCounter * const ptc = &MeterTable[i];
     if (ptc && ptc->nb_enter) {
-      int n = sprintf (string, "          Perf meter results               :   enters  seconds  sec/enter\n");
+      int n = sprintf (string, "          Perf meter results               :   enters  seconds  microsec/enter\n");
       if (n < length)
       {
         memcpy (buffer, string, n);

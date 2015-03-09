@@ -288,6 +288,12 @@ Standard_Integer Image_Diff::Compare()
     return -1;
   }
 
+  // first check if images are exactly teh same
+  if (! memcmp (myImageNew->Data(), myImageRef->Data(), myImageRef->SizeBytes()))
+  {
+    return 0;
+  }
+
   // Tolerance of comparison operation for color
   // Maximum difference between colors (white - black) = 100%
   Image_ColorXXX24 aDiff = {{255, 255, 255}};
