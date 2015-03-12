@@ -648,6 +648,8 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
     
   // (1.1.b) Cas Cylindrique
       if ( (SectionType == GeomAbs_Circle) && IsTrsf) {
+        const Standard_Real TolProd = 1.e-6;
+        
 	gp_Circ C = AC.Circle();
 	C.Transform(Tf2);
 	
@@ -655,7 +657,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	DS.Normalize();
         levier = Abs(DS.CrossMagnitude(DP)) * C.Radius();
         SError = levier * Abs(Last - First);
-	if (SError <= Tol) {
+	if (SError <= TolProd) {
 	  Ok = Standard_True;
           gp_Ax3 axe (C.Location(), DP, C.Position().XDirection());
 	  S = new (Geom_CylindricalSurface) 
