@@ -162,6 +162,16 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
       if (!Ok && Abs(myfirstU-mylastU) <= TolU)
       {
           Ok = Standard_True; // stop interval cutting, approx the rest part
+
+          if ((thetol3d + thetol2d) < (KeptT3d + KeptT2d))
+          {
+            KeptMultiCurve = TheMultiCurve;
+            KeptUfirst     = myfirstU;
+            KeptUlast      = mylastU;
+            KeptT3d        = thetol3d;
+            KeptT2d        = thetol2d;
+          }
+
           mylastU = KeptUlast;
 
           tolreached = Standard_False; // helas
