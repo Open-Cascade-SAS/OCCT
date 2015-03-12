@@ -227,7 +227,7 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
   SetTolerance();
 
   myMaxDegree = 11;
-  myMaxSegments = 30;
+  myMaxSegments = 100;
 
   // Attention to closed non-declared wire !
   if (!mySpine.Closed()) {
