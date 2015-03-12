@@ -1,0 +1,36 @@
+puts "============"
+puts "CR25876"
+puts "==========="
+puts ""
+###############################################################################
+# Geom2dAPI_InterCurveCurve returns only one intersection point instead of two intersection points
+###############################################################################
+
+restore [locate_data_file bug25876_oc_test_firstcircle.brep] e1
+restore [locate_data_file bug25876_oc_test_secondcircle.brep] e2
+
+explode e1
+explode e2
+
+mk2dcurve c1 e1_1
+mk2dcurve c2 e2_1
+
+set inter1 [2dintersect c1 c2 1e-3]
+set int1 [regexp {Intersection point 2} ${inter1}]
+if { ${int1} == 0 } {
+    puts "Error : Second intersection is not found"
+} 
+
+#smallview -2D-
+view 1 -2D- 728 450 400 400
+2dfit
+xwd ${imagedir}/${test_image}_1.png
+donly c1 c2
+
+set inter2 [2dintersect c1 c2 1e-7]
+set int2 [regexp {Intersection point 2} ${inter2}]
+if { ${int2} == 0 } {
+    puts "Error : Second intersection is not found"
+} 
+
+xwd ${imagedir}/${test_image}_2.png

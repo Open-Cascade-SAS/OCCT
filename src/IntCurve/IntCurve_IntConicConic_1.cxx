@@ -719,7 +719,11 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
   PeriodicInterval C1Domain(DomainCirc1); 
   //-- On se ramene entre 0 et 2PI
   Standard_Real deltat = C1Domain.Bsup-C1Domain.Binf;
-  if(deltat>=PIpPI) { deltat=PIpPI-1e-14; } 
+  if(deltat>=PIpPI)
+  {
+    // make deltat not including the upper limit
+    deltat=NextAfter(PIpPI, 0.);
+  }
   
   while(C1Domain.Binf >= PIpPI)
     C1Domain.Binf-=PIpPI;
@@ -732,8 +736,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
   deltat = C2Domain.Bsup-C2Domain.Binf;
   if(deltat>=PIpPI)
   {
-    deltat=PIpPI-1e-14;
-  } 
+    deltat=NextAfter(PIpPI, 0.);
+  }
 
   while(C2Domain.Binf >= PIpPI)
     C2Domain.Binf-=PIpPI;
@@ -1027,19 +1031,13 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
 
         if(Opposite)
         {
-          if(nbsol!=3)
-          {
             if(C2inf<C2sup)
               C2inf+=PIpPI;
-          }
         }
         else
         {
-          if(nbsol!=3)
-          { 
             if(C2sup<C2inf)
               C2sup+=PIpPI;
-          }
         }
 
         IntRes2d_IntersectionPoint NewPoint2(P1b,C1sup,C2sup,T1b,T2b,Standard_False);
