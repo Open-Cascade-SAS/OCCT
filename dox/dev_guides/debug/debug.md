@@ -85,7 +85,7 @@ const char* BRepTools_Write (const char* theFileNameStr, void* theShapePtr)
 ~~~~~
 
 Saves the specified shape to a file with the given name.
-- *theFileNameStr* - the DRAW interpreter variable name to set.
+- *theFileNameStr* - the name of the file where the shape is saved.
 - *theShapePtr* - a pointer to *TopoDS_Shape* variable.
 
 ~~~~~
@@ -104,7 +104,7 @@ const char* BRepMesh_Dump (void* theMeshHandlePtr, const char* theFileNameStr)
 
 Stores mesh produced in parametric space to BREP file.
 - *theMeshHandlePtr* - a pointer to *Handle(BRepMesh_DataStructureOfDelaun)* variable.
-- *theFileNameStr* - name of file the mesh sould be stored to.
+- *theFileNameStr* - the name of the file where the mesh is stored.
 
 The following additional function is provided by *TKGeomBase* toolkit:
 
@@ -274,16 +274,17 @@ In Visual Studio 2012 and later, visualizers can be put in a separate file in su
 @section occt_debug_perf Performance measurement tools
 
 It is recommended to use specialized performance analysis tools to profile OCCT and application code.
-However, when such tools are not available or cannot be used for some reason, tools provided by OCD package can be used: see low-level C functions and macros defined OSD_PerfMeter.h, and OSD_PerfMeter class.
+However, when such tools are not available or cannot be used for some reason, tools provided by OSD package can be used: low-level C functions and macros defined in *OSD_PerfMeter.h* and *OSD_PerfMeter* class.
 
-This tool maintains an array of 100 global performance counters that can be started and stopped independently.
-Adding performance counter to a function of interest allows to get statistics on number of calls and total execution time of the function.
-In C++ code, this can be achieved by creating local variable OSD_PerfMeter in each block of code to be measured.
-In C or Fortran code, use functions perf_start_meter and perf_stop_meter to start and stop the counter.
-Note that this instrumentation is intended to be removed when profiling is completed.
-Macros provided in OSD_PerfMeter.h can be used to keep instrumentation code permanently, but enable it only when macro PERF_ENABLE_METERS is defined.
+This tool maintains an array of 100 global performance counters that can be started and stopped independently. Adding a performance counter to a function of interest allows to get statistics on the number of calls and the total execution time of the function.
+* In C++ code, this can be achieved by creating local variable *OSD_PerfMeter* in each block of code to be measured.
+* In C or Fortran code, use functions *perf_start_meter* and *perf_stop_meter* to start and stop the counter.
+
+Note that this instrumentation is intended to be removed when the profiling is completed.
+
+Macros provided in *OSD_PerfMeter.h* can be used to keep instrumentation code permanently but enable it only when macro *PERF_ENABLE_METERS* is defined.
 Each counter has its name shown when the collected statistics are printed.
 
-In DRAW, use command dperf to prints all performance statistics.
+In DRAW, use command *dperf* to print all performance statistics.
 
 Note that performance counters are not thread-safe.

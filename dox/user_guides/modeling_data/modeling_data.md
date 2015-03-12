@@ -648,7 +648,7 @@ The following methods are available:
 
 Note that the B-spline curve and surface are accepted but they are not cut into pieces of the desired continuity. It is the global continuity, which is seen. 
 
-@subsection occt_modat_5 Adaptors for Curves and Surfaces
+@subsection occt_modat_4_4 Adaptors for Curves and Surfaces
 
 Some Open CASCADE Technology general algorithms may work theoretically on numerous types of curves or surfaces. 
 

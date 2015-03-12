@@ -1447,7 +1447,7 @@ Returns the number of selected objects in the interactive context.
 
 Syntax:     
 ~~~~~
-valntialiasing 1|0
+vantialiasing 1|0
 ~~~~~
 Sets antialiasing if the command is called with 1 or unsets otherwise.
 

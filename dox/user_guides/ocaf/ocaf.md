@@ -703,7 +703,7 @@ Consider the following example. Two boxes (solids) are fused into one solid (the
 
 After the fuse operation a modified result is placed to a separate label as a named shape, which refers to the old shape – one of the boxes, as well as to the new shape – the shape resulting from the fuse operation – and has evolution MODIFY (see the following figure). 
 
-Named shapes, which contain information about modified faces, belong to the fuse result sub-labels: sub-label with tag 1 – modified faces of the first box, sub-label with tag 2 – generated faces of the box 2. 
+Named shapes, which contain information about modified faces, belong to the fuse result sub-labels: sub-label with tag 1 – modified faces from box 1, sub-label with tag 2 – modified faces from box 2. 
 
 @image html /user_guides/ocaf/images/ocaf_image015.png
 @image latex /user_guides/ocaf/images/ocaf_image015.png

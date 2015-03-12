@@ -204,7 +204,7 @@ The definition of the following attributes is obligatory:
   | Open                  | The issue is being processed.                                                |
   | Fixed                 | The issue has been successfully fixed.                                       |
   | Reopened              | The bug has been reopened because of insufficient fix or regression.         |
-  |                       | Unable to reproduceThe bug is not reproduced.                                |
+  | Unable to reproduce   | The bug is not reproduced.                                |
   | Not fixable           | The bug cannot be fixed because it is a bug of third party software, or because it requires more workload than it can be allowed.        |
   | Duplicate             | The bug for the same issue already exists in the tracker.                    |
   | Not a bug             | It is a normal behavior in accordance with the specification of the product  |
