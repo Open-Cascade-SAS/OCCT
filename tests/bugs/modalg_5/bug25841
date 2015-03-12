@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC25841"
+puts "========"
+puts ""
+#############################
+# Incorrect edge displaying
+#############################
+
+restore [locate_data_file OCC25841_Curve_2.brep] a
+vinit
+vclear
+vfront
+vdisplay a
+vfit
+set only_screen 1

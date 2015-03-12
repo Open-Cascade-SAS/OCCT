@@ -473,6 +473,11 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       else {
 
         if (Coef >= 1.5) {
+          if (!aPrevPoint.IsEqual(points.Last(), Precision::Confusion()))
+          {
+            parameters.Append (U1);
+            points    .Append (aPrevPoint);
+          }
           U2 = MiddleU;
           Du  = U2-U1;
           CurrentPoint = MiddlePoint;
