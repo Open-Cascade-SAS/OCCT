@@ -133,40 +133,35 @@ void gp_GTrsf2d::PreMultiply (const gp_GTrsf2d& T)
 
 gp_Trsf2d gp_GTrsf2d::Trsf2d () const
 {
-  gp_Trsf2d T;
-  Standard_Real value;
-#ifndef No_Exception
-  Standard_Real tolerance = Precision::Angular() ;
-  Standard_Real tol2 = 2. * tolerance;
-#endif
+  // Test of orthogonality
+  const Standard_Real aTolerance  = Precision::Angular();
+  const Standard_Real aTolerance2 = 2.0 * aTolerance;
 
-  Standard_ConstructionError_Raise_if
-    (Form() == gp_Other," gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d (0)");
+  if ( Form() == gp_Other )
+    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(0)");
+
+  Standard_Real value = (matrix.Value(1, 1) * matrix.Value(1, 1)
+                      +  matrix.Value(2, 1) * matrix.Value(2, 1));
+  if ( Abs(value - 1.) > aTolerance2 )
+    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(1)");
+
+  value = (matrix.Value(1, 2) * matrix.Value(1, 2)
+        +  matrix.Value(2, 2) * matrix.Value(2, 2));
+  if ( Abs(value - 1.) > aTolerance2 )
+    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(2)");
+
+  value = (matrix.Value(1, 1) * matrix.Value(1, 2)
+        +  matrix.Value(2, 1) * matrix.Value(2, 2));
+  if ( Abs(value) > aTolerance )
+    Standard_ConstructionError::Raise("gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d(3)");
 
 
-//Test of orthogonality
+  gp_Trsf2d aTransformation;
+  aTransformation.matrix = matrix;
+  aTransformation.shape  = shape;
+  aTransformation.scale  = scale;
+  aTransformation.loc    = loc;
 
-  value = (matrix.Value(1,1) * matrix.Value(1,1) +
-	   matrix.Value(2,1) * matrix.Value(2,1)) ;
-  Standard_ConstructionError_Raise_if
-    (Abs(value - 1.) > tol2," gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d (1)");
-
-  value = (matrix.Value(1,2) * matrix.Value(1,2) +
-	   matrix.Value(2,2) * matrix.Value(2,2));
-  Standard_ConstructionError_Raise_if
-    (Abs(value - 1.) > tol2," gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d (2)");
-
-  value = (matrix.Value(1,1) * matrix.Value(1,2) +
-	   matrix.Value(2,1) * matrix.Value(2,2));
-  Standard_ConstructionError_Raise_if
-    (Abs(value) > tolerance," gp_GTrsf2d::Trsf2d() - non-orthogonal GTrsf2d (3)");
-//
-
-  T.matrix = matrix ;
-  T.shape = shape;
-  T.scale = scale ;
-  T.loc = loc;
-
-  return T;
+  return aTransformation;
 }
 

@@ -176,9 +176,10 @@ inline void gp_GTrsf::Transforms (Standard_Real& X,
 
 inline gp_Trsf gp_GTrsf::Trsf () const
 {
+  if ( Form() == gp_Other )
+    Standard_ConstructionError::Raise("gp_GTrsf::Trsf() - non-orthogonal GTrsf");
+
   gp_Trsf T;
-  Standard_ConstructionError_Raise_if
-    (Form() == gp_Other,"");
   T.shape = shape;
   T.scale = scale;
   T.matrix = matrix;

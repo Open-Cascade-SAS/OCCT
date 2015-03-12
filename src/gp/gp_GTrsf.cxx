@@ -122,10 +122,10 @@ void gp_GTrsf::SetForm()
   //
   gp_Mat M(matrix);
   Standard_Real s = M.Determinant();
-  Standard_Real As = s;
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As < gp::Resolution(),"gp_GTrsf::SetForm, null determinant");
+
+  if ( Abs(s) < gp::Resolution() )
+    Standard_ConstructionError::Raise("gp_GTrsf::SetForm, null determinant");
+
   if (s > 0)
     s = Pow(s,1./3.);
   else
@@ -142,15 +142,11 @@ void gp_GTrsf::SetForm()
   TM.Subtract(anIdentity);
   if (shape==gp_Other) shape = gp_CompoundTrsf;
 
-  Standard_Integer i, j;
-  for (i=1; i<=3; i++) {
-    for (j=1; j<=3; j++) {
-      As = TM.Value(i,j);
-      if (As < 0) As = - As;
-      if (As > tol) {
-	shape = gp_Other;
-	return;
+  for (Standard_Integer i = 1; i <= 3; i++)
+    for (Standard_Integer j = 1; j <= 3; j++)
+      if ( Abs( TM.Value(i, j) ) > tol )
+      {
+        shape = gp_Other;
+        return;
       }
-    }
-  }
 }
