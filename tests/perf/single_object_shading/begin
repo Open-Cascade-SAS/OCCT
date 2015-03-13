@@ -1,6 +1,0 @@
-box b 100 0 0 50 50 50
-vinit; vdisplay b
-vtrihedron tri
-vsetdispmode 1
-
-dchrono tmr start

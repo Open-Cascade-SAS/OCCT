@@ -1,9 +1,0 @@
-puts "3D visualization performance tests"
-puts "Panning V3d View with 1 MeshVS_Mesh (+ AIS trihedron)"
-puts "Object haves shading mode"
-
-
-set D_y 10
-for {set i 1} {$i < 30} {incr i} {
-    vpan 0 ${D_y}
-}

@@ -1,8 +1,0 @@
-puts "3D visualization performance tests"
-puts "Redraw V3d View with 27 AIS-objects (+ AIS trihedron)"
-puts "Objects have wireframe mode"
-
-
-for {set i 1} {$i < 100} {incr i} {
-    vrepaint
-}

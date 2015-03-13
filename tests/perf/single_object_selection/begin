@@ -1,5 +1,0 @@
-box b 100 0 0 50 50 50
-vinit; vdisplay b
-vtrihedron tri
-verase b
-vdisplay b

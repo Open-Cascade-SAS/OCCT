@@ -1,9 +1,0 @@
-puts "3D visualization performance tests"
-puts "Rotate V3d View with 27 MeshVS_Mesh (+ AIS trihedron)"
-puts "Objects have shrink mode"
-
-
-set A_z 0.1
-for {set i 1} {$i < 100} {incr i} {
-    vrotate 0 0 ${A_z}
-}
