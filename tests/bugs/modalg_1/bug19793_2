@@ -60,14 +60,14 @@ if { [regexp {Debug mode} [dversion]] } {
   if { [regexp {Windows} [dversion]] } {
     puts "Checking WINDOWS performance..."
     # Initial CPU_time is 92-94 seconds for Windows
-    if {$CPU_time > 200.} {
+    if {$CPU_time > 300.} {
        puts "ERROR: OCC23753 is reproduced."
        puts "       Low performance: $CPU_time"
     }
   } else {
     puts "Checking LINUX performance..."
     # Initial CPU_time is 287-289 seconds for Linux
-    if {$CPU_time > 250.} {
+    if {$CPU_time > 350.} {
        puts "ERROR: OCC23753 is reproduced."
        puts "       Low performance: $CPU_time"
     }
