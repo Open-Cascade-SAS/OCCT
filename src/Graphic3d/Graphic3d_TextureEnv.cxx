@@ -65,6 +65,20 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv (const Graphic3d_NameOfTextureEnv the
 }
 
 // =======================================================================
+// function : Graphic3d_TextureEnv
+// purpose  :
+// =======================================================================
+Graphic3d_TextureEnv::Graphic3d_TextureEnv (const Handle(Image_PixMap)& thePixMap)
+: Graphic3d_TextureRoot (thePixMap, Graphic3d_TOT_2D_MIPMAP),
+  myName (Graphic3d_NOT_ENV_UNKNOWN)
+{
+  myParams->SetFilter  (Graphic3d_TOTF_TRILINEAR);
+  myParams->SetGenMode (Graphic3d_TOTM_SPHERE,
+                        Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
+                        Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
+}
+
+// =======================================================================
 // function : Name
 // purpose  :
 // =======================================================================

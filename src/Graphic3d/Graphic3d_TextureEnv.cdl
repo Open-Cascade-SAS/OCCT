@@ -23,7 +23,8 @@ inherits TextureRoot from Graphic3d
 uses
 
   NameOfTextureEnv from Graphic3d,
-  AsciiString      from TCollection
+  AsciiString      from TCollection,
+  PixMap_Handle    from Image
 
 raises
 
@@ -36,6 +37,9 @@ is
 
   Create (theName : NameOfTextureEnv from Graphic3d) returns TextureEnv from Graphic3d;
   ---Purpose: Creates an environment texture from a predefined texture name set.
+
+  Create (thePixMap : PixMap_Handle from Image) returns TextureEnv from Graphic3d;
+  ---Purpose: Creates an environment texture from the pixmap.
 
   Name (me) returns NameOfTextureEnv from Graphic3d;
   ---Purpose:
