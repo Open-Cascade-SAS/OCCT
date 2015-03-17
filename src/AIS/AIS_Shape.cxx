@@ -614,7 +614,7 @@ void AIS_Shape::UnsetColor()
       Quantity_Color aColor = aDefaultMat.AmbientColor();
       if (myDrawer->HasLink())
       {
-        Quantity_Color aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
+        aColor = myDrawer->Link()->ShadingAspect()->Color (myCurrentFacingModel);
       }
       mat.SetColor (aColor);
     }
