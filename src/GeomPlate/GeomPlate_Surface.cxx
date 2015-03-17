@@ -376,10 +376,8 @@ Handle(Geom_Surface) GeomPlate_Surface::CallSurfinit() const
 void GeomPlate_Surface::SetBounds(const Standard_Real Umin, const Standard_Real Umax, const Standard_Real Vmin, const Standard_Real Vmax)
 {
   if ((Umin>Umax) || (Vmin>Vmax)) Standard_Failure::Raise("Bounds haven't the good sense");
-  else
-    myUmin=Umin;myUmax=Umax;myVmin=Vmin;myVmax=Vmax;
   if ((Umin==Umax) || (Vmin==Vmax)) Standard_Failure::Raise("Bounds are equal");
-
+  myUmin=Umin;myUmax=Umax;myVmin=Vmin;myVmax=Vmax;
 }
 
 
