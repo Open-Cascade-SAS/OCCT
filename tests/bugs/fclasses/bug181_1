@@ -15,8 +15,6 @@ set tmp ${imagedir}
 
 pload QAcommands
 
-file delete -force ${tmp}/1
-
 set log [OCC181 OCC181 ${imagedir} ${tmp}/1 0]
 
 set list [split ${log}]
@@ -29,3 +27,4 @@ if { ${status} == "TRUE"} then {
    puts "OCC181: Error"
 }
 
+file delete -force ${tmp}/1
