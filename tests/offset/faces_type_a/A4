@@ -1,4 +1,6 @@
 #old file ofcb23
+puts "TODO CR25925 ALL: ERROR. offsetperform operation not done."
+puts "TODO CR25925 ALL: TEST INCOMPLETE"
 
 restore [locate_data_file CHE_cc3.rle] s
 OFFSETSHAPE -0.01 {s_6} $calcul $type

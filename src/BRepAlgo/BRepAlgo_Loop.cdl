@@ -94,10 +94,11 @@ fields
 
     myFace       : Face                      from TopoDS;
     myConstEdges : ListOfShape               from TopTools;
+    myEdges      : ListOfShape               from TopTools;
     myVerOnEdges : DataMapOfShapeListOfShape from TopTools;
     myNewWires   : ListOfShape               from TopTools;
     myNewFaces   : ListOfShape               from TopTools;
-    myNewEdges   : DataMapOfShapeListOfShape from TopTools; 
+    myCutEdges   : DataMapOfShapeListOfShape from TopTools;
      
     myVerticesForSubstitute  : DataMapOfShapeShape from TopTools;
     
