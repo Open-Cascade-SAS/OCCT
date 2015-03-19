@@ -29,6 +29,8 @@
 
 ProjLib_Projector::ProjLib_Projector()
 {
+  isDone = Standard_False;
+  myType = GeomAbs_BSplineCurve;
 }
 
 

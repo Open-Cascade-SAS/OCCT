@@ -767,7 +767,7 @@ void ProjLib_CompProjectedCurve::Init()
 
     t = Triple.X() + Step;
     if (t > LastU) t = LastU;
-
+    Standard_Real prevStep = Step;
     Standard_Real U0, V0;
     gp_Pnt2d aLowBorder(mySurface->FirstUParameter(),mySurface->FirstVParameter());
     gp_Pnt2d aUppBorder(mySurface->LastUParameter(), mySurface->LastVParameter());
@@ -776,8 +776,8 @@ void ProjLib_CompProjectedCurve::Init()
     while (t <= LastU && new_part) 
     {
 
-      U0 = Triple.Y() + (Triple.Y() - prevTriple.Y());
-      V0 = Triple.Z() + (Triple.Z() - prevTriple.Z());
+      U0 = Triple.Y() + (Step / prevStep) * (Triple.Y() - prevTriple.Y());
+      V0 = Triple.Z() + (Step / prevStep) * (Triple.Z() - prevTriple.Z());
       // adjust U0 to be in [mySurface->FirstUParameter(),mySurface->LastUParameter()]
       U0 = Min(Max(U0, aLowBorder.X()), aUppBorder.X()); 
       // adjust V0 to be in [mySurface->FirstVParameter(),mySurface->LastVParameter()]
@@ -837,8 +837,26 @@ void ProjLib_CompProjectedCurve::Init()
       // Go further
       else 
       {
-        prevTriple = Triple; 
+        prevTriple = Triple;
+        prevStep = Step;
         Triple = gp_Pnt(t, aPrjPS.Solution().X(), aPrjPS.Solution().Y());
+
+        if (mySurface->GetType() == GeomAbs_SurfaceOfRevolution &&
+           (Abs (Triple.Z() - mySurface->FirstVParameter()) < Precision::Confusion() ||
+            Abs (Triple.Z() - mySurface->LastVParameter() ) < Precision::Confusion() ))
+        {
+          // Go out from possible attraktor.
+
+          Standard_Real U,V;
+          InitialPoint(myCurve->Value(t), t, myCurve, mySurface, myTolU, myTolV, U, V);
+          if (Abs (Abs(U - Triple.Y()) - mySurface->UPeriod()) < Precision::Confusion())
+          {
+            // Handle period jump.
+            U = Triple.Y();
+          }
+          Triple.SetY(U);
+          Triple.SetZ(V);
+        }
 
         if((Triple.X() - mySequence->Value(myNbCurves)->Value(mySequence->Value(myNbCurves)->Length()).X()) > 1.e-10)
           mySequence->Value(myNbCurves)->Append(Triple);
@@ -854,7 +872,7 @@ void ProjLib_CompProjectedCurve::Init()
         Step = WalkStep;
         t += Step;
         if (t > (LastU-MinStep/2) ) 
-        { 
+        {
           Step =Step+LastU-t;
           t = LastU;
         }	
