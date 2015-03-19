@@ -1093,6 +1093,9 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
   // Clear status bitfields
   theWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
 
+  // Update state of surface detail level
+  theWorkspace->GetGlContext()->ShaderManager()->UpdateSurfaceDetailStateTo (mySurfaceDetail);
+
   // Added PCT for handling of textures
   switch (mySurfaceDetail)
   {

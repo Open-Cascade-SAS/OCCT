@@ -122,7 +122,8 @@ enum OpenGl_UniformStateType
   OpenGl_MODEL_WORLD_STATE,
   OpenGl_WORLD_VIEW_STATE,
   OpenGl_PROJECTION_STATE,
-  OpenGl_MATERIALS_STATE
+  OpenGl_MATERIALS_STATE,
+  OpenGl_SURF_DETAIL_STATE
 };
 
 //! Total number of state types.

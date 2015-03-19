@@ -17,12 +17,11 @@
 #define _OpenGl_State_HeaderFile
 
 #include <InterfaceGraphic_tgl_all.hxx>
-
+#include <NCollection_List.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Light.hxx>
 #include <OpenGl_Vec.hxx>
-
-#include <NCollection_List.hxx>
+#include <Visual3d_TypeOfSurfaceDetail.hxx>
 
 //! Defines interface for OpenGL state.
 class OpenGl_StateInterface
@@ -101,7 +100,7 @@ public:
 
   //! Creates uninitialized world-view state.
   OpenGl_WorldViewState();
-  
+
   //! Sets new world-view matrix.
   void Set (const OpenGl_Mat4& theWorldViewMatrix);
 
@@ -146,7 +145,7 @@ public:
 
   //! Creates new material state.
   OpenGl_MaterialState (const OpenGl_Element* theAspect = NULL);
-  
+
   //! Sets new material aspect.
   void Set (const OpenGl_Element* theAspect);
 
@@ -181,6 +180,30 @@ protected:
   Standard_Size                   myIndex;      //!< Current state index
   Standard_Size                   myNextIndex;  //!< Next    state index
   NCollection_List<Standard_Size> myStateStack; //!< Stack of previous states
+
+};
+
+//! Defines generic state of OCCT surface detail.
+class OpenGl_SurfaceDetailState : public OpenGl_StateInterface
+{
+public:
+
+  //! Creates new surface detail state.
+  OpenGl_SurfaceDetailState (const Visual3d_TypeOfSurfaceDetail theDetail = Visual3d_TOD_NONE)
+  : myDetail (theDetail)
+  {
+    //
+  }
+
+  //! Sets new surface detail.
+  void Set (const Visual3d_TypeOfSurfaceDetail theDetail) { myDetail = theDetail; }
+
+  //! Returns surface detail.
+  const Visual3d_TypeOfSurfaceDetail Detail() const { return myDetail; }
+
+private:
+
+  Visual3d_TypeOfSurfaceDetail myDetail; //!< OCCT surface detail
 
 };
 

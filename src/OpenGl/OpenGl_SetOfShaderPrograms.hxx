@@ -27,7 +27,8 @@ enum OpenGl_ProgramOptions
   OpenGl_PO_VertColor  = 0x04, //!< per-vertex color
   OpenGl_PO_TextureRGB = 0x08, //!< handle RGB   texturing
   OpenGl_PO_TextureA   = 0x10, //!< handle Alpha texturing
-  OpenGl_PO_NB         = 0x20  //!< overall number of combinations
+  OpenGl_PO_TextureEnv = 0x20, //!< handle environment map
+  OpenGl_PO_NB         = 0x40  //!< overall number of combinations
 };
 
 //! Alias to programs array of predefined length

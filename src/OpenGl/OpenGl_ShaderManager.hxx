@@ -87,7 +87,7 @@ public:
       return bindProgramWithState (theCustomProgram, theAspect);
     }
 
-    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor);
+    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor, Standard_True);
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
     return bindProgramWithState (aProgram, theAspect);
   }
@@ -228,6 +228,14 @@ public:
 
 public:
 
+  //! Returns current state of OCCT surface detail.
+  Standard_EXPORT const OpenGl_SurfaceDetailState& SurfaceDetailState() const;
+
+  //! Updates state of OCCT surface detail.
+  Standard_EXPORT void UpdateSurfaceDetailStateTo (const Visual3d_TypeOfSurfaceDetail theDetail);
+
+public:
+
   //! Pushes current state of OCCT graphics parameters to specified program.
   Standard_EXPORT void PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
@@ -259,14 +267,21 @@ protected:
 
   //! Define program bits.
   Standard_Integer getProgramBits (const Handle(OpenGl_Texture)& theTexture,
-                                   const Standard_Boolean        theHasVertColor)
+                                   const Standard_Boolean        theHasVertColor,
+                                   const Standard_Boolean        theEnableEnvMap = Standard_False)
+
   {
     Standard_Integer aBits = 0;
     if (myContext->Clipping().IsClippingOrCappingOn())
     {
       aBits |= OpenGl_PO_ClipPlanes;
     }
-    if (!theTexture.IsNull())
+    if (theEnableEnvMap && mySurfaceDetailState.Detail() == Visual3d_TOD_ENVIRONMENT)
+    {
+      // Environment map overwrites material texture
+      aBits |= OpenGl_PO_TextureEnv;
+    }
+    else if (!theTexture.IsNull())
     {
       aBits |= theTexture->IsAlpha() ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
     }
@@ -281,7 +296,9 @@ protected:
   Handle(OpenGl_ShaderProgram)& getStdProgram (const Standard_Boolean theToLightOn,
                                                const Standard_Integer theBits)
   {
-    if (theToLightOn)
+    // If environment map is enabled lighting calculations are
+    // not needed (in accordance with default OCCT behaviour)
+    if (theToLightOn && (theBits & OpenGl_PO_TextureEnv) == 0)
     {
       Handle(OpenGl_ShaderProgram)& aProgram = myLightPrograms->ChangeValue (theBits);
       if (aProgram.IsNull())
@@ -357,6 +374,7 @@ protected:
   OpenGl_WorldViewState              myWorldViewState;     //!< State of OCCT world-view  transformation
   OpenGl_ClippingState               myClippingState;      //!< State of OCCT clipping planes
   OpenGl_LightSourceState            myLightSourceState;   //!< State of OCCT light sources
+  OpenGl_SurfaceDetailState          mySurfaceDetailState; //!< State of OCCT surface detail
 
 private:
 
