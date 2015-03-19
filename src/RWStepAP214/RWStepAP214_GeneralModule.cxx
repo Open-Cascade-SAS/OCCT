@@ -3724,11 +3724,14 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
 	RWStepRepr_RWCompositeShapeAspect tool;
 	tool.Share(anent,iter);
       }
-    case 471: {
+      break;
+    case 471: 
+      {
       DeclareAndCast(StepRepr_DerivedShapeAspect,anent,ent);
       RWStepRepr_RWDerivedShapeAspect tool;
       tool.Share(anent,iter);
-    }
+      }
+      break;
     case 472:  // same as ShapeAspect
       {
 	DeclareAndCast(StepRepr_Extension,anent,ent);
