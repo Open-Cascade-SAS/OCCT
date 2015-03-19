@@ -12,1010 +12,127 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGProp_Sinert.ixx>
+#include<BRepGProp_Sinert.ixx>
+#include<BRepGProp_Gauss.hxx>
 
-#include <math.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Precision.hxx>
-
-class HMath_Vector{
-  math_Vector *pvec;
-  void operator=(const math_Vector&){}
- public:
-  HMath_Vector(){ pvec = 0;}
-  HMath_Vector(math_Vector* pv){ pvec = pv;}
-  ~HMath_Vector(){ if(pvec != 0) delete pvec;}
-  void operator=(math_Vector* pv){ if(pvec != pv && pvec != 0) delete pvec;  pvec = pv;}
-  Standard_Real& operator()(Standard_Integer i){ return (*pvec).operator()(i);}
-  const Standard_Real& operator()(Standard_Integer i) const{ return (*pvec).operator()(i);}
-  const math_Vector* operator->() const{ return pvec;}
-  math_Vector* operator->(){ return pvec;}
-  math_Vector* Vector(){ return pvec;}
-  math_Vector* Init(Standard_Real v, Standard_Integer i = 0, Standard_Integer iEnd = 0){ 
-    if(pvec == 0) return pvec;
-    if(iEnd - i == 0) pvec->Init(v);
-    else { Standard_Integer End = (iEnd <= pvec->Upper()) ? iEnd : pvec->Upper();
-           for(; i <= End; i++) pvec->operator()(i) = v; }
-    return pvec;
-  }
-};
-
-static Standard_Real EPS_PARAM          = 1.e-12;
-static Standard_Real EPS_DIM            = 1.e-20;
-static Standard_Real ERROR_ALGEBR_RATIO = 2.0/3.0;
-
-static Standard_Integer  GPM        = 61;
-static Standard_Integer  SUBS_POWER = 32;
-static Standard_Integer  SM         = 1953;
-
-static math_Vector LGaussP0(1,GPM);
-static math_Vector LGaussW0(1,GPM);
-static math_Vector LGaussP1(1,RealToInt(Ceiling(ERROR_ALGEBR_RATIO*GPM)));
-static math_Vector LGaussW1(1,RealToInt(Ceiling(ERROR_ALGEBR_RATIO*GPM)));
-
-static math_Vector* LGaussP[] = {&LGaussP0,&LGaussP1};
-static math_Vector* LGaussW[] = {&LGaussW0,&LGaussW1};
-
-static HMath_Vector L1    = new math_Vector(1,SM,0.0);
-static HMath_Vector L2    = new math_Vector(1,SM,0.0);
-static HMath_Vector DimL  = new math_Vector(1,SM,0.0);
-static HMath_Vector ErrL  = new math_Vector(1,SM,0.0);
-static HMath_Vector ErrUL = new math_Vector(1,SM,0.0);
-static HMath_Vector IxL   = new math_Vector(1,SM,0.0);
-static HMath_Vector IyL   = new math_Vector(1,SM,0.0);
-static HMath_Vector IzL   = new math_Vector(1,SM,0.0);
-static HMath_Vector IxxL  = new math_Vector(1,SM,0.0);
-static HMath_Vector IyyL  = new math_Vector(1,SM,0.0);
-static HMath_Vector IzzL  = new math_Vector(1,SM,0.0);
-static HMath_Vector IxyL  = new math_Vector(1,SM,0.0);
-static HMath_Vector IxzL  = new math_Vector(1,SM,0.0);
-static HMath_Vector IyzL  = new math_Vector(1,SM,0.0);
-
-static math_Vector UGaussP0(1,GPM);
-static math_Vector UGaussW0(1,GPM);
-static math_Vector UGaussP1(1,RealToInt(Ceiling(ERROR_ALGEBR_RATIO*GPM)));
-static math_Vector UGaussW1(1,RealToInt(Ceiling(ERROR_ALGEBR_RATIO*GPM)));
-
-static math_Vector* UGaussP[] = {&UGaussP0,&UGaussP1};
-static math_Vector* UGaussW[] = {&UGaussW0,&UGaussW1};
-
-static HMath_Vector U1   = new math_Vector(1,SM,0.0);
-static HMath_Vector U2   = new math_Vector(1,SM,0.0);
-static HMath_Vector DimU = new math_Vector(1,SM,0.0);
-static HMath_Vector ErrU = new math_Vector(1,SM,0.0);
-static HMath_Vector IxU  = new math_Vector(1,SM,0.0);
-static HMath_Vector IyU  = new math_Vector(1,SM,0.0);
-static HMath_Vector IzU  = new math_Vector(1,SM,0.0);
-static HMath_Vector IxxU = new math_Vector(1,SM,0.0);
-static HMath_Vector IyyU = new math_Vector(1,SM,0.0);
-static HMath_Vector IzzU = new math_Vector(1,SM,0.0);
-static HMath_Vector IxyU = new math_Vector(1,SM,0.0);
-static HMath_Vector IxzU = new math_Vector(1,SM,0.0);
-static HMath_Vector IyzU = new math_Vector(1,SM,0.0);
-
-static inline Standard_Real MultiplicationInf(Standard_Real theMA, Standard_Real theMB)
+//=======================================================================
+//function : BRepGProp_Sinert
+//purpose  : Constructor
+//=======================================================================
+BRepGProp_Sinert::BRepGProp_Sinert()
 {
-  if((theMA == 0.0) || (theMB == 0.0))  //strictly zerro (without any tolerances)
-    return 0.0;
-
-  if(Precision::IsPositiveInfinite(theMA))
-  {
-    if(theMB < 0.0)
-      return -Precision::Infinite();
-    else
-      return Precision::Infinite();
-  }
-
-  if(Precision::IsPositiveInfinite(theMB))
-  {
-    if(theMA < 0.0)
-      return -Precision::Infinite();
-    else
-      return Precision::Infinite();
-  }
-
-  if(Precision::IsNegativeInfinite(theMA))
-  {
-    if(theMB < 0.0)
-      return +Precision::Infinite();
-    else
-      return -Precision::Infinite();
-  }
-
-  if(Precision::IsNegativeInfinite(theMB))
-  {
-    if(theMA < 0.0)
-      return +Precision::Infinite();
-    else
-      return -Precision::Infinite();
-  }
-
-  return (theMA * theMB);
 }
 
-static inline Standard_Real AdditionInf(Standard_Real theMA, Standard_Real theMB)
+//=======================================================================
+//function : BRepGProp_Sinert
+//purpose  : Constructor
+//=======================================================================
+BRepGProp_Sinert::BRepGProp_Sinert (const BRepGProp_Face& theSurface,
+                                    const gp_Pnt&         theLocation)
 {
-  if(Precision::IsPositiveInfinite(theMA))
-  {
-    if(Precision::IsNegativeInfinite(theMB))
-      return 0.0;
-    else
-      return Precision::Infinite();
-  }
-
-  if(Precision::IsPositiveInfinite(theMB))
-  {
-    if(Precision::IsNegativeInfinite(theMA))
-      return 0.0;
-    else
-      return Precision::Infinite();
-  }
-
-  if(Precision::IsNegativeInfinite(theMA))
-  {
-    if(Precision::IsPositiveInfinite(theMB))
-      return 0.0;
-    else
-      return -Precision::Infinite();
-  }
-
-  if(Precision::IsNegativeInfinite(theMB))
-  {
-    if(Precision::IsPositiveInfinite(theMA))
-      return 0.0;
-    else
-      return -Precision::Infinite();
-  }
-
-  return (theMA + theMB);
+  SetLocation(theLocation);
+  Perform(theSurface);
 }
 
-static inline Standard_Real Multiplication(Standard_Real theMA, Standard_Real theMB)
+//=======================================================================
+//function : BRepGProp_Sinert
+//purpose  : Constructor
+//=======================================================================
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
+                                   BRepGProp_Domain& theDomain,
+                                   const gp_Pnt&     theLocation)
 {
-  return (theMA * theMB);
+  SetLocation(theLocation);
+  Perform(theSurface, theDomain);
 }
 
-static inline Standard_Real Addition(Standard_Real theMA, Standard_Real theMB)
+//=======================================================================
+//function : BRepGProp_Sinert
+//purpose  : Constructor
+//=======================================================================
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
+                                   const gp_Pnt&       theLocation,
+                                   const Standard_Real theEps)
 {
-  return (theMA + theMB);
+  SetLocation(theLocation);
+  Perform(theSurface, theEps);
 }
 
-static Standard_Integer FillIntervalBounds(Standard_Real               A,
-                                           Standard_Real               B,
-                                           const TColStd_Array1OfReal& Knots, 
-                                           HMath_Vector&               VA,
-                                           HMath_Vector&               VB)
+//=======================================================================
+//function : BRepGProp_Sinert
+//purpose  : Constructor
+//=======================================================================
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
+                                   BRepGProp_Domain&   theDomain,
+                                   const gp_Pnt&       theLocation,
+                                   const Standard_Real theEps)
 {
-  Standard_Integer i = 1, iEnd = Knots.Upper(), j = 1, k = 1;
-  VA(j++) = A;
-  for(; i <= iEnd; i++){
-    Standard_Real kn = Knots(i);
-    if(A < kn)
-    {
-      if(kn < B) 
-      {
-        VA(j++) = VB(k++) = kn;
-      }
-      else 
-      {
-        break;
-      }
-    }
-  }
-  VB(k) = B;
-  return k;
+  SetLocation(theLocation);
+  Perform(theSurface, theDomain, theEps);
 }
 
-static inline Standard_Integer MaxSubs(Standard_Integer n, Standard_Integer coeff = SUBS_POWER){
-  //  return n = IntegerLast()/coeff < n? IntegerLast(): n*coeff + 1;
-  return Min((n * coeff + 1),SM);
-}
-
-static Standard_Integer LFillIntervalBounds(Standard_Real               A,
-                                            Standard_Real               B,
-                                            const TColStd_Array1OfReal& Knots, 
-                                            const Standard_Integer      NumSubs)
+//=======================================================================
+//function : SetLocation
+//purpose  : 
+//=======================================================================
+void BRepGProp_Sinert::SetLocation(const gp_Pnt& theLocation)
 {
-  Standard_Integer iEnd = MaxSubs(Knots.Upper()-1, NumSubs), jEnd = L1->Upper();
-  iEnd = Max(iEnd, Knots.Upper());
-  if(iEnd - 1 > jEnd){
-    L1    = new math_Vector(1,iEnd);
-    L2    = new math_Vector(1,iEnd);
-    DimL  = new math_Vector(1,iEnd);
-    ErrL  = new math_Vector(1,iEnd,0.0);
-    ErrUL = new math_Vector(1,iEnd,0.0);
-    IxL   = new math_Vector(1,iEnd);
-    IyL   = new math_Vector(1,iEnd);
-    IzL   = new math_Vector(1,iEnd);
-    IxxL  = new math_Vector(1,iEnd);
-    IyyL  = new math_Vector(1,iEnd);
-    IzzL  = new math_Vector(1,iEnd);
-    IxyL  = new math_Vector(1,iEnd);
-    IxzL  = new math_Vector(1,iEnd);
-    IyzL  = new math_Vector(1,iEnd);
-  }
-  return FillIntervalBounds(A, B, Knots, L1, L2);
+  loc = theLocation;
 }
 
-static Standard_Integer UFillIntervalBounds(Standard_Real               A,
-                                            Standard_Real               B,
-                                            const TColStd_Array1OfReal& Knots, 
-                                            const Standard_Integer      NumSubs)
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void BRepGProp_Sinert::Perform(const BRepGProp_Face& theSurface)
 {
-  Standard_Integer iEnd = MaxSubs(Knots.Upper()-1, NumSubs), jEnd = U1->Upper();
-  iEnd = Max(iEnd, Knots.Upper());
-  if(iEnd - 1 > jEnd){
-    U1   = new math_Vector(1,iEnd);
-    U2   = new math_Vector(1,iEnd);
-    DimU = new math_Vector(1,iEnd);
-    ErrU = new math_Vector(1,iEnd,0.0);
-    IxU  = new math_Vector(1,iEnd);
-    IyU  = new math_Vector(1,iEnd);
-    IzU  = new math_Vector(1,iEnd);
-    IxxU = new math_Vector(1,iEnd);
-    IyyU = new math_Vector(1,iEnd);
-    IzzU = new math_Vector(1,iEnd);
-    IxyU = new math_Vector(1,iEnd);
-    IxzU = new math_Vector(1,iEnd);
-    IyzU = new math_Vector(1,iEnd);
-  }
-  return FillIntervalBounds(A, B, Knots, U1, U2);
-}
-
-static Standard_Real CCompute(BRepGProp_Face&                  S,
-                              BRepGProp_Domain&                D,
-                              const gp_Pnt&          loc,
-                              Standard_Real&         Dim,
-                              gp_Pnt&                g,
-                              gp_Mat&                inertia,
-                              const Standard_Real    EpsDim,
-                              const Standard_Boolean isErrorCalculation,
-                              const Standard_Boolean isVerifyComputation) 
-{
-  Standard_Real  (*FuncAdd)(Standard_Real, Standard_Real);
-  Standard_Real  (*FuncMul)(Standard_Real, Standard_Real);
-
-  FuncAdd = Addition;
-  FuncMul = Multiplication;
-
-  Standard_Boolean isNaturalRestriction = S.NaturalRestriction();
-
-  Standard_Integer NumSubs = SUBS_POWER;
-
-  Standard_Real Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
-  Dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
-  Standard_Real x, y, z;
-  //boundary curve parametrization
-  Standard_Real l1, l2, lm, lr, l;   
-  //BRepGProp_Face parametrization in U and V direction
-  Standard_Real BV1, BV2, v;         
-  Standard_Real BU1, BU2, u1, u2, um, ur, u;
-  S.Bounds (BU1, BU2, BV1, BV2);
-  u1 = BU1;
-
-  if(Precision::IsInfinite(BU1) || Precision::IsInfinite(BU2) ||
-     Precision::IsInfinite(BV1) || Precision::IsInfinite(BV2))
-  {
-    FuncAdd = AdditionInf;
-    FuncMul = MultiplicationInf;
-  }
-
-
-  //location point used to compute the inertia
-  Standard_Real xloc, yloc, zloc;
-  loc.Coord (xloc, yloc, zloc); // use member of parent class
-  //Jacobien (x, y, z) -> (u, v) = ||n||
-  Standard_Real ds;                  
-  //On the BRepGProp_Face
-  gp_Pnt Ps;                    
-  gp_Vec VNor;
-  //On the boundary curve u-v
-  gp_Pnt2d Puv;                
-  gp_Vec2d Vuv;
-  Standard_Real Dul;  // Dul = Du / Dl
-  Standard_Real CDim[2], CIx, CIy, CIz, CIxx, CIyy, CIzz, CIxy, CIxz, CIyz;
-  Standard_Real LocDim[2], LocIx, LocIy, LocIz, LocIxx, LocIyy, LocIzz, LocIxy, LocIxz, LocIyz;
-
-  Standard_Real ErrorU, ErrorL, ErrorLMax = 0.0, Eps=0.0, EpsL=0.0, EpsU=0.0;
-
-  Standard_Integer iD = 0, NbLSubs, iLS, iLSubEnd, iGL, iGLEnd, NbLGaussP[2], LRange[2], iL, kL, kLEnd, IL, JL;
-  Standard_Integer i, NbUSubs, iUS, iUSubEnd, iGU, iGUEnd, NbUGaussP[2], URange[2], iU, kU, kUEnd, IU, JU;
-  Standard_Integer UMaxSubs, LMaxSubs;
-  iGLEnd = isErrorCalculation? 2: 1; 
-  for(i = 0; i < 2; i++) {
-    LocDim[i] = 0.0;
-    CDim[i] = 0.0;
-  }
-
-  NbUGaussP[0] = S.SIntOrder(EpsDim);  
-  NbUGaussP[1] = RealToInt(Ceiling(ERROR_ALGEBR_RATIO*NbUGaussP[0]));
-  math::GaussPoints(NbUGaussP[0],UGaussP0);  math::GaussWeights(NbUGaussP[0],UGaussW0);
-  math::GaussPoints(NbUGaussP[1],UGaussP1);  math::GaussWeights(NbUGaussP[1],UGaussW1);
-
-  NbUSubs = S.SUIntSubs();
-  TColStd_Array1OfReal UKnots(1,NbUSubs+1);
-  S.UKnots(UKnots);
-
-  while (isNaturalRestriction || D.More())
-  {
-    if(isNaturalRestriction)
-    { 
-      NbLGaussP[0] = Min(2*NbUGaussP[0],math::GaussPointsMax());
-    }
-    else
-    {
-      S.Load(D.Value());  ++iD;
-      NbLGaussP[0] = S.LIntOrder(EpsDim);  
-    }
-
-    NbLGaussP[1] = RealToInt(Ceiling(ERROR_ALGEBR_RATIO*NbLGaussP[0]));
-    math::GaussPoints(NbLGaussP[0],LGaussP0);  math::GaussWeights(NbLGaussP[0],LGaussW0);
-    math::GaussPoints(NbLGaussP[1],LGaussP1);  math::GaussWeights(NbLGaussP[1],LGaussW1);
-
-    NbLSubs = isNaturalRestriction? S.SVIntSubs(): S.LIntSubs();
-
-    TColStd_Array1OfReal LKnots(1,NbLSubs+1);
-    if(isNaturalRestriction)
-    {
-      S.VKnots(LKnots); 
-      l1 = BV1; l2 = BV2;
-    }
-    else
-    {
-      S.LKnots(LKnots);
-      l1 = S.FirstParameter();  l2 = S.LastParameter();
-    }
-
-    ErrorL = 0.0;
-    kLEnd = 1; JL = 0;
-    //OCC503(apo): if(Abs(l2-l1) < EPS_PARAM) continue;
-    if(Abs(l2-l1) > EPS_PARAM)
-    {
-      iLSubEnd = LFillIntervalBounds(l1, l2, LKnots, NumSubs);
-      LMaxSubs = MaxSubs(iLSubEnd);
-      if(LMaxSubs > DimL.Vector()->Upper())
-        LMaxSubs = DimL.Vector()->Upper();
-
-      DimL.Init(0.0,1,LMaxSubs);  ErrL.Init(0.0,1,LMaxSubs);  ErrUL.Init(0.0,1,LMaxSubs);
-      
-      do{// while: L
-        if(++JL > iLSubEnd)
-        {
-          LRange[0] = IL = ErrL->Max();
-          LRange[1] = JL;
-          L1(JL) = (L1(IL) + L2(IL))/2.0;
-          L2(JL) = L2(IL);
-          L2(IL) = L1(JL);
-        }
-        else
-          LRange[0] = IL = JL;
-        
-        if(JL == LMaxSubs || Abs(L2(JL) - L1(JL)) < EPS_PARAM)
-          if(kLEnd == 1)
-          {
-            DimL(JL) = ErrL(JL) = IxL(JL) = IyL(JL) = IzL(JL) = 
-              IxxL(JL) = IyyL(JL) = IzzL(JL) = IxyL(JL) = IxzL(JL) = IyzL(JL) = 0.0;
-          }else{
-            JL--;
-            EpsL = ErrorL;  Eps = EpsL/0.9;
-            break;
-          }
-        else
-          for(kL=0; kL < kLEnd; kL++)
-          {
-            iLS = LRange[kL];
-            lm = 0.5*(L2(iLS) + L1(iLS));         
-            lr = 0.5*(L2(iLS) - L1(iLS));
-            CIx = CIy = CIz = CIxx = CIyy = CIzz = CIxy = CIxz = CIyz = 0.0;
-            
-            for(iGL=0; iGL < iGLEnd; iGL++)
-            {
-              CDim[iGL] = 0.0;
-              for(iL=1; iL<=NbLGaussP[iGL]; iL++)
-              {
-                l = lm + lr*(*LGaussP[iGL])(iL);
-                if(isNaturalRestriction)
-                {
-                  v = l; u2 = BU2; Dul = (*LGaussW[iGL])(iL);
-                }
-                else
-                {
-                  S.D12d (l, Puv, Vuv);
-                  Dul = Vuv.Y()*(*LGaussW[iGL])(iL);  // Dul = Du / Dl
-                  if(Abs(Dul) < EPS_PARAM)
-                    continue;
-
-                  v  = Puv.Y();
-                  u2 = Puv.X();
-                  //Check on cause out off bounds of value current parameter
-                  if(v < BV1)
-                    v = BV1;
-                  else if(v > BV2)
-                    v = BV2;
-
-                  if(u2 < BU1)
-                    u2 = BU1;
-                  else if(u2 > BU2)
-                    u2 = BU2;
-                }
-
-                ErrUL(iLS) = 0.0;
-                kUEnd = 1;
-                JU = 0;
-
-                if(Abs(u2-u1) < EPS_PARAM)
-                  continue;
-
-                iUSubEnd = UFillIntervalBounds(u1, u2, UKnots, NumSubs);
-                UMaxSubs = MaxSubs(iUSubEnd);
-                if(UMaxSubs > DimU.Vector()->Upper())
-                  UMaxSubs = DimU.Vector()->Upper();
-
-                DimU.Init(0.0,1,UMaxSubs);  ErrU.Init(0.0,1,UMaxSubs);  ErrorU = 0.0;
-                
-                do{//while: U
-                  if(++JU > iUSubEnd)
-                  {
-                    URange[0] = IU = ErrU->Max();
-                    URange[1] = JU;
-                    U1(JU) = (U1(IU)+U2(IU))/2.0;
-                    U2(JU) = U2(IU);
-                    U2(IU) = U1(JU);
-                  }
-                  else
-                    URange[0] = IU = JU;
-
-                  if(JU == UMaxSubs || Abs(U2(JU) - U1(JU)) < EPS_PARAM)
-                    if(kUEnd == 1)
-                    {
-                      DimU(JU) = ErrU(JU) = IxU(JU) = IyU(JU) = IzU(JU) = 
-                        IxxU(JU) = IyyU(JU) = IzzU(JU) = IxyU(JU) = IxzU(JU) = IyzU(JU) = 0.0;
-                    }else
-                    {
-                      JU--;  
-                      EpsU = ErrorU;  Eps = EpsU*Abs((u2-u1)*Dul)/0.1;  EpsL = 0.9*Eps;
-                      break;
-                    }
-                  else
-                    for(kU=0; kU < kUEnd; kU++)
-                    {
-                      iUS = URange[kU];
-                      um = 0.5*(U2(iUS) + U1(iUS));
-                      ur = 0.5*(U2(iUS) - U1(iUS));
-                      LocIx = LocIy = LocIz = LocIxx = LocIyy = LocIzz = LocIxy = LocIxz = LocIyz = 0.0;
-                      iGUEnd = iGLEnd - iGL;
-                      for(iGU=0; iGU < iGUEnd; iGU++)
-                      {
-                        LocDim[iGU] = 0.0;
-                        for(iU=1; iU <= NbUGaussP[iGU]; iU++)
-                        {
-                          u = um + ur*(*UGaussP[iGU])(iU);
-                          S.Normal(u, v, Ps, VNor);
-                          ds = VNor.Magnitude();    //Jacobien(x,y,z) -> (u,v)=||n||
-                          ds *= (*UGaussW[iGU])(iU); 
-                          LocDim[iGU] += ds; 
-
-                          if(iGU > 0)
-                            continue;
-
-                          Ps.Coord(x, y, z);  
-                          x = FuncAdd(x, -xloc);
-                          y = FuncAdd(y, -yloc);
-                          z = FuncAdd(z, -zloc);
-
-                          const Standard_Real XdS = FuncMul(x, ds);
-                          const Standard_Real YdS = FuncMul(y, ds);
-                          const Standard_Real ZdS = FuncMul(z, ds);
-
-                          LocIx = FuncAdd(LocIx, XdS);
-                          LocIy = FuncAdd(LocIy, YdS);
-                          LocIz = FuncAdd(LocIz, ZdS);
-                          LocIxy = FuncAdd(LocIxy, FuncMul(x, YdS));
-                          LocIyz = FuncAdd(LocIyz, FuncMul(y, ZdS));
-                          LocIxz = FuncAdd(LocIxz, FuncMul(x, ZdS));
-
-                          const Standard_Real XXdS = FuncMul(x, XdS);
-                          const Standard_Real YYdS = FuncMul(y, YdS);
-                          const Standard_Real ZZdS = FuncMul(z, ZdS);
-
-                          LocIxx = FuncAdd(LocIxx, FuncAdd(YYdS, ZZdS));
-                          LocIyy = FuncAdd(LocIyy, FuncAdd(XXdS, ZZdS));
-                          LocIzz = FuncAdd(LocIzz, FuncAdd(XXdS, YYdS));
-                        }//for: iU
-                      }//for: iGU
-
-                      DimU(iUS) = FuncMul(LocDim[0],ur);
-                      if(iGL > 0)
-                        continue;
-
-                      ErrU(iUS) = FuncMul(Abs(LocDim[1]-LocDim[0]), ur);
-                      IxU(iUS) = FuncMul(LocIx, ur);
-                      IyU(iUS) = FuncMul(LocIy, ur);
-                      IzU(iUS) = FuncMul(LocIz, ur);
-                      IxxU(iUS) = FuncMul(LocIxx, ur);
-                      IyyU(iUS) = FuncMul(LocIyy, ur);
-                      IzzU(iUS) = FuncMul(LocIzz, ur);
-                      IxyU(iUS) = FuncMul(LocIxy, ur);
-                      IxzU(iUS) = FuncMul(LocIxz, ur);
-                      IyzU(iUS) = FuncMul(LocIyz, ur);
-                    }//for: kU (iUS)
-
-                    if(JU == iUSubEnd)
-                      kUEnd = 2;
-
-                    if(kUEnd == 2)
-                      ErrorU = ErrU(ErrU->Max());
-                }while((ErrorU - EpsU > 0.0 && EpsU != 0.0) || kUEnd == 1);
-
-                for(i=1; i<=JU; i++)
-                  CDim[iGL] = FuncAdd(CDim[iGL], FuncMul(DimU(i), Dul));
-
-                if(iGL > 0)
-                  continue;
-
-                ErrUL(iLS) = ErrorU*Abs((u2-u1)*Dul);
-                for(i=1; i<=JU; i++)
-                {
-                  CIx = FuncAdd(CIx, FuncMul(IxU(i), Dul));
-                  CIy = FuncAdd(CIy, FuncMul(IyU(i), Dul));
-                  CIz = FuncAdd(CIz, FuncMul(IzU(i), Dul));
-                  CIxx = FuncAdd(CIxx, FuncMul(IxxU(i), Dul));
-                  CIyy = FuncAdd(CIyy, FuncMul(IyyU(i), Dul));
-                  CIzz = FuncAdd(CIzz, FuncMul(IzzU(i), Dul));
-                  CIxy = FuncAdd(CIxy, FuncMul(IxyU(i), Dul));
-                  CIxz = FuncAdd(CIxz, FuncMul(IxzU(i), Dul));
-                  CIyz = FuncAdd(CIyz, FuncMul(IyzU(i), Dul));
-                }
-              }//for: iL 
-            }//for: iGL
-
-            DimL(iLS) = FuncMul(CDim[0], lr);  
-            if(iGLEnd == 2)
-              ErrL(iLS) = FuncAdd(FuncMul(Abs(CDim[1]-CDim[0]),lr), ErrUL(iLS));
-
-            IxL(iLS) = FuncMul(CIx, lr);
-            IyL(iLS) = FuncMul(CIy, lr);
-            IzL(iLS) = FuncMul(CIz, lr); 
-            IxxL(iLS) = FuncMul(CIxx, lr);
-            IyyL(iLS) = FuncMul(CIyy, lr);
-            IzzL(iLS) = FuncMul(CIzz, lr); 
-            IxyL(iLS) = FuncMul(CIxy, lr);
-            IxzL(iLS) = FuncMul(CIxz, lr);
-            IyzL(iLS) = FuncMul(CIyz, lr);
-          }//for: (kL)iLS
-          //  Calculate/correct epsilon of computation by current value of Dim
-          //That is need for not spend time for 
-          if(JL == iLSubEnd)
-          {  
-            kLEnd = 2; 
-            Standard_Real DDim = 0.0;
-            for(i=1; i<=JL; i++)
-              DDim += DimL(i);
-
-            DDim = Abs(DDim*EpsDim);
-            if(DDim > Eps)
-            { 
-              Eps = DDim;
-              EpsL = 0.9*Eps;
-            }
-          }
-
-          if(kLEnd == 2)
-            ErrorL = ErrL(ErrL->Max());
-        }while((ErrorL - EpsL > 0.0 && isVerifyComputation) || kLEnd == 1);
-
-        for(i=1; i<=JL; i++)
-        {
-          Dim = FuncAdd(Dim, DimL(i)); 
-          Ix = FuncAdd(Ix, IxL(i));
-          Iy = FuncAdd(Iy, IyL(i));
-          Iz = FuncAdd(Iz, IzL(i));
-          Ixx = FuncAdd(Ixx, IxxL(i));
-          Iyy = FuncAdd(Iyy, IyyL(i));
-          Izz = FuncAdd(Izz, IzzL(i));
-          Ixy = FuncAdd(Ixy, IxyL(i));
-          Ixz = FuncAdd(Ixz, IxzL(i));
-          Iyz = FuncAdd(Iyz, IyzL(i));
-        }
-
-        ErrorLMax = Max(ErrorLMax, ErrorL);
-      }
-
-      if(isNaturalRestriction)
-        break;
-
-      D.Next();
-    }
-
-    if(Abs(Dim) >= EPS_DIM)
-    {
-      Ix /= Dim;
-      Iy /= Dim;
-      Iz /= Dim;
-      g.SetCoord (Ix, Iy, Iz);
-    }
-    else
-    {
-      Dim =0.0;
-      g.SetCoord (0., 0.,0.);
-    }
-
-    inertia = gp_Mat (gp_XYZ (Ixx, -Ixy, -Ixz),
-                      gp_XYZ (-Ixy, Iyy, -Iyz),
-                      gp_XYZ (-Ixz, -Iyz, Izz));
-
-    if(iGLEnd == 2)
-      Eps = Dim != 0.0? ErrorLMax/Abs(Dim): 0.0;
-    else
-      Eps = EpsDim;
-
-    return Eps;
-}
-
-static Standard_Real Compute(BRepGProp_Face& S, const gp_Pnt& loc, Standard_Real& Dim, gp_Pnt& g, gp_Mat& inertia, 
-                             Standard_Real EpsDim) 
-{
-  Standard_Boolean isErrorCalculation  = 0.0 > EpsDim || EpsDim < 0.001? 1: 0;
-  Standard_Boolean isVerifyComputation = 0.0 < EpsDim && EpsDim < 0.001? 1: 0;
-  EpsDim = Abs(EpsDim);
-  BRepGProp_Domain D;
-  return CCompute(S,D,loc,Dim,g,inertia,EpsDim,isErrorCalculation,isVerifyComputation);
-}
-
-static Standard_Real Compute(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& loc, Standard_Real& Dim, gp_Pnt& g, gp_Mat& inertia, 
-                             Standard_Real EpsDim) 
-{
-  Standard_Boolean isErrorCalculation  = 0.0 > EpsDim || EpsDim < 0.001? 1: 0;
-  Standard_Boolean isVerifyComputation = 0.0 < EpsDim && EpsDim < 0.001? 1: 0;
-  EpsDim = Abs(EpsDim);
-  return CCompute(S,D,loc,Dim,g,inertia,EpsDim,isErrorCalculation,isVerifyComputation);
-}
-
-static void Compute(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& loc, Standard_Real& dim, gp_Pnt& g, gp_Mat& inertia)
-{
-  Standard_Real  (*FuncAdd)(Standard_Real, Standard_Real);
-  Standard_Real  (*FuncMul)(Standard_Real, Standard_Real);
-
-  FuncAdd = Addition;
-  FuncMul = Multiplication;
-
-  Standard_Real Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
-  dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
-
-  Standard_Real x, y, z;
-  Standard_Integer NbCGaussgp_Pnts = 0;
-
-  Standard_Real l1, l2, lm, lr, l;   //boundary curve parametrization
-  Standard_Real v1, v2,         v;   //BRepGProp_Face parametrization in v direction
-  Standard_Real u1, u2, um, ur, u;
-  Standard_Real ds;                  //Jacobien (x, y, z) -> (u, v) = ||n||
-
-  gp_Pnt P;                    //On the BRepGProp_Face
-  gp_Vec VNor;
-
-  gp_Pnt2d Puv;                //On the boundary curve u-v
-  gp_Vec2d Vuv;
-  Standard_Real Dul;                 // Dul = Du / Dl
-  Standard_Real CArea, CIx, CIy, CIz, CIxx, CIyy, CIzz, CIxy, CIxz, CIyz;
-  Standard_Real LocArea, LocIx, LocIy, LocIz, LocIxx, LocIyy, LocIzz, LocIxy,
-    LocIxz, LocIyz;
-
-
-  S.Bounds (u1, u2, v1, v2);
-
-  if(Precision::IsInfinite(u1) || Precision::IsInfinite(u2) ||
-     Precision::IsInfinite(v1) || Precision::IsInfinite(v2))
-  {
-    FuncAdd = AdditionInf;
-    FuncMul = MultiplicationInf;
-  }
-
-
-  Standard_Integer NbUGaussgp_Pnts = Min(S.UIntegrationOrder (),
-    math::GaussPointsMax());
-  Standard_Integer NbVGaussgp_Pnts = Min(S.VIntegrationOrder (),
-    math::GaussPointsMax());
-
-  Standard_Integer NbGaussgp_Pnts = Max(NbUGaussgp_Pnts, NbVGaussgp_Pnts);
-
-  //Number of Gauss points for the integration
-  //on the BRepGProp_Face
-  math_Vector GaussSPV (1, NbGaussgp_Pnts);
-  math_Vector GaussSWV (1, NbGaussgp_Pnts);
-  math::GaussPoints  (NbGaussgp_Pnts,GaussSPV);
-  math::GaussWeights (NbGaussgp_Pnts,GaussSWV);
-
-
-  //location point used to compute the inertia
-  Standard_Real xloc, yloc, zloc;
-  loc.Coord (xloc, yloc, zloc);
-
-  while (D.More()) {
-
-    S.Load(D.Value());
-    NbCGaussgp_Pnts =  Min(S.IntegrationOrder (), math::GaussPointsMax());        
-
-    math_Vector GaussCP (1, NbCGaussgp_Pnts);
-    math_Vector GaussCW (1, NbCGaussgp_Pnts);
-    math::GaussPoints  (NbCGaussgp_Pnts,GaussCP);
-    math::GaussWeights (NbCGaussgp_Pnts,GaussCW);
-
-    CArea = 0.0;
-    CIx = CIy = CIz = CIxx = CIyy = CIzz = CIxy = CIxz = CIyz = 0.0;
-    l1 = S.FirstParameter ();
-    l2 = S.LastParameter  ();
-    lm = 0.5 * (l2 + l1);         
-    lr = 0.5 * (l2 - l1);
-
-    for (Standard_Integer i = 1; i <= NbCGaussgp_Pnts; i++) {
-      l = lm + lr * GaussCP (i);
-      S.D12d(l, Puv, Vuv);
-      v   = Puv.Y();
-      u2  = Puv.X();
-      Dul = Vuv.Y();
-      Dul *= GaussCW (i);
-      um  = 0.5 * (u2 + u1);
-      ur  = 0.5 * (u2 - u1);
-      LocArea = LocIx  = LocIy  = LocIz = LocIxx = LocIyy = LocIzz = 
-        LocIxy  = LocIxz = LocIyz = 0.0;
-      for (Standard_Integer j = 1; j <= NbGaussgp_Pnts; j++) {
-        u = FuncAdd(um, FuncMul(ur, GaussSPV (j)));
-        S.Normal (u, v, P, VNor);
-        ds = VNor.Magnitude();    //normal.Magnitude
-        ds = FuncMul(ds, Dul) * GaussSWV (j); 
-        LocArea = FuncAdd(LocArea, ds); 
-        P.Coord (x, y, z);
-
-        x = FuncAdd(x, -xloc);
-        y = FuncAdd(y, -yloc);
-        z = FuncAdd(z, -zloc);
-
-        const Standard_Real XdS = FuncMul(x, ds);
-        const Standard_Real YdS = FuncMul(y, ds);
-        const Standard_Real ZdS = FuncMul(z, ds);
-        
-        LocIx = FuncAdd(LocIx, XdS);
-        LocIy = FuncAdd(LocIy, YdS);
-        LocIz = FuncAdd(LocIz, ZdS);
-        LocIxy = FuncAdd(LocIxy, FuncMul(x, YdS));
-        LocIyz = FuncAdd(LocIyz, FuncMul(y, ZdS));
-        LocIxz = FuncAdd(LocIxz, FuncMul(x, ZdS));
-
-        const Standard_Real XXdS = FuncMul(x, XdS);
-        const Standard_Real YYdS = FuncMul(y, YdS);
-        const Standard_Real ZZdS = FuncMul(z, ZdS);
-        
-        LocIxx = FuncAdd(LocIxx, FuncAdd(YYdS, ZZdS));
-        LocIyy = FuncAdd(LocIyy, FuncAdd(XXdS, ZZdS));
-        LocIzz = FuncAdd(LocIzz, FuncAdd(XXdS, YYdS));
-      }
-
-      CArea = FuncAdd(CArea, FuncMul(LocArea, ur));
-      CIx   = FuncAdd(CIx, FuncMul(LocIx, ur));
-      CIy   = FuncAdd(CIy, FuncMul(LocIy, ur));
-      CIz   = FuncAdd(CIz, FuncMul(LocIz, ur));
-      CIxx  = FuncAdd(CIxx, FuncMul(LocIxx, ur));
-      CIyy  = FuncAdd(CIyy, FuncMul(LocIyy, ur));
-      CIzz  = FuncAdd(CIzz, FuncMul(LocIzz, ur));
-      CIxy  = FuncAdd(CIxy, FuncMul(LocIxy, ur));
-      CIxz  = FuncAdd(CIxz, FuncMul(LocIxz, ur));
-      CIyz  = FuncAdd(CIyz, FuncMul(LocIyz, ur));
-    }
-
-    dim = FuncAdd(dim, FuncMul(CArea, lr));
-    Ix  = FuncAdd(Ix,  FuncMul(CIx, lr));
-    Iy  = FuncAdd(Iy,  FuncMul(CIy, lr));
-    Iz  = FuncAdd(Iz,  FuncMul(CIz, lr));
-    Ixx = FuncAdd(Ixx, FuncMul(CIxx, lr));
-    Iyy = FuncAdd(Iyy, FuncMul(CIyy, lr));
-    Izz = FuncAdd(Izz, FuncMul(CIzz, lr));
-    Ixy = FuncAdd(Ixy, FuncMul(CIxy, lr));
-    Ixz = FuncAdd(Iyz, FuncMul(CIxz, lr));
-    Iyz = FuncAdd(Ixz, FuncMul(CIyz, lr));
-    D.Next();
-  }
-
-  if (Abs(dim) >= EPS_DIM) {
-    Ix /= dim;
-    Iy /= dim;
-    Iz /= dim;
-    g.SetCoord (Ix, Iy, Iz);
-  }
-  else {
-    dim =0.;
-    g.SetCoord (0., 0.,0.);
-  }
-
-  inertia = gp_Mat (gp_XYZ (Ixx, -Ixy, -Ixz),
-                    gp_XYZ (-Ixy, Iyy, -Iyz),
-                    gp_XYZ (-Ixz, -Iyz, Izz));
-}
-
-static void Compute(const BRepGProp_Face& S,
-                    const gp_Pnt& loc,
-                    Standard_Real& dim,
-                    gp_Pnt& g,
-                    gp_Mat& inertia)
-{
-  Standard_Real  (*FuncAdd)(Standard_Real, Standard_Real);
-  Standard_Real  (*FuncMul)(Standard_Real, Standard_Real);
-
-  FuncAdd = Addition;
-  FuncMul = Multiplication;
-
-  Standard_Real Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
-  dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
-
-  Standard_Real LowerU, UpperU, LowerV, UpperV;
-  S.Bounds (LowerU, UpperU, LowerV, UpperV);
-
-  if(Precision::IsInfinite(LowerU) || Precision::IsInfinite(UpperU) ||
-     Precision::IsInfinite(LowerV) || Precision::IsInfinite(UpperV))
-  {
-    FuncAdd = AdditionInf;
-    FuncMul = MultiplicationInf;
-  }
-
-  Standard_Integer UOrder = Min(S.UIntegrationOrder (),
-    math::GaussPointsMax());
-  Standard_Integer VOrder = Min(S.VIntegrationOrder (),
-    math::GaussPointsMax());   
-  gp_Pnt P;          
-  gp_Vec VNor;   
-  Standard_Real dsi, ds;        
-  Standard_Real ur, um, u, vr, vm, v;
-  Standard_Real x, y, z; 
-  Standard_Real Ixi, Iyi, Izi, Ixxi, Iyyi, Izzi, Ixyi, Ixzi, Iyzi;
-  Standard_Real xloc, yloc, zloc;
-  loc.Coord (xloc, yloc, zloc);
-
-  Standard_Integer i, j;
-  math_Vector GaussPU (1, UOrder);     //gauss points and weights
-  math_Vector GaussWU (1, UOrder);
-  math_Vector GaussPV (1, VOrder);
-  math_Vector GaussWV (1, VOrder);
-
-  //Recuperation des points de Gauss dans le fichier GaussPoints.
-  math::GaussPoints  (UOrder,GaussPU);
-  math::GaussWeights (UOrder,GaussWU);
-  math::GaussPoints  (VOrder,GaussPV);
-  math::GaussWeights (VOrder,GaussWV);
-
-  // Calcul des integrales aux points de gauss :
-  um = 0.5 * FuncAdd(UpperU,  LowerU);
-  vm = 0.5 * FuncAdd(UpperV,  LowerV);
-  ur = 0.5 * FuncAdd(UpperU, -LowerU);
-  vr = 0.5 * FuncAdd(UpperV, -LowerV);
-
-  for (j = 1; j <= VOrder; j++) {
-    v = FuncAdd(vm, FuncMul(vr, GaussPV(j)));
-    dsi = Ixi = Iyi = Izi = Ixxi = Iyyi = Izzi = Ixyi = Ixzi = Iyzi = 0.0;
-
-    for (i = 1; i <= UOrder; i++) {
-      u = FuncAdd(um, FuncMul(ur, GaussPU (i)));
-      S.Normal (u, v, P, VNor); 
-      ds = FuncMul(VNor.Magnitude(), GaussWU (i));
-      P.Coord (x, y, z);
-
-      x = FuncAdd(x, -xloc);
-      y = FuncAdd(y, -yloc);
-      z = FuncAdd(z, -zloc);
-
-      dsi = FuncAdd(dsi, ds);
-
-      const Standard_Real XdS = FuncMul(x, ds);
-      const Standard_Real YdS = FuncMul(y, ds);
-      const Standard_Real ZdS = FuncMul(z, ds);
-
-      Ixi = FuncAdd(Ixi, XdS);
-      Iyi = FuncAdd(Iyi, YdS);
-      Izi = FuncAdd(Izi, ZdS);
-      Ixyi = FuncAdd(Ixyi, FuncMul(x, YdS));
-      Iyzi = FuncAdd(Iyzi, FuncMul(y, ZdS));
-      Ixzi = FuncAdd(Ixzi, FuncMul(x, ZdS));
-
-      const Standard_Real XXdS = FuncMul(x, XdS);
-      const Standard_Real YYdS = FuncMul(y, YdS);
-      const Standard_Real ZZdS = FuncMul(z, ZdS);
-
-      Ixxi = FuncAdd(Ixxi, FuncAdd(YYdS, ZZdS));
-      Iyyi = FuncAdd(Iyyi, FuncAdd(XXdS, ZZdS));
-      Izzi = FuncAdd(Izzi, FuncAdd(XXdS, YYdS));
-    }
-
-    dim   = FuncAdd(dim, FuncMul(dsi, GaussWV (j)));
-    Ix    = FuncAdd(Ix,  FuncMul(Ixi, GaussWV (j)));
-    Iy    = FuncAdd(Iy,  FuncMul(Iyi, GaussWV (j)));
-    Iz    = FuncAdd(Iz,  FuncMul(Izi, GaussWV (j)));
-    Ixx   = FuncAdd(Ixx, FuncMul(Ixxi, GaussWV (j)));
-    Iyy   = FuncAdd(Iyy, FuncMul(Iyyi, GaussWV (j)));
-    Izz   = FuncAdd(Izz, FuncMul(Izzi, GaussWV (j)));
-    Ixy   = FuncAdd(Ixy, FuncMul(Ixyi, GaussWV (j)));
-    Iyz   = FuncAdd(Iyz, FuncMul(Iyzi, GaussWV (j)));
-    Ixz   = FuncAdd(Ixz, FuncMul(Ixzi, GaussWV (j)));
-  }
-
-  vr  = FuncMul(vr, ur);
-  Ixx = FuncMul(vr, Ixx);
-  Iyy = FuncMul(vr, Iyy);
-  Izz = FuncMul(vr, Izz);
-  Ixy = FuncMul(vr, Ixy);
-  Ixz = FuncMul(vr, Ixz);
-  Iyz = FuncMul(vr, Iyz);
-
-  if (Abs(dim) >= EPS_DIM)
-  {
-    Ix    /= dim;
-    Iy    /= dim;
-    Iz    /= dim;
-    dim   *= vr;
-    g.SetCoord (Ix, Iy, Iz);
-  }
-  else
-  {
-    dim =0.;
-    g.SetCoord (0.,0.,0.);
-  }
-
-  inertia = gp_Mat (gp_XYZ ( Ixx, -Ixy, -Ixz),
-                    gp_XYZ (-Ixy,  Iyy, -Iyz),
-                    gp_XYZ (-Ixz, -Iyz,  Izz));
-}
-
-BRepGProp_Sinert::BRepGProp_Sinert(){}
-
-BRepGProp_Sinert::BRepGProp_Sinert (const BRepGProp_Face&   S,
-                              const gp_Pnt& SLocation
-                              ) 
-{
-  SetLocation(SLocation);
-  Perform(S);
-}
-
-BRepGProp_Sinert::BRepGProp_Sinert (BRepGProp_Face&   S,
-                              BRepGProp_Domain& D,
-                              const gp_Pnt& SLocation
-                              ) 
-{
-  SetLocation(SLocation);
-  Perform(S,D);
-}
-
-BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& S, const gp_Pnt& SLocation, const Standard_Real Eps){
-  SetLocation(SLocation);
-  Perform(S, Eps);
-}
-
-BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& SLocation, const Standard_Real Eps){
-  SetLocation(SLocation);
-  Perform(S, D, Eps);
-}
-
-void BRepGProp_Sinert::SetLocation(const gp_Pnt& SLocation){
-  loc = SLocation;
-}
-
-void BRepGProp_Sinert::Perform(const BRepGProp_Face& S){
-  Compute(S,loc,dim,g,inertia);
   myEpsilon = 1.0;
-  return;
+
+  BRepGProp_Gauss aGauss(BRepGProp_Gauss::Sinert);
+  aGauss.Compute(theSurface, loc, dim, g, inertia);
 }
 
-void BRepGProp_Sinert::Perform(BRepGProp_Face& S, BRepGProp_Domain& D){
-  Compute(S,D,loc,dim,g,inertia);
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void BRepGProp_Sinert::Perform(BRepGProp_Face&   theSurface,
+                               BRepGProp_Domain& theDomain)
+{
   myEpsilon = 1.0;
-  return;
+
+  BRepGProp_Gauss aGauss(BRepGProp_Gauss::Sinert);
+  aGauss.Compute(theSurface, theDomain, loc, dim, g, inertia);
 }
 
-Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& S, const Standard_Real Eps){
-  return myEpsilon = Compute(S,loc,dim,g,inertia,Eps);
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
+                                        const Standard_Real theEps)
+{
+  BRepGProp_Domain anEmptyDomian;
+  return Perform(theSurface, anEmptyDomian, theEps);
 }
 
-Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& S, BRepGProp_Domain& D, const Standard_Real Eps){
-  return myEpsilon = Compute(S,D,loc,dim,g,inertia,Eps);
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
+                                        BRepGProp_Domain&   theDomain,
+                                        const Standard_Real theEps)
+{
+  BRepGProp_Gauss  aGauss(BRepGProp_Gauss::Sinert);
+  return myEpsilon = aGauss.Compute(theSurface, theDomain, loc, theEps, dim, g, inertia);
 }
 
-
-Standard_Real BRepGProp_Sinert::GetEpsilon(){
+//=======================================================================
+//function : GetEpsilon
+//purpose  : 
+//=======================================================================
+Standard_Real BRepGProp_Sinert::GetEpsilon()
+{
   return myEpsilon;
 }
