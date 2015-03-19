@@ -525,8 +525,8 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferWire
 	AddWarning(mywire, "an Edge is a null entity");
       }
       else {
-	ent = TransferEdge(E, Standard_False);
-	if (!ent.IsNull()) Seq->Append(ent);
+	      ent = TransferEdge(E, Standard_False);
+	      if (!ent.IsNull()) Seq->Append(ent);
       }
     }
   }
@@ -537,7 +537,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferWire
   Standard_Integer nbedges = Seq->Length();
   Handle(IGESData_HArray1OfIGESEntity) Tab;
   if ( nbedges == 1 ) {
-    res = ent;
+    res = GetCasted(IGESData_IGESEntity, Seq->Value(1));
   }
   else if ( nbedges >= 2) {
     Tab =  new IGESData_HArray1OfIGESEntity(1,nbedges);

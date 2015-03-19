@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC25843"
+puts "============"
+puts ""
+#######################################################################
+# Wire containing degenerated edge is not written to IGES / STEP
+#######################################################################
+
+restore [locate_data_file bug25843_onewire.brep] w
+
+set aFile ${imagedir}/bug25843_onewire.igs
+
+file delete ${aFile}
+
+brepiges w ${aFile}
+
+if { ![file exists ${aFile}] } {
+   puts "Error: Wire containing degenerated edge is not written to IGES file"
+} else {
+   puts "OK: Wire containing degenerated edge is written to IGES file"
+}
+
+catch {exec chmod 777 ${aFile}}

@@ -54,6 +54,9 @@
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_NullObject.hxx>
+
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
@@ -178,8 +181,15 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 //??    curveList->Append(Gpms);
     return Standard_True;
   }
-    
-  BRepAdaptor_Curve CA ( anEdge );
+
+  BRepAdaptor_Curve CA;
+  try {
+    OCC_CATCH_SIGNALS
+    CA.Initialize (anEdge);
+  }
+  catch (Standard_NullObject) {
+    return Standard_False;
+  }
 
   // Vertices
   TopoDS_Vertex Vfirst, Vlast;
