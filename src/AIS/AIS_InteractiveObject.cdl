@@ -173,9 +173,13 @@ is
     	-- be implemented when the main mode is not mode 0.
 
 
-    Redisplay (me:mutable; AllModes:Boolean from Standard =Standard_False); 
-    	---Purpose: Updates the active presentation; if <AllModes> = Standard_True
-    	--          all the presentations inside are recomputed. 
+    Redisplay (me:mutable; AllModes:Boolean from Standard =Standard_False);
+       ---Purpose: Updates the active presentation; if <AllModes> = Standard_True
+       --          all the presentations inside are recomputed.
+       --          IMPORTANT: It is preferable to call Redisplay method of
+       --          corresponding AIS_InteractiveContext instance for cases when it
+       --          is accessible. This method just redirects call to myCTXPtr,
+       --          so this class field must be up to date for proper result.
     
 
     SetInfiniteState(me:mutable;aFlag:Boolean from Standard = Standard_True);

@@ -68,13 +68,14 @@ mystate(0)
 
 //=======================================================================
 //function : Redisplay
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_InteractiveObject::Redisplay(const Standard_Boolean AllModes)
+void AIS_InteractiveObject::Redisplay (const Standard_Boolean AllModes)
 {
-  Update(AllModes);
-  UpdateSelection();
+  if (myCTXPtr == NULL)
+    return;
+
+  myCTXPtr->Redisplay (this, Standard_False, AllModes);
 }
 
 //=======================================================================

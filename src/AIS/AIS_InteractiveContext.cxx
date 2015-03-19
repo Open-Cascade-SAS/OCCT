@@ -1693,7 +1693,8 @@ void AIS_InteractiveContext::redisplayPrsRecModes (const Handle(AIS_InteractiveO
 {
   if (theIObj->RecomputeEveryPrs())
   {
-    theIObj->Redisplay();
+    theIObj->Update (Standard_True);
+    theIObj->UpdateSelection();
   }
   else
   {
@@ -1719,7 +1720,8 @@ void AIS_InteractiveContext::redisplayPrsModes (const Handle(AIS_InteractiveObje
 {
   if (theIObj->RecomputeEveryPrs())
   {
-    theIObj->Redisplay();
+    theIObj->Update (Standard_True);
+    theIObj->UpdateSelection();
   }
   else
   {
@@ -1904,7 +1906,8 @@ void AIS_InteractiveContext::SetAngleAndDeviation (const Handle(AIS_InteractiveO
 
   if (theIObj->RecomputeEveryPrs())
   {
-    theIObj->Redisplay();
+    theIObj->Update (Standard_True);
+    theIObj->UpdateSelection();
   }
   else
   {

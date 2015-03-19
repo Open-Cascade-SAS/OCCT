@@ -893,7 +893,7 @@ static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
         {
           continue;
         }
-        aShape->Redisplay();
+        ViewerTest::GetAISContext()->Redisplay (aShape, Standard_False);
       }
     }
   }
@@ -939,7 +939,7 @@ static int VHLRType (Draw_Interpretor& di, Standard_Integer argc, const char** a
       if (aShape->TypeOfHLR() != aTypeOfHLR)
         aShape->SetTypeOfHLR (aTypeOfHLR);
       if (MyHLRIsOn)
-        aShape->Redisplay();
+        ViewerTest::GetAISContext()->Redisplay (aShape, Standard_False);
     }
     ViewerTest::CurrentView()->Update();
     return 0;
@@ -962,7 +962,7 @@ static int VHLRType (Draw_Interpretor& di, Standard_Integer argc, const char** a
         continue;
       anAISObject->SetTypeOfHLR (aTypeOfHLR);
       if (MyHLRIsOn)
-        anAISObject->Redisplay();
+        ViewerTest::GetAISContext()->Redisplay (anAISObject, Standard_False);
     }
     ViewerTest::CurrentView()->Update();
   }
@@ -1386,7 +1386,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
           aShape->SetTypeOfHLR (Prs3d_TOH_Algo);
         else
           aShape->SetTypeOfHLR (Prs3d_TOH_PolyAlgo);
-        aShape->Redisplay();
+        aContext->Redisplay (aShape, Standard_False);
       }
     }
     else
@@ -1400,7 +1400,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
           aShape->SetTypeOfHLR (Prs3d_TOH_Algo);
         else
           aShape->SetTypeOfHLR (Prs3d_TOH_PolyAlgo);
-        aShape->Redisplay();
+        aContext->Redisplay (aShape, Standard_False);
       }
     }
 

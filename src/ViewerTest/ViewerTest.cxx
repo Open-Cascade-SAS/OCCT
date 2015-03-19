@@ -2182,7 +2182,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
       else if (!aColoredPrs.IsNull())
       {
-        aColoredPrs->Redisplay();
+        aCtx->Redisplay (aColoredPrs, Standard_False);
       }
     }
     else
