@@ -1374,6 +1374,9 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
                         if (previoustg)
                         {
+                          //There are three consecutive points:
+                          //previousPointSave -> ParamPnt -> curPnt.
+
                           Standard_Real prevU1, prevV1, prevU2, prevV2;
                           previousPointSave.Parameters(prevU1, prevV1, prevU2, prevV2);
                           gp_Pnt2d prevPntOnS1(prevU1, prevV1), prevPntOnS2(prevU2, prevV2);
@@ -1383,9 +1386,49 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                           gp_Vec2d PrevToParamOnS2(prevPntOnS2, ParamPntOnS2);
                           gp_Vec2d PrevToCurOnS2(prevPntOnS2, curPntOnS2);
                           Standard_Real MaxAngle = 3*M_PI/4;
+                          Standard_Real anAngleS1 = 0.0, anAngleS2 = 0.0;
+                          const Standard_Real aSQMParS1 = PrevToParamOnS1.SquareMagnitude();
+                          const Standard_Real aSQMParS2 = PrevToParamOnS2.SquareMagnitude();
+                          const Standard_Real aSQMCurS1 = PrevToCurOnS1.SquareMagnitude();
+                          const Standard_Real aSQMCurS2 = PrevToCurOnS2.SquareMagnitude();
 
-                          if (Abs(PrevToParamOnS1.Angle(PrevToCurOnS1)) > MaxAngle &&
-                            Abs(PrevToParamOnS2.Angle(PrevToCurOnS2)) > MaxAngle)
+                          if(aSQMCurS1 < gp::Resolution())
+                          {
+                            //We came back to the one of previos point.
+                            //Therefore, we must break;
+
+                            anAngleS1 = M_PI;
+                          }
+                          else if(aSQMParS1 < gp::Resolution())
+                          {
+                            //We are walking along tangent zone.
+                            //It should be continued.
+                            anAngleS1 = 0.0;
+                          }
+                          else
+                          {
+                            anAngleS1 = Abs(PrevToParamOnS1.Angle(PrevToCurOnS1));
+                          }
+
+                          if(aSQMCurS2 < gp::Resolution())
+                          {
+                            //We came back to the one of previos point.
+                            //Therefore, we must break;
+
+                            anAngleS2 = M_PI;
+                          }
+                          else if(aSQMParS2 < gp::Resolution())
+                          {
+                            //We are walking along tangent zone.
+                            //It should be continued;
+                            anAngleS2 = 0.0;
+                          }
+                          else
+                          {
+                            anAngleS2 = Abs(PrevToParamOnS2.Angle(PrevToCurOnS2));
+                          }
+
+                          if ((anAngleS1 > MaxAngle) && (anAngleS2 > MaxAngle))
                           {
                             Arrive = Standard_True;
                             break;
