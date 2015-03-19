@@ -2432,8 +2432,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
       Standard_Real aDensity;
       Handle(TCollection_HAsciiString) aDensName;
       Handle(TCollection_HAsciiString) aDensValType;
-      Handle(StepRepr_Representation) RepDRI = new StepRepr_Representation;
-      Handle(StepRepr_Representation) RepMRI = new StepRepr_Representation;
+      Handle(StepRepr_Representation) RepDRI;
+      Handle(StepRepr_Representation) RepMRI;
       if(MatTool->GetMaterial(MatL,aName,aDescription,aDensity,aDensName,aDensValType)) {
         if(aName->Length()==0) continue;
         TCollection_AsciiString aKey(aName->ToCString());
@@ -2449,10 +2449,11 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
           DRI->Init(aName,aDescription);
           Handle(StepRepr_HArray1OfRepresentationItem) HARI = new StepRepr_HArray1OfRepresentationItem(1,1);
           HARI->SetValue(1,DRI);
+          RepDRI = new StepRepr_Representation();
           RepDRI->Init(new TCollection_HAsciiString("material name"),HARI,RC);
           Model->AddWithRefs(RepDRI);
           // write MRI
-          if(aDensity>0) {
+          if( aDensity > 0 ) {
             // mass
             Handle(StepBasic_SiUnitAndMassUnit) SMU = new StepBasic_SiUnitAndMassUnit;
             SMU->SetName(StepBasic_sunGram);
@@ -2479,39 +2480,47 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
             MRI->Init(aDensName,MVM,aUnit);
             HARI = new StepRepr_HArray1OfRepresentationItem(1,1);
             HARI->SetValue(1,MRI);
+            RepMRI = new StepRepr_Representation();
             RepMRI->Init(new TCollection_HAsciiString("density"),HARI,RC);
             Model->AddWithRefs(RepMRI);
           }
           //WriteNewMaterial(Model,aName,aDescription,aDensity,aDensName,aDensValType,RC,RepDRI,RepMRI);
           MapDRI.Bind(aKey,RepDRI);
-          if(!RepMRI.IsNull()) MapMRI.Bind(aKey,RepMRI);
+          if ( !RepMRI.IsNull() ) MapMRI.Bind (aKey, RepMRI);
         }
       }
-      // write chain PDS---(DRI,MRI)
-      StepRepr_CharacterizedDefinition CD1;
-      CD1.SetValue(aProdDef);
-      Handle(StepRepr_PropertyDefinition) PropD1 = new StepRepr_PropertyDefinition;
-      PropD1->Init(new TCollection_HAsciiString("material property"),Standard_True,
-                   new TCollection_HAsciiString("material name"),CD1);
-      Model->AddWithRefs(PropD1);
-      StepRepr_RepresentedDefinition RD1;
-      RD1.SetValue(PropD1);
-      Handle(StepRepr_PropertyDefinitionRepresentation) PDR1 =
-        new StepRepr_PropertyDefinitionRepresentation;
-      PDR1->Init(RD1,RepDRI);
-      Model->AddWithRefs(PDR1);
-      StepRepr_CharacterizedDefinition CD2;
-      CD2.SetValue(aProdDef);
-      Handle(StepRepr_PropertyDefinition) PropD2 = new StepRepr_PropertyDefinition;
-      PropD2->Init(new TCollection_HAsciiString("material property"),Standard_True,
-                   new TCollection_HAsciiString("density"),CD2);
-      Model->AddWithRefs(PropD2);
-      StepRepr_RepresentedDefinition RD2;
-      RD2.SetValue(PropD2);
-      Handle(StepRepr_PropertyDefinitionRepresentation) PDR2 =
-        new StepRepr_PropertyDefinitionRepresentation;
-      PDR2->Init(RD2,RepMRI);
-      Model->AddWithRefs(PDR2);
+      
+      if( !RepDRI.IsNull() )
+      {
+        StepRepr_CharacterizedDefinition CD1;
+        CD1.SetValue(aProdDef);
+        Handle(StepRepr_PropertyDefinition) PropD1 = new StepRepr_PropertyDefinition;
+        PropD1->Init(new TCollection_HAsciiString("material property"),Standard_True,
+          new TCollection_HAsciiString("material name"),CD1);
+        Model->AddWithRefs(PropD1);
+        StepRepr_RepresentedDefinition RD1;
+        RD1.SetValue(PropD1);
+        Handle(StepRepr_PropertyDefinitionRepresentation) PDR1 =
+          new StepRepr_PropertyDefinitionRepresentation;
+        PDR1->Init(RD1,RepDRI);
+        Model->AddWithRefs(PDR1);
+
+        if( !RepMRI.IsNull() )
+        {
+          StepRepr_CharacterizedDefinition CD2;
+          CD2.SetValue (aProdDef);
+          Handle (StepRepr_PropertyDefinition) PropD2 = new StepRepr_PropertyDefinition;
+          PropD2->Init (new TCollection_HAsciiString ("material property"), Standard_True,
+            new TCollection_HAsciiString ("density"), CD2);
+          Model->AddWithRefs (PropD2);
+          StepRepr_RepresentedDefinition RD2;
+          RD2.SetValue (PropD2);
+          Handle (StepRepr_PropertyDefinitionRepresentation) PDR2 =
+            new StepRepr_PropertyDefinitionRepresentation;
+          PDR2->Init (RD2, RepMRI);
+          Model->AddWithRefs (PDR2);
+        }
+      }
     }
   }
 

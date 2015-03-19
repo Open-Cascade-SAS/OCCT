@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC25910"
+puts "========"
+puts ""
+#######################################################################
+# The material with 0-density causes errors during writing STEP files
+#######################################################################
+
+pload DCAF
+
+NewDocument D
+box b 10 10 10
+XSetMaterial D [XAddShape D b] Vacuum 0.
+set bug_info [catch {WriteStep D $imagedir/OCC25910.stp}]
+
+if {$bug_info != 0} {
+  puts "ERROR: OCC25910 is reproduced."
+}
