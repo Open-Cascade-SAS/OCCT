@@ -22,7 +22,7 @@
 #include <NCollection_DataMap.hxx>
 
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
-  #include <X11/Xlib.h>
+  #include <InterfaceGraphic.hxx>
 #endif
 
 //! This class creates and provides connection with X server.
