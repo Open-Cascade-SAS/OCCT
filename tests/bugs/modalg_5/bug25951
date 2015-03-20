@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC25951"
+puts "========"
+puts ""
+#######################################
+# Exception in intersection operation
+#######################################
+
+restore [locate_data_file OCC25951-qff001.brep] q
+explode q
+copy q_1 b1
+copy q_2 b2
+bsection result b1 b2
+
+set nb_v_good 1
+set nb_e_good 0
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 2

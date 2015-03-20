@@ -353,7 +353,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                   Point3dDebut = PW.Value(1).Value();
                   const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
                   Point3dFin   = PointFin.Value();
-                  for( ver = 1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
+                  for( ver = 1 ; ver<= NbLigCalculee ; ver++) { 
                     const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
 
                     // Check end point if it is on existing line.
@@ -365,9 +365,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                     const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
                     const IntSurf_PntOn2S& verPointFin = verwline->Point(verwline->NbPnts());
-                    if( Point3dDebut.Distance(verPointDebut.Value()) <= TolTangency ) { 
-                      if(Point3dFin.Distance(verPointFin.Value()) <= TolTangency)
-                        RejetLigne = Standard_True; 
+                    if( (Point3dDebut.Distance(verPointDebut.Value()) <= TolTangency) &&
+                        (Point3dFin.Distance(verPointFin.Value()) <= TolTangency))
+                    { 
+                      RejetLigne = Standard_True; 
+                      break;
                     }
                   }
 
@@ -496,7 +498,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
               Point3dDebut = PW.Value(1).Value();
               const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
               Point3dFin   = PointFin.Value();
-              for(ver=1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
+              for(ver=1 ; ver<= NbLigCalculee ; ver++) { 
                 const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
 
                 // Check end point if it is on existing line.
@@ -508,11 +510,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                 const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
                 const IntSurf_PntOn2S& verPointFin   = verwline->Point(verwline->NbPnts());
-                if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency)
+                if( (Point3dDebut.Distance(verPointDebut.Value()) < TolTangency) ||
+                    (Point3dFin.Distance(verPointFin.Value()) < TolTangency))
+                {
                   RejetLigne = Standard_True; 
-                else { 
-                  if(Point3dFin.Distance(verPointFin.Value()) < TolTangency)
-                    RejetLigne = Standard_True; 
+                  break;
                 }
               }
 
@@ -726,15 +728,15 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                   RejetLigne = Standard_False;
                   Point3dDebut = PW.Value(1).Value();
                   Point3dFin   = PW.Value(PW.NbPoints()).Value();
-                  for(ver=1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
+                  for(ver=1 ; ver<= NbLigCalculee ; ver++) { 
                     const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
                     const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
                     const IntSurf_PntOn2S& verPointFin = verwline->Point(verwline->NbPnts());
-                    if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency)
+                    if( (Point3dDebut.Distance(verPointDebut.Value()) < TolTangency) ||
+                        (Point3dFin.Distance(verPointFin.Value()) < TolTangency)) 
+                    {
                       RejetLigne = Standard_True; 
-                    else { 
-                      if(Point3dFin.Distance(verPointFin.Value()) < TolTangency)
-                        RejetLigne = Standard_True; 
+                      break;
                     }
                   }
 
@@ -899,15 +901,15 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                 RejetLigne = Standard_False;
                 Point3dDebut = PW.Value(1).Value();
                 Point3dFin   = PW.Value(PW.NbPoints()).Value();
-                for( ver = 1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
+                for( ver = 1 ; ver<= NbLigCalculee ; ver++) { 
                   const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
                   const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
                   const IntSurf_PntOn2S& verPointFin = verwline->Point(verwline->NbPnts());
-                  if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency)
+                  if( (Point3dDebut.Distance(verPointDebut.Value()) < TolTangency) ||
+                      (Point3dFin.Distance(verPointFin.Value()) < TolTangency))
+                  {
                     RejetLigne = Standard_True; 
-                  else { 
-                    if(Point3dFin.Distance(verPointFin.Value()) < TolTangency)
-                      RejetLigne = Standard_True; 
+                    break;
                   }
                 }
 
@@ -1533,7 +1535,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
             Point3dDebut = PW.Value(1).Value();
             const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
             Point3dFin   = PointFin.Value();
-            for( ver = 1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
+            for( ver = 1 ; ver<= NbLigCalculee ; ver++) { 
               const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
 
               // Check end point if it is on existing line.
@@ -1545,9 +1547,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
               const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
               const IntSurf_PntOn2S& verPointFin = verwline->Point(verwline->NbPnts());
-              if(Point3dDebut.Distance(verPointDebut.Value()) <= TolTangency) { 
-                if(Point3dFin.Distance(verPointFin.Value()) <= TolTangency)
-                  RejetLigne = Standard_True; 
+              if( (Point3dDebut.Distance(verPointDebut.Value()) <= TolTangency) &&
+                  (Point3dFin.Distance(verPointFin.Value()) <= TolTangency)) 
+              {
+                RejetLigne = Standard_True; 
+                break;
               }
             }
 
@@ -2356,6 +2360,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
                             //modified by NIZNHY-PKV Tue May 10 11:08:13 2011t
 
                             RejectLine = Standard_True;
+                            ver--;
                             break;
                           }
                         }//for(m=1; m<iPWNbPoints; ++m){
@@ -2898,7 +2903,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
             const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
             Point3dFin   = PointFin.Value();
 
-            for(ver=1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++)
+            for(ver=1 ; ver<= NbLigCalculee ; ver++)
             {
               const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
               //-- Handle(IntPatch_WLine) verwline=Handle(IntPatch_WLine)::DownCast(SLin.Value(ver));
@@ -2913,16 +2918,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
               const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
               const IntSurf_PntOn2S& verPointFin   = verwline->Point(verwline->NbPnts());
-              if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency)
+              if( (Point3dDebut.Distance(verPointDebut.Value()) < TolTangency) ||
+                  (Point3dFin.Distance(verPointFin.Value()) < TolTangency))
               {
                 RejetLigne = Standard_True; 
-              }
-              else
-              {
-                if(Point3dFin.Distance(verPointFin.Value()) < TolTangency)
-                {
-                  RejetLigne = Standard_True; 
-                }
+                break;
               }
             }
 
