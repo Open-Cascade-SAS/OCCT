@@ -49,7 +49,7 @@ inline Standard_Boolean IsEqual (const Standard_Integer theOne,
   return theOne == theTwo;
 }
 
-#if (defined(_LP64) || defined(__LP64__) || defined(_WIN64))
+#if (defined(_LP64) || defined(__LP64__) || defined(_WIN64)) || defined(__APPLE__)
 // ------------------------------------------------------------------
 // Hascode : Computes a hascoding value for a given unsigned integer
 // ------------------------------------------------------------------

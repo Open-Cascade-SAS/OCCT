@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef WNT
+#ifndef _WIN32
 
 //---------- All Systems except windowsNT : ----------------------------------
 
@@ -21,10 +21,14 @@
 
 //const OSD_WhoAmI Iam = OSD_WEnvironmentIterator;
 #ifdef __APPLE__
-#include <crt_externs.h>
-#define environ (*_NSGetEnviron())
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    #include <crt_externs.h>
+    #define environ (*_NSGetEnviron())
+  #else
+    extern char **environ;
+  #endif
 #else
-extern char **environ;
+  extern char **environ;
 #endif
 
 OSD_EnvironmentIterator::OSD_EnvironmentIterator(){
