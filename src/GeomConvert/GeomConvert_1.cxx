@@ -702,7 +702,10 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
         if (V2 > vmax)
           V2 = vmax;
       }
-      BS->Segment (U1, U2, V1, V2);
+      if (BS->IsUPeriodic() || BS->IsVPeriodic())
+        BS->CheckAndSegment (U1, U2, V1, V2);
+      else
+        BS->Segment (U1, U2, V1, V2);
       TheSurface = BS;
     }
 

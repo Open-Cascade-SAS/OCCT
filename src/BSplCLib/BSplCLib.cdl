@@ -296,7 +296,8 @@ is
 
     KnotSequence (Knots    : Array1OfReal from TColStd; 
                   Mults    : Array1OfInteger from TColStd;
-                  KnotSeq  : in out Array1OfReal from TColStd);
+                  KnotSeq  : in out Array1OfReal from TColStd;
+                  Periodic : Boolean  =  Standard_False);
 		
     KnotSequence (Knots    : Array1OfReal from TColStd; 
                   Mults    : Array1OfInteger from TColStd;
@@ -1278,7 +1279,8 @@ is
 		     FlatKnots                  : Array1OfReal from TColStd ;
     	    	     Parameter                  : in Real    ;
 		     FirstNonZeroBsplineIndex   : in out Integer ;
-		     BsplineBasis               : in out Matrix from math)
+		     BsplineBasis               : in out Matrix from math ;
+                     isPeriodic                 : in Boolean = Standard_False)
 
     returns Integer  ; 
     ---Purpose: This  evaluates  the Bspline  Basis  at  a

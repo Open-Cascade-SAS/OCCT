@@ -438,7 +438,8 @@ BSplCLib::EvalBsplineBasis
  const  TColStd_Array1OfReal&         FlatKnots,
  const  Standard_Real                 Parameter,
  Standard_Integer&             FirstNonZeroBsplineIndex,
- math_Matrix&                  BsplineBasis)
+ math_Matrix&                  BsplineBasis,
+ Standard_Boolean              isPeriodic)
 {
   // the matrix must have at least DerivativeRequest + 1
   //   row and Order columns
@@ -497,7 +498,7 @@ BSplCLib::EvalBsplineBasis
   BSplCLib::LocateParameter(Order - 1, 
 			    FlatKnots,
 			    Parameter,
-			    Standard_False, 
+			    isPeriodic, 
 			    Order, 
 			    NumPoles+1, 
 			    ii,

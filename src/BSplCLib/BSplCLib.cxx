@@ -430,9 +430,10 @@ Standard_Integer BSplCLib::KnotSequenceLength
 void BSplCLib::KnotSequence 
 (const TColStd_Array1OfReal&    Knots,
  const TColStd_Array1OfInteger& Mults,
- TColStd_Array1OfReal&          KnotSeq)
+ TColStd_Array1OfReal&          KnotSeq,
+ const Standard_Boolean         Periodic)
 {
-  BSplCLib::KnotSequence(Knots,Mults,0,Standard_False,KnotSeq);
+  BSplCLib::KnotSequence(Knots,Mults,0,Periodic,KnotSeq);
 }
 
 //=======================================================================
