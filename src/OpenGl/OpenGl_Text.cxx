@@ -412,6 +412,12 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   {
     theWorkspace->EnableTexture (aPrevTexture);
   }
+
+  // restore Z buffer settings
+  if (theWorkspace->UseZBuffer() && theWorkspace->UseDepthTest())
+  {
+    glEnable (GL_DEPTH_TEST);
+  }
 }
 
 // =======================================================================
@@ -581,21 +587,14 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
       return aFont;
     }
 
-    Handle(OpenGl_Context) aCtx = theCtx;
-  #if !defined(GL_ES_VERSION_2_0)
-    glPushAttrib (GL_TEXTURE_BIT);
-  #endif
     aFont = new OpenGl_Font (aFontFt, theKey);
-    if (!aFont->Init (aCtx))
-    {
-      //glPopAttrib();
-      //return aFont; // out of resources?
-    }
-  #if !defined(GL_ES_VERSION_2_0)
-    glPopAttrib(); // texture bit
-  #endif
 
-    aCtx->ShareResource (theKey, aFont);
+    if (!aFont->Init (theCtx))
+    {
+      // out of resources?
+    }
+
+    theCtx->ShareResource (theKey, aFont);
   }
   return aFont;
 }
@@ -705,8 +704,6 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
 #if !defined(GL_ES_VERSION_2_0)
 
-  // push enabled flags to the stack
-  glPushAttrib (GL_ENABLE_BIT);
   glDisable (GL_LIGHTING);
 
   // setup depth test
@@ -818,15 +815,15 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     glEnd();
 
     glStencilFunc (GL_ALWAYS, 0, 0xFF);
-    // glPopAttrib() will reset state for us
-    //glDisable (GL_STENCIL_TEST);
-    //if (!myIs2d) glEnable (GL_DEPTH_TEST);
 
     glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   }
 
-  // revert OpenGL state
-  glPopAttrib(); // enable bit
+  // reset OpenGL state
+  glDisable (GL_BLEND);
+  glDisable (GL_ALPHA_TEST);
+  glDisable (GL_STENCIL_TEST);
+  glDisable (GL_COLOR_LOGIC_OP);
 
   // model view matrix was modified
   theCtx->WorldViewState.Pop();

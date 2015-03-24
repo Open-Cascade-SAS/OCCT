@@ -465,7 +465,6 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   const OpenGl_AspectLine* anAspect = theWorkspace->AspectLine (Standard_True);
 
 #if !defined(GL_ES_VERSION_2_0)
-  glPushAttrib (GL_POLYGON_BIT);
   glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 #endif
 
@@ -522,9 +521,6 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   myVboAttribs->UnbindAttribute (aGlContext, Graphic3d_TOA_POS);
 
   // restore line context
-#if !defined(GL_ES_VERSION_2_0)
-  glPopAttrib();
-#endif
   theWorkspace->SetAspectLine (anAspectLineOld);
 }
 
@@ -789,6 +785,15 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
      || anAspectFace->InteriorStyle() == Aspect_IS_HIDDENLINE)
     {
       drawEdges (anEdgeColor, theWorkspace);
+
+    #if !defined(GL_ES_VERSION_2_0)
+      // restore OpenGL polygon mode if needed
+      if (anAspectFace->InteriorStyle() >= Aspect_IS_HATCH)
+      {
+        glPolygonMode (GL_FRONT_AND_BACK,
+          anAspectFace->InteriorStyle() == Aspect_IS_POINT ? GL_POINT : GL_FILL);
+      }
+    #endif
     }
   }
 

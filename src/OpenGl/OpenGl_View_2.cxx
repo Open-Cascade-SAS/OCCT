@@ -241,7 +241,7 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   aCtx->ProjectionState.Pop();
   aCtx->ApplyProjectionMatrix();
 
-  if (theWorkspace->UseZBuffer())
+  if (theWorkspace->UseZBuffer() && theWorkspace->ToRedrawGL())
   {
     aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
   }
@@ -586,26 +586,18 @@ void OpenGl_View::InvalidateBVHData (const Graphic3d_ZLayerId theLayerId)
 /*----------------------------------------------------------------------*/
 
 //ExecuteViewDisplay
-void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
+void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
                                  const Standard_Boolean          theToDrawImmediate)
 {
   if ( myZLayers.NbStructures() <= 0 )
     return;
 
-  const Handle(OpenGl_Context)& aCtx = AWorkspace->GetGlContext();
-#if !defined(GL_ES_VERSION_2_0)
-  if (aCtx->core11 != NULL)
-  {
-    aCtx->core11->glPushAttrib (GL_DEPTH_BUFFER_BIT);
-  }
-#endif
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
-  //TsmPushAttri(); /* save previous graphics context */
-
-  if ( (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED) == 0 )
+  if ( (theWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED) == 0 )
   {
   #if !defined(GL_ES_VERSION_2_0)
-    const int antiAliasingMode = AWorkspace->AntiAliasingMode();
+    const int anAntiAliasingMode = theWorkspace->AntiAliasingMode();
   #endif
 
     if ( !myAntiAliasing )
@@ -616,7 +608,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
         glDisable (GL_POINT_SMOOTH);
       }
       glDisable(GL_LINE_SMOOTH);
-      if( antiAliasingMode & 2 ) glDisable(GL_POLYGON_SMOOTH);
+      if( anAntiAliasingMode & 2 ) glDisable(GL_POLYGON_SMOOTH);
     #endif
       glBlendFunc (GL_ONE, GL_ZERO);
       glDisable (GL_BLEND);
@@ -629,21 +621,14 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
         glEnable(GL_POINT_SMOOTH);
       }
       glEnable(GL_LINE_SMOOTH);
-      if( antiAliasingMode & 2 ) glEnable(GL_POLYGON_SMOOTH);
+      if( anAntiAliasingMode & 2 ) glEnable(GL_POLYGON_SMOOTH);
     #endif
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_BLEND);
     }
   }
 
-  myZLayers.Render (AWorkspace, theToDrawImmediate);
-
-#if !defined(GL_ES_VERSION_2_0)
-  if (aCtx->core11 != NULL)
-  {
-    aCtx->core11->glPopAttrib();
-  }
-#endif
+  myZLayers.Render (theWorkspace, theToDrawImmediate);
 }
 
 /*----------------------------------------------------------------------*/
