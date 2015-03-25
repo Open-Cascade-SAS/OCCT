@@ -1,0 +1,127 @@
+puts "================"
+puts "OCC25416"
+puts "================"
+puts ""
+#######################################################################
+# Wrong section curve
+#######################################################################
+
+# Check if list of xdistcs-command is valid
+proc checkList {List Tolerance D_good Limit_Tol} {
+   set L1 [llength ${List}]
+   set L2 10
+   set L3 5
+   set N [expr (${L1} - ${L2})/${L3} + 1]
+
+   for {set i 1} {${i} <= ${N}} {incr i} {
+      set j1 [expr ${L2} + (${i}-1)*${L3}]
+      set j2 [expr ${j1} + 2]
+      set T [lindex ${List} ${j1}]
+      set D [lindex ${List} ${j2}]
+      #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+      if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+         puts "Error: T=${T} D=${D}"
+      }
+      
+      if { ${Tolerance} > ${Limit_Tol} } {
+        if { [expr abs(${D} - ${D_good})] > ${Limit_Tol} 
+             && [expr abs(${D} - ${D_good})] <= ${Tolerance} } {
+           puts "Attention (critical value of tolerance) : T=${T} D=${D}"
+        }
+      }
+   }
+}
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
+
+# bopcurves command
+
+restore [locate_data_file bug25416_f3.brep] f1
+restore [locate_data_file bug25416_f4.brep] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+#Trim according to "xbounds f1"
+trim s1 s1 -55.44 150.554 -98.1087 79.1766
+
+mkface ff1 s1
+donly ff1 f2
+
+#############################
+set log [bopcurves ff1 f2]
+#############################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+#This value must be equal to the analogical value in bug25292_31 and bug25292_32 of "bugs modalg_5" testgrid. 
+set MaxTol 1.e-7
+
+#This value must be equal to the analogical value in bug25292_31 and bug25292_32 of "bugs modalg_5" testgrid. 
+set GoodNbCurv 2
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+#-------------
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  set log [dump c_$i]
+  set dumptrimres [regexp {Trimmed curve\nParameters : +([-0-9.+eE]+) +([-0-9.+eE]+)} ${log} full U1 U2]
+  
+  if {${dumptrimres} == 0} {
+    regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+    
+    puts "Degree=${Degree}"
+    puts "Poles=${Poles}"
+    puts "KnotsPoles=${KnotsPoles}"
+    puts ""
+    
+    set Knot 1
+    set exp_string "Knots :\n\n +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+    regexp ${exp_string} ${log} full U1 Mult1
+    
+    set Knot ${KnotsPoles}
+    set exp_string " +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+    regexp ${exp_string} ${log} full U2 Mult2
+  }
+
+  puts "U1=${U1}"
+  puts "U2=${U2}"
+  
+  if {[expr {$U2 - $U1}] < 1.0e-20} {
+    puts "Error: Wrong curve's range!"
+  }
+
+  dlog reset
+  dlog on
+  xdistcs c_$i s1 ${U1} ${U2} 10
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+
+  dlog reset
+  dlog on
+  xdistcs c_$i s2 ${U1} ${U2} 10
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+}
+
+smallview
+fit
+set only_screen_axo 1

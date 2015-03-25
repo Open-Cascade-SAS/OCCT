@@ -41,7 +41,6 @@
 #define No_Standard_OutOfRange
 #endif
 
-
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <TopTrans_CurveTransition.hxx>
@@ -53,6 +52,11 @@
 #include <IntSurf_SequenceOfInteriorPoint.hxx>
 #include <IntSurf_QuadricTool.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <gp_Lin2d.hxx>
+#include <ElCLib.hxx>
+
+#include <Bnd_Box2d.hxx>
 
 static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)&   Line,
   const Standard_Boolean         IsReversed,
@@ -79,6 +83,12 @@ static
   Standard_Real V1,
   Standard_Real U2,
   Standard_Real V2);
+
+static Standard_Boolean IsIn2DBox(const Bnd_Box2d& theBox,
+                                  const Handle(IntPatch_PointLine)& theLine,
+                                  const Standard_Real theUPeriod,
+                                  const Standard_Real theVPeriod,
+                                  const Standard_Boolean isTheSurface1Using);
 
 //=======================================================================
 //function : IntPatch_ImpPrmIntersection
@@ -402,7 +412,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   const Standard_Real Pas)
 {
   Standard_Boolean reversed, procf, procl, dofirst, dolast;
-  Standard_Integer indfirst = 0, indlast = 0, ind2, i,j,k, NbSegm;
+  Standard_Integer indfirst = 0, indlast = 0, ind2, NbSegm;
   Standard_Integer NbPointIns, NbPointRst, Nblines, Nbpts, NbPointDep;
   Standard_Real U1,V1,U2,V2,paramf,paraml,currentparam;
 
@@ -557,7 +567,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     UVap(2)=s2d.Y();
     Func.Value(UVap,Valf);
     Standard_Real rvalf = Sign(1.,Valf(1));
-    for(i = 2; i <= aNbSamples; ++i)
+    for(Standard_Integer i = 2; i <= aNbSamples; ++i)
     {
       D1->SamplePoint(i,s2d, s3d);
       UVap(1)=s2d.X(); 
@@ -586,7 +596,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
         solins.Perform(Func,Surf1,D1,TolTang);
     }
     NbPointIns = solins.NbPoints();
-    for (i=1; i <= NbPointIns; i++) {
+    for (Standard_Integer i=1; i <= NbPointIns; i++) {
       seqpins.Append(solins.Value(i));
     }
   }
@@ -616,13 +626,13 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     }
     //
     Nblines = iwalk.NbLines();
-    for (j=1; j<=Nblines; j++) {
+    for (Standard_Integer j=1; j<=Nblines; j++) {
       const Handle(IntPatch_TheIWLineOfTheIWalking)&  iwline  = iwalk.Value(j);
       const Handle(IntSurf_LineOn2S)&                 thelin  = iwline->Line();
 
       Nbpts = thelin->NbPoints();
       if(Nbpts>=2) { 
-
+        Standard_Integer k = 0;
         tgline = iwline->TangentVector(k);	
         if(k>=1 && k<=Nbpts) { } else { k=Nbpts>>1; } 
         valpt = thelin->Value(k).Value();	
@@ -772,7 +782,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
           PPoint = seqpdep(indfirst);
           tgline = PPoint.Direction3d();
           Standard_Integer themult = PPoint.Multiplicity();
-          for (i=NbPointRst; i>=1; i--) {
+          for (Standard_Integer i=NbPointRst; i>=1; i--) {
             if (Destination(i) == indfirst) {
               if (!reversed) { //-- typeS1 = Pln || Cyl || Sph || Cone
                 Quad.Parameters(PPoint.Value(),U1,V1);
@@ -860,7 +870,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
           PPoint = seqpdep(indlast);
           tgline = PPoint.Direction3d().Reversed();
           Standard_Integer themult = PPoint.Multiplicity();
-          for (i=NbPointRst; i >=1; i--) {
+          for (Standard_Integer i=NbPointRst; i >=1; i--) {
             if (Destination(i) == indlast) {
               if (!reversed) {
                 Quad.Parameters(PPoint.Value(),U1,V1);
@@ -952,7 +962,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
 
     Nblines = slin.Length();
-    for (j=1; j<=Nblines-1; j++) {
+    for (Standard_Integer j=1; j<=Nblines-1; j++) {
       dofirst = dolast = Standard_False;
       const  Handle(IntPatch_Line)& slinj = slin(j);
       const Handle(IntPatch_WLine)& wlin1 = *((Handle(IntPatch_WLine)*)&slinj);
@@ -970,7 +980,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
       }
 
       if (dofirst || dolast) {
-        for (k=j+1; k<=Nblines;k++) {
+        for (Standard_Integer k=j+1; k<=Nblines;k++) {
           const  Handle(IntPatch_Line)& slink = slin(k);
           const  Handle(IntPatch_WLine)& wlin2 = *((Handle(IntPatch_WLine)*)&slink);
           if (wlin2->HasFirstPoint()) {
@@ -1031,7 +1041,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   // Treatment the segments
   NbSegm = solrst.NbSegments();
   if (NbSegm) {
-    for(i=1; i<=NbSegm; i++) {
+    for(Standard_Integer i=1; i<=NbSegm; i++) {
       thesegm = solrst.Segment(i);  
       //Check if segment is degenerated
       if(thesegm.HasFirstPoint() && thesegm.HasLastPoint())
@@ -1240,7 +1250,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
         Standard_Integer nbsample = 100;
 
         if (!reversed) {
-          for (j=1; j<=nbsample; j++) {
+          for (Standard_Integer j=1; j<=nbsample; j++) {
             prm = paramf + (j-1)*(paraml-paramf)/(nbsample-1);
             arcsegm->D0(prm,p2d);
             Surf2->D0(p2d.X(),p2d.Y(),ptpoly);
@@ -1251,7 +1261,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
           }
         }
         else {
-          for (j=1; j<=nbsample; j++) {
+          for (Standard_Integer j=1; j<=nbsample; j++) {
             prm = paramf + (j-1)*(paraml-paramf)/(nbsample-1);
             arcsegm->D0(prm,p2d);
             Surf1->D0(p2d.X(),p2d.Y(),ptpoly);
@@ -1266,7 +1276,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
       if (dofirst || dolast) {
         Nblines = slin.Length();
-        for (j=1; j<=Nblines; j++) {
+        for (Standard_Integer j=1; j<=Nblines; j++) {
           const Handle(IntPatch_Line)& slinj = slin(j);
           typ = slinj->ArcType();
           if (typ == IntPatch_Walking) {
@@ -1275,7 +1285,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
           else {
             Nbpts = (*((Handle(IntPatch_RLine)*)&slinj))->NbVertex();
           }
-          for (k=1; k<=Nbpts;k++) {
+          for (Standard_Integer k=1; k<=Nbpts;k++) {
             if (typ == IntPatch_Walking) {
               ptdeb = (*((Handle(IntPatch_WLine)*)&slinj))->Vertex(k);
             }
@@ -1333,18 +1343,100 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   }// if (NbSegm) 
   //
   // on traite les restrictions de la surface implicite
-  for (i=1; i<=slin.Length(); i++)
+  for (Standard_Integer i=1; i<=slin.Length(); i++)
   {
+    Handle(IntPatch_Line)& aL = slin(i);
+    
     if (!reversed)
-      IntPatch_RstInt::PutVertexOnLine(slin(i),Surf1,D1,Surf2,Standard_True,TolTang);
+      IntPatch_RstInt::PutVertexOnLine(aL,Surf1,D1,Surf2,Standard_True,TolTang);
     else
-      IntPatch_RstInt::PutVertexOnLine(slin(i),Surf2,D2,Surf1,Standard_False,TolTang);
+      IntPatch_RstInt::PutVertexOnLine(aL,Surf2,D2,Surf1,Standard_False,TolTang);
   }
+
+  const Standard_Real aUPeriodOfSurf1 = Surf1->IsUPeriodic() ? Surf1->UPeriod() : 0.0,
+                      aUPeriodOfSurf2 = Surf2->IsUPeriodic() ? Surf2->UPeriod() : 0.0,
+                      aVPeriodOfSurf1 = Surf1->IsVPeriodic() ? Surf1->VPeriod() : 0.0,
+                      aVPeriodOfSurf2 = Surf2->IsVPeriodic() ? Surf2->VPeriod() : 0.0;
+
+  for (Standard_Integer i = 1; i <= slin.Length(); i++)
+  {
+    //BndBox of the points in Restriction line
+    Bnd_Box2d aBRL;
+    for(Standard_Integer j = i + 1; j <= slin.Length(); j++)
+    {
+      Handle(IntPatch_PointLine) aL1 = Handle(IntPatch_PointLine)::DownCast(slin(i));
+      Handle(IntPatch_PointLine) aL2 = Handle(IntPatch_PointLine)::DownCast(slin(j));
+
+      Handle(IntPatch_RLine) aRL1 = Handle(IntPatch_RLine)::DownCast(aL1);
+      Handle(IntPatch_RLine) aRL2 = Handle(IntPatch_RLine)::DownCast(aL2);
+
+      if(aRL1.IsNull() && aRL2.IsNull())
+      {//If Walking-Walking
+        continue;
+      }
+      else if(aRL1.IsNull())
+      {// i-th line is not restriction,
+       // but j-th is restriction
+        slin.Append(aL1);
+        slin.SetValue(i, aL2);
+        slin.Remove(j);
+        j--;
+        continue;
+      }
+
+      //Here aL1 (i-th line) is Restriction-line and aL2 (j-th line) is not Restriction
+
+      if(aBRL.IsVoid())
+      {//Fill aBRL
+        for(Standard_Integer aPRID = 1; aPRID <= aRL1->NbPnts(); aPRID++)
+        {
+          Standard_Real u = 0.0, v = 0.0;
+          if(reversed)
+            aRL1->Point(aPRID).ParametersOnS1(u, v);
+          else
+            aRL1->Point(aPRID).ParametersOnS2(u, v);
+
+          aBRL.Add(gp_Pnt2d(u, v));
+        }
+
+        Standard_Real aXmin = 0.0, aYmin = 0.0, aXMax = 0.0, aYMax = 0.0;
+        aBRL.Get(aXmin, aYmin, aXMax, aYMax);
+        const Standard_Real aDX = aXMax - aXmin,
+                            aDY = aYMax - aYmin;
+
+        const Standard_Real aTolU = reversed? Surf1->UResolution(TolArc) : Surf2->UResolution(TolArc);
+        const Standard_Real aTolV = reversed? Surf1->VResolution(TolArc) : Surf2->VResolution(TolArc);
+
+        if((aDX > aTolU) && (aDY > aTolV))
+        {//Delete restriction line because it is not isoline.
+          slin.Remove(i);
+          i--;
+          break;
+        }
+
+        aXmin -= aTolU;
+        aXMax += aTolU;
+        aYmin -= aTolV;
+        aYMax += aTolV;
+        aBRL.SetVoid();
+        aBRL.Update(aXmin, aYmin, aXMax, aYMax);
+      }
+
+      const Standard_Boolean isCoincide = IsIn2DBox(aBRL, aL2,
+                        (reversed? aUPeriodOfSurf1 : aUPeriodOfSurf2),
+                        (reversed? aVPeriodOfSurf1 : aVPeriodOfSurf2), reversed);
+
+      if(isCoincide)
+      {//Delete Walking-line
+        slin.Remove(j);
+        j--;
+      }
+    }
+  }
+
   empt = (slin.Length() == 0 && spnt.Length() == 0);
   done = Standard_True;
-  
-  
-  // post processing for cones and spheres
+
 
   if(slin.Length() == 0)
     return;
@@ -1355,12 +1447,14 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   if(!isDecomposeRequired)
     return;
 
+  // post processing for cones and spheres
+
   const Handle(Adaptor3d_TopolTool)& PDomain = (reversed) ? D1 : D2;
   const Handle(Adaptor3d_HSurface)& aQSurf = (reversed) ? Surf2 : Surf1;
 
   IntPatch_SequenceOfLine dslin;
   Standard_Boolean isDecompose = Standard_False;
-  for(i = 1; i <= slin.Length(); i++ )
+  for(Standard_Integer i = 1; i <= slin.Length(); i++ )
   {
     if(DecomposeResult(slin(i),reversed,Quad,PDomain,aQSurf,TolArc,dslin))
     {
@@ -1372,7 +1466,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     return;
 
   slin.Clear();
-  for(i = 1; i <= dslin.Length(); i++ )
+  for(Standard_Integer i = 1; i <= dslin.Length(); i++ )
     slin.Append(dslin(i));
 }
 
@@ -1518,8 +1612,8 @@ static Standard_Boolean AreSamePoints(const IntSurf_PntOn2S& P1,
 }
 
 static void ForcedPurgePoints(const Handle(IntSurf_LineOn2S)& Result,
-  const Standard_Boolean          IsReversed,
-  const IntSurf_Quadric&          Quad)
+                              const Standard_Boolean          IsReversed,
+                              const IntSurf_Quadric&          Quad)
 {
   if(Result->NbPoints() <= 30) return;
   Standard_Integer Index = 0, IndexLimF = 8, IndexLimL = 8;
@@ -1790,10 +1884,10 @@ static Standard_Boolean InsertSeamVertices(Handle(IntSurf_LineOn2S)&       Line,
 }
 
 static void ToSmooth( const Handle(IntSurf_LineOn2S)& Line,
-  const Standard_Boolean          IsReversed,
-  const IntSurf_Quadric&          Quad,
-  const Standard_Boolean          IsFirst,
-  Standard_Real&                  D3D)
+                      const Standard_Boolean          IsReversed,
+                      const IntSurf_Quadric&          Quad,
+                      const Standard_Boolean          IsFirst,
+                      Standard_Real&                  D3D)
 {
   if(Line->NbPoints() <= 10)
     return;
@@ -1886,10 +1980,10 @@ static void ToSmooth( const Handle(IntSurf_LineOn2S)& Line,
 } 
 
 static Standard_Boolean TestMiddleOnPrm(const IntSurf_PntOn2S& aP,
-  const IntSurf_PntOn2S& aV,
-  const Standard_Boolean IsReversed,
-  const Standard_Real    ArcTol,
-  const Handle(Adaptor3d_TopolTool)&  PDomain)
+                                        const IntSurf_PntOn2S& aV,
+                                        const Standard_Boolean IsReversed,
+                                        const Standard_Real    ArcTol,
+                                        const Handle(Adaptor3d_TopolTool)&  PDomain)
 
 {
   Standard_Boolean result = Standard_False;
@@ -1911,15 +2005,15 @@ static Standard_Boolean TestMiddleOnPrm(const IntSurf_PntOn2S& aP,
 }
 
 static void VerifyVertices( const Handle(IntSurf_LineOn2S)&    Line,
-  const Standard_Boolean             IsReversed,
-  const Handle(IntSurf_LineOn2S)&    Vertices,
-  const Standard_Real                TOL2D,
-  const Standard_Real       ArcTol,
-  const Handle(Adaptor3d_TopolTool)& PDomain,
-  IntSurf_PntOn2S&          VrtF,
-  Standard_Boolean&         AddFirst,
-  IntSurf_PntOn2S&          VrtL,
-  Standard_Boolean&         AddLast)
+                            const Standard_Boolean             IsReversed,
+                            const Handle(IntSurf_LineOn2S)&    Vertices,
+                            const Standard_Real                TOL2D,
+                            const Standard_Real       ArcTol,
+                            const Handle(Adaptor3d_TopolTool)& PDomain,
+                            IntSurf_PntOn2S&          VrtF,
+                            Standard_Boolean&         AddFirst,
+                            IntSurf_PntOn2S&          VrtL,
+                            Standard_Boolean&         AddLast)
 {
   Standard_Integer nbp = Line->NbPoints(), nbv = Vertices->NbPoints();
   Standard_Integer FIndexSame = 0, FIndexNear = 0, LIndexSame = 0, LIndexNear = 0;
@@ -2522,21 +2616,58 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
 
   return hasBeenDecomposed;
 }
-/*
-// <-A
+
+static Standard_Boolean IsIn2DBox(const Bnd_Box2d& theBox,
+                                  const Handle(IntPatch_PointLine)& theLine,
+                                  const Standard_Real theUPeriod,
+                                  const Standard_Real theVPeriod,
+                                  const Standard_Boolean isTheSurface1Using)
 {
-Standard_Integer aNbPnts;
-Standard_Real aU1,aV1,aU2,aV2;
-gp_Pnt aPx;
-//
-aNbPnts=thelin->NbPoints(); 
-printf(" WLine: aNbPnts=%d\n", aNbPnts);
-for(i=1; i <= aNbPnts; ++i) {
-const IntSurf_PntOn2S& aPoint = thelin->Value(i);
-aPx=aPoint.Value();
-aPoint.Parameters(aU1, aV1, aU2, aV2);
-printf(" point %d %lf %lf %lf %lf %lf %lf %lf\n", 
-i, aPx.X(), aPx.Y(), aPx.Z(), aU1, aV1, aU2, aV2);
+  const Standard_Integer aNbPnts = theLine->NbPnts();
+
+  const Standard_Real aDeltaUPeriod[] = {0.0, -theUPeriod, 2.0*theUPeriod};
+  const Standard_Real aDeltaVPeriod[] = {0.0, -theVPeriod, 2.0*theVPeriod};
+
+  const Standard_Integer aSzOfUPArr = sizeof(aDeltaUPeriod)/sizeof(aDeltaUPeriod[0]);
+  const Standard_Integer aSzOfVPArr = sizeof(aDeltaVPeriod)/sizeof(aDeltaVPeriod[0]);
+
+  for(Standard_Integer aPtID = 1; aPtID <= aNbPnts; aPtID++)
+  {
+    Standard_Real aU = 0.0, aV = 0.0;
+    if(isTheSurface1Using)
+      theLine->Point(aPtID).ParametersOnS1(aU, aV);
+    else
+      theLine->Point(aPtID).ParametersOnS2(aU, aV);
+
+    if(!theBox.IsOut(gp_Pnt2d(aU, aV)))
+      continue;
+
+    Standard_Boolean isInscribe = Standard_False;
+
+    for(Standard_Integer aUind = 0; !isInscribe && (aUind < aSzOfUPArr); aUind++)
+    {
+      if((aUind > 0) && (aDeltaUPeriod[aUind] == 0.0))
+      {
+        break;
+      }
+
+      aU += aDeltaUPeriod[aUind];
+
+      for(Standard_Integer aVind = 0; !isInscribe && (aVind < aSzOfVPArr); aVind++)
+      {
+        if((aVind > 0) && (aDeltaVPeriod[aVind] == 0.0))
+        {
+          break;
+        }
+
+        aV += aDeltaVPeriod[aVind];
+
+        isInscribe = !theBox.IsOut(gp_Pnt2d(aU, aV));
+      }
+    }
+
+    if(!isInscribe)
+      return Standard_False;
+  }
+  return Standard_True;
 }
-}
-*/

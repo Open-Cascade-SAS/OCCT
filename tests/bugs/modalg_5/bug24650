@@ -6,6 +6,8 @@ puts ""
 # Wrong intersection curves obtained for a surface of revolution and a plane.
 ##############################################################
 
+set GoodNbCurv 1
+
 restore [locate_data_file bug24650_fz1365.brep] b1
 restore [locate_data_file bug24650_fz2495.brep] b2
 
@@ -13,22 +15,67 @@ mksurface sb1 b1
 mksurface sb2 b2
 trimu sb1tu sb1 0.242 0.291
 
-set N [intersect i sb1tu sb2]
+clear
 
-if { [llength ${N}] != 1} {
-   puts "Error : Wrong intersection curves"
+set N [intersect res sb1tu sb2]
+
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  renamevar res res_1
+}
+
+
+set ic 1
+set AllowRepeate 1
+while { $AllowRepeate != 0 } {
+  set che [whatis res_$ic]
+  set ind [string first "3d curve" $che]
+  if {${ind} < 0} {
+    set AllowRepeate 0
+  } else {
+    display res_$ic
+    
+    bounds res_$ic U1 U2
+    
+    dval U1
+    dval U2
+    
+    if {[dval U2-U1] < 1.0e-20} {
+      puts "Error: Wrong curve's range!"
+    }
+    
+    dlog reset
+    dlog on
+    xdistcs res_$ic sb1tu U1 U2 10
+    set Log1 [dlog get]
+    set List1 [split ${Log1} {TD= \t\n}]
+    set Tolerance 1.0e-7
+    set Limit_Tol 1.0e-7
+    set D_good 0.
+    checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+    
+    dlog reset
+    dlog on
+    xdistcs res_$ic sb2 U1 U2 10
+    set Log1 [dlog get]
+    set List1 [split ${Log1} {TD= \t\n}]
+    set Tolerance 1.0e-7
+    set Limit_Tol 1.0e-7
+    set D_good 0.
+    checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+    
+    incr ic
+  }
+}
+
+if {[expr {$ic - 1}] == $GoodNbCurv} {
+  puts "OK: Curve Number is good!"
 } else {
-   set info1 [dump i]
-   set type_of_curve "BSplineCurve"
-   if { [regexp ${type_of_curve} ${info1}] != 1 } {
-      puts "Error : Wrong type of intersection curve"
-   } else {
-      puts "OK : Good type of intersection curve"
-   }
+  puts "Error: Curve Number is bad!"
 }
 
 smallview
-donly i
 fit
 set only_screen_axo 1
-

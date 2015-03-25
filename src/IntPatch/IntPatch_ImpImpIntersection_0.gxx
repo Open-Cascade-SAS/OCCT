@@ -22,6 +22,12 @@
 #include <IntSurf.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+#include <IntPatch_GLine.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Hyperbola.hxx>
+
 
 static void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 			    const Handle(Adaptor3d_HSurface)& S2,
@@ -82,7 +88,8 @@ static void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds&,
 static void ProcessRLine (IntPatch_SequenceOfLine&,
 			  const IntSurf_Quadric&,
 			  const IntSurf_Quadric&,
-			  const Standard_Real);
+			  const Standard_Real,
+                          const Standard_Boolean theIsReqToKeepRLine);
 
 //-- le calcul de dist est completement faux ds la routine ci dessous a revoir (lbr le 18 nov 97)
 Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
@@ -1654,13 +1661,136 @@ void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds& listedg,
   }
 }
 
+inline const gp_Pnt& PointValue(const Handle(IntPatch_RLine) theRLine,
+                                const Standard_Integer theIndex)
+{
+  return theRLine->Point(theIndex).Value();
+}
+
+inline const gp_Pnt& VertexValue( const Handle(IntPatch_RLine) theRLine,
+                                  const Standard_Integer theIndex)
+{
+  return theRLine->Vertex(theIndex).Value();
+}
+
+static Standard_Real SquareDistance(const Handle(IntPatch_GLine) theGLine,
+                                    const gp_Pnt& theP,
+                                    GeomAPI_ProjectPointOnCurve& thePrj)
+{
+  Standard_Real aSQDist = RealLast();
+  switch(theGLine->ArcType())
+  {
+  case IntPatch_Lin:
+    aSQDist = theGLine->Line().SquareDistance(theP);
+    break;
+  case IntPatch_Circle:
+    aSQDist = theGLine->Circle().SquareDistance(theP);
+    break;
+  default:
+    thePrj.Perform(theP);
+    if(thePrj.NbPoints() == 0)
+    {
+      //Lines are not overlapped
+      return aSQDist;
+    }
+
+    aSQDist = theP.SquareDistance(thePrj.NearestPoint());
+  }
+
+  return aSQDist;
+}
+
+static Standard_Boolean IsRLineGood(const IntSurf_Quadric& Quad1,
+                                    const IntSurf_Quadric& Quad2,
+                                    const Handle(IntPatch_GLine) theGLine,
+                                    const Handle(IntPatch_RLine) theRLine,
+                                    const Standard_Real theTol)
+{
+  const Standard_Real aSQTol = theTol*theTol;
+  const IntPatch_IType aGType = theGLine->ArcType();
+  Standard_Integer aNbPntsM1 = 0;
+  
+  const gp_Pnt& (*Value) (const Handle(IntPatch_RLine), const Standard_Integer);
+
+  if(theRLine->HasPolygon())
+  {
+    aNbPntsM1 = theRLine->NbPnts()-1;
+    Value = PointValue;
+  }
+  else
+  {
+    aNbPntsM1 = theRLine->NbVertex()-1;
+    Value = VertexValue;
+  }
+  
+  if(aNbPntsM1 < 1)
+    return Standard_False;
+
+  GeomAPI_ProjectPointOnCurve aPrj;
+  
+  Handle(Geom_Curve) aCurv;
+  if(aGType == IntPatch_Ellipse)
+    aCurv = new Geom_Ellipse(theGLine->Ellipse());
+  else if(aGType == IntPatch_Parabola)
+    aCurv = new Geom_Parabola(theGLine->Parabola());
+  else if(aGType == IntPatch_Hyperbola)
+    aCurv = new Geom_Hyperbola(theGLine->Hyperbola());
+  
+  if(!aCurv.IsNull())
+    aPrj.Init(aCurv, aCurv->FirstParameter(), aCurv->LastParameter());  
+
+  if(aNbPntsM1 == 1)
+  {
+    gp_Pnt aP1(Value(theRLine, 1)), aP2(Value(theRLine, 2));
+
+    if(aP1.SquareDistance(aP2) < aSQTol)
+    {
+      //RLine is degenerated
+      return Standard_False;
+    }
+
+    gp_Pnt aPMid;
+    if(theRLine->IsArcOnS1())
+    {
+      const Handle(Adaptor2d_HCurve2d)& anAC2d = theRLine->ArcOnS1();
+      const Standard_Real aParF = anAC2d->FirstParameter(),
+                          aParL = anAC2d->LastParameter();
+      gp_Pnt2d aP2d(anAC2d->Value(0.5*(aParF+aParL)));
+      aPMid = Quad1.Value(aP2d.X(), aP2d.Y());
+    }
+    else
+    {
+      const Handle(Adaptor2d_HCurve2d)& anAC2d = theRLine->ArcOnS2();
+      const Standard_Real aParF = anAC2d->FirstParameter(),
+                          aParL = anAC2d->LastParameter();
+      gp_Pnt2d aP2d(anAC2d->Value(0.5*(aParF+aParL)));
+      aPMid = Quad2.Value(aP2d.X(), aP2d.Y());
+    }
+
+    const Standard_Real aSQDist = SquareDistance(theGLine, aPMid, aPrj);
+    return (aSQDist > aSQTol);
+  }
+
+  for(Standard_Integer i = 2; i <= aNbPntsM1; i++)
+  {
+    const gp_Pnt aP(Value(theRLine, i));
+    const Standard_Real aSQDist = SquareDistance(theGLine, aP, aPrj);
+
+    if(aSQDist > aSQTol)
+      return Standard_True;
+  }
+
+  return Standard_False;
+}
+                                      
 
 void ProcessRLine (IntPatch_SequenceOfLine& slin,
 //		   const Handle(Adaptor3d_HSurface)& Surf1,
 //		   const Handle(Adaptor3d_HSurface)& Surf2,
 		   const IntSurf_Quadric& Quad1,
 		   const IntSurf_Quadric& Quad2,
-		   const Standard_Real _TolArc) {
+		   const Standard_Real _TolArc,
+                   const Standard_Boolean theIsReqToKeepRLine) {
 
 // On cherche a placer sur les restrictions solutions les points "multiples"
 // des autres lignes d intersection
@@ -1701,15 +1831,17 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
   for (i=1; i<=Nblin; i++) {
     const Handle(IntPatch_Line)& slini = slin(i);
     typ1 = slini->ArcType();
+
+    Standard_Boolean HasToDeleteRLine = Standard_False;
     if (typ1 == IntPatch_Restriction) {
       seq_Pnt3d.Clear();
       seq_Real.Clear();
+      
       for (j=1; j<=Nblin; j++) {
 	const  Handle(IntPatch_Line)& slinj = slin(j);
 	Nbpt = seq_Pnt3d.Length();      // important que ce soit ici
 	typ2 = slinj->ArcType();
 	if (typ2 != IntPatch_Restriction) {
-	  
 	  //-- arcref = (*((Handle(IntPatch_RLine)*)&slini))->Arc();
 	  //-- OnFirst = (*((Handle(IntPatch_RLine)*)&slini))->IsOnFirstSurface();
 
@@ -1896,8 +2028,32 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 	      } //-- if (keeppoint)
 	    } //-- if ((OnFirst && !Ptvtx.IsOnDomS1())||(!OnFirst && !Ptvtx.IsOnDomS2()))
 	  } //-- boucle sur les vertex
+
+          if(!theIsReqToKeepRLine)
+          {
+            Handle(IntPatch_GLine) aGL = Handle(IntPatch_GLine)::DownCast(slinj);
+
+            if(!aGL.IsNull())
+            {
+              HasToDeleteRLine = !IsRLineGood(Quad1, Quad2, aGL, 
+                                        Handle(IntPatch_RLine)::DownCast(slini), TolArc);
+            }
+
+            if(HasToDeleteRLine)
+            {
+              break;
+            }
+          }
 	} //-- if (typ2 != IntPatch_Restriction)
       } //-- for (j=1; j<=Nblin; j++) 
     } //-- if (typ1 == IntPatch_Restriction)
+
+    if(HasToDeleteRLine)
+    {
+      slin.Remove(i);
+      i--;
+      Nblin = slin.Length();
+      continue;
+    }
   } //-- for (i=1; i<=Nblin; i++)
 }

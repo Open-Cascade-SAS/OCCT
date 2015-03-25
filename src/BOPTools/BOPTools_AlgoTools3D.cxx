@@ -796,6 +796,12 @@ Standard_Integer BOPTools_AlgoTools3D::PointInFace
     }
   }
   //
+  if(!aHatcher.IsDone(aIx))
+  {
+    iErr=2;
+    return iErr;
+  }
+
   aNbDomains=aHatcher.NbDomains(aIx);
   if (aNbDomains > 0) {
     const HatchGen_Domain& aDomain=aHatcher.Domain (aIx, 1);

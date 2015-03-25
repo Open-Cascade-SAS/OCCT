@@ -16,7 +16,7 @@
 
 class WLine from IntPatch
 
-inherits Line from IntPatch 
+inherits PointLine from IntPatch 
 
 	---Purpose: Definition of set of points as a result of the intersection
 	--          between 2 parametrised patches.

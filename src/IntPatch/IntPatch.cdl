@@ -38,14 +38,11 @@ is
     class Point;
 
     deferred class Line;
-    
-    	class GLine;      -- inherits Line from IntPatch
-
-    	class ALine;      -- inherits Line from IntPatch
-    
-    	class WLine;      -- inherits Line from IntPatch
-    
-    	class RLine;      -- inherits Line from IntPatch
+    class ALine;                -- inherits Line from IntPatch
+    class GLine;                -- inherits Line from IntPatch
+    deferred class PointLine;   -- inherits Line from IntPatch
+    class RLine;                -- inherits PointLine from IntPatch
+    class WLine;                -- inherits PointLine from IntPatch
 
     class ArcFunction;
 	

@@ -20,10 +20,9 @@
 #include <Precision.hxx>
 
 IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang,
-				const IntSurf_TypeTrans Trans1,
-				const IntSurf_TypeTrans Trans2) :
-  IntPatch_Line(Tang,Trans1,Trans2),
-  fipt(Standard_False),lapt(Standard_False)
+                                const IntSurf_TypeTrans Trans1,
+                                const IntSurf_TypeTrans Trans2) :
+  IntPatch_PointLine(Tang,Trans1,Trans2), fipt(Standard_False),lapt(Standard_False)
 
 {
   typ = IntPatch_Restriction;
@@ -33,10 +32,9 @@ IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang,
 
 
 IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang,
-				const IntSurf_Situation Situ1,
-				const IntSurf_Situation Situ2) :
-  IntPatch_Line(Tang,Situ1,Situ2),
-  fipt(Standard_False),lapt(Standard_False)
+                                const IntSurf_Situation Situ1,
+                                const IntSurf_Situation Situ2) :
+  IntPatch_PointLine(Tang,Situ1,Situ2), fipt(Standard_False),lapt(Standard_False)
 {
   typ = IntPatch_Restriction;
   onS2=Standard_False;
@@ -45,8 +43,7 @@ IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang,
 
 
 IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang) :
-  IntPatch_Line(Tang),
-  fipt(Standard_False),lapt(Standard_False)
+  IntPatch_PointLine(Tang), fipt(Standard_False),lapt(Standard_False)
 
 {
   typ = IntPatch_Restriction;

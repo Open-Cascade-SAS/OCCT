@@ -925,7 +925,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
                                     const Handle(Adaptor3d_TopolTool)& theD2,
                                     const Standard_Real TolArc,
                                     const Standard_Real TolTang,
-                                    const Standard_Boolean isGeomInt)
+                                    const Standard_Boolean isGeomInt,
+                                    const Standard_Boolean theIsReqToKeepRLine)
 {
   myTolArc = TolArc;
   myTolTang = TolTang;
@@ -1124,13 +1125,15 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     {
       if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
       {
-        GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, 
-                      TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+        GeomGeomPerfom( theS1, theD1, theS2, theD2, TolArc, 
+                        TolTang, ListOfPnts, RestrictLine,
+                        typs1, typs2, theIsReqToKeepRLine);
       }
       else
       {
-        GeomGeomPerfomTrimSurf(theS1, theD1, theS2, theD2,
-              TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+        GeomGeomPerfomTrimSurf( theS1, theD1, theS2, theD2,
+                                TolArc, TolTang, ListOfPnts, RestrictLine,
+                                typs1, typs2, theIsReqToKeepRLine);
       }
     }
     else
@@ -1500,9 +1503,11 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
                                            IntSurf_ListOfPntOn2S& ListOfPnts,
                                            const Standard_Boolean RestrictLine,
                                            const GeomAbs_SurfaceType typs1,
-                                           const GeomAbs_SurfaceType typs2)
+                                           const GeomAbs_SurfaceType typs2,
+                                           const Standard_Boolean theIsReqToKeepRLine)
 {
-  IntPatch_ImpImpIntersection interii(theS1,theD1,theS2,theD2,myTolArc,myTolTang);
+  IntPatch_ImpImpIntersection interii(theS1,theD1,theS2,theD2,
+                                      myTolArc,myTolTang, theIsReqToKeepRLine);
   const Standard_Boolean anIS = interii.IsDone();
   if (anIS)
   {
@@ -1693,14 +1698,16 @@ void IntPatch_Intersection::
                           IntSurf_ListOfPntOn2S& theListOfPnts,
                           const Standard_Boolean RestrictLine,
                           const GeomAbs_SurfaceType theTyps1,
-                          const GeomAbs_SurfaceType theTyps2)
+                          const GeomAbs_SurfaceType theTyps2,
+                          const Standard_Boolean theIsReqToKeepRLine)
 {
   IntSurf_Quadric Quad1,Quad2;
 
   if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
   {
     IntPatch_ImpImpIntersection anInt;
-    anInt.Perform(theS1, theD1, theS2, theD2, myTolArc, myTolTang, Standard_True);
+    anInt.Perform(theS1, theD1, theS2, theD2, myTolArc,
+                  myTolTang, Standard_True, theIsReqToKeepRLine);
 
     done = anInt.IsDone();
 
@@ -1743,7 +1750,8 @@ void IntPatch_Intersection::
   else
   {
     GeomGeomPerfom(theS1, theD1, theS2, theD2,
-            theTolArc, theTolTang, theListOfPnts, RestrictLine, theTyps1, theTyps2);
+            theTolArc, theTolTang, theListOfPnts,
+            RestrictLine, theTyps1, theTyps2, theIsReqToKeepRLine);
   }
 }
 

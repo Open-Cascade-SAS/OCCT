@@ -1,0 +1,75 @@
+-- Created on: 2015-02-18
+-- Created by: Nikolai BUKHALOV
+-- Copyright (c) 1992-1999 Matra Datavision
+-- Copyright (c) 1999-2015 OPEN CASCADE SAS
+--
+-- This file is part of Open CASCADE Technology software library.
+--
+-- This library is free software; you can redistribute it and/or modify it under
+-- the terms of the GNU Lesser General Public License version 2.1 as published
+-- by the Free Software Foundation, with special exception defined in the file
+-- OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+-- distribution for complete text of the license and disclaimer of any warranty.
+--
+-- Alternatively, this file may be used under the terms of Open CASCADE
+-- commercial license or contractual agreement.
+
+deferred class PointLine from IntPatch 
+
+inherits Line from IntPatch
+
+  ---Purpose: Definition of an intersection line between two
+  --          surfaces.
+  --          A line defined by a set of points
+  --          (e.g. coming from a walking algorithm) as
+  --          defined in the class WLine or RLine (Restriction line).
+
+
+uses TypeTrans          from IntSurf,
+     Situation          from IntSurf,
+     PntOn2S            from IntSurf     
+
+
+raises DomainError from Standard,
+       OutOfRange  from Standard
+
+is
+
+  Initialize(Tang: Boolean from Standard;
+             Trans1,Trans2: TypeTrans from IntSurf);
+    
+    ---Purpose: To initialize the fields, when the transitions
+    --          are In or Out.
+
+
+  Initialize(Tang: Boolean from Standard;
+             Situ1,Situ2: Situation from IntSurf);
+    
+    ---Purpose: To initialize the fields, when the transitions
+    --          are Touch.
+
+  Initialize(Tang: Boolean from Standard);
+  
+    ---Purpose: To initialize the fields, when the transitions
+    --          are Undecided.
+
+  NbPnts(me) returns Integer from Standard
+    ---Purpose: Returns the number of intersection points.
+  
+    is deferred;
+
+  Point(me; Index : Integer from Standard) returns PntOn2S from IntSurf
+    ---Purpose: Returns the intersection point of range Index.
+
+    ---C++: return const&
+    
+    raises OutOfRange  from Standard,
+           DomainError from Standard
+    --- The exception DomainError is raised if HasPolygon returns False.
+    --- The exception OutOfRange is raised if Index <= 0 or Index > NbPnts.
+    
+    is deferred;
+    
+-- fields
+
+end Line;

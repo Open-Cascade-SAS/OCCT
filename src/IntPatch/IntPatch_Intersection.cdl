@@ -88,8 +88,16 @@ is
              S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
              S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
              TolArc,TolTang: Real from Standard;
-             isGeomInt : Boolean from Standard = Standard_True)   	     
+             isGeomInt : Boolean from Standard = Standard_True;
+             theIsReqToKeepRLine: Boolean from Standard = Standard_False)   	     
 
+      ---Purpose: Flag theIsReqToKeepRLine has been enterred only for
+      --          compatibility with TopOpeBRep package. It shall be deleted
+      --          after deleting TopOpeBRep.
+      --          When intersection result returns IntPatch_RLine and another
+      --          IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
+      --          will always keep both lines even if they are coincided.
+             
       raises ConstructionError from Standard    
       is static;
     
@@ -140,7 +148,15 @@ is
                     TolArc,TolTang: Real from Standard;
                     LOfPnts: in out ListOfPntOn2S from IntSurf;
                     RestrictLine: Boolean from Standard;
-                    typs1, typs2: SurfaceType from GeomAbs)
+                    typs1, typs2: SurfaceType from GeomAbs;
+                    theIsReqToKeepRLine: Boolean from Standard = Standard_False)
+                    
+      ---Purpose: Flag theIsReqToKeepRLine has been enterred only for
+      --          compatibility with TopOpeBRep package. It shall be deleted
+      --          after deleting TopOpeBRep.
+      --          When intersection result returns IntPatch_RLine and another
+      --          IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
+      --          will always keep both lines even if they are coincided.
 
       is private;
       
@@ -150,8 +166,16 @@ is
                             TolArc,TolTang: Real from Standard;
                             LOfPnts: in out ListOfPntOn2S from IntSurf;
                             RestrictLine: Boolean from Standard;
-                            typs1, typs2: SurfaceType from GeomAbs)
-
+                            typs1, typs2: SurfaceType from GeomAbs;
+                            theIsReqToKeepRLine: Boolean from Standard = Standard_False)
+                            
+      ---Purpose: Flag theIsReqToKeepRLine has been enterred only for
+      --          compatibility with TopOpeBRep package. It shall be deleted
+      --          after deleting TopOpeBRep.
+      --          When intersection result returns IntPatch_RLine and another
+      --          IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
+      --          will always keep both lines even if they are coincided.
+      
       is private;
                     
     GeomParamPerfom(me: in out;

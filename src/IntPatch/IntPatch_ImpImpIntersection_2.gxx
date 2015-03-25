@@ -24,7 +24,7 @@ static
 //purpose  : 
 //=======================================================================
 IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection ():
-       done(Standard_False)
+        done(Standard_False)
 {
 }
 //=======================================================================
@@ -37,9 +37,10 @@ IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
         const Handle(Adaptor3d_HSurface)&  S2,
         const Handle(Adaptor3d_TopolTool)& D2,
         const Standard_Real TolArc,
-        const Standard_Real TolTang)
+        const Standard_Real TolTang,
+        const Standard_Boolean theIsReqToKeepRLine)
 {
-  Perform(S1,D1,S2,D2,TolArc,TolTang);
+  Perform(S1,D1,S2,D2,TolArc,TolTang, Standard_False, theIsReqToKeepRLine);
 }
 //=======================================================================
 //function : Perform
@@ -51,7 +52,8 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
                                           const Handle(Adaptor3d_TopolTool)& D2,
                                           const Standard_Real TolArc,
                                           const Standard_Real TolTang,
-                                          const Standard_Boolean isTheTrimmed) {
+                                          const Standard_Boolean isTheTrimmed,
+                                          const Standard_Boolean theIsReqToKeepRLine) {
   done = Standard_False;
   Standard_Boolean isTrimmed = isTheTrimmed;
   spnt.Clear();
@@ -418,7 +420,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 
       if (edg1.Length() !=0 || edg2.Length() !=0) {
         //      ProcessRLine(slin,S1,S2,TolArc);
-        ProcessRLine(slin,quad1,quad2,TolArc);
+        ProcessRLine(slin,quad1,quad2,TolArc, theIsReqToKeepRLine);
       }
     }//if (!nosolonS1 || !nosolonS2) {
     else {

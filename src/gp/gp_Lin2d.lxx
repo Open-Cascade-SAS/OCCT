@@ -95,10 +95,8 @@ inline Standard_Real gp_Lin2d::SquareDistance (const gp_Pnt2d& P) const
 inline Standard_Real gp_Lin2d::SquareDistance (const gp_Lin2d& Other) const
 {
   Standard_Real D = 0.0;
-  if (pos.IsParallel (Other.pos, gp::Resolution())) { 
-    D = Other.Distance(pos.Location());
-    D *= D;return D * D;
-  }
+  if (pos.IsParallel (Other.pos, gp::Resolution())) 
+    D = Other.SquareDistance(pos.Location());
   return D;
 }
 

@@ -17,7 +17,7 @@
 class RLine from IntPatch
 
 
-inherits Line from IntPatch 
+inherits PointLine from IntPatch 
 
 	---Purpose: Implementation of an intersection line described by a
 	--          restriction line on one of the surfaces.

@@ -35,11 +35,13 @@ uses StdFail,
 
      IntSurf,
      IntPatch,
-     ApproxInt
+     ApproxInt,
+     Bnd
 
 is
 
     class IntSS;
+    imported VectorOfReal;
 
     class LineConstructor;
 

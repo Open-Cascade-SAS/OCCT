@@ -30,8 +30,11 @@ uses Intersection    from IntPatch,
      Surface         from Geom,
      HSurface        from GeomAdaptor,
      TopolTool       from Adaptor3d,
-     Line            from IntPatch
-
+     Line            from IntPatch,
+     RLine           from IntPatch,
+     Box2d           from Bnd,
+     VectorOfReal    from GeomInt
+     
 
 raises NotDone    from StdFail,
        OutOfRange from Standard
@@ -190,6 +193,27 @@ is
     TolFixTangents(me:out;   
     	    aTolCheck:out Real from Standard;
     	    aTolAngCheck:out Real from Standard);     
+
+    TreatRLine(myclass; theRL: RLine from IntPatch;
+                theHS1, theHS2: HSurface from GeomAdaptor;
+                theC3d: out Curve from Geom;
+                theC2d1, theC2d2: out Curve from Geom2d;
+                theTolReached: out Real from Standard);
+    ---Purpose: converts RLine to Geom(2d)_Curve.
+            
+    BuildPCurves(myclass; f, l : Real from Standard;
+                  Tol: out Real from Standard;
+                  S: Surface from Geom;
+                  C: Curve from Geom;
+                  C2d: out Curve from Geom2d);
+    ---Purpose: creates 2D-curve on given surface from given 3D-curve
+    
+    TrimILineOnSurfBoundaries(myclass; theC2d1, theC2d2: Curve from Geom2d;
+                              theBound1, theBound2: Box2d from Bnd;
+                              theArrayOfParameters: out VectorOfReal from GeomInt);
+    ---Purpose: puts into theArrayOfParameters the parameters of intersection
+    --          points of given theC2d1 and theC2d2 curves with the boundaries
+    --          of the source surface.
 
 --- Private methods
 --  

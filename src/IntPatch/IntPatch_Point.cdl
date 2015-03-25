@@ -24,7 +24,6 @@ uses
      HVertex    from Adaptor3d,
      HCurve2d   from Adaptor2d,
      PntOn2S    from IntSurf,
-     Line       from IntPatch,
      Transition from IntSurf,
      Pnt        from gp
      
