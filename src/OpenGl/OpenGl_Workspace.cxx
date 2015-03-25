@@ -986,7 +986,8 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     return;
   }
 
-  if (redrawImmediate (theCView, theCUnderLayer, theCOverLayer, NULL, Standard_True))
+  if (redrawImmediate (theCView, theCUnderLayer, theCOverLayer, NULL, Standard_True)
+  && !myGlContext->caps->buffersNoSwap)
   {
     myGlContext->SwapBuffers();
   }
