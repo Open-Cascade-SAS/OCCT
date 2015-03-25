@@ -42,17 +42,29 @@ public:
     DRAW_MODE_NONE = -1
   };
 
+  //! Empty constructor
+  Standard_EXPORT OpenGl_PrimitiveArray (const OpenGl_GraphicDriver* theDriver);
+
   //! Default constructor
-  OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*          theDriver,
-                         const Graphic3d_TypeOfPrimitiveArray theType,
-                         const Handle(Graphic3d_IndexBuffer)& theIndices,
-                         const Handle(Graphic3d_Buffer)&      theAttribs,
-                         const Handle(Graphic3d_BoundBuffer)& theBounds);
+  Standard_EXPORT OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*          theDriver,
+                                         const Graphic3d_TypeOfPrimitiveArray theType,
+                                         const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                         const Handle(Graphic3d_Buffer)&      theAttribs,
+                                         const Handle(Graphic3d_BoundBuffer)& theBounds);
+
+  //! Destructor
+  Standard_EXPORT virtual ~OpenGl_PrimitiveArray();
 
   //! Render primitives to the window
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
-  virtual void Release (OpenGl_Context* theContext);
+  //! Release OpenGL resources (VBOs)
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
+
+  //! Return true if VBOs initialization has been performed.
+  //! VBO initialization is performed during first Render() call.
+  //! Notice that this flag does not indicate VBOs validity.
+  Standard_Boolean IsInitialized() const { return myIsVboInit; }
 
   //! @return primitive type (GL_LINES, GL_TRIANGLES and others)
   GLint DrawMode() const { return myDrawMode; }
@@ -70,11 +82,11 @@ public:
   const Standard_Size GetUID() const { return myUID; }
 
   //! Initialize indices, attributes and bounds with new data.
-  void InitBuffers (const Handle(OpenGl_Context)&        theContext,
-                    const Graphic3d_TypeOfPrimitiveArray theType,
-                    const Handle(Graphic3d_IndexBuffer)& theIndices,
-                    const Handle(Graphic3d_Buffer)&      theAttribs,
-                    const Handle(Graphic3d_BoundBuffer)& theBounds);
+  Standard_EXPORT void InitBuffers (const Handle(OpenGl_Context)&        theContext,
+                                    const Graphic3d_TypeOfPrimitiveArray theType,
+                                    const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                    const Handle(Graphic3d_Buffer)&      theAttribs,
+                                    const Handle(Graphic3d_BoundBuffer)& theBounds);
 
 protected:
 
@@ -106,11 +118,6 @@ private:
   //! If buffer of attributes is empty, draw mode is set to NONE to avoid invalid array rendering.
   //! @param theType type of primitive array.
   void setDrawMode (const Graphic3d_TypeOfPrimitiveArray theType);
-
-protected:
-
-  //! Destructor
-  virtual ~OpenGl_PrimitiveArray();
 
 protected:
 

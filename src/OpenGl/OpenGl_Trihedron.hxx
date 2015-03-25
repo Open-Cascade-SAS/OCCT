@@ -32,29 +32,34 @@ class OpenGl_Trihedron : public OpenGl_Element
 {
 public:
 
-  static void Setup (const Quantity_NameOfColor theXColor,
-                     const Quantity_NameOfColor theYColor,
-                     const Quantity_NameOfColor theZColor,
-                     const Standard_Real        theSizeRatio,
-                     const Standard_Real        theAxisDiametr,
-                     const Standard_Integer     theNbFacettes);
+  static void Setup(const Quantity_NameOfColor theXColor,
+    const Quantity_NameOfColor theYColor,
+    const Quantity_NameOfColor theZColor,
+    const Standard_Real        theSizeRatio,
+    const Standard_Real        theAxisDiametr,
+    const Standard_Integer     theNbFacettes);
 
 public:
 
-  OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosition,
-                    const Quantity_NameOfColor          theColor,
-                    const Standard_Real                 theScale,
-                    const Standard_Boolean              theAsWireframe);
+  OpenGl_Trihedron(const Aspect_TypeOfTriedronPosition thePosition,
+    const Quantity_NameOfColor          theColor,
+    const Standard_Real                 theScale,
+    const Standard_Boolean              theAsWireframe);
 
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (OpenGl_Context* theCtx);
+  virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release(OpenGl_Context* theCtx);
 
 protected:
 
   virtual ~OpenGl_Trihedron();
 
-  void redraw        (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  void redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  void redraw(const Handle(OpenGl_Workspace)& theWorkspace) const;
+  void redrawZBuffer(const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Resets current model-view and projection transfprmations and sets
+  //! translation for trihedron position
+  //! @sa Aspect_TypeOfTriedronPosition
+  void resetTransformations (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 protected:
 
@@ -69,15 +74,17 @@ protected:
   float myDiameter;
   int   myNbFacettes;
 
-  OpenGl_AspectLine       myAspectLine;
-  OpenGl_AspectText       myAspectText;
-  mutable OpenGl_Text     myLabelX;
-  mutable OpenGl_Text     myLabelY;
-  mutable OpenGl_Text     myLabelZ;
-  mutable OpenGl_Cylinder myCylinder;
-  mutable OpenGl_Sphere   mySphere;
-  mutable OpenGl_Cylinder myCone;
-  mutable OpenGl_Disk     myDisk;
+  OpenGl_AspectLine              myAspectLine;
+  OpenGl_AspectText              myAspectText;
+  mutable OpenGl_Text            myLabelX;
+  mutable OpenGl_Text            myLabelY;
+  mutable OpenGl_Text            myLabelZ;
+  mutable OpenGl_Cylinder        myCylinder;
+  mutable OpenGl_Sphere          mySphere;
+  mutable OpenGl_Cylinder        myCone;
+  mutable OpenGl_Disk            myDisk;
+  mutable OpenGl_PrimitiveArray  myLine;
+  mutable OpenGl_PrimitiveArray  myCircle;
 
 public:
 

@@ -2943,6 +2943,7 @@ static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   V3dView->View()->ZFitAll();
+  V3dView->Redraw();
 
   return 0;
 }

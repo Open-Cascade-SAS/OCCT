@@ -16,6 +16,7 @@
 #ifndef _OpenGl_CappingPlaneResource_H__
 #define _OpenGl_CappingPlaneResource_H__
 
+#include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Resource.hxx>
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Matrix.hxx>
@@ -50,13 +51,16 @@ public:
 
   //! Release associated OpenGl resources.
   //! @param theContext [in] the resource context.
-  Standard_EXPORT void Release (OpenGl_Context* theContext);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
   //! @return aspect face for rendering capping surface.
   inline const OpenGl_AspectFace* AspectFace() const { return myAspect; }
 
   //! @return evaluated orientation matrix to transform infinite plane.
   inline const OpenGl_Matrix* Orientation() const { return &myOrientation; }
+
+  //! @return primitive array of vertices to render infinite plane.
+  inline const OpenGl_PrimitiveArray& Primitives() const { return myPrimitives; }
 
 private:
 
@@ -69,6 +73,7 @@ private:
 
 private:
 
+  OpenGl_PrimitiveArray       myPrimitives;    //!< vertices and texture coordinates for rendering
   OpenGl_Matrix               myOrientation;   //!< plane transformation matrix.
   OpenGl_AspectFace*          myAspect;        //!< capping face aspect.
   Handle(Graphic3d_ClipPlane) myPlaneRoot;     //!< parent clipping plane structure.

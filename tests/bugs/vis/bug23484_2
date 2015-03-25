@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC23484"
+puts "============"
+puts ""
+############################################################################################
+puts "Visualization, TKOpenGl - primitive arrays to become the only way to render geometry"
+puts "Tests clipping plane rendering with primitive arrays"
+############################################################################################
+
+set anImage $imagedir/${casename}_1.png
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+box b 1 1 1
+vdisplay b
+vfit
+
+vclipplane create pln
+vclipplane set pln view Driver1/Viewer1/View1
+vclipplane change pln equation 0 1 0 -0.5
+vclipplane change pln capping on
+
+vdump $anImage
+
+vclear

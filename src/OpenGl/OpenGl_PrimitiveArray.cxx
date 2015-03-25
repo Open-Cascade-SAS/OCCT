@@ -600,6 +600,21 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 // function : OpenGl_PrimitiveArray
 // purpose  :
 // =======================================================================
+OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver* theDriver)
+
+: myDrawMode  (DRAW_MODE_NONE),
+  myIsVboInit (Standard_False)
+{
+  if (theDriver != NULL)
+  {
+    myUID = theDriver->GetNextPrimitiveArrayUID();
+  }
+}
+
+// =======================================================================
+// function : OpenGl_PrimitiveArray
+// purpose  :
+// =======================================================================
 OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*          theDriver,
                                               const Graphic3d_TypeOfPrimitiveArray theType,
                                               const Handle(Graphic3d_IndexBuffer)& theIndices,
@@ -874,5 +889,3 @@ void OpenGl_PrimitiveArray::InitBuffers (const Handle(OpenGl_Context)&        th
 
   setDrawMode (theType);
 }
-
-

@@ -39,34 +39,6 @@ namespace
   static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
   static const GLint THE_FILLPRIM_TO   = GL_TRIANGLE_FAN;
 #endif
-
-  static const OpenGl_Vec4 THE_CAPPING_PLN_VERTS[12] =
-    { OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 1.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 1.0f, 0.0f),
-      OpenGl_Vec4 (-1.0f, 0.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 (-1.0f, 0.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f,-1.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f,-1.0f, 0.0f),
-      OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f) };
-
-  static const OpenGl_Vec4 THE_CAPPING_PLN_TCOORD[12] =
-    { OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 1.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 ( 0.0f, 1.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 (-1.0f, 0.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 (-1.0f, 0.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f,-1.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
-      OpenGl_Vec4 ( 0.0f,-1.0f, 0.0f, 0.0f),
-      OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f) };
 }
 
 // =======================================================================
@@ -226,24 +198,12 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
     theWorkspace->SetAspectFace (aPlaneAspect);
   }
 
-  // apply aspect for rendering
-  theWorkspace->AspectFace (Standard_True);
-
   // set identity model matrix
   aContext->ModelWorldState.Push();
   aContext->ModelWorldState.SetCurrent (OpenGl_Mat4::Map (*aPlaneRes->Orientation()->mat));
   aContext->ApplyModelViewMatrix();
 
-#if !defined(GL_ES_VERSION_2_0)
-  glNormal3f (0.0f, 1.0f, 0.0f);
-  glEnableClientState (GL_VERTEX_ARRAY);
-  glVertexPointer (4, GL_FLOAT, 0, (GLfloat* )&THE_CAPPING_PLN_VERTS);
-  glEnableClientState (GL_TEXTURE_COORD_ARRAY);
-  glTexCoordPointer (4, GL_FLOAT, 0, (GLfloat*)&THE_CAPPING_PLN_TCOORD);
-  glDrawArrays (GL_TRIANGLES, 0, 12);
-  glDisableClientState (GL_VERTEX_ARRAY);
-  glDisableClientState (GL_TEXTURE_COORD_ARRAY);
-#endif
+  aPlaneRes->Primitives().Render (theWorkspace);
 
   aContext->ModelWorldState.Pop();
   aContext->ApplyModelViewMatrix();

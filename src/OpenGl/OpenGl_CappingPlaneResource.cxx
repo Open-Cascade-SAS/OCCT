@@ -13,10 +13,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <NCollection_AlignedAllocator.hxx>
 #include <OpenGl_CappingPlaneResource.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Vec.hxx>
 #include <Precision.hxx>
+
+namespace
+{
+  //! 12 plane vertices, interleaved:
+  //!  - 4 floats, position
+  //!  - 4 floats, normal
+  //!  - 4 floats, UV texture coordinates
+  static const GLfloat THE_CAPPING_PLN_VERTS[12 * (4 + 4 + 4)] =
+  {
+    0.0f, 0.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f, 0.0f,
+
+    0.0f, 0.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 0.0f, 1.0f,
+    0.0f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f, 0.0f,
+   -1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f, 0.0f,
+
+    0.0f, 0.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 0.0f, 1.0f,
+   -1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f,-1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f,-1.0f, 0.0f, 0.0f,
+
+    0.0f, 0.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 0.0f, 1.0f,
+    0.0f, 0.0f,-1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f,-1.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f, 0.0f
+  };
+}
 
 IMPLEMENT_STANDARD_HANDLE (OpenGl_CappingPlaneResource, OpenGl_Resource)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource, OpenGl_Resource)
@@ -26,12 +53,28 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource, OpenGl_Resource)
 // purpose  :
 // =======================================================================
 OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource (const Handle(Graphic3d_ClipPlane)& thePlane)
-: myOrientation (OpenGl_IdentityMatrix),
+: myPrimitives  (NULL),
+  myOrientation (OpenGl_IdentityMatrix),
   myAspect      (NULL),
   myPlaneRoot   (thePlane),
   myEquationMod ((unsigned int )-1),
   myAspectMod   ((unsigned int )-1)
-{}
+{
+  // Fill primitive array
+  Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
+  Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (anAlloc);
+  Graphic3d_Attribute anAttribInfo[] =
+  {
+    { Graphic3d_TOA_POS,  Graphic3d_TOD_VEC4 },
+    { Graphic3d_TOA_NORM, Graphic3d_TOD_VEC4 },
+    { Graphic3d_TOA_UV,   Graphic3d_TOD_VEC4 }
+  };
+  if (anAttribs->Init (12, anAttribInfo, 3))
+  {
+    memcpy (anAttribs->ChangeData(), THE_CAPPING_PLN_VERTS, sizeof(THE_CAPPING_PLN_VERTS));
+    myPrimitives.InitBuffers (NULL, Graphic3d_TOPA_TRIANGLES, NULL, anAttribs, NULL);
+  }
+}
 
 // =======================================================================
 // function : OpenGl_CappingPlaneResource
@@ -59,6 +102,7 @@ void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& theConte
 void OpenGl_CappingPlaneResource::Release (OpenGl_Context* theContext)
 {
   OpenGl_Element::Destroy (theContext, myAspect);
+  myPrimitives.Release (theContext);
   myEquationMod = (unsigned int )-1;
   myAspectMod   = (unsigned int )-1;
 }

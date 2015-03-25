@@ -185,6 +185,13 @@ OpenGl_Context::~OpenGl_Context()
     {
       anIter.Value()->Release (this);
     }
+
+    // release delayed resources added during deletion of shared resources
+    while (!myUnusedResources->IsEmpty())
+    {
+      myUnusedResources->First()->Release (this);
+      myUnusedResources->RemoveFirst();
+    }
   }
   else
   {
@@ -231,6 +238,13 @@ void OpenGl_Context::forcedRelease()
   mySharedResources->Clear();
   myShaderManager->clear();
   myShaderManager->SetContext (NULL);
+
+  // release delayed resources added during deletion of shared resources
+  while (!myUnusedResources->IsEmpty())
+  {
+    myUnusedResources->First()->Release (this);
+    myUnusedResources->RemoveFirst();
+  }
 }
 
 // =======================================================================
