@@ -11,10 +11,9 @@ if { [string compare $command chamf] == 0 } {
     set os $env(os_type)
   }
   if {[string compare $group dist_angle] == 0} {
-    puts "TODO ?OCC22909 All:Faulty shapes in variables faulty_1 to faulty_"
     puts "TODO OCC22909 MacOS: chamfer is not done. compute of chamfer failed"
   } else {
-    puts "TODO ?OCC22909 ALL:Faulty shapes in variables faulty_1 to faulty_"
+    puts "TODO OCC22909 ALL:Faulty shapes in variables faulty_1 to faulty_"
   }
   if {[string compare $group dist_dist] == 0} {
     puts "TODO OCC22909 MacOS: chamfer is not done. compute of chamfer failed"

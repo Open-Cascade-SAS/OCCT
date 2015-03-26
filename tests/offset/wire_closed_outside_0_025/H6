@@ -1,7 +1,7 @@
-puts "TODO ?OCC23068 ALL: Error : The offset cannot be built."
-puts "TODO ?OCC23068 ALL: An exception was caught"
-puts "TODO ?OCC23068 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO ?OCC23748 ALL: Error: Offset is not done."
+puts "TODO OCC23748 ALL: Error : The offset cannot be built."
+puts "TODO OCC23748 Windows: Error: Offset is not done."
+puts "TODO OCC23748 Debian60-64: An exception was caught"
+puts "TODO OCC23748 Debian60-64: \\*\\* Exception \\*\\*"
 
 restore [locate_data_file offset_wire_092.brep] s
 

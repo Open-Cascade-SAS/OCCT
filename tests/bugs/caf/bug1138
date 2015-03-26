@@ -1,6 +1,6 @@
-puts "TODO ?OCC12345 ALL: An exception was caught"
-puts "TODO ?OCC12345 ALL: Faulty OCC1138 : here is reading problem when the filename is a directory name."
-puts "TODO ?OCC12345 ALL: Faulty OCC1138"
+puts "TODO OCC12345 Debian60-64: An exception was caught"
+puts "TODO OCC12345 Debian60-64: Faulty OCC1138 : here is reading problem when the filename is a directory name."
+puts "TODO OCC12345 Debian60-64: Faulty OCC1138"
 
 puts "================"
 puts "OCC1138"

@@ -1,5 +1,5 @@
-puts "TODO OCC12345 ALL: Faulty OCC825"
-puts "TODO OCC12345 ALL: Error : The command is not valid. The square is"
+puts "TODO OCC25915 ALL: Faulty OCC825"
+puts "TODO OCC25915 ALL: Error : The command is not valid. The square is"
 
 pload QAcommands
 

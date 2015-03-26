@@ -1,4 +1,4 @@
-puts "TODO ?OCC12345 ALL: OCC309: Error 2"
+puts "TODO ?OCC24296 ALL: OCC309: Error 2"
 
 puts "================"
 puts "OCC309"
@@ -18,31 +18,31 @@ if { ${ll} != 2 } {
     set result1 [lindex ${result} 0]
     set result2 [lindex ${result} 1]
     set CurrentDirectory [pwd]
-    set UpTrek [file dirname ${CurrentDirectory}]
+    set UpTrek "[file join [file dirname [file dirname ${CurrentDirectory}]] [file tail ${CurrentDirectory}]]"
     if { [string compare $tcl_platform(platform) "windows"] != 0} {
-	set res1 [ string range $result1 1 [expr [string length $result1] -3 ] ]
-	set res2 [ string range $result2 1 [expr [string length $result2] -3 ] ]
+      set res1 [ string range $result1 1 [expr [string length $result1] -3 ] ]
+      set res2 [ string range $result2 1 [expr [string length $result2] -3 ] ]
     } else {
-	set res1 [ string range $result1 3 [expr [string length $result1] -2 ] ]
-	set res2 [ string range $result2 3 [expr [string length $result2] -2 ] ]
-	set CurrentDirectory [ string range $CurrentDirectory 2 [expr [string length $CurrentDirectory] -1 ]]
-	set UpTrek [ string range $UpTrek 2 [expr [string length $UpTrek] -1 ]]
+      set res1 [ string range $result1 3 [expr [string length $result1] -2 ] ]
+      set res2 [ string range $result2 3 [expr [string length $result2] -2 ] ]
+      set CurrentDirectory [ string range $CurrentDirectory 2 [expr [string length $CurrentDirectory] -1 ]]
+      set UpTrek [ string range $UpTrek 2 [expr [string length $UpTrek] -1 ]]
     }
     if {[string compare ${res1} "${CurrentDirectory}"] == 0} {
-	puts "OCC309: OK 1"
+      puts "OCC309: OK 1"
     } else {
-	puts "result1 = ${result1}"
-	puts "res1 = ${res1}"
-	puts "CurrentDirectory = ${CurrentDirectory}"
-	puts "OCC309: Error 1"
+      puts "result1 = ${result1}"
+      puts "res1 = ${res1}"
+      puts "CurrentDirectory = ${CurrentDirectory}"
+      puts "OCC309: Error 1"
     }
     if {[string compare ${res2} "${UpTrek}"] == 0} {
-	puts "OCC309: OK 2"
+      puts "OCC309: OK 2"
     } else {
-	puts "result2 = ${result2}"
-	puts "res2 = ${res2}"
-	puts "UpTrek = ${UpTrek}"
-	puts "OCC309: Error 2"
+      puts "result2 = ${result2}"
+      puts "res2 = ${res2}"
+      puts "UpTrek = ${UpTrek}"
+      puts "OCC309: Error 2"
     }
 }
 

@@ -1,5 +1,3 @@
-puts "TODO ?OCC12345 ALL: OCC12522: Faulty"
-
 puts "========"
 puts "OCC12522"
 puts "========"
@@ -31,7 +29,7 @@ plane plane1 6400 -4000 -160 0 0 1 1 0 0
 extrema curve1 plane1
 
 set percent_max 0.1
-set good_length 8.3705138910905177
+set good_length 2.9009126041478908
 
 set ext_1_length [lindex [length ext_1] 4]
 

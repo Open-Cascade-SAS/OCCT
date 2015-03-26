@@ -1,4 +1,4 @@
-puts "TODO ?OFF22926 ALL: The offset is not valid"
+puts "TODO ?OCC23068 ALL: Error\\s*:\\s*The offset is not valid. The volume is"
 puts "TODO ?OCC23068 ALL: result is not a topological shape"
 puts "TODO ?OCC24156 ALL: TEST INCOMPLETE"
 

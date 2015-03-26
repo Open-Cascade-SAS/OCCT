@@ -1,3 +1,7 @@
+puts "TODO ?OCC25921 Debian60-64: Tcl Exception: Memory leak detected"
+puts "TODO ?OCC25921 Debian60-64: TEST INCOMPLETE"
+
+
 puts "============"
 puts "OCC7287"
 puts "============"
@@ -12,17 +16,15 @@ puts ""
 
 set BugNumber OCC7287
 
-set NCycles 100
+set NCycles 10
 box b1 10 10 10 100 100 100
 box b2 50 50 50
 
+set listmem {}
 for {set i 1} {${i} <= ${NCycles}} {incr i } {
     bop b1 b2
     bopfuse r
 
     lappend listmem [meminfo h]
-    if { [checktrend $listmem 0 100 "Memory leak detected"] } {
-        puts "No memory leak, $i iterations"
-        break
-    }
+    checktrend $listmem 0 100 "Memory leak detected"
 }

@@ -1,4 +1,5 @@
+puts "TODO OCC23150 ALL: Error : Number of faults is"
+puts "TODO OCC24592 ALL: Error : Number of free edges is"
+
 restore [locate_data_file CIN902_intcqhmr.rle] a
-puts "TODO ?#23150 ALL: Error : Number of faults is"
-puts "TODO #24592 ALL: Error : Number of free edges is"
 set nbFreeEdges ""

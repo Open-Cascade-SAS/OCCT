@@ -2,13 +2,9 @@
 
 set listmem {}
 
-for {set i 1} {$i < 100000} {incr i} {
+for {set i 1} {$i < 10} {incr i} {
     box b 10 10 10
 
     lappend listmem [meminfo h]
-
-    if { [checktrend $listmem 0 256 "Memory leak detected"] } {
-        puts "No memory leak, $i iterations"
-        break
-    }
+    checktrend $listmem 0 256 "Memory leak detected"
 }

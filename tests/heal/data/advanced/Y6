@@ -3,15 +3,7 @@ if {[string compare $command "SplitAngle"] == 0 } {
     if {[array get env os_type] != ""} {
        set os $env(os_type)
     }
-    if {
-	    [string compare $os "Debian40"] != 0
-	&&  [string compare $os "Mandriva2008"] != 0
-	&&  [string compare $os "Mandriva2010"] != 0
-       } {
-  puts "TODO ?OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
-    } else {
-  puts "TODO ?OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
-    }
+  puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
 }
 
 restore [locate_data_file METABO3.brep] a

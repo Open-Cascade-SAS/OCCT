@@ -1,7 +1,5 @@
-puts "TODO ?OCC12345 ALL: An exception was caught"
-puts "TODO ?OCC12345 ALL: \\*\\* Exception "
-puts "TODO ?OCC23748 ALL: Error: Offset is not done."
-puts "TODO ?OCC12345 ALL: Faulty OCC745"
+puts "TODO OCC23748 ALL: Error: Offset is not done."
+puts "TODO OCC23748 ALL: Faulty OCC745"
 
 puts "========"
 puts "OCC745"

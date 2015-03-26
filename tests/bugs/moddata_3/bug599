@@ -6,7 +6,7 @@ puts ""
 ## Result of BOPFUSE operation is unclosed shape inspite of source solids are valid
 #########################################################
 
-cpulimit 1000
+cpulimit 2000
 
 restore [locate_data_file OCC600_1.brep] a
 checkshape a

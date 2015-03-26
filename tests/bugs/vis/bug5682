@@ -7,19 +7,19 @@ puts ""
 ######################################################
 
 set BugNumber OCC5682
-set listmem {}
 
 box b 100 100 100
 
 vinit
-vdisplay b
-vfit
-
 catch {vselmode 4 1}
-vclear
 
-lappend listmem [meminfo h]
-if { [checktrend $listmem 0 1 "Memory leak detected"] } {
-    puts "No memory leak"
-    break
+set listmem {}
+set i_max 5
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+    vdisplay b
+    vfit
+    vclear
+
+    lappend listmem [meminfo h]
+    checktrend $listmem 0 1 "Memory leak detected"
 }

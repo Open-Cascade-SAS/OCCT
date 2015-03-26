@@ -1,22 +1,9 @@
+puts "TODO ?#22911 MacOS: Faulty shapes in variables faulty_1 to faulty_"
+
 #
 # *10603
 #
 #Create 3 torus
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-if {[string compare $os "Debian60-64"] != 0} {
-  set inst ""
-  if { [regexp -nocase {Windows} $os] == 1 } {
-    set inst "?"
-  }
-  if { [string compare $os "MacOS" ] == 0 } {
-    set inst "?"
-  }
-  # CR23404
-  puts "TODO ${inst}#22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
-}
 
 ptorus a0 100 20
 tcopy a0 a1

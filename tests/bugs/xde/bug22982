@@ -1,7 +1,5 @@
-puts "TODO ?OCC11111 ALL: Error on Record"
-puts "TODO ?OCC11111 ALL: Error : Colors are not equal"
-puts "TODO ?OCC11111 ALL: \\*\\* Exception"
-
+puts "TODO OCC22982 ALL: Error on Record"
+# errors appear during reading source step file
 pload QAcommands
 
 puts "============"
@@ -21,46 +19,48 @@ UndoLimit D11 100
 # Open a transaction
 NewCommand D11
 
-set fileNameAir [locate_data_file OCC22982-Air.step]
+ReadStep D11 [locate_data_file OCC22982-Air.step]
 
-set status 0
-
-if { [catch { ReadStep D11 $fileNameAir } catch_result] } {
-  puts "Faulty ${BugNumber} : there is reading problem"
-  set status 1
-}
-
-XSetColor D11 0:1:1:1 0 0 1
-XSetColor D11 0:1:1:1:1 1 0 0
+XUnsetColor D11 0:1:1:1 s
+XUnsetColor D11 0:1:1:1:1 s
 XUnsetColor D11 0:1:1:1:2 s
 XUnsetColor D11 0:1:1:1:3 s
+XUnsetColor D11 0:1:1:1:4 s
+XUnsetColor D11 0:1:1:1:5 s
+XUnsetColor D11 0:1:1:1:6 s
+XSetColor D11 0:1:1:1 0 0 1
+XSetColor D11 0:1:1:1:1 1 0 0
 
-set XRedCoords {2 148 179 204}
+set XRedCoords {2 160 186 204}
 set XRedCoords [split $XRedCoords " "]
-set YRedCoords {177 54 166 78}
+set YRedCoords {177 48 162 78}
 set YRedCoords [split $YRedCoords " "]
 
-set XBlueCoords {238 315 406 347 369 204 171 62}
+set XBlueCoords {238 315 406 348 370 204 171 62}
 set XBlueCoords [split $XBlueCoords " "]
-set YBlueCoords {171 87 188 174 290 286 237 303}
+set YBlueCoords {172 87 188 175 290 271 238 303}
 set YBlueCoords [split $YBlueCoords " "]
 
 XShow D11
 vfit
 
+# Check colors of document with source shape
 for {set i 0} {$i < [llength $XRedCoords]} {incr i} {
     set XCoord [lindex $XRedCoords $i]
     set YCoord [lindex $YRedCoords $i]
     checkcolor $XCoord $YCoord 1 0 0
 }
+for {set i 0} {$i < [llength $XBlueCoords]} {incr i} {
+    set XCoord [lindex $XBlueCoords $i]
+    set YCoord [lindex $YBlueCoords $i]
+    checkcolor $XCoord $YCoord 0 0 1
+}
 
 # Close/Open a transaction
 NewCommand D11
 
-if { [catch { WriteStep D11 ${imagedir}/${test_image}.step } catch_result] } {
-  puts "Faulty ${BugNumber} : there is writing problem"
-  set status 1
-}
+file delete -force ${imagedir}/${test_image}.step
+WriteStep D11 ${imagedir}/${test_image}.step
 
 NewDocument D2 MDTV-XCAF
 UndoLimit D2 100
@@ -68,23 +68,21 @@ UndoLimit D2 100
 # Close/Open a transaction
 NewCommand D2
 
-if { [catch { ReadStep D2 ${imagedir}/${test_image}.step } catch_result] } {
-  puts "Faulty ${BugNumber} : there is reading problem"
-  set status 1
-}
+ReadStep D2 ${imagedir}/${test_image}.step
 
 XShow D2
 vfit 
+
+# Check colors of document with resulting shape
+for {set i 0} {$i < [llength $XRedCoords]} {incr i} {
+    set XCoord [lindex $XRedCoords $i]
+    set YCoord [lindex $YRedCoords $i]
+    checkcolor $XCoord $YCoord 1 0 0
+}
 for {set i 0} {$i < [llength $XBlueCoords]} {incr i} {
     set XCoord [lindex $XBlueCoords $i]
     set YCoord [lindex $YBlueCoords $i]
     checkcolor $XCoord $YCoord 0 0 1
 }
 
-if { $status != 0 } {
-   puts "Faulty ${BugNumber}"
-} else {
-  puts "OK ${BugNumber}"
-}
-
-set 3dviewer 0
+set only_screen 1

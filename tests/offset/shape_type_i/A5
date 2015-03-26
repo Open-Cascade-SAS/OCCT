@@ -1,8 +1,6 @@
-puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_2 "
-puts "TODO ?OCC23068 ALL: Error : The volume of the resulting shape "
 pcone s 5 0 12 90
 trotate s 0 0 0 0 0 1 90
 
 OFFSETSHAPE 1 {} $calcul $type
 
-set volume 0
+set volume 3.57243e+022

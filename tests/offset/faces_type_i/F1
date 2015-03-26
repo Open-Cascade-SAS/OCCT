@@ -1,9 +1,5 @@
-puts "TODO ?OCC23068 ALL: \\*\\* Exception"
-puts "TODO ?OCC23068 ALL: An exception was caught"
-puts "TODO ?OCC23068 ALL: TEST INCOMPLETE"
-puts "TODO ?OCC23068 ALL: Error : The offset is not valid"
-puts "TODO ?OCC23748 ALL: ERROR. offsetperform operation not done."
-puts "TODO ?OCC23748 ALL: Tcl Exception: ERROR. offsetperform operation not done."
+puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC23748 ALL: TEST INCOMPLETE"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2

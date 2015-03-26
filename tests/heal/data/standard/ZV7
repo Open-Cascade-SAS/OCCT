@@ -1,7 +1,4 @@
 if { [string compare $command "ShapeConvertRev"] == 0 } {
-   puts "TODO ?OCC23127 All: An exception was caught"
-   puts "TODO ?OCC23127 All: \\*\\* Exception \\*\\*"
-   puts "TODO ?OCC23127 All: TEST INCOMPLETE"
    puts "TODO OCC23127 All: Error : The resulting shape is not correct"
    set test_identity 1
 }

@@ -1,7 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
-puts "TODO ?OCC12345 ALL: Error : The command is not valid. The square is"
-
 puts "========"
 puts "OCC772"
 puts "SAM1643"
@@ -11,12 +7,12 @@ puts ""
 ## Impossible to make a common of the shapes attached.
 ######################################
 
-restore [locate_data_file OCC772.brep] a 
+restore [locate_data_file OCC772_fix.brep] a 
 explode a
 checkshape a_1
 checkshape a_2
 
 bcommon result a_1 a_2
 
-set square 0
-set 2dviewer 0
+set square 10190.7
+set 2dviewer 1

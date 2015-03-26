@@ -8,7 +8,7 @@ if {[string compare $command "SplitAngle"] == 0 } {
 	&&  [string compare $os "Mandriva2008"] != 0
 	&&  [string compare $os "Mandriva2010"] != 0
        } {
-  puts "TODO ?OCC23245 ALL: Faulty shapes in variables faulty_1 to faulty_"
+  puts "TODO OCC23245 ALL: Faulty shapes in variables faulty_1 to faulty_"
     }
 }
 

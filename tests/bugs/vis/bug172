@@ -15,12 +15,9 @@ for {set i 1} {${i} <= ${i_max}} {incr i} {
     OCC172
     # deselect shape
     OCC172
-    
+
     lappend listmem [meminfo h]
-    if { [checktrend $listmem 0 1 "Memory leak detected"] } {
-        puts "No memory leak, $i iterations"
-        break
-    }
+    checktrend $listmem 0 1 "Memory leak detected"
 }
 
 

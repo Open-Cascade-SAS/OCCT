@@ -1,6 +1,6 @@
-puts "TODO OCC11111 ALL: \\*\\* Exception"
-puts "TODO OCC11111 ALL: An exception was caught"
-puts "TODO ?OCC11111 ALL: TEST INCOMPLETE"
+puts "TODO OCC25916 ALL: \\*\\* Exception"
+puts "TODO OCC25916 ALL: An exception was caught"
+puts "TODO OCC25916 ALL: TEST INCOMPLETE"
 puts "========"
 puts "OCC21261"
 puts "========"
@@ -27,12 +27,8 @@ set nb_compsol_good 0
 set nb_compound_good 0
 set nb_shape_good 22
 
-
-
 vinit
 vdisplay result
 vsetdispmode 0
 vfit
-
-
-set only_screen 0
+set only_screen 1

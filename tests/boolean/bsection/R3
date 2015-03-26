@@ -1,9 +1,8 @@
 ## buc60289
-puts "TODO ?OCC24255 ALL: Error : The length of the resulting shape is"
 
 restore [locate_data_file heal-Face1.rle] a
 restore [locate_data_file Plan.rle] b
 
 bsection result a b
 
-set length 1908.63
+set length 1686.21

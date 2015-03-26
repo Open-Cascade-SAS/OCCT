@@ -1,9 +1,6 @@
-puts "TODO ?OCC12345 ALL: An exception was caught"
-puts "TODO ?OCC12345 ALL: \\*\\* Exception"
-puts "TODO ?OCC12345 ALL: Error: Offset is not done."
-puts "TODO ?OCC12345 ALL: Faulty BUC60782: mkoffset works wrongly"
-puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
-
+puts "TODO OCC25919 ALL: Error: Offset is not done."
+puts "TODO OCC25919 ALL: Faulty BUC60782: mkoffset works wrongly"
+puts "TODO OCC25919 ALL: Error : The square of result shape is"
 
 puts "========================"
 puts "BUC60782"

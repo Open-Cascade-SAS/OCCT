@@ -1,9 +1,7 @@
-puts "TODO ?OCC11111 ALL: An exception was caught"
-puts "TODO ?OCC11111 ALL: \\*\\* Exception"
-puts "TODO ?OCC11111 ALL: Error: Offset is not done."
-puts "TODO ?OCC11111 ALL: Faulty OCC305 : function MKOFFSET works wrongly"
-puts "TODO ?OCC12345 ALL: Tcl Exception: result is not a topological shape!!!"
-puts "TODO ?OCC12345 ALL: TEST INCOMPLETE"
+puts "TODO OCC25919 ALL: Error: Offset is not done."
+puts "TODO OCC25919 ALL: Faulty OCC305 : function MKOFFSET works wrongly"
+puts "TODO OCC25919 ALL: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC25919 ALL: TEST INCOMPLETE"
 
 puts "========"
 puts "OCC305"

@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
-
 pload QAcommands
 
 puts "======="
@@ -18,14 +15,13 @@ puts ""
 if { [ catch { set info_result [OCC825 a1 a2 a3 a4 a5] } ] } {
     puts "Faulty : an exception was caught"
 } else {
-    checkshape a1
-    checkshape a2
     bcut result a2 a1
+	
     set ExplodeList [explode result]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+	  puts "Faulty : Resulting shape is empty COMPOUND"
     }
 }
 
-set square 0
-set 2dviewer 0
+set square 5890.46
+set 2dviewer 1

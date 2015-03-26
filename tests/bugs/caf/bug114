@@ -3,7 +3,7 @@ puts "OCC114"
 puts "==========="
 
 # Max number of iterations for computing memory leackage
-set i_max 20
+set i_max 10
 puts "Amount of iterations is $i_max"
 
 NewDocument D MDTV-Standard
@@ -20,8 +20,5 @@ for {set i 1} {${i} <= ${i_max}} {incr i} {
 
     # check memory usage (with tolerance equal to half page size)
     lappend listmem [meminfo h]
-    if { [checktrend $listmem 0 1 "Memory leak detected"] } {
-        puts "No memory leak, $i iterations"
-        break
-    }
+    checktrend $listmem 0 1 "Memory leak detected"
 }

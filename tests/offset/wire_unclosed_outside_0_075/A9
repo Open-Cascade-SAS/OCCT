@@ -1,7 +1,4 @@
-#puts "TODO OCC23068 ALL: Error : The length of the resulting shape is"
-#puts "TODO OCC23068 ALL: Error : The resulting shape is WRONG"
-puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
-#puts "TODO OCC23068 ALL: Error : big tolerance of shape result"
+puts "TODO OCC23748 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 restore [locate_data_file offset_wire_027.brep] s
 

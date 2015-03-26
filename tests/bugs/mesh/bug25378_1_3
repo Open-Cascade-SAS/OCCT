@@ -1,15 +1,16 @@
-puts "TODO OCC25378 Debian60-64: is more than expected time - 700 seconds"
-puts "TODO OCC25378     Windows: is more than expected time - 450 seconds"
-
 puts "============"
 puts "CR25378"
 puts "============"
 puts ""
 ###################################################################################
 # Building of triangulation for distored surfaces can take very long using BRepMesh_IncrementalMesh
+#
+# Test case was created to control bad situation, building of triangulation takes
+# very long time and it is expected by the meaning of issue #25378.
+# Case when it is passed too fast should be considered as failure.
 ###################################################################################
 
-cpulimit 1500
+cpulimit 2000
 
 restore [locate_data_file bug25378_Blower_bad.brep] b
 trinfo b
@@ -21,15 +22,15 @@ trinfo b
 
 if { [regexp {Debug mode} [dversion]] } {
     cpulimit 2000
-    set max_t_001 1400
+    set max_t_001 600
 } else {
   if { [regexp {Windows} [dversion]] } {
-    set max_t_001 450
+    set max_t_001 360
   } else {
-    set max_t_001 700
+    set max_t_001 400
   }
 }
 
-set tol_percent 0.05
-
-checktime ${t_001} ${max_t_001} ${tol_percent} "3. Time of building of triangulation "
+if {${max_t_001} > ${t_001}} {
+   puts "Error. Time of building of triangulation, ${t_001} seconds, is less than expected minimum time - ${max_t_001} seconds"
+}

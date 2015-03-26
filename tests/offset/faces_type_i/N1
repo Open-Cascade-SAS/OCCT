@@ -1,9 +1,8 @@
 puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
-puts "TODO ?OCC23748 ALL: ERROR. offsetperform operation not done."
-puts "TODO ?OCC23748 ALL: Tcl Exception: ERROR. offsetperform operation not done."
-puts "TODO ?OCC23748 ALL: TEST INCOMPLETE"
+puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC23748 ALL: TEST INCOMPLETE"
 
 beziersurf c 3 2 \
 0 0 0 0 5 5 2 14 3 \

@@ -8,6 +8,6 @@ if { [string compare $command chamf_sequence] == 0 && [string compare $group equ
   if {[array get env os_type] != ""} {
     set os $env(os_type)
   }
-  puts "TODO ?OCC22909 ALL:Faulty shapes in variables faulty_1 to faulty_3"
+  puts "TODO OCC22909 ALL:Faulty shapes in variables faulty_1 to faulty_"
   puts "TODO OCC24156 MacOS: chamfer is not done. compute of chamfer failed"
 }

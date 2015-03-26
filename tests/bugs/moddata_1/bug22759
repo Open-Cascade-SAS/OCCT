@@ -1,8 +1,3 @@
-puts "TODO ?OCC12345 ALL: Process killed by CPU limit"
-puts "TODO OCC11111 ALL: TEST INCOMPLETE"
-
-cpulimit 30
-
 puts "============"
 puts "OCC22759"
 puts "============"
@@ -14,6 +9,8 @@ puts ""
 set BugNumber OCC22759
 
 catch { pload XDE }
+
+cpulimit 400
 
 restore [locate_data_file OCC22759-weldt6.brep] result
 checkshape result
@@ -28,21 +25,19 @@ regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
 
 regexp {deflection +([-0-9.+eE]+)} $tri_info full defl
 
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
+if { [array get env os_type] != "" } {
+   set os $env(os_type)
 }
-
-if { [regexp {Windows} $os ] } {
-   puts "OS = Windows NT"
-   set good_tri  248672
-   set good_nod  127078
-   set good_defl 0.0028424483708953232
-} else {
+if { [string compare $os "windows"] != 0 } {
    puts "OS = Linux"
-   set good_tri  248724
-   set good_nod  127104
-   set good_defl 0.0028424483709341111
+   set good_tri  524278
+   set good_nod  265870
+   set good_defl 0.0026800432954056617
+} else {
+   puts "OS = Windows NT"
+   set good_tri  523436
+   set good_nod  265456
+   set good_defl 0.0028033497029316067
 }
 
 proc GetPercent {Value GoodValue} {
@@ -102,4 +97,4 @@ vfit
 vsetdispmode 1
 
 set only_screen 1
-set square 0
+set square 9951.34

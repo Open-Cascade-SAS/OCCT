@@ -1,5 +1,5 @@
-puts "TODO ?OCC11111 ALL: Error : The square of result shape is"
-puts "TODO ?OCC11111 ALL: Error : Result shape is WRONG"
+puts "TODO OCC22033 ALL: Error : The square of result shape is"
+puts "TODO OCC22033 ALL: Error : Result shape is WRONG"
 
 puts "============"
 puts "OCC6272"

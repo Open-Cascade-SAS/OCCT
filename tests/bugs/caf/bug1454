@@ -1,5 +1,3 @@
-puts "TODO ?OCC12345 ALL: Elapsed time is more then 20.0 seconds - Faulty"
-puts "TODO ?OCC12345 ALL: Faulty OCC1454"
 
 puts "===== OCC1454 ====="
 #######################################################################################
@@ -7,14 +5,16 @@ puts "===== OCC1454 ====="
 #######################################################################################
 
 puts "Info: Open the document with 80000 sublabels of the label 0:2"
-chrono h reset; chrono h start
+dchrono h reset
+dchrono h start
 Open [locate_data_file OCC1726.std] D
-chrono h stop; set TimeList [chrono h show]
+dchrono h stop
+set TimeList [dchrono h show]
 
-set ElapsedTime_min [lindex ${TimeList} 4]
-set ElapsedTime_sec [lindex ${TimeList} 6]
-set CPUusertime [lindex ${TimeList} 11]
-set CPUsystemtime [lindex ${TimeList} 16]
+regexp {Elapsed time: [-0-9.+eE]+ Hours ([-0-9.+eE]+) Minutes ([-0-9.+eE]+) Seconds} $TimeList full ElapsedTime_min ElapsedTime_sec
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $TimeList full CPUusertime
+regexp {CPU system time: ([-0-9.+eE]+) seconds} $TimeList full CPUsystemtime
+
 puts "ElapsedTime = ${ElapsedTime_min} min ${ElapsedTime_sec} sec CPUusertime = ${CPUusertime} CPUsystemtime = ${CPUsystemtime}"
 
 if { ${ElapsedTime_sec} > 20.0 || ${ElapsedTime_min} != 0 } {

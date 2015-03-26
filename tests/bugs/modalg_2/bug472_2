@@ -1,6 +1,9 @@
-puts "TODO ?OCC12345 ALL: Error : The command is not valid. The square is"
-puts "TODO ?OCC24122 ALL: Error : The square of result shape is"
-puts "TODO ?OCC24122 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC25917 ALL: Error : The command is not valid. The square is"
+if { [regexp {Debug mode} [dversion]] } {
+  puts "TODO OCC25917 ALL: TEST INCOMPLETE"
+  puts "TODO OCC25917 ALL: Tcl Exception"
+}
+
 puts "========================"
 puts " OCC472 "
 puts "(case 2)"

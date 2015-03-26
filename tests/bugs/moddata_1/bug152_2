@@ -1,9 +1,8 @@
-# by apn master-master 03.12.2012
-puts "TODO ?OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
-#puts "TODO OCC12345 ALL: An exception was caught"
-#puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
-#puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "TODO OCC22033 ALL: Faulty shapes in variables faulty_1 to faulty_"
+if { [regexp {Debug mode} [dversion]] } {
+  puts "TODO OCC22033 ALL: TEST INCOMPLETE"
+  puts "TODO OCC22033 ALL: Exception"
+}
 
 puts "================"
 puts "OCC152"

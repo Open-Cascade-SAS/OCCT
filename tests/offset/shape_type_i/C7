@@ -2,9 +2,8 @@ puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC23068 ALL: Error : The area of face result_\\d+ of the resulting shape is negative."
-puts "TODO ?OCC23068 ALL: Error: bsection of the result and s is not equal to zero"
-puts "TODO ?OCC23068 ALL:Error\\s*:\\s*.*The volume"
+puts "TODO OCC25406 ALL: Error: bsection of the result and s is not equal to zero"
+puts "TODO OCC23068 ALL:Error\\s*:\\s*.*The volume"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2
