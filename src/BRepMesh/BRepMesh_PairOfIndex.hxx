@@ -55,10 +55,10 @@ public:
   inline void Prepend(const Standard_Integer theIndex)
   {
     if (myIndex[1] >= 0)
-      Standard_OutOfRange::Raise ("BRepMesh_PairOfIndex::Append, more than two index to store");
+      Standard_OutOfRange::Raise ("BRepMesh_PairOfIndex::Prepend, more than two index to store");
 
     myIndex[1] = myIndex[0];
-    myIndex[1] = theIndex;
+    myIndex[0] = theIndex;
   }
 
   //! Returns is pair is empty.
