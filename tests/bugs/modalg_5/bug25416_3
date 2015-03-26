@@ -8,8 +8,8 @@ puts ""
 
 #Check if intersection algorithm produces overlapped curves
 
-restore [locate_data_file bug25416_s1.brep] s1
-restore [locate_data_file bug25416_s2.brep] s2
+restore [locate_data_file bug25416_s1.draw] s1
+restore [locate_data_file bug25416_s2.draw] s2
 
 set ll [intersect ii s1 s2]
 
@@ -21,13 +21,13 @@ if { [llength $ll] < 1 } {
 foreach i $ll {
    foreach j $ll {
       if { $i >= $j } continue
-      
+
       decho off
       mkedge e1 $i
       mkedge e2 $j
       set coe [checkoverlapedges e1 e2]
       decho on
-     
+
       puts "$i<->$j: $coe"
       if { [regexp "Edges is not overlaped" $coe] != 1 } {
          set status 2
