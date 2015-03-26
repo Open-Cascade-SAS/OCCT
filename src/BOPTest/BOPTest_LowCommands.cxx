@@ -40,6 +40,7 @@
 #include <DrawTrSurf.hxx>
 
 #include <BOPTools_AlgoTools2D.hxx>
+#include <IntTools_FClass2d.hxx>
 
 static
   void PrintState (Draw_Interpretor& aDI,
@@ -58,6 +59,7 @@ static
 
 static  Standard_Integer bclassify   (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer b2dclassify (Draw_Interpretor& , Standard_Integer , const char** );
+static  Standard_Integer b2dclassifx (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer bhaspc      (Draw_Interpretor& , Standard_Integer , const char** );
 
 //=======================================================================
@@ -73,10 +75,88 @@ static  Standard_Integer bhaspc      (Draw_Interpretor& , Standard_Integer , con
   const char* g = "BOPTest commands";
   theCommands.Add("bclassify"    , "use bclassify Solid Point [Tolerance=1.e-7]",
                   __FILE__, bclassify   , g);
-  theCommands.Add("b2dclassify"  , "use bclassify Face Point2d [Tol2D=Tol(Face)] ",
+  theCommands.Add("b2dclassify"  , "use b2dclassify Face Point2d [Tol] ",
                   __FILE__, b2dclassify , g);
+  theCommands.Add("b2dclassifx"  , "use b2dclassifx Face Point2d [Tol] ",
+                  __FILE__, b2dclassifx , g);
   theCommands.Add("bhaspc"       , "use bhaspc Edge Face [do]",
                   __FILE__, bhaspc      , g);
+}
+
+
+//
+//=======================================================================
+//function : b2dclassifx
+//purpose  : 
+//=======================================================================
+Standard_Integer b2dclassifx (Draw_Interpretor& theDI,
+                              Standard_Integer  theArgNb,
+                              const char**      theArgVec)
+{
+  if (theArgNb < 3)  {
+    theDI << " use b2dclassifx Face Point2d [Tol]\n";
+    return 1;
+  }
+
+  TopoDS_Shape aS = DBRep::Get (theArgVec[1]);
+  if (aS.IsNull())  {
+    theDI << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  else if (aS.ShapeType() != TopAbs_FACE)  {
+    theDI << " Shape type must be FACE\n";
+    return 1;
+  }
+  TopAbs_State aState;
+  gp_Pnt2d aP (8., 9.);
+  //
+  DrawTrSurf::GetPoint2d (theArgVec[2], aP);
+  const TopoDS_Face&  aF   = TopoDS::Face(aS);
+  const Standard_Real aTol = (theArgNb == 4) ? 
+    Draw::Atof (theArgVec[3]) : BRep_Tool::Tolerance (aF);
+  //
+  IntTools_FClass2d aClassifier(aF, aTol);
+  aState=aClassifier.Perform(aP);
+  PrintState (theDI, aState);
+  //
+  return 0;
+}
+//
+//=======================================================================
+//function : b2dclassify
+//purpose  : 
+//=======================================================================
+Standard_Integer b2dclassify (Draw_Interpretor& theDI,
+                              Standard_Integer  theArgNb,
+                              const char**      theArgVec)
+{
+  if (theArgNb < 3)  {
+    theDI << " use b2dclassify Face Point2d [Tol]\n";
+    return 1;
+  }
+
+  TopoDS_Shape aS = DBRep::Get (theArgVec[1]);
+  if (aS.IsNull())  {
+    theDI << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  else if (aS.ShapeType() != TopAbs_FACE)  {
+    theDI << " Shape type must be FACE\n";
+    return 1;
+  }
+  //
+  gp_Pnt2d aP (8., 9.);
+  //
+  DrawTrSurf::GetPoint2d (theArgVec[2], aP);
+  const TopoDS_Face&  aF   = TopoDS::Face(aS);
+  const Standard_Real aTol = (theArgNb == 4) ? 
+    Draw::Atof (theArgVec[3]) : BRep_Tool::Tolerance (aF);
+  
+  BRepClass_FaceClassifier aClassifier;
+  aClassifier.Perform(aF, aP, aTol);
+  PrintState (theDI, aClassifier.State());
+  //
+  return 0;
 }
 
 //=======================================================================
@@ -111,42 +191,6 @@ Standard_Integer bclassify (Draw_Interpretor& theDI,
   aSC.Perform (aP,aTol);
 
   PrintState (theDI, aSC.State());
-  return 0;
-}
-//
-//=======================================================================
-//function : b2dclassify
-//purpose  : 
-//=======================================================================
-Standard_Integer b2dclassify (Draw_Interpretor& theDI,
-                              Standard_Integer  theArgNb,
-                              const char**      theArgVec)
-{
-  if (theArgNb < 3)  {
-    theDI << " use bclassify Face Point2d [Tol2D=Tol(Face)]\n";
-    return 1;
-  }
-
-  TopoDS_Shape aS = DBRep::Get (theArgVec[1]);
-  if (aS.IsNull())  {
-    theDI << " Null Shape is not allowed here\n";
-    return 1;
-  }
-  else if (aS.ShapeType() != TopAbs_FACE)  {
-    theDI << " Shape type must be FACE\n";
-    return 1;
-  }
-
-  gp_Pnt2d aP (8., 9.);
-  DrawTrSurf::GetPoint2d (theArgVec[2], aP);
-  const TopoDS_Face&  aF   = TopoDS::Face(aS);
-  const Standard_Real aTol = (theArgNb == 4) ? 
-    Draw::Atof (theArgVec[3]) : BRep_Tool::Tolerance (aF);
-
-  BRepClass_FaceClassifier aClassifier;
-  aClassifier.Perform(aF, aP, aTol);
-
-  PrintState (theDI, aClassifier.State());
   return 0;
 }
 

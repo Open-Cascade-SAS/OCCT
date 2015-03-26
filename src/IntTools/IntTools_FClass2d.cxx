@@ -58,8 +58,8 @@ IntTools_FClass2d::IntTools_FClass2d()
 //function : IntTools_FClass2d::IntTools_FClass2d
 //purpose  : 
 //=======================================================================
-  IntTools_FClass2d::IntTools_FClass2d(const TopoDS_Face& aFace,
-                                       const Standard_Real TolUV) 
+IntTools_FClass2d::IntTools_FClass2d(const TopoDS_Face& aFace,
+				     const Standard_Real TolUV) 
 : Toluv(TolUV), Face(aFace)  
 {
   Init(Face, Toluv);
@@ -68,7 +68,7 @@ IntTools_FClass2d::IntTools_FClass2d()
 //function : IsHole
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_FClass2d::IsHole() const
+Standard_Boolean IntTools_FClass2d::IsHole() const
 {
   return myIsHole;
 } 
@@ -76,8 +76,8 @@ IntTools_FClass2d::IntTools_FClass2d()
 //function : Init
 //purpose  : 
 //=======================================================================
-  void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
-                               const Standard_Real TolUV) 
+void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
+			     const Standard_Real TolUV) 
 {
   Standard_Boolean WireIsNotEmpty, Ancienpnt3dinitialise, degenerated;
   Standard_Integer nbpnts, firstpoint, NbEdges;
@@ -372,7 +372,10 @@ IntTools_FClass2d::IntTools_FClass2d()
       gp_Pnt2d anInitPnt(0., 0.);
       //
       PClass.Init(anInitPnt);
-      TabClass.Append((void *)new CSLib_Class2d(PClass,FlecheU,FlecheV,Umin,Vmin,Umax,Vmax));
+      TabClass.Append((void *)new CSLib_Class2d(PClass,
+						FlecheU,
+						FlecheV,
+						Umin,Vmin,Umax,Vmax));
       BadWire=1;
       TabOrien.Append(-1);
     }
@@ -392,8 +395,8 @@ IntTools_FClass2d::IntTools_FClass2d()
         //
         aS=0.;
         //
-
         Standard_Integer iFlag=1;
+	//
         PClass(im2)=SeqPnt2d.Value(im2);
         PClass(im1)=SeqPnt2d.Value(im1);
         PClass(nbpnts)=SeqPnt2d.Value(nbpnts);
@@ -423,13 +426,26 @@ IntTools_FClass2d::IntTools_FClass2d()
 
               Standard_Real aN = aVPrev.Magnitude() * aVNext.Magnitude();
               if(aN > 1e-16) { 
-                Standard_Real aDerivAngle = aVPrev.Angle(aVNext);
+                Standard_Real aDerivAngle, aAbsDA, aProduct, aPA;
                 //ifv 23.08.06
-                if(Abs(aDerivAngle) <= Precision::Angular()) aDerivAngle = 0.; 
+		aPA=Precision::Angular();
+		aDerivAngle = aVPrev.Angle(aVNext);
+		aAbsDA=Abs(aDerivAngle);
+                if(aAbsDA <= aPA) {
+		  aDerivAngle = 0.; 
+		}
+		//
+		aProduct=aDerivAngle * a;
+		//
+	        if(Abs(aAbsDA - M_PI) <= aPA) {
+		  if (aProduct > 0.) {
+		    aProduct=-aProduct; 
+		  }
+		}
                 //ifv 23.08.06 : if edges continuity > G1, |aDerivAngle| ~0,
                 //but can has wrong sign and causes condition aDerivAngle * a < 0.
                 //that is wrong in such situation
-                if (iFlag && aDerivAngle * a < 0.) {
+                if (iFlag && aProduct < 0.) {
                   iFlag=0;
                   // Bad case.
                   angle = 0.;
@@ -452,7 +468,10 @@ IntTools_FClass2d::IntTools_FClass2d()
         if(FlecheV<Toluv)
           FlecheV = Toluv;
 
-        TabClass.Append((void *)new CSLib_Class2d(PClass,FlecheU,FlecheV,Umin,Vmin,Umax,Vmax));
+        TabClass.Append((void *)new CSLib_Class2d(PClass,
+						  FlecheU,
+						  FlecheV,
+						  Umin,Vmin,Umax,Vmax));
         //
         if((angle<2 && angle>-2)||(angle>10)||(angle<-10)) { 
           BadWire=1;
@@ -467,7 +486,10 @@ IntTools_FClass2d::IntTools_FClass2d()
         TabOrien.Append(-1);
         TColgp_Array1OfPnt2d PPClass(1,2);
         PPClass.Init(anInitPnt);
-        TabClass.Append((void *)new CSLib_Class2d(PPClass,FlecheU,FlecheV,Umin,Vmin,Umax,Vmax));
+        TabClass.Append((void *)new CSLib_Class2d(PPClass,
+						  FlecheU,
+						  FlecheV,
+						  Umin,Vmin,Umax,Vmax));
       }
     }// else if(WireIsNotEmpty)
   } // for(; aExpF.More();  aExpF.Next()) {
@@ -510,9 +532,10 @@ IntTools_FClass2d::IntTools_FClass2d()
 //function : PerformInfinitePoint
 //purpose  : 
 //=======================================================================
-  TopAbs_State IntTools_FClass2d::PerformInfinitePoint() const 
+TopAbs_State IntTools_FClass2d::PerformInfinitePoint() const 
 { 
-  if(Umax==-RealLast() || Vmax==-RealLast() || Umin==RealLast() || Vmin==RealLast()) { 
+  if(Umax==-RealLast() || Vmax==-RealLast() || 
+     Umin==RealLast() || Vmin==RealLast()) { 
     return(TopAbs_IN);
   }
   gp_Pnt2d P(Umin-(Umax-Umin),Vmin-(Vmax-Vmin));
@@ -522,8 +545,9 @@ IntTools_FClass2d::IntTools_FClass2d()
 //function : Perform
 //purpose  : 
 //=======================================================================
-  TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv,
-                                          const Standard_Boolean RecadreOnPeriodic) const
+TopAbs_State IntTools_FClass2d::Perform
+  (const gp_Pnt2d& _Puv,
+   const Standard_Boolean RecadreOnPeriodic) const
 { 
   Standard_Integer nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
@@ -658,9 +682,10 @@ IntTools_FClass2d::IntTools_FClass2d()
 //function : TestOnRestriction
 //purpose  : 
 //=======================================================================
-  TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
-                                                    const Standard_Real Tol,
-                                                    const Standard_Boolean RecadreOnPeriodic) const
+TopAbs_State IntTools_FClass2d::TestOnRestriction
+  (const gp_Pnt2d& _Puv,
+   const Standard_Real Tol,
+   const Standard_Boolean RecadreOnPeriodic) const
 { 
   Standard_Integer nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
@@ -765,12 +790,11 @@ IntTools_FClass2d::IntTools_FClass2d()
       }
   } //for (;;)
 }
-
 //=======================================================================
 //function : Destroy
 //purpose  : 
 //=======================================================================
-  void IntTools_FClass2d::Destroy() 
+void IntTools_FClass2d::Destroy() 
 { 
   Standard_Integer nbtabclass = TabClass.Length(); 
   for(Standard_Integer d=1; d<=nbtabclass;d++) {
