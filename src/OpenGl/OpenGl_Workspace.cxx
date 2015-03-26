@@ -727,7 +727,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   if (theCView.RenderParams.Method == Graphic3d_RM_RAYTRACING
    && myComputeInitStatus != OpenGl_RT_FAIL)
   {
-    if (UpdateRaytraceGeometry (OpenGl_GUM_CHECK) && myIsRaytraceDataValid)
+    if (InitRaytraceResources (theCView) && UpdateRaytraceGeometry (OpenGl_GUM_CHECK) && myIsRaytraceDataValid)
     {
       myToRedrawGL = Standard_False;
 

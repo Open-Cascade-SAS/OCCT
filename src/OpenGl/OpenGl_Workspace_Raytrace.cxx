@@ -1136,8 +1136,9 @@ Handle(OpenGl_ShaderObject) OpenGl_Workspace::LoadShader (const ShaderSource& th
 
   if (!aShader->Create (myGlContext))
   {
-    const TCollection_ExtendedString aMessage = "Error: Failed to create shader object";
-      
+    const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to create ") +
+      (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object";
+
     myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
       GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
 
@@ -1148,8 +1149,9 @@ Handle(OpenGl_ShaderObject) OpenGl_Workspace::LoadShader (const ShaderSource& th
 
   if (!aShader->LoadSource (myGlContext, theSource.Source()))
   {
-    const TCollection_ExtendedString aMessage = "Error: Failed to set shader source";
-      
+    const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to set ") +
+      (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader source";
+
     myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
       GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
 
@@ -1162,37 +1164,31 @@ Handle(OpenGl_ShaderObject) OpenGl_Workspace::LoadShader (const ShaderSource& th
 
   if (!aShader->Compile (myGlContext))
   {
-    if (aShader->FetchInfoLog (myGlContext, aBuildLog))
-    {
-      const TCollection_ExtendedString aMessage =
-        TCollection_ExtendedString ("Error: Failed to compile shader object:\n") + aBuildLog;
+    aShader->FetchInfoLog (myGlContext, aBuildLog);
 
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << aBuildLog << std::endl;
-#endif
+    const TCollection_ExtendedString aMessage = TCollection_ExtendedString ("Error: Failed to compile ") +
+      (theType == GL_VERTEX_SHADER ? "vertex" : "fragment") + " shader object:\n" + aBuildLog;
 
-      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
-    }
-    
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+
     aShader->Release (myGlContext.operator->());
 
     return Handle(OpenGl_ShaderObject)();
   }
-
-#ifdef RAY_TRACE_PRINT_INFO
-  if (aShader->FetchInfoLog (myGlContext, aBuildLog))
+  else if (myGlContext->caps->glslWarnings)
   {
-    if (!aBuildLog.IsEmpty())
+    aShader->FetchInfoLog (myGlContext, aBuildLog);
+
+    if (!aBuildLog.IsEmpty() && !aBuildLog.IsEqual ("No errors.\n"))
     {
-      std::cout << aBuildLog << std::endl;
+      const TCollection_ExtendedString aMessage = TCollection_ExtendedString (theType == GL_VERTEX_SHADER ?
+        "Vertex" : "Fragment") + " shader was compiled with following warnings:\n" + aBuildLog;
+
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+        GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMessage);
     }
-    else
-    {
-      std::cout << "Info: shader build log is empty" << std::endl;
-    }
-  }  
-#endif
+  }
 
   return aShader;
 }
@@ -1209,7 +1205,7 @@ Standard_Boolean OpenGl_Workspace::SafeFailBack (const TCollection_ExtendedStrin
   myComputeInitStatus = OpenGl_RT_FAIL;
 
   ReleaseRaytraceResources();
-  
+
   return Standard_False;
 }
 
@@ -1245,6 +1241,11 @@ TCollection_AsciiString OpenGl_Workspace::GenerateShaderPrefix()
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView& theCView)
 {
+  if (myComputeInitStatus == OpenGl_RT_FAIL)
+  {
+    return Standard_False;
+  }
+
   Standard_Boolean aToRebuildShaders = Standard_False;
 
   if (myComputeInitStatus == OpenGl_RT_INIT)
@@ -1306,13 +1307,13 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       if (!myRaytraceShader->LoadSource (myGlContext, myRaytraceShaderSource.Source())
        || !myPostFSAAShader->LoadSource (myGlContext, myPostFSAAShaderSource.Source()))
       {
-        return Standard_False;
+        return SafeFailBack ("Failed to load source into ray-tracing fragment shaders");
       }
 
       if (!myRaytraceShader->Compile (myGlContext)
        || !myPostFSAAShader->Compile (myGlContext))
       {
-        return Standard_False;
+        return SafeFailBack ("Failed to compile ray-tracing fragment shaders");
       }
 
       myRaytraceProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
@@ -1320,7 +1321,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       if (!myRaytraceProgram->Link (myGlContext)
        || !myPostFSAAProgram->Link (myGlContext))
       {
-        return Standard_False;
+        return SafeFailBack ("Failed to initialize vertex attributes for ray-tracing program");
       }
     }
   }
@@ -1329,17 +1330,11 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
   {
     if (!myGlContext->IsGlGreaterEqual (3, 1))
     {
-      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
-                                "Ray-tracing requires OpenGL 3.1 and higher");
-      return Standard_False;
+      return SafeFailBack ("Ray-tracing requires OpenGL 3.1 and higher");
     }
     else if (!myGlContext->arbTboRGB32)
     {
-      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
-                                "Ray-tracing requires OpenGL 4.0+ or GL_ARB_texture_buffer_object_rgb32 extension");
-      return Standard_False;
+      return SafeFailBack ("Ray-tracing requires OpenGL 4.0+ or GL_ARB_texture_buffer_object_rgb32 extension");
     }
 
     myRaytraceParameters.NbBounces = theCView.RenderParams.RaytracingDepth;
@@ -1348,12 +1343,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
 
     if (aFolder.IsEmpty())
     {
-      const TCollection_ExtendedString aMessage = "Failed to locate shaders directory";
-      
-      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
-      
-      return Standard_False;
+      return SafeFailBack ("Failed to locate shaders directory");
     }
 
     if (myIsRaytraceDataValid)
@@ -1374,10 +1364,11 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
 
       if (aBasicVertShader.IsNull())
       {
-        return SafeFailBack ("Failed to set vertex shader source");
+        return SafeFailBack ("Failed to initialize ray-trace vertex shader");
       }
 
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs", aFolder + "/RaytraceRender.fs" };
+      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
+                                           aFolder + "/RaytraceRender.fs" };
 
       myRaytraceShaderSource.Load (aFiles, 2);
 
@@ -1389,7 +1380,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       {
         aBasicVertShader->Release (myGlContext.operator->());
 
-        return SafeFailBack ("Failed to set ray-trace fragment shader source");
+        return SafeFailBack ("Failed to initialize ray-trace fragment shader");
       }
 
       myRaytraceProgram = new OpenGl_ShaderProgram;
@@ -1410,18 +1401,28 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       }
 
       myRaytraceProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
+
+      TCollection_AsciiString aLinkLog;
+
       if (!myRaytraceProgram->Link (myGlContext))
       {
-        TCollection_AsciiString aLinkLog;
+        myRaytraceProgram->FetchInfoLog (myGlContext, aLinkLog);
 
-        if (myRaytraceProgram->FetchInfoLog (myGlContext, aLinkLog))
+        return SafeFailBack (TCollection_ExtendedString (
+          "Failed to link ray-trace shader program:\n") + aLinkLog);
+      }
+      else if (myGlContext->caps->glslWarnings)
+      {
+        myRaytraceProgram->FetchInfoLog (myGlContext, aLinkLog);
+
+        if (!aLinkLog.IsEmpty() && !aLinkLog.IsEqual ("No errors.\n"))
         {
-  #ifdef RAY_TRACE_PRINT_INFO
-          std::cout << aLinkLog << std::endl;
-  #endif
-        }
+          const TCollection_ExtendedString aMessage = TCollection_ExtendedString (
+            "Ray-trace shader program was linked with following warnings:\n") + aLinkLog;
 
-        return SafeFailBack ("Failed to link ray-trace shader program");
+          myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+            GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMessage);
+        }
       }
     }
 
@@ -1431,10 +1432,11 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
 
       if (aBasicVertShader.IsNull())
       {
-        return SafeFailBack ("Failed to set vertex shader source");
+        return SafeFailBack ("Failed to initialize FSAA vertex shader");
       }
 
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs", aFolder + "/RaytraceSmooth.fs" };
+      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
+                                           aFolder + "/RaytraceSmooth.fs" };
 
       myPostFSAAShaderSource.Load (aFiles, 2);
 
@@ -1446,7 +1448,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       {
         aBasicVertShader->Release (myGlContext.operator->());
 
-        return SafeFailBack ("Failed to set FSAA fragment shader source");
+        return SafeFailBack ("Failed to initialize FSAA fragment shader");
       }
 
       myPostFSAAProgram = new OpenGl_ShaderProgram;
@@ -1467,18 +1469,28 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       }
 
       myPostFSAAProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
+
+      TCollection_AsciiString aLinkLog;
+
       if (!myPostFSAAProgram->Link (myGlContext))
       {
-        TCollection_AsciiString aLinkLog;
-
-        if (myPostFSAAProgram->FetchInfoLog (myGlContext, aLinkLog))
-        {
-  #ifdef RAY_TRACE_PRINT_INFO
-          std::cout << aLinkLog << std::endl;
-  #endif
-        }
+        myPostFSAAProgram->FetchInfoLog (myGlContext, aLinkLog);
       
-        return SafeFailBack ("Failed to link FSAA shader program");
+        return SafeFailBack (TCollection_ExtendedString (
+          "Failed to link FSAA shader program:\n") + aLinkLog);
+      }
+      else if (myGlContext->caps->glslWarnings)
+      {
+        myPostFSAAProgram->FetchInfoLog (myGlContext, aLinkLog);
+
+        if (!aLinkLog.IsEmpty() && !aLinkLog.IsEqual ("No errors.\n"))
+        {
+          const TCollection_ExtendedString aMessage = TCollection_ExtendedString (
+            "FSAA shader program was linked with following warnings:\n") + aLinkLog;
+
+          myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+            GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMessage);
+        }
       }
     }
   }
@@ -2311,9 +2323,6 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
                                              const Aspect_CLayer2d& theCUnderLayer,
                                              OpenGl_FrameBuffer*    theFrameBuffer)
 {
-  if (!InitRaytraceResources (theCView))
-    return Standard_False;
-
   if (!ResizeRaytraceBuffers (theSizeX, theSizeY))
     return Standard_False;
 
