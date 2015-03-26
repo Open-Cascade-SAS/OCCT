@@ -7,7 +7,7 @@ puts ""
 #######################################################################
 
 restore [locate_data_file bug25892_c007] c
-restore [locate_data_file bug25892_s007] s
+restore [locate_data_file bug25892_s003] s
 
 project cx c s
 
