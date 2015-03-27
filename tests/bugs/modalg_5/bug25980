@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC25980"
+puts "========"
+puts ""
+#################################################
+# Wrong result obtained by projection algorithm
+#################################################
+
+restore [locate_data_file c2t.draw] c
+restore [locate_data_file s1t.draw] s
+
+set bug_info [catch {project x c s}]
+
+if {$bug_info == 0} {
+  puts "ERROR: OCC25980 is reproduced."
+}

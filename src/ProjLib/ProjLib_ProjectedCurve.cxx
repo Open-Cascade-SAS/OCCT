@@ -522,7 +522,7 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
           }
         }
 
-        ProjLib_CompProjectedCurve Projector(mySurface,myCurve, myTolerance, myTolerance);
+        ProjLib_CompProjectedCurve Projector(mySurface,myCurve, myTolerance, myTolerance, 100 * myTolerance);
         Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve();
         HProjector->Set(Projector);
 
@@ -537,7 +537,7 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
         }
         else 
         {
-          StdFail_NotDone::Raise("ProjLib CompProjectedCurve Not Done");
+          return;
         }
         // Approximons cette courbe algorithmique.
         Standard_Boolean Only3d = Standard_False;

@@ -560,7 +560,6 @@ void ProjLib_CompProjectedCurve::Init()
   Standard_Boolean FromLastU=Standard_False;
 
   //new part (to discard far solutions)
-  //Method Extrema_ExtCS gives wrong result(ex. sphere and segment orthogonal to it)
   Standard_Real TolC = Precision::Confusion(), TolS = Precision::Confusion();
   Extrema_ExtCS CExt(myCurve->Curve(),
     mySurface->Surface(),
@@ -570,13 +569,16 @@ void ProjLib_CompProjectedCurve::Init()
   {
     // Search for the minimum solution
     Nend = CExt.NbExt();
-    if(myMaxDist > 0) 
+    if(myMaxDist > 0 &&
+       // Avoid usage of extrema result that can be wrong for extrusion
+       mySurface->GetType() != GeomAbs_SurfaceOfExtrusion)
     {
       Standard_Real min_val2;
       min_val2 = CExt.SquareDistance(1);
       for(i = 2; i <= Nend; i++)
-        if (CExt.SquareDistance(i) < min_val2) min_val2 = CExt.SquareDistance(i);  
-      if(min_val2 > myMaxDist * myMaxDist) return;
+        if (CExt.SquareDistance(i) < min_val2) min_val2 = CExt.SquareDistance(i);
+      if (min_val2 > myMaxDist * myMaxDist)
+        return;
     }
   }
   // end of new part
