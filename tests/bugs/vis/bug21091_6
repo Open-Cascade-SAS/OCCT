@@ -42,7 +42,7 @@ vexport ${aFile} EPS
 if { [string compare $tcl_platform(platform) "windows"] != 0 } {
    set refsize 10314
 } else {
-   set refsize 10309
+   set refsize 10338
 }
 
 if { [file exists ${aFile}] } {

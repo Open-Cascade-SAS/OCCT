@@ -35,9 +35,9 @@ if { [string compare $os "windows"] != 0 } {
    set good_defl 0.0026800432954056617
 } else {
    puts "OS = Windows NT"
-   set good_tri  523436
-   set good_nod  265456
-   set good_defl 0.0028033497029316067
+   set good_tri  524278
+   set good_nod  265870
+   set good_defl 0.0026800432954056617
 }
 
 proc GetPercent {Value GoodValue} {

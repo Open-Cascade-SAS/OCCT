@@ -42,7 +42,7 @@ vexport ${aFile} PS
 if { [string compare $tcl_platform(platform) "windows"] != 0 } {
    set refsize 10370
 } else {
-   set refsize 10365
+   set refsize 10394
 }
 
 if { [file exists ${aFile}] } {
