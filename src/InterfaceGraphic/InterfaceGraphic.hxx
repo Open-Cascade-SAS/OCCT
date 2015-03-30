@@ -27,6 +27,10 @@
 
 #include <stdio.h>
 
+// exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
+#define GL_GLEXT_LEGACY
+#define GLX_GLXEXT_LEGACY
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
