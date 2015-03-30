@@ -394,6 +394,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   } catch ( Standard_Failure ) {
 //    cout << "a Shape should be incorrect : A Selection on the Bnd  is activated   "<<endl;
     if ( aMode == 0 ) {
+      aSelection->Clear();
       Bnd_Box B = BoundingBox();
       Handle(StdSelect_BRepOwner) aOwner = new StdSelect_BRepOwner(shape,this);
       Handle(Select3D_SensitiveBox) aSensitiveBox = new Select3D_SensitiveBox(aOwner,B);

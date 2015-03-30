@@ -1,0 +1,29 @@
+puts "============"
+puts "CR25935"
+puts "Visualization, TKV3d, Exception when displaying shell in the viewer"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+restore [locate_data_file bug25935.brep] aShape
+explode aShape Sh
+
+vinit
+
+# check displaying and selection of a sub-shell of the shape
+vdisplay aShape_3
+vfit
+vmoveto 214 200
+checkcolor 214 200 0 1 1
+
+vremove -all
+
+# check displaying and selection of the whole shape
+vdisplay aShape
+vfit
+vmoveto 192 211
+vmoveto 213 191
+vmoveto 205 205
+vmoveto 197 194
+checkcolor 205 205 0 1 1

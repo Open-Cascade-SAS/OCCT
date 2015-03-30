@@ -1714,6 +1714,18 @@ inline void addStructureBndBox (const Handle(Graphic3d_Structure)& theStruct,
 
   // "FitAll" operation ignores object with transform persistence parameter
   const Bnd_Box aBox = theStruct->MinMaxValues (theToIgnoreInfiniteFlag);
+
+  // To prevent float overflow at camera parameters calculation and further
+  // rendering, bounding boxes with at least one vertex coordinate out of
+  // float range are skipped by view fit algorithms
+  if (Abs (aBox.CornerMax().X()) >= ShortRealLast() ||
+      Abs (aBox.CornerMax().Y()) >= ShortRealLast() ||
+      Abs (aBox.CornerMax().Z()) >= ShortRealLast() ||
+      Abs (aBox.CornerMin().X()) >= ShortRealLast() ||
+      Abs (aBox.CornerMin().Y()) >= ShortRealLast() ||
+      Abs (aBox.CornerMin().Z()) >= ShortRealLast())
+    return;
+
   theBndBox.Add (aBox);
 }
 

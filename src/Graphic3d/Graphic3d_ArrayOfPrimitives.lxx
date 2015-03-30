@@ -72,9 +72,9 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Standard_R
                                                                 const Standard_Real theY,
                                                                 const Standard_Real theZ)
 {
-  return AddVertex (Standard_ShortReal (theX),
-                    Standard_ShortReal (theY),
-                    Standard_ShortReal (theZ));
+  return AddVertex (RealToShortReal (theX),
+                    RealToShortReal (theY),
+                    RealToShortReal (theZ));
 }
 
 inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const gp_Pnt& theVertex,
@@ -87,7 +87,7 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const gp_Pnt& th
 inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Standard_Real theX,  const Standard_Real theY,  const Standard_Real theZ,
                                                                 const Standard_Real theNX, const Standard_Real theNY, const Standard_Real theNZ)
 {
-  return AddVertex (Standard_ShortReal (theX),  Standard_ShortReal (theY),  Standard_ShortReal (theZ),
+  return AddVertex (RealToShortReal (theX),  RealToShortReal (theY),  RealToShortReal (theZ),
                     Standard_ShortReal (theNX), Standard_ShortReal (theNY), Standard_ShortReal (theNZ));
 }
 
@@ -101,7 +101,7 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const gp_Pnt&   
 inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Standard_Real theX,  const Standard_Real theY,  const Standard_Real theZ,
                                                                 const Standard_Real theTX, const Standard_Real theTY)
 {
-  return AddVertex (Standard_ShortReal (theX),  Standard_ShortReal (theY),  Standard_ShortReal (theZ),
+  return AddVertex (RealToShortReal (theX),  RealToShortReal (theY),  RealToShortReal (theZ),
                     Standard_ShortReal (theTX), Standard_ShortReal (theTY));
 }
 
@@ -118,7 +118,7 @@ inline Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex (const Standard_R
                                                                 const Standard_Real theNX, const Standard_Real theNY, const Standard_Real theNZ,
                                                                 const Standard_Real theTX, const Standard_Real theTY)
 {
-  return AddVertex (Standard_ShortReal (theX),  Standard_ShortReal (theY),  Standard_ShortReal (theZ),
+  return AddVertex (RealToShortReal (theX),  RealToShortReal (theY),  RealToShortReal (theZ),
                     Standard_ShortReal (theNX), Standard_ShortReal (theNY), Standard_ShortReal (theNZ),
                     Standard_ShortReal (theTX), Standard_ShortReal (theTY));
 }
