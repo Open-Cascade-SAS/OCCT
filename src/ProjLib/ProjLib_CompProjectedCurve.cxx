@@ -583,10 +583,13 @@ void ProjLib_CompProjectedCurve::Init()
   }
   // end of new part
 
-  Standard_Real FirstU, LastU, Step, DecStep, SearchStep, WalkStep, t;
+  Standard_Real FirstU, LastU, Step, SearchStep, WalkStep, t;
 
   FirstU = myCurve->FirstParameter();
   LastU  = myCurve->LastParameter();
+  const Standard_Real GlobalMinStep = 1.e-4;
+  //<GlobalMinStep> is sufficiently small to provide solving from initial point
+  //and, on the other hand, it is sufficiently large to avoid too close solutions.
   const Standard_Real MinStep = 0.01*(LastU - FirstU), 
     MaxStep = 0.1*(LastU - FirstU);
   SearchStep = 10*MinStep;
@@ -669,30 +672,36 @@ void ProjLib_CompProjectedCurve::Init()
         // as initial point for aPrjPS, so we switch them
         gp_Vec2d D;
 
-        if((Abs(U - Uinf) < mySurface->UResolution(Precision::PConfusion())) &&
-          mySurface->IsUPeriodic())
-        { 
-          d1(t, U, V, D, myCurve, mySurface);
-          if (D.X() < 0) U = Usup;
-        }
-        else if((Abs(U - Usup) < mySurface->UResolution(Precision::PConfusion())) &&
-          mySurface->IsUPeriodic())
+        if ((mySurface->IsUPeriodic() &&
+            Abs(Usup - Uinf - mySurface->UPeriod()) < Precision::Confusion()) ||
+            (mySurface->IsVPeriodic() && 
+            Abs(Vsup - Vinf - mySurface->VPeriod()) < Precision::Confusion()))
         {
-          d1(t, U, V, D, myCurve, mySurface);
-          if (D.X() > 0) U = Uinf;
-        }
+          if((Abs(U - Uinf) < mySurface->UResolution(Precision::PConfusion())) &&
+            mySurface->IsUPeriodic())
+          { 
+            d1(t, U, V, D, myCurve, mySurface);
+            if (D.X() < 0 ) U = Usup;
+          }
+          else if((Abs(U - Usup) < mySurface->UResolution(Precision::PConfusion())) &&
+            mySurface->IsUPeriodic())
+          {
+            d1(t, U, V, D, myCurve, mySurface);
+            if (D.X() > 0) U = Uinf;
+          }
 
-        if((Abs(V - Vinf) < mySurface->VResolution(Precision::PConfusion())) && 
-          mySurface->IsVPeriodic()) 
-        {
-          d1(t, U, V, D, myCurve, mySurface);
-          if (D.Y() < 0) V = Vsup;
-        }
-        else if((Abs(V - Vsup) <= mySurface->VResolution(Precision::PConfusion())) &&
-          mySurface->IsVPeriodic())
-        {
-          d1(t, U, V, D, myCurve, mySurface);
-          if (D.Y() > 0) V = Vinf;
+          if((Abs(V - Vinf) < mySurface->VResolution(Precision::PConfusion())) && 
+            mySurface->IsVPeriodic()) 
+          {
+            d1(t, U, V, D, myCurve, mySurface);
+            if (D.Y() < 0) V = Vsup;
+          }
+          else if((Abs(V - Vsup) <= mySurface->VResolution(Precision::PConfusion())) &&
+            mySurface->IsVPeriodic())
+          {
+            d1(t, U, V, D, myCurve, mySurface);
+            if (D.Y() > 0) V = Vinf;
+          }
         }
 
 
@@ -765,7 +774,6 @@ void ProjLib_CompProjectedCurve::Init()
     else WalkStep = Min(MaxStep, Max(MinStep, 0.1*MagnD1/MagnD2));
 
     Step = WalkStep;
-    DecStep = Step;;
 
     t = Triple.X() + Step;
     if (t > LastU) t = LastU;
@@ -790,8 +798,7 @@ void ProjLib_CompProjectedCurve::Init()
                      aLowBorder, aUppBorder, FuncTol, Standard_True);
       if(!aPrjPS.IsDone()) 
       {
-
-        if (DecStep <= MinStep) 
+        if (Step <= GlobalMinStep)
         {
           //Search for exact boundary point
           Tol = Min(myTolU, myTolV);
@@ -820,18 +827,19 @@ void ProjLib_CompProjectedCurve::Init()
             Step =Step+LastU-t;
             t = LastU;
           }
-          DecStep=Step;
           new_part = Standard_False;
         }
         else 
         {
           // decrease step
-          DecStep=DecStep / 2.;
-          Step = Max (MinStep , DecStep);
+          Standard_Real SaveStep = Step;
+          Step /= 2.;
           t = Triple .X() + Step;
           if (t > (LastU-MinStep/4) ) 
           { 
             Step =Step+LastU-t;
+            if (Abs(Step - SaveStep) <= Precision::PConfusion())
+              Step = GlobalMinStep; //to avoid looping
             t = LastU;
           }
         }
@@ -878,7 +886,6 @@ void ProjLib_CompProjectedCurve::Init()
           Step =Step+LastU-t;
           t = LastU;
         }	
-        DecStep=Step;
       }
     }
   }
@@ -1220,8 +1227,28 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U,gp_Pnt2d& P) const
   aPrjPS.Perform(U, U0, V0, gp_Pnt2d(myTolU, myTolV), 
     gp_Pnt2d(mySurface->FirstUParameter(), mySurface->FirstVParameter()), 
     gp_Pnt2d(mySurface->LastUParameter(), mySurface->LastVParameter()));
-  P = aPrjPS.Solution();
-
+  if (aPrjPS.IsDone())
+    P = aPrjPS.Solution();
+  else
+  {
+    gp_Pnt thePoint = myCurve->Value(U);
+    Extrema_ExtPS aExtPS(thePoint, mySurface->Surface(), myTolU, myTolV);
+    if (aExtPS.IsDone() && aExtPS.NbExt()) 
+    {
+      Standard_Integer i, Nend, imin = 1;
+      // Search for the nearest solution which is also a normal projection
+      Nend = aExtPS.NbExt();
+      for(i = 2; i <= Nend; i++)
+        if (aExtPS.SquareDistance(i) < aExtPS.SquareDistance(imin))
+          imin = i;
+      const Extrema_POnSurf& POnS = aExtPS.Point(imin);
+      Standard_Real ParU,ParV;
+      POnS.Parameter(ParU, ParV);
+      P.SetCoord(ParU, ParV);
+    }
+    else
+      P.SetCoord(U0,V0);
+  }
 }
 //=======================================================================
 //function : D1

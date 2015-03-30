@@ -1,0 +1,21 @@
+puts "============"
+puts "CR25894"
+puts "==========="
+puts ""
+###############################################################################
+# BRepOffsetAPI_NormalProjection fails to projection an edge on a face
+###############################################################################
+
+restore [locate_data_file bug25894_ProjectionFailed.brep] p
+
+explode p
+
+nproject r p_1 p_2
+whatis r
+set explode_log [explode r]
+
+if { [regexp "r_1" ${explode_log}] != 1 } {
+    puts "Error : projection an edge on a face works wrongly"
+} else {
+    puts "OK: projection an edge on a face works good"
+}
