@@ -172,8 +172,8 @@ public:
   const TCollection_AsciiString& NamesFont() const { return myNamesFont; }
   void SetNamesFont (const TCollection_AsciiString& theFont) { myNamesFont = theFont; }
 
-  const Font_FontAspect& NamesFontAspect() const { return myNamesStyle; }
-  void SetNamesFontAspect (const Font_FontAspect& theAspect) { myNamesStyle = theAspect; }
+  Font_FontAspect NamesFontAspect() const { return myNamesStyle; }
+  void SetNamesFontAspect (Font_FontAspect theAspect) { myNamesStyle = theAspect; }
 
   const Standard_Integer NamesSize() const { return myNamesSize; }
   void SetNamesSize (const Standard_Integer theValue) { myNamesSize = theValue; }
@@ -181,8 +181,8 @@ public:
   const TCollection_AsciiString& ValuesFont () const { return myValuesFont; }
   void SetValuesFont (const TCollection_AsciiString& theFont) { myValuesFont = theFont; }
 
-  const Font_FontAspect& ValuesFontAspect() const { return myValuesStyle; }
-  void SetValuesFontAspect (const Font_FontAspect& theAspect) { myValuesStyle = theAspect; }
+  Font_FontAspect ValuesFontAspect() const { return myValuesStyle; }
+  void SetValuesFontAspect (Font_FontAspect theAspect) { myValuesStyle = theAspect; }
 
   const Standard_Integer ValuesSize() const { return myValuesSize; }
   void SetValuesSize (const Standard_Integer theValue) { myValuesSize = theValue; }
