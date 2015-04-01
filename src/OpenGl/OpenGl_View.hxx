@@ -429,14 +429,18 @@ protected: //! @name data types related to ray-tracing
     //! Actual ray-tracing depth (number of ray bounces).
     Standard_Integer NbBounces;
 
-    //! Sets light propagation through transparent media.
+    //! Enables/disables light propagation through transparent media.
     Standard_Boolean TransparentShadows;
+
+    //! Enables/disables the use of OpenGL bindless textures.
+    Standard_Boolean UseBindlessTextures;
 
     //! Creates default compile-time ray-tracing parameters.
     RaytracingParams()
     : StackSize (THE_DEFAULT_STACK_SIZE),
       NbBounces (THE_DEFAULT_NB_BOUNCES),
-      TransparentShadows (Standard_False)
+      TransparentShadows (Standard_False),
+      UseBindlessTextures (Standard_False)
     {
       //
     }

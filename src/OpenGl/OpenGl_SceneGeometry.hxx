@@ -304,7 +304,7 @@ public: //! @name methods related to texture management
   }
 
   //! Checks if scene contains textured objects.
-  Standard_Integer HasTextures() const
+  Standard_Boolean HasTextures() const
   {
     return !myTextures.IsEmpty();
   }

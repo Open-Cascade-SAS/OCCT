@@ -1011,9 +1011,9 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
     aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
   }
 
-  // If OpenGL driver supports bindless textures,
-  // activate texturing in ray-tracing mode
-  if (theGlContext->arbTexBindless != NULL)
+  // If OpenGL driver supports bindless textures and texturing
+  // is actually used, activate texturing in ray-tracing mode
+  if (myRaytraceParameters.UseBindlessTextures && theGlContext->arbTexBindless != NULL)
   {
     aPrefixString += TCollection_AsciiString ("\n#define USE_TEXTURES") +
       TCollection_AsciiString ("\n#define MAX_TEX_NUMBER ") + TCollection_AsciiString (OpenGl_RaytraceGeometry::MAX_TEX_NUMBER);
@@ -1150,6 +1150,12 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
     if (theCView.RenderParams.RaytracingDepth != myRaytraceParameters.NbBounces)
     {
       myRaytraceParameters.NbBounces = theCView.RenderParams.RaytracingDepth;
+      aToRebuildShaders = Standard_True;
+    }
+
+    if (myRaytraceGeometry.HasTextures() != myRaytraceParameters.UseBindlessTextures)
+    {
+      myRaytraceParameters.UseBindlessTextures = myRaytraceGeometry.HasTextures();
       aToRebuildShaders = Standard_True;
     }
 
