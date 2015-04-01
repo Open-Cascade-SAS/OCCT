@@ -1483,10 +1483,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   }
   if ((theBits & OpenGl_PO_VertColor) != 0)
   {
-    aSrcVertExtraOut  += EOL"THE_SHADER_OUT vec4 VertColor;";
-    aSrcVertExtraMain += EOL"  VertColor = occVertColor;";
-    aSrcFragGetColor   = EOL"THE_SHADER_IN  vec4 VertColor;"
-                         EOL"vec4 getVertColor(void) { return VertColor; }";
+    aSrcVertExtraOut    += EOL"THE_SHADER_OUT vec4 VertColor;";
+    aSrcVertExtraMain   += EOL"  VertColor = occVertColor;";
+    aSrcFragGetVertColor = EOL"THE_SHADER_IN  vec4 VertColor;"
+                           EOL"vec4 getVertColor(void) { return VertColor; }";
   }
 
   if ((theBits & OpenGl_PO_Point) != 0)
