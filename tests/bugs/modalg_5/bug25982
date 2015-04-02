@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC25982"
+puts "============"
+puts ""
+###############################
+## Wrong result obtained by General Fuse operator.
+###############################
+
+restore [locate_data_file bug25982_human_head_3.brep] b1
+
+tcopy b1 b2
+tmirror b2 0 0 0 1 0 0
+explode b1 f
+explode b2 f
+copy b1_4 b1
+copy b2_4 b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+ 
+bfillds
+bbuild result
+
+set square 306.285
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 6
+ EDGE      : 11
+ WIRE      : 4
+ FACE      : 2
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 24
+"
+checknbshapes result ${nbshapes_expected} 1 "Result obtained by General Fuse operator"
+
+set 3dviewer 1

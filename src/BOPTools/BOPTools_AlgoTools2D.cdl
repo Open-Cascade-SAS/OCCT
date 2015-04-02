@@ -24,7 +24,7 @@ uses
     Vertex from TopoDS,
     Edge   from TopoDS, 
     Face   from TopoDS, 
-     
+    Surface from BRepAdaptor, 
     Curve from Geom2d,
     Curve from Geom, 
     ProjectedCurve from ProjLib,
@@ -124,7 +124,16 @@ is
           --- Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF> .  
           --- [aT1,  aT2] - range to adjust 
           ---
- 
+    AdjustPCurveOnFace  (myclass;    
+              aF    :  Surface from BRepAdaptor; 
+              aT1   :  Real from Standard;   
+              aT2   :  Real from Standard;   
+              aC2D  :  Curve from Geom2d; 
+              aC2DA : out Curve from Geom2d); 
+          ---Purpose:   
+          --- Adjust P-Curve <aC2D> (3D-curve <C3D>) on surface <aF> .  
+          --- [aT1,  aT2] - range to adjust 
+          --- 
     IntermediatePoint (myclass; 
               aFirst: Real from Standard; 
               aLast : Real from Standard) 
