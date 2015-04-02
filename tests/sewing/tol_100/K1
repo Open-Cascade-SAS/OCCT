@@ -1,4 +1,4 @@
-puts "TODO ?OCC23150 Windows: Error : Number of faults is"
+puts "TODO ?OCC23150 ALL: Error : Number of faults is"
 puts "TODO OCC24592 ALL: Error : Number of free edges is"
 
 restore [locate_data_file CNP002_projoiep.rle] a

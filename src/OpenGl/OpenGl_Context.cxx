@@ -953,26 +953,19 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     FindProc ("glGetStringi", myFuncs->glGetStringi);
   }
 
-  // this check would not work well due to buggy NVIDIA drivers!
-  /*GLint aProfile = 0;
+  bool isCoreProfile = false;
   if (IsGlGreaterEqual (3, 2))
   {
-    ::glGetIntegerv (GL_CONTEXT_PROFILE_MASK, &aProfile);
-  }
-  const bool isCoreProfile = (aProfile & GL_CONTEXT_CORE_PROFILE_BIT) != 0;*/
+    isCoreProfile = (theIsCoreProfile == Standard_True);
 
-  // detect Core profile
-  /*for (int anErr = glGetError(), aPrevErr = GL_NO_ERROR;; aPrevErr = anErr, anErr = glGetError())
-  {
-    if (anErr == aPrevErr)
+    // detect Core profile
+    if (isCoreProfile)
     {
-      break;
+      GLint aProfile = 0;
+      ::glGetIntegerv (GL_CONTEXT_PROFILE_MASK, &aProfile);
+      isCoreProfile = (aProfile & GL_CONTEXT_CORE_PROFILE_BIT) != 0;
     }
   }
-  const char* anExtString = (const char* )::glGetString (GL_EXTENSIONS);
-  const bool isCoreProfile = IsGlGreaterEqual (3, 2) && (glGetError() != GL_NO_ERROR);*/
-
-  const bool isCoreProfile = IsGlGreaterEqual (3, 2) && theIsCoreProfile;
 #endif
 
   core11     = NULL;
