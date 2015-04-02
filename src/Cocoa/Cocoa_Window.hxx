@@ -16,12 +16,26 @@
 #ifndef _Cocoa_Window_H__
 #define _Cocoa_Window_H__
 
-#ifdef __OBJC__
-  @class NSView;
-  @class NSWindow;
+#if defined(__APPLE__)
+  #import <TargetConditionals.h>
+#endif
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  #ifdef __OBJC__
+    @class UIView;
+    @class UIWindow;
+  #else
+    struct UIView;
+    struct UIWindow;
+  #endif
 #else
-  struct NSView;
-  struct NSWindow;
+  #ifdef __OBJC__
+    @class NSView;
+    @class NSWindow;
+  #else
+    struct NSView;
+    struct NSWindow;
+  #endif
 #endif
 
 #include <Aspect_Window.hxx>
@@ -56,8 +70,13 @@ public:
                                 const Standard_Integer thePxWidth,
                                 const Standard_Integer thePxHeight);
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  //! Creates a wrapper over existing UIView handle
+  Standard_EXPORT Cocoa_Window (UIView* theViewUI);
+#else
   //! Creates a wrapper over existing NSView handle
   Standard_EXPORT Cocoa_Window (NSView* theViewNS);
+#endif
 
   //! Destroies the Window and all resourses attached to it
   Standard_EXPORT virtual  void Destroy();
@@ -95,11 +114,19 @@ public:
   Standard_EXPORT virtual void Size (Standard_Integer& theWidth,
                                      Standard_Integer& theHeight) const;
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  //! @return associated UIView
+  UIView* HView() const { return myHView; }
+
+  //! Setup new UIView.
+  Standard_EXPORT void SetHView (UIView* theView);
+#else
   //! @return associated NSView
-  Standard_EXPORT NSView* HView() const;
+  NSView* HView() const { return myHView; }
 
   //! Setup new NSView.
   Standard_EXPORT void SetHView (NSView* theView);
+#endif
 
   //! @return native Window handle
   virtual Aspect_Drawable NativeHandle() const
@@ -115,8 +142,12 @@ public:
 
 protected:
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  UIView*          myHView;
+#else
   NSWindow*        myHWindow;
   NSView*          myHView;
+#endif
   Standard_Integer myXLeft;
   Standard_Integer myYTop;
   Standard_Integer myXRight;

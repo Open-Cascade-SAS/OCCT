@@ -13,7 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#import <Cocoa/Cocoa.h>
+#import <TargetConditionals.h>
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  #import <UIKit/UIKit.h>
+#else
+  #import <Cocoa/Cocoa.h>
+#endif
 
 #include <Cocoa_Window.hxx>
 
@@ -26,6 +32,13 @@
 IMPLEMENT_STANDARD_HANDLE (Cocoa_Window, Aspect_Window)
 IMPLEMENT_STANDARD_RTTIEXT(Cocoa_Window, Aspect_Window)
 
+#if defined(__clang__) && (__clang_major__ >= 4) && __has_feature(objc_arc)
+  #define HAVE_OBJC_ARC
+#endif
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  //
+#else
 static Standard_Integer getScreenBottom()
 {
   Cocoa_LocalPool aLocalPool;
@@ -48,6 +61,7 @@ static Standard_Integer getScreenBottom()
   CGRect aRect = CGDisplayBounds(aDispId);
   return Standard_Integer(aRect.origin.y + aRect.size.height);
 }
+#endif
 
 // =======================================================================
 // function : Cocoa_Window
@@ -59,13 +73,18 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
                             const Standard_Integer thePxWidth,
                             const Standard_Integer thePxHeight)
 : Aspect_Window (),
+#if !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
   myHWindow (NULL),
+#endif
   myHView   (NULL),
   myXLeft   (thePxLeft),
   myYTop    (thePxTop),
   myXRight  (thePxLeft + thePxWidth),
   myYBottom (thePxTop + thePxHeight)
 {
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  //
+#else
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
     Aspect_WindowDefinitionError::Raise ("Coordinate(s) out of range");
@@ -99,21 +118,32 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
 
   // do not destroy NSWindow on close - we didn't handle it!
   [myHWindow setReleasedWhenClosed: NO];
+#endif
 }
 
 // =======================================================================
 // function : Cocoa_Window
 // purpose  :
 // =======================================================================
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+Cocoa_Window::Cocoa_Window (UIView* theViewNS)
+: Aspect_Window(),
+#else
 Cocoa_Window::Cocoa_Window (NSView* theViewNS)
-: Aspect_Window (),
+: Aspect_Window(),
   myHWindow (NULL),
-  myHView   ([theViewNS retain]),
+#endif
+  myHView   (NULL),
   myXLeft   (0),
   myYTop    (0),
   myXRight  (512),
   myYBottom (512)
 {
+#if defined(HAVE_OBJC_ARC)
+  myHView = theViewNS;
+#else
+  myHView = [theViewNS retain];
+#endif
   DoResize();
 }
 
@@ -123,45 +153,54 @@ Cocoa_Window::Cocoa_Window (NSView* theViewNS)
 // =======================================================================
 void Cocoa_Window::Destroy()
 {
+#if !defined(HAVE_OBJC_ARC)
   Cocoa_LocalPool aLocalPool;
+#endif
+#if !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
   if (myHWindow != NULL)
   {
+  #if !defined(HAVE_OBJC_ARC)
     //[myHWindow close];
     [myHWindow release];
+  #endif
     myHWindow = NULL;
   }
+#endif
   if (myHView != NULL)
   {
+  #if !defined(HAVE_OBJC_ARC)
     [myHView release];
+  #endif
     myHView = NULL;
   }
-}
-
-// =======================================================================
-// function : HView
-// purpose  :
-// =======================================================================
-NSView* Cocoa_Window::HView() const
-{
-  return myHView;
 }
 
 // =======================================================================
 // function : SetHView
 // purpose  :
 // =======================================================================
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+void Cocoa_Window::SetHView (UIView* theView)
+{
+#else
 void Cocoa_Window::SetHView (NSView* theView)
 {
   if (myHWindow != NULL)
   {
     [myHWindow setContentView: theView];
   }
+#endif
+
+#if defined(HAVE_OBJC_ARC)
+  myHView = theView;
+#else
   if (myHView != NULL)
   {
     [myHView release];
     myHView = NULL;
   }
   myHView = [theView retain];
+#endif
 }
 
 // =======================================================================
@@ -175,7 +214,12 @@ Standard_Boolean Cocoa_Window::IsMapped() const
     return Standard_True;
   }
 
-  return (myHView != NULL) &&  [[myHView window] isVisible];
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  return myHView != NULL;
+#else
+  return myHView != NULL
+   &&  [[myHView window] isVisible];
+#endif
 }
 
 // =======================================================================
@@ -191,7 +235,11 @@ void Cocoa_Window::Map() const
 
   if (myHView != NULL)
   {
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    //
+  #else
     [[myHView window] orderFront: NULL];
+  #endif
   }
 }
 
@@ -203,7 +251,11 @@ void Cocoa_Window::Unmap() const
 {
   if (myHView != NULL)
   {
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    //
+  #else
     [[myHView window] orderOut: NULL];
+  #endif
   }
 }
 
@@ -218,7 +270,11 @@ Aspect_TypeOfResize Cocoa_Window::DoResize() const
     return Aspect_TOR_UNKNOWN;
   }
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  CGRect aBounds = [myHView bounds];
+#else
   NSRect aBounds = [myHView bounds];
+#endif
   Standard_Integer aMask = 0;
   Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
 
@@ -267,7 +323,11 @@ Quantity_Ratio Cocoa_Window::Ratio() const
     return 1.0;
   }
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  CGRect aBounds = [myHView bounds];
+#else
   NSRect aBounds = [myHView bounds];
+#endif
   return Quantity_Ratio (aBounds.size.width / aBounds.size.height);
 }
 
@@ -278,12 +338,20 @@ Quantity_Ratio Cocoa_Window::Ratio() const
 void Cocoa_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
                              Standard_Integer& X2, Standard_Integer& Y2) const
 {
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  CGRect aBounds = [myHView bounds];
+  X1 = 0;
+  Y1 = 0;
+  X2 = (Standard_Integer )aBounds.size.width;
+  Y2 = (Standard_Integer )aBounds.size.height;
+#else
   NSWindow* aWindow = [myHView window];
   NSRect aWindowRect = [aWindow frame];
   X1 = (Standard_Integer) aWindowRect.origin.x;
   Y1 = getScreenBottom() - (Standard_Integer) aWindowRect.origin.y - (Standard_Integer) aWindowRect.size.height;
   X2 = X1 + (Standard_Integer) aWindowRect.size.width;
   Y2 = Y1 + (Standard_Integer) aWindowRect.size.height;
+#endif
 }
 
 // =======================================================================
@@ -298,7 +366,11 @@ void Cocoa_Window::Size (Standard_Integer& theWidth,
     return;
   }
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  CGRect aBounds = [myHView bounds];
+#else
   NSRect aBounds = [myHView bounds];
+#endif
   theWidth  = (Standard_Integer )aBounds.size.width;
   theHeight = (Standard_Integer )aBounds.size.height;
 }

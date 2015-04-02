@@ -26,6 +26,7 @@
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_GlCore44.hxx>
+#include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 
@@ -145,13 +146,19 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   // Notice that GL version / extension availability checks are required
   // because function pointers may be available but not functionality itself
   // (depends on renderer).
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  myGContext    = NULL;
+  myGlLibHandle = dlopen ("/System/Library/Frameworks/OpenGLES.framework/OpenGLES", RTLD_LAZY);
+#else
   myGContext    = NULL;
   myGlLibHandle = dlopen ("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
+#endif
 #else
   myDisplay =  NULL;
   myWindow   = 0;
   myGContext = 0;
 #endif
+
   memset (myFuncs.operator->(), 0, sizeof(OpenGl_GlFunctions));
   myShaderManager = new OpenGl_ShaderManager (this);
 }
@@ -175,6 +182,13 @@ OpenGl_Context::~OpenGl_Context()
   }
   myDefaultVao = 0;
 #endif
+
+  // release default FBO
+  if (!myDefaultFbo.IsNull())
+  {
+    myDefaultFbo->Release (this);
+    myDefaultFbo.Nullify();
+  }
 
   // release shared resources if any
   if (((const Handle(Standard_Transient)& )mySharedResources)->GetRefCount() <= 1)
@@ -681,8 +695,15 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Handle           theWindow,
                                        const Aspect_RenderingContext theGContext,
                                        const Standard_Boolean        theIsCoreProfile)
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-Standard_Boolean OpenGl_Context::Init (const void*                   theGContext,
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+Standard_Boolean OpenGl_Context::Init (EAGLContext*                  theGContext,
                                        const Standard_Boolean        theIsCoreProfile)
+#else
+Standard_Boolean OpenGl_Context::Init (NSOpenGLContext*              theGContext,
+                                       const Standard_Boolean        theIsCoreProfile)
+#endif
+
 #else
 Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
                                        const Aspect_Display          theDisplay,
@@ -700,7 +721,7 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
   myGContext = theGContext;
   myWindowDC = theWindowDC;
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  myGContext = (void* )theGContext;
+  myGContext = theGContext;
 #else
   myWindow   = theWindow;
   myGContext = theGContext;
@@ -2351,6 +2372,17 @@ void OpenGl_Context::BindDefaultVao()
 
   core32->glBindVertexArray (myDefaultVao);
 #endif
+}
+
+// =======================================================================
+// function : SetDefaultFrameBuffer
+// purpose  :
+// =======================================================================
+Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(OpenGl_FrameBuffer)& theFbo)
+{
+  Handle(OpenGl_FrameBuffer) aFbo = myDefaultFbo;
+  myDefaultFbo = theFbo;
+  return aFbo;
 }
 
 // =======================================================================

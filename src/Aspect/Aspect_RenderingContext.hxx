@@ -22,7 +22,25 @@
 #ifndef _Aspect_RenderingContext_HeaderFile
 #define _Aspect_RenderingContext_HeaderFile
 
- typedef void*	       Aspect_RenderingContext;	/* GLXContext under UNIX */
-						/* HGLRC under WNT */
+#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  #import <TargetConditionals.h>
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    #ifdef __OBJC__
+      @class EAGLContext;
+    #else
+      struct EAGLContext;
+    #endif
+    typedef EAGLContext* Aspect_RenderingContext;
+  #else
+    #ifdef __OBJC__
+      @class NSOpenGLContext;
+    #else
+      struct NSOpenGLContext;
+    #endif
+    typedef NSOpenGLContext* Aspect_RenderingContext;
+  #endif
+#else
+  typedef void* Aspect_RenderingContext; // GLXContext under UNIX
+#endif
 
 #endif /* _Aspect_RenderingContext_HeaderFile */

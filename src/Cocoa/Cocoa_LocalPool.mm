@@ -15,7 +15,17 @@
 
 #include <Cocoa_LocalPool.hxx>
 
-#import <Cocoa/Cocoa.h>
+#import <TargetConditionals.h>
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  #import <UIKit/UIKit.h>
+#else
+  #import <Cocoa/Cocoa.h>
+#endif
+
+#if defined(__clang__) && (__clang_major__ >= 4) && __has_feature(objc_arc)
+  // ARC
+#else
 
 // =======================================================================
 // function : Cocoa_LocalPool
@@ -33,9 +43,10 @@ Cocoa_LocalPool::Cocoa_LocalPool()
 // =======================================================================
 Cocoa_LocalPool::~Cocoa_LocalPool()
 {
-  NSAutoreleasePool* aPool = (NSAutoreleasePool* )myPoolObj;
-  //[aPool drain];
-  [aPool release];
+  //[myPoolObj drain];
+  [myPoolObj release];
 }
+
+#endif
 
 #endif // __APPLE__

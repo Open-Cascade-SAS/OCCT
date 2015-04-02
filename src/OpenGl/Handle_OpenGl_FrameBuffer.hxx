@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2015 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,36 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef __Cocoa_LocalPool_h_
-#define __Cocoa_LocalPool_h_
+#ifndef _Handle_OpenGl_FrameBuffer_Header
+#define _Handle_OpenGl_FrameBuffer_Header
 
-#if defined(__clang__) && (__clang_major__ >= 4) && __has_feature(objc_arc)
+#include <OpenGl_Resource.hxx>
 
-// @autoreleasepool should be used within ARC
+class OpenGl_FrameBuffer;
+DEFINE_STANDARD_HANDLE(OpenGl_FrameBuffer, OpenGl_Resource)
 
-#else
-
-#ifdef __OBJC__
-  @class NSAutoreleasePool;
-#else
-  struct NSAutoreleasePool;
-#endif
-
-//! Auxiliary class to create local pool.
-class Cocoa_LocalPool
-{
-
-public:
-
-  Cocoa_LocalPool();
-  ~Cocoa_LocalPool();
-
-private:
-
-  NSAutoreleasePool* myPoolObj;
-
-};
-
-#endif // ARC
-
-#endif // __Cocoa_LocalPool_h_
+#endif // _Handle_OpenGl_FrameBuffer_Header

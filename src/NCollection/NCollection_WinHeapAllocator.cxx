@@ -74,7 +74,7 @@ void* NCollection_WinHeapAllocator::Allocate (const Standard_Size theSize)
   if (aResult == NULL)
   {
     char aBuf[128];
-    Sprintf (aBuf, "Failed to allocate "PRIuPTR" bytes in local dynamic heap", theSize);
+    Sprintf (aBuf, "Failed to allocate " PRIuPTR " bytes in local dynamic heap", theSize);
     Standard_OutOfMemory::Raise (aBuf);
   }
   return aResult;

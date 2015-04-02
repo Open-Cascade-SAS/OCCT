@@ -699,6 +699,12 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
   Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
 
+  if (!myGlContext->DefaultFrameBuffer().IsNull()
+    && myGlContext->DefaultFrameBuffer()->IsValid())
+  {
+    myGlContext->DefaultFrameBuffer()->BindBuffer (myGlContext);
+  }
+
   if (myHasFboBlit
    && myTransientDrawToFront)
   {
@@ -986,6 +992,12 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     return;
   }
 
+  if (!myGlContext->DefaultFrameBuffer().IsNull()
+   &&  myGlContext->DefaultFrameBuffer()->IsValid())
+  {
+    myGlContext->DefaultFrameBuffer()->BindBuffer (myGlContext);
+  }
+
   if (redrawImmediate (theCView, theCUnderLayer, theCOverLayer, NULL, Standard_True)
   && !myGlContext->caps->buffersNoSwap)
   {
@@ -1021,6 +1033,11 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
     {
       theTargetFBO->BindBuffer (myGlContext);
     }
+    else if (!myGlContext->DefaultFrameBuffer().IsNull()
+          &&  myGlContext->DefaultFrameBuffer()->IsValid())
+    {
+      myGlContext->DefaultFrameBuffer()->BindBuffer (myGlContext);
+    }
     else
     {
       myGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
@@ -1040,6 +1057,11 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
       {
         theTargetFBO->BindDrawBuffer (myGlContext);
       }
+      else if (!myGlContext->DefaultFrameBuffer().IsNull()
+            &&  myGlContext->DefaultFrameBuffer()->IsValid())
+      {
+        myGlContext->DefaultFrameBuffer()->BindDrawBuffer (myGlContext);
+      }
       else
       {
         myGlContext->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
@@ -1052,6 +1074,11 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
       if (theTargetFBO != NULL)
       {
         theTargetFBO->BindBuffer (myGlContext);
+      }
+      else if (!myGlContext->DefaultFrameBuffer().IsNull()
+            &&  myGlContext->DefaultFrameBuffer()->IsValid())
+      {
+        myGlContext->DefaultFrameBuffer()->BindBuffer (myGlContext);
       }
       else
       {

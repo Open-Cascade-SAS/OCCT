@@ -26,6 +26,18 @@
 
 #include <MMgt_TShared.hxx>
 
+#if defined(__APPLE__)
+  #import <TargetConditionals.h>
+#endif
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  #ifdef __OBJC__
+    @class UIView;
+  #else
+    struct UIView;
+  #endif
+#endif
+
 //! This class represents low-level wrapper over window with GL context.
 //! The window itself should be provided to constructor.
 class OpenGl_Window : public MMgt_TShared
@@ -81,8 +93,15 @@ protected:
 
   Handle(OpenGl_Context) myGlContext;
   Standard_Boolean       myOwnGContext; //!< set to TRUE if GL context was not created by this class
-  Standard_Integer       myWidth;       //!< window width
-  Standard_Integer       myHeight;      //!< window height
+#if defined(__APPLE__)
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  UIView*                myUIView;
+#endif
+  Standard_Integer       myWidthPt;     //!< window width  in logical units
+  Standard_Integer       myHeightPt;    //!< window height in logical units
+#endif
+  Standard_Integer       myWidth;       //!< window width  in pixels
+  Standard_Integer       myHeight;      //!< window height in pixels
   TEL_COLOUR             myBgColor;     //!< background color
 
 public:

@@ -17,11 +17,25 @@
 
 #define GL_GLEXT_LEGACY // To prevent inclusion of system glext.h on Mac OS X 10.6.8
 
-#import <Cocoa/Cocoa.h>
+#import <TargetConditionals.h>
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  #import <UIKit/UIKit.h>
+#else
+  #import <Cocoa/Cocoa.h>
+
+#if !defined(MAC_OS_X_VERSION_10_7) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7)
+@interface NSView (LionAPI)
+- (NSSize )convertSizeToBacking: (NSSize )theSize;
+@end
+#endif
+
+#endif
 
 #include <InterfaceGraphic.hxx>
 
 #include <OpenGl_Window.hxx>
+#include <OpenGl_FrameBuffer.hxx>
 
 #include <OpenGl_Context.hxx>
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
@@ -29,12 +43,16 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <OpenGL/CGLRenderers.h>
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  //
+#else
+  #include <OpenGL/CGLRenderers.h>
+#endif
 
 namespace
 {
   static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
-};
+}
 
 // =======================================================================
 // function : OpenGl_Window
@@ -47,107 +65,157 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                               const Handle(OpenGl_Context)& theShareCtx)
 : myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-  myWidth  ((Standard_Integer )theCWindow.dx),
-  myHeight ((Standard_Integer )theCWindow.dy),
+#if defined(__APPLE__)
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  myUIView (NULL),
+#endif
+  myWidthPt  (theCWindow.dx),
+  myHeightPt (theCWindow.dy),
+#endif
+  myWidth    (theCWindow.dx),
+  myHeight   (theCWindow.dy),
   myBgColor (THE_DEFAULT_BG_COLOR)
 {
   myBgColor.rgb[0] = theCWindow.Background.r;
   myBgColor.rgb[1] = theCWindow.Background.g;
   myBgColor.rgb[2] = theCWindow.Background.b;
 
-  Cocoa_LocalPool aLocalPool;
-  //NSOpenGLContext* aGContext = (NSOpenGLContext* )theGContext;
-
-  // all GL context within one OpenGl_GraphicDriver should be shared!
-  NSOpenGLContext* aGLCtxShare = theShareCtx.IsNull() ? NULL : (NSOpenGLContext* )theShareCtx->myGContext;
-  NSOpenGLContext* aGLContext  = NULL;
-
-  NSOpenGLPixelFormatAttribute anAttribs[32] = {};
-  Standard_Integer aLastAttrib = 0;
-  //anAttribs[aLastAttrib++] = NSOpenGLPFAColorSize;    anAttribs[aLastAttrib++] = 32,
-  anAttribs[aLastAttrib++] = NSOpenGLPFADepthSize;    anAttribs[aLastAttrib++] = 24;
-  anAttribs[aLastAttrib++] = NSOpenGLPFAStencilSize;  anAttribs[aLastAttrib++] = 8;
-  anAttribs[aLastAttrib++] = NSOpenGLPFADoubleBuffer;
-  if (theCaps->contextNoAccel)
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  EAGLContext* aGLContext = theGContext;
+  if (aGLContext == NULL)
   {
-    anAttribs[aLastAttrib++] = NSOpenGLPFARendererID;
-    anAttribs[aLastAttrib++] = (NSOpenGLPixelFormatAttribute )kCGLRendererGenericFloatID;
+    void* aViewPtr = (void* )theCWindow.XWindow;
+
+    myUIView = (__bridge UIView* )aViewPtr;
+    CAEAGLLayer* anEaglLayer = (CAEAGLLayer* )myUIView.layer;
+    anEaglLayer.opaque = TRUE;
+    anEaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        [NSNumber numberWithBool: FALSE], kEAGLDrawablePropertyRetainedBacking,
+                                        kEAGLColorFormatRGBA8,            kEAGLDrawablePropertyColorFormat,
+                                        NULL];
+
+    aGLContext = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2];
+    if (aGLContext == NULL
+    || ![EAGLContext setCurrentContext: aGLContext])
+    {
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: EAGLContext creation failed");
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
+    }
+
+    myGlContext->Init (aGLContext, Standard_False);
   }
   else
   {
-    anAttribs[aLastAttrib++] = NSOpenGLPFAAccelerated;
-  }
-  anAttribs[aLastAttrib] = 0;
-  const Standard_Integer aLastMainAttrib = aLastAttrib;
-  Standard_Integer aTryCore   = 0;
-  Standard_Integer aTryStereo = 0;
-  for (aTryCore = 1; aTryCore >= 0; --aTryCore)
-  {
-    aLastAttrib = aLastMainAttrib;
-    if (aTryCore == 1)
+    if (![EAGLContext setCurrentContext: aGLContext])
     {
-      if (theCaps->contextCompatible)
-      {
-        continue;
-      }
-
-      // supported since OS X 10.7+
-      anAttribs[aLastAttrib++] = 99;     // NSOpenGLPFAOpenGLProfile
-      anAttribs[aLastAttrib++] = 0x3200; // NSOpenGLProfileVersion3_2Core
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: EAGLContext can not be assigned");
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
     }
 
-    for (aTryStereo = 1; aTryStereo >= 0; --aTryStereo)
+    myGlContext->Init (aGLContext, Standard_False);
+  }
+#else
+
+  Cocoa_LocalPool aLocalPool;
+
+  // all GL context within one OpenGl_GraphicDriver should be shared!
+  NSOpenGLContext* aGLCtxShare = theShareCtx.IsNull() ? NULL : theShareCtx->myGContext;
+  NSOpenGLContext* aGLContext  = theGContext;
+  bool isCore = false;
+  if (aGLContext == NULL)
+  {
+    NSOpenGLPixelFormatAttribute anAttribs[32] = {};
+    Standard_Integer aLastAttrib = 0;
+    //anAttribs[aLastAttrib++] = NSOpenGLPFAColorSize;    anAttribs[aLastAttrib++] = 32,
+    anAttribs[aLastAttrib++] = NSOpenGLPFADepthSize;    anAttribs[aLastAttrib++] = 24;
+    anAttribs[aLastAttrib++] = NSOpenGLPFAStencilSize;  anAttribs[aLastAttrib++] = 8;
+    anAttribs[aLastAttrib++] = NSOpenGLPFADoubleBuffer;
+    if (theCaps->contextNoAccel)
     {
-      if (aTryStereo == 1)
+      anAttribs[aLastAttrib++] = NSOpenGLPFARendererID;
+      anAttribs[aLastAttrib++] = (NSOpenGLPixelFormatAttribute )kCGLRendererGenericFloatID;
+    }
+    else
+    {
+      anAttribs[aLastAttrib++] = NSOpenGLPFAAccelerated;
+    }
+    anAttribs[aLastAttrib] = 0;
+    const Standard_Integer aLastMainAttrib = aLastAttrib;
+    Standard_Integer aTryCore   = 0;
+    Standard_Integer aTryStereo = 0;
+    for (aTryCore = 1; aTryCore >= 0; --aTryCore)
+    {
+      aLastAttrib = aLastMainAttrib;
+      if (aTryCore == 1)
       {
-        if (!theCaps->contextStereo)
+        if (theCaps->contextCompatible)
         {
           continue;
         }
-        anAttribs[aLastAttrib++] = NSOpenGLPFAStereo;
+
+        // supported since OS X 10.7+
+        anAttribs[aLastAttrib++] = 99;     // NSOpenGLPFAOpenGLProfile
+        anAttribs[aLastAttrib++] = 0x3200; // NSOpenGLProfileVersion3_2Core
       }
 
-      anAttribs[aLastAttrib] = 0;
+      for (aTryStereo = 1; aTryStereo >= 0; --aTryStereo)
+      {
+        if (aTryStereo == 1)
+        {
+          if (!theCaps->contextStereo)
+          {
+            continue;
+          }
+          anAttribs[aLastAttrib++] = NSOpenGLPFAStereo;
+        }
 
-      NSOpenGLPixelFormat* aGLFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
-      aGLContext = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
-                                              shareContext: aGLCtxShare];
+        anAttribs[aLastAttrib] = 0;
+
+        NSOpenGLPixelFormat* aGLFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
+        aGLContext = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
+                                                shareContext: aGLCtxShare];
+        if (aGLContext != NULL)
+        {
+          break;
+        }
+      }
+
       if (aGLContext != NULL)
       {
         break;
       }
     }
 
-    if (aGLContext != NULL)
+    if (aGLContext == NULL)
     {
-      break;
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: NSOpenGLContext creation failed");
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
     }
+
+    if (aTryStereo == 0
+     && theCaps->contextStereo)
+    {
+      TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: QuadBuffer is unavailable!");
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_OTHER_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+    }
+    if (aTryCore == 0
+    && !theCaps->contextCompatible)
+    {
+      TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: core profile creation failed.");
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+    }
+
+    NSView* aView = (NSView* )theCWindow.XWindow;
+    [aGLContext setView: aView];
+    isCore = (aTryCore == 1);
   }
 
-  if (aGLContext == NULL)
-  {
-    TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: NSOpenGLContext creation failed");
-    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
-    return;
-  }
+  myGlContext->Init (aGLContext, isCore);
+#endif
 
-  if (aTryStereo == 0
-   && theCaps->contextStereo)
-  {
-    TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: QuadBuffer is unavailable!");
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_OTHER_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
-  }
-  if (aTryCore == 0
-  && !theCaps->contextCompatible)
-  {
-    TCollection_ExtendedString aMsg("OpenGl_Window::CreateWindow: core profile creation failed.");
-    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
-  }
-
-  NSView* aView = (NSView* )theCWindow.XWindow;
-  [aGLContext setView: aView];
-
-  myGlContext->Init (aGLContext, aTryCore == 1);
   myGlContext->Share (theShareCtx);
   Init();
 }
@@ -158,15 +226,25 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 // =======================================================================
 OpenGl_Window::~OpenGl_Window()
 {
-  NSOpenGLContext* aGLCtx = (NSOpenGLContext* )myGlContext->myGContext;
+  if (!myOwnGContext
+   ||  myGlContext.IsNull())
+  {
+    myGlContext.Nullify();
+    return;
+  }
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  myGlContext.Nullify();
+  [EAGLContext setCurrentContext: NULL];
+  myUIView = NULL;
+#else
+  NSOpenGLContext* aGLCtx = myGlContext->myGContext;
   myGlContext.Nullify();
 
   [NSOpenGLContext clearCurrentContext];
-  if (myOwnGContext)
-  {
-    [aGLCtx clearDrawable];
-    [aGLCtx release];
-  }
+  [aGLCtx clearDrawable];
+  [aGLCtx release];
+#endif
 }
 
 // =======================================================================
@@ -176,14 +254,14 @@ OpenGl_Window::~OpenGl_Window()
 void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
 {
   // If the size is not changed - do nothing
-  if (myWidth  == (Standard_Integer )theCWindow.dx
-   && myHeight == (Standard_Integer )theCWindow.dy)
+  if (myWidthPt  == theCWindow.dx
+   && myHeightPt == theCWindow.dy)
   {
     return;
   }
 
-  myWidth  = (Standard_Integer )theCWindow.dx;
-  myHeight = (Standard_Integer )theCWindow.dy;
+  myWidthPt  = theCWindow.dx;
+  myHeightPt = theCWindow.dy;
 
   Init();
 }
@@ -199,20 +277,84 @@ void OpenGl_Window::Init()
     return;
   }
 
-  NSOpenGLContext* aGLCtx = (NSOpenGLContext* )myGlContext->myGContext;
-  NSRect aBounds = [[aGLCtx view] bounds];
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  Handle(OpenGl_FrameBuffer) aDefFbo = myGlContext->SetDefaultFrameBuffer (NULL);
+  if (!aDefFbo.IsNull())
+  {
+    aDefFbo->Release (myGlContext.operator->());
+  }
+  else
+  {
+    aDefFbo = new OpenGl_FrameBuffer();
+  }
+
+  if (myOwnGContext)
+  {
+    EAGLContext* aGLCtx      = myGlContext->myGContext;
+    CAEAGLLayer* anEaglLayer = (CAEAGLLayer* )myUIView.layer;
+    GLuint aWinRBColor = 0;
+    ::glGenRenderbuffers (1, &aWinRBColor);
+    ::glBindRenderbuffer (GL_RENDERBUFFER, aWinRBColor);
+    [aGLCtx renderbufferStorage: GL_RENDERBUFFER fromDrawable: anEaglLayer];
+    ::glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH,  &myWidth);
+    ::glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myHeight);
+    ::glBindRenderbuffer (GL_RENDERBUFFER, 0);
+
+    if (!aDefFbo->InitWithRB (myGlContext, myWidth, myHeight, aWinRBColor))
+    {
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO creation failed");
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
+    }
+  }
+  else
+  {
+    if (!aDefFbo->InitWrapper (myGlContext))
+    {
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO wrapper creation failed");
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
+    }
+
+    myWidth  = aDefFbo->GetVPSizeX();
+    myHeight = aDefFbo->GetVPSizeY();
+  }
+  myGlContext->SetDefaultFrameBuffer (aDefFbo);
+  aDefFbo->BindBuffer (myGlContext);
+  aDefFbo.Nullify();
+#else
+  NSOpenGLContext* aGLCtx  = myGlContext->myGContext;
+  NSView*          aView   = [aGLCtx view];
+  NSRect           aBounds = [aView bounds];
 
   // we should call this method each time when window is resized
   [aGLCtx update];
 
-  myWidth  = Standard_Integer(aBounds.size.width);
-  myHeight = Standard_Integer(aBounds.size.height);
+  if ([aView respondsToSelector: @selector(convertSizeToBacking:)])
+  {
+    NSSize aRes = [aView convertSizeToBacking: aBounds.size];
+    myWidth  = Standard_Integer(aRes.width);
+    myHeight = Standard_Integer(aRes.height);
+  }
+  else
+  {
+    myWidth  = Standard_Integer(aBounds.size.width);
+    myHeight = Standard_Integer(aBounds.size.height);
+  }
+  myWidthPt  = Standard_Integer(aBounds.size.width);
+  myHeightPt = Standard_Integer(aBounds.size.height);
+#endif
 
-  glMatrixMode (GL_MODELVIEW);
-  glViewport (0, 0, myWidth, myHeight);
-
-  glDisable (GL_SCISSOR_TEST);
-  glDrawBuffer (GL_BACK);
+  ::glDisable (GL_DITHER);
+  ::glDisable (GL_SCISSOR_TEST);
+  ::glViewport (0, 0, myWidth, myHeight);
+#if !defined(GL_ES_VERSION_2_0)
+  ::glDrawBuffer (GL_BACK);
+  if (myGlContext->core11 != NULL)
+  {
+    ::glMatrixMode (GL_MODELVIEW);
+  }
+#endif
 }
 
 #endif // __APPLE__

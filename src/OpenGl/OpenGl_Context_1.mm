@@ -17,10 +17,17 @@
 
 #define GL_GLEXT_LEGACY // To prevent inclusion of system glext.h on Mac OS X 10.6.8
 
-#import <Cocoa/Cocoa.h>
+#import <TargetConditionals.h>
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  #import <UIKit/UIKit.h>
+#else
+  #import <Cocoa/Cocoa.h>
+#endif
 
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_FrameBuffer.hxx>
 
 #include <Standard_ProgramError.hxx>
 
@@ -30,8 +37,13 @@
 // =======================================================================
 Standard_Boolean OpenGl_Context::IsCurrent() const
 {
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   return myGContext != NULL
-      && [NSOpenGLContext currentContext] == (NSOpenGLContext* )myGContext;
+      && [EAGLContext     currentContext] == myGContext;
+#else
+  return myGContext != NULL
+      && [NSOpenGLContext currentContext] == myGContext;
+#endif
 }
 
 // =======================================================================
@@ -46,8 +58,12 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
     return Standard_False;
   }
 
-  [(NSOpenGLContext* )myGContext makeCurrentContext];
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  return [EAGLContext setCurrentContext: myGContext] == YES;
+#else
+  [myGContext makeCurrentContext];
   return Standard_True;
+#endif
 }
 
 // =======================================================================
@@ -56,11 +72,26 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
 // =======================================================================
 void OpenGl_Context::SwapBuffers()
 {
-  if (myGContext != NULL)
+  if (myGContext == NULL)
   {
-    glFinish();
-    [(NSOpenGLContext* )myGContext flushBuffer];
+    return;
   }
+
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  if (myDefaultFbo.IsNull()
+  || !myDefaultFbo->IsValid()
+  ||  myDefaultFbo->ColorRenderBuffer() == 0)
+  {
+    return;
+  }
+
+  ::glBindRenderbuffer (GL_RENDERBUFFER, myDefaultFbo->ColorRenderBuffer());
+  [myGContext presentRenderbuffer: GL_RENDERBUFFER];
+  //::glBindRenderbuffer (GL_RENDERBUFFER, 0);
+#else
+  glFinish();
+  [myGContext flushBuffer];
+#endif
 }
 
 // =======================================================================
@@ -74,7 +105,11 @@ Standard_Boolean OpenGl_Context::Init (const Standard_Boolean theIsCoreProfile)
     return Standard_True;
   }
 
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  myGContext = [EAGLContext     currentContext];
+#else
   myGContext = [NSOpenGLContext currentContext];
+#endif
   if (myGContext == NULL)
   {
     return Standard_False;

@@ -21,6 +21,7 @@
 #include <Aspect_Display.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Handle_OpenGl_Context.hxx>
+#include <Handle_OpenGl_FrameBuffer.hxx>
 #include <Handle_OpenGl_Sampler.hxx>
 #include <Handle_OpenGl_ShaderManager.hxx>
 #include <Handle_OpenGl_ShaderProgram.hxx>
@@ -34,12 +35,28 @@
 #include <OpenGl_Resource.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Handle_OpenGl_Context.hxx>
 #include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Utils.hxx>
 
 //! Forward declarations
+#if defined(__APPLE__)
+  #import <TargetConditionals.h>
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    #ifdef __OBJC__
+      @class EAGLContext;
+    #else
+      struct EAGLContext;
+    #endif
+  #else
+    #ifdef __OBJC__
+      @class NSOpenGLContext;
+    #else
+      struct NSOpenGLContext;
+    #endif
+  #endif
+#endif
+
 struct OpenGl_GlFunctions;
 struct OpenGl_ArbTBO;
 struct OpenGl_ArbIns;
@@ -222,10 +239,19 @@ public:
   }
 
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  //! Initialize class from specified OpenGL context (NSOpenGLContext). Method should be called only once.
-  Standard_EXPORT Standard_Boolean Init (const void*                   theGContext,
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+
+  //! Initialize class from specified OpenGL ES context (EAGLContext). Method should be called only once.
+  Standard_EXPORT Standard_Boolean Init (EAGLContext*                  theGContext,
                                          const Standard_Boolean        theIsCoreProfile = Standard_False);
+  #else
+
+  //! Initialize class from specified OpenGL context (NSOpenGLContext). Method should be called only once.
+  Standard_EXPORT Standard_Boolean Init (NSOpenGLContext*              theGContext,
+                                         const Standard_Boolean        theIsCoreProfile = Standard_False);
+  #endif
 #else
+
   //! Initialize class from specified window and rendering context. Method should be called only once.
   //! @return false if OpenGL context can not be bound to specified window
   Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theWindow,
@@ -501,6 +527,16 @@ public: //! @name methods to alter or retrieve current state
   //! Bind default Vertex Array Object
   Standard_EXPORT void BindDefaultVao();
 
+  //! Default Frame Buffer Object.
+  const Handle(OpenGl_FrameBuffer)& DefaultFrameBuffer() const
+  {
+    return myDefaultFbo;
+  }
+
+  //! Setup new Default Frame Buffer Object and return previously set.
+  //! This call doesn't change Active FBO!
+  Standard_EXPORT Handle(OpenGl_FrameBuffer) SetDefaultFrameBuffer (const Handle(OpenGl_FrameBuffer)& theFbo);
+
   //! Return debug context initialization state.
   Standard_Boolean IsDebugContext() const
   {
@@ -576,7 +612,11 @@ private: // system-dependent fields
   Aspect_Handle           myWindowDC; //!< Device Descriptor handle : HDC
   Aspect_RenderingContext myGContext; //!< Rendering Context handle : HGLRC
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  void*                   myGContext; //!< Rendering Context handle : NSOpenGLContext
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  EAGLContext*            myGContext;    //!< Rendering Context handle
+  #else
+  NSOpenGLContext*        myGContext; //!< Rendering Context handle
+  #endif
 #else
   Aspect_Drawable         myWindow;   //!< window handle (owner of GL context) : GLXDrawable
   Aspect_Display          myDisplay;  //!< connection to the X-server : Display*
@@ -618,6 +658,7 @@ private: //! @name fields tracking current state
 
   Handle(OpenGl_ShaderProgram) myActiveProgram; //!< currently active GLSL program
   Handle(OpenGl_Sampler)       myTexSampler;    //!< currently active sampler object
+  Handle(OpenGl_FrameBuffer)   myDefaultFbo;    //!< default Frame Buffer Object
   Standard_Integer             myRenderMode;    //!< value for active rendering mode
   Standard_Integer             myDrawBuffer;    //!< current draw buffer
   unsigned int                 myDefaultVao;    //!< default Vertex Array Object

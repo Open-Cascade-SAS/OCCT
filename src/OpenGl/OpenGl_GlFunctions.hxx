@@ -38,13 +38,24 @@
 
 // include main OpenGL header provided with system
 #if defined(__APPLE__)
-  #include <OpenGL/gl.h>
-  #include <OpenGL/glu.h>
+  #import <TargetConditionals.h>
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    #include <OpenGLES/ES2/gl.h>
+  #else
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glu.h>
+  #endif
   #define __X_GL_H // prevent chaotic gl.h inclusions to avoid compile errors
 #elif defined(HAVE_GLES2) || defined(__ANDROID__)
   #include <GLES2/gl2.h>
   //#include <GLES3/gl3.h>
+#else
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
 
+#if defined(GL_ES_VERSION_2_0)
+  // define items to unify code paths with desktop OpenGL
   typedef double GLdouble;
   typedef double GLclampd;
   typedef uint64_t GLuint64;
@@ -128,9 +139,6 @@
 
   // GL_EXT_texture_buffer for OpenGL ES 3.1+
   #define GL_TEXTURE_BUFFER_ARB             0x8C2A
-#else
-  #include <GL/gl.h>
-  #include <GL/glu.h>
 #endif
 
 #if defined(__ANDROID__)

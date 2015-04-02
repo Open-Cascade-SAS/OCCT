@@ -62,6 +62,7 @@ OpenGl_Window.cxx
 OpenGl_Window_1.mm
 OpenGl_AVIWriter.hxx
 OpenGl_AVIWriter.cxx
+Handle_OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_Texture.cxx

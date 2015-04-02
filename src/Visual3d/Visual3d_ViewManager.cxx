@@ -445,7 +445,11 @@ Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& 
   Aspect_Handle TheSpecifiedWindowId = THEWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   const Handle(Cocoa_Window) THEWindow = Handle(Cocoa_Window)::DownCast (AWindow);
-  NSView* TheSpecifiedWindowId = THEWindow->HView();
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    UIView* TheSpecifiedWindowId = THEWindow->HView();
+  #else
+    NSView* TheSpecifiedWindowId = THEWindow->HView();
+  #endif
 #elif defined(__ANDROID__)
   int TheSpecifiedWindowId = -1;
 #else
@@ -464,7 +468,11 @@ Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& 
       Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
       const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
-      NSView* TheWindowIdOfView = theWindow->HView();
+      #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+        UIView* TheWindowIdOfView = theWindow->HView();
+      #else
+        NSView* TheWindowIdOfView = theWindow->HView();
+      #endif
 #elif defined(__ANDROID__)
       int TheWindowIdOfView = 0;
 #else
