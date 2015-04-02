@@ -1051,11 +1051,11 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     arbFBOBlit = (OpenGl_ArbFBOBlit* )(&(*myFuncs));
   }
 
-  hasHighp = CheckExtension ("OES_fragment_precision_high");
+  hasHighp = CheckExtension ("GL_OES_fragment_precision_high");
   GLint aRange[2] = {0, 0};
-  GLint aPrec [2] = {0, 0};
-  ::glGetShaderPrecisionFormat (GL_FRAGMENT_SHADER, GL_HIGH_FLOAT, aRange, aPrec);
-  if (aPrec[1] != 0)
+  GLint aPrec     = 0;
+  ::glGetShaderPrecisionFormat (GL_FRAGMENT_SHADER, GL_HIGH_FLOAT, aRange, &aPrec);
+  if (aPrec != 0)
   {
     hasHighp = Standard_True;
   }
