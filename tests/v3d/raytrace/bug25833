@@ -1,0 +1,47 @@
+puts "========"
+puts "OCC25833"
+puts "========"
+puts ""
+##########################################
+## Visualization, Ray Tracing - fix problems with the backside of triangles
+##########################################
+
+box b1 100 100 100
+explode b1 Fa
+box b2 10 10 -20 10 10 10
+
+vsetdispmode 1
+vdisplay b1_5 b1_6 b2
+vsetmaterial b1_5 steel
+vsetmaterial b1_6 steel
+vfit
+
+# Problem 1: b1_5 (grey) becomes semi-transparent after the next line,
+# compare it with b1_6 visible from the frontside
+vrenderparams -rayTrace
+vdump ${imagedir}/${test_image}_1.png
+checkcolor 100 300 0.37647059559822083 0.3803921639919281 0.40392157435417175
+if { ${stat} != 1 } {
+   puts "Error : bad color (case 1)"
+}
+
+# Problem 2: The small box shows through b1_5
+vrenderparams -reflections
+vdump ${imagedir}/${test_image}_2.png
+checkcolor 190 250 0.37647059559822083 0.3803921639919281 0.40392157435417175
+if { ${stat} != 1 } {
+   puts "Error : bad color (case 2)"
+}
+
+ttranslate b2 30 30 30
+# Problem 3: The small box is not reflected from the backface of b1_5
+vdisplay b2
+vdump ${imagedir}/${test_image}_3.png
+checkcolor 190 260 0.79607844352722168 0.60784316062927246 0.21960784494876862
+if { ${stat} != 1 } {
+   puts "Error : bad color (case 3)"
+}
+checkcolor 190 310 0.61960786581039429 0.56078433990478516 0.43529412150382996
+if { ${stat} != 1 } {
+   puts "Error : bad color (case 4)"
+}
