@@ -449,16 +449,19 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
 void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeColour,
                                        const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
   if (myVboAttribs.IsNull())
   {
     return;
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  glDisable (GL_LIGHTING);
+  if (aGlContext->core11 != NULL)
+  {
+    glDisable (GL_LIGHTING);
+  }
 #endif
 
-  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
   const OpenGl_AspectLine* anAspectLineOld = NULL;
 
   anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace (Standard_True)->AspectEdge());
@@ -786,8 +789,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     {
       drawEdges (anEdgeColor, theWorkspace);
 
-    #if !defined(GL_ES_VERSION_2_0)
       // restore OpenGL polygon mode if needed
+    #if !defined(GL_ES_VERSION_2_0)
       if (anAspectFace->InteriorStyle() >= Aspect_IS_HATCH)
       {
         glPolygonMode (GL_FRONT_AND_BACK,

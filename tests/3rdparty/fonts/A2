@@ -87,5 +87,4 @@ vdrawtext OpenCascade -200 -200 100 255 000 255 0 0 010 0 15 1 Times-Roman
 vdrawtext OpenCascade -200 -200 150 000 255 255 0 0 010 0 15 1 Arbat 
 vdrawtext OpenCascade -200 -200 200 255 255 000 0 0 010 0 15 3 Elephant
 vdrawtext OpenCascade -200 -200 250 000 255 005 0 0 010 0 15 4 RockWell
-vdrawtext OpenCascade -200 -200 300 255 000 005 0 0 010 0 15 1 Webdings
-vdrawtext OpenCascade -200 -200 350 255 000 205 0 0 010 0 15 1 Arial
+vdrawtext OpenCascade -200 -200 300 255 000 005 0 0 010 0 15 1 Arial

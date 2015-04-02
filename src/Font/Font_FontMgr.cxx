@@ -35,7 +35,7 @@ struct Font_FontMgr_FontAliasMapNode
 static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
 {
 
-#ifdef WNT
+#ifdef _WIN32
 
   { "Courier"                  , "Courier New"    , Font_FA_Regular },
   { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
@@ -48,6 +48,15 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
   { "Rock"                     , "Arial"          , Font_FA_Regular  },
   { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
 
+#elif defined(__ANDROID__)
+
+  { "Courier"                  , "Droid Sans Mono", Font_FA_Regular },
+  { "Times-Roman"              , "Droid Serif"    , Font_FA_Regular  },
+  { "Times-Bold"               , "Droid Serif"    , Font_FA_Bold },
+  { "Times-Italic"             , "Droid Serif"    , Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Droid Serif"    , Font_FA_BoldItalic  },
+  { "Arial"                    , "Roboto"         , Font_FA_Regular  },
+
 #else   //X11
 
   { "Courier"                  , "Courier"      , Font_FA_Regular },
@@ -55,7 +64,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
   { "Times-Bold"               , "Times"        , Font_FA_Bold },
   { "Times-Italic"             , "Times"        , Font_FA_Italic  },
   { "Times-BoldItalic"         , "Times"        , Font_FA_BoldItalic  },
-  { "Arial"                    , "Helvetica"    , Font_FA_Regular  }, 
+  { "Arial"                    , "Helvetica"    , Font_FA_Regular  },
   { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , Font_FA_Regular  },
   { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , Font_FA_Regular  },
   { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , Font_FA_Regular  },
@@ -67,7 +76,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
 
 #define NUM_FONT_ENTRIES (int)(sizeof(Font_FontMgr_MapOfFontsAliases)/sizeof(Font_FontMgr_FontAliasMapNode))
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
 
   #include <windows.h>
   #include <stdlib.h>
@@ -93,6 +102,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
 #else
 
   #include <OSD_DirectoryIterator.hxx>
+  #include <OSD_FileIterator.hxx>
   #include <OSD_Path.hxx>
   #include <OSD_File.hxx>
   #include <OSD_OpenMode.hxx>
@@ -127,7 +137,8 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
                                                    };
   #else
     // default fonts paths in most Unix systems (Linux and others)
-    static Standard_CString myDefaultFontsDirs[] = {"/usr/share/fonts",
+    static Standard_CString myDefaultFontsDirs[] = {"/system/fonts",         // Android
+                                                    "/usr/share/fonts",
                                                     "/usr/local/share/fonts",
                                                     NULL
                                                    };
@@ -442,6 +453,24 @@ void Font_FontMgr::InitFontDataBase()
   for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
        anIter.More(); anIter.Next())
   {
+  #ifdef __ANDROID__
+    OSD_Path aFolderPath (anIter.Value());
+    for (OSD_FileIterator aFileIter (aFolderPath, "*"); aFileIter.More(); aFileIter.Next())
+    {
+      OSD_Path aFontFilePath;
+      aFileIter.Values().Path (aFontFilePath);
+
+      TCollection_AsciiString aFontFileName;
+      aFontFilePath.SystemName (aFontFileName);
+      aFontFileName = anIter.Value() + "/" + aFontFileName;
+
+      Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontFileName.ToCString());
+      if (!aNewFont.IsNull())
+      {
+        myListOfFonts.Append (aNewFont);
+      }
+    }
+  #else
     OSD_File aReadFile (anIter.Value() + "/fonts.dir");
     if (!aReadFile.Exists())
     {
@@ -517,10 +546,10 @@ void Font_FontMgr::InitFontDataBase()
         {
           myListOfFonts.Append (aNewFontFromXLFD);
         }
-
       }
     }
     aReadFile.Close();
+  #endif
   }
 #endif
 }
@@ -557,7 +586,7 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont (const Handle(TCollection_HAsciiSt
 {
   if ( (theFontSize < 2 && theFontSize != -1) || theFontName.IsNull())
   {
-    return NULL; 
+    return NULL;
   }
 
   for (Font_NListOfSystemFont::Iterator aFontsIterator (myListOfFonts);
