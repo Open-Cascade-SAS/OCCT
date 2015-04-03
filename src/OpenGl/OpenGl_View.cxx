@@ -62,8 +62,8 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myZClip(myDefaultZClip),
   myCamera(AContext.Camera),
   myFog(myDefaultFog),
-  myTrihedron(NULL),
-  myGraduatedTrihedron(NULL),
+  myToShowTrihedron (false),
+  myToShowGradTrihedron (false),
   myVisualization(AContext.Visualization),
   myShadingModel ((Visual3d_TypeOfModel )AContext.Model),
   myAntiAliasing(Standard_False),
@@ -86,8 +86,6 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
 OpenGl_View::~OpenGl_View()
 {
   ReleaseGlResources (NULL); // ensure ReleaseGlResources() was called within valid context
-  OpenGl_Element::Destroy (NULL, myTrihedron);
-  OpenGl_Element::Destroy (NULL, myGraduatedTrihedron);
   OpenGl_Element::Destroy (NULL, myBgGradientArray);
   OpenGl_Element::Destroy (NULL, myBgTextureArray);
   OpenGl_Element::Destroy (NULL, myTextureParams);
@@ -95,14 +93,8 @@ OpenGl_View::~OpenGl_View()
 
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
-  if (myTrihedron != NULL)
-  {
-    myTrihedron->Release (theCtx.operator->());
-  }
-  if (myGraduatedTrihedron != NULL)
-  {
-    myGraduatedTrihedron->Release (theCtx.operator->());
-  }
+  myTrihedron         .Release (theCtx.operator->());
+  myGraduatedTrihedron.Release (theCtx.operator->());
 
   if (!myTextureEnv.IsNull())
   {
@@ -222,37 +214,41 @@ void OpenGl_View::SetFog (const Graphic3d_CView& theCView,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::TriedronDisplay (const Handle(OpenGl_Context)&       theCtx,
-                                   const Aspect_TypeOfTriedronPosition thePosition,
+void OpenGl_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
                                    const Quantity_NameOfColor          theColor,
                                    const Standard_Real                 theScale,
                                    const Standard_Boolean              theAsWireframe)
 {
-  OpenGl_Element::Destroy (theCtx.operator->(), myTrihedron);
-  myTrihedron = new OpenGl_Trihedron (thePosition, theColor, theScale, theAsWireframe);
+  myToShowTrihedron = true;
+  myTrihedron.SetWireframe   (theAsWireframe);
+  myTrihedron.SetPosition    (thePosition);
+  myTrihedron.SetScale       (theScale);
+  myTrihedron.SetLabelsColor (theColor);
 }
 
 /*----------------------------------------------------------------------*/
 
 void OpenGl_View::TriedronErase (const Handle(OpenGl_Context)& theCtx)
 {
-  OpenGl_Element::Destroy (theCtx.operator->(), myTrihedron);
+  myToShowTrihedron = false;
+  myTrihedron.Release (theCtx.operator->());
 }
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&        theCtx,
+void OpenGl_View::GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&       theCtx,
                                              const Graphic3d_GraduatedTrihedron& theData)
 {
-  OpenGl_Element::Destroy (theCtx.operator->(), myGraduatedTrihedron);
-  myGraduatedTrihedron = new OpenGl_GraduatedTrihedron (theData);
+  myToShowGradTrihedron = true;
+  myGraduatedTrihedron.SetValues (theCtx, theData);
 }
 
 /*----------------------------------------------------------------------*/
 
 void OpenGl_View::GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx)
 {
-  OpenGl_Element::Destroy (theCtx.operator->(), myGraduatedTrihedron);
+  myToShowGradTrihedron = false;
+  myGraduatedTrihedron.Release (theCtx.operator->());
 }
 
 /*----------------------------------------------------------------------*/

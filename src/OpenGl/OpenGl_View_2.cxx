@@ -780,13 +780,13 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
 void OpenGl_View::RedrawTrihedron (const Handle(OpenGl_Workspace) &theWorkspace)
 {
   // display global trihedron
-  if (myTrihedron != NULL)
+  if (myToShowTrihedron)
   {
-    myTrihedron->Render (theWorkspace);
+    myTrihedron.Render (theWorkspace);
   }
-  if (myGraduatedTrihedron != NULL)
+  if (myToShowGradTrihedron)
   {
-    myGraduatedTrihedron->Render (theWorkspace);
+    myGraduatedTrihedron.Render (theWorkspace);
   }
 }
 

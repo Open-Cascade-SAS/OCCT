@@ -458,9 +458,10 @@ is
         ---Category: Graduated trihedron
         ---------------------------------
 
-        GetGraduatedTrihedron(me;
-                              theTrigedronData: out GraduatedTrihedron from Graphic3d)
+        GetGraduatedTrihedron (me)
+        returns GraduatedTrihedron from Graphic3d
         ---Purpose: Returns data of a graduated trihedron.
+        ---C++: return const&
         is static;
 
         GraduatedTrihedronDisplay(me : mutable;

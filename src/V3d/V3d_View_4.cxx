@@ -271,9 +271,9 @@ void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho AType )
   MyView->TriedronEcho (AType);
 }
 
-void V3d_View::GetGraduatedTrihedron (Graphic3d_GraduatedTrihedron& theTrihedronData) const
+const Graphic3d_GraduatedTrihedron& V3d_View::GetGraduatedTrihedron() const
 {
-  MyView->GetGraduatedTrihedron (theTrihedronData);
+  return MyView->GetGraduatedTrihedron();
 }
 
 void V3d_View::GraduatedTrihedronDisplay(const Graphic3d_GraduatedTrihedron& theTrihedronData)

@@ -10,3 +10,5 @@ ViewerTest_FilletCommands.cxx
 ViewerTest_VoxelCommands.cxx
 ViewerTest_OpenGlCommands.cxx
 ViewerTest_ViewerCommands_1.mm
+ViewerTest.hxx
+ViewerTest.cxx

@@ -35,34 +35,50 @@
 #include <OpenGl_Cylinder.hxx>
 #include <Precision.hxx>
 
+namespace
+{
+  static const OpenGl_TextParam THE_LABEL_PARAMS =
+  {
+    16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
+  };
+}
+
 // =======================================================================
 // function : Constructor
 // purpose  :
 // =======================================================================
-OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron (const Graphic3d_GraduatedTrihedron& theData)
+OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron()
 : myMin (0.0f, 0.0f, 0.0f),
-  myMax (100.0f, 100.0f, 100.0f),
-  myData (theData)
+  myMax (100.0f, 100.0f, 100.0f)
 {
+  //
+}
+
+// =======================================================================
+// function : SetValues
+// purpose  :
+// =======================================================================
+void OpenGl_GraduatedTrihedron::SetValues (const Handle(OpenGl_Context)&       theCtx,
+                                           const Graphic3d_GraduatedTrihedron& theData)
+{
+  Release (theCtx.operator->());
+  myData = theData;
+
   // Initialize text label parameters for x, y, and z axes
   myAxes[0] = Axis (myData.XAxisAspect(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
   myAxes[1] = Axis (myData.YAxisAspect(), OpenGl_Vec3 (0.0f, 1.0f, 0.0f));
   myAxes[2] = Axis (myData.ZAxisAspect(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
 
   // Initialize constant primitives: text, arrows.
-
-  myAxes[0].InitArrow (NULL, myData.ArrowLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
-
-  myAxes[1].InitArrow (NULL, myData.ArrowLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
-
-  myAxes[2].InitArrow (NULL, myData.ArrowLength(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
-
+  myAxes[0].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
+  myAxes[1].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (0.0f, 0.0f, 1.0f));
+  myAxes[2].InitArrow (theCtx, myData.ArrowsLength(), OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
   for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
   {
-    myAxes[anIt].Label.SetFontSize (NULL, theData.NamesSize());
+    myAxes[anIt].Label.SetFontSize (theCtx, theData.NamesSize());
   }
 
-  myLabelValues.SetFontSize (NULL, theData.ValuesSize());
+  myLabelValues.SetFontSize (theCtx, theData.ValuesSize());
 
   myAspectLabels.SetFontAspect (theData.NamesFontAspect());
   myAspectLabels.ChangeFontName() = theData.NamesFont();
@@ -71,15 +87,9 @@ OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron (const Graphic3d_GraduatedT
   myAspectValues.ChangeFontName() = theData.ValuesFont();
 
   // Grid aspect
-  Graphic3d_CAspectLine anAspect;
-  anAspect.IsDef = 1;
-  anAspect.IsSet = 1;
-  anAspect.Width = 1.0f;
-  anAspect.LineType = Aspect_TOL_SOLID;
-  anAspect.Color.r = (Standard_ShortReal) theData.GridColor().Red();
-  anAspect.Color.g = (Standard_ShortReal) theData.GridColor().Green();
-  anAspect.Color.b = (Standard_ShortReal) theData.GridColor().Blue();
-  myGridLineAspect.SetAspect (anAspect);
+  myGridLineAspect.ChangeColor().rgb[0] = (Standard_ShortReal) theData.GridColor().Red();
+  myGridLineAspect.ChangeColor().rgb[1] = (Standard_ShortReal) theData.GridColor().Green();
+  myGridLineAspect.ChangeColor().rgb[2] = (Standard_ShortReal) theData.GridColor().Blue();
 }
 
 // =======================================================================
@@ -310,7 +320,7 @@ Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes (const Standard_Sho
 // function : renderLine
 // purpose  :
 // =======================================================================
-void OpenGl_GraduatedTrihedron::renderLine (const OpenGl_PrimitiveArray* theLine,
+void OpenGl_GraduatedTrihedron::renderLine (const OpenGl_PrimitiveArray&    theLine,
                                             const Handle(OpenGl_Workspace)& theWorkspace,
                                             const OpenGl_Mat4& theMat,
                                             const Standard_ShortReal theXt,
@@ -322,7 +332,7 @@ void OpenGl_GraduatedTrihedron::renderLine (const OpenGl_PrimitiveArray* theLine
   OpenGl_Utils::Translate (aMat, theXt, theYt, theZt);
   aContext->WorldViewState.SetCurrent (aMat);
   aContext->ApplyWorldViewMatrix();
-  theLine->Render (theWorkspace);
+  theLine.Render (theWorkspace);
 }
 
 // =======================================================================
@@ -335,7 +345,7 @@ void OpenGl_GraduatedTrihedron::renderGridPlane (const Handle(OpenGl_Workspace)&
                                                  OpenGl_Mat4& theMat) const
 {
   const Graphic3d_AxisAspect& aCurAspect = myData.AxisAspect (theIndex);
-  if (aCurAspect.TickmarkNumber() <= 0)
+  if (aCurAspect.TickmarksNumber() <= 0)
   {
     return;
   }
@@ -343,10 +353,10 @@ void OpenGl_GraduatedTrihedron::renderGridPlane (const Handle(OpenGl_Workspace)&
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
   Standard_ShortReal aStep = theGridAxes.Axes[theIndex].GetData()[theIndex]
-                            * (myMax.GetData()[theIndex] - myMin.GetData()[theIndex]) / aCurAspect.TickmarkNumber();
+                            * (myMax.GetData()[theIndex] - myMin.GetData()[theIndex]) / aCurAspect.TickmarksNumber();
 
   // NOTE:
-  // Get two other axes directions and draw lines Axis.TickmarkNumber times.
+  // Get two other axes directions and draw lines Axis.TickmarksNumber times.
   // Combining together from three axes, these lines will make a grid.
   for (Standard_Integer anIter = 1; anIter <= 2; ++anIter)
   {
@@ -364,12 +374,12 @@ void OpenGl_GraduatedTrihedron::renderGridPlane (const Handle(OpenGl_Workspace)&
     aContext->ApplyWorldViewMatrix();
 
     const OpenGl_Vec3 aStepVec (myAxes[theIndex].Direction * aStep);
-    for (Standard_Integer anIt = myData.ToDrawAxes() ? 1 : 0; anIt < aCurAspect.TickmarkNumber(); ++anIt)
+    for (Standard_Integer anIt = myData.ToDrawAxes() ? 1 : 0; anIt < aCurAspect.TickmarksNumber(); ++anIt)
     {
       OpenGl_Utils::Translate (aMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
       aContext->WorldViewState.SetCurrent (aMat);
       aContext->ApplyWorldViewMatrix();
-      anAxis.Line->Render (theWorkspace);
+      anAxis.Line.Render (theWorkspace);
     }
   }
 }
@@ -416,12 +426,12 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   aProjMat .Convert (aContext->ProjectionState.Current());
 
   // Get the window's (fixed) coordinates for before matrixes modifications
-  OpenGl_Vec3 aEndPoint = -anAxis.Direction * myData.ArrowLength();
+  OpenGl_Vec3 aEndPoint = -anAxis.Direction * myData.ArrowsLength();
   OpenGl_Vec3 aWinPoint;
   OpenGl_Utils::Project<Standard_ShortReal> (aEndPoint.x(), aEndPoint.y(), aEndPoint.z(),
                                              aModelMat, aProjMat, aViewport,
                                              aWinPoint.x(), aWinPoint.y(), aWinPoint.z());
-  anAxis.Arrow->Render (theWorkspace);
+  anAxis.Arrow.Render (theWorkspace);
   theWorkspace->ActiveView()->EndTransformPersistence (aContext);
 
   // Get current Model-View and Projection states after the end of Transform Persistence
@@ -445,7 +455,7 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
 
   aContext->WorldViewState.SetCurrent (aModelMat);
   aContext->ApplyWorldViewMatrix();
-  anAxis.Line->Render (theWorkspace);
+  anAxis.Line.Render (theWorkspace);
 }
 
 // =======================================================================
@@ -468,27 +478,27 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
   const Axis& anAxis = myAxes[theIndex];
   const OpenGl_Vec3 aSizeVec (myMax - myMin);
   Standard_ShortReal aStep = theGridAxes.Axes[theIndex].GetData()[theIndex]
-                       * (myMax.GetData()[theIndex] - myMin.GetData()[theIndex]) / aCurAspect.TickmarkNumber();
+                       * (myMax.GetData()[theIndex] - myMin.GetData()[theIndex]) / aCurAspect.TickmarksNumber();
 
   OpenGl_Vec3 aDir = (theGridAxes.Ticks[theIndex] - theGridAxes.Origin).Normalized();
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
-  if (aCurAspect.ToDrawTickmarks() && aCurAspect.TickmarkNumber() > 0)
+  if (aCurAspect.ToDrawTickmarks() && aCurAspect.TickmarksNumber() > 0)
   {
     theWorkspace->SetAspectLine (&myGridLineAspect);
 
     OpenGl_Mat4 aModelMat (theMat);
 
-    anAxis.InitTickmark (aContext, aDir * (Standard_ShortReal) aCurAspect.TickmarkLength() * theDpix);
+    anAxis.InitTickmark (aContext, aDir * (Standard_ShortReal) aCurAspect.TickmarksLength() * theDpix);
     OpenGl_Utils::Translate (aModelMat, theGridAxes.Ticks[theIndex].x(),
                                         theGridAxes.Ticks[theIndex].y(),
                                         theGridAxes.Ticks[theIndex].z());
     aContext->WorldViewState.SetCurrent (aModelMat);
     aContext->ApplyWorldViewMatrix();
     OpenGl_Vec3 aStepVec = anAxis.Direction * aStep;
-    for (Standard_Integer anIter = 0; anIter <= aCurAspect.TickmarkNumber(); ++anIter)
+    for (Standard_Integer anIter = 0; anIter <= aCurAspect.TickmarksNumber(); ++anIter)
     {
-      anAxis.Tickmark->Render (theWorkspace);
+      anAxis.Tickmark.Render (theWorkspace);
       OpenGl_Utils::Translate (aModelMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
       aContext->WorldViewState.SetCurrent (aModelMat);
       aContext->ApplyWorldViewMatrix();
@@ -501,7 +511,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
 
   if (aCurAspect.ToDrawName())
   {
-    Standard_Real anOffset = aCurAspect.NameOffset() + aCurAspect.TickmarkLength();
+    Standard_Real anOffset = aCurAspect.NameOffset() + aCurAspect.TickmarksLength();
 
     OpenGl_Vec3 aMiddle (theGridAxes.Ticks[theIndex] + aSizeVec * theGridAxes.Axes[theIndex] * 0.5f + aDir * (Standard_ShortReal)(theDpix * anOffset));
 
@@ -511,13 +521,13 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
     anAxis.Label.Render (theWorkspace);
   }
 
-  if (aCurAspect.ToDrawValues() && aCurAspect.TickmarkNumber() > 0)
+  if (aCurAspect.ToDrawValues() && aCurAspect.TickmarksNumber() > 0)
   {
     myAspectValues.ChangeColor() = anAxis.LineAspect.Color();
     theWorkspace->SetAspectText (&myAspectValues);
-    Standard_Real anOffset = aCurAspect.ValuesOffset() + aCurAspect.TickmarkLength();
+    Standard_Real anOffset = aCurAspect.ValuesOffset() + aCurAspect.TickmarksLength();
 
-    for (Standard_Integer anIt = 0; anIt <= aCurAspect.TickmarkNumber(); ++anIt)
+    for (Standard_Integer anIt = 0; anIt <= aCurAspect.TickmarksNumber(); ++anIt)
     {
       sprintf (aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
       OpenGl_Vec3 aPos (theGridAxes.Ticks[theIndex] + anAxis.Direction* (Standard_ShortReal) (anIt * aStep) + aDir * (Standard_ShortReal) (theDpix * anOffset));
@@ -542,13 +552,15 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
   if (myData.CubicAxesCallback)
   {
     myData.CubicAxesCallback (myData.PtrVisual3dView);
-    if (myAxes[0].Line == NULL || myAxes[1].Line == NULL || myAxes[2].Line == NULL
-        || OpenGl_Vec3 (anOldMin - myMin).Modulus() > Precision::Confusion()
-        || OpenGl_Vec3 (anOldMax - myMax).Modulus() > Precision::Confusion())
+    if (!myAxes[0].Line.IsInitialized()
+     || !myAxes[1].Line.IsInitialized()
+     || !myAxes[2].Line.IsInitialized()
+     ||  OpenGl_Vec3 (anOldMin - myMin).Modulus() > Precision::Confusion()
+     ||  OpenGl_Vec3 (anOldMax - myMax).Modulus() > Precision::Confusion())
     {
-        myAxes[0].InitLine (aContext, OpenGl_Vec3 (myMax.x() - myMin.x(), 0.0f, 0.0f));
-        myAxes[1].InitLine (aContext, OpenGl_Vec3 (0.0f, myMax.y() - myMin.y(), 0.0f));
-        myAxes[2].InitLine (aContext, OpenGl_Vec3 (0.0f, 0.0f, myMax.z() - myMin.z()));
+      myAxes[0].InitLine (aContext, OpenGl_Vec3 (myMax.x() - myMin.x(), 0.0f, 0.0f));
+      myAxes[1].InitLine (aContext, OpenGl_Vec3 (0.0f, myMax.y() - myMin.y(), 0.0f));
+      myAxes[2].InitLine (aContext, OpenGl_Vec3 (0.0f, 0.0f, myMax.z() - myMin.z()));
     }
   }
 
@@ -690,57 +702,55 @@ void OpenGl_GraduatedTrihedron::SetMinMax (const OpenGl_Vec3& theMin, const Open
 
 // =======================================================================
 // method  : OpenGl_GraduatedTrihedron::Axis constructor
-// purpose : 
+// purpose :
 // =======================================================================
 OpenGl_GraduatedTrihedron::Axis::Axis (const Graphic3d_AxisAspect& theAspect,
-                                       const OpenGl_Vec3& theDirection)
+                                       const OpenGl_Vec3&          theDirection)
 : Direction (theDirection),
-  Label (NCollection_String ((Standard_Utf16Char* )theAspect.Name().ToExtString()).ToCString(),
-  Direction, THE_LABEL_PARAMS)
+  Label     (NCollection_String ((Standard_Utf16Char* )theAspect.Name().ToExtString()).ToCString(), theDirection, THE_LABEL_PARAMS),
+  Tickmark  (NULL),
+  Line      (NULL),
+  Arrow     (NULL)
 {
   NameColor.rgb[0] = (Standard_ShortReal) theAspect.NameColor().Red();
   NameColor.rgb[1] = (Standard_ShortReal) theAspect.NameColor().Green();
   NameColor.rgb[2] = (Standard_ShortReal) theAspect.NameColor().Blue();
   NameColor.rgb[3] = 1.0f;
 
-  // Fill aspect
-  Graphic3d_CAspectLine anAspect;
-  anAspect.IsDef = 1;
-  anAspect.IsSet = 1;
-  anAspect.Width = 1.0f;
-  anAspect.LineType = Aspect_TOL_SOLID;
-  anAspect.Color.r = (Standard_ShortReal) theAspect.Color().Red();
-  anAspect.Color.g = (Standard_ShortReal) theAspect.Color().Green();
-  anAspect.Color.b = (Standard_ShortReal) theAspect.Color().Blue();
-  LineAspect.SetAspect (anAspect);
-
-  // Create primitives
-  Line = new OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_SEGMENTS, NULL, NULL, NULL);
-  Tickmark = new OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_SEGMENTS, NULL, NULL, NULL);
-  Arrow = new OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_POLYLINES, NULL, NULL, NULL);
+  LineAspect.ChangeColor().rgb[0] = (Standard_ShortReal) theAspect.Color().Red();
+  LineAspect.ChangeColor().rgb[1] = (Standard_ShortReal) theAspect.Color().Green();
+  LineAspect.ChangeColor().rgb[2] = (Standard_ShortReal) theAspect.Color().Blue();
 }
 
 // =======================================================================
-// method  : OpenGl_GraduatedTrihedron::Axis operator = 
-// purpose : 
+// method  : OpenGl_GraduatedTrihedron::Axis::~Axis
+// purpose :
 // =======================================================================
-OpenGl_GraduatedTrihedron::Axis&
-  OpenGl_GraduatedTrihedron::Axis::operator= (const Axis& theOther)
+OpenGl_GraduatedTrihedron::Axis::~Axis()
 {
-  Direction = theOther.Direction;
-  NameColor = theOther.NameColor;
-  LineAspect = theOther.LineAspect;
-  Label = theOther.Label;
+  //
+}
 
-  Line->InitBuffers (NULL, Graphic3d_TOPA_SEGMENTS, theOther.Line->Indices(), theOther.Line->Attributes(), theOther.Line->Bounds());
-  Tickmark->InitBuffers (NULL, Graphic3d_TOPA_SEGMENTS, theOther.Tickmark->Indices(), theOther.Tickmark->Attributes(), theOther.Tickmark->Bounds());
-  Arrow->InitBuffers (NULL, Graphic3d_TOPA_POLYLINES, theOther.Arrow->Indices(), theOther.Arrow->Attributes(), theOther.Arrow->Bounds());
+// =======================================================================
+// method  : OpenGl_GraduatedTrihedron::Axis operator=
+// purpose :
+// =======================================================================
+OpenGl_GraduatedTrihedron::Axis& OpenGl_GraduatedTrihedron::Axis::operator= (const Axis& theOther)
+{
+  Direction  = theOther.Direction;
+  NameColor  = theOther.NameColor;
+  LineAspect = theOther.LineAspect;
+  Label      = theOther.Label;
+
+  Line    .InitBuffers (NULL, Graphic3d_TOPA_SEGMENTS,  theOther.Line.Indices(),     theOther.Line.Attributes(),     theOther.Line.Bounds());
+  Tickmark.InitBuffers (NULL, Graphic3d_TOPA_SEGMENTS,  theOther.Tickmark.Indices(), theOther.Tickmark.Attributes(), theOther.Tickmark.Bounds());
+  Arrow   .InitBuffers (NULL, Graphic3d_TOPA_POLYLINES, theOther.Arrow.Indices(),    theOther.Arrow.Attributes(),    theOther.Arrow.Bounds());
   return *this;
 }
 
 // =======================================================================
 // method  : InitArrow
-// purpose : 
+// purpose :
 // =======================================================================
 void OpenGl_GraduatedTrihedron::Axis::InitArrow (const Handle(OpenGl_Context)& theContext,
                                                  const Standard_ShortReal theLength,
@@ -769,8 +779,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitArrow (const Handle(OpenGl_Context)& t
   anArray->AddVertex (aPoint3);
   anArray->AddVertex (aPoint1);
 
-  Arrow->InitBuffers (theContext, Graphic3d_TOPA_POLYLINES,
-                      anArray->Indices(), anArray->Attributes(), anArray->Bounds());
+  Arrow.InitBuffers (theContext, Graphic3d_TOPA_POLYLINES,
+                     anArray->Indices(), anArray->Attributes(), anArray->Bounds());
 }
 
 // =======================================================================
@@ -784,8 +794,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitTickmark (const Handle(OpenGl_Context)
   Handle(Graphic3d_ArrayOfSegments) anArray = new Graphic3d_ArrayOfSegments (2);
   anArray->AddVertex (0.0f, 0.0f, 0.0f);
   anArray->AddVertex (theDir);
-  Tickmark->InitBuffers (theContext, Graphic3d_TOPA_SEGMENTS,
-                         anArray->Indices(), anArray->Attributes(), anArray->Bounds());
+  Tickmark.InitBuffers (theContext, Graphic3d_TOPA_SEGMENTS,
+                        anArray->Indices(), anArray->Attributes(), anArray->Bounds());
 
 }
 
@@ -801,8 +811,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitLine (const Handle(OpenGl_Context)& th
   anArray->AddVertex (0.0f, 0.0f, 0.0f);
   anArray->AddVertex (theDir);
 
-  Line->InitBuffers (theContext, Graphic3d_TOPA_SEGMENTS,
-                     anArray->Indices(), anArray->Attributes(), anArray->Bounds());
+  Line.InitBuffers (theContext, Graphic3d_TOPA_SEGMENTS,
+                    anArray->Indices(), anArray->Attributes(), anArray->Bounds());
 }
 
 // =======================================================================
@@ -811,8 +821,8 @@ void OpenGl_GraduatedTrihedron::Axis::InitLine (const Handle(OpenGl_Context)& th
 // =======================================================================
 void OpenGl_GraduatedTrihedron::Axis::Release (OpenGl_Context* theCtx)
 {
-  Label.Release (theCtx);
-  Tickmark->Release (theCtx);
-  Line->Release (theCtx);
-  Arrow->Release (theCtx);
+  Label   .Release (theCtx);
+  Tickmark.Release (theCtx);
+  Line    .Release (theCtx);
+  Arrow   .Release (theCtx);
 }

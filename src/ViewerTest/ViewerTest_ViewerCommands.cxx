@@ -2857,94 +2857,228 @@ static int VScale(Draw_Interpretor& di, Standard_Integer argc, const char** argv
   return 0;
 }
 //==============================================================================
-//function : VTestZBuffTrihedron
-//purpose  : Displays a V3d_ZBUFFER'ed or V3d_WIREFRAME'd trihedron
+//function : VZBuffTrihedron
+//purpose  :
 //==============================================================================
 
-static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
+                            Standard_Integer  theArgNb,
+                            const char**      theArgVec)
 {
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-  if ( V3dView.IsNull() ) return 1;
-
-  V3dView->ZBufferTriedronSetup();
-
-  if ( argc == 1 ) {
-    // Set up default trihedron parameters
-    V3dView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
-  } else
-  if ( argc == 7 )
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
-    Aspect_TypeOfTriedronPosition aPosition = Aspect_TOTP_LEFT_LOWER;
-    const char* aPosType = argv[1];
-
-    if ( strcmp(aPosType, "center") == 0 )
-    {
-      aPosition = Aspect_TOTP_CENTER;
-    } else
-    if (strcmp(aPosType, "left_lower") == 0)
-    {
-      aPosition = Aspect_TOTP_LEFT_LOWER;
-    } else
-    if (strcmp(aPosType, "left_upper") == 0)
-    {
-      aPosition = Aspect_TOTP_LEFT_UPPER;
-    } else
-    if (strcmp(aPosType, "right_lower") == 0)
-    {
-      aPosition = Aspect_TOTP_RIGHT_LOWER;
-    } else
-    if (strcmp(aPosType, "right_upper") == 0)
-    {
-      aPosition = Aspect_TOTP_RIGHT_UPPER;
-    } else
-    {
-      di << argv[1] << " Invalid type of alignment"  << "\n";
-      di << "Must be one of [ center, left_lower,"   << "\n";
-      di << "left_upper, right_lower, right_upper ]" << "\n";
-      return 1;
-    }
-
-    Standard_Real R = Draw::Atof(argv[2])/255.;
-    Standard_Real G = Draw::Atof(argv[3])/255.;
-    Standard_Real B = Draw::Atof(argv[4])/255.;
-    Quantity_Color aColor(R, G, B, Quantity_TOC_RGB);
-
-    Standard_Real aScale = Draw::Atof(argv[5]);
-
-    if( aScale <= 0.0 )
-    {
-      di << argv[5] << " Invalid value. Must be > 0" << "\n";
-      return 1;
-    }
-
-    V3d_TypeOfVisualization aPresentation = V3d_ZBUFFER;
-    const char* aPresType = argv[6];
-
-    if ( strcmp(aPresType, "wireframe") == 0 )
-    {
-      aPresentation = V3d_WIREFRAME;
-    } else
-    if (strcmp(aPresType, "zbuffer") == 0)
-    {
-      aPresentation = V3d_ZBUFFER;
-    } else
-    {
-      di << argv[6] << " Invalid type of visualization" << "\n";
-      di << "Must be one of [ wireframe, zbuffer ]"     << "\n";
-      return 1;
-    }
-
-    V3dView->TriedronDisplay( aPosition, aColor.Name(), aScale, aPresentation );
-
-  } else
-  {
-    di << argv[0] << " Invalid number of arguments" << "\n";
+    std::cout << "Error: no active viewer!\n";
     return 1;
   }
 
-  V3dView->View()->ZFitAll();
-  V3dView->Redraw();
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
 
+  Aspect_TypeOfTriedronPosition aPosition     = Aspect_TOTP_LEFT_LOWER;
+  V3d_TypeOfVisualization       aVisType      = V3d_ZBUFFER;
+  Quantity_Color                aLabelsColor  = Quantity_NOC_WHITE;
+  Quantity_Color                anArrowColorX = Quantity_NOC_RED;
+  Quantity_Color                anArrowColorY = Quantity_NOC_GREEN;
+  Quantity_Color                anArrowColorZ = Quantity_NOC_BLUE1;
+  Standard_Real                 aScale        = 0.1;
+  Standard_Real                 aSizeRatio    = 0.8;
+  Standard_Real                 anArrowDiam   = 0.05;
+  Standard_Integer              aNbFacets     = 12;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    Standard_CString        anArg = theArgVec[anArgIter];
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase();
+    if (anUpdateTool.parseRedrawMode (aFlag))
+    {
+      continue;
+    }
+    else if (aFlag == "-on")
+    {
+      continue;
+    }
+    else if (aFlag == "-off")
+    {
+      aView->TriedronErase();
+      return 0;
+    }
+    else if (aFlag == "-pos"
+          || aFlag == "-position"
+          || aFlag == "-corner")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aPosName (theArgVec[anArgIter]);
+      aPosName.LowerCase();
+      if (aPosName == "center")
+      {
+        aPosition = Aspect_TOTP_CENTER;
+      }
+      else if (aPosName == "left_lower"
+            || aPosName == "lower_left"
+            || aPosName == "leftlower"
+            || aPosName == "lowerleft")
+      {
+        aPosition = Aspect_TOTP_LEFT_LOWER;
+      }
+      else if (aPosName == "left_upper"
+            || aPosName == "upper_left"
+            || aPosName == "leftupper"
+            || aPosName == "upperleft")
+      {
+        aPosition = Aspect_TOTP_LEFT_UPPER;
+      }
+      else if (aPosName == "right_lower"
+            || aPosName == "lower_right"
+            || aPosName == "rightlower"
+            || aPosName == "lowerright")
+      {
+        aPosition = Aspect_TOTP_RIGHT_LOWER;
+      }
+      else if (aPosName == "right_upper"
+            || aPosName == "upper_right"
+            || aPosName == "rightupper"
+            || aPosName == "upperright")
+      {
+        aPosition = Aspect_TOTP_RIGHT_UPPER;
+      }
+      else
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "' - unknown position '" << aPosName << "'\n";
+        return 1;
+      }
+    }
+    else if (aFlag == "-type")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aTypeName (theArgVec[anArgIter]);
+      aTypeName.LowerCase();
+      if (aTypeName == "wireframe"
+       || aTypeName == "wire")
+      {
+        aVisType = V3d_WIREFRAME;
+      }
+      else if (aTypeName == "zbuffer"
+            || aTypeName == "shaded")
+      {
+        aVisType = V3d_ZBUFFER;
+      }
+      else
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "' - unknown type '" << aTypeName << "'\n";
+      }
+    }
+    else if (aFlag == "-scale")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      aScale = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-size"
+          || aFlag == "-sizeratio")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      aSizeRatio = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-arrowdiam"
+          || aFlag == "-arrowdiameter")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      anArrowDiam = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-nbfacets")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+
+      aNbFacets = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-colorlabel"
+          || aFlag == "-colorlabels")
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           aLabelsColor);
+      if (aNbParsed == 0)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+    }
+    else if (aFlag == "-colorarrowx")
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           anArrowColorX);
+      if (aNbParsed == 0)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+    }
+    else if (aFlag == "-colorarrowy")
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           anArrowColorY);
+      if (aNbParsed == 0)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+    }
+    else if (aFlag == "-colorarrowz")
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
+                                                           theArgVec + anArgIter + 1,
+                                                           anArrowColorZ);
+      if (aNbParsed == 0)
+      {
+        std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+    }
+    else
+    {
+      std::cerr << "Error: wrong syntax at '" << anArg << "'\n";
+      return 1;
+    }
+  }
+
+  aView->ZBufferTriedronSetup (anArrowColorX.Name(), anArrowColorY.Name(), anArrowColorZ.Name(),
+                               aSizeRatio, anArrowDiam, aNbFacets);
+  aView->TriedronDisplay (aPosition, aLabelsColor.Name(), aScale, aVisType);
+  aView->View()->ZFitAll();
   return 0;
 }
 
@@ -3720,7 +3854,8 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
     // On/off arguments
     if ((aKey.IsEqual ("xdrawname") || aKey.IsEqual ("ydrawname") || aKey.IsEqual ("zdrawname")
         || aKey.IsEqual ("xdrawticks") || aKey.IsEqual ("ydrawticks") || aKey.IsEqual ("zdrawticks")
-        || aKey.IsEqual ("xdrawvalues") || aKey.IsEqual ("ydrawvalues") || aKey.IsEqual ("zdrawvalues"))
+        || aKey.IsEqual ("xdrawvalues") || aKey.IsEqual ("ydrawvalues") || aKey.IsEqual ("zdrawvalues")
+        || aKey.IsEqual ("drawgrid") || aKey.IsEqual ("drawaxes"))
         && anArgs->Length() == 1 && (anArgs->Value(1).IsEqual ("on") || anArgs->Value(1).IsEqual ("off")))
     {
       continue;
@@ -3799,15 +3934,15 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   }
   if (aMapOfArgs.Find ("xdrawname", aValues))
   {
-    aTrihedronData.ChangeXAxisAspect().SetToDrawName (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeXAxisAspect().SetDrawName (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("ydrawname", aValues))
   {
-    aTrihedronData.ChangeYAxisAspect().SetToDrawName (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeYAxisAspect().SetDrawName (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("zdrawname", aValues))
   {
-    aTrihedronData.ChangeZAxisAspect().SetToDrawName (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeZAxisAspect().SetDrawName (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("xnameoffset", aValues))
   {
@@ -3881,53 +4016,53 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   // TICKMARKS
   if (aMapOfArgs.Find ("xticks", aValues))
   {
-    aTrihedronData.ChangeXAxisAspect().SetTickmarkNumber (aValues->Value(1).IntegerValue());
+    aTrihedronData.ChangeXAxisAspect().SetTickmarksNumber (aValues->Value(1).IntegerValue());
   }
   if (aMapOfArgs.Find ("yticks", aValues))
   {
-    aTrihedronData.ChangeYAxisAspect().SetTickmarkNumber (aValues->Value(1).IntegerValue());
+    aTrihedronData.ChangeYAxisAspect().SetTickmarksNumber (aValues->Value(1).IntegerValue());
   }
   if (aMapOfArgs.Find ("zticks", aValues))
   {
-    aTrihedronData.ChangeZAxisAspect().SetTickmarkNumber (aValues->Value(1).IntegerValue());
+    aTrihedronData.ChangeZAxisAspect().SetTickmarksNumber (aValues->Value(1).IntegerValue());
   }
   if (aMapOfArgs.Find ("xticklength", aValues))
   {
-    aTrihedronData.ChangeXAxisAspect().SetTickmarkLength (aValues->Value(1).IntegerValue());
+    aTrihedronData.ChangeXAxisAspect().SetTickmarksLength (aValues->Value(1).IntegerValue());
   }
   if (aMapOfArgs.Find ("yticklength", aValues))
   {
-    aTrihedronData.ChangeYAxisAspect().SetTickmarkLength (aValues->Value(1).IntegerValue());
+    aTrihedronData.ChangeYAxisAspect().SetTickmarksLength (aValues->Value(1).IntegerValue());
   }
   if (aMapOfArgs.Find ("zticklength", aValues))
   {
-    aTrihedronData.ChangeZAxisAspect().SetTickmarkLength (aValues->Value(1).IntegerValue());
+    aTrihedronData.ChangeZAxisAspect().SetTickmarksLength (aValues->Value(1).IntegerValue());
   }
   if (aMapOfArgs.Find ("xdrawticks", aValues))
   {
-    aTrihedronData.ChangeXAxisAspect().SetToDrawTickmarks (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeXAxisAspect().SetDrawTickmarks (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("ydrawticks", aValues))
   {
-    aTrihedronData.ChangeYAxisAspect().SetToDrawTickmarks (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeYAxisAspect().SetDrawTickmarks (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("zdrawticks", aValues))
   {
-    aTrihedronData.ChangeZAxisAspect().SetToDrawTickmarks (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeZAxisAspect().SetDrawTickmarks (aValues->Value(1).IsEqual ("on"));
   }
 
   // VALUES
   if (aMapOfArgs.Find ("xdrawvalues", aValues))
   {
-    aTrihedronData.ChangeXAxisAspect().SetToDrawValues (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeXAxisAspect().SetDrawValues (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("ydrawvalues", aValues))
   {
-    aTrihedronData.ChangeYAxisAspect().SetToDrawValues (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeYAxisAspect().SetDrawValues (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("zdrawvalues", aValues))
   {
-    aTrihedronData.ChangeZAxisAspect().SetToDrawValues (aValues->Value(1).IsEqual ("on"));
+    aTrihedronData.ChangeZAxisAspect().SetDrawValues (aValues->Value(1).IsEqual ("on"));
   }
   if (aMapOfArgs.Find ("xvaluesoffset", aValues))
   {
@@ -3945,7 +4080,7 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   // ARROWS
   if (aMapOfArgs.Find ("arrowlength", aValues))
   {
-    aTrihedronData.SetArrowLength ((Standard_ShortReal) aValues->Value(1).RealValue());
+    aTrihedronData.SetArrowsLength ((Standard_ShortReal) aValues->Value(1).RealValue());
   }
 
   // FONTS
@@ -3956,6 +4091,15 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   if (aMapOfArgs.Find ("valuesfont", aValues))
   {
     aTrihedronData.SetValuesFont (aValues->Value(1));
+  }
+
+  if (aMapOfArgs.Find ("drawgrid", aValues))
+  {
+    aTrihedronData.SetDrawGrid (aValues->Value(1).IsEqual ("on"));
+  }
+  if (aMapOfArgs.Find ("drawaxes", aValues))
+  {
+    aTrihedronData.SetDrawAxes (aValues->Value(1).IsEqual ("on"));
   }
 
   // The final step: display of erase trihedron
@@ -7995,10 +8139,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vscale          : vscale X Y Z",
     __FILE__,VScale,group);
   theCommands.Add("vzbufftrihedron",
-    "vzbufftrihedron [center|left_lower|left_upper|right_lower|right_upper"
-    " textR=255 textG=255 textB=255 scale=0.1 wireframe|zbuffer]"
-    " : Displays a V3d_ZBUFFER'ed or V3d_WIREFRAME'd trihedron",
-    __FILE__,VTestZBuffTrihedron,group);
+            "vzbufftrihedron [{-on|-off}=-on] [-type {wireframe|zbuffer}=zbuffer]"
+    "\n\t\t:       [-position center|left_lower|left_upper|right_lower|right_upper]"
+    "\n\t\t:       [-scale value=0.1] [-size value=0.8] [-arrowDiam value=0.05]"
+    "\n\t\t:       [-colorArrowX color=RED] [-colorArrowY color=GREEN] [-colorArrowZ color=BLUE]"
+    "\n\t\t:       [-nbfacets value=12] [-colorLabels color=WHITE]"
+    "\n\t\t: Displays a trihedron",
+    __FILE__,VZBuffTrihedron,group);
   theCommands.Add("vrotate",
     "vrotate [[-mouseStart X Y] [-mouseMove X Y]]|[AX AY AZ [X Y Z]]"
     "\n                : Option -mouseStart starts rotation according to the mouse position"
@@ -8046,6 +8193,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\t[-xdrawticks on/off] [-ydrawticks on/off] [-zdrawticks on/off]\n"
     "\t[-xticks Number] [-yticks Number] [-zticks Number]\n"
     "\t[-xticklength IntVal] [-yticklength IntVal] [-zticklength IntVal]\n"
+    "\t[-drawgrid on/off] [-drawaxes on/off]\n"
     " - Displays or erases graduated trihedron"
     " - xname, yname, zname - names of axes, default: X, Y, Z\n"
     " - namefont - font of axes names. Default: Arial\n"

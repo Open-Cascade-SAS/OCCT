@@ -66,6 +66,9 @@ public:
   //! Notice that this flag does not indicate VBOs validity.
   Standard_Boolean IsInitialized() const { return myIsVboInit; }
 
+  //! Invalidate VBO content without destruction.
+  void Invalidate() const { myIsVboInit = Standard_False; }
+
   //! @return primitive type (GL_LINES, GL_TRIANGLES and others)
   GLint DrawMode() const { return myDrawMode; }
 

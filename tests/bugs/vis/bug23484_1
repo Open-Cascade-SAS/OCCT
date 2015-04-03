@@ -14,10 +14,10 @@ vinit View1
 vfit
 vaxo
 
-vzbufftrihedron left_lower 255 255 255 0.1 wireframe
+vzbufftrihedron -scale 0.1 -type wireframe -position left_lower
 vdump $anImage1
 
-vzbufftrihedron center 255 255 255 0.1 wireframe
+vzbufftrihedron -scale 0.1 -type wireframe -position center
 vdump $anImage2
 
 vclear

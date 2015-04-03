@@ -32,31 +32,55 @@ class OpenGl_Trihedron : public OpenGl_Element
 {
 public:
 
-  static void Setup(const Quantity_NameOfColor theXColor,
-    const Quantity_NameOfColor theYColor,
-    const Quantity_NameOfColor theZColor,
-    const Standard_Real        theSizeRatio,
-    const Standard_Real        theAxisDiametr,
-    const Standard_Integer     theNbFacettes);
+  //! Default constructor.
+  OpenGl_Trihedron();
+
+  //! Destructor.
+  virtual ~OpenGl_Trihedron();
+
+  //! Render the element.
+  virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Release OpenGL resources.
+  virtual void Release (OpenGl_Context* theCtx);
 
 public:
 
-  OpenGl_Trihedron(const Aspect_TypeOfTriedronPosition thePosition,
-    const Quantity_NameOfColor          theColor,
-    const Standard_Real                 theScale,
-    const Standard_Boolean              theAsWireframe);
+  //! Switch wireframe / shaded trihedron.
+  void SetWireframe (const Standard_Boolean theAsWireframe) { myIsWireframe = theAsWireframe; }
 
-  virtual void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release(OpenGl_Context* theCtx);
+  //! Setup the corner to draw the trihedron.
+  void SetPosition (const Aspect_TypeOfTriedronPosition thePosition) { myPos = thePosition; }
+
+  //! Setup the scale factor.
+  void SetScale (const Standard_Real theScale);
+
+  //! Setup the size ratio factor.
+  void SetSizeRatio (const Standard_Real theRatio);
+
+  //! Setup the arrow diameter.
+  void SetArrowDiameter (const Standard_Real theDiam);
+
+  //! Setup the number of facets for tessellation.
+  void SetNbFacets (const Standard_Integer theNbFacets);
+
+  //! Setup color of text labels.
+  void SetLabelsColor (const Quantity_Color& theColor);
+
+  //! Setup per-arrow color.
+  void SetArrowsColors (const Quantity_Color& theColorX,
+                        const Quantity_Color& theColorY,
+                        const Quantity_Color& theColorZ);
 
 protected:
 
-  virtual ~OpenGl_Trihedron();
+  //! Invalidate Primitve Arrays.
+  void invalidate();
 
   void redraw(const Handle(OpenGl_Workspace)& theWorkspace) const;
   void redrawZBuffer(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
-  //! Resets current model-view and projection transfprmations and sets
+  //! Resets current model-view and projection transformations and sets
   //! translation for trihedron position
   //! @sa Aspect_TypeOfTriedronPosition
   void resetTransformations (const Handle(OpenGl_Workspace)& theWorkspace) const;
@@ -66,10 +90,9 @@ protected:
   Aspect_TypeOfTriedronPosition myPos;
   Standard_Real myScale;
   Standard_Boolean myIsWireframe;
-  // Parameters for z-buffered mode
-  TEL_COLOUR myXColor;
-  TEL_COLOUR myYColor;
-  TEL_COLOUR myZColor;
+  OpenGl_Vec4 myXColor;
+  OpenGl_Vec4 myYColor;
+  OpenGl_Vec4 myZColor;
   float myRatio;
   float myDiameter;
   int   myNbFacettes;

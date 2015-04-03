@@ -36,8 +36,9 @@ public:
 
   Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTLINE& theAspect);
 
-  const TEL_COLOUR & Color() const { return myColor; }
-  Aspect_TypeOfLine  Type() const { return myType; }
+  const TEL_COLOUR&  Color() const { return myColor; }
+  TEL_COLOUR&        ChangeColor() { return myColor; }
+  Aspect_TypeOfLine  Type()  const { return myType; }
   float              Width() const { return myWidth; }
 
   //! Init and return OpenGl shader program resource.

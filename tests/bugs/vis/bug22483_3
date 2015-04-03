@@ -8,9 +8,7 @@ puts ""
 
 set BugNumber OCC22483
 
-vinit
-vzbufftrihedron right_upper 200 50 255 0.2 zbuffer 
+vinit View1
+vzbufftrihedron -position right_upper -scale 0.2 -type zbuffer -colorLabels 0.78 0.20 1.0
 
 set only_screen 1
-
-

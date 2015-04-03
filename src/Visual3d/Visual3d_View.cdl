@@ -514,11 +514,11 @@ is
     ---Category: Graduated trihedron
     ------------------------------------------
 
-    GetGraduatedTrihedron(me;
-                          theTrigedronData: out GraduatedTrihedron from Graphic3d)
-    returns Boolean from Standard
+    GetGraduatedTrihedron (me)
+    returns GraduatedTrihedron from Graphic3d
     is static;
-    ---Purpose: Returns data of a graduated trihedron if displayed (return value is True)
+    ---Purpose: Returns data of a graduated trihedron
+    ---C++: return const&
 
     GraduatedTrihedronDisplay(me : mutable;
                               theTrigedronData: in GraduatedTrihedron from Graphic3d)

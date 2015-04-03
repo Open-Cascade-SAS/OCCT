@@ -492,14 +492,25 @@ Standard_Boolean OpenGl_GraphicDriver::Print (const Graphic3d_CView& theCView,
 // function : ZBufferTriedronSetup
 // purpose  :
 // =======================================================================
-void OpenGl_GraphicDriver::ZBufferTriedronSetup (const Quantity_NameOfColor theXColor,
+void OpenGl_GraphicDriver::ZBufferTriedronSetup (const Graphic3d_CView&     theCView,
+                                                 const Quantity_NameOfColor theXColor,
                                                  const Quantity_NameOfColor theYColor,
                                                  const Quantity_NameOfColor theZColor,
                                                  const Standard_Real        theSizeRatio,
                                                  const Standard_Real        theAxisDiametr,
-                                                 const Standard_Integer     theNbFacettes)
+                                                 const Standard_Integer     theNbFacets)
 {
-  OpenGl_Trihedron::Setup (theXColor, theYColor, theZColor, theSizeRatio, theAxisDiametr, theNbFacettes);
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView == NULL)
+  {
+    return;
+  }
+
+  OpenGl_Trihedron& aTrih = aCView->View->ChangeTrihedron();
+  aTrih.SetArrowsColors  (theXColor, theYColor, theZColor);
+  aTrih.SetSizeRatio     (theSizeRatio);
+  aTrih.SetNbFacets      (theNbFacets);
+  aTrih.SetArrowDiameter (theAxisDiametr);
 }
 
 // =======================================================================
@@ -515,7 +526,7 @@ void OpenGl_GraphicDriver::TriedronDisplay (const Graphic3d_CView&              
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
   if (aCView != NULL)
   {
-    aCView->View->TriedronDisplay (aCView->WS->GetGlContext(), thePosition, theColor, theScale, theAsWireframe);
+    aCView->View->TriedronDisplay (thePosition, theColor, theScale, theAsWireframe);
   }
 }
 
@@ -633,12 +644,12 @@ void OpenGl_GraphicDriver::GraduatedTrihedronErase (const Graphic3d_CView& theCV
 // purpose  :
 // =======================================================================
 void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Graphic3d_CView& theView,
-                                                           const Graphic3d_Vec3 theMin,
-                                                           const Graphic3d_Vec3 theMax)
+                                                           const Graphic3d_Vec3   theMin,
+                                                           const Graphic3d_Vec3   theMax)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView* )theView.ptrView;
   if (aCView != NULL)
   {
-    aCView->View->GraduatedTrihedron()->SetMinMax (theMin, theMax);
+    aCView->View->ChangeGraduatedTrihedron().SetMinMax (theMin, theMax);
   }
 }

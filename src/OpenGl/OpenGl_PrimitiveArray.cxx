@@ -287,6 +287,7 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO (const Handle(OpenGl_Context)& 
                                                   const Standard_Boolean        theToKeepData) const
 {
   bool isNormalMode = theCtx->ToUseVbo();
+  clearMemoryGL (theCtx);
   if (myAttribs.IsNull()
    || myAttribs->IsEmpty()
    || myAttribs->NbElements < 1

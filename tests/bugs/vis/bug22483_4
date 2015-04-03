@@ -8,9 +8,7 @@ puts ""
 
 set BugNumber OCC22483
 
-vinit
-vzbufftrihedron center 0 150 255 0.1 wireframe 
+vinit View1
+vzbufftrihedron -position center -scale 0.1 -type wireframe -colorLabels 0.0 0.59 1.0
 
 set only_screen 1
-
-

@@ -2060,7 +2060,7 @@ void Visual3d_View::ZBufferTriedronSetup (const Quantity_NameOfColor theXColor,
                                           const Standard_Real        theAxisDiametr,
                                           const Standard_Integer     theNbFacettes)
 {
-  myGraphicDriver->ZBufferTriedronSetup (theXColor, theYColor, theZColor,
+  myGraphicDriver->ZBufferTriedronSetup (MyCView, theXColor, theYColor, theZColor,
                                          theSizeRatio, theAxisDiametr, theNbFacettes);
 }
 
@@ -2115,15 +2115,9 @@ static void SetMinMaxValuesCallback (Visual3d_View* theView)
 // function : GetGraduatedTrihedron
 // purpose  :
 // =======================================================================
-Standard_Boolean Visual3d_View::GetGraduatedTrihedron (Graphic3d_GraduatedTrihedron& theTrihedronData) const
+const Graphic3d_GraduatedTrihedron& Visual3d_View::GetGraduatedTrihedron() const
 {
-  if (!myGTrihedron.PtrVisual3dView)
-  {
-    return Standard_False;
-  }
-
-  theTrihedronData = myGTrihedron;
-  return Standard_True;
+  return myGTrihedron;
 }
 
 // =======================================================================

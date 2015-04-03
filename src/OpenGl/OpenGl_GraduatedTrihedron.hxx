@@ -29,11 +29,6 @@
 class Visual3d_View;
 class OpenGl_View;
 
-static const OpenGl_TextParam THE_LABEL_PARAMS =
-{
-  16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
-};
-
 //! This class allows to render Graduated Trihedron, i.e. trihedron with grid.
 //! it is based on Graphic3d_GraduatedTrihedron parameters and support its customization
 //! on construction level only.
@@ -46,20 +41,27 @@ public:
 
 public:
 
-  OpenGl_GraduatedTrihedron (const Graphic3d_GraduatedTrihedron& theData);
+  //! Default constructor.
+  OpenGl_GraduatedTrihedron();
 
+  //! Destructor.
+  virtual ~OpenGl_GraduatedTrihedron();
+
+  //! Draw the element.
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
+  //! Release OpenGL resources.
   virtual void Release (OpenGl_Context* theCtx);
+
+  //! Setup configuration.
+  void SetValues (const Handle(OpenGl_Context)&       theCtx,
+                  const Graphic3d_GraduatedTrihedron& theData);
 
   //! Sets up-to-date values of scene bounding box.
   //! Can be used in callback mechanism to get up-to-date values.
   //! @sa Graphic3d_GraduatedTrihedron::CubicAxesCallback
-  void SetMinMax (const OpenGl_Vec3& theMin, const OpenGl_Vec3& theMax);
-
-protected:
-
-  virtual ~OpenGl_GraduatedTrihedron();
+  void SetMinMax (const OpenGl_Vec3& theMin,
+                  const OpenGl_Vec3& theMax);
 
 private:
 
@@ -72,23 +74,18 @@ private:
     TEL_COLOUR          NameColor;
     OpenGl_AspectLine   LineAspect;
     mutable OpenGl_Text Label;
-    mutable OpenGl_PrimitiveArray* Tickmark;
-    mutable OpenGl_PrimitiveArray* Line;
-    mutable OpenGl_PrimitiveArray* Arrow;
+    mutable OpenGl_PrimitiveArray Tickmark;
+    mutable OpenGl_PrimitiveArray Line;
+    mutable OpenGl_PrimitiveArray Arrow;
 
   public:
 
     Axis (const Graphic3d_AxisAspect& theAspect = Graphic3d_AxisAspect(),
           const OpenGl_Vec3& theDirection = OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
 
-    Axis& operator= (const Axis& theOther);
+    ~Axis();
 
-    ~Axis()
-    {
-      OpenGl_Element::Destroy (NULL, Line);
-      OpenGl_Element::Destroy (NULL, Tickmark);
-      OpenGl_Element::Destroy (NULL, Arrow);
-    }
+    Axis& operator= (const Axis& theOther);
 
     void InitArrow (const Handle(OpenGl_Context)& theContext,
                     const Standard_ShortReal theLength,
@@ -101,6 +98,7 @@ private:
                    const OpenGl_Vec3& theDir) const;
 
     void Release (OpenGl_Context* theCtx);
+
   };
 
 private:
@@ -165,12 +163,12 @@ private:
   //! @param thaTx the X for vector of translation
   //! @param thaTy the Y for vector of translation
   //! @param thaTz the Z for vector of translation
-  void renderLine (const OpenGl_PrimitiveArray* theLine,
-                  const Handle(OpenGl_Workspace)& theWorkspace,
-                  const OpenGl_Mat4& theMat,
-                  const Standard_ShortReal theXt,
-                  const Standard_ShortReal theYt,
-                  const Standard_ShortReal theZt) const;
+  void renderLine (const OpenGl_PrimitiveArray&    theLine,
+                   const Handle(OpenGl_Workspace)& theWorkspace,
+                   const OpenGl_Mat4&              theMat,
+                   const Standard_ShortReal        theXt,
+                   const Standard_ShortReal        theYt,
+                   const Standard_ShortReal        theZt) const;
 
   //! Render grid lines perpendecular the axis of input index
   //! @param theWorkspace [in] the OpenGl Workspace
@@ -205,7 +203,6 @@ private:
                              const Standard_Integer theIndex,
                              const GridAxes& theGridAxes,
                              const Standard_ShortReal theDpix) const;
-
 
 protected: //! @name Scene bounding box values
 

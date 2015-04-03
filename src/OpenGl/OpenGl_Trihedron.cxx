@@ -21,43 +21,15 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <Precision.hxx>
 
-static const OpenGl_TextParam THE_LABEL_PARAMS =
+namespace
 {
-  16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
-};
-
-static const CALL_DEF_CONTEXTLINE myDefaultContextLine =
-{
-  1, //IsDef
-  1, //IsSet
-  { 1.F, 1.F, 1.F }, //Color
-  Aspect_TOL_SOLID, //LineType
-  1.F //Width
-};
-
-static const CALL_DEF_CONTEXTTEXT myDefaultContextText =
-{
-  1, //IsDef
-  1, //IsSet
-  "Courier", //Font
-  0.3F, //Space
-  1.0F, //Expan
-  { 1.F, 1.F, 1.F }, //Color
-  Aspect_TOST_NORMAL, //Style
-  Aspect_TODT_NORMAL, //DisplayType
-  { 1.F, 1.F, 1.F }, //ColorSubTitle
-  0, //TextZoomable
-  0.F, //TextAngle
-  Font_FA_Regular //TextFontAspect
-};
-
-static TEL_COLOUR theXColor = {{ 1.F, 0.F, 0.F, 0.6F }};
-static TEL_COLOUR theYColor = {{ 0.F, 1.F, 0.F, 0.6F }};
-static TEL_COLOUR theZColor = {{ 0.F, 0.F, 1.F, 0.6F }};
-static float theRatio = 0.8f;
-static float theDiameter = 0.05f;
-static int   theNbFacettes = 12;
+  static const OpenGl_TextParam THE_LABEL_PARAMS =
+  {
+    16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
+  };
+}
 
 // =======================================================================
 // function : resetTransformations
@@ -198,12 +170,12 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
                           anCircleArray->Attributes(), anCircleArray->Bounds());
   }
 
-  if (!myDisk.IsDefined())
+  if (!myDisk.IsInitialized())
   {
     myDisk.Init (0.0, static_cast<GLfloat> (aConeDiametr), myNbFacettes, 1);
   }
 
-  if (!myCone.IsDefined())
+  if (!myCone.IsInitialized())
   {
     myCone.Init (static_cast<GLfloat> (aConeDiametr), 0.0f, static_cast<GLfloat> (aConeLength), myNbFacettes, 1);
   }
@@ -212,9 +184,9 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   OpenGl_AspectFace anAspectY;
   OpenGl_AspectFace anAspectZ;
   OpenGl_AspectLine anAspectLine;
-  memcpy (anAspectX.ChangeIntFront().matcol.rgb, myXColor.rgb, sizeof (TEL_COLOUR));
-  memcpy (anAspectY.ChangeIntFront().matcol.rgb, myYColor.rgb, sizeof (TEL_COLOUR));
-  memcpy (anAspectZ.ChangeIntFront().matcol.rgb, myZColor.rgb, sizeof (TEL_COLOUR));
+  memcpy (anAspectX.ChangeIntFront().matcol.rgb, myXColor.GetData(), sizeof (TEL_COLOUR));
+  memcpy (anAspectY.ChangeIntFront().matcol.rgb, myYColor.GetData(), sizeof (TEL_COLOUR));
+  memcpy (anAspectZ.ChangeIntFront().matcol.rgb, myZColor.GetData(), sizeof (TEL_COLOUR));
   OpenGl_Mat4d aModelMatrix;
   aModelMatrix.Convert (aContext->WorldViewState.Current());
   OpenGl_Mat4d aModelViewX (aModelMatrix);
@@ -224,9 +196,9 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   // Set line aspect
   const OpenGl_AspectLine* aCurrentAspectLine = theWorkspace->AspectLine (Standard_True);
   CALL_DEF_CONTEXTLINE aLineAspect = {1, 1, { 1.F, 1.F, 1.F },  aCurrentAspectLine->Type(), aCurrentAspectLine->Width()};
-  aLineAspect.Color.r = myZColor.rgb[0];
-  aLineAspect.Color.g = myZColor.rgb[1];
-  aLineAspect.Color.b = myZColor.rgb[2];
+  aLineAspect.Color.r = myZColor.r();
+  aLineAspect.Color.g = myZColor.g();
+  aLineAspect.Color.b = myZColor.b();
   anAspectLine.SetAspect (aLineAspect);
 
   // Disable depth test and face culling
@@ -271,9 +243,9 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewX);
   aContext->ApplyWorldViewMatrix();
 
-  aLineAspect.Color.r = myXColor.rgb[0];
-  aLineAspect.Color.g = myXColor.rgb[1];
-  aLineAspect.Color.b = myXColor.rgb[2];
+  aLineAspect.Color.r = myXColor.r();
+  aLineAspect.Color.g = myXColor.g();
+  aLineAspect.Color.b = myXColor.b();
   anAspectLine.SetAspect (aLineAspect);
   theWorkspace->SetAspectLine (&anAspectLine);
   myLine.Render (theWorkspace);
@@ -289,9 +261,9 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewY);
   aContext->ApplyWorldViewMatrix();
 
-  aLineAspect.Color.r = myYColor.rgb[0];
-  aLineAspect.Color.g = myYColor.rgb[1];
-  aLineAspect.Color.b = myYColor.rgb[2];
+  aLineAspect.Color.r = myYColor.r();
+  aLineAspect.Color.g = myYColor.g();
+  aLineAspect.Color.b = myYColor.b();
   anAspectLine.SetAspect (aLineAspect);
   theWorkspace->SetAspectLine (&anAspectLine);
   myLine.Render (theWorkspace);
@@ -343,14 +315,13 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
 // =======================================================================
 void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  Handle(OpenGl_Context)     aContext = theWorkspace->GetGlContext();
+  Handle(OpenGl_Context) aContext = theWorkspace->GetGlContext();
   aContext->WorldViewState.Push();
   aContext->ProjectionState.Push();
 
   resetTransformations (theWorkspace);
 
-  GLdouble aScale = myScale;
-  aScale *= myRatio;
+  const GLdouble aScale = myScale * myRatio;
 
   const OpenGl_AspectLine* anAspectLine = theWorkspace->AspectLine (Standard_True);
   const TEL_COLOUR&        aLineColor   = anAspectLine->Color();
@@ -365,24 +336,24 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
   // Position des Axes
   GLdouble aTriedronAxeX[3] = { aScale, 0.0,    0.0 };
   GLdouble aTriedronAxeY[3] = { 0.0,    aScale, 0.0 };
-  if (!myDisk.IsDefined())
+  if (!myDisk.IsInitialized())
   {
     myDisk.Init (static_cast<GLfloat> (aCylinderDiametr),
                  static_cast<GLfloat> (aConeDiametr),
                  myNbFacettes, 1);
   }
 
-  if (!mySphere.IsDefined())
+  if (!mySphere.IsInitialized())
   {
     mySphere.Init (static_cast<GLfloat> (aCylinderDiametr * 2.0), myNbFacettes, myNbFacettes);
   }
 
-  if (!myCone.IsDefined())
+  if (!myCone.IsInitialized())
   {
     myCone.Init (static_cast<GLfloat> (aConeDiametr), 0.0f, static_cast<GLfloat> (aConeLength), myNbFacettes, 1);
   }
 
-  if (!myCylinder.IsDefined())
+  if (!myCylinder.IsInitialized())
   {
     myCylinder.Init (static_cast<GLfloat> (aCylinderDiametr),
                      static_cast<GLfloat> (aCylinderDiametr),
@@ -416,10 +387,10 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
   OpenGl_AspectFace anAspectX;
   OpenGl_AspectFace anAspectY;
   OpenGl_AspectFace anAspectZ;
-  memcpy (anAspectX.ChangeIntFront().matcol.rgb,   myXColor.rgb, sizeof (TEL_COLOUR));
-  memcpy (anAspectY.ChangeIntFront().matcol.rgb,   myYColor.rgb, sizeof (TEL_COLOUR));
-  memcpy (anAspectZ.ChangeIntFront().matcol.rgb,   myZColor.rgb, sizeof (TEL_COLOUR));
-  memcpy (anAspectC.ChangeIntFront().matcol.rgb, aLineColor.rgb, sizeof (TEL_COLOUR));
+  memcpy (anAspectX.ChangeIntFront().matcol.rgb, myXColor.GetData(), sizeof (TEL_COLOUR));
+  memcpy (anAspectY.ChangeIntFront().matcol.rgb, myYColor.GetData(), sizeof (TEL_COLOUR));
+  memcpy (anAspectZ.ChangeIntFront().matcol.rgb, myZColor.GetData(), sizeof (TEL_COLOUR));
+  memcpy (anAspectC.ChangeIntFront().matcol.rgb, aLineColor.rgb,     sizeof (TEL_COLOUR));
 
   OpenGl_Mat4d aModelMatrix;
   aModelMatrix.Convert (aContext->WorldViewState.Current());
@@ -512,42 +483,26 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
 // function : OpenGl_Trihedron
 // purpose  :
 // =======================================================================
-OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosition,
-                                    const Quantity_NameOfColor          theColor,
-                                    const Standard_Real                 theScale,
-                                    const Standard_Boolean              theAsWireframe)
-: myPos (thePosition),
-  myScale (theScale),
-  myIsWireframe (theAsWireframe),
+OpenGl_Trihedron::OpenGl_Trihedron()
+: myPos (Aspect_TOTP_LEFT_LOWER),
+  myScale (1.0),
+  myIsWireframe (Standard_False),
+  myXColor (1.0f, 0.0f, 0.0f, 0.6f),
+  myYColor (0.0f, 1.0f, 0.0f, 0.6f),
+  myZColor (0.0f, 0.0f, 1.0f, 0.6f),
+  myRatio      (0.8f),
+  myDiameter   (0.05f),
+  myNbFacettes (12),
   myLabelX ("X", OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
   myLabelY ("Y", OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
   myLabelZ ("Z", OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS),
   myLine   (NULL), // do not register arrays UID - trihedron is not intended to be drawn by Ray Tracing engine
   myCircle (NULL)
 {
-  Standard_Real R,G,B;
-  Quantity_Color aColor (theColor);
-  aColor.Values (R, G, B, Quantity_TOC_RGB);
-
-  CALL_DEF_CONTEXTLINE aLineAspect = myDefaultContextLine;
-  aLineAspect.Color.r = (float)R;
-  aLineAspect.Color.g = (float)G;
-  aLineAspect.Color.b = (float)B;
-  myAspectLine.SetAspect (aLineAspect);
-
-  CALL_DEF_CONTEXTTEXT aTextAspect = myDefaultContextText;
-  aTextAspect.Color.r = (float)R;
-  aTextAspect.Color.g = (float)G;
-  aTextAspect.Color.b = (float)B;
-  myAspectText.SetAspect (aTextAspect);
-
-  myXColor = theXColor;
-  myYColor = theYColor;
-  myZColor = theZColor;
-
-  myRatio = theRatio;
-  myDiameter = theDiameter;
-  myNbFacettes = theNbFacettes;
+  const TEL_COLOUR aWhiteColor = {{ 1.0f, 1.0f, 1.0f, 1.0f }};
+  myAspectLine.ChangeColor()    = aWhiteColor;
+  myAspectText.ChangeColor()    = aWhiteColor;
+  myAspectText.ChangeFontName() = "Courier";
 }
 
 // =======================================================================
@@ -576,6 +531,96 @@ void OpenGl_Trihedron::Release (OpenGl_Context* theCtx)
   myCylinder.Release (theCtx);
   myLine.Release (theCtx);
   myCircle.Release (theCtx);
+}
+
+// =======================================================================
+// function : invalidate
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::invalidate()
+{
+  myCone    .Invalidate();
+  myDisk    .Invalidate();
+  mySphere  .Invalidate();
+  myCylinder.Invalidate();
+  myLine    .Invalidate();
+  myCircle  .Invalidate();
+}
+
+// =======================================================================
+// function : SetScale
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::SetScale (const Standard_Real theScale)
+{
+  if (Abs (myScale - theScale) > Precision::Confusion())
+  {
+    invalidate();
+  }
+  myScale = theScale;
+}
+
+// =======================================================================
+// function : SetSizeRatio
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::SetSizeRatio (const Standard_Real theRatio)
+{
+  if (Abs (Standard_Real(myRatio) - theRatio) > Precision::Confusion())
+  {
+    invalidate();
+  }
+  myRatio = float(theRatio);
+}
+
+// =======================================================================
+// function : SetArrowDiameter
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::SetArrowDiameter (const Standard_Real theDiam)
+{
+  if (Abs (Standard_Real(myDiameter) - theDiam) > Precision::Confusion())
+  {
+    invalidate();
+  }
+  myDiameter = float(theDiam);
+}
+
+// =======================================================================
+// function : SetNbFacets
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::SetNbFacets (const Standard_Integer theNbFacets)
+{
+  if (Abs (myNbFacettes - theNbFacets) > 0)
+  {
+    invalidate();
+  }
+  myNbFacettes = theNbFacets;
+}
+
+// =======================================================================
+// function : SetLabelsColor
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::SetLabelsColor (const Quantity_Color& theColor)
+{
+  myAspectText.ChangeColor().rgb[0] = float(theColor.Red());
+  myAspectText.ChangeColor().rgb[1] = float(theColor.Green());
+  myAspectText.ChangeColor().rgb[2] = float(theColor.Blue());
+}
+
+// =======================================================================
+// function : SetArrowsColors
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::SetArrowsColors (const Quantity_Color& theColorX,
+                                        const Quantity_Color& theColorY,
+                                        const Quantity_Color& theColorZ)
+{
+  myXColor = OpenGl_Vec4 (float(theColorX.Red()), float(theColorX.Green()), float(theColorX.Blue()), 0.6f);
+  myYColor = OpenGl_Vec4 (float(theColorY.Red()), float(theColorY.Green()), float(theColorY.Blue()), 0.6f);
+  myZColor = OpenGl_Vec4 (float(theColorZ.Red()), float(theColorZ.Green()), float(theColorZ.Blue()), 0.6f);
 }
 
 // =======================================================================
@@ -619,31 +664,4 @@ void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) con
 
   theWorkspace->SetAspectText (aPrevAspectText);
   theWorkspace->SetAspectLine (aPrevAspectLine);
-}
-
-/*----------------------------------------------------------------------*/
-//call_ztriedron_setup
-void OpenGl_Trihedron::Setup (const Quantity_NameOfColor XColor, const Quantity_NameOfColor YColor, const Quantity_NameOfColor ZColor,
-                              const Standard_Real SizeRatio, const Standard_Real AxisDiametr, const Standard_Integer NbFacettes)
-{
-  Standard_Real R,G,B;
-
-  Quantity_Color(XColor).Values(R, G, B, Quantity_TOC_RGB);
-  theXColor.rgb[0] = float (R);
-  theXColor.rgb[1] = float (G);
-  theXColor.rgb[2] = float (B);
-
-  Quantity_Color(YColor).Values(R, G, B, Quantity_TOC_RGB);
-  theYColor.rgb[0] = float (R);
-  theYColor.rgb[1] = float (G);
-  theYColor.rgb[2] = float (B);
-
-  Quantity_Color(ZColor).Values(R, G, B, Quantity_TOC_RGB);
-  theZColor.rgb[0] = float (R);
-  theZColor.rgb[1] = float (G);
-  theZColor.rgb[2] = float (B);
-
-  theRatio = float (SizeRatio);
-  theDiameter = float (AxisDiametr);
-  theNbFacettes = NbFacettes;
 }

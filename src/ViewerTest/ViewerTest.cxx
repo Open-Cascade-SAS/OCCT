@@ -107,6 +107,56 @@ Quantity_NameOfColor ViewerTest::GetColorFromName (const Standard_CString theNam
 }
 
 //=======================================================================
+//function : ParseColor
+//purpose  :
+//=======================================================================
+
+Standard_Integer ViewerTest::ParseColor (Standard_Integer  theArgNb,
+                                         const char**      theArgVec,
+                                         Quantity_Color&   theColor)
+{
+  Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
+  if (theArgNb >= 1
+   && Quantity_Color::ColorFromName (theArgVec[0], aColor))
+  {
+    theColor = aColor;
+    return 1;
+  }
+  else if (theArgNb >= 3)
+  {
+    const TCollection_AsciiString anRgbStr[3] =
+    {
+      theArgVec[0],
+      theArgVec[1],
+      theArgVec[2]
+    };
+    if (!anRgbStr[0].IsRealValue()
+     || !anRgbStr[1].IsRealValue()
+     || !anRgbStr[2].IsRealValue())
+    {
+      return 0;
+    }
+
+    Graphic3d_Vec4d anRgb;
+    anRgb.x() = anRgbStr[0].RealValue();
+    anRgb.y() = anRgbStr[1].RealValue();
+    anRgb.z() = anRgbStr[2].RealValue();
+    if (anRgb.x() < 0.0 || anRgb.x() > 1.0
+     || anRgb.y() < 0.0 || anRgb.y() > 1.0
+     || anRgb.z() < 0.0 || anRgb.z() > 1.0)
+    {
+      std::cout << "Error: RGB color values should be within range 0..1!\n";
+      return 0;
+    }
+
+    theColor.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
+    return 3;
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : GetTypeNames
 //purpose  :
 //=======================================================================

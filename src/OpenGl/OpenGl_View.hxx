@@ -44,6 +44,8 @@
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_Light.hxx>
 #include <OpenGl_LineAttributes.hxx>
+#include <OpenGl_Trihedron.hxx>
+#include <OpenGl_GraduatedTrihedron.hxx>
 
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_GraphicDriver.hxx>
@@ -72,9 +74,7 @@ struct OPENGL_FOG
 };
 
 struct OpenGl_Matrix;
-class OpenGl_GraduatedTrihedron;
 class OpenGl_Structure;
-class OpenGl_Trihedron;
 class Handle(OpenGl_PrinterContext);
 class OpenGl_StateCounter;
 
@@ -102,14 +102,14 @@ class OpenGl_View : public MMgt_TShared
 
   void SetFog (const Graphic3d_CView& theCView, const Standard_Boolean theFlag);
 
-  void TriedronDisplay (const Handle(OpenGl_Context)&       theCtx,
-                        const Aspect_TypeOfTriedronPosition thePosition,
+  OpenGl_Trihedron& ChangeTrihedron() { return myTrihedron; }
+  void TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
                         const Quantity_NameOfColor          theColor,
                         const Standard_Real                 theScale,
                         const Standard_Boolean              theAsWireframe);
   void TriedronErase (const Handle(OpenGl_Context)& theCtx);
 
-  OpenGl_GraduatedTrihedron* GraduatedTrihedron() const { return myGraduatedTrihedron; }
+  OpenGl_GraduatedTrihedron& ChangeGraduatedTrihedron() { return myGraduatedTrihedron; }
   void GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&        theCtx,
                                   const Graphic3d_GraduatedTrihedron& theCubic);
   void GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx);
@@ -246,8 +246,10 @@ protected:
   Handle(Graphic3d_Camera) myCamera;
 
   OPENGL_FOG myFog;
-  OpenGl_Trihedron*          myTrihedron;
-  OpenGl_GraduatedTrihedron* myGraduatedTrihedron;
+  OpenGl_Trihedron           myTrihedron;
+  OpenGl_GraduatedTrihedron  myGraduatedTrihedron;
+  bool                       myToShowTrihedron;
+  bool                       myToShowGradTrihedron;
 
   //View_LABViewContext
   int myVisualization;

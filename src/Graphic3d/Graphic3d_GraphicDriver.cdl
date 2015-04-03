@@ -293,6 +293,7 @@ is
     ----------------------------------------
 
     ZBufferTriedronSetup ( me          : mutable;
+                           theCView    : CView from Graphic3d;
                            XColor      : NameOfColor from Quantity = Quantity_NOC_RED;
                            YColor      : NameOfColor from Quantity = Quantity_NOC_GREEN;
                            ZColor      : NameOfColor from Quantity = Quantity_NOC_BLUE1;
