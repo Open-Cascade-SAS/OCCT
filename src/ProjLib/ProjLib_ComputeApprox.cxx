@@ -137,7 +137,7 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
     if(T < V1 || T > V2)
       T = ElCLib::InPeriod(T, V1, V2);
   }
-  
+
   return gp_Pnt2d(S, T);
 }
 //=======================================================================
@@ -516,9 +516,11 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       }
       //
       ElSLib::Parameters(SP, P, UU, V1);
-      Standard_Real UUmi = Min(Min(U1,UU),Min(UU,U2));
-      Standard_Real UUma = Max(Max(U1,UU),Max(UU,U2));
-      Standard_Boolean reCalc = ((UUmi >= 0. && UUmi <= M_PI) && (UUma >= 0. && UUma <= M_PI));
+      //+This fragment was the reason of bug # 26008.
+      //+It has been deleted on April, 03 2015.
+      //Standard_Real UUmi = Min(Min(U1,UU),Min(UU,U2));
+      //Standard_Real UUma = Max(Max(U1,UU),Max(UU,U2));
+      //Standard_Boolean reCalc = ((UUmi >= 0. && UUmi <= M_PI) && (UUma >= 0. && UUma <= M_PI));
       // box+sphere <<
       P2 = myCurve->Value(W1+M_PI/8);
       ElSLib::Parameters(SP,P2,U2,V2);
@@ -585,15 +587,18 @@ static void Function_SetUVBounds(Standard_Real& myU1,
 
       // box+sphere >>
       myV1 = -1.e+100; myV2 = 1.e+100;
-      Standard_Real UU1 = myU1, UU2 = myU2;
-      if((Abs(UU1) <= (2.*M_PI) && Abs(UU2) <= (2.*M_PI)) && NbSolutions == 1 && reCalc) {
-        gp_Pnt Center = Circle.Location();
-        Standard_Real U,V;
-        ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
-        myU1 = U-M_PI;
-        myU1 = Min(UU1,myU1);
-        myU2 = myU1 + 2.*M_PI;
-      }
+      
+      //+This fragment was the reason of bug # 26008.
+      //+It has been deleted on April, 03 2015.
+      //Standard_Real UU1 = myU1, UU2 = myU2;
+      //if((Abs(UU1) <= (2.*M_PI) && Abs(UU2) <= (2.*M_PI)) && NbSolutions == 1 && reCalc) {
+      //  gp_Pnt Center = Circle.Location();
+      //  Standard_Real U,V;
+      //  ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
+      //  myU1 = U-M_PI;
+      //  myU1 = Min(UU1,myU1);
+      //  myU2 = myU1 + 2.*M_PI;
+      //}
       // box+sphere <<
 
     }//if ( myCurve->GetType() == GeomAbs_Circle)
@@ -939,30 +944,30 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
     ProjLib_Function F( C, S);
 
 #ifdef OCCT_DEBUG
-    if ( AffichValue) {
-      Standard_Integer Nb = 20;
-      Standard_Real U1, U2, dU, U;
-      U1 = F.FirstParameter();
-      U2 = F.LastParameter();
-      dU = ( U2 - U1) / Nb;
-      TColStd_Array1OfInteger Mults(1,Nb+1);
-      TColStd_Array1OfReal    Knots(1,Nb+1);
-      TColgp_Array1OfPnt2d    Poles(1,Nb+1);
-      for ( Standard_Integer i = 1; i <= Nb+1; i++) {
-	      U = U1 + (i-1)*dU;
-	      Poles(i) = F.Value(U);
-	      Knots(i) = i;
-	      Mults(i) = 1;
-      }
-      Mults(1)    = 2;
-      Mults(Nb+1) = 2;
-#ifdef DRAW
-// POP pour NT
-      char* ResultName = "Result";
-      DrawTrSurf::Set(ResultName,new Geom2d_BSplineCurve(Poles,Knots,Mults,1));
-//      DrawTrSurf::Set("Result",new Geom2d_BSplineCurve(Poles,Knots,Mults,1));
-#endif
-    }
+    //if ( AffichValue) {
+    //  Standard_Integer Nb = 20;
+    //  Standard_Real U1, U2, dU, U;
+    //  U1 = F.FirstParameter();
+    //  U2 = F.LastParameter();
+    //  dU = ( U2 - U1) / Nb;
+    //  TColStd_Array1OfInteger Mults(1,Nb+1);
+    //  TColStd_Array1OfReal    Knots(1,Nb+1);
+    //  TColgp_Array1OfPnt2d    Poles(1,Nb+1);
+    //  for ( Standard_Integer i = 1; i <= Nb+1; i++) {
+    //   U = U1 + (i-1)*dU;
+    //   Poles(i) = F.Value(U);
+    //   cout << "i = " << i << ": U = " << U << 
+    //      ", p(" << Poles(i).X() << ", " << Poles(i).Y() << ");" << endl;
+    //   Knots(i) = i;
+    //   Mults(i) = 1;
+    //  }
+    //  Mults(1)    = 2;
+    //  Mults(Nb+1) = 2;
+
+    //2D-curve for showing in DRAW
+    //  Handle(Geom2d_Curve) aCC = new Geom2d_BSplineCurve(Poles,Knots,Mults,1);
+    //  AffichValue = Standard_False;
+    //}
 #endif    
 
 //-----------
