@@ -23,7 +23,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <IntPatch_GLine.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_Hyperbola.hxx>
@@ -1673,9 +1674,9 @@ inline const gp_Pnt& VertexValue( const Handle(IntPatch_RLine) theRLine,
   return theRLine->Vertex(theIndex).Value();
 }
 
-static Standard_Real SquareDistance(const Handle(IntPatch_GLine) theGLine,
+static Standard_Real SquareDistance(const Handle(IntPatch_GLine)& theGLine,
                                     const gp_Pnt& theP,
-                                    GeomAPI_ProjectPointOnCurve& thePrj)
+                                    Extrema_ExtPC& theExtr)
 {
   Standard_Real aSQDist = RealLast();
   switch(theGLine->ArcType())
@@ -1687,14 +1688,23 @@ static Standard_Real SquareDistance(const Handle(IntPatch_GLine) theGLine,
     aSQDist = theGLine->Circle().SquareDistance(theP);
     break;
   default:
-    thePrj.Perform(theP);
-    if(thePrj.NbPoints() == 0)
+    theExtr.Perform(theP);
+    if(!theExtr.IsDone() || !theExtr.NbExt())
     {
       //Lines are not overlapped
       return aSQDist;
     }
 
-    aSQDist = theP.SquareDistance(thePrj.NearestPoint());
+    aSQDist = theExtr.SquareDistance(1);
+    const Standard_Integer aNbExtr = theExtr.NbExt();
+    for ( Standard_Integer i = 2; i <= aNbExtr; i++)
+    {
+      const Standard_Real aSQD = theExtr.SquareDistance(i);
+      if (aSQD < aSQDist)
+      {
+        aSQDist = aSQD;
+      }
+    }
   }
 
   return aSQDist;
@@ -1726,9 +1736,10 @@ static Standard_Boolean IsRLineGood(const IntSurf_Quadric& Quad1,
   if(aNbPntsM1 < 1)
     return Standard_False;
 
-  GeomAPI_ProjectPointOnCurve aPrj;
-  
+  Extrema_ExtPC anExtr;
+  GeomAdaptor_Curve anAC;
   Handle(Geom_Curve) aCurv;
+
   if(aGType == IntPatch_Ellipse)
     aCurv = new Geom_Ellipse(theGLine->Ellipse());
   else if(aGType == IntPatch_Parabola)
@@ -1737,7 +1748,12 @@ static Standard_Boolean IsRLineGood(const IntSurf_Quadric& Quad1,
     aCurv = new Geom_Hyperbola(theGLine->Hyperbola());
   
   if(!aCurv.IsNull())
-    aPrj.Init(aCurv, aCurv->FirstParameter(), aCurv->LastParameter());  
+  {
+    const Standard_Real anUinf = aCurv->FirstParameter(),
+                        anUsup = aCurv->LastParameter();
+    anAC.Load(aCurv, anUinf, anUsup);
+    anExtr.Initialize(anAC, anUinf, anUsup);
+  }
 
   if(aNbPntsM1 == 1)
   {
@@ -1767,14 +1783,14 @@ static Standard_Boolean IsRLineGood(const IntSurf_Quadric& Quad1,
       aPMid = Quad2.Value(aP2d.X(), aP2d.Y());
     }
 
-    const Standard_Real aSQDist = SquareDistance(theGLine, aPMid, aPrj);
+    const Standard_Real aSQDist = SquareDistance(theGLine, aPMid, anExtr);
     return (aSQDist > aSQTol);
   }
 
   for(Standard_Integer i = 2; i <= aNbPntsM1; i++)
   {
     const gp_Pnt aP(Value(theRLine, i));
-    const Standard_Real aSQDist = SquareDistance(theGLine, aP, aPrj);
+    const Standard_Real aSQDist = SquareDistance(theGLine, aP, anExtr);
 
     if(aSQDist > aSQTol)
       return Standard_True;

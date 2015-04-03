@@ -88,13 +88,14 @@
 #include <Approx_CurveOnSurface.hxx>
 #include <GeomAdaptor.hxx>
 #include <GeomProjLib.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <Geom2dInt_GInter.hxx>
 
 static
   void Parameters(const Handle(GeomAdaptor_HSurface)& HS1,
@@ -2055,6 +2056,98 @@ Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
 }
 
 //=======================================================================
+//function : ParametersOfNearestPointOnSurface
+//purpose  : 
+//=======================================================================
+static Standard_Boolean ParametersOfNearestPointOnSurface(const Extrema_ExtPS theExtr,
+                                                          Standard_Real& theU,
+                                                          Standard_Real& theV)
+{
+  if(!theExtr.IsDone() || !theExtr.NbExt())
+    return Standard_False;
+
+  Standard_Integer anIndex = 1;
+  Standard_Real aMinSQDist = theExtr.SquareDistance(anIndex);
+  for(Standard_Integer i = 2; i <= theExtr.NbExt(); i++)
+  {
+    Standard_Real aSQD = theExtr.SquareDistance(i);
+    if (aSQD < aMinSQDist)
+    {
+      aMinSQDist = aSQD;
+      anIndex = i;
+    }
+  }
+
+  theExtr.Point(anIndex).Parameter(theU, theV);
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : GetSegmentBoundary
+//purpose  : 
+//=======================================================================
+static void GetSegmentBoundary( const IntRes2d_IntersectionSegment& theSegm,
+                                const Handle(Geom2d_Curve)& theCurve,
+                                GeomInt_VectorOfReal& theArrayOfParameters)
+{
+  Standard_Real aU1 = theCurve->FirstParameter(), aU2 = theCurve->LastParameter();
+
+  if(theSegm.HasFirstPoint())
+  {
+    const IntRes2d_IntersectionPoint& anIPF = theSegm.FirstPoint();
+    aU1 = anIPF.ParamOnFirst();
+  }
+
+  if(theSegm.HasLastPoint())
+  {
+    const IntRes2d_IntersectionPoint& anIPL = theSegm.LastPoint();
+    aU2 = anIPL.ParamOnFirst();
+  }
+
+  theArrayOfParameters.Append(aU1);
+  theArrayOfParameters.Append(aU2);
+}
+
+//=======================================================================
+//function : IntersectCurveAndBoundary
+//purpose  : 
+//=======================================================================
+static void IntersectCurveAndBoundary(const Handle(Geom2d_Curve)& theC2d,
+                                      const Handle(Geom2d_Curve)* const theArrBounds,
+                                      const Standard_Integer theNumberOfCurves,
+                                      const Standard_Real theTol,
+                                      GeomInt_VectorOfReal& theArrayOfParameters)
+{
+  if(theC2d.IsNull())
+    return;
+
+  Geom2dAdaptor_Curve anAC1(theC2d);
+  for(Standard_Integer aCurID = 0; aCurID < theNumberOfCurves; aCurID++)
+  {
+    if(theArrBounds[aCurID].IsNull())
+      continue;
+
+    Geom2dAdaptor_Curve anAC2(theArrBounds[aCurID]);
+    Geom2dInt_GInter anIntCC2d(anAC1, anAC2, theTol, theTol);
+
+    if(!anIntCC2d.IsDone() || anIntCC2d.IsEmpty())
+      continue;
+
+    for (Standard_Integer aPntID = 1; aPntID <= anIntCC2d.NbPoints(); aPntID++)
+    {
+      const Standard_Real aParam = anIntCC2d.Point(aPntID).ParamOnFirst();
+      theArrayOfParameters.Append(aParam);
+    }
+
+    for (Standard_Integer aSegmID = 1; aSegmID <= anIntCC2d.NbSegments(); aSegmID++)
+    {
+      GetSegmentBoundary(anIntCC2d.Segment(aSegmID), theC2d, theArrayOfParameters);
+    }
+  }
+}
+
+//=======================================================================
 //function : TreatRLine
 //purpose  : Approx of Restriction line
 //=======================================================================
@@ -2147,45 +2240,55 @@ void GeomInt_IntSS::BuildPCurves (Standard_Real f,
     }
   }
   else {
-    if((l - f) > Epsilon(Abs(f))) {
-      GeomAPI_ProjectPointOnSurf aProjector1, aProjector2;
-      gp_Pnt P1 = C->Value(f);
-      gp_Pnt P2 = C->Value(l);
-      aProjector1.Init(P1, S);
-      aProjector2.Init(P2, S);
+    if((l - f) > Epsilon(Abs(f)))
+    {
+      //The domain of C2d is [Epsilon(Abs(f)), 2.e-09]
+      //On this small range C2d can be considered as segment 
+      //of line.
 
-      if(aProjector1.IsDone() && aProjector2.IsDone()) {
-        Standard_Real U=0., V=0.;
-        aProjector1.LowerDistanceParameters(U, V);
-        gp_Pnt2d p1(U, V);
+      Standard_Real aU=0., aV=0.;
+      GeomAdaptor_Surface anAS;
+      anAS.Load(S);
+      Extrema_ExtPS anExtr;
+      const gp_Pnt aP3d1 = C->Value(f);
+      const gp_Pnt aP3d2 = C->Value(l);
 
-        aProjector2.LowerDistanceParameters(U, V);
-        gp_Pnt2d p2(U, V);
+      anExtr.SetAlgo(Extrema_ExtAlgo_Grad);
+      anExtr.Initialize(anAS, umin, umax, vmin, vmax,
+                                Precision::Confusion(), Precision::Confusion());
+      anExtr.Perform(aP3d1);
 
-        if(p1.Distance(p2) > gp::Resolution()) {
-          TColgp_Array1OfPnt2d poles(1,2);
-          TColStd_Array1OfReal knots(1,2);
-          TColStd_Array1OfInteger mults(1,2);
-          poles(1) = p1;
-          poles(2) = p2;
-          knots(1) = f;
-          knots(2) = l;
-          mults(1) = mults(2) = 2;
+      if(ParametersOfNearestPointOnSurface(anExtr, aU, aV))
+      {
+        const gp_Pnt2d aP2d1(aU, aV);
 
-          C2d = new Geom2d_BSplineCurve(poles,knots,mults,1);
+        anExtr.Perform(aP3d2);
 
-          // compute reached tolerance.begin
-          gp_Pnt PMid = C->Value((f + l) * 0.5);
-          aProjector1.Perform(PMid);
+        if(ParametersOfNearestPointOnSurface(anExtr, aU, aV))
+        {
+          const gp_Pnt2d aP2d2(aU, aV);
 
-          if(aProjector1.IsDone()) {
-            aProjector1.LowerDistanceParameters(U, V);
-            gp_Pnt2d pmidproj(U, V);
-            gp_Pnt2d pmidcurve2d = C2d->Value((f + l) * 0.5);
-            Standard_Real adist = pmidcurve2d.Distance(pmidproj);
-            Tol = (adist > Tol) ? adist : Tol;
+          if(aP2d1.Distance(aP2d2) > gp::Resolution())
+          {
+            TColgp_Array1OfPnt2d poles(1,2);
+            TColStd_Array1OfReal knots(1,2);
+            TColStd_Array1OfInteger mults(1,2);
+            poles(1) = aP2d1;
+            poles(2) = aP2d2;
+            knots(1) = f;
+            knots(2) = l;
+            mults(1) = mults(2) = 2;
+
+            C2d = new Geom2d_BSplineCurve(poles,knots,mults,1);
+
+            //Check same parameter in middle point .begin
+            const gp_Pnt PMid(C->Value(0.5*(f+l)));
+            const gp_Pnt2d pmidcurve2d(0.5*(aP2d1.XY() + aP2d2.XY()));
+            const gp_Pnt aPC(anAS.Value(pmidcurve2d.X(), pmidcurve2d.Y()));
+            const Standard_Real aDist = PMid.Distance(aPC);
+            Tol = Max(aDist, Tol);
+            //Check same parameter in middle point .end
           }
-          // compute reached tolerance.end
         }
       }
     }
@@ -2309,57 +2412,13 @@ void GeomInt_IntSS::TrimILineOnSurfBoundaries(const Handle(Geom2d_Curve)& theC2d
     }
   }
 
-  Geom2dAPI_InterCurveCurve anIntCC2d;
+  const Standard_Real anIntTol = 10.0*Precision::Confusion();
 
-  if(!theC2d1.IsNull())
-  {
-    for(Standard_Integer aCurID = 0; aCurID < aNumberOfCurves; aCurID++)
-    {
-      if(aCurS1Bounds[aCurID].IsNull())
-        continue;
+  IntersectCurveAndBoundary(theC2d1, aCurS1Bounds,
+                        aNumberOfCurves, anIntTol, theArrayOfParameters);
 
-      anIntCC2d.Init(theC2d1, aCurS1Bounds[aCurID]);
-
-      for (Standard_Integer aPntID = 1; aPntID <= anIntCC2d.NbPoints(); aPntID++)
-      {
-        const Standard_Real aParam = anIntCC2d.Intersector().Point(aPntID).ParamOnFirst();
-        theArrayOfParameters.Append(aParam);
-      }
-
-      for (Standard_Integer aSegmID = 1; aSegmID <= anIntCC2d.NbSegments(); aSegmID++)
-      {
-        Handle(Geom2d_Curve) aCS, aCSTemp;
-        anIntCC2d.Segment(aSegmID, aCS, aCSTemp);
-        theArrayOfParameters.Append(aCS->FirstParameter());
-        theArrayOfParameters.Append(aCS->LastParameter());
-      }
-    }
-  }
-
-  if(!theC2d2.IsNull())
-  {
-    for(Standard_Integer aCurID = 0; aCurID < aNumberOfCurves; aCurID++)
-    {
-      if(aCurS2Bounds[aCurID].IsNull())
-        continue;
-
-      anIntCC2d.Init(theC2d2, aCurS2Bounds[aCurID]);
-
-      for (Standard_Integer aPntID = 1; aPntID <= anIntCC2d.NbPoints(); aPntID++)
-      {
-        const Standard_Real aParam = anIntCC2d.Intersector().Point(aPntID).ParamOnFirst();
-        theArrayOfParameters.Append(aParam);
-      }
-
-      for (Standard_Integer aSegmID = 1; aSegmID <= anIntCC2d.NbSegments(); aSegmID++)
-      {
-        Handle(Geom2d_Curve) aCS, aCSTemp;
-        anIntCC2d.Segment(aSegmID, aCS, aCSTemp);
-        theArrayOfParameters.Append(aCS->FirstParameter());
-        theArrayOfParameters.Append(aCS->LastParameter());
-      }
-    }
-  }
+  IntersectCurveAndBoundary(theC2d2, aCurS2Bounds,
+                        aNumberOfCurves, anIntTol, theArrayOfParameters);
 
   std::sort(theArrayOfParameters.begin(), theArrayOfParameters.end());
 }
