@@ -5270,7 +5270,7 @@ Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const cha
   aisContext->OpenLocalContext();
   //aisContext->ActivateStandardMode(TopAbs_ShapeEnum::TopAbs_EDGE);
   aisContext->ActivateStandardMode(TopAbs_EDGE);
-  aisContext->SetSensitivity(8);
+  aisContext->SetPixelTolerance(8);
 
   return 0; //TCL_OK
 }

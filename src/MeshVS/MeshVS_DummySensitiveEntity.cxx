@@ -13,84 +13,61 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_DummySensitiveEntity.ixx>
+#include <MeshVS_DummySensitiveEntity.hxx>
+
+#include <Bnd_Box2d.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (MeshVS_DummySensitiveEntity, SelectBasics_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DummySensitiveEntity, SelectBasics_SensitiveEntity)
 
 //================================================================
 // Function : Constructor MeshVS_DummySensitiveEntity
 // Purpose  :
 //================================================================
-MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity
-  ( const Handle(SelectBasics_EntityOwner)& OwnerId )
-: SelectBasics_SensitiveEntity( OwnerId )
-{
-}
+MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+: SelectBasics_SensitiveEntity (theOwnerId)
+{}
 
 //================================================================
-// Function : Areas
+// Function : NbSubElements
 // Purpose  :
 //================================================================
-void MeshVS_DummySensitiveEntity::Areas( SelectBasics_ListOfBox2d& )
+Standard_Integer MeshVS_DummySensitiveEntity::NbSubElements()
 {
-}
-
-//================================================================
-// Function : Matches
-// Purpose  :
-//================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches( const SelectBasics_PickArgs&,
-                                                       Standard_Real&,
-                                                       Standard_Real& )
-{
-  return Standard_False;
+  return -1;
 }
 
 //================================================================
 // Function : Matches
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches( const Standard_Real,
-                                                       const Standard_Real,
-                                                       const Standard_Real,
-                                                       const Standard_Real,
-                                                       const Standard_Real )
+Standard_Boolean MeshVS_DummySensitiveEntity::Matches (SelectBasics_SelectingVolumeManager& /*theMgr*/,
+                                                       SelectBasics_PickResult& /*thePickResult*/)
 {
   return Standard_False;
 }
 
 //================================================================
-// Function : Matches
+// Function : BoundingBox
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches( const TColgp_Array1OfPnt2d&,
-                                                       const Bnd_Box2d&,
-                                                       const Standard_Real )
+Select3D_BndBox3d MeshVS_DummySensitiveEntity::BoundingBox()
 {
-  return Standard_False;
+  return Select3D_BndBox3d();
 }
 
 //================================================================
-// Function : NeedsConversion
+// Function : ElementsNb
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::NeedsConversion() const
-{
-  return Standard_False;
-}
+void MeshVS_DummySensitiveEntity::BVH()
+{}
 
 //================================================================
-// Function : Is3D
+// Function : Clear
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Is3D() const
-{
-  return Standard_True;
-}
-
-//================================================================
-// Function : MaxBoxes
-// Purpose  :
-//================================================================
-Standard_Integer MeshVS_DummySensitiveEntity::MaxBoxes() const
-{
-  return 0;
-}
+void MeshVS_DummySensitiveEntity::Clear()
+{}

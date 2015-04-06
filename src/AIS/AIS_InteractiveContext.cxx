@@ -43,6 +43,7 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <Standard_Atomic.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
 #include <UnitsAPI.hxx>
 
 #include <AIS_Trihedron.hxx>
@@ -2364,6 +2365,9 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   if (theIObj.IsNull()
   || !myObjects.IsBound (theIObj))
   {
+    // for cases when reference shape of connected interactives was not displayed
+    // but its selection primitives were calculated
+    mgrSelector->Remove (theIObj);
     return;
   }
 
@@ -2585,64 +2589,10 @@ void AIS_InteractiveContext::UnsetSelectionMode (const Handle(AIS_InteractiveObj
 }
 
 //=======================================================================
-//function : SetSensitivityMode
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetSensitivityMode (const StdSelect_SensitivityMode theMode)
-{
-  if (HasOpenedContext())
-  {
-    myLocalContexts (myCurLocalIndex)->SetSensitivityMode (theMode);
-  }
-  else
-  {
-    myMainSel->SetSensitivityMode (theMode);
-  }
-}
-
-//=======================================================================
-//function : SensitivityMode
-//purpose  :
-//=======================================================================
-StdSelect_SensitivityMode AIS_InteractiveContext::SensitivityMode() const
-{
-  return HasOpenedContext()
-       ? myLocalContexts (myCurLocalIndex)->SensitivityMode()
-       : myMainSel->SensitivityMode();
-}
-
-//=======================================================================
-//function : SetSensitivity
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetSensitivity (const Standard_Real thePrecision)
-{
-  if (HasOpenedContext())
-  {
-    myLocalContexts(myCurLocalIndex)->SetSensitivity (thePrecision);
-  }
-  else
-  {
-    myMainSel->SetSensitivity (thePrecision);
-  }
-}
-
-//=======================================================================
-//function : Sensitivity
-//purpose  :
-//=======================================================================
-Standard_Real AIS_InteractiveContext::Sensitivity() const
-{
-  return HasOpenedContext()
-       ? myLocalContexts(myCurLocalIndex)->Sensitivity()
-       : myMainSel->Sensitivity();
-}
-
-//=======================================================================
 //function : SetPixelTolerance
 //purpose  :
 //=======================================================================
-void AIS_InteractiveContext::SetPixelTolerance (const Standard_Integer thePrecision)
+void AIS_InteractiveContext::SetPixelTolerance (const Standard_Real thePrecision)
 {
   if (HasOpenedContext())
   {
@@ -2658,7 +2608,7 @@ void AIS_InteractiveContext::SetPixelTolerance (const Standard_Integer thePrecis
 //function : PixelTolerance
 //purpose  :
 //=======================================================================
-Standard_Integer AIS_InteractiveContext::PixelTolerance() const
+Standard_Real AIS_InteractiveContext::PixelTolerance() const
 {
   return HasOpenedContext()
        ? myLocalContexts (myCurLocalIndex)->PixelTolerance()
@@ -2835,4 +2785,38 @@ Standard_Integer AIS_InteractiveContext::GetZLayer (const Handle(AIS_Interactive
   return !theIObj.IsNull()
        ?  theIObj->ZLayer()
        :  Graphic3d_ZLayerId_UNKNOWN;
+}
+
+//=======================================================================
+//function : RebuildSelectionStructs
+//purpose  : Rebuilds 1st level of BVH selection forcibly
+//=======================================================================
+void AIS_InteractiveContext::RebuildSelectionStructs()
+{
+  myMainSel->RebuildObjectsTree (Standard_True);
+}
+
+//=======================================================================
+//function : Disconnect
+//purpose  : Disconnects selectable object from an assembly and updates selection structures
+//=======================================================================
+void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& theAssembly,
+                                         const Handle(AIS_InteractiveObject)& theObjToDisconnect)
+{
+  if (theAssembly->IsInstance ("AIS_MultipleConnectedInteractive"))
+  {
+    const Handle(AIS_MultipleConnectedInteractive)& theObj =
+      Handle(AIS_MultipleConnectedInteractive)::DownCast (theAssembly);
+    theObj->Disconnect (theObjToDisconnect);
+    mgrSelector->Remove (theObjToDisconnect);
+  }
+  else if (theAssembly->IsInstance ("AIS_ConnectedInteractive") && theObjToDisconnect == NULL)
+  {
+    const Handle(AIS_ConnectedInteractive)& theObj =
+      Handle(AIS_ConnectedInteractive)::DownCast (theAssembly);
+    theObj->Disconnect();
+    mgrSelector->Remove (theObj);
+  }
+  else
+    return;
 }

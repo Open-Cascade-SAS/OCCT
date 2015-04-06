@@ -16,12 +16,7 @@
 
 package SelectBasics 
 
-	---Purpose:  kernel of dynamic selection:
-	--           - contains the algorithm to sort the sensitive areas
-	--           before the selection action;->quick selection of
-	--           an item in a set of items...
-	--           - contains the entities able to give the algorithm
-	--             sensitive areas .
+	---Purpose: interface class for dynamic selection
 
 uses
     Bnd,
@@ -31,36 +26,21 @@ uses
     MMgt,
     gp,
     TColgp,
-    TopLoc
-    
+    TopLoc,
+    Select3D
 
 is
 
 
     deferred class EntityOwner;
-
-    class SortAlgo; 
-
-    class BasicTool;
-
-    class ListOfBox2d instantiates List from TCollection 
-    (Box2d from Bnd);
     
-
-    class SequenceOfOwner instantiates Sequence from TCollection 
-    (EntityOwner);
-    
-
-
     deferred class SensitiveEntity;
 
-
-    class ListOfSensitive instantiates List from TCollection 
-    (SensitiveEntity);
-
-    imported PickArgs;
-    ---Purpose: Structure to provide all-in-one information on picking arguments
+    imported PickResult;
+    ---Purpose: Structure to provide all-in-one result of selection of sensitive
     -- for "Matches" method of SelectBasics_SensitiveEntity.
+
+    imported SelectingVolumeManager;
 
     MaxOwnerPriority returns Integer;
     

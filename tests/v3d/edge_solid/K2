@@ -43,7 +43,7 @@ vmoveto 225 98
 vmoveto 0 0
 vmoveto 270 326
 vmoveto 0 0
-vmoveto 341 111
+vmoveto 342 111
 vmoveto 0 0
 vselect 0 0
 vmoveto 0 0
@@ -54,6 +54,6 @@ vfit
 vmoveto 0 0
 vmoveto 310 87
 vmoveto 0 0
-vselect 237 99
+vselect 237 100
 vmoveto 0 0
 

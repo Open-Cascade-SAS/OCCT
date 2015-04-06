@@ -19,6 +19,7 @@
 #include <AIS_ConcentricRelation.ixx>
 
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 

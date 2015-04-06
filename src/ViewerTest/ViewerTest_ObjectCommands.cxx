@@ -1743,10 +1743,7 @@ static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb
   aPlane->SetComponent (new Geom_Plane (aCenterPnt, aDirection));
   aPlane->SetSize (aSizeX, aSizeY);
 
-  if (isUpdate)
-  {
-    aContextAIS->Update (aPlane, Standard_True);
-  }
+  aContextAIS->Update (aPlane, isUpdate);
 
   return 0;
 }
@@ -3842,7 +3839,7 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
     return 1; // TCL_ERROR
   }
   // Check argumnets 
-  if (argc != 6)
+  if (argc != 6 && argc != 7)
   {
     std::cout << "vconnect error: expect at least 5 arguments\n";
     return 1; // TCL_ERROR
@@ -3879,6 +3876,7 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
       return 1; // TCL_ERROR
     }
     anOriginObject = new AIS_Shape (aTDShape);
+    GetMapOfAIS().Bind (anOriginObject, anOriginObjectName);
   }
  
   // Get location data
@@ -3910,6 +3908,14 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
 
   // Bind connected object to its name
   GetMapOfAIS().Bind (aConnected, aName);
+
+  if (argc == 7)
+  {
+    TCollection_AsciiString anArg = argv[6];
+    anArg.LowerCase();
+    if (anArg == "-nodisplay")
+      return 0;
+  }
 
   // Display connected object
   TheAISContext()->Display (aConnected);
@@ -3988,7 +3994,7 @@ static Standard_Integer VDisconnect (Draw_Interpretor& di,
     anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (anObject));
   }
 
-  anAssembly->Disconnect (anIObj);
+  aContext->Disconnect (anAssembly, anIObj);
   aContext->UpdateCurrentViewer();
 
   return 0;
@@ -5999,8 +6005,9 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VConnect, group);
 
   theCommands.Add("vconnectto",
-    "vconnectto : instance_name Xo Yo Zo object"
-    "  Makes an instance 'instance_name' of 'object' with position (Xo Yo Zo).", 
+    "vconnectto : instance_name Xo Yo Zo object [-nodisplay]"
+    "  Makes an instance 'instance_name' of 'object' with position (Xo Yo Zo)."
+    "\n\t\t:   -nodisplay - only creates interactive object, but not displays it",
     __FILE__, VConnectTo,group);
 
   theCommands.Add("vdisconnect",

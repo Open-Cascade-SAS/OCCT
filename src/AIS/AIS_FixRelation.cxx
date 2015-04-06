@@ -23,6 +23,7 @@
 #include <TopAbs_ShapeEnum.hxx>
 
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 
 #include <BRep_Tool.hxx>

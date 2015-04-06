@@ -55,11 +55,8 @@ void SelectMgr_EntityOwner::Set(const Handle(SelectMgr_SelectableObject)& aSO)
 }
 
 Standard_Boolean SelectMgr_EntityOwner::HasSelectable() const
-{  
-  Handle(Standard_Transient) aNull;
-  if(mySelectable != aNull.operator->()){
-    if(!Selectable().IsNull()) return Standard_True;}
-  return Standard_False;
+{
+  return mySelectable != NULL;
 }
 
 Handle(SelectMgr_SelectableObject) SelectMgr_EntityOwner::Selectable() const

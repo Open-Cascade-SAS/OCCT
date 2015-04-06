@@ -15,7 +15,7 @@ vdisplay a b
 vfit
 vselmode 2 1
 vselect 0 0
-vselect 60 300
+vselect 58 300
 vselect 300 200 300 60 400 60 407 150 1
 
 set NbSelected1 [vnbselected]

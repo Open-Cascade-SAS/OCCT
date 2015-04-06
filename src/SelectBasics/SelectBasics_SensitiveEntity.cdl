@@ -16,131 +16,76 @@
 
 deferred class SensitiveEntity from SelectBasics inherits TShared from MMgt
 
-	---Purpose: root class ; the inheriting classes will be able to give
-	--          sensitive Areas for the dynamic selection algorithms
+  ---Purpose: root class; the inheriting classes will be able to give
+  --          sensitive Areas for the dynamic selection algorithms
 
 uses 
     EntityOwner,
-    ListOfBox2d,
-    PickArgs,
-    Array1OfPnt2d from TColgp,
-    Box2d from Bnd
+    BndBox3d from Select3D,
+    PickResult,
+    SelectingVolumeManager
 
 is
 
 
-    Initialize (OwnerId            : EntityOwner;
-    	    	aSensitivityFactor : ShortReal from Standard =1);
-    
-    
-    Set (me:mutable ; TheOwnerId : EntityOwner) is virtual;
-    ---Level: Public 
-    
+    Initialize (theOwnerId       : EntityOwner;
+                theSensFactor    : Real from Standard = 2.0);
 
-    OwnerId(me) returns any EntityOwner is static;
+    Set (me : mutable;
+         theOwnerId : EntityOwner)
+      is virtual;
+    ---Level: Public
+    ---Purpose: Sets owner of the entity
+
+
+    OwnerId (me)
+      returns any EntityOwner
+      is static;
     ---Level: Public 
     ---C++: return const&
-    	    
-    
-    Areas(me:mutable; aresult : in out ListOfBox2d ) is deferred;  
-    ---Level: Public 
-    ---Purpose: to be implemented specifically by each type of
-    --          sensitive  primitive .
-    --          
+    ---Purpose: Returns pointer to owner of the entity
 
-    Matches (me : mutable;
-             thePickArgs : PickArgs from SelectBasics;
-             theMatchDMin : out Real from Standard;
-             theMatchDepth : out Real from Standard) returns Boolean is deferred;
+
+    Matches (me           : mutable;
+            theMgr        : out SelectingVolumeManager from SelectBasics;
+            thePickResult : out PickResult from SelectBasics)
+    returns Boolean is deferred;
     ---Level: Public
-    ---Purpose: Checks whether the sensitive entity matches the picking detection
-    -- area (close to the picking line). This method takes into account depth
-    -- limits produced by abstract view: far/near planes, clippings.
-    -- Please port existing implementations of your picking detection, which
-    -- were done at Matches (X, Y, Tol, DMin) method to this one, introducing
-    -- the depth checks. Please note that the previous method is suppressed
-    -- and the virtual implementations are not used by OCC selection framework.
-    -- The porting procedure for simple sensitives (or if you are not interested
-    -- in implementing full scale depth checks) can be simplified to writing the
-    -- following code snippet:
-    -- @code
-    -- { // example code for porting descendants of Select3D_SensitiveEntity
-    --
-    --   // invoke implementation of obsolete matches method (if implemented)...
-    --   if (!Matches (thePickArgs.X(), thePickArgs.Y(), thePickArgs.Tolerance(), theMatchDMin))
-    --     return Standard_False;
-    --
-    --   // invoke your implementation of computing depth (if implemented)...
-    --   Standard_Real aDetectDepth = ComputeDepth (thePickArgs.PickLine());
-    --
-    --   return !thePickArgs.IsClipped(aDetectDepth);
-    -- }
-    -- @endcode
-    -- @param thePickArgs [in] the picking arguments.
-    -- @param theMatchDMin [out] the minimum distance on xy plane from point
-    -- of picking to center of gravity of the detected sub-part of sensitive
-    -- entity or the whole sensitive (e.g. used for resolving selection of
-    -- coinciding circles, selection will be set to the one whose center is
-    -- closest to the picking point).
-    -- @param theMatchDepth [out] the minimum detected depth: depth of the 
-    -- closest detected sub-part of sensitive entity (or the whole sensitive).
-    -- @return True if the sensitive matches the detection area.
-    -- This method is an entry point for picking detection framework.
-    -- The method is triggered when it is required to compose list of
-    -- detected sensitive entities. The sensitives are filtered out from
-    -- detection result if returned value is False. The passed entities are
-    -- then can be sorted by "theDetectDist", "theDetectDepth" parameters.
+    ---Purpose: Checks whether the sensitive entity is overlapped by
+    --          current selecting volume
 
-    Matches (me  :mutable; 
-             XMin,YMin,XMax,YMax : Real from Standard;
-             aTol: Real from Standard)
-    returns Boolean
-    is deferred;    
-    ---Level: Public 
-    ---Purpose: returns True if the box (Xmin,YMin)------(Xmax,Ymax)
-    --          contains the SensitiveEntity. 
-    --          Necessary for selection using elastic boxes,or segments.
-
-
-    Matches (me  :mutable; 
-             Polyline:Array1OfPnt2d from TColgp;
-	     aBox:Box2d from Bnd;
-             aTol: Real from Standard)
-    returns Boolean
-    is deferred;    
-    ---Level: Public 
-    ---Purpose: returns True if the polyline xi,yi
-    --          contains the SensitiveEntity. 
-    --          Necessary for selection using polyline selection
-
-    NeedsConversion(me) returns Boolean is deferred ;
-    
-    Is3D(me) returns Boolean from Standard is deferred;
-    ---Purpose: returns True if able to give 3D information
-    --          (Depth,...). See Select3D
-    
-    MaxBoxes(me) returns Integer is deferred;
-    ---Purpose: returns the max number of boxes the entity is able to give
-    --          at a time
-
-
-    SetSensitivityFactor(me:mutable; aFactor:ShortReal from Standard);
+    SetSensitivityFactor (me : mutable;
+                          theSensFactor :Real from Standard);
     ---C++: inline
+    ---Purpose: Allows to manage the sensitivity of the entity
 
-    SensitivityFactor(me) returns ShortReal from Standard;
+    SensitivityFactor (me)
+      returns Real from Standard;
     ---C++: inline
     ---Purpose: allows a better sensitivity for
     --          a specific entity in selection algorithms
     --          useful for small sized entities.
 
+    NbSubElements (me : mutable) returns Integer from Standard
+    is deferred;
+    ---Purpose: Returns the number of sub-entities or elements in
+    --          sensitive entity. Is used to determine if entity is
+    --          complex and needs to pre-build BVH at the creation of
+    --          sensitive entity step or is light-weighted so the tree
+    --          can be build on demand with unnoticeable delay
+
+    BoundingBox (me : mutable) returns BndBox3d from Select3D is deferred;
+    ---Purpose: Returns bounding box of sensitive entity
+
+    BVH (me : mutable) is deferred;
+    ---Purpose: Builds BVH tree for sensitive if it is needed
+
+    Clear (me : mutable) is deferred;
+    ---Purpose: Clears up all the resources and memory allocated
+
 
 fields
     
     myOwnerId       : EntityOwner from SelectBasics is protected;
-    mySFactor       : ShortReal from Standard;
+    mySFactor       : Real from Standard;
 end SensitiveEntity;
-
-
-
-
-

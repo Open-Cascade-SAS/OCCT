@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC24623_4"
+puts "============"
+puts ""
+#######################################################################
+puts "Visualization - improve selection mechanism"
+# tests memory leaks in creation of selection primitives for connected
+# interactive objects: checks that there is no "dead links" to reference
+#                      interactives after its clearing
+#######################################################################
+
+puts ""
+pload MODELING VISUALIZATION
+psphere s 0.5
+tclean  s
+incmesh s 0.001
+trinfo  s
+vinit
+vclear
+
+set aMemInit [meminfo h]
+set anIterNb 100
+
+for {set anIterCount 0} {$anIterCount < $anIterNb} {incr anIterCount} {
+    set aNb 11
+
+    vconnectto i_1 0 0 0 s -nodisplay
+    vloadselection i_1
+    for {set i 2} {$i < $aNb} {incr i} { vconnectto i_${i} ${i} 0 0 i_1 -nodisplay; vloadselection i_${i} }
+    vclear
+}
+
+set aMemClear [meminfo h]
+
+puts "Initial memory : [expr $aMemInit   / (1024 * 1024)] MiB"
+puts "Clearing       : [expr $aMemClear  / (1024 * 1024)] MiB"
+
+set aRatio [expr $aMemClear / double($aMemInit)]
+
+# check if the memory difference is greater than 20%
+if {[expr $aRatio > 1.2]} {
+    puts "Error : TEST FAILED"
+}

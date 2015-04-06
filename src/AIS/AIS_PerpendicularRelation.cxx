@@ -41,6 +41,7 @@
 
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>

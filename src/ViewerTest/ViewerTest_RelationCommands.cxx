@@ -52,7 +52,6 @@
 #include <IntAna_IntConicQuad.hxx>
 #include <IntAna_Quadric.hxx>
 #include <Precision.hxx>
-#include <Select3D_Projector.hxx>
 #include <StdSelect.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -90,8 +89,6 @@ extern Handle(AIS_InteractiveContext)& TheAISContext ();
 static gp_Pnt Get3DPointAtMousePosition()
 {
   Handle(V3d_View) aView = ViewerTest::CurrentView();
-  static Select3D_Projector aProjector;
-  aProjector.SetView (aView);
 
   Standard_Real xv,yv,zv;
   aView->Proj (xv,yv,zv);

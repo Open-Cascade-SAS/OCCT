@@ -1,0 +1,74 @@
+puts "============"
+puts "OCC24623_2"
+puts "============"
+puts ""
+#######################################################################
+puts "Visualization - improve selection mechanism"
+# tests performance of selection algorithm. Creates a spiral via polyline
+# and checks its selection in neutral point. For representative result,
+# increase the number of points in POINTS_NUM and check time measurments
+# in comparsion to previous OCCT versions.
+#######################################################################
+
+set POINTS_NUM 1000
+set STEP 0.3
+
+pload ALL
+
+set aCoef 0.2
+set aZ 0
+# unset aPointCoords
+list aPointCoords
+for {set i 0} {$i < $POINTS_NUM} {incr i} {
+  set aX [expr $aCoef * $aZ * cos($aZ)]
+  set aY [expr $aCoef * $aZ * sin($aZ)]
+  set aZ [expr $aZ + $STEP]
+  lappend aPointCoords $aX
+  lappend aPointCoords $aY
+  lappend aPointCoords $aZ
+}
+
+vinit
+set aMemInit [meminfo h]
+puts "Initial mem: [expr $aMemInit   / (1024 * 1024)] MiB ([expr $aMemInit])"
+polyline p {*}$aPointCoords
+vdisplay p
+
+vfit
+
+puts "Selection time before the transformations:"
+chrono aTimer reset
+chrono aTimer start
+vmoveto 223 236
+chrono aTimer stop
+chrono aTimer show
+vmoveto 0 0
+chrono aTimer reset
+chrono aTimer start
+vmoveto 223 236
+chrono aTimer stop
+chrono aTimer show
+
+puts ""
+puts "Applying transformations..."
+vtranslateview 1 0 0
+vrotate 100 100 100
+
+puts ""
+puts "Selection time after the transformations:"
+chrono aTimer reset
+chrono aTimer start
+vmoveto 115 160
+chrono aTimer stop
+chrono aTimer show
+vmoveto 0 0
+chrono aTimer reset
+chrono aTimer start
+vmoveto 115 160
+chrono aTimer stop
+chrono aTimer show
+
+set aMemSel [meminfo h]
+puts "Selection mem: [expr $aMemSel   / (1024 * 1024)] MiB ([expr $aMemSel])"
+
+checkcolor 131 195 0 1 1

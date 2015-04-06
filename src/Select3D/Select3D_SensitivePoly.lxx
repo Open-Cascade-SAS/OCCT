@@ -12,28 +12,19 @@
 // commercial license or contractual agreement.
 
 #include<Select3D_Pnt.hxx>
-#include<Select3D_Pnt2d.hxx>
 #include<TColgp_HArray1OfPnt.hxx>
 #include<TColgp_Array1OfPnt2d.hxx>
 
-inline void Select3D_SensitivePoly
-::Points3D( Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt )
+//==================================================
+// Function: Points3D
+// Purpose :
+//==================================================
+inline void Select3D_SensitivePoly::Points3D (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
 { 
-  Standard_Integer aSize = mypolyg.Size();
-  theHArrayOfPnt = new TColgp_HArray1OfPnt(1,aSize);
+  Standard_Integer aSize = myPolyg.Size();
+  theHArrayOfPnt = new TColgp_HArray1OfPnt (1,aSize);
   for(Standard_Integer anIndex = 1; anIndex <= aSize; anIndex++)
   {
-    theHArrayOfPnt->SetValue(anIndex, mypolyg.Pnt(anIndex-1));
+    theHArrayOfPnt->SetValue (anIndex, myPolyg.Pnt (anIndex-1));
   }
 }
-
-inline void Select3D_SensitivePoly
-::Points2D( TColgp_Array1OfPnt2d& aArrayOf2dPnt)
-{
-  for(Standard_Integer anIndex = 1; anIndex <= mypolyg.Size(); anIndex++)
-  {
-    aArrayOf2dPnt.SetValue(anIndex, mypolyg.Pnt2d(anIndex-1));
-  }
-}
-
-

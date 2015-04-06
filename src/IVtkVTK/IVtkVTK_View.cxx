@@ -18,6 +18,7 @@
 #include <vtkAutoInit.h>
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkTransform.h>
 
 // Initialization of VTK object factories.
@@ -158,4 +159,57 @@ bool IVtkVTK_View::DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldP
   theWorldPnt = gp_XYZ (aCoords[0] / aCoords[3], aCoords[1] / aCoords[3], aCoords[2] / aCoords[3]);
 
   return true;
+}
+
+//================================================================
+// Function : GetWindowSize
+// Purpose  :
+//================================================================
+void IVtkVTK_View::GetWindowSize (int& theX, int& theY) const
+{
+  int* aSize = myRenderer->GetRenderWindow()->GetSize();
+  theX = aSize[0];
+  theY = aSize[1];
+}
+
+//================================================================
+// Function : GetCamera
+// Purpose  :
+//================================================================
+void IVtkVTK_View::GetCamera (Graphic3d_Mat4d& theProj,
+                              Graphic3d_Mat4d& theOrient,
+                              Standard_Boolean& theIsOrtho) const
+{
+  theIsOrtho = !IsPerspective();
+
+  vtkMatrix4x4* aCompositeProj =
+    myRenderer->GetActiveCamera()->GetCompositeProjectionTransformMatrix (myRenderer->GetTiledAspectRatio(),
+                                                                          0,
+                                                                          1);
+  for (Standard_Integer aRow = 0; aRow < 4; ++aRow)
+  {
+    for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
+    {
+      theProj.SetValue (aRow, aCol, aCompositeProj->GetElement (aRow, aCol));
+    }
+  }
+
+  theOrient.InitIdentity();
+}
+
+//================================================================
+// Function : GetViewport
+// Purpose  :
+//================================================================
+void IVtkVTK_View::GetViewport (Standard_Real& theX,
+                                Standard_Real& theY,
+                                Standard_Real& theWidth,
+                                Standard_Real& theHeight) const
+{
+  Standard_Real aViewport[4];
+  myRenderer->GetViewport (aViewport);
+  theX = aViewport[0];
+  theY = aViewport[1];
+  theWidth  = aViewport[2];
+  theHeight = aViewport[3];
 }

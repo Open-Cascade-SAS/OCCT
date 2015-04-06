@@ -164,8 +164,6 @@ enum CurrentAction3d {
 #include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <SelectBasics_BasicTool.hxx>
-#include <SelectBasics_ListOfBox2d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>

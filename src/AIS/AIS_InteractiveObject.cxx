@@ -33,6 +33,8 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_BndBox4f.hxx>
+#include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 
@@ -585,4 +587,63 @@ void AIS_InteractiveObject::PolygonOffsets(Standard_Integer&    aMode,
 {
   if( HasPolygonOffsets() )
     myDrawer->ShadingAspect()->Aspect()->PolygonOffsets( aMode, aFactor, aUnits );
+}
+
+//=======================================================================
+//function : BoundingBox
+//purpose  : Returns bounding box of object correspondingly to its
+//           current display mode
+//=======================================================================
+void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
+{
+  if (myDisplayMode == -1)
+  {
+    if (!myPresentations.IsEmpty())
+    {
+      const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations.First().Presentation();
+      const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
+      const Graphic3d_BndBox4f& aBndBox = aStruct->CStructure()->BoundingBox();
+      theBndBox.Update (static_cast<Standard_Real> (aBndBox.CornerMin().x()),
+                        static_cast<Standard_Real> (aBndBox.CornerMin().y()),
+                        static_cast<Standard_Real> (aBndBox.CornerMin().z()),
+                        static_cast<Standard_Real> (aBndBox.CornerMax().x()),
+                        static_cast<Standard_Real> (aBndBox.CornerMax().y()),
+                        static_cast<Standard_Real> (aBndBox.CornerMax().z()));
+      return;
+    }
+    else
+    {
+      for (PrsMgr_ListOfPresentableObjectsIter aPrsIter (Children()); aPrsIter.More(); aPrsIter.Next())
+      {
+        const Handle(AIS_InteractiveObject)& aChild = Handle(AIS_InteractiveObject)::DownCast (aPrsIter.Value());
+        if (aChild.IsNull())
+        {
+          continue;
+        }
+        Bnd_Box aBox;
+        aChild->BoundingBox (aBox);
+        theBndBox.Add (aBox);
+      }
+      return;
+    }
+  }
+  else
+  {
+    for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
+    {
+      if (myPresentations (aPrsIter).Mode() == myDisplayMode)
+      {
+        const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
+        const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
+        const Graphic3d_BndBox4f& aBndBox = aStruct->CStructure()->BoundingBox();
+        theBndBox.Update (static_cast<Standard_Real> (aBndBox.CornerMin().x()),
+                          static_cast<Standard_Real> (aBndBox.CornerMin().y()),
+                          static_cast<Standard_Real> (aBndBox.CornerMin().z()),
+                          static_cast<Standard_Real> (aBndBox.CornerMax().x()),
+                          static_cast<Standard_Real> (aBndBox.CornerMax().y()),
+                          static_cast<Standard_Real> (aBndBox.CornerMax().z()));
+        return;
+      }
+    }
+  }
 }

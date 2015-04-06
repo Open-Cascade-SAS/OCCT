@@ -680,10 +680,10 @@ void CAnimationView3D::DrawRectangle(const Standard_Integer  MinX    ,
      m_IsVisible = false;
     }
 
-    StoredMinX = min ( MinX, MaxX );
-    StoredMinY = min ( MinY, MaxY );
-    StoredMaxX = max ( MinX, MaxX );
-    StoredMaxY = max ( MinY, MaxY);
+    StoredMinX = Min ( MinX, MaxX );
+    StoredMinY = Min ( MinY, MaxY );
+    StoredMaxX = Max ( MinX, MaxX );
+    StoredMaxY = Max ( MinY, MaxY);
 
     if (Draw) // move : draw
     {

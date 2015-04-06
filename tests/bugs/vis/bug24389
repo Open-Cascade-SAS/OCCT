@@ -192,7 +192,7 @@ check_picking $pick_coord $check_coord "diameter dimension (diam3)"
 check_cross_picking $pick_coord diam3 "diameter dimension (diam3)"
 
 # check sensitives "rad1"
-set pick_coord { { 287 157 } { 326 165 } }
+set pick_coord { { 287 157 } { 326 164 } }
 set check_coord { 287 157 }
 check_picking $pick_coord $check_coord "radius dimension (rad1)"
 check_cross_picking $pick_coord rad1 "radius dimension (rad1)"

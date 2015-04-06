@@ -68,6 +68,20 @@ public:
   //! @return Two doubles containing the display coordinates of the view window center 
   Standard_EXPORT virtual void    GetViewCenter (double& theX, double& theY) const;
 
+  //! Gets window size in screen coordinates in pixels
+  Standard_EXPORT virtual void    GetWindowSize (int& theX, int& theY) const Standard_OVERRIDE;
+
+  //! Gets camera projection and orientation matrices
+  Standard_EXPORT virtual void    GetCamera (Graphic3d_Mat4d& theProj,
+                                             Graphic3d_Mat4d& theOrient,
+                                             Standard_Boolean& theIsOrtho) const Standard_OVERRIDE;
+
+  //! Gets viewport coordinates
+  Standard_EXPORT virtual void   GetViewport (Standard_Real& theX,
+                                              Standard_Real& theY,
+                                              Standard_Real& theWidth,
+                                              Standard_Real& theHeight) const Standard_OVERRIDE;
+
   //! Converts 3D display coordinates into 3D world coordinates.
   //! @param [in] theDisplayPnt 2d point of display coordinates
   //! @param [out] theWorldPnt 3d point of world coordinates

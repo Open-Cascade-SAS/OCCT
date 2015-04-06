@@ -15,7 +15,7 @@ vinit
 vdisplay result
 vfit
 vsetdispmode 1
-vselect 290 135
+vselect 289 135
 
 set length 5.82393
 set only_screen 0

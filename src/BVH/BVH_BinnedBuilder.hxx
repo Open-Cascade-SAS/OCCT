@@ -45,7 +45,8 @@ public:
 
   //! Creates binned SAH BVH builder.
   BVH_BinnedBuilder (const Standard_Integer theLeafNodeSize = 5,
-                     const Standard_Integer theMaxTreeDepth = 32);
+                     const Standard_Integer theMaxTreeDepth = 32,
+                     const Standard_Boolean theToUseMainAxis = Standard_False);
 
   //! Releases resources of binned SAH BVH builder.
   virtual ~BVH_BinnedBuilder();
@@ -63,6 +64,10 @@ protected:
                               const Standard_Integer theNode,
                               BVH_BinVector&         theBins,
                               const Standard_Integer theAxis);
+
+private:
+
+  Standard_Boolean myUseMainAxis; //!< Defines whether to search for the best split or use the widest axis
 
 };
 

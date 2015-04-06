@@ -14,206 +14,128 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Select3D_SensitiveWire.ixx>
-#include <SelectBasics_BasicTool.hxx>
+#include <Select3D_SensitiveWire.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Select3D_SensitiveEntitySequence.hxx>
-#include <SelectBasics_ListIteratorOfListOfBox2d.hxx>
-#include <SelectBasics_ListOfBox2d.hxx>
 #include <Precision.hxx>
+#include <TopLoc_Location.hxx>
 
-#include <Bnd_Box2d.hxx>
-#include <ElCLib.hxx>
+#include <Select3D_SensitiveSegment.hxx>
 
-//static Standard_Boolean debugmode=Standard_False;
+IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveWire, Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveWire, Select3D_SensitiveEntity)
 
 //=====================================================
-// Function : Create
-// Purpose  :Constructor
+// Function : Select3D_SensitiveWire
+// Purpose  :
 //=====================================================
-
-Select3D_SensitiveWire::
-Select3D_SensitiveWire(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                       const Standard_Integer /*MaxRect*/):
-Select3D_SensitiveEntity(OwnerId),
-myDetectedIndex(-1)
+Select3D_SensitiveWire::Select3D_SensitiveWire (const Handle(SelectBasics_EntityOwner)& theOwnerId)
+: Select3D_SensitiveSet (theOwnerId),
+  myCenter (0.0, 0.0, 0.0)
 {}
 
 //=====================================================
 // Function : Add
 // Purpose  :
 //=====================================================
-
-void Select3D_SensitiveWire
-::Add(const Handle(Select3D_SensitiveEntity)& aSensitive)
+void Select3D_SensitiveWire::Add (const Handle(Select3D_SensitiveEntity)& theSensitive)
 {
-  if(!aSensitive.IsNull()) 
-    mysensitive.Append(aSensitive); 
+  if (!theSensitive.IsNull())
+    myEntities.Append (theSensitive);
+
+  Select3D_BndBox3d aBndBox = theSensitive->BoundingBox();
+  myBndBox.Combine (aBndBox);
+  myCenter.ChangeCoord() += theSensitive->CenterOfGeometry().XYZ();
+  if (myEntities.Length() != 1)
+    myCenter.ChangeCoord().Divide (2.0);
+  myEntityIndexes.Append (myEntities.Length() - 1);
 }
 
 //=======================================================================
-//function : SetLocation
-//purpose  :
+// function : NbSubElements
+// purpose  : Returns the amount of sub-entities
 //=======================================================================
-
-void Select3D_SensitiveWire::SetLocation(const TopLoc_Location& aLoc)
+Standard_Integer Select3D_SensitiveWire::NbSubElements()
 {
-
-  // evitons les problemes...
-  if(aLoc.IsIdentity()) return;
-
-  if(HasLocation())
-    if(aLoc == Location()) return;
-
-  Select3D_SensitiveEntity::SetLocation(aLoc);
-  for(Standard_Integer i=1;i<=mysensitive.Length();i++){
-    if(mysensitive(i)->HasLocation()){
-      if(mysensitive(i)->Location()!=aLoc) 
-        mysensitive(i)->SetLocation(mysensitive(i)->Location()*aLoc);
-    }
-    else
-      mysensitive(i)->SetLocation(aLoc);
-
-  }
+  return myEntities.Length();
 }
 
 //=======================================================================
-//function : ResetLocation
-//purpose  :
+// function : Size
+// purpose  : Returns the length of vector of sensitive entities
 //=======================================================================
-
-void Select3D_SensitiveWire::ResetLocation()
+Standard_Integer Select3D_SensitiveWire::Size() const
 {
-  if(!HasLocation()) return;
-  for(Standard_Integer i=1;i<=mysensitive.Length();i++){
-    if(mysensitive(i)->HasLocation() && mysensitive(i)->Location()!=Location())
-      mysensitive(i)->SetLocation(mysensitive(i)->Location()*Location().Inverted());
-    else
-      mysensitive(i)->ResetLocation();
-
-  }
-  Select3D_SensitiveEntity::ResetLocation();
+  return myEntities.Length();
 }
 
-//=====================================================
-// Function : Project
-// Purpose  :
-//=====================================================
-void Select3D_SensitiveWire::Project(const Handle(Select3D_Projector)& aProj)
+//=======================================================================
+// function : Box
+// purpose  : Returns bounding box of sensitive entity with index theIdx
+//=======================================================================
+Select3D_BndBox3d Select3D_SensitiveWire::Box (const Standard_Integer theIdx) const
 {
-  for (Standard_Integer aSensIt = 1; aSensIt <= mysensitive.Length(); aSensIt++)
+  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theIdx);
+  return myEntities.Value (aSensitiveIdx)->BoundingBox();
+}
+
+//=======================================================================
+// function : Center
+// purpose  : Returns geometry center of sensitive entity with index
+//            theIdx in the vector along the given axis theAxis
+//=======================================================================
+Standard_Real Select3D_SensitiveWire::Center (const Standard_Integer theIdx,
+                                              const Standard_Integer theAxis) const
+{
+  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theIdx);
+  const gp_Pnt& aCenter = myEntities.Value (aSensitiveIdx)->CenterOfGeometry();
+  Standard_Real aCenterCoord = 0.0;
+  aCenterCoord = theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
+
+  return aCenterCoord;
+}
+
+//=======================================================================
+// function : Swap
+// purpose  : Swaps items with indexes theIdx1 and theIdx2 in the vector
+//=======================================================================
+void Select3D_SensitiveWire::Swap (const Standard_Integer theIdx1,
+                                   const Standard_Integer theIdx2)
+{
+  const Standard_Integer aSensitiveIdx1 = myEntityIndexes.Value (theIdx1);
+  const Standard_Integer aSensitiveIdx2 = myEntityIndexes.Value (theIdx2);
+  myEntityIndexes.ChangeValue (theIdx1) = aSensitiveIdx2;
+  myEntityIndexes.ChangeValue (theIdx2) = aSensitiveIdx1;
+}
+
+// =======================================================================
+// function : overlapsElement
+// purpose  : Checks whether the entity with index theIdx overlaps the
+//            current selecting volume
+// =======================================================================
+Standard_Boolean Select3D_SensitiveWire::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+                                                          Standard_Integer theElemIdx,
+                                                          Standard_Real& theMatchDepth)
+{
+  const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theElemIdx);
+  const Handle(SelectBasics_SensitiveEntity)& aSeg = myEntities.Value (aSensitiveIdx);
+  SelectBasics_PickResult aMatchResult;
+  if (aSeg->Matches (theMgr, aMatchResult))
   {
-    mysensitive (aSensIt)->Project (aProj);
-  }
-}
-
-//=====================================================
-// Function : Areas
-// Purpose  :
-//=====================================================
-
-void Select3D_SensitiveWire
-::Areas(SelectBasics_ListOfBox2d& theareas)
-{
-  Bnd_Box2d BB; // en attendant un nouveau champ rob-18-jun-97
-  SelectBasics_ListOfBox2d BidL;
-  Standard_Integer i;
-  for (i=1; i<=mysensitive.Length(); i++)
-    mysensitive.Value(i)->Areas(BidL);
-
-  for(SelectBasics_ListIteratorOfListOfBox2d it(BidL);it.More();it.Next())
-    BB.Add(it.Value());
-
-  theareas.Append(BB);
-}
-
-//=====================================================
-// Function : Matches
-// Purpose  :
-//=====================================================
-
-Standard_Boolean Select3D_SensitiveWire::Matches (const SelectBasics_PickArgs& thePickArgs,
-                                                  Standard_Real& theMatchDMin,
-                                                  Standard_Real& theMatchDepth)
-{
-  theMatchDMin = RealLast();
-  theMatchDepth = RealLast();
-  Standard_Real aSegDMin, aSegDepth;
-  Standard_Boolean isMatched = Standard_False;
-  myDetectedIndex = -1;
-
-  for (Standard_Integer aSegIt = 1; aSegIt <= mysensitive.Length(); aSegIt++)
-  {
-    const Handle(SelectBasics_SensitiveEntity)& aSeg = mysensitive.Value (aSegIt);
-    if (!aSeg->Matches (thePickArgs, aSegDMin, aSegDepth))
-    {
-      continue;
-    }
-
-    isMatched = Standard_True;
-    if (aSegDMin > theMatchDMin)
-    {
-      continue;
-    }
-
-    myDetectedIndex = aSegIt;
-    theMatchDMin    = aSegDMin;
-    theMatchDepth   = aSegDepth;
+    theMatchDepth = aMatchResult.Depth();
+    return Standard_True;
   }
 
-  return isMatched;
+  return Standard_False;
 }
 
-//=====================================================
-// Function : Matches
-// Purpose  :
-//=====================================================
-
-Standard_Boolean Select3D_SensitiveWire::
-Matches (const Standard_Real XMin,
-         const Standard_Real YMin,
-         const Standard_Real XMax,
-         const Standard_Real YMax,
-         const Standard_Real aTol)
+// =======================================================================
+// function : distanceToCOG
+// purpose  : Calculates distance from the 3d projection of used-picked
+//            screen point to center of the geometry
+// =======================================================================
+Standard_Real Select3D_SensitiveWire::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
 {
-  Standard_Integer i;
-  for (i=1; i<=mysensitive.Length(); i++) 
-  {
-    if (!(mysensitive.Value(i)->Matches(XMin,YMin,XMax,YMax,aTol)))
-      return Standard_False;
-  }
-  return Standard_True;
-}
-
-//=======================================================================
-//function : Matches
-//purpose  :
-//=======================================================================
-
-Standard_Boolean Select3D_SensitiveWire::
-Matches (const TColgp_Array1OfPnt2d& aPoly,
-         const Bnd_Box2d& aBox,
-         const Standard_Real aTol)
-{
-  Standard_Integer i;
-  for (i=1; i<=mysensitive.Length(); i++) 
-  {
-    if (!(mysensitive.Value(i)->Matches(aPoly, aBox, aTol)))
-      return Standard_False;
-  }
-  return Standard_True;
-}
-
-
-//=====================================================
-// Function : MaxBoxes
-// Purpose  :
-//=====================================================
-
-Standard_Integer Select3D_SensitiveWire::
-MaxBoxes () const
-{
-  return 1;
+  return theMgr.DistToGeometryCenter (myCenter);
 }
 
 //=======================================================================
@@ -221,62 +143,37 @@ MaxBoxes () const
 //purpose  :
 //=======================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetConnected(const TopLoc_Location& aLoc)
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetConnected()
 {
-  Handle(Select3D_SensitiveWire) SWIR = new Select3D_SensitiveWire(myOwnerId);
-  for(Standard_Integer i=1;i<=mysensitive.Length();i++)
-    SWIR->Add(mysensitive(i)->GetConnected(aLoc));
+  Handle(Select3D_SensitiveWire) aNewEntity = new Select3D_SensitiveWire (myOwnerId);
+  for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Length(); anEntityIdx++)
+    aNewEntity->Add (myEntities(anEntityIdx)->GetConnected());
 
-  if(HasLocation())
-    SWIR->SetLocation(Location()*aLoc);
-  else
-    SWIR->SetLocation(aLoc);
-  return SWIR;
-}
-
-
-//=======================================================================
-//function : Dump
-//purpose  :
-//=======================================================================
-
-void Select3D_SensitiveWire::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
-{
-  S<<"\tSensitiveWire 3D :"<<endl;;
-  if(HasLocation())
-    S<<"\t\tExisting Location"<<endl;
-  S<<"\t\tComposed Of "<<mysensitive.Length()<<" Sensitive Entities"<<endl;
-
-  for(Standard_Integer i=1;i<= mysensitive.Length();i++){
-    S<<"Sensitive #"<<i<<" : "<<endl;
-    mysensitive(i)->Dump(S,FullDump);}
-
-  S<<"\tEnd Of Sensitive Wire"<<endl;
-
+  return aNewEntity;
 }
 
 //=======================================================================
 //function : GetEdges
 //purpose  : returns the sensitive edges stored in this wire
 //=======================================================================
-
-void Select3D_SensitiveWire::GetEdges( Select3D_SensitiveEntitySequence& theEdges )
+const NCollection_Vector<Handle(Select3D_SensitiveEntity)>& Select3D_SensitiveWire::GetEdges()
 {
-  theEdges.Clear();
-  theEdges.Append(mysensitive);
+  return myEntities;
 }
 
 //=============================================================================
 // Function : GetLastDetected
 // Purpose  :
 //=============================================================================
-
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
 {
   Handle(Select3D_SensitiveEntity) aRes;
 
-  if ( myDetectedIndex >= 1 && myDetectedIndex <= mysensitive.Length() )
-    aRes = mysensitive.Value( myDetectedIndex );
+  if (myDetectedIdx >= 0 && myDetectedIdx < myEntities.Length())
+  {
+    const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (myDetectedIdx);
+    aRes = myEntities.Value (aSensitiveIdx);
+  }
 
   return aRes;
 }
@@ -285,14 +182,41 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
 //function : Set
 //purpose  :
 //=======================================================================
-
-void Select3D_SensitiveWire::Set(const Handle(SelectBasics_EntityOwner) &TheOwnerId) 
+void Select3D_SensitiveWire::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 {
-  Select3D_SensitiveEntity::Set(TheOwnerId);
+  Select3D_SensitiveEntity::Set (theOwnerId);
 
   // Set TheOwnerId for each element of sensitive wire
-  for (Standard_Integer i = 1; i <= mysensitive.Length(); ++i) 
+  for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Length(); ++anEntityIdx)
   {
-    mysensitive.Value(i)->Set(TheOwnerId);
+    myEntities.Value (anEntityIdx)->Set (theOwnerId);
   }
+}
+
+//=======================================================================
+// function : BoundingBox
+// purpose  : Returns bounding box of the wire. If location
+//            transformation is set, it will be applied
+//=======================================================================
+Select3D_BndBox3d Select3D_SensitiveWire::BoundingBox()
+{
+  if (myBndBox.IsValid())
+    return myBndBox;
+
+  for (Standard_Integer aSensitiveIdx = 0; aSensitiveIdx < myEntities.Length(); ++aSensitiveIdx)
+  {
+    myBndBox.Combine (myEntities.Value (aSensitiveIdx)->BoundingBox());
+  }
+
+  return myBndBox;
+}
+
+//=======================================================================
+// function : CenterOfGeometry
+// purpose  : Returns center of the wire. If location transformation
+//            is set, it will be applied
+//=======================================================================
+gp_Pnt Select3D_SensitiveWire::CenterOfGeometry() const
+{
+  return myCenter;
 }

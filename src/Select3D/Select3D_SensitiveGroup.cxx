@@ -14,84 +14,129 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Select3D_SensitiveGroup.ixx>
-#include <Select3D_ListIteratorOfListOfSensitive.hxx>
 #include <Precision.hxx>
+#include <Select3D_SensitiveGroup.hxx>
+#include <TopLoc_Location.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveGroup, Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveGroup, Select3D_SensitiveEntity)
 
 //=======================================================================
 //function : Creation
-//purpose  : 
+//purpose  :
 //=======================================================================
-Select3D_SensitiveGroup::Select3D_SensitiveGroup(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                                                 const Standard_Boolean MatchAll):
-Select3D_SensitiveEntity(OwnerId),
-myMustMatchAll(MatchAll)
-{
-}
+Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                                  const Standard_Boolean theIsMustMatchAll)
+: Select3D_SensitiveSet (theOwnerId),
+  myMustMatchAll (theIsMustMatchAll),
+  myCenter (0.0, 0.0, 0.0) {}
 
 //=======================================================================
 //function : Creation
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Select3D_SensitiveGroup::Select3D_SensitiveGroup(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                                                 Select3D_ListOfSensitive& TheList, 
-                                                 const Standard_Boolean MatchAll):
-Select3D_SensitiveEntity(OwnerId),
-myMustMatchAll(MatchAll)
+Select3D_SensitiveGroup::Select3D_SensitiveGroup (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                                  Select3D_EntitySequence& theEntities,
+                                                  const Standard_Boolean theIsMustMatchAll)
+: Select3D_SensitiveSet (theOwnerId),
+  myMustMatchAll (theIsMustMatchAll)
 {
-  myList.Append(TheList);
-}
+  myCenter = gp_Pnt (0.0, 0.0, 0.0);
 
-//=======================================================================
-//function : Add
-//purpose  : No control of  entities inside 
-//=======================================================================
-
-void Select3D_SensitiveGroup::Add(Select3D_ListOfSensitive& LL) 
-{myList.Append(LL);}
-
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveGroup::Add(const Handle(Select3D_SensitiveEntity)& aSensitive) 
-{
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
+  for (Select3D_EntitySequenceIter anIter (theEntities); anIter.More(); anIter.Next())
   {
-    if(It.Value()==aSensitive) return;
+    const Handle(Select3D_SensitiveEntity)& anEntity = anIter.Value();
+    myEntities.Append (anEntity);
+    myBndBox.Combine (anEntity->BoundingBox());
+    myBVHPrimIndexes.Append (myEntities.Size());
+    myCenter.ChangeCoord() += anEntity->CenterOfGeometry().XYZ();
   }
-  myList.Append(aSensitive);
+
+  myCenter.ChangeCoord().Divide (static_cast<Standard_Real> (myEntities.Size()));
+
+  MarkDirty();
+}
+
+//=======================================================================
+//function : Add
+//purpose  : No control of entities inside
+//=======================================================================
+void Select3D_SensitiveGroup::Add (Select3D_EntitySequence& theEntities)
+{
+  gp_Pnt aCent (0.0, 0.0, 0.0);
+  for (Select3D_EntitySequenceIter anIter (theEntities); anIter.More(); anIter.Next())
+  {
+    myEntities.Append (anIter.Value());
+    myBndBox.Combine (anIter.Value()->BoundingBox());
+    myBVHPrimIndexes.Append (myEntities.Size());
+    aCent.ChangeCoord() += anIter.Value()->CenterOfGeometry().XYZ();
+  }
+  aCent.ChangeCoord().Divide (myEntities.Length());
+  myCenter = (myCenter.XYZ() + aCent.XYZ()).Multiplied (0.5);
+}
+
+//=======================================================================
+//function : Add
+//purpose  :
+//=======================================================================
+void Select3D_SensitiveGroup::Add (const Handle(Select3D_SensitiveEntity)& theSensitive)
+{
+  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value() == theSensitive)
+      return;
+  }
+  myEntities.Append (theSensitive);
+  myBVHPrimIndexes.Append (myEntities.Size());
+  myBndBox.Combine (theSensitive->BoundingBox());
+  myCenter.ChangeCoord() += theSensitive->CenterOfGeometry().XYZ();
+  if (myEntities.First() != myEntities.Last())
+  {
+    myCenter.ChangeCoord().Multiply (0.5);
+  }
 }
 
 //=======================================================================
 //function : Remove
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void Select3D_SensitiveGroup::Remove(const Handle(Select3D_SensitiveEntity)& aSensitive) 
+void Select3D_SensitiveGroup::Remove (const Handle(Select3D_SensitiveEntity)& theSensitive)
 {
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
+  Standard_Boolean isSensitiveRemoved = Standard_False;
+  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
   {
-    if(It.Value()==aSensitive)
+    if (anIter.Value() == theSensitive)
     {
-      myList.Remove(It);
-      return;
+      myEntities.Remove (anIter);
+      isSensitiveRemoved = Standard_True;
+      break;
     }
+  }
+
+  if (isSensitiveRemoved)
+  {
+    myBndBox.Clear();
+    myCenter = gp_Pnt (0.0, 0.0, 0.0);
+    myBVHPrimIndexes.Clear();
+    for (Standard_Integer anIdx = 1; anIdx <= myEntities.Size(); ++anIdx)
+    {
+      myBndBox.Combine (myEntities.Value (anIdx)->BoundingBox());
+      myCenter.ChangeCoord() += myEntities.Value (anIdx)->CenterOfGeometry().XYZ();
+      myBVHPrimIndexes.Append (anIdx);
+    }
+    myCenter.ChangeCoord().Divide (static_cast<Standard_Real> (myEntities.Size()));
   }
 }
 
 //=======================================================================
 //function : IsIn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean Select3D_SensitiveGroup::IsIn(const Handle(Select3D_SensitiveEntity)& aSensitive) const
+Standard_Boolean Select3D_SensitiveGroup::IsIn (const Handle(Select3D_SensitiveEntity)& theSensitive) const
 {
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
+  for(Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
   {
-    if(It.Value()==aSensitive)
+    if (anIter.Value() == theSensitive)
       return Standard_True;
   }
   return Standard_False;
@@ -99,224 +144,192 @@ Standard_Boolean Select3D_SensitiveGroup::IsIn(const Handle(Select3D_SensitiveEn
 
 //=======================================================================
 //function : Clear
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_SensitiveGroup::Clear()
-{myList.Clear();}
-
-//=======================================================================
-//function : Project
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveGroup::Project(const Handle(Select3D_Projector)& aProjector) 
 {
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()) 
-  {
-    It.Value()->Project(aProjector);
-  }
+  myEntities.Clear();
+  myBndBox.Clear();
+  myCenter = gp_Pnt (0.0, 0.0, 0.0);
+  myEntities.Clear();
 }
 
 //=======================================================================
-//function : Areas
-//purpose  : 
+// function : NbSubElements
+// purpose  : Returns the amount of sub-entities
 //=======================================================================
-
-void Select3D_SensitiveGroup::Areas(SelectBasics_ListOfBox2d& boxes) 
+Standard_Integer Select3D_SensitiveGroup::NbSubElements()
 {
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()) 
-  {
-    It.Value()->Areas(boxes);
-  }
+  return myEntities.Size();
 }
 
 //=======================================================================
 //function : GetConnected
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveGroup::GetConnected(const TopLoc_Location& aLocation) 
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveGroup::GetConnected()
 {
-  Handle(Select3D_SensitiveGroup) newgroup = new Select3D_SensitiveGroup(myOwnerId,myMustMatchAll);
-  Select3D_ListOfSensitive LL;
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()) 
+  Handle(Select3D_SensitiveGroup) aNewEntity = new Select3D_SensitiveGroup (myOwnerId, myMustMatchAll);
+  Select3D_EntitySequence aConnectedEnt;
+  for (Select3D_EntitySequenceIter It (myEntities); It.More(); It.Next()) 
   {
-    LL.Append(It.Value()->GetConnected(aLocation));
+    aConnectedEnt.Append (It.Value()->GetConnected());
   }
-  newgroup->Add(LL);
-  return newgroup;
-}
-
-//=======================================================================
-//function : SetLocation
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveGroup::SetLocation(const TopLoc_Location& aLoc) 
-{
-  if(aLoc.IsIdentity()) return;
-
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
-  {
-    It.Value()->SetLocation(aLoc);
-  }
-
-  if(HasLocation())
-    if(aLoc == Location()) return;
-  
-  Select3D_SensitiveEntity::SetLocation(aLoc);
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()) 
-  {
-    if(It.Value()->HasLocation())
-    {
-      if(It.Value()->Location()!=aLoc) 
-        It.Value()->SetLocation(It.Value()->Location()*aLoc);
-    }
-    else
-      It.Value()->SetLocation(aLoc);
-  }
-}
-
-//=======================================================================
-//function : ResetLocation
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveGroup::ResetLocation() 
-{
- if(!HasLocation()) return;
- for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
- {
-   if(It.Value()->HasLocation() && It.Value()->Location()!=Location())
-     It.Value()->SetLocation(It.Value()->Location()*Location().Inverted());
-   else
-     It.Value()->ResetLocation();
- }
- Select3D_SensitiveEntity::ResetLocation();
+  aNewEntity->Add (aConnectedEnt);
+  return aNewEntity;
 }
 
 //=======================================================================
 //function : Matches
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean Select3D_SensitiveGroup::Matches (const SelectBasics_PickArgs& thePickArgs,
-                                                   Standard_Real& theMatchDMin,
-                                                   Standard_Real& theMatchDepth)
+Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                   SelectBasics_PickResult& thePickResult)
 {
-  theMatchDMin = RealLast();
-  theMatchDepth = RealLast();
-  Standard_Real aChildDMin, aChildDepth;
-  Standard_Boolean isMatched = Standard_False;
+  if (!myMustMatchAll
+    || theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point)
+    return Select3D_SensitiveSet::Matches (theMgr, thePickResult);
 
-  Select3D_ListIteratorOfListOfSensitive anIt (myList);
-  for (; anIt.More(); anIt.Next())
+  Standard_Real aDepth     = RealLast();
+  Standard_Real aDistToCOG = RealLast();
+
+  for (Select3D_EntitySequenceIter anIt (myEntities); anIt.More(); anIt.Next())
   {
-    Handle(SelectBasics_SensitiveEntity)& aChild = anIt.Value();
-    if (!aChild->Matches (thePickArgs, aChildDMin, aChildDepth))
+    SelectBasics_PickResult aMatchResult;
+    Handle(SelectBasics_SensitiveEntity)& aChild = anIt.ChangeValue();
+    if (!aChild->Matches (theMgr, aMatchResult))
     {
-      continue;
+      aMatchResult = SelectBasics_PickResult (RealLast(), RealLast());
+      return Standard_False;
     }
 
-    if (!isMatched)
-    {
-      theMatchDMin = aChildDMin;
-      isMatched = Standard_True;
-    }
-
-    theMatchDepth = Min (aChildDepth, theMatchDepth);
+    aDepth = Min (aMatchResult.Depth(), aDepth);
   }
 
-  return isMatched;
-}
+  aDistToCOG = theMgr.DistToGeometryCenter (CenterOfGeometry());
+  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
 
-//=======================================================================
-//function : Matches
-//purpose  :  si on doit tout matcher, on ne repond oui que si toutes
-//            les primitives repondent oui
-//=======================================================================
-Standard_Boolean Select3D_SensitiveGroup::Matches(const Standard_Real XMin, 
-                                                  const Standard_Real YMin, 
-                                                  const Standard_Real XMax, 
-                                                  const Standard_Real YMax, 
-                                                  const Standard_Real aTol) 
-{
-  Standard_Boolean result(Standard_True);
-  
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
-  {
-    if(It.Value()->Matches(XMin,YMin,XMax,YMax,aTol))
-    {
-      if(!myMustMatchAll)
-        return Standard_True;
-    }
-    // ca ne matches pas..
-    else 
-    {
-      if(myMustMatchAll) 
-        return Standard_False;
-      else 
-        result = Standard_False;
-    }
-  }
-  return result;
-}
-
-//=======================================================================
-//function : Matches
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Select3D_SensitiveGroup::
-Matches (const TColgp_Array1OfPnt2d& aPoly,
-         const Bnd_Box2d& aBox,
-         const Standard_Real aTol)
-{ 
-  Standard_Boolean result(Standard_True);
-  
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
-  {
-    if(It.Value()->Matches(aPoly, aBox, aTol))
-    {
-      if(!myMustMatchAll) 
-        return Standard_True;
-    }
-    else 
-    {
-      if(myMustMatchAll) 
-        return Standard_False;
-      else 
-        result = Standard_False;
-    }
-  }
-  return result;
-}
-
-//=======================================================================
-//function : MaxBoxes
-//purpose  : 
-//=======================================================================
-
-Standard_Integer Select3D_SensitiveGroup::MaxBoxes() const
-{
-  Standard_Integer nbboxes(0);
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()){
-    nbboxes+=It.Value()->MaxBoxes();
-  }
-  return nbboxes;
+  return Standard_True;
 }
 
 //=======================================================================
 //function : Set
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void Select3D_SensitiveGroup::Set 
-  (const Handle(SelectBasics_EntityOwner)& TheOwnerId)
+void Select3D_SensitiveGroup::Set (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 { 
-  Select3D_SensitiveEntity::Set(TheOwnerId);
+  Select3D_SensitiveEntity::Set (theOwnerId);
   // set TheOwnerId for each element of sensitive group
-  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
-    It.Value()->Set(TheOwnerId);
+  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
+    anIter.Value()->Set (theOwnerId);
+}
+
+//=======================================================================
+// function : BoundingBox
+// purpose  : Returns bounding box of the group. If location
+//            transformation is set, it will be applied
+//=======================================================================
+Select3D_BndBox3d Select3D_SensitiveGroup::BoundingBox()
+{
+  if (myBndBox.IsValid())
+    return myBndBox;
+
+  // do not apply the transformation because sensitives AABBs
+  // are already transformed
+  for (Select3D_EntitySequenceIter anIter (myEntities); anIter.More(); anIter.Next())
+  {
+    myBndBox.Combine (anIter.Value()->BoundingBox());
+  }
+
+  return myBndBox;
+}
+
+//=======================================================================
+// function : CenterOfGeometry
+// purpose  : Returns center of group. If location transformation
+//            is set, it will be applied
+//=======================================================================
+gp_Pnt Select3D_SensitiveGroup::CenterOfGeometry() const
+{
+  return myCenter;
+}
+
+//=======================================================================
+// function : Box
+// purpose  : Returns bounding box of sensitive entity with index theIdx
+//=======================================================================
+Select3D_BndBox3d Select3D_SensitiveGroup::Box (const Standard_Integer theIdx) const
+{
+  const Standard_Integer anElemIdx = myBVHPrimIndexes.Value (theIdx);
+  return myEntities.Value (anElemIdx)->BoundingBox();
+}
+
+//=======================================================================
+// function : Center
+// purpose  : Returns geometry center of sensitive entity with index
+//            theIdx in the vector along the given axis theAxis
+//=======================================================================
+Standard_Real Select3D_SensitiveGroup::Center (const Standard_Integer theIdx,
+                                               const Standard_Integer theAxis) const
+{
+  const Standard_Integer anElemIdx = myBVHPrimIndexes.Value (theIdx);
+  const gp_Pnt aCenter = myEntities.Value (anElemIdx)->CenterOfGeometry();
+  return theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
+}
+
+//=======================================================================
+// function : Swap
+// purpose  : Swaps items with indexes theIdx1 and theIdx2 in the vector
+//=======================================================================
+void Select3D_SensitiveGroup::Swap (const Standard_Integer theIdx1,
+                                    const Standard_Integer theIdx2)
+{
+  const Standard_Integer anEntIdx1 = myBVHPrimIndexes.Value (theIdx1);
+  const Standard_Integer anEntIdx2 = myBVHPrimIndexes.Value (theIdx2);
+
+  myBVHPrimIndexes.ChangeValue (theIdx1) = anEntIdx2;
+  myBVHPrimIndexes.ChangeValue (theIdx2) = anEntIdx1;
+}
+
+//=======================================================================
+// function : Size
+// purpose  : Returns the length of vector of sensitive entities
+//=======================================================================
+Standard_Integer Select3D_SensitiveGroup::Size() const
+{
+  return myBVHPrimIndexes.Size();
+}
+
+// =======================================================================
+// function : overlapsElement
+// purpose  : Checks whether the entity with index theIdx overlaps the
+//            current selecting volume
+// =======================================================================
+Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+                                                           Standard_Integer theElemIdx,
+                                                           Standard_Real& theMatchDepth)
+{
+  theMatchDepth = RealLast();
+  const Standard_Integer aSensitiveIdx = myBVHPrimIndexes.Value (theElemIdx);
+  SelectBasics_PickResult aResult;
+  Standard_Boolean isMatching = myEntities.Value (aSensitiveIdx)->Matches (theMgr, aResult);
+  if (isMatching)
+  {
+    theMatchDepth = aResult.Depth();
+    return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+// =======================================================================
+// function : distanceToCOG
+// purpose  : Calculates distance from the 3d projection of used-picked
+//            screen point to center of the geometry
+// =======================================================================
+Standard_Real Select3D_SensitiveGroup::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
+{
+  return theMgr.DistToGeometryCenter (CenterOfGeometry());
 }

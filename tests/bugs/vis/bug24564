@@ -33,7 +33,7 @@ puts "Testing box selection over the plane in axonometry projection:"
 vaxo
 vfit
 
-vmoveto 199 200
+vmoveto 200 200
 if { "[vreadpixel 199 200 rgb name]" != "CYAN1"  } {
   puts "Error : The box is not selectable!"
 }

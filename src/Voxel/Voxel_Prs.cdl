@@ -108,7 +108,7 @@ is
     protected;
 
     ComputeSelection(me : mutable;
-    	    	     theSelection : Selection from SelectMgr;
+                     theSelection : Selection from SelectMgr;
     	    	     theMode      : Integer from Standard)
     is private;
 

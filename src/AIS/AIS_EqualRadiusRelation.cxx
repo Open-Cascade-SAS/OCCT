@@ -26,6 +26,7 @@
 #include <Geom_Circle.hxx>
 #include <ElCLib.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Precision.hxx>

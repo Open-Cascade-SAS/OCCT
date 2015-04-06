@@ -192,9 +192,21 @@ is
     	-- -   full
     	-- -   partial
     	-- -   none.
-    deferred class SelectableObject;
 
-    deferred class ViewerSelector;
+    enumeration TypeOfBVHUpdate is TBU_Add,
+                                   TBU_Remove,
+                                   TBU_Renew,
+                                   TBU_Invalidate,
+                                   TBU_None;
+       ---Purpose:       Keeps track for BVH update state for each SelectMgr_Selection entity in a following way:
+       -- - Add        : 2nd level BVH does not contain any of the selection's sensitive entities and they must be
+       --                added;
+       -- - Remove     : all sensitive entities of the selection must be removed from 2nd level BVH;
+       -- - Renew      : 2nd level BVH already contains sensitives of the selection, but the its complete update
+       --                and removal is required. Therefore, sensitives of the selection with this type of update
+       --                must be removed from 2nd level BVH and added after recomputation.
+       -- - Invalidate : the 2nd level BVH needs to be rebuilt;
+       -- - None       : entities of the selection are up to date.
 
     deferred class Filter;
 
@@ -209,7 +221,7 @@ is
 
     class EntityOwner;
 
-    class Selection;
+    deferred class SelectableObject;
 
     class  SelectionManager;
 
@@ -227,22 +239,11 @@ is
     class IndexedMapOfOwner instantiates IndexedMap from TCollection
     (EntityOwner from SelectMgr,MapTransientHasher from TColStd);
 
-    class DataMapOfIntegerSensitive instantiates DataMap from TCollection
-        (Integer, SensitiveEntity from SelectBasics,
-         MapIntegerHasher from TColStd);
-
     class SequenceOfSelector instantiates Sequence from TCollection
-        (ViewerSelector);
-
-    class SequenceOfSelection instantiates Sequence from TCollection
-        (Selection);
-
-
-    class DataMapOfSelectionActivation instantiates DataMap from TCollection
-    (Selection,Integer,MapTransientHasher from TColStd);
+        (ViewerSelector from SelectMgr);
 
     class DataMapOfObjectSelectors instantiates DataMap from TCollection
-    (SelectableObject,SequenceOfSelector,MapTransientHasher from TColStd);
+    (SelectableObject from SelectMgr,SequenceOfSelector,MapTransientHasher from TColStd);
 
     private class IndexedDataMapOfOwnerCriterion
         instantiates IndexedDataMap from TCollection
@@ -255,5 +256,19 @@ is
     pointer SOPtr to SelectableObject from SelectMgr;
 
     imported CompareResults;
+
+    imported SelectableObjectSet;
+    imported FrustumBuilder;
+    imported BaseFrustum;
+    imported Frustum;
+    imported RectangularFrustum;
+    imported TriangularFrustum;
+    imported TriangularFrustumSet;
+    imported SelectingVolumeManager;
+    imported transient class Selection;
+    imported SequenceOfSelection;
+    imported SensitiveEntity;
+    imported SensitiveEntitySet;
+    imported transient class ViewerSelector;
 
 end SelectMgr;

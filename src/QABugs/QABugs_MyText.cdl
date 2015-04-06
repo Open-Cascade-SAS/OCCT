@@ -20,16 +20,12 @@ uses
     PresentationManager3d from PrsMgr, 
     Presentation from Prs3d,
     NameOfColor  from  Quantity,
-    Selection from SelectMgr
+    Selection    from SelectMgr
 is 
     Create(aText  :ExtendedString  from  TCollection;aPosition  : Pnt  from  gp)
     returns MyText from QABugs;
     Create(aText  :ExtendedString  from  TCollection;aPosition  : Pnt  from  gp;aFont :  CString from Standard; aColor : NameOfColor  from  Quantity; aHeight :Real  from  Standard)
     returns MyText from QABugs;
-
-    NbPossibleSelection(me)
-    returns Integer from Standard
-    is redefined virtual protected;
     
     Compute(me:mutable;
             aPresentationManager: PresentationManager3d from PrsMgr;

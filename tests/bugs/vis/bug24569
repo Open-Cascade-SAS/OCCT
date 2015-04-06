@@ -30,6 +30,7 @@ puts "Testing of plane sensitivity update:"
 
 vchangeplane pl1 x=-150 y=150 z=0 sx=10 sy=10
 vupdate pl1
+vzrange 230.36270740666069 409.91874112463427
 vmoveto 200 240
 checkcolor 199 23 0 1 0
 

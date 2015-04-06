@@ -33,7 +33,6 @@ public:
   DEFINE_STANDARD_RTTI( IVtk_IShapePickerAlgo )
 
   virtual void SetView (const IVtk_IView::Handle& theView) = 0;
-  virtual void Modified() = 0;
   virtual int  NbPicked() = 0;
 
   //! Get activated selection modes for a shape.

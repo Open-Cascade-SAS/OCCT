@@ -11,93 +11,268 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Select3D_SensitivePoly.ixx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
-#include <Select3D_Pnt.hxx>
-#include <Select3D_Pnt2d.hxx>
-#include <Select3D_Box2d.hxx>
 #include <TopLoc_Location.hxx>
 
+#include <Select3D_Pnt.hxx>
+
+#include <Select3D_SensitivePoly.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (Select3D_SensitivePoly, Select3D_SensitiveSet)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoly, Select3D_SensitiveSet)
 
 //==================================================
-// Function: faire disparaitre ce constructeur a la prochaine version...
-// Purpose : simplement garde pour ne pas perturber la version update
-//==================================================
-
-Select3D_SensitivePoly::
-Select3D_SensitivePoly(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                       const TColgp_Array1OfPnt& ThePoints):
-Select3D_SensitiveEntity(OwnerId),
-mypolyg(ThePoints.Upper()-ThePoints.Lower()+1)
-{
-  for (Standard_Integer theIndex = 0 ; theIndex < mypolyg.Size(); ++theIndex)
-    mypolyg.SetPnt(theIndex, ThePoints.Value(ThePoints.Lower()+theIndex));
-}
-
-//==================================================
-// Function: Creation
+// Function: Select3D_SensitivePoly
 // Purpose :
 //==================================================
-
-Select3D_SensitivePoly::
-Select3D_SensitivePoly(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                       const Handle(TColgp_HArray1OfPnt)& ThePoints):
-Select3D_SensitiveEntity(OwnerId),
-mypolyg(ThePoints->Upper()-ThePoints->Lower()+1)
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                                const TColgp_Array1OfPnt& thePoints,
+                                                const Standard_Boolean theIsBVHEnabled)
+: Select3D_SensitiveSet (theOwnerId),
+  myPolyg (thePoints.Upper() - thePoints.Lower() + 1)
 {
-  for (Standard_Integer theIndex = 0; theIndex < mypolyg.Size(); theIndex++)
-    mypolyg.SetPnt(theIndex, ThePoints->Value(ThePoints->Lower()+theIndex));
-}
+  Standard_Integer aLowerIdx = thePoints.Lower();
+  Standard_Integer anUpperIdx = thePoints.Upper();
+  gp_XYZ aPntSum (0.0, 0.0, 0.0);
 
-//==================================================
-// Function: Creation
-// Purpose :
-//==================================================
-
-Select3D_SensitivePoly::
-Select3D_SensitivePoly(const Handle(SelectBasics_EntityOwner)& OwnerId, 
-                       const Standard_Integer NbPoints):
-Select3D_SensitiveEntity(OwnerId),
-mypolyg(NbPoints)
-{
-}
-
-//==================================================
-// Function: Project
-// Purpose :
-//==================================================
-
-void Select3D_SensitivePoly::Project(const Handle(Select3D_Projector)& aProj)
-{
-  mybox2d.SetVoid();
-
-  Standard_Boolean hasloc = HasLocation();
-  gp_Pnt2d aPnt2d;
-  gp_Pnt aPnt;
-  for (Standard_Integer theIndex = 0; theIndex < mypolyg.Size(); ++theIndex)
+  Select3D_BndBox3d aBndBox;
+  for (Standard_Integer aIdx = aLowerIdx; aIdx <= anUpperIdx; ++aIdx)
   {
-    aPnt = mypolyg.Pnt(theIndex);
-    if (hasloc)
+    aPntSum += thePoints.Value (aIdx).XYZ();
+    const SelectMgr_Vec3 aPnt (thePoints.Value (aIdx).X(),
+                               thePoints.Value (aIdx).Y(),
+                               thePoints.Value (aIdx).Z());
+    aBndBox.Add (aPnt);
+    myPolyg.SetPnt (aIdx - aLowerIdx, thePoints.Value (aIdx));
+  }
+
+  myBndBox = aBndBox;
+  myCOG = aPntSum / myPolyg.Size();
+
+  if (theIsBVHEnabled)
+  {
+    const Standard_Integer aPntsNum = myPolyg.Size();
+    mySegmentIndexes = new TColStd_HArray1OfInteger (0, aPntsNum - 2);
+    for (Standard_Integer aSegmIter = 0; aSegmIter < aPntsNum - 1; ++aSegmIter)
     {
-      aProj->Project(aPnt.Transformed(Location().Transformation()), aPnt2d);
+      mySegmentIndexes->SetValue (aSegmIter, aSegmIter);
     }
-    else
-    {
-      aProj->Project(aPnt, aPnt2d);
-    }
-    mybox2d.Update(aPnt2d);
-    mypolyg.SetPnt2d(theIndex, aPnt2d);
   }
 }
 
 //==================================================
-// Function: Areas
+// Function: Select3D_SensitivePoly
 // Purpose :
 //==================================================
-void Select3D_SensitivePoly
-::Areas(SelectBasics_ListOfBox2d& aSeq)
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                                const Handle(TColgp_HArray1OfPnt)& thePoints,
+                                                const Standard_Boolean theIsBVHEnabled)
+: Select3D_SensitiveSet (theOwnerId),
+  myPolyg (thePoints->Upper() - thePoints->Lower() + 1)
 {
-  aSeq.Append(mybox2d);
+  Standard_Integer aLowerIdx = thePoints->Lower();
+  Standard_Integer anUpperIdx = thePoints->Upper();
+  gp_XYZ aPntSum (0.0, 0.0, 0.0);
+
+  Select3D_BndBox3d aBndBox;
+  for (Standard_Integer aIdx = aLowerIdx; aIdx <= anUpperIdx; ++aIdx)
+  {
+    aPntSum += thePoints->Value (aIdx).XYZ();
+    const SelectMgr_Vec3 aPnt (thePoints->Value (aIdx).X(),
+                               thePoints->Value (aIdx).Y(),
+                               thePoints->Value (aIdx).Z());
+    aBndBox.Add (aPnt);
+    myPolyg.SetPnt (aIdx - aLowerIdx, thePoints->Value (aIdx));
+  }
+
+  myBndBox = aBndBox;
+  myCOG = aPntSum / myPolyg.Size();
+
+  if (theIsBVHEnabled)
+  {
+    const Standard_Integer aPntsNum = myPolyg.Size();
+    mySegmentIndexes = new TColStd_HArray1OfInteger (0, aPntsNum - 2);
+    for (Standard_Integer aSegmIter = 0; aSegmIter < aPntsNum - 1; ++aSegmIter)
+    {
+      mySegmentIndexes->SetValue (aSegmIter, aSegmIter);
+    }
+  }
 }
 
+//==================================================
+// Function: Creation
+// Purpose :
+//==================================================
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                                const Standard_Boolean theIsBVHEnabled,
+                                                const Standard_Integer theNbPnts)
+: Select3D_SensitiveSet (theOwnerId),
+  myPolyg (theNbPnts)
+{
+  if (theIsBVHEnabled)
+  {
+    mySegmentIndexes = new TColStd_HArray1OfInteger (0, theNbPnts - 2);
+    for (Standard_Integer aIdx = 0; aIdx < theNbPnts - 1; ++aIdx)
+    {
+      mySegmentIndexes->SetValue (aIdx, aIdx);
+    }
+  }
+  myCOG = gp_Pnt (RealLast(), RealLast(), RealLast());
+}
+
+//==================================================
+// function : BoundingBox
+// purpose  : Returns bounding box of a polygon. If location
+//            transformation is set, it will be applied
+//==================================================
+Select3D_BndBox3d Select3D_SensitivePoly::BoundingBox()
+{
+  if (myBndBox.IsValid())
+    return myBndBox;
+
+  Select3D_BndBox3d aBndBox;
+  for (Standard_Integer aPntIter = 0; aPntIter < myPolyg.Size(); ++aPntIter)
+  {
+    SelectMgr_Vec3 aPnt (myPolyg.Pnt (aPntIter).x,
+                         myPolyg.Pnt (aPntIter).y,
+                         myPolyg.Pnt (aPntIter).z);
+    aBndBox.Add (aPnt);
+  }
+
+  myBndBox = aBndBox;
+
+  return myBndBox;
+}
+
+//==================================================
+// Function: Size
+// Purpose : Returns the amount of segments of
+//           the poly
+//==================================================
+Standard_Integer Select3D_SensitivePoly::Size() const
+{
+  if (!mySegmentIndexes.IsNull())
+    return mySegmentIndexes->Length();
+
+  return -1;
+}
+
+//==================================================
+// Function: Box
+// Purpose : Returns bounding box of segment with
+//           index theIdx
+//==================================================
+Select3D_BndBox3d Select3D_SensitivePoly::Box (const Standard_Integer theIdx) const
+{
+  if (mySegmentIndexes.IsNull())
+    return Select3D_BndBox3d (SelectMgr_Vec3 (RealLast()));
+
+  const Standard_Integer aSegmentIdx = mySegmentIndexes->Value (theIdx);
+  gp_Pnt aPnt1 = myPolyg.Pnt3d (aSegmentIdx);
+  gp_Pnt aPnt2 = myPolyg.Pnt3d (aSegmentIdx + 1);
+
+  const SelectMgr_Vec3 aMinPnt (Min (aPnt1.X(), aPnt2.X()),
+                                Min (aPnt1.Y(), aPnt2.Y()),
+                                Min (aPnt1.Z(), aPnt2.Z()));
+  const SelectMgr_Vec3 aMaxPnt (Max (aPnt1.X(), aPnt2.X()),
+                                Max (aPnt1.Y(), aPnt2.Y()),
+                                Max (aPnt1.Z(), aPnt2.Z()));
+
+  return Select3D_BndBox3d (aMinPnt, aMaxPnt);
+}
+
+//==================================================
+// Function: Center
+// Purpose : Returns geometry center of sensitive
+//           entity index theIdx in the vector along
+//           the given axis theAxis
+//==================================================
+Standard_Real Select3D_SensitivePoly::Center (const Standard_Integer theIdx,
+                                              const Standard_Integer theAxis) const
+{
+  if (mySegmentIndexes.IsNull())
+    return RealLast();
+
+  const Select3D_BndBox3d aBndBox = Box (theIdx);
+  const SelectMgr_Vec3& aCenter = (aBndBox.CornerMin() + aBndBox.CornerMax()) * 0.5;
+  return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
+}
+
+//==================================================
+// Function: Swap
+// Purpose : Swaps items with indexes theIdx1 and
+//           theIdx2 in the vector
+//==================================================
+void Select3D_SensitivePoly::Swap (const Standard_Integer theIdx1,
+                                   const Standard_Integer theIdx2)
+{
+  if (mySegmentIndexes.IsNull())
+    return;
+
+  const Standard_Integer aSegmentIdx1 = mySegmentIndexes->Value (theIdx1);
+  const Standard_Integer aSegmentIdx2 = mySegmentIndexes->Value (theIdx2);
+  mySegmentIndexes->ChangeValue (theIdx1) = aSegmentIdx2;
+  mySegmentIndexes->ChangeValue (theIdx2) = aSegmentIdx1;
+  return;
+}
+
+//==================================================
+// Function: overlapsElement
+// Purpose : Checks whether the segment with index
+//           theIdx overlaps the current selecting
+//           volume
+//==================================================
+Standard_Boolean Select3D_SensitivePoly::overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
+                                                          Standard_Integer theElemIdx,
+                                                          Standard_Real& theMatchDepth)
+{
+  if (mySegmentIndexes.IsNull())
+    return Standard_False;
+
+  const Standard_Integer aSegmentIdx = mySegmentIndexes->Value (theElemIdx);
+  gp_Pnt aPnt1 = myPolyg.Pnt3d (aSegmentIdx);
+  gp_Pnt aPnt2 = myPolyg.Pnt3d (aSegmentIdx + 1);
+
+  return theMgr.Overlaps (aPnt1, aPnt2, theMatchDepth);
+}
+
+//==================================================
+// Function: distanceToCOG
+// Purpose : Calculates distance from the 3d
+//           projection of used-picked screen point
+//           to center of the geometry
+//==================================================
+Standard_Real Select3D_SensitivePoly::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
+{
+  if (myCOG.X() == RealLast() && myCOG.Y() == RealLast() && myCOG.Z() == RealLast())
+  {
+    gp_XYZ aCenter (0.0, 0.0, 0.0);
+    for (Standard_Integer aIdx = 0; aIdx < myPolyg.Size(); ++aIdx)
+    {
+      aCenter += myPolyg.Pnt (aIdx);
+    }
+    myCOG = aCenter / myPolyg.Size();
+  }
+
+  return theMgr.DistToGeometryCenter (myCOG);
+}
+
+//==================================================
+// Function: NbSubElements
+// Purpose : Returns the amount of segments in poly
+//==================================================
+Standard_Integer Select3D_SensitivePoly::NbSubElements()
+{
+  return myPolyg.Size();
+}
+
+//==================================================
+// Function: CenterOfGeometry
+// Purpose : Returns center of the point set. If
+//           location transformation is set, it will
+//           be applied
+//==================================================
+gp_Pnt Select3D_SensitivePoly::CenterOfGeometry() const
+{
+  return myCOG;
+}

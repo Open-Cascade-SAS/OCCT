@@ -29,6 +29,8 @@
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <AIS_Selection.hxx>
 
+#include <StdSelect_ViewerSelector3d.hxx>
+
 //=======================================================================
 //function : OpenLocalContext
 //purpose  : 
@@ -59,10 +61,6 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
   myLastPicked.Nullify();
   myWasLastMain = Standard_True;
 
-
-
-  Standard_Integer untilnow = myCurLocalIndex;
-  
   myCurLocalIndex = HighestIndex() + 1;
   
   Handle(AIS_LocalContext) NewLocal= new AIS_LocalContext(this,myCurLocalIndex,
@@ -72,12 +70,6 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
   // the AIS_LocalContext bind itself to myLocalContexts
   // because procedures performed in AIS_LocalContext constructor
   // already may access myLocalContexts(myCurLocalIndex) (like methods AIS_LocalContext::IsSelected()).
-  //myLocalContexts.Bind (myCurLocalIndex, NewLocal);
-  NewLocal->MainSelector()->Set ((myLocalContexts.Extent() > 1)
-    ? myLocalContexts (untilnow)->MainSelector()->Projector()
-    : myMainSel->Projector());
-
-  NewLocal->MainSelector()->UpdateConversion();
 
 #ifdef OCCT_DEBUG
   cout<<"\tOpen Local Context No "<<myCurLocalIndex<<endl;
@@ -123,17 +115,11 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
  // the only open local context is closed...
  if(myLocalContexts.Extent()==1 && GoodIndex == myCurLocalIndex){
    
-   Standard_Boolean updateproj = !(myLocalContexts(myCurLocalIndex)->HasSameProjector(myMainSel->Projector()));
    myLocalContexts(myCurLocalIndex)->Terminate( updateviewer );
    myLocalContexts.UnBind(myCurLocalIndex);
    myCurLocalIndex = 0;
 
    ResetOriginalState(Standard_False);
-   if(updateproj)
-     myMainSel->UpdateConversion();
-   else{
-     myMainSel->UpdateSort();
-   }
    if(debugmode)
      cout<<"No More Opened Local Context "<<endl;
  }
@@ -146,11 +132,6 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
    // the current is closed...
    if(GoodIndex==myCurLocalIndex){
      myCurLocalIndex = HighestIndex();
-     const Handle(AIS_LocalContext)& LocCtx = myLocalContexts(myCurLocalIndex);
-     if (!LocCtx->HasSameProjector (VS->Projector()))
-     {
-       LocCtx->MainSelector()->UpdateConversion();
-     }
    }
    else if(debugmode)
      cout<<"a No Current Local Context WasClosed"<<endl;
@@ -177,7 +158,6 @@ void AIS_InteractiveContext::CloseAllContexts(const Standard_Boolean updateviewe
   
   ResetOriginalState(Standard_False);
 
-  myMainSel->UpdateSort();
   if(updateviewer) myMainVwr->Update();
 }
 
@@ -226,12 +206,13 @@ Standard_Integer AIS_InteractiveContext::HighestIndex() const
 
 void AIS_InteractiveContext::
 Activate(const Handle(AIS_InteractiveObject)& anIObj, 
-         const Standard_Integer aMode)
+         const Standard_Integer aMode,
+         const Standard_Boolean theIsForce)
 {
   if(!HasOpenedContext()){
     if(!myObjects.IsBound(anIObj)) return;
     const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
-    if(STAT->GraphicStatus()==AIS_DS_Displayed)
+    if(STAT->GraphicStatus()==AIS_DS_Displayed || theIsForce)
       mgrSelector->Activate(anIObj,aMode,myMainSel);
     STAT ->AddSelectionMode(aMode);
   }
@@ -571,31 +552,6 @@ const SelectMgr_ListOfFilter& AIS_InteractiveContext::Filters() const
 }
 
 //=======================================================================
-//function : DisplayActiveAreas
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveContext::DisplayActiveAreas(const Handle(V3d_View)& aviou)
-{
-  if(HasOpenedContext())
-    myLocalContexts(myCurLocalIndex)->DisplayAreas(aviou);
-  else
-    myMainSel->DisplayAreas(aviou);
-  
-}
-
-//=======================================================================
-//function : ClearActiveAreas
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveContext::ClearActiveAreas(const Handle(V3d_View)& aviou)
-{
-  if(HasOpenedContext())
-    myLocalContexts(myCurLocalIndex)->ClearAreas(aviou);
-  else
-    myMainSel->ClearAreas(aviou);
-}
-
-//=======================================================================
 //function : DisplayActiveSensitive
 //purpose  : 
 //=======================================================================
@@ -631,41 +587,11 @@ void AIS_InteractiveContext::DisplayActiveSensitive(const Handle(AIS_Interactive
   
   for(;It.More();It.Next()){
     const Handle(SelectMgr_Selection)& Sel = anIObj->Selection(It.Value());
-    VS->DisplaySensitive(Sel,aviou,Standard_False);
+    VS->DisplaySensitive(Sel,anIObj->Transformation(), aviou,Standard_False);
   }  
   
 }
 
-//=======================================================================
-//function : DisplayActiveAreas
-//purpose  : 
-//=======================================================================
-
-void AIS_InteractiveContext::DisplayActiveAreas(const Handle(AIS_InteractiveObject)& anIObj,
-                                                const Handle(V3d_View)& aviou)
-{
-  TColStd_ListIteratorOfListOfInteger It;
-  Handle(StdSelect_ViewerSelector3d) VS;
-  if(HasOpenedContext()){
-    const Handle(AIS_LocalContext)& LC = myLocalContexts(myCurLocalIndex);
-    if(!LC->IsIn(anIObj)) return;
-    It.Initialize(LC->SelectionModes(anIObj));
-    VS = LC->MainSelector();
-  }
-  else{
-    if(!myObjects.IsBound(anIObj)) return;
-    It.Initialize(myObjects(anIObj)->SelectionModes());
-    VS = myMainSel;
-  }
-  
-  
-  for(;It.More();It.Next()){
-    const Handle(SelectMgr_Selection)& Sel = anIObj->Selection(It.Value());
-    VS->DisplayAreas(Sel,aviou,Standard_False);
-  }  
-  
-}
-  
 //=======================================================================
 //function : ClearActiveSensitive
 //purpose  : 
@@ -848,6 +774,7 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
 {
   Standard_Boolean upd_main(Standard_False);
   TColStd_ListIteratorOfListOfInteger itl;
+  myMainSel->ResetSelectionActivationStatus();
 
   for (AIS_DataMapIteratorOfDataMapOfIOStatus it(myObjects);it.More();it.Next()){
     const Handle(AIS_InteractiveObject)& iobj = it.Key();

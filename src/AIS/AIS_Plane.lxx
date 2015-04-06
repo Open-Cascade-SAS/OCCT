@@ -50,7 +50,7 @@ inline Select3D_TypeOfSensitivity AIS_Plane::TypeOfSensitivity() const
   return myTypeOfSensitivity;
 }
 
-inline void AIS_Plane::SetTypeOfSensitivity (const Select3D_TypeOfSensitivity theTypeOfSensitivity)
+inline void AIS_Plane::SetTypeOfSensitivity (const Select3D_TypeOfSensitivity& theTypeOfSensitivity)
 {
   myTypeOfSensitivity = theTypeOfSensitivity;
 }

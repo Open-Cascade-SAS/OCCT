@@ -47,16 +47,6 @@ IVtkOCC_ShapePickerAlgo::~IVtkOCC_ShapePickerAlgo()
 void IVtkOCC_ShapePickerAlgo::SetView (const IVtk_IView::Handle& theView)
 {
   myView = theView;
-  Modified();
-}
-
-//================================================================
-// Function : Modified
-// Purpose  :
-//================================================================
-void IVtkOCC_ShapePickerAlgo::Modified()
-{
-  myViewerSelector->Update (myView);
 }
 
 //================================================================
@@ -132,6 +122,7 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode (const IVtk_IShape::Handle& theSh
       // then create a new selection in the given mode for this object (shape).
       Handle(SelectMgr_Selection) aNewSelection = new SelectMgr_Selection (theMode); 
       aSelObj->AddSelection (aNewSelection, theMode);
+      myViewerSelector->AddSelectionToObject (aSelObj, aNewSelection);
     }
 
     // Update the selection for the given mode according to its status.
@@ -141,14 +132,16 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode (const IVtk_IShape::Handle& theSh
     {
       case SelectMgr_TOU_Full:
         // Recompute the sensitive primitives which correspond to the mode.
-        aSelObj->UpdateSelection (theMode); 
+        myViewerSelector->RemoveSelectionOfObject (aSelObj, aSelObj->Selection (theMode));
+        aSelObj->RecomputePrimitives (theMode);
+        myViewerSelector->AddSelectionToObject (aSelObj, aSelObj->Selection (theMode));
+        myViewerSelector->RebuildObjectsTree();
+        myViewerSelector->RebuildSensitivesTree (aSelObj);
       case SelectMgr_TOU_Partial:
         {
           if (aSelObj->HasTransformation())
           {
-            // Updates locations in all sensitive entities from the Selection and
-            // corresponding entity owners (shapes).
-            aSelObj->UpdateTransformations (aSel);
+            myViewerSelector->RebuildObjectsTree();
           }
           break;
         }

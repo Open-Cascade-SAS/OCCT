@@ -21,6 +21,7 @@
 
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>

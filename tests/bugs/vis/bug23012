@@ -21,8 +21,7 @@ stepread [locate_data_file OCC23012-Sample_9.stp] b *
 vdisplay a_1 b_1
 vsetdispmode a_1 1
 vsetdispmode b_1 1
-vselprecision
-vselprecision 1 0.1
+vselprecision 0
 
 set ColorBefore [vreadpixel ${x1} ${y1} rgb]
 

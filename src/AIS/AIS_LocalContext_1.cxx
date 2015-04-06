@@ -31,12 +31,12 @@
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
 #include <Visual3d_View.hxx>
 
-#include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 #include <OSD_Environment.hxx>
@@ -855,7 +855,7 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
       continue;
     }
 
-    if (toClearDeactivated && !mySM->IsActivated (theIO, myMainVS, aMode))
+    if (toClearDeactivated && !mySM->IsActivated(theIO, aMode, myMainVS))
     {
       continue;
     }
@@ -863,7 +863,7 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
     Handle(SelectMgr_Selection) aSelection = theIO->Selection(aMode);
     for (aSelection->Init(); aSelection->More(); aSelection->Next())
     {
-      Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive();
+      Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
       if (anEntity.IsNull())
       {
         continue;
@@ -1012,7 +1012,7 @@ void AIS_LocalContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,
       const Handle(SelectMgr_Selection)& SIOBJ = anIObj->Selection(0);
       SIOBJ->Init();
       if(SIOBJ->More()){
-	Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->OwnerId();
+        Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->BaseSensitive()->OwnerId();
 	EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
       }
     }
@@ -1049,10 +1049,9 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
     {
       const Handle(SelectMgr_Selection)& SIOBJ = anIObj->Selection(0);
       SIOBJ->Init();
-      if(SIOBJ->More())
-      {
-        Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->OwnerId();
-        EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
+      if(SIOBJ->More()){
+        Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->BaseSensitive()->OwnerId();
+	EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
       }
     }
     if(EO.IsNull())
@@ -1272,27 +1271,6 @@ Standard_Boolean AIS_LocalContext::ComesFromDecomposition(const Standard_Integer
   return Standard_False;
 }
 
-
-//=======================================================================
-//function : DisplayAreas
-//purpose  : 
-//=======================================================================
-
-void AIS_LocalContext::DisplayAreas(const Handle(V3d_View)& aviou)
-{
-    myMainVS->DisplayAreas(aviou);
-}
-
-//=======================================================================
-//function : ClearAreas
-//purpose  : 
-//=======================================================================
-
-void AIS_LocalContext::ClearAreas(const Handle(V3d_View)& aviou)
-{
-    myMainVS->ClearAreas(aviou);
-}
-
 //=======================================================================
 //function : DisplaySensitive
 //purpose  : 
@@ -1475,9 +1453,9 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const
   Standard_Boolean found(Standard_False);
 
   if (!found) {
-    SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive aSensitiveIt (myMainVS->Primitives());
-    for (; aSensitiveIt.More(); aSensitiveIt.Next()) {
-      EO = Handle(SelectMgr_EntityOwner)::DownCast (aSensitiveIt.Value()->OwnerId());
+    NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt (myMainVS->ActiveOwners());
+    for (; anOwnersIt.More(); anOwnersIt.Next()) {
+      EO = Handle(SelectMgr_EntityOwner)::DownCast (anOwnersIt.Value());
       Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(EO);
       if (!BROwnr.IsNull() && BROwnr->HasShape() && BROwnr->Shape() == sh) {
 	 found = Standard_True;

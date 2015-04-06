@@ -269,6 +269,7 @@ void PrsMgr_PresentableObject::SetCombinedParentTransform (const gp_Trsf& theTra
 void PrsMgr_PresentableObject::UpdateTransformation()
 {
   myTransformation = myCombinedParentTransform * myLocalTransformation;
+  myInvTransformation = myTransformation.Inverted();
   Handle(Geom_Transformation) aTrsf = new Geom_Transformation (myTransformation);
 
   for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)

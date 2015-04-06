@@ -19,6 +19,8 @@
 #include <IVtk_Interface.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_Mat4d.hxx>
 
 DEFINE_STANDARD_HANDLE( IVtk_IView, IVtk_Interface )
 
@@ -65,11 +67,25 @@ public:
   //! @return Two doubles containing the display coordinates of the view window center 
   virtual void    GetViewCenter (double& theX, double& theY) const = 0;
 
+  //! Gets window size in screen coordinates in pixels
+  virtual void    GetWindowSize (int& theX, int& theY) const = 0;
+
+  //! Gets camera projection and orientation matrices
+  virtual void    GetCamera (Graphic3d_Mat4d& theProj,
+                             Graphic3d_Mat4d& theOrient,
+                             Standard_Boolean& theIsOrtho) const = 0;
+
   //! Converts 3D display coordinates into 3D world coordinates.
   //! @param [in] theDisplayPnt 2d point of display coordinates
   //! @param [out] theWorldPnt 3d point of world coordinates
   //! @return true if conversion was successful, false otherwise
   virtual bool    DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const = 0;
+
+  //! Gets viewport coordinates
+  virtual void    GetViewport (Standard_Real& theX,
+                               Standard_Real& theY,
+                               Standard_Real& theWidth,
+                               Standard_Real& theHeight) const = 0;
 
   DEFINE_STANDARD_RTTI( IVtk_IView )
 };

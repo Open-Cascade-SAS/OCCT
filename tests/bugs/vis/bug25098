@@ -8,17 +8,17 @@ puts ""
 
 proc ParseEntityInfo {theInfoString} {
   set aStringArr [split $theInfoString " "]
+  set isEdgeInfo 0
   set aDepth ""
-  set aDistance ""
   set aPoint ""
   set aType ""
   set aSize [llength $aStringArr]
   for {set aIdx 0} {$aIdx < $aSize} {incr aIdx} {
     set aItem [lindex $theInfoString $aIdx]
-    if {[string compare $aItem "Depth:"] == 0} {
-      set aDepth [string trim [lindex $theInfoString [expr $aIdx + 1]]]
-    } elseif {[string compare $aItem "Distance:"] == 0} {
-        set aDistance [string trim [lindex $theInfoString [expr $aIdx + 1]]]
+    if {[string compare $aItem "e"] == 0} {
+      set isEdgeInfo 1
+    } elseif {[string compare $aItem "Depth:"] == 0} {
+        set aDepth [string trim [lindex $theInfoString [expr $aIdx + 1]]]
     } elseif {[string compare $aItem "Point:"] == 0} {
         set aPoint [string trim [lindex $theInfoString [expr $aIdx + 1]]]
         append aPoint " "
@@ -30,7 +30,7 @@ proc ParseEntityInfo {theInfoString} {
     }
   }
 
-  return [list $aDepth $aDistance $aPoint $aType]
+  return [list $isEdgeInfo $aDepth $aPoint $aType]
 }
 
 pload VISUALIZATION MODELING
@@ -53,33 +53,56 @@ vmoveto 240 300
 set aOut [split [vstate -entities] "\n"]
 
 # compare parameters of detected match: depth, distance and point
-set aEdgeInfoList [ParseEntityInfo [lindex $aOut 1]]
-set aWireInfoList [ParseEntityInfo [lindex $aOut 3]]
-for {set aIdx 0} {$aIdx < 3} {incr aIdx} {
-  if {[string equal [lindex $aEdgeInfoList $aIdx] [lindex $aWireInfoList $aIdx]] == 0} {
+set anInfoList1Idx 1
+set anInfoList2Idx -1
+set anInfoList1 [ParseEntityInfo [lindex $aOut $anInfoList1Idx]]
+if {[string equal [lindex $anInfoList1 0] "1"]} {
+  set anInfoList2Idx 3
+} else {
+  set anInfoList2Idx 4
+}
+set anInfoList2 [ParseEntityInfo [lindex $aOut $anInfoList2Idx]]
+for {set aIdx 1} {$aIdx < 3} {incr aIdx} {
+  if {[string equal [lindex $anInfoList1 $aIdx] [lindex $anInfoList2 $aIdx]] == 0} {
     set aDebugInfo "Characteristics are not equal at value nb: "
     append aDebugInfo [expr $aIdx + 1]
     puts $aDebugInfo
     set aDebugInfo "The values are: "
-    append aDebugInfo [lindex $aEdgeInfoList $aIdx]
+    append aDebugInfo [lindex $anInfoList1 $aIdx]
     append aDebugInfo " and "
-    append aDebugInfo [lindex $aWireInfoList $aIdx]
+    append aDebugInfo [lindex $anInfoList2 $aIdx]
     puts $aDebugInfo
     puts "ERROR"
     puts ""
   }
 }
 
+set anEdgeSensitiveType ""
+set aWireSensitiveType ""
+set anEdgeTypeStringNb -1
+set aWireTypeStringNb -1
+if {[string equal [lindex $anInfoList1 0] "1"]} {
+  set anEdgeTypeStringNb 2
+  set anEdgeSensitiveType [lindex $anInfoList1 3]
+  set aWireTypeStringNb 4
+  set aWireSensitiveType [lindex $anInfoList2 3]
+} else {
+  set anEdgeTypeStringNb 5
+  set anEdgeSensitiveType [lindex $anInfoList2 3]
+  set aWireTypeStringNb 2
+  set aWireSensitiveType [lindex $anInfoList1 3]
+}
+
 # checks that edge e is represented by correct shape and sensitive entity
-if {[string equal [lindex $aEdgeInfoList 3] "(Select3D_SensitiveSegment)"] == 0} {
+if {[string equal $anEdgeSensitiveType "(Select3D_SensitiveSegment)"] == 0} {
   puts "Wrong sensitive for segment! Value is: "
-  puts [lindex $aEdgeInfoList 3]
+  puts $anEdgeSensitiveType
   puts "Must be: (Select3D_SensitiveSegment)"
   puts "ERROR"
   puts ""
 }
 
-set aEdgeType [string trim [lindex $aOut 2]]
+set aEdgeType [string trim [lindex $aOut $anEdgeTypeStringNb]]
 if {[string equal $aEdgeType "Detected Shape: BRep_TEdge"] == 0} {
   puts "Wrong type of edge! Value is: "
   puts $aEdgeType
@@ -89,15 +112,15 @@ if {[string equal $aEdgeType "Detected Shape: BRep_TEdge"] == 0} {
 }
 
 # checks that wire b_5 is represented by correct shape and sensitive entity
-if {[string equal [lindex $aWireInfoList 3] "(Select3D_SensitiveWire)"] == 0} {
+if {[string equal $aWireSensitiveType "(Select3D_SensitiveWire)"] == 0} {
   puts "Wrong sensitive for wire! Value is: "
-  puts [lindex $aWireInfoList 3]
+  puts $aWireSensitiveType
   puts "Must be: (Select3D_SensitiveWire)"
   puts "ERROR"
   puts ""
 }
 
-set aWireType [string trim [lindex $aOut 4]]
+set aWireType [string trim [lindex $aOut $aWireTypeStringNb]]
 if {[string equal $aWireType "Detected Shape: TopoDS_TWire"] == 0} {
   puts "Wrong type of wire! Value is: "
   puts $aWireType
@@ -106,10 +129,10 @@ if {[string equal $aWireType "Detected Shape: TopoDS_TWire"] == 0} {
   puts ""
 }
 
-set aWireSensitiveType [string trim [lindex $aOut 5]]
-if {[string equal $aWireSensitiveType "Detected Child: Select3D_SensitiveCurve"] == 0} {
+set aWireChildSensitiveType [string trim [lindex $aOut [expr $aWireTypeStringNb + 1]]]
+if {[string equal $aWireChildSensitiveType "Detected Child: Select3D_SensitiveCurve"] == 0} {
   puts "Wrong type of wire's inner sensitive! Value is: "
-  puts $aWireSensitiveType
+  puts $aWireChildSensitiveType
   puts "Must be: Detected Child: Select3D_SensitiveCurve"
   puts "ERROR"
 }

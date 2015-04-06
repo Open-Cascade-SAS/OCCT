@@ -18,6 +18,7 @@
 
 #include <AIS_ConnectedInteractive.ixx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Geom_Transformation.hxx>
 
@@ -287,31 +288,30 @@ void AIS_ConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selectio
 
   if (!myReference->HasSelection (theMode))
   {
-    myReference->UpdateSelection (theMode);
+    myReference->RecomputePrimitives (theMode);
   }
 
   const Handle(SelectMgr_Selection)& TheRefSel = myReference->Selection (theMode);
   Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
   Handle(Select3D_SensitiveEntity) aSensitive, aNewSensitive;
-  
+
+  TopLoc_Location aLocation (Transformation());
+  anOwner->SetLocation (aLocation);
+
   if (TheRefSel->IsEmpty())
   {
-    myReference->UpdateSelection (theMode);
+    myReference->RecomputePrimitives (theMode);
   }
 
   for (TheRefSel->Init(); TheRefSel->More(); TheRefSel->Next())
   {
-    aSensitive = Handle(Select3D_SensitiveEntity)::DownCast (TheRefSel->Sensitive());
+    aSensitive = Handle(Select3D_SensitiveEntity)::DownCast (TheRefSel->Sensitive()->BaseSensitive());
     if (!aSensitive.IsNull())
     {
-      TopLoc_Location aLocation (Transformation());
       // Get the copy of SE3D
-      aNewSensitive = aSensitive->GetConnected (aLocation);
+      aNewSensitive = aSensitive->GetConnected();
 
       aNewSensitive->Set(anOwner);
-      // In case if SE3D caches some location-dependent data
-      // that must be updated after setting OWN
-      aNewSensitive->SetLocation (aLocation);
 
       theSelection->Add (aNewSensitive);
     }
@@ -330,13 +330,13 @@ void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_
     Shapes2EntitiesMap;
 
   if (!myReference->HasSelection (theMode))
-    myReference->UpdateSelection (theMode);
+    myReference->RecomputePrimitives (theMode);
    
   const Handle(SelectMgr_Selection)& aRefSel = myReference->Selection (theMode);
 
   if (aRefSel->IsEmpty() || aRefSel->UpdateStatus() == SelectMgr_TOU_Full)
   {
-    myReference->UpdateSelection (theMode);
+    myReference->RecomputePrimitives (theMode);
   }
   
   Handle(StdSelect_BRepOwner) anOwner;
@@ -352,7 +352,7 @@ void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_
   // sensitive entities associated with aMode 
   for (aRefSel->Init(); aRefSel->More(); aRefSel->Next())
   {
-    aSE = Handle(Select3D_SensitiveEntity)::DownCast (aRefSel->Sensitive()); 
+    aSE = Handle(Select3D_SensitiveEntity)::DownCast (aRefSel->Sensitive()->BaseSensitive());
     if(!aSE.IsNull())
     {
       anOwner = Handle(StdSelect_BRepOwner)::DownCast (aSE->OwnerId());
@@ -376,17 +376,14 @@ void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_
                                        this, 
                                        aSEList.First()->OwnerId()->Priority(), 
                                        Standard_True);
+    anOwner->SetLocation (Transformation());
 
     for (SensitiveList::Iterator aListIt (aSEList); aListIt.More(); aListIt.Next())
-    {      
+    {
       aSE = aListIt.Value();
 
-      TopLoc_Location aLocation (Transformation());
-      aNewSE = aSE->GetConnected (aDummyLoc);
+      aNewSE = aSE->GetConnected();
       aNewSE->Set (anOwner);
-      // In case if aSE caches some location-dependent data 
-      // that must be updated after setting anOwner
-      aNewSE->SetLocation (aLocation);
 
       theSelection->Add (aNewSE);
     }

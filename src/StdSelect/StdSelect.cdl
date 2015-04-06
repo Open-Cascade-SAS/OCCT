@@ -51,7 +51,8 @@ uses
     TColStd,
     gp,
     Select3D,
-    Graphic3d,Visual3d,
+    Graphic3d,
+    Visual3d,
     Quantity,
     Prs3d,
     V3d,
@@ -88,10 +89,8 @@ is
     	---Purpose: Selection sensitivity mode. SM_WINDOW mode uses the
     	-- specified pixel tolerance to compute the sensitivity value,
     	-- SM_VIEW mode allows to define the sensitivity manually.
-
-
-    class ViewerSelector3d;
-
+      
+    
     class BRepSelectionTool;
 
     class BRepOwner;
@@ -103,6 +102,8 @@ is
     class FaceFilter;
     class ShapeTypeFilter;
 
+    imported transient class ViewerSelector3d;
+
     ---Category: Private Classes
 
     private class Prs;
@@ -111,13 +112,10 @@ is
 
     private class IndexedDataMapOfOwnerPrs instantiates IndexedDataMap from TCollection
     (EntityOwner from SelectBasics,Prs from StdSelect,MapTransientHasher from TColStd);
-
-    GetProjector (aView: View from V3d) returns Projector from Select3D;
-    	---Purpose: Returns the 3D projector for the view aView.
-    SetDrawerForBRepOwner(aSelection: Selection from SelectMgr;
-			  aDrawer   : Drawer from Prs3d);
-     	---Purpose: puts The same drawer in every BRepOwner Of SensitivePrimitive
-     	--          Used Only for hilight Of BRepOwner...
 			
+    SetDrawerForBRepOwner(aSelection: Selection from SelectMgr;
+              aDrawer   : Drawer from Prs3d);
+        ---Purpose: puts The same drawer in every BRepOwner Of SensitivePrimitive
+        --          Used Only for hilight Of BRepOwner...
 
 end StdSelect;

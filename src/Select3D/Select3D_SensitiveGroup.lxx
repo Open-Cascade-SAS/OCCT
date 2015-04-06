@@ -14,14 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline  void Select3D_SensitiveGroup::Set(const Standard_Boolean MustMatchAllEntities) 
-{myMustMatchAll = MustMatchAllEntities;}
+//=======================================================================
+//function : SetMatchType
+//purpose  :
+//=======================================================================
+inline void Select3D_SensitiveGroup::SetMatchType (const Standard_Boolean theIsMustMatchAll)
+{
+  myMustMatchAll = theIsMustMatchAll;
+}
 
- 
-inline  Standard_Boolean Select3D_SensitiveGroup::MustMatchAll() const
-{return myMustMatchAll;}
+//=======================================================================
+//function : MustMatchAll
+//purpose  :
+//=======================================================================
+inline Standard_Boolean Select3D_SensitiveGroup::MustMatchAll() const
+{
+  return myMustMatchAll;
+}
 
-inline const Select3D_ListOfSensitive& Select3D_SensitiveGroup::GetEntities() const
-{return myList;}
-
- 
+//=======================================================================
+//function : GetEntities
+//purpose  :
+//=======================================================================
+inline const Select3D_EntitySequence& Select3D_SensitiveGroup::GetEntities() const
+{
+  return myEntities;
+}

@@ -23,6 +23,7 @@
 #include <Graphic3d_Structure.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <StdPrs_Curve.hxx>

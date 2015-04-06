@@ -427,43 +427,16 @@ is
 ---Purpose:
 -- Removes selection mode from Interactive Objects.
 -- aMode provides the selection mode index of the entity aniobj.
-    
-    SetSensitivityMode(me    : mutable;
-                       aMode : SensitivityMode from StdSelect) is static;
-    ---Level: Public
-    ---Purpose: Sets the selection sensitivity mode. SM_WINDOW mode
-    -- uses the specified pixel tolerance to compute the sensitivity
-    -- value, SM_VIEW mode allows to define the sensitivity manually.
-
-    SensitivityMode(me) returns SensitivityMode from StdSelect;
-    ---Level: Public
-    ---Purpose: Returns the selection sensitivity mode.
-
-    SetSensitivity(me:mutable;
-			aPrecision: Real from Standard);
-    ---Level: Public
-    ---Purpose: Sets the sensitivity aPrecision
--- according to the view size for the current context or local
--- context if any is activated. 
---   Sets the sensitivity aPrecision in pixels for the current context
--- or local context if any is activated. By default, this
--- sensitivity is equal to 4 pixels.
---   When a local context is open, the defined sensitivity applies to
--- this local context instead of the main context.
-
-    Sensitivity (me) returns Real from Standard;
-    ---Level: Public 
-    ---Purpose: Returns the selection sensitivity value.
 
     SetPixelTolerance(me:mutable;
-			aPrecision: Integer from Standard = 4);
+			aPrecision: Real from Standard = 4.0);
     ---Level: Public
     ---Purpose: Define the current selection pixel sensitivity
     --		for this context or local context if any one is activated.
     --  Warning: When a local context is open the sensitivity is apply on it 
     --          instead on the main context.
 
-    PixelTolerance(me) returns Integer from Standard;
+    PixelTolerance(me) returns Real from Standard;
     ---Level: Public 
     ---Purpose: Returns the pixel tolerance.
 
@@ -1668,9 +1641,10 @@ is
     ZDetection(me) returns Boolean;
     ---Purpose: Retrieves the Z detection state.
 
-    Activate(me     : mutable;
-    	     anIobj : InteractiveObject from AIS;
-    	     aMode  : Integer from Standard = 0);
+    Activate(me         : mutable;
+             anIobj     : InteractiveObject from AIS;
+             aMode      : Integer from Standard = 0;
+             theIsForce : Boolean from Standard = Standard_False);
     ---Purpose: Activates the selection mode aMode whose index is
 -- given, for the given interactive entity anIobj.
 
@@ -1947,10 +1921,10 @@ is
     ---C++: inline
     ---C++: return const &
 
-    MainSelector(me) returns any ViewerSelector3d from StdSelect;
+    MainSelector(me) returns ViewerSelector3d from StdSelect;
     ---C++: inline
     ---C++: return const &
-    LocalSelector(me) returns any ViewerSelector3d from StdSelect;
+    LocalSelector(me) returns ViewerSelector3d from StdSelect;
 
     PurgeDisplay(me:mutable) 
     returns Integer from Standard;
@@ -1962,12 +1936,6 @@ is
 
 
     HighestIndex(me)  returns  Integer  from  Standard;
-
-    DisplayActiveAreas(me:mutable;aView:View from V3d) ;
-
-    ClearActiveAreas (me   :mutable;
-    	    	aView: View from V3d) is static;
-    ---Level: Internal 
     
     DisplayActiveSensitive(me:mutable;aView : View from V3d) is static; 
     
@@ -1976,9 +1944,6 @@ is
 
 
     DisplayActiveSensitive(me:mutable;
-    	    	           anObject: InteractiveObject from AIS;
-			   aView   : View from V3d) is static;
-    DisplayActiveAreas(me:mutable;
     	    	           anObject: InteractiveObject from AIS;
 			   aView   : View from V3d) is static;
 
@@ -2010,12 +1975,20 @@ is
     ---Purpose: returns if possible,
     --          the first local context where the object is seen
 
+    RebuildSelectionStructs (me : mutable);
+    ---Purpose: Rebuilds 1st level of BVH selection forcibly
     SetViewAffinity (me           : mutable;
                      theIObj      : InteractiveObject from AIS;
                      theView      : View from V3d;
                      theIsVisible : Boolean from Standard) is static;
     ---Purpose: setup object visibility in specified view,
     -- has no effect if object is not disaplyed in this context.
+
+    Disconnect (me                 : mutable;
+                theAssembly        : InteractiveObject from AIS;
+                theObjToDisconnect : InteractiveObject from AIS = NULL)
+      is static;
+    ---Purpose: Disconnects theObjToDisconnect from theAssembly and removes dependent selection structures
 
     ObjectsForView (me;
                     theListOfIO        : in out ListOfInteractive from AIS;

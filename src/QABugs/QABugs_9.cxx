@@ -117,7 +117,7 @@ static Standard_Integer OCC137 (Draw_Interpretor& di, Standard_Integer argc, con
       const Handle(SelectMgr_Selection)& aSelection = AISObj->Selection(4);
       if(!aSelection.IsNull()) {
         for(aSelection->Init();aSelection->More();aSelection->Next()) {
-          Handle(StdSelect_BRepOwner) aO = Handle(StdSelect_BRepOwner)::DownCast(aSelection->Sensitive()->OwnerId());
+          Handle(StdSelect_BRepOwner) aO = Handle(StdSelect_BRepOwner)::DownCast(aSelection->Sensitive()->BaseSensitive()->OwnerId());
           aO->SetHilightMode(Draw::Atoi(argv[1]));
         }
       }

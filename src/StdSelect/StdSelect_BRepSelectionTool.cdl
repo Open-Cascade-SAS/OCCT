@@ -53,18 +53,18 @@ class BRepSelectionTool from StdSelect
 	--                     
 
 uses
-    Selection         from SelectMgr,
-    Shape             from TopoDS,
-    Face              from TopoDS,
-    ShapeEnum         from TopAbs,
-    SelectableObject  from SelectMgr,
-    BRepOwner         from StdSelect,
-    SensitiveEntity   from Select3D,
-    ListOfSensitive   from Select3D
+    Selection        from SelectMgr,
+    Shape            from TopoDS,
+    Face             from TopoDS,
+    ShapeEnum        from TopAbs,
+    SelectableObject from SelectMgr,
+    BRepOwner        from StdSelect,
+    SensitiveEntity  from Select3D,
+    EntitySequence   from Select3D
 is
     
     Load(myclass;
-    	 aSelection        : Selection from SelectMgr;
+         aSelection        : Selection from SelectMgr;
     	 aShape            : Shape             from TopoDS;
 	 aType             : ShapeEnum         from TopAbs;
      theDeflection : Real from Standard;
@@ -90,7 +90,7 @@ is
 
 
     Load(myclass;
-    	 aSelection : Selection from SelectMgr;
+         aSelection : Selection from SelectMgr;
     	 Origin     : SelectableObject  from SelectMgr;
     	 aShape     : Shape             from TopoDS;
 	 aType      : ShapeEnum         from TopAbs;
@@ -152,6 +152,14 @@ is
     	-- computed for the faces which have none. If it is false,
     	-- sensitive entities on these faces will be calculated.
 
+    preBuildBVH (myclass;
+                 theSelection : Selection from SelectMgr)
+        is private;
+        ---Level: Internal
+        ---Purpose: Traverses the selection given and pre-builds BVH trees for heavyweight
+        -- sensitive entities containing more than BVH_PRIMITIVE_LIMIT (defined in .cxx file)
+        -- sub-elements
+
     GetEdgeSensitive(myclass;
     	    	     aShape     : Shape     from TopoDS;
 		     anOwner    : BRepOwner from StdSelect;
@@ -160,7 +168,7 @@ is
 		     theDeflectionAngle : Real from Standard;
     	    	     NbPOnEdge  : Integer;
     	    	     MaximalParameter : Real from Standard;
-    	    	     aSensitive : in out SensitiveEntity from Select3D) 
+                     aSensitive : in out SensitiveEntity from Select3D)
     is private;
     	---Level: Internal
     	---Purpose:	
@@ -169,7 +177,7 @@ is
     GetSensitiveForFace(myclass;
     	    	        aFace             : Face from TopoDS;
 			anOwner           : BRepOwner from StdSelect;
-			OutList           : in out ListOfSensitive from Select3D;
+			OutList           : in out EntitySequence from Select3D;
 			AutoTriangulation : Boolean from Standard = Standard_True;
 			NbPOnEdge         : Integer = 9;
     	    	        MaxiParam         : Real from Standard =500;

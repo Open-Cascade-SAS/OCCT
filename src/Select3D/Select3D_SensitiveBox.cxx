@@ -14,198 +14,126 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Select3D_SensitiveBox.ixx>
+#include <Select3D_SensitiveBox.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
 #include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
 
-
+IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveBox, Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveBox, Select3D_SensitiveEntity)
 
 //==================================================
-// Function: Constructor
+// Function: Select3D_SensitiveBox
 // Purpose :
 //==================================================
-
-Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                                             const Bnd_Box& BBox):
-Select3D_SensitiveEntity(OwnerId),
-mybox3d(BBox){}
-
-//==================================================
-// Function: Constructor
-// Purpose :
-//==================================================
-
-Select3D_SensitiveBox::
-Select3D_SensitiveBox(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                      const Standard_Real XMin,
-                      const Standard_Real YMin,
-                      const Standard_Real ZMin,
-                      const Standard_Real XMax,
-                      const Standard_Real YMax,
-                      const Standard_Real ZMax):
-Select3D_SensitiveEntity(OwnerId)
+Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                              const Bnd_Box& theBox)
+: Select3D_SensitiveEntity (theOwnerId)
 {
-  mybox3d.Update(XMin,YMin,ZMin,XMax,YMax,ZMax);
+  Standard_Real aXMax, aYMax, aZMax;
+  Standard_Real aXMin, aYMin, aZMin;
+  theBox.Get (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+  myBox = Select3D_BndBox3d (SelectMgr_Vec3 (aXMin, aYMin, aZMin),
+                             SelectMgr_Vec3 (aXMax, aYMax, aZMax));
+  myCenter3d = (gp_XYZ (aXMin, aYMin, aZMin) + gp_XYZ (aXMax, aYMax, aZMax))
+                * (1.0 / 2.0);
 }
 
 //==================================================
-// Function: Project
+// Function: Select3D_SensitiveBox
 // Purpose :
 //==================================================
 
-void Select3D_SensitiveBox::
-Project(const Handle(Select3D_Projector)& aProj)
+Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectBasics_EntityOwner)& theOwnerId,
+                                              const Standard_Real theXMin,
+                                              const Standard_Real theYMin,
+                                              const Standard_Real theZMin,
+                                              const Standard_Real theXMax,
+                                              const Standard_Real theYMax,
+                                              const Standard_Real theZMax)
+: Select3D_SensitiveEntity (theOwnerId)
 {
-  if(HasLocation())
-  {
-    Bnd_Box B = mybox3d.Transformed(Location().Transformation());
-    ProjectBox(aProj,B);
-  }
-  else
-    ProjectBox(aProj,mybox3d);
+  myBox = Select3D_BndBox3d (SelectMgr_Vec3 (theXMin, theYMin, theZMin),
+                             SelectMgr_Vec3 (theXMax, theYMax, theZMax));
+  myCenter3d = (gp_XYZ (theXMin, theYMin, theZMin) + gp_XYZ (theXMax, theYMax, theZMax))
+                * (1.0 / 2.0);
 }
 
-//==================================================
-// Function: Areas
-// Purpose :
-//==================================================
-
-void Select3D_SensitiveBox::
-Areas(SelectBasics_ListOfBox2d& aSeq)
-{  aSeq.Append(mybox2d);}
+//=======================================================================
+// function : NbSubElements
+// purpose  : Returns the amount of sub-entities in sensitive
+//=======================================================================
+Standard_Integer Select3D_SensitiveBox::NbSubElements()
+{
+  return 1;
+}
 
 //=======================================================================
 //function : GetConnected
 //purpose  : 
 //=======================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected(const TopLoc_Location& aLoc) 
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
 {
-  Handle(Select3D_SensitiveBox) NiouEnt =  new Select3D_SensitiveBox(myOwnerId,mybox3d);
-  
-  if(HasLocation()) NiouEnt->SetLocation(Location());
-  NiouEnt->UpdateLocation(aLoc);
-  return NiouEnt;
+  Bnd_Box aBox;
+  aBox.Update (myBox.CornerMin().x(), myBox.CornerMin().y(), myBox.CornerMin().z(),
+               myBox.CornerMax().x(), myBox.CornerMax().y(), myBox.CornerMax().z());
+  Handle(Select3D_SensitiveBox) aNewEntity =  new Select3D_SensitiveBox (myOwnerId, aBox);
+
+  return aNewEntity;
 }
 
-//==================================================
-// Function: Matches
-// Purpose :
-//==================================================
-
-Standard_Boolean Select3D_SensitiveBox::Matches (const SelectBasics_PickArgs& thePickArgs,
-                                                 Standard_Real& theMatchDMin,
-                                                 Standard_Real& theMatchDepth)
+//=======================================================================
+// function : Matches
+// purpose  : Checks whether the box overlaps current selecting volume
+//=======================================================================
+Standard_Boolean Select3D_SensitiveBox::Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                 SelectBasics_PickResult& thePickResult)
 {
-  // check that sensitive box passes by depth
-  Standard_Real aDepth = ComputeDepth (thePickArgs.PickLine());
-  if (thePickArgs.IsClipped (aDepth))
+  Standard_Real aDepth     = RealLast();
+  Standard_Real aDistToCOG = RealLast();
+  Standard_Boolean isMatched = theMgr.Overlaps (myBox, aDepth);
+
+  if (isMatched)
   {
-    return Standard_False;
+    aDistToCOG = theMgr.DistToGeometryCenter (myCenter3d);
   }
 
-  theMatchDMin = 0.0;
-  theMatchDepth = aDepth;
-  return Standard_True;
-}
+  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
 
-//==================================================
-// Function: Matches
-// Purpose :
-//==================================================
-
-Standard_Boolean Select3D_SensitiveBox::
-Matches (const Standard_Real XMin,
-         const Standard_Real YMin,
-         const Standard_Real XMax,
-         const Standard_Real YMax,
-         const Standard_Real aTol)
-{
-  Bnd_Box2d BoundBox;
-  BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
-  return(!BoundBox.IsOut(mybox2d));
+  return isMatched;
 }
 
 //=======================================================================
-//function : Matches
-//purpose  : 
+// function : CenterOfGeometry
+// purpose  : Returns center of the box. If location transformation
+//            is set, it will be applied
 //=======================================================================
-
-Standard_Boolean Select3D_SensitiveBox::
-Matches (const TColgp_Array1OfPnt2d& /*aPoly*/,
-         const Bnd_Box2d& aBox,
-         const Standard_Real /*aTol*/)
+gp_Pnt Select3D_SensitiveBox::CenterOfGeometry() const
 {
-  return(!aBox.IsOut(mybox2d));
+  return myCenter3d;
 }
 
 //=======================================================================
-//function : Dump
-//purpose  : 
+// function : BoundingBox
+// purpose  : Returns coordinates of the box. If location transformation
+//            is set, it will be applied
 //=======================================================================
-
-void Select3D_SensitiveBox::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
+Select3D_BndBox3d Select3D_SensitiveBox::BoundingBox()
 {
-  S<<"\tSensitiveBox 3D :\n";
-  if(HasLocation())
-    S<<"\t\tExisting Location"<<endl;
-  
-  Standard_Real XMin,YMin,ZMin,XMax,YMax,ZMax;
-  mybox3d.Get(XMin,YMin,ZMin,XMax,YMax,ZMax);
-  
-  S<<"\t\t PMin [ "<<XMin<<" , "<<YMin<<" , "<<ZMin<<" ]";
-  S<<"\t\t PMax [ "<<XMax<<" , "<<YMax<<" , "<<ZMax<<" ]"<<endl;
-
-  if(FullDump)
-  {
-//    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
-    Select3D_SensitiveEntity::DumpBox(S,mybox2d);
-  }
-}
-
-
-//=======================================================================
-//function : ProjectBox
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveBox::ProjectBox(const Handle(Select3D_Projector)& aPrj,
-                                       const Bnd_Box& aBox) 
-{
-  mybox2d.SetVoid();
-  gp_Pnt2d curp2d;
-  Standard_Real XMin,YMin,ZMin,XMax,YMax,ZMax;
-  aBox.Get(XMin,YMin,ZMin,XMax,YMax,ZMax);
-
-  aPrj->Project(gp_Pnt(XMin,YMin,ZMin),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMax,YMin,ZMin),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMax,YMax,ZMin),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMin,YMax,ZMin),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMin,YMin,ZMax),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMax,YMin,ZMax),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMax,YMax,ZMax),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj->Project(gp_Pnt(XMin,YMax,ZMax),curp2d);
-  mybox2d.Update(curp2d.X(),curp2d.Y());
+  return myBox;
 }
 
 //=======================================================================
-//function : ComputeDepth
-//purpose  : 
+// function : Box
+// purpose  :
 //=======================================================================
-
-Standard_Real Select3D_SensitiveBox::ComputeDepth(const gp_Lin& EyeLine) const
+Bnd_Box Select3D_SensitiveBox::Box() const
 {
-  Standard_Real XMin,YMin,ZMin,XMax,YMax,ZMax;
-  mybox3d.Get(XMin,YMin,ZMin,XMax,YMax,ZMax);
-  gp_Pnt PMid((XMin+XMax)/2.,(YMin+YMax)/2.,(ZMin+ZMax)/2.);
-  return ElCLib::Parameter(EyeLine,PMid);
+  Bnd_Box aBox;
+  aBox.Update (myBox.CornerMin().x(), myBox.CornerMin().y(), myBox.CornerMin().z(),
+               myBox.CornerMax().x(), myBox.CornerMax().y(), myBox.CornerMax().z());
+
+  return aBox;
 }

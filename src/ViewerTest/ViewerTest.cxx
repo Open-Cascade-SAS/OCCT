@@ -65,7 +65,6 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
-#include <Select3D_Projector.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
 
@@ -445,6 +444,7 @@ void ViewerTest::Clear()
       }
       it.Next();
     }
+    TheAISContext()->RebuildSelectionStructs();
     TheAISContext()->UpdateCurrentViewer();
 //    TheNISContext()->UpdateViews();
     GetMapOfAIS().Clear();
@@ -625,51 +625,6 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   return 0;
 }
 
-//==============================================================================
-//function : VDispAreas,VDispSensitive,...
-//purpose  :
-//==============================================================================
-static Standard_Integer VDispAreas (Draw_Interpretor& ,
-                                    Standard_Integer  theArgNb,
-                                    Standard_CString* )
-{
-  if (theArgNb > 1)
-  {
-    std::cout << "Error: wrong syntax!\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) aCtx;
-  Handle(V3d_View)               aView;
-  if (!getCtxAndView (aCtx, aView))
-  {
-    return 1;
-  }
-
-  aCtx->DisplayActiveAreas (aView);
-  return 0;
-}
-static Standard_Integer VClearAreas (Draw_Interpretor& ,
-                                     Standard_Integer  theArgNb,
-                                     Standard_CString* )
-{
-  if (theArgNb > 1)
-  {
-    std::cout << "Error: wrong syntax!\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) aCtx;
-  Handle(V3d_View)               aView;
-  if (!getCtxAndView (aCtx, aView))
-  {
-    return 1;
-  }
-
-  aCtx->ClearActiveAreas (aView);
-  return 0;
-
-}
 static Standard_Integer VDispSensi (Draw_Interpretor& ,
                                     Standard_Integer  theArgNb,
                                     Standard_CString* )
@@ -735,17 +690,16 @@ static int VDir (Draw_Interpretor& theDI,
 
 //==============================================================================
 //function : VSelPrecision
-//purpose  : To set the selection precision mode and tolerance value
-//Draw arg : Selection precision mode (0 for window, 1 for view) and tolerance
-//           value (integer number of pixel for window mode, double value of
-//           sensitivity for view mode). Without arguments the function just
-//           prints the current precision mode and the corresponding tolerance.
+//purpose  : To set the selection tolerance value
+//Draw arg : Selection tolerance value (real value determining the width and
+//           height of selecting frustum bases). Without arguments the function
+//           just prints current tolerance.
 //==============================================================================
 static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if( argc > 3 )
+  if( argc > 2 )
   {
-    di << "Use: " << argv[0] << " [precision_mode [tolerance_value]]\n";
+    di << "Use: " << argv[0] << " [tolerance_value]\n";
     return 1;
   }
 
@@ -755,38 +709,17 @@ static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char
 
   if( argc == 1 )
   {
-    StdSelect_SensitivityMode aMode = aContext->SensitivityMode();
-    if( aMode == StdSelect_SM_WINDOW )
-    {
-      Standard_Integer aPixelTolerance = aContext->PixelTolerance();
-      di << "Precision mode  : 0 (window)\n";
-      di << "Pixel tolerance : " << aPixelTolerance << "\n";
-    }
-    else if( aMode == StdSelect_SM_VIEW )
-    {
-      Standard_Real aSensitivity = aContext->Sensitivity();
-      di << "Precision mode : 1 (view)\n";
-      di << "Sensitivity    : " << aSensitivity << "\n";
-    }
+    Standard_Real aPixelTolerance = aContext->PixelTolerance();
+    di << "Precision mode  : 0 (window)\n";
+    di << "Pixel tolerance : " << aPixelTolerance << "\n";
   }
-  else if( argc > 1 )
+  else if (argc == 2)
   {
-    StdSelect_SensitivityMode aMode = ( StdSelect_SensitivityMode )Draw::Atoi( argv[1] );
-    aContext->SetSensitivityMode( aMode );
-    if( argc > 2 )
-    {
-      if( aMode == StdSelect_SM_WINDOW )
-      {
-        Standard_Integer aPixelTolerance = Draw::Atoi( argv[2] );
-        aContext->SetPixelTolerance( aPixelTolerance );
-      }
-      else if( aMode == StdSelect_SM_VIEW )
-      {
-        Standard_Real aSensitivity = Draw::Atof( argv[2] );
-        aContext->SetSensitivity( aSensitivity );
-      }
-    }
+
+    Standard_Integer aPixelTolerance = Draw::Atoi (argv[1]);
+    aContext->SetPixelTolerance (aPixelTolerance);
   }
+
   return 0;
 }
 
@@ -4082,23 +4015,25 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   {
     theDI << "Detected entities:\n";
     Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->HasOpenedContext() ? aCtx->LocalSelector() : aCtx->MainSelector();
-    for (aSelector->Init(); aSelector->More(); aSelector->Next())
+    for (aSelector->InitDetected(); aSelector->MoreDetected(); aSelector->NextDetected())
     {
-      Handle(SelectBasics_SensitiveEntity) anEntity = aSelector->Primitive (0);
-      Standard_Real aMatchDMin  = 0.0;
-      Standard_Real aMatchDepth = Precision::Infinite();
-      anEntity->Matches (aSelector->LastPickingArguments(), aMatchDMin, aMatchDepth);
-
+      const Handle(SelectBasics_SensitiveEntity)& anEntity = aSelector->DetectedEntity();
       Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
       Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-
-      const gp_Lin aLine = aSelector->LastPickingArguments().PickLine();
-      const gp_Pnt aPnt  = aLine.Location().Translated (gp_Vec (aLine.Direction()) * aMatchDepth);
+      SelectMgr_SelectingVolumeManager aMgr = anObj->HasTransformation() ? aSelector->GetManager().Transform (anObj->InversedTransformation())
+                                                                         : aSelector->GetManager();
+      SelectBasics_PickResult aResult;
+      anEntity->Matches (aMgr, aResult);
+      NCollection_Vec3<Standard_Real> aDetectedPnt = aMgr.DetectedPoint (aResult.Depth());
 
       TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
       aName.LeftJustify (20, ' ');
       char anInfoStr[512];
-      Sprintf (anInfoStr, " Depth: %+.3f Distance: %+.3f Point: %+.3f %+.3f %+.3f", aMatchDepth, aMatchDMin, aPnt.X(), aPnt.Y(), aPnt.Z());
+      Sprintf (anInfoStr,
+               " Depth: %+.3f Distance: %+.3f Point: %+.3f %+.3f %+.3f",
+               aResult.Depth(),
+               aResult.DistToGeomCenter(),
+               aDetectedPnt.x(), aDetectedPnt.y(), aDetectedPnt.z());
       theDI << "  " << aName
             << anInfoStr
             << " (" << anEntity->DynamicType()->Name() << ")"
@@ -4816,6 +4751,129 @@ static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a
 }
 
 //==============================================================================
+//function : VLoadSelection
+//purpose  : Adds given objects to map of AIS and loads selection primitives for them
+//==============================================================================
+static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
+                                        Standard_Integer theArgNb,
+                                        const char** theArgVec)
+{
+  if (theArgNb < 2)
+  {
+    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    ViewerTest::ViewerInit();
+    aCtx = ViewerTest::GetAISContext();
+  }
+
+  // Parse input arguments
+  TColStd_SequenceOfAsciiString aNamesOfIO;
+  Standard_Boolean isLocal = Standard_False;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    const TCollection_AsciiString aName     = theArgVec[anArgIter];
+    TCollection_AsciiString       aNameCase = aName;
+    aNameCase.LowerCase();
+    if (aNameCase == "-local")
+    {
+      isLocal = Standard_True;
+    }
+    else
+    {
+      aNamesOfIO.Append (aName);
+    }
+  }
+
+  if (aNamesOfIO.IsEmpty())
+  {
+    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
+    return 1;
+  }
+
+  // Prepare context
+  if (isLocal && !aCtx->HasOpenedContext())
+  {
+    aCtx->OpenLocalContext (Standard_False);
+  }
+  else if (!isLocal && aCtx->HasOpenedContext())
+  {
+    aCtx->CloseAllContexts (Standard_False);
+  }
+
+  // Load selection of interactive objects
+  for (Standard_Integer anIter = 1; anIter <= aNamesOfIO.Length(); ++anIter)
+  {
+    const TCollection_AsciiString& aName = aNamesOfIO.Value (anIter);
+
+    const Handle(AIS_InteractiveObject)& aShape = GetMapOfAIS().IsBound2 (aName) ?
+      Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName)) : GetAISShapeFromName (aName.ToCString());
+
+    if (!aShape.IsNull())
+    {
+      if (!GetMapOfAIS().IsBound2 (aName))
+      {
+        GetMapOfAIS().Bind (aShape, aName);
+      }
+
+      aCtx->Load (aShape, -1, Standard_False);
+      aCtx->Activate (aShape, aShape->SelectionMode(), Standard_True);
+    }
+  }
+
+  return 0;
+}
+
+//==============================================================================
+//function : VAutoActivateSelection
+//purpose  : Activates or deactivates auto computation of selection
+//==============================================================================
+static int VAutoActivateSelection (Draw_Interpretor& theDi,
+                                   Standard_Integer theArgNb,
+                                   const char** theArgVec)
+{
+
+  if (theArgNb > 2)
+  {
+    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    ViewerTest::ViewerInit();
+    aCtx = ViewerTest::GetAISContext();
+  }
+
+  if (theArgNb == 1)
+  {
+    TCollection_AsciiString aSelActivationString;
+    if (aCtx->GetAutoActivateSelection())
+    {
+      aSelActivationString.Copy ("ON");
+    }
+    else
+    {
+      aSelActivationString.Copy ("OFF");
+    }
+
+    theDi << "Auto activation of selection is: " << aSelActivationString << "\n";
+  }
+  else
+  {
+    Standard_Boolean toActivate = Draw::Atoi (theArgVec[1]);
+    aCtx->SetAutoActivateSelection (toActivate);
+  }
+
+  return 0;
+}
+
+//==============================================================================
 //function : ViewerTest::Commands
 //purpose  : Add all the viewer command in the Draw_Interpretor
 //==============================================================================
@@ -5015,14 +5073,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: Where style is: 0 = EMPTY, 1 = HOLLOW, 2 = HATCH, 3 = SOLID, 4 = HIDDENLINE.",
 		  __FILE__,VSetInteriorStyle,group);
 
-  theCommands.Add("vardis",
-		  "vardis          : display activeareas",
-		  __FILE__,VDispAreas,group);
-
-  theCommands.Add("varera",
-		  "varera           : erase activeareas",
-		  __FILE__,VClearAreas,group);
-
   theCommands.Add("vsensdis",
 		  "vardisp           : display active entities",
 		  __FILE__,VDispSensi,group);
@@ -5031,7 +5081,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VClearSensi,group);
 
   theCommands.Add("vselprecision",
-		  "vselprecision : vselprecision [precision_mode [tolerance_value]]",
+		  "vselprecision : vselprecision [tolerance_value]",
 		  __FILE__,VSelPrecision,group);
 
   theCommands.Add("vperf",
@@ -5126,6 +5176,18 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vpickselected", "vpickselected [name]: extract selected shape.",
     __FILE__, VPickSelected, group);
+
+  theCommands.Add ("vloadselection",
+    "vloadselection [-context] [name1] ... [nameN] : allows to load selection"
+    "\n\t\t: primitives for the shapes with names given without displaying them."
+    "\n\t\t:   -local - open local context before selection computation",
+    __FILE__, VLoadSelection, group);
+
+  theCommands.Add ("vautoactivatesel",
+    "vautoactivatesel [0|1] : manage or display the option to automatically"
+    "\n\t\t: activate selection for newly displayed objects"
+    "\n\t\t:   [0|1] - turn off | on auto activation of selection",
+    __FILE__, VAutoActivateSelection, group);
 
 }
 

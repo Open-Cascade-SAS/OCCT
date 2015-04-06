@@ -16,6 +16,7 @@
 
 #include <AIS_InteractiveContext.jxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
 #include <AIS_Selection.hxx>
 #include <AIS_StatusOfDetection.hxx>
 #include <AIS_StatusOfPick.hxx>
@@ -1098,11 +1099,11 @@ void AIS_InteractiveContext::EntityOwners(SelectMgr_IndexedMapOfOwner& theOwners
     if ( !theIObj->HasSelection( aMode ) )
       continue;
 
-    Handle(SelectMgr_Selection) aSel = theIObj->Selection( aMode );
+    Handle(SelectMgr_Selection) aSel = theIObj->Selection(aMode);
 
     for ( aSel->Init(); aSel->More(); aSel->Next() )
     {
-      Handle(SelectBasics_SensitiveEntity) aEntity = aSel->Sensitive();
+      Handle(SelectBasics_SensitiveEntity) aEntity = aSel->Sensitive()->BaseSensitive();
       if ( aEntity.IsNull() )
 	continue;
 

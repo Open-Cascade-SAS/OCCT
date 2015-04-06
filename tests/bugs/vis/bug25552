@@ -31,7 +31,7 @@ vaspects -noupdate b2 -setcolor GREEN
 vfit
 # b1 should be displayed only in View1
 verase -inview b1
-vmoveto 250 350
+vmoveto 250 347
 
 set aColorV2B1 [vreadpixel  50 250 rgb name]
 if { $aColorV2B1 != "BLACK" } {

@@ -54,12 +54,12 @@ vmoveto 0 0
 vviewparams -scale 6.063093 -proj -0.444872 -0.214876 0.86866 -up 0.109494 -0.886324 -0.185966 -at 71.8115798514333 53.1349971091326 8.4539251074103
 vfit
 vmoveto 0 0
-vmoveto 140 11
+vmoveto 141 11
 vmoveto 0 0
 vselect 406 44 1
 vmoveto 0 0
 vselect 406 44 1
 vmoveto 0 0
-vselect 140 11 1
+vselect 141 11 1
 vmoveto 0 0
 

@@ -33,6 +33,7 @@
 #include <Prs3d_Presentation.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
 #include <AIS_Selection.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
@@ -70,7 +71,7 @@ myLoadDisplayed(LoadDisplayed),
 myAcceptStdMode(AcceptStandardModes),
 myAcceptErase(AcceptEraseOfTemp),
 mySM(aCtx->SelectionManager()),
-myMainVS(new StdSelect_ViewerSelector3d(aCtx->MainSelector()->Projector())),
+myMainVS(aCtx->MainSelector()),
 myFilters(new SelectMgr_OrFilter()),
 myAutoHilight(Standard_True),
 mylastindex(0),
@@ -84,13 +85,14 @@ myAISCurDetected(0)
   // created and mapped.
   aCtx->myLocalContexts.Bind (Index, this);
 
+  myMainVS->ResetSelectionActivationStatus();
   myMainPM = aCtx->MainPrsMgr();
   mySelName = AIS_Local_SelName(this, Index);
   AIS_Selection::CreateSelection(mySelName.ToCString());
 
   mySM->Add(myMainVS);
   if(myLoadDisplayed) LoadContextObjects();
-  Process(Standard_False);
+  Process();
 
 }
 
@@ -195,7 +197,24 @@ Load(const Handle(AIS_InteractiveObject)& anInteractive,
      const Standard_Boolean AllowShapeDecomposition,
      const Standard_Integer ActivationMode)
 {
-  if(myActiveObjects.IsBound(anInteractive)) return Standard_False;
+  if (myActiveObjects.IsBound (anInteractive))
+  {
+    if (anInteractive->HasSelection (ActivationMode))
+    {
+      const Handle(SelectMgr_Selection)& aSel = anInteractive->Selection (ActivationMode);
+      if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
+      {
+        if (!myMainVS->Contains (anInteractive))
+        {
+          mySM->Load (anInteractive, myMainVS);
+        }
+        mySM->Activate (anInteractive, ActivationMode, myMainVS);
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
+
   Handle(AIS_LocalStatus) Att = new AIS_LocalStatus();
   
   if(anInteractive->AcceptShapeDecomposition() && AllowShapeDecomposition)
@@ -296,8 +315,6 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
     }
   }
 
-  UpdateSort();
-
   ClearOutdatedSelection (anInteractive, Standard_True);
 
   return status;
@@ -353,7 +370,6 @@ void AIS_LocalContext::Clear(const AIS_ClearMode aType)
   case AIS_CM_TemporaryShapePrs:
     ClearDetected();
   }
-  UpdateSort();
 }
 //=======================================================================
 //function : ActivateMode
@@ -370,7 +386,6 @@ void AIS_LocalContext::ActivateMode(const Handle(AIS_InteractiveObject)& aSelect
     myActiveObjects(aSelectable)->AddSelectionMode(aMode);
     mySM->Activate(aSelectable,aMode,myMainVS);
   }
-  UpdateSort();
 }
 //=======================================================================
 //function : ActivateMode
@@ -386,8 +401,6 @@ void AIS_LocalContext::DeactivateMode(const Handle(AIS_InteractiveObject)& aSele
   
   myActiveObjects(aSelectable)->RemoveSelectionMode(aMode);
   mySM->Deactivate(aSelectable,aMode,myMainVS);
-  UpdateSort();
-  
 }
 //=======================================================================
 //function : ActivateMode
@@ -398,9 +411,8 @@ void AIS_LocalContext::Deactivate(const Handle(AIS_InteractiveObject)& aSelectab
 {
   if(!myActiveObjects.IsBound(aSelectable)) return;
   
-  mySM->Deactivate(aSelectable,myMainVS);
+  mySM->Deactivate(aSelectable, -1, myMainVS);
   myActiveObjects(aSelectable)->ClearSelectionModes();
-  UpdateSort();
 }
 
 //=======================================================================
@@ -465,7 +477,6 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
   {
     mySM->Remove (aSelectable);
   }
-  UpdateSort();
   ClearOutdatedSelection (aSelectable, Standard_True);
 
   // This should be done at the very end because most methods use
@@ -538,10 +549,8 @@ void AIS_LocalContext::DeactivateStandardMode(const TopAbs_ShapeEnum aType)
       myListOfStandardMode.Remove(It);
       if(myFilters->IsIn(myStdFilters[IMode]))
 	myFilters->Remove(myStdFilters[IMode]);
-      UpdateSort();
       return;
     }	
-  UpdateSort();
 }
 
 //=======================================================================
@@ -588,31 +597,6 @@ void AIS_LocalContext::RemoveFilter(const Handle(SelectMgr_Filter)& aFilter)
   }
 }
 
-
-
-Standard_Boolean AIS_LocalContext::HasSameProjector(const Handle(Select3D_Projector)& thePrj) const
-{
-  const Handle(Select3D_Projector)& aCurPrj = myMainVS->Projector();
-  if (aCurPrj->Perspective() != thePrj->Perspective())
-    return Standard_False;  
-  if (aCurPrj->Perspective() && aCurPrj->Focus() != thePrj->Focus())
-    return Standard_False;
-  const gp_GTrsf& aCurTrsf = aCurPrj->Transformation();
-  const gp_GTrsf& aPrjTrsf = thePrj->Transformation();
-
-  for (Standard_Integer i = 1; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 1; j <= 3 ; ++j)
-    {
-      if (aCurTrsf.Value (i, j) != aPrjTrsf.Value (i, j))
-        return Standard_False;
-    }
-  }
-
-  return Standard_True;
-}
-
-
 //=======================================================================
 //function : Terminate
 //purpose  :
@@ -627,7 +611,6 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
   mylastindex=0;
   // clear the selector...
   myMainVS->Clear();
-  myCTX->SelectionManager()->Remove(myMainVS);
   
 
   AIS_Selection::SetCurrentSelection(mySelName.ToCString());
@@ -650,7 +633,6 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
   }
 
   Handle(V3d_View) aDummyView;
-  myMainVS->ClearAreas     (aDummyView);
   myMainVS->ClearSensitive (aDummyView);
 
   if (theToUpdate)
@@ -893,12 +875,17 @@ void AIS_LocalContext::LoadContextObjects()
     myCTX->DisplayedObjects(LL,Standard_True);
     Handle(AIS_LocalStatus) Att;
     for (It.Initialize(LL);It.More();It.Next()){
+      const Handle(AIS_InteractiveObject)& anObj = It.Value();
       Att= new AIS_LocalStatus();
-      Att->SetDecomposition((It.Value()->AcceptShapeDecomposition() && myAcceptStdMode));
+      Att->SetDecomposition((anObj->AcceptShapeDecomposition() && myAcceptStdMode));
       Att->SetTemporary(Standard_False);
-      Att->SetHilightMode(It.Value()->HasHilightMode()? It.Value()->HilightMode(): 0);
-      
-      myActiveObjects.Bind(It.Value(),Att);
+      Att->SetHilightMode(anObj->HasHilightMode()? anObj->HilightMode(): 0);
+      for (anObj->Init(); anObj->More(); anObj->Next())
+      {
+        const Handle(SelectMgr_Selection)& aSel = anObj->CurrentSelection();
+        aSel->SetSelectionState (SelectMgr_SOS_Deactivated);
+      }
+      myActiveObjects.Bind(anObj,Att);
     }
   }
 }
@@ -922,17 +909,16 @@ void AIS_LocalContext::UnloadContextObjects()
 //purpose  : 
 //=======================================================================
 
-void AIS_LocalContext::Process(const Handle(SelectMgr_SelectableObject)& anObject,
-			       const Standard_Boolean WithProj)
+void AIS_LocalContext::Process(const Handle(SelectMgr_SelectableObject)& anObject)
 { 
   if(!myActiveObjects.IsBound(anObject)) return;
   if(myActiveObjects(anObject)->Decomposed())
-    ActivateStandardModes(anObject,WithProj);
+    ActivateStandardModes(anObject);
   else
     {
       TColStd_ListIteratorOfListOfInteger It(myActiveObjects(anObject)->SelectionModes());
       for(;It.More();It.Next())
-	myCTX->SelectionManager()->Activate(anObject,It.Value(),myMainVS,WithProj);
+	myCTX->SelectionManager()->Activate(anObject,It.Value(),myMainVS);
     }
 }
 
@@ -941,7 +927,7 @@ void AIS_LocalContext::Process(const Handle(SelectMgr_SelectableObject)& anObjec
 //purpose  : 
 //=======================================================================
 
-void AIS_LocalContext::Process(const Standard_Boolean WithProj)
+void AIS_LocalContext::Process()
 { 
 
   myMainVS->Clear();
@@ -951,11 +937,11 @@ void AIS_LocalContext::Process(const Standard_Boolean WithProj)
   for(;It.More();It.Next()){
     myCTX->SelectionManager()->Load(It.Key(),myMainVS);
     if(It.Value()->Decomposed()) 
-      ActivateStandardModes(It.Key(),WithProj);
+      ActivateStandardModes(It.Key());
     else if( myCTX->GetAutoActivateSelection() )
     {
       It.Value()->AddSelectionMode(0);
-      myCTX->SelectionManager()->Activate(It.Key(),0,myMainVS,WithProj);
+      myCTX->SelectionManager()->Activate(It.Key(),0,myMainVS);
     }
   }
 
@@ -966,8 +952,7 @@ void AIS_LocalContext::Process(const Standard_Boolean WithProj)
 //purpose  : 
 //=======================================================================
 
-void AIS_LocalContext::ActivateStandardModes(const Handle(SelectMgr_SelectableObject)& anObject,
-					     const Standard_Boolean WithProj)
+void AIS_LocalContext::ActivateStandardModes(const Handle(SelectMgr_SelectableObject)& anObject)
 { 
   if(!myActiveObjects.IsBound(anObject)) return;
   
@@ -976,7 +961,7 @@ void AIS_LocalContext::ActivateStandardModes(const Handle(SelectMgr_SelectableOb
   const Handle(AIS_LocalStatus)&  LS = myActiveObjects(anObject);
   if(LS->Decomposed()){
     for(;itl.More();itl.Next()){
-      myCTX->SelectionManager()->Activate(anObject,itl.Value(),myMainVS,WithProj);
+      myCTX->SelectionManager()->Activate(anObject,itl.Value(),myMainVS);
       LS->AddSelectionMode(itl.Value());
     }
   }
@@ -1023,13 +1008,13 @@ void AIS_LocalContext::ClearObjects()
 	  myMainPM->Erase(SO,CurAtt->DisplayMode());
       }
       
-      TColStd_ListIteratorOfListOfInteger ITL(CurAtt->SelectionModes());
-      for(;ITL.More();ITL.Next())
-	mySM->Deactivate(SO,ITL.Value(),myMainVS);
-      
-      if(CurAtt->IsTemporary())
-	mySM->Remove(SO,myMainVS);
-      
+      TColStd_ListIteratorOfListOfInteger aSelModeIter (CurAtt->SelectionModes());
+      for ( ; aSelModeIter.More(); aSelModeIter.Next())
+      {
+        Standard_Integer aSelMode = aSelModeIter.Value();
+        mySM->Deactivate (SO, aSelMode, myMainVS);
+      }
+
     }
   ClearSelected( Standard_False );
   myActiveObjects.Clear();
@@ -1080,16 +1065,6 @@ void AIS_LocalContext::ClearDetected()
       }
     }
   }
-}
-
-void AIS_LocalContext::UpdateConversion()
-{
-  myMainVS->UpdateConversion();
-}
-
-void AIS_LocalContext::UpdateSort()
-{
-  myMainVS->UpdateSort();
 }
 
 //=======================================================================
@@ -1155,32 +1130,12 @@ Standard_Boolean AIS_LocalContext::IsImmediateModeOn() const
   return myMainPM->IsImmediateModeOn();
 }
 
-void AIS_LocalContext::SetSensitivityMode(const StdSelect_SensitivityMode aMode) {
-
-  myMainVS->SetSensitivityMode(aMode);
-}
-
-StdSelect_SensitivityMode AIS_LocalContext::SensitivityMode() const {
-
-  return myMainVS->SensitivityMode();
-}
-
-void AIS_LocalContext::SetSensitivity(const Standard_Real aPrecision) {
-
-  myMainVS->SetSensitivity(aPrecision);
-}
-
-Standard_Real AIS_LocalContext::Sensitivity() const {
-
-  return myMainVS->Sensitivity();
-}
-
-void AIS_LocalContext::SetPixelTolerance(const Standard_Integer aPrecision) {
+void AIS_LocalContext::SetPixelTolerance(const Standard_Real aPrecision) {
 
   myMainVS->SetPixelTolerance(aPrecision);
 }
 
-Standard_Integer AIS_LocalContext::PixelTolerance() const {
+Standard_Real AIS_LocalContext::PixelTolerance() const {
 
   return myMainVS->PixelTolerance();
 }

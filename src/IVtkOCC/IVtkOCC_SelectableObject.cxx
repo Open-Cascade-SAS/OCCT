@@ -170,3 +170,13 @@ const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
 
   return myBndBox;
 }
+
+//============================================================================
+// Method:  BoundingBox
+// Purpose:
+//============================================================================
+void IVtkOCC_SelectableObject::BoundingBox (Bnd_Box& theBndBox)
+{
+  BoundingBox();
+  theBndBox = myBndBox;
+}

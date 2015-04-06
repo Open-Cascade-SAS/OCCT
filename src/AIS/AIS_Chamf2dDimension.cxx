@@ -25,6 +25,7 @@
 #include <Prs3d_Drawer.hxx>
 
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 
 #include <TopoDS.hxx>

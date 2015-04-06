@@ -77,10 +77,3 @@ void QABugs_MyText::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
     myPosition.Z() + 20);
   aSelection->Add(box);
 }
-
-
-Standard_Integer QABugs_MyText::NbPossibleSelection() const
-{
-  return 1;
-}
-

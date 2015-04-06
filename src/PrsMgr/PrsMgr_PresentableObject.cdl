@@ -234,6 +234,10 @@ is
    Transformation(me) returns any Trsf from gp;
    ---C++: inline
    ---C++: return const&
+
+   InversedTransformation(me) returns any Trsf from gp;
+   ---C++: inline
+   ---C++: return const&
    
    ResetTransformation(me:mutable)  is virtual;
    ---Purpose: resets local transformation to identity.
@@ -330,6 +334,7 @@ fields
  
     myLocalTransformation : Trsf from gp;     -- Own transformation of presentable object.
     myTransformation : Trsf from gp;          -- Combined transformation of presentable object.
+    myInvTransformation : Trsf from gp;       -- Inverted combined transformation of presentable object.
     myCombinedParentTransform : Trsf from gp; -- Combined transformation of presentable object excepting local transformation.
 
     myChildren : ListOfPresentableObjects from PrsMgr; -- Child objects in scene hierarchy.

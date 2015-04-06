@@ -581,6 +581,12 @@ is
     	---Purpose: Retrieves current polygon offsets settings from <myDrawer>.
     	---Category: Inquire methods
 
+    BoundingBox (me : mutable;
+                 theBndBox : out Box from Bnd)
+        is redefined;
+       ---Level: Public
+       ---Purpose: Returns bounding box of object correspondingly to its current display mode.
+
 fields
 
     myCTXPtr : PToContext from AIS;

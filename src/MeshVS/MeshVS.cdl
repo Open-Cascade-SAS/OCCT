@@ -141,12 +141,6 @@ is
   class MeshOwner;
   class MeshEntityOwner;
 
-  class DummySensitiveEntity; 
-  class SensitiveMesh;
-  class SensitiveFace;
-  class SensitiveSegment;
-  class SensitivePolyhedron;
-
             ---Category: miscellaneous types: data maps, enumerations and other
 
   imported EntityType;
@@ -156,6 +150,11 @@ is
   imported BuilderPriority;
   imported TwoNodes;
   imported Buffer;
+  imported SensitiveFace;
+  imported SensitiveMesh;
+  imported SensitiveSegment;
+  imported SensitivePolyhedron;
+  imported DummySensitiveEntity;
 
   class Tool;
 

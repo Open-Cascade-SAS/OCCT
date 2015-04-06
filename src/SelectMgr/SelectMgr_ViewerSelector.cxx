@@ -18,27 +18,26 @@
 //              ROB JAN/07/98 : Improve Storage of detected entities
 //              AGV OCT/23/03 : Optimize the method SortResult() (OCC4201)
 
-#include <SelectMgr_ViewerSelector.ixx>
-#include <SelectMgr_CompareResults.hxx>
-#include <gp_Pnt2d.hxx>
+#include <BVH_Tree.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
-#include <Bnd_HArray1OfBox2d.hxx>
-#include <Bnd_Array1OfBox2d.hxx>
+#include <OSD_Environment.hxx>
 #include <Precision.hxx>
+#include <SelectMgr_ViewerSelector.hxx>
+#include <SelectMgr_CompareResults.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <SelectBasics_SensitiveEntity.hxx>
+#include <SelectBasics_PickResult.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_SortCriterion.hxx>
+#include <SelectMgr_SensitiveEntitySet.hxx>
+#include <SortTools_QuickSortOfInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <SelectBasics_ListIteratorOfListOfBox2d.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
-#include <SelectBasics_ListOfBox2d.hxx>
-#include <SelectBasics_PickArgs.hxx>
-#include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
-#include <SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation.hxx>
-#include <SelectMgr_SortCriterion.hxx>
-#include <SortTools_QuickSortOfInteger.hxx>
-#include <OSD_Environment.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (SelectMgr_ViewerSelector, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, MMgt_TShared)
 
 static Standard_Boolean SelectDebugModeOnVS()
 {
@@ -52,45 +51,90 @@ static Standard_Boolean SelectDebugModeOnVS()
   return ( isDebugMode != 0 );
 }
 
-namespace
+SelectMgr_ToleranceMap::SelectMgr_ToleranceMap()
 {
-  // container to store depth limits in collection map
-  struct SelectMgr_DepthRange
+  myLargestKey = -1;
+}
+
+SelectMgr_ToleranceMap::~SelectMgr_ToleranceMap()
+{
+  myTolerances.Clear();
+}
+
+void SelectMgr_ToleranceMap::Add (const Standard_Real& theTolerance)
+{
+  if (myTolerances.IsBound (theTolerance))
   {
-    Standard_Real DepthMin;
-    Standard_Real DepthMax;
-    Standard_Boolean IsEmpty() const { return (DepthMin == DepthMax); }
+    Standard_Integer& aFreq = myTolerances.ChangeFind (theTolerance);
+    aFreq++;
 
-    void Common (const SelectMgr_DepthRange& theOther)
+    if (theTolerance == myLargestKey)
+      return;
+
+    Standard_Integer aMaxFreq = myTolerances.Find (myLargestKey);
+    if (aFreq >= aMaxFreq)
     {
-      if (theOther.DepthMin > DepthMax || theOther.DepthMax < DepthMin)
-      {
-        DepthMin = RealFirst();
-        DepthMax = RealLast();
-        return;
-      }
-
-      DepthMin = Max (DepthMin, theOther.DepthMin);
-      DepthMax = Min (DepthMax, theOther.DepthMax);
+      myLargestKey = aFreq == aMaxFreq ? Max (myLargestKey, theTolerance) : theTolerance;
     }
-  };
-};
+  }
+  else
+  {
+    if (myTolerances.IsEmpty())
+    {
+      myTolerances.Bind (theTolerance, 1);
+      myLargestKey = theTolerance;
+      return;
+    }
+
+    myTolerances.Bind (theTolerance, 1);
+    Standard_Integer aMaxFreq = myTolerances.Find (myLargestKey);
+    if (aMaxFreq <= 1)
+    {
+      myLargestKey = aMaxFreq == 1 ? Max (myLargestKey, theTolerance) : theTolerance;
+    }
+  }
+}
+
+void SelectMgr_ToleranceMap::Decrement (const Standard_Real& theTolerance)
+{
+  if (myTolerances.IsBound (theTolerance))
+  {
+    Standard_Integer& aFreq = myTolerances.ChangeFind (theTolerance);
+    aFreq--;
+
+    if (theTolerance == myLargestKey)
+    {
+      Standard_Integer aMaxFreq = aFreq;
+      for (NCollection_DataMap<Standard_Real, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
+      {
+        if (aMaxFreq <= anIter.Value() && myLargestKey != anIter.Key())
+        {
+          aMaxFreq = anIter.Value();
+          myLargestKey = anIter.Key();
+        }
+      }
+    }
+  }
+}
+
+const Standard_Real SelectMgr_ToleranceMap::Largest()
+{
+  return myLargestKey;
+}
 
 //==================================================
 // Function: Initialize
 // Purpose :
 //==================================================
 SelectMgr_ViewerSelector::SelectMgr_ViewerSelector():
-toupdate(Standard_True),
-tosort(Standard_True),
 preferclosest(Standard_True),
-mytolerance(0.),
-myCurRank(0),
-myLastPickArgs (0.0, 0.0, 0.0, RealFirst(), RealLast(), gp_Lin()),
-lastx (Precision::Infinite()),
-lasty (Precision::Infinite()),
-myUpdateSortPossible( Standard_True )
+mytolerance(2.0),
+myToUpdateTolerance (Standard_True),
+myCurRank (0),
+myIsLeftChildQueuedFirst (Standard_False),
+myEntityIdx (0)
 {
+  mySelectableObjects = new SelectMgr_SelectableObjectSet();
 }
 
 
@@ -98,22 +142,18 @@ myUpdateSortPossible( Standard_True )
 // Function: Activate
 // Purpose :
 //==================================================
-void SelectMgr_ViewerSelector::
-Activate (const Handle(SelectMgr_Selection)& aSelection,
-          const Standard_Boolean AutomaticProj)
+void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theSelection)
 {
-  tosort = Standard_True;
+  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  {
+    theSelection->Sensitive()->SetActiveForSelection();
+  }
 
-  if (!myselections.IsBound(aSelection))
-  {
-    myselections.Bind(aSelection,0);
-  }
-  else if (myselections(aSelection)!=0)
-  {
-    myselections(aSelection)= 0;
-  }
-  if(AutomaticProj)
-    Convert(aSelection);
+  theSelection->SetSelectionState (SelectMgr_SOS_Activated);
+
+  myTolerances.Add (theSelection->Sensitivity());
+  mytolerance = myTolerances.Largest();
+  myToUpdateTolerance = Standard_True;
 }
 
 
@@ -121,409 +161,242 @@ Activate (const Handle(SelectMgr_Selection)& aSelection,
 // Function: Deactivate
 // Purpose :
 //==================================================
-void SelectMgr_ViewerSelector::
-Deactivate (const Handle(SelectMgr_Selection)& aSel)
+void SelectMgr_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& theSelection)
 {
-  if(myselections.IsBound(aSel))
-  {myselections(aSel)=1;
-  tosort = Standard_True;}
-}
-
-
-
-
-
-//==================================================
-// Function: Sleep
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::Sleep()
-{ SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-for (;It.More();It.Next()){
-  if(It.Value()==0) myselections(It.Key())= 2;
-}
-UpdateSort();
-}
-//=======================================================================
-//function : Sleep
-//purpose  :
-//=======================================================================
-
-void SelectMgr_ViewerSelector::Sleep(const Handle(SelectMgr_SelectableObject)& SO)
-{
-
-  for(SO->Init();SO->More();SO->Next()){
-    if(myselections.IsBound(SO->CurrentSelection())){
-      myselections(SO->CurrentSelection()) = 2;
-    }
-  }
-  UpdateSort();
-}
-
-
-//==================================================
-// Function: Awake
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::Awake(const Standard_Boolean AutomaticProj)
-{
-  SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-  for (;It.More();It.Next()){
-    if(It.Value()==2)
-      myselections(It.Key())=0;
-    if(AutomaticProj)
-      UpdateConversion();
-    UpdateSort();
-  }
-}
-
-void SelectMgr_ViewerSelector::Awake(const Handle(SelectMgr_SelectableObject)& SO,
-                                     const Standard_Boolean AutomaticProj)
-{
-  for(SO->Init();SO->More();SO->Next()){
-    if(myselections.IsBound(SO->CurrentSelection())){
-      myselections(SO->CurrentSelection()) =0;
-      if(AutomaticProj)
-        Convert(SO->CurrentSelection());
-    }
+  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  {
+    theSelection->Sensitive()->ResetSelectionActiveStatus();
   }
 
+  theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
+
+  myTolerances.Decrement (theSelection->Sensitivity());
+  mytolerance = myTolerances.Largest();
+  myToUpdateTolerance = Standard_True;
 }
+
 //==================================================
 // Function: Clear
 // Purpose :
 //==================================================
 void SelectMgr_ViewerSelector::Clear()
 {
-  myentities.Clear();
-  myselections.Clear();
-  toupdate = Standard_True;
-  tosort = Standard_True;
   mystored.Clear();
-  lastx = Precision::Infinite();
-  lasty = Precision::Infinite();
-
+  myMapOfDetected.Clear();
 }
 
-//==================================================
-// Function: UpdateConversion
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::UpdateConversion()
+//=======================================================================
+// function: checkOverlap
+// purpose : Internal function that checks if a particular sensitive
+//           entity theEntity overlaps current selecting volume precisely
+//=======================================================================
+void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_SensitiveEntity)& theEntity,
+                                             const Standard_Integer theEntityIdx,
+                                             SelectMgr_SelectingVolumeManager& theMgr)
 {
-  if( SelectDebugModeOnVS() )
-    cout<<"\t\t\t\t\t SelectMgr_VS::UpdateConversion"<<endl;
+  const Handle(SelectMgr_EntityOwner)& anOwner =
+    Handle(SelectMgr_EntityOwner)::DownCast (theEntity->OwnerId());
 
-  SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-  for(;It.More();It.Next()){
-    //Convert only if active...
-    if(It.Value()==0)
-      Convert(It.Key());
+  SelectBasics_PickResult aPickResult;
+  if (theEntity->Matches (theMgr, aPickResult))
+  {
+    if (!anOwner.IsNull())
+    {
+      Standard_Boolean isPointSelection =
+        theMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point;
+      if (HasDepthClipping (anOwner) && isPointSelection)
+      {
+        Standard_Boolean isClipped = theMgr.IsClipped (anOwner->Selectable()->GetClipPlanes(),
+                                                       aPickResult.Depth());
+        if (isClipped)
+          return;
+      }
+
+      Standard_Integer aPriority = anOwner->Priority();
+
+      SelectMgr_SortCriterion aCriterion (aPriority, aPickResult.Depth(), aPickResult.DistToGeomCenter(), theEntity->SensitivityFactor() / 33, preferclosest);
+      if (mystored.Contains (anOwner))
+      {
+        if (theMgr.GetActiveSelectionType() != 1)
+        {
+          SelectMgr_SortCriterion& aPrevCriterion = mystored.ChangeFromKey (anOwner);
+          if (aCriterion > aPrevCriterion)
+          {
+            aPrevCriterion = aCriterion;
+            myMapOfDetected.ChangeFind (anOwner) = theEntityIdx;
+          }
+        }
+      }
+      else
+      {
+        mystored.Add (anOwner, aCriterion);
+        myMapOfDetected.Bind (anOwner, theEntityIdx);
+      }
+    }
   }
-  toupdate = Standard_False;
-  tosort = Standard_True;
 }
 
-
-//==================================================
-// Function: Convert
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::
-Convert (const Handle(SelectMgr_Selection)& /*aSel*/) {tosort=Standard_True;}
-
-
-//==================================================
-// Function: UpdateSort
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::UpdateSort()
+//=======================================================================
+// function: traverseObject
+// purpose : Internal function that checks if there is possible overlap
+//           between some entity of selectable object theObject and
+//           current selecting volume
+//=======================================================================
+void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_SelectableObject)& theObject)
 {
-  if( !myUpdateSortPossible )
+  NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
+    myMapOfObjectSensitives.ChangeFind (theObject);
+
+  if (anEntitySet->Size() == 0)
     return;
 
-  if( SelectDebugModeOnVS() )
-    cout<<"\t\t\t\t\t SelectMgr_ViewerSelector::UpdateSort()"<<endl;
-  mystored.Clear();
-  myentities.Clear();
-  myactivenb = NbBoxes();
+  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aSensitivesTree = anEntitySet->BVH();
 
-  if(myactivenb > 0) {
-    Standard_Boolean NoClip = myclip.IsVoid();
-    Handle(Bnd_HArray1OfBox2d) refToTab = new Bnd_HArray1OfBox2d(1,myactivenb);
-    Bnd_Array1OfBox2d & tab = refToTab->ChangeArray1();
-    Standard_Real xmin=Precision::Infinite(),ymin=Precision::Infinite(),xmax=-Precision::Infinite(),ymax=-Precision::Infinite();
-    Standard_Real curxmin,curymin,curxmax,curymax;
-    //    Standard_Integer boxindex=0,indexsel=0,indexprim=0;
-    Standard_Integer boxindex=0;
+  SelectMgr_SelectingVolumeManager aMgr = theObject->HasTransformation() ?
+    mySelectingVolumeMgr.Transform (theObject->InversedTransformation()) : mySelectingVolumeMgr;
 
-    SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It;
-    SelectBasics_ListIteratorOfListOfBox2d LIt;
-    Handle(SelectMgr_Selection) curEntity;
-    Standard_Real ScaleFactor;
-    for(It.Initialize(myselections);It.More();It.Next()){
-      if(It.Value()== 0)
-      { curEntity = It.Key();
-      for(curEntity->Init();curEntity->More();curEntity->Next())
-      {
-        static SelectBasics_ListOfBox2d BoxList;
-        BoxList.Clear();
-        curEntity->Sensitive()->Areas(BoxList);
-        ScaleFactor = curEntity->Sensitive()->SensitivityFactor();
-
-
-        for(LIt.Initialize(BoxList);LIt.More();LIt.Next()){
-          boxindex++;
-
-          tab.SetValue(boxindex,LIt.Value());
-
-          tab(boxindex).SetGap(mytolerance*ScaleFactor);
-          myentities.Bind(boxindex,curEntity->Sensitive());
-          if(NoClip){
-            if (!tab(boxindex).IsVoid()) {
-              tab(boxindex).Get(curxmin,curymin,curxmax,curymax);
-              if(curxmin<xmin) xmin=curxmin;
-              if(curxmax>xmax) xmax=curxmax;
-              if(curymin<ymin) ymin=curymin;
-              if(curymax>ymax) ymax=curymax;
-            }
-          }
-        }
-      }
-      }
-    }
-
-
-    if(NoClip) {myclip.SetVoid();myclip.Update(xmin,ymin,xmax,ymax);}
-    myselector.Initialize(myclip, mytolerance,refToTab);
-    tosort = Standard_False;
-    if(NoClip) myclip.SetVoid();
-  }
-}
-
-
-//==================================================
-// Function: Remove
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::
-Remove(const Handle(SelectMgr_Selection)& aSel)
-{
-  if (myselections.IsBound(aSel))
-  { myselections.UnBind(aSel);
-  tosort = Standard_True;
-  }
-}
-
-//==================================================
-// Function: SetSensitivity
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::SetSensitivity(const Standard_Real aVal)
-{mytolerance = aVal;
-tosort=Standard_True;}
-
-//==================================================
-// Function: SetClipping
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::SetClipping(const Standard_Real Xc,
-                                           const Standard_Real Yc,
-                                           const Standard_Real Height,
-                                           const Standard_Real Width)
-{
-  Bnd_Box2d aClip;
-  aClip.Set(gp_Pnt2d(Xc-Width/2, Yc-Height/2));
-  aClip.Add(gp_Pnt2d(Xc+Width/2, Yc+Height/2));
-  myclip = aClip;
-  tosort = Standard_True;
-}
-
-
-//==================================================
-// Function: SetClipping
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::SetClipping (const Bnd_Box2d& abox)
-{myclip = abox;
-tosort = Standard_True;
-}
-
-//==================================================
-// Function: InitSelect
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::InitSelect(const Standard_Real Xr,
-                                          const Standard_Real Yr)
-{
-  Standard_OutOfRange_Raise_if(Abs(Xr-Precision::Infinite())<=Precision::Confusion() ||
-    Abs(Yr-Precision::Infinite())<=Precision::Confusion(),
-    " Infinite values in IniSelect");
-  mystored.Clear();
-  myprim.Clear();
-  if (toupdate) UpdateConversion();
-  if (tosort) UpdateSort();
-  if(myactivenb!=0){
-    myselector.InitSelect(Xr,Yr);
-    if(myselector.More()) {lastx = Xr;lasty=Yr;}
-    LoadResult();
-  }
-}
-
-//==================================================
-// Function: InitSelect
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::InitSelect(const Bnd_Box2d& aBox)
-{
-  mystored.Clear();
-  if(toupdate) UpdateConversion();
-  if (tosort) UpdateSort();
-  if (myactivenb!=0){
-    myselector.InitSelect(aBox);
-    LoadResult(aBox);
-  }
-}
-
-//==================================================
-// Function: InitSelect
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::InitSelect(const Standard_Real Xmin,
-                                          const Standard_Real Ymin,
-                                          const Standard_Real Xmax,
-                                          const Standard_Real Ymax)
-{
-  mystored.Clear();
-
-  if (toupdate) UpdateConversion();
-  if (tosort)   UpdateSort();
-  if (myactivenb!=0){
-    Bnd_Box2d aBox;
-    aBox.Update(Xmin,Ymin,Xmax,Ymax);
-    myselector.InitSelect(aBox);
-    LoadResult(aBox);
-  }
-}
-
-//==================================================
-// Function: InitSelect
-// Purpose : Polyline Selection
-//==================================================
-void SelectMgr_ViewerSelector::InitSelect(const TColgp_Array1OfPnt2d& aPoly)
-{
-  mystored.Clear();
-
-  if (toupdate) UpdateConversion();
-  if (tosort)   UpdateSort();
-  if (myactivenb!=0){
-    // the Bnd boxes are used for the first time
-    Bnd_Box2d aBox;
-    Standard_Integer NbPnt = aPoly.Length();
-    Standard_Integer i;
-    for(i=1;i<=NbPnt;i++) {
-      aBox.Update(aPoly(i).X(),aPoly(i).Y());
-    }
-    myselector.InitSelect(aBox);
-    LoadResult(aPoly);
-    //    LoadResult(aBox);
-  }
-}
-
-
-//==================================================
-// Function: LoadResult
-// Purpose : for the moment the size of the primitive
-//           is not taken into account in the search criteriai...
-//           The priority, the depth and the min. distance to CDG or Borders is taken...
-//==================================================
-void SelectMgr_ViewerSelector::LoadResult()
-{
-  if (myselector.More())
+  Standard_Integer aNode = 0; // a root node
+  if (!aMgr.Overlaps (aSensitivesTree->MinPoint (0),
+                      aSensitivesTree->MaxPoint (0)))
   {
-    NCollection_DataMap<Handle(SelectMgr_EntityOwner), SelectMgr_DepthRange> aMapOfOwnerRanges;
-
-    // collect information on depth clipping from implementations
-    gp_Lin aPickLine = PickingLine (lastx, lasty);
-    SelectMgr_DepthRange aViewDRange;
-    DepthClipping (lastx, lasty, aViewDRange.DepthMin, aViewDRange.DepthMax);
-
-    Standard_Real aDMin;
-    Standard_Real aDepthMin;
-    Standard_Integer aNument;
-
-    if (!aViewDRange.IsEmpty())
+    return;
+  }
+  Standard_Integer aStack[32];
+  Standard_Integer aHead = -1;
+  for (;;)
+  {
+    if (!aSensitivesTree->IsOuter (aNode))
     {
-      for (; myselector.More(); myselector.Next())
+      const Standard_Integer aLeftChildIdx  = aSensitivesTree->LeftChild  (aNode);
+      const Standard_Integer aRightChildIdx = aSensitivesTree->RightChild (aNode);
+      const Standard_Boolean isLeftChildIn  =  aMgr.Overlaps (aSensitivesTree->MinPoint (aLeftChildIdx),
+                                                              aSensitivesTree->MaxPoint (aLeftChildIdx));
+      const Standard_Boolean isRightChildIn = aMgr.Overlaps (aSensitivesTree->MinPoint (aRightChildIdx),
+                                                             aSensitivesTree->MaxPoint (aRightChildIdx));
+      if (isLeftChildIn
+          && isRightChildIn)
       {
-        aNument = myselector.Value();
-
-        const Handle(SelectBasics_SensitiveEntity)& SE = myentities (aNument);
-        const Handle(SelectMgr_EntityOwner)& anOwner =
-          Handle(SelectMgr_EntityOwner)::DownCast (SE->OwnerId());
-
-        // compute depth range for sensitives of entity owner
-        SelectMgr_DepthRange anEntityDRange (aViewDRange);
-        if (!anOwner.IsNull() && HasDepthClipping (anOwner) && !aMapOfOwnerRanges.Find (anOwner, anEntityDRange))
+        aNode = aLeftChildIdx;
+        ++aHead;
+        aStack[aHead] = aRightChildIdx;
+      }
+      else if (isLeftChildIn
+        || isRightChildIn)
+      {
+        aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+      }
+      else
+      {
+        if (aHead < 0)
         {
-          // get depth range from implementation
-          SelectMgr_DepthRange aGetRange;
-          DepthClipping (lastx, lasty, anOwner, aGetRange.DepthMin, aGetRange.DepthMax);
-
-          // concatenate and remember depth range for pefromance increase
-          anEntityDRange.Common (aGetRange);
-          aMapOfOwnerRanges.Bind (anOwner, anEntityDRange);
+          break;
         }
 
-        if (anEntityDRange.IsEmpty())
-        {
-          continue;
-        }
-
-        myLastPickArgs = SelectBasics_PickArgs (lastx, lasty, mytolerance,
-                                                anEntityDRange.DepthMin,
-                                                anEntityDRange.DepthMax,
-                                                aPickLine);
-
-        if (SE->Matches (myLastPickArgs, aDMin, aDepthMin))
-        {
-          if (!anOwner.IsNull())
-          {
-            Standard_Integer aPrior = anOwner->Priority();
-
-            SelectMgr_SortCriterion SC (aPrior, aDepthMin, aDMin, mytolerance, preferclosest);
-            if (mystored.Contains (anOwner))
-            {
-              SelectMgr_SortCriterion& Crit = mystored.ChangeFromKey (anOwner);
-              if (SC > Crit)
-              {
-                Crit = SC;
-
-                // update previously recorded entity for this owner
-                for (int i = 1; i <= myprim.Length(); i++)
-                {
-                  if (myentities (myprim(i))->OwnerId() == anOwner)
-                  {
-                    myprim.SetValue (i, aNument);
-                    break;
-                  }
-                }
-              }
-            }
-            else
-            {
-              mystored.Add (anOwner, SC);
-
-              // record entity
-              myprim.Append (aNument);
-            }
-          }
-        }
+        aNode = aStack[aHead];
+        --aHead;
       }
     }
+    else
+    {
+      Standard_Integer aStartIdx = aSensitivesTree->BegPrimitive (aNode);
+      Standard_Integer anEndIdx = aSensitivesTree->EndPrimitive (aNode);
+      for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+      {
+        const SelectMgr_HSensitiveEntity& aSensitive =
+          anEntitySet->GetSensitiveById (anIdx);
+        if (aSensitive->IsActiveForSelection())
+        {
+          checkOverlap (aSensitive->BaseSensitive(), anIdx, aMgr);
+        }
+      }
+      if (aHead < 0)
+      {
+        break;
+      }
 
-    SortResult();
+      aNode = aStack[aHead];
+      --aHead;
+    }
   }
+}
+
+//=======================================================================
+// function: TraverseSensitives
+// purpose : Traverses BVH containing all added selectable objects and
+//           finds candidates for further search of overlap
+//=======================================================================
+void SelectMgr_ViewerSelector::TraverseSensitives()
+{
+  mystored.Clear();
+  myMapOfDetected.Clear();
+
+  if (mySelectableObjects->Size() == 0)
+    return;
+
+  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& anObjectsTree = mySelectableObjects->BVH();
+
+  Standard_Integer aNode = 0;
+  if (!mySelectingVolumeMgr.Overlaps (anObjectsTree->MinPoint (0),
+                                      anObjectsTree->MaxPoint (0)))
+  {
+    return;
+  }
+  Standard_Integer aStack[32];
+  Standard_Integer aHead = -1;
+  for (;;)
+  {
+    if (!anObjectsTree->IsOuter (aNode))
+    {
+      const Standard_Integer aLeftChildIdx  = anObjectsTree->LeftChild  (aNode);
+      const Standard_Integer aRightChildIdx = anObjectsTree->RightChild (aNode);
+      const Standard_Boolean isLeftChildIn  =
+        mySelectingVolumeMgr.Overlaps (anObjectsTree->MinPoint (aLeftChildIdx),
+                                       anObjectsTree->MaxPoint (aLeftChildIdx));
+      const Standard_Boolean isRightChildIn =
+        mySelectingVolumeMgr.Overlaps (anObjectsTree->MinPoint (aRightChildIdx),
+                                       anObjectsTree->MaxPoint (aRightChildIdx));
+      if (isLeftChildIn
+        && isRightChildIn)
+      {
+        aNode = aLeftChildIdx;
+        ++aHead;
+        aStack[aHead] = aRightChildIdx;
+      }
+      else if (isLeftChildIn
+        || isRightChildIn)
+      {
+        aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+      }
+      else
+      {
+        if (aHead < 0)
+        {
+          break;
+        }
+
+        aNode = aStack[aHead];
+        --aHead;
+      }
+    }
+    else
+    {
+      Standard_Integer aStartIdx = anObjectsTree->BegPrimitive (aNode);
+      Standard_Integer anEndIdx = anObjectsTree->EndPrimitive (aNode);
+      for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+      {
+        traverseObject (mySelectableObjects->GetObjectById (anIdx));
+      }
+      if (aHead < 0)
+      {
+        break;
+      }
+
+      aNode = aStack[aHead];
+      --aHead;
+    }
+  }
+
+  SortResult();
 
   if (SelectDebugModeOnVS())
   {
@@ -541,124 +414,13 @@ void SelectMgr_ViewerSelector::LoadResult()
 }
 
 //==================================================
-// Function: LoadResult
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::LoadResult(const Bnd_Box2d& abox)
-{
-  mystored.Clear();
-
-  //  Handle(SelectMgr_EntityOwner)  OWNR;
-  if(myselector.More())
-  { Standard_Real xmin,ymin,xmax,ymax;
-  abox.Get(xmin,ymin,xmax,ymax);
-  //      Standard_Boolean Found(Standard_False);
-  //      Standard_Real DMin=0.;
-  Standard_Integer nument;
-  for(;myselector.More();myselector.Next()){
-    nument = myselector.Value();
-    const Handle(SelectBasics_SensitiveEntity)& SE = myentities(nument);
-    if (SE->Matches(xmin,ymin,xmax,ymax,0.0)){
-      const Handle(SelectBasics_EntityOwner)& OWNR = SE->OwnerId();
-      if(!OWNR.IsNull()){
-        if(!mystored.Contains(OWNR)){
-          SelectMgr_SortCriterion SC(OWNR->Priority(),Precision::Infinite(),
-            Precision::Infinite(),mytolerance,preferclosest);
-          mystored.Add(OWNR,SC);
-          myprim.Append(nument);
-        }
-      }
-    }
-  }
-
-  // do not parse in case of selection by elastic rectangle (BUG ANALYST)
-  if(mystored.IsEmpty()) return;
-  if(myIndexes.IsNull())
-    myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent());
-  else if(mystored.Extent() !=myIndexes->Length())
-    myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent());
-
-  // to work faster...
-  TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1();
-  for(Standard_Integer I=1;I<=mystored.Extent();I++)
-    thearr(I)=I;
-  }
-}
-//==================================================
-// Function: LoadResult
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::LoadResult(const TColgp_Array1OfPnt2d& aPoly)
-{
-  mystored.Clear();
-  Bnd_Box2d aBox;
-  Standard_Integer NbPnt = aPoly.Length();
-  Standard_Integer i;
-  for(i=1;i<=NbPnt;i++) {
-    aBox.Update(aPoly(i).X(),aPoly(i).Y());
-  }
-  Standard_Integer NB=0;
-  //  Handle(SelectMgr_EntityOwner)  OWNR;
-  if(myselector.More())
-  {
-    Standard_Integer nument;
-
-    for(;myselector.More();myselector.Next()){
-      NB++;
-      nument = myselector.Value();
-      const Handle(SelectBasics_SensitiveEntity)& SE = myentities(nument);
-      if (SE->Matches(aPoly,aBox,0.0)){
-        const Handle(SelectBasics_EntityOwner)& OWNR = SE->OwnerId();
-        if(!OWNR.IsNull()){
-          if(!mystored.Contains(OWNR)){
-            SelectMgr_SortCriterion SC(OWNR->Priority(),Precision::Infinite(),
-              Precision::Infinite(),mytolerance,preferclosest);
-            mystored.Add(OWNR,SC);
-            myprim.Append(nument);
-          }
-        }
-      }
-    }
-
-    if(mystored.IsEmpty()) return;
-    if(myIndexes.IsNull())
-      myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent());
-    else if(mystored.Extent() !=myIndexes->Length())
-      myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent());
-
-    // to work faster...
-    TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1();
-    for(Standard_Integer I=1;I<=mystored.Extent();I++)
-      thearr(I)=I;
-  }
-}
-
-
-//==================================================
-// Function: HasStored
-// Purpose :
-//==================================================
-Standard_Boolean SelectMgr_ViewerSelector::
-HasStored ()
-{
-  if(Abs(lastx-Precision::Infinite())<=Precision::Confusion()) return Standard_False;
-  if(Abs(lasty-Precision::Infinite())<=Precision::Confusion()) return Standard_False;
-  InitSelect(lastx,lasty);
-  Init();
-  return More();
-}
-
-
-
-
-//==================================================
 // Function: Picked
 // Purpose :
 //==================================================
 Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
 ::Picked() const
 {
-  Standard_Integer RankInMap = myIndexes->Value(myCurRank);
+  Standard_Integer RankInMap = myIndexes->Value (myCurRank);
   const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(RankInMap);
   Handle(SelectMgr_EntityOwner) Ownr = *((Handle(SelectMgr_EntityOwner)*) &toto);
   return Ownr;
@@ -689,7 +451,7 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
 
   Init();
   if(More()){
-    Standard_Integer RankInMap = myIndexes->Value(1);
+    Standard_Integer RankInMap = myIndexes->Value (myIndexes->Lower());
     const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(RankInMap);
     Handle(SelectMgr_EntityOwner) Ownr = *((Handle(SelectMgr_EntityOwner)*) &toto);
     return Ownr;
@@ -716,36 +478,16 @@ Standard_Integer SelectMgr_ViewerSelector::NbPicked() const
 Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked(const Standard_Integer aRank) const
 {
 
-  Handle(SelectMgr_EntityOwner) Own;
-  if (aRank<1 || aRank>NbPicked())
-    return Own;
-  Standard_Integer Indx = myIndexes->Value(aRank);
+  Handle(SelectMgr_EntityOwner) anOwner;
+  if (aRank < 1 || aRank > NbPicked())
+    return anOwner;
+  Standard_Integer anOwnerIdx = myIndexes->Value (aRank);
 
 
-  const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(Indx);
-  Own = *((Handle(SelectMgr_EntityOwner)*) &toto);
-  return Own;
+  const Handle(SelectBasics_EntityOwner)& aStoredOwner = mystored.FindKey (anOwnerIdx);
+  anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aStoredOwner);
+  return anOwner;
 }
-//=======================================================================
-//function : Primitive
-//purpose  :
-//=======================================================================
-Handle(SelectBasics_SensitiveEntity) SelectMgr_ViewerSelector::Primitive
-(const Standard_Integer /*Index*/) const
-{
-  return myentities(myprim(myCurRank));
-}
-
-
-//==================================================
-// Function: LastPosition
-// Purpose :
-//==================================================
-void SelectMgr_ViewerSelector::LastPosition(Standard_Real& Xlast,
-                                            Standard_Real& YLast) const
-{   Xlast = lastx;YLast = lasty;}
-
-
 
 //===================================================
 //
@@ -753,100 +495,78 @@ void SelectMgr_ViewerSelector::LastPosition(Standard_Real& Xlast,
 //
 //==================================================
 
-
-
-
-//==================================================
-// Function: NbBoxes
-// Purpose :
-//==================================================
-Standard_Integer SelectMgr_ViewerSelector::NbBoxes()
-{
-  SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-  //  Standard_Integer Nbb=0, first,last;
-  Standard_Integer Nbb=0;
-
-  for(;It.More();It.Next()){
-    if(It.Value()==0){
-      for(It.Key()->Init();It.Key()->More();It.Key()->Next())
-      {Nbb+= It.Key()->Sensitive()->MaxBoxes();}
-    }
-  }
-  return Nbb;
-}
-
-
-
-
 //==================================================
 // Function: Contains
 // Purpose :
 //==================================================
-Standard_Boolean SelectMgr_ViewerSelector::
-Contains(const Handle(SelectMgr_SelectableObject)& anObject) const
+Standard_Boolean SelectMgr_ViewerSelector::Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
 {
-  for (anObject->Init();anObject->More();anObject->Next()){
-    if(myselections.IsBound(anObject->CurrentSelection()))
-      return Standard_True;
-  }
-  return Standard_False;
+  return mySelectableObjects->Contains (theObject);
 }
-
-
 
 //==================================================
 // Function: ActiveModes
 // Purpose : return all the  modes with a given state for an object
 //==================================================
-
-
-Standard_Boolean SelectMgr_ViewerSelector::
-Modes(const Handle(SelectMgr_SelectableObject)& SO,
-      TColStd_ListOfInteger& TheActiveList,
-      const SelectMgr_StateOfSelection WantedState) const
+Standard_Boolean SelectMgr_ViewerSelector::Modes (const Handle(SelectMgr_SelectableObject)& theSelectableObject,
+                                                  TColStd_ListOfInteger& theModeList,
+                                                  const SelectMgr_StateOfSelection theWantedState) const
 {
-  Standard_Boolean Found= Standard_False;
-  for(SO->Init();SO->More();SO->Next()){
-    if(myselections.IsBound(SO->CurrentSelection())){
-      if(WantedState==SelectMgr_SOS_Any)
-        TheActiveList.Append(SO->CurrentSelection()->Mode());
-      else if( myselections(SO->CurrentSelection())==WantedState)
-        TheActiveList.Append(SO->CurrentSelection()->Mode());
-
-      if(!Found) Found=Standard_True;
-    }
+  Standard_Boolean hasActivatedStates = mySelectableObjects->Contains (theSelectableObject);
+  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
+  {
+      if (theWantedState == SelectMgr_SOS_Any)
+      {
+        theModeList.Append (theSelectableObject->CurrentSelection()->Mode());
+      }
+      else if (theWantedState == theSelectableObject->CurrentSelection()->GetSelectionState())
+      {
+        theModeList.Append (theSelectableObject->CurrentSelection()->Mode());
+      }
   }
-  return Found;
+
+  return hasActivatedStates;
 }
 
-
-Standard_Boolean SelectMgr_ViewerSelector::
-IsActive(const Handle(SelectMgr_SelectableObject)& SO,
-         const Standard_Integer aMode) const
+//==================================================
+// Function: IsActive
+// Purpose :
+//==================================================
+Standard_Boolean SelectMgr_ViewerSelector::IsActive (const Handle(SelectMgr_SelectableObject)& theSelectableObject,
+                                                     const Standard_Integer theMode) const
 {
-  for(SO->Init();SO->More();SO->Next()){
-    if(aMode==SO->CurrentSelection()->Mode()){
-      if(myselections.IsBound(SO->CurrentSelection()) &&
-        myselections(SO->CurrentSelection())==SelectMgr_SOS_Activated)
-        return Standard_True;
-      else return Standard_False;
+  if (!mySelectableObjects->Contains (theSelectableObject))
+    return Standard_False;
+
+  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
+  {
+    if (theMode == theSelectableObject->CurrentSelection()->Mode())
+    {
+      return theSelectableObject->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated;
     }
   }
+
   return Standard_False;
 }
 
-
-Standard_Boolean SelectMgr_ViewerSelector::
-IsInside(const Handle(SelectMgr_SelectableObject)& SO,
-         const Standard_Integer aMode) const
+//==================================================
+// Function: IsInside
+// Purpose :
+//==================================================
+Standard_Boolean SelectMgr_ViewerSelector::IsInside (const Handle(SelectMgr_SelectableObject)& theSelectableObject,
+                                                     const Standard_Integer theMode) const
 {
-  for(SO->Init();SO->More();SO->Next()){
-    if(aMode==SO->CurrentSelection()->Mode()){
-      if(myselections.IsBound(SO->CurrentSelection())) return Standard_True;
-      else return Standard_False;
+  if (!mySelectableObjects->Contains (theSelectableObject))
+    return Standard_False;
 
+  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
+  {
+    if (theMode == theSelectableObject->CurrentSelection()->Mode())
+    {
+      return theSelectableObject->CurrentSelection()->GetSelectionState() != SelectMgr_SOS_Unknown;
     }
   }
+
   return Standard_False;
 }
 
@@ -856,90 +576,44 @@ IsInside(const Handle(SelectMgr_SelectableObject)& SO,
 //purpose  :
 //=======================================================================
 
-SelectMgr_StateOfSelection SelectMgr_ViewerSelector::Status(const Handle(SelectMgr_Selection)& aSel) const
+SelectMgr_StateOfSelection SelectMgr_ViewerSelector::Status (const Handle(SelectMgr_Selection)& theSelection) const
 {
-  if(!myselections.IsBound(aSel)) return SelectMgr_SOS_Unknown;
-  //JR/Hp
-  Standard_Integer ie = myselections(aSel) ;
-  return SelectMgr_StateOfSelection( ie );
-  //  return SelectMgr_StateOfSelection(myselections(aSel));
-
+  return theSelection->GetSelectionState();
 }
-
-
-
-//=======================================================================
-//function : Dump
-//purpose  :
-//=======================================================================
-
-void SelectMgr_ViewerSelector::Dump(Standard_OStream& S) const
-{
-  S<<"=========================="<<endl;
-  S<<" SelectMgr_ViewerSelector "<<endl;
-  S<<"=========================="<<endl;
-  S<<" "<<endl;
-}
-
-
 
 //==================================================
 // Function: Status
 // Purpose : gives Information about selectors
 //==================================================
 
-TCollection_AsciiString SelectMgr_ViewerSelector::
-Status(const Handle(SelectMgr_SelectableObject)& SO) const
+TCollection_AsciiString SelectMgr_ViewerSelector::Status (const Handle(SelectMgr_SelectableObject)& theSelectableObject) const
 {
-  TCollection_AsciiString Status("Status Object :\n\t");
-  Standard_Boolean Found= Standard_False;
-  for(SO->Init();SO->More();SO->Next()){
-    if(myselections.IsBound(SO->CurrentSelection()))
-    {
-      Found = Standard_True;
-      Status = Status + "Mode " +
-        TCollection_AsciiString(SO->CurrentSelection()->Mode()) +
-        " present - " ;
-      if(myselections(SO->CurrentSelection()))
-        Status = Status + " Active \n\t";
-      else
-        Status = Status + " Inactive \n\t";
-    }
-  }
+  TCollection_AsciiString aStatus ("Status Object :\n\t");
 
-  if(!Found) Status = Status + "Not Present in the selector\n\n";
-  return Status;
-}
-
-
-TCollection_AsciiString SelectMgr_ViewerSelector::
-Status () const
-{
-  // sevsitive primitives present
-  //-----------------------------
-  TCollection_AsciiString Status("\t\tSelector Status :\n\t");
-  // selections
-  //-----------
-  Standard_Integer NbActive =0,NbPrim=0;
-  Status = Status + "Number of already computed selections : " +
-    TCollection_AsciiString(myselections.Extent());
-
-  SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-  for(;It.More();It.Next())
+  for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
   {
-    if(It.Value()==0) {NbActive++;
-    for(It.Key()->Init();It.Key()->More();It.Key()->Next()){NbPrim++;}
+    if (theSelectableObject->CurrentSelection()->GetSelectionState() != SelectMgr_SOS_Unknown)
+    {
+      aStatus = aStatus + "Mode " +
+        TCollection_AsciiString (theSelectableObject->CurrentSelection()->Mode()) +
+        " present - ";
+      if (theSelectableObject->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
+      {
+        aStatus = aStatus + " Active \n\t";
+      }
+      else
+      {
+        aStatus = aStatus + " Inactive \n\t";
+      }
     }
   }
-  Status = Status + " - " + TCollection_AsciiString(NbActive) + " activated ones\n\t";
-  Status = Status + "Number of active sensitive primitives : " +
-    TCollection_AsciiString(NbPrim)+"\n\t";
-  Status = Status + "Real stored Pick Tolerance : " + TCollection_AsciiString(mytolerance) +"\n\t";
-  if(toupdate) {
-    Status = Status + "\nWARNING : those informations will be obsolete for the next Pick\n"
-      +"to get the real status of the selector - make One pick and call Status again\n";
+
+  if (mySelectableObjects->Contains (theSelectableObject))
+  {
+    aStatus = aStatus + "Not Present in the selector\n\n";
   }
-  return Status;
+
+  return aStatus;
 }
 
 //=======================================================================
@@ -968,104 +642,8 @@ void SelectMgr_ViewerSelector::SortResult()
   for (I=1; I <= anExtent; I++)
     thearr(I)=I;
 
-  // OCC4201 (AGV): This loop is inefficient on large arrays, so I replace it
-  //                with a standard sort algo
-  //  // on trie suivant les criteres  (i) (Owner) (SortCriterion)
-  //  Standard_Boolean OKSort;
-  //  Standard_Integer temp,indx,indx1;
-  //  Standard_Integer tmprim;
-  //  // merci lbr...
-  //  do{
-  //    OKSort =Standard_True;
-  //    for(I=1;I<thearr.Length();I++){
-  //      indx = thearr(I);
-  //      indx1 = thearr(I+1);
-  //      if(mystored(indx) < mystored(indx1)){
-  //      OKSort = Standard_False;
-  //
-  //      temp = thearr(I+1);
-  //      thearr(I+1) = thearr (I);
-  //      thearr(I) = temp;
-  //
-  //      tmprim = myprim(I+1);
-  //      myprim(I+1) = myprim(I);
-  //      myprim(I) = tmprim;
-  //
-  //      }
-  //    }
-  //  } while (OKSort==Standard_False);
-  //
-  // OCC4201 (AGV): debut
-
   SortTools_QuickSortOfInteger::Sort (thearr,
     SelectMgr_CompareResults(mystored));
-  TColStd_Array1OfInteger myPrimArr (1, myprim.Length());
-  for (I = 1; I <= myPrimArr.Length(); I++)
-    myPrimArr (I) = myprim (I);
-  for (I = 1; I <= thearr.Length(); I++) {
-    const Standard_Integer ind = thearr(I);
-    if (ind > 0 && ind <= myPrimArr.Upper())
-      myprim (I) = myPrimArr (ind);
-  }
-  // OCC4201 (AGV): fin
-  // it is enough to return owners corresponding to parced indices...
-
-}
-
-
-//=======================================================================
-//function :
-//purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_ViewerSelector::IsUpdateSortPossible() const
-{
-  return myUpdateSortPossible;
-}
-
-//=======================================================================
-//function :
-//purpose  :
-//=======================================================================
-void SelectMgr_ViewerSelector::SetUpdateSortPossible( const Standard_Boolean possible )
-{
-  myUpdateSortPossible = possible;
-}
-
-//=======================================================================
-//function : PickingLine
-//purpose  : Stub
-//=======================================================================
-gp_Lin SelectMgr_ViewerSelector::PickingLine (const Standard_Real /*theX*/,
-                                              const Standard_Real /*theY*/) const
-{
-  return gp_Lin();
-}
-
-//=======================================================================
-//function : DepthClipping
-//purpose  : Stub
-//=======================================================================
-void SelectMgr_ViewerSelector::DepthClipping (const Standard_Real /*theX*/,
-                                              const Standard_Real /*theY*/,
-                                              Standard_Real& theMin,
-                                              Standard_Real& theMax) const
-{
-  theMin = RealFirst();
-  theMax = RealLast();
-}
-
-//=======================================================================
-//function : DepthClipping
-//purpose  : Stub
-//=======================================================================
-void SelectMgr_ViewerSelector::DepthClipping (const Standard_Real /*theX*/,
-                                              const Standard_Real /*theY*/,
-                                              const Handle(SelectMgr_EntityOwner)& /*theOwner*/,
-                                              Standard_Real& theMin,
-                                              Standard_Real& theMax) const
-{
-  theMin = RealFirst();
-  theMax = RealLast();
 }
 
 //=======================================================================
@@ -1075,4 +653,160 @@ void SelectMgr_ViewerSelector::DepthClipping (const Standard_Real /*theX*/,
 Standard_Boolean SelectMgr_ViewerSelector::HasDepthClipping (const Handle(SelectMgr_EntityOwner)& /*theOwner*/) const
 {
   return Standard_False;
+}
+
+//=======================================================================
+// function : AddSelectableObject
+// purpose  : Adds new object to the map of selectable objects
+//=======================================================================
+void SelectMgr_ViewerSelector::AddSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject)
+{
+  if (!myMapOfObjectSensitives.IsBound (theObject))
+  {
+    mySelectableObjects->Append (theObject);
+    NCollection_Handle<SelectMgr_SensitiveEntitySet> anEntitySet = new SelectMgr_SensitiveEntitySet();
+    myMapOfObjectSensitives.Bind (theObject, anEntitySet);
+  }
+}
+
+//=======================================================================
+// function : AddSelectionToObject
+// purpose  : Adds new selection to the object and builds its BVH tree
+//=======================================================================
+void SelectMgr_ViewerSelector::AddSelectionToObject (const Handle(SelectMgr_SelectableObject)& theObject,
+                                                     const Handle(SelectMgr_Selection)& theSelection)
+{
+  if (myMapOfObjectSensitives.IsBound (theObject))
+  {
+    NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
+      myMapOfObjectSensitives.ChangeFind (theObject);
+    anEntitySet->Append (theSelection);
+    anEntitySet->BVH();
+  }
+  else
+  {
+    AddSelectableObject (theObject);
+    AddSelectionToObject (theObject, theSelection);
+  }
+}
+
+//=======================================================================
+// function : RemoveSelectableObject
+// purpose  : Removes selectable object from map of selectable ones
+//=======================================================================
+void SelectMgr_ViewerSelector::RemoveSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject)
+{
+  if (myMapOfObjectSensitives.IsBound (theObject))
+  {
+    myMapOfObjectSensitives.UnBind (theObject);
+    mySelectableObjects->Remove (theObject);
+  }
+}
+
+//=======================================================================
+// function : RemoveSelectionOfObject
+// purpose  : Removes selection of the object and marks its BVH tree
+//            for rebuild
+//=======================================================================
+void SelectMgr_ViewerSelector::RemoveSelectionOfObject (const Handle(SelectMgr_SelectableObject)& theObject,
+                                                        const Handle(SelectMgr_Selection)& theSelection)
+{
+  if (myMapOfObjectSensitives.IsBound (theObject))
+  {
+    NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
+      myMapOfObjectSensitives.ChangeFind (theObject);
+    anEntitySet->Remove (theSelection);
+  }
+}
+
+//=======================================================================
+// function : RebuildObjectsTree
+// purpose  : Marks BVH of selectable objects for rebuild
+//=======================================================================
+void SelectMgr_ViewerSelector::RebuildObjectsTree (const Standard_Boolean theIsForce)
+{
+  mySelectableObjects->MarkDirty();
+
+  if (theIsForce)
+  {
+    mySelectableObjects->BVH();
+  }
+}
+
+//=======================================================================
+// function : RebuildSensitivesTree
+// purpose  : Marks BVH of sensitive entities of particular selectable
+//            object for rebuild
+//=======================================================================
+void SelectMgr_ViewerSelector::RebuildSensitivesTree (const Handle(SelectMgr_SelectableObject)& theObject,
+                                                      const Standard_Boolean theIsForce)
+{
+  if (!mySelectableObjects->Contains (theObject))
+    return;
+
+  NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet = myMapOfObjectSensitives.ChangeFind (theObject);
+  anEntitySet->MarkDirty();
+
+  if (theIsForce)
+  {
+    anEntitySet->BVH();
+  }
+}
+
+//=======================================================================
+// function : resetSelectionActivationStatus
+// purpose  : Marks all added sensitive entities of all objects as
+//            non-selectable
+//=======================================================================
+void SelectMgr_ViewerSelector::resetSelectionActivationStatus()
+{
+  SelectMgr_MapOfObjectSensitivesIterator aSensitivesIter (myMapOfObjectSensitives);
+  for ( ; aSensitivesIter.More(); aSensitivesIter.Next())
+  {
+    NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
+      aSensitivesIter.ChangeValue();
+    Standard_Integer anEntitiesNb = anEntitySet->Size();
+    for (Standard_Integer anIdx = 0; anIdx < anEntitiesNb; ++anIdx)
+    {
+      anEntitySet->GetSensitiveById (anIdx)->ResetSelectionActiveStatus();
+    }
+  }
+}
+
+//=======================================================================
+// function : DetectedEntity
+// purpose  : Returns sensitive entity that was detected during the
+//            previous run of selection algorithm
+//=======================================================================
+const Handle(SelectBasics_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEntity() const
+{
+  const Handle(SelectMgr_EntityOwner)& anOwner = myDetectedIter.Key();
+  const Handle(SelectMgr_SelectableObject)& anObject = anOwner->Selectable();
+  const NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
+    myMapOfObjectSensitives.Find (anObject);
+
+  return anEntitySet->GetSensitiveById (myDetectedIter.Value())->BaseSensitive();
+}
+
+//=======================================================================
+// function : ActiveOwners
+// purpose  : Returns the list of active entity owners
+//=======================================================================
+NCollection_List<Handle(SelectBasics_EntityOwner)> SelectMgr_ViewerSelector::ActiveOwners() const
+{
+  NCollection_List<Handle(SelectBasics_EntityOwner)> anActiveOwners;
+  for (SelectMgr_MapOfObjectSensitivesIterator anIter (myMapOfObjectSensitives); anIter.More(); anIter.Next())
+  {
+    const NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet = anIter.Value();
+    Standard_Integer anEntitiesNb = anEntitySet->Size();
+    for (Standard_Integer anIdx = 0; anIdx < anEntitiesNb; ++anIdx)
+    {
+      if (anEntitySet->GetSensitiveById (anIdx)->IsActiveForSelection())
+      {
+        anActiveOwners.Append (anEntitySet->GetSensitiveById (anIdx)->BaseSensitive()->OwnerId());
+      }
+    }
+  }
+
+  return anActiveOwners;
 }

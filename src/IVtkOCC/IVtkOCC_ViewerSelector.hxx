@@ -17,7 +17,6 @@
 #define __IVTKOCC_VIEWERSELECTOR_H__
 
 #include <IVtk_IView.hxx>
-#include <Select3D_Projector.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_ViewerSelector.hxx>
 
@@ -31,10 +30,6 @@ class IVtkOCC_ViewerSelector : public SelectMgr_ViewerSelector
 {
 public:
   IVtkOCC_ViewerSelector();
-
-  //! Projects all sensitive entities from the given selection container to 2D space
-  //! param [in] theSelection Container with sensitive entities to project
-  void Convert (const Handle(SelectMgr_Selection)& theSelection);
 
   //! Implements point picking
   //! @param [in] theXPix, theYPix Display coordinates of the point
@@ -56,32 +51,15 @@ public:
   void Pick (double** thePoly, const int theNbPoints, const IVtk_IView::Handle& theView);
 
   //! Activates the given selection
-  void Activate (const Handle(SelectMgr_Selection)& theSelection,
-                 const Standard_Boolean             isAutomaticProj = Standard_True);
+  void Activate (const Handle(SelectMgr_Selection)& theSelection);
 
   //! Deactivate the given selection
   void Deactivate (const Handle(SelectMgr_Selection)& theSelection);
 
-  //! Checks if some projection parameters have changed,
-  //! and updates the 2D projections of all sensitive entities if necessary.
-  //! @param [in] theView Interface to VTK renderer to access projection parameters
-  Standard_Boolean Update (const IVtk_IView::Handle& theView);
-
-  //! Returns picking line.
-  //! @param theX direction X.
-  //! @param theX direction Y.
-  //! @return picking direction.
-  virtual gp_Lin PickingLine (const Standard_Real theX, const Standard_Real theY) const;
-
   DEFINE_STANDARD_RTTI( IVtkOCC_ViewerSelector )
 
 private:
-  Standard_Real myCoeff[14];
-  Standard_Real myPrevCoeff[14];
-  Standard_Real myCenter[2];
-  Standard_Real myPrevCenter[2];
   Standard_Integer myPixTol;
-  Handle(Select3D_Projector) myPrj;
   Standard_Boolean myToUpdateTol;
 };
 

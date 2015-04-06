@@ -13,15 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_SensitiveMesh.ixx>
+#include <MeshVS_SensitiveMesh.hxx>
 
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <Select3D_Projector.hxx>
+#include <Select3D_SensitiveEntity.hxx>
+#include <SelectBasics_EntityOwner.hxx>
 #include <TopLoc_Location.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_MeshOwner.hxx>
+#include <NCollection_Vec4.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 //=======================================================================
 // name    : MeshVS_SensitiveMesh::MeshVS_SensitiveMesh
@@ -29,16 +34,24 @@
 //=======================================================================
 MeshVS_SensitiveMesh::MeshVS_SensitiveMesh (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                             const Standard_Integer theMode)
-: Select3D_SensitiveEntity( theOwnerId )
+: Select3D_SensitiveEntity (theOwnerId)
 {
   myMode = theMode;
-  mybox.SetVoid();
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast( OwnerId() );
+  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast (OwnerId());
   if( !anOwner.IsNull() )
   {
     Handle(MeshVS_DataSource) aDS = anOwner->GetDataSource();
-    if( !aDS.IsNull() )
-      mybox = aDS->GetBoundingBox();
+    if (!aDS.IsNull())
+    {
+      Bnd_Box aBox = aDS->GetBoundingBox();
+      Standard_Real aXMin, aYMin, aZMin;
+      Standard_Real aXMax, aYMax, aZMax;
+      aBox.Get (aXMin, aYMin, aZMin,
+                aXMax, aYMax, aZMax);
+      Select3D_Vec3 aMinPnt (aXMin, aYMin, aZMin);
+      Select3D_Vec3 aMaxPnt (aXMax, aYMax, aZMax);
+      myBndBox = Select3D_BndBox3d (aMinPnt, aMaxPnt);
+    }
   }
 }
 
@@ -46,159 +59,54 @@ MeshVS_SensitiveMesh::MeshVS_SensitiveMesh (const Handle(SelectBasics_EntityOwne
 // Function : GetMode
 // Purpose  :
 //================================================================
-Standard_Integer MeshVS_SensitiveMesh::GetMode () const
+Standard_Integer MeshVS_SensitiveMesh::GetMode() const
 {
   return myMode;
-}
-
-//=======================================================================
-// name    : Matches
-// Purpose :
-//=======================================================================
-Standard_Boolean MeshVS_SensitiveMesh::Matches (const SelectBasics_PickArgs& thePickArgs,
-                                                Standard_Real& theMatchDMin,
-                                                Standard_Real& theMatchDepth)
-{
-  theMatchDMin = 0.0;
-  theMatchDepth = Precision::Infinite();
-
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast( OwnerId() );
-  if( anOwner.IsNull() ) return Standard_False;
-  Handle(MeshVS_Mesh) aMeshPrs = Handle(MeshVS_Mesh)::DownCast( anOwner->Selectable() );
-  if( aMeshPrs.IsNull() ) return Standard_False;
-  Handle(MeshVS_DataSource) aDS = anOwner->GetDataSource();
-  if( aDS.IsNull() ) return Standard_False;
-  Handle(TColStd_HPackedMapOfInteger) NodesMap;
-  Handle(TColStd_HPackedMapOfInteger) ElemsMap;
-
-  // Mesh data source should provide the algorithm for computation
-  // of detected entities from 2D point
-  Standard_Boolean isDetected =
-    aDS->GetDetectedEntities (aMeshPrs, thePickArgs.X(), thePickArgs.Y(),
-                              thePickArgs.Tolerance(), NodesMap,
-                              ElemsMap, theMatchDMin);
-
-  // The detected entites will be available from mesh owner
-  anOwner->SetDetectedEntities( NodesMap, ElemsMap );
-
-  return isDetected;
-}
-
-//=======================================================================
-// name    : Matches
-// Purpose :
-//=======================================================================
-Standard_Boolean MeshVS_SensitiveMesh::Matches(const Standard_Real XMin,
-					       const Standard_Real YMin,
-					       const Standard_Real XMax,
-					       const Standard_Real YMax,
-					       const Standard_Real aTol)
-{
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast( OwnerId() );
-  if( anOwner.IsNull() ) return Standard_False;
-  Handle(MeshVS_Mesh) aMeshPrs = Handle(MeshVS_Mesh)::DownCast( anOwner->Selectable() );
-  if( aMeshPrs.IsNull() ) return Standard_False;
-  Handle(MeshVS_DataSource) aDS = anOwner->GetDataSource();
-  if( aDS.IsNull() ) return Standard_False;
-  Handle(TColStd_HPackedMapOfInteger) NodesMap;
-  Handle(TColStd_HPackedMapOfInteger) ElemsMap;
-  // Mesh data source should provide the algorithm for computation
-  // of detected entities from 2D box area
-  Standard_Boolean isDetected = aDS->GetDetectedEntities( aMeshPrs, XMin, YMin, XMax, YMax, aTol, NodesMap, ElemsMap );
-  // The detected entites will be available from mesh owner
-  anOwner->SetDetectedEntities( NodesMap, ElemsMap );
-  
-  return isDetected;
-}
-
-//=======================================================================
-// name    : Matches
-// Purpose :
-//=======================================================================
-Standard_Boolean MeshVS_SensitiveMesh::Matches(const TColgp_Array1OfPnt2d& Polyline,
-					       const Bnd_Box2d&            aBox,
-					       const Standard_Real         aTol)
-{
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast( OwnerId() );
-  if( anOwner.IsNull() ) return Standard_False;
-  Handle(MeshVS_Mesh) aMeshPrs = Handle(MeshVS_Mesh)::DownCast( anOwner->Selectable() );
-  if( aMeshPrs.IsNull() ) return Standard_False;
-  Handle(MeshVS_DataSource) aDS = anOwner->GetDataSource();
-  if( aDS.IsNull() ) return Standard_False;
-  Handle(TColStd_HPackedMapOfInteger) NodesMap;
-  Handle(TColStd_HPackedMapOfInteger) ElemsMap;
-  // Mesh data source should provide the algorithm for computation
-  // of detected entities from 2D polyline
-  Standard_Boolean isDetected = aDS->GetDetectedEntities( aMeshPrs, Polyline, aBox, aTol, NodesMap, ElemsMap );
-  // The detected entites will be available from mesh owner
-  anOwner->SetDetectedEntities( NodesMap, ElemsMap );
- 
-  return isDetected;
 }
 
 //=======================================================================
 // name    : GetConnected
 // Purpose :
 //=======================================================================
-Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected( const TopLoc_Location& aLoc ) 
+Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected()
 {
-  Handle(MeshVS_SensitiveMesh) aMeshEnt = new MeshVS_SensitiveMesh( myOwnerId );
-  if(HasLocation()) aMeshEnt->SetLocation( Location() );
-  aMeshEnt->UpdateLocation( aLoc );
+  Handle(MeshVS_SensitiveMesh) aMeshEnt = new MeshVS_SensitiveMesh (myOwnerId);
   return aMeshEnt;
 }
 
-//==================================================
-// Function: ProjectOneCorner
-// Purpose :
-//==================================================
-void MeshVS_SensitiveMesh::ProjectOneCorner(const Handle(Select3D_Projector)& theProj,
-					    const Standard_Real theX, 
-					    const Standard_Real theY, 
-					    const Standard_Real theZ)
+//=======================================================================
+// function : NbSubElements
+// purpose  : Returns the amount of mesh nodes
+//=======================================================================
+Standard_Integer MeshVS_SensitiveMesh::NbSubElements()
 {
-  gp_Pnt aPnt( theX, theY, theZ );  
-  gp_Pnt2d aProjPnt;
-  if( HasLocation() )
-    theProj->Project( aPnt.Transformed(Location().Transformation()), aProjPnt );
-  else 
-    theProj->Project( aPnt, aProjPnt );
-  mybox2d.Add( aProjPnt );
+  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast (OwnerId());
+  if (anOwner.IsNull())
+    return -1;
+  Handle(MeshVS_DataSource) aDataSource = anOwner->GetDataSource();
+  if (aDataSource.IsNull())
+    return -1;
+  return aDataSource->GetAllNodes().Extent();
 }
 
-//==================================================
-// Function: Project
-// Purpose :
-//==================================================
-void MeshVS_SensitiveMesh::Project(const Handle(Select3D_Projector)& aProj)
+//=======================================================================
+// function : BoundingBox
+// purpose  : Returns bounding box of mesh
+//=======================================================================
+Select3D_BndBox3d MeshVS_SensitiveMesh::BoundingBox()
 {
-  mybox2d.SetVoid();
-  if (mybox.IsVoid())
-    return;
-  // Compute the 2D bounding box - projection of mesh bounding box
-  Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast( OwnerId() );
-  if( anOwner.IsNull() ) return;
-  Handle(MeshVS_DataSource) aDS = anOwner->GetDataSource();
-  if( aDS.IsNull() ) return;
-
-  Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
-  mybox.Get( XMin, YMin, ZMin, XMax, YMax, ZMax );  
-
-  ProjectOneCorner (aProj, XMin, YMin, ZMin);
-  ProjectOneCorner (aProj, XMin, YMin, ZMax);
-  ProjectOneCorner (aProj, XMin, YMax, ZMin);
-  ProjectOneCorner (aProj, XMin, YMax, ZMax);
-  ProjectOneCorner (aProj, XMax, YMin, ZMin);
-  ProjectOneCorner (aProj, XMax, YMin, ZMax);
-  ProjectOneCorner (aProj, XMax, YMax, ZMin);
-  ProjectOneCorner (aProj, XMax, YMax, ZMax);
+  return myBndBox;
 }
 
-//==================================================
-// Function: Areas 
-// Purpose :
-//==================================================
-void MeshVS_SensitiveMesh::Areas( SelectBasics_ListOfBox2d& aSeq )
+//=======================================================================
+// function : CenterOfGeometry
+// purpose  : Returns center of mesh
+//=======================================================================
+gp_Pnt MeshVS_SensitiveMesh::CenterOfGeometry() const
 {
-  aSeq.Append(mybox2d);
+  if (!myBndBox.IsValid())
+    return gp_Pnt (0.0, 0.0, 0.0);
+
+  SelectMgr_Vec3 aCenter = (myBndBox.CornerMax() + myBndBox.CornerMin()) * 0.5;
+  return gp_Pnt (aCenter.x(), aCenter.y(), aCenter.z());
 }

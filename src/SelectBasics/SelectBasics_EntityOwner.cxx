@@ -25,8 +25,3 @@ SelectBasics_EntityOwner
 ::SelectBasics_EntityOwner (const Standard_Integer aPriority):
 mypriority(aPriority)
 {}
-
-
-
-
-

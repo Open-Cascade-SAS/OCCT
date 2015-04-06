@@ -29,6 +29,7 @@ deferred class SelectableObject from SelectMgr  inherits PresentableObject from 
            
 uses
 
+    Box                   from Bnd,
     SelectionManager      from SelectMgr,
     Selection             from SelectMgr,
     SequenceOfSelection   from SelectMgr,
@@ -57,34 +58,36 @@ is
     ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      : Integer) is deferred;
         ---Purpose: Recovers and calculates any sensitive primitive,
-    	-- aSelection, available in Shape mode, specified by
-    	-- aMode. As a rule, these are sensitive faces.
-    	-- This method is defined as virtual. This enables you to
-    	-- implement it in the creation of a new class of AIS
-    	-- Interactive Object. You need to do this and in so
-    	-- doing, redefine this method, if you create a class
-    	-- which enriches the list of signatures and types.  
-    
-    NbPossibleSelection(me) returns Integer from Standard is virtual;
-        ---Level: Public 
-    	---Purpose: defines the number of different modes of selection
-    	--          (or decomposition) for an Object.
-    
+        -- aSelection, available in Shape mode, specified by
+        -- aMode. As a rule, these are sensitive faces.
+        -- This method is defined as virtual. This enables you to
+        -- implement it in the creation of a new class of AIS
+        -- Interactive Object. You need to do this and in so
+        -- doing, redefine this method, if you create a class
+        -- which enriches the list of signatures and types.
 
 
     ---Category: 
     
     
-    UpdateSelection (me:mutable) is static;
-	---Purpose: re-computes the sensitive primitives for all modes
+    RecomputePrimitives (me : mutable)
+      is static;
+	---Purpose: Re-computes the sensitive primitives for all modes. IMPORTANT: Do not use
+    -- this method to update selection primitives except implementing custom selection manager!
+    -- This method does not take into account necessary BVH updates, but may invalidate the pointers
+    -- it refers to. TO UPDATE SELECTION properly from outside classes, use method UpdateSelection.
     
-    UpdateSelection (me:mutable; aMode: Integer from Standard) is static;
-        ---Purpose: re-computes the sensitive primitives which correspond to
-        --          the <amode>th selection mode.   
+    RecomputePrimitives (me      : mutable;
+                         theMode : Integer from Standard)
+      is static;
+    ---Purpose: Re-computes the sensitive primitives which correspond to the <theMode>th selection mode.
+    -- IMPORTANT: Do not use this method to update selection primitives except implementing custom selection manager!
+    -- selection manager! This method does not take into account necessary BVH updates, but may invalidate
+    -- the pointers it refers to. TO UPDATE SELECTION properly from outside classes, use method UpdateSelection.
 
 
-    AddSelection(me:mutable ;aSelection: Selection from SelectMgr;
-                             aMode : Integer) 
+    AddSelection(me:mutable; aSelection : Selection from SelectMgr;
+                             aMode      : Integer) 
     is static;
         ---Purpose: Adds the selection aSelection with the selection mode
     	-- index aMode to this framework.
@@ -100,7 +103,7 @@ is
     	-- completely) when some selection mode is activated not for the first time.
 
     Selection(me;aMode : Integer) 
-    returns any Selection from SelectMgr 
+    returns any Selection from SelectMgr
     is  static;
 	---C++:  return const& 
     	---Purpose: Returns the selection Selection having the selection mode aMode.
@@ -187,40 +190,68 @@ is
    ---Purpose: Set Z layer ID and update all presentations of the selectable object.
    -- The layers mechanism allows drawing objects in higher layers in overlay of objects in lower layers.
 
+   UpdateSelection ( me      : mutable;
+                     theMode : Integer from Standard = -1)
+     is static;
+   ---Purpose: Sets update status FULL to selections of the object. Must be used as the only method of UpdateSelection
+   -- from outer classes to prevent BVH structures from being outdated.
+
+   BoundingBox (me : mutable;
+                theBndBox : out Box from Bnd)
+    is deferred;
+    ---Purpose: Returns bounding box of selectable object
+    -- by storing its minimum and maximum 3d coordinates
+    -- to output parameters
+
     SetAttributes(me:mutable; theDrawer: Drawer from Prs3d) is virtual;
-    	---Purpose: Initializes the drawing tool theDrawer.
-    
+        ---Purpose: Initializes the drawing tool theDrawer.
+
     Attributes(me) returns any Drawer from Prs3d;
-    	---C++: return const&
-    	---C++:  inline
-    	---Purpose: Returns the attributes settings.
-        
+        ---C++: return const&
+        ---C++:  inline
+        ---Purpose: Returns the attributes settings.
+
     UnsetAttributes(me:mutable) is virtual;
-	---Purpose: Clears settings provided by the drawing tool theDrawer.
+    ---Purpose: Clears settings provided by the drawing tool theDrawer.
 
     SetHilightAttributes(me:mutable; theDrawer: Drawer from Prs3d) is virtual;
-    	---Purpose: Initializes the hilight drawing tool theDrawer.
+        ---Purpose: Initializes the hilight drawing tool theDrawer.
 
     HilightAttributes(me) returns any Drawer from Prs3d;
-    	---C++: return const&
-    	---C++:  inline
-    	---Purpose: Returns the hilight attributes settings.
+        ---C++: return const&
+        ---C++:  inline
+        ---Purpose: Returns the hilight attributes settings.
 
     UnsetHilightAttributes(me:mutable) is virtual;
-	---Purpose: Clears settings provided by the hilight drawing tool theDrawer.
+    ---Purpose: Clears settings provided by the hilight drawing tool theDrawer.
 
     InitDefaultHilightAttributes(myclass; theDrawer : Drawer from Prs3d);
-	---Purpose: Initializes theDrawer by default hilight settings.
+    ---Purpose: Initializes theDrawer by default hilight settings.
+
+    SetAssemblyOwner (me : mutable;
+                      theOwner : EntityOwner from SelectMgr;
+                      theMode  : Integer from Standard = -1);
+    ---Purpose: Sets common entity owner for assembly sensitive object entities
+
+    GetAssemblyOwner (me)
+      returns EntityOwner from SelectMgr
+      is static;
+    ---C++: return const&
+    ---Purpose: Returns common entity owner if the object is an assembly
 
 fields
 
     myselections        : SequenceOfSelection is protected;
     myDrawer            : Drawer from Prs3d is protected;
     myHilightDrawer     : Drawer from Prs3d is protected;
+    myAssemblyOwner     : EntityOwner from SelectMgr is protected;
     mycurrent           : Integer;
     myAutoHilight       : Boolean from Standard;
 
     mySelectionPrs      : Presentation from Prs3d;
     myHilightPrs        : Presentation from Prs3d;
+    
+friends
+    class SelectionManager from SelectMgr
 
 end SelectableObject;

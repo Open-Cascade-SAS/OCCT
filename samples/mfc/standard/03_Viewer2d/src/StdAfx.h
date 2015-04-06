@@ -127,8 +127,6 @@
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>
 #include <Quantity_PlaneAngle.hxx>
-#include <SelectBasics_ListOfBox2d.hxx>
-#include <SelectBasics_BasicTool.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectableObject.hxx>

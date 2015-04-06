@@ -229,7 +229,6 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
-#include <SelectBasics_BasicTool.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>

@@ -21,9 +21,11 @@
 // =======================================================================
 template<class T, int N>
 BVH_SpatialMedianBuilder<T, N>::BVH_SpatialMedianBuilder (const Standard_Integer theLeafNodeSize,
-                                                          const Standard_Integer theMaxTreeDepth)
+                                                          const Standard_Integer theMaxTreeDepth,
+                                                          const Standard_Boolean theToUseMainAxis)
 : BVH_BinnedBuilder<T, N, 2> (theLeafNodeSize,
-                              theMaxTreeDepth)
+                              theMaxTreeDepth,
+                              theToUseMainAxis)
 {
   //
 }

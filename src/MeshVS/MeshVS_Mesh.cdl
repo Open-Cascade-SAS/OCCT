@@ -29,9 +29,9 @@ uses
 
   NameOfColor from Quantity,
 
-  Selection       from SelectMgr,
-  EntityOwner     from SelectMgr,
-  SequenceOfOwner from SelectMgr,
+  Selection        from SelectMgr,
+  EntityOwner      from SelectMgr,
+  SequenceOfOwner  from SelectMgr,
 
   Boolean from Standard,
   CString from Standard,

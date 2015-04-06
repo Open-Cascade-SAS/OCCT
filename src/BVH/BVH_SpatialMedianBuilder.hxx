@@ -26,7 +26,8 @@ public:
 
   //! Creates spatial median split builder.
   BVH_SpatialMedianBuilder (const Standard_Integer theLeafNodeSize = 5,
-                            const Standard_Integer theMaxTreeDepth = 32);
+                            const Standard_Integer theMaxTreeDepth = 32,
+                            const Standard_Boolean theToUseMainAxis = Standard_False);
 
   //! Releases resources of spatial median split builder.
   virtual ~BVH_SpatialMedianBuilder();

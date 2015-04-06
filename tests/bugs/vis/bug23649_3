@@ -21,7 +21,7 @@ vfit
 #select the first shape
 vselect 70 230
 #select the second shape
-vselect 200 360 1
+vselect 200 358 1
 vmoveto 0 0
 vdump ${anImage1}
 
@@ -30,5 +30,5 @@ vmoveto 70 230
 vdump ${anImage2}
 
 #highlight the second edge - it should NOT be highlightable by default
-vmoveto 200 360
+vmoveto 200 358
 vdump ${anImage3}

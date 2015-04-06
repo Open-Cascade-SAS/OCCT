@@ -19,9 +19,11 @@
 // =======================================================================
 template<class T, int N, int Bins>
 BVH_BinnedBuilder<T, N, Bins>::BVH_BinnedBuilder (const Standard_Integer theLeafNodeSize,
-                                                  const Standard_Integer theMaxTreeDepth)
+                                                  const Standard_Integer theMaxTreeDepth,
+                                                  const Standard_Boolean theToUseMainAxis)
 : BVH_QueueBuilder<T, N> (theLeafNodeSize,
-                          theMaxTreeDepth)
+                          theMaxTreeDepth),
+  myUseMainAxis (theToUseMainAxis)
 {
   //
 }
@@ -129,6 +131,46 @@ namespace BVH
 
 #include <limits>
 
+namespace BVH
+{
+  template<class T, int N>
+  struct BVH_AxisSelector
+  {
+    typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+
+    // =======================================================================
+    // function : MainAxis
+    // purpose  :
+    // =======================================================================
+    static Standard_Integer MainAxis (const BVH_VecNt& theSize)
+    {
+      if (theSize.y() > theSize.x())
+      {
+        return theSize.y() > theSize.z() ? 1 : 2;
+      }
+      else
+      {
+        return theSize.z() > theSize.x() ? 2 : 0;
+      }
+    }
+  };
+
+  template<class T>
+  struct BVH_AxisSelector<T, 2>
+  {
+    typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
+
+    // =======================================================================
+    // function : MainAxis
+    // purpose  :
+    // =======================================================================
+    static Standard_Integer MainAxis (const BVH_VecNt& theSize)
+    {
+      return theSize.x() > theSize.y() ? 0 : 1;
+    }
+  };
+}
+
 // =======================================================================
 // function : BuildNode
 // purpose  :
@@ -162,8 +204,10 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
 
   Standard_Real aMinSplitCost = std::numeric_limits<Standard_Real>::max();
 
+  Standard_Integer aMainAxis = BVH::BVH_AxisSelector<T, N>::MainAxis (aSize);
+
   // Find best split
-  for (Standard_Integer anAxis = 0; anAxis < (N < 4 ? N : 3); ++anAxis)
+  for (Standard_Integer anAxis = myUseMainAxis ? aMainAxis : 0; anAxis <= (myUseMainAxis ? aMainAxis : Min (N - 1, 2)); ++anAxis)
   {
     if (BVH::VecComp<T, N>::Get (aSize, anAxis) <= BVH::THE_NODE_MIN_SIZE)
       continue;

@@ -28,6 +28,11 @@ inline const gp_Trsf& PrsMgr_PresentableObject::Transformation() const
   return myTransformation;
 }
 
+inline const gp_Trsf& PrsMgr_PresentableObject::InversedTransformation() const
+{
+  return myInvTransformation;
+}
+
 inline const PrsMgr_ListOfPresentableObjects& PrsMgr_PresentableObject::Children() const 
 {
   return myChildren;

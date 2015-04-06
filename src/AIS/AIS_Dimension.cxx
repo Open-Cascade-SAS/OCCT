@@ -50,8 +50,6 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
-#include <Select3D_ListIteratorOfListOfSensitive.hxx>
-#include <Select3D_ListOfSensitive.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitiveCurve.hxx>

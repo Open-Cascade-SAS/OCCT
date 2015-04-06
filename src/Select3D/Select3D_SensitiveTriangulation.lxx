@@ -14,29 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//=======================================================================
+//function : Triangulation
+//purpose  :
+//=======================================================================
 inline const Handle(Poly_Triangulation)& Select3D_SensitiveTriangulation::Triangulation() const
 {
   return myTriangul;
 }
 
- 
-inline const gp_Pnt& Select3D_SensitiveTriangulation::CDG3D() const
-{
-  return myCDG3D;
-}
-
- 
-inline const gp_Pnt2d& Select3D_SensitiveTriangulation::CDG2D() const
-{
-  return myCDG2D;
-}
-
+//=======================================================================
+//function : HasInitLocation
+//purpose  :
+//=======================================================================
 inline Standard_Boolean Select3D_SensitiveTriangulation::HasInitLocation() const
-{return !myiniloc.IsIdentity();}
-inline const TopLoc_Location& Select3D_SensitiveTriangulation::GetInitLocation() const
-{return myiniloc;}
-
-inline Standard_Integer Select3D_SensitiveTriangulation::DetectedTriangle() const
 {
-  return myDetectedTr;
+  return !myInitLocation.IsIdentity();
+}
+
+//=======================================================================
+//function : GetInitLocation
+//purpose  :
+//=======================================================================
+inline const TopLoc_Location& Select3D_SensitiveTriangulation::GetInitLocation() const
+{
+  return myInitLocation;
 }

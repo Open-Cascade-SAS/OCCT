@@ -159,6 +159,7 @@ AIS_MultipleConnectedInteractive::AIS_MultipleConnectedInteractive()
   : AIS_InteractiveObject (PrsMgr_TOP_AllView)
 {
   myHasOwnPresentations = Standard_False;
+  myAssemblyOwner = NULL;
   SetHilightMode (0);
 }
 
@@ -189,12 +190,16 @@ Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const H
                                                                          const Graphic3d_TransModeFlags&      theTrsfPersFlag,
                                                                          const gp_Pnt&                        theTrsfPersPoint)
 {
+  if (myAssemblyOwner.IsNull())
+    myAssemblyOwner = new SelectMgr_EntityOwner (this);
+
   Handle(AIS_InteractiveObject) anObjectToAdd;
 
   Handle(AIS_MultipleConnectedInteractive) aMultiConnected = Handle(AIS_MultipleConnectedInteractive)::DownCast (theAnotherObj);
   if (!aMultiConnected.IsNull())
   { 
     Handle(AIS_MultipleConnectedInteractive) aNewMultiConnected = new AIS_MultipleConnectedInteractive();
+    aNewMultiConnected->myAssemblyOwner = myAssemblyOwner;
     aNewMultiConnected->SetLocalTransformation (aMultiConnected->LocalTransformation());
 
     // Perform deep copy of instance tree
@@ -357,7 +362,7 @@ Standard_Boolean AIS_MultipleConnectedInteractive::AcceptShapeDecomposition() co
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================
-void AIS_MultipleConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+void AIS_MultipleConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selection)& /*theSelection*/,
                                                          const Standard_Integer             theMode)
 {
   if (theMode != 0)
@@ -370,67 +375,13 @@ void AIS_MultipleConnectedInteractive::ComputeSelection (const Handle(SelectMgr_
         continue;
       }
 
-      if (!aChild->HasSelection(theMode))
+      if (!aChild->HasSelection (theMode))
       {
-        aChild->UpdateSelection(theMode);
+        aChild->RecomputePrimitives (theMode);
       }
 
-      aChild->ComputeSelection (theSelection, theMode);
-    }
-
-    return;
-  }
-
-  for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())
-  {
-    Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (anIter.Value());
-    if (aChild.IsNull())
-    {
-      continue;
-    }
-
-    if (!aChild->HasSelection (theMode))
-    {
-      aChild->UpdateSelection (theMode);
-    }
-
-    const Handle(SelectMgr_Selection)& TheRefSel = aChild->Selection (theMode);
-
-    // To redirect selection we must replace owners in sensitives, but we don't want new owner for each SE.
-    // Only for each existing owner.
-    NCollection_DataMap <Handle(SelectMgr_EntityOwner), Handle(SelectMgr_EntityOwner)> anOwnerMap;
-
-    Handle(Select3D_SensitiveEntity) aSensitive, aNewSensitive;
-
-    if (TheRefSel->IsEmpty())
-    {
-      aChild->UpdateSelection(theMode);
-    }
-
-    for (TheRefSel->Init(); TheRefSel->More(); TheRefSel->Next())
-    {
-      aSensitive = Handle(Select3D_SensitiveEntity)::DownCast(TheRefSel->Sensitive());
-
-      if (!aSensitive.IsNull())
-      {
-        TopLoc_Location aLocation (Transformation());
-        // Get the copy of aSensitive
-        aNewSensitive = aSensitive->GetConnected (aLocation);
-        Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aNewSensitive->OwnerId());
-
-        if (!anOwnerMap.IsBound (anOwner))
-        {
-          Handle(SelectMgr_EntityOwner) aNewOwner = new SelectMgr_AssemblyEntityOwner (anOwner, this);
-          anOwnerMap.Bind (anOwner, aNewOwner);
-        }
-
-        aNewSensitive->Set (anOwnerMap.Find (anOwner));
-        // In case if aSensitive caches some location-dependent data
-        // that must be updated after setting OWN
-        aNewSensitive->SetLocation (aLocation);
-
-        theSelection->Add (aNewSensitive);
-      }
+      Handle(SelectMgr_Selection) aSelection = new SelectMgr_Selection (theMode);
+      aChild->ComputeSelection (aSelection, theMode);
     }
   }
 }

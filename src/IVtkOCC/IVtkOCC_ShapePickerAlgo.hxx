@@ -39,12 +39,6 @@ public:
   //! the 3D view projection.
   Standard_EXPORT virtual void SetView (const IVtk_IView::Handle& theView);
 
-  //! Informs the picker that some parameters of the view
-  //! has been modified so it is necessary to recompute internal selection data.
-  //! It makes sense to call this method automatically as soon as 
-  //! the underlying VTK object emits its ModifiedEvent.
-  Standard_EXPORT virtual void Modified();
-
   //! Get number of picked entities.
   Standard_EXPORT virtual int  NbPicked();
 

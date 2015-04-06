@@ -12,10 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void SelectBasics_SensitiveEntity::
-SetSensitivityFactor(const Standard_ShortReal F)
-{mySFactor = F;}
+//=======================================================================
+// function : SetSensitivityFactor
+// purpose  : Allows to manage the sensitivity of the entity
+//=======================================================================
+inline void SelectBasics_SensitiveEntity::SetSensitivityFactor (const Standard_Real theSensFactor)
+{
+  mySFactor = theSensFactor;
+}
 
-inline Standard_ShortReal SelectBasics_SensitiveEntity::
-SensitivityFactor() const 
-{return mySFactor;}
+//=======================================================================
+// function : SensitivityFactor
+// purpose  : Gets sensitivity factor for the entity
+//=======================================================================
+inline Standard_Real SelectBasics_SensitiveEntity::SensitivityFactor() const
+{
+  return mySFactor;
+}

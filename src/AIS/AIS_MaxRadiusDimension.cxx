@@ -30,6 +30,7 @@
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
 
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>

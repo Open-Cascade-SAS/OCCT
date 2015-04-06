@@ -1,6 +1,5 @@
 puts "============"
 puts "CR25935"
-puts "Visualization, TKV3d, Exception when displaying shell in the viewer"
 puts "============"
 puts ""
 

@@ -5,7 +5,7 @@ puts "============"
 puts ""
 
 set x_start_sel_coord 100
-set y_start_sel_coord 100
+set y_start_sel_coord 104
 
 set x_end_sel_coord 400
 set y_end_sel_coord 400

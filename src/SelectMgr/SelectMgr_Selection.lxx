@@ -12,22 +12,83 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Integer SelectMgr_Selection::Mode() const {return myMode;}
+// =======================================================================
+// function : Mode
+// purpose  :
+// =======================================================================
+inline Standard_Integer SelectMgr_Selection::Mode() const
+{
+  return myMode;
+}
 
-inline void SelectMgr_Selection::Init ()  
-{myit.Initialize(myentities);}
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+inline void SelectMgr_Selection::Init()
+{
+  myEntityIter.Init (myEntities);
+}
 
+// =======================================================================
+// function : More
+// purpose  :
+// =======================================================================
 inline Standard_Boolean SelectMgr_Selection::More() const
-{return myit.More();}
+{
+  return myEntityIter.More();
+}
 
-inline void SelectMgr_Selection::Next() 
-{myit.Next();}
+// =======================================================================
+// function : Next
+// purpose  :
+// =======================================================================
+inline void SelectMgr_Selection::Next()
+{
+  myEntityIter.Next();
+}
 
-inline const Handle (SelectBasics_SensitiveEntity)& SelectMgr_Selection::Sensitive () const
-{return myit.Value();}
+// =======================================================================
+// function : Sensitive
+// purpose  :
+// =======================================================================
+inline const SelectMgr_HSensitiveEntity& SelectMgr_Selection::Sensitive() const
+{
+  return myEntityIter.Value();
+}
 
-inline void SelectMgr_Selection::UpdateStatus(const SelectMgr_TypeOfUpdate TheStat)
-{myUpdateStatus = TheStat;}
+// =======================================================================
+// function : UpdateStatus
+// purpose  :
+// =======================================================================
+inline void SelectMgr_Selection::UpdateStatus(const SelectMgr_TypeOfUpdate theStatus)
+{
+  myUpdateStatus = theStatus;
+}
 
+// =======================================================================
+// function : UpdateStatus
+// purpose  :
+// =======================================================================
 inline SelectMgr_TypeOfUpdate SelectMgr_Selection::UpdateStatus() const
-{return myUpdateStatus;}
+{
+  return myUpdateStatus;
+}
+
+// =======================================================================
+// function : UpdateBVHStatus
+// purpose  :
+// =======================================================================
+inline void SelectMgr_Selection::UpdateBVHStatus (const SelectMgr_TypeOfBVHUpdate theStatus)
+{
+  myBVHUpdateStatus = theStatus;
+}
+
+// =======================================================================
+// function : BVHUpdateStatus
+// purpose  :
+// =======================================================================
+inline SelectMgr_TypeOfBVHUpdate SelectMgr_Selection::BVHUpdateStatus() const
+{
+  return myBVHUpdateStatus;
+}

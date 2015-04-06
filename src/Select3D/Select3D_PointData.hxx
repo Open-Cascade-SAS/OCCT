@@ -15,14 +15,13 @@
 #define _Select3D_PointData_HeaderFile
 
 #include <Select3D_Pnt.hxx>
-#include <Select3D_Pnt2d.hxx>
 
-// A framework for safe management of Select3D_SensitivePoly polygons of 3D and 2D points
+// A framework for safe management of Select3D_SensitivePoly polygons of 3D points
 class Select3D_PointData {
 
 public:
 
-  // Constructs internal arrays of 2D and 3D points defined
+  // Constructs internal array of 3D points defined
   // by number of points theNbPoints
   Select3D_PointData (const Standard_Integer theNbPoints)
   : mynbpoints(theNbPoints)
@@ -31,14 +30,12 @@ public:
       Standard_ConstructionError::Raise("Select3D_PointData");
 
     mypolyg3d = new Select3D_Pnt[mynbpoints];
-    mypolyg2d = new Select3D_Pnt2d[mynbpoints];
   }
 
   // Destructor
   ~Select3D_PointData ()
   {
     delete [] mypolyg3d;
-    delete [] mypolyg2d;
   }
 
   // Sets Select3D_Pnt to internal array
@@ -61,26 +58,6 @@ public:
     mypolyg3d[theIndex] = theValue;
   }
 
-  // Sets Select3D_Pnt2d to internal array
-  // of 2D points if theIndex is valid
-  void SetPnt2d (const Standard_Integer theIndex,
-                 const Select3D_Pnt2d& theValue)
-  {
-    if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::SetPnt2d");
-    mypolyg2d[theIndex] = theValue;
-  }
-
-  // Sets gp_Pnt2d to internal array
-  // of 2D points if theIndex is valid
-  void SetPnt2d (const Standard_Integer theIndex,
-                 const gp_Pnt2d& theValue)
-  {
-    if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::SetPnt2d");
-    mypolyg2d[theIndex] = theValue;
-  }
-
   // Returns 3D point from internal array
   // if theIndex is valid
   Select3D_Pnt Pnt (const Standard_Integer theIndex) const
@@ -90,13 +67,13 @@ public:
     return mypolyg3d[theIndex];
   }
 
-  // Returns 2D point from internal array
+  // Returns 3D point from internal array
   // if theIndex is valid
-  Select3D_Pnt2d Pnt2d (const Standard_Integer theIndex) const
+  gp_Pnt Pnt3d (const Standard_Integer theIndex) const
   {
     if (theIndex < 0 || theIndex >= mynbpoints)
-      Standard_OutOfRange::Raise("Select3D_PointData::Pnt2d");
-    return mypolyg2d[theIndex];
+      Standard_OutOfRange::Raise("Select3D_PointData::Pnt");
+    return mypolyg3d[theIndex];
   }
 
   // Returns size of internal arrays
@@ -112,7 +89,6 @@ private:
 private:
 
   Select3D_Pnt*    mypolyg3d;
-  Select3D_Pnt2d*  mypolyg2d;
   Standard_Integer mynbpoints;
 };
 

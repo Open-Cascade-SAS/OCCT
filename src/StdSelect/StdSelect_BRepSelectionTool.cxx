@@ -31,6 +31,7 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_Circle.hxx>
+#include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveSegment.hxx>
@@ -40,9 +41,7 @@
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveGroup.hxx>
-
-#include <Select3D_ListIteratorOfListOfSensitive.hxx>
-#include <Select3D_ListOfSensitiveTriangle.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -60,6 +59,40 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ErrorHandler.hxx>
+
+#define BVH_PRIMITIVE_LIMIT 800000
+
+//==================================================
+// function: preBuildBVH
+// purpose : Pre-builds BVH tree for heavyweight
+//           sensitive entities with sub-elements
+//           amount more than BVH_PRIMITIVE_LIMIT
+//==================================================
+void StdSelect_BRepSelectionTool::preBuildBVH (const Handle(SelectMgr_Selection)& theSelection)
+{
+  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  {
+    const Handle(SelectBasics_SensitiveEntity)& aSensitive = theSelection->Sensitive()->BaseSensitive();
+    if (aSensitive->NbSubElements() >= BVH_PRIMITIVE_LIMIT)
+    {
+      aSensitive->BVH();
+    }
+
+    if (aSensitive->IsInstance ("Select3D_SensitiveGroup"))
+    {
+      const Handle(Select3D_SensitiveGroup)& aGroup = Handle(Select3D_SensitiveGroup)::DownCast (aSensitive);
+      const Select3D_EntitySequence& aSubEntities = aGroup->GetEntities();
+      for (Select3D_EntitySequenceIter aSubEntitiesIter (aSubEntities); aSubEntitiesIter.More(); aSubEntitiesIter.Next())
+      {
+        const Handle(Select3D_SensitiveEntity)& aSubEntity = aSubEntitiesIter.Value();
+        if (aSubEntity->NbSubElements() >= BVH_PRIMITIVE_LIMIT)
+        {
+          aSubEntity->BVH();
+        }
+      }
+    }
+  }
+}
 
 //==================================================
 // Function: Load
@@ -156,9 +189,11 @@ void StdSelect_BRepSelectionTool
   for (theSelection->Init(); theSelection->More(); theSelection->Next())
   {
     Handle(SelectMgr_EntityOwner) anOwner
-      = Handle(SelectMgr_EntityOwner)::DownCast (theSelection->Sensitive()->OwnerId());
+      = Handle(SelectMgr_EntityOwner)::DownCast (theSelection->Sensitive()->BaseSensitive()->OwnerId());
     anOwner->Set (theSelectableObj);
   }
+
+  preBuildBVH (theSelection);
 }
 
 //==================================================
@@ -217,11 +252,11 @@ void StdSelect_BRepSelectionTool
     case TopAbs_FACE:
     {
       const TopoDS_Face& aFace = TopoDS::Face (theShape);
-      Select3D_ListOfSensitive aSensitiveList;
+      Select3D_EntitySequence aSensitiveList;
       GetSensitiveForFace (aFace, theOwner,
                            aSensitiveList,
                            isAutoTriangulation, theNbPOnEdge, theMaxParam);
-      for (Select3D_ListIteratorOfListOfSensitive aSensIter (aSensitiveList);
+      for (Select3D_EntitySequenceIter aSensIter (aSensitiveList);
            aSensIter.More(); aSensIter.Next())
       {
         theSelection->Add (aSensIter.Value());
@@ -575,7 +610,7 @@ Standard_Integer StdSelect_BRepSelectionTool::GetStandardPriority (const TopoDS_
 Standard_Boolean StdSelect_BRepSelectionTool
 ::GetSensitiveForFace (const TopoDS_Face& theFace,
                        const Handle(StdSelect_BRepOwner)& theOwner,
-                       Select3D_ListOfSensitive& theSensitiveList,
+                       Select3D_EntitySequence& theSensitiveList,
                        const Standard_Boolean /*theAutoTriangulation*/,
                        const Standard_Integer NbPOnEdge,
                        const Standard_Real    theMaxParam,

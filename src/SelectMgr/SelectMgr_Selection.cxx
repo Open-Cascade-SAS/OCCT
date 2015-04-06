@@ -14,17 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectMgr_Selection.ixx>
+#include <Standard_NullObject.hxx>
 
+#include <SelectMgr_Selection.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (SelectMgr_Selection, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection, MMgt_TShared)
 
 //==================================================
-// Function: Create 
+// Function: SelectMgr_Selection
 // Purpose :
 //==================================================
-SelectMgr_Selection
-::SelectMgr_Selection (const Standard_Integer IdMode):
-myMode(IdMode)
+SelectMgr_Selection::SelectMgr_Selection (const Standard_Integer theModeIdx)
+: myMode (theModeIdx),
+  mySelectionState (SelectMgr_SOS_Unknown),
+  myBVHUpdateStatus (SelectMgr_TBU_None),
+  mySensFactor (2.0)
 {}
+
+SelectMgr_Selection::~SelectMgr_Selection()
+{
+  Destroy();
+}
 
 //==================================================
 // Function: Destroy
@@ -32,47 +43,98 @@ myMode(IdMode)
 //==================================================
 void SelectMgr_Selection::Destroy()
 {
-  for (SelectBasics_ListIteratorOfListOfSensitive anIt(myentities); anIt.More(); anIt.Next())
+  for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Size(); ++anEntityIdx)
   {
-    anIt.Value()->Set (NULL);
+    SelectMgr_HSensitiveEntity& anEntity = myEntities.ChangeValue (anEntityIdx);
+    anEntity->BaseSensitive()->Set (NULL);
   }
+  mySensFactor = 2.0;
 }
 
 //==================================================
 // Function: ADD
 // Purpose :
 //==================================================
-void SelectMgr_Selection
-::Add (const Handle(SelectBasics_SensitiveEntity)& aprimitive)
+void SelectMgr_Selection::Add (const Handle(SelectBasics_SensitiveEntity)& theSensitive)
 {
   // if input is null:
   // in debug mode raise exception
   Standard_NullObject_Raise_if
-    (aprimitive.IsNull(), "Null sensitive entity is added to the selection");
+    (theSensitive.IsNull(), "Null sensitive entity is added to the selection");
+
   // in release mode do not add
-  if (!aprimitive.IsNull())
-    myentities.Append(aprimitive);
+  if (!theSensitive.IsNull())
+  {
+    SelectMgr_HSensitiveEntity anEntity = new SelectMgr_SensitiveEntity (theSensitive);
+    myEntities.Append (anEntity);
+    if (mySelectionState == SelectMgr_SOS_Activated &&
+        !anEntity->IsActiveForSelection())
+    {
+      anEntity->SetActiveForSelection();
+    }
+
+    mySensFactor = Max (mySensFactor,
+                        anEntity->BaseSensitive()->SensitivityFactor());
+  }
 }	
 
 //==================================================
-// Function: Clear 
+// Function: Clear
 // Purpose :
 //==================================================
-void SelectMgr_Selection
-::Clear () {myentities.Clear();}
+void SelectMgr_Selection::Clear()
+{
+  for (Standard_Integer anIdx = 0; anIdx < myEntities.Size(); ++anIdx)
+  {
+    SelectMgr_HSensitiveEntity& anEntity = myEntities.ChangeValue (anIdx);
+    anEntity->Clear();
+  }
+
+  myEntities.Clear();
+}
 
 //==================================================
 // Function: IsEmpty 
 // Purpose :
 //==================================================
-Standard_Boolean SelectMgr_Selection
-::IsEmpty() const
+Standard_Boolean SelectMgr_Selection::IsEmpty() const
 {
-  return myentities.IsEmpty();
+  return myEntities.IsEmpty();
 }
 
+//==================================================
+// function: GetEntityById
+// purpose : Returns sensitive entity stored by
+//           index theIdx in entites vector
+//==================================================
+SelectMgr_HSensitiveEntity& SelectMgr_Selection::GetEntityById (const Standard_Integer theIdx)
+{
+  return myEntities.ChangeValue (theIdx);
+}
 
+//==================================================
+// function: GetSelectionState
+// purpose : Returns status of selection
+//==================================================
+const SelectMgr_StateOfSelection SelectMgr_Selection::GetSelectionState() const
+{
+  return mySelectionState;
+}
 
+//==================================================
+// function: SetSelectionState
+// purpose : Sets status of selection
+//==================================================
+void SelectMgr_Selection::SetSelectionState (const SelectMgr_StateOfSelection theState) const
+{
+  mySelectionState = theState;
+}
 
-
-
+//==================================================
+// function: Sensitivity
+// purpose : Returns sensitivity of the selection
+//==================================================
+const Standard_Real SelectMgr_Selection::Sensitivity() const
+{
+  return mySensFactor;
+}

@@ -51,7 +51,6 @@ uses
     Shape                     from TopoDS,
     View                      from V3d,
     PresentationManager3d     from PrsMgr,
-    Projector                 from Select3D,
     IndexedMapOfOwner         from SelectMgr,
     EntityOwner               from SelectMgr,
     OrFilter                  from SelectMgr,
@@ -104,14 +103,6 @@ is
 
 
     Terminate(me: mutable; updateviewer : Boolean from Standard = Standard_True);
-
-    HasSameProjector(me;aPrj:Projector from Select3D)
-    returns Boolean from Standard;
-    ---Purpose: compares the current projector of the localContext
-    --          with <aPrj>
-    --          returns True if the projectors are identical.
-    --          (no need to update projection of selection primitives
-    --          when closing the local context)....
 
     Reactivate(me:mutable);
     ---Purpose: to be called when a upper local context was closed...
@@ -445,35 +436,14 @@ is
                 WithColor : out Boolean from Standard;
                 HiCol     : out NameOfColor from Quantity)
     returns Boolean from Standard;
-    
-    SetSensitivityMode(me    : mutable;
-                       aMode : SensitivityMode from StdSelect) is static;
-    ---Level: Public
-    ---Purpose: Sets the selection sensitivity mode. SM_WINDOW mode
-    -- uses the specified pixel tolerance to compute the sensitivity
-    -- value, SM_VIEW mode allows to define the sensitivity manually.
-
-    SensitivityMode(me) returns SensitivityMode from StdSelect;
-    ---Level: Public
-    ---Purpose: Returns the selection sensitivity mode.
-
-    SetSensitivity(me:mutable;
-                        aPrecision: Real from Standard);
-    ---Level: Public
-    ---Purpose: Define the current selection sensitivity for
-    --          this local context according to the view size.
-    
-    Sensitivity (me) returns Real from Standard;
-    ---Level: Public 
-    ---Purpose: Returns the selection sensitivity value.
 
     SetPixelTolerance(me:mutable;
-                        aPrecision: Integer from Standard = 2);
+                        aPrecision: Real from Standard = 2);
     ---Level: Public
     ---Purpose: Define the current selection sensitivity for
     --          this local context according to the view size.
 
-    PixelTolerance(me) returns Integer from Standard;
+    PixelTolerance(me) returns Real from Standard;
     ---Level: Public 
     ---Purpose: Returns the pixel tolerance.
 
@@ -505,11 +475,6 @@ is
 
                             ---Category: INTERNAL METHODS;
 
-    UpdateConversion(me:mutable);
-
-    UpdateSort(me:mutable);
-
-
 
     Status(me) returns AsciiString from TCollection is private;
     
@@ -524,15 +489,12 @@ is
     UnloadContextObjects(me:mutable);
 
     Process(me       : mutable;
-            anObject : SelectableObject from SelectMgr;
-            WithProj: Boolean from Standard = Standard_True) is static private;
+            anObject : SelectableObject from SelectMgr) is static private;
 
-    Process(me:mutable;
-            WithProj: Boolean from Standard = Standard_True) is static private;
+    Process(me:mutable) is static private;
     
 
-    ActivateStandardModes(me:mutable;anObject: SelectableObject from SelectMgr;
-            WithProj: Boolean from Standard = Standard_True)  is  static  private;
+    ActivateStandardModes(me:mutable;anObject: SelectableObject from SelectMgr)  is  static  private;
 
     manageDetected (me                   : mutable;
                     thePickOwner         : EntityOwner from SelectMgr;
@@ -566,13 +528,6 @@ is
     ComesFromDecomposition(me; aPickedIndex : Integer from Standard)
     returns Boolean from Standard is static private;
 
-
-    DisplayAreas(me:mutable;aviou:View from V3d);
-    
-    ClearAreas (me:mutable;
-                aView: View from V3d) is static;
-    ---Level: Internal 
-
     HasFilters(me;aType:ShapeEnum from TopAbs) 
     returns Boolean from Standard is private;
     
@@ -580,7 +535,7 @@ is
     
     ClearSensitive(me:mutable;aView:View from V3d) is static;
 
-    MainSelector(me) returns any ViewerSelector3d from StdSelect;
+    MainSelector(me) returns ViewerSelector3d from StdSelect;
     ---C++: inline
     ---C++: return const&
 

@@ -83,7 +83,6 @@
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_Text.hxx>
 
-#include <Select3D_ListOfSensitive.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveGroup.hxx>

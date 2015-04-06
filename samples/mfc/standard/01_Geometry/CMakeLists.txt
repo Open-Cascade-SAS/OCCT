@@ -33,15 +33,13 @@ set (Geometry_ISESSION2D_HEADER_FILES ${Geometry_ISESSION2D_DIR}/ISession_Curve.
                                       ${Geometry_ISESSION2D_DIR}/ISession_Point.h
                                       ${Geometry_ISESSION2D_DIR}/ISession_Surface.h
                                       ${Geometry_ISESSION2D_DIR}/ISession_Text.h
-                                      ${Geometry_ISESSION2D_DIR}/ISession2D_Curve.h
-                                      ${Geometry_ISESSION2D_DIR}/ISession2D_SensitiveCurve.h)
+                                      ${Geometry_ISESSION2D_DIR}/ISession2D_Curve.h)
 set (Geometry_ISESSION2D_SOURCE_FILES ${Geometry_ISESSION2D_DIR}/ISession_Curve.cpp
                                       ${Geometry_ISESSION2D_DIR}/ISession_Direction.cpp
                                       ${Geometry_ISESSION2D_DIR}/ISession_Point.cpp
                                       ${Geometry_ISESSION2D_DIR}/ISession_Surface.cpp
                                       ${Geometry_ISESSION2D_DIR}/ISession_Text.cpp
-                                      ${Geometry_ISESSION2D_DIR}/ISession2D_Curve.cpp
-                                      ${Geometry_ISESSION2D_DIR}/ISession2D_SensitiveCurve.cpp)
+                                      ${Geometry_ISESSION2D_DIR}/ISession2D_Curve.cpp)
 
 set (Geometry_RESOURCE_DIR            ${MFC_STANDARD_SAMPLES_DIR}/01_Geometry/res)
 set (Geometry_RESOURCE_HEADER         ${Geometry_RESOURCE_DIR}/resource.h)

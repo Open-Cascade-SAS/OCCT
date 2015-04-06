@@ -14,30 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void Select3D_SensitiveSegment::Set(const Standard_Integer MaxRect)
-{mymaxrect = MaxRect;}
-
-inline void Select3D_SensitiveSegment::StartPoint (const gp_Pnt& start)
+//=======================================================================
+//function : StartPoint
+//purpose  :
+//=======================================================================
+inline void Select3D_SensitiveSegment::StartPoint (const gp_Pnt& thePnt)
 {
-  mystart = start;
+  myStart = thePnt;
 }
 
-inline void Select3D_SensitiveSegment::EndPoint (const gp_Pnt& end)
+//=======================================================================
+//function : EndPoint
+//purpose  :
+//=======================================================================
+inline void Select3D_SensitiveSegment::EndPoint (const gp_Pnt& thePnt)
 {
-  myend = end;
+  myEnd = thePnt;
 }
 
-inline gp_Pnt Select3D_SensitiveSegment::StartPoint () const
-{return mystart;}
+//=======================================================================
+//function : StartPoint
+//purpose  :
+//=======================================================================
+inline gp_Pnt Select3D_SensitiveSegment::StartPoint() const
+{
+  return myStart;
+}
 
-inline gp_Pnt Select3D_SensitiveSegment::EndPoint () const
-{return myend;}
-
-inline gp_Pnt2d Select3D_SensitiveSegment::StartPoint2d () const
-{return myprojstart;}
-
-inline gp_Pnt2d Select3D_SensitiveSegment::EndPoint2d () const
-{return myprojend;}
-
-inline Standard_Integer Select3D_SensitiveSegment::MaxBoxes()
-const {return mymaxrect;}
+//=======================================================================
+//function : EndPoint
+//purpose  :
+//=======================================================================
+inline gp_Pnt Select3D_SensitiveSegment::EndPoint() const
+{
+  return myEnd;
+}
