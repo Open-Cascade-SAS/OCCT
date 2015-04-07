@@ -51,6 +51,25 @@ math_Vector::math_Vector(const Standard_Address theTab,
   Standard_RangeError_Raise_if((theLower > theUpper) , "");
 }
 
+math_Vector::math_Vector(const gp_XY& theOther):
+  LowerIndex(1),
+  UpperIndex(2),
+  Array(1,2)
+{
+  Array(1) = theOther.X();
+  Array(2) = theOther.Y();
+}
+
+math_Vector::math_Vector(const gp_XYZ& theOther):
+  LowerIndex(1),
+  UpperIndex(3),
+  Array(1, 3)
+{
+  Array(1) = theOther.X();
+  Array(2) = theOther.Y();
+  Array(3) = theOther.Z();
+}
+
 void math_Vector::Init(const Standard_Real theInitialValue)
 {
   Array.Init(theInitialValue);

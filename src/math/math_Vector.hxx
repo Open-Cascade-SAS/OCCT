@@ -16,6 +16,8 @@
 #define _math_Vector_HeaderFile
 
 #include <math_SingleTab.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
 
 class Standard_DimensionError;
 class Standard_DivideByZero;
@@ -68,6 +70,12 @@ public:
   //! Constructs a vector in the range [theLower..theUpper]
   //! with the "c array" theTab.
   Standard_EXPORT math_Vector(const Standard_Address theTab, const Standard_Integer theLower, const Standard_Integer theUpper);
+
+  //! Constructor for converting gp_XY to math_Vector
+  Standard_EXPORT math_Vector(const gp_XY& Other);
+  
+  //! Constructor for converting gp_XYZ to math_Vector
+  Standard_EXPORT math_Vector(const gp_XYZ& Other);
 
   //! Initialize all the elements of a vector with "theInitialValue".
   Standard_EXPORT void Init(const Standard_Real theInitialValue);

@@ -1,3 +1,5 @@
+puts "TODO OCC26009 All: Error: Cannot find the result of BLEND-operation."
+
 pcylinder s1 3 15 
 pcylinder s2 3 15 
 trotate s2 0 0 0 1 0 0 90

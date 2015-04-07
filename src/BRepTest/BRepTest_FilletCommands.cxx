@@ -378,7 +378,11 @@ Standard_Integer topoblend(Draw_Interpretor& di, Standard_Integer narg, const ch
 Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const char** a)
 {
   printtolblend(di);
-  if(narg != 5) return 1;
+  if(narg < 5)
+  {
+    cout << "Use <command name> result shape1 shape2 radius [-d]" << endl;
+    return 1;
+  }
 
   Standard_Boolean fuse  = !strcmp(a[0],"bfuseblend");
   TopoDS_Shape S1 = DBRep::Get(a[2]);
@@ -388,6 +392,15 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
     return 1;
   }
   Standard_Real Rad = Draw::Atof(a[4]);
+  Standard_Boolean isDebug = Standard_False;
+
+  if(narg == 6)
+  {
+    if(!strcmp(a[5], "-d"))
+    {
+      isDebug = Standard_True;
+    }
+  }
 
   BOPAlgo_PaveFiller theDSFiller;
   BOPCol_ListOfShape aLS;
@@ -410,16 +423,35 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
 
   Standard_Boolean anIsDone = pBuilder->IsDone();
   if (!anIsDone)
-    {
-      printf("boolean operation not done ErrorStatus()=%d\n", pBuilder->ErrorStatus());
-      return 1;
-    }
+  {
+    printf("boolean operation not done ErrorStatus()=%d\n", pBuilder->ErrorStatus());
+    return 1;
+  }
 
   TopoDS_Shape ResultOfBop = pBuilder->Shape();
   
   delete pBuilder;
+
+  const int aStrLen = 1000;
+  char aBuff[aStrLen];
+
+  if(isDebug)
+  {
+    strcpy(aBuff, a[1]);
+    DBRep::Set( strcat(aBuff, "_bop"), ResultOfBop );
+
+    di << "Intermediate result of BOP-operation is saved to \"" << aBuff << "\" variable\n";
+  }
+
   pBuilder = new BRepAlgoAPI_Section( S1, S2, theDSFiller );
   TopoDS_Shape theSection = pBuilder->Shape();
+
+  if(isDebug)
+  {
+    strcpy(aBuff, a[1]);
+    DBRep::Set( strcat(aBuff, "_sec"), theSection );
+     di << "Intermediate bopsection result is saved to \"" << aBuff << "\" variable\n";
+  }
 
   TopoDS_Compound result;
   BRep_Builder BB; 
@@ -427,26 +459,30 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   
   TopExp_Explorer Explo( ResultOfBop, TopAbs_SOLID );
   for (; Explo.More(); Explo.Next())
+  {
+    const TopoDS_Shape& aSolid = Explo.Current();
+
+    BRepFilletAPI_MakeFillet Blender(aSolid);
+    Blender.SetParams(ta,t3d,t2d,t3d,t2d,fl);
+    Blender.SetContinuity( blend_cont, tapp_angle );
+
+    TopExp_Explorer expsec( theSection, TopAbs_EDGE );
+    for (; expsec.More(); expsec.Next())
     {
-      const TopoDS_Shape& aSolid = Explo.Current();
-
-      BRepFilletAPI_MakeFillet Blender(aSolid);
-      Blender.SetParams(ta,t3d,t2d,t3d,t2d,fl);
-      Blender.SetContinuity( blend_cont, tapp_angle );
-
-      TopExp_Explorer expsec( theSection, TopAbs_EDGE );
-      for (; expsec.More(); expsec.Next())
-	{
-	  TopoDS_Edge anEdge = TopoDS::Edge(expsec.Current());
-	  Blender.Add( Rad, anEdge );
-	}
-
-      Blender.Build();
-      if (Blender.IsDone())
-	BB.Add( result, Blender.Shape() );
-      else
-	BB.Add( result, aSolid );
+      TopoDS_Edge anEdge = TopoDS::Edge(expsec.Current());
+      Blender.Add( Rad, anEdge );
     }
+
+    Blender.Build();
+    if (Blender.IsDone())
+      BB.Add( result, Blender.Shape() );
+    else
+    {
+      di << "Error: Cannot find the result of BLEND-operation."
+        " The result of BOP operation will be returned.\n";
+      BB.Add( result, aSolid );
+    }
+  }
 
   delete pBuilder;
   DBRep::Set( a[1], result );
@@ -759,11 +795,11 @@ void  BRepTest::FilletCommands(Draw_Interpretor& theCommands)
 		  topoblend,g);
 
   theCommands.Add("bfuseblend",
-		  "bfuseblend result shape1 shape2 radius",__FILE__,
+		  "bfuseblend result shape1 shape2 radius [-d]",__FILE__,
 		  boptopoblend,g);
   
   theCommands.Add("bcutblend",
-		  "bcutblend result shape tool radius",__FILE__,
+		  "bcutblend result shape1 tool radius [-d]",__FILE__,
 		  boptopoblend,g);
 
   theCommands.Add("blend1",

@@ -1,0 +1,82 @@
+puts "============"
+puts "OCC25742"
+puts "============"
+puts ""
+###############################
+## A partition of 2 shapes stresses a performance issue
+###############################
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 10
+    set max_time2 10
+  } else {
+    set max_time 10
+    set max_time2 10
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 1
+    set max_time2 1
+  } else {
+    set max_time 1
+    set max_time2 1
+  }
+}
+
+restore [locate_data_file bug25742_pipeFiss.brep] b1
+restore [locate_data_file bug25742_shellFiss.brep] b2
+
+explode b1 f
+explode b2 f
+
+smallview
+donly b1_4 b2_1
+fit
+
+ 
+dchrono h reset
+dchrono h start
+
+bopcurves b1_4 b2_1 -2d
+
+dchrono h stop
+set q [dchrono h show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
+puts "$z"
+
+if { $z > ${max_time} } {
+    puts "Elapsed time of bopcurves is more than ${max_time} seconds - Error"
+} else {
+    puts "Elapsed time of bopcurves is less than ${max_time} seconds - OK"
+}
+
+
+mksurface s1 b1_4
+mksurface s2 b2_1
+
+dchrono h2 stop
+set q2 [dchrono h2 show]
+
+set CurveNumb [intersect i s1 s2]
+
+dchrono h2 stop
+set q2 [dchrono h2 show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z2
+puts "$z2"
+
+if { $z2 > ${max_time2} } {
+    puts "Elapsed time of intersect is more than ${max_time2} seconds - Faulty"
+} else {
+    puts "Elapsed time of intersect is less than ${max_time2} seconds - OK"
+}
+
+if { [llength ${CurveNumb}] < 1 } {
+    puts "Error : Bad intersection"
+} else {
+    puts "OK : Good intersection"
+}
+
+set only_screen_axo 1
