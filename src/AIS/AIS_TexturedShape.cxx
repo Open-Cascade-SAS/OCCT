@@ -23,6 +23,8 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -78,10 +80,8 @@ void AIS_TexturedShape::SetTextureFileName (const TCollection_AsciiString& theTe
     }
     else
     {
-#ifdef OCCT_DEBUG
-      std::cout << "Texture " << theTextureFileName << " doesn't exist\n";
-      std::cout << "Using Texture 0 instead ...\n";
-#endif
+      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: texture with ID ") + theTextureFileName
+                                       + " is undefined! Texture 0 will be used instead.", Message_Fail);
       myPredefTexture = Graphic3d_NameOfTexture2D (0);
     }
     myTextureFile = "";
@@ -314,72 +314,89 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
   myAspect = new Graphic3d_AspectFillArea3d (*myDrawer->ShadingAspect()->Aspect());
   if (HasPolygonOffsets())
   {
-    // Issue 23115: copy polygon offset settings passed through myDrawer
     Standard_Integer aMode;
     Standard_ShortReal aFactor, aUnits;
     PolygonOffsets (aMode, aFactor, aUnits);
     myAspect->SetPolygonOffsets (aMode, aFactor, aUnits);
   }
 
-  if (!myToMapTexture)
+  Standard_Boolean hasTexture = Standard_False;
+  if (myToMapTexture)
   {
-    myAspect->SetTextureMapOff();
-    return;
+    TCollection_AsciiString aTextureDesc;
+    if (!myTexturePixMap.IsNull())
+    {
+      myTexture = new Graphic3d_Texture2Dmanual (myTexturePixMap);
+      aTextureDesc = " (custom image)";
+    }
+    else if (myPredefTexture != Graphic3d_NOT_2D_UNKNOWN)
+    {
+      myTexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
+      aTextureDesc = TCollection_AsciiString(" (predefined texture ") + myTexture->GetId() + ")";
+    }
+    else
+    {
+      myTexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
+      aTextureDesc = TCollection_AsciiString(" (") + myTextureFile + ")";
+    }
+
+    if (myModulate)
+    {
+      myTexture->EnableModulate();
+    }
+    else
+    {
+      myTexture->DisableModulate();
+    }
+
+    if (myTexture->IsDone())
+    {
+      hasTexture = Standard_True;
+    }
+    else
+    {
+      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: texture can not be loaded ") + aTextureDesc, Message_Fail);
+    }
   }
 
-  if (!myTexturePixMap.IsNull())
-  {
-    myTexture = new Graphic3d_Texture2Dmanual (myTexturePixMap);
-  }
-  else if (myPredefTexture != Graphic3d_NOT_2D_UNKNOWN)
-  {
-    myTexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
-  }
-  else
-  {
-    myTexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
-  }
-
-  myAspect->SetTextureMapOn();
   myAspect->SetTextureMap (myTexture);
-  if (!myTexture->IsDone())
+  if (hasTexture)
   {
-#ifdef OCCT_DEBUG
-    std::cout << "An error occurred while building texture\n";
-#endif
-    myAspect->SetTextureMapOff();
-    return;
+    myAspect->SetTextureMapOn();
   }
-
-  if (myModulate)
-    myTexture->EnableModulate();
   else
-    myTexture->DisableModulate();
+  {
+    myAspect->SetTextureMapOff();
+  }
 
   if (myToShowTriangles)
-    myAspect->SetEdgeOn();
-  else
-    myAspect->SetEdgeOff();
-
-  // manage back face culling in consistent way (as in StdPrs_ShadedShape::Add())
-  if (StdPrs_ToolShadedShape::IsClosed (myshape))
   {
-    myAspect->SuppressBackFace();
+    myAspect->SetEdgeOn();
   }
   else
   {
-    myAspect->AllowBackFace();
+    myAspect->SetEdgeOff();
   }
 
   // Go through all groups to change fill aspect for all primitives
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (thePrs->Groups()); aGroupIt.More(); aGroupIt.Next())
   {
     const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
-
-    if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
+    if (!aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
     {
-      aGroup->SetGroupPrimitivesAspect (myAspect);
+      continue;
     }
+
+    if (aGroup->IsClosed())
+    {
+      myAspect->SuppressBackFace();
+    }
+    else
+    {
+      myAspect->AllowBackFace();
+    }
+
+    aGroup->SetGroupPrimitivesAspect (myAspect);
   }
 }
 
