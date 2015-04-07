@@ -55,15 +55,6 @@ namespace
 extern void InitLayerProp (const int theListId); //szvgl: defined in OpenGl_GraphicDriver_Layer.cxx
 
 /*----------------------------------------------------------------------*/
-
-struct OPENGL_CLIP_PLANE
-{
-  GLboolean isEnabled;
-  GLdouble Equation[4];
-  DEFINE_STANDARD_ALLOC
-};
-
-/*----------------------------------------------------------------------*/
 /*
 * Fonctions privees
 */
@@ -265,24 +256,13 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
 #if !defined(GL_ES_VERSION_2_0)
-  // store and disable current clipping planes
-  const Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
-  NCollection_Array1<OPENGL_CLIP_PLANE> aOldPlanes (GL_CLIP_PLANE0, GL_CLIP_PLANE0 + aMaxPlanes - 1);
+  // Disable current clipping planes
   if (aContext->core11 != NULL)
   {
-    for (Standard_Integer aClipPlaneId = aOldPlanes.Lower(); aClipPlaneId <= aOldPlanes.Upper(); ++aClipPlaneId)
+    const Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
+    for (Standard_Integer aClipPlaneId = GL_CLIP_PLANE0; aClipPlaneId < GL_CLIP_PLANE0 + aMaxPlanes; ++aClipPlaneId)
     {
-      OPENGL_CLIP_PLANE& aPlane = aOldPlanes.ChangeValue (aClipPlaneId);
-      aContext->core11->glGetClipPlane (aClipPlaneId, aPlane.Equation);
-      if (aPlane.isEnabled)
-      {
-        aContext->core11fwd->glDisable (aClipPlaneId);
-        aPlane.isEnabled = GL_TRUE;
-      }
-      else
-      {
-        aPlane.isEnabled = GL_FALSE;
-      }
+      aContext->core11fwd->glDisable (aClipPlaneId);
     }
   }
 #endif
@@ -543,28 +523,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     theWorkspace->DisplayCallback (theCView, aMode);
   }
 
-  // ===============================
-  //      Step 7: Finalize
-  // ===============================
-
-#if !defined(GL_ES_VERSION_2_0)
-  // restore clipping planes
-  if (aContext->core11 != NULL)
-  {
-    for (Standard_Integer aClipPlaneId = aOldPlanes.Lower(); aClipPlaneId <= aOldPlanes.Upper(); ++aClipPlaneId)
-    {
-      const OPENGL_CLIP_PLANE& aPlane = aOldPlanes.ChangeValue (aClipPlaneId);
-      aContext->core11->glClipPlane (aClipPlaneId, aPlane.Equation);
-      if (aPlane.isEnabled)
-        aContext->core11fwd->glEnable (aClipPlaneId);
-      else
-        aContext->core11fwd->glDisable (aClipPlaneId);
-    }
-  }
-#endif
-
   // ==============================================================
-  //      Step 8: Keep shader manager informed about last View
+  //      Step 7: Keep shader manager informed about last View
   // ==============================================================
 
   if (!aManager.IsNull())
