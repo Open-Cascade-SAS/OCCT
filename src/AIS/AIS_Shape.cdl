@@ -212,6 +212,8 @@ uses
         
     SetWidth(me:mutable; aValue:Real from Standard) is  redefined virtual;
     	---Purpose: Sets the value aValue for line width in the reconstructed compound shape.
+      -- Changes line aspects for lines-only presentation modes like Wireframe and Bounding Box.
+      -- Doesn't change face boundary line aspect.
     UnsetWidth(me:mutable) is redefined virtual;
     	---Purpose: Removes the setting for line width in the reconstructed compound shape.
 
