@@ -147,68 +147,72 @@ Standard_Integer Geom2dAPI_InterCurveCurve::NbSegments() const
 //=======================================================================
 //function : Segment
 //purpose  : 
+//  If aSeg.IsOpposite() == TRUE
+//
+//                U1            U2
+//    Curve 1:    *------------>*
+//
+//                V2            V1
+//    Curve 2:    *<------------*
+//
+//    Segment:  FirstPoint--->LastPoint
+//
+//
+//  If aSeg.IsOpposite() == FALSE
+//
+//                U1            U2
+//    Curve 1:    *------------>*
+//
+//                V1            V2
+//    Curve 2:    *------------>*
+//
+//    Segment:  FirstPoint--->LastPoint
 //=======================================================================
 
 void Geom2dAPI_InterCurveCurve::Segment
-  (const Standard_Integer      Index,
-         Handle(Geom2d_Curve)& Curve1,
-         Handle(Geom2d_Curve)& Curve2) const 
+  (const Standard_Integer      theIndex,
+         Handle(Geom2d_Curve)& theCurve1,
+         Handle(Geom2d_Curve)& theCurve2) const 
 {
-  Standard_OutOfRange_Raise_if(Index < 0 || Index > NbSegments(),
-			       "Geom2dAPI_InterCurveCurve::Segment");
+  Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > NbSegments(),
+                               "Geom2dAPI_InterCurveCurve::Segment");
 
-  Standard_NullObject_Raise_if(myCurve2.IsNull(),
-			       "Geom2dAPI_InterCurveCurve::Segment");
+  Standard_NullObject_Raise_if(myCurve1.IsNull() || myCurve2.IsNull(),
+                               "Geom2dAPI_InterCurveCurve::Segment");
 
-  Standard_Real U1, U2, V1, V2;
+  Standard_Real aU1 = myCurve1->FirstParameter(),
+                aU2 = myCurve1->LastParameter(),
+                aV1 = myCurve2->FirstParameter(),
+                aV2 = myCurve2->LastParameter();
 
-  IntRes2d_IntersectionSegment Seg = myIntersector.Segment(Index);
-  if ( Seg.IsOpposite()) {
-    if ( Seg.HasFirstPoint()) {
-      IntRes2d_IntersectionPoint IP1 = Seg.FirstPoint();
-      U1 = IP1.ParamOnFirst();
-      V2 = IP1.ParamOnSecond();
-    }
-    else {
-      U1 = Curve1->FirstParameter();
-      V2 = Curve2->LastParameter();
-    }
-    if ( Seg.HasLastPoint()) {
-      IntRes2d_IntersectionPoint IP2 = Seg.LastPoint();
-      U2 = IP2.ParamOnFirst();
-      V1 = IP2.ParamOnSecond();
-    }
-    else {
-      U2 = Curve1->FirstParameter();
-      V1 = Curve2->LastParameter();
-    }
-  }
-  else {
-    if ( Seg.HasFirstPoint()) {
-      IntRes2d_IntersectionPoint IP1 = Seg.FirstPoint();
-      U1 = IP1.ParamOnFirst();
-      V1 = IP1.ParamOnSecond();
-    }
-    else {
-      U1 = Curve1->FirstParameter();
-      V1 = Curve2->FirstParameter();
-    }
-    if ( Seg.HasLastPoint()) {
-      IntRes2d_IntersectionPoint IP2 = Seg.LastPoint();
-      U2 = IP2.ParamOnFirst();
-      V2 = IP2.ParamOnSecond();
-    }
-    else {
-      U2 = Curve1->FirstParameter();
-      V2 = Curve2->FirstParameter();
-    }
+  const IntRes2d_IntersectionSegment& aSeg = myIntersector.Segment(theIndex);
+  const Standard_Boolean isOpposite = aSeg.IsOpposite();
+
+  if(aSeg.HasFirstPoint())
+  {
+    const IntRes2d_IntersectionPoint& anIPF = aSeg.FirstPoint();
+    aU1 = anIPF.ParamOnFirst();
+    
+    if(isOpposite)
+      aV2 = anIPF.ParamOnSecond();
+    else
+      aV1 = anIPF.ParamOnSecond();
   }
 
-  Curve1 = new Geom2d_TrimmedCurve(myCurve1, U1, U2);
-  Curve2 = new Geom2d_TrimmedCurve(myCurve2, V1, V2);
+  if(aSeg.HasLastPoint())
+  {
+    const IntRes2d_IntersectionPoint& anIPL = aSeg.LastPoint();
+    aU2 = anIPL.ParamOnFirst();
 
+    if(isOpposite)
+      aV1 = anIPL.ParamOnSecond();
+    else
+      aV2 = anIPL.ParamOnSecond();
+  }
+
+  theCurve1 = new Geom2d_TrimmedCurve(myCurve1, aU1, aU2);
+  theCurve2 = new Geom2d_TrimmedCurve(myCurve2, aV1, aV2);
 }
-
 
 //=======================================================================
 //function : Segment

@@ -40,7 +40,7 @@ is
            ReverseFlag : Boolean           from Standard)
 	   
     	--Purpose: Creates   an    IntersectionSegment    from     two
-    	--         IntersectionPoint.  Oppos is  True if the  2 curves
+    	--         IntersectionPoint.  Oppos is  FALSE if the  2 curves
     	--         have the same orientation.  if ReverseFlag is True,
     	--         P1 and P2 are the point on the  first curve, and on
     	--         the  second curve.  else, P1  is   the point on the
@@ -80,7 +80,7 @@ is
 
     IsOpposite(me)
     
-	---Purpose: Returns TRUE if the intersection segment has got
+	---Purpose: Returns FALSE if the intersection segment has got
 	--          the same orientation on both curves.
 
 	---C++: inline
