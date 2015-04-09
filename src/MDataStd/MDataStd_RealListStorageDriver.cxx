@@ -66,16 +66,19 @@ void MDataStd_RealListStorageDriver::Paste(const Handle(TDF_Attribute)&  Source,
 					   const Handle(PDF_Attribute)&        Target,
 					   const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
-  Handle(TDataStd_RealList) S = Handle(TDataStd_RealList)::DownCast (Source);
-  Handle(PDataStd_RealList) T = Handle(PDataStd_RealList)::DownCast (Target);
+  const Handle(TDataStd_RealList) S = Handle(TDataStd_RealList)::DownCast (Source);
+  const Handle(PDataStd_RealList) T = Handle(PDataStd_RealList)::DownCast (Target);
   
-  Standard_Integer lower = 1, upper = S->Extent(), i = lower;
-  if (upper >= lower)
+  Standard_Integer lower(1), upper = S->Extent();
+  if(upper == 0) {
+    lower = 0;
+    T->Init(lower, upper);
+  }
+  else if (upper >= lower)
   {
     T->Init(lower, upper);
     TColStd_ListIteratorOfListOfReal itr(S->List());
-    for (; itr.More(); itr.Next(), i++) 
-    {
+    for (Standard_Integer i = lower; itr.More(); itr.Next(), i++) {
       T->SetValue(i, itr.Value());
     }
   }

@@ -68,22 +68,21 @@ void MDataStd_ReferenceListRetrievalDriver::Paste(const Handle(PDF_Attribute)& S
 						  const Handle(TDF_Attribute)& Target,
 						  const Handle(MDF_RRelocationTable)& ) const
 {
-  Handle(PDataStd_ReferenceList) S = Handle(PDataStd_ReferenceList)::DownCast (Source);
-  Handle(TDataStd_ReferenceList) T = Handle(TDataStd_ReferenceList)::DownCast (Target);
-
+  const Handle(PDataStd_ReferenceList) S = Handle(PDataStd_ReferenceList)::DownCast (Source);
+  const Handle(TDataStd_ReferenceList) T = Handle(TDataStd_ReferenceList)::DownCast (Target);
+  if(S.IsNull()) return;
   Standard_Integer i, lower = S->Lower(), upper = S->Upper();
-  for (i = lower; i <= upper; i++)
-  {
-    const Handle(PCollection_HExtendedString)& pvalue = S->Value(i);
-    if (!pvalue.IsNull()) 
+  if(upper > 0)
+    for (i = lower; i <= upper; i++)
     {
-      TDF_Label L;
-      TCollection_AsciiString tvalue = pvalue->Convert();
-      TDF_Tool::Label(T->Label().Data(), tvalue, L, Standard_True);
-      if (!L.IsNull())
+      const Handle(PCollection_HExtendedString)& pvalue = S->Value(i);
+      if (!pvalue.IsNull()) 
       {
-	T->Append(L);
+        TDF_Label L;
+        const TCollection_AsciiString& tvalue = pvalue->Convert();
+        TDF_Tool::Label(T->Label().Data(), tvalue, L, Standard_True);
+        if (!L.IsNull()) 
+          T->Append(L);
       }
     }
-  }
 }

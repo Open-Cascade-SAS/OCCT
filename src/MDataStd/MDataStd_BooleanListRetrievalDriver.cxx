@@ -64,12 +64,13 @@ void MDataStd_BooleanListRetrievalDriver::Paste(const Handle(PDF_Attribute)& Sou
 						const Handle(TDF_Attribute)& Target,
 						const Handle(MDF_RRelocationTable)& ) const
 {
-  Handle(PDataStd_BooleanList) S = Handle(PDataStd_BooleanList)::DownCast (Source);
-  Handle(TDataStd_BooleanList) T = Handle(TDataStd_BooleanList)::DownCast (Target);
-
-  Standard_Integer i, lower = S->Lower(), upper = S->Upper();
-  for (i = lower; i <= upper; i++)
-  {
-    T->Append(S->Value(i));
+  const Handle(PDataStd_BooleanList) S = Handle(PDataStd_BooleanList)::DownCast (Source);
+  const Handle(TDataStd_BooleanList) T = Handle(TDataStd_BooleanList)::DownCast (Target);
+  if(!S.IsNull()) {
+    Standard_Integer i, lower = S->Lower(), upper = S->Upper();
+     if(upper > 0)
+      for (i = lower; i <= upper; i++) {
+        T->Append(S->Value(i));
+     }
   }
 }

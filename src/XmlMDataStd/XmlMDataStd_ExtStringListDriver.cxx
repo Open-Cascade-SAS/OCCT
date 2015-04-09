@@ -79,7 +79,8 @@ Standard_Boolean XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persiste
     return Standard_False;
   }
 
-  Handle(TDataStd_ExtStringList) anExtStringList = Handle(TDataStd_ExtStringList)::DownCast(theTarget);
+  if(aLastInd == 0) return Standard_True;
+  const Handle(TDataStd_ExtStringList) anExtStringList = Handle(TDataStd_ExtStringList)::DownCast(theTarget);
   
   if (!anElement.hasChildNodes())
   {
@@ -114,7 +115,7 @@ void XmlMDataStd_ExtStringListDriver::Paste(const Handle(TDF_Attribute)& theSour
 				       XmlObjMgt_Persistent&        theTarget,
 				       XmlObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_ExtStringList) anExtStringList = Handle(TDataStd_ExtStringList)::DownCast(theSource);
+  const Handle(TDataStd_ExtStringList) anExtStringList = Handle(TDataStd_ExtStringList)::DownCast(theSource);
 
   Standard_Integer anU = anExtStringList->Extent();
   XmlObjMgt_Element& anElement = theTarget;

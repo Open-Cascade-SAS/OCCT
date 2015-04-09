@@ -69,23 +69,27 @@ void MDataStd_ReferenceListStorageDriver::Paste(const Handle(TDF_Attribute)&  So
 						const Handle(PDF_Attribute)&        Target,
 						const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
-  Handle(TDataStd_ReferenceList) S = Handle(TDataStd_ReferenceList)::DownCast (Source);
-  Handle(PDataStd_ReferenceList) T = Handle(PDataStd_ReferenceList)::DownCast (Target);
-  
-  Standard_Integer lower = 1, upper = S->Extent(), i = lower;
-  if (upper >= lower)
+  const Handle(TDataStd_ReferenceList) S = Handle(TDataStd_ReferenceList)::DownCast (Source);
+  const Handle(PDataStd_ReferenceList) T = Handle(PDataStd_ReferenceList)::DownCast (Target);
+  if(S.IsNull()) return;
+  Standard_Integer lower(1), upper = S->Extent();
+  if(upper == 0) {
+    lower = 0;
+    T->Init(lower, upper);
+  }
+  else if (upper >= lower)
   {
     T->Init(lower, upper);
     TDF_ListIteratorOfLabelList itr(S->List());
-    for (; itr.More(); itr.Next(), i++) 
+    for (Standard_Integer i = lower; itr.More(); itr.Next(), i++) 
     {
       TDF_Label L = itr.Value();
       if (!L.IsNull())
       {
-	TCollection_AsciiString tvalue;
-	TDF_Tool::Entry(L, tvalue);
-	Handle(PCollection_HExtendedString) pvalue = new PCollection_HExtendedString(tvalue);
-	T->SetValue(i, pvalue);
+        TCollection_AsciiString tvalue;
+        TDF_Tool::Entry(L, tvalue);
+        const Handle(PCollection_HExtendedString)& pvalue = new PCollection_HExtendedString(tvalue);
+        T->SetValue(i, pvalue);
       }
     }
   }

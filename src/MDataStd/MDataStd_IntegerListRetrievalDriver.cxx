@@ -64,12 +64,12 @@ void MDataStd_IntegerListRetrievalDriver::Paste(const Handle(PDF_Attribute)& Sou
 						const Handle(TDF_Attribute)& Target,
 						const Handle(MDF_RRelocationTable)& ) const
 {
-  Handle(PDataStd_IntegerList) S = Handle(PDataStd_IntegerList)::DownCast (Source);
-  Handle(TDataStd_IntegerList) T = Handle(TDataStd_IntegerList)::DownCast (Target);
+  const Handle(PDataStd_IntegerList) S = Handle(PDataStd_IntegerList)::DownCast (Source);
+  const Handle(TDataStd_IntegerList) T = Handle(TDataStd_IntegerList)::DownCast (Target);
 
   Standard_Integer i, lower = S->Lower(), upper = S->Upper();
-  for (i = lower; i <= upper; i++)
-  {
-    T->Append(S->Value(i));
-  }
+  if(upper > 0)
+    for (i = lower; i <= upper; i++) {
+      T->Append(S->Value(i));
+    }
 }

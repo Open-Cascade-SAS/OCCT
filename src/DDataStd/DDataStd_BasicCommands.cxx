@@ -94,6 +94,10 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TDataStd_ReferenceArray.hxx>
+#include <TDataStd_ExtStringList.hxx>
+#include <TDataStd_ReferenceList.hxx>
+#include <TDF_ListIteratorOfLabelList.hxx>
+#include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
 
 //=======================================================================
 //function : DDataStd_SetInteger
@@ -1475,6 +1479,65 @@ static Standard_Integer DDataStd_SetBooleanArrayValue (Draw_Interpretor& di,
 } 
 
 //=======================================================================
+//function : DDataStd_SetExtStringList (DF, entry, elmt1, elmt2, ...  )
+//=======================================================================
+static Standard_Integer DDataStd_SetExtStringList (Draw_Interpretor& di,
+                                                 Standard_Integer nb, 
+                                                 const char** arg) 
+{
+  if (nb > 2) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    DDF::AddLabel(DF, arg[2], label);
+    Handle(TDataStd_ExtStringList) A = TDataStd_ExtStringList::Set(label);
+    for(Standard_Integer i = 3; i <= nb - 1; i++) 
+    {
+      TCollection_ExtendedString aValue(arg[i]);     
+      A->Append(aValue); 
+    }
+    return 0; 
+  }
+  di << "DDataStd_SetExtStringList: Error" << "\n";
+  return 1; 
+} 
+//
+//=======================================================================
+//function : DDataStd_SetReferenceList (DF, entry, elmt1, elmt2, ...  )
+//=======================================================================
+static Standard_Integer DDataStd_SetReferenceList (Draw_Interpretor& di,
+                                                   Standard_Integer nb, 
+                                                   const char** arg) 
+{
+  if (nb > 2) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    DDF::AddLabel(DF, arg[2], label);
+    if(!label.IsNull()) {
+      Handle(TDataStd_ReferenceList) A = TDataStd_ReferenceList::Set(label);
+      for(Standard_Integer i = 3; i <= nb - 1; i++) 
+      {
+        TDF_Label aValueLabel;
+        DDF::AddLabel(DF, arg[i], aValueLabel);
+        if(aValueLabel.IsNull()) continue;
+        A->Append(aValueLabel); 
+      }
+      return 0; 
+    }
+  }
+  di << "DDataStd_SetReferenceList: Error" << "\n";
+  return 1; 
+} 
+
+
+//=======================================================================
 //function : SetBooleanList (DF, entry, elmt1, elmt2, ...  )
 //=======================================================================
 static Standard_Integer DDataStd_SetBooleanList (Draw_Interpretor& di,
@@ -1761,107 +1824,228 @@ static Standard_Integer DDataStd_ChangeByteArray (Draw_Interpretor& di,
 //function : GetBooleanList (DF, entry )
 //=======================================================================
 static Standard_Integer DDataStd_GetBooleanList (Draw_Interpretor& di,
-                                                 Standard_Integer, 
+                                                 Standard_Integer nb, 
                                                  const char** arg) 
 {   
-  Handle(TDF_Data) DF;
-  if (!DDF::GetDF(arg[1],DF)) 
+  if (nb == 3) {
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF)) 
       return 1;  
 
-  TDF_Label label;
-  if ( !DDF::FindLabel(DF, arg[2], label) ) 
-  {
-    di << "No label for entry"  << "\n";
-    return 1;
-  }
+    TDF_Label label;
+    if ( !DDF::FindLabel(DF, arg[2], label) ) 
+    {
+      di << "No label for entry"  << "\n";
+      return 1;
+    }
  
-  Handle(TDataStd_BooleanList) A;
-  if ( !label.FindAttribute(TDataStd_BooleanList::GetID(), A) ) 
-  {
-    di << "There is no TDataStd_BooleanList at label"  << "\n";
-    return 1;
-  }
+    Handle(TDataStd_BooleanList) A;
+    if ( !label.FindAttribute(TDataStd_BooleanList::GetID(), A) ) 
+    {
+      di << "There is no TDataStd_BooleanList at label"  << "\n";
+      return 1;
+    }
   
-  const TDataStd_ListOfByte& bList = A->List();
-  TDataStd_ListIteratorOfListOfByte itr(bList);
-  for (; itr.More(); itr.Next())
-  {
-    di << (Standard_Integer) itr.Value() << " ";
+    const TDataStd_ListOfByte& bList = A->List();
+    Standard_Boolean isEmpty = (bList.Extent() > 0) ? Standard_False : Standard_True;
+    if(!isEmpty) {
+      TDataStd_ListIteratorOfListOfByte itr(bList);
+      for (; itr.More(); itr.Next())
+      {
+        di << (Standard_Integer) itr.Value() << " ";
+      }
+      di << "\n";
+    } else 
+       di << "List is empty" << "\n";
+    return 0; 
   }
-  di << "\n";
-  return 0; 
+  di << "DDataStd_GetBooleanList: Error" << "\n";
+  return 1; 
 }
 
 //=======================================================================
 //function : GetIntegerList (DF, entry )
 //=======================================================================
 static Standard_Integer DDataStd_GetIntegerList (Draw_Interpretor& di,
-                                                 Standard_Integer, 
+                                                 Standard_Integer nb, 
                                                  const char** arg) 
-{   
-  Handle(TDF_Data) DF;
-  if (!DDF::GetDF(arg[1],DF)) 
+{ 
+  if (nb == 3) {
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF)) 
       return 1;  
 
-  TDF_Label label;
-  if ( !DDF::FindLabel(DF, arg[2], label) ) 
-  {
-    di << "No label for entry"  << "\n";
-    return 1;
-  }
+    TDF_Label label;
+    if ( !DDF::FindLabel(DF, arg[2], label) ) 
+    {
+      di << "No label for entry"  << "\n";
+      return 1;
+    }
  
-  Handle(TDataStd_IntegerList) A;
-  if ( !label.FindAttribute(TDataStd_IntegerList::GetID(), A) ) 
-  {
-    di << "There is no TDataStd_IntegerList at label"  << "\n";
-    return 1;
-  }
+    Handle(TDataStd_IntegerList) A;
+    if ( !label.FindAttribute(TDataStd_IntegerList::GetID(), A) ) 
+    {
+      di << "There is no TDataStd_IntegerList at label"  << "\n";
+      return 1;
+    }
   
-  const TColStd_ListOfInteger& iList = A->List();
-  TColStd_ListIteratorOfListOfInteger itr(iList);
-  for (; itr.More(); itr.Next())
-  {
-    di << itr.Value() << " ";
+    const TColStd_ListOfInteger& iList = A->List();
+    Standard_Boolean isEmpty = (iList.Extent() > 0) ? Standard_False : Standard_True;
+    if(!isEmpty) {
+      TColStd_ListIteratorOfListOfInteger itr(iList);
+      for (; itr.More(); itr.Next())
+      {
+        di << itr.Value() << " ";
+      }
+      di << "\n";
+    } else 
+      di << "List is empty" << "\n";
+
+    return 0; 
   }
-  di << "\n";
-  return 0; 
+  di << "DDataStd_GetIntegerList: Error" << "\n";
+  return 1; 
 }
 
 //=======================================================================
 //function : GetRealList (DF, entry )
 //=======================================================================
 static Standard_Integer DDataStd_GetRealList (Draw_Interpretor& di,
-                                              Standard_Integer, 
+                                              Standard_Integer nb, 
                                               const char** arg) 
 {   
-  Handle(TDF_Data) DF;
-  if (!DDF::GetDF(arg[1],DF)) 
+  if (nb == 3) {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF)) 
       return 1;  
 
-  TDF_Label label;
-  if ( !DDF::FindLabel(DF, arg[2], label) ) 
-  {
-    di << "No label for entry"  << "\n";
-    return 1;
-  }
+    TDF_Label label;
+    if ( !DDF::FindLabel(DF, arg[2], label) ) 
+    {
+      di << "No label for entry"  << "\n";
+      return 1;
+    }
  
-  Handle(TDataStd_RealList) A;
-  if ( !label.FindAttribute(TDataStd_RealList::GetID(), A) ) 
-  {
-    di << "There is no TDataStd_RealList at label"  << "\n";
-    return 1;
-  }
+    Handle(TDataStd_RealList) A;
+    if ( !label.FindAttribute(TDataStd_RealList::GetID(), A) ) 
+    {
+      di << "There is no TDataStd_RealList at label"  << "\n";
+      return 1;
+    }
   
-  const TColStd_ListOfReal& iList = A->List();
-  TColStd_ListIteratorOfListOfReal itr(iList);
-  for (; itr.More(); itr.Next())
-  {
-    di << itr.Value() << " ";
+    const TColStd_ListOfReal& rList = A->List();
+    Standard_Boolean isEmpty = (rList.Extent() > 0) ? Standard_False : Standard_True;
+    if(!isEmpty) {
+      TColStd_ListIteratorOfListOfReal itr(rList);
+      for (; itr.More(); itr.Next())
+      {
+        di << itr.Value() << " ";
+      }
+      di << "\n";
+    } else
+      di << "List is empty" << "\n";
+    return 0; 
   }
-  di << "\n";
-  return 0; 
+  di << "DDataStd_GetRealList: Error" << "\n";
+  return 1; 
 }
 
+//=======================================================================
+//function : DDataStd_GetExtStringList (DF, entry)
+//=======================================================================
+static Standard_Integer DDataStd_GetExtStringList (Draw_Interpretor& di,
+                                                 Standard_Integer nb, 
+                                                 const char** arg) 
+{
+  if (nb == 3) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    if ( !DDF::FindLabel(DF, arg[2], label) ) 
+    {
+      di << "No label for entry"  << "\n";
+      return 1;
+    }
+
+    Handle(TDataStd_ExtStringList) A;
+    if ( !label.FindAttribute(TDataStd_ExtStringList::GetID(), A) ) 
+    {
+      di << "There is no TDataStd_ExtStringList at label"  << "\n";
+      return 1;
+    }
+    
+    const TDataStd_ListOfExtendedString& aList = A->List();
+    Standard_Boolean isEmpty = (aList.Extent() > 0) ? Standard_False : Standard_True;
+    if(!isEmpty) {
+      TDataStd_ListIteratorOfListOfExtendedString itr(aList);	
+      for (; itr.More(); itr.Next())
+      {
+        const TCollection_ExtendedString& aStr = itr.Value();
+        di << aStr << " ";	
+      }
+      di << "\n";
+    }
+    else {
+      di << "List is empty" << "\n";
+    }
+    return 0; 
+  }
+  di << "DDataStd_GetExtStringList: Error" << "\n";
+  return 1; 
+} 
+
+//=======================================================================
+//function : DDataStd_GetReferenceList (DF, entry )
+//=======================================================================
+static Standard_Integer DDataStd_GetReferenceList (Draw_Interpretor& di,
+                                                   Standard_Integer nb, 
+                                                   const char** arg) 
+{
+  if (nb == 3) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    if ( !DDF::FindLabel(DF, arg[2], label) ) 
+    {
+      di << "No label for entry"  << "\n";
+      return 1;
+    }
+    
+    Handle(TDataStd_ReferenceList) A;
+    if ( !label.FindAttribute(TDataStd_ReferenceList::GetID(), A) ) 
+    {
+      di << "There is no TDataStd_ReferenceList at label"  << "\n";
+      return 1;
+    }
+    
+    const TDF_LabelList& aList = A->List();
+    Standard_Boolean isEmpty = (aList.Extent() > 0) ? Standard_False : Standard_True;
+    if(!isEmpty) {
+      TDF_ListIteratorOfLabelList itr(aList);
+      for (; itr.More(); itr.Next())
+      {
+        const TDF_Label& aLabel = itr.Value();
+        if (!aLabel.IsNull()) {
+          TCollection_AsciiString entry;
+          TDF_Tool::Entry(aLabel, entry);
+          di << entry.ToCString() << " ";
+        }
+      }
+      di << "\n";
+    } else 
+      di << "List is empty" << "\n";
+    return 0;
+  }
+  di << "DDataStd_GetReferenceList: Error" << "\n";
+  return 1; 
+} 
+//
 //=======================================================================
 //function : SetIntPackedMap (DF, entry, isDelta, key1, key2, ...
 //=======================================================================
@@ -3177,6 +3361,13 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
                    "SetRealList (DF, entry, elmt1, elmt2, ...  )",
                    __FILE__, DDataStd_SetRealList, g);
 
+   theCommands.Add ("SetExtStringList", 
+                   "SetExtStringList (DF, entry, elmt1, elmt2, ...  )",
+                   __FILE__, DDataStd_SetExtStringList, g);
+
+   theCommands.Add ("SetReferenceList", 
+                   "SetReferenceList (DF, entry, elmt1, elmt2, ...  )",
+                   __FILE__, DDataStd_SetReferenceList, g);
 
   // GET
 
@@ -3285,7 +3476,13 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
                    "GetRealList (DF, entry )",
                    __FILE__, DDataStd_GetRealList, g);
 
+  theCommands.Add ("GetExtStringList", 
+                   "GetExtStringList (DF, entry)",
+                   __FILE__, DDataStd_GetExtStringList, g);
 
+   theCommands.Add ("GetReferenceList", 
+                    "GetReferenceList (DF, entry)",
+                   __FILE__, DDataStd_GetReferenceList, g);
 
 // ========================= UTF =====================================
   const char* ggg = "UTF Commands";

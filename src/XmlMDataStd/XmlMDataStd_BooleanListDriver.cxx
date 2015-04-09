@@ -77,8 +77,9 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
     return Standard_False;
   }
 
-  Handle(TDataStd_BooleanList) aBooleanList = Handle(TDataStd_BooleanList)::DownCast(theTarget);
-  if (aFirstInd == aLastInd) 
+  const Handle(TDataStd_BooleanList) aBooleanList = Handle(TDataStd_BooleanList)::DownCast(theTarget);
+  if(aLastInd == 0) aFirstInd = 0;
+  if (aFirstInd == aLastInd && aLastInd > 0) 
   {
     Standard_Integer anInteger;
     if (!XmlObjMgt::GetStringValue(anElement).GetInteger(anInteger)) 
@@ -91,7 +92,7 @@ Standard_Boolean XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent
     }
     aBooleanList->Append(anInteger ? Standard_True : Standard_False);
   }
-  else 
+  else if(aLastInd >= 1)
   {
     Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
@@ -120,21 +121,22 @@ void XmlMDataStd_BooleanListDriver::Paste(const Handle(TDF_Attribute)& theSource
 					  XmlObjMgt_Persistent&        theTarget,
 					  XmlObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_BooleanList) aBooleanList = Handle(TDataStd_BooleanList)::DownCast(theSource);
+  const Handle(TDataStd_BooleanList) aBooleanList = Handle(TDataStd_BooleanList)::DownCast(theSource);
 
   Standard_Integer anU = aBooleanList->Extent();
   theTarget.Element().setAttribute(::LastIndexString(), anU);
-  if (anU >= 1)
+  // Allocation of 1 char for each boolean value + a space. 
+  NCollection_LocalArray<Standard_Character> str(2 * anU + 1);
+  if(anU == 0) str[0] = 0;
+  else if (anU >= 1)
   {
-    // Allocation of 1 char for each boolean value + a space.
-    Standard_Integer iChar = 0;
-    NCollection_LocalArray<Standard_Character> str(2 * anU + 1);
+    Standard_Integer iChar(0);
     TDataStd_ListIteratorOfListOfByte itr(aBooleanList->List());
     for (; itr.More(); itr.Next())
     {
       const Standard_Byte& byte = itr.Value();
       iChar += Sprintf(&(str[iChar]), "%d ", byte);
     }
-    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
   }
+  XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
 }

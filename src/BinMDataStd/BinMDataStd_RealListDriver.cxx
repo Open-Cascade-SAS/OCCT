@@ -48,6 +48,8 @@ Standard_Boolean BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&  
   Standard_Integer aIndex, aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
     return Standard_False;
+  if(aLastInd == 0) return Standard_True;
+
   const Standard_Integer aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return Standard_False;
@@ -55,7 +57,7 @@ Standard_Boolean BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&  
   TColStd_Array1OfReal aTargetArray(aFirstInd, aLastInd);
   theSource.GetRealArray (&aTargetArray(aFirstInd), aLength);
 
-  Handle(TDataStd_RealList) anAtt = Handle(TDataStd_RealList)::DownCast(theTarget);
+  const Handle(TDataStd_RealList) anAtt = Handle(TDataStd_RealList)::DownCast(theTarget);
   for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)
   {
     anAtt->Append(aTargetArray.Value(aIndex));
@@ -71,13 +73,14 @@ void BinMDataStd_RealListDriver::Paste(const Handle(TDF_Attribute)& theSource,
 				       BinObjMgt_Persistent&        theTarget,
 				       BinObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_RealList) anAtt = Handle(TDataStd_RealList)::DownCast(theSource);
-  const Standard_Integer aFirstInd = 1;
-  const Standard_Integer aLastInd  = anAtt->Extent();
+  const Handle(TDataStd_RealList) anAtt = Handle(TDataStd_RealList)::DownCast(theSource);
+  const Standard_Integer aFirstInd = (anAtt->Extent()> 0) ? 1 : 0;
+  const Standard_Integer aLastInd(anAtt->Extent());  
   const Standard_Integer aLength   = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return;
   theTarget << aFirstInd << aLastInd;
+  if(aLastInd == 0) return;
   TColStd_Array1OfReal aSourceArray(aFirstInd, aLastInd);
   if (aLastInd >= 1)
   {

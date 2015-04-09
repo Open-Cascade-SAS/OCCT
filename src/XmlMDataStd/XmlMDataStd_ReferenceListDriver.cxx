@@ -82,7 +82,8 @@ Standard_Boolean XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persiste
     return Standard_False;
   }
 
-  Handle(TDataStd_ReferenceList) aReferenceList = Handle(TDataStd_ReferenceList)::DownCast(theTarget);
+  if(aLastInd == 0) return Standard_True;
+  const Handle(TDataStd_ReferenceList) aReferenceList = Handle(TDataStd_ReferenceList)::DownCast(theTarget);
   
   if (!anElement.hasChildNodes())
   {
@@ -107,8 +108,8 @@ Standard_Boolean XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persiste
     if (XmlObjMgt::GetTagEntryString (aValueStr, anEntry) == Standard_False)
     {
       TCollection_ExtendedString aMessage =
-	TCollection_ExtendedString ("Cannot retrieve reference from \"")
-	  + aValueStr + '\"';
+      TCollection_ExtendedString ("Cannot retrieve reference from \"")
+      + aValueStr + '\"';
       WriteMessage (aMessage);
       return Standard_False;
     }
@@ -134,8 +135,8 @@ Standard_Boolean XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persiste
   if (XmlObjMgt::GetTagEntryString (aValueStr, anEntry) == Standard_False)
   {
     TCollection_ExtendedString aMessage =
-      TCollection_ExtendedString ("Cannot retrieve reference from \"")
-	+ aValueStr + '\"';
+    TCollection_ExtendedString ("Cannot retrieve reference from \"")
+    + aValueStr + '\"';
     WriteMessage (aMessage);
     return Standard_False;
   }
@@ -158,7 +159,7 @@ void XmlMDataStd_ReferenceListDriver::Paste(const Handle(TDF_Attribute)& theSour
 					    XmlObjMgt_Persistent&        theTarget,
 					    XmlObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_ReferenceList) aReferenceList = Handle(TDataStd_ReferenceList)::DownCast(theSource);
+  const Handle(TDataStd_ReferenceList) aReferenceList = Handle(TDataStd_ReferenceList)::DownCast(theSource);
   TDF_Label L = aReferenceList->Label();
   if (L.IsNull())
   {
@@ -169,7 +170,7 @@ void XmlMDataStd_ReferenceListDriver::Paste(const Handle(TDF_Attribute)& theSour
   Standard_Integer anU = aReferenceList->Extent();
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastIndexString(), anU);
-  
+  if(anU == 0) return;
   XmlObjMgt_Document aDoc = anElement.getOwnerDocument().Doc();
   
   TDF_ListIteratorOfLabelList itr(aReferenceList->List());

@@ -67,18 +67,22 @@ void MDataStd_ExtStringListStorageDriver::Paste(const Handle(TDF_Attribute)& Sou
 						const Handle(PDF_Attribute)& Target,
 						const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
-  Handle(TDataStd_ExtStringList) S = Handle(TDataStd_ExtStringList)::DownCast (Source);
-  Handle(PDataStd_ExtStringList) T = Handle(PDataStd_ExtStringList)::DownCast (Target);
-  
-  Standard_Integer lower = 1, upper = S->Extent(), i = lower;
-  if (upper >= lower)
+  const Handle(TDataStd_ExtStringList) S = Handle(TDataStd_ExtStringList)::DownCast (Source);
+  const Handle(PDataStd_ExtStringList) T = Handle(PDataStd_ExtStringList)::DownCast (Target);
+  if(S.IsNull()) return;
+  Standard_Integer lower(1), upper = S->Extent();
+  if(upper == 0) {
+    lower = 0;
+    T->Init(lower, upper);
+  }
+  else if (upper >= lower)
   {
     T->Init(lower, upper);
     TDataStd_ListIteratorOfListOfExtendedString itr(S->List());
-    for (; itr.More(); itr.Next(), i++) 
+    for (Standard_Integer i = lower; itr.More(); itr.Next(), i++) 
     {
       const TCollection_ExtendedString& tvalue = itr.Value();
-      Handle(PCollection_HExtendedString) pvalue = new PCollection_HExtendedString(tvalue);
+      const Handle(PCollection_HExtendedString)& pvalue = new PCollection_HExtendedString(tvalue);
       T->SetValue(i, pvalue);
     }
   }

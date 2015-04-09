@@ -48,14 +48,15 @@ Standard_Boolean BinMDataStd_BooleanListDriver::Paste(const BinObjMgt_Persistent
   Standard_Integer aIndex, aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
     return Standard_False;
+  if(aLastInd == 0) return Standard_True;
+
   const Standard_Integer aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return Standard_False;
-
   TColStd_Array1OfByte aTargetArray(aFirstInd, aLastInd);
   theSource.GetByteArray (&aTargetArray(aFirstInd), aLength);
 
-  Handle(TDataStd_BooleanList) anAtt = Handle(TDataStd_BooleanList)::DownCast(theTarget);
+  const Handle(TDataStd_BooleanList) anAtt = Handle(TDataStd_BooleanList)::DownCast(theTarget);
   for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)
   {
     anAtt->Append(aTargetArray.Value(aIndex) ? Standard_True : Standard_False);
@@ -71,22 +72,18 @@ void BinMDataStd_BooleanListDriver::Paste(const Handle(TDF_Attribute)& theSource
 					  BinObjMgt_Persistent&        theTarget,
 					  BinObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_BooleanList) anAtt = Handle(TDataStd_BooleanList)::DownCast(theSource);
-  const Standard_Integer aFirstInd = 1;
-  const Standard_Integer aLastInd  = anAtt->Extent();
+  const Handle(TDataStd_BooleanList) anAtt = Handle(TDataStd_BooleanList)::DownCast(theSource);
+  const Standard_Integer aFirstInd = (anAtt->Extent()> 0) ? 1 : 0;
+  const Standard_Integer aLastInd(anAtt->Extent());  
   const Standard_Integer aLength   = aLastInd - aFirstInd + 1;
-  if (aLength <= 0)
-    return;
+  if (aLength <= 0) return;
   theTarget << aFirstInd << aLastInd;
+  if(aLastInd == 0) return;
   TColStd_Array1OfByte aSourceArray(aFirstInd, aLastInd);
-  if (aLastInd >= 1)
-  {
-    TDataStd_ListIteratorOfListOfByte itr(anAtt->List());
-    for (Standard_Integer i = 1; itr.More(); itr.Next(), i++)
-    {
-      aSourceArray.SetValue(i, itr.Value());
-    }
-    Standard_Byte *aPtr = (Standard_Byte *) &aSourceArray(aFirstInd);
-    theTarget.PutByteArray(aPtr, aLength);
+  TDataStd_ListIteratorOfListOfByte itr(anAtt->List());
+  for (Standard_Integer i = 1; itr.More(); itr.Next(), i++) {
+    aSourceArray.SetValue(i, itr.Value());
   }
+  Standard_Byte *aPtr = (Standard_Byte *) &aSourceArray(aFirstInd);
+  theTarget.PutByteArray(aPtr, aLength);
 }

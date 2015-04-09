@@ -64,12 +64,13 @@ void MDataStd_RealListRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source
 					     const Handle(TDF_Attribute)& Target,
 					     const Handle(MDF_RRelocationTable)& ) const
 {
-  Handle(PDataStd_RealList) S = Handle(PDataStd_RealList)::DownCast (Source);
-  Handle(TDataStd_RealList) T = Handle(TDataStd_RealList)::DownCast (Target);
-
-  Standard_Integer i, lower = S->Lower(), upper = S->Upper();
-  for (i = lower; i <= upper; i++)
-  {
-    T->Append(S->Value(i));
+  const Handle(PDataStd_RealList) S = Handle(PDataStd_RealList)::DownCast (Source);
+  const Handle(TDataStd_RealList) T = Handle(TDataStd_RealList)::DownCast (Target);
+  if(!S.IsNull()) {
+    Standard_Integer i, lower = S->Lower(), upper = S->Upper();
+    if(upper > 0)
+      for (i = lower; i <= upper; i++) {
+        T->Append(S->Value(i));
+      }
   }
 }

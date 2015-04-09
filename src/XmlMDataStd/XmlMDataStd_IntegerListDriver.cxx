@@ -77,8 +77,9 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
     return Standard_False;
   }
 
-  Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theTarget);
-  if (aFirstInd == aLastInd) 
+  const Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theTarget);
+  if(aLastInd == 0) aFirstInd = 0;
+  if (aFirstInd == aLastInd && aLastInd > 0) 
   {
     Standard_Integer anInteger;
     if (!XmlObjMgt::GetStringValue(anElement).GetInteger(anInteger)) 
@@ -91,7 +92,7 @@ Standard_Boolean XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent
     }
     anIntList->Append(anInteger);
   }
-  else 
+  else if(aLastInd >= 1)
   {
     Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
@@ -120,24 +121,25 @@ void XmlMDataStd_IntegerListDriver::Paste(const Handle(TDF_Attribute)& theSource
 					  XmlObjMgt_Persistent&        theTarget,
 					  XmlObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theSource);
+  const Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theSource);
 
   Standard_Integer anU = anIntList->Extent();
   theTarget.Element().setAttribute(::LastIndexString(), anU);
-  if (anU >= 1)
+  NCollection_LocalArray<Standard_Character> str(12 * anU + 1);
+  if(anU == 0)
+    str[0] = 0;
+  else if (anU >= 1)
   {
     // Allocation of 12 chars for each integer including the space.
     // An example: -2 147 483 648
     Standard_Integer iChar = 0;
-    NCollection_LocalArray<Standard_Character> str(12 * anU + 1);
     TColStd_ListIteratorOfListOfInteger itr(anIntList->List());
     for (; itr.More(); itr.Next())
     {
       const Standard_Integer& intValue = itr.Value();
       iChar += Sprintf(&(str[iChar]), "%d ", intValue);
-    }
-
-    // No occurrence of '&', '<' and other irregular XML characters
-    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+    }  
   }
+  // No occurrence of '&', '<' and other irregular XML characters
+  XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
 }

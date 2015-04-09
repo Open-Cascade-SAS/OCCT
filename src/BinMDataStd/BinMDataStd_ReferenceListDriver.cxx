@@ -49,11 +49,13 @@ Standard_Boolean BinMDataStd_ReferenceListDriver::Paste(const BinObjMgt_Persiste
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
     return Standard_False;
+  if(aLastInd == 0) return Standard_True;
+
   const Standard_Integer aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return Standard_False;
 
-  Handle(TDataStd_ReferenceList) anAtt = Handle(TDataStd_ReferenceList)::DownCast(theTarget);
+  const Handle(TDataStd_ReferenceList) anAtt = Handle(TDataStd_ReferenceList)::DownCast(theTarget);
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i++)
   {
     TCollection_AsciiString entry;
@@ -76,13 +78,15 @@ void BinMDataStd_ReferenceListDriver::Paste(const Handle(TDF_Attribute)& theSour
 					    BinObjMgt_Persistent&        theTarget,
 					    BinObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_ReferenceList) anAtt = Handle(TDataStd_ReferenceList)::DownCast(theSource);
-  if (anAtt->IsEmpty())
+  const Handle(TDataStd_ReferenceList) anAtt = Handle(TDataStd_ReferenceList)::DownCast(theSource);
+  if (anAtt.IsNull())
     return;
-  Standard_Integer aFirstInd = 1, aLastInd = anAtt->Extent(), i = aFirstInd;
+  const Standard_Integer aFirstInd = (anAtt->Extent()> 0) ? 1 : 0;
+  const Standard_Integer aLastInd(anAtt->Extent());  
   theTarget << aFirstInd << aLastInd;
+  if(aLastInd == 0) return;
   TDF_ListIteratorOfLabelList itr(anAtt->List());
-  for (; itr.More(); itr.Next(), i++)
+  for (Standard_Integer i = aFirstInd; itr.More(); itr.Next(), i++)
   {
     TDF_Label L = itr.Value();
     if (!L.IsNull())

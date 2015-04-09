@@ -66,14 +66,15 @@ void MDataStd_ExtStringListRetrievalDriver::Paste(const Handle(PDF_Attribute)& S
 					     const Handle(TDF_Attribute)& Target,
 					     const Handle(MDF_RRelocationTable)& ) const
 {
-  Handle(PDataStd_ExtStringList) S = Handle(PDataStd_ExtStringList)::DownCast (Source);
-  Handle(TDataStd_ExtStringList) T = Handle(TDataStd_ExtStringList)::DownCast (Target);
-
+  const Handle(PDataStd_ExtStringList) S = Handle(PDataStd_ExtStringList)::DownCast (Source);
+  const Handle(TDataStd_ExtStringList) T = Handle(TDataStd_ExtStringList)::DownCast (Target);
+  if(S.IsNull()) return;
   Standard_Integer i, lower = S->Lower(), upper = S->Upper();
-  for (i = lower; i <= upper; i++)
-  {
-    const Handle(PCollection_HExtendedString)& pvalue = S->Value(i);
-    TCollection_ExtendedString tvalue = pvalue->Convert();
-    T->Append(tvalue);
-  }
+  if(upper > 0)
+    for (i = lower; i <= upper; i++)
+    {
+      const Handle(PCollection_HExtendedString)& pvalue = S->Value(i);
+      TCollection_ExtendedString tvalue = pvalue->Convert();
+      T->Append(tvalue);
+    }
 }

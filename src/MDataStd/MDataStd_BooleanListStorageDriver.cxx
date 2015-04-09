@@ -66,16 +66,19 @@ void MDataStd_BooleanListStorageDriver::Paste(const Handle(TDF_Attribute)&  Sour
 					      const Handle(PDF_Attribute)&        Target,
 					      const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
-  Handle(TDataStd_BooleanList) S = Handle(TDataStd_BooleanList)::DownCast (Source);
-  Handle(PDataStd_BooleanList) T = Handle(PDataStd_BooleanList)::DownCast (Target);
+  const Handle(TDataStd_BooleanList) S = Handle(TDataStd_BooleanList)::DownCast (Source);
+  const Handle(PDataStd_BooleanList) T = Handle(PDataStd_BooleanList)::DownCast (Target);
   
-  Standard_Integer lower = 1, upper = S->Extent(), i = lower;
-  if (upper >= lower)
+  Standard_Integer lower(1), upper = S->Extent();
+  if(upper == 0) {
+    lower = 0;
+    T->Init(lower, upper);
+  }
+  else if (upper >= lower)
   {
     T->Init(lower, upper);
     TDataStd_ListIteratorOfListOfByte itr(S->List());
-    for (; itr.More(); itr.Next(), i++) 
-    {
+    for (Standard_Integer i = lower; itr.More(); itr.Next(), i++) {
       T->SetValue(i, itr.Value());
     }
   }

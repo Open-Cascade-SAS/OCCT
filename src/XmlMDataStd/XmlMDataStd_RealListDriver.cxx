@@ -78,13 +78,13 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
     return Standard_False;
   }
 
-  Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theTarget);
-
+  const Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theTarget);
   // Check the type of LDOMString
   const XmlObjMgt_DOMString& aString = XmlObjMgt::GetStringValue(anElement);
+  if(aLastInd == 0) aFirstInd = 0;
   if (aString.Type() == LDOMBasicString::LDOM_Integer) 
   {
-    if (aFirstInd == aLastInd) 
+    if (aFirstInd == aLastInd  && aLastInd > 0) 
     {
       Standard_Integer anIntValue;
       if (aString.GetInteger(anIntValue))
@@ -100,7 +100,7 @@ Standard_Boolean XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  
       return Standard_False;
     }
   } 
-  else 
+  else if(aLastInd >= 1)
   {
     Standard_CString aValueStr = Standard_CString(aString.GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
@@ -128,22 +128,23 @@ void XmlMDataStd_RealListDriver::Paste(const Handle(TDF_Attribute)& theSource,
 				       XmlObjMgt_Persistent&        theTarget,
 				       XmlObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theSource);
+  const Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theSource);
 
   Standard_Integer anU = aRealList->Extent();
   theTarget.Element().setAttribute(::LastIndexString(), anU);
-  if (anU >= 1)
-  {
-    // Allocation of 25 chars for each double value including the space:
-    // An example: -3.1512678732195273e+020
+  // Allocation of 25 chars for each double value including the space:
+  // An example: -3.1512678732195273e+020
+  NCollection_LocalArray<Standard_Character> str(25 * anU + 1);
+  if(anU == 0) str[0] = 0;
+  else if (anU >= 1)
+  {   
     Standard_Integer iChar = 0;
-    NCollection_LocalArray<Standard_Character> str(25 * anU + 1);
     TColStd_ListIteratorOfListOfReal itr(aRealList->List());
     for (; itr.More(); itr.Next())
     {
       const Standard_Real& realValue = itr.Value();
       iChar += Sprintf(&(str[iChar]), "%.17g ", realValue);
     }
-    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
   }
+  XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
 }

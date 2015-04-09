@@ -66,16 +66,19 @@ void MDataStd_IntegerListStorageDriver::Paste(const Handle(TDF_Attribute)&  Sour
 					      const Handle(PDF_Attribute)&        Target,
 					      const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
-  Handle(TDataStd_IntegerList) S = Handle(TDataStd_IntegerList)::DownCast (Source);
-  Handle(PDataStd_IntegerList) T = Handle(PDataStd_IntegerList)::DownCast (Target);
+  const Handle(TDataStd_IntegerList) S = Handle(TDataStd_IntegerList)::DownCast (Source);
+  const Handle(PDataStd_IntegerList) T = Handle(PDataStd_IntegerList)::DownCast (Target);
   
-  Standard_Integer lower = 1, upper = S->Extent(), i = lower;
-  if (upper >= lower)
+  Standard_Integer lower(1), upper = S->Extent(), i = lower;
+  if(upper == 0) {
+    lower = 0;
+    T->Init(lower, upper);
+  }
+  else if (upper >= lower)
   {
     T->Init(lower, upper);
     TColStd_ListIteratorOfListOfInteger itr(S->List());
-    for (; itr.More(); itr.Next(), i++) 
-    {
+    for (; itr.More(); itr.Next(), i++) {
       T->SetValue(i, itr.Value());
     }
   }

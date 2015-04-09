@@ -41,18 +41,20 @@ Handle(TDF_Attribute) BinMDataStd_ExtStringListDriver::NewEmpty() const
 //function : Paste
 //purpose  : persistent -> transient (retrieve)
 //=======================================================================
-Standard_Boolean BinMDataStd_ExtStringListDriver::Paste(const BinObjMgt_Persistent&  theSource,
-							const Handle(TDF_Attribute)& theTarget,
-							BinObjMgt_RRelocationTable&  ) const
+Standard_Boolean BinMDataStd_ExtStringListDriver::Paste
+                                (const BinObjMgt_Persistent&  theSource,
+                                 const Handle(TDF_Attribute)& theTarget,
+                                 BinObjMgt_RRelocationTable&  ) const
 {
   Standard_Integer aFirstInd, aLastInd;
   if (! (theSource >> aFirstInd >> aLastInd))
     return Standard_False;
+  if(aLastInd == 0) return Standard_True;
   const Standard_Integer aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return Standard_False;
-
-  Handle(TDataStd_ExtStringList) anAtt = Handle(TDataStd_ExtStringList)::DownCast(theTarget);
+  const Handle(TDataStd_ExtStringList) anAtt =
+    Handle(TDataStd_ExtStringList)::DownCast(theTarget);
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
   {
     TCollection_ExtendedString aStr;
@@ -70,13 +72,15 @@ Standard_Boolean BinMDataStd_ExtStringListDriver::Paste(const BinObjMgt_Persiste
 //function : Paste
 //purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_ExtStringListDriver::Paste(const Handle(TDF_Attribute)& theSource,
-					    BinObjMgt_Persistent&        theTarget,
-					    BinObjMgt_SRelocationTable&  ) const
+void BinMDataStd_ExtStringListDriver::Paste
+                                (const Handle(TDF_Attribute)& theSource,
+                                 BinObjMgt_Persistent&        theTarget,
+                                 BinObjMgt_SRelocationTable&  ) const
 {
-  Handle(TDataStd_ExtStringList) anAtt = Handle(TDataStd_ExtStringList)::DownCast(theSource);
-  const Standard_Integer aFirstInd = 1;
-  const Standard_Integer aLastInd  = anAtt->Extent();
+  const Handle(TDataStd_ExtStringList) anAtt =
+    Handle(TDataStd_ExtStringList)::DownCast(theSource);
+  const Standard_Integer aFirstInd = (anAtt->Extent()> 0) ? 1 : 0;
+  const Standard_Integer aLastInd(anAtt->Extent());
   theTarget << aFirstInd << aLastInd;
   TDataStd_ListIteratorOfListOfExtendedString itr(anAtt->List());
   for (; itr.More(); itr.Next())

@@ -1,0 +1,127 @@
+# =================== OCAF ======================
+# Standard attributes of List containers (bin format)
+#
+# Testing purpose: test of set /get & save / restore 
+#                  of TDataStd_BooleanList,  TDataStd_IntegerList 
+#                  TDataStd_RealList, TDataStd_ExtStringList,
+#                  TDataStd_ReferenceList  attributes
+#                  
+# ===============================================
+# Test case: t2 (testing Set /Get attribute with empty list)
+# 1. create BooleanList attribute with empty list
+# 2. create IntegerList attribute with empty list
+# 3. create RealList attribute with empty list
+# 4. create ExtStringList attribute with empty list
+# 5. create ReferenceList attribute with empty list
+# 6. save the Document in external cbf file 
+# 7. reopen the Document
+# 8. check the restored attributes at the specified labels
+# ===============================================
+
+NewDocument D BinOcaf
+# 1.  create BooleanList attribute with empty list
+set Lab1 [Label D 0:1:1]
+SetBooleanList D $Lab1
+set info1 [GetBooleanList D $Lab1]
+# output => "List is empty"
+
+# 2. create IntegerList attribute with empty list
+set Lab2 [Label D 0:1:2]
+SetIntegerList D $Lab2
+set info2 [GetIntegerList D $Lab2]
+# output => "List is empty"
+
+# 3. create RealList attribute with empty list
+set Lab3 [Label D 0:1:3]
+SetRealList D $Lab3
+set info3 [GetRealList D $Lab3]
+# output => "List is empty"
+
+# 4. create ExtStringList attribute with empty list
+set Lab4 [Label D 0:1:4]
+SetExtStringList D $Lab4
+set info4 [GetExtStringList D $Lab4]
+# output => "List is empty"
+
+# 5. create ReferenceList attribute with empty list
+set Lab5 [Label D 0:1:5]
+SetReferenceList D $Lab5
+set info5 [GetReferenceList D $Lab5]
+# output => "List is empty"
+
+# 6. save the Document in external file
+SaveAs D ${imagedir}/bug26014_test2.cbf
+Close D
+
+# 7. reopen the Document
+Open ${imagedir}/bug26014_test2.cbf D
+
+# 8. Check the restored attributes at the specified labels
+set info8 [GetBooleanList D $Lab1]
+# output => "List is empty"
+
+set info9 [GetIntegerList D $Lab2]
+# output => "List is empty"
+
+set info10 [GetRealList D $Lab3]
+# output => "List is empty"
+
+set info11 [GetExtStringList D $Lab4]
+# output => "List is empty"
+
+set info12 [GetReferenceList D $Lab5]
+# output => "List is empty"
+
+Close D
+
+if { [regexp {List is empty} ${info1}] } {
+   puts "OK: created BooleanList attribute is good"
+} else {
+   puts "Error: created BooleanList attribute is bad"
+}
+if { [regexp {List is empty} ${info2}] } {
+   puts "OK: created IntegerList attribute is good"
+} else {
+   puts "Error: created IntegerList attribute is bad"
+}
+if { [regexp {List is empty} ${info3}] } {
+   puts "OK: created RealList attribute is good"
+} else {
+   puts "Error: created RealList attribute is bad"
+}
+if { [regexp {List is empty} ${info4}] } {
+   puts "OK: created ExtStringList attribute is good"
+} else {
+   puts "Error: created ExtStringList attribute is bad"
+}
+if { [regexp {List is empty} ${info5}] } {
+   puts "OK: created ReferenceList attribute is good"
+} else {
+   puts "Error: created ReferenceList attribute is bad"
+}
+
+if { [regexp {List is empty} ${info8}] } {
+   puts "OK: restored BooleanList attribute is good"
+} else {
+   puts "Error: restored BooleanList attribute is bad"
+}
+if { [regexp {List is empty} ${info9}] } {
+   puts "OK: restored IntegerList attribute is good"
+} else {
+   puts "Error: restored IntegerList attribute is bad"
+}
+if { [regexp {List is empty} ${info10}] } {
+   puts "OK: restored RealList attribute is good"
+} else {
+   puts "Error: restored RealList attribute is bad"
+}
+if { [regexp {List is empty} ${info11}] } {
+   puts "OK: restored ExtStringList attribute is good"
+} else {
+   puts "Error: restored ExtStringList attribute is bad"
+}
+if { [regexp {List is empty} ${info12}] } {
+   puts "OK: restored ReferenceList attribute is good"
+} else {
+   puts "Error: restored ReferenceList attribute is bad"
+}
