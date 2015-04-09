@@ -318,11 +318,10 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       {
         BRepTools::Clean (myshape);
       }
+      // After this call if type of deflection is relative
+      // computed deflection coefficient is stored as absolute.
       StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
     }
-    // After this call if type of deflection is relative
-    // computed deflection coefficient is stored as absolute.
-    StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
   }
   else // WireFrame mode
   {
