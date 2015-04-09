@@ -435,8 +435,17 @@ void  BRepSweep_Rotation::SetGeneratingPCurve
   if (AS.GetType()==GeomAbs_Plane){
     gp_Pln pln = AS.Plane();
     gp_Ax3 ax3 = pln.Position();
-    Handle(Geom_Line) GL = Handle(Geom_Line)::DownCast
-      (BRep_Tool::Curve(TopoDS::Edge(aNewEdge),Loc,First,Last));
+    Handle(Geom_Curve) aC = BRep_Tool::Curve(TopoDS::Edge(aNewEdge),Loc,First,Last);
+    Handle(Geom_Line) GL = Handle(Geom_Line)::DownCast(aC);
+    if (GL.IsNull()) {
+      Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast(aC);
+      if (!aTrimmedCurve.IsNull()) {
+        GL = Handle(Geom_Line)::DownCast(aTrimmedCurve->BasisCurve());
+        if (GL.IsNull()) {
+            Standard_ConstructionError::Raise("BRepSweep_Rotation::SetGeneratingPCurve");
+        }
+      }
+    }
     gp_Lin gl = GL->Lin();
     gl.Transform(Loc.Transformation());
     point = gl.Location();
