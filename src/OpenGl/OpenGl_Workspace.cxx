@@ -146,15 +146,8 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   NamedStatus (0),
   HighlightColor (&THE_WHITE_COLOR),
   //
-  myComputeInitStatus (OpenGl_RT_NONE),
-  myIsRaytraceDataValid (Standard_False),
-  myIsRaytraceWarnTextures (Standard_False),
   myHasFboBlit (Standard_True),
-  myViewModificationStatus (0),
-  myLayersModificationStatus (0),
   //
-  myRaytraceFilter       (new OpenGl_RaytraceFilter()),
-  myToRedrawGL           (Standard_True),
   myViewId               (-1),
   myAntiAliasingMode     (3),
   myTransientDrawToFront (Standard_True),
@@ -252,8 +245,6 @@ OpenGl_Workspace::~OpenGl_Workspace()
   {
     myFullScreenQuad.Release (myGlContext.operator->());
   }
-
-  ReleaseRaytraceResources();
 }
 
 // =======================================================================
@@ -727,77 +718,25 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   else
   {
     myResultFBO->Release (myGlContext.operator->());
+    myResultFBO->ChangeViewport (0, 0);
   }
 
-  myToRedrawGL = Standard_True;
-  if (theCView.RenderParams.Method == Graphic3d_RM_RAYTRACING
-   && myComputeInitStatus != OpenGl_RT_FAIL)
+  // draw entire frame using normal OpenGL pipeline
+  if (myResultFBO->IsValid())
   {
-    if (InitRaytraceResources (theCView) && UpdateRaytraceGeometry (OpenGl_GUM_CHECK) && myIsRaytraceDataValid)
-    {
-      myToRedrawGL = Standard_False;
-
-      // Only non-raytracable structures should be rendered in OpenGL mode.
-      Handle(OpenGl_RenderFilter) aRenderFilter = GetRenderFilter();
-      myRaytraceFilter->SetPrevRenderFilter (aRenderFilter);
-      SetRenderFilter (myRaytraceFilter);
-
-      if (myOpenGlFBO.IsNull())
-      {
-        myOpenGlFBO = new OpenGl_FrameBuffer();
-      }
-      if (myOpenGlFBO->GetVPSizeX() != aSizeX
-       || myOpenGlFBO->GetVPSizeY() != aSizeY)
-      {
-        myOpenGlFBO->Init (myGlContext, aSizeX, aSizeY);
-      }
-
-      // OverLayer and UnderLayer shouldn't be drawn by OpenGL.
-      // They will be drawn during ray-tracing.
-      Aspect_CLayer2d anEmptyCLayer;
-      anEmptyCLayer.ptrLayer = NULL;
-
-      myOpenGlFBO->BindBuffer (myGlContext);
-      redraw1 (theCView, anEmptyCLayer, anEmptyCLayer);
-      myOpenGlFBO->UnbindBuffer (myGlContext);
-
-      Raytrace (theCView, aSizeX, aSizeY,
-                theCOverLayer, theCUnderLayer,
-                myResultFBO->IsValid() ? myResultFBO.operator->() : aFrameBuffer);
-      myBackBufferRestored = Standard_True;
-      myIsImmediateDrawn   = Standard_False;
-      if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aFrameBuffer))
-      {
-        toSwap = false;
-      }
-
-      SetRenderFilter (aRenderFilter);
-
-      theCView.WasRedrawnGL = Standard_False;
-    }
+    myResultFBO->BindBuffer (myGlContext);
+  }
+  else if (aFrameBuffer != NULL)
+  {
+    aFrameBuffer->BindBuffer (myGlContext);
   }
 
-  if (myToRedrawGL)
+  redraw1 (theCView, theCUnderLayer, theCOverLayer);
+  myBackBufferRestored = Standard_True;
+  myIsImmediateDrawn   = Standard_False;
+  if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aFrameBuffer))
   {
-    // draw entire frame using normal OpenGL pipeline
-    if (myResultFBO->IsValid())
-    {
-      myResultFBO->BindBuffer (myGlContext);
-    }
-    else if (aFrameBuffer != NULL)
-    {
-      aFrameBuffer->BindBuffer (myGlContext);
-    }
-
-    redraw1 (theCView, theCUnderLayer, theCOverLayer);
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aFrameBuffer))
-    {
-      toSwap = false;
-    }
-
-    theCView.WasRedrawnGL = Standard_True;
+    toSwap = false;
   }
 
   if (aFrameBuffer != NULL)
@@ -885,25 +824,17 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
     glDisable (GL_DEPTH_TEST);
   }
 
-  if (!ToRedrawGL())
+  if (NamedStatus & OPENGL_NS_WHITEBACK)
   {
-    // set background to black
-    glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
-    toClear |= GL_DEPTH_BUFFER_BIT; //
+    // set background to white
+    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
+    toClear |= GL_DEPTH_BUFFER_BIT;
   }
   else
   {
-    if (NamedStatus & OPENGL_NS_WHITEBACK)
-    {
-        // set background to white
-      glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
-      toClear |= GL_DEPTH_BUFFER_BIT;
-    }
-    else
-    {
-      glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
-    }
+    glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
   }
+
   glClear (toClear);
 
   Handle(OpenGl_Workspace) aWS (this);
@@ -1210,4 +1141,22 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
     return false;
   }
   return true;
+}
+
+IMPLEMENT_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
+
+// =======================================================================
+// function : CanRender
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_RaytraceFilter::CanRender (const OpenGl_Element* theElement)
+{
+  Standard_Boolean aPrevFilterResult = Standard_True;
+  if (!myPrevRenderFilter.IsNull())
+  {
+    aPrevFilterResult = myPrevRenderFilter->CanRender (theElement);
+  }
+  return aPrevFilterResult &&
+    !OpenGl_Raytrace::IsRaytracedElement (theElement);
 }

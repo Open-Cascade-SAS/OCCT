@@ -38,6 +38,7 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_ArbFBO.hxx>
 
 #define EPSI 0.0001
 
@@ -241,7 +242,7 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   aCtx->ProjectionState.Pop();
   aCtx->ApplyProjectionMatrix();
 
-  if (theWorkspace->UseZBuffer() && theWorkspace->ToRedrawGL())
+  if (theWorkspace->UseZBuffer())
   {
     aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
   }
@@ -340,8 +341,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // ====================================
 
   // Render background
-  if (theWorkspace->ToRedrawGL()
-  && !theToDrawImmediate)
+  if (!theToDrawImmediate)
   {
     DrawBackground (theWorkspace);
   }
@@ -456,7 +456,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   {
     // single-pass monographic rendering
     // redraw scene with normal orientation and projection
-    RedrawScene (thePrintContext, theWorkspace, theToDrawImmediate);
+    RedrawScene (thePrintContext, theWorkspace, theCView, theToDrawImmediate);
   }
   else
   {
@@ -469,7 +469,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     aContext->ApplyProjectionMatrix();
 
     // redraw left Eye
-    RedrawScene (thePrintContext, theWorkspace, theToDrawImmediate);
+    RedrawScene (thePrintContext, theWorkspace, theCView, theToDrawImmediate);
 
     // reset depth buffer of first rendering pass
     if (theWorkspace->UseDepthTest())
@@ -483,7 +483,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     aContext->ApplyProjectionMatrix();
 
     // redraw right Eye
-    RedrawScene (thePrintContext, theWorkspace, theToDrawImmediate);
+    RedrawScene (thePrintContext, theWorkspace, theCView, theToDrawImmediate);
 
     // switch back to monographic rendering
     aContext->SetDrawBufferMono();
@@ -513,8 +513,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   // Render trihedron
-  if (theWorkspace->ToRedrawGL()
-  && !theToDrawImmediate)
+  if (!theToDrawImmediate)
   {
     RedrawTrihedron (theWorkspace);
 
@@ -587,6 +586,7 @@ void OpenGl_View::InvalidateBVHData (const Graphic3d_ZLayerId theLayerId)
 
 //ExecuteViewDisplay
 void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
+                                 const Graphic3d_CView&          theCView,
                                  const Standard_Boolean          theToDrawImmediate)
 {
   if ( myZLayers.NbStructures() <= 0 )
@@ -628,7 +628,109 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
     }
   }
 
-  myZLayers.Render (theWorkspace, theToDrawImmediate);
+  Standard_Boolean toRenderGL = theToDrawImmediate ||
+    theCView.RenderParams.Method != Graphic3d_RM_RAYTRACING || myRaytraceInitStatus == OpenGl_RT_FAIL;
+
+  if (!toRenderGL)
+  {
+    toRenderGL = !initRaytraceResources (theCView, aCtx) ||
+      !updateRaytraceGeometry (OpenGl_GUM_CHECK, theWorkspace->ActiveViewId(), aCtx);
+
+    OpenGl_FrameBuffer* anOutputFBO = NULL;
+
+    if (theWorkspace->ResultFBO()->IsValid())
+    {
+      anOutputFBO = theWorkspace->ResultFBO().operator->();
+    }
+    else if (theCView.ptrFBO != NULL)
+    {
+      anOutputFBO = (OpenGl_FrameBuffer* )theCView.ptrFBO;
+    }
+    else
+    {
+      //toRenderGL = Standard_True; // failed to get valid FBO
+    }
+
+    if (!toRenderGL && myIsRaytraceDataValid)
+    {
+      const Standard_Integer aSizeX = anOutputFBO != NULL ?
+        anOutputFBO->GetVPSizeX() : theWorkspace->Width();
+      const Standard_Integer aSizeY = anOutputFBO != NULL ?
+        anOutputFBO->GetVPSizeY() : theWorkspace->Height();
+
+      if (myOpenGlFBO.IsNull())
+        myOpenGlFBO = new OpenGl_FrameBuffer;
+
+      if (myOpenGlFBO->GetVPSizeX() != aSizeX
+       || myOpenGlFBO->GetVPSizeY() != aSizeY)
+      {
+        myOpenGlFBO->Init (aCtx, aSizeX, aSizeY);
+      }
+
+      if (myRaytraceFilter.IsNull())
+        myRaytraceFilter = new OpenGl_RaytraceFilter;
+
+      myRaytraceFilter->SetPrevRenderFilter (theWorkspace->GetRenderFilter());
+
+      if (anOutputFBO != NULL)
+        anOutputFBO->UnbindBuffer (aCtx);
+
+      // Prepare preliminary OpenGL output
+      if (aCtx->arbFBOBlit != NULL)
+      {
+        // Render bottom OSD layer
+        myZLayers.Render (theWorkspace, theToDrawImmediate, OpenGl_LF_Bottom);
+
+        theWorkspace->SetRenderFilter (myRaytraceFilter);
+        {
+          if (anOutputFBO != NULL)
+          {
+            anOutputFBO->BindReadBuffer (aCtx);
+          }
+          else
+          {
+            aCtx->arbFBO->glBindFramebuffer (GL_READ_FRAMEBUFFER, 0);
+          }
+
+          myOpenGlFBO->BindDrawBuffer (aCtx);
+
+          aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, aSizeX, aSizeY,
+                                               0, 0, aSizeX, aSizeY,
+                                               GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+                                               GL_NEAREST);
+
+          // Render non-polygonal elements in default layer
+          myZLayers.Render (theWorkspace, theToDrawImmediate, OpenGl_LF_Default);
+        }
+        theWorkspace->SetRenderFilter (myRaytraceFilter->PrevRenderFilter());
+      }
+
+      if (anOutputFBO != NULL)
+      {
+        anOutputFBO->BindBuffer (aCtx);
+      }
+      else
+      {
+        aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, 0);
+      }
+
+      // Ray-tracing polygonal primitive arrays
+      raytrace (theCView, aSizeX, aSizeY, anOutputFBO, aCtx);
+
+      // Render upper (top and topmost) OpenGL layers
+      myZLayers.Render (theWorkspace, theToDrawImmediate, OpenGl_LF_Upper);
+    }
+  }
+
+  // Redraw 3D scene using OpenGL in standard
+  // mode or in case of ray-tracing failure
+  if (toRenderGL)
+  {
+    myZLayers.Render (theWorkspace, theToDrawImmediate, OpenGl_LF_All);
+
+    // Set flag that scene was redrawn by standard pipeline
+    theCView.WasRedrawnGL = Standard_True;
+  }
 }
 
 /*----------------------------------------------------------------------*/
@@ -971,6 +1073,7 @@ void OpenGl_View::ChangePriority (const OpenGl_Structure *theStructure,
 
 void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintContext,
                                const Handle(OpenGl_Workspace)&      theWorkspace,
+                               const Graphic3d_CView&               theCView,
                                const Standard_Boolean               theToDrawImmediate)
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
@@ -1103,14 +1206,14 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
       theWorkspace->DisableTexture();
       // Render the view
-      RenderStructs (theWorkspace, theToDrawImmediate);
+      RenderStructs (theWorkspace, theCView, theToDrawImmediate);
       break;
 
     case Visual3d_TOD_ENVIRONMENT:
       theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
       theWorkspace->EnableTexture (myTextureEnv);
       // Render the view
-      RenderStructs (theWorkspace, theToDrawImmediate);
+      RenderStructs (theWorkspace, theCView, theToDrawImmediate);
       theWorkspace->DisableTexture();
       break;
 
@@ -1118,7 +1221,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       // First pass
       theWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
       // Render the view
-      RenderStructs (theWorkspace, theToDrawImmediate);
+      RenderStructs (theWorkspace, theCView, theToDrawImmediate);
       theWorkspace->DisableTexture();
 
       // Second pass
@@ -1151,7 +1254,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
         theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
 
         // Render the view
-        RenderStructs (theWorkspace, theToDrawImmediate);
+        RenderStructs (theWorkspace, theCView, theToDrawImmediate);
         theWorkspace->DisableTexture();
 
         // Restore properties back

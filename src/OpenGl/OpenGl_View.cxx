@@ -73,10 +73,15 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myModelViewState (0),
   myStateCounter (theCounter),
   myLastLightSourceState (0, 0),
-  myModificationState (1), // initial state
   myTextureParams   (new OpenGl_AspectFace()),
   myBgGradientArray (new OpenGl_BackgroundArray (Graphic3d_TOB_GRADIENT)),
-  myBgTextureArray  (new OpenGl_BackgroundArray (Graphic3d_TOB_TEXTURE))
+  myBgTextureArray  (new OpenGl_BackgroundArray (Graphic3d_TOB_TEXTURE)),
+  // ray-tracing fields initialization
+  myRaytraceInitStatus (OpenGl_RT_NONE),
+  myIsRaytraceDataValid (Standard_False),
+  myIsRaytraceWarnTextures (Standard_False),
+  myToUpdateEnvironmentMap (Standard_False),
+  myLayersModificationStatus (0)
 {
   myCurrLightSourceState = myStateCounter->Increment();
 }
@@ -114,6 +119,8 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
   {
     myBgTextureArray->Release (theCtx.operator->());
   }
+
+  releaseRaytraceResources (theCtx);
 }
 
 void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
@@ -135,14 +142,14 @@ void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
   if (!anImage.IsNull())
     myTextureEnv->Init (theCtx, *anImage.operator->(), theTexture->Type());
 
-  myModificationState++;
+  myToUpdateEnvironmentMap = Standard_True;
 }
 
 void OpenGl_View::SetSurfaceDetail (const Visual3d_TypeOfSurfaceDetail theMode)
 {
   mySurfaceDetail = theMode;
 
-  myModificationState++;
+  myToUpdateEnvironmentMap = Standard_True;
 }
 
 // =======================================================================

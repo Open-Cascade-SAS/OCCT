@@ -302,6 +302,33 @@ public:
                              v[3] > theVec.v[3] ? v[3] : theVec.v[3]);
   }
 
+  //! Compute component-wise modulus of the vector.
+  NCollection_Vec4 cwiseAbs() const
+  {
+    return NCollection_Vec4 (std::abs (v[0]),
+                             std::abs (v[1]),
+                             std::abs (v[2]),
+                             std::abs (v[3]));
+  }
+
+  //! Compute maximum component of the vector.
+  Element_t maxComp() const
+  {
+    const Element_t aMax1 = v[0] > v[1] ? v[0] : v[1];
+    const Element_t aMax2 = v[2] > v[3] ? v[2] : v[3];
+
+    return aMax1 > aMax2 ? aMax1 : aMax2;
+  }
+
+  //! Compute minimum component of the vector.
+  Element_t minComp() const
+  {
+    const Element_t aMin1 = v[0] < v[1] ? v[0] : v[1];
+    const Element_t aMin2 = v[2] < v[3] ? v[2] : v[3];
+
+    return aMin1 < aMin2 ? aMin1 : aMin2;
+  }
+
   //! Compute per-component division by scale factor.
   NCollection_Vec4& operator/= (const Element_t theInvFactor)
   {

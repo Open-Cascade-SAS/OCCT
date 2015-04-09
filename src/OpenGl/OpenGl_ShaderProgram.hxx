@@ -132,7 +132,7 @@ const int MaxStateTypes = 6;
 //! Wrapper for OpenGL program object.
 class OpenGl_ShaderProgram : public OpenGl_Resource
 {
-  friend class OpenGl_Workspace;
+  friend class OpenGl_View;
 
 public:
 

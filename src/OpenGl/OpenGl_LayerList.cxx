@@ -357,7 +357,8 @@ void OpenGl_LayerList::SetLayerSettings (const Graphic3d_ZLayerId        theLaye
 //purpose  :
 //=======================================================================
 void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
-                               const Standard_Boolean          theToDrawImmediate) const
+                               const Standard_Boolean          theToDrawImmediate,
+                               const OpenGl_LayerFilter        theLayersToProcess) const
 {
   OpenGl_GlobalLayerSettings aDefaultSettings;
 
@@ -365,9 +366,22 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   aCtx->core11fwd->glGetIntegerv (GL_DEPTH_FUNC,      &aDefaultSettings.DepthFunc);
   aCtx->core11fwd->glGetBooleanv (GL_DEPTH_WRITEMASK, &aDefaultSettings.DepthMask);
 
-  Standard_Integer aSeqId = myLayers.Lower();
+  Standard_Integer aSeqId = myLayers.Lower(), aMainId = myLayerIds.Find (Graphic3d_ZLayerId_Default);
   for (OpenGl_SequenceOfLayers::Iterator anIts (myLayers); anIts.More(); anIts.Next(), ++aSeqId)
   {
+    if (theLayersToProcess == OpenGl_LF_Bottom)
+    {
+      if (aSeqId >= aMainId) continue;
+    }
+    else if (theLayersToProcess == OpenGl_LF_Upper)
+    {
+      if (aSeqId <= aMainId) continue;
+    }
+    else if (theLayersToProcess == OpenGl_LF_Default)
+    {
+      if (aSeqId != aMainId) continue;
+    }
+
     const OpenGl_Layer& aLayer = anIts.Value();
     if (aLayer.NbStructures() < 1)
     {

@@ -175,6 +175,25 @@ public:
                              v[1] > theVec.v[1] ? v[1] : theVec.v[1]);
   }
 
+  //! Compute component-wise modulus of the vector.
+  NCollection_Vec2 cwiseAbs() const
+  {
+    return NCollection_Vec2 (std::abs (v[0]),
+                             std::abs (v[1]));
+  }
+
+  //! Compute maximum component of the vector.
+  Element_t maxComp() const
+  {
+    return v[0] > v[1] ? v[0] : v[1];
+  }
+
+  //! Compute minimum component of the vector.
+  Element_t minComp() const
+  {
+    return v[0] < v[1] ? v[0] : v[1];
+  }
+
   //! Compute per-component multiplication by scale factor.
   NCollection_Vec2& operator*= (const Element_t theFactor)
   {

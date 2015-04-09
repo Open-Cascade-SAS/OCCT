@@ -17,6 +17,7 @@
 #define _OpenGl_LayerList_Header
 
 #include <OpenGl_Layer.hxx>
+#include <OpenGl_LayerFilter.hxx>
 
 #include <InterfaceGraphic_telem.hxx>
 
@@ -89,7 +90,8 @@ public:
 
   //! Render this element
   void Render (const Handle(OpenGl_Workspace)& theWorkspace,
-               const Standard_Boolean          theToDrawImmediate) const;
+               const Standard_Boolean          theToDrawImmediate,
+               const OpenGl_LayerFilter        theLayersToProcess) const;
 
   //! Returns the set of OpenGL Z-layers.
   const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
