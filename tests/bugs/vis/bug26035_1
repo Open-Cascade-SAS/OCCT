@@ -1,0 +1,29 @@
+puts "============"
+puts "CR26035"
+puts "============"
+puts ""
+#######################################################################
+#  Dimension drawing between two vertices
+#######################################################################
+
+vinit View1
+vclear
+vaxo
+
+set x1 10
+set y1 0
+set z1 0
+
+set x2 10
+set y2 0
+set z2 10
+
+vertex v1 $x1 $y1 $z1
+vertex v2 $x2 $y2 $z2
+
+vdimension len -length -shapes v1 v2 -plane yoz
+
+vfit
+
+set only_screen 1
+

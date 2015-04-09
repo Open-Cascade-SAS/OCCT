@@ -1,0 +1,26 @@
+puts "============"
+puts "CR26035"
+puts "============"
+puts ""
+#######################################################################
+#  Drawing dimension between edge and vertex
+#######################################################################
+
+vinit View1
+vclear
+vaxo
+
+vertex v1 10 -10 0
+vertex v2 10 10 0
+edge e v1 v2
+vdisplay e
+
+vertex v3 10 0 10
+vdisplay v3
+
+vdimension len -length -shapes e v3 -plane yoz
+
+vfit
+
+set only_screen 1
+

@@ -1,0 +1,24 @@
+puts "============"
+puts "CR26035"
+puts "============"
+puts ""
+#######################################################################
+#  Exception when trying to draw dimension between face and point
+#######################################################################
+
+vinit View1
+vclear
+vaxo
+
+box b -10 -10 -10 20 20 20
+explode b F
+vdisplay b_1
+
+vpoint p 10 0 0
+
+catch {vdimension len -length -shapes b_1 p -plane zox}
+
+vfit
+
+set only_screen 1
+

@@ -550,20 +550,46 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
       }
       else if (aShapes.Extent() == 2)
       {
-        if (aShapes.First()->Type() == AIS_KOI_Shape && aShapes.Last()->Type() == AIS_KOI_Shape)
-          aDim = new AIS_LengthDimension ((Handle(AIS_Shape)::DownCast(aShapes.First ()))->Shape(),
-          (Handle(AIS_Shape)::DownCast(aShapes.Last ()))->Shape(),
-          aWorkingPlane);
-        else// AIS_Point
+        TopoDS_Shape aShape1, aShape2;
+
+        // Getting shapes
+        if (aShapes.First()->DynamicType() == STANDARD_TYPE (AIS_Point))
         {
-          Handle(AIS_Point) aPoint1 = Handle(AIS_Point)::DownCast(aShapes.First ());
-          Handle(AIS_Point) aPoint2 = Handle(AIS_Point)::DownCast(aShapes.Last ());
-          // Adjust working plane
-          aWorkingPlane.SetLocation (BRep_Tool::Pnt(aPoint1->Vertex()));
-          aDim = new AIS_LengthDimension (aPoint1->Component()->Pnt(),
-            aPoint2->Component()->Pnt(),
-            aWorkingPlane);
+          Handle(AIS_Point) aPoint1 = Handle(AIS_Point)::DownCast (aShapes.First ());
+          aShape1 = aPoint1->Vertex();
         }
+        else if (aShapes.First()->Type() == AIS_KOI_Shape)
+        {
+          aShape1 = (Handle(AIS_Shape)::DownCast (aShapes.First()))->Shape();
+        }
+
+        if (aShapes.Last()->DynamicType() == STANDARD_TYPE (AIS_Point))
+        {
+          Handle(AIS_Point) aPoint2 = Handle(AIS_Point)::DownCast (aShapes.Last ());
+          aShape2 = aPoint2->Vertex();
+        }
+        else if (aShapes.Last()->Type() == AIS_KOI_Shape)
+        {
+          aShape2 = (Handle(AIS_Shape)::DownCast (aShapes.Last()))->Shape();
+        }
+
+        if (aShape1.IsNull() || aShape2.IsNull())
+        {
+          std::cerr << theArgs[0] << ": wrong shape type.\n";
+          return 1;
+        }
+
+        // Adjust working plane
+        if (aShape1.ShapeType() == TopAbs_VERTEX)
+        {
+          aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape1)));
+        }
+        else if (aShape2.ShapeType() == TopAbs_VERTEX)
+        {
+          aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape2)));
+        }
+
+        aDim = new AIS_LengthDimension (aShape1, aShape2, aWorkingPlane);
       }
       else
       {
