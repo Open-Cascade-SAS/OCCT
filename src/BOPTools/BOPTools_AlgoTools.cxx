@@ -65,6 +65,7 @@
 #include <BOPCol_MapOfShape.hxx>
 //
 #include <IntTools_ShrunkRange.hxx>
+#include <Precision.hxx>
 //
 
 static
@@ -1496,13 +1497,67 @@ void BOPTools_AlgoTools::MakeVertex(BOPCol_ListOfShape& aLV,
                                     TopoDS_Vertex& aVnew)
 {
   Standard_Integer aNb;
-  Standard_Real aTi, aDi, aDmax;
-  gp_Pnt aPi, aP;
-  gp_XYZ aXYZ(0.,0.,0.), aXYZi;
-  BOPCol_ListIteratorOfListOfShape aIt;
   //
   aNb=aLV.Extent();
-  if (aNb) {
+  if (!aNb) {
+    return;
+  }
+  //
+  else if (aNb==1) {
+    aVnew=*((TopoDS_Vertex*)(&aLV.First()));
+    return;
+  }
+  //
+  else if (aNb==2) {
+    Standard_Integer m, n;
+    Standard_Real aR[2], dR, aD, aEps;
+    TopoDS_Vertex aV[2];
+    gp_Pnt aP[2];
+    BRep_Builder aBB;
+    //
+    aEps=RealEpsilon();
+    for (m=0; m<aNb; ++m) {
+      aV[m]=(!m)? 
+	*((TopoDS_Vertex*)(&aLV.First())):
+	*((TopoDS_Vertex*)(&aLV.Last()));
+      aP[m]=BRep_Tool::Pnt(aV[m]);
+      aR[m]=BRep_Tool::Tolerance(aV[m]);
+    }  
+    //
+    m=0; // max R
+    n=1; // min R
+    if (aR[0]<aR[1]) {
+      m=1;
+      n=0;
+    }
+    //
+    dR=aR[m]-aR[n]; // dR >= 0.
+    gp_Vec aVD(aP[m], aP[n]);
+    aD=aVD.Magnitude();
+    //
+    if (aD<=dR || aD<aEps) { 
+      aBB.MakeVertex (aVnew, aP[m], aR[m]);
+    }
+    else {
+      Standard_Real aRr;
+      gp_XYZ aXYZr;
+      gp_Pnt aPr;
+      //
+      aRr=0.5*(aR[m]+aR[n]+aD);
+      aXYZr=0.5*(aP[m].XYZ()+aP[n].XYZ()-aVD.XYZ()*(dR/aD));
+      aPr.SetXYZ(aXYZr);
+      //
+      aBB.MakeVertex (aVnew, aPr, aRr);
+    }
+    return;
+  }// else if (aNb==2) {
+  //
+  else { // if (aNb>2) 
+    Standard_Real aTi, aDi, aDmax;
+    gp_Pnt aPi, aP;
+    gp_XYZ aXYZ(0.,0.,0.), aXYZi;
+    BOPCol_ListIteratorOfListOfShape aIt;
+    //
     aIt.Initialize(aLV);
     for (; aIt.More(); aIt.Next()) {
       TopoDS_Vertex& aVi=*((TopoDS_Vertex*)(&aIt.Value()));
