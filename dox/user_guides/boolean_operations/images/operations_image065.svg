@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="500.70731"
+   height="257.98001"
+   id="svg3731"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="operations_image059.svg">
+  <defs
+     id="defs3733">
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart"
+       style="overflow:visible">
+      <path
+         id="path4673"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6,0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path4649"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <clipPath
+       id="clipEmfPath1"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3744"
+         height="157.5"
+         width="566.85828"
+         y="0"
+         x="0" />
+    </clipPath>
+    <clipPath
+       id="clipEmfPath2"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3747"
+         height="15"
+         width="134.10196"
+         y="14.7"
+         x="215.55315" />
+    </clipPath>
+    <clipPath
+       id="clipEmfPath3"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3750"
+         height="13.95"
+         width="158.85233"
+         y="118.5"
+         x="53.850784" />
+    </clipPath>
+    <clipPath
+       id="clipEmfPath4"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3753"
+         height="15"
+         width="189.90277"
+         y="68.849998"
+         x="185.10271" />
+    </clipPath>
+    <clipPath
+       id="clipEmfPath5"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3756"
+         height="13.95"
+         width="180.15263"
+         y="118.2"
+         x="315.3046" />
+    </clipPath>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart-1"
+       style="overflow:visible">
+      <path
+         id="path4673-7"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6,0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <clipPath
+       id="clipEmfPath1-0"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3744-9"
+         height="157.5"
+         width="566.85828"
+         y="0"
+         x="0" />
+    </clipPath>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart-7"
+       style="overflow:visible">
+      <path
+         id="path4673-1"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6,0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart-2"
+       style="overflow:visible">
+      <path
+         id="path4673-76"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6,0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <clipPath
+       id="clipEmfPath1-4"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         id="rect3744-2"
+         height="157.5"
+         width="566.85828"
+         y="0"
+         x="0" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.7435336"
+     inkscape:cx="250.35365"
+     inkscape:cy="166.25673"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3758"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1195"
+     inkscape:window-height="615"
+     inkscape:window-x="10"
+     inkscape:window-y="129"
+     inkscape:window-maximized="0"
+     inkscape:snap-bbox="false"
+     inkscape:bbox-nodes="false"
+     inkscape:snap-nodes="false"
+     inkscape:snap-global="true" />
+  <metadata
+     id="metadata3736">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(204.63937,-240.29985)">
+    <g
+       id="g3758"
+       transform="translate(-261.51666,329.10596)">
+      <text
+         id="text3760"
+         style="font-size:12.45018196px;font-style:normal;font-weight:normal;text-align:start;text-anchor:start;fill:#000000;font-family:Arial"
+         y="142.64999"
+         x="558.15814"
+         xml:space="preserve"> </text>
+      <path
+         id="path3762"
+         d="m 214.87814,10.5 0,23.4375 135.43322,0 0,-23.4375 z"
+         clip-path="url(#clipEmfPath1)"
+         style="fill:none;stroke:#000000;stroke-width:1.25626838px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0"
+         transform="matrix(1.8268958,0,0,0.9818143,-213.2932,-1.3165801)" />
+      <text
+         id="text3764"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="23.035164"
+         x="220.98541"
+         xml:space="preserve">BRepAlgoAPI_BuilderAlgo</text>
+      <text
+         id="text3766"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="25.049999"
+         x="327.60477"
+         xml:space="preserve"> </text>
+      <path
+         id="path3768"
+         d="m 53.175776,114.3 0,22.37812 160.127334,0 0,-22.37812 z"
+         clip-path="url(#clipEmfPath2)"
+         style="fill:none;stroke:#000000;stroke-width:1.24689317px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3770"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="143.76225"
+         x="148.95631"
+         xml:space="preserve">BRepAlgoAPI_Fuse</text>
+      <text
+         id="text3772"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="128.85001"
+         x="204.603"
+         xml:space="preserve"> </text>
+      <text
+         id="text3774"
+         style="font-size:12.45018196px;font-style:normal;font-weight:normal;text-align:start;text-anchor:start;fill:#000000;font-family:Arial"
+         y="158.85001"
+         x="57.45084"
+         xml:space="preserve"> </text>
+      <path
+         id="path3776"
+         d="m 280.56035,62.94375 -0.59064,-22.621875 c -0.009,-0.346875 0.26251,-0.6375 0.60939,-0.646875 0.34688,-0.0094 0.62813,0.2625 0.63751,0.609375 l 0.59063,22.63125 c 0.009,0.346875 -0.2625,0.628125 -0.60938,0.6375 -0.34688,0.0094 -0.62814,-0.2625 -0.63751,-0.609375 z m -3.68443,-21.290625 3.55317,-7.603125 3.94694,7.40625 z"
+         clip-path="url(#clipEmfPath3)"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.1500022px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3778"
+         d="m 177.37132,50.938071 0,23.25606 252.44098,0 0,-23.25606 z"
+         style="fill:none;stroke:#000000;stroke-width:1.43770862px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3780"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="64.861305"
+         x="203.64111"
+         xml:space="preserve">BRepAlgoAPI_BooleanOperation</text>
+      <text
+         id="text3782"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="79.199997"
+         x="351.30511"
+         xml:space="preserve"> </text>
+      <text
+         id="text3784"
+         style="font-size:12.45018196px;font-style:normal;font-weight:normal;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="108.3"
+         x="188.70276"
+         xml:space="preserve"> </text>
+      <path
+         id="path3786"
+         d="m 198.98728,113.10938 20.70968,-20.700005 c 0.24375,-0.24375 0.63751,-0.24375 0.88126,0 0.24375,0.24375 0.24375,0.6375 0,0.88125 L 199.87792,114 c -0.24376,0.24375 -0.64689,0.24375 -0.89064,0 -0.24375,-0.24375 -0.24375,-0.64688 0,-0.89062 z m 17.61588,-22.031255 7.95012,-2.653125 -2.64379,7.959375 z"
+         clip-path="url(#clipEmfPath4)"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.1500022px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3790"
+         d="m 323.06859,130.86407 0,22.45692 161.49789,0 0,-22.45692 z"
+         style="fill:none;stroke:#000000;stroke-width:1.18685222px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3792"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="144.46437"
+         x="341.69354"
+         xml:space="preserve">BRepAlgoAPI_Cut</text>
+      <text
+         id="text3794"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="128.55"
+         x="480.30701"
+         xml:space="preserve"> </text>
+      <text
+         id="text3796"
+         style="font-size:12.45018196px;font-style:normal;font-weight:normal;text-align:start;text-anchor:start;fill:#000000;font-family:Arial"
+         y="158.39999"
+         x="318.75464"
+         xml:space="preserve"> </text>
+      <path
+         id="path3778-1"
+         d="m 136.65269,130.42418 0,23.58586 147.81153,0 0,-23.58586 z"
+         style="fill:none;stroke:#000000;stroke-width:1.10790598px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#916f6f;stroke:#000000;stroke-width:0.7965284px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart)"
+         d="m 304.3563,32.239951 0,18.31124"
+         id="path3875"
+         inkscape:connector-curvature="0" />
+      <path
+         transform="matrix(1.1475795,0,0,0.99628756,-17.657381,-45.674459)"
+         id="path3762-4"
+         d="m 214.87814,10.5 0,23.4375 135.43322,0 0,-23.4375 z"
+         clip-path="url(#clipEmfPath1-0)"
+         style="fill:none;stroke:#000000;stroke-width:1.25626838px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3778-1-8"
+         d="m 78.687273,88.627374 0,23.585856 147.811517,0 0,-23.585856 z"
+         style="fill:none;stroke:#000000;stroke-width:1.10790598px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.90858448px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+         d="M 276.56388,74.263936 224.85315,129.41594"
+         id="path6825"
+         inkscape:connector-type="polyline"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.91995925px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+         d="m 325.68413,73.924924 51.41999,56.861286"
+         id="path6825-2"
+         inkscape:connector-type="polyline"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 179.52049,162.77106 c -59.64898,14.3387 -59.64898,14.3387 -59.64898,14.3387"
+         id="path6849"
+         inkscape:connector-curvature="0"
+         transform="translate(56.87729,-88.80611)" />
+      <text
+         id="text3792-4"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="103.56826"
+         x="83.965698"
+         xml:space="preserve">BRepAlgoAPI_Common</text>
+      <path
+         id="path3778-1-8-5"
+         d="m 373.01844,90.295386 0,23.546834 158.6699,0 0,-23.546834 z"
+         style="fill:none;stroke:#000000;stroke-width:1.14692891px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.0304904px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 389.40321,74.26698 c 58.76558,15.4553 58.76558,15.4553 58.76558,15.4553"
+         id="path6849-5"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3792-4-1"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="104.71535"
+         x="382.07281"
+         xml:space="preserve">BRepAlgoAPI_Section</text>
+      <path
+         style="fill:#916f6f;stroke:#000000;stroke-width:0.7965284px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart)"
+         d="m 305.51053,-9.9971206 0,18.31124"
+         id="path3875-1"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3764-5"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="-19.759373"
+         x="249.94737"
+         xml:space="preserve">BRepAlgoAPI_Algo</text>
+      <path
+         style="fill:#916f6f;stroke:#000000;stroke-width:0.7965284px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart)"
+         d="m 306.65763,-54.160308 0,18.31124"
+         id="path3875-1-1"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3762-3"
+         d="m 214.87814,10.5 0,23.4375 135.43322,0 0,-23.4375 z"
+         clip-path="url(#clipEmfPath1-4)"
+         style="fill:none;stroke:#000000;stroke-width:1.25626838px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0"
+         transform="matrix(1.6833898,0,0,0.98459396,-169.65553,-88.430725)" />
+      <text
+         id="text3764-2"
+         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
+         y="-65.054825"
+         x="221.258"
+         xml:space="preserve">BRepBuilderAPI_MakeShape</text>
+    </g>
+  </g>
+</svg>

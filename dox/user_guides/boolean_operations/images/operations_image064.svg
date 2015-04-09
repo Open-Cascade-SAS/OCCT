@@ -10,38 +10,40 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="500.70731"
-   height="148.97501"
+   height="102.98"
    id="svg3731"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="operations_image057.svg">
+   sodipodi:docname="operations_image064.svg">
   <defs
      id="defs3733">
     <marker
        inkscape:stockid="Arrow2Mstart"
        orient="auto"
-       refY="0.0"
-       refX="0.0"
+       refY="0"
+       refX="0"
        id="Arrow2Mstart"
        style="overflow:visible">
       <path
          id="path4673"
-         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
-         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
-         transform="scale(0.6) translate(0,0)" />
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6,0.6)"
+         inkscape:connector-curvature="0" />
     </marker>
     <marker
        inkscape:stockid="Arrow1Lstart"
        orient="auto"
-       refY="0.0"
-       refX="0.0"
+       refY="0"
+       refX="0"
        id="Arrow1Lstart"
        style="overflow:visible">
       <path
          id="path4649"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
-         transform="scale(0.8) translate(12.5,0)" />
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
     </marker>
     <clipPath
        id="clipEmfPath1"
@@ -113,8 +115,8 @@
      fit-margin-bottom="0"
      inkscape:window-width="1037"
      inkscape:window-height="615"
-     inkscape:window-x="198"
-     inkscape:window-y="198"
+     inkscape:window-x="38"
+     inkscape:window-y="209"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata3736">
@@ -124,7 +126,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -132,7 +134,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(204.63937,-349.30482)">
+     transform="translate(204.63937,-395.29983)">
     <g
        id="g3758"
        transform="translate(-262.09021,339.42982)">
@@ -147,12 +149,13 @@
          d="m 214.87814,10.5 0,23.4375 135.43322,0 0,-23.4375 z"
          clip-path="url(#clipEmfPath1)"
          style="fill:none;stroke:#000000;stroke-width:1.25626838px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         transform="translate(-1.4412873,56.78124)" />
       <text
          id="text3764"
          style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
-         y="25.049999"
-         x="237.60347"
+         y="80.110596"
+         x="236.44154"
          xml:space="preserve">BOPAlgo_Algo</text>
       <text
          id="text3766"
@@ -166,12 +169,6 @@
          clip-path="url(#clipEmfPath2)"
          style="fill:none;stroke:#000000;stroke-width:1.24689317px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          inkscape:connector-curvature="0" />
-      <text
-         id="text3770"
-         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
-         y="128.85001"
-         x="62.100906"
-         xml:space="preserve">BOPAlgo_BuilderFace</text>
       <text
          id="text3772"
          style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
@@ -192,15 +189,15 @@
          inkscape:connector-curvature="0" />
       <path
          id="path3778"
-         d="m 184.42769,64.6125 0,23.4375 191.2528,0 0,-23.4375 z"
+         d="m 185.00124,121.96729 0,23.4375 191.2528,0 0,-23.4375 z"
          style="fill:none;stroke:#000000;stroke-width:1.25626838px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          inkscape:connector-curvature="0" />
       <text
          id="text3780"
          style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
-         y="79.199997"
-         x="208.80305"
-         xml:space="preserve">BOPAlgo_BuilderArea</text>
+         y="135.98123"
+         x="213.3766"
+         xml:space="preserve">BOPAlgo_PaveFiller</text>
       <text
          id="text3782"
          style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
@@ -219,22 +216,6 @@
          clip-path="url(#clipEmfPath4)"
          style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.1500022px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
          inkscape:connector-curvature="0" />
-      <path
-         id="path3788"
-         d="M 328.51115,113.3491 313.4858,93.159778 c -0.20034,-0.263568 -0.12749,-0.632564 0.12749,-0.825847 0.27318,-0.193283 0.65565,-0.122998 0.85598,0.14057 l 15.04358,20.189319 c 0.18212,0.26357 0.12749,0.63257 -0.1457,0.82585 -0.27319,0.17571 -0.65565,0.123 -0.856,-0.14057 z m -16.79197,-17.536069 -1.29309,-7.766476 7.21217,3.672384 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.14311314px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3790"
-         d="m 314.55459,113.925 0,22.3875 181.50265,0 0,-22.3875 z"
-         style="fill:none;stroke:#000000;stroke-width:1.25626838px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         inkscape:connector-curvature="0" />
-      <text
-         id="text3792"
-         style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
-         y="128.55"
-         x="330.30481"
-         xml:space="preserve">BOPAlgo_BuilderSolid</text>
       <text
          id="text3794"
          style="font-size:12.45018196px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
@@ -248,21 +229,10 @@
          x="318.75464"
          xml:space="preserve"> </text>
       <path
-         id="path3778-1"
-         d="m 59.826945,114.93839 0,23.58586 147.811525,0 0,-23.58586 z"
-         style="fill:none;stroke:#000000;stroke-width:1.10790598px;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path3788-7"
-         d="m 188.47884,114.85983 15.27723,-21.996553 c 0.20368,-0.287169 0.12962,-0.689183 -0.12963,-0.899777 -0.27777,-0.210571 -0.66664,-0.134008 -0.87033,0.153161 l -15.29576,21.996549 c -0.18517,0.28716 -0.12962,0.68918 0.14815,0.89977 0.27777,0.19144 0.66664,0.134 0.87034,-0.15315 z m 17.07345,-19.105793 1.31477,-8.461686 -7.33307,4.001108 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.15062799px;stroke-linecap:butt;stroke-linejoin:bevel;stroke-opacity:1;stroke-dasharray:none"
-         inkscape:connector-curvature="0" />
-      <path
          style="fill:#916f6f;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart)"
-         d="m 224.83077,23.941568 0,30.398037"
+         d="m 281.70806,91.744904 0,30.398036"
          id="path3875"
-         inkscape:connector-curvature="0"
-         transform="translate(57.45084,9.875)" />
+         inkscape:connector-curvature="0" />
     </g>
   </g>
 </svg>
