@@ -79,15 +79,13 @@ void BRepBuilderAPI_Transform::Perform(const TopoDS_Shape& S,
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Shape& BRepBuilderAPI_Transform::ModifiedShape
+TopoDS_Shape BRepBuilderAPI_Transform::ModifiedShape
   (const TopoDS_Shape& S) const
 {  
   if (myUseModif) {
     return myModifier.ModifiedShape(S);
   }
-  static TopoDS_Shape SM;
-  SM = S.Moved (myLocation);
-  return SM;
+  return S.Moved (myLocation);
 }
 
 

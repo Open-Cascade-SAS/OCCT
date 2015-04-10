@@ -524,7 +524,7 @@ void TNaming::Replicate (const TopoDS_Shape& SH,
   TNaming_Builder Builder2 (L.FindChild(1,Standard_True)); 
   for (TopExp_Explorer exp(SH, SST); exp.More(); exp.Next()) {
     const TopoDS_Shape& oldSubShape = exp.Current();
-    const TopoDS_Shape& newSubShape = opeTrsf.ModifiedShape(oldSubShape);
+    TopoDS_Shape newSubShape = opeTrsf.ModifiedShape(oldSubShape);
     Builder2.Generated(oldSubShape, newSubShape);
   }
 }

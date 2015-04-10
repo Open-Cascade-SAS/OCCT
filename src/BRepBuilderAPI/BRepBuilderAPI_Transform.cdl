@@ -82,7 +82,6 @@ is
     ModifiedShape(me; S: Shape from TopoDS)
     	returns Shape from TopoDS
 	---Purpose: Returns the modified shape corresponding to <S>.
-	---C++: return const&
 	raises NoSuchObject from Standard
                -- if S is not the initial shape or a sub-shape
                -- of the initial shape.

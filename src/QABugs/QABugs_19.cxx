@@ -311,7 +311,7 @@ static Standard_Boolean OCC23774Test(const TopoDS_Face& grossPlateFace, const To
     di << "Not Done1 " << "\n";
     return Standard_False;
   }
-  const TopoDS_Shape& step1ModifiedShape = transformer1.ModifiedShape(originalWire);
+  TopoDS_Shape step1ModifiedShape = transformer1.ModifiedShape(originalWire);
   
   BRepExtrema_DistShapeShape distShapeShape1(grossPlateFace,step1ModifiedShape,Extrema_ExtFlag_MIN);
   if(!distShapeShape1.IsDone())
@@ -329,7 +329,7 @@ static Standard_Boolean OCC23774Test(const TopoDS_Face& grossPlateFace, const To
     di << "Not Done1 \n";
     return Standard_False;
   }
-  const TopoDS_Shape& step2ModifiedShape = transformer1.ModifiedShape(step1ModifiedShape);
+  TopoDS_Shape step2ModifiedShape = transformer1.ModifiedShape(step1ModifiedShape);
 
   //This is identity matrix for values but for type is gp_Rotation ?!
   gp_Trsf2d mirror11 = mirror1;

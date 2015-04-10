@@ -98,7 +98,7 @@ const TopTools_ListOfShape& BRepBuilderAPI_GTransform::Modified
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Shape& BRepBuilderAPI_GTransform::ModifiedShape
+TopoDS_Shape BRepBuilderAPI_GTransform::ModifiedShape
   (const TopoDS_Shape& S) const
 {
   const TopTools_DataMapOfShapeListOfShape &aMapModif = myHist.Modification();

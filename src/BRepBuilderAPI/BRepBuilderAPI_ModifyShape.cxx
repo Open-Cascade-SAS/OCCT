@@ -131,7 +131,7 @@ void BRepBuilderAPI_ModifyShape::DoModif (const TopoDS_Shape& S,
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Shape& BRepBuilderAPI_ModifyShape::ModifiedShape
+TopoDS_Shape BRepBuilderAPI_ModifyShape::ModifiedShape
   (const TopoDS_Shape& S) const
 {
   return myModifier.ModifiedShape(S);

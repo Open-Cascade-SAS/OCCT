@@ -122,7 +122,6 @@ is
     	-- transformation has been applied. Raises NoSuchObject from Standard
     	-- if S is not the initial shape or a sub-shape
     	-- of the initial shape.
-	---C++: return const&
 	raises NoSuchObject from Standard
              
     is virtual;

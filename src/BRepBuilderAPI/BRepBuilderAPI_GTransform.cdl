@@ -110,16 +110,13 @@ is
     returns ListOfShape from TopTools
     is redefined virtual;
 
--- Modified by Sergey KHROMOV - Thu Mar 27 17:43:59 2003 Begin
     ModifiedShape(me; S: Shape from TopoDS)
     	returns Shape from TopoDS
 	---Purpose: Returns the modified shape corresponding to <S>.
-	---C++: return const&
 	raises NoSuchObject from Standard
                -- if S is not the initial shape or a sub-shape
                -- of the initial shape.
     is redefined virtual;
--- Modified by Sergey KHROMOV - Thu Mar 27 17:44:02 2003 End
 
 fields
 
