@@ -39,3 +39,11 @@ inline Standard_Boolean
 {
   return theString1.IsEqual(theString2);
 }
+
+//------------------------------------------------------------------------
+//  IsEmpty
+//------------------------------------------------------------------------
+inline Standard_Boolean TCollection_ExtendedString::IsEmpty() const
+{
+  return mylength == 0;
+}

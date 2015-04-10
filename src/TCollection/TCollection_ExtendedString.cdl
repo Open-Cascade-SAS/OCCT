@@ -148,6 +148,12 @@ is
    raises OutOfRange from Standard
    is static;
 
+   IsEmpty(me) returns Boolean from Standard
+   is static;
+   ---Level: Public
+   ---C++: inline
+   ---Purpose: Returns True if this string contains no characters.
+
    IsEqual (me ; other : ExtString ) 
    returns Boolean from Standard
    is static;
