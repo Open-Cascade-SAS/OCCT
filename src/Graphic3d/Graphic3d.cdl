@@ -355,12 +355,9 @@ is
     imported BndBox4f;
     ---Purpose: Redefines BVH_Box<Standard_ShortReal, 4> for AABB representation
     ---Category: Imported types
-    imported Buffer;
-    imported Buffer_Handle;
-    imported BoundBuffer;
-    imported BoundBuffer_Handle;
-    imported IndexBuffer;
-    imported IndexBuffer_Handle;
+    imported transient class Buffer;
+    imported transient class BoundBuffer;
+    imported transient class IndexBuffer;
 
     imported BndBox4d;
     imported BufferType;
@@ -382,12 +379,10 @@ is
     imported CAspectLine;
     imported CAspectText;
 
-    imported CStructure;
+    imported transient class CStructure;
     ---Category: Imported types
 
     pointer CStructurePtr to CStructure from Graphic3d;
-
-    imported CStructure_Handle;
 
     imported CLight;
     ---Category: Imported types
@@ -408,19 +403,17 @@ is
     imported GraduatedTrihedron;
     ---Category: Imported types
 
-    imported ClipPlane;
+    imported transient class ClipPlane;
     ---Category: Imported types
 
-    imported ClipPlane_Handle;
 
     imported CTexture;
 
     imported CTransPersStruct;
     imported TransModeFlags;
     
-    imported MarkerImage;
-    imported MarkerImage_Handle;
-    imported Camera_Handle;
+    imported transient class MarkerImage;
+    imported transient class Camera;
 
     primitive PtrFrameBuffer;
     primitive Vec2;
@@ -538,7 +531,7 @@ is
     imported NListOfHAsciiString;
     ---Category: Instantiated classes
 
-    imported ShaderProgram_Handle;
+    imported transient class ShaderProgram;
     ---Category: Instantiated classes
 
     imported SequenceOfHClipPlane;

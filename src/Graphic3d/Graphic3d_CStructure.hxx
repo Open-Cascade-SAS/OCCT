@@ -16,18 +16,20 @@
 #define _Graphic3d_CStructure_HeaderFile
 
 #include <Graphic3d_BndBox4f.hxx>
-#include <Graphic3d_CStructure_Handle.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
+#include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Standard_Transient.hxx>
 #include <Handle_Graphic3d_GraphicDriver.hxx>
 
+//! Forward declaration.
 class Handle(Graphic3d_StructureManager);
+class Handle(Graphic3d_CStructure);
 
 //! Low-level graphic structure interface
 class Graphic3d_CStructure : public Standard_Transient
@@ -164,5 +166,7 @@ public:
   DEFINE_STANDARD_RTTI(Graphic3d_CStructure) // Type definition
 
 };
+
+DEFINE_STANDARD_HANDLE (Graphic3d_CStructure, Standard_Transient)
 
 #endif // _Graphic3d_CStructure_HeaderFile

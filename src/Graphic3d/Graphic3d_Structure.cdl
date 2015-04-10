@@ -54,7 +54,7 @@ uses
 	AspectMarker3d		from Graphic3d,
 	AspectText3d		from Graphic3d,
 	CStructure          from Graphic3d,
-	CStructure_Handle   from Graphic3d,
+	CStructure   from Graphic3d,
 	GraphicDriver		from Graphic3d,
 	Group			from Graphic3d,
 	SequenceOfGroup		from Graphic3d,
@@ -951,7 +951,7 @@ is
 	---Category: Private methods
 
   CStructure (me)
-  returns CStructure_Handle from Graphic3d
+  returns CStructure from Graphic3d
   is static;
   ---Purpose: Returns the low-level structure
   ---C++: return const &
@@ -969,7 +969,7 @@ fields
 --
 
 	-- the associated low-level structure
-  myCStructure : CStructure_Handle from Graphic3d;
+  myCStructure : CStructure from Graphic3d;
 
 	-- the structures to which the structure is attached
 	myAncestors		:	SequenceOfAddress from TColStd;

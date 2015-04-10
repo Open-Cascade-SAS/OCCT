@@ -25,7 +25,7 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
-#include <Graphic3d_SequenceOfHClipPlane_Handle.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Structure, Graphic3d_CStructure)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Structure, Graphic3d_CStructure)
@@ -705,7 +705,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   // Set up plane equations for non-structure transformed global model-view matrix
   // List of planes to be applied to context state
-  Handle(Graphic3d_SequenceOfHClipPlane) aUserPlanes;
+  NCollection_Handle<Graphic3d_SequenceOfHClipPlane> aUserPlanes;
 
   // Collect clipping planes of structure scope
   if (!myClipPlanes.IsEmpty())

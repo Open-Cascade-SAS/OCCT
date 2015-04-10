@@ -24,11 +24,10 @@
 #include <Graphic3d_TextureMap.hxx>
 #include <Aspect_HatchStyle.hxx>
 
-DEFINE_STANDARD_HANDLE (Graphic3d_ClipPlane, Standard_Transient)
-
 class gp_Pln;
 class Graphic3d_AspectFillArea3d;
 class Handle(Graphic3d_AspectFillArea3d);
+class Handle(Graphic3d_ClipPlane);
 
 //! Container for properties describing graphic driver clipping planes.
 //! It is up to application to create instances of this class and specify its
@@ -223,5 +222,7 @@ public:
 
   DEFINE_STANDARD_RTTI(Graphic3d_ClipPlane);
 };
+
+DEFINE_STANDARD_HANDLE (Graphic3d_ClipPlane, Standard_Transient)
 
 #endif

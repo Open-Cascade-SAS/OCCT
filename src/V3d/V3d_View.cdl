@@ -93,7 +93,7 @@ uses
         ContextView                       from Visual3d,
         Vector                            from Graphic3d,
         Vertex                            from Graphic3d,
-        Camera_Handle                     from Graphic3d,
+        Camera                            from Graphic3d,
         Window                            from Aspect,
         PixMap                            from Image,
         BufferType                        from Graphic3d,
@@ -121,7 +121,7 @@ uses
         AsciiString                       from TCollection,
         ExtendedString                    from TCollection,
         PrintAlgo                         from Aspect,
-        ClipPlane_Handle                  from Graphic3d,
+        ClipPlane                         from Graphic3d,
         GraduatedTrihedron               from Graphic3d,
         SequenceOfHClipPlane              from Graphic3d,
         RenderingMode                     from Graphic3d,
@@ -1379,14 +1379,14 @@ is
      ---Purpose: returns the current state of the gl lighting
      --          currently used in triedron displaying
 
-     AddClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+     AddClipPlane (me : mutable; thePlane : ClipPlane from Graphic3d) is virtual;
      ---Purpose: Adds clip plane to the view. The composition of clip planes truncates the
      -- rendering space to convex volume. Number of supported clip planes can be consulted
      -- by PlaneLimit method of associated Visual3d_View. Please be aware that the planes
      -- which exceed the limit are ignored during rendering. 
      -- @param thePlane [in] the clip plane to be added to view.
 
-     RemoveClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+     RemoveClipPlane (me : mutable; thePlane : ClipPlane from Graphic3d) is virtual;
      ---Purpose: Removes clip plane from the view.
      -- @param thePlane [in] the clip plane to be removed from view.
 
@@ -1404,11 +1404,11 @@ is
      ---Purpose: Get clip planes.
      -- @return sequence clip planes that have been set for the view
 
-    SetCamera (me : mutable; theCamera : Camera_Handle from Graphic3d) is static;
+    SetCamera (me : mutable; theCamera : Camera from Graphic3d) is static;
     ---Level: Public
     ---Purpose: Change camera used by view.
 
-    Camera (me) returns Camera_Handle from Graphic3d is static;
+    Camera (me) returns Camera from Graphic3d is static;
     ---Level: Public
     ---C++: return const&
     ---Purpose: Returns camera object of the view.
@@ -1416,7 +1416,7 @@ is
     -- the camera approach.
 
     FitMinMax (me;
-               theCamera          : Camera_Handle from Graphic3d;
+               theCamera          : Camera from Graphic3d;
                theBox             : Box from Bnd;
                theMargin          : Real from Standard;
                theResolution      : Real from Standard = 0.0;
@@ -1440,7 +1440,7 @@ is
     -- @return TRUE if the fit all operation can be done.
 
     Scale (me;
-           theCamera : Camera_Handle from Graphic3d;
+           theCamera : Camera from Graphic3d;
            theSizeXv : Real from Standard;
            theSizeYv : Real from Standard) is protected;
     ---Level: Protected
@@ -1451,7 +1451,7 @@ is
     -- @param theSizeYv [in] size of viewport frame on "y" axis.
 
     Translate (me;
-         theCamera : Camera_Handle from Graphic3d;
+         theCamera : Camera from Graphic3d;
          theDXv    : Real from Standard;
          theDYv    : Real from Standard) is protected;
     ---Level: Protected
@@ -1486,7 +1486,7 @@ fields
         myCamStartOpEye : Pnt from gp is protected;
         myCamStartOpBnd : Real[6] is protected;
         myCamStartOpCenter : Pnt from gp is protected;
-        myCamera : Camera_Handle from Graphic3d is protected;
+        myCamera : Camera from Graphic3d is protected;
 
         MyViewer :              ViewerPointer from V3d ;
         MyActiveLights:         ListOfTransient from V3d;

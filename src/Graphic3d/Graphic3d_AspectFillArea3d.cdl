@@ -38,16 +38,16 @@ class AspectFillArea3d from Graphic3d inherits AspectFillArea from Aspect
 
 uses
 
-        Color                 from Quantity,
-        Ratio                 from Quantity,
+        Color          from Quantity,
+        Ratio          from Quantity,
 
-        TypeOfLine            from Aspect,    
-        InteriorStyle         from Aspect,
+        TypeOfLine     from Aspect,
+        InteriorStyle  from Aspect,
 
-        MaterialAspect        from Graphic3d,
-        TextureMap            from Graphic3d,
+        MaterialAspect from Graphic3d,
+        TextureMap     from Graphic3d,
 
-        ShaderProgram_Handle  from Graphic3d
+        ShaderProgram  from Graphic3d
 
 is
 
@@ -188,7 +188,7 @@ is
         ---Category: Methods to modify the class definition
 
         SetShaderProgram ( me  :  mutable; 
-                           theProgram  :  ShaderProgram_Handle from Graphic3d );
+                           theProgram  :  ShaderProgram from Graphic3d );
         ---Level: Public
         ---Purpose: Sets up OpenGL/GLSL shader program.
         ---Category: Methods to modify the class definition
@@ -253,7 +253,7 @@ is
         ---Category: Inquire methods
 
         ShaderProgram ( me )
-        returns ShaderProgram_Handle from Graphic3d;
+        returns ShaderProgram from Graphic3d;
         ---C++: return const &
 
 --
@@ -299,6 +299,6 @@ fields
         MyPolygonOffsetFactor   :       ShortReal from Standard;
         MyPolygonOffsetUnits    :       ShortReal from Standard;
 
-        MyShaderProgram         :       ShaderProgram_Handle  from  Graphic3d;
+        MyShaderProgram         :       ShaderProgram  from  Graphic3d;
 
 end AspectFillArea3d;

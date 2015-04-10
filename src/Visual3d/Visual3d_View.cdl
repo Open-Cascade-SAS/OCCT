@@ -80,7 +80,7 @@ uses
     Structure               from Graphic3d,
     SequenceOfStructure     from Graphic3d,
     MapOfStructure          from Graphic3d,
-    Camera_Handle           from Graphic3d,
+    Camera           from Graphic3d,
 
     ZLayerId                from Graphic3d,
     ZLayerSettings          from Graphic3d,
@@ -635,20 +635,20 @@ is
 	--	    3d coordinates <AX>, <AY>, <AZ>.
 
     DefaultCamera (me)
-        returns Camera_Handle from Graphic3d
+        returns Camera from Graphic3d
         is static;
     ---Level: Public
     ---Purpose: @return the default camera of <me>.
     ---C++: return const &
 
     Camera (me)
-        returns Camera_Handle from Graphic3d
+        returns Camera from Graphic3d
         is static;
     ---Level: Public
     ---Purpose: @return the camera of <me>.
     ---C++: return const &
 
-    SetCamera (me : mutable; theCamera : Camera_Handle from Graphic3d) is static;
+    SetCamera (me : mutable; theCamera : Camera from Graphic3d) is static;
     ---Level: Public
     ---Purpose: Set camera object to provide orientation and projection matrices
     -- for graphic driver.
@@ -1123,7 +1123,7 @@ fields
 
   myGTrihedron     : GraduatedTrihedron from Graphic3d;
 
-  myDefaultCamera  : Camera_Handle from Graphic3d;
+  myDefaultCamera  : Camera from Graphic3d;
 
   myAutoZFitIsOn          : Boolean from Standard;
   myAutoZFitScaleFactor   : Real from Standard;

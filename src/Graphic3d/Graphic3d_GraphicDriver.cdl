@@ -48,7 +48,7 @@ uses
     Handle              from Aspect,
     Display             from Aspect,
     PrintAlgo           from Aspect,
-    DisplayConnection_Handle from Aspect,
+    DisplayConnection   from Aspect,
 
     ZLayerId            from Graphic3d,
     ZLayerSettings      from Graphic3d,
@@ -63,7 +63,6 @@ uses
     CLight              from Graphic3d,
     CPlane              from Graphic3d,
     CStructure          from Graphic3d,
-    CStructure_Handle   from Graphic3d,
     CView               from Graphic3d,
     BufferType          from Graphic3d,
     Structure           from Graphic3d,
@@ -96,7 +95,7 @@ raises
     TransformError      from Graphic3d
 
 is
-    Initialize (theDisp : DisplayConnection_Handle from Aspect)
+    Initialize (theDisp : DisplayConnection from Aspect)
     returns GraphicDriver from Graphic3d;
     ---Level: Public
     ---Purpose: Initialises the Driver
@@ -138,13 +137,13 @@ is
     ---Purpose: call_togl_erasestructure
 
     RemoveStructure ( me            : mutable;
-                      theCStructure : in out CStructure_Handle from Graphic3d )
+                      theCStructure : in out CStructure from Graphic3d )
         is deferred;
     ---Purpose: call_togl_removestructure
 
     Structure (me : mutable;
                theManager : StructureManager from Graphic3d)
-        returns CStructure_Handle from Graphic3d
+        returns CStructure from Graphic3d
         is deferred;
     ---Purpose: Creates new empty graphic structure
 
@@ -379,11 +378,9 @@ is
     is deferred;
     ---Purpose: Display structure in immediate mode on top of general presentation
 
-    EraseImmediateStructure ( me            : mutable;
-                              theCView      : CView      from Graphic3d;
-                              theCStructure : CStructure from Graphic3d )
-    is deferred;
-    ---Purpose: Erases immediate structure
+    ---C++: alias "
+  //! Erases immediate structure
+  Standard_EXPORT virtual void EraseImmediateStructure (const Graphic3d_CView& theCView, const Graphic3d_CStructure& theCStructure) = 0;"
 
     -------------------------------
     -- Category: Layer mode methods
@@ -657,12 +654,9 @@ is
         -- indexes will be set to default layer ( the bottom-level z layer
         -- with ID = 0 ).
 
-    ChangeZLayer( me            : mutable;
-                  theCStructure : CStructure from Graphic3d;
-                  theCView      : CView from Graphic3d;
-                  theNewLayerId : ZLayerId from Graphic3d )
-        is deferred;
-        ---Purpose: Change Z layer of a structure already presented in view.
+    ---C++: alias "
+  //! Change Z layer of a structure already presented in view.
+  Standard_EXPORT virtual void ChangeZLayer (const Graphic3d_CStructure& theCStructure, const Graphic3d_CView& theCView, const Graphic3d_ZLayerId theNewLayerId) = 0;"
 
     SetZLayerSettings( me          : mutable;
                        theCView    : CView from Graphic3d;
@@ -671,13 +665,9 @@ is
         is deferred;
         ---Purpose:  Sets the settings for a single Z layer of specified view.
 
-    ChangePriority( me             : mutable;
-                    theCStructure  : CStructure from Graphic3d;
-                    theCView       : CView from Graphic3d;
-                    theNewPriority : Integer from Standard )
-        is deferred;
-        ---Purpose: Changes the priority of a structure within its Z layer
-        -- in the specified view.
+    ---C++: alias "
+  //! Changes the priority of a structure within its Z layer in the specified view.
+  Standard_EXPORT virtual void ChangePriority (const Graphic3d_CStructure& theCStructure, const Graphic3d_CView& theCView, const Standard_Integer theNewPriority) = 0;"
 
     -----------------------------
     -- Category: Internal methods
@@ -691,9 +681,8 @@ is
                   ACLight   : CLight from Graphic3d;
                   AField    : Integer from Standard );
 
-    PrintCStructure ( me;
-                      ACStructure   : CStructure from Graphic3d;
-                      AField    : Integer from Standard );
+    ---C++: alias "
+  Standard_EXPORT void PrintCStructure (const Graphic3d_CStructure& ACStructure, const Standard_Integer AField) const;"
 
     PrintCView ( me;
                  ACView : CView from Graphic3d;
@@ -732,7 +721,7 @@ is
         is static;
 
     GetDisplayConnection (me)
-       returns DisplayConnection_Handle from Aspect;
+       returns DisplayConnection from Aspect;
     ---C++: return const &
 
     ---Purpose: returns Handle to display connection
@@ -747,7 +736,7 @@ is
 fields
 
     MyTraceLevel       : Integer from Standard is protected;
-    myDisplayConnection: DisplayConnection_Handle from Aspect is protected;
+    myDisplayConnection: DisplayConnection from Aspect is protected;
     myDeviceLostFlag   : Boolean from Standard is protected;
 
 end GraphicDriver from Graphic3d;

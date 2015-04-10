@@ -16,8 +16,6 @@
 #ifndef _Graphic3d_MarkerImage_H__
 #define _Graphic3d_MarkerImage_H__
 
-#include <Graphic3d_MarkerImage_Handle.hxx>
-
 #include <TColStd_HArray1OfByte.hxx>
 #include <Image_PixMap_Handle.hxx>
 #include <Quantity_Parameter.hxx>
@@ -82,5 +80,7 @@ public:
   DEFINE_STANDARD_RTTI(Graphic3d_MarkerImage) // Type definition
 
 };
+
+DEFINE_STANDARD_HANDLE (Graphic3d_MarkerImage, Standard_Transient)
 
 #endif // _Graphic3d_MarkerImage_H__

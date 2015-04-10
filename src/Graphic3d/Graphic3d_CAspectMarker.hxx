@@ -18,8 +18,8 @@
 #include <Aspect_TypeOfMarker.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_CTexture.hxx>
-#include <Graphic3d_MarkerImage_Handle.hxx>
-#include <Graphic3d_ShaderProgram_Handle.hxx>
+#include <Graphic3d_MarkerImage.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 
 class Graphic3d_CAspectMarker
 {

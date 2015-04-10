@@ -22,12 +22,12 @@ class PointAspect from Prs3d inherits BasicAspect from Prs3d
 
 uses 
 
-    AspectMarker3d 	from Graphic3d,
-    NameOfColor 	from Quantity,
-    Color 		from Quantity,
-    TypeOfMarker 	from Aspect,
-    HArray1OfByte   	from TColStd,
-    MarkerImage_Handle from Graphic3d
+    AspectMarker3d from Graphic3d,
+    NameOfColor 	 from Quantity,
+    Color 		     from Quantity,
+    TypeOfMarker 	 from Aspect,
+    HArray1OfByte  from TColStd,
+    MarkerImage    from Graphic3d
 
 
 is
@@ -81,7 +81,7 @@ is
     	---Purpose: Returns marker's texture size.		    
 
     GetTexture (me:mutable)
-         returns MarkerImage_Handle from Graphic3d;
+         returns MarkerImage from Graphic3d;
     	---Level: Public
     	---Purpose: Returns marker's texture. 
     	---C++: return const &

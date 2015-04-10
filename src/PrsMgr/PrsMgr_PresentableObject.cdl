@@ -57,7 +57,7 @@ uses
     Transformation         from Geom,
     ListOfInteger          from TColStd,
     Location               from TopLoc, 
-    ClipPlane_Handle       from Graphic3d,
+    ClipPlane              from Graphic3d,
     SequenceOfHClipPlane   from Graphic3d,
     TransModeFlags         from Graphic3d, 
     Pnt                    from gp,
@@ -256,7 +256,7 @@ is
      returns ZLayerId from Graphic3d is static;
    ---Purpose: Get ID of Z layer.
 
-   AddClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+   AddClipPlane (me : mutable; thePlane : ClipPlane from Graphic3d) is virtual;
    ---Purpose: Adds clip plane for graphical clipping for all display mode
    -- presentations. The composition of clip planes truncates the rendering
    -- space to convex volume. Please be aware that number of supported
@@ -266,7 +266,7 @@ is
    -- to predict the maximum possible number of object clipping planes.
    -- @param thePlane [in] the clip plane to be appended to map of clip planes.
 
-   RemoveClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+   RemoveClipPlane (me : mutable; thePlane : ClipPlane from Graphic3d) is virtual;
    ---Purpose: Removes previously added clip plane.
    -- @param thePlane [in] the clip plane to be removed from map of clip planes.
 

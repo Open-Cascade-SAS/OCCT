@@ -15,7 +15,6 @@
 #define _Aspect_DisplayConnection_H__
 
 #include <Standard_Transient.hxx>
-#include <Aspect_DisplayConnection_Handle.hxx>
 #include <Aspect_XAtom.hxx>
 
 #include <TCollection_AsciiString.hxx>
@@ -80,5 +79,7 @@ public:
   DEFINE_STANDARD_RTTI(Aspect_DisplayConnection) // Type definition
 
 };
+
+DEFINE_STANDARD_HANDLE (Aspect_DisplayConnection, Standard_Transient)
 
 #endif // _Aspect_DisplayConnection_H__

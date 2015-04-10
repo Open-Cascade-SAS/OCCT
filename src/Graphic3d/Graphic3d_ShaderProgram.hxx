@@ -16,8 +16,7 @@
 #ifndef _Graphic3d_ShaderProgram_HeaderFile
 #define _Graphic3d_ShaderProgram_HeaderFile
 
-#include <Graphic3d_ShaderObject_Handle.hxx>
-#include <Graphic3d_ShaderProgram_Handle.hxx>
+#include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderVariable.hxx>
 #include <NCollection_Sequence.hxx>
 
@@ -111,6 +110,8 @@ private:
   TCollection_AsciiString      myHeader;        //!< GLSL header with version code and used extensions
 
 };
+
+DEFINE_STANDARD_HANDLE (Graphic3d_ShaderProgram, Standard_Transient)
 
 // =======================================================================
 // function : PushVariable

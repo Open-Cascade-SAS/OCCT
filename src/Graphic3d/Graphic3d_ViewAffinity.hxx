@@ -16,7 +16,9 @@
 #ifndef _Graphic3d_ViewAffinity_HeaderFile
 #define _Graphic3d_ViewAffinity_HeaderFile
 
-#include <Graphic3d_Structure.hxx>
+#include <Standard.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_DefineHandle.hxx>
 
 //! Structure display state.
 class Graphic3d_ViewAffinity : public Standard_Transient

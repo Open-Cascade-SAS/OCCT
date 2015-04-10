@@ -19,7 +19,9 @@
 #include <OSD_Path.hxx>
 
 #include <Graphic3d_TypeOfShaderObject.hxx>
-#include <Graphic3d_ShaderObject_Handle.hxx>
+
+//! Forward declaration
+class Handle(Graphic3d_ShaderObject);
 
 //! This class is responsible for managing shader objects.
 class Graphic3d_ShaderObject : public Standard_Transient
@@ -72,5 +74,7 @@ private:
   //! The type of shader object.
   Graphic3d_TypeOfShaderObject myType;
 };
+
+DEFINE_STANDARD_HANDLE (Graphic3d_ShaderObject, Standard_Transient)
 
 #endif

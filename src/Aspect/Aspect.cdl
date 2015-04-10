@@ -133,9 +133,7 @@ is
 
         deferred class ColorScale;
 
-        imported DisplayConnection;
-
-        imported DisplayConnection_Handle;
+        imported transient class DisplayConnection;
 
         -------------------------
         -- Category: Enumerations

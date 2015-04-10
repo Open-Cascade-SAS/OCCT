@@ -35,9 +35,9 @@ deferred class ArrayOfPrimitives from Graphic3d inherits TShared
 uses
 
     TypeOfPrimitiveArray from Graphic3d,
-    Buffer_Handle        from Graphic3d,
-    BoundBuffer_Handle   from Graphic3d,
-    IndexBuffer_Handle   from Graphic3d,
+    Buffer               from Graphic3d,
+    BoundBuffer          from Graphic3d,
+    IndexBuffer          from Graphic3d,
     Vec3                 from Graphic3d,
     Color                from Quantity,
     Pnt                  from gp,
@@ -442,19 +442,19 @@ is
     -------------------------------------------------------------------
 
     Indices (me)
-    returns IndexBuffer_Handle from Graphic3d;
+    returns IndexBuffer from Graphic3d;
     ---Purpose: Returns optional index buffer.
     ---C++: inline
     ---C++: return const &
 
     Attributes (me)
-    returns Buffer_Handle from Graphic3d;
+    returns Buffer from Graphic3d;
     ---Purpose: Returns vertex attributes buffer (colors, normals, texture coordinates).
     ---C++: inline
     ---C++: return const &
 
     Bounds (me)
-    returns BoundBuffer_Handle from Graphic3d;
+    returns BoundBuffer from Graphic3d;
     ---Purpose: Returns optional bounds buffer.
     ---C++: inline
     ---C++: return const &
@@ -644,9 +644,9 @@ is
 
 fields
 
-  myIndices        : IndexBuffer_Handle from Graphic3d; -- optional index buffer
-  myAttribs        : Buffer_Handle      from Graphic3d; -- vertex attributes buffer (colors, normals, texture coordinates)
-  myBounds         : BoundBuffer_Handle from Graphic3d; -- vertex attributes buffer (colors, normals, texture coordinates)
+  myIndices        : IndexBuffer from Graphic3d; -- optional index buffer
+  myAttribs        : Buffer      from Graphic3d; -- vertex attributes buffer (colors, normals, texture coordinates)
+  myBounds         : BoundBuffer from Graphic3d; -- vertex attributes buffer (colors, normals, texture coordinates)
 
   myType           : TypeOfPrimitiveArray from Graphic3d;
 

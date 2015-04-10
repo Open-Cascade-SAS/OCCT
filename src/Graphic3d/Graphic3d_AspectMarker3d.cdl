@@ -27,12 +27,12 @@ class AspectMarker3d from Graphic3d inherits AspectMarker from Aspect
 
 uses
 
-  Color                 from Quantity,
-  TypeOfMarker          from Aspect,
-  HArray1OfByte         from TColStd,
-  PixMap_Handle         from Image,
-  MarkerImage_Handle    from Graphic3d,
-  ShaderProgram_Handle  from Graphic3d
+  Color          from Quantity,
+  TypeOfMarker   from Aspect,
+  HArray1OfByte  from TColStd,
+  PixMap_Handle  from Image,
+  MarkerImage    from Graphic3d,
+  ShaderProgram  from Graphic3d
 
 is
 
@@ -73,7 +73,7 @@ is
   ---Purpose: Returns marker's texture size.
 
   GetMarkerImage (me)
-  returns MarkerImage_Handle from Graphic3d;
+  returns MarkerImage from Graphic3d;
   ---Level: Public
   ---Purpose: Returns marker's image texture.
   --- Could be null handle if marker aspect has been initialized as
@@ -81,7 +81,7 @@ is
   ---C++: return const &
 
   SetMarkerImage (me       : mutable;
-                  theImage : MarkerImage_Handle from Graphic3d);
+                  theImage : MarkerImage from Graphic3d);
   ---Level: Public
   ---Purpose: Set marker's image texture.
 
@@ -91,12 +91,12 @@ is
              theTexture: HArray1OfByte from TColStd ) is static;
 
   SetShaderProgram ( me  :  mutable; 
-                     theProgram  :  ShaderProgram_Handle from Graphic3d );
+                     theProgram  :  ShaderProgram from Graphic3d );
   ---Level: Public
   ---Purpose: Sets up OpenGL/GLSL shader program.
 
   ShaderProgram ( me )
-  returns ShaderProgram_Handle from Graphic3d;
+  returns ShaderProgram from Graphic3d;
   ---C++: return const &
 
 fields
@@ -113,8 +113,8 @@ fields
 --            - the scale factor
 --           defined by AspectMarker.
 
-myMarkerImage : MarkerImage_Handle from Graphic3d is protected;
+myMarkerImage : MarkerImage from Graphic3d is protected;
 
-MyShaderProgram  :  ShaderProgram_Handle  from  Graphic3d; 
+MyShaderProgram  :  ShaderProgram  from  Graphic3d; 
 
 end AspectMarker3d;

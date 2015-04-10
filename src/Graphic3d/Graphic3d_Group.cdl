@@ -83,9 +83,9 @@ deferred class Group from Graphic3d inherits TShared
         VerticalTextAlignment       from Graphic3d,
         ArrayOfPrimitives           from Graphic3d,
         TypeOfPrimitiveArray        from Graphic3d,
-        IndexBuffer_Handle          from Graphic3d,
-        Buffer_Handle               from Graphic3d,
-        BoundBuffer_Handle          from Graphic3d,
+        IndexBuffer                 from Graphic3d,
+        Buffer                      from Graphic3d,
+        BoundBuffer                 from Graphic3d,
         TransModeFlags              from Graphic3d,
         BndBox4f                    from Graphic3d,
         Ax2                         from gp
@@ -360,9 +360,9 @@ deferred class Group from Graphic3d inherits TShared
 
     AddPrimitiveArray (me              : mutable;
                        theType         : TypeOfPrimitiveArray from Graphic3d;
-                       theIndices      : IndexBuffer_Handle   from Graphic3d;
-                       theAttribs      : Buffer_Handle        from Graphic3d;
-                       theBounds       : BoundBuffer_Handle   from Graphic3d;
+                       theIndices      : IndexBuffer          from Graphic3d;
+                       theAttribs      : Buffer               from Graphic3d;
+                       theBounds       : BoundBuffer          from Graphic3d;
                        theToEvalMinMax : Boolean from Standard = Standard_True) is virtual;
     ---Level: Public
     ---Purpose: Adds an array of primitives for display

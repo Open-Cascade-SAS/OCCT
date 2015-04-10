@@ -20,8 +20,6 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <Graphic3d_ShaderVariable_Handle.hxx>
-
 //! Interface for generic variable value.
 struct Graphic3d_ValueInterface
 {
@@ -161,6 +159,8 @@ protected:
   //! The generic value of shader variable.
   Graphic3d_ValueInterface* myValue;
 };
+
+DEFINE_STANDARD_HANDLE (Graphic3d_ShaderVariable, Standard_Transient)
 
 #include <Graphic3d_ShaderVariable.lxx>
 
