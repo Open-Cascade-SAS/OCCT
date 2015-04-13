@@ -162,4 +162,4 @@ LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d \
         -lTKBRep -lTKGeomBase -lTKPShape -lTKTopAlgo -lTKPrim \
         -lTKBool -lTKVoxel -lTKOpenGl \
 
-
+QMAKE_CXXFLAGS            = -Zc:wchar_t 
