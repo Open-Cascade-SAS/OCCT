@@ -40,10 +40,11 @@ is
     Set (myclass; label : Label from TDF; lower, upper : Integer from Standard; 
     	    	  isDelta : Boolean from Standard = Standard_False)
     ---Purpose: Finds, or creates, an ExtStringArray attribute with <lower> 
-    --          and <upper> bounds.  The ExtStringArray  attribute is returned. 
-    --          If <isDelta> == False, DefaultDeltaOnModification is used.     
-    -- 	        If attribute is already set, all input parameters are refused 
-    --          and the found attribute is returned.
+    -- and <upper> bounds on the specified label. 
+    -- If <isDelta> == False, DefaultDeltaOnModification is used. 
+    -- If <isDelta> == True, DeltaOnModification of the current attribute is used.
+    -- If attribute is already set, all input parameters are refused and the found
+    -- attribute is returned.
     returns ExtStringArray from TDataStd;
 
     

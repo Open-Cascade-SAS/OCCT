@@ -40,7 +40,8 @@ is
     	    	  isDelta : Boolean from Standard = Standard_False)
     ---Purpose: Finds or creates on the <label> an integer array attribute 
     -- with the specified <lower> and <upper> boundaries. 
-    -- If <isDelta> == False, DefaultDeltaOnModification is used.     
+    -- If <isDelta> == False, DefaultDeltaOnModification is used. 
+    -- If <isDelta> == True, DeltaOnModification of the current attribute is used.
     -- If attribute is already set, all input parameters are refused and the found
     -- attribute is returned.
     returns IntegerArray from TDataStd;

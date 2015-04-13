@@ -38,10 +38,12 @@ is
 
     Set (myclass; label : Label from TDF; lower, upper : Integer from Standard; 
     	    	  isDelta : Boolean from Standard = Standard_False)
-    	---Purpose: Finds or creates on the <label> a real array attribute 
-        -- with the specified <lower> and <upper> boundaries.  
-    	-- If attribute is already set, all input parameters are refused and the found
-    	-- attribute is returned.
+    ---Purpose: Finds or creates on the <label> a real array attribute with
+    -- the specified <lower> and <upper> boundaries.  
+    -- If <isDelta> == False, DefaultDeltaOnModification is used. 
+    -- If <isDelta> == True, DeltaOnModification of the current attribute is used. 
+    -- If attribute is already set, input parameter <isDelta> is refused and the found
+    -- attribute returned.
     returns RealArray from TDataStd;
 
     
