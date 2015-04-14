@@ -187,6 +187,8 @@ static
 						  const Standard_Real Tol,
 						  const Standard_Boolean RecadreOnPeriodic)
 {
+  if(myFace.IsNull())
+    return TopAbs_UNKNOWN;
   if(myFClass2d == NULL) { 
     myFClass2d = (void *) new BRepTopAdaptor_FClass2d(myFace,Tol);
   } 
