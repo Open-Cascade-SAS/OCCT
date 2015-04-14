@@ -61,9 +61,7 @@ is
 fields
 
 Addr        : Address;
-AddrBuf     : Address[32];
-Buf         : Real[512];
-isAddrAllocated: Boolean;
+Buf         : Real[16];
 isAllocated : Boolean;
 LowR        : Integer;
 UppR        : Integer;
