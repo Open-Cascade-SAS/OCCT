@@ -1,2 +1,8 @@
 restore [locate_data_file CCH_propag.rle] a
-set nbFreeEdges 7
+
+sewing result $tol a
+
+checkmaxtol result 1.5e-005
+checknbshapes result -shell 1
+checkfreebounds result 7
+checkfaults result a 0

@@ -19,18 +19,6 @@ bbuild result
 
 set square 3107.42
 
-set nbshapes_expected "
-Number of shapes in shape
- VERTEX    : 26
- EDGE      : 45
- WIRE      : 23
- FACE      : 23
- SHELL     : 5
- SOLID     : 5
- COMPSOLID : 0
- COMPOUND  : 1
- SHAPE     : 128
-"
-checknbshapes result ${nbshapes_expected} 1 "Result done by General Fuse operator"
+checknbshapes result -vertex 26 -edge 45 -wire 23 -face 23 -shell 5 -solid 5 -compsolid 0 -compound 1 -shape 128 -t -m "Result done by General Fuse operator"
 
 set 2dviewer 1

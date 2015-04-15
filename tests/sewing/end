@@ -1,69 +1,7 @@
-set cs_a [checkshape a]
-puts "checkshape a"
-if { [info exists nb_f] == 0 } {
-  set nb_f 0
-}
-if { $cs_a == "This shape seems to be valid"} {
-  puts "Shape a seems to be valid"
-  set nb_a 0
-} else {
-  puts "Shape a is not valid"
-  regexp {Faulty shapes in variables faulty_([0-9]*) to faulty_([0-9]*)} $cs_a full nb_a_begin nb_a_end
-  puts "Number of faulties is [expr $nb_a_end - $nb_a_begin +1]"
-  set nb_a [expr $nb_a_end - $nb_a_begin +1]
-}
-
-set exp [explode a f]
-set L [concat compound $exp C]
-eval $L
-puts [whatis C]
-puts [sewing result $tol C]
-
 if { [isdraw result] } {
-  set cs_r [checkshape result]
-  puts "checkshape result"
-  if { $cs_r == "This shape seems to be valid"} {
-    puts "Shape result seems to be valid"
-    set nb_r 0
-  } else {
-    puts "Shape result is not valid"
-    regexp {Faulty shapes in variables faulty_([0-9]*) to faulty_([0-9]*)} $cs_r full nb_r_begin nb_r_end
-    set nb_r [expr $nb_r_end - $nb_r_begin +1]
-  }
-  set t [dtyp result]
-  puts $t
-  set w [lindex $t 1]
-  if {"$w" == "SHELL"} {
-    freebounds $result -0.01
-    set s [explode result_c e]
-    puts $s
-    set index [ llength $s ]
-    #nbFreeEdges is set to empty only in cases of unstable work of sewing (see #24591).
-    if { [string compare "$nbFreeEdges" ""] == 0 || $index != $nbFreeEdges } {
-      puts "Error : Number of free edges is $index"
-    }
-
-    puts "Number of faults for the initial shape is $nb_a."
-    puts "Number of faults for the resulting shape is $nb_r."
-
-    #if nb_f is empty then it is instaility.
-    if { [string compare "$nb_f" ""] == 0 || $nb_f > 0 } {
-      set os "ALL"
-      if {[array get env os_type] != ""} {
-        set os $env(os_type)
-      }
-      puts "TODO #23150 $os: Error : Number of faults is $nb_f"
-    }
-    if { $nb_r > $nb_a } {
-      puts "Error : Number of faults is $nb_r"
-    }
-  } else { 
-    puts "Error : OPERATION FAILED"
-  }
   clear
   smallview
   donly result
-  checkshape result
   fit
   xwd $imagedir/${test_image}.png
 } else {

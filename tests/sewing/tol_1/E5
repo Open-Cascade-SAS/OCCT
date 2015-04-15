@@ -1,2 +1,8 @@
 restore [locate_data_file CFI901_congefkd.rle] a
-set nbFreeEdges 12
+
+sewing result $tol a
+
+checkmaxtol result 0.0011000000000000001
+checknbshapes result -shell 1
+checkfreebounds result 12
+checkfaults result a 0

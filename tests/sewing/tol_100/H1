@@ -1,2 +1,10 @@
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+
 restore [locate_data_file CHE_filter.rle] a
-set nb_f 16
+
+sewing result $tol a
+
+checkmaxtol result 0.0054045213822515332
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 16

@@ -13,18 +13,6 @@ bcut result a b
 
 set square 268575
 
-set nbshapes_expected "
-Number of shapes in shape
- VERTEX    : 8
- EDGE      : 12
- WIRE      : 6
- FACE      : 5
- SHELL     : 1
- SOLID     : 1
- COMPSOLID : 0
- COMPOUND  : 1
- SHAPE     : 34
-"
-checknbshapes result ${nbshapes_expected} 1 "Result of BOP cut"
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 5 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 34 -t -m "Result of BOP cut"
 
 set 2dviewer 1

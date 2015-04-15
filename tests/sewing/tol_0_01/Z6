@@ -1,2 +1,8 @@
 restore [locate_data_file CFI_5_f12fgk.rle] a
-set nbFreeEdges 10
+
+sewing result $tol a
+
+checkmaxtol result 9.9999999999999995e-008
+checknbshapes result -shell 1
+checkfreebounds result 10
+checkfaults result a 0

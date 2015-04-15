@@ -1,2 +1,8 @@
 restore [locate_data_file CFI_11_e2fff.rle] a
-set nbFreeEdges 12
+
+sewing result $tol a
+
+checkmaxtol result 0.001
+checknbshapes result -shell 1
+checkfreebounds result 12
+checkfaults result a 0

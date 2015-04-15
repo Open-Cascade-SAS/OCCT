@@ -1,3 +1,10 @@
-puts "TODO OCC23150 ALL: Error : Number of faults is"
+puts "TODO ?OCC24592 ALL: Error : Number of faults is"
 
 restore [locate_data_file CIN902_intcqhmq.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 58.18051229943552
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 13

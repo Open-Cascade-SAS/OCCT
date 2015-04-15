@@ -20,4 +20,8 @@ if {[llength ${list}] > 4} {
    puts "Faulty OCC859: here is sewing problem"
 }
 
+checkmaxtol result 0.00025118948696105701
+checknbshapes result -shell 1
+checkfreebounds result 6
+
 set 2dviewer 1

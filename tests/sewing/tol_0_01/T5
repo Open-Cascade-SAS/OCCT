@@ -1,1 +1,8 @@
 restore [locate_data_file CFE900_uki60gfk.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 0.023145757709786
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

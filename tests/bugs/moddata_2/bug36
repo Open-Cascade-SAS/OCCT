@@ -23,6 +23,10 @@ if [catch { igesbrep $filepath a * } res] {
     } else {
 	puts "Elapsed time is less then 30 seconds - OK"      
     }
+
+    checkmaxtol result 2.5472812372261969e-005
+    checknbshapes result -shell 13
+    checkfreebounds result 1249
 }
 
 set 2dviewer 0

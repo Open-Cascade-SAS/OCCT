@@ -31,6 +31,10 @@ if { $ve1 != $ve2 || $ed1 != $ed2 || $we1 != $we2} {
     puts "OK OCC714: SEWING operation was made PROPERLY"
 }
 
+checkmaxtol result 0.00016588397833094108
+checknbshapes result -shell 1
+checkfreebounds result 0
+
 set square 12917.1
 set 2dviewer 0
 

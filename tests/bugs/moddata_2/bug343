@@ -18,6 +18,10 @@ if [catch {igesbrep $filepath a *} catch_result] {
     #
     sewing result1 100. a
 
+    checkmaxtol result1 0.21325393968565914
+    checknbshapes result1 -shell 1
+    checkfreebounds result1 86
+
     set FaceList [explode result1 f]
     set FaceListLength [llength ${FaceList}]
     if { ${FaceListLength} < 1 } {
@@ -66,6 +70,10 @@ if [catch {igesbrep $filepath a *} catch_result] {
 
         tpcompound a
 	sewing result2 100. a
+
+        checkmaxtol result2 0.21325393968565914
+        checknbshapes result2 -shell 1
+        checkfreebounds result2 86
 
         set FaceList [explode result2 f]
         set FaceListLength [llength ${FaceList}]

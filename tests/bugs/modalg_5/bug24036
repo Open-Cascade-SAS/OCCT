@@ -14,21 +14,8 @@ explode v
 sewing result 0.00001 v_1 v_2
 
 checkshape result
-
-set tolmaxres [tolmax result]
-regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full MaxTolerance
-set CMP_TOL 1.e-4
-if { ${MaxTolerance} > ${CMP_TOL} } {
-   puts "Error: invalid tolerance"
-}
-
-freebounds $result 0
-set s [explode result_c e]
-
-set index [ llength $s ]
-puts "Number of free edges is $index"
-if { $index != 2 } {
-   puts "Error : Number of free edges is $index"
-}
+checkmaxtol result 2.0000004260026293e-007 {v_1 v_2} -min_tol 1.e-4
+checknbshapes result -shell 1
+checkfreebounds result 2
 
 set 2dviewer 1

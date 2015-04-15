@@ -17,6 +17,11 @@ if [catch { igesbrep $filepath a *} result] {
     } else {
 	puts " BUC60898 OK: function SEWING works without except"
     }
+
+    checkmaxtol result 0.0002494807463576937
+    checknbshapes result -shell 4
+    checkfreebounds result 1725
+
     set square 798.266
     set 2dviewer 0
 }

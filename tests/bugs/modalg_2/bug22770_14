@@ -24,4 +24,8 @@ set nb_compsol_good 0
 set nb_compound_good 1
 set nb_shape_good 3476
 
+checkmaxtol result 0.00077119287499509003
+checknbshapes result -shell 0
+checkfreebounds result 1469
+
 set 3dviewer 0

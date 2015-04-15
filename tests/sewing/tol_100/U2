@@ -1,1 +1,8 @@
 restore [locate_data_file support-fixed.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 1.4199998855590501e-007
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

@@ -1,1 +1,8 @@
 restore [locate_data_file CFI_pro10129.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 1.2098699769702099e-006
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

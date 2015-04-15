@@ -1,2 +1,8 @@
 restore [locate_data_file CTO904_pro10095b.rle] a
-set nbFreeEdges 4
+
+sewing result $tol a
+
+checkmaxtol result 114.90666646781224
+checknbshapes result -shell 1
+checkfreebounds result 4
+checkfaults result a 0

@@ -28,7 +28,8 @@ if { ($tri != 6409 || $nod != 6195) } {
     puts "Shading problem may be, nb tri & nod"
 } 
 
+checkmaxtol result 0.00061050555357809982
+checknbshapes result -shell 1
+checkfreebounds result 265
+
 set 3dviewer 1
-
-
-

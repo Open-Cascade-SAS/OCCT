@@ -131,3 +131,11 @@ if { ${square2} != ${square2_good} } {
 donly sr2
 fit
 xwd $imagedir/${test_image}_2.png
+
+checkmaxtol sr1 2.0000000024492936e-007
+checknbshapes sr1 -shell 1
+checkfreebounds sr1 2
+
+checkmaxtol sr2 3.0000000042603855e-007
+checknbshapes sr2 -shell 1
+checkfreebounds sr2 0

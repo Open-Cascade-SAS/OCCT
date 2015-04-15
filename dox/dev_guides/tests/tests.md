@@ -988,7 +988,7 @@ This group allows  testing extended data exchange packages.
 | Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS, TKVoxel	| vis |
 
 
-@subsection testmanual_5_2 Recommended approaches to checking test results
+@subsection testmanual_5_3 Recommended approaches to checking test results
 
 @subsubsection testmanual_5_3_1 Shape validity
 
@@ -997,6 +997,36 @@ Run command *checkshape* on the result (or intermediate) shape and make sure tha
 Example
 ~~~~~
 checkshape result
+~~~~~
+
+To check the number of faults in the shape command *checkfaults* can be used.
+
+Use: checkfaults shape source_shape [ref_value=0]
+
+The default syntax of *checkfaults* command:
+~~~~~
+checkfaults results a_1
+~~~~~
+
+The command will check the number of faults in the source shape (*a_1*) and compare it
+with number of faults in the resulting shape (*result*). If shape *result* contains
+more faults, you will get an error:
+~~~~~
+checkfaults results a_1
+Error : Number of faults is 5
+~~~~~
+It is possible to set the reference value for comparison (reference value is 4):
+
+~~~~~
+checkfaults results a_1 4
+~~~~~
+
+If number of faults in the resulting shape is unstable, reference value should be set to "-1".
+As a result command *checkfaults* will return the following error:
+
+~~~~~
+checkfaults results a_1 -1
+Error : Number of faults is UNSTABLE
 ~~~~~
 
 @subsubsection testmanual_5_3_2 Shape tolerance
@@ -1008,6 +1038,33 @@ regexp { *FACE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_face
 regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_edgee
 regexp { *VERTEX +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_vertex
 ~~~~~
+
+It is possible to use command *checkmaxtol* to check maximal tolerance of shape and compare it with reference value.
+
+Use: checkmaxtol shape ref_value [source_shapes={}] [options...]
+
+Allowed options are:
+ *   -min_tol: minimum tolerance for comparison
+ *   -multi_tol: tolerance multiplier
+
+Argument "source_shapes" is a list of shapes to compare with.
+It can be empty to skip comparison of tolerance with these shapes.
+
+The default syntax of *checkmaxtol* command for comparison with the reference value:
+~~~~~
+checkmaxtol result 0.00001
+~~~~~
+
+There is an opportunity to compare max tolerance of resulting shape with max tolerance of source shape.
+In the following example command *checkmaxtol* gets max tolerance among objects *a_1* and *a_2*.
+Then it chooses the maximum value between founded tolerance and value -min_tol (0.000001)
+and multiply it on the coefficient -multi_tol (i.e. 2):
+
+~~~~~
+checkmaxtol result 0.00001 {a_1 a_2} -min_tol 0.000001 -multi_tol 2
+~~~~~
+
+If the value of maximum tolerance more than founded tolerance for comparison, the command will return an error.
 
 @subsubsection testmanual_5_3_3 Shape volume, area, or length
 
@@ -1058,3 +1115,82 @@ vdump $imagedir/${casename}_shading.png
 ~~~~~
 
 This image will be included in the HTML log produced by *testgrid* command and will be checked for non-regression through comparison of images by command *testdiff*.
+
+@subsubsection testmanual_5_3_6 Number of free edges
+
+To check the number of free edges run the command *checkfreebounds*.
+
+It compares number of free edges with reference value.
+
+Use: checkfreebounds shape ref_value [options...]
+
+Allowed options are:
+ * -tol N: used tolerance (default -0.01)
+ * -type N: used type, possible values are "closed" and "opened" (default "closed")
+
+~~~~~
+checkfreebounds result 13
+~~~~~
+
+Option -tol N is used to set tolerance for command *freebounds*, which is used within command *checkfreebounds*.
+
+Option -type N is used to select the type of counted free edges - closed or opened.
+
+If the number of free edges in the resulting shape is unstable, reference value should be set to "-1".
+As a result command *checkfreebounds* will return the following error:
+
+~~~~~
+checkfreebounds result -1
+Error : Number of free edges is UNSTABLE
+~~~~~
+
+@subsubsection testmanual_5_3_7 Compare numbers
+
+Procedure to check equality of two reals with some tolerance (relative and absolute)
+
+Use: checkreal name value expected tol_abs tol_rel
+
+~~~~~
+checkreal "Some important value" $value 5 0.0001 0.01
+~~~~~
+
+@subsubsection testmanual_5_3_8 Check number of sub-shapes
+
+Compare number of sub-shapes in "shape" with given reference data
+
+Use: checknbshapes shape [options...]
+Allowed options are:
+ * -vertex N
+ * -edge N
+ * -wire N
+ * -face N
+ * -shell N
+ * -solid N
+ * -compsolid N
+ * -compound N
+ * -shape N
+ * -t: compare the number of sub-shapes in "shape" counting
+      the same sub-shapes with different location as different sub-shapes.
+ * -m msg: print "msg" in case of error
+
+~~~~~
+checknbshapes result -vertex 8 -edge 4
+~~~~~
+
+@subsubsection testmanual_5_3_9 Check pixel color
+
+To check pixel color command *checkcolor* can be used.
+
+Use: checkcolor x y red green blue
+
+  x y - pixel coordinates
+
+  red green blue - expected pixel color (values from 0 to 1)
+
+This procedure checks color with tolerance (5x5 area)
+
+Next example will compare color of point with coordinates x=100 y=100 with RGB color R=1 G=0 B=0.
+If colors are not equal, procedure will check the nearest ones points (5x5 area)
+~~~~~
+checkcolor 100 100 1 0 0
+~~~~~

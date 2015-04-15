@@ -1,2 +1,10 @@
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+
 restore [locate_data_file CTO900_cts40185_top.rle] a
-set nb_f 8
+
+sewing result $tol a
+
+checkmaxtol result 0.0035001001080334497
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 8

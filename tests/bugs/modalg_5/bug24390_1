@@ -18,27 +18,8 @@ restore [locate_data_file bug24390_face_5.brep] f6
 sewing result f1 f2 f3 f4 f5 f6
 
 checkshape result
-
-set tolmax_f [tolmax f1]
-regexp {max tol = ([-0-9.+eE]+)} ${tolmax_f} full CMP_TOL
-
-set face_list {f2 f3 f4 f5 f6}
-foreach f ${face_list} {
-   set tolmax_f [tolmax ${f}]
-   regexp {max tol = ([-0-9.+eE]+)} ${tolmax_f} full FaceMaxTolerance
-   if { ${FaceMaxTolerance} > ${CMP_TOL} } {
-      set CMP_TOL ${FaceMaxTolerance}
-   }
-}
-
-set CMP_TOL [expr 5. * ${CMP_TOL}]
-puts "CMP_TOL=${CMP_TOL}"
-
-set tolmaxres [tolmax result]
-regexp {max tol = ([-0-9.+eE]+)} ${tolmaxres} full MaxTolerance
-puts "MaxTolerance=${MaxTolerance}"
-if { ${MaxTolerance} > ${CMP_TOL} } {
-   puts "Error: invalid tolerance"
-}
+checkmaxtol result 6.1606205182399194e-005 {f1 f2 f3 f4 f5 f6} -min_tol 0 -multi_tol 5.
+checknbshapes result -shell 1
+checkfreebounds result 0
 
 set 2dviewer 1

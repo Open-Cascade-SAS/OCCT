@@ -17,6 +17,11 @@ if [catch {sewing result 0.019 shape_8h} catch_result] {
 } else {
   checkshape result f
 }
+
+checkmaxtol result 0.99457631799307555
+checknbshapes result -shell 1
+checkfreebounds result 13
+
 set square 16490.5
 set 3dviewer 0
 

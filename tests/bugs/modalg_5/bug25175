@@ -12,5 +12,9 @@ igesread [locate_data_file bug25175_3.igs] a *
 
 sewing result 0.1 a
 
+checkmaxtol result 0.0076621571738049385
+checknbshapes result -shell 1
+checkfreebounds result 2
+
 set 2dviewer 1
 

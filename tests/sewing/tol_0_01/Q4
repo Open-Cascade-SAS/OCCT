@@ -1,2 +1,8 @@
 restore [locate_data_file CIN900_buc60204.rle] a
-set nbFreeEdges 24
+
+sewing result $tol a
+
+checkmaxtol result 0.10000030000000001
+checknbshapes result -shell 1
+checkfreebounds result 24
+checkfaults result a 0

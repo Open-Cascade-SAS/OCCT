@@ -23,20 +23,7 @@ baddtools b2
 bfillds
 bbuild result
 
+checknbshapes result -vertex 6 -edge 11 -wire 4 -face 2 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 24 -t -m "Result obtained by General Fuse operator"
+
 set square 306.285
-
-set nbshapes_expected "
-Number of shapes in shape
- VERTEX    : 6
- EDGE      : 11
- WIRE      : 4
- FACE      : 2
- SHELL     : 0
- SOLID     : 0
- COMPSOLID : 0
- COMPOUND  : 1
- SHAPE     : 24
-"
-checknbshapes result ${nbshapes_expected} 1 "Result obtained by General Fuse operator"
-
 set 3dviewer 1

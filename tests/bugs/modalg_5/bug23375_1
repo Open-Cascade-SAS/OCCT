@@ -13,24 +13,9 @@ restore [locate_data_file bug23375_Volute1.brep] v
 explode v
 sewing result 0.01 v_1 v_2
 
-# 1
 checkshape result
-
-# 2
-set tolmaxres [tolmax result]
-regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full MaxTolerance
-set CMP_TOL 1.e-4
-if { ${MaxTolerance} > ${CMP_TOL} } {
-   puts "Error: invalid tolerance"
-}
-
-# 3
-freebounds $result -0.01
-set s [explode result_c e]
-puts $s
-set index [ llength $s ]
-if { $index != 8 } {
-   puts "Error : Number of free edges is $index"
-}
+checkmaxtol result 3.1397023587080346e-005 {v_1 v_2} -min_tol 1.e-4
+checknbshapes result -shell 1
+checkfreebounds result 8
 
 set 2dviewer 1

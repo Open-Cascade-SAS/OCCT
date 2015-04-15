@@ -6,6 +6,11 @@ puts "========================"
 restore [locate_data_file buc60523a.brep] a
 checkshape a
 sewing result 1.e-7 a
+
+checkmaxtol result 0.0010002000000000001
+checknbshapes result -shell 1
+checkfreebounds result 2
+
 set square 156.919
 set 2dviewer 0
 

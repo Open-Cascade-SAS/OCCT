@@ -12,30 +12,9 @@ restore [locate_data_file  bug24174_stitch.brep] a
 
 sewing result 0.1 a
 
-# 0
-set log_1 [tolmax a]
-regexp {max tol = ([-0-9.+eE]+)} ${log_1} full MaxTolerance_a
-set CMP_TOL ${MaxTolerance_a}
-
-# 1
 checkshape result
-
-# 2
-set log_2 [tolmax result]
-regexp {max tol = ([-0-9.+eE]+)} ${log_2} full MaxTolerance_result
-if { ${MaxTolerance_result} > ${CMP_TOL} } {
-   puts "Error: invalid tolerance"
-}
-
-# 3
-freebounds $result 0
-set s [explode result_c e]
-
-set Number [ llength ${s} ]
-puts "Number of free edges is ${Number}"
-set Number_Free_Edges 9
-if { ${Number} != ${Number_Free_Edges} } {
-   puts "Error : Number of free edges is ${Number}"
-}
+checkmaxtol result 0.58022137281123598 {a}
+checknbshapes result -shell 1
+checkfreebounds result 9
 
 set 2dviewer 1

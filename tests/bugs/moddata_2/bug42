@@ -34,5 +34,9 @@ if { [llength $closed_wires] != 1} {
    puts "Error : Amount of free closed wires is not equal 1"
 }
 
+checkmaxtol result 0.21325393955468794
+checknbshapes result -shell 1
+checkfreebounds result 86
+
 set 2dviewer 0
 

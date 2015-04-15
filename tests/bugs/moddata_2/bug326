@@ -14,5 +14,9 @@ if [catch { sewing result a } catch_result] {
     puts "OCC326 OK: Sewing is ok, there is no except"
 }
 
+checkmaxtol result 54.6751898398187
+checknbshapes result -shell 1
+checkfreebounds result 254
+
 set 2dviewer 0
 

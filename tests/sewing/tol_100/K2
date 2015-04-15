@@ -1,2 +1,8 @@
 restore [locate_data_file CNP002_projoieq.rle] a
-set nbFreeEdges 32
+
+sewing result $tol a
+
+checkmaxtol result 0.0011000000000000001
+checknbshapes result -shell 1
+checkfreebounds result 32
+checkfaults result a 0

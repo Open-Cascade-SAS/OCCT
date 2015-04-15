@@ -1,1 +1,8 @@
 restore [locate_data_file CFE900_pro16gff.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 3.8614424452715898e-007
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

@@ -21,5 +21,9 @@ if { ${res_faces} != ${good_faces} } {
     puts "Faulty ${BugNumber}"
 }
 
+checkmaxtol result 105.192615242296
+checknbshapes result -shell 1
+checkfreebounds result 73
+
 set 2dviewer 0
 

@@ -14,18 +14,6 @@ bopfuse result
 
 set square 3.05204e+06
 
-set nbshapes_expected "
-Number of shapes in shape
- VERTEX    : 22
- EDGE      : 36
- WIRE      : 17
- FACE      : 14
- SHELL     : 1
- SOLID     : 1
- COMPSOLID : 0
- COMPOUND  : 1
- SHAPE     : 92
-"
-checknbshapes result ${nbshapes_expected} 1 "Result done by Boolean Operation algorithm"
+checknbshapes result -vertex 22 -edge 36 -wire 17 -face 14 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 92 -t -m "Result done by Boolean Operation algorithm"
 
 set 2dviewer 1

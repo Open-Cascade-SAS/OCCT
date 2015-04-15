@@ -1,2 +1,10 @@
+puts "TODO ?OCC24592 ALL: Error: Max tolerance"
+
 restore [locate_data_file CFI_pro11907.rle] a
-set nbFreeEdges 5
+
+sewing result $tol a
+
+checkmaxtol result 119.70912291460951
+checknbshapes result -shell 1
+checkfreebounds result 5
+checkfaults result a 0

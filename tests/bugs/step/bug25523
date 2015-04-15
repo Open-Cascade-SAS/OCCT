@@ -9,19 +9,7 @@ puts ""
 restore [locate_data_file bug25523_bad_loopback_step.brep] a
 nbshapes a
 
-set nbshapes_expected "
-Number of shapes in a
- VERTEX    : 30
- EDGE      : 54
- WIRE      : 32
- FACE      : 27
- SHELL     : 1
- SOLID     : 1
- COMPSOLID : 0
- COMPOUND  : 0
- SHAPE     : 145
-"
-checknbshapes a ${nbshapes_expected} 0 "Stator model"
+checknbshapes a -vertex 30 -edge 54 -wire 32 -face 27 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 145 -m "Stator model"
 
 newmodel
 set aFile ${imagedir}/bug25523.stp
@@ -31,7 +19,7 @@ stepwrite a a ${aFile}
 
 stepread ${aFile} b *
 nbshapes b_1 ;# empty compound
-checknbshapes b_1 ${nbshapes_expected} 0 "Stator model"
+checknbshapes b_1 -vertex 30 -edge 54 -wire 32 -face 27 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 145 -m "Stator model"
 
 tpstat c ;# reports exception
 

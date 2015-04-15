@@ -1,1 +1,8 @@
 restore [locate_data_file CFE900_cts21gev.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 0.0020158847022207702
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

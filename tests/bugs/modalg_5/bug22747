@@ -29,5 +29,9 @@ if { [regexp "Progress:" $List2] != 1 } {
     puts "Mode +t works properly"
 }
 
+checkmaxtol result 2.0000280013370992e-005
+checknbshapes result -shell 1
+checkfreebounds result 456
+
 set 2dviewer 0
 

@@ -1,4 +1,11 @@
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+puts "TODO ?OCC24592 ALL: Error : Number of free edges is"
+
 restore [locate_data_file CCH_indusheq.rle] a
-puts "TODO #24592 ALL: Error : Number of free edges is"
-set nb_f ""
-set nbFreeEdges ""
+
+sewing result $tol a
+
+checkmaxtol result 9.9999999999999995e-007
+checknbshapes result -shell 1
+checkfreebounds result 33
+checkfaults result a 2

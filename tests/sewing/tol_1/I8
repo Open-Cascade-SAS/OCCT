@@ -1,2 +1,8 @@
 restore [locate_data_file CFI_7_c3_fhq.rle] a
-set nbFreeEdges 4
+
+sewing result $tol a
+
+checkmaxtol result 4.9999999999999998e-007
+checknbshapes result -shell 1
+checkfreebounds result 4
+checkfaults result a 0

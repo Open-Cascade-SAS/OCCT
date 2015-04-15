@@ -1,1 +1,8 @@
 restore [locate_data_file CCI60005.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 9.9513300238605307e-005
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

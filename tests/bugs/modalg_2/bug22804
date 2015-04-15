@@ -53,6 +53,9 @@ if { ${IsOk}  == 0 } {
    puts "${BugNumber}: OK"
 }
 
+checkmaxtol result 2279.641703013865
+checknbshapes result -shell 1
+checkfreebounds result 5
+
 set square 1.22542e+09
 set 2dviewer 0
-

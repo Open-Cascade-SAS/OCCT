@@ -19,6 +19,10 @@ vinit
 vdisplay result
 
 # checkshape res
-                                                                                                                                                                         
+
+checkmaxtol result 0.0022960682613350899
+checknbshapes result -shell 2
+checkfreebounds result 115
+
 set square 270868
 set 3dviewer 0

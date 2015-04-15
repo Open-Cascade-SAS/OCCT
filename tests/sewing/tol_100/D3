@@ -1,3 +1,11 @@
+puts "TODO ?OCC24592 ALL: Error: Max tolerance"
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+
 restore [locate_data_file CFI_pro15441.rle] a
-set nb_f ""
-set nbFreeEdges 4
+
+sewing result $tol a
+
+checkmaxtol result 29.44023733263295
+checknbshapes result -shell 1
+checkfreebounds result 4
+checkfaults result a 5

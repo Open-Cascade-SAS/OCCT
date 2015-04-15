@@ -1,2 +1,10 @@
+puts "TODO OCC23674 ALL: Error : Number of faults is"
+
 restore [locate_data_file CIN901_intcqhmi.rle] a
-set nb_f 6
+
+sewing result $tol a
+
+checkmaxtol result 27.029859224903987
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 6

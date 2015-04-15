@@ -1,2 +1,8 @@
 restore [locate_data_file 4_P1(hlacg07).draw] a
-set nbFreeEdges 17
+
+sewing result $tol a
+
+checkmaxtol result 9.9999999999999995e-007
+checknbshapes result -shell 1
+checkfreebounds result 17
+checkfaults result a 0

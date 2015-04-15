@@ -1,1 +1,8 @@
 restore [locate_data_file CFI_pro90fjr.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 355
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

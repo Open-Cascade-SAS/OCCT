@@ -1,2 +1,8 @@
 restore [locate_data_file CIN001_a20.rle] a
-set nbFreeEdges 74
+
+sewing result $tol a
+
+checkmaxtol result 0.0049520649253341166
+checknbshapes result -shell 1
+checkfreebounds result 74
+checkfaults result a 0

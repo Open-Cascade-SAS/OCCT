@@ -36,7 +36,7 @@ if { [info exists env(DRAWHOME) ] } {
 
 # load standard DRAW scripts
 if { [file isdirectory $dir] } { 
-  foreach script {StandardCommands.tcl Geometry.tcl StandardViews.tcl TestCommands.tcl} {
+  foreach script {StandardCommands.tcl Geometry.tcl StandardViews.tcl TestCommands.tcl CheckCommands.tcl} {
     if [file exist [file join $dir $script]] {
       source [file join $dir $script]
     } else {

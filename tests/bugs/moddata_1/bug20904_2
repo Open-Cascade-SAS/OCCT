@@ -44,5 +44,9 @@ if { ${status} != 0 } {
   puts "OK ${BugNumber}"
 }
 
+checkmaxtol result 9.9999999999999995e-008
+checknbshapes result -shell 1
+checkfreebounds result 8
+
 set square 1.33253e+06
 set 2dviewer 0

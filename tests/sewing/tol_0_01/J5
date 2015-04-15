@@ -1,1 +1,8 @@
 restore [locate_data_file CCV_2_d1_gsw.rle] a
+
+sewing result $tol a
+
+checkmaxtol result 5.7516605984962204e-007
+checknbshapes result -shell 1
+checkfreebounds result 0
+checkfaults result a 0

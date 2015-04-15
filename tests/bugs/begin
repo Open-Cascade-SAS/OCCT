@@ -1,4 +1,5 @@
 # File : begin
+
 if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
     pload TOPTEST
     pload VISUALIZATION
@@ -23,17 +24,6 @@ if { [info exists imagedir] == 0 } {
 }
 if { [info exists test_image] == 0 } {
    set test_image photo
-}
-
-# Procedure to check equality of two reals with tolerance (relative and absolute)
-help checkreal {name value expected tol_abs tol_rel}
-proc checkreal {name value expected tol_abs tol_rel} {
-    if { abs ($value - $expected) > $tol_abs + $tol_rel * abs ($expected) } {
-        puts "Error: $name = $value is not equal to expected $expected"
-    } else {
-        puts "Check of $name OK: value = $value, expected = $expected"
-    }
-    return
 }
 
 # Procedure to check equality of two reals with tolerance (relative and absolute)
@@ -155,31 +145,4 @@ proc checktime {value expected tol_rel message} {
    } else {
       puts "Improvement. ${message}, ${value} seconds, is less than expected time - ${expected} seconds"
    }
-}
-
-# Procedure to check result of nbshapes command
-proc checknbshapes { res nbshapes_expected_s count_locations message} {
-
-    upvar $res shape
-    if { ${count_locations} == 0 } {
-      set nb_info [nbshapes shape]
-    } else {
-      set nb_info [nbshapes shape -t]
-    }
-
-    set EntityList {VERTEX EDGE WIRE FACE SHELL SOLID COMPSOLID COMPOUND SHAPE}
-
-    puts "Checking $message"
-    foreach Entity ${EntityList} {
-       set expr_string "${Entity} +: +(\[-0-9.+eE\]+)"
-       if { [regexp "${expr_string}" ${nbshapes_expected_s} full nb_entity1] > 0 } {
-       	  if { [regexp "${expr_string}" ${nb_info} full nb_entity2] > 0 } {
-    	     if { ${nb_entity2} != ${nb_entity1} } {
-             	puts "Error: number of ${Entity} entities is wrong: ${nb_entity2} while ${nb_entity1} is expected"
-    	     } else {
-             	puts "OK: number of ${Entity} entities is as expected: ${nb_entity2}"
-    	     }
-       	  }
-       }
-    }
 }

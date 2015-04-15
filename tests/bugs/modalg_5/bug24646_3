@@ -22,18 +22,6 @@ bbuild result
 
 set square 8.82625e+06
 
-set nbshapes_expected "
-Number of shapes in shape
- VERTEX    : 88
- EDGE      : 180
- WIRE      : 88
- FACE      : 88
- SHELL     : 2
- SOLID     : 2
- COMPSOLID : 0
- COMPOUND  : 1
- SHAPE     : 449
-"
-checknbshapes result ${nbshapes_expected} 1 "Result done by Boolean Operation algorithm"
+checknbshapes result -vertex 88 -edge 180 -wire 88 -face 88 -shell 2 -solid 2 -compsolid 0 -compound 1 -shape 449 -t -m "Result done by Boolean Operation algorithm"
 
 set 2dviewer 1

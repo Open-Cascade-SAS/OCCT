@@ -12,5 +12,10 @@ restore [locate_data_file OCC22765.brep] a
 sewing result 0.1 a
 
 checkshape result f
+
+checkmaxtol result 2.0000280013370992e-005
+checknbshapes result -shell 1
+checkfreebounds result 456
+
 set square 0.0141287
 set 3dviewer 1
