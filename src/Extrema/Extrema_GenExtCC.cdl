@@ -99,7 +99,6 @@ fields
   myCurveMinTol : Real from Standard;
   myLowBorder : Vector from math;
   myUppBorder : Vector from math;
-  mySolCount : Integer from Standard;
   myPoints1 : SequenceOfReal from TColStd;
   myPoints2 : SequenceOfReal from TColStd;
   myC : Address from Standard [2];

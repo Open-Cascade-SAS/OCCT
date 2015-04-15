@@ -138,16 +138,6 @@ is
 
     class LocateExtCC;
 
-    class ELCC    instantiates GenExtCC from Extrema
-        (Curve from Adaptor3d,
-         CurveTool from Extrema,
-         Curve from Adaptor3d,
-         CurveTool from Extrema,
-         HArray1OfPnt from TColgp,
-         POnCurv from Extrema,
-         Pnt from gp,
-         Vec from gp);
-
     class LocECC    instantiates GenLocateExtCC from Extrema
         (Curve from Adaptor3d,
          CurveTool from Extrema,
@@ -172,17 +162,6 @@ is
     
     class LocateExtCC2d;
     
-
-    class ELCC2d instantiates GenExtCC from Extrema
-        (Curve2d from Adaptor2d,
-         Curve2dTool from Extrema,
-         Curve2d from Adaptor2d,
-         Curve2dTool from Extrema,
-         HArray1OfPnt2d from TColgp,
-         POnCurv2d from Extrema,
-         Pnt2d from gp,
-         Vec2d from gp);
-
     class LocECC2d instantiates GenLocateExtCC from Extrema
         (Curve2d from Adaptor2d,
          Curve2dTool from Extrema,

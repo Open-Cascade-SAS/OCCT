@@ -27,10 +27,12 @@
 //purpose  : 
 //=======================================================================
 Extrema_GenExtCC::Extrema_GenExtCC()
-: myLowBorder(1,2),
+: myCurveMinTol(Precision::PConfusion()),
+  myLowBorder(1,2),
   myUppBorder(1,2),
   myDone(Standard_False)
 {
+  myC[0] = myC[1] = 0;
 }
 
 //=======================================================================
@@ -39,7 +41,8 @@ Extrema_GenExtCC::Extrema_GenExtCC()
 //=======================================================================
 Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
                                    const Curve2& C2)
-: myLowBorder(1,2),
+: myCurveMinTol(Precision::PConfusion()),
+  myLowBorder(1,2),
   myUppBorder(1,2),
   myDone(Standard_False)
 {
@@ -49,7 +52,6 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
   myLowBorder(2) = C2.FirstParameter();
   myUppBorder(1) = C1.LastParameter();
   myUppBorder(2) = C2.LastParameter();
-  myCurveMinTol = 1.0e-9;
 }
 
 //=======================================================================
@@ -62,7 +64,8 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
                                    const Standard_Real Usup,
                                    const Standard_Real Vinf,
                                    const Standard_Real Vsup)
-: myLowBorder(1,2),
+: myCurveMinTol(Precision::PConfusion()),
+  myLowBorder(1,2),
   myUppBorder(1,2),
   myDone(Standard_False)
 {
@@ -72,7 +75,6 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
   myLowBorder(2) = Vinf;
   myUppBorder(1) = Usup;
   myUppBorder(2) = Vsup;
-  myCurveMinTol = 1.0e-9;
 }
 
 //=======================================================================
@@ -122,12 +124,15 @@ void Extrema_GenExtCC::Perform()
   C1.Intervals(anIntervals1, GeomAbs_C2);
   C2.Intervals(anIntervals2, GeomAbs_C2);
 
-  math_MultipleVarFunction *aFunc = new Extrema_GlobOptFuncCCC2(C1, C2);
-  math_GlobOptMin aFinder(aFunc, myLowBorder, myUppBorder);
+  Extrema_GlobOptFuncCCC2 aFunc (C1, C2);
+  math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder);
   Standard_Real aDiscTol = 1.0e-2;
   Standard_Real aValueTol = 1.0e-2;
   Standard_Real aSameTol = myCurveMinTol / (aDiscTol);
   aFinder.SetTol(aDiscTol, aSameTol);
+
+  Standard_Real anEps1 = (myUppBorder(1) - myLowBorder(1)) * Precision::Confusion();
+  Standard_Real anEps2 = (myUppBorder(2) - myLowBorder(2)) * Precision::Confusion();
 
   Standard_Integer i,j,k;
   math_Vector aFirstBorderInterval(1,2);
@@ -146,60 +151,49 @@ void Extrema_GenExtCC::Perform()
       aFinder.SetLocalParams(aFirstBorderInterval, aSecondBorderInterval);
       aFinder.Perform();
 
+      // check that solution found on current interval is not worse than previous
       aCurrF = aFinder.GetF();
-      if (aCurrF < aF + aSameTol * aValueTol)
+      if (aCurrF >= aF + aSameTol * aValueTol)
       {
-        if (aCurrF > aF - aSameTol * aValueTol)
-        {
-          if (aCurrF < aF)
-            aF = aCurrF;
+        continue;
+      }
 
-          math_Vector sol(1,2);
-          Standard_Integer myTmpSolCount = aFinder.NbExtrema();
-          for(k = 1; k <= myTmpSolCount; k++)
-          {
-            aFinder.Points(k, sol);
-            myPoints1.Append(sol(1));
-            myPoints2.Append(sol(2));
-          }
-          mySolCount += myTmpSolCount;
-        } // if (aCurrF > aF - aSameTol * aValueTol)
-        else
-        {
+      // clean previously computed solution if current one is better
+      if (aCurrF > aF - aSameTol * aValueTol)
+      {
+        if (aCurrF < aF)
           aF = aCurrF;
-          mySolCount = aFinder.NbExtrema();
-          myPoints1.Clear();
-          myPoints2.Clear();
-          math_Vector sol(1,2);
-          for(k = 1; k <= mySolCount; k++)
-          {
-            aFinder.Points(k, sol);
-            myPoints1.Append(sol(1));
-            myPoints2.Append(sol(2));
-          }
-        } // else
-      } //if (aCurrF < aF + aSameTol * aValueTol)
-    }
-  }
-
-  // Clear solutions clusters if it is necessary.
-  for(i = 1; i <= mySolCount - 1; i++)
-  {
-    for(j = i + 1; j <= mySolCount; j++)
-    {
-      if (Abs(myPoints1(i) - myPoints1(j)) < (myUppBorder(1) - myLowBorder(1)) * Precision::Confusion() &&
-          Abs(myPoints2(i) - myPoints2(j)) < (myUppBorder(2) - myLowBorder(2)) * Precision::Confusion())
+      }
+      else
       {
-        // Points with indexes i and j is in same cluster, delete j point from extrema array.
-        myPoints1.Remove(j);
-        myPoints2.Remove(j);
-        j--;
-        mySolCount--;
+        aF = aCurrF;
+        myPoints1.Clear();
+        myPoints2.Clear();
+      }
+
+      // save found solutions avoiding repetitions
+      math_Vector sol(1,2);
+      for(k = 1; k <= aFinder.NbExtrema(); k++)
+      {
+        aFinder.Points(k, sol);
+
+        // avoid duplicated points
+        Standard_Boolean isNew = Standard_True;
+        for (Standard_Integer iSol = 1; isNew && iSol <= myPoints1.Length(); iSol++)
+        {
+          if (Abs(myPoints1(iSol) - sol(1)) < anEps1 &&
+              Abs(myPoints2(iSol) - sol(2)) < anEps2)
+            isNew = Standard_False;
+        }
+        if (isNew)
+        {
+          myPoints1.Append(sol(1));
+          myPoints2.Append(sol(2));
+        }
       }
     }
   }
 
-  delete aFunc;
   myDone = Standard_True;
 }
 
@@ -220,7 +214,7 @@ Standard_Integer Extrema_GenExtCC::NbExt() const
 {
   StdFail_NotDone_Raise_if (!myDone, "Extrema_GenExtCC::NbExt()")
 
-  return mySolCount;
+  return myPoints1.Length();
 }
 
 //=======================================================================
