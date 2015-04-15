@@ -1,0 +1,34 @@
+puts "================================================================"
+puts "CR25778"
+puts "Gradient background will cut view if there is ClipPlane defined."
+puts "================================================================"
+puts ""
+
+set aExpectedImg $imagedir/${casename}_expected_img.png
+set aVerifiedImg $imagedir/${casename}_verified_img.png
+set aDiff $imagedir/${casename}_diff.png
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+box b 1 1 1
+vdisplay b
+vfit
+
+vclipplane create pln
+vclipplane set pln view Driver1/Viewer1/View1
+vclipplane change pln equation 0 1 0 -0.5
+
+vsetgradientbg 0 0 0 0 0 0 0
+
+vdump $aExpectedImg
+
+vsetgradientbg 0 0 0 0 0 0 1
+
+vdump $aVerifiedImg
+
+set aDiffRes [diffimage $aExpectedImg $aVerifiedImg 0.1 0 0 $aDiff]
+if {$aDiffRes != 0} {
+  puts "ERROR : Test failed: gradient background affects clipping."
+}

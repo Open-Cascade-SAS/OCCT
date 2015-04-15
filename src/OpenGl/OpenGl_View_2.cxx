@@ -232,6 +232,7 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   aCtx->WorldViewState.Pop();
   aCtx->ProjectionState.Pop();
   aCtx->ApplyProjectionMatrix();
+  aCtx->ApplyWorldViewMatrix();
 
   if (theWorkspace->UseZBuffer())
   {
