@@ -1,8 +1,8 @@
 call "%~dp0..\..\..\env.bat" %1 %2 %3
 
-set "BIN_DIR=Debug"
+set "BIN_DIR=win%ARCH%\%VCVER%\bind"
 if ["%CASDEB%"] == [""] (
-  set "BIN_DIR=Release"
+  set "BIN_DIR=win%ARCH%\%VCVER%\bin"
 )
 
 if not exist "%~dp0%BIN_DIR%\VoxelDemo.exe" goto ERR_EXE
