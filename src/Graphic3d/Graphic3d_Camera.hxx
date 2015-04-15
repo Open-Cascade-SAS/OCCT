@@ -90,7 +90,7 @@ public:
   //! Enumerates supported monographic projections.
   //! - Projection_Orthographic : orthographic projection.
   //! - Projection_Perspective  : perspective projection.
-  //! - Projection_Stere        : stereographic projection.
+  //! - Projection_Stereo       : stereographic projection.
   //! - Projection_MonoLeftEye  : mono projection for stereo left eye.
   //! - Projection_MonoRightEye : mono projection for stereo right eye.
   enum Projection

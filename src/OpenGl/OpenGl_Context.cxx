@@ -123,6 +123,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #else
   myRenderMode (0),
 #endif
+  myReadBuffer (0),
   myDrawBuffer (0),
   myDefaultVao (0),
   myIsGlDebugCtx (Standard_False)
@@ -288,93 +289,58 @@ Standard_Integer OpenGl_Context::MaxClipPlanes() const
   return myMaxClipPlanes;
 }
 
+#if !defined(GL_ES_VERSION_2_0)
+inline Standard_Integer stereoToMonoBuffer (const Standard_Integer theBuffer)
+{
+  switch (theBuffer)
+  {
+    case GL_BACK_LEFT:
+    case GL_BACK_RIGHT:
+      return GL_BACK;
+    case GL_FRONT_LEFT:
+    case GL_FRONT_RIGHT:
+      return GL_FRONT;
+    default:
+      return theBuffer;
+  }
+}
+#endif
+
 // =======================================================================
-// function : SetDrawBufferLeft
+// function : SetReadBuffer
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetDrawBufferLeft()
+void OpenGl_Context::SetReadBuffer (const Standard_Integer theReadBuffer)
 {
 #if !defined(GL_ES_VERSION_2_0)
-  switch (myDrawBuffer)
+  myReadBuffer = !myIsStereoBuffers ? stereoToMonoBuffer (theReadBuffer) : theReadBuffer;
+  if (myReadBuffer < GL_COLOR_ATTACHMENT0
+   && arbFBO != NULL)
   {
-    case GL_BACK_RIGHT :
-    case GL_BACK :
-      glDrawBuffer (GL_BACK_LEFT);
-      myDrawBuffer = GL_BACK_LEFT;
-      break;
-
-    case GL_FRONT_RIGHT :
-    case GL_FRONT :
-      glDrawBuffer (GL_FRONT_LEFT);
-      myDrawBuffer = GL_FRONT_LEFT;
-      break;
-
-    case GL_FRONT_AND_BACK :
-    case GL_RIGHT :
-      glDrawBuffer (GL_LEFT);
-      myDrawBuffer = GL_LEFT;
-      break;
+    arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
   }
+  ::glReadBuffer (myReadBuffer);
+#else
+  (void )theReadBuffer;
 #endif
 }
 
 // =======================================================================
-// function : SetDrawBufferRight
+// function : SetDrawBuffer
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetDrawBufferRight()
+void OpenGl_Context::SetDrawBuffer (const Standard_Integer theDrawBuffer)
 {
 #if !defined(GL_ES_VERSION_2_0)
-  switch (myDrawBuffer)
+  myDrawBuffer = !myIsStereoBuffers ? stereoToMonoBuffer (theDrawBuffer) : theDrawBuffer;
+  if (myDrawBuffer < GL_COLOR_ATTACHMENT0
+   && arbFBO != NULL)
   {
-    case GL_BACK_LEFT :
-    case GL_BACK :
-      glDrawBuffer (GL_BACK_RIGHT);
-      myDrawBuffer = GL_BACK_RIGHT;
-      break;
-
-    case GL_FRONT_LEFT :
-    case GL_FRONT :
-      glDrawBuffer (GL_FRONT_RIGHT);
-      myDrawBuffer = GL_FRONT_RIGHT;
-      break;
-
-    case GL_FRONT_AND_BACK :
-    case GL_LEFT :
-      glDrawBuffer (GL_RIGHT);
-      myDrawBuffer = GL_RIGHT;
-      break;
+    arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
   }
-#endif
-}
-
-// =======================================================================
-// function : SetDrawBufferMono
-// purpose  :
-// =======================================================================
-void OpenGl_Context::SetDrawBufferMono()
-{
-#if !defined(GL_ES_VERSION_2_0)
-  switch (myDrawBuffer)
-  {
-    case GL_BACK_LEFT :
-    case GL_BACK_RIGHT :
-      glDrawBuffer (GL_BACK);
-      myDrawBuffer = GL_BACK;
-      break;
-
-    case GL_FRONT_LEFT :
-    case GL_FRONT_RIGHT :
-      glDrawBuffer (GL_FRONT);
-      myDrawBuffer = GL_FRONT;
-      break;
-
-    case GL_LEFT :
-    case GL_RIGHT :
-      glDrawBuffer (GL_FRONT_AND_BACK);
-      myDrawBuffer = GL_FRONT_AND_BACK;
-      break;
-  }
+  ::glDrawBuffer (myDrawBuffer);
+#else
+  (void )theDrawBuffer;
 #endif
 }
 
@@ -391,8 +357,9 @@ void OpenGl_Context::FetchState()
     ::glGetIntegerv (GL_RENDER_MODE, &myRenderMode);
   }
 
-  // cache draw buffer state
-  glGetIntegerv (GL_DRAW_BUFFER, &myDrawBuffer);
+  // cache buffers state
+  ::glGetIntegerv (GL_READ_BUFFER, &myReadBuffer);
+  ::glGetIntegerv (GL_DRAW_BUFFER, &myDrawBuffer);
 #endif
 }
 

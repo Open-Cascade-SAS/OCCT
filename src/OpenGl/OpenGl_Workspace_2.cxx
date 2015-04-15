@@ -550,9 +550,6 @@ Standard_Boolean OpenGl_Workspace::Print
     }
   }
 
-  // activate the offscreen buffer
-  aFrameBuffer->BindBuffer (GetGlContext());
-
   // calculate offset for centered printing
   int aDevOffx = (int)(devWidth  - width) /2;
   int aDevOffy = (int)(devHeight - height)/2;
@@ -564,18 +561,21 @@ Standard_Boolean OpenGl_Workspace::Print
   if (!showBackground)
     NamedStatus |= OPENGL_NS_WHITEBACK;
 
+  // switch to mono camera for image dump
+  const Graphic3d_Camera::Projection aProjectType = myView->Camera()->ProjectionType() != Graphic3d_Camera::Projection_Stereo
+                                                  ? myView->Camera()->ProjectionType()
+                                                  : Graphic3d_Camera::Projection_Perspective;
   if (!IsTiling)
   {
     myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
                               (GLfloat )aFrameHeight/viewHeight);
-    aFrameBuffer->SetupViewport (GetGlContext());
-    redraw1 (ACView, ACUnderLayer, ACOverLayer);
+    redraw1 (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer, aProjectType);
     if (!myTransientDrawToFront)
     {
       // render to FBO only if allowed to render to back buffer
       myBackBufferRestored = Standard_True;
       myIsImmediateDrawn   = Standard_False;
-      redrawImmediate (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer);
+      redrawImmediate (ACView, ACUnderLayer, ACOverLayer, NULL, aProjectType, aFrameBuffer);
       myBackBufferRestored = Standard_False;
       myIsImmediateDrawn   = Standard_False;
     }
@@ -683,14 +683,13 @@ Standard_Boolean OpenGl_Workspace::Print
                                      aFrameHeight;
 
         // draw to the offscreen buffer and capture the result
-        aFrameBuffer->SetupViewport (GetGlContext());
-        redraw1 (ACView, ACUnderLayer, ACOverLayer);
+        redraw1 (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer, aProjectType);
         if (!myTransientDrawToFront)
         {
           // render to FBO only if forces to render to back buffer
           myBackBufferRestored = Standard_True;
           myIsImmediateDrawn   = Standard_False;
-          redrawImmediate (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer);
+          redrawImmediate (ACView, ACUnderLayer, ACOverLayer, NULL, aProjectType, aFrameBuffer);
           myBackBufferRestored = Standard_False;
           myIsImmediateDrawn   = Standard_False;
         }

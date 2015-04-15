@@ -265,22 +265,31 @@ public:
   //! @return true if clipping algorithm enabled
   inline Standard_Boolean IsCullingEnabled() const { return myIsCullingEnabled; }
 
-  //! Returns framebuffer storing cached main presentation of the view.
-  const Handle(OpenGl_FrameBuffer)& ResultFBO() const { return myResultFBO; }
-
 protected:
 
   //! Copy content of Back buffer to the Front buffer
   void copyBackToFront();
 
+  //! Blit image from/to specified buffers.
+  bool blitBuffers (OpenGl_FrameBuffer* theReadFbo,
+                    OpenGl_FrameBuffer* theDrawFbo);
+
   virtual Standard_Boolean Activate();
 
-  void redraw1 (const Graphic3d_CView& theCView,
-                const Aspect_CLayer2d& theCUnderLayer,
-                const Aspect_CLayer2d& theCOverLayer);
+  void redraw1 (const Graphic3d_CView&               theCView,
+                const Aspect_CLayer2d&               theCUnderLayer,
+                const Aspect_CLayer2d&               theCOverLayer,
+                OpenGl_FrameBuffer*                  theReadDrawFbo,
+                const Graphic3d_Camera::Projection   theProjection);
 
-  //! Blit snapshot containing main scene (myResultFBO or BackBuffer)
-  //! into presentation buffer (myResultFBO->offscreen FBO or myResultFBO->BackBuffer or BackBuffer->FrontBuffer),
+  //! Setup default FBO.
+  void bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo = NULL);
+
+  //! Blend together views pair into stereo image.
+  void drawStereoPair();
+
+  //! Blit snapshot containing main scene (myMainSceneFbos or BackBuffer)
+  //! into presentation buffer (myMainSceneFbos -> offscreen FBO or myMainSceneFbos -> BackBuffer or BackBuffer -> FrontBuffer),
   //! and redraw immediate structures on top.
   //!
   //! When scene caching is disabled (myTransientDrawToFront, no double buffer in window, etc.),
@@ -290,7 +299,9 @@ protected:
   bool redrawImmediate (const Graphic3d_CView& theCView,
                         const Aspect_CLayer2d& theCUnderLayer,
                         const Aspect_CLayer2d& theCOverLayer,
-                        OpenGl_FrameBuffer*    theTargetFBO,
+                        OpenGl_FrameBuffer*    theReadFbo,
+                        const Graphic3d_Camera::Projection theProjection,
+                        OpenGl_FrameBuffer*    theDrawFbo,
                         const Standard_Boolean theIsPartialUpdate = Standard_False);
 
   void updateMaterial (const int theFlag);
@@ -300,9 +311,12 @@ protected:
 
 protected: //! @name protected fields
 
-  //! Framebuffer stores cached main presentation of the view (without presentation of immediate layers).
-  Handle(OpenGl_FrameBuffer) myResultFBO;
-  //! Special flag which is invalidated when myResultFBO can not be blitted for some reason (e.g. driver bugs).
+  //! Two framebuffers (left and right views) store cached main presentation
+  //! of the view (without presentation of immediate layers).
+  Handle(OpenGl_FrameBuffer) myMainSceneFbos[2];
+  //! Additional buffers for immediate layer in stereo mode.
+  Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2];
+  //! Special flag which is invalidated when myMainSceneFbos can not be blitted for some reason (e.g. driver bugs).
   Standard_Boolean           myHasFboBlit;
 
   //! Vertices for full-screen quad rendering.

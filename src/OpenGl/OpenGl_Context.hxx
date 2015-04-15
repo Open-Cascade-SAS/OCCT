@@ -487,20 +487,24 @@ public:
 
 public: //! @name methods to alter or retrieve current state
 
-  //! Switch to left stereographic rendering buffer.
-  //! This method can be used to keep unchanged choise
-  //! of front/back/both buffer rendering.
-  Standard_EXPORT void SetDrawBufferLeft();
+  //! Return active read buffer.
+  Standard_Integer ReadBuffer() { return myReadBuffer; }
 
-  //! Switch to right stereographic rendering buffer.
-  //! This method can be used to keep unchanged choise
-  //! of front/back/both buffer rendering.
-  Standard_EXPORT void SetDrawBufferRight();
+  //! Switch read buffer, wrapper for ::glReadBuffer().
+  Standard_EXPORT void SetReadBuffer (const Standard_Integer theReadBuffer);
 
-  //! Switch to non-stereographic rendering buffer.
-  //! This method can be used to keep unchanged choise
-  //! of front/back/both buffer rendering.
-  Standard_EXPORT void SetDrawBufferMono();
+  //! Return active draw buffer.
+  Standard_Integer DrawBuffer() { return myDrawBuffer; }
+
+  //! Switch draw buffer, wrapper for ::glDrawBuffer().
+  Standard_EXPORT void SetDrawBuffer (const Standard_Integer theDrawBuffer);
+
+  //! Switch read/draw buffers.
+  void SetReadDrawBuffer (const Standard_Integer theBuffer)
+  {
+    SetReadBuffer (theBuffer);
+    SetDrawBuffer (theBuffer);
+  }
 
   //! Fetch OpenGl context state. This class tracks value of several OpenGl
   //! state variables. Consulting the cached values is quicker than
@@ -667,6 +671,7 @@ private: //! @name fields tracking current state
   Handle(OpenGl_Sampler)       myTexSampler;    //!< currently active sampler object
   Handle(OpenGl_FrameBuffer)   myDefaultFbo;    //!< default Frame Buffer Object
   Standard_Integer             myRenderMode;    //!< value for active rendering mode
+  Standard_Integer             myReadBuffer;    //!< current read buffer
   Standard_Integer             myDrawBuffer;    //!< current draw buffer
   unsigned int                 myDefaultVao;    //!< default Vertex Array Object
   Standard_Boolean             myIsGlDebugCtx;  //!< debug context initialization state

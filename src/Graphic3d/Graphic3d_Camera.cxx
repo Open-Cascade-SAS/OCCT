@@ -734,6 +734,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
       StereoEyeProj (aLeft, aRight, aBot, aTop,
                      aZNear, aZFar, aIOD, aFocus,
                      Standard_True, *theMatrices.MProjection);
+      *theMatrices.LProjection = *theMatrices.MProjection;
       break;
     }
 
@@ -742,6 +743,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
       StereoEyeProj (aLeft, aRight, aBot, aTop,
                      aZNear, aZFar, aIOD, aFocus,
                      Standard_False, *theMatrices.MProjection);
+      *theMatrices.RProjection = *theMatrices.MProjection;
       break;
     }
 

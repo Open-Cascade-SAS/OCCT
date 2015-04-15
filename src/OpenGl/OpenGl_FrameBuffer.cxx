@@ -100,6 +100,23 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 }
 
 // =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& theGlContext,
+                                               const GLsizei                 theViewportSizeX,
+                                               const GLsizei                 theViewportSizeY)
+{
+  if (myVPSizeX == theViewportSizeX
+   && myVPSizeY == theViewportSizeY)
+  {
+    return IsValid();
+  }
+
+  return Init (theGlContext, theViewportSizeX, theViewportSizeY);
+}
+
+// =======================================================================
 // function : InitWithRB
 // purpose  :
 // =======================================================================

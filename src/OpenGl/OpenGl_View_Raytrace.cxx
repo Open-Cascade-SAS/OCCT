@@ -2208,7 +2208,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
                                                   const OpenGl_Vec3*            theOrigins,
                                                   const OpenGl_Vec3*            theDirects,
                                                   const OpenGl_Mat4&            theUnviewMat,
-                                                  OpenGl_FrameBuffer*           theOutputFBO,
+                                                  OpenGl_FrameBuffer*           theReadDrawFbo,
                                                   const Handle(OpenGl_Context)& theGlContext)
 {
   bindRaytraceTextures (theGlContext);
@@ -2296,8 +2296,8 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
       {
         glEnable (GL_BLEND);
 
-        if (theOutputFBO != NULL)
-          theOutputFBO->BindBuffer (theGlContext);
+        if (theReadDrawFbo != NULL)
+          theReadDrawFbo->BindBuffer (theGlContext);
       }
       else
       {
@@ -2328,7 +2328,7 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
 Standard_Boolean OpenGl_View::raytrace (const Graphic3d_CView&        theCView,
                                         const Standard_Integer        theSizeX,
                                         const Standard_Integer        theSizeY,
-                                        OpenGl_FrameBuffer*           theOutputFBO,
+                                        OpenGl_FrameBuffer*           theReadDrawFbo,
                                         const Handle(OpenGl_Context)& theGlContext)
 {
   if (!initRaytraceResources (theCView, theGlContext))
@@ -2347,15 +2347,11 @@ Standard_Boolean OpenGl_View::raytrace (const Graphic3d_CView&        theCView,
   }
 
   // Get model-view and projection matrices
-  OpenGl_Mat4 aOrientationMatrix;
-  OpenGl_Mat4 aViewMappingMatrix;
+  OpenGl_Mat4 aOrientationMatrix = myCamera->OrientationMatrixF();
+  OpenGl_Mat4 aViewMappingMatrix = theGlContext->ProjectionState.Current();
+
   OpenGl_Mat4 aInverOrientMatrix;
-
-  GetMatrices (aOrientationMatrix,
-               aViewMappingMatrix);
-
   aOrientationMatrix.Inverted (aInverOrientMatrix);
-
   if (!updateRaytraceLightSources (aInverOrientMatrix, theGlContext))
   {
     return Standard_False;
@@ -2375,9 +2371,9 @@ Standard_Boolean OpenGl_View::raytrace (const Graphic3d_CView&        theCView,
   glDisable (GL_DEPTH_TEST);
   glBlendFunc (GL_ONE, GL_SRC_ALPHA);
 
-  if (theOutputFBO != NULL)
+  if (theReadDrawFbo != NULL)
   {
-    theOutputFBO->BindBuffer (theGlContext);
+    theReadDrawFbo->BindBuffer (theGlContext);
   }
 
   // Generate ray-traced image
@@ -2397,7 +2393,7 @@ Standard_Boolean OpenGl_View::raytrace (const Graphic3d_CView&        theCView,
                                                    aOrigins,
                                                    aDirects,
                                                    anUnviewMat,
-                                                   theOutputFBO,
+                                                   theReadDrawFbo,
                                                    theGlContext);
 
     if (!aResult)

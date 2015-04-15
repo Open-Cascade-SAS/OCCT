@@ -83,12 +83,6 @@ protected:
   void EnableFeatures() const;
   void DisableFeatures() const;
 
-  //! Draw directly to the FRONT buffer. Can cause artifacts on the screen.
-  void MakeFrontBufCurrent() const;
-
-  //! Draw to BACK buffer. Normal and default state.
-  void MakeBackBufCurrent() const;
-
 protected:
 
   Handle(OpenGl_Context) myGlContext;

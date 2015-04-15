@@ -156,6 +156,17 @@ public:
          && myContext->BindProgram (myBlitProgram);
   }
 
+  //! Bind program for rendering Anaglyph image.
+  Standard_Boolean BindAnaglyphProgram()
+  {
+    if (myAnaglyphProgram.IsNull())
+    {
+      prepareStdProgramAnaglyph();
+    }
+    return !myAnaglyphProgram.IsNull()
+         && myContext->BindProgram (myAnaglyphProgram);
+  }
+
 public:
 
   //! Returns current state of OCCT light sources.
@@ -354,6 +365,9 @@ protected:
   //! Set pointer myLightPrograms to active lighting programs set from myMapOfLightPrograms
   Standard_EXPORT void switchLightPrograms();
 
+  //! Prepare standard GLSL program for Anaglyph image.
+  Standard_EXPORT Standard_Boolean prepareStdProgramAnaglyph();
+
 protected:
 
   Visual3d_TypeOfModel               myShadingModel;       //!< lighting shading model
@@ -363,6 +377,8 @@ protected:
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
   Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on shading model and lights configuration
+
+  Handle(OpenGl_ShaderProgram)       myAnaglyphProgram;    //!< standard program for Anaglyph image
 
   OpenGl_Context*                    myContext;            //!< OpenGL context
 

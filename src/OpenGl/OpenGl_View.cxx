@@ -500,13 +500,3 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
   theCtx->ApplyProjectionMatrix();
   return aTransPersPrev;
 }
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_View::GetMatrices (OpenGl_Mat4& theOrientation,
-                               OpenGl_Mat4& theViewMapping) const
-{
-  theViewMapping = myCamera->ProjectionMatrixF();
-  theOrientation = myCamera->OrientationMatrixF();
-}
-/*----------------------------------------------------------------------*/

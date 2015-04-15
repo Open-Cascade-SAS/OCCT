@@ -170,6 +170,8 @@ class OpenGl_View : public MMgt_TShared
 
   void Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
                const Handle(OpenGl_Workspace)&      theWorkspace,
+               OpenGl_FrameBuffer*                  theReadDrawFbo,
+               Graphic3d_Camera::Projection         theProjection,
                const Graphic3d_CView&               theCView,
                const Aspect_CLayer2d&               theCUnderLayer,
                const Aspect_CLayer2d&               theCOverLayer,
@@ -198,10 +200,6 @@ class OpenGl_View : public MMgt_TShared
   //! marks primitive set for rebuild.
   void InvalidateBVHData (const Standard_Integer theLayerId);
 
-  //! Returns view-mapping and orientation matrices.
-  void GetMatrices (OpenGl_Mat4& theOrientation,
-                    OpenGl_Mat4& theViewMapping) const;
-
   //! Returns list of immediate structures rendered on top of main presentation
   const OpenGl_SequenceOfStructure& ImmediateStructures() const
   {
@@ -218,6 +216,7 @@ class OpenGl_View : public MMgt_TShared
 protected:
 
   void RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
+                      OpenGl_FrameBuffer*             theReadDrawFbo,
                       const Graphic3d_CView&          theCView,
                       const Standard_Boolean          theToDrawImmediate);
 
@@ -234,6 +233,7 @@ protected:
   //! matrices supplied by 3d view.
   void RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintContext,
                     const Handle(OpenGl_Workspace)&      theWorkspace,
+                    OpenGl_FrameBuffer*                  theReadDrawFbo,
                     const Graphic3d_CView&               theCView,
                     const Standard_Boolean               theToDrawImmediate);
 
@@ -587,14 +587,14 @@ protected: //! @name methods related to ray-tracing
                                        const OpenGl_Vec3*            theOrigins,
                                        const OpenGl_Vec3*            theDirects,
                                        const OpenGl_Mat4&            theUnviewMat,
-                                       OpenGl_FrameBuffer*           theOutputFBO,
+                                       OpenGl_FrameBuffer*           theReadDrawFbo,
                                        const Handle(OpenGl_Context)& theGlContext);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing.
   Standard_Boolean raytrace (const Graphic3d_CView&        theCView,
                              const Standard_Integer        theSizeX,
                              const Standard_Integer        theSizeY,
-                             OpenGl_FrameBuffer*           theOutputFBO,
+                             OpenGl_FrameBuffer*           theReadDrawFbo,
                              const Handle(OpenGl_Context)& theGlContext);
 
 protected: //! @name fields related to ray-tracing

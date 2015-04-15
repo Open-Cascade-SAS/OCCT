@@ -235,6 +235,7 @@ void OpenGl_ShaderManager::clear()
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
   myBlitProgram.Nullify();
+  myAnaglyphProgram.Nullify();
   switchLightPrograms();
 }
 
@@ -1575,6 +1576,60 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     theProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return Standard_False;
   }
+  return Standard_True;
+}
+
+// =======================================================================
+// function : prepareStdProgramAnaglyph
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramAnaglyph()
+{
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  TCollection_AsciiString aSrcVert =
+      EOL"THE_SHADER_OUT vec2 TexCoord;"
+      EOL"void main()"
+      EOL"{"
+      EOL"  TexCoord    = occVertex.zw;"
+      EOL"  gl_Position = vec4(occVertex.x, occVertex.y, 0.0, 1.0);"
+      EOL"}";
+
+  TCollection_AsciiString aSrcFrag =
+      EOL"uniform sampler2D uLeftSampler;"
+      EOL"uniform sampler2D uRightSampler;"
+      EOL
+      EOL"THE_SHADER_IN vec2 TexCoord;"
+      EOL
+      EOL"void main()"
+      EOL"{"
+      EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+      EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+      EOL"  aColorL.b = 0.0;"
+      EOL"  aColorL.g = 0.0;"
+      EOL"  aColorR.r = 0.0;"
+      EOL"  occFragColor = aColorL + aColorR;"
+      EOL"}";
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (myContext->core32 != NULL)
+  {
+    aProgramSrc->SetHeader ("#version 150");
+  }
+#endif
+
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, myAnaglyphProgram))
+  {
+    myAnaglyphProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return Standard_False;
+  }
+
+  myContext->BindProgram (myAnaglyphProgram);
+  myAnaglyphProgram->SetSampler (myContext, "uLeftSampler",  0);
+  myAnaglyphProgram->SetSampler (myContext, "uRightSampler", 1);
+  myContext->BindProgram (NULL);
   return Standard_True;
 }
 

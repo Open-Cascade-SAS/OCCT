@@ -896,25 +896,3 @@ void OpenGl_Window::DisableFeatures() const
   }
 #endif
 }
-
-// =======================================================================
-// function : MakeFrontBufCurrent
-// purpose  : TelMakeFrontBufCurrent
-// =======================================================================
-void OpenGl_Window::MakeFrontBufCurrent() const
-{
-#if !defined(GL_ES_VERSION_2_0)
-  glDrawBuffer (GL_FRONT);
-#endif
-}
-
-// =======================================================================
-// function : MakeBackBufCurrent
-// purpose  : TelMakeBackBufCurrent
-// =======================================================================
-void OpenGl_Window::MakeBackBufCurrent() const
-{
-#if !defined(GL_ES_VERSION_2_0)
-  glDrawBuffer (GL_BACK);
-#endif
-}

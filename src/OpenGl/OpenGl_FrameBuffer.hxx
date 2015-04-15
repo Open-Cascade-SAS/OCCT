@@ -89,6 +89,11 @@ public:
                                          const GLsizei                 theViewportSizeY);
 
   //! (Re-)initialize FBO with specified dimensions.
+  Standard_EXPORT Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
+                                             const GLsizei                 theViewportSizeX,
+                                             const GLsizei                 theViewportSizeY);
+
+  //! (Re-)initialize FBO with specified dimensions.
   //! The Render Buffer Objects will be used for Color, Depth and Stencil attachments (as opposite to textures).
   //! @param theGlCtx         currently bound OpenGL context
   //! @param theViewportSizeX required viewport size, the actual dimensions of FBO might be greater
