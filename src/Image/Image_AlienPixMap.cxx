@@ -23,6 +23,8 @@
 
 #include <Image_AlienPixMap.hxx>
 #include <gp.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_OpenFile.hxx>
@@ -262,7 +264,10 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   }
   if ((aFIF == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading (aFIF))
   {
-    // unsupported image format
+    TCollection_AsciiString aMessage = "Error: image file '";
+    aMessage.AssignCat (theImagePath);
+    aMessage.AssignCat ("' has unsupported file format.");
+    ::Message::DefaultMessenger()->Send (aMessage, Message_Fail);
     return false;
   }
 
@@ -285,6 +290,10 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
 #endif
   if (anImage == NULL)
   {
+    TCollection_AsciiString aMessage = "Error: image file '";
+    aMessage.AssignCat (theImagePath);
+    aMessage.AssignCat ("' is missing or invalid.");
+    ::Message::DefaultMessenger()->Send (aMessage, Message_Fail);
     return false;
   }
 
@@ -294,6 +303,10 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   if (aFormat == Image_PixMap::ImgUNKNOWN)
   {
     //anImage = FreeImage_ConvertTo24Bits (anImage);
+    TCollection_AsciiString aMessage = "Error: image file '";
+    aMessage.AssignCat (theImagePath);
+    aMessage.AssignCat ("' has unsupported pixel format.");
+    ::Message::DefaultMessenger()->Send (aMessage, Message_Fail);
     return false;
   }
 
