@@ -4937,6 +4937,156 @@ static int VGrid (Draw_Interpretor& /*theDI*/,
 }
 
 //==============================================================================
+//function : VConvert
+//purpose  :
+//==============================================================================
+
+static int VConvert (Draw_Interpretor& theDI,
+                     Standard_Integer  theArgNb,
+                     const char**      theArgVec)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  enum { Model, Ray, View, Window, Grid } aMode = Model;
+
+  // access coordinate arguments
+  TColStd_SequenceOfReal aCoord;
+  Standard_Integer anArgIdx = 1;
+  for (; anArgIdx < 4 && anArgIdx < theArgNb; ++anArgIdx)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIdx]);
+    if (!anArg.IsRealValue())
+    {
+      break;
+    }
+    aCoord.Append (anArg.RealValue());
+  }
+
+  // non-numeric argument too early
+  if (aCoord.IsEmpty())
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  // collect all other arguments and options
+  for (; anArgIdx < theArgNb; ++anArgIdx)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIdx]);
+    anArg.LowerCase();
+    if      (anArg == "window") aMode = Window;
+    else if (anArg == "view")   aMode = View;
+    else if (anArg == "grid")   aMode = Grid;
+    else if (anArg == "ray")    aMode = Ray;
+    else
+    {
+      std::cerr << "Error: wrong argument " << anArg << "! See usage:\n";
+      theDI.PrintHelp (theArgVec[0]);
+      return 1;
+    }
+  }
+
+  // complete input checks
+  if ((aCoord.Length() == 1 && theArgNb > 3) ||
+      (aCoord.Length() == 2 && theArgNb > 4) ||
+      (aCoord.Length() == 3 && theArgNb > 5))
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  Standard_Real aXYZ[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  Standard_Integer aXYp[2] = {0, 0};
+
+  // convert one-dimensional coordinate
+  if (aCoord.Length() == 1)
+  {
+    switch (aMode)
+    {
+      case View   : theDI << "View Vv: "   << aView->Convert ((Standard_Integer) aCoord (1)); return 0;
+      case Window : theDI << "Window Vp: " << aView->Convert ((Quantity_Length) aCoord (1));  return 0;
+      default:
+        std::cerr << "Error: wrong arguments! See usage:\n";
+        theDI.PrintHelp (theArgVec[0]);
+        return 1;
+    }
+  }
+
+  // convert 2D coordinates from projection or view reference space
+  if (aCoord.Length() == 2)
+  {
+    switch (aMode)
+    {
+      case Model :
+        aView->Convert ((Standard_Integer) aCoord (1), (Standard_Integer) aCoord (2), aXYZ[0], aXYZ[1], aXYZ[2]);
+        theDI << "Model X,Y,Z: " << aXYZ[0] << " " << aXYZ[1] << " " << aXYZ[2] << "\n";
+        return 0;
+
+      case View :
+        aView->Convert ((Standard_Integer) aCoord (1), (Standard_Integer) aCoord (2), aXYZ[0], aXYZ[1]);
+        theDI << "View Xv,Yv: " << aXYZ[0] << " " << aXYZ[1] << "\n";
+        return 0;
+
+      case Window :
+        aView->Convert ((V3d_Coordinate) aCoord (1), (V3d_Coordinate) aCoord (2), aXYp[0], aXYp[1]);
+        theDI << "Window Xp,Yp: " << aXYp[0] << " " << aXYp[1] << "\n";
+        return 0;
+
+      case Grid :
+        aView->Convert ((Standard_Integer) aCoord (1), (Standard_Integer) aCoord (2), aXYZ[0], aXYZ[1], aXYZ[2]);
+        aView->ConvertToGrid (aXYZ[0], aXYZ[1], aXYZ[2], aXYZ[3], aXYZ[4], aXYZ[5]);
+        theDI << "Model X,Y,Z: " << aXYZ[3] << " " << aXYZ[4] << " " << aXYZ[5] << "\n";
+        return 0;
+
+      case Ray :
+        aView->ConvertWithProj ((Standard_Integer) aCoord (1),
+                                (Standard_Integer) aCoord (2),
+                                aXYZ[0], aXYZ[1], aXYZ[2],
+                                aXYZ[3], aXYZ[4], aXYZ[5]);
+        theDI << "Model DX,DY,DZ: " << aXYZ[3] << " " << aXYZ[4] << " " << aXYZ[5] << "\n";
+        return 0;
+
+      default:
+        std::cerr << "Error: wrong arguments! See usage:\n";
+        theDI.PrintHelp (theArgVec[0]);
+        return 1;
+    }
+  }
+
+  // convert 3D coordinates from view reference space
+  else if (aCoord.Length() == 3)
+  {
+    switch (aMode)
+    {
+      case Window :
+        aView->Convert (aCoord (1), aCoord (2), aCoord (3), aXYp[0], aXYp[1]);
+        theDI << "Window Xp,Yp: " << aXYp[0] << " " << aXYp[1] << "\n";
+        return 0;
+
+      case Grid :
+        aView->ConvertToGrid (aCoord (1), aCoord (2), aCoord (3), aXYZ[0], aXYZ[1], aXYZ[2]);
+        theDI << "Model X,Y,Z: " << aXYZ[0] << " " << aXYZ[1] << " " << aXYZ[2] << "\n";
+        return 0;
+
+      default:
+        std::cerr << "Error: wrong arguments! See usage:\n";
+        theDI.PrintHelp (theArgVec[0]);
+        return 1;
+    }
+  }
+
+  return 0;
+}
+
+//==============================================================================
 //function : VFps
 //purpose  :
 //==============================================================================
@@ -8240,6 +8390,25 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : Mode - rectangular or circular"
     " : Type - lines or points",
     __FILE__, VGrid, group);
+  theCommands.Add ("vconvert",
+    "vconvert v [Mode={window|view}]"
+    "\n\t\t: vconvert x y [Mode={window|view|grid|ray}]"
+    "\n\t\t: vconvert x y z [Mode={window|grid}]"
+    "\n\t\t:   window - convert to window coordinates, pixels"
+    "\n\t\t:   view   - convert to view projection plane"
+    "\n\t\t:   grid   - convert to model coordinates, given on grid"
+    "\n\t\t:   ray    - convert projection ray to model coordiantes"
+    "\n\t\t: - vconvert v window : convert view to window;"
+    "\n\t\t: - vconvert v view   : convert window to view;"
+    "\n\t\t: - vconvert x y window : convert view to window;"
+    "\n\t\t: - vconvert x y view : convert window to view;"
+    "\n\t\t: - vconvert x y : convert window to model;"
+    "\n\t\t: - vconvert x y grid : convert window to model using grid;"
+    "\n\t\t: - vconvert x y ray : convert window projection line to model;"
+    "\n\t\t: - vconvert x y z window : convert model to window;"
+    "\n\t\t: - vconvert x y z grid : convert view to model using grid;"
+    "\n\t\t: Converts the given coordinates to window/view/model space.",
+    __FILE__, VConvert, group);
   theCommands.Add ("vfps",
     "vfps [framesNb=100] : estimate average frame rate for active view",
     __FILE__, VFps, group);

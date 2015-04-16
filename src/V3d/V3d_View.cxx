@@ -1792,14 +1792,6 @@ void V3d_View::Convert(const Standard_Integer Xp,
   X = aResult.X();
   Y = aResult.Y();
   Z = aResult.Z();
-
-  Graphic3d_Vertex aVrp;
-  aVrp.SetCoord (X, Y, Z);
-
-  if( MyViewer->Grid()->IsActive() ) {
-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
-    aNewVrp.Coord (X, Y, Z) ;
-  }
 }
 
 //=======================================================================
@@ -1843,11 +1835,6 @@ void V3d_View::ConvertWithProj(const Standard_Integer Xp,
   Dx = aNormDir.x();
   Dy = aNormDir.y();
   Dz = aNormDir.z();
-
-  if( MyViewer->Grid()->IsActive() ) {
-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
-    aNewVrp.Coord (X, Y, Z) ;
-  }
 }
 
 //=======================================================================
