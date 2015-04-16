@@ -115,7 +115,8 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
         Standard_Real anAngle = aVec1.Dot (aVec2);
         if (!aPlane.Contains (thePoints.Value (aPntIter)) || anAngle > Precision::Confusion())
         {
-          Standard_Integer anUpperBound = aPntIter - aStartIdx;
+          // subtract 1 due to indexation from zero in sub-polygons
+          Standard_Integer anUpperBound = aPntIter - aStartIdx - 1;
           Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anUpperBound);
           for (Standard_Integer aIdx = aStartIdx; aIdx <= aStartIdx + anUpperBound; ++aIdx)
           {
@@ -217,7 +218,8 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
       Standard_Real anAngle = aVec1.Dot (aVec2);
       if (!aPlane.Contains (thePoints->Value (aPntIter)) || anAngle > Precision::Confusion())
       {
-        Standard_Integer anUpperBound = aPntIter - aStartIdx;
+        // subtract 1 due to indexation from zero in sub-polygons
+        Standard_Integer anUpperBound = aPntIter - aStartIdx - 1;
         Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anUpperBound);
         for (Standard_Integer aIdx = aStartIdx; aIdx <= aStartIdx + anUpperBound; ++aIdx)
         {
@@ -284,7 +286,6 @@ void Select3D_InteriorSensitivePointSet::GetPoints (Handle(TColgp_HArray1OfPnt)&
     const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (anIdx);
     aSize += aPolygon->NbSubElements();
   }
-  aSize -= (myPlanarPolygons.Length() - 1) * 2;
 
   theHArrayOfPnt = new TColgp_HArray1OfPnt (1, aSize);
   Standard_Integer anOutputPntArrayIdx = 1;

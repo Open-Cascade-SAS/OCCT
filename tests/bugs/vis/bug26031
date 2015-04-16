@@ -1,0 +1,29 @@
+puts "============"
+puts "CR26031"
+puts "============"
+puts ""
+
+##########################################################################################
+# Visualization - fix out-of-range within Select3D_InteriorSensitivePointSet::GetPoints()
+##########################################################################################
+
+pload VISUALIZATION XDE
+
+testreadiges [locate_data_file bug25747_pencil.igs] aPencil
+
+vinit View1
+vclear
+vdefaults -autoTriang 0
+vdisplay aPencil
+vsetdispmode 1
+vfit
+
+# create a connected interactive
+vconnectto aCopy 50 50 50 aPencil
+vfit
+
+# check that selection primitives for connected object were created successfully
+vmoveto 220 133
+checkcolor 220 133 0 1 1
+
+vdump ${imagedir}/${casename}.png
