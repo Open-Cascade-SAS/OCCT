@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC22644"
+puts "=========="
+puts ""
+##############################################################
+# Incorrect result of Boolean operations (Fuse, Cut, Common)
+##############################################################
+
+restore [locate_data_file bug22644_Torus.brep] t
+restore [locate_data_file bug22644_Prism.brep] p
+checkshape t
+checkshape p
+
+bop t p
+bopcommon result
+
+set square 102.34
+set 2dviewer 1
