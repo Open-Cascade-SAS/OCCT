@@ -1656,29 +1656,24 @@ void ProcessZClipMotion()
 {
   Handle(V3d_View)  a3DView = ViewerTest::CurrentView();
   if ( Abs(X_Motion - X_ButtonPress) > 2 ) {
-    static Standard_Real CurZPos = 0.;
 
     //Quantity_Length VDX, VDY;
     //a3DView->Size(VDX,VDY);
     //Standard_Real VDZ = a3DView->ZSize();
     //printf("View size (%lf,%lf,%lf)\n", VDX, VDY, VDZ);
 
-    Quantity_Length dx = a3DView->Convert(X_Motion - X_ButtonPress);
+    Quantity_Length aDx = a3DView->Convert(X_Motion - X_ButtonPress);
 
     // Front = Depth + width/2.
-    Standard_Real D = 0.5;
-    Standard_Real W = 0.1;
+    Standard_Real aDepth = 0.5;
+    Standard_Real aWidth = 0.1;
+    a3DView->ZClipping(aDepth,aWidth);
 
-    CurZPos += (dx);
-
-    D += CurZPos;
+    aDepth += aDx;
 
     //printf("dx %lf Depth %lf Width %lf\n", dx, D, W);
 
-    a3DView->SetZClippingType(V3d_OFF);
-    a3DView->SetZClippingDepth(D);
-    a3DView->SetZClippingWidth(W);
-    a3DView->SetZClippingType(V3d_FRONT);
+    a3DView->SetZClippingDepth(aDepth);
 
     a3DView->Redraw();
 
