@@ -927,7 +927,13 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       return vec4 (aResult.xyz + aWeight.xyz * aColor.xyz, aWeight.w * aColor.w);
     }
 
-    aHit.Normal = normalize (aHit.Normal);
+    vec3 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0).xyz;
+    vec3 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1).xyz;
+    vec3 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2).xyz;
+
+    aHit.Normal = normalize (vec3 (dot (aInvTransf0, aHit.Normal),
+                                   dot (aInvTransf1, aHit.Normal),
+                                   dot (aInvTransf2, aHit.Normal)));
 
     // For polygons that are parallel to the screen plane, the depth slope
     // is equal to 1, resulting in small polygon offset. For polygons that
@@ -945,10 +951,6 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     }
 
     theRay.Origin += theRay.Direct * aHit.Time; // intersection point
-
-    vec3 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0).xyz;
-    vec3 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1).xyz;
-    vec3 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2).xyz;
 
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
 
