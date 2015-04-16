@@ -1,0 +1,31 @@
+puts "========="
+puts "CR26038"
+puts "========="
+puts ""
+###############################
+## Wrong result done by extrema for the circle and plane
+###############################
+
+restore [locate_data_file  bug26038_f1.brep] f
+restore [locate_data_file  bug26038_e1.brep] e
+
+mksurface s f
+mkcurve c e
+
+extrema c s
+regexp {The length ext_1 is +([-0-9.+eE]+)} [length ext_1] full ext_1_length
+set good_length 1.0e-7
+set tol_abs 1.0e-6
+set tol_rel 1.0e-6
+checkreal "length of ext_1" ${ext_1_length} ${good_length} ${tol_abs} ${tol_rel}
+
+dlog reset
+dlog on
+xdistcs c s 1.57079 1.5708 10
+set Log [dlog get]
+
+set List [split ${Log} {TD= \t\n}]
+set Tolerance 1.0e-6
+set D_good 0.
+set Limit_Tol 1.0e-6
+checkList ${List} ${Tolerance} ${D_good} ${Limit_Tol}

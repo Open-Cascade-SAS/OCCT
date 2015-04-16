@@ -311,13 +311,90 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Circ& C,
 
 
 
-//void Extrema_ExtElCS::Perform(const gp_Circ& C,
-//			      const gp_Pln& S)
-void Extrema_ExtElCS::Perform(const gp_Circ& ,
-			      const gp_Pln& )
+void Extrema_ExtElCS::Perform(const gp_Circ& C,
+                              const gp_Pln& S)
 {
-  Standard_NotImplemented::Raise();
+  myDone = Standard_True;
+  myIsPar = Standard_False;
 
+  gp_Ax2 Pos = C.Position();
+  gp_Dir NCirc = Pos.Direction();
+  gp_Dir NPln = S.Axis().Direction();
+
+  if (NCirc.IsParallel(NPln, Precision::Angular())) {
+
+    mySqDist = new TColStd_HArray1OfReal(1, 1);
+    mySqDist->SetValue(1, S.SquareDistance(C.Location()));
+    myIsPar = Standard_True;
+
+  }
+  else {
+
+    gp_Dir ExtLine = NCirc ^ NPln;
+    ExtLine = ExtLine ^ NCirc;
+    //
+    gp_Dir XDir = Pos.XDirection();
+    Standard_Real T[2];
+    T[0] = XDir.AngleWithRef(ExtLine, NCirc);
+    if(T[0] < 0.)
+    {
+      //Put in period
+      T[0] += M_PI;
+    }
+    T[1] = T[0] + M_PI;
+    //
+    myNbExt = 2;
+    //Check intersection 
+    IntAna_IntConicQuad anInter(C, S,
+                                Precision::Angular(),
+                                Precision::Confusion());
+    if(anInter.IsDone())
+    {
+      if(anInter.NbPoints() > 1)
+      {
+        myNbExt += anInter.NbPoints();
+      }
+    }
+
+    myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+    mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+    myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+
+    Standard_Integer i;
+    gp_Pnt PC, PP;
+    Standard_Real U, V;
+    Extrema_POnCurv POnC;
+    Extrema_POnSurf POnS;
+    for(i = 0; i < 2; ++i)
+    {
+      PC = ElCLib::CircleValue(T[i], C.Position(), C.Radius());
+      POnC.SetValues(T[i], PC);
+      myPoint1->SetValue(i+1, POnC);
+      ElSLib::PlaneParameters(S.Position(), PC, U, V);
+      PP = ElSLib::PlaneValue(U, V, S.Position());
+      POnS.SetParameters(U, V, PP);
+      myPoint2->SetValue(i+1, POnS);
+      mySqDist->SetValue(i+1, PC.SquareDistance(PP));
+    }
+    //
+    if(myNbExt > 2)
+    {
+      //Add intersection points
+      for(i = 1; i <= anInter.NbPoints(); ++i)
+      {
+        Standard_Real t = anInter.ParamOnConic(i);
+        PC = ElCLib::CircleValue(t, C.Position(), C.Radius());
+        POnC.SetValues(t, PC);
+        myPoint1->SetValue(i+2, POnC);
+        ElSLib::PlaneParameters(S.Position(), PC, U, V);
+        PP = ElSLib::PlaneValue(U, V, S.Position());
+        POnS.SetParameters(U, V, PP);
+        myPoint2->SetValue(i+2, POnS);
+        mySqDist->SetValue(i+2, PC.SquareDistance(PP));
+      }
+    }
+  }
+  //  
 }
 
 

@@ -38,6 +38,7 @@
 #include <Extrema_ExtPElS.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Extrema_ExtPS.hxx>
+#include <ElSLib.hxx>
 
 Extrema_ExtCS::Extrema_ExtCS() 
 {
@@ -218,6 +219,11 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         myExtElCS.Perform(C.Circle(), myS->Cylinder());
         break;
       }
+      else if(myStype == GeomAbs_Plane)
+      {
+        myExtElCS.Perform(C.Circle(), myS->Plane());
+        break;
+      }
     }
   case GeomAbs_Hyperbola: 
     {
@@ -350,6 +356,30 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         Standard_Real Ucurve = PC.Parameter();
         PS.Parameter(U, V);
         AddSolution(C, Ucurve, U, V, PC.Value(), PS.Value(), myExtElCS.SquareDistance(i));
+      }
+      if(mySqDist.Length() == 0 && NbExt > 0)
+      {
+        //Analytical extremas seem to be out of curve/surface boundaries.
+        //For plane it is possible to add extremity points of curve
+        if(myStype == GeomAbs_Plane)
+        {
+          gp_Pln aPln = myS->Plane();
+          gp_Pnt PC, PP;
+          if(!Precision::IsInfinite(myucinf))
+          {
+            PC = C.Value(myucinf);
+            ElSLib::PlaneParameters(aPln.Position(), PC, U, V);
+            PP = ElSLib::PlaneValue(U, V, aPln.Position());
+            AddSolution(C, myucinf, U, V, PC, PP, PC.SquareDistance(PP));
+          }
+          if(!Precision::IsInfinite(myucsup))
+          {
+            PC = C.Value(myucsup);
+            ElSLib::PlaneParameters(aPln.Position(), PC, U, V);
+            PP = ElSLib::PlaneValue(U, V, aPln.Position());
+            AddSolution(C, myucsup, U, V, PC, PP, PC.SquareDistance(PP));
+          }
+        }
       }
     }
   }
