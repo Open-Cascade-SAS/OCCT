@@ -2,7 +2,7 @@ puts "============="
 puts "FRA62523"
 puts "============="
 
-igesbrep [locate_data_file fra62523a.igs] a *
+igesbrep [locate_data_file fra62523a.igs] a_1 *
 
 # tpcompound b
 # checkshape a_1

@@ -1,3 +1,7 @@
+puts "TODO OCC641 ALL: An exception was caught"
+puts "TODO OCC641 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC641 ALL: Error : result shape is displayed wrongly"
+
 puts "================"
 puts "OCC641"
 puts "SAM1559"
@@ -13,13 +17,13 @@ vinit
 vdisplay a
 vfit
 
-copy a b
+copy a result
 
 if [catch {tmirror result 0 0 0 0 1 0 } res] {
    puts "Error : function tmirror works wrongly"
 } else {
    if [catch { vdisplay result } res] {
-      puts "Error : result shape is displaed wrongly"
+      puts "Error : result shape is displayed wrongly"
    }
    vfit
 }

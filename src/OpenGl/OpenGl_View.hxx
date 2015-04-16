@@ -120,7 +120,9 @@ class OpenGl_View : public MMgt_TShared
   Standard_Integer Backfacing () const { return myBackfacing; }
 
   const TEL_TRANSFORM_PERSISTENCE * BeginTransformPersistence (const Handle(OpenGl_Context)& theCtx,
-                                                               const TEL_TRANSFORM_PERSISTENCE *theTransPers);
+                                                               const TEL_TRANSFORM_PERSISTENCE *theTransPers,
+                                                               Standard_Integer theWidth,
+                                                               Standard_Integer theHeight);
   void EndTransformPersistence (const Handle(OpenGl_Context)& theCtx);
 
   //! Add structure to display list with specified priority.

@@ -656,7 +656,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const TEL_TRANSFORM_PERSISTENCE *aTransPersistence = NULL;
   if ( myTransPers && myTransPers->mode != 0 )
   {
-    aTransPersistence = theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, myTransPers);
+    aTransPersistence = theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, myTransPers, theWorkspace->Width(), theWorkspace->Height());
   }
 
   // Take into account transform persistence
@@ -790,7 +790,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Restore transform persistence
   if ( myTransPers && myTransPers->mode != 0 )
   {
-    theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, aTransPersistence);
+    theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, aTransPersistence, theWorkspace->Width(), theWorkspace->Height());
   }
 
   // Apply highlight box

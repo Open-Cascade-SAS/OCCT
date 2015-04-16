@@ -410,7 +410,7 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   aTransMode.pointY = anArrowVec.y();
   aTransMode.pointZ = anArrowVec.z();
 
-  theWorkspace->ActiveView()->BeginTransformPersistence (aContext, &aTransMode);
+  theWorkspace->ActiveView()->BeginTransformPersistence (aContext, &aTransMode, theWorkspace->Width(), theWorkspace->Height());
 
   // NOTE:
   // OpenGl_View applies Transform Persistence only in Projection Matrix.

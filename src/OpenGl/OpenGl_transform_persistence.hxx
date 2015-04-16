@@ -19,7 +19,9 @@ enum TP_FLAGS
   TPF_PAN             = 0x001,
   TPF_ZOOM            = 0x002,
   TPF_ROTATE          = 0x008,
-  TPF_TRIEDRON        = 0x020   
+  TPF_TRIEDRON        = 0x020,
+  TPF_2D              = 0x040,
+  TPF_2D_ISTOPDOWN    = 0x041
 };
 
 #endif /*OPENGL_TRANSFORM_PERSISTENCE_H*/

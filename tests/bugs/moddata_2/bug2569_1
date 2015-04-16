@@ -10,7 +10,7 @@ puts ""
 ######################################################
 cpulimit 60
 vinit
-set out [OCC2569 26 result]
+set out [OCC2569 26 res]
 if {[string compare $out "\n Degree = 25\n"] == 0} {
     puts "OCC2569: OK"
 } else {

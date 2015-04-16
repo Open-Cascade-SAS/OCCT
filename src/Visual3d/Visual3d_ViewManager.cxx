@@ -88,6 +88,13 @@ myZLayerGenId (1, IntegerLast())
   MyGraphicDriver = theDriver;
 
   // default layers are always presented in display layer sequence it can not be removed
+  Graphic3d_ZLayerSettings anUnderlaySettings;
+  anUnderlaySettings.Flags = 0;
+  anUnderlaySettings.IsImmediate = false;
+  myLayerIds.Add             (Graphic3d_ZLayerId_BotOSD);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_BotOSD);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_BotOSD, anUnderlaySettings);
+
   Graphic3d_ZLayerSettings aDefSettings;
   aDefSettings.Flags = Graphic3d_ZLayerDepthTest
                      | Graphic3d_ZLayerDepthWrite;

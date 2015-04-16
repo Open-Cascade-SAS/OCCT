@@ -24,6 +24,8 @@ enum {
   Graphic3d_TMF_ZoomPers           = 0x0002,
   Graphic3d_TMF_RotatePers         = 0x0008,
   Graphic3d_TMF_TriedronPers       = 0x0020,
+  Graphic3d_TMF_2d                 = 0x0040,
+  Graphic3d_TMF_2d_IsTopDown       = 0x0041,
   Graphic3d_TMF_FullPers           = Graphic3d_TMF_PanPers | Graphic3d_TMF_ZoomPers | Graphic3d_TMF_RotatePers
 };
 

@@ -3174,6 +3174,42 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   return 0;
 }
 
+//! Auxiliary method to parse transformation persistence flags
+inline Standard_Boolean parseTrsfPersFlag (const TCollection_AsciiString& theFlagString,
+                                           Standard_Integer&              theFlags)
+{
+  if (theFlagString == "pan")
+  {
+    theFlags |= Graphic3d_TMF_PanPers;
+  }
+  else if (theFlagString == "zoom")
+  {
+    theFlags |= Graphic3d_TMF_ZoomPers;
+  }
+  else if (theFlagString == "rotate")
+  {
+    theFlags |= Graphic3d_TMF_RotatePers;
+  }
+  else if (theFlagString == "trihedron")
+  {
+    theFlags = Graphic3d_TMF_TriedronPers;
+  }
+  else if (theFlagString == "full")
+  {
+    theFlags = Graphic3d_TMF_FullPers;
+  }
+  else if (theFlagString == "none")
+  {
+    theFlags = Graphic3d_TMF_None;
+  }
+  else
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
 //==============================================================================
 //function : VDisplay2
 //author   : ege
@@ -3202,6 +3238,12 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   Graphic3d_ZLayerId aZLayer        = Graphic3d_ZLayerId_UNKNOWN;
   Standard_Boolean   toDisplayLocal = Standard_False;
   Standard_Boolean   toReDisplay    = Standard_False;
+  Standard_Integer   isSelectable   = -1;
+  Standard_Integer   anObjDispMode  = -2;
+  Standard_Integer   anObjHighMode  = -2;
+  Standard_Boolean   toSetTrsfPers  = Standard_False;
+  Graphic3d_TransModeFlags aTrsfPersFlags = Graphic3d_TMF_None;
+  gp_Pnt aTPPosition;
   TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
   AIS_DisplayStatus aDispStatus = AIS_DS_None;
   Standard_Integer toDisplayInView = Standard_False;
@@ -3232,9 +3274,125 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       aZLayer = Graphic3d_ZLayerId_Topmost;
     }
     else if (aNameCase == "-osd"
-          || aNameCase == "-toposd")
+          || aNameCase == "-toposd"
+          || aNameCase == "-overlay")
     {
       aZLayer = Graphic3d_ZLayerId_TopOSD;
+    }
+    else if (aNameCase == "-botosd"
+          || aNameCase == "-underlay")
+    {
+      aZLayer = Graphic3d_ZLayerId_BotOSD;
+    }
+    else if (aNameCase == "-select"
+          || aNameCase == "-selectable")
+    {
+      isSelectable = 1;
+    }
+    else if (aNameCase == "-noselect"
+          || aNameCase == "-noselection")
+    {
+      isSelectable = 0;
+    }
+    else if (aNameCase == "-dispmode"
+          || aNameCase == "-displaymode")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+
+      anObjDispMode = Draw::Atoi (theArgVec [anArgIter]);
+    }
+    else if (aNameCase == "-highmode"
+          || aNameCase == "-highlightmode")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+
+      anObjHighMode = Draw::Atoi (theArgVec [anArgIter]);
+    }
+    else if (aNameCase == "-3d")
+    {
+      toSetTrsfPers  = Standard_True;
+      aTrsfPersFlags = Graphic3d_TMF_None;
+    }
+    else if (aNameCase == "-2d")
+    {
+      toSetTrsfPers  = Standard_True;
+      aTrsfPersFlags = Graphic3d_TMF_2d;
+    }
+    else if (aNameCase == "-2dtopdown")
+    {
+      toSetTrsfPers  = Standard_True;
+      aTrsfPersFlags = Graphic3d_TMF_2d | Graphic3d_TMF_2d_IsTopDown;
+    }
+    else if (aNameCase == "-trsfpers"
+          || aNameCase == "-pers")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+
+      toSetTrsfPers  = Standard_True;
+      aTrsfPersFlags = Graphic3d_TMF_None;
+      TCollection_AsciiString aPersFlags (theArgVec [anArgIter]);
+      aPersFlags.LowerCase();
+      for (Standard_Integer aParserPos = aPersFlags.Search ("|");; aParserPos = aPersFlags.Search ("|"))
+      {
+        if (aParserPos == -1)
+        {
+          if (!parseTrsfPersFlag (aPersFlags, aTrsfPersFlags))
+          {
+            std::cerr << "Error: wrong transform persistence flags " << theArgVec [anArgIter] << ".\n";
+            return 1;
+          }
+          break;
+        }
+
+        TCollection_AsciiString anOtherFlags = aPersFlags.Split (aParserPos - 1);
+        if (!parseTrsfPersFlag (aPersFlags, aTrsfPersFlags))
+        {
+          std::cerr << "Error: wrong transform persistence flags " << theArgVec [anArgIter] << ".\n";
+          return 1;
+        }
+        aPersFlags = anOtherFlags;
+      }
+    }
+    else if (aNameCase == "-trsfperspos"
+          || aNameCase == "-perspos")
+    {
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aX (theArgVec[++anArgIter]);
+      TCollection_AsciiString aY (theArgVec[++anArgIter]);
+      TCollection_AsciiString aZ = "0";
+      if (!aX.IsIntegerValue()
+       || !aY.IsIntegerValue())
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+      if (anArgIter + 1 < theArgNb)
+      {
+        TCollection_AsciiString aTemp = theArgVec[anArgIter + 1];
+        if (aTemp.IsIntegerValue())
+        {
+          aZ = aTemp;
+          ++anArgIter;
+        }
+      }
+      aTPPosition.SetCoord (aX.IntegerValue(), aY.IntegerValue(), aZ.IntegerValue());
     }
     else if (aNameCase == "-layer")
     {
@@ -3308,6 +3466,18 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         {
           aShape->SetZLayer (aZLayer);
         }
+        if (toSetTrsfPers)
+        {
+          aShape->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+        }
+        if (anObjDispMode != -2)
+        {
+          aShape->SetDisplayMode (anObjDispMode);
+        }
+        if (anObjHighMode != -2)
+        {
+          aShape->SetHilightMode (anObjHighMode);
+        }
         GetMapOfAIS().Bind (aShape, aName);
 
         Standard_Integer aDispMode = aShape->HasDisplayMode()
@@ -3315,8 +3485,14 @@ static int VDisplay2 (Draw_Interpretor& theDI,
                                    : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
                                     ? aCtx->DisplayMode()
                                     : 0);
-        Standard_Integer aSelMode = aShape->HasSelectionMode() && aCtx->GetAutoActivateSelection()
-                                  ? aShape->SelectionMode() : -1;
+        Standard_Integer aSelMode = -1;
+        if ( isSelectable ==  1
+         || (isSelectable == -1
+          && aCtx->GetAutoActivateSelection()
+          && aShape->GetTransformPersistenceMode() == 0))
+        {
+          aSelMode = aShape->HasSelectionMode() ? aShape->SelectionMode() : -1;
+        }
 
         aCtx->Display (aShape, aDispMode, aSelMode,
                        Standard_False, aShape->AcceptShapeDecomposition(),
@@ -3329,6 +3505,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
           }
           aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
         }
+      }
+      else
+      {
+        std::cerr << "Error: object with name '" << aName << "' does not exist!\n";
       }
       continue;
     }
@@ -3345,14 +3525,31 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       {
         aShape->SetZLayer (aZLayer);
       }
-
+      if (toSetTrsfPers)
+      {
+        aShape->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+      }
+      if (anObjDispMode != -2)
+      {
+        aShape->SetDisplayMode (anObjDispMode);
+      }
+      if (anObjHighMode != -2)
+      {
+        aShape->SetHilightMode (anObjHighMode);
+      }
       Standard_Integer aDispMode = aShape->HasDisplayMode()
                                   ? aShape->DisplayMode()
                                   : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
                                   ? aCtx->DisplayMode()
                                   : 0);
-      Standard_Integer aSelMode = aShape->HasSelectionMode() && aCtx->GetAutoActivateSelection()
-                                ? aShape->SelectionMode() : -1;
+      Standard_Integer aSelMode = -1;
+      if ( isSelectable ==  1
+       || (isSelectable == -1
+        && aCtx->GetAutoActivateSelection()
+        && aShape->GetTransformPersistenceMode() == 0))
+      {
+        aSelMode = aShape->HasSelectionMode() ? aShape->SelectionMode() : -1;
+      }
 
       if (aShape->Type() == AIS_KOI_Datum)
       {
@@ -3378,6 +3575,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
           aCtx->Redisplay (aShape, Standard_False);
         }
 
+        if (aSelMode == -1)
+        {
+          aCtx->Erase (aShape);
+        }
         aCtx->Display (aShape, aDispMode, aSelMode,
                        Standard_False, aShape->AcceptShapeDecomposition(),
                        aDispStatus);
@@ -4720,73 +4921,6 @@ static int VDisplayType(Draw_Interpretor& , Standard_Integer argc, const char** 
   return 0;
 }
 
-//==============================================================================
-//function : VSetTransMode
-//purpose  :
-//Draw arg : vsettransmode shape flag1 [flag2] [flag3] [X Y Z]
-//==============================================================================
-
-static int VSetTransMode ( Draw_Interpretor& di, Standard_Integer argc, const char** argv ) {
-  // Verification des arguments
-  if ( a3DView().IsNull() ) {
-    ViewerTest::ViewerInit();
-    di << "La commande vinit n'a pas ete appele avant" << "\n";
-  }
-
-  if ( argc < 3 || argc > 8 ) {
-    di << argv[0] << " Invalid number of arguments" << "\n";
-    return 1;
-  }
-
-  TCollection_AsciiString shapeName;
-  shapeName = argv[1];
-  Standard_Integer persFlag1 = Draw::Atoi(argv[2]);
-  Standard_Integer persFlag2 = 0;
-  Standard_Integer persFlag3 = 0;
-  gp_Pnt origin = gp_Pnt( 0.0, 0.0, 0.0 );
-  if ( argc == 4 || argc == 5 || argc == 7 || argc == 8 ) {
-    persFlag2 = Draw::Atoi(argv[3]);
-  }
-  if ( argc == 5 || argc == 8 ) {
-    persFlag3 = Draw::Atoi(argv[4]);
-  }
-  if ( argc >= 6 ) {
-    origin.SetX( Draw::Atof(argv[argc - 3]) );
-    origin.SetY( Draw::Atof(argv[argc - 2]) );
-    origin.SetZ( Draw::Atof(argv[argc - 1]) );
-  }
-
-  Standard_Boolean IsBound = GetMapOfAIS().IsBound2(shapeName);
-  Handle(Standard_Transient) anObj;
-  if ( IsBound ) {
-    anObj = GetMapOfAIS().Find2(shapeName);
-    if ( anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject)) ) {
-      Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast(anObj);
-      aShape->SetTransformPersistence( (persFlag1 | persFlag2 | persFlag3), origin );
-      if ( persFlag1 == 0 && persFlag2 == 0 && persFlag3 == 0 ) {
-        di << argv[0] << " All persistence modifiers were removed" << "\n";
-      }
-    } else {
-      di << argv[0] << " Wrong object type" << "\n";
-      return 1;
-    }
-  } else { // Create the AIS_Shape from a name
-    const Handle(AIS_InteractiveObject) aShape = GetAISShapeFromName((const char* )shapeName.ToCString());
-    if ( !aShape.IsNull() ) {
-      GetMapOfAIS().Bind( aShape, shapeName );
-      aShape->SetTransformPersistence( (persFlag1 | persFlag2 | persFlag3), origin );
-      TheAISContext()->Display( aShape, Standard_False );
-    } else {
-      di << argv[0] << " Object not found" << "\n";
-      return 1;
-    }
-  }
-
-  // Upadate the screen and redraw the view
-  TheAISContext()->UpdateCurrentViewer();
-  return 0;
-}
-
 static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a)
 {
   ifstream s(a[1]);
@@ -4946,13 +5080,22 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       __FILE__, visos, group);
 
   theCommands.Add("vdisplay",
-      "vdisplay [-noupdate|-update] [-local] [-mutable] name1 [name2] ... [name n]"
+              "vdisplay [-noupdate|-update] [-local] [-mutable] [-overlay|-underlay]"
+      "\n\t\t:          [-trsfPers flags] [-trsfPersPos X Y [Z]] [-3d|-2d|-2dTopDown]"
+      "\n\t\t:          [-dispMode mode] [-highMode mode]"
+      "\n\t\t:          name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
       "\n\t\t: Option -local enables displaying of objects in local"
       "\n\t\t: selection context. Local selection context will be opened"
       "\n\t\t: if there is not any."
-      "\n\t\t: Option -noupdate suppresses viewer redraw call."
-      "\n\t\t: Option -mutable enables optimizations for mutable objects.",
+      "\n\t\t:  -noupdate    suppresses viewer redraw call."
+      "\n\t\t:  -mutable     enables optimizations for mutable objects."
+      "\n\t\t:  -overlay     draws objects in overlay."
+      "\n\t\t:  -underlay    draws objects in underlay."
+      "\n\t\t:  -selectable|-noselect controls selection of objects."
+      "\n\t\t:  -trsfPers    sets a transform persistence flags."
+      "\n\t\t:  -trsfPersPos sets an anchor point for transform persistence."
+      "\n\t\t:  -2d|-2dTopDown displays object in screen coordinates.",
       __FILE__, VDisplay2, group);
 
   theCommands.Add ("vupdate",
@@ -5216,10 +5359,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vtypes",
 		  "vtypes : list of known types and signatures in AIS - To be Used in vpickobject command for selection with filters",
 		  VIOTypes,group);
-
-  theCommands.Add("vsettransmode",
-		  "vsettransmode   : vsettransmode shape flag1 [flag2] [flag3] [X Y Z]",
-		  __FILE__,VSetTransMode,group);
 
   theCommands.Add("vr", "vr : reading of the shape",
 		  __FILE__,vr, group);

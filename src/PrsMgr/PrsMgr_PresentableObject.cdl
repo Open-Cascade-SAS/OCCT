@@ -174,7 +174,7 @@ is
    -- -   combination (Graphic3d_TMF_PanPers | Graphic3d_TMF_ZoomPers);
    -- -   combination (Graphic3d_TMF_PanPers | Graphic3d_TMF_RotatePers);
    -- -   combination (Graphic3d_TMF_ZoomPers | Graphic3d_TMF_RotatePers).
-   -- If Graphic3d_TMF_TriedronPers persistence mode selected APoint coordinates X and Y means:
+   -- If Graphic3d_TMF_TriedronPers or Graphic3d_TMF_2d persistence mode selected APoint coordinates X and Y means:
    -- -   X = 0.0, Y = 0.0 - center of view window;
    -- -   X > 0.0, Y > 0.0 - right upper corner of view window;
    -- -   X > 0.0, Y < 0.0 - right lower corner of view window;

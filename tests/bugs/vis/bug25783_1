@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC25783_1"
+puts "Draw 2D objects."
+puts "============"
+puts ""
+
+vinit View1
+vclear
+vaxo
+
+# display polyline in overlay
+text2brep tcc "Center" Times-Roman 30
+vdisplay  tcc -2d -osd
+polyline  lcc -50 -50 0 -50 50 0 50 50 0 50 0 0 0 -50 0 -50 -50 0
+vdisplay  lcc -2d -overlay
+
+# display polyline in overlay in the bottom left corner of the view
+text2brep tbl "Bottom-Left" Times-Roman 30
+vdisplay  tbl -2d -trsfPersPos -1 -1 5 -osd
+polyline  lbl 0 0 0 0 100 0 100 100 0 100 50 0 50 0 0 0 0 0
+vdisplay  lbl -2d -trsfPersPos -1 -1 3 -overlay
+
+# display polyline in overlay in the top left corner of the view
+text2brep ttl "Top-Left" Times-Roman 30 x=-27 y=0
+vdisplay  ttl -2d -trsfPersPos -1 1 30 -osd
+polyline  ltl 0 -100 0 0 0 0 100 0 0 100 -50 0 50 -100 0 0 -100 0
+vdisplay  ltl -2d -trsfPersPos -1 1 3  -overlay
+
+# display polyline in overlay in the top right corner of the view
+text2brep ttr "Top-Right" Times-Roman 30 x=-100 y=0
+vdisplay  ttr -2d -trsfPersPos 1 1 30 -osd
+polyline  ltr -100 -100 0 -100 0 0 0 0 0 0 -50 0 -50 -100 0 -100 -100 0
+vdisplay  ltr -2d -trsfPersPos 1 1 3  -overlay
+
+# display polyline in overlay in the bottom right corner of the view
+text2brep tbr "Bottom-Right" Times-Roman 30 x=-165 y=0
+vdisplay  tbr -2d -trsfPersPos 1 -1 5 -osd
+polyline  lbr -100 0 0 -100 100 0 0 100 0 0 50 0 -50 0 0 -100 0 0
+vdisplay  lbr -2d -trsfPersPos 1 -1 3 -overlay
+
+vdump ${imagedir}/${casename}.png

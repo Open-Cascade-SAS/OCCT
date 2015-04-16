@@ -23,7 +23,7 @@ set nb_compound_good 0
 set nb_shape_good 503
 
 vinit
-vdisplay res
+vdisplay result
 vsetdispmode 1
 vfit
 

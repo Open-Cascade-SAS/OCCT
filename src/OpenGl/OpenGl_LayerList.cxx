@@ -34,6 +34,9 @@ OpenGl_LayerList::OpenGl_LayerList (const Standard_Integer theNbPriorities)
 {
   // insert default priority layers
   myLayers.Append (OpenGl_Layer (myNbPriorities));
+  myLayerIds.Bind (Graphic3d_ZLayerId_BotOSD,  myLayers.Upper());
+
+  myLayers.Append (OpenGl_Layer (myNbPriorities));
   myLayerIds.Bind (Graphic3d_ZLayerId_Default, myLayers.Upper());
 
   myLayers.Append (OpenGl_Layer (myNbPriorities));

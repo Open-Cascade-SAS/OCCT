@@ -14,8 +14,8 @@ set BugNumber OCC22910
 
 catch { pload MODELING }
 
-restore [locate_data_file s.rle] result
-set exception_status [ catch { uiso u result 0.5 } ]
+restore [locate_data_file s.rle] res
+set exception_status [ catch { uiso u res 0.5 } ]
 
 if { ${exception_status} == 0 } {
    puts "OK ${BugNumber}"

@@ -269,6 +269,7 @@ void OpenGl_View::EndTransformPersistence(const Handle(OpenGl_Context)& theCtx)
     theCtx->ProjectionState.Pop();
 
     theCtx->ApplyProjectionMatrix();
+    theCtx->ApplyWorldViewMatrix();
 
     myIsTransPers = Standard_False;
   }
@@ -278,7 +279,9 @@ void OpenGl_View::EndTransformPersistence(const Handle(OpenGl_Context)& theCtx)
 
 //transform_persistence_begin
 const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const Handle(OpenGl_Context)& theCtx,
-                                                                         const TEL_TRANSFORM_PERSISTENCE* theTransPers)
+                                                                         const TEL_TRANSFORM_PERSISTENCE* theTransPers,
+                                                                         Standard_Integer theWidth,
+                                                                         Standard_Integer theHeight)
 {
   const TEL_TRANSFORM_PERSISTENCE* aTransPersPrev = myTransPers;
   myTransPers = theTransPers;
@@ -296,6 +299,7 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
 
   const GLdouble aViewportW = (GLdouble )aViewport[2];
   const GLdouble aViewportH = (GLdouble )aViewport[3];
+
   if (myIsTransPers)
   {
     // pop matrix stack - it will be overridden later
@@ -305,6 +309,56 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
   else
   {
     myIsTransPers = Standard_True;
+  }
+
+  if (theTransPers->mode & TPF_2D)
+  {
+    GLfloat aLeft   = -static_cast<GLfloat> (theWidth  / 2);
+    GLfloat aRight  =  static_cast<GLfloat> (theWidth  / 2);
+    GLfloat aBottom = -static_cast<GLfloat> (theHeight / 2);
+    GLfloat aTop    =  static_cast<GLfloat> (theHeight / 2);
+    GLfloat aGap    =  static_cast<GLfloat> (theTransPers->pointZ);
+    if (theTransPers->pointX > 0)
+    {
+      aLeft  -= static_cast<GLfloat> (theWidth / 2) - aGap;
+      aRight -= static_cast<GLfloat> (theWidth / 2) - aGap;
+    }
+    else if (theTransPers->pointX < 0)
+    {
+      aLeft  += static_cast<GLfloat> (theWidth / 2) - aGap;
+      aRight += static_cast<GLfloat> (theWidth / 2) - aGap;
+    }
+    if (theTransPers->pointY > 0)
+    {
+      aBottom -= static_cast<GLfloat> (theHeight / 2) - aGap;
+      aTop    -= static_cast<GLfloat> (theHeight / 2) - aGap;
+    }
+    else if (theTransPers->pointY < 0)
+    {
+      aBottom += static_cast<GLfloat> (theHeight / 2) - aGap;
+      aTop    += static_cast<GLfloat> (theHeight / 2) - aGap;
+    }
+    if (theTransPers->mode == TPF_2D_ISTOPDOWN)
+    {
+      const GLfloat aTemp = aTop;
+      aTop    = aBottom;
+      aBottom = aTemp;
+    }
+
+    OpenGl_Mat4 aProjectMat;
+    OpenGl_Utils::Ortho2D<Standard_ShortReal> (aProjectMat,
+                                               aLeft, aRight,
+                                               aBottom, aTop);
+
+    theCtx->WorldViewState.Push();
+    theCtx->ProjectionState.Push();
+
+    theCtx->WorldViewState.SetIdentity();
+    theCtx->ProjectionState.SetCurrent (aProjectMat);
+
+    theCtx->ApplyWorldViewMatrix();
+    theCtx->ApplyProjectionMatrix();
+    return aTransPersPrev;
   }
 
   // push matrices into stack and reset them

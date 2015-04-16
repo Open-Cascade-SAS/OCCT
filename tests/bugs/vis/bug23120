@@ -10,11 +10,8 @@ box b1 10 20 30
 box b2 10 20 30
 ttranslate b2 50 50 0
 vinit
-vdisplay b1
-# This line breaks normal rendering
-# of all subsequently displayed presentations
-vsettransmode b1 32 0 0 0 0 0
-# This box is drawn incorrectly due to the bug
+vdisplay b1 -trsfPers trihedron
+
 vdisplay b2
 vfit
 vsetdispmode 1
@@ -31,4 +28,3 @@ if { $stat != 1 } {
 }
 
 set only_screen 1
-
