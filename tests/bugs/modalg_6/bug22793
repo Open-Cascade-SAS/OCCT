@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC22793"
+puts "============"
+puts ""
+######################################################
+# Boolean cut operation hangs computer
+######################################################
+
+restore [locate_data_file bug22793_Positive.brep] p
+restore [locate_data_file bug22793_Void.brep] v
+
+checkshape p
+tolerance p
+
+checkshape v
+tolerance v
+
+bop p v
+bopcut result
+
+set square 1.89516e+07
+
+set nbshapes_expected "
+Number of shapes in result
+ VERTEX    : 16
+ EDGE      : 24
+ WIRE      : 10
+ FACE      : 10
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 63
+"
+checknbshapes result ${nbshapes_expected} 1 "Result obtained by Boolean cut operation"
+
+set 2dviewer 1
