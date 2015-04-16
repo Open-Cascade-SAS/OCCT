@@ -1,0 +1,31 @@
+puts "============="
+puts ""
+puts "============="
+puts ""
+
+##############################################################################
+## Drawing mesh as closed object.
+##############################################################################
+
+pload XDE
+
+set anImage1 $imagedir/${casename}_Opened.png
+set anImage2 $imagedir/${casename}_Closed.png
+
+vinit
+meshfromstl aMesh [locate_data_file sh1.stl]
+vsetdispmode aMesh 2
+vright
+vfit
+
+vclipplane create aClipPlane
+vclipplane change aClipPlane equation 0 1 0 0
+vclipplane change aClipPlane capping on
+vclipplane change aClipPlane capping color 0.9 0.9 0.9
+vclipplane set aClipPlane object aMesh
+
+meshclosed aMesh 0
+vdump ${anImage1}
+
+meshclosed aMesh 1
+vdump ${anImage2}

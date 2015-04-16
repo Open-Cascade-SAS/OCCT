@@ -472,6 +472,36 @@ static Standard_Integer shrink
   }
   return 0;
 }
+
+//-----------------------------------------------------------------------------
+static Standard_Integer closed (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc < 3)
+  {
+    theDI << "Wrong number of parameters." << "\n";
+  }
+  else
+  {
+    Handle(MeshVS_Mesh) aMesh = getMesh (theArgv[1], theDI);
+    if (!aMesh.IsNull())
+    {
+      Standard_Integer aFlag = Draw::Atoi (theArgv[2]);
+      aMesh->GetDrawer()->SetBoolean (MeshVS_DA_SupressBackFaces, aFlag);
+
+      Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
+      if (aContext.IsNull())
+      {
+        theDI << "The context is null" << "\n";
+      }
+      else
+      {
+        aContext->Redisplay (aMesh);
+      }
+    }
+  }
+  return 0;
+}
+
 //-----------------------------------------------------------------------------
 
 static Standard_Integer mdisplay
@@ -1219,6 +1249,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("meshlinkcolor",   "change MeshVS_Mesh line color",                __FILE__, linecolor,       g );
   theCommands.Add ("meshmat",         "change MeshVS_Mesh material and transparency", __FILE__, meshmat,         g );
   theCommands.Add ("meshshrcoef",     "change MeshVS_Mesh shrink coeff",              __FILE__, shrink,          g );
+  theCommands.Add ("meshclosed",      "meshclosed meshname (0/1) \nChange MeshVS_Mesh drawing mode. 0 - not closed object, 1 - closed object", __FILE__, closed, g);
   theCommands.Add ("meshshow",        "display MeshVS_Mesh object",                   __FILE__, mdisplay,        g );
   theCommands.Add ("meshhide",        "erase MeshVS_Mesh object",                     __FILE__, merase,          g );
   theCommands.Add ("meshhidesel",     "hide selected entities",                       __FILE__, hidesel,         g );
