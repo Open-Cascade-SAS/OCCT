@@ -595,6 +595,7 @@ public: //! @name core profiles
 public: //! @name extensions
 
   Standard_Boolean       hasHighp;       //!< highp in GLSL ES fragment shader is supported
+  Standard_Boolean       hasUintIndex;   //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
   Standard_Boolean       hasTexRGBA8;    //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
   Standard_Boolean       arbNPTW;        //!< GL_ARB_texture_non_power_of_two
   Standard_Boolean       arbTexRG;       //!< GL_ARB_texture_rg

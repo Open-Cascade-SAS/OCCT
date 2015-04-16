@@ -122,6 +122,9 @@ private:
   //! @param theType type of primitive array.
   void setDrawMode (const Graphic3d_TypeOfPrimitiveArray theType);
 
+  //! Rebuilds the array of vertex attributes so that it can be drawn without indices.
+  Standard_Boolean processIndices (const Handle(OpenGl_Context)& theContext) const;
+
 protected:
 
   mutable Handle(OpenGl_VertexBuffer)   myVboIndices;

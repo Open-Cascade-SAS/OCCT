@@ -25,6 +25,7 @@
 #include <OpenGl_VertexBufferCompat.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Graphic3d_TextureParams.hxx>
+#include <NCollection_AlignedAllocator.hxx>
 
 namespace
 {
@@ -628,16 +629,23 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*       
   myDrawMode  (DRAW_MODE_NONE),
   myIsVboInit (Standard_False)
 {
-  if (theDriver != NULL)
-  {
-    myUID = theDriver->GetNextPrimitiveArrayUID();
-  }
-
   if (!myIndices.IsNull()
     && myIndices->NbElements < 1)
   {
     // dummy index buffer?
     myIndices.Nullify();
+  }
+
+  if (theDriver != NULL)
+  {
+    myUID = theDriver->GetNextPrimitiveArrayUID();
+  #if defined (GL_ES_VERSION_2_0)
+    const Handle(OpenGl_Context)& aCtx = theDriver->GetSharedContext();
+    if (!aCtx.IsNull())
+    {
+      processIndices (aCtx);
+    }
+  #endif
   }
 
   setDrawMode (theType);
@@ -700,6 +708,9 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     const Standard_Boolean toKeepData = myDrawMode == GL_POINTS
                                     && !anAspectMarker->SpriteRes (aCtx).IsNull()
                                     &&  anAspectMarker->SpriteRes (aCtx)->IsDisplayList();
+  #if defined (GL_ES_VERSION_2_0)
+    processIndices (aCtx);
+  #endif
     buildVBO (aCtx, toKeepData);
     myIsVboInit = Standard_True;
   }
@@ -872,6 +883,41 @@ void OpenGl_PrimitiveArray::setDrawMode (const Graphic3d_TypeOfPrimitiveArray th
 }
 
 // =======================================================================
+// function : processIndices
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_PrimitiveArray::processIndices (const Handle(OpenGl_Context)& theContext) const
+{
+  if (myIndices.IsNull()
+   || theContext->hasUintIndex)
+  {
+    return Standard_True;
+  }
+
+  if (myIndices->NbElements > std::numeric_limits<GLushort>::max())
+  {
+    Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (new NCollection_AlignedAllocator (16));
+    if (!anAttribs->Init (myIndices->NbElements, myAttribs->AttributesArray(), myAttribs->NbAttributes))
+    {
+      return Standard_False; // failed to initialize attribute array
+    }
+
+    for (Standard_Integer anIdxIdx = 0; anIdxIdx < myIndices->NbElements; ++anIdxIdx)
+    {
+      const Standard_Integer anIndex = myIndices->Index (anIdxIdx);
+      memcpy (anAttribs->ChangeData() + myAttribs->Stride * anIdxIdx,
+              myAttribs->Data()       + myAttribs->Stride * anIndex,
+              myAttribs->Stride);
+    }
+
+    myIndices.Nullify();
+    myAttribs = anAttribs;
+  }
+
+  return Standard_True;
+}
+
+// =======================================================================
 // function : InitBuffers
 // purpose  :
 // =======================================================================
@@ -887,6 +933,9 @@ void OpenGl_PrimitiveArray::InitBuffers (const Handle(OpenGl_Context)&        th
   myIndices = theIndices;
   myAttribs = theAttribs;
   myBounds = theBounds;
+#if defined(GL_ES_VERSION_2_0)
+  processIndices (theContext);
+#endif
 
   setDrawMode (theType);
 }

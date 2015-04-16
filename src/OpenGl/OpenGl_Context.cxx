@@ -83,9 +83,11 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
 #if defined(GL_ES_VERSION_2_0)
   hasHighp   (Standard_False),
+  hasUintIndex(Standard_False),
   hasTexRGBA8(Standard_False),
 #else
   hasHighp   (Standard_True),
+  hasUintIndex(Standard_True),
   hasTexRGBA8(Standard_True),
 #endif
   arbNPTW  (Standard_False),
@@ -1057,7 +1059,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     arbFBOBlit = (OpenGl_ArbFBOBlit* )(&(*myFuncs));
   }
 
-  hasHighp = CheckExtension ("GL_OES_fragment_precision_high");
+  hasUintIndex = IsGlGreaterEqual (3, 0)
+              || CheckExtension ("GL_OES_element_index_uint");
+  hasHighp     = CheckExtension ("GL_OES_fragment_precision_high");
   GLint aRange[2] = {0, 0};
   GLint aPrec     = 0;
   ::glGetShaderPrecisionFormat (GL_FRAGMENT_SHADER, GL_HIGH_FLOAT, aRange, &aPrec);
