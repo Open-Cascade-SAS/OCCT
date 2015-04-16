@@ -30,6 +30,7 @@
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 
+static const Standard_Integer aNbSolMAX = 16;
 
 // circulaire tangent a deux cercles et de rayon donne
 //====================================================
@@ -50,17 +51,17 @@ Geom2dGcc_Circ2d2TanRad::
 			    const Geom2dGcc_QualifiedCurve& Qualified2 ,
 			    const Standard_Real             Radius     ,
 			    const Standard_Real             Tolerance  ):
-  cirsol(1,16)   ,
-  qualifier1(1,16),
-  qualifier2(1,16),
-  TheSame1(1,16) ,
-  TheSame2(1,16) ,
-  pnttg1sol(1,16),
-  pnttg2sol(1,16),
-  par1sol(1,16)  ,
-  par2sol(1,16)  ,
-  pararg1(1,16)  ,
-  pararg2(1,16)  
+  cirsol(1,aNbSolMAX)   ,
+  qualifier1(1,aNbSolMAX),
+  qualifier2(1,aNbSolMAX),
+  TheSame1(1,aNbSolMAX) ,
+  TheSame2(1,aNbSolMAX) ,
+  pnttg1sol(1,aNbSolMAX),
+  pnttg2sol(1,aNbSolMAX),
+  par1sol(1,aNbSolMAX)  ,
+  par2sol(1,aNbSolMAX)  ,
+  pararg1(1,aNbSolMAX)  ,
+  pararg2(1,aNbSolMAX)  
 {
   if (Radius < 0.) { Standard_NegativeValue::Raise(); }
   else {

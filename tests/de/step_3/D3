@@ -1,5 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 Debian60-64: Error : 1 differences with reference data found :" 
+puts "TODO CR25593 ALL: Error : 3 differences with reference data found :" 
+puts "TODO CR25593 ALL: TPSTAT : Faulty" 
 
 set LinuxDiff 1
 set LinuxFaulties {CHECKSHAPE}
@@ -9,7 +10,7 @@ set ref_data {
 DATA        : Faulties = 0  ( 395 )  Warnings = 0  ( 0 )  Summary  = 0  ( 395 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 2 )  Summary  = 0  ( 2 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 149  ( 149 )  Face     = 149  ( 149 )   Summary  = 2146  ( 2144 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 149  ( 149 )  Face     = 149  ( 149 )   Summary  = 2144  ( 2144 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 149  ( 149 )  Face     = 149  ( 149 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 846  ( 846 )
 TOLERANCE   : MaxTol   = 0.0009108451735  ( 0.0009108451735 )  AvgTol   =  3.593153987e-005  (  3.593209779e-005 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )

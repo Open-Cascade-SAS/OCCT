@@ -32,6 +32,8 @@
 #include <Geom2dGcc_CurveToolGeo.hxx>
 #include <Geom2dInt_GInter.hxx>
 
+static const Standard_Integer aNbSolMAX = 16;
+
 // circulaire tant a une courbe et une droite ,de rayon donne
 //==============================================================
 
@@ -56,17 +58,17 @@ Geom2dGcc_Circ2d2TanRadGeo (const GccEnt_QualifiedLin&  Qualified1,
 // initialisation des champs.                                            +
 //========================================================================
 
-cirsol(1,16)   ,
-qualifier1(1,16),
-qualifier2(1,16),
-TheSame1(1,16) ,
-TheSame2(1,16) ,
-pnttg1sol(1,16),
-pnttg2sol(1,16),
-par1sol(1,16)  ,
-par2sol(1,16)  ,
-pararg1(1,16)  ,
-pararg2(1,16)  
+cirsol(1,aNbSolMAX)   ,
+qualifier1(1,aNbSolMAX),
+qualifier2(1,aNbSolMAX),
+TheSame1(1,aNbSolMAX) ,
+TheSame2(1,aNbSolMAX) ,
+pnttg1sol(1,aNbSolMAX),
+pnttg2sol(1,aNbSolMAX),
+par1sol(1,aNbSolMAX)  ,
+par2sol(1,aNbSolMAX)  ,
+pararg1(1,aNbSolMAX)  ,
+pararg2(1,aNbSolMAX)  
 {
 
   //========================================================================
@@ -244,17 +246,17 @@ Geom2dGcc_Circ2d2TanRadGeo (const GccEnt_QualifiedCirc& Qualified1,
 // initialisation des champs.                                            +
 //========================================================================
 
-cirsol(1,16)   ,
-qualifier1(1,16),
-qualifier2(1,16),
-TheSame1(1,16) ,
-TheSame2(1,16) ,
-pnttg1sol(1,16),
-pnttg2sol(1,16),
-par1sol(1,16)  ,
-par2sol(1,16)  ,
-pararg1(1,16)  ,
-pararg2(1,16)  
+cirsol(1,aNbSolMAX)   ,
+qualifier1(1,aNbSolMAX),
+qualifier2(1,aNbSolMAX),
+TheSame1(1,aNbSolMAX) ,
+TheSame2(1,aNbSolMAX) ,
+pnttg1sol(1,aNbSolMAX),
+pnttg2sol(1,aNbSolMAX),
+par1sol(1,aNbSolMAX)  ,
+par2sol(1,aNbSolMAX)  ,
+pararg1(1,aNbSolMAX)  ,
+pararg2(1,aNbSolMAX)  
 {
 
   //========================================================================
@@ -437,17 +439,17 @@ Geom2dGcc_Circ2d2TanRadGeo (const Geom2dGcc_QCurve& Qualified1,
 // initialisation des champs.                                            +
 //========================================================================
 
-cirsol(1,16)   ,
-qualifier1(1,16),
-qualifier2(1,16),
-TheSame1(1,16) ,
-TheSame2(1,16) ,
-pnttg1sol(1,16),
-pnttg2sol(1,16),
-par1sol(1,16)  ,
-par2sol(1,16)  ,
-pararg1(1,16)  ,
-pararg2(1,16)  
+cirsol(1,aNbSolMAX)   ,
+qualifier1(1,aNbSolMAX),
+qualifier2(1,aNbSolMAX),
+TheSame1(1,aNbSolMAX) ,
+TheSame2(1,aNbSolMAX) ,
+pnttg1sol(1,aNbSolMAX),
+pnttg2sol(1,aNbSolMAX),
+par1sol(1,aNbSolMAX)  ,
+par2sol(1,aNbSolMAX)  ,
+pararg1(1,aNbSolMAX)  ,
+pararg2(1,aNbSolMAX)  
 {
 
   //========================================================================
@@ -528,197 +530,170 @@ pararg2(1,16)
   }
 }
 
+//=======================================================================
+//function : PrecRoot
+//purpose  : In case, when curves has tangent zones, intersection point
+//            found may be precised. This function uses precision algorithm
+//            of Extrema Curve-Curve method (dot product between every
+//            tangent vector and vector between points in two curves must
+//            be equal to zero).
+//=======================================================================
 static void PrecRoot(const Adaptor3d_OffsetCurve& theC1,
                      const Adaptor3d_OffsetCurve& theC2,
                      const Standard_Real theU0,
                      const Standard_Real theV0,
-                     const Standard_Real theUmin,
-                     const Standard_Real theUmax,
-                     const Standard_Real theVmin,
-                     const Standard_Real theVmax,
                      Standard_Real& theUfinal,
                      Standard_Real& theVfinal)
 {
-  const Standard_Real aInitStepU = (theUmax - theUmin)/2.0,
-    aInitStepV = (theVmax - theVmin)/2.0;
+/*
+It is necessary for precision to solve the system
 
-  Standard_Real aStepU = aInitStepU, aStepV = aInitStepV;
+    \left\{\begin{matrix}
+    (x_{1}(u)-x_{2}(v))*{x_{1}(u)}'+(y_{1}(u)-y_{2}(v))*{y_{1}(u)}'=0\\ 
+    (x_{1}(u)-x_{2}(v))*{x_{2}(v)}'+(y_{1}(u)-y_{2}(v))*{y_{2}(v)}'=0
+    \end{matrix}\right.
 
-  const Standard_Real aTol = Precision::PConfusion() * Precision::PConfusion();
-  const Standard_Integer aNbIterMax = 100;
+Precision of any 2*2-system (two equation and two variables)
 
-  gp_Pnt2d aP1, aP2;
-  gp_Vec2d aD1, aD2;
+    \left\{\begin{matrix}
+    S_{1}(u,v)=0\\ 
+    S_{2}(u,v)=0
+    \end{matrix}\right.
 
-  Geom2dGcc_CurveToolGeo::D1(theC1, theU0, aP1, aD1);
-  Geom2dGcc_CurveToolGeo::D1(theC2, theV0, aP2, aD2);
+by Newton method can be made as follows:
 
-  gp_Vec2d vP12(aP1.XY() - aP2.XY());
+    u=u_{0}-\left (\frac{\frac{\partial S_{2}}{\partial v}*S_{1}-
+      \frac{\partial S_{1}}{\partial v}*S_{2}}
+      {\frac{\partial S_{1}}{\partial u}*
+      \frac{\partial S_{2}}{\partial v}-
+      \frac{\partial S_{1}}{\partial v}*
+      \frac{\partial S_{2}}{\partial u}}  \right )_{u_{0},v_{0}}\\ 
+    v=v_{0}-\left (\frac{\frac{\partial S_{1}}{\partial u}*S_{2}-
+      \frac{\partial S_{2}}{\partial u}*S_{1}}
+      {\frac{\partial S_{1}}{\partial u}*
+      \frac{\partial S_{2}}{\partial v}-
+      \frac{\partial S_{1}}{\partial v}*
+      \frac{\partial S_{2}}{\partial u}}  \right )_{u_{0},v_{0}}
+    \end{matrix}\right.
 
-  Standard_Real aU = theU0, aV = theV0;
+where u_{0} and v_{0} are initial values or values computed on previous iteration.
+*/
+
   theUfinal = theU0;
   theVfinal = theV0;
 
-  Standard_Real aSQDistPrev = aP1.SquareDistance(aP2);
+  const Standard_Integer aNbIterMax = 100;
 
-  Standard_Integer aNbIter = 1;
+  Standard_Real aU = theU0, aV = theV0;
+  gp_Pnt2d aPu, aPv;
+  gp_Vec2d aD1u, aD1v, aD2u, aD2v;
+
+  Standard_Integer aNbIter = 0;
+
+  Standard_Real aStepU = 0.0, aStepV = 0.0;
+
+  Standard_Real aSQDistPrev = RealFirst();
+
+  Geom2dGcc_CurveToolGeo::D2(theC1, aU, aPu, aD1u, aD2u);
+  Geom2dGcc_CurveToolGeo::D2(theC2, aV, aPv, aD1v, aD2v);
+
+  const Standard_Real aCrProd = Abs(aD1u.Crossed(aD1v));
+  if(aCrProd*aCrProd > 1.0e-6*
+      aD1u.SquareMagnitude()*aD1v.SquareMagnitude())
+  {
+    //Curves are not tangent. Therefore, we consider that 
+    //2D-intersection algorithm have found good point which
+    //did not need in more precision.
+    return;
+  }
 
   do
   {
-    Standard_Real aDetH = aD1.Y()*aD2.X() - aD1.X()*aD2.Y();
-    if(aDetH == 0.0)
+    aNbIter++;
+
+    gp_Vec2d aVuv(aPv, aPu);
+
+    Standard_Real aSQDist = aVuv.SquareMagnitude();
+    if(IsEqual(aSQDist, 0.0))
       break;
 
-    aU += aStepU*(aD2.Y() * vP12.X() - aD2.X()*vP12.Y())/aDetH;
-    aV += aStepV*(aD1.Y() * vP12.X() - aD1.X()*vP12.Y())/aDetH;
-
-    if(Abs(aU - theUmin) > 1000.0)
-      //method diverges
-      return;
-
-    if(Abs(aU - theUmax) > 1000.0)
-      //method diverges
-      return;
-
-    if(Abs(aV - theVmin) > 1000.0)
-      //method diverges
-      return;
-
-    if(Abs(aV - theVmax) > 1000.0)
-      //method diverges
-      return;
-
-    Geom2dGcc_CurveToolGeo::D1(theC1, aU, aP1, aD1);
-    Geom2dGcc_CurveToolGeo::D1(theC2, aV, aP2, aD2);
-    const Standard_Real aSQDist = aP1.SquareDistance(aP2);
-
-    if(Precision::IsInfinite(aSQDist))
-      //method diverges
-      return;
-
-    vP12.SetXY(aP1.XY() - aP2.XY());
-
-    if(aSQDist < aSQDistPrev)
+    if((aNbIter == 1) || (aSQDist < aSQDistPrev))
     {
       aSQDistPrev = aSQDist;
-      aStepU = aInitStepU;
-      aStepV = aInitStepV;
       theUfinal = aU;
       theVfinal = aV;
     }
+
+
+    Standard_Real aG1 = aD1u.Magnitude();
+    Standard_Real aG2 = aD1v.Magnitude();
+
+    if(IsEqual(aG1, 0.0) || IsEqual(aG2, 0.0))
+    {//Here we do not processing singular cases.
+      break;
+    }
+
+    Standard_Real aF1 = aVuv.Dot(aD1u);
+    Standard_Real aF2 = aVuv.Dot(aD1v);
+
+    Standard_Real aFIu = aVuv.Dot(aD2u);
+    Standard_Real aFIv = aVuv.Dot(aD2v);
+    Standard_Real aPSIu = aD1u.Dot(aD2u);
+    Standard_Real aPSIv = aD1v.Dot(aD2v);
+
+    Standard_Real aTheta = aD1u*aD1v;
+
+    Standard_Real aS1 = aF1/aG1;
+    Standard_Real aS2 = aF2/aG2;
+
+    Standard_Real aDS1u = (aG1*aG1+aFIu)/aG1 - (aS1*aPSIu/(aG1*aG1));
+    Standard_Real aDS1v = -aTheta/aG1;
+    Standard_Real aDS2u = aTheta/aG2;
+    Standard_Real aDS2v = (aFIv-aG2*aG2)/aG2 - (aS2*aPSIv/(aG2*aG2));
+
+    Standard_Real aDet = aDS1u*aDS2v-aDS1v*aDS2u;
+
+    if(IsEqual(aDet, 0.0))
+    {
+      if(!IsEqual(aStepV, 0.0) && !IsEqual(aDS1u, 0.0))
+      {
+        aV += aStepV;
+        aU = aU - (aDS1v*aStepV - aS1)/aDS1u;
+      }
+      else if(!IsEqual(aStepU, 0.0) && !IsEqual(aDS1v, 0.0))
+      {
+        aU += aStepU;
+        aV = aV - (aDS1u*aStepU - aS1)/aDS1v;
+      }
+      else
+      {
+        break;
+      }
+    }
     else
     {
-      aStepU /= 2.0;
-      aStepV /= 2.0;
+      aStepU = -(aS1*aDS2v-aS2*aDS1v)/aDet;
+      aStepV = -(aS2*aDS1u-aS1*aDS2u)/aDet;
+
+      if(Abs(aStepU) < Epsilon(Abs(aU)))
+      {
+        if(Abs(aStepV) < Epsilon(Abs(aV)))
+        {
+          break;
+        }
+      }
+
+      aU += aStepU;
+      aV += aStepV;
     }
+
+    Geom2dGcc_CurveToolGeo::D2(theC1, aU, aPu, aD1u, aD2u);
+    Geom2dGcc_CurveToolGeo::D2(theC2, aV, aPv, aD1v, aD2v);
   }
-  while((aNbIter++ < aNbIterMax) && ((aStepU > aTol) || (aStepV > aTol)));
-
-  Standard_Boolean isInBound = Standard_True;
-  if(theUfinal < theUmin)
-  {
-    aU = theUfinal;
-    aV = theVfinal;
-
-    theUfinal = theUmin;
-    isInBound = Standard_False;
-  }
-
-  if(theUfinal > theUmax)
-  {
-    aU = theUfinal;
-    aV = theVfinal;
-
-    theUfinal = theUmax;
-    isInBound = Standard_False;
-  }
-
-  if(!isInBound)
-  {
-    Geom2dGcc_CurveToolGeo::D1(theC1, aU, aP1, aD1);
-    Geom2dGcc_CurveToolGeo::D1(theC2, aV, aP2, aD2);
-    Standard_Real aV1 = (aD2.X() == 0.0) ? aV :((theUfinal - aU)*aD1.X() + aV*aD2.X() + (aP1.X() - aP2.X()))/aD2.X();
-    Standard_Real aV2 = (aD2.Y() == 0.0) ? aV :((theUfinal - aU)*aD1.Y() + aV*aD2.Y() + (aP1.Y() - aP2.Y()))/aD2.Y();
-
-    if(aV1 < theVmin)
-      aV1 = theVmin;
-
-    if(aV1 > theVmax)
-      aV1 = theVmax;
-
-    if(aV2 < theVmin)
-      aV2 = theVmin;
-
-    if(aV2 > theVmax)
-      aV2 = theVmax;
-
-    aP1 = Geom2dGcc_CurveToolGeo::Value(theC1,theUfinal);
-    aP2 = Geom2dGcc_CurveToolGeo::Value(theC2,aV1);
-
-    Standard_Real aSQ1 = aP1.SquareDistance(aP2);
-
-    aP2 = Geom2dGcc_CurveToolGeo::Value(theC2,aV2);
-    Standard_Real aSQ2 = aP1.SquareDistance(aP2);
-
-    if(aSQ1 < aSQ2)
-      theVfinal = aV1;
-    else
-      theVfinal = aV2;
-
-    return;
-  }
-
-  if(theVfinal < theVmin)
-  {
-    aU = theUfinal;
-    aV = theVfinal;
-
-    theVfinal = theVmin;
-    isInBound = Standard_False;
-  }
-
-  if(theVfinal > theVmax)
-  {
-    aU = theUfinal;
-    aV = theVfinal;
-
-    theVfinal = theVmax;
-    isInBound = Standard_False;
-  }
-
-  if(isInBound)
-    return;
-
-  Geom2dGcc_CurveToolGeo::D1(theC1, aU, aP1, aD1);
-  Geom2dGcc_CurveToolGeo::D1(theC2, aV, aP2, aD2);
-  Standard_Real aU1 = (aD1.X() == 0.0) ? aU :((theVfinal - aV)*aD2.X() + aU*aD1.X() + (aP2.X() - aP1.X()))/aD1.X();
-  Standard_Real aU2 = (aD1.Y() == 0.0) ? aU :((theVfinal - aV)*aD2.Y() + aU*aD1.Y() + (aP2.Y() - aP1.Y()))/aD1.Y();
-
-  if(aU1 < theUmin)
-    aU1 = theUmin;
-
-  if(aU1 > theUmax)
-    aU1 = theUmax;
-
-  if(aU2 < theUmin)
-    aU2 = theUmin;
-
-  if(aU2 > theUmax)
-    aU2 = theUmax;
-
-  aP2 = Geom2dGcc_CurveToolGeo::Value(theC2,theVfinal);
-  aP1 = Geom2dGcc_CurveToolGeo::Value(theC1,aU1);
-
-  Standard_Real aSQ1 = aP1.SquareDistance(aP2);
-
-  aP1 = Geom2dGcc_CurveToolGeo::Value(theC1,aU2);
-  Standard_Real aSQ2 = aP1.SquareDistance(aP2);
-
-  if(aSQ1 < aSQ2)
-    theUfinal = aU1;
-  else
-    theUfinal = aU2;  
+  while(aNbIter <= aNbIterMax);
 }
+
+
 
 // circulaire tant a deux courbes ,de rayon donne
 //==================================================
@@ -733,7 +708,6 @@ static void PrecRoot(const Adaptor3d_OffsetCurve& theC1,
 // On cree la solution qu on ajoute aux solutions deja trouvees.         +
 // On remplit les champs.                                                +
 //========================================================================
-
 Geom2dGcc_Circ2d2TanRadGeo::
 Geom2dGcc_Circ2d2TanRadGeo (const Geom2dGcc_QCurve& Qualified1,
                             const Geom2dGcc_QCurve& Qualified2,
@@ -744,17 +718,17 @@ Geom2dGcc_Circ2d2TanRadGeo (const Geom2dGcc_QCurve& Qualified1,
 // initialisation des champs.                                            +
 //========================================================================
 
-cirsol(1,16)   ,
-qualifier1(1,16),
-qualifier2(1,16),
-TheSame1(1,16) ,
-TheSame2(1,16) ,
-pnttg1sol(1,16),
-pnttg2sol(1,16),
-par1sol(1,16)  ,
-par2sol(1,16)  ,
-pararg1(1,16)  ,
-pararg2(1,16)  
+cirsol(1,aNbSolMAX)   ,
+qualifier1(1,aNbSolMAX),
+qualifier2(1,aNbSolMAX),
+TheSame1(1,aNbSolMAX) ,
+TheSame2(1,aNbSolMAX) ,
+pnttg1sol(1,aNbSolMAX),
+pnttg2sol(1,aNbSolMAX),
+par1sol(1,aNbSolMAX)  ,
+par2sol(1,aNbSolMAX)  ,
+pararg1(1,aNbSolMAX)  ,
+pararg2(1,aNbSolMAX)  
 {
 
   //========================================================================
@@ -881,6 +855,8 @@ pararg2(1,16)
         Intp.Perform(C1,C2,Tol,Tol);
         if (Intp.IsDone()) {
           if (!Intp.IsEmpty()) {
+            const Standard_Real aSQApproxTol = Precision::Approximation() *
+                                                Precision::Approximation();
             for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++)
             {
               Standard_Real aU0 = Intp.Point(i).ParamOnFirst();
@@ -897,21 +873,16 @@ pararg2(1,16)
               gp_Pnt2d P21 = Geom2dGcc_CurveToolGeo::Value(C1,aU2);
               gp_Pnt2d P22 = Geom2dGcc_CurveToolGeo::Value(C2,aV2);
 
-              Standard_Real aDist1112 = P11.Distance(P12);
-              Standard_Real aDist1122 = P11.Distance(P22);
+              Standard_Real aDist1112 = P11.SquareDistance(P12);
+              Standard_Real aDist1122 = P11.SquareDistance(P22);
 
-              Standard_Real aDist1221 = P12.Distance(P21);
-              Standard_Real aDist2122 = P21.Distance(P22);
+              Standard_Real aDist1221 = P12.SquareDistance(P21);
+              Standard_Real aDist2122 = P21.SquareDistance(P22);
 
-              if( Min(aDist1112, aDist1122) <= Precision::Approximation() &&
-                Min(aDist1221, aDist2122) <= Precision::Approximation())
+              if( (Min(aDist1112, aDist1122) <= aSQApproxTol) &&
+                  (Min(aDist1221, aDist2122) <= aSQApproxTol))
               {
-                PrecRoot(C1, C2, aU0, aV0,
-                  Max(Geom2dGcc_CurveToolGeo::FirstParameter(C1), aU0 - 10.0),
-                  Min(Geom2dGcc_CurveToolGeo::LastParameter(C1), aU0 + 10.0),
-                  Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2), aV0 - 10.0),
-                  Min(Geom2dGcc_CurveToolGeo::LastParameter(C2), aV0 + 10.0),
-                  aU0, aV0);
+                PrecRoot(C1, C2, aU0, aV0, aU0, aV0);
               }
 
               NbrSol++;

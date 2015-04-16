@@ -41,6 +41,7 @@
 #include <Geom2d_Circle.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 
 #include <stdio.h>
 #ifdef WNT
@@ -275,7 +276,6 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   return 0;
 }
 
-
 //=======================================================================
 //function : intersect
 //purpose  : 
@@ -319,7 +319,10 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
 
   for ( i = 1; i <= Intersector.NbPoints(); i++) {
     gp_Pnt2d P = Intersector.Point(i);
+
     di<<"Intersection point "<<i<<" : "<<P.X()<<" "<<P.Y()<<"\n";
+    di<<"parameter on the fist: "<<Intersector.Intersector().Point(i).ParamOnFirst();
+    di<<" parameter on the second: "<<Intersector.Intersector().Point(i).ParamOnSecond()<<"\n";
     Handle(Draw_Marker2D) mark = new Draw_Marker2D( P, Draw_X, Draw_vert); 
     dout << mark;
   }

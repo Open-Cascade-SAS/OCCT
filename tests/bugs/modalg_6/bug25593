@@ -1,0 +1,60 @@
+puts "============"
+puts "OCC25593"
+puts "============"
+puts ""
+#########################################################################
+# Number of intersection points for 2d curves depends on the order of arguments in command "2dintersect"
+#########################################################################
+
+restore [locate_data_file bug25593_face1.brep] b
+pcurve b
+
+puts "Intersection 1"
+set info1 [2dintersect b_2 b_3 1.e-10]
+regexp {Intersection point 1 : +([-0-9.+eE]+) +([-0-9.+eE]+)} $info1 full p1x p1y
+regexp {parameter on the fist: +([-0-9.+eE]+) +parameter on the second: +([-0-9.+eE]+)} $info1 full par1f par1s
+
+puts "Intersection 2"
+set info2 [2dintersect b_3 b_2 1.e-10]
+regexp {Intersection point 1 : +([-0-9.+eE]+) +([-0-9.+eE]+)} $info2 full p2x p2y
+regexp {parameter on the fist: +([-0-9.+eE]+) +parameter on the second: +([-0-9.+eE]+)} $info2 full par2f par2s
+
+set NbIP1 1
+if { [regexp "Intersection point 1" $info1] != 1  } {
+   puts "Error : Intersection 1 should have one point"
+   set NbIP1 0
+}
+if { [regexp "Intersection point 2" $info1] == 1  } {
+   puts "Error : Intersection 1 should have one point"
+   set NbIP1 2
+}
+puts "NbIP1=$NbIP1"
+
+set NbIP2 1
+if { [regexp "Intersection point 1" $info2] != 1  } {
+   puts "Error : Intersection 2 should have one point"
+   set NbIP2 0
+}
+if { [regexp "Intersection point 2" $info2] == 1  } {
+   puts "Error : Intersection 2 should have one point"
+   set NbIP2 2
+}
+puts "NbIP2=$NbIP2"
+
+if { $NbIP1 != 1 || $NbIP2 != 1 } {
+   puts "ERROR: Wrong solutions number"
+} else {
+   puts "p1x=$p1x p1y=$p1y par1f=$par1f $par1s"
+   puts "p2x=$p2x p2y=$p2y par2f=$par2f $par2s"
+   set sqd [expr ($p1x-$p2x)*($p1x-$p2x)+($p1y-$p2y)*($p1y-$p2y)]
+   if { $sqd > 1.0e-14 } {
+      puts "ERROR: Intersection points are different"
+   } else {
+      puts "OK: Intersection points are equal"
+   }
+   if { (abs($par1f - $par2s) > 1.0e-9) || (abs($par1s - $par2f) > 1.0e-9) } {
+      puts "ERROR: Parameters on intersecting curves are not coincided"
+   } else {
+      puts "OK: Parameters on intersecting curves are coincided"
+   }
+}

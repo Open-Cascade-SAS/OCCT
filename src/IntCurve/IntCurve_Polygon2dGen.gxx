@@ -26,19 +26,18 @@
 
 #define MAJORATION_DEFLECTION 1.5
 //======================================================================
-//== On echantillonne sur le Domain de la Curve  NbPts Points 
-//== a parametres constants.
+//== We take samples on the Domain of the Curve  NbPts Points 
+//== with constant parameters.
 //== 
-//== On estime la fleche maximum en prenant la distance maxi entre la 
-//== droite Curve.Value(X(i))-->Curve.Value(X(i+1)) 
-//== et le point Curve.Value(X(i+1/2))
+//== We estimate the maximum deflection taking the max distance between the
+//== right Curve.Value(X(i))-->Curve.Value(X(i+1)) 
+//== and the point Curve.Value(X(i+1/2))
 //======================================================================
 //  Modified by Sergey KHROMOV - Mon Mar 24 12:02:43 2003 Begin
 IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
 					     const Standard_Integer tNbPts,
 					     const IntRes2d_Domain& D,
 					     const Standard_Real    Tol):
-// 					     const Standard_Real    ):
 //  Modified by Sergey KHROMOV - Mon Mar 24 12:02:45 2003 End
        ThePnts(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)),
        TheParams(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)),
@@ -49,13 +48,13 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   TheMaxNbPoints = NbPts+NbPts;
   NbPntIn = NbPts;
   //----------------------------------------------------- 
-  //--- Initialisation du Brise a d_Parametre constant
+  //--- Initialization of the breaking with d_Parametre constant
   //---
   Binf = D.FirstParameter();
   Bsup = D.LastParameter();
   //-----------------------------------------------------
-  //-- IntRes2d Raise si HasFirst retourne False
-  //-- et Acces a First Parameter
+  //-- IntRes2d Raise if HasFirst returns False
+  //-- and accesses First Parameter
   //-- 
   Standard_Real u=Binf; 
   Standard_Real u1=Bsup;
@@ -76,7 +75,7 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
 
 
   //-----------------------------------------------------
-  //--- Calcul d un majorant de fleche approche
+  //--- Calculate a maximal deflection
   //---
 //  Modified by Sergey KHROMOV - Mon Mar 24 12:03:05 2003 Begin
 //   TheDeflection = 0.000000001;
@@ -112,109 +111,6 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   ClosedPolygon = Standard_False;
 }
 //======================================================================
-//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:26 2003 Begin
-IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
-					     const Standard_Integer tNbPts,
-					     const IntRes2d_Domain& D,
-					     const Standard_Real Tol,
-					     const Bnd_Box2d& BoxOtherPolygon):
-//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:28 2003 End
-       ThePnts(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)), 
-       TheParams(1,(tNbPts<3)? 6 : (tNbPts+tNbPts)), 
-       TheIndex(1,(tNbPts<3)? 6 : (tNbPts+tNbPts))
-{
-  Standard_Integer NbPts = (tNbPts<3)? 3 : tNbPts;
-  TheMaxNbPoints = NbPts+NbPts;
-  NbPntIn = NbPts; 
-  //----------------------------------------------------- 
-  //--- Initialisation du Brise a d_Parametre constant
-  //---
-  Binf = D.FirstParameter();
-  Bsup = D.LastParameter();
-  //-----------------------------------------------------
-  Standard_Real u=Binf; 
-  Standard_Real u1=Bsup;
-  Standard_Real du=(u1-u)/(Standard_Real)(NbPts-1);
-  Standard_Integer i=1;
-  do {
-    gp_Pnt2d P=TheCurveTool::Value(C,u);
-    myBox.Add(P);
-    ThePnts.SetValue(i,P); 
-    TheParams.SetValue(i,u);
-    TheIndex.SetValue(i,i);
-    u+=du;
-    i++;
-  }
-  while(i<=NbPts);
-
-
-  //-----------------------------------------------------
-  //--- Calcul d un majorant de fleche approche
-  //---
-//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:55 2003 Begin
-//   TheDeflection = 0.0000001;
-  TheDeflection = Min(0.0000001, Tol/100.);
-//  Modified by Sergey KHROMOV - Mon Mar 24 12:03:56 2003 End
-  i=1;
-  u=D.FirstParameter();
-  u+=du * 0.5;
-  
-  do {
-    gp_Pnt2d Pm = TheCurveTool::Value(C,u);
-    const gp_Pnt2d& P1 = ThePnts.Value(i);
-    const gp_Pnt2d& P2 = ThePnts.Value(i+1);
-
-    Standard_Real dx,dy;    
-    dx=P1.X()-P2.X(); if(dx<0) dx=-dx;
-    dy=P1.Y()-P2.Y(); if(dy<0) dy=-dy;
-    if(dx+dy>1e-12) {      
-      gp_Lin2d L(P1,gp_Dir2d(gp_Vec2d(P1,P2)));
-      Standard_Real t = L.Distance(Pm);      
-      if(t>TheDeflection) {
-	TheDeflection = t;
-      }
-    }
-    u+=du;
-    i++;
-  }
-  while(i<NbPts);
-  
-  myBox.Enlarge(TheDeflection*MAJORATION_DEFLECTION);
-  ClosedPolygon = Standard_False;
-  //-------------------------------------------------------
-  //-- On supprime les points alignes 
-  //-- (Permet de diminuer le nombre total de points) 
-  //-- (Dans le cas ou la courbe est "droite"       )
-  Standard_Real DeflectionMaj = TheDeflection;
-  for(i=2;i<NbPntIn && NbPntIn>3;i++) { 
-    Standard_Integer indexim1 = TheIndex.Value(i-1);
-    Standard_Integer indexi   = TheIndex.Value(i);
-    Standard_Integer indexip1 = TheIndex.Value(i+1);
-    const gp_Pnt2d& Pim1 = ThePnts.Value(indexim1);
-    const gp_Pnt2d& Pi   = ThePnts.Value(indexi);
-    const gp_Pnt2d& Pip1 = ThePnts.Value(indexip1);
-
-    Standard_Real dx,dy;    
-    dx=Pim1.X()-Pip1.X(); if(dx<0) dx=-dx;
-    dy=Pim1.Y()-Pip1.Y(); if(dy<0) dy=-dy;
-    Standard_Real t=0;
-    if(dx+dy>1e-12) {    
-      gp_Lin2d L(Pim1,gp_Dir2d(gp_Vec2d(Pim1,Pip1)));
-      t = L.Distance(Pi);
-    }
-    if(t<=DeflectionMaj) { 
-      //-- On supprime le point i
-      for(Standard_Integer j = i; j<NbPntIn; j++) { 
-	TheIndex.SetValue(j,TheIndex.Value(j+1));
-      }
-      NbPntIn--;
-      i--;
-    }
-  }
-
-  ComputeWithBox(C,BoxOtherPolygon);
-}
-//======================================================================
 void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve&        C,
 					   const Bnd_Box2d& BoxOtherPolygon) {
   if(myBox.IsOut(BoxOtherPolygon)) { 
@@ -243,31 +139,23 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve&        C,
       const gp_Pnt2d& P2d = ThePnts.Value(TheIndex.Value(i));
       Ri = CalculRegion(P2d.X(),P2d.Y(),bx0,bx1,by0,by1);
       if((Ri & Rprec)==0) { 
-	if(nbp) { 
-	  if(TheIndex.Value(nbp) != TheIndex.Value(i-1)) { 
-	    nbp++;
-	    TheIndex.SetValue(nbp,TheIndex.Value(i-1));
-	  }
-	}
-	else {
-	  nbp++;
-	  TheIndex.SetValue(nbp,TheIndex.Value(i-1)); 
-	}
-	nbp++;
-	TheIndex.SetValue(nbp,TheIndex.Value(i));
-	if(TheIndex.Value(i) > MaxIndexUsed) MaxIndexUsed = TheIndex.Value(i);
+        if(nbp) { 
+          if(TheIndex.Value(nbp) != TheIndex.Value(i-1)) { 
+            nbp++;
+            TheIndex.SetValue(nbp,TheIndex.Value(i-1));
+          }
+        }
+        else {
+          nbp++;
+          TheIndex.SetValue(nbp,TheIndex.Value(i-1)); 
+        }
+        nbp++;
+        TheIndex.SetValue(nbp,TheIndex.Value(i));
+        if(TheIndex.Value(i) > MaxIndexUsed) MaxIndexUsed = TheIndex.Value(i);
 
-	Rprec = Ri;
-      }
-      else { 
-	if((Ri & Rprec)==0) { 
-	  nbp++;
-	  TheIndex.SetValue(nbp,TheIndex.Value(i));
-	  if(TheIndex.Value(i) > MaxIndexUsed) MaxIndexUsed = TheIndex.Value(i);
+        Rprec = Ri;
+      }//if((Ri & Rprec)==0) condition
 
-	  Rprec = Ri; 
-	}
-      }
       Rprec = Ri;
     }
     if(nbp==1) { 
@@ -418,7 +306,7 @@ void IntCurve_Polygon2dGen::Dump(void) const {
   if(debug) { 
     Standard_Real bx0,bx1,by0,by1;
     
-    cout<<"\n ----- Dump de IntCurve_Polygon2dGen -----"<<endl;
+    cout<<"\n ----- Dump of IntCurve_Polygon2dGen -----"<<endl;
     if(myBox.IsVoid()) { 
       cout<<"  Polygone Vide "<<endl;
       return;

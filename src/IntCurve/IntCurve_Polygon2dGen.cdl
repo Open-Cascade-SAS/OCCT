@@ -46,20 +46,6 @@ is
 		    
     	    	    returns Polygon2dGen from IntCurve;
 
-    Create         (Curve       : TheCurve;
-    	    	    NbPnt       : Integer  from Standard;
-		    Domain      : Domain   from IntRes2d;
-    	    	    Tol         : Real     from Standard;
-		    OtherBox    : Box2d    from Bnd)
-		    
-		    ---Purpose: Compute a polygon on the domain of the
-		    --          curve.   parameters of  the  begin and
-		    --          end of the curve (and its polygon) are
-		    --          adjusted to lie in the OtherBox.
-		    
-    	    	    returns Polygon2dGen from IntCurve;
-
-
     ComputeWithBox(me       : in out; 
                    Curve    : TheCurve;
 		   OtherBox : Box2d  from Bnd)

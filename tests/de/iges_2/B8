@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 #puts "TODO CR23096 ALL: Error : 1 differences with reference data found :" 
 
@@ -9,7 +8,7 @@ set filename FRA62468-2.igs
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 253  ( 4993 )  Summary  = 253  ( 4993 )
-CHECKSHAPE  : Wires    = 12  ( 17 )  Faces    = 12  ( 11 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 12  ( 19 )  Faces    = 12  ( 13 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   Summary  = 63154  ( 63144 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   FreeWire = 18  ( 18 )   FreeEdge  = 452 ( 452 )   SharedEdge = 26794  ( 26793 )
 TOLERANCE   : MaxTol   =   0.9804479161  (   0.9805459497 )  AvgTol   =   0.01153089031  (   0.01154870945 )
