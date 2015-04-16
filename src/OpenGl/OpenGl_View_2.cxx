@@ -596,23 +596,21 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
     toRenderGL = !initRaytraceResources (theCView, aCtx) ||
       !updateRaytraceGeometry (OpenGl_GUM_CHECK, theWorkspace->ActiveViewId(), aCtx);
 
-    OpenGl_FrameBuffer* anOutputFBO = NULL;
+    toRenderGL |= !myIsRaytraceDataValid; // if no ray-trace data use OpenGL
 
-    if (theWorkspace->ResultFBO()->IsValid())
+    if (!toRenderGL)
     {
-      anOutputFBO = theWorkspace->ResultFBO().operator->();
-    }
-    else if (theCView.ptrFBO != NULL)
-    {
-      anOutputFBO = (OpenGl_FrameBuffer* )theCView.ptrFBO;
-    }
-    else
-    {
-      //toRenderGL = Standard_True; // failed to get valid FBO
-    }
+      OpenGl_FrameBuffer* anOutputFBO = NULL;
 
-    if (!toRenderGL && myIsRaytraceDataValid)
-    {
+      if (theWorkspace->ResultFBO()->IsValid())
+      {
+        anOutputFBO = theWorkspace->ResultFBO().operator->();
+      }
+      else if (theCView.ptrFBO != NULL)
+      {
+        anOutputFBO = (OpenGl_FrameBuffer* )theCView.ptrFBO;
+      }
+
       const Standard_Integer aSizeX = anOutputFBO != NULL ?
         anOutputFBO->GetVPSizeX() : theWorkspace->Width();
       const Standard_Integer aSizeY = anOutputFBO != NULL ?
