@@ -178,20 +178,17 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
   // project ray from camera onto grid plane
   if (!myCamera->IsOrthographic())
   {
-    gp_Vec aPointFromCamera = gp_Vec (myCamera->Eye(), gp_Pnt (x1, y1, z1));
-    aPointFromCamera.Normalize();
-
-    Standard_Real aT = - gp_Vec (myCamera->Eye().XYZ()).Dot (aPlaneNormal) / 
-                                  aPointFromCamera.Dot (aPlaneNormal);
-    aPointOnPlane = gp_Vec (myCamera->Eye().XYZ()) + aPointFromCamera * aT;
-  } else
+    gp_Vec aDirCamera2Point       = gp_Vec (myCamera->Eye(), gp_Pnt (x1, y1, z1)).Normalized();
+    gp_Vec aVecCamera2Orig        = gp_Vec (myCamera->Eye(), gp_Pnt (x0, y0, z0));
+    Standard_Real aDistPointPlane = aVecCamera2Orig.Dot (aPlaneNormal) / aDirCamera2Point.Dot (aPlaneNormal);
+    aPointOnPlane = gp_Vec (myCamera->Eye().XYZ()) + aDirCamera2Point * aDistPointPlane;
+  }
+  else
   {
-    gp_Vec aPointFromCamera (myCamera->Direction());
-    gp_Vec aPointOnCamera (gp_Vec (x1, y1, z1) - aPointFromCamera);
-
-    Standard_Real aT = - aPointOnCamera.Dot (aPlaneNormal) / 
-                          aPointFromCamera.Dot (aPlaneNormal);
-    aPointOnPlane = aPointOnCamera + aPointFromCamera * aT;
+    gp_Vec aDirCamera             = myCamera->Direction();
+    gp_Vec aVecOrig2Point         = gp_Vec (gp_Pnt (x0, y0, z0), gp_Pnt (x1, y1, z1));
+    Standard_Real aDistPointPlane = aVecOrig2Point.Dot (aPlaneNormal) / aDirCamera.Dot (aPlaneNormal);
+    aPointOnPlane = gp_Vec (x1, y1, z1) + aDirCamera * aDistPointPlane;
   }
 
   if (IsRectangular) {

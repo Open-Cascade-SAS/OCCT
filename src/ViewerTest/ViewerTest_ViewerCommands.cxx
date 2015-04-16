@@ -4937,6 +4937,71 @@ static int VGrid (Draw_Interpretor& /*theDI*/,
 }
 
 //==============================================================================
+//function : VPriviledgedPlane
+//purpose  :
+//==============================================================================
+
+static int VPriviledgedPlane (Draw_Interpretor& theDI,
+                              Standard_Integer  theArgNb,
+                              const char**      theArgVec)
+{
+  if (theArgNb != 1 && theArgNb != 7 && theArgNb != 10)
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  // get the active viewer
+  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
+  if (aViewer.IsNull())
+  {
+    std::cerr << "Error: no active viewer. Please call vinit.\n";
+    return 1;
+  }
+
+  if (theArgNb == 1)
+  {
+    gp_Ax3 aPriviledgedPlane = aViewer->PrivilegedPlane();
+    const gp_Pnt& anOrig = aPriviledgedPlane.Location();
+    const gp_Dir& aNorm = aPriviledgedPlane.Direction();
+    const gp_Dir& aXDir = aPriviledgedPlane.XDirection();
+    theDI << "Origin: " << anOrig.X() << " " << anOrig.Y() << " " << anOrig.Z() << " "
+          << "Normal: " << aNorm.X() << " " << aNorm.Y() << " " << aNorm.Z() << " "
+          << "X-dir: "  << aXDir.X() << " " << aXDir.Y() << " " << aXDir.Z() << "\n";
+    return 0;
+  }
+
+  Standard_Integer anArgIdx = 1;
+  Standard_Real anOrigX = Draw::Atof (theArgVec[anArgIdx++]);
+  Standard_Real anOrigY = Draw::Atof (theArgVec[anArgIdx++]);
+  Standard_Real anOrigZ = Draw::Atof (theArgVec[anArgIdx++]);
+  Standard_Real aNormX  = Draw::Atof (theArgVec[anArgIdx++]);
+  Standard_Real aNormY  = Draw::Atof (theArgVec[anArgIdx++]);
+  Standard_Real aNormZ  = Draw::Atof (theArgVec[anArgIdx++]);
+
+  gp_Ax3 aPriviledgedPlane;
+  gp_Pnt anOrig (anOrigX, anOrigY, anOrigZ);
+  gp_Dir aNorm (aNormX, aNormY, aNormZ);
+  if (theArgNb > 7)
+  {
+    Standard_Real aXDirX = Draw::Atof (theArgVec[anArgIdx++]);
+    Standard_Real aXDirY = Draw::Atof (theArgVec[anArgIdx++]);
+    Standard_Real aXDirZ = Draw::Atof (theArgVec[anArgIdx++]);
+    gp_Dir aXDir (aXDirX, aXDirY, aXDirZ);
+    aPriviledgedPlane = gp_Ax3 (anOrig, aNorm, aXDir);
+  }
+  else
+  {
+    aPriviledgedPlane = gp_Ax3 (anOrig, aNorm);
+  }
+
+  aViewer->SetPrivilegedPlane (aPriviledgedPlane);
+
+  return 0;
+}
+
+//==============================================================================
 //function : VConvert
 //purpose  :
 //==============================================================================
@@ -4949,7 +5014,7 @@ static int VConvert (Draw_Interpretor& theDI,
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    std::cerr << "No active view. Please call vinit.\n";
+    std::cerr << "Error: no active view. Please call vinit.\n";
     return 1;
   }
 
@@ -8390,6 +8455,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : Mode - rectangular or circular"
     " : Type - lines or points",
     __FILE__, VGrid, group);
+  theCommands.Add ("vpriviledgedplane",
+    "vpriviledgedplane [Ox Oy Oz Nx Ny Nz [Xx Xy Xz]]"
+    "\n\t\t:   Ox, Oy, Oz - plane origin"
+    "\n\t\t:   Nx, Ny, Nz - plane normal direction"
+    "\n\t\t:   Xx, Xy, Xz - plane x-reference axis direction"
+    "\n\t\t: Sets or prints viewer's priviledged plane geometry.",
+    __FILE__, VPriviledgedPlane, group);
   theCommands.Add ("vconvert",
     "vconvert v [Mode={window|view}]"
     "\n\t\t: vconvert x y [Mode={window|view|grid|ray}]"
