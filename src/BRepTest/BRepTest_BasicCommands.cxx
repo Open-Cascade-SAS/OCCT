@@ -85,7 +85,7 @@ static Standard_Integer addpcurve(Draw_Interpretor& , Standard_Integer n, const 
 // transform
 //=======================================================================
 
-static Standard_Integer transform(Draw_Interpretor& di,Standard_Integer n,const char** a)
+static Standard_Integer transform(Draw_Interpretor& ,Standard_Integer n,const char** a)
 {
   if (n <= 1) return 1;
 
