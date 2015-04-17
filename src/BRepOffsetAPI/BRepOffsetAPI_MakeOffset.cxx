@@ -47,7 +47,9 @@ static Standard_Boolean AffichSpine = Standard_False;
 //=======================================================================
 
 BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset()
-:myIsInitialized( Standard_False)
+  : myIsInitialized( Standard_False),
+    myJoin(GeomAbs_Arc),
+    myIsOpenResult(Standard_False)
 {
 }
 
