@@ -273,9 +273,6 @@ void SelectMgr_SelectionManager::Remove (const Handle(SelectMgr_SelectableObject
         break;
       }
     }
-    theSelector->RemoveSelectionOfObject (theObject, theObject->CurrentSelection());
-    theSelector->RemoveSelectableObject (theObject);
-    theObject->CurrentSelection()->UpdateBVHStatus (SelectMgr_TBU_Remove);
 
     if (aSelectors.IsEmpty())
     {

@@ -1017,8 +1017,17 @@ void AIS_LocalContext::ClearObjects()
 
     }
   ClearSelected( Standard_False );
+
+  // Clear selection structures for temporary objects, created in local context
+  for (AIS_DataMapIteratorOfDataMapOfSelStat anIter (myActiveObjects); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->IsTemporary())
+    {
+      mySM->Remove (anIter.Key(), myMainVS);
+    }
+  }
+
   myActiveObjects.Clear();
-//  myMainVS->ClearAreas();myMainVS->ClearSensitive();
 }
 
 

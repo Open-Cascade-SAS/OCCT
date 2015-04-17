@@ -1,0 +1,33 @@
+puts "============"
+puts "CR26076"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - empty bounding box of a shape after closing local context"
+##########################################################################################
+
+pload VISUALIZATION MODELING
+
+vinit
+
+box b1 1 1 1
+box b2 4 5 6
+
+# display box b1 in global context
+vdisplay b1
+# display box b2 in local context only
+vdisplay -local b2
+
+vfit
+
+# display only box b1 by closing local context and erasing box b2
+vdonly b1
+
+vfit
+
+# check that selection works properly
+vmoveto 100 100
+checkcolor 205 205 0 1 1
+
+vdump ${imagedir}/${casename}.png

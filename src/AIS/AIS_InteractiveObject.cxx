@@ -603,6 +603,13 @@ void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
       const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations.First().Presentation();
       const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
       const Graphic3d_BndBox4f& aBndBox = aStruct->CStructure()->BoundingBox();
+
+      if (!aBndBox.IsValid())
+      {
+        theBndBox.SetVoid();
+        return;
+      }
+
       theBndBox.Update (static_cast<Standard_Real> (aBndBox.CornerMin().x()),
                         static_cast<Standard_Real> (aBndBox.CornerMin().y()),
                         static_cast<Standard_Real> (aBndBox.CornerMin().z()),
@@ -636,6 +643,13 @@ void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
         const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
         const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
         const Graphic3d_BndBox4f& aBndBox = aStruct->CStructure()->BoundingBox();
+
+        if (!aBndBox.IsValid())
+        {
+          theBndBox.SetVoid();
+          return;
+        }
+
         theBndBox.Update (static_cast<Standard_Real> (aBndBox.CornerMin().x()),
                           static_cast<Standard_Real> (aBndBox.CornerMin().y()),
                           static_cast<Standard_Real> (aBndBox.CornerMin().z()),

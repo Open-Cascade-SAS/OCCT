@@ -72,6 +72,9 @@ Select3D_BndBox3d SelectMgr_SelectableObjectSet::Box (const Standard_Integer the
   const Handle(SelectMgr_SelectableObject)& anObject = GetObjectById (theIndex);
   Bnd_Box aBox;
   anObject->BoundingBox (aBox);
+  if (aBox.IsVoid())
+    return Select3D_BndBox3d();
+
   return Select3D_BndBox3d (SelectMgr_Vec3 (aBox.CornerMin().X(), aBox.CornerMin().Y(), aBox.CornerMin().Z()),
                             SelectMgr_Vec3 (aBox.CornerMax().X(), aBox.CornerMax().Y(), aBox.CornerMax().Z()));
 }

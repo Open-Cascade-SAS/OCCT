@@ -3478,7 +3478,8 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         {
           aShape->SetHilightMode (anObjHighMode);
         }
-        GetMapOfAIS().Bind (aShape, aName);
+        if (!toDisplayLocal)
+          GetMapOfAIS().Bind (aShape, aName);
 
         Standard_Integer aDispMode = aShape->HasDisplayMode()
                                    ? aShape->DisplayMode()
