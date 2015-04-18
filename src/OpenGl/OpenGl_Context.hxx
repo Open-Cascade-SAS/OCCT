@@ -35,6 +35,7 @@
 #include <OpenGl_Resource.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Utils.hxx>
@@ -465,7 +466,13 @@ public:
                                     const unsigned int theSeverity,
                                     const TCollection_ExtendedString& theMessage);
 
+  //! Adds a filter for messages with theId and theSource (GL_DEBUG_SOURCE_)
+  Standard_EXPORT Standard_Boolean ExcludeMessage (const unsigned int theSource,
+                                                   const unsigned int theId);
 
+  //! Removes a filter for messages with theId and theSource (GL_DEBUG_SOURCE_)
+  Standard_EXPORT Standard_Boolean IncludeMessage (const unsigned int theSource,
+                                                   const unsigned int theId);
 
   //! @return true if OpenGl context supports left and
   //! right rendering buffers.
@@ -663,6 +670,8 @@ private: //! @name fields tracking current state
   Standard_Integer             myDrawBuffer;    //!< current draw buffer
   unsigned int                 myDefaultVao;    //!< default Vertex Array Object
   Standard_Boolean             myIsGlDebugCtx;  //!< debug context initialization state
+  TCollection_AsciiString      myVendor;        //!< Graphics Driver's vendor
+  TColStd_PackedMapOfInteger   myFilters[6];    //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
 
 public:
 

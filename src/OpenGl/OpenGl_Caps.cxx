@@ -37,8 +37,10 @@ OpenGl_Caps::OpenGl_Caps()
   contextStereo     (Standard_False),
 #ifdef OCCT_DEBUG
   contextDebug      (Standard_True),
+  contextSyncDebug  (Standard_True),
 #else
   contextDebug      (Standard_False),
+  contextSyncDebug  (Standard_False),
 #endif
   contextNoAccel    (Standard_False),
 #if !defined(GL_ES_VERSION_2_0)
@@ -46,7 +48,8 @@ OpenGl_Caps::OpenGl_Caps()
 #else
   contextCompatible (Standard_False),
 #endif
-  glslWarnings      (Standard_False)
+  glslWarnings      (Standard_False),
+  suppressExtraMsg  (Standard_True)
 {
   //
 }
@@ -64,9 +67,11 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   buffersNoSwap     = theCopy.buffersNoSwap;
   contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;
+  contextSyncDebug  = theCopy.contextSyncDebug;
   contextNoAccel    = theCopy.contextNoAccel;
   contextCompatible = theCopy.contextCompatible;
   glslWarnings      = theCopy.glslWarnings;
+  suppressExtraMsg  = theCopy.suppressExtraMsg;
   return *this;
 }
 

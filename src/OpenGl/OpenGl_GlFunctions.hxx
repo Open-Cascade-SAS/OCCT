@@ -1329,9 +1329,6 @@ public: //! @name GL_ARB_texture_storage (added to OpenGL 4.2 core)
   PFNGLTEXSTORAGE1DPROC                                glTexStorage1D;
   PFNGLTEXSTORAGE2DPROC                                glTexStorage2D;
   PFNGLTEXSTORAGE3DPROC                                glTexStorage3D;
-  PFNGLTEXTURESTORAGE1DEXTPROC                         glTextureStorage1DEXT;
-  PFNGLTEXTURESTORAGE2DEXTPROC                         glTextureStorage2DEXT;
-  PFNGLTEXTURESTORAGE3DEXTPROC                         glTextureStorage3DEXT;
 
 public: //! @name OpenGL 4.2
 

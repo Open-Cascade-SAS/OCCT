@@ -62,6 +62,19 @@ public: //! @name context creation parameters
   Standard_Boolean contextDebug;
 
   /**
+   * Request debug GL context to emit messages within main thread (when contextDebug is specified!).
+   *
+   * Some implementations performs GL rendering within dedicated thread(s),
+   * in this case debug messages will be pushed from unknown thread making call stack useless,
+   * since it does not interconnected to application calls.
+   * This option asks GL driver to switch into synchronized implementation.
+   * Affects performance - thus should not be turned on by products in released state.
+   *
+   * OFF by default.
+   */
+  Standard_Boolean contextSyncDebug;
+
+  /**
    * Disable hardware acceleration.
    *
    * This flag overrides default behavior, when accelerated context always preferred over software ones:
@@ -95,6 +108,9 @@ public: //! @name flags to activate verbose output
 
   //! Print GLSL program compilation/linkage warnings, if any. OFF by default.
   Standard_Boolean glslWarnings;
+
+  //! Suppress redundant messages from debug GL context. ON by default.
+  Standard_Boolean suppressExtraMsg;
 
 public: //! @name class methods
 

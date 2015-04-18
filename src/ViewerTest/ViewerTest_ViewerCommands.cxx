@@ -5211,30 +5211,128 @@ static int VGlDebug (Draw_Interpretor& theDI,
   {
     aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->Viewer()->Driver());
   }
+  OpenGl_Caps* aDefCaps = &ViewerTest_myDefaultCaps;
+  OpenGl_Caps* aCaps    = !aDriver.IsNull() ? &aDriver->ChangeOptions() : NULL;
+
   if (theArgNb < 2)
   {
-    if (aDriver.IsNull())
+    TCollection_AsciiString aDebActive, aSyncActive;
+    if (aCaps == NULL)
     {
-      std::cerr << "No active view. Please call vinit.\n";
-      return 0;
+      aCaps = aDefCaps;
+    }
+    else
+    {
+      Standard_Boolean isActive = OpenGl_Context::CheckExtension ((const char* )::glGetString (GL_EXTENSIONS),
+                                                                  "GL_ARB_debug_output");
+      aDebActive = isActive ? " (active)" : " (inactive)";
+      if (isActive)
+      {
+        // GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB
+        aSyncActive = ::glIsEnabled (0x8242) == GL_TRUE ? " (active)" : " (inactive)";
+      }
     }
 
-    Standard_Boolean isActive = OpenGl_Context::CheckExtension ((const char* )glGetString (GL_EXTENSIONS),
-                                                                "GL_ARB_debug_output");
-    std::cout << "Active graphic driver: debug " << (isActive ? "ON" : "OFF") << "\n";
-    theDI << (isActive ? "1" : "0");
+    theDI << "debug:   " << (aCaps->contextDebug      ? "1" : "0") << aDebActive  << "\n"
+          << "sync:    " << (aCaps->contextSyncDebug  ? "1" : "0") << aSyncActive << "\n"
+          << "glslWarn:" << (aCaps->glslWarnings      ? "1" : "0") << "\n"
+          << "extraMsg:" << (aCaps->suppressExtraMsg  ? "0" : "1") << "\n";
     return 0;
   }
 
-  const Standard_Boolean toEnableDebug = Draw::Atoi (theArgVec[1]) != 0;
-  ViewerTest_myDefaultCaps.contextDebug = toEnableDebug;
-  ViewerTest_myDefaultCaps.glslWarnings = toEnableDebug;
-  if (aDriver.IsNull())
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    return 0;
+    Standard_CString        anArg     = theArgVec[anArgIter];
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.LowerCase();
+    Standard_Boolean toEnableDebug = Standard_True;
+    if (anArgCase == "-glsl"
+     || anArgCase == "-glslwarn"
+     || anArgCase == "-glslwarns"
+     || anArgCase == "-glslwarnings")
+    {
+      Standard_Boolean toShowWarns = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toShowWarns))
+      {
+        --anArgIter;
+      }
+      aDefCaps->glslWarnings = toShowWarns;
+      if (aCaps != NULL)
+      {
+        aCaps->glslWarnings = toShowWarns;
+      }
+    }
+    else if (anArgCase == "-extra"
+          || anArgCase == "-extramsg"
+          || anArgCase == "-extramessages")
+    {
+      Standard_Boolean toShow = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toShow))
+      {
+        --anArgIter;
+      }
+      aDefCaps->suppressExtraMsg = !toShow;
+      if (aCaps != NULL)
+      {
+        aCaps->suppressExtraMsg = !toShow;
+      }
+    }
+    else if (anArgCase == "-noextra"
+          || anArgCase == "-noextramsg"
+          || anArgCase == "-noextramessages")
+    {
+      Standard_Boolean toSuppress = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toSuppress))
+      {
+        --anArgIter;
+      }
+      aDefCaps->suppressExtraMsg = toSuppress;
+      if (aCaps != NULL)
+      {
+        aCaps->suppressExtraMsg = toSuppress;
+      }
+    }
+    else if (anArgCase == "-sync")
+    {
+      Standard_Boolean toSync = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toSync))
+      {
+        --anArgIter;
+      }
+      aDefCaps->contextSyncDebug = toSync;
+      if (toSync)
+      {
+        aDefCaps->contextDebug = Standard_True;
+      }
+    }
+    else if (anArgCase == "-debug")
+    {
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnableDebug))
+      {
+        --anArgIter;
+      }
+      aDefCaps->contextDebug = toEnableDebug;
+    }
+    else if (parseOnOff (anArg, toEnableDebug)
+          && (anArgIter + 1 == theArgNb))
+    {
+      // simple alias to turn on almost everything
+      aDefCaps->contextDebug     = toEnableDebug;
+      aDefCaps->contextSyncDebug = toEnableDebug;
+      aDefCaps->glslWarnings     = toEnableDebug;
+    }
+    else
+    {
+      std::cout << "Error: wrong syntax at '" << anArg << "'\n";
+      return 1;
+    }
   }
 
-  aDriver->ChangeOptions().glslWarnings = toEnableDebug;
   return 0;
 }
 
@@ -8480,9 +8578,16 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vfps [framesNb=100] : estimate average frame rate for active view",
     __FILE__, VFps, group);
   theCommands.Add ("vgldebug",
-    "vgldebug [{0|1}] : request debug GL context, should be called before vinit\n"
-    "                : this function is implemented only for Windows\n"
-    "                : GL_ARB_debug_output extension should be exported by OpenGL driver!",
+            "vgldebug [-sync {0|1}] [-debug {0|1}] [-glslWarn {0|1}]"
+    "\n\t\t:          [-extraMsg {0|1}] [{0|1}]"
+    "\n\t\t: Request debug GL context. Should be called BEFORE vinit."
+    "\n\t\t: Debug context can be requested only on Windows"
+    "\n\t\t: with GL_ARB_debug_output extension implemented by GL driver!"
+    "\n\t\t:  -sync     - request synchronized debug GL context"
+    "\n\t\t:  -glslWarn - log GLSL compiler/linker warnings,"
+    "\n\t\t:              which are suppressed by default,"
+    "\n\t\t:  -extraMsg - log extra diagnostic messages from GL context,"
+    "\n\t\t:              which are suppressed by default",
     __FILE__, VGlDebug, group);
   theCommands.Add ("vvbo",
     "vvbo [{0|1}] : turn VBO usage On/Off; affects only newly displayed objects",

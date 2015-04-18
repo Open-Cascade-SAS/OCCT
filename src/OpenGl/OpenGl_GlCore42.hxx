@@ -54,9 +54,6 @@ public: //! @name GL_ARB_texture_storage (added to OpenGL 4.2 core)
   using theBaseClass_t::glTexStorage1D;
   using theBaseClass_t::glTexStorage2D;
   using theBaseClass_t::glTexStorage3D;
-  using theBaseClass_t::glTextureStorage1DEXT;
-  using theBaseClass_t::glTextureStorage2DEXT;
-  using theBaseClass_t::glTextureStorage3DEXT;
 
 #endif
 

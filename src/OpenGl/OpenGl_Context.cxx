@@ -899,7 +899,14 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
                                   const unsigned int theSeverity,
                                   const TCollection_ExtendedString& theMessage)
 {
-  //OpenGl_Context* aCtx = (OpenGl_Context* )theUserParam;
+  if (caps->suppressExtraMsg
+   && theSource >= GL_DEBUG_SOURCE_API_ARB
+   && theSource <= GL_DEBUG_SOURCE_OTHER_ARB
+   && myFilters[theSource - GL_DEBUG_SOURCE_API_ARB].Contains (theId))
+  {
+    return;
+  }
+
   Standard_CString& aSrc = (theSource >= GL_DEBUG_SOURCE_API_ARB
                         && theSource <= GL_DEBUG_SOURCE_OTHER_ARB)
                          ? THE_DBGMSG_SOURCES[theSource - GL_DEBUG_SOURCE_API_ARB]
@@ -927,6 +934,30 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
   aMsg += " | Message:\n  ";
   aMsg += theMessage;
   Messenger()->Send (aMsg, aGrav);
+}
+
+// =======================================================================
+// function : ExcludeMessage
+// purpose  :
+// ======================================================================
+Standard_Boolean OpenGl_Context::ExcludeMessage (const unsigned int theSource,
+                                                 const unsigned int theId)
+{
+  return theSource >= GL_DEBUG_SOURCE_API_ARB
+      && theSource <= GL_DEBUG_SOURCE_OTHER_ARB
+      && myFilters[theSource - GL_DEBUG_SOURCE_API_ARB].Add (theId);
+}
+
+// =======================================================================
+// function : IncludeMessage
+// purpose  :
+// ======================================================================
+Standard_Boolean OpenGl_Context::IncludeMessage (const unsigned int theSource,
+                                                 const unsigned int theId)
+{
+  return theSource >= GL_DEBUG_SOURCE_API_ARB
+      && theSource <= GL_DEBUG_SOURCE_OTHER_ARB
+      && myFilters[theSource - GL_DEBUG_SOURCE_API_ARB].Remove (theId);
 }
 
 // =======================================================================
@@ -963,11 +994,19 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myGlVerMajor = 0;
   myGlVerMinor = 0;
   ReadGlVersion (myGlVerMajor, myGlVerMinor);
+  myVendor = (const char* )::glGetString (GL_VENDOR);
 
 #if defined(GL_ES_VERSION_2_0)
   (void )theIsCoreProfile;
   const bool isCoreProfile = false;
 #else
+
+  if (myVendor.Search ("NVIDIA") != -1)
+  {
+    // Buffer detailed info: Buffer object 1 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW)
+    // will use VIDEO memory as the source for buffer object operations.
+    ExcludeMessage (GL_DEBUG_SOURCE_API_ARB, 131185);
+  }
   if (IsGlGreaterEqual (3, 0))
   {
     // retrieve auxiliary function in advance
@@ -1157,9 +1196,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       // setup default callback
       myIsGlDebugCtx = Standard_True;
       arbDbg->glDebugMessageCallbackARB (debugCallbackWrap, this);
-    #ifdef OCCT_DEBUG
-      glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-    #endif
+      if (caps->contextSyncDebug)
+      {
+        ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+      }
     }
   }
 
@@ -1820,10 +1860,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   const bool hasTextureStorage = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_texture_storage"))
        && FindProcShort (glTexStorage1D)
        && FindProcShort (glTexStorage2D)
-       && FindProcShort (glTexStorage3D)
-       && FindProcShort (glTextureStorage1DEXT)
-       && FindProcShort (glTextureStorage2DEXT)
-       && FindProcShort (glTextureStorage3DEXT);
+       && FindProcShort (glTexStorage3D);
 
   has42 = IsGlGreaterEqual (4, 2)
        && hasBaseInstance
