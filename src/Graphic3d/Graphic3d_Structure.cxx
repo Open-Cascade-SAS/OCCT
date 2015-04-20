@@ -807,6 +807,9 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_Structure::FillArea3dAspect() const
   aBack.SetEnvReflexion (myCStructure->ContextFillArea.Back.EnvReflexion);
   aBack.SetMaterialType (myCStructure->ContextFillArea.Back.IsPhysic ? Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT);
 
+  aBack.SetRefractionIndex (Standard_Real (myCStructure->ContextFillArea.Back.RefractionIndex));
+  aBack.SetBSDF (myCStructure->ContextFillArea.Back.BSDF);
+
   // Front Material
   Graphic3d_MaterialAspect aFront;
   aFront.SetShininess    (Standard_Real (myCStructure->ContextFillArea.Front.Shininess));
@@ -854,6 +857,9 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_Structure::FillArea3dAspect() const
 
   aFront.SetEnvReflexion (myCStructure->ContextFillArea.Front.EnvReflexion);
   aFront.SetMaterialType (myCStructure->ContextFillArea.Front.IsPhysic ? Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT);
+
+  aFront.SetRefractionIndex (Standard_Real (myCStructure->ContextFillArea.Front.RefractionIndex));
+  aFront.SetBSDF (myCStructure->ContextFillArea.Front.BSDF);
 
   Quantity_Color anIntColor  (Standard_Real (myCStructure->ContextFillArea.IntColor.r),
                               Standard_Real (myCStructure->ContextFillArea.IntColor.g),
@@ -1004,6 +1010,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   myCStructure->ContextFillArea.Back.Specular        = float (aBack.Specular());
   myCStructure->ContextFillArea.Back.Transparency    = float (aBack.Transparency());
   myCStructure->ContextFillArea.Back.RefractionIndex = float (aBack.RefractionIndex());
+  myCStructure->ContextFillArea.Back.BSDF            = aBack.BSDF();
   myCStructure->ContextFillArea.Back.Emission        = float (aBack.Emissive());
 
   // Reflection mode
@@ -1048,6 +1055,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   myCStructure->ContextFillArea.Front.Specular        = float (aFront.Specular());
   myCStructure->ContextFillArea.Front.Transparency    = float (aFront.Transparency());
   myCStructure->ContextFillArea.Front.RefractionIndex = float (aFront.RefractionIndex());
+  myCStructure->ContextFillArea.Front.BSDF            = aFront.BSDF();
   myCStructure->ContextFillArea.Front.Emission        = float (aFront.Emissive());
 
   // Reflection mode

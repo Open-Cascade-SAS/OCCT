@@ -34,12 +34,12 @@ class MaterialAspect from Graphic3d
 
 uses
 
-	Color			from Quantity,
-
-	NameOfMaterial		from Graphic3d,
-	TypeOfReflection	from Graphic3d,
-	TypeOfMaterial          from Graphic3d,
-	AsciiString		from TCollection
+  Color             from Quantity,
+  NameOfMaterial    from Graphic3d,
+  TypeOfReflection  from Graphic3d,
+  TypeOfMaterial    from Graphic3d,
+  BSDF              from Graphic3d,
+  AsciiString       from TCollection
 
 raises
 
@@ -147,6 +147,13 @@ is
 	--  Warning: Raises MaterialDefinitionError if <theValue> is a
 	--	    lesser than 1.0.
 	raises MaterialDefinitionError from Graphic3d is static;
+
+  SetBSDF ( me : in out;
+            theBSDF  : BSDF from Graphic3d )
+          is static;
+  ---Level: Public
+  ---Purpose: Modifies the BSDF (bidirectional scattering distribution function).
+  --  Category: Methods to modify the class definition
 
 	SetColor ( me		: in out;
 		   AColor	: Color from Quantity )
@@ -325,6 +332,14 @@ is
 	---Purpose: Returns the refraction index of the material
 	---Category: Inquire methods
 
+  BSDF ( me )
+    returns BSDF from Graphic3d
+    is static;
+  ---C++: return const&
+  ---Level: Public
+  ---Purpose: Returns BSDF (bidirectional scattering distribution function).
+  ---Category: Inquire methods
+
   Emissive ( me )
 		returns Real from Standard
 		is static;
@@ -484,6 +499,9 @@ fields
   -- the coefficient of transparency and refraction index
   myTransparencyCoef  : ShortReal from Standard;
   myRefractionIndex   : ShortReal from Standard;
+
+  -- BSDF (bidirectional scattering distribution function). Physically based material represented as weighted mixture of BxDFs (BRDFs and BTDFs) and its parameters.
+  myBSDF              : BSDF from Graphic3d;
 
   -- the specular exponent
   myShininess    : ShortReal from Standard;

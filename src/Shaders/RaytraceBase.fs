@@ -73,12 +73,14 @@ uniform int uLightCount;
 //! Intensity of global ambient light.
 uniform vec4 uGlobalAmbient;
 
-//! Enables/disables environment map.
-uniform int uEnvironmentEnable;
-//! Enables/disables computation of shadows.
-uniform int uShadowsEnable;
-//! Enables/disables computation of reflections.
-uniform int uReflectionsEnable;
+//! Enables/disables hard shadows.
+uniform int uShadowsEnabled;
+//! Enables/disables specular reflections.
+uniform int uReflectEnabled;
+//! Enables/disables spherical environment map.
+uniform int uSphereMapEnabled;
+//! Enables/disables environment map background.
+uniform int uSphereMapForBack;
 
 //! Radius of bounding sphere of the scene.
 uniform float uSceneRadius;
@@ -90,14 +92,19 @@ uniform float uSceneEpsilon;
   uniform sampler2D uTextureSamplers[MAX_TEX_NUMBER];
 #endif
 
+//! Top color of gradient background.
+uniform vec4 uBackColorTop = vec4 (0.0);
+//! Bottom color of gradient background.
+uniform vec4 uBackColorBot = vec4 (0.0);
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Specific data types
-  
+
 //! Stores ray parameters.
 struct SRay
 {
   vec3 Origin;
-  
+
   vec3 Direct;
 };
 
@@ -105,9 +112,9 @@ struct SRay
 struct SIntersect
 {
   float Time;
-  
+
   vec2 UV;
-  
+
   vec3 Normal;
 };
 
@@ -125,6 +132,24 @@ struct SIntersect
 #define AXIS_Y vec3 (0.0f, 1.0f, 0.0f)
 #define AXIS_Z vec3 (0.0f, 0.0f, 1.0f)
 
+#define M_PI 3.14159265f
+
+#define LUMA vec3 (0.2126f, 0.7152f, 0.0722f)
+
+// =======================================================================
+// function : MatrixRowMultiplyDir
+// purpose  : Multiplies a vector by matrix
+// =======================================================================
+vec3 MatrixRowMultiplyDir (in vec3 v,
+                           in vec4 m0,
+                           in vec4 m1,
+                           in vec4 m2)
+{
+  return vec3 (dot (m0.xyz, v),
+               dot (m1.xyz, v),
+               dot (m2.xyz, v));
+}
+
 //! 32-bit state of random number generator.
 uint RandState;
 
@@ -133,9 +158,9 @@ uint RandState;
 // purpose  : Applies hash function by Thomas Wang to randomize seeds
 //            (see http://www.burtleburtle.net/bob/hash/integer.html)
 // =======================================================================
-void SeedRand (in int theSeed)
+void SeedRand (in int theSeed, in int theSizeX)
 {
-  RandState = uint (int (gl_FragCoord.y) * uWinSizeX + int (gl_FragCoord.x) + theSeed);
+  RandState = uint (int (gl_FragCoord.y) * theSizeX + int (gl_FragCoord.x) + theSeed);
 
   RandState = (RandState + 0x479ab41du) + (RandState <<  8);
   RandState = (RandState ^ 0xe4aa10ceu) ^ (RandState >>  5);
@@ -196,6 +221,26 @@ vec3 MatrixColMultiplyDir (in vec3 v,
                m0[2] * v.x + m1[2] * v.y + m2[2] * v.z);
 }
 
+//=======================================================================
+// function : InverseDirection
+// purpose  : Returns safely inverted direction of the given one
+//=======================================================================
+vec3 InverseDirection (in vec3 theInput)
+{
+  vec3 anInverse = 1.f / max (abs (theInput), SMALL);
+
+  return mix (-anInverse, anInverse, step (ZERO, theInput));
+}
+
+//=======================================================================
+// function : BackgroundColor
+// purpose  : Returns color of gradient background
+//=======================================================================
+vec4 BackgroundColor()
+{
+  return mix (uBackColorBot, uBackColorTop, vPixel.y);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Functions for compute ray-object intersection
 
@@ -239,7 +284,7 @@ float ComputeOpenGlDepth (in SRay theRay)
 // function : ComputeOpenGlColor
 // purpose  :
 // =======================================================================
-vec4 ComputeOpenGlColor (in SRay theRay)
+vec4 ComputeOpenGlColor()
 {
   vec4 anOpenGlColor = texelFetch (uOpenGlColorTexture, ivec2 (gl_FragCoord.xy), 0);
   // During blending with factors GL_SRC_ALPHA and GL_ONE_MINUS_SRC_ALPHA (for text and markers)
@@ -421,16 +466,16 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
   return aTriIndex;
 }
 
-#define MATERIAL_AMBN(index) (11 * index + 0)
-#define MATERIAL_DIFF(index) (11 * index + 1)
-#define MATERIAL_SPEC(index) (11 * index + 2)
-#define MATERIAL_EMIS(index) (11 * index + 3)
-#define MATERIAL_REFL(index) (11 * index + 4)
-#define MATERIAL_REFR(index) (11 * index + 5)
-#define MATERIAL_TRAN(index) (11 * index + 6)
-#define MATERIAL_TRS1(index) (11 * index + 7)
-#define MATERIAL_TRS2(index) (11 * index + 8)
-#define MATERIAL_TRS3(index) (11 * index + 9)
+#define MATERIAL_AMBN(index) (18 * index + 0)
+#define MATERIAL_DIFF(index) (18 * index + 1)
+#define MATERIAL_SPEC(index) (18 * index + 2)
+#define MATERIAL_EMIS(index) (18 * index + 3)
+#define MATERIAL_REFL(index) (18 * index + 4)
+#define MATERIAL_REFR(index) (18 * index + 5)
+#define MATERIAL_TRAN(index) (18 * index + 6)
+#define MATERIAL_TRS1(index) (18 * index + 7)
+#define MATERIAL_TRS2(index) (18 * index + 8)
+#define MATERIAL_TRS3(index) (18 * index + 9)
 
 // =======================================================================
 // function : ObjectAnyHit
@@ -851,9 +896,20 @@ vec2 SmoothUV (in vec2 theUV, in ivec4 theTriangle)
 #endif
 
 // =======================================================================
+// function : FetchEnvironment
+// purpose  :
+// =======================================================================
+vec4 FetchEnvironment (in vec2 theTexCoord)
+{
+  return mix (vec4 (0.0f, 0.0f, 0.0f, 1.0f),
+    textureLod (uEnvironmentMapTexture, theTexCoord, 0.0f), float (uSphereMapEnabled));
+}
+
+// =======================================================================
 // function : Refract
 // purpose  : Computes refraction ray (also handles TIR)
 // =======================================================================
+#ifndef PATH_TRACING
 vec3 Refract (in vec3 theInput,
               in vec3 theNormal,
               in float theRefractIndex,
@@ -877,6 +933,7 @@ vec3 Refract (in vec3 theInput,
   return normalize (anIndex * theInput -
     (anIndex * aNdotI + (aNdotI < 0.0f ? aNdotT : -aNdotT)) * theNormal);
 }
+#endif
 
 #define MIN_SLOPE 0.0001f
 #define EPS_SCALE 8.0000f
@@ -892,6 +949,7 @@ vec3 Refract (in vec3 theInput,
 // function : Radiance
 // purpose  : Computes color along the given ray
 // =======================================================================
+#ifndef PATH_TRACING
 vec4 Radiance (in SRay theRay, in vec3 theInverse)
 {
   vec3 aResult = vec3 (0.0f);
@@ -909,19 +967,19 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
     if (aTriIndex.x == -1)
     {
-      vec4 aColor = vec4 (0.0f);
+      vec4 aColor = vec4 (0.0);
 
-      if (aWeight.w != 0.0f)
-      {
-        aColor = anOpenGlDepth != MAXFLOAT ?
-          ComputeOpenGlColor (theRay) : vec4 (0.0f, 0.0f, 0.0f, 1.0f);
-      }
-      else if (bool(uEnvironmentEnable))
+      if (bool(uSphereMapForBack) || aWeight.w == 0.0f /* reflection */)
       {
         float aTime = IntersectSphere (theRay, uSceneRadius);
 
-        aColor = textureLod (uEnvironmentMapTexture, Latlong (
-          theRay.Direct * aTime + theRay.Origin, uSceneRadius), 0.0f);
+        aColor = FetchEnvironment (Latlong (
+          theRay.Direct * aTime + theRay.Origin, uSceneRadius));
+      }
+      else
+      {
+        vec4 aGlColor = ComputeOpenGlColor();
+        aColor = vec4 (BackgroundColor().rgb * aGlColor.w + ComputeOpenGlColor().rgb, aGlColor.w);
       }
 
       return vec4 (aResult.xyz + aWeight.xyz * aColor.xyz, aWeight.w * aColor.w);
@@ -944,7 +1002,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
     if (anOpenGlDepth < aHit.Time + aPolygonOffset)
     {
-      vec4 aGlColor = ComputeOpenGlColor (theRay);
+      vec4 aGlColor = ComputeOpenGlColor();
 
       aResult += aWeight.xyz * aGlColor.xyz;
       aWeight *= aGlColor.w;
@@ -1018,7 +1076,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       {
         float aVisibility = 1.0f;
 
-        if (bool(uShadowsEnable))
+        if (bool(uShadowsEnabled))
         {
           SRay aShadow = SRay (theRay.Origin, aLight.xyz);
 
@@ -1059,7 +1117,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     }
     else
     {
-      aWeight *= bool(uReflectionsEnable) ?
+      aWeight *= bool(uReflectEnabled) ?
         texelFetch (uRaytraceMaterialTexture, MATERIAL_REFL (aTriIndex.w)) : vec4 (0.0f);
 
       vec3 aReflect = reflect (theRay.Direct, aNormal);
@@ -1096,3 +1154,4 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
                aResult.z,
                aWeight.w);
 }
+#endif

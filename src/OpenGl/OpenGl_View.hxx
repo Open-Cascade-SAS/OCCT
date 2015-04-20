@@ -21,6 +21,7 @@
 
 #include <TColStd_Array2OfReal.hxx>
 #include <NCollection_List.hxx>
+#include <math_BullardGenerator.hxx>
 
 #include <Quantity_NameOfColor.hxx>
 #include <Aspect_FillMethod.hxx>
@@ -318,6 +319,7 @@ protected: //! @name data types related to ray-tracing
   {
     OpenGl_RT_aPosition,
 
+    // camera position
     OpenGl_RT_uOriginLT,
     OpenGl_RT_uOriginLB,
     OpenGl_RT_uOriginRT,
@@ -328,22 +330,31 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uDirectRB,
     OpenGl_RT_uUnviewMat,
 
+    // 3D scene params
     OpenGl_RT_uSceneRad,
     OpenGl_RT_uSceneEps,
     OpenGl_RT_uLightAmbnt,
     OpenGl_RT_uLightCount,
 
-    OpenGl_RT_uShadEnabled,
-    OpenGl_RT_uReflEnabled,
-    OpenGl_RT_uEnvMapEnable,
+    // background params
+    OpenGl_RT_uBackColorTop,
+    OpenGl_RT_uBackColorBot,
 
+    // ray-tracing params
+    OpenGl_RT_uShadowsEnabled,
+    OpenGl_RT_uReflectEnabled,
+    OpenGl_RT_uSphereMapEnabled,
+    OpenGl_RT_uSphereMapForBack,
+    OpenGl_RT_uTexSamplersArray,
+
+    // sampled frame params
+    OpenGl_RT_uSampleWeight,
+    OpenGl_RT_uFrameRndSeed,
+
+    // adaptive FSAA params
     OpenGl_RT_uOffsetX,
     OpenGl_RT_uOffsetY,
     OpenGl_RT_uSamples,
-    OpenGl_RT_uWinSizeX,
-    OpenGl_RT_uWinSizeY,
-
-    OpenGl_RT_uTextures,
 
     OpenGl_RT_NbVariables // special field
   };
@@ -366,16 +377,20 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_RaytraceMaterialTexture = 9,
     OpenGl_RT_RaytraceLightSrcTexture = 10,
 
-    OpenGl_RT_FSAAInputTexture = 11,
+    OpenGl_RT_FsaaInputTexture = 11,
+    OpenGl_RT_PrevAccumTexture = 12,
 
-    OpenGl_RT_OpenGlColorTexture = 12,
-    OpenGl_RT_OpenGlDepthTexture = 13
+    OpenGl_RT_OpenGlColorTexture = 13,
+    OpenGl_RT_OpenGlDepthTexture = 14
   };
 
   //! Tool class for management of shader sources.
   class ShaderSource
   {
   public:
+
+    //! Default shader prefix - empty string.
+    static const TCollection_AsciiString EMPTY_PREFIX;
 
     //! Creates new uninitialized shader source.
     ShaderSource()
@@ -384,9 +399,11 @@ protected: //! @name data types related to ray-tracing
     }
 
     //! Creates new shader source from specified file.
-    ShaderSource (const TCollection_AsciiString& theFileName)
+    ShaderSource (const TCollection_AsciiString& theFileName, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX)
     {
-      Load (&theFileName, 1);
+      TCollection_AsciiString aFileNames[] = { theFileName, "" };
+
+      Load (aFileNames, thePrefix);
     }
 
   public:
@@ -407,7 +424,7 @@ protected: //! @name data types related to ray-tracing
     TCollection_AsciiString Source() const;
 
     //! Loads shader source from specified files.
-    void Load (const TCollection_AsciiString* theFileNames, const Standard_Integer theCount);
+    void Load (const TCollection_AsciiString* theFileNames, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
 
   private:
 
@@ -434,6 +451,9 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables light propagation through transparent media.
     Standard_Boolean TransparentShadows;
 
+    //! Enables/disables global illumination (GI) effects.
+    Standard_Boolean GlobalIllumination;
+
     //! Enables/disables the use of OpenGL bindless textures.
     Standard_Boolean UseBindlessTextures;
 
@@ -442,6 +462,7 @@ protected: //! @name data types related to ray-tracing
     : StackSize (THE_DEFAULT_STACK_SIZE),
       NbBounces (THE_DEFAULT_NB_BOUNCES),
       TransparentShadows (Standard_False),
+      GlobalIllumination  (Standard_False),
       UseBindlessTextures (Standard_False)
     {
       //
@@ -572,6 +593,11 @@ protected: //! @name methods related to ray-tracing
                                           const ShaderSource&           theSource,
                                           const Handle(OpenGl_Context)& theGlContext);
 
+  //! Creates shader program from the given vertex and fragment shaders.
+  Handle(OpenGl_ShaderProgram) initProgram (const Handle(OpenGl_Context)&      theGlContext,
+                                            const Handle(OpenGl_ShaderObject)& theVertShader,
+                                            const Handle(OpenGl_ShaderObject)& theFragShader);
+
   //! Initializes OpenGL/GLSL shader programs.
   Standard_Boolean initRaytraceResources (const Graphic3d_CView&        theCView,
                                           const Handle(OpenGl_Context)& theGlContext);
@@ -658,6 +684,8 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_ShaderProgram) myRaytraceProgram;
   //! OpenGL/GLSL adaptive-AA shader program.
   Handle(OpenGl_ShaderProgram) myPostFSAAProgram;
+  //! OpenGL/GLSL program for displaying texture.
+  Handle(OpenGl_ShaderProgram) myOutImageProgram;
 
   //! Texture buffer of data records of bottom-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) mySceneNodeInfoTexture;
@@ -701,14 +729,26 @@ protected: //! @name fields related to ray-tracing
   //! PrimitiveArray to TriangleSet map for scene partial update.
   std::map<Standard_Size, OpenGl_TriangleSet*> myArrayToTrianglesMap;
 
-  //! Graphical ray-tracing filter to filter out all raytracable structures.
+  //! Set of IDs of non-raytracable elements (to detect updates).
+  std::set<Standard_Integer> myNonRaytraceStructureIDs;
+
+  //! Render filter to filter out all raytracable structures.
   Handle(OpenGl_RaytraceFilter) myRaytraceFilter;
 
   //! Marks if environment map should be updated.
   Standard_Boolean myToUpdateEnvironmentMap;
 
   //! State of OpenGL layer list.
-  Standard_Size myLayersModificationStatus;
+  Standard_Size myLayerListState;
+
+  //! Number of accumulated frames (for progressive rendering).
+  Standard_Integer myAccumFrames;
+
+  //! Stored ray origins used for detection of camera movements.
+  OpenGl_Vec3 myPreviousOrigins[3];
+
+  //! Bullard RNG to produce random sequence.
+  math_BullardGenerator myRNG;
 
 public:
 

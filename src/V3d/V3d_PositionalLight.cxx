@@ -94,6 +94,15 @@ V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Sta
 
 //-Methods, in order
 
+// =======================================================================
+// function : SetSmoothRadius
+// purpose  :
+// =======================================================================
+void V3d_PositionalLight::SetSmoothRadius (const Standard_Real theValue)
+{
+  MyLight->SetSmoothRadius (theValue);
+}
+
 void V3d_PositionalLight::SetPosition(const Standard_Real Xp, const Standard_Real Yp, const Standard_Real Zp) {
   MyLight->SetPosition (Graphic3d_Vertex (Xp,Yp,Zp));
 }

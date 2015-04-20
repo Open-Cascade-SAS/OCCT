@@ -190,7 +190,7 @@ public:
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
 
-  //! Resets structure modification state (for ray-tracing)
+  //! Resets structure modification state (for ray-tracing).
   void ResetModificationState() const { myModificationState = 0; }
 
   //! Is the structure ray-tracable (contains ray-tracable elements)?

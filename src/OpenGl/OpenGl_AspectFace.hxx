@@ -31,6 +31,7 @@
 #include <Graphic3d_CAspectFillArea.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_BSDF.hxx>
 
 #define OPENGL_AMBIENT_MASK  (1<<0)
 #define OPENGL_DIFFUSE_MASK  (1<<1)
@@ -41,12 +42,28 @@ static const TEL_POFFSET_PARAM THE_DEFAULT_POFFSET = { Aspect_POM_Fill, 1.0F, 0.
 
 struct OPENGL_SURF_PROP
 {
-  float        amb, diff, spec, emsv;
-  float        trans, shine, index;
-  float        env_reflexion;
-  int          isphysic;
+  Standard_ShortReal amb;
+  Standard_ShortReal diff;
+  Standard_ShortReal spec;
+  Standard_ShortReal emsv;
+
+  Standard_ShortReal trans;
+  Standard_ShortReal shine;
+  Standard_ShortReal index;
+
+  Standard_ShortReal env_reflexion;
+  Standard_Integer   isphysic;
+
   unsigned int color_mask;
-  TEL_COLOUR speccol, difcol, ambcol, emscol, matcol;
+
+  TEL_COLOUR speccol;
+  TEL_COLOUR difcol;
+  TEL_COLOUR ambcol;
+  TEL_COLOUR emscol;
+  TEL_COLOUR matcol;
+
+  Graphic3d_BSDF BSDF;
+
   DEFINE_STANDARD_ALLOC
 };
 

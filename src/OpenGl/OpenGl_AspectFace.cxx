@@ -111,6 +111,9 @@ void OpenGl_AspectFace::convertMaterial (const CALL_DEF_MATERIAL& theMat,
   // in OpenGl it is opposite.
   theSurf.trans = 1.0f - theMat.Transparency;
   theSurf.index = theMat.RefractionIndex;
+
+  // material BSDF (for physically-based rendering)
+  theSurf.BSDF = theMat.BSDF;
 }
 
 // =======================================================================

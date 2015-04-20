@@ -9,14 +9,14 @@ out vec4 OutColor;
 
 #define LUM_DIFFERENCE 0.085f
 
-#define LUMA vec3 (0.2126f, 0.7152f, 0.0722f)
-
 // =======================================================================
 // function : main
 // purpose  :
 // =======================================================================
 void main (void)
 {
+#ifndef PATH_TRACING
+
   int aPixelX = int (gl_FragCoord.x);
   int aPixelY = int (gl_FragCoord.y);
 
@@ -75,4 +75,6 @@ void main (void)
   }
 
   OutColor = aColor;
+
+#endif
 }

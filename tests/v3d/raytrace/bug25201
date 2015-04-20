@@ -1,0 +1,53 @@
+puts "========"
+puts "OCC25201: Visualization - Implementing soft shadows and ambient occlusion in OCCT ray-tracing core"
+puts "========"
+
+# custom shapes
+set aShape1 [locate_data_file occ/Top.brep]
+set aShape2 [locate_data_file occ/Bottom.brep]
+
+# setup 3D viewer content
+vinit name=View1 w=512 h=512
+vglinfo
+
+vvbo 0
+vsetdispmode 1
+vsetgradientbg 180 200 255 180 180 180 2
+vtextureenv on 4
+restore $aShape1 s1
+restore $aShape2 s2
+vdisplay s1 s2
+vsetmaterial s1 Gold
+vsetmaterial s2 Silver
+vsetlocation s1 0.0 0.1 0.0
+vlight change 0 pos -1 1 0.5
+vturnview 3.0 -1.2 -0.1
+vfit
+
+# activate path tracing
+vrenderparams -raytrace
+vrenderparams -gi
+vrenderparams -rayDepth 12
+
+set aModeNum 0
+
+vlight change 0 sm 0.1
+vlight change 0 int 100
+vbsdf s1 roughness 6400
+
+vfps 200
+vdump $imagedir/${casename}_${aModeNum}.png
+incr aModeNum
+
+vsetmaterial s1 glass
+vbsdf s1 absorpcoeff 1.0
+
+vfps 200
+vdump $imagedir/${casename}_${aModeNum}.png
+incr aModeNum
+
+vsetmaterial s2 plaster
+
+vfps 200
+vdump $imagedir/${casename}_${aModeNum}.png
+incr aModeNum

@@ -362,6 +362,8 @@ is
     imported BndBox4d;
     imported BufferType;
 
+    imported BSDF;
+
     imported CBitFields20;
     ---Category: Imported types
 

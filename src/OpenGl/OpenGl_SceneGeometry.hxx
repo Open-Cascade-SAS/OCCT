@@ -72,6 +72,32 @@ public:
   //! Texture transformation matrix.
   BVH_Mat4f TextureTransform;
 
+  //! Physically-based material properties (used in path tracing engine).
+  struct Physical
+  {
+    //! Weight of the diffuse BRDF.
+    BVH_Vec4f Kd;
+
+    //! Weight of the reflection BRDF.
+    BVH_Vec4f Kr;
+
+    //! Weight of the transmission BTDF.
+    BVH_Vec4f Kt;
+
+    //! Weight of the Blinn's glossy BRDF.
+    BVH_Vec4f Ks;
+
+    //! Self-emitted radiance.
+    BVH_Vec4f Le;
+
+    //! Fresnel coefficients.
+    BVH_Vec4f Fresnel;
+
+    //! Absorption color for the transmission BSDF.
+    BVH_Vec4f Absorption;
+
+  } BSDF;
+
 public:
 
   //! Creates new default material.

@@ -17,13 +17,16 @@
 
 #include <InterfaceGraphic_telem.hxx>
 #include <Graphic3d_BndBox4f.hxx>
+#include <Graphic3d_BSDF.hxx>
 #include <Standard_Transient.hxx>
 
 /* COULEUR */
 
 typedef struct {
 
-        float r, g, b;
+  Standard_ShortReal r;
+  Standard_ShortReal g;
+  Standard_ShortReal b;
 
 } CALL_DEF_COLOR;
 
@@ -31,7 +34,9 @@ typedef struct {
 
 typedef struct {
 
-        float x, y, z;
+  Standard_ShortReal x;
+  Standard_ShortReal y;
+  Standard_ShortReal z;
 
 } CALL_DEF_POINT;
 
@@ -39,47 +44,52 @@ typedef struct {
 
 typedef struct {
 
-        float Ambient;
-        int IsAmbient;
+  Standard_ShortReal Ambient;
+  Standard_Integer   IsAmbient;
 
-        float Diffuse;
-        int IsDiffuse;
+  Standard_ShortReal Diffuse;
+  Standard_Integer   IsDiffuse;
 
-        float Specular;
-        int IsSpecular;
+  Standard_ShortReal Specular;
+  Standard_Integer   IsSpecular;
 
-        float Emission;
-        int IsEmission;
+  Standard_ShortReal Emission;
+  Standard_Integer   IsEmission;
 
-        float Shininess;
-        float Transparency;
-        float RefractionIndex;
+  Graphic3d_BSDF     BSDF;
 
-        float EnvReflexion;
+  Standard_ShortReal Shininess;
+  Standard_ShortReal Transparency;
+  Standard_ShortReal RefractionIndex;
 
-        int IsPhysic;
+  Standard_ShortReal EnvReflexion;
 
-        /* Attribut couleur eclairage */
-        CALL_DEF_COLOR ColorAmb, ColorDif, ColorSpec, ColorEms, Color;
+  Standard_Integer   IsPhysic;
 
+  /* Color attributes */
+  CALL_DEF_COLOR     ColorAmb;
+  CALL_DEF_COLOR     ColorDif;
+  CALL_DEF_COLOR     ColorSpec;
+  CALL_DEF_COLOR     ColorEms;
+  CALL_DEF_COLOR     Color;
 
 } CALL_DEF_MATERIAL;
 
 /* Transform persistence struct */
 typedef struct
 {
-        int            IsSet;
-	int            IsDef;
-	int	       Flag;
-        CALL_DEF_POINT Point;
+  Standard_Integer IsSet;
+  Standard_Integer IsDef;
+  Standard_Integer Flag;
+  CALL_DEF_POINT   Point;
 } CALL_DEF_TRANSFORM_PERSISTENCE;
 
 /* USERDRAW DATA */
 
 typedef struct {
 
-        void            *Data;
-        Graphic3d_BndBox4f  *Bounds;
+  void*               Data;
+  Graphic3d_BndBox4f* Bounds;
 
 } CALL_DEF_USERDRAW;
 

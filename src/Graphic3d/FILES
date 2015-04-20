@@ -65,3 +65,5 @@ Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
 Graphic3d_RenderingParams.hxx
 Graphic3d_NMapOfTransient.hxx
+Graphic3d_BSDF.hxx
+Graphic3d_BSDF.cxx

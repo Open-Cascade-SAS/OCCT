@@ -7502,58 +7502,64 @@ static int VLight (Draw_Interpretor& theDi,
       {
         case V3d_AMBIENT:
         {
-          theDi << "  Type:      Ambient\n";
+          theDi << "  Type:       Ambient\n";
+          theDi << "  Intensity:  " << aLight->Intensity() << "\n";
           break;
         }
         case V3d_DIRECTIONAL:
         {
           Handle(V3d_DirectionalLight) aLightDir = Handle(V3d_DirectionalLight)::DownCast (aLight);
-          theDi << "  Type:      Directional\n";
-          theDi << "  Headlight: " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  Type:       Directional\n";
+          theDi << "  Intensity:  " << aLight->Intensity() << "\n";
+          theDi << "  Headlight:  " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  Smoothness: " << aLight->Smoothness() << "\n";
           if (!aLightDir.IsNull())
           {
             aLightDir->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
-            theDi << "  Position:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            theDi << "  Position:   " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
             aLightDir->Direction (anXYZ[0], anXYZ[1], anXYZ[2]);
-            theDi << "  Direction: " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            theDi << "  Direction:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
           }
           break;
         }
         case V3d_POSITIONAL:
         {
           Handle(V3d_PositionalLight) aLightPos = Handle(V3d_PositionalLight)::DownCast (aLight);
-          theDi << "  Type:      Positional\n";
-          theDi << "  Headlight: " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  Type:       Positional\n";
+          theDi << "  Intensity:  " << aLight->Intensity() << "\n";
+          theDi << "  Headlight:  " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  Smoothness: " << aLight->Smoothness() << "\n";
           if (!aLightPos.IsNull())
           {
             aLightPos->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
-            theDi << "  Position:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            theDi << "  Position:   " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
             aLightPos->Attenuation (anAtten[0], anAtten[1]);
-            theDi << "  Atten.:    " << anAtten[0] << " " << anAtten[1] << "\n";
+            theDi << "  Atten.:     " << anAtten[0] << " " << anAtten[1] << "\n";
           }
           break;
         }
         case V3d_SPOT:
         {
           Handle(V3d_SpotLight) aLightSpot = Handle(V3d_SpotLight)::DownCast (aLight);
-          theDi << "  Type:      Spot\n";
-          theDi << "  Headlight: " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  Type:       Spot\n";
+          theDi << "  Intensity:  " << aLight->Intensity() << "\n";
+          theDi << "  Headlight:  " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
           if (!aLightSpot.IsNull())
           {
             aLightSpot->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
-            theDi << "  Position:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            theDi << "  Position:   " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
             aLightSpot->Direction (anXYZ[0], anXYZ[1], anXYZ[2]);
-            theDi << "  Direction: " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            theDi << "  Direction:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
             aLightSpot->Attenuation (anAtten[0], anAtten[1]);
-            theDi << "  Atten.:    " << anAtten[0] << " " << anAtten[1] << "\n";
-            theDi << "  Angle:     " << (aLightSpot->Angle() * 180.0 / M_PI) << "\n";
-            theDi << "  Exponent:  " << aLightSpot->Concentration() << "\n";
+            theDi << "  Atten.:     " << anAtten[0] << " " << anAtten[1] << "\n";
+            theDi << "  Angle:      " << (aLightSpot->Angle() * 180.0 / M_PI) << "\n";
+            theDi << "  Exponent:   " << aLightSpot->Concentration() << "\n";
           }
           break;
         }
         default:
         {
-          theDi << "  Type:      UNKNOWN\n";
+          theDi << "  Type:       UNKNOWN\n";
           break;
         }
       }
@@ -7785,6 +7791,56 @@ static int VLight (Draw_Interpretor& theDi,
         return 1;
       }
     }
+    else if (anArgCase.IsEqual ("SM")
+          || anArgCase.IsEqual ("SMOOTHNESS"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      Standard_Real aSmoothness = Atof (theArgVec[anArgIt]);
+
+      if (fabs (aSmoothness) < Precision::Confusion())
+      {
+        aLightCurr->SetIntensity (1.f);
+      }
+      else if (fabs (aLightCurr->Smoothness()) < Precision::Confusion())
+      {
+        aLightCurr->SetIntensity ((aSmoothness * aSmoothness) / 3.f);
+      }
+      else
+      {
+        Standard_ShortReal aSmoothnessRatio = static_cast<Standard_ShortReal> (aSmoothness / aLightCurr->Smoothness());
+        aLightCurr->SetIntensity (aLightCurr->Intensity() / (aSmoothnessRatio * aSmoothnessRatio));
+      }
+
+      if (!aLightPos.IsNull())
+      {
+        aLightPos->SetSmoothRadius (aSmoothness);
+      }
+      else if (!aLightDir.IsNull())
+      {
+        aLightDir->SetSmoothAngle (aSmoothness);
+      }
+    }
+    else if (anArgCase.IsEqual ("INT")
+          || anArgCase.IsEqual ("INTENSITY"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      Standard_Real aIntensity = Atof (theArgVec[anArgIt]);
+
+      if (!aLightCurr.IsNull())
+      {
+        aLightCurr->SetIntensity (aIntensity);
+      }
+    }
     else if (anArgCase.IsEqual ("ANG")
           || anArgCase.IsEqual ("ANGLE"))
     {
@@ -7975,11 +8031,12 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
     }
     theDI << "\n";
-    theDI << "fsaa:         " << (aParams.IsAntialiasingEnabled      ? "on" : "off") << "\n";
-    theDI << "shadows:      " << (aParams.IsShadowEnabled            ? "on" : "off") << "\n";
-    theDI << "reflections:  " << (aParams.IsReflectionEnabled        ? "on" : "off") << "\n";
-    theDI << "rayDepth:     " <<  aParams.RaytracingDepth                            << "\n";
-    theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled ? "on" : "off") << "\n";
+    theDI << "fsaa:         " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
+    theDI << "shadows:      " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
+    theDI << "reflections:  " << (aParams.IsReflectionEnabled         ? "on" : "off") << "\n";
+    theDI << "rayDepth:     " <<  aParams.RaytracingDepth                             << "\n";
+    theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
+    theDI << "GI:           " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
@@ -8066,7 +8123,9 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       const Standard_Integer aDepth = Draw::Atoi (theArgVec[anArgIter]);
-      if (aDepth < 1 || aDepth > 10)
+
+      // We allow RaytracingDepth be more than 10 in case of GI enabled
+      if (aDepth < 1 || (aDepth > 10 && !aParams.IsGlobalIlluminationEnabled))
       {
         std::cerr << "Error: invalid ray-tracing depth " << aDepth << ". Should be within range [1; 10]\n";
         return 1;
@@ -8142,6 +8201,42 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.IsTransparentShadowEnabled = toEnable;
     }
+    else if (aFlag == "-gi")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.IsGlobalIlluminationEnabled = toEnable;
+      if (!toEnable)
+      {
+        aParams.RaytracingDepth = Min (aParams.RaytracingDepth, 10);
+      }
+    }
+    else if (aFlag == "-env")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.UseEnvironmentMapBackground ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+        && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.UseEnvironmentMapBackground = toEnable;
+    }
     else if (aFlag == "-shademodel"
           || aFlag == "-shadingmodel"
           || aFlag == "-shading")
@@ -8200,8 +8295,55 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       return 1;
     }
   }
+
   return 0;
 }
+
+//=======================================================================
+//function : VProgressiveMode
+//purpose  :
+//=======================================================================
+#if defined(_WIN32)
+static Standard_Integer VProgressiveMode (Draw_Interpretor& /*theDI*/,
+                                          Standard_Integer  /*theNbArgs*/,
+                                          const char**      /*theArgs*/)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "Error: no active viewer!\n";
+    return 1;
+  }
+
+  std::cout << "Press Enter or Escape key to exit progressive rendering mode" << std::endl;
+
+  for (;;)
+  {
+    aView->Redraw();
+
+    Standard_Boolean toExit = Standard_False;
+
+    MSG aMsg;
+    while (PeekMessage (&aMsg, NULL, NULL, NULL, PM_REMOVE))
+    {
+      if (aMsg.message == WM_KEYDOWN && (aMsg.wParam == 0x0d || aMsg.wParam == 0x1b))
+      {
+        toExit = Standard_True;
+      }
+
+      TranslateMessage (&aMsg);
+      DispatchMessage  (&aMsg);
+    }
+
+    if (toExit)
+    {
+      break;
+    }
+  }
+
+  return 0;
+}
+#endif
 
 //=======================================================================
 //function : VFrustumCulling
@@ -8817,6 +8959,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n        {dir}ection X Y Z (for directional light or for spotlight)"
     "\n        color colorName"
     "\n        {head}light 0|1"
+    "\n        {sm}oothness value"
+    "\n        {int}ensity value"
     "\n        {constAtten}uation value"
     "\n        {linearAtten}uation value"
     "\n        angle angleDeg"
@@ -8827,7 +8971,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VLight, group);
   theCommands.Add("vraytrace",
             "vraytrace [0|1]"
-    "\n\t\t: Turn on/off raytracing renderer."
+    "\n\t\t: Turns on/off ray-tracing renderer."
     "\n\t\t:   'vraytrace 0' alias for 'vrenderparams -raster'."
     "\n\t\t:   'vraytrace 1' alias for 'vrenderparams -rayTrace'.",
     __FILE__, VRenderParams, group);
@@ -8840,6 +8984,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-reflections  on|off'  Enables/disables specular reflections"
     "\n      '-fsaa         on|off'  Enables/disables adaptive anti-aliasing"
     "\n      '-gleam        on|off'  Enables/disables transparency shadow effects"
+    "\n      '-gi           on|off'  Enables/disables global illumination effects"
+    "\n      '-env          on|off'  Enables/disables environment map background"
     "\n      '-shadingModel model'   Controls shading model from enumeration"
     "\n                              color, flat, gouraud, phong"
     "\n    Unlike vcaps, these parameters dramatically change visual properties."
@@ -8861,4 +9007,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vxrotate",
     __FILE__,VXRotate,group);
 
+#if defined(_WIN32)
+  theCommands.Add("vprogressive",
+    "vprogressive",
+    __FILE__, VProgressiveMode, group);
+#endif
 }

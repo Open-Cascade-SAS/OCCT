@@ -42,10 +42,12 @@ Visual3d_Light::Visual3d_Light (const Quantity_Color& theColor)
 // purpose  :
 // =======================================================================
 Visual3d_Light::Visual3d_Light (const Quantity_Color&   theColor,
-                                const Graphic3d_Vector& theDir,
-                                const Standard_Boolean  theIsHeadlight)
+                                const Graphic3d_Vector& theDirection,
+                                const Standard_Boolean  theIsHeadlight,
+                                const Standard_Real     theSmoothAngle,
+                                const Standard_Real     theIntensity)
 {
-  Visual3d_LightDefinitionError_Raise_if (theDir.LengthZero(),
+  Visual3d_LightDefinitionError_Raise_if (theDirection.LengthZero(),
                                           "Bad value for LightDirection");
   myCLight.Type        = Visual3d_TOLS_DIRECTIONAL;
   myCLight.IsHeadlight = theIsHeadlight;
@@ -54,11 +56,14 @@ Visual3d_Light::Visual3d_Light (const Quantity_Color&   theColor,
   myCLight.Color.b()   = Standard_ShortReal (theColor.Blue());
 
   Standard_Real X, Y, Z;
-  theDir.Coord (X, Y, Z);
+  theDirection.Coord (X, Y, Z);
   const Standard_Real aNorm = Sqrt (X * X + Y * Y + Z * Z);
   myCLight.Direction.x() = Standard_ShortReal (X / aNorm);
   myCLight.Direction.y() = Standard_ShortReal (Y / aNorm);
   myCLight.Direction.z() = Standard_ShortReal (Z / aNorm);
+
+  myCLight.Smoothness = static_cast<Standard_ShortReal> (theSmoothAngle);
+  myCLight.Intensity  = static_cast<Standard_ShortReal> (theIntensity);
 }
 
 // =======================================================================
@@ -66,9 +71,11 @@ Visual3d_Light::Visual3d_Light (const Quantity_Color&   theColor,
 // purpose  :
 // =======================================================================
 Visual3d_Light::Visual3d_Light (const Quantity_Color&   theColor,
-                                const Graphic3d_Vertex& thePos,
+                                const Graphic3d_Vertex& thePosition,
                                 const Standard_Real     theFact1,
-                                const Standard_Real     theFact2)
+                                const Standard_Real     theFact2,
+                                const Standard_Real     theSmoothRadius,
+                                const Standard_Real     theIntensity)
 {
   Visual3d_LightDefinitionError_Raise_if ((theFact1 == 0.0 && theFact2 == 0.0)
                                        || (theFact1  < 0.0 || theFact1 >  1.0)
@@ -79,11 +86,13 @@ Visual3d_Light::Visual3d_Light (const Quantity_Color&   theColor,
   myCLight.Color.r()    = Standard_ShortReal (theColor.Red());
   myCLight.Color.g()    = Standard_ShortReal (theColor.Green());
   myCLight.Color.b()    = Standard_ShortReal (theColor.Blue());
-  myCLight.Position.x() = Standard_ShortReal (thePos.X());
-  myCLight.Position.y() = Standard_ShortReal (thePos.Y());
-  myCLight.Position.z() = Standard_ShortReal (thePos.Z());
+  myCLight.Position.x() = Standard_ShortReal (thePosition.X());
+  myCLight.Position.y() = Standard_ShortReal (thePosition.Y());
+  myCLight.Position.z() = Standard_ShortReal (thePosition.Z());
   myCLight.ChangeConstAttenuation()  = Standard_ShortReal (theFact1);
   myCLight.ChangeLinearAttenuation() = Standard_ShortReal (theFact2);
+  myCLight.Smoothness = static_cast<Standard_ShortReal> (theSmoothRadius);
+  myCLight.Intensity  = static_cast<Standard_ShortReal> (theIntensity);
 }
 
 // =======================================================================
@@ -348,6 +357,66 @@ void Visual3d_Light::SetPosition (const Graphic3d_Vertex& thePos)
   myCLight.Position.x() = float (thePos.X());
   myCLight.Position.y() = float (thePos.Y());
   myCLight.Position.z() = float (thePos.Z());
+}
+
+// =======================================================================
+// function : SetSmoothAngle
+// purpose  :
+// =======================================================================
+void Visual3d_Light::SetSmoothAngle (const Standard_Real theValue)
+{
+  Visual3d_LightDefinitionError_Raise_if (myCLight.Type != Visual3d_TOLS_DIRECTIONAL,
+    "Light Type != Visual3d_TOLS_DIRECTIONAL");
+
+  Visual3d_LightDefinitionError_Raise_if (theValue < 0.0 || theValue > M_PI / 2.0,
+    "Bad value for smoothing angle");
+
+  myCLight.Smoothness = static_cast<Standard_ShortReal> (theValue);
+}
+
+// =======================================================================
+// function : SetSmoothRadius
+// purpose  :
+// =======================================================================
+void Visual3d_Light::SetSmoothRadius (const Standard_Real theValue)
+{
+  Visual3d_LightDefinitionError_Raise_if (myCLight.Type != Visual3d_TOLS_POSITIONAL,
+    "Light Type != Visual3d_TOLS_POSITIONAL");
+
+  Visual3d_LightDefinitionError_Raise_if (theValue < 0.0,
+    "Bad value for smoothing radius");
+
+  myCLight.Smoothness = static_cast<Standard_ShortReal> (theValue);
+}
+
+// =======================================================================
+// function : SetIntensity
+// purpose  :
+// =======================================================================
+void Visual3d_Light::SetIntensity (const Standard_Real theValue)
+{
+  Visual3d_LightDefinitionError_Raise_if (theValue <= 0.0,
+    "Bad value for intensity");
+
+  myCLight.Intensity = static_cast<Standard_ShortReal> (theValue);
+}
+
+// =======================================================================
+// function : Intensity
+// purpose  :
+// =======================================================================
+Standard_Real Visual3d_Light::Intensity() const
+{
+  return static_cast<Standard_Real> (myCLight.Intensity);
+}
+
+// =======================================================================
+// function : Smoothness
+// purpose  :
+// =======================================================================
+Standard_Real Visual3d_Light::Smoothness() const
+{
+  return static_cast<Standard_Real> (myCLight.Smoothness);
 }
 
 // =======================================================================

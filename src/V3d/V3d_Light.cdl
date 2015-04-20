@@ -105,6 +105,20 @@ is
   ---Level: Public
   ---Purpose: Setup headlight flag.
 
+  SetIntensity ( me       : mutable;
+                 theValue : Real from Standard )
+  ---Level: Public
+  ---Purpose: Modifies the intensity of light source.
+  is static;
+
+  Intensity ( me ) returns Real from Standard is static;
+  ---Level: Public
+  ---Purpose: returns the intensity of light source
+
+  Smoothness ( me ) returns Real from Standard is static;
+  ---Level: Public
+  ---Purpose: returns the smoothness of light source
+
         IsDisplayed( me ) returns Boolean from Standard;
         ---Level: Public
         ---Purpose: Returns TRUE when a light representation is displayed

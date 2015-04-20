@@ -102,6 +102,32 @@ V3d_TypeOfLight V3d_Light::Type() const {
   return MyType;
 }
 
+// =======================================================================
+// function : SetIntensity
+// purpose  :
+// =======================================================================
+void V3d_Light::SetIntensity (const Standard_Real theValue)
+{
+  MyLight->SetIntensity (theValue);
+}
+
+// =======================================================================
+// function : Intensity
+// purpose  :
+// =======================================================================
+Standard_Real V3d_Light::Intensity() const
+{
+  return MyLight->Intensity();
+}
+
+// =======================================================================
+// function : Smoothness
+// purpose  :
+// =======================================================================
+Standard_Real V3d_Light::Smoothness() const
+{
+  return MyLight->Smoothness();
+}
 
 Standard_Boolean V3d_Light::Headlight() const {
   return MyLight->Headlight();

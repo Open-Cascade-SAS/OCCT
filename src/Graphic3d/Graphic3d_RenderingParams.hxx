@@ -23,6 +23,9 @@ class Graphic3d_RenderingParams
 {
 public:
 
+  //! Default number of samples per pixel.
+  static const Standard_Integer THE_DEFAULT_SPP = 1;
+
   //! Default ray-tracing depth.
   static const Standard_Integer THE_DEFAULT_DEPTH = 3;
 
@@ -30,12 +33,15 @@ public:
 
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
-  : Method (Graphic3d_RM_RASTERIZATION),
-    RaytracingDepth (THE_DEFAULT_DEPTH),
-    IsShadowEnabled (Standard_True),
-    IsReflectionEnabled (Standard_False),
-    IsAntialiasingEnabled (Standard_False),
-    IsTransparentShadowEnabled (Standard_False)
+  : Method                      (Graphic3d_RM_RASTERIZATION),
+    RaytracingDepth             (THE_DEFAULT_DEPTH),
+    SamplesPerPixel             (THE_DEFAULT_SPP),
+    IsShadowEnabled             (Standard_True),
+    IsReflectionEnabled         (Standard_False),
+    IsAntialiasingEnabled       (Standard_False),
+    IsTransparentShadowEnabled  (Standard_False),
+    IsGlobalIlluminationEnabled (Standard_False),
+    UseEnvironmentMapBackground (Standard_False)
   {
     //
   }
@@ -48,6 +54,9 @@ public:
   //! Maximum ray-tracing depth.
   Standard_Integer RaytracingDepth;
 
+  //! Number of samples per pixel (SPP).
+  Standard_Integer SamplesPerPixel;
+
   //! Enables/disables shadows rendering.
   Standard_Boolean IsShadowEnabled;
 
@@ -59,6 +68,12 @@ public:
 
   //! Enables/disables light propagation through transparent media.
   Standard_Boolean IsTransparentShadowEnabled;
+
+  //! Enables/disables global illumination effects (uses path tracing).
+  Standard_Boolean IsGlobalIlluminationEnabled;
+
+  //! Enables/disables environment map background (instead of OCCT background).
+  Standard_Boolean UseEnvironmentMapBackground;
 
 };
 

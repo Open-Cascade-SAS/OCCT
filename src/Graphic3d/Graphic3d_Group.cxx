@@ -336,14 +336,15 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   // Back Material
   const Graphic3d_MaterialAspect& aBack = theAspFill->BackMaterial();
 
-  // Light specificity
-  ContextFillArea.Back.Shininess    = float (aBack.Shininess());
-  ContextFillArea.Back.Ambient      = float (aBack.Ambient());
-  ContextFillArea.Back.Diffuse      = float (aBack.Diffuse());
-  ContextFillArea.Back.Specular     = float (aBack.Specular());
-  ContextFillArea.Back.Transparency = float (aBack.Transparency());
-  ContextFillArea.Back.Emission     = float (aBack.Emissive());
+  // Material properties
+  ContextFillArea.Back.Shininess       = float (aBack.Shininess());
+  ContextFillArea.Back.Ambient         = float (aBack.Ambient());
+  ContextFillArea.Back.Diffuse         = float (aBack.Diffuse());
+  ContextFillArea.Back.Specular        = float (aBack.Specular());
+  ContextFillArea.Back.Transparency    = float (aBack.Transparency());
+  ContextFillArea.Back.Emission        = float (aBack.Emissive());
   ContextFillArea.Back.RefractionIndex = float (aBack.RefractionIndex());
+  ContextFillArea.Back.BSDF            = aBack.BSDF();
 
   // Reflection mode
   ContextFillArea.Back.IsAmbient    = aBack.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0;
@@ -378,14 +379,16 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
 
   // Front Material
   const Graphic3d_MaterialAspect& aFront = theAspFill->FrontMaterial();
-  // Light specificity
-  ContextFillArea.Front.Shininess     = float (aFront.Shininess());
-  ContextFillArea.Front.Ambient       = float (aFront.Ambient());
-  ContextFillArea.Front.Diffuse       = float (aFront.Diffuse());
-  ContextFillArea.Front.Specular      = float (aFront.Specular());
-  ContextFillArea.Front.Transparency  = float (aFront.Transparency());
-  ContextFillArea.Front.Emission      = float (aFront.Emissive());
+
+  // Material properties
+  ContextFillArea.Front.Shininess       = float (aFront.Shininess());
+  ContextFillArea.Front.Ambient         = float (aFront.Ambient());
+  ContextFillArea.Front.Diffuse         = float (aFront.Diffuse());
+  ContextFillArea.Front.Specular        = float (aFront.Specular());
+  ContextFillArea.Front.Transparency    = float (aFront.Transparency());
+  ContextFillArea.Front.Emission        = float (aFront.Emissive());
   ContextFillArea.Front.RefractionIndex = float (aFront.RefractionIndex());
+  ContextFillArea.Front.BSDF            = aFront.BSDF();
 
   // Reflection mode
   ContextFillArea.Front.IsAmbient     = aFront.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0;
@@ -636,6 +639,9 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
 
   ContextFillArea.Back.EnvReflexion = float (aBack.EnvReflexion());
 
+  ContextFillArea.Back.RefractionIndex = float (aBack.RefractionIndex());
+  ContextFillArea.Back.BSDF = aBack.BSDF();
+
   // Front Material
   const Graphic3d_MaterialAspect& aFront = theAspFill->FrontMaterial();
   // Light specificity
@@ -676,6 +682,9 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   ContextFillArea.Front.ColorEms.b    = float (aFront.EmissiveColor().Blue());
 
   ContextFillArea.Front.EnvReflexion  = float (aFront.EnvReflexion());
+
+  ContextFillArea.Front.RefractionIndex = float (aFront.RefractionIndex());
+  ContextFillArea.Front.BSDF = aFront.BSDF();
 
   ContextFillArea.IsDef = 1; // Material definition ok
 
@@ -892,6 +901,9 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
 
   aBack.SetEnvReflexion (anAspFill.Back.EnvReflexion);
 
+  aBack.SetRefractionIndex (Standard_Real (anAspFill.Back.RefractionIndex));
+  aBack.SetBSDF (anAspFill.Back.BSDF);
+
   // Front Material
   aFront.SetShininess    (Standard_Real (anAspFill.Front.Shininess));
   aFront.SetAmbient      (Standard_Real (anAspFill.Front.Ambient));
@@ -925,6 +937,9 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
   aFront.SetEmissiveColor (aColor);
 
   aFront.SetEnvReflexion (anAspFill.Front.EnvReflexion);
+
+  aFront.SetRefractionIndex (Standard_Real (anAspFill.Front.RefractionIndex));
+  aFront.SetBSDF (anAspFill.Front.BSDF);
 
   // Edges
   anAspFill.Edge == 1 ? theAspFill->SetEdgeOn() : theAspFill->SetEdgeOff();

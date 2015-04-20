@@ -30,6 +30,8 @@ public:
   Graphic3d_Vec4     Params;      //!< packed light parameters
   Standard_Integer   Type;        //!< Visual3d_TypeOfLightSource enumeration
   Standard_Boolean   IsHeadlight; //!< flag to mark head light
+  Standard_ShortReal Smoothness;  //!< radius (cone angle) for point (directional) light
+  Standard_ShortReal Intensity;   //!< intensity multiplier for light
 
   //! Const attenuation factor of positional light source
   Standard_ShortReal  ConstAttenuation()  const { return Params.x();  }
@@ -61,7 +63,9 @@ public:
     Direction     (0.0f, 0.0f, 0.0f, 0.0f),
     Params        (0.0f, 0.0f, 0.0f, 0.0f),
     Type          (0),
-    IsHeadlight   (Standard_False)
+    IsHeadlight   (Standard_False),
+    Smoothness    (0.0f),
+    Intensity     (1.0f)
   {
     //
   }

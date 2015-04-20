@@ -53,6 +53,9 @@ public:
   //! Gets background gradient fill method
   Aspect_GradientFillMethod GradientFillMethod() const { return myGradientParams.type; }
 
+  //! Returns color of gradient background for the given index.
+  const OpenGl_Vec4& GradientColor (const Standard_Integer theIndex) const { return (&myGradientParams.color1)[theIndex]; }
+
   //! Sets type of gradient fill method
   Standard_EXPORT void SetGradientFillMethod (const Aspect_GradientFillMethod theType);
 

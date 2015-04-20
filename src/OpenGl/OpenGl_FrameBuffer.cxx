@@ -139,6 +139,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& the
 {
   if (myVPSizeX == theViewportSizeX
    && myVPSizeY == theViewportSizeY)
+
   {
     return IsValid();
   }

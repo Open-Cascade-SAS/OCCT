@@ -454,7 +454,7 @@ is
     	-- -   Pewter
     	-- -   Silver
     	-- -   Stone.
-    
+
     SetMaterial(me:mutable;aName:NameOfMaterial from Graphic3d) is virtual; 
     	---Purpose: Sets the name aName for material defining this
     	-- display attribute for the interactive object.

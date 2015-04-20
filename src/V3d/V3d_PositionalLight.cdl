@@ -108,6 +108,12 @@ is
 	--  Warning: raises BadValue from V3d
 	--          if one of the attenuation coefficients is not between 0 et 1.
 
+    SetSmoothRadius ( me       : mutable;
+                      theValue : Real from Standard )
+    ---Level: Public
+    ---Purpose: Modifies the smoothing radius
+    is static;
+
      	---------------------------------------------------
         ---Category: Displaying methods 
         ---------------------------------------------------

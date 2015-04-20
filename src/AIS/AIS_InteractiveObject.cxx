@@ -276,9 +276,7 @@ void AIS_InteractiveObject::UnsetWidth()
 //function : 
 //purpose  : 
 //=======================================================================
-//POP pour K4L
 void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfMaterial aName)
-//void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfPhysicalMaterial aName)
 {
   if( HasColor() || IsTransparent() || HasMaterial() )
   {
@@ -292,44 +290,57 @@ void AIS_InteractiveObject::SetMaterial(const Graphic3d_NameOfMaterial aName)
   myOwnMaterial  = aName;
   hasOwnMaterial = Standard_True;
 }
+
 //=======================================================================
 //function : SetMaterial
 //purpose  : 
 //=======================================================================
-
-void AIS_InteractiveObject::SetMaterial(const Graphic3d_MaterialAspect& aMat)
+void AIS_InteractiveObject::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
 {
-  if (HasColor() || IsTransparent() || HasMaterial())
+  if (!HasColor() && !IsTransparent() && !HasMaterial())
   {
-    myDrawer->ShadingAspect()->SetMaterial(aMat);
+    myDrawer->SetShadingAspect (new Prs3d_ShadingAspect);
   }
-  else
-  {
-    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-    myDrawer->ShadingAspect()->SetMaterial(aMat);
-  }
+
+  myDrawer->ShadingAspect()->SetMaterial (theMaterial);
+
   hasOwnMaterial = Standard_True;
 }
+
 //=======================================================================
-//function : 
-//purpose  : 
+//function : UnsetMaterial
+//purpose  :
 //=======================================================================
 void AIS_InteractiveObject::UnsetMaterial()
 {
-  if( !HasMaterial() ) return;
+  if (!HasMaterial())
+  {
+    return;
+  }
+
   if (HasColor() || IsTransparent())
   {
     if(myDrawer->HasLink())
     {
       myDrawer->ShadingAspect()->SetMaterial (AIS_GraphicTool::GetMaterial (myDrawer->Link()));
     }
-    if (HasColor()) SetColor (myOwnColor);
-    if (IsTransparent()) SetTransparency (myTransparency);
+
+    if (HasColor())
+    {
+      SetColor (myOwnColor);
+    }
+
+    if (IsTransparent())
+    {
+      SetTransparency (myTransparency);
+    }
   }
-  else{
-    Handle(Prs3d_ShadingAspect) SA;
-    myDrawer->SetShadingAspect(SA);
+  else
+  {
+    Handle(Prs3d_ShadingAspect) anAspect;
+    myDrawer->SetShadingAspect (anAspect);
   }
+
   hasOwnMaterial = Standard_False;
 }
 

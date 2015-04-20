@@ -81,7 +81,7 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myIsRaytraceDataValid (Standard_False),
   myIsRaytraceWarnTextures (Standard_False),
   myToUpdateEnvironmentMap (Standard_False),
-  myLayersModificationStatus (0)
+  myLayerListState (0)
 {
   myCurrLightSourceState = myStateCounter->Increment();
 }

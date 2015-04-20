@@ -67,30 +67,35 @@ is
 	--	    Light sources are created in a visualiser
 	--	    and are activated in one of its views.
 
-	Create ( Color		: Color from Quantity;
-		 Direction	: Vector from Graphic3d; 
-    	    	 Headlight      : Boolean  from  Standard  =  Standard_False )
-		returns Light from Visual3d
-	---Level: Public
-	---Purpose: Creates a DIRECTIONAL light source.
-	--	    Light sources are created in a visualiser
-	--	    and are activated in one of its views.
-	--  Warning: Raises LightDefinitionError if <Direction> is null.
-	raises LightDefinitionError;
+    Create ( theColor       : Color from Quantity;
+             theDirection   : Vector from Graphic3d;
+             theHeadlight   : Boolean from Standard = Standard_False;
+             theSmoothAngle : Real from Standard = 0.0;
+             theIntensity   : Real from Standard = 1.0 )
+    returns Light from Visual3d
+    ---Level: Public
+    ---Purpose: Creates a DIRECTIONAL light source.
+    --      Light sources are created in a visualiser
+    --      and are activated in one of its views.
+    --  Warning: Raises LightDefinitionError if <Direction> is null.
+    raises LightDefinitionError;
 
-	Create ( Color		: Color from Quantity;
-		 Position	: Vertex from Graphic3d;
-		 Fact1, Fact2	: Real from Standard )
-		returns Light from Visual3d
-	---Level: Public
-	---Purpose: Creates a POSITIONAL light source.
-	--	    Light sources are created in a visualiser
-	--	    and are activated in one of its views.
-	--  Warning: Raises LightDefinitionError 
-	--	    if <Fact1> and <Fact2> are null.
-	--	    if <Fact1> is a negative value or greater than 1.0.
-	--	    if <Fact2> is a negative value or greater than 1.0.
-	raises LightDefinitionError;
+    Create ( theColor        : Color from Quantity;
+             thePosition     : Vertex from Graphic3d;
+             theFact1        : Real from Standard;
+             theFact2        : Real from Standard;
+             theSmoothRadius : Real from Standard = 0.0;
+             theIntensity   : Real from Standard = 1.0 )
+    returns Light from Visual3d
+    ---Level: Public
+    ---Purpose: Creates a POSITIONAL light source.
+    --      Light sources are created in a visualiser
+    --      and are activated in one of its views.
+    --  Warning: Raises LightDefinitionError 
+    --      if <Fact1> and <Fact2> are null.
+    --      if <Fact1> is a negative value or greater than 1.0.
+    --      if <Fact2> is a negative value or greater than 1.0.
+    raises LightDefinitionError;
 
 	Create ( Color		: Color from Quantity;
 		 Position	: Vertex from Graphic3d;
@@ -195,6 +200,45 @@ is
 	--  Warning: Raises LightDefinitionError 
 	--	    if the type of the light is not TOLS_POSITIONAL or TOLS_SPOT.
 	raises LightDefinitionError is static;
+
+    SetSmoothAngle ( me       : mutable;
+                     theValue : Real from Standard )
+    ---Level: Public
+    ---Purpose: Modifies the smoothing angle (in radians) of
+    --          DIRECTIONAL light source.
+    --  Category: Methods to modify the class definition
+    --  Warning: Raises LightDefinitionError
+    --      if the type of the light is not TOLS_DIRECTIONAL
+    --      if <Value> is negative or greater than PI / 2.
+    raises LightDefinitionError is static;
+
+    SetSmoothRadius ( me       : mutable;
+                      theValue : Real from Standard )
+    ---Level: Public
+    ---Purpose: Modifies the smoothing radius of
+    --          POSITIONAL light source.
+    --  Category: Methods to modify the class definition
+    --  Warning: Raises LightDefinitionError
+    --      if the type of the light is not TOLS_POSITIONAL
+    --      if <Value> is negative.
+    raises LightDefinitionError is static;
+
+    SetIntensity ( me       : mutable;
+                   theValue : Real from Standard )
+    ---Level: Public
+    ---Purpose: Modifies the intensity of light source.
+    --  Category: Methods to modify the class definition
+    --  Warning: Raises LightDefinitionError
+    --      if <Value> is negative or equal to zero.
+    raises LightDefinitionError is static;
+
+    Intensity ( me ) returns Real from Standard is static;
+    ---Level: Public
+    ---Purpose: returns the intensity of light source
+
+    Smoothness ( me ) returns Real from Standard is static;
+    ---Level: Public
+    ---Purpose: returns the smoothness of light source
 
 	----------------------------
 	-- Category: Inquire methods

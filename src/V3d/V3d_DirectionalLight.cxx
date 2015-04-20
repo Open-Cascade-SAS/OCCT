@@ -90,6 +90,15 @@ V3d_DirectionalLight::V3d_DirectionalLight(const Handle(V3d_Viewer)& VM,const St
 
 //-Methods, in order
 
+// =======================================================================
+// function : SetSmoothAngle
+// purpose  :
+// =======================================================================
+void V3d_DirectionalLight::SetSmoothAngle (const Standard_Real theValue)
+{
+  MyLight->SetSmoothAngle (theValue);
+}
+
 void V3d_DirectionalLight::SetDirection(const V3d_TypeOfOrientation Direction) {
 
   Graphic3d_Vector V = V3d::GetProjAxis(Direction) ;
