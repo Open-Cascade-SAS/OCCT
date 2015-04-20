@@ -147,6 +147,12 @@ public:
   Graphic3d_AxisAspect& ChangeYAxisAspect() { return myAxes(1); }
   Graphic3d_AxisAspect& ChangeZAxisAspect() { return myAxes(2); }
 
+  Graphic3d_AxisAspect& ChangeAxisAspect (const Standard_Integer theIndex)
+  {
+    Standard_OutOfRange_Raise_if (theIndex < 0 || theIndex > 2, "Graphic3d_GraduatedTrihedron::ChangeAxisAspect: theIndex is out of bounds [0,2].");
+    return myAxes (theIndex);
+  }
+
   const Graphic3d_AxisAspect& XAxisAspect() const { return myAxes(0); }
   const Graphic3d_AxisAspect& YAxisAspect() const { return myAxes(1); }
   const Graphic3d_AxisAspect& ZAxisAspect() const { return myAxes(2); }
