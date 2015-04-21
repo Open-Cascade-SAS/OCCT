@@ -1842,6 +1842,21 @@ void AIS_InteractiveContext::SetColor (const Handle(AIS_InteractiveObject)& theI
 }
 
 //=======================================================================
+//function : SetIsoOnTriangulation
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::IsoOnTriangulation (const Standard_Boolean theIsEnabled,
+                                                 const Handle(AIS_InteractiveObject)& theObject)
+{
+  if (theObject.IsNull())
+  {
+    return;
+  }
+
+  theObject->SetIsoOnTriangulation (theIsEnabled);
+}
+
+//=======================================================================
 //function : SetDeviationCoefficient
 //purpose  :
 //=======================================================================
@@ -2665,6 +2680,23 @@ Standard_Boolean AIS_InteractiveContext::IsoOnPlane() const
 }
 
 //=======================================================================
+//function : IsoOnTriangulation
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::IsoOnTriangulation (const Standard_Boolean theToSwitchOn)
+{
+  myDefaultDrawer->SetIsoOnTriangulation (theToSwitchOn);
+}
+
+//=======================================================================
+//function : IsoOnTriangulation
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::IsoOnTriangulation() const
+{
+  return myDefaultDrawer->IsoOnTriangulation();
+}
+
 //function : SetPixelTolerance
 //purpose  : Disables the mechanism of adaptive tolerance calculation in
 //           SelectMgr_ViewerSelector and sets the given tolerance for ALL

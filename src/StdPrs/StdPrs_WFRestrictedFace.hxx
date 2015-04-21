@@ -36,7 +36,6 @@ public:
                  const Handle(BRepAdaptor_HSurface)& theFace,
                  const Standard_Boolean              theDrawUIso,
                  const Standard_Boolean              theDrawVIso,
-                 const Quantity_Length               theDeflection,
                  const Standard_Integer              theNbUIso,
                  const Standard_Integer              theNbVIso,
                  const Handle(Prs3d_Drawer)&         theDrawer,

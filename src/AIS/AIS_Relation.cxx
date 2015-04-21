@@ -42,7 +42,7 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_Point.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_WFShape.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
@@ -123,7 +123,7 @@ void AIS_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)&
     BRepBuilderAPI_MakeEdge MakEd(gc->Circ(),pf, pl);
     E = MakEd.Edge();
   }
-  StdPrs_WFDeflectionShape::Add(aPrs, E, myDrawer);
+  StdPrs_WFShape::Add (aPrs, E, myDrawer);
 
   //Calcul de la presentation des lignes de raccord
   myDrawer->WireAspect()->SetTypeOfLine(aCallTOL);
@@ -131,31 +131,31 @@ void AIS_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)&
     gp_Pnt ppf, ppl;
     ppf = BRep_Tool::Pnt( TopExp::FirstVertex(TopoDS::Edge(anEdge)));
     ppl = BRep_Tool::Pnt( TopExp::LastVertex(TopoDS::Edge(anEdge)));
-    if (FirstP.Distance( ppf ) > gp::Resolution())
-      {
-	BRepBuilderAPI_MakeEdge MakEd1(FirstP, ppf);
-	StdPrs_WFDeflectionShape::Add(aPrs, MakEd1.Edge(), myDrawer);
-      }
+    if (FirstP.Distance (ppf) > gp::Resolution())
+    {
+      BRepBuilderAPI_MakeEdge MakEd1 (FirstP, ppf);
+      StdPrs_WFShape::Add (aPrs, MakEd1.Edge(), myDrawer);
+    }
     else
-      {
-	BRepBuilderAPI_MakeVertex MakVert1( FirstP );
-	StdPrs_WFDeflectionShape::Add(aPrs, MakVert1.Vertex(), myDrawer);
-      }
-    if (LastP.Distance( ppl ) > gp::Resolution())
-      {
-	BRepBuilderAPI_MakeEdge MakEd2(LastP, ppl);
-	StdPrs_WFDeflectionShape::Add(aPrs, MakEd2.Edge(), myDrawer);
-      }
+    {
+      BRepBuilderAPI_MakeVertex MakVert1 (FirstP);
+      StdPrs_WFShape::Add (aPrs, MakVert1.Vertex(), myDrawer);
+    }
+    if (LastP.Distance (ppl) > gp::Resolution())
+    {
+      BRepBuilderAPI_MakeEdge MakEd2 (LastP, ppl);
+      StdPrs_WFShape::Add (aPrs, MakEd2.Edge(), myDrawer);
+    }
     else
-      {
-	BRepBuilderAPI_MakeVertex MakVert2( LastP );
-	StdPrs_WFDeflectionShape::Add(aPrs, MakVert2.Vertex(), myDrawer);
-      }
+    {
+      BRepBuilderAPI_MakeVertex MakVert2 (LastP);
+      StdPrs_WFShape::Add (aPrs, MakVert2.Vertex(), myDrawer);
+    }
 /*
-    BRepBuilderAPI_MakeEdge MakEd1(FirstP, ppf);
-    StdPrs_WFDeflectionShape::Add(aPrs, MakEd1.Edge(), myDrawer);
-    BRepBuilderAPI_MakeEdge MakEd2(LastP, ppl);
-    StdPrs_WFDeflectionShape::Add(aPrs, MakEd2.Edge(), myDrawer);
+    BRepBuilderAPI_MakeEdge MakEd1 (FirstP, ppf);
+    StdPrs_WFShape::Add (aPrs, MakEd1.Edge(), myDrawer);
+    BRepBuilderAPI_MakeEdge MakEd2 (LastP, ppl);
+    StdPrs_WFShape::Add (aPrs, MakEd2.Edge(), myDrawer);
 */
   }
 }
@@ -197,8 +197,8 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
   // Si les points ne sont pas confondus...
   if (!ProjPoint.IsEqual (BRep_Tool::Pnt(aVertex),Precision::Confusion())) {
     // calcul des lignes de rappel
-    BRepBuilderAPI_MakeEdge MakEd(ProjPoint,BRep_Tool::Pnt(aVertex));
-    StdPrs_WFDeflectionShape::Add(aPrs, MakEd.Edge(), myDrawer);
+    BRepBuilderAPI_MakeEdge MakEd (ProjPoint,BRep_Tool::Pnt(aVertex));
+    StdPrs_WFShape::Add (aPrs, MakEd.Edge(), myDrawer);
   }
 }
 

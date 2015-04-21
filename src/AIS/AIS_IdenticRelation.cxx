@@ -43,7 +43,6 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TopAbs.hxx>

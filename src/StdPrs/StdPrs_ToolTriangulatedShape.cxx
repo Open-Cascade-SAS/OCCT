@@ -14,32 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ToolShadedShape.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 
+#include <BRepMesh_DiscretFactory.hxx>
+#include <BRepMesh_DiscretRoot.hxx>
+#include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomLib.hxx>
-#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <Prs3d.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 #include <TShort_Array1OfShortReal.hxx>
-#include <TColgp_Array1OfDir.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
-//function : isTriangulated
+//function : IsTriangulated
 //purpose  :
 //=======================================================================
-Standard_Boolean StdPrs_ToolShadedShape::IsTriangulated (const TopoDS_Shape& theShape)
+Standard_Boolean StdPrs_ToolTriangulatedShape::IsTriangulated (const TopoDS_Shape& theShape)
 {
   TopLoc_Location aLocDummy;
   for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
@@ -58,7 +61,7 @@ Standard_Boolean StdPrs_ToolShadedShape::IsTriangulated (const TopoDS_Shape& the
 //function : IsClosed
 //purpose  :
 //=======================================================================
-Standard_Boolean StdPrs_ToolShadedShape::IsClosed (const TopoDS_Shape& theShape)
+Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull())
   {
@@ -128,22 +131,12 @@ Standard_Boolean StdPrs_ToolShadedShape::IsClosed (const TopoDS_Shape& theShape)
 }
 
 //=======================================================================
-//function : Triangulation
-//purpose  :
-//=======================================================================
-Handle(Poly_Triangulation) StdPrs_ToolShadedShape::Triangulation (const TopoDS_Face& theFace,
-                                                                  TopLoc_Location&   theLoc)
-{
-  return BRep_Tool::Triangulation (theFace, theLoc);
-}
-
-//=======================================================================
 //function : Normal
 //purpose  :
 //=======================================================================
-void StdPrs_ToolShadedShape::Normal (const TopoDS_Face&  theFace,
-                                     Poly_Connect&       thePolyConnect,
-                                     TColgp_Array1OfDir& theNormals)
+void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
+                                           Poly_Connect&       thePolyConnect,
+                                           TColgp_Array1OfDir& theNormals)
 {
   const Handle(Poly_Triangulation)& aPolyTri = thePolyConnect.Triangulation();
   const TColgp_Array1OfPnt&         aNodes   = aPolyTri->Nodes();
@@ -219,4 +212,43 @@ void StdPrs_ToolShadedShape::Normal (const TopoDS_Face&  theFace,
       theNormals.ChangeValue (aNodeIter).Reverse();
     }
   }
+}
+
+//=======================================================================
+//function : IsTessellated
+//purpose  :
+//=======================================================================
+Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated (const TopoDS_Shape&         theShape,
+                                                              const Handle(Prs3d_Drawer)& theDrawer)
+{
+  return BRepTools::Triangulation (theShape, Prs3d::GetDeflection (theShape, theDrawer));
+}
+
+// =======================================================================
+// function : Tessellate
+// purpose  :
+// =======================================================================
+Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate (const TopoDS_Shape&         theShape,
+                                                           const Handle(Prs3d_Drawer)& theDrawer)
+{
+  Standard_Boolean wasRecomputed = Standard_False;
+  // Check if it is possible to avoid unnecessary recomputation of shape triangulation
+  if (IsTessellated (theShape, theDrawer))
+  {
+    return wasRecomputed;
+  }
+
+  Standard_Real aDeflection = Prs3d::GetDeflection (theShape, theDrawer);
+
+  // retrieve meshing tool from Factory
+  Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,
+                                                                                   aDeflection,
+                                                                                   theDrawer->HLRAngle());
+  if (!aMeshAlgo.IsNull())
+  {
+    aMeshAlgo->Perform();
+    wasRecomputed = Standard_True;
+  }
+
+  return wasRecomputed;
 }

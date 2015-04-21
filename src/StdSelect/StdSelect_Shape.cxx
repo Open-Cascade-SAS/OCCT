@@ -20,8 +20,8 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Projector.hxx>
 #include <Standard_Type.hxx>
+#include <StdPrs_WFShape.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
 #include <StdSelect_Shape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
@@ -45,10 +45,10 @@ void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/
     if(CanShade)
       StdPrs_ShadedShape::Add (P, mysh, myDrawer);
     else
-      StdPrs_WFDeflectionShape::Add (P, mysh, myDrawer);
+      StdPrs_WFShape::Add (P, mysh, myDrawer);
   }
   else if (aMode==0)
-    StdPrs_WFDeflectionShape::Add (P, mysh, myDrawer);
+    StdPrs_WFShape::Add (P, mysh, myDrawer);
 }
 
 void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector ,

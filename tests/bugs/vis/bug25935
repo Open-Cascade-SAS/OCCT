@@ -13,8 +13,8 @@ vinit
 # check displaying and selection of a sub-shell of the shape
 vdisplay aShape_3
 vfit
-vmoveto 214 200
-checkcolor 214 200 0 1 1
+vmoveto 210 200
+checkcolor 210 200 0 1 1
 
 vremove -all
 
@@ -25,4 +25,4 @@ vmoveto 192 211
 vmoveto 213 191
 vmoveto 205 205
 vmoveto 197 194
-checkcolor 205 205 0 1 1
+checkcolor 205 212 0 1 1

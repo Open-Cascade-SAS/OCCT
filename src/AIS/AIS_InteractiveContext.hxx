@@ -826,7 +826,21 @@ public:
   //! Returns True if drawing isoparameters on planes is enabled.
   //! if <forUIsos> = False,
   Standard_EXPORT Standard_Boolean IsoOnPlane() const;
-  
+
+  //! Enables or disables on-triangulation build for isolines for a particular object.
+  //! In case if on-triangulation builder is disabled, default on-plane
+  //! builder will compute isolines for the object given.
+  Standard_EXPORT void IsoOnTriangulation (const Standard_Boolean theIsEnabled,
+                                           const Handle(AIS_InteractiveObject)& theObject);
+
+  //! Enables or disables on-triangulation build for isolines for default drawer.
+  //! In case if on-triangulation builder is disabled, default on-plane
+  //! builder will compute isolines for the object given.
+  Standard_EXPORT void IsoOnTriangulation (const Standard_Boolean theToSwitchOn);
+
+  //! Returns true if drawing isolines on triangulation algorithm is enabled.
+  Standard_EXPORT Standard_Boolean IsoOnTriangulation() const;
+
   //! Sets the graphic basic aspect to the current presentation of
   //! ALL selected objects.
   //! When <globalChange> is TRUE , the full object presentation

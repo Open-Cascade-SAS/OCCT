@@ -34,9 +34,9 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <StdPrs_BndBox.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_ToolShadedShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TopExp_Explorer.hxx>
 
@@ -438,7 +438,7 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
   {
     case AIS_WireFrame:
     {
-      StdPrs_WFDeflectionShape::Add (thePrs, myshape, myDrawer);
+      StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       break;
     }
     case AIS_Shaded:
@@ -462,14 +462,14 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
 
       if (myshape.ShapeType() > TopAbs_FACE)
       {
-        StdPrs_WFDeflectionShape::Add (thePrs, myshape, myDrawer);
+        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
         break;
       }
 
       myDrawer->SetShadingAspectGlobal (Standard_False);
       if (IsInfinite())
       {
-        StdPrs_WFDeflectionShape::Add (thePrs, myshape, myDrawer);
+        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
         break;
       }
       try
@@ -502,11 +502,11 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
     {
       if (IsInfinite())
       {
-        StdPrs_WFDeflectionShape::Add (thePrs, myshape, myDrawer);
+        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       else
       {
-        StdPrs_WFDeflectionRestrictedFace::AddBox (thePrs, BoundingBox(), myDrawer);
+        StdPrs_BndBox::Add (thePrs, BoundingBox(), myDrawer);
       }
       break;
     }

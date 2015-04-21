@@ -34,8 +34,8 @@
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_ToolShadedShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
+#include <StdPrs_WFShape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -317,7 +317,13 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       }
       // After this call if type of deflection is relative
       // computed deflection coefficient is stored as absolute.
-      StdPrs_ShadedShape::Tessellate (myshape, myDrawer);
+      Standard_Boolean wasRecomputed = StdPrs_ToolTriangulatedShape::Tessellate (myshape, myDrawer);
+
+      // Set to update wireframe presentation on triangulation.
+      if (myDrawer->IsoOnTriangulation() && wasRecomputed)
+      {
+        SetToUpdate (AIS_WireFrame);
+      }
     }
   }
   else // WireFrame mode
@@ -416,7 +422,7 @@ void AIS_ColoredShape::addShapesWithCustomProps (const Handle(Prs3d_Presentation
       }
       else
       {
-        StdPrs_WFDeflectionShape::Add (thePrs, aShapeDraw, aDrawer);
+        StdPrs_WFShape::Add (thePrs, aShapeDraw, aDrawer);
       }
       aDrawer->SetTypeOfDeflection (aPrevType);
     }

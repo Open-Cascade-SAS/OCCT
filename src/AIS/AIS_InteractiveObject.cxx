@@ -663,3 +663,12 @@ void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
     }
   }
 }
+
+//=======================================================================
+//function : SetIsoOnTriangulation
+//purpose  : Enables or disables isoline on triangulation building
+//=======================================================================
+void AIS_InteractiveObject::SetIsoOnTriangulation (const Standard_Boolean theIsEnabled)
+{
+  myDrawer->SetIsoOnTriangulation (theIsEnabled);
+}

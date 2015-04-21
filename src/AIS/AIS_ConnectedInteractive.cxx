@@ -36,7 +36,7 @@
 #include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_HLRPolyShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_WFShape.hxx>
 #include <StdSelect.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -204,7 +204,7 @@ void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjec
     case TopAbs_WIRE:
     {
       thePresentation->SetDisplayPriority (4);
-      StdPrs_WFDeflectionShape::Add (thePresentation, theShape, myDrawer);
+      StdPrs_WFShape::Add (thePresentation, theShape, myDrawer);
       break;
     }
     default:

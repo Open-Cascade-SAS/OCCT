@@ -48,6 +48,8 @@ Prs3d_Drawer::Prs3d_Drawer()
   myHasOwnHLRDeviationAngle       (Standard_False),
   myIsoOnPlane                    (Standard_False),
   myHasOwnIsoOnPlane              (Standard_False),
+  myIsoOnTriangulation            (Standard_False),
+  myHasOwnIsoOnTriangulation      (Standard_False),
   myIsAutoTriangulated            (Standard_True),
   myHasOwnIsAutoTriangulated      (Standard_False),
 
@@ -146,6 +148,16 @@ Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR()
     myTypeOfHLR = Prs3d_TOH_PolyAlgo;
   }
   return myTypeOfHLR;
+}
+
+// =======================================================================
+// function : SetIsoOnTriangulation
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetIsoOnTriangulation (const Standard_Boolean theToEnable)
+{
+  myHasOwnIsoOnTriangulation = Standard_True;
+  myIsoOnTriangulation = theToEnable;
 }
 
 // =======================================================================
@@ -1038,6 +1050,7 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myHasOwnDeviationAngle          = Standard_False;
   myHasOwnHLRDeviationAngle       = Standard_False;
   myHasOwnIsoOnPlane              = Standard_False;
+  myHasOwnIsoOnTriangulation      = Standard_False;
   myHasOwnIsAutoTriangulated      = Standard_False;
   myHasOwnWireDraw                = Standard_False;
   myHasOwnShadingAspectGlobal     = Standard_False;

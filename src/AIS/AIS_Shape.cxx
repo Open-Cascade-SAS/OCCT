@@ -45,6 +45,8 @@
 #include <Prs3d_Projector.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+#include <StdPrs_BndBox.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveBox.hxx>
@@ -55,7 +57,6 @@
 #include <StdPrs_HLRPolyShape.hxx>
 #include <StdPrs_HLRShape.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdSelect.hxx>
 #include <StdSelect_BRepOwner.hxx>
@@ -142,21 +143,32 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     }
   }
 
-  if (IsInfinite()) aPrs->SetInfiniteState(Standard_True); //not taken in account duting FITALL
-  switch (aMode) {
-  case 0:{
-    try { OCC_CATCH_SIGNALS  StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer); }
-    catch (Standard_Failure) { 
-#ifdef OCCT_DEBUG
-      cout << "AIS_Shape::Compute()  failed"<< endl;
-      cout << "a Shape should be incorrect : No Compute can be maked on it  "<< endl;     
-#endif
-// presentation of the bounding box is calculated
-//      Compute(aPresentationManager,aPrs,2);
-    }
-    break;
+  if (IsInfinite())
+  {
+    aPrs->SetInfiniteState (Standard_True); //not taken in account duting FITALL
   }
-  case 1:
+
+  switch (aMode)
+  {
+    case AIS_WireFrame:
+    {
+      try
+      {
+        OCC_CATCH_SIGNALS
+        StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+      }
+      catch (Standard_Failure)
+      {
+      #ifdef OCCT_DEBUG
+        cout << "AIS_Shape::Compute() failed" << endl;
+        cout << "a Shape should be incorrect : No Compute can be maked on it " << endl;
+      #endif
+        // presentation of the bounding box is calculated
+        //      Compute(aPresentationManager,aPrs,2);
+      }
+      break;
+    }
+    case AIS_Shaded:
     {
       if (myDrawer->IsAutoTriangulation())
       {
@@ -170,41 +182,57 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
         }
       }
 
-      //shading only on face...
-      if ((Standard_Integer) myshape.ShapeType()>4)
-        StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
-      else {
-        myDrawer->SetShadingAspectGlobal(Standard_False);
-        if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
-        else {
+      if ((Standard_Integer) myshape.ShapeType() > 4)
+      {
+        StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+      }
+      else
+      {
+        myDrawer->SetShadingAspectGlobal (Standard_False);
+        if (IsInfinite())
+        {
+          StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+        }
+        else
+        {
+          try
           {
-            try {
-              OCC_CATCH_SIGNALS
-              StdPrs_ShadedShape::Add(aPrs,myshape,myDrawer);
-            }
-            catch (Standard_Failure) {
-#ifdef OCCT_DEBUG
-              cout << "AIS_Shape::Compute() in ShadingMode failed"<< endl;
-#endif
-              StdPrs_WFShape::Add(aPrs,myshape,myDrawer);
-            }
+            OCC_CATCH_SIGNALS
+            StdPrs_ShadedShape::Add (aPrs, myshape, myDrawer);
+          }
+          catch (Standard_Failure)
+          {
+          #ifdef OCCT_DEBUG
+            cout << "AIS_Shape::Compute() in ShadingMode failed" << endl;
+          #endif
+            StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
           }
         }
       }
-      Standard_Real value = Transparency() ;
-      if( value > 0. ) {
-        SetTransparency( value );
+      Standard_Real aTransparency = Transparency() ;
+      if (aTransparency > 0.0)
+      {
+        SetTransparency (aTransparency);
       }
       break;
     }
-  case 2:
+
+    // Bounding box.
+    case 2:
     {
-      // bounding box
-      if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
-      else StdPrs_WFDeflectionRestrictedFace::AddBox (aPrs, BoundingBox(), myDrawer);
+      if (IsInfinite())
+      {
+        StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+      }
+      else
+      {
+        StdPrs_BndBox::Add (aPrs, BoundingBox(), myDrawer);
+      }
     }
-  } // end switch
-  aPrs->ReCompute(); // for hidden line recomputation if necessary...
+  }
+
+  // Recompute hidden line presentation (if necessary).
+  aPrs->ReCompute();
 }
 
 //=======================================================================

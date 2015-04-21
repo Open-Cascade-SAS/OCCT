@@ -454,6 +454,8 @@ public:
   //! Returns bounding box of object correspondingly to its current display mode.
   Standard_EXPORT virtual void BoundingBox (Bnd_Box& theBndBox) Standard_OVERRIDE;
 
+  //! Enables or disables on-triangulation build of isolines according to the flag given.
+  Standard_EXPORT void SetIsoOnTriangulation (const Standard_Boolean theIsEnabled);
 
 friend class AIS_InteractiveContext;
 

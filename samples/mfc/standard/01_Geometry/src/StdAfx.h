@@ -234,7 +234,6 @@
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_ShadedSurface.hxx>
 #include <StdPrs_Point.hxx>
 #include <StdPrs_WFSurface.hxx>

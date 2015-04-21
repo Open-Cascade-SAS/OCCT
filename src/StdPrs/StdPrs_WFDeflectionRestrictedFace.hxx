@@ -112,9 +112,6 @@ public:
   //! visualization approach is activated (it is activated by default).
   Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(BRepAdaptor_HSurface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Quantity_Length Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(Prs3d_Drawer)& aDrawer, Prs3d_NListOfSequenceOfPnt& Curves);
   
-  //! Adds box as polyline to the presentation object
-  Standard_EXPORT static void AddBox (const Handle(Prs3d_Presentation)& thePrs, const Bnd_Box& theBndBox, const Handle(Prs3d_Drawer)& theDrawer);
-  
   Standard_EXPORT static Standard_Boolean Match (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);
   
   Standard_EXPORT static Standard_Boolean MatchUIso (const Quantity_Length X, const Quantity_Length Y, const Quantity_Length Z, const Quantity_Length aDistance, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(Prs3d_Drawer)& aDrawer);

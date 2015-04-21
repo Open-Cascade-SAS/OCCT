@@ -2755,7 +2755,7 @@ static int VDrawText (Draw_Interpretor& theDI,
 #include <TShort_HArray1OfShortReal.hxx>
 
 #include <AIS_Triangulation.hxx>
-#include <StdPrs_ToolShadedShape.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Poly_Connect.hxx>
 #include <TColgp_Array1OfDir.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
@@ -5848,7 +5848,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
     for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
-      Handle(Poly_Triangulation) aTriangulation = StdPrs_ToolShadedShape::Triangulation (aFace, aLocation);
+      Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (aFace, aLocation);
       if (!aTriangulation.IsNull())
       {
         aNbPoints += aTriangulation->NbNodes();
@@ -5864,7 +5864,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
     for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
-      Handle(Poly_Triangulation) aTriangulation = StdPrs_ToolShadedShape::Triangulation (aFace, aLocation);
+      Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (aFace, aLocation);
       if (aTriangulation.IsNull())
       {
         continue;
@@ -5878,7 +5878,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
       if (hasNormals)
       {
         Poly_Connect aPolyConnect (aTriangulation);
-        StdPrs_ToolShadedShape::Normal (aFace, aPolyConnect, aNormals);
+        StdPrs_ToolTriangulatedShape::Normal (aFace, aPolyConnect, aNormals);
       }
 
       for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)

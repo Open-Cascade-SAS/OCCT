@@ -1,0 +1,43 @@
+puts "============"
+puts "CR25300"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - Build wireframe representation consistent with the shape's triangulation"
+#
+# Case 1: Test isolines on conic shape where usual algorithm builds isos beyond the
+#         shape's boundaries
+##########################################################################################
+
+pload VISUALIZATION
+
+restore [locate_data_file bug25300_pencil.brep] aPencil
+
+set aSimpleIsoImg $imagedir/${casename}_iso.png
+set aIsoOnTrgImg $imagedir/${casename}_iso_on_triang.png
+
+vinit View1
+vclear
+vaxo
+vdisplay aPencil
+vviewparams -scale 9787.997 -proj -0.0115 -0.9998 0.0145
+vviewparams -up -0.0155 0.0147 0.9998 -at 0.0503 0 0
+vsetdispmode 1
+
+# shows that default isoline builder has problemas with proper
+# construction of isolines on top of the pencil
+vmoveto 200 200
+vdump $aSimpleIsoImg
+checkcolor 337 162 0 1 1
+
+vmoveto 0 0
+
+# enable isoline-on-triangulation builder
+vaspects aPencil -isoontriang on
+
+# shows that isoline-on-triangulation builder constructs isos that
+# do not extend beyond the boundaries of shape's triangulation
+vmoveto 200 200
+vdump $aIsoOnTrgImg
+checkcolor 337 162 0 0 0

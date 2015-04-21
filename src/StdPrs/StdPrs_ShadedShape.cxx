@@ -17,11 +17,10 @@
 #include <StdPrs_ShadedShape.hxx>
 
 #include <Bnd_Box.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepMesh_DiscretFactory.hxx>
-#include <BRepMesh_DiscretRoot.hxx>
 #include <BRepTools.hxx>
+#include <BRepBndLib.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -31,7 +30,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_List.hxx>
 #include <Precision.hxx>
-#include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -40,8 +38,7 @@
 #include <Poly_Connect.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
-#include <StdPrs_ToolShadedShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -74,7 +71,7 @@ namespace
     if (!aShapeIter.More())
     {
       // compound contains no shaded elements at all
-      StdPrs_WFDeflectionShape::Add (thePrs, theShape, theDrawer);
+      StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
       return;
     }
 
@@ -103,7 +100,7 @@ namespace
     }
     if (hasElement)
     {
-      StdPrs_WFDeflectionShape::Add (thePrs, aCompoundWF, theDrawer);
+      StdPrs_WFShape::Add (thePrs, aCompoundWF, theDrawer);
     }
   }
 
@@ -136,7 +133,7 @@ namespace
       theDrawer->UIsoAspect()->SetNumber (5);
       theDrawer->VIsoAspect()->SetNumber (5);
 
-      StdPrs_WFDeflectionShape::Add (thePrs, aCompoundWF, theDrawer);
+      StdPrs_WFShape::Add (thePrs, aCompoundWF, theDrawer);
 
       theDrawer->UIsoAspect()->SetNumber (aPrevUIsoNb);
       theDrawer->VIsoAspect()->SetNumber (aPrevVIsoNb);
@@ -163,7 +160,7 @@ namespace
     for (; aFaceIt.More(); aFaceIt.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
-      aT = StdPrs_ToolShadedShape::Triangulation (aFace, aLoc);
+      aT = BRep_Tool::Triangulation (aFace, aLoc);
       if (!aT.IsNull())
       {
         aNbTriangles += aT->NbTriangles();
@@ -181,7 +178,7 @@ namespace
     for (aFaceIt.Init (theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
-      aT = StdPrs_ToolShadedShape::Triangulation (aFace, aLoc);
+      aT = BRep_Tool::Triangulation (aFace, aLoc);
       if (aT.IsNull())
       {
         continue;
@@ -196,7 +193,7 @@ namespace
       const TColgp_Array1OfPnt&   aNodes   = aT->Nodes();
       const TColgp_Array1OfPnt2d& aUVNodes = aT->UVNodes();
       TColgp_Array1OfDir aNormals (aNodes.Lower(), aNodes.Upper());
-      StdPrs_ToolShadedShape::Normal (aFace, aPolyConnect, aNormals);
+      StdPrs_ToolTriangulatedShape::Normal (aFace, aPolyConnect, aNormals);
 
       if (theHasTexels)
       {
@@ -456,7 +453,7 @@ void StdPrs_ShadedShape::ExploreSolids (const TopoDS_Shape&    theShape,
         const TopoDS_Shape& aSubShape   = anIter.Value();
         const Standard_Boolean isClosed = aSubShape.ShapeType() == TopAbs_SHELL &&
                                           BRep_Tool::IsClosed (aSubShape)       &&
-                                          StdPrs_ToolShadedShape::IsTriangulated (aSubShape);
+                                          StdPrs_ToolTriangulatedShape::IsTriangulated (aSubShape);
         theBuilder.Add (isClosed ? theClosed : theOpened, aSubShape);
       }
       return;
@@ -498,30 +495,6 @@ void StdPrs_ShadedShape::Add (const Handle(Prs3d_Presentation)& thePrs,
 }
 
 // =======================================================================
-// function : Tessellate
-// purpose  :
-// =======================================================================
-void StdPrs_ShadedShape::Tessellate (const TopoDS_Shape&          theShape,
-                                     const Handle (Prs3d_Drawer)& theDrawer)
-{
-  // Check if it is possible to avoid unnecessary recomputation of shape triangulation
-  Standard_Real aDeflection = Prs3d::GetDeflection (theShape, theDrawer);
-  if (BRepTools::Triangulation (theShape, aDeflection))
-  {
-    return;
-  }
-
-  // retrieve meshing tool from Factory
-  Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,
-                                                                                   aDeflection,
-                                                                                   theDrawer->HLRAngle());
-  if (!aMeshAlgo.IsNull())
-  {
-    aMeshAlgo->Perform();
-  }
-}
-
-// =======================================================================
 // function : Add
 // purpose  :
 // =======================================================================
@@ -546,7 +519,7 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
   if (theDrawer->IsAutoTriangulation())
   {
     // Triangulation completeness is important for "open-closed" analysis - perform tessellation beforehand
-    Tessellate (theShape, theDrawer);
+    StdPrs_ToolTriangulatedShape::Tessellate (theShape, theDrawer);
   }
 
   // add special wireframe presentation for faces without triangulation

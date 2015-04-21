@@ -89,7 +89,7 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 	aCurve.D0(Last,P2);
       } while (P1.Distance(P2) < aLimit);
     }
-  }    
+  }
 
 }
 
@@ -631,47 +631,4 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::MatchVIso
                       aDrawer->MaximalChordialDeviation(),
                       aDrawer->UIsoAspect()->Number(),
                       aDrawer->VIsoAspect()->Number());
-}
-
-namespace
-{
-  static const Standard_Integer THE_INDICES[][3] =
-  { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 0, 1 }, { 0, 0, 1 },
-    { 0, 1, 1 }, { 1, 1, 1 }, { 1, 1, 0 }, { 0, 1, 0 },
-    { 0, 0, 0 }, { 0, 0, 1 }, { 1, 0, 1 }, { 1, 1, 1 },
-    { 0, 1, 1 }, { 0, 1, 0 }, { 1, 1, 0 }, { 1, 0, 0 } };
-}
-
-//=======================================================================
-//function : AddBox
-//purpose  :
-//=======================================================================
-void StdPrs_WFDeflectionRestrictedFace::AddBox (const Handle(Prs3d_Presentation)& thePrs,
-                                                const Bnd_Box&                    theBndBox,
-                                                const Handle(Prs3d_Drawer)&       theDrawer)
-{
-  if (theBndBox.IsVoid())
-  {
-    return;
-  }
-
-  Standard_Real X[2], Y[2], Z[2];
-  theBndBox.Get (X[0], Y[0], Z[0], X[1], Y[1], Z[1]);
-
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
-  Quantity_Color    aColor;
-  Aspect_TypeOfLine aDummyLineType;
-  Standard_Real     aWidth = 1.0;
-  theDrawer->LineAspect()->Aspect()->Values (aColor, aDummyLineType, aWidth);
-
-  aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (aColor, Aspect_TOL_DOTDASH, aWidth));
-
-  Handle(Graphic3d_ArrayOfPolylines) aPolyline = new Graphic3d_ArrayOfPolylines(16);
-  for(Standard_Integer aVertIter = 0; aVertIter < 16; ++aVertIter)
-  {
-    aPolyline->AddVertex (X[THE_INDICES[aVertIter][0]],
-                          Y[THE_INDICES[aVertIter][1]],
-                          Z[THE_INDICES[aVertIter][2]]);
-  }
-  aGroup->AddPrimitiveArray (aPolyline);
 }

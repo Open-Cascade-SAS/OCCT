@@ -1,0 +1,43 @@
+puts "============"
+puts "CR25300"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - Build wireframe representation consistent with the shape's triangulation"
+#
+# Case 2: Conic shape where isolines are build outside of its displayed triangulation
+##########################################################################################
+
+pload VISUALIZATION MODELING
+
+pcone aCone 90 0 150 360
+
+set aSimpleIsoImg $imagedir/${casename}_iso.png
+set aIsoOnTrgImg $imagedir/${casename}_iso_on_triang.png
+
+vinit View1
+vclear
+vaxo
+vdisplay aCone
+vviewparams -scale 122.2874 -proj 0.0353 -0.9281 0.3706
+vviewparams -up -0.2791 0.3469 0.8954 -at -5.5784 62.4399 122.7242
+vviewparams -eye 12.0732 -401.6167 308.0344
+vsetdispmode 1
+
+# shows that default isoline builder has problemas with proper
+# construction of isolines on top of the conic surface
+vmoveto 300 300
+vdump $aSimpleIsoImg
+checkcolor 347 179 0 1 1
+
+vmoveto 0 0
+
+# enable isoline-on-triangulation builder
+vaspects aCone -isoontriang on
+
+# shows that isoline-on-triangulation builder constructs isos that
+# do not extend beyond the boundaries of shape's triangulation
+vmoveto 300 300
+vdump $aIsoOnTrgImg
+checkcolor 347 179 0 0 0

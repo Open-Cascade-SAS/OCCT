@@ -12,7 +12,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <StdPrs_ToolShadedShape.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Poly_Connect.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Poly_Triangulation.hxx>
@@ -58,7 +58,7 @@ void User_Cylinder::Compute(const Handle_PrsMgr_PresentationManager3d& /*aPresen
 {
   switch (aMode) {
 case 0:
-  StdPrs_WFDeflectionShape::Add(aPresentation,myShape, myDrawer );
+  StdPrs_WFShape::Add(aPresentation,myShape, myDrawer );
   break;
 case 1:
   {
@@ -238,7 +238,7 @@ case 6: //color
       const Poly_Array1OfTriangle& triangles = myT->Triangles();
       TColgp_Array1OfDir myNormal(Nodes.Lower(), Nodes.Upper());
 
-      StdPrs_ToolShadedShape::Normal(myFace, pc, myNormal);
+      StdPrs_ToolTriangulatedShape::Normal(myFace, pc, myNormal);
       BRepTools::UVBounds(myFace,Umin, Umax, Vmin, Vmax);
       dUmax = (Umax - Umin);
       dVmax = (Vmax - Vmin);

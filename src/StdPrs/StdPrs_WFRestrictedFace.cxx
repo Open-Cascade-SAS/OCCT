@@ -39,7 +39,6 @@ void StdPrs_WFRestrictedFace::Add
                  const Handle(BRepAdaptor_HSurface)& theFace,
                  const Standard_Boolean              theDrawUIso,
                  const Standard_Boolean              theDrawVIso,
-                 const Quantity_Length               theDeflection,
                  const Standard_Integer              theNbUIso,
                  const Standard_Integer              theNBVIso,
                  const Handle(Prs3d_Drawer)&         theDrawer,
@@ -180,26 +179,32 @@ void StdPrs_WFRestrictedFace::Add
       Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt;
       if (!aGeomBSurface.IsNull())
       {
-        if (anIsoBuild.IsXLine(anI))
-          aBCurve = aGeomBSurface->UIso(anIsoCoord);
-        else 
-          aBCurve = aGeomBSurface->VIso(anIsoCoord);
+        if (anIsoBuild.IsXLine (anI))
+        {
+          aBCurve = aGeomBSurface->UIso (anIsoCoord);
+        }
+        else
+        {
+          aBCurve = aGeomBSurface->VIso (anIsoCoord);
+        }
 
         //Note that the isos are the part of the shape, it will be displayed after a computation the whole shape
         //NbPoints = 30 - default parameter for computation of such curves
-        StdPrs_Curve::Add (thePresentation, GeomAdaptor_Curve(aBCurve), b1, b2, theDeflection, 
-                           aPoints->ChangeSequence(), 30, Standard_False);
-        theCurves.Append(aPoints);
+        StdPrs_Curve::Add (thePresentation, GeomAdaptor_Curve (aBCurve), b1, b2, aPoints->ChangeSequence(), 30, Standard_False);
+        theCurves.Append (aPoints);
       }
       else
       {
-        if (anIsoBuild.IsXLine(anI))
-          anIsoCurve.Load(GeomAbs_IsoU,anIsoCoord,b1,b2);
+        if (anIsoBuild.IsXLine (anI))
+        {
+          anIsoCurve.Load (GeomAbs_IsoU, anIsoCoord, b1, b2);
+        }
         else
-          anIsoCurve.Load(GeomAbs_IsoV,anIsoCoord,b1,b2);
-        StdPrs_Curve::Add (thePresentation, anIsoCurve, theDeflection, theDrawer, 
-                           aPoints->ChangeSequence(), Standard_False);
-        theCurves.Append(aPoints);
+        {
+          anIsoCurve.Load(GeomAbs_IsoV, anIsoCoord, b1, b2);
+        }
+        StdPrs_Curve::Add (thePresentation, anIsoCurve, theDrawer, aPoints->ChangeSequence(), Standard_False);
+        theCurves.Append (aPoints);
       }
     }
   }
@@ -392,7 +397,6 @@ void StdPrs_WFRestrictedFace::Add
                                 theFace,
                                 Standard_True,
                                 Standard_True,
-                                theDrawer->MaximalChordialDeviation(),
                                 theDrawer->UIsoAspect()->Number(),
                                 theDrawer->VIsoAspect()->Number(),
                                 theDrawer,
@@ -415,7 +419,6 @@ void StdPrs_WFRestrictedFace::AddUIso
                                 theFace,
                                 Standard_True,
                                 Standard_False,
-                                theDrawer->MaximalChordialDeviation(),
                                 theDrawer->UIsoAspect()->Number(),
                                 theDrawer->VIsoAspect()->Number(),
                                 theDrawer,
@@ -438,7 +441,6 @@ void StdPrs_WFRestrictedFace::AddVIso
                                 theFace,
                                 Standard_False,
                                 Standard_True,
-                                theDrawer->MaximalChordialDeviation(),
                                 theDrawer->UIsoAspect()->Number(),
                                 theDrawer->VIsoAspect()->Number(),
                                 theDrawer,

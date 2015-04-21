@@ -128,6 +128,20 @@ public:
   //! Returns true if the drawer has IsoOnPlane setting active.
   Standard_Boolean HasOwnIsoOnPlane() const { return myHasOwnIsoOnPlane; }
 
+  //! Returns True if the drawing of isos on triangulation is enabled.
+  Standard_Boolean IsoOnTriangulation() const
+  {
+    return HasOwnIsoOnTriangulation() || myLink.IsNull()
+         ? myIsoOnTriangulation
+         : myLink->IsoOnTriangulation();
+  }
+
+  //! Returns true if the drawer has IsoOnTriangulation setting active.
+  Standard_Boolean HasOwnIsoOnTriangulation() const { return myHasOwnIsoOnTriangulation; }
+
+  //! Enables or disables isolines on triangulation by setting the parameter theIsEnabled to true or false.
+  Standard_EXPORT void SetIsoOnTriangulation (const Standard_Boolean theToEnable);
+
   //! Sets the discretisation parameter theValue.
   Standard_EXPORT void SetDiscretisation (const Standard_Integer theValue);
 
@@ -849,6 +863,8 @@ protected:
   Standard_Real                 myPreviousHLRDeviationAngle;
   Standard_Boolean              myIsoOnPlane;
   Standard_Boolean              myHasOwnIsoOnPlane;
+  Standard_Boolean              myIsoOnTriangulation;
+  Standard_Boolean              myHasOwnIsoOnTriangulation;
   Standard_Boolean              myIsAutoTriangulated;
   Standard_Boolean              myHasOwnIsAutoTriangulated;
 

@@ -244,11 +244,10 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 // purpose:
 //==================================================================
 void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
-                        const Adaptor3d_Curve&                    aCurve,
-                        const Quantity_Length              /*aDeflection*/,
+                        const Adaptor3d_Curve&             aCurve,
                         const Handle(Prs3d_Drawer)&        aDrawer,
-                        TColgp_SequenceOfPnt&           Points,
-                        const Standard_Boolean drawCurve)
+                        TColgp_SequenceOfPnt&              Points,
+                        const Standard_Boolean             drawCurve)
 {
   Standard_Real V1, V2;
   FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2);
@@ -257,23 +256,20 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
   DrawCurve(aCurve,Prs3d_Root::CurrentGroup(aPresentation),NbPoints,V1,V2,Points,drawCurve);
 }
 
-
 //==================================================================
 // function: Add
 // purpose:
 //==================================================================
 void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
-                        const Adaptor3d_Curve&                    aCurve,
+                        const Adaptor3d_Curve&             aCurve,
                         const Standard_Real                U1,
                         const Standard_Real                U2,
-                        const Quantity_Length              /*aDeflection*/,
                         TColgp_SequenceOfPnt&              Points,
                         const Standard_Integer             NbPoints,
-                        const Standard_Boolean drawCurve)
+                        const Standard_Boolean             drawCurve)
 {
   DrawCurve(aCurve,Prs3d_Root::CurrentGroup(aPresentation),NbPoints,U1,U2,Points,drawCurve);
 }
-
 
 //==================================================================
 // function: Add

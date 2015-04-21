@@ -29,7 +29,7 @@
 #include <Select3D_SensitiveBox.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <StdPrs_WFDeflectionRestrictedFace.hxx>
+#include <StdPrs_BndBox.hxx>
 
 
 //==================================================
@@ -448,7 +448,7 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
         return;
       }
 
-      StdPrs_WFDeflectionRestrictedFace::AddBox (thePrs, aBndBox, myDrawer);
+      StdPrs_BndBox::Add (thePrs, aBndBox, myDrawer);
       break;
     }
   }

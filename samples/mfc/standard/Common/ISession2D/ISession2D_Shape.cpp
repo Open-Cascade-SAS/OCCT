@@ -320,7 +320,7 @@ void ISession2D_Shape::DrawCompound(const Handle(Prs3d_Presentation)& thePresent
   if (theCompound.IsNull())
     return;
   myDrawer->SetWireAspect(theAspect);
-  StdPrs_WFDeflectionShape::Add(thePresentation,TopoDS_Shape(theCompound),myDrawer);
+  StdPrs_WFShape::Add(thePresentation,TopoDS_Shape(theCompound),myDrawer);
 }
 
 void ISession2D_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,

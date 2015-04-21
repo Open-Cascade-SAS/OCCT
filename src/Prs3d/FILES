@@ -50,5 +50,3 @@ Prs3d_TextAspect.hxx
 Prs3d_TypeOfHLR.hxx
 Prs3d_TypeOfLinePicking.hxx
 Prs3d_VertexDrawMode.hxx
-Prs3d_WFShape.cxx
-Prs3d_WFShape.hxx

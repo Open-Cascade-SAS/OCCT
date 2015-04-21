@@ -94,7 +94,6 @@
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_HLRPolyShape.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdPrs_ToolRFace.hxx>
 #include <StdSelect.hxx>

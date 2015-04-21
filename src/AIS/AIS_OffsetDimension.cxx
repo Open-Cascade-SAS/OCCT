@@ -48,7 +48,7 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_WFShape.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TopExp_Explorer.hxx>
@@ -355,8 +355,8 @@ void AIS_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentation)&
   BRepBuilderAPI_Transform transform2 (mySShape, aTrsf, Standard_True);
   TopoDS_Shape myTSShape = transform2.Shape();
 
-  StdPrs_WFDeflectionShape::Add(aprs, myTFShape, myDrawer);
-  StdPrs_WFDeflectionShape::Add(aprs, myTSShape, myDrawer);
+  StdPrs_WFShape::Add (aprs, myTFShape, myDrawer);
+  StdPrs_WFShape::Add (aprs, myTSShape, myDrawer);
 }
 
 //=======================================================================
@@ -466,9 +466,8 @@ void AIS_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)
   BRepBuilderAPI_Transform transform2 (mySShape, aTrsf, Standard_True);
   TopoDS_Shape myTSShape = transform2.Shape();
 
-  StdPrs_WFDeflectionShape::Add(aprs, myTFShape, myDrawer);
-  StdPrs_WFDeflectionShape::Add(aprs, myTSShape, myDrawer);
-
+  StdPrs_WFShape::Add (aprs, myTFShape, myDrawer);
+  StdPrs_WFShape::Add (aprs, myTSShape, myDrawer);
 }
 
 //=======================================================================
@@ -482,8 +481,8 @@ void AIS_OffsetDimension::ComputeAxeFaceOffset(const Handle(Prs3d_Presentation)&
   TopoDS_Shape myTFShape = transform1.Shape();
   BRepBuilderAPI_Transform transform2 (mySShape, aTrsf, Standard_True);
   TopoDS_Shape myTSShape = transform2.Shape();
-  
-  StdPrs_WFDeflectionShape::Add(aprs, myTFShape, myDrawer);
-  StdPrs_WFDeflectionShape::Add(aprs, myTSShape, myDrawer);
+
+  StdPrs_WFShape::Add (aprs, myTFShape, myDrawer);
+  StdPrs_WFShape::Add (aprs, myTSShape, myDrawer);
 }
 

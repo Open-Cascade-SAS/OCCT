@@ -577,7 +577,8 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       TheAISContext()->IsoNumber(AIS_TOI_IsoV) << "\n";
     di << "IsoOnPlane mode is " <<
       (TheAISContext()->IsoOnPlane() ? "ON" : "OFF") << "\n";
-
+    di << "IsoOnTriangulation mode is " <<
+      (TheAISContext()->IsoOnTriangulation() ? "ON" : "OFF") << "\n";
     return 0;
   }
 
@@ -1468,6 +1469,11 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer         ToSetFreeBoundaryColor;
   Quantity_Color           FreeBoundaryColor;
 
+  Standard_Integer         ToEnableIsoOnTriangulation;
+
+  Standard_Integer         ToSetMaxParamValue;
+  Standard_Real            MaxParamValue;
+
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
   : ToSetVisibility   (0),
@@ -1482,11 +1488,14 @@ struct ViewerTest_AspectsChangeSet
     Transparency      (0.0),
     ToSetMaterial     (0),
     Material          (Graphic3d_NOM_DEFAULT),
-    ToSetShowFreeBoundary  (0),
-    ToSetFreeBoundaryWidth (0),
-    FreeBoundaryWidth      (1.0),
-    ToSetFreeBoundaryColor (0),
-    FreeBoundaryColor      (DEFAULT_FREEBOUNDARY_COLOR) {}
+    ToSetShowFreeBoundary      (0),
+    ToSetFreeBoundaryWidth     (0),
+    FreeBoundaryWidth          (1.0),
+    ToSetFreeBoundaryColor     (0),
+    FreeBoundaryColor          (DEFAULT_FREEBOUNDARY_COLOR),
+    ToEnableIsoOnTriangulation (-1),
+    ToSetMaxParamValue (0),
+    MaxParamValue (500000) {}
 
   //! @return true if no changes have been requested
   Standard_Boolean IsEmpty() const
@@ -1498,7 +1507,8 @@ struct ViewerTest_AspectsChangeSet
         && ToSetMaterial          == 0
         && ToSetShowFreeBoundary  == 0
         && ToSetFreeBoundaryColor == 0
-        && ToSetFreeBoundaryWidth == 0;
+        && ToSetFreeBoundaryWidth == 0
+        && ToSetMaxParamValue     == 0;
   }
 
   //! @return true if properties are valid
@@ -1538,6 +1548,11 @@ struct ViewerTest_AspectsChangeSet
      || FreeBoundaryWidth >  10.0)
     {
       std::cout << "Error: the free boundary width should be within [1; 10] range (specified " << FreeBoundaryWidth << ")\n";
+      isOk = Standard_False;
+    }
+    if (MaxParamValue < 0.0)
+    {
+      std::cout << "Error: the max parameter value should be greater than zero (specified " << MaxParamValue << ")\n";
       isOk = Standard_False;
     }
     return isOk;
@@ -2069,6 +2084,42 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetFreeBoundaryWidth = -1;
       aChangeSet->FreeBoundaryWidth = 1.0;
     }
+    else if (anArg == "-isoontriangulation"
+          || anArg == "-isoontriang")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      aValue.LowerCase();
+      if (aValue == "on"
+        || aValue == "1")
+      {
+        aChangeSet->ToEnableIsoOnTriangulation = 1;
+      }
+      else if (aValue == "off"
+        || aValue == "0")
+      {
+        aChangeSet->ToEnableIsoOnTriangulation = 0;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-setmaxparamvalue")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetMaxParamValue = 1;
+      aChangeSet->MaxParamValue = Draw::Atof (theArgVec[anArgIter]);
+    }
     else
     {
       std::cout << "Error: wrong syntax at " << anArg << "\n";
@@ -2145,6 +2196,14 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     if (aChangeSet->ToSetFreeBoundaryColor != 0)
     {
       aDrawer->FreeBoundaryAspect()->SetColor (aChangeSet->FreeBoundaryColor);
+    }
+    if (aChangeSet->ToEnableIsoOnTriangulation != -1)
+    {
+      aDrawer->SetIsoOnTriangulation (aChangeSet->ToEnableIsoOnTriangulation == 1);
+    }
+    if (aChangeSet->ToSetMaxParamValue != 0)
+    {
+      aDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
     }
 
     // redisplay all objects in context
@@ -2229,6 +2288,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aCtx->UnsetWidth (aPrs, Standard_False);
       }
+      else if (aChangeSet->ToEnableIsoOnTriangulation != -1)
+      {
+        aCtx->IsoOnTriangulation (aChangeSet->ToEnableIsoOnTriangulation == 1, aPrs);
+        toRedisplay = Standard_True;
+      }
       if (!aDrawer.IsNull())
       {
         if (aChangeSet->ToSetShowFreeBoundary == 1)
@@ -2268,6 +2332,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
           toRedisplay = Standard_True;
         }
+        if (aChangeSet->ToSetMaxParamValue != 0)
+        {
+          aDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
+        }
       }
 
       for (aChangesIter.Next(); aChangesIter.More(); aChangesIter.Next())
@@ -2294,6 +2362,11 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
            || aChangeSet->ToSetLineWidth == -1)
           {
             aColoredPrs->UnsetCustomAspects (aSubShape, Standard_True);
+          }
+          if (aChangeSet->ToSetMaxParamValue != 0)
+          {
+            Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
+            aCurColDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
           }
         }
       }
@@ -5465,6 +5538,8 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
       "\n\t\t:          [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"
       "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
+      "\n\t\t:          [-isoontriangulation 0|1]"
+      "\n\t\t:          [-setMaxParamValue {value}]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."

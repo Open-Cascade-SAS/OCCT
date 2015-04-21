@@ -145,28 +145,6 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     
     Standard_Boolean UClosed = aSurface->IsUClosed();
     Standard_Boolean VClosed = aSurface->IsVClosed();
-      
-    Standard_Real TheDeflection;
-    Aspect_TypeOfDeflection TOD = aDrawer->TypeOfDeflection();    
-    if (TOD == Aspect_TOD_RELATIVE) {
-// On calcule la fleche en fonction des min max globaux de la piece:
-       Bnd_Box Total;
-       BndLib_AddSurface::Add(aSurface->Surface(),U1, U2, V1, V2, 0.,Total);
-       Standard_Real m = aDrawer->MaximalChordialDeviation()/
-	 aDrawer->DeviationCoefficient();
-       Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-       Total.Get( aXmin, aYmin, aZmin, aXmax, aYmax, aZmax );
-       if ( ! (Total.IsOpenXmin() || Total.IsOpenXmax() ))
-	  m = Min ( m , Abs (aXmax-aXmin));
-       if ( ! (Total.IsOpenYmin() || Total.IsOpenYmax() ))
-	  m = Min ( m , Abs (aYmax-aYmin));
-       if ( ! (Total.IsOpenZmin() || Total.IsOpenZmax() ))
-	  m = Min ( m , Abs (aZmax-aZmin));
-
-       TheDeflection = m * aDrawer->DeviationCoefficient();
-    }
-    else
-      TheDeflection = aDrawer->MaximalChordialDeviation();  
 
     Adaptor3d_IsoCurve anIso;
     anIso.Load(aSurface);
@@ -174,66 +152,67 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     // Trace des frontieres.
     // *********************
     //
-    if ( !(UClosed && VClosed) ) {
-	
-      (Prs3d_Root::CurrentGroup(aPresentation))->SetPrimitivesAspect
-	(aDrawer->FreeBoundaryAspect()->Aspect());
-      if ( !UClosed ) 
-	{ 
-	  anIso.Load(GeomAbs_IsoU,U1,V1,V2);
-          Handle(TColgp_HSequenceOfPnt) aPntsU1 = new TColgp_HSequenceOfPnt;
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsU1->ChangeSequence(), Standard_False);
-	  freeCurves.Append(aPntsU1);
-	  anIso.Load(GeomAbs_IsoU,U2,V1,V2);
-          Handle(TColgp_HSequenceOfPnt) aPntsU2 = new TColgp_HSequenceOfPnt;
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsU2->ChangeSequence(), Standard_False);
-	  freeCurves.Append(aPntsU2);
-	}
-      if ( !VClosed )
-	{
-	  anIso.Load(GeomAbs_IsoV,V1,U1,U2);
-          Handle(TColgp_HSequenceOfPnt) aPntsV1 = new TColgp_HSequenceOfPnt;
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsV1->ChangeSequence(), Standard_False);
-	  freeCurves.Append(aPntsV1);
-	  anIso.Load(GeomAbs_IsoV,V2,U1,U2);
-          Handle(TColgp_HSequenceOfPnt) aPntsV2 = new TColgp_HSequenceOfPnt;
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsV2->ChangeSequence(), Standard_False);
-	  freeCurves.Append(aPntsV2);
-	}
+    if (!(UClosed && VClosed))
+    {
+      Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (aDrawer->FreeBoundaryAspect()->Aspect());
+      if (!UClosed)
+      {
+        anIso.Load (GeomAbs_IsoU, U1, V1, V2);
+        Handle(TColgp_HSequenceOfPnt) aPntsU1 = new TColgp_HSequenceOfPnt;
+        StdPrs_Curve::Add (aPresentation, anIso, aDrawer, aPntsU1->ChangeSequence(), Standard_False);
+        freeCurves.Append (aPntsU1);
+
+        anIso.Load (GeomAbs_IsoU,U2,V1,V2);
+        Handle(TColgp_HSequenceOfPnt) aPntsU2 = new TColgp_HSequenceOfPnt;
+        StdPrs_Curve::Add (aPresentation, anIso, aDrawer, aPntsU2->ChangeSequence(), Standard_False);
+        freeCurves.Append(aPntsU2);
+      }
+      if (!VClosed)
+      {
+        anIso.Load (GeomAbs_IsoV, V1, U1, U2);
+        Handle(TColgp_HSequenceOfPnt) aPntsV1 = new TColgp_HSequenceOfPnt;
+        StdPrs_Curve::Add (aPresentation, anIso, aDrawer, aPntsV1->ChangeSequence(), Standard_False);
+        freeCurves.Append (aPntsV1);
+
+        anIso.Load (GeomAbs_IsoV, V2, U1, U2);
+        Handle(TColgp_HSequenceOfPnt) aPntsV2 = new TColgp_HSequenceOfPnt;
+        StdPrs_Curve::Add (aPresentation, anIso, aDrawer, aPntsV2->ChangeSequence(), Standard_False);
+        freeCurves.Append(aPntsV2);
+      }
     }
     //
     // Trace des isoparametriques.
     // ***************************
     //
     Standard_Integer fin = aDrawer->UIsoAspect()->Number();
-    if ( fin != 0) {
-      
-      (Prs3d_Root::CurrentGroup(aPresentation))->SetPrimitivesAspect
-	(aDrawer->UIsoAspect()->Aspect());
-      
-      Standard_Real du= UClosed ? (U2-U1)/fin : (U2-U1)/(1+fin);
-      for (Standard_Integer i=1; i<=fin;i++){
-	anIso.Load(GeomAbs_IsoU,U1+du*i,V1,V2);
+    if (fin != 0)
+    {
+      Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (aDrawer->UIsoAspect()->Aspect());
+
+      Standard_Real du= UClosed ? (U2-U1) / fin : (U2-U1) / (1 + fin);
+      for (Standard_Integer i = 1; i <= fin; i++)
+      {
+        anIso.Load (GeomAbs_IsoU, U1 + du * i, V1, V2);
         Handle(TColgp_HSequenceOfPnt) Pnts = new TColgp_HSequenceOfPnt;
-	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts->ChangeSequence(), Standard_False);
-	UIsoCurves.Append(Pnts);
+        StdPrs_Curve::Add (aPresentation, anIso, aDrawer, Pnts->ChangeSequence(), Standard_False);
+        UIsoCurves.Append (Pnts);
       }
     }
     fin = aDrawer->VIsoAspect()->Number();
-    if ( fin != 0) {
+    if (fin != 0)
+    {
+      Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (aDrawer->VIsoAspect()->Aspect());
       
-      (Prs3d_Root::CurrentGroup(aPresentation))->SetPrimitivesAspect
-	(aDrawer->VIsoAspect()->Aspect());
-      
-      Standard_Real dv= VClosed ?(V2-V1)/fin : (V2-V1)/(1+fin);
-      for (Standard_Integer i=1; i<=fin;i++){
-	anIso.Load(GeomAbs_IsoV,V1+dv*i,U1,U2);
+      Standard_Real dv = VClosed ? (V2 - V1) / fin : (V2 - V1) / (1 + fin);
+      for (Standard_Integer i = 1; i <= fin; i++)
+      {
+        anIso.Load (GeomAbs_IsoV, V1 + dv * i, U1, U2);
         Handle(TColgp_HSequenceOfPnt) Pnts = new TColgp_HSequenceOfPnt;
-	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts->ChangeSequence(), Standard_False);
-	VIsoCurves.Append(Pnts);
+        StdPrs_Curve::Add (aPresentation, anIso, aDrawer, Pnts->ChangeSequence(), Standard_False);
+        VIsoCurves.Append (Pnts);
       }
     }
-    
+
     Standard_Integer nbVertices = 0, nbBounds = 0; 
     //Draw surface via primitive array
     if(UIsoCurves.Size() > 0) {
