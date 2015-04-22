@@ -230,6 +230,10 @@ void AIS_Selection::ClearAndSelect(const Handle(Standard_Transient)& anObject) {
 Standard_Integer AIS_Selection::Extent() {
   Handle(AIS_Selection) S;
   AIS_Sel_CurrentSelection (S);
+
+  if (S.IsNull())
+    return 0;
+
   return S->myresult.Extent();
 }
 
@@ -241,7 +245,10 @@ Handle(Standard_Transient)  AIS_Selection::Single()
 {
   Handle(AIS_Selection) S;
   AIS_Sel_CurrentSelection (S);
-  
+
+  if (S.IsNull())
+    return Handle(Standard_Transient)();
+
   S->Init();
   return S->Value();
 }
