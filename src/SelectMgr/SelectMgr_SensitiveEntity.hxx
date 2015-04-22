@@ -18,10 +18,12 @@
 
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <Handle_SelectBasics_SensitiveEntity.hxx>
+#include <Standard.hxx>
+#include <Standard_DefineHandle.hxx>
 
 //! The purpose of this class is to mark sensitive entities selectable or not
 //! depending on current active selection of parent object for proper BVH traverse
-class SelectMgr_SensitiveEntity
+class SelectMgr_SensitiveEntity : public Standard_Transient
 {
 public:
 
@@ -38,7 +40,7 @@ public:
 
   //! Returns true if this entity belongs to the active selection
   //! mode of parent object
-  const Standard_Boolean IsActiveForSelection() const;
+  Standard_Boolean IsActiveForSelection() const;
 
   //! Marks entity as inactive for selection
   Standard_EXPORT void ResetSelectionActiveStatus() const;
@@ -46,10 +48,14 @@ public:
   //! Marks entity as active for selection
   Standard_EXPORT void SetActiveForSelection() const;
 
+  DEFINE_STANDARD_RTTI(SelectMgr_SensitiveEntity) // Type definition
+
 private:
 
   Handle(SelectBasics_SensitiveEntity) mySensitive;      //!< Related SelectBasics entity
-  mutable Standard_Boolean myIsActiveForSelection;       //!< Selection activity status
+  mutable Standard_Boolean             myIsActiveForSelection;       //!< Selection activity status
 };
+
+DEFINE_STANDARD_HANDLE(SelectMgr_SensitiveEntity, Standard_Transient)
 
 #endif // _SelectMgr_SensitiveEntity_HeaderFile

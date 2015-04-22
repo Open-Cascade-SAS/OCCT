@@ -45,7 +45,7 @@ void SelectMgr_Selection::Destroy()
 {
   for (Standard_Integer anEntityIdx = 0; anEntityIdx < myEntities.Size(); ++anEntityIdx)
   {
-    SelectMgr_HSensitiveEntity& anEntity = myEntities.ChangeValue (anEntityIdx);
+    Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anEntityIdx);
     anEntity->BaseSensitive()->Set (NULL);
   }
   mySensFactor = 2.0;
@@ -65,7 +65,7 @@ void SelectMgr_Selection::Add (const Handle(SelectBasics_SensitiveEntity)& theSe
   // in release mode do not add
   if (!theSensitive.IsNull())
   {
-    SelectMgr_HSensitiveEntity anEntity = new SelectMgr_SensitiveEntity (theSensitive);
+    Handle(SelectMgr_SensitiveEntity) anEntity = new SelectMgr_SensitiveEntity (theSensitive);
     myEntities.Append (anEntity);
     if (mySelectionState == SelectMgr_SOS_Activated &&
         !anEntity->IsActiveForSelection())
@@ -86,7 +86,7 @@ void SelectMgr_Selection::Clear()
 {
   for (Standard_Integer anIdx = 0; anIdx < myEntities.Size(); ++anIdx)
   {
-    SelectMgr_HSensitiveEntity& anEntity = myEntities.ChangeValue (anIdx);
+    Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anIdx);
     anEntity->Clear();
   }
 
@@ -107,7 +107,7 @@ Standard_Boolean SelectMgr_Selection::IsEmpty() const
 // purpose : Returns sensitive entity stored by
 //           index theIdx in entites vector
 //==================================================
-SelectMgr_HSensitiveEntity& SelectMgr_Selection::GetEntityById (const Standard_Integer theIdx)
+Handle(SelectMgr_SensitiveEntity)& SelectMgr_Selection::GetEntityById (const Standard_Integer theIdx)
 {
   return myEntities.ChangeValue (theIdx);
 }
@@ -134,7 +134,7 @@ void SelectMgr_Selection::SetSelectionState (const SelectMgr_StateOfSelection th
 // function: Sensitivity
 // purpose : Returns sensitivity of the selection
 //==================================================
-const Standard_Real SelectMgr_Selection::Sensitivity() const
+Standard_Real SelectMgr_Selection::Sensitivity() const
 {
   return mySensFactor;
 }

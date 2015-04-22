@@ -17,7 +17,6 @@
 #ifndef _SelectMgr_Selection_HeaderFile
 #define _SelectMgr_Selection_HeaderFile
 
-#include <NCollection_Handle.hxx>
 #include <NCollection_Vector.hxx>
 
 #include <Standard.hxx>
@@ -33,8 +32,6 @@
 
 class Standard_NullObject;
 class SelectBasics_SensitiveEntity;
-
-typedef NCollection_Handle<SelectMgr_SensitiveEntity> SelectMgr_HSensitiveEntity;
 
 //!  Represents the state of a given selection mode for a
 //! Selectable Object. Contains all the sensitive entities available for this mode.
@@ -111,7 +108,7 @@ public:
   void Next();
 
   //! Returns any sensitive primitive in this framework.
-  const SelectMgr_HSensitiveEntity& Sensitive() const;
+  const Handle(SelectMgr_SensitiveEntity)& Sensitive() const;
 
   //! Returns the flag UpdateFlag.
   //! This flage gives the update status of this framework
@@ -134,24 +131,24 @@ public:
   Standard_EXPORT void SetSelectionState (const SelectMgr_StateOfSelection theState) const;
 
   //! Returns sensitivity of the selection
-  Standard_EXPORT const Standard_Real Sensitivity() const;
+  Standard_EXPORT Standard_Real Sensitivity() const;
 
   DEFINE_STANDARD_RTTI (SelectMgr_Selection)
 
 protected:
 
   //! Returns sensitive entity stored by index theIdx in entites vector
-  SelectMgr_HSensitiveEntity& GetEntityById (const Standard_Integer theIdx);
+  Handle(SelectMgr_SensitiveEntity)& GetEntityById (const Standard_Integer theIdx);
 
 private:
 
-  NCollection_Vector<SelectMgr_HSensitiveEntity>           myEntities;
-  NCollection_Vector<SelectMgr_HSensitiveEntity>::Iterator myEntityIter;
-  Standard_Integer                                         myMode;
-  SelectMgr_TypeOfUpdate                                   myUpdateStatus;
-  mutable SelectMgr_StateOfSelection                       mySelectionState;
-  mutable SelectMgr_TypeOfBVHUpdate                        myBVHUpdateStatus;
-  Standard_Real                                            mySensFactor;
+  NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>           myEntities;
+  NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator myEntityIter;
+  Standard_Integer                                                myMode;
+  SelectMgr_TypeOfUpdate                                          myUpdateStatus;
+  mutable SelectMgr_StateOfSelection                              mySelectionState;
+  mutable SelectMgr_TypeOfBVHUpdate                               myBVHUpdateStatus;
+  Standard_Real                                                   mySensFactor;
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_Selection, MMgt_TShared)

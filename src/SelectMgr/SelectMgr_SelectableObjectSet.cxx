@@ -132,7 +132,7 @@ const Handle(SelectMgr_SelectableObject)& SelectMgr_SelectableObjectSet::GetObje
 // function : Contains
 // purpose  : Returns true if this objects set contains theObject given
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectableObjectSet::Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
+Standard_Boolean SelectMgr_SelectableObjectSet::Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
 {
   for (Standard_Integer anObjectIdx = 1; anObjectIdx <= myObjects.Size(); ++anObjectIdx)
   {

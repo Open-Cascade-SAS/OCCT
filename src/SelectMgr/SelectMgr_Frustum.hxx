@@ -63,25 +63,25 @@ protected:
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  const Standard_Boolean hasOverlap (const SelectMgr_Vec3& theMinPnt,
-                                     const SelectMgr_Vec3& theMaxPnt);
+  Standard_Boolean hasOverlap (const SelectMgr_Vec3& theMinPnt,
+                               const SelectMgr_Vec3& theMaxPnt);
 
   //! SAT intersection test between defined volume and given point
-  const Standard_Boolean hasOverlap (const gp_Pnt& thePnt);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt);
 
   //! SAT intersection test between defined volume and given segment
-  const Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
-                                     const gp_Pnt& thePnt2);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
+                               const gp_Pnt& thePnt2);
 
   //! SAT intersection test between frustum given and planar convex polygon represented as ordered point set
-  const Standard_Boolean hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                     SelectMgr_Vec3& theNormal);
+  Standard_Boolean hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                               SelectMgr_Vec3& theNormal);
 
   //! SAT intersection test between defined volume and given triangle
-  const Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
-                                     const gp_Pnt& thePnt2,
-                                     const gp_Pnt& thePnt3,
-                                     SelectMgr_Vec3& theNormal);
+  Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
+                               const gp_Pnt& thePnt2,
+                               const gp_Pnt& thePnt3,
+                               SelectMgr_Vec3& theNormal);
 
 private:
 

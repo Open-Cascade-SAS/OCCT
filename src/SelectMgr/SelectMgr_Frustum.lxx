@@ -121,8 +121,8 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const gp_Pnt& thePnt1,
 //            theMinPnt and maximum at point theMaxPnt
 // =======================================================================
 template <int N>
-const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinPnt,
-                                                         const SelectMgr_Vec3& theMaxPnt)
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinPnt,
+                                                   const SelectMgr_Vec3& theMaxPnt)
 {
   // E0 test
   if (theMinPnt.x() > myMaxOrthoVertsProjections[0]
@@ -210,7 +210,7 @@ const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& t
 // purpose  : SAT intersection test between defined volume and given point
 // =======================================================================
 template <int N>
-const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
 {
   SelectMgr_Vec3 aPnt (thePnt.X(), thePnt.Y(), thePnt.Z());
 
@@ -242,8 +242,8 @@ const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
 // purpose  : SAT intersection test between defined volume and given segment
 // =======================================================================
 template <int N>
-const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
-                                                         const gp_Pnt& theEndPnt)
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
+                                                   const gp_Pnt& theEndPnt)
 {
   const SelectMgr_Vec3& aDir = SelectMgr_Vec3 (theEndPnt.X() - theStartPnt.X(),
                                                theEndPnt.Y() - theStartPnt.Y(),
@@ -329,8 +329,8 @@ const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartP
 //            polygon represented as ordered point set
 // =======================================================================
 template <int N>
-const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                                         SelectMgr_Vec3& theNormal)
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                                                   SelectMgr_Vec3& theNormal)
 {
   Standard_Integer aStartIdx = theArrayOfPnts->Lower();
   Standard_Integer anEndIdx = theArrayOfPnts->Upper();
@@ -427,10 +427,10 @@ const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HAr
 // purpose  : SAT intersection test between defined volume and given triangle
 // =======================================================================
 template <int N>
-const Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
-                                                         const gp_Pnt& thePnt2,
-                                                         const gp_Pnt& thePnt3,
-                                                         SelectMgr_Vec3& theNormal)
+Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
+                                                   const gp_Pnt& thePnt2,
+                                                   const gp_Pnt& thePnt3,
+                                                   SelectMgr_Vec3& theNormal)
 {
 
   SelectMgr_Vec3 aPnt1 (thePnt1.X(), thePnt1.Y(), thePnt1.Z());

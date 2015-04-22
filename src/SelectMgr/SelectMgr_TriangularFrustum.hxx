@@ -45,38 +45,38 @@ public:
   // SAT Tests for different objects
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  virtual const Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  virtual const Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
-                                           const SelectMgr_Vec3& theMaxPt) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
+                                     const SelectMgr_Vec3& theMaxPt) Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  virtual const Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                           Select3D_TypeOfSensitivity theSensType,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                                     Select3D_TypeOfSensitivity theSensType,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                           const gp_Pnt& thePnt2,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                     const gp_Pnt& thePnt2,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                           const gp_Pnt& thePnt2,
-                                           const gp_Pnt& thePnt3,
-                                           Select3D_TypeOfSensitivity theSensType,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                     const gp_Pnt& thePnt2,
+                                     const gp_Pnt& thePnt3,
+                                     Select3D_TypeOfSensitivity theSensType,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
   void Clear();

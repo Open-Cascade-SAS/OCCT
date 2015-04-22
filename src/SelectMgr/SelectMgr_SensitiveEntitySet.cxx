@@ -33,7 +33,7 @@ SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet()
 // function : Append
 // purpose  : Adds new entity to the set and marks BVH tree for rebuild
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Append (const SelectMgr_HSensitiveEntity& theEntity)
+void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntity)& theEntity)
 {
   if (!theEntity->BaseSensitive()->IsKind ("Select3D_SensitiveEntity"))
   {
@@ -69,7 +69,7 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
 // function : Remove
 // purpose  : Removes entity from the set and marks BVH tree for rebuild
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Remove (const SelectMgr_HSensitiveEntity& theEntity)
+void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_SensitiveEntity)& theEntity)
 {
   for (Standard_Integer anEntityIdx = 1; anEntityIdx <= myEntities.Size(); ++anEntityIdx)
   {
@@ -173,7 +173,7 @@ Standard_Integer SelectMgr_SensitiveEntitySet::Size() const
 // function : GetSensitiveById
 // purpose  : Returns the entity with index theIndex in the set
 //=======================================================================
-const SelectMgr_HSensitiveEntity& SelectMgr_SensitiveEntitySet::GetSensitiveById
+const Handle(SelectMgr_SensitiveEntity)& SelectMgr_SensitiveEntitySet::GetSensitiveById
   (const Standard_Integer theIndex) const
 {
   Standard_Integer anIdx = myEntityIdxs.Value (theIndex + 1);

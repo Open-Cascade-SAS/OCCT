@@ -50,28 +50,28 @@ public:
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
   virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
 
-  virtual const Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual const Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                           const SelectMgr_Vec3& theMaxPnt) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
+                                     const SelectMgr_Vec3& theMaxPnt) Standard_OVERRIDE;
 
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual const Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                           Select3D_TypeOfSensitivity theSensType,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                     Select3D_TypeOfSensitivity theSensType,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                           const gp_Pnt& thePt2,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                     const gp_Pnt& thePt2,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                           const gp_Pnt& thePt2,
-                                           const gp_Pnt& thePt3,
-                                           Select3D_TypeOfSensitivity theSensType,
-                                           Standard_Real& theDepth) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                     const gp_Pnt& thePt2,
+                                     const gp_Pnt& thePt3,
+                                     Select3D_TypeOfSensitivity theSensType,
+                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
 private:
 

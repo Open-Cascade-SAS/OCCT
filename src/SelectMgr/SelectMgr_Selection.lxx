@@ -52,7 +52,7 @@ inline void SelectMgr_Selection::Next()
 // function : Sensitive
 // purpose  :
 // =======================================================================
-inline const SelectMgr_HSensitiveEntity& SelectMgr_Selection::Sensitive() const
+inline const Handle(SelectMgr_SensitiveEntity)& SelectMgr_Selection::Sensitive() const
 {
   return myEntityIter.Value();
 }

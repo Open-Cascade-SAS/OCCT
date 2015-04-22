@@ -89,49 +89,49 @@ public:
   virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& /*theTrsf*/) { return NULL; }
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  virtual const Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
-                                           Standard_Real& theDepth);
+  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
+                                     Standard_Real& theDepth);
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  virtual const Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
-                                           const SelectMgr_Vec3& theMaxPt);
+  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
+                                     const SelectMgr_Vec3& theMaxPt);
 
   //! Intersection test between defined volume and given point
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt,
-                                           Standard_Real& theDepth);
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+                                     Standard_Real& theDepth);
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  virtual const Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                           Select3D_TypeOfSensitivity theSensType,
-                                           Standard_Real& theDepth);
+  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                     Select3D_TypeOfSensitivity theSensType,
+                                     Standard_Real& theDepth);
 
   //! Checks if line segment overlaps selecting frustum
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                           const gp_Pnt& thePt2,
-                                           Standard_Real& theDepth);
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                     const gp_Pnt& thePt2,
+                                     Standard_Real& theDepth);
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                           const gp_Pnt& thePt2,
-                                           const gp_Pnt& thePt3,
-                                           Select3D_TypeOfSensitivity theSensType,
-                                           Standard_Real& theDepth);
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                     const gp_Pnt& thePt2,
+                                     const gp_Pnt& thePt3,
+                                     Select3D_TypeOfSensitivity theSensType,
+                                     Standard_Real& theDepth);
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
-  virtual const Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG);
+  virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG);
 
   virtual SelectMgr_Vec3 DetectedPoint (const Standard_Real theDepth) const;
 
   //! Checks if the point of sensitive in which selection was detected belongs
   //! to the region defined by clipping planes
-  virtual const Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                            const Standard_Real theDepth);
+  virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                      const Standard_Real theDepth);
 
 protected:
   Standard_Real    myPixelTolerance;      //!< Pixel tolerance

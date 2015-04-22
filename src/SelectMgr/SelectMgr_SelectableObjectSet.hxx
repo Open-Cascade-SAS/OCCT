@@ -61,7 +61,7 @@ public:
   const Handle(SelectMgr_SelectableObject)& GetObjectById (const Standard_Integer theIndex) const;
 
   //! Returns true if this objects set contains theObject given
-  const Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
+  Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
 
 private:
 

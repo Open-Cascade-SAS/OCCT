@@ -52,7 +52,7 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Transform (co
 // function : GetActiveSelectionType
 // purpose  :
 //=======================================================================
-const Standard_Integer SelectMgr_SelectingVolumeManager::GetActiveSelectionType() const
+Standard_Integer SelectMgr_SelectingVolumeManager::GetActiveSelectionType() const
 {
   return myActiveSelectionType;
 }
@@ -177,8 +177,8 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const TColgp_Array1
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
-                                                                   Standard_Real& theDepth)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
+                                                             Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -191,8 +191,8 @@ const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const BVH_Box
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theMinPt,
-                                                                   const SelectMgr_Vec3& theMaxPt)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theMinPt,
+                                                             const SelectMgr_Vec3& theMaxPt)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -204,8 +204,8 @@ const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectM
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt,
-                                                                   Standard_Real& theDepth)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt,
+                                                             Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -221,9 +221,9 @@ const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt&
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                                                   Standard_Integer theSensType,
-                                                                   Standard_Real& theDepth)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                                             Standard_Integer theSensType,
+                                                             Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -237,9 +237,9 @@ const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(
 // function : Overlaps
 // purpose  : Checks if line segment overlaps selecting volume
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
-                                                                   const gp_Pnt& thePt2,
-                                                                   Standard_Real& theDepth)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
+                                                             const gp_Pnt& thePt2,
+                                                             Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -254,11 +254,11 @@ const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt&
 //            boundary line defined by triangle vertices depending on
 //            given sensitivity type
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
-                                                                   const gp_Pnt& thePt2,
-                                                                   const gp_Pnt& thePt3,
-                                                                   Standard_Integer theSensType,
-                                                                   Standard_Real& theDepth)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
+                                                             const gp_Pnt& thePt2,
+                                                             const gp_Pnt& thePt3,
+                                                             Standard_Integer theSensType,
+                                                             Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -275,7 +275,7 @@ const Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt&
 // purpose  : Measures distance between 3d projection of user-picked
 //            screen point and given point theCOG
 //=======================================================================
-const Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_Pnt& theCOG)
+Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_Pnt& theCOG)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
@@ -302,8 +302,8 @@ NCollection_Vec3<Standard_Real> SelectMgr_SelectingVolumeManager::DetectedPoint 
 // purpose  : Checks if the point of sensitive in which selection was
 //            detected belongs to the region defined by clipping planes
 //=======================================================================
-const Standard_Boolean SelectMgr_SelectingVolumeManager::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                                                    const Standard_Real& theDepth)
+Standard_Boolean SelectMgr_SelectingVolumeManager::IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                                              const Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Point)
     return Standard_False;

@@ -69,7 +69,7 @@ public:
 
   Standard_EXPORT void Decrement (const Standard_Real& theTolerance);
 
-  Standard_EXPORT const Standard_Real Largest();
+  Standard_EXPORT Standard_Real Largest();
 
 private:
   NCollection_DataMap<Standard_Real, Standard_Integer> myTolerances;

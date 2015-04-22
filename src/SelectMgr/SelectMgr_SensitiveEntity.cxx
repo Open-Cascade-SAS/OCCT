@@ -15,6 +15,9 @@
 
 #include <SelectMgr_SensitiveEntity.hxx>
 
+IMPLEMENT_STANDARD_HANDLE (SelectMgr_SensitiveEntity, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity, Standard_Transient)
+
 //=======================================================================
 // function : SelectMgr_SensitiveEntity
 // purpose  : Creates new inactive for selection object with base entity
@@ -50,7 +53,7 @@ const Handle(SelectBasics_SensitiveEntity)& SelectMgr_SensitiveEntity::BaseSensi
 // purpose  : Returns true if this entity belongs to the active selection
 //            mode of parent object
 //=======================================================================
-const Standard_Boolean SelectMgr_SensitiveEntity::IsActiveForSelection() const
+Standard_Boolean SelectMgr_SensitiveEntity::IsActiveForSelection() const
 {
   return myIsActiveForSelection;
 }

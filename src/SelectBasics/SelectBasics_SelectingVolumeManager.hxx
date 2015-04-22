@@ -41,44 +41,44 @@ public:
 
   virtual ~SelectBasics_SelectingVolumeManager() {};
 
-  virtual const Standard_Integer GetActiveSelectionType() const = 0;
+  virtual Standard_Integer GetActiveSelectionType() const = 0;
 
   //! Returns true if selecting volume is overlapped by box theBox
-  virtual const Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                           Standard_Real& theDepth) = 0;
+  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                     Standard_Real& theDepth) = 0;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box with minimum
   //! corner at point theMinPt and maximum at point theMaxPt
-  virtual const Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theMinPt,
-                                           const NCollection_Vec3<Standard_Real>& theMaxPt) = 0;
+  virtual Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theMinPt,
+                                     const NCollection_Vec3<Standard_Real>& theMaxPt) = 0;
 
   //! Returns true if selecting volume is overlapped by point thePt
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt,
-                                           Standard_Real& theDepth) = 0;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+                                     Standard_Real& theDepth) = 0;
 
   //! Returns true if selecting volume is overlapped by planar convex polygon, which points
   //! are stored in theArrayOfPts, taking into account sensitivity type theSensType
-  virtual const Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                           Standard_Integer theSensType,
-                                           Standard_Real& theDepth) = 0;
+  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                     Standard_Integer theSensType,
+                                     Standard_Real& theDepth) = 0;
 
   //! Returns true if selecting volume is overlapped by line segment with start point at thePt1
   //! and end point at thePt2
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                           const gp_Pnt& thePt2,
-                                           Standard_Real& theDepth) = 0;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                     const gp_Pnt& thePt2,
+                                     Standard_Real& theDepth) = 0;
 
   //! Returns true if selecting volume is overlapped by triangle with vertices thePt1,
   //! thePt2 and thePt3, taking into account sensitivity type theSensType
-  virtual const Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                           const gp_Pnt& thePt2,
-                                           const gp_Pnt& thePt3,
-                                           Standard_Integer theSensType,
-                                           Standard_Real& theDepth) = 0;
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                     const gp_Pnt& thePt2,
+                                     const gp_Pnt& thePt3,
+                                     Standard_Integer theSensType,
+                                     Standard_Real& theDepth) = 0;
 
   //! Calculates distance from 3d projection of user-defined selection point
   //! to the given point theCOG
-  virtual const Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) = 0;
+  virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) = 0;
 
   virtual NCollection_Vec3<Standard_Real> DetectedPoint (const Standard_Real theDepth) const = 0;
 

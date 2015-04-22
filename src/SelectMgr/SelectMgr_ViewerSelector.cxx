@@ -117,7 +117,7 @@ void SelectMgr_ToleranceMap::Decrement (const Standard_Real& theTolerance)
   }
 }
 
-const Standard_Real SelectMgr_ToleranceMap::Largest()
+Standard_Real SelectMgr_ToleranceMap::Largest()
 {
   return myLargestKey;
 }
@@ -302,7 +302,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
       Standard_Integer anEndIdx = aSensitivesTree->EndPrimitive (aNode);
       for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
       {
-        const SelectMgr_HSensitiveEntity& aSensitive =
+        const Handle(SelectMgr_SensitiveEntity)& aSensitive =
           anEntitySet->GetSensitiveById (anIdx);
         if (aSensitive->IsActiveForSelection())
         {

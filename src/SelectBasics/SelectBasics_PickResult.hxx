@@ -35,12 +35,12 @@ public:
     myDistToCenter (theDistToCenter) {}
 
 public:
-  inline const Standard_Real Depth() const
+  inline Standard_Real Depth() const
   {
     return myDepth;
   }
 
-  inline const Standard_Real DistToGeomCenter() const
+  inline Standard_Real DistToGeomCenter() const
   {
     return myDistToCenter;
   }

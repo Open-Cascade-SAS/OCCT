@@ -38,14 +38,14 @@ public:
   virtual ~SelectMgr_SensitiveEntitySet() {};
 
   //! Adds new entity to the set and marks BVH tree for rebuild
-  void Append (const SelectMgr_HSensitiveEntity& theEntity);
+  void Append (const Handle(SelectMgr_SensitiveEntity)& theEntity);
 
   //! Adds every entity of selection theSelection to the set and marks
   //! BVH tree for rebuild
   void Append (const Handle(SelectMgr_Selection)& theSelection);
 
   //! Removes entity from the set and marks BVH tree for rebuild
-  void Remove (const SelectMgr_HSensitiveEntity& theEntity);
+  void Remove (const Handle(SelectMgr_SensitiveEntity)& theEntity);
 
   //! Removes every entity of selection theSelection from the set
   //! and marks BVH tree for rebuild
@@ -67,12 +67,12 @@ public:
   virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns the entity with index theIndex in the set
-  const SelectMgr_HSensitiveEntity& GetSensitiveById (const Standard_Integer theIndex) const;
+  const Handle(SelectMgr_SensitiveEntity)& GetSensitiveById (const Standard_Integer theIndex) const;
 
 private:
 
-  NCollection_Sequence<SelectMgr_HSensitiveEntity> myEntities;       //!< A sequence of calculated sensitives of the object
-  NCollection_Sequence<Standard_Integer>           myEntityIdxs;     //!< Cached indexes for faster BVH build
+  NCollection_Sequence<Handle(SelectMgr_SensitiveEntity)> myEntities;       //!< A sequence of calculated sensitives of the object
+  NCollection_Sequence<Standard_Integer>                  myEntityIdxs;     //!< Cached indexes for faster BVH build
 };
 
 #endif // _SelectMgr_SensitiveEntitySet_HeaderFile

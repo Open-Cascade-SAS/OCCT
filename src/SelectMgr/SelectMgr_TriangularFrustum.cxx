@@ -225,8 +225,8 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::Transform
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                                              Standard_Real& /*theDepth*/)
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                                        Standard_Real& /*theDepth*/)
 {
   return hasOverlap (theBox.CornerMin(), theBox.CornerMax());
 }
@@ -237,8 +237,8 @@ const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const BVH_Box<Stan
 //            axis-aligned bounding box with minimum corner at point
 //            theMinPt and maximum at point theMaxPt
 // =======================================================================
-const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Vec3& theMinPt,
-                                                              const SelectMgr_Vec3& theMaxPt)
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Vec3& theMinPt,
+                                                        const SelectMgr_Vec3& theMaxPt)
 {
   return hasOverlap (theMinPt, theMaxPt);
 }
@@ -247,8 +247,8 @@ const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Ve
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 // =======================================================================
-const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt,
-                                                              Standard_Real& /*theDepth*/)
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt,
+                                                        Standard_Real& /*theDepth*/)
 {
   return hasOverlap (thePnt);
 }
@@ -260,9 +260,9 @@ const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& theP
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 // =======================================================================
-const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                                              Select3D_TypeOfSensitivity theSensType,
-                                                              Standard_Real& /*theDepth*/)
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                                                        Select3D_TypeOfSensitivity theSensType,
+                                                        Standard_Real& /*theDepth*/)
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
@@ -293,9 +293,9 @@ const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const Handle(TColg
 // function : Overlaps
 // purpose  : Checks if line segment overlaps selecting frustum
 // =======================================================================
-const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
-                                                              const gp_Pnt& thePnt2,
-                                                              Standard_Real& /*theDepth*/)
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
+                                                        const gp_Pnt& thePnt2,
+                                                        Standard_Real& /*theDepth*/)
 {
   return hasOverlap (thePnt1, thePnt2);
 }
@@ -307,11 +307,11 @@ const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& theP
 //            boundary line defined by triangle vertices depending on
 //            given sensitivity type
 // =======================================================================
-const Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
-                                                              const gp_Pnt& thePnt2,
-                                                              const gp_Pnt& thePnt3,
-                                                              Select3D_TypeOfSensitivity theSensType,
-                                                              Standard_Real& theDepth)
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
+                                                        const gp_Pnt& thePnt2,
+                                                        const gp_Pnt& thePnt3,
+                                                        Select3D_TypeOfSensitivity theSensType,
+                                                        Standard_Real& theDepth)
 {
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
