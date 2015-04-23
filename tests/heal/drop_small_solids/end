@@ -9,9 +9,10 @@ proc parseprops a {
     ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)[\t ]+([-0-9.+eE]+)} $a]
 }
 
-proc cmpprops {cmd a b} {
-  set aa [parseprops [$cmd $a]]
-  set bb [parseprops [$cmd $b]]
+proc cmpprops {cmd shape1 shape2} {
+  upvar $shape1 a $shape2 b
+  set aa [parseprops [$cmd a]]
+  set bb [parseprops [$cmd b]]
   for {set i 1} {$i < [llength $aa]} {incr i} {
     if {[expr abs([lindex $aa $i] - [lindex $bb $i])] > 1e-8} {return 0}
   }
