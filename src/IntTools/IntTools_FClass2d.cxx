@@ -634,8 +634,12 @@ TopAbs_State IntTools_FClass2d::Perform
       bUIn = (u >= Umin) && (u <= Umax);
       bVIn = (v >= Vmin) && (v <= Vmax);
       //
-      aFCTol = (bUIn==bVIn) ? Max(aURes, aVRes) : 
-        (!bUIn ? aURes : aVRes);
+      if (bUIn==bVIn) {
+	aFCTol = Min(aURes, aVRes);
+      }
+      else {
+	aFCTol = (!bUIn) ? aURes : aVRes;
+      }
       //
       BRepClass_FaceClassifier aClassifier;
       aClassifier.Perform(Face,Puv,aFCTol);
