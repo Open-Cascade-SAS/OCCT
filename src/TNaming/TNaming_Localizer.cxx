@@ -543,6 +543,7 @@ void TNaming_Localizer::FindNeighbourg (const TopoDS_Shape&      Sol,
 					const TopoDS_Shape&      S,
 					TopTools_MapOfShape&     Neighbourg)
 {  
+  if(Sol.IsNull() || S.IsNull()) return;
   TopAbs_ShapeEnum       TA = S.ShapeType();
   TopAbs_ShapeEnum       TS=TopAbs_COMPOUND;
 
