@@ -610,7 +610,7 @@ Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
                                 const TopoDS_Edge& aE1,
                                 const TopoDS_Edge& aE2)
 {
-  Standard_Real aDist, aD, aT11, aT12, aT21, aT22, aTol2d;
+  Standard_Real aDist, aD, aT11, aT12, aT21, aT22, aTol2d, aT1, aT2;
   Standard_Integer j, aNbPnt;
   Geom2dInt_GInter aInter;
   gp_Pnt aP;
@@ -639,7 +639,17 @@ Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
     if (aNbPnt) {
       aDist = -Precision::Infinite();
       for (j = 1; j <= aNbPnt; ++j) {
-        aP2D = aInter.Point(j).Value();
+        const IntRes2d_IntersectionPoint& aPoint = aInter.Point(j);
+        //
+        aT1 = aPoint.ParamOnFirst();
+        aT2 = aPoint.ParamOnSecond();
+        //
+        if ((aT1 < aT11 || aT1 > aT12) ||
+            (aT2 < aT21 || aT2 > aT22)) {
+          continue;
+        }          
+        //
+        aP2D = aPoint.Value();
         aS->D0(aP2D.X(), aP2D.Y(), aP);
         aD=aPV.SquareDistance(aP);
         if (aD > aDist) {
