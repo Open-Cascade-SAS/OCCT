@@ -95,9 +95,6 @@ thrusections -N thread 1 0 tw1 tw2
 
 puts "Putting together and writing \"Open CASCADE\"..."
 
-# add threading to the body
-compound body thread bottle
-
 # define text
 text2brep text2d OpenCASCADE Times-Roman 8 bold composite=0
 prism text text2d 0 0 2
@@ -106,7 +103,8 @@ ttranslate text 24.75 -2 65
 
 # cut operation
 bcut bodytext body text
-compound bodytext thread bottle
+bop bodytext thread
+bopfuse bottle
 
 puts "Showing result..."
 
