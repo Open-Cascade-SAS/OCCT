@@ -1,3 +1,5 @@
+puts "TODO OCC23954 ALL: Error: result is not Toroidal surface"
+
 puts "============"
 puts "OCC23954"
 puts "============"
@@ -12,8 +14,11 @@ circle c_3 0 100 0 1 0 0 0 -1 0 100
 circle c_4 0 100 0 1 0 0 0 0 1 10
 circle c_5 0 100 0 1 0 0 0 0 1 120
 for { set i 1 } { $i <= 5 } { incr i } {
-    mkedge e c_$i
-    revol r e 0 0 0 0 0 1 90
-    mksurface s_$i r
-    dump s_$i
+  mkedge e c_$i
+  revol r e 0 0 0 0 0 1 90
+  mksurface s_$i r
+  set info [dump s_$i]
+  if { [regexp "SurfaceOfRevolution" $info] == 1 } {
+    puts "Error: result is not Toroidal surface"
+  }
 }
