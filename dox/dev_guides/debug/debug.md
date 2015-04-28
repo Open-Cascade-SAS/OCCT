@@ -35,41 +35,6 @@ This feature can be activated by defining environment variable *CSF_DEBUG_BOP*, 
 
 The diagnostic code checks validity of the input arguments and the result of each Boolean operation. When an invalid situation is detected, the report consisting of argument shapes and a DRAW script to reproduce the problematic operation is saved to the directory pointed by *CSF_DEBUG_BOP*.
 
-@section occt_debug_commands DRAW debugging commands
-
-In this section description and usage of several debug commands represented.
-
-@subsection occt_debug_commands_xdist "xdist" commands family
-
-Commands with prefix "xdist" provides functionality to check distance between two objects on even grid:
-
-  * xdistef - distance between edge and face.
-  * xdistcs - distance between curve and surface. This means that projection to surface of each sample point computed.
-  * xdistcc - distance between two 3d curves.
-  * xdistcc2ds - distance between 3d curve and 2d curve on surface.
-  * xdistc2dc2dss - distance between two 2d curves on surface.
-
-**Usage:**
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-xdistef edge face
-xdistcs curve surface firstParam lastParam [NumberOfSamplePoints]
-xdistcc curve1 curve2 startParam finishParam [NumberOfSamplePoints]
-xdistcc2ds c curve2d surf startParam finishParam [NumberOfSamplePoints]
-xdistc2dc2dss curve2d_1 curve2d_2 surface_1 surface_2 startParam finishParam [NumberOfSamplePoints]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It is assumed that curves have same parametrization range and startParam < finishParam.
-
-**Examples:** 
-~~~~~
-bopcurves b1 b2 -2d 
-mksurf s1 b1
-mksurf s2 b2
-xdistcs c_1 s1 0 1 100
-xdistcc2ds c_1 c2d2_1 s2 0 1
-xdistc2dc2dss c2d1_1 c2d2_1 s1 s2 0 1 1000
-~~~~~
-
 @section occt_debug_call Functions for calling from debugger
 
 Modern interactive debuggers provide the possibility to execute application code at a program break point. This feature can be used to analyse the temporary objects available only in the context of the debugged code. OCCT provides several global functions that can be used in this way.

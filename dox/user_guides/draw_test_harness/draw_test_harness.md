@@ -7023,13 +7023,14 @@ buildevol
 ~~~~~
 
 
-@subsection occt_draw_7_9  Topological analysis
+@subsection occt_draw_7_9  Analysis of topology and geometry
 
 Analysis of shapes includes commands to compute length, area, volumes and inertial properties. 
 
   * Use **lprops**, **sprops**, **vprops** to compute integral properties.
   * Use **bounding** to display the bounding box of a shape.
   * Use **distmini** to calculate the minimum distance between two shapes.
+  * Use **xdistef**, **xdistcs**, **xdistcc**, **xdistc2dc2dss**, **xdistcc2ds** to check the distance between two objects on even grid.
 
 
 @subsubsection occt_draw_7_9_1  lprops, sprops, vprops
@@ -7131,6 +7132,37 @@ are:
 
 ==d1_val d1 d12 
 ~~~~~
+
+@subsubsection occt_draw_7_9_4 xdistef, xdistcs, xdistcc, xdistc2dc2dss, xdistcc2ds 
+
+Syntax:
+~~~~~
+xdistef edge face
+xdistcs curve surface firstParam lastParam [NumberOfSamplePoints]
+xdistcc curve1 curve2 startParam finishParam [NumberOfSamplePoints]
+xdistcc2ds c curve2d surf startParam finishParam [NumberOfSamplePoints]
+xdistc2dc2dss curve2d_1 curve2d_2 surface_1 surface_2 startParam finishParam [NumberOfSamplePoints]
+~~~~~
+
+It is assumed that curves have the same parametrization range and *startParam* is less than *finishParam*.
+
+Commands with prefix *xdist* allow checking the distance between two objects on even grid:
+  * **xdistef** - distance between edge and face;
+  * **xdistcs** - distance between curve and surface. This means that the projection of each sample point to the surface is computed;
+  * **xdistcc** - distance between two 3D curves;
+  * **xdistcc2ds** - distance between 3d curve and 2d curve on surface;
+  * **xdistc2dc2dss** - distance between two 2d curves on surface.
+  
+**Examples**
+~~~~~
+bopcurves b1 b2 -2d 
+mksurf s1 b1
+mksurf s2 b2
+xdistcs c_1 s1 0 1 100
+xdistcc2ds c_1 c2d2_1 s2 0 1
+xdistc2dc2dss c2d1_1 c2d2_1 s1 s2 0 1 1000
+~~~~~
+
 
 @subsection occt_draw_7_10  Surface creation
 

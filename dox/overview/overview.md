@@ -20,7 +20,7 @@ http://www.opencascade.org
 @section OCCT_OVW_SECTION_2 Copyrights
 
 Open CASCADE Technology and all materials, including this documentation, is 
-Copyright (c) 1999-2013 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright (c) 1999-2015 by OPEN CASCADE S.A.S. All rights reserved.
 
 @htmlonly<center>@endhtmlonly
 http://www.opencascade.com
@@ -168,7 +168,7 @@ See @ref occt_dev_guides__documentation "OCCT Documentation Guide" for details o
 **Generation of HTML documentation**
 
 To generate HTML documentation from sources contained in *dox* subdirectory, 
-you need to have Tcl and Doxygen 1.8.4 (or above) installed on your system.
+you need to have Tcl and Doxygen 1.8.5 (or above) installed on your system.
 
 In Tcl prompt, cd to OCCT root folder and run 
 
@@ -184,7 +184,7 @@ is available for download from www.opencascade.org and dev.opencascade.org sites
 
 Prerequisites:
 
-  * Doxygen version 1.8.4 or higher
+  * Doxygen version 1.8.5 or higher
   * Graphviz version 2.28.0 or higher
 
 Run WOK (cd \<WOK_INSTALL_DIR\>/site folder):
@@ -224,7 +224,7 @@ for which OCCT is certified to work.
 | Minimum memory    | 512 MB, 1 GB recommended |
 | Free disk space (complete installation) | 600 MB approx. |
 | Video card   | See \ref overview_req_graphics |
-| Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
+| Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ |
 | C++      | GNU gcc 4.0.  - 4.7.3. |
 | TCL (for testing tools)    | Tcl/Tk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
 | Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
@@ -243,7 +243,7 @@ for which OCCT is certified to work.
 | Minimum memory    | 512 MB, 1 GB recommended |
 | Free disk space (complete installation) | 600 MB approx. |
 | Video card   | See \ref overview_req_graphics |
-| Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
+| Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ |
 | C++ | Microsoft Visual Studio: 2005 SP1, 2008 SP1, 2010 SP1 \*, 2012 Update 3, 2013 <br>Intel C++ Composer XE 2013 SP1 |
 | TCL (for testing tools) | Tcl/Tk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html  |
 | Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
@@ -338,7 +338,7 @@ When the installation is complete, you will find the directories for 3rd party p
 @image html /overview/images/overview_3rdparty.png 
 @image latex /overview/images/overview_3rdparty.png 
 
-The contents of the OCCT-6.8.0 directory (called further "OCCT root", or $CASROOT) are as follows:
+The contents of the OCCT-6.9.0 directory (called further "OCCT root", or $CASROOT) are as follows:
 
 @image html /overview/images/overview_installation.png "The directory tree"
 @image latex /overview/images/overview_installation.png "The directory tree"

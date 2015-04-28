@@ -69,15 +69,14 @@ Example:
 Draw[]> testgrid
 ~~~~~
 
-For running only a subset of test cases, give masks for group, grid, and test case names to be executed.
-Each argument is a list of comma- or space-separated file masks; by default "*" is assumed.
+To run only a subset of test cases, give masks for group, grid, and test case names to be executed.
+Each argument is a list of file masks separated with commas or spaces; by default "*" is assumed.
 
 Example:
 
 ~~~~~
 Draw[]> testgrid bugs caf,moddata*,xde
 ~~~~~
-
 
 As the tests progress, the result of each test case is reported. 
 At the end of the log a summary of test cases is output, 
@@ -102,13 +101,13 @@ Example:
 The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See <a href="#testmanual_3_5">Interpretation of test results</a> for details.
 
 The results and detailed logs of the tests are saved by default to a new subdirectory of the subdirectory *results* in the current folder, whose name is generated automatically using the current date and time, prefixed by Git branch name (if Git is available and current sources are managed by Git).
-If necessary, a non-default output directory can be specified using option <i> –outdir</i> followed by a path to the directory. This directory should be new or empty; use option –overwrite to allow writing results in existing non-empty directory. 
+If necessary, a non-default output directory can be specified using option <i> –outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>–overwrite</i> to allow writing results in the existing non-empty directory. 
 
 Example:
 ~~~~~
 Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~~
-In the output directory, a cumulative HTML report summary.html provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
+In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
 
 Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
 
@@ -144,7 +143,7 @@ Note that normally an intermediate output of the script is not shown. The detail
 To see intermediate commands and their output during the test execution, add one more argument 
 <i>"echo"</i> at the end of the command line. Note that with this option the log is not collected and summary is not produced.
 
-Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
+Type <i>help test</i> in DRAW prompt to get help on options supported by *test* command:
 
 ~~~~~
 Draw[3]> help test
@@ -170,10 +169,10 @@ test: Run specified test case
 
 The detailed rules of creation of new tests are given in <a href="#testmanual_3">section 3</a>. The following short description covers the most typical situations:
 
-Use prefix "bug" followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script and DRAW commands specific for this test case.
+Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script and DRAW commands specific for this test case.
 
 1.	If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. Note that this package defines macros *QVERIFY* and *QCOMPARE*, thus code created for QTest or GoogleTest frameworks can be used with minimal modifications.
-2.	Add script(s) for the test case in grid (subfolder) corresponding to the relevant OCCT module of the group bugs <i>($CASROOT/tests/bugs)</i>. See <a href="#testmanual_5_2">the correspondence map</a>.
+2.	Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group bugs <i>($CASROOT/tests/bugs)</i>. See <a href="#testmanual_5_2">the correspondence map</a>.
 3.	In the test script:
 	*	Load all necessary DRAW modules by command *pload*.
 	*	Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
@@ -213,7 +212,7 @@ checkshape result
 Standard OCCT tests are located in subdirectory tests of the OCCT root folder ($CASROOT).
 
 Additional test folders can be added to the test system by defining environment variable *CSF_TestScriptsPath*. This should be list of paths separated by semicolons (*;*) on Windows 
-or colons (*:*) on Linux or Mac. Upon DRAW launch, path to tests sub-folder of OCCT is added at the end of this variable automatically. 
+or colons (*:*) on Linux or Mac. Upon DRAW launch, path to tests subfolder of OCCT is added at the end of this variable automatically. 
 
 Each test folder is expected to contain:
   * Optional file parse.rules defining patterns for interpretation of test results, common for all groups in this folder
@@ -456,15 +455,15 @@ If the new test corresponds to a functionality already covered by the existing s
 
 @subsection testmanual_3_2 Adding Data Files Required for a Test
 
-It is advisable to make self-contained test scripts whenever possible, so as they could be used in environments where data files are not available. For that simple geometric objects and shapes can be created using DRAW commands in the test script itself.
+It is advisable to make self-contained test scripts whenever possible, so as they could be used in the  environments where data files are not available. For that simple geometric objects and shapes can be created using DRAW commands in the test script itself.
 
-If the test requires a data file, it should be put to directory listed in environment variable *CSF_TestDataPath*.
+If the test requires a data file, it should be put to the directory listed in environment variable *CSF_TestDataPath*.
 Alternatively, it can be put to subdirectory *data* of the test grid. 
 It is recommended to prefix the data file with the corresponding issue id prefixed by *bug*, e.g. *bug12345_face1.brep*, to avoid possible conflicts with names of existing data files. 
 
-Note that when the test is integrated to the master branch, OCC team will move the data file to data files repository, so as to keep OCCT sources repository clean from data files.
+Note that when the test is integrated to the master branch, OCC team will move the data file to the data files repository, to keep OCCT sources repository clean from data files.
 
-When preparing a test script, try to minimize the size of involved data model. For instance, if the problem detected on a big shape can be reproduced on a single face extracted from that shape, use only that face in the test.
+When you prepare a test script, try to minimize the size of involved data model. For instance, if the problem detected on a big shape can be reproduced on a single face extracted from that shape, use only that face in the test.
 
 
 @subsection testmanual_3_3 Adding new DRAW commands
@@ -475,7 +474,7 @@ If the test cannot be implemented using available DRAW commands, consider the fo
 * Otherwise the new command implementing the actions needed for this particular test should be added in *QABugs* package. The command name should be formed by the Mantis issue ID prefixed by *bug*, e.g. *bug12345*.
 
 Note that a DRAW command is expected to return 0 in case of a normal completion, and 1 (Tcl exception) if it is incorrectly used (e.g. a wrong number of input arguments). Thus if the new command needs to report a test error, this should be done by outputting an appropriate error message rather than by returning a non-zero value.
-Also file names must not be encoded in DRAW command but in script, and passed to DRAW command as argument.
+File names must be encoded in the script rather than in the DRAW command and passed to the DRAW command as an argument.
 
 @subsection testmanual_3_4 Script Implementation
 
@@ -522,13 +521,16 @@ stepread [locate_data_file CAROSKI_COUPELLE.step] a *
 ~~~~~
 
 When the test needs to produce some snapshots or other artefacts, use Tcl variable *imagedir* as the location where such files should be put. 
-Command *testgrid* sets this variable to the subdirectory of the results folder corresponding to the grid. 
-Command *test* by default creates dedicated temporary directory in the system temporary folder (normally the one specified by environment variable *TempDir*, *TEMP*, or *TMP*) for each execution, and sets *imagedir* to that location. 
-However if variable *imagedir* is defined on top level of Tcl interpretor, command *test* will use it instead of creating a new directory.
+* Command *testgrid* sets this variable to the subdirectory of the results folder corresponding to the grid. 
+* Command *test* by default creates a dedicated temporary directory in the system temporary folder (normally the one specified by environment variable *TempDir*, *TEMP*, or *TMP*) for each execution, and sets *imagedir* to that location. 
+
+However if variable *imagedir* is defined on the top level of Tcl interpretor, command *test* will use it instead of creating a new directory.
 
 Use Tcl variable *casename* to prefix all files produced by the test. 
 This variable is set to the name of the test case.
-For the image file (snapshot) to be recognized by the test system (for inclusion in HTML log and differences), its name should start with name of the test case (use variable *casename*), optionally followed by underscore or dash and arbitrary suffix.
+
+The test system can recognize an image file (snapshot) and include it in HTML log and differences if its name starts with the name of the test case (use variable *casename*), optionally followed by underscore or dash and arbitrary suffix.
+
 The image format (defined by extension) should be *png*.
 
 Example:
@@ -550,9 +552,9 @@ A1-front.png
 Note that OCCT must be built with FreeImage support to be able to produce usable images.
 
 Other Tcl variables defined during the test execution are:
-- *groupname*: name of the test group
-- *gridname*: name of the test grid
-- *dirname*: path to the root directory of the current set of test scripts
+- *groupname*: name of the test group;
+- *gridname*: name of the test grid;
+- *dirname*: path to the root directory of the current set of test scripts.
 
 In order to ensure that the test works as expected in different environments, observe the following additional rules:
 * Avoid using external commands such as *grep, rm,* etc., as these commands can be absent on another system (e.g. on Windows); use facilities provided by Tcl instead.
@@ -576,7 +578,7 @@ The new test created for an unsolved problem should return BAD. The new test cre
 
 @subsection testmanual_3_6 Marking BAD cases
 
-If the test produces an invalid result at a certain moment then corresponding bug should be created in the  OCCT issue tracker located at http://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
+If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker located at http://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
 
 The following statement should be added to such a test script:
 ~~~~~
@@ -585,7 +587,7 @@ puts "TODO BugNumber ListOfPlatforms: RegularExpression"
 
 Here:
 * *BugNumber* is the bug ID in the tracker. For example: #12345.
-* *ListOfPlatforms* is a list of platforms at which the bug is reproduced (e.g. Mandriva2008, Windows or All). Note that the platform name is custom for the OCCT test system; it corresponds to the value of environment variable *os_type* defined in DRAW.
+* *ListOfPlatforms* is a list of platforms, at which the bug is reproduced (e.g. Mandriva2008, Windows or All). Note that the platform name is custom for the OCCT test system; it corresponds to the value of environment variable *os_type* defined in DRAW.
 
 Example:
 ~~~~~
@@ -593,7 +595,7 @@ Draw[2]> puts $env(os_type)
 windows
 ~~~~~
 
-* RegularExpression is a regular expression which should be matched against the line indicating the problem in the script output. 
+* RegularExpression is a regular expression, which should be matched against the line indicating the problem in the script output. 
 
 Example:
 ~~~~~
@@ -620,7 +622,7 @@ puts "TODO OCC22817 All: TEST INCOMPLETE"
 
 @subsection testmanual_4_1 Running Tests on Older Versions of OCCT
 
-Sometimes it might be necessary to run tests on previous versions of OCCT (<= 6.5.4) that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory which is current by the moment of DRAW start-up, to load test commands and to define necessary environment.
+Sometimes it might be necessary to run tests on the previous versions of OCCT (<= 6.5.4) that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory, which is current by the moment of DRAW start-up, to load test commands and to define the necessary environment.
 
 Note: in OCCT 6.5.3, file *DrawAppliInit* already exists in <i>$CASROOT/src/DrawResources</i>, new commands should be added to this file instead of a new one in the current directory.
 
@@ -634,7 +636,7 @@ set env(CSF_TestDataPath) $env(CASROOT)/data;d:/test-data
 return
 ~~~~~
 
-Note that on older versions of OCCT the tests are run in compatibility mode and not all output of the test command can be captured; this can lead to absence of some error messages (can be reported as either a failure or an improvement).
+Note that on older versions of OCCT the tests are run in compatibility mode and thus not all output of the test command can be captured; this can lead to absence of some error messages (can be reported as either a failure or an improvement).
 
 @subsection testmanual_4_2 Adding custom tests
 
