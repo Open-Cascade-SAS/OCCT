@@ -17,7 +17,6 @@
 #include <TNaming_Tool.hxx>
 #include <TNaming_NewShapeIterator.hxx> 
 #include <TNaming_Iterator.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_Naming.hxx>
@@ -76,7 +75,7 @@ static Standard_Boolean IsForbiden(const TDF_LabelMap& Forbiden,
 //=======================================================================
 static void LastModif(      TNaming_NewShapeIterator& it,
 		      const TopoDS_Shape&             S,
-		            TopTools_MapOfShape&      MS,
+		      TopTools_IndexedMapOfShape&     MS,
 		      const TDF_LabelMap&             Updated,
 		      const TDF_LabelMap&             Forbiden)
 { 
@@ -105,29 +104,21 @@ static void LastModif(      TNaming_NewShapeIterator& it,
     MS.Add(S);    
 }
 //=======================================================================
-static void ApplyOrientation (TopTools_MapOfShape& MS, 
+static void ApplyOrientation (TopTools_IndexedMapOfShape& MS, 
 			      const TopAbs_Orientation OrientationToApply)
 {
- if (!MS.IsEmpty ()) {
 #ifdef OCCT_DEBUG_APPLY
+ if (!MS.IsEmpty ()) {
    cout <<"OrientationToApply = " <<OrientationToApply <<endl;
-   TopTools_MapIteratorOfMapOfShape it1(MS);
-   for (; it1.More(); it1.Next()) {
-     cout << "ApplyOrientation: TShape = " << it1.Key().TShape()->This() << " OR = " <<it1.Key().Orientation() <<endl;
-   }
-#endif
-   TopTools_MapOfShape aMS;
-   aMS.Assign(MS);
-   TopTools_MapIteratorOfMapOfShape it(aMS);
-   for (; it.More(); it.Next()) {
-     if(it.Key().Orientation() != OrientationToApply) {
-       TopoDS_Shape aS = it.Key();
-       MS.Remove(aS);
-       aS.Orientation(OrientationToApply);
-       MS.Add(aS);
-     }
+   for (Standard_Integer anItMS1 = 1; anItMS1 <= MS.Extent(); ++anItMS1) {
+     cout << "ApplyOrientation: TShape = " << MS (anItMS1).TShape()->This() << " OR = " << MS (anItMS1).Orientation() <<endl;
    }
  }
+#endif
+  for (Standard_Integer anItMS = 1; anItMS <= MS.Extent(); ++anItMS)
+  {
+    MS.Substitute (anItMS, MS (anItMS).Oriented (OrientationToApply));
+  }
 }
 //=======================================================================
 //function : CurrentShape
@@ -136,7 +127,7 @@ static void ApplyOrientation (TopTools_MapOfShape& MS,
 void TNaming_NamingTool::CurrentShape(const TDF_LabelMap&               Valid,
 				      const TDF_LabelMap&               Forbiden,
 				      const Handle(TNaming_NamedShape)& Att,
-				      TopTools_MapOfShape&              MS)
+				      TopTools_IndexedMapOfShape& MS)
 {
   TDF_Label Lab = Att->Label();
 #ifdef OCCT_DEBUG_DESC
@@ -201,11 +192,11 @@ void TNaming_NamingTool::CurrentShape(const TDF_LabelMap&               Valid,
     }
     else {      
 //     LastModif(it, S, MS, Valid, Forbiden);
-      TopTools_MapOfShape MS2; 
+      TopTools_IndexedMapOfShape MS2; 
       LastModif(it, S, MS2, Valid, Forbiden);
       if (YaOrientationToApply) ApplyOrientation (MS2, OrientationToApply);//the solution to be refined
-      for (TopTools_MapIteratorOfMapOfShape itMS2(MS2); itMS2.More();itMS2.Next()) 
-	MS.Add(itMS2.Key());
+      for (Standard_Integer anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
+        MS.Add (MS2 (anItMS2));
     }
   }
 }
@@ -219,7 +210,7 @@ void TNaming_NamingTool::CurrentShapeFromShape(const TDF_LabelMap&              
 					       const TDF_LabelMap&               Forbiden,
 					       const TDF_Label&                  Acces,
 					       const TopoDS_Shape&               S,
-					       TopTools_MapOfShape&              MS)
+					       TopTools_IndexedMapOfShape&       MS)
 {
   TNaming_NewShapeIterator it(S,Acces);
 

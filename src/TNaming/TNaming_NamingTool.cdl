@@ -21,7 +21,7 @@ private class NamingTool from TNaming
 uses Label   from TDF,
      LabelMap from TDF,
      NamedShape from TNaming,
-     MapOfShape from TopTools,
+     IndexedMapOfShape from TopTools,
      Shape      from TopoDS
 
 
@@ -32,14 +32,14 @@ is
     	           Valid    :        LabelMap   from TDF;
                    Forbiden :        LabelMap   from TDF;
 		   NS       :        NamedShape from TNaming;
-		   MS       : in out MapOfShape from TopTools);
+		   MS       : in out IndexedMapOfShape from TopTools);
 		   
     CurrentShapeFromShape  (myclass;
                             Valid    :        LabelMap   from TDF;
                     	    Forbiden :        LabelMap   from TDF;
 		    	    Acces    :        Label      from TDF;
 		    	    S        :        Shape      from TopoDS;
-		    	    MS       : in out MapOfShape from TopTools);
+		    	    MS       : in out IndexedMapOfShape from TopTools);
 		   
     BuildDescendants (myclass;
                       NS       : NamedShape from TNaming;

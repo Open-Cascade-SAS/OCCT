@@ -36,6 +36,7 @@
 #include <TDF_TagSource.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
@@ -403,20 +404,18 @@ static Standard_Boolean Compare (const Handle(TNaming_NamedShape)& NS,
 				 const TopoDS_Shape&               S)
 {
   TDF_LabelMap Forbiden;
-  TopTools_MapOfShape MS;
+  TopTools_IndexedMapOfShape MS;
   if (!Stop.IsNull()) TNaming_NamingTool::BuildDescendants(Stop,Forbiden);
   TNaming_NamingTool::CurrentShape(MDF.GetValid(),Forbiden,NS,MS);
 #ifdef OCCT_DEBUG_NBS
   Write(S, "Compare_S.brep");
   cout <<  "S: TShape = " <<S.TShape()->This() <<endl;
-  Standard_Integer i =1;
-  TopTools_MapIteratorOfMapOfShape it(MS);
   TCollection_AsciiString aNam("Compare_MS_");
   TCollection_AsciiString ext(".brep");
-  for(;it.More();it.Next(), i++) {
-    TCollection_AsciiString aName = aNam + i + ext;
-    Write(it.Key(), aName.ToCString()) ;
-    cout << aName.ToCString()<< ": TShape = " <<it.Key().TShape()->This() <<endl;
+  for (Standard_Integer anItMS = 1; anItMS <= MS.Extent(); ++anItMS) {
+    TCollection_AsciiString aName = aNam + anItMS + ext;
+    Write (MS (anItMS), aName.ToCString());
+    cout << aName.ToCString()<< ": TShape = " << MS (anItMS).TShape()->This() << endl;
   }
 #endif
   return (MS.Contains(S) && MS.Extent() == 1);

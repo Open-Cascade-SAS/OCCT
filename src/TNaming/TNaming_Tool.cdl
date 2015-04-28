@@ -24,17 +24,17 @@ class Tool from TNaming
 
         
 uses 
-    Label            from TDF,
-    LabelList        from TDF,
-    LabelMap         from TDF,
-    NamedShape       from TNaming,	
-    UsedShapes       from TNaming,
-    Evolution        from TNaming,
-    MapOfNamedShape  from TNaming,	
-    ListOfShape      from TopTools,     
-    Shape            from TopoDS,
-    OldShapeIterator from TNaming,
-    MapOfShape       from TopTools
+    Label             from TDF,
+    LabelList         from TDF,
+    LabelMap          from TDF,
+    NamedShape        from TNaming,	
+    UsedShapes        from TNaming,
+    Evolution         from TNaming,
+    MapOfNamedShape   from TNaming,	
+    ListOfShape       from TopTools,     
+    Shape             from TopoDS,
+    OldShapeIterator  from TNaming,
+    IndexedMapOfShape from TopTools
 
 is
     
@@ -209,7 +209,7 @@ is
     FirstOlds (myclass; Shapes :        UsedShapes from TNaming;
     	                S      :        Shape from TopoDS;
 	                it     : in out OldShapeIterator from TNaming;
-	                MS     : in out MapOfShape from TopTools;
+	                MS     : in out IndexedMapOfShape from TopTools;
 	                Labels : in out LabelList from TDF)
     is private;
 

@@ -26,8 +26,7 @@
 #include <TNaming_NamingTool.hxx>
 #include <TNaming_NewShapeIterator.hxx>
 
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 
@@ -250,7 +249,7 @@ Standard_Boolean TNaming_Selector::IsIdentified (const TDF_Label& L,
 
       // mpv : external condition
       TDF_LabelMap Forbiden,Valid;
-      TopTools_MapOfShape MS;
+      TopTools_IndexedMapOfShape MS;
       TNaming_NamingTool::CurrentShape(Valid,Forbiden,NS,MS);
       return (MS.Contains(Selection) && MS.Extent() == 1);
     }
@@ -259,7 +258,7 @@ Standard_Boolean TNaming_Selector::IsIdentified (const TDF_Label& L,
     NS = Ident.NamedShapeOfGeneration();
     if(!NS.IsNull()) {
       TDF_LabelMap Forbiden,Valid;
-      TopTools_MapOfShape MS;
+      TopTools_IndexedMapOfShape MS;
       TNaming_NamingTool::CurrentShape(Valid,Forbiden,NS,MS);
       if(MS.Contains(Selection) && MS.Extent() == 1) {
 	const TopoDS_Shape& aS = Ident.ShapeArg();
@@ -271,8 +270,7 @@ Standard_Boolean TNaming_Selector::IsIdentified (const TDF_Label& L,
 	  FindGenerated(NS, aS, aList);
 	  Ident.NextArg();
 	}
-	TopTools_MapIteratorOfMapOfShape itm(MS);
-	const TopoDS_Shape& aC = itm.Key();
+	const TopoDS_Shape& aC = MS (1);
 	Standard_Boolean isEq(Standard_False);
 	TopTools_ListIteratorOfListOfShape itl(aList);
 	for(;itl.More();itl.Next()) {
