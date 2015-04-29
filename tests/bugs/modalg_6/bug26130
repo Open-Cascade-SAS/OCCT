@@ -1,0 +1,13 @@
+puts "TODO OCC26130 ALL: Standard_ConstructionError"
+puts "=========="
+puts "OCC26130"
+puts "=========="
+puts ""
+##############################################################
+# PCurve creation failure
+##############################################################
+
+restore [locate_data_file bug26130_projcomp.brep] a
+explode a
+
+catch {bhaspc a_1 a_2 do}
