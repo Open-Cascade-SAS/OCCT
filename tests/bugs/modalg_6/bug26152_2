@@ -1,0 +1,17 @@
+puts "TODO OCC26152 ALL: Standard_ConstructionError"
+puts "=========="
+puts "OCC26152"
+puts "=========="
+puts ""
+##############################################################
+# Wrong result obtained by projection algorithm.
+##############################################################
+
+restore [locate_data_file bug26130_projcomp.brep] a
+explode a
+explode a_2 e
+
+mkcurve c a_2_4
+mksurface s a_2
+
+catch {project cx c s}
