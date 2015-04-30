@@ -292,16 +292,27 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
                    const TheKeyType&      theKey1,
                    const TheItemType&     theItem)
   {
-    Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > Extent(), "NCollection_IndexedDataMap::Substitute");
+    Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > Extent(),
+                                  "NCollection_IndexedDataMap::Substitute : "
+                                  "Index is out of range");
 
     IndexedDataMapNode * p;
     // check if theKey1 is not already in the map
     Standard_Integer iK1 = Hasher::HashCode (theKey1, NbBuckets());
     p = (IndexedDataMapNode *) myData1[iK1];
-    while (p) 
+    while (p)
     {
-      if (Hasher::IsEqual (p->Key1(), theKey1)) 
-        Standard_DomainError::Raise("NCollection_IndexedDataMap::Substitute");
+      if (Hasher::IsEqual (p->Key1(), theKey1))
+      {
+        if (p->Key2() != theIndex)
+        {
+          Standard_DomainError::Raise ("NCollection_IndexedDataMap::Substitute : "
+                                       "Attempt to substitute existing key");
+        }
+        p->Key1() = theKey1;
+        p->ChangeValue() = theItem;
+        return;
+      }
       p = (IndexedDataMapNode *) p->Next();
     }
 

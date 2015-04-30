@@ -163,11 +163,11 @@ Standard_Integer TCollection_IndexedDataMap::Add(const TheKey& K1, const TheItem
 //=======================================================================
 
 void TCollection_IndexedDataMap::Substitute(const Standard_Integer I,
-					    const TheKey& K1,
-					    const TheItem& T)
+                                            const TheKey& K1,
+                                            const TheItem& T)
 {
-  Standard_OutOfRange_Raise_if(I < 1 || I > Extent(), 
-			       "IndexedMap::Substitute");
+  Standard_OutOfRange_Raise_if(I < 1 || I > Extent(), "IndexedDataMap::Substitute : "
+                                                      "Index is out of range");
   TCollection_IndexedDataMapNode** data1 = (TCollection_IndexedDataMapNode**)myData1;
   TCollection_IndexedDataMapNode* p;
 
@@ -175,8 +175,14 @@ void TCollection_IndexedDataMap::Substitute(const Standard_Integer I,
   Standard_Integer k1 = Hasher::HashCode(K1,NbBuckets());
   p = data1[k1];
   while (p) {
-    if (Hasher::IsEqual(p->Key1(),K1)) 
-      Standard_DomainError::Raise("IndexedMap::Substitute");
+    if (Hasher::IsEqual(p->Key1(),K1)) {
+      if (p->Key2() != I)
+        Standard_DomainError::Raise("IndexedDataMap::Substitute : "
+                                    "Attempt to substitute existing key");
+      p->Key1() = K1;
+      p->Value() = T;
+      return;
+    }
     p = (TCollection_IndexedDataMapNode*) p->Next();
   }
 

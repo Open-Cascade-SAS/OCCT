@@ -21,6 +21,8 @@
 
 #include <gp_Pnt.hxx>
 
+#include <Precision.hxx>
+
 #include <NCollection_Vector.hxx>
 
 #define ItemType gp_Pnt
@@ -498,6 +500,16 @@ static void TestIndexedMap  (QANCollection_IndexedMapFunc& theM)
   // Substitute
   Random(aKey);
   aM.Substitute(1,aKey);
+  if (!aM.Contains (aKey) || aM.FindIndex (aKey) != 1)
+  {
+    printf("Error   : map does not contain valid key after substitute"); 
+  }
+  // Invoke substitute with the same key
+  aM.Substitute(1,aKey);
+  if (!aM.Contains (aKey) || aM.FindIndex (aKey) != 1)
+  {
+    printf("Error   : map does not contain valid key after substitute"); 
+  }
   // Copy constructor (including operator=)
   ////////////////////////////////QANCollection_IndexedMap aM2 = QANCollection_IndexedMap(aM);
   QANCollection_IndexedMapFunc aM2 = QANCollection_IndexedMapFunc(aM);
@@ -551,9 +563,20 @@ static void TestIndexedDataMap  (QANCollection_IDMapFunc& theM)
     aM.RemoveLast();
     printf("      successfully removed item, l=%d\n", aM.Size());
   }
-  // Substitute
+  // Substitute with different keys
   Random(aKey);
   aM.Substitute (1, aKey, anItem);
+  if (!aM.Contains (aKey) || aM.FindIndex (aKey) != 1 || !aM.FindFromKey (aKey).IsEqual (anItem, Precision::Confusion()))
+  {
+    printf("Error   : map does not contain valid key and item after substitute"); 
+  }
+  // Substitute with equal keys
+  Random(anItem);
+  aM.Substitute (1, aKey, anItem);
+  if (!aM.Contains (aKey) || aM.FindIndex (aKey) != 1 || !aM.FindFromKey (aKey).IsEqual (anItem, Precision::Confusion()))
+  {
+    printf("Error   : map does not contain valid key and item after substitute"); 
+  }
   // Copy constructor (including operator=)
   ////////////////////////////////theM = QANCollection_IDMap(aM);
   theM = QANCollection_IDMapFunc(aM);
