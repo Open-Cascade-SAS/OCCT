@@ -28,10 +28,10 @@ if { $init_dump == $result_dump} {
 #retrieve amount of knots of result curve from dump
 regexp { +Degree +[-0-9.+eE]+, +[-0-9.+eE]+ +Poles, +([-0-9.+eE]+) +KnotsPoles +:} $result_dump full KnotsNumber
 #create string to be found in result dump
-set trueLastKnot "$KnotsNumber : 1.00000000015925 "
+set trueLastKnot "$KnotsNumber : 1 4"
 
 #verify parametrization of result curve
-if { [regexp "1 : 0.500000000000006 " $result_dump] && [regexp $trueLastKnot $result_dump]} {
+if { [regexp "1 : 0.5 4" $result_dump] && [regexp $trueLastKnot $result_dump]} {
     puts " OCC253 is OK: command segment works properly" 
 } else {
     puts "Faulty OCC253: parametrization of result curve is wrong" 

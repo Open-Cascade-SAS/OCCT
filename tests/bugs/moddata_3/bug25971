@@ -1,0 +1,52 @@
+puts "============"
+puts "OCC25971"
+puts "============"
+puts ""
+#######################################################################
+# Near B-Spline knots get merged after saving/restoring (exporting/importing)
+#######################################################################
+
+pload XDE
+
+restore [locate_data_file bug25971_a_328_1.brep] a
+
+fixshape f a 1e-6
+explode f e
+
+dump f_4
+
+newmodel
+set aFile ${imagedir}/bug25971.stp
+catch { file delete ${aFile} }
+
+stepwrite a a ${aFile}
+
+stepread ${aFile} ff *
+
+catch { file delete ${aFile} }
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 4
+ EDGE      : 5
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 12
+"
+checknbshapes ff_1 -ref ${nbshapes_expected} -t -m "Saved shape"
+
+tpstat c ; #Exception caught for the shell
+
+vinit View1
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+vinit View2
+vdisplay ff_1
+vfit
+vdump ${imagedir}/${casename}_2.png

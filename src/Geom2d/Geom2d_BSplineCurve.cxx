@@ -33,6 +33,7 @@
 #include <BSplCLib.hxx>
 #include <BSplCLib_KnotDistribution.hxx>
 #include <BSplCLib_MultDistribution.hxx>
+#include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -686,7 +687,7 @@ void Geom2d_BSplineCurve::Segment(const Standard_Real aU1,
   Standard_DomainError_Raise_if ( aU2 < aU1, "Geom2d_BSplineCurve::Segment");
   //
   Standard_Real AbsUMax = Max(Abs(FirstParameter()),Abs(LastParameter()));
-  Standard_Real Eps = Epsilon(AbsUMax);
+  Standard_Real Eps = Max (Epsilon(AbsUMax), Precision::PConfusion());
   Standard_Real NewU1, NewU2;
   Standard_Real U, DU=0;
   Standard_Integer i, k, index;
