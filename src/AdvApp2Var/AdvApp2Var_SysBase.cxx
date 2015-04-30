@@ -2423,18 +2423,18 @@ int AdvApp2Var_SysBase::mcrfill_(integer *size,
 				 void *tout)
 
 {
-  register char *jmin=static_cast<char*> (tin);
-  register char *jmout=static_cast<char*> (tout);
+  char *jmin=static_cast<char*> (tin);
+  char *jmout=static_cast<char*> (tout);
   if (mcrfill_ABS(jmout-jmin) >= *size)
     memcpy( tout, tin, *size);
   else if (tin > tout)
     {
-      register integer n = *size;
+      integer n = *size;
       while (n-- > 0) *jmout++ = *jmin++;
     }
   else
     {
-      register integer n = *size;
+      integer n = *size;
       jmin+=n;
       jmout+=n;
       while (n-- > 0) *--jmout = *--jmin;

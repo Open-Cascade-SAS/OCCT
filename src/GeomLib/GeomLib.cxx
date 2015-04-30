@@ -998,9 +998,8 @@ void GeomLib_CurveOnSurfaceEvaluator::Evaluate (Standard_Integer *,/*Dimension*/
                                                 Standard_Integer *DerivativeRequest,
                                                 Standard_Real    *Result,// [Dimension]
                                                 Standard_Integer *ReturnCode)
-{ 
-  register Standard_Integer ii ;
-  gp_Pnt Point ;
+{
+  gp_Pnt Point;
 
   //Gestion des positionnements gauche / droite
   if ((DebutFin[0] != FirstParam) || (DebutFin[1] != LastParam)) 
@@ -1015,21 +1014,21 @@ void GeomLib_CurveOnSurfaceEvaluator::Evaluate (Standard_Integer *,/*Dimension*/
     {
      TrimCurve->D0((*Parameter), Point) ;
    
-     for (ii = 0 ; ii < 3 ; ii++)
+     for (Standard_Integer ii = 0 ; ii < 3 ; ii++)
        Result[ii] = Point.Coord(ii + 1);
    }
   if (*DerivativeRequest == 1) 
     {
       gp_Vec Vector;
       TrimCurve->D1((*Parameter), Point, Vector);
-      for (ii = 0 ; ii < 3 ; ii++)
+      for (Standard_Integer ii = 0 ; ii < 3 ; ii++)
         Result[ii] = Vector.Coord(ii + 1) ;
     }
   if (*DerivativeRequest == 2) 
     {
       gp_Vec Vector, VecBis;
       TrimCurve->D2((*Parameter), Point, VecBis, Vector);
-      for (ii = 0 ; ii < 3 ; ii++)
+      for (Standard_Integer ii = 0 ; ii < 3 ; ii++)
         Result[ii] = Vector.Coord(ii + 1) ;
     }
   ReturnCode[0] = 0;

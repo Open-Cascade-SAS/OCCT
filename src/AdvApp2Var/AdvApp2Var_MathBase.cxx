@@ -10157,15 +10157,13 @@ void AdvApp2Var_MathBase::mmwprcs_(doublereal *epsil1,
  doublereal AdvApp2Var_MathBase::pow__di (doublereal *x,
 				   integer *n)
 {
-
-  register integer ii ;
   doublereal result ;
   integer    absolute ;
   result = 1.0e0 ;
   if ( *n > 0 ) {absolute = *n;}
   else {absolute = -*n;}
     /* System generated locals */
-  for(ii = 0 ; ii < absolute ; ii++) {
+  for(integer ii = 0 ; ii < absolute ; ii++) {
       result *=  *x ;
    }
   if (*n < 0) {
@@ -10216,14 +10214,13 @@ integer pow__ii(integer *x,
 		integer *n)
 
 {
-  register integer ii ;
   integer result ;
   integer    absolute ;
   result = 1 ;
   if ( *n > 0 ) {absolute = *n;}
   else {absolute = -*n;}
     /* System generated locals */
-  for(ii = 0 ; ii < absolute ; ii++) {
+  for(integer ii = 0 ; ii < absolute ; ii++) {
       result *=  *x ;
    }
   if (*n < 0) {
