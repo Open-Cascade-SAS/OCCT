@@ -195,7 +195,7 @@ AnInterpolator.Load (StartingTangent, EndingTangent);
 
 @subsection occt_modalg_2_4 Lines and  Circles from Constraints
 
-@subsibsection occt_modalg_2_4_1 Types of constraints
+@subsubsection occt_modalg_2_4_1 Types of constraints
 
 The algorithms for construction of 2D circles or lines can be described with numeric or geometric constraints in relation to other curves. 
 
@@ -244,7 +244,7 @@ GccAna_Circ2d2TanRad
 
 This expression finds all circles  of radius *Rad*, which are tangent to both circle *C1* and *C2*, while *C1* is outside and *C2* is inside.
   
-@subsection occt_modalg_2_4_2 Available types of lines and circles
+@subsubsection occt_modalg_2_4_2 Available types of lines and circles
 
 The following analytic algorithms using value-handled entities for creation of 2D lines or circles with geometric constraints are available: 
   * circle tangent to three  elements (lines, circles, curves, points),
@@ -448,7 +448,7 @@ GccAna_Circ2d2TanRad  Solver(GccEnt::Unqualified(C1),
 ~~~~~							
 
 
-@subsection occt_modalg_2_4_2 Types of  algorithms
+@subsubsection occt_modalg_2_4_3 Types of  algorithms
 
 OCCT implements several categories of algorithms:
 
@@ -555,7 +555,7 @@ The class *GeomFill_BezierCurves* allows producing a Bezier surface from contigu
 
 The class *GeomFill_BSplineCurves* allows producing a BSpline surface from contiguous BSpline curves.  Note that problems may occur with rational BSplines. 
 
-@subsubsection occt_modalg_2_5_2 Pipe Surfaces
+@subsubsection occt_modalg_2_5_3 Pipe Surfaces
 
 The class *GeomFill_Pipe* allows producing a pipe by sweeping a curve (the section) along another curve  (the path). The result is a BSpline surface. 
 
@@ -565,14 +565,14 @@ The following types of construction are available:
   * pipes with a section evolving between two given curves.
   
   
-@subsubsection occt_modalg_2_5_3 Filling a contour
+@subsubsection occt_modalg_2_5_4 Filling a contour
 
 It is often convenient to create a surface from two or more curves which will form the boundaries that define the new surface.
 This is done by the class *GeomFill_ConstrainedFilling*, which allows filling a contour defined by two, three or four curves as well  as by tangency constraints. The resulting surface is a BSpline. 
 
 A case in point is the intersection of two fillets at a corner. If the radius of the fillet on one edge is different from that of the fillet on another, it becomes impossible to sew together all the edges of the resulting surfaces. This leaves a gap in the overall surface of the object which you are constructing.
 
-@figure{/technical_overview/images/modeling_algos_image059.png,"Intersecting filleted edges with differing radiuses"}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image059.png,"Intersecting filleted edges with differing radiuses"}
 
 These algorithms allow you to fill this gap from two, three or four curves. This can be done with or without constraints, and the resulting surface will be either a Bezier or a BSpline surface in one of a range of filling styles.
 
@@ -595,7 +595,7 @@ The enumerations *FillingStyle* specify the styles used to build the surface. Th
 @image html /user_guides/modeling_algos/images/modeling_algos_image018.png "Intersecting filleted edges with different radii leave a gap, is filled by a surface"
 @image latex /user_guides/modeling_algos/images/modeling_algos_image018.png "Intersecting filleted edges with different radii leave a gap, is filled by a surface"
 
-@subsubsection occt_modalg_2_5_4 Plate surfaces
+@subsubsection occt_modalg_2_5_5 Plate surfaces
 
 In CAD, it is often necessary to generate a surface which has no exact mathematical definition, but which is defined by respective constraints. These can be of a mathematical, a technical or an aesthetic order.
 
@@ -605,7 +605,7 @@ curve constraints and the point constraint respectively. The resulting surface c
 The surface is built using a variational spline algorithm. It uses the principle of deformation of a thin plate by localised mechanical forces. If not already given in the input, an initial surface is calculated. This corresponds to the plate prior
 to deformation. Then, the algorithm is called to calculate the final surface. It looks for a solution satisfying constraints and minimizing energy input.
 
-@figure{/technical_overview/images/modeling_algos_image061.png,"Surface generated from two curves and a point"}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image061.png,"Surface generated from two curves and a point"}
 
 The package *GeomPlate*   provides the following services for creating surfaces respecting curve and  point constraints: 
 
@@ -631,7 +631,7 @@ The class *Surface* allows describing the characteristics of plate surface objec
 
 The class *MakeApprox* allows converting a *GeomPlate* surface into a *Geom_BSplineSurface*. 
 
-@figure{/technical_overview/images/modeling_algos_image060.png,"Surface generated from four curves and a point"}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image060.png,"Surface generated from four curves and a point"}
 
 Let us create a Plate surface  and approximate it from a polyline as a curve constraint and a point constraint 
 
@@ -1200,7 +1200,7 @@ There are two root classes for their construction and modification:
 * The deferred class  *BRepBuilderAPI_MakeShape* is the root of all *BRepBuilderAPI* classes,  which build shapes. It inherits from the class *BRepBuilderAPI_Command* and provides a field to store the constructed shape. 
 * The deferred class *BRepBuilderAPI_ModifyShape* is used as a root for the shape  modifications. It inherits *BRepBuilderAPI_MakeShape* and implements the methods  used to trace the history of all sub-shapes. 
 
-@subection occt_modalg_3_1 Vertex
+@subsection occt_modalg_3_1 Vertex
 
 *BRepBuilderAPI_MakeVertex*  creates a new vertex from a 3D point from gp. 
 ~~~~~

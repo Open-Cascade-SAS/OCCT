@@ -4790,7 +4790,7 @@ circle c 50 0 0 20
 revsurf s c 0 0 0 0 1 0 
 ~~~~~
 
-@subsubsection occt_draw_6_3*11  extsurf
+@subsubsection occt_draw_6_3_11  extsurf
 
 Syntax:      
 ~~~~~

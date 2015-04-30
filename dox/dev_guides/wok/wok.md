@@ -480,8 +480,11 @@ This automatically takes you to the root directory of the workbench
 
 @subsubsection occt_wok_3_3_8  Using Existing Resources
 Before creating new data types, you should look for existing components that you can reuse. In particular, you should look through the existing resources of your Open CASCADE Technology platform to see if any of the required components already exist, or if any existing generic components can be suitably implemented. This search can be conducted using the online documentation. You should note the packages and classes, which you can reuse. 
+
 @subsection occt_wok_3_4  Creating Software Components
+
 @subsubsection occt_wok_3_4_1  Creating a Package
+
 To develop new software components, you usually need to create one or more packages. You do this, by using the following command: 
 ~~~~~
 > ucreate –p <MyPackage> 
@@ -613,6 +616,7 @@ The umake steps for development units of package type are explained below.
 * *obj.lib*     Generates the shared library for the development unit. 
 
 @subsubsection occt_wok_3_4_2  Creating a Nocdlpack
+
 If your executable requires the use of a nocdlpack, create a development unit of nocdlpack type and move to its structure using the commands below: 
 ~~~~~
   > ucreate -n <MyNoCDLPack>
@@ -656,7 +660,8 @@ The *umake* steps for development units of *nocdlpack* type are explained below.
   + Implementation dependencies in terms of the unit suppliers. (Unit.ImplDep) 
 * *obj.lib*   Generates the shared library for the unit. 
 
-@subsubsection occt_wok_3_3_3  Creating a Schema
+@subsubsection occt_wok_3_4_3  Creating a Schema
+
 If the application, which you intend to build, stores data in a file, you need to define a schema for the persistent data types that are known. 
 
 You create a schema and go to its root directory using the commands: 
@@ -735,7 +740,9 @@ The umake steps for development units of schema type are explained below.
 * *obj.idep*   Generates dependency information for the schema. 
 
 @subsection occt_wok_3_5  Building an Executable
+
 @subsubsection occt_wok_3_5_1  Creating an Executable
+
 To make an executable from one or more of the packages, which you have created, write a .cdl file to specify the packages to use. 
 
 #### Writing an Executable
@@ -805,7 +812,9 @@ The umake steps for development units of executable type are explained below.
 * *exec.link* Links each part of the executable. 
 
 @subsection occt_wok_3_6  Test Environments
-@subsubsection occt_wok_3_3_1  Testing an Executable
+
+@subsubsection occt_wok_3_6_1  Testing an Executable
+
 To test an executable, you create an executable development unit and move to its structure.
 
 When you write the .cdl file for your test executable, specify the packages to test, for example: 

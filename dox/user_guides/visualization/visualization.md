@@ -4,7 +4,7 @@ Visualization    {#occt_user_guides__visualization}
 
 @section occt_visu_1 Introduction
 
-Visualization in Open CASCADE Technology is based on the  separation of:  
+Visualization in Open CASCADE Technology is based on the  separation of:
   * on the one hand - the data which stores the geometry and topology  of the entities you want to display and select, and 
   * on the other hand - its **presentation** (what you see  when an object is displayed in a scene) and **selection** (possibility to choose the whole object or its sub-parts interactively to apply application-defined operations to the selected entities). 
 
@@ -16,7 +16,7 @@ Presentations are managed through the **Presentation** component, and selection 
 
 If, however, you require types of interactive objects and  filters other than those provided, you will need to know the mechanics of  presentable and selectable objects, specifically how to implement their virtual  functions. To do this requires familiarity with such fundamental concepts as the sensitive primitive and the presentable object.  
 
-The the following packages are used to display 3D objects :  
+The the following packages are used to display 3D objects:
   * *AIS*; 
   * *StdPrs*; 
   * *Prs3d*; 
@@ -31,12 +31,12 @@ The figure below presents a schematic overview of the relations between the key 
 @image html visualization_image003.png "Key concepts and packages in visualization"
 @image latex visualization_image003.png "Key concepts and packages in visualization"
 
-To answer different needs of CASCADE users, this User’s Guide offers the following three paths in reading it.
-  
+To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
+  
   * If the 3D services proposed in AIS meet your requirements, you  need only read chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>.   
   * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 <a href="#occt_visu_2">Fundamental Concepts</a>, chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>, and 4 <a href="#occt_visu_4">3D Presentations</a>. You may want to begin with the chapter presenting AIS.
 
-@section occt_visu_2  Fundamental Concepts
+@section occt_visu_2  Fundamental Concepts
 
 @subsection occt_visu_2_1 Presentation 
 
@@ -44,7 +44,7 @@ In Open CASCADE Technology, presentation services are  separated from the data, 
 
 @subsubsection occt_visu_2_1_1 Structure of  the Presentation
 
-Displaying an object on the screen involves three kinds of entities:  
+Displaying an object on the screen involves three kinds of entities:
   * a presentable object, the *AIS_InteractiveObject*
   * a viewer 
   * an interactive context, the *AIS_InteractiveContext*. 
@@ -71,16 +71,16 @@ Presentation involves at least the *AIS, PrsMgr, StdPrs* and  *V3d* packages. Ad
 * *StdPrs* package  provides ready-to-use standard presentation algorithms for specific geometries: points, curves and  shapes of the geometry and topology toolkits.
 * *Prs3d* package provides generic presentation algorithms such as wireframe, shading and hidden line removal associated with a *Drawer* class, which controls the attributes of the presentation to be created in terms of color, line type, thickness, etc.
 * *V3d* package provides  the services supported by the 3D viewer.
-* *Graphic3d* package provides resources to create 3D graphic structures.  
+* *Graphic3d* package provides resources to create 3D graphic structures.
 * *Visual3d* package contains classes implementing commands for 3D viewer.
 * *DsgPrs* package provides tools for display of dimensions, relations and XYZ trihedrons.
 
 @subsubsection occt_visu_2_1_3 A Basic Example: How to display a 3D object 
 
 ~~~~~
-Void Standard_Real dx  = ...; //Parameters   
-Void Standard_Real dy  = ...; //to build  a wedge  
-Void Standard_Real dz  = ...;  
+Void Standard_Real dx  = ...; //Parameters   
+Void Standard_Real dy  = ...; //to build  a wedge  
+Void Standard_Real dz  = ...;  
 Void Standard_Real ltx = ...; 
 
 Handle(V3d_Viewer)aViewer = ...;  
@@ -104,29 +104,29 @@ The shape is created using the *BRepPrimAPI_MakeWedge*  command. An *AIS_Shape* 
 
 Objects that may be selected graphically, are displayed as sets of sensitive primitives, which provide sensitive zones in 2D graphic space. These zones are sorted according to their position on the screen when starting the selection process.  
   
-@image html visualization_image006.png "A model"  
-@image latex visualization_image006.png "A model"  
+@image html visualization_image006.png "A model"
+@image latex visualization_image006.png "A model"
 
 The position of the mouse is also associated with a sensitive zone. When moving within the window where objects are displayed, the areas touched by the zone of the mouse are analyzed. The owners of these areas  are then highlighted or signaled by other means such as the name of the object highlighted in a list. That way, you are informed of the identity of the detected element.  
 
 @image html visualization_image007.png "Modeling faces with sensitive primitives"
 @image latex visualization_image007.png "Modeling faces with sensitive primitives"
 
-@image html visualization_image008.png "In a dynamic selection, each sensitive polygon is represented by its  bounding rectangle"   
+@image html visualization_image008.png "In a dynamic selection, each sensitive polygon is represented by its  bounding rectangle"   
 @image latex visualization_image008.png "In a dynamic selection, each sensitive polygon is represented by its  bounding rectangle"
 
 @image html visualization_image009.png "Reference to the sensitive primitive, then to the owner"
 @image latex visualization_image009.png "Reference to the sensitive primitive, then to the owner"
 
 
-@subsubsection occt_visu_2_2_1 The Sensitive Primitive  
+@subsubsection occt_visu_2_2_1 The Sensitive Primitive
 
 The sensitive primitive along with the entity owner allows defining what can be made selectable, and providing the link between the applicative object and the sensitive zones defined by the 2D bounding boxes. To be dynamically selectable, an object has to be  represented either as a sensitive primitive or a set of them, e.g. 2D  boxes that will be included in a sorting algorithm.
 
-The use of 2D boxes allows a pre-selection of the detected  entities. After pre-selection, the algorithm checks which sensitive primitives are actually detected. When detected, the primitives provide their owners’ identity.
+The use of 2D boxes allows a pre-selection of the detected  entities. After pre-selection, the algorithm checks which sensitive primitives are actually detected. When detected, the primitives provide their owners' identity.
 
 @image html visualization_image010.png "Example of sensitive primitives"
-@image latex visualization_image010.png "Example of sensitive primitives"  
+@image latex visualization_image010.png "Example of sensitive primitives"
 
 In the example, the sensitive line segment proposes a bounding box to the selector. During selection, positions 1 and 2 of the mouse detect the box  but after sorting, only position 2 retains the line segment as selected by the  algorithm.  
 
@@ -148,7 +148,7 @@ as the mouse cursor moves over them. This allows the  user to be certain that th
   
 <h4>Selectable Object</h4>
 
-A selectable object presents a given number of selection  modes which can be redefined, and which will be activated or deactivated in the selection manager’s selectors.  
+A selectable object presents a given number of selection  modes which can be redefined, and which will be activated or deactivated in the selection manager's selectors.  
 
 Note that the selection mode of a selectable object, can refer to the selection mode of  the object itself or to the selection mode of its part.
 
@@ -167,7 +167,7 @@ See also <a href="#occt_visu_3">AIS: Application Interactive Services</a>.
 Let us consider, for example, a 3D selectable shape object, which  corresponds to a topological shape.  
 
 For this class, seven selection modes can be defined:  
-* mode 0 - selection of the shape itself  
+* mode 0 - selection of the shape itself 
 * mode 1 - selection of vertices  
 * mode 2 - selection of edges  
 * mode 3 - selection of wires  
@@ -335,7 +335,7 @@ When all these steps have been carried out, follow the  procedure below:
 1. Create an interactive context.  
 2. Create the selectable objects and  calculate their various possible selections.  
 3. Load these selectable objects in the  interactive context. The objects may be common to all the selectors, i.e. they  will be seen by all the selectors in the selection manager, or local to one  selector or more.  
-4. Activate or deactivate the objects’ selection modes in  the selector(s). When activating a selection mode in a selector for a given  object, the manager sends the order to make the sensitive primitives in this  selector selectable. If the primitives are to projected from 3D to 2D, the  selector calls the specific method used to carry out this projection.  
+4. Activate or deactivate the objects' selection modes in  the selector(s). When activating a selection mode in a selector for a given  object, the manager sends the order to make the sensitive primitives in this  selector selectable. If the primitives are to projected from 3D to 2D, the  selector calls the specific method used to carry out this projection.  
 
 At this stage, the selection of selectable entities in the  selectors is available.  
 The selection loop informs constantly the selectors with the  position of the mouse and questions them about the detected entities.  
@@ -361,11 +361,11 @@ To build the selection, which corresponds to the mode "selection  of the rooms"
 
 Void House::ComputeSelection 
 	(Const  Handle(SelectMgr_Selection)& Sel, 
-	 const Standard_Integer mode { 
-		 switch(mode){   
+	 const Standard_Integer mode { 
+		 switch(mode){   
 		case 0: //Selection of the rooms  
-		{   
-		for(Standard_Integer i = 1; i <= myNbRooms; i++)   
+		{   
+		for(Standard_Integer i = 1; i <= myNbRooms; i++)   
 		{ 
 		//for every room, create an instance of the owner, the given room  and its name. 
 		Handle(RoomOwner) aRoomOwner = new RoomOwner (Room(i),  NameRoom(i)); 
@@ -373,10 +373,10 @@ Void House::ComputeSelection
 	Handle(Select3d_SensitiveBox) aSensitiveBox; 
 	aSensitiveBox = new Select3d_SensitiveBox  
 		(aRoomOwner, Xmin, Ymin, Zmin,  Xmax, Ymax, Zmax); 
-		 Sel -> Add(aSensitiveBox);   
-		}   
-		break;   
-		Case 1: ... //Selection of the doors   
+		 Sel -> Add(aSensitiveBox);   
+		}   
+		break;   
+		Case 1: ... //Selection of the doors   
 		} //Switch     
 ) // ComputeSelection  
 ~~~~~
@@ -387,8 +387,8 @@ Void House::ComputeSelection
 @image html visualization_image013.png "Activated sensitive rectangles in the selector during dynamic selection in view 1"
 @image latex visualization_image013.png "Activated sensitive rectangles in the selector during dynamic selection in view 1"
 
-@image html visualization_image014.png "Activated sensitive polygons corresponding  to selection mode 1 (selection of doors)"
-@image latex visualization_image014.png "Activated sensitive polygons corresponding  to selection mode 1 (selection of doors)"
+@image html visualization_image014.png "Activated sensitive polygons corresponding  to selection mode 1 (selection of doors)"
+@image latex visualization_image014.png "Activated sensitive polygons corresponding  to selection mode 1 (selection of doors)"
 
 @image html visualization_image015.png "Sensitive rectangles in the selector during  dynamic selection in view 2"
 @image latex visualization_image015.png "Sensitive rectangles in the selector during  dynamic selection in view 2"
@@ -448,20 +448,20 @@ If you are creating your own type of interactive object, you  must implement the
 ~~~~~
 void PackageName_ClassName::Compute  
 	(const  Handle(PrsMgr_PresentationManager3d)& aPresentationManager,   
-	 const  Handle(Prs3d_Presentation)& aPresentation,  
-	 const Standard_Integer aMode =  0);  
+	 const  Handle(Prs3d_Presentation)& aPresentation,  
+	 const Standard_Integer aMode =  0);  
 ~~~~~
 
 ####  For hidden line removal (HLR) mode in 3D:
 ~~~~~
 void PackageName_ClassName::Compute  
 	(const  Handle(Prs3d_Projector)& aProjector,  
-	 const  Handle(Prs3d_Presentation)& aPresentation);  
+	 const  Handle(Prs3d_Presentation)& aPresentation);  
 ~~~~~
 
 @subsubsection occt_visu_3_2_2 Hidden Line Removal
 
-The view can have two states: the normal mode or the computed  mode (Hidden Line Removal mode). When the latter is active, the view looks for all presentations displayed in the normal mode, which have been signalled  as accepting HLR mode. An internal mechanism allows calling the interactive  object’s own *Compute*, that is projector function. 
+The view can have two states: the normal mode or the computed  mode (Hidden Line Removal mode). When the latter is active, the view looks for all presentations displayed in the normal mode, which have been signalled  as accepting HLR mode. An internal mechanism allows calling the interactive  object's own *Compute*, that is projector function. 
 
 By  convention, the Interactive Object accepts or rejects the  representation of HLR mode. It is possible to make this declaration in one of two ways:
 
@@ -472,8 +472,8 @@ By  convention, the Interactive Object accepts or rejects the  representation of
 * Later by using the function *PrsMgr_PresentableObject::SetTypeOfPresentation* 
 
 *AIS_Shape* class is an example of an interactive object that supports  HLR representation. It supports two types of the HLR algorithm:  
-* the  polygonal algorithm based on the shape’s triangulation; 
-* the  exact algorithm that works with the shape’s real geometry. 
+* the  polygonal algorithm based on the shape's triangulation; 
+* the  exact algorithm that works with the shape's real geometry. 
 
 The type of the HLR algorithm is stored in *AIS_Drawer* of the  shape. It is a value of the *Prs3d_TypeOfHLR* enumeration and can be set to: 
 	* *Prs3d_TOH_PolyAlgo* for a polygonal algorithm; 
@@ -521,17 +521,17 @@ Note that the same presentation (and consequently the same  highlight mode) is u
 For example, you want to systematically highlight  the wireframe presentation of a shape - non regarding if it is visualized in  wireframe presentation or with shading. Thus, you set the highlight mode to *0* in the constructor of the interactive object. Do not forget to implement this representation mode in the *Compute* functions.  
 
 #### Infinite Status
-If you don’t want an object to be affected  by a *FitAll* view, you must declare it infinite; you can cancel its "infinite"  status using *AIS_InteractiveObject::SetInfiniteState* and *AIS_InteractiveObject::IsInfinite* functions. 
+If you do not want an object to be affected  by a *FitAll* view, you must declare it infinite; you can cancel its "infinite"  status using *AIS_InteractiveObject::SetInfiniteState* and *AIS_InteractiveObject::IsInfinite* functions. 
 
 Let us take for example the class called *IShape* representing  an interactive object :
 
 ~~~~~ 
 myPk_IShape::myPK_IShape  
 	(const TopoDS_Shape& SH,  PrsMgr_TypeOfPresentation aType):  
-	AIS_InteractiveObject(aType), myShape(SH), myDrwr(new AIS_Drawer())  {SetHilightMode(0);}   
+	AIS_InteractiveObject(aType), myShape(SH), myDrwr(new AIS_Drawer())  {SetHilightMode(0);}   
 void myPk_IShape::Compute  
 	(const Handle(PrsMgr_PresentationManager3d)  & PM,  
-	 const Handle(Prs3d_Presentation)& P,   
+	 const Handle(Prs3d_Presentation)& P,   
 	 const Standard_Integer TheMode) 
 { 
 	switch (TheMode){  
@@ -577,7 +577,7 @@ These functions can be useful if you decide that the *0*  mode used by default w
   * *AIS_InteractiveObject::SetSelectionPriority* sets a priority; 
   * *AIS_InteractiveObject::UnsetSelectionPriority* unsets the priority.
   
-    
+    
 @subsubsection occt_visu_3_2_5 Graphic attributes
 
 Graphic attributes manager, or *AIS Drawer*, stores graphic attributes for specific interactive objects and for interactive objects controlled by interactive context.
@@ -603,7 +603,7 @@ The  following virtual functions provide settings for color, width, material and
   * *AIS_InteractiveObject::SetWidth* 
   * *AIS_InteractiveObject::UnsetWidth* 
   * *AIS_InteractiveObject::SetMaterial   (const Graphic3d_NameOfPhysicalMaterial & aName)* 
-  * *AIS_InteractiveObject::SetMaterial   (const Graphic3d_MaterialAspect & aMat)* 
+  * *AIS_InteractiveObject::SetMaterial   (const Graphic3d_MaterialAspect & aMat)* 
   * *AIS_InteractiveObject::UnsetMaterial* 
   * *AIS_InteractiveObject::SetTransparency* 
   * *AIS_InteractiveObject::UnsetTransparency* 
@@ -645,7 +645,7 @@ Due to the fact that the accuracy of three-dimensional  graphics coordinates has
 
 To the problem when the elements of two or  more Interactive Objects are coincident you can apply the polygon offset. It is a  sort of graphics computational offset, or depth buffer offset, that allows you  to arrange elements (by modifying their depth value) without changing their  coordinates. The graphical elements that accept this kind of offsets are solid  polygons or displayed as boundary lines and points. The polygons could be  displayed as lines or points by setting the appropriate interior style. 
 
-The method *AIS_InteractiveObject::SetPolygonOffsets (const Standard_Integer aMode, const Standard_Real aFactor, const Standard_Real aUnits)* allows setting up the polygon  offsets.
+The method *AIS_InteractiveObject::SetPolygonOffsets (const Standard_Integer aMode, const Standard_Real aFactor, const Standard_Real aUnits)* allows setting up the polygon  offsets.
 
 The  parameter *aMode* can contain various combinations of *Aspect_PolygonOffsetMode* enumeration elements: 
   * *Aspect_POM_None*
@@ -665,14 +665,14 @@ Negative  offset values move polygons closer to the viewer while positive values
 
 **Warning**
  
-This  method has a side effect – it creates its own shading aspect if not yet  created, so it is better to set up the object shading aspect first. 
+This  method has a side effect - it creates its own shading aspect if not yet  created, so it is better to set up the object shading aspect first. 
 
 You can use the following  functions to obtain the current settings for polygon offsets: 
 ~~~~~
   void  AIS_InteractiveObject::PolygonOffsets
 		(Standard_Integer &aMode, 
-		 Standard_Real &aFactor, 
-		 Standard_Real &aUnits) 
+		 Standard_Real &aFactor, 
+		 Standard_Real &aUnits) 
   Standard_Boolean AIS_InteractiveObject::HasPolygonOffsets() 
 ~~~~~
 
@@ -680,15 +680,15 @@ The same  operation could be performed for the interactive object known by the *
 ~~~~~
 void  AIS_InteractiveContext::SetPolygonOffsets
 	(const Handle(AIS_InteractiveObject) &anObj, 
-	 const Standard_Integer aMode,  
-	 const Standard_Real aFactor, 
-	 const Standard_Real aUnits) 
+	 const Standard_Integer aMode,  
+	 const Standard_Real aFactor, 
+	 const Standard_Real aUnits) 
 void  AIS_InteractiveContext::PolygonOffsets
 	(const Handle(AIS_InteractiveObject) &anObj, 
-	 Standard_Integer &aMode,  
-	 Standard_Real &aFactor, 
-	 Standard_Real &aUnits) 
-Standard_Boolean      AIS_InteractiveContext::HasPolygonOffsets
+	 Standard_Integer &aMode,  
+	 Standard_Real &aFactor, 
+	 Standard_Real &aUnits) 
+Standard_Boolean      AIS_InteractiveContext::HasPolygonOffsets
 	(const Handle(AIS_InteractiveObject) &anObj) 
 ~~~~~
 
@@ -803,7 +803,7 @@ Closing Local Contexts is done by:
 ~~~~~
 
 *Warning* 
-When the index isn’t specified in the first function, the  current Context is closed. This option can be dangerous, as other Interactive  Functions can open local contexts without necessarily warning the user. For  greater security, you have to close the context with the index given on  opening. 
+When the index is not specified in the first function, the  current Context is closed. This option can be dangerous, as other Interactive  Functions can open local contexts without necessarily warning the user. For  greater security, you have to close the context with the index given on  opening. 
 
 To get the index of the current context, use function *AIS_InteractiveContext::IndexOfCurrentLocal*. It allows closing all open local  contexts at one go. In this case, you find yourself directly at Neutral Point.  
 
@@ -819,14 +819,14 @@ Neutral Point should be used to visualize the interactive  objects, which repres
 ~~~~~
 AIS_InteractiveContext::Display  
 	(const  Handle(AIS_InteractiveObject)& anIobj, 
-	 const  Standard_Boolean updateviewer=Standard_True);  
+	 const  Standard_Boolean updateviewer=Standard_True);  
 
 AIS_InteractiveContext::Display  
 	(const  Handle(AIS_InteractiveObject)& anIobj,  
-	 const  Standard_Integer amode, 
-	 const  Standard_Integer aSelectionMode, 
-	 const  Standard_Boolean updateviewer = Standard_True,  
-	 const  Standard_Boolean allowdecomposition =  Standard_True);  
+	 const  Standard_Integer amode, 
+	 const  Standard_Integer aSelectionMode, 
+	 const  Standard_Boolean updateviewer = Standard_True,  
+	 const  Standard_Boolean allowdecomposition =  Standard_True);  
 
   AIS_InteractiveContext::Erase  
   AIS_InteractiveContext::EraseMode  
@@ -840,12 +840,12 @@ AIS_InteractiveContext::Display
   
 Bear in mind the following points:  
   * It is recommended to display and erase interactive objects when  no local context is opened, and open a local context for local selection only.
-  * The first *Display* function among the two ones available in  *InteractiveContext* visualizes the object in its default mode (set with  help of SetDisplayMode() method of InteractiveObject prior to Display() call),  or in the default context mode, if applicable. If it has neither, the function  displays it in 0 presentation mode. The object’s default selection mode is  automatically activated (0 mode by convention). 
+  * The first *Display* function among the two ones available in  *InteractiveContext* visualizes the object in its default mode (set with  help of SetDisplayMode() method of InteractiveObject prior to Display() call),  or in the default context mode, if applicable. If it has neither, the function  displays it in 0 presentation mode. The object's default selection mode is  automatically activated (0 mode by convention). 
   * Activating the displayed object by default can be turned off with  help of *SetAutoActivateSelection()* method. This might be efficient if  you are not interested in selection immediately after displaying an object.
   * The second *Display* function should only be used in Neutral  Point to visualize a supplementary mode for the object, which you can erase by  *EraseMode (...)*. You activate the selection mode. This is passed as an argument.  By convention, if you do not want to activate a selection mode, you must set  the *SelectionMode* argument to -1. This function is  especially interesting in open local context, as we will see below. 
   * In Neutral Point, it is not advisable to activate other selection  modes than the default selection one. It is preferable to open a local context  in order to activate particular selection modes. 
   * When you call *Erase(Interactive object)* function, the *PutIncollector*  argument, which is *FALSE* by default, allows you to visualize the object  directly in the Collector and makes it selectable (by activation of 0 mode).  You can nonetheless block its passage through the Collector by changing the  value of this option. In this case, the object is present in the Interactive  Context, but is not seen anywhere. 
-  * *Erase()* with *putInCollector = Standard_True*  might be slow as it recomputes the object presentation in the Collector. Set *putInCollector* to *Standard_False* if you simply want to hide the object’s  presentation temporarily.
+  * *Erase()* with *putInCollector = Standard_True*  might be slow as it recomputes the object presentation in the Collector. Set *putInCollector* to *Standard_False* if you simply want to hide the object's  presentation temporarily.
   * Visualization attributes and graphic behavior can be modified through a set of functions similar to those for the interactive object (color, thickness of line, material, transparency,  locations, etc.) The context then manages immediate and deferred updates. 
   * Call *Remove()* method of *InteractiveContext* as soon  as the interactive object is no longer needed and you want to destroy it..  Otherwise, references to *InteractiveObject* are kept by *InteractiveContext*,  and the *Object* is not destroyed, which results in memory leaks. In  general, if the presentation of an  interactive object can be computed quickly, it  is recommended to *Remove()* it instead of using *Erase()* method.
 
@@ -855,7 +855,7 @@ In open local context, the *Display* functions presented above can be as well.
 
 **WARNING** 
 
-The function *AIS_InteractiveObject::Display* automatically  activates the object’s default selection mode. When you only want to visualize  an Interactive Object in open Context, you must call the function *AIS_InteractiveContext::Display*.  
+The function *AIS_InteractiveObject::Display* automatically  activates the object's default selection mode. When you only want to visualize  an Interactive Object in open Context, you must call the function *AIS_InteractiveContext::Display*.  
 
 You can activate or deactivate specific selection modes in the local open context in several different ways:  
 Use the Display functions with the appropriate modes.
@@ -934,7 +934,7 @@ myContext->Display(myAIShape,1,-1,Standard_True,Standard_True);
 Handle(StdSelect_FaceFilter) Fil1= new  
 	StdSelect_FaceFilter(StdSelect_Revol);   
 Handle(StdSelect_FaceFilter) Fil2= new 
-      StdSelect_FaceFilter(StdSelect_Plane);  
+      StdSelect_FaceFilter(StdSelect_Plane);  
 
 myContext->AddFilter(Fil1);   
 myContext->AddFilter(Fil2);  
@@ -1004,7 +1004,7 @@ while (myAISCtx->MoreSelected())
 		{ 
 		TopoDS_Shape  ashape = myAISCtx->SelectedShape(); 
 			// to be able  to use the picked shape 
-			            }  
+			            }  
 		else  
 		{ 
 		Handle_AIS_InteractiveObject  anyobj = myAISCtx->Interactive(); 
@@ -1080,8 +1080,8 @@ For your applicative function, you need an axis to create a  revolved object. Yo
 ~~~~~
 myIHMEditor::myIHMEditor  
 	(const  Handle(AIS_InteractiveContext)& Ctx, 
-	 ....) : 
-	 myCtx(Ctx),  
+	 ....) : 
+	 myCtx(Ctx),  
 	...  
 { 
 } 
@@ -1092,7 +1092,7 @@ myIndex =myCtx->OpenLocalContext();
 
 //the filters  
 
-Handle(AIS_SignatureFilter) F1 = new  AIS_SignatureFilter(AIS_KOI_Datum,AIS_SD_Point);   
+Handle(AIS_SignatureFilter) F1 = new  AIS_SignatureFilter(AIS_KOI_Datum,AIS_SD_Point);   
 //filter on the points  
 
 Handle(AIS_SignatureFilter) F2 = new AIS_SignatureFilter(AIS_KOI_Datum,AIS_SD_Axis);   
@@ -1122,8 +1122,8 @@ Standard_Boolean myIHMEditor::Select()
 		myCTX->Select();   
 		myCTX->InitSelected();  
 		if(myCTX->MoreSelected()) 
-		 {
-		 if(myCTX->HasSelectedShape())     
+		 {
+		 if(myCTX->HasSelectedShape())     
 		{ const  TopoDS_Shape& sh = myCTX->SelectedShape(); 
 		if(  vertex){  
 			if(myFirstV...)   
@@ -1136,19 +1136,19 @@ Standard_Boolean myIHMEditor::Select()
 			// the filter  on the AIS_Points  
 			myFirstV = Standard_False;  
 			return Standard_True;  
-			 }
+			 }
 			else
-			 { 
+			 { 
 			mypoint2 =...;  
 			//  construction of the axis return Standard_False;  
 			} 
-		 } 
-		 else  
-		  {  
+		 } 
+		 else  
+		  {  
 		//it is a  cylindrical face : you recover the axis; visualize it; and stock it.  
 		return  Standard_False;  
 		}  
-		  }  
+		  }  
 		// it is not  a shape but is no doubt a point.  
 		else  
 		{  
@@ -1242,7 +1242,7 @@ And at maximum seven selection modes, depending on the shape complexity:
 
   * *AIS_Triangulation* is a simple interactive object for displaying  triangular mesh contained in *Poly_Triangulation* container. 
   * *AIS_ConnectedInteractive* is an Interactive Object connecting to  another interactive object reference, and located elsewhere in the viewer makes  it possible not to calculate presentation and selection, but to deduce them  from your object reference.  
-  * *AIS_ConnectedShape* is an object connected to interactive objects  having a shape; this class has the same decompositions as *AIS_Shape*. What’s  more, it allows a presentation of hidden parts, which are calculated  automatically from the shape of its reference.  
+  * *AIS_ConnectedShape* is an object connected to interactive objects  having a shape; this class has the same decompositions as *AIS_Shape*. Furthermore, it allows a presentation of hidden parts, which are calculated  automatically from the shape of its reference.  
   * *AIS_MultipleConnectedInteractive* is an object connected to a list  of interactive objects (which can also be Connected objects. It does not  require memory hungry calculations of presentation) 
   * *AIS_MultipleConnectedShape* is an interactive Object connected to  a list of interactive objects having a Shape <i>(AIS_Shape, AIS_ConnectedShape,  AIS_MultipleConnectedShape)</i>. The presentation of hidden parts is calculated  automatically.  
   * *AIS_TexturedShape* is an Interactive Object that supports texture  mapping. It is constructed as a usual AIS_Shape, but has additional methods  that allow to map a texture on it. 
@@ -1319,7 +1319,7 @@ The list of relations is not exhaustive.
 
 *MeshVS_Mesh* is an Interactive Object that represents meshes. This object differs from the *AIS_Shape* as its geometrical  data is supported by the data source *MeshVS_DataSource* that describes  nodes and elements of the object. As a result, you can provide your own data  source.  
 
-However, the *DataSource* does not provide any  information on attributes, for example nodal colors, but you can apply them in  a special way – by choosing the appropriate presentation builder.  
+However, the *DataSource* does not provide any  information on attributes, for example nodal colors, but you can apply them in  a special way - by choosing the appropriate presentation builder.  
 
 The presentations of *MeshVS_Mesh* are built with the  presentation builders *MeshVS_PrsBuilder*. You can choose between the  builders to represent the object in a different way. Moreover, you can redefine  the base builder class and provide your own presentation builder. 
 
@@ -1391,14 +1391,14 @@ aMesh->AddBuilder  (aBuilder, Standard_True);
 
 *MeshVS_NodalColorPrsBuilder* allows representing a mesh  with a color scaled texture mapped on it. 
 To do this you should define a color  map for the color scale, pass this map to the presentation builder, 
-and define an appropriate value in the range of 0.0 – 1.0 for every node. 
+and define an appropriate value in the range of 0.0 - 1.0 for every node. 
 
 The following example demonstrates how you can do this (check if the view has been set up to display textures): 
 
 ~~~~~
 // assign nodal builder to the mesh
 Handle  (MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder 
-    	(aMesh,MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask); 
+    	(aMesh,MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask); 
 aBuilder->UseTexture  (Standard_True); 
 
 // prepare color map
@@ -1408,10 +1408,10 @@ aColorMap.Append  ((Quantity_NameOfColor) Quantity_NOC_BLUE1);
 
 // assign color scale map  values (0..1) to nodes
 TColStd_DataMapOfIntegerReal  aScaleMap; 
-…
+...
 // iterate through the  nodes and add an node id and an appropriate value to the map
 aScaleMap.Bind  (anId, aValue); 
-  
+  
 // pass color map and color scale values to the builder
 aBuilder->SetColorMap  (aColorMap); 
 aBuilder->SetInvalidColor  (Quantity_NOC_BLACK); 
@@ -1474,7 +1474,7 @@ The *ComputeSelection*  function for the interactive box can have the following 
 ~~~~~
 void InteractiveBox::ComputeSelection  
 	(const  Handle(SelectMgr_Selection)& Sel, 
-	 const Standard_Integer Mode)  
+	 const Standard_Integer Mode)  
 { 
 	switch(Mode) 
 		{  case 0:   //locating the whole box by  making its faces sensitive...  
@@ -1487,8 +1487,8 @@ void InteractiveBox::ComputeSelection
 	Sel->Add(new  Select3D_SensitiveFace(Ownr,Array,Sensitivity));  
 			} 
 			break;  
-	   } 
-	  case 1:  
+	   } 
+	  case 1:  
 	// locates the edges  {  
 	for(Standard_Integer i=1;i<=12;i++)  
 			{ 
@@ -1527,7 +1527,7 @@ for(VS->Init();VS->More();VS->Next())
 	{ 
 	VS->Picked();   
 	// picking of all owners  detected  
-	  } 
+	  } 
 	SM->Deactivate(box1);   
 	// deactivate all active modes  of box1  
 ~~~~~
@@ -1608,7 +1608,7 @@ The following example shows how to disable the VBO support:
 ~~~~~
 // get the graphic  driver
 Handle (Graphic3d_GraphicDriver) aDriver =  
-  myAISContext->CurrentViewer()->Driver(); 
+  myAISContext->CurrentViewer()->Driver(); 
 
 // disable VBO support
 aDriver->EnableVBO (Standard_False); 
@@ -1639,7 +1639,7 @@ You can also modify the values assigned to the vertex or  query these values by 
   * *void  Graphic3d_ArrayOfPrimitives::SetVertexNormal*
   * *void  Graphic3d_ArrayOfPrimitives::SetVertexTexel*
   * *gp_Pnt  Graphic3d_ArrayOfPrimitives::Vertices*
-  * *gp_Dir   Graphic3d_ArrayOfPrimitives::VertexNormal*
+  * *gp_Dir   Graphic3d_ArrayOfPrimitives::VertexNormal*
   * *gp_Pnt3d  Graphic3d_ArrayOfPrimitives::VertexTexel*
   * *Quantity_Color  Graphic3d_ArrayOfPrimitives::VertexColor*
   * *void  Graphic3d_ArrayOfPrimitives::Vertices*
@@ -1674,26 +1674,26 @@ The following example shows how to define an array of  triangles:
 
 ~~~~~
 // create an array
-Standard_Boolean  IsNormals     = Standard_False;  
-Standard_Boolean  IsColors      = Standard_False; 
+Standard_Boolean  IsNormals     = Standard_False;  
+Standard_Boolean  IsColors      = Standard_False; 
 Standard_Boolean  IsTextureCrds = Standard_False; 
 Handle (Graphic3d_ArrayOfTriangles) anArray =  
-          new Graphic3d_ArrayOfTriangles (aVerticesMaxCount, 
-                                          aEdgesMaxCount, 
-                                          IsNormals, 
-                                          IsColors, 
-                                          IsTextureCrds); 
+          new Graphic3d_ArrayOfTriangles (aVerticesMaxCount, 
+                                          aEdgesMaxCount, 
+                                          IsNormals, 
+                                          IsColors, 
+                                          IsTextureCrds); 
 // add vertices to the array
-anArray->AddVertex  (-1.0, 0.0, 0.0);   // vertex 1
-anArray->AddVertex  ( 1.0, 0.0, 0.0);   // vertex 2
-anArray->AddVertex  ( 0.0, 1.0, 0.0);   // vertex 3 
-anArray->AddVertex  ( 0.0,-1.0, 0.0);   // vertex 4 
+anArray->AddVertex  (-1.0, 0.0, 0.0);   // vertex 1
+anArray->AddVertex  ( 1.0, 0.0, 0.0);   // vertex 2
+anArray->AddVertex  ( 0.0, 1.0, 0.0);   // vertex 3 
+anArray->AddVertex  ( 0.0,-1.0, 0.0);   // vertex 4 
 
 // add edges to the array
-anArray->AddEdge  (1);  // first triangle
+anArray->AddEdge  (1);  // first triangle
 anArray->AddEdge  (2); 
 anArray->AddEdge  (3); 
-anArray->AddEdge  (1);  // second triangle
+anArray->AddEdge  (1);  // second triangle
 anArray->AddEdge  (2); 
 anArray->AddEdge  (4); 
 
@@ -1717,31 +1717,31 @@ The following example shows how to define an array of  polygons:
 
 ~~~~~
 // create an array
-Standard_Boolean  IsNormals      = Standard_False;  
+Standard_Boolean  IsNormals      = Standard_False;  
 Standard_Boolean  IsVertexColors = Standard_False; 
-Standard_Boolean  IsFaceColors   = Standard_False; 
-Standard_Boolean  IsTextureCrds  = Standard_False; 
+Standard_Boolean  IsFaceColors   = Standard_False; 
+Standard_Boolean  IsTextureCrds  = Standard_False; 
 Handle (Graphic3d_ArrayOfPolygons) anArray =  
-          new Graphic3d_ArrayOfPolygons (aVerticesMaxCount, 
-                                         aBoundsMaxCount, 
-                                         aEdgesMaxCount, 
-                                         IsNormals, 
-                                         IsVertexColors, 
-                                         IsFaceColors, 
-                                         IsTextureCrds); 
+          new Graphic3d_ArrayOfPolygons (aVerticesMaxCount, 
+                                         aBoundsMaxCount, 
+                                         aEdgesMaxCount, 
+                                         IsNormals, 
+                                         IsVertexColors, 
+                                         IsFaceColors, 
+                                         IsTextureCrds); 
 
 // add bounds to the array, first polygon
 anArray->AddBound (3);  
-anArray->AddVertex (-1.0,  0.0, 0.0);    
-anArray->AddVertex  ( 1.0, 0.0, 0.0);    
-anArray->AddVertex  ( 0.0, 1.0, 0.0);    
+anArray->AddVertex (-1.0,  0.0, 0.0);    
+anArray->AddVertex  ( 1.0, 0.0, 0.0);    
+anArray->AddVertex  ( 0.0, 1.0, 0.0);    
 
 // add bounds to the array, second polygon
 anArray->AddBound (4); 
-anArray->AddVertex (-1.0,  0.0, 0.0);    
-anArray->AddVertex  ( 1.0, 0.0, 0.0);    
-anArray->AddVertex  ( 1.0,-1.0, 0.0);    
-anArray->AddVertex  (-1.0,-1.0, 0.0);    
+anArray->AddVertex (-1.0,  0.0, 0.0);    
+anArray->AddVertex  ( 1.0, 0.0, 0.0);    
+anArray->AddVertex  ( 1.0,-1.0, 0.0);    
+anArray->AddVertex  (-1.0,-1.0, 0.0);    
 
 // add the array to the structure 
 Handle  (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup  (aPrs); 
@@ -1784,41 +1784,41 @@ To add any text to the graphic structure you can use the  following methods:
 ~~~~~
  void Graphic3d_Group::Text
 			(const Standard_CString AText, 
-			 const Graphic3d_Vertex& APoint, 
-			 const Standard_Real AHeight, 
-			 const Quantity_PlaneAngle AAngle, 
-			 const Graphic3d_TextPath ATp, 
-			 const Graphic3d_HorizontalTextAlignment  AHta, 
-			 const Graphic3d_VerticalTextAlignment  AVta, 
-			 const Standard_Boolean EvalMinMax), 
+			 const Graphic3d_Vertex& APoint, 
+			 const Standard_Real AHeight, 
+			 const Quantity_PlaneAngle AAngle, 
+			 const Graphic3d_TextPath ATp, 
+			 const Graphic3d_HorizontalTextAlignment  AHta, 
+			 const Graphic3d_VerticalTextAlignment  AVta, 
+			 const Standard_Boolean EvalMinMax), 
 ~~~~~			
 *AText*  parameter is the text string, *APoint* is the three-dimensional position of the  text, *AHeight* is the text height, *AAngle* is the orientation of the text (at the  moment, this parameter has no effect, but you can specify the text orientation through  the *Graphic3d_AspectText3d* attributes). 
 
 *ATp* parameter defines the text path, *AHta* is the horizontal alignment of the text,  *AVta* is the vertical alignment of the text. 
 
-You can  pass *Standard_False* as *EvalMinMax* if you don’t want the graphic3d structure  boundaries to be affected by the text position.  
+You can  pass *Standard_False* as *EvalMinMax* if you do not want the graphic3d structure  boundaries to be affected by the text position.  
 
 **Note** that the text orientation angle can be defined by *Graphic3d_AspectText3d* attributes. 
 ~~~~~
   void  Graphic3d_Group::Text
 			(const Standard_CString AText, 
-			 const Graphic3d_Vertex& APoint, 
-			 const Standard_Real AHeight, 
-			 const Standard_Boolean EvalMinMax) 
+			 const Graphic3d_Vertex& APoint, 
+			 const Standard_Real AHeight, 
+			 const Standard_Boolean EvalMinMax) 
   void  Graphic3d_Group::Text
 			(const TCcollection_ExtendedString  &AText,  
 			 const Graphic3d_Vertex& APoint, 
-			 const Standard_Real AHeight, 
-			 const Quantity_PlaneAngle AAngle, 
-			 const Graphic3d_TextPath ATp, 
-			 const Graphic3d_HorizontalTextAlignment  AHta, 
-			 const Graphic3d_VerticalTextAlignment  AVta, 
-			 const Standard_Boolean EvalMinMax) 
+			 const Standard_Real AHeight, 
+			 const Quantity_PlaneAngle AAngle, 
+			 const Graphic3d_TextPath ATp, 
+			 const Graphic3d_HorizontalTextAlignment  AHta, 
+			 const Graphic3d_VerticalTextAlignment  AVta, 
+			 const Standard_Boolean EvalMinMax) 
   void  Graphic3d_Group::Text
 			(const TCcollection_ExtendedString  &AText,  
-			 const Graphic3d_Vertex& APoint, 
-			 const Standard_Real AHeight, 
-			 const Standard_Boolean EvalMinMax) 
+			 const Graphic3d_Vertex& APoint, 
+			 const Standard_Real AHeight, 
+			 const Standard_Boolean EvalMinMax) 
 ~~~~~
 
 See the example:
@@ -2036,7 +2036,7 @@ aView->Update();
 
 @subsubsection occt_visu_4_4_5 Perspective Projection
 
-**Field of view (FOVy)** - defines the field of camera view by y axis in degrees (45° is default).
+**Field of view (FOVy)** - defines the field of camera view by y axis in degrees (45� is default).
 
 @image html camera_perspective.png "Perspective frustum"
 
@@ -2058,7 +2058,7 @@ There are two types of IOD:
 * _IODType_Absolute_ : Intraocular distance is defined as an absolute value.
 * _IODType_Relative_ : Intraocular distance is defined relative to the camera focal length (as its coefficient).
 
-**Field of view (FOV)** - defines the field of camera view by y axis in degrees (45° is default).
+**Field of view (FOV)** - defines the field of camera view by y axis in degrees (45� is default).
 
 **ZFocus** - defines the distance to the point of stereographic focus.
 
@@ -2132,21 +2132,21 @@ The following example demonstrates how to draw overlay graphics by the *V3d_Laye
 // redefined method of  V3d_LayerMgr
 void  MyLayerMgr::Redraw () 
 { 
-   Quantity_Color aRed (Quantity_NOC_RED); 
-   myOverlayLayer->SetColor (aRed); 
-   myOverlayLayer->DrawRectangle (0, 0, 100, 100); 
+   Quantity_Color aRed (Quantity_NOC_RED); 
+   myOverlayLayer->SetColor (aRed); 
+   myOverlayLayer->DrawRectangle (0, 0, 100, 100); 
 } 
 ~~~~~
 
-The layer contains layer items that will be displayed on  view redraw. Such items are *Visual3d_LayerItem* entities. To manipulate *Visual3d_LayerItem* entities assigned to the layer’s internal list you can use the following methods: 
+The layer contains layer items that will be displayed on  view redraw. Such items are *Visual3d_LayerItem* entities. To manipulate *Visual3d_LayerItem* entities assigned to the layer's internal list you can use the following methods: 
 
 ~~~~~
    void  Visual3d_Layer::AddLayerItem (const Handle (Visual3d_LayerItem)&  Item)  
-   void  Visual3d_Layer::RemoveLayerItem (const Handle (Visual3d_LayerItem)&  Item)   
+   void  Visual3d_Layer::RemoveLayerItem (const Handle (Visual3d_LayerItem)&  Item)   
    void  Visual3d_Layer::RemoveAllLayerItems ()
-   const  Visual3d_NListOfLayerItem& Visual3d_Layer::GetLayerItemList ()    
+   const  Visual3d_NListOfLayerItem& Visual3d_Layer::GetLayerItemList ()    
 ~~~~~
-The layer’s items are rendered when the method *void  Visual3d_Layer::RenderLayerItems()* is  called by the graphical driver.
+The layer's items are rendered when the method *void  Visual3d_Layer::RenderLayerItems()* is  called by the graphical driver.
 
 The *Visual3d_LayerItem* has virtual methods that are  used to render the item: 
 ~~~~~
@@ -2160,8 +2160,8 @@ The item presentation can be computed before drawing by the *ComputeLayerPrs* me
    Standard_Boolean  Visual3d_LayerItem::IsNeedToRecompute 
 ~~~~~
 
-An example of *Visual3d_LayerItem* is *V3d_ColorScaleLayerItem*  that represents the color scale entity as the layer’s item.  
-The *V3d_ColorScaleLayerItem* sends render requests to  the color scale entity represented by it. As this entity (*V3d_ColorScale*)  is assigned to the *V3d_LayerMgr* it uses its overlay layer’s services for  drawing: 
+An example of *Visual3d_LayerItem* is *V3d_ColorScaleLayerItem*  that represents the color scale entity as the layer's item.  
+The *V3d_ColorScaleLayerItem* sends render requests to  the color scale entity represented by it. As this entity (*V3d_ColorScale*)  is assigned to the *V3d_LayerMgr* it uses its overlay layer's services for  drawing: 
 
 <h4>Example </h4>
 
@@ -2169,29 +2169,29 @@ The *V3d_ColorScaleLayerItem* sends render requests to  the color scale entity r
 // tell V3d_ColorScale to draw itself
 void  V3d_ColorScaleLayerItem::RedrawLayerPrs () 
 { 
-   Visual3d_LayerItem::RedrawLayerPrs () 
-  if  (!MyColorScale.IsNull ()) 
-    MyColorScale->DrawScale  (); 
+   Visual3d_LayerItem::RedrawLayerPrs () 
+  if  (!MyColorScale.IsNull ()) 
+    MyColorScale->DrawScale  (); 
 } 
 
 // V3d_ColorScale has a reference to a LayerMgr
 void  V3d_ColorScale::DrawScale () 
 { 
-    // calls V3d_ColorScale::PaintRect,  V3d_ColorScale::PaintText, etc … 
+    // calls V3d_ColorScale::PaintRect,  V3d_ColorScale::PaintText, etc. 
 } 
 
 // PaintRect method uses overlay layer of LayerMgr to  draw a rectangle 
 void V3d_ColorScale::PaintRect   
-       (const  Standard_Integer X, const Standard_Integer Y, 
-        const  Standard_Integer W, const Standard_Integer H, 
-        const  Quantity_Color aColor, 
-        const  Standard_Boolean aFilled) 
+       (const  Standard_Integer X, const Standard_Integer Y, 
+        const  Standard_Integer W, const Standard_Integer H, 
+        const  Quantity_Color aColor, 
+        const  Standard_Boolean aFilled) 
 { 
-  const Handle  (Visual3d_Layer)& theLayer = myLayerMgr->Overlay (); 
-   ...
-   theLayer->SetColor (aColor); 
-   theLayer->DrawRectangle (X, Y, W, H); 
-   ... 
+  const Handle  (Visual3d_Layer)& theLayer = myLayerMgr->Overlay (); 
+   ...
+   theLayer->SetColor (aColor); 
+   theLayer->DrawRectangle (X, Y, W, H); 
+   ... 
 } 
 ~~~~~
 
@@ -2202,9 +2202,9 @@ To set solid color for  the background you can use the following methods:
 ~~~~~
    void  V3d_View::SetBackgroundColor
 		(const Quantity_TypeOfColor Type,  
-		 const Quantity_Parameter V1, 
-		 const Quantity_Parameter V2, 
-		 const Quantity_Parameter V3) 
+		 const Quantity_Parameter V1, 
+		 const Quantity_Parameter V2, 
+		 const Quantity_Parameter V3) 
 ~~~~~
 
 This method allows you to specify the background color in RGB (red,  green, blue) or HLS (hue, lightness, saturation) color spaces, so the  appropriate values of the Type parameter are *Quantity_TOC_RGB* and  *Quantity_TOC_HLS*. 
@@ -2220,15 +2220,15 @@ The gradient background  style could be set up with the following methods:
 ~~~~~
   void  V3d_View::SetBgGradientColors
 		(const Quantity_Color& Color1,  
-		 const Quantity_Color& Color2, 
-		 const Aspect_GradientFillMethod  FillStyle, 
-		 const Standard_Boolean update) 
+		 const Quantity_Color& Color2, 
+		 const Aspect_GradientFillMethod  FillStyle, 
+		 const Standard_Boolean update) 
 		
    void  V3d_View::SetBgGradientColors
 		(const Quantity_NameOfColor Color1,  
-		 const Quantity_NameOfColor Color2, 
-		 const Aspect_GradientFillMethod  FillStyle, 
-		 const Standard_Boolean update) 
+		 const Quantity_NameOfColor Color2, 
+		 const Aspect_GradientFillMethod  FillStyle, 
+		 const Standard_Boolean update) 
 ~~~~~
 
 The *Color1* and *Color2* parameters define the boundary colors of  interpolation, the *FillStyle* parameter defines the direction of interpolation.  You can pass *Standard_True* as the last parameter to update the view.  
@@ -2239,9 +2239,9 @@ To get the current  background color you can use the following methods:
 ~~~~~
    void  V3d_View::BackgroundColor
 		(const Quantity_TypeOfColor Type,  
-		 Quantity_Parameter &V1, 
-		 Quantity_Parameter &V2, 
-		 Quantity_Parameter &V3) 
+		 Quantity_Parameter &V1, 
+		 Quantity_Parameter &V2, 
+		 Quantity_Parameter &V3) 
    Quantity_Color  V3d_View::BackgroundColor()
    void V3d_View::GradientBackgroundColors(Quantity_Color& Color1, Quantity_Color& Color2) 
    Aspect_GradientBackground  GradientBackground()
@@ -2251,15 +2251,15 @@ To set the image as a  background and change the background image style you can 
 ~~~~~  
   void V3d_View::SetBackgroundImage
 		(const Standard_CString FileName,  
-		 const Aspect_FillMethod FillStyle, 
-		 const Standard_Boolean update) 
+		 const Aspect_FillMethod FillStyle, 
+		 const Standard_Boolean update) 
   void  V3d_View::SetBgImageStyle
 		(const Aspect_FillMethod FillStyle,  
-		 const Standard_Boolean update) 
+		 const Standard_Boolean update) 
 ~~~~~
 
 The *FileName* parameter defines the image file name and the path to it,  the *FillStyle* parameter defines the method of filling the background with the  image. The methods are:  
-  * *Aspect_FM_NONE* -  draws the image in the default position;
+  * *Aspect_FM_NONE* -  draws the image in the default position;
   * *Aspect_FM_CENTERED* - draws the image at the center of the view;
   * *Aspect_FM_TILED* tiles the view with the image;
   * *Aspect_FM_STRETCH* stretches the image over the view.
@@ -2326,21 +2326,21 @@ Handle(Aspect_DisplayConnection)  aDisplayConnection;
 Handle  (Graphic3d_GraphicDriver) aDriver = Graphic3d::InitGraphicDriver (aDisplayConnection); 
 
 // create a window
-Standard_Integer  aDefWidth  = 800; 
+Standard_Integer  aDefWidth  = 800; 
 Standard_Integer  aDefHeight = 600; 
 Handle  (WNT_WClass) aWClass =  new WNT_WClass ("Virtual Class",DefWindowProc, 
-                              CS_VREDRAW | CS_HREDRAW, 0, 0,  
-                              ::LoadCursor (NULL, IDC_ARROW)); 
-Handle  (WNT_Window) aWindow =  new WNT_Window ("VirtualWnd",  aWClass,  
-                              WS_OVERLAPPEDWINDOW, 0, 0,  
-                              aDefWidth, aDefHeight); 
+                              CS_VREDRAW | CS_HREDRAW, 0, 0,  
+                              ::LoadCursor (NULL, IDC_ARROW)); 
+Handle  (WNT_Window) aWindow =  new WNT_Window ("VirtualWnd",  aWClass,  
+                              WS_OVERLAPPEDWINDOW, 0, 0,  
+                              aDefWidth, aDefHeight); 
 
 // set up the window as  virtual
 aWindow->SetVirtual  (Standard_True); 
 
 // create a view and an  interactive context
 Handle  (V3d_Viewer) aViewer =  new V3d_Viewer (aDriver, 
-                              Standard_ExtString ("Virtual")); 
+                              Standard_ExtString ("Virtual")); 
 Handle  (AIS_InteractiveContext) aContext = new AIS_InteractiveContext (aViewer); 
 Handle  (V3d_View) aView = aViewer->CreateView (); 
 
@@ -2360,7 +2360,7 @@ aView->Dump  ("3dscene.png");
 
 The contents of a view can be printed out. Moreover, the OpenGl graphic driver used by the v3d view supports printing in high  resolution. The print method uses the OpenGl frame buffer (Frame Buffer Object)  for rendering the view contents and advanced print algorithms that allow  printing in, theoretically, any resolution.  
 
-The method *void V3d_View::Print(const Aspect_Handle hPrnDC, const Standard_Boolean showDialog, const Standard_Boolean showBackground, const Standard_CString  filename, const Aspect_PrintAlgo printAlgorithm)* prints the view  contents: 
+The method *void V3d_View::Print(const Aspect_Handle hPrnDC, const Standard_Boolean showDialog, const Standard_Boolean showBackground, const Standard_CString  filename, const Aspect_PrintAlgo printAlgorithm)* prints the view  contents: 
 
 *hPrnDC* is the printer device handle. You can pass your own printer handle  or *NULL* to select the printer by the default dialog. In that case you can use  the default dialog or pass *Standard_False* as the *showDialog* argument to  select the default printer automatically.  
 
@@ -2439,14 +2439,14 @@ Structure display priorities control the order, in which structures are drawn. W
 
 @subsubsection occt_visu_4_4_15 Z-layer support
 
-OCCT features depth-arranging functionality called z-layer. A graphical presentation can be put into a z-layer. In general, this function can be used for implementing "bring to front"� functionality in a graphical application.
+OCCT features depth-arranging functionality called z-layer. A graphical presentation can be put into a z-layer. In general, this function can be used for implementing "bring to front" functionality in a graphical application.
 
 Example:
 
 ~~~~~
 // set z-layer to an interactive object
-Handle(AIS_InteractiveContext) aContext = …
-Handle(AIS_InteractiveObject) anInterObj = …
+Handle(AIS_InteractiveContext) aContext = ...
+Handle(AIS_InteractiveObject) anInterObj = ...
 Standard_Integer anId = 3;
 aViewer->AddZLayer (anId);
 aContext->SetZLayer (anInterObj, anId);
@@ -2458,7 +2458,7 @@ For each z-layer, it is allowed to:
 * Enable / disable depth buffer clearing.
 * Enable / disable polygon offset.
 
-The corresponding method *SetZLayerOption (…)* is available in *Graphic3d_GraphicDriver* interface. You can get the options using getter from *Visual3d_ViewManager* and *V3d_Viewer*. It returns *Graphic3d_ZLayerSettings* cached in *Visual3d_ViewManager* for a given *LayerId*.
+The corresponding method *SetZLayerOption (...)* is available in *Graphic3d_GraphicDriver* interface. You can get the options using getter from *Visual3d_ViewManager* and *V3d_Viewer*. It returns *Graphic3d_ZLayerSettings* cached in *Visual3d_ViewManager* for a given *LayerId*.
 
 Example:
 ~~~~~
@@ -2503,10 +2503,10 @@ Let us see for example how to create a new clipping plane with custom parameters
 // create a new clipping plane
 const Handle(Graphic3d_ClipPlane)& aClipPlane = new Graphic3d_ClipPlane();
 // change equation of the clipping plane
-Standard_Real aCoeffA = …
-Standard_Real aCoeffB = …
-Standard_Real aCoeffC = …
-Standard_Real aCoeffD = …
+Standard_Real aCoeffA = ...
+Standard_Real aCoeffB = ...
+Standard_Real aCoeffC = ...
+Standard_Real aCoeffD = ...
 aClipPlane->SetEquation (gp_Pln (aCoeffA, aCoeffB, aCoeffC, aCoeffD));
 // set capping
 aClipPlane->SetCapping (aCappingArg == "on");
@@ -2517,12 +2517,12 @@ aMat.SetAmbientColor (aColor);
 aMat.SetDiffuseColor (aColor);
 aClipPlane->SetCappingMaterial (aMat);
 // set the texture of clipping plane
-Handle(Graphic3d_Texture2Dmanual) aTexture = …
+Handle(Graphic3d_Texture2Dmanual) aTexture = ...
 aTexture->EnableModulate();
 aTexture->EnableRepeat();
 aClipPlane->SetCappingTexture (aTexture);
 // add the clipping plane to an interactive object
-Handle(AIS_InteractiveObject) aIObj = …
+Handle(AIS_InteractiveObject) aIObj = ...
 aIObj->AddClipPlane (aClipPlane);
 // or to the whole view
 aView->AddClipPlane (aClipPlane);
@@ -2662,7 +2662,7 @@ Handle(AIS_Shape) anAISShape = new AIS_Shape(aShape);
 myAISContext->Display (anAISShape);
 ~~~~~
 
-@subsubsection occt_visu_4_5_4 Create your own interactive object
+@subsubsection occt_visu_4_5_5 Create your own interactive object
 
 Follow the procedure below to compute the presentable object:
 
