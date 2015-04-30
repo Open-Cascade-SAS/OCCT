@@ -84,146 +84,55 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
   : Select3D_SensitiveSet (theOwnerId)
 {
   Select3D_Plane aPlane;
-  Standard_Integer aStartIdx = 1, anEndIdx = 0;
   Standard_Integer aLowerIdx = thePoints.Lower();
   Standard_Integer anUpperIdx = thePoints.Upper();
-  Select3D_BndBox3d aBndBox;
-  gp_XYZ aPntSum (0.0, 0.0, 0.0);
-  if (thePoints.Length() > 3)
-  {
-    for (Standard_Integer aPntIter = aLowerIdx; aPntIter <= anUpperIdx; ++aPntIter)
-    {
-      gp_Pnt aPnt1, aPnt2;
-      const gp_Pnt& aPnt3 = thePoints.Value (aPntIter);
-      aBndBox.Add (SelectMgr_Vec3 (aPnt3.X(), aPnt3.Y(), aPnt3.Z()));
-      aPntSum += aPnt3.XYZ();
-      if (aPntIter - aLowerIdx >= 2)
-      {
-        aPnt1 = thePoints.Value (aPntIter - 2);
-        aPnt2 = thePoints.Value (aPntIter - 1);
-      }
-      if (aPntIter - aStartIdx == 2 && !aPlane.IsValid())
-      {
-        aPlane.MakePlane (aPnt1, aPnt2, aPnt3);
-        aStartIdx = aPntIter - 2;
-        anEndIdx = aPntIter;
-      }
-      else if (aPlane.IsValid())
-      {
-        const gp_XYZ& aVec1 = aPnt1.XYZ() - aPnt2.XYZ();
-        const gp_XYZ& aVec2 = aPnt3.XYZ() - aPnt2.XYZ();
-        Standard_Real anAngle = aVec1.Dot (aVec2);
-        if (!aPlane.Contains (thePoints.Value (aPntIter)) || anAngle > Precision::Confusion())
-        {
-          // subtract 1 due to indexation from zero in sub-polygons
-          Standard_Integer anUpperBound = aPntIter - aStartIdx - 1;
-          Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anUpperBound);
-          for (Standard_Integer aIdx = aStartIdx; aIdx <= aStartIdx + anUpperBound; ++aIdx)
-          {
-            aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value (aIdx));
-          }
-          Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
-                                                                                    aPointsArray,
-                                                                                    Standard_False);
-          myPlanarPolygons.Append (aPlanarPolyg);
-          aStartIdx = aPntIter;
-          anEndIdx = aPntIter;
-          aPlane.Invalidate();
-        }
-        else
-        {
-          if (anEndIdx == anUpperIdx)
-          {
-            Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anEndIdx - aStartIdx);
-            for (Standard_Integer aIdx = aStartIdx; aIdx <= anEndIdx; ++aIdx)
-            {
-              aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value (aIdx));
-            }
-            Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
-                                                                                      aPointsArray,
-                                                                                      Standard_False);
-            myPlanarPolygons.Append (aPlanarPolyg);
-          }
-          anEndIdx++;
-        }
-      }
-    }
-  }
-  else
-  {
-    Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, 2);
-    const gp_Pnt& aPnt1 = thePoints.Value (aLowerIdx);
-    const gp_Pnt& aPnt2 = thePoints.Value (aLowerIdx + 1);
-    const gp_Pnt& aPnt3 = thePoints.Value (aLowerIdx + 2);
-    aPointsArray->SetValue (0, aPnt1);
-    aPointsArray->SetValue (1, aPnt2);
-    aPointsArray->SetValue (2, aPnt3);
-    aBndBox.Add (SelectMgr_Vec3 (aPnt1.X(), aPnt1.Y(), aPnt1.Z()));
-    aBndBox.Add (SelectMgr_Vec3 (aPnt2.X(), aPnt2.Y(), aPnt2.Z()));
-    aBndBox.Add (SelectMgr_Vec3 (aPnt3.X(), aPnt3.Y(), aPnt3.Z()));
-    aPntSum += aPnt1.XYZ() + aPnt2.XYZ() + aPnt3.XYZ();
-    Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
-                                                                              aPointsArray,
-                                                                              Standard_False);
-    myPlanarPolygons.Append (aPlanarPolyg);
-  }
-
-  myPolygonsIdxs = new TColStd_HArray1OfInteger (0, myPlanarPolygons.Length() - 1);
-  for (Standard_Integer aIdx = 0; aIdx < myPlanarPolygons.Length(); ++aIdx)
-  {
-    myPolygonsIdxs->SetValue (aIdx, aIdx);
-  }
-
-  myCOG = aPntSum / thePoints.Length();
-  myBndBox = aBndBox;
-}
-
-// =======================================================================
-// function : Select3D_InteriorSensitivePointSet
-// purpose  : Splits the given point set thePoints onto planar convex
-//            polygons
-// =======================================================================
-Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Handle(SelectBasics_EntityOwner)& theOwnerId,
-                                                                        const Handle(TColgp_HArray1OfPnt)& thePoints)
-  : Select3D_SensitiveSet (theOwnerId)
-{
-  Select3D_Plane aPlane;
-  Standard_Integer aLowerIdx = thePoints->Lower();
-  Standard_Integer anUpperIdx = thePoints->Upper();
   Standard_Integer aStartIdx = aLowerIdx, anEndIdx = 0;
   Select3D_BndBox3d aBndBox;
   gp_XYZ aPntSum (0.0, 0.0, 0.0);
   for (Standard_Integer aPntIter = aLowerIdx; aPntIter <= anUpperIdx; ++aPntIter)
   {
     gp_Pnt aPnt1, aPnt2;
-    const gp_Pnt& aPnt3 = thePoints->Value (aPntIter);
+    const gp_Pnt& aPnt3 = thePoints.Value (aPntIter);
     aPntSum += aPnt3.XYZ();
     SelectMgr_Vec3 aCurrPnt (aPnt3.X(), aPnt3.Y(), aPnt3.Z());
     aBndBox.Add (aCurrPnt);
     if (aPntIter - aLowerIdx >= 2)
     {
-      aPnt1 = thePoints->Value (aPntIter - 2);
-      aPnt2 = thePoints->Value (aPntIter - 1);
+      aPnt1 = thePoints.Value (aPntIter - 2);
+      aPnt2 = thePoints.Value (aPntIter - 1);
     }
     if (aPntIter - aStartIdx == 2 && !aPlane.IsValid())
     {
       aPlane.MakePlane (aPnt1, aPnt2, aPnt3);
       aStartIdx = aPntIter - 2;
       anEndIdx = aPntIter;
+
+      if (anEndIdx == anUpperIdx)
+      {
+        Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anEndIdx - aStartIdx);
+        for (Standard_Integer aIdx = aStartIdx; aIdx <= anEndIdx; ++aIdx)
+        {
+          aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value(aIdx));
+        }
+        Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
+                                                                                 aPointsArray,
+                                                                                 Standard_False);
+        myPlanarPolygons.Append (aPlanarPolyg);
+      }
     }
     else if (aPlane.IsValid())
     {
       const gp_XYZ& aVec1 = aPnt1.XYZ() - aPnt2.XYZ();
       const gp_XYZ& aVec2 = aPnt3.XYZ() - aPnt2.XYZ();
       Standard_Real anAngle = aVec1.Dot (aVec2);
-      if (!aPlane.Contains (thePoints->Value (aPntIter)) || anAngle > Precision::Confusion())
+      if (!aPlane.Contains (thePoints.Value (aPntIter)) || anAngle > Precision::Confusion())
       {
         // subtract 1 due to indexation from zero in sub-polygons
         Standard_Integer anUpperBound = aPntIter - aStartIdx - 1;
         Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anUpperBound);
         for (Standard_Integer aIdx = aStartIdx; aIdx <= aStartIdx + anUpperBound; ++aIdx)
         {
-          aPointsArray->SetValue (aIdx - aStartIdx, thePoints->Value (aIdx));
+          aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value (aIdx));
         }
         Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
                                                                                   aPointsArray,
@@ -241,7 +150,7 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
           Handle (TColgp_HArray1OfPnt) aPointsArray = new TColgp_HArray1OfPnt (0, anEndIdx - aStartIdx);
           for (Standard_Integer aIdx = aStartIdx; aIdx <= anEndIdx; ++aIdx)
           {
-            aPointsArray->SetValue (aIdx - aStartIdx, thePoints->Value (aIdx));
+            aPointsArray->SetValue (aIdx - aStartIdx, thePoints.Value (aIdx));
           }
           Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
                                                                                     aPointsArray,
@@ -252,14 +161,14 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
     }
   }
 
+  myCOG = aPntSum / thePoints.Length();
+  myBndBox = aBndBox;
+
   myPolygonsIdxs = new TColStd_HArray1OfInteger (0, myPlanarPolygons.Length() - 1);
   for (Standard_Integer aIdx = 0; aIdx < myPlanarPolygons.Length(); ++aIdx)
   {
     myPolygonsIdxs->SetValue (aIdx, aIdx);
   }
-
-  myCOG = aPntSum / thePoints->Length();
-  myBndBox = aBndBox;
 }
 
 // =======================================================================

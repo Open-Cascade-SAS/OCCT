@@ -26,16 +26,6 @@ Select3D_BoundarySensitivePointSet::Select3D_BoundarySensitivePointSet (const Ha
 {}
 
 //=======================================================================
-// function : Select3D_BoundarySensitivePointSet
-// purpose  : Creates new instance of Select3D_SensitivePoly with BVH tree
-//            required and initializes it with the given array of points
-//=======================================================================
-Select3D_BoundarySensitivePointSet::Select3D_BoundarySensitivePointSet (const Handle(SelectBasics_EntityOwner)& OwnerId,
-                                                                        const Handle(TColgp_HArray1OfPnt)& ThePoints)
-  : Select3D_SensitivePoly (OwnerId, ThePoints, Standard_True)
-{}
-
-//=======================================================================
 // function : Matches
 // purpose  : Checks whether the point set overlaps current selecting
 //            volume

@@ -36,11 +36,6 @@ public:
   Standard_EXPORT Select3D_BoundarySensitivePointSet (const Handle(SelectBasics_EntityOwner)& OwnerId,
                                                       const TColgp_Array1OfPnt& ThePoints);
 
-  //! Creates new instance of Select3D_SensitivePoly with BVH tree
-  //! required and initializes it with the given array of points
-  Standard_EXPORT Select3D_BoundarySensitivePointSet (const Handle(SelectBasics_EntityOwner)& OwnerId,
-                                                      const Handle(TColgp_HArray1OfPnt)& ThePoints);
-
   //! Checks whether the point set overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;

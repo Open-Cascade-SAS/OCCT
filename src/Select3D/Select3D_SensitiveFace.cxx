@@ -57,11 +57,11 @@ Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_Entity
 {
   if (mySensType == Select3D_TOS_INTERIOR)
   {
-    myFacePoints = new Select3D_InteriorSensitivePointSet (theOwnerId, thePoints);
+    myFacePoints = new Select3D_InteriorSensitivePointSet (theOwnerId, thePoints->Array1());
   }
   else
   {
-    myFacePoints = new Select3D_BoundarySensitivePointSet (theOwnerId, thePoints);
+    myFacePoints = new Select3D_BoundarySensitivePointSet (theOwnerId, thePoints->Array1());
   }
 }
 

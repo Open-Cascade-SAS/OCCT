@@ -45,10 +45,6 @@ public:
   Standard_EXPORT Select3D_InteriorSensitivePointSet (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                                       const TColgp_Array1OfPnt& thePoints);
 
-  //! Splits the given point set thePoints onto planar convex polygons
-  Standard_EXPORT Select3D_InteriorSensitivePointSet (const Handle(SelectBasics_EntityOwner)& theOwnerId,
-                                                      const Handle(TColgp_HArray1OfPnt)& thePoints);
-
   //! Checks whether the point set overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
