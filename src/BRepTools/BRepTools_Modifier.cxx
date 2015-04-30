@@ -544,7 +544,6 @@ Standard_Boolean BRepTools_Modifier::Rebuild
   // Set flag of the shape.
   result.Orientation(ResOr);
 
-  result.Free      (S.Free());
   result.Modified  (S.Modified());
   result.Checked   (S.Checked());
   result.Orientable(S.Orientable());
