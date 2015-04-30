@@ -121,6 +121,6 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom2d_B
 const Handle(StepGeom_BoundedCurve) &
       GeomToStep_MakeBoundedCurve::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theBoundedCurve;
 }

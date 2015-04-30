@@ -59,6 +59,6 @@ GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface
 const Handle(StepGeom_ConicalSurface) &
       GeomToStep_MakeConicalSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theConicalSurface;
 }

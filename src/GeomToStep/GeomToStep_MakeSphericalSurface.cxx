@@ -53,6 +53,6 @@ GeomToStep_MakeSphericalSurface::GeomToStep_MakeSphericalSurface
 const Handle(StepGeom_SphericalSurface) &
       GeomToStep_MakeSphericalSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theSphericalSurface;
 }

@@ -83,7 +83,7 @@ GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const Handle(Geom2d_Hyperbola
 
 const Handle(StepGeom_Hyperbola)& GeomToStep_MakeHyperbola::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theHyperbola;
 }
 

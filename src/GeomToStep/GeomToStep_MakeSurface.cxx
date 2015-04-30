@@ -82,6 +82,6 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S)
 const Handle(StepGeom_Surface) &
       GeomToStep_MakeSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theSurface;
 }

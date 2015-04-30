@@ -57,6 +57,6 @@ GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface
 const Handle(StepGeom_SweptSurface) &
       GeomToStep_MakeSweptSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theSweptSurface;
 }

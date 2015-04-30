@@ -80,7 +80,7 @@ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& 
 
 const Handle(StepGeom_Parabola)& GeomToStep_MakeParabola::Value() const 
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theParabola;
 }
 

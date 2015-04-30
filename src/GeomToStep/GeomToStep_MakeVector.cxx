@@ -81,6 +81,6 @@ GeomToStep_MakeVector::GeomToStep_MakeVector ( const Handle(Geom2d_Vector)&
 const Handle(StepGeom_Vector) &
       GeomToStep_MakeVector::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theVector;
 }

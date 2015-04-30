@@ -110,6 +110,6 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d
 const Handle(StepGeom_Axis2Placement2d) &
       GeomToStep_MakeAxis2Placement2d::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theAxis2Placement2d;
 }

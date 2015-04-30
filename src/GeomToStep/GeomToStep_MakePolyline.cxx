@@ -51,6 +51,6 @@ GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt2d& P)
 const Handle(StepGeom_Polyline) &
       GeomToStep_MakePolyline::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return thePolyline;
 }

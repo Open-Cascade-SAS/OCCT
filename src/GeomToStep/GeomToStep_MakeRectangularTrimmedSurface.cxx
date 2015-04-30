@@ -103,6 +103,6 @@ GeomToStep_MakeRectangularTrimmedSurface::
 const Handle(StepGeom_RectangularTrimmedSurface) &
       GeomToStep_MakeRectangularTrimmedSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theRectangularTrimmedSurface;
 }

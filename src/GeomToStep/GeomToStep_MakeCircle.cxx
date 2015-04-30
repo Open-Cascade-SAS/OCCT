@@ -81,6 +81,6 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom2d_Circle)& Cer)
 const Handle(StepGeom_Circle) &
       GeomToStep_MakeCircle::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theCircle;
 }

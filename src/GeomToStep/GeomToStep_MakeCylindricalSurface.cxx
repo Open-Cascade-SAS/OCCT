@@ -53,6 +53,6 @@ GeomToStep_MakeCylindricalSurface::GeomToStep_MakeCylindricalSurface
 const Handle(StepGeom_CylindricalSurface) &
       GeomToStep_MakeCylindricalSurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theCylindricalSurface;
 }

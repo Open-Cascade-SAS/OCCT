@@ -79,6 +79,6 @@ GeomToStep_MakeElementarySurface::GeomToStep_MakeElementarySurface
 const Handle(StepGeom_ElementarySurface) &
       GeomToStep_MakeElementarySurface::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done, "");
   return theElementarySurface;
 }
