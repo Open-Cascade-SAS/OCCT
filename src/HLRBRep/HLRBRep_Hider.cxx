@@ -430,15 +430,19 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  EB.Builds(aBuildIN);                         // build hidden parts
 	                                               // ******************
 	  while (EB.MoreEdges()) {
-	    while (EB.MoreVertices()) {
+            p1 = 0.; p2 = 0.;
+            Standard_Integer aMaskP1P2 = 0;
+            while (EB.MoreVertices()) {
 	      switch (EB.Orientation()) {
 	      case TopAbs_FORWARD  : 
 		p1   =  EB.Current().Parameter(); 
 		tol1 =  EB.Current().Tolerance();
+                aMaskP1P2 |= 1;
 		break;
 	      case TopAbs_REVERSED :
 		p2   =  EB.Current().Parameter(); 
 		tol2 =  EB.Current().Tolerance();
+                aMaskP1P2 |= 2;
 		break;
 	      case TopAbs_INTERNAL :
 	      case TopAbs_EXTERNAL :
@@ -447,7 +451,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      EB.NextVertex();
 	    }
 
-	    if(Abs(p1 - p2) <= 1.e-7) {
+	    if(aMaskP1P2 != 3 || p2 - p1 <= 1.e-7) {
 	      EB.NextEdge();
 	      continue;
 	    }
@@ -479,15 +483,19 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  EB.Builds(TopAbs_ON);             // build parts under the boundary
 	                                    // ******************************
 	  while (EB.MoreEdges()) {
+            p1 = 0.; p2 = 0.;
+            Standard_Integer aMaskP1P2 = 0;
 	    while (EB.MoreVertices()) {
 	      switch (EB.Orientation()) {
 	      case TopAbs_FORWARD  :
 		p1   = EB.Current().Parameter(); 
 		tol1 = EB.Current().Tolerance();
+                aMaskP1P2 |= 1;
 		break;
 	      case TopAbs_REVERSED :
 		p2   = EB.Current().Parameter(); 
 		tol2 = EB.Current().Tolerance();
+                aMaskP1P2 |= 2;
 		break;
 	      case TopAbs_INTERNAL :
 	      case TopAbs_EXTERNAL :
@@ -495,7 +503,12 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      }
 	      EB.NextVertex();
 	    }
-	    
+
+            if(aMaskP1P2 != 3 || p2 - p1 <= 1.e-7) {
+	      EB.NextEdge();
+	      continue;
+	    }
+
 	    TopAbs_State aTestState = TopAbs_IN;
 	    if(IsSuspicion) {
 	      //Standard_Integer aNbp = 1;
@@ -558,15 +571,19 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  EB.Builds (TopAbs_IN);                   // build parts on the Face
                                                    // ***********************
 	  while (EB.MoreEdges()) {
+            p1 = 0.; p2 = 0.;
+            Standard_Integer aMaskP1P2 = 0;
 	    while (EB.MoreVertices()) {
 	      switch (EB.Orientation()) {
 	      case TopAbs_FORWARD  : 
 		p1   = EB.Current().Parameter(); 
 		tol1 = EB.Current().Tolerance();
+                aMaskP1P2 |= 1;
 		break;
 	      case TopAbs_REVERSED :
 		p2   = EB.Current().Parameter(); 
 		tol2 = EB.Current().Tolerance();
+                aMaskP1P2 |= 2;
 		break;
 	      case TopAbs_INTERNAL :
 	      case TopAbs_EXTERNAL :   
@@ -574,6 +591,12 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      }
 	      EB.NextVertex();
 	    }
+
+            if(aMaskP1P2 != 3 || p2 - p1 <= 1.e-7) {
+	      EB.NextEdge();
+	      continue;
+	    }
+
 	    ES.Hide(p1,tol1,p2,tol2,
 		    Standard_True,    // on     the Face
 		    Standard_False);  // inside the Face
@@ -583,15 +606,19 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  EB.Builds(TopAbs_ON);      // build hidden parts under the boundary
                                      // *************************************
 	  while (EB.MoreEdges()) {
+            p1 = 0.; p2 = 0.;
+            Standard_Integer aMaskP1P2 = 0;
 	    while (EB.MoreVertices()) {
 	      switch (EB.Orientation()) {
 	      case TopAbs_FORWARD  :
 		p1   = EB.Current().Parameter(); 
 		tol1 = EB.Current().Tolerance();
+                aMaskP1P2 |= 1;
 		break;
 	      case TopAbs_REVERSED :
 		p2   = EB.Current().Parameter(); 
 		tol2 = EB.Current().Tolerance();
+                aMaskP1P2 |= 2;
 		break;
 	      case TopAbs_INTERNAL :
 	      case TopAbs_EXTERNAL :
@@ -599,7 +626,13 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      }
 	      EB.NextVertex();
 	    }
-	    ES.Hide(p1,tol1,p2,tol2,
+
+	    if(aMaskP1P2 != 3 || p2 - p1 <= 1.e-7) {
+	      EB.NextEdge();
+	      continue;
+	    }
+
+            ES.Hide(p1,tol1,p2,tol2,
 		    Standard_True,    // on the Face
 		    Standard_True);   // on the boundary
 	    EB.NextEdge();
