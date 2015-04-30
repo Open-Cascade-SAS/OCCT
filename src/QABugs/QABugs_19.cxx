@@ -3602,6 +3602,94 @@ Standard_Integer xprojponf (Draw_Interpretor& di,
   return 0;
 }
 
+//=======================================================================
+//function : OCC25547
+//purpose  :
+//=======================================================================
+#include <BRepMesh_CircleTool.hxx>
+
+static Standard_Boolean inspect_point(const gp_XY&        thePoint,
+                                      const gp_XY&        theCenter,
+                                      const Standard_Real theRadius)
+{
+  static Standard_Real aPrecision   = Precision::PConfusion();
+  static Standard_Real aSqPrecision = aPrecision * aPrecision;
+  const gp_XY aDistVec = thePoint - theCenter;
+  if (aDistVec.SquareModulus() - (theRadius * theRadius) < aSqPrecision)
+    return Standard_True;
+  else
+    return Standard_False;
+}
+
+static Standard_Integer OCC24923(
+  Draw_Interpretor& theDI, 
+  Standard_Integer  argc, 
+  const char **     argv)
+{
+  srand(static_cast<unsigned int>(time(NULL)));
+
+  const Standard_Real    aMaxDeviation = (argc > 1) ? Draw::Atof(argv[1]) : 0.01;
+  const Standard_Integer aPointsNb     = 10000000;
+  const Standard_Real    aMinAngle     = 5 * M_PI / 180.;
+  static Standard_Real   aSqPrecision  = Precision::PConfusion() * Precision::PConfusion();
+
+  Standard_Integer aFailedNb = 0;
+  for (Standard_Integer i = 0; i < aPointsNb; ++i)
+  {
+    gp_XY p[3];
+    for (Standard_Integer j = 0; j < 3; ++j)
+      p[j].SetCoord(((Standard_Real)rand())/RAND_MAX, ((Standard_Real)rand())/RAND_MAX);
+
+    // Check that points do not compose degenerated triangle.
+    gp_XY aVec1 = p[1] - p[0];
+    gp_XY aVec2 = p[2] - p[0];
+    if (aVec1.SquareModulus() > aSqPrecision && 
+        aVec2.SquareModulus() > aSqPrecision &&
+        (aVec1 ^ aVec2) > aMinAngle)
+    {
+      gp_XY aCenter;
+      Standard_Real aRadius;
+      if (BRepMesh_CircleTool::MakeCircle(p[0], p[1], p[2], aCenter, aRadius))
+      {
+        if (!inspect_point(p[0], aCenter, aRadius) || 
+            !inspect_point(p[1], aCenter, aRadius) || 
+            !inspect_point(p[2], aCenter, aRadius))
+        {
+         /* theDI << "Missed: " <<
+            "p1=(" << p1.X() << ", " << p1.Y() << "), " <<
+            "p2=(" << p2.X() << ", " << p2.Y() << "), " <<
+            "p3=(" << p3.X() << ", " << p3.Y() << "), " <<
+            "c=(" << aCenter.X() << ", " << aCenter.Y() << "), " <<
+            "r=" << aRadius << "\n";*/
+            
+          ++aFailedNb;
+        }
+
+        continue;
+      }
+    }
+
+    // Ensure that aPointsNb suitable for tests are generated
+    --i;
+  }
+
+  const Standard_Real aDeviation = 
+    1. - (Standard_Real)(aPointsNb - aFailedNb) / (Standard_Real)aPointsNb;
+
+  theDI << "Number of failed cases: " << aFailedNb << " (Total " << aPointsNb << ")\n";
+  if (aDeviation > aMaxDeviation)
+  {
+    theDI << "Failed. Number of incorrect results is too huge: " << 
+      aDeviation * 100 << "% (Max " << aMaxDeviation * 100 << "%)" << "\n";
+    return 1;
+  }
+
+  theDI << "Deviation of incorrect results is: " <<
+    aDeviation * 100 << "% (Max " << aMaxDeviation * 100 << "%)" << "\n";
+  theDI << "Test completed\n";
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3671,5 +3759,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   theCommands.Add ("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
   theCommands.Add ("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
+  theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   return;
 }

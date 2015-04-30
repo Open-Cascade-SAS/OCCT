@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC24923"
+puts "========"
+puts ""
+############################################
+# BRepMesh_CircleTool produces bad circles
+############################################
+
+pload QAcommands
+
+set bug_info [OCC24923]
+set num_failed [string range [lindex $bug_info 12] 0 [expr {[string first "%" [lindex $bug_info 12]] - 1}]]
+set max_failed [string range [lindex $bug_info 14] 0 [expr {[string first "%" [lindex $bug_info 14]] - 1}]]
+if {$num_failed > $max_failed} {
+  puts "ERROR: OCC24923 is reproduced. Number of failed tests is too large ($num_failed > $max_failed)."
+}

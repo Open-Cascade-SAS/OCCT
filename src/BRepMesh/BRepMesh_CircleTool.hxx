@@ -87,6 +87,20 @@ public:
   Standard_EXPORT void Bind(const Standard_Integer theIndex,
                             const gp_Circ2d&       theCircle);
 
+  //! Computes circle on three points.
+  //! @param thePoint1 first point.
+  //! @param thePoint2 second point.
+  //! @param thePoint3 third point.
+  //! @param[out] theLocation center of computed circle.
+  //! @param[out] theRadius radius of computed circle.
+  //! @return FALSE in case of impossibility to build a circle 
+  //! on the given points, TRUE elsewhere.
+  Standard_EXPORT static Standard_Boolean MakeCircle(const gp_XY&   thePoint1,
+                                                     const gp_XY&   thePoint2,
+                                                     const gp_XY&   thePoint3,
+                                                     gp_XY&         theLocation,
+                                                     Standard_Real& theRadius);
+
   //! Computes circle on three points and bind it to the tool.
   //! @param theIndex index a circle should be bound with.
   //! @param thePoint1 first point.

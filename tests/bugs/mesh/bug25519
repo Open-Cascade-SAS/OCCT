@@ -22,7 +22,7 @@ regexp {deflection ([0-9.+e-]+)} ${trinfo_s} str defl_s
 
 set good_nbtri 2721
 set good_nbnod 1405
-set good_defl 0.048938765264496524
+set good_defl 0.044436924588798624
 
 set good_percent 5
 

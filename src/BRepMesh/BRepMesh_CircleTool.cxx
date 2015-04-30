@@ -105,6 +105,59 @@ void BRepMesh_CircleTool::Bind(const Standard_Integer theIndex,
 }
 
 //=======================================================================
+//function : MakeCircle
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepMesh_CircleTool::MakeCircle(const gp_XY&   thePoint1,
+                                                 const gp_XY&   thePoint2,
+                                                 const gp_XY&   thePoint3,
+                                                 gp_XY&         theLocation,
+                                                 Standard_Real& theRadius)
+{
+  static const Standard_Real aPrecision   = Precision::PConfusion();
+  static const Standard_Real aSqPrecision = aPrecision * aPrecision;
+
+  if ((thePoint1 - thePoint3).SquareModulus() < aSqPrecision)
+    return Standard_False;
+
+  gp_XY aLink1(thePoint2 - thePoint1);
+  if (aLink1.SquareModulus() < aSqPrecision)
+    return Standard_False;
+
+  gp_XY aLink2(thePoint3 - thePoint2);
+  if (aLink2.SquareModulus() < aSqPrecision)
+    return Standard_False;
+
+  gp_XY aMidPnt1 = (thePoint1 + thePoint2) / 2.;
+  gp_XY aNorm1   = gp_XY(aLink1.Y(), -aLink1.X());
+  aNorm1.Add(aMidPnt1);
+
+  if (aLink2.SquareModulus() < aSqPrecision)
+    return Standard_False;
+
+  gp_XY aMidPnt2 = (thePoint2 + thePoint3) / 2.;
+  gp_XY aNorm2   = gp_XY(aLink2.Y(), -aLink2.X());
+  aNorm2.Add(aMidPnt2);
+
+  gp_XY aIntPnt;
+  Standard_Real aParam[2];
+  BRepMesh_GeomTool::IntFlag aIntFlag = 
+    BRepMesh_GeomTool::IntLinLin(aMidPnt1, aNorm1,
+      aMidPnt2, aNorm2, aIntPnt, aParam);
+
+  if (aIntFlag != BRepMesh_GeomTool::Cross)
+    return Standard_False;
+
+  theLocation = aIntPnt;
+
+  theRadius = Sqrt(Max(Max((thePoint1 - aIntPnt).SquareModulus(), 
+                           (thePoint2 - aIntPnt).SquareModulus()),
+                           (thePoint3 - aIntPnt).SquareModulus())) + aPrecision;
+
+  return Standard_True;
+}
+
+//=======================================================================
 //function : Bind
 //purpose  : 
 //=======================================================================
@@ -113,39 +166,12 @@ Standard_Boolean BRepMesh_CircleTool::Bind(const Standard_Integer theIndex,
                                            const gp_XY&           thePoint2,
                                            const gp_XY&           thePoint3)
 {
-  const Standard_Real aPrecision   = Precision::PConfusion();
-  const Standard_Real aSqPrecision = aPrecision * aPrecision;
-
-  const gp_XY aPoints[3] = { thePoint1, thePoint2, thePoint3 };
-
-  gp_XY aNorm[3];
-  gp_XY aMidPnt[3];
-  for (Standard_Integer i = 0; i < 3; ++i)
-  {
-    const gp_XY& aPnt1 = aPoints[i];
-    const gp_XY& aPnt2 = aPoints[(i + 1) % 3];
-
-    aMidPnt[i] = (aPnt1 + aPnt2) / 2.;
-
-    gp_XY aLink(aPnt2 - aPnt1);
-    if (aLink.SquareModulus() < aSqPrecision)
-      return Standard_False;
-
-    aNorm[i] = gp_XY(aLink.Y(), -aLink.X());
-    aNorm[i].Add(aMidPnt[i]);
-  }
-
-  gp_XY aIntPnt;
-  Standard_Real aParam[2];
-  BRepMesh_GeomTool::IntFlag aIntFlag = 
-    BRepMesh_GeomTool::IntLinLin(aMidPnt[0], aNorm[0],
-      aMidPnt[1], aNorm[1], aIntPnt, aParam);
-
-  if (aIntFlag != BRepMesh_GeomTool::Cross)
+  gp_XY aLocation;
+  Standard_Real aRadius;
+  if (!MakeCircle(thePoint1, thePoint2, thePoint3, aLocation, aRadius))
     return Standard_False;
 
-  Standard_Real aRadius = (aPoints[0] - aIntPnt).Modulus();
-  bind(theIndex, aIntPnt, aRadius);
+  bind(theIndex, aLocation, aRadius);
   return Standard_True;
 }
 

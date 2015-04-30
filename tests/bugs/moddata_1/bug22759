@@ -30,13 +30,13 @@ if { [array get env os_type] != "" } {
 }
 if { [string compare $os "windows"] != 0 } {
    puts "OS = Linux"
-   set good_tri  524278
-   set good_nod  265870
+   set good_tri  520414
+   set good_nod  263938
    set good_defl 0.0026800432954056617
 } else {
    puts "OS = Windows NT"
-   set good_tri  524278
-   set good_nod  265870
+   set good_tri  520414
+   set good_nod  263938
    set good_defl 0.0026800432954056617
 }
 

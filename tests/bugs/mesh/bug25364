@@ -64,12 +64,12 @@ puts "mem_wsetpeak_2=${mem_wsetpeak_2}"
 puts "mem_virt_2=${mem_virt_2}"
 puts "mem_heap_2=${mem_heap_2}"
 
-set mem_delta_private 180
+set mem_delta_private 200
 set mem_delta_swap 100
 set mem_delta_swappeak 250
-set mem_delta_wset 180
-set mem_delta_wsetpeak 180
-set mem_delta_virt 180
+set mem_delta_wset 200
+set mem_delta_wsetpeak 200
+set mem_delta_virt 200
 set mem_delta_heap 80
 
 if { [regexp {Debug mode} [dversion]] } {
