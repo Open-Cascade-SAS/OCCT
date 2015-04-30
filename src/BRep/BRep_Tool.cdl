@@ -366,7 +366,8 @@ is
     -----------------------------------------------------------
     
     IsClosed(myclass; E : Edge          from TopoDS; 
-    	    	      T : Triangulation from Poly)
+    	    	      T : Triangulation from Poly;
+		      L : Location from TopLoc)
     returns Boolean
     
 	---Purpose: Returns  True  if <E> has two arrays of indices in

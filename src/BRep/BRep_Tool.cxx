@@ -706,7 +706,8 @@ Standard_Boolean BRep_Tool::IsClosed(const TopoDS_Edge& E,
   TopLoc_Location l;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(F,l);
   if (IsClosed(E,S,l)) return Standard_True;
-  return IsClosed(E, BRep_Tool::Triangulation(F,l));
+  const Handle(Poly_Triangulation)& T = BRep_Tool::Triangulation(F,l);
+  return IsClosed(E, T, l);
 }
 
 //=======================================================================
@@ -749,9 +750,10 @@ Standard_Boolean BRep_Tool::IsClosed(const TopoDS_Edge& E,
 //=======================================================================
 
 Standard_Boolean BRep_Tool::IsClosed(const TopoDS_Edge&                E, 
-                                     const Handle(Poly_Triangulation)& T)
+                                     const Handle(Poly_Triangulation)& T,
+                                     const TopLoc_Location& L)
 {
-  TopLoc_Location      l = E.Location();
+  TopLoc_Location l = L.Predivided(E.Location());
 
   // find the representation
   BRep_ListIteratorOfListOfCurveRepresentation itcr
