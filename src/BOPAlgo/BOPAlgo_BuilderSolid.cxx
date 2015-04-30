@@ -463,7 +463,17 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   // 1. Shells Usual
   aIt.Initialize (myShapes);
   for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aF=aIt.Value();
+    const TopoDS_Face& aF=*((TopoDS_Face*)&aIt.Value());
+    if (myContext->IsInfiniteFace(aF)) {
+      TopoDS_Shell aSh;
+      BRep_Builder aBB;
+      //
+      aBB.MakeShell(aSh);
+      aBB.Add(aSh, aF);
+      myLoops.Append(aSh);
+      continue;
+    }
+    //
     if (!myShapesToAvoid.Contains(aF)) {
       aSSp.AddStartElement(aF);
     }
@@ -511,9 +521,11 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   // c. add all edges that are not processed to myShapesToAvoid
   aIt.Initialize (myShapes);
   for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aF=aIt.Value();
-    if (!aMP.Contains(aF)) {
-      myShapesToAvoid.Add(aF);
+    const TopoDS_Face& aF=*((TopoDS_Face*)&aIt.Value());
+    if (!myContext->IsInfiniteFace(aF)) {
+      if (!aMP.Contains(aF)) {
+        myShapesToAvoid.Add(aF);
+      }
     }
   }
   //=================================================

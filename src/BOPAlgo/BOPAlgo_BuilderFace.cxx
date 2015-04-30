@@ -480,6 +480,17 @@ void BOPAlgo_BuilderFace::PerformAreas()
   //
   myAreas.Clear();
   //
+  if (myLoops.IsEmpty()) {
+    if (myContext->IsInfiniteFace(myFace)) {
+      aBB.MakeFace(aFace, aS, aLoc, aTol);
+      if (BRep_Tool::NaturalRestriction(myFace)) {
+        aBB.NaturalRestriction(aFace, Standard_True);
+      }
+      myAreas.Append(aFace); 
+    }
+    return;
+  }
+  //
   // 1. Growthes and Holes -> aDMISB: [Index/ShapeBox2D]
   aIt1.Initialize(myLoops);
   for (k=0 ; aIt1.More(); aIt1.Next(), ++k) {

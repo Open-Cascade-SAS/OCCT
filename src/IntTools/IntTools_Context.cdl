@@ -25,13 +25,15 @@ class Context from IntTools
 
 
 uses  
-
+     
+    Box from Bnd,
     Pnt2d from gp,
     Pnt   from gp, 
     State from TopAbs,  
     Curve from Geom,   
     ProjectPointOnCurve from GeomAPI, 
     ProjectPointOnSurf  from GeomAPI,
+    Shape  from TopoDS, 
     Vertex from TopoDS, 
     Face   from TopoDS,
     Edge   from TopoDS, 
@@ -300,7 +302,19 @@ is
     --- Returns false if projection algorithm failed
     --- other wiese returns true.
     ---
-     
+    BndBox(me:mutable; 
+        theS:Shape from TopoDS) 
+    returns Box from Bnd; 
+    ---C++: return &  
+    --- Returns a reference to boundong box 
+    --- for given shape  <theS>
+    ---  
+    IsInfiniteFace(me:mutable;   
+        theFace:Face from TopoDS)  
+    returns Boolean from Standard;  
+    ---Purpose: Returns true if the solid <theFace> has 
+    --          infinite bounds     
+ 
 fields 
     myAllocator  : BaseAllocator from BOPCol is protected;
     myFClass2dMap:DataMapOfShapeAddress from BOPCol is protected; 
@@ -309,7 +323,8 @@ fields
     mySClassMap  :DataMapOfShapeAddress from BOPCol is protected;
     myProjPTMap  :DataMapOfTransientAddress from BOPCol is protected;    
     myHatcherMap :DataMapOfShapeAddress from BOPCol is protected; 
-    myProjSDataMap:DataMapOfShapeAddress from BOPCol is protected; 
+    myProjSDataMap:DataMapOfShapeAddress from BOPCol is protected;  
+    myBndBoxDataMap:DataMapOfShapeAddress from BOPCol is protected;  
     myCreateFlag :Integer from Standard is protected; 
      
 end Context;
