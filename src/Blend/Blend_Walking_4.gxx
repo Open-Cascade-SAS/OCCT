@@ -16,6 +16,8 @@
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_ExtPC.hxx>
 
+static const Standard_Real CosRef3D = 0.88;
+
 static void RecadreIfPeriodic(Standard_Real& NewU,
                               Standard_Real& NewV,
                               const Standard_Real OldU,
@@ -92,6 +94,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 				    Blend_FuncInv& FuncInv,
 				    const Standard_Real Bound)
 {
+  Standard_Real Cosi = 0., Cosi2 = 0.;
 
   Standard_Real stepw = pasmax;
   Standard_Integer nbp = line->NbPoints();
@@ -105,6 +108,10 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
     stepw = Max(stepw,100.*tolgui);
   }
   Standard_Real parprec = param;
+  gp_Vec TgOnGuide, PrevTgOnGuide;
+  gp_Pnt PtOnGuide;
+  hguide->D1(parprec, PtOnGuide, TgOnGuide);
+  PrevTgOnGuide = TgOnGuide;
 
   if (sens*(parprec - Bound) >= -tolgui) {
     return;
@@ -145,6 +152,37 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
     sectioncalculee = 0;
     nbcomputedsection++;
 #endif
+
+    hguide->D1(param, PtOnGuide, TgOnGuide);
+    //Check deflection on guide
+    Cosi = PrevTgOnGuide * TgOnGuide;
+    if (Cosi < gp::Resolution()) //angle>=pi/2 or null magnitude
+      Cosi2 = 0.;
+    else
+      Cosi2 = Cosi * Cosi / PrevTgOnGuide.SquareMagnitude() / TgOnGuide.SquareMagnitude();
+    if (Cosi2 < CosRef3D) //angle 3d too great
+    {
+      State = Blend_StepTooLarge;
+      stepw = stepw/2.;
+      param = parprec + sens*stepw;  // on ne risque pas de depasser Bound.
+      if (Abs(stepw) < tolgui) {
+        Ext1.SetValue(previousP.PointOnS1(),
+                      sol(1),sol(2),
+                      previousP.Parameter(),tolesp);
+        Ext2.SetValue(previousP.PointOnS2(),
+                      sol(3),sol(4),
+                      previousP.Parameter(),tolesp);
+        if (!previousP.IsTangencyPoint()) {
+          Ext1.SetTangent(previousP.TangentOnS1());
+          Ext2.SetTangent(previousP.TangentOnS2());
+        }
+        Arrive = Standard_True;
+      }
+      continue;
+    }
+    PrevTgOnGuide = TgOnGuide;
+    //////////////////////////
+    
     Standard_Boolean bonpoint = 1;
     Func.Set(param);
     rsnld.Perform(Func,parinit,infbound,supbound);
