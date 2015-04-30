@@ -1,0 +1,2 @@
+source [locate_data_file 200a0-1_be_enveloppe.prt.1.gdml.tcl]
+

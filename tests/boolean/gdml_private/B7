@@ -1,0 +1,2 @@
+source [locate_data_file 20000_bat-nord_et1.asm.1.gdml.tcl]
+

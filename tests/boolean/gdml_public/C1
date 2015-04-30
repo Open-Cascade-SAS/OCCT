@@ -1,0 +1,77 @@
+# test script for revol_rect_oblique.prt.3.gdml file
+compound result
+
+# cone 
+plane pln_sh2770860 0 0 1752.6372651538566 0 0 1 1 0 0
+erase pln_sh2770860
+pcone sh2770860 pln_sh2770860 469.61773982 666.83785218000003 736.03547960614355 360
+settolerance sh2770860 2.4886727447599999e-005
+
+# cone 
+plane pln_sh276FDE0 0 0 80.068607794346875 0 0 1 1 0 0
+erase pln_sh276FDE0
+pcone sh276FDE0 pln_sh276FDE0 298.82011236999989 666.8378521799998 98.610056185653136 360
+settolerance sh276FDE0 6.6683785217999979e-006
+
+# copy shape
+copy sh276FDE0 sh276FDE0_copy
+
+# shape transformation
+trotate sh276FDE0_copy 0 0 0 1 0 0 -180 
+ttranslate sh276FDE0_copy 0 -2.7224587029195391e-009 2667.3514087387584
+
+# shape transformation
+trotate sh276FDE0_copy 0 0 0 1 0 0 164.99999999999997 
+ttranslate sh276FDE0_copy 254 381 2195.4636134900002
+
+# cone 
+plane pln_sh2772A10 0 0 26.951401570293473 0 0 1 1 0 0
+erase pln_sh2772A10
+pcone sh2772A10 pln_sh2772A10 100.58400000000005 470.63373982000024 99.154528939706523 360
+settolerance sh2772A10 4.7063373982000028e-006
+
+# copy shape
+copy sh2772A10 sh2772A10_copy
+
+# shape transformation
+trotate sh2772A10_copy 0 0 0 1 0 0 -180 
+ttranslate sh2772A10_copy 0 -2.9245939003885724e-010 1878.4709592669262
+
+# shape transformation
+trotate sh2772A10_copy 0 0 0 1 0 0 164.99999999999997 
+ttranslate sh2772A10_copy 254 381 2195.4636134900002
+
+# cone 
+plane pln_sh2773C70 0 0 375.38459842556551 0 0 1 1 0 0
+erase pln_sh2773C70
+pcone sh2773C70 pln_sh2773C70 100.584 299.83611237000002 743.61900687443438 360
+settolerance sh2773C70 1.1190036052999998e-005
+
+# copy shape
+copy sh2773C70 sh2773C70_copy
+
+# shape transformation
+ttranslate sh2773C70_copy 0 -1.6200374375330284e-009 1472.0709592705846
+
+# shape transformation
+trotate sh2773C70_copy 0 0 0 1 0 0 164.99999999999997 
+ttranslate sh2773C70_copy 254 381 2195.4636134900002
+
+# copy shape
+copy sh2770860 sh2770860_copy
+
+# shape transformation
+trotate sh2770860_copy 0 0 0 1 0 0 164.99999999999997 
+ttranslate sh2770860_copy 254 381 2195.4636134900002
+
+# fuse operation
+bfuse sh4CDA9F0 sh2770860_copy sh276FDE0_copy; copy sh4CDA9F0 sh4CDA9F0_copy 
+
+# cut operation
+bcut sh4CD6540 sh4CDA9F0_copy sh2772A10_copy; copy sh4CD6540 sh4CD6540_copy 
+
+# cut operation
+bcut sh4977860 sh4CD6540_copy sh2773C70_copy; copy sh4977860 sh4977860_copy 
+
+# result
+add sh4977860_copy result

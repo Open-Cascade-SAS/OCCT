@@ -1,0 +1,32 @@
+# test script for cut01.prt.4.gdml file
+compound result
+
+# box 
+box sh46B0230 -254 -381 -381 508 762 762
+
+# box 
+box sh4912900 -254 -190.5 -381 508 381 762
+
+# copy shape
+copy sh4912900 sh4912900_copy
+
+# shape transformation
+trotate sh4912900_copy 0 0 0 -0.63331020410333672 0.75474971096672405 -0.17108786974603546 91.727941072350504 
+ttranslate sh4912900_copy 12.702649262360318 -217.06072879313561 182.19951927
+
+# shape transformation
+trotate sh4912900_copy 0 0 0 0 0 0.99999999999999989 150.00000000000003 
+ttranslate sh4912900_copy -97.529547440000002 -202.95567883999999 508
+
+# copy shape
+copy sh46B0230 sh46B0230_copy
+
+# shape transformation
+trotate sh46B0230_copy 0 0 0 0 0 0.99999999999999989 150.00000000000003 
+ttranslate sh46B0230_copy -97.529547440000002 -202.95567883999999 508
+
+# cut operation
+bcut sh498BA20 sh46B0230_copy sh4912900_copy; copy sh498BA20 sh498BA20_copy 
+
+# result
+add sh498BA20_copy result

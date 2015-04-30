@@ -1,0 +1,34 @@
+# test script for rib06.prt.1.gdml file
+compound result
+
+# cylinder 
+plane pln_sh4F112F0 -0 -0 -12.5 0 0 1 -1 1.2246467991473532e-016 0
+erase pln_sh4F112F0
+pcylinder sh4F112F0 pln_sh4F112F0 45 25 180
+settolerance sh4F112F0 4.5000000000000003e-007
+
+# cylinder 
+plane pln_sh4EFB8A0 -0 -0 -12.5 0 0 1 -1 1.2246467991473532e-016 0
+erase pln_sh4EFB8A0
+pcylinder sh4EFB8A0 pln_sh4EFB8A0 5 25 180
+settolerance sh4EFB8A0 2.4999999999999999e-007
+
+# copy shape
+copy sh4EFB8A0 sh4EFB8A0_copy
+
+# shape transformation
+trotate sh4EFB8A0_copy 0 0 0 -1 0 0 90 
+ttranslate sh4EFB8A0_copy 25 0 0
+
+# copy shape
+copy sh4F112F0 sh4F112F0_copy
+
+# shape transformation
+trotate sh4F112F0_copy 0 0 0 -1 0 0 90 
+ttranslate sh4F112F0_copy 25 0 0
+
+# cut operation
+bcut sh4D8B540 sh4F112F0_copy sh4EFB8A0_copy; copy sh4D8B540 sh4D8B540_copy 
+
+# result
+add sh4D8B540_copy result

@@ -1,0 +1,30 @@
+# test script for rib03.prt.1.gdml file
+compound result
+
+# box 
+box sh4B6F0F0 -20 -20 -2.5 40 40 5
+
+# box 
+box sh4DD0CC0 -5 -5 -7.0984999999999996 10 10 14.196999999999999
+
+# copy shape
+copy sh4DD0CC0 sh4DD0CC0_copy
+
+# shape transformation
+trotate sh4DD0CC0_copy 0 0 0 0 0 1 90 
+ttranslate sh4DD0CC0_copy 0 0 9.5984999999999996
+
+# shape transformation
+ttranslate sh4DD0CC0_copy 20 20 2.5
+
+# copy shape
+copy sh4B6F0F0 sh4B6F0F0_copy
+
+# shape transformation
+ttranslate sh4B6F0F0_copy 20 20 2.5
+
+# fuse operation
+bfuse sh4DC8740 sh4B6F0F0_copy sh4DD0CC0_copy; copy sh4DC8740 sh4DC8740_copy 
+
+# result
+add sh4DC8740_copy result

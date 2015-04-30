@@ -5,6 +5,13 @@ if { [isdraw result] } {
    set ch [checkshape result]
    puts $ch
    
+   if {[info exists command] && ${command} == "mkvolume"} {
+     set bcheck [bopcheck result]
+     puts $bcheck
+     if {![regexp {This shape seems to be OK.} $bcheck]} {
+       puts "Error: bopcheck failed"
+     }
+   }
    if { [info exists square] } {
       set prop "area"
       set mass $square
@@ -20,7 +27,7 @@ if { [isdraw result] } {
    }
 
    #if mass (length or square) is empty in test case then result should be an empty shape.
-   if { [string compare "$mass" "empty"] != 0 } {
+   if { [info exists mass] && [string compare "$mass" "empty"] != 0 } {
       if { $m == 0 } {
        	 puts "Error : The $command is not valid. The $prop is 0."
       }
@@ -53,19 +60,23 @@ if { [isdraw result] } {
         }
       }
    } else {
-      if { $m != 0 } {
+      if { [info exists mass] && $m != 0 } {
        	 puts "Error : The $command is not valid. The $prop is $m"
       }
    }
 
    smallview
-   if { $m > 0 } {
-      donly result
-      if { [info exists nbsh_v ] } {
+   if { [info exists m ] } {
+     if { $m > 0 } {
+       donly result
+       if { [info exists nbsh_v ] } {
          explode result v
-      }
+       }
+     } else {
+       donly a b
+     }
    } else {
-      donly a b
+     donly result
    }
    fit
    xwd $imagedir/${test_image}.png

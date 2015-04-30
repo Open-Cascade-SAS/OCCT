@@ -1,0 +1,2 @@
+source [locate_data_file 20000_hl3-so.asm.2.gdml.tcl]
+

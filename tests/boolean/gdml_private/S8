@@ -1,0 +1,2 @@
+source [locate_data_file 20000_rdc_401-ta6017.prt.2.gdml.tcl]
+

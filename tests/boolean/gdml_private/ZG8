@@ -1,0 +1,2 @@
+source [locate_data_file 51578_test_cylinder.prt.gdml.tcl]
+

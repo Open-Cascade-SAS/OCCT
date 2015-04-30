@@ -1,0 +1,7 @@
+puts "TODO ?OCC26017 Windows: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC26017 Windows: Error : The area of the resulting shape is"
+puts "TODO ?OCC26017 ALL: Error : The gdml is not valid. The area is"
+source [locate_data_file 20000_et4_401-ta6319.prt.2.gdml.tcl]
+
+## image is differ from application
+set square 0

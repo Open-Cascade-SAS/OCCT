@@ -1,0 +1,2 @@
+source [locate_data_file 20000_bat-sud_ss1.asm.3.gdml.tcl]
+

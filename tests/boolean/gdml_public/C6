@@ -1,0 +1,75 @@
+# test script for rotor01.prt.3.gdml file
+compound result
+
+# cone 
+plane pln_sh47F18A0 0 0 228.60000000000002 0 0 1 1 0 0
+erase pln_sh47F18A0
+pcone sh47F18A0 pln_sh47F18A0 76.200000000000003 101.59999999999999 76.199999999999989 360
+settolerance sh47F18A0 3.0479999999999999e-006
+
+# cylinder 
+plane pln_sh47F0E20 -0 -0 -76.200000000000003 0 0 1 1 0 0
+erase pln_sh47F0E20
+pcylinder sh47F0E20 pln_sh47F0E20 38.100000000000001 152.40000000000001 360
+settolerance sh47F0E20 1.5239999999999999e-006
+
+# cylinder 
+plane pln_sh47F3200 -0 -0 -31.75 0 0 1 1 0 0
+erase pln_sh47F3200
+pcylinder sh47F3200 pln_sh47F3200 63.5 63.5 360
+settolerance sh47F3200 6.3499999999999996e-007
+
+# cylinder 
+plane pln_sh47F41C0 -0 -0 -31.75 0 0 1 1 0 0
+erase pln_sh47F41C0
+pcylinder sh47F41C0 pln_sh47F41C0 38.100000000000001 63.5 360
+settolerance sh47F41C0 6.3499999999999996e-007
+
+# copy shape
+copy sh47F41C0 sh47F41C0_copy
+
+# shape transformation
+ttranslate sh47F41C0_copy 0 -2.7494673204841999e-014 247.64999999999998
+
+# shape transformation
+trotate sh47F41C0_copy 0 0 0 1 0 0 90 
+ttranslate sh47F41C0_copy 0 342.89999999999998 0
+
+# copy shape
+copy sh47F3200 sh47F3200_copy
+
+# shape transformation
+ttranslate sh47F3200_copy 0 -2.7494673204841999e-014 247.64999999999998
+
+# shape transformation
+trotate sh47F3200_copy 0 0 0 1 0 0 90 
+ttranslate sh47F3200_copy 0 342.89999999999998 0
+
+# cut operation
+bcut sh4AFD1C0 sh47F3200_copy sh47F41C0_copy; copy sh4AFD1C0 sh4AFD1C0_copy 
+
+# copy shape
+copy sh47F0E20 sh47F0E20_copy
+
+# shape transformation
+ttranslate sh47F0E20_copy 0 -3.2429614549300819e-014 292.09999999999997
+
+# shape transformation
+trotate sh47F0E20_copy 0 0 0 1 0 0 90 
+ttranslate sh47F0E20_copy 0 342.89999999999998 0
+
+# fuse operation
+bfuse sh4AFE030 sh47F0E20_copy sh4AFD1C0_copy; copy sh4AFE030 sh4AFE030_copy 
+
+# copy shape
+copy sh47F18A0 sh47F18A0_copy
+
+# shape transformation
+trotate sh47F18A0_copy 0 0 0 1 0 0 90 
+ttranslate sh47F18A0_copy 0 342.89999999999998 0
+
+# cut operation
+bcut sh47E7D40 sh47F18A0_copy sh4AFE030_copy; copy sh47E7D40 sh47E7D40_copy 
+
+# result
+add sh47E7D40_copy result

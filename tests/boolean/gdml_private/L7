@@ -1,0 +1,5 @@
+puts "TODO ?OCC26017 ALL: TEST INCOMPLETE"
+puts "TODO ?OCC26017 ALL: Process killed by CPU limit"
+puts "TODO ?OCC26017 ALL: Faulty shapes in variables faulty_1 to faulty_"
+source [locate_data_file 20000_g1-2_et6.asm.4.gdml.tcl]
+

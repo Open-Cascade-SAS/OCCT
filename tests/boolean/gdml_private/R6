@@ -1,0 +1,2 @@
+source [locate_data_file 20000_hl2_murs-ss1.prt.2.gdml.tcl]
+

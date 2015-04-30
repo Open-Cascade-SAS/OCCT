@@ -1,0 +1,34 @@
+# test script for revol_rect_plain.prt.gdml file
+compound result
+
+# cylinder 
+plane pln_sh4882DC0 -0 -0 -381 0 0 1 1 0 0
+erase pln_sh4882DC0
+pcylinder sh4882DC0 pln_sh4882DC0 635 762 360
+settolerance sh4882DC0 7.6199999999999999e-006
+
+# cylinder 
+plane pln_sh4882340 -0 -0 -381 0 0 1 1 0 0
+erase pln_sh4882340
+pcylinder sh4882340 pln_sh4882340 127 762 360
+settolerance sh4882340 7.6199999999999999e-006
+
+# copy shape
+copy sh4882340 sh4882340_copy
+
+# shape transformation
+trotate sh4882340_copy 0 0 0 -1 0 0 90 
+ttranslate sh4882340_copy 63.5 0 254
+
+# copy shape
+copy sh4882DC0 sh4882DC0_copy
+
+# shape transformation
+trotate sh4882DC0_copy 0 0 0 -1 0 0 90 
+ttranslate sh4882DC0_copy 63.5 0 254
+
+# cut operation
+bcut sh4AE56C0 sh4882DC0_copy sh4882340_copy; copy sh4AE56C0 sh4AE56C0_copy 
+
+# result
+add sh4AE56C0_copy result

@@ -1,0 +1,3 @@
+puts "TODO OCC26018 ALL: Faulty shapes in variables faulty_1 to faulty_"
+source [locate_data_file 51679_tkz_montecristo_sbr.prt.1.gdml.tcl]
+

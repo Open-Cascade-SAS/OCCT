@@ -1,0 +1,52 @@
+# test script for common02.prt.1.gdml file
+compound result
+
+# box 
+box sh49D5D00 -317.5 -304.80000000000001 -381 635 609.60000000000002 762
+
+# box 
+box sh49D8690 -571.5 -457.19999999999999 -381 1143 914.39999999999998 762
+
+# cylinder 
+plane pln_sh49DBFE0 -0 -0 -381 0 0 1 1 0 0
+erase pln_sh49DBFE0
+pcylinder sh49DBFE0 pln_sh49DBFE0 419.10000000000002 762 360
+settolerance sh49DBFE0 7.6199999999999999e-006
+
+# copy shape
+copy sh49DBFE0 sh49DBFE0_copy
+
+# shape transformation
+trotate sh49DBFE0_copy 0 0 0 0.70710678118654757 -4.329780281177467e-017 0.70710678118654757 180 
+ttranslate sh49DBFE0_copy -266.69999999999999 0 0
+
+# shape transformation
+trotate sh49DBFE0_copy 0 0 0 0 1 0 90 
+ttranslate sh49DBFE0_copy 635 127 -139.69999999999999
+
+# copy shape
+copy sh49D8690 sh49D8690_copy
+
+# shape transformation
+trotate sh49D8690_copy 0 0 0 0 -1 0 90 
+ttranslate sh49D8690_copy -266.69999999999999 0 0
+
+# shape transformation
+trotate sh49D8690_copy 0 0 0 0 1 0 90 
+ttranslate sh49D8690_copy 635 127 -139.69999999999999
+
+# cut operation
+bcut sh49A5250 sh49D8690_copy sh49DBFE0_copy; copy sh49A5250 sh49A5250_copy 
+
+# copy shape
+copy sh49D5D00 sh49D5D00_copy
+
+# shape transformation
+trotate sh49D5D00_copy 0 0 0 0 1 0 90 
+ttranslate sh49D5D00_copy 635 127 -139.69999999999999
+
+# cut operation
+bcut sh464ACD0 sh49D5D00_copy sh49A5250_copy; copy sh464ACD0 sh464ACD0_copy 
+
+# result
+add sh464ACD0_copy result

@@ -1,0 +1,38 @@
+# test script for cone_trunc2.prt.1.gdml file
+compound result
+
+# cylinder 
+plane pln_sh4A1ADB0 -0 -0 -98.15938036 0 0 1 1 0 0
+erase pln_sh4A1ADB0
+pcylinder sh4A1ADB0 pln_sh4A1ADB0 555.80733567000004 196.31876072 360
+settolerance sh4A1ADB0 5.5580733567000004e-006
+
+# cone 
+plane pln_sh4A1A330 0 0 0 0 0 1 1 0 0
+erase pln_sh4A1A330
+pcone sh4A1A330 pln_sh4A1A330 0 555.80733567000016 386.81270655999998 360
+settolerance sh4A1A330 5.5580733567000013e-006
+
+# copy shape
+copy sh4A1A330 sh4A1A330_copy
+
+# shape transformation
+trotate sh4A1A330_copy 0 0 0 1 0 0 180 
+ttranslate sh4A1A330_copy 0 3.4891115774371428e-008 484.97208690922002
+
+# shape transformation
+trotate sh4A1A330_copy 0 0 0 1 0 0 130.88181030000001 
+ttranslate sh4A1A330_copy 254 -34.795627709999998 204.22696378000001
+
+# copy shape
+copy sh4A1ADB0 sh4A1ADB0_copy
+
+# shape transformation
+trotate sh4A1ADB0_copy 0 0 0 1 0 0 130.88181030000001 
+ttranslate sh4A1ADB0_copy 254 -34.795627709999998 204.22696378000001
+
+# fuse operation
+bfuse sh4C4C8D0 sh4A1ADB0_copy sh4A1A330_copy; copy sh4C4C8D0 sh4C4C8D0_copy 
+
+# result
+add sh4C4C8D0_copy result
