@@ -10,3 +10,5 @@ BOPTools_ListOfCoupleOfShape.hxx
 BOPTools_ListOfEdgeSet.hxx
 BOPTools_MapOfSet.hxx
 BOPTools_DataMapOfShapeSet.hxx
+
+BOPTools_AlgoTools2D_1.cxx

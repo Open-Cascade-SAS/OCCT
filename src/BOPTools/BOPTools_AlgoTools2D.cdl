@@ -27,7 +27,8 @@ uses
     Surface from BRepAdaptor, 
     Curve from Geom2d,
     Curve from Geom, 
-    ProjectedCurve from ProjLib,
+    ProjectedCurve from ProjLib, 
+    Context from IntTools, 
     ListOfShape from BOPCol 
     
 is   
@@ -205,5 +206,15 @@ is
           ---Purpose:   
           --- Make empty  P-Curve <aC> of relevant to <PC> type  
           ---
-
+    AttachExistingPCurve (myclass;    
+              aEold :  Edge from TopoDS; 
+              aEnew :  Edge from TopoDS; 
+              aF    :  Face from TopoDS; 
+              aCtx  :  Context from IntTools) 
+        returns Integer from Standard;   
+          ---Purpose:   
+          --- Attach P-Curve from the edge <aEold> on surface <aF>   
+          --- to the edge <aEnew>  
+          --- Returns 0 in case of success  
+     
 end AlgoTools2D;

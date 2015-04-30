@@ -952,18 +952,9 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
   else { // On segmente le resultat
     Handle(Geom2d_TrimmedCurve) TC =
       new Geom2d_TrimmedCurve( CurvePtr, FirstOnCurve, LastOnCurve );
-
-    Standard_Real newFirstOnCurve = TC->FirstParameter(), newLastOnCurve = TC->LastParameter();
-    
+    //
     Handle(Geom2d_BSplineCurve) BS =
       Geom2dConvert::CurveToBSplineCurve(TC);
-
-    if (BS->IsPeriodic()) 
-      BS->Segment( newFirstOnCurve, newLastOnCurve) ;
-    else 
-      BS->Segment( Max(newFirstOnCurve, BS->FirstParameter()),
-		   Min(newLastOnCurve,  BS->LastParameter()) );
-
     TColStd_Array1OfReal Knots(1,BS->NbKnots());
     BS->Knots(Knots);
     

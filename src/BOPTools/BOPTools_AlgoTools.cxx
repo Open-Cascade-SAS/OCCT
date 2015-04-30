@@ -1156,7 +1156,7 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
   //
   aProjector.LowerDistanceParameters(aU, aV);
   gp_Pnt2d aP2D(aU, aV);
-  bInFace=theContext->IsPointInFace (theFSr, aP2D);
+  bInFace=theContext->IsPointInOnFace (theFSr, aP2D);
   if (!bInFace) {
     return bRet;
   }
