@@ -1061,6 +1061,9 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
     }
     //
     dT = aTOp - aT1max;
+    if (Abs(dT) < aTolInt) {
+      continue;
+    }
     //
     aT=aT1max + aCf*dT;
     aC2D->D0(aT, aP);
