@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
@@ -8,11 +7,11 @@ set filename 919-001-T02-04-FT-VL.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 99  ( 787 )  Summary  = 99  ( 787 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 129  ( 798 )  Summary  = 129  ( 798 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 426  ( 426 )   Summary  = 14323  ( 14321 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 426  ( 426 )   FreeWire = 265  ( 265 )   FreeEdge  = 2465 ( 2465 )   SharedEdge = 5783  ( 5781 )
-TOLERANCE   : MaxTol   =   0.7242522382  (  0.09805261731 )  AvgTol   =  0.001420422933  (  0.0005172907259 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 426  ( 426 )   Summary  = 14321  ( 14321 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 426  ( 426 )   FreeWire = 265  ( 265 )   FreeEdge  = 2465 ( 2465 )   SharedEdge = 5781  ( 5781 )
+TOLERANCE   : MaxTol   =  0.09805261731  (  0.09805261731 )  AvgTol   =  0.0005286623368  (  0.0005262647535 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1739  ( 5424 )  N2Labels = 0  ( 0 )   TotalLabels = 1740  ( 5425 )   NameLabels = 1740  ( 2237 )   ColorLabels = 1739  ( 5424 )   LayerLabels = 1739  ( 5424 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 2 )

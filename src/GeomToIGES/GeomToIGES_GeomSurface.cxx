@@ -90,6 +90,10 @@
 
 #include <Precision.hxx>
 
+#include <ShapeAnalysis.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_ErrorHandler.hxx>
+
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
@@ -244,29 +248,90 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
   
   Standard_Boolean PeriodU = start->IsUPeriodic();
   Standard_Boolean PeriodV = start->IsVPeriodic();
-  if (PeriodU || PeriodV) {
-    mysurface = Handle(Geom_BSplineSurface)::DownCast(start->Copy());
+  mysurface = Handle(Geom_BSplineSurface)::DownCast(start->Copy());
 
-    //szv#10:PRO19566:05Oct99
-    Standard_Boolean workaround = !(mysurface->IsURational() || mysurface->IsVRational());
-    if (workaround) mysurface->SetWeight(1,1,0.3);
+  Standard_Real Umin = Udeb, Umax = Ufin, Vmin = Vdeb, Vmax = Vfin;
+  Standard_Real U0,U1,V0,V1;
+  Standard_Real uShift = 0, vShift = 0;
+  mysurface->Bounds(U0,U1,V0,V1);
 
-    if ( PeriodU ) mysurface->SetUNotPeriodic();
-    if ( PeriodV ) mysurface->SetVNotPeriodic();
-
-    //szv#10:PRO19566:05Oct99
-    if (workaround) mysurface->SetWeight(1,1,1.);
+  // cut segment from periodic surfaces for syncronization of pcurves ranges
+  // and surface bounds (issue 26138)
+  if (!PeriodU) {
+    if (Umin < U0)
+      Umin = U0;
+    if (U1 < Umax)
+      Umax = U1;
   }
   else {
-    mysurface = start;
+    if (Abs(Umin - U0) < Precision::PConfusion())
+      Umin = U0;
+    if (Abs(Umax - U1) < Precision::PConfusion())
+      Umax = U1;
+    uShift = ShapeAnalysis::AdjustToPeriod(Umin, U0, U1);
+    Umin += uShift;
+    Umax += uShift;
+  }
+  if (!PeriodV) {
+    if (Vmin < V0)
+      Vmin = V0;
+    if (V1 < Vmax)
+      Vmax = V1;
+  }
+  else {
+    if (Abs(Vmin - V0) < Precision::PConfusion())
+      Vmin = V0;
+    if (Abs(Vmax - V1) < Precision::PConfusion())
+      Vmax = V1;
+    vShift = ShapeAnalysis::AdjustToPeriod(Vmin, V0, V1);
+    Vmin += vShift;
+    Vmax += vShift;
+  }
+  if ( Abs(uShift) > Precision::PConfusion() || Abs(vShift) > Precision::PConfusion()) {
+    Standard_Boolean isNeedSegment = Standard_True;
+    isNeedSegment = Abs(Umax-Umin) > Precision::PConfusion() && 
+                    Abs(Vmax-Vmin) > Precision::PConfusion();
+    Standard_Real uMaxShift = 0, vMaxShift = 0;
+    uMaxShift = ShapeAnalysis::AdjustToPeriod(Ufin, U0, U1);
+    vMaxShift = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
+    isNeedSegment &= 
+      (PeriodU && Abs(uShift - uMaxShift) > Precision::PConfusion()) ||
+      (PeriodV && Abs(vShift - vMaxShift) > Precision::PConfusion());           
+    if (isNeedSegment) {
+      try {
+        OCC_CATCH_SIGNALS
+        Handle(Geom_BSplineSurface) bspl = Handle(Geom_BSplineSurface)::DownCast ( start->Copy() );
+        if ( ! bspl.IsNull() ) {
+          bspl->CheckAndSegment(Umin, Umax, Vmin, Vmax);
+          if ((U1 - U0) - (Umax - Umin) > Precision::PConfusion())
+            PeriodU = Standard_False;
+          if ((V1 - V0) - (Vmax - Vmin) > Precision::PConfusion())
+            PeriodV = Standard_False;
+	        mysurface = bspl;
+        }
+      }
+      catch ( Standard_Failure ) {
+        #ifdef DEB
+        cout << "Warning: GeomToIGES_GeomSurface: can't trim bspline" << endl;
+        cout << "Warning: Exception in Segment(): " ;
+        Standard_Failure::Caught()->Print(cout);
+        #endif
+    }
+    }
+  }
+
+  //unperiodize surface to get neccessary for IGES standard number of knots and mults
+  if ( mysurface->IsUPeriodic() ) {
+    mysurface->SetUNotPeriodic();
+  }
+  if ( mysurface->IsVPeriodic() ) {
+    mysurface->SetVNotPeriodic();
   }
  
   Standard_Integer DegU = mysurface->UDegree();
   Standard_Integer DegV = mysurface->VDegree();
   Standard_Boolean CloseU = mysurface->IsUClosed();
   Standard_Boolean CloseV = mysurface->IsVClosed();
-  //Standard_Boolean PeriodU = start->IsUPeriodic();
-  //Standard_Boolean PeriodV = start->IsVPeriodic();
   Standard_Boolean RationU = mysurface->IsURational();
   Standard_Boolean RationV = mysurface->IsVRational();
   Standard_Integer NbUPoles = mysurface->NbUPoles();
@@ -348,18 +413,6 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
     UIndex++;
     VIndex = Poles->LowerCol();
   }
-      
-  // mjm le 9/10/97 mise en place d`une protection
-  Standard_Real U1,U2,V1,V2;
-  Standard_Real Umin = Udeb;
-  Standard_Real Umax = Ufin;
-  Standard_Real Vmin = Vdeb;
-  Standard_Real Vmax = Vfin;
-  mysurface->Bounds(U1,U2,V1,V2);
-  if ( U1 > Umin ) Umin = U1;
-  if ( V1 > Vmin ) Vmin = V1;
-  if ( U2 < Umax ) Umax = U2;
-  if ( V2 < Vmax ) Vmax = V2;
 
   BSpline-> Init (IndexU, IndexV, DegU, DegV, CloseU, CloseV, Polynom, PeriodU, 
 		  PeriodV, KnotsU, KnotsV, Weights, Poles, Umin, Umax, Vmin, Vmax);

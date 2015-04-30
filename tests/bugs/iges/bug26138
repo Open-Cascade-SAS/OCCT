@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC26138"
+puts "========"
+puts ""
+#####################################################
+# Problems with writing periodic BSplines into IGES
+#####################################################
+
+igesbrep [locate_data_file OCC26138_Torus.igs] a *
+brepiges a ${imagedir}/bug26138.igs
+igesbrep ${imagedir}/bug26138.igs b *
+set a_info [lindex [sprops a] 2]
+set b_info [lindex [sprops b] 2]
+if {$a_info != $b_info} {
+  puts "ERROR: OCC26138 is reproduced. Shape a is not equal to shape b."
+}

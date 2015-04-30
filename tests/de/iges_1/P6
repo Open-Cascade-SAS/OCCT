@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -7,11 +6,11 @@ set filename igsBF6.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 4 )  Warnings = 56  ( 2482 )  Summary  = 56  ( 2486 )
+TPSTAT      : Faulties = 0  ( 4 )  Warnings = 122  ( 2490 )  Summary  = 122  ( 2494 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 478  ( 478 )   Summary  = 9622  ( 9620 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 478  ( 478 )   FreeWire = 11  ( 11 )   FreeEdge  = 679 ( 679 )   SharedEdge = 4100  ( 4098 )
-TOLERANCE   : MaxTol   =   0.9116177018  (   0.7254994252 )  AvgTol   =   0.01026239826  (  0.001491209557 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 478  ( 478 )   Summary  = 9620  ( 9620 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 478  ( 478 )   FreeWire = 11  ( 11 )   FreeEdge  = 679 ( 679 )   SharedEdge = 4098  ( 4098 )
+TOLERANCE   : MaxTol   =   0.7255001399  (   0.7254994252 )  AvgTol   =   0.00150384607  (  0.001491267872 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 856  ( 1636 )  N2Labels = 0  ( 0 )   TotalLabels = 857  ( 1637 )   NameLabels = 857  ( 1390 )   ColorLabels = 856  ( 1636 )   LayerLabels = 856  ( 1636 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 10  ( 10 )

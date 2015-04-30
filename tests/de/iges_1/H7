@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -6,11 +7,11 @@ set filename BUC60034.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 53 )  Warnings = 2  ( 632 )  Summary  = 2  ( 685 )
+TPSTAT      : Faulties = 0  ( 53 )  Warnings = 3  ( 637 )  Summary  = 3  ( 690 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1766  ( 1766 )   Summary  = 18585  ( 18587 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1766  ( 1766 )   FreeWire = 0  ( 2 )   FreeEdge  = 104 ( 104 )   SharedEdge = 7470  ( 7469 )
-TOLERANCE   : MaxTol   =   0.1881003203  (   0.1881003203 )  AvgTol   =  0.0004558439058  (  0.0004561075883 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1766  ( 1766 )   Summary  = 18582  ( 18587 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1766  ( 1766 )   FreeWire = 0  ( 2 )   FreeEdge  = 104 ( 104 )   SharedEdge = 7469  ( 7469 )
+TOLERANCE   : MaxTol   =   0.1881003203  (   0.1881003203 )  AvgTol   =  0.0004558439058  (  0.0004561112628 )
 LABELS      : N0Labels = 3  ( 6 )  N1Labels = 1868  ( 3154 )  N2Labels = 0  ( 0 )   TotalLabels = 1871  ( 3160 )   NameLabels = 1819  ( 2019 )   ColorLabels = 1868  ( 3151 )   LayerLabels = 1868  ( 3100 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 5 )

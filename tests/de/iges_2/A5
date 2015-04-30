@@ -8,11 +8,11 @@ set filename t_cat_424_002_sgi_hybdrw_vw_tuer_standard.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 733 )  Warnings = 67  ( 4329 )  Summary  = 67  ( 5062 )
+TPSTAT      : Faulties = 0  ( 733 )  Warnings = 64  ( 4345 )  Summary  = 64  ( 5078 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2263  ( 2263 )   Summary  = 81573  ( 81625 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2263  ( 2263 )   FreeWire = 2854  ( 2907 )   FreeEdge  = 19507 ( 19507 )   SharedEdge = 29769  ( 29768 )
-TOLERANCE   : MaxTol   =   0.7925892163  (   0.7925891552 )  AvgTol   =  0.001587411664  (  0.001633612857 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2263  ( 2263 )   Summary  = 81570  ( 81625 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2263  ( 2263 )   FreeWire = 2854  ( 2907 )   FreeEdge  = 19507 ( 19507 )   SharedEdge = 29768  ( 29768 )
+TOLERANCE   : MaxTol   =   0.7925892163  (   0.7925891552 )  AvgTol   =  0.001587410529  (  0.001648822728 )
 LABELS      : N0Labels = 28  ( 28 )  N1Labels = 13487  ( 17629 )  N2Labels = 0  ( 0 )   TotalLabels = 13515  ( 17657 )   NameLabels = 13515  ( 17494 )   ColorLabels = 13489  ( 17629 )   LayerLabels = 13438  ( 17573 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 18  ( 18 )
