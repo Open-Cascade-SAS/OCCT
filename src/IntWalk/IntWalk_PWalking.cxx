@@ -1003,28 +1003,18 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
             if(LevelOfIterWithoutAppend > 5)
             {
-              if(pasSav[0]<pasInit[0])
+              for (Standard_Integer i = 0; i < 4; i++)
               {
-                pasInit[0]-=(pasInit[0]-pasSav[0])*0.25;
-                LevelOfIterWithoutAppend=0;
-              }
+                if (pasSav[i] > pasInit[i])
+                  continue;
 
-              if(pasSav[1]<pasInit[1])
-              {
-                pasInit[1]-=(pasInit[1]-pasSav[1])*0.25;
-                LevelOfIterWithoutAppend=0;
-              }
+                const Standard_Real aDelta = (pasInit[i]-pasSav[i])*0.25;
 
-              if(pasSav[2]<pasInit[2])
-              {
-                pasInit[2]-=(pasInit[2]-pasSav[2])*0.25;
-                LevelOfIterWithoutAppend=0;
-              }
-
-              if(pasSav[3]<pasInit[3])
-              {
-                pasInit[3]-=(pasInit[3]-pasSav[3])*0.25;
-                LevelOfIterWithoutAppend=0;
+                if(aDelta > Epsilon(pasInit[i]))
+                {
+                  pasInit[i] -= aDelta;
+                  LevelOfIterWithoutAppend=0;
+                }
               }
             }
 
