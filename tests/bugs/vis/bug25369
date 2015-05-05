@@ -14,7 +14,7 @@ vdisplay b
 vfit
 set s [encoding convertfrom unicode "\x3A\x04\x30\x04\x40\x04\x2E\x00\x70\x00\x6E\x00\x67\x00"]
 
-vdrawtext $s 0 0 0 255 255 255 0 0 0 0 50 0 Times 1
+vdrawtext text0 $s -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font Times
 vdump $::imagedir/$s
 vtexture b $::imagedir/$s
 

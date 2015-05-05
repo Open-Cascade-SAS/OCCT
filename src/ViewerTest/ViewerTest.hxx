@@ -88,6 +88,17 @@ public:
   Standard_EXPORT static void RemoveView (const Handle(V3d_View)& theView,
                                           const Standard_Boolean  theToRemoveContext = Standard_True);
 
+  //! Display AIS object in active Viewer and register it in the map of Interactive Objects with specified name.
+  //! @param theName            key to be associated to displayed interactive object
+  //! @param theObject          object to display
+  //! @param theToUpdate        redraw viewer after displaying object
+  //! @param theReplaceIfExists replace the object assigned to specified key
+  //! @return true if new object has been displayed
+  Standard_EXPORT static Standard_Boolean Display (const TCollection_AsciiString&       theName,
+                                                   const Handle(AIS_InteractiveObject)& theObject,
+                                                   const Standard_Boolean               theToUpdate = Standard_True,
+                                                   const Standard_Boolean               theReplaceIfExists = Standard_True);
+
   //! waits until a shape of type <aType> is picked in the AIS Viewer and returns it.
   //! if <aType> == TopAbs_Shape, any shape can be picked...
   //! MaxPick  is the Max number before exiting, if no pick is successful

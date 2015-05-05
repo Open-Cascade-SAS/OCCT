@@ -18,7 +18,7 @@ set data [split $aFileData "\n"]
 set aLineId 0
 foreach aLine $data {
   set aLineY  [expr $aLineId * 400]
-  vdrawtext "$aLine"  100  $aLineY -400 000 255 255 0 0 000 0 20 1 Times-Roman
+  vdrawtext "Line_$aLineId" "$aLine" -noupdate -pos 100  $aLineY -400 -color 0.0 1.0 1.0 -halign left -valign bottom -angle 000 -zoom 0 -height 20 -aspect regular -font Times-Roman
   set aLineId [expr $aLineId + 1]
 }
 

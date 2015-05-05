@@ -10,7 +10,7 @@ set BugNumber OCC22149
 
 vfont add [locate_data_file bug22149_mona.ttf] Mona
 vinit
-vdrawtext HELLO 0 0 0 0 255 0 0 0 0 0 50 1
-vdrawtext [encoding convertfrom unicode \x42\x30] 0 0 200 255 0 0 0 0 0 0 50 0 Mona 1
+vdrawtext text0 HELLO -pos 0 0 0 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular
+vdrawtext text1 [encoding convertfrom unicode \x42\x30] -pos 0 0 200 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font Mona
 
 set only_screen 1

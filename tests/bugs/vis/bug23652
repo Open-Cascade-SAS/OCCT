@@ -8,8 +8,8 @@ puts "========"
 
 vinit
 vtrihedron tri
-vdrawtext Default 0.0 0.0 0.0 255 255 255 0 0 0 1 20 0
-vdrawtext Right_Align 0.0 0.0 0.0 255 255 255 2 0 0 1 20 0
+vdrawtext text0 Default -pos 0.0 0.0 0.0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 1 -height 20 -aspect regular
+vdrawtext text1 Right_Align -pos 0.0 0.0 0.0 -color 1.0 1.0 1.0 -halign right -valign bottom -angle 0 -zoom 1 -height 20 -aspect regular
 
 set scale    3.1783114563761763
 set proj_X   0.57735025882720947

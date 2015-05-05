@@ -18,21 +18,21 @@ vsetdispmode 0
 vdisplay o1 o2
 vdisplay b1 b2
 vfit
-vdrawtext "b1"   0 -3 3 255  25  25 2 0 000 0 14 1 Arial
-vdrawtext "b2"   3  0 3  25 255  25 2 0 000 0 14 1 Arial
-vdrawtext "bc_1" 0 -9 3 255 225 225 2 0 000 0 14 1 Arial
-vdrawtext "bc_2" 3 -6 3 255 225 225 2 0 000 0 14 1 Arial
+vdrawtext tb1 "b1" -pos 0 -3 3 -color 1.0 0.098 0.098 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
+vdrawtext tb2 "b2" -pos 3 0 3 -color 0.098 1.0 0.098 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
+vdrawtext bc_1 "bc_1" -pos 0 -9 3 -color 1.0 0.8823 0.8823 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
+vdrawtext bc_2 "bc_2" -pos 3 -6 3 -color 1.0 0.8823 0.8823 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
 vsetdispmode 1
 set anImage ${imagedir}/${casename}_2_1.png
 vdump ${anImage}
 
-vsetmaterial b1 b2 plastic
-vsetcolor b1 RED
-vsetcolor b2 GREEN
+vsetmaterial b1 b2 tb1 tb2 plastic
+vsetcolor b1 tb1 RED
+vsetcolor b2 tb2 GREEN
 set anImage ${imagedir}/${casename}_2_2.png
 vdump ${anImage}
 
 vsetlocation b1 0 -3 0
-vconnect bc 0 -6 0 b1 b2
+vconnect bc 0 -6 0 b1 b2 tb1 tb2
 set anImage ${imagedir}/${casename}_2_3.png
 vdump ${anImage}

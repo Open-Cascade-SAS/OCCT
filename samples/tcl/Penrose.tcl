@@ -82,4 +82,4 @@ vsetcolor b10 0 0.48046875 0.73828125
 # set material to plastic for better look
 for {set i 1} {$i <= 10} {incr i} {vsetmaterial b$i plastic}
 
-vdrawtext "Which\nbox\nis\ncloser\nto\nyou?" 0 -6 -2 0 0 0 left top 0 0 40  Bold
+vdrawtext label "Which\nbox\nis\ncloser\nto\nyou?" -pos 0 -6 -2 -color 0 0 0 -halign left -valign bottom -angle 0 -zoom 0 -height 40

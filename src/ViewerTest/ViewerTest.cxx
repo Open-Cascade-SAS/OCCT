@@ -257,24 +257,20 @@ Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS(){
   return TheMap;
 }
 
-
-//==============================================================================
-//function : VDisplayAISObject
-//purpose  : register interactive object in the map of AIS objects;
-//           if other object with such name already registered, it will be kept
-//           or replaced depending on value of <theReplaceIfExists>,
-//           if "true" - the old object will be cleared from AIS context;
-//           returns Standard_True if <theAISObj> registered in map;
-//==============================================================================
-Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
-                                                    const Handle(AIS_InteractiveObject)& theAISObj,
-                                                    Standard_Boolean theReplaceIfExists = Standard_True)
+//=======================================================================
+//function : Display
+//purpose  :
+//=======================================================================
+Standard_Boolean ViewerTest::Display (const TCollection_AsciiString&       theName,
+                                      const Handle(AIS_InteractiveObject)& theObject,
+                                      const Standard_Boolean               theToUpdate,
+                                      const Standard_Boolean               theReplaceIfExists)
 {
   ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
-  if (aContextAIS.IsNull())
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
   {
-    std::cout << "AIS context is not available.\n";
+    std::cout << "Error: AIS context is not available.\n";
     return Standard_False;
   }
 
@@ -282,36 +278,40 @@ Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiStrin
   {
     if (!theReplaceIfExists)
     {
-      std::cout << "Other interactive object has been already "
-                << "registered with name: " << theName << ".\n"
+      std::cout << "Error: other interactive object has been already registered with name: " << theName << ".\n"
                 << "Please use another name.\n";
       return Standard_False;
     }
 
-    // stop displaying object
-    Handle(AIS_InteractiveObject) anOldObj =
-       Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theName));
-
+    Handle(AIS_InteractiveObject) anOldObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theName));
     if (!anOldObj.IsNull())
-      aContextAIS->Remove (anOldObj, Standard_True);
-
-    // remove name and old object from map
+    {
+      aCtx->Remove (anOldObj, Standard_True);
+    }
     aMap.UnBind2 (theName);
   }
 
-  if (theAISObj.IsNull())
+  if (theObject.IsNull())
   {
-    // object with specified name already unbound
+    // object with specified name has been already unbound
     return Standard_True;
   }
 
-  // unbind AIS object if was bound with another name
-  aMap.UnBind1 (theAISObj);
+  // unbind AIS object if it was bound with another name
+  aMap.UnBind1 (theObject);
 
   // can be registered without rebinding
-  aMap.Bind (theAISObj, theName);
-  aContextAIS->Display (theAISObj, Standard_True);
+  aMap.Bind (theObject, theName);
+  aCtx->Display (theObject, theToUpdate);
   return Standard_True;
+}
+
+//! Alias for ViewerTest::Display(), compatibility with old code.
+Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiString&       theName,
+                                                    const Handle(AIS_InteractiveObject)& theObject,
+                                                    Standard_Boolean theReplaceIfExists = Standard_True)
+{
+  return ViewerTest::Display (theName, theObject, Standard_True, theReplaceIfExists);
 }
 
 static TColStd_MapOfInteger theactivatedmodes(8);

@@ -47,7 +47,7 @@ for { set aMode 0 } { $aMode <= 1 } { incr aMode } {
     set aRow [expr $aMarkerType - 7]
     set aCol 5
     set aName [lindex $aMarkerTypeNames $aMarkerType]
-    vdrawtext "$aName" 0 [expr $aRow + 0.5] 0 128 255 255 1 1 000 0 12 2 Arial
+    vdrawtext "$aName" "$aName" -pos 0 [expr $aRow + 0.5] 0 -color 0.5 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 12 -aspect bold -font Arial
     if { $aMarkerType == 13 } {
       vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom1
       set aCol [expr $aCol - 1]

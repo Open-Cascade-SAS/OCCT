@@ -7,31 +7,31 @@ puts ""
 vtrihedron trihedr
 
 vpoint pTL  -700  100 600
-vdrawtext "Top-Left\nFirst line\nLion The Second\n3rd"       -700  100  600 000 255 255 0 2 000 1 50 1 Times-Roman
+vdrawtext Text0 "Top-Left\nFirst line\nLion The Second\n3rd" -pos -700  100  600 -color 0.0 1.0 1.0 -halign left -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pTC  0  100 600
-vdrawtext "Top-Center\nFirst line\nLion The Second\n3rd"        0  100  600 000 255 255 1 2 000 1 50 1 Times-Roman
+vdrawtext Text1 "Top-Center\nFirst line\nLion The Second\n3rd" -pos 0  100  600 -color 0.0 1.0 1.0 -halign center -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pTR  700  100 600
-vdrawtext "Top-Right\nFirst line\nLion The Second\n3rd"       700  100  600 000 255 255 2 2 000 1 50 1 Times-Roman
+vdrawtext Text2 "Top-Right\nFirst line\nLion The Second\n3rd" -pos 700  100  600 -color 0.0 1.0 1.0 -halign right -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pCL  -700  100 -100
-vdrawtext "Center-Left\nFirst line\nLion The Second\n3rd"    -700  100 -100 255 255 255 0 1 000 1 50 1 Times-Roman
+vdrawtext Text3 "Center-Left\nFirst line\nLion The Second\n3rd" -pos -700  100 -100 -color 1.0 1.0 1.0 -halign left -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pCC  0  100 -100
-vdrawtext "Center-Center\nFirst line\nLion The Second\n3rd"     0  100 -100 255 255 255 1 1 000 1 50 1 Times-Roman
+vdrawtext Text4 "Center-Center\nFirst line\nLion The Second\n3rd" -pos 0  100 -100 -color 1.0 1.0 1.0 -halign center -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pCR  700  100 -100
-vdrawtext "Center-Right\nFirst line\nLion The Second\n3rd"    700  100 -100 255 255 255 2 1 000 1 50 1 Times-Roman
+vdrawtext Text5 "Center-Right\nFirst line\nLion The Second\n3rd" -pos 700  100 -100 -color 1.0 1.0 1.0 -halign right -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pBL  -700  100 -700
-vdrawtext "Bottom-Left\nFirst line\nLion The Second\n3rd"    -700  100 -700 255 255   0 0 0 000 1 50 1 Times-Roman
+vdrawtext Text6 "Bottom-Left\nFirst line\nLion The Second\n3rd" -pos -700  100 -700 -color 1.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pBC  0  100 -700
-vdrawtext "Bottom-Center\nFirst line\nLion The Second\n3rd"     0  100 -700 255 255   0 1 0 000 1 50 1 Times-Roman
+vdrawtext Text7 "Bottom-Center\nFirst line\nLion The Second\n3rd" -pos 0  100 -700 -color 1.0 1.0 0.0 -halign center -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vpoint pBR  700  100 -700
-vdrawtext "Bottom-Right\nFirst line\nLion The Second\n3rd"    700  100 -700 255 255   0 2 0 000 1 50 1 Times-Roman
+vdrawtext Text8 "Bottom-Right\nFirst line\nLion The Second\n3rd" -pos 700  100 -700 -color 1.0 1.0 0.0 -halign right -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vfit
 

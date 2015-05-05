@@ -15,6 +15,6 @@ vpoint p1     0  10000 -400
 vpoint p2  1000      0 -400
 vfit
 
-vdrawtext "$aText"  100  100 -400 000 255 255 0 0 000 1 50 1 Times-Roman
+vdrawtext text "$aText"  -pos 100  100 -400 -color 0.0 1.0 1.0 -halign left -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font Times-Roman
 
 vfps

@@ -23,3 +23,5 @@ AIS_RadiusDimension.hxx
 AIS_RadiusDimension.cxx
 AIS_PointCloud.hxx
 AIS_PointCloud.cxx
+AIS_TextLabel.hxx
+AIS_TextLabel.cxx

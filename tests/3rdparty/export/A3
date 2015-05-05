@@ -7,23 +7,29 @@ puts ""
 vtrihedron trihedron
 
 vpoint p1 -300 -300 -300
-vdrawtext OpenCascade -300 -300 -300 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OC0 OpenCascade -pos -300 -300 -300 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
+
 vpoint p2 -300 -300 -100
-vdrawtext OpenCascade -300 -300 -100 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OC1 OpenCascade -pos -300 -300 -100 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
+
 vpoint p3 -100 -100 -300
-vdrawtext OpenCascade -100 -100 -300 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OC2 OpenCascade -pos -100 -100 -300 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
+
 vpoint p4 -100 -100 -100
-vdrawtext OpenCascade -100 -100 -100 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OC3 OpenCascade -pos -100 -100 -100 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
 
 
 vpoint p5 -300 -100 -300
-vdrawtext OpenCascade -300 -100 -300 000 255 000 0 0 000 0 15 1 Courier
+vdrawtext OC4 OpenCascade -pos -300 -100 -300 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
+
 vpoint p6 -100 -300 -300
-vdrawtext OpenCascade -100 -300 -300 000 255 000 0 0 000 0 15 1 Courier
+vdrawtext OC5 OpenCascade -pos -100 -300 -300 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
+
 vpoint p7 -300 -100 -100
-vdrawtext OpenCascade -300 -100 -100 000 255 000 0 0 000 0 15 1 Courier
+vdrawtext OC6 OpenCascade -pos -300 -100 -100 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
+
 vpoint p8 -100 -300 -100
-vdrawtext OpenCascade -100 -300 -100 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OC7 OpenCascade -pos -100 -300 -100 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 000 -zoom 0 -height 15 -aspect regular -font Courier
 
 vaxis ax1 100 100 100 100 100 0
 

@@ -13,16 +13,18 @@ vsetdispmode 1
 vtop
 
 set aLine 0
+set aLineId 0
 foreach aSize $THE_FONT_SIZES {
   set aText "\[$aSize\] $THE_TEXT"
 
   vpoint aPnt_$aSize 0.0 $aLine 0.0
-  vdrawtext $aText 0.0 $aLine 0.0 000 255 255 0 2 000 1 $aSize 4 $THE_FONT_NAME
+  vdrawtext "Line_$aLineId" $aText -pos 0.0 $aLine 0.0 -color 0.0 1.0 1.0 -halign left -valign top -angle 000 -zoom 1 -height $aSize -aspect bolditalic -font $THE_FONT_NAME
 
   text2brep aBText_$aSize $aText $THE_FONT_NAME $aSize bolditalic composite=1
   ttranslate aBText_$aSize 0.0 $aLine 0.0
   vdisplay  aBText_$aSize
   set aLine [expr $aLine - 4.0 * $aSize]
+  set aLineId [expr $aLineId + 1]
 }
 
 vfit

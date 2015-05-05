@@ -10,30 +10,30 @@ set THE_ROW_DIST  35
 proc drawLabels {} {
   set x 20
   set y 15
-  set r 25
-  set g 25
-  set b 25
+  set r 0.098
+  set g 0.098
+  set b 0.098
   foreach aMatIter $::THE_MATERIALS {
-    vdrawtext "$aMatIter" $x $y 0 $r $g $b 2 1 000 0 14 1 Arial
+    vdrawtext "$aMatIter" "$aMatIter" -pos $x $y 0 -color $r $g $b -halign right -valign center -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
     incr y 10
   }
   set x 40
   set y  5
   foreach aColIter $::THE_COLORS {
     if { $aColIter == "red" } {
-      set r 255
-      set g 0
+      set r 1.0
+      set g 0.0
       set b 0
     } elseif { $aColIter == "green" } {
-      set r 0
-      set g 255
-      set b 0
+      set r 0.0
+      set g 1.0
+      set b 0.0
     } elseif { $aColIter == "blue1" } {
-      set r 0
-      set g 0
-      set b 255
+      set r 0.0
+      set g 0.0
+      set b 1.0
     }
-    vdrawtext "$aColIter" $x $y 0 $r $g $b 1 1 000 0 14 1 Arial
+    vdrawtext "$aColIter" "$aColIter" -pos $x $y 0 -color $r $g $b -halign center -valign center -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
     incr x $::THE_ROW_DIST
   }
 }

@@ -16,7 +16,7 @@ vdisplay b
 vfit
 vsetdispmode b 1
 
-vdrawtext "Open\nCASCADE" 0 0 0 255 0 0 1 1 -45 1 50 1 Arial
+vdrawtext text "Open\nCASCADE" -pos 0 0 0 -color 1.0 0.0 0.0 -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font Arial
 
 set bug_info [vreadpixel 255 283 rgb name]
 if {$bug_info != "RED"} {

@@ -33,7 +33,7 @@ vdisplay p
 vmarkerstest mTest 7 -3 0 PointsOnSide=5 MarkerType=5
 
 # 3d text
-vdrawtext 3D_Text 1 2 2 255 0 0 0 0 0 0 20 0
+vdrawtext text0 3D_Text -pos 1 2 2 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular
 
 vlight change 0 pos -1 1 1
 

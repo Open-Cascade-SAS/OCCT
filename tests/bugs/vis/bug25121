@@ -13,10 +13,10 @@ vdisplay -noupdate b
 vtop
 vfit
 
-vdrawtext "000 3D" 0.0 0.0 0.0 255 255 255 1 1 000 0 16 1 Courier
-vdrawtext "001 3D" 0.0 1.0 0.0 255 255 255 1 1 000 0 16 1 Courier
-vdrawtext "101 3D" 0.0 2.0 0.0 255 255 255 1 1 000 0 16 1 Courier
-vdrawtext "110 3D" 0.0 3.0 0.0 255 255 255 1 1 000 0 16 1 Courier
+vdrawtext 000_3D "000 3D" -pos 0.0 0.0 0.0 -color 1.0 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 16 -aspect regular -font Courier
+vdrawtext 001_3D "001 3D" -pos 0.0 1.0 0.0 -color 1.0 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 16 -aspect regular -font Courier
+vdrawtext 101_3D "101 3D" -pos 0.0 2.0 0.0 -color 1.0 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 16 -aspect regular -font Courier
+vdrawtext 110_3D "110 3D" -pos 0.0 3.0 0.0 -color 1.0 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 16 -aspect regular -font Courier
 voverlaytext "000 2D" 100 200 16 Courier 255 255 255 normal 0 0 255
 voverlaytext "001 2D" 100 250 16 Courier 255 255 255 normal 0 0 255
 voverlaytext "101 2D" 100 300 16 Courier 255 255 255 normal 0 0 255

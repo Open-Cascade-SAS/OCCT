@@ -10,7 +10,7 @@ pload QAcommands
 pload VISUALIZATION
 
 vinit
-vdrawtext "ANOTHERBUG" 100 100 100 255 0 0 0 0 0 1 50 0
+vdrawtext text0 "ANOTHERBUG" -pos 100 100 100 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular
 vtrihedron trihedron
 
 set x 239

@@ -15,7 +15,7 @@ vsetdispmode 1
 vdisplay b_1 b_2
 vfit
 
-vdrawtext "SAMPLE TEXT" 1 0 3 255 0 0 0 0 0 0 30 1
+vdrawtext text "SAMPLE TEXT" -pos 1 0 3 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 30 -aspect regular
 
 set bug_info [vreadpixel 260 137 rgb name]
 if {$bug_info != "RED"} {

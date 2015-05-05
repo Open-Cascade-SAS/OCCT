@@ -114,6 +114,7 @@
 
 #include <AIS_MultipleConnectedInteractive.hxx>
 #include <AIS_ConnectedInteractive.hxx>
+#include <AIS_TextLabel.hxx>
 #include <TopLoc_Location.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
@@ -2390,230 +2391,239 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
   return 0;
 }
 
-
-//===============================================================================================
+//=======================================================================
 //function : VDrawText
-//author   : psn
-//purpose  : Create a text.
-//Draw arg : vdrawtext  name  [X] [Y] [Z] [R] [G] [B] [hor_align] [ver_align] [angle] [zoomable]
-//===============================================================================================
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_StructureManager.hxx>
-#include <Graphic3d_VerticalTextAlignment.hxx>
-#include <Graphic3d_HorizontalTextAlignment.hxx>
-
-#include <Font_NameOfFont.hxx>
-
-#include <Visual3d_ViewManager.hxx>
-
-#include <Standard_DefineHandle.hxx>
-
-#include <Prs3d_Root.hxx>
-#include <Prs3d_Text.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-
-#include <TCollection_ExtendedString.hxx>
-#include <TCollection_AsciiString.hxx>
-
-#include <gp_Pnt.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Quantity_Color.hxx>
-
-
-DEFINE_STANDARD_HANDLE(MyTextClass, AIS_InteractiveObject)
-
-class MyTextClass:public AIS_InteractiveObject
+//purpose  :
+//=======================================================================
+static int VDrawText (Draw_Interpretor& theDI,
+                      Standard_Integer  theArgsNb,
+                      const char**      theArgVec)
 {
-public:
-  // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(MyTextClass );
-
-  MyTextClass(){};
-
-  MyTextClass
-    (
-      const TCollection_ExtendedString& , const gp_Pnt& ,
-      Quantity_Color color,
-      Standard_Integer aHJust,
-      Standard_Integer aVJust ,
-      Standard_Real Angle ,
-      Standard_Boolean Zoom ,
-      Standard_Real  Height,
-      Font_FontAspect FontAspect,
-      Standard_CString Font
-    );
-
-private:
-
-  void Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                  const Handle(Prs3d_Presentation)& aPresentation,
-                  const Standard_Integer aMode);
-
-  void ComputeSelection (  const Handle(SelectMgr_Selection)& /*aSelection*/,
-                           const Standard_Integer /*aMode*/){} ;
-
-protected:
-  TCollection_ExtendedString          aText;
-  gp_Pnt                              aPosition;
-  Standard_Real                       Red;
-  Standard_Real                       Green;
-  Standard_Real                       Blue;
-  Standard_Real                       aAngle;
-  Standard_Real                       aHeight;
-  Standard_Boolean                    aZoomable;
-  Quantity_Color                      aColor;
-  TCollection_AsciiString             aFont;
-  Font_FontAspect                     aFontAspect;
-  Graphic3d_HorizontalTextAlignment   aHJustification;
-  Graphic3d_VerticalTextAlignment     aVJustification;
-};
-
-
-
-IMPLEMENT_STANDARD_HANDLE(MyTextClass, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(MyTextClass, AIS_InteractiveObject)
-
-
-MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& position,
-                          Quantity_Color    color       = Quantity_NOC_YELLOW,
-                          Standard_Integer  aHJust      = Graphic3d_HTA_LEFT,
-                          Standard_Integer  aVJust      = Graphic3d_VTA_BOTTOM,
-                          Standard_Real     angle       = 0.0 ,
-                          Standard_Boolean  zoomable    = Standard_True,
-                          Standard_Real     height      = 12.,
-                          Font_FontAspect   fontAspect  = Font_FA_Regular,
-                          Standard_CString  font        = "Courier")
-{
-  aText           = text;
-  aPosition       = position;
-  aHJustification = Graphic3d_HorizontalTextAlignment(aHJust);
-  aVJustification = Graphic3d_VerticalTextAlignment(aVJust);
-  aAngle          = angle;
-  aZoomable       = zoomable;
-  aHeight         = height;
-  aColor          = color;
-  aFontAspect     = fontAspect;
-  aFont           = font;
-};
-
-
-
-//////////////////////////////////////////////////////////////////////////////
-void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                          const Handle(Prs3d_Presentation)& aPresentation,
-                          const Standard_Integer /*aMode*/)
-{
-
-  aPresentation->Clear();
-
-  if (!myDrawer->HasOwnTextAspect())
-  {
-    myDrawer->SetTextAspect (new Prs3d_TextAspect());
-    if(myDrawer->HasLink())
-    {
-      *myDrawer->TextAspect()->Aspect() = *myDrawer->Link()->TextAspect()->Aspect();
-    }
-  }
-
-  Handle(Prs3d_TextAspect) asp = myDrawer->TextAspect();
-
-  asp->SetFont(aFont.ToCString());
-  asp->SetColor(aColor);
-  asp->SetHeight(aHeight); // I am changing the myHeight value
-
-  asp->SetHorizontalJustification(aHJustification);
-  asp->SetVerticalJustification(aVJustification);
-  asp->Aspect()->SetTextZoomable(aZoomable);
-  asp->Aspect()->SetTextAngle(aAngle);
-  asp->Aspect()->SetTextFontAspect(aFontAspect);
-  Prs3d_Text::Draw(aPresentation, asp, aText, aPosition);
-
-  /* This comment code is worked
-  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
-  Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
-  Graphic3d_Vertex vertices_text;
-  vertices_text.SetCoord(aPosition.X(),aPosition.Y(),aPosition.Y());
-  TheGroup->SetPrimitivesAspect(aspect);
-  TheGroup->Text(aText,vertices_text,aHeight,Standard_True);
-  */
-};
-
-static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  // Check arguments
-  if (argc < 14)
-  {
-    di<<"Error: "<<argv[0]<<" - invalid number of arguments\n";
-    di<<"Usage: type help "<<argv[0]<<"\n";
-    return 1; //TCL_ERROR
-  }
-
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-
-  // Create 3D view if it doesn't exist
-  if ( aContext.IsNull() )
+  if (theArgsNb < 3)
   {
-    ViewerTest::ViewerInit();
-    aContext = ViewerTest::GetAISContext();
-    if( aContext.IsNull() )
+    std::cout << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+  else if (aContext.IsNull())
+  {
+    std::cout << "Error: no active view!\n";
+    return 1;
+  }
+
+  Standard_Integer           anArgIt = 1;
+  TCollection_ExtendedString aName (theArgVec[anArgIt++], Standard_True);
+  TCollection_ExtendedString aText (theArgVec[anArgIt++], Standard_True);
+  Handle(AIS_TextLabel)      aTextPrs;
+  ViewerTest_AutoUpdater     anAutoUpdater (aContext, ViewerTest::CurrentView());
+
+  if (GetMapOfAIS().IsBound2 (aName))
+  {
+    aTextPrs  = Handle(AIS_TextLabel)::DownCast (GetMapOfAIS().Find2 (aName));
+  }
+  else
+  {
+    aTextPrs = new AIS_TextLabel();
+    aTextPrs->SetFont ("Courier");
+  }
+
+  aTextPrs->SetText (aText);
+
+  for (; anArgIt < theArgsNb; ++anArgIt)
+  {
+    TCollection_AsciiString aParam (theArgVec[anArgIt]);
+    aParam.LowerCase();
+
+    if (anAutoUpdater.parseRedrawMode (aParam))
     {
-      di << "Error: Cannot create a 3D view\n";
-      return 1; //TCL_ERROR
+      continue;
+    }
+    else if (aParam == "-pos"
+          || aParam == "-position")
+    {
+      if (anArgIt + 3 >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      gp_Pnt aPos;
+      aPos.SetX (Draw::Atof (theArgVec[++anArgIt]));
+      aPos.SetY (Draw::Atof (theArgVec[++anArgIt]));
+      aPos.SetZ (Draw::Atof (theArgVec[++anArgIt]));
+      aTextPrs->SetPosition (aPos);
+    }
+    else if (aParam == "-color")
+    {
+      if (anArgIt + 1 >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aColor (theArgVec[anArgIt + 1]);
+      Quantity_NameOfColor aNameOfColor = Quantity_NOC_BLACK;
+      if (Quantity_Color::ColorFromName (aColor.ToCString(), aNameOfColor))
+      {
+        anArgIt += 1;
+        aTextPrs->SetColor (aNameOfColor);
+        continue;
+      }
+      else if (anArgIt + 3 >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aGreen (theArgVec[anArgIt + 2]);
+      TCollection_AsciiString aBlue  (theArgVec[anArgIt + 3]);
+      if (!aColor.IsRealValue()
+       || !aGreen.IsRealValue()
+       || !aBlue.IsRealValue())
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      const Graphic3d_Vec3d anRGB (aColor.RealValue(),
+                                   aGreen.RealValue(),
+                                   aBlue.RealValue());
+
+      aTextPrs->SetColor (Quantity_Color (anRGB.r(), anRGB.g(), anRGB.b(), Quantity_TOC_RGB));
+      anArgIt += 3;
+    }
+    else if (aParam == "-halign")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      aType.LowerCase();
+      if (aType == "left")
+      {
+        aTextPrs->SetHJustification (Graphic3d_HTA_LEFT);
+      }
+      else if (aType == "center")
+      {
+        aTextPrs->SetHJustification (Graphic3d_HTA_CENTER);
+      }
+      else if (aType == "right")
+      {
+        aTextPrs->SetHJustification (Graphic3d_HTA_RIGHT);
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-valign")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      aType.LowerCase();
+      if (aType == "top")
+      {
+        aTextPrs->SetVJustification (Graphic3d_VTA_TOP);
+      }
+      else if (aType == "center")
+      {
+        aTextPrs->SetVJustification (Graphic3d_VTA_CENTER);
+      }
+      else if (aType == "bottom")
+      {
+        aTextPrs->SetVJustification (Graphic3d_VTA_BOTTOM);
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-angle")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aTextPrs->SetAngle (Draw::Atof (theArgVec[anArgIt]) * (M_PI / 180.0));
+    }
+    else if (aParam == "-zoom")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aTextPrs->SetZoomable (Draw::Atoi (theArgVec[anArgIt]) == 1);
+    }
+    else if (aParam == "-height")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aTextPrs->SetHeight (Draw::Atof(theArgVec[anArgIt]));
+    }
+    else if (aParam == "-aspect")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString anOption (theArgVec[anArgIt]);
+      anOption.LowerCase();
+      if (anOption.IsEqual ("regular"))
+      {
+        aTextPrs->SetFontAspect (Font_FA_Regular);
+      }
+      else if (anOption.IsEqual ("bold"))
+      {
+        aTextPrs->SetFontAspect (Font_FA_Bold);
+      }
+      else if (anOption.IsEqual ("italic"))
+      {
+        aTextPrs->SetFontAspect (Font_FA_Italic);
+      }
+      else if (anOption.IsEqual ("bolditalic"))
+      {
+        aTextPrs->SetFontAspect (Font_FA_BoldItalic);
+      }
+    }
+    else if (aParam == "-font")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aTextPrs->SetFont (theArgVec[anArgIt]);
+    }
+    else
+    {
+      std::cout << "Error: unknown argument '" << aParam << "'\n";
+      return 1;
     }
   }
 
-  // Text position
-  const Standard_Real X = Draw::Atof(argv[2]);
-  const Standard_Real Y = Draw::Atof(argv[3]);
-  const Standard_Real Z = Draw::Atof(argv[4]);
-  const gp_Pnt pnt(X,Y,Z);
-
-  // Text color
-  const Quantity_Parameter R = Draw::Atof(argv[5])/255.;
-  const Quantity_Parameter G = Draw::Atof(argv[6])/255.;
-  const Quantity_Parameter B = Draw::Atof(argv[7])/255.;
-  const Quantity_Color aColor( R, G, B, Quantity_TOC_RGB );
-
-  // Text alignment
-  const int hor_align = Draw::Atoi(argv[8]);
-  const int ver_align = Draw::Atoi(argv[9]);
-
-  // Text angle
-  const Standard_Real angle = Draw::Atof(argv[10]);
-
-  // Text zooming
-  const Standard_Boolean zoom = Draw::Atoi(argv[11]);
-
-  // Text height
-  const Standard_Real height = Draw::Atof(argv[12]);
-
-  // Text aspect
-  const Font_FontAspect aspect = Font_FontAspect(Draw::Atoi(argv[13]));
-
-  // Text font
-  TCollection_AsciiString font;
-  if(argc < 15)
-    font.AssignCat("Courier");
-  else
-    font.AssignCat(argv[14]);
-
-  // Text is multibyte
-  const Standard_Boolean isMultibyte = (argc < 16)? Standard_False : (Draw::Atoi(argv[15]) != 0);
-
-  // Read text string
-  TCollection_ExtendedString name(argv[1],isMultibyte);
-
-  if (name.Length())
-  {
-    Handle(MyTextClass) myT = new MyTextClass(name,pnt,aColor,hor_align,ver_align,angle,zoom,height,aspect,font.ToCString());
-    aContext->Display(myT,Standard_True);
-  }
-
+  ViewerTest::Display (aName, aTextPrs, Standard_False);
   return 0;
 }
 
@@ -5977,9 +5987,20 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vcircle CircleName [PointName PointName PointName IsFilled]\n\t\t\t\t\t[PlaneName PointName Radius IsFilled]",
     __FILE__,VCircleBuilder,group);
 
-  theCommands.Add("vdrawtext",
-    "vdrawtext  : vdrawtext name X Y Z R G B hor_align ver_align angle zoomable height Aspect [Font [isMultiByte]]",
-    __FILE__,VDrawText,group);
+  theCommands.Add ("vdrawtext",
+                   "vdrawtext name text"
+                   "\n\t\t: [-pos X=0 Y=0 Z=0]"
+                   "\n\t\t: [-color {R G B|name}=yellow]"
+                   "\n\t\t: [-halign {left|center|right}=left]"
+                   "\n\t\t: [-valign {top|center|bottom}=bottom}]"
+                   "\n\t\t: [-angle angle=0]"
+                   "\n\t\t: [-zoom {0|1}=0]"
+                   "\n\t\t: [-height height=16]"
+                   "\n\t\t: [-aspect {regular|bold|italic|bolditalic}=regular]"
+                   "\n\t\t: [-font font=Times]"
+                   "\n\t\t: [-noupdate]"
+                   "\n\t\t: Display text label at specified position.",
+    __FILE__, VDrawText, group);
 
   theCommands.Add("vdrawsphere",
     "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0] [ToPrintInfo=1]\n",
