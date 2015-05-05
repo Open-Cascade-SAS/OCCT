@@ -253,7 +253,7 @@ for which OCCT is certified to work.
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
 | VTK (for VTK Integration Services | VTK 6.1.0 http://www.vtk.org/VTK/resources/software.html |
 
-* VC++ 10 32-bit is used for certification of contributions and for building 
+* VC++ 10 64-bit is used for certification of contributions and for building 
   binary package of official release of OCCT on Windows.
 
 @subsection OCCT_OVW_SECTION_5_3 MAC OS X
@@ -331,7 +331,7 @@ OCCT installation with reference documentation requires 1,4 Gb on disk.
   * Launch the installer and follow the instructions.
 
 The includes and binaries of third-party libraries necessary for building and launching 
-OCCT are included into binary distribution (built with Visual C++ 2008). 
+OCCT are included into binary distribution (built with Visual C++ 2010). 
 When the installation is complete, you will find the directories for 3rd party products 
 (some might be absent in case of custom installation) and the main **OCCT** directory:
 
@@ -354,7 +354,7 @@ The contents of the OCCT-6.9.0 directory (called further "OCCT root", or $CASROO
   * **samples**  This folder contains sample applications.
   * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
   * **tests**  This folder contains scripts for OCCT testing.
-  * **win32/vc10**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2010;
+  * **win64/vc10**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2010;
 
 @section OCCT_OVW_SECTION_4_2 Environment Variables
 
