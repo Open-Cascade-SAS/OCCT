@@ -77,8 +77,12 @@ private:
     a2DNo3D  ,   // 0 1 0
     a2D3D    };  // 1 1 1
   static  void PreProcess (CGeometryDoc* aDoc,DisplayType aDisplayType);
-  static void PostProcess(CGeometryDoc* aDoc,UINT anID,DisplayType aDisplayType,
-                          const TCollection_AsciiString& aString,Quantity_Coefficient Coef = -1);
+  static void PostProcess(CGeometryDoc* aDoc,
+    UINT anID,
+    DisplayType aDisplayType,
+    const TCollection_AsciiString& aString,
+    Standard_Boolean UpdateViewer = Standard_True,
+    Quantity_Coefficient Coef = -1);
   static void DisplayPoint(CGeometryDoc* aDoc,
     const gp_Pnt2d& aPoint,
     const char* aText,
@@ -122,7 +126,7 @@ private:
     Handle(Geom_Surface) aSurface,
     Standard_Boolean UpdateViewer = false);
 
-
+  static void ResetView(CGeometryDoc* aDoc);
 
   static void AddSeparator(CGeometryDoc* aDoc,TCollection_AsciiString& aMessage);
 

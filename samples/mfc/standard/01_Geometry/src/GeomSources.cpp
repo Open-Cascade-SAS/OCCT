@@ -54,17 +54,20 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
 }
 
 void GeomSources::PostProcess (CGeometryDoc* aDoc, UINT anID, DisplayType aDisplayType,
-                               const TCollection_AsciiString& theString, Quantity_Coefficient Coef)
+                               const TCollection_AsciiString& theString, Standard_Boolean UpdateViewer, Quantity_Coefficient Coef)
 {
   Standard_CString aString = theString.ToCString();
-  if (aDisplayType == No2D3D || aDisplayType == a2D3D)
-  {   
-    aDoc->Fit3DViews(Coef);
-  }
+  if (UpdateViewer)
+  {
+    if (aDisplayType == No2D3D || aDisplayType == a2D3D)
+    {
+      aDoc->Fit3DViews(Coef);
+    }
 
-  if (aDisplayType == a2DNo3D || aDisplayType == a2D3D)
-  { 
-    aDoc->Fit2DViews();  
+    if (aDisplayType == a2DNo3D || aDisplayType == a2D3D)
+    {
+      aDoc->Fit2DViews();
+    }
   }
 
   TCollection_AsciiString Message("Results are ");
@@ -196,6 +199,13 @@ void GeomSources::DisplaySurface(CGeometryDoc* aDoc,
   aDoc->GetAISContext()->Display(aGraphicalSurface,UpdateViewer);
 }
 
+void GeomSources::ResetView(CGeometryDoc* aDoc)
+{
+  aDoc->GetAISContext()->CurrentViewer()->InitActiveViews();
+  Handle(V3d_View) aView = aDoc->GetAISContext()->CurrentViewer()->ActiveView();
+  aView->Reset();
+}
+
 // Function name	: GeomSources::gpTest1
 // Description	    : 
 // Return type		: void 
@@ -253,8 +263,9 @@ gp_Pnt P1(1,2,3); \n\
                   \n");
   AddSeparator(aDoc,Message);
 //--------------------------------------------------------------
-  DisplayPoint(aDoc,P1,"P1 (1,2,3)",false,0.5);
-  PostProcess(aDoc,ID_BUTTON_Test_2,TheDisplayType,Message,1.0);
+  DisplayPoint(aDoc,P1,"P1 (1,2,3)",false,30);
+  PostProcess(aDoc,ID_BUTTON_Test_2,TheDisplayType,Message,Standard_False);
+  ResetView(aDoc);
 }
 
 
@@ -279,8 +290,9 @@ gp_Pnt P2(A);      \n\
                    \n");
   AddSeparator(aDoc,Message);
 //--------------------------------------------------------------
-  DisplayPoint(aDoc,P2,"P2 (1,2,3)",false,0.5);
-  PostProcess(aDoc,ID_BUTTON_Test_3,TheDisplayType,Message,1.0 /*0.02*/);
+  DisplayPoint(aDoc,P2,"P2 (1,2,3)",false,30);
+  PostProcess(aDoc,ID_BUTTON_Test_3,TheDisplayType,Message,Standard_False);
+  ResetView(aDoc);
 }
 
 
@@ -310,7 +322,7 @@ Standard_Real TheZ = P3.Z();   \n\
                                \n");
   AddSeparator(aDoc,Message);
 //--------------------------------------------------------------
-  DisplayPoint(aDoc,P3,"P3 = gp::Origin()",false,0.5);
+  DisplayPoint(aDoc,P3,"P3 = gp::Origin()",false,30);
 
   TCollection_AsciiString Message2 (TheX);
   TCollection_AsciiString Message3 (TheY);
@@ -324,7 +336,8 @@ Standard_Real TheZ = P3.Z();   \n\
   Message4 = TheZ;
   Message += Message4;
 
-  PostProcess(aDoc,ID_BUTTON_Test_4,TheDisplayType,Message,1.0 /*0.02*/);
+  PostProcess(aDoc,ID_BUTTON_Test_4,TheDisplayType,Message,Standard_False);
+  ResetView(aDoc);
 }
 
 
