@@ -82,6 +82,10 @@
 #include <Approx_CurvilinearParameter.hxx>
 #include <Geom_BSplineSurface.hxx>
 
+#include <Poly_Triangulation.hxx>
+#include <TShort_HArray1OfShortReal.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
 
 // TODO - not thread-safe static variables
 static Standard_Real thePrecision = Precision::Confusion();     
@@ -1655,6 +1659,146 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
     {
     }
   }
+}
+
+//=======================================================================
+// function : EnsureNormalConsistency
+// purpose  : Corrects the normals in Poly_Triangulation of faces.
+//              Returns TRUE if any correction is done.
+//=======================================================================
+Standard_Boolean BRepLib::
+            EnsureNormalConsistency(const TopoDS_Shape& theShape,
+                                    const Standard_Real theAngTol,
+                                    const Standard_Boolean theForceComputeNormals)
+{
+  const Standard_Real aThresDot = cos(theAngTol);
+
+  Standard_Boolean aRetVal = Standard_False, isNormalsFound = Standard_False;
+
+  // compute normals if they are absent
+  TopExp_Explorer anExpFace(theShape,TopAbs_FACE);
+  for (; anExpFace.More(); anExpFace.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(anExpFace.Current());
+    const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace);
+    if(aSurf.IsNull())
+      continue;
+    TopLoc_Location aLoc;
+    const Handle(Poly_Triangulation)& aPT = BRep_Tool::Triangulation(aFace, aLoc);
+    if(aPT.IsNull())
+      continue;
+    if (!theForceComputeNormals && aPT->HasNormals())
+    {
+      isNormalsFound = Standard_True;
+      continue;
+    }
+
+    GeomLProp_SLProps aSLP(aSurf, 2, Precision::Confusion());
+    const Standard_Integer anArrDim = 3*aPT->NbNodes();
+    Handle(TShort_HArray1OfShortReal) aNormArr = new TShort_HArray1OfShortReal(1, anArrDim);
+    Standard_Integer anNormInd = aNormArr->Lower();
+    for(Standard_Integer i = aPT->UVNodes().Lower(); i <= aPT->UVNodes().Upper(); i++)
+    {
+      const gp_Pnt2d &aP2d = aPT->UVNodes().Value(i);
+      aSLP.SetParameters(aP2d.X(), aP2d.Y());
+
+      gp_XYZ aNorm(0.,0.,0.);
+      if(!aSLP.IsNormalDefined())
+      {
+#ifdef OCCT_DEBUG
+        cout << "BRepLib::EnsureNormalConsistency(): Cannot find normal!" << endl;
+#endif
+      }
+      else
+      {
+        aNorm = aSLP.Normal().XYZ();
+        if (aFace.Orientation() == TopAbs_REVERSED)
+          aNorm.Reverse();
+      }
+      aNormArr->ChangeValue(anNormInd++) = static_cast<Standard_ShortReal>(aNorm.X());
+      aNormArr->ChangeValue(anNormInd++) = static_cast<Standard_ShortReal>(aNorm.Y());
+      aNormArr->ChangeValue(anNormInd++) = static_cast<Standard_ShortReal>(aNorm.Z());
+    }
+
+    aRetVal = Standard_True;
+    isNormalsFound = Standard_True;
+    aPT->SetNormals(aNormArr);
+  }
+
+  if(!isNormalsFound)
+  {
+    return aRetVal;
+  }
+
+  // loop by edges
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
+  TopExp::MapShapesAndAncestors(theShape,TopAbs_EDGE,TopAbs_FACE,aMapEF);
+  for(Standard_Integer anInd = 1; anInd <= aMapEF.Extent(); anInd++)
+  {
+    const TopoDS_Edge& anEdg = TopoDS::Edge(aMapEF.FindKey(anInd));
+    const TopTools_ListOfShape& anEdgList = aMapEF.FindFromIndex(anInd);
+    if (anEdgList.Extent() != 2)
+      continue;
+    TopTools_ListIteratorOfListOfShape anItF(anEdgList);
+    const TopoDS_Face aFace1 = TopoDS::Face(anItF.Value());
+    anItF.Next();
+    const TopoDS_Face aFace2 = TopoDS::Face(anItF.Value());
+    TopLoc_Location aLoc1, aLoc2;
+    const Handle(Poly_Triangulation)& aPT1 = BRep_Tool::Triangulation(aFace1, aLoc1);
+    const Handle(Poly_Triangulation)& aPT2 = BRep_Tool::Triangulation(aFace2, aLoc2);
+
+    if(aPT1.IsNull() || aPT2.IsNull())
+      continue;
+
+    if(!aPT1->HasNormals() || !aPT2->HasNormals())
+      continue;
+
+    const Handle(Poly_PolygonOnTriangulation)& aPTEF1 = 
+                                BRep_Tool::PolygonOnTriangulation(anEdg, aPT1, aLoc1);
+    const Handle(Poly_PolygonOnTriangulation)& aPTEF2 = 
+                                BRep_Tool::PolygonOnTriangulation(anEdg, aPT2, aLoc2);
+
+    TShort_Array1OfShortReal& aNormArr1 = aPT1->ChangeNormals();
+    TShort_Array1OfShortReal& aNormArr2 = aPT2->ChangeNormals();
+
+    for(Standard_Integer anEdgNode = aPTEF1->Nodes().Lower();
+                         anEdgNode <= aPTEF1->Nodes().Upper(); anEdgNode++)
+    {
+      //Number of node
+      const Standard_Integer aFNodF1 = aPTEF1->Nodes().Value(anEdgNode);
+      const Standard_Integer aFNodF2 = aPTEF2->Nodes().Value(anEdgNode);
+
+      const Standard_Integer aFNorm1FirstIndex = aNormArr1.Lower() + 3*
+                                                    (aFNodF1 - aPT1->Nodes().Lower());
+      const Standard_Integer aFNorm2FirstIndex = aNormArr2.Lower() + 3*
+                                                    (aFNodF2 - aPT2->Nodes().Lower());
+
+      gp_XYZ aNorm1(aNormArr1.Value(aFNorm1FirstIndex),
+                    aNormArr1.Value(aFNorm1FirstIndex+1),
+                    aNormArr1.Value(aFNorm1FirstIndex+2));
+      gp_XYZ aNorm2(aNormArr2.Value(aFNorm2FirstIndex),
+                    aNormArr2.Value(aFNorm2FirstIndex+1),
+                    aNormArr2.Value(aFNorm2FirstIndex+2));
+      const Standard_Real aDot = aNorm1 * aNorm2;
+
+      if(aDot > aThresDot)
+      {
+        gp_XYZ aNewNorm = (aNorm1 + aNorm2).Normalized();
+        aNormArr1.ChangeValue(aFNorm1FirstIndex) =
+          aNormArr2.ChangeValue(aFNorm2FirstIndex) =
+          static_cast<Standard_ShortReal>(aNewNorm.X());
+        aNormArr1.ChangeValue(aFNorm1FirstIndex+1) =
+          aNormArr2.ChangeValue(aFNorm2FirstIndex+1) =
+          static_cast<Standard_ShortReal>(aNewNorm.Y());
+        aNormArr1.ChangeValue(aFNorm1FirstIndex+2) =
+          aNormArr2.ChangeValue(aFNorm2FirstIndex+2) =
+          static_cast<Standard_ShortReal>(aNewNorm.Z());
+        aRetVal = Standard_True;
+      }
+    }
+  }
+
+  return aRetVal;
 }
 
 //=======================================================================

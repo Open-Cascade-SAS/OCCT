@@ -1,0 +1,49 @@
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 9
+  } else {
+    set max_time 9
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 3
+  } else {
+    set max_time 3
+  }
+}
+
+restore [locate_data_file Mustang_250.brep] a
+
+dchrono ch reset
+dchrono ch start
+puts [fastsewing result -tol 2.5e-4 a]
+dchrono ch stop
+
+set q [dchrono ch show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
+puts "$z"
+
+if { $z > ${max_time} } {
+    puts "Elapsed time is more than ${max_time} seconds - Error"
+} else {
+    puts "Elapsed time is less than ${max_time} seconds - OK"
+}
+
+donly result
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 250
+ EDGE      : 496
+ WIRE      : 248
+ FACE      : 248
+ SHELL     : 1
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 1244
+"
+
+checknbshapes result -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"

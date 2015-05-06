@@ -258,6 +258,7 @@ is
     -- 
 
     class  Sewing;
+    imported transient class FastSewing;
 
     -- 
     --  Construction of composite topologies

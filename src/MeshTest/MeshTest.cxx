@@ -81,6 +81,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+#include <BRepLib.hxx>
 
 
 //epa Memory leaks test
@@ -1590,6 +1591,31 @@ Standard_Integer triedgepoints(Draw_Interpretor& di, Standard_Integer nbarg, con
 }
 
 //=======================================================================
+//function : correctnormals
+//purpose  : Corrects normals in shape triangulation nodes (...)
+//=======================================================================
+Standard_Integer correctnormals (Draw_Interpretor& theDI, 
+                            Standard_Integer /*theNArg*/, 
+                            const char** theArgVal)
+{
+  TopoDS_Shape S = DBRep::Get(theArgVal[1]);
+
+  //Use "correctnormals shape"
+
+  
+  if(!BRepLib::EnsureNormalConsistency(S))
+  {
+    theDI << "Normals have not been changed!\n";
+  }
+  else
+  {
+    theDI << "Some corrections in source shape have been made!\n";
+  }
+
+  return 0;
+}
+
+//=======================================================================
 void  MeshTest::Commands(Draw_Interpretor& theCommands)
 //=======================================================================
 {
@@ -1622,6 +1648,8 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("wavefront","wavefront name",__FILE__, wavefront, g);
   theCommands.Add("onetriangulation","onetriangulation name",__FILE__, onetriangulation, g);
   theCommands.Add("triepoints", "triepoints shape1 [shape2 ...]",__FILE__, triedgepoints, g);
+
+  theCommands.Add("correctnormals", "correctnormals shape",__FILE__, correctnormals, g);
 
 #if 0
   theCommands.Add("extrema","extrema ",__FILE__, extrema, g);

@@ -42,6 +42,8 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <Precision.hxx>
 #include <Draw_ProgressIndicator.hxx>
+#include <NCollection_Vector.hxx>
+#include <BRepBuilderAPI_FastSewing.hxx>
 
 #ifdef _WIN32
 //#define strcasecmp strcmp Already defined
@@ -405,6 +407,66 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
 }
 
 //=======================================================================
+//function : fastsewing
+//purpose  : 
+//=======================================================================
+Standard_Integer fastsewing (Draw_Interpretor& theDI, 
+                            Standard_Integer theNArg, 
+                            const char** theArgVal)
+{
+  if(theNArg < 3)
+  {
+    //                0         1       2     3         4
+    theDI << "Use: fastsewing result [-tol <value>] <list_of_faces>\n";
+    return 1;
+  }
+
+  BRepBuilderAPI_FastSewing aFS;
+
+  Standard_Integer aStartIndex = 2;
+
+  if(!strcmp(theArgVal[aStartIndex], "-tol"))
+  {
+    aFS.SetTolerance(Draw::Atof (theArgVal[aStartIndex+1]));
+    aStartIndex = 4;
+  }
+
+  for(Standard_Integer i = aStartIndex; i < theNArg; i++)
+  {
+    TopoDS_Shape aS = DBRep::Get(theArgVal[i]);
+    
+    if(!aFS.Add(aS))
+    {
+      theDI << "Face is not added. See statuses.\n";
+    }
+  }
+
+  BRepBuilderAPI_FastSewing::FS_VARStatuses aStatus = aFS.GetStatuses();
+
+  if(aStatus)
+  {
+    theDI << "Error: There are some problems while adding (" <<
+                        (static_cast<Standard_Integer>(aStatus)) << ")\n";
+    aFS.GetStatuses(&cout);
+  }
+
+  aFS.Perform();
+
+  aStatus = aFS.GetStatuses();
+
+  if(aStatus)
+  {
+    theDI << "Error: There are some problems while performing (" <<
+                        (static_cast<Standard_Integer>(aStatus)) << ")\n";
+    aFS.GetStatuses(&cout);
+  }
+
+  DBRep::Set(theArgVal[1], aFS.GetResult());
+
+  return 0;
+}
+
+//=======================================================================
 // continuity
 //=======================================================================
 
@@ -508,5 +570,8 @@ void  BRepTest::SurfaceCommands(Draw_Interpretor& theCommands)
   theCommands.Add("encoderegularity", 
 		  "encoderegularity shape [tolerance (in degree)]",
 		  __FILE__,encoderegularity, g);
+
+  theCommands.Add ("fastsewing", "fastsewing result [-tol <value>] <list_of_faces>", 
+                                                __FILE__, fastsewing, g);
 }
 
