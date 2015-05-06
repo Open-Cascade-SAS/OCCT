@@ -69,10 +69,32 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   myVPSizeY = theViewportSizeY;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
-  if (!initTrashTextures (theGlContext))
+  if (!myColorTexture->Init (theGlContext, myTextFormat,
+                             GL_RGBA, GL_UNSIGNED_BYTE,
+                             myVPSizeX, myVPSizeY, Graphic3d_TOT_2D))
   {
     Release (theGlContext.operator->());
     return Standard_False;
+  }
+
+  // extensions (GL_OES_packed_depth_stencil, GL_OES_depth_texture) + GL version might be used to determine supported formats
+  // instead of just trying to create such texture
+  if (!myDepthStencilTexture->Init (theGlContext, GL_DEPTH24_STENCIL8,
+                                    GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
+                                    myVPSizeX, myVPSizeY, Graphic3d_TOT_2D))
+  {
+    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
+      + "Warning! Depth textures are not supported by hardware!";
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                               GL_DEBUG_TYPE_PORTABILITY_ARB,
+                               0,
+                               GL_DEBUG_SEVERITY_HIGH_ARB,
+                               aMsg);
+
+    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
+    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBufferId);
+    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, myVPSizeX, myVPSizeY);
+    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
   }
 
   // Build FBO and setup it as texture
@@ -80,15 +102,23 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   theGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
   theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                                 GL_TEXTURE_2D, myColorTexture->TextureId(), 0);
-#ifdef GL_DEPTH_STENCIL_ATTACHMENT
-  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                                GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
-#else
-  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                                GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
-  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                                GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
-#endif
+  if (myDepthStencilTexture->IsValid())
+  {
+  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
+    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                                  GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+  #else
+    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                  GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                  GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+  #endif
+  }
+  else if (myGlDepthRBufferId != NO_RENDERBUFFER)
+  {
+    theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                     GL_RENDERBUFFER, myGlDepthRBufferId);
+  }
   if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
     Release (theGlContext.operator->());
@@ -285,20 +315,6 @@ void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
 
   myColorTexture->Release (theGlCtx);
   myDepthStencilTexture->Release (theGlCtx);
-}
-
-// =======================================================================
-// function : initTrashTexture
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_FrameBuffer::initTrashTextures (const Handle(OpenGl_Context)& theGlContext)
-{
-  return    myColorTexture->Init (theGlContext, myTextFormat,
-                                  GL_RGBA, GL_UNSIGNED_BYTE,
-                                  myVPSizeX, myVPSizeY, Graphic3d_TOT_2D)
-  && myDepthStencilTexture->Init (theGlContext, GL_DEPTH24_STENCIL8,
-                                  GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
-                                  myVPSizeX, myVPSizeY, Graphic3d_TOT_2D);
 }
 
 // =======================================================================

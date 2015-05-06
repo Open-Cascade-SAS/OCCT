@@ -153,9 +153,6 @@ public:
 
 protected:
 
-  //! Generate textures with undefined data
-  Standard_Boolean initTrashTextures (const Handle(OpenGl_Context)& theGlContext);
-
   Standard_Boolean isValidFrameBuffer() const
   {
     return myGlFBufferId != NO_FRAMEBUFFER;

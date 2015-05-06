@@ -16,6 +16,7 @@
 #include <OpenGl_Font.hxx>
 
 #include <OpenGl_Context.hxx>
+#include <Graphic3d_TextureParams.hxx>
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -113,7 +114,13 @@ bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
   memset (&myLastTilePx, 0, sizeof(myLastTilePx));
   myLastTilePx.Bottom = myTileSizeY;
 
-  myTextures.Append (new OpenGl_Texture());
+  Handle(Graphic3d_TextureParams) aParams = new Graphic3d_TextureParams();
+  aParams->SetModulate    (Standard_False);
+  aParams->SetRepeat      (Standard_False);
+  aParams->SetFilter      (Graphic3d_TOTF_BILINEAR);
+  aParams->SetAnisoFilter (Graphic3d_LOTA_OFF);
+
+  myTextures.Append (new OpenGl_Texture (aParams));
   Handle(OpenGl_Texture)& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;
@@ -130,10 +137,6 @@ bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
     return false;
   }
 
-  aTexture->Bind (theCtx);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, theCtx->TextureWrapClamp());
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, theCtx->TextureWrapClamp());
-  aTexture->Unbind (theCtx);
   return true;
 }
 

@@ -775,11 +775,11 @@ bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer* theReadFbo,
     {
       theReadFbo->ColorTexture()       ->Bind   (myGlContext, GL_TEXTURE0 + 0);
       theReadFbo->DepthStencilTexture()->Bind   (myGlContext, GL_TEXTURE0 + 1);
-      myFullScreenQuad.BindVertexAttrib (myGlContext, 0);
+      myFullScreenQuad.BindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
 
       myGlContext->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
 
-      myFullScreenQuad.UnbindVertexAttrib (myGlContext, 0);
+      myFullScreenQuad.UnbindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
       theReadFbo->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
       theReadFbo->ColorTexture()       ->Unbind (myGlContext, GL_TEXTURE0 + 0);
     }

@@ -390,6 +390,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   const bool    toForceP2  = !theCtx->IsGlGreaterEqual (3, 0) && !theCtx->arbNPTW;
   const GLsizei aWidthOut  = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aWidth,  aMaxSize) : Min (aWidth,  aMaxSize);
   const GLsizei aHeightOut = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize) : Min (aHeight, aMaxSize);
+  const GLenum  aFilter    = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
+  const GLenum  aWrapMode  = myParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
 
 #if !defined(GL_ES_VERSION_2_0)
   GLint aTestWidth  = 0;
@@ -419,8 +421,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     #if !defined(GL_ES_VERSION_2_0)
       myTarget = GL_TEXTURE_1D;
       Bind (theCtx);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
 
       Image_PixMap aCopy;
       if (aDataPtr != NULL)
@@ -480,8 +483,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     {
       myTarget = GL_TEXTURE_2D;
       Bind (theCtx);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
 
       Image_PixMap aCopy;
       if (aDataPtr != NULL)
@@ -548,9 +553,23 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     {
       myTarget     = GL_TEXTURE_2D;
       myHasMipmaps = Standard_True;
+
+      GLenum aFilterMin = aFilter;
+      aFilterMin = GL_NEAREST_MIPMAP_NEAREST;
+      if (myParams->Filter() == Graphic3d_TOTF_BILINEAR)
+      {
+        aFilterMin = GL_LINEAR_MIPMAP_NEAREST;
+      }
+      else if (myParams->Filter() == Graphic3d_TOTF_TRILINEAR)
+      {
+        aFilterMin = GL_LINEAR_MIPMAP_LINEAR;
+      }
+
       Bind (theCtx);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterMin);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
 
       if (theCtx->arbFBO != NULL
        && aWidth == aWidthOut && aHeight == aHeightOut)
@@ -667,21 +686,16 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 #if !defined(GL_ES_VERSION_2_0)
   myTarget = GL_TEXTURE_RECTANGLE;
 
-  const GLsizei aSizeX = Min (theCtx->MaxTextureSize(), theSizeX);
-  const GLsizei aSizeY = Min (theCtx->MaxTextureSize(), theSizeY);
+  const GLsizei aSizeX    = Min (theCtx->MaxTextureSize(), theSizeX);
+  const GLsizei aSizeY    = Min (theCtx->MaxTextureSize(), theSizeY);
+  const GLenum  aFilter   = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
+  const GLenum  aWrapMode = myParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
 
   Bind (theCtx);
-
-  if (myParams->Filter() == Graphic3d_TOTF_NEAREST)
-  {
-    glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  }
-  else
-  {
-    glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  }
+  glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, aFilter);
+  glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, aFilter);
+  glTexParameteri (myTarget, GL_TEXTURE_WRAP_S,     aWrapMode);
+  glTexParameteri (myTarget, GL_TEXTURE_WRAP_T,     aWrapMode);
 
   const GLint anIntFormat = theFormat.Internal();
   myTextFormat = theFormat.Format();
