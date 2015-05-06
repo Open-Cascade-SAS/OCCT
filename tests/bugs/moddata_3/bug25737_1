@@ -1,0 +1,32 @@
+puts "============"
+puts "CR25737"
+puts "============"
+puts ""
+###################################################################################
+# GCPnts_TangentialDeflection does not produce points to approximate a knee
+###################################################################################
+
+restore [locate_data_file bug25737_face3535.brep] result
+
+tclean result
+incmesh result 1 -a 20
+
+isos result 0
+
+triangles result
+
+set report [tricheck result]
+if {$report != ""} {
+  puts "Error : Problem of build a mesh"
+} else {
+  puts "OK : Building a mesh is good"
+}
+
+# Checking triangulation area (triarea command)...
+set rel_tol 1
+set area_eps 0
+
+smallview
+donly result
+fit
+set only_screen_axo 1
