@@ -905,7 +905,7 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
 
   Standard_Boolean isAISRemainsDetected = Standard_False;
 
-  // 3. Remove entity owners from AIS_Selection
+  // 3. AIS_Selection : remove entity owners from AIS_Selection
   const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
   Handle(AIS_Selection) aSelection = AIS_Selection::Selection (mySelName.ToCString());
   AIS_NListTransient::Iterator anIter (aSelection->Objects());
@@ -922,22 +922,23 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
     {
       isAISRemainsDetected = Standard_True;
     }
-
-    aRemoveEntites.Append (anOwner);
-    anOwner->SetSelected (Standard_False);
-    for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+    else
     {
-      Unhilight (anOwner, aViewer->ActiveView());
+      aRemoveEntites.Append (anOwner);
+      anOwner->SetSelected (Standard_False);
+      for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+      {
+        Unhilight (anOwner, aViewer->ActiveView());
+      }
     }
   }
-
   AIS_NListTransient::Iterator anIterRemove (aRemoveEntites);
   for (; anIterRemove.More(); anIterRemove.Next())
   {
     aSelection->Select (anIterRemove.Value());
   }
 
-  // 4. Remove entity owners from myMapOfOwner
+  // 4. AIS_LocalContext - myMapOfOwner : remove entity owners from myMapOfOwner
   SelectMgr_IndexedMapOfOwner anOwnersToKeep;
   for (Standard_Integer anIdx = 1; anIdx <= myMapOfOwner.Extent(); anIdx++)
   {

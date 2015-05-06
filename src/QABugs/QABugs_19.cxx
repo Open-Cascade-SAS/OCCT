@@ -22,6 +22,7 @@
 #include <V3d_View.hxx>
 #include <TopoDS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_LocalContext.hxx>
 #include <AIS_TexturedShape.hxx>
 #include <Image_PixMap.hxx>
 #include <Image_Color.hxx>
@@ -3551,6 +3552,95 @@ static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , 
   return 0;
 }
 
+//=======================================================================
+//function : OCC26172
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 1)
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if(anAISContext.IsNull())
+  {
+    std::cerr << "Error: no active view. Please call vinit.\n";
+    return 1;
+  }
+
+  gp_Pnt aStart (100, 100, 100);
+  gp_Pnt anEnd (300, 400, 600);
+  BRepBuilderAPI_MakeEdge anEdgeBuilder (aStart, anEnd);
+  TopoDS_Edge anEdge = anEdgeBuilder.Edge();
+  Handle(AIS_Shape) aTestAISShape = new AIS_Shape (anEdge);
+  anAISContext->Display (aTestAISShape);
+
+  // 2. activate it in selection modes
+  TColStd_SequenceOfInteger aModes;
+  aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_VERTEX));
+  aModes.Append (AIS_Shape::SelectionMode ((TopAbs_ShapeEnum) TopAbs_EDGE));
+
+  anAISContext->OpenLocalContext();
+  anAISContext->Deactivate (aTestAISShape);
+  anAISContext->Load (aTestAISShape, -1, true);
+  for (Standard_Integer anIt = 1; anIt <= aModes.Length(); ++anIt)
+  {
+    anAISContext->Activate (aTestAISShape, aModes (anIt));
+  }
+
+  // select entities in vertex selection mode
+  Handle(SelectMgr_Selection) aSelection = aTestAISShape->Selection (aModes (1));
+  for (aSelection->Init(); aSelection->More(); aSelection->Next())
+  {
+    Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
+    if (anEntity.IsNull())
+    {
+      continue;
+    }
+
+    Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
+
+    if (anOwner.IsNull())
+    {
+      continue;
+    }
+
+    anAISContext->LocalContext()->AddOrRemoveSelected (anOwner);
+  }
+
+  // select entities in edge selection mode
+  aSelection = aTestAISShape->Selection (aModes (2));
+  for (aSelection->Init(); aSelection->More(); aSelection->Next())
+  {
+    Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive()->BaseSensitive();
+    if (anEntity.IsNull())
+    {
+      continue;
+    }
+
+    Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
+
+    if (anOwner.IsNull())
+    {
+      continue;
+    }
+
+    anAISContext->LocalContext()->AddOrRemoveSelected (anOwner);
+  }
+
+  // deactivate vertex mode and check clearing of outdated selection
+  anAISContext->Deactivate (aTestAISShape, aModes (1));
+  anAISContext->LocalContext()->ClearOutdatedSelection (aTestAISShape, true);
+
+  return 0;
+}
+
 #include <IntTools_Context.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 
@@ -3758,6 +3848,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC25545, group);
   theCommands.Add ("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   theCommands.Add ("OCC24881", "OCC24881 shape", __FILE__, OCC24881, group);
+  theCommands.Add ("OCC26172", "OCC26172", __FILE__, OCC26172, group);
   theCommands.Add ("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   return;

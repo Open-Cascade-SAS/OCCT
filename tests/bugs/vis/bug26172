@@ -1,0 +1,29 @@
+puts "============"
+puts "CR26172"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Locally selected object stays in the viewer after object deactivation in the local context"
+##########################################################################################
+
+set check_x 102
+set check_y 333
+
+pload VISUALIZATION MODELING
+
+vinit View1
+vclear
+vaxo
+
+OCC26172
+
+vfit
+
+# check that the selection is cleared properly
+checkcolor $check_x $check_y 0.8 0.8 0.8
+if { [checkcolor $check_x $check_y 0.8 0.8 0.8] != 1 } {
+  puts "Error: selection is cleared incorrectly by AIS_LocalContext::ClearOutdatedSelection()"
+}
+
+vdump ${imagedir}/${casename}.png
