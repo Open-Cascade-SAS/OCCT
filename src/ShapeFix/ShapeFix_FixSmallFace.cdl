@@ -64,17 +64,10 @@ is
     ---Purpose : 
     --
     
-    SplitFaces(me: mutable) returns Shape from TopoDS;
-    ---Purpose : Split faces by splitting vertices
-    --
-    
     SplitOneFace(me: mutable; F : in out Face from TopoDS;theSplittedFaces: in out Compound from TopoDS) returns Boolean;
     ---Purpose : Compute data for face splitting.
     --
     
-    RemoveSmallFaces(me:mutable) returns Shape from TopoDS;
-    ---Purpose : Remove small faces from compound.
-  
     --Fixes after removing
     FixFace(me: mutable; F: Face from TopoDS) returns Face from TopoDS;
     FixShape(me: mutable) returns Shape from TopoDS;

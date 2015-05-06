@@ -539,14 +539,6 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
   return myShape;
 }
 
- TopoDS_Shape ShapeFix_FixSmallFace::SplitFaces() 
-{
-   myShape = RemoveSmallFaces();
-   myResult = myShape;
-  return myShape;
-
-}
-
  Standard_Boolean ShapeFix_FixSmallFace::SplitOneFace(TopoDS_Face& F,TopoDS_Compound& theSplittedFaces) 
 {
   TopTools_DataMapOfShapeListOfShape MapEdges; 
@@ -716,16 +708,6 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
       return Standard_True ;
     }
   return Standard_False ;
-}
-
-
- TopoDS_Shape ShapeFix_FixSmallFace::RemoveSmallFaces() 
-{
-   myShape = SplitFaces();
-   myShape = FixSpotFace();
-   myShape = FixStripFace ();
-   return myShape;
-
 }
 
  TopoDS_Face ShapeFix_FixSmallFace::FixFace(const TopoDS_Face& F) 
