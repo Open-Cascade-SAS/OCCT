@@ -74,8 +74,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Bnd_Box.hxx>
 
-#include <XSDRAWSTLVRML_ToVRML.hxx>
-
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
 #pragma warning(4:4190)
@@ -1178,26 +1176,6 @@ static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : tovrml
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer tovrml(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if ( argc < 3 )
-  {
-    di << "Wrong number of parameters" << "\n";
-    di << "Use : tovrml <shape name> <file name>" << "\n";
-    return 0;
-  }
-  XSDRAWSTLVRML_ToVRML aVrml;
-  TopoDS_Shape aShape = DBRep::Get (argv[1]);
-  const char* aFilename = argv[2];
-  if (!aVrml.Write (aShape,aFilename)) return 1;
-  return 0;
-}
-
 //-----------------------------------------------------------------------------
 
 static Standard_Integer meshinfo(Draw_Interpretor& di,
@@ -1238,7 +1216,6 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   //XSDRAW::LoadDraw(theCommands);
 
   theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
-  theCommands.Add ("tovrml",    "shape file",__FILE__, tovrml, g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",   "shape file",__FILE__,readstl,g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);

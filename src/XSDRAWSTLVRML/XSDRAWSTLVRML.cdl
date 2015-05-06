@@ -33,9 +33,6 @@ is
     class CoordsMap instantiates DataMap from TCollection
             ( Integer from Standard, DataMapOfIntegerReal from TColStd, MapIntegerHasher from TColStd );
 
-    class ToVRML;
-    ---Purpose: A utility which writes a Shape to VRML format
-
     InitCommands (theCommands : in out Interpretor from Draw);
     ---Purpose : Inits commands for writing to STL and VRML formats
 
