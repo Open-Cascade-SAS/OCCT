@@ -97,7 +97,11 @@ void StdSelect_ViewerSelector3d::SetPixelTolerance (const Standard_Real theToler
 {
   if (mytolerance != theTolerance)
   {
-    mytolerance = theTolerance;
+    if (theTolerance < 0.0)
+      myTolerances.ResetDefaults();
+    else
+      myTolerances.SetCustomTolerance (theTolerance);
+    mytolerance = myTolerances.Tolerance();
     myToUpdateTolerance = Standard_True;
   }
 }

@@ -429,10 +429,11 @@ is
 -- aMode provides the selection mode index of the entity aniobj.
 
     SetPixelTolerance(me:mutable;
-			aPrecision: Real from Standard = 4.0);
+			aPrecision: Real from Standard = 2.0);
     ---Level: Public
-    ---Purpose: Define the current selection pixel sensitivity
-    --		for this context or local context if any one is activated.
+    ---Purpose: Disables the mechanism of adaptive tolerance calculation in SelectMgr_ViewerSelector and
+    --          sets the given tolerance for ALL sensitive entities activated. For more information, see
+    --          SelectMgr_ViewerSelector documentation
     --  Warning: When a local context is open the sensitivity is apply on it 
     --          instead on the main context.
 

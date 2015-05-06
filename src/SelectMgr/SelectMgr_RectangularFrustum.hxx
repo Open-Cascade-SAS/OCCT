@@ -45,6 +45,10 @@ public:
   //! Returns a copy of the frustum transformed according to the matrix given
   virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
 
+  //! IMPORTANT: Makes sense only for frustum built on a single point!
+  //! Returns a copy of the frustum resized according to the scale factor given
+  virtual NCollection_Handle<SelectMgr_BaseFrustum> Scale (const Standard_Real theScaleFactor) Standard_OVERRIDE;
+
 
   // SAT Tests for different objects
 
@@ -107,8 +111,9 @@ protected:
 private:
 
   SelectMgr_Vec3 myNearPickedPnt;             //!< 3d projection of user-picked selection point onto near view plane
-  SelectMgr_Vec3 myFarPickedPnt;               //!< 3d projection of user-picked selection point onto far view plane
+  SelectMgr_Vec3 myFarPickedPnt;              //!< 3d projection of user-picked selection point onto far view plane
   SelectMgr_Vec3 myViewRayDir;
+  gp_Pnt2d       myMousePos;                  //!< Mouse coordinates
 };
 
 #endif // _SelectMgr_RectangularFrustum_HeaderFile

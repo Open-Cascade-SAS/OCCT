@@ -749,7 +749,7 @@ static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char
 {
   if( argc > 2 )
   {
-    di << "Use: " << argv[0] << " [tolerance_value]\n";
+    di << "Wrong parameters! Must be: " << argv[0] << " [-unset] [tolerance]\n";
     return 1;
   }
 
@@ -760,14 +760,20 @@ static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char
   if( argc == 1 )
   {
     Standard_Real aPixelTolerance = aContext->PixelTolerance();
-    di << "Precision mode  : 0 (window)\n";
     di << "Pixel tolerance : " << aPixelTolerance << "\n";
   }
   else if (argc == 2)
   {
-
-    Standard_Integer aPixelTolerance = Draw::Atoi (argv[1]);
-    aContext->SetPixelTolerance (aPixelTolerance);
+    TCollection_AsciiString anArg = TCollection_AsciiString (argv[1]);
+    anArg.LowerCase();
+    if (anArg == "-unset")
+    {
+      aContext->SetPixelTolerance (-1.0);
+    }
+    else
+    {
+      aContext->SetPixelTolerance (anArg.RealValue());
+    }
   }
 
   return 0;
@@ -5275,7 +5281,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VClearSensi,group);
 
   theCommands.Add("vselprecision",
-		  "vselprecision : vselprecision [tolerance_value]",
+		  "vselprecision [-unset] [tolerance_value]"
+                  "\n\t\t  Manages selection precision or prints current value if no parameter is passed."
+                  "\n\t\t  -unset - restores default selection tolerance behavior, based on individual entity tolerance",
 		  __FILE__,VSelPrecision,group);
 
   theCommands.Add("vperf",

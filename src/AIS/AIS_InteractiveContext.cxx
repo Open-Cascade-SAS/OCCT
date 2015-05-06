@@ -1703,6 +1703,7 @@ void AIS_InteractiveContext::redisplayPrsRecModes (const Handle(AIS_InteractiveO
     {
       theIObj->Update (aModes.Value(), Standard_False);
     }
+    theIObj->UpdateSelection();
     theIObj->SetRecomputeOk();
   }
 
@@ -2590,7 +2591,10 @@ void AIS_InteractiveContext::UnsetSelectionMode (const Handle(AIS_InteractiveObj
 
 //=======================================================================
 //function : SetPixelTolerance
-//purpose  :
+//purpose  : Disables the mechanism of adaptive tolerance calculation in
+//           SelectMgr_ViewerSelector and sets the given tolerance for ALL
+//           sensitive entities activated. For more information, see
+//           SelectMgr_ViewerSelector.hxx
 //=======================================================================
 void AIS_InteractiveContext::SetPixelTolerance (const Standard_Real thePrecision)
 {
@@ -2672,8 +2676,8 @@ void AIS_InteractiveContext::InitAttributes()
   aLineAspect->SetWidth      (1.0);
   aLineAspect->SetTypeOfLine (Aspect_TOL_DASH);
 
-  // tolerance to 4 pixels...
-  SetPixelTolerance();
+  // tolerance to 2 pixels...
+  SetPixelTolerance (2.0);
 
   // Customizing the drawer for trihedrons and planes...
   Handle(Prs3d_DatumAspect) aTrihAspect = myDefaultDrawer->DatumAspect();

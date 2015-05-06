@@ -40,6 +40,10 @@ public:
   //! Returns a copy of active frustum transformed according to the matrix given
   Standard_EXPORT virtual SelectMgr_SelectingVolumeManager Transform (const gp_Trsf& theTrsf);
 
+  //! IMPORTANT: Makes sense only for point selection!
+  //! Returns a copy of the frustum resized according to the scale factor given
+  Standard_EXPORT virtual SelectMgr_SelectingVolumeManager Scale (const Standard_Real theScaleFactor);
+
   Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
 
   Standard_EXPORT void SetActiveSelectionType (const SelectionType& theType);

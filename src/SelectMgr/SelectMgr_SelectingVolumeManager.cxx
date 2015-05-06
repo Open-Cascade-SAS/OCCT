@@ -49,6 +49,25 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Transform (co
 }
 
 //=======================================================================
+// function : Scale
+// purpose  : IMPORTANT: Makes sense only for point selection!
+//            Returns a copy of the frustum resized according to the scale factor given
+//=======================================================================
+SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Scale (const Standard_Real theScaleFactor)
+{
+  if (myActiveSelectionType != Point)
+    return SelectMgr_SelectingVolumeManager (Standard_False);
+
+  SelectMgr_SelectingVolumeManager aMgr (Standard_False);
+
+  aMgr.myActiveSelectionType = Point;
+
+  aMgr.mySelectingVolumes[Point] = mySelectingVolumes[Point]->Scale (theScaleFactor);
+
+  return aMgr;
+}
+
+//=======================================================================
 // function : GetActiveSelectionType
 // purpose  :
 //=======================================================================

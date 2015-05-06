@@ -24,8 +24,8 @@ vfit
 vtop
 
 vaspects -setwidth 5
-vmoveto 199 200
-if { "[vreadpixel 199 200 rgb name]" != "CYAN1"  } {
+vmoveto 200 200
+if { "[vreadpixel 200 200 rgb name]" != "CYAN1"  } {
   puts "Error : The box is not selectable!"
 }
 

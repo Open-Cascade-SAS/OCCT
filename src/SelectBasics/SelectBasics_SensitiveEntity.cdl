@@ -54,11 +54,6 @@ is
     ---Purpose: Checks whether the sensitive entity is overlapped by
     --          current selecting volume
 
-    SetSensitivityFactor (me : mutable;
-                          theSensFactor :Real from Standard);
-    ---C++: inline
-    ---Purpose: Allows to manage the sensitivity of the entity
-
     SensitivityFactor (me)
       returns Real from Standard;
     ---C++: inline
@@ -82,6 +77,12 @@ is
 
     Clear (me : mutable) is deferred;
     ---Purpose: Clears up all the resources and memory allocated
+
+    SetSensitivityFactor (me : mutable;
+                          theSensFactor :Real from Standard)
+      is protected;
+    ---C++: inline
+    ---Purpose: Allows to manage the sensitivity of the entity
 
 
 fields

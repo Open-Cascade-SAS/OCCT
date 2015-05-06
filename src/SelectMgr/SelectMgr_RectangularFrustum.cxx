@@ -154,6 +154,7 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d &thePoint)
   myNearPickedPnt = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 0.0);
   myFarPickedPnt  = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 1.0);
   myViewRayDir = myFarPickedPnt - myNearPickedPnt;
+  myMousePos = thePoint;
 
   // LeftTopNear
   myVertices[0] = myBuilder->ProjectPntOnViewPlane (thePoint.X() - myPixelTolerance / 2.0,
@@ -428,6 +429,136 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Transfor
   // RightBottomFar
   aRes->myVertices[7] = SelectMgr_MatOp::Transform (theTrsf, myVertices[7]);
 
+  // Top
+  aRes->myPlanes[0] = myBuilder->PlaneEquation (aRes->myVertices[1],
+                                                aRes->myVertices[0],
+                                                aRes->myVertices[5],
+                                                aRes->myVertices[6]);
+  // Bottom
+  aRes->myPlanes[1] = myBuilder->PlaneEquation (aRes->myVertices[3],
+                                                aRes->myVertices[2],
+                                                aRes->myVertices[7],
+                                                aRes->myVertices[4]);
+  // Left
+  aRes->myPlanes[2] = myBuilder->PlaneEquation (aRes->myVertices[1],
+                                                aRes->myVertices[0],
+                                                aRes->myVertices[2],
+                                                aRes->myVertices[6]);
+  // Right
+  aRes->myPlanes[3] = myBuilder->PlaneEquation (aRes->myVertices[5],
+                                                aRes->myVertices[4],
+                                                aRes->myVertices[6],
+                                                aRes->myVertices[2]);
+  // Near
+  aRes->myPlanes[4] = myBuilder->PlaneEquation (aRes->myVertices[4],
+                                                aRes->myVertices[6],
+                                                aRes->myVertices[2],
+                                                aRes->myVertices[3]);
+  // Far
+  aRes->myPlanes[5] = myBuilder->PlaneEquation (aRes->myVertices[5],
+                                                aRes->myVertices[7],
+                                                aRes->myVertices[3],
+                                                aRes->myVertices[2]);
+
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
+  {
+    Standard_Real aMax = -DBL_MAX;
+    Standard_Real aMin =  DBL_MAX;
+    const SelectMgr_Vec3 aPlane = aRes->myPlanes[aPlaneIdx];
+    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
+    {
+      Standard_Real aProjection = DOT (aPlane, aRes->myVertices[aVertIdx]);
+      aMax = Max (aMax, aProjection);
+      aMin = Min (aMin, aProjection);
+    }
+    aRes->myMaxVertsProjections[aPlaneIdx] = aMax;
+    aRes->myMinVertsProjections[aPlaneIdx] = aMin;
+  }
+
+  SelectMgr_Vec3 aDimensions[3] =
+  {
+    SelectMgr_Vec3 (1.0, 0.0, 0.0),
+    SelectMgr_Vec3 (0.0, 1.0, 0.0),
+    SelectMgr_Vec3 (0.0, 0.0, 1.0)
+  };
+
+  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
+  {
+    Standard_Real aMax = -DBL_MAX;
+    Standard_Real aMin =  DBL_MAX;
+    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
+    {
+      Standard_Real aProjection = DOT (aDimensions[aDim], aRes->myVertices[aVertIdx]);
+      aMax = Max (aMax, aProjection);
+      aMin = Min (aMin, aProjection);
+    }
+    aRes->myMaxOrthoVertsProjections[aDim] = aMax;
+    aRes->myMinOrthoVertsProjections[aDim] = aMin;
+  }
+
+  // Horizontal
+  aRes->myEdgeDirs[0] = aRes->myVertices[4] - aRes->myVertices[0];
+  // Vertical
+  aRes->myEdgeDirs[1] = aRes->myVertices[2] - aRes->myVertices[0];
+  // LeftLower
+  aRes->myEdgeDirs[2] = aRes->myVertices[2] - aRes->myVertices[3];
+  // RightLower
+  aRes->myEdgeDirs[3] = aRes->myVertices[6] - aRes->myVertices[7];
+  // LeftUpper
+  aRes->myEdgeDirs[4] = aRes->myVertices[0] - aRes->myVertices[1];
+  // RightUpper
+  aRes->myEdgeDirs[5] = aRes->myVertices[4] - aRes->myVertices[5];
+
+  return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
+}
+
+// =======================================================================
+// function : Scale
+// purpose  : IMPORTANT: Makes sense only for frustum built on a single point!
+//            Returns a copy of the frustum resized according to the scale factor given
+// =======================================================================
+NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Scale (const Standard_Real theScaleFactor)
+{
+  SelectMgr_RectangularFrustum* aRes = new SelectMgr_RectangularFrustum();
+
+  aRes->myNearPickedPnt = myNearPickedPnt;
+  aRes->myFarPickedPnt  = myFarPickedPnt;
+  aRes->myViewRayDir    = myViewRayDir;
+
+  aRes->myIsOrthographic = myIsOrthographic;
+
+    // LeftTopNear
+  aRes->myVertices[0] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
+                                                          myMousePos.Y() + theScaleFactor / 2.0,
+                                                          0.0);
+  // LeftTopFar
+  aRes->myVertices[1] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
+                                                          myMousePos.Y() + theScaleFactor / 2.0,
+                                                          1.0);
+  // LeftBottomNear
+  aRes->myVertices[2] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
+                                                          myMousePos.Y() - theScaleFactor / 2.0,
+                                                          0.0);
+  // LeftBottomFar
+  aRes->myVertices[3] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
+                                                          myMousePos.Y() - theScaleFactor / 2.0,
+                                                          1.0);
+  // RightTopNear
+  aRes->myVertices[4] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
+                                                          myMousePos.Y() + theScaleFactor / 2.0,
+                                                          0.0);
+  // RightTopFar
+  aRes->myVertices[5] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
+                                                          myMousePos.Y() + theScaleFactor / 2.0,
+                                                          1.0);
+  // RightBottomNear
+  aRes->myVertices[6] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
+                                                          myMousePos.Y() - theScaleFactor / 2.0,
+                                                          0.0);
+  // RightBottomFar
+  aRes->myVertices[7] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
+                                                          myMousePos.Y() - theScaleFactor / 2.0,
+                                                          1.0);
   // Top
   aRes->myPlanes[0] = myBuilder->PlaneEquation (aRes->myVertices[1],
                                                 aRes->myVertices[0],

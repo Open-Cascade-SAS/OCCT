@@ -88,6 +88,10 @@ public:
 
   virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& /*theTrsf*/) { return NULL; }
 
+  //! IMPORTANT: Makes sense only for frustum built on a single point!
+  //! Returns a copy of the frustum resized according to the scale factor given
+  virtual NCollection_Handle<SelectMgr_BaseFrustum> Scale (const Standard_Real /*theScaleFactor*/) { return NULL; }
+
   //! SAT intersection test between defined volume and given axis-aligned box
   virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
                                      Standard_Real& theDepth);

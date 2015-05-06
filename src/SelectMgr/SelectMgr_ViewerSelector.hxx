@@ -57,23 +57,41 @@ typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), NCollection_Hand
 typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer> SelectMgr_MapOfOwnerDetectedEntities;
 typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer>::Iterator SelectMgr_MapOfOwnerDetectedEntitiesIterator;
 
+//! An internal class for calculation of current largest tolerance value which will be applied
+//! for creation of selecting frustum by default. Each time the selection set is deactivated,
+//! maximum tolerance value will be recalculated. If a user enables custom precision using
+//! StdSelect_ViewerSelector3d::SetPixelTolerance, it will be applied to all sensitive entities
+//! without any checks.
 class SelectMgr_ToleranceMap
 {
 public:
 
+  //! Sets tolerance values to -1.0
   SelectMgr_ToleranceMap();
 
   Standard_EXPORT ~SelectMgr_ToleranceMap();
 
+  //! Adds the value given to map, checks if the current tolerance value
+  //! should be replaced by theTolerance
   Standard_EXPORT void Add (const Standard_Real& theTolerance);
 
+  //! Decrements a counter of the tolerance given, checks if the current tolerance value
+  //! should be recalculated
   Standard_EXPORT void Decrement (const Standard_Real& theTolerance);
 
-  Standard_EXPORT Standard_Real Largest();
+  //! Returns a current tolerance that must be applied
+  Standard_EXPORT Standard_Real Tolerance();
+
+  //! Sets tolerance to the given one and disables adaptive checks
+  Standard_EXPORT void SetCustomTolerance (const Standard_Real theTolerance);
+
+  //! Unsets a custom tolerance and enables adaptive checks
+  Standard_EXPORT void ResetDefaults();
 
 private:
   NCollection_DataMap<Standard_Real, Standard_Integer> myTolerances;
   Standard_Real                                        myLargestKey;
+  Standard_Real                                        myCustomTolerance;
 };
 
 //! A framework to define finding, sorting the sensitive
@@ -99,6 +117,13 @@ private:
 //! SelectMgr_SelectionManager, and manipulate
 //! the SelectMgr_Selection objects given to them by
 //! the selection manager.
+//!
+//! Tolerances are applied to the entities in the following way:
+//! 1. tolerance value stored in mytolerance will be used to calculate initial
+//!    selecting frustum, which will be applied for intersection testing during
+//!    BVH traverse;
+//! 2. if tolerance of sensitive entity is less than mytolerance, the frustum for
+//!    intersection detection will be resized according to its sensitivity.
 class SelectMgr_ViewerSelector : public MMgt_TShared
 {
 public:
@@ -254,6 +279,13 @@ protected:
 
   //! Marks all added sensitive entities of all objects as non-selectable
   void resetSelectionActivationStatus();
+
+  //! Checks if the entity given requires to scale current selecting frustum
+  Standard_Boolean isToScaleFrustum (const Handle(SelectBasics_SensitiveEntity)& theEntity);
+
+  //! Applies given scale and transformation matrices to the default selecting volume manager
+  SelectMgr_SelectingVolumeManager scaleAndTransform (const Standard_Real theScale,
+                                                      const gp_Trsf& theTrsf);
 
 private:
 
