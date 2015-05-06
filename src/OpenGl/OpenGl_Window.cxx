@@ -459,11 +459,97 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     aVis = XGetVisualInfo (aDisp, aVisInfoMask, &aVisInfo, &aNbItems);
   }
 
+#if defined(__linux) || defined(Linux) || defined(__APPLE__)
+  if (aVis != NULL)
+  {
+    // check Visual for OpenGl context's parameters compatibility
+    int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, isStereo = 0;
+    int aDepthSize = 0, aStencilSize = 0;
+
+    if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0)
+      isGl = 0;
+
+    if (glXGetConfig (aDisp, aVis, GLX_RGBA, &isRGBA) != 0)
+      isRGBA = 0;
+
+    if (glXGetConfig (aDisp, aVis, GLX_DOUBLEBUFFER, &isDoubleBuffer) != 0)
+      isDoubleBuffer = 0;
+
+    if (glXGetConfig (aDisp, aVis, GLX_STEREO, &isStereo) != 0)
+      isStereo = 0;
+
+    if (glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
+      aDepthSize = 0;
+
+    if (glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize) != 0)
+      aStencilSize = 0;
+
+    if (!isGl)
+    {
+      XFree (aVis);
+      aVis = NULL;
+      if (myOwnGContext)
+      {
+        TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: window Visual does not support GL rendering!");
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                  GL_DEBUG_TYPE_OTHER_ARB,
+                                  0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+      }
+    }
+    else
+    {
+      TCollection_ExtendedString aList;
+      if (aDepthSize < 1)
+      {
+        if (!aList.IsEmpty()) aList += ", ";
+        aList += "no depth buffer";
+      }
+      if (aStencilSize < 1)
+      {
+        if (!aList.IsEmpty()) aList += ", ";
+        aList += "no stencil buffer";
+      }
+      if (isRGBA == 0)
+      {
+        if (!aList.IsEmpty()) aList += ", ";
+        aList += "no RGBA color buffer";
+      }
+      if (isDoubleBuffer == 0)
+      {
+        if (!aList.IsEmpty()) aList += ", ";
+        aList += "no Double Buffer";
+      }
+      if (theCaps->contextStereo && isStereo == 0)
+      {
+        if (!aList.IsEmpty()) aList += ", ";
+        aList += "no Quad Buffer";
+      }
+      if (!theCaps->contextStereo && isStereo == 1)
+      {
+        if (!aList.IsEmpty()) aList += ", ";
+        aList += "extra Quad Buffer";
+      }
+      if (!aList.IsEmpty())
+      {
+        TCollection_ExtendedString aMsg = TCollection_ExtendedString ("OpenGl_Window::CreateWindow: window Visual is incomplete: ") + aList;
+        if (myOwnGContext)
+        {
+          XFree (aVis);
+          aVis = NULL;
+        }
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                  GL_DEBUG_TYPE_OTHER_ARB,
+                                  0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMsg);
+      }
+    }
+  }
+#endif
+
   if (!myOwnGContext)
   {
-    if (aVis != NULL)
+    if (aVis == NULL)
     {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: XGetVisualInfo failed.");
+      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: XGetVisualInfo is unable to choose needed configuration in existing OpenGL context. ");
       return;
     }
 
@@ -471,41 +557,6 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   }
   else
   {
-  #if defined(__linux) || defined(Linux) || defined(__APPLE__)
-    if (aVis != NULL)
-    {
-      // check Visual for OpenGl context's parameters compatibility
-      int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, isStereo = 0;
-      int aDepthSize = 0, aStencilSize = 0;
-
-      if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0)
-        isGl = 0;
-
-      if (glXGetConfig (aDisp, aVis, GLX_RGBA, &isRGBA) != 0)
-        isRGBA = 0;
-
-      if (glXGetConfig (aDisp, aVis, GLX_DOUBLEBUFFER, &isDoubleBuffer) != 0)
-        isDoubleBuffer = 0;
-
-      if (glXGetConfig (aDisp, aVis, GLX_STEREO, &isStereo) != 0)
-        isStereo = 0;
-
-      if (glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
-        aDepthSize = 0;
-
-      if (glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize) != 0)
-        aStencilSize = 0;
-
-      if (!isGl || !aDepthSize || !isRGBA  || !aStencilSize ||
-          (isDoubleBuffer ? 1 : 0) != 1 ||
-          (isStereo       ? 1 : 0) != (theCaps->contextStereo ? 1 : 0))
-      {
-        XFree (aVis);
-        aVis = NULL;
-      }
-    }
-  #endif
-
     if (aVis == NULL)
     {
       int anIter = 0;
@@ -556,6 +607,13 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
       {
         Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: glXChooseVisual failed.");
         return;
+      }
+      else
+      {
+        TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: child window has been created with better Visual.");
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                  GL_DEBUG_TYPE_OTHER_ARB,
+                                  0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMsg);
       }
     }
 
