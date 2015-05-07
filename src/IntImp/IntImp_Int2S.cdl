@@ -225,7 +225,17 @@ is
 
     	is static;
     
+    ChangePoint(me: in out)
+      ---Purpose: return the intersection point which is 
+       --         enable for changing.
 
+        returns PntOn2S from IntSurf
+      ---C++: return &
+      ---C++: inline
+
+        is static;
+    
+    
 fields
 
     done         : Boolean from Standard;

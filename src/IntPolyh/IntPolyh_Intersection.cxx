@@ -232,7 +232,7 @@ void IntPolyh_Intersection::GetTangentZonePoint(const Standard_Integer Indexz,
   const IntPolyh_StartPoint   &sp=TTangentZones[Indexz-1];
   x=sp.X();
   y=sp.Y();
-  z=sp.Y();
+  z=sp.Z();
   u1=sp.U1();
   v1=sp.V1();
   u2=sp.U2();

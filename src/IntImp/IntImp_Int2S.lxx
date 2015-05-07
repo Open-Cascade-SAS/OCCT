@@ -71,3 +71,7 @@ inline IntImp_TheFunction& IntImp_Int2S::Function()  {
   return myZerParFunc;
 } 
 
+inline IntSurf_PntOn2S& IntImp_Int2S::ChangePoint()
+{
+  return pint;
+}

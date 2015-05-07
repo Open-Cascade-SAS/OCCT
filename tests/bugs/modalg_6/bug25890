@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC25890"
+puts "============"
+puts ""
+###############################
+## Intersection algorithm produces curves overlaped
+###############################
+
+restore [locate_data_file bug25890_f1.brep] f1
+restore [locate_data_file bug25890_f2.brep] f2
+
+set log [bopcurves f1 f2]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if { ${NbCurv} != 5 } {
+    puts "Error : NbCurv is bad"
+}
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX : 0
+ EDGE : 0
+ WIRE : 0
+ FACE : 0
+ SHELL : 0
+ SOLID : 0
+ COMPSOLID : 0
+ COMPOUND : 1
+ SHAPE : 1
+"
+
+for {set i 1} {$i <= $NbCurv} {incr i} {
+  for {set j [expr $i+1]} {$j <= $NbCurv} {incr j} {
+    puts " Check c_$i and c_$j"
+    mkedge e1 c_$i
+    mkedge e2 c_$j
+    bcommon rr e1 e2
+    checknbshapes rr -ref "${nbshapes_expected}" -t -m "Partition of 2 shapes"
+  }
+}
