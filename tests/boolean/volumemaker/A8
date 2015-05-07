@@ -3,7 +3,7 @@
 
 puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC26020 ALL: Error: bopcheck failed"
-puts "TODO OCC26020 Debian60-64: Error : The area of the resulting shape is"
+puts "TODO ?OCC26019 ALL: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 -4.2580937183769834 -506.18339008981781 147.62942729477928 0.98768834059988952 -6.6728564553435301e-012 -0.15643446501022945

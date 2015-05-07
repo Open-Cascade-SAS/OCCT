@@ -3,8 +3,9 @@ puts "TODO OCC26018 ALL: TEST INCOMPLETE"
 puts "TODO ?OCC26018 ALL: Process killed by CPU limit"
 puts "TODO ?OCC26017 Debian60-64: \\*\\* Exception"
 puts "TODO ?OCC26017 Debian60-64: An exception was caught"
-puts "TODO ?OCC26017 Debian60-64: Tcl Exception:"
-puts "TODO ?OCC26017 Debian60-64: Error: sh141385A0_copy is not a valid shape
+puts "TODO ?OCC26017 ALL: Tcl Exception:"
+puts "TODO ?OCC26017 ALL: Error: sh141385A0_copy is not a valid shape"
+puts "TODO ?OCC26017 ALL Error: sh59D36470_copy is not a valid shape"
 
 source [locate_data_file 20000_asm-gene.asm.6.gdml.tcl]
 
