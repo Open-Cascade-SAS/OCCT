@@ -22,6 +22,7 @@
 SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager (Standard_Boolean theToAllocateFrustums)
 {
   myActiveSelectionType = Unknown;
+  myToAllowOverlap = Standard_False;
 
   if (theToAllocateFrustums)
   {
@@ -44,6 +45,7 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Transform (co
   aMgr.myActiveSelectionType = myActiveSelectionType;
 
   aMgr.mySelectingVolumes[myActiveSelectionType / 2] = mySelectingVolumes[myActiveSelectionType / 2]->Transform (theTrsf);
+  aMgr.myToAllowOverlap = myToAllowOverlap;
 
   return aMgr;
 }
@@ -202,21 +204,21 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const BVH_Box<Stand
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBndBox,
-                                                                  theDepth);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBndBox, theDepth);
 }
 
 //=======================================================================
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theMinPt,
-                                                             const SelectMgr_Vec3& theMaxPt)
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                             const SelectMgr_Vec3& theBoxMax,
+                                                             Standard_Boolean*     theInside)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theMinPt, theMaxPt);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBoxMin, theBoxMax, theInside);
 }
 
 //=======================================================================
@@ -328,4 +330,24 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::IsClipped (const Graphic3d_Se
     return Standard_False;
 
   return mySelectingVolumes[Frustum]->IsClipped (thePlanes, theDepth);
+}
+
+//=======================================================================
+// function : AllowOverlapDetection
+// purpose  : If theIsToAllow is false, only fully included sensitives will
+//            be detected, otherwise the algorithm will mark both included
+//            and overlapped entities as matched
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::AllowOverlapDetection (const Standard_Boolean theIsToAllow)
+{
+  myToAllowOverlap = theIsToAllow;
+}
+
+//=======================================================================
+// function : IsOverlapAllowed
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::IsOverlapAllowed() const
+{
+  return myActiveSelectionType != Box || myToAllowOverlap;
 }

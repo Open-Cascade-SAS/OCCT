@@ -136,7 +136,7 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
         }
         Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
                                                                                   aPointsArray,
-                                                                                  Standard_False);
+                                                                                  Standard_True);
         myPlanarPolygons.Append (aPlanarPolyg);
         aStartIdx = aPntIter;
         anEndIdx = aPntIter;
@@ -154,7 +154,7 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
           }
           Handle(Select3D_SensitivePoly) aPlanarPolyg = new Select3D_SensitivePoly (theOwnerId,
                                                                                     aPointsArray,
-                                                                                    Standard_False);
+                                                                                    Standard_True);
           myPlanarPolygons.Append (aPlanarPolyg);
         }
       }
@@ -277,6 +277,17 @@ Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasi
   Handle(TColgp_HArray1OfPnt) aPoints;
   aPolygon->Points3D (aPoints);
   return theMgr.Overlaps (aPoints, Select3D_TOS_INTERIOR, theMatchDepth);
+}
+
+// =======================================================================
+// function : elementIsInside
+// purpose  :
+// =======================================================================
+Standard_Boolean Select3D_InteriorSensitivePointSet::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                                      const Standard_Integer               theElemIdx)
+{
+  Standard_Real aDummy;
+  return overlapsElement (theMgr, theElemIdx, aDummy);
 }
 
 // =======================================================================

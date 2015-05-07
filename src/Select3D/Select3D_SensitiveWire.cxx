@@ -129,6 +129,17 @@ Standard_Boolean Select3D_SensitiveWire::overlapsElement (SelectBasics_Selecting
 }
 
 // =======================================================================
+// function : elementIsInside
+// purpose  :
+// =======================================================================
+Standard_Boolean Select3D_SensitiveWire::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                          const Standard_Integer               theElemIdx)
+{
+  SelectBasics_PickResult aMatchResult;
+  return myEntities.Value (myEntityIndexes.Value (theElemIdx))->Matches (theMgr, aMatchResult);
+}
+
+// =======================================================================
 // function : distanceToCOG
 // purpose  : Calculates distance from the 3d projection of used-picked
 //            screen point to center of the geometry

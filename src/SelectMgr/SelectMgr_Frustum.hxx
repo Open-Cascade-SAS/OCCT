@@ -63,8 +63,9 @@ protected:
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_Boolean hasOverlap (const SelectMgr_Vec3& theMinPnt,
-                               const SelectMgr_Vec3& theMaxPnt);
+  Standard_Boolean hasOverlap (const SelectMgr_Vec3& theBoxMin,
+                               const SelectMgr_Vec3& theBoxMax,
+                               Standard_Boolean*     theInside = NULL);
 
   //! SAT intersection test between defined volume and given point
   Standard_Boolean hasOverlap (const gp_Pnt& thePnt);
@@ -88,7 +89,8 @@ private:
   //! Checks if AABB and frustum are separated along the given axis
   Standard_Boolean isSeparated (const SelectMgr_Vec3& theBoxMin,
                                 const SelectMgr_Vec3& theBoxMax,
-                                const SelectMgr_Vec3& theAxis) const;
+                                const SelectMgr_Vec3& theDirect,
+                                Standard_Boolean*     theInside) const;
 
   //! Checks if triangle and frustum are separated along the given axis
   Standard_Boolean isSeparated (const gp_Pnt& thePnt1,

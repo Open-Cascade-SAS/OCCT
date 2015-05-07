@@ -49,92 +49,114 @@ void Select3D_SensitiveSet::BVH()
 Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                  SelectBasics_PickResult& thePickResult)
 {
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = myContent->GetBVH();
+  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aBVH = myContent->GetBVH();
 
-  Standard_Integer aNode = 0; // a root node
-  if (!theMgr.Overlaps (aBVHTree->MinPoint (0),
-                        aBVHTree->MaxPoint (0)))
+  thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
+
+  if (!theMgr.Overlaps (aBVH->MinPoint (0),
+                        aBVH->MaxPoint (0)))
   {
     return Standard_False;
   }
 
   Standard_Integer aStack[32];
+  Standard_Integer aNode =  0;
   Standard_Integer aHead = -1;
-  Standard_Real aDepth      = RealLast();
-  Standard_Real aDistToCOG  = RealLast();
-  SelectMgr_Vec3 aClosestPnt (RealLast());
+
   Standard_Integer aMatchesNb = -1;
+  Standard_Real    aMinDepth  = RealLast();
+
   for (;;)
   {
-    if (!aBVHTree->IsOuter (aNode))
+    const BVH_Vec4i& aData = aBVH->NodeInfoBuffer()[aNode];
+
+    if (aData.x() == 0) // is inner node
     {
-      const Standard_Integer aLeftChildIdx  = aBVHTree->LeftChild  (aNode);
-      const Standard_Integer aRightChildIdx = aBVHTree->RightChild (aNode);
-      const Standard_Boolean isLeftChildIn  = theMgr.Overlaps (aBVHTree->MinPoint (aLeftChildIdx),
-                                                               aBVHTree->MaxPoint (aLeftChildIdx));
-      const Standard_Boolean isRightChildIn = theMgr.Overlaps (aBVHTree->MinPoint (aRightChildIdx),
-                                                               aBVHTree->MaxPoint (aRightChildIdx));
-      if (isLeftChildIn
-       && isRightChildIn)
+      const Standard_Integer aLftIdx = aData.y();
+      const Standard_Integer aRghIdx = aData.z();
+
+      Standard_Boolean isLftInside = Standard_True;
+      Standard_Boolean isRghInside = Standard_True;
+
+      Standard_Boolean toCheckLft = theMgr.Overlaps (aBVH->MinPoint (aLftIdx),
+                                                     aBVH->MaxPoint (aLftIdx),
+                                                     theMgr.IsOverlapAllowed() ? NULL : &isLftInside);
+
+      Standard_Boolean toCheckRgh = theMgr.Overlaps (aBVH->MinPoint (aRghIdx),
+                                                     aBVH->MaxPoint (aRghIdx),
+                                                     theMgr.IsOverlapAllowed() ? NULL : &isRghInside);
+
+      if (!theMgr.IsOverlapAllowed()) // inclusion test
       {
-        aNode = aLeftChildIdx;
-        ++aHead;
-        aStack[aHead] = aRightChildIdx;
+        if (!toCheckLft || !toCheckRgh)
+        {
+          return Standard_False; // no inclusion
+        }
+
+        toCheckLft &= !isLftInside;
+        toCheckRgh &= !isRghInside;
       }
-      else if (isLeftChildIn
-            || isRightChildIn)
+
+      if (toCheckLft || toCheckRgh)
       {
-        aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+        aNode = toCheckLft ? aLftIdx : aRghIdx;
+
+        if (toCheckLft && toCheckRgh)
+        {
+          aStack[++aHead] = aRghIdx;
+        }
       }
       else
       {
         if (aHead < 0)
-        {
           break;
-        }
 
-        aNode = aStack[aHead];
-        --aHead;
+        aNode = aStack[aHead--];
       }
     }
     else
     {
-      Standard_Integer aStartIdx = aBVHTree->BegPrimitive (aNode);
-      Standard_Integer anEndIdx = aBVHTree->EndPrimitive (aNode);
-      Standard_Boolean isMatched = Standard_False;
-      for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+      for (Standard_Integer anElemIdx = aData.y(); anElemIdx <= aData.z(); ++anElemIdx)
       {
-        Standard_Real anElementDepth = 0.0;
-        isMatched = overlapsElement (theMgr, anIdx, anElementDepth);
-        if (isMatched)
+        if (!theMgr.IsOverlapAllowed()) // inclusion test
         {
-          if (aDepth > anElementDepth)
+          if (!elementIsInside (theMgr, anElemIdx))
           {
-            aDepth = anElementDepth;
-            myDetectedIdx = anIdx;
+            return Standard_False;
           }
-          aMatchesNb++;
+        }
+        else // overlap test
+        {
+          Standard_Real aCurrentDepth = 0.0;
+
+          if (!overlapsElement (theMgr, anElemIdx, aCurrentDepth))
+          {
+            continue;
+          }
+
+          if (aMinDepth > aCurrentDepth)
+          {
+            aMinDepth = aCurrentDepth;
+            myDetectedIdx = anElemIdx;
+          }
+
+          ++aMatchesNb;
         }
       }
-      if (aHead < 0)
-      {
-        break;
-      }
 
-      aNode = aStack[aHead];
-      --aHead;
+      if (aHead < 0)
+        break;
+
+      aNode = aStack[aHead--];
     }
   }
 
   if (aMatchesNb != -1)
   {
-    aDistToCOG = distanceToCOG (theMgr);
-    thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-    return Standard_True;
+    thePickResult = SelectBasics_PickResult (aMinDepth, distanceToCOG (theMgr));
   }
 
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-  return Standard_False;
+  return !theMgr.IsOverlapAllowed() || aMatchesNb != -1;
 }
 
 //=======================================================================
@@ -175,4 +197,13 @@ void Select3D_SensitiveSet::MarkDirty()
 void Select3D_SensitiveSet::Clear()
 {
   myContent.Nullify();
+}
+
+//=======================================================================
+// function : GetLeafNodeSize
+// purpose  : Returns a number of nodes in 1 BVH leaf
+//=======================================================================
+Standard_Integer Select3D_SensitiveSet::GetLeafNodeSize() const
+{
+  return myContent->GetLeafNodeSize();
 }

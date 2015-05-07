@@ -298,6 +298,55 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
   }
 }
 
+//==================================================
+// Function : elementIsInside
+// Purpose  :
+//==================================================
+Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                                   const Standard_Integer               theElemIdx)
+{
+  Standard_Real aDummy;
+
+  const Standard_Integer& aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
+
+  if (mySensType == Select3D_TOS_BOUNDARY)
+  {
+    gp_Pnt aSegmPnt1 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 1));
+    gp_Pnt aSegmPnt2 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 2));
+
+    if (HasInitLocation()) // Note: Should be removed (by transforming frustum)
+    {
+      aSegmPnt1.Transform (myInitLocation.Transformation());
+      aSegmPnt2.Transform (myInitLocation.Transformation());
+    }
+
+    return theMgr.Overlaps (aSegmPnt1, aDummy) && theMgr.Overlaps (aSegmPnt2, aDummy);
+  }
+  else
+  {
+    Standard_Integer aNode1;
+    Standard_Integer aNode2;
+    Standard_Integer aNode3;
+
+    myTriangul->Triangles() (aPrimitiveIdx + 1).Get (aNode1, aNode2, aNode3);
+
+    gp_Pnt aPnt1 = myTriangul->Nodes().Value (aNode1);
+    gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
+    gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
+
+    if (HasInitLocation()) // Note: Should be removed (by transforming frustum)
+    {
+      aPnt1.Transform (myInitLocation.Transformation());
+      aPnt2.Transform (myInitLocation.Transformation());
+      aPnt3.Transform (myInitLocation.Transformation());
+    }
+
+    return theMgr.Overlaps (aPnt1, aDummy)
+        && theMgr.Overlaps (aPnt2, aDummy)
+        && theMgr.Overlaps (aPnt3, aDummy);
+  }
+}
+
 //=======================================================================
 // function : distanceToCOG
 // purpose  : Calculates distance from the 3d projection of used-picked

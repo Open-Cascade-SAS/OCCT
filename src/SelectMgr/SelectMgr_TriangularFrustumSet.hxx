@@ -54,7 +54,8 @@ public:
                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
   virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                     const SelectMgr_Vec3& theMaxPnt) Standard_OVERRIDE;
+                                     const SelectMgr_Vec3& theMaxPnt,
+                                     Standard_Boolean* theInside) Standard_OVERRIDE;
 
   virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
                                      Standard_Real& theDepth) Standard_OVERRIDE;

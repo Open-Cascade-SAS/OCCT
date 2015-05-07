@@ -241,28 +241,39 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
   Standard_Real aDepth     = RealLast();
   Standard_Real aDistToCOG = RealLast();
 
-  Standard_Boolean isCollisionDetected = Standard_False;
   if (mySensType == Select3D_TOS_BOUNDARY)
   {
-    isCollisionDetected = Select3D_SensitivePoly::Matches (theMgr, thePickResult);
+    if (!Select3D_SensitivePoly::Matches (theMgr, thePickResult))
+    {
+      thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+      return Standard_False;
+    }
   }
   else if (mySensType == Select3D_TOS_INTERIOR)
   {
     Handle(TColgp_HArray1OfPnt) anArrayOfPnt;
     Points3D (anArrayOfPnt);
-    isCollisionDetected = theMgr.Overlaps (anArrayOfPnt,
-                                           Select3D_TOS_INTERIOR,
-                                           aDepth);
+    if (!theMgr.IsOverlapAllowed())
+    {
+      thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+      if (!theMgr.Overlaps (myBndBox.CornerMin(), myBndBox.CornerMax(), Standard_False))
+      {
+        return Standard_False;
+      }
+      return Standard_True;
+    }
+
+    if (!theMgr.Overlaps (anArrayOfPnt, Select3D_TOS_INTERIOR, aDepth))
+    {
+      thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+      return Standard_False;
+    }
   }
 
-  if (isCollisionDetected)
-  {
-    aDistToCOG = theMgr.DistToGeometryCenter (myCenter3D);
-  }
 
+  aDistToCOG = theMgr.DistToGeometryCenter (myCenter3D);
   thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-
-  return isCollisionDetected;
+  return Standard_True;
 }
 
 void Select3D_SensitiveCircle::ArrayBounds (Standard_Integer & theLow,

@@ -986,7 +986,7 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   // fixed using tolerance distance, relative to boundaries size. The tolerance distance
   // should be computed using information on boundaries of primary application actors,
   // (e.g. representing the displayed model) - to ensure that they are not unreasonably clipped.
-  const Standard_ShortReal anEpsilon = 1e-4;
+  const Standard_ShortReal anEpsilon = 1e-4f;
 
   if (theGraphicBB.IsVoid())
   {

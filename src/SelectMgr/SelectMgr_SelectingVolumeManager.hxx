@@ -86,8 +86,9 @@ public:
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
-                                                      const SelectMgr_Vec3& theMaxPt) Standard_OVERRIDE;
+  Standard_EXPORT  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                      const SelectMgr_Vec3& theBoxMax,
+                                                      Standard_Boolean*     theInside = NULL) Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
@@ -128,10 +129,18 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
                                                       const Standard_Real& theDepth);
 
+  //! Is used for rectangular selection only
+  //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the algorithm will
+  //! mark both included and overlapped entities as matched
+  Standard_EXPORT virtual void AllowOverlapDetection (const Standard_Boolean theIsToAllow);
+
+  Standard_EXPORT virtual Standard_Boolean IsOverlapAllowed() const Standard_OVERRIDE;
+
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes
 
   NCollection_Handle<SelectMgr_BaseFrustum> mySelectingVolumes[VolumeTypesNb];      //!< Array of selecting volumes
+  Standard_Boolean                          myToAllowOverlap;      //!< Defines if partially overlapped entities will me detected or not
 };
 
 #endif

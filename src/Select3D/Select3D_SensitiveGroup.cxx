@@ -314,14 +314,24 @@ Standard_Boolean Select3D_SensitiveGroup::overlapsElement (SelectBasics_Selectin
   theMatchDepth = RealLast();
   const Standard_Integer aSensitiveIdx = myBVHPrimIndexes.Value (theElemIdx);
   SelectBasics_PickResult aResult;
-  Standard_Boolean isMatching = myEntities.Value (aSensitiveIdx)->Matches (theMgr, aResult);
-  if (isMatching)
+  if (myEntities.Value (aSensitiveIdx)->Matches (theMgr, aResult))
   {
     theMatchDepth = aResult.Depth();
     return Standard_True;
   }
 
   return Standard_False;
+}
+
+// =======================================================================
+// function : elementIsInside
+// purpose  :
+// =======================================================================
+Standard_Boolean Select3D_SensitiveGroup::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                           const Standard_Integer               theElemIdx)
+{
+  Standard_Real aDummy;
+  return overlapsElement(theMgr, theElemIdx, aDummy);
 }
 
 // =======================================================================

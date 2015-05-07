@@ -37,9 +37,19 @@ is
     
     ShiftSelect(me:mutable) is virtual;
 
-    Select(me:mutable;xmin,ymin,xmax,ymax:Integer) is virtual;
+    Select (me                    : mutable;
+            theXPressed           : Integer;
+            theYPressed           : Integer;
+            theXMotion            : Integer;
+            theYMotion            : Integer;
+            theIsAutoAllowOverlap : Boolean from Standard = Standard_True) is virtual;
     
-    ShiftSelect(me:mutable;xmin,ymin,xmax,ymax:Integer) is virtual;
+    ShiftSelect (me                    : mutable;
+                 theXPressed           : Integer;
+                 theYPressed           : Integer;
+                 theXMotion            : Integer;
+                 theYMotion            : Integer;
+                 theIsAutoAllowOverlap : Boolean from Standard = Standard_True) is virtual;
     
     Select(me:mutable;thePolyline:Array1OfPnt2d from TColgp) is virtual;
     

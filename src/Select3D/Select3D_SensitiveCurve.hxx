@@ -65,10 +65,6 @@ public:
   Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                            const TColgp_Array1OfPnt& thePoints);
 
-  //! Checks whether the curve overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
-
   //! Returns the copy of this
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 

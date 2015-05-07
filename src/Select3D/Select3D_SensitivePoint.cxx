@@ -42,13 +42,15 @@ Standard_Boolean Select3D_SensitivePoint::Matches (SelectBasics_SelectingVolumeM
 {
   Standard_Real aDepth      = RealLast();
   Standard_Real aDistToCOG  = RealLast();
-  Standard_Boolean isMatched = theMgr.Overlaps (myPoint, aDepth);
-  if (isMatched)
-    aDistToCOG = aDepth;
+  if (!theMgr.Overlaps (myPoint, aDepth))
+  {
+    thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+    return Standard_False;
+  }
 
+  aDistToCOG = aDepth;
   thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-
-  return isMatched;
+  return Standard_True;
 }
 
 //=======================================================================

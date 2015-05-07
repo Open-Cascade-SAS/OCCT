@@ -107,8 +107,9 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const BVH_Box<Standard_Real, 3
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theMinPt*/,
-                                                  const SelectMgr_Vec3& /*theMaxPt*/)
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBoxMin*/,
+                                                  const SelectMgr_Vec3& /*theBoxMax*/,
+                                                  Standard_Boolean*     /*theInside*/)
 {
   return Standard_False;
 }

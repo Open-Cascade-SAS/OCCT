@@ -42,21 +42,23 @@ Select3D_SensitiveSegment::Select3D_SensitiveSegment (const Handle(SelectBasics_
 Standard_Boolean Select3D_SensitiveSegment::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                      SelectBasics_PickResult& thePickResult)
 {
-  Standard_Real aDepth     = RealLast();
-  Standard_Real aDistToCOG = RealLast();
-  Standard_Boolean isMatched = theMgr.Overlaps (myStart,
-                                                myEnd,
-                                                aDepth);
+  thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
 
-  if (isMatched)
+  Standard_Real aDepth;
+  if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
-    gp_Pnt aCenter = CenterOfGeometry();
-    aDistToCOG = theMgr.DistToGeometryCenter (aCenter);
+    return theMgr.Overlaps (myStart, aDepth) && theMgr.Overlaps (myEnd, aDepth);
   }
 
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  if (!theMgr.Overlaps (myStart, myEnd, aDepth)) // check for overlap
+  {
+    return Standard_False;
+  }
 
-  return isMatched;
+  thePickResult = SelectBasics_PickResult (aDepth,
+    theMgr.DistToGeometryCenter (CenterOfGeometry()));
+
+  return Standard_True;
 }
 
 //=======================================================================

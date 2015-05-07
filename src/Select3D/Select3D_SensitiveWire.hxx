@@ -89,6 +89,10 @@ protected:
                                                             Standard_Integer theElemIdx,
                                                             Standard_Real& theMatchDepth) Standard_OVERRIDE;
 
+  //! Checks whether the entity with index theIdx is inside the current selecting volume
+  Standard_EXPORT virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                            const Standard_Integer               theElemIdx) Standard_OVERRIDE;
+
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
   Standard_EXPORT virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
 

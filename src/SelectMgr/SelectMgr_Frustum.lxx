@@ -15,6 +15,7 @@
 
 #include <NCollection_Vector.hxx>
 #include <Poly_Array1OfTriangle.hxx>
+#include <Standard_Assert.hxx>
 
 #define DOT(A, B) (A.x() * B.x() + A.y() * B.y() + A.z() * B.z())
 #define DOTp(A, B) (A.x() * B.X() + A.y() * B.Y() + A.z() * B.Z())
@@ -26,43 +27,51 @@
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const SelectMgr_Vec3& theBoxMin,
                                                     const SelectMgr_Vec3& theBoxMax,
-                                                    const SelectMgr_Vec3& theAxis) const
+                                                    const SelectMgr_Vec3& theDirect,
+                                                    Standard_Boolean*     theInside) const
 {
+  const Standard_Real aMinB =
+    theDirect.x() * (theDirect.x() < 0.0 ? theBoxMax.x() : theBoxMin.x()) +
+    theDirect.y() * (theDirect.y() < 0.0 ? theBoxMax.y() : theBoxMin.y()) +
+    theDirect.z() * (theDirect.z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
+
+  const Standard_Real aMaxB =
+    theDirect.x() * (theDirect.x() < 0.0 ? theBoxMin.x() : theBoxMax.x()) +
+    theDirect.y() * (theDirect.y() < 0.0 ? theBoxMin.y() : theBoxMax.y()) +
+    theDirect.z() * (theDirect.z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
+
+  Standard_ASSERT_RAISE (aMaxB >= aMinB, "Error! Failed to project box");
+
   // frustum projection
   Standard_Real aMinF =  DBL_MAX;
   Standard_Real aMaxF = -DBL_MAX;
 
-  // box projection
-  Standard_Real aMinB =  DBL_MAX;
-  Standard_Real aMaxB = -DBL_MAX;
-
-  const Standard_Real aBoxProj1 =
-    theAxis.x() * (theAxis.x() < 0.0 ? theBoxMax.x() : theBoxMin.x()) +
-    theAxis.y() * (theAxis.y() < 0.0 ? theBoxMax.y() : theBoxMin.y()) +
-    theAxis.z() * (theAxis.z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
-
-  const Standard_Real aBoxProj2 =
-    theAxis.x() * (theAxis.x() < 0.0 ? theBoxMin.x() : theBoxMax.x()) +
-    theAxis.y() * (theAxis.y() < 0.0 ? theBoxMin.y() : theBoxMax.y()) +
-    theAxis.z() * (theAxis.z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
-
-  aMinB = Min (aBoxProj1, aBoxProj2);
-  aMaxB = Max (aBoxProj1, aBoxProj2);
-
   for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
-    const Standard_Real aProj = DOT (myVertices[aVertIdx], theAxis);
+    const Standard_Real aProj = DOT (myVertices[aVertIdx], theDirect);
 
     aMinF = Min (aMinF, aProj);
     aMaxF = Max (aMaxF, aProj);
 
     if (aMinF <= aMaxB && aMaxF >= aMinB)
     {
-      return Standard_False;
+      if (theInside == NULL || !(*theInside)) // only overlap test
+      {
+        return Standard_False;
+      }
     }
   }
 
-  return aMinF > aMaxB || aMaxF < aMinB;
+  if (aMinF > aMaxB || aMaxF < aMinB)
+  {
+    return Standard_True; // fully separated
+  }
+  else if (theInside != NULL) // to check for inclusion?
+  {
+    *theInside &= aMinB >= aMinF && aMaxB <= aMaxF;
+  }
+
+  return Standard_False;
 }
 
 // =======================================================================
@@ -122,80 +131,64 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const gp_Pnt& thePnt1,
 // =======================================================================
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinPnt,
-                                                   const SelectMgr_Vec3& theMaxPnt)
+                                                   const SelectMgr_Vec3& theMaxPnt,
+                                                   Standard_Boolean*     theInside)
 {
-  // E0 test
-  if (theMinPnt.x() > myMaxOrthoVertsProjections[0]
-  || theMaxPnt.x() < myMinOrthoVertsProjections[0])
+  for (Standard_Integer anAxis = 0; anAxis < 3; ++anAxis)
   {
-    return Standard_False;
-  }
-
-  // E1 test
-  if (theMinPnt.y() > myMaxOrthoVertsProjections[1]
-  || theMaxPnt.y() < myMinOrthoVertsProjections[1])
-  {
-    return Standard_False;
-  }
-
-  // E2 test
-  if (theMinPnt.z() > myMaxOrthoVertsProjections[2]
-  || theMaxPnt.z() < myMinOrthoVertsProjections[2])
-  {
-    return Standard_False;
+    if (theMinPnt[anAxis] > myMaxOrthoVertsProjections[anAxis]
+     || theMaxPnt[anAxis] < myMinOrthoVertsProjections[anAxis])
+    {
+      return Standard_False; // fully separated
+    }
+    else if (theInside != NULL) // to check for inclusion?
+    {
+      *theInside &= theMinPnt[anAxis] >= myMinOrthoVertsProjections[anAxis]
+                 && theMaxPnt[anAxis] <= myMaxOrthoVertsProjections[anAxis];
+    }
   }
 
   const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
-    Standard_Real aBoxProjMax = RealFirst();
-    Standard_Real aBoxProjMin = RealLast();
-    Standard_Real aFrustumProjMax = RealFirst();
-    Standard_Real aFrustumProjMin = RealLast();
     SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
 
-    aFrustumProjMax = myMaxVertsProjections[aPlaneIdx];
-    aFrustumProjMin = myMinVertsProjections[aPlaneIdx];
-
-    const Standard_Real aBoxProj1 =
+    const Standard_Real aBoxProjMin =
       aPlane.x() * (aPlane.x() < 0.f ? theMaxPnt.x() : theMinPnt.x()) +
       aPlane.y() * (aPlane.y() < 0.f ? theMaxPnt.y() : theMinPnt.y()) +
       aPlane.z() * (aPlane.z() < 0.f ? theMaxPnt.z() : theMinPnt.z());
 
-    const Standard_Real aBoxProj2 =
+    const Standard_Real aBoxProjMax =
       aPlane.x() * (aPlane.x() < 0.f ? theMinPnt.x() : theMaxPnt.x()) +
       aPlane.y() * (aPlane.y() < 0.f ? theMinPnt.y() : theMaxPnt.y()) +
       aPlane.z() * (aPlane.z() < 0.f ? theMinPnt.z() : theMaxPnt.z());
 
-    aBoxProjMin = Min (aBoxProj1, aBoxProj2);
-    aBoxProjMax = Max (aBoxProj1, aBoxProj2);
+    Standard_ASSERT_RAISE (aBoxProjMax >= aBoxProjMin, "Error! Failed to project box");
 
-    if (aBoxProjMin > aFrustumProjMax
-      || aBoxProjMax < aFrustumProjMin)
+    if (aBoxProjMin > myMaxVertsProjections[aPlaneIdx]
+     || aBoxProjMax < myMinVertsProjections[aPlaneIdx])
     {
-      return Standard_False;
+      return Standard_False; // fully separated
+    }
+    else if (theInside != NULL) // to check for inclusion?
+    {
+      *theInside &= aBoxProjMin >= myMinVertsProjections[aPlaneIdx]
+                 && aBoxProjMax <= myMaxVertsProjections[aPlaneIdx];
     }
   }
 
-  SelectMgr_Vec3 aBndBoxDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  Standard_Integer aDirectionsNb = myIsOrthographic ? 4 : 6;
   for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
   {
-    for (Standard_Integer aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
-    {
-      SelectMgr_Vec3 anEdge1 = aBndBoxDimensions[aDim];
-      SelectMgr_Vec3 anEdge2 = myEdgeDirs[aVolDir];
-      SelectMgr_Vec3 aTestDirection = SelectMgr_Vec3 (anEdge1.y() * anEdge2.z() - anEdge1.z() * anEdge2.y(),
-                                                      anEdge1.z() * anEdge2.x() - anEdge1.x() * anEdge2.z(),
-                                                      anEdge1.x() * anEdge2.y() - anEdge1.y() * anEdge2.x());
+    SelectMgr_Vec3 anEdge1 (aDim == 0, aDim == 1, aDim == 2);
 
-      if (isSeparated (theMinPnt, theMaxPnt, aTestDirection))
+    for (Standard_Integer aVolDir = 0, aDirectionsNb = myIsOrthographic ? 4 : 6; aVolDir < aDirectionsNb; ++aVolDir)
+    {
+      SelectMgr_Vec3 aDirection (anEdge1.y() * myEdgeDirs[aVolDir].z() - anEdge1.z() * myEdgeDirs[aVolDir].y(),
+                                 anEdge1.z() * myEdgeDirs[aVolDir].x() - anEdge1.x() * myEdgeDirs[aVolDir].z(),
+                                 anEdge1.x() * myEdgeDirs[aVolDir].y() - anEdge1.y() * myEdgeDirs[aVolDir].x());
+
+      if (isSeparated (theMinPnt, theMaxPnt, aDirection, theInside))
       {
         return Standard_False;
       }
@@ -212,23 +205,18 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinP
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
 {
-  SelectMgr_Vec3 aPnt (thePnt.X(), thePnt.Y(), thePnt.Z());
-
   const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
-    Standard_Real aPointProj      = RealLast();
-    Standard_Real aFrustumProjMax = RealFirst();
-    Standard_Real aFrustumProjMin = RealLast();
-    SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
+    const Select3D_Vec3& aPlane = myPlanes[aPlaneIdx];
 
-    aPointProj = DOT (aPlane, aPnt);
+    const Standard_Real aPointProj = aPlane.x() * thePnt.X() +
+                                     aPlane.y() * thePnt.Y() +
+                                     aPlane.z() * thePnt.Z();
 
-    aFrustumProjMax = myMaxVertsProjections[aPlaneIdx];
-    aFrustumProjMin = myMinVertsProjections[aPlaneIdx];
-
-    if (aPointProj > aFrustumProjMax
-      || aPointProj < aFrustumProjMin)
+    if (aPointProj > myMaxVertsProjections[aPlaneIdx]
+     || aPointProj < myMinVertsProjections[aPlaneIdx])
     {
       return Standard_False;
     }

@@ -91,18 +91,24 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected()
 Standard_Boolean Select3D_SensitiveBox::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                  SelectBasics_PickResult& thePickResult)
 {
-  Standard_Real aDepth     = RealLast();
-  Standard_Real aDistToCOG = RealLast();
-  Standard_Boolean isMatched = theMgr.Overlaps (myBox, aDepth);
+  thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
 
-  if (isMatched)
+  if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
-    aDistToCOG = theMgr.DistToGeometryCenter (myCenter3d);
+    Standard_Boolean isInside = Standard_True;
+    return theMgr.Overlaps (myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
   }
 
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  Standard_Real aDepth;
+  if (!theMgr.Overlaps (myBox, aDepth)) // check for overlap
+  {
+    return Standard_False;
+  }
 
-  return isMatched;
+  thePickResult = SelectBasics_PickResult (
+    aDepth, theMgr.DistToGeometryCenter (myCenter3d));
+
+  return Standard_True;
 }
 
 //=======================================================================

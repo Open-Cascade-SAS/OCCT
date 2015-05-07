@@ -58,6 +58,8 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_Entity
       mySegmentIndexes->SetValue (aSegmIter, aSegmIter);
     }
   }
+
+  myIsComputed = Standard_True;
 }
 
 //==================================================
@@ -97,6 +99,8 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_Entity
       mySegmentIndexes->SetValue (aSegmIter, aSegmIter);
     }
   }
+
+  myIsComputed = Standard_True;
 }
 
 //==================================================
@@ -118,6 +122,7 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectBasics_Entity
     }
   }
   myCOG = gp_Pnt (RealLast(), RealLast(), RealLast());
+  myIsComputed = Standard_False;
 }
 
 //==================================================
@@ -237,6 +242,20 @@ Standard_Boolean Select3D_SensitivePoly::overlapsElement (SelectBasics_Selecting
 }
 
 //==================================================
+// Function : elementIsInside
+// Purpose  :
+//==================================================
+Standard_Boolean Select3D_SensitivePoly::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                                          const Standard_Integer               theElemIdx)
+{
+  const Standard_Integer aSegmentIdx = mySegmentIndexes->Value (theElemIdx);
+
+  Standard_Real aDummy;
+  return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0), aDummy)
+      && theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 1), aDummy);
+}
+
+//==================================================
 // Function: distanceToCOG
 // Purpose : Calculates distance from the 3d
 //           projection of used-picked screen point
@@ -244,7 +263,7 @@ Standard_Boolean Select3D_SensitivePoly::overlapsElement (SelectBasics_Selecting
 //==================================================
 Standard_Real Select3D_SensitivePoly::distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr)
 {
-  if (myCOG.X() == RealLast() && myCOG.Y() == RealLast() && myCOG.Z() == RealLast())
+  if (!myIsComputed)
   {
     gp_XYZ aCenter (0.0, 0.0, 0.0);
     for (Standard_Integer aIdx = 0; aIdx < myPolyg.Size(); ++aIdx)
@@ -252,6 +271,7 @@ Standard_Real Select3D_SensitivePoly::distanceToCOG (SelectBasics_SelectingVolum
       aCenter += myPolyg.Pnt (aIdx);
     }
     myCOG = aCenter / myPolyg.Size();
+    myIsComputed = Standard_True;
   }
 
   return theMgr.DistToGeometryCenter (myCOG);
@@ -274,5 +294,16 @@ Standard_Integer Select3D_SensitivePoly::NbSubElements()
 //==================================================
 gp_Pnt Select3D_SensitivePoly::CenterOfGeometry() const
 {
+  if (!myIsComputed)
+  {
+    gp_XYZ aCenter (0.0, 0.0, 0.0);
+    for (Standard_Integer aIdx = 0; aIdx < myPolyg.Size(); ++aIdx)
+    {
+      aCenter += myPolyg.Pnt (aIdx);
+    }
+    myCOG = aCenter / myPolyg.Size();
+    myIsComputed = Standard_True;
+  }
+
   return myCOG;
 }

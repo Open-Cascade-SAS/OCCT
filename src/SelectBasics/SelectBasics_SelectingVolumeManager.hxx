@@ -49,8 +49,9 @@ public:
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box with minimum
   //! corner at point theMinPt and maximum at point theMaxPt
-  virtual Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theMinPt,
-                                     const NCollection_Vec3<Standard_Real>& theMaxPt) = 0;
+  virtual Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theBoxMin,
+                                     const NCollection_Vec3<Standard_Real>& theBoxMax,
+                                     Standard_Boolean*                      theInside = NULL) = 0;
 
   //! Returns true if selecting volume is overlapped by point thePt
   virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
@@ -81,6 +82,8 @@ public:
   virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) = 0;
 
   virtual NCollection_Vec3<Standard_Real> DetectedPoint (const Standard_Real theDepth) const = 0;
+
+  virtual Standard_Boolean IsOverlapAllowed() const = 0;
 
 protected:
   SelectionType myActiveSelectionType;      //!< Active selection type: point, box or polyline

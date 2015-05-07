@@ -139,11 +139,12 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const BVH_Box<Standar
 // purpose  :
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                                           const SelectMgr_Vec3& theMaxPnt)
+                                                           const SelectMgr_Vec3& theMaxPnt,
+                                                           Standard_Boolean* /*theInside*/)
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt))
+    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, NULL))
       return Standard_True;
   }
 

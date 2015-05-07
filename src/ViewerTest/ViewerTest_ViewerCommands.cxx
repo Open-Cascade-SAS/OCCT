@@ -1606,13 +1606,13 @@ void VT_ProcessButton1Release (Standard_Boolean theIsShift)
     Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
     if (theIsShift)
     {
-      EM->ShiftSelect (Min (X_ButtonPress, X_Motion), Max (Y_ButtonPress, Y_Motion),
-                       Max (X_ButtonPress, X_Motion), Min (Y_ButtonPress, Y_Motion));
+      EM->ShiftSelect (X_ButtonPress, Y_ButtonPress,
+                       X_Motion, Y_Motion);
     }
     else
     {
-      EM->Select (Min (X_ButtonPress, X_Motion), Max (Y_ButtonPress, Y_Motion),
-                  Max (X_ButtonPress, X_Motion), Min (Y_ButtonPress, Y_Motion));
+      EM->Select (X_ButtonPress, Y_ButtonPress,
+                  X_Motion, Y_Motion);
     }
   }
 }
@@ -5767,34 +5767,48 @@ static Standard_Integer VSelect (Draw_Interpretor& di,
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  const Standard_Boolean isShiftSelection = (argc>3 && !(argc%2) && (atoi(argv[argc-1])==1));
+
+  const Standard_Boolean isShiftSelection = (argc > 3 && !(argc % 2) && (atoi (argv[argc - 1]) == 1));
+  Standard_Integer aCoordsNb = isShiftSelection ? argc - 2 : argc - 1;
+  TCollection_AsciiString anArg;
+  anArg = isShiftSelection ? argv[argc - 3] : argv[argc - 2];
+  anArg.LowerCase();
+  if (anArg == "-allowoverlap")
+  {
+    Standard_Boolean isValidated = isShiftSelection ? argc == 8
+      : argc == 7;
+    if (!isValidated)
+    {
+      di << "Wrong number of arguments! -allowoverlap key is applied only for rectangle selection";
+      return 1;
+    }
+
+    Standard_Integer isToAllow = isShiftSelection ? Draw::Atoi(argv[argc - 2]) : Draw::Atoi(argv[argc - 1]);
+    myAIScontext->MainSelector()->AllowOverlapDetection((Standard_Boolean)isToAllow);
+    aCoordsNb -= 2;
+  }
+
   Handle(ViewerTest_EventManager) aCurrentEventManager = ViewerTest::CurrentEventManager();
   aCurrentEventManager->MoveTo(atoi(argv[1]),atoi(argv[2]));
-  if(argc <= 4)
+  if(aCoordsNb == 2)
   {
     if(isShiftSelection)
       aCurrentEventManager->ShiftSelect();
     else
       aCurrentEventManager->Select();
   }
-  else if(argc <= 6)
+  else if(aCoordsNb == 4)
   {
     if(isShiftSelection)
-      aCurrentEventManager->ShiftSelect(atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
+      aCurrentEventManager->ShiftSelect (atoi (argv[1]), atoi (argv[2]), atoi (argv[3]), atoi (argv[4]), Standard_False);
     else
-      aCurrentEventManager->Select(atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
+      aCurrentEventManager->Select (atoi (argv[1]), atoi (argv[2]), atoi (argv[3]), atoi (argv[4]), Standard_False);
   }
   else
   {
-    Standard_Integer anUpper = 0;
+    TColgp_Array1OfPnt2d aPolyline (1,aCoordsNb / 2);
 
-    if(isShiftSelection)
-      anUpper = (argc-1)/2;
-    else
-      anUpper = argc/2;
-    TColgp_Array1OfPnt2d aPolyline(1,anUpper);
-
-    for(Standard_Integer i=1;i<=anUpper;++i)
+    for(Standard_Integer i=1;i<=aCoordsNb / 2;++i)
       aPolyline.SetValue(i,gp_Pnt2d(atoi(argv[2*i-1]),atoi(argv[2*i])));
 
     if(isShiftSelection)
@@ -8626,12 +8640,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "diffimage     : diffimage imageFile1 imageFile2 toleranceOfColor(0..1) blackWhite(1|0) borderFilter(1|0) [diffImageFile]",
     __FILE__, VDiffImage, group);
   theCommands.Add ("vselect",
-    "vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [shift_selection = 0|1]\n"
+    "vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [-allowoverlap 0|1] [shift_selection = 0|1]\n"
     "- emulates different types of selection:\n"
     "- 1) single click selection\n"
     "- 2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)\n"
     "- 3) selection with polygon having corners in pixel positions (x1,y1), (x2,y2),...,(xn,yn)\n"
-    "- 4) any of these selections with shift button pressed",
+    "- 4) -allowoverlap determines will partially included objects be selected in rectangular selection"
+    " (partial inclusion - overlap - is not allowed by default)\n"
+    "- 5) any of these selections with shift button pressed",
     __FILE__, VSelect, group);
   theCommands.Add ("vmoveto",
     "vmoveto x y"

@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCurve, Select3D_SensitivePoly)
 Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                                   const Handle(Geom_Curve)& theCurve,
                                                   const Standard_Integer theNbPnts)
-: Select3D_SensitivePoly (theOwnerId, theNbPnts > 2, theNbPnts),
+: Select3D_SensitivePoly (theOwnerId, Standard_True, theNbPnts),
   myCurve (theCurve)
 {
   loadPoints (theCurve, theNbPnts);
@@ -41,7 +41,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
 //==================================================
 Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                                   const Handle(TColgp_HArray1OfPnt)& thePoints)
-: Select3D_SensitivePoly (theOwnerId, thePoints, thePoints->Length() > 2)
+: Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True)
 
 {
   SetSensitivityFactor (3.0);
@@ -53,7 +53,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
 //==================================================
 Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                                   const TColgp_Array1OfPnt& thePoints)
-: Select3D_SensitivePoly (theOwnerId, thePoints, thePoints.Length() > 2)
+: Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True)
 {
   SetSensitivityFactor (3.0);
 }
@@ -100,41 +100,4 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected()
   }
 
   return aNewEntity;
-}
-
-//=======================================================================
-// function : Matches
-// purpose  : Checks whether the curve overlaps current selecting volume
-//=======================================================================
-Standard_Boolean Select3D_SensitiveCurve::Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                   SelectBasics_PickResult& thePickResult)
-{
-  if (myPolyg.Size() > 2)
-    return Select3D_SensitivePoly::Matches (theMgr, thePickResult);
-
-  const gp_Pnt aPnt1 = myPolyg.Pnt3d (0);
-  const gp_Pnt aPnt2 = myPolyg.Pnt3d (1);
-  Standard_Real aDepth = RealLast();
-  Standard_Boolean isMatched = theMgr.Overlaps (aPnt1, aPnt2, aDepth);
-
-  if (isMatched)
-  {
-    Standard_Real aDistToCOG = RealLast();
-    if (myCOG.X() == RealLast() && myCOG.Y() == RealLast() && myCOG.Z() == RealLast())
-    {
-      gp_XYZ aCenter (0.0, 0.0, 0.0);
-      for (Standard_Integer aIdx = 0; aIdx < myPolyg.Size(); ++aIdx)
-      {
-        aCenter += myPolyg.Pnt (aIdx);
-      }
-      myCOG = aCenter / myPolyg.Size();
-    }
-
-    aDistToCOG = theMgr.DistToGeometryCenter (myCOG);
-
-    thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-    return Standard_True;
-  }
-
-  return Standard_False;
 }

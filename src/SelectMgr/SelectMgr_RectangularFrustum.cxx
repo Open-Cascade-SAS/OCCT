@@ -99,7 +99,6 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   aSc = (Abs (aSn) < Precision::Confusion() ? 0.0 : aSn / aSd);
   aTc = (Abs (aTn) < Precision::Confusion() ? 0.0 : aTn / aTd);
 
-  SelectMgr_Vec3 aDiff = aW + (anU * aSc) - (aV * aTc);
   SelectMgr_Vec3 aClosestPnt = myNearPickedPnt + myViewRayDir * aTc;
   theDepth = DISTANCE (myNearPickedPnt, aClosestPnt);
 }
@@ -142,6 +141,35 @@ void SelectMgr_RectangularFrustum::segmentPlaneIntersection (const SelectMgr_Vec
 
   SelectMgr_Vec3 aClosestPnt = myNearPickedPnt + anU * aParam;
   theDepth = DISTANCE (myNearPickedPnt, aClosestPnt);
+}
+
+namespace
+{
+  // =======================================================================
+  // function : computeNormals
+  // purpose  : Computes normals to frustum faces
+  // =======================================================================
+  void computeNormals (const SelectMgr_Vec3* theVertices, SelectMgr_Vec3* theNormals)
+  {
+    // Top
+    theNormals[0] = SelectMgr_Vec3::Cross (theVertices[1] - theVertices[0],
+                                           theVertices[4] - theVertices[0]);
+    // Bottom
+    theNormals[1] = SelectMgr_Vec3::Cross (theVertices[3] - theVertices[2],
+                                           theVertices[6] - theVertices[2]);
+    // Left
+    theNormals[2] = SelectMgr_Vec3::Cross (theVertices[1] - theVertices[0],
+                                           theVertices[2] - theVertices[0]);
+    // Right
+    theNormals[3] = SelectMgr_Vec3::Cross (theVertices[5] - theVertices[4],
+                                           theVertices[6] - theVertices[4]);
+    // Near
+    theNormals[4] = SelectMgr_Vec3::Cross (theVertices[6] - theVertices[4],
+                                           theVertices[0] - theVertices[4]);
+    // Far
+    theNormals[5] = SelectMgr_Vec3::Cross (theVertices[7] - theVertices[5],
+                                           theVertices[1] - theVertices[5]);
+  }
 }
 
 // =======================================================================
@@ -188,36 +216,9 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d &thePoint)
   myVertices[7] = myBuilder->ProjectPntOnViewPlane (thePoint.X() + myPixelTolerance / 2.0,
                                                     thePoint.Y() - myPixelTolerance / 2.0,
                                                     1.0);
-  // Top
-  myPlanes[0] = myBuilder->PlaneEquation (myVertices[1],
-                                          myVertices[0],
-                                          myVertices[5],
-                                          myVertices[6]);
-  // Bottom
-  myPlanes[1] = myBuilder->PlaneEquation (myVertices[3],
-                                          myVertices[2],
-                                          myVertices[7],
-                                          myVertices[4]);
-  // Left
-  myPlanes[2] = myBuilder->PlaneEquation (myVertices[1],
-                                          myVertices[0],
-                                          myVertices[2],
-                                          myVertices[6]);
-  // Right
-  myPlanes[3] = myBuilder->PlaneEquation (myVertices[5],
-                                          myVertices[4],
-                                          myVertices[6],
-                                          myVertices[2]);
-  // Near
-  myPlanes[4] = myBuilder->PlaneEquation (myVertices[4],
-                                          myVertices[6],
-                                          myVertices[2],
-                                          myVertices[3]);
-  // Far
-  myPlanes[5] = myBuilder->PlaneEquation (myVertices[5],
-                                          myVertices[7],
-                                          myVertices[3],
-                                          myVertices[2]);
+
+  // compute frustum normals
+  computeNormals (myVertices, myPlanes);
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
   {
@@ -313,40 +314,12 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
                                                     theMinPnt.Y(),
                                                     0.0);
   // RightBottomFar
-  myVertices[7] = myBuilder->ProjectPntOnViewPlane (theMaxPnt.X() ,
+  myVertices[7] = myBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
                                                     theMinPnt.Y(),
                                                     1.0);
 
-  // Top
-  myPlanes[0] = myBuilder->PlaneEquation (myVertices[1],
-                                          myVertices[0],
-                                          myVertices[5],
-                                          myVertices[6]);
-  // Bottom
-  myPlanes[1] = myBuilder->PlaneEquation (myVertices[3],
-                                          myVertices[2],
-                                          myVertices[7],
-                                          myVertices[4]);
-  // Left
-  myPlanes[2] = myBuilder->PlaneEquation (myVertices[1],
-                                          myVertices[0],
-                                          myVertices[2],
-                                          myVertices[6]);
-  // Right
-  myPlanes[3] = myBuilder->PlaneEquation (myVertices[5],
-                                          myVertices[4],
-                                          myVertices[6],
-                                          myVertices[2]);
-  // Near
-  myPlanes[4] = myBuilder->PlaneEquation (myVertices[4],
-                                          myVertices[6],
-                                          myVertices[2],
-                                          myVertices[3]);
-  // Far
-  myPlanes[5] = myBuilder->PlaneEquation (myVertices[5],
-                                          myVertices[7],
-                                          myVertices[3],
-                                          myVertices[2]);
+  // compute frustum normals
+  computeNormals (myVertices, myPlanes);
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
   {
@@ -429,36 +402,8 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Transfor
   // RightBottomFar
   aRes->myVertices[7] = SelectMgr_MatOp::Transform (theTrsf, myVertices[7]);
 
-  // Top
-  aRes->myPlanes[0] = myBuilder->PlaneEquation (aRes->myVertices[1],
-                                                aRes->myVertices[0],
-                                                aRes->myVertices[5],
-                                                aRes->myVertices[6]);
-  // Bottom
-  aRes->myPlanes[1] = myBuilder->PlaneEquation (aRes->myVertices[3],
-                                                aRes->myVertices[2],
-                                                aRes->myVertices[7],
-                                                aRes->myVertices[4]);
-  // Left
-  aRes->myPlanes[2] = myBuilder->PlaneEquation (aRes->myVertices[1],
-                                                aRes->myVertices[0],
-                                                aRes->myVertices[2],
-                                                aRes->myVertices[6]);
-  // Right
-  aRes->myPlanes[3] = myBuilder->PlaneEquation (aRes->myVertices[5],
-                                                aRes->myVertices[4],
-                                                aRes->myVertices[6],
-                                                aRes->myVertices[2]);
-  // Near
-  aRes->myPlanes[4] = myBuilder->PlaneEquation (aRes->myVertices[4],
-                                                aRes->myVertices[6],
-                                                aRes->myVertices[2],
-                                                aRes->myVertices[3]);
-  // Far
-  aRes->myPlanes[5] = myBuilder->PlaneEquation (aRes->myVertices[5],
-                                                aRes->myVertices[7],
-                                                aRes->myVertices[3],
-                                                aRes->myVertices[2]);
+  // compute frustum normals
+  computeNormals (aRes->myVertices, aRes->myPlanes);
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
   {
@@ -559,36 +504,8 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Scale (c
   aRes->myVertices[7] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
                                                           myMousePos.Y() - theScaleFactor / 2.0,
                                                           1.0);
-  // Top
-  aRes->myPlanes[0] = myBuilder->PlaneEquation (aRes->myVertices[1],
-                                                aRes->myVertices[0],
-                                                aRes->myVertices[5],
-                                                aRes->myVertices[6]);
-  // Bottom
-  aRes->myPlanes[1] = myBuilder->PlaneEquation (aRes->myVertices[3],
-                                                aRes->myVertices[2],
-                                                aRes->myVertices[7],
-                                                aRes->myVertices[4]);
-  // Left
-  aRes->myPlanes[2] = myBuilder->PlaneEquation (aRes->myVertices[1],
-                                                aRes->myVertices[0],
-                                                aRes->myVertices[2],
-                                                aRes->myVertices[6]);
-  // Right
-  aRes->myPlanes[3] = myBuilder->PlaneEquation (aRes->myVertices[5],
-                                                aRes->myVertices[4],
-                                                aRes->myVertices[6],
-                                                aRes->myVertices[2]);
-  // Near
-  aRes->myPlanes[4] = myBuilder->PlaneEquation (aRes->myVertices[4],
-                                                aRes->myVertices[6],
-                                                aRes->myVertices[2],
-                                                aRes->myVertices[3]);
-  // Far
-  aRes->myPlanes[5] = myBuilder->PlaneEquation (aRes->myVertices[5],
-                                                aRes->myVertices[7],
-                                                aRes->myVertices[3],
-                                                aRes->myVertices[2]);
+  // compute frustum normals
+  computeNormals (aRes->myVertices, aRes->myPlanes);
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
   {
@@ -648,10 +565,11 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Scale (c
 //            axis-aligned bounding box with minimum corner at point
 //            theMinPnt and maximum at point theMaxPnt
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                                         const SelectMgr_Vec3& theMaxPnt)
+Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                         const SelectMgr_Vec3& theBoxMax,
+                                                         Standard_Boolean*     theInside)
 {
-  return hasOverlap (theMinPnt, theMaxPnt);
+  return hasOverlap (theBoxMin, theBoxMax, theInside);
 }
 
 // =======================================================================

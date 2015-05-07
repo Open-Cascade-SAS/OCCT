@@ -84,27 +84,56 @@ void ViewerTest_EventManager::MoveTo (const Standard_Integer theXPix,
 //purpose  :
 //=======================================================================
 
-void ViewerTest_EventManager::Select (const Standard_Integer theXPMin,
-                                      const Standard_Integer theYPMin,
-                                      const Standard_Integer theXPMax,
-                                      const Standard_Integer theYPMax)
+void ViewerTest_EventManager::Select (const Standard_Integer theXPressed,
+                                      const Standard_Integer theYPressed,
+                                      const Standard_Integer theXMotion,
+                                      const Standard_Integer theYMotion,
+                                      const Standard_Boolean theIsAutoAllowOverlap)
 {
   #define IS_FULL_INCLUSION Standard_True
   if (myView.IsNull()
-   || Abs (theXPMax - theXPMin) < 2
-   || Abs (theYPMax - theYPMin) < 2)
+   || Abs (theXPressed - theXMotion) < 2
+   || Abs (theYPressed - theYMotion) < 2)
   {
     return;
   }
   else if (!myCtx.IsNull())
   {
-    myCtx->Select (theXPMin, theYPMin, theXPMax, theYPMax, myView, Standard_False);
+    if (theIsAutoAllowOverlap)
+    {
+      if (theYPressed == Min (theYPressed, theYMotion))
+      {
+        myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
+      }
+      else
+      {
+        myCtx->MainSelector()->AllowOverlapDetection (Standard_True);
+      }
+    }
+    myCtx->Select (Min (theXPressed, theXMotion),
+                   Min (theYPressed, theYMotion),
+                   Max (theXPressed, theXMotion),
+                   Max (theYPressed, theYMotion),
+                   myView,
+                   Standard_False);
+
+    // to restore default state of viewer selector
+    if (theIsAutoAllowOverlap)
+    {
+      myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
+    }
   }
 
   const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
   if (!aView.IsNull())
   {
-    aView->Select (theXPMin, theYPMin, theXPMax, theYPMax, Standard_False, IS_FULL_INCLUSION, Standard_False);
+    aView->Select (Min (theXPressed, theXMotion),
+                   Min (theYPressed, theYMotion),
+                   Max (theXPressed, theXMotion),
+                   Max (theYPressed, theYMotion),
+                   Standard_False,
+                   IS_FULL_INCLUSION,
+                   Standard_False);
   }
   myView->Redraw();
 }
@@ -114,25 +143,54 @@ void ViewerTest_EventManager::Select (const Standard_Integer theXPMin,
 //purpose  :
 //=======================================================================
 
-void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPMin,
-                                           const Standard_Integer theYPMin,
-                                           const Standard_Integer theXPMax,
-                                           const Standard_Integer theYPMax)
+void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPressed,
+                                           const Standard_Integer theYPressed,
+                                           const Standard_Integer theXMotion,
+                                           const Standard_Integer theYMotion,
+                                           const Standard_Boolean theIsAutoAllowOverlap)
 {
   if (myView.IsNull()
-   || Abs (theXPMax - theXPMin) < 2
-   || Abs (theYPMax - theYPMin) < 2)
+   || Abs (theXPressed - theXMotion) < 2
+   || Abs (theYPressed - theYMotion) < 2)
   {
     return;
   }
   else if (!myCtx.IsNull())
   {
-    myCtx->AIS_InteractiveContext::ShiftSelect (theXPMin, theYPMin, theXPMax, theYPMax, myView, Standard_False);
+    if (theIsAutoAllowOverlap)
+    {
+      if (theYPressed == Min (theYPressed, theYMotion))
+      {
+        myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
+      }
+      else
+      {
+        myCtx->MainSelector()->AllowOverlapDetection (Standard_True);
+      }
+    }
+    myCtx->ShiftSelect (Min (theXPressed, theXMotion),
+                        Min (theYPressed, theYMotion),
+                        Max (theXPressed, theXMotion),
+                        Max (theYPressed, theYMotion),
+                        myView,
+                        Standard_False);
+
+    // to restore default state of viewer selector
+    if (theIsAutoAllowOverlap)
+    {
+      myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
+    }
   }
   const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
   if (!aView.IsNull())
   {
-    aView->Select (theXPMin, theYPMin, theXPMax, theYPMax, Standard_True, IS_FULL_INCLUSION, Standard_False);
+    aView->Select (Min (theXPressed, theXMotion),
+                   Min (theYPressed, theYMotion),
+                   Max (theXPressed, theXMotion),
+                   Max (theYPressed, theYMotion),
+                   Standard_True,
+                   IS_FULL_INCLUSION,
+                   Standard_False);
   }
   myView->Redraw();
 }

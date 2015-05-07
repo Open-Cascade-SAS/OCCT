@@ -58,8 +58,9 @@ public:
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                     const SelectMgr_Vec3& theMaxPnt) Standard_OVERRIDE;
+  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                     const SelectMgr_Vec3& theBoxMax,
+                                     Standard_Boolean*     theInside = NULL) Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,

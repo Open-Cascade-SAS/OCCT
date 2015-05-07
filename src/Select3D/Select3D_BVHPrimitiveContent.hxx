@@ -50,8 +50,14 @@ public:
   //! Returns the tree built for set of sensitives
   Standard_EXPORT const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& GetBVH();
 
+  //! Returns a number of nodes in 1 BVH leaf
+  Standard_Integer GetLeafNodeSize() const { return myLeafNodeSize; }
+
 protected:
   Handle(Select3D_SensitiveSet) mySensitiveSet;     //!< Set of sensitive entities
+
+private:
+  static const Standard_Integer myLeafNodeSize = 8;     //!< Number of sub-elements in the leaf
 };
 
 #endif // _Select3D_BVHPrimitiveContent_Header

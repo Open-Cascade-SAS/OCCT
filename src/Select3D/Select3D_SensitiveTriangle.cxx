@@ -33,14 +33,13 @@ Select3D_SensitiveTriangle::Select3D_SensitiveTriangle (const Handle(SelectBasic
                                                         const gp_Pnt& thePnt1,
                                                         const gp_Pnt& thePnt2,
                                                         const Select3D_TypeOfSensitivity theType)
-: Select3D_SensitivePoly (theOwnerId, Standard_False, 3),
+: Select3D_SensitiveEntity (theOwnerId),
   mySensType (theType)
 {
-  myPolyg.SetPnt (0, thePnt0);
-  myPolyg.SetPnt (1, thePnt1);
-  myPolyg.SetPnt (2, thePnt2);
-  myCentroid = (gp_XYZ (myPolyg.Pnt (0)) + gp_XYZ (myPolyg.Pnt (1)) + gp_XYZ (myPolyg.Pnt (2)))
-                * (0.3);
+  myPoints[0] = thePnt0;
+  myPoints[1] = thePnt1;
+  myPoints[2] = thePnt2;
+  myCentroid = (thePnt0.XYZ() + thePnt1.XYZ() + thePnt2.XYZ()) * (1.0 / 3.0);
 }
 
 //==================================================
@@ -53,18 +52,23 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
 {
   Standard_Real aDepth     = RealLast();
   Standard_Real aDistToCOG = RealLast();
-  gp_Pnt aPnt1 = myPolyg.Pnt3d (0);
-  gp_Pnt aPnt2 = myPolyg.Pnt3d (1);
-  gp_Pnt aPnt3 = myPolyg.Pnt3d (2);
-  Standard_Boolean isMatched = theMgr.Overlaps (aPnt1, aPnt2, aPnt3, mySensType, aDepth);
-  if (isMatched)
+  if (!theMgr.IsOverlapAllowed())
   {
-    aDistToCOG = theMgr.DistToGeometryCenter (myCentroid);
+    Standard_Real aDummy;
+    return theMgr.Overlaps (myPoints[0], aDummy)
+        && theMgr.Overlaps (myPoints[1], aDummy)
+        && theMgr.Overlaps (myPoints[2], aDummy);
   }
 
-  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  if (!theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, aDepth))
+  {
+    thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+    return Standard_False;
+  }
 
-  return isMatched;
+  aDistToCOG = theMgr.DistToGeometryCenter (myCentroid);
+  thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
+  return Standard_True;
 }
 
 //==================================================
@@ -73,9 +77,9 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
 //==================================================
 void Select3D_SensitiveTriangle::Points3D (gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
 {
-  thePnt0 = myPolyg.Pnt (0);
-  thePnt1 = myPolyg.Pnt (1);
-  thePnt2 = myPolyg.Pnt (2);
+  thePnt0 = myPoints[0];
+  thePnt1 = myPoints[1];
+  thePnt2 = myPoints[2];
 }
 
 //==================================================
@@ -84,11 +88,7 @@ void Select3D_SensitiveTriangle::Points3D (gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_
 //==================================================
 gp_Pnt Select3D_SensitiveTriangle::Center3D() const
 {
-  gp_XYZ aPnt1, aPnt2, aPnt3;
-  aPnt1 = myPolyg.Pnt (0);
-  aPnt2 = myPolyg.Pnt (1);
-  aPnt3 = myPolyg.Pnt (2);
-  return gp_Pnt ((aPnt1 + aPnt2 + aPnt3) / 3.0);
+  return myCentroid;
 }
 
 //==================================================
@@ -99,7 +99,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveTriangle::GetConnected()
 {
   // Create a copy of this
   Handle(Select3D_SensitiveEntity) aNewEntity =
-    new Select3D_SensitiveTriangle (myOwnerId, myPolyg.Pnt(0), myPolyg.Pnt(1), myPolyg.Pnt(2), mySensType);
+    new Select3D_SensitiveTriangle (myOwnerId, myPoints[0], myPoints[1], myPoints[2], mySensType);
 
   return aNewEntity;
 }
@@ -112,23 +112,11 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveTriangle::GetConnected()
 //==================================================
 Select3D_BndBox3d Select3D_SensitiveTriangle::BoundingBox()
 {
-  gp_Pnt aPnt1 = myPolyg.Pnt3d (0);
-  gp_Pnt aPnt2 = myPolyg.Pnt3d (1);
-  gp_Pnt aPnt3 = myPolyg.Pnt3d (2);
-  const SelectMgr_Vec3 aMinPnt = SelectMgr_Vec3 (Min (aPnt1.X(), Min (aPnt2.X(), aPnt3.X())),
-                                                 Min (aPnt1.Y(), Min (aPnt2.Y(), aPnt3.Y())),
-                                                 Min (aPnt1.Z(), Min (aPnt2.Z(), aPnt3.Z())));
-  const SelectMgr_Vec3 aMaxPnt = SelectMgr_Vec3 (Max (aPnt1.X(), Max (aPnt2.X(), aPnt3.X())),
-                                                 Max (aPnt1.Y(), Max (aPnt2.Y(), aPnt3.Y())),
-                                                 Max (aPnt1.Z(), Max (aPnt2.Z(), aPnt3.Z())));
+  const SelectMgr_Vec3 aMinPnt = SelectMgr_Vec3 (Min (myPoints[0].X(), Min (myPoints[1].X(), myPoints[2].X())),
+                                                 Min (myPoints[0].Y(), Min (myPoints[1].Y(), myPoints[2].Y())),
+                                                 Min (myPoints[0].Z(), Min (myPoints[1].Z(), myPoints[2].Z())));
+  const SelectMgr_Vec3 aMaxPnt = SelectMgr_Vec3 (Max (myPoints[0].X(), Max (myPoints[1].X(), myPoints[2].X())),
+                                                 Max (myPoints[0].Y(), Max (myPoints[1].Y(), myPoints[2].Y())),
+                                                 Max (myPoints[0].Z(), Max (myPoints[1].Z(), myPoints[2].Z())));
   return Select3D_BndBox3d (aMinPnt, aMaxPnt);
-}
-
-//==================================================
-// Function: NbSubElements
-// Purpose : Returns the amount of points
-//==================================================
-Standard_Integer Select3D_SensitiveTriangle::NbSubElements()
-{
-  return 3;
 }

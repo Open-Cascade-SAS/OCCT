@@ -26,7 +26,7 @@
 Select3D_BVHPrimitiveContent::Select3D_BVHPrimitiveContent (const Handle(Select3D_SensitiveSet)& theSensitiveSet)
 {
   mySensitiveSet = theSensitiveSet;
-  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (8, 32);
+  myBuilder = new BVH_LinearBuilder<Standard_Real, 3> (myLeafNodeSize, 32);
 
   MarkDirty();
 }

@@ -106,6 +106,10 @@ private:
                                             Standard_Integer theElemIdx,
                                             Standard_Real& theMatchDepth) Standard_OVERRIDE;
 
+  //! Checks whether the entity with index theIdx is inside the current selecting volume
+  virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                            const Standard_Integer               theElemIdx) Standard_OVERRIDE;
+
   //! Calculates distance from the 3d projection of used-picked screen point
   //! to center of the geometry
   virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) Standard_OVERRIDE;
@@ -116,6 +120,7 @@ protected:
   mutable gp_Pnt                  myCOG;                //!< Center of the poly
   Handle_TColStd_HArray1OfInteger mySegmentIndexes;     //!< Segment indexes for BVH tree build
   Select3D_BndBox3d               myBndBox;             //!< Bounding box of the poly
+  mutable Standard_Boolean        myIsComputed;         //!< Is true if all the points and data structures of polygon are initialized
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitivePoly, Select3D_SensitiveSet)

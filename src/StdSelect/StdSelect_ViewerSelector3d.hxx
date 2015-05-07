@@ -87,6 +87,11 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean HasDepthClipping (const Handle(SelectMgr_EntityOwner)& theOwner) const Standard_OVERRIDE;
 
+  //! Is used for rectangular selection only
+  //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the algorithm will
+  //! mark both included and overlapped entities as matched
+  Standard_EXPORT void AllowOverlapDetection (const Standard_Boolean theIsToAllow);
+
   DEFINE_STANDARD_RTTI(StdSelect_ViewerSelector3d)
 
 protected:

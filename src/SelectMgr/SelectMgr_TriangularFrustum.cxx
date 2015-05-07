@@ -24,6 +24,28 @@ SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
   Clear();
 }
 
+namespace
+{
+  void computeFrustumNormals (const SelectMgr_Vec3* theVertices, SelectMgr_Vec3* theNormals)
+  {
+    // V0V1
+    theNormals[0] = SelectMgr_Vec3::Cross (theVertices[3] - theVertices[0],
+                                           theVertices[4] - theVertices[0]);
+    // V1V2
+    theNormals[1] = SelectMgr_Vec3::Cross (theVertices[4] - theVertices[1],
+                                           theVertices[5] - theVertices[1]);
+    // V0V2
+    theNormals[2] = SelectMgr_Vec3::Cross (theVertices[3] - theVertices[0],
+                                           theVertices[5] - theVertices[0]);
+    // Near
+    theNormals[3] = SelectMgr_Vec3::Cross (theVertices[1] - theVertices[0],
+                                           theVertices[2] - theVertices[0]);
+    // Far
+    theNormals[4] = SelectMgr_Vec3::Cross (theVertices[4] - theVertices[3],
+                                           theVertices[5] - theVertices[3]);
+  }
+}
+
 //=======================================================================
 // function : SelectMgr_TriangularFrustum
 // purpose  : Creates new triangular frustum with bases of triangles with
@@ -47,29 +69,7 @@ void SelectMgr_TriangularFrustum::Build (const gp_Pnt2d& theP1,
   // V2_Far
   myVertices[5] = myBuilder->ProjectPntOnViewPlane (theP3.X(), theP3.Y(), 1.0);
 
-  // V0V1
-  myPlanes[0] = myBuilder->PlaneEquation (myVertices[0],
-                                          myVertices[3],
-                                          myVertices[4],
-                                          myVertices[1]);
-  // V1V2
-  myPlanes[1] = myBuilder->PlaneEquation (myVertices[1],
-                                          myVertices[4],
-                                          myVertices[5],
-                                          myVertices[2]);
-  // V0V2
-  myPlanes[2] = myBuilder->PlaneEquation (myVertices[0],
-                                          myVertices[3],
-                                          myVertices[5],
-                                          myVertices[2]);
-  // Near
-  myPlanes[3] = myBuilder->PlaneEquation (myVertices[0],
-                                          myVertices[1],
-                                          myVertices[2]);
-  // Far
-  myPlanes[4] = myBuilder->PlaneEquation (myVertices[3],
-                                          myVertices[4],
-                                          myVertices[5]);
+  computeFrustumNormals (myVertices, myPlanes);
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
   {
@@ -144,29 +144,7 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::Transform
 
   aRes->myIsOrthographic = myIsOrthographic;
 
-  // V0V1
-  aRes->myPlanes[0] = myBuilder->PlaneEquation (aRes->myVertices[0],
-                                                aRes->myVertices[3],
-                                                aRes->myVertices[4],
-                                                aRes->myVertices[1]);
-  // V1V2
-  aRes->myPlanes[1] = myBuilder->PlaneEquation (aRes->myVertices[1],
-                                                aRes->myVertices[4],
-                                                aRes->myVertices[5],
-                                                aRes->myVertices[2]);
-  // V0V2
-  aRes->myPlanes[2] = myBuilder->PlaneEquation (aRes->myVertices[0],
-                                                aRes->myVertices[3],
-                                                aRes->myVertices[5],
-                                                aRes->myVertices[2]);
-  // Near
-  aRes->myPlanes[3] = myBuilder->PlaneEquation (aRes->myVertices[0],
-                                               aRes->myVertices[1],
-                                               aRes->myVertices[2]);
-  // Far
-  aRes->myPlanes[4] = myBuilder->PlaneEquation (aRes->myVertices[3],
-                                                aRes->myVertices[4],
-                                                aRes->myVertices[5]);
+  computeFrustumNormals (aRes->myVertices, aRes->myPlanes);
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
   {
@@ -238,9 +216,10 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const BVH_Box<Standard_R
 //            theMinPt and maximum at point theMaxPt
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Vec3& theMinPt,
-                                                        const SelectMgr_Vec3& theMaxPt)
+                                                        const SelectMgr_Vec3& theMaxPt,
+                                                        Standard_Boolean* /*theInside*/)
 {
-  return hasOverlap (theMinPt, theMaxPt);
+  return hasOverlap (theMinPt, theMaxPt, NULL);
 }
 
 // =======================================================================

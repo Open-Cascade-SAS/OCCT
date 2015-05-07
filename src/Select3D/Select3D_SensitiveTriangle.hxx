@@ -41,7 +41,7 @@ class TopLoc_Location;
 //! This comes into play in the detection of meshing and triangulation in surfaces.
 //! In some cases this class can raise Standard_ConstructionError and
 //! Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
-class Select3D_SensitiveTriangle : public Select3D_SensitivePoly
+class Select3D_SensitiveTriangle : public Select3D_SensitiveEntity
 {
 public:
 
@@ -71,7 +71,9 @@ public:
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   //! Returns the amount of points
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+  virtual Standard_Integer NbSubElements() Standard_OVERRIDE { return 3; }
+
+  virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return myCentroid; }
 
   DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangle)
 
@@ -79,6 +81,7 @@ private:
 
   Select3D_TypeOfSensitivity mySensType;     //!< Type of sensitivity: boundary or interior
   gp_Pnt                     myCentroid;     //!< Center of triangle
+  gp_Pnt                     myPoints[3];
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)

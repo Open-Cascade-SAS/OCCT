@@ -55,18 +55,6 @@ public:
   Standard_Real SignedPlanePntDist (const SelectMgr_Vec3& theEq,
                                    const SelectMgr_Vec3& thePnt) const;
 
-  //! Creates plane equation from 3 points: thePntA, thePntB and
-  //! thePntC containing point theInnerPnt
-  SelectMgr_Vec3 PlaneEquation (const SelectMgr_Vec3& thePntA,
-                                const SelectMgr_Vec3& thePntB,
-                                const SelectMgr_Vec3& thePntC,
-                                const SelectMgr_Vec3& theInnerPnt) const;
-
-  //! Calculates plane equation from 3 points
-  SelectMgr_Vec3 PlaneEquation (const SelectMgr_Vec3& thePntA,
-                                const SelectMgr_Vec3& thePntB,
-                                const SelectMgr_Vec3& thePntC) const;
-
   //! Projects 2d screen point onto view frustum plane:
   //! theZ = 0 - near plane,
   //! theZ = 1 - far plane

@@ -96,49 +96,6 @@ Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist (const SelectMgr_Vec3
   return anA * thePnt.x() + aB * thePnt.y() + aC * thePnt.z();
 }
 
-// =======================================================================
-// function : PlaneEquation
-// purpose  : Creates plane equation from 3 points: thePntA, thePntB and
-//            thePntC containing point theInnerPnt
-// =======================================================================
-SelectMgr_Vec3 SelectMgr_FrustumBuilder::PlaneEquation (const SelectMgr_Vec3& thePntA,
-                                                        const SelectMgr_Vec3& thePntB,
-                                                        const SelectMgr_Vec3& thePntC,
-                                                        const SelectMgr_Vec3& theInnerPnt) const
-{
-  NCollection_Vec4<Standard_Real> aPlaneEquation (0.0);
-
-  const SelectMgr_Vec3& aDirVecAB = thePntB - thePntA;
-  const SelectMgr_Vec3& aDirVecAC = thePntC - thePntA;
-  SelectMgr_Vec3 aPlaneNormal = SelectMgr_Vec3 (aDirVecAB.y() * aDirVecAC.z() - aDirVecAB.z() * aDirVecAC.y(),
-                                                aDirVecAB.z() * aDirVecAC.x() - aDirVecAB.x() * aDirVecAC.z(),
-                                                aDirVecAB.x() * aDirVecAC.y() - aDirVecAB.y() * aDirVecAC.x());
-
-  if (SignedPlanePntDist (aPlaneNormal, theInnerPnt) > 0)
-  {
-    aPlaneNormal *= -1.0;
-  }
-
-  return aPlaneNormal;
-}
-
-//=======================================================================
-// function : PlaneEquation
-// purpose  : Calculates plane equation from 3 points
-//=======================================================================
-SelectMgr_Vec3 SelectMgr_FrustumBuilder::PlaneEquation (const SelectMgr_Vec3& thePntA,
-                                                        const SelectMgr_Vec3& thePntB,
-                                                        const SelectMgr_Vec3& thePntC) const
-{
-  const SelectMgr_Vec3& aVec1 = thePntB - thePntA;
-  const SelectMgr_Vec3& aVec2 = thePntC - thePntA;
-  SelectMgr_Vec3 aPlaneEquation = SelectMgr_Vec3 (aVec1.y() * aVec2.z() - aVec1.z() * aVec2.y(),
-                                                  aVec1.z() * aVec2.x() - aVec1.x() * aVec2.z(),
-                                                  aVec1.x() * aVec2.y() - aVec1.y() * aVec2.x());
-
-  return aPlaneEquation;
-}
-
 //=======================================================================
 // function : safePointCast
 // purpose  :

@@ -31,7 +31,7 @@ class Select3D_BVHPrimitiveContent;
 //! This class is base class for handling overlap detection of complex sensitive
 //! entities. It provides an interface for building BVH tree for some set of entities.
 //! Thereby, each iteration of overlap detection is a traverse of BVH tree in fact.
-//! To use speed-up heirarchical structure in a custom complex sensitive entity, it is
+//! To use speed-up hierarchical structure in a custom complex sensitive entity, it is
 //! necessary to make that custom entity a descendant of this class and organize sub-entities
 //! in some container which allows referencing to elements by index. Note that methods taking
 //! index as a parameter are used for BVH build and the range of given index is [0; Size() - 1].
@@ -87,6 +87,9 @@ public:
   //! Destroys cross-reference to avoid memory leak
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
+  //! Returns a number of nodes in 1 BVH leaf
+  Standard_EXPORT Standard_Integer GetLeafNodeSize() const;
+
 public:
   DEFINE_STANDARD_RTTI(Select3D_SensitiveSet)
 
@@ -96,6 +99,10 @@ protected:
   virtual Standard_Boolean overlapsElement (SelectBasics_SelectingVolumeManager& theMgr,
                                             Standard_Integer theElemIdx,
                                             Standard_Real& theMatchDepth) = 0;
+
+  //! Checks whether the entity with index theIdx is inside the current selecting volume
+  virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
+                                            const Standard_Integer               theElemIdx) = 0;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
   virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) = 0;

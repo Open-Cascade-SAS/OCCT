@@ -668,3 +668,15 @@ void StdSelect_ViewerSelector3d::ResetSelectionActivationStatus()
 {
   resetSelectionActivationStatus();
 }
+
+//=======================================================================
+//function : AllowOverlapDetection
+//purpose  : Sets the detection type: if theIsToAllow is false,
+//           only fully included sensitives will be detected, otherwise
+//           the algorithm will mark both included and overlapped entities
+//           as matched
+//=======================================================================
+void StdSelect_ViewerSelector3d::AllowOverlapDetection (const Standard_Boolean theIsToAllow)
+{
+  mySelectingVolumeMgr.AllowOverlapDetection (theIsToAllow);
+}
