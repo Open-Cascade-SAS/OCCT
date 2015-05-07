@@ -16,21 +16,20 @@
 #ifndef _SelectMgr_FrustumBuilder_HeaderFile
 #define _SelectMgr_FrustumBuilder_HeaderFile
 
+#include <Standard_DefineHandle.hxx>
+
 #include <Graphic3d_Camera.hxx>
-#include <NCollection_Handle.hxx>
 #include <Precision.hxx>
 #include <SelectMgr_VectorTypes.hxx>
 
 //! The purpose of this class is to provide unified interface for building
 //! selecting frustum depending on current camera projection and orientation
 //! matrices, window size and viewport parameters.
-class SelectMgr_FrustumBuilder
+class SelectMgr_FrustumBuilder : public Standard_Transient
 {
 public:
   //! Creates new frustum builder with empty matrices
   SelectMgr_FrustumBuilder();
-
-  ~SelectMgr_FrustumBuilder() {};
 
   //! Stores current orientation matrix
   void SetOrientation (const Graphic3d_Mat4d& theOrientation);
@@ -62,6 +61,8 @@ public:
                                         const Standard_Real& theY,
                                         const Standard_Real& theZ) const;
 
+  DEFINE_STANDARD_RTTI(SelectMgr_FrustumBuilder)
+
 private:
 
   //! Unprojects point from NDC coords to 3d world space
@@ -76,5 +77,7 @@ private:
   NCollection_Vec4<Standard_Real>   myViewport;
   Standard_Boolean                  myIsViewportSet;
 };
+
+DEFINE_STANDARD_HANDLE(SelectMgr_FrustumBuilder, Standard_Transient)
 
 #endif // _SelectMgr_FrustumBuilder_HeaderFile

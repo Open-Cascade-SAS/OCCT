@@ -19,6 +19,9 @@
 //Modif on jul-21-97 : changement en harray1 pour eventuelles connexions ...
 
 #include <Select3D_SensitiveFace.hxx>
+#include <Select3D_SensitivePoly.hxx>
+#include <Select3D_InteriorSensitivePointSet.hxx>
+
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 
@@ -41,7 +44,7 @@ Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_Entity
   }
   else
   {
-    myFacePoints = new Select3D_BoundarySensitivePointSet (theOwnerId, thePoints);
+    myFacePoints = new Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True);
   }
 }
 
@@ -61,7 +64,7 @@ Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_Entity
   }
   else
   {
-    myFacePoints = new Select3D_BoundarySensitivePointSet (theOwnerId, thePoints->Array1());
+    myFacePoints = new Select3D_SensitivePoly (theOwnerId, thePoints->Array1(), Standard_True);
   }
 }
 
@@ -72,7 +75,15 @@ Select3D_SensitiveFace::Select3D_SensitiveFace (const Handle(SelectBasics_Entity
 //=======================================================================
 void Select3D_SensitiveFace::GetPoints (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)
 {
-  myFacePoints->GetPoints (theHArrayOfPnt);
+  if (myFacePoints->IsKind(STANDARD_TYPE(Select3D_SensitivePoly)))
+  {
+    Handle(Select3D_SensitivePoly)::DownCast (myFacePoints)->Points3D (theHArrayOfPnt);
+  }
+  else
+  {
+    Handle(Select3D_InteriorSensitivePointSet)::DownCast (myFacePoints)->GetPoints (theHArrayOfPnt);
+  }
+
 }
 
 //=======================================================================
@@ -102,7 +113,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveFace::GetConnected()
 {
   // Create a copy of this
   Handle(TColgp_HArray1OfPnt) aPoints;
-  myFacePoints->GetPoints (aPoints);
+  GetPoints (aPoints);
 
   Handle(Select3D_SensitiveEntity) aNewEntity =
     new Select3D_SensitiveFace (myOwnerId, aPoints, mySensType);

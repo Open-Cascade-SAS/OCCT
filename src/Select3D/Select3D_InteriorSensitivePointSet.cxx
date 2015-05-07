@@ -21,6 +21,8 @@
 
 #include <Select3D_InteriorSensitivePointSet.hxx>
 
+namespace {
+
 // Internal class for creation of planar polygons
 class Select3D_Plane
 {
@@ -73,6 +75,11 @@ private:
   NCollection_Vec4<Standard_Real> myPlane;
   Standard_Boolean                myIsInitialized;
 };
+
+} // anonymous namespace
+
+IMPLEMENT_STANDARD_HANDLE (Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
+IMPLEMENT_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
 
 // =======================================================================
 // function : Select3D_InteriorSensitivePointSet
@@ -169,17 +176,6 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet (const Ha
   {
     myPolygonsIdxs->SetValue (aIdx, aIdx);
   }
-}
-
-// =======================================================================
-// function : Matches
-// purpose  : Checks whether the point set overlaps current selecting
-//            volume
-// =======================================================================
-Standard_Boolean Select3D_InteriorSensitivePointSet::Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                              SelectBasics_PickResult& thePickResult)
-{
-  return Select3D_SensitiveSet::Matches (theMgr, thePickResult);
 }
 
 // =======================================================================
@@ -318,15 +314,6 @@ Select3D_BndBox3d Select3D_InteriorSensitivePointSet::BoundingBox()
 gp_Pnt Select3D_InteriorSensitivePointSet::CenterOfGeometry() const
 {
   return myCOG;
-}
-
-//=======================================================================
-// function : BVH
-// purpose  : Builds BVH tree for the point set
-//=======================================================================
-void Select3D_InteriorSensitivePointSet::BVH()
-{
-  BVH();
 }
 
 //=======================================================================

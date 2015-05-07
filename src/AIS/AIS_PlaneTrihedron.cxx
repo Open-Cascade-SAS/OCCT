@@ -47,8 +47,6 @@
 #include <UnitsAPI.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-#include <Select3D_SensitiveFace.hxx>
-
 void  ExtremityPoints(TColgp_Array1OfPnt& PP,const Handle(Geom_Plane)& myPlane,const Handle(Prs3d_Drawer)& myDrawer);
 
 //=======================================================================

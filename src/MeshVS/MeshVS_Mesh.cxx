@@ -361,7 +361,7 @@ void MeshVS_Mesh::ComputeSelection ( const Handle(SelectMgr_Selection)& theSelec
                 aSharedNodes.Add( aElemNodes( i ) );
               }
 
-              anEnt = new Select3D_SensitiveFace( myWholeMeshOwner, Points );
+              anEnt = new Select3D_SensitiveFace( myWholeMeshOwner, Points, Select3D_TOS_INTERIOR);
               theSelection->Add( anEnt );
             }
           }

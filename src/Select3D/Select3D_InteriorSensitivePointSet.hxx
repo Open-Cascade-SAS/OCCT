@@ -22,7 +22,6 @@
 #include <Handle_TColgp_HArray1OfPnt.hxx>
 #include <Handle_TColStd_HArray1OfInteger.hxx>
 
-#include <Select3D_ISensitivePointSet.hxx>
 #include <Select3D_SensitivePoly.hxx>
 #include <Select3D_SensitiveSet.hxx>
 
@@ -37,7 +36,7 @@ typedef NCollection_Vector<Handle(Select3D_SensitivePoly)> Select3D_VectorOfHPol
 //! This class handles the selection of arbitrary point set with internal type of sensitivity.
 //! The main principle is to split the point set given onto planar convex polygons and search
 //! for the overlap with one or more of them through traverse of BVH tree.
-class Select3D_InteriorSensitivePointSet : public Select3D_ISensitivePointSet, public Select3D_SensitiveSet
+class Select3D_InteriorSensitivePointSet : public Select3D_SensitiveSet
 {
 public:
 
@@ -45,13 +44,9 @@ public:
   Standard_EXPORT Select3D_InteriorSensitivePointSet (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                                       const TColgp_Array1OfPnt& thePoints);
 
-  //! Checks whether the point set overlaps current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
-
   //! Initializes the given array theHArrayOfPnt by 3d coordinates of vertices of the
   //! whole point set
-  Standard_EXPORT virtual void GetPoints (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt) Standard_OVERRIDE;
+  Standard_EXPORT virtual void GetPoints (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt);
 
   //! Returns the length of vector of planar convex polygons
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
@@ -76,11 +71,10 @@ public:
   //! transformation is set, it will be applied
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
-  //! Builds BVH tree for the point set
-  Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
-
   //! Returns the amount of points in set
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+
+  DEFINE_STANDARD_RTTI(Select3D_InteriorSensitivePointSet)
 
 protected:
 
@@ -105,5 +99,7 @@ protected:
   gp_Pnt                          myCOG;                //!< Center of the point set
   Select3D_BndBox3d               myBndBox;             //!< Bounding box of the point set
 };
+
+DEFINE_STANDARD_HANDLE(Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
 
 #endif // _Select3D_InteriorSensitivePointSet_HeaderFile

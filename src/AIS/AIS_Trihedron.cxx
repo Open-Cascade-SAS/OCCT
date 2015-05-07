@@ -19,7 +19,6 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveFace.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Line.hxx>

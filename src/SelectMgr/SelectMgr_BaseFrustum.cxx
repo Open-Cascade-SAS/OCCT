@@ -86,7 +86,7 @@ void SelectMgr_BaseFrustum::SetWindowSize (const Standard_Integer theWidth, cons
 // function : SetBuilder
 // purpose  :
 //=======================================================================
-void SelectMgr_BaseFrustum::SetBuilder (const NCollection_Handle<SelectMgr_FrustumBuilder>& theBuilder)
+void SelectMgr_BaseFrustum::SetBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder)
 {
   myBuilder.Nullify();
   myBuilder = theBuilder;

@@ -25,7 +25,6 @@
 #include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
-#include <NCollection_Handle.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
@@ -47,7 +46,7 @@ public:
   //! orthographic camera and empty frustum builder
   SelectMgr_BaseFrustum();
 
-  virtual ~SelectMgr_BaseFrustum() {};
+  virtual ~SelectMgr_BaseFrustum() {}
 
   //! Passes camera projection and orientation matrices to builder
   void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
@@ -68,23 +67,23 @@ public:
                     const Standard_Real theHeight);
 
   //! Nullifies the builder created in the constructor and copies the pointer given
-  void SetBuilder (const NCollection_Handle<SelectMgr_FrustumBuilder>& theBuilder);
+  void SetBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder);
 
 
   //! Builds volume according to the point and given pixel tolerance
-  virtual void Build (const gp_Pnt2d& /*thePoint*/) {};
+  virtual void Build (const gp_Pnt2d& /*thePoint*/) {}
 
   //! Builds volume according to the selected rectangle
   virtual void Build (const gp_Pnt2d& /*theMinPt*/,
-                      const gp_Pnt2d& /*theMaxPt*/) {};
+                      const gp_Pnt2d& /*theMaxPt*/) {}
 
   //! Builds volume according to the triangle given
   virtual void Build (const gp_Pnt2d& /*theP1*/,
                       const gp_Pnt2d& /*theP2*/,
-                      const gp_Pnt2d& /*theP3*/) {};
+                      const gp_Pnt2d& /*theP3*/) {}
 
   //! Builds selecting volumes set according to polyline points
-  virtual void Build (const TColgp_Array1OfPnt2d& /*thePoints*/) {};
+  virtual void Build (const TColgp_Array1OfPnt2d& /*thePoints*/) {}
 
   virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& /*theTrsf*/) { return NULL; }
 
@@ -142,7 +141,7 @@ protected:
   Standard_Real    myPixelTolerance;      //!< Pixel tolerance
   Standard_Boolean myIsOrthographic;      //!< Defines if current camera is orthographic
 
-  NCollection_Handle<SelectMgr_FrustumBuilder> myBuilder;      //!< A tool implementing methods for volume build
+  Handle(SelectMgr_FrustumBuilder) myBuilder; //!< A tool implementing methods for volume build
 };
 
 #endif // _SelectMgr_BaseFrustum_HeaderFile

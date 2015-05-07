@@ -1,14 +1,11 @@
 Select3D_Pnt.hxx
 Select3D_Macro.hxx
 Select3D_PointData.hxx
-Select3D_BoundarySensitivePointSet.hxx
-Select3D_BoundarySensitivePointSet.cxx
 Select3D_BndBox3d.hxx
 Select3D_BVHPrimitiveContent.hxx
 Select3D_BVHPrimitiveContent.cxx
 Select3D_InteriorSensitivePointSet.hxx
 Select3D_InteriorSensitivePointSet.cxx
-Select3D_ISensitivePointSet.hxx
 Select3D_EntitySequence.hxx
 Select3D_SensitiveBox.hxx
 Select3D_SensitiveBox.cxx

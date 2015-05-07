@@ -21,24 +21,16 @@
 #ifndef _Select3D_SensitiveFace_HeaderFile
 #define _Select3D_SensitiveFace_HeaderFile
 
-#include <NCollection_Handle.hxx>
-
-#include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
-#include <Standard_Type.hxx>
 
 #include <Select3D_TypeOfSensitivity.hxx>
-#include <Select3D_SensitivePoly.hxx>
+#include <Select3D_SensitiveSet.hxx>
 #include <Handle_SelectBasics_EntityOwner.hxx>
 #include <Handle_TColgp_HArray1OfPnt.hxx>
 #include <Standard_Boolean.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-
-#include <Select3D_ISensitivePointSet.hxx>
-#include <Select3D_BoundarySensitivePointSet.hxx>
-#include <Select3D_InteriorSensitivePointSet.hxx>
 
 class Standard_ConstructionError;
 class Standard_OutOfRange;
@@ -61,7 +53,7 @@ public:
   //! The array of points is the outer polygon of the geometric face.
   Standard_EXPORT Select3D_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                           const TColgp_Array1OfPnt& thePoints,
-                                          const Select3D_TypeOfSensitivity theType = Select3D_TOS_INTERIOR);
+                                          const Select3D_TypeOfSensitivity theType);
 
   //! Constructs a sensitive face object defined by the
   //! owner theOwnerId, the array of points thePoints, and
@@ -69,7 +61,7 @@ public:
   //! The array of points is the outer polygon of the geometric face.
   Standard_EXPORT Select3D_SensitiveFace (const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                           const Handle(TColgp_HArray1OfPnt)& thePoints,
-                                          const Select3D_TypeOfSensitivity theType = Select3D_TOS_INTERIOR);
+                                          const Select3D_TypeOfSensitivity theType);
 
   //! Initializes the given array theHArrayOfPnt by 3d
   //! coordinates of vertices of the face
@@ -99,8 +91,8 @@ public:
 
 private:
 
-  Select3D_TypeOfSensitivity                      mySensType;           //!< Type of sensitivity: interior or boundary
-  NCollection_Handle<Select3D_ISensitivePointSet> myFacePoints;     //!< Wrapper for overlap detection created depending on sensitivity type
+  Select3D_TypeOfSensitivity    mySensType;       //!< Type of sensitivity: interior or boundary
+  Handle(Select3D_SensitiveSet) myFacePoints;     //!< Wrapper for overlap detection created depending on sensitivity type
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveFace, Select3D_SensitiveEntity)

@@ -19,7 +19,6 @@
 #include <BVH_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <SelectMgr_BaseFrustum.hxx>
-#include <SelectMgr_FrustumBuilder.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 

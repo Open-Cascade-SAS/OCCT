@@ -44,10 +44,8 @@ uses
 is
 
     imported BndBox3d;
-    imported BoundarySensitivePointSet;
     imported BVHPrimitiveContent;
     imported InteriorSensitivePointSet;
-    imported ISensitivePointSet;
     imported EntitySequence;
     imported Pnt;
     imported PointData;
