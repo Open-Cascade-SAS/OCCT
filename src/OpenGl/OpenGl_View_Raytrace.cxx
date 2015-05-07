@@ -157,7 +157,7 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
   else if (theMode == OpenGl_GUM_REBUILD)
   {
     // Actualize the hash map of structures - remove out-of-date records
-    std::map<const OpenGl_Structure*, Standard_Size>::iterator anIter = myStructureStates.begin();
+    std::map<const OpenGl_Structure*, StructState>::iterator anIter = myStructureStates.begin();
 
     while (anIter != myStructureStates.end())
     {
@@ -209,14 +209,18 @@ Standard_Boolean OpenGl_View::toUpdateStructure (const OpenGl_Structure* theStru
     return Standard_False; // did not contain ray-trace elements
   }
 
-  std::map<const OpenGl_Structure*, Standard_Size>::iterator aStructState = myStructureStates.find (theStructure);
+  std::map<const OpenGl_Structure*, StructState>::iterator aStructState = myStructureStates.find (theStructure);
 
-  if (aStructState != myStructureStates.end())
+  if (aStructState == myStructureStates.end() || aStructState->second.StructureState != theStructure->ModificationState())
   {
-    return aStructState->second != theStructure->ModificationState();
+    return Standard_True;
+  }
+  else if (theStructure->InstancedStructure() != NULL)
+  {
+    return aStructState->second.InstancedState != theStructure->InstancedStructure()->ModificationState();
   }
 
-  return Standard_True;
+  return Standard_False;
 }
 
 // =======================================================================
@@ -354,7 +358,7 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
 {
   if (!theStructure->IsVisible())
   {
-    myStructureStates[theStructure] = theStructure->ModificationState();
+    myStructureStates[theStructure] = StructState (theStructure);
 
     return Standard_True;
   }
@@ -388,16 +392,15 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
     theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
 
   // Process all connected OpenGL structures
-  for (OpenGl_ListOfStructure::Iterator anIts (theStructure->ConnectedStructures()); anIts.More(); anIts.Next())
+  const OpenGl_Structure* anInstanced = theStructure->InstancedStructure();
+
+  if (anInstanced != NULL && anInstanced->IsRaytracable())
   {
-    if (anIts.Value()->IsRaytracable())
-    {
-      aResult &= addRaytraceGroups (anIts.Value(), aStructMatID,
-        theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
-    }
+    aResult &= addRaytraceGroups (anInstanced, aStructMatID,
+      theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
   }
 
-  myStructureStates[theStructure] = theStructure->ModificationState();
+  myStructureStates[theStructure] = StructState (theStructure);
 
   return aResult;
 }

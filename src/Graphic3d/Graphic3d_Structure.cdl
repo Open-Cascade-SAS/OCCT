@@ -40,42 +40,42 @@ class Structure from Graphic3d inherits TShared
 
 uses
 
-	Array2OfReal		from TColStd,
-	SequenceOfAddress	from TColStd,
+    Array2OfReal            from TColStd,
+    SequenceOfAddress       from TColStd,
 
-	Color			from Quantity,
+    Color                   from Quantity,
 
-	GenId			from Aspect,
-	TypeOfHighlightMethod	from Aspect,
+    GenId                   from Aspect,
+    TypeOfHighlightMethod   from Aspect,
 
-	DataStructureManager	from Graphic3d,
-	AspectFillArea3d	from Graphic3d,
-	AspectLine3d		from Graphic3d,
-	AspectMarker3d		from Graphic3d,
-	AspectText3d		from Graphic3d,
-	CStructure          from Graphic3d,
-	CStructure   from Graphic3d,
-	GraphicDriver		from Graphic3d,
-	Group			from Graphic3d,
-	SequenceOfGroup		from Graphic3d,
-	SequenceOfStructure	from Graphic3d,
-	HSequenceOfStructure	from Graphic3d,
-	MapOfStructure		from Graphic3d,
-	StructureManager	from Graphic3d,
-	StructureManagerPtr from Graphic3d,
-	TypeOfComposition	from Graphic3d,
-	TypeOfConnection	from Graphic3d,
-	TypeOfPrimitive		from Graphic3d,
-	TypeOfStructure		from Graphic3d,
-	Vector			from Graphic3d,
-	Vertex			from Graphic3d,
-	TransModeFlags          from Graphic3d,
-  ZLayerId from Graphic3d,
-	Pnt                     from gp,
-    SequenceOfHClipPlane from Graphic3d,
-    BndBox4f from Graphic3d,
-    BndBox4d from Graphic3d,
-    Box from Bnd
+    DataStructureManager    from Graphic3d,
+    AspectFillArea3d        from Graphic3d,
+    AspectLine3d            from Graphic3d,
+    AspectMarker3d          from Graphic3d,
+    AspectText3d            from Graphic3d,
+    CStructure              from Graphic3d,
+    GraphicDriver           from Graphic3d,
+    Group                   from Graphic3d,
+    SequenceOfGroup         from Graphic3d,
+    SequenceOfStructure     from Graphic3d,
+    HSequenceOfStructure    from Graphic3d,
+    MapOfStructure          from Graphic3d,
+    IndexedMapOfAddress     from Graphic3d,
+    StructureManager        from Graphic3d,
+    StructureManagerPtr     from Graphic3d,
+    TypeOfComposition       from Graphic3d,
+    TypeOfConnection        from Graphic3d,
+    TypeOfPrimitive         from Graphic3d,
+    TypeOfStructure         from Graphic3d,
+    Vector                  from Graphic3d,
+    Vertex                  from Graphic3d,
+    TransModeFlags          from Graphic3d,
+    ZLayerId                from Graphic3d,
+    Pnt                     from gp,
+    SequenceOfHClipPlane    from Graphic3d,
+    BndBox4f                from Graphic3d,
+    BndBox4d                from Graphic3d,
+    Box                     from Bnd
 
 raises
 
@@ -957,6 +957,38 @@ is
   ---C++: return const &
   ---C++: inline
 
+  AppendDescendant (me : mutable;
+                    theDescendant : Address from Standard)
+    returns Boolean from Standard
+    is protected;
+  ---Level: Internal
+  ---Purpose: Appends new descendant structure.
+  ---Category: Private methods
+
+  RemoveDescendant (me : mutable;
+                    theDescendant : Address from Standard)
+    returns Boolean from Standard
+    is protected;
+  ---Level: Internal
+  ---Purpose: Removes the given descendant structure.
+  ---Category: Private methods
+
+  AppendAncestor (me : mutable;
+                  theAncestor : Address from Standard)
+    returns Boolean from Standard
+    is protected;
+  ---Level: Internal
+  ---Purpose: Appends new ancestor structure.
+  ---Category: Private methods
+
+  RemoveAncestor (me : mutable;
+                  theAncestor : Address from Standard)
+    returns Boolean from Standard
+    is protected;
+  ---Level: Internal
+  ---Purpose: Removes the given ancestor structure.
+  ---Category: Private methods
+
 fields
 
 --
@@ -968,14 +1000,20 @@ fields
 --			It is a sequence of groups of primitives.
 --
 
-	-- the associated low-level structure
-  myCStructure : CStructure from Graphic3d;
+    -- the associated low-level structure
+    myCStructure : CStructure from Graphic3d;
 
-	-- the structures to which the structure is attached
-	myAncestors		:	SequenceOfAddress from TColStd;
+    -- the structures to which the structure is attached
+    myAncestors     :  SequenceOfAddress from TColStd;
 
-	-- the structures attached to the structure
-	myDescendants		:	SequenceOfAddress from TColStd;
+    -- the structures attached to the structure
+    myDescendants   :  SequenceOfAddress from TColStd;
+
+    -- the map of structures to which the structure is attached
+    myAncestorMap   :  IndexedMapOfAddress from Graphic3d;
+
+    -- the map of structures attached to the structure
+    myDescendantMap :  IndexedMapOfAddress from Graphic3d;
 
 	-- the highlight method of the structure
 	myHighlightColor	:	Color from Quantity;

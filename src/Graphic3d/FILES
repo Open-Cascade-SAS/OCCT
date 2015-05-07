@@ -32,6 +32,7 @@ Graphic3d_ShaderVariable.cxx
 Graphic3d_ShaderVariable.lxx
 Graphic3d_MapOfStructure.hxx
 Graphic3d_MapIteratorOfMapOfStructure.hxx
+Graphic3d_IndexedMapOfAddress.hxx
 Graphic3d_TypeOfShaderObject.hxx
 Graphic3d_DataStructure.pxx
 Graphic3d_StructureManager.pxx

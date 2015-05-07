@@ -175,8 +175,8 @@ public:
   //! and will lead to broken visualization due to loosed data.
   Standard_EXPORT void ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx);
 
-  //! Returns list of connected OpenGL structures.
-  const OpenGl_ListOfStructure& ConnectedStructures() const { return myConnected; }
+  //! Returns instanced OpenGL structure.
+  const OpenGl_Structure* InstancedStructure() const { return myInstancedStructure; }
 
   //! Returns OpenGL face aspect.
   const OpenGl_AspectFace* AspectFace() const { return myAspectFace; }
@@ -194,29 +194,14 @@ public:
   void ResetModificationState() const { myModificationState = 0; }
 
   //! Is the structure ray-tracable (contains ray-tracable elements)?
-  Standard_Boolean IsRaytracable() const { return myIsRaytracable; }
+  Standard_Boolean IsRaytracable() const;
 
 protected:
 
   Standard_EXPORT virtual ~OpenGl_Structure();
 
-  //! Registers ancestor connected structure (for updating ray-tracing state).
-  void RegisterAncestorStructure (const OpenGl_Structure* theStructure) const;
-
-  //! Unregisters ancestor connected structure (for updating ray-tracing state).
-  void UnregisterAncestorStructure (const OpenGl_Structure* theStructure) const;
-
-  //! Unregisters structure from ancestor structure (for updating ray-tracing state).
-  void UnregisterFromAncestorStructure() const;
-
-  //! Updates modification state for structure and its parents.
-  void UpdateStateWithAncestorStructures() const;
-
   //! Updates ray-tracable status for structure and its parents.
-  void UpdateRaytracableWithAncestorStructures() const;
-
-  //! Sets ray-tracable status for structure and its parents.
-  void SetRaytracableWithAncestorStructures() const;
+  void UpdateStateIfRaytracable (const Standard_Boolean toCheck = Standard_True) const;
 
 protected:
 
@@ -230,15 +215,14 @@ protected:
   Handle(OpenGl_Group)       myHighlightBox;
   TEL_COLOUR*                myHighlightColor;
 
-  OpenGl_ListOfStructure           myConnected;
+  OpenGl_Structure*          myInstancedStructure;
 
-  mutable OpenGl_ListOfStructure   myAncestorStructures;
-  mutable Standard_Boolean         myIsRaytracable;
-  mutable Standard_Size            myModificationState;
+  mutable Standard_Boolean   myIsRaytracable;
+  mutable Standard_Size      myModificationState;
 
-  mutable Standard_Boolean         myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse.
+  mutable Standard_Boolean   myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse.
 
-  Standard_Boolean                 myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
+  Standard_Boolean           myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
 
 public:
 

@@ -23,18 +23,23 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_VectorTypes.hxx>
 
+#include <NCollection_IndexedMap.hxx>
+
 //! The purpose of this class is to organize all selectable objects into
 //! data structure, allowing to build BVH tree. For selectable objects
 //! binned BVH builder is used with 32 bins and 1 element per leaf.
 class SelectMgr_SelectableObjectSet : public BVH_PrimitiveSet<Standard_Real, 3>
 {
+  Handle(SelectMgr_SelectableObject) EMPTY_OBJ;
+
 public:
 
   //! Creates new empty objects set and initializes BVH tree
   //! builder to Binned builder with 1 element per list
   SelectMgr_SelectableObjectSet();
 
-  virtual ~SelectMgr_SelectableObjectSet() {};
+  //! Releases resources of selectable object set.
+  virtual ~SelectMgr_SelectableObjectSet() { }
 
   //! Adds new object to the set and marks BVH tree for rebuild
   void Append (const Handle(SelectMgr_SelectableObject)& theObject);
@@ -65,8 +70,7 @@ public:
 
 private:
 
-  NCollection_Sequence<Handle(SelectMgr_SelectableObject)> myObjects;
-  NCollection_Sequence<Standard_Integer>                   myObjectIdxs;
+  NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)> myObjects;
 };
 
 #endif // _SelectMgr_SelectableObjectSet_HeaderFile

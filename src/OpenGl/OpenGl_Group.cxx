@@ -42,8 +42,7 @@ OpenGl_Group::OpenGl_Group (const Handle(Graphic3d_Structure)& theStruct)
   myAspectText(NULL),
   myFirst(NULL),
   myLast(NULL),
-  myIsRaytracable (Standard_False),
-  myModificationState (0)
+  myIsRaytracable (Standard_False)
 {
   Handle(OpenGl_Structure) aStruct = Handle(OpenGl_Structure)::DownCast (myStructure->CStructure());
   if (aStruct == NULL)
@@ -116,11 +115,10 @@ void OpenGl_Group::UpdateAspectFace (const Standard_Boolean theIsGlobal)
 
   if (myIsRaytracable)
   {
-    ++myModificationState;
     OpenGl_Structure* aStruct = GlStruct();
     if (aStruct != NULL)
     {
-      aStruct->UpdateStateWithAncestorStructures();
+      aStruct->UpdateStateIfRaytracable (Standard_False);
     }
   }
 }
@@ -302,14 +300,12 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
 
   if (OpenGl_Raytrace::IsRaytracedElement (aNode))
   {
-    myModificationState++;
     myIsRaytracable = Standard_True;
 
     OpenGl_Structure* aStruct = GlStruct();
     if (aStruct != NULL)
     {
-      aStruct->UpdateStateWithAncestorStructures();
-      aStruct->SetRaytracableWithAncestorStructures();
+      aStruct->UpdateStateIfRaytracable (Standard_False);
     }
   }
 }
@@ -366,6 +362,8 @@ void OpenGl_Group::Clear (const Standard_Boolean theToUpdateStructureMgr)
 
   Release (aCtx);
   Graphic3d_Group::Clear (theToUpdateStructureMgr);
+
+  myIsRaytracable = Standard_False;
 }
 
 // =======================================================================

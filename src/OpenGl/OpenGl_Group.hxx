@@ -104,9 +104,6 @@ public:
   //! Returns OpenGL face aspect.
   const OpenGl_AspectFace* AspectFace() const { return myAspectFace; }
 
-  //! Returns modification state for ray-tracing.
-  Standard_Size ModificationState() const { return myModificationState; }
-
   //! Is the group ray-tracable (contains ray-tracable elements)?
   Standard_Boolean IsRaytracable() const { return myIsRaytracable; }
 
@@ -128,7 +125,6 @@ protected:
   OpenGl_ElementNode*    myLast;
 
   Standard_Boolean       myIsRaytracable;
-  Standard_Size          myModificationState;
 
 public:
 

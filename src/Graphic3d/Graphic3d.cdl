@@ -493,6 +493,7 @@ is
     imported transient class NMapOfTransient;
 
     imported MapOfStructure;
+    imported IndexedMapOfAddress;
     imported SequenceOfDisplayedStructures;
 
     ---------------------------------

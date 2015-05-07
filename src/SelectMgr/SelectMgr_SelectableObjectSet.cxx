@@ -34,10 +34,10 @@ SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 //=======================================================================
 void SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_SelectableObject)& theObject)
 {
-  myObjects.Append (theObject);
-  myObjectIdxs.Append (myObjects.Size());
-
-  MarkDirty();
+  if (Size() < myObjects.Add (theObject))
+  {
+    MarkDirty();
+  }
 }
 
 //=======================================================================
@@ -47,19 +47,15 @@ void SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_SelectableObj
 //=======================================================================
 void SelectMgr_SelectableObjectSet::Remove (const Handle(SelectMgr_SelectableObject)& theObject)
 {
-  for (Standard_Integer anObjectIdx = 1; anObjectIdx <= myObjects.Size(); ++anObjectIdx)
+  const Standard_Integer anIndex = myObjects.FindIndex (theObject);
+
+  if (anIndex != 0)
   {
-    if (myObjects.Value (anObjectIdx) == theObject)
-    {
-      myObjects.Remove (anObjectIdx);
-      myObjectIdxs.Clear();
-      for (Standard_Integer anObjIdxsIter = 1; anObjIdxsIter <= myObjects.Size(); ++anObjIdxsIter)
-      {
-        myObjectIdxs.Append (anObjIdxsIter);
-      }
-      MarkDirty();
-      break;
-    }
+    Swap (anIndex - 1, Size() - 1);
+
+    myObjects.RemoveLast();
+
+    MarkDirty();
   }
 }
 
@@ -88,11 +84,9 @@ Standard_Real SelectMgr_SelectableObjectSet::Center (const Standard_Integer theI
                                                      const Standard_Integer theAxis) const
 {
   Select3D_BndBox3d aBndBox = Box (theIndex);
-  Standard_Real aCenter = theAxis == 0 ? (aBndBox.CornerMin().x() + aBndBox.CornerMax().x()) * 0.5 :
-    (theAxis == 1 ? (aBndBox.CornerMin().y() + aBndBox.CornerMax().y()) * 0.5 :
-                    (aBndBox.CornerMin().z() + aBndBox.CornerMax().z()) * 0.5);
 
-  return aCenter;
+  return (aBndBox.CornerMin()[theAxis] +
+          aBndBox.CornerMax()[theAxis]) * 0.5;
 }
 
 //=======================================================================
@@ -102,10 +96,15 @@ Standard_Real SelectMgr_SelectableObjectSet::Center (const Standard_Integer theI
 void SelectMgr_SelectableObjectSet::Swap (const Standard_Integer theIndex1,
                                           const Standard_Integer theIndex2)
 {
-  Standard_Integer anObjectIdx1 = myObjectIdxs.Value (theIndex1 + 1);
-  Standard_Integer anObjectIdx2 = myObjectIdxs.Value (theIndex2 + 1);
-  myObjectIdxs.ChangeValue (theIndex1 + 1) = anObjectIdx2;
-  myObjectIdxs.ChangeValue (theIndex2 + 1) = anObjectIdx1;
+  const Standard_Integer aIndex1 = theIndex1 + 1;
+  const Standard_Integer aIndex2 = theIndex2 + 1;
+
+  Handle(SelectMgr_SelectableObject) anObject1 = myObjects.FindKey (aIndex1);
+  Handle(SelectMgr_SelectableObject) anObject2 = myObjects.FindKey (aIndex2);
+
+  myObjects.Substitute (aIndex1, EMPTY_OBJ);
+  myObjects.Substitute (aIndex2, anObject1);
+  myObjects.Substitute (aIndex1, anObject2);
 }
 
 //=======================================================================
@@ -114,18 +113,16 @@ void SelectMgr_SelectableObjectSet::Swap (const Standard_Integer theIndex1,
 //=======================================================================
 Standard_Integer SelectMgr_SelectableObjectSet::Size() const
 {
-  return myObjectIdxs.Size();
+  return myObjects.Size();
 }
 
 //=======================================================================
 // function : GetObjectById
 // purpose  : Returns object from set by theIndex given
 //=======================================================================
-const Handle(SelectMgr_SelectableObject)& SelectMgr_SelectableObjectSet::GetObjectById
-                                                                         (const Standard_Integer theIndex) const
+const Handle(SelectMgr_SelectableObject)& SelectMgr_SelectableObjectSet::GetObjectById (const Standard_Integer theIndex) const
 {
-  Standard_Integer anIdx = myObjectIdxs.Value (theIndex + 1);
-  return myObjects.Value (anIdx);
+  return myObjects.FindKey (theIndex + 1);
 }
 
 //=======================================================================
@@ -134,11 +131,5 @@ const Handle(SelectMgr_SelectableObject)& SelectMgr_SelectableObjectSet::GetObje
 //=======================================================================
 Standard_Boolean SelectMgr_SelectableObjectSet::Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
 {
-  for (Standard_Integer anObjectIdx = 1; anObjectIdx <= myObjects.Size(); ++anObjectIdx)
-  {
-    if (myObjects.Value (anObjectIdx) == theObject)
-      return Standard_True;
-  }
-
-  return Standard_False;
+  return myObjects.Contains (theObject);
 }

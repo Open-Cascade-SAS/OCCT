@@ -448,6 +448,31 @@ protected: //! @name data types related to ray-tracing
     }
   };
 
+  //! Describes state of OpenGL structure.
+  struct StructState
+  {
+    Standard_Size StructureState;
+    Standard_Size InstancedState;
+
+    //! Creates new structure state.
+    StructState (const Standard_Size theStructureState = 0,
+                 const Standard_Size theInstancedState = 0)
+    : StructureState (theStructureState),
+      InstancedState (theInstancedState)
+    {
+      //
+    }
+
+    //! Creates new structure state.
+    StructState (const OpenGl_Structure* theStructure)
+    {
+      StructureState = theStructure->ModificationState();
+
+      InstancedState = theStructure->InstancedStructure() != NULL ?
+        theStructure->InstancedStructure()->ModificationState() : 0;
+    }
+  };
+
 protected: //! @name methods related to ray-tracing
 
   //! Updates 3D scene geometry for ray-tracing.
@@ -671,7 +696,7 @@ protected: //! @name fields related to ray-tracing
   Standard_Integer myUniformLocations[2][OpenGl_RT_NbVariables];
 
   //! State of OpenGL structures reflected to ray-tracing.
-  std::map<const OpenGl_Structure*, Standard_Size> myStructureStates;
+  std::map<const OpenGl_Structure*, StructState> myStructureStates;
 
   //! PrimitiveArray to TriangleSet map for scene partial update.
   std::map<Standard_Size, OpenGl_TriangleSet*> myArrayToTrianglesMap;

@@ -3834,7 +3834,7 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
 //===============================================================================================
 //function : VConnectTo
 //purpose  : Creates and displays AIS_ConnectedInteractive object from input object and location 
-//Draw arg : vconnectto name Xo Yo Zo object
+//Draw arg : vconnectto name Xo Yo Zo object [-nodisplay|-noupdate|-update]
 //===============================================================================================
 
 static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/, 
@@ -3843,6 +3843,7 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
 {
   // Check the viewer
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
   if (aContext.IsNull())
   {
     std::cout << "vconnect error : call vinit before\n";
@@ -3925,10 +3926,15 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
     anArg.LowerCase();
     if (anArg == "-nodisplay")
       return 0;
+
+    if (!anUpdateTool.parseRedrawMode (anArg))
+    {
+      std::cout << "Warning! Unknown argument '" << anArg << "' passed, -nodisplay|-noupdate|-update expected at this point.\n";
+    }
   }
 
   // Display connected object
-  TheAISContext()->Display (aConnected);
+  TheAISContext()->Display (aConnected, Standard_False);
 
   return 0;
 }
@@ -6026,7 +6032,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VConnect, group);
 
   theCommands.Add("vconnectto",
-    "vconnectto : instance_name Xo Yo Zo object [-nodisplay]"
+    "vconnectto : instance_name Xo Yo Zo object [-nodisplay|-noupdate|-update]"
     "  Makes an instance 'instance_name' of 'object' with position (Xo Yo Zo)."
     "\n\t\t:   -nodisplay - only creates interactive object, but not displays it",
     __FILE__, VConnectTo,group);

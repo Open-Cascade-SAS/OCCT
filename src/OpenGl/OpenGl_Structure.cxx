@@ -119,17 +119,18 @@ public:
 // =======================================================================
 OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager)
 : Graphic3d_CStructure (theManager),
-  myTransformation(NULL),
-  myTransPers(NULL),
-  myAspectLine(NULL),
-  myAspectFace(NULL),
-  myAspectMarker(NULL),
-  myAspectText(NULL),
-  myHighlightColor(NULL),
-  myIsRaytracable (Standard_False),
-  myModificationState (0),
-  myIsCulled (Standard_True),
-  myIsMirrored (Standard_False)
+  myTransformation     (NULL),
+  myTransPers          (NULL),
+  myAspectLine         (NULL),
+  myAspectFace         (NULL),
+  myAspectMarker       (NULL),
+  myAspectText         (NULL),
+  myHighlightColor     (NULL),
+  myInstancedStructure (NULL),
+  myIsRaytracable      (Standard_False),
+  myModificationState  (0),
+  myIsCulled           (Standard_True),
+  myIsMirrored         (Standard_False)
 {
   //
 }
@@ -189,9 +190,9 @@ void OpenGl_Structure::UpdateTransformation()
 
   matcpy (myTransformation->mat, &Graphic3d_CStructure::Transformation[0][0]);
 
-  if (myIsRaytracable)
+  if (IsRaytracable())
   {
-    UpdateStateWithAncestorStructures();
+    ++myModificationState;
   }
 }
 
@@ -236,9 +237,9 @@ void OpenGl_Structure::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect)
   }
   myAspectFace->SetAspect (theAspect);
 
-  if (myIsRaytracable)
+  if (IsRaytracable())
   {
-    UpdateStateWithAncestorStructures();
+    ++myModificationState;
   }
 }
 
@@ -365,111 +366,41 @@ void OpenGl_Structure::clearHighlightColor (const Handle(OpenGl_Context)& theGlC
 // =======================================================================
 void OpenGl_Structure::OnVisibilityChanged()
 {
-  if (myIsRaytracable)
+  if (IsRaytracable())
   {
-    UpdateStateWithAncestorStructures();
+    ++myModificationState;
   }
 }
 
 // =======================================================================
-// function : RegisterAncestorStructure
+// function : IsRaytracable
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::RegisterAncestorStructure (const OpenGl_Structure* theStructure) const
+Standard_Boolean OpenGl_Structure::IsRaytracable() const
 {
-  for (OpenGl_ListOfStructure::Iterator anIt (myAncestorStructures); anIt.More(); anIt.Next())
+  if (!myGroups.IsEmpty())
   {
-    if (anIt.Value() == theStructure)
-    {
-      return;
-    }
+    return myIsRaytracable; // geometry structure
+  }
+  else if (myInstancedStructure != NULL)
+  {
+    return myInstancedStructure->IsRaytracable(); // instance structure
   }
 
-  myAncestorStructures.Append (theStructure);
+  return Standard_False; // has no any groups or structures
 }
 
 // =======================================================================
-// function : UnregisterAncestorStructure
+// function : UpdateRaytracableState
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::UnregisterAncestorStructure (const OpenGl_Structure* theStructure) const
+void OpenGl_Structure::UpdateStateIfRaytracable (const Standard_Boolean toCheck) const
 {
-  for (OpenGl_ListOfStructure::Iterator anIt (myAncestorStructures); anIt.More(); anIt.Next())
+  myIsRaytracable = !toCheck || OpenGl_Raytrace::IsRaytracedStructure (this);
+
+  if (IsRaytracable())
   {
-    if (anIt.Value() == theStructure)
-    {
-      myAncestorStructures.Remove (anIt);
-      return;
-    }
-  }
-}
-
-// =======================================================================
-// function : UnregisterFromAncestorStructure
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::UnregisterFromAncestorStructure() const
-{
-  for (OpenGl_ListOfStructure::Iterator anIta (myAncestorStructures); anIta.More(); anIta.Next())
-  {
-    OpenGl_Structure* anAncestor = const_cast<OpenGl_Structure*> (anIta.ChangeValue());
-
-    for (OpenGl_ListOfStructure::Iterator anIts (anAncestor->myConnected); anIts.More(); anIts.Next())
-    {
-      if (anIts.Value() == this)
-      {
-        anAncestor->myConnected.Remove (anIts);
-        return;
-      }
-    }
-  }
-}
-
-// =======================================================================
-// function : UpdateStateWithAncestorStructures
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::UpdateStateWithAncestorStructures() const
-{
-  myModificationState++;
-
-  for (OpenGl_ListOfStructure::Iterator anIt (myAncestorStructures); anIt.More(); anIt.Next())
-  {
-    anIt.Value()->UpdateStateWithAncestorStructures();
-  }
-}
-
-// =======================================================================
-// function : UpdateRaytracableWithAncestorStructures
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::UpdateRaytracableWithAncestorStructures() const
-{
-  myIsRaytracable = OpenGl_Raytrace::IsRaytracedStructure (this);
-
-  if (!myIsRaytracable)
-  {
-    for (OpenGl_ListOfStructure::Iterator anIt (myAncestorStructures); anIt.More(); anIt.Next())
-    {
-      anIt.Value()->UpdateRaytracableWithAncestorStructures();
-    }
-  }
-}
-
-// =======================================================================
-// function : SetRaytracableWithAncestorStructures
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::SetRaytracableWithAncestorStructures() const
-{
-  myIsRaytracable = Standard_True;
-
-  for (OpenGl_ListOfStructure::Iterator anIt (myAncestorStructures); anIt.More(); anIt.Next())
-  {
-    if (!anIt.Value()->IsRaytracable())
-    {
-      anIt.Value()->SetRaytracableWithAncestorStructures();
-    }
+    ++myModificationState;
   }
 }
 
@@ -479,17 +410,17 @@ void OpenGl_Structure::SetRaytracableWithAncestorStructures() const
 // =======================================================================
 void OpenGl_Structure::Connect (Graphic3d_CStructure& theStructure)
 {
-  OpenGl_Structure* aStruct = (OpenGl_Structure* )&theStructure;
-  Disconnect (theStructure);
-  myConnected.Append (aStruct);
+  OpenGl_Structure* aStruct = static_cast<OpenGl_Structure*> (&theStructure);
+
+  Standard_ASSERT_RAISE (myInstancedStructure == NULL || myInstancedStructure == aStruct,
+    "Error! Instanced structure is already defined");
+
+  myInstancedStructure = aStruct;
 
   if (aStruct->IsRaytracable())
   {
-    UpdateStateWithAncestorStructures();
-    SetRaytracableWithAncestorStructures();
+    UpdateStateIfRaytracable (Standard_False);
   }
-
-  aStruct->RegisterAncestorStructure (this);
 }
 
 // =======================================================================
@@ -498,22 +429,15 @@ void OpenGl_Structure::Connect (Graphic3d_CStructure& theStructure)
 // =======================================================================
 void OpenGl_Structure::Disconnect (Graphic3d_CStructure& theStructure)
 {
-  OpenGl_Structure* aStruct = (OpenGl_Structure* )&theStructure;
-  for (OpenGl_ListOfStructure::Iterator anIter (myConnected); anIter.More(); anIter.Next())
+  OpenGl_Structure* aStruct = static_cast<OpenGl_Structure*> (&theStructure);
+
+  if (myInstancedStructure == aStruct)
   {
-    // Check for the given structure
-    if (anIter.Value() == aStruct)
+    myInstancedStructure = NULL;
+
+    if (aStruct->IsRaytracable())
     {
-      myConnected.Remove (anIter);
-
-      if (aStruct->IsRaytracable())
-      {
-        UpdateStateWithAncestorStructures();
-        UpdateRaytracableWithAncestorStructures();
-      }
-
-      aStruct->UnregisterAncestorStructure (this);
-      return;
+      UpdateStateIfRaytracable();
     }
   }
 }
@@ -545,12 +469,14 @@ void OpenGl_Structure::RemoveGroup (const Handle(Graphic3d_Group)& theGroup)
     // Check for the given group
     if (aGroupIter.Value() == theGroup)
     {
+      const Standard_Boolean wasRaytracable =
+        static_cast<const OpenGl_Group&> (*theGroup).IsRaytracable();
+
       theGroup->Clear (Standard_False);
 
-      if (((OpenGl_Group* )theGroup.operator->())->IsRaytracable())
+      if (wasRaytracable)
       {
-        UpdateStateWithAncestorStructures();
-        UpdateRaytracableWithAncestorStructures();
+        UpdateStateIfRaytracable();
       }
 
       myGroups.Remove (aGroupIter);
@@ -588,8 +514,7 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 
   if (aRaytracableGroupDeleted)
   {
-    UpdateStateWithAncestorStructures();
-    UpdateRaytracableWithAncestorStructures();
+    myIsRaytracable = Standard_False;
   }
 
   Is2dText       = Standard_False;
@@ -695,12 +620,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (myHighlightColor)
     theWorkspace->HighlightColor = myHighlightColor;
 
-  // Render connected structures
-  OpenGl_ListOfStructure::Iterator anIter (myConnected);
-  while (anIter.More())
+  // Render instanced structure (if exists)
+  if (myInstancedStructure != NULL)
   {
-    anIter.Value()->RenderGeometry (theWorkspace);
-    anIter.Next();
+    myInstancedStructure->RenderGeometry (theWorkspace);
   }
 
   // Set up plane equations for non-structure transformed global model-view matrix
@@ -816,9 +739,6 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
   OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectMarker);
   OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectText);
   clearHighlightColor (theGlCtx);
-
-  // Remove from connected list of ancestor
-  UnregisterFromAncestorStructure();
 }
 
 // =======================================================================
