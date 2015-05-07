@@ -986,29 +986,27 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   // fixed using tolerance distance, relative to boundaries size. The tolerance distance
   // should be computed using information on boundaries of primary application actors,
   // (e.g. representing the displayed model) - to ensure that they are not unreasonably clipped.
+  const Standard_ShortReal anEpsilon = 1e-4;
 
   if (theGraphicBB.IsVoid())
   {
-    // ShortReal precision factor used to add meaningful tolerance to
+    // Precision factor used to add meaningful tolerance to
     // ZNear, ZFar values in order to avoid equality after type conversion
     // to ShortReal matrices type.
-    const Standard_Real aPrecision = 1.0 / Pow (10.0, ShortRealDigits() - 1);
 
     Standard_Real aZFar  = Distance() * 3.0;
     Standard_Real aZNear = 0.0;
 
     if (!IsOrthographic())
     {
-      if (aZFar < aPrecision)
+      if (aZFar < anEpsilon)
       {
-        // Invalid case when both values are negative
-        aZNear = aPrecision;
-        aZFar  = aPrecision * 2.0;
+        aZNear = anEpsilon;
+        aZFar  = anEpsilon * 2.0;
       }
-      else if (aZNear < Abs (aZFar) * aPrecision)
+      else if (aZNear < aZFar * anEpsilon)
       {
-        // Z is less than 0.0, try to fix it using any appropriate z-scale
-        aZNear = Abs (aZFar) * aPrecision;
+        aZNear = aZFar * anEpsilon;
       }
     }
 
@@ -1090,22 +1088,20 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   Standard_Real aMidDepth  = (aGraphicMinDist + aGraphicMaxDist) * 0.5;
   Standard_Real aHalfDepth = (aGraphicMaxDist - aGraphicMinDist) * 0.5;
 
-  // ShortReal precision factor used to add meaningful tolerance to
-  // ZNear, ZFar values in order to avoid equality after type conversion
-  // to ShortReal matrices type.
-  const Standard_Real aPrecision = Pow (0.1, ShortRealDigits() - 2);
-
   // Compute enlarged or shrank near and far z ranges
-  Standard_Real aZNear = aMidDepth - aHalfDepth * theScaleFactor;
-  Standard_Real aZFar  = aMidDepth + aHalfDepth * theScaleFactor;
-  aZNear              -= aPrecision * 0.5;
-  aZFar               += aPrecision * 0.5;
+  Standard_Real aZNear  = aMidDepth - aHalfDepth * theScaleFactor;
+  Standard_Real aZFar   = aMidDepth + aHalfDepth * theScaleFactor;
+  Standard_Real aZRange = Abs (aZFar - aZNear);
+  Standard_Real aZConf  = Max (static_cast <Standard_Real> (anEpsilon * aZRange),
+                               static_cast <Standard_Real> (anEpsilon));
+
+  aZNear -= Abs (aZNear) * anEpsilon + aZConf;
+  aZFar  += Abs  (aZFar) * anEpsilon + aZConf;
 
   if (!IsOrthographic())
   {
-    if (aZFar >= aPrecision)
+    if (aZFar > anEpsilon)
     {
-      // To avoid numeric errors... (See comments in the beginning of the method).
       // Choose between model distance and graphical distance, as the model boundaries
       // might be infinite if all structures have infinite flag.
       const Standard_Real aGraphicDepth = aGraphicMaxDist >= aGraphicMinDist
@@ -1115,25 +1111,23 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
         ? aModelMaxDist - aModelMinDist : RealLast();
 
       const Standard_Real aMinDepth = Min (aModelDepth, aGraphicDepth);
-      const Standard_Real aZTolerance =
-        Max (Abs (aMinDepth) * aPrecision, aPrecision);
-
-      if (aZNear < aZTolerance)
+      const Standard_Real aZTol     = Max (static_cast<Standard_Real> (anEpsilon * Abs (aMinDepth)),
+                                           static_cast<Standard_Real> (anEpsilon));
+      if (aZNear < aZTol)
       {
-        aZNear = aZTolerance;
+        aZNear = aZTol;
       }
     }
-    else // aZFar < aPrecision - Invalid case when both ZNear and ZFar are negative
+    else
     {
-      aZNear = aPrecision;
-      aZFar  = aPrecision * 2.0;
+      aZNear = anEpsilon;
+      aZFar  = anEpsilon * 2.0;
     }
   }
 
-  // If range is too small
-  if (aZFar < (aZNear + Abs (aZFar) * aPrecision))
+  if (aZFar < (aZNear + Abs (aZFar) * anEpsilon))
   {
-    aZFar = aZNear + Abs (aZFar) * aPrecision;
+    aZFar = aZNear + Abs (aZFar) * anEpsilon;
   }
 
   SetZRange (aZNear, aZFar);
