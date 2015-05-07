@@ -278,7 +278,7 @@ proc testgrid {args} {
     set tests_list {}
 
     # iterate by all script paths
-    foreach dir [_split_path $env(CSF_TestScriptsPath)] {
+    foreach dir [lsort -unique [_split_path $env(CSF_TestScriptsPath)]] {
 	# protection against empty paths
 	set dir [string trim $dir]
 	if { $dir == "" } { continue }
