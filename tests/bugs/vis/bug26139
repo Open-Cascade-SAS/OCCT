@@ -1,0 +1,15 @@
+puts "============"
+puts "CR26139"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "AIS_InteractiveContext::Display performance regression"
+#     To measure performance downgrade, the time elapsed should be greated than on previous version
+##########################################################################################
+
+pload VISUALIZATION
+pload QAcommands
+
+vinit View1
+OCC26139

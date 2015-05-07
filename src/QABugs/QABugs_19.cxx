@@ -3390,6 +3390,92 @@ static Standard_Integer OCC25547(
   return 0;
 }
 
+static Standard_Integer OCC26139 (Draw_Interpretor& theDI,
+                                  Standard_Integer  argc,
+                                  const char **     argv)
+{
+
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    theDI << "Use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+
+  Standard_Integer aBoxGridSize = 100;
+  Standard_Integer aCompGridSize = 3;
+  Standard_Real aBoxSize = 5.0;
+
+  if (argc > 1)
+  {
+    for (Standard_Integer anArgIdx = 1; anArgIdx < argc; ++anArgIdx)
+    {
+      TCollection_AsciiString anArg (argv[anArgIdx]);
+      anArg.LowerCase();
+      if (anArg == "-boxgrid")
+      {
+        aBoxGridSize = Draw::Atoi (argv[++anArgIdx]);
+      }
+      else if (anArg == "-compgrid")
+      {
+        aCompGridSize = Draw::Atoi (argv[++anArgIdx]);
+      }
+      else if (anArg == "-boxsize")
+      {
+        aBoxSize = Draw::Atof (argv[++anArgIdx]);
+      }
+    }
+  }
+
+  NCollection_List<Handle(AIS_Shape)> aCompounds;
+  for (Standard_Integer aCompGridX = 0; aCompGridX < aCompGridSize; ++aCompGridX)
+  {
+    for (Standard_Integer aCompGridY = 0; aCompGridY < aCompGridSize; ++aCompGridY)
+    {
+      BRep_Builder aBuilder;
+      TopoDS_Compound aComp;
+      aBuilder.MakeCompound (aComp);
+      for (Standard_Integer aBoxGridX = 0; aBoxGridX < aBoxGridSize; ++aBoxGridX)
+      {
+        for (Standard_Integer aBoxGridY = 0; aBoxGridY < aBoxGridSize; ++aBoxGridY)
+        {
+          BRepPrimAPI_MakeBox aBox (gp_Pnt (aBoxGridX * aBoxSize, aBoxGridY * aBoxSize, 0.0),
+                                    aBoxSize, aBoxSize, aBoxSize);
+          aBuilder.Add (aComp, aBox.Shape());
+        }
+      }
+      gp_Trsf aTrsf;
+      aTrsf.SetTranslation (gp_Vec (aBoxGridSize * aBoxSize * aCompGridX,
+                                    aBoxGridSize * aBoxSize * aCompGridY,
+                                    0.0));
+      TopLoc_Location aLoc (aTrsf);
+      aComp.Located (aLoc);
+      aCompounds.Append (new AIS_Shape (aComp));
+    }
+  }
+
+  OSD_Timer aTimer;
+  for (NCollection_List<Handle(AIS_Shape)>::Iterator aCompIter (aCompounds); aCompIter.More(); aCompIter.Next())
+  {
+    aTimer.Start();
+    aCtx->Display (aCompIter.Value(), Standard_False);
+    aTimer.Stop();
+    theDI << "Display time: " << aTimer.ElapsedTime() << "\n";
+    aTimer.Reset();
+  }
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (NCollection_List<Handle(AIS_Shape)>::Iterator aCompIter (aCompounds); aCompIter.More(); aCompIter.Next())
+  {
+    aCtx->Remove (aCompIter.Value(), Standard_False);
+  }
+  aTimer.Stop();
+  theDI << "Remove time: " << aTimer.ElapsedTime() << "\n";
+
+  return 0;
+}
+
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <OSD.hxx>
@@ -3851,5 +3937,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26172", "OCC26172", __FILE__, OCC26172, group);
   theCommands.Add ("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
+  theCommands.Add ("OCC26139", "OCC26139 [-boxsize value] [-boxgrid value] [-compgrid value]", __FILE__, OCC26139, group);
   return;
 }

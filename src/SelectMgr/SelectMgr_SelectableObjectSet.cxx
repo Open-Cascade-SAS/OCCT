@@ -51,7 +51,10 @@ void SelectMgr_SelectableObjectSet::Remove (const Handle(SelectMgr_SelectableObj
 
   if (anIndex != 0)
   {
-    Swap (anIndex - 1, Size() - 1);
+    if (anIndex != Size())
+    {
+      Swap (anIndex - 1, Size() - 1);
+    }
 
     myObjects.RemoveLast();
 

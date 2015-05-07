@@ -18,7 +18,7 @@
 
 #include <BVH_PrimitiveSet.hxx>
 
-#include <NCollection_Sequence.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <NCollection_Handle.hxx>
 
 #include <Select3D_BndBox3d.hxx>
@@ -26,11 +26,15 @@
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectMgr_Selection.hxx>
 
+typedef NCollection_IndexedMap<Handle(SelectMgr_SensitiveEntity)> SelectMgr_IndexedMapOfHSensitive;
+
 //! This class is used to store all calculated sensitive entites of one selectable
 //! object. It provides an interface for building BVH tree which is used to speed-up
 //! the performance of searching for overlap among sensitives of one selectable object
 class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet<Standard_Real, 3>
 {
+  Handle(SelectMgr_SensitiveEntity) EMPTY_ENT;
+
 public:
 
   SelectMgr_SensitiveEntitySet();
@@ -43,9 +47,6 @@ public:
   //! Adds every entity of selection theSelection to the set and marks
   //! BVH tree for rebuild
   void Append (const Handle(SelectMgr_Selection)& theSelection);
-
-  //! Removes entity from the set and marks BVH tree for rebuild
-  void Remove (const Handle(SelectMgr_SensitiveEntity)& theEntity);
 
   //! Removes every entity of selection theSelection from the set
   //! and marks BVH tree for rebuild
@@ -71,8 +72,7 @@ public:
 
 private:
 
-  NCollection_Sequence<Handle(SelectMgr_SensitiveEntity)> myEntities;       //!< A sequence of calculated sensitives of the object
-  NCollection_Sequence<Standard_Integer>                  myEntityIdxs;     //!< Cached indexes for faster BVH build
+  SelectMgr_IndexedMapOfHSensitive mySensitives;     //!< Map of entities and its corresponding index in BVH
 };
 
 #endif // _SelectMgr_SensitiveEntitySet_HeaderFile
