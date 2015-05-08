@@ -34,7 +34,8 @@ SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 //=======================================================================
 void SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_SelectableObject)& theObject)
 {
-  if (Size() < myObjects.Add (theObject))
+  Standard_Integer aSize = Size();
+  if (aSize < myObjects.Add (theObject))
   {
     MarkDirty();
   }
