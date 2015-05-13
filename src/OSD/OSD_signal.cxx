@@ -129,11 +129,6 @@ static void Handler (const int theSignal)
     perror ("sigaction");
   }
 
-  siginfo_t * aSigInfo = NULL;
-#ifdef SA_SIGINFO
-  aSigInfo = theSigInfo;
-#endif
-
 #if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
   if (pthread_self() != getOCCThread()  || !Standard_ErrorHandler::IsInTryBlock()) {
     // use the previous signal handler
@@ -143,6 +138,12 @@ static void Handler (const int theSignal)
 
     if (asigacthandler.sa_flags & SA_SIGINFO) {
       void (*aCurInfoHandle)(int, siginfo_t *, void *) = asigacthandler.sa_sigaction;
+
+      siginfo_t * aSigInfo = NULL;
+#ifdef SA_SIGINFO
+      aSigInfo = theSigInfo;
+#endif
+
       if (aSigInfo) {
         switch (aSigInfo->si_signo) {
           case SIGFPE:
