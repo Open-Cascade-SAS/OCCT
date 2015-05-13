@@ -256,9 +256,11 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
     if (!theMgr.IsOverlapAllowed())
     {
       thePickResult = SelectBasics_PickResult (aDepth, aDistToCOG);
-      if (!theMgr.Overlaps (myBndBox.CornerMin(), myBndBox.CornerMax(), Standard_False))
+      for (Standard_Integer aPntIdx = anArrayOfPnt->Lower(); aPntIdx <= anArrayOfPnt->Upper(); ++aPntIdx)
       {
-        return Standard_False;
+        Standard_Real aDummy;
+        if (!theMgr.Overlaps (anArrayOfPnt->Value (aPntIdx), aDummy))
+          return Standard_False;
       }
       return Standard_True;
     }

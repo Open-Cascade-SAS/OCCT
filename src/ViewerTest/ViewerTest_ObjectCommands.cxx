@@ -4337,7 +4337,7 @@ class Triangle: public AIS_InteractiveObject
 {
 public: 
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(FilledCircle); 
+  DEFINE_STANDARD_RTTI(Triangle);
   Triangle (const gp_Pnt& theP1, 
             const gp_Pnt& theP2, 
             const gp_Pnt& theP3);
