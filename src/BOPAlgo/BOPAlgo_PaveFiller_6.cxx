@@ -374,10 +374,10 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   //-----------------------------------------------------scope f
   aAllocator=new NCollection_IncAllocator();
   //
-  BOPCol_ListOfInteger aLSE(aAllocator);
+  BOPCol_ListOfInteger aLSE(aAllocator), aLBV(aAllocator);
   BOPCol_MapOfInteger aMVOnIn(100, aAllocator), aMF(100, aAllocator),
                       aMVStick(100,aAllocator), aMVEF(100, aAllocator),
-                      aMVB(100, aAllocator), aMI(100, aAllocator);
+                      aMI(100, aAllocator);
   BOPDS_IndexedMapOfPaveBlock aMPBOnIn(100, aAllocator);
   BOPDS_MapOfPaveBlock aMPBAdd(100, aAllocator);
   BOPDS_ListOfPaveBlock aLPB(aAllocator);
@@ -385,8 +385,9 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   BOPCol_DataMapOfShapeInteger aMVI(100, aAllocator);
   BOPDS_DataMapOfPaveBlockListOfPaveBlock aDMExEdges(100, aAllocator);
   BOPCol_DataMapOfIntegerReal aMVTol(100, aAllocator);
-  BOPCol_DataMapIteratorOfDataMapOfIntegerReal aItMV;
   BOPCol_DataMapOfIntegerInteger aDMI(100, aAllocator);
+  BOPCol_DataMapOfIntegerListOfInteger aDMBV(100, aAllocator);
+  BOPCol_DataMapIteratorOfDataMapOfIntegerReal aItMV;
   //
   for (i=0; i<aNbFF; ++i) {
     //
@@ -411,17 +412,19 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     // Update face info
     if (aMF.Add(nF1)) {
       myDS->UpdateFaceInfoOn(nF1);
+      myDS->UpdateFaceInfoIn(nF1);
     }
     if (aMF.Add(nF2)) {
       myDS->UpdateFaceInfoOn(nF2);
+      myDS->UpdateFaceInfoIn(nF2);
     }
-   
+    //
     BOPDS_FaceInfo& aFI1=myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2=myDS->ChangeFaceInfo(nF2);
     //
     aMVOnIn.Clear();
     aMPBOnIn.Clear();
-    aMVB.Clear();
+    aDMBV.Clear();
     aMVTol.Clear();
     //
     myDS->VerticesOnIn(nF1, nF2, aMVOnIn, aMPBOnIn);
@@ -465,7 +468,13 @@ void BOPAlgo_PaveFiller::MakeBlocks()
       }
       //
       if (aIC.HasBounds()) {
-        PutBoundPaveOnCurve(aF1, aF2, aTolR3D, aNC, aMVB);
+        aLBV.Clear();
+        //
+        PutBoundPaveOnCurve(aF1, aF2, aTolR3D, aNC, aLBV);
+        //
+        if (!aLBV.IsEmpty()) {
+          aDMBV.Bind(j, aLBV);
+        }
       }
     }//for (j=0; j<aNbC; ++j) {
     //
@@ -529,7 +538,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
                               aFI2.PaveBlocksIn().Contains(aPBOut));
             }
             if (!bInBothFaces) {
-              PreparePostTreatFF(i, aPBOut, aMSCPB, aMVI, aVC);
+              PreparePostTreatFF(i, j, aPBOut, aMSCPB, aMVI, aLPBC);
             }
           }
           continue;
@@ -580,7 +589,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
       TV->Tolerance(aTol);
     }
     //
-    ProcessExistingPaveBlocks(i, aMPBOnIn, aMSCPB, aMVI, aMVB, aMPBAdd);
+    ProcessExistingPaveBlocks(i, aMPBOnIn, aDMBV, aMSCPB, aMVI, aMPBAdd);
   }//for (i=0; i<aNbFF; ++i) {
   // 
   // post treatment
@@ -913,22 +922,23 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo
     for (j=0; j<aNbC; ++j) {
       BOPDS_Curve& aNC=aVNC(j);
       BOPDS_ListOfPaveBlock& aLPBC=aNC.ChangePaveBlocks();
-      aItLPB.Initialize(aLPBC);
-      //
-      // Treat existing pave blocks
-      if (aItLPB.More() && theDME.IsBound(aLPBC.First())) {
-        const Handle(BOPDS_PaveBlock)& aPB=aLPBC.First();
-        BOPDS_ListOfPaveBlock& aLPB=theDME.ChangeFind(aPB);
-        UpdateExistingPaveBlocks(aPB, aLPB, nF1, nF2);
-        aLPBC.Clear();
-        continue;
-      }
       //
       // Add section edges to face info
-      for (; aItLPB.More(); aItLPB.Next()) {
+      aItLPB.Initialize(aLPBC);
+      for (; aItLPB.More(); ) {
         const Handle(BOPDS_PaveBlock)& aPB=aItLPB.Value();
+        //
+        // Treat existing pave blocks
+        if (theDME.IsBound(aPB)) {
+          BOPDS_ListOfPaveBlock& aLPB=theDME.ChangeFind(aPB);
+          UpdateExistingPaveBlocks(aPB, aLPB, nF1, nF2);
+          aLPBC.Remove(aItLPB);
+          continue;
+        }
+        //
         aFI1.ChangePaveBlocksSc().Add(aPB);
         aFI2.ChangePaveBlocksSc().Add(aPB);
+        aItLPB.Next();
       }
     }
     //
@@ -1006,6 +1016,11 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo
           const Handle(BOPDS_PaveBlock)& aPB = aMPBCopy(j);
           if (theDME.IsBound(aPB)) {
             const BOPDS_ListOfPaveBlock& aLPB = theDME.Find(aPB);
+            if (aLPB.IsEmpty()) {
+              aMPBOnIn.Add(aPB);
+              continue;
+            }
+            //
             aItLPB.Initialize(aLPB);
             for (; aItLPB.More(); aItLPB.Next()) {
               const Handle(BOPDS_PaveBlock)& aPB1 = aItLPB.Value();
@@ -1189,7 +1204,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo
                                                const TopoDS_Face& aF2,
                                                const Standard_Real aTolR3D,
                                                BOPDS_Curve& aNC,
-                                               BOPCol_MapOfInteger& aMVB)
+                                               BOPCol_ListOfInteger& aLVB)
 {
   Standard_Boolean bVF;
   Standard_Integer nV, iFlag, nVn, j, aNbEP;
@@ -1277,7 +1292,8 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo
       BOPDS_ShapeInfo& aSIDS=myDS->ChangeShapeInfo(nVn);
       Bnd_Box& aBoxDS=aSIDS.ChangeBox();
       BRepBndLib::Add(aVn, aBoxDS);
-      aMVB.Add(nVn);
+      //
+      aLVB.Append(nVn);
     }
   }
 }
@@ -1769,51 +1785,68 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
   void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks
     (const Standard_Integer theInt,
      const BOPDS_IndexedMapOfPaveBlock& aMPBOnIn,
+     const BOPCol_DataMapOfIntegerListOfInteger& aDMBV,
      BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& aMSCPB,
      BOPCol_DataMapOfShapeInteger& aMVI,
-     const BOPCol_MapOfInteger& aMVB,
      BOPDS_MapOfPaveBlock& aMPB)
 {
-  Standard_Integer nV, nE, iFlag, i, aNbPB;
-  Standard_Real aT;
-  BOPCol_MapIteratorOfMapOfInteger aItB;
+  if (aDMBV.IsEmpty()) {
+    return;
+  }
   //
-  BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
+  Standard_Real aT;
+  Standard_Integer i, nV, nE, iC, aNbPB, iFlag;
+  BOPCol_ListIteratorOfListOfInteger aItLI;
+  BOPCol_DataMapIteratorOfDataMapOfIntegerListOfInteger aItBV;
+  //
+  BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
   BOPDS_InterfFF& aFF = aFFs(theInt);
-  BOPDS_VectorOfCurve& aVC=aFF.ChangeCurves();
-  //  
-  aItB.Initialize(aMVB);
-  for (; aItB.More(); aItB.Next()) {
-    nV = aItB.Value();
-    const BOPDS_ShapeInfo& aSIV=myDS->ShapeInfo(nV);
-    const Bnd_Box& aBoxV=aSIV.Box();
-    const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&aSIV.Shape();
-    if (!aMVI.IsBound(aV)) {
-      continue;
-    }
+  BOPDS_VectorOfCurve& aVC = aFF.ChangeCurves();
+  //
+  aNbPB = aMPBOnIn.Extent();
+  //
+  aItBV.Initialize(aDMBV);
+  for (; aItBV.More(); aItBV.Next()) {
+    iC = aItBV.Key();
+    const BOPCol_ListOfInteger& aLBV = aItBV.Value();
     //
-    aNbPB = aMPBOnIn.Extent();
-    for (i = 1; i <= aNbPB; ++i) {
-      const Handle(BOPDS_PaveBlock)& aPB = aMPBOnIn(i);
-      if (aPB->Pave1().Index() == nV || aPB->Pave2().Index() == nV) {
+    BOPDS_Curve& aNC = aVC.ChangeValue(iC);
+    BOPDS_ListOfPaveBlock& aLPBC = aNC.ChangePaveBlocks();
+    //
+    aItLI.Initialize(aLBV);
+    for (; aItLI.More(); aItLI.Next()) {
+      nV = aItLI.Value();
+      const BOPDS_ShapeInfo& aSIV=myDS->ShapeInfo(nV);
+      const Bnd_Box& aBoxV=aSIV.Box();
+      const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&aSIV.Shape();
+      if (!aMVI.IsBound(aV)) {
         continue;
       }
       //
-      if (aMPB.Contains(aPB)) {
-        continue;
-      }
-      nE=aPB->Edge();
-      const BOPDS_ShapeInfo& aSIE=myDS->ShapeInfo(nE);
-      const Bnd_Box& aBoxE=aSIE.Box();
-      //
-      if (!aBoxV.IsOut(aBoxE)) {
+      for (i = 1; i <= aNbPB; ++i) {
+        const Handle(BOPDS_PaveBlock)& aPB = aMPBOnIn(i);
+        if (aPB->Pave1().Index() == nV || aPB->Pave2().Index() == nV) {
+          continue;
+        }
+        //
+        if (aMPB.Contains(aPB)) {
+          continue;
+        }
+        //
+        nE = aPB->Edge();
+        const BOPDS_ShapeInfo& aSIE = myDS->ShapeInfo(nE);
+        const Bnd_Box& aBoxE = aSIE.Box();
+        //
+        if (aBoxV.IsOut(aBoxE)) {
+          continue;
+        }
+        //
         const TopoDS_Edge& aE = *(TopoDS_Edge*)&aSIE.Shape();
         //
-        iFlag=myContext->ComputeVE (aV, aE, aT);
+        iFlag = myContext->ComputeVE(aV, aE, aT);
         if (!iFlag) {
           aMPB.Add(aPB);
-          //
-          PreparePostTreatFF(theInt, aPB, aMSCPB, aMVI, aVC);
+          PreparePostTreatFF(theInt, iC, aPB, aMSCPB, aMVI, aLPBC);
         }
       }
     }
@@ -1888,10 +1921,11 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
   // 3. Update pave blocks
   if (bCB) {
     //create new common blocks
+    BOPDS_ListOfPaveBlock aLPBNew;
     const BOPCol_ListOfInteger& aFaces = aCB1->Faces();
     aIt.Initialize(aLPB);
     for (; aIt.More(); aIt.Next()) {
-      Handle(BOPDS_PaveBlock)& aPB = aIt.ChangeValue();
+      const Handle(BOPDS_PaveBlock)& aPB = aIt.Value();
       //
       aCB = new BOPDS_CommonBlock;
       aIt1.Initialize(aLPB1);
@@ -1911,8 +1945,11 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
       aCB->AddFaces(aFaces);
       myDS->SortPaveBlocks(aCB);
       //
-      aPB=aCB->PaveBlocks().First();
+      const Handle(BOPDS_PaveBlock)& aPBNew = aCB->PaveBlocks().First();
+      aLPBNew.Append(aPBNew);
     }
+    //
+    aLPB = aLPBNew;
   } 
   else {
     nE = aPBf->OriginalEdge();
@@ -2038,16 +2075,14 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
 //=======================================================================
   void BOPAlgo_PaveFiller::PreparePostTreatFF
     (const Standard_Integer aInt,
+     const Standard_Integer aCur,
      const Handle(BOPDS_PaveBlock)& aPB,
      BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& aMSCPB,
      BOPCol_DataMapOfShapeInteger& aMVI,
-     BOPDS_VectorOfCurve& aVC) 
+     BOPDS_ListOfPaveBlock& aLPBC)
 {
-  Standard_Integer nV1, nV2, iC;
+  Standard_Integer nV1, nV2;
   //
-  aVC.Append1();
-  iC=aVC.Extent()-1;
-  BOPDS_ListOfPaveBlock& aLPBC = aVC(iC).ChangePaveBlocks();
   aLPBC.Append(aPB);
   //
   aPB->Indices(nV1, nV2);
@@ -2057,7 +2092,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
   // Keep info for post treatment 
   BOPDS_CoupleOfPaveBlocks aCPB;
   aCPB.SetIndexInterf(aInt);
-  aCPB.SetIndex(iC);
+  aCPB.SetIndex(aCur);
   aCPB.SetPaveBlock1(aPB);
   //
   aMSCPB.Add(aE, aCPB);
