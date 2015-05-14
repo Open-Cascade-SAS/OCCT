@@ -4,8 +4,8 @@
 
 puts "TODO OCC26020 Windows: Error status"
 puts "TODO OCC26020 Windows: TEST INCOMPLETE"
-puts "TODO OCC26020 Debian60-64: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC26019 Debian60-64: Error: bopcheck failed"
+puts "TODO OCC26020 Debian70-64: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC26019 Debian70-64: Error: bopcheck failed"
 
 # planar face 
 plane pln_f1 -2.4595121467478056e-014 -746.52181700999995 1844.22896887 0.86602540378443849 -0.47367733686073094 -0.16009303715192033

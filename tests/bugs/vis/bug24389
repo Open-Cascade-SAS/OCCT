@@ -156,68 +156,68 @@ proc check_cross_picking { pick object name } {
 # pick coord { [flyout], dimension line, text }
 
 # check sensitives "len1"
-set pick_coord { { 99 133 } { 106 124 } { 76 131 } }
-set check_coord { 125 124 }
+set pick_coord { {100 133 } { 106 124 } { 76 130 } }
+set check_coord { 123 125 }
 check_picking $pick_coord $check_coord "length dimension (len1)"
 check_cross_picking $pick_coord len1 "length dimension (len1)"
 
 # check sensitives "len2"
-set pick_coord { { 99 167 } { 127 176 } { 185 183 } }
-set check_coord { 112 176 }
+set pick_coord { { 100 167 } { 126 177 } { 187 180 } }
+set check_coord { 106 177 }
 check_picking $pick_coord $check_coord "length dimension (len2)"
 check_cross_picking $pick_coord len2 "length dimension (len2)"
 
 # check sensitives "len3"
-set pick_coord { { 99 114 } { 110 98 } { 131 105 } }
-set check_coord { 152 109 }
+set pick_coord { { 100 114 } { 106 99 } { 120 97 } }
+set check_coord { 153 109 }
 check_picking $pick_coord $check_coord "length dimension (len3)"
 check_cross_picking $pick_coord len3 "length dimension (len3)"
 
 # check sensitives "diam1"
-set pick_coord { { 247 150 } { 194 157 } }
-set check_coord { 236 150 }
+set pick_coord { { 247 151 } { 184 150 } }
+set check_coord { 236 151 }
 check_picking $pick_coord $check_coord "diameter dimension (diam1)"
 check_cross_picking $pick_coord diam1 "diameter dimension (diam1)"
 
 # check sensitives "diam2"
-set pick_coord { { 221 98 } { 305 105 } }
-set check_coord { 238 98 }
+set pick_coord { { 221 99 } { 285 99 } }
+set check_coord { 239 99 }
 check_picking $pick_coord $check_coord "diameter dimension (diam2)"
 check_cross_picking $pick_coord diam2 "diameter dimension (diam2)"
 
 # check sensitives "diam3"
-set pick_coord { { 204 225 } { 268 242 } { 243 249 } }
-set check_coord { 204 233 }
+set pick_coord { { 205 225 } { 263 242 } { 224 242 } }
+set check_coord { 205 233 }
 check_picking $pick_coord $check_coord "diameter dimension (diam3)"
 check_cross_picking $pick_coord diam3 "diameter dimension (diam3)"
 
 # check sensitives "rad1"
-set pick_coord { { 287 157 } { 326 164 } }
-set check_coord { 287 157 }
+set pick_coord { { 288 158 } { 310 157 } }
+set check_coord { 288 158 }
 check_picking $pick_coord $check_coord "radius dimension (rad1)"
 check_cross_picking $pick_coord rad1 "radius dimension (rad1)"
 
 # check sensitives "rad2"
-set pick_coord { { 320 242 } { 383 249 } }
-set check_coord { 340 242 }
+set pick_coord { { 320 242 } { 362 241 } }
+set check_coord { 320 242 }
 check_picking $pick_coord $check_coord "radius dimension (rad2)"
 check_cross_picking $pick_coord rad2 "radius dimension (rad2)"
 
 # check sensitives "ang1"
-set pick_coord { { 112 268 } { 96 220 } { 80 250 } }
-set check_coord { 96 220 }
+set pick_coord { { 113 229 } { 96 221 } { 85 256 } }
+set check_coord { 86 250 }
 check_picking $pick_coord $check_coord "angle dimension (ang1)"
 check_cross_picking $pick_coord ang1 "angle dimension (ang1)"
 
 # check sensitives "ang2"
-set pick_coord { { 139 301 } { 152 327 } { 65 297 } }
-set check_coord { 108 320 }
+set pick_coord { { 140 311 } { 91 310 } { 50 278 } }
+set check_coord { 105 318 }
 check_picking $pick_coord $check_coord "angle dimension (ang2)"
 check_cross_picking $pick_coord ang2 "angle dimension (ang2)"
 
 # check sensitives "ang3"
-set pick_coord { { 171 304 } { 199 321 } { 252 285 } }
-set check_coord { 191 324 }
+set pick_coord { { 172 303 } { 163 327 } { 243 287 } }
+set check_coord { 183 326 }
 check_picking $pick_coord $check_coord "angle dimension (ang3)"
 check_cross_picking $pick_coord ang3 "angle dimension (ang3)"
 

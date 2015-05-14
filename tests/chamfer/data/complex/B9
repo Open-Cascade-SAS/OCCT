@@ -14,7 +14,7 @@ if { [string compare $command chamf_sequence] == 0 } {
   
   if { [string compare ${os} "Windows-64-VC9"] != 0 && [string compare ${os} "Windows-64-VC10"] != 0} {
     set nf 0
-    if {[string compare $os "Debian60-64"] == 0 } {
+    if {[string compare $os "Debian70-64"] == 0 } {
       if { [string compare $group dist_dist] == 0 } {
         set nf 2
       } elseif { [string compare $group equal_dist] == 0 } {

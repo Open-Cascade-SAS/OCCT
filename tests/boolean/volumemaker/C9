@@ -2,8 +2,8 @@
 # cylinder plane unstable
 
 puts "TODO ?OCC26019 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC26019 Debian60-64: Error: bopcheck failed"
-puts "TODO ?OCC26019 Debian60-64: Error : The area of the resulting shape is"
+puts "TODO ?OCC26019 Debian70-64: Error: bopcheck failed"
+puts "TODO ?OCC26019 Debian70-64: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 0 -875 -1.4432899320127035e-014 0 1 1.1102230246251565e-016

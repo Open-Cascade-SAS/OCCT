@@ -1,6 +1,6 @@
 puts "TODO ?OCC26017 ALL: TEST INCOMPLETE"
-puts "TODO ?OCC26017 Debian60-64: \\*\\* Exception"
-puts "TODO ?OCC26017 Debian60-64: An exception was caught"
+puts "TODO ?OCC26017 Debian70-64: \\*\\* Exception"
+puts "TODO ?OCC26017 Debian70-64: An exception was caught"
 puts "TODO ?OCC26017 ALL: Faulty shapes in variables faulty_1 to faulty_"
 source [locate_data_file 20000_ss2_401-ta5993.prt.2.gdml.tcl]
 

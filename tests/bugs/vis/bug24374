@@ -13,10 +13,10 @@ vdimension dim1 -length -shapes b_9 -text 3d -plane zox
 vselmode b 2 1
 vselmode dim1 2 1
 vfit
-vmoveto 140 370
+vmoveto 130 352
 
-set x_coord 140
-set y_coord 370
+set x_coord 130
+set y_coord 352
 checkcolor $x_coord $y_coord 0 1 1
 
 if { $stat != 1 } {

@@ -18,4 +18,9 @@ set aFile $imagedir/shape.pdf
 
 set format PDF
 
-set size 154489
+
+if { [string compare $tcl_platform(platform) "windows"] != 0 } {
+  set size 144401
+} else {
+  set size 154489
+}
