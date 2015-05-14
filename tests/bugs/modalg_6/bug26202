@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC26202"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result of chamfer on cylindrical surface: wrong value of chord
+#######################################################################
+
+restore [locate_data_file bug26202_shell.brep] b
+
+explode b
+explode b_2 e
+
+smallview
+donly b b_2_1
+fit
+xwd $imagedir/${test_image}_1.png
+
+chamf q b b_2_1 b_2 0.02 0.01
+explode q v
+explode b v
+
+donly b_2 q_1 q_5
+fit
+xwd $imagedir/${test_image}_2.png
+
+donly q b b_2 q_1 q_5
+xwd $imagedir/${test_image}_3.png
+
+distmini dd b_2 q_5
+dump dd_val
+#dd_val is 0.013334, but must be 0.02
+
+set info [dump dd_val]
+regexp "\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\* Dump of dd_val \\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\n(\[-0-9*\.+eE\]+)" $info full Length
+
+set expected_Length 0.02
+set tol_abs_Length 1.0e-4
+set tol_rel_Length 0.0001
+checkreal "Length" ${Length} ${expected_Length} ${tol_abs_Length} ${tol_rel_Length}

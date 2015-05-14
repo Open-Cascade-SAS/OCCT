@@ -353,15 +353,11 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   gp_Ax3 AxCyl = Cyl.Position();
   // OrCyl is the point on axis of cylinder in the plane normal to the
   // axis containing OrSpine
-  gp_Pnt Loc = AxCyl.Location();
-  gp_Vec LocSp(Loc, OrSpine);
-  gp_XYZ temp = AxCyl.Direction().XYZ();
-  temp = temp.Multiplied(LocSp.XYZ().Multiplied(temp) );
-  OrCyl.SetXYZ( (Loc.XYZ()).Added(temp) );
-//  gp_XYZ temp = AxCyl.Direction().XYZ();
-//  temp = temp.Multiplied( OrSpine.XYZ().Multiplied(temp) );
-//  OrCyl.SetXYZ( (AxCyl.Location().XYZ()).Added(temp) );
-
+  // Project <OrSpine> onto <AxCyl>
+  gp_XYZ AxLoc = AxCyl.Location().XYZ(); //aLine.Location().XYZ();
+  gp_XYZ AxDir = AxCyl.Direction().XYZ();
+  Standard_Real Parameter = (OrSpine.XYZ() - AxLoc) * AxDir;
+  OrCyl.SetXYZ( AxLoc + Parameter * AxDir );
  
   //construction of POnPln
   gp_Vec VecTranslPln,tmp;
