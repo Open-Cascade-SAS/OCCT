@@ -16,8 +16,8 @@
 #ifndef _Graphic3d_IndexedMapOfAddress
 #define _Graphic3d_IndexedMapOfAddress
 
-#include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_DataMap<const Standard_Address, Standard_Integer> Graphic3d_IndexedMapOfAddress;
+typedef NCollection_IndexedMap<const Standard_Address> Graphic3d_IndexedMapOfAddress;
 
 #endif // _Graphic3d_IndexedMapOfAddress
