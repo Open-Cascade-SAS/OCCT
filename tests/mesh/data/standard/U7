@@ -14,7 +14,7 @@ if { [string compare $command "shading"] == 0 } {
    set nbn 83
    if {
           [string compare $os "Mandriva2008"] == 0
-       || [string compare $os "Debian60-64"] == 0
+       || [string compare $os "Debian70-64"] == 0
       } {
 ###      set nbl 19
 ###      set nbfree($os) $nbl

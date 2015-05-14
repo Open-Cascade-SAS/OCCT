@@ -1669,6 +1669,8 @@ proc _tests_platform_def {} {
 	    set env(os_type) RedHat$num
 	} elseif { [regexp {Debian[ \tA-Za-z/]+([0-9]+)[.]([0-9]+)} $issue res num subnum] } {
 	    set env(os_type) Debian$num$subnum
+	} elseif { [regexp {Debian[ \tA-Za-z/]+([0-9]+)} $issue res num] } {
+	    set env(os_type) Debian${num}0
 	} elseif { [regexp {CentOS[ \tA-Za-z]+([0-9]+)[.]([0-9]+)} $issue res num subnum] } {
 	    set env(os_type) CentOS$num$subnum
 	} elseif { [regexp {Scientific[ \tA-Za-z]+([0-9]+)[.]([0-9]+)} $issue res num subnum] } {

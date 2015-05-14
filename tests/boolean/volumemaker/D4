@@ -2,7 +2,7 @@
 # cylinder plane
 
 puts "TODO OCC26020 ALL: Error: bopcheck failed"
-puts "TODO OCC26020 Debian60-64: Error : The area of the resulting shape is"
+puts "TODO OCC26020 Debian70-64: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 1665.7013364039071 -825 -339.75605834598957 0.15643446504023129 4.4408920985006257e-016 0.98768834059513766

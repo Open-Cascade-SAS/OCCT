@@ -1,6 +1,6 @@
-#puts "TODO OCC24074 Debian60-64 Windows: An exception was caught"
-puts "TODO OCC24074 Debian60-64 Windows: Error: Offset is not done"
-puts "TODO OCC24074 Debian60-64 Windows: TEST INCOMPLETE"
+#puts "TODO OCC24074 ALL: An exception was caught"
+puts "TODO OCC24074 ALL: Error: Offset is not done"
+puts "TODO OCC24074 ALL: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC24074"

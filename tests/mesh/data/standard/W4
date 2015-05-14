@@ -23,7 +23,7 @@ if { [string compare $command "shading"] == 0 } {
 ###    set os $env(os_type)
 ###  }
 ###  set bug_freelinks "OCC22687"
-###  if {[string compare $os "Mandriva2008"] == 0 || [string compare $os "MacOS"] == 0 || [string compare $os "Mandriva2010"] == 0 || [string compare $os "Debian40"] == 0 || [string compare $os "Debian60-64"] == 0 || [string compare $os "windows"] == 0} {
+###  if {[string compare $os "Mandriva2008"] == 0 || [string compare $os "MacOS"] == 0 || [string compare $os "Mandriva2010"] == 0 || [string compare $os "Debian40"] == 0 || [string compare $os "Debian70-64"] == 0 || [string compare $os "windows"] == 0} {
 ###    set nb 4
 ###  } else {
 ###    set nb 6

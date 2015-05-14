@@ -1,8 +1,8 @@
 # ? - because sometimes test is killed by elapsed time
 puts "TODO OCC26018 ALL: TEST INCOMPLETE"
 puts "TODO ?OCC26018 ALL: Process killed by CPU limit"
-puts "TODO ?OCC26017 Debian60-64: \\*\\* Exception"
-puts "TODO ?OCC26017 Debian60-64: An exception was caught"
+puts "TODO ?OCC26017 Debian70-64: \\*\\* Exception"
+puts "TODO ?OCC26017 Debian70-64: An exception was caught"
 puts "TODO ?OCC26017 ALL: Tcl Exception:"
 puts "TODO ?OCC26017 ALL: Error: sh141385A0_copy is not a valid shape"
 puts "TODO ?OCC26017 ALL Error: sh59D36470_copy is not a valid shape"
