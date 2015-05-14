@@ -68,6 +68,9 @@ namespace
     return TCollection_AsciiString ("AIS_CurContext_")
          + TCollection_AsciiString (Standard_Atomic_Increment (&THE_AIS_INDEX_CUR));
   }
+
+  typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)> AIS_MapOfObjectOwners;
+  typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)>::Iterator AIS_MapIteratorOfMapOfObjectOwners;
 }
 
 //=======================================================================
@@ -2823,4 +2826,66 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
   }
   else
     return;
+}
+
+//=======================================================================
+//function : FitSelected
+//purpose  : Fits the view corresponding to the bounds of selected objects
+//=======================================================================
+void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
+                                          const Standard_Real theMargin,
+                                          const Standard_Boolean theToUpdate)
+{
+  Standard_CString aSelName = HasOpenedContext() ?
+      myLocalContexts (myCurLocalIndex)->SelectionName().ToCString()
+    : myCurrentName.ToCString();
+
+  Bnd_Box aBndSelected;
+
+  const Handle(AIS_Selection)& aSelection = AIS_Selection::Selection (aSelName);
+  AIS_MapOfObjectOwners anObjectOwnerMap;
+  for (aSelection->Init(); aSelection->More(); aSelection->Next())
+  {
+    const Handle(AIS_InteractiveObject)& anObj =
+      Handle(AIS_InteractiveObject)::DownCast (aSelection->Value());
+    if (!anObj.IsNull())
+    {
+      if (anObj->IsInfinite())
+        continue;
+
+      Bnd_Box aTmpBnd;
+      anObj->BoundingBox (aTmpBnd);
+      aBndSelected.Add (aTmpBnd);
+    }
+    else
+    {
+      const Handle(SelectMgr_EntityOwner)& anOwner =
+        Handle(SelectMgr_EntityOwner)::DownCast (aSelection->Value());
+      if (anOwner.IsNull())
+        continue;
+
+      Handle(SelectMgr_IndexedMapOfOwner) anOwnerMap;
+      if (!anObjectOwnerMap.Find (anOwner->Selectable(), anOwnerMap))
+      {
+        anOwnerMap = new SelectMgr_IndexedMapOfOwner();
+        anObjectOwnerMap.Bind (anOwner->Selectable(), anOwnerMap);
+      }
+
+      anOwnerMap->Add (anOwner);
+    }
+  }
+
+  for (AIS_MapIteratorOfMapOfObjectOwners anIter (anObjectOwnerMap); anIter.More(); anIter.Next())
+  {
+    const Handle(SelectMgr_SelectableObject) anObject = anIter.Key();
+    Bnd_Box aTmpBox = anObject->BndBoxOfSelected (anIter.ChangeValue());
+    aBndSelected.Add (aTmpBox);
+  }
+
+  anObjectOwnerMap.Clear();
+
+  if (aBndSelected.IsVoid())
+    return;
+
+  theView->FitAll (aBndSelected, theMargin, theToUpdate);
 }

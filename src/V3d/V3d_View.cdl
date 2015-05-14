@@ -796,6 +796,19 @@ is
         --          @param theMargin [in] the margin coefficient for view borders.
         --          @param theToUpdate [in] flag to perform view update.
 
+        FitAll (me          : mutable;
+                theBox      : Box from Bnd;
+                theMargin   : Coefficient = 0.01;
+                theToUpdate : Boolean from Standard = Standard_True);
+        ---Level: Public
+        ---Purpose: Adjust view parameters to fit the displayed scene, respecting height / width ratio
+        --          according to the custom bounding box given.
+        --          Throws program error exception if margin coefficient is < 0 or >= 1.
+        --          Updates the view.
+        --          @param theBox [in] the custom bounding box to fit.
+        --          @param theMargin [in] the margin coefficient for view borders.
+        --          @param theToUpdate [in] flag to perform view update.
+
         DepthFitAll( me : mutable ;   Aspect : Coefficient = 0.01;
                                       Margin : Coefficient = 0.01 );
         ---Level: Public

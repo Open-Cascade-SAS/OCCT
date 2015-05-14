@@ -1351,11 +1351,15 @@ void VT_ProcessKeyPress (const char* buf_ret)
   }
   else if (!strcasecmp (buf_ret, "F"))
   {
-    // FitAll
-    if (aNisView.IsNull())
-      aView->FitAll();
+    if (ViewerTest::GetAISContext()->NbSelected() > 0)
+    {
+      ViewerTest::GetAISContext()->FitSelected (aView);
+    }
     else
-      aNisView->FitAll3d();
+    {
+      // FitAll
+      aView->FitAll();
+    }
   }
   else if (!strcasecmp (buf_ret, "H"))
   {
@@ -2467,7 +2471,6 @@ static void OSWindowSetup()
 
 }
 
-
 //==============================================================================
 //function : VFit
 
@@ -2475,13 +2478,27 @@ static void OSWindowSetup()
 //Draw arg : No args
 //==============================================================================
 
-static int VFit(Draw_Interpretor& , Standard_Integer , const char** )
+static int VFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgc, const char** theArgv)
 {
+  if (theArgc > 2)
+  {
+    std::cout << "Wrong number of arguments! Use: vfit [-selected]" << std::endl;
+  }
+
   const Handle(V3d_View) aView = ViewerTest::CurrentView();
-  Handle(NIS_View) V = Handle(NIS_View)::DownCast(aView);
-  if (V.IsNull() == Standard_False) {
-    V->FitAll3d();
-  } else if (aView.IsNull() == Standard_False) {
+
+  if (theArgc == 2)
+  {
+    TCollection_AsciiString anArg (theArgv[1]);
+    anArg.LowerCase();
+    if (anArg == "-selected")
+    {
+      ViewerTest::GetAISContext()->FitSelected (aView);
+      return 0;
+    }
+  }
+  if (!aView.IsNull())
+  {
     aView->FitAll();
   }
   return 0;
@@ -8424,7 +8441,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vpick           : vpick X Y Z [shape subshape] ( all variables as string )",
     VPick,group);
   theCommands.Add("vfit"    ,
-    "vfit or <F>         : vfit",
+    "vfit or <F> [-selected]"
+    "\n\t\t: [-selected] fits the scene according to bounding box of currently selected objects",
     __FILE__,VFit,group);
   theCommands.Add ("vfitarea",
     "vfitarea x1 y1 x2 y2"

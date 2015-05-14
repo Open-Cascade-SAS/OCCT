@@ -1451,16 +1451,25 @@ void V3d_View::SetAxialScale( const Standard_Real Sx, const Standard_Real Sy, co
 //function : FitAll
 //purpose  :
 //=============================================================================
-void V3d_View::FitAll (const Standard_Real theMargin, const Standard_Boolean theToUpdate)
+void V3d_View::FitAll (const Quantity_Coefficient theMargin, const Standard_Boolean theToUpdate)
 {
-  Standard_ASSERT_RAISE (theMargin >= 0.0 && theMargin < 1.0, "Invalid margin coefficient");
+  FitAll (MyView->MinMaxValues(), theMargin, theToUpdate);
+}
+
+//=============================================================================
+//function : FitAll
+//purpose  :
+//=============================================================================
+void V3d_View::FitAll (const Bnd_Box& theBox, const Quantity_Coefficient theMargin, const Standard_Boolean theToUpdate)
+{
+  Standard_ASSERT_RAISE(theMargin >= 0.0 && theMargin < 1.0, "Invalid margin coefficient");
 
   if (MyView->NumberOfDisplayedStructures() == 0)
   {
     return;
   }
 
-  if (!FitMinMax (myCamera, MyView->MinMaxValues(), theMargin, 10.0 * Precision::Confusion()))
+  if (!FitMinMax (myCamera, theBox, theMargin, 10.0 * Precision::Confusion()))
   {
     return;
   }

@@ -95,10 +95,10 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo (const Standard_Integer  theXpix,
   // result of courses..
   if (aDetectedNb == 0 || myDetectedSeq.IsEmpty())
   {
-    if (mylastindex != 0 && mylastindex <= myMapOfOwner.Extent())
+    if (mylastindex != 0 && mylastindex <= myMapOfOwner->Extent())
     {
       myMainPM->ClearImmediateDraw();
-      Unhilight (myMapOfOwner (mylastindex), theView);
+      Unhilight (myMapOfOwner->FindKey (mylastindex), theView);
       if (theToRedrawImmediate)
       {
         theView->RedrawImmediate();
@@ -148,7 +148,7 @@ AIS_StatusOfPick AIS_LocalContext::Select (const Standard_Boolean toUpdateViewer
     return (AIS_Selection::Extent() == 0) ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
   }
 
-  const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner (aDetIndex);
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner->FindKey (aDetIndex);
 
   ClearSelected (Standard_False);
 
@@ -314,7 +314,7 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Boolean toUpdateV
   {
     AIS_Selection::SetCurrentSelection (mySelName.ToCString());
     Standard_Integer aSelNum = AIS_Selection::Extent();
-    const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner (aDetIndex);
+    const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner->FindKey (aDetIndex);
     Standard_Boolean toSelect = anOwner->IsSelected() ? Standard_False : Standard_True;
     AIS_Selection::Select (anOwner);
     anOwner->SetSelected (toSelect);
@@ -940,9 +940,9 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
 
   // 4. AIS_LocalContext - myMapOfOwner : remove entity owners from myMapOfOwner
   SelectMgr_IndexedMapOfOwner anOwnersToKeep;
-  for (Standard_Integer anIdx = 1; anIdx <= myMapOfOwner.Extent(); anIdx++)
+  for (Standard_Integer anIdx = 1; anIdx <= myMapOfOwner->Extent(); anIdx++)
   {
-    Handle(SelectMgr_EntityOwner) anOwner = myMapOfOwner (anIdx);
+    Handle(SelectMgr_EntityOwner) anOwner = myMapOfOwner->FindKey (anIdx);
     if (anOwner.IsNull())
     {
       continue;
@@ -960,9 +960,9 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
       }
     }
   }
-  myMapOfOwner.Clear();
-  myMapOfOwner.Assign (anOwnersToKeep);
-  mylastindex = myMapOfOwner.FindIndex (aLastPicked);
+  myMapOfOwner->Clear();
+  myMapOfOwner->Assign (anOwnersToKeep);
+  mylastindex = myMapOfOwner->FindIndex (aLastPicked);
   if (!IsValidIndex (mylastindex))
   {
     myMainPM->ClearImmediateDraw();
@@ -1159,9 +1159,9 @@ void AIS_LocalContext::manageDetected (const Handle(SelectMgr_EntityOwner)& theP
   //
   //=======================================================================================================
 
-  const Standard_Integer aNewIndex = myMapOfOwner.Contains  (thePickOwner)
-                                   ? myMapOfOwner.FindIndex (thePickOwner)
-                                   : myMapOfOwner.Add       (thePickOwner);
+  const Standard_Integer aNewIndex = myMapOfOwner->Contains  (thePickOwner)
+                                   ? myMapOfOwner->FindIndex (thePickOwner)
+                                   : myMapOfOwner->Add       (thePickOwner);
 
   // For the advanced mesh selection mode the owner indices comparison
   // is not effective because in that case only one owner manage the
@@ -1173,9 +1173,9 @@ void AIS_LocalContext::manageDetected (const Handle(SelectMgr_EntityOwner)& theP
   {
     myMainPM->ClearImmediateDraw();
     if (mylastindex != 0
-     && mylastindex <= myMapOfOwner.Extent())
+     && mylastindex <= myMapOfOwner->Extent())
     {
-      const Handle(SelectMgr_EntityOwner)& aLastOwner = myMapOfOwner (mylastindex);
+      const Handle(SelectMgr_EntityOwner)& aLastOwner = myMapOfOwner->FindKey (mylastindex);
       Unhilight (aLastOwner, theView);
     }
 
@@ -1222,7 +1222,7 @@ AIS_LocalContext::DetectedShape() const
   static TopoDS_Shape bidsh;
   if(mylastindex != 0)
   {
-    Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(myMapOfOwner(mylastindex));
+    Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(myMapOfOwner->FindKey (mylastindex));
     if(BROwnr.IsNull()) return bidsh;
     return BROwnr->Shape();
   }
@@ -1239,7 +1239,7 @@ AIS_LocalContext::DetectedInteractive() const
 {
   Handle(AIS_InteractiveObject) Iobj;
   if(IsValidIndex(mylastindex)){
-    Handle(SelectMgr_SelectableObject) SO = myMapOfOwner.FindKey(mylastindex)->Selectable();
+    Handle(SelectMgr_SelectableObject) SO = myMapOfOwner->FindKey(mylastindex)->Selectable();
     Iobj = *((Handle(AIS_InteractiveObject)*) &SO);
   }
   return Iobj;
@@ -1252,7 +1252,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::DetectedOwner() const
 {
   Handle(SelectMgr_EntityOwner) bid;
   if(!IsValidIndex(mylastindex)) return bid;
-  return myMapOfOwner.FindKey(mylastindex);
+  return myMapOfOwner->FindKey(mylastindex);
 }
 
 
@@ -1263,7 +1263,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::DetectedOwner() const
 
 Standard_Boolean AIS_LocalContext::ComesFromDecomposition(const Standard_Integer PickedIndex) const 
 {
-  const Handle(SelectMgr_EntityOwner)& OWN = myMapOfOwner.FindKey(PickedIndex);
+  const Handle(SelectMgr_EntityOwner)& OWN = myMapOfOwner->FindKey(PickedIndex);
   Handle(SelectMgr_SelectableObject) aSel  = OWN->Selectable();
   if (myActiveObjects.IsBound (aSel)) { // debug of jmi
     const Handle(AIS_LocalStatus)& Stat      = myActiveObjects(aSel);    
@@ -1300,7 +1300,7 @@ void AIS_LocalContext::ClearSensitive(const Handle(V3d_View)& aviou)
 Standard_Boolean AIS_LocalContext::IsShape(const Standard_Integer Index) const
 {
   
-  if(Handle(StdSelect_BRepOwner)::DownCast(myMapOfOwner.FindKey(Index)).IsNull())
+  if(Handle(StdSelect_BRepOwner)::DownCast(myMapOfOwner->FindKey(Index)).IsNull())
     return Standard_False;
   return 
     ComesFromDecomposition(Index);
@@ -1383,12 +1383,12 @@ Standard_Boolean AIS_LocalContext::UnhilightLastDetected (const Handle(V3d_View)
   }
 
   myMainPM->BeginImmediateDraw();
-  const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner (mylastindex);
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner->FindKey (mylastindex);
   const Standard_Integer aHilightMode = anOwner->HasSelectable()
                                       ? GetHiMod (Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable()))
                                       : 0;
 
-  myMapOfOwner (mylastindex)->Unhilight (myMainPM, aHilightMode);
+  myMapOfOwner->FindKey (mylastindex)->Unhilight (myMainPM, aHilightMode);
   myMainPM->EndImmediateDraw (theView);
   mylastindex = 0;
   return Standard_True;

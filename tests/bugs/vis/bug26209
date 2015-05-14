@@ -1,0 +1,33 @@
+puts "============"
+puts "CR26209"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - provide a method to fit view to the specific bounding box"
+##########################################################################################
+
+pload VISUALIZATION MODELING
+
+box b 1 1 1
+vinit View1
+vdisplay b
+vfit
+vselmode b 2 1
+vselmode b 1 1
+
+vselect 330 334
+vfit -selected
+checkcolor 330 334 0 0 0
+checkcolor 330 131 0.8 0.8 0.8
+
+vselect 0 0
+vfit
+
+vselect 29 104
+vselect 204 2 1
+vfit -selected
+checkcolor 29 104 0 0 0
+checkcolor 2 317 0.8 0.8 0.8
+
+vdump ${imagedir}/${casename}.png

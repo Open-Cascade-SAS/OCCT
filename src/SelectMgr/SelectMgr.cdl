@@ -236,9 +236,6 @@ is
     class SequenceOfOwner instantiates Sequence from TCollection
     (EntityOwner from SelectMgr);
 
-    class IndexedMapOfOwner instantiates IndexedMap from TCollection
-    (EntityOwner from SelectMgr,MapTransientHasher from TColStd);
-
     class SequenceOfSelector instantiates Sequence from TCollection
         (ViewerSelector from SelectMgr);
 
@@ -256,7 +253,7 @@ is
     pointer SOPtr to SelectableObject from SelectMgr;
 
     imported CompareResults;
-
+    imported transient class IndexedMapOfOwner;
     imported SelectableObjectSet;
     imported FrustumBuilder;
     imported BaseFrustum;

@@ -30,6 +30,7 @@ deferred class SelectableObject from SelectMgr  inherits PresentableObject from 
 uses
 
     Box                   from Bnd,
+    IndexedMapOfOwner     from SelectMgr,
     SelectionManager      from SelectMgr,
     Selection             from SelectMgr,
     SequenceOfSelection   from SelectMgr,
@@ -238,6 +239,12 @@ is
       is static;
     ---C++: return const&
     ---Purpose: Returns common entity owner if the object is an assembly
+
+    BndBoxOfSelected (me : mutable;
+                      theOwners : out IndexedMapOfOwner from SelectMgr)
+      returns Box from Bnd;
+    ---Purpose: Returns a bounding box of sensitive entities with the owners given
+    --          if they are a part of activated selection
 
 fields
 

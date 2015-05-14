@@ -1079,7 +1079,7 @@ Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::SelectedOwner() const
 //function : EntityOwners
 //purpose  : 
 //=======================================================================
-void AIS_InteractiveContext::EntityOwners(SelectMgr_IndexedMapOfOwner& theOwners,
+void AIS_InteractiveContext::EntityOwners(Handle(SelectMgr_IndexedMapOfOwner)& theOwners,
 					  const Handle(AIS_InteractiveObject)& theIObj,
 					  const Standard_Integer theMode) const 
 {
@@ -1091,6 +1091,9 @@ void AIS_InteractiveContext::EntityOwners(SelectMgr_IndexedMapOfOwner& theOwners
     ActivatedModes( theIObj, aModes );
   else
     aModes.Append( theMode );
+
+  if (theOwners.IsNull())
+    theOwners = new SelectMgr_IndexedMapOfOwner();
 
   TColStd_ListIteratorOfListOfInteger anItr( aModes );
   for (; anItr.More(); anItr.Next() )
@@ -1110,7 +1113,7 @@ void AIS_InteractiveContext::EntityOwners(SelectMgr_IndexedMapOfOwner& theOwners
       Handle(SelectMgr_EntityOwner) aOwner =
 	Handle(SelectMgr_EntityOwner)::DownCast(aEntity->OwnerId());
       if ( !aOwner.IsNull() )
-	theOwners.Add( aOwner );
+	theOwners->Add( aOwner );
     }
   }
 }
