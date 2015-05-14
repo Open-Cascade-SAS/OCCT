@@ -1003,17 +1003,11 @@ fields
     -- the associated low-level structure
     myCStructure : CStructure from Graphic3d;
 
-    -- the structures to which the structure is attached
-    myAncestors     :  SequenceOfAddress from TColStd;
+    -- the set of structures to which the structure is attached
+    myAncestors   :  IndexedMapOfAddress from Graphic3d;
 
-    -- the structures attached to the structure
-    myDescendants   :  SequenceOfAddress from TColStd;
-
-    -- the map of structures to which the structure is attached
-    myAncestorMap   :  IndexedMapOfAddress from Graphic3d;
-
-    -- the map of structures attached to the structure
-    myDescendantMap :  IndexedMapOfAddress from Graphic3d;
+    -- the set of structures attached to the structure
+    myDescendants :  IndexedMapOfAddress from Graphic3d;
 
 	-- the highlight method of the structure
 	myHighlightColor	:	Color from Quantity;

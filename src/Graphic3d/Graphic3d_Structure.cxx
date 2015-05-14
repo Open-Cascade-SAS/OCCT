@@ -164,16 +164,14 @@ void Graphic3d_Structure::Remove()
   // of ancestors of this structure and in the list of ancestors
   // of descendants of the same structure.
 
-  const Standard_Integer aNbDesc = myDescendants.Length();
-  for (Standard_Integer aStructIter = 1; aStructIter <= aNbDesc; ++aStructIter)
+  for (Standard_Integer aStructIdx = 1, aNbDesc = myDescendants.Size(); aStructIdx <= aNbDesc; ++aStructIdx)
   {
-    ((Graphic3d_Structure *)(myDescendants.ChangeValue (aStructIter)))->Remove (APtr, Graphic3d_TOC_ANCESTOR);
+    ((Graphic3d_Structure *)myDescendants.FindKey (aStructIdx))->Remove (APtr, Graphic3d_TOC_ANCESTOR);
   }
 
-  const Standard_Integer aNbAnces = myAncestors.Length();
-  for (Standard_Integer aStructIter = 1; aStructIter <= aNbAnces; ++aStructIter)
+  for (Standard_Integer aStructIdx = 1, aNbAnces = myAncestors.Size(); aStructIdx <= aNbAnces; ++aStructIdx)
   {
-    ((Graphic3d_Structure *)(myAncestors.ChangeValue (aStructIter)))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
+    ((Graphic3d_Structure *)myAncestors.FindKey (aStructIdx))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
   }
 
   // Destruction of me in the graphic library
@@ -479,10 +477,9 @@ Standard_Boolean Graphic3d_Structure::ContainsFacet() const
   }
 
   // stop at the first descendant containing at least one facet
-  const Standard_Integer aNbDesc = myDescendants.Length();
-  for (Standard_Integer aStructIter = 1; aStructIter <= aNbDesc; ++aStructIter)
+  for (Graphic3d_IndexedMapOfAddress::Iterator anIter (myDescendants); anIter.More(); anIter.Next())
   {
-    if (((const Graphic3d_Structure *)(myDescendants.Value (aStructIter)))->ContainsFacet())
+    if (((const Graphic3d_Structure *)anIter.Value())->ContainsFacet())
     {
       return Standard_True;
     }
@@ -514,10 +511,9 @@ Standard_Boolean Graphic3d_Structure::IsEmpty() const
   }
 
   // stop at the first non-empty descendant
-  const Standard_Integer aNbDesc = myDescendants.Length();
-  for (Standard_Integer aDescIter = 1; aDescIter <= aNbDesc; ++aDescIter)
+  for (Graphic3d_IndexedMapOfAddress::Iterator anIter (myDescendants); anIter.More(); anIter.Next())
   {
-    if (!((const Graphic3d_Structure* )(myDescendants.Value (aDescIter)))->IsEmpty())
+    if (!((const Graphic3d_Structure* )anIter.Value())->IsEmpty())
     {
       return Standard_False;
     }
@@ -1274,10 +1270,9 @@ Standard_Boolean Graphic3d_Structure::AcceptConnection (const Handle(Graphic3d_S
 //=============================================================================
 void Graphic3d_Structure::Ancestors (Graphic3d_MapOfStructure& theSet) const
 {
-  const Standard_Integer aNbAnces = myAncestors.Length ();
-  for (Standard_Integer anIter = 1; anIter <= aNbAnces; ++anIter)
+  for (Graphic3d_IndexedMapOfAddress::Iterator anIter (myAncestors); anIter.More(); anIter.Next())
   {
-    theSet.Add ((Graphic3d_Structure* )(myAncestors.Value (anIter)));
+    theSet.Add ((Graphic3d_Structure* )anIter.Value());
   }
 }
 
@@ -1305,53 +1300,10 @@ Standard_Address Graphic3d_Structure::Owner() const
 //=============================================================================
 void Graphic3d_Structure::Descendants (Graphic3d_MapOfStructure& theSet) const
 {
-  const Standard_Integer aNbDesc = myDescendants.Length ();
-  for (Standard_Integer anIter = 1; anIter <= aNbDesc; ++anIter)
+  for (Graphic3d_IndexedMapOfAddress::Iterator anIter (myDescendants); anIter.More(); anIter.Next())
   {
-    theSet.Add ((Graphic3d_Structure* )(myDescendants.Value (anIter)));
+    theSet.Add ((Graphic3d_Structure* )anIter.Value());
   }
-}
-
-//=============================================================================
-//function : AppendDescendant
-//purpose  :
-//=============================================================================
-Standard_Boolean Graphic3d_Structure::AppendDescendant (const Standard_Address theDescendant)
-{
-  if (myDescendantMap.IsBound (theDescendant))
-  {
-    return Standard_False; // already connected
-  }
-
-  myDescendantMap.Bind (theDescendant, myDescendants.Length() + 1);
-  myDescendants.Append (theDescendant);
-
-  return Standard_True;
-}
-
-//=============================================================================
-//function : RemoveDescendant
-//purpose  :
-//=============================================================================
-Standard_Boolean Graphic3d_Structure::RemoveDescendant (const Standard_Address theDescendant)
-{
-  Standard_Integer aStructIdx;
-  if (!myDescendantMap.Find (theDescendant, aStructIdx))
-  {
-    return Standard_False;
-  }
-
-  myDescendantMap.UnBind (theDescendant);
-
-  if (aStructIdx != myDescendants.Length())
-  {
-    myDescendants.Exchange (aStructIdx, myDescendants.Length());
-    myDescendantMap.Bind   (myDescendants (aStructIdx), aStructIdx);
-  }
-
-  myDescendants.Remove (myDescendants.Length());
-
-  return Standard_True;
 }
 
 //=============================================================================
@@ -1360,15 +1312,20 @@ Standard_Boolean Graphic3d_Structure::RemoveDescendant (const Standard_Address t
 //=============================================================================
 Standard_Boolean Graphic3d_Structure::AppendAncestor (const Standard_Address theAncestor)
 {
-  if (myAncestorMap.IsBound (theAncestor))
-  {
-    return Standard_False; // already connected
-  }
+  const Standard_Integer aSize = myAncestors.Size();
 
-  myAncestorMap.Bind (theAncestor, myAncestors.Length() + 1);
-  myAncestors.Append (theAncestor);
+  return myAncestors.Add (theAncestor) > aSize; // new object
+}
 
-  return Standard_True;
+//=============================================================================
+//function : AppendDescendant
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::AppendDescendant (const Standard_Address theDescendant)
+{
+  const Standard_Integer aSize = myDescendants.Size();
+
+  return myDescendants.Add (theDescendant) > aSize; // new object
 }
 
 //=============================================================================
@@ -1377,23 +1334,32 @@ Standard_Boolean Graphic3d_Structure::AppendAncestor (const Standard_Address the
 //=============================================================================
 Standard_Boolean Graphic3d_Structure::RemoveAncestor (const Standard_Address theAncestor)
 {
-  Standard_Integer aStructIdx;
-  if (!myAncestorMap.Find (theAncestor, aStructIdx))
+  const Standard_Integer anIndex = myAncestors.FindIndex (theAncestor);
+
+  if (anIndex != 0)
   {
-    return Standard_False;
+    myAncestors.Swap (anIndex, myAncestors.Size());
+    myAncestors.RemoveLast();
   }
 
-  myAncestorMap.UnBind (theAncestor);
+  return anIndex != 0; // object was found
+}
 
-  if (aStructIdx != myAncestors.Length())
+//=============================================================================
+//function : RemoveDescendant
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::RemoveDescendant (const Standard_Address theDescendant)
+{
+  const Standard_Integer anIndex = myDescendants.FindIndex (theDescendant);
+
+  if (anIndex != 0)
   {
-    myAncestors.Exchange (aStructIdx, myAncestors.Length());
-    myAncestorMap.Bind   (myAncestors (aStructIdx), aStructIdx);
+    myDescendants.Swap (anIndex, myDescendants.Size());
+    myDescendants.RemoveLast();
   }
 
-  myAncestors.Remove (myAncestors.Length());
-
-  return Standard_True;
+  return anIndex != 0; // object was found
 }
 
 //=============================================================================
@@ -1491,27 +1457,25 @@ void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection theTyp
   {
     case Graphic3d_TOC_DESCENDANT:
     {
-      const Standard_Integer aLength = myDescendants.Length();
-      for (Standard_Integer anIter = 1; anIter <= aLength; ++anIter)
+      for (Standard_Integer anIdx = 1, aLength = myDescendants.Size(); anIdx <= aLength; ++anIdx)
       {
         // Value (1) instead of Value (i) as myDescendants
         // is modified by :
         // Graphic3d_Structure::Disconnect (AStructure)
         // that takes AStructure from myDescendants
-        ((Graphic3d_Structure* )(myDescendants.Value (1)))->Disconnect (this);
+        ((Graphic3d_Structure* )(myDescendants.FindKey (1)))->Disconnect (this);
       }
       break;
     }
     case Graphic3d_TOC_ANCESTOR:
     {
-      const Standard_Integer aLength = myAncestors.Length();
-      for (Standard_Integer anIter = 1; anIter <= aLength; ++anIter)
+      for (Standard_Integer anIdx = 1, aLength = myAncestors.Size(); anIdx <= aLength; ++anIdx)
       {
         // Value (1) instead of Value (i) as myAncestors
         // is modified by :
         // Graphic3d_Structure::Disconnect (AStructure)
         // that takes AStructure from myAncestors
-        ((Graphic3d_Structure* )(myAncestors.Value (1)))->Disconnect (this);
+        ((Graphic3d_Structure* )(myAncestors.FindKey (1)))->Disconnect (this);
       }
       break;
     }
@@ -1543,8 +1507,8 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal&       theMat
   TColStd_Array2OfReal aMatrix44 (0, 3, 0, 3);
 
   // Assign the new transformation in an array [0..3][0..3]
-  // Avoid problemes if the user has defined matrice [1..4][1..4]
-  //                                              or [3..6][-1..2] !!
+  // Avoid problems if the user has defined matrix [1..4][1..4]
+  //                                            or [3..6][-1..2] !!
   Standard_Integer lr = theMatrix.LowerRow();
   Standard_Integer ur = theMatrix.UpperRow();
   Standard_Integer lc = theMatrix.LowerCol();
@@ -1851,9 +1815,9 @@ void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
   Graphic3d_BndBox4d aCombinedBox, aBox;
   getBox (aCombinedBox, theToIgnoreInfiniteFlag);
 
-  for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); ++aStructIt)
+  for (Graphic3d_IndexedMapOfAddress::Iterator anIter (myDescendants); anIter.More(); anIter.Next())
   {
-    const Graphic3d_Structure* aStruct = (const Graphic3d_Structure* )myDescendants.Value (aStructIt);
+    const Graphic3d_Structure* aStruct = (const Graphic3d_Structure* )anIter.Value();
     aStruct->getBox (aBox, theToIgnoreInfiniteFlag);
     aCombinedBox.Combine (aBox);
   }
