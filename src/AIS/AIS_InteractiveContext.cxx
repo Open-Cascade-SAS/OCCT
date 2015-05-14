@@ -2333,9 +2333,16 @@ void AIS_InteractiveContext::EraseGlobal (const Handle(AIS_InteractiveObject)& t
 
   for (TColStd_ListIteratorOfListOfInteger aDispModeIter (aStatus->DisplayedModes()); aDispModeIter.More(); aDispModeIter.Next())
   {
-    if (myMainPM->IsHighlighted (theIObj, aDispModeIter.Value()))
+    if (aStatus->IsHilighted())
     {
-      myMainPM->Unhighlight (theIObj, aDispModeIter.Value());
+      if (IsCurrent (theIObj))
+      {
+        AddOrRemoveCurrentObject (theIObj, Standard_False);
+      }
+      else if (myMainPM->IsHighlighted (theIObj, aDispModeIter.Value()))
+      {
+        myMainPM->Unhighlight (theIObj, aDispModeIter.Value());
+      }
     }
 
     myMainPM->SetVisibility (theIObj, aDispModeIter.Value(), Standard_False);
