@@ -1942,6 +1942,16 @@ is
     
     ClearActiveSensitive(me:mutable;aView:View from V3d) is static;
 
+    FitSelected (me          : mutable;
+                 theView     : View from V3d;
+                 theMargin   : Real from Standard = 0.01;
+                 theToUpdate : Boolean from Standard = Standard_True)
+      is static;
+    ---Level: Public
+    ---Purpose: Fits the view correspondingly to the bounds of selected objects.
+    --          Infinite objects are ignored if infinite state of AIS_InteractiveObject
+    --          is set to true.
+
 
 
     DisplayActiveSensitive(me:mutable;

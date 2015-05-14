@@ -61,4 +61,4 @@ inline Standard_Boolean AIS_LocalContext::HasNextDetected() const
 {return myCurDetected<myDetectedSeq.Length();}
 
 inline Standard_Boolean AIS_LocalContext::IsValidIndex(const Standard_Integer indx) const
-{ return (indx>0 && indx<=myMapOfOwner.Extent());}
+{ return (indx>0 && indx<=myMapOfOwner->Extent());}

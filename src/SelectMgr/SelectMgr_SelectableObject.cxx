@@ -580,3 +580,49 @@ const Handle(SelectMgr_EntityOwner)& SelectMgr_SelectableObject::GetAssemblyOwne
 {
   return myAssemblyOwner;
 }
+
+//=======================================================================
+//function : BndBoxOfSelected
+//purpose  : Returns a bounding box of sensitive entities with the owners given
+//           if they are a part of activated selection
+//=======================================================================
+Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected (Handle(SelectMgr_IndexedMapOfOwner)& theOwners)
+{
+  Bnd_Box aBnd;
+
+  if (theOwners->IsEmpty())
+    return aBnd;
+
+  for (Init(); More(); Next())
+  {
+    const Handle(SelectMgr_Selection)& aSel = CurrentSelection();
+    if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
+      continue;
+
+    for (aSel->Init(); aSel->More(); aSel->Next())
+    {
+      const Handle(SelectMgr_EntityOwner) anOwner =
+        Handle(SelectMgr_EntityOwner)::DownCast (aSel->Sensitive()->BaseSensitive()->OwnerId());
+      if (theOwners->Contains (anOwner))
+      {
+        Select3D_BndBox3d aBox = aSel->Sensitive()->BaseSensitive()->BoundingBox();
+        Bnd_Box aTmpBnd;
+        aTmpBnd.Update (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
+                        aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
+        aBnd.Add (aTmpBnd);
+
+        Standard_Integer anOwnerIdx = theOwners->FindIndex (anOwner);
+        if (theOwners->Size() != anOwnerIdx)
+        {
+          theOwners->Swap (anOwnerIdx, theOwners->Size());
+        }
+        theOwners->RemoveLast();
+
+        if (theOwners->IsEmpty())
+          return aBnd;
+      }
+    }
+  }
+
+  return aBnd;
+}

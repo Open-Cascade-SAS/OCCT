@@ -1,6 +1,7 @@
 SelectMgr_CompareResults.hxx
 SelectMgr_FrustumBuilder.hxx
 SelectMgr_FrustumBuilder.cxx
+SelectMgr_IndexedMapOfOwner.hxx
 SelectMgr_SelectableObjectSet.hxx
 SelectMgr_SelectableObjectSet.cxx
 SelectMgr_BaseFrustum.hxx
