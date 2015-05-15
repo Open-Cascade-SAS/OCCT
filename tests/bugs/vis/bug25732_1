@@ -18,7 +18,7 @@ vsetdispmode b 1
 
 vdrawtext text "Open\nCASCADE" -pos 0 0 0 -color 1.0 0.0 0.0 -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font Arial
 
-set bug_info [vreadpixel 255 283 rgb name]
+set bug_info [vreadpixel 259 279 rgb name]
 if {$bug_info != "RED"} {
   puts "ERROR: OCC25732 is reproduced. Text is missed."
 }
