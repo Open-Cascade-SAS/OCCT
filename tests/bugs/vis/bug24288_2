@@ -32,7 +32,7 @@ if { $stat != 1 } {
 # Y axis rotation
 vrotate 0 $m_pi 0
 vfit
-vmoveto 185 246
+vmoveto 159 246
 
 set x_coord 113
 set y_coord 294
