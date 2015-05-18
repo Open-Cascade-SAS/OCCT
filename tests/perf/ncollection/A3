@@ -1,0 +1,41 @@
+pload QAcommands
+
+set info [QANTestNCollectionIndexedDataMap]
+
+set keys {}
+set values {}
+foreach line [split $info "\n"] {
+  set key [string trim [string range $line 0 [expr {[string first ":" $line] - 1}]]]
+  set value [string trim [string range $line [expr {[string first ":" $line] + 1}] [expr {[string length $line] - 1}]]]
+  if {[string length $key] != 0} {
+    if {[string length $value] != 0} {
+      lappend keys $key
+      lappend values $value
+    }
+  }
+}
+
+if { [string compare $tcl_platform(platform) "windows"] != 0 } {
+  set check_values  { 0.1549615
+                      0.1290805
+                      0.1602191
+                      0.3487175
+                    }
+} else {
+  set check_values  { 0.017762852
+                      0.008435507
+                      0.018746851
+                      0.079263713
+                    }
+}
+
+set index 0
+foreach key $keys {
+  set value [lindex $values $index]
+  if { $value > [lindex $check_values $index] } {
+    puts "ERROR: performance of $key become worse"
+  } else {
+    puts "OK: performance of $key is OK"
+  }
+  incr index
+}
