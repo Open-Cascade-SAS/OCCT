@@ -1,0 +1,29 @@
+puts "============"
+puts "CR26163"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - AIS_Shape::SetWidth() should not overwrite the free boundary color"
+##########################################################################################
+
+set check_x 252
+set check_y 170
+
+pload VISUALIZATION MODELING
+
+vinit View1 w=400 h=400
+vclear
+vaxo
+
+restore [locate_data_file bug26163.brep] s 
+vdisplay s
+vfit
+vsetwidth s 4
+
+# check that free boundary color is kept
+if { [checkcolor $check_x $check_y 0.0 1.0 0.0] != 1 } {
+  puts "Error: free boundary aspect unexpectedly changed."
+}
+
+vdump ${imagedir}/${casename}.png

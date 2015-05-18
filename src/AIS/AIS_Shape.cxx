@@ -474,10 +474,30 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
       *theDrawer->PointAspect()->Aspect() = *theDrawer->Link()->PointAspect()->Aspect();
     }
   }
-  // disable dedicated line aspects
-  theDrawer->SetFreeBoundaryAspect  (theDrawer->LineAspect());
-  theDrawer->SetUnFreeBoundaryAspect(theDrawer->LineAspect());
-  theDrawer->SetSeenLineAspect      (theDrawer->LineAspect());
+  if (!theDrawer->HasOwnFreeBoundaryAspect())
+  {
+    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
+  {
+    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnSeenLineAspect())
+  {
+    theDrawer->SetSeenLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->SeenLineAspect()->Aspect() = *theDrawer->Link()->SeenLineAspect()->Aspect();
+    }
+  }
 
   // override color
   theDrawer->ShadingAspect()->SetColor (theColor, myCurrentFacingModel);
@@ -485,6 +505,9 @@ void AIS_Shape::setColor (const Handle(Prs3d_Drawer)& theDrawer,
   theDrawer->LineAspect()->SetColor (theColor);
   theDrawer->WireAspect()->SetColor (theColor);
   theDrawer->PointAspect()->SetColor (theColor);
+  theDrawer->FreeBoundaryAspect()->SetColor (theColor);
+  theDrawer->UnFreeBoundaryAspect()->SetColor (theColor);
+  theDrawer->SeenLineAspect()->SetColor (theColor);
 }
 
 //=======================================================================
@@ -695,14 +718,37 @@ void AIS_Shape::setWidth (const Handle(Prs3d_Drawer)& theDrawer,
       *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
     }
   }
-  // disable dedicated line aspects
-  theDrawer->SetFreeBoundaryAspect  (theDrawer->LineAspect());
-  theDrawer->SetUnFreeBoundaryAspect(theDrawer->LineAspect());
-  theDrawer->SetSeenLineAspect      (theDrawer->LineAspect());
+  if (!theDrawer->HasOwnFreeBoundaryAspect())
+  {
+    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnUnFreeBoundaryAspect())
+  {
+    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+    }
+  }
+  if (!theDrawer->HasOwnSeenLineAspect())
+  {
+    theDrawer->SetSeenLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    if (theDrawer->HasLink())
+    {
+      *theDrawer->SeenLineAspect()->Aspect() = *theDrawer->Link()->SeenLineAspect()->Aspect();
+    }
+  }
 
   // override width
   theDrawer->LineAspect()->SetWidth (theLineWidth);
   theDrawer->WireAspect()->SetWidth (theLineWidth);
+  theDrawer->FreeBoundaryAspect()->SetWidth (theLineWidth);
+  theDrawer->UnFreeBoundaryAspect()->SetWidth (theLineWidth);
+  theDrawer->SeenLineAspect()->SetWidth (theLineWidth);
 }
 
 //=======================================================================
