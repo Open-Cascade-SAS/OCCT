@@ -70,7 +70,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     TheKeyType& Key1 (void)
     { return myKey1; }
     //! Key2
-    const Standard_Integer& Key2 (void)
+    Standard_Integer& Key2 (void)
     { return myKey2; }
     //! Next2
     IndexedDataMapNode*& Next2 (void)
@@ -343,6 +343,58 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     p->ChangeValue() = theItem;
     p->Next()  = myData1[iK1];
     myData1[iK1] = p;
+  }
+
+  //! Swaps two elements with the given indices.
+  void Swap (const Standard_Integer theIndex1,
+             const Standard_Integer theIndex2)
+  {
+    Standard_OutOfRange_Raise_if (theIndex1 < 1 || theIndex1 > Extent()
+                               || theIndex2 < 1 || theIndex2 > Extent(), "NCollection_IndexedDataMap::Swap");
+
+    if (theIndex1 == theIndex2)
+    {
+      return;
+    }
+
+    const Standard_Integer aK1 = ::HashCode (theIndex1, NbBuckets());
+    const Standard_Integer aK2 = ::HashCode (theIndex2, NbBuckets());
+
+    IndexedDataMapNode* aP1 = (IndexedDataMapNode*) myData2[aK1];
+    IndexedDataMapNode* aP2 = (IndexedDataMapNode*) myData2[aK2];
+
+    if (aP1->Key2() == theIndex1)
+    {
+      myData2[aK1] = (IndexedDataMapNode *) aP1->Next2();
+    }
+    else
+    {
+      IndexedDataMapNode* aQ = aP1;
+      for (aP1 = aQ->Next2(); aP1->Key2() != theIndex1; aQ = aP1, aP1 = aQ->Next2()) { }
+
+      aQ->Next2() = aP1->Next2();
+    }
+
+    if (aP2->Key2() == theIndex2)
+    {
+      myData2[aK2] = (IndexedDataMapNode *) aP2->Next2();
+    }
+    else
+    {
+      IndexedDataMapNode* aQ = aP2;
+      for (aP2 = aQ->Next2(); aP2->Key2() != theIndex2; aQ = aP2, aP2 = aQ->Next2()) { }
+
+      aQ->Next2() = aP2->Next2();
+    }
+
+    std::swap (aP1->Key2(),
+               aP2->Key2());
+
+    aP1->Next2() = (IndexedDataMapNode*) myData2[aK2];
+    myData2[aK2] = aP1;
+
+    aP2->Next2() = (IndexedDataMapNode*) myData2[aK1];
+    myData2[aK1] = aP2;
   }
 
   //! RemoveLast

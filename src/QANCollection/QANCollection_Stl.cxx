@@ -1143,13 +1143,13 @@ static Standard_Integer QANTestNCollectionPerformance (Draw_Interpretor& di, Sta
 
   di << "\n" << "std::vector vs NCollection_Array1 (sort):" << "\n\n";
   TestPerformanceRandomIterator<NCollection_Array1<double>, std::vector<double> >(di);
-  
+
   di << "\n" << "std::vector vs NCollection_Vector (sort):" << "\n\n";
   TestPerformanceRandomIterator<NCollection_Vector<double>, std::vector<double> >(di);
-  
+
   di << "\n" << "std::vector vs NCollection_Array1 (replace):" << "\n\n";
   TestPerformanceForwardIterator<NCollection_Array1<double>, std::vector<double> >(di);
-  
+
   di << "\n" << "std::vector vs NCollection_Vector (replace):" << "\n\n";
   TestPerformanceForwardIterator<NCollection_Vector<double>, std::vector<double> >(di);
 
@@ -1167,7 +1167,193 @@ static Standard_Integer QANTestNCollectionPerformance (Draw_Interpretor& di, Sta
 
   di << "\n" << "std::set vs NCollection_IndexedMap (search):" << "\n\n";
   TestPerformanceMapAccess<NCollection_IndexedMap<int>, int>(di);
-  
+
+  return 0;
+}
+
+//=======================================================================
+//function : QANTestNCollectionIndexedMap
+//purpose  :
+//=======================================================================
+static Standard_Integer QANTestNCollectionIndexedMap (Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  OSD_Timer aTimer;
+
+  std::vector<Standard_Integer>            aIndxs;
+  std::vector<Standard_Integer>            aItems;
+  NCollection_IndexedMap<Standard_Integer> aIndxMap;
+
+  const Standard_Integer aNbItems = 1000000;
+
+  srand (1);
+  for (Standard_Integer anId = 1; anId <= aNbItems; ++anId)
+  {
+    const Standard_Integer aVal = anId * 2;
+
+    aIndxs.push_back (anId);
+    aItems.push_back (aVal);
+
+    aIndxMap.Add  (aVal);
+  }
+
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems; ++anId)
+  {
+    if (aIndxMap.FindIndex (aItems[anId]) != aIndxs[anId])
+    {
+      std::cout << "failed FindIndex\n";
+    }
+
+    if (aIndxMap.FindKey (aIndxs[anId]) != aItems[anId])
+    {
+      std::cout << "failed FindKey\n";
+    }
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime1 = aTimer.ElapsedTime();
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems / 30; ++anId)
+  {
+    const Standard_Integer anId2 = Min (aNbItems - 1,
+      static_cast<Standard_Integer> (rand() / float (RAND_MAX) * aNbItems));
+
+    aIndxMap.Swap (aIndxs[anId], aIndxs[anId2]);
+
+    std::swap (aIndxs[anId], aIndxs[anId2]);
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime2 = aTimer.ElapsedTime();
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems; ++anId)
+  {
+    if (aIndxMap.FindIndex (aItems[anId]) != aIndxs[anId])
+    {
+      std::cout << "failed FindIndex\n";
+    }
+
+    if (aIndxMap.FindKey (aIndxs[anId]) != aItems[anId])
+    {
+      std::cout << "failed FindKey\n";
+    }
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime3 = aTimer.ElapsedTime();
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems; ++anId)
+  {
+    aIndxMap.RemoveLast();
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime4 = aTimer.ElapsedTime();
+
+  di << "Search time 1: " << aTime1 << "\n"
+     << "Swapping time: " << aTime2 << "\n"
+     << "Search time 2: " << aTime3 << "\n"
+     << "Remove   time: " << aTime4 << "\n";
+
+  return 0;
+}
+
+//=======================================================================
+//function : QANTestNCollectionIndexedDataMap
+//purpose  :
+//=======================================================================
+static Standard_Integer QANTestNCollectionIndexedDataMap (Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  OSD_Timer aTimer;
+
+  std::vector<Standard_Integer>                                  aIndxs;
+  std::vector<Standard_Integer>                                  aItems;
+  NCollection_IndexedDataMap<Standard_Integer, Standard_Integer> aIndxMap;
+
+  const Standard_Integer aNbItems = 1000000;
+
+  srand (1);
+  for (Standard_Integer anId = 1; anId <= aNbItems; ++anId)
+  {
+    const Standard_Integer aVal = anId * 2;
+
+    aIndxs.push_back (anId);
+    aItems.push_back (aVal);
+
+    aIndxMap.Add  (aVal, aVal * 2);
+  }
+
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems; ++anId)
+  {
+    if (aIndxMap.FindIndex (aItems[anId]) != aIndxs[anId])
+    {
+      std::cout << "failed FindIndex\n";
+    }
+
+    if (aIndxMap.FindKey (aIndxs[anId]) != aItems[anId])
+    {
+      std::cout << "failed FindKey\n";
+    }
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime1 = aTimer.ElapsedTime();
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems / 30; ++anId)
+  {
+    const Standard_Integer anId2 = Min (aNbItems - 1,
+      static_cast<Standard_Integer> (rand() / float (RAND_MAX) * aNbItems));
+
+    aIndxMap.Swap (aIndxs[anId], aIndxs[anId2]);
+
+    std::swap (aIndxs[anId], aIndxs[anId2]);
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime2 = aTimer.ElapsedTime();
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems; ++anId)
+  {
+    if (aIndxMap.FindIndex (aItems[anId]) != aIndxs[anId])
+    {
+      std::cout << "failed FindIndex\n";
+    }
+
+    if (aIndxMap.FindKey (aIndxs[anId]) != aItems[anId])
+    {
+      std::cout << "failed FindKey\n";
+    }
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime3 = aTimer.ElapsedTime();
+
+  aTimer.Reset();
+  aTimer.Start();
+  for (Standard_Integer anId = 0; anId < aNbItems; ++anId)
+  {
+    aIndxMap.RemoveLast();
+  }
+  aTimer.Stop();
+
+  const Standard_Real aTime4 = aTimer.ElapsedTime();
+
+  di << "Search time 1: " << aTime1 << "\n"
+     << "Swapping time: " << aTime2 << "\n"
+     << "Search time 2: " << aTime3 << "\n"
+     << "Remove   time: " << aTime4 << "\n";
+
   return 0;
 }
 
@@ -1237,6 +1423,18 @@ void QANCollection::CommandsStl (Draw_Interpretor& theCommands)
                    "QANTestNCollectionPerformance",
                    __FILE__,
                    QANTestNCollectionPerformance,
+                   aGroup);
+
+  theCommands.Add ("QANTestNCollectionIndexedMap",
+                   "QANTestNCollectionIndexedMap",
+                   __FILE__,
+                   QANTestNCollectionIndexedMap,
+                   aGroup);
+
+  theCommands.Add ("QANTestNCollectionIndexedDataMap",
+                   "QANTestNCollectionIndexedDataMap",
+                   __FILE__,
+                   QANTestNCollectionIndexedDataMap,
                    aGroup);
 
   return;
