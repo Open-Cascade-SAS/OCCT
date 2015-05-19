@@ -54,9 +54,6 @@
     <ClCompile Include="..\..\..\src\ISession2D\ISession2D_Curve.cpp">
       <Filter>Source Files\ISession2d</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\ISession2D\ISession2D_SensitiveCurve.cpp">
-      <Filter>Source Files\ISession2d</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\ISession2D\ISession_Curve.cpp">
       <Filter>Source Files\ISession2d</Filter>
     </ClCompile>
@@ -104,9 +101,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\ISession2D\ISession2D_Curve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\ISession2D\ISession2D_SensitiveCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\ISession2D\ISession_Curve.h">

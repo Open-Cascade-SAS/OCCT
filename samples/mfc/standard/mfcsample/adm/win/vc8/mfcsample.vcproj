@@ -20,7 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../../../win32\vc8\libd"
+			OutputDirectory="../../../../win32\vc8\bind"
 			IntermediateDirectory=".\win32\objd"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -81,14 +81,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win32\vc8\libd/mfcsample.dll"
+				OutputFile="../../../../win32\vc8\bind/mfcsample.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../../win32\vc8\libd/mfcsample.pdb"
+				ProgramDatabaseFile="../../../../win32\vc8\bind/mfcsample.pdb"
 				SubSystem="2"
-				ImportLibrary=""
+				ImportLibrary="../../../../win32\vc8\libd/mfcsample.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -118,7 +118,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../../../../win32\vc8\lib"
+			OutputDirectory="../../../../win32\vc8\bin"
 			IntermediateDirectory=".\win32\obj"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -180,13 +180,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win32\vc8\lib/mfcsample.dll"
+				OutputFile="../../../../win32\vc8\bin/mfcsample.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32)"
-				ProgramDatabaseFile="../../../../win32\vc8\lib/mfcsample.pdb"
+				ProgramDatabaseFile="../../../../win32\vc8\bin/mfcsample.pdb"
 				SubSystem="2"
-				ImportLibrary=""
+				ImportLibrary="../../../../win32\vc8\lib/mfcsample.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -216,7 +216,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="../../../../win64\vc8\libd"
+			OutputDirectory="../../../../win64\vc8\bind"
 			IntermediateDirectory=".\win64\objd"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -248,7 +248,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(CSF_OPT_INC)&quot;;..\..\..\..\Common"
+				AdditionalIncludeDirectories="$(CSF_OPT_INC),..\..\..\..\Common"
 				PreprocessorDefinitions="_DEBUG;WIN64;_WINDOWS;WNT;_AFXEXT;CSFDB;WINVER=0x0500"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -277,14 +277,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win64\vc8\libd/mfcsample.dll"
+				OutputFile="../../../../win64\vc8\bind/mfcsample.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB64D)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../../win64\vc8\libd/mfcsample.pdb"
+				ProgramDatabaseFile="../../../../win64\vc8\bind/mfcsample.pdb"
 				SubSystem="2"
-				ImportLibrary=""
+				ImportLibrary="../../../../win64\vc8\libd/mfcsample.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -314,7 +314,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="../../../../win64\vc8\lib"
+			OutputDirectory="../../../../win64\vc8\bin"
 			IntermediateDirectory=".\win64\obj"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -376,13 +376,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win64\vc8\lib/mfcsample.dll"
+				OutputFile="../../../../win64\vc8\bin/mfcsample.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB64)"
-				ProgramDatabaseFile="../../../../win64\vc8\lib/mfcsample.pdb"
+				ProgramDatabaseFile="../../../../win64\vc8\bin/mfcsample.pdb"
 				SubSystem="2"
-				ImportLibrary=""
+				ImportLibrary="../../../../win64\vc8\lib/mfcsample.lib"
 				TargetMachine="17"
 			/>
 			<Tool
