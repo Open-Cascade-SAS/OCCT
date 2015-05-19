@@ -59,8 +59,10 @@ class Wire from ShapeFix inherits Root from ShapeFix
     --          a) Wire (ether TopoDS_Wire or ShapeExtend_Wire)
     --          b) Face or surface
     --          c) Precision
+    --          d) Maximal tail angle and width
     --          This can be done either by calling corresponding methods
-    --          (LoadWire, SetFace or SetSurface, and SetPrecision), or
+    --          (LoadWire, SetFace or SetSurface, SetPrecision, SetMaxTailAngle
+    --          and SetMaxTailWidth), or
     --          by loading already filled ShapeAnalisis_Wire with method Load
 
 uses 
@@ -130,6 +132,12 @@ is
     
     SetPrecision (me: mutable; prec: Real) is redefined;
     	---Purpose: Set working precision (to root and to analyzer)
+
+    SetMaxTailAngle (me: mutable; theMaxTailAngle: Real);
+      ---Purpose: Sets the maximal allowed angle of the tails in radians.
+
+    SetMaxTailWidth (me: mutable; theMaxTailWidth: Real);
+      ---Purpose: Sets the maximal allowed width of the tails.
 
     IsLoaded (me) returns Boolean;
     	---C++: inline
@@ -313,6 +321,9 @@ is
     	--       -1 default
     	--        1 method will be called
     	--        0 method will not be called
+    FixTailMode(me: mutable) returns Integer;
+      ---C++: inline
+      ---C++: return &
 
     --- Fixing methods:
     
@@ -767,6 +778,8 @@ is
 	--          FAIL1 - There was no pcurve found on some edge
 	--          FAIL2 - Method failed to fix the gap
 
+    FixTails(me: mutable) returns Boolean;
+
     --- Result of fixes: 
 
     StatusReorder          (me; status: Status from ShapeExtend) returns Boolean;
@@ -800,6 +813,9 @@ is
     	--          DONE: some problem(s) was(were) detected and successfully fixed
     	--          FAIL: some problem(s) cannot be fixed
     	---Level  : Public (API)
+    StatusFixTails(me; status: Status from ShapeExtend) returns Boolean;
+      ---C++: inline
+
     LastFixStatus (me; status: Status from ShapeExtend) returns Boolean;		 
     	---C++: inline
     	---Purpose: Queries the status of last call to methods Fix... of 
@@ -843,6 +859,7 @@ fields
     myFixSelfIntersectingEdgeMode:          Integer is protected;
     myFixIntersectingEdgesMode:             Integer is protected;
     myFixNonAdjacentIntersectingEdgesMode:  Integer is protected;
+    myFixTailMode:                          Integer is protected;
 
     myRemoveLoopMode:                       Integer is protected;
       -- -1 - old variant (default)
@@ -874,4 +891,7 @@ fields
     myStatusGaps2d:           Integer is protected;
     myStatusRemovedSegment:   Boolean is protected;
     myStatusNotches:          Integer is protected;
+    myStatusFixTails:         Integer is protected;
+    myMaxTailAngleSine:       Real is protected;
+    myMaxTailWidth:           Real is protected;
 end Wire;

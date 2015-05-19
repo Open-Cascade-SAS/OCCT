@@ -462,6 +462,7 @@ Standard_Boolean ShapeFix_Face::Perform()
                theAdvFixWire->StatusConnected(ShapeExtend_DONE) ||
                theAdvFixWire->StatusEdgeCurves(ShapeExtend_DONE) ||
                theAdvFixWire->StatusNotches(ShapeExtend_DONE) ||  // CR0024983
+               theAdvFixWire->StatusFixTails(ShapeExtend_DONE) ||
                theAdvFixWire->StatusDegenerated(ShapeExtend_DONE) ||
                theAdvFixWire->StatusClosed(ShapeExtend_DONE));
         TopoDS_Wire w = theAdvFixWire->Wire();
@@ -561,9 +562,10 @@ Standard_Boolean ShapeFix_Face::Perform()
         }
 	if ( theAdvFixWire->Perform() ) {
           isfixReorder =  theAdvFixWire->StatusReorder(ShapeExtend_DONE);
-	  fixed = (theAdvFixWire->StatusLacking(ShapeExtend_DONE) ||
-                   theAdvFixWire->StatusSelfIntersection(ShapeExtend_DONE) ||
-                   theAdvFixWire->StatusNotches(ShapeExtend_DONE));  //Standard_True; 
+          fixed = (theAdvFixWire->StatusLacking(ShapeExtend_DONE) ||
+            theAdvFixWire->StatusSelfIntersection(ShapeExtend_DONE) ||
+            theAdvFixWire->StatusNotches(ShapeExtend_DONE) ||
+            theAdvFixWire->StatusFixTails(ShapeExtend_DONE));
 	  TopoDS_Wire w = theAdvFixWire->Wire();
           if(fixed) {
             if ( ! Context().IsNull() ) Context()->Replace ( wire, w );

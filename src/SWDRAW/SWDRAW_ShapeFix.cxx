@@ -413,8 +413,11 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
   
   Standard_CString res = 0;
   Standard_Integer par = 0, mess=0;
-  for ( Standard_Integer i=1; i < argc; i++ ) {
-    if ( argv[i][0] == '-' || argv[i][0] == '+' || argv[i][0] == '*' ) {
+  for ( Standard_Integer i=1; i < argc; i++ )
+  {
+    if (strlen(argv[i]) == 2 &&
+      (argv[i][0] == '-' || argv[i][0] == '+' || argv[i][0] == '*'))
+    {
       Standard_Integer val = ( argv[i][0] == '-' ? 0 : argv[i][0] == '+' ? 1 : -1 );
       switch ( argv[i][1] ) {
       case 'l': sfs->FixWireTool()->FixLackingMode()          = val; break;
@@ -429,7 +432,27 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
       }
       continue;
     }
-    else {
+    else if (!strcmp(argv[i], "-maxtaila"))
+    {
+      if (++i >= argc)
+      {
+        break;
+      }
+
+      sfs->FixWireTool()->SetMaxTailAngle(Draw::Atof(argv[i]) * (M_PI / 180));
+    }
+    else if (!strcmp(argv[i], "-maxtailw"))
+    {
+      if (++i >= argc)
+      {
+        break;
+      }
+
+      sfs->FixWireTool()->SetMaxTailWidth(Draw::Atof(argv[i]));
+      sfs->FixWireTool()->FixTailMode() = 1;
+    }
+    else
+    {
       switch ( par ) {
       case 0: res = argv[i];                       break;
       case 1: {
@@ -445,7 +468,8 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   if ( par <2 ) {
-    di << "Use: " << argv[0] << " result shape [tolerance [max_tolerance]] [switches]" << "\n"; 
+    di << "Use: " << argv[0] << " result shape [tolerance [max_tolerance]] [switches]\n"
+      "[-maxtaila <degrees>] [-maxtailw <width>]" << "\n";
     di << "Switches allow to tune parameters of ShapeFix" << "\n"; 
     di << "The following syntax is used: <symbol><parameter>" << "\n"; 
     di << "- symbol may be - to set parameter off, + to set on or * to set default" << "\n"; 
@@ -787,7 +811,9 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
 		   __FILE__,stwire,g);
   theCommands.Add ("reface","shape result : controle sens wire",
 		   __FILE__,reface,g);
-  theCommands.Add ("fixshape","res shape [preci [maxpreci]] [{switches}]",
+  theCommands.Add ("fixshape",
+"res shape [preci [maxpreci]] [{switches}]\n"
+"  [-maxtaila <degrees>] [-maxtailw <width>]",
 		   __FILE__,fixshape,g);
 //  theCommands.Add ("testfill","result edge1 edge2",
 //		   __FILE__,XSHAPE_testfill,g);

@@ -406,6 +406,15 @@ inline  Standard_Integer& ShapeFix_Wire::FixNonAdjacentIntersectingEdgesMode()
 }
 
 //=======================================================================
+//function : FixTailMode
+//purpose  :
+//=======================================================================
+inline Standard_Integer& ShapeFix_Wire::FixTailMode()
+{
+  return myFixTailMode;
+}
+
+//=======================================================================
 //function : Status.. for high-level methods
 
 //=======================================================================
@@ -516,6 +525,16 @@ inline  Standard_Boolean ShapeFix_Wire::StatusNotches(const ShapeExtend_Status s
 {
   return ShapeExtend::DecodeStatus ( myStatusNotches, status ); 
 } 
+
+//=======================================================================
+//function : StatusFixTails
+//purpose  :
+//=======================================================================
+inline Standard_Boolean ShapeFix_Wire::StatusFixTails(const ShapeExtend_Status status) const
+{
+  return ShapeExtend::DecodeStatus(myStatusFixTails, status);
+}
+
 //=======================================================================
 //function : LastFixStatus - Status for low-level methods (common)
 //purpose  : 

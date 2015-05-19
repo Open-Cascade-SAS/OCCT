@@ -1,0 +1,8 @@
+pload XDE
+
+stepread [locate_data_file bug26261_ca07771-040x.stp] s *
+renamevar s_1 s
+fixshape  r  s  -maxtaila 1  -maxtailw 1e-3
+
+checknbshapes  r  -vertex 25950  -edge 41999  -wire 16519  -face 16205  -shell 51  -solid 1  -compsolid 0  -compound 2
+checklength r 127197.57657573155

@@ -129,7 +129,7 @@
 //purpose  : 
 //=======================================================================
 
-ShapeFix_Wire::ShapeFix_Wire()
+ShapeFix_Wire::ShapeFix_Wire() : myMaxTailAngleSine(0), myMaxTailWidth(-1)
 {
   myFixEdge = new ShapeFix_Edge;
   myAnalyzer = new ShapeAnalysis_Wire;
@@ -143,8 +143,10 @@ ShapeFix_Wire::ShapeFix_Wire()
 //purpose  : 
 //=======================================================================
 
-ShapeFix_Wire::ShapeFix_Wire (const TopoDS_Wire& wire, 
-			      const TopoDS_Face &face, const Standard_Real prec)
+ShapeFix_Wire::ShapeFix_Wire (
+  const TopoDS_Wire& wire,
+  const TopoDS_Face &face,
+  const Standard_Real prec) : myMaxTailAngleSine(0), myMaxTailWidth(-1)
 {
   myFixEdge = new ShapeFix_Edge;
   myAnalyzer = new ShapeAnalysis_Wire;
@@ -165,6 +167,25 @@ void ShapeFix_Wire::SetPrecision (const Standard_Real prec)
   myAnalyzer->SetPrecision ( prec );
 }
  
+//=======================================================================
+//function : SetMaxTailAngle
+//purpose  :
+//=======================================================================
+void ShapeFix_Wire::SetMaxTailAngle(const Standard_Real theMaxTailAngle)
+{
+  myMaxTailAngleSine = Sin(theMaxTailAngle);
+  myMaxTailAngleSine = (myMaxTailAngleSine >= 0) ? myMaxTailAngleSine : 0;
+}
+
+//=======================================================================
+//function : SetMaxTailWidth
+//purpose  :
+//=======================================================================
+void ShapeFix_Wire::SetMaxTailWidth(const Standard_Real theMaxTailWidth)
+{
+  myMaxTailWidth = theMaxTailWidth;
+}
+
 //=======================================================================
 //function : ClearModes
 //purpose  : 
@@ -194,6 +215,7 @@ void ShapeFix_Wire::ClearModes()
   myFixSelfIntersectingEdgeMode = -1;
   myFixIntersectingEdgesMode = -1;
   myFixNonAdjacentIntersectingEdgesMode = -1;
+  myFixTailMode = 0;
 
   myFixReorderMode = -1;
   myFixSmallMode = -1;
@@ -227,6 +249,8 @@ void ShapeFix_Wire::ClearStatuses()
   myStatusGaps3d           = emptyStatus; //szv#9:S4244:19Aug99 new method introduced
   myStatusGaps2d           = emptyStatus; //szv#9:S4244:19Aug99 new method introduced
   myStatusClosed           = emptyStatus;
+  myStatusNotches = emptyStatus;
+  myStatusFixTails = emptyStatus;
 }
 
 //=======================================================================
@@ -361,11 +385,21 @@ Standard_Boolean ShapeFix_Wire::Perform()
   }
   
   //pdn - temporary to test
-  if ( NeedFix ( myFixNotchedEdgesMode, ReorderOK ) ) {
+  if (myFixTailMode <= 0 && NeedFix(myFixNotchedEdgesMode, ReorderOK))
+  {
     Fixed |= FixNotchedEdges();
     if(Fixed) FixShifted(); //skl 07.03.2002 for OCC180
   }
     
+  if (myFixTailMode != 0)
+  {
+    Fixed |= FixTails();
+    if (Fixed)
+    {
+      FixShifted();
+    }
+  }
+
   if ( NeedFix ( myFixSelfIntersectionMode, myClosedMode ) ) {
     Standard_Integer savFixIntersectingEdgesMode = myFixIntersectingEdgesMode;
     // switch off FixIntEdges if reorder not done
@@ -3321,4 +3355,172 @@ void ShapeFix_Wire::UpdateWire ()
       sbwd->Add ( exp.Current(), i++ );
     sbwd->Remove ( i-- );
   }
+}
+
+//=======================================================================
+//function : FixTails
+//purpose  :
+//=======================================================================
+Standard_Boolean ShapeFix_Wire::FixTails()
+{
+  if (myMaxTailWidth < 0 || !IsReady())
+  {
+    return Standard_False;
+  }
+
+  myLastFixStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  if (!Context().IsNull())
+  {
+    UpdateWire();
+  }
+  Handle(ShapeExtend_WireData) aSEWD = WireData();
+  Standard_Integer aECount = NbEdges(), aENs[] = {aECount, 1};
+  Standard_Boolean aCheckAngle = Standard_True;
+  while (aECount >= 2 && aENs[1] <= aECount)
+  {
+    const TopoDS_Edge aEs[] = {aSEWD->Edge(aENs[0]), aSEWD->Edge(aENs[1])};
+    TopoDS_Edge aEParts[2][2];
+    if (!myAnalyzer->CheckTail(aEs[0], aEs[1],
+      aCheckAngle ? myMaxTailAngleSine : -1, myMaxTailWidth, MaxTolerance(),
+      aEParts[0][0], aEParts[0][1], aEParts[1][0], aEParts[1][1]))
+    {
+      aENs[0] = aENs[1]++;
+      aCheckAngle = Standard_True;
+      continue;
+    }
+
+    // Provide not less than 1 edge in the result wire.
+    Standard_Integer aSplitCounts[] =
+      {aEParts[0][1].IsNull() ? 0 : 1, aEParts[1][1].IsNull() ? 0 : 1};
+    const Standard_Integer aRemoveCount =
+      (aEParts[0][0].IsNull() ? 0 : 1) + (aEParts[1][0].IsNull() ? 0 : 1);
+    if (aECount + aSplitCounts[0] + aSplitCounts[1] < 1 + aRemoveCount)
+    {
+      aENs[0] = aENs[1]++;
+      aCheckAngle = Standard_True;
+      continue;
+    }
+
+    // Split the edges.
+    for (Standard_Integer aEI = 0; aEI < 2; ++aEI)
+    {
+      if (aSplitCounts[aEI] == 0)
+      {
+        continue;
+      }
+
+      // Replace the edge by the wire of its parts in the shape.
+      const TopoDS_Edge aE = aEs[aEI];
+      if (!Context().IsNull())
+      {
+        TopoDS_Wire aEWire;
+        BRep_Builder().MakeWire(aEWire);
+        BRep_Builder().Add(aEWire, aEParts[aEI][0]);
+        BRep_Builder().Add(aEWire, aEParts[aEI][1]);
+        TopoDS_Edge aFE = TopoDS::Edge(aE.Oriented(TopAbs_FORWARD));
+        Context()->Replace(aFE, aEWire);
+      }
+
+      // Replace the edge by its parts in the edge wire.
+      const TopAbs_Orientation aOrient = aE.Orientation();
+      aEParts[aEI][0].Orientation(aOrient);
+      aEParts[aEI][1].Orientation(aOrient);
+      const Standard_Integer aFirstPI = (aOrient != TopAbs_REVERSED) ? 0 : 1;
+      const Standard_Integer aAdd =
+        (aEI == 0 || aENs[1] < aENs[0]) ? 0 : aSplitCounts[0];
+      aSEWD->Set(aEParts[aEI][aFirstPI], aENs[aEI] + aAdd);
+      aSEWD->Add(aEParts[aEI][1 - aFirstPI], aENs[aEI] + 1 + aAdd);
+    }
+
+    // Remove the tail.
+    if (aRemoveCount == 2)
+    {
+      aCheckAngle = Standard_True;
+      FixDummySeam(aENs[0] + aSplitCounts[0] +
+        ((aENs[0] < aENs[1]) ? 0 : aSplitCounts[1]));
+      if (!Context().IsNull())
+      {
+        UpdateWire();
+      }
+      myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE);
+
+      if (aSplitCounts[0] + aSplitCounts[1] == 2)
+      {
+        aENs[0] = aENs[1]++;
+        continue;
+      }
+
+      if (aSplitCounts[0] == aSplitCounts[1])
+      {
+        aECount -= 2;
+        if (aENs[1] >= 3)
+        {
+          --aENs[0];
+          --aENs[1];
+        }
+        else
+        {
+          aENs[0] = aECount;
+          aENs[1] = 1;
+        }
+        aCheckAngle = Standard_False;
+      }
+      else
+      {
+        --aECount;
+        if (aSplitCounts[0] != 0)
+        {
+          aENs[0] = (aENs[0] <= aECount) ? aENs[0] : aECount;
+        }
+        else
+        {
+          if (aENs[1] >= 3)
+          {
+            --aENs[0];
+            --aENs[1];
+          }
+          else
+          {
+            aENs[0] = aECount;
+            aENs[1] = 1;
+          }
+        }
+      }
+    }
+    else
+    {
+      aCheckAngle = Standard_False;
+      --aECount;
+      const Standard_Integer aRI = aEParts[0][0].IsNull() ? 1 : 0;
+      if (aSplitCounts[aRI] != 0)
+      {
+        if (aRI == 0)
+        {
+          if (aENs[1] >= 3)
+          {
+            --aENs[0];
+            --aENs[1];
+          }
+          else
+          {
+            aENs[0] = aECount;
+            aENs[1] = 1;
+          }
+        }
+        else
+        {
+          aENs[0] = (aENs[1] > 1) ? aENs[0] : aECount;
+        }
+      }
+      aSEWD->Remove(aENs[aRI] + ((aRI != 0 || aSplitCounts[0] == 0) ? 0 : 1));
+      if (!Context().IsNull())
+      {
+        Context()->Remove(aEs[aRI].Oriented(TopAbs_FORWARD));
+        UpdateWire();
+      }
+      myLastFixStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE);
+    }
+  }
+  myStatusNotches = myLastFixStatus;
+  return ShapeExtend::DecodeStatus(myLastFixStatus, ShapeExtend_DONE);
 }
