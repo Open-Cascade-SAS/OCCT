@@ -51,6 +51,7 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 
   myFunc = theFunc;
   myC = theC;
+  myIsFindSingleSolution = Standard_False;
   myZ = -1;
   mySolCount = 0;
 
@@ -191,7 +192,7 @@ math_GlobOptMin::~math_GlobOptMin()
 //purpose  : Compute Global extremum point
 //=======================================================================
 // In this algo indexes started from 1, not from 0.
-void math_GlobOptMin::Perform()
+void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
 {
   Standard_Integer i;
 
@@ -221,10 +222,21 @@ void math_GlobOptMin::Perform()
 
   myE1 = minLength * myTol;
   myE2 = maxLength * myTol;
-  if (myC > 1.0)
-    myE3 = - maxLength * myTol / 4.0;
+
+  myIsFindSingleSolution = isFindSingleSolution;
+  if (isFindSingleSolution)
+  {
+    // Run local optimization 
+    // if current value better than optimal.
+    myE3 = 0.0;
+  }
   else
-    myE3 = - maxLength * myTol * myC / 4.0;
+  {
+    if (myC > 1.0)
+      myE3 = - maxLength * myTol / 4.0;
+    else
+      myE3 = - maxLength * myTol * myC / 4.0;
+  }
 
   computeGlobalExtremum(myN);
 
@@ -404,8 +416,10 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       aStepBestValue = (isInside && (val < d))? val : d;
       aStepBestPoint = (isInside && (val < d))? myTmp : myX;
 
-      // Solutions are close to each other.
-      if (Abs(aStepBestValue - myF) < mySameTol * 0.01)
+      // Solutions are close to each other 
+      // and it is allowed to have more than one solution.
+      if (Abs(aStepBestValue - myF) < mySameTol * 0.01 &&
+          !myIsFindSingleSolution)
       {
         if (!isStored(aStepBestPoint))
         {
@@ -417,8 +431,12 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
         }
       }
 
-      // New best solution.
-      if ((aStepBestValue - myF) * myZ > mySameTol * 0.01)
+      // New best solution:
+      // new point is out of (mySameTol * 0.01) surrounding or
+      // new point is better than old + single point search.
+      Standard_Real aFunctionalDelta = (aStepBestValue - myF) * myZ;
+      if (aFunctionalDelta > mySameTol * 0.01 ||
+         (aFunctionalDelta > 0.0 && myIsFindSingleSolution))
       {
         mySolCount = 0;
         myF = aStepBestValue;
