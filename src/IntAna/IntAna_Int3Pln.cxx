@@ -38,8 +38,8 @@ void IntAna_Int3Pln::Perform (const gp_Pln& P1, const gp_Pln& P2,
 			      const gp_Pln& P3) {
 
   done=Standard_False;
-  static math_Matrix M(1,3,1,3);
-  static math_Vector V(1,3);
+  math_Matrix M(1,3,1,3);
+  math_Vector V(1,3);
   
   P1.Coefficients(M(1,1),M(1,2),M(1,3),V(1));
   P2.Coefficients(M(2,1),M(2,2),M(2,3),V(2));
