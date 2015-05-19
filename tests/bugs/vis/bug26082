@@ -1,0 +1,48 @@
+puts "============"
+puts "CR26082"
+puts "============"
+puts ""
+
+#########################################################################
+puts "When view is resized horizontally the viusaliziation is not scaled"
+#########################################################################
+
+set cursor_1 { 288  53 }
+set cursor_2 {  53 127 }
+set cursor_3 { 122 154 }
+
+set viewparams { -scale 606.309 \
+                 -proj 0.577 -0.577 0.577 \
+                 -up -0.408 0.408 0.816 \
+                 -at 0.5 0.5 0.5
+                 -eye 1.5 -0.5 1.5 }
+
+pload VISUALIZATION MODELING
+
+box b 1 1 1
+
+vinit View1 w=400 h=400
+vinit View2 w=200 h=400
+vinit View3 w=400 h=200
+vclear
+vaxo
+
+vdisplay b
+
+vactivate View1
+vviewparams {*}$viewparams
+vmoveto {*}$cursor_1
+checkcolor {*}$cursor_1 0 1 1
+vdump ${imagedir}/${casename}_1.png
+
+vactivate View2
+vviewparams {*}$viewparams
+vmoveto {*}$cursor_2
+checkcolor {*}$cursor_2 0 1 1
+vdump ${imagedir}/${casename}_2.png
+
+vactivate View3
+vviewparams {*}$viewparams
+vmoveto {*}$cursor_3
+checkcolor {*}$cursor_3 0 1 1
+vdump ${imagedir}/${casename}_3.png

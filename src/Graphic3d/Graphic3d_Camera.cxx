@@ -694,18 +694,28 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
   Elem_t aZNear   = static_cast<Elem_t> (myZNear);
   Elem_t aZFar    = static_cast<Elem_t> (myZFar);
   Elem_t anAspect = static_cast<Elem_t> (myAspect);
-  Elem_t aDYHalf = 0.0;
+  Elem_t aDXHalf = 0.0, aDYHalf = 0.0;
   if (IsOrthographic())
   {
+    aDXHalf = aScale * Elem_t (0.5);
     aDYHalf = aScale * Elem_t (0.5);
   }
   else
   {
+    aDXHalf = aZNear * Elem_t (Tan (DTR_HALF * myFOVy));
     aDYHalf = aZNear * Elem_t (Tan (DTR_HALF * myFOVy));
   }
 
+  if (anAspect > 1.0)
+  {
+    aDXHalf *= anAspect;
+  }
+  else
+  {
+    aDYHalf /= anAspect;
+  }
+
   // sets right of frustum based on aspect ratio
-  Elem_t aDXHalf = anAspect * aDYHalf;
   Elem_t aLeft   = -aDXHalf;
   Elem_t aRight  =  aDXHalf;
   Elem_t aBot    = -aDYHalf;
