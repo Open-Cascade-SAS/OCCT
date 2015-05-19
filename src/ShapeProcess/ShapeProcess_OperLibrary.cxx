@@ -752,15 +752,38 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   sfw->FixSeamMode()	             = ctx->IntegerVal ( "FixSeamMode", -1 );
   sfw->FixSameParameterMode()        = ctx->IntegerVal ( "FixEdgeSameParameterMode", -1 );
   sfw->FixNotchedEdgesMode()         = ctx->IntegerVal ( "FixNotchedEdgesMode", -1 );
+  sfw->FixTailMode() = ctx->IntegerVal("FixTailMode", 0);
+  sfw->SetMaxTailAngle(ctx->RealVal("MaxTailAngle", 0) * (M_PI / 180));
+  sfw->SetMaxTailWidth(ctx->RealVal("MaxTailWidth", -1));
   sfw->FixSelfIntersectingEdgeMode() = ctx->IntegerVal ( "FixSelfIntersectingEdgeMode", -1 );
   sfw->FixIntersectingEdgesMode()    = ctx->IntegerVal ( "FixIntersectingEdgesMode", -1 );
   sfw->FixNonAdjacentIntersectingEdgesMode() = ctx->IntegerVal ( "FixNonAdjacentIntersectingEdgesMode", -1 );
-  
+  if (sfw->FixTailMode() == 1)
+  {
+    sfw->FixTailMode() = 0;
+    sfs->Init(ctx->Result());
+    sfs->Perform(ctx->Progress());
+    sfw->FixTailMode() = 1;
+    if (!ctx->Progress().IsNull() && ctx->Progress()->UserBreak())
+    {
+      return Standard_False;
+    }
+
+    TopoDS_Shape result = sfs->Shape();
+    if (result != ctx->Result() ||
+      (!msg.IsNull() && !msg->MapShape().IsEmpty()))
+    {
+      ctx->RecordModification(sfs->Context(), msg);
+      ctx->SetResult(result);
+    }
+  }
+
   sfs->Init(ctx->Result());
   sfs->Perform(ctx->Progress());
-
-  if ( !ctx->Progress().IsNull() && ctx->Progress()->UserBreak() )
+  if (!ctx->Progress().IsNull() && ctx->Progress()->UserBreak())
+  {
     return Standard_False;
+  }
 
   TopoDS_Shape result = sfs->Shape();
   if (( result != ctx->Result() ) ||
