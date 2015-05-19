@@ -77,6 +77,8 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_DivideByZero.hxx>
 
+#include <NCollection_Array1.hxx>
+
 #include <Visual3d_ViewManager.hxx>
 #include <Visual3d_Light.hxx>
 #include <Visual3d_Layer.hxx>
@@ -1579,7 +1581,7 @@ void V3d_View::WindowFit (const Standard_Integer theMinXp,
 
   if (!myCamera->IsOrthographic())
   {
-    // normalize view coordiantes
+    // normalize view coordinates
     Standard_Integer aWinWidth, aWinHeight;
     MyWindow->Size (aWinWidth, aWinHeight);
 
@@ -2993,35 +2995,40 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   // option is to perform frustum plane adjustment algorithm in view camera space,
   // which will lead to a number of additional world-view space conversions and
   // loosing precision as well.
-  gp_Pnt aMinCorner = theBox.CornerMin();
-  gp_Pnt aMaxCorner = theBox.CornerMax();
-  Standard_Real aXmin = aMinCorner.X() * theCamera->AxialScale().X();
-  Standard_Real aXmax = aMaxCorner.X() * theCamera->AxialScale().X();
-  Standard_Real aYmin = aMinCorner.Y() * theCamera->AxialScale().Y();
-  Standard_Real aYmax = aMaxCorner.Y() * theCamera->AxialScale().Y();
-  Standard_Real aZmin = aMinCorner.Z() * theCamera->AxialScale().Z();
-  Standard_Real aZmax = aMaxCorner.Z() * theCamera->AxialScale().Z();
+  gp_Pnt aBndMin = theBox.CornerMin().XYZ().Multiplied (theCamera->AxialScale());
+  gp_Pnt aBndMax = theBox.CornerMax().XYZ().Multiplied (theCamera->AxialScale());
 
-  Bnd_Box aBBox;
-  aBBox.Update (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  if (aBBox.IsThin (RealEpsilon()))
+  if (aBndMax.IsEqual (aBndMin, RealEpsilon()))
   {
     return Standard_False; // nothing to fit all
   }
 
-  gp_Pnt aBBCenter ((aXmin + aXmax) * 0.5, (aYmin + aYmax) * 0.5, (aZmin + aZmax) * 0.5);
+  // Prepare camera frustum planes.
+  NCollection_Array1<gp_Pln> aFrustumPlane (1, 6);
+  theCamera->Frustum (aFrustumPlane.ChangeValue (1),
+                      aFrustumPlane.ChangeValue (2),
+                      aFrustumPlane.ChangeValue (3),
+                      aFrustumPlane.ChangeValue (4),
+                      aFrustumPlane.ChangeValue (5),
+                      aFrustumPlane.ChangeValue (6));
 
-  gp_Pln aFrustumLeft;
-  gp_Pln aFrustumRight;
-  gp_Pln aFrustumBottom;
-  gp_Pln aFrustumTop;
-  gp_Pln aFrustumNear;
-  gp_Pln aFrustumFar;
-  theCamera->Frustum (aFrustumLeft, aFrustumRight, aFrustumBottom, aFrustumTop, aFrustumNear, aFrustumFar);
-
+  // Prepare camera up, side, direction vectors.
   gp_Dir aCamUp  = theCamera->OrthogonalizedUp();
   gp_Dir aCamDir = theCamera->Direction();
   gp_Dir aCamSide = aCamDir ^ aCamUp;
+
+  // Prepare scene bounding box parameters.
+  gp_Pnt aBndCenter = (aBndMin.XYZ() + aBndMax.XYZ()) / 2.0;
+
+  NCollection_Array1<gp_Pnt> aBndCorner (1, 8);
+  aBndCorner.ChangeValue (1) = gp_Pnt (aBndMin.X(), aBndMin.Y(), aBndMin.Z());
+  aBndCorner.ChangeValue (2) = gp_Pnt (aBndMin.X(), aBndMin.Y(), aBndMax.Z());
+  aBndCorner.ChangeValue (3) = gp_Pnt (aBndMin.X(), aBndMax.Y(), aBndMin.Z());
+  aBndCorner.ChangeValue (4) = gp_Pnt (aBndMin.X(), aBndMax.Y(), aBndMax.Z());
+  aBndCorner.ChangeValue (5) = gp_Pnt (aBndMax.X(), aBndMin.Y(), aBndMin.Z());
+  aBndCorner.ChangeValue (6) = gp_Pnt (aBndMax.X(), aBndMin.Y(), aBndMax.Z());
+  aBndCorner.ChangeValue (7) = gp_Pnt (aBndMax.X(), aBndMax.Y(), aBndMin.Z());
+  aBndCorner.ChangeValue (8) = gp_Pnt (aBndMax.X(), aBndMax.Y(), aBndMax.Z());
 
   // Perspective-correct camera projection vector, matching the bounding box is determined geometrically.
   // Knowing the initial shape of a frustum it is possible to match it to a bounding box.
@@ -3039,30 +3046,33 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   // 3) Determine new camera projection vector using the normalized asymmetry.
   // 4) Determine new zooming in view space.
 
-  // Determine normalized projection asymmetry (if any).
+  // 1. Determine normalized projection asymmetry (if any).
+  Standard_Real anAssymX = Tan ( aCamSide.Angle (aFrustumPlane (1).Axis().Direction()))
+                         - Tan (-aCamSide.Angle (aFrustumPlane (2).Axis().Direction()));
+  Standard_Real anAssymY = Tan ( aCamUp.Angle   (aFrustumPlane (3).Axis().Direction()))
+                         - Tan (-aCamUp.Angle   (aFrustumPlane (4).Axis().Direction()));
 
-  Standard_Real anAssymX = Tan ( aCamSide.Angle (aFrustumLeft.Axis().Direction()))
-                         - Tan (-aCamSide.Angle (aFrustumRight.Axis().Direction()));
-  Standard_Real anAssymY = Tan ( aCamUp.Angle   (aFrustumBottom.Axis().Direction()))
-                         - Tan (-aCamUp.Angle   (aFrustumTop.Axis().Direction()));
+  // 2. Determine how far should be the frustum planes placed from center
+  //    of bounding box, in order to match the bounding box closely.
+  NCollection_Array1<Standard_Real> aFitDistance (1, 6);
+  aFitDistance.ChangeValue (1) = 0.0;
+  aFitDistance.ChangeValue (2) = 0.0;
+  aFitDistance.ChangeValue (3) = 0.0;
+  aFitDistance.ChangeValue (4) = 0.0;
+  aFitDistance.ChangeValue (5) = 0.0;
+  aFitDistance.ChangeValue (6) = 0.0;
 
-  // Determine how far should be the frustum planes placed from center
-  // of bounding box, in order to match the bounding box closely.
-  gp_Pln aMatchSide[6] = {aFrustumLeft, aFrustumRight, aFrustumBottom, aFrustumTop, aFrustumNear, aFrustumFar};
-  Standard_Real aMatchDistance[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  for (Standard_Integer anIt = 0; anIt < 6; ++anIt)
+  for (Standard_Integer anI = aFrustumPlane.Lower(); anI <= aFrustumPlane.Upper(); ++anI)
   {
-    const gp_Dir& aPlaneN = aMatchSide[anIt].Axis().Direction();
+    // Measure distances from center of bounding box to its corners towards the frustum plane.
+    const gp_Dir& aPlaneN = aFrustumPlane.ChangeValue (anI).Axis().Direction();
 
-    gp_Trsf aPlaneTrsf;
-    aPlaneTrsf.SetTransformation (gp_Ax3(), gp_Ax3 (aBBCenter, aPlaneN));
-    Bnd_Box aRelativeBBox = aBBox.Transformed (aPlaneTrsf);
+    Standard_Real& aFitDist = aFitDistance.ChangeValue (anI);
 
-    Standard_Real aDummy = 0.0;
-    Standard_Real aZmin  = 0.0;
-    Standard_Real aZmax  = 0.0;
-    aRelativeBBox.Get (aDummy, aDummy, aZmin, aDummy, aDummy, aZmax);
-    aMatchDistance[anIt] = -aZmin;
+    for (Standard_Integer aJ = aBndCorner.Lower(); aJ <= aBndCorner.Upper(); ++aJ)
+    {
+      aFitDist = Max (aFitDist, gp_Vec (aBndCenter, aBndCorner (aJ)).Dot (aPlaneN));
+    }
   }
   // The center of camera is placed on the same line with center of bounding box.
   // The view plane section crosses the bounding box at its center.
@@ -3080,32 +3090,31 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   //                            \//
   //                            //
   //                      (frustum plane)
+  aFitDistance.ChangeValue (1) *= Sqrt(1 + Pow (Tan ( aCamSide.Angle (aFrustumPlane (1).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (2) *= Sqrt(1 + Pow (Tan (-aCamSide.Angle (aFrustumPlane (2).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (3) *= Sqrt(1 + Pow (Tan ( aCamUp.Angle   (aFrustumPlane (3).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (4) *= Sqrt(1 + Pow (Tan (-aCamUp.Angle   (aFrustumPlane (4).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (5) *= Sqrt(1 + Pow (Tan ( aCamDir.Angle  (aFrustumPlane (5).Axis().Direction())), 2.0));
+  aFitDistance.ChangeValue (6) *= Sqrt(1 + Pow (Tan (-aCamDir.Angle  (aFrustumPlane (6).Axis().Direction())), 2.0));
 
-  aMatchDistance[0] *= Sqrt(1 + Pow (Tan ( aCamSide.Angle (aFrustumLeft.Axis().Direction())),   2.0));
-  aMatchDistance[1] *= Sqrt(1 + Pow (Tan (-aCamSide.Angle (aFrustumRight.Axis().Direction())),  2.0));
-  aMatchDistance[2] *= Sqrt(1 + Pow (Tan ( aCamUp.Angle   (aFrustumBottom.Axis().Direction())), 2.0));
-  aMatchDistance[3] *= Sqrt(1 + Pow (Tan (-aCamUp.Angle   (aFrustumTop.Axis().Direction())),    2.0));
-  aMatchDistance[4] *= Sqrt(1 + Pow (Tan ( aCamDir.Angle  (aFrustumNear.Axis().Direction())),   2.0));
-  aMatchDistance[5] *= Sqrt(1 + Pow (Tan (-aCamDir.Angle  (aFrustumFar.Axis().Direction())),    2.0));
+  Standard_Real aViewSizeXv = aFitDistance (1) + aFitDistance (2);
+  Standard_Real aViewSizeYv = aFitDistance (3) + aFitDistance (4);
+  Standard_Real aViewSizeZv = aFitDistance (5) + aFitDistance (6);
 
-  Standard_Real aViewSizeXv = aMatchDistance[0] + aMatchDistance[1];
-  Standard_Real aViewSizeYv = aMatchDistance[2] + aMatchDistance[3];
-  Standard_Real aViewSizeZv = aMatchDistance[4] + aMatchDistance[5];
-
-  // Place center of camera on the same line with center of bounding
-  // box applying corresponding projection asymmetry (if any).
+  // 3. Place center of camera on the same line with center of bounding
+  //    box applying corresponding projection asymmetry (if any).
   Standard_Real anAssymXv = anAssymX * aViewSizeXv * 0.5;
   Standard_Real anAssymYv = anAssymY * aViewSizeYv * 0.5;
-  Standard_Real anOffsetXv = (aMatchDistance[1] - aMatchDistance[0]) * 0.5 + anAssymXv;
-  Standard_Real anOffsetYv = (aMatchDistance[3] - aMatchDistance[2]) * 0.5 + anAssymYv;
+  Standard_Real anOffsetXv = (aFitDistance (2) - aFitDistance (1)) * 0.5 + anAssymXv;
+  Standard_Real anOffsetYv = (aFitDistance (4) - aFitDistance (3)) * 0.5 + anAssymYv;
   gp_Vec aTranslateSide = gp_Vec (aCamSide) * anOffsetXv;
   gp_Vec aTranslateUp   = gp_Vec (aCamUp)   * anOffsetYv;
-  gp_Pnt aNewCenter     = aBBCenter.Translated (aTranslateSide).Translated (aTranslateUp);
+  gp_Pnt aCamNewCenter  = aBndCenter.Translated (aTranslateSide).Translated (aTranslateUp);
 
   gp_Trsf aCenterTrsf;
-  aCenterTrsf.SetTranslation (theCamera->Center(), aNewCenter);
+  aCenterTrsf.SetTranslation (theCamera->Center(), aCamNewCenter);
   theCamera->Transform (aCenterTrsf);
-  theCamera->SetDistance (aMatchDistance[5] + aMatchDistance[4]);
+  theCamera->SetDistance (aFitDistance (6) + aFitDistance (5));
 
   // Bounding box collapses to a point or thin line going in depth of the screen
   if (aViewSizeXv < theResolution && aViewSizeYv < theResolution)
@@ -3135,8 +3144,14 @@ void V3d_View::Scale (const Handle(Graphic3d_Camera)& theCamera,
                       const Standard_Real theSizeYv) const
 {
   Standard_Real anAspect = theCamera->Aspect();
-  Standard_Real aMaxSize = Max (theSizeXv / anAspect, theSizeYv);
-  theCamera->SetScale (aMaxSize);
+  if (anAspect > 1.0)
+  {
+    theCamera->SetScale (Max (theSizeXv / anAspect, theSizeYv));
+  }
+  else
+  {
+    theCamera->SetScale (Max (theSizeXv, theSizeYv * anAspect));
+  }
 }
 
 // =======================================================================
