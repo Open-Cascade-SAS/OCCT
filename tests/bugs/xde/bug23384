@@ -1,9 +1,5 @@
 # Original bug : 23384
 # Date : 16 Aug 2012
-
-if {[array get env os_type] != ""} {
-    set os $env(os_type)
-}
 XOpen [locate_data_file bug23384-doc_subshapes.dxc] doc
 set info1 [XStat doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info1 full l0
@@ -46,15 +42,3 @@ if { ${l0} != ${l0_1} ||
      ${nbname} != ${nbname_1} } {
     puts "Error : Document is read/written wrong!"
 }
-
-
-
-
-
-
-
-
-
-
-
-

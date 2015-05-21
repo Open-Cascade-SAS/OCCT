@@ -1,5 +1,5 @@
 puts "TODO OCC26018 ALL: Error : The area of the resulting shape is"
-puts "TODO OCC26018 Debian70-64: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC26018 Linux: Faulty shapes in variables faulty_1 to faulty_"
 source [locate_data_file 20000_et3_401-ta6037.prt.2.gdml.tcl]
 
 ## image is differ from application

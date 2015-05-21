@@ -1657,33 +1657,13 @@ proc _tests_platform_def {} {
     global env tcl_platform
 
     if [info exists env(os_type)] { return }
-
     set env(os_type) $tcl_platform(platform)
-
-    # use detailed mapping for various versions of Lunix
-    # (note that mapping is rather non-uniform, for historical reasons)
-    if { $tcl_platform(os) == "Linux" && ! [catch {exec cat /etc/issue} issue] } {
-	if { [regexp {Mandriva[ \tA-Za-z]+([0-9]+)} $issue res num] } {
-	    set env(os_type) Mandriva$num
-	} elseif { [regexp {Red Hat[ \tA-Za-z]+([0-9]+)} $issue res num] } {
-	    set env(os_type) RedHat$num
-	} elseif { [regexp {Debian[ \tA-Za-z/]+([0-9]+)[.]([0-9]+)} $issue res num subnum] } {
-	    set env(os_type) Debian$num$subnum
-	} elseif { [regexp {Debian[ \tA-Za-z/]+([0-9]+)} $issue res num] } {
-	    set env(os_type) Debian${num}0
-	} elseif { [regexp {CentOS[ \tA-Za-z]+([0-9]+)[.]([0-9]+)} $issue res num subnum] } {
-	    set env(os_type) CentOS$num$subnum
-	} elseif { [regexp {Scientific[ \tA-Za-z]+([0-9]+)[.]([0-9]+)} $issue res num subnum] } {
-	    set env(os_type) SL$num$subnum
-	} elseif { [regexp {Fedora Core[ \tA-Za-z]+([0-9]+)} $issue res num] } {
-	    set env(os_type) FedoraCore$num
-	}
-	if { [exec uname -m] == "x86_64" } {
-	    set env(os_type) "$env(os_type)-64"
-	}
-    } elseif { $tcl_platform(os) == "Darwin" } {
-        set env(os_type) MacOS
+	if { $tcl_platform(os) == "Linux" } {
+        set env(os_type) Linux
     }
+	if { $tcl_platform(os) == "Darwin" } {
+        set env(os_type) MacOS
+    } 
 }
 _tests_platform_def
 

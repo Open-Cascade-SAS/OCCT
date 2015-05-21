@@ -1,7 +1,5 @@
-if {[array get env os_type] != ""} {
-    set os $env(os_type)
-}
-if {[string compare $os "windows"] != 0 } {
+set env(os_type) $tcl_platform(platform)
+if {[string compare $env(os_type) "windows"] != 0 } {
     puts "TODO ?OCC12345 MacOS: \\*\\* Exception"
     puts "TODO ?OCC12345 MacOS: An exception was caught"
     puts "TODO ?OCC12345 MacOS: TEST INCOMPLETE"

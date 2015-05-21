@@ -1,13 +1,3 @@
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-
-if {
-        [string compare $os "Windows-32-VC8"] == 0
-   } {
-}
-
 restore [locate_data_file offset_wire_098.brep] s
 
 set length 332.67

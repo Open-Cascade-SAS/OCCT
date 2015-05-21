@@ -1,5 +1,5 @@
-puts "TODO OCC23626 Debian70-64 Windows: Tcl Exception"
-puts "TODO OCC23626 Debian70-64 Windows: TEST INCOMPLETE"
+puts "TODO OCC23626 ALL: Tcl Exception"
+puts "TODO OCC23626 ALL: TEST INCOMPLETE"
 
 puts "================"
 puts "OCC63"

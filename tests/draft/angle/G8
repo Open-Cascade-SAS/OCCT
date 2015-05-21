@@ -1,6 +1,6 @@
 #F6----------------------------------------------
-puts "TODO OCC22803 Debian70-64: Error in depouille"
-puts "TODO OCC22803 Debian70-64: Error : The skin cannot be built."
+puts "TODO OCC22803 Linux: Error in depouille"
+puts "TODO OCC22803 Linux: Error : The skin cannot be built."
 puts "TODO OCC22803 Windows: Faulty shapes in variables faulty_1 to faulty_"
 polyline p 0 0 3  0 0 0  10 0 0  10 0 3  
 beziercurve bc 4 10 0 3  7 0 2  3 0 3  0 0 3

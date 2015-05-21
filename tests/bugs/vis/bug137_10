@@ -1,9 +1,3 @@
-if { [array get env os_type] != "" } {
-   set os $env(os_type)
-}
-if { [string compare $os "windows"] != 0 } {
-}
-
 puts "================"
 puts "OCC137"
 puts "================"
