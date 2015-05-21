@@ -41,7 +41,7 @@ Standard_Integer OpenGl_BVHClipPrimitiveSet::Size() const
 // =======================================================================
 Graphic3d_BndBox4f OpenGl_BVHClipPrimitiveSet::Box (const Standard_Integer theIdx) const
 {
-  return myStructs (theIdx + 1)->BoundingBox();
+  return myStructs.FindKey (theIdx + 1)->BoundingBox();
 }
 
 // =======================================================================
@@ -51,12 +51,10 @@ Graphic3d_BndBox4f OpenGl_BVHClipPrimitiveSet::Box (const Standard_Integer theId
 Standard_ShortReal OpenGl_BVHClipPrimitiveSet::Center (const Standard_Integer theIdx,
                                                        const Standard_Integer theAxis) const
 {
-  Graphic3d_BndBox4f aBndBox = myStructs (theIdx + 1)->BoundingBox();
-  Standard_ShortReal aCenter =  theAxis == 0 ? (aBndBox.CornerMin().x() + aBndBox.CornerMax().x()) * 0.5f
-                             : (theAxis == 1 ? (aBndBox.CornerMin().y() + aBndBox.CornerMax().y()) * 0.5f
-                             : (theAxis == 2 ? (aBndBox.CornerMin().z() + aBndBox.CornerMax().z()) * 0.5f
-                             : (aBndBox.CornerMin().w() + aBndBox.CornerMax().w()) * 0.5f));
-  return aCenter;
+  Graphic3d_BndBox4f aBndBox = myStructs.FindKey (theIdx + 1)->BoundingBox();
+
+  return (aBndBox.CornerMin()[theAxis] +
+          aBndBox.CornerMax()[theAxis]) * 0.5f;
 }
 
 // =======================================================================
@@ -66,10 +64,7 @@ Standard_ShortReal OpenGl_BVHClipPrimitiveSet::Center (const Standard_Integer th
 void OpenGl_BVHClipPrimitiveSet::Swap (const Standard_Integer theIdx1,
                                        const Standard_Integer theIdx2)
 {
-  const OpenGl_Structure* aStruct1 = myStructs (theIdx1 + 1);
-  const OpenGl_Structure* aStruct2 = myStructs (theIdx2 + 1);
-  myStructs.ChangeValue (theIdx1 + 1) = aStruct2;
-  myStructs.ChangeValue (theIdx2 + 1) = aStruct1;
+  myStructs.Swap (theIdx1 + 1, theIdx2 + 1);
 }
 
 // =======================================================================
@@ -80,14 +75,16 @@ void OpenGl_BVHClipPrimitiveSet::Assign (const OpenGl_ArrayOfStructure& theStruc
 {
   myStructs.Clear();
 
-  const Standard_Integer aNbPriorities = theStructs.Length();
-  for (Standard_Integer aPriorityIdx = 0; aPriorityIdx < aNbPriorities; ++aPriorityIdx)
+  for (Standard_Integer aPriorityIdx = 0, aNbPriorities = theStructs.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
   {
     for (OpenGl_SequenceOfStructure::Iterator aStructIter (theStructs (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
+
       if (!aStruct->IsAlwaysRendered())
-        myStructs.Append (aStruct);
+      {
+        myStructs.Add (aStruct);
+      }
     }
   }
 
@@ -100,8 +97,12 @@ void OpenGl_BVHClipPrimitiveSet::Assign (const OpenGl_ArrayOfStructure& theStruc
 // =======================================================================
 void OpenGl_BVHClipPrimitiveSet::Add (const OpenGl_Structure* theStruct)
 {
-  myStructs.Append (theStruct);
-  MarkDirty();
+  const Standard_Integer aSize = myStructs.Size();
+
+  if (myStructs.Add (theStruct) > aSize) // new structure?
+  {
+    MarkDirty();
+  }
 }
 
 // =======================================================================
@@ -110,14 +111,13 @@ void OpenGl_BVHClipPrimitiveSet::Add (const OpenGl_Structure* theStruct)
 // =======================================================================
 void OpenGl_BVHClipPrimitiveSet::Remove (const OpenGl_Structure* theStruct)
 {
-  for (Standard_Integer anIdx = 1; anIdx <= myStructs.Size(); ++anIdx)
+  const Standard_Integer anIndex = myStructs.FindIndex (theStruct);
+
+  if (anIndex != 0)
   {
-    if (myStructs (anIdx) == theStruct)
-    {
-      myStructs.Remove (anIdx);
-      MarkDirty();
-      break;
-    }
+    myStructs.Swap (Size(), anIndex);
+    myStructs.RemoveLast();
+    MarkDirty();
   }
 }
 
@@ -137,5 +137,5 @@ void OpenGl_BVHClipPrimitiveSet::Clear()
 // =======================================================================
 const OpenGl_Structure* OpenGl_BVHClipPrimitiveSet::GetStructureById (Standard_Integer theId)
 {
-  return myStructs (theId + 1);
+  return myStructs.FindKey (theId + 1);
 }

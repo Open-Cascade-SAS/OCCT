@@ -1,0 +1,70 @@
+puts "=========="
+puts "OCC26199"
+puts "=========="
+puts ""
+############################################################
+# Visualization - use NCollection_IndexedMap instead of NCollection_Sequence in OpenGl_BVHClipPrimitiveSet to improve performance
+############################################################
+
+psphere s 0.5
+tclean  s
+incmesh s 0.1
+trinfo  s
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+vdefaults -defl 1.0 -autoTriang off
+# Warning, unknown argument '-DEFL'
+
+vdisplay s
+
+set aNb1 100
+
+# display 100x100 connected instances of single presentation
+puts "Creating [expr $aNb1*$aNb1] instances..."
+set t1 [time {for {set i 0} {$i < $aNb1} {incr i} {for {set j 0} {$j < $aNb1} {incr j} {vconnectto s_${i}_${j} ${i} ${j} 0 s -noupdate}}}]
+
+# the following command is slow
+set t2 [time {vclear}]
+
+set d1 [lindex $t1 0]
+puts "vconnectto done in $d1 microseconds!\n"
+
+set d2 [lindex $t2 0]
+puts "vclear done in $d2 microseconds!\n"
+
+set t1_sec [expr $d1 * 1.e-6]
+set t2_sec [expr $d2 * 1.e-6]
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time_vconnectto 5
+    set max_time_vclear 5
+  } else {
+    set max_time_vconnectto 5
+    set max_time_vclear 5
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time_vconnectto 1
+    set max_time_vclear 1
+  } else {
+    set max_time_vconnectto 1
+    set max_time_vclear 1
+  }
+}
+
+if { ${t1_sec} > ${max_time_vconnectto} } {                                         
+    puts "Elapsed time of vconnectto is more than ${max_time_vconnectto} seconds - Error"
+} else {
+    puts "Elapsed time of vconnectto is less than ${max_time_vconnectto} seconds - OK"
+}
+
+if { ${t2_sec} > ${max_time_vclear} } {                                         
+    puts "Elapsed time of vclear is more than ${max_time_vclear} seconds - Error"
+} else {
+    puts "Elapsed time of vclear is less than ${max_time_vclear} seconds - OK"
+}
