@@ -41,6 +41,7 @@
 #include <GeomAdaptor_HSurface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <GProp_GProps.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
@@ -48,9 +49,11 @@
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <BRepGProp.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <ShapeExtend.hxx>
 #include <ShapeAnalysis.hxx>
@@ -1705,46 +1708,103 @@ Standard_Boolean ShapeAnalysis_Wire::CheckNotchedEdges(const Standard_Integer nu
 //function : CheckSmallArea
 //purpose  : 
 //=======================================================================
-
-Standard_Boolean ShapeAnalysis_Wire::CheckSmallArea(const Standard_Real prec2d)
+Standard_Boolean ShapeAnalysis_Wire::CheckSmallArea(const TopoDS_Wire& theWire,
+                                                    const Standard_Boolean theIsOuterWire)
 {
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL1);
-  Standard_Integer NbEdges = myWire->NbEdges();
-  if ( !IsReady() || NbEdges <1 ) return Standard_False;
+  const Standard_Integer aNbControl = 23;
+  const Standard_Integer NbEdges    = myWire->NbEdges();
+  if ( !IsReady() || NbEdges < 1 )
+    return Standard_False;
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
-  
-  Standard_Integer NbControl=23;
-  Standard_Real area=0;
-  gp_XY prev, cont;
-  for (Standard_Integer nbe = 1; nbe <= NbEdges; nbe++) {
-    Standard_Real First, Last;
-    Handle(Geom2d_Curve) c2d;
-    ShapeAnalysis_Edge sae;
-    if (!sae.PCurve(myWire->Edge(nbe),myFace,c2d,First,Last)) {
+
+  Standard_Real aF, aL, aLength(0.0);
+  const Standard_Real anInv = 1.0 / static_cast<Standard_Real>(aNbControl - 1);
+  gp_XY aCenter2d(0., 0.);
+
+  // try to find mid point for closed contour
+  Handle(Geom2d_Curve) aCurve2d;
+  for (Standard_Integer j = 1; j <= NbEdges; ++j)
+  {
+    const ShapeAnalysis_Edge anAnalyzer;
+    if (!anAnalyzer.PCurve(myWire->Edge(j),myFace,aCurve2d,aF,aL))
+    {
       myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
       return Standard_False;
     }
-    
-    Standard_Integer ibeg = 0;
-    if( nbe == 1 ) {
-      gp_Pnt2d pntIni = c2d->Value(First);
-      prev = pntIni.XY();
-      cont = prev;
-      ibeg = 1;
-    }
-    for ( Standard_Integer i = ibeg; i < NbControl; i++) {
-      Standard_Real prm = ((NbControl-1-i)*First + i*Last)/(NbControl-1);
-      gp_Pnt2d pntCurr = c2d->Value(prm);
-      gp_XY curr = pntCurr.XY();
-      area += curr ^ prev;
-      prev = curr;
+
+    for (Standard_Integer i = 1; i < aNbControl; ++i)
+    {
+      const Standard_Real aV = anInv * ((aNbControl - 1 - i) * aF+ i * aL);
+      aCenter2d += aCurve2d->Value(aV).XY();
     }
   }
-  area +=  cont ^ prev;
-  if ( Abs(area) < 2*prec2d*prec2d ) {
-    myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1);
-    return Standard_True;
+  aCenter2d *= 1.0 / static_cast<Standard_Real>(NbEdges * (aNbControl - 1));
+
+  // check approximated area in 3D
+  gp_Pnt aPnt3d;
+  gp_XYZ aPrev3d, aCross(0., 0., 0.);
+  gp_XYZ aCenter(mySurf->Value(aCenter2d.X(), aCenter2d.Y()).XYZ());
+
+  Handle(Geom_Curve) aCurve3d;
+  for (Standard_Integer j = 1; j <= NbEdges; ++j)
+  {
+    const ShapeAnalysis_Edge anAnalizer;
+    if (!anAnalizer.Curve3d(myWire->Edge(j), aCurve3d, aF, aL))
+    {
+      myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+      return Standard_False;
+    }
+
+    Standard_Integer aBegin = 0;
+    if (j == 1)
+    {
+      aBegin  = 1;
+      aPnt3d  = aCurve3d->Value(aF);
+      aPrev3d = aPnt3d.XYZ() - aCenter;
+    }
+    for (Standard_Integer i = aBegin; i < aNbControl; ++i)
+    {
+      const Standard_Real anU =
+        anInv * ( (aNbControl - 1 - i) * aF + i * aL );
+      const gp_Pnt  aPnt      = aCurve3d->Value(anU);
+      const gp_XYZ& aCurrent  = aPnt.XYZ();
+      const gp_XYZ  aVec      = aCurrent - aCenter;
+
+      aCross  += aPrev3d ^ aVec;
+      aLength += aPnt3d.Distance(aPnt);
+
+      aPnt3d  = aPnt;
+      aPrev3d = aVec;
+    }
   }
+
+  Standard_Real aTolerance = aLength * myPrecision;
+  if ( aCross.Modulus() < aTolerance )
+  {
+    // check real area in 3D
+    GProp_GProps aProps;
+    GProp_GProps aLProps;
+    if (theIsOuterWire)
+    {
+      BRepGProp::SurfaceProperties(myFace, aProps);
+      BRepGProp::LinearProperties(myFace, aLProps);
+    }
+    else
+    {
+      BRepBuilderAPI_MakeFace aFace(mySurf->Surface(), theWire);
+      BRepGProp::SurfaceProperties(aFace.Face(), aProps);
+      BRepGProp::LinearProperties(aFace.Face(), aLProps);
+    }
+
+    Standard_Real aNewTolerance = aLProps.Mass() * myPrecision;
+    if ( aProps.Mass() < 0.5 * aNewTolerance )
+    {
+      myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1);
+      return Standard_True;
+    }
+  }
+
   return Standard_False;
 }
 

@@ -2,7 +2,7 @@
 set filename frame.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 9875 )  Warnings = 0  ( 2629 )  Summary  = 0  ( 12504 )
+DATA        : Faulties = 0  ( 9879 )  Warnings = 0  ( 2629 )  Summary  = 0  ( 12508 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   Summary  = 2830  ( 2830 )

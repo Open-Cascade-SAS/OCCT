@@ -10,11 +10,11 @@ set filename UKI60028-1.igs
 
 set ref_data {
 DATA        : Faulties = 4  ( 0 )  Warnings = 0  ( 0 )  Summary  = 4  ( 0 )
-TPSTAT      : Faulties = 8  ( 150 )  Warnings = 41  ( 785 )  Summary  = 49  ( 935 )
+TPSTAT      : Faulties = 8  ( 150 )  Warnings = 42  ( 788 )  Summary  = 50  ( 938 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   Summary  = 7582  ( 7684 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   FreeWire = 189  ( 284 )   FreeEdge  = 1726 ( 1726 )   SharedEdge = 3035  ( 3035 )
-TOLERANCE   : MaxTol   =   0.6023944505  (   0.6023945025 )  AvgTol   =  0.007299249683  (    0.0087526096 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   Summary  = 7579  ( 7684 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   FreeWire = 189  ( 284 )   FreeEdge  = 1726 ( 1726 )   SharedEdge = 3033  ( 3035 )
+TOLERANCE   : MaxTol   =   0.6023944505  (   0.6023945025 )  AvgTol   =  0.007298261126  (  0.008822197287 )
 LABELS      : N0Labels = 8  ( 11 )  N1Labels = 949  ( 1809 )  N2Labels = 0  ( 0 )   TotalLabels = 957  ( 1820 )   NameLabels = 955  ( 1263 )   ColorLabels = 949  ( 1807 )   LayerLabels = 917  ( 1774 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 12  ( 14 )

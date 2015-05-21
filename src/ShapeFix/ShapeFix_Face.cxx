@@ -41,6 +41,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
+#include <GProp_GProps.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -51,6 +52,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
+#include <BRepGProp.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
@@ -685,13 +687,14 @@ Standard_Boolean ShapeFix_Face::Perform()
     myFace = TopoDS::Face ( exp.Current() );
 
     // fix small-area wires
-    if ( NeedFix ( myFixSmallAreaWireMode, Standard_False ) ) {
-      if ( FixSmallAreaWire() )
-	myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
+    if ( NeedFix ( myFixSmallAreaWireMode, Standard_False ) )
+    {
+      const Standard_Boolean isRemoveFace = NeedFix( myRemoveSmallAreaFaceMode, Standard_False );
+      if ( FixSmallAreaWire( isRemoveFace ) )
+        myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
     }
   }
-  
-    
+
   if ( ! Context().IsNull() ) {
     if(Status ( ShapeExtend_DONE ) && !isReplaced && !aInitFace.IsSame(savShape))
     {
@@ -1840,51 +1843,69 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
 //function : FixSmallAreaWire
 //purpose  : 
 //=======================================================================
-
 //%14 pdn 24.02.99 PRO10109, USA60293 fix wire on face with small area.
-Standard_Boolean ShapeFix_Face::FixSmallAreaWire() 
+Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRemoveSmallFace)
 {
-  if ( ! Context().IsNull() ) {
-    TopoDS_Shape S = Context()->Apply ( myFace );
-    myFace = TopoDS::Face ( S );
+  if ( !Context().IsNull() )
+  {
+    TopoDS_Shape aShape = Context()->Apply(myFace);
+    myFace = TopoDS::Face(aShape);
   }
-  
-  //smh#8
-  TopoDS_Shape emptyCopied = myFace.EmptyCopied();
-  TopoDS_Face face = TopoDS::Face (emptyCopied);
+
+  BRep_Builder aBuilder;
   Standard_Integer nbRemoved = 0, nbWires = 0;
-  BRep_Builder B;
-  Standard_Real prec = ::Precision::PConfusion()*100;
-  for (TopoDS_Iterator wi (myFace, Standard_False); wi.More(); wi.Next()) {
-    if(wi.Value().ShapeType() != TopAbs_WIRE && 
-       (wi.Value().Orientation() != TopAbs_FORWARD && wi.Value().Orientation() != TopAbs_REVERSED))
-        continue;
-    TopoDS_Wire wire = TopoDS::Wire ( wi.Value() );
-    Handle(ShapeAnalysis_Wire) saw = new ShapeAnalysis_Wire(wire,myFace,prec);
-    if ( saw->CheckSmallArea(prec) )
+
+  TopoDS_Shape anEmptyCopy = myFace.EmptyCopied();
+  TopoDS_Face  aFace = TopoDS::Face(anEmptyCopy);
+
+  const TopoDS_Wire   anOuterWire  = BRepTools::OuterWire(myFace);
+  const Standard_Real aTolerance3d = ShapeFix_Root::Precision();
+  for (TopoDS_Iterator aWIt(myFace, Standard_False); aWIt.More(); aWIt.Next())
+  {
+    const TopoDS_Shape& aShape = aWIt.Value();
+    if ( aShape.ShapeType()   != TopAbs_WIRE    &&
+         aShape.Orientation() != TopAbs_FORWARD &&
+         aShape.Orientation() != TopAbs_REVERSED )
     {
-      SendWarning ( wire, Message_Msg ("FixAdvFace.FixSmallAreaWire.MSG0") );// Null area wire detected, wire skipped
-      nbRemoved++;
+      continue;
+    }
+
+    const TopoDS_Wire&         aWire       = TopoDS::Wire(aShape);
+    const Standard_Boolean     isOuterWire = anOuterWire.IsEqual(aWire);
+    Handle(ShapeAnalysis_Wire) anAnalyzer  = new ShapeAnalysis_Wire(aWire, myFace, aTolerance3d);
+    if ( anAnalyzer->CheckSmallArea(aWire, isOuterWire) )
+    {
+      // Null area wire detected, wire skipped
+      SendWarning(aWire, Message_Msg("FixAdvFace.FixSmallAreaWire.MSG0"));
+      ++nbRemoved;
     }
     else
     {
-      B.Add(face,wire);
-      nbWires++;
+      aBuilder.Add(aFace, aWire);
+      ++nbWires;
     }
   }
-  if ( nbRemoved <=0 ) return Standard_False;
-  
-  if ( nbWires <=0 ) {
+
+  if ( nbRemoved <= 0 )
+    return Standard_False;
+
+  if ( nbWires <= 0 )
+  {
 #ifdef OCCT_DEBUG
     cout << "Warning: ShapeFix_Face: All wires on a face have small area; left untouched" << endl;
 #endif
+    if ( theIsRemoveSmallFace && !Context().IsNull() )
+      Context()->Remove(myFace);
+
     return Standard_False;
   }
 #ifdef OCCT_DEBUG
   cout << "Warning: ShapeFix_Face: " << nbRemoved << " small area wire(s) removed" << endl;
 #endif
-  if ( ! Context().IsNull() ) Context()->Replace ( myFace, face );
-  myFace = face;
+  if ( !Context().IsNull() )
+    Context()->Replace(myFace, aFace);
+
+  myFace = aFace;
   return Standard_True;
 }
 //=======================================================================

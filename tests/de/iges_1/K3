@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR25923 ALL: NBSHAPES : Faulty"
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -6,11 +7,11 @@ set filename FRA62468-1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 299  ( 5226 )  Summary  = 299  ( 5226 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 427  ( 5255 )  Summary  = 427  ( 5255 )
 CHECKSHAPE  : Wires    = 12  ( 20 )  Faces    = 16  ( 18 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   Summary  = 68418  ( 68418 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   FreeWire = 10  ( 10 )   FreeEdge  = 283 ( 283 )   SharedEdge = 29071  ( 29075 )
-TOLERANCE   : MaxTol   =   0.9874083984  (   0.9875071265 )  AvgTol   =   0.01114309412  (   0.01115568387 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   Summary  = 68354  ( 68418 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   FreeWire = 10  ( 10 )   FreeEdge  = 283 ( 283 )   SharedEdge = 29043  ( 29075 )
+TOLERANCE   : MaxTol   =   0.9874083984  (   0.9875071265 )  AvgTol   =   0.01115315301  (    0.0111584608 )
 LABELS      : N0Labels = 5392  ( 5458 )  N1Labels = 18  ( 4437 )  N2Labels = 0  ( 0 )   TotalLabels = 5410  ( 9895 )   NameLabels = 5392  ( 5458 )   ColorLabels = 5391  ( 9829 )   LayerLabels = 5391  ( 9829 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

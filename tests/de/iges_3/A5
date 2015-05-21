@@ -9,11 +9,11 @@ set filename USA60022.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 155  ( 2001 )  Summary  = 155  ( 2001 )
-CHECKSHAPE  : Wires    = 7  ( 13 )  Faces    = 8  ( 15 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 665  ( 634 )   Summary  = 25075  ( 24992 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 665  ( 634 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11900  ( 11871 )
-TOLERANCE   : MaxTol   =      6.4081268  (    1.331845935 )  AvgTol   =   0.00219409015  (  0.002198928582 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 157  ( 2003 )  Summary  = 157  ( 2003 )
+CHECKSHAPE  : Wires    = 7  ( 14 )  Faces    = 9  ( 15 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 666  ( 634 )   Summary  = 25078  ( 24995 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 666  ( 634 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11901  ( 11872 )
+TOLERANCE   : MaxTol   =      6.4081268  (    1.331845935 )  AvgTol   =  0.002669852591  (   0.00229913384 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 634  ( 634 )  N2Labels = 0  ( 0 )   TotalLabels = 635  ( 635 )   NameLabels = 635  ( 635 )   ColorLabels = 634  ( 635 )   LayerLabels = 634  ( 635 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

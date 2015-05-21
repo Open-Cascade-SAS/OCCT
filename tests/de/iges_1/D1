@@ -1,4 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR25923 ALL: TPSTAT : Faulty" 
+
 set filename FRA60182.igs
 
 set ref_data {
