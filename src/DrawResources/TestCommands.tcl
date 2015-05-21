@@ -591,6 +591,9 @@ help testdiff {
           1 - output only differences 
           2 - output also list of logs and directories present in one of dirs only
           3 - (default) output also progress messages 
+		  
+  -highlight_percent value: highlight considerable (>value in %) deviations
+                            of CPU and memory (default value is 5%)
 }
 proc testdiff {dir1 dir2 args} {
     if { "$dir1" == "$dir2" } {
@@ -606,6 +609,7 @@ proc testdiff {dir1 dir2 args} {
     set basename ""
     set status "same"
     set verbose 3
+	set highlight_percent 5
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
 	set arg [lindex $args $narg]
 
@@ -642,7 +646,18 @@ proc testdiff {dir1 dir2 args} {
 	    }
 	    continue
 	}
-
+	
+	# highlight_percent
+    if { $arg == "-highlight_percent" } {
+	    incr narg
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+		set highlight_percent [expr [lindex $args $narg]]
+	    } else {
+		error "Error: Option -highlight_percent must be followed by integer value"
+	    }
+	    continue
+	}
+		
 	if { [regexp {^-} $arg] } {
 	    error "Error: unsupported option \"$arg\""
 	}
@@ -657,7 +672,7 @@ proc testdiff {dir1 dir2 args} {
     # save result to log file
     if { "$logfile" != "" } {
         _log_save $logfile [join $log "\n"]
-        _log_html_diff "[file rootname $logfile].html" $log $dir1 $dir2
+        _log_html_diff "[file rootname $logfile].html" $log $dir1 $dir2 ${highlight_percent}
         puts "Log is saved to $logfile (and .html)"
     }
 
@@ -1878,7 +1893,7 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
 }
 
 # Auxiliary procedure to save log of results comparison to file
-proc _log_html_diff {file log dir1 dir2} {
+proc _log_html_diff {file log dir1 dir2 highlight_percent} {
     # create missing directories as needed
     catch {file mkdir [file dirname $file]}
 
@@ -1898,9 +1913,9 @@ proc _log_html_diff {file log dir1 dir2} {
     puts $fd "<pre>"
     set logpath [file split [file normalize $file]]
     foreach line $log {
-        # put a line; highlight considerable (>5%) deviations of CPU and memory
+        # put a line; highlight considerable (> ${highlight_percent}%) deviations of CPU and memory
         if { [regexp "\[\\\[](\[0-9.e+-]+)%\[\]]" $line res value] && 
-             [expr abs($value)] > 5 } {
+             [expr abs($value)] > ${highlight_percent} } {
             puts $fd "<table><tr><td bgcolor=\"[expr $value > 0 ? \"red\" : \"lightgreen\"]\">$line</td></tr></table>"
         } else {
             puts $fd $line
