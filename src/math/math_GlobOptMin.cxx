@@ -258,8 +258,8 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
   {
     math_MultipleVarFunctionWithHessian* myTmp = 
       dynamic_cast<math_MultipleVarFunctionWithHessian*> (myFunc);
-    
     math_NewtonMinimum newtonMinimum(*myTmp);
+    newtonMinimum.SetBoundary(myGlobA, myGlobB);
     newtonMinimum.Perform(*myTmp, thePnt);
 
     if (newtonMinimum.IsDone())

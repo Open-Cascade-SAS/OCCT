@@ -21,6 +21,7 @@
 //#endif
 
 #include <math_NewtonMinimum.ixx>
+#include <Precision.hxx>
 
 #include <math_Gauss.hxx>
 #include <math_Jacobi.hxx>
@@ -49,6 +50,9 @@ math_NewtonMinimum::math_NewtonMinimum(
   nbiter            (0),
   NoConvexTreatement(theWithSingularity),
   Convex            (Standard_True),
+  myIsBoundsDefined(Standard_False),
+  myLeft(1, theFunction.NbVariables(), 0.0),
+  myRight(1, theFunction.NbVariables(), 0.0),
   Done              (Standard_False),
   Itermax           (theNbIterations)
 {
@@ -60,6 +64,18 @@ math_NewtonMinimum::math_NewtonMinimum(
 //=======================================================================
 math_NewtonMinimum::~math_NewtonMinimum()
 {
+}
+
+//=======================================================================
+//function : SetBoundary
+//purpose  : Set boundaries for conditional optimization
+//=======================================================================
+void math_NewtonMinimum::SetBoundary(const math_Vector& theLeftBorder,
+                                     const math_Vector& theRightBorder)
+{
+  myLeft = theLeftBorder;
+  myRight = theRightBorder;
+  myIsBoundsDefined = Standard_True;
 }
 
 //=======================================================================
@@ -134,8 +150,52 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       TheStatus = math_DirectionSearchError;
       return;
     }
-   
     LU.Solve(TheGradient, TheStep);
+
+    if (myIsBoundsDefined)
+    {
+      // Project point on bounds or nullify TheStep coords if point lies on boudary.
+
+      *suivant = *precedent - TheStep;
+      Standard_Real aMult = RealLast();
+      for(Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
+      {
+        if (suivant->Value(anIdx) < myLeft(anIdx))
+        {
+          Standard_Real aValue = Abs(precedent->Value(anIdx) - myLeft(anIdx)) / Abs(TheStep(anIdx));
+          aMult = Min (aValue, aMult);
+        }
+
+        if (suivant->Value(anIdx) > myRight(anIdx))
+        {
+          Standard_Real aValue = Abs(precedent->Value(anIdx) - myRight(anIdx)) / Abs(TheStep(anIdx));
+          aMult = Min (aValue, aMult);
+        }
+      }
+
+      if (aMult != RealLast())
+      {
+        if (aMult > Precision::PConfusion())
+        {
+          // Project point into param space.
+          TheStep *= aMult;
+        }
+        else
+        {
+          // Old point on border and new point out of border:
+          // Nullify corresponding TheStep indexes.
+          for(Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
+          {
+            if (Abs(precedent->Value(anIdx) - myRight(anIdx)) < Precision::PConfusion() ||
+                Abs(precedent->Value(anIdx) - myLeft(anIdx) ) < Precision::PConfusion())
+            {
+              TheStep(anIdx) = 0.0;
+            }
+          }
+        }
+      }
+    }
+
     Standard_Boolean hasProblem = Standard_False;
     do
     {

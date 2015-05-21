@@ -97,8 +97,13 @@ is
     raises DimensionError,
     	   NotDone
     is static;
-    
-    
+
+    SetBoundary(me: in out; 
+                theLeftBorder : in Vector;
+                theRightBorder: in Vector)
+    ---Purpose: Set boundaries.
+    is static;
+
     Minimum(me)
     	---Purpose: returns the value of the minimum.
         -- Exception NotDone is raised if the minimum was not found.
@@ -166,6 +171,9 @@ CTol:            Real    is protected;
 nbiter:          Integer is protected;
 NoConvexTreatement: Boolean is protected;
 Convex           : Boolean is protected;
+myIsBoundsDefined  : Boolean is protected;
+myLeft             : Vector is protected;
+myRight            : Vector is protected;
 Itermax:         Integer;
 
 

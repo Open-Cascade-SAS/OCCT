@@ -1,0 +1,40 @@
+puts "========"
+puts "OCC26022"
+puts "========"
+puts ""
+##############################################
+# Extrema_ExtCC gives not precise solution
+##############################################
+
+restore [locate_data_file bug26022_splitnoproblem671_notria.brep] a
+
+explode a
+explode a_2 e
+subshape a_2 e 2
+mkcurve c1 a_1
+mkcurve c2 a_2_2
+
+extrema c1 c2 1
+
+cvalue c1 prm_1_1 x1 y1 z1
+bounds c1 u1 u2
+cvalue c1 u2 x2 y2 z2
+
+regexp {is ([\d.\-e]+)} [length ext_1] str dist
+set dist_to_end [dval sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2))]
+set parametric_dist_to_end [dval u2-prm_1_1]
+
+puts "dist of solution $dist"
+puts "parametric dist to end of curve $parametric_dist_to_end"
+puts "dist to end of curve $dist_to_end"
+
+set tol_abs 4.0e-12
+set tol_rel 1.0e-2
+
+set expected_dist 0.0
+set expected_parametric_dist_to_end 0.0
+set expected_dist_to_end 0.0
+
+checkreal "dist of solution" ${dist} ${expected_dist} ${tol_abs} ${tol_rel}
+checkreal "parametric dist to end of curve" ${parametric_dist_to_end} ${expected_parametric_dist_to_end} ${tol_abs} ${tol_rel}
+checkreal "dist to end of curve" ${dist_to_end} ${expected_dist_to_end} ${tol_abs} ${tol_rel}
