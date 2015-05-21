@@ -18,8 +18,8 @@
 
 #include <BVH_PrimitiveSet.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IndexedMap.hxx>
 
-#include <OpenGl_Vec.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_SequenceOfStructure.hxx>
 
@@ -40,14 +40,14 @@ public:
   //! Returns total number of structures.
   virtual Standard_Integer Size() const;
 
-  //! Returns AABB of a structure.
+  //! Returns AABB of the structure.
   virtual Graphic3d_BndBox4f Box (const Standard_Integer theIdx) const;
 
-  //! Calculates center of the AABB projection onto given axis.
+  //! Calculates center of the AABB along given axis.
   virtual Standard_ShortReal Center (const Standard_Integer theIdx,
                                      const Standard_Integer theAxis) const;
 
-  //! Swaps given AABBs.
+  //! Swaps structures with the given indices.
   virtual void Swap (const Standard_Integer theIdx1,
                      const Standard_Integer theIdx2);
 
@@ -55,21 +55,21 @@ public:
   //! if each structure is cullable or not.
   void Assign (const OpenGl_ArrayOfStructure& theStructs);
 
-  //! Adds structure theStruct to the set.
+  //! Adds structure to the set.
   void Add (const OpenGl_Structure* theStruct);
 
-  //! Removes the given OpenGl_Structure from the set.
+  //! Removes the given structure from the set.
   void Remove (const OpenGl_Structure* theStruct);
 
   //! Cleans the whole primitive set.
   void Clear();
 
-  //! Returns the structure corresponding to the given id.
+  //! Returns the structure corresponding to the given ID.
   const OpenGl_Structure* GetStructureById (Standard_Integer theId);
 
 private:
 
-  NCollection_Sequence<const OpenGl_Structure*> myStructs;    //!< Sequence of structures
+  NCollection_IndexedMap<const OpenGl_Structure*> myStructs;    //!< Indexed map of structures.
 
 };
 

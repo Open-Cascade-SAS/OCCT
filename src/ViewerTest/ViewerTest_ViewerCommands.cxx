@@ -7426,9 +7426,9 @@ static int VDefaults (Draw_Interpretor& theDi,
       // currently HLRDeviationAngle is used instead of DeviationAngle in most places
       aDefParams->SetHLRAngle (M_PI * Draw::Atof (theArgVec[anArgIter]) / 180.0);
     }
-    if (anArg == "-AUTOTR"
-     || anArg == "-AUTOTRIANG"
-     || anArg == "-AUTOTRIANGULATION")
+    else if (anArg == "-AUTOTR"
+          || anArg == "-AUTOTRIANG"
+          || anArg == "-AUTOTRIANGULATION")
     {
       if (++anArgIter >= theArgsNb)
       {
