@@ -1,43 +1,14 @@
 set TheFileName shading_055.brep
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
+set env(os_type) $tcl_platform(os)
 if { [string compare $command "shading"] == 0 } {
    set nb 62
-   if {[string compare $os "Mandriva2008"] == 0} {
-      set nb 64
-   }
-   if {[string compare $os "Mandriva2010"] == 0} {
-      set nb 64
-   }
-   if {[string compare $os "Debian40"] == 0} {
-      set nb 72
-   }
 }
 if { [string compare $command "incmesh"] == 0 } {
    set nb 60
-   if {[string compare $os "Mandriva2008"] == 0} {
-      set nb 64
-   }
-   if {[string compare $os "Mandriva2010"] == 0} {
-      set nb 64
-   }
-   if {[string compare $os "Debian40"] == 0} {
-      set nb 72
-   }
 }
 if { [string compare $command "mesh"] == 0 } {
    set nb 36
-   if {[string compare $os "Mandriva2008"] == 0} {
-      set nb {40|56}
-   }
-   if {[string compare $os "Mandriva2010"] == 0} {
-      set nb 56
-   }
-   if {[string compare $os "Debian40"] == 0} {
-      set nb {51|61}
-   }
 }
+
 set bug_cross "OCC22687"
-set nbcross($os) $nb
+set nbcross($env(os_type)) $nb

@@ -25,10 +25,8 @@ regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
 
 regexp {deflection +([-0-9.+eE]+)} $tri_info full defl
 
-if { [array get env os_type] != "" } {
-   set os $env(os_type)
-}
-if { [string compare $os "windows"] != 0 } {
+set env(os_type) $tcl_platform(platform)
+if { [string compare $env(os_type) "windows"] != 0 } {
    puts "OS = Linux"
    set good_tri  520414
    set good_nod  263938

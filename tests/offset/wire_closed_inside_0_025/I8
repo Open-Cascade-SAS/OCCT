@@ -1,18 +1,4 @@
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-
-if {
-        [string compare $os "Windows-64-VC8"] == 0
-    ||  [string compare $os "Windows-64-VC9"] == 0
-    ||  [string compare $os "Windows-64-VC10"] == 0
-   } {
-  puts "TODO OCC23068 $os: Error : Result shape is WRONG"
-}
-if { [string compare $os "MacOS"] == 0 } {
-    puts "TODO OCC24156 MacOS: Error : The resulting shape is WRONG"
-}
+puts "TODO OCC24156 MacOS: Error : The resulting shape is WRONG"
 
 restore [locate_data_file offset_wire_103.brep] s
 

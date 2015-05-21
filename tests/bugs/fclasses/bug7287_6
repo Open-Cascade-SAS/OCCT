@@ -1,5 +1,5 @@
-puts "TODO ?OCC25921 Debian70-64: Tcl Exception: Memory leak detected"
-puts "TODO ?OCC25921 Debian70-64: TEST INCOMPLETE"
+puts "TODO ?OCC25921 Linux: Tcl Exception: Memory leak detected"
+puts "TODO ?OCC25921 Linux: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC7287"

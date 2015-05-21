@@ -1,5 +1,3 @@
-set os $env(os_type)
-
 puts "BUC60591"
 puts ""
 puts "=================================="

@@ -2,8 +2,8 @@
 # plane
 
 puts "TODO OCC26020 Windows: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC26020 Debian70-64: Error : The mkvolume is not valid. The area is"
-puts "TODO OCC26020 Debian70-64: Error : The area of the resulting shape is"
+puts "TODO OCC26020 Linux: Error : The mkvolume is not valid. The area is"
+puts "TODO OCC26020 Linux: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 -513.57358775546049 376.87261141864394 391.24411461018769 -0.35888381816183362 -0.86162916044152549 0.35888381816183351

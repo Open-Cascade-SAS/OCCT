@@ -2,8 +2,8 @@
 # cylinder plane
 
 puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC26020 Debian70-64: Error: bopcheck failed"
-puts "TODO OCC26020 Debian70-64: Error : The area of the resulting shape is"
+puts "TODO OCC26020 Linux: Error: bopcheck failed"
+puts "TODO OCC26020 Linux: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 -335.23319463083521 698.25 1031.741684575172 0.95105651629515375 3.3306690738754676e-016 0.30901699437494723

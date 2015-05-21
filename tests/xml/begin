@@ -22,12 +22,8 @@ if { [info exists test_image ] == 0 } {
 
 set WorkDirectory $imagedir
 
-set os "ALL"
-if {[array get env os_type] != ""} {
-    set os $env(os_type)
-}
-
-if { [regexp "indows" $os] } {
+set env(os_type) $tcl_platform(platform)
+if { [regexp "indows" $env(os_type)] } {
     if {[regexp -nocase {jdk} $env(PATH)] || [regexp -nocase {java} $env(PATH)]} {
 	set Java "java"
     } else {

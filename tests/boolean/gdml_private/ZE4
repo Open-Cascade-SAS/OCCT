@@ -1,5 +1,5 @@
-puts "TODO ?OCC26017 Debian70-64: TEST INCOMPLETE"
-puts "TODO ?OCC26017 Debian70-64: \\*\\* Exception"
-puts "TODO ?OCC26017 Debian70-64: An exception was caught"
+puts "TODO ?OCC26017 Linux: TEST INCOMPLETE"
+puts "TODO ?OCC26017 Linux: \\*\\* Exception"
+puts "TODO ?OCC26017 Linux: An exception was caught"
 source [locate_data_file 401-ta6001-3.prt.1.gdml.tcl]
 

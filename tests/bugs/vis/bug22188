@@ -23,7 +23,7 @@ regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
 regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
 regexp {Maximal deflection +([-0-9.+eE]+)} $tri_info full defl
 
-if { [string compare $tcl_platform(os) "Windows"] == 0 }  {
+if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
    set good_tri  6114
    set good_nod  3080
    set good_defl 0.50050406431775729

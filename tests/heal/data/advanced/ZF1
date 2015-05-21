@@ -1,15 +1,1 @@
-if {[string compare $command "SplitAngle"] == 0 } {
-    set os "ALL"
-    if {[array get env os_type] != ""} {
-       set os $env(os_type)
-    }
-    if {
-	    [string compare $os "Debian40"] == 0
-	||  [string compare $os "Mandriva2008"] == 0
-	||  [string compare $os "Mandriva2010"] == 0
-       } {
-    }
-}
-
 restore [locate_data_file cd.brep] a
-

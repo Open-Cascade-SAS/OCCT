@@ -4,43 +4,20 @@ set rel_tol 10.7
 set bug_withouttri "OCC22687"
 set bug_freelinks "OCC22687"
 set bug_freenodes "OCC22687"
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
+
 if { [string compare $command "shading"] == 0 } {
-###   set nbt 14
-   set nbt 9
-   set nbn 83
-   if {
-          [string compare $os "Mandriva2008"] == 0
-       || [string compare $os "Debian70-64"] == 0
-      } {
-###      set nbl 19
-###      set nbfree($os) $nbl
-##    else
-##      set nbl 17
-   }
-set nbwithouttri($os) $nbt
-set nbfreenodes($os) $nbn
+##set nbt 14
+  set nbt 9
+  set nbn 83
+  set nbwithouttri($env(os_type)) $nbt
+  set nbfreenodes($env(os_type)) $nbn
 } else {
-   if {
-          [string compare $os "Mandriva2010"] == 0
-      } {
-      set nbt 14
-      set nbn 83
-      set nbl 19
-      set nbwithouttri($os) $nbt
-      set nbfree($os) $nbl
-      set nbfreenodes($os) $nbn
-   } else {
-      set bug_withouttri "OCC23105"
-###      set nbt 14
-      set nbt 8
-      set nbn 60
-      set nbl 3
-      set nbwithouttri($os) $nbt
-      set nbfree($os) $nbl
-      set nbfreenodes($os) $nbn
-   }
+  set bug_withouttri "OCC23105"
+##set nbt 14
+  set nbt 8
+  set nbn 60
+  set nbl 3
+  set nbwithouttri($env(os_type)) $nbt
+  set nbfree($env(os_type)) $nbl
+  set nbfreenodes($env(os_type)) $nbn
 }

@@ -18,7 +18,16 @@ vsetdispmode b 1
 
 vdrawtext text "Open\nCASCADE" -pos 0 0 0 -color 1.0 0.0 0.0 -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font Arial
 
-set bug_info [vreadpixel 259 279 rgb name]
+set env(os_type) $tcl_platform(platform)
+if { [string compare ${env(os_type)} "windows"] != 0 } {
+  set x_coord 259
+  set y_coord 279
+} else {
+  set x_coord 255
+  set y_coord 277
+}
+
+set bug_info [vreadpixel ${x_coord} ${y_coord} rgb name]
 if {$bug_info != "RED"} {
   puts "ERROR: OCC25732 is reproduced. Text is missed."
 }

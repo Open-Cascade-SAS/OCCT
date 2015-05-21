@@ -3,18 +3,7 @@
 #puts "TODO OCC24255 ALL: An exception was caught" 
 puts "TODO OCC24255 ALL: Error: Offset is not done."
 puts "TODO OCC24255 ALL: Error : The offset cannot be built."
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-
-#if {
-#        [string compare $os "Mandriva2010"   ] != 0
-#    &&  [string compare $os "Debian40"       ] != 0
-#    &&  [string compare $os "Mandriva2008"   ] != 0
-#   } {
-#  puts "TODO OCC23068 $os: Error : The resulting shape is WRONG"
-#}
+#puts "TODO OCC23068 ALL: Error : The resulting shape is WRONG"
 
 restore [locate_data_file offset_wire_041.brep] s
 

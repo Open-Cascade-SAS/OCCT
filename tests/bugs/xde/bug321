@@ -1,5 +1,3 @@
-set os $env(os_type)
-
 puts "========"
 puts "OCC321"
 puts "========"
