@@ -85,13 +85,14 @@ Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
   //
   bIsToReverse=IsToReverse(aE2, aE1, aCtx);
   if (bIsToReverse) {
+    Standard_Real aT21r, aT22r;
+    //
     aC2DoldC->Reverse();
     //
-    gp_Pnt2d aP1, aP2;
-    //
-    aC2Dold->D0(aT22, aP2);
-    aC2DoldC->D0(aT21, aP1);
-    aC2DoldC->Translate(aP1, aP2);
+    aT21r=aC2DoldC->ReversedParameter(aT21);
+    aT22r=aC2DoldC->ReversedParameter(aT22);
+    aT21=aT22r;
+    aT22=aT21r;
   }
   //
   aC2DT=new Geom2d_TrimmedCurve(aC2DoldC, aT21, aT22);
