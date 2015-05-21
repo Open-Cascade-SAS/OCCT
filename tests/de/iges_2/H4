@@ -10,12 +10,12 @@ set filename UKI60028-2.igs
 
 set ref_data {
 DATA        : Faulties = 8  ( 0 )  Warnings = 0  ( 0 )  Summary  = 8  ( 0 )
-TPSTAT      : Faulties = 16  ( 149 )  Warnings = 60  ( 1008 )  Summary  = 76  ( 1157 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   Summary  = 7690  ( 7731 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   FreeWire = 219  ( 254 )   FreeEdge  = 1870 ( 1870 )   SharedEdge = 3105  ( 3106 )
-TOLERANCE   : MaxTol   =   0.9970503224  (   0.9970502696 )  AvgTol   =   0.01722883731  (   0.02184796555 )
-LABELS      : N0Labels = 9  ( 9 )  N1Labels = 896  ( 1689 )  N2Labels = 0  ( 0 )   TotalLabels = 905  ( 1698 )   NameLabels = 905  ( 1233 )   ColorLabels = 896  ( 1690 )   LayerLabels = 864  ( 1657 )
+TPSTAT      : Faulties = 16  ( 149 )  Warnings = 60  ( 1010 )  Summary  = 76  ( 1159 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   Summary  = 7690  ( 7735 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   FreeWire = 219  ( 254 )   FreeEdge  = 1870 ( 1870 )   SharedEdge = 3105  ( 3108 )
+TOLERANCE   : MaxTol   =   0.9970503224  (   0.9970502696 )  AvgTol   =   0.01722883731  (   0.02186287201 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 896  ( 1691 )  N2Labels = 0  ( 0 )   TotalLabels = 905  ( 1700 )   NameLabels = 905  ( 1233 )   ColorLabels = 896  ( 1692 )   LayerLabels = 864  ( 1659 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 7 )
 COLORS      : Colors   = BLUE1 LEMONCHIFFON1 RED RED4 WHITE YELLOW  ( BLUE1 GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW )

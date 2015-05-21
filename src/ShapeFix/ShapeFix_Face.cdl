@@ -105,6 +105,13 @@ is
         ---C++: inline
         ---Purpose: Returns (modifiable) the fix small area wire mode, by default
         --          False. If True, drops small wires.
+
+    RemoveSmallAreaFaceMode (me: mutable) returns Integer;
+        ---C++: return &
+        ---C++: inline
+        ---Purpose: Returns (modifiable) the remove face with small area, by default
+        --          False. If True, drops faces with small outer wires.
+
     FixIntersectingWiresMode (me: mutable) returns Integer;
         ---C++: return &
         ---C++: inline
@@ -202,7 +209,7 @@ is
         --          missing seam edge
         --          Returns True if missing seam was added
 
-    FixSmallAreaWire (me: mutable) returns Boolean;
+    FixSmallAreaWire (me: mutable; theIsRemoveSmallFace: Boolean = Standard_False) returns Boolean;
         ---Purpose: Detects wires with small area (that is less than 
         --          100*Precision::PConfusion(). Removes these wires if they are internal.
         --  Returns : True if at least one small wire removed,
@@ -276,6 +283,7 @@ fields
     myFixAddNaturalBoundMode   : Integer;
     myFixMissingSeamMode       : Integer;
     myFixSmallAreaWireMode     : Integer;
+    myRemoveSmallAreaFaceMode  : Integer;
     myFixLoopWiresMode         : Integer; -- gka 08.01.2004
     myFixIntersectingWiresMode : Integer; -- skl 23.12.2003
     myFixSplitFaceMode         : Integer; -- skl 03.02.2004

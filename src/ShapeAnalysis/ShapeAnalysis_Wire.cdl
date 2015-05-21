@@ -490,9 +490,9 @@ is
     	    	    	    	    Tolerance: Real = 0.0) returns Boolean;
     	---Purpose: Detects a notch
 
-    CheckSmallArea (me: mutable; prec2d : Real = 0)
+    CheckSmallArea (me: mutable; theWire : Wire from TopoDS; theIsOuterWire : Boolean)
     returns Boolean;
-    	---Purpose: Checks if wire has parametric area less than prec2d.
+    	---Purpose: Checks if wire has parametric area less than precision.
 		 
     CheckShapeConnect (me : mutable; shape : Shape from TopoDS; prec: Real = 0.0)
     returns Boolean;

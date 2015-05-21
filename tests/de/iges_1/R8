@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR25923 ALL: STATSHAPE : Faulty"
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 set LinuxDiff 5
@@ -6,12 +7,12 @@ set filename BUC60743.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
-TPSTAT      : Faulties = 3  ( 59 )  Warnings = 2203  ( 4655 )  Summary  = 2206  ( 4714 )
-CHECKSHAPE  : Wires    = 7  ( 17 )  Faces    = 7  ( 12 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3349  ( 2837 )   Summary  = 45902  ( 39187 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3349  ( 3349 )   FreeWire = 6  ( 6 )   FreeEdge  = 67 ( 67 )   SharedEdge = 19594  ( 16763 )
-TOLERANCE   : MaxTol   =    4.854604894  (    5.769095076 )  AvgTol   =   0.01628658326  (   0.01747356296 )
-LABELS      : N0Labels = 11  ( 11 )  N1Labels = 2891  ( 6318 )  N2Labels = 0  ( 0 )   TotalLabels = 2902  ( 6329 )   NameLabels = 2900  ( 5879 )   ColorLabels = 2891  ( 6318 )   LayerLabels = 2411  ( 5256 )
+TPSTAT      : Faulties = 3  ( 59 )  Warnings = 2205  ( 4736 )  Summary  = 2208  ( 4795 )
+CHECKSHAPE  : Wires    = 7  ( 16 )  Faces    = 6  ( 12 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3350  ( 2837 )   Summary  = 45907  ( 39191 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3350  ( 3349 )   FreeWire = 6  ( 6 )   FreeEdge  = 67 ( 67 )   SharedEdge = 19595  ( 16764 )
+TOLERANCE   : MaxTol   =    3.742696236  (    5.769095076 )  AvgTol   =   0.01636161939  (   0.01749445935 )
+LABELS      : N0Labels = 11  ( 11 )  N1Labels = 2891  ( 6319 )  N2Labels = 0  ( 0 )   TotalLabels = 2902  ( 6330 )   NameLabels = 2900  ( 5879 )   ColorLabels = 2891  ( 6319 )   LayerLabels = 2411  ( 5257 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )
 COLORS      : Colors   = BLACK BLUE1 RED YELLOW  ( BLACK BLUE1 RED YELLOW )

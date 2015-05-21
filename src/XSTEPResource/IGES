@@ -26,6 +26,7 @@ FromIGES.FixShape.FixOrientationMode		: -1
 FromIGES.FixShape.FixAddNaturalBoundMode	: -1
 FromIGES.FixShape.FixMissingSeamMode		: -1
 FromIGES.FixShape.FixSmallAreaWireMode		: -1
+FromIGES.FixShape.RemoveSmallAreaFaceMode	: -1
 FromIGES.FixShape.FixIntersectingWiresMode	: -1
 FromIGES.FixShape.FixLoopWiresMode              : -1
 FromIGES.FixShape.FixSplitFaceMode              : -1

@@ -64,6 +64,16 @@ inline Standard_Integer& ShapeFix_Face::FixSmallAreaWireMode()
 }
 
 //=======================================================================
+//function : RemoveSmallAreaFaceMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Face::RemoveSmallAreaFaceMode()
+{
+  return myRemoveSmallAreaFaceMode;
+}
+
+//=======================================================================
 //function : FixIntersectingWiresMode
 //purpose  : 
 //=======================================================================

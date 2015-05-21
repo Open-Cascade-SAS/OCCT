@@ -725,6 +725,7 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   sff->FixAddNaturalBoundMode()   = ctx->IntegerVal ( "FixAddNaturalBoundMode", -1 );
   sff->FixMissingSeamMode()       = ctx->IntegerVal ( "FixMissingSeamMode", -1 );
   sff->FixSmallAreaWireMode()     = ctx->IntegerVal ( "FixSmallAreaWireMode", -1 );
+  sff->RemoveSmallAreaFaceMode()  = ctx->IntegerVal ( "RemoveSmallAreaFaceMode", -1 );
   sff->FixIntersectingWiresMode() = ctx->IntegerVal ( "FixIntersectingWiresMode", -1 );
   sff->FixLoopWiresMode()         = ctx->IntegerVal ( "FixLoopWiresMode", -1 );
   sff->FixSplitFaceMode()         = ctx->IntegerVal ( "FixSplitFaceMode", -1 );
