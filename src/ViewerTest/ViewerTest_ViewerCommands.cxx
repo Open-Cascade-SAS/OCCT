@@ -2480,8 +2480,6 @@ static int VFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgc, const ch
   }
 
   const Handle(V3d_View) aView = ViewerTest::CurrentView();
-<<<<<<< .mine
-  Handle(NIS_View) V = Handle(NIS_View)::DownCast (aView);
 
   if (theArgc == 2)
   {
@@ -2489,32 +2487,12 @@ static int VFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgc, const ch
     anArg.LowerCase();
     if (anArg == "-selected")
     {
-      ViewerTest::GetAISContext()->FitSelected (V.IsNull() ? aView : V);
+      ViewerTest::GetAISContext()->FitSelected (aView);
       return 0;
     }
   }
+  if (aView.IsNull() == Standard_False) {
 
-  if (V.IsNull() == Standard_False) {
-    V->FitAll3d();
-  } else if (aView.IsNull() == Standard_False) {
-=======
-  if (!aView.IsNull())
-  {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> .theirs
     aView->FitAll();
   }
   return 0;
