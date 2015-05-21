@@ -240,7 +240,7 @@ is
         theF2: Face from TopoDS;  
         theTolR3D:Real from Standard; 
         theNC:out Curve from BOPDS;  
-        theMVB:out MapOfInteger from BOPCol) 
+        theLBV:out ListOfInteger from BOPCol) 
       is protected; 
 
     IsExistingPaveBlock(me:out; 
@@ -367,9 +367,9 @@ is
     ProcessExistingPaveBlocks(me:out; 
         theInt     : Integer from Standard; 
         theMPBOnIn : IndexedMapOfPaveBlock from BOPDS; 
+        theDMBV    : DataMapOfIntegerListOfInteger from BOPCol; 
         theMSCPB   : out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         theMVI     : out DataMapOfShapeInteger from BOPCol; 
-        theMVB     : MapOfInteger from BOPCol; 
         theMPB     : out MapOfPaveBlock from BOPDS)
       is  protected; 
     ---Purpose:       
@@ -402,11 +402,12 @@ is
     -- is closed 3D-curve  
      
     PreparePostTreatFF(me:out; 
-        aInt   : Integer from Standard; 
+        aInt   : Integer from Standard;
+        aCur   : Integer from Standard;
         aPB    : PaveBlock from BOPDS;  
         aMSCPB : out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         aMVI   : out DataMapOfShapeInteger from BOPCol; 
-        aVC    : out VectorOfCurve from BOPDS)
+        aLPB   : out ListOfPaveBlock from BOPDS)
       is protected; 
     ---Purpose: 
     -- Keeps data for post treatment 
