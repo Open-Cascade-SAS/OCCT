@@ -21,8 +21,6 @@
 #include <Standard_values.h>
 #include <Standard_TypeDef.hxx>
 
-class Handle_Standard_Type;
-
          //  *********************************** //
          //       Class methods                  //
          //                                      //

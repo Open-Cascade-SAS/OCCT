@@ -18,6 +18,6 @@
 #include <Handle_Standard_Transient.hxx>
 #include <Standard_PrimitiveTypes.hxx>
 #include <Standard_Transient_proto.hxx>
-#include <Standard_Type.hxx>
+//#include <Standard_Type.hxx>
 
 #endif 

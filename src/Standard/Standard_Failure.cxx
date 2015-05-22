@@ -152,7 +152,7 @@ void Standard_Failure::Reraise ()
 #endif
 }
 
-void Standard_Failure::Jump() const 
+void Standard_Failure::Jump()
 {
 #if defined (NO_CXX_EXCEPTION) || defined (OCC_CONVERT_SIGNALS)
   Standard_ErrorHandler::Error (this);

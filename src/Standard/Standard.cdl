@@ -28,24 +28,6 @@ package Standard
 
 
 is
-    enumeration InternalType is
-    	    	Void,          -- TYPUND     0x00000000  /* Undefined    */
-		Char,          -- TYPIT1     0x00010001  /* Byte         */
-		ExtChar,       -- TYPIT2     0x00020001  /* Integer*2    */
-		LongInt,       -- TYPIT4     0x00040001  /* Integer*4    */
-		Bool,          -- TYPLO4     0x00040002  /* Logical*4    */
-		Float,         -- TYPRE4     0x00040004  /* Real*4       */
-		LongDouble,    -- TYPRE8     0x00080004  /* Real*8       */
-		String,        -- TYPCHR     0x00000010  /* Character    */
-		EString,       -- TYPCHREXT  0x00000011  /* Character    */
-		EntryAddress,  -- TYPENT     0x00040020	 /* Function address */
-		DataAddress,   -- TYPDAD     0x00040080  /* Data address */
-		EngineHandle,  -- TYPHDLE    0x00004000  /* Handle       */
-		Long64,        -- TYPIT8     0x00080001  /* Integer*8    */
-		Array;         -- TYPARR     0x00008000  /* Tableau      */
-
-    enumeration WayOfLife is IsNothing, IsAddress, IsTransient, IsPersistent, IsNotLoaded;
-    enumeration KindOfType is IsUnKnown, IsClass, IsEnumeration, IsPrimitive, IsImported, IsPackage;
     enumeration HandlerStatus is HandlerVoid, HandlerJumped, HandlerProcessed;
 
     imported IStream;
@@ -71,8 +53,6 @@ is
     deferred class ErrorHandlerCallback;
     class ErrorHandler;
     
-    class AncestorIterator;
-    
     primitive Boolean;
     primitive Character;
     primitive ExtCharacter;
@@ -87,8 +67,8 @@ is
 
     deferred class Persistent ;
 
-    deferred class Transient ;
-   	    class Type; -- inherits Transient
+    imported deferred class Transient ;
+   	    imported transient class Type; -- inherits Transient
     	    class Failure; --  inherits Transient
     	    	exception AbortiveTransaction inherits Failure;
 	        exception DomainError inherits Failure;

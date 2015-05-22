@@ -31,9 +31,17 @@ class Standard_Transient
     //---- uses the friend Standard_Transient class
     friend class Handle(Standard_Transient);
 
- public:
+public:
     
     DEFINE_STANDARD_ALLOC
+
+    //! Definition of base_type for RTTI (see Standard_Type)
+    typedef void base_type; 
+
+    //! Definition of the class name
+    static const char* get_type_name () { return "Standard_Transient"; }
+
+public:
 
     //! Empty constructor
     Standard_Transient() : count(0) {}
@@ -80,7 +88,5 @@ class Standard_Transient
 
    volatile Standard_Integer count;
 };
-
-Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(Standard_Transient);
 
 #endif 

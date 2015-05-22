@@ -17,9 +17,6 @@
 #define NCollection_Handle_HeaderFile
 
 #include <MMgt_TShared.hxx>
-
-//! Standard type function allowing to check that contained object is Handle
-Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(NCollection_Handle);
   
 //! Purpose: This template class is used to define Handle adaptor
 //! for allocated dynamically objects of arbitrary type.
@@ -28,20 +25,6 @@ Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(NCollection_Handle);
 //! the object when last referred Handle is destroyed (i.e. it is a 
 //! typical smart pointer), and that it can be handled as 
 //! Handle(Standard_Transient) in OCCT components.
-//!
-//! Use it as follows:
-//!
-//! NCollection_Handle<T> aPtr = new T (...);
-//!
-//! aPtr->Method(...);
-//!
-//! Handle(Standard_Transient) aBase = aPtr;
-//! if ( aBase->IsKind(STANDARD_TYPE(NCollection_Handle)) )
-//! {
-//!   NCollection_Handle<T> aPtr2 = NCollection_Handle<T>::DownCast (aBase);
-//!   if ( ! aPtr2.IsNull() )
-//!     aPtr2->Method2();
-//! }
 
 template <class T>
 class NCollection_Handle : public Handle(Standard_Transient)
@@ -60,10 +43,6 @@ class NCollection_Handle : public Handle(Standard_Transient)
 
     //! Destructor deletes the object
     ~Ptr () { if ( myPtr ) delete myPtr; myPtr = 0; }
-
-    //! Implementation of DynamicType() method
-    const Handle(Standard_Type)& DynamicType() const 
-      { return STANDARD_TYPE(NCollection_Handle); }
 
   protected:
 
@@ -108,10 +87,11 @@ class NCollection_Handle : public Handle(Standard_Transient)
   
   //! Downcast arbitrary Handle to the argument type if contained
   //! object is Handle for this type; returns null otherwise
-  static NCollection_Handle<T> DownCast (const Handle(Standard_Transient)& theOther) 
+  static NCollection_Handle<T> DownCast (const Handle(Standard_Transient)& theOther)
   {
-    return NCollection_Handle<T> (theOther.IsNull() ? 0 : dynamic_cast<Ptr*> (theOther.operator->()), 0);
+    return NCollection_Handle<T>(dynamic_cast<Ptr*>(theOther.get()), 0);
   }
+
 };
 
 #endif

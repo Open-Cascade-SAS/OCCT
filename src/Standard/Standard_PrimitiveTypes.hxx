@@ -18,12 +18,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-class Standard_Type;
-class Handle_Standard_Type;
-
-class Handle_Standard_Transient;
-class Standard_Transient;
-
 #include <Standard_Macro.hxx>
 
 #include <Standard_Boolean.hxx>
@@ -35,18 +29,4 @@ class Standard_Transient;
 #include <Standard_ExtString.hxx>
 #include <Standard_Address.hxx>
 
-__Standard_API Standard_Integer HashCode(const Standard_Address, 
-			  const Standard_Integer,
-			  const Handle_Standard_Type&);
-
 #endif
-
-
-
-
-
-
-
-
-
-

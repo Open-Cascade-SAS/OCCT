@@ -73,13 +73,6 @@ IFSelect_BasicDumper::IFSelect_BasicDumper ()  {  }
     file.SendItem(sra->Upper());
     return Standard_True;
   }
-/*  if (type == STANDARD_TYPE(IFSelect_SelectTextType)) {
-    DeclareAndCast(IFSelect_SelectTextType,sty,item);
-    if (sty->IsExact()) file.SendText("exact");
-    else                file.SendText("contains");
-    file.SendText(sty->SignatureText().ToCString());
-    return Standard_True;
-  } */
   if (type == STANDARD_TYPE(IFSelect_SelectShared))          return Standard_True;
   if (type == STANDARD_TYPE(IFSelect_SelectSharing))         return Standard_True;
 

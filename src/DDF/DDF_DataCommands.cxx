@@ -317,11 +317,7 @@ static Standard_Integer  DDF_CheckAttrs (Draw_Interpretor& di,Standard_Integer n
 		}
 		TDF_Tool::Entry(sAtt->Label(), entr1);
 		//cout<<"\tAttribute dynamic type = "<<sAtt->DynamicType()<<",\tlocated on Label = "<<entr1<<endl;
-		di<<"\tAttribute dynamic type = ";
-		Standard_SStream aSStream;
-		sAtt->DynamicType()->Print(aSStream);
-		aSStream << ends;
-		di << aSStream;
+		di<<"\tAttribute dynamic type = " << sAtt->DynamicType()->Name();
 		di<<",\tlocated on Label = "<<entr1.ToCString()<<"\n";
 	      }
 	  }
@@ -356,21 +352,14 @@ static Standard_Integer  DDF_CheckLabel (Draw_Interpretor& di,Standard_Integer n
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next()) {
       itr.Value()->References(ds1);
       //cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<endl;
-      di<<"\tSource Attribute dynamic type = ";
-      Standard_SStream aSStream1;
-      itr.Value()->DynamicType()->Print(aSStream1);
-      aSStream1 << ends;
-      di << aSStream1 << "\n";
+      di<<"\tSource Attribute dynamic type = " << itr.Value()->DynamicType()->Name() << "\n";
       const TDF_AttributeMap& attMap = ds1->Attributes(); //attMap
       for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
 	Handle(TDF_Attribute) sAtt = attMItr.Key();
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(sAtt->Label(), entry);
 	//cout<<"\t\tReferences attribute dynamic type = "<<sAtt->DynamicType()<<",\tLabel = "<<entry<<endl;
-	di<<"\t\tReferences attribute dynamic type = ";
-	Standard_SStream aSStream2;
-	sAtt->DynamicType()->Print(aSStream2);
-	di << aSStream2;
+	di<<"\t\tReferences attribute dynamic type = " << sAtt->DynamicType()->Name();
 	di<<",\tLabel = "<<entry.ToCString()<<"\n";
       }
       ds1->Clear();

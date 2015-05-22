@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_TreeNode.ixx>
+#include <TDataStd_TreeNode.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_DeltaOnAddition.hxx>
+#include <TDF_DeltaOnRemoval.hxx>
+#include <TDF_RelocationTable.hxx>
 #include <Standard_DomainError.hxx>
 
 //=======================================================================

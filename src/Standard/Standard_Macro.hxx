@@ -21,7 +21,6 @@
 
 // Standard OCC macros: Handle(), STANDARD_TYPE()
 # define   Handle(ClassName)      Handle_##ClassName
-# define   STANDARD_TYPE(aType)   aType##_Type_()
 
 #if defined(__cplusplus) && (__cplusplus >= 201100L)
   // part of C++11 standard

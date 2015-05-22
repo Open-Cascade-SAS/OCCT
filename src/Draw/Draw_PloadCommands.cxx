@@ -18,6 +18,7 @@
 #include <OSD_Directory.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
+#include <OSD_SharedLibrary.hxx>
 #include <Resource_Manager.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_MapOfAsciiString.hxx>
@@ -252,6 +253,32 @@ static Standard_Integer Pload (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : dtryload
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer dtryload (Draw_Interpretor& di, Standard_Integer n, const char** argv)
+{
+  if (n != 2)
+  {
+    cout << "Error: specify path to library to be loaded" << endl;
+    return 1;
+  }
+
+  OSD_SharedLibrary aLib(argv[1]);
+  if (aLib.DlOpen(OSD_RTLD_NOW))
+  {
+    di << "Loading " << argv[1] << " successful";
+    aLib.DlClose();
+  }
+  else 
+  {
+    di << "Loading " << argv[1] << " failed: " << aLib.DlError();
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : PloadCommands
 //purpose  : 
 //=======================================================================
@@ -266,4 +293,6 @@ void Draw::PloadCommands(Draw_Interpretor& theCommands)
   
   theCommands.Add("pload" , "pload [-PluginFilename] [[Key1] [Key2] ...]: Loads Draw plugins " ,
 		  __FILE__, Pload, g);
+  theCommands.Add("dtryload" , "dtryload path : load and unload specified dynamic loaded library" ,
+		  __FILE__, dtryload, g);
 }

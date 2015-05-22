@@ -13,18 +13,18 @@
 // commercial license or contractual agreement.
 
 #include <Standard_Transient.hxx>
-
-// The Initialization of the Standard_Transient variables
-IMPLEMENT_STANDARD_TYPE(Standard_Transient)
-IMPLEMENT_STANDARD_SUPERTYPE_ARRAY()
-IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_END()
-IMPLEMENT_STANDARD_TYPE_END(Standard_Transient)
-
-IMPLEMENT_STANDARD_RTTI(Standard_Transient)
+#include <Standard_Type.hxx>
 
 //
 // The Standard_Transient Methods
 //
+
+// DynamicType
+//
+const Handle(Standard_Type)& Standard_Transient::DynamicType() const
+{
+  return STANDARD_TYPE(Standard_Transient);
+}
 
 // The Method This 
 //

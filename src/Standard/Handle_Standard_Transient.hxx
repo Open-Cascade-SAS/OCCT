@@ -127,6 +127,12 @@ public:
     return entity;
   }
 
+  //! STL-style member accessor
+  Standard_Transient* get() const
+  {
+    return entity;
+  }
+
   //! Dereferencing operator
   Standard_Transient& operator*()
   {

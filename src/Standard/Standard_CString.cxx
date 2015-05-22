@@ -18,7 +18,7 @@
 //          resizing of a Map or copying an item from a Map to another Map.
 //        - three methods of HashCoding of strings converted to uppercase.
 
-#define _Standard_CString_SourceFile
+#include <Standard_Type.hxx>
 
 #include <Standard_CLocaleSentry.hxx>
 #include <Standard_CString.hxx>

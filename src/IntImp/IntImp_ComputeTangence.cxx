@@ -12,6 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntImp_ComputeTangence.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
 
 static const IntImp_ConstIsoparametric staticChoixRef [4] = {
@@ -22,8 +23,6 @@ IntImp_VIsoparametricOnCaro2,
 };
 
 Standard_EXPORT const IntImp_ConstIsoparametric *ChoixRef = staticChoixRef ;
-
-#include <IntImp_ComputeTangence.hxx>
 
 //=======================================================================
 //function : IntImp_ComputeTangence

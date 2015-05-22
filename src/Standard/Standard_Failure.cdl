@@ -94,7 +94,7 @@ is
 	--          dangerous since some of methods require that object
 	--          was allocated dynamically.
 	
-    Jump (me);
+    Jump (me: mutable);
    	---Purpose: Used to throw CASCADE exception from C signal handler.
         --          On platforms that do not allow throwing C++ exceptions 
         --          from this handler (e.g. Linux), uses longjump to get to 

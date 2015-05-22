@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-deferred class Transient from Standard 
+imported deferred class Transient from Standard 
 
     ---Purpose: Abstract class which forms the root of the entire 
     --          Transient class hierarchy.
@@ -81,6 +81,3 @@ is
         count : Integer from Standard;
 	
 end Transient from Standard;
-
-
-

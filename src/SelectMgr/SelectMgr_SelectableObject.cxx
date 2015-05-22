@@ -30,6 +30,7 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
+#include <PrsMgr_PresentableObjectPointer.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>
@@ -108,6 +109,9 @@ void SelectMgr_SelectableObject::RecomputePrimitives()
 //==================================================
 void SelectMgr_SelectableObject::RecomputePrimitives (const Standard_Integer theMode)
 {
+  Handle(PrsMgr_PresentableObject) aPrsParent (Parent());
+  Handle(SelectMgr_SelectableObject) aSelParent = Handle(SelectMgr_SelectableObject)::DownCast (aPrsParent);
+
   for (Standard_Integer aSelIdx =1; aSelIdx <= myselections.Length(); aSelIdx++ )
   {
     if (myselections.Value (aSelIdx)->Mode() == theMode)
@@ -116,9 +120,9 @@ void SelectMgr_SelectableObject::RecomputePrimitives (const Standard_Integer the
       ComputeSelection (myselections (aSelIdx), theMode);
       myselections (aSelIdx)->UpdateStatus (SelectMgr_TOU_Partial);
       myselections (aSelIdx)->UpdateBVHStatus (SelectMgr_TBU_Renew);
-      if (Parent() != NULL && Handle(SelectMgr_SelectableObject)::DownCast (Parent())->GetAssemblyOwner() != NULL && theMode == 0)
+      if (theMode == 0 && ! aSelParent.IsNull() && ! aSelParent->GetAssemblyOwner().IsNull())
       {
-        SetAssemblyOwner (Handle(SelectMgr_SelectableObject)::DownCast (Parent())->GetAssemblyOwner(), theMode);
+        SetAssemblyOwner (aSelParent->GetAssemblyOwner(), theMode);
       }
       return;
     }
@@ -127,9 +131,9 @@ void SelectMgr_SelectableObject::RecomputePrimitives (const Standard_Integer the
   Handle(SelectMgr_Selection) aNewSel = new SelectMgr_Selection (theMode);
   ComputeSelection (aNewSel, theMode);
 
-  if (Parent() != NULL && Handle(SelectMgr_SelectableObject)::DownCast (Parent())->GetAssemblyOwner() != NULL && theMode == 0)
+  if (theMode == 0 && ! aSelParent.IsNull() && ! aSelParent->GetAssemblyOwner().IsNull())
   {
-    SetAssemblyOwner (Handle(SelectMgr_SelectableObject)::DownCast (Parent())->GetAssemblyOwner(), theMode);
+    SetAssemblyOwner (aSelParent->GetAssemblyOwner(), theMode);
   }
 
   aNewSel->UpdateStatus (SelectMgr_TOU_Partial);
@@ -207,9 +211,14 @@ void SelectMgr_SelectableObject
     myselections.Last()->UpdateBVHStatus (SelectMgr_TBU_Renew);
   }
 
-  if (Parent() != NULL && Handle(SelectMgr_SelectableObject)::DownCast (Parent())->GetAssemblyOwner() != NULL && aMode == 0)
+  if (aMode == 0)
   {
-    SetAssemblyOwner (Handle(SelectMgr_SelectableObject)::DownCast (Parent())->GetAssemblyOwner(), aMode);
+    Handle(PrsMgr_PresentableObject) aPrsParent (Parent());
+    Handle(SelectMgr_SelectableObject) aSelParent = Handle(SelectMgr_SelectableObject)::DownCast (aPrsParent);
+    if (! aSelParent.IsNull() && ! aSelParent->GetAssemblyOwner().IsNull())
+    {
+      SetAssemblyOwner (aSelParent->GetAssemblyOwner(), aMode);
+    }
   }
 }
 
