@@ -41,12 +41,20 @@ Standard_IMPORT Draw_Viewer dout;
 Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 2) {
-    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z]" << "\n";
+    di << "Use: " << a[0] << " shape [epsilon] [c[losed]] [x y z] [-full]" << "\n";
     di << "Compute properties of the shape" << "\n";
     di << "The epsilon, if given, defines relative precision of computation" << "\n";
     di << "The \"closed\" flag, if present, do computation only closed shells of the shape" << "\n";
-    di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n" << "\n";
+    di << "The centroid coordinates will be put to DRAW variables x y z (if given)\n";
+    di << "All values are outputted with the full precision in the full mode.\n\n";
     return 1;
+  }
+
+  Standard_Boolean isFullMode = Standard_False;
+  if (n >= 2 && strcmp(a[n-1], "-full") == 0)
+  {
+    isFullMode = Standard_True;
+    --n;
   }
 
   TopoDS_Shape S = DBRep::Get(a[1]);
@@ -87,45 +95,70 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
     Draw::Set(a[shift+3],P.Y());
     Draw::Set(a[shift+4],P.Z());
   }
-	    
-  Standard_SStream aSStream1;
-  aSStream1 << "\n\n";
-  aSStream1 << "Mass : " << setw(15) << G.Mass() << "\n" << "\n";
-  if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  setw(15) << eps <<  "\n" << "\n";
-  
-  aSStream1 << "Center of gravity : \n";
-  aSStream1 << "X = " << setw(15) << P.X() << "\n";
-  aSStream1 << "Y = " << setw(15) << P.Y() << "\n";
-  aSStream1 << "Z = " << setw(15) << P.Z() << "\n";
-  aSStream1 << "\n";
-  
-  aSStream1 << "Matrix of Inertia : \n";
-  aSStream1 << setw(15) << I(1,1);
-  aSStream1 << " " << setw(15) << I(1,2);
-  aSStream1 << " " << setw(15) << I(1,3) << "\n";
-  aSStream1 << setw(15) << I(2,1);
-  aSStream1 << " " << setw(15) << I(2,2);
-  aSStream1 << " " << setw(15) << I(2,3) << "\n";
-  aSStream1 << setw(15) << I(3,1);
-  aSStream1 << " " << setw(15) << I(3,2);
-  aSStream1 << " " << setw(15) << I(3,3) << "\n";
-  aSStream1 << "\n";
-  aSStream1 << ends;
-  di << aSStream1;
 
   GProp_PrincipalProps Pr = G.PrincipalProperties();
-
   Standard_Real Ix,Iy,Iz;
   Pr.Moments(Ix,Iy,Iz);
+
+  if (!isFullMode)
+  {
+    Standard_SStream aSStream1;
+    aSStream1 << "\n\n";
+    aSStream1 << "Mass : " << setw(15) << G.Mass() << "\n" << "\n";
+    if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  setw(15) << eps <<  "\n" << "\n";
   
-  Standard_SStream aSStream2;
-  aSStream2 << "Moments : \n";
-  aSStream2 << "IX = " << setw(15) << Ix << "\n";
-  aSStream2 << "IY = " << setw(15) << Iy << "\n";
-  aSStream2 << "IZ = " << setw(15) << Iz << "\n";
-  aSStream2 << "\n";
-  aSStream2 << ends;
-  di << aSStream2;
+    aSStream1 << "Center of gravity : \n";
+    aSStream1 << "X = " << setw(15) << P.X() << "\n";
+    aSStream1 << "Y = " << setw(15) << P.Y() << "\n";
+    aSStream1 << "Z = " << setw(15) << P.Z() << "\n";
+    aSStream1 << "\n";
+  
+    aSStream1 << "Matrix of Inertia : \n";
+    aSStream1 << setw(15) << I(1,1);
+    aSStream1 << " " << setw(15) << I(1,2);
+    aSStream1 << " " << setw(15) << I(1,3) << "\n";
+    aSStream1 << setw(15) << I(2,1);
+    aSStream1 << " " << setw(15) << I(2,2);
+    aSStream1 << " " << setw(15) << I(2,3) << "\n";
+    aSStream1 << setw(15) << I(3,1);
+    aSStream1 << " " << setw(15) << I(3,2);
+    aSStream1 << " " << setw(15) << I(3,3) << "\n";
+    aSStream1 << "\n";
+    aSStream1 << ends;
+    di << aSStream1;
+
+    Standard_SStream aSStream2;
+    aSStream2 << "Moments : \n";
+    aSStream2 << "IX = " << setw(15) << Ix << "\n";
+    aSStream2 << "IY = " << setw(15) << Iy << "\n";
+    aSStream2 << "IZ = " << setw(15) << Iz << "\n";
+    aSStream2 << "\n";
+    aSStream2 << ends;
+    di << aSStream2;
+  }
+  else
+  {
+    di << "\n\nMass : " << G.Mass() << "\n\n";
+    if (witheps && *a[0] != 'l')
+    {
+      di << "Relative error of mass computation : " << eps <<  "\n\n";
+    }
+
+    di << "Center of gravity : \n";
+    di << "X = " << P.X() << "\n";
+    di << "Y = " << P.Y() << "\n";
+    di << "Z = " << P.Z() << "\n\n";
+
+    di << "Matrix of Inertia :\n";
+    di << I(1,1) << "    " << I(1,2) << "    " << I(1,3) << "\n";
+    di << I(2,1) << "    " << I(2,2) << "    " << I(2,3) << "\n";
+    di << I(3,1) << "    " << I(3,2) << "    " << I(3,3) << "\n\n";
+
+    di << "Moments :\n";
+    di << "IX = " << Ix << "\n";
+    di << "IY = " << Iy << "\n";
+    di << "IZ = " << Iz << "\n\n";
+  }
 
   //if (n == 2) {  
     gp_Ax2 axes(P,Pr.ThirdAxisOfInertia(),Pr.FirstAxisOfInertia());
@@ -282,20 +315,12 @@ void  BRepTest::GPropCommands(Draw_Interpretor& theCommands)
 
   const char* g = "Global properties";
   theCommands.Add("lprops",
-		  "lprops name [epsilon] [x y z] : compute linear properties",
-		  __FILE__,
-		  props,
-		  g);
-  theCommands.Add("sprops",
-		  "sprops name [epsilon] [x y z] : compute surfacic properties",
-		  __FILE__,
-		  props,
-		  g);
-  theCommands.Add("vprops",
-		  "vprops name [epsilon] [c[losed]] [x y z] : compute volumic properties",
-		  __FILE__,
-		  props,
-		  g);
+    "lprops name [x y z] [-full] : compute linear properties",
+    __FILE__, props, g);
+  theCommands.Add("sprops", "sprops name [epsilon] [x y z] [-full] :\n"
+"  compute surfacic properties", __FILE__, props, g);
+  theCommands.Add("vprops", "vprops name [epsilon] [c[losed]] [x y z] [-full] :\n"
+"  compute volumic properties", __FILE__, props, g);
 
   theCommands.Add("vpropsgk",
 		  "vpropsgk name epsilon closed span mode [x y z] : compute volumic properties",
