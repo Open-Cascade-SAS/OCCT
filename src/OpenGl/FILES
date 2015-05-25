@@ -141,7 +141,6 @@ OpenGl_ShaderManager.hxx
 OpenGl_ShaderManager.cxx
 OpenGl_ShaderStates.hxx
 OpenGl_ShaderStates.cxx
-OpenGl_SequenceOfStructure.hxx
 Handle_OpenGl_ShaderObject.hxx
 Handle_OpenGl_ShaderProgram.hxx
 Handle_OpenGl_ShaderManager.hxx

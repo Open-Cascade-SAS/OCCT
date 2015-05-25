@@ -21,9 +21,12 @@
 #include <NCollection_IndexedMap.hxx>
 
 #include <OpenGl_Structure.hxx>
-#include <OpenGl_SequenceOfStructure.hxx>
 
-typedef NCollection_Array1<OpenGl_SequenceOfStructure> OpenGl_ArrayOfStructure;
+//! Defines index map of OpenGL structures.
+typedef NCollection_IndexedMap<const OpenGl_Structure*> OpenGl_IndexedMapOfStructure;
+
+//! Defines array of indexed maps of OpenGL structures.
+typedef NCollection_Array1<OpenGl_IndexedMapOfStructure> OpenGl_ArrayOfIndexedMapOfStructure;
 
 //! Set of OpenGl_Structures for building BVH tree.
 class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet<Standard_ShortReal, 4>
@@ -53,7 +56,7 @@ public:
 
   //! Replaces the set by the given array taking into account
   //! if each structure is cullable or not.
-  void Assign (const OpenGl_ArrayOfStructure& theStructs);
+  void Assign (const OpenGl_ArrayOfIndexedMapOfStructure& theStructs);
 
   //! Adds structure to the set.
   void Add (const OpenGl_Structure* theStruct);

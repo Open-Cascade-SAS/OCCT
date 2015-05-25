@@ -1429,8 +1429,7 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
   {
     glDisable (GL_DEPTH_TEST);
   }
-  for (OpenGl_SequenceOfStructure::Iterator anIter (myView->ImmediateStructures());
-       anIter.More(); anIter.Next())
+  for (OpenGl_IndexedMapOfStructure::Iterator anIter (myView->ImmediateStructures()); anIter.More(); anIter.Next())
   {
     const OpenGl_Structure* aStructure = anIter.Value();
     if (!aStructure->IsVisible())

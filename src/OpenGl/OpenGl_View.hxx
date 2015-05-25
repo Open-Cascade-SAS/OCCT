@@ -201,7 +201,7 @@ class OpenGl_View : public MMgt_TShared
   void InvalidateBVHData (const Standard_Integer theLayerId);
 
   //! Returns list of immediate structures rendered on top of main presentation
-  const OpenGl_SequenceOfStructure& ImmediateStructures() const
+  const OpenGl_IndexedMapOfStructure& ImmediateStructures() const
   {
     return myImmediateList;
   }
@@ -267,8 +267,8 @@ protected:
 
   //View_LABDepthCueing - fixed index used
 
-  OpenGl_LayerList           myZLayers;       //!< main list of displayed structure, sorted by layers
-  OpenGl_SequenceOfStructure myImmediateList; //!< list of immediate structures rendered on top of main presentation
+  OpenGl_LayerList             myZLayers;       //!< main list of displayed structure, sorted by layers
+  OpenGl_IndexedMapOfStructure myImmediateList; //!< list of immediate structures rendered on top of main presentation
 
   const TEL_TRANSFORM_PERSISTENCE *myTransPers;
   Standard_Boolean myIsTransPers;
