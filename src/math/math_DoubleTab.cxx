@@ -15,7 +15,6 @@
 // Lpa, le 7/02/92
 #include <math_DoubleTab.ixx>
 
-#include <math_Memory.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Integer.hxx>

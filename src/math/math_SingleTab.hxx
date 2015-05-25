@@ -15,9 +15,10 @@
 #ifndef _math_SingleTab_HeaderFile
 #define _math_SingleTab_HeaderFile
 
-#include <math_Memory.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Failure.hxx>
+
+#include <string.h>
 
 static const Standard_Integer aLengthOfBuf = 512;
 
