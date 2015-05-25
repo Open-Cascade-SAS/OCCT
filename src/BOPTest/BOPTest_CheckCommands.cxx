@@ -999,7 +999,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di,
       }
       //
       aTolE = BRep_Tool::Tolerance(aE);
-      if (aDMax < aTolE) {
+      if (!(aDMax > aTolE)) {
         continue;
       }
       //
