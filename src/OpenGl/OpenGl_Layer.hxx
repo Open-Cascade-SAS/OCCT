@@ -82,7 +82,7 @@ public:
   Standard_Boolean Append (const OpenGl_Layer& theOther);
 
   //! Returns array of OpenGL structures.
-  const OpenGl_ArrayOfStructure& ArrayOfStructures() const { return myArray; }
+  const OpenGl_ArrayOfIndexedMapOfStructure& ArrayOfStructures() const { return myArray; }
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
@@ -105,12 +105,12 @@ protected:
 
 private:
 
-  OpenGl_ArrayOfStructure            myArray;
-  Standard_Integer                   myNbStructures;
-  Graphic3d_ZLayerSettings           myLayerSettings;             //!< Layer setting flags
-  mutable OpenGl_BVHClipPrimitiveSet myBVHPrimitives;             //<! Set of OpenGl_Structures for building BVH tree
-  mutable Standard_Boolean           myBVHIsLeftChildQueuedFirst; //<! Is needed for implementation of stochastic order of BVH traverse
-  mutable Standard_Boolean           myIsBVHPrimitivesNeedsReset; //<! Defines if the primitive set for BVH is outdated
+  OpenGl_ArrayOfIndexedMapOfStructure myArray;
+  Standard_Integer                    myNbStructures;
+  Graphic3d_ZLayerSettings            myLayerSettings;             //!< Layer setting flags
+  mutable OpenGl_BVHClipPrimitiveSet  myBVHPrimitives;             //!< Set of OpenGl_Structures for building BVH tree
+  mutable Standard_Boolean            myBVHIsLeftChildQueuedFirst; //!< Is needed for implementation of stochastic order of BVH traverse
+  mutable Standard_Boolean            myIsBVHPrimitivesNeedsReset; //!< Defines if the primitive set for BVH is outdated
 
 public:
 

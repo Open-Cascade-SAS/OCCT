@@ -71,13 +71,13 @@ void OpenGl_BVHClipPrimitiveSet::Swap (const Standard_Integer theIdx1,
 // function : Assign
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveSet::Assign (const OpenGl_ArrayOfStructure& theStructs)
+void OpenGl_BVHClipPrimitiveSet::Assign (const OpenGl_ArrayOfIndexedMapOfStructure& theStructs)
 {
   myStructs.Clear();
 
   for (Standard_Integer aPriorityIdx = 0, aNbPriorities = theStructs.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
   {
-    for (OpenGl_SequenceOfStructure::Iterator aStructIter (theStructs (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
+    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (theStructs (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
 
