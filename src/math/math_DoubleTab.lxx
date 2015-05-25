@@ -14,7 +14,8 @@
 
 // Lpa, le 7/02/92
 
-#include <math_Memory.hxx>
+#include <string.h>
+
 #include <Standard_OutOfRange.hxx>
 
 inline Standard_Real& math_DoubleTab::Value (const Standard_Integer RowIndex,
