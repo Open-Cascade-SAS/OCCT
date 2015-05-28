@@ -1986,37 +1986,20 @@ DistanceMinimizeByGradient( const Handle(Adaptor3d_HSurface)& theASurf1,
   const Standard_Real aTol = 1.0e-14;
   Handle(Geom_Surface) aS1, aS2;
 
-  switch(theASurf1->GetType())
-  {
-  case GeomAbs_BezierSurface:
-    aS1 = theASurf1->Surface().Bezier();
-    break;
-  case GeomAbs_BSplineSurface:
-    aS1 = theASurf1->Surface().BSpline();
-    break;
-  default:
-    return Standard_True;
-  }
-
-  switch(theASurf2->GetType())
-  {
-  case GeomAbs_BezierSurface:
-    aS2 = theASurf2->Surface().Bezier();
-    break;
-  case GeomAbs_BSplineSurface:
-    aS2 = theASurf2->Surface().BSpline();
-    break;
-  default:
-    return Standard_True;
-  }
+  if (theASurf1->GetType() != GeomAbs_BezierSurface &&
+      theASurf1->GetType() != GeomAbs_BSplineSurface)
+      return Standard_True;
+  if (theASurf2->GetType() != GeomAbs_BezierSurface &&
+      theASurf2->GetType() != GeomAbs_BSplineSurface)
+      return Standard_True;
 
   Standard_Boolean aStatus = Standard_False;
 
   gp_Pnt aP1, aP2;
   gp_Vec aD1u, aD1v, aD2U, aD2V;
 
-  aS1->D1(theU1, theV1, aP1, aD1u, aD1v);
-  aS2->D1(theU2, theV2, aP2, aD2U, aD2V);
+  theASurf1->D1(theU1, theV1, aP1, aD1u, aD1v);
+  theASurf2->D1(theU2, theV2, aP2, aD2U, aD2V);
 
   Standard_Real aSQDistPrev = aP1.SquareDistance(aP2);
 
@@ -2053,8 +2036,8 @@ DistanceMinimizeByGradient( const Handle(Adaptor3d_HSurface)& theASurf1,
 
     gp_Pnt aPt1, aPt2;
 
-    aS1->D1(aPARu, aPARv, aPt1, aD1u, aD1v);
-    aS2->D1(aParU, aParV, aPt2, aD2U, aD2V);
+    theASurf1->D1(aPARu, aPARv, aPt1, aD1u, aD1v);
+    theASurf2->D1(aParU, aParV, aPt2, aD2U, aD2V);
 
     Standard_Real aSQDist = aPt1.SquareDistance(aPt2);
 
@@ -2078,8 +2061,8 @@ DistanceMinimizeByGradient( const Handle(Adaptor3d_HSurface)& theASurf1,
       }
       else
       {
-        aS1->D1(theU1, theV1, aPt1, aD1u, aD1v);
-        aS2->D1(theU2, theV2, aPt2, aD2U, aD2V);
+        theASurf1->D1(theU1, theV1, aPt1, aD1u, aD1v);
+        theASurf2->D1(theU2, theV2, aPt2, aD2U, aD2V);
 
         gp_Vec aP12(aPt1, aPt2);
         aGradFu = -aP12.Dot(aD1u);

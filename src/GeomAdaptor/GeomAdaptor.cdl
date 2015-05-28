@@ -28,7 +28,9 @@ uses
     TColStd,
     Geom2dAdaptor,
     TColgp,
-    Precision
+    Precision,
+    BSplCLib,
+    BSplSLib
 
 is
       class Curve; 

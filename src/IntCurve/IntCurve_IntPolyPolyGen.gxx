@@ -679,20 +679,25 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     aPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol),
     aPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);
 
-  if( (aPoly1->DeflectionOverEstimation() > TolConf) ||
+  if( (aPoly1->DeflectionOverEstimation() > TolConf) &&
       (aPoly2->DeflectionOverEstimation() > TolConf))
   {
     const Standard_Real aDeflectionSum = 
       Max(aPoly1->DeflectionOverEstimation(), TolConf) + 
       Max(aPoly2->DeflectionOverEstimation(), TolConf);
 
-    aPoly2->SetDeflectionOverEstimation(aDeflectionSum);
-    aPoly1->SetDeflectionOverEstimation(aDeflectionSum);
-
-    const Bnd_Box2d aB1 = aPoly1->Bounding(), aB2 = aPoly2->Bounding();
-
-    aPoly1->ComputeWithBox(C1, aB2);
-    aPoly2->ComputeWithBox(C2, aB1);
+    if (nbsamplesOnC2 > nbsamplesOnC1)
+    {
+      aPoly2->ComputeWithBox(C2, aPoly1->Bounding());
+      aPoly1->SetDeflectionOverEstimation(aDeflectionSum);
+      aPoly1->ComputeWithBox(C1, aPoly2->Bounding());
+    }
+    else
+    {
+      aPoly1->ComputeWithBox(C1, aPoly2->Bounding());
+      aPoly2->SetDeflectionOverEstimation(aDeflectionSum);
+      aPoly2->ComputeWithBox(C2, aPoly1->Bounding());
+    }
   }
 
   //----------------------------------------------------------------------

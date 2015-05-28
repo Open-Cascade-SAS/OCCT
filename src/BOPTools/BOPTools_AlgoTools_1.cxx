@@ -111,7 +111,7 @@ static
 static 
   Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
                                   const TopoDS_Face& aF,
-                                  const Handle(Geom_Surface)& aS,
+                                  const GeomAdaptor_Surface& aS,
                                   const TopoDS_Edge& aE1,
                                   const TopoDS_Edge& aE2);
 
@@ -558,7 +558,7 @@ void CorrectWires(const TopoDS_Face& aFx)
       aT=BRep_Tool::Parameter(aV, aE);
       //
       aC2D->D0(aT, aP2D);
-      aS->D0(aP2D.X(), aP2D.Y(), aP);
+      aGAS.D0(aP2D.X(), aP2D.Y(), aP);
       aD2=aPV.SquareDistance(aP);
       if (aD2>aD2max) {
         aD2max=aD2;
@@ -586,7 +586,7 @@ void CorrectWires(const TopoDS_Face& aFx)
           continue;
         }
         //
-        aD2=IntersectCurves2d(aPV, aF, aS, aE, aE1);
+        aD2=IntersectCurves2d(aPV, aF, aGAS, aE, aE1);
         if (aD2>aD2max) {
           aD2max=aD2;
         }
@@ -606,7 +606,7 @@ void CorrectWires(const TopoDS_Face& aFx)
 //=======================================================================
 Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
                                 const TopoDS_Face& aF,
-                                const Handle(Geom_Surface)& aS,
+                                const GeomAdaptor_Surface& aGAS,
                                 const TopoDS_Edge& aE1,
                                 const TopoDS_Edge& aE2)
 {
@@ -650,7 +650,7 @@ Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
         }          
         //
         aP2D = aPoint.Value();
-        aS->D0(aP2D.X(), aP2D.Y(), aP);
+        aGAS.D0(aP2D.X(), aP2D.Y(), aP);
         aD=aPV.SquareDistance(aP);
         if (aD > aDist) {
           aDist = 1.01 * aD;

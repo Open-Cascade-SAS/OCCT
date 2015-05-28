@@ -1,7 +1,6 @@
-puts "TODO OCC25925 ALL: Tcl Exception: result is not a topological shape!!!"
-puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done"
-puts "TODO OCC25925 ALL: Faulty OCC5805 : result is not Closed shape"
-puts "TODO OCC25925 ALL: TEST INCOMPLETE"
+puts "TODO OCC24862 ALL: Error : Result shape is WRONG"
+puts "TODO OCC24862 ALL: Error : The square of result shape is"
+puts "TODO OCC24682 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 puts "============"
 puts "OCC5805"

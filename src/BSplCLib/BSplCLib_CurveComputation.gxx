@@ -19,6 +19,7 @@
 // xab : 12-Mar-96 : added MovePointAndTangent
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <PLib.hxx>
@@ -1087,6 +1088,65 @@ void BSplCLib::BuildCache
       CacheWeights(1) = 1.0e0 ;
     }
   }
+}
+
+void BSplCLib::BuildCache(const Standard_Real          theParameter,
+                          const Standard_Real          theSpanDomain,
+                          const Standard_Boolean       thePeriodicFlag,
+                          const Standard_Integer       theDegree,
+                          const TColStd_Array1OfReal&  theFlatKnots,
+                          const Array1OfPoints&        thePoles,
+                          const TColStd_Array1OfReal&  theWeights,
+                                TColStd_Array2OfReal&  theCacheArray)
+{
+  Standard_Real    aParam = theParameter;
+  Standard_Integer anIndex = 0;
+  Standard_Integer aDimension;
+  Standard_Boolean isRational;
+  
+  BSplCLib_DataContainer dc(theDegree);
+  PrepareEval(aParam,
+              anIndex,
+              aDimension,
+              isRational,
+              theDegree,
+              thePeriodicFlag,
+              thePoles,
+              theWeights,
+              theFlatKnots,
+              (BSplCLib::NoMults()),
+              dc);
+  //
+  // Watch out : PrepareEval checks if locally the Bspline is polynomial
+  // therefore rational flag could be set to False even if there are 
+  // Weights. The Dimension is set accordingly.
+  //
+
+  Standard_Integer aCacheShift = // helps to store weights when PrepareEval did not found that the curve is locally polynomial
+    (&theWeights != NULL && !isRational) ? aDimension + 1 : aDimension;
+
+  BSplCLib::Bohm(aParam, theDegree, theDegree, *dc.knots, aDimension, *dc.poles);
+
+  Standard_Real aCoeff = 1.0;
+  Standard_Real* aCache = (Standard_Real *) &(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+  Standard_Real* aPolyCoeffs = dc.poles;
+
+  for (Standard_Integer i = 0; i <= theDegree; i++)
+  {
+    for (Standard_Integer j = 0; j< aDimension; j++)
+      aCache[j] = aPolyCoeffs[j] * aCoeff;
+    aCoeff *= theSpanDomain / (i+1);
+    aPolyCoeffs += aDimension;
+    aCache += aDimension;
+    if (aCacheShift > aDimension)
+    {
+      aCache[0] = 0.0;
+      aCache++;
+    }
+  }
+
+  if (aCacheShift > aDimension)
+    theCacheArray.SetValue(theCacheArray.LowerRow(), theCacheArray.LowerCol() + aCacheShift - 1, 1.0);
 }
 
 //=======================================================================

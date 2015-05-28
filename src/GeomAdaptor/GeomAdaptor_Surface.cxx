@@ -51,6 +51,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Trsf.hxx>
 #include <BSplCLib.hxx>
+#include <BSplSLib_Cache.hxx>
 #include <Precision.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
@@ -131,7 +132,7 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       mySurfaceType = GeomAbs_BezierSurface;
     else if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
       Load((*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface(),
-	   UFirst,ULast,VFirst,VLast);
+           UFirst,ULast,VFirst,VLast);
     }
     else if ( TheType == STANDARD_TYPE(Geom_Plane))
       mySurfaceType = GeomAbs_Plane;
@@ -149,7 +150,12 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       mySurfaceType = GeomAbs_SurfaceOfExtrusion;
     else if ( TheType == STANDARD_TYPE(Geom_BSplineSurface)) {
       mySurfaceType = GeomAbs_BSplineSurface;
-      myBspl        = 	*((Handle(Geom_BSplineSurface)*)&S);
+      myBspl        = *((Handle(Geom_BSplineSurface)*)&mySurface);
+      // Create cache for B-spline
+      mySurfaceCache = new BSplSLib_Cache( 
+        myBspl->UDegree(), myBspl->IsUPeriodic(), myBspl->UKnotSequence(), 
+        myBspl->VDegree(), myBspl->IsVPeriodic(), myBspl->VKnotSequence(), 
+        myBspl->Poles(), myBspl->Weights());
     }
     else if ( TheType == STANDARD_TYPE(Geom_OffsetSurface))
       mySurfaceType = GeomAbs_OffsetSurface;
@@ -600,6 +606,19 @@ Standard_Real GeomAdaptor_Surface::VPeriod() const
 }
 
 //=======================================================================
+//function : RebuildCache
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Surface::RebuildCache(const Standard_Real theU,
+                                       const Standard_Real theV) const
+{
+  mySurfaceCache->BuildCache(theU, theV, 
+    myBspl->UDegree(), myBspl->IsUPeriodic(), myBspl->UKnotSequence(), 
+    myBspl->VDegree(), myBspl->IsVPeriodic(), myBspl->VKnotSequence(), 
+    myBspl->Poles(), myBspl->Weights());
+}
+
+//=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
@@ -607,6 +626,15 @@ Standard_Real GeomAdaptor_Surface::VPeriod() const
 gp_Pnt GeomAdaptor_Surface::Value(const Standard_Real U, 
                                   const Standard_Real V) const 
 {
+  if (mySurfaceType == GeomAbs_BSplineSurface && !mySurfaceCache.IsNull())
+  {
+    if (!mySurfaceCache->IsCacheValid(U, V))
+      RebuildCache(U, V);
+    gp_Pnt P;
+    mySurfaceCache->D0(U, V, P);
+    return P;
+  }
+
   return mySurface->Value(U,V);
 }
 
@@ -618,6 +646,14 @@ gp_Pnt GeomAdaptor_Surface::Value(const Standard_Real U,
 void GeomAdaptor_Surface::D0(const Standard_Real U, 
                              const Standard_Real V, gp_Pnt& P) const 
 {
+  if (mySurfaceType == GeomAbs_BSplineSurface && !mySurfaceCache.IsNull())
+  {
+    if (!mySurfaceCache->IsCacheValid(U, V))
+      RebuildCache(U, V);
+    mySurfaceCache->D0(U, V, P);
+    return;
+  }
+
   mySurface->D0(U,V,P);
 }
 
@@ -629,11 +665,11 @@ void GeomAdaptor_Surface::D0(const Standard_Real U,
 
 void GeomAdaptor_Surface::D1(const Standard_Real U, 
                              const Standard_Real V, 
-			     gp_Pnt&       P,
-			     gp_Vec&       D1U, 
-			     gp_Vec&       D1V ) const 
+                                   gp_Pnt&       P,
+                                   gp_Vec&       D1U, 
+                                   gp_Vec&       D1V ) const 
 {
-  Standard_Integer Ideb,Ifin,IVdeb,IVfin,USide=0,VSide=0;
+  Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide=0, VSide=0;
   Standard_Real u = U, v = V;
   if (Abs(U-myUFirst) <= myTolU) {USide= 1; u = myUFirst;}
   else if (Abs(U-myULast) <= myTolU) {USide= -1; u = myULast;}
@@ -641,39 +677,42 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
   else if (Abs(V-myVLast) <= myTolV) {VSide= -1; v = myVLast;}
 
   switch(mySurfaceType) {
-  case  GeomAbs_BSplineSurface: 
-    {	
-      if((USide==0)&&(VSide==0)){
-	myBspl->D1(u,v,P,D1U,D1V);
-      }
-      else { 
-	if(IfUVBound(u,v,Ideb,Ifin,IVdeb,IVfin,USide,VSide))
-	  myBspl->LocalD1 (u, v, Ideb, Ifin,IVdeb ,IVfin ,P ,D1U,D1V); 
-	else myBspl->D1(u,v,P,D1U,D1V);
-      }
-      break;
+  case GeomAbs_BSplineSurface:
+    if ((USide != 0 || VSide != 0) && 
+        IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+      myBspl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
+    else if (!mySurfaceCache.IsNull())
+    {
+      if (!mySurfaceCache->IsCacheValid(U, V))
+        RebuildCache(U, V);
+      mySurfaceCache->D1(U, V, P, D1U, D1V);
     }
-      
-    case GeomAbs_SurfaceOfExtrusion  :
-      
-       if(USide==0) myExtSurf->D1(u,v,P,D1U,D1V);
-       else myExtSurf->LocalD1(u,v,USide,P,D1U,D1V);
-       break;
-     
-    case GeomAbs_SurfaceOfRevolution :
-     
-       if(VSide==0) myRevSurf->D1 (u, v, P,D1U,D1V );
-       else myRevSurf->LocalD1 (u, v, VSide, P,D1U,D1V );
-       break;
-     
-    case  GeomAbs_OffsetSurface :
-      {
-	if((USide==0)&&(VSide==0)) myOffSurf->D1 (u, v,P,D1U,D1V ); 
-	else   myOffSurf->LocalD1 (u, v, USide, VSide ,P,D1U,D1V ); 
-	break;
-      }
-      default :   
-	mySurface->D1(u,v,P,D1U,D1V);
+    else
+      myBspl->D1(u, v, P, D1U, D1V);
+    break;
+
+  case GeomAbs_SurfaceOfExtrusion:
+    if (USide==0) 
+      myExtSurf->D1(u, v, P, D1U, D1V);
+    else 
+      myExtSurf->LocalD1(u, v, USide, P, D1U, D1V);
+    break;
+
+  case GeomAbs_SurfaceOfRevolution:
+    if (VSide==0) 
+      myRevSurf->D1(u, v, P, D1U, D1V);
+    else 
+      myRevSurf->LocalD1(u, v, VSide, P, D1U, D1V);
+    break;
+
+  case GeomAbs_OffsetSurface:
+    if (USide==0 && VSide==0) 
+      myOffSurf->D1(u, v, P, D1U, D1V);
+    else 
+      myOffSurf->LocalD1(u, v, USide, VSide, P, D1U, D1V);
+    break;
+  default:
+    mySurface->D1(u, v, P, D1U, D1V);
   }
 }
 
@@ -683,50 +722,56 @@ void GeomAdaptor_Surface::D1(const Standard_Real U,
 //=======================================================================
 
 void GeomAdaptor_Surface::D2(const Standard_Real U,
-                             const Standard_Real V, gp_Pnt& P,
-                             gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U,
-                             gp_Vec& D2V, gp_Vec& D2UV) const 
+                             const Standard_Real V, 
+                                   gp_Pnt&       P,
+                                   gp_Vec&       D1U, 
+                                   gp_Vec&       D1V, 
+                                   gp_Vec&       D2U,
+                                   gp_Vec&       D2V, 
+                                   gp_Vec&       D2UV) const 
 { 
-  Standard_Integer  Ideb,Ifin,IVdeb,IVfin,USide=0,VSide=0;
+  Standard_Integer Ideb, Ifin, IVdeb, IVfin, USide=0, VSide=0;
   Standard_Real u = U, v = V;
   if (Abs(U-myUFirst) <= myTolU) {USide= 1; u = myUFirst;}
   else if (Abs(U-myULast) <= myTolU) {USide= -1; u = myULast;}
   if (Abs(V-myVFirst) <= myTolV) {VSide= 1; v = myVFirst;}
   else if (Abs(V-myVLast) <= myTolV) {VSide= -1; v = myVLast;}
 
-  switch(mySurfaceType)
+  switch(mySurfaceType) {
+  case  GeomAbs_BSplineSurface:
+    if((USide != 0 || VSide != 0) && 
+       IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+      myBspl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
+    else if (!mySurfaceCache.IsNull())
     {
-    case  GeomAbs_BSplineSurface:
-      
-       if((USide==0)&&(VSide==0)) myBspl->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
-       else{
-	 if(IfUVBound(u,v,Ideb,Ifin,IVdeb,IVfin,USide,VSide))
-	   myBspl->LocalD2 (u, v, Ideb, Ifin,IVdeb ,IVfin ,P ,D1U,D1V,D2U,D2V,D2UV); 
-	 else myBspl->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
-       }
-       break;
-     
-    case GeomAbs_SurfaceOfExtrusion  :
-      
-       if(USide==0)  myExtSurf->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
-       else myExtSurf->LocalD2(u,v,USide,P,D1U,D1V,D2U,D2V,D2UV);
-       break;
-     
-    case GeomAbs_SurfaceOfRevolution :
-      
-       if(VSide==0) myRevSurf->D2 (u, v, P,D1U,D1V,D2U,D2V,D2UV );
-       else myRevSurf->LocalD2 (u, v, VSide, P,D1U,D1V,D2U,D2V,D2UV );
-       break;
-     
-    case  GeomAbs_OffsetSurface :
-      {
-	if((USide==0)&&(VSide==0)) myOffSurf->D2 (u, v,P,D1U,D1V,D2U,D2V,D2UV ); 
-	else myOffSurf->LocalD2 (u, v, USide, VSide ,P,D1U,D1V,D2U,D2V,D2UV ); 
-	break;
-      }
-      default :  { mySurface->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
-		   break;}
+      if (!mySurfaceCache->IsCacheValid(U, V))
+        RebuildCache(U, V);
+      mySurfaceCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
     }
+    else myBspl->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
+    break;
+
+  case GeomAbs_SurfaceOfExtrusion  :
+
+    if(USide==0)  myExtSurf->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
+    else myExtSurf->LocalD2(u,v,USide,P,D1U,D1V,D2U,D2V,D2UV);
+    break;
+
+  case GeomAbs_SurfaceOfRevolution :
+
+    if(VSide==0) myRevSurf->D2 (u, v, P,D1U,D1V,D2U,D2V,D2UV );
+    else myRevSurf->LocalD2 (u, v, VSide, P,D1U,D1V,D2U,D2V,D2UV );
+    break;
+
+  case  GeomAbs_OffsetSurface :
+    {
+      if((USide==0)&&(VSide==0)) myOffSurf->D2 (u, v,P,D1U,D1V,D2U,D2V,D2UV ); 
+      else myOffSurf->LocalD2 (u, v, USide, VSide ,P,D1U,D1V,D2U,D2V,D2UV ); 
+      break;
+    }
+  default :  { mySurface->D2(u,v,P,D1U,D1V,D2U,D2V,D2UV);
+    break;}
+  }
 }
 
 

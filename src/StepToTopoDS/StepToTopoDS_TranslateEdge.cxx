@@ -421,7 +421,8 @@ void  StepToTopoDS_TranslateEdge::MakeFromCurve3D
     TP->AddWarning(C3D,"Update of 3D-Parameters has failed");
 
   //:d5: instead of AdjustCurve above which is incorrect if U1 and U2 are not ends
-  gp_Pnt pU1 = C1->Value ( U1 ), pU2 = C1->Value ( U2 );
+  GeomAdaptor_Curve aCA(C1);
+  gp_Pnt pU1 = aCA.Value ( U1 ), pU2 = aCA.Value ( U2 );
   temp1 = pU1.Distance ( pv1 );
   temp2 = pU2.Distance ( pv2 );
   if ( temp1 > preci || temp2 > preci ) {

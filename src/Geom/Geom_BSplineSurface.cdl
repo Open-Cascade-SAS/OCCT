@@ -147,8 +147,7 @@ uses  Array1OfInteger      from TColStd,
       BSplKnotDistribution from GeomAbs,
       Curve                from Geom,
       Geometry             from Geom,
-      Shape                from GeomAbs,
-      Mutex                from Standard
+      Shape                from GeomAbs
 
 raises ConstructionError   from Standard,
        DimensionError      from Standard,
@@ -919,16 +918,6 @@ is
         --                 |1.0, 2.0, 0.5|
         --   if Weights =  |1.0, 2.0, 0.5|   returns False
         --                 |1.0, 2.0, 0.5|
-
-  IsCacheValid(me;  UParameter, VParameter : Real) returns Boolean ;
-  
-        ---Purpose :
-        --           Tells whether the Cache is valid for the
-        --           given parameter 
-        -- Warnings : the parameter must be normalized within
-        -- the period if the curve is periodic. Otherwise
-        -- the answer will be false
-        -- 
         
   Bounds (me; U1, U2, V1, V2 : out Real);
         ---Purpose :
@@ -1017,6 +1006,11 @@ is
        ---Purpose :
        --  Raised if the length of P in the U and V direction
        --  is not equal to NbUpoles and NbVPoles.
+  Poles (me)
+  returns Array2OfPnt from TColgp
+       ---Purpose : Returns the poles of the B-spline surface.
+       ---C++ : return const &
+  is static;
 
 
   UDegree (me)  returns Integer;
@@ -1055,6 +1049,11 @@ is
        	---Purpose :
        	--  Raised if the length of Ku is not equal to the number of knots
        	--  in the U direction.
+  UKnots (me)
+  returns Array1OfReal from TColStd
+       ---Purpose : Returns the knots in the U direction.
+       ---C++ : return const &
+  is static;
 
 
   UKnotSequence (me; Ku : out Array1OfReal from TColStd)
@@ -1066,6 +1065,15 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of Ku is not equal to NbUPoles + UDegree + 1
+  UKnotSequence (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the uknots sequence.
+        --  In this sequence the knots with a multiplicity greater than 1
+        --  are repeated.
+        --- Example :
+        --  Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
+        ---C++ : return const &
+  is static;
 
 
   UMultiplicity (me; UIndex : Integer)   returns Integer
@@ -1083,6 +1091,11 @@ is
        	---Purpose :
        	--  Raised if the length of Mu is not equal to the number of
        	--  knots in the U direction.
+  UMultiplicities (me)
+  returns Array1OfInteger from TColStd
+       ---Purpose : Returns the multiplicities of the knots in the U direction.
+       ---C++ : return const &
+  is static;
 
 
   VDegree (me)  returns Integer;
@@ -1120,6 +1133,11 @@ is
        ---Purpose :
        --  Raised if the length of Kv is not equal to the number of 
        --  knots in the V direction.
+  VKnots (me)
+  returns Array1OfReal from TColStd
+       ---Purpose : Returns the knots in the V direction.
+       ---C++ : return const &
+  is static;
 
 
   VKnotSequence (me; Kv : out Array1OfReal from TColStd)
@@ -1131,6 +1149,15 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of Kv is not equal to NbVPoles + VDegree + 1
+  VKnotSequence (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the vknots sequence.
+        --  In this sequence the knots with a multiplicity greater than 1
+        --  are repeated.
+        --- Example :
+        --  Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
+        ---C++ : return const &
+  is static;
 
 
   VMultiplicity (me; VIndex : Integer)   returns Integer
@@ -1148,6 +1175,11 @@ is
        ---Purpose :
        --  Raised if the length of Mv is not equal to the number of 
        --  knots in the V direction.
+  VMultiplicities (me)
+  returns Array1OfInteger from TColStd
+       ---Purpose : Returns the multiplicities of the knots in the V direction.
+       ---C++ : return const &
+  is static;
 
 
   Weight (me; UIndex, VIndex : Integer)   returns Real
@@ -1164,6 +1196,11 @@ is
         ---Purpose :
         --  Raised if the length of W in the U and V direction is 
         --  not equal to NbUPoles and NbVPoles.
+  Weights (me)
+  returns Array2OfReal from TColStd
+        ---Purpose : Returns the weights of the B-spline surface.
+        ---C++ : return const &
+  is static;
 
 
 
@@ -1389,16 +1426,6 @@ is
   is static private;
 
   
-  InvalidateCache(me : mutable)
-    	---Purpose : Invalidates the cache. This has to be private this has to be private
-      is static private;
-      
-  ValidateCache(me : mutable ; UParameter : Real; 
-    	    	    	       VParameter : Real) 
-  
-    is static private;
-    	---Purpose : updates the cache and validates it
-
   
 fields
 	     
@@ -1420,68 +1447,8 @@ fields
    vknots    : HArray1OfReal    from TColStd;
    umults    : HArray1OfInteger from TColStd;
    vmults    : HArray1OfInteger from TColStd;
-  -- Inplementation of the cache on surfaces
-   cachepoles : HArray2OfPnt     from TColgp;
-  -- Taylor expansion of the poles function, in homogeneous
-  -- form if the curve is rational. The taylor expansion
-  -- is normalized so that the span corresponds to
-  -- [0 1]x[0 1]. The Taylor expension of lower degree
-  -- is stored as consecutive Pnt in the array that is
-  -- if udeg <= vdeg than the array stores the following
-  -- 
-  --                                  (2,0)           (3,0) 
-  --               (1,0)             f     (u0,v0)   f     (u0,v0)
-  --  f  (u0,v0)  f     (u0,v0)      -------------   -----------
-  --                                      2             3!
-  --                                
-  --                                   (2,1)           (3,1) 
-  --   (0,1)          (1,1)         f     (u0,v0)   f     (u0,v0)
-  --  f     (u0,v0)  f     (u0,v0)  -------------   -----------
-  --                                     2              3!
-  --   
-  -- Otherwise it is stored in the following fashion
-  -- 
-  --  
-  --                                  (0,2)           (0,3) 
-  --               (0,1)             f     (u0,v0)   f     (u0,v0)
-  --  f  (u0,v0)  f     (u0,v0)      -------------   -----------
-  --                                      2             3!
-  --                                
-  --                                 (1,2)           (1,3) 
-  --   (1,0)          (1,1)         f     (u0,v0)   f     (u0,v0)
-  --  f     (u0,v0)  f     (u0,v0)  -------------   -----------
-  --                                     2              3!
-  --   
-  --   The size of the array is (1,Max degree) (1, Min degree) 
-  -- 
-    cacheweights   : HArray2OfReal    from TColStd;
-  -- Taylor expansion of the poles function, in homogeneous
-  -- form if the curve is rational. The taylor expansion
-  -- is normalized so that the span corresponds to
-  -- [0 1]x[0 1]. The Taylor expension of lower degree
-  -- is stored as consecutive Real in the array as explained above
-    ucacheparameter : Real ;
-    vcacheparameter : Real ;
-  -- Parameters at which the Taylor expension is stored in 
-  -- the cache  
-    ucachespanlenght : Real ;
-    vcachespanlenght : Real ;
-      -- Since the Taylor expansion is normalized in the 
-  -- cache to evaluate the cache one has to use
-  -- (UParameter - uparametercache) / ucachespanlenght
-  -- (VParameter - vparametercache) / vcachespanlenght
-    ucachespanindex : Integer ;
-    vcachespanindex : Integer ;
-  -- the span for which the cache is valid if 
-  -- validcache is 1 
-    validcache : Integer ;
-    
-  -- usefull to evaluate the parametric resolutions
-    umaxderivinv  : Real from Standard;
-    vmaxderivinv  : Real from Standard;
-    maxderivinvok : Boolean from Standard;
-
-    myMutex       : Mutex from Standard;
-    -- protected bsplinesurface-cache
-
+   umaxderivinv  : Real from Standard;
+   vmaxderivinv  : Real from Standard;
+   maxderivinvok : Boolean from Standard;
+   
 end;

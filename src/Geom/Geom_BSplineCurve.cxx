@@ -125,12 +125,11 @@ Geom_BSplineCurve::Geom_BSplineCurve
 {
   // check
   
-  CheckCurveData (Poles,
-		  Knots,
-		  Mults,
-		  Degree,
-		  Periodic);
-
+  CheckCurveData(Poles,
+                 Knots,
+                 Mults,
+                 Degree,
+                 Periodic);
 
   // copy arrays
 
@@ -145,11 +144,6 @@ Geom_BSplineCurve::Geom_BSplineCurve
   mults->ChangeArray1() = Mults;
 
   UpdateKnots();
-  cachepoles = new TColgp_HArray1OfPnt(1,Degree + 1);
-  parametercache = 0.0e0 ;
-  spanlenghtcache = 0.0e0 ;
-  spanindexcache = 0 ;
-
 }
 
 //=======================================================================
@@ -174,11 +168,11 @@ Geom_BSplineCurve::Geom_BSplineCurve
 
   // check
   
-  CheckCurveData (Poles,
-		  Knots,
-		  Mults,
-		  Degree,
-		  Periodic);
+  CheckCurveData(Poles,
+                 Knots,
+                 Mults,
+                 Degree,
+                 Periodic);
 
   if (Weights.Length() != Poles.Length())
     Standard_ConstructionError::Raise("Geom_BSplineCurve");
@@ -197,11 +191,9 @@ Geom_BSplineCurve::Geom_BSplineCurve
   
   poles =  new TColgp_HArray1OfPnt(1,Poles.Length());
   poles->ChangeArray1() = Poles;
-  cachepoles = new TColgp_HArray1OfPnt(1,Degree + 1);
   if (rational) {
     weights =  new TColStd_HArray1OfReal(1,Weights.Length());
     weights->ChangeArray1() = Weights;
-    cacheweights  = new TColStd_HArray1OfReal(1,Degree + 1);
   }
 
   knots = new TColStd_HArray1OfReal(1,Knots.Length());
@@ -211,9 +203,6 @@ Geom_BSplineCurve::Geom_BSplineCurve
   mults->ChangeArray1() = Mults;
 
   UpdateKnots();
-  parametercache = 0.0e0 ;
-  spanlenghtcache = 0.0e0 ;
-  spanindexcache = 0 ;
 }
 
 //=======================================================================
@@ -598,7 +587,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
 
   BSplCLib::LocateParameter(deg,knots->Array1(),mults->Array1(),
 			    NewU2,periodic,FromU1,ToU2,index2,U);
-  if ( Abs(knots->Value(index2+1)-U) <= Eps)
+  if ( Abs(knots->Value(index2+1)-U) <= Eps || index2 == index1)
     index2++;
   
   Standard_Integer nbknots = index2 - index1 + 1;
@@ -974,7 +963,6 @@ void Geom_BSplineCurve::SetPole
   if (Index < 1 || Index > poles->Length()) Standard_OutOfRange::Raise();
   poles->SetValue (Index, P);
   maxderivinvok = 0;
-  InvalidateCache() ;
 }
 
 //=======================================================================
@@ -1023,7 +1011,6 @@ void Geom_BSplineCurve::SetWeight
     rational = !weights.IsNull();
   }
   maxderivinvok = 0;
-  InvalidateCache() ;
 }
 
 //=======================================================================
@@ -1032,11 +1019,11 @@ void Geom_BSplineCurve::SetWeight
 //=======================================================================
 
 void Geom_BSplineCurve::MovePoint(const Standard_Real U,
-				  const gp_Pnt& P,
-				  const Standard_Integer Index1,
-				  const Standard_Integer Index2,
-				  Standard_Integer& FirstModifiedPole,
-				  Standard_Integer& LastmodifiedPole)
+                                  const gp_Pnt& P,
+                                  const Standard_Integer Index1,
+                                  const Standard_Integer Index2,
+                                  Standard_Integer& FirstModifiedPole,
+                                  Standard_Integer& LastmodifiedPole)
 {
   if (Index1 < 1 || Index1 > poles->Length() || 
       Index2 < 1 || Index2 > poles->Length() || Index1 > Index2) {
@@ -1047,12 +1034,11 @@ void Geom_BSplineCurve::MovePoint(const Standard_Real U,
   D0(U, P0);
   gp_Vec Displ(P0, P);
   BSplCLib::MovePoint(U, Displ, Index1, Index2, deg, rational, poles->Array1(), 
-		      weights->Array1(), flatknots->Array1(), 
-		      FirstModifiedPole, LastmodifiedPole, npoles);
+                      weights->Array1(), flatknots->Array1(), 
+                      FirstModifiedPole, LastmodifiedPole, npoles);
   if (FirstModifiedPole) {
     poles->ChangeArray1() = npoles;
     maxderivinvok = 0;
-    InvalidateCache() ;
   }
 }
 
@@ -1061,14 +1047,13 @@ void Geom_BSplineCurve::MovePoint(const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-void Geom_BSplineCurve::
-MovePointAndTangent(const Standard_Real U,
-		    const gp_Pnt&       P,
-		    const gp_Vec&       Tangent,
-		    const Standard_Real    Tolerance,
-		    const Standard_Integer StartingCondition,
-		    const Standard_Integer EndingCondition,
-		    Standard_Integer&      ErrorStatus) 
+void Geom_BSplineCurve::MovePointAndTangent(const Standard_Real    U,
+                                            const gp_Pnt&          P,
+                                            const gp_Vec&          Tangent,
+                                            const Standard_Real    Tolerance,
+                                            const Standard_Integer StartingCondition,
+                                            const Standard_Integer EndingCondition,
+                                            Standard_Integer&      ErrorStatus) 
 {
   Standard_Integer ii ;
   if (IsPeriodic()) {
@@ -1086,26 +1071,24 @@ MovePointAndTangent(const Standard_Real U,
      delta_derivative) ;
   gp_Vec delta(P0, P);
   for (ii = 1 ; ii <= 3 ; ii++) {
-    delta_derivative.SetCoord(ii, 
-			      Tangent.Coord(ii)- delta_derivative.Coord(ii)) ;
+    delta_derivative.SetCoord(ii, Tangent.Coord(ii)-delta_derivative.Coord(ii));
   }
   BSplCLib::MovePointAndTangent(U,
-				delta,
-				delta_derivative,
-				Tolerance,
-				deg,
-				rational,
-				StartingCondition,
-				EndingCondition,
-				poles->Array1(), 
-				weights->Array1(), 
-				flatknots->Array1(), 
-				new_poles,
-				ErrorStatus) ;
+                                delta,
+                                delta_derivative,
+                                Tolerance,
+                                deg,
+                                rational,
+                                StartingCondition,
+                                EndingCondition,
+                                poles->Array1(), 
+                                weights->Array1(), 
+                                flatknots->Array1(), 
+                                new_poles,
+                                ErrorStatus) ;
   if (!ErrorStatus) {
     poles->ChangeArray1() = new_poles;
     maxderivinvok = 0;
-    InvalidateCache() ;
   }
 }
 
@@ -1119,11 +1102,11 @@ void Geom_BSplineCurve::UpdateKnots()
   rational = !weights.IsNull();
 
   Standard_Integer MaxKnotMult = 0;
-  BSplCLib::KnotAnalysis (deg, 
-		periodic,
-		knots->Array1(), 
-		mults->Array1(), 
-		knotSet, MaxKnotMult);
+  BSplCLib::KnotAnalysis(deg, 
+                         periodic,
+                         knots->Array1(), 
+                         mults->Array1(), 
+                         knotSet, MaxKnotMult);
   
   if (knotSet == GeomAbs_Uniform && !periodic)  {
     flatknots = knots;
@@ -1132,10 +1115,10 @@ void Geom_BSplineCurve::UpdateKnots()
     flatknots = new TColStd_HArray1OfReal 
       (1, BSplCLib::KnotSequenceLength(mults->Array1(),deg,periodic));
 
-    BSplCLib::KnotSequence (knots->Array1(), 
-			    mults->Array1(),
-			    deg,periodic,
-			    flatknots->ChangeArray1());
+    BSplCLib::KnotSequence(knots->Array1(), 
+                           mults->Array1(),
+                           deg,periodic,
+                           flatknots->ChangeArray1());
   }
   
   if (MaxKnotMult == 0)  smooth = GeomAbs_CN;
@@ -1148,36 +1131,6 @@ void Geom_BSplineCurve::UpdateKnots()
       default :  smooth = GeomAbs_C3;   break;
     }
   }
-  InvalidateCache() ;
-}
-
-//=======================================================================
-//function : Invalidate the Cache
-//purpose  : as the name says
-//=======================================================================
-
-void Geom_BSplineCurve::InvalidateCache() 
-{
-  validcache = 0 ;
-}
-
-//=======================================================================
-//function : check if the Cache is valid
-//purpose  : as the name says
-//=======================================================================
-
-Standard_Boolean Geom_BSplineCurve::IsCacheValid
-(const Standard_Real  U)  const 
-{
-  //Roman Lygin 26.12.08, performance improvements
-  //1. avoided using NewParameter = (U - parametercache) / spanlenghtcache
-  //to check against [0, 1), as division is CPU consuming
-  //2. minimized use of if, as branching is also CPU consuming
-  Standard_Real aDelta = U - parametercache;
-
-  return ( validcache &&
-      (aDelta >= 0.0e0) &&
-      ((aDelta < spanlenghtcache) || (spanindexcache == flatknots->Upper() - deg)) );
 }
 
 //=======================================================================
@@ -1198,85 +1151,5 @@ void Geom_BSplineCurve::PeriodicNormalization(Standard_Real&  Parameter) const
       Parameter +=  Period ;
     }
   }
-}
-
-//=======================================================================
-//function : Validate the Cache
-//purpose  : that is compute the cache so that it is valid
-//=======================================================================
-
-void Geom_BSplineCurve::ValidateCache(const Standard_Real  Parameter) 
-{
-  Standard_Real NewParameter ;
-  Standard_Integer LocalIndex = 0 ;
-  //
-  // check if the degree did not change
-  //
-  if (cachepoles->Upper() < deg + 1)
-    cachepoles = new TColgp_HArray1OfPnt(1,deg + 1);
-  if (rational)
-  {
-    if (cacheweights.IsNull() || cacheweights->Upper() < deg + 1)
-     cacheweights  = new TColStd_HArray1OfReal(1,deg + 1);
-  }
-  else if (!cacheweights.IsNull())
-    cacheweights.Nullify();
-
-  BSplCLib::LocateParameter(deg,
-			    (flatknots->Array1()),
-			    (BSplCLib::NoMults()),
-			    Parameter,
-			    periodic,
-			    LocalIndex,
-			    NewParameter);
-  spanindexcache = LocalIndex ;
-  if (Parameter == flatknots->Value(LocalIndex + 1)) {
-    
-    LocalIndex += 1 ;
-    parametercache = flatknots->Value(LocalIndex) ;
-    if (LocalIndex == flatknots->Upper() - deg) {
-      //
-      // for the last span if the parameter is outside of 
-      // the domain of the curve than use the last knot
-      // and normalize with the last span Still set the
-      // spanindexcache to flatknots->Upper() - deg so that
-      // the IsCacheValid will know for sure we are extending
-      // the Bspline 
-      //
-      
-      spanlenghtcache = flatknots->Value(LocalIndex - 1) - parametercache ;
-    }
-    else {
-      spanlenghtcache = flatknots->Value(LocalIndex + 1) - parametercache ;
-    }
-  }
-  else {
-    parametercache = flatknots->Value(LocalIndex) ;
-    spanlenghtcache = flatknots->Value(LocalIndex + 1) - parametercache ;
-  }
-  
-  if  (rational) {
-    BSplCLib::BuildCache(parametercache,
-			 spanlenghtcache,
-			 periodic,
-			 deg,
-			 (flatknots->Array1()),
-			 poles->Array1(),
-			 weights->Array1(),
-			 cachepoles->ChangeArray1(),
-			 cacheweights->ChangeArray1()) ;
-  }
-  else {
-    BSplCLib::BuildCache(parametercache,
-			 spanlenghtcache,
-			 periodic,
-			 deg,
-			 (flatknots->Array1()),
-			 poles->Array1(),
-			 *((TColStd_Array1OfReal*) NULL),
-			 cachepoles->ChangeArray1(),
-			 *((TColStd_Array1OfReal*) NULL)) ;
-  }
-  validcache = 1 ;
 }
 

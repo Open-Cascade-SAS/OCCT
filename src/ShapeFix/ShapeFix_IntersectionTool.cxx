@@ -18,6 +18,8 @@
 #include <BRepTools.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -68,7 +70,7 @@ ShapeFix_IntersectionTool::ShapeFix_IntersectionTool(const Handle(ShapeBuild_ReS
 //=======================================================================
 static gp_Pnt GetPointOnEdge(const TopoDS_Edge &edge, 
                              const Handle(ShapeAnalysis_Surface) &surf,
-                             const Handle(Geom2d_Curve) &Crv2d, 
+                             const Geom2dAdaptor_Curve &Crv2d, 
                              const Standard_Real param )
 {
   if( BRep_Tool::SameParameter(edge) ) {
@@ -78,7 +80,8 @@ static gp_Pnt GetPointOnEdge(const TopoDS_Edge &edge,
     if( !ConS.IsNull() )
       return ConS->Value(param).Transformed(L.Transformation());
   }
-  return surf->Value(Crv2d->Value(param));
+  gp_Pnt2d aP2d = Crv2d.Value(param);
+  return surf->Adaptor3d()->Value(aP2d.X(), aP2d.Y());
 }
 
 
@@ -868,9 +871,9 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
         if( !sae.PCurve(edge1, face, Crv1, a1, b1, Standard_False) ) return Standard_False;
         if( !sae.PCurve(edge2, face, Crv2, a2, b2, Standard_False) ) return Standard_False;
         Standard_Real tolint = 1.0e-10; 
-        IntRes2d_Domain d1(Crv1->Value(a1),a1,tolint,Crv1->Value(b1),b1,tolint);
-        IntRes2d_Domain d2(Crv2->Value(a2),a2,tolint,Crv2->Value(b2),b2,tolint);
         Geom2dAdaptor_Curve C1(Crv1), C2(Crv2);
+        IntRes2d_Domain d1(C1.Value(a1),a1,tolint,C1.Value(b1),b1,tolint);
+        IntRes2d_Domain d2(C2.Value(a2),a2,tolint,C2.Value(b2),b2,tolint);
         Geom2dInt_GInter Inter;
         Inter.Perform( C1, d1, C2, d2, tolint, tolint );
         if(!Inter.IsDone()) continue;
@@ -883,8 +886,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
              Tr2.PositionOnCurve() == IntRes2d_Middle ) {
             Standard_Real param1 = IP.ParamOnFirst(); 
             Standard_Real param2 = IP.ParamOnSecond();
-            gp_Pnt pi1 = GetPointOnEdge(edge1,sas,Crv1,param1);
-            gp_Pnt pi2 = GetPointOnEdge(edge2,sas,Crv2,param2);
+            gp_Pnt pi1 = GetPointOnEdge(edge1,sas,C1,param1);
+            gp_Pnt pi2 = GetPointOnEdge(edge2,sas,C2,param2);
             BRep_Builder B;
             TopoDS_Vertex V;
             Standard_Real tolV=0;
@@ -1023,10 +1026,10 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
             IntRes2d_IntersectionPoint IPL = IS.LastPoint();
             Standard_Real p12 = IPL.ParamOnFirst();
             Standard_Real p22 = IPL.ParamOnSecond();
-            gp_Pnt Pnt11 = GetPointOnEdge(edge1,sas,Crv1,p11);
-            gp_Pnt Pnt12 = GetPointOnEdge(edge1,sas,Crv1,p12);
-            gp_Pnt Pnt21 = GetPointOnEdge(edge2,sas,Crv2,p21);
-            gp_Pnt Pnt22 = GetPointOnEdge(edge2,sas,Crv2,p22);
+            gp_Pnt Pnt11 = GetPointOnEdge(edge1,sas,C1,p11);
+            gp_Pnt Pnt12 = GetPointOnEdge(edge1,sas,C1,p12);
+            gp_Pnt Pnt21 = GetPointOnEdge(edge2,sas,C2,p21);
+            gp_Pnt Pnt22 = GetPointOnEdge(edge2,sas,C2,p22);
             // next string commented by skl 29.12.2004 for OCC7624
             //if( Pnt11.Distance(Pnt21)>myPreci || Pnt12.Distance(Pnt22)>myPreci ) continue;
             if( Pnt11.Distance(Pnt21)>MaxTolVert || Pnt12.Distance(Pnt22)>MaxTolVert ) continue;
@@ -1155,8 +1158,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
             if( !IsModified1 && !IsModified2 ) {
               Standard_Real param1 = (p11+p12)/2;
               Standard_Real param2 = (p21+p22)/2;
-              gp_Pnt Pnt10 = GetPointOnEdge(edge1,sas,Crv1,param1);
-              gp_Pnt Pnt20 = GetPointOnEdge(edge2,sas,Crv2,param2);
+              gp_Pnt Pnt10 = GetPointOnEdge(edge1,sas,C1,param1);
+              gp_Pnt Pnt20 = GetPointOnEdge(edge2,sas,C2,param2);
               gp_Pnt P0( (Pnt10.X()+Pnt20.X())/2, (Pnt10.Y()+Pnt20.Y())/2,
                          (Pnt10.Z()+Pnt20.Z())/2 );
               dist1 = Max(Pnt11.Distance(P0),Pnt12.Distance(P0));
@@ -1516,9 +1519,9 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
             if( !sae.PCurve(edge2, face, Crv2, a2, b2, Standard_False) ) 
               continue; //return Standard_False;gka 06.09.04
             Standard_Real tolint = 1.0e-10; 
-            IntRes2d_Domain d1(Crv1->Value(a1),a1,tolint,Crv1->Value(b1),b1,tolint);
-            IntRes2d_Domain d2(Crv2->Value(a2),a2,tolint,Crv2->Value(b2),b2,tolint);
             Geom2dAdaptor_Curve C1(Crv1), C2(Crv2);
+            IntRes2d_Domain d1(C1.Value(a1),a1,tolint,C1.Value(b1),b1,tolint);
+            IntRes2d_Domain d2(C2.Value(a2),a2,tolint,C2.Value(b2),b2,tolint);
             Geom2dInt_GInter Inter;
             Inter.Perform( C1, d1, C2, d2, tolint, tolint );
             if(!Inter.IsDone()) continue;
@@ -1532,8 +1535,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
                 // create new vertex and split both edges
                 Standard_Real param1 = IP.ParamOnFirst(); 
                 Standard_Real param2 = IP.ParamOnSecond();
-                gp_Pnt pi1 = GetPointOnEdge(edge1,sas,Crv1,param1);
-                gp_Pnt pi2 = GetPointOnEdge(edge2,sas,Crv2,param2);
+                gp_Pnt pi1 = GetPointOnEdge(edge1,sas,C1,param1);
+                gp_Pnt pi2 = GetPointOnEdge(edge2,sas,C2,param2);
                 gp_Pnt P0( (pi1.X()+pi2.X())/2, (pi1.Y()+pi2.Y())/2, (pi1.Z()+pi2.Z())/2 );
                 BRep_Builder B;
                 TopoDS_Vertex V;
@@ -1597,10 +1600,10 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
                 IntRes2d_IntersectionPoint IPL = IS.LastPoint();
                 Standard_Real p12 = IPL.ParamOnFirst();
                 Standard_Real p22 = IPL.ParamOnSecond();
-                gp_Pnt Pnt11 = GetPointOnEdge(edge1,sas,Crv1,p11);
-                gp_Pnt Pnt12 = GetPointOnEdge(edge1,sas,Crv1,p12);
-                gp_Pnt Pnt21 = GetPointOnEdge(edge2,sas,Crv2,p21);
-                gp_Pnt Pnt22 = GetPointOnEdge(edge2,sas,Crv2,p22);
+                gp_Pnt Pnt11 = GetPointOnEdge(edge1,sas,C1,p11);
+                gp_Pnt Pnt12 = GetPointOnEdge(edge1,sas,C1,p12);
+                gp_Pnt Pnt21 = GetPointOnEdge(edge2,sas,C2,p21);
+                gp_Pnt Pnt22 = GetPointOnEdge(edge2,sas,C2,p22);
 
                 // analysis for edge1
                 TopoDS_Vertex V1 = sae.FirstVertex(edge1);
@@ -1888,8 +1891,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
                                (Pnt11.Z()+Pnt12.Z())/2 );
                     Standard_Real param1 = (p11+p12)/2;
                     Standard_Real param2 = (p21+p22)/2;
-                    gp_Pnt Pnt10 = GetPointOnEdge(edge1,sas,Crv1,param1);
-                    gp_Pnt Pnt20 = GetPointOnEdge(edge2,sas,Crv2,param2);
+                    gp_Pnt Pnt10 = GetPointOnEdge(edge1,sas,C1,param1);
+                    gp_Pnt Pnt20 = GetPointOnEdge(edge2,sas,C2,param2);
                     dist1 = Max(Pnt11.Distance(P0),Pnt12.Distance(Pnt10));
                     dist2 = Max(Pnt21.Distance(P0),Pnt22.Distance(Pnt10));
                     Standard_Real tolV = Max(dist1,dist2);

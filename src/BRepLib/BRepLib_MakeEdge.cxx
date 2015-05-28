@@ -773,7 +773,7 @@ void  BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
   Standard_Real cl = C->LastParameter();
   Standard_Real epsilon = Precision::PConfusion();
   Standard_Boolean periodic = C->IsPeriodic();
-
+  GeomAdaptor_Curve aCA(C);
 
   TopoDS_Vertex V1,V2;
   if (periodic) {
@@ -813,14 +813,15 @@ void  BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
   Standard_Boolean p1inf = Precision::IsNegativeInfinite(p1);
   Standard_Boolean p2inf = Precision::IsPositiveInfinite(p2);
   gp_Pnt P1,P2;
-  if (!p1inf) P1 = C->Value(p1);
-  if (!p2inf) P2 = C->Value(p2);
+  if (!p1inf) P1 = aCA.Value(p1);
+  if (!p2inf) P2 = aCA.Value(p2);
 
   Standard_Real preci = BRepLib::Precision();
   BRep_Builder B;
 
   // check for closed curve
   Standard_Boolean closed = Standard_False;
+  Standard_Boolean degenerated = Standard_False;
   if (!p1inf && !p2inf)
     closed = (P1.Distance(P2) <= preci);
 
@@ -836,13 +837,19 @@ void  BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
       V2 = V1;
     else {
       if (!V1.IsSame(V2)) {
-	myError = BRepLib_DifferentPointsOnClosedCurve;
-	return;
+        myError = BRepLib_DifferentPointsOnClosedCurve;
+        return;
       }
       else if (P1.Distance(BRep_Tool::Pnt(V1)) > 
-	       Max(preci,BRep_Tool::Tolerance(V1))) {
-	myError = BRepLib_DifferentPointsOnClosedCurve;
-	return;
+        Max(preci,BRep_Tool::Tolerance(V1))) {
+        myError = BRepLib_DifferentPointsOnClosedCurve;
+        return;
+      }
+      else
+      {
+        gp_Pnt PM = aCA.Value((p1+p2)/2);
+        if (P1.Distance(PM) < preci)
+          degenerated = Standard_True;
       }
     }
   }
@@ -898,6 +905,7 @@ void  BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
     B.Add(E,V2);
   }
   B.Range(E,p1,p2);
+  B.Degenerated(E, degenerated);
 
   myError = BRepLib_EdgeDone;
   Done();

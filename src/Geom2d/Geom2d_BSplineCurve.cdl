@@ -124,8 +124,7 @@ uses  Array1OfInteger      from TColStd,
       Vec2d                from gp,
       BSplKnotDistribution from GeomAbs,
       Geometry             from Geom2d,
-      Shape                from GeomAbs,
-      Mutex                from Standard
+      Shape                from GeomAbs
 
 raises ConstructionError   from Standard,
        DimensionError      from Standard,
@@ -642,17 +641,6 @@ is
         --  Returns True if the weights are not identical.
         --  The tolerance criterion is Epsilon of the class Real.
     
-  IsCacheValid(me;  Parameter : Real) returns Boolean
-  
-        ---Purpose :
-        --           Tells whether the Cache is valid for the
-        --           given parameter 
-        -- Warnings : the parameter must be normalized within
-        -- the period if the curve is periodic. Otherwise
-        -- the answer will be false
-        -- 
-        is static private;
-  
   Continuity (me)  returns Shape from GeomAbs;
         --- Purpose :
         --  Returns the global continuity of the curve :
@@ -843,6 +831,11 @@ is
      raises DimensionError;
         --- Purpose :
         --  Raised if the length of K is not equal to the number of knots.
+  Knots (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : returns the knot values of the B-spline curve;
+        ---C++ : return const &
+  is static;
 
 
   KnotSequence (me; K : out Array1OfReal from TColStd)
@@ -854,6 +847,15 @@ is
      raises DimensionError;
         --- Purpose :
         --  Raised if the length of K is not equal to NbPoles + Degree + 1
+  KnotSequence (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the knots sequence.
+        --  In this sequence the knots with a multiplicity greater than 1
+        --  are repeated. 
+        -- Example :
+        --  K = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
+        ---C++ : return const &
+  is static;
 
 
 
@@ -919,6 +921,11 @@ is
      raises DimensionError;
         --- Purpose :
         --  Raised if the length of M is not equal to NbKnots.
+  Multiplicities (me)
+  returns Array1OfInteger from TColStd
+        ---Purpose : returns the multiplicity of the knots of the curve.
+        ---C++ : return const &
+  is static;
 
 
   NbKnots (me)  returns Integer;
@@ -942,6 +949,11 @@ is
      raises DimensionError;
         --- Purpose : 
         --  Raised if the length of P is not equal to the number of poles.
+  Poles (me)
+  returns Array1OfPnt2d from TColgp
+        ---Purpose : Returns the poles of the B-spline curve;
+        ---C++ : return const &
+  is static;
 
 
   StartPoint (me)  returns Pnt2d;
@@ -963,6 +975,11 @@ is
      raises DimensionError;
         --- Purpose :
         --  Raised if the length of W is not equal to NbPoles.
+  Weights (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the weights of the B-spline curve;
+        ---C++ : return const &
+  is static;
 
 
 
@@ -996,17 +1013,8 @@ is
   UpdateKnots(me : mutable)
     	---Purpose: Recompute  the  flatknots,  the knotsdistribution, the continuity.
   is static private;
-  
-  InvalidateCache(me : mutable)
-	---Purpose : Invalidates the cache. This has to be private this has to be private
-      is static private;
 
   
-  ValidateCache(me : mutable ; Parameter : Real) 
-  
-    is static private;
-    	---Purpose : updates the cache and validates it
-             
 fields
 
   rational  : Boolean;
@@ -1019,35 +1027,7 @@ fields
   flatknots : HArray1OfReal from TColStd;
   knots     : HArray1OfReal from TColStd;
   mults     : HArray1OfInteger from TColStd;
-  cachepoles      : HArray1OfPnt2d     from TColgp;
-  -- Taylor expansion of the poles function, in homogeneous
-  -- form if the curve is rational. The taylor expansion
-  -- is normalized so that the span corresponds to
-  -- [0 1] see below
-  cacheweights    : HArray1OfReal    from TColStd;
-  -- Taylor expansion of the poles function, in homogeneous
-  -- form if the curve is rational. The taylor expansion
-  -- is normalized so that the span corresponds to
-  -- [0 1] see below
-  validcache      : Integer;
-  -- = 1 the cache is valid 
-  -- = 0 the cache is invalid
-  parametercache    : Real;
-  -- Parameter at which the Taylor expension is stored in 
-  -- the cache
-  spanlenghtcache   : Real;
-  -- Since the Taylor expansion is normalized in the 
-  -- cache to evaluate the cache one has to use
-  -- (Parameter - refcache) * normcache 
-  spanindexcache : Integer;
-  -- the span for which the cache is valid if 
-  -- validcache is 1 
-
-  -- usefull to evaluate the parametric resolution
   maxderivinv   : Real from Standard;
   maxderivinvok : Boolean from Standard;
-
-  myMutex       : Mutex from Standard;
-  -- protected bspline-cache
 
 end;

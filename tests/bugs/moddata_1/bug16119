@@ -39,9 +39,9 @@ set deltaY [dval dvy1-dvy2]
 set deltaZ [dval dvz1-dvz2]
 
 set percent_max 0.1
-set good_deltaX 4.4408920985006262e-015
-set good_deltaY -4.6629367034256575e-015
-set good_deltaZ -2.6645352591003757e-015
+set good_deltaX -3.5527136788005009e-015
+set good_deltaY -3.5527136788005009e-015
+set good_deltaZ 8.8817841970012523e-016
 
 set deltaX_percent [GetPercent ${deltaX} ${good_deltaX}]
 puts "deltaX_percent = ${deltaX_percent}"

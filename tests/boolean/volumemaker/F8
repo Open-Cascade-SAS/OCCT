@@ -1,7 +1,7 @@
 # test script on make volume operation
 # cone cylinder plane
 
-puts "TODO OCC26020 ALL: Error: bopcheck failed"
+puts "TODO OCC26020 Windows: Error: bopcheck failed"
 
 # planar face 
 plane pln_f1 27.577164466275352 -1038.2137499999999 27.577164466275359 0.70710678118654746 4.4408920985006262e-016 0.70710678118654768

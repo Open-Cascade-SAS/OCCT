@@ -109,48 +109,15 @@ Standard_Boolean Geom_BSplineSurface::IsCNv
 
 void Geom_BSplineSurface::D0(const Standard_Real U,
                              const Standard_Real V,
-                             gp_Pnt& P) const 
+                                   gp_Pnt&       P) const 
 {
-  Standard_Real  new_u(U), new_v(V);
-  PeriodicNormalization(new_u, new_v);
+  Standard_Real aNewU = U;
+  Standard_Real aNewV = V;
+  PeriodicNormalization(aNewU, aNewV);
 
-  Geom_BSplineSurface* MySurface = (Geom_BSplineSurface *) this;
-  Standard_Mutex::Sentry aSentry(MySurface->myMutex);
-
-  if(!IsCacheValid(new_u, new_v))
-     MySurface->ValidateCache(new_u, new_v);
-
- Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
-               uspanlenght_11 = ucachespanlenght/2,
-               vparameter_11 = (2*vcacheparameter + vcachespanlenght)/2,
-               vspanlenght_11 = vcachespanlenght/2 ; 
- if (cacheweights.IsNull()) {
-      
-   BSplSLib::CacheD0(new_u,
-		     new_v,
-		     udeg,
-		     vdeg,
-		     uparameter_11,
-		     vparameter_11,
-		     uspanlenght_11,
-		     vspanlenght_11,
-		     cachepoles->Array2(),
-		     *((TColStd_Array2OfReal*) NULL),
-		     P) ;
- }
- else {
-   BSplSLib::CacheD0(new_u,
-		     new_v,
-		     udeg,
-		     vdeg,
-		     uparameter_11,
-		     vparameter_11,
-		     uspanlenght_11,
-		     vspanlenght_11,
-		     cachepoles->Array2(),
-		     cacheweights->Array2(),
-		     P) ;
- }
+  BSplSLib::D0(aNewU,aNewV,0,0,POLES,WEIGHTS,UFKNOTS,VFKNOTS,FMULTS,FMULTS,
+       udeg,vdeg,urational,vrational,uperiodic,vperiodic,
+       P);
 }
 
 //=======================================================================
@@ -160,56 +127,25 @@ void Geom_BSplineSurface::D0(const Standard_Real U,
 
 void Geom_BSplineSurface::D1(const Standard_Real U,
                              const Standard_Real V,
-                             gp_Pnt& P,
-                             gp_Vec& D1U,
-                             gp_Vec& D1V) const
+                                   gp_Pnt&       P,
+                                   gp_Vec&       D1U,
+                                   gp_Vec&       D1V) const
 {
-  Standard_Real  new_u(U), new_v(V);
-  PeriodicNormalization(new_u, new_v);
+  Standard_Real aNewU = U;
+  Standard_Real aNewV = V;
+  PeriodicNormalization(aNewU, aNewV);
 
-  Geom_BSplineSurface* MySurface = (Geom_BSplineSurface *) this;
-  Standard_Mutex::Sentry aSentry(MySurface->myMutex);
+  Standard_Integer uindex = 0, vindex = 0;
 
-  if(!IsCacheValid(new_u, new_v))
-     MySurface->ValidateCache(new_u, new_v);
+  BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(), U, uperiodic, uindex, aNewU);
+  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
 
-  Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
-                uspanlenght_11 = ucachespanlenght/2,
-                vparameter_11 = (2*vcacheparameter + vcachespanlenght)/2,
-                vspanlenght_11 = vcachespanlenght/2 ;
+  BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(), V, vperiodic, vindex, aNewV);
+  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
 
-  if (cacheweights.IsNull()) {
-    
-    BSplSLib::CacheD1(new_u,
-		      new_v,
-		      udeg,
-		      vdeg,
-		      uparameter_11,
-		      vparameter_11,
-		      uspanlenght_11,
-		      vspanlenght_11,
-		      cachepoles->Array2(),
-		      *((TColStd_Array2OfReal*) NULL),
-		      P,
-		      D1U,
-		      D1V) ;
-  }
-  else {
-    
-    BSplSLib::CacheD1(new_u,
-		      new_v,
-		      udeg,
-		      vdeg,
-		      uparameter_11,
-		      vparameter_11,
-		      uspanlenght_11,
-		      vspanlenght_11,
-		      cachepoles->Array2(),
-		      cacheweights->Array2(),
-		      P,
-		      D1U,
-		      D1V) ;
-  }
+  BSplSLib::D1(aNewU,aNewV,uindex,vindex,POLES,WEIGHTS,UFKNOTS,VFKNOTS,FMULTS,FMULTS,
+       udeg,vdeg,urational,vrational,uperiodic,vperiodic,
+       P, D1U, D1V);
 }
 
 //=======================================================================
@@ -218,64 +154,30 @@ void Geom_BSplineSurface::D1(const Standard_Real U,
 //=======================================================================
 
 void Geom_BSplineSurface::D2 (const Standard_Real U, 
-			      const Standard_Real V,
-			            gp_Pnt&       P,
-			            gp_Vec&       D1U,
-			            gp_Vec&       D1V,
-			            gp_Vec&       D2U,
-			            gp_Vec&       D2V,
-			            gp_Vec&       D2UV) const
+                              const Standard_Real V,
+                                    gp_Pnt&       P,
+                                    gp_Vec&       D1U,
+                                    gp_Vec&       D1V,
+                                    gp_Vec&       D2U,
+                                    gp_Vec&       D2V,
+                                    gp_Vec&       D2UV) const
 {
-  Standard_Real  new_u(U), new_v(V);
-  PeriodicNormalization(new_u, new_v);
+  Standard_Real aNewU = U;
+  Standard_Real aNewV = V;
+  PeriodicNormalization(aNewU, aNewV);
 
-  Geom_BSplineSurface* MySurface = (Geom_BSplineSurface *) this;
-  Standard_Mutex::Sentry aSentry(MySurface->myMutex);
+  Standard_Integer uindex = 0, vindex = 0;
 
-  if(!IsCacheValid(new_u, new_v))
-     MySurface->ValidateCache(new_u, new_v);
+  BSplCLib::LocateParameter(udeg, uknots->Array1(), umults->Array1(), U, uperiodic, uindex, aNewU);
+  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
 
-  Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
-                uspanlenght_11 = ucachespanlenght/2,
-                vparameter_11 = (2*vcacheparameter + vcachespanlenght)/2,
-                vspanlenght_11 = vcachespanlenght/2 ;
-  if (cacheweights.IsNull()) {
-      BSplSLib::CacheD2(new_u,
-			new_v,
-			udeg,
-			vdeg,
-			uparameter_11,
-			vparameter_11,
-			uspanlenght_11,
-			vspanlenght_11,
-			cachepoles->Array2(),
-			*((TColStd_Array2OfReal*) NULL),
-			P,
-			D1U,
-			D1V,
-			D2U,
-			D2UV,
-			D2V); 
-    }
-    else {
-      BSplSLib::CacheD2(new_u,
-			new_v,
-			udeg,
-			vdeg,
-			uparameter_11,
-			vparameter_11,
-			uspanlenght_11,
-			vspanlenght_11,
-			cachepoles->Array2(),
-			cacheweights->Array2(),
-			P,
-			D1U,
-			D1V,
-			D2U,
-			D2UV,
-			D2V); 
-    }
-  }
+  BSplCLib::LocateParameter(vdeg, vknots->Array1(), vmults->Array1(), V, vperiodic, vindex, aNewV);
+  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+
+  BSplSLib::D2(aNewU,aNewV,uindex,vindex,POLES,WEIGHTS,UFKNOTS,VFKNOTS,FMULTS,FMULTS,
+       udeg,vdeg,urational,vrational,uperiodic,vperiodic,
+       P, D1U, D1V, D2U, D2V, D2UV);
+}
 
 //=======================================================================
 //function : D3
@@ -542,6 +444,11 @@ void Geom_BSplineSurface::Poles (TColgp_Array2OfPnt& P) const
   P = poles->Array2();
 }
 
+const TColgp_Array2OfPnt& Geom_BSplineSurface::Poles() const
+{
+  return poles->Array2();
+}
+
 //=======================================================================
 //function : UIso
 //purpose  : 
@@ -645,6 +552,11 @@ void Geom_BSplineSurface::UKnots (TColStd_Array1OfReal& Ku) const
   Ku = uknots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom_BSplineSurface::UKnots() const
+{
+  return uknots->Array1();
+}
+
 //=======================================================================
 //function : VKnots
 //purpose  : 
@@ -654,6 +566,11 @@ void Geom_BSplineSurface::VKnots (TColStd_Array1OfReal& Kv) const
 {
   Standard_DimensionError_Raise_if (Kv.Length() != vknots->Length(), " ");
   Kv = vknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom_BSplineSurface::VKnots() const
+{
+  return vknots->Array1();
 }
 
 //=======================================================================
@@ -667,6 +584,11 @@ void Geom_BSplineSurface::UKnotSequence (TColStd_Array1OfReal& Ku) const
   Ku = ufknots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom_BSplineSurface::UKnotSequence() const
+{
+  return ufknots->Array1();
+}
+
 //=======================================================================
 //function : VKnotSequence
 //purpose  : 
@@ -676,6 +598,11 @@ void Geom_BSplineSurface::VKnotSequence (TColStd_Array1OfReal& Kv) const
 {
   Standard_DimensionError_Raise_if (Kv.Length() != vfknots->Length(), " ");
   Kv = vfknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom_BSplineSurface::VKnotSequence() const
+{
+  return vfknots->Array1();
 }
 
 //=======================================================================
@@ -699,6 +626,11 @@ void Geom_BSplineSurface::UMultiplicities (TColStd_Array1OfInteger& Mu) const
 {
   Standard_DimensionError_Raise_if (Mu.Length() != umults->Length(), " ");
   Mu = umults->Array1();
+}
+
+const TColStd_Array1OfInteger& Geom_BSplineSurface::UMultiplicities() const
+{
+  return umults->Array1();
 }
 
 //=======================================================================
@@ -798,6 +730,11 @@ void Geom_BSplineSurface::VMultiplicities (TColStd_Array1OfInteger& Mv) const
   Mv = vmults->Array1();
 }
 
+const TColStd_Array1OfInteger& Geom_BSplineSurface::VMultiplicities() const
+{
+  return vmults->Array1();
+}
+
 //=======================================================================
 //function : Weight
 //purpose  : 
@@ -826,6 +763,13 @@ void Geom_BSplineSurface::Weights (TColStd_Array2OfReal& W) const
   W = weights->Array2();
 }
 
+const TColStd_Array2OfReal& Geom_BSplineSurface::Weights() const
+{
+  if (urational || vrational)
+    return weights->Array2();
+  return BSplSLib::NoWeights();
+}
+
 //=======================================================================
 //function : Transform
 //purpose  : 
@@ -839,8 +783,6 @@ void Geom_BSplineSurface::Transform (const gp_Trsf& T)
       VPoles (i, j).Transform (T);
     }
   }
-
-  InvalidateCache();
 }
 
 //=======================================================================
@@ -1555,8 +1497,6 @@ void Geom_BSplineSurface::SetPoleCol (const Standard_Integer      VIndex,
   for (Standard_Integer I = CPoles.Lower(); I <= CPoles.Upper(); I++) {
     Poles (I+Poles.LowerRow()-1, VIndex+Poles.LowerCol()-1) = CPoles(I);
   }
-
-  InvalidateCache();
 }
 
 //=======================================================================
@@ -1593,8 +1533,6 @@ void Geom_BSplineSurface::SetPoleRow (const Standard_Integer    UIndex,
   for (Standard_Integer I = CPoles.Lower(); I <= CPoles.Upper(); I++) {
     Poles (UIndex+Poles.LowerRow()-1, I+Poles.LowerCol()-1) = CPoles (I);
   }
-
-  InvalidateCache();
 }
 
 //=======================================================================
@@ -1620,7 +1558,6 @@ void Geom_BSplineSurface::SetPole (const Standard_Integer UIndex,
 				   const gp_Pnt&          P)
 {
   poles->SetValue (UIndex+poles->LowerRow()-1, VIndex+poles->LowerCol()-1, P);
-  InvalidateCache();
 }
 
 //=======================================================================
@@ -1676,7 +1613,6 @@ void Geom_BSplineSurface::MovePoint(const Standard_Real U,
     poles->ChangeArray2() = npoles;
   }
   maxderivinvok = 0;
-  InvalidateCache() ;
 }
 
 //=======================================================================

@@ -2,18 +2,18 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
-puts "TODO CR25013 ALL: Error : 4 differences with reference data found" 
+puts "TODO CR23096 ALL: Error : 3 differences with reference data found" 
 
 set LinuxDiff 3
 set filename Z8M6SAT.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 11  ( 0 )  Warnings = 946  ( 3166 )  Summary  = 957  ( 3166 )
-CHECKSHAPE  : Wires    = 51  ( 42 )  Faces    = 51  ( 45 )  Shells   = 0  ( 4 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 772  ( 32 )  Face     = 3242  ( 3241 )   Summary  = 29515  ( 28693 )
-STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 772  ( 32 )  Face     = 3242  ( 3241 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 12667  ( 12612 )
-TOLERANCE   : MaxTol   =    15.00001475  (    20.46526799 )  AvgTol   =   0.03158606342  (   0.03807479444 )
+TPSTAT      : Faulties = 7  ( 0 )  Warnings = 956  ( 3168 )  Summary  = 963  ( 3168 )
+CHECKSHAPE  : Wires    = 50  ( 41 )  Faces    = 49  ( 45 )  Shells   = 0  ( 4 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 772  ( 32 )  Face     = 3242  ( 3241 )   Summary  = 29459  ( 28673 )
+STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 772  ( 32 )  Face     = 3242  ( 3241 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 12632  ( 12599 )
+TOLERANCE   : MaxTol   =    15.00300076  (    20.46526799 )  AvgTol   =    0.0281001785  (   0.03853100147 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

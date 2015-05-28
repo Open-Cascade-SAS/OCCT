@@ -25,16 +25,16 @@ set tol_abs 1.0e-05
 set tol_rel 0.01
 
 set expected_dmax 0.0013771610718045313
-set expected_ufmax 0.890625
+set expected_ufmax 0.953125
 
 checkreal "dmax" ${dmax} ${expected_dmax} ${tol_abs} ${tol_rel}
 checkreal "ufmax" ${ufmax} ${expected_ufmax} ${tol_abs} ${tol_rel}
 
-set expected_ulmax 0.90625
+set expected_ulmax 0.96875
 if { ${ulmax} != ${expected_ulmax} } {
     puts "Error : bad value of ulmax=${ulmax}"
 }
-set expected_i 69
+set expected_i 73
 if { ${i} != ${expected_i} } {
     puts "Error : bad value of i=${i}"
 }

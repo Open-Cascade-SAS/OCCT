@@ -762,8 +762,8 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
     aTV1=aTV - dt;
   }
   //
-  aC2D->D0 (aTV1, aPV1);
-  aC2D->D0 (aTV, aPV);
+  aGAC2D.D0 (aTV1, aPV1);
+  aGAC2D.D0 (aTV, aPV);
   //
   aV2D = bIsIN ? gp_Vec2d(aPV1, aPV) : gp_Vec2d(aPV, aPV1);
   //
@@ -1017,15 +1017,15 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
   aTolInt=1.e-10;  
   //
   BOPTools_AlgoTools2D::CurveOnSurface(aE, myFace, aC2D, aT1, aT2, aTol);
+  aGAC1.Load(aC2D, aT1, aT2);
   //
   aTV=BRep_Tool::Parameter (aV, aE, myFace);
-  aC2D->D0(aTV, aPV);
+  aGAC1.D0(aTV, aPV);
   //
   aTOp = (fabs(aTV-aT1) < fabs(aTV-aT2)) ? aT2 : aT1;
   //
-  aGAC1.Load(aC2D, aT1, aT2);
-  aC2D->D0(aT1, aP1);
-  aC2D->D0(aT2, aP2);
+  aGAC1.D0(aT1, aP1);
+  aGAC1.D0(aT2, aP2);
   aDomain1.SetValues(aP1, aT1, aTolInt, aP2, aT2, aTolInt);
   //
   for (i=0; i<2; ++i) {
@@ -1066,7 +1066,7 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
     }
     //
     aT=aT1max + aCf*dT;
-    aC2D->D0(aT, aP);
+    aGAC1.D0(aT, aP);
     gp_Vec2d aV2D(aPV, aP);
     gp_Dir2d aDir2D(aV2D);
     //

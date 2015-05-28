@@ -4,4 +4,5 @@ BSplCLib_3.cxx
 BSplCLib_BzSyntaxes.cxx
 BSplCLib_CurveComputation.gxx
 BSplCLib_EvaluatorFunction.hxx
-
+BSplCLib_Cache.hxx
+BSplCLib_Cache.cxx

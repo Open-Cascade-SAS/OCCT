@@ -1068,7 +1068,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated (const Standard_Integer nu
 // from 3d curve (but only if edge is SameParameter)
 static gp_Pnt GetPointOnEdge ( const TopoDS_Edge &edge, 
 			       const Handle(ShapeAnalysis_Surface) &surf,
-			       const Handle(Geom2d_Curve) &Crv2d, 
+			       const Geom2dAdaptor_Curve &Crv2d, 
 			       const Standard_Real param )
 {
   if ( BRep_Tool::SameParameter ( edge ) ) {
@@ -1078,7 +1078,8 @@ static gp_Pnt GetPointOnEdge ( const TopoDS_Edge &edge,
     if ( ! ConS.IsNull() )
       return ConS->Value ( param ).Transformed ( L.Transformation() );
   }
-  return surf->Value ( Crv2d->Value ( param ) );
+  gp_Pnt2d aP2d = Crv2d.Value(param);
+  return surf->Adaptor3d()->Value(aP2d.X(), aP2d.Y());
 }
 
 //=======================================================================
@@ -1132,7 +1133,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSelfIntersectingEdge (const Standard_I
     const IntRes2d_Transition &Tr2 = IP.TransitionOfSecond();
     if ( Tr1.PositionOnCurve() != IntRes2d_Middle &&
 	 Tr2.PositionOnCurve() != IntRes2d_Middle ) continue;
-    gp_Pnt pint = GetPointOnEdge ( edge, mySurf, Crv, IP.ParamOnFirst() );
+    gp_Pnt pint = GetPointOnEdge ( edge, mySurf, AC, IP.ParamOnFirst() );
     Standard_Real dist21 = pnt1.SquareDistance ( pint );
     Standard_Real dist22 = pnt2.SquareDistance ( pint );
     if ( dist21 > tol1 * tol1 && dist22 > tol2 * tol2 ) {
@@ -1222,11 +1223,11 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges (const Standard_Inte
   Standard_Real tolint = 1.0e-10; 
 
   //szv#4:S4163:12Mar99 warning
-  IntRes2d_Domain d1 ( Crv1->Value ( a1 ), a1, tolint, 
-		       Crv1->Value ( b1 ), b1, tolint );
-  IntRes2d_Domain d2 ( Crv2->Value ( a2 ), a2, tolint, 
-		       Crv2->Value ( b2 ), b2, tolint );
   Geom2dAdaptor_Curve C1 ( Crv1 ), C2 ( Crv2 );
+  IntRes2d_Domain d1 ( C1.Value ( a1 ), a1, tolint, 
+		       C1.Value ( b1 ), b1, tolint );
+  IntRes2d_Domain d2 ( C2.Value ( a2 ), a2, tolint, 
+		       C2.Value ( b2 ), b2, tolint );
 
   //:64 abv 25 Dec 97: Attention!
   // Since Intersection algorithm is not symmetrical, for consistency with BRepCheck 
@@ -1282,8 +1283,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges (const Standard_Inte
 	 param2-b2 > ::Precision::PConfusion() ) continue;
 
     //:82 abv 21 Jan 98: point of intersection on Crv1 and Crv2 is different
-    gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, Crv1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
-    gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, Crv2, param2 ); //:h0: thesurf.Value ( Crv2->Value ( param2 ) );
+    gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, C1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
+    gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, C2, param2 ); //:h0: thesurf.Value ( Crv2->Value ( param2 ) );
     gp_Pnt pint = 0.5 * ( pi1.XYZ() + pi2.XYZ() );
     Standard_Real di1 = pi1.SquareDistance ( pnt );
     Standard_Real di2 = pi2.SquareDistance ( pnt );
@@ -1413,8 +1414,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(const Standard_Integ
 	 Tr2.PositionOnCurve() != IntRes2d_Middle ) continue;
     Standard_Real param1 = IP.ParamOnFirst(); 
     Standard_Real param2 = IP.ParamOnSecond();
-    gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, Crv1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
-    gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, Crv2, param2 );
+    gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, C1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
+    gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, C2, param2 );
     Standard_Boolean OK1 = Standard_False;
     Standard_Boolean OK2 = Standard_False;
 
@@ -1494,13 +1495,15 @@ Standard_Boolean ShapeAnalysis_Wire::CheckLacking (const Standard_Integer num,
     myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL3);
     return Standard_False;
   }
-  c2d->D1 ( b, p2d1, v1 ); 
+  Geom2dAdaptor_Curve anAdapt(c2d);
+  anAdapt.D1(b, p2d1, v1);
   if ( E1.Orientation() == TopAbs_REVERSED ) v1.Reverse();
   if ( ! sae.PCurve ( E2, myFace, c2d, a, b, Standard_True ) ) {
     myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL3);
     return Standard_False;
   }
-  c2d->D1 ( a, p2d2, v2 );
+  anAdapt.Load(c2d);
+  anAdapt.D1(a, p2d2, v2);
   if ( E2.Orientation() == TopAbs_REVERSED ) v2.Reverse();
   v12 = p2d2.XY() - p2d1.XY();
   myMax2d = v12.SquareMagnitude();

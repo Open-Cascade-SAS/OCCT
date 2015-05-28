@@ -1,19 +1,20 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: LABELS : Faulty"
-puts "TODO CR25923 ALL: NBSHAPES : Faulty"
-#puts "TODO CR23096 ALL: Error : 1 differences with reference data found :" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: Error : 2 differences with reference data found" 
 
 set LinuxDiff 1
 set filename FRA62468-2.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 349  ( 5016 )  Summary  = 349  ( 5016 )
-CHECKSHAPE  : Wires    = 12  ( 19 )  Faces    = 12  ( 13 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   Summary  = 63090  ( 63144 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   FreeWire = 18  ( 18 )   FreeEdge  = 452 ( 452 )   SharedEdge = 26766  ( 26793 )
-TOLERANCE   : MaxTol   =   0.9804479161  (   0.9805459497 )  AvgTol   =   0.01154225009  (   0.01155173987 )
-LABELS      : N0Labels = 5089  ( 5165 )  N1Labels = 26  ( 3844 )  N2Labels = 0  ( 0 )   TotalLabels = 5115  ( 9009 )   NameLabels = 5089  ( 5165 )   ColorLabels = 5086  ( 8933 )   LayerLabels = 5086  ( 8933 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 253  ( 4993 )  Summary  = 253  ( 4993 )
+CHECKSHAPE  : Wires    = 8  ( 11 )  Faces    = 8  ( 7 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   Summary  = 63158  ( 63146 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   FreeWire = 18  ( 18 )   FreeEdge  = 452 ( 452 )   SharedEdge = 26798  ( 26797 )
+TOLERANCE   : MaxTol   =   0.9804479161  (   0.9805459497 )  AvgTol   =   0.01153089031  (   0.01154870945 )
+LABELS      : N0Labels = 5089  ( 5165 )  N1Labels = 26  ( 3834 )  N2Labels = 0  ( 0 )   TotalLabels = 5115  ( 8999 )   NameLabels = 5089  ( 5165 )   ColorLabels = 5086  ( 8923 )   LayerLabels = 5086  ( 8923 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
 COLORS      : Colors   = BLUE1 CYAN1 GREEN  ( BLUE1 CYAN1 GREEN )

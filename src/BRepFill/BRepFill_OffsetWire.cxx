@@ -2232,10 +2232,10 @@ void TrimEdge (const TopoDS_Edge&              E,
   // otherwise preserve only one of its representations.
   //----------------------------------------------------------
   if (!BRep_Tool::Degenerated(E)) {
+    Standard_Real aParTol = 2.0 * Precision::PConfusion();
     for (Standard_Integer k = 1; k < TheVer.Length(); k ++) {
       if (TheVer.Value(k).IsSame(TheVer.Value(k+1)) || 
-
-        Abs(ThePar.Value(k)-ThePar.Value(k+1)) <= Precision::PConfusion()) {
+          Abs(ThePar.Value(k)-ThePar.Value(k+1)) <= aParTol) {
 
           if(k+1 == TheVer.Length()) {
             StoreInMap(TheVer(k), TheVer(k+1), MapVV);

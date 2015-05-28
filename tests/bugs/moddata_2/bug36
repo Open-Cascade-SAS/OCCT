@@ -26,7 +26,7 @@ if [catch { igesbrep $filepath a * } res] {
 
     checkmaxtol result 2.5472812372261969e-005
     checknbshapes result -shell 13
-    checkfreebounds result 1249
+    checkfreebounds result 1247
 }
 
 set 2dviewer 0

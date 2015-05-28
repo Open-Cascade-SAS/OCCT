@@ -122,10 +122,11 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
   Standard_Real uMin = (cf < cl ? cf : cl);
   Standard_Real uMax = (cf < cl ? cl : cf);
   
+  GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve))) {
     Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
-    gp_Pnt LowBound = C3D->Value(uMin);
-    gp_Pnt HigBound = C3D->Value(uMax);
+    gp_Pnt LowBound = GAC.Value(uMin);
+    gp_Pnt HigBound = GAC.Value(uMax);
     distmin = LowBound.Distance(P3D);
     if (distmin <= prec) {
       param = uMin;
@@ -140,7 +141,6 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
     }
   }
 
-  GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (!C3D->IsClosed()) {
     //modified by rln on 16/12/97 after CSR# PRO11641 entity 20767
     //the VIso was not closed (according to C3D->IsClosed()) while it "almost"
@@ -403,10 +403,11 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real paramPrev,
   Standard_Real uMin = (cf < cl ? cf : cl);
   Standard_Real uMax = (cf < cl ? cl : cf);
   Standard_Real distmin = Precision::Infinite();
+  GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve))) {
     Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
-    gp_Pnt LowBound = C3D->Value(uMin);
-    gp_Pnt HigBound = C3D->Value(uMax);
+    gp_Pnt LowBound = GAC.Value(uMin);
+    gp_Pnt HigBound = GAC.Value(uMax);
     distmin = LowBound.Distance(P3D);
     if (distmin <= prec) {
       param = uMin;
@@ -421,7 +422,6 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real paramPrev,
     }
   }
 
-  GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (!C3D->IsClosed()) {
     //modified by rln on 16/12/97 after CSR# PRO11641 entity 20767
     //the VIso was not closed (according to C3D->IsClosed()) while it "almost"
@@ -1017,11 +1017,13 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints (const Handle(Geom_Curve)&
     Handle(Geom_TrimmedCurve) aC = Handle(Geom_TrimmedCurve)::DownCast(curve);
     return GetSamplePoints(aC->BasisCurve(),first,last,seq);
   }
+
+  GeomAdaptor_Curve GAC(curve);
   Standard_Real step = ( last - first ) / (Standard_Real)( nbp - 1 );
   Standard_Real par = first, stop = last - 0.5 * step;
   for ( ; par < stop; par += step )
-    seq.Append(curve->Value(par));
-  seq.Append(curve->Value(last));
+    seq.Append(GAC.Value(par));
+  seq.Append(GAC.Value(last));
   return Standard_True;
 }
 //=======================================================================
@@ -1043,8 +1045,8 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints (const Handle(Geom2d_Curve
   Standard_Real step = ( last - first ) / (Standard_Real)( nbs - 1 );
   Standard_Real par = first, stop = last - 0.5 * step;
   for ( ; par < stop; par += step )
-    seq.Append(curve->Value(par));
-  seq.Append(curve->Value(last));
+    seq.Append(C.Value(par));
+  seq.Append(C.Value(last));
   return Standard_True;
 /*
   Standard_Integer i;

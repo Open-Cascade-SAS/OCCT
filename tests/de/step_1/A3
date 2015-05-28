@@ -8,7 +8,7 @@ set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 42  ( 58 )  Summary  = 42  ( 58 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 49  ( 0 )  Face     = 49  ( 49 )   Summary  = 579  ( 530 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 49  ( 0 )  Face     = 49  ( 49 )   Summary  = 579  ( 529 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 49  ( 0 )  Face     = 49  ( 49 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 220  ( 218 )
 TOLERANCE   : MaxTol   = 0.003591433268  ( 0.006121716429 )  AvgTol   =  0.0002657130942  (  0.0004625449099 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )

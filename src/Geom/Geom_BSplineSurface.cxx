@@ -165,8 +165,6 @@ Geom_BSplineSurface::Geom_BSplineSurface
  maxderivinvok(0)
 
 {
-  Standard_Integer MinDegree,
-  MaxDegree ;
 
   // check
   
@@ -196,19 +194,6 @@ Geom_BSplineSurface::Geom_BSplineSurface
 
   vmults  = new TColStd_HArray1OfInteger (1,VMults.Length());
   vmults->ChangeArray1() = VMults;
-  MinDegree = Min(udeg,vdeg) ;
-  MaxDegree = Max(udeg,vdeg) ;
-  cachepoles = new TColgp_HArray2OfPnt(1,MaxDegree + 1,
-                                       1,MinDegree + 1) ;
-  
-  cacheweights.Nullify() ;
-  ucacheparameter = 0.0e0 ;
-  vcacheparameter = 0.0e0 ;
-  ucachespanlenght = 1.0e0 ;
-  vcachespanlenght = 1.0e0 ;
-  ucachespanindex = 0 ;
-  vcachespanindex = 0 ;
-  validcache = 0 ;
 
   UpdateUKnots();
   UpdateVKnots();
@@ -238,8 +223,6 @@ Geom_BSplineSurface::Geom_BSplineSurface
  vdeg(VDegree),
  maxderivinvok(0)
 {
-  Standard_Integer MinDegree,
-  MaxDegree ;
   // check weights
 
   if (Weights.ColLength() != Poles.ColLength())
@@ -289,21 +272,6 @@ Geom_BSplineSurface::Geom_BSplineSurface
 
   vmults  = new TColStd_HArray1OfInteger (1,VMults.Length());
   vmults->ChangeArray1() = VMults;
-  MinDegree = Min(udeg,vdeg) ;
-  MaxDegree = Max(udeg,vdeg) ;
-  cachepoles = new TColgp_HArray2OfPnt(1,MaxDegree + 1,
-                                       1,MinDegree + 1) ;
-  if (urational || vrational) {
-    cacheweights = new TColStd_HArray2OfReal (1,MaxDegree + 1,
-					      1,MinDegree + 1);
-  }
-  ucacheparameter = 0.0e0 ;
-  vcacheparameter = 0.0e0 ;
-  ucachespanlenght = 1.0e0 ;
-  vcachespanlenght = 1.0e0 ;
-  ucachespanindex = 0 ;
-  vcachespanindex = 0 ;
-  validcache = 0 ;
 
   UpdateUKnots();
   UpdateVKnots();
@@ -1258,8 +1226,6 @@ void Geom_BSplineSurface::UpdateUKnots()
       default :  Usmooth = GeomAbs_C3;   break;
     }
   }
-
-  InvalidateCache() ;
 }
 
 //=======================================================================
@@ -1298,18 +1264,8 @@ void Geom_BSplineSurface::UpdateVKnots()
       default :  Vsmooth = GeomAbs_C3;   break;
     }
   }
-  InvalidateCache() ;
 }
 
-//=======================================================================
-//function :  InvalidateCache
-//purpose  : Invalidates the Cache of the surface
-//=======================================================================
-
-void Geom_BSplineSurface::InvalidateCache()
-{
-  validcache = 0 ;
-}
 
 //=======================================================================
 //function : Normalizes the parameters if the curve is periodic
@@ -1363,177 +1319,6 @@ void Geom_BSplineSurface::PeriodicNormalization
 }
 
 //=======================================================================
-//function : ValidateCache
-//purpose  : function that validates the cache of the surface
-//=======================================================================
-
-void Geom_BSplineSurface::ValidateCache(const Standard_Real  Uparameter,
-					const Standard_Real  Vparameter) 
-{
-  Standard_Real NewParameter  ;
-  Standard_Integer LocalIndex = 0  ;
-  Standard_Integer MinDegree,
-  MaxDegree ;
-  //
-  // check if the degree did not change
-  //
-
-  MinDegree = Min(udeg,vdeg) ;
-  MaxDegree = Max(udeg,vdeg) ;
-  if (cachepoles->ColLength() < MaxDegree + 1 ||
-      cachepoles->RowLength() < MinDegree + 1) {
-    cachepoles = new TColgp_HArray2OfPnt(1,MaxDegree + 1,
-					 1,MinDegree + 1);
-  }
-  //
-  // Verif + poussee pour les poids
-  //
-  if (urational || vrational) {
-    if (cacheweights.IsNull()) {
-      cacheweights  = new TColStd_HArray2OfReal(1,MaxDegree + 1,
-						1,MinDegree + 1);
-    }
-    else {
-      if (cacheweights->ColLength() < MaxDegree + 1 ||
-	  cacheweights->RowLength() < MinDegree + 1) {
-	cacheweights  = new TColStd_HArray2OfReal(1,MaxDegree + 1,
-						  1,MinDegree + 1);
-      }
-    }
-  }
-  else if (!cacheweights.IsNull())
-    cacheweights.Nullify();
-
-  BSplCLib::LocateParameter(udeg,
-			    (ufknots->Array1()),
-			    (BSplCLib::NoMults()),
-			    Uparameter,
-			    uperiodic,
-			    LocalIndex,
-			    NewParameter);
-  ucachespanindex = LocalIndex ;
-  if (Uparameter == ufknots->Value(LocalIndex + 1)) {
-    
-    LocalIndex += 1 ;
-    ucacheparameter = ufknots->Value(LocalIndex) ;
-    if (LocalIndex == ufknots->Upper() - udeg) {
-      //
-      // for the last span if the parameter is outside of 
-      // the domain of the curve than use the last knot
-      // and normalize with the last span Still set the
-      // cachespanindex to flatknots->Upper() - deg so that
-      // the IsCacheValid will know for sure we are extending
-      // the Bspline 
-      //
-      
-      ucachespanlenght = ufknots->Value(LocalIndex - 1) - ucacheparameter ;
-    }
-    else {
-	ucachespanlenght = ufknots->Value(LocalIndex + 1) - ucacheparameter ;
-      }
-  }
-  else {
-      ucacheparameter = ufknots->Value(LocalIndex) ;
-      ucachespanlenght = ufknots->Value(LocalIndex + 1) - ucacheparameter ;
-    }
-
-  LocalIndex = 0 ;   
-  BSplCLib::LocateParameter(vdeg,
-			    (vfknots->Array1()),
-			    (BSplCLib::NoMults()),
-			    Vparameter,
-			    vperiodic,
-			    LocalIndex,
-			    NewParameter);
-  vcachespanindex = LocalIndex ;
-  if (Vparameter == vfknots->Value(LocalIndex + 1)) {
-    LocalIndex += 1 ;
-    vcacheparameter = vfknots->Value(LocalIndex) ;
-    if (LocalIndex == vfknots->Upper() - vdeg) {
-      //
-      // for the last span if the parameter is outside of 
-      // the domain of the curve than use the last knot
-      // and normalize with the last span Still set the
-      // cachespanindex to flatknots->Upper() - deg so that
-      // the IsCacheValid will know for sure we are extending
-      // the Bspline 
-      //
-      
-      vcachespanlenght = vfknots->Value(LocalIndex - 1) - vcacheparameter ;
-    }
-    else {
-      vcachespanlenght = vfknots->Value(LocalIndex + 1) - vcacheparameter ;
-    }
-  }
-  else {
-    vcacheparameter = vfknots->Value(LocalIndex) ;
-    vcachespanlenght = vfknots->Value(LocalIndex + 1) - vcacheparameter ;
-  }
-  
-  Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
-                uspanlenght_11 = ucachespanlenght/2,
-                vparameter_11 = (2*vcacheparameter + vcachespanlenght)/2,
-                vspanlenght_11 = vcachespanlenght/2 ;
-  if (urational || vrational) {
-    BSplSLib::BuildCache(uparameter_11,
-			 vparameter_11,
-			 uspanlenght_11,
-			 vspanlenght_11,
-			 uperiodic,
-			 vperiodic,
-			 udeg,
-			 vdeg,
-			 ucachespanindex,
-			 vcachespanindex,
-			 (ufknots->Array1()),
-			 (vfknots->Array1()),
-			 poles->Array2(),
-		         weights->Array2(),
-		         cachepoles->ChangeArray2(),
-		         cacheweights->ChangeArray2()) ;
-  }
-  else {
-    BSplSLib::BuildCache(uparameter_11,
-			 vparameter_11,
-			 uspanlenght_11,
-			 vspanlenght_11,
-			 uperiodic,
-			 vperiodic,
-			 udeg,
-			 vdeg,
-			 ucachespanindex,
-			 vcachespanindex,
-			 (ufknots->Array1()),
-			 (vfknots->Array1()),
-			 poles->Array2(),
-			 *((TColStd_Array2OfReal*) NULL),
-			 cachepoles->ChangeArray2(),
-			 *((TColStd_Array2OfReal*) NULL)) ;
-  }
-  validcache = 1 ;
-}
-
-//=======================================================================
-//function : IsCacheValid
-//purpose  : function that checks for the validity of the cache of the
-//           surface
-//=======================================================================
-Standard_Boolean Geom_BSplineSurface::IsCacheValid
-(const Standard_Real  U,
- const Standard_Real  V)  const 
-{
-  //Roman Lygin 26.12.08, see comments in Geom_BSplineCurve::IsCacheValid()
-  Standard_Real aDeltaU = U - ucacheparameter;
-  Standard_Real aDeltaV = V - vcacheparameter;
-
-  return ( validcache &&
-      (aDeltaU >= 0.0e0) &&
-      ((aDeltaU < ucachespanlenght) || (ucachespanindex == ufknots->Upper() - udeg)) &&
-      (aDeltaV >= 0.0e0) &&
-      ((aDeltaV < vcachespanlenght) || (vcachespanindex == vfknots->Upper() - vdeg)) );
-}
-
-//=======================================================================
 //function : SetWeight
 //purpose  : 
 //=======================================================================
@@ -1550,7 +1335,6 @@ void Geom_BSplineSurface::SetWeight (const Standard_Integer UIndex,
   }
   Weights (UIndex+Weights.LowerRow()-1, VIndex+Weights.LowerCol()-1) = Weight;
   Rational(Weights, urational, vrational);
-  InvalidateCache();
 }
 
 //=======================================================================
@@ -1583,8 +1367,6 @@ void Geom_BSplineSurface::SetWeightCol
   }
   // Verifie si c'est rationnel
   Rational(Weights, urational, vrational);
-
-  InvalidateCache();
 }
 
 //=======================================================================
@@ -1619,6 +1401,5 @@ void Geom_BSplineSurface::SetWeightRow
   }
   // Verifie si c'est rationnel
   Rational(Weights, urational, vrational);
-  InvalidateCache();
 }
 

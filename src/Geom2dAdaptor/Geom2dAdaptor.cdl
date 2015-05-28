@@ -27,7 +27,8 @@ uses
     gp,
     Standard,
     TColStd,
-    TColgp
+    TColgp,
+    BSplCLib
 
 is
 

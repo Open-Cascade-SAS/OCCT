@@ -104,6 +104,8 @@ uses TColStd, gp, TColgp, math, GeomAbs
 
 
 is
+    
+    imported transient class Cache;
 
     imported EvaluatorFunction ;
 
@@ -2063,6 +2065,30 @@ is
     --          If rational computes the homogeneous Taylor expension
     --          for the numerator and stores it in CachePoles
 
+    BuildCache(theParameter        : Real;
+               theSpanDomain       : Real;
+               thePeriodicFlag     : Boolean ;
+               theDegree           : Integer;
+               theFlatKnots        : Array1OfReal           from TColStd ;
+               thePoles            : Array1OfPnt            from TColgp;
+               theWeights          : Array1OfReal           from TColStd ;
+               theCacheArray       : in out Array2OfReal    from TColStd)   ;
+    ---Purpose: Perform the evaluation of the Taylor expansion
+    --          of the Bspline normalized between 0 and 1.
+    --          Structure of result optimized for BSplCLib_Cache.
+
+    BuildCache(theParameter        : Real;
+               theSpanDomain       : Real;
+               thePeriodicFlag     : Boolean ;
+               theDegree           : Integer;
+               theFlatKnots        : Array1OfReal           from TColStd ;
+               thePoles            : Array1OfPnt2d          from TColgp;
+               theWeights          : Array1OfReal           from TColStd ;
+               theCacheArray       : in out Array2OfReal    from TColStd)   ;
+    ---Purpose: Perform the evaluation of the Taylor expansion
+    --          of the Bspline normalized between 0 and 1.
+    --          Structure of result optimized for BSplCLib_Cache.
+
     PolesCoefficients(Poles         : Array1OfPnt2d   from TColgp;
                       CachePoles    : in out Array1OfPnt2d   from TColgp);
     ---Warning: To be used for Beziercurves ONLY!!!
@@ -2454,6 +2480,7 @@ is
     --          all u1 and u0 in the domain of the curve f(u) 
     --          | u1 - u0 | < UTolerance and 
     --          we have |f (u1) - f (u0)| < Tolerance3D
+    
 
 end BSplCLib;
 

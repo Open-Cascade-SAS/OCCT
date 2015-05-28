@@ -21,7 +21,7 @@ vertex v2 x y z
 distmini d v1 v2
 regexp {([-0-9.+eE]+)} [dump d_val] full dist
 
-set checkdist 2.54211497292521e-013
+set checkdist 1.13686837721616e-013
 
 if { [expr 1.*abs($checkdist - $dist)/$checkdist] > 0.1 } {
     puts "Error : Distance is wrong"

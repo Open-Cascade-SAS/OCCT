@@ -1,2 +1,1 @@
-puts "TODO OCC24035 ALL: Faulty shapes in variables faulty_1 to faulty_"
 restore [locate_data_file wrong_checkshape_2.brep] a

@@ -33,7 +33,8 @@ uses Vec2d                  from gp,
      BSplineCurve           from Geom2d,
      CurveType              from GeomAbs,
      Shape                  from GeomAbs,
-     HCurve2d               from Adaptor2d
+     HCurve2d               from Adaptor2d,
+     Cache                  from BSplCLib
      
      
 raises NoSuchObject from Standard,
@@ -123,19 +124,44 @@ is
         --- Purpose : Computes the point of parameter U on the curve 
     is redefined static;
 
+    ValueBSpline(me; U: Real) returns Pnt2d from gp
+        --- Purpose : Computes the point of parameter U on the B-spline curve
+    is private;
+
+    ValueOffset(me; U: Real) returns Pnt2d from gp
+        --- Purpose : Computes the point of parameter U on the offset curve
+    is private;
+
     D0 (me; U : Real; P : out Pnt2d from gp)
         --- Purpose : Computes the point of parameter U.
     is redefined static;
 
+    D0BSpline(me; theU : Real; theP : out Pnt2d from gp)
+        --- Purpose : Computes the point of parameter U on the B-spline curve
+    is private;
+
+    D0Offset(me; theU : Real; theP : out Pnt2d from gp)
+        --- Purpose : Computes the point of parameter U on the offset curve
+    is private;
+
     D1 (me; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)
         --- Purpose : Computes the point of parameter U on the curve with its
         --  first derivative.
-
     raises 
        DomainError from Standard
         --- Purpose : Raised if the continuity of the current interval
         --  is not C1.
     is redefined static;
+
+    D1BSpline(me; theU : Real; theP : out Pnt2d from gp ; theV : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the B-spline curve
+        --  and its derivative
+    is private;
+
+    D1Offset(me; theU : Real; theP : out Pnt2d from gp ; theV : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the offset curve
+        --  and its derivative
+    is private;
     
     D2 (me; U : Real; P : out Pnt2d from gp; V1, V2 : out Vec2d from gp)
         --- Purpose :
@@ -147,6 +173,16 @@ is
         --  is not C2.
     is redefined static;
 
+    D2BSpline(me; theU : Real; theP : out Pnt2d from gp; theV1, theV2 : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the B-spline curve
+        --  and its first and second derivatives
+    is private;
+
+    D2Offset(me; theU : Real; theP : out Pnt2d from gp; theV1, theV2 : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the offset curve
+        --  and its first and second derivatives
+    is private;
+
     D3 (me; U : Real; P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp)
         --- Purpose :
         --  Returns the point P of parameter U, the first, the second 
@@ -156,6 +192,16 @@ is
         --- Purpose : Raised if the continuity of the current interval
         --  is not C3.
     is redefined static;
+
+    D3BSpline(me; theU : Real; theP : out Pnt2d from gp; theV1, theV2, theV3 : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the B-spline curve
+        --  and its first, second and third derivatives
+    is private;
+
+    D3Offset(me; theU : Real; theP : out Pnt2d from gp; theV1, theV2, theV3 : out Vec2d from gp)
+        --- Purpose : Computes the point of parameter U on the offset curve
+        --  and its first, second and third derivatives
+    is private;
         
     DN (me; U : Real; N : Integer)   returns Vec2d from gp
         --- Purpose :
@@ -168,6 +214,18 @@ is
         OutOfRange from Standard
         --- Purpose : Raised if N < 1.            
     is redefined static;
+
+    DNBSpline(me; theU : Real; N : Integer) returns Vec2d from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    is private;
+
+    DNOffset(me; theU : Real; N : Integer) returns Vec2d from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    is private;
 
 
     Resolution(me; Ruv :Real) returns Real
@@ -243,6 +301,11 @@ is
 
     load(me : in out; C : Curve from Geom2d; UFirst,ULast : Real)
     is private;
+    
+    RebuildCache(me; theParameter : Real)
+    ---Purpose: Rebuilds B-spline cache
+    -- \param theParameter the value on the knot axis which identifies the caching span
+    is static private;
    
 fields 
 
@@ -250,6 +313,8 @@ fields
   myTypeCurve         : CurveType        from GeomAbs ;
   myFirst             : Real             from Standard ;
   myLast              : Real             from Standard;
+  myCurveCache        : Cache            from BSplCLib;
+  myOffsetBaseCurveAdaptor : HCurve2d    from Adaptor2d;
   
 end Curve;
 

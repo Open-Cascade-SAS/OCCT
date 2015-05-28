@@ -397,6 +397,10 @@ void Geom_SurfaceOfRevolution::D1
       XYZ Vdir = direction.XYZ();                        //Vdir
       Q.Subtract(C);                                     //CQ
       XYZ VcrossCQ  = Vdir.Crossed (Q);                  //Vdir^CQ
+      // If the point is placed on the axis of revolution then derivatives on U are undefined.
+      // Manually set them to zero.
+      if (VcrossCQ.SquareModulus() < Precision::SquareConfusion())
+        VcrossCQ.SetCoord(0.0, 0.0, 0.0);
       XYZ VcrossDQv = Vdir.Crossed (DQv);                //(Vdir^Q')
       XYZ VdotCQ    = Vdir.Multiplied (Vdir.Dot(Q));     //(Vdir.CQ)Vdir
       XYZ VdotDQv   = Vdir.Multiplied (Vdir.Dot(DQv));   //(Vdir.Q')Vdir
@@ -463,6 +467,10 @@ void Geom_SurfaceOfRevolution::D2
       XYZ Vdir  = direction.XYZ();                          //Vdir
       Q.Subtract(C);                                        //CQ
       XYZ VcrossCQ   = Vdir.Crossed (Q);                    //Vdir^CQ
+      // If the point is placed on the axis of revolution then derivatives on U are undefined.
+      // Manually set them to zero.
+      if (VcrossCQ.SquareModulus() < Precision::SquareConfusion())
+        VcrossCQ.SetCoord(0.0, 0.0, 0.0);
       XYZ VcrossD1Qv = Vdir.Crossed (D1Qv);                 //(Vdir^Q')
       XYZ VcrossD2Qv = Vdir.Crossed (D2Qv);                 //(Vdir^Q")
       XYZ VdotCQ     = Vdir.Multiplied (Vdir.Dot(Q));       //(Vdir.CQ)Vdir
@@ -558,6 +566,10 @@ void Geom_SurfaceOfRevolution::D3
       XYZ Vdir  = direction.XYZ();                          //Vdir
       Q.Subtract(C);                                        //CQ
       XYZ VcrossCQ   = Vdir.Crossed (Q);                    //Vdir^CQ
+      // If the point is placed on the axis of revolution then derivatives on U are undefined.
+      // Manually set them to zero.
+      if (VcrossCQ.SquareModulus() < Precision::SquareConfusion())
+        VcrossCQ.SetCoord(0.0, 0.0, 0.0);
       XYZ VcrossD1Qv = Vdir.Crossed (D1Qv);                 //(Vdir^Q')
       XYZ VcrossD2Qv = Vdir.Crossed (D2Qv);                 //(Vdir^Q")
       XYZ VcrossD3Qv = Vdir.Crossed (D3Qv);                 //(Vdir^Q''')
@@ -763,6 +775,11 @@ void Geom_SurfaceOfRevolution::LocalD1 (const Standard_Real    U,
 	 XYZ Vdir = direction.XYZ();                        //Vdir
 	 Q.Subtract(C);                                     //CQ
 	 XYZ VcrossCQ  = Vdir.Crossed (Q);                  //Vdir^CQ
+      // If the point is placed on the axis of revolution then derivatives on U are undefined.
+      // Manually set them to zero.
+      if (VcrossCQ.SquareModulus() < Precision::SquareConfusion())
+        VcrossCQ.SetCoord(0.0, 0.0, 0.0);
+
 	 XYZ VcrossDQv = Vdir.Crossed (DQv);                //(Vdir^Q')
 	 XYZ VdotCQ    = Vdir.Multiplied (Vdir.Dot(Q));     //(Vdir.CQ)Vdir
 	 XYZ VdotDQv   = Vdir.Multiplied (Vdir.Dot(DQv));   //(Vdir.Q')Vdir
@@ -818,6 +835,11 @@ void Geom_SurfaceOfRevolution::LocalD2 (const Standard_Real    U,
 	  XYZ Vdir  = direction.XYZ();                           //Vdir
 	  Q.Subtract(C);                                         //CQ
 	  XYZ VcrossCQ   = Vdir.Crossed (Q);                     //Vdir^CQ
+      // If the point is placed on the axis of revolution then derivatives on U are undefined.
+      // Manually set them to zero.
+      if (VcrossCQ.SquareModulus() < Precision::SquareConfusion())
+        VcrossCQ.SetCoord(0.0, 0.0, 0.0);
+
 	  XYZ VcrossD1Qv = Vdir.Crossed (D1Qv);                  //(Vdir^Q')
 	  XYZ VcrossD2Qv = Vdir.Crossed (D2Qv);                  //(Vdir^Q")
 	  XYZ VdotCQ     = Vdir.Multiplied (Vdir.Dot(Q));        //(Vdir.CQ)Vdir
@@ -896,6 +918,11 @@ void Geom_SurfaceOfRevolution::LocalD3 (const Standard_Real    U,
 	  XYZ Vdir  = direction.XYZ();                          //Vdir
 	  Q.Subtract(C);                                        //CQ
 	  XYZ VcrossCQ   = Vdir.Crossed (Q);                    //Vdir^CQ
+      // If the point is placed on the axis of revolution then derivatives on U are undefined.
+      // Manually set them to zero.
+      if (VcrossCQ.SquareModulus() < Precision::SquareConfusion())
+        VcrossCQ.SetCoord(0.0, 0.0, 0.0);
+
 	  XYZ VcrossD1Qv = Vdir.Crossed (D1Qv);                 //(Vdir^Q')
 	  XYZ VcrossD2Qv = Vdir.Crossed (D2Qv);                 //(Vdir^Q")
 	  XYZ VcrossD3Qv = Vdir.Crossed (D3Qv);                 //(Vdir^Q''')

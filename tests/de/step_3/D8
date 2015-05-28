@@ -1,7 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR25593 ALL: CHECKSHAPE : Faulty" 
-
 # No checkape error on WNT in 64-bit only (after 22598 and issue 25797 was registered for that)
+puts "TODO CR23096 Linux: CHECKSHAPE : Faulty"
 
 set filename trj6_pm4-hc-214.stp
 

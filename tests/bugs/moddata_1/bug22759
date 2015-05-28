@@ -28,14 +28,14 @@ regexp {deflection +([-0-9.+eE]+)} $tri_info full defl
 set env(os_type) $tcl_platform(platform)
 if { [string compare $env(os_type) "windows"] != 0 } {
    puts "OS = Linux"
-   set good_tri  520414
-   set good_nod  263938
-   set good_defl 0.0026800432954056617
+   set good_tri  615414
+   set good_nod  311438
+   set good_defl 0.0032657364637550075
 } else {
    puts "OS = Windows NT"
-   set good_tri  520414
-   set good_nod  263938
-   set good_defl 0.0026800432954056617
+   set good_tri  615414
+   set good_nod  311438
+   set good_defl 0.0032657364637550075
 }
 
 proc GetPercent {Value GoodValue} {

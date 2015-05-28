@@ -1281,10 +1281,10 @@ Standard_Boolean BOPTools_AlgoTools::IsHole(const TopoDS_Shape& aW,
       dU=-dU;
     }
     //
-    aC2D->D0(aU, aP2D0);
+    aBAC2D.D0(aU, aP2D0);
     for(i=2; i<=aNbS; i++) {
       aU=aU1+(i-1)*dU;
-      aC2D->D0(aU, aP2D1);
+      aBAC2D.D0(aU, aP2D1);
       aP2D0.Coord(aX0, aY0);
       aP2D1.Coord(aX1, aY1);
       //

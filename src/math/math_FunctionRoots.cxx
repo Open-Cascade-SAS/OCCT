@@ -440,7 +440,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 	  F.Value(x1,f1); f1-=K;
 	  F.Value(x2,f2); f2-=K;
 	  //-- printf("\n *************** RECHERCHE MINIMUM **********\n");
-	  while(Abs(x3-x0) > tolCR*(Abs(x1)+Abs(x2)) && (Abs(x1 -x2) > 0)) { 
+	  Standard_Real tolX = 0.001 * NEpsX;
+	  while(Abs(x3-x0) > tolCR*(Abs(x1)+Abs(x2)) && (Abs(x1 -x2) > tolX)) { 
 	    //-- printf("\n (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) (%10.5g,%10.5g) ", 
 	    //--    x0,f0,x1,f1,x2,f2,x3,f3);
 	    if(recherche_minimum) {  

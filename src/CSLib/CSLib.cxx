@@ -165,7 +165,13 @@ gp_Dir&              Normal
 //     if (D1UMag <= MagTol || D1VMag <= MagTol && NMag > MagTol) MagTol = 2* NMag;
 }
   else
-     { Normal = gp_Dir (D1UvD1V);   Status = Defined; }
+  {
+    // Firstly normalize tangent vectors D1U and D1V (this method is more stable)
+    gp_Dir aD1U(D1U);
+    gp_Dir aD1V(D1V);
+    Normal = gp_Dir(aD1U.Crossed(aD1V));
+    Status = Defined;
+  }
   
 
 }

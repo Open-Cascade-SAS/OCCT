@@ -151,7 +151,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
   InfiniteStatus = Standard_False;
   Done = Standard_True;
 
-  Eps = 1.e-12;
+  Eps = 1.5e-12;
 
   Depi = M_PI+M_PI;
   if (InfBound <= RealFirst() && SupBound >= RealLast()) {

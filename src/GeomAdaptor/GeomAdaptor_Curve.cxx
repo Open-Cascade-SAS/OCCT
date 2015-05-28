@@ -26,6 +26,7 @@
 #include <GeomAdaptor_HCurve.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <BSplCLib.hxx>
+#include <BSplCLib_Cache.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -48,9 +49,21 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Geom_OffsetCurve.hxx>
+#include <CSLib_Offset.hxx>
 
 #define myBspl (*((Handle(Geom_BSplineCurve)*)&myCurve))
 #define PosTol Precision::PConfusion()/2
+
+static const int maxDerivOrder = 3;
+static const Standard_Real MinStep   = 1e-7;
+
+static gp_Vec dummyDerivative; // used as empty value for unused derivatives in AdjustDerivative
+// Recalculate derivatives in the singular point
+// Returns true if the direction of derivatives is changed
+static Standard_Boolean AdjustDerivative(
+    const Handle(Adaptor3d_HCurve)& theAdaptor, Standard_Integer theMaxDerivative, Standard_Real theU, gp_Vec& theD1,
+    gp_Vec& theD2 = dummyDerivative, gp_Vec& theD3 = dummyDerivative, gp_Vec& theD4 = dummyDerivative);
+
 
 //=======================================================================
 //function : LocalContinuity
@@ -155,6 +168,15 @@ void GeomAdaptor_Curve::load(const Handle(Geom_Curve)& C,
     }
     else if ( TheType == STANDARD_TYPE(Geom_BSplineCurve)) {
       myTypeCurve = GeomAbs_BSplineCurve;
+      // Create cache for B-spline
+      myCurveCache = new BSplCLib_Cache(myBspl->Degree(), myBspl->IsPeriodic(), 
+        myBspl->KnotSequence(), myBspl->Poles(), myBspl->Weights());
+    }
+    else if ( TheType == STANDARD_TYPE(Geom_OffsetCurve)) {
+      myTypeCurve = GeomAbs_OtherCurve;
+      // Create nested adaptor for base curve
+      Handle(Geom_Curve) aBase = Handle(Geom_OffsetCurve)::DownCast(myCurve)->BasisCurve();
+      myOffsetBaseCurveAdaptor = new GeomAdaptor_HCurve(aBase);
     }
     else {
       myTypeCurve = GeomAbs_OtherCurve;
@@ -511,28 +533,81 @@ Standard_Real GeomAdaptor_Curve::Period() const
 }
 
 //=======================================================================
+//function : RebuildCache
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::RebuildCache(const Standard_Real theParameter) const
+{
+  myCurveCache->BuildCache(theParameter, myBspl->Degree(), 
+    myBspl->IsPeriodic(), myBspl->KnotSequence(), 
+    myBspl->Poles(), myBspl->Weights());
+}
+
+//=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
 
 gp_Pnt GeomAdaptor_Curve::Value(const Standard_Real U) const
 {
-  if ( (myTypeCurve == GeomAbs_BSplineCurve)&&
-      (U==myFirst || U==myLast) ) {
+  if (myTypeCurve == GeomAbs_BSplineCurve)
+    return ValueBSpline(U);
+  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
+    return ValueOffset(U);
+  return myCurve->Value(U);
+}
+
+//=======================================================================
+//function : ValueBSpline
+//purpose  : 
+//=======================================================================
+gp_Pnt GeomAdaptor_Curve::ValueBSpline(const Standard_Real theU) const
+{
+  if (theU == myFirst || theU == myLast)
+  {
     Standard_Integer Ideb = 0, Ifin = 0;
-    if (U==myFirst) {
+    if (theU == myFirst) {
       myBspl->LocateU(myFirst, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
       if (Ideb>=Ifin) Ifin = Ideb+1;
     }
-    if (U==myLast) {
+    if (theU == myLast) {
       myBspl->LocateU(myLast, PosTol, Ideb, Ifin);
       if (Ifin>myBspl->NbKnots()) Ifin = myBspl->NbKnots();
       if (Ideb>=Ifin) Ideb = Ifin-1;
     }
-    return myBspl->LocalValue(U, Ideb, Ifin);
+    return myBspl->LocalValue(theU, Ideb, Ifin);
   }
-  return myCurve->Value(U);
+  else if (!myCurveCache.IsNull()) // use cached B-spline data
+  {
+    if (!myCurveCache->IsCacheValid(theU))
+      RebuildCache(theU);
+    gp_Pnt aRes;
+    myCurveCache->D0(theU, aRes);
+    return aRes;
+  }
+  return myCurve->Value(theU);
+}
+
+//=======================================================================
+//function : ValueOffset
+//purpose  : 
+//=======================================================================
+gp_Pnt GeomAdaptor_Curve::ValueOffset(const Standard_Real theU) const
+{
+  gp_Pnt aP;
+  gp_Vec aV;
+  myOffsetBaseCurveAdaptor->D1(theU, aP, aV);
+  Standard_Boolean IsDirectionChange = Standard_False;
+  if(aV.SquareMagnitude() <= gp::Resolution())
+    IsDirectionChange = AdjustDerivative(myOffsetBaseCurveAdaptor, 1, theU, aV);
+
+  Handle(Geom_OffsetCurve) anOffC = Handle(Geom_OffsetCurve)::DownCast(myCurve);
+  Standard_Real anOffsetVal = anOffC->Offset();
+  const gp_Dir& anOffsetDir = anOffC->Direction();
+
+  CSLib_Offset::D0(aP, aV, anOffsetDir, anOffsetVal, IsDirectionChange, aP);
+  return aP;
 }
 
 //=======================================================================
@@ -542,24 +617,53 @@ gp_Pnt GeomAdaptor_Curve::Value(const Standard_Real U) const
 
 void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 {
-  if ( (myTypeCurve == GeomAbs_BSplineCurve)&&
-      (U==myFirst || U==myLast) ) {
+  if (myTypeCurve == GeomAbs_BSplineCurve)
+    D0BSpline(U, P);
+  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
+    D0Offset(U, P);
+  else
+    myCurve->D0(U, P);
+}
+
+//=======================================================================
+//function : D0BSpline
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D0BSpline(const Standard_Real theU, gp_Pnt& theP) const
+{
+  if (theU == myFirst || theU == myLast) 
+  {
     Standard_Integer Ideb = 0, Ifin = 0;
-    if (U==myFirst) {
+    if (theU == myFirst) {
       myBspl->LocateU(myFirst, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
       if (Ideb>=Ifin) Ifin = Ideb+1;
     }
-    if (U==myLast) {
+    if (theU == myLast) {
       myBspl->LocateU(myLast, PosTol, Ideb, Ifin);
       if (Ifin>myBspl->NbKnots()) Ifin = myBspl->NbKnots();
       if (Ideb>=Ifin) Ideb = Ifin-1;
     }
-    myBspl->LocalD0( U, Ideb, Ifin, P);
+    myBspl->LocalD0(theU, Ideb, Ifin, theP);
+    return;
   }
-  else {
-    myCurve->D0(U, P);
-  } 
+  else if (!myCurveCache.IsNull()) // use cached B-spline data
+  {
+    if (!myCurveCache->IsCacheValid(theU))
+      RebuildCache(theU);
+    myCurveCache->D0(theU, theP);
+    return;
+  }
+  myCurve->D0(theU, theP);
+}
+
+//=======================================================================
+//function : D0Offset
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D0Offset(const Standard_Real theU, gp_Pnt& theP) const
+{
+  theP = ValueOffset(theU);
 }
 
 //=======================================================================
@@ -569,25 +673,65 @@ void GeomAdaptor_Curve::D0(const Standard_Real U, gp_Pnt& P) const
 
 void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const 
 {
-  if ( (myTypeCurve == GeomAbs_BSplineCurve)&&
-      (U==myFirst || U==myLast) ) {
+  if (myTypeCurve == GeomAbs_BSplineCurve)
+    D1BSpline(U, P, V);
+  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
+    D1Offset(U, P, V);
+  else
+    myCurve->D1(U, P, V);
+}
+
+//=======================================================================
+//function : D1BSpline
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D1BSpline(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV) const
+{
+  if (theU == myFirst || theU == myLast) 
+  {
     Standard_Integer Ideb = 0, Ifin = 0;
-    if (U==myFirst) {
+    if (theU == myFirst) {
       myBspl->LocateU(myFirst, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
       if (Ideb>=Ifin) Ifin = Ideb+1;
     }
-    if (U==myLast) {
+    if (theU == myLast) {
       myBspl->LocateU(myLast, PosTol, Ideb, Ifin);
       if (Ifin>myBspl->NbKnots()) Ifin = myBspl->NbKnots();
       if (Ideb>=Ifin) Ideb = Ifin-1;
     }
-    myBspl->LocalD1( U, Ideb, Ifin, P, V); 
-  } 
-  else {
-    myCurve->D1( U, P, V);
+    myBspl->LocalD1(theU, Ideb, Ifin, theP, theV);
+    return;
   }
+  else if (!myCurveCache.IsNull()) // use cached B-spline data
+  {
+    if (!myCurveCache->IsCacheValid(theU))
+      RebuildCache(theU);
+    myCurveCache->D1(theU, theP, theV);
+    return;
+  }
+  myCurve->D1(theU, theP, theV);
 }
+
+//=======================================================================
+//function : D1Offset
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D1Offset(const Standard_Real theU, gp_Pnt& theP, gp_Vec& theV) const
+{
+  gp_Vec aV2;
+  myOffsetBaseCurveAdaptor->D2 (theU, theP, theV, aV2);
+
+  Standard_Boolean IsDirectionChange = Standard_False;
+  if(theV.SquareMagnitude() <= gp::Resolution())
+    IsDirectionChange = AdjustDerivative(myOffsetBaseCurveAdaptor, 2, theU, theV, aV2);
+
+  Handle(Geom_OffsetCurve) anOffC = Handle(Geom_OffsetCurve)::DownCast(myCurve);
+  Standard_Real anOffsetVal = anOffC->Offset();
+  const gp_Dir& anOffsetDir = anOffC->Direction();
+  CSLib_Offset::D1(theP, theV, aV2, anOffsetDir, anOffsetVal, IsDirectionChange, theP, theV);
+}
+
 
 //=======================================================================
 //function : D2
@@ -595,26 +739,67 @@ void GeomAdaptor_Curve::D1(const Standard_Real U, gp_Pnt& P, gp_Vec& V) const
 //=======================================================================
 
 void GeomAdaptor_Curve::D2(const Standard_Real U, 
-			   gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const 
+                           gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const 
 {
-  if ( (myTypeCurve == GeomAbs_BSplineCurve)&&
-      (U==myFirst || U==myLast) ) {
+  if (myTypeCurve == GeomAbs_BSplineCurve)
+    D2BSpline(U, P, V1, V2);
+  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
+    D2Offset(U, P, V1, V2);
+  else
+    myCurve->D2(U, P, V1, V2);
+}
+
+//=======================================================================
+//function : D2BSpline
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D2BSpline(const Standard_Real theU, gp_Pnt& theP,
+                                  gp_Vec& theV1, gp_Vec& theV2) const
+{
+  if (theU == myFirst || theU == myLast)
+  {
     Standard_Integer Ideb = 0, Ifin = 0;
-    if (U==myFirst) {
+    if (theU == myFirst) {
       myBspl->LocateU(myFirst, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
       if (Ideb>=Ifin) Ifin = Ideb+1;
     }
-    if (U==myLast) {
+    if (theU == myLast) {
       myBspl->LocateU(myLast, PosTol, Ideb, Ifin);
       if (Ifin>myBspl->NbKnots()) Ifin = myBspl->NbKnots();
       if (Ideb>=Ifin) Ideb = Ifin-1;
     }
-    myBspl->LocalD2( U, Ideb, Ifin, P, V1, V2);         
+    myBspl->LocalD2(theU, Ideb, Ifin, theP, theV1, theV2);
+    return;
   }
-  else {
-    myCurve->D2( U, P, V1, V2);
+  else if (!myCurveCache.IsNull()) // use cached B-spline data
+  {
+    if (!myCurveCache->IsCacheValid(theU))
+      RebuildCache(theU);
+    myCurveCache->D2(theU, theP, theV1, theV2);
+    return;
   }
+  myCurve->D2(theU, theP, theV1, theV2);
+}
+
+//=======================================================================
+//function : D2Offset
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D2Offset(const Standard_Real theU, gp_Pnt& theP,
+                                  gp_Vec& theV1, gp_Vec& theV2) const
+{
+  gp_Vec V3;
+  myOffsetBaseCurveAdaptor->D3 (theU, theP, theV1, theV2, V3);
+
+  Standard_Boolean IsDirectionChange = Standard_False;
+  if(theV1.SquareMagnitude() <= gp::Resolution())
+    IsDirectionChange = AdjustDerivative(myOffsetBaseCurveAdaptor, 3, theU, theV1, theV2, V3);
+
+  Handle(Geom_OffsetCurve) anOffC = Handle(Geom_OffsetCurve)::DownCast(myCurve);
+  Standard_Real anOffsetVal = anOffC->Offset();
+  const gp_Dir& anOffsetDir = anOffC->Direction();
+  CSLib_Offset::D2(theP, theV1, theV2, V3, anOffsetDir, anOffsetVal, IsDirectionChange, theP, theV1, theV2);
 }
 
 //=======================================================================
@@ -623,27 +808,71 @@ void GeomAdaptor_Curve::D2(const Standard_Real U,
 //=======================================================================
 
 void GeomAdaptor_Curve::D3(const Standard_Real U, 
-			   gp_Pnt& P, gp_Vec& V1, 
-			   gp_Vec& V2, gp_Vec& V3) const 
+                           gp_Pnt& P, gp_Vec& V1, 
+                           gp_Vec& V2, gp_Vec& V3) const 
 {
-  if ( (myTypeCurve == GeomAbs_BSplineCurve) &&
-      (U==myFirst || U==myLast) ) {
+  if (myTypeCurve == GeomAbs_BSplineCurve)
+    D3BSpline(U, P, V1, V2, V3);
+  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
+    D3Offset(U, P, V1, V2, V3);
+  else
+    myCurve->D3(U, P, V1, V2, V3);
+}
+
+//=======================================================================
+//function : D3BSpline
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D3BSpline(const Standard_Real theU,
+                                  gp_Pnt& theP, gp_Vec& theV1,
+                                  gp_Vec& theV2, gp_Vec& theV3) const
+{
+  if (theU == myFirst || theU == myLast)
+  {
     Standard_Integer Ideb = 0, Ifin = 0;
-    if (U==myFirst) {
+    if (theU == myFirst) {
       myBspl->LocateU(myFirst, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
       if (Ideb>=Ifin) Ifin = Ideb+1;
     }
-    if (U==myLast) {
+    if (theU == myLast) {
       myBspl->LocateU(myLast, PosTol, Ideb, Ifin);
       if (Ifin>myBspl->NbKnots()) Ifin = myBspl->NbKnots();
       if (Ideb>=Ifin) Ideb = Ifin-1;
     }
-    myBspl->LocalD3( U, Ideb, Ifin, P, V1, V2, V3);  
+    myBspl->LocalD3(theU, Ideb, Ifin, theP, theV1, theV2, theV3);
+    return;
   }
-  else {
-    myCurve->D3( U, P, V1, V2, V3);
+  else if (!myCurveCache.IsNull()) // use cached B-spline data
+  {
+    if (!myCurveCache->IsCacheValid(theU))
+      RebuildCache(theU);
+    myCurveCache->D3(theU, theP, theV1, theV2, theV3);
+    return;
   }
+  myCurve->D3(theU, theP, theV1, theV2, theV3);
+}
+
+//=======================================================================
+//function : D3Offset
+//purpose  : 
+//=======================================================================
+void GeomAdaptor_Curve::D3Offset(const Standard_Real theU,
+                                 gp_Pnt& theP, gp_Vec& theV1,
+                                 gp_Vec& theV2, gp_Vec& theV3) const
+{
+  myOffsetBaseCurveAdaptor->D3 (theU, theP, theV1, theV2, theV3);
+  gp_Vec V4 = myOffsetBaseCurveAdaptor->DN(theU, 4);
+
+  Standard_Boolean IsDirectionChange = Standard_False;
+  if(theV1.SquareMagnitude() <= gp::Resolution())
+    IsDirectionChange = AdjustDerivative(myOffsetBaseCurveAdaptor, 4, theU, theV1, theV2, theV3, V4);
+
+  Handle(Geom_OffsetCurve) anOffC = Handle(Geom_OffsetCurve)::DownCast(myCurve);
+  Standard_Real anOffsetVal = anOffC->Offset();
+  const gp_Dir& anOffsetDir = anOffC->Direction();
+  CSLib_Offset::D3(theP, theV1, theV2, theV3, V4, anOffsetDir, anOffsetVal, IsDirectionChange,
+                   theP, theV1, theV2, theV3);
 }
 
 //=======================================================================
@@ -652,10 +881,21 @@ void GeomAdaptor_Curve::D3(const Standard_Real U,
 //=======================================================================
 
 gp_Vec GeomAdaptor_Curve::DN(const Standard_Real    U, 
-			     const Standard_Integer N) const 
+                             const Standard_Integer N) const 
 {
-  if ( (myTypeCurve == GeomAbs_BSplineCurve) &&
-      (U==myFirst || U==myLast) ) {
+  if (myTypeCurve == GeomAbs_BSplineCurve)
+    return DNBSpline(U, N);
+  else if (myCurve->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
+    return DNOffset(U, N);
+
+  return myCurve->DN(U, N);
+}
+
+gp_Vec GeomAdaptor_Curve::DNBSpline(const Standard_Real    U,
+                                    const Standard_Integer N) const
+{
+  if ((U==myFirst || U==myLast))
+  {
     Standard_Integer Ideb = 0, Ifin = 0;
     if (U==myFirst) {
       myBspl->LocateU(myFirst, PosTol, Ideb, Ifin);
@@ -668,10 +908,31 @@ gp_Vec GeomAdaptor_Curve::DN(const Standard_Real    U,
       if (Ideb>=Ifin) Ideb = Ifin-1;
     } 
     return myBspl->LocalDN( U, Ideb, Ifin, N);
-  }  
-  else {
-    return myCurve->DN( U, N);
   }
+  return myCurve->DN( U, N);
+}
+
+gp_Vec GeomAdaptor_Curve::DNOffset(const Standard_Real    U,
+                                   const Standard_Integer N) const
+{
+  gp_Pnt aPnt;
+  gp_Vec aVec, aVN;
+
+  switch (N)
+  {
+  case 1:
+    D1Offset(U, aPnt, aVN);
+    break;
+  case 2:
+    D2Offset(U, aPnt, aVec, aVN);
+    break;
+  case 3:
+    D3Offset(U, aPnt, aVec, aVec, aVN);
+    break;
+  default:
+    aVN = myCurve->DN(U, N);
+  }
+  return aVN;
 }
 
 //=======================================================================
@@ -857,3 +1118,56 @@ Handle(Geom_BSplineCurve) GeomAdaptor_Curve::BSpline() const
   return *((Handle(Geom_BSplineCurve)*)&myCurve);
 }
 
+
+// ============= Auxiliary functions ===================
+Standard_Boolean AdjustDerivative(const Handle(Adaptor3d_HCurve)& theAdaptor, Standard_Integer theMaxDerivative,
+                                  Standard_Real theU, gp_Vec& theD1, gp_Vec& theD2,
+                                  gp_Vec& theD3, gp_Vec& theD4)
+{
+  static const Standard_Real aTol = gp::Resolution();
+
+  Standard_Boolean IsDirectionChange = Standard_False;
+  const Standard_Real anUinfium   = theAdaptor->FirstParameter();
+  const Standard_Real anUsupremum = theAdaptor->LastParameter();
+
+  const Standard_Real DivisionFactor = 1.e-3;
+  Standard_Real du;
+  if((anUsupremum >= RealLast()) || (anUinfium <= RealFirst())) 
+    du = 0.0;
+  else
+    du = anUsupremum - anUinfium;
+
+  const Standard_Real aDelta = Max(du * DivisionFactor, MinStep);
+
+  //Derivative is approximated by Taylor-series
+  Standard_Integer anIndex = 1; //Derivative order
+  gp_Vec V;
+
+  do
+  {
+    V =  theAdaptor->DN(theU, ++anIndex);
+  }
+  while((V.SquareMagnitude() <= aTol) && anIndex < maxDerivOrder);
+
+  Standard_Real u;
+
+  if(theU-anUinfium < aDelta)
+    u = theU+aDelta;
+  else
+    u = theU-aDelta;
+
+  gp_Pnt P1, P2;
+  theAdaptor->D0(Min(theU, u), P1);
+  theAdaptor->D0(Max(theU, u), P2);
+
+  gp_Vec V1(P1, P2);
+  IsDirectionChange = V.Dot(V1) < 0.0;
+  Standard_Real aSign = IsDirectionChange ? -1.0 : 1.0;
+
+  theD1 = V * aSign;
+  gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
+  for (Standard_Integer i = 1; i < theMaxDerivative; i++)
+    *(aDeriv[i-1]) = theAdaptor->DN(theU, anIndex + i) * aSign;
+
+  return IsDirectionChange;
+}

@@ -30,7 +30,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_RangeError.hxx>
-#include <Standard_Mutex.hxx>
 #include <Precision.hxx>
 
 #define  POLES    (poles->Array1())
@@ -181,33 +180,24 @@ Standard_Integer Geom_BSplineCurve::Degree () const
 
 void Geom_BSplineCurve::D0(const Standard_Real U, gp_Pnt& P) const 
 {
-  Standard_Real NewU(U);
-  PeriodicNormalization(NewU);
-
-  Geom_BSplineCurve* MyCurve = (Geom_BSplineCurve *) this;
-  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
-
-  if(!IsCacheValid(NewU)) 
-    MyCurve->ValidateCache(NewU);
-
-  if(rational)
+  Standard_Integer aSpanIndex = 0;
+  Standard_Real aNewU(U);
+  PeriodicNormalization(aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  if (aNewU < knots->Value(aSpanIndex))
+    aSpanIndex--;
+  if (rational) 
   {
-    BSplCLib::CacheD0(NewU,
-      deg,
-      parametercache,
-      spanlenghtcache,
-      cachepoles->Array1(),
-      cacheweights->Array1(),
+    BSplCLib::D0(aNewU,aSpanIndex,deg,periodic,POLES,
+      weights->Array1(),
+      knots->Array1(), mults->Array1(),
       P);
   }
-  else
+  else 
   {
-    BSplCLib::CacheD0(NewU,
-      deg,
-      parametercache,
-      spanlenghtcache,
-      cachepoles->Array1(),
+    BSplCLib::D0(aNewU,aSpanIndex,deg,periodic,POLES,
       *((TColStd_Array1OfReal*) NULL),
+      knots->Array1(), mults->Array1(),
       P);
   }
 }
@@ -221,36 +211,25 @@ void Geom_BSplineCurve::D1 (const Standard_Real U,
                                   gp_Pnt& P,
                                   gp_Vec& V1) const
 {
-  Standard_Real NewU(U);
-  PeriodicNormalization(NewU);
-
-  Geom_BSplineCurve* MyCurve = (Geom_BSplineCurve *) this;
-  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
-
-  if(!IsCacheValid(NewU)) 
-    MyCurve->ValidateCache(NewU);
-
-  if(rational)
+  Standard_Integer aSpanIndex = 0;
+  Standard_Real aNewU(U);
+  PeriodicNormalization(aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  if (aNewU < knots->Value(aSpanIndex))
+    aSpanIndex--;
+  if (rational) 
   {
-    BSplCLib::CacheD1(NewU,
-      deg,
-      parametercache,
-      spanlenghtcache,
-      cachepoles->Array1(),
-      cacheweights->Array1(),
-      P,
-      V1);
+    BSplCLib::D1(aNewU,aSpanIndex,deg,periodic,POLES,
+      weights->Array1(),
+      knots->Array1(), mults->Array1(),
+      P, V1);
   }
-  else
+  else 
   {
-    BSplCLib::CacheD1(NewU,
-      deg,
-      parametercache,
-      spanlenghtcache,
-      cachepoles->Array1(),
+    BSplCLib::D1(aNewU,aSpanIndex,deg,periodic,POLES,
       *((TColStd_Array1OfReal*) NULL),
-      P,
-      V1);
+      knots->Array1(), mults->Array1(),
+      P, V1);
   }
 }
 
@@ -264,37 +243,25 @@ void Geom_BSplineCurve::D2(const Standard_Real U,
                            gp_Vec& V1,
                            gp_Vec& V2) const
 {
-  Standard_Real NewU(U);
-  PeriodicNormalization(NewU);
-
-  Geom_BSplineCurve* MyCurve = (Geom_BSplineCurve *) this;
-  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
-
-  if(!IsCacheValid(NewU)) 
-    MyCurve->ValidateCache(NewU);
-
-  if(rational)
+  Standard_Integer aSpanIndex = 0;
+  Standard_Real aNewU(U);
+  PeriodicNormalization(aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  if (aNewU < knots->Value(aSpanIndex))
+    aSpanIndex--;
+  if (rational) 
   {
-    BSplCLib::CacheD2(NewU,
-		      deg,
-		      parametercache,
-		      spanlenghtcache,
-		      (cachepoles->Array1()),
-		      cacheweights->Array1(),
-		      P,
-		      V1,
-		      V2);
+    BSplCLib::D2(aNewU,aSpanIndex,deg,periodic,POLES,
+      weights->Array1(),
+      knots->Array1(), mults->Array1(),
+      P, V1, V2);
   }
-  else {
-    BSplCLib::CacheD2(NewU,
-		      deg,
-		      parametercache,
-		      spanlenghtcache,
-		      (cachepoles->Array1()),
-		      *((TColStd_Array1OfReal*) NULL),
-		      P,
-		      V1,
-		      V2);
+  else 
+  {
+    BSplCLib::D2(aNewU,aSpanIndex,deg,periodic,POLES,
+      *((TColStd_Array1OfReal*) NULL),
+      knots->Array1(), mults->Array1(),
+      P, V1, V2);
   }
 }
 
@@ -309,41 +276,25 @@ void Geom_BSplineCurve::D3(const Standard_Real U,
                            gp_Vec& V2,
                            gp_Vec& V3) const
 {
-  
-  Standard_Real NewU(U);
-  PeriodicNormalization(NewU);
-
-  Geom_BSplineCurve* MyCurve = (Geom_BSplineCurve *) this;
-  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
-
-  if(!IsCacheValid(NewU)) 
-    MyCurve->ValidateCache(NewU);
-
-  if(rational)
+  Standard_Integer aSpanIndex = 0;
+  Standard_Real aNewU(U);
+  PeriodicNormalization(aNewU);
+  BSplCLib::LocateParameter(deg, knots->Array1(), mults->Array1(), U, periodic, aSpanIndex, aNewU);
+  if (aNewU < knots->Value(aSpanIndex))
+    aSpanIndex--;
+  if (rational) 
   {
-    BSplCLib::CacheD3(NewU,
-		      deg,
-		      parametercache,
-		      spanlenghtcache,
-		      (cachepoles->Array1()),
-		      cacheweights->Array1(),
-		      P,
-		      V1,
-		      V2,
-		      V3) ;
+    BSplCLib::D3(aNewU,aSpanIndex,deg,periodic,POLES,
+      weights->Array1(),
+      knots->Array1(), mults->Array1(),
+      P, V1, V2, V3);
   }
-  else
+  else 
   {
-    BSplCLib::CacheD3(NewU,
-		      deg,
-		      parametercache,
-		      spanlenghtcache,
-		      cachepoles->Array1(),
-		      *((TColStd_Array1OfReal*) NULL),
-		      P,
-		      V1,
-		      V2,
-		      V3) ;
+    BSplCLib::D3(aNewU,aSpanIndex,deg,periodic,POLES,
+      *((TColStd_Array1OfReal*) NULL),
+      knots->Array1(), mults->Array1(),
+      P, V1, V2, V3);
   }
 }
 
@@ -352,19 +303,19 @@ void Geom_BSplineCurve::D3(const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-gp_Vec Geom_BSplineCurve::DN  (const Standard_Real    U,
-			       const Standard_Integer N ) const
+gp_Vec Geom_BSplineCurve::DN(const Standard_Real    U,
+                             const Standard_Integer N) const
 {
   gp_Vec V;
   if (rational) {
     BSplCLib::DN(U,N,0,deg,periodic,POLES,
-		 weights->Array1(),
-		 FKNOTS,FMULTS,V);
+      weights->Array1(),
+      FKNOTS,FMULTS,V);
   }
   else {
     BSplCLib::DN(U,N,0,deg,periodic,POLES,
-		 *((TColStd_Array1OfReal*) NULL),
-		 FKNOTS,FMULTS,V);
+      *((TColStd_Array1OfReal*) NULL),
+      FKNOTS,FMULTS,V);
   }
   return V;
 }
@@ -437,6 +388,11 @@ void Geom_BSplineCurve::Knots (TColStd_Array1OfReal& K) const
   K = knots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom_BSplineCurve::Knots() const
+{
+  return knots->Array1();
+}
+
 //=======================================================================
 //function : KnotSequence
 //purpose  : 
@@ -447,6 +403,11 @@ void Geom_BSplineCurve::KnotSequence (TColStd_Array1OfReal& K) const
   Standard_DimensionError_Raise_if
     (K.Length() != flatknots->Length(), "Geom_BSplineCurve::KnotSequence");
   K = flatknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom_BSplineCurve::KnotSequence() const
+{
+  return flatknots->Array1();
 }
 
 //=======================================================================
@@ -668,6 +629,11 @@ void Geom_BSplineCurve::Multiplicities (TColStd_Array1OfInteger& M) const
   M = mults->Array1();
 }
 
+const TColStd_Array1OfInteger& Geom_BSplineCurve::Multiplicities() const
+{
+  return mults->Array1();
+}
+
 //=======================================================================
 //function : NbKnots
 //purpose  : 
@@ -706,6 +672,11 @@ void Geom_BSplineCurve::Poles (TColgp_Array1OfPnt& P) const
   Standard_DimensionError_Raise_if (P.Length() != poles->Length(),
 				    "Geom_BSplineCurve::Poles");
   P = poles->Array1();
+}
+
+const TColgp_Array1OfPnt& Geom_BSplineCurve::Poles() const
+{
+  return poles->Array1();
 }
 
 //=======================================================================
@@ -757,6 +728,13 @@ void Geom_BSplineCurve::Weights
   }
 }
 
+const TColStd_Array1OfReal& Geom_BSplineCurve::Weights() const
+{
+  if (IsRational())
+    return weights->Array1();
+  return BSplCLib::NoWeights();
+}
+
 //=======================================================================
 //function : IsRational
 //purpose  : 
@@ -778,7 +756,6 @@ void Geom_BSplineCurve::Transform
   TColgp_Array1OfPnt & CPoles = poles->ChangeArray1();
   for (Standard_Integer I = 1; I <= CPoles.Length(); I++)  
     CPoles (I).Transform (T);
-  InvalidateCache() ;
   maxderivinvok = 0;
 }
 

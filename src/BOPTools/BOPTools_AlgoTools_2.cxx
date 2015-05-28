@@ -74,8 +74,8 @@ void BOPTools_AlgoTools::UpdateVertex (const TopoDS_Edge& aE,
   gp_Pnt aPv=BRep_Tool::Pnt(aV);
   aTolV=BRep_Tool::Tolerance(aV);
 
-  Handle(Geom_Curve) aC3D=BRep_Tool::Curve(aE, aFirst, aLast);
-  aC3D->D0(aT, aPc);
+  GeomAdaptor_Curve aCA( BRep_Tool::Curve(aE, aFirst, aLast) );
+  aCA.D0(aT, aPc);
   aDist=aPv.Distance(aPc);
   if (aDist>aTolV) {
     BRep_Builder BB;
@@ -97,8 +97,8 @@ void BOPTools_AlgoTools::UpdateVertex (const IntTools_Curve& aC,
   gp_Pnt aPv=BRep_Tool::Pnt(aV);
   aTolV=BRep_Tool::Tolerance(aV);
 
-  Handle(Geom_Curve) aC3D=aC.Curve();
-  aC3D->D0(aT, aPc);
+  GeomAdaptor_Curve aCA( aC.Curve() );
+  aCA.D0(aT, aPc);
   aDist=aPv.Distance(aPc);
   if (aDist>aTolV) {
     BRep_Builder BB;

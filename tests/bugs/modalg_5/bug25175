@@ -14,7 +14,7 @@ sewing result 0.1 a
 
 checkmaxtol result 0.0076621571738049385
 checknbshapes result -shell 1
-checkfreebounds result 2
+checkfreebounds result 0
 
 set 2dviewer 1
 

@@ -38,7 +38,8 @@ uses
      Shape            from GeomAbs,
      Curve            from GeomAdaptor,
      HCurve           from Adaptor3d,
-     HSurface         from Adaptor3d
+     HSurface         from Adaptor3d,
+     Cache            from BSplSLib
 
 raises
     NoSuchObject      from Standard,
@@ -386,6 +387,12 @@ is
                        TolV  :  Real  =  0.0)
     is private;
 
+    RebuildCache(me; theU, theV : Real)
+    ---Purpose: Rebuilds B-spline cache
+    -- \param theU first parameter to identify the span for caching
+    -- \param theV second parameter to identify the span for caching
+    is static private;
+
 fields
 
     mySurface            : Surface          from Geom;
@@ -395,5 +402,6 @@ fields
     myVFirst             : Real             from Standard;
     myVLast              : Real             from Standard; 
     myTolU,  myTolV      : Real             from Standard;
+    mySurfaceCache       : Cache            from BSplSLib;
 
 end Surface;

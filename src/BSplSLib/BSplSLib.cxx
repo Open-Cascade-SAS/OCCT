@@ -2043,6 +2043,101 @@ void BSplSLib::BuildCache
   }
 }
 
+void BSplSLib::BuildCache(const Standard_Real          theU,
+                          const Standard_Real          theV,
+                          const Standard_Real          theUSpanDomain,
+                          const Standard_Real          theVSpanDomain,
+                          const Standard_Boolean       theUPeriodicFlag,
+                          const Standard_Boolean       theVPeriodicFlag,
+                          const Standard_Integer       theUDegree,
+                          const Standard_Integer       theVDegree,
+                          const Standard_Integer       theUIndex,
+                          const Standard_Integer       theVIndex,
+                          const TColStd_Array1OfReal&  theUFlatKnots,
+                          const TColStd_Array1OfReal&  theVFlatKnots,
+                          const TColgp_Array2OfPnt&    thePoles,
+                          const TColStd_Array2OfReal&  theWeights,
+                                TColStd_Array2OfReal&  theCacheArray)
+{
+  Standard_Boolean flag_u_or_v;
+  Standard_Integer d1, d2;
+  Standard_Real    u1, u2;
+  Standard_Boolean isRationalOnParam = (&theWeights != NULL);
+  Standard_Boolean isRational;
+
+  BSplSLib_DataContainer dc(theUDegree, theVDegree);
+  flag_u_or_v =
+    PrepareEval(theU, theV, theUIndex, theVIndex, theUDegree, theVDegree,
+                isRationalOnParam, isRationalOnParam,
+                theUPeriodicFlag, theVPeriodicFlag,
+                thePoles, theWeights,
+                theUFlatKnots, theVFlatKnots,
+                (BSplCLib::NoMults()), (BSplCLib::NoMults()),
+                u1, u2, d1, d2, isRational, dc);
+
+  Standard_Integer d2p1 = d2 + 1;
+  Standard_Integer aDimension = isRational ? 4 : 3;
+  Standard_Integer aCacheShift = // helps to store weights when PrepareEval did not found that the surface is locally polynomial
+    (isRationalOnParam && !isRational) ? aDimension + 1 : aDimension;
+
+  Standard_Real aDomains[2];
+  // aDomains[0] corresponds to variable with minimal degree
+  // aDomains[1] corresponds to variable with maximal degree
+  if (flag_u_or_v)
+  {
+    aDomains[0] = theUSpanDomain;
+    aDomains[1] = theVSpanDomain;
+  }
+  else
+  {
+    aDomains[0] = theVSpanDomain;
+    aDomains[1] = theUSpanDomain;
+  }
+
+  BSplCLib::Bohm(u1, d1, d1, *dc.knots1, aDimension * d2p1, *dc.poles);
+  for (Standard_Integer kk = 0; kk <= d1 ; kk++) 
+    BSplCLib::Bohm(u2, d2, d2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
+
+  Standard_Real* aCache = (Standard_Real *) &(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+  Standard_Real* aPolyCoeffs = dc.poles;
+
+  Standard_Real aFactors[2];
+  // aFactors[0] corresponds to variable with minimal degree
+  // aFactors[1] corresponds to variable with maximal degree
+  aFactors[1] = 1.0;
+  Standard_Integer aRow, aCol, i;
+  Standard_Real aCoeff;
+  for (aRow = 0; aRow <= d2; aRow++)
+  {
+    aFactors[0] = 1.0;
+    for (aCol = 0; aCol <= d1; aCol++)
+    {
+      aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
+      aCoeff = aFactors[0] * aFactors[1];
+      for (i = 0; i < aDimension; i++)
+        aCache[i] = aPolyCoeffs[i] * aCoeff;
+      aCache += aCacheShift;
+      aFactors[0] *= aDomains[0] / (aCol + 1);
+    }
+    aFactors[1] *= aDomains[1] / (aRow + 1);
+  }
+
+  // Fill the weights for the surface which is not locally polynomial
+  if (aCacheShift > aDimension)
+  {
+    aCache = (Standard_Real *) &(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+    aCache += aCacheShift - 1;
+    for (aRow = 0; aRow <= d2; aRow++)
+      for (aCol = 0; aCol <= d1; aCol++)
+      {
+        *aCache = 0.0;
+        aCache += aCacheShift;
+      }
+    theCacheArray.SetValue(theCacheArray.LowerRow(), theCacheArray.LowerCol() + aCacheShift - 1, 1.0);
+  }
+}
+
+
 //=======================================================================
 //function : CacheD0
 //purpose  : Evaluates the polynomial cache of the Bspline Curve

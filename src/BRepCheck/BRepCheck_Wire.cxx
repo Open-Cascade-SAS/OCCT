@@ -108,7 +108,7 @@ inline Standard_Boolean IsOriented(const TopoDS_Shape& S)
 }
 
 static
-  void CurveDirForParameter(const Handle(Geom2d_Curve)& aC2d,
+  void CurveDirForParameter(const Geom2dAdaptor_Curve& aC2d,
 			    const Standard_Real aPrm,
 			    gp_Pnt2d& Pnt,
 			    gp_Vec2d& aVec2d);
@@ -1653,14 +1653,15 @@ void ChoixUV(const TopoDS_Vertex& theVertex,
     C2d = BRep_Tool::CurveOnSurface(anE, theFace, aFirstParam, aLastParam);
     if(C2d.IsNull())
       continue;
+    Geom2dAdaptor_Curve aCA(C2d);
 
     aParam =(aVOrientation != anE.Orientation()) ? aFirstParam : aLastParam;
-    aPnt = C2d->Value(aParam);
+    aPnt = aCA.Value(aParam);
 
     if(!IsDistanceIn2DTolerance(aFaceSurface, aPnt, aPntRef, aTol3d, Standard_False))
       continue;
 
-    CurveDirForParameter(C2d, aParam, aPnt, aDer);
+    CurveDirForParameter(aCA, aParam, aPnt, aDer);
 
     if (aVOrientation == anE.Orientation())
       aDer.Reverse();
@@ -1753,21 +1754,21 @@ void ChoixUV(const TopoDS_Vertex& theVertex,
 //function : CurveDirForParameter
 //purpose  : 
 //=======================================================================
-void CurveDirForParameter(const Handle(Geom2d_Curve)& aC2d,
-			  const Standard_Real aPrm,
-			  gp_Pnt2d& Pnt,
-			  gp_Vec2d& aVec2d)
+void CurveDirForParameter(const Geom2dAdaptor_Curve& aC2d,
+                          const Standard_Real aPrm,
+                          gp_Pnt2d& Pnt,
+                          gp_Vec2d& aVec2d)
 {
   Standard_Real aTol=gp::Resolution();
   Standard_Integer i;
 
-  aC2d->D1(aPrm, Pnt, aVec2d);
+  aC2d.D1(aPrm, Pnt, aVec2d);
   //
   if (aVec2d.Magnitude() <= aTol) {
     for (i = 2; i <= 100; i++){
-      aVec2d = aC2d->DN(aPrm, i);
+      aVec2d = aC2d.DN(aPrm, i);
       if (aVec2d.Magnitude() > aTol) {
-	break;
+        break;
       }
     }
   }

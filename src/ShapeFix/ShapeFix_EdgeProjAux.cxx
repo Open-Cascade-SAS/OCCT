@@ -426,7 +426,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
     Standard_Real wmid;
     sac.Project(COnS,mid,preci,pnt,wmid,Standard_False);
     wmid+=ShapeAnalysis::AdjustToPeriod(wmid,0,period);
-    if(w1>w2) {
+    if(w1>=w2) {
       if(w2 > wmid) myFirstParam -= period;
       else if (w1 > wmid)
         UpdateParam2d(theCurve2d);

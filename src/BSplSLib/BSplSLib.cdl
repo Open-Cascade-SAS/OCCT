@@ -71,6 +71,8 @@ uses TColStd, gp, TColgp
 
 
 is 
+    
+    imported transient class Cache;
 
     imported EvaluatorFunction ;
     ---Purpose:
@@ -464,6 +466,19 @@ is
     --          for the numerator and stores it in CachePoles
     --          
     --     
+
+    BuildCache(theU,           theV           : Real;
+               theUSpanDomain, theVSpanDomain : Real;
+               theUPeriodic,   theVPeriodic   : Boolean;
+               theUDegree,     theVDegree     : Integer;
+               theUIndex,      theVIndex      : Integer;
+               theUFlatKnots,  theVFlatKnots  : Array1OfReal  from TColStd;
+               thePoles                       : Array2OfPnt   from TColgp;
+               theWeights                     : Array2OfReal  from TColStd;
+               theCacheArray           : in out Array2OfReal  from TColStd);
+    ---Purpose: Perform the evaluation of the Taylor expansion
+    --          of the Bspline normalized between 0 and 1.
+    --          Structure of result optimized for BSplSLib_Cache.
 
     CacheD0(U,V                             : Real;
     	    UDegree,VDegree                 : Integer;
