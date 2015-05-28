@@ -73,6 +73,7 @@ void BSplCLib::Hunt (const Array1OfReal& XX,
 {
   // replaced by simple dichotomy (RLE)
   Ilc = XX.Lower();
+  if (XX.Length() <= 1) return;
   const Standard_Real *px = &XX(Ilc);
   px -= Ilc;
 

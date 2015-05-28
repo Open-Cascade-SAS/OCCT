@@ -958,13 +958,19 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
               Standard_Real aDist = Max(BS->StartPoint().XYZ().SquareModulus(),
                 BS->EndPoint().XYZ().SquareModulus());
               Standard_Real eps = Epsilon(aDist);
-              if(BS->StartPoint().SquareDistance(BS->EndPoint()) < 2.*eps &&
-                !BS->IsClosed() && !BS->IsPeriodic())
+              if(BS->StartPoint().SquareDistance(BS->EndPoint()) < 2.*eps)
               {
-                //force Closed()
-                gp_Pnt aPm((BS->Pole(1).XYZ() + BS->Pole(BS->NbPoles()).XYZ()) / 2.);
-                BS->SetPole(1, aPm);
-                BS->SetPole(BS->NbPoles(), aPm);
+                // Avoid creating B-splines containing two coincident poles only
+                if (mbspc.Degree() == 1 && nbpoles == 2)
+                  continue;
+
+                if (!BS->IsClosed() && !BS->IsPeriodic())
+                {
+                  //force Closed()
+                  gp_Pnt aPm((BS->Pole(1).XYZ() + BS->Pole(BS->NbPoles()).XYZ()) / 2.);
+                  BS->SetPole(1, aPm);
+                  BS->SetPole(BS->NbPoles(), aPm);
+                }
               }
               sline.Append(BS);
 

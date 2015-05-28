@@ -3132,7 +3132,11 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
 	myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
       }
       else 
-	FixDummySeam(n1);
+      {
+        FixDummySeam(n1);
+        // The seam edge is removed from the list. So, need to step back to avoid missing of edge processing
+        i--;
+      }
   
       i--;
       if(!Context().IsNull()) //skl 07.03.2002 for OCC180

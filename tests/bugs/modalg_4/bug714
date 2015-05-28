@@ -7,8 +7,6 @@ puts ""
 ## After command sew in DRAW on attached shape free wires are disappeared.
 ####################################################
 
-puts "TODO OCC25593 ALL: Faulty shapes in variables faulty_1 to faulty_4"
-
 restore [locate_data_file OCC714.brep] a 
 checkshape a
 

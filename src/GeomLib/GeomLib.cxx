@@ -1705,6 +1705,8 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
 	  NewP(ii,jj).SetCoord(3,PRes(indice+2));
 	  if (rational) {
 	    ww =  PRes(indice+3);
+	    if (Abs(ww - 1.0) < EpsW)
+	      ww = 1.0;
 	    if (ww < EpsW) {
 	      NullWeight = Standard_True;
 	    }
@@ -1725,6 +1727,8 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
 	  NewP(ii,jj).SetCoord(3,PRes(indice+2));
 	  if (rational) {
 	    ww =  PRes(indice+3);
+	    if (Abs(ww - 1.0) < EpsW)
+	      ww = 1.0;
 	    if (ww < EpsW) {
 	      NullWeight = Standard_True;
 	    }

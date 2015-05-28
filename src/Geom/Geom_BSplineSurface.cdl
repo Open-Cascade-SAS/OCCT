@@ -1017,6 +1017,11 @@ is
        ---Purpose :
        --  Raised if the length of P in the U and V direction
        --  is not equal to NbUpoles and NbVPoles.
+  Poles (me)
+  returns Array2OfPnt from TColgp
+       ---Purpose : Returns the poles of the B-spline surface.
+       ---C++ : return const &
+  is static;
 
 
   UDegree (me)  returns Integer;
@@ -1055,6 +1060,11 @@ is
        	---Purpose :
        	--  Raised if the length of Ku is not equal to the number of knots
        	--  in the U direction.
+  UKnots (me)
+  returns Array1OfReal from TColStd
+       ---Purpose : Returns the knots in the U direction.
+       ---C++ : return const &
+  is static;
 
 
   UKnotSequence (me; Ku : out Array1OfReal from TColStd)
@@ -1066,6 +1076,15 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of Ku is not equal to NbUPoles + UDegree + 1
+  UKnotSequence (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the uknots sequence.
+        --  In this sequence the knots with a multiplicity greater than 1
+        --  are repeated.
+        --- Example :
+        --  Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
+        ---C++ : return const &
+  is static;
 
 
   UMultiplicity (me; UIndex : Integer)   returns Integer
@@ -1083,6 +1102,11 @@ is
        	---Purpose :
        	--  Raised if the length of Mu is not equal to the number of
        	--  knots in the U direction.
+  UMultiplicities (me)
+  returns Array1OfInteger from TColStd
+       ---Purpose : Returns the multiplicities of the knots in the U direction.
+       ---C++ : return const &
+  is static;
 
 
   VDegree (me)  returns Integer;
@@ -1120,6 +1144,11 @@ is
        ---Purpose :
        --  Raised if the length of Kv is not equal to the number of 
        --  knots in the V direction.
+  VKnots (me)
+  returns Array1OfReal from TColStd
+       ---Purpose : Returns the knots in the V direction.
+       ---C++ : return const &
+  is static;
 
 
   VKnotSequence (me; Kv : out Array1OfReal from TColStd)
@@ -1131,6 +1160,15 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of Kv is not equal to NbVPoles + VDegree + 1
+  VKnotSequence (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the vknots sequence.
+        --  In this sequence the knots with a multiplicity greater than 1
+        --  are repeated.
+        --- Example :
+        --  Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
+        ---C++ : return const &
+  is static;
 
 
   VMultiplicity (me; VIndex : Integer)   returns Integer
@@ -1148,6 +1186,11 @@ is
        ---Purpose :
        --  Raised if the length of Mv is not equal to the number of 
        --  knots in the V direction.
+  VMultiplicities (me)
+  returns Array1OfInteger from TColStd
+       ---Purpose : Returns the multiplicities of the knots in the V direction.
+       ---C++ : return const &
+  is static;
 
 
   Weight (me; UIndex, VIndex : Integer)   returns Real
@@ -1164,6 +1207,11 @@ is
         ---Purpose :
         --  Raised if the length of W in the U and V direction is 
         --  not equal to NbUPoles and NbVPoles.
+  Weights (me)
+  returns Array2OfReal from TColStd
+        ---Purpose : Returns the weights of the B-spline surface.
+        ---C++ : return const &
+  is static;
 
 
 

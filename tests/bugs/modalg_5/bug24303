@@ -10,12 +10,12 @@ pload QAcommands
 
 set status 0
 
-set info1 [OCC24303 4]
+set info1 [OCC24303 5]
 regexp {Solutions +([-0-9.+eE]+)} ${info1} full Solution
 regexp {Distance += +([-0-9.+eE]+)} ${info1} full Distance
 
-if { [info exists Sol4] } {
-   set info2 [dump Sol4]
+if { [info exists Sol5] } {
+   set info2 [dump Sol5]
    regexp {Center +:([-0-9.+eE]+), +([-0-9.+eE]+)} ${info2} full CenterX CenterY
    regexp {XAxis +:([-0-9.+eE]+), +([-0-9.+eE]+)} ${info2} full XAxisX XAxisY
    regexp {YAxis +:([-0-9.+eE]+), +([-0-9.+eE]+)} ${info2} full YAxisX YAxisY

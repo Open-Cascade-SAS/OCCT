@@ -440,6 +440,11 @@ void Geom2d_BSplineCurve::Knots (TColStd_Array1OfReal& K) const
   K = knots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom2d_BSplineCurve::Knots() const
+{
+  return knots->Array1();
+}
+
 //=======================================================================
 //function : KnotSequence
 //purpose  : 
@@ -450,6 +455,11 @@ void Geom2d_BSplineCurve::KnotSequence (TColStd_Array1OfReal& K) const
   Standard_DimensionError_Raise_if
     (K.Length() != flatknots->Length(), "Geom2d_BSplineCurve::KnotSequence");
   K = flatknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom2d_BSplineCurve::KnotSequence() const
+{
+  return flatknots->Array1();
 }
 
 //=======================================================================
@@ -676,6 +686,11 @@ void Geom2d_BSplineCurve::Multiplicities (TColStd_Array1OfInteger& M) const
   M = mults->Array1();
 }
 
+const TColStd_Array1OfInteger& Geom2d_BSplineCurve::Multiplicities() const
+{
+  return mults->Array1();
+}
+
 //=======================================================================
 //function : NbKnots
 //purpose  : 
@@ -714,6 +729,11 @@ void Geom2d_BSplineCurve::Poles (TColgp_Array1OfPnt2d& P) const
   Standard_DimensionError_Raise_if (P.Length() != poles->Length(),
 				    "Geom2d_BSplineCurve::Poles");
   P = poles->Array1();
+}
+
+const TColgp_Array1OfPnt2d& Geom2d_BSplineCurve::Poles() const
+{
+  return poles->Array1();
 }
 
 //=======================================================================
@@ -762,6 +782,13 @@ void Geom2d_BSplineCurve::Weights
     for (i = W.Lower(); i <= W.Upper(); i++)
       W(i) = 1.;
   }
+}
+
+const TColStd_Array1OfReal& Geom2d_BSplineCurve::Weights() const
+{
+  if (IsRational())
+    return weights->Array1();
+  return BSplCLib::NoWeights();
 }
 
 //=======================================================================

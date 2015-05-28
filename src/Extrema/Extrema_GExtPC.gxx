@@ -146,6 +146,34 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
         IntExtIsDone = IntExtIsDone || mydone;
       }
       mydone = IntExtIsDone;
+
+      // Additional checking if the point is on the first or last point of the curve and does not added yet
+      if (mydist1 < Precision::SquareConfusion() || mydist2 < Precision::SquareConfusion())
+      {
+        Standard_Boolean isFirstAdded = Standard_False;
+        Standard_Boolean isLastAdded  = Standard_False;
+        Standard_Integer aNbPoints = mypoint.Length();
+        for (i = 1; i <= aNbPoints; i++)
+        {
+          U = mypoint.Value(i).Parameter();
+          if (Abs(U - myuinf) < mytolu)
+            isFirstAdded = Standard_True;
+          else if (Abs(myusup - U) < mytolu)
+            isLastAdded = Standard_True;
+        }
+        if (!isFirstAdded && mydist1 < Precision::SquareConfusion())
+        {
+          mySqDist.Prepend(mydist1);
+          myismin.Prepend(Standard_True);
+          mypoint.Prepend(ThePOnC(myuinf, Pf));
+        }
+        if (!isLastAdded && mydist2 < Precision::SquareConfusion())
+        {
+          mySqDist.Append(mydist2);
+          myismin.Append(Standard_True);
+          mypoint.Append(ThePOnC(myusup, Pl));
+        }
+      }
       return;
     }
   }

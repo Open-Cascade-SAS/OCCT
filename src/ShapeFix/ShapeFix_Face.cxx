@@ -1281,6 +1281,16 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
                   found = (staout != clas.Perform (unp1,Standard_False));
                 }
               }
+              // Additional check of diagonal steps for toroidal surfaces
+              if (!found && uclosed && vclosed)
+              {
+                for (Standard_Real dX = -1.0; dX <= 1.0 && !found; dX += 2.0)
+                  for (Standard_Real dY = -1.0; dY <= 1.0 && !found; dY += 2.0)
+                  {
+                    unp1.SetCoord(unp.X() + uRange * dX, unp.Y() + vRange * dY);
+                    found = (staout != clas.Perform(unp1, Standard_False));
+                  }
+              }
             }
             if(found) {
               if(stb==TopAbs_IN) stb = TopAbs_OUT;

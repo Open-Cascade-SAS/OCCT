@@ -26,6 +26,7 @@
 
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
 
 #include <GeomProjLib.hxx>
 
@@ -56,12 +57,12 @@ class BRepLib_CheckCurveOnSurface_GlobOptFunc :
      const Standard_Real theFirst,
      const Standard_Real theLast)
     :
-      myCurve(theC3D),
-      myPCurve(theC2D),
-      mySurf(theSurf),
       myFirst(theFirst),
       myLast(theLast)
   {
+    myCurve = new GeomAdaptor_HCurve(theC3D);
+    myPCurve = new Geom2dAdaptor_HCurve(theC2D);
+    mySurf = new GeomAdaptor_HSurface(theSurf);
   }
   //
   virtual Standard_Integer NbVariables() const {
@@ -160,9 +161,9 @@ class BRepLib_CheckCurveOnSurface_GlobOptFunc :
     return ((myFirst <= theParam) && (theParam <= myLast));
   }
 
-  Handle(Geom_Curve) myCurve;
-  Handle(Geom2d_Curve) myPCurve;
-  Handle(Geom_Surface) mySurf;
+  Handle(GeomAdaptor_HCurve) myCurve;
+  Handle(Geom2dAdaptor_HCurve) myPCurve;
+  Handle(GeomAdaptor_HSurface) mySurf;
   Standard_Real myFirst;
   Standard_Real myLast;
 };

@@ -8,7 +8,7 @@ set filename PRO10109.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 47  ( 41 )  Summary  = 47  ( 41 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 1  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 209  ( 129 )  Face     = 209  ( 209 )   Summary  = 3032  ( 2883 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 209  ( 129 )  Face     = 209  ( 209 )   FreeWire = 0  ( 1 )   FreeEdge  = 67 ( 67 )   SharedEdge = 1152  ( 1150 )
 TOLERANCE   : MaxTol   =   0.3035246255  (   0.3035246024 )  AvgTol   =  0.001361092422  (  0.003604130581 )

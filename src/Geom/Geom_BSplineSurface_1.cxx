@@ -542,6 +542,11 @@ void Geom_BSplineSurface::Poles (TColgp_Array2OfPnt& P) const
   P = poles->Array2();
 }
 
+const TColgp_Array2OfPnt& Geom_BSplineSurface::Poles() const
+{
+  return poles->Array2();
+}
+
 //=======================================================================
 //function : UIso
 //purpose  : 
@@ -645,6 +650,11 @@ void Geom_BSplineSurface::UKnots (TColStd_Array1OfReal& Ku) const
   Ku = uknots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom_BSplineSurface::UKnots() const
+{
+  return uknots->Array1();
+}
+
 //=======================================================================
 //function : VKnots
 //purpose  : 
@@ -654,6 +664,11 @@ void Geom_BSplineSurface::VKnots (TColStd_Array1OfReal& Kv) const
 {
   Standard_DimensionError_Raise_if (Kv.Length() != vknots->Length(), " ");
   Kv = vknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom_BSplineSurface::VKnots() const
+{
+  return vknots->Array1();
 }
 
 //=======================================================================
@@ -667,6 +682,11 @@ void Geom_BSplineSurface::UKnotSequence (TColStd_Array1OfReal& Ku) const
   Ku = ufknots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom_BSplineSurface::UKnotSequence() const
+{
+  return ufknots->Array1();
+}
+
 //=======================================================================
 //function : VKnotSequence
 //purpose  : 
@@ -676,6 +696,11 @@ void Geom_BSplineSurface::VKnotSequence (TColStd_Array1OfReal& Kv) const
 {
   Standard_DimensionError_Raise_if (Kv.Length() != vfknots->Length(), " ");
   Kv = vfknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom_BSplineSurface::VKnotSequence() const
+{
+  return vfknots->Array1();
 }
 
 //=======================================================================
@@ -699,6 +724,11 @@ void Geom_BSplineSurface::UMultiplicities (TColStd_Array1OfInteger& Mu) const
 {
   Standard_DimensionError_Raise_if (Mu.Length() != umults->Length(), " ");
   Mu = umults->Array1();
+}
+
+const TColStd_Array1OfInteger& Geom_BSplineSurface::UMultiplicities() const
+{
+  return umults->Array1();
 }
 
 //=======================================================================
@@ -798,6 +828,11 @@ void Geom_BSplineSurface::VMultiplicities (TColStd_Array1OfInteger& Mv) const
   Mv = vmults->Array1();
 }
 
+const TColStd_Array1OfInteger& Geom_BSplineSurface::VMultiplicities() const
+{
+  return vmults->Array1();
+}
+
 //=======================================================================
 //function : Weight
 //purpose  : 
@@ -824,6 +859,13 @@ void Geom_BSplineSurface::Weights (TColStd_Array2OfReal& W) const
     (W.ColLength() != weights->ColLength() ||
      W.RowLength() != weights->RowLength(), " ");
   W = weights->Array2();
+}
+
+const TColStd_Array2OfReal& Geom_BSplineSurface::Weights() const
+{
+  if (urational || vrational)
+    return weights->Array2();
+  return BSplSLib::NoWeights();
 }
 
 //=======================================================================

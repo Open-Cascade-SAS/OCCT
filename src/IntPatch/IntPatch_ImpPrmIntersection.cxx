@@ -569,7 +569,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     Standard_Real rvalf = Sign(1.,Valf(1));
     for(Standard_Integer i = 2; i <= aNbSamples; ++i)
     {
-      D1->SamplePoint(i,s2d, s3d);
+      T->SamplePoint(i,s2d, s3d);
       UVap(1)=s2d.X(); 
       UVap(2)=s2d.Y();
       Func.Value(UVap,Valf);

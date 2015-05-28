@@ -789,6 +789,15 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of K is not equal to the number of knots.
+  Knots (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : returns the knot values of the B-spline curve; 
+    	-- Warning
+    	-- A knot with a multiplicity greater than 1 is not
+    	-- repeated in the knot table. The Multiplicity function
+    	-- can be used to obtain the multiplicity of each knot.
+        ---C++ : return const &
+  is static;
 
 
   KnotSequence (me; K : out Array1OfReal from TColStd)
@@ -845,6 +854,12 @@ is
     	-- Standard_DimensionError if the array K is not of
     	-- the appropriate length.Returns the knots sequence.
              raises DimensionError;
+  KnotSequence (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : returns the knots of the B-spline curve. 
+    	-- Knots with multiplicit greater than 1 are repeated
+        ---C++ : return const &
+  is static;
        
 
 
@@ -910,6 +925,11 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of M is not equal to NbKnots.
+  Multiplicities (me)
+  returns Array1OfInteger from TColStd
+        ---Purpose : returns the multiplicity of the knots of the curve.
+        ---C++ : return const &
+  is static;
 
 
   NbKnots (me)  returns Integer;
@@ -933,6 +953,11 @@ is
      raises DimensionError;
         ---Purpose : 
         --  Raised if the length of P is not equal to the number of poles.
+  Poles (me)
+  returns Array1OfPnt from TColgp
+        ---Purpose : Returns the poles of the B-spline curve;
+        ---C++ : return const &
+  is static;
 
 
   StartPoint (me)  returns Pnt;
@@ -954,6 +979,11 @@ is
      raises DimensionError;
         ---Purpose :
         --  Raised if the length of W is not equal to NbPoles.
+  Weights (me)
+  returns Array1OfReal from TColStd
+        ---Purpose : Returns the weights of the B-spline curve;
+        ---C++ : return const &
+  is static;
 
 
 

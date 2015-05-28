@@ -437,6 +437,11 @@ void Geom_BSplineCurve::Knots (TColStd_Array1OfReal& K) const
   K = knots->Array1();
 }
 
+const TColStd_Array1OfReal& Geom_BSplineCurve::Knots() const
+{
+  return knots->Array1();
+}
+
 //=======================================================================
 //function : KnotSequence
 //purpose  : 
@@ -447,6 +452,11 @@ void Geom_BSplineCurve::KnotSequence (TColStd_Array1OfReal& K) const
   Standard_DimensionError_Raise_if
     (K.Length() != flatknots->Length(), "Geom_BSplineCurve::KnotSequence");
   K = flatknots->Array1();
+}
+
+const TColStd_Array1OfReal& Geom_BSplineCurve::KnotSequence() const
+{
+  return flatknots->Array1();
 }
 
 //=======================================================================
@@ -668,6 +678,11 @@ void Geom_BSplineCurve::Multiplicities (TColStd_Array1OfInteger& M) const
   M = mults->Array1();
 }
 
+const TColStd_Array1OfInteger& Geom_BSplineCurve::Multiplicities() const
+{
+  return mults->Array1();
+}
+
 //=======================================================================
 //function : NbKnots
 //purpose  : 
@@ -706,6 +721,11 @@ void Geom_BSplineCurve::Poles (TColgp_Array1OfPnt& P) const
   Standard_DimensionError_Raise_if (P.Length() != poles->Length(),
 				    "Geom_BSplineCurve::Poles");
   P = poles->Array1();
+}
+
+const TColgp_Array1OfPnt& Geom_BSplineCurve::Poles() const
+{
+  return poles->Array1();
 }
 
 //=======================================================================
@@ -755,6 +775,13 @@ void Geom_BSplineCurve::Weights
     for (i = W.Lower(); i <= W.Upper(); i++)
       W(i) = 1.;
   }
+}
+
+const TColStd_Array1OfReal& Geom_BSplineCurve::Weights() const
+{
+  if (IsRational())
+    return weights->Array1();
+  return BSplCLib::NoWeights();
 }
 
 //=======================================================================

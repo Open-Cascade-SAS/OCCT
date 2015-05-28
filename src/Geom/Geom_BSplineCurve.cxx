@@ -598,7 +598,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
 
   BSplCLib::LocateParameter(deg,knots->Array1(),mults->Array1(),
 			    NewU2,periodic,FromU1,ToU2,index2,U);
-  if ( Abs(knots->Value(index2+1)-U) <= Eps)
+  if ( Abs(knots->Value(index2+1)-U) <= Eps || index2 == index1)
     index2++;
   
   Standard_Integer nbknots = index2 - index1 + 1;
