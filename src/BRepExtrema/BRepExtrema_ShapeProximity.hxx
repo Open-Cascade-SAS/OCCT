@@ -17,12 +17,11 @@
 #define _BRepExtrema_ShapeProximity_HeaderFile
 
 #include <BVH_Geometry.hxx>
-#include <BRepExtrema_TriangleSet.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 
-//! Set of overlapped sub-shapes.
-typedef NCollection_DataMap<Standard_Integer, TColStd_PackedMapOfInteger > BRepExtrema_OverlappedSubShapes;
+#include <BRepExtrema_TriangleSet.hxx>
+#include <BRepExtrema_OverlapTool.hxx>
 
 //! Tool class for shape proximity detection.
 //! For two given shapes and given tolerance (offset from the mesh) the algorithm allows
@@ -38,7 +37,7 @@ typedef NCollection_DataMap<Standard_Integer, TColStd_PackedMapOfInteger > BRepE
 //! on distance less than the given tolerance from each other.
 class BRepExtrema_ShapeProximity
 {
- public:
+public:
 
   //! Creates empty proximity tool.
   Standard_EXPORT BRepExtrema_ShapeProximity (const Standard_Real theTolerance = 0.0);
@@ -68,58 +67,50 @@ public:
   //! Loads 2nd shape into proximity tool.
   Standard_EXPORT Standard_Boolean LoadShape2 (const TopoDS_Shape& theShape2);
 
-  //! Performs search for overlapped faces.
+  //! Performs search of overlapped faces.
   Standard_EXPORT void Perform();
 
   //! True if the search is completed.
   Standard_Boolean IsDone() const
   { 
-    return myIsDone;
+    return myOverlapTool.IsDone();
   }
 
-  //! Returns set of all the face triangles of the 1st shape.
-  const NCollection_Handle<BRepExtrema_TriangleSet>& PrimitiveSet1() const
+  //! Returns set of IDs of overlapped faces of 1st shape (started from 0).
+  const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes1() const
   {
-    return myPrimitiveSet1;
+    return myOverlapTool.OverlapSubShapes1();
   }
 
-  //! Returns set of all the face triangles of the 2nd shape.
-  const NCollection_Handle<BRepExtrema_TriangleSet>& PrimitiveSet2() const
+  //! Returns set of IDs of overlapped faces of 2nd shape (started from 0).
+  const BRepExtrema_MapOfIntegerPackedMapOfInteger& OverlapSubShapes2() const
   {
-    return myPrimitiveSet2;
+    return myOverlapTool.OverlapSubShapes2();
   }
 
-  //! Returns set of IDs of overlapped faces of 1st shape.
-  const BRepExtrema_OverlappedSubShapes& OverlapSubShapes1() const
-  {
-    return myOverlapSubShapes1;
-  }
-
-  //! Returns set of IDs of overlapped faces of 2nd shape.
-  const BRepExtrema_OverlappedSubShapes& OverlapSubShapes2() const
-  {
-    return myOverlapSubShapes2;
-  }
-
-  //! Returns sub-shape from 1st shape with the given index.
+  //! Returns sub-shape from 1st shape with the given index (started from 0).
   const TopoDS_Face& GetSubShape1 (const Standard_Integer theID) const
   {
     return myFaceList1.Value (theID);
   }
 
-  //! Returns sub-shape from 1st shape with the given index.
+  //! Returns sub-shape from 1st shape with the given index (started from 0).
   const TopoDS_Face& GetSubShape2 (const Standard_Integer theID) const
   {
     return myFaceList2.Value (theID);
   }
 
-protected:
+  //! Returns set of all the face triangles of the 1st shape.
+  const Handle(BRepExtrema_TriangleSet)& ElementSet1() const
+  {
+    return myElementSet1;
+  }
 
-  //! Performs narrow-phase of overlap test (exact intersection).
-  void IntersectLeavesExact (const BVH_Vec4i& theLeaf1, const BVH_Vec4i& theLeaf2);
-
-  //! Performs narrow-phase of overlap test (intersection with non-zero tolerance).
-  void IntersectLeavesToler (const BVH_Vec4i& theLeaf1, const BVH_Vec4i& theLeaf2);
+  //! Returns set of all the face triangles of the 2nd shape.
+  const Handle(BRepExtrema_TriangleSet)& ElementSet2() const
+  {
+    return myElementSet2;
+  }
 
 private:
 
@@ -137,17 +128,12 @@ private:
   BRepExtrema_ShapeList myFaceList2;
 
   //! Set of all the face triangles of the 1st shape.
-  NCollection_Handle<BRepExtrema_TriangleSet> myPrimitiveSet1;
+  Handle(BRepExtrema_TriangleSet) myElementSet1;
   //! Set of all the face triangles of the 2nd shape.
-  NCollection_Handle<BRepExtrema_TriangleSet> myPrimitiveSet2;
+  Handle(BRepExtrema_TriangleSet) myElementSet2;
 
-  //! Set of overlapped faces of 1st shape.
-  BRepExtrema_OverlappedSubShapes myOverlapSubShapes1;
-  //! Set of overlapped faces of 2nd shape.
-  BRepExtrema_OverlappedSubShapes myOverlapSubShapes2;
-
-  //! Is overlap test completed?
-  Standard_Boolean myIsDone;
+  //! Overlap tool used for intersection/overlap test.
+  BRepExtrema_OverlapTool myOverlapTool;
 
 };
 

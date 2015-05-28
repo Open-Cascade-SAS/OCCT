@@ -19,5 +19,11 @@ BRepExtrema_SolutionElem.hxx
 BRepExtrema_SupportType.hxx
 BRepExtrema_TriangleSet.hxx
 BRepExtrema_TriangleSet.cxx
+BRepExtrema_OverlapTool.hxx
+BRepExtrema_OverlapTool.cxx
+BRepExtrema_ElementFilter.hxx
 BRepExtrema_ShapeProximity.hxx
 BRepExtrema_ShapeProximity.cxx
+BRepExtrema_SelfIntersection.hxx
+BRepExtrema_SelfIntersection.cxx
+BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx
