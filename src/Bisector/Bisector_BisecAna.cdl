@@ -27,6 +27,7 @@ inherits
 uses
     Shape             from GeomAbs,
     CurveType         from GeomAbs,
+    JoinType          from GeomAbs,
     Curve             from Geom2d,
     Geometry          from Geom2d,    
     TrimmedCurve      from Geom2d,
@@ -43,14 +44,15 @@ is
     Create returns BisecAna;
     
     Perform(me        : mutable                                ;
-            Cu1       : Curve   from Geom2d                    ;
-            Cu2       : Curve   from Geom2d                    ;
-            P         : Pnt2d   from gp                        ;
-            V1        : Vec2d   from gp                        ;
-            V2        : Vec2d   from gp                        ;
-            Sense     : Real    from Standard                  ;
-    	    Tolerance : Real    from Standard                  ;
-    	    oncurve   : Boolean from Standard = Standard_True  );
+            Cu1       : Curve    from Geom2d                    ;
+            Cu2       : Curve    from Geom2d                    ;
+            P         : Pnt2d    from gp                        ;
+            V1        : Vec2d    from gp                        ;
+            V2        : Vec2d    from gp                        ;
+            Sense     : Real     from Standard                  ;
+	    jointype  : JoinType from GeomAbs                  ;
+    	    Tolerance : Real     from Standard                  ;
+    	    oncurve   : Boolean  from Standard = Standard_True  );
 	   
     	--- Purpose : Performs  the bisecting line  between the  curves
     	--            <Cu1> and <Cu2>. 
@@ -125,7 +127,8 @@ is
              Sense :        Real    from Standard   ;
              U     :    out Real    from Standard   ;
     	     sense :    out Boolean from Standard   ;
-    	     ok    :    out Boolean from Standard   ) 
+    	     ok    :    out Boolean from Standard   ;
+	     IsBisecOfTwoLines : Boolean from Standard = Standard_False)
 	 
 	 --- Purpose : Returns the distance between the point <P> and
 	 --            the bisecting <Bis>.

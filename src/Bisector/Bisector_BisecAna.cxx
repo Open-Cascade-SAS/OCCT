@@ -76,7 +76,8 @@ Standard_Real Bisector_BisecAna::Distance (
    const Standard_Real         adirection,
    Standard_Real&              aparameter,
    Standard_Boolean&           asense,
-   Standard_Boolean&           astatus)
+   Standard_Boolean&           astatus,
+   Standard_Boolean            IsBisecOfTwoLines)
 {
   astatus = Standard_True;
 
@@ -153,30 +154,36 @@ Standard_Real Bisector_BisecAna::Distance (
   else {
     asense = Standard_True;
 
-//  Modified by Sergey KHROMOV - Tue Oct 22 16:35:51 2002 Begin
-// Replacement of -1.E-8 for a tolerance 1.e-4
-    Standard_Real aTol = 1.e-4;
-
-    if ((afirstdir^secdirrev)*adirection < -0.1) {   // input
-      if((afirstdir^tangdir)*adirection < aTol &&
-	 (secdirrev^tangdir)*adirection < aTol) asense = Standard_False;
-    }
-    else if((afirstdir^secdirrev)*adirection > 0.1) { // output
-      if((afirstdir^tangdir)*adirection < aTol ||
-	 (secdirrev^tangdir)*adirection < aTol) asense = Standard_False;
-    }
-    else  {                                                // flat
-      if (afirstdir.Dot(secdirrev) > 0.) {                // tangent 
-	if ((afirstdir^tangdir)*adirection < 0.) asense = Standard_False;
+    if (!IsBisecOfTwoLines)
+    {
+      //  Modified by Sergey KHROMOV - Tue Oct 22 16:35:51 2002 Begin
+      // Replacement of -1.E-8 for a tolerance 1.e-4
+      Standard_Real aTol = 1.e-4;
+      
+      if ((afirstdir^secdirrev)*adirection < -0.1) {   // input
+        if((afirstdir^tangdir)*adirection < aTol &&
+           (secdirrev^tangdir)*adirection < aTol)
+          asense = Standard_False;
       }
-      else{                                                // turn back
-//  Modified by Sergey KHROMOV - Thu Oct 31 14:16:53 2002
-// 	if ((afirstdir.Dot(tangdir))*adirection > 0.) asense = Standard_False;
-	if (afirstdir.Dot(tangdir) < 0.) asense = Standard_False;
-//  Modified by Sergey KHROMOV - Thu Oct 31 14:16:54 2002
+      else if((afirstdir^secdirrev)*adirection > 0.1) { // output
+        if((afirstdir^tangdir)*adirection < aTol ||
+           (secdirrev^tangdir)*adirection < aTol)
+          asense = Standard_False;
       }
+      else  {                                                // flat
+        if (afirstdir.Dot(secdirrev) > 0.) {                // tangent 
+          if ((afirstdir^tangdir)*adirection < 0.)
+            asense = Standard_False;
+        }
+        else{                                                // turn back
+          //  Modified by Sergey KHROMOV - Thu Oct 31 14:16:53 2002
+          // 	if ((afirstdir.Dot(tangdir))*adirection > 0.) asense = Standard_False;
+          if (afirstdir.Dot(tangdir) < 0.) asense = Standard_False;
+          //  Modified by Sergey KHROMOV - Thu Oct 31 14:16:54 2002
+        }
+      }
+      //  Modified by Sergey KHROMOV - Tue Oct 22 16:35:51 2002 End
     }
-//  Modified by Sergey KHROMOV - Tue Oct 22 16:35:51 2002 End
   }
   return distance;
 }
@@ -198,6 +205,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 				const gp_Vec2d&             afirstvector  ,
 				const gp_Vec2d&             asecondvector ,
 				const Standard_Real         adirection    ,
+                                const GeomAbs_JoinType      ajointype     ,
 				const Standard_Real         tolerance     ,
 				const Standard_Boolean      oncurve       )
 {
@@ -625,14 +633,26 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	}
 	else if (type == GccInt_Par) {
 	  bisectorcurve = new Geom2d_Parabola(TheSol->Parabola());
+          Standard_Real FocalLength = ((Handle(Geom2d_Parabola)&)bisectorcurve)->Focal();
+          Standard_Real secondparameter = Precision::Infinite();
 	  if (!thesense)
+          {
+            if (ajointype == GeomAbs_Intersection &&
+                4.*FocalLength < firstparameter) //first parameter is too far from peak of parabola
+              secondparameter = 0.;
 	    thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
 						  firstparameter,
-						  - Precision::Infinite());
+						  -secondparameter);
+          }
 	  else
+          {
+            if (ajointype == GeomAbs_Intersection &&
+                firstparameter < -4.*FocalLength) //first parameter is too far from peak of parabola
+              secondparameter = 0.;
 	    thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
 						  firstparameter,
-						  Precision::Infinite());
+						  secondparameter);
+          }
 	}
       }
     }
@@ -714,7 +734,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
       else
 	distanceptsol = Distance(apoint,solution,
 				 afirstvector,asecondvector,
-				 adirection,parameter,sense,ok);
+				 adirection,parameter,sense,ok, Standard_True);
 //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
       if (ok || !oncurve) {
 	thesense = sense;
