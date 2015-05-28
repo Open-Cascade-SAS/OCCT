@@ -80,13 +80,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-<<<<<<< HEAD
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win32\vc8\bind/mfcsample.dll"
-=======
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib  FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win32\vc8\libd/mfcsample.dll"
->>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
+				OutputFile="../../../../win32\vc8\bind/mfcsample.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D)"
@@ -184,13 +179,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-<<<<<<< HEAD
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win32\vc8\bin/mfcsample.dll"
-=======
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib   TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win32\vc8\lib/mfcsample.dll"
->>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
+				OutputFile="../../../../win32\vc8\bin/mfcsample.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32)"
@@ -286,13 +276,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-<<<<<<< HEAD
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win64\vc8\bind/mfcsample.dll"
-=======
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib  FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win64\vc8\libd/mfcsample.dll"
->>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
+				OutputFile="../../../../win64\vc8\bind/mfcsample.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB64D)"
@@ -390,13 +375,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-<<<<<<< HEAD
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win64\vc8\bin/mfcsample.dll"
-=======
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib   TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
-				OutputFile="../../../../win64\vc8\lib/mfcsample.dll"
->>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
+				OutputFile="../../../../win64\vc8\bin/mfcsample.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB64)"

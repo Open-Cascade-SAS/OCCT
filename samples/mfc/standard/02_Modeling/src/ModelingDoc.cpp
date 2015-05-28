@@ -780,7 +780,7 @@ TopoDS_Face F = BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()),Wc); \n\
 axe = gp_Ax1(gp_Pnt(290,290.,0.),gp_Dir(0.,1,0.)); \n\
 TopoDS_Shape S4 = BRepPrimAPI_MakeRevol(F,axe, 90.*PI180); \n\
 		\n");
-  PocessTextInDialog("Make a prism", Message);
+  PocessTextInDialog("Make a revol", Message);
 }
 
 void CModelingDoc::OnPipe() 
