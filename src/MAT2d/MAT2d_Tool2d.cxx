@@ -351,12 +351,12 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
 #endif
 
   if(type1 != STANDARD_TYPE(Geom2d_CartesianPoint) && 
-    type2 != STANDARD_TYPE(Geom2d_CartesianPoint)) {
-      bisector.Perform(item1,item2,
-        GeomPnt (abisector->IssuePoint()),
-        GeomVec (abisector->FirstVector()),
-        GeomVec (abisector->SecondVector()),
-        theDirection,tolerance,ontheline);
+     type2 != STANDARD_TYPE(Geom2d_CartesianPoint)) {
+    bisector.Perform(item1,item2,
+		     GeomPnt (abisector->IssuePoint()),
+		     GeomVec (abisector->FirstVector()),
+		     GeomVec (abisector->SecondVector()),
+		     theDirection,theJoinType,tolerance,ontheline);
   }
   else if(type1 == STANDARD_TYPE(Geom2d_CartesianPoint) && 
     type2 == STANDARD_TYPE(Geom2d_CartesianPoint)) {
@@ -721,10 +721,20 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance (
 
     Standard_Real EpsDist = MAT2d_TOLCONF*300. ;
     Distance = Dist(1);
-    for (Standard_Integer i = 1; i <= 4; i++){
     if (theJoinType == GeomAbs_Intersection &&
-        Precision::IsInfinite(Dist(i)))
-      continue;
+        Precision::IsInfinite(Distance))
+    {
+      for (Standard_Integer i = 2; i <= 4; i++)
+        if (!Precision::IsInfinite(Dist(i)))
+        {
+          Distance = Dist(i);
+          break;
+        }
+    }
+    for (Standard_Integer i = 1; i <= 4; i++){
+      if (theJoinType == GeomAbs_Intersection &&
+          Precision::IsInfinite(Dist(i)))
+        continue;
       if (Abs(Dist(i) - Distance) > EpsDist) {
         Distance = Precision::Infinite();
         return Standard_False;
@@ -1168,7 +1178,7 @@ void MAT2d_Tool2d::BisecFusion(const Standard_Integer I1,
     Handle(Bisector_BisecCC) BCC1 = Handle(Bisector_BisecCC)::DownCast(Bisector1->BasisCurve());
 
     Bis.Perform(BCC1->Curve(2), BCC1->Curve(1), P2, VBid, VBid, 
-      theDirection, Tolerance, Standard_False); 
+		theDirection, theJoinType, Tolerance, Standard_False); 
 
     Bisector1 = Handle(Geom2d_TrimmedCurve)::DownCast(Bis.Value());
     BCC1      = Handle(Bisector_BisecCC)   ::DownCast(Bisector1->BasisCurve());	

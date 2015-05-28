@@ -303,8 +303,9 @@ static void EvalParametersBis(const Geom2dAdaptor_Curve& Bis,
 //=======================================================================
 
 void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
-  const TopoDS_Edge& Edge2,
-  TColgp_SequenceOfPnt& Params)
+                                          const TopoDS_Edge& Edge2,
+                                          const GeomAbs_JoinType theJoinType,
+                                          TColgp_SequenceOfPnt& Params)
 {
   Params.Clear();
 
@@ -553,6 +554,23 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
     Points2.Remove(Params.Length()+1, Points2.Length());
   }
 
+  NbPoints = Params.Length();
+
+  if (NbPoints > 0 && theJoinType == GeomAbs_Intersection)
+  {
+    //Remove all vertices with non-minimal parameter
+    Standard_Integer imin = 1;
+    for (i = 2; i <= NbPoints; i++)
+      if (Params(i).X() < Params(imin).X())
+        imin = i;
+    gp_Pnt Pnt1 = Params(imin);
+    gp_Pnt Pnt2 = Points2(imin);
+    Params.Clear();
+    Points2.Clear();
+    Params.Append(Pnt1);
+    Points2.Append(Pnt2);
+  }
+  
   NbPoints = Params.Length();
   for ( i = 1; i <= NbPoints; i++) {
     PSeq = Params(i);

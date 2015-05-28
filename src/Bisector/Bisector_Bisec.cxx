@@ -73,13 +73,14 @@ Bisector_Bisec::Bisector_Bisec()
 //===========================================================================
 
 void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
-  const Handle(Geom2d_Curve)& asecondcurve  ,
-  const gp_Pnt2d&             apoint        ,
-  const gp_Vec2d&             afirstvector  ,
-  const gp_Vec2d&             asecondvector ,
-  const Standard_Real         adirection    ,
-  const Standard_Real         tolerance     ,
-  const Standard_Boolean      oncurve       )
+			     const Handle(Geom2d_Curve)& asecondcurve  ,
+			     const gp_Pnt2d&             apoint        ,
+			     const gp_Vec2d&             afirstvector  ,
+			     const gp_Vec2d&             asecondvector ,
+			     const Standard_Real         adirection    ,
+                             const GeomAbs_JoinType      ajointype     ,
+			     const Standard_Real         tolerance     ,
+			     const Standard_Boolean      oncurve       )
 {
   Handle(Standard_Type)  Type1 = afirstcurve ->DynamicType();
   Handle(Standard_Type)  Type2 = asecondcurve->DynamicType();
@@ -149,18 +150,19 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     //------------------------------------------------------------------
     // Analytic Bissectrice.
     //------------------------------------------------------------------
-    Handle(Bisector_BisecAna) BisAna = new Bisector_BisecAna();
-    BisAna->Perform(afirstcurve1   ,
-      asecondcurve1  ,
-      apoint        ,
-      afirstvector  ,
-      asecondvector ,
-      adirection    ,
-      tolerance     ,
-      oncurve       );
-    UFirst = BisAna->ParameterOfStartPoint();
-    ULast  = BisAna->ParameterOfEndPoint(); 
-    Bis = BisAna;   
+     Handle(Bisector_BisecAna) BisAna = new Bisector_BisecAna();
+     BisAna->Perform(afirstcurve1  ,
+		     asecondcurve1 ,
+		     apoint        ,
+		     afirstvector  ,
+		     asecondvector ,
+		     adirection    ,
+                     ajointype     ,
+		     tolerance     ,
+		     oncurve       );
+     UFirst = BisAna->ParameterOfStartPoint();
+     ULast  = BisAna->ParameterOfEndPoint();    
+     Bis = BisAna;   
   }
   else {  
     Standard_Boolean IsLine = Standard_False;

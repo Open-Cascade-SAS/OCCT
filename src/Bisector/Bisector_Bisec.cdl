@@ -45,20 +45,22 @@ uses
     Point        from Geom2d  ,
     Pnt2d        from gp      ,
     Vec2d        from gp      ,
-    Integer      from Standard
+    Integer      from Standard,
+    JoinType     from GeomAbs
 
 is
     Create returns Bisec from Bisector;
 
     Perform(me        : in out                                 ;
-            Cu1       : Curve   from Geom2d                    ;
-            Cu2       : Curve   from Geom2d                    ;
-            P         : Pnt2d   from gp                        ;
-            V1        : Vec2d   from gp                        ;
-            V2        : Vec2d   from gp                        ;
-            Sense     : Real    from Standard                  ;
-    	    Tolerance : Real    from Standard                  ;
-    	    oncurve   : Boolean from Standard = Standard_True  );
+            Cu1       : Curve    from Geom2d                    ;
+            Cu2       : Curve    from Geom2d                    ;
+            P         : Pnt2d    from gp                        ;
+            V1        : Vec2d    from gp                        ;
+            V2        : Vec2d    from gp                        ;
+            Sense     : Real     from Standard                  ;
+	    ajointype : JoinType from GeomAbs                   ;
+    	    Tolerance : Real     from Standard                  ;
+    	    oncurve   : Boolean  from Standard = Standard_True  );
 	   
     	--- Purpose : Performs  the bisecting line  between the  curves
     	--            <Cu1> and <Cu2>. 

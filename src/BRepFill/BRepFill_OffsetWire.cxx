@@ -900,6 +900,9 @@ void BRepFill_OffsetWire::PerformWithBiLo
       //				   MapNodeVertex,VE);
     }
 
+    if (myJoinType == GeomAbs_Intersection)
+      StartOnEdge = EndOnEdge = 0;
+
     //---------------------------------------------
     // Construction of geometries.
     //---------------------------------------------
@@ -912,7 +915,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     // Construction of vertices on edges parallel to the spine.
     //-----------------------------------------------------------
 
-    Trim.IntersectWith(E [0], E [1], Params);
+    Trim.IntersectWith(E [0], E [1], myJoinType, Params);
 
     for (Standard_Integer s = 1; s <= Params.Length(); s++) {
       TopoDS_Vertex VC;
