@@ -435,16 +435,16 @@ public:
   Standard_EXPORT Standard_Boolean SetGlNormalizeEnabled (Standard_Boolean isEnabled);
 
   //! Applies matrix stored in ModelWorldState to OpenGl.
-  void ApplyModelWorldMatrix();
+  Standard_EXPORT void ApplyModelWorldMatrix();
 
   //! Applies matrix stored in WorldViewState to OpenGl.
-  void ApplyWorldViewMatrix();
+  Standard_EXPORT void ApplyWorldViewMatrix();
 
   //! Applies combination of matrices stored in ModelWorldState and WorldViewState to OpenGl.
-  void ApplyModelViewMatrix();
+  Standard_EXPORT void ApplyModelViewMatrix();
 
   //! Applies matrix stored in ProjectionState to OpenGl.
-  void ApplyProjectionMatrix();
+  Standard_EXPORT void ApplyProjectionMatrix();
 
 public:
 
