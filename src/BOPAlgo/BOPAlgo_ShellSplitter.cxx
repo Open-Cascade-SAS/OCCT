@@ -43,7 +43,8 @@ static
                  TopoDS_Shell& );
 //
 static
-  void RefineShell(TopoDS_Shell& theShell);
+  void RefineShell(TopoDS_Shell& theShell,
+                   BOPCol_ListOfShape& aLShX);
 //
 static
   void MapEdgesAndFaces
@@ -329,8 +330,9 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   BOPTools_CoupleOfShape aCSOff;
   BOPCol_MapOfOrientedShape AddedFacesMap;
   BOPCol_IndexedDataMapOfShapeListOfShape aEFMap, aMEFP;
+  Handle (IntTools_Context) aContext;
   // 
-  Handle (IntTools_Context) aContext=new IntTools_Context;
+  aContext=new IntTools_Context;
   //
   const BOPCol_ListOfShape& myShapes=aCB.Shapes();
   //
@@ -345,6 +347,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
                                      TopAbs_EDGE, 
                                      TopAbs_FACE, 
                                      aEFMap);
+                                    
   }
   //
   aItF.Initialize (myShapes);
@@ -454,15 +457,18 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
       } // for (; aExp.More(); aExp.Next()) {
     } // for (; aItS.More(); aItS.Next()) {
     //
-    if (BRep_Tool::IsClosed(aShell)) {
-      aShell.Closed (Standard_True);
-      myLoops.Append(aShell);
-    }
-    else {
-      RefineShell(aShell);
-      if (BRep_Tool::IsClosed(aShell)) {
-        aShell.Closed (Standard_True);
-        myLoops.Append(aShell);
+    BOPCol_ListOfShape aLShX; 
+    BOPCol_ListIteratorOfListOfShape aItLShX;
+    //
+    RefineShell(aShell, aLShX);
+    //
+    aItLShX.Initialize(aLShX);
+    for (; aItLShX.More(); aItLShX.Next()) { 
+      TopoDS_Shell& aShX=*((TopoDS_Shell*)&aItLShX.Value());
+      //
+      if (BRep_Tool::IsClosed(aShX)) {
+        aShX.Closed(Standard_True);
+        myLoops.Append(aShX);
       }
     }
   } // for (; aItF.More(); aItF.Next()) {
@@ -471,7 +477,8 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
 //function : RefineShell
 //purpose  : 
 //=======================================================================
-void RefineShell(TopoDS_Shell& theShell)
+void RefineShell(TopoDS_Shell& theShell, 
+                 BOPCol_ListOfShape& aLShX)
 {
   TopoDS_Iterator aIt;
   //
@@ -480,12 +487,12 @@ void RefineShell(TopoDS_Shell& theShell)
     return;
   }
   //
-  Standard_Integer i, aNbMEF, aNbF;
+  Standard_Integer i, aNbMEF, aNbF, aNbMFB;
   BOPCol_IndexedDataMapOfShapeListOfShape aMEF; 
   TopoDS_Builder aBB;
   TopExp_Explorer aExp;
-  BOPCol_MapOfShape aMEStop, aMFB;
-  BOPCol_MapIteratorOfMapOfShape aItM;
+  BOPCol_IndexedMapOfShape aMFB;
+  BOPCol_MapOfShape aMEStop, aMFProcessed;
   BOPCol_ListIteratorOfListOfShape aItLF, aItLFP;
   BOPCol_ListOfShape aLFP, aLFP1;
   //
@@ -494,6 +501,7 @@ void RefineShell(TopoDS_Shell& theShell)
                                    TopAbs_EDGE, 
                                    TopAbs_FACE, 
                                    aMEF);
+                                  
   aNbMEF=aMEF.Extent();
   for (i=1; i<=aNbMEF; ++i) {
     const TopoDS_Shape& aE=aMEF.FindKey(i);
@@ -505,69 +513,86 @@ void RefineShell(TopoDS_Shell& theShell)
   }
   //
   if (aMEStop.IsEmpty()) {
+    aLShX.Append(theShell);
     return;
   }
   //
   // The first Face 
-  const TopoDS_Shape& aF1=aIt.Value();
-  aMFB.Add(aF1);
-  aLFP.Append(aF1);
-  //
-  // Trying to reach the branch point
-  for (;;)  {
-    aItLFP.Initialize(aLFP);
-    for (; aItLFP.More(); aItLFP.Next()) { 
-      const TopoDS_Shape& aFP=aItLFP.Value();
-      //
-      aExp.Init(aFP, TopAbs_EDGE);
-      for (; aExp.More(); aExp.Next()) {
-        const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
-        if (aMEStop.Contains(aE)) {
-          continue;
-        }
-        //
-        if (BRep_Tool::Degenerated(aE)) {
-          continue;
-        }
-        //
-        const BOPCol_ListOfShape& aLF=aMEF.FindFromKey(aE);
-        //
-        aItLF.Initialize(aLF);
-        for (; aItLF.More(); aItLF.Next()) { 
-          const TopoDS_Shape& aFP1=aItLF.Value();
-          if (aFP1.IsSame(aFP)) {
-            continue;
-          }
-          if (aMFB.Contains(aFP1)) {
-            continue;
-          }
-          aMFB.Add(aFP1);
-          aLFP1.Append(aFP1);
-        }// for (; aItLF.More(); aItLF.Next()) { 
-      }// for (; aExp.More(); aExp.Next()) {
-    }// for (; aItLFP.More(); aItLFP.Next()) { 
-    //
-    //
-    if (aLFP1.IsEmpty()) {
-      break;
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aF1=aIt.Value();
+    if (!aMFProcessed.Add(aF1)) {
+      continue;
     }
     //
+    aMFB.Clear();
     aLFP.Clear();
-    aItLF.Initialize(aLFP1);
-    for (; aItLF.More(); aItLF.Next()) { 
-      const TopoDS_Shape& aFP1=aItLF.Value();
-      aLFP.Append(aFP1);
+    //
+    aMFB.Add(aF1);
+    aLFP.Append(aF1);
+    //
+    // Trying to reach the branch point
+    for (;;)  {  
+      aItLFP.Initialize(aLFP);
+      for (; aItLFP.More(); aItLFP.Next()) { 
+        const TopoDS_Shape& aFP=aItLFP.Value();
+        //
+        aExp.Init(aFP, TopAbs_EDGE);
+        for (; aExp.More(); aExp.Next()) {
+          const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
+          if (aMEStop.Contains(aE)) {
+            continue;
+          }
+          //
+          if (BRep_Tool::Degenerated(aE)) {
+            continue;
+          }
+          //
+          const BOPCol_ListOfShape& aLF=aMEF.FindFromKey(aE);
+          //
+          aItLF.Initialize(aLF);
+          for (; aItLF.More(); aItLF.Next()) { 
+            const TopoDS_Shape& aFP1=aItLF.Value();
+            if (aFP1.IsSame(aFP)) {
+              continue;
+            }
+            if (aMFB.Contains(aFP1)) {
+              continue;
+            }
+            //
+            aMFProcessed.Add(aFP1);
+            aMFB.Add(aFP1);
+            aLFP1.Append(aFP1);
+          }// for (; aItLF.More(); aItLF.Next()) { 
+        }// for (; aExp.More(); aExp.Next()) {
+      } // for (; aItLFP.More(); aItLFP.Next()) { 
+      //
+      //
+      if (aLFP1.IsEmpty()) {
+        break;
+      }
+      //
+      aLFP.Clear();
+      aItLF.Initialize(aLFP1);
+      for (; aItLF.More(); aItLF.Next()) { 
+        const TopoDS_Shape& aFP1=aItLF.Value();
+        aLFP.Append(aFP1);
+      }
+      aLFP1.Clear();
+    }// for (;;)  {
+    //
+    aNbMFB=aMFB.Extent();
+    if (aNbMFB) {
+      TopoDS_Shell aShX;
+      aBB.MakeShell(aShX);
+      //
+      for (i=1; i<=aNbMFB; ++i) {
+        const TopoDS_Shape& aFB=aMFB(i);
+        aBB.Add(aShX, aFB);
+      }
+      aLShX.Append(aShX);
     }
-    aLFP1.Clear();
-  }// for (;;)  {
-  //
-  // Remove all faces before the branch point
-  aItM.Initialize(aMFB);
-  for (; aItM.More(); aItM.Next()) { 
-    const TopoDS_Shape& aFB=aItM.Value();
-    aBB.Remove(theShell, aFB);
-  }
-}
+  }//for (; aIt.More(); aIt.Next()) {
+}    
 //=======================================================================
 //function : MakeShells
 //purpose  : 
