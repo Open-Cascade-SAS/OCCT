@@ -106,7 +106,8 @@ protected:
 
   //! A key for the map of blocks
   struct Key {Standard_Size Value;};
-  //! AccAllocator hasher
+
+  //! Key hasher
   class Hasher
   {
   public:
@@ -125,6 +126,15 @@ protected:
     Block*           prevBlock;
     Standard_Integer allocCount;
 
+    Block(const Standard_Address theAddress,
+          const Standard_Size    theSize,
+          Block*                 thePrevBlock = 0L)
+      : address(theAddress), prevBlock(thePrevBlock), allocCount(0)
+      {SetFreeSize (theSize);}
+
+    void SetFreeSize(const Standard_Size theSize)
+      {allocStart = (Standard_Byte*)address + theSize;}
+
     Standard_Size FreeSize() const
       {return (Standard_Byte*)allocStart - (Standard_Byte*)address;}
 
@@ -133,6 +143,9 @@ protected:
 
     void Free()
       {allocCount--;}
+
+    Standard_Boolean IsEmpty() const
+      {return allocCount == 0;}
   };
 
 // --------- PROTECTED METHODS ---------
