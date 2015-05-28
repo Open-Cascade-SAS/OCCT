@@ -145,10 +145,20 @@ public:
   //! List of pre-defined OCCT state uniform variables.
   static Standard_CString PredefinedKeywords[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];
 
-protected:
-
   //! Creates uninitialized shader program.
+  //!
+  //! WARNING! This constructor is not intended to be called anywhere but from OpenGl_ShaderManager::Create().
+  //! Manager has been designed to synchronize camera position, lights definition and other aspects of the program implicitly,
+  //! as well as sharing same program across rendering groups.
+  //!
+  //! Program created outside the manager will be left detached from these routines,
+  //! and them should be performed manually by caller.
+  //!
+  //! This constructor has been made public to provide more flexibility to re-use OCCT OpenGL classes without OCCT Viewer itself.
+  //! If this is not the case - create the program using shared OpenGl_ShaderManager instance instead.
   Standard_EXPORT OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy = NULL);
+
+protected:
 
   static OpenGl_VariableSetterSelector mySetterSelector;
 
