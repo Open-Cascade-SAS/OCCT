@@ -1,0 +1,42 @@
+puts "========"
+puts "OCC26180"
+puts "========"
+puts ""
+##################################################################
+## Modeling Algorithms - Provide shape self-intersection detector
+##################################################################
+
+list aBoxNames
+
+set BOX_SIZE 5
+set BOX_GRID_SIZE 30
+
+for {set i 0} {$i < $BOX_GRID_SIZE} {incr i} {
+  for {set j 0} {$j < $BOX_GRID_SIZE} {incr j} {
+    box b_[expr $i]_[expr $j] [expr $i * 6] [expr $j * 6] 0 5 5 5
+        lappend aBoxNames b_[expr $i]_[expr $j]
+        lappend aBoxNames " "
+  }
+}
+
+psphere s 30
+ttranslate s 90.0 90.0 0.0
+incmesh s 0.002
+trinfo s
+
+set aCompName "C"
+compound {*}$aBoxNames s $aCompName
+
+vinit
+vsetdispmode 1
+vdisplay $aCompName
+vsettransparency $aCompName 0.8
+vdump $imagedir/${casename}_1.png
+
+selfintersect $aCompName -tol 0.0 -profile
+
+vdisplay [set aCompName]_overlapped
+vsetcolor [set aCompName]_overlapped red
+vsettransparency [set aCompName]_overlapped 0.5
+vfit
+vdump $imagedir/${casename}_2.png

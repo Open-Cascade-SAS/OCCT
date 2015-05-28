@@ -21,8 +21,10 @@
 #include <BRepExtrema_Poly.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_ShapeProximity.hxx>
+#include <BRepExtrema_SelfIntersection.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 #include <Draw.hxx>
@@ -233,18 +235,18 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 
   if (aProfile)
   {
-    theDI << "Number of primitives in shape 1: " << aTool.PrimitiveSet1()->Size() << "\n";
-    theDI << "Number of primitives in shape 2: " << aTool.PrimitiveSet2()->Size() << "\n";
+    theDI << "Number of primitives in shape 1: " << aTool.ElementSet1()->Size() << "\n";
+    theDI << "Number of primitives in shape 2: " << aTool.ElementSet2()->Size() << "\n";
     theDI << "Building data structures: " << aInitTime << "\n";
     theDI << "Executing proximity test: " << aWorkTime << "\n";
   }
 
-  TopoDS_Builder  aCompBuilder;
+  TopoDS_Builder aCompBuilder;
 
   TopoDS_Compound aFaceCompound1;
   aCompBuilder.MakeCompound (aFaceCompound1);
 
-  for (BRepExtrema_OverlappedSubShapes::Iterator anIt1 (aTool.OverlapSubShapes1()); anIt1.More(); anIt1.Next())
+  for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt1 (aTool.OverlapSubShapes1()); anIt1.More(); anIt1.Next())
   {
     TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[1]) + "_" + (anIt1.Key() + 1);
 
@@ -258,7 +260,7 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
   TopoDS_Compound aFaceCompound2;
   aCompBuilder.MakeCompound (aFaceCompound2);
 
-  for (BRepExtrema_OverlappedSubShapes::Iterator anIt2 (aTool.OverlapSubShapes2()); anIt2.More(); anIt2.Next())
+  for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt2 (aTool.OverlapSubShapes2()); anIt2.More(); anIt2.Next())
   {
     TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[2]) + "_" + (anIt2.Key() + 1);
 
@@ -271,6 +273,123 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 
   DBRep::Set ((TCollection_AsciiString (theArgs[1]) + "_" + "overlapped").ToCString(), aFaceCompound1);
   DBRep::Set ((TCollection_AsciiString (theArgs[2]) + "_" + "overlapped").ToCString(), aFaceCompound2);
+
+  return 0;
+}
+
+//==============================================================================
+//function : ShapeSelfIntersection
+//purpose  :
+//==============================================================================
+static int ShapeSelfIntersection (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgs)
+{
+  if (theNbArgs < 2 || theNbArgs > 5)
+  {
+    std::cout << "Usage: " << theArgs[0] <<
+      " Shape [-tol <value>] [-profile]" << std::endl;
+
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get (theArgs[1]);
+
+  if (aShape.IsNull())
+  {
+    std::cout << "Error: Failed to find specified shape" << std::endl;
+    return 1;
+  }
+
+  Standard_Real    aTolerance = 0.0;
+  Standard_Boolean aToProfile = Standard_False;
+
+  for (Standard_Integer anArgIdx = 2; anArgIdx < theNbArgs; ++anArgIdx)
+  {
+    TCollection_AsciiString aFlag (theArgs[anArgIdx]);
+    aFlag.LowerCase();
+
+    if (aFlag == "-tol")
+    {
+      if (++anArgIdx >= theNbArgs)
+      {
+        std::cout << "Error: wrong syntax at argument '" << aFlag << std::endl;
+        return 1;
+      }
+
+      const Standard_Real aValue = Draw::Atof (theArgs[anArgIdx]);
+      if (aValue < 0.0)
+      {
+        std::cout << "Error: Tolerance value should be non-negative" << std::endl;
+        return 1;
+      }
+      else
+      {
+        aTolerance = aValue;
+      }
+    }
+
+    if (aFlag == "-profile")
+    {
+      aToProfile = Standard_True;
+    }
+  }
+
+  OSD_Timer aTimer;
+
+  Standard_Real aInitTime = 0.0;
+  Standard_Real aWorkTime = 0.0;
+
+  if (aToProfile)
+  {
+    aTimer.Start();
+  }
+
+  BRepExtrema_SelfIntersection aTool (aShape, aTolerance);
+
+  if (aToProfile)
+  {
+    aInitTime = aTimer.ElapsedTime();
+
+    aTimer.Reset();
+    aTimer.Start();
+  }
+
+  // Perform shape self-intersection test
+  aTool.Perform();
+
+  if (!aTool.IsDone())
+  {
+    std::cout << "Error: Failed to perform proximity test" << std::endl;
+    return 1;
+  }
+
+  if (aToProfile)
+  {
+    aWorkTime = aTimer.ElapsedTime();
+    aTimer.Stop();
+
+    theDI << "Building data structure (BVH):    " << aInitTime << "\n";
+    theDI << "Executing self-intersection test: " << aWorkTime << "\n";
+  }
+
+  // Extract output faces
+  TopoDS_Builder  aCompBuilder;
+  TopoDS_Compound aFaceCompound;
+
+  aCompBuilder.MakeCompound (aFaceCompound);
+
+  for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt (aTool.OverlapElements()); anIt.More(); anIt.Next())
+  {
+    TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[1]) + "_" + (anIt.Key() + 1);
+
+    const TopoDS_Face& aFace = aTool.GetSubShape (anIt.Key());
+    aCompBuilder.Add (aFaceCompound, aFace);
+    DBRep::Set (aStr.ToCString(), aFace);
+
+    theDI << aStr << " \n";
+  }
+
+  theDI << "Compound of overlapped sub-faces: " << theArgs[1] << "_overlapped\n";
+  DBRep::Set ((TCollection_AsciiString (theArgs[1]) + "_" + "overlapped").ToCString(), aFaceCompound);
 
   return 0;
 }
@@ -312,5 +431,18 @@ void BRepTest::ExtremaCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:   -profile : outputs execution time for main algorithm stages",
                    __FILE__,
                    ShapeProximity,
+                   aGroup);
+
+  theCommands.Add ("selfintersect",
+                   "selfintersect Shape [-tol <value>] [-profile]"
+                   "\n\t\t: Searches for intersected/overlapped faces in the given shape."
+                   "\n\t\t: The algorithm uses shape tessellation (should be computed in"
+                   "\n\t\t: advance), and provides approximate results. The options are:"
+                   "\n\t\t:   -tol     : non-negative tolerance value used for overlapping"
+                   "\n\t\t:              test (for zero tolerance, the strict intersection"
+                   "\n\t\t:              test will be performed)"
+                   "\n\t\t:   -profile : outputs execution time for main algorithm stages",
+                   __FILE__,
+                   ShapeSelfIntersection,
                    aGroup);
 }

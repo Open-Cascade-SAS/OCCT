@@ -17,14 +17,13 @@
 #define _BRepExtrema_TriangleSet_HeaderFile
 
 #include <TopoDS_Face.hxx>
-
 #include <BVH_PrimitiveSet.hxx>
 
 //! List of shapes and their IDs for collision detection.
 typedef NCollection_Vector<TopoDS_Face> BRepExtrema_ShapeList;
 
 //! Triangle set corresponding to specific face.
-class BRepExtrema_TriangleSet : public BVH_PrimitiveSet<Standard_Real, 3>
+class BRepExtrema_TriangleSet : public BVH_PrimitiveSet<Standard_Real, 3>, public Standard_Transient
 {
 public:
 
@@ -79,6 +78,12 @@ protected:
   //! Array of vertex coordinates.
   BVH_Array3d myVertexArray;
 
+public:
+
+  DEFINE_STANDARD_RTTI(BRepExtrema_TriangleSet)
+
 };
+
+DEFINE_STANDARD_HANDLE (BRepExtrema_TriangleSet, Standard_Transient)
 
 #endif // _BRepExtrema_TriangleSet_HeaderFile
