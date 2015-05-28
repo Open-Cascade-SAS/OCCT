@@ -410,7 +410,7 @@ Standard_Real Extrema_ExtCS::SquareDistance(const Standard_Integer N) const
 Standard_Integer Extrema_ExtCS::NbExt() const
 {
   if(!myDone) StdFail_NotDone::Raise();
-  return mySqDist.Length();
+  return myPOnC.Length();
 }
 
 
