@@ -2,12 +2,10 @@
 # Date : 26Aout98
 
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file CTO904_pro14942a.rle] a 
 restore [locate_data_file pro14942b.rle] b
 
 bcut result a b
 
-#CR23958 set square 0
-set square 192472
+set square 192941
