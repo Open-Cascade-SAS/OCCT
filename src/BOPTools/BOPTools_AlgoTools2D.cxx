@@ -15,6 +15,7 @@
 #include <BOPTools_AlgoTools2D.ixx>
 
 #include <Standard_NotImplemented.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Precision.hxx>
 #include <gp.hxx>
 
@@ -652,6 +653,12 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
       aTolR = aProj3.GetTolerance();
     }
   }
+  //
+  if(aC2D.IsNull())
+  {
+    Standard_ConstructionError::Raise("BOPTools_AlgoTools2D::MakePCurveOnFace : PCurve is Null");
+  }
+  //
   TolReached2d=aTolR;
   BOPTools_AlgoTools2D::AdjustPCurveOnFace (aBAS, aT1, aT2, 
                                             aC2D, aC2DA);
