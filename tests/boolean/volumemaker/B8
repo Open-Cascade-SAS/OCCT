@@ -1,8 +1,8 @@
 # test script on make volume operation
 # plane
 
-puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC26020 ALL: Error: bopcheck failed"
+puts "TODO ?OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC26020 ALL: Error: bopcheck failed"
 
 # planar face 
 plane pln_f1 675.40193739250992 -18.500000000000014 -849.55972443208043 -0.78282540776981002 -2.2204460492503131e-016 -0.62224141693560608
@@ -47,5 +47,4 @@ mkface f8 pln_f8 -1000000 1000000 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6 f7 f8
 
-set square 3.60102e+013
-
+set square 28748.8

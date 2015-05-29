@@ -31,5 +31,4 @@ mkface f5 con_f5 0 6.2831853071795862 0 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5
 
-set square 7.9273e+006
-
+set square 8.06875e+006

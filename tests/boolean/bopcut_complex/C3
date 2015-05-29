@@ -1,7 +1,11 @@
-restore [locate_data_file OCC122.brep] sh
-explode sh
+# Original bug : pro9373
+# Date : 24mar98
 
-bop  sh_1 sh_2
-bopcut result
+puts "TODO #22911 ALL: Error : The $command is not valid. The area is 0."
 
-set square 83334.1
+restore [locate_data_file pro9373a.rle] a
+restore [locate_data_file pro9373b.rle] b
+
+bcommon result a b
+
+set square 0
