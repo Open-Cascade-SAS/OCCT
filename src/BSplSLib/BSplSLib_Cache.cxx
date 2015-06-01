@@ -148,8 +148,20 @@ void BSplSLib_Cache::BuildCache(const Standard_Real&           theParameterU,
                             thePeriodicU, mySpanIndex[0], aNewParamU);
   BSplCLib::LocateParameter(theDegreeV, theFlatKnotsV, BSplCLib::NoMults(), aNewParamV, 
                             thePeriodicV, mySpanIndex[1], aNewParamV);
+
+  // Protection against Out of Range exception.
+  if (mySpanIndex[0] >= theFlatKnotsU.Length()) {
+    mySpanIndex[0] = theFlatKnotsU.Length() - 1;
+  }
+
   mySpanLength[0] = (theFlatKnotsU.Value(mySpanIndex[0] + 1) - theFlatKnotsU.Value(mySpanIndex[0])) * 0.5;
   mySpanStart[0]  = theFlatKnotsU.Value(mySpanIndex[0]) + mySpanLength[0];
+
+  // Protection against Out of Range exception.
+  if (mySpanIndex[1] >= theFlatKnotsV.Length()) {
+    mySpanIndex[1] = theFlatKnotsV.Length() - 1;
+  }
+
   mySpanLength[1] = (theFlatKnotsV.Value(mySpanIndex[1] + 1) - theFlatKnotsV.Value(mySpanIndex[1])) * 0.5;
   mySpanStart[1]  = theFlatKnotsV.Value(mySpanIndex[1]) + mySpanLength[1];
   mySpanIndexMax[0] = theFlatKnotsU.Length() - 1 - theDegreeU;
