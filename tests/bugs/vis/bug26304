@@ -1,0 +1,46 @@
+puts "============"
+puts "CR26304"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - wrong calculation of point in SelectMgr_RectangularFrustum::DetectedPoint"
+##########################################################################################
+
+proc findPoint {theInfoString} {
+  puts $theInfoString
+  set aStringArr [split $theInfoString " "]
+  set aSize [llength $aStringArr]
+  for {set aIdx 0} {$aIdx < $aSize} {incr aIdx} {
+    set aItem [lindex $theInfoString $aIdx]
+    if {[string compare $aItem "Point:"] == 0} {
+        set aX [string trim [lindex $theInfoString [expr $aIdx + 1]]]
+        set aY [string trim [lindex $theInfoString [expr $aIdx + 2]]]
+        set aZ [string trim [lindex $theInfoString [expr $aIdx + 3]]]
+        return [list $aX $aY $aZ]
+      }
+    }
+}
+
+pload VISUALIZATION MODELING
+
+vinit View1
+vsetdispmode 1
+box b 100 100 100
+vdisplay b
+vfit
+vselect 48 258
+
+set anOut [split [vstate -entities] "\n"]
+set aPnt [findPoint [lindex $anOut 1]]
+vpoint p {*}$aPnt
+vfit
+
+vviewparams -scale 22.3 -proj 0.576 -0.78 0.24 -up -0.21 0.136 0.967
+vviewparams -at 10.887 16.807 36.2306 -eye 111.071 -118.34 77.44
+
+if {[vreadpixel 103 293 name] != "YELLOW 1"} {
+  puts "ERROR: Wrong point calculated"
+}
+
+vdump ${imagedir}/${casename}.png
