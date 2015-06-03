@@ -20,21 +20,6 @@
 
 #include <OpenGl_CView.hxx>
 
-void OpenGl_GraphicDriver::SetDepthTestEnabled( const Graphic3d_CView& ACView, const Standard_Boolean isEnabled ) const
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    aCView->WS->UseDepthTest() = isEnabled;
-}
-
-Standard_Boolean OpenGl_GraphicDriver::IsDepthTestEnabled( const Graphic3d_CView& ACView ) const
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    return aCView->WS->UseDepthTest();
-  return Standard_False;
-}
-
 void OpenGl_GraphicDriver::ReadDepths( const Graphic3d_CView& ACView,
                                       const Standard_Integer x,
                                       const Standard_Integer y,

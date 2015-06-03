@@ -153,8 +153,8 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
   myIsImmediateDrawn     (Standard_False),
-  myUseZBuffer (Standard_False),
-  myUseDepthTest (Standard_True),
+  myUseZBuffer    (Standard_True),
+  myUseDepthWrite (Standard_True),
   myUseGLLight (Standard_True),
   myIsCullingEnabled (Standard_False),
   myFrameCounter (0),
@@ -1095,37 +1095,23 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView&               theCView,
   // request reset of material
   NamedStatus |= OPENGL_NS_RESMAT;
 
-  GLbitfield toClear = GL_COLOR_BUFFER_BIT;
-  if (myUseZBuffer)
-  {
-    glDepthFunc (GL_LEQUAL);
-    glDepthMask (GL_TRUE);
-    if (myUseDepthTest)
-    {
-      glEnable (GL_DEPTH_TEST);
-    }
-    else
-    {
-      glDisable (GL_DEPTH_TEST);
-    }
+  myUseZBuffer    = Standard_True;
+  myUseDepthWrite = Standard_True;
+  GLbitfield toClear = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+  glDepthFunc (GL_LEQUAL);
+  glDepthMask (GL_TRUE);
+  glEnable (GL_DEPTH_TEST);
 
-  #if !defined(GL_ES_VERSION_2_0)
-    glClearDepth (1.0);
-  #else
-    glClearDepthf (1.0f);
-  #endif
-    toClear |= GL_DEPTH_BUFFER_BIT;
-  }
-  else
-  {
-    glDisable (GL_DEPTH_TEST);
-  }
+#if !defined(GL_ES_VERSION_2_0)
+  glClearDepth (1.0);
+#else
+  glClearDepthf (1.0f);
+#endif
 
   if (NamedStatus & OPENGL_NS_WHITEBACK)
   {
     // set background to white
     glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
-    toClear |= GL_DEPTH_BUFFER_BIT;
   }
   else
   {
@@ -1399,34 +1385,22 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
 
   Handle(OpenGl_Workspace) aWS (this);
 
-  if (myUseZBuffer)
-  {
-    glDepthFunc (GL_LEQUAL);
-    glDepthMask (GL_TRUE);
-    if (myUseDepthTest)
-    {
-      glEnable (GL_DEPTH_TEST);
-    }
-    else
-    {
-      glDisable (GL_DEPTH_TEST);
-    }
-
-  #if !defined(GL_ES_VERSION_2_0)
-    glClearDepth (1.0);
-  #else
-    glClearDepthf (1.0f);
-  #endif
-  }
-  else
-  {
-    glDisable (GL_DEPTH_TEST);
-  }
+  myUseZBuffer    = Standard_True;
+  myUseDepthWrite = Standard_True;
+  glDepthFunc (GL_LEQUAL);
+  glDepthMask (GL_TRUE);
+  glEnable (GL_DEPTH_TEST);
+#if !defined(GL_ES_VERSION_2_0)
+  glClearDepth (1.0);
+#else
+  glClearDepthf (1.0f);
+#endif
 
   myView->Render (myPrintContext, aWS, theDrawFbo, theProjection,
                   theCView, theCUnderLayer, theCOverLayer, Standard_True);
   if (!myView->ImmediateStructures().IsEmpty())
   {
+    myUseZBuffer = Standard_False;
     glDisable (GL_DEPTH_TEST);
   }
   for (OpenGl_IndexedMapOfStructure::Iterator anIter (myView->ImmediateStructures()); anIter.More(); anIter.Next())

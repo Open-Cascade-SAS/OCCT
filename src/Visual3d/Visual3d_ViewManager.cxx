@@ -571,24 +571,6 @@ void Visual3d_ViewManager::UnIdentification (const Standard_Integer aViewId)
 
 void Visual3d_ViewManager::SetZBufferAuto (const Standard_Boolean AFlag)
 {
-  if (MyZBufferAuto && AFlag) return;
-  if (! MyZBufferAuto && ! AFlag) return;
-
-  // if pass from False to True :
-  // no problem, at the next view update, it
-  // will properly ask questions to answer (SetVisualisation)
-  // if pass from True to False :
-  // it is necessary to modify ZBufferActivity at each view so that
-  // zbuffer could be active only if required by context.
-  // In this case -1 is passed so that the view ask itself the question
-  // Note : 0 forces the desactivation, 1 forces the activation
-  if (! AFlag)
-  {
-    for(int i=1; i<=MyDefinedView.Length(); i++)
-    {
-      (MyDefinedView.Value(i))->SetZBufferActivity(-1);
-    }
-  }
   MyZBufferAuto = AFlag;
 }
 

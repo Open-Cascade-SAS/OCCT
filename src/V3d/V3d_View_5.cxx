@@ -33,16 +33,6 @@
 //BUC61045 25/10/01 SAV ; added functionality to control gl lighting from higher API
 
 
-void V3d_View::EnableDepthTest( const Standard_Boolean enable ) const
-{
-  MyView->EnableDepthTest( enable );
-}
-
-Standard_Boolean V3d_View::IsDepthTestEnabled() const
-{
-  return MyView->IsDepthTestEnabled();
-}
-
 void V3d_View::EnableGLLight( const Standard_Boolean enable ) const
 {
   MyView->EnableGLLight( enable );

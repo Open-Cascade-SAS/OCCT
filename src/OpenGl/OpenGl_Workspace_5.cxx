@@ -125,7 +125,10 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
       myMatTmp.Diffuse.a() = aProps->trans;
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable    (GL_BLEND);
-      glDepthMask (GL_FALSE);
+      if (myUseDepthWrite)
+      {
+        glDepthMask (GL_FALSE);
+      }
     }
     else
     {
@@ -135,7 +138,10 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
         glBlendFunc (GL_ONE, GL_ZERO);
         glDisable   (GL_BLEND);
       }
-      glDepthMask (GL_TRUE);
+      if (myUseDepthWrite)
+      {
+        glDepthMask (GL_TRUE);
+      }
     }
   }
 

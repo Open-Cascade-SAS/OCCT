@@ -61,7 +61,6 @@ Visual3d_View::Visual3d_View (const Handle(Visual3d_ViewManager)& theMgr)
   MyCView.WsId                    = -1;
   MyCView.DefWindow.IsDefined     = 0;
   MyCView.Context.NbActiveLight   = 0;
-  MyCView.Context.ZBufferActivity = -1;
 
   MyCView.Backfacing    = 0;
   MyCView.ptrUnderLayer = 0;
@@ -835,22 +834,6 @@ void Visual3d_View::Activate()
     }
   }
 
-  // If the activation/desactivation of ZBuffer should be automatic
-  // depending on the presence or absence of facets.
-  if (myViewManager->ZBufferAuto())
-  {
-    const Standard_Boolean containsFacet = ContainsFacet();
-    const Standard_Boolean hasZBuffer    = ZBufferIsActivated();
-    if (containsFacet && !hasZBuffer)
-    {
-      SetZBufferActivity (1); // If the view contains facets and if ZBuffer is not active
-    }
-    else if (!containsFacet && hasZBuffer)
-    {
-      SetZBufferActivity (0); // If the view does not contain facets and if ZBuffer is active
-    }
-  }
-
   Update (myViewManager->UpdateMode());
 }
 
@@ -975,23 +958,6 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
       myViewManager->RecomputeStructures();
       myViewManager->RecomputeStructures (myImmediateStructures);
       myGraphicDriver->ResetDeviceLostFlag();
-    }
-
-    // set up Z buffer state before redrawing
-    if (myViewManager->ZBufferAuto())
-    {
-      const Standard_Boolean hasFacet   = ContainsFacet();
-      const Standard_Boolean hasZBuffer = ZBufferIsActivated();
-      // if the view contains facets and if ZBuffer is not active
-      if (hasFacet && !hasZBuffer)
-      {
-        SetZBufferActivity (1);
-      }
-      // if the view contains only facets and if ZBuffer is active
-      if (!hasFacet && hasZBuffer)
-      {
-        SetZBufferActivity (0);
-      }
     }
 
     if (myStructuresUpdated)
@@ -1813,45 +1779,6 @@ Standard_Integer Visual3d_View::Identification() const
 }
 
 // =======================================================================
-// function : ZBufferIsActivated
-// purpose  :
-// =======================================================================
-Standard_Boolean Visual3d_View::ZBufferIsActivated() const
-{
-  if (IsDeleted()
-  || !IsDefined()
-  || !IsActive())
-  {
-    return Standard_False;
-  }
-
-  if (MyCView.Context.ZBufferActivity == -1)
-  {
-    // not forced by the programmer => depends on the type of visualisation
-    return MyContext.Visualization () == Visual3d_TOV_SHADING;
-  }
-  return MyCView.Context.ZBufferActivity != 0; //  0 or 1 => forced by the programmer
-}
-
-// =======================================================================
-// function : SetZBufferActivity
-// purpose  :
-// =======================================================================
-void Visual3d_View::SetZBufferActivity (const Standard_Integer theActivity)
-{
-  if (IsDeleted()
-  ||  MyCView.Context.ZBufferActivity == theActivity
-  || !IsDefined()
-  || !IsActive())
-  {
-    return;
-  }
-
-  MyCView.Context.ZBufferActivity = theActivity;
-  myGraphicDriver->SetVisualisation (MyCView);
-}
-
-// =======================================================================
 // function : UpdateView
 // purpose  :
 // =======================================================================
@@ -2338,24 +2265,6 @@ Visual3d_TypeOfBackfacingModel Visual3d_View::BackFacingModel() const
     case 1: return Visual3d_TOBM_FORCE;
   }
   return Visual3d_TOBM_DISABLE;
-}
-
-// =======================================================================
-// function : EnableDepthTest
-// purpose  :
-// =======================================================================
-void Visual3d_View::EnableDepthTest (const Standard_Boolean theToEnable) const
-{
-  myGraphicDriver->SetDepthTestEnabled (MyCView, theToEnable);
-}
-
-// =======================================================================
-// function : IsDepthTestEnabled
-// purpose  :
-// =======================================================================
-Standard_Boolean Visual3d_View::IsDepthTestEnabled() const
-{
-  return myGraphicDriver->IsDepthTestEnabled (MyCView);
 }
 
 // =======================================================================

@@ -197,9 +197,18 @@ public:
                                Image_PixMap&               theImage,
                                const Graphic3d_BufferType& theBufferType);
 
-  Standard_Boolean& UseZBuffer()   { return myUseZBuffer; }
-  Standard_Boolean& UseDepthTest() { return myUseDepthTest; }
-  Standard_Boolean& UseGLLight()   { return myUseGLLight; }
+  //! Setup Z-buffer usage flag (without affecting GL state!).
+  //! Returns previously set flag.
+  Standard_Boolean SetUseZBuffer (const Standard_Boolean theToUse)
+  {
+    const Standard_Boolean wasUsed = myUseZBuffer;
+    myUseZBuffer = theToUse;
+    return wasUsed;
+  }
+
+  Standard_Boolean& UseZBuffer()    { return myUseZBuffer; }
+  Standard_Boolean& UseDepthWrite() { return myUseDepthWrite; }
+  Standard_Boolean& UseGLLight()    { return myUseGLLight; }
 
   Standard_Integer AntiAliasingMode() const { return myAntiAliasingMode; }
 
@@ -331,7 +340,7 @@ protected: //! @name protected fields
   Standard_Boolean       myBackBufferRestored;
   Standard_Boolean       myIsImmediateDrawn;     //!< flag indicates that immediate mode buffer contains some data
   Standard_Boolean       myUseZBuffer;
-  Standard_Boolean       myUseDepthTest;
+  Standard_Boolean       myUseDepthWrite;
   Standard_Boolean       myUseGLLight;
   Standard_Boolean       myIsCullingEnabled;     //!< frustum culling flag
 

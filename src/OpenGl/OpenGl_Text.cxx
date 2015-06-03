@@ -414,7 +414,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   }
 
   // restore Z buffer settings
-  if (theWorkspace->UseZBuffer() && theWorkspace->UseDepthTest())
+  if (theWorkspace->UseZBuffer())
   {
     glEnable (GL_DEPTH_TEST);
   }
@@ -732,12 +732,8 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 #endif
 
   // setup depth test
-  if (!myIs2d
-   && theTextAspect.StyleType() != Aspect_TOST_ANNOTATION)
-  {
-    glEnable (GL_DEPTH_TEST);
-  }
-  else
+  if (myIs2d
+   || theTextAspect.StyleType() == Aspect_TOST_ANNOTATION)
   {
     glDisable (GL_DEPTH_TEST);
   }

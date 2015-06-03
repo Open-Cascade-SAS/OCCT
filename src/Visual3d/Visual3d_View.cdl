@@ -30,7 +30,6 @@
 --		               of a Set. Improves performance of Selection
 --		               mechanisms
 
---              SAV  - 22/10/01 -> Add EnableDepthTest() & IsDepthTestEnabled() methods.
 --              SAV  - 25/10/01 -> Add EnableGLLight() & IsGLLightEnabled() methods.
 --              VSV - 28/05/02: ZBUFFER mode of Trihedron
 --              SAV  - 23/12/02 Added methods too set background image
@@ -969,28 +968,6 @@ is
         -- or insufficient memory.
 	--  Warning: Works only under Windows.
 
-	ZBufferIsActivated ( me )
-		returns Boolean from Standard
-		is static;
-	---Level: Advanced
-	---Purpose: Returns Standard_True if the ZBuffer is activated
-	--	    in the view <me> and Standard_False if not.
-	---Category: Internal methods
-
-	SetZBufferActivity ( me : mutable; AnActivity : Integer from Standard )
-		is static;
-	---Level: Advanced
-	---Purpose: Activates the ZBuffer if the integer <AnActivity>
-	--	    is equal to 1.
-	--	    Deactivates the ZBuffer if the integer <AnActivity>
-	--	    is equal to 0.
-	--	    If the integer <AnActivity> is equal to -1 then
-	--	    - the ZBuffer is activated if
-	--		me->Context ().Visualization () == Visual3d_TOV_SHADING
-	--	    - the ZBuffer is deactivated if
-	--		me->Context ().Visualization () == Visual3d_TOV_WIREFRAME
-	---Category: Internal methods
-
 	UnderLayer ( me )
 		returns Layer from Visual3d;
 	---Level: Internal
@@ -1004,16 +981,6 @@ is
 	---Purpose: Returns the underlay of the view <me>.
 	---Category: Private methods
 	---C++: return const &
-
-    	EnableDepthTest( me; enable : Boolean from Standard )
-    	is static;
-	---Level: Public
-	---Purpose: turns on/off opengl depth
-
-    	IsDepthTestEnabled( me ) returns Boolean from Standard
-    	is static;
-	---Level: Public
-	---Purpose: returns current state of the opengl depth testing
 
     	ReadDepths( me; x,y,width,height: Integer from Standard;
     	    	    	buffer : Address )

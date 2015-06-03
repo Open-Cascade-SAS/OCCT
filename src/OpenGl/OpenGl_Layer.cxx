@@ -294,7 +294,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   {
     glClear (GL_DEPTH_BUFFER_BIT);
   }
- 
+
   // handle depth test
   if (IsSettingEnabled (Graphic3d_ZLayerDepthTest))
   {
@@ -305,7 +305,7 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   {
     glDepthFunc (GL_ALWAYS);
   }
-  
+
   // handle depth offset
   if (IsSettingEnabled (Graphic3d_ZLayerDepthOffset))
   {
@@ -321,7 +321,8 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace)&   theWorkspace,
   }
 
   // handle depth write
-  glDepthMask (IsSettingEnabled (Graphic3d_ZLayerDepthWrite) ? GL_TRUE : GL_FALSE);
+  theWorkspace->UseDepthWrite() = IsSettingEnabled (Graphic3d_ZLayerDepthWrite);
+  glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
 
   // render priority list
   theWorkspace->IsCullingEnabled() ? renderTraverse (theWorkspace) : renderAll (theWorkspace);

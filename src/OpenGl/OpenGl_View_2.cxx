@@ -166,7 +166,11 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
     return;
   }
 
-  aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
+  const Standard_Boolean wasUsedZBuffer = theWorkspace->SetUseZBuffer (Standard_False);
+  if (wasUsedZBuffer)
+  {
+    aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
+  }
 
   aCtx->WorldViewState.Push();
   aCtx->ProjectionState.Push();
@@ -234,8 +238,9 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
   aCtx->ApplyProjectionMatrix();
   aCtx->ApplyWorldViewMatrix();
 
-  if (theWorkspace->UseZBuffer())
+  if (wasUsedZBuffer)
   {
+    theWorkspace->SetUseZBuffer (Standard_True);
     aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
   }
 }

@@ -1,0 +1,41 @@
+puts "==========="
+puts "0026149: Visualization - depth buffer should not be written within Z-layers without Graphic3d_ZLayerDepthWrite flag"
+puts "Check that objects drawn in Graphic3d_ZLayerId_BotOSD layer do not overlap objects in Graphic3d_ZLayerId_Default layer."
+puts "==========="
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+
+text2brep tcc "Center" Times-Roman 30
+vdisplay  tcc -2d -underlay
+polyline  lcc -50 -50 0 -50 50 0 50 50 0 50 0 0 0 -50 0 -50 -50 0
+vdisplay  lcc -2d -underlay
+
+text2brep tbl "Bottom-Left" Times-Roman 30
+vdisplay  tbl -2d -trsfPersPos -1 -1 5 -underlay
+polyline  lbl 0 0 0 0 100 0 100 100 0 100 50 0 50 0 0 0 0 0
+vdisplay  lbl -2d -trsfPersPos -1 -1 3 -underlay
+
+text2brep ttl "Top-Left" Times-Roman 30 x=-27 y=0
+vdisplay  ttl -2d -trsfPersPos -1 1 30 -underlay
+polyline  ltl 0 -100 0 0 0 0 100 0 0 100 -50 0 50 -100 0 0 -100 0
+vdisplay  ltl -2d -trsfPersPos -1 1 3  -underlay
+
+text2brep ttr "Top-Right" Times-Roman 30 x=-100 y=0
+vdisplay  ttr -2d -trsfPersPos 1 1 30 -underlay
+polyline  ltr -100 -100 0 -100 0 0 0 0 0 0 -50 0 -50 -100 0 -100 -100 0
+vdisplay  ltr -2d -trsfPersPos 1 1 3  -underlay
+
+text2brep tbr "Bottom-Right" Times-Roman 30 x=-165 y=0
+vdisplay  tbr -2d -trsfPersPos 1 -1 5 -underlay
+polyline  lbr -100 0 0 -100 100 0 0 100 0 0 50 0 -50 0 0 -100 0 0
+vdisplay  lbr -2d -trsfPersPos 1 -1 3 -underlay
+
+box b 1 2 3
+vdisplay b
+vfit
+vsetdispmode b 1
+
+vdump ${imagedir}/${casename}.png

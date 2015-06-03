@@ -37,7 +37,6 @@ public:
     ZClipBackPlane  (0.0f),
     DepthFrontPlane (0.0f),
     DepthBackPlane  (0.0f),
-    ZBufferActivity (0),
     Model (0),
     Visualization (0),
     NbActiveLight (0),
@@ -63,7 +62,6 @@ public:
   float DepthFrontPlane;
   float DepthBackPlane;
 
-  int   ZBufferActivity;
   int   Model;
   int   Visualization;
 

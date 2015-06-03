@@ -481,7 +481,6 @@ void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView)
   if (aCView)
   {
     aCView->View->SetVisualisation(ACView.Context);
-    aCView->WS->UseZBuffer() = ( ACView.Context.Visualization == 0? (ACView.Context.ZBufferActivity == 1) : (ACView.Context.ZBufferActivity != 0) );
   }
 }
 

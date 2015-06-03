@@ -249,8 +249,6 @@ public:
                                           const Standard_CString theFileName,
                                           const Aspect_PrintAlgo thePrintAlgorithm = Aspect_PA_STRETCH,
                                           const Standard_Real    theScaleFactor = 1.0) const;
-  Standard_EXPORT void SetDepthTestEnabled (const Graphic3d_CView& view,const Standard_Boolean isEnabled) const;
-  Standard_EXPORT Standard_Boolean IsDepthTestEnabled (const Graphic3d_CView& view) const;
 
   //! Reads depths of shown pixels of the given rectangle (glReadPixels with GL_DEPTH_COMPONENT)
   Standard_EXPORT void ReadDepths (const Graphic3d_CView& view,const Standard_Integer x,const Standard_Integer y,const Standard_Integer width,const Standard_Integer height,const Standard_Address buffer) const;

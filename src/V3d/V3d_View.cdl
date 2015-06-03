@@ -33,8 +33,6 @@
 --              -> Add method Dump()
 --      THA  - 17/08/00 Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
 --              -> Add Print method (works only under Windows).
---              SAV - 22/10/01
---                              -> Add EnableDepthTest() & IsDepthTestEnabled().
 --              VSV - 28/05/02: ZBUFFER mode of Trihedron
 --              SAV - 23/12/02  -> Added methods to set background image
 --              NKV - 23/07/07  -> Define custom projection and model view matrixes
@@ -1370,16 +1368,6 @@ is
         is static;
          ---Level   : Public
          ---Purpose : Returns current state of the back faces display
-
-        EnableDepthTest( me; enable : Boolean from Standard = Standard_True )
-        is static;
-     ---Level: Public
-     ---Purpose: turns on/off opengl depth testing
-
-        IsDepthTestEnabled( me ) returns Boolean from Standard
-        is static;
-     ---Level: Public
-     ---Purpose: returns the current state of the depth testing
 
         EnableGLLight( me; enable : Boolean from Standard = Standard_True )
         is static;

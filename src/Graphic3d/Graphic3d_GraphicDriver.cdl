@@ -513,15 +513,6 @@ is
             is deferred;
         ---Purpose: call_togl_backfacing
 
-        SetDepthTestEnabled( me; view : CView from Graphic3d;
-                                 isEnabled : Boolean from Standard )
-    is deferred;
-    ---Purpose: call_togl_depthtest
-
-        IsDepthTestEnabled( me; view : CView from Graphic3d )
-    returns Boolean from Standard is deferred;
-    ---Purpose: call_togl_isdepthtest
-
         ReadDepths( me;
                     view          : CView from Graphic3d;
                     x, y          : Integer;
