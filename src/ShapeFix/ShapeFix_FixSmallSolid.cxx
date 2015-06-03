@@ -455,8 +455,9 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge (
 
         // remove the small solid
         theContext->Remove (aSmallSolid);
-        aSmallSolids.Remove (aSolidIter);
         SendWarning ( aSmallSolid, Message_Msg( "ShapeFix.FixSmallSolid.MSG1" ));
+
+        aSmallSolids.Remove (aSolidIter);
       }
       else
         aSolidIter.Next();
