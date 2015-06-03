@@ -268,7 +268,11 @@ is
     SetEnlargeZone(me: in out; EnlargeZone: in out Boolean from Standard);
     GetEnlargeZone(me) returns Boolean from Standard;
 
-
+    GetMinDeflection(me; SurfID: Integer from Standard) returns Real from Standard;
+    --- Purpose: returns FlecheMin
+    GetMaxDeflection(me; SurfID: Integer from Standard) returns Real from Standard;
+    --- Purpose: returns FlecheMax
+    
 fields
 
     
@@ -283,6 +287,9 @@ fields
     NbSamplesV1    : Integer from Standard;
     NbSamplesV2    : Integer from Standard;
     
+    -- Minimal and maximal distance between array of points in 
+    -- the surface (MaSurface1 and MaSurface2 correspondingly) and 
+    -- triangles on it.
     FlecheMax1     : Real    from Standard;
     FlecheMax2     : Real    from Standard;
     FlecheMin1     : Real    from Standard;

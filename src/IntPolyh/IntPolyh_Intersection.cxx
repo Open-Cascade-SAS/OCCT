@@ -28,7 +28,7 @@ Standard_Integer MYDISPLAY = 0;
 Standard_Integer MYPRINT   = 0;
 
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1,
-					     const Handle(Adaptor3d_HSurface)& S2)
+                                             const Handle(Adaptor3d_HSurface)& S2)
 {
   myNbSU1 = -1;
   myNbSV1 = -1;
@@ -43,11 +43,11 @@ IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S
 }
 
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1,
-					     const Standard_Integer NbSU1,
-					     const Standard_Integer NbSV1,
-					     const Handle(Adaptor3d_HSurface)& S2,
-					     const Standard_Integer NbSU2,
-					     const Standard_Integer NbSV2)
+                                             const Standard_Integer NbSU1,
+                                             const Standard_Integer NbSV1,
+                                             const Handle(Adaptor3d_HSurface)& S2,
+                                             const Standard_Integer NbSU2,
+                                             const Standard_Integer NbSV2)
 {
   myNbSU1 = NbSU1;
   myNbSV1 = NbSV1;
@@ -65,17 +65,10 @@ void IntPolyh_Intersection::Perform() {
 
   done = Standard_True;
 
-  Standard_Boolean startFromAdvanced = Standard_False;
   Standard_Boolean isStdDone = Standard_False;
   Standard_Boolean isAdvDone = Standard_False;
   Standard_Integer nbCouplesStd = 0;
   Standard_Integer nbCouplesAdv = 0;
-  
-  //GeomAbs_SurfaceType ST1 = mySurf1->GetType();
-  //GeomAbs_SurfaceType ST2 = mySurf2->GetType();
-
-//   if(ST1 == GeomAbs_Torus || ST2 == GeomAbs_Torus)
-//     startFromAdvanced = Standard_True;
   
   IntPolyh_PMaillageAffinage aPMaillageStd = 0;
   IntPolyh_PMaillageAffinage aPMaillageFF = 0;
@@ -83,70 +76,41 @@ void IntPolyh_Intersection::Perform() {
   IntPolyh_PMaillageAffinage aPMaillageRF = 0;
   IntPolyh_PMaillageAffinage aPMaillageRR = 0;
 
+  isStdDone = PerformStd(aPMaillageStd,nbCouplesStd);
 
-  if(!startFromAdvanced) {
-
-    isStdDone = PerformStd(aPMaillageStd,nbCouplesStd);
-
-    // default interference done well, use it
-    if(isStdDone && nbCouplesStd > 10) {
-      aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-    }
-    // default interference done, but too few interferences foud;
-    // use advanced interference
-    else if(isStdDone && nbCouplesStd <= 10) {
-      isAdvDone = PerformAdv(aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
-      
-      // advanced interference found
-      if(isAdvDone && nbCouplesAdv > 10) {
-	aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
-      }
-      else {
-	// use result of default
-	if(nbCouplesStd > 0)
-	  aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-      }
-    }
-    // default interference faild, use advanced
-    else {
-//       isAdvDone = PerformAdv(aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
-      
-//       if(isAdvDone && nbCouplesAdv > 0) {cout << "4adv done, nbc: " << nbCouplesAdv << endl;
-// 	aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
-// 	aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
-// 	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
-// 	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
-//       }
-    }
-  }// start from default
-  else {
-    
+  // default interference done well, use it
+  if(isStdDone && nbCouplesStd > 10) {
+    aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
+  }
+  // default interference done, but too few interferences foud;
+  // use advanced interference
+  else if(isStdDone && nbCouplesStd <= 10) {
     isAdvDone = PerformAdv(aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
 
-    // advanced done, interference found; use it
-    if(isAdvDone) {
-
-      if(nbCouplesAdv > 0) {
-	aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
-      }
-      else {
-	isStdDone = PerformStd(aPMaillageStd,nbCouplesStd);
-	if(isStdDone && nbCouplesStd > 0)
-	  aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-      }
+    // advanced interference found
+    if(isAdvDone && nbCouplesAdv > 10) {
+      aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
+      aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
+      aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
+      aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
     }
     else {
-      isStdDone = PerformStd(aPMaillageStd,nbCouplesStd);
-      if(isStdDone && nbCouplesStd > 0)
-	aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
+      // use result of default
+      if(nbCouplesStd > 0)
+        aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
     }
-  } // start from advanced
+  }
+  // default interference faild, use advanced
+  else {
+    //       isAdvDone = PerformAdv(aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
+
+    //       if(isAdvDone && nbCouplesAdv > 0) {cout << "4adv done, nbc: " << nbCouplesAdv << endl;
+    // 	aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
+    // 	aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
+    // 	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
+    // 	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
+    //       }
+  }
 
   // accept result
   nbsectionlines = TSectionLines.NbItems();
