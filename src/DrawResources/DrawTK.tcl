@@ -236,10 +236,10 @@ proc vsamples {} {
     set istitlefound 0
     while {[gets $chan line] >= 0} {
       if {[lindex [split $line " "] 0] == "#Category:"} {
-        set acategory [string trimleft $line "#Category: "]
+        set acategory [string trim [string trimleft $line "#Category: "]]
       }
       if {[lindex [split $line " "] 0] == "#Title:"} {
-        set atitle [string trimleft $line "#Title: "]
+        set atitle [string trim [string trimleft $line "#Title: "]]
         lappend alistofthree $acategory $atitle $fname
         incr istitlefound
         break
