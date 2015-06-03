@@ -678,8 +678,8 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   //
   anIsDone=aFF.IsDone();
   if (!anIsDone) {
-    di << " anIsDone=" << (Standard_Integer) anIsDone << "\n";
-    return 1;
+    di << "Error: anIsDone=" << (Standard_Integer) anIsDone << "\n";
+    return 0;
   }
   //
   aFF.PrepareLines3D(Standard_False);
@@ -692,7 +692,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   aNbCurves=aSCs.Length();
   if (!aNbCurves) {
     di << " has no 3d curve\n";
-    return 1;
+    return 0;
   }
   else
   {

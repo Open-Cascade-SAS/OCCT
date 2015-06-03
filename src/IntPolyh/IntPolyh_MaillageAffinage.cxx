@@ -3269,10 +3269,10 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleCompare ()
         //
         if (TriContact(P1, P2, P3, Q1, Q2, Q3, CoupleAngle)) {
           if (CpteurTab >= NbTTC)
-            {
-              TTrianglesContacts.SetNbItems(CpteurTab);
-              return(CpteurTab);
-            }
+          {
+            TTrianglesContacts.SetNbItems(CpteurTab);
+            return(CpteurTab);
+          }
           TTrianglesContacts[CpteurTab].SetCoupleValue(i_S1, i_S2);
           TTrianglesContacts[CpteurTab].SetAngleValue(CoupleAngle);
           //test  TTrianglesContacts[CpteurTab].Dump(CpteurTab);
@@ -3832,6 +3832,25 @@ Standard_Boolean IntPolyh_MaillageAffinage::GetEnlargeZone() const
 {
   return myEnlargeZone;
 }
+
+//=======================================================================
+//function : GetMinDeflection
+//purpose  : 
+//=======================================================================
+Standard_Real IntPolyh_MaillageAffinage::GetMinDeflection(const Standard_Integer SurfID) const
+{
+  return (SurfID==1)? FlecheMin1:FlecheMin2;
+}
+
+//=======================================================================
+//function : GetMaxDeflection
+//purpose  : 
+//=======================================================================
+Standard_Real IntPolyh_MaillageAffinage::GetMaxDeflection(const Standard_Integer SurfID) const
+{
+  return (SurfID==1)? FlecheMax1:FlecheMax2;
+}
+
 //=======================================================================
 //function : DegeneratedIndex
 //purpose  : 

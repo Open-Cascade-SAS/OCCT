@@ -27,13 +27,12 @@ Standard_Integer MYPRINT1   = 0;
 //function : IntPolyh_Intersection
 //purpose  : 
 //=======================================================================
-
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1,
-					     const TColStd_Array1OfReal& Upars1,
-					     const TColStd_Array1OfReal& Vpars1,
-					     const Handle(Adaptor3d_HSurface)& S2,
-					     const TColStd_Array1OfReal& Upars2,
-					     const TColStd_Array1OfReal& Vpars2)
+                                             const TColStd_Array1OfReal& Upars1,
+                                             const TColStd_Array1OfReal& Vpars1,
+                                             const Handle(Adaptor3d_HSurface)& S2,
+                                             const TColStd_Array1OfReal& Upars2,
+                                             const TColStd_Array1OfReal& Vpars2)
 {
   myNbSU1 = Upars1.Length();
   myNbSV1 = Vpars1.Length();
@@ -59,7 +58,6 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& Upars1,
 
   done = Standard_True;
 
-  Standard_Boolean startFromAdvanced = Standard_False;
   Standard_Boolean isStdDone = Standard_False;
   Standard_Boolean isAdvDone = Standard_False;
   Standard_Integer nbCouplesStd = 0;
@@ -72,37 +70,35 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& Upars1,
   IntPolyh_PMaillageAffinage aPMaillageRF = 0;
   IntPolyh_PMaillageAffinage aPMaillageRR = 0;
 
+  isStdDone = PerformStd( Upars1, Vpars1, Upars2, Vpars2, 
+                          aPMaillageStd,nbCouplesStd);
 
-  if(!startFromAdvanced) {
-
-    isStdDone = PerformStd(Upars1, Vpars1, Upars2, Vpars2, 
-			   aPMaillageStd,nbCouplesStd);
-
-    // default interference done well, use it
-    if(isStdDone && nbCouplesStd > 10) {
-      aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-    }
-    // default interference done, but too few interferences foud;
-    // use advanced interference
-    else if(isStdDone && nbCouplesStd <= 10) {
-      isAdvDone = PerformAdv(Upars1, Vpars1, Upars2, Vpars2,
-			     aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
+  // default interference done well, use it
+  if(isStdDone && nbCouplesStd > 10) {
+    aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
+  }
+  // default interference done, but too few interferences foud;
+  // use advanced interference
+  else if(isStdDone && nbCouplesStd <= 10) {
+    isAdvDone = PerformAdv( Upars1, Vpars1, Upars2, Vpars2,
+                            aPMaillageFF,aPMaillageFR,aPMaillageRF,
+                            aPMaillageRR,nbCouplesAdv);
       
-      // advanced interference found
-      if(isAdvDone && nbCouplesAdv > 10) {
-	aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
-      }
-      else {
-	// use result of default
-	if(nbCouplesStd > 0)
-	  aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-      }
+    // advanced interference found
+    if(isAdvDone && nbCouplesAdv > 10) {
+      aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
+      aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
+      aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
+      aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
     }
-    // default interference faild, use advanced
     else {
+      // use result of default
+      if(nbCouplesStd > 0)
+        aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
+    }
+  }
+  // default interference faild, use advanced
+  else {
 //       isAdvDone = PerformAdv(aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
       
 //       if(isAdvDone && nbCouplesAdv > 0) {cout << "4adv done, nbc: " << nbCouplesAdv << endl;
@@ -111,35 +107,7 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& Upars1,
 // 	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
 // 	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
 //       }
-    }
-  }// start from default
-  else {
-    
-    isAdvDone = PerformAdv(Upars1, Vpars1, Upars2, Vpars2,
-			   aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
-
-    // advanced done, interference found; use it
-    if(isAdvDone) {
-
-      if(nbCouplesAdv > 0) {
-	aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
-	aPMaillageRR->StartPointsChain(TSectionLines,TTangentZones);
-      }
-      else {
-	isStdDone = PerformStd(aPMaillageStd,nbCouplesStd);
-	if(isStdDone && nbCouplesStd > 0)
-	  aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-      }
-    }
-    else {
-      isStdDone = PerformStd(Upars1, Vpars1, Upars2, Vpars2,
-			     aPMaillageStd,nbCouplesStd);
-      if(isStdDone && nbCouplesStd > 0)
-	aPMaillageStd->StartPointsChain(TSectionLines, TTangentZones);
-    }
-  } // start from advanced
+  }
 
   // accept result
   nbsectionlines = TSectionLines.NbItems();
@@ -201,13 +169,13 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const Standard_Boolean i
      (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
       FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
     return Standard_False;
-  }
+}
 */
 //IFV test for parallel surf
   if(FinTTC > 200) {
     const Standard_Real eps = .996; //~ cos of 5deg.
     IntPolyh_ArrayOfCouples& Couples = theMaillageS->GetArrayOfCouples();
-    
+
     Standard_Integer i, npara = 0;
     for(i = 0; i < FinTTC; ++i) {
       Standard_Real cosa = Abs(Couples[i].AngleValue());
@@ -280,13 +248,13 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
      (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
       FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
     return Standard_False;
-  }
+}
 */
 //IFV test for parallel surf
   if(FinTTC > 200) {
     const Standard_Real eps = .996; //~ cos of 5deg.
     IntPolyh_ArrayOfCouples& Couples = theMaillageS->GetArrayOfCouples();
-    
+
     Standard_Integer i, npara = 0;
     for(i = 0; i < FinTTC; ++i) {
       Standard_Real cosa = Abs(Couples[i].AngleValue());
@@ -305,7 +273,6 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
 //function : PerformAdv
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean IntPolyh_Intersection::PerformAdv(const TColStd_Array1OfReal& Upars1,
 						   const TColStd_Array1OfReal& Vpars1,
 						   const TColStd_Array1OfReal& Upars2,

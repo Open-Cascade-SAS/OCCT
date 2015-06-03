@@ -196,18 +196,20 @@ set surfaces [list surf1 surf2 rsurf1 surf3 rsurf2 surf4 rsurf3 surf5 rsurf4 sur
 #set i 1
 #set shapes {}
 foreach s1 $surfaces {
-#    mkface f_$s1 $s1
-#    lappend shapes f_$s1
-    foreach s2 $surfaces {
-        if { $s1 != $s2 } {
-            intersect r $s1 $s2
-#            if { [regexp {a 3d curve} [whatis r]] } {
-#                mkedge e_$i r
-#                lappend shapes e_$i
-#                incr i
-#            }
-        }
+# mkface f_$s1 $s1
+# lappend shapes f_$s1
+  foreach s2 $surfaces {
+    if { $s1 != $s2 } {
+      if [catch {intersect r $s1 $s2}] {
+        continue
+      }
+    # if { [regexp {a 3d curve} [whatis r]] } {
+#   mkedge e_$i r
+#   lappend shapes e_$i
+#   incr i
+# }
     }
+  }
 }
 
 #eval vdisplay $shapes; vfit
