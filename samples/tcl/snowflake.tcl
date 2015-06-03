@@ -1,9 +1,11 @@
 # Creation of 2d drawing
 
-#Category: Modeling 
-#Title: Snowflake - creation of 2d geometry
+#Category: Modeling
+#Title: Snowflake - creation of 2d drawing
 
 pload MODELING AISV
+
+puts "Generating sample drawing of snowflake..."
 
 # make circular elements
 circle c11 5 5 0 5
@@ -121,10 +123,22 @@ eval compound [explode scale w] scale
 eval compound [explode mass w] mass
 compound sample occ name material sheets scale mass text
 
-compound snowflake frame text drawing
+compound snowflake lines text drawing
 
 # display in 3d view
 vinit Driver1/Viewer1/View1 w=1024 h=768
 vdisplay snowflake lines text
+vsetcolor snowflake 0 0 0 
+vsetcolor lines 0 0 0 
+vsetcolor text 0 0 0 
+vsetcolorbg 255 255 255
 vtop
 vfit
+
+# add dimension
+explode snowflake v
+vdimension length -length -shapes snowflake_93 snowflake_15 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
+
+if { [regexp HAVE_GL2PS [dversion]] } {
+    puts "You can use command vexport to generate PDF: vexport your_file_path.pdf"
+}
