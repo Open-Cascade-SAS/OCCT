@@ -2600,6 +2600,29 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
             if(( aWLFindStatus[i] != WLFStatus_Broken) || (aWLine[i]->NbPnts() >= 1) || IsEqual(anU1, anUl))
             {
+              if(aWLine[i]->NbPnts() > 0)
+              {
+                Standard_Real aU2p = 0.0, aV2p = 0.0;
+                if(isTheReverse)
+                  aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS1(aU2p, aV2p);
+                else
+                  aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS2(aU2p, aV2p);
+
+                const Standard_Real aDelta = aU2[i] - aU2p;
+
+                if(2*Abs(aDelta) > aPeriod)
+                {
+                  if(aDelta > 0.0)
+                  {
+                    aU2[i] -= aPeriod;
+                  }
+                  else
+                  {
+                    aU2[i] += aPeriod;
+                  }
+                }
+              }
+
               if(AddPointIntoWL(theQuad1, theQuad2, anEquationCoeffs, isTheReverse, Standard_True,
                                 gp_Pnt2d(anU1, aV1[i]), gp_Pnt2d(aU2[i], aV2[i]),
                                 aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
@@ -2611,6 +2634,20 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
                   aWLFindStatus[i] = WLFStatus_Exist;
                 }
               }
+              else if(!isFound1 && !isFound2)
+              {//We do not add any point while doing this iteration
+                if(aWLFindStatus[i] == WLFStatus_Exist)
+                {
+                  aWLFindStatus[i] = WLFStatus_Broken;
+                } 
+              }
+            }
+          }
+          else
+          {//We do not add any point while doing this iteration
+            if(aWLFindStatus[i] == WLFStatus_Exist)
+            {
+              aWLFindStatus[i] = WLFStatus_Broken;
             }
           }
           
@@ -2625,62 +2662,94 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
         {//current lines are filled. Go to the next lines
           anUf = anU1;
 
-          Standard_Real anULastAdded = RealFirst();
+          Standard_Boolean isAdded = Standard_True;
+
           for(Standard_Integer i = 0; i < aNbWLines; i++)
           {
-            if((aWLFindStatus[i] != WLFStatus_Broken) || aWLine[i]->NbPnts() < 2)
+            if(isAddingWLEnabled[i])
+            {
               continue;
+            }
 
-            Standard_Real aU1c = 0.0, aV1c = 0.0;
+            isAdded = Standard_False;
 
-            if(isTheReverse)
-              aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS2(aU1c, aV1c);
-            else
-              aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS1(aU1c, aV1c);
+            Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
-            anULastAdded = Max(anULastAdded, aU1c);
+            AddBoundaryPoint( theQuad1, theQuad2, aWLine[i], anEquationCoeffs,
+                              theUVSurf1, theUVSurf2, theTol3D, theTol2D, aPeriod,
+                              anU1, aU2[i], aV1[i], aV1Prev[i],
+                              aV2[i], aV2Prev[i], i, isTheReverse,
+                              Standard_False, isFound1, isFound2);
+
+            if(isFound1 || isFound2)
+            {
+              isAdded = Standard_True;
+            }
+
+            if(aWLine[i]->NbPnts() > 0)
+            {
+              Standard_Real aU2p = 0.0, aV2p = 0.0;
+              if(isTheReverse)
+                aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS1(aU2p, aV2p);
+              else
+                aWLine[i]->Point(aWLine[i]->NbPnts()).ParametersOnS2(aU2p, aV2p);
+
+              const Standard_Real aDelta = aU2[i] - aU2p;
+
+              if(2*Abs(aDelta) > aPeriod)
+              {
+                if(aDelta > 0.0)
+                {
+                  aU2[i] -= aPeriod;
+                }
+                else
+                {
+                  aU2[i] += aPeriod;
+                }
+              }
+            }
+
+            if(AddPointIntoWL(theQuad1, theQuad2, anEquationCoeffs, isTheReverse,
+                              Standard_True, gp_Pnt2d(anU1, aV1[i]),
+                              gp_Pnt2d(aU2[i], aV2[i]), aUSurf1f, aUSurf1l,
+                              aUSurf2f, aUSurf2l, aVSurf1f, aVSurf1l,
+                              aVSurf2f, aVSurf2l, aPeriod, aWLine[i]->Curve(),
+                              i, theTol3D, theTol2D, Standard_False))
+            {
+              isAdded = Standard_True;
+            }
           }
 
-          for(Standard_Integer i = 0; i < aNbWLines; i++)
+          if(!isAdded)
           {
-            if((aWLFindStatus[i] != WLFStatus_Exist))
-              continue;
-
-            Standard_Real aU2c = 0.0, aV1c = 0.0, aV2c = 0.0;
-            Standard_Boolean isAdded = Standard_False;
-
-            //Try to add current point
-            if(CylCylComputeParameters(anU1, i, anEquationCoeffs, aU2c, aV1c, aV2c))
+            Standard_Real anUmaxAdded = RealFirst();
+            for(Standard_Integer i = 0; i < aNbWLines; i++)
             {
-              InscribePoint(aUSurf2f, aUSurf2l, aU2c, theTol2D, aPeriod, Standard_False);
+              Standard_Real aU1c = 0.0, aV1c = 0.0;
+              if(isTheReverse)
+                aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS2(aU1c, aV1c);
+              else
+                aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS1(aU1c, aV1c);
 
-              isAdded = AddPointIntoWL( theQuad1, theQuad2, anEquationCoeffs, isTheReverse,
-                            Standard_True, gp_Pnt2d(anU1, aV1c), gp_Pnt2d(aU2c, aV2c),
-                            aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
-                            aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l, aPeriod,
-                            aWLine[i]->Curve(), i, theTol3D, theTol2D, Standard_False);
+              anUmaxAdded = Max(anUmaxAdded, aU1c);
             }
 
-            if(isAdded)
-              continue;
+            for(Standard_Integer i = 0; i < aNbWLines; i++)
+            {
+              if(isAddingWLEnabled[i])
+              {
+                continue;
+              }
 
-            if(anULastAdded == anU1)
-            {//strictly equal only
-              continue;
+              CylCylComputeParameters(anUmaxAdded, i, anEquationCoeffs, aU2[i], aV1[i], aV2[i]);
+
+              AddPointIntoWL( theQuad1, theQuad2, anEquationCoeffs, isTheReverse,
+                              Standard_True, gp_Pnt2d(anUmaxAdded, aV1[i]),
+                              gp_Pnt2d(aU2[i], aV2[i]), aUSurf1f, aUSurf1l,
+                              aUSurf2f, aUSurf2l, aVSurf1f, aVSurf1l,
+                              aVSurf2f, aVSurf2l, aPeriod, aWLine[i]->Curve(),
+                              i, theTol3D, theTol2D, Standard_False);
             }
-
-            //Try to add last added point
-            
-            if(!CylCylComputeParameters(anULastAdded, i, anEquationCoeffs, aU2c, aV1c, aV2c))
-              continue;
-
-            InscribePoint(aUSurf2f, aUSurf2l, aU2c, theTol2D, aPeriod, Standard_False);
-
-            AddPointIntoWL( theQuad1, theQuad2, anEquationCoeffs, isTheReverse, Standard_True,
-                            gp_Pnt2d(anULastAdded, aV1c), gp_Pnt2d(aU2c, aV2c),
-                            aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
-                            aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l, aPeriod,
-                            aWLine[i]->Curve(), i, theTol3D, theTol2D, Standard_False);
           }
 
           break;
@@ -2892,7 +2961,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
             CylCylComputeParameters(anUf, anIndex, anEquationCoeffs,
                                     anU2, anV1, anV2);
       anUf += aDU;
-            
+
       if(!isDone)
       {
         continue;
@@ -2918,7 +2987,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
       aWLine->ComputeVertexParameters(theTol3D);
       theSlin.Append(aWLine);
-
+  
       theSPnt.Remove(aNbPnt);
       aNbPnt--;
     }

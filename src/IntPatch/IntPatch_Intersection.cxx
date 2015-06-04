@@ -107,7 +107,7 @@ static void JoinWLines(IntPatch_SequenceOfLine& theSlin,
     const Handle(IntPatch_WLine)& aWLine1 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine1));
 
     if(aWLine1.IsNull())
-    {//We must have failure to join not-point-lines
+    {//We must have failed to join not-point-lines
       return;
     }
 
