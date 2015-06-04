@@ -515,7 +515,7 @@ void SelectMgr_SelectionManager::ClearSelectionStructures (const Handle(SelectMg
 {
   for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObj->Children()); anChildrenIter.More(); anChildrenIter.Next())
   {
-    ClearSelectionStructures (theObj, theMode, theSelector);
+    ClearSelectionStructures (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theMode, theSelector);
   }
 
   if (!theObj->HasOwnPresentations())
@@ -575,7 +575,7 @@ void SelectMgr_SelectionManager::RestoreSelectionStructures (const Handle(Select
 {
   for (PrsMgr_ListOfPresentableObjectsIter anChildrenIter (theObj->Children()); anChildrenIter.More(); anChildrenIter.Next())
   {
-    RestoreSelectionStructures (theObj, theMode, theSelector);
+    RestoreSelectionStructures (Handle(SelectMgr_SelectableObject)::DownCast (anChildrenIter.Value()), theMode, theSelector);
   }
 
   if (!theObj->HasOwnPresentations())
@@ -687,7 +687,6 @@ void SelectMgr_SelectionManager::RecomputeSelection (const Handle(SelectMgr_Sele
   for(theObject->Init(); theObject->More(); theObject->Next())
   {
     const Handle(SelectMgr_Selection)& aSelection = theObject->CurrentSelection();
-    aSelection->UpdateStatus (SelectMgr_TOU_Full);
     Standard_Integer aSelMode = aSelection->Mode();
 
     for (TColStd_MapIteratorOfMapOfTransient aSelectorIter (mySelectors); aSelectorIter.More(); aSelectorIter.Next())
@@ -695,23 +694,13 @@ void SelectMgr_SelectionManager::RecomputeSelection (const Handle(SelectMgr_Sele
       const Handle(SelectMgr_ViewerSelector)& aCurSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key());
       if (aCurSelector->Status (aSelection) == SelectMgr_SOS_Activated)
       {
-        switch (aSelection->UpdateStatus())
-        {
-        case SelectMgr_TOU_Full:
           ClearSelectionStructures (theObject, aSelMode, aCurSelector);
           theObject->RecomputePrimitives(aSelMode);
           RestoreSelectionStructures (theObject, aSelMode, aCurSelector);
-        case SelectMgr_TOU_Partial:
-          theObject->UpdateTransformations (aSelection);
-          aCurSelector->RebuildObjectsTree();
-          aSelection->UpdateBVHStatus (SelectMgr_TBU_None);
-          break;
-        default:
-          break;
-        }
-        aSelection->UpdateStatus (SelectMgr_TOU_None);
       }
     }
+    aSelection->UpdateStatus (SelectMgr_TOU_None);
+    aSelection->UpdateBVHStatus (SelectMgr_TBU_None);
   }
 }
 
