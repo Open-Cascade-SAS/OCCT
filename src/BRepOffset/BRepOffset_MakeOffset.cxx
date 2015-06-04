@@ -112,8 +112,10 @@
 #include <Geom_Plane.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <BRepLib_FindSurface.hxx>
-
-
+#include <BRepCheck_Analyzer.hxx>
+#include <NCollection_List.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
 // POP for NT
 #include <stdio.h>
 
@@ -238,11 +240,13 @@ static void DEBVerticesControl (const TopTools_IndexedMapOfShape& NewEdges,
 }  
 #endif
 
-
+//---------------------------------------------------------------------
 static void UpdateTolerance (      TopoDS_Shape&               myShape,
 			     const TopTools_IndexedMapOfShape& myFaces);
 
-
+static void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList);
+//---------------------------------------------------------------------
+//
 static Standard_Boolean FindParameter(const TopoDS_Vertex& V, 
 				      const TopoDS_Edge& E,
 				      Standard_Real& U)
@@ -459,6 +463,10 @@ static void FillContours(const TopoDS_Shape& aShape,
     }
 }
 
+
+//
+//-----------------------------------------------------------------------
+//
 //=======================================================================
 //function : BRepOffset_MakeOffset
 //purpose  : 
@@ -671,7 +679,10 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
   //------------------------------------------
   // Construction of myShape without caps.
   //------------------------------------------
-  RemoveCorks (myShape,myFaces);
+  if(!myFaces.IsEmpty())
+  {
+    RemoveCorks (myShape,myFaces);
+  }
   
   if (! IsConnectedShell(myShape))
     Standard_ConstructionError::Raise("BRepOffset_MakeOffset : Incorrect set of faces to remove, the remaining shell is not connected");
@@ -1842,6 +1853,11 @@ void BRepOffset_MakeOffset::UpdateFaceOffset()
 
 void BRepOffset_MakeOffset::CorrectConicalFaces()
 {
+  if(myOffsetShape.IsNull())
+  {
+    return;
+  }
+  //
   TopTools_SequenceOfShape Cones;
   TopTools_SequenceOfShape Circs;
   TopTools_SequenceOfShape Seams;
@@ -1909,6 +1925,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape Cone(FacesOfCone);
   BRep_Builder BB;
   TopLoc_Location L;
+  Standard_Boolean IsModified = Standard_False;
   for (; Cone.More(); Cone.Next() ) {
     gp_Sphere theSphere;
     Handle(Geom_SphericalSurface) aSphSurf;
@@ -2155,40 +2172,108 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     TopoDS_Shape theShell = Explo.Current();
     theShell.Free( Standard_True );
     BB.Add( theShell, NewSphericalFace );
+    IsModified = Standard_True;
+    if(!theShell.Closed())
+    {
+      if(BRep_Tool::IsClosed(theShell))
+      {
+        theShell.Closed(Standard_True);
+      }
+    }
   }
-
+  //
+  if(!IsModified)
+  {
+    return;
+  }
+  //
   if (myShape.ShapeType() == TopAbs_SOLID || myThickening)
   {
-    Explo.Init( myOffsetShape, TopAbs_SHELL );
-    
-    if (Explo.More()) {
-      TopoDS_Shape theShell = Explo.Current();
-      theShell.Closed( Standard_True );
-    }
-    
+    //Explo.Init( myOffsetShape, TopAbs_SHELL );
+
+    //if (Explo.More()) {
+    //  TopoDS_Shape theShell = Explo.Current();
+    //  theShell.Closed( Standard_True );
+    //}
+
     Standard_Integer            NbShell = 0;
     TopoDS_Compound             NC;
     TopoDS_Shape                S1;
     BB.MakeCompound (NC);
-    
+
+    TopoDS_Solid Sol;
+    BB.MakeSolid(Sol);
+    Sol.Closed(Standard_True);
     for (Explo.Init(myOffsetShape,TopAbs_SHELL); Explo.More(); Explo.Next()) {
-      const TopoDS_Shell& Sh = TopoDS::Shell(Explo.Current());
+      TopoDS_Shell Sh = TopoDS::Shell(Explo.Current());
+      //if (myThickening && myOffset > 0.)
+      //  Sh.Reverse();
       NbShell++;
       if (Sh.Closed()) {
-        TopoDS_Solid  Sol;
-        BB.MakeSolid  (Sol);
-        BB.Add        (Sol,Sh);
-        Sol.Closed(Standard_True);
-        BB.Add (NC,Sol);
-        if (NbShell == 1) S1 = Sol;
+        BB.Add(Sol,Sh);
       }
       else {
         BB.Add (NC,Sh);
-        if (NbShell == 1) S1 = Sh;
+        if(NbShell == 1)
+        {
+          S1 = Sh;
+        }
       }
     }
-    if (NbShell == 1) myOffsetShape = S1;
-    else              myOffsetShape = NC;
+    TopoDS_Iterator anIt(Sol);
+    Standard_Boolean SolIsNull = !anIt.More();
+    //Checking solid
+    if(!SolIsNull)
+    {
+      Standard_Integer nbs = 0;
+      while(anIt.More()) {anIt.Next(); ++nbs;}
+      if(nbs > 1)
+      {
+        BRepCheck_Analyzer aCheck(Sol, Standard_False);
+        if(!aCheck.IsValid())
+        {
+          TopTools_ListOfShape aSolList;
+          CorrectSolid(Sol, aSolList);
+          if(!aSolList.IsEmpty())
+          {
+            BB.Add(NC, Sol);
+            TopTools_ListIteratorOfListOfShape aSLIt(aSolList);
+            for(; aSLIt.More(); aSLIt.Next())
+            {
+              BB.Add(NC, aSLIt.Value());
+            }
+            SolIsNull = Standard_True;
+          }
+        }
+      }
+    }
+    //
+    anIt.Initialize(NC);
+    Standard_Boolean NCIsNull = !anIt.More();
+    if((!SolIsNull) && (!NCIsNull))
+    {
+      BB.Add(NC, Sol);
+      myOffsetShape = NC;
+    }
+    else if(SolIsNull && (!NCIsNull))
+    {
+      if (NbShell == 1) 
+      {
+        myOffsetShape = S1;
+      }
+      else
+      {
+        myOffsetShape = NC;
+      }
+    }
+    else if((!SolIsNull) && NCIsNull)
+    {
+      myOffsetShape = Sol;
+    }
+    else
+    {
+      myOffsetShape = NC;
+    }
   }
 }
 
@@ -2788,16 +2873,30 @@ void BRepOffset_MakeOffset::MakeShells ()
   }
 
   if (myThickening)
-    {
-      TopExp_Explorer Explo(myShape, TopAbs_FACE);
-      for (; Explo.More(); Explo.Next())
-	Glue.Add(Explo.Current());
+  {
+    TopExp_Explorer Explo(myShape, TopAbs_FACE);
+    for (; Explo.More(); Explo.Next())
+	    Glue.Add(Explo.Current());
       
-      for (it.Initialize(myWalls); it.More(); it.Next())
-	Glue.Add(it.Value());
-    }
+    for (it.Initialize(myWalls); it.More(); it.Next())
+	    Glue.Add(it.Value());
+  }
 
   myOffsetShape = Glue.Shells();
+  //
+  //Set correct value for closed flag
+  TopExp_Explorer Explo(myOffsetShape, TopAbs_SHELL);
+  for(; Explo.More(); Explo.Next())
+  {
+    TopoDS_Shape aS = Explo.Current(); 
+    if(!aS.Closed())
+    {
+      if(BRep_Tool::IsClosed(aS))
+      {
+        aS.Closed(Standard_True);
+      }
+    }
+  }               
 }
 
 //=======================================================================
@@ -2821,26 +2920,79 @@ void BRepOffset_MakeOffset::MakeSolid ()
   TopoDS_Shape                S1;
   B.MakeCompound (NC);
 
+  TopoDS_Solid Sol;
+  B.MakeSolid(Sol);
+  Sol.Closed(Standard_True);
+  Standard_Boolean aMakeSolid = (myShape.ShapeType() == TopAbs_SOLID) || myThickening;
   for (exp.Init(myOffsetShape,TopAbs_SHELL); exp.More(); exp.Next()) {
     TopoDS_Shell Sh = TopoDS::Shell(exp.Current());
     if (myThickening && myOffset > 0.)
       Sh.Reverse();
     NbShell++;
-    if (Sh.Closed()) {
-      TopoDS_Solid  Sol;
-      B.MakeSolid  (Sol);
-      B.Add        (Sol,Sh);
-      Sol.Closed(Standard_True);
-      B.Add (NC,Sol);
-      if (NbShell == 1) S1 = Sol;
+    if (Sh.Closed() && aMakeSolid) {
+      B.Add(Sol,Sh);
     }
     else {
       B.Add (NC,Sh);
-      if (NbShell == 1) S1 = Sh;
+      if(NbShell == 1)
+      {
+        S1 = Sh;
+      }
     }
   }
-  if (NbShell == 1) myOffsetShape = S1;
-  else              myOffsetShape = NC;
+  TopoDS_Iterator anIt(Sol);
+  Standard_Boolean SolIsNull = !anIt.More();
+  //Checking solid
+  if(!SolIsNull)
+  {
+    Standard_Integer nbs = 0;
+    while(anIt.More()) {anIt.Next(); ++nbs;}
+    if(nbs > 1)
+    {
+      BRepCheck_Analyzer aCheck(Sol, Standard_False);
+      if(!aCheck.IsValid())
+      {
+        TopTools_ListOfShape aSolList;
+        CorrectSolid(Sol, aSolList);
+        if(!aSolList.IsEmpty())
+        {
+          B.Add(NC, Sol);
+          TopTools_ListIteratorOfListOfShape aSLIt(aSolList);
+          for(; aSLIt.More(); aSLIt.Next())
+          {
+            B.Add(NC, aSLIt.Value());
+          }
+          SolIsNull = Standard_True;
+        }
+      }
+    }
+  }
+  anIt.Initialize(NC);
+  Standard_Boolean NCIsNull = !anIt.More();
+  if((!SolIsNull) && (!NCIsNull))
+  {
+    B.Add(NC, Sol);
+    myOffsetShape = NC;
+  }
+  else if(SolIsNull && (!NCIsNull))
+  {
+    if (NbShell == 1) 
+    {
+      myOffsetShape = S1;
+    }
+    else
+    {
+      myOffsetShape = NC;
+    }
+  }
+  else if((!SolIsNull) && NCIsNull)
+  {
+    myOffsetShape = Sol;
+  }
+  else
+  {
+    myOffsetShape = NC;
+  }
 }
 
 //=======================================================================
@@ -2862,7 +3014,7 @@ void BRepOffset_MakeOffset::SelectShells ()
     const TopTools_ListOfShape& LA = myAnalyse.Ancestors(E);
     if (LA.Extent() < 2) {
       if (myAnalyse.Type(E).First().Type() == BRepOffset_FreeBoundary) {
-	FreeEdges.Add(E);                       
+	      FreeEdges.Add(E);                       
       }
     }  
   }
@@ -3109,8 +3261,8 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
 //purpose  : 
 //=======================================================================
 
-static void UpdateTolerance (TopoDS_Shape& S,
-			     const TopTools_IndexedMapOfShape& Faces)
+void UpdateTolerance (TopoDS_Shape& S,
+			                const TopTools_IndexedMapOfShape& Faces)
 {
   BRep_Builder B;
   TopTools_MapOfShape View;
@@ -3152,3 +3304,78 @@ static void UpdateTolerance (TopoDS_Shape& S,
   }
 }
 
+//=======================================================================
+//function : CorrectSolid
+//purpose  : 
+//=======================================================================
+void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList)
+{
+  BRep_Builder aBB;
+  TopoDS_Shape anOuterShell;
+  NCollection_List<Standard_Real> aVols;
+  Standard_Real aVolMax = 0., anOuterVol = 0.;
+
+  TopoDS_Iterator anIt(theSol);
+  for(; anIt.More(); anIt.Next())
+  {
+    const TopoDS_Shape& aSh = anIt.Value();
+    GProp_GProps aVProps;
+    BRepGProp::VolumeProperties(aSh, aVProps, Standard_True);
+    if(Abs(aVProps.Mass()) > aVolMax)
+    {
+      anOuterVol = aVProps.Mass();
+      aVolMax = Abs(anOuterVol);
+      anOuterShell = aSh; 
+    }
+    aVols.Append(aVProps.Mass());
+  }
+  //
+  if(anOuterVol < 0.)
+  {
+    anOuterShell.Reverse();
+  }
+  TopoDS_Solid aNewSol;
+  aBB.MakeSolid(aNewSol);
+  aNewSol.Closed(Standard_True);
+  aBB.Add(aNewSol, anOuterShell);
+  BRepClass3d_SolidClassifier aSolClass(aNewSol);
+  //
+  anIt.Initialize(theSol);
+  NCollection_List<Standard_Real>::Iterator aVIt(aVols);
+  for(; anIt.More(); anIt.Next(), aVIt.Next())
+  {
+    TopoDS_Shell aSh = TopoDS::Shell(anIt.Value());
+    if(aSh.IsSame(anOuterShell))
+    {
+      continue;
+    }
+    else
+    {
+      TopExp_Explorer aVExp(aSh, TopAbs_VERTEX);
+      const TopoDS_Vertex& aV = TopoDS::Vertex(aVExp.Current());
+      gp_Pnt aP = BRep_Tool::Pnt(aV);
+      aSolClass.Perform(aP, BRep_Tool::Tolerance(aV));
+      if(aSolClass.State() == TopAbs_IN)
+      {
+        if(aVIt.Value() > 0.)
+        {
+          aSh.Reverse();
+        }
+        aBB.Add(aNewSol, aSh);
+      }
+      else
+      {
+        if(aVIt.Value() < 0.)
+        {
+          aSh.Reverse();
+        }
+        TopoDS_Solid aSol;
+        aBB.MakeSolid(aSol);
+        aSol.Closed(Standard_True);
+        aBB.Add(aSol, aSh);
+        theSolList.Append(aSol);
+      }
+    }
+  }
+  theSol = aNewSol;
+}
