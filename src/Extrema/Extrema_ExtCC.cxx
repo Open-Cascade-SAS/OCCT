@@ -678,50 +678,44 @@ void Extrema_ExtCC::Results(const Extrema_ECC&   AlgExt,
 			     const Standard_Real  Ut21,
 			     const Standard_Real  Ut22)
 {
-  Standard_Integer i, j,NbExt;
-  Standard_Real Val, U, U2,Uj,U2j;
-  Extrema_POnCurv P1, P2,P1j,P2j;
-  Standard_Boolean IsExtrema;
+  Standard_Integer i, NbExt;
+  Standard_Real Val, U, U2;
+  Extrema_POnCurv P1, P2;
 
   myDone = AlgExt.IsDone();
-  if (myDone) {
+  if (myDone)
+  {
+    myIsPar = AlgExt.IsParallel();
     NbExt = AlgExt.NbExt();
-    for (i = 1; i <= NbExt; i++) {
+    for (i = 1; i <= NbExt; i++)
+    {
       AlgExt.Points(i, P1, P2);
       U = P1.Parameter();
       U2 = P2.Parameter();
-      IsExtrema=Standard_True;
-      for  (j=1;j<=mynbext;j++)
-      { P1j=mypoints.Value(2*j-1);
-        P2j=mypoints.Value(2*j);
-        Uj=P1j.Parameter();
-        U2j=P2j.Parameter();
-        if ((Abs(Uj-U)<=myTol[0]) && (Abs(U2j-U2)<=myTol[1]))     
-        IsExtrema=Standard_False;}
-     
-      if (IsExtrema) 
-      {  
-//  Verification de la validite des parametres
-	if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*)myC[0]))) {
-	  U = ElCLib::InPeriod(U, Ut11, Ut11+Extrema_CurveTool::Period(*((Adaptor3d_Curve*)myC[0])));
-	}
-	if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*)myC[1]))) {
-	  U2 = ElCLib::InPeriod(U2, Ut21, Ut21+Extrema_CurveTool::Period(*((Adaptor3d_Curve*)myC[1])));
-	}
 
-         if ((U  >= Ut11 - RealEpsilon())  && 
-	   (U  <= Ut12 + RealEpsilon())  &&
-	   (U2 >= Ut21 - RealEpsilon())  &&
-	   (U2 <= Ut22 + RealEpsilon()))   
-         { mynbext++;
-	   Val = AlgExt.SquareDistance(i);
-	   mySqDist.Append(Val);
-	   P1.SetValues(U, P1.Value());
-	   P2.SetValues(U2, P2.Value());
-	   mypoints.Append(P1);
-	   mypoints.Append(P2);
-         }
+      // Check points to be into param space.
+      if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*)myC[0])))
+      {
+        U = ElCLib::InPeriod(U, Ut11, Ut11+Extrema_CurveTool::Period(*((Adaptor3d_Curve*)myC[0])));
+      }
+      if (Extrema_CurveTool::IsPeriodic(*((Adaptor3d_Curve*)myC[1])))
+      {
+        U2 = ElCLib::InPeriod(U2, Ut21, Ut21+Extrema_CurveTool::Period(*((Adaptor3d_Curve*)myC[1])));
+      }
+
+      if ((U  >= Ut11 - RealEpsilon())  &&
+          (U  <= Ut12 + RealEpsilon())  &&
+          (U2 >= Ut21 - RealEpsilon())  &&
+          (U2 <= Ut22 + RealEpsilon())   )
+      {
+        mynbext++;
+        Val = AlgExt.SquareDistance(i);
+        mySqDist.Append(Val);
+        P1.SetValues(U, P1.Value());
+        P2.SetValues(U2, P2.Value());
+        mypoints.Append(P1);
+        mypoints.Append(P2);
       }
     }
-  }  
+  }
 }

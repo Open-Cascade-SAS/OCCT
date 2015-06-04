@@ -512,6 +512,7 @@ void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
   myDone = AlgExt.IsDone();
   if (myDone)
   {
+    myIsPar = AlgExt.IsParallel();
     if (!myIsPar)
     {
       NbExt = AlgExt.NbExt();
