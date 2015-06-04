@@ -497,13 +497,15 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
 {
   Standard_Integer i,j;
   Standard_Boolean isSame = Standard_True;
+  math_Vector aTol(1, myN);
+  aTol = (myB -  myA) * mySameTol;
 
   for(i = 0; i < mySolCount; i++)
   {
     isSame = Standard_True;
     for(j = 1; j <= myN; j++)
     {
-      if ((Abs(thePnt(j) - myY(i * myN + j))) > (myB(j) -  myA(j)) * mySameTol)
+      if ((Abs(thePnt(j) - myY(i * myN + j))) > aTol(j))
       {
         isSame = Standard_False;
         break;

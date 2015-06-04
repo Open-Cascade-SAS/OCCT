@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <algorithm>
+
 #include <Extrema_GlobOptFuncCC.hxx>
 #include <math_GlobOptMin.hxx>
 #include <Standard_NullObject.hxx>
@@ -21,13 +23,82 @@
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Precision.hxx>
+#include <NCollection_Vector.hxx>
+#include <NCollection_CellFilter.hxx>
+
+// Comparator, used in std::sort.
+static Standard_Boolean comp(const gp_XY& theA,
+                             const gp_XY& theB)
+{
+  if (theA.X() < theB.X())
+  {
+    return Standard_True;
+  }
+  else
+  {
+    if (theA.X() == theB.X())
+    {
+      if (theA.Y() <= theB.Y())
+        return Standard_True;
+    }
+  }
+
+  return Standard_False;
+}
+
+class Extrema_CCPointsInspector : public NCollection_CellFilter_InspectorXY
+{
+public:
+  typedef gp_XY Target;
+  //! Constructor; remembers the tolerance
+  Extrema_CCPointsInspector (const Standard_Real theTol)
+  {
+    myTol = theTol * theTol;
+    myIsFind = Standard_False;
+  }
+
+  void ClearFind()
+  {
+    myIsFind = Standard_False;
+  }
+
+  Standard_Boolean isFind()
+  {
+    return myIsFind;
+  }
+
+  //! Set current point to search for coincidence
+  void SetCurrent (const gp_XY& theCurPnt) 
+  { 
+    myCurrent = theCurPnt;
+  }
+
+  //! Implementation of inspection method
+  NCollection_CellFilter_Action Inspect (const Target& theObject)
+  {
+    gp_XY aPt = myCurrent.Subtracted(theObject);
+    const Standard_Real aSQDist = aPt.SquareModulus();
+    if(aSQDist < myTol)
+    {
+      myIsFind = Standard_True;
+    }
+
+    return CellFilter_Keep;
+  }
+
+private:
+  Standard_Real myTol;
+  gp_XY myCurrent;
+  Standard_Boolean myIsFind;
+};
 
 //=======================================================================
 //function : Extrema_GenExtCC
 //purpose  : 
 //=======================================================================
 Extrema_GenExtCC::Extrema_GenExtCC()
-: myCurveMinTol(Precision::PConfusion()),
+: myParallel(Standard_False),
+  myCurveMinTol(Precision::PConfusion()),
   myLowBorder(1,2),
   myUppBorder(1,2),
   myDone(Standard_False)
@@ -41,7 +112,8 @@ Extrema_GenExtCC::Extrema_GenExtCC()
 //=======================================================================
 Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
                                    const Curve2& C2)
-: myCurveMinTol(Precision::PConfusion()),
+: myParallel(Standard_False),
+  myCurveMinTol(Precision::PConfusion()),
   myLowBorder(1,2),
   myUppBorder(1,2),
   myDone(Standard_False)
@@ -64,7 +136,8 @@ Extrema_GenExtCC::Extrema_GenExtCC(const Curve1& C1,
                                    const Standard_Real Usup,
                                    const Standard_Real Vinf,
                                    const Standard_Real Vsup)
-: myCurveMinTol(Precision::PConfusion()),
+: myParallel(Standard_False),
+  myCurveMinTol(Precision::PConfusion()),
   myLowBorder(1,2),
   myUppBorder(1,2),
   myDone(Standard_False)
@@ -112,6 +185,7 @@ void Extrema_GenExtCC::SetTolerance(Standard_Real theTol)
 void Extrema_GenExtCC::Perform()
 {
   myDone = Standard_False;
+  myParallel = Standard_False;
 
   Curve1 &C1 = *(Curve1*)myC[0];
   Curve2 &C2 = *(Curve2*)myC[1];
@@ -131,14 +205,19 @@ void Extrema_GenExtCC::Perform()
   Standard_Real aSameTol = myCurveMinTol / (aDiscTol);
   aFinder.SetTol(aDiscTol, aSameTol);
 
-  Standard_Real anEps1 = (myUppBorder(1) - myLowBorder(1)) * Precision::Confusion();
-  Standard_Real anEps2 = (myUppBorder(2) - myLowBorder(2)) * Precision::Confusion();
+  // Size computed to have cell index inside of int32 value.
+  const Standard_Real aCellSize = Max(anIntervals1.Upper() - anIntervals1.Lower(),
+                                      anIntervals2.Upper() - anIntervals2.Lower())
+                                  * Precision::PConfusion() / (2.0 * Sqrt(2.0));
+  Extrema_CCPointsInspector anInspector(Precision::PConfusion());
+  NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);
+  NCollection_Vector<gp_XY> aPnts;
 
   Standard_Integer i,j,k;
   math_Vector aFirstBorderInterval(1,2);
   math_Vector aSecondBorderInterval(1,2);
-  Standard_Real aF = RealLast(); // best functional value
-  Standard_Real aCurrF = RealLast(); // current functional value computed on current interval
+  Standard_Real aF = RealLast(); // Best functional value.
+  Standard_Real aCurrF = RealLast(); // Current functional value computed on current interval.
   for(i = 1; i <= aNbInter[0]; i++)
   {
     for(j = 1; j <= aNbInter[1]; j++)
@@ -151,14 +230,14 @@ void Extrema_GenExtCC::Perform()
       aFinder.SetLocalParams(aFirstBorderInterval, aSecondBorderInterval);
       aFinder.Perform();
 
-      // check that solution found on current interval is not worse than previous
+      // Check that solution found on current interval is not worse than previous.
       aCurrF = aFinder.GetF();
       if (aCurrF >= aF + aSameTol * aValueTol)
       {
         continue;
       }
 
-      // clean previously computed solution if current one is better
+      // Clean previously computed solution if current one is better.
       if (aCurrF > aF - aSameTol * aValueTol)
       {
         if (aCurrF < aF)
@@ -167,30 +246,87 @@ void Extrema_GenExtCC::Perform()
       else
       {
         aF = aCurrF;
-        myPoints1.Clear();
-        myPoints2.Clear();
+        aFilter.Reset(aCellSize);
+        aPnts.Clear();
       }
 
-      // save found solutions avoiding repetitions
+      // Save found solutions avoiding repetitions.
       math_Vector sol(1,2);
       for(k = 1; k <= aFinder.NbExtrema(); k++)
       {
         aFinder.Points(k, sol);
+        gp_XY aPnt2d(sol(1), sol(2));
 
-        // avoid duplicated points
-        Standard_Boolean isNew = Standard_True;
-        for (Standard_Integer iSol = 1; isNew && iSol <= myPoints1.Length(); iSol++)
+        gp_XY aXYmin = anInspector.Shift(aPnt2d, -aCellSize);
+        gp_XY aXYmax = anInspector.Shift(aPnt2d,  aCellSize);
+
+        anInspector.ClearFind();
+        anInspector.SetCurrent(aPnt2d);
+        aFilter.Inspect(aXYmin, aXYmax, anInspector);
+        if (!anInspector.isFind())
         {
-          if (Abs(myPoints1(iSol) - sol(1)) < anEps1 &&
-              Abs(myPoints2(iSol) - sol(2)) < anEps2)
-            isNew = Standard_False;
-        }
-        if (isNew)
-        {
-          myPoints1.Append(sol(1));
-          myPoints2.Append(sol(2));
+          // Point is out of close cells, add new one.
+          aFilter.Add(aPnt2d, aPnt2d);
+          aPnts.Append(gp_XY(sol(1), sol(2)));
         }
       }
+    }
+  }
+
+  if (aPnts.Size() == 0)
+  {
+    // No solutions.
+    myDone = Standard_False;
+    return;
+  }
+
+  // Check for infinity solutions case, for this:
+  // Sort points lexicographically and check midpoint between each two neighboring points.
+  // If all midpoints functional value is acceptable
+  // then set myParallel flag to true and return one soulution.
+  std::sort(aPnts.begin(), aPnts.end(), comp);
+  Standard_Boolean isParallel = Standard_False;
+  Standard_Real aVal = 0.0;
+  math_Vector aVec(1,2, 0.0);
+
+  // Avoid mark parallel case when have duplicates out of tolerance.
+  // Bad conditioned task: bug25635_1, bug23706_10, bug23706_13.
+  const Standard_Integer aMinNbInfSol = 100;
+  if (aPnts.Size() >= aMinNbInfSol)
+  {
+    isParallel = Standard_True;
+    for(Standard_Integer anIdx = aPnts.Lower(); anIdx <= aPnts.Upper() - 1; anIdx++)
+    {
+      const gp_XY& aCurrent = aPnts(anIdx);
+      const gp_XY& aNext    = aPnts(anIdx + 1);
+
+      aVec(1) = (aCurrent.X() + aNext.X()) * 0.5;
+      aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
+
+      aFunc.Value(aVec, aVal);
+
+      if (Abs(aVal - aF) > Precision::Confusion())
+      {
+        isParallel = Standard_False;
+        break;
+      }
+    }
+  }
+
+  if (isParallel)
+  {
+    const gp_XY& aCurrent = aPnts.First();
+    myPoints1.Append(aCurrent.X());
+    myPoints2.Append(aCurrent.Y());
+    myParallel = Standard_True;
+  }
+  else
+  {
+    for(Standard_Integer anIdx = aPnts.Lower(); anIdx <= aPnts.Upper(); anIdx++)
+    {
+      const gp_XY& aCurrent = aPnts(anIdx);
+      myPoints1.Append(aCurrent.X());
+      myPoints2.Append(aCurrent.Y());
     }
   }
 
@@ -204,6 +340,15 @@ void Extrema_GenExtCC::Perform()
 Standard_Boolean Extrema_GenExtCC::IsDone() const 
 {
   return myDone; 
+}
+
+//=======================================================================
+//function : IsParallel
+//purpose  : 
+//=======================================================================
+Standard_Boolean Extrema_GenExtCC::IsParallel() const 
+{
+  return myParallel; 
 }
 
 //=======================================================================
