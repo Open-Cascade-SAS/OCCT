@@ -3489,6 +3489,42 @@ static Standard_Integer OCC26172 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//=======================================================================
+//function : OCC26284
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC26284 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 1)
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
+  {
+    std::cerr << "Error: no active view. Please call vinit.\n";
+    return 1;
+  }
+
+  BRepPrimAPI_MakeSphere aSphereBuilder (gp_Pnt (0.0, 0.0, 0.0), 1.0);
+  Handle(AIS_Shape) aSphere = new AIS_Shape (aSphereBuilder.Shape());
+  anAISContext->Display (aSphere);
+  for (Standard_Integer aChildIdx = 0; aChildIdx < 5; ++aChildIdx)
+  {
+    BRepPrimAPI_MakeSphere aBuilder (gp_Pnt (1.0 + aChildIdx, 1.0 + aChildIdx, 1.0 + aChildIdx), 1.0);
+    Handle(AIS_Shape) aChild = new AIS_Shape (aBuilder.Shape());
+    aSphere->AddChild (aChild);
+    anAISContext->Display (aChild);
+  }
+
+  anAISContext->RecomputeSelectionOnly (aSphere);
+
+  return 0;
+}
+
 #include <IntTools_Context.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 
@@ -3698,5 +3734,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("xprojponf", "xprojponf p f", __FILE__, xprojponf, group);
   theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   theCommands.Add ("OCC26139", "OCC26139 [-boxsize value] [-boxgrid value] [-compgrid value]", __FILE__, OCC26139, group);
+  theCommands.Add ("OCC26284", "OCC26284", __FILE__, OCC26284, group);
   return;
 }

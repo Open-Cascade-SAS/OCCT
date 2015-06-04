@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC26284"
+puts "========"
+puts ""
+##################################################################
+puts "Visualization - eliminate recursion in SelectMgr_SelectionManager"
+##################################################################
+
+pload QAcommands VISUALIZATION
+
+vinit
+OCC26284
+
+vfit
+set only_screen 1
