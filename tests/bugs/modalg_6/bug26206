@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC26206"
+puts "================"
+puts ""
+#######################################################################
+# BRepClass_FaceClassifier returns TopAbs_OUT for internal point
+#######################################################################
+
+restore [locate_data_file bug26206_group_1.brep] a
+
+point p 0.012676794773312086 0.04799218752935417
+
+set info [b2dclassify a p 1e-05]
+
+if { [regexp "The point is IN shape" $info] == 1  } {
+    puts "OK: point is IN shape"
+} else {
+    puts "Error : point should be IN shape"
+}
+
+pcurve a
+
+#v2d2
+view 1 -2D-  728 20 400 400
+2dfit
+xwd ${imagedir}/${test_image}.png
