@@ -275,6 +275,10 @@ void BSplCLib::LocateParameter
 
     while (val <= Eps) {
       KnotIndex++;
+
+      if(KnotIndex >= Knots.Upper())
+        break;
+
       K1 = K2;
       K2 = knots[KnotIndex + 1];
       val = K2 - K1;

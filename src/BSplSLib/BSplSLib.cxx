@@ -570,6 +570,9 @@ static Standard_Boolean  PrepareEval (const Standard_Real            U,
         if(ip < PLowerRow)
           ip = PUpperRow;
 
+        if(ip > PUpperRow)
+          ip = PLowerRow;
+
         for (j = 0; j <= d2; j++)
           {
           const gp_Pnt& P = Poles.Value(ip,jp);
