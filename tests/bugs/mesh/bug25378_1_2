@@ -23,11 +23,7 @@ trinfo b
 if { [regexp {Debug mode} [dversion]] } {
     set max_t_01 180
 } else {
-  if { [regexp {Windows} [dversion]] } {
-    set max_t_01 90
-  } else {
-    set max_t_01 90
-  }
+  set max_t_01 50
 }
 
 if {${max_t_01} > ${t_01}} {

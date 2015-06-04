@@ -496,6 +496,7 @@ static inline Standard_Real ComputeToleranceVertex(const Standard_Real dist, con
 {
   return (dist * 0.5 + Tol1 + Tol2);
 }
+
 TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirst,
 					       const TopoDS_Edge& edgeLast,
 					       const TopTools_ListOfShape& listFacesFirst,
@@ -870,14 +871,22 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
   }
   Standard_Real tolReached = Precision::Infinite();
   Standard_Boolean isSamePar = Standard_False; 
-  if( isResEdge)
+  try
   {
-    SameParameter(edge);
+    if( isResEdge)
+      SameParameter(edge);
+    
+
     if( BRep_Tool::SameParameter(edge))
     {
       isSamePar = Standard_True;
       tolReached = BRep_Tool::Tolerance(edge);
     }
+  }
+  
+  catch(Standard_Failure)
+  {
+    isSamePar = Standard_False;
   }
  
  
@@ -905,10 +914,10 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
 
       // Discretize edge curve
       Standard_Integer i, j, nbp = 23;
-      Standard_Real deltaT = (last3d - first3d) / (nbp + 1);
+      Standard_Real deltaT = (last3d - first3d) / (nbp -1);
       TColgp_Array1OfPnt c3dpnt(1,nbp);
       for (i = 1; i <= nbp; i++) 
-        c3dpnt(i) = c3dAdapt.Value(first3d + i*deltaT);
+        c3dpnt(i) = c3dAdapt.Value(first3d + (i-1)*deltaT);
 
       Standard_Real dist = 0., maxTol = -1.0;
       Standard_Boolean more = Standard_True;
@@ -924,9 +933,9 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
             aS = Handle(Geom_Surface)::DownCast(surf2->Transformed ( loc2 ));
 
           Standard_Real dist2 = 0.;
-          deltaT = (last - first) / (nbp + 1);
+          deltaT = (last - first) / (nbp - 1);
           for (i = 1; i <= nbp; i++) {
-            gp_Pnt2d aP2d =  c2d2->Value(first + i*deltaT);
+            gp_Pnt2d aP2d =  c2d2->Value(first + (i -1)*deltaT);
             gp_Pnt aP2(0.,0.,0.);
             aS->D0(aP2d.X(),aP2d.Y(), aP2);
             gp_Pnt aP1 = c3dpnt(i);

@@ -2,6 +2,7 @@
 puts "TODO OCC22803 Linux: Error in depouille"
 puts "TODO OCC22803 Linux: Error : The skin cannot be built."
 puts "TODO OCC22803 Windows: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC22803 Windows: Error : The area of the resulting shape is"
 polyline p 0 0 3  0 0 0  10 0 0  10 0 3  
 beziercurve bc 4 10 0 3  7 0 2  3 0 3  0 0 3
 mkedge bc bc

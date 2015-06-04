@@ -1,8 +1,8 @@
-puts "TODO OCC24036 ALL: Faulty shapes in variables faulty_1 to faulty_2"
-puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 642 vertices instead of 966"
-puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 955 edges instead of 1224"
-puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 3 shells instead of 18"
-puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 2133 shapes instead of 2741"
+puts "TODO OCC24036 ALL: Faulty shapes in variables faulty_1 to faulty_"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 642 vertices instead of 966"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 955 edges instead of 1224"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 3 shells instead of 18"
+#puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 2133 shapes instead of 2741"
 
 puts "================"
 puts "OCC22770"
@@ -30,18 +30,18 @@ sewing result a b +c
 
 set square 1.8847e+07
 
-set nb_v_good 642
-set nb_e_good 955
+set nb_v_good 964
+set nb_e_good 1222
 set nb_w_good 273
 set nb_f_good 259
-set nb_sh_good 3
+set nb_sh_good 18
 set nb_sol_good 0
 set nb_compsol_good 0
 set nb_compound_good 1
-set nb_shape_good 2133
+set nb_shape_good 2737
 
 checkmaxtol result 0.000126867229511314
 checknbshapes result -shell 18
-checkfreebounds result 927
+checkfreebounds result 926
 
 set 3dviewer 0

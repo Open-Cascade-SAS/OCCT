@@ -385,7 +385,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
   Standard_Real Tol = Tolerance;
   Standard_Real Tol2 = Tol * Tol;
-  Standard_Real Tolp = myC3d->Resolution(Tol), deltamin = 50*Tolp;
+  Standard_Real deltamin = Precision::PConfusion();//50*Tolp;
 
   Standard_Real besttol2 = Tol2;
   Standard_Boolean extrok = 0;
@@ -414,7 +414,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   else extrok = 0;
 
 
-  if(dmax2 > besttol2) besttol2 = dmax2;
+  //if(dmax2 > besttol2) besttol2 = dmax2;
 
   //Take a multiple of the sample pof CheckShape,
   //at least the control points will be correct. No comment!!!
@@ -507,12 +507,14 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     myC3d->D0(pc3d[ii],Pc3d);
     dist2 = Pcons.SquareDistance(Pc3d);
     use_parameter = (dist2 <= Tol2  && (pc3d[ii] > pc3d[count-1] + deltamin)) ;
+    Standard_Real aDistMin = RealLast();;
     if(use_parameter) {
 
       if(dist2 > dmax2) dmax2 = dist2;
       initp = previousp = pc3d[count] = pc3d[ii];
       pcons[count] = pcons[ii];
       count++;
+      
     }
     else {
       if(!projok) initp = pc3d[ii];
@@ -521,21 +523,25 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
       if (Projector.IsDone()) {
         curp = Projector.Point().Parameter();
         Standard_Real dist_2 = Projector.SquareDistance();
-        if(dist_2 > besttol2) besttol2 = dist_2;
-        projok = 1;
+        projok = Standard_True;
+        aDistMin = dist_2; 
       }
       else
       {
         ProjectPointOnCurve(initp,Pcons,Tol,30,myC3d->Curve(),projok,curp);
+        if(projok)
+        {
+          const gp_Pnt& ap1 =myC3d->Value(curp);
+          aDistMin = Pcons.SquareDistance(ap1);
+        }
       }
-      
+      projok = (projok && (curp > previousp + deltamin && curp < bornesup));
       if(projok)
       {
-        if(curp > previousp + deltamin && curp < bornesup){
-          initp = previousp = pc3d[count] = curp;
-          pcons[count] = pcons[ii];
-          count++;
-        }
+        initp = previousp = pc3d[count] = curp;
+        pcons[count] = pcons[ii];
+        count++;
+       
       }
       else
       {
@@ -546,30 +552,38 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
           if(aNbExt > 0)
           {
             Standard_Integer anIndMin = 0;
-            Standard_Real aDistMin = RealLast();
+            Standard_Real aCurDistMin = RealLast();
             for(Standard_Integer i = 1; i <= aNbExt; i++)
             {
               const gp_Pnt &aP = PR.Point(i).Value();
               Standard_Real aDist2 = aP.SquareDistance(Pcons);
-              if(aDist2 < aDistMin)
+              if(aDist2 < aCurDistMin)
               {
-                aDistMin = aDist2;
+                aCurDistMin = aDist2;
                 anIndMin = i;
               }
             }
-            curp = PR.Point(anIndMin).Parameter();
-            if(curp > previousp + deltamin && curp < bornesup)
+            if(anIndMin)
             {
-              initp = previousp = pc3d[count] = curp;
-              pcons[count] = pcons[ii];
-              count++;
-              projok = Standard_True;
+              curp = PR.Point(anIndMin).Parameter();
+              if( curp > previousp + deltamin && curp < bornesup)
+              {
+                aDistMin = aCurDistMin;
+                initp = previousp = pc3d[count] = curp;
+                pcons[count] = pcons[ii];
+                count++;
+                projok = Standard_True;
+                
+              }
             }
+         
           }
         }
       }
-
-      if(!projok)
+      if(projok && besttol2 < aDistMin)
+        besttol2 = aDistMin;
+        
+      else if(!projok)
       {
         //Projector
 #ifdef OCCT_DEBUG
