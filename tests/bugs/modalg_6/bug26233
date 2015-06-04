@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC26233"
+puts "========"
+puts ""
+################################################
+# BRepOffset_MakeOffset makes incorrect result
+################################################
+
+psphere a 100
+explode a f
+thickshell r a_1 10 i 1.e-7
+explode r
+
+set bug_info [whatis r]
+if {$bug_info != "r is a shape SOLID FORWARD Free Modified Closed\n"} {
+  puts "ERROR: OCC26233 is reproduced. Shape r has incorrect characteristics."
+}
+
+set bug_info [whatis r_1]
+if {$bug_info != "r_1 is a shape SHELL FORWARD Modified Orientable Closed\n"} {
+  puts "ERROR: OCC26233 is reproduced. Shape r_1 has incorrect characteristics."
+}
+
+set bug_info [whatis r_2]
+if {$bug_info != "r_2 is a shape SHELL REVERSED Modified Orientable Closed\n"} {
+  puts "ERROR: OCC26233 is reproduced. Shape r_2 has incorrect characteristics."
+}
