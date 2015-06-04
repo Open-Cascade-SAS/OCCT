@@ -23,6 +23,10 @@
 #include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
 
+static const Standard_Real Probing_Start = 0.123;
+static const Standard_Real Probing_End = 0.7;
+static const Standard_Real Probing_Step = 0.2111;
+
 //=======================================================================
 //function : BRepClass_FaceExplorer
 //purpose  : 
@@ -31,7 +35,7 @@
 BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F) :
        myFace(F),
        myCurEdgeInd(1),
-       myCurEdgePar(0.123)
+       myCurEdgePar(Probing_Start)
 {
   myFace.Orientation(TopAbs_FORWARD);
 }
@@ -56,7 +60,7 @@ Standard_Boolean BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P,
 						 Standard_Real& Par)
 {
   myCurEdgeInd = 1;
-  myCurEdgePar = 0.123;
+  myCurEdgePar = Probing_Start;
 
   return OtherSegment(P, L, Par);
 }
@@ -75,7 +79,7 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
   Standard_Real        aFPar;
   Standard_Real        aLPar;
   Handle(Geom2d_Curve) aC2d;
-  Standard_Real        aTolParConf = Precision::PConfusion();
+  Standard_Real        aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
   gp_Pnt2d             aPOnC;
   Standard_Real        aParamIn;
 
@@ -103,32 +107,51 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
 	} else if (Precision::IsPositiveInfinite(aLPar))
 	  aLPar = aFPar + 1.;
 
-	for (; myCurEdgePar < 0.7 ;myCurEdgePar += 0.2111) {
+	for (; myCurEdgePar < Probing_End ;myCurEdgePar += Probing_Step) {
 	  aParamIn = myCurEdgePar*aFPar + (1. - myCurEdgePar)*aLPar;
 
-	  aC2d->D0(aParamIn, aPOnC);
-	  Par = aPOnC.Distance(P);
+          gp_Vec2d aTanVec;
+	  aC2d->D1(aParamIn, aPOnC, aTanVec);
+	  Par = aPOnC.SquareDistance(P);
 
-	  if (Par > aTolParConf) {
+	  if (Par > aTolParConf2) {
 	    gp_Vec2d aLinVec(P, aPOnC);
 	    gp_Dir2d aLinDir(aLinVec);
+
+            Standard_Real aTanMod = aTanVec.SquareMagnitude();
+            if (aTanMod < aTolParConf2)
+              continue;
+            aTanVec /= Sqrt(aTanMod);
+            Standard_Real aSinA = aTanVec.Crossed(aLinDir.XY());
+            const Standard_Real SmallAngle = 0.001;
+            if (Abs(aSinA) < SmallAngle)
+            {
+              // The line from the input point P to the current point on edge
+              // is tangent to the edge curve. This condition is bad for classification.
+              // Therefore try to go to another point in the hope that there will be 
+              // no tangent. If there tangent is preserved then leave the last point in 
+              // order to get this edge chanse to participate in classification.
+              if (myCurEdgePar + Probing_Step < Probing_End)
+                continue;
+            }
 
 	    L = gp_Lin2d(P, aLinDir);
 
 	    // Check if ends of a curve lie on a line.
 	    aC2d->D0(aFPar, aPOnC);
 
-	    if (L.Distance(aPOnC) > aTolParConf) {
+	    if (L.SquareDistance(aPOnC) > aTolParConf2) {
 	      aC2d->D0(aLPar, aPOnC);
 
-	      if (L.Distance(aPOnC) > aTolParConf) {
-		myCurEdgePar += 0.2111;
+	      if (L.SquareDistance(aPOnC) > aTolParConf2) {
+		myCurEdgePar += Probing_Step;
 
-		if (myCurEdgePar >= 0.7) {
+		if (myCurEdgePar >= Probing_End) {
 		  myCurEdgeInd++;
-		  myCurEdgePar = 0.123;
+		  myCurEdgePar = Probing_Start;
 		}
 
+		Par = Sqrt(Par);
 		return Standard_True;
 	      }
 	    }
@@ -139,7 +162,7 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
 
     // This curve is not valid for line construction. Go to another edge.
     myCurEdgeInd++;
-    myCurEdgePar = 0.123;
+    myCurEdgePar = Probing_Start;
   }
 
   // nothing found, return an horizontal line
