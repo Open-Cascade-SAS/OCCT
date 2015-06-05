@@ -26,7 +26,7 @@ if { [regexp {Debug mode} [dversion]] } {
   if { [regexp {Windows} [dversion]] } {
     set max_t_1 15
   } else {
-    set max_t_1 20
+    set max_t_1 8
   }
 }
 
