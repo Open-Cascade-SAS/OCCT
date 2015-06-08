@@ -203,7 +203,7 @@ public:
   Standard_EXPORT TCollection_AsciiString Status (const Handle(SelectMgr_SelectableObject)& theSelectableObject) const;
 
   //! Returns the list of active entity owners
-  Standard_EXPORT NCollection_List<Handle(SelectBasics_EntityOwner)> ActiveOwners() const;
+  Standard_EXPORT void ActiveOwners (NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners) const;
 
   //! Adds new object to the map of selectable objects
   Standard_EXPORT void AddSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject);

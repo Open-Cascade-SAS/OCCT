@@ -839,9 +839,8 @@ const Handle(SelectBasics_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEn
 // function : ActiveOwners
 // purpose  : Returns the list of active entity owners
 //=======================================================================
-NCollection_List<Handle(SelectBasics_EntityOwner)> SelectMgr_ViewerSelector::ActiveOwners() const
+void SelectMgr_ViewerSelector::ActiveOwners (NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners) const
 {
-  NCollection_List<Handle(SelectBasics_EntityOwner)> anActiveOwners;
   for (SelectMgr_MapOfObjectSensitivesIterator anIter (myMapOfObjectSensitives); anIter.More(); anIter.Next())
   {
     const NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet = anIter.Value();
@@ -850,10 +849,8 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> SelectMgr_ViewerSelector::Act
     {
       if (anEntitySet->GetSensitiveById (anIdx)->IsActiveForSelection())
       {
-        anActiveOwners.Append (anEntitySet->GetSensitiveById (anIdx)->BaseSensitive()->OwnerId());
+        theOwners.Append (anEntitySet->GetSensitiveById (anIdx)->BaseSensitive()->OwnerId());
       }
     }
   }
-
-  return anActiveOwners;
 }
