@@ -1454,8 +1454,10 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const
   Standard_Boolean found(Standard_False);
 
   if (!found) {
-    NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt (myMainVS->ActiveOwners());
-    for (; anOwnersIt.More(); anOwnersIt.Next()) {
+    NCollection_List<Handle(SelectBasics_EntityOwner)> anActiveOwners;
+    myMainVS->ActiveOwners (anActiveOwners);
+    for (NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt (anActiveOwners); anOwnersIt.More(); anOwnersIt.Next())
+    {
       EO = Handle(SelectMgr_EntityOwner)::DownCast (anOwnersIt.Value());
       Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(EO);
       if (!BROwnr.IsNull() && BROwnr->HasShape() && BROwnr->Shape() == sh) {
