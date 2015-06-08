@@ -26,6 +26,8 @@
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Workspace.hxx>
 
+#include <TCollection_ExtendedString.hxx>
+
 IMPLEMENT_STANDARD_HANDLE (OpenGl_SetOfShaderPrograms, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_SetOfShaderPrograms, Standard_Transient)
 
@@ -1234,6 +1236,52 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
     aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
   }
 
+  TCollection_AsciiString aSrcVertEndMain;
+  if ((theBits & OpenGl_PO_StippleLine) != 0)
+  {
+    bool hasCaps = false;
+  #if defined(GL_ES_VERSION_2_0)
+    if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      aProgramSrc->SetHeader ("#version 300 es");
+      hasCaps = true;
+    }
+  #else
+    if (myContext->core32 != NULL)
+    {
+      aProgramSrc->SetHeader ("#version 150");
+      hasCaps = true;
+    }
+  #endif
+
+    if (hasCaps)
+    {
+      aSrcVertExtraOut +=
+        EOL"THE_SHADER_OUT vec2 ScreenSpaceCoord;";
+      aSrcFragExtraOut +=
+        EOL"THE_SHADER_IN  vec2 ScreenSpaceCoord;"
+        EOL"uniform int   uPattern;"
+        EOL"uniform float uFactor;";
+      aSrcVertEndMain =
+        EOL"  ScreenSpaceCoord = gl_Position.xy / gl_Position.w;";
+      aSrcFragMainGetColor =
+        EOL"  float anAngle      = atan (dFdx (ScreenSpaceCoord.x), dFdy (ScreenSpaceCoord.y));"
+        EOL"  float aRotatePoint = gl_FragCoord.x * sin (anAngle) + gl_FragCoord.y * cos (anAngle);"
+        EOL"  uint  aBit         = uint (floor (aRotatePoint / uFactor + 0.5)) & 15U;"
+        EOL"  if ((uint (uPattern) & (1U << aBit)) == 0U) discard;"
+        EOL"  vec4 aColor = getColor();"
+        EOL"  if (aColor.a <= 0.1) discard;"
+        EOL"  occFragColor = aColor;";
+    }
+    else
+    {
+      const TCollection_ExtendedString aWarnMessage =
+        "Warning: stipple lines in GLSL will be ignored.";
+      myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+        GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aWarnMessage);
+    }
+  }
+
   aSrcVert =
       aSrcVertExtraFunc
     + aSrcVertExtraOut
@@ -1241,7 +1289,8 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
       EOL"{"
     + aSrcVertExtraMain
     + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
-      EOL"}";
+    + aSrcVertEndMain
+    + EOL"}";
 
   aSrcFrag =
       aSrcFragExtraOut

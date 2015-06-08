@@ -263,26 +263,13 @@ const OpenGl_AspectText * OpenGl_Workspace::SetAspectText(const OpenGl_AspectTex
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean WithApply)
+const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean theWithApply)
 {
-  if ( WithApply && (AspectLine_set != AspectLine_applied) )
+  if (theWithApply)
   {
-    myGlContext->SetColor4fv (*(const OpenGl_Vec4* )AspectLine_set->Color().rgb);
-    if ( !AspectLine_applied || (AspectLine_set->Type() != AspectLine_applied->Type() ) )
-    {
-      myLineAttribs->SetTypeOfLine (AspectLine_set->Type());
-    }
-
-    if ( !AspectLine_applied || ( AspectLine_set->Width() != AspectLine_applied->Width() ) )
-    {
-      glLineWidth( (GLfloat)AspectLine_set->Width() );
-#ifdef HAVE_GL2PS
-      gl2psLineWidth( (GLfloat)AspectLine_set->Width() );
-#endif
-    }
-
     AspectLine_applied = AspectLine_set;
   }
+
   return AspectLine_set;
 }
 

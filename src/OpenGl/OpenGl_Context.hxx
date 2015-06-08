@@ -20,6 +20,7 @@
 #include <Aspect_Drawable.hxx>
 #include <Aspect_Display.hxx>
 #include <Aspect_RenderingContext.hxx>
+#include <Aspect_TypeOfLine.hxx>
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_FrameBuffer.hxx>
 #include <Handle_OpenGl_Sampler.hxx>
@@ -531,6 +532,13 @@ public: //! @name methods to alter or retrieve current state
 
   //! Setup current color.
   Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);
+
+  //! Setup type of line.
+  Standard_EXPORT void SetTypeOfLine (const Aspect_TypeOfLine  theType,
+                                      const Standard_ShortReal theFactor = 1.0f);
+
+  //! Setup width of line.
+  Standard_EXPORT void SetLineWidth (const Standard_ShortReal theWidth);
 
   //! Setup point size.
   Standard_EXPORT void SetPointSize (const Standard_ShortReal theSize);

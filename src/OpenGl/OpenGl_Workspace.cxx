@@ -301,6 +301,9 @@ void OpenGl_Workspace::ResetAppliedAspect()
   AspectFace(Standard_True);
   AspectMarker(Standard_True);
   AspectText(Standard_True);
+
+  myGlContext->SetTypeOfLine (myDefaultAspectLine.Type());
+  myGlContext->SetLineWidth  (myDefaultAspectLine.Width());
 }
 
 // =======================================================================

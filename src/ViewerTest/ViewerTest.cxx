@@ -1357,6 +1357,9 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer         ToSetLineWidth;
   Standard_Real            LineWidth;
 
+  Standard_Integer         ToSetTypeOfLine;
+  Aspect_TypeOfLine        TypeOfLine;
+
   Standard_Integer         ToSetTransparency;
   Standard_Real            Transparency;
 
@@ -1380,6 +1383,8 @@ struct ViewerTest_AspectsChangeSet
     Color             (DEFAULT_COLOR),
     ToSetLineWidth    (0),
     LineWidth         (1.0),
+    ToSetTypeOfLine   (0),
+    TypeOfLine        (Aspect_TOL_SOLID),
     ToSetTransparency (0),
     Transparency      (0.0),
     ToSetMaterial     (0),
@@ -1747,6 +1752,45 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetColor = 1;
       anArgIter += aNbComps;
     }
+    else if (anArg == "-setlinetype")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      aValue.LowerCase();
+
+      if (aValue.IsEqual ("solid"))
+      {
+        aChangeSet->TypeOfLine = Aspect_TOL_SOLID;
+      }
+      else if (aValue.IsEqual ("dot"))
+      {
+        aChangeSet->TypeOfLine = Aspect_TOL_DOT;
+      }
+      else if (aValue.IsEqual ("dash"))
+      {
+        aChangeSet->TypeOfLine = Aspect_TOL_DASH;
+      }
+      else if (aValue.IsEqual ("dotdash"))
+      {
+        aChangeSet->TypeOfLine = Aspect_TOL_DOTDASH;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+
+      aChangeSet->ToSetTypeOfLine = 1;
+    }
+    else if (anArg == "-unsetlinetype")
+    {
+      aChangeSet->ToSetTypeOfLine = -1;
+    }
     else if (anArg == "-unsetcolor")
     {
       aChangeSet->ToSetColor = -1;
@@ -1918,6 +1962,8 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->Visibility = 1;
       aChangeSet->ToSetLineWidth = -1;
       aChangeSet->LineWidth = 1.0;
+      aChangeSet->ToSetTypeOfLine = -1;
+      aChangeSet->TypeOfLine = Aspect_TOL_SOLID;
       aChangeSet->ToSetTransparency = -1;
       aChangeSet->Transparency = 0.0;
       aChangeSet->ToSetColor = -1;
@@ -1974,6 +2020,14 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aDrawer->SeenLineAspect()->SetColor       (aChangeSet->Color);
       aDrawer->WireAspect()->SetColor           (aChangeSet->Color);
       aDrawer->PointAspect()->SetColor          (aChangeSet->Color);
+    }
+    if (aChangeSet->ToSetTypeOfLine != 0)
+    {
+      aDrawer->LineAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
+      aDrawer->WireAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
+      aDrawer->FreeBoundaryAspect()->SetTypeOfLine   (aChangeSet->TypeOfLine);
+      aDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (aChangeSet->TypeOfLine);
+      aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
     }
     if (aChangeSet->ToSetTransparency != 0)
     {
@@ -2110,6 +2164,15 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           *aBoundaryAspect->Aspect() = *aDrawer->FreeBoundaryAspect()->Aspect();
           aBoundaryAspect->SetColor (aChangeSet->FreeBoundaryColor);
           aDrawer->SetFreeBoundaryAspect (aBoundaryAspect);
+          toRedisplay = Standard_True;
+        }
+        if (aChangeSet->ToSetTypeOfLine != 0)
+        {
+          aDrawer->LineAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
+          aDrawer->WireAspect()->SetTypeOfLine           (aChangeSet->TypeOfLine);
+          aDrawer->FreeBoundaryAspect()->SetTypeOfLine   (aChangeSet->TypeOfLine);
+          aDrawer->UnFreeBoundaryAspect()->SetTypeOfLine (aChangeSet->TypeOfLine);
+          aDrawer->SeenLineAspect()->SetTypeOfLine       (aChangeSet->TypeOfLine);
           toRedisplay = Standard_True;
         }
       }
@@ -5302,11 +5365,12 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vaspects",
               "vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]"
-      "\n\t\t:          [-setvisibility 0|1]"
-      "\n\t\t:          [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]"
-      "\n\t\t:          [-setmaterial MatName] [-unsetmaterial]"
-      "\n\t\t:          [-settransparency Transp] [-unsettransparency]"
-      "\n\t\t:          [-setwidth LineWidth] [-unsetwidth]"
+      "\n\t\t:          [-setVisibility 0|1]"
+      "\n\t\t:          [-setColor ColorName] [-setcolor R G B] [-unsetColor]"
+      "\n\t\t:          [-setMaterial MatName] [-unsetMaterial]"
+      "\n\t\t:          [-setTransparency Transp] [-unsetTransparency]"
+      "\n\t\t:          [-setWidth LineWidth] [-unsetWidth]"
+      "\n\t\t:          [-setLineType {solid|dash|dot|dotDash}] [-unsetLineType]"
       "\n\t\t:          [-freeBoundary {off/on | 0/1}]"
       "\n\t\t:          [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
       "\n\t\t:          [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"

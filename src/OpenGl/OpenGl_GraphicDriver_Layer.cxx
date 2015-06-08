@@ -270,17 +270,13 @@ void OpenGl_GraphicDriver::SetLineAttributes (const Standard_Integer   theType,
 
   if (TheLayerProp.LineType != theType)
   {
-    Handle(OpenGl_LineAttributes) aLineAttribs;
-    if (aCtx->GetResource ("OpenGl_LineAttributes", aLineAttribs))
-    {
-      TheLayerProp.LineType = theType;
-      aLineAttribs->SetTypeOfLine ((Aspect_TypeOfLine )theType);
-    }
+    TheLayerProp.LineType = theType;
+    aCtx->SetTypeOfLine ((Aspect_TypeOfLine) theType);
   }
   if (TheLayerProp.LineWidth != theWidth)
   {
     TheLayerProp.LineWidth = theWidth;
-    glLineWidth ((GLfloat )theWidth);
+    aCtx->SetLineWidth (theWidth);
   }
 }
 

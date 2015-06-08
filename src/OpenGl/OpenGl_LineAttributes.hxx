@@ -35,13 +35,10 @@ public:
   void Init (const Handle(OpenGl_Context)& theGlCtx);
   virtual void Release (OpenGl_Context* theGlCtx);
 
-  void SetTypeOfLine (const Aspect_TypeOfLine theType) const;
-
   void SetTypeOfHatch (const int theType) const;
 
 protected:
 
-  unsigned int myLinestyleBase;
   unsigned int myPatternBase;
 
 public:

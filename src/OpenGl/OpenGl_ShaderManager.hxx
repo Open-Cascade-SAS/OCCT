@@ -105,7 +105,12 @@ public:
       return bindProgramWithState (theCustomProgram, theAspect);
     }
 
-    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor);
+    Standard_Integer aBits = getProgramBits (theTexture, theHasVertColor);
+    if (theAspect->Type() != Aspect_TOL_SOLID)
+    {
+      aBits |= OpenGl_PO_StippleLine;
+    }
+
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
     return bindProgramWithState (aProgram, theAspect);
   }

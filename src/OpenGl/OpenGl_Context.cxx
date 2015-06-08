@@ -49,6 +49,13 @@
   #include <GL/glx.h> // glXGetProcAddress()
 #endif
 
+#ifdef HAVE_GL2PS
+  #include <gl2ps.h>
+  #ifdef _MSC_VER
+    #pragma comment (lib, "gl2ps.lib")
+  #endif
+#endif
+
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Context, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
 
@@ -2407,6 +2414,104 @@ void OpenGl_Context::SetColor4fv (const OpenGl_Vec4& theColor)
   else if (core11 != NULL)
   {
     core11->glColor4fv (theColor.GetData());
+  }
+#endif
+}
+
+// =======================================================================
+// function : SetTypeOfLine
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
+                                    const Standard_ShortReal theFactor)
+{
+  Standard_Integer aPattern = 0xFFFF;
+  switch (theType)
+  {
+    case Aspect_TOL_DASH:
+    {
+      aPattern = 0xFFC0;
+      break;
+    }
+    case Aspect_TOL_DOT:
+    {
+      aPattern = 0xCCCC;
+      break;
+    }
+    case Aspect_TOL_DOTDASH:
+    {
+      aPattern = 0xFF18;
+      break;
+    }
+    case Aspect_TOL_SOLID:
+    {
+      aPattern = 0xFFFF;
+      break;
+    }
+    case Aspect_TOL_USERDEFINED:
+    {
+      aPattern = 0xFF24;
+      break;
+    }
+  }
+
+  if (myActiveProgram != NULL)
+  {
+    myActiveProgram->SetUniform (this, "uPattern", aPattern);
+    myActiveProgram->SetUniform (this, "uFactor",  theFactor);
+    return;
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (theType != Aspect_TOL_SOLID)
+  {
+  #ifdef HAVE_GL2PS
+    if (IsFeedback())
+    {
+      gl2psEnable (GL2PS_LINE_STIPPLE);
+    }
+  #endif
+
+    if (core11 != NULL)
+    {
+      core11fwd->glEnable (GL_LINE_STIPPLE);
+
+      core11->glLineStipple (static_cast<GLint>    (theFactor),
+                             static_cast<GLushort> (aPattern));
+    }
+  }
+  else
+  {
+    if (core11 != NULL)
+    {
+      core11fwd->glDisable (GL_LINE_STIPPLE);
+    }
+
+  #ifdef HAVE_GL2PS
+    if (IsFeedback())
+    {
+      gl2psDisable (GL2PS_LINE_STIPPLE);
+    }
+  #endif
+  }
+#endif
+}
+
+// =======================================================================
+// function : SetLineWidth
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
+{
+  if (core11 != NULL)
+  {
+    // glLineWidth() is still defined within Core Profile, but has no effect with values != 1.0f
+    core11fwd->glLineWidth (theWidth);
+  }
+#ifdef HAVE_GL2PS
+  if (IsFeedback())
+  {
+    gl2psLineWidth (theWidth);
   }
 #endif
 }

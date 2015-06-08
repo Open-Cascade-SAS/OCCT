@@ -483,7 +483,11 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   /// 2) draw elements from vertex array, when bounds defines count of primitive's vertices.
   /// 3) draw primitive's edges by vertexes if no edges and bounds array is specified
   myVboAttribs->BindPositionAttribute (aGlContext);
-  aGlContext->SetColor4fv (*(const OpenGl_Vec4* )theEdgeColour->rgb);
+
+  aGlContext->SetColor4fv   (*(const OpenGl_Vec4* )theEdgeColour->rgb);
+  aGlContext->SetTypeOfLine (anAspect->Type());
+  aGlContext->SetLineWidth  (anAspect->Width());
+
   if (!myVboIndices.IsNull())
   {
     myVboIndices->Bind (aGlContext);
@@ -801,6 +805,12 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
 
     aCtx->SetColor4fv (*(const OpenGl_Vec4* )(myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb));
+    if (myDrawMode == GL_LINES
+     || myDrawMode == GL_LINE_STRIP)
+    {
+      aCtx->SetTypeOfLine (anAspectLine->Type());
+      aCtx->SetLineWidth  (anAspectLine->Width());
+    }
 
     drawArray (theWorkspace, aFaceColors, hasColorAttrib);
   }

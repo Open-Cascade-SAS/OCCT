@@ -18,15 +18,6 @@
 #include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_Context.hxx>
 
-#ifdef HAVE_GL2PS
-  #include <gl2ps.h>
-#endif
-
-#define DOT_LS       0xCCCC
-#define DASH_DOT_LS  0xFF18
-#define DASH_LS      0xFFC0
-#define DASH_DDOT_LS 0xFF24
-
 static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
 {
   //TEL_HS_SOLID
@@ -494,8 +485,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 // purpose  :
 // =======================================================================
 OpenGl_LineAttributes::OpenGl_LineAttributes()
-: myLinestyleBase(0),
-  myPatternBase(0)
+: myPatternBase(0)
 {
   //
 }
@@ -515,17 +505,6 @@ OpenGl_LineAttributes::~OpenGl_LineAttributes()
 // =======================================================================
 void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
 {
-  // Delete line styles
-  if (myLinestyleBase != 0)
-  {
-    if (theGlCtx->IsValid())
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      glDeleteLists ((GLuint )myLinestyleBase, 5);
-    #endif
-    }
-    myLinestyleBase = 0;
-  }
   // Delete surface patterns
   if (myPatternBase != 0)
   {
@@ -546,7 +525,7 @@ void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
 void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Return if already initialized
-  if (myLinestyleBase != 0)
+  if (myPatternBase != 0)
   {
     return;
   }
@@ -557,25 +536,6 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
     return;
   }
 
-  myLinestyleBase = theGlCtx->core11->glGenLists (5);
-
-  // Line
-  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_DASH, GL_COMPILE);
-  glLineStipple (1,  DASH_LS);
-  glEndList();
-
-  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_DOT, GL_COMPILE);
-  glLineStipple (1,  DOT_LS);
-  glEndList();
-
-  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_DOTDASH, GL_COMPILE);
-  glLineStipple (1,  DASH_DOT_LS);
-  glEndList();
-
-  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_USERDEFINED, GL_COMPILE);
-  glLineStipple (1,  DASH_DDOT_LS);
-  glEndList();
-
   // GL_POLYGON_STIPPLE need 32x32 stipple patterns
   const int nbi = sizeof(myInteriors) / (32 * sizeof(unsigned int));
   myPatternBase = glGenLists(TEL_HS_USER_DEF_START);
@@ -584,37 +544,6 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
     glNewList ((GLuint )myPatternBase + i, GL_COMPILE);
     glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
     glEndList();
-  }
-#endif
-}
-
-// =======================================================================
-// function : SetTypeOfLine
-// purpose  :
-// =======================================================================
-void OpenGl_LineAttributes::SetTypeOfLine (const Aspect_TypeOfLine theType) const
-{
-#if !defined(GL_ES_VERSION_2_0)
-  if (theType != Aspect_TOL_SOLID)
-  {
-    if (myLinestyleBase != 0)
-    {
-      glCallList ((GLuint )myLinestyleBase + (GLuint )theType);
-      glEnable (GL_LINE_STIPPLE);
-    }
-  #ifdef HAVE_GL2PS
-    gl2psEnable (GL2PS_LINE_STIPPLE);
-  #endif
-  }
-  else
-  {
-    if (myLinestyleBase != 0)
-    {
-      glDisable (GL_LINE_STIPPLE);
-    }
-  #ifdef HAVE_GL2PS
-    gl2psDisable (GL2PS_LINE_STIPPLE);
-  #endif
   }
 #endif
 }

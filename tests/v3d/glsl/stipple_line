@@ -1,0 +1,14 @@
+restore [locate_data_file occ/fuse.brep] f
+
+vcaps -ffp 1
+vinit View1
+vclear
+vsetdispmode 0
+vaxo
+vdisplay f
+vaspects f -setLineType dotDash
+vfit
+vdump $::imagedir/${::casename}_ffp.png
+
+vcaps -ffp 0
+vdump $::imagedir/${::casename}_glsl.png
