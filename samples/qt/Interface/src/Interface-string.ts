@@ -195,11 +195,11 @@
         <translation>STEP Files (*.stp *.step)</translation>
     </message>
     <message>
-        <source>INF_FILTER_FORMAT_4</source>
+        <source>INF_FILTER_FORMAT_3</source>
         <translation>VRML Files (*.vrml)</translation>
     </message>
     <message>
-        <source>INF_FILTER_FORMAT_5</source>
+        <source>INF_FILTER_FORMAT_4</source>
         <translation>STL Files (*.stl)</translation>
     </message>
 </context>
