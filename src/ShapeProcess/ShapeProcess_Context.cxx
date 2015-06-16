@@ -67,28 +67,61 @@ Standard_Boolean ShapeProcess_Context::Init (const Standard_CString file,
 //purpose  : 
 //=======================================================================
 
-Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standard_CString file)
+Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standard_CString name)
 {
   // Optimisation of loading resource file: file is load only once
   // and reloaded only if file date has changed
   static Handle(Resource_Manager) sRC;
-  static Standard_Time mtime;
-  static TCollection_AsciiString name;
-  if ( ! sRC.IsNull() && ! name.IsEqual ( file ) ) sRC.Nullify();
-  if ( ! sRC.IsNull() ) {
-    struct stat buf;
-    if ( ! stat ( file, &buf ) && (Standard_Time)buf.st_mtime != mtime ) {
-      sRC.Nullify();
-      mtime = buf.st_mtime;
+  static Standard_Time sMtime, sUMtime;
+  static TCollection_AsciiString sName;
+
+  struct stat buf;
+  Standard_Time aMtime(0), aUMtime(0);
+  TCollection_AsciiString aPath,aUserPath;
+  Resource_Manager::GetResourcePath(aPath,name,Standard_False);
+  Resource_Manager::GetResourcePath(aUserPath,name,Standard_True);
+  if ( !aPath.IsEmpty() )
+  {
+    stat( aPath.ToCString(), &buf );
+    aMtime = (Standard_Time)buf.st_mtime;
+  }
+  if ( !aUserPath.IsEmpty() )
+  {
+    stat( aUserPath.ToCString(), &buf );
+    aUMtime = (Standard_Time)buf.st_mtime;
+  }
+
+  Standard_Boolean isFileModified = Standard_False;
+  if ( !sRC.IsNull() ) {
+    if ( sName.IsEqual ( name ) ) {
+      if ( sMtime != aMtime )
+      {
+        sMtime = aMtime;
+        isFileModified = Standard_True;
+      }
+      if ( sUMtime != aUMtime )
+      {
+        sUMtime = aUMtime;
+        isFileModified = Standard_True;
+      }
+      if (isFileModified)
+        sRC.Nullify();
     }
+    else
+      sRC.Nullify();
   }
   if ( sRC.IsNull() ) {
 #ifdef OCCT_DEBUG
     cout << "Info: ShapeProcess_Context: Reload Resource_Manager: " 
-         << name.ToCString() << " -> " << file << endl;
+         << sName.ToCString() << " -> " << name << endl;
 #endif
-    sRC = new Resource_Manager ( file );
-    name = file;
+    sRC = new Resource_Manager ( name );
+    if (!isFileModified)
+    {
+      sName = name;
+      sMtime = aMtime;
+      sUMtime = aUMtime;
+    }
   }
   return sRC;
 }
@@ -402,4 +435,3 @@ Standard_Integer ShapeProcess_Context::TraceLevel () const
 {
   return myTraceLev;
 }
-

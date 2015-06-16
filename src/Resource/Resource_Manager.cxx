@@ -33,8 +33,7 @@
 #define END      0
 #define EMPTY    1
 #define COMMENT  2
-#define INCLUDE  3
-#define RESOURCE 4
+#define RESOURCE 3
 #define ERROR   -1
 
 static Standard_Integer WhatKindOfLine(OSD_File& aFile,
@@ -51,14 +50,24 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 				   const Standard_Boolean Verbose) : myName(aName), myVerbose(Verbose)
 {
   if ( !aDefaultsDirectory.IsEmpty() ) {
-    Load(aDefaultsDirectory,myName,myRefMap);
+    OSD_Path anOSDPath(aDefaultsDirectory);
+    anOSDPath.DownTrek(anOSDPath.Name());
+    anOSDPath.SetName(aName);
+    TCollection_AsciiString aPath;
+    anOSDPath.SystemName(aPath);
+    Load(aPath,myRefMap);
   }
   else
     if (myVerbose)
       cout << "Resource Manager Warning: aDefaultsDirectory is empty." << endl;
 
   if ( !anUserDefaultsDirectory.IsEmpty() ) {
-    Load(anUserDefaultsDirectory,myName,myRefMap);
+    OSD_Path anOSDPath(anUserDefaultsDirectory);
+    anOSDPath.DownTrek(anOSDPath.Name());
+    anOSDPath.SetName(aName);
+    TCollection_AsciiString aPath;
+    anOSDPath.SystemName(aPath);
+    Load(aPath,myRefMap);
   }
   else
     if (myVerbose)
@@ -70,44 +79,34 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 {
   Debug = (getenv("ResourceDebug") != NULL) ;
 
-  TCollection_AsciiString EnvVar, CSF_ = "CSF_" ;
   TCollection_AsciiString Directory ;
-  Standard_CString dir ;
 
   if ( getenv ("CSF_ResourceVerbose") != NULL )
     myVerbose = Standard_True;
 
-  EnvVar = CSF_ + aName + "Defaults" ;
-  if ((dir = getenv (EnvVar.ToCString())) != NULL) {
-    Directory = dir;
-    Load(Directory,myName,myRefMap);
-  }
-  else
-    if (myVerbose)
-      cout << "Resource Manager Warning: Environment variable \"" << EnvVar
-	   << "\" not set." << endl;
+  TCollection_AsciiString aPath,aUserPath;
+  GetResourcePath(aPath,aName,Standard_False);
+  GetResourcePath(aUserPath,aName,Standard_True);
 
-  EnvVar = CSF_ + aName + "UserDefaults" ;
-  if ((dir = getenv (EnvVar.ToCString())) != NULL) {
-    Directory = dir;
-    Load(Directory, myName, myUserMap);
-  }
-  else
-    if (myVerbose)
-      cout << "Resource Manager Warning: Environment variable \"" << EnvVar
-	   << "\" not set." << endl;
+  if (!aPath.IsEmpty())
+    Load(aPath,myRefMap);
+  else if (myVerbose)
+    cout << "Resource Manager Warning: Environment variable \"CSF_" << aName << "Defaults\" not set." << endl;
+
+  if (!aUserPath.IsEmpty())
+    Load(aUserPath,myRefMap);
+  else if (myVerbose)
+    cout << "Resource Manager Warning: Environment variable \"CSF_" << aName << "UserDefaults\" not set." << endl;
 }
 
-void Resource_Manager::Load(TCollection_AsciiString& aDirectory,
-			    TCollection_AsciiString& aName,
-			    Resource_DataMapOfAsciiStringAsciiString& aMap)
+void Resource_Manager::Load(TCollection_AsciiString& aPath,
+                            Resource_DataMapOfAsciiStringAsciiString& aMap)
 {
-  Standard_Integer Kind, Pos;
+  Standard_Integer Kind;
   TCollection_AsciiString Token1, Token2;
   TCollection_AsciiString Directory, Name;
   TCollection_AsciiString FileName;
-  FileName =  aDirectory + "/" + aName;
-  OSD_File File = OSD_Path(FileName);
+  OSD_File File = OSD_Path(aPath);
   File.Open(OSD_ReadOnly,OSD_Protection());
   if (File.Failed()) {
     if (myVerbose)
@@ -121,15 +120,6 @@ void Resource_Manager::Load(TCollection_AsciiString& aDirectory,
     case COMMENT :
     case EMPTY :
       break ;
-    case INCLUDE :
-      Directory = OSD_Path::AbsolutePath(aDirectory,Token1);
-      Pos = Directory.SearchFromEnd("/");
-      if (Pos != 0) {
-	Name = Directory.Split(Pos);
-	Directory.Trunc(Pos-1);
-	Load(Directory,Name,aMap);
-      }
-      break;
     case RESOURCE :
       if (!aMap.Bind(Token1,Token2))
         aMap(Token1) = Token2;
@@ -161,15 +151,6 @@ static Standard_Integer WhatKindOfLine(OSD_File& aFile,
 
   if (Line.Value(1) == '!')
     return COMMENT;
-
-  if (Line.Value(1) == '#') {
-    Line.Remove(1);
-    if ((Line.Token(" \t")).IsDifferent("include"))
-      return ERROR;
-
-    aToken1 = Line.Token(" \t\n",2);
-    return INCLUDE;
-  }
 
   Pos1 = Line.FirstLocationNotInSet(WhiteSpace, 1, Line.Length());
   if (Line.Value(Pos1) == '\n')
@@ -236,43 +217,46 @@ static Standard_Integer GetLine(OSD_File& aFile,TCollection_AsciiString& aLine)
 //=======================================================================
 Standard_Boolean Resource_Manager::Save() const
 {
-  Standard_Integer Index;
-  TCollection_AsciiString EnvVar, CSF_ = "CSF_";
+  TCollection_AsciiString anEnvVar("CSF_");
+  anEnvVar += myName;
+  anEnvVar += "UserDefaults";
+
   Standard_CString dir;
-
-  EnvVar = CSF_ + myName + "UserDefaults";
-
-  if ((dir = getenv (EnvVar.ToCString())) == NULL) {
+  if ((dir = getenv (anEnvVar.ToCString())) == NULL) {
     if (myVerbose)
       cout << "Resource Manager Warning: environment variable \""
-	   << EnvVar << "\" not set.  Cannot save resources." << endl ;
+	   << anEnvVar << "\" not set.  Cannot save resources." << endl ;
     return Standard_False;
   }
-  TCollection_AsciiString FilePath = dir;
-  OSD_Directory Dir = OSD_Path(FilePath);
+
+  TCollection_AsciiString aFilePath(dir);
+  OSD_Path anOSDPath(aFilePath);
+  OSD_Directory Dir = anOSDPath;
   Standard_Boolean Status = Standard_True;
   if ( !Dir.Exists() ) {
     {
       try {
         OCC_CATCH_SIGNALS
-	Dir.Build(OSD_Protection(OSD_RX, OSD_RWX, OSD_RX, OSD_RX));
+        Dir.Build(OSD_Protection(OSD_RX, OSD_RWX, OSD_RX, OSD_RX));
       }
       catch (Standard_Failure) {
-	Status = Standard_False;
+        Status = Standard_False;
       }
     }
     Status = Status && !Dir.Failed();
     if (!Status) {
       if (myVerbose)
-	cout << "Resource Manager: Error opening or creating directory \"" << FilePath
-	     << "\". Permission denied. Cannot save resources." << endl;
+        cout << "Resource Manager: Error opening or creating directory \"" << aFilePath
+             << "\". Permission denied. Cannot save resources." << endl;
       return Standard_False;
     }
   }
 
-  FilePath += "/"; FilePath += myName;
-  OSD_Path Path(FilePath);
-  OSD_File File = Path;
+  anOSDPath.DownTrek(anOSDPath.Name());
+  anOSDPath.SetName(myName);
+  anOSDPath.SystemName(aFilePath);
+
+  OSD_File File = anOSDPath;
   OSD_Protection theProt;
   Status = Standard_True;
   {
@@ -287,41 +271,45 @@ Standard_Boolean Resource_Manager::Save() const
   Status = Status && !File.Failed();
   if (!Status) {
     if (myVerbose)
-      cout << "Resource Manager: Error opening or creating file \"" << FilePath
+      cout << "Resource Manager: Error opening or creating file \"" << aFilePath
            << "\". Permission denied. Cannot save resources." << endl;
     return Standard_False;
   }
 
-  Resource_LexicalCompare Comp;
-  Standard_Integer NbKey = myUserMap.Extent();
-  TColStd_Array1OfAsciiString KeyArray(1,NbKey+1); // 1 more item is added to allow saving empty resource
-  Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString Iter(myUserMap);
+  const Standard_Integer NbKey = myUserMap.Extent();
+  if (NbKey)
+  {
+    TColStd_Array1OfAsciiString KeyArray(1,NbKey);
+    Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString Iter(myUserMap);
 
-  for ( Index = 1; Iter.More(); Iter.Next())
-    KeyArray(Index++)= Iter.Key();
+    Standard_Integer Index;
+    for ( Index = 1; Iter.More(); Iter.Next())
+      KeyArray(Index++)= Iter.Key();
 
-  Resource_QuickSortOfArray1::Sort(KeyArray, Comp);
+    Resource_LexicalCompare Comp;
+    Resource_QuickSortOfArray1::Sort(KeyArray, Comp);
 
-  TCollection_AsciiString Line, Value;
-  for (Index = 1 ; Index <= NbKey ; Index++) {
-    Value = myUserMap(KeyArray(Index));
-    if (!Value.IsEmpty())
-      switch(Value.Value(1)) {
-      case '\\' :
-      case ' ' :
-      case '\t' :
-	Value.Insert(1,'\\');
-	break;
-      }
-    Line = KeyArray(Index) + ":\t" + Value + "\n";
+    TCollection_AsciiString Line, Value;
+    for (Index = 1 ; Index <= NbKey ; Index++) {
+      Value = myUserMap(KeyArray(Index));
+      if (!Value.IsEmpty())
+        switch(Value.Value(1)) {
+        case '\\' :
+        case ' ' :
+        case '\t' :
+          Value.Insert(1,'\\');
+          break;
+        }
+      Line = KeyArray(Index) + ":\t" + Value + "\n";
 
-    if (Debug)
-      cout << "Line = '" << Line << "'" << endl;
+      if (Debug)
+        cout << "Line = '" << Line << "'" << endl;
 
-    File.Write(Line, Line.Length());
+      File.Write(Line, Line.Length());
+    }
+    if (myVerbose)
+      cout << "Resource Manager: Resources saved in file " << aFilePath << endl;
   }
-  if (myVerbose)
-    cout << "Resource Manager: Resources saved in file " << FilePath << endl;
   File.Close();
   return Standard_True;
 }
@@ -467,4 +455,30 @@ Standard_Boolean Resource_Manager::Find(const Standard_CString aResource) const
   if (myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource))
     return Standard_True;
   return Standard_False;
+}
+
+//=======================================================================
+//function : GetResourcePath
+//purpose  : 
+//=======================================================================
+
+void Resource_Manager::GetResourcePath (TCollection_AsciiString& aPath, const Standard_CString aName, const Standard_Boolean isUserDefaults)
+{
+  aPath.Clear();
+
+  TCollection_AsciiString anEnvVar("CSF_");
+  anEnvVar += aName;
+  anEnvVar += isUserDefaults?"UserDefaults":"Defaults";
+
+  Standard_CString dir;
+  if ((dir = getenv (anEnvVar.ToCString())) == NULL)
+    return;
+
+  TCollection_AsciiString aResPath(dir);
+
+  OSD_Path anOSDPath(aResPath);
+  anOSDPath.DownTrek(anOSDPath.Name());
+  anOSDPath.SetName(aName);
+
+  anOSDPath.SystemName(aPath);
 }
