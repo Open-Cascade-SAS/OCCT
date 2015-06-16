@@ -180,12 +180,21 @@ is
      --          If the resource does not exist, it is created.
      ---Level: Public
 
+     GetResourcePath(myclass;
+                     aPath: in out AsciiString from TCollection;
+                     aName: CString from Standard;
+                     isUserDefaults: Boolean from Standard);
+     ---Purpose: Gets the resource file full path by its name.
+     --          If corresponding environment variable is not set
+     --          or file doesn't exist returns empty string.
+     ---Level: Public
+
+
 ---Category: Private methods.
 
      Load (me: mutable ;
-    	   aDirectory: in out AsciiString from TCollection;
-           aName:      in out AsciiString from TCollection;
-	   aMap:       in out DataMapOfAsciiStringAsciiString)
+           aPath: in out AsciiString from TCollection;
+           aMap:  in out DataMapOfAsciiStringAsciiString)
      is static private;
      ---Level: Internal
 
