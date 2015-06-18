@@ -1,0 +1,129 @@
+puts "============"
+puts "CR25760"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - precision factor added to ZNear, ZFar in method ZFitAll() of Graphic3d_Camera is not enough
+#######################################################################
+
+vinit View1 w=409 h=409
+vclear
+
+vclear
+vautozfit 0
+
+proc test3d {dstart} {
+
+  set proj1 { 0.47243081629544409 -0.39335870920278265 -0.78871924644244684}
+  set proj2 {-0.31828216872577886  0.17649241059446089 -0.93142197208020105}
+
+  for {set i 1} {$i <= 3} {incr i} {
+    for {set r 1} {$r <= 3} {incr r} {
+
+      set x    [expr pow(100, $i)]
+      set y    [expr pow( 70, $i)]
+      set z    [expr pow( 50, $i)]
+      set dist [expr pow(100, $r)]
+
+      vclear
+      vertex v0  $x $y $z
+      vertex v1 [expr "$x + ($dist * [lindex $proj1 0])"] [expr "$y + ($dist * [lindex $proj1 1])"] [expr "$z + ($dist * [lindex $proj1 2])"]
+      vertex v2 [expr "$x + ($dist * [lindex $proj2 0])"] [expr "$y + ($dist * [lindex $proj2 1])"] [expr "$z + ($dist * [lindex $proj2 2])"]
+
+      for {set d [expr $dstart * {max ($x,$y,$z,$dist)}]} {$d <= 1e7} {set d [expr "abs ($d) * 1.2E5"]} {
+        for {set p 1} {$p <= 2} {incr p} {
+          set proj [set proj$p]
+
+          vremove -all
+          vdisplay v0
+          vdisplay v$p
+          vviewparams -eye [expr "$x - ($d * [lindex $proj 0])"] [expr "$y - ($d * [lindex $proj 1])"] [expr "$z - ($d * [lindex $proj 2])"] -at $x $y $z
+          vzfit
+
+          vremove -all
+          vdisplay v0
+          if { [checkcolor 204 204 1 1 0] != 1 } {
+            puts "Error: 3D projection test failed with the following parameters:"
+            vviewparams
+            vzrange
+            puts ""
+            puts "v1 x: $x"
+            puts "v1 y: $y"
+            puts "v1 z: $z"
+            puts "v2 x: [expr $x + ($dist * [lindex $proj 0])]"
+            puts "v2 y: [expr $y + ($dist * [lindex $proj 1])]"
+            puts "v2 z: [expr $z + ($dist * [lindex $proj 2])]"
+            puts ""
+            return 0
+          }
+
+          vremove -all
+          vdisplay v$p
+          if { [checkcolor 204 204 1 1 0] != 1 } {
+            puts "Error: 3D projection test failed with the following parameters:"
+            vviewparams
+            vzrange
+            puts ""
+            puts "v1 x: $x"
+            puts "v1 y: $y"
+            puts "v1 z: $z"
+            puts "v2 x: [expr $x + ($dist * [lindex $proj 0])]"
+            puts "v2 y: [expr $y + ($dist * [lindex $proj 1])]"
+            puts "v2 z: [expr $z + ($dist * [lindex $proj 2])]"
+            puts ""
+            return 0
+          }
+        }
+      }
+    }
+  }
+  return 1
+}
+
+set tcl_precision 16
+
+####################################################################
+# Test orthographic camera without frustum culling.                #
+# Test camera with scale 1E-8 to avoid jittering.                  # 
+####################################################################
+vcamera -ortho
+vviewparams -scale 1e-8
+vfrustumculling 0
+
+if { [test3d 1e-7] != 1 } {
+  puts "Error: 3D projection test failed: camera is orthographic, view frustum culling is OFF"
+}
+
+####################################################################
+# Test orthographic camera with frustum culling.                   #
+# Test camera with scale 1E-8 to avoid jittering.                  # 
+####################################################################
+vcamera -ortho
+vviewparams -scale 1e-8
+vfrustumculling 1
+
+if { [test3d 1e-7] != 1 } {
+  puts "Error: 3D projection test failed: camera is orthographic, view frustum culling is ON"
+}
+
+####################################################################
+# Test perspective camera without frustum culling.                 #
+# Test camera with less starting distance 1.0 to avoid jittering. #
+####################################################################
+vcamera -persp
+vfrustumculling 0
+
+if { [test3d 1.0] != 1 } {
+  puts "Error: 3D projection test failed: camera is perspective, view frustum culling is OFF"
+}
+
+####################################################################
+# Test perspective camera with frustum culling.                    #
+# Test camera with less starting distance 1.0 to avoid jittering. #
+####################################################################
+vcamera -persp
+vfrustumculling 1
+
+if { [test3d 1.0] != 1 } {
+  puts "Error: 3D projection test failed: camera is perspective, view frustum culling is ON"
+}
