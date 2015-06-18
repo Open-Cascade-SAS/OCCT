@@ -1,0 +1,79 @@
+puts "============"
+puts "CR25760"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - precision factor added to ZNear, ZFar in method ZFitAll() of Graphic3d_Camera is not enough
+#######################################################################
+
+vinit View1 w=409 h=409
+vclear
+
+proc test2d {} {
+  set pix1 {135 204}
+  set pix2 {204 187}
+
+  for {set i 8} {$i <= 8} {incr i} {
+    set min_z [expr pow (-10, $i)]
+    set max_z [expr $min_z + 1000]
+    plane p1 0 0 $min_z 0 0 1
+    plane p2 0 0 $max_z 0 0 1
+
+    mkface f1 p1 -1 0 -1 0
+    mkface f2 p2  0 1  0 1
+
+    vclear
+    vdisplay f1 f2
+    vtop
+    vfit
+
+    for {set z [expr $max_z + 1.0]} {$z <= 1e10} {set z [expr abs ($z) * 1.2]} {
+      vviewparams -eye 0 0 $z
+      vmoveto {*}$pix1
+      if { [checkcolor {*}$pix1 0 1 1] != 1 } {
+        puts "Error: 2D projection test failed with the following parameters:"
+        vviewparams
+        vzrange
+        puts ""
+        puts "z    : $z"
+        puts "min_z: $min_z"
+        puts "max_z: $max_z"
+        return 0
+      }
+      vmoveto {*}$pix2
+      if { [checkcolor {*}$pix2 0 1 1] != 1 } {
+        puts "Error: 2D projection test failed with the following parameters:"
+        vviewparams
+        vzrange
+        puts ""
+        puts "z    : $z"
+        puts "min_z: $min_z"
+        puts "max_z: $max_z"
+        return 0
+      }
+    }
+  }
+  return 1
+}
+
+set tcl_precision 16
+
+####################################################################
+# Test orthographic camera without frustum culling.                #
+####################################################################
+vcamera -ortho
+vfrustumculling 0
+
+if { [test2d] != 1 } {
+  puts "Error: 2D projection test failed: view frustum culling is OFF"
+}
+
+####################################################################
+# Test orthographic camera with frustum culling.                   #
+####################################################################
+vcamera -ortho
+vfrustumculling 1
+
+if { [test2d] != 1 } {
+  puts "Error: 2D projection test failed: view frustum culling is ON"
+}

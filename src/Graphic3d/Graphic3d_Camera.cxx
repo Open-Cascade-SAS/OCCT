@@ -41,6 +41,20 @@ namespace
 
   // minimum camera distance
   static const Standard_Real MIN_DISTANCE = Pow (0.1, ShortRealDigits() - 2);
+
+  // z-range tolerance compatible with for floating point.
+  static Standard_Real zEpsilon()
+  {
+    return FLT_EPSILON;
+  }
+
+  // relative z-range tolerance compatible with for floating point.
+  static Standard_Real zEpsilon (const Standard_Real theValue)
+  {
+    Standard_Real aLogRadix = Log10 (Abs (theValue)) / Log10 (FLT_RADIX);
+    Standard_Real aExp = Floor (aLogRadix);
+    return FLT_EPSILON * Pow (FLT_RADIX, aExp);
+  };
 };
 
 // =======================================================================
@@ -989,45 +1003,20 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
 {
   Standard_ASSERT_RAISE (theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
 
-  // Method changes ZNear and ZFar planes of camera so as to fit the graphical structures
-  // by their real boundaries (computed ignoring infinite flag) into the viewing volume.
-  // In addition to the graphical boundaries, the usual min max used for fitting perspective
-  // camera. To avoid numeric errors for perspective camera the negative ZNear values are
-  // fixed using tolerance distance, relative to boundaries size. The tolerance distance
-  // should be computed using information on boundaries of primary application actors,
-  // (e.g. representing the displayed model) - to ensure that they are not unreasonably clipped.
-  const Standard_ShortReal anEpsilon = 1e-4f;
-
+  // Method changes zNear and zFar parameters of camera so as to fit graphical structures
+  // by their graphical boundaries. It precisely fits min max boundaries of primary application
+  // objects (second argument), while it can sacrifice the real graphical boundaries of the
+  // scene with infinite or helper objects (third argument) for the sake of perspective projection.
   if (theGraphicBB.IsVoid())
   {
-    // Precision factor used to add meaningful tolerance to
-    // ZNear, ZFar values in order to avoid equality after type conversion
-    // to ShortReal matrices type.
-
-    Standard_Real aZFar  = Distance() * 3.0;
-    Standard_Real aZNear = 0.0;
-
-    if (!IsOrthographic())
-    {
-      if (aZFar < anEpsilon)
-      {
-        aZNear = anEpsilon;
-        aZFar  = anEpsilon * 2.0;
-      }
-      else if (aZNear < aZFar * anEpsilon)
-      {
-        aZNear = aZFar * anEpsilon;
-      }
-    }
-
-    SetZRange (aZNear, aZFar);
+    SetZRange (DEFAULT_ZNEAR, DEFAULT_ZFAR);
     return;
   }
 
-  // Measure depth of boundary points from camera eye
+  // Measure depth of boundary points from camera eye.
   NCollection_Sequence<gp_Pnt> aPntsToMeasure;
 
-  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
+  Standard_Real aGraphicBB[6];
   theGraphicBB.Get (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2], aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
 
   aPntsToMeasure.Append (gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2]));
@@ -1041,7 +1030,7 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
 
   if (!theMinMax.IsVoid() && !theMinMax.IsWhole())
   {
-    Standard_Real aMinMax[6]; // applicative min max boundaries
+    Standard_Real aMinMax[6];
     theMinMax.Get (aMinMax[0], aMinMax[1], aMinMax[2], aMinMax[3], aMinMax[4], aMinMax[5]);
 
     aPntsToMeasure.Append (gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[2]));
@@ -1054,7 +1043,7 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
     aPntsToMeasure.Append (gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[5]));
   }
 
-  // Camera eye plane
+  // Camera eye plane.
   gp_Dir aCamDir = Direction();
   gp_Pnt aCamEye = myEye;
   gp_Pln aCamPln (aCamEye, aCamDir);
@@ -1066,7 +1055,7 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
 
   const gp_XYZ& anAxialScale = myAxialScale;
 
-  // Get minimum and maximum distances to the eye plane
+  // Get minimum and maximum distances to the eye plane.
   Standard_Integer aCounter = 0;
   NCollection_Sequence<gp_Pnt>::Iterator aPntIt(aPntsToMeasure);
   for (; aPntIt.More(); aPntIt.Next())
@@ -1079,14 +1068,13 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
 
     Standard_Real aDistance = aCamPln.Distance (aMeasurePnt);
 
-    // Check if the camera is intruded into the scene
+    // Check if the camera is intruded into the scene.
     if (aCamDir.IsOpposite (gp_Vec (aCamEye, aMeasurePnt), M_PI * 0.5))
     {
       aDistance *= -1;
     }
 
-    // the first eight points are from theGraphicBB, the last eight points are from theMinMax
-    // (they can be absent).
+    // The first eight points are from theGraphicBB, the last eight points are from theMinMax (can be absent).
     Standard_Real& aChangeMinDist = aCounter >= 8 ? aModelMinDist : aGraphicMinDist;
     Standard_Real& aChangeMaxDist = aCounter >= 8 ? aModelMaxDist : aGraphicMaxDist;
     aChangeMinDist = Min (aDistance, aChangeMinDist);
@@ -1094,50 +1082,85 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
     aCounter++;
   }
 
-  // Compute depth of bounding box center
+  // Compute depth of bounding box center.
   Standard_Real aMidDepth  = (aGraphicMinDist + aGraphicMaxDist) * 0.5;
   Standard_Real aHalfDepth = (aGraphicMaxDist - aGraphicMinDist) * 0.5;
 
-  // Compute enlarged or shrank near and far z ranges
+  // Compute enlarged or shrank near and far z ranges.
   Standard_Real aZNear  = aMidDepth - aHalfDepth * theScaleFactor;
   Standard_Real aZFar   = aMidDepth + aHalfDepth * theScaleFactor;
-  Standard_Real aZRange = Abs (aZFar - aZNear);
-  Standard_Real aZConf  = Max (static_cast <Standard_Real> (anEpsilon * aZRange),
-                               static_cast <Standard_Real> (anEpsilon));
-
-  aZNear -= Abs (aZNear) * anEpsilon + aZConf;
-  aZFar  += Abs  (aZFar) * anEpsilon + aZConf;
 
   if (!IsOrthographic())
   {
-    if (aZFar > anEpsilon)
+    // Everything is behind the perspective camera.
+    if (aZFar < zEpsilon())
     {
-      // Choose between model distance and graphical distance, as the model boundaries
-      // might be infinite if all structures have infinite flag.
-      const Standard_Real aGraphicDepth = aGraphicMaxDist >= aGraphicMinDist
-        ? aGraphicMaxDist - aGraphicMinDist : RealLast();
-
-      const Standard_Real aModelDepth = aModelMaxDist >= aModelMinDist
-        ? aModelMaxDist - aModelMinDist : RealLast();
-
-      const Standard_Real aMinDepth = Min (aModelDepth, aGraphicDepth);
-      const Standard_Real aZTol     = Max (static_cast<Standard_Real> (anEpsilon * Abs (aMinDepth)),
-                                           static_cast<Standard_Real> (anEpsilon));
-      if (aZNear < aZTol)
-      {
-        aZNear = aZTol;
-      }
+      SetZRange (DEFAULT_ZNEAR, DEFAULT_ZFAR);
+      return;
     }
-    else
+
+    // For better perspective the zNear value should not be less than zEpsilon (zFar).
+    // If zNear computed by graphical boundaries do not meet the rule (e.g. it is negative
+    // when computing it for grid) it could be increased up to minimum depth computed by
+    // application min max values. This means that z-fit can sacrifice presentation of
+    // non primary application graphical objects in favor of better perspective projection;
+    if (aZNear < zEpsilon (aZFar))
     {
-      aZNear = anEpsilon;
-      aZFar  = anEpsilon * 2.0;
+      // Otherwise it should be increased up to zEpsilon (1.0) to avoid clipping of primary
+      // graphical objects.
+      if (aModelMinDist < zEpsilon (aZFar))
+      {
+        aMidDepth  = (aModelMinDist + aModelMaxDist) * 0.5;
+        aHalfDepth = (aModelMinDist - aModelMaxDist) * 0.5;
+        aZNear     = Max (zEpsilon(), aMidDepth - aHalfDepth * theScaleFactor);
+      }
+      else
+      {
+        aZNear = zEpsilon (aZFar);
+      }
     }
   }
 
-  if (aZFar < (aZNear + Abs (aZFar) * anEpsilon))
+  //
+  // Consider clipping errors due to double to single precision floating-point conversion.
+  //
+
+  // Model to view transformation performs translation of points against eye position
+  // in three dimensions. Both point coordinate and eye position values are converted from
+  // double to single precision floating point numbers producing conversion errors. 
+  // Epsilon (Mod) * 3.0 should safely compensate precision error for z coordinate after
+  // translation assuming that the:
+  // Epsilon (Eye.Mod()) * 3.0 > Epsilon (Eye.X()) + Epsilon (Eye.Y()) + Epsilon (Eye.Z()).
+  Standard_Real aEyeConf = 3.0 * zEpsilon (myEye.XYZ().Modulus());
+
+  // Model to view transformation performs rotation of points according to view direction.
+  // New z coordinate is computed as a multiplication of point's x, y, z coordinates by the
+  // "forward" direction vector's x, y, z coordinates. Both point's and "z" direction vector's
+  // values are converted from double to single precision floating point numbers producing
+  // conversion errors.
+  // Epsilon (Mod) * 6.0 should safely compensate the precision errors for the multiplication
+  // of point coordinates by direction vector.
+  gp_Pnt aGraphicMin = theGraphicBB.CornerMin();
+  gp_Pnt aGraphicMax = theGraphicBB.CornerMax();
+
+  Standard_Real aModelConf = 6.0 * zEpsilon (aGraphicMin.XYZ().Modulus()) +
+                             6.0 * zEpsilon (aGraphicMax.XYZ().Modulus());
+
+  // Compensate floating point conversion errors by increasing zNear, zFar to avoid clipping.
+  aZNear -= zEpsilon (aZNear) + aEyeConf + aModelConf;
+  aZFar  += zEpsilon (aZFar)  + aEyeConf + aModelConf;
+
+  if (!IsOrthographic())
   {
-    aZFar = aZNear + Abs (aZFar) * anEpsilon;
+    // Compensate zNear, zFar conversion errors for perspective projection.
+    aZNear -= aZFar * zEpsilon (aZNear) / (aZFar - zEpsilon (aZNear));
+    aZFar  += zEpsilon (aZFar);
+
+    // Ensure that after all the zNear is not a negative value.
+    if (aZNear < zEpsilon())
+    {
+      aZNear = zEpsilon();
+    }
   }
 
   SetZRange (aZNear, aZFar);
