@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC25981"
+puts "========"
+puts ""
+#################################################
+# Wrong result obtained by projection algorithm.
+#################################################
+
+restore [locate_data_file bug25981_cb1_4.draw] c
+restore [locate_data_file bug25981_b2f.brep] f
+mksurface s f
+project x c s
+
+2dcvalue x 0 firstX firstY
+set log [dump firstX]
+regexp {([-0-9.+eE]+)} ${log} x1
+
+set tol_abs 1.e-7
+if {abs($x1) > $tol_abs} {
+  puts "Error: Bad start position of projected curve"
+}
+
+view 1 -2D- 465 20 400 400
+2dfit
+pcurve f
+
+xwd ${imagedir}/${casename}.png
