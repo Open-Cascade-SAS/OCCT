@@ -217,7 +217,12 @@ is
         --          Initially it holds empty TopoDS_Compound
 
     SetShape (me:mutable; L: Label from TDF; S: Shape from TopoDS);
-    	---Purpose: Sets representation (TopoDS_Shape) for top-level shape
+    	---Purpose: Sets representation (TopoDS_Shape) for top-level shape.
+    	--          If S has location(location.IsIdentity() is false),
+    	--          command will be skipped. Sub-shapes of S which is 
+    	--          subshape of old shape, will be stored ( all atributes will be stored). 
+    	--          If a sub-label of L is not a sub-shape of the new shape,
+    	--          it will be removed.
 
     AddShape (me:mutable; S: Shape from TopoDS; 
     	                  makeAssembly: Boolean = Standard_True;
@@ -327,6 +332,9 @@ is
 
     RemoveComponent (me; comp: Label from TDF);
     	---Purpose: Removes a component from its assembly
+
+    UpdateAssociatedAssembly (me; L: Label from TDF);
+    	---Purpose: Update labels associated with Label <L>
 
     UpdateAssembly (me; L: Label from TDF);
     	---Purpose: Update an assembly at label <L>

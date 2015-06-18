@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC26314"
+puts "========"
+puts ""
+############################################################
+# Method XCAFDoc_ShapeTool::SetShape() works not correctly
+############################################################
+
+pload OCAFKERNEL
+
+box b 0 0 0 1 1 1
+box b1 -10 -10 -10 10 10 10
+box b2 1 1 1 10 10 10
+NewDocument d
+compound b1 c1
+XAddShape d b 1
+XAddShape d c1 1
+XShow d
+XSetShape d 0:1:1:3 b2
+XShow d
+vfit
+
+set only_screen 1
