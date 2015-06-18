@@ -120,7 +120,9 @@ static void RecadreMemePeriode(IntSurf_PntOn2S& POn2S,const IntSurf_PntOn2S& Ref
 }
 
 static Standard_Boolean CompareVertexAndPoint(const gp_Pnt& V, const gp_Pnt& P, const Standard_Real& Tol) { 
-  return (V.Distance(P) <= Tol);
+  const Standard_Real aSQDist = V.SquareDistance(P);
+  const Standard_Real aSQTol = Tol*Tol;
+  return (aSQDist <= aSQTol);
 }
 
 void IntPatch_WLine::SetPeriod(const Standard_Real pu1,
