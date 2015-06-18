@@ -4,7 +4,7 @@ restore [locate_data_file CIN901_intcqhmi.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 27.029859224903987
+checkmaxtol result 15.355207687279844
 checknbshapes result -shell 1
-checkfreebounds result 0
+checkfreebounds result 3
 checkfaults result a 6

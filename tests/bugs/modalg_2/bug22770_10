@@ -14,18 +14,21 @@ sewing result +t 0.01 a b +mint 0.01 -a
 
 set square 1.88469e+07
 
-set nb_v_good 478
-set nb_e_good 748
-set nb_w_good 273
-set nb_f_good 259
-set nb_sh_good 2
-set nb_sol_good 0
-set nb_compsol_good 0
-set nb_compound_good 1
-set nb_shape_good 1761
+checkmaxtol result 0.00087010032709666047
+checkfreebounds result 12
 
-checkmaxtol result 0.002196807453775285
-checknbshapes result -shell 2
-checkfreebounds result 10
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 479
+ EDGE      : 748
+ WIRE      : 273
+ FACE      : 259
+ SHELL     : 2
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 1762
+"
+checknbshapes result -ref ${nbshapes_expected} -t -m "sewing result"
 
-set 3dviewer 0
+set 3dviewer 1
