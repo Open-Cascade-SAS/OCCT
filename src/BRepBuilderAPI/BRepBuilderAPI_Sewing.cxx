@@ -492,9 +492,83 @@ static Standard_Boolean findNMVertices(const TopoDS_Edge& theEdge,
   return Standard_True;
 }
 
-static inline Standard_Real ComputeToleranceVertex(const Standard_Real dist, const Standard_Real Tol1, const Standard_Real Tol2)
+static void ComputeToleranceVertex(TopoDS_Vertex theV1, TopoDS_Vertex theV2,
+                                   TopoDS_Vertex& theNewV)
 {
-  return (dist * 0.5 + Tol1 + Tol2);
+  Standard_Integer m, n;
+  Standard_Real aR[2], dR, aD, aEps;
+  TopoDS_Vertex aV[2];
+  gp_Pnt aP[2];
+  BRep_Builder aBB;
+  //
+  aEps = RealEpsilon();
+  aV[0] = theV1;
+  aV[1] = theV2;
+  for (m = 0; m < 2; ++m) {
+    aP[m] = BRep_Tool::Pnt(aV[m]);
+    aR[m] = BRep_Tool::Tolerance(aV[m]);
+    }  
+    //
+  m=0; // max R
+  n=1; // min R
+  if (aR[0] < aR[1]) {
+    m=1;
+    n=0;
+  }
+  //
+  dR = aR[m] - aR[n]; // dR >= 0.
+  gp_Vec aVD(aP[m], aP[n]);
+  aD = aVD.Magnitude();
+  //
+  if (aD <= dR || aD < aEps) { 
+    aBB.MakeVertex (theNewV, aP[m], aR[m]);
+  }
+  else {
+    Standard_Real aRr;
+    gp_XYZ aXYZr;
+    gp_Pnt aPr;
+    //
+    aRr = 0.5 * (aR[m] + aR[n] + aD);
+    aXYZr = 0.5 * (aP[m].XYZ() + aP[n].XYZ() - aVD.XYZ() * (dR/aD));
+    aPr.SetXYZ(aXYZr);
+    //
+    aBB.MakeVertex (theNewV, aPr, aRr);
+  }
+  return;
+}
+
+static void ComputeToleranceVertex(TopoDS_Vertex theV1, TopoDS_Vertex theV2,
+                                   TopoDS_Vertex theV3, TopoDS_Vertex& theNewV)
+{
+  Standard_Real aDi, aDmax;
+  gp_Pnt aCenter;
+  gp_Pnt aP[3];
+  Standard_Real aR[3];
+  TopoDS_Vertex aV[3];
+  gp_XYZ aXYZ(0.,0.,0.);
+  aV[0] = theV1;
+  aV[1] = theV2;
+  aV[2] = theV3;
+  for (Standard_Integer i = 0; i < 3; ++i) {
+    aP[i] = BRep_Tool::Pnt(aV[i]);
+    aR[i] = BRep_Tool::Tolerance(aV[i]);
+    aXYZ = aXYZ + aP[i].XYZ();
+  }
+  //
+  aXYZ.Divide(3.0);
+  aCenter.SetXYZ(aXYZ);
+  //
+  aDmax=-1.;
+  for ( Standard_Integer i = 0; i < 3; ++i) {
+    aDi = aCenter.Distance(aP[i]);
+    aDi += aR[i];
+    if (aDi > aDmax)
+      aDmax = aDi;
+  }
+
+  BRep_Builder aBB;
+  aBB.MakeVertex (theNewV, aCenter, aDmax);
+  return;
 }
 TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirst,
 					       const TopoDS_Edge& edgeLast,
@@ -604,111 +678,54 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
     //V21 = TopoDS::Vertex(myReShape->Apply(V21));
     //V22 = TopoDS::Vertex(myReShape->Apply(V22));
 
-    gp_Pnt p11 = BRep_Tool::Pnt(V11);
-    gp_Pnt p12 = BRep_Tool::Pnt(V12);
-    gp_Pnt p21 = BRep_Tool::Pnt(V21); 
-    gp_Pnt p22 = BRep_Tool::Pnt(V22);
-
-    
-
     //Standard_Boolean isRev = Standard_False;
-    gp_Pnt pfirst;
-    Standard_Real Tol1 = 0.;
     if (isClosed1 || isClosed2) {
       // at least one of the edges is closed
       if (isClosed1 && isClosed2) {
         // both edges are closed
-        pfirst.SetXYZ(0.5*(p11.XYZ() + p21.XYZ()));
-        gp_Vec v1 =  p21.XYZ() - p11.XYZ();
-        Standard_Real d1 = v1.Magnitude();
-        Tol1 = ComputeToleranceVertex(d1,BRep_Tool::Tolerance(V11),BRep_Tool::Tolerance(V21));
-        //Tol1 = Max(pfirst.Distance(p11),pfirst.Distance(p21));
+        ComputeToleranceVertex(V11, V21, V1New);
       }
       else if (isClosed1) {
         // only first edge is closed
-        gp_XYZ pt =0.5*(p21.XYZ()+ p22.XYZ());
-        pfirst.SetXYZ(0.5*(p11.XYZ() + pt));
-        gp_Vec v1 =  p22.XYZ() - p21.XYZ();
-        Standard_Real d1 = v1.Magnitude();
-        Tol1= ComputeToleranceVertex(d1,BRep_Tool::Tolerance(V22),BRep_Tool::Tolerance(V21));
-        gp_Vec v2 =  p11.XYZ() - pt;
-        Standard_Real d2 = v2.Magnitude();
-        Tol1= ComputeToleranceVertex(d2,Tol1,BRep_Tool::Tolerance(V11));
-        //Tol1 = Max(pfirst.Distance(p21),pfirst.Distance(p22));
-        //Tol1 = Max(pfirst.Distance(p11),Tol1);
+        ComputeToleranceVertex(V22, V21, V11, V1New);
       }
       else {
         // only second edge is closed
-        gp_XYZ pt = 0.5*(p11.XYZ()+ p12.XYZ());
-        pfirst.SetXYZ(0.5*(p21.XYZ() + pt));
-        gp_Vec v1 =  p11.XYZ() - p12.XYZ();
-        Standard_Real d1 = v1.Magnitude();
-        Tol1 = ComputeToleranceVertex(d1,BRep_Tool::Tolerance(V11),BRep_Tool::Tolerance(V12));
-        gp_Vec v2 =  p21.XYZ() - pt;
-        Standard_Real d2 = v2.Magnitude();
-        Tol1 = ComputeToleranceVertex(d2,Tol1,BRep_Tool::Tolerance(V21));
-        //Tol1 = Max(pfirst.Distance(p11),pfirst.Distance(p12));
-        //Tol1 = Max(pfirst.Distance(p21),Tol1);
+        ComputeToleranceVertex(V11, V12, V21, V1New);
       }
-      aBuilder.MakeVertex(V1New,pfirst,Tol1);
       V2New = V1New;
     }
     else {
       // both edges are open
-      gp_Pnt plast;
-      Standard_Real Tol2 = 0.;
       Standard_Boolean isOldFirst = ( secForward ? V11.IsSame(V21) :  V11.IsSame(V22) );
       Standard_Boolean isOldLast = ( secForward ? V12.IsSame(V22) : V12.IsSame(V21)) ;
       if (secForward) {
         //case if vertices already sewed
         if(!isOldFirst)
         {
-          pfirst.SetXYZ(0.5*(p11.XYZ() + p21.XYZ()));
-          gp_Vec v1 =  p21.XYZ() - p11.XYZ();
-          Standard_Real d1 = v1.Magnitude();
-          Tol1 = ComputeToleranceVertex(d1,BRep_Tool::Tolerance(V11),BRep_Tool::Tolerance(V21));
+          ComputeToleranceVertex(V11, V21, V1New);
         }
         if(!isOldLast)
         {
-          plast.SetXYZ(0.5*(p12.XYZ() + p22.XYZ()));
-
-          gp_Vec v2 =  p22.XYZ() - p12.XYZ();
-          Standard_Real d2 = v2.Magnitude();
-
-          Tol2 = ComputeToleranceVertex(d2,BRep_Tool::Tolerance(V12),BRep_Tool::Tolerance(V22));
+          ComputeToleranceVertex(V12, V22, V2New);
         }
-
       }
       else {
         if(!isOldFirst)
         {
-          pfirst.SetXYZ(0.5*(p11.XYZ() + p22.XYZ()));
-          gp_Vec v1 =  p22.XYZ() - p11.XYZ();
-          Standard_Real d1 = v1.Magnitude();
-          Tol1 = ComputeToleranceVertex(d1,BRep_Tool::Tolerance(V11),BRep_Tool::Tolerance(V22));
+          ComputeToleranceVertex(V11, V22, V1New);
         }
         if(!isOldLast)
         {
-          plast.SetXYZ(0.5*(p12.XYZ() + p21.XYZ()));
-          gp_Vec v2 =  p21.XYZ() - p12.XYZ();
-          Standard_Real d2 = v2.Magnitude();
-          Tol2 = ComputeToleranceVertex(d2,BRep_Tool::Tolerance(V12),BRep_Tool::Tolerance(V21));
+          ComputeToleranceVertex(V12, V21, V2New);
         }
-
       }
-      if(!isOldFirst)
-        aBuilder.MakeVertex(V1New,pfirst,Tol1);
-      else
+      if(isOldFirst)
         V1New = V11;
-       
 
-      if(!isOldLast)
-        aBuilder.MakeVertex(V2New,plast,Tol2);
-      else
+      if(isOldLast)
         V2New = V12;
-
     }
-
     // Add the vertices in the good sense
     TopoDS_Shape anEdge = edge.Oriented(TopAbs_FORWARD);
     TopoDS_Shape aLocalEdge = V1New.Oriented(TopAbs_FORWARD); //(listNode.First()).Oriented(TopAbs_FORWARD);
