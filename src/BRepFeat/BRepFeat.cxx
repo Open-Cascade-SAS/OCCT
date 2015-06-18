@@ -54,6 +54,7 @@
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <LocOpe_BuildShape.hxx> 
+#include <ElSLib.hxx>
 
 #include <TColGeom_SequenceOfCurve.hxx>
 
@@ -490,14 +491,9 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
 {
   Bnd_Box B;
   BRepBndLib::Add(Sbase,B);
-  Standard_Real c[6], bnd;
-  B.Get(c[0],c[2],c[4],c[1],c[3],c[5]);
-  bnd = c[0];
-  for(Standard_Integer i = 1 ; i < 6; i++) {
-    if(c[i] > bnd) bnd = c[i];
-  }
-  bnd = 10*bnd;
-
+  Standard_Real x[2], y[2], z[2];
+  B.Get(x[0],y[0],z[0],x[1],y[1],z[1]);
+  Standard_Real diam = 10.*Sqrt(B.SquareExtent());
   
   Handle(Geom_Surface) s = BRep_Tool::Surface(FUntil);
   Handle(Standard_Type) styp = s->DynamicType();
@@ -507,16 +503,80 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
   }
   Handle(Geom_RectangularTrimmedSurface) str;
   if (styp == STANDARD_TYPE(Geom_Plane)) {
+    gp_Pln aPln = Handle(Geom_Plane)::DownCast(s)->Pln();
+    Standard_Real u, v, umin = RealLast(), umax = -umin,
+                        vmin = RealLast(), vmax = -vmin;
+    for(Standard_Integer i = 0 ; i < 2; i++) 
+    {
+      for(Standard_Integer j = 0; j < 2; j++)
+      {
+        for(Standard_Integer k = 0; k < 2; k++)
+        {
+          gp_Pnt aP(x[i], y[j], z[k]);
+          ElSLib::Parameters(aPln, aP, u, v);
+          if(u < umin) 
+            umin = u;
+          if(u > umax) 
+            umax = u;
+          if(v < vmin)
+            vmin = v;
+          if(v > vmax)
+            vmax = v;
+        }
+      }
+    }
+    umin -= diam;
+    umax += diam;
+    vmin -= diam;
+    vmax += diam;
     str = new Geom_RectangularTrimmedSurface
-      (s, bnd, -bnd, bnd, -bnd, Standard_True, Standard_True);
+      (s, umin, umax, vmin, vmax, Standard_True, Standard_True);
   }
   else if (styp == STANDARD_TYPE(Geom_CylindricalSurface)) {
+    gp_Cylinder aCyl = Handle(Geom_CylindricalSurface)::DownCast(s)->Cylinder();
+    Standard_Real u, v, vmin = RealLast(), vmax = -vmin;
+    for(Standard_Integer i = 0 ; i < 2; i++) 
+    {
+      for(Standard_Integer j = 0; j < 2; j++)
+      {
+        for(Standard_Integer k = 0; k < 2; k++)
+        {
+          gp_Pnt aP(x[i], y[j], z[k]);
+          ElSLib::Parameters(aCyl, aP, u, v);
+          if(v < vmin)
+            vmin = v;
+          if(v > vmax)
+            vmax = v;
+        }
+      }
+    }
+    vmin -= diam;
+    vmax += diam;
     str = new Geom_RectangularTrimmedSurface
-      (s, bnd, -bnd, Standard_False, Standard_True);
+      (s, vmin, vmax, Standard_False, Standard_True);
   }
   else if (styp == STANDARD_TYPE(Geom_ConicalSurface)) {
+    gp_Cone aCon = Handle(Geom_ConicalSurface)::DownCast(s)->Cone();
+    Standard_Real u, v, vmin = RealLast(), vmax = -vmin;
+    for(Standard_Integer i = 0 ; i < 2; i++) 
+    {
+      for(Standard_Integer j = 0; j < 2; j++)
+      {
+        for(Standard_Integer k = 0; k < 2; k++)
+        {
+          gp_Pnt aP(x[i], y[j], z[k]);
+          ElSLib::Parameters(aCon, aP, u, v);
+          if(v < vmin)
+            vmin = v;
+          if(v > vmax)
+            vmax = v;
+        }
+      }
+    }
+    vmin -= diam;
+    vmax += diam;
     str = new Geom_RectangularTrimmedSurface
-      (s, bnd, -bnd, Standard_False, Standard_True);
+      (s, vmin, vmax, Standard_False, Standard_True);
   }
   else {
     FUntil.Nullify();
