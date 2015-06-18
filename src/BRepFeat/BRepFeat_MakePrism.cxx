@@ -260,15 +260,15 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
     if(myLShape.ShapeType() == TopAbs_WIRE) {
       TopExp_Explorer ex1(VraiPrism, TopAbs_FACE);
       for(; ex1.More(); ex1.Next()) {
-	TopExp_Explorer ex2(ex1.Current(), TopAbs_WIRE);
-	for(; ex2.More(); ex2.Next()) {
-	  if(ex2.Current().IsSame(myLShape)) {
-	    FFace = TopoDS::Face(ex1.Current());
-	    found = Standard_True;
-	    break;
-	  }
-	}
-	if(found) break;
+        TopExp_Explorer ex2(ex1.Current(), TopAbs_WIRE);
+        for(; ex2.More(); ex2.Next()) {
+          if(ex2.Current().IsSame(myLShape)) {
+            FFace = TopoDS::Face(ex1.Current());
+            found = Standard_True;
+            break;
+          }
+        }
+        if(found) break;
       }
     }
     
@@ -276,9 +276,9 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
     for(; exp.More(); exp.Next()) {
       const TopoDS_Face& ff = TopoDS::Face(exp.Current());
       if(ToFuse(ff, FFace)) {
-	TopTools_DataMapOfShapeListOfShape sl;
-	if(!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace)) 
-	break;
+        TopTools_DataMapOfShapeListOfShape sl;
+        if(!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace)) 
+          break;
       }
     }
   }
@@ -570,15 +570,17 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From,
     ASI2.Perform(scur);
     TopAbs_Orientation OrU, OrF;
     TopoDS_Face FFrom, FUntil;
+    Standard_Real ParF, ParU;
     if (ASI1.IsDone() && ASI1.NbPoints(1) >=1) {
       if (myFuse == 1) {
-	OrU = ASI1.Point(1,1).Orientation();
+	      OrU = ASI1.Point(1,1).Orientation();
       }
       else {
-	OrU = ASI1.Point(1,ASI1.NbPoints(1)).Orientation();
+	      OrU = ASI1.Point(1,ASI1.NbPoints(1)).Orientation();
       }
       if(sens==-1) OrU = TopAbs::Reverse(OrU);
       FUntil = ASI1.Point(1,1).Face();
+      ParU = ASI1.Point(1,1).Parameter();
     }
     else {
       NotDone();
@@ -589,11 +591,19 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From,
       OrF = ASI2.Point(1,1).Orientation();
       if(sens==1) OrF = TopAbs::Reverse(OrF);
       FFrom = ASI2.Point(1,1).Face();
+      ParF = ASI2.Point(1,1).Parameter();
     }
     else {
       NotDone();
       myStatusError = BRepFeat_NoIntersectF;
       return;
+    }
+    if(tran > 0 && (Abs(ParU) < Abs(ParF)))
+    {
+      TopAbs_Orientation Or;
+      Or = OrU;
+      OrU = OrF;
+      OrF = Or;
     }
     TopoDS_Shape Comp;
     BRep_Builder B;
