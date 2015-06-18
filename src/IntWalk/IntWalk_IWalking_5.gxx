@@ -107,8 +107,18 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
     }
   }
 
-  if (Abs(Du) < tolerance(1) && Abs(Dv) < tolerance(2))
+  const Standard_Real aMinTolU = 0.1*Abs(Step*previousd2d.X()),
+                      aMinTolV = 0.1*Abs(Step*previousd2d.Y());
+
+  if ((Abs(Du) < Min(tolerance(1), aMinTolU)) && (Abs(Dv) < Min(tolerance(2), aMinTolV)))
+  {
+    //Thin shapes (for which Ulast-Ufirst or/and Vlast-Vfirst is quite small)
+    //exists (see bug #25820). In this case, step is quite small too.
+    //Nevertheless, it not always means that we mark time. Therefore, Du and Dv
+    //must consider step (aMinTolU and aMinTolV parameters).
+
     return IntWalk_ArretSurPointPrecedent; //confused point 2d
+  }
 
   Standard_Real Cosi = StepSign * (Du * previousd2d.X() + Dv * previousd2d.Y());
 
