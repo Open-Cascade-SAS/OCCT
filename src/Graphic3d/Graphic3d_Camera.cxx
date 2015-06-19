@@ -559,8 +559,18 @@ gp_Pnt Graphic3d_Camera::ConvertView2World (const gp_Pnt& thePnt) const
 gp_XYZ Graphic3d_Camera::ViewDimensions() const
 {
   // view plane dimensions
-  Standard_Real aSizeY = IsOrthographic() ? myScale : (2.0 * Distance() * Tan (DTR_HALF * myFOVy));
-  Standard_Real aSizeX = myAspect * aSizeY;
+  Standard_Real aSize = IsOrthographic() ? myScale : (2.0 * Distance() * Tan (DTR_HALF * myFOVy));
+  Standard_Real aSizeX, aSizeY;
+  if (myAspect > 1.0)
+  {
+    aSizeX = aSize * myAspect;
+    aSizeY = aSize;
+  }
+  else
+  {
+    aSizeX = aSize;
+    aSizeY = aSize / myAspect;
+  }
 
   // and frustum depth
   return gp_XYZ (aSizeX, aSizeY, myZFar - myZNear);

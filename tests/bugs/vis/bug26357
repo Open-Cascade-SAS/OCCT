@@ -1,0 +1,51 @@
+puts "============"
+puts "CR26357"
+puts "============"
+puts ""
+
+#########################################################################
+puts "Panning regression after fixing 0026082"
+#########################################################################
+
+box b 100 100 100
+
+vinit View1 w=400 h=400
+vinit View2 w=200 h=400
+vinit View3 w=400 h=200
+vclear
+vaxo
+
+vdisplay b
+
+# Test panning with aspect ratio 1:1
+vactivate View1
+vfit
+vpan        200 0
+vmoveto     399 200
+checkcolor  399 200 0 1 1
+vpan       -200 0
+vmoveto     200 200
+checkcolor  200 200 0 1 1
+vdump ${imagedir}/${casename}_1.png
+
+# Test panning with aspect ratio 1:2
+vactivate View2
+vfit
+vpan        100 0
+vmoveto     199 100
+checkcolor  199 100 0 1 1
+vpan       -100 0
+vmoveto     100 100
+checkcolor  100 100 0 1 1
+vdump ${imagedir}/${casename}_2.png
+
+# Test panning with aspect ratio 2:1
+vactivate View3
+vfit
+vpan        200 0
+vmoveto     399 100
+checkcolor  399 100 0 1 1
+vpan       -200 0
+vmoveto     200 100
+checkcolor  200 100 0 1 1
+vdump ${imagedir}/${casename}_3.png
