@@ -175,7 +175,7 @@ is
 
   AngleWithRef (me; Other , VRef : Vec)   returns Real
         ---C++: inline  
-        --- Purpose : Computes the angle, in radians, between this vector and
+        ---Purpose : Computes the angle, in radians, between this vector and
     	-- vector Other. The result is a value between -Pi and Pi.
     	-- For this, VRef defines the positive sense of rotation: the
     	-- angular value is positive, if the cross product this ^ Other
@@ -204,52 +204,50 @@ is
          ---Purpose: Computes the square magnitude of this vector.
 	 ---C++: inline
 
-        --- Purpose : Adds two vectors
-
   Add (me : in out; Other : Vec)          is static;
         ---C++: inline
         ---C++: alias operator +=
+        --- Purpose : Adds two vectors
 
   Added (me; Other : Vec)  returns Vec    is static;
         ---C++: inline
         ---C++: alias operator +
-  --- Purpose : Adds two vectors
-        --- Purpose : Subtracts two vectors
+        --- Purpose : Adds two vectors
 
   Subtract (me : in out; Right : Vec)       is static;
         ---C++: inline
         ---C++: alias operator -=
+        --- Purpose : Subtracts two vectors
 
   Subtracted (me; Right : Vec)  returns Vec  is static;
         ---C++: inline
         ---C++: alias operator -
 	--- Purpose : Subtracts two vectors
-        --- Purpose : Multiplies a vector by a scalar
 
   Multiply (me : in out; Scalar : Real)           is static;
         ---C++: inline  
         ---C++: alias operator *=
+        --- Purpose : Multiplies a vector by a scalar
 
   Multiplied (me; Scalar : Real)   returns Vec   is static;
         ---C++: inline  
         ---C++: alias operator *
-    --- Purpose : Multiplies a vector by a scalar
-        --- Purpose : Divides a vector by a scalar
+        --- Purpose : Multiplies a vector by a scalar
 
   Divide (me : in out; Scalar : Real)             is static;
         ---C++: inline  
         ---C++: alias operator /=
+        --- Purpose : Divides a vector by a scalar
 
   Divided (me; Scalar : Real)   returns Vec      is static;
         ---C++: inline  
         ---C++: alias operator /
         --- Purpose : Divides a vector by a scalar
-
-        --- Purpose : computes the cross product between two vectors
    
   Cross (me : in out; Right : Vec)                     is static;
         ---C++: inline  
         ---C++: alias operator ^=
+        --- Purpose : computes the cross product between two vectors
 
   Crossed (me; Right : Vec)  returns Vec               is static;
         --- Purpose : computes the cross product between two vectors
@@ -270,15 +268,13 @@ is
         --  Returns || <me> ^ Right ||**2
         ---C++: inline
 
-        --- Purpose : Computes the triple vector product.
-        --  <me> ^ (V1 ^ V2)
-
   CrossCross (me : in out; V1, V2 : Vec)          is static;
         ---C++: inline  
+        --- Purpose : Computes the triple vector product.
+        --  <me> ^= (V1 ^ V2)
 
   CrossCrossed (me; V1, V2 : Vec)   returns Vec   is static;
         ---C++: inline  
-
         --- Purpose : Computes the triple vector product.
         --  <me> ^ (V1 ^ V2)
     
@@ -291,13 +287,11 @@ is
         ---C++: inline  
         --- Purpose : Computes the triple scalar product <me> * (V1 ^ V2).
 
-
+  Normalize (me : in out)       raises ConstructionError   is static;
+        ---C++: inline  
         --- Purpose : normalizes a vector
         --  Raises an exception if the magnitude of the vector is 
         --  lower or equal to Resolution from gp.
-
-  Normalize (me : in out)       raises ConstructionError   is static;
-        ---C++: inline  
 
   Normalized (me)  returns Vec  raises ConstructionError   is static;
     	--- Purpose : normalizes a vector
@@ -305,10 +299,9 @@ is
         --  lower or equal to Resolution from gp.
         ---C++: inline
 	
-        --- Purpose : Reverses the direction of a vector
-
   Reverse (me : in out)        is static;
         ---C++: inline  
+        --- Purpose : Reverses the direction of a vector
 
   Reversed (me)  returns Vec   is static;
         --- Purpose : Reverses the direction of a vector
@@ -320,7 +313,7 @@ is
                  A3 : Real; V3 : Vec; V4 : Vec)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form :
+        --  <me> is set to the following linear form :
         --  A1 * V1 + A2 * V2 + A3 * V3 + V4
         ---C++: inline
 
@@ -328,7 +321,7 @@ is
                  A1 : Real; V1 : Vec; A2 : Real; V2 : Vec; A3 : Real; V3 : Vec)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form :
+        --  <me> is set to the following linear form :
         --  A1 * V1 + A2 * V2 + A3 * V3
         ---C++: inline
 
@@ -336,27 +329,27 @@ is
                  A1 : Real; V1 : Vec; A2 : Real; V2 : Vec; V3 : Vec)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form :
+        --  <me> is set to the following linear form :
         --  A1 * V1 + A2 * V2 + V3
         ---C++: inline
 
   SetLinearForm (me : in out; A1 : Real; V1 : Vec; A2 : Real; V2 : Vec)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form :
+        --  <me> is set to the following linear form :
         --  A1 * V1 + A2 * V2
         ---C++: inline
 
   SetLinearForm (me : in out; A1 : Real; V1, V2 : Vec)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form : A1 * V1 + V2
+        --  <me> is set to the following linear form : A1 * V1 + V2
         ---C++: inline
 
   SetLinearForm (me : in out; V1, V2 : Vec)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form : V1 + V2
+        --  <me> is set to the following linear form : V1 + V2
         ---C++: inline 
 
   Mirror (me : in out; V : Vec)          is static;
@@ -399,9 +392,9 @@ is
     Scaled (me; S : Real)  returns Vec  is static;
     	--- Purpose : Scales a vector. S is the scaling value.
        	---C++: inline
-        --- Purpose : Transforms a vector with the transformation T.
 
   Transform (me : in out; T : Trsf)         is static;
+        --- Purpose : Transforms a vector with the transformation T.
 
   Transformed (me; T : Trsf)   returns Vec  is static;
        ---C++: inline  
