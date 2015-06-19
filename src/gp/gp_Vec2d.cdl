@@ -43,7 +43,7 @@ is
 
   Create (Xv, Yv : Real)  returns Vec2d;
         ---C++: inline
-        --- Purpose : Creates a point with its two cartesian coordinates.
+        --- Purpose : Creates a point with its two Cartesian coordinates.
 
   Create (P1, P2 : Pnt2d)  returns Vec2d;
         ---C++: inline
@@ -242,11 +242,10 @@ is
     	---C++: alias operator -
     	--- Purpose : Reverses the direction of a vector
 
-        --- Purpose : Subtracts two vectors
-
   Subtract (me : in out; Right : Vec2d)          is static;
         ---C++: inline
         ---C++: alias operator -=
+        --- Purpose : Subtracts two vectors
 
   Subtracted (me; Right : Vec2d)  returns Vec2d  is static;
         ---C++: inline
@@ -257,49 +256,47 @@ is
                  A1 : Real; V1 : Vec2d; A2 : Real; V2 : Vec2d; V3 : Vec2d)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form :
+        --  <me> is set to the following linear form :
         --  A1 * V1 + A2 * V2 + V3
         ---C++: inline
 
   SetLinearForm (me : in out; A1 : Real; V1 : Vec2d; A2 : Real; V2 : Vec2d)
      is static;
         --- Purpose :
-        --  <me> is setted to the following linear form : A1 * V1 + A2 * V2
+        --  <me> is set to the following linear form : A1 * V1 + A2 * V2
         ---C++: inline
 
   SetLinearForm (me : in out; A1 : Real; V1, V2 : Vec2d)   is static;
         --- Purpose :
-        --  <me> is setted to the following linear form : A1 * V1 + V2
+        --  <me> is set to the following linear form : A1 * V1 + V2
         ---C++: inline
 
   SetLinearForm (me : in out; Left, Right : Vec2d)         is static;
         --- Purpose :
-        --  <me> is setted to the following linear form : Left + Right
+        --  <me> is set to the following linear form : Left + Right
         ---C++: inline
 
 
+  Mirror (me : in out; V : Vec2d)         is static;
         --- Purpose :
         --  Performs the symmetrical transformation of a vector
         --  with respect to the vector V which is the center of 
         --  the  symmetry.
-
-  Mirror (me : in out; V : Vec2d)         is static;
 
   Mirrored (me; V : Vec2d) returns Vec2d  is static;
-
         --- Purpose :
         --  Performs the symmetrical transformation of a vector
         --  with respect to the vector V which is the center of 
         --  the  symmetry.
-    --- Purpose :
+
+  Mirror (me : in out; A1 : Ax2d)         is static;
+        ---Purpose :
         --  Performs the symmetrical transformation of a vector
         --  with respect to an axis placement which is the axis
         --  of the symmetry.
 
-  Mirror (me : in out; A1 : Ax2d)         is static;
-
   Mirrored (me; A1 : Ax2d)  returns Vec2d is static;
-   --- Purpose :
+        ---Purpose :
         --  Performs the symmetrical transformation of a vector
         --  with respect to an axis placement which is the axis
         --  of the symmetry. 
