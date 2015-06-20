@@ -32,10 +32,6 @@
 IMPLEMENT_STANDARD_HANDLE (Cocoa_Window, Aspect_Window)
 IMPLEMENT_STANDARD_RTTIEXT(Cocoa_Window, Aspect_Window)
 
-#if defined(__clang__) && (__clang_major__ >= 4) && __has_feature(objc_arc)
-  #define HAVE_OBJC_ARC
-#endif
-
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //
 #else

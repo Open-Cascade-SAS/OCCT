@@ -141,7 +141,8 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   myOwnGContext (theGContext == 0),
   myWidth   (theCWindow.dx),
   myHeight  (theCWindow.dy),
-  myBgColor (THE_DEFAULT_BG_COLOR)
+  myBgColor (THE_DEFAULT_BG_COLOR),
+  mySwapInterval (theCaps->swapInterval)
 {
   myBgColor.rgb[0] = theCWindow.Background.r;
   myBgColor.rgb[1] = theCWindow.Background.g;
@@ -672,7 +673,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )aDisp, (Aspect_RenderingContext )aGContext, isCoreProfile);
 #endif
   myGlContext->Share (theShareCtx);
-
+  myGlContext->SetSwapInterval (mySwapInterval);
   Init();
 }
 

@@ -15,16 +15,16 @@ vcamera -fov 45 -iodType relative -iod 0.05 -zfocustype relative -zfocus 1.0
 vcamera -ortho
 vfit
 set aTitle "ortho"
-vdump $imagedir/${casename}_${aTitle}.png rgb 512 512
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512
 vcamera -persp
 vfit
 set aTitle "persp"
-vdump $imagedir/${casename}_${aTitle}.png rgb 512 512
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512
 vcamera -stereo
 set aTitle "stereoR"
-vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 R
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo R
 set aTitle "stereoL"
-vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 L
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo L
 
 # test context stereo mode swicthing
 # if not supported by hardware it must not crash
@@ -35,4 +35,4 @@ vdisplay b
 vcamera -stereo
 vfit
 set aTitle "afterSwitch"
-vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 R
+vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo R

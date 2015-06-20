@@ -156,16 +156,7 @@ is
         --            TOBM_ALWAYS_DISPLAYED     force display of back faces
         --            TOBM_NEVER_DISPLAYED      disable display of back faces
 
-        enumeration StereoDumpOptions is
-            SDO_MONO,
-            SDO_LEFT_EYE,
-            SDO_RIGHT_EYE
-        end StereoDumpOptions;
-        ---Purpose : Options to be used with image dumping.
-        --
-        --            SDO_MONO dump monographic projection for stereo camera
-        --            SDO_LEFT_EYE dump left eye projection for stereo camera
-        --            SDO_RIGHT_EYE dump right eye projection for stereo camera
+        primitive StereoDumpOptions;
 
         ------------------------
         ---Category: The classes

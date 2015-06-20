@@ -1,0 +1,33 @@
+puts "========"
+puts "Stereo output modes"
+puts "========"
+
+restore [locate_data_file occ/fuse.brep] f
+vinit View1
+vclear
+vsetdispmode 1
+vaxo
+vdisplay f
+vfit
+vrotate -0.5 0.0 0.0
+
+vstereo -mode anaglyph
+vfit
+vdump $::imagedir/${::casename}_anaglyph.png -stereo blend
+
+vstereo -mode columnInterlaced
+vdump $::imagedir/${::casename}_col.png -stereo blend
+
+vstereo -mode chessBoard
+vdump $::imagedir/${::casename}_chess.png -stereo blend
+
+vstereo -mode rowInterlaced
+vdump $::imagedir/${::casename}_row.png -stereo blend
+
+vstereo -mode sideBySide
+vdump $::imagedir/${::casename}_sbs_anamorph.png -stereo blend
+
+vstereo -mode overUnder
+vdump $::imagedir/${::casename}_overunder_anamorph.png -stereo blend
+
+vdump $::imagedir/${::casename}_sbs.png -stereo sbs

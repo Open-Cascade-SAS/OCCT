@@ -18,10 +18,6 @@
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>
 
-typedef struct {
-  int mapped;
-} EXT_WINDOW ;
-
 /* WINDOW */
 
 typedef struct {
@@ -31,17 +27,8 @@ typedef struct {
   Aspect_Drawable XWindow;
   Aspect_Drawable XParentWindow;
 
-  EXT_WINDOW *ext_data;
-
-  struct {
-    float xm, ym, xM, yM;
-  } Position;
-
   int dx, dy;
-
-  char *Title;
-
-  char *Icon;
+  int left, top;
 
   struct {
     float r, g, b;
