@@ -286,7 +286,7 @@ protected:
   void bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo = NULL);
 
   //! Blend together views pair into stereo image.
-  void drawStereoPair();
+  void drawStereoPair (const Graphic3d_CView& theCView);
 
   //! Blit snapshot containing main scene (myMainSceneFbos or BackBuffer)
   //! into presentation buffer (myMainSceneFbos -> offscreen FBO or myMainSceneFbos -> BackBuffer or BackBuffer -> FrontBuffer),

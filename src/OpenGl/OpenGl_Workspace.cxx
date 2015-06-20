@@ -703,6 +703,10 @@ bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer* theReadFbo,
   {
     return false;
   }
+  else if (theReadFbo == theDrawFbo)
+  {
+    return true;
+  }
 
   // clear destination before blitting
   if (theDrawFbo != NULL
@@ -804,7 +808,7 @@ bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer* theReadFbo,
 // function : drawStereoPair
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::drawStereoPair()
+void OpenGl_Workspace::drawStereoPair (const Graphic3d_CView& theCView)
 {
   OpenGl_FrameBuffer* aPair[2] =
   {
@@ -812,7 +816,8 @@ void OpenGl_Workspace::drawStereoPair()
     myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL
   };
   if (aPair[0] == NULL
-   || aPair[1] == NULL)
+  ||  aPair[1] == NULL
+  || !myTransientDrawToFront)
   {
     aPair[0] = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
     aPair[1] = myMainSceneFbos[1]->IsValid() ? myMainSceneFbos[1].operator->() : NULL;
@@ -822,6 +827,27 @@ void OpenGl_Workspace::drawStereoPair()
    || aPair[1] == NULL)
   {
     return;
+  }
+
+  Standard_Boolean toReverse = theCView.RenderParams.ToReverseStereo;
+  const Standard_Boolean isOddY = (theCView.DefWindow.top + theCView.DefWindow.dy) % 2 == 1;
+  const Standard_Boolean isOddX =  theCView.DefWindow.left % 2 == 1;
+  if (isOddY
+   && (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_RowInterlaced
+    || theCView.RenderParams.StereoMode == Graphic3d_StereoMode_ChessBoard))
+  {
+    toReverse = !toReverse;
+  }
+  if (isOddX
+   && (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_ColumnInterlaced
+    || theCView.RenderParams.StereoMode == Graphic3d_StereoMode_ChessBoard))
+  {
+    toReverse = !toReverse;
+  }
+
+  if (toReverse)
+  {
+    std::swap (aPair[0], aPair[1]);
   }
 
   myGlContext->core20fwd->glDepthFunc (GL_ALWAYS);
@@ -843,8 +869,71 @@ void OpenGl_Workspace::drawStereoPair()
 
   const Handle(OpenGl_ShaderManager)& aManager = myGlContext->ShaderManager();
   if (myFullScreenQuad.IsValid()
-   && aManager->BindAnaglyphProgram())
+   && aManager->BindStereoProgram (theCView.RenderParams.StereoMode))
   {
+    if (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_Anaglyph)
+    {
+      OpenGl_Mat4 aFilterL, aFilterR;
+      aFilterL.SetDiagonal (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+      aFilterR.SetDiagonal (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+      switch (theCView.RenderParams.AnaglyphFilter)
+      {
+        case Graphic3d_RenderingParams::Anaglyph_RedCyan_Simple:
+        {
+          aFilterL.SetRow (0, Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f));
+          aFilterR.SetRow (1, Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
+          aFilterR.SetRow (2, Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f));
+          break;
+        }
+        case Graphic3d_RenderingParams::Anaglyph_RedCyan_Optimized:
+        {
+          aFilterL.SetRow (0, Graphic3d_Vec4 ( 0.4154f,      0.4710f,      0.16666667f, 0.0f));
+          aFilterL.SetRow (1, Graphic3d_Vec4 (-0.0458f,     -0.0484f,     -0.0257f,     0.0f));
+          aFilterL.SetRow (2, Graphic3d_Vec4 (-0.0547f,     -0.0615f,      0.0128f,     0.0f));
+          aFilterL.SetRow (3, Graphic3d_Vec4 ( 0.0f,         0.0f,         0.0f,        0.0f));
+          aFilterR.SetRow (0, Graphic3d_Vec4 (-0.01090909f, -0.03636364f, -0.00606061f, 0.0f));
+          aFilterR.SetRow (1, Graphic3d_Vec4 ( 0.37560000f,  0.73333333f,  0.01111111f, 0.0f));
+          aFilterR.SetRow (2, Graphic3d_Vec4 (-0.06510000f, -0.12870000f,  1.29710000f, 0.0f));
+          aFilterR.SetRow (3, Graphic3d_Vec4 ( 0.0f,                0.0f,  0.0f,        0.0f));
+          break;
+        }
+        case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Simple:
+        {
+          aFilterL.SetRow (0, Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f));
+          aFilterL.SetRow (1, Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
+          aFilterR.SetRow (2, Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f));
+          break;
+        }
+        case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Optimized:
+        {
+          aFilterL.SetRow (0, Graphic3d_Vec4 ( 1.062f, -0.205f,  0.299f, 0.0f));
+          aFilterL.SetRow (1, Graphic3d_Vec4 (-0.026f,  0.908f,  0.068f, 0.0f));
+          aFilterL.SetRow (2, Graphic3d_Vec4 (-0.038f, -0.173f,  0.022f, 0.0f));
+          aFilterL.SetRow (3, Graphic3d_Vec4 ( 0.0f,    0.0f,    0.0f,   0.0f));
+          aFilterR.SetRow (0, Graphic3d_Vec4 (-0.016f, -0.123f, -0.017f, 0.0f));
+          aFilterR.SetRow (1, Graphic3d_Vec4 ( 0.006f,  0.062f, -0.017f, 0.0f));
+          aFilterR.SetRow (2, Graphic3d_Vec4 ( 0.094f,  0.185f,  0.911f, 0.0f));
+          aFilterR.SetRow (3, Graphic3d_Vec4 ( 0.0f,    0.0f,    0.0f,   0.0f));
+          break;
+        }
+        case Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple:
+        {
+          aFilterR.SetRow (0, Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f));
+          aFilterL.SetRow (1, Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
+          aFilterR.SetRow (2, Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f));
+          break;
+        }
+        case Graphic3d_RenderingParams::Anaglyph_UserDefined:
+        {
+          aFilterL = theCView.RenderParams.AnaglyphLeft;
+          aFilterR = theCView.RenderParams.AnaglyphRight;
+          break;
+        }
+      }
+      myGlContext->ActiveProgram()->SetUniform (myGlContext, "uMultL", aFilterL);
+      myGlContext->ActiveProgram()->SetUniform (myGlContext, "uMultR", aFilterR);
+    }
+
     aPair[0]->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + 0);
     aPair[1]->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + 1);
     myFullScreenQuad.BindVertexAttrib (myGlContext, 0);
@@ -880,8 +969,17 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     return;
   }
 
+  if (mySwapInterval != myGlContext->caps->swapInterval)
+  {
+    mySwapInterval = myGlContext->caps->swapInterval;
+    myGlContext->SetSwapInterval (mySwapInterval);
+  }
+
   ++myFrameCounter;
   myIsCullingEnabled = theCView.IsCullingEnabled;
+  const Graphic3d_StereoMode      aStereoMode  = theCView.RenderParams.StereoMode;
+  const Handle(Graphic3d_Camera)& aCamera      = myView->Camera();
+  Graphic3d_Camera::Projection    aProjectType = aCamera->ProjectionType();
 
   // release pending GL resources
   myGlContext->ReleaseDelayed();
@@ -905,7 +1003,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   }
 
   if (myHasFboBlit
-   && myTransientDrawToFront)
+   && (myTransientDrawToFront || aProjectType == Graphic3d_Camera::Projection_Stereo))
   {
     if (myMainSceneFbos[0]->GetVPSizeX() != aSizeX
      || myMainSceneFbos[0]->GetVPSizeY() != aSizeY)
@@ -930,34 +1028,28 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     myImmediateSceneFbos[1]->ChangeViewport (0, 0);
   }
 
-  // draw entire frame using normal OpenGL pipeline
-  const Handle(Graphic3d_Camera)& aCamera      = myView->Camera();
-  Graphic3d_Camera::Projection    aProjectType = aCamera->ProjectionType();
-  if (aProjectType == Graphic3d_Camera::Projection_Stereo)
+  if (aProjectType == Graphic3d_Camera::Projection_Stereo
+   && myMainSceneFbos[0]->IsValid())
   {
-    if (aFrameBuffer != NULL
-    || !myGlContext->IsRender())
+    myMainSceneFbos[1]->InitLazy (myGlContext, aSizeX, aSizeY);
+    if (!myMainSceneFbos[1]->IsValid())
     {
-      // implicitly switch to mono camera for image dump
+      // no enough memory?
       aProjectType = Graphic3d_Camera::Projection_Perspective;
     }
-    else if (myMainSceneFbos[0]->IsValid())
+    else if (!myTransientDrawToFront)
     {
-      myMainSceneFbos[1]->InitLazy (myGlContext, aSizeX, aSizeY);
-      if (!myMainSceneFbos[1]->IsValid())
+      //
+    }
+    else if (!myGlContext->HasStereoBuffers()
+           || aStereoMode != Graphic3d_StereoMode_QuadBuffer)
+    {
+      myImmediateSceneFbos[0]->InitLazy (myGlContext, aSizeX, aSizeY);
+      myImmediateSceneFbos[1]->InitLazy (myGlContext, aSizeX, aSizeY);
+      if (!myImmediateSceneFbos[0]->IsValid()
+       || !myImmediateSceneFbos[1]->IsValid())
       {
-        // no enough memory?
         aProjectType = Graphic3d_Camera::Projection_Perspective;
-      }
-      else if (!myGlContext->HasStereoBuffers())
-      {
-        myImmediateSceneFbos[0]->InitLazy (myGlContext, aSizeX, aSizeY);
-        myImmediateSceneFbos[1]->InitLazy (myGlContext, aSizeX, aSizeY);
-        if (!myImmediateSceneFbos[0]->IsValid()
-         || !myImmediateSceneFbos[1]->IsValid())
-        {
-          aProjectType = Graphic3d_Camera::Projection_Perspective;
-        }
       }
     }
   }
@@ -975,23 +1067,40 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL
     };
 
+    if (!myTransientDrawToFront)
+    {
+      anImmFbos[0] = aMainFbos[0];
+      anImmFbos[1] = aMainFbos[1];
+    }
+    else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
+          || aStereoMode == Graphic3d_StereoMode_QuadBuffer)
+    {
+      anImmFbos[0] = NULL;
+      anImmFbos[1] = NULL;
+    }
+
   #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (GL_BACK_LEFT);
+    myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
     redraw1 (theCView, theCUnderLayer, theCOverLayer,
              aMainFbos[0], Graphic3d_Camera::Projection_MonoLeftEye);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
   #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (GL_BACK_LEFT);
+    myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
     if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aMainFbos[0], aProjectType, anImmFbos[0]))
     {
       toSwap = false;
     }
+    else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
+          && toSwap)
+    {
+      myGlContext->SwapBuffers();
+    }
 
   #if !defined(GL_ES_VERSION_2_0)
-    myGlContext->SetReadDrawBuffer (GL_BACK_RIGHT);
+    myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
   #endif
     redraw1 (theCView, theCUnderLayer, theCOverLayer,
              aMainFbos[1], Graphic3d_Camera::Projection_MonoRightEye);
@@ -1005,7 +1114,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     if (anImmFbos[0] != NULL)
     {
       bindDefaultFbo (aFrameBuffer);
-      drawStereoPair();
+      drawStereoPair (theCView);
     }
   }
   else
@@ -1238,6 +1347,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     aFrameBuffer = myGlContext->DefaultFrameBuffer().operator->();
   }
 
+  const Graphic3d_StereoMode aStereoMode = theCView.RenderParams.StereoMode;
   if (aProjectType == Graphic3d_Camera::Projection_Stereo)
   {
     if (aFrameBuffer != NULL)
@@ -1277,6 +1387,12 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
       myImmediateSceneFbos[0]->IsValid() ? myImmediateSceneFbos[0].operator->() : NULL,
       myImmediateSceneFbos[1]->IsValid() ? myImmediateSceneFbos[1].operator->() : NULL
     };
+    if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
+     || aStereoMode == Graphic3d_StereoMode_QuadBuffer)
+    {
+      anImmFbos[0] = NULL;
+      anImmFbos[1] = NULL;
+    }
 
     if (myGlContext->arbFBO != NULL)
     {
@@ -1285,7 +1401,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   #if !defined(GL_ES_VERSION_2_0)
     if (anImmFbos[0] == NULL)
     {
-      myGlContext->SetReadDrawBuffer (GL_BACK_LEFT);
+      myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
     }
   #endif
     toSwap = redrawImmediate (theCView, theCUnderLayer, theCOverLayer,
@@ -1293,6 +1409,12 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
                               Graphic3d_Camera::Projection_MonoLeftEye,
                               anImmFbos[0],
                               Standard_True) || toSwap;
+    if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
+    &&  toSwap
+    && !myGlContext->caps->buffersNoSwap)
+    {
+      myGlContext->SwapBuffers();
+    }
 
     if (myGlContext->arbFBO != NULL)
     {
@@ -1301,7 +1423,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   #if !defined(GL_ES_VERSION_2_0)
     if (anImmFbos[1] == NULL)
     {
-      myGlContext->SetReadDrawBuffer (GL_BACK_RIGHT);
+      myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
     }
   #endif
     toSwap = redrawImmediate (theCView, theCUnderLayer, theCOverLayer,
@@ -1312,7 +1434,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     if (anImmFbos[0] != NULL)
     {
       bindDefaultFbo (aFrameBuffer);
-      drawStereoPair();
+      drawStereoPair (theCView);
     }
   }
   else

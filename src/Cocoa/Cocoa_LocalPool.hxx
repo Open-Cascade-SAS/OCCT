@@ -14,7 +14,13 @@
 #ifndef __Cocoa_LocalPool_h_
 #define __Cocoa_LocalPool_h_
 
-#if defined(__clang__) && (__clang_major__ >= 4) && __has_feature(objc_arc)
+#if defined(__clang__) && (__clang_major__ >= 4)
+#if __has_feature(objc_arc)
+  #define HAVE_OBJC_ARC
+#endif
+#endif
+
+#ifdef HAVE_OBJC_ARC
 
 // @autoreleasepool should be used within ARC
 

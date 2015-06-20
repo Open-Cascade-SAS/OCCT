@@ -2872,17 +2872,25 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   {
     switch (theStereoOptions)
     {
-      case V3d_SDO_MONO :
+      case V3d_SDO_MONO:
+      {
         myCamera->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
         break;
-
-      case V3d_SDO_LEFT_EYE :
+      }
+      case V3d_SDO_LEFT_EYE:
+      {
         myCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoLeftEye);
         break;
-
-      case V3d_SDO_RIGHT_EYE :
+      }
+      case V3d_SDO_RIGHT_EYE:
+      {
         myCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoRightEye);
         break;
+      }
+      case V3d_SDO_BLENDED:
+      {
+        break; // dump as is
+      }
     }
   }
 

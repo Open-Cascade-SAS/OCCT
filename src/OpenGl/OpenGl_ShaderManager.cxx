@@ -235,7 +235,10 @@ void OpenGl_ShaderManager::clear()
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
   myBlitProgram.Nullify();
-  myAnaglyphProgram.Nullify();
+  for (Standard_Integer aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
+  {
+    myStereoPrograms[aModeIter].Nullify();
+  }
   switchLightPrograms();
 }
 
@@ -1580,10 +1583,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
 }
 
 // =======================================================================
-// function : prepareStdProgramAnaglyph
+// function : prepareStdProgramStereo
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderManager::prepareStdProgramAnaglyph()
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                                const Graphic3d_StereoMode    theStereoMode)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert =
@@ -1594,21 +1598,188 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramAnaglyph()
       EOL"  gl_Position = vec4(occVertex.x, occVertex.y, 0.0, 1.0);"
       EOL"}";
 
-  TCollection_AsciiString aSrcFrag =
-      EOL"uniform sampler2D uLeftSampler;"
-      EOL"uniform sampler2D uRightSampler;"
-      EOL
-      EOL"THE_SHADER_IN vec2 TexCoord;"
-      EOL
-      EOL"void main()"
-      EOL"{"
-      EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
-      EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
-      EOL"  aColorL.b = 0.0;"
-      EOL"  aColorL.g = 0.0;"
-      EOL"  aColorR.r = 0.0;"
-      EOL"  occFragColor = aColorL + aColorR;"
-      EOL"}";
+  TCollection_AsciiString aSrcFrag;
+  switch (theStereoMode)
+  {
+    case Graphic3d_StereoMode_Anaglyph:
+    {
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"uniform mat4 uMultL;"
+          EOL"uniform mat4 uMultR;"
+          EOL
+          EOL"vec4 THE_POW_UP   = vec4 (2.2, 2.2, 2.2, 1.0);"
+          EOL"vec4 THE_POW_DOWN = 1.0 / THE_POW_UP;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  aColorL = pow (aColorL, THE_POW_UP);" // normalize
+          EOL"  aColorR = pow (aColorR, THE_POW_UP);"
+          EOL"  vec4 aColor = uMultR * aColorR + uMultL * aColorL;"
+          EOL"  occFragColor = pow (aColor, THE_POW_DOWN);"
+          EOL"}";
+      break;
+    }
+    case Graphic3d_StereoMode_RowInterlaced:
+    {
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  if (int (mod (gl_FragCoord.y + 1.5, 2.0)) == 1)"
+          EOL"  {"
+          EOL"    occFragColor = aColorL;"
+          EOL"  }"
+          EOL"  else"
+          EOL"  {"
+          EOL"    occFragColor = aColorR;"
+          EOL"  }"
+          EOL"}";
+      break;
+    }
+    case Graphic3d_StereoMode_ColumnInterlaced:
+    {
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  if (int (mod (gl_FragCoord.x + 1.5, 2.0)) != 1)"
+          EOL"  {"
+          EOL"    occFragColor = aColorL;"
+          EOL"  }"
+          EOL"  else"
+          EOL"  {"
+          EOL"    occFragColor = aColorR;"
+          EOL"  }"
+          EOL"}";
+      break;
+    }
+    case Graphic3d_StereoMode_ChessBoard:
+    {
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  bool isEvenX = int(mod(floor(gl_FragCoord.x + 1.5), 2.0)) == 1;"
+          EOL"  bool isEvenY = int(mod(floor(gl_FragCoord.y + 1.5), 2.0)) != 1;"
+          EOL"  if ((isEvenX && isEvenY) || (!isEvenX && !isEvenY))"
+          EOL"  {"
+          EOL"    occFragColor = aColorL;"
+          EOL"  }"
+          EOL"  else"
+          EOL"  {"
+          EOL"    occFragColor = aColorR;"
+          EOL"  }"
+          EOL"}";
+      break;
+    }
+    case Graphic3d_StereoMode_SideBySide:
+    {
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec2 aTexCoord = vec2 (TexCoord.x * 2.0, TexCoord.y);"
+          EOL"  if (TexCoord.x > 0.5)"
+          EOL"  {"
+          EOL"    aTexCoord.x -= 1.0;"
+          EOL"  }"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  aTexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, aTexCoord);"
+          EOL"  if (TexCoord.x <= 0.5)"
+          EOL"  {"
+          EOL"    occFragColor = aColorL;"
+          EOL"  }"
+          EOL"  else"
+          EOL"  {"
+          EOL"    occFragColor = aColorR;"
+          EOL"  }"
+          EOL"}";
+      break;
+    }
+    case Graphic3d_StereoMode_OverUnder:
+    {
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec2 aTexCoord = vec2 (TexCoord.x, TexCoord.y * 2.0);"
+          EOL"  if (TexCoord.y > 0.5)"
+          EOL"  {"
+          EOL"    aTexCoord.y -= 1.0;"
+          EOL"  }"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  aTexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, aTexCoord);"
+          EOL"  if (TexCoord.y <= 0.5)"
+          EOL"  {"
+          EOL"    occFragColor = aColorL;"
+          EOL"  }"
+          EOL"  else"
+          EOL"  {"
+          EOL"    occFragColor = aColorR;"
+          EOL"  }"
+          EOL"}";
+      break;
+    }
+    case Graphic3d_StereoMode_QuadBuffer:
+    case Graphic3d_StereoMode_SoftPageFlip:
+    default:
+    {
+      /*const Handle(OpenGl_ShaderProgram)& aProgram = myStereoPrograms[Graphic3d_StereoMode_QuadBuffer];
+      if (!aProgram.IsNull())
+      {
+        return aProgram->IsValid();
+      }*/
+      aSrcFrag =
+          EOL"uniform sampler2D uLeftSampler;"
+          EOL"uniform sampler2D uRightSampler;"
+          EOL
+          EOL"THE_SHADER_IN vec2 TexCoord;"
+          EOL
+          EOL"void main()"
+          EOL"{"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  aColorL.b = 0.0;"
+          EOL"  aColorL.g = 0.0;"
+          EOL"  aColorR.r = 0.0;"
+          EOL"  occFragColor = aColorL + aColorR;"
+          EOL"}";
+      break;
+    }
+  }
 
 #if !defined(GL_ES_VERSION_2_0)
   if (myContext->core32 != NULL)
@@ -1620,15 +1791,15 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramAnaglyph()
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));
   TCollection_AsciiString aKey;
-  if (!Create (aProgramSrc, aKey, myAnaglyphProgram))
+  if (!Create (aProgramSrc, aKey, theProgram))
   {
-    myAnaglyphProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    theProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return Standard_False;
   }
 
-  myContext->BindProgram (myAnaglyphProgram);
-  myAnaglyphProgram->SetSampler (myContext, "uLeftSampler",  0);
-  myAnaglyphProgram->SetSampler (myContext, "uRightSampler", 1);
+  myContext->BindProgram (theProgram);
+  theProgram->SetSampler (myContext, "uLeftSampler",  0);
+  theProgram->SetSampler (myContext, "uRightSampler", 1);
   myContext->BindProgram (NULL);
   return Standard_True;
 }

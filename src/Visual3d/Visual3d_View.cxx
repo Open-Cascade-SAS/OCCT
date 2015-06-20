@@ -110,10 +110,13 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
   MyCView.DefWindow.XWindow       = theWindow->NativeHandle();
   MyCView.DefWindow.XParentWindow = theWindow->NativeParentHandle();
 
-  Standard_Integer Width, Height;
-  theWindow->Size (Width, Height);
-  MyCView.DefWindow.dx = Width;
-  MyCView.DefWindow.dy = Height;
+  Standard_Integer aWidth = 0, aHeight = 0, aLeft = 0, aTop = 0;
+  theWindow->Position (aLeft, aTop, aWidth, aHeight);
+  theWindow->Size (aWidth, aHeight);
+  MyCView.DefWindow.left = aLeft;
+  MyCView.DefWindow.top  = aTop;
+  MyCView.DefWindow.dx   = aWidth;
+  MyCView.DefWindow.dy   = aHeight;
 
   Standard_Real R, G, B;
   MyBackground = MyWindow->Background ();
@@ -271,7 +274,11 @@ void Visual3d_View::SetRatio()
   const Aspect_TypeOfUpdate anUpdateMode = myViewManager->UpdateMode();
   myViewManager->SetUpdateMode (Aspect_TOU_WAIT);
 
-  Standard_Integer aWidth, aHeight;
+  Standard_Integer aWidth = 0, aHeight = 0, aLeft = 0, aTop = 0;
+  MyWindow->Position (aLeft, aTop, aWidth, aHeight);
+  MyCView.DefWindow.left = aLeft;
+  MyCView.DefWindow.top  = aTop;
+
   MyWindow->Size (aWidth, aHeight);
   if (aWidth > 0 && aHeight > 0)
   {

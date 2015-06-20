@@ -23,9 +23,7 @@
   #import <Cocoa/Cocoa.h>
 #endif
 
-#if defined(__clang__) && (__clang_major__ >= 4) && __has_feature(objc_arc)
-  // ARC
-#else
+#ifndef HAVE_OBJC_ARC
 
 // =======================================================================
 // function : Cocoa_LocalPool

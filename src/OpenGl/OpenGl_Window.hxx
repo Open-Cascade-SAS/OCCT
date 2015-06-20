@@ -98,6 +98,8 @@ protected:
   Standard_Integer       myHeight;      //!< window height in pixels
   TEL_COLOUR             myBgColor;     //!< background color
 
+  Standard_Integer       mySwapInterval;//!< last assigned swap interval (VSync) for this window
+
 public:
 
   DEFINE_STANDARD_RTTI(OpenGl_Window) // Type definition

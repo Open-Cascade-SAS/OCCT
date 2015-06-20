@@ -45,6 +45,11 @@
   //
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <dlfcn.h>
+  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    //
+  #else
+    #include <OpenGL/OpenGL.h>
+  #endif
 #else
   #include <GL/glx.h> // glXGetProcAddress()
 #endif
@@ -518,6 +523,48 @@ void OpenGl_Context::SwapBuffers()
 }
 
 #endif // __APPLE__
+
+// =======================================================================
+// function : SetSwapInterval
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::SetSwapInterval (const Standard_Integer theInterval)
+{
+#if defined(HAVE_EGL)
+  if (::eglSwapInterval ((EGLDisplay )myDisplay, theInterval) == EGL_TRUE)
+  {
+    return Standard_True;
+  }
+#elif defined(_WIN32)
+  if (myFuncs->wglSwapIntervalEXT != NULL)
+  {
+    myFuncs->wglSwapIntervalEXT (theInterval);
+    return Standard_True;
+  }
+#elif defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+  //
+#elif defined(__APPLE__)
+  if (::CGLSetParameter (CGLGetCurrentContext(), kCGLCPSwapInterval, &theInterval) == kCGLNoError)
+  {
+    return Standard_True;
+  }
+#else
+  if (theInterval == -1
+   && myFuncs->glXSwapIntervalEXT != NULL)
+  {
+    typedef int (*glXSwapIntervalEXT_t_x)(Display* theDisplay, GLXDrawable theDrawable, int theInterval);
+    glXSwapIntervalEXT_t_x aFuncPtr = (glXSwapIntervalEXT_t_x )myFuncs->glXSwapIntervalEXT;
+    aFuncPtr ((Display* )myDisplay, (GLXDrawable )myWindow, theInterval);
+    return Standard_True;
+  }
+  else if (myFuncs->glXSwapIntervalSGI != NULL)
+  {
+    myFuncs->glXSwapIntervalSGI (theInterval);
+    return Standard_True;
+  }
+#endif
+  return Standard_False;
+}
 
 // =======================================================================
 // function : findProc
@@ -1120,7 +1167,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   #define FindProcShort(theFunc) FindProc(#theFunc, myFuncs->theFunc)
 
   // retrieve platform-dependent extensions
-#if defined(_WIN32) && !defined(HAVE_EGL)
+#if defined(HAVE_EGL)
+  //
+#elif defined(_WIN32)
   if (FindProcShort (wglGetExtensionsStringARB))
   {
     const char* aWglExts = myFuncs->wglGetExtensionsStringARB (wglGetCurrentDC());
@@ -1148,6 +1197,19 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       FindProcShort (wglDXUnlockObjectsNV);
     }
   }
+#elif defined(__APPLE__)
+    //
+#else
+    const char* aGlxExts = ::glXQueryExtensionsString ((Display* )myDisplay, DefaultScreen ((Display* )myDisplay));
+    if (CheckExtension (aGlxExts, "GLX_EXT_swap_control"))
+    {
+      FindProcShort (glXSwapIntervalEXT);
+    }
+    if (CheckExtension (aGlxExts, "GLX_SGI_swap_control"))
+    {
+      FindProcShort (glXSwapIntervalSGI);
+    }
+    //extSwapTear = CheckExtension (aGlxExts, "GLX_EXT_swap_control_tear");
 #endif
 
   // initialize debug context extension

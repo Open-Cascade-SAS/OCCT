@@ -30,6 +30,7 @@ Graphic3d_ShaderProgram.cxx
 Graphic3d_ShaderVariable.hxx
 Graphic3d_ShaderVariable.cxx
 Graphic3d_ShaderVariable.lxx
+Graphic3d_StereoMode.hxx
 Graphic3d_MapOfStructure.hxx
 Graphic3d_MapIteratorOfMapOfStructure.hxx
 Graphic3d_IndexedMapOfAddress.hxx

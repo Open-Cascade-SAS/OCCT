@@ -16,8 +16,8 @@ vinit
 vsetdispmode 1
 vdisplay b
 vfit
-vdump ${imagedir}/texture_409.png rgb 409 409
-vdump ${imagedir}/texture_412.png rgb 412 412
+vdump ${imagedir}/texture_409.png -buffer rgb -width 409 -height 409
+vdump ${imagedir}/texture_412.png -buffer rgb -width 412 -height 412
 
 # texture loaded correctly
 vtexture b ${imagedir}/texture_412.png

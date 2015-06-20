@@ -310,6 +310,13 @@ Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView&      t
   return (aCView != NULL) && aCView->WS->BufferDump ((OpenGl_FrameBuffer* )theCView.ptrFBO, theImage, theBufferType);
 }
 
+//! Compute aligned number greater or equal to specified one
+inline Standard_Size getAligned (const Standard_Size theNumber,
+                                 const Standard_Size theAlignment)
+{
+  return theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment;
+}
+
 Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFBOPtr,
                                                Image_PixMap&               theImage,
                                                const Graphic3d_BufferType& theBufferType)
@@ -348,14 +355,30 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
   // setup alignment
   const GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
+  bool isBatchCopy = !theImage.IsTopDown();
 
+  const GLint   anExtraBytes       = GLint(theImage.RowExtraBytes());
+  GLint         aPixelsWidth       = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  Standard_Size aSizeRowBytesEstim = getAligned (theImage.SizePixelBytes() * aPixelsWidth, anAligment);
+  if (anExtraBytes < anAligment)
+  {
+    aPixelsWidth = 0;
+  }
+  else if (aSizeRowBytesEstim != theImage.SizeRowBytes())
+  {
+    aPixelsWidth = 0;
+    isBatchCopy  = false;
+  }
 #if !defined(GL_ES_VERSION_2_0)
-  const GLint anExtraBytes = (GLint )theImage.RowExtraBytes();
-  const GLint aPixelsWidth = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
-  glPixelStorei (GL_PACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
+  glPixelStorei (GL_PACK_ROW_LENGTH, aPixelsWidth);
+#else
+  if (aPixelsWidth != 0)
+  {
+    isBatchCopy = false;
+  }
 #endif
 
-  if (theImage.IsTopDown())
+  if (!isBatchCopy)
   {
     // copy row by row
     for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)

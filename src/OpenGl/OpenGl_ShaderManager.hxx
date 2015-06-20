@@ -17,6 +17,7 @@
 #define _OpenGl_ShaderManager_HeaderFile
 
 #include <Graphic3d_ShaderProgram.hxx>
+#include <Graphic3d_StereoMode.hxx>
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>
@@ -156,15 +157,21 @@ public:
          && myContext->BindProgram (myBlitProgram);
   }
 
-  //! Bind program for rendering Anaglyph image.
-  Standard_Boolean BindAnaglyphProgram()
+  //! Bind program for rendering stereoscopic image.
+  Standard_Boolean BindStereoProgram (const Graphic3d_StereoMode theStereoMode)
   {
-    if (myAnaglyphProgram.IsNull())
+    if (theStereoMode < 0 || theStereoMode >= Graphic3d_StereoMode_NB)
     {
-      prepareStdProgramAnaglyph();
+      return Standard_False;
     }
-    return !myAnaglyphProgram.IsNull()
-         && myContext->BindProgram (myAnaglyphProgram);
+
+    if (myStereoPrograms[theStereoMode].IsNull())
+    {
+      prepareStdProgramStereo (myStereoPrograms[theStereoMode], theStereoMode);
+    }
+    const Handle(OpenGl_ShaderProgram)& aProgram = myStereoPrograms[theStereoMode];
+    return !aProgram.IsNull()
+         && myContext->BindProgram (aProgram);
   }
 
 public:
@@ -365,8 +372,9 @@ protected:
   //! Set pointer myLightPrograms to active lighting programs set from myMapOfLightPrograms
   Standard_EXPORT void switchLightPrograms();
 
-  //! Prepare standard GLSL program for Anaglyph image.
-  Standard_EXPORT Standard_Boolean prepareStdProgramAnaglyph();
+  //! Prepare standard GLSL program for stereoscopic image.
+  Standard_EXPORT Standard_Boolean prepareStdProgramStereo (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                            const Graphic3d_StereoMode    theStereoMode);
 
 protected:
 
@@ -378,7 +386,7 @@ protected:
   Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on shading model and lights configuration
 
-  Handle(OpenGl_ShaderProgram)       myAnaglyphProgram;    //!< standard program for Anaglyph image
+  Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
 
   OpenGl_Context*                    myContext;            //!< OpenGL context
 

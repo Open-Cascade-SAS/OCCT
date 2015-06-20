@@ -21,11 +21,12 @@
 
 //const OSD_WhoAmI Iam = OSD_WEnvironmentIterator;
 #ifdef __APPLE__
+  #import <TargetConditionals.h>
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    extern char **environ;
+  #else
     #include <crt_externs.h>
     #define environ (*_NSGetEnviron())
-  #else
-    extern char **environ;
   #endif
 #else
   extern char **environ;
