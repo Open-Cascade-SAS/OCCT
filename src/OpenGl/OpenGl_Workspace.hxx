@@ -51,6 +51,7 @@
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_LineAttributes.hxx>
+#include <OpenGl_CappingAlgo.hxx>
 
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
@@ -265,6 +266,24 @@ public:
   //! @return true if clipping algorithm enabled
   inline Standard_Boolean IsCullingEnabled() const { return myIsCullingEnabled; }
 
+  //! Returns capping algorithm rendering filter.
+  const Handle(OpenGl_CappingAlgoFilter)& DefaultCappingAlgoFilter() const
+  {
+    return myDefaultCappingAlgoFilter;
+  }
+
+  //! Returns face aspect for none culling mode.
+  const OpenGl_AspectFace& NoneCulling() const
+  {
+    return myNoneCulling;
+  }
+
+  //! Returns face aspect for front face culling mode.
+  const OpenGl_AspectFace& FrontCulling() const
+  {
+    return myFrontCulling;
+  }
+
 protected:
 
   //! Copy content of Back buffer to the Front buffer
@@ -336,6 +355,10 @@ protected: //! @name protected fields
   Standard_Boolean       myIsCullingEnabled;     //!< frustum culling flag
 
   unsigned int           myFrameCounter;         //!< redraw counter, for debugging
+
+  Handle(OpenGl_CappingAlgoFilter) myDefaultCappingAlgoFilter;
+  OpenGl_AspectFace                myNoneCulling;
+  OpenGl_AspectFace                myFrontCulling;
 
 protected: //! @name fields related to status
 

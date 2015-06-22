@@ -49,11 +49,6 @@
   #include <OpenGL/CGLRenderers.h>
 #endif
 
-namespace
-{
-  static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
-}
-
 // =======================================================================
 // function : OpenGl_Window
 // purpose  :
@@ -74,12 +69,12 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
 #endif
   myWidth    (theCWindow.dx),
   myHeight   (theCWindow.dy),
-  myBgColor (THE_DEFAULT_BG_COLOR),
   mySwapInterval (theCaps->swapInterval)
 {
   myBgColor.rgb[0] = theCWindow.Background.r;
   myBgColor.rgb[1] = theCWindow.Background.g;
   myBgColor.rgb[2] = theCWindow.Background.b;
+  myBgColor.rgb[3] = 1.0f;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   EAGLContext* aGLContext = theGContext;

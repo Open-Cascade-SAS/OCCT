@@ -214,6 +214,12 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
     int v;
     if (sscanf (anAaEnv, "%d", &v) > 0) myAntiAliasingMode = v;
   }
+
+  myDefaultCappingAlgoFilter         = new OpenGl_CappingAlgoFilter();
+  myNoneCulling.ChangeCullingMode()  = TelCullNone;
+  myNoneCulling.ChangeEdge()         = 0;
+  myFrontCulling.ChangeCullingMode() = TelCullBack;
+  myFrontCulling.ChangeEdge()        = 0;
 }
 
 // =======================================================================

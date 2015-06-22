@@ -45,27 +45,6 @@ public:
   //! @param thePlane [in] the graphical plane, for which the capping surface is rendered.
   Standard_EXPORT static void RenderPlane (const Handle(OpenGl_Workspace)& theWorkspace,
                                            const Handle(Graphic3d_ClipPlane)& thePlane);
-
-private:
-
-  //! Init algorithm.
-  static void Init();
-
-  //! @return capping algorithm rendering filter.
-  static const Handle(OpenGl_RenderFilter)& CappingFilter() { return myRenderFilter; }
-
-  //! @return face aspect for front face culling mode.
-  static const OpenGl_AspectFace* FrontCulling() { return &myFrontCulling; }
-
-  //! @return face aspect for none culling mode.
-  static const OpenGl_AspectFace* NoneCulling() { return &myNoneCulling; }
-
-private:
-
-  static Handle(OpenGl_RenderFilter) myRenderFilter;
-  static OpenGl_AspectFace myFrontCulling;
-  static OpenGl_AspectFace myNoneCulling;
-  static Standard_Boolean myIsInit;
 };
 
 //! Graphical capping rendering algorithm filter.

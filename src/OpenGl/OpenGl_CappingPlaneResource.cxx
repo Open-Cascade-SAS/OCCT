@@ -43,6 +43,16 @@ namespace
     0.0f, 0.0f,-1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f, 0.0f,
     1.0f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f, 0.0f
   };
+
+  static const OpenGl_Matrix OpenGl_IdentityMatrix =
+  {
+    // mat[4][4]
+    { { 1.0f, 0.0f, 0.0f, 0.0f },
+      { 0.0f, 1.0f, 0.0f, 0.0f },
+      { 0.0f, 0.0f, 1.0f, 0.0f },
+      { 0.0f, 0.0f, 0.0f, 1.0f } }
+  };
+
 }
 
 IMPLEMENT_STANDARD_HANDLE (OpenGl_CappingPlaneResource, OpenGl_Resource)
