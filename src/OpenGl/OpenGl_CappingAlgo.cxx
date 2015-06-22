@@ -24,14 +24,8 @@
 IMPLEMENT_STANDARD_HANDLE(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 
-Handle(OpenGl_RenderFilter) OpenGl_CappingAlgo::myRenderFilter;
-OpenGl_AspectFace OpenGl_CappingAlgo::myFrontCulling;
-OpenGl_AspectFace OpenGl_CappingAlgo::myNoneCulling;
-Standard_Boolean OpenGl_CappingAlgo::myIsInit = Standard_False;
-
 namespace
 {
-
 #if !defined(GL_ES_VERSION_2_0)
   static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
   static const GLint THE_FILLPRIM_TO   = GL_POLYGON;
@@ -70,16 +64,12 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     return;
   }
 
-  // init internal data
-  Init();
-
   // remember current aspect face defined in workspace
   const OpenGl_AspectFace* aFaceAsp = theWorkspace->AspectFace (Standard_False);
 
   // replace primitive groups rendering filter
-  static Handle(OpenGl_CappingAlgoFilter) aCappingFilter = new OpenGl_CappingAlgoFilter();
   Handle(OpenGl_RenderFilter) aRenderFilter = theWorkspace->GetRenderFilter();
-  theWorkspace->SetRenderFilter (aCappingFilter);
+  theWorkspace->SetRenderFilter (theWorkspace->DefaultCappingAlgoFilter());
 
   // prepare for rendering the clip planes
   glEnable (GL_STENCIL_TEST);
@@ -113,7 +103,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
     // override aspects, disable culling
-    theWorkspace->SetAspectFace (NoneCulling());
+    theWorkspace->SetAspectFace (&theWorkspace->NoneCulling());
     theWorkspace->AspectFace (Standard_True);
 
     // evaluate number of pair faces
@@ -131,7 +121,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     }
 
     // override material, cull back faces
-    theWorkspace->SetAspectFace (FrontCulling());
+    theWorkspace->SetAspectFace (&theWorkspace->FrontCulling());
     theWorkspace->AspectFace (Standard_True);
 
     // enable all clip plane except the rendered one
@@ -213,25 +203,6 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
   // set delayed resource release
   aPlaneRes.Nullify();
   aContext->ReleaseResource (aResId, Standard_True);
-}
-
-// =======================================================================
-// function : Init
-// purpose  :
-// =======================================================================
-void OpenGl_CappingAlgo::Init()
-{
-  if (myIsInit)
-    return;
-
-  myRenderFilter = new OpenGl_CappingAlgoFilter();
-  myNoneCulling.ChangeCullingMode() = TelCullNone;
-  myNoneCulling.ChangeEdge() = 0;
-
-  myFrontCulling.ChangeCullingMode() = TelCullBack;
-  myFrontCulling.ChangeEdge() = 0;
-
-  myIsInit = Standard_True;
 }
 
 // =======================================================================

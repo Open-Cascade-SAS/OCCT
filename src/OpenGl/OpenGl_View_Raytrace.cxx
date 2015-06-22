@@ -999,7 +999,7 @@ const TCollection_AsciiString OpenGl_View::ShaderSource::EMPTY_PREFIX;
 // =======================================================================
 TCollection_AsciiString OpenGl_View::ShaderSource::Source() const
 {
-  static const TCollection_AsciiString aVersion = "#version 140";
+  const TCollection_AsciiString aVersion = "#version 140";
 
   if (myPrefix.IsEmpty())
   {

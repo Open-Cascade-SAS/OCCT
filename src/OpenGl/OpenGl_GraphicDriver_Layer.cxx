@@ -40,25 +40,28 @@ struct OpenGl_LAYER_PROP
 
 /*----------------------------------------------------------------------*/
 
-static const TEL_COLOUR myDefaultColor = {{ 1.F, 1.F, 1.F, 1.F }};
-static const CALL_DEF_CONTEXTTEXT myDefaultContextText =
+namespace
 {
-  1, //IsDef
-  1, //IsSet
-  "Courier", //Font
-  0.3F, //Space
-  1.F, //Expan
-  { 1.F, 1.F, 1.F }, //Color
-  (int)Aspect_TOST_NORMAL, //Style
-  (int)Aspect_TODT_NORMAL, //DisplayType
-  { 1.F, 1.F, 1.F }, //ColorSubTitle
-  0, //TextZoomable
-  0.F, //TextAngle
-  (int)Font_FA_Regular //TextFontAspect
-};
+  static const TEL_COLOUR myDefaultColor = {{ 1.F, 1.F, 1.F, 1.F }};
+  static const CALL_DEF_CONTEXTTEXT myDefaultContextText =
+  {
+    1, //IsDef
+    1, //IsSet
+    "Courier", //Font
+    0.3F, //Space
+    1.F, //Expan
+    { 1.F, 1.F, 1.F }, //Color
+    (int)Aspect_TOST_NORMAL, //Style
+    (int)Aspect_TODT_NORMAL, //DisplayType
+    { 1.F, 1.F, 1.F }, //ColorSubTitle
+    0, //TextZoomable
+    0.F, //TextAngle
+    (int)Font_FA_Regular //TextFontAspect
+  };
 
-static Standard_Boolean TheLayerIsOpen = Standard_False;
-static OpenGl_LAYER_PROP TheLayerProp;
+  static Standard_Boolean TheLayerIsOpen = Standard_False;
+  static OpenGl_LAYER_PROP TheLayerProp;
+}
 
 /*----------------------------------------------------------------------*/
 

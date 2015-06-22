@@ -24,16 +24,6 @@ struct OpenGl_Matrix
   DEFINE_STANDARD_ALLOC
 };
 
-Standard_EXPORT void OpenGl_Multiplymat3 (OpenGl_Matrix *c, const OpenGl_Matrix *a, const OpenGl_Matrix *b);
 Standard_EXPORT void OpenGl_Transposemat3 (OpenGl_Matrix *c, const OpenGl_Matrix *a);
-
-static const OpenGl_Matrix OpenGl_IdentityMatrix =
-{
-  // mat[4][4]
-  { { 1.0f, 0.0f, 0.0f, 0.0f },
-    { 0.0f, 1.0f, 0.0f, 0.0f },
-    { 0.0f, 0.0f, 1.0f, 0.0f },
-    { 0.0f, 0.0f, 0.0f, 1.0f } }
-};
 
 #endif //OpenGl_Matrix_Header
