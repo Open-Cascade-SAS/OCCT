@@ -212,45 +212,43 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::B
   for (Standard_Integer anAxis = myUseMainAxis ? aMainAxis : 0; anAxis <= (myUseMainAxis ? aMainAxis : Min (N - 1, 2)); ++anAxis)
   {
     if (BVH::VecComp<T, N>::Get (aSize, anAxis) <= BVH::THE_NODE_MIN_SIZE)
+    {
       continue;
+    }
 
-    BVH_BinVector aBins;
-    GetSubVolumes (theSet, theBVH, theNode, aBins, anAxis);
+    BVH_BinVector aBinVector;
+    GetSubVolumes (theSet, theBVH, theNode, aBinVector, anAxis);
+
+    BVH_SplitPlanes aSplitPlanes;
+    for (Standard_Integer aLftSplit = 1, aRghSplit = Bins - 1; aLftSplit < Bins; ++aLftSplit, --aRghSplit)
+    {
+      aSplitPlanes[aLftSplit].LftVoxel.Count = aSplitPlanes[aLftSplit - 1].LftVoxel.Count + aBinVector[aLftSplit - 1].Count;
+      aSplitPlanes[aRghSplit].RghVoxel.Count = aSplitPlanes[aRghSplit + 1].RghVoxel.Count + aBinVector[aRghSplit + 0].Count;
+
+      aSplitPlanes[aLftSplit].LftVoxel.Box = aSplitPlanes[aLftSplit - 1].LftVoxel.Box;
+      aSplitPlanes[aRghSplit].RghVoxel.Box = aSplitPlanes[aRghSplit + 1].RghVoxel.Box;
+
+      aSplitPlanes[aLftSplit].LftVoxel.Box.Combine (aBinVector[aLftSplit - 1].Box);
+      aSplitPlanes[aRghSplit].RghVoxel.Box.Combine (aBinVector[aRghSplit + 0].Box);
+    }
 
     // Choose the best split (with minimum SAH cost)
     for (Standard_Integer aSplit = 1; aSplit < Bins; ++aSplit)
     {
-      Standard_Integer aLftCount = 0;
-      Standard_Integer aRghCount = 0;
-
-      BVH_Box<T, N> aLftAABB;
-      BVH_Box<T, N> aRghAABB;
-
-      for (Standard_Integer anIndex = 0; anIndex < aSplit; ++anIndex)
-      {
-        aLftCount += aBins[anIndex].Count;
-        aLftAABB.Combine (aBins[anIndex].Box);
-      }
-
-      for (Standard_Integer anIndex = aSplit; anIndex < Bins; ++anIndex)
-      {
-        aRghCount += aBins[anIndex].Count;
-        aRghAABB.Combine (aBins[anIndex].Box);
-      }
-
       // Simple SAH evaluation
-      Standard_Real aCost = (static_cast<Standard_Real> (aLftAABB.Area()) /* / aNodeArea */) * aLftCount
-                          + (static_cast<Standard_Real> (aRghAABB.Area()) /* / aNodeArea */) * aRghCount;
+      Standard_Real aCost =
+        (static_cast<Standard_Real> (aSplitPlanes[aSplit].LftVoxel.Box.Area()) /* / S(N) */) * aSplitPlanes[aSplit].LftVoxel.Count
+      + (static_cast<Standard_Real> (aSplitPlanes[aSplit].RghVoxel.Box.Area()) /* / S(N) */) * aSplitPlanes[aSplit].RghVoxel.Count;
 
       if (aCost <= aMinSplitCost)
       {
         aMinSplitCost   = aCost;
         aMinSplitAxis   = anAxis;
         aMinSplitIndex  = aSplit;
-        aMinSplitBoxLft = aLftAABB;
-        aMinSplitBoxRgh = aRghAABB;
-        aMinSplitNumLft = aLftCount;
-        aMinSplitNumRgh = aRghCount;
+        aMinSplitBoxLft = aSplitPlanes[aSplit].LftVoxel.Box;
+        aMinSplitBoxRgh = aSplitPlanes[aSplit].RghVoxel.Box;
+        aMinSplitNumLft = aSplitPlanes[aSplit].LftVoxel.Count;
+        aMinSplitNumRgh = aSplitPlanes[aSplit].RghVoxel.Count;
       }
     }
   }

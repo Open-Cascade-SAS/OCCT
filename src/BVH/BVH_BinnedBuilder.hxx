@@ -42,8 +42,18 @@ class BVH_BinnedBuilder : public BVH_QueueBuilder<T, N>
 {
 public:
 
-  //! Type for the array of bins of BVH tree node.
+  //! Type of the array of bins of BVH tree node.
   typedef BVH_Bin<T, N> BVH_BinVector[Bins];
+
+  //! Describes split plane candidate.
+  struct BVH_SplitPlane
+  {
+    BVH_Bin<T, N> LftVoxel;
+    BVH_Bin<T, N> RghVoxel;
+  };
+
+  //! Type of the array of split plane candidates.
+  typedef BVH_SplitPlane BVH_SplitPlanes[Bins + 1];
 
 public:
 
