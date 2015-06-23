@@ -398,15 +398,13 @@ protected: //! @name data types related to ray-tracing
       //
     }
 
-    //! Creates new shader source from specified file.
-    ShaderSource (const TCollection_AsciiString& theFileName, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX)
-    {
-      TCollection_AsciiString aFileNames[] = { theFileName, "" };
-
-      Load (aFileNames, thePrefix);
-    }
-
   public:
+
+    //! Returns error description in case of load fail.
+    const TCollection_AsciiString& ErrorDescription() const
+    {
+      return myError;
+    }
 
     //! Returns prefix to insert before the source.
     const TCollection_AsciiString& Prefix() const
@@ -424,12 +422,13 @@ protected: //! @name data types related to ray-tracing
     TCollection_AsciiString Source() const;
 
     //! Loads shader source from specified files.
-    void Load (const TCollection_AsciiString* theFileNames, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
+    Standard_Boolean Load (const TCollection_AsciiString* theFileNames, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);
 
   private:
 
     TCollection_AsciiString mySource; //!< Source string of the shader object
     TCollection_AsciiString myPrefix; //!< Prefix to insert before the source
+    TCollection_AsciiString myError;  //!< error state
 
   };
 

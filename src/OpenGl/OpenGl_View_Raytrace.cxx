@@ -1013,36 +1013,50 @@ TCollection_AsciiString OpenGl_View::ShaderSource::Source() const
 // function : Load
 // purpose  : Loads shader source from specified files
 // =======================================================================
-void OpenGl_View::ShaderSource::Load (const TCollection_AsciiString* theFileNames,
-                                      const TCollection_AsciiString& thePrefix)
+Standard_Boolean OpenGl_View::ShaderSource::Load (const TCollection_AsciiString* theFileNames,
+                                                  const TCollection_AsciiString& thePrefix)
 {
+  myError.Clear();
   mySource.Clear();
-
+  TCollection_AsciiString aMissingFiles;
   for (Standard_Integer anIndex = 0; !theFileNames[anIndex].IsEmpty(); ++anIndex)
   {
     OSD_File aFile (theFileNames[anIndex]);
-
-    Standard_ASSERT_RETURN (aFile.Exists(),
-      "Error: Failed to find shader source file", /* none */);
-
-    aFile.Open (OSD_ReadOnly, OSD_Protection());
+    if (aFile.Exists())
+    {
+      aFile.Open (OSD_ReadOnly, OSD_Protection());
+    }
+    if (!aFile.IsOpen())
+    {
+      if (!aMissingFiles.IsEmpty())
+      {
+        aMissingFiles += ", ";
+      }
+      aMissingFiles += TCollection_AsciiString("'") + theFileNames[anIndex] + "'";
+      continue;
+    }
+    else if (!aMissingFiles.IsEmpty())
+    {
+      aFile.Close();
+      continue;
+    }
 
     TCollection_AsciiString aSource;
-
-    Standard_ASSERT_RETURN (aFile.IsOpen(),
-      "Error: Failed to open shader source file", /* none */);
-
     aFile.Read (aSource, (Standard_Integer) aFile.Size());
-
     if (!aSource.IsEmpty())
     {
       mySource += TCollection_AsciiString ("\n") + aSource;
     }
-
     aFile.Close();
   }
 
   myPrefix = thePrefix;
+  if (!aMissingFiles.IsEmpty())
+  {
+    myError = TCollection_AsciiString("Shader files ") + aMissingFiles + " are missing or inaccessible";
+    return Standard_False;
+  }
+  return Standard_True;
 }
 
 // =======================================================================
@@ -1364,33 +1378,39 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
     std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
 #endif
 
+    ShaderSource aBasicVertShaderSrc;
     {
-      Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (
-        GL_VERTEX_SHADER, ShaderSource (aFolder + "/RaytraceBase.vs"), theGlContext);
+      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.vs", "" };
+      if (!aBasicVertShaderSrc.Load (aFiles))
+      {
+        return safeFailBack (aBasicVertShaderSrc.ErrorDescription(), theGlContext);
+      }
+    }
 
+    {
+      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
+                                           aFolder + "/PathtraceBase.fs",
+                                           aFolder + "/RaytraceRender.fs",
+                                           "" };
+      if (!myRaytraceShaderSource.Load (aFiles, aPrefixString))
+      {
+        return safeFailBack (myRaytraceShaderSource.ErrorDescription(), theGlContext);
+      }
+
+      Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (GL_VERTEX_SHADER, aBasicVertShaderSrc, theGlContext);
       if (aBasicVertShader.IsNull())
       {
         return safeFailBack ("Failed to initialize ray-trace vertex shader", theGlContext);
       }
 
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
-                                           aFolder + "/PathtraceBase.fs",
-                                           aFolder + "/RaytraceRender.fs",
-                                           "" };
-
-      myRaytraceShaderSource.Load (aFiles, aPrefixString);
-
       myRaytraceShader = initShader (GL_FRAGMENT_SHADER, myRaytraceShaderSource, theGlContext);
-
       if (myRaytraceShader.IsNull())
       {
         aBasicVertShader->Release (theGlContext.operator->());
-
         return safeFailBack ("Failed to initialize ray-trace fragment shader", theGlContext);
       }
 
       myRaytraceProgram = initProgram (theGlContext, aBasicVertShader, myRaytraceShader);
-
       if (myRaytraceProgram.IsNull())
       {
         return safeFailBack ("Failed to initialize ray-trace shader program", theGlContext);
@@ -1398,31 +1418,28 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
     }
 
     {
-      Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (
-        GL_VERTEX_SHADER, ShaderSource (aFolder + "/RaytraceBase.vs"), theGlContext);
+      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
+                                           aFolder + "/RaytraceSmooth.fs",
+                                           "" };
+      if (!myPostFSAAShaderSource.Load (aFiles, aPrefixString))
+      {
+        return safeFailBack (myPostFSAAShaderSource.ErrorDescription(), theGlContext);
+      }
 
+      Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (GL_VERTEX_SHADER, aBasicVertShaderSrc, theGlContext);
       if (aBasicVertShader.IsNull())
       {
         return safeFailBack ("Failed to initialize FSAA vertex shader", theGlContext);
       }
 
-      TCollection_AsciiString aFiles[] = { aFolder + "/RaytraceBase.fs",
-                                           aFolder + "/RaytraceSmooth.fs",
-                                           "" };
-
-      myPostFSAAShaderSource.Load (aFiles, aPrefixString);
-
       myPostFSAAShader = initShader (GL_FRAGMENT_SHADER, myPostFSAAShaderSource, theGlContext);
-
       if (myPostFSAAShader.IsNull())
       {
         aBasicVertShader->Release (theGlContext.operator->());
-
         return safeFailBack ("Failed to initialize FSAA fragment shader", theGlContext);
       }
 
       myPostFSAAProgram = initProgram (theGlContext, aBasicVertShader, myPostFSAAShader);
-
       if (myPostFSAAProgram.IsNull())
       {
         return safeFailBack ("Failed to initialize FSAA shader program", theGlContext);
@@ -1430,26 +1447,27 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
     }
 
     {
-      Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (
-        GL_VERTEX_SHADER, ShaderSource (aFolder + "/RaytraceBase.vs"), theGlContext);
+      ShaderSource aDispShaderSrc;
+      TCollection_AsciiString aFiles[] = { aFolder + "/Display.fs", "" };
+      if (!aDispShaderSrc.Load (aFiles, aPrefixString))
+      {
+        return safeFailBack (aDispShaderSrc.ErrorDescription(), theGlContext);
+      }
 
+      Handle(OpenGl_ShaderObject) aBasicVertShader = initShader (GL_VERTEX_SHADER, aBasicVertShaderSrc, theGlContext);
       if (aBasicVertShader.IsNull())
       {
         return safeFailBack ("Failed to set vertex shader source", theGlContext);
       }
 
-      Handle(OpenGl_ShaderObject) aDisplayShader = initShader (
-        GL_FRAGMENT_SHADER, ShaderSource (aFolder + "/Display.fs", aPrefixString), theGlContext);
-
+      Handle(OpenGl_ShaderObject) aDisplayShader = initShader (GL_FRAGMENT_SHADER, aDispShaderSrc, theGlContext);
       if (aDisplayShader.IsNull())
       {
         aBasicVertShader->Release (theGlContext.operator->());
-
         return safeFailBack ("Failed to set display fragment shader source", theGlContext);
       }
 
       myOutImageProgram = initProgram (theGlContext, aBasicVertShader, aDisplayShader);
-
       if (myOutImageProgram.IsNull())
       {
         return safeFailBack ("Failed to initialize output shader program", theGlContext);
