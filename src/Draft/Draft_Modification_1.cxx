@@ -1212,14 +1212,16 @@ void Draft_Modification::Perform ()
 		Dist2Min = RealLast();
 		for (i = 1; i <= myExtPC.NbExt(); i++)
 		  {
-		    Dist2 = myExtPC.SquareDistance(i);
-		    if (Dist2 < Dist2Min)
-		      {
-			Dist2Min = Dist2;
-			pmin = myExtPC.Point(i).Parameter();
-		      }
+                    if (myExtPC.IsMin(i))
+                    {
+                      Dist2 = myExtPC.SquareDistance(i);
+                      if (Dist2 < Dist2Min)
+                      {
+                        Dist2Min = Dist2;
+                        pmin = myExtPC.Point(i).Parameter();
+                      }
+                    }
 		  }
-
 		newC->D1(pmin,pfv,newd1);
 		Standard_Boolean YaRev = d1fv.Dot(newd1) < 0.; 
 		
@@ -1986,7 +1988,7 @@ static Standard_Real Parameter(const Handle(Geom_Curve)& C,
     GeomAdaptor_Curve TheCurve(C);
     Extrema_ExtPC myExtPC(P,TheCurve);
     if (!myExtPC.IsDone()) {
-      Standard_Failure::Raise();
+      Standard_Failure::Raise("Draft_Modification_1::Parameter: ExtremaPC not done.");
     }
     if (myExtPC.NbExt() >= 1) {
       Standard_Real Dist2, Dist2Min = myExtPC.SquareDistance(1);

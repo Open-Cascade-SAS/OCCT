@@ -12,7 +12,7 @@ set z 2.0
 set pp_ch1 1.8318851868378956
 set pp_ch2 3.0397214383562297
 set pp_ch3 5.5
-set pp_ch4 6.8388132447593541
+set pp_ch4 6.838813244759355
 set pp_ch5 7.8261046366621292
 
 restore [locate_data_file bug23706_c13.draw] c

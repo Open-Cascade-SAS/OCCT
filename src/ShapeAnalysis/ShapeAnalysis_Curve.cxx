@@ -231,16 +231,28 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
   try {
     OCC_CATCH_SIGNALS
     Extrema_ExtPC myExtPC(P3D,C3D);
-    if ( myExtPC.IsDone() && ( myExtPC.NbExt() > 0) ) {
-      Standard_Real dist2, dist2Min = myExtPC.SquareDistance(1);
-      Standard_Integer index = 1;
-      for ( Standard_Integer i = 2; i <= myExtPC.NbExt(); i++) {
+    Standard_Real dist2Min = RealLast() , dist2;
+    Standard_Integer index = 0;
+    if ( myExtPC.IsDone() && ( myExtPC.NbExt() > 0) )
+    {
+      for ( Standard_Integer i = 1; i <= myExtPC.NbExt(); i++)
+      {
+        if (!myExtPC.IsMin(i))
+          continue;
+
         dist2 = myExtPC.SquareDistance(i);
-        if ( dist2 < dist2Min) { dist2Min = dist2; index = i; }
+        if ( dist2 < dist2Min)
+        {
+          dist2Min = dist2; index = i;
+        }
       }
-      param = (myExtPC.Point(index)).Parameter();
-      proj  = (myExtPC.Point(index)).Value();
-      OK = Standard_True;
+
+      if (index != 0)
+      {
+        param = (myExtPC.Point(index)).Parameter();
+        proj  = (myExtPC.Point(index)).Value();
+        OK = Standard_True;
+      }
     }
   }
   catch(Standard_Failure) {

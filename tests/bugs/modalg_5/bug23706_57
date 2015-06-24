@@ -9,10 +9,10 @@ puts ""
 set x 5.0
 set y 7.0
 set z 8.0
-set pp_ch1 3.0397214383562297
-set pp_ch2 5.5
-set pp_ch3 7.2883607799598096
-set pp_ch4 1
+set pp_ch1 1
+set pp_ch2 3.0397214383562297
+set pp_ch3 5.5
+set pp_ch4 7.2883607799598096
 
 restore [locate_data_file bug23706_c13.draw] c
 set info [proj c $x $y $z]

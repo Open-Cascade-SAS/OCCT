@@ -1,18 +1,18 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
-
+puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 set filename sim6049.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 6  ( 2819 )  Summary  = 6  ( 2819 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 2820 )  Summary  = 7  ( 2820 )
 CHECKSHAPE  : Wires    = 4  ( 6 )  Faces    = 4  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3785  ( 3785 )   Summary  = 69461  ( 69485 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3785  ( 3785 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 30982  ( 30997 )
-TOLERANCE   : MaxTol   =  0.08172710091  (  0.05040240237 )  AvgTol   =  0.000605864669  (  0.0006023709171 )
-LABELS      : N0Labels = 3785  ( 3785 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 3785  ( 3785 )   NameLabels = 3785  ( 3785 )   ColorLabels = 3785  ( 3785 )   LayerLabels = 3785  ( 3785 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3786  ( 3786 )   Summary  = 69468  ( 69491 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3786  ( 3786 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 30984  ( 30999 )
+TOLERANCE   : MaxTol   =  0.08172710091  (  0.05040240237 )  AvgTol   =  0.0006058177695  (  0.0006024184165 )
+LABELS      : N0Labels = 3785  ( 3785 )  N1Labels = 2  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 3787  ( 3785 )   NameLabels = 3785  ( 3785 )   ColorLabels = 3786  ( 3785 )   LayerLabels = 3786  ( 3785 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )
 COLORS      : Colors   = BLUE1 CYAN1 GREEN MAGENTA1 RED YELLOW  ( BLUE1 CYAN1 GREEN MAGENTA1 RED YELLOW )
