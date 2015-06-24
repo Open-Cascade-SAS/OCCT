@@ -494,9 +494,16 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
             Extrema_ExtPC anExtr(P, mySurface->BasisCurve()->Curve(), myTolerance);
             if (anExtr.IsDone())
             {
-              Standard_Integer anIndex = 1;
-              while (!anExtr.IsMin(anIndex) && anIndex < anExtr.NbExt()) anIndex++;
-              Vsingular[0] = anExtr.Point(anIndex).Parameter();
+              Standard_Real aMinDist = RealLast();
+              for(Standard_Integer anIdx = 1; anIdx <= anExtr.NbExt(); anIdx++)
+              {
+                if (anExtr.IsMin(anIdx) &&
+                    anExtr.SquareDistance(anIdx) < aMinDist)
+                {
+                  aMinDist = anExtr.SquareDistance(anIdx);
+                  Vsingular[0] = anExtr.Point(anIdx).Parameter();
+                }
+              }
             }
             else
               Vsingular[0] = ElCLib::Parameter(L, P);
@@ -513,9 +520,16 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
             Extrema_ExtPC anExtr(P, mySurface->BasisCurve()->Curve(), myTolerance);
             if (anExtr.IsDone())
             {
-              Standard_Integer anIndex = 1;
-              while (!anExtr.IsMin(anIndex) && anIndex < anExtr.NbExt()) anIndex++;
-              Vsingular[1] = anExtr.Point(anIndex).Parameter();
+              Standard_Real aMinDist = RealLast();
+              for(Standard_Integer anIdx = 1; anIdx <= anExtr.NbExt(); anIdx++)
+              {
+                if (anExtr.IsMin(anIdx) &&
+                    anExtr.SquareDistance(anIdx) < aMinDist)
+                {
+                  aMinDist = anExtr.SquareDistance(anIdx);
+                  Vsingular[1] = anExtr.Point(anIdx).Parameter();
+                }
+              }
             }
             else
               Vsingular[1] = ElCLib::Parameter(L, P);

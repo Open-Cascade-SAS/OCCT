@@ -1,5 +1,5 @@
 #D4----------------------------------------------
-puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_4"
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to"
 
 plane pt 0 0 0 1 0 0 
 ptorus pt pt 15 12
@@ -10,4 +10,4 @@ bfuse f pt pr
 nexplode f f
 depouille result f 0 0 1 f_4 5 0 0 40 0 0 1
 
-set square 10850.6
+set square 10112.2

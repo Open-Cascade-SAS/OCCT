@@ -364,17 +364,18 @@ Standard_Integer Extrema_FuncExtPC::GetStateNumber ()
 {
   if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
   mySqDist.Append(myPc.SquareDistance(myP));
-  Standard_Integer IntVal;
-  if (!myD1Init) {
-    myD1Init = Standard_True;
-    Standard_Real FF, DD;
-    Values(myU, FF, DD);
+
+  // It is necessary to always compute myD1f.
+  myD1Init = Standard_True;
+  Standard_Real FF, DD;
+  Values(myU, FF, DD);
+
+  Standard_Integer IntVal = 0;
+  if (myD1f > 0.0)
+  {
+    IntVal = 1;
   }
-  if (!myD1Init) IntVal = 0;
-  else {
-    if (myD1f > 0.) { IntVal = 1; }
-    else { IntVal = 0; }
-  }
+
   myIsMin.Append(IntVal);
   myPoint.Append(POnC(myU,myPc));
   return 0;

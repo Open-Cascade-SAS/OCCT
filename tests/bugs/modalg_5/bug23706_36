@@ -10,7 +10,7 @@ set x 11.0
 set y -6.0
 set z 5.0
 set pp_ch1 0.22894170490369881
-set pp_ch2 1.7205732840814361
+set pp_ch2 1.0000000014908634
 
 restore [locate_data_file bug23706_c05.draw] c
 set info [proj c $x $y $z]

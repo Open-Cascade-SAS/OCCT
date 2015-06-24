@@ -9,7 +9,7 @@ puts ""
 set x 3.999999652077201
 set y 5.0000000062915735
 set z 5.00002142991819367
-set pp_ch 0.9991079538920743
+set pp_ch 0.99910795389207607
 
 restore [locate_data_file bug23706_c.draw] c
 set info [proj c $x $y $z]
