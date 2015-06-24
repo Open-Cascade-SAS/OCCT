@@ -151,9 +151,10 @@ void TDataStd_Relation::Paste(const Handle(TDF_Attribute)& Into,
 {  
   Handle(TDataStd_Relation) REL = Handle(TDataStd_Relation)::DownCast (Into); 
   REL->SetRelation(myRelation);  
-  Handle(TDataStd_Variable) V1,V2;
+  Handle(TDataStd_Variable) V1;
   for (TDF_ListIteratorOfAttributeList it (myVariables); it.More(); it.Next()) {
     V1 = Handle(TDataStd_Variable)::DownCast(it.Value());
+    Handle(TDF_Attribute) V2;
     RT->HasRelocation (V1,V2);
     REL->GetVariables().Append(V2);
   }

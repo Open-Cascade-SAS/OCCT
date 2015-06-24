@@ -62,8 +62,8 @@ static TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:16 2002 End
 //
 static GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d);
-static void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
-                           const Standard_Boolean isFirst);
+static Handle(Geom2d_TrimmedCurve) AdjustCurveEnd (const Handle(Geom2d_BoundedCurve)& theC2d, 
+                                                   const gp_Pnt2d theP, const Standard_Boolean isFirst);
 //
 //=======================================================================
 //function : BRepMAT2d_Explorer
@@ -202,7 +202,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
       //
       if(TCCurr <= TCPrev)
       {
-        AdjustCurveEnd(CT2d, aPLast, Standard_True);
+        CT2d = AdjustCurveEnd (CT2d, aPLast, Standard_True);
         // Creation of new edge.
         TopoDS_Edge aNewEdge;
         TopoDS_Vertex aVf = TopExp::FirstVertex(anEdge);
@@ -220,7 +220,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
       else
       {
         gp_Pnt2d aP = CT2d->Value(CT2d->FirstParameter());
-        AdjustCurveEnd(CPrev, aP, Standard_False);
+        CPrev = AdjustCurveEnd(CPrev, aP, Standard_False);
         theCurves.ChangeValue(currentContour).ChangeValue(aNbC) = CPrev;
         //Change previous edge
         TopoDS_Edge aNewEdge;
@@ -260,7 +260,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     //
     if(TCCurr <= TCPrev)
     {
-      AdjustCurveEnd(aFirstCurve, aPLast, Standard_True);
+      aFirstCurve = AdjustCurveEnd(aFirstCurve, aPLast, Standard_True);
       theCurves.ChangeValue(currentContour).ChangeValue(1) = aFirstCurve;
       // Creation of new edge.
       TopoDS_Edge aNewEdge;
@@ -279,7 +279,7 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     else
     {
       gp_Pnt2d aP = aFirstCurve->Value(aFirstCurve->FirstParameter());
-      AdjustCurveEnd(CPrev, aP, Standard_False);
+      CPrev = AdjustCurveEnd(CPrev, aP, Standard_False);
       theCurves.ChangeValue(currentContour).ChangeValue(aNbC) = CPrev;
       //Change previous edge
       TopoDS_Edge aNewEdge;
@@ -607,8 +607,8 @@ GeomAbs_CurveType GetCurveType(const Handle(Geom2d_Curve)& theC2d)
 //function : AdjustCurveEnd
 //purpose  : 
 //=======================================================================
-void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
-                           const Standard_Boolean isFirst)
+Handle(Geom2d_TrimmedCurve) AdjustCurveEnd (const Handle(Geom2d_BoundedCurve)& theC2d,
+                                            const gp_Pnt2d theP, const Standard_Boolean isFirst)
 {
   GeomAbs_CurveType aType = GetCurveType(theC2d);
   if(aType == GeomAbs_Line)
@@ -617,12 +617,12 @@ void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
     if(isFirst)
     {
       gp_Pnt2d aP = theC2d->Value(theC2d->LastParameter());
-      theC2d = GCE2d_MakeSegment(theP, aP).Value();
+      return GCE2d_MakeSegment(theP, aP);
     }
     else
     {
       gp_Pnt2d aP = theC2d->Value(theC2d->FirstParameter());
-      theC2d = GCE2d_MakeSegment(aP, theP).Value();
+      return GCE2d_MakeSegment(aP, theP);
     }
   }
   else
@@ -633,13 +633,13 @@ void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
     if(isFirst)
     {
       BCurve->SetPole(1, theP);
-      theC2d = new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
+      return new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
                                                BCurve->LastParameter());
     }
     else
     {
       BCurve->SetPole(BCurve->NbPoles(), theP);
-      theC2d = new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
+      return new Geom2d_TrimmedCurve(BCurve, BCurve->FirstParameter(),
                                                BCurve->LastParameter());
     }
   }

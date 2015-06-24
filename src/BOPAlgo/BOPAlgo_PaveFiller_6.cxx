@@ -609,7 +609,7 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
      BOPCol_DataMapOfShapeInteger& aMVI,
      BOPDS_DataMapOfPaveBlockListOfPaveBlock& aDMExEdges,
      BOPCol_DataMapOfIntegerInteger& aDMI,
-     Handle(NCollection_BaseAllocator)& theAllocator)
+     const Handle(NCollection_BaseAllocator)& theAllocator)
 {
   Standard_Integer iRet, aNbS;
   //

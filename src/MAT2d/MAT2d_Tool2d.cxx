@@ -96,7 +96,7 @@ static Standard_Boolean AreNeighbours(const Standard_Integer IEdge1,
   const Standard_Integer IEdge2,
   const Standard_Integer NbEdge);
 
-static void SetTrim(Bisector_Bisec&  Bis , Handle(Geom2d_Curve)& Line1);
+static void SetTrim(Bisector_Bisec&  Bis, const Handle(Geom2d_Curve)& Line1);
 static Standard_Boolean CheckEnds (const Handle(Geom2d_Geometry)& Elt    ,
                                    const gp_Pnt2d&                PCom   ,
                                    const Standard_Real            Distance,
@@ -1241,7 +1241,7 @@ Standard_Boolean AreNeighbours(const Standard_Integer IEdge1,
 //function : SetTrim
 //purpose  :
 //==========================================================================
-void SetTrim(Bisector_Bisec& Bis, Handle(Geom2d_Curve)& Line1)
+static void SetTrim(Bisector_Bisec& Bis, const Handle(Geom2d_Curve)& Line1)
 {  
   Geom2dInt_GInter Intersect; 
   Standard_Real    Distance;  

@@ -423,7 +423,7 @@ void BOPAlgo_PaveFiller::PerformEF()
 //=======================================================================
 Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
   (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
-   Handle(NCollection_BaseAllocator)& theAllocator)
+   const Handle(NCollection_BaseAllocator)& theAllocator)
 {
   Standard_Integer aNbV, iRet;
   //

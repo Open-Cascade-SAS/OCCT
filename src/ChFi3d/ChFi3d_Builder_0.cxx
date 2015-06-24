@@ -4185,8 +4185,9 @@ Standard_EXPORT
     Bout = PDeb.Translated(-20*rabdist * VrefDeb);
     Standard_Boolean goodext = 0;
     for(Standard_Integer icont = 3; icont>=1 && !goodext; icont--) {
-      newc = BSpline;
-      GeomLib::ExtendCurveToPoint( newc, Bout, icont, Standard_False);
+      Handle(Geom_BoundedCurve) anExtCurve = BSpline;
+      GeomLib::ExtendCurveToPoint (anExtCurve, Bout, icont, Standard_False);
+      newc = Handle(Geom_BSplineCurve)::DownCast (anExtCurve);
       gacurve.Load(newc);
       GCPnts_AbscissaPoint GCP(gacurve,-rabdist,Wrefdeb,WF);
       if(GCP.IsDone()) {
@@ -4210,8 +4211,9 @@ Standard_EXPORT
     Bout = PFin.Translated(20*rabdist * VrefFin);
     Standard_Boolean goodext = 0;
     for(Standard_Integer icont = 3; icont>=1 && !goodext; icont--) {
-      newc = BSpline;
-      GeomLib::ExtendCurveToPoint( newc, Bout, icont, Standard_True);
+      Handle(Geom_BoundedCurve) anExtCurve = BSpline;
+      GeomLib::ExtendCurveToPoint (anExtCurve, Bout, icont, Standard_True);
+      newc = Handle(Geom_BSplineCurve)::DownCast (anExtCurve);
       gacurve.Load(newc);
       GCPnts_AbscissaPoint GCP(gacurve,rabdist,Wreffin,WL);
       if(GCP.IsDone()) {
@@ -4338,7 +4340,9 @@ Standard_EXPORT
         adjust = Standard_True;
     }
     if(adjust) {
-      GeomLib::AdjustExtremity(BSpline, PDeb, PFin, VrefDeb, VrefFin);
+      Handle(Geom_BoundedCurve) anExtCurve = BSpline;
+      GeomLib::AdjustExtremity(anExtCurve, PDeb, PFin, VrefDeb, VrefFin);
+      BSpline = Handle(Geom_BSplineCurve)::DownCast (anExtCurve);
     }
   }
 

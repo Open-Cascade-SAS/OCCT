@@ -27,7 +27,7 @@
 #include <TColStd_Array1OfReal.hxx>
 
 BRepBlend_AppSurface::BRepBlend_AppSurface(
-			       Handle(Approx_SweepFunction)& Func,
+			       const Handle(Approx_SweepFunction)& Func,
 			       const Standard_Real First, 
 			       const Standard_Real Last,
 			       const Standard_Real Tol3d, 

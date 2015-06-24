@@ -54,7 +54,7 @@ public:
   //! approximated  with an  tolerance   given  by   the
   //! resolution on   support surfaces,  but  if this
   //! tolerance is too large Tol2d  is used.
-  Standard_EXPORT BRepBlend_AppSurface(Handle(Approx_SweepFunction)& Funct, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Real TolAngular, const GeomAbs_Shape Continuity = GeomAbs_C0, const Standard_Integer Degmax = 11, const Standard_Integer Segmax = 50);
+  Standard_EXPORT BRepBlend_AppSurface(const Handle(Approx_SweepFunction)& Funct, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Real TolAngular, const GeomAbs_Shape Continuity = GeomAbs_C0, const Standard_Integer Degmax = 11, const Standard_Integer Segmax = 50);
   
     Standard_Boolean IsDone() const;
   

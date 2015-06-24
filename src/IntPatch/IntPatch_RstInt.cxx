@@ -441,7 +441,7 @@ static Standard_Boolean IsSegment2dSmall(const IntPatch_Polygo& Pol,
 //purpose  : 
 //=======================================================================
 
-void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
+void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 				       const Handle(Adaptor3d_HSurface)& Surf,
 				       const Handle(Adaptor3d_TopolTool)& Domain,
 				       const Handle(Adaptor3d_HSurface)& OtherSurf,

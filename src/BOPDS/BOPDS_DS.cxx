@@ -661,7 +661,7 @@ void BOPDS_DS::Init()
 void BOPDS_DS::InitShape
   (const Standard_Integer aI,
    const TopoDS_Shape& aS,
-   Handle(NCollection_BaseAllocator)& theAllocator,
+   const Handle(NCollection_BaseAllocator)& theAllocator,
    BOPCol_DataMapOfShapeInteger& aMSI)
 {
   Standard_Integer aIx;

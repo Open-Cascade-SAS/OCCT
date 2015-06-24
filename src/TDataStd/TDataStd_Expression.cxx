@@ -151,9 +151,10 @@ void TDataStd_Expression::Paste(const Handle(TDF_Attribute)& Into,
 {  
   Handle(TDataStd_Expression) EXPR = Handle(TDataStd_Expression)::DownCast (Into); 
   EXPR->SetExpression(myExpression);  
-  Handle(TDataStd_Variable) V1,V2;
+  Handle(TDataStd_Variable) V1;
   for (TDF_ListIteratorOfAttributeList it (myVariables); it.More(); it.Next()) {
     V1 = Handle(TDataStd_Variable)::DownCast(it.Value());
+    Handle(TDF_Attribute) V2;
     RT->HasRelocation (V1,V2);
     EXPR->GetVariables().Append(V2);
   }

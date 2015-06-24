@@ -139,9 +139,9 @@ protected:
   
   Standard_EXPORT void FillShrunkData (const TopAbs_ShapeEnum theType1, const TopAbs_ShapeEnum theType2);
   
-  Standard_EXPORT Standard_Integer PerformVerticesEE (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT Standard_Integer PerformVerticesEE (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB, const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT Standard_Integer PerformVerticesEF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT Standard_Integer PerformVerticesEF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB, const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT Standard_Boolean CheckFacePaves (const TopoDS_Vertex& theVnew, const BOPCol_MapOfInteger& theMIF);
   
@@ -172,7 +172,7 @@ protected:
   
 
   //! Treatment of section edges.
-  Standard_EXPORT Standard_Integer PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB, BOPCol_DataMapOfShapeInteger& theMVI, BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges, BOPCol_DataMapOfIntegerInteger& theDMI, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT Standard_Integer PostTreatFF (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB, BOPCol_DataMapOfShapeInteger& theMVI, BOPDS_DataMapOfPaveBlockListOfPaveBlock& theDMExEdges, BOPCol_DataMapOfIntegerInteger& theDMI, const BOPCol_BaseAllocator& theAllocator);
   
   Standard_EXPORT void FindPaveBlocks (const Standard_Integer theV, const Standard_Integer theF, BOPDS_ListOfPaveBlock& theLPB);
   

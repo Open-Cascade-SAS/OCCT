@@ -136,7 +136,7 @@ static
 
 static
   void AdjustUPeriodic (const Handle(Geom_Surface)& aS,
-			Handle(Geom2d_Curve)& aC2D);
+			const Handle(Geom2d_Curve)& aC2D);
 static
   void GetQuadric(const Handle(GeomAdaptor_HSurface)& HS1,
 		  IntSurf_Quadric& quad1);
@@ -1000,30 +1000,6 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 
   case IntPatch_Restriction: 
     {
-      GeomAbs_SurfaceType typS1 = myHS1->Surface().GetType();
-      GeomAbs_SurfaceType typS2 = myHS2->Surface().GetType();
-      Standard_Boolean isAnalS1 = Standard_False;
-      switch (typS1)
-      {
-      case GeomAbs_Plane:
-      case GeomAbs_Cylinder:
-      case GeomAbs_Sphere:
-      case GeomAbs_Cone: 
-      case GeomAbs_Torus: isAnalS1 = Standard_True; break;
-      default: break;
-      }
-
-      Standard_Integer isAnalS2 = Standard_False;
-      switch (typS2)
-      {
-      case GeomAbs_Plane:
-      case GeomAbs_Cylinder:
-      case GeomAbs_Sphere:
-      case GeomAbs_Cone: 
-      case GeomAbs_Torus: isAnalS2 = Standard_True; break;
-      default: break;
-      }
-
       Handle(IntPatch_RLine) RL = 
         Handle(IntPatch_RLine)::DownCast(L);
       Handle(Geom_Curve) aC3d;
@@ -1111,7 +1087,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 //function : AdjustUPeriodic
 //purpose  : 
 //=======================================================================
- void AdjustUPeriodic (const Handle(Geom_Surface)& aS, Handle(Geom2d_Curve)& aC2D)
+ static void AdjustUPeriodic (const Handle(Geom_Surface)& aS, const Handle(Geom2d_Curve)& aC2D)
 {
   if (aC2D.IsNull() || !aS->IsUPeriodic())
     return;
@@ -1155,7 +1131,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 //function : GetQuadric
 //purpose  : 
 //=======================================================================
- void GetQuadric(const Handle(GeomAdaptor_HSurface)& HS1, IntSurf_Quadric& quad1)
+ static void GetQuadric(const Handle(GeomAdaptor_HSurface)& HS1, IntSurf_Quadric& quad1)
 {
   switch (HS1->Surface().GetType())
   {

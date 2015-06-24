@@ -27,9 +27,8 @@
 #include <BOPDS_PDS.hxx>
 #include <Standard_Integer.hxx>
 #include <BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx>
+
 class BOPDS_PaveBlock;
-
-
 
 class BOPAlgo_Tools 
 {
@@ -38,41 +37,20 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT static void MakeBlocksCnx (const BOPCol_IndexedDataMapOfIntegerListOfInteger& theMILI, BOPCol_DataMapOfIntegerListOfInteger& theMBlocks, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT static void MakeBlocksCnx (const BOPCol_IndexedDataMapOfIntegerListOfInteger& theMILI, BOPCol_DataMapOfIntegerListOfInteger& theMBlocks, const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT static void MakeBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMILI, BOPDS_DataMapOfIntegerListOfPaveBlock& theMBlocks, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT static void MakeBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMILI, BOPDS_DataMapOfIntegerListOfPaveBlock& theMBlocks, const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT static void PerformCommonBlocks (BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMBlocks, BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
+  Standard_EXPORT static void PerformCommonBlocks (BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMBlocks, const BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
   
-  Standard_EXPORT static void FillMap (const Standard_Integer tneN1, const Standard_Integer tneN2, BOPCol_IndexedDataMapOfIntegerListOfInteger& theMILI, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT static void FillMap (const Standard_Integer tneN1, const Standard_Integer tneN2, BOPCol_IndexedDataMapOfIntegerListOfInteger& theMILI, const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Handle(BOPDS_PaveBlock)& tnePB2, BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMILI, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Handle(BOPDS_PaveBlock)& tnePB2, BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& theMILI, const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Standard_Integer tneF, BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI, BOPCol_BaseAllocator& theAllocator);
+  Standard_EXPORT static void FillMap (const Handle(BOPDS_PaveBlock)& tnePB1, const Standard_Integer tneF, BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMILI, const BOPCol_BaseAllocator& theAllocator);
   
-  Standard_EXPORT static void PerformCommonBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks, BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static void PerformCommonBlocks (const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theMBlocks, const BOPCol_BaseAllocator& theAllocator, BOPDS_PDS& pDS);
 
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_Tools_HeaderFile

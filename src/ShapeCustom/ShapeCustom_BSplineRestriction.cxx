@@ -841,7 +841,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge& E,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(Handle(Geom_Curve)& aCurve,
+Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_Curve)& aCurve,
                                                               Handle(Geom_Curve)& C,
                                                               const Standard_Boolean IsConvert,
                                                               const Standard_Real First,
@@ -1149,7 +1149,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::NewCurve2d(const TopoDS_Edge& E
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(Handle(Geom2d_Curve)& aCurve,
+Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geom2d_Curve)& aCurve,
                                                                 Handle(Geom2d_Curve)& C, 
                                                                 const Standard_Boolean IsConvert,
                                                                 const Standard_Real First, 

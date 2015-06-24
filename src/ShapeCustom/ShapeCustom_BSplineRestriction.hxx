@@ -103,12 +103,12 @@ public:
   //! Returns Standard_True if  the curve has been modified.
   //! if flag IsOf equals Standard_True Offset curves are aproximated to Offset
   //! if Standard_False to BSpline
-  Standard_EXPORT Standard_Boolean ConvertCurve (Handle(Geom_Curve)& aCurve, Handle(Geom_Curve)& C, const Standard_Boolean IsConvert, const Standard_Real First, const Standard_Real Last, Standard_Real& TolCur, const Standard_Boolean IsOf = Standard_True);
+  Standard_EXPORT Standard_Boolean ConvertCurve (const Handle(Geom_Curve)& aCurve, Handle(Geom_Curve)& C, const Standard_Boolean IsConvert, const Standard_Real First, const Standard_Real Last, Standard_Real& TolCur, const Standard_Boolean IsOf = Standard_True);
   
   //! Returns Standard_True if the pcurve has been modified.
   //! if flag IsOf equals Standard_True Offset pcurves are aproximated to Offset
   //! if Standard_False to BSpline
-  Standard_EXPORT Standard_Boolean ConvertCurve2d (Handle(Geom2d_Curve)& aCurve, Handle(Geom2d_Curve)& C, const Standard_Boolean IsConvert, const Standard_Real First, const Standard_Real Last, Standard_Real& TolCur, const Standard_Boolean IsOf = Standard_True);
+  Standard_EXPORT Standard_Boolean ConvertCurve2d (const Handle(Geom2d_Curve)& aCurve, Handle(Geom2d_Curve)& C, const Standard_Boolean IsConvert, const Standard_Real First, const Standard_Real Last, Standard_Real& TolCur, const Standard_Boolean IsOf = Standard_True);
   
   //! Sets tolerance of aproximation for curve3d and surface
     void SetTol3d (const Standard_Real Tol3d);

@@ -187,9 +187,9 @@ static Standard_Real recadre(const Standard_Real p,
 //           parameter in FaceInterference.
 //=======================================================================
 
-static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& fb,
-			       Handle(Adaptor2d_HCurve2d)& pcfb,
-			       Handle(Adaptor3d_HSurface)& surf,
+static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
+			       const Handle(Adaptor2d_HCurve2d)& pcfb,
+			       const Handle(Adaptor3d_HSurface)& surf,
 			       ChFiDS_FaceInterference&  fi,
 			       ChFiDS_CommonPoint&       cp,
 			       gp_Pnt2d&                 p2dbout,
@@ -229,8 +229,8 @@ static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& fb,
 //           and <p2dbout>
 //=======================================================================
 
-static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& fb,
-			       Handle(Adaptor3d_HCurve)&   ct,
+static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
+			       const Handle(Adaptor3d_HCurve)&   ct,
 			       ChFiDS_FaceInterference&  fi,
 			       ChFiDS_CommonPoint&       cp,
 			       gp_Pnt2d&                 p2dbout,
@@ -356,9 +356,9 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
 //           face at end.
 //=======================================================================
 
-static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& face,
-			       Handle(Adaptor2d_HCurve2d)& edonface,
-			       Handle(Adaptor3d_HSurface)& surf,
+static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& face,
+			       const Handle(Adaptor2d_HCurve2d)& edonface,
+			       const Handle(Adaptor3d_HSurface)& surf,
 			       ChFiDS_FaceInterference&  fi,
 			       ChFiDS_CommonPoint&       cp,
 			       const Standard_Boolean    isfirst)
@@ -424,42 +424,25 @@ static void ChFi3d_ExtendSurface (Handle(Geom_Surface) & S ,
                                   Standard_Integer & prol )
 {
   if (prol) return;
-  Handle(Geom_BSplineSurface) S1;
-  Handle(Geom_BezierSurface) S2;
+
+  prol = (S->IsKind (STANDARD_TYPE(Geom_BSplineSurface)) ? 1 :
+          S->IsKind (STANDARD_TYPE(Geom_BezierSurface))  ? 2 : 0);
+  if ( ! prol )
+    return;
+
   Standard_Real length,umin,umax,vmin,vmax;
   gp_Pnt P1,P2;
   S->Bounds(umin,umax,vmin,vmax);
   S->D0(umin,vmin,P1);
   S->D0(umax,vmax,P2);
   length=P1.Distance(P2);
-  prol=0;
-  S1=Handle(Geom_BSplineSurface)::DownCast(S);
-  S2=Handle(Geom_BezierSurface)::DownCast(S);
-  if (!S1.IsNull()) {
-                  GeomLib::ExtendSurfByLength(S1,length,1,Standard_False,
-                  Standard_True);
-                  GeomLib::ExtendSurfByLength(S1,length,1,Standard_True,
-                  Standard_True);
-                  GeomLib::ExtendSurfByLength(S1,length,1,Standard_False,
-                  Standard_False);
-                  GeomLib::ExtendSurfByLength(S1,length,1,Standard_True,
-                  Standard_False);
-                  S=S1;
-                  prol=1;
-   }
-   if (!S2.IsNull()) {
-                 GeomLib::ExtendSurfByLength(S2,length,1,Standard_False,
-                 Standard_True);
-                 GeomLib::ExtendSurfByLength(S2,length,1,Standard_True,
-                 Standard_True);
-                 GeomLib::ExtendSurfByLength(S2,length,1,Standard_False,
-                 Standard_False);
-                 GeomLib::ExtendSurfByLength(S2,length,1,Standard_True,
-                 Standard_False);
-                 S=S2;
-                 prol=2;
 
-  }
+  Handle(Geom_BoundedSurface) aBS = Handle(Geom_BoundedSurface)::DownCast(S);
+  GeomLib::ExtendSurfByLength (aBS, length, 1, Standard_False, Standard_True);
+  GeomLib::ExtendSurfByLength (aBS, length, 1, Standard_True,  Standard_True);
+  GeomLib::ExtendSurfByLength (aBS, length, 1, Standard_False, Standard_False);
+  GeomLib::ExtendSurfByLength (aBS, length, 1, Standard_True,  Standard_False);
+  S = aBS;
 }
 
 //=======================================================================
@@ -467,7 +450,7 @@ static void ChFi3d_ExtendSurface (Handle(Geom_Surface) & S ,
 //purpose  : calculate the 2d of the curve Ct on face Face
 //=======================================================================
 
-static void  ComputeCurve2d (Handle(Geom_Curve )& Ct,
+static void  ComputeCurve2d (const Handle(Geom_Curve )& Ct,
                        TopoDS_Face & Face,
                        Handle(Geom2d_Curve) & C2d)
 {
@@ -2267,8 +2250,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       inters.Perform(HC, HGs);
       if ( !prolface[nn] && ( !inters.IsDone() || (inters.NbPoints()==0) )) {
 	// extend surface of conge
-        Handle(Geom_BSplineSurface) S1=
-          Handle(Geom_BSplineSurface)::DownCast(DStr.Surface(Fd->Surf()).Surface());
+        Handle(Geom_BoundedSurface) S1=
+          Handle(Geom_BoundedSurface)::DownCast(DStr.Surface(Fd->Surf()).Surface());
         if (!S1.IsNull()) {
           Standard_Real length = 0.5 * Max(Fi1Length,Fi2Length);
           GeomLib::ExtendSurfByLength(S1,length,1,Standard_False,!isfirst);

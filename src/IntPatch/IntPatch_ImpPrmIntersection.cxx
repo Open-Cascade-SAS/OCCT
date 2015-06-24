@@ -2240,7 +2240,7 @@ static Standard_Boolean AddVertices(Handle(IntSurf_LineOn2S)& Line,
 }
 
 
-static void PutIntVertices(Handle(IntPatch_Line)&    Line,
+static void PutIntVertices(const Handle(IntPatch_Line)&    Line,
   Handle(IntSurf_LineOn2S)& Result,
   Standard_Boolean          ,//IsReversed,
   Handle(IntSurf_LineOn2S)& Vertices,

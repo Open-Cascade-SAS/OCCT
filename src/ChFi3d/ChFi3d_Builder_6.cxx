@@ -692,10 +692,13 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   Standard_Real length1,length2;
   length1=Data->FirstExtensionValue();
   length2=Data->LastExtensionValue();
+
+  Handle(Geom_BoundedSurface) aBndSurf = Surf;
   if (length1 > Precision::Confusion())
-    GeomLib::ExtendSurfByLength(Surf,length1,1,Standard_False,Standard_False);
+    GeomLib::ExtendSurfByLength(aBndSurf,length1,1,Standard_False,Standard_False);
   if (length2 >  Precision::Confusion())
-    GeomLib::ExtendSurfByLength(Surf,length2,1,Standard_False,Standard_True);
+    GeomLib::ExtendSurfByLength(aBndSurf,length2,1,Standard_False,Standard_True);
+  Surf = Handle(Geom_BSplineSurface)::DownCast (aBndSurf);
 
   //Correction of surface on extremities
   if (length1 <= Precision::Confusion())
