@@ -56,17 +56,3 @@ const Handle(Geom_Transformation)& GC_MakeRotation::Value() const
 { 
   return TheRotation;
 }
-
-const Handle(Geom_Transformation)& GC_MakeRotation::Operator() const 
-{
-  return TheRotation;
-}
-
-GC_MakeRotation::operator Handle(Geom_Transformation) () const
-{
-  return TheRotation;
-}
-
-
-
-

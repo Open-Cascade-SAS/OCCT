@@ -64,11 +64,7 @@ Value(me) returns TrimmedCurve from Geom
     is static;
     	--- Purpose: Returns the constructed arc of hyperbola.
     	---C++: return const&
-
-Operator(me) returns TrimmedCurve from Geom
-    is static;
-    	---C++: return const&
-    	---C++: alias "Standard_EXPORT operator Handle_Geom_TrimmedCurve() const;"
+        ---C++: alias "operator const Handle(Geom_TrimmedCurve)& () const { return Value(); }"
 
 fields
 

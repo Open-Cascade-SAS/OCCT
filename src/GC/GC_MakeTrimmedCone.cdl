@@ -71,11 +71,7 @@ Value(me) returns RectangularTrimmedSurface from Geom
     ---Purpose: Returns the constructed trimmed cone.
     -- StdFail_NotDone if no trimmed cone is constructed.
     ---C++: return const&
-
-Operator(me) returns RectangularTrimmedSurface from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_RectangularTrimmedSurface() const;"
+    ---C++: alias "operator const Handle(Geom_RectangularTrimmedSurface)& () const { return Value(); }"
 
 fields
 

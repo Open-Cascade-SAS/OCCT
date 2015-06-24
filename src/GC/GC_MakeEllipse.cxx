@@ -51,14 +51,3 @@ const Handle(Geom_Ellipse)& GC_MakeEllipse::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheEllipse;
 }
-
-const Handle(Geom_Ellipse)& GC_MakeEllipse::Operator() const 
-{
-  return Value();
-}
-
-GC_MakeEllipse::operator Handle(Geom_Ellipse) () const
-{
-  return Value();
-}
-

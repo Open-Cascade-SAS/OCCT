@@ -77,14 +77,3 @@ const Handle(Geom2d_Parabola)& GCE2d_MakeParabola::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheParabola;
 }
-
-const Handle(Geom2d_Parabola)& GCE2d_MakeParabola::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeParabola::operator Handle(Geom2d_Parabola) () const
-{
-  return Value();
-}
-

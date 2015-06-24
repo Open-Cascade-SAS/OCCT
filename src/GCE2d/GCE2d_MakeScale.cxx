@@ -30,14 +30,3 @@ const Handle(Geom2d_Transformation)& GCE2d_MakeScale::Value() const
 { 
   return TheScale;
 }
-
-const Handle(Geom2d_Transformation)& GCE2d_MakeScale::Operator() const 
-{
-  return TheScale;
-}
-
-GCE2d_MakeScale::operator Handle(Geom2d_Transformation) () const
-{
-  return TheScale;
-}
-

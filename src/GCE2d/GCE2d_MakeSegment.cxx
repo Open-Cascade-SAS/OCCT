@@ -80,14 +80,3 @@ const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeSegment::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheSegment;
 }
-
-const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeSegment::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeSegment::operator Handle(Geom2d_TrimmedCurve) () const
-{
-  return Value();
-}
-

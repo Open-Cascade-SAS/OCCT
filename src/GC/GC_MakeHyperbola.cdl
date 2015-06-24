@@ -81,11 +81,7 @@ Value(me) returns Hyperbola from Geom
     ---Purpose: Returns the constructed hyperbola.
     -- Exceptions StdFail_NotDone if no hyperbola is constructed.
     ---C++: return const&
-
-Operator(me) returns Hyperbola from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_Hyperbola() const;"
+    ---C++: alias "operator const Handle(Geom_Hyperbola)& () const { return Value(); }"
 
 fields
 

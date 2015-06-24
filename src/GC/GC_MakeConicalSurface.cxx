@@ -108,14 +108,3 @@ const Handle(Geom_ConicalSurface)& GC_MakeConicalSurface::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCone;
 }
-
-const Handle(Geom_ConicalSurface)& GC_MakeConicalSurface::Operator() const 
-{
-  return Value();
-}
-
-GC_MakeConicalSurface::operator Handle(Geom_ConicalSurface) () const
-{
-  return Value();
-}
-

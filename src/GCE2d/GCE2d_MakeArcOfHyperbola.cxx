@@ -59,14 +59,3 @@ const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeArcOfHyperbola::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheArc;
 }
-
-const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeArcOfHyperbola::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeArcOfHyperbola::operator Handle(Geom2d_TrimmedCurve) () const
-{
-  return Value();
-}
-

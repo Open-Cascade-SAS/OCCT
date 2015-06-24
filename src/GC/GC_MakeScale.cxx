@@ -32,14 +32,3 @@ const Handle(Geom_Transformation)& GC_MakeScale::Value() const
 { 
   return TheScale;
 }
-
-const Handle(Geom_Transformation)& GC_MakeScale::Operator() const 
-{
-  return TheScale;
-}
-
-GC_MakeScale::operator Handle(Geom_Transformation) () const
-{
-  return TheScale;
-}
-

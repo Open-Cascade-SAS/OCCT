@@ -80,14 +80,3 @@ const Handle(Geom_Transformation)& GC_MakeMirror::Value() const
 { 
   return TheMirror;
 }
-
-const Handle(Geom_Transformation)& GC_MakeMirror::Operator() const 
-{
-  return TheMirror;
-}
-
-GC_MakeMirror::operator Handle(Geom_Transformation) () const
-{
-  return TheMirror;
-}
-

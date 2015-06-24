@@ -40,14 +40,3 @@ const Handle(Geom2d_Transformation)& GCE2d_MakeTranslation::Value() const
 { 
   return TheTranslation;
 }
-
-const Handle(Geom2d_Transformation)& GCE2d_MakeTranslation::Operator() const 
-{
-  return TheTranslation;
-}
-
-GCE2d_MakeTranslation::operator Handle(Geom2d_Transformation) () const
-{
-  return TheTranslation;
-}
-

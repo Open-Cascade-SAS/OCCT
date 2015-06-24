@@ -18,6 +18,7 @@
 #include <GC_MakeCylindricalSurface.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Geom_CylindricalSurface.hxx>
 
 //=========================================================================
 //   Creation of a cylinder limited by three points <P1>, <P2> and <P3>.         +
@@ -85,16 +86,3 @@ const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCylinder::
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCyl;
 }
-
-const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCylinder::
-       Operator() const 
-{
-  return Value();
-}
-
-GC_MakeTrimmedCylinder::
-  operator Handle(Geom_RectangularTrimmedSurface) () const
-{
-  return Value();
-}
-

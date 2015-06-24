@@ -62,14 +62,3 @@ const Handle(Geom2d_Ellipse)& GCE2d_MakeEllipse::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheEllipse;
 }
-
-const Handle(Geom2d_Ellipse)& GCE2d_MakeEllipse::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeEllipse::operator Handle(Geom2d_Ellipse) () const
-{
-  return Value();
-}
-

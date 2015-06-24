@@ -64,14 +64,3 @@ const Handle(Geom_TrimmedCurve)& GC_MakeSegment::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheSegment;
 }
-
-const Handle(Geom_TrimmedCurve)& GC_MakeSegment::Operator() const 
-{
-  return Value();
-}
-
-GC_MakeSegment::operator Handle(Geom_TrimmedCurve) () const
-{
-  return Value();
-}
-

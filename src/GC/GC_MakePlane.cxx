@@ -122,14 +122,3 @@ const Handle(Geom_Plane)& GC_MakePlane::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return ThePlane;
 }
-
-const Handle(Geom_Plane)& GC_MakePlane::Operator() const 
-{
-  return Value();
-}
-
-GC_MakePlane::operator Handle(Geom_Plane) () const
-{
-  return Value();
-}
-

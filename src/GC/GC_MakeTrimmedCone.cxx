@@ -76,16 +76,3 @@ const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCone::
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCone;
 }
-
-const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCone::
-       Operator() const 
-{
-  return Value();
-}
-
-GC_MakeTrimmedCone::
-  operator Handle(Geom_RectangularTrimmedSurface) () const
-{
-  return Value();
-}
-

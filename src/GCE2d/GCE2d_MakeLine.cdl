@@ -72,11 +72,7 @@ Value(me) returns Line from Geom2d
     ---C++: return const&
     ---Purpose: Returns the constructed line.
     -- Exceptions StdFail_NotDone if no line is constructed.
-
-Operator(me) returns Line from Geom2d
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom2d_Line() const;"
+    ---C++: alias "operator const Handle(Geom2d_Line)& () const { return Value(); }"
 
 fields
 

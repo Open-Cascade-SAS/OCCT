@@ -72,11 +72,7 @@ Value(me) returns Ellipse from Geom
     	---Purpose: Returns the constructed ellipse.
     	-- Exceptions StdFail_NotDone if no ellipse is constructed.
         ---C++: return const&
-
-Operator(me) returns Ellipse from Geom
-    is static;
-    	---C++: return const&
-    	---C++: alias "Standard_EXPORT operator Handle_Geom_Ellipse() const;"
+        ---C++: alias "operator const Handle(Geom_Ellipse)& () const { return Value(); }"
 
 fields
 

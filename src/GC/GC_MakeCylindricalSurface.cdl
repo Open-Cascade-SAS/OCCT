@@ -109,11 +109,7 @@ Value(me) returns CylindricalSurface from Geom
     ---Purpose: Returns the constructed cylinder.
     -- Exceptions StdFail_NotDone if no cylinder is constructed.
     ---C++: return const&
-
-Operator(me) returns CylindricalSurface from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_CylindricalSurface() const;"
+    ---C++: alias "operator const Handle(Geom_CylindricalSurface)& () const { return Value(); }"
 
 fields
 

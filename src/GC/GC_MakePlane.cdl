@@ -98,11 +98,7 @@ Value(me) returns Plane from Geom
     ---Purpose: Returns the constructed plane.
     -- Exceptions StdFail_NotDone if no plane is constructed.
     ---C++: return const&
-
-Operator(me) returns Plane from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_Plane() const;"
+    ---C++: alias "operator const Handle(Geom_Plane)& () const { return Value(); }"
 
 fields
 

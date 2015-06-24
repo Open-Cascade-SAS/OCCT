@@ -76,14 +76,3 @@ const Handle(Geom2d_Line)& GCE2d_MakeLine::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheLine;
 }
-
-const Handle(Geom2d_Line) & GCE2d_MakeLine::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeLine::operator Handle(Geom2d_Line) () const
-{
-  return Value();
-}
-

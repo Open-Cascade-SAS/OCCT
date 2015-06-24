@@ -161,20 +161,3 @@ const Handle(Geom_TrimmedCurve)& GC_MakeArcOfCircle::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheArc;
 }
-//=======================================================================
-//function : Operator
-//purpose  : 
-//=======================================================================
-const Handle(Geom_TrimmedCurve)& GC_MakeArcOfCircle::Operator() const 
-{
-  return Value();
-}
-//=======================================================================
-//function : operator
-//purpose  : 
-//=======================================================================
-GC_MakeArcOfCircle::operator Handle(Geom_TrimmedCurve) () const
-{
-  return Value();
-}
-

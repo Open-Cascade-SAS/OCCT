@@ -62,14 +62,3 @@ const Handle(Geom2d_Hyperbola)& GCE2d_MakeHyperbola::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheHyperbola;
 }
-
-const Handle(Geom2d_Hyperbola)& GCE2d_MakeHyperbola::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeHyperbola::operator Handle(Geom2d_Hyperbola) () const
-{
-  return Value();
-}
-

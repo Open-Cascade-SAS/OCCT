@@ -66,14 +66,3 @@ const Handle(Geom_Line)& GC_MakeLine::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheLine;
 }
-
-const Handle(Geom_Line)& GC_MakeLine::Operator() const 
-{
-  return Value();
-}
-
-GC_MakeLine::operator Handle(Geom_Line) () const
-{
-  return Value();
-}
-

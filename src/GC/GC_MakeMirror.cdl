@@ -61,11 +61,7 @@ Value(me) returns Transformation from Geom
     is static;
     ---Purpose: Returns the constructed transformation.
     ---C++: return const&
-
-Operator(me) returns Transformation from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_Transformation() const;"
+    ---C++: alias "operator const Handle(Geom_Transformation)& () const { return Value(); }"
 
 fields
 

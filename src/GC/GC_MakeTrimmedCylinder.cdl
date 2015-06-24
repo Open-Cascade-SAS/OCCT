@@ -93,11 +93,7 @@ Value(me) returns RectangularTrimmedSurface from Geom
     -- Exceptions
     -- StdFail_NotDone if no trimmed cylinder is constructed.
     ---C++: return const&
-
-Operator(me) returns RectangularTrimmedSurface from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_RectangularTrimmedSurface() const;"
+    ---C++: alias "operator const Handle(Geom_RectangularTrimmedSurface)& () const { return Value(); }"
 
 fields
 

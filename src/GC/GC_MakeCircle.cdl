@@ -100,11 +100,7 @@ Value(me) returns Circle from Geom
     -- Exceptions
     -- StdFail_NotDone if no circle is constructed.
     ---C++: return const&
-
-Operator(me) returns Circle from Geom
-    is static;
-    ---C++: return const&
-    ---C++: alias "Standard_EXPORT operator Handle_Geom_Circle() const;"
+    ---C++: alias "operator const Handle(Geom_Circle)& () const { return Value(); }"
 
 fields
 

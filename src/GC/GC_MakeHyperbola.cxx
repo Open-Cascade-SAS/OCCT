@@ -50,14 +50,3 @@ const Handle(Geom_Hyperbola)& GC_MakeHyperbola::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheHyperbola;
 }
-
-const Handle(Geom_Hyperbola)& GC_MakeHyperbola::Operator() const 
-{
-  return Value();
-}
-
-GC_MakeHyperbola::operator Handle(Geom_Hyperbola) () const
-{
-  return Value();
-}
-

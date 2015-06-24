@@ -102,11 +102,7 @@ Value(me) returns Parabola from Geom2d
     	---C++: return const&
     	---Purpose: Returns the constructed parabola.
     	-- Exceptions StdFail_NotDone if no parabola is constructed.
-    
-Operator(me) returns Parabola from Geom2d
-    is static;
-    	---C++: return const&
-    	---C++: alias "Standard_EXPORT operator Handle_Geom2d_Parabola() const;"
+        ---C++: alias "operator const Handle(Geom2d_Parabola)& () const { return Value(); }"
 
 fields
 

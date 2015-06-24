@@ -101,13 +101,3 @@ const Handle(Geom_CylindricalSurface)&
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCylinder;
 }
-
-const Handle(Geom_CylindricalSurface)& GC_MakeCylindricalSurface::Operator() const 
-{
-  return Value();
-}
-
-GC_MakeCylindricalSurface::operator Handle(Geom_CylindricalSurface) () const
-{
-  return Value();
-}

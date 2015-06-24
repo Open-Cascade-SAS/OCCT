@@ -31,17 +31,3 @@ const Handle(Geom2d_Transformation)& GCE2d_MakeRotation::Value() const
 { 
   return TheRotation;
 }
-
-const Handle(Geom2d_Transformation)& GCE2d_MakeRotation::Operator() const 
-{
-  return TheRotation;
-}
-
-GCE2d_MakeRotation::operator Handle(Geom2d_Transformation) () const
-{
-  return TheRotation;
-}
-
-
-
-

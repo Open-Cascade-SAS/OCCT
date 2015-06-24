@@ -58,14 +58,3 @@ const Handle(Geom2d_Transformation)& GCE2d_MakeMirror::Value() const
 { 
   return TheMirror;
 }
-
-const Handle(Geom2d_Transformation)& GCE2d_MakeMirror::Operator() const 
-{
-  return TheMirror;
-}
-
-GCE2d_MakeMirror::operator Handle(Geom2d_Transformation) () const
-{
-  return TheMirror;
-}
-

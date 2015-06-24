@@ -42,14 +42,3 @@ const Handle(Geom_Transformation)& GC_MakeTranslation::Value() const
 { 
   return TheTranslation;
 }
-
-const Handle(Geom_Transformation)& GC_MakeTranslation::Operator() const 
-{
-  return TheTranslation;
-}
-
-GC_MakeTranslation::operator Handle(Geom_Transformation) () const
-{
-  return TheTranslation;
-}
-

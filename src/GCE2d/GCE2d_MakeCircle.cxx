@@ -103,14 +103,3 @@ const Handle(Geom2d_Circle)& GCE2d_MakeCircle::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCircle;
 }
-
-const Handle(Geom2d_Circle)& GCE2d_MakeCircle::Operator() const 
-{
-  return Value();
-}
-
-GCE2d_MakeCircle::operator Handle(Geom2d_Circle) () const
-{
-  return Value();
-}
-
