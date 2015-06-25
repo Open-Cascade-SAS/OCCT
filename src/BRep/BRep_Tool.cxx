@@ -337,22 +337,24 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
       return nullPCurve;
     }
 
-    aCurveLocation = L.Predivided(aCurveLocation);
+    aCurveLocation = aCurveLocation.Predivided(L);
+    First = f; Last = l; //Range of edge must not be modified
 
-    Handle(Geom_Plane) Plane = GP;
     if (!aCurveLocation.IsIdentity())
     {
       const gp_Trsf& T = aCurveLocation.Transformation();
-      Handle(Geom_Geometry) GPT = GP->Transformed(T);
-      Plane = *((Handle(Geom_Plane)*)&GPT);
+      Handle(Geom_Geometry) GC3d = C3d->Transformed(T);
+      C3d = *((Handle(Geom_Curve)*)&GC3d);
+      f = C3d->TransformedParameter(f, T);
+      l = C3d->TransformedParameter(l, T);
     }
     GeomAdaptor_Surface& GAS = HS->ChangeSurface();
-    GAS.Load(Plane);
+    GAS.Load(GP);
 
     Handle(Geom_Curve) ProjOnPlane = 
       GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d,f,l,Standard_True,Standard_False),
-                                  Plane,
-                                  Plane->Position().Direction(),
+                                  GP,
+                                  GP->Position().Direction(),
                                   Standard_True);
 
     GeomAdaptor_Curve& GAC = HC->ChangeCurve();
@@ -366,7 +368,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
         (*((Handle(Geom2d_TrimmedCurve)*)&pc));
       pc = TC->BasisCurve();
     }
-    First = f; Last = l;
+
     return pc;
   }
   
