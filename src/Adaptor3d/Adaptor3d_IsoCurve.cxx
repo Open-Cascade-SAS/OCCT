@@ -766,14 +766,15 @@ gp_Circ Adaptor3d_IsoCurve::Circle() const
   case GeomAbs_SurfaceOfRevolution: 
     {
       if (myIso == GeomAbs_IsoV) {
-	gp_Ax1 Ax1 = mySurface->AxeOfRevolution();
-	gp_Vec DX(Ax1.Location(), Value(0));
-        if(DX.IsParallel(Ax1.Direction(),Precision::Angular())) {
-          return gp_Circ(gp_Ax2(Value(0), Ax1.Direction()),0);
+        const gp_Pnt aVal0 = Value (0.0);
+        gp_Ax1 Ax1 = mySurface->AxeOfRevolution();
+        if (gp_Lin (Ax1).Contains (aVal0, Precision::Confusion())) {
+          return gp_Circ(gp_Ax2(aVal0, Ax1.Direction()),0);
         }
         else {
+          gp_Vec DX(Ax1.Location(), aVal0);
           axes = gp_Ax3(Ax1.Location(), Ax1.Direction(), DX);
-          computeHR(axes,Value(0),h,radius);
+          computeHR(axes,aVal0,h,radius);
           gp_Vec VT = axes.Direction();
           axes.Translate(VT * h);
           return gp_Circ(axes.Ax2(),radius);
