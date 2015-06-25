@@ -35,6 +35,7 @@
 
 #include <IntTools_FaceFace.hxx>
 #include <IntTools_Curve.hxx>
+#include <IntTools_PntOn2Faces.hxx>
 
 #include <BOPCol_ListOfShape.hxx>
 
@@ -641,9 +642,9 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   const TopoDS_Face& aF2=*(TopoDS_Face*)(&S2);
   //
   Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
-  Standard_Integer i, aNbCurves;
+  Standard_Integer i, aNbCurves, aNbPoints;
   Standard_Real anAppTol, aTolR;
-  TCollection_AsciiString aNm("c_");
+  TCollection_AsciiString aNm("c_"), aNp("p_");
   //
   anAppTol = 0.0000001;
   aToApproxC3d = Standard_True;
@@ -684,71 +685,92 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   //
   aFF.PrepareLines3D(Standard_False);
   const IntTools_SequenceOfCurves& aSCs=aFF.Lines();
-
+  const IntTools_SequenceOfPntOn2Faces& aSPs = aFF.Points();
+  //
+  aNbCurves = aSCs.Length();
+  aNbPoints = aSPs.Length();
+  if (!aNbCurves && !aNbPoints) {
+    di << " has no 3d curves\n";
+    di << " has no 3d points\n";
+    return 0;
+  }
   //
   aTolR=aFF.TolReached3d();
   di << "Tolerance Reached=" << aTolR << "\n";
-
-  aNbCurves=aSCs.Length();
-  if (!aNbCurves) {
-    di << " has no 3d curve\n";
-    return 0;
-  }
-  else
-  {
+  //
+  // curves
+  if (aNbCurves) {
     di << aNbCurves << " curve(s) found.\n";
-  }
-
-  for (i=1; i<=aNbCurves; i++) {
-    const IntTools_Curve& anIC=aSCs(i);
-
-    Handle (Geom_Curve)  aC3D = anIC.Curve();
-
-    if (aC3D.IsNull()) {
-      di << " has Null 3d curve# " << i << "\n";
-      continue;
-    }
-
-    TCollection_AsciiString anIndx(i), aNmx;
-    aNmx = aNm + anIndx;
-
-    Standard_CString nameC = aNmx.ToCString();
-
-    DrawTrSurf::Set(nameC, aC3D);
-    di << nameC << " ";
     //
-    Handle(Geom2d_Curve) aPC1 = anIC.FirstCurve2d();
-    Handle(Geom2d_Curve) aPC2 = anIC.SecondCurve2d();
-    //
-    if (!aPC1.IsNull() || !aPC2.IsNull()) {
-      di << "(";
-      //
-      if (!aPC1.IsNull()) {
-        TCollection_AsciiString pc1N("c2d1_"), pc1Nx;
-        pc1Nx = pc1N + anIndx;
-        Standard_CString nameC2d1 = pc1Nx.ToCString();
-        //
-        DrawTrSurf::Set(nameC2d1, aPC1);
-        di << nameC2d1;
+    for (i=1; i<=aNbCurves; i++) {
+      const IntTools_Curve& anIC=aSCs(i);
+
+      Handle (Geom_Curve)  aC3D = anIC.Curve();
+
+      if (aC3D.IsNull()) {
+        di << " has Null 3d curve# " << i << "\n";
+        continue;
       }
+
+      TCollection_AsciiString anIndx(i), aNmx;
+      aNmx = aNm + anIndx;
+
+      Standard_CString nameC = aNmx.ToCString();
+
+      DrawTrSurf::Set(nameC, aC3D);
+      di << nameC << " ";
       //
-      if (!aPC2.IsNull()) {
-        TCollection_AsciiString pc2N("c2d2_"), pc2Nx;
-        pc2Nx = pc2N + anIndx;
-        Standard_CString nameC2d2 = pc2Nx.ToCString();
-        //
-        DrawTrSurf::Set(nameC2d2, aPC2);
+      Handle(Geom2d_Curve) aPC1 = anIC.FirstCurve2d();
+      Handle(Geom2d_Curve) aPC2 = anIC.SecondCurve2d();
+      //
+      if (!aPC1.IsNull() || !aPC2.IsNull()) {
+        di << "(";
         //
         if (!aPC1.IsNull()) {
-          di << ", ";
+          TCollection_AsciiString pc1N("c2d1_"), pc1Nx;
+          pc1Nx = pc1N + anIndx;
+          Standard_CString nameC2d1 = pc1Nx.ToCString();
+          //
+          DrawTrSurf::Set(nameC2d1, aPC1);
+          di << nameC2d1;
         }
-        di << nameC2d2;
+        //
+        if (!aPC2.IsNull()) {
+          TCollection_AsciiString pc2N("c2d2_"), pc2Nx;
+          pc2Nx = pc2N + anIndx;
+          Standard_CString nameC2d2 = pc2Nx.ToCString();
+          //
+          DrawTrSurf::Set(nameC2d2, aPC2);
+          //
+          if (!aPC1.IsNull()) {
+            di << ", ";
+          }
+          di << nameC2d2;
+        }
+        di << ") ";
       }
-      di << ") ";
     }
+    di << "\n";
   }
   //
-  di << "\n";
+  // points
+  if (aNbPoints) {
+    di << aNbPoints << " point(s) found.\n";
+    //
+    for (i = 1; i <= aNbPoints; i++) {
+      const IntTools_PntOn2Faces& aPi = aSPs(i);
+      const gp_Pnt& aP = aPi.P1().Pnt();
+      //
+      TCollection_AsciiString anIndx(i), aNmx;
+      aNmx = aNp + anIndx;
+      Standard_CString nameP = aNmx.ToCString();
+      //
+      DrawTrSurf::Set(nameP, aP);
+      di << nameP << " ";
+    }
+    di << "\n";
+  }
+  //
   return 0;
 }
 //=======================================================================
