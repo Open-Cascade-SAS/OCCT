@@ -1,0 +1,36 @@
+puts "============"
+puts "CR26359"
+puts "============"
+puts ""
+###################################################################################
+# Revolution shape of Parabola Curve has no triangles
+###################################################################################
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+restore [locate_data_file bug26359_parabola.brep] p
+
+vdisplay p
+vfit
+
+set trinfo_s [trinfo p]
+regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
+regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
+regexp {deflection ([0-9.+e-]+)} ${trinfo_s} str defl_s
+
+if { ${nbtri_s} == 0 } {
+   puts "Error: shape contains 0 triangles"
+}
+
+if { ${nbnod_s} == 0 } {
+   puts "Error: shape contains 0 nodes"
+}
+
+if { ${defl_s} == 0 } {
+   puts "Error: deflection is 0"
+}
+
+vdump ${imagedir}/${casename}.png
