@@ -389,7 +389,10 @@ void BRepOffsetAPI_MiddlePath::Build()
         break;
       }
     }
-    myPaths.Append(Edges);
+    if (!Edges.IsEmpty())
+      myPaths.Append(Edges);
+    else
+      return;
   }
 
   //Filling of "myPaths"
