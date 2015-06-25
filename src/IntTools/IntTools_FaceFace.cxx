@@ -766,6 +766,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     }
 
     // Points
+    Standard_Boolean bValid2D1, bValid2D2;
     Standard_Real U1,V1,U2,V2;
     IntTools_PntOnFace aPntOnF1, aPntOnF2;
     IntTools_PntOn2Faces aPntOn2Faces;
@@ -776,6 +777,19 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       const IntSurf_PntOn2S& aISPnt=myIntersector.Point(i).PntOn2S();
       const gp_Pnt& aPnt=aISPnt.Value();
       aISPnt.Parameters(U1,V1,U2,V2);
+      //
+      // check the validity of the intersection point for the faces
+      bValid2D1 = myContext->IsPointInOnFace(myFace1, gp_Pnt2d(U1, V1));
+      if (!bValid2D1) {
+        continue;
+      }
+      //
+      bValid2D2 = myContext->IsPointInOnFace(myFace2, gp_Pnt2d(U2, V2));
+      if (!bValid2D2) {
+        continue;
+      }
+      //
+      // add the intersection point
       aPntOnF1.Init(myFace1, aPnt, U1, V1);
       aPntOnF2.Init(myFace2, aPnt, U2, V2);
       //
