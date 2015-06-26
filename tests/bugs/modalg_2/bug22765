@@ -13,7 +13,7 @@ sewing result 0.1 a
 
 checkshape result f
 
-checkmaxtol result 2.0000280013370992e-005
+checkmaxtol result -ref 1.0000280013370991e-005
 checknbshapes result -shell 1
 checkfreebounds result 456
 

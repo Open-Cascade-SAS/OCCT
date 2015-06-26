@@ -45,7 +45,7 @@ if { ${status} != 0 } {
   puts "OK ${BugNumber}"
 }
 
-checkmaxtol result 2.5602765785712274e-006
+checkmaxtol result -ref 4.8601049330873404e-006
 checknbshapes result -shell 1
 checkfreebounds result 5
 

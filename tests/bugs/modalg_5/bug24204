@@ -20,15 +20,11 @@ addsweep w2
 
 buildsweep result
 
-set log_result [tolmax result]
-regexp {max tol = ([-0-9.+eE]+)} ${log_result} full tolmax_result
+set tolmax_result [checkmaxtol result]
 
-set log_w1 [tolmax w1]
-regexp {max tol = ([-0-9.+eE]+)} ${log_w1} full tolmax_w1
-set log_w2 [tolmax w2]
-regexp {max tol = ([-0-9.+eE]+)} ${log_w2} full tolmax_w2
-set log_sp [tolmax sp]
-regexp {max tol = ([-0-9.+eE]+)} ${log_sp} full tolmax_sp
+set tolmax_w1 [checkmaxtol w1]
+set tolmax_w2 [checkmaxtol w2]
+set tolmax_sp [checkmaxtol sp]
 
 set tolmax_s ${tolmax_w1}
 if { ${tolmax_w2} > ${tolmax_s} } {

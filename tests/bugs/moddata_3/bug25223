@@ -42,8 +42,7 @@ puts "vproj=${vproj}"
 puts "proj1=${proj1}"
 puts "proj2=${proj2}"
 
-set tolmax_f [tolmax f]
-regexp {max tol = ([-0-9.+eE]+)} ${tolmax_f} full CMP_TOL
+set CMP_TOL [checkmaxtol f]
 
 puts "CMP_TOL=${CMP_TOL}"
 

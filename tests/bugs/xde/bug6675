@@ -15,7 +15,7 @@ set tolerance 1.00000e-07
 sewing result ${tolerance} a
 
 checkshape result
-checkmaxtol result 2.0021528498807746e-005
+checkmaxtol result -ref 1.0021647610996499e-005
 checknbshapes result -shell 1
 checkfreebounds result 0
 

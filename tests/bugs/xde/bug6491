@@ -21,7 +21,7 @@ if { ${res_faces} != ${good_faces} } {
     puts "Faulty ${BugNumber}"
 }
 
-checkmaxtol result 105.192615242296
+checkmaxtol result -ref 185.91005891234283
 checknbshapes result -shell 1
 checkfreebounds result 73
 

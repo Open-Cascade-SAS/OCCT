@@ -28,16 +28,7 @@ if { [catch { offsetshape result resthru -0.5 resthru_6 resthru_7 } catch_result
    puts "Faulty ${BugNumber} : offsetshape is wrong"
 }
 
-if { [catch { set tolmaxres [tolmax result] } catch_result] } {
-   puts "Faulty ${BugNumber} : tolmax is wrong"
-}
-regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full maxtolerance
-if { [catch { expr $maxtolerance } catch_result] } {
-   puts "Faulty ${BugNumber} : maxtolerance is wrong (1)."
-}
-if { $maxtolerance > 1. } {
-   puts "Faulty ${BugNumber} : maxtolerance is wrong (2)."
-}
+checkmaxtol result -min_tol 1.
 
 set square 1116.06
 

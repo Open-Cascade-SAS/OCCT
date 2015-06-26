@@ -5,7 +5,7 @@ restore [locate_data_file CNP002_projoiep.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 28.187689872750411
+checkmaxtol result -ref 2.81877e+001
 checknbshapes result -shell 1
 checkfreebounds result 15
 checkfaults result a 1

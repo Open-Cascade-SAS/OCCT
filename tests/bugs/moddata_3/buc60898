@@ -18,7 +18,7 @@ if [catch { igesbrep $filepath a *} result] {
 	puts " BUC60898 OK: function SEWING works without except"
     }
 
-    checkmaxtol result 0.0002494807463576937
+    checkmaxtol result -ref 0.077930308575156593
     checknbshapes result -shell 4
     checkfreebounds result 1725
 

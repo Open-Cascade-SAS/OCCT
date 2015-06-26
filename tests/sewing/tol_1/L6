@@ -2,7 +2,7 @@ restore [locate_data_file CFI_cts21630.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 9.9999999999999995e-008
+checkmaxtol result -ref 0.00192061858482228
 checknbshapes result -shell 1
 checkfreebounds result 0
 checkfaults result a 0

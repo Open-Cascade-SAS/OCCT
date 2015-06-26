@@ -18,7 +18,7 @@ restore [locate_data_file bug24390_face_5.brep] f6
 sewing result f1 f2 f3 f4 f5 f6
 
 checkshape result
-checkmaxtol result 6.1606205182399194e-005 {f1 f2 f3 f4 f5 f6} -min_tol 0 -multi_tol 5.
+checkmaxtol result -ref 2.0535401727466399e-005 -source {f1 f2 f3 f4 f5 f6} -min_tol 0 -multi_tol 5.
 checknbshapes result -shell 1
 checkfreebounds result 0
 

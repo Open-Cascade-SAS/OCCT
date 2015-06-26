@@ -12,11 +12,6 @@ restore [locate_data_file 22770-tramp.brep] a
 restore [locate_data_file 22770-trans.brep] b 
 sewing result +t 0.01 a b +mint 0.01 -a
 
-set square 1.88469e+07
-
-checkmaxtol result 0.00087010032709666047
-checkfreebounds result 12
-
 set nbshapes_expected "
 Number of shapes in shape
  VERTEX    : 479
@@ -30,5 +25,8 @@ Number of shapes in shape
  SHAPE     : 1762
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "sewing result"
+checkmaxtol result -ref 0.066338232054955981
+checkfreebounds result 12
 
+set square 1.88469e+07
 set 3dviewer 1

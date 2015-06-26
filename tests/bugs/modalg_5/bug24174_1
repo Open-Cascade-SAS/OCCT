@@ -14,7 +14,7 @@ explode a
 sewing result 0.1 a_1 a_2
 
 checkshape result
-checkmaxtol result 8.2074631917183755e-005 {a_1 a_2}
+checkmaxtol result -ref 0.076388434959049206 -source {a_1 a_2}
 checknbshapes result -shell 1
 checkfreebounds result 12
 

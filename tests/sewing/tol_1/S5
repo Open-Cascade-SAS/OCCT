@@ -2,7 +2,7 @@ restore [locate_data_file CIN001_a20.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 0.0035009498713573254
+checkmaxtol result -ref 0.0035821432134069929
 checknbshapes result -shell 1
 checkfreebounds result 74
 checkfaults result a 0

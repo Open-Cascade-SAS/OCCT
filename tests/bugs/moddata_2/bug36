@@ -24,7 +24,7 @@ if [catch { igesbrep $filepath a * } res] {
 	puts "Elapsed time is less then 30 seconds - OK"      
     }
 
-    checkmaxtol result 2.5472812372261969e-005
+    checkmaxtol result -ref 0.96087447225733291
     checknbshapes result -shell 13
     checkfreebounds result 1247
 }

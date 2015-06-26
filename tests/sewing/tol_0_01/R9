@@ -2,7 +2,7 @@ restore [locate_data_file CFE900_id260gao.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 2.74999999999998e-007
+checkmaxtol result -ref 5.07875742322483e-005
 checknbshapes result -shell 1
 checkfreebounds result 0
 checkfaults result a 0

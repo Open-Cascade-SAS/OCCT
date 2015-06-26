@@ -856,7 +856,6 @@ Standard_EXPORT Standard_Boolean FUN_tool_findPinE(const TopoDS_Shape& E,gp_Pnt&
 Standard_EXPORT Standard_Boolean FUN_tool_maxtol(const TopoDS_Shape& S,const TopAbs_ShapeEnum& typ,Standard_Real& maxtol)
 // purpose : returns maxtol of <S>'s shapes of type <typ> 
 {
-  maxtol = 0.;
   Standard_Boolean face   = (typ == TopAbs_FACE);
   Standard_Boolean edge   = (typ == TopAbs_EDGE);
   Standard_Boolean vertex = (typ == TopAbs_VERTEX);
@@ -878,37 +877,9 @@ Standard_EXPORT Standard_Real FUN_tool_maxtol(const TopoDS_Shape& S)
 // purpose : returns maxtol between <S>'s shapes.
 {
   Standard_Real maxtol = 0.;
-  if (S.IsNull()) return maxtol;
-  Standard_Boolean hasfa = FUN_tool_maxtol(S,TopAbs_FACE,maxtol);
-  if (hasfa) {
-    TopExp_Explorer exf(S,TopAbs_FACE);
-    for (; exf.More(); exf.Next()){
-      const TopoDS_Shape& ff = exf.Current();
-      Standard_Boolean hasedge = FUN_tool_maxtol(ff,TopAbs_EDGE,maxtol);
-      if (hasedge) {	
-	TopExp_Explorer exe(S,TopAbs_FACE);
-	for (; exe.More(); exe.Next())
-  {
-	  const TopoDS_Shape& ee = exe.Current();
-    FUN_tool_maxtol(ee,TopAbs_VERTEX,maxtol);
-	}
-      }
-    }
-  }
-  if (!hasfa) {
-    Standard_Boolean hasedge = FUN_tool_maxtol(S,TopAbs_EDGE,maxtol);
-    if (hasedge) {	
-      TopExp_Explorer exe(S,TopAbs_FACE);
-      for (; exe.More(); exe.Next())
-      {
-        const TopoDS_Shape& ee = exe.Current();
-        FUN_tool_maxtol(ee,TopAbs_VERTEX,maxtol);
-      }
-    }
-    if (!hasedge) {
-      FUN_tool_maxtol(S,TopAbs_VERTEX,maxtol);
-    }
-  }
+  FUN_tool_maxtol(S,TopAbs_FACE,maxtol);
+  FUN_tool_maxtol(S,TopAbs_EDGE,maxtol);
+  FUN_tool_maxtol(S,TopAbs_VERTEX,maxtol);
   return maxtol;
 }
 

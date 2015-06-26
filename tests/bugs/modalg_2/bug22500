@@ -14,7 +14,7 @@ if { [catch {sewing result 0.01 a} catch_result] } {
     puts "Faulty ${BugNumber} : function Sewing works wrongly"
 }
 
-checkmaxtol result 4.3455205172376901e-006
+checkmaxtol result -ref 4.5583792019775401e-006
 checknbshapes result -shell 1
 checkfreebounds result 28
 

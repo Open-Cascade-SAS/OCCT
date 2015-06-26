@@ -16,16 +16,9 @@ set CMP_TOL 1.e-6
 
 # 1
 checkshape aa
-set tolmaxres [tolmax aa]
-regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full MaxTolerance
-if { ${MaxTolerance} > ${CMP_TOL} } {
-   puts "Error: invalid tolerance of first wire"
-}
+checkmaxtol aa -min_tol ${CMP_TOL}
 
 # 2
 checkshape bb
-set tolmaxres [tolmax bb]
-regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full MaxTolerance
-if { ${MaxTolerance} > ${CMP_TOL} } {
-   puts "Error: invalid tolerance of second wire"
-}
+checkmaxtol bb -min_tol ${CMP_TOL}
+

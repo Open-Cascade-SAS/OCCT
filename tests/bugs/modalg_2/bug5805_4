@@ -1,7 +1,6 @@
 puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done."
 puts "TODO OCC25925 ALL: Faulty OCC5805 : offsetshape is wrong"
-puts "TODO OCC25925 ALL: Faulty OCC5805 : tolmax is wrong"
-puts "TODO OCC25925 ALL: Tcl Exception: can't read"
+puts "TODO OCC25925 ALL: Tcl Exception:"
 puts "TODO OCC25925 ALL: TEST INCOMPLETE"
 
 puts "============"
@@ -33,16 +32,7 @@ if { [catch { offsetperform result } catch_result] } {
    puts "Faulty ${BugNumber} : offsetshape is wrong"
 }
 
-if { [catch { set tolmaxres [tolmax result] } catch_result] } {
-   puts "Faulty ${BugNumber} : tolmax is wrong"
-}
-regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full maxtolerance
-if { [catch { expr $maxtolerance } catch_result] } {
-   puts "Faulty ${BugNumber} : maxtolerance is wrong (1)."
-}
-if { $maxtolerance > 1. } {
-   puts "Faulty ${BugNumber} : maxtolerance is wrong (2)."
-}
+checkmaxtol result -min_tol 1.
 
 set square 1185.03
 

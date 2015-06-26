@@ -28,7 +28,7 @@ set nb_compsol_good 0
 set nb_compound_good 1
 set nb_shape_good 6
 
-checkmaxtol result 0
+checkmaxtol result -ref 0.0050001000000007819
 checknbshapes result -shell 0
 checkfreebounds result 0
 

@@ -2,7 +2,7 @@ restore [locate_data_file CFI_buc60fjt.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 0.00040595360557049199
+checkmaxtol result -ref 0.00058414055871530202
 checknbshapes result -shell 1
 checkfreebounds result 0
 checkfaults result a 0

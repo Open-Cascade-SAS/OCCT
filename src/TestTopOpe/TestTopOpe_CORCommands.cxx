@@ -714,16 +714,6 @@ static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }  
 
-static Standard_Integer tolmax(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n < 2) return 1;
-  TopoDS_Shape s = DBRep::Get(a[1]);
-  if (s.IsNull()) {di<<"null shape"<<"\n"; return 1;}  
-  Standard_Real tol = FUN_tool_maxtol(s);
-  di<<"max tol = "<<tol<<"\n";
-  return 0;
-}
-
 static Standard_Integer solidclassifier(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 4) return 1;
@@ -903,7 +893,6 @@ void TestTopOpe::CORCommands(Draw_Interpretor& theCommands)
   theCommands.Add("projponf",   
                   "projponf f pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]",
                                                             __FILE__, projponf, g);
-  theCommands.Add("tolmax",     "tolmax s",                 __FILE__, tolmax, g);
   theCommands.Add("normal",     "normal f p3d length",      __FILE__, normal, g);
   theCommands.Add("curvature",  "curvature f x y z",        __FILE__, curvature , g);
   

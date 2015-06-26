@@ -5,7 +5,7 @@ restore [locate_data_file CCH_indusheq.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 9.9999999999999995e-007
+checkmaxtol result -ref 0.014624921005106987
 checknbshapes result -shell 1
 checkfreebounds result 33
 checkfaults result a 2

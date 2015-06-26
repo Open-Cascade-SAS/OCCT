@@ -18,7 +18,7 @@ if [catch {sewing result 0.019 shape_8h} catch_result] {
   checkshape result f
 }
 
-checkmaxtol result 0.99457631799307555
+checkmaxtol result -ref 0.99057887669774025
 checknbshapes result -shell 1
 checkfreebounds result 13
 

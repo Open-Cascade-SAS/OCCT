@@ -2,7 +2,7 @@ restore [locate_data_file CHE900_hkg60iob.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 1.0246950765959601e-007
+checkmaxtol result -ref 1.72571274507878e-006
 checknbshapes result -shell 1
 checkfreebounds result 0
 checkfaults result a 0

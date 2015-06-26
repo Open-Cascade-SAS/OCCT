@@ -2,7 +2,7 @@ restore [locate_data_file CTO900_pro8934a.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 0.000136507373610426
+checkmaxtol result -ref 0.27097139218059602
 checknbshapes result -shell 1
 checkfreebounds result 0
 checkfaults result a 0

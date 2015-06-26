@@ -10,7 +10,7 @@ checkshape sh
 sewing result 1 sh
 checkshape result
 
-checkmaxtol result 0.0030000000000000001
+checkmaxtol result -ref 0.0030000000000000001
 checknbshapes result -shell 1
 checkfreebounds result 0
 

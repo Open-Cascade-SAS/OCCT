@@ -14,7 +14,7 @@ explode v
 sewing result 0.01 v_1 v_2
 
 checkshape result
-checkmaxtol result 3.1397023587080346e-005 {v_1 v_2} -min_tol 1.e-4
+checkmaxtol result -ref 6.7739238740616194e-005 -source {v_1 v_2} -min_tol 1.e-4
 checknbshapes result -shell 1
 checkfreebounds result 8
 

@@ -351,26 +351,33 @@ proc checkfreebounds {shape ref_value args} {
 }
 
 help checkmaxtol {
-  Compare max tolerance of shape with ref_value.
-  Argument "source_shapes" is a list of used for sewing shapes.
-  It can be empty to skip comparison of tolerance with source shapes.
+  Compare max tolerance of shape with reference value.
+  Command returns max tolerance of the shape.
 
-  Use: checkmaxtol shape ref_value [source_shapes={}] [options...]
+  Use: checkmaxtol shape [options...]
   Allowed options are:
-    -min_tol: minimum tolerance for comparison
-    -multi_tol: tolerance multiplier
+    -ref: reference value of maximum tolerance.
+    -source: list of shapes to compare with, e.g.: -source {shape1 shape2 shape3}
+    -min_tol: minimum tolerance for comparison.
+    -multi_tol: tolerance multiplier.
 }
-proc checkmaxtol {shape ref_value {source_shapes {}} args} {
-  puts "checkmaxtol ${shape} ${ref_value} ${source_shapes} ${args}"
+
+proc checkmaxtol {shape args} {
+  puts "checkmaxtol ${shape} ${args}"
   upvar ${shape} ${shape}
 
+  set ref_value ""
+  set source_shapes {}
   set min_tol 0
   set tol_multiplier 0
 
+  # check arguments
   for {set narg 0} {$narg < [llength $args]} {incr narg} {
     set arg [lindex $args $narg]
     if {[_check_arg "-min_tol" min_tol 1] ||
-        [_check_arg "-multi_tol" tol_multiplier 1]
+        [_check_arg "-multi_tol" tol_multiplier 1] ||
+        [_check_arg "-source" source_shapes 1] ||
+        [_check_arg "-ref" ref_value 1]
        } {
       continue
     }
@@ -382,26 +389,33 @@ proc checkmaxtol {shape ref_value {source_shapes {}} args} {
   }
 
   # get max tol of shape
-  regexp {max tol = ([-0-9.+eE]+)} [tolmax ${shape}] full max_tol
+  set max_tol 0
+  if {[regexp "Tolerance MAX=(\[-0-9.+eE\]+)" [tolerance ${shape}] full maxtol_temp]} {
+    set max_tol ${maxtol_temp}
+  } else {
+    error "Error: cannot get tolerances of shape \"${shape}\""
+  }
 
-  checkreal "Max tolerance" $max_tol $ref_value 0.0001 0.01
-  if {[llength $source_shapes]} {
-    # find max tol of source shapes
-    foreach source_shape $source_shapes {
-      upvar ${source_shape} ${source_shape}
-      regexp {max tol = ([-0-9.+eE]+)} [tolmax $source_shape] full _src_max_tol
-      if { ${_src_max_tol} > ${min_tol} } {
-        set min_tol ${_src_max_tol}
-      }
-    }
-    if {${tol_multiplier}} {
-      set min_tol [expr ${tol_multiplier} * ${_src_max_tol}]
-    }
-    # compare max tol of source shapes with max tol of sewing_result
-    if { ${max_tol} > ${min_tol} } {
-      puts "Error: tolerance of \"${shape}\" (${max_tol}) is greater than max tolerance of source shapes (${min_tol})"
+  # find max tol of source shapes
+  foreach source_shape ${source_shapes} {
+    upvar ${source_shape} ${source_shape}
+    set _src_max_tol [checkmaxtol ${source_shape}]
+    if { [expr ${_src_max_tol} > ${min_tol} ] } {
+      set min_tol ${_src_max_tol}
     }
   }
+  # apply -multi_tol option
+  if {${tol_multiplier}} {
+    set min_tol [expr ${tol_multiplier} * ${_src_max_tol}]
+  }
+  # compare max tol of source shapes with checking tolerance
+  if { ${min_tol} && [expr ${max_tol} > ${min_tol}] } {
+    puts "Error: tolerance of \"${shape}\" (${max_tol}) is greater than checking tolerance (${min_tol})"
+  }
+  if { ${ref_value} != "" } {
+    checkreal "Max tolerance" ${max_tol} ${ref_value} 0.0001 0.01
+  }
+  return ${max_tol}
 }
 
 help checkfaults {

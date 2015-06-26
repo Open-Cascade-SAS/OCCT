@@ -2,7 +2,7 @@ restore [locate_data_file CFI_5_g12fgl.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 0.00020000000000000001
+checkmaxtol result -ref 0.00020000000000000001
 checknbshapes result -shell 1
 checkfreebounds result 10
 checkfaults result a 0

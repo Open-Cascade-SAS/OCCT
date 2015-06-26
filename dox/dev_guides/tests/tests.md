@@ -1043,18 +1043,17 @@ regexp { *VERTEX +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_vertex
 
 It is possible to use command *checkmaxtol* to check maximal tolerance of shape and compare it with reference value.
 
-Use: checkmaxtol shape ref_value [source_shapes={}] [options...]
+Use: checkmaxtol shape [options...]
 
 Allowed options are:
+ *   -ref: reference value of maximum tolerance
+ *   -source: list of shapes to compare with
  *   -min_tol: minimum tolerance for comparison
  *   -multi_tol: tolerance multiplier
 
-Argument "source_shapes" is a list of shapes to compare with.
-It can be empty to skip comparison of tolerance with these shapes.
-
 The default syntax of *checkmaxtol* command for comparison with the reference value:
 ~~~~~
-checkmaxtol result 0.00001
+checkmaxtol result -ref 0.00001
 ~~~~~
 
 There is an opportunity to compare max tolerance of resulting shape with max tolerance of source shape.
@@ -1063,10 +1062,16 @@ Then it chooses the maximum value between founded tolerance and value -min_tol (
 and multiply it on the coefficient -multi_tol (i.e. 2):
 
 ~~~~~
-checkmaxtol result 0.00001 {a_1 a_2} -min_tol 0.000001 -multi_tol 2
+checkmaxtol result -source {a_1 a_2} -min_tol 0.000001 -multi_tol 2
 ~~~~~
 
 If the value of maximum tolerance more than founded tolerance for comparison, the command will return an error.
+
+Also, command *checkmaxtol* can be used to get max tolerance of the shape:
+
+~~~~~
+set maxtol [checkmaxtol result]
+~~~~~
 
 @subsubsection testmanual_5_3_3 Shape volume, area, or length
 

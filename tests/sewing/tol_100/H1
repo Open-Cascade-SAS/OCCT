@@ -4,7 +4,7 @@ restore [locate_data_file CHE_filter.rle] a
 
 sewing result $tol a
 
-checkmaxtol result 0.0054045213822515332
+checkmaxtol result -ref 0.010538211695240274
 checknbshapes result -shell 1
 checkfreebounds result 0
 checkfaults result a 16
