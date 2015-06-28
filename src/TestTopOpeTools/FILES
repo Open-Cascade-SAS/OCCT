@@ -3,3 +3,5 @@ TestTopOpeTools_Trace.hxx
 TestTopOpeTools_Trace.cxx
 TestTopOpeTools_TraceCommands.cxx
 TestTopOpeTools_OtherCommands.cxx
+TestTopOpeTools_Array1OfMesure.hxx
+TestTopOpeTools_HArray1OfMesure.hxx

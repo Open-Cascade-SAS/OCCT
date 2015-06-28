@@ -58,11 +58,8 @@ is
 exception UndefinedDerivative inherits DomainError  from  Standard;
 exception UndefinedValue inherits DomainError from  Standard;
 
-    class SequenceOfBSplineSurface 
-    	instantiates Sequence from TCollection (BSplineSurface from Geom);
-    class HSequenceOfBSplineSurface 
-    	instantiates HSequence from TCollection (BSplineSurface from Geom,
-    	    	    	    	SequenceOfBSplineSurface from Geom);
+    imported SequenceOfBSplineSurface;
+    imported transient class HSequenceOfBSplineSurface;
 
         ---Group: Geometric entities 
 

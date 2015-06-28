@@ -1,0 +1,8 @@
+
+
+#ifndef TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape_HeaderFile
+#define TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape_HeaderFile
+
+#include <TopTools_DataMapOfOrientedShapeShape.hxx>
+
+#endif

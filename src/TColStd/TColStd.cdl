@@ -29,202 +29,141 @@ is
  
     class HPackedMapOfInteger; 
  
-    class Array1OfInteger     instantiates 
-    	Array1 from TCollection                 (Integer);
-    class Array1OfReal        instantiates 
-    	Array1 from TCollection                 (Real);
-    class Array1OfCharacter   instantiates 
-    	Array1 from TCollection                 (Character);
-    class Array1OfBoolean     instantiates
-        Array1 from TCollection                 (Boolean);
-    class Array1OfAsciiString      instantiates 
-    	Array1 from TCollection                 (AsciiString from TCollection);
-    class Array1OfExtendedString   instantiates 
-    	Array1 from TCollection              (ExtendedString from TCollection);
-    class Array1OfTransient   instantiates 
-    	Array1 from TCollection                 (Transient );
-    class Array1OfByte        instantiates
-	Array1 from TCollection                 (Byte);
+    imported Array1OfInteger;
+    imported Array1OfReal;
+    imported Array1OfCharacter;
+    imported Array1OfBoolean;
+    imported Array1OfAsciiString;
+    imported Array1OfExtendedString;
+    imported Array1OfTransient;
+    imported Array1OfByte;
 
 
-    class HArray1OfInteger     instantiates 
-    	HArray1 from TCollection            (Integer,
-    	    	    	    	             Array1OfInteger    from TColStd);
-    class HArray1OfReal        instantiates 
-    	HArray1 from TCollection            (Real,
-	    	    	                     Array1OfReal       from TColStd);
-    class HArray1OfCharacter   instantiates 
-    	HArray1 from TCollection            (Character,
-	    	    	    	             Array1OfCharacter  from TColStd);
-    class HArray1OfBoolean     instantiates 
-    	HArray1 from TCollection            (Boolean,
-    	    	    	    	             Array1OfBoolean    from TColStd);
-    class HArray1OfAsciiString      instantiates 
-    	HArray1 from TCollection            (AsciiString from TCollection,
-    	    	    	    	             Array1OfAsciiString  from TColStd);
-    class HArray1OfExtendedString      instantiates 
-    	HArray1 from TCollection            (ExtendedString from TCollection,
-    	    	    	    	             Array1OfExtendedString     from TColStd);
-    class HArray1OfTransient   instantiates 
-    	HArray1 from TCollection            (Transient,
-    	    	    	    	             Array1OfTransient  from TColStd );
-    class HArray1OfByte        instantiates 
-    	HArray1 from TCollection            (Byte,
-	    	    	                     Array1OfByte       from TColStd);
+    imported transient class HArray1OfInteger;
+    imported transient class HArray1OfReal;
+    imported transient class HArray1OfCharacter;
+    imported transient class HArray1OfBoolean;
+    imported transient class HArray1OfAsciiString;
+    imported transient class HArray1OfExtendedString;
+    imported transient class HArray1OfTransient;
+    imported transient class HArray1OfByte;
 
 
-    class Array2OfInteger     instantiates 
-    Array2 from TCollection                       (Integer);
-    class Array2OfReal        instantiates 
-    Array2 from TCollection                       (Real);
-    class Array2OfCharacter   instantiates 
-    Array2 from TCollection                       (Character);
-    class Array2OfBoolean     instantiates 
-    Array2 from TCollection                       (Boolean);
-    class Array2OfTransient   instantiates 
-    Array2 from TCollection                       (Transient);
+    imported Array2OfInteger;
+    imported Array2OfReal;
+    imported Array2OfCharacter;
+    imported Array2OfBoolean;
+    imported Array2OfTransient;
 
 
-    class HArray2OfInteger     instantiates 
-    	HArray2 from TCollection             (Integer,
-    	    	    	                      Array2OfInteger    from TColStd);
-    class HArray2OfReal        instantiates 
-    	HArray2 from TCollection             (Real,
-	    	    	    	    	      Array2OfReal       from TColStd);
-    class HArray2OfCharacter   instantiates 
-    	HArray2 from TCollection             (Character,
-	    	    	    	    	      Array2OfCharacter  from TColStd);
-    class HArray2OfBoolean     instantiates 
-    	HArray2 from TCollection             (Boolean,
-	    	    	    	    	      Array2OfBoolean    from TColStd);
-    class HArray2OfTransient   instantiates 
-    	HArray2 from TCollection             (Transient,
-	    	    	    	    	      Array2OfTransient  from TColStd);
+    imported transient class HArray2OfInteger;
+    imported transient class HArray2OfReal;
+    imported transient class HArray2OfCharacter;
+    imported transient class HArray2OfBoolean;
+    imported transient class HArray2OfTransient;
 
-class SequenceOfInteger   instantiates 
-    Sequence from TCollection                (Integer);
-class SequenceOfReal      instantiates 
-    Sequence from TCollection                (Real); 
-class SequenceOfAsciiString    instantiates 
-    Sequence from TCollection                (AsciiString from  TCollection);
-class SequenceOfHAsciiString   instantiates 
-     Sequence from TCollection                (HAsciiString from  TCollection);
-class SequenceOfExtendedString    instantiates 
-    Sequence from TCollection               (ExtendedString from  TCollection);
-class SequenceOfHExtendedString   instantiates 
-     Sequence from TCollection             (HExtendedString from  TCollection);
-class SequenceOfTransient instantiates 
-    Sequence from TCollection                (Transient);
-class SequenceOfAddress instantiates 
-    Sequence from TCollection                (Address);
-class SequenceOfBoolean instantiates 
-    Sequence from TCollection                (Boolean);
+imported SequenceOfInteger;
+imported SequenceOfReal; 
+imported SequenceOfAsciiString;
+imported SequenceOfHAsciiString;
+imported SequenceOfExtendedString;
+imported SequenceOfHExtendedString;
+imported SequenceOfTransient;
+imported SequenceOfAddress;
+imported SequenceOfBoolean;
 
 
-class HSequenceOfInteger   instantiates 
-    HSequence from TCollection             (Integer,
-    	    	    	    	    	    SequenceOfInteger   from TColStd);
-class HSequenceOfReal      instantiates 
-    HSequence from TCollection             (Real,
-    	    	    	    	    	    SequenceOfReal      from TColStd);
-class HSequenceOfAsciiString    instantiates 
-    HSequence from TCollection             (AsciiString  from  TCollection, 
-    	    	    	    	    	    SequenceOfAsciiString    from TColStd);
-class HSequenceOfHAsciiString   instantiates 
-    HSequence from TCollection       (HAsciiString  from  TCollection,
- 	    	    	    	     SequenceOfHAsciiString   from TColStd);
-class HSequenceOfExtendedString    instantiates 
-    HSequence from TCollection             (ExtendedString  from  TCollection, 
-    	    	    	    	    	    SequenceOfExtendedString    from TColStd);
-class HSequenceOfHExtendedString   instantiates 
-    HSequence from TCollection       (HExtendedString  from  TCollection,
- 	    	    	    	     SequenceOfHExtendedString   from TColStd);
-class HSequenceOfTransient instantiates 
-    HSequence from TCollection             (Transient,
-    	    	    	    	    	    SequenceOfTransient from TColStd);
+imported transient class HSequenceOfInteger;
+imported transient class HSequenceOfReal;
+imported transient class HSequenceOfAsciiString;
+imported transient class HSequenceOfHAsciiString;
+imported transient class HSequenceOfExtendedString;
+imported transient class HSequenceOfHExtendedString;
+imported transient class HSequenceOfTransient;
 
 --                    
 --       Instantiations List (Integer,Real,Transient)
 --       ********************************************
 --       
-class ListOfInteger     instantiates List from TCollection(Integer  );
-class ListOfReal        instantiates List from TCollection(Real     );
-class ListOfTransient   instantiates List from TCollection(Transient);
-class ListOfAsciiString instantiates List from TCollection(AsciiString from TCollection);
+imported ListOfInteger;
+imported ListIteratorOfListOfInteger;
+imported ListOfReal;
+imported ListIteratorOfListOfReal;
+imported ListOfTransient;
+imported ListIteratorOfListOfTransient;
+imported ListOfAsciiString;
+imported ListIteratorOfListOfAsciiString;
 
 --                    
 --       Instantiations MapHasher (Integer,Real, Transient, Persistent)
 --       **************************************************************
 --       
-class MapIntegerHasher    instantiates MapHasher from TCollection(Integer);
-class MapRealHasher       instantiates MapHasher from TCollection(Real);
-class MapTransientHasher  instantiates MapHasher from TCollection(Transient);
+imported MapIntegerHasher;
+imported MapRealHasher;
+imported MapTransientHasher;
 
 
 --       Instantiations Map (Integer, Real, Transient, Persistent)
 --       *********************************************************
 --       
-class MapOfInteger    instantiates 
-      Map from TCollection(Integer,MapIntegerHasher);
-class MapOfReal       instantiates    
-      Map from TCollection(Real,MapRealHasher);
-class MapOfTransient  instantiates 
-      Map from TCollection(Transient,MapTransientHasher);
-class MapOfAsciiString instantiates
-      Map from TCollection(AsciiString from TCollection,AsciiString from TCollection);
+imported MapOfInteger;
+imported MapIteratorOfMapOfInteger;
+imported MapOfReal;
+imported MapIteratorOfMapOfReal;
+imported MapOfTransient;
+imported MapIteratorOfMapOfTransient;
+imported MapOfAsciiString;
+imported MapIteratorOfMapOfAsciiString;
 
 --                    
 --       Instantiations IndexedMap (Integer, Real, Transient, Persistent)
 --       ****************************************************************
 --       
-class IndexedMapOfInteger    instantiates 
-      IndexedMap from TCollection(Integer,MapIntegerHasher);
-class IndexedMapOfReal       instantiates    
-      IndexedMap from TCollection(Real,MapRealHasher);
-class IndexedMapOfTransient  instantiates 
-      IndexedMap from TCollection(Transient,MapTransientHasher);
+imported IndexedMapOfInteger;
+imported IndexedMapOfReal;
+imported IndexedMapOfTransient;
 
-class IndexedDataMapOfTransientTransient instantiates
-      IndexedDataMap from TCollection(Transient,
-    	    	    	    	      Transient,
-    	    	    	    	      MapTransientHasher); 
+imported IndexedDataMapOfTransientTransient; 
 
 --                    
 --       Instantiations DataMap
 --       **********************
 --       
-class DataMapOfIntegerReal  instantiates
-      DataMap from TCollection(Integer,Real,MapIntegerHasher);
+imported DataMapOfIntegerReal;
+imported DataMapIteratorOfDataMapOfIntegerReal;
 
-class DataMapOfIntegerInteger  instantiates
-      DataMap from TCollection(Integer,Integer,MapIntegerHasher);
+imported DataMapOfIntegerInteger;
 
-class DataMapOfIntegerListOfInteger instantiates
-      DataMap from TCollection(Integer,ListOfInteger from TColStd,MapIntegerHasher);
+imported DataMapIteratorOfDataMapOfIntegerInteger;
 
-class DataMapOfTransientTransient instantiates 
-      DataMap from TCollection(Transient,Transient,MapTransientHasher);
+imported DataMapOfIntegerListOfInteger;
 
-class DataMapOfAsciiStringInteger instantiates 
-      DataMap from TCollection(AsciiString from TCollection,Integer,AsciiString from TCollection);
+imported DataMapIteratorOfDataMapOfIntegerListOfInteger;
 
-class DataMapOfIntegerTransient instantiates 
-      DataMap from TCollection(Integer,Transient,MapIntegerHasher);
+imported DataMapOfTransientTransient;
 
-class DataMapOfStringInteger instantiates 
-      DataMap from TCollection(ExtendedString from TCollection,Integer,ExtendedString from TCollection);
+imported DataMapIteratorOfDataMapOfTransientTransient;
+
+imported DataMapOfAsciiStringInteger;
+
+imported DataMapIteratorOfDataMapOfAsciiStringInteger;
+
+imported DataMapOfIntegerTransient;
+
+imported DataMapIteratorOfDataMapOfIntegerTransient;
+
+imported DataMapOfStringInteger;
+
+imported DataMapIteratorOfDataMapOfStringInteger;
 
 --
 --  Arrays of lists...
 --  ******************
 --
 
-class Array1OfListOfInteger instantiates
-    Array1 from TCollection (ListOfInteger from TColStd);
+imported Array1OfListOfInteger;
 
-class HArray1OfListOfInteger instantiates
-    HArray1 from TCollection (ListOfInteger from TColStd,
-    	    	    	      Array1OfListOfInteger from TColStd);
+imported transient class HArray1OfListOfInteger;
 
 end TColStd;
 

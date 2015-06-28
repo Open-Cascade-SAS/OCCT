@@ -94,10 +94,9 @@ is
 
     class ReShape;
 
-    class MapOfVertexPnt2d instantiates DataMap from TCollection
-    	(Shape from TopoDS,
-    	 SequenceOfPnt2d from TColgp,
-	 ShapeMapHasher  from TopTools);
+    imported MapOfVertexPnt2d;
+
+    imported DataMapIteratorOfMapOfVertexPnt2d;
 	
     --
     --     Methods

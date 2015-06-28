@@ -1,2 +1,7 @@
 IntSurf_Allocator.hxx
 IntSurf_SequenceOfPntOn2S.hxx
+IntSurf_SequenceOfCouple.hxx
+IntSurf_SequenceOfPathPoint.hxx
+IntSurf_SequenceOfInteriorPoint.hxx
+IntSurf_ListOfPntOn2S.hxx
+IntSurf_ListIteratorOfListOfPntOn2S.hxx

@@ -158,52 +158,64 @@ is
 
   class Tool;
 
-  class SequenceOfPrsBuilder instantiates Sequence from TCollection ( PrsBuilder );
+  imported SequenceOfPrsBuilder;
 
-  class DataMapOfIntegerColor instantiates DataMap from TCollection
-                          ( Integer, Color from Quantity, MapIntegerHasher from TColStd );
+  imported DataMapOfIntegerColor;
 
-  class DataMapOfIntegerMaterial instantiates DataMap from TCollection
-                          ( Integer, MaterialAspect from Graphic3d, MapIntegerHasher from TColStd );
+  imported DataMapIteratorOfDataMapOfIntegerColor;
 
-  class DataMapOfIntegerBoolean instantiates DataMap from TCollection
-                          ( Integer, Boolean, MapIntegerHasher from TColStd );
+  imported DataMapOfIntegerMaterial;
 
-  class DataMapOfIntegerOwner instantiates DataMap from TCollection
-                          ( Integer, EntityOwner from SelectMgr, MapIntegerHasher from TColStd );   
+  imported DataMapIteratorOfDataMapOfIntegerMaterial;
 
-  class DataMapOfIntegerMeshEntityOwner instantiates DataMap from TCollection
-                          ( Integer, MeshEntityOwner from MeshVS, MapIntegerHasher from TColStd );
+  imported DataMapOfIntegerBoolean;
 
-  class DataMapOfIntegerAsciiString instantiates DataMap from TCollection
-                          ( Integer, AsciiString from TCollection, MapIntegerHasher from TColStd );
+  imported DataMapIteratorOfDataMapOfIntegerBoolean;
 
-  class DataMapOfIntegerTwoColors instantiates DataMap from TCollection
-                          ( Integer, TwoColors from MeshVS, MapIntegerHasher from TColStd );
+  imported DataMapOfIntegerOwner;
 
-  class DataMapOfIntegerVector instantiates DataMap from TCollection
-                          ( Integer, Vec from gp, MapIntegerHasher from TColStd );
+  imported DataMapIteratorOfDataMapOfIntegerOwner;   
 
-  class TwoColorsHasher   instantiates MapHasher from TCollection( TwoColors );
+  imported DataMapOfIntegerMeshEntityOwner;
+
+  imported DataMapIteratorOfDataMapOfIntegerMeshEntityOwner;
+
+  imported DataMapOfIntegerAsciiString;
+
+  imported DataMapIteratorOfDataMapOfIntegerAsciiString;
+
+  imported DataMapOfIntegerTwoColors;
+
+  imported DataMapIteratorOfDataMapOfIntegerTwoColors;
+
+  imported DataMapOfIntegerVector;
+
+  imported DataMapIteratorOfDataMapOfIntegerVector;
+
+  imported TwoColorsHasher;
 
   class ColorHasher;
 
-  class DataMapOfTwoColorsMapOfInteger instantiates DataMap from TCollection
-                          ( TwoColors from MeshVS, MapOfInteger from TColStd, TwoColorsHasher );
+  imported DataMapOfTwoColorsMapOfInteger;
 
-  class DataMapOfColorMapOfInteger  instantiates DataMap from TCollection
-                          ( Color from Quantity, MapOfInteger from TColStd, ColorHasher );
+  imported DataMapIteratorOfDataMapOfTwoColorsMapOfInteger;
 
-  class Array1OfSequenceOfInteger instantiates Array1 from TCollection( SequenceOfInteger from TColStd );
+  imported DataMapOfColorMapOfInteger;
 
-  class HArray1OfSequenceOfInteger instantiates HArray1 from TCollection
-                          ( SequenceOfInteger from TColStd, Array1OfSequenceOfInteger );
+  imported DataMapIteratorOfDataMapOfColorMapOfInteger;
 
-  class DataMapOfHArray1OfSequenceOfInteger instantiates DataMap from TCollection
-                          ( Integer, HArray1OfSequenceOfInteger from MeshVS, MapIntegerHasher from TColStd );
+  imported Array1OfSequenceOfInteger;
 
-  class TwoNodesHasher   instantiates MapHasher from TCollection( TwoNodes );
+  imported transient class HArray1OfSequenceOfInteger;
 
-  class MapOfTwoNodes instantiates Map from TCollection( TwoNodes, TwoNodesHasher );
+  imported DataMapOfHArray1OfSequenceOfInteger;
+
+  imported DataMapIteratorOfDataMapOfHArray1OfSequenceOfInteger;
+
+  imported TwoNodesHasher;
+
+  imported MapOfTwoNodes;
+
+  imported MapIteratorOfMapOfTwoNodes;
 
 end MeshVS;

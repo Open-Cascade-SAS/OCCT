@@ -1,6 +1,4 @@
 Geom_BSplineCurve_1.cxx		
 Geom_BSplineSurface_1.cxx
-
-
-
-
+Geom_SequenceOfBSplineSurface.hxx
+Geom_HSequenceOfBSplineSurface.hxx

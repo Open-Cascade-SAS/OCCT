@@ -128,9 +128,9 @@ is
     
     class Schema;
         
-    class SeqOfRoot instantiates Sequence from TCollection(Root from Storage);
+    imported SeqOfRoot;
     
-    class HSeqOfRoot instantiates HSequence from TCollection(Root from Storage,SeqOfRoot);
+    imported transient class HSeqOfRoot;
 
     -- PRIVATE
     
@@ -139,26 +139,24 @@ is
 
     private class TypedCallBack;
     
-    private class PType instantiates IndexedDataMap from TCollection(AsciiString from TCollection, 
-    				     		     	     Integer from Standard, 
-    	                                              	     AsciiString from TCollection);			
+    imported PType;			
 
-    private class MapOfPers instantiates DataMap from TCollection(AsciiString from TCollection, 
-    	    	    	    	    	    	    	    	  Root from Storage,
-    	    	    	    	    	    	    	    	  AsciiString from TCollection);
+    imported MapOfPers;
+
+    imported DataMapIteratorOfMapOfPers;
         
-    private class MapOfCallBack instantiates DataMap from TCollection(AsciiString from TCollection, 
-    	    	    	    				              TypedCallBack from Storage,
-    	    	    	    	    	    	    	    	      AsciiString from TCollection);
+    imported MapOfCallBack;
+        
+    imported DataMapIteratorOfMapOfCallBack;
   							  
-    private class ArrayOfCallBack instantiates Array1 from TCollection(CallBack from Storage);
-    private class HArrayOfCallBack instantiates HArray1 from TCollection(CallBack from Storage,ArrayOfCallBack from Storage);
+    imported ArrayOfCallBack;
+    imported transient class HArrayOfCallBack;
  
-    class ArrayOfSchema instantiates Array1 from TCollection(Schema from Storage);
-    class HArrayOfSchema instantiates HArray1 from TCollection(Schema from Storage,ArrayOfSchema from Storage);
+    imported ArrayOfSchema;
+    imported transient class HArrayOfSchema;
     
-    private class PArray instantiates Array1 from TCollection(Persistent from Standard);  
-    private class HPArray instantiates HArray1 from TCollection(Persistent from Standard, PArray from Storage);
+    imported PArray;  
+    imported transient class HPArray;
     
     -- METHODS
     

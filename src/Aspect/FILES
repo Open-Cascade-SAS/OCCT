@@ -14,3 +14,4 @@ Aspect_GradientBackground.cxx
 Aspect_Convert.hxx
 Aspect_DisplayConnection.hxx
 Aspect_DisplayConnection.cxx
+Aspect_SequenceOfColor.hxx

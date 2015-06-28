@@ -1,0 +1,10 @@
+AppParCurves_Array1OfConstraintCouple.hxx
+AppParCurves_HArray1OfConstraintCouple.hxx
+AppParCurves_Array1OfMultiPoint.hxx
+AppParCurves_HArray1OfMultiPoint.hxx
+AppParCurves_Array1OfMultiCurve.hxx
+AppParCurves_HArray1OfMultiCurve.hxx
+AppParCurves_SequenceOfMultiCurve.hxx
+AppParCurves_Array1OfMultiBSpCurve.hxx
+AppParCurves_HArray1OfMultiBSpCurve.hxx
+AppParCurves_SequenceOfMultiBSpCurve.hxx

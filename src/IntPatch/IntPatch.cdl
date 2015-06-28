@@ -106,9 +106,9 @@ is
     class Intersection;
 
 
-    class SequenceOfPoint instantiates Sequence from TCollection (Point from IntPatch);
+    imported SequenceOfPoint;
 
-    class SequenceOfLine instantiates Sequence from TCollection (Line from IntPatch);
+    imported SequenceOfLine;
 
     class TheSurfFunction instantiates ZerImpFunc from IntImp
         (HSurface     from Adaptor3d,

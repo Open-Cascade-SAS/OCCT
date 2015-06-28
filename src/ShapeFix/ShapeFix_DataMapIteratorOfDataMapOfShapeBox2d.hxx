@@ -1,0 +1,8 @@
+
+
+#ifndef ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d_HeaderFile
+#define ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d_HeaderFile
+
+#include <ShapeFix_DataMapOfShapeBox2d.hxx>
+
+#endif

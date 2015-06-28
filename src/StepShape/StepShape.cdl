@@ -182,32 +182,32 @@ class BoxDomain;
 
 class ContextDependentShapeRepresentation;
 
-class Array1OfOrientedClosedShell instantiates Array1 from TCollection (OrientedClosedShell);
-class HArray1OfOrientedClosedShell instantiates HArray1 from TCollection (OrientedClosedShell,Array1OfOrientedClosedShell from StepShape);
+imported Array1OfOrientedClosedShell;
+imported transient class HArray1OfOrientedClosedShell;
 
-class Array1OfEdge instantiates Array1 from TCollection (Edge);
-class HArray1OfEdge instantiates HArray1 from TCollection (Edge,Array1OfEdge from StepShape);
+imported Array1OfEdge;
+imported transient class HArray1OfEdge;
 
-class Array1OfFace instantiates Array1 from TCollection (Face);
-class HArray1OfFace instantiates HArray1 from TCollection (Face,Array1OfFace from StepShape);
+imported Array1OfFace;
+imported transient class HArray1OfFace;
 
-class Array1OfFaceBound instantiates Array1 from TCollection (FaceBound);
-class HArray1OfFaceBound instantiates HArray1 from TCollection (FaceBound,Array1OfFaceBound from StepShape);
+imported Array1OfFaceBound;
+imported transient class HArray1OfFaceBound;
 
-class Array1OfConnectedEdgeSet instantiates Array1 from TCollection (ConnectedEdgeSet);
-class HArray1OfConnectedEdgeSet instantiates HArray1 from TCollection (ConnectedEdgeSet,Array1OfConnectedEdgeSet from StepShape);
+imported Array1OfConnectedEdgeSet;
+imported transient class HArray1OfConnectedEdgeSet;
 
-class Array1OfConnectedFaceSet instantiates Array1 from TCollection (ConnectedFaceSet);
-class HArray1OfConnectedFaceSet instantiates HArray1 from TCollection (ConnectedFaceSet,Array1OfConnectedFaceSet from StepShape);
+imported Array1OfConnectedFaceSet;
+imported transient class HArray1OfConnectedFaceSet;
 
-class Array1OfGeometricSetSelect instantiates Array1 from TCollection (GeometricSetSelect);
-class HArray1OfGeometricSetSelect instantiates HArray1 from TCollection (GeometricSetSelect,Array1OfGeometricSetSelect from StepShape);
+imported Array1OfGeometricSetSelect;
+imported transient class HArray1OfGeometricSetSelect;
 
-class Array1OfOrientedEdge instantiates Array1 from TCollection (OrientedEdge);
-class HArray1OfOrientedEdge instantiates HArray1 from TCollection (OrientedEdge,Array1OfOrientedEdge from StepShape);
+imported Array1OfOrientedEdge;
+imported transient class HArray1OfOrientedEdge;
 
-class Array1OfShell instantiates Array1 from TCollection (Shell);
-class HArray1OfShell instantiates HArray1 from TCollection (Shell,Array1OfShell from StepShape);
+imported Array1OfShell;
+imported transient class HArray1OfShell;
 
     -- ABV 18 Apr 00: for dimensions and tolerances (Part 47)
     enumeration AngleRelator is 
@@ -240,9 +240,8 @@ class HArray1OfShell instantiates HArray1 from TCollection (Shell,Array1OfShell 
     class QualifiedRepresentationItem;
     class MeasureRepresentationItemAndQualifiedRepresentationItem;
 
-    class Array1OfValueQualifier  instantiates Array1 from TCollection (ValueQualifier);
-    class HArray1OfValueQualifier instantiates HArray1 from TCollection 
-    	(ValueQualifier,Array1OfValueQualifier);
+    imported Array1OfValueQualifier;
+    imported transient class HArray1OfValueQualifier;
 
 --added for AP209
 

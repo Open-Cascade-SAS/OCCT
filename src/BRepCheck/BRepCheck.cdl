@@ -113,19 +113,20 @@ is
     end Status;
 
 
-    class ListOfStatus instantiates List from TCollection
-        (Status from BRepCheck);
+    imported ListOfStatus;
+
+
+    imported ListIteratorOfListOfStatus;
        
-    class DataMapOfShapeListOfStatus instantiates DataMap from TCollection 
-        (Shape          from TopoDS,
-         ListOfStatus   from BRepCheck,
-         ShapeMapHasher from TopTools);
+    imported DataMapOfShapeListOfStatus;
+       
+    imported DataMapIteratorOfDataMapOfShapeListOfStatus;
  
  
-    class DataMapOfShapeResult instantiates DataMap from TCollection
-     (Shape          from TopoDS,
-         Result         from BRepCheck,
-         OrientedShapeMapHasher from TopTools);
+    imported DataMapOfShapeResult;
+ 
+ 
+    imported DataMapIteratorOfDataMapOfShapeResult;
   
   
     -- Package method

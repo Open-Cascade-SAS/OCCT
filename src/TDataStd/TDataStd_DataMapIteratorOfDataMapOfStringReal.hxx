@@ -1,0 +1,8 @@
+
+
+#ifndef TDataStd_DataMapIteratorOfDataMapOfStringReal_HeaderFile
+#define TDataStd_DataMapIteratorOfDataMapOfStringReal_HeaderFile
+
+#include <TDataStd_DataMapOfStringReal.hxx>
+
+#endif

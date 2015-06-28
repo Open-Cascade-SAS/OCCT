@@ -38,7 +38,9 @@ is
 
     class Interpol;           -- inherits BSpFunc from Law
 
-    class Laws instantiates List from TCollection (Function from Law);
+    imported Laws;
+
+    imported ListIteratorOfLaws;
 
     class Composite;          -- inherits Function from Law
     

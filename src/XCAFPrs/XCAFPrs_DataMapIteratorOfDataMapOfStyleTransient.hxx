@@ -1,0 +1,8 @@
+
+
+#ifndef XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient_HeaderFile
+#define XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient_HeaderFile
+
+#include <XCAFPrs_DataMapOfStyleTransient.hxx>
+
+#endif

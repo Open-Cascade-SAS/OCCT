@@ -1,0 +1,8 @@
+
+
+#ifndef TopTools_DataMapIteratorOfDataMapOfShapeListOfShape_HeaderFile
+#define TopTools_DataMapIteratorOfDataMapOfShapeListOfShape_HeaderFile
+
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+
+#endif

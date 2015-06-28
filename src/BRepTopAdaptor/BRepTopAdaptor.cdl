@@ -56,10 +56,9 @@ is
     
     class Tool; 
     
-    class MapOfShapeTool  instantiates DataMap from TCollection
-        (Shape          from TopoDS,
-         Tool           from BRepTopAdaptor,
-         ShapeMapHasher from TopTools);
+    imported MapOfShapeTool;
+    
+    imported DataMapIteratorOfMapOfShapeTool;
 
 
 end BRepTopAdaptor;

@@ -1,0 +1,8 @@
+
+
+#ifndef ExprIntrp_ListIteratorOfStackOfGeneralExpression_HeaderFile
+#define ExprIntrp_ListIteratorOfStackOfGeneralExpression_HeaderFile
+
+#include <ExprIntrp_StackOfGeneralExpression.hxx>
+
+#endif

@@ -1,0 +1,8 @@
+
+
+#ifndef Interface_DataMapIteratorOfDataMapOfTransientInteger_HeaderFile
+#define Interface_DataMapIteratorOfDataMapOfTransientInteger_HeaderFile
+
+#include <Interface_DataMapOfTransientInteger.hxx>
+
+#endif

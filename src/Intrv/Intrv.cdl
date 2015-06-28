@@ -41,6 +41,6 @@ is
     
     class Interval;
     class Intervals;
-    class SequenceOfInterval instantiates Sequence from TCollection(Interval);
+    imported SequenceOfInterval;
     
 end Intrv;

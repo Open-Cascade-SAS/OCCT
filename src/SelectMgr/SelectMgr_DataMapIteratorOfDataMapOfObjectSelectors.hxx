@@ -1,0 +1,8 @@
+
+
+#ifndef SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors_HeaderFile
+#define SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors_HeaderFile
+
+#include <SelectMgr_DataMapOfObjectSelectors.hxx>
+
+#endif

@@ -1,0 +1,8 @@
+
+
+#ifndef TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver_HeaderFile
+#define TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver_HeaderFile
+
+#include <TPrsStd_DataMapOfGUIDDriver.hxx>
+
+#endif

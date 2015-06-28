@@ -5,3 +5,9 @@ TestTopOpeDraw_Displayer.cxx
 TestTopOpeDraw_TTOT.hxx
 TestTopOpeDraw_TTOT.cxx
 TestTopOpeDraw_SaveRestore.cxx
+TestTopOpeDraw_ListOfPnt2d.hxx
+TestTopOpeDraw_ListIteratorOfListOfPnt2d.hxx
+TestTopOpeDraw_Array1OfDrawableP3D.hxx
+TestTopOpeDraw_HArray1OfDrawableP3D.hxx
+TestTopOpeDraw_Array1OfDrawableMesure.hxx
+TestTopOpeDraw_HArray1OfDrawableMesure.hxx

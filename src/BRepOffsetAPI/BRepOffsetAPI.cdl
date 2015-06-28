@@ -92,10 +92,8 @@ is
     --     
     class MakeFilling;  ---  inherits MakeShape from BRepBuilderAPI
 
-    class SequenceOfSequenceOfReal instantiates 
-    	Sequence from TCollection (SequenceOfReal from TColStd);
+    imported SequenceOfSequenceOfReal;
 
-    class SequenceOfSequenceOfShape instantiates 
-    	Sequence from TCollection (SequenceOfShape from TopTools);
+    imported SequenceOfSequenceOfShape;
 
 end;

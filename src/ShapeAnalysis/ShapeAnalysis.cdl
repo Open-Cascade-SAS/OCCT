@@ -94,17 +94,13 @@ is
 
 	class TransferParametersProj;
 
-    class SequenceOfFreeBounds instantiates
-        Sequence  from TCollection (FreeBoundData from ShapeAnalysis);
+    imported SequenceOfFreeBounds;
 
-    class HSequenceOfFreeBounds instantiates
-        HSequence from TCollection (FreeBoundData        from ShapeAnalysis,
-                                    SequenceOfFreeBounds from ShapeAnalysis);
+    imported transient class HSequenceOfFreeBounds;
 
-    class DataMapOfShapeListOfReal instantiates
-    	DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	 ListOfReal     from TColStd,
-                                 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeListOfReal;
+
+    imported DataMapIteratorOfDataMapOfShapeListOfReal;
 
     --class SequenceOfOverlapEdges instantiates 
     	--Sequence from TCollection (OverlapEdges from ShapeAnalysis); 

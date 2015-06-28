@@ -29,3 +29,5 @@ Draw_PluginMacro.hxx
 Draw_PloadCommands.cxx
 Draw_Window_1.mm
 Draw_Debug.cxx
+Draw_SequenceOfDrawable3D.hxx
+Draw_MapOfAsciiString.hxx

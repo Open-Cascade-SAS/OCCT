@@ -1,0 +1,5 @@
+Plate_SequenceOfPinpointConstraint.hxx
+Plate_SequenceOfLinearXYZConstraint.hxx
+Plate_SequenceOfLinearScalarConstraint.hxx
+Plate_Array1OfPinpointConstraint.hxx
+Plate_HArray1OfPinpointConstraint.hxx

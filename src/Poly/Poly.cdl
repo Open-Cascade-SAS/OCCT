@@ -40,12 +40,9 @@ is
 
     class Triangle;
 
-    class Array1OfTriangle
-    instantiates Array1 from TCollection(Triangle from Poly);
+    imported Array1OfTriangle;
 
-    class HArray1OfTriangle
-    instantiates HArray1 from TCollection(Triangle         from Poly,
-                                          Array1OfTriangle from Poly);
+    imported transient class HArray1OfTriangle;
 
     class Triangulation;
 

@@ -96,8 +96,8 @@ is
 	    class ShapeRepresentationRelationshipWithTransformation;
 
 
-    class Array1OfRepresentationItem instantiates Array1 from TCollection (RepresentationItem);
-    class HArray1OfRepresentationItem instantiates HArray1 from TCollection (RepresentationItem,Array1OfRepresentationItem from StepRepr);
+    imported Array1OfRepresentationItem;
+    imported transient class HArray1OfRepresentationItem;
 
     -- Added from Rev2 to Rev4
 
@@ -129,17 +129,17 @@ is
     class ReprItemAndLengthMeasureWithUnit;
     
     
-    class Array1OfPropertyDefinitionRepresentation instantiates Array1 from TCollection (PropertyDefinitionRepresentation);
-    class HArray1OfPropertyDefinitionRepresentation instantiates HArray1 from TCollection (PropertyDefinitionRepresentation, Array1OfPropertyDefinitionRepresentation from StepRepr);
+    imported Array1OfPropertyDefinitionRepresentation;
+    imported transient class HArray1OfPropertyDefinitionRepresentation;
 
-    class Array1OfMaterialPropertyRepresentation instantiates Array1 from TCollection (MaterialPropertyRepresentation);
-    class HArray1OfMaterialPropertyRepresentation instantiates HArray1 from TCollection (MaterialPropertyRepresentation, Array1OfMaterialPropertyRepresentation from StepRepr);
+    imported Array1OfMaterialPropertyRepresentation;
+    imported transient class HArray1OfMaterialPropertyRepresentation;
 
-    class SequenceOfMaterialPropertyRepresentation instantiates Sequence from TCollection (MaterialPropertyRepresentation);
-    class HSequenceOfMaterialPropertyRepresentation instantiates HSequence from TCollection (MaterialPropertyRepresentation, SequenceOfMaterialPropertyRepresentation from StepRepr);
+    imported SequenceOfMaterialPropertyRepresentation;
+    imported transient class HSequenceOfMaterialPropertyRepresentation;
 
-    class SequenceOfRepresentationItem instantiates Sequence from TCollection (RepresentationItem);
-    class HSequenceOfRepresentationItem instantiates HSequence from TCollection (RepresentationItem, SequenceOfRepresentationItem from StepRepr);
+    imported SequenceOfRepresentationItem;
+    imported transient class HSequenceOfRepresentationItem;
 
 
     --	Protocol returns Protocol from StepRepr;

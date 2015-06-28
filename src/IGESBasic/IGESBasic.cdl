@@ -92,10 +92,8 @@ is
 
     -- The class instantiations :
 
-    class Array2OfHArray1OfReal    instantiates 
-        Array2 from TCollection (HArray1OfReal from TColStd);
-    class Array1OfLineFontEntity instantiates
-        Array1 from TCollection (LineFontEntity from IGESData);
+    imported Array2OfHArray1OfReal;
+    imported Array1OfLineFontEntity;
 
     class HArray1OfHArray1OfInteger instantiates
     	JaggedArray from Interface (HArray1OfInteger     from TColStd);
@@ -110,15 +108,13 @@ is
     	JaggedArray from Interface (HArray1OfXYZ         from TColgp);
     -- HArray1 from TCollection (HArray1OfXYZ  from TColgp, Array1OfHArray1OfXYZ);
 
-    class HArray2OfHArray1OfReal    instantiates HArray2 from TCollection
-    	 (HArray1OfReal from TColStd,Array2OfHArray1OfReal);
+    imported transient class HArray2OfHArray1OfReal;
 
     class HArray1OfHArray1OfIGESEntity instantiates
     	JaggedArray from Interface (HArray1OfIGESEntity  from IGESData);
     -- HArray1 from TCollection (HArray1OfIGESEntity from IGESData,Array1OfHArray1OfIGESEntity);
 
-    class HArray1OfLineFontEntity   instantiates HArray1 from TCollection
-    	 (LineFontEntity from IGESData,Array1OfLineFontEntity);
+    imported transient class HArray1OfLineFontEntity;
 
     --  Package methods 
 

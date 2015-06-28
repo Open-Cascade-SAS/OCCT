@@ -117,15 +117,11 @@ is
 
     -- Instantiations :
 
-    class  Array1OfLeaderArrow instantiates
-    	 Array1 from TCollection (LeaderArrow);
-    class  Array1OfGeneralNote instantiates
-    	 Array1 from TCollection (GeneralNote);
+    imported Array1OfLeaderArrow;
+    imported Array1OfGeneralNote;
 
-    class HArray1OfLeaderArrow instantiates
-    	HArray1 from TCollection (LeaderArrow,Array1OfLeaderArrow);
-    class HArray1OfGeneralNote instantiates
-    	HArray1 from TCollection (GeneralNote,Array1OfGeneralNote);
+    imported transient class HArray1OfLeaderArrow;
+    imported transient class HArray1OfGeneralNote;
 
     -- Package Methods
 

@@ -7,3 +7,4 @@ IntPolyh_ArrayOfPoints.hxx
 IntPolyh_ArrayOfStartPoints.hxx
 IntPolyh_ArrayOfTangentZones.hxx
 IntPolyh_ArrayOfTriangles.hxx
+IntPolyh_SeqOfStartPoints.hxx

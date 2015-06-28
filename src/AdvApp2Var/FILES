@@ -17,4 +17,7 @@ AdvApp2Var_MathBase_mathinit.cxx
 AdvApp2Var_SysBase.hxx
 AdvApp2Var_SysBase.cxx
 AdvApp2Var_SysBase_baseinit.cxx
-
+AdvApp2Var_Strip.hxx
+AdvApp2Var_SequenceOfNode.hxx
+AdvApp2Var_SequenceOfPatch.hxx
+AdvApp2Var_SequenceOfStrip.hxx

@@ -68,7 +68,7 @@ end;
 
     class GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
 
-    class Array1OfDatumReference instantiates Array1 from TCollection (DatumReference);
-    class HArray1OfDatumReference instantiates HArray1 from TCollection (DatumReference,Array1OfDatumReference from StepDimTol);
+    imported Array1OfDatumReference;
+    imported transient class HArray1OfDatumReference;
     
 end StepDimTol;

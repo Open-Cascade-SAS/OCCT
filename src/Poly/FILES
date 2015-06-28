@@ -11,3 +11,5 @@ Poly_CoherentLink.cxx
 Poly_MakeLoops.hxx
 Poly_MakeLoops.cxx
 Poly_ListOfTriangulation.hxx
+Poly_Array1OfTriangle.hxx
+Poly_HArray1OfTriangle.hxx

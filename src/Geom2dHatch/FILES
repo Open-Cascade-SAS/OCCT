@@ -1,0 +1,4 @@
+Geom2dHatch_Hatchings.hxx
+Geom2dHatch_DataMapIteratorOfHatchings.hxx
+Geom2dHatch_MapOfElements.hxx
+Geom2dHatch_DataMapIteratorOfMapOfElements.hxx

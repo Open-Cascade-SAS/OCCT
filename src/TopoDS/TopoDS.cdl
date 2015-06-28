@@ -49,7 +49,9 @@ is
 
     class HShape;
 
-    class ListOfShape instantiates List from TCollection (Shape from TopoDS);
+    imported ListOfShape;
+
+    imported ListIteratorOfListOfShape;
 	---Purpose: Used to implement the TShape.
 
     deferred class TShape;

@@ -60,8 +60,7 @@ is
     generic class CSWalking;
 
 
-    class SequenceOfPoint instantiates Sequence from TCollection
-    	(Point from Blend);
+    imported SequenceOfPoint;
 	
     enumeration Status is 
     	StepTooLarge,

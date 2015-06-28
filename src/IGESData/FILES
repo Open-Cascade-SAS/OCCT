@@ -1,1 +1,4 @@
 IGESData_Dump.hxx
+IGESData_Array1OfDirPart.hxx
+IGESData_Array1OfIGESEntity.hxx
+IGESData_HArray1OfIGESEntity.hxx

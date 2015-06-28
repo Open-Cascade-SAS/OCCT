@@ -1,0 +1,8 @@
+
+
+#ifndef MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString_HeaderFile
+#define MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString_HeaderFile
+
+#include <MeshVS_DataMapOfIntegerAsciiString.hxx>
+
+#endif

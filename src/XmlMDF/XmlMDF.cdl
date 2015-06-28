@@ -45,10 +45,9 @@ is
 
     deferred class ADriver; -- Attribute Storage/Retrieve Driver.
 
-    private class MapOfDriver
-        instantiates DataMap from TCollection (AsciiString    from TCollection,
-                                               ADriver        from XmlMDF, 
-                                               AsciiString    from TCollection);
+    imported MapOfDriver;
+
+    imported DataMapIteratorOfMapOfDriver;
 
     ---Category: Storage and Retrieval attributes drivers
     --          ========================================
@@ -61,10 +60,8 @@ is
      --           =============================================================
 
     -- Map (Type, ADriver)
-    class TypeADriverMap instantiates DataMap from TCollection
-        (Type from Standard,
-         ADriver from XmlMDF,
-         MapTransientHasher from TColStd);
+    imported TypeADriverMap;
+    imported DataMapIteratorOfTypeADriverMap;
 
     -- Attribute Storage Driver Table.
     class ADriverTable;

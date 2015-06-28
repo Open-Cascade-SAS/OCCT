@@ -61,8 +61,7 @@ uses
 
 is
     
-    class Array2OfOrientation instantiates 
-    	Array2 from TCollection (Orientation from TopAbs);
+    imported Array2OfOrientation;
     
     class CurveTransition;
     

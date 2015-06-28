@@ -1,0 +1,8 @@
+
+
+#ifndef BRep_ListIteratorOfListOfPointRepresentation_HeaderFile
+#define BRep_ListIteratorOfListOfPointRepresentation_HeaderFile
+
+#include <BRep_ListOfPointRepresentation.hxx>
+
+#endif

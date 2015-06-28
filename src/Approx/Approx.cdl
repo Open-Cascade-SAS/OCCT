@@ -98,8 +98,7 @@ end;
 --- instantiate classes:
 --------------------------
 
-    class SequenceOfHArray1OfReal instantiates Sequence from TCollection
-    	    	    	    	    	    (HArray1OfReal from TColStd);
+    imported SequenceOfHArray1OfReal;
 
 
 -----------------------------------------------------------------
@@ -115,15 +114,11 @@ end;
 
     class SameParameter from Approx ;
 
-    class Array1OfAdHSurface    instantiates Array1 from TCollection 
-    	    	    	    (HSurface  from  Adaptor3d)                      ;
-    class HArray1OfAdHSurface  instantiates HArray1 from TCollection
-    	    	    	    (HSurface from   Adaptor3d, Array1OfAdHSurface)  ;
-    class Array1OfGTrsf2d     instantiates Array1 from TCollection
-                            (GTrsf2d  from  gp)                            ;
+    imported Array1OfAdHSurface;
+    imported transient class HArray1OfAdHSurface;
+    imported Array1OfGTrsf2d;
  
-    class HArray1OfGTrsf2d  instantiates HArray1  from TCollection
-    	    	    	    (GTrsf2d from  gp, Array1OfGTrsf2d)  ; 
+    imported transient class HArray1OfGTrsf2d; 
 			    
     --    class ApproxPoints from Approx ;
     --    class ApproxPoints  from Approx ;

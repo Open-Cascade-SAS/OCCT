@@ -82,116 +82,82 @@ is
     
     class OrientedShapeMapHasher;
     
-    class MapOfShape instantiates 
-    	Map from TCollection(Shape          from TopoDS, 
-                             ShapeMapHasher from TopTools);
-
-    class MapOfOrientedShape instantiates 
-    	Map from TCollection(Shape          from TopoDS, 
-                             OrientedShapeMapHasher from TopTools);
-
-    class IndexedMapOfShape instantiates 
-    	IndexedMap from TCollection(Shape          from TopoDS, 
-                                    ShapeMapHasher from TopTools);
-				    
-    class DataMapOfIntegerShape instantiates 
-    	DataMap from TCollection(Integer,
-	    	    	    	 Shape            from TopoDS,
-				 MapIntegerHasher from TColStd);
+    imported MapOfShape;
     
-    class DataMapOfOrientedShapeInteger instantiates 
-    	DataMap from TCollection(Shape                    from TopoDS,
-                                 Integer                  from Standard,
-				 OrientedShapeMapHasher   from TopTools);
+    imported MapIteratorOfMapOfShape;
 
-    class DataMapOfShapeInteger instantiates 
-    	DataMap from TCollection(Shape                    from TopoDS,
-                                 Integer                  from Standard,
-				 ShapeMapHasher           from TopTools);
+    imported MapOfOrientedShape;
 
-    class DataMapOfShapeReal instantiates 
-    	DataMap from TCollection(Shape                    from TopoDS,
-				 Real                     from Standard,
-				 ShapeMapHasher           from TopTools);
+    imported MapIteratorOfMapOfOrientedShape;
 
-    class Array1OfShape instantiates 
-    	Array1 from TCollection	(Shape from TopoDS);
+    imported IndexedMapOfShape;
+				    
+    imported DataMapOfIntegerShape;
+				    
+    imported DataMapIteratorOfDataMapOfIntegerShape;
+    
+    imported DataMapOfOrientedShapeInteger;
+    
+    imported DataMapIteratorOfDataMapOfOrientedShapeInteger;
+
+    imported DataMapOfShapeInteger;
+
+    imported DataMapIteratorOfDataMapOfShapeInteger;
+
+    imported DataMapOfShapeReal;
+
+    imported DataMapIteratorOfDataMapOfShapeReal;
+
+    imported Array1OfShape;
 	
-    class HArray1OfShape instantiates 
-    	HArray1 from TCollection(Shape         from TopoDS,
-    	    	    	    	 Array1OfShape from TopTools); 
+    imported transient class HArray1OfShape; 
 				  
-    class Array2OfShape instantiates 
-    	Array2 from TCollection	(Shape from TopoDS);
+    imported Array2OfShape;
 	
-    class HArray2OfShape instantiates 
-    	HArray2 from TCollection(Shape         from TopoDS,
-    	    	    	    	 Array2OfShape from TopTools);			 
+    imported transient class HArray2OfShape;			 
 	
-    class SequenceOfShape instantiates 
-    	Sequence from TCollection (Shape from TopoDS);
+    imported SequenceOfShape;
 	
-    class HSequenceOfShape instantiates 
-    	HSequence from TCollection(Shape           from TopoDS,
-    	    	    	    	   SequenceOfShape from TopTools);
+    imported transient class HSequenceOfShape;
 	
-    class ListOfShape instantiates 
-    	List from TCollection (Shape from TopoDS);
+    imported ListOfShape;
 	
-    class Array1OfListOfShape instantiates 
-    	Array1 from TCollection	(ListOfShape from TopTools);
+    imported ListIteratorOfListOfShape;
 	
-    class HArray1OfListOfShape instantiates 
-    	HArray1 from TCollection(ListOfShape         from TopTools,
-    	    	    	    	 Array1OfListOfShape from TopTools);
+    imported Array1OfListOfShape;
 	
-    class DataMapOfIntegerListOfShape instantiates 
-    	DataMap from TCollection(Integer from Standard, 
-	    		         ListOfShape from TopTools,
-	    		       	 MapIntegerHasher from TColStd);
+    imported transient class HArray1OfListOfShape;
 	
-    class DataMapOfShapeListOfShape instantiates
-    	DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	 ListOfShape    from TopTools,
-                                 ShapeMapHasher from TopTools);
+    imported DataMapOfIntegerListOfShape;
+	
+    imported DataMapIteratorOfDataMapOfIntegerListOfShape;
+	
+    imported DataMapOfShapeListOfShape;
+	
+    imported DataMapIteratorOfDataMapOfShapeListOfShape;
 				 
-    class DataMapOfShapeListOfInteger instantiates
-    	DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	 ListOfInteger  from TColStd,
-                                 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeListOfInteger;
 				 
-    class IndexedDataMapOfShapeShape instantiates
-    	IndexedDataMap from TCollection(Shape          from TopoDS,
-	    	    	    	    	Shape          from TopoDS,
-                                        ShapeMapHasher from TopTools);				
-    class IndexedDataMapOfShapeListOfShape instantiates
-    	IndexedDataMap from TCollection(Shape          from TopoDS,
-	    	    	    	    	ListOfShape    from TopTools,
-                                        ShapeMapHasher from TopTools);
+    imported DataMapIteratorOfDataMapOfShapeListOfInteger;
+				 
+    imported IndexedDataMapOfShapeShape;				
+    imported IndexedDataMapOfShapeListOfShape;
 					
-    class DataMapOfShapeShape instantiates
-    	DataMap from TCollection (Shape          from TopoDS,
-	                          Shape          from TopoDS,
-	                          ShapeMapHasher from TopTools);
+    imported DataMapOfShapeShape;
+					
+    imported DataMapIteratorOfDataMapOfShapeShape;
 
-    class IndexedMapOfOrientedShape instantiates
-    	IndexedMap from TCollection(Shape from TopoDS,
-    	    	    	    	    OrientedShapeMapHasher from TopTools);
+    imported IndexedMapOfOrientedShape;
 
-    class DataMapOfShapeSequenceOfShape instantiates 
-    	DataMap from TCollection (Shape           from TopoDS,
-    	    	    	    	  SequenceOfShape from TopTools,
-				  ShapeMapHasher  from TopTools);
+    imported DataMapOfShapeSequenceOfShape;
 
-    class IndexedDataMapOfShapeAddress instantiates
-    	IndexedDataMap from TCollection(Shape          from TopoDS,
-	    	    	    	    	Address        from Standard,
-                                        ShapeMapHasher from TopTools);	  
+    imported DataMapIteratorOfDataMapOfShapeSequenceOfShape;
 
-     class DataMapOfOrientedShapeShape instantiates
-        DataMap from TCollection (Shape                  from TopoDS,
-                                  Shape                  from TopoDS,
-                                  OrientedShapeMapHasher from TopTools);			    
+    imported IndexedDataMapOfShapeAddress;	  
+
+     imported DataMapOfOrientedShapeShape;
+
+     imported DataMapIteratorOfDataMapOfOrientedShapeShape;			    
 
     ----------------------------------------------------------
     -- Tools for writing and reading Locations and Shapes

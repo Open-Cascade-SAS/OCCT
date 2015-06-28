@@ -98,8 +98,7 @@ is
     
     class Box;
 
-    class SequenceOfDrawable3D instantiates 
-    	Sequence from TCollection (Drawable3D);
+    imported SequenceOfDrawable3D;
 	
     class ProgressIndicator;
 
@@ -111,7 +110,7 @@ is
 
     class Printer;
 
-    class MapOfAsciiString instantiates IndexedMap from TCollection(AsciiString from TCollection,AsciiString from TCollection); 
+    imported MapOfAsciiString; 
      
     Load(theDI: out Interpretor from Draw;
          theKey, theResourceFileName: AsciiString from TCollection;

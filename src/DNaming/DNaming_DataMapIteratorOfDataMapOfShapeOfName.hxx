@@ -1,0 +1,8 @@
+
+
+#ifndef DNaming_DataMapIteratorOfDataMapOfShapeOfName_HeaderFile
+#define DNaming_DataMapIteratorOfDataMapOfShapeOfName_HeaderFile
+
+#include <DNaming_DataMapOfShapeOfName.hxx>
+
+#endif

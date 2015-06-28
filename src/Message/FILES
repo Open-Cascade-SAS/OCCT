@@ -2,3 +2,7 @@ Message_Status.hxx
 Message_StatusType.hxx
 Message_ExecStatus.hxx
 Message_HArrayOfMsg.hxx
+Message_ListOfMsg.hxx
+Message_ListIteratorOfListOfMsg.hxx
+Message_SequenceOfPrinters.hxx
+Message_SequenceOfProgressScale.hxx

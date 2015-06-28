@@ -68,8 +68,8 @@ is
     
     class Quadric;
     --
-    class ListOfCurve  instantiates  
-    	List from TCollection(Curve from IntAna);    
+    imported ListOfCurve;
+    imported ListIteratorOfListOfCurve;    
     --
 end IntAna;
 

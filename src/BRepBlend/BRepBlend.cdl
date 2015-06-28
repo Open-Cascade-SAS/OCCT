@@ -60,8 +60,7 @@ is
 
     alias ChAsymInv is ChAsymInv from BlendFunc;
 
-    class SequenceOfPointOnRst instantiates Sequence from TCollection
-    	(PointOnRst from BRepBlend);
+    imported SequenceOfPointOnRst;
 
     class Walking instantiates Walking from Blend
     	(HVertex              from Adaptor3d,
@@ -100,8 +99,7 @@ is
          Line        from BRepBlend);
 
 
-    class SequenceOfLine instantiates Sequence from TCollection
-    	(Line from BRepBlend);
+    imported SequenceOfLine;
 
 
     class AppSurface; 

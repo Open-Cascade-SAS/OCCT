@@ -249,30 +249,30 @@ class ExternallyDefinedClass;
 class ExternallyDefinedGeneralProperty;
 class RepItemGroup;
 
-class Array1OfAutoDesignDateAndTimeItem instantiates Array1 from TCollection (AutoDesignDateAndTimeItem);
-class HArray1OfAutoDesignDateAndTimeItem instantiates HArray1 from TCollection (AutoDesignDateAndTimeItem,Array1OfAutoDesignDateAndTimeItem from StepAP214);
+imported Array1OfAutoDesignDateAndTimeItem;
+imported transient class HArray1OfAutoDesignDateAndTimeItem;
 
-class Array1OfAutoDesignDatedItem instantiates Array1 from TCollection (AutoDesignDatedItem);
-class HArray1OfAutoDesignDatedItem instantiates HArray1 from TCollection (AutoDesignDatedItem,Array1OfAutoDesignDatedItem from StepAP214);
+imported Array1OfAutoDesignDatedItem;
+imported transient class HArray1OfAutoDesignDatedItem;
 
-class Array1OfAutoDesignGeneralOrgItem instantiates Array1 from TCollection (AutoDesignGeneralOrgItem);
-class HArray1OfAutoDesignGeneralOrgItem instantiates HArray1 from TCollection (AutoDesignGeneralOrgItem,Array1OfAutoDesignGeneralOrgItem from StepAP214);
+imported Array1OfAutoDesignGeneralOrgItem;
+imported transient class HArray1OfAutoDesignGeneralOrgItem;
 
-class Array1OfAutoDesignDateAndPersonItem instantiates Array1 from TCollection (AutoDesignDateAndPersonItem);
-class HArray1OfAutoDesignDateAndPersonItem instantiates HArray1 from TCollection (AutoDesignDateAndPersonItem,Array1OfAutoDesignDateAndPersonItem from StepAP214);
+imported Array1OfAutoDesignDateAndPersonItem;
+imported transient class HArray1OfAutoDesignDateAndPersonItem;
 
-class Array1OfAutoDesignGroupedItem instantiates Array1 from TCollection (AutoDesignGroupedItem);
-class HArray1OfAutoDesignGroupedItem instantiates HArray1 from TCollection (AutoDesignGroupedItem,Array1OfAutoDesignGroupedItem from StepAP214);
+imported Array1OfAutoDesignGroupedItem;
+imported transient class HArray1OfAutoDesignGroupedItem;
 
     -- Added from Rev2 to Rev4
 
-class Array1OfAutoDesignPresentedItemSelect instantiates Array1 from TCollection (AutoDesignPresentedItemSelect from StepAP214);
-class HArray1OfAutoDesignPresentedItemSelect instantiates HArray1 from TCollection (AutoDesignPresentedItemSelect from StepAP214,Array1OfAutoDesignPresentedItemSelect);
+imported Array1OfAutoDesignPresentedItemSelect;
+imported transient class HArray1OfAutoDesignPresentedItemSelect;
 
     -- Added from CC1 to CC2 of STEP214
 
-class Array1OfAutoDesignReferencingItem instantiates Array1 from TCollection (AutoDesignReferencingItem from StepAP214);
-class HArray1OfAutoDesignReferencingItem instantiates HArray1 from TCollection (AutoDesignReferencingItem from StepAP214,Array1OfAutoDesignReferencingItem);
+imported Array1OfAutoDesignReferencingItem;
+imported transient class HArray1OfAutoDesignReferencingItem;
 
 	-- Protocol returns Protocol from StepAP214;
 	--  : creates a Protocol
@@ -280,35 +280,35 @@ class HArray1OfAutoDesignReferencingItem instantiates HArray1 from TCollection (
     -- added from Cc2 to DIS
     
 
-class Array1OfDateAndTimeItem instantiates Array1 from TCollection (DateAndTimeItem);
-class HArray1OfDateAndTimeItem instantiates HArray1 from TCollection (DateAndTimeItem,Array1OfDateAndTimeItem from StepAP214);
+imported Array1OfDateAndTimeItem;
+imported transient class HArray1OfDateAndTimeItem;
 
-class Array1OfDateItem instantiates Array1 from TCollection (DateItem);
-class HArray1OfDateItem instantiates HArray1 from TCollection (DateItem,Array1OfDateItem from StepAP214);
+imported Array1OfDateItem;
+imported transient class HArray1OfDateItem;
 
-class Array1OfApprovalItem instantiates Array1 from TCollection (ApprovalItem);
-class HArray1OfApprovalItem instantiates HArray1 from TCollection (ApprovalItem,Array1OfApprovalItem from StepAP214);
+imported Array1OfApprovalItem;
+imported transient class HArray1OfApprovalItem;
 
-class Array1OfOrganizationItem instantiates Array1 from TCollection (OrganizationItem);
-class HArray1OfOrganizationItem instantiates HArray1 from TCollection (OrganizationItem,Array1OfOrganizationItem from StepAP214);
+imported Array1OfOrganizationItem;
+imported transient class HArray1OfOrganizationItem;
 
-class Array1OfPersonAndOrganizationItem instantiates Array1 from TCollection (PersonAndOrganizationItem);
-class HArray1OfPersonAndOrganizationItem instantiates HArray1 from TCollection (PersonAndOrganizationItem,Array1OfPersonAndOrganizationItem from StepAP214);
+imported Array1OfPersonAndOrganizationItem;
+imported transient class HArray1OfPersonAndOrganizationItem;
 
-class Array1OfGroupItem instantiates Array1 from TCollection (GroupItem);
-class HArray1OfGroupItem instantiates HArray1 from TCollection (GroupItem,Array1OfGroupItem from StepAP214);
+imported Array1OfGroupItem;
+imported transient class HArray1OfGroupItem;
 
-class Array1OfSecurityClassificationItem instantiates Array1 from TCollection (SecurityClassificationItem);
-class HArray1OfSecurityClassificationItem instantiates HArray1 from TCollection (SecurityClassificationItem,Array1OfSecurityClassificationItem from StepAP214);
+imported Array1OfSecurityClassificationItem;
+imported transient class HArray1OfSecurityClassificationItem;
 
-class Array1OfPresentedItemSelect instantiates Array1 from TCollection (PresentedItemSelect);
-class HArray1OfPresentedItemSelect instantiates HArray1 from TCollection (PresentedItemSelect,Array1OfPresentedItemSelect from StepAP214);
+imported Array1OfPresentedItemSelect;
+imported transient class HArray1OfPresentedItemSelect;
 
-class Array1OfDocumentReferenceItem instantiates Array1 from TCollection (DocumentReferenceItem);
-class HArray1OfDocumentReferenceItem instantiates HArray1 from TCollection (DocumentReferenceItem,Array1OfDocumentReferenceItem from StepAP214);
+imported Array1OfDocumentReferenceItem;
+imported transient class HArray1OfDocumentReferenceItem;
 
-class Array1OfExternalIdentificationItem instantiates Array1 from TCollection (ExternalIdentificationItem);
-class HArray1OfExternalIdentificationItem instantiates HArray1 from TCollection (ExternalIdentificationItem,Array1OfExternalIdentificationItem from StepAP214);
+imported Array1OfExternalIdentificationItem;
+imported transient class HArray1OfExternalIdentificationItem;
 
 
     Protocol returns Protocol from StepAP214;

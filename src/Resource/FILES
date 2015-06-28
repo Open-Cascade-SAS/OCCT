@@ -3,3 +3,7 @@ Resource_ConvertUnicode.c
 Resource_ConvertUnicode.hxx
 Resource_Shiftjis.h
 Resource_gb2312.h
+Resource_DataMapOfAsciiStringAsciiString.hxx
+Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString.hxx
+Resource_DataMapOfAsciiStringExtendedString.hxx
+Resource_DataMapIteratorOfDataMapOfAsciiStringExtendedString.hxx

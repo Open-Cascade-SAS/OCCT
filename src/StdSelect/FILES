@@ -1,3 +1,4 @@
 StdSelect_ViewerSelector3d.hxx
 StdSelect_ViewerSelector3d.cxx
 StdSelect_ViewerSelector3d.lxx
+StdSelect_IndexedDataMapOfOwnerPrs.hxx

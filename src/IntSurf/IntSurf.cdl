@@ -38,8 +38,7 @@ is
 
     class Couple;
 
-    class SequenceOfCouple instantiates Sequence from TCollection
-                (Couple from IntSurf);
+    imported SequenceOfCouple;
     
     
     class LineOn2S;
@@ -50,23 +49,21 @@ is
     
     class PathPoint;
     
-    class SequenceOfPathPoint instantiates Sequence from TCollection
-    	(PathPoint from IntSurf);
+    imported SequenceOfPathPoint;
 
     class PathPointTool;
     
     class InteriorPoint;
     
-    class SequenceOfInteriorPoint instantiates Sequence from TCollection
-    	(InteriorPoint from IntSurf);
+    imported SequenceOfInteriorPoint;
     
     class InteriorPointTool;
 
     class Transition;    
 
     --amv    
-    class ListOfPntOn2S instantiates List from TCollection
-    	(PntOn2S from IntSurf);
+    imported ListOfPntOn2S;
+    imported ListIteratorOfListOfPntOn2S;
     
     enumeration TypeTrans is In, Out, Touch, Undecided;
     

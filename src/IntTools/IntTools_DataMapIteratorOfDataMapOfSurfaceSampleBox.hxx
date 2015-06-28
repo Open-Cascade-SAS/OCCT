@@ -1,0 +1,8 @@
+
+
+#ifndef IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox_HeaderFile
+#define IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox_HeaderFile
+
+#include <IntTools_DataMapOfSurfaceSampleBox.hxx>
+
+#endif

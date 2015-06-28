@@ -1,0 +1,8 @@
+
+
+#ifndef MeshVS_DataMapIteratorOfDataMapOfIntegerVector_HeaderFile
+#define MeshVS_DataMapIteratorOfDataMapOfIntegerVector_HeaderFile
+
+#include <MeshVS_DataMapOfIntegerVector.hxx>
+
+#endif

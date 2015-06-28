@@ -88,11 +88,9 @@ is
     class Mesure;
     
     pointer PMesure to Mesure from TestTopOpeTools;
-    class Array1OfMesure instantiates Array1 from TCollection
-    (Mesure from TestTopOpeTools);
+    imported Array1OfMesure;
     
-    class HArray1OfMesure instantiates HArray1 from TCollection
-    (Mesure from TestTopOpeTools, Array1OfMesure from TestTopOpeTools);
+    imported transient class HArray1OfMesure;
     
     AllCommands(I : in out Interpretor from Draw);
     ---Purpose: Defines all topological operation test commands

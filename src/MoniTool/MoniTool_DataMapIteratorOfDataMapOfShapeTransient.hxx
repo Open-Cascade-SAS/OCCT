@@ -1,0 +1,8 @@
+
+
+#ifndef MoniTool_DataMapIteratorOfDataMapOfShapeTransient_HeaderFile
+#define MoniTool_DataMapIteratorOfDataMapOfShapeTransient_HeaderFile
+
+#include <MoniTool_DataMapOfShapeTransient.hxx>
+
+#endif

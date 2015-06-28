@@ -1,0 +1,8 @@
+
+
+#ifndef STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR_HeaderFile
+#define STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR_HeaderFile
+
+#include <STEPCAFControl_DataMapOfShapeSDR.hxx>
+
+#endif

@@ -1,0 +1,8 @@
+
+
+#ifndef MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger_HeaderFile
+#define MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger_HeaderFile
+
+#include <MeshVS_DataMapOfColorMapOfInteger.hxx>
+
+#endif

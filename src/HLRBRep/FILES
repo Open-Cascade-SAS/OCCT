@@ -1,0 +1,7 @@
+HLRBRep_Array1OfEData.hxx
+HLRBRep_Array1OfFData.hxx
+HLRBRep_SeqOfShapeBounds.hxx
+HLRBRep_ListOfBPoint.hxx
+HLRBRep_ListIteratorOfListOfBPoint.hxx
+HLRBRep_ListOfBPnt2D.hxx
+HLRBRep_ListIteratorOfListOfBPnt2D.hxx

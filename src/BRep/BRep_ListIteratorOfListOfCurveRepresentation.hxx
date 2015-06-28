@@ -1,0 +1,8 @@
+
+
+#ifndef BRep_ListIteratorOfListOfCurveRepresentation_HeaderFile
+#define BRep_ListIteratorOfListOfCurveRepresentation_HeaderFile
+
+#include <BRep_ListOfCurveRepresentation.hxx>
+
+#endif

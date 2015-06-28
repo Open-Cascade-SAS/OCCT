@@ -4,3 +4,11 @@ ExprIntrp_yaccanal.hxx
 ExprIntrp_yaccintrf.cxx
 ExprIntrp_yaccintrf.hxx
 ExprIntrp_yacclex.cxx
+ExprIntrp_SequenceOfNamedFunction.hxx
+ExprIntrp_SequenceOfNamedExpression.hxx
+ExprIntrp_StackOfGeneralExpression.hxx
+ExprIntrp_ListIteratorOfStackOfGeneralExpression.hxx
+ExprIntrp_StackOfGeneralRelation.hxx
+ExprIntrp_ListIteratorOfStackOfGeneralRelation.hxx
+ExprIntrp_StackOfGeneralFunction.hxx
+ExprIntrp_ListIteratorOfStackOfGeneralFunction.hxx

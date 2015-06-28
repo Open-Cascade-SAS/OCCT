@@ -7,3 +7,11 @@ Interface_Translates.hxx
 Interface_StaticStandards.cxx
 Interface_Version.hxx
 Interface_VectorOfFileParameter.hxx
+Interface_SequenceOfCheck.hxx
+Interface_HSequenceOfCheck.hxx
+Interface_Array1OfFileParameter.hxx
+Interface_DataMapOfTransientInteger.hxx
+Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx
+Interface_Array1OfHAsciiString.hxx
+Interface_HArray1OfHAsciiString.hxx
+Interface_IndexedMapOfAsciiString.hxx

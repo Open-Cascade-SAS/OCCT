@@ -35,10 +35,8 @@ is
 
     class EventManager;
 
-    class DoubleMapOfInteractiveAndName  instantiates  DoubleMap
-    	from  TCollection  (    Transient from Standard,
-    	    	    	    	AsciiString  from  TCollection,
-    	    	    	    	MapTransientHasher  from  TColStd,
-    	    	    	    	AsciiString  from  TCollection);
+    imported DoubleMapOfInteractiveAndName;
+
+    imported DoubleMapIteratorOfDoubleMapOfInteractiveAndName;
 
 end;

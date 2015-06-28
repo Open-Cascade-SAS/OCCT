@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData_HeaderFile
+#define TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData_HeaderFile
+
+#include <TopOpeBRepDS_MapOfIntegerShapeData.hxx>
+
+#endif

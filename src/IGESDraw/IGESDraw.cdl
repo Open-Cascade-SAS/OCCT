@@ -92,15 +92,11 @@ is
 
      -- The class instantiations :
 
-     class  Array1OfConnectPoint   instantiates
-    	  Array1 from TCollection (ConnectPoint);
-     class  Array1OfViewKindEntity instantiates
-          Array1 from TCollection (ViewKindEntity from IGESData);
+     imported Array1OfConnectPoint;
+     imported Array1OfViewKindEntity;
 
-     class HArray1OfConnectPoint   instantiates  HArray1 from TCollection
-    	 (ConnectPoint,Array1OfConnectPoint);
-     class HArray1OfViewKindEntity instantiates  HArray1 from TCollection
-    	 (ViewKindEntity from IGESData,Array1OfViewKindEntity);
+     imported transient class HArray1OfConnectPoint;
+     imported transient class HArray1OfViewKindEntity;
 
      -- Package Methods :
 

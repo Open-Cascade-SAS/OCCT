@@ -1,0 +1,8 @@
+
+
+#ifndef BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape_HeaderFile
+#define BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape_HeaderFile
+
+#include <BRepFill_DataMapOfShapeDataMapOfShapeListOfShape.hxx>
+
+#endif

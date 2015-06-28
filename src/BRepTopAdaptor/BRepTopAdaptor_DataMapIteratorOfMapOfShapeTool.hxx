@@ -1,0 +1,8 @@
+
+
+#ifndef BRepTopAdaptor_DataMapIteratorOfMapOfShapeTool_HeaderFile
+#define BRepTopAdaptor_DataMapIteratorOfMapOfShapeTool_HeaderFile
+
+#include <BRepTopAdaptor_MapOfShapeTool.hxx>
+
+#endif

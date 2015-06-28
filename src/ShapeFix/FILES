@@ -1,1 +1,4 @@
 ShapeFix_Wire_1.cxx
+ShapeFix_SequenceOfWireSegment.hxx
+ShapeFix_DataMapOfShapeBox2d.hxx
+ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d.hxx

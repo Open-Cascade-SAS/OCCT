@@ -1,0 +1,8 @@
+
+
+#ifndef TNaming_DataMapIteratorOfDataMapOfShapeShapesSet_HeaderFile
+#define TNaming_DataMapIteratorOfDataMapOfShapeShapesSet_HeaderFile
+
+#include <TNaming_DataMapOfShapeShapesSet.hxx>
+
+#endif

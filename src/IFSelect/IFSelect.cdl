@@ -206,18 +206,14 @@ is
 
     	-- --    Instantiations    -- --
 
-    class TSeqOfDispatch  instantiates  Sequence from TCollection (Dispatch);
-    class TSeqOfSelection instantiates  Sequence from TCollection (Selection);
-    class HSeqOfSelection instantiates HSequence from TCollection
-    	(Selection,TSeqOfSelection);
+    imported TSeqOfDispatch;
+    imported TSeqOfSelection;
+    imported transient class HSeqOfSelection;
 
     -- the followings sequences are used by ModelCopier (definition or result)
-    class SequenceOfGeneralModifier  instantiates Sequence from TCollection
-        (GeneralModifier);
-    class SequenceOfInterfaceModel   instantiates Sequence from TCollection
-        (InterfaceModel from Interface);
-    class SequenceOfAppliedModifiers instantiates Sequence from TCollection
-    	(AppliedModifiers);
+    imported SequenceOfGeneralModifier;
+    imported SequenceOfInterfaceModel;
+    imported SequenceOfAppliedModifiers;
 
     	--   Package Methods   --
 

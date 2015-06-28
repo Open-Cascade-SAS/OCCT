@@ -81,8 +81,9 @@ is
 
     deferred class CurveRepresentation;
 
-    class ListOfCurveRepresentation instantiates
-    List from TCollection (CurveRepresentation from BRep);
+    imported ListOfCurveRepresentation;
+
+    imported ListIteratorOfListOfCurveRepresentation;
     
     deferred class GCurve;
 
@@ -112,8 +113,9 @@ is
 
     deferred class PointRepresentation;
 
-    class ListOfPointRepresentation instantiates
-    List from TCollection (PointRepresentation from BRep);
+    imported ListOfPointRepresentation;
+
+    imported ListIteratorOfListOfPointRepresentation;
     
     class PointOnCurve;
 

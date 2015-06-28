@@ -63,11 +63,9 @@ is
 
     class VPointInter;
 
-    class Array1OfVPointInter instantiates Array1 from TCollection
-    	(VPointInter from TopOpeBRep);
+    imported Array1OfVPointInter;
 
-    class HArray1OfVPointInter instantiates HArray1 from TCollection
-    	(VPointInter from TopOpeBRep, Array1OfVPointInter from TopOpeBRep);
+    imported transient class HArray1OfVPointInter;
 
     pointer PThePointOfIntersection to Point from IntPatch;
     class VPointInterIterator;
@@ -80,16 +78,13 @@ is
     class LineInter;
     pointer PLineInter to LineInter from TopOpeBRep;
 	
-    class Array1OfLineInter instantiates Array1 from TCollection
-    	(LineInter from TopOpeBRep);
+    imported Array1OfLineInter;
 
-    class HArray1OfLineInter instantiates HArray1 from TCollection
-    	(LineInter from TopOpeBRep, Array1OfLineInter from TopOpeBRep);
+    imported transient class HArray1OfLineInter;
 
-    class DataMapOfTopolTool instantiates DataMap from TCollection 
-    	(Shape          from TopoDS,
-     	 TopolTool from BRepTopAdaptor,
-     	 ShapeMapHasher from TopTools);
+    imported DataMapOfTopolTool;
+
+    imported DataMapIteratorOfDataMapOfTopolTool;
 
     pointer PIntRes2d_IntersectionPoint to IntersectionPoint from IntRes2d;
     class Hctxff2d;
@@ -100,7 +95,7 @@ is
     end P2Dstatus;
     
     class Point2d;
-    class SequenceOfPoint2d instantiates Sequence from TCollection(Point2d from TopOpeBRep);
+    imported SequenceOfPoint2d;
     
     class PointClassifier;
 
@@ -129,7 +124,8 @@ is
     class FFTransitionTool;
 
     class Bipoint;
-    class ListOfBipoint instantiates List from TCollection(Bipoint);
+    imported ListOfBipoint;
+    imported ListIteratorOfListOfBipoint;
     
     class FacesFiller;
     pointer PFacesFiller to FacesFiller from TopOpeBRep;

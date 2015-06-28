@@ -90,11 +90,11 @@ is
 
     class SplitTool;
 
-    class SequenceOfWireSegment instantiates Sequence from TCollection
-    	(WireSegment from ShapeFix);
+    imported SequenceOfWireSegment;
     
-    class DataMapOfShapeBox2d instantiates DataMap from TCollection                           
-    	(Shape from TopoDS, Box2d from Bnd, ShapeMapHasher from TopTools);
+    imported DataMapOfShapeBox2d;
+    
+    imported DataMapIteratorOfDataMapOfShapeBox2d;
 
 
     SameParameter (shape       : Shape from TopoDS;

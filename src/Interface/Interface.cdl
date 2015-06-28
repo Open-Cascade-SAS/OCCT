@@ -128,29 +128,25 @@ is
 
     	-- --  Instantiations  -- --
 
-    private class  SequenceOfCheck  instantiates
-    	 Sequence from TCollection (Check);
-    private class HSequenceOfCheck  instantiates
-    	HSequence from TCollection (Check,SequenceOfCheck);
+    imported SequenceOfCheck;
+    imported transient class HSequenceOfCheck;
 
-    class Array1OfFileParameter instantiates
-        Array1 from TCollection    (FileParameter);
+    imported Array1OfFileParameter;
 
     --  Useful Instantiations to define Data
 
-    class  DataMapOfTransientInteger  instantiates  DataMap  from TCollection
-    	(Transient, Integer,MapTransientHasher from TColStd);
+    imported DataMapOfTransientInteger;
 
-    class  Array1OfHAsciiString instantiates   Array1  from TCollection
-    	(HAsciiString from TCollection);
+    imported DataMapIteratorOfDataMapOfTransientInteger;
 
-    class HArray1OfHAsciiString instantiates  HArray1  from TCollection
-    	(HAsciiString from TCollection,Array1OfHAsciiString);
+    imported Array1OfHAsciiString;
+
+    imported transient class HArray1OfHAsciiString;
 
 --  ==============IndexedMapOfAsciiString===================
 class MapAsciiStringHasher;    -- instantiates MapHasher from TCollection;
 
-class IndexedMapOfAsciiString instantiates IndexedMap  from TCollection(AsciiString from TCollection,MapAsciiStringHasher from Interface);
+imported IndexedMapOfAsciiString;
 
 -- ==================================
 

@@ -87,8 +87,7 @@ is
     class ComputeGaussPointsAndWeights; 
     class ComputeKronrodPointsAndWeights; 
     class ValueAndWeight; 
-    class Array1OfValueAndWeight
-    	instantiates Array1 from TCollection (ValueAndWeight from math);
+    imported Array1OfValueAndWeight;
     class CompareOfValueAndWeight; 
     class QuickSortOfValueAndWeight
     	instantiates QuickSort from SortTools (ValueAndWeight from math, 

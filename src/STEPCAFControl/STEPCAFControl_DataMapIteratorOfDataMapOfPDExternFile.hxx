@@ -1,0 +1,8 @@
+
+
+#ifndef STEPCAFControl_DataMapIteratorOfDataMapOfPDExternFile_HeaderFile
+#define STEPCAFControl_DataMapIteratorOfDataMapOfPDExternFile_HeaderFile
+
+#include <STEPCAFControl_DataMapOfPDExternFile.hxx>
+
+#endif

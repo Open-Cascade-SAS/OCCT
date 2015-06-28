@@ -40,11 +40,8 @@ is
     	(Shape from TopoDS, OrientedShapeMapHasher from TopTools, ShapeInfo);
 
     class TransferResultInfo;
-    class SequenceOfTransferResultInfo instantiates Sequence from TCollection
-    	(TransferResultInfo from TransferBRep);
-    class HSequenceOfTransferResultInfo instantiates HSequence from TCollection
-    	(TransferResultInfo from TransferBRep,
-    	 SequenceOfTransferResultInfo from TransferBRep);
+    imported SequenceOfTransferResultInfo;
+    imported transient class HSequenceOfTransferResultInfo;
     
     	--  some usefull functions for binding shapes  --
 

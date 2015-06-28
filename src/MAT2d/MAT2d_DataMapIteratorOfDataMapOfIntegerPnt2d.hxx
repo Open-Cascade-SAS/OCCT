@@ -1,0 +1,8 @@
+
+
+#ifndef MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d_HeaderFile
+#define MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d_HeaderFile
+
+#include <MAT2d_DataMapOfIntegerPnt2d.hxx>
+
+#endif

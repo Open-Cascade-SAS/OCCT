@@ -1,0 +1,8 @@
+
+
+#ifndef TDataStd_ListIteratorOfListOfExtendedString_HeaderFile
+#define TDataStd_ListIteratorOfListOfExtendedString_HeaderFile
+
+#include <TDataStd_ListOfExtendedString.hxx>
+
+#endif

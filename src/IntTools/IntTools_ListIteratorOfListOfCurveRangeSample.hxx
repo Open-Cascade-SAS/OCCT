@@ -1,0 +1,8 @@
+
+
+#ifndef IntTools_ListIteratorOfListOfCurveRangeSample_HeaderFile
+#define IntTools_ListIteratorOfListOfCurveRangeSample_HeaderFile
+
+#include <IntTools_ListOfCurveRangeSample.hxx>
+
+#endif

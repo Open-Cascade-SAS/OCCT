@@ -1,0 +1,8 @@
+
+
+#ifndef BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt_HeaderFile
+#define BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt_HeaderFile
+
+#include <BRepMAT2d_DataMapOfShapeSequenceOfBasicElt.hxx>
+
+#endif

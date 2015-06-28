@@ -1,0 +1,8 @@
+
+
+#ifndef AIS_DataMapIteratorOfDataMapofIntegerListOfinteractive_HeaderFile
+#define AIS_DataMapIteratorOfDataMapofIntegerListOfinteractive_HeaderFile
+
+#include <AIS_DataMapofIntegerListOfinteractive.hxx>
+
+#endif

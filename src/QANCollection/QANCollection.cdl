@@ -22,20 +22,13 @@ uses
     gp
 
 is
-    class  ListOfPnt   instantiates  List  from  TCollection    (Pnt  from  gp);
-    class  DataMapOfRealPnt instantiates DataMap from TCollection  
-                                        (Real from Standard, 
-                                         Pnt from gp, 
-                                         MapRealHasher from TColStd);
-    class  IndexedDataMapOfRealPnt instantiates IndexedDataMap from TCollection
-                                        (Real from Standard, 
-                                         Pnt from gp, 
-                                         MapRealHasher from TColStd);
-    class  DoubleMapOfRealInteger instantiates DoubleMap from TCollection  
-                                        (Real from Standard, 
-                                         Integer from Standard, 
-                                         MapRealHasher from TColStd, 
-                                         MapIntegerHasher from TColStd);
+    imported ListOfPnt;
+    imported ListIteratorOfListOfPnt;
+    imported DataMapOfRealPnt;
+    imported DataMapIteratorOfDataMapOfRealPnt;
+    imported IndexedDataMapOfRealPnt;
+    imported DoubleMapOfRealInteger;
+    imported DoubleMapIteratorOfDoubleMapOfRealInteger;
 
     Commands(DI : in out Interpretor from Draw);
     CommandsSimple(DI : in out Interpretor from Draw);

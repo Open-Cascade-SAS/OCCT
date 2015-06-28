@@ -98,23 +98,21 @@ is
 
     class Interval;
    
-    class ListOfInterval instantiates 
-    	List from TCollection  (Interval from BRepOffset);
+    imported ListOfInterval;
+   
+    imported ListIteratorOfListOfInterval;
     
-    class DataMapOfShapeListOfInterval  instantiates
-    	DataMap from TCollection(Shape           from TopoDS,
-	    	    	    	 ListOfInterval  from BRepOffset,
-				 ShapeMapHasher  from TopTools );   
+    imported DataMapOfShapeListOfInterval;
     
-    class DataMapOfShapeOffset instantiates
-    	DataMap from TCollection(Shape           from TopoDS,
-	    	    	    	 Offset          from BRepOffset,
-				 ShapeMapHasher  from TopTools );   
+    imported DataMapIteratorOfDataMapOfShapeListOfInterval;   
+    
+    imported DataMapOfShapeOffset;
+    
+    imported DataMapIteratorOfDataMapOfShapeOffset;   
 				 
-    class DataMapOfShapeMapOfShape instantiates
-	DataMap from TCollection(Shape           from TopoDS,
-	    	    	    	 MapOfShape      from TopTools,
-				 ShapeMapHasher  from TopTools);     
+    imported DataMapOfShapeMapOfShape;
+				 
+    imported DataMapIteratorOfDataMapOfShapeMapOfShape;     
 
   
     Surface( Surface : in  Surface from Geom;

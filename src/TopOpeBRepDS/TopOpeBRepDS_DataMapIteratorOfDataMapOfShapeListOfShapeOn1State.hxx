@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State_HeaderFile
+#define TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State_HeaderFile
+
+#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+
+#endif

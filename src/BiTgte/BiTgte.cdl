@@ -56,9 +56,8 @@ is
     private class HCurveOnVertex instantiates 
     	GenHCurve from Adaptor3d(CurveOnVertex from BiTgte);
 
-    private class DataMapOfShapeBox instantiates 
-       	DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	 Box            from Bnd,
-				 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeBox;
+
+    imported DataMapIteratorOfDataMapOfShapeBox;
 
 end BiTgte;

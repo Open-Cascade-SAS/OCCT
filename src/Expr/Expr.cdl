@@ -86,24 +86,17 @@ is
     exception InvalidOperand inherits ExprFailure;
     exception NotEvaluable inherits ExprFailure;
     
-    class SequenceOfGeneralExpression instantiates 
-    	    Sequence from TCollection(GeneralExpression);
+    imported SequenceOfGeneralExpression;
  
-    class Array1OfGeneralExpression instantiates 
-    	    Array1 from TCollection(GeneralExpression);
+    imported Array1OfGeneralExpression;
     
-    class Array1OfNamedUnknown instantiates 
-    	    Array1 from TCollection(NamedUnknown);
+    imported Array1OfNamedUnknown;
 
-    class MapOfNamedUnknown instantiates 
-    	    IndexedMap from TCollection(NamedUnknown,
-    	    	    	    	    	MapTransientHasher from TColStd);
+    imported MapOfNamedUnknown;
     
-    class Array1OfSingleRelation instantiates 
-    	    Array1 from TCollection(SingleRelation);
+    imported Array1OfSingleRelation;
     
-    class SequenceOfGeneralRelation instantiates 
-    	    Sequence from TCollection(GeneralRelation);
+    imported SequenceOfGeneralRelation;
 
     CopyShare(exp : GeneralExpression)
     ---Level : Internal

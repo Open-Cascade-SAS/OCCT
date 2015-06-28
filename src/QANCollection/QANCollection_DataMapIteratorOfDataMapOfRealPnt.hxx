@@ -1,0 +1,8 @@
+
+
+#ifndef QANCollection_DataMapIteratorOfDataMapOfRealPnt_HeaderFile
+#define QANCollection_DataMapIteratorOfDataMapOfRealPnt_HeaderFile
+
+#include <QANCollection_DataMapOfRealPnt.hxx>
+
+#endif

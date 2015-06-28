@@ -38,8 +38,7 @@ is
 
     deferred class Polygon2d;
 
-    class Array1OfLin instantiates Array1 from TCollection
-     	    	    (Lin from gp);
+    imported Array1OfLin;
     ---Purpose: Describes  a set of Straight Lines  to  intersect with the
     --          Polyhedron.
 
@@ -49,20 +48,17 @@ is
 
     class SectionPoint;
 
-    class SeqOfSectionPoint instantiates Sequence from TCollection
-    	    	    	    	    	    (SectionPoint);
+    imported SeqOfSectionPoint;
 
 
     class SectionLine;
 
-    class SeqOfSectionLine instantiates Sequence from TCollection
-    	    	    	    	    	    (SectionLine);
+    imported SeqOfSectionLine;
 
 
     class TangentZone;
 
-    class SeqOfTangentZone instantiates Sequence from TCollection
-    	    	    	    	    	    (TangentZone);
+    imported SeqOfTangentZone;
 
 
     deferred class Interference;

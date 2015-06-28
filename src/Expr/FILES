@@ -1,2 +1,8 @@
 Expr_Operators.cxx
 Expr_Operators.hxx
+Expr_SequenceOfGeneralExpression.hxx
+Expr_Array1OfGeneralExpression.hxx
+Expr_Array1OfNamedUnknown.hxx
+Expr_MapOfNamedUnknown.hxx
+Expr_Array1OfSingleRelation.hxx
+Expr_SequenceOfGeneralRelation.hxx

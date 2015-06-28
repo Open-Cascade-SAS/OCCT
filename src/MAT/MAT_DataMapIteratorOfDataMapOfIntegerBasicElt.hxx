@@ -1,0 +1,8 @@
+
+
+#ifndef MAT_DataMapIteratorOfDataMapOfIntegerBasicElt_HeaderFile
+#define MAT_DataMapIteratorOfDataMapOfIntegerBasicElt_HeaderFile
+
+#include <MAT_DataMapOfIntegerBasicElt.hxx>
+
+#endif

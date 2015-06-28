@@ -1,0 +1,8 @@
+
+
+#ifndef MAT_DataMapIteratorOfDataMapOfIntegerBisector_HeaderFile
+#define MAT_DataMapIteratorOfDataMapOfIntegerBisector_HeaderFile
+
+#include <MAT_DataMapOfIntegerBisector.hxx>
+
+#endif

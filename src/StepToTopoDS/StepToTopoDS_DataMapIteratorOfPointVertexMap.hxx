@@ -1,0 +1,8 @@
+
+
+#ifndef StepToTopoDS_DataMapIteratorOfPointVertexMap_HeaderFile
+#define StepToTopoDS_DataMapIteratorOfPointVertexMap_HeaderFile
+
+#include <StepToTopoDS_PointVertexMap.hxx>
+
+#endif

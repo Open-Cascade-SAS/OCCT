@@ -108,17 +108,13 @@ is
 
     -- Instantiations :
 
-    class  Array1OfFlow instantiates   Array1 from TCollection (Flow);
-    class  Array1OfNode instantiates   Array1 from TCollection (Node);
-    class  Array1OfFiniteElement instantiates
-    	 Array1 from TCollection (FiniteElement);
+    imported Array1OfFlow;
+    imported Array1OfNode;
+    imported Array1OfFiniteElement;
 
-    class HArray1OfFlow instantiates  HArray1 from TCollection
-    	 (Flow,Array1OfFlow);
-    class HArray1OfNode instantiates  HArray1 from TCollection
-    	 (Node,Array1OfNode);
-    class HArray1OfFiniteElement instantiates  HArray1 from TCollection
-    	 (FiniteElement,Array1OfFiniteElement);
+    imported transient class HArray1OfFlow;
+    imported transient class HArray1OfNode;
+    imported transient class HArray1OfFiniteElement;
 
     -- Package Methods
 

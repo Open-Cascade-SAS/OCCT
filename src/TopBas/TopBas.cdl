@@ -38,8 +38,9 @@ is
     	    	    	    (Real    from Standard,
     	    	    	     Integer from Standard);
 			    
-    class ListOfTestInterference instantiates 
-    List from TCollection (TestInterference);
+    imported ListOfTestInterference;
+			    
+    imported ListIteratorOfListOfTestInterference;
 
 end TopBas;
 

@@ -117,42 +117,34 @@ is
     class ElementOrElementGroup;  -- added 04.02.2003
     
    
-class Array1OfNodeRepresentation instantiates Array1 from TCollection (NodeRepresentation);
-class HArray1OfNodeRepresentation instantiates HArray1 from TCollection (NodeRepresentation, Array1OfNodeRepresentation from StepFEA);
+imported Array1OfNodeRepresentation;
+imported transient class HArray1OfNodeRepresentation;
 
-class Array1OfCurveElementInterval instantiates Array1 from TCollection (CurveElementInterval);
-class HArray1OfCurveElementInterval instantiates HArray1 from TCollection (CurveElementInterval, Array1OfCurveElementInterval from StepFEA);
+imported Array1OfCurveElementInterval;
+imported transient class HArray1OfCurveElementInterval;
 
-class Array1OfCurveElementEndOffset instantiates Array1 from TCollection (CurveElementEndOffset);
-class HArray1OfCurveElementEndOffset instantiates HArray1 from TCollection (CurveElementEndOffset, Array1OfCurveElementEndOffset from StepFEA);
+imported Array1OfCurveElementEndOffset;
+imported transient class HArray1OfCurveElementEndOffset;
 
-class Array1OfCurveElementEndRelease instantiates Array1 from TCollection (CurveElementEndRelease);
-class HArray1OfCurveElementEndRelease instantiates HArray1 from TCollection (CurveElementEndRelease, Array1OfCurveElementEndRelease from StepFEA);
+imported Array1OfCurveElementEndRelease;
+imported transient class HArray1OfCurveElementEndRelease;
 
-class Array1OfElementRepresentation instantiates Array1 from TCollection (ElementRepresentation);
-class HArray1OfElementRepresentation instantiates HArray1 from TCollection (ElementRepresentation, Array1OfElementRepresentation from StepFEA);
+imported Array1OfElementRepresentation;
+imported transient class HArray1OfElementRepresentation;
 
-class Array1OfDegreeOfFreedom instantiates Array1 from TCollection (DegreeOfFreedom);
-class HArray1OfDegreeOfFreedom instantiates HArray1 from TCollection (DegreeOfFreedom, Array1OfDegreeOfFreedom from StepFEA);
+imported Array1OfDegreeOfFreedom;
+imported transient class HArray1OfDegreeOfFreedom;
 
-class SequenceOfElementRepresentation instantiates Sequence
-     from TCollection (ElementRepresentation);
-class HSequenceOfElementRepresentation instantiates HSequence
-     from TCollection (ElementRepresentation, SequenceOfElementRepresentation from StepFEA);
+imported SequenceOfElementRepresentation;
+imported transient class HSequenceOfElementRepresentation;
 
-class SequenceOfElementGeometricRelationship instantiates Sequence 
-    from TCollection (ElementGeometricRelationship);
-class HSequenceOfElementGeometricRelationship instantiates HSequence
-     from TCollection (ElementGeometricRelationship, SequenceOfElementGeometricRelationship from StepFEA);
+imported SequenceOfElementGeometricRelationship;
+imported transient class HSequenceOfElementGeometricRelationship;
 
-class SequenceOfNodeRepresentation instantiates Sequence
-     from TCollection (NodeRepresentation);
-class HSequenceOfNodeRepresentation instantiates HSequence
-     from TCollection (NodeRepresentation, SequenceOfNodeRepresentation from StepFEA);
+imported SequenceOfNodeRepresentation;
+imported transient class HSequenceOfNodeRepresentation;
 
-class SequenceOfCurve3dElementProperty instantiates Sequence
-     from TCollection (Curve3dElementProperty);
-class HSequenceOfCurve3dElementProperty instantiates HSequence
-     from TCollection (Curve3dElementProperty, SequenceOfCurve3dElementProperty from StepFEA);
+imported SequenceOfCurve3dElementProperty;
+imported transient class HSequenceOfCurve3dElementProperty;
 
 end;

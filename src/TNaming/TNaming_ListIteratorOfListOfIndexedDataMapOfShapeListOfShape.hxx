@@ -1,0 +1,8 @@
+
+
+#ifndef TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape_HeaderFile
+#define TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape_HeaderFile
+
+#include <TNaming_ListOfIndexedDataMapOfShapeListOfShape.hxx>
+
+#endif

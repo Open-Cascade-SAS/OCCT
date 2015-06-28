@@ -1,1 +1,6 @@
 BRepAlgo_1.cxx
+BRepAlgo_DataMapOfShapeBoolean.hxx
+BRepAlgo_DataMapIteratorOfDataMapOfShapeBoolean.hxx
+BRepAlgo_DataMapOfShapeInterference.hxx
+BRepAlgo_DataMapIteratorOfDataMapOfShapeInterference.hxx
+BRepAlgo_SequenceOfSequenceOfInteger.hxx

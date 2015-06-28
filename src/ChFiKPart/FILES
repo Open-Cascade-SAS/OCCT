@@ -24,3 +24,5 @@ ChFiKPart_ComputeData_ChAsymPlnCyl.hxx
 ChFiKPart_ComputeData_ChAsymPlnCyl.cxx
 ChFiKPart_ComputeData_ChAsymPlnCon.hxx
 ChFiKPart_ComputeData_ChAsymPlnCon.cxx
+ChFiKPart_RstMap.hxx
+ChFiKPart_DataMapIteratorOfRstMap.hxx

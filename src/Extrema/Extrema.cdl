@@ -191,59 +191,42 @@ is
     class POnCurv instantiates Point from Extrema(Pnt from gp);
     class POnCurv2d instantiates Point from Extrema(Pnt2d from gp);
     
-    class Array1OfPOnCurv     instantiates 
-    	Array1 from TCollection(POnCurv);
+    imported Array1OfPOnCurv;
 	
-    class Array2OfPOnCurv     instantiates 
-    	Array2 from TCollection(POnCurv);
+    imported Array2OfPOnCurv;
 	
-    class Array1OfPOnCurv2d   instantiates 
-    	Array1 from TCollection(POnCurv2d);
+    imported Array1OfPOnCurv2d;
 	
-    class Array2OfPOnCurv2d   instantiates 
-    	Array2 from TCollection(POnCurv2d);
+    imported Array2OfPOnCurv2d;
 	
-    class Array1OfPOnSurf     instantiates 
-    	Array1 from TCollection(POnSurf);
+    imported Array1OfPOnSurf;
 	
-    class Array2OfPOnSurf     instantiates 
-    	Array2 from TCollection(POnSurf);
+    imported Array2OfPOnSurf;
 	
-    class Array2OfPOnSurfParams instantiates 
-    	Array2 from TCollection(POnSurfParams);
+    imported Array2OfPOnSurfParams;
 	
 
-    class HArray1OfPOnCurv    instantiates 
-    	HArray1 from TCollection(POnCurv, Array1OfPOnCurv);
+    imported transient class HArray1OfPOnCurv;
 	
-    class HArray2OfPOnCurv    instantiates 
-    	HArray2 from TCollection(POnCurv, Array2OfPOnCurv);
+    imported transient class HArray2OfPOnCurv;
 	
-    class HArray1OfPOnCurv2d  instantiates 
-    	HArray1 from TCollection(POnCurv2d,Array1OfPOnCurv2d);
+    imported transient class HArray1OfPOnCurv2d;
 	
-    class HArray2OfPOnCurv2d  instantiates 
-    	HArray2 from TCollection(POnCurv2d,Array2OfPOnCurv2d);
+    imported transient class HArray2OfPOnCurv2d;
 	
     
-    class HArray1OfPOnSurf    instantiates 
-    	HArray1 from TCollection(POnSurf, Array1OfPOnSurf);
+    imported transient class HArray1OfPOnSurf;
 	
-    class HArray2OfPOnSurf    instantiates 
-    	HArray2 from TCollection(POnSurf, Array2OfPOnSurf);
+    imported transient class HArray2OfPOnSurf;
 	
-    class HArray2OfPOnSurfParams instantiates 
-    	HArray2 from TCollection(POnSurfParams, Array2OfPOnSurfParams);
+    imported transient class HArray2OfPOnSurfParams;
 	
 
-    class SequenceOfPOnCurv   instantiates 
-    	Sequence from TCollection(POnCurv);
+    imported SequenceOfPOnCurv;
 	
-    class SequenceOfPOnCurv2d instantiates 
-    	Sequence from TCollection(POnCurv2d);
+    imported SequenceOfPOnCurv2d;
 	
-    class SequenceOfPOnSurf   instantiates 
-    	Sequence from TCollection(POnSurf);
+    imported SequenceOfPOnSurf;
 	
 
 

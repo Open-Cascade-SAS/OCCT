@@ -1,0 +1,8 @@
+
+
+#ifndef MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean_HeaderFile
+#define MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean_HeaderFile
+
+#include <MeshVS_DataMapOfIntegerBoolean.hxx>
+
+#endif

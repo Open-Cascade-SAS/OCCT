@@ -56,17 +56,17 @@ is
     deferred class Printer;
 	  class PrinterOStream;
     
-    class ListOfMsg instantiates List from TCollection (Msg from Message);
+    imported ListOfMsg;
     
-    class SequenceOfPrinters instantiates 
-    Sequence from TCollection (Printer from Message);
+    imported ListIteratorOfListOfMsg;
+    
+    imported SequenceOfPrinters;
 
     -- Progress indication
     deferred class ProgressIndicator;
     class ProgressScale;
     class ProgressSentry;
-    class SequenceOfProgressScale instantiates
-         Sequence from TCollection (ProgressScale from Message);
+    imported SequenceOfProgressScale;
     
     DefaultMessenger returns Messenger from Message;
         ---Purpose: Defines default messenger for OCCT applications.

@@ -413,29 +413,32 @@ is
 		    ---Category: The Collections
 
 
-    class ListOfInteractive instantiates List from TCollection
-    (InteractiveObject from AIS);
+    imported ListOfInteractive;
 
-    class SequenceOfInteractive	instantiates Sequence from TCollection
-    (InteractiveObject from AIS);
+
+    imported ListIteratorOfListOfInteractive;
+
+    imported SequenceOfInteractive;
     
-    class SequenceOfDimension	instantiates Sequence from TCollection
-    (Relation from AIS);
+    imported SequenceOfDimension;
 	    
-    class MapOfInteractive instantiates Map from TCollection
-    (InteractiveObject from AIS,MapTransientHasher from TColStd);
+    imported MapOfInteractive;
+	    
+    imported MapIteratorOfMapOfInteractive;
     
     
-    class DataMapofIntegerListOfinteractive instantiates DataMap from
-    TCollection(Integer from Standard, ListOfInteractive from AIS,MapIntegerHasher  from  TColStd);
+    imported DataMapofIntegerListOfinteractive;
+    
+    
+    imported DataMapIteratorOfDataMapofIntegerListOfinteractive;
     -- for further management of layers 
 
-    private class DataMapOfIOStatus instantiates DataMap from
-    TCollection(InteractiveObject from AIS,GlobalStatus from AIS,MapTransientHasher  from  TColStd);
+    imported DataMapOfIOStatus;
+
+    imported DataMapIteratorOfDataMapOfIOStatus;
     -- Management of interactiveObjects Status...
 
-    class IndexedDataMapOfOwnerPrs instantiates IndexedDataMap from TCollection 
-    (EntityOwner from SelectMgr,Presentation from Prs3d ,MapTransientHasher from TColStd); 
+    imported IndexedDataMapOfOwnerPrs; 
     -- for dynamic selection management in local context...
     
     -- san: 18/04/2003 AIS_Selection class optimization
@@ -445,11 +448,13 @@ is
     imported NDataMapOfTransientIteratorOfListTransient;
     -- service map for AIS_Selection class optimized logic
 
-    private class  DataMapOfILC  instantiates  DataMap  from  TCollection 
-    (Integer  from  Standard,  LocalContext  from  AIS,  MapIntegerHasher  from  TColStd);
+    imported DataMapOfILC;
 
-    private class DataMapOfSelStat instantiates DataMap from TCollection 
-    (SelectableObject from SelectMgr,LocalStatus from AIS,MapTransientHasher  from  TColStd); 
+    imported DataMapIteratorOfDataMapOfILC;
+
+    imported DataMapOfSelStat;
+
+    imported DataMapIteratorOfDataMapOfSelStat; 
     -- to tell if an object is sensitive to Standard Modes Of Selection....
 
 -- Methods for dimensions

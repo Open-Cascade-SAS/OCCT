@@ -110,8 +110,7 @@ is
 
     private class Shape;
 
-    private class IndexedDataMapOfOwnerPrs instantiates IndexedDataMap from TCollection
-    (EntityOwner from SelectBasics,Prs from StdSelect,MapTransientHasher from TColStd);
+    imported IndexedDataMapOfOwnerPrs;
 			
     SetDrawerForBRepOwner(aSelection: Selection from SelectMgr;
               aDrawer   : Drawer from Prs3d);

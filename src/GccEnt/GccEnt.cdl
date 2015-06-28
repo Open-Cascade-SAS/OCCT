@@ -70,8 +70,7 @@ is
     	-- defined as the left-hand side of the line or curve in
     	-- relation to its orientation.
         
-    class Array1OfPosition instantiates 
-    	Array1 from TCollection (Position from GccEnt);
+    imported Array1OfPosition;
 
     Unqualified(Obj : Lin2d from gp) returns QualifiedLin;
     	---Purpose: Constructs a qualified line,

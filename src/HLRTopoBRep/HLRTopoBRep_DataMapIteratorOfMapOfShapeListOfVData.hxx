@@ -1,0 +1,8 @@
+
+
+#ifndef HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData_HeaderFile
+#define HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData_HeaderFile
+
+#include <HLRTopoBRep_MapOfShapeListOfVData.hxx>
+
+#endif

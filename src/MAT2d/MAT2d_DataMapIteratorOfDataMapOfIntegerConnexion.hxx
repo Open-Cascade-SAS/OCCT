@@ -1,0 +1,8 @@
+
+
+#ifndef MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion_HeaderFile
+#define MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion_HeaderFile
+
+#include <MAT2d_DataMapOfIntegerConnexion.hxx>
+
+#endif

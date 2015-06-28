@@ -1,0 +1,8 @@
+
+
+#ifndef TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger_HeaderFile
+#define TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger_HeaderFile
+
+#include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
+
+#endif

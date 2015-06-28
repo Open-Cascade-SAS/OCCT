@@ -38,10 +38,8 @@ is
     
     class Unit;
     
-    class UtsSequence instantiates
-          Sequence from TCollection (Unit from Units);
-    class UnitsSequence instantiates 
-    	  HSequence from TCollection(Unit from Units, UtsSequence);
+    imported UtsSequence;
+    imported transient class UnitsSequence;
     
     private class ShiftedUnit;
 
@@ -49,17 +47,13 @@ is
     
     class ShiftedToken ;
     
-    class TksSequence instantiates
-           Sequence from TCollection (Token from Units);
-    class TokensSequence instantiates 
-    	   HSequence from TCollection(Token from Units, TksSequence);
+    imported TksSequence;
+    imported transient class TokensSequence;
     
     class Quantity;
     
-    class QtsSequence instantiates
-          Sequence from TCollection (Quantity from Units);
-    class QuantitiesSequence instantiates 
-    	  HSequence from TCollection(Quantity from Units, QtsSequence);
+    imported QtsSequence;
+    imported transient class QuantitiesSequence;
     
     class UnitsDictionary;
     

@@ -1,0 +1,4 @@
+XSDRAWSTLVRML_ElemNodesMap.hxx
+XSDRAWSTLVRML_DataMapIteratorOfElemNodesMap.hxx
+XSDRAWSTLVRML_CoordsMap.hxx
+XSDRAWSTLVRML_DataMapIteratorOfCoordsMap.hxx

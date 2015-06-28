@@ -85,10 +85,8 @@ is
     	-- Init & Protocol encapsulate the general actions required to work with
     	-- this package. While their use is not mandatory, it makes work easier.
 
-    class  Array1OfField  instantiates    Array1 from TCollection
-    	(Field from StepData);
-    class HArray1OfField  instantiates   HArray1 from TCollection
-    	(Field from StepData,Array1OfField from StepData);
+    imported Array1OfField;
+    imported transient class HArray1OfField;
 
     HeaderProtocol  returns Protocol from StepData;
     ---Purpose : Returns the recorded HeaderProtocol, which can be :

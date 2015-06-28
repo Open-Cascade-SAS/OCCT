@@ -49,15 +49,11 @@ is
     class SelectForTransfer;
     -- Classes that are intended for assembly exploration
     
-    class SequenceOfAssemblyLink instantiates
-    	Sequence from TCollection (AssemblyLink from STEPSelections);
+    imported SequenceOfAssemblyLink;
 	
-    class HSequenceOfAssemblyLink instantiates
-    	HSequence from TCollection (AssemblyLink           from STEPSelections,
-	    	    	    	    SequenceOfAssemblyLink from STEPSelections);
+    imported transient class HSequenceOfAssemblyLink;
 				    
-    class SequenceOfAssemblyComponent instantiates
-    	Sequence from TCollection (AssemblyComponent from STEPSelections);
+    imported SequenceOfAssemblyComponent;
     
     class AssemblyComponent;
     

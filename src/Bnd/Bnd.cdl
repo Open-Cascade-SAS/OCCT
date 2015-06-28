@@ -63,31 +63,22 @@ uses    Standard,
 
 
 is  class Box;
-    class Array1OfBox instantiates Array1 from TCollection
-                                   (Box from Bnd);
-    class HArray1OfBox instantiates HArray1 from TCollection
-                                   (Box from Bnd,
-                                    Array1OfBox from Bnd);
+    imported Array1OfBox;
+    imported transient class HArray1OfBox;
 
    class Sphere;
-   class Array1OfSphere instantiates Array1 from TCollection
-   	 			     (Sphere from Bnd);
-   class HArray1OfSphere instantiates HArray1 from TCollection
-   	 		 	      (Sphere from Bnd,
-				      Array1OfSphere from Bnd);
+   imported Array1OfSphere;
+   imported transient class HArray1OfSphere;
 
 
     class Box2d;
-    class Array1OfBox2d instantiates Array1 from TCollection
-                                   (Box2d from Bnd);
-    class HArray1OfBox2d instantiates HArray1 from TCollection
-                                   (Box2d from Bnd,
-                                    Array1OfBox2d from Bnd);
+    imported Array1OfBox2d;
+    imported transient class HArray1OfBox2d;
 
 
     class BoundSortBox2d;
     class BoundSortBox;
-    class SeqOfBox instantiates Sequence from TCollection (Box from Bnd);
+    imported SeqOfBox;
         ---Purpose: This sequence used to store the bounding boxes of sub-Shapes.
     
     --- Optimized boxes (no Gap, no infinity supported)

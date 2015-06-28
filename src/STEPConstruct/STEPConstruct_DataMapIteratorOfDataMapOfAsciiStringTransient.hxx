@@ -1,0 +1,8 @@
+
+
+#ifndef STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient_HeaderFile
+#define STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient_HeaderFile
+
+#include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>
+
+#endif

@@ -36,10 +36,9 @@ is
 
     class Intersector3d;
 
-    class MapOfInter instantiates  
-       DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	Address        from Standard,
-                                ShapeMapHasher from TopTools);
+    imported MapOfInter;
+
+    imported DataMapIteratorOfMapOfInter;
 
     class SolidExplorer;
         

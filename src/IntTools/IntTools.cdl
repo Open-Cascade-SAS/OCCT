@@ -96,15 +96,12 @@ is
     ---
     ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
     ---   
-    class SequenceOfPntOn2Faces instantiates  
-     Sequence from TCollection(PntOn2Faces from IntTools); 
+    imported SequenceOfPntOn2Faces; 
     --
-    class SequenceOfCurves instantiates  
-     Sequence from TCollection(Curve from IntTools); 
+    imported SequenceOfCurves; 
  
     
-    class  SequenceOfRanges  instantiates  
-     Sequence from TCollection(Range from IntTools); 
+    imported SequenceOfRanges; 
 
     class  CArray1OfInteger  instantiates  
      CArray1(Integer from Standard); 
@@ -112,14 +109,11 @@ is
     class  CArray1OfReal  instantiates  
      CArray1(Real from Standard); 
   
-    class  SequenceOfRoots   instantiates  
-     Sequence from TCollection(Root  from IntTools); 
+    imported SequenceOfRoots; 
   
-    class  Array1OfRoots     instantiates  
-     Array1    from TCollection  (Root from IntTools);  
+    imported Array1OfRoots;  
      
-    class  Array1OfRange     instantiates  
-     Array1    from TCollection  (Range from IntTools); 
+    imported Array1OfRange; 
   
     class  QuickSort         instantiates  
      QuickSort from SortTools   (Root from IntTools, 
@@ -130,45 +124,43 @@ is
      QuickSort from SortTools   (Range from IntTools, 
                     Array1OfRange from IntTools, 
                     CompareRange from IntTools); 
-    class  SequenceOfCommonPrts   instantiates  
-     Sequence from TCollection(CommonPrt from IntTools);        
+    imported SequenceOfCommonPrts;        
   
-    class  IndexedDataMapOfTransientAddress instantiates
-     IndexedDataMap from TCollection(Transient      from Standard,
-                     Address        from Standard,
-                                        MapTransientHasher from TColStd); 
+    imported IndexedDataMapOfTransientAddress; 
     
 
-    class  ListOfCurveRangeSample  instantiates  
-     List from TCollection(CurveRangeSample from IntTools);
+    imported ListOfCurveRangeSample;
+    
 
-    class  ListOfSurfaceRangeSample  instantiates  
-     List from TCollection(SurfaceRangeSample from IntTools);
+    imported ListIteratorOfListOfCurveRangeSample;
 
-    class  ListOfBox  instantiates  
-     List from TCollection(Box from Bnd);
+    imported ListOfSurfaceRangeSample;
+
+    imported ListIteratorOfListOfSurfaceRangeSample;
+
+    imported ListOfBox;
+
+    imported ListIteratorOfListOfBox;
  
     class CurveRangeSampleMapHasher;
 
     class SurfaceRangeSampleMapHasher;
     
-    class MapOfCurveSample instantiates 
-     Map from TCollection(CurveRangeSample from IntTools,
-                             CurveRangeSampleMapHasher from IntTools);
-        
-    class MapOfSurfaceSample instantiates 
-     Map from TCollection(SurfaceRangeSample from IntTools,
-                    SurfaceRangeSampleMapHasher from IntTools);
+    imported MapOfCurveSample;
     
-    class DataMapOfCurveSampleBox instantiates 
-     DataMap from TCollection(CurveRangeSample from IntTools,
-                 Box              from Bnd,
-     CurveRangeSampleMapHasher from IntTools);
+    imported MapIteratorOfMapOfCurveSample;
+        
+    imported MapOfSurfaceSample;
+        
+    imported MapIteratorOfMapOfSurfaceSample;
+    
+    imported DataMapOfCurveSampleBox;
+    
+    imported DataMapIteratorOfDataMapOfCurveSampleBox;
 
-    class DataMapOfSurfaceSampleBox instantiates 
-     DataMap from TCollection(SurfaceRangeSample from IntTools,
-                 Box              from Bnd,
-     SurfaceRangeSampleMapHasher from IntTools);
+    imported DataMapOfSurfaceSampleBox;
+
+    imported DataMapIteratorOfDataMapOfSurfaceSampleBox;
     -----------------------------------------------------
     --  Block  of  static  functions  
     -----------------------------------------------------  

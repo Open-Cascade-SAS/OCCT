@@ -55,8 +55,7 @@ is
     --  C L A S S E S  --
     -- --------------- --
      
-    class  Array1OfMat  instantiates   
-    Array1 from TCollection  (Mat from gp);
+    imported Array1OfMat;
 
     class MakeCurvefromApprox;
 

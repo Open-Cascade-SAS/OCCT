@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeface_HeaderFile
+#define TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeface_HeaderFile
+
+#include <TopOpeBRepTool_DataMapOfShapeface.hxx>
+
+#endif

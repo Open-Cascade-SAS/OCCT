@@ -1,0 +1,8 @@
+
+
+#ifndef ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg_HeaderFile
+#define ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg_HeaderFile
+
+#include <ShapeExtend_DataMapOfTransientListOfMsg.hxx>
+
+#endif

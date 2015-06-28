@@ -70,10 +70,9 @@ is
 
     class FindEdgesInFace;
 
-    class DataMapOfShapePnt instantiates DataMap from TCollection
-            (Shape          from TopoDS,
-         Pnt            from gp,
-         ShapeMapHasher from TopTools);
+    imported DataMapOfShapePnt;
+
+    imported DataMapIteratorOfDataMapOfShapePnt;
 
     class PntFace;
     
@@ -87,14 +86,11 @@ is
     class SplitDrafts;
 
 
-    class SequenceOfPntFace instantiates Sequence from TCollection
-            (PntFace from LocOpe);
+    imported SequenceOfPntFace;
 
-    class SequenceOfLin instantiates Sequence from TCollection
-            (Lin from gp);
+    imported SequenceOfLin;
 
-    class SequenceOfCirc instantiates Sequence from TCollection
-            (Circ from gp);
+    imported SequenceOfCirc;
 
     private class HBuilder;    -- inherits HBuilder from TopOpeBRepBuild
 

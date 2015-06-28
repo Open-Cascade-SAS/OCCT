@@ -125,36 +125,27 @@ is
     -- Instanciated Classes
     -- --------------------
 
-    class DataMapOfRI instantiates 
-        DataMap from TCollection
-            (RepresentationItem from StepRepr,
- 	     Shape              from TopoDS,
-    	     MapTransientHasher from TColStd);
+    imported DataMapOfRI;
 
-    class DataMapOfRINames instantiates 
-        DataMap from TCollection
-            (AsciiString from TCollection,
- 	     Shape       from TopoDS,
-    	     AsciiString from TCollection);
+    imported DataMapIteratorOfDataMapOfRI;
+
+    imported DataMapOfRINames;
+
+    imported DataMapIteratorOfDataMapOfRINames;
 
 
-    class DataMapOfTRI instantiates 
-    	DataMap from TCollection
-            (TopologicalRepresentationItem from StepShape,
- 	     Shape                         from TopoDS,
-    	     MapTransientHasher            from TColStd);
+    imported DataMapOfTRI;
 
-    class PointEdgeMap instantiates
-    	DataMap from TCollection
-    	    (PointPair       from StepToTopoDS,
-	     Edge            from TopoDS,
-	     PointPairHasher from StepToTopoDS);
 
-    class PointVertexMap instantiates
-    	DataMap from TCollection
-    	    	(CartesianPoint       from StepGeom,
-	    	 Vertex               from TopoDS,
-	         CartesianPointHasher from StepToTopoDS);
+    imported DataMapIteratorOfDataMapOfTRI;
+
+    imported PointEdgeMap;
+
+    imported DataMapIteratorOfPointEdgeMap;
+
+    imported PointVertexMap;
+
+    imported DataMapIteratorOfPointVertexMap;
 
 --    class ExtPCOnS instantiates
 --    	GExtPC from Extrema(CurveOnSurface      from GeomAdaptor,

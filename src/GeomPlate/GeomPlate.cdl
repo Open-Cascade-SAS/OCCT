@@ -49,35 +49,26 @@ is
 
     class BuildPlateSurface ; 
 
-    class Array1OfHCurveOnSurface  
-	instantiates Array1 from TCollection ( HCurveOnSurface from Adaptor3d);     
+    imported Array1OfHCurveOnSurface;     
      
-    class HArray1OfHCurveOnSurface
-    	instantiates HArray1 from TCollection (HCurveOnSurface from Adaptor3d,  Array1OfHCurveOnSurface  from  GeomPlate);
+    imported transient class HArray1OfHCurveOnSurface;
      
     class  CurveConstraint; 
      
     class  PointConstraint;  
      
      
-    class Array1OfSequenceOfReal instantiates
-    Array1 from TCollection (SequenceOfReal from TColStd);
+    imported Array1OfSequenceOfReal;
 
-    class HArray1OfSequenceOfReal instantiates
-    HArray1 from TCollection (SequenceOfReal from TColStd,
-    	    	    	      Array1OfSequenceOfReal from GeomPlate);
+    imported transient class HArray1OfSequenceOfReal;
 
-    class  SequenceOfCurveConstraint 
-        instantiates  Sequence  from  TCollection  (CurveConstraint  from  GeomPlate); 
+    imported SequenceOfCurveConstraint; 
      
-    class  SequenceOfPointConstraint 
-        instantiates  Sequence  from  TCollection  (PointConstraint  from  GeomPlate); 
+    imported SequenceOfPointConstraint; 
 	
-    class  HSequenceOfCurveConstraint 
-        instantiates  HSequence  from  TCollection  (CurveConstraint  from  GeomPlate,  SequenceOfCurveConstraint from  GeomPlate );
+    imported transient class HSequenceOfCurveConstraint;
     
-    class  HSequenceOfPointConstraint  
-        instantiates  HSequence  from  TCollection  (PointConstraint  from  GeomPlate,  SequenceOfPointConstraint from  GeomPlate );  
+    imported transient class HSequenceOfPointConstraint;  
 
 
     class BuildAveragePlane;
@@ -92,8 +83,7 @@ is
 
     class Aij;
 
-    class SequenceOfAij instantiates
-    	Sequence from TCollection (Aij from GeomPlate);
+    imported SequenceOfAij;
     
 end;
 

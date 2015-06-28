@@ -1,0 +1,6 @@
+HLRTopoBRep_ListOfVData.hxx
+HLRTopoBRep_ListIteratorOfListOfVData.hxx
+HLRTopoBRep_MapOfShapeListOfVData.hxx
+HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData.hxx
+HLRTopoBRep_DataMapOfShapeFaceData.hxx
+HLRTopoBRep_DataMapIteratorOfDataMapOfShapeFaceData.hxx

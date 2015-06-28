@@ -68,11 +68,8 @@ is
     class HCompCurve instantiates GenHCurve from Adaptor3d
     	(CompCurve from BRepAdaptor); 
 	 
-    class Array1OfCurve 
-    	instantiates Array1 from TCollection (Curve from BRepAdaptor); 
+    imported Array1OfCurve; 
 	 
-    class HArray1OfCurve
-    	instantiates HArray1 from TCollection (Curve from BRepAdaptor,
-    	    	    	    	Array1OfCurve from BRepAdaptor);
+    imported transient class HArray1OfCurve;
 
 end BRepAdaptor;

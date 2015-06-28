@@ -65,8 +65,7 @@ is
     class Prs;
 
     class ModedPresentation;
-    class Presentations  instantiates Sequence from TCollection
-    	(ModedPresentation from PrsMgr);
+    imported Presentations;
     pointer PresentationPointer to Presentation from PrsMgr;
     pointer PresentableObjectPointer to PresentableObject from PrsMgr;
 end PrsMgr;

@@ -1,0 +1,8 @@
+
+
+#ifndef MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial_HeaderFile
+#define MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial_HeaderFile
+
+#include <MeshVS_DataMapOfIntegerMaterial.hxx>
+
+#endif

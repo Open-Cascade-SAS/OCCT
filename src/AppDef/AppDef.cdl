@@ -93,12 +93,9 @@ class BSplineCompute instantiates BSplComputeLine from Approx
 
 
 
-class Array1OfMultiPointConstraint instantiates Array1 from TCollection
-    	    	(MultiPointConstraint);
+imported Array1OfMultiPointConstraint;
 
-class HArray1OfMultiPointConstraint instantiates 
-    	    	    HArray1 from TCollection(
-                    MultiPointConstraint,Array1OfMultiPointConstraint);
+imported transient class HArray1OfMultiPointConstraint;
 
 
 end AppDef;

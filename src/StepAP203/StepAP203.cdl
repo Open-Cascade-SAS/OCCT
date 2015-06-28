@@ -47,54 +47,34 @@ is
     class StartWork;
     class WorkItem;
 
-    class Array1OfApprovedItem instantiates 
-    	  Array1 from TCollection (ApprovedItem);
-    class HArray1OfApprovedItem instantiates 
-    	  HArray1 from TCollection (ApprovedItem, Array1OfApprovedItem);
+    imported Array1OfApprovedItem;
+    imported transient class HArray1OfApprovedItem;
 
-    class Array1OfCertifiedItem instantiates 
-    	  Array1 from TCollection (CertifiedItem);
-    class HArray1OfCertifiedItem instantiates 
-    	  HArray1 from TCollection (CertifiedItem, Array1OfCertifiedItem);
+    imported Array1OfCertifiedItem;
+    imported transient class HArray1OfCertifiedItem;
 
-    class Array1OfClassifiedItem instantiates 
-    	  Array1 from TCollection (ClassifiedItem);
-    class HArray1OfClassifiedItem instantiates 
-    	  HArray1 from TCollection (ClassifiedItem, Array1OfClassifiedItem);
+    imported Array1OfClassifiedItem;
+    imported transient class HArray1OfClassifiedItem;
 
-    class Array1OfContractedItem instantiates 
-    	  Array1 from TCollection (ContractedItem);
-    class HArray1OfContractedItem instantiates 
-    	  HArray1 from TCollection (ContractedItem, Array1OfContractedItem);
+    imported Array1OfContractedItem;
+    imported transient class HArray1OfContractedItem;
 
-    class Array1OfDateTimeItem instantiates 
-    	  Array1 from TCollection (DateTimeItem);
-    class HArray1OfDateTimeItem instantiates 
-    	  HArray1 from TCollection (DateTimeItem, Array1OfDateTimeItem);
+    imported Array1OfDateTimeItem;
+    imported transient class HArray1OfDateTimeItem;
 
-    class Array1OfPersonOrganizationItem instantiates 
-    	  Array1 from TCollection (PersonOrganizationItem);
-    class HArray1OfPersonOrganizationItem instantiates 
-    	  HArray1 from TCollection (PersonOrganizationItem, Array1OfPersonOrganizationItem);
+    imported Array1OfPersonOrganizationItem;
+    imported transient class HArray1OfPersonOrganizationItem;
 
-    class Array1OfSpecifiedItem instantiates 
-    	  Array1 from TCollection (SpecifiedItem);
-    class HArray1OfSpecifiedItem instantiates 
-    	  HArray1 from TCollection (SpecifiedItem, Array1OfSpecifiedItem);
+    imported Array1OfSpecifiedItem;
+    imported transient class HArray1OfSpecifiedItem;
 
-    class Array1OfWorkItem instantiates 
-    	  Array1 from TCollection (WorkItem);
-    class HArray1OfWorkItem instantiates 
-    	  HArray1 from TCollection (WorkItem, Array1OfWorkItem);
+    imported Array1OfWorkItem;
+    imported transient class HArray1OfWorkItem;
 
-    class Array1OfChangeRequestItem instantiates 
-    	  Array1 from TCollection (ChangeRequestItem);
-    class HArray1OfChangeRequestItem instantiates 
-    	  HArray1 from TCollection (ChangeRequestItem, Array1OfChangeRequestItem);
+    imported Array1OfChangeRequestItem;
+    imported transient class HArray1OfChangeRequestItem;
 
-    class Array1OfStartRequestItem instantiates 
-    	  Array1 from TCollection (StartRequestItem);
-    class HArray1OfStartRequestItem instantiates 
-    	  HArray1 from TCollection (StartRequestItem, Array1OfStartRequestItem);
+    imported Array1OfStartRequestItem;
+    imported transient class HArray1OfStartRequestItem;
 
 end StepAP203;

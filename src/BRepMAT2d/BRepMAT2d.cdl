@@ -39,15 +39,14 @@ is
     class LinkTopoBilo;
 
 
-    class DataMapOfShapeSequenceOfBasicElt instantiates DataMap from TCollection 
-    		    		    	      (Shape               from TopoDS, 
-					       SequenceOfBasicElt  from MAT, 
-					       ShapeMapHasher      from TopTools); 
+    imported DataMapOfShapeSequenceOfBasicElt;
+
+
+    imported DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt; 
     
-    class DataMapOfBasicEltShape  instantiates
-    	DataMap from TCollection (BasicElt            from MAT,
-    	    	    	    	  Shape               from TopoDS,
-    	    	    	    	  MapTransientHasher  from TColStd);				       
+    imported DataMapOfBasicEltShape;
+    
+    imported DataMapIteratorOfDataMapOfBasicEltShape;				       
 
 end BRepMAT2d;
 

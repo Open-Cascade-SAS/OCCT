@@ -1,0 +1,5 @@
+LocOpe_DataMapOfShapePnt.hxx
+LocOpe_DataMapIteratorOfDataMapOfShapePnt.hxx
+LocOpe_SequenceOfPntFace.hxx
+LocOpe_SequenceOfLin.hxx
+LocOpe_SequenceOfCirc.hxx

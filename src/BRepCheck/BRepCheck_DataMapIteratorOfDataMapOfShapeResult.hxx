@@ -1,0 +1,8 @@
+
+
+#ifndef BRepCheck_DataMapIteratorOfDataMapOfShapeResult_HeaderFile
+#define BRepCheck_DataMapIteratorOfDataMapOfShapeResult_HeaderFile
+
+#include <BRepCheck_DataMapOfShapeResult.hxx>
+
+#endif

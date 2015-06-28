@@ -38,10 +38,9 @@ uses
 
 is
 
-    class RstMap instantiates DataMap from TCollection 
-    	(Integer from Standard, 
-    	 HCurve2d from Adaptor2d, 
-    	 MapIntegerHasher  from  TColStd);
+    imported RstMap;
+
+    imported DataMapIteratorOfRstMap;
 
     class ComputeData;
 

@@ -1,0 +1,8 @@
+
+
+#ifndef STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape_HeaderFile
+#define STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape_HeaderFile
+
+#include <STEPCAFControl_DataMapOfLabelShape.hxx>
+
+#endif

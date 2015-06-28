@@ -104,8 +104,10 @@ is
     class OffsetAncestors;
 
 
-    class ListOfOffsetWire instantiates 
-    	List from TCollection (OffsetWire from BRepFill);
+    imported ListOfOffsetWire;
+
+
+    imported ListIteratorOfListOfOffsetWire;
     private class ApproxSeewing;
 
     imported MultiLine;
@@ -127,48 +129,37 @@ is
 --modified by NIZHNY-MKK  Tue Oct 21 17:43:15 2003
     class TrimShellCorner;
 			     
-    private  class  SequenceOfSection  instantiates   
-    	Sequence  from TCollection (Section); 
+    imported SequenceOfSection; 
 	
-    class DataMapOfNodeDataMapOfShapeShape instantiates 
-    	DataMap from TCollection (Node                from MAT,
-    	    	    	    	  DataMapOfShapeShape from TopTools,
-    	    	    	    	  MapTransientHasher  from TColStd );
+    imported DataMapOfNodeDataMapOfShapeShape;
+	
+    imported DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape;
    
-    class DataMapOfNodeShape instantiates 
-    	DataMap from TCollection (Node                from MAT,
-    	    	    	    	  Shape               from TopoDS,
-   	    	    	    	  MapTransientHasher  from TColStd );
+    imported DataMapOfNodeShape;
+   
+    imported DataMapIteratorOfDataMapOfNodeShape;
 				  
-    class DataMapOfShapeDataMapOfShapeListOfShape instantiates
-    	DataMap from TCollection (Shape                      from TopoDS,
-    	    	    	    	  DataMapOfShapeListOfShape  from TopTools,
-    	    	    	    	  ShapeMapHasher             from TopTools ); 
+    imported DataMapOfShapeDataMapOfShapeListOfShape;
 				  
-    class DataMapOfShapeSequenceOfReal	instantiates
-        	DataMap from TCollection (Shape          from TopoDS,
-    	    	    	    	          SequenceOfReal from TColStd,
-    	    	    	    	          ShapeMapHasher from TopTools );
+    imported DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape; 
+				  
+    imported DataMapOfShapeSequenceOfReal;
+				  
+    imported DataMapIteratorOfDataMapOfShapeSequenceOfReal;
 
-    class DataMapOfShapeSequenceOfPnt	instantiates
-        	DataMap from TCollection (Shape          from TopoDS,
-    	    	    	    	          SequenceOfPnt  from TColgp,
-    	    	    	    	          ShapeMapHasher from TopTools ); 
+    imported DataMapOfShapeSequenceOfPnt;
 
-    class DataMapOfOrientedShapeListOfShape instantiates
-	    DataMap from TCollection (Shape                  from TopoDS,
-		    	    	      ListOfShape            from TopTools,  
-    	    	    	    	      OrientedShapeMapHasher from TopTools); 
+    imported DataMapIteratorOfDataMapOfShapeSequenceOfPnt; 
 
-    class IndexedDataMapOfOrientedShapeListOfShape instantiates
-	    IndexedDataMap from TCollection (Shape                  from TopoDS,
-		    	    	      	     ListOfShape            from TopTools,  
-    	    	    	    	      	     OrientedShapeMapHasher from TopTools); 
+    imported DataMapOfOrientedShapeListOfShape;
 
-    class DataMapOfShapeHArray2OfShape	instantiates
-        	DataMap from TCollection (Shape          from TopoDS,
-    	    	    	    	          HArray2OfShape from TopTools,
-    	    	    	    	          ShapeMapHasher from TopTools); 
+    imported DataMapIteratorOfDataMapOfOrientedShapeListOfShape; 
+
+    imported IndexedDataMapOfOrientedShapeListOfShape; 
+
+    imported DataMapOfShapeHArray2OfShape;
+
+    imported DataMapIteratorOfDataMapOfShapeHArray2OfShape; 
 
 
     class CurveConstraint ;
@@ -179,11 +170,9 @@ is
     
     private class EdgeFaceAndOrder;
     
-    private class SequenceOfFaceAndOrder instantiates
-    	Sequence from TCollection (FaceAndOrder from BRepFill);
+    imported SequenceOfFaceAndOrder;
     
-    private class SequenceOfEdgeFaceAndOrder instantiates
-    	Sequence from TCollection (EdgeFaceAndOrder from BRepFill);
+    imported SequenceOfEdgeFaceAndOrder;
 				      
     Face( Edge1 : Edge from TopoDS;
     	  Edge2 : Edge from TopoDS )

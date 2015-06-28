@@ -59,7 +59,7 @@ is
     end StoreStatus;
     
     deferred class Document;
-    class SequenceOfDocument instantiates Sequence from TCollection(Document from PCDM);
+    imported SequenceOfDocument;
 
     deferred class Reader;
     deferred class Writer;
@@ -74,7 +74,7 @@ is
 
     ---Category: classes for versioning  reading/writing og the headers.
     private class Reference;
-    private class SequenceOfReference instantiates Sequence from TCollection(Reference from PCDM);
+    imported SequenceOfReference;
     private deferred class ReadWriter;
     private class ReadWriter_1;
     

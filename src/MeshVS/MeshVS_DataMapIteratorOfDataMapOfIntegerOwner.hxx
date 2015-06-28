@@ -1,0 +1,8 @@
+
+
+#ifndef MeshVS_DataMapIteratorOfDataMapOfIntegerOwner_HeaderFile
+#define MeshVS_DataMapIteratorOfDataMapOfIntegerOwner_HeaderFile
+
+#include <MeshVS_DataMapOfIntegerOwner.hxx>
+
+#endif

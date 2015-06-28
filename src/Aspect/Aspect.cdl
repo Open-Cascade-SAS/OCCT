@@ -524,7 +524,6 @@ is
         -- Category: Instantiated classes
         ---------------------------------
 
-        class SequenceOfColor instantiates
-                Sequence from TCollection(Color from Quantity);
+        imported SequenceOfColor;
 
 end Aspect;

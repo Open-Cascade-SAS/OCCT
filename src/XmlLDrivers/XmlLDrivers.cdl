@@ -32,8 +32,7 @@ is
 
     private class NamespaceDef;
     
-    private class SequenceOfNamespaceDef
-        instantiates Sequence from TCollection (NamespaceDef from XmlLDrivers);
+    imported SequenceOfNamespaceDef;
 
     Factory (theGUID : GUID from Standard) returns Transient from Standard;
 

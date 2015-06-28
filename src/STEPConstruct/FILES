@@ -1,1 +1,5 @@
 EXTERNLIB
+STEPConstruct_DataMapOfAsciiStringTransient.hxx
+STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient.hxx
+STEPConstruct_DataMapOfPointTransient.hxx
+STEPConstruct_DataMapIteratorOfDataMapOfPointTransient.hxx

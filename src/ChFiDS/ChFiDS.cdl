@@ -53,19 +53,17 @@ is
 
     class Regul;
 
-    class Regularities instantiates List from TCollection
-                                    (Regul from ChFiDS);
+    imported Regularities;
+
+    imported ListIteratorOfRegularities;
 
     class CircSection;
     
-    class StripeArray1 instantiates Array1 from TCollection
-                              (Stripe from ChFiDS);
+    imported StripeArray1;
 
-    class SecArray1 instantiates Array1 from TCollection
-                              (CircSection from ChFiDS);
+    imported SecArray1;
 
-    class SecHArray1 instantiates HArray1 from TCollection
-        (CircSection from ChFiDS,SecArray1 from ChFiDS);
+    imported transient class SecHArray1;
 
     class Map; 
 
@@ -75,22 +73,17 @@ is
 
     class SurfData;
 
-    class SequenceOfSurfData instantiates Sequence from TCollection
-    	    (SurfData from ChFiDS);
+    imported SequenceOfSurfData;
 
-    class HData instantiates HSequence from TCollection
-    	    (SurfData from ChFiDS,
-    	     SequenceOfSurfData from ChFiDS);
+    imported transient class HData;
 	    
     class Stripe;
 
-    class ListOfStripe instantiates List from TCollection
-    	    (Stripe from ChFiDS);
+    imported ListOfStripe;
+
+    imported ListIteratorOfListOfStripe;
 	    
-    class IndexedDataMapOfVertexListOfStripe instantiates 
-          IndexedDataMap from TCollection ( Vertex from TopoDS,
-	    	    	    	    	    ListOfStripe from ChFiDS, 
-					    ShapeMapHasher from TopTools); 
+    imported IndexedDataMapOfVertexListOfStripe; 
 
     class StripeMap;
 
@@ -98,8 +91,9 @@ is
 
     class HElSpine instantiates GenHCurve from Adaptor3d (ElSpine from ChFiDS);
 
-    class ListOfHElSpine instantiates List from TCollection
-    	    	        (HElSpine from ChFiDS);
+    imported ListOfHElSpine;
+
+    imported ListIteratorOfListOfHElSpine;
 
     class Spine;
 
@@ -107,8 +101,7 @@ is
 
     class ChamfSpine; --- inherits Sp
 
-    class SequenceOfSpine instantiates 
-    	    Sequence from TCollection(Spine from ChFiDS);
+    imported SequenceOfSpine;
 
     
 

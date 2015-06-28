@@ -1,0 +1,12 @@
+HLRAlgo_ListOfBPoint.hxx
+HLRAlgo_ListIteratorOfListOfBPoint.hxx
+HLRAlgo_Array1OfPHDat.hxx
+HLRAlgo_HArray1OfPHDat.hxx
+HLRAlgo_Array1OfPISeg.hxx
+HLRAlgo_HArray1OfPISeg.hxx
+HLRAlgo_Array1OfPINod.hxx
+HLRAlgo_HArray1OfPINod.hxx
+HLRAlgo_Array1OfTData.hxx
+HLRAlgo_HArray1OfTData.hxx
+HLRAlgo_InterferenceList.hxx
+HLRAlgo_ListIteratorOfInterferenceList.hxx

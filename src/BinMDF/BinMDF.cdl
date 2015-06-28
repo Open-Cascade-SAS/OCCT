@@ -50,17 +50,12 @@ is
     private alias StringIdMap is DataMapOfAsciiStringInteger from TColStd;
 
     -- Map (Type, ADriver)
-    class TypeADriverMap instantiates DataMap from TCollection
-        (Type from Standard,
-         ADriver from BinMDF,
-         MapTransientHasher from TColStd);
+    imported TypeADriverMap;
+    imported DataMapIteratorOfTypeADriverMap;
 
     -- Double Map (Type, Integer ID)
-    class TypeIdMap instantiates DoubleMap from TCollection
-        (Type from Standard,
-         Integer from Standard,
-         MapTransientHasher from TColStd,
-         MapIntegerHasher from TColStd);
+    imported TypeIdMap;
+    imported DoubleMapIteratorOfTypeIdMap;
 
     -- Attribute Storage Driver Table.
     class ADriverTable;

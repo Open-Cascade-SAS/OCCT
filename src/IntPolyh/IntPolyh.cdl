@@ -76,8 +76,7 @@ is
 
     class Point;
     class StartPoint;
-    class SeqOfStartPoints instantiates Sequence from TCollection
-        (StartPoint from IntPolyh);
+    imported SeqOfStartPoints;
 
     class Edge;
      

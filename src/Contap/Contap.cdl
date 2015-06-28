@@ -38,13 +38,11 @@ is
 
     class Contour;
 
-    class TheSequenceOfPoint instantiates Sequence from TCollection (Point from Contap);
+    imported TheSequenceOfPoint;
 
-    class TheHSequenceOfPoint instantiates HSequence from TCollection
-        (Point              from Contap,
-         TheSequenceOfPoint from Contap);
+    imported transient class TheHSequenceOfPoint;
 
-    class TheSequenceOfLine instantiates Sequence from TCollection(Line from Contap);
+    imported TheSequenceOfLine;
 
     class TheSearch instantiates SearchOnBoundaries from IntStart
         (HVertex      from Adaptor3d,

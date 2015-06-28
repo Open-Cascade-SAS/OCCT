@@ -114,18 +114,13 @@ is
 
     -- Instantiations :
 
-    class  Array1OfBoundary instantiates  Array1 from TCollection (Boundary);
-    class  Array1OfCurveOnSurface        instantiates
-	  Array1 from TCollection (CurveOnSurface);
-    class  Array1OfTransformationMatrix  instantiates
-    	  Array1 from TCollection (TransformationMatrix);
+    imported Array1OfBoundary;
+    imported Array1OfCurveOnSurface;
+    imported Array1OfTransformationMatrix;
 
-    class HArray1OfBoundary instantiates HArray1 from TCollection
-    	 (Boundary,Array1OfBoundary);
-    class HArray1OfCurveOnSurface        instantiates HArray1 from TCollection
-    	 (CurveOnSurface,Array1OfCurveOnSurface);
-    class HArray1OfTransformationMatrix  instantiates HArray1 from TCollection
-    	 (TransformationMatrix,Array1OfTransformationMatrix);
+    imported transient class HArray1OfBoundary;
+    imported transient class HArray1OfCurveOnSurface;
+    imported transient class HArray1OfTransformationMatrix;
 
     -- Package Methods
 

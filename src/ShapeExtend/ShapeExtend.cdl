@@ -107,15 +107,13 @@ is
 
     class Explorer;
 
-    class DataMapOfShapeListOfMsg instantiates DataMap from TCollection
-    	(Shape          from TopoDS,
-         ListOfMsg      from Message,
-         ShapeMapHasher from TopTools);
+    imported DataMapOfShapeListOfMsg;
+
+    imported DataMapIteratorOfDataMapOfShapeListOfMsg;
     
-    class DataMapOfTransientListOfMsg instantiates DataMap from TCollection
-    	(Transient,
-         ListOfMsg          from Message,
-         MapTransientHasher from TColStd);
+    imported DataMapOfTransientListOfMsg;
+    
+    imported DataMapIteratorOfDataMapOfTransientListOfMsg;
 	 
     Init;
     	---Purpose: Inits using of ShapeExtend.

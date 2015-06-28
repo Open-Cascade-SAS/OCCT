@@ -126,12 +126,11 @@ is
 
     	-- --   Instantiations   -- --
 
-    class Array1OfDirPart instantiates Array1 from TCollection (DirPart);
+    imported Array1OfDirPart;
 
-    class Array1OfIGESEntity instantiates Array1 from TCollection (IGESEntity);
+    imported Array1OfIGESEntity;
 
-    class HArray1OfIGESEntity  instantiates
-    	HArray1 from TCollection (IGESEntity,Array1OfIGESEntity); 
+    imported transient class HArray1OfIGESEntity; 
 	
     	--   General Routines   --
     	-- They encapsulate the general actions required to work with this

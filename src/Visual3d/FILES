@@ -4,3 +4,7 @@ EXTERNLIB
 Visual3d_WOKSteps.edl 
 Visual3d_NListOfLayerItem.hxx
 Visual3d_MapOfZLayerSettings.hxx
+Visual3d_SequenceOfLight.hxx
+Visual3d_HSequenceOfLight.hxx
+Visual3d_SequenceOfView.hxx
+Visual3d_HSequenceOfView.hxx

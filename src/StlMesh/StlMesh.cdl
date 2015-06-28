@@ -38,17 +38,14 @@ is
 
     class MeshTriangle;
 
-    class SequenceOfMeshDomain  instantiates
-          Sequence from TCollection (MeshDomain from StlMesh);
+    imported SequenceOfMeshDomain;
 
 
 
-    class SequenceOfMeshTriangle  instantiates
-          Sequence from TCollection (MeshTriangle from StlMesh);
+    imported SequenceOfMeshTriangle;
     
     
-    class SequenceOfMesh instantiates
-    	  Sequence from TCollection (Mesh from StlMesh);
+    imported SequenceOfMesh;
 	  ---Purpose: Sequence of meshes
     
     Merge (mesh1, mesh2 : in Mesh) returns Mesh;

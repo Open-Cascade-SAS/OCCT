@@ -115,10 +115,9 @@ is
     ---Category: tools
     --           =====
 
-    class Array1OfTrsf instantiates Array1 from TCollection (Trsf from gp);
+    imported Array1OfTrsf;
        	
-    class HArray1OfTrsf instantiates HArray1 from TCollection (Trsf         from gp,
-                                                               Array1OfTrsf from TDataXtd);       	 
+    imported transient class HArray1OfTrsf;       	 
 							       
     IDList (anIDList : in out IDList from TDF);
 	---Purpose: Appends to <anIDList> the list of the attributes

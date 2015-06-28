@@ -310,50 +310,45 @@ class PresentationLayerUsage;
 
 
 -- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4 :
-class Array1OfTextOrCharacter instantiates Array1 from TCollection (TextOrCharacter);
-class HArray1OfTextOrCharacter instantiates HArray1 from TCollection (TextOrCharacter,Array1OfTextOrCharacter from StepVisual);
+imported Array1OfTextOrCharacter;
+imported transient class HArray1OfTextOrCharacter;
 
-class Array1OfStyleContextSelect instantiates Array1 from TCollection (StyleContextSelect);
-class HArray1OfStyleContextSelect instantiates HArray1 from TCollection (StyleContextSelect,Array1OfStyleContextSelect from StepVisual);
+imported Array1OfStyleContextSelect;
+imported transient class HArray1OfStyleContextSelect;
 
-class Array1OfCurveStyleFontPattern instantiates Array1 from TCollection (CurveStyleFontPattern);
-class HArray1OfCurveStyleFontPattern instantiates HArray1 from TCollection (CurveStyleFontPattern,Array1OfCurveStyleFontPattern from StepVisual);
+imported Array1OfCurveStyleFontPattern;
+imported transient class HArray1OfCurveStyleFontPattern;
 
 -- Removed from CC1-Rev2 to Rev4 :class HArray1OfDraughtingCalloutElement and Array
 
-class Array1OfFillStyleSelect instantiates Array1 from TCollection (FillStyleSelect);
-class HArray1OfFillStyleSelect instantiates HArray1 from TCollection (FillStyleSelect,Array1OfFillStyleSelect from StepVisual);
+imported Array1OfFillStyleSelect;
+imported transient class HArray1OfFillStyleSelect;
 
 -- Removed from CC1-Rev2 to Rev4 :class HArray1OfFillAreaStyleTileSymbolWithStyle
 
-class Array1OfInvisibleItem instantiates Array1 from TCollection (InvisibleItem);
-class HArray1OfInvisibleItem instantiates HArray1 from TCollection (InvisibleItem,Array1OfInvisibleItem from StepVisual);
+imported Array1OfInvisibleItem;
+imported transient class HArray1OfInvisibleItem;
 
-class Array1OfLayeredItem instantiates Array1 from TCollection (LayeredItem);
-class HArray1OfLayeredItem instantiates HArray1 from TCollection (LayeredItem,Array1OfLayeredItem from StepVisual);
+imported Array1OfLayeredItem;
+imported transient class HArray1OfLayeredItem;
 
-class Array1OfPresentationStyleSelect instantiates Array1 from TCollection (PresentationStyleSelect);
-class HArray1OfPresentationStyleSelect instantiates HArray1 from TCollection (PresentationStyleSelect,Array1OfPresentationStyleSelect from StepVisual);
+imported Array1OfPresentationStyleSelect;
+imported transient class HArray1OfPresentationStyleSelect;
 
-class Array1OfPresentationStyleAssignment instantiates Array1 from TCollection (PresentationStyleAssignment);
-class HArray1OfPresentationStyleAssignment instantiates HArray1 from TCollection (PresentationStyleAssignment,Array1OfPresentationStyleAssignment from StepVisual);
+imported Array1OfPresentationStyleAssignment;
+imported transient class HArray1OfPresentationStyleAssignment;
 
-class Array1OfSurfaceStyleElementSelect instantiates Array1 from TCollection (SurfaceStyleElementSelect);
-class HArray1OfSurfaceStyleElementSelect instantiates HArray1 from TCollection (SurfaceStyleElementSelect,Array1OfSurfaceStyleElementSelect from StepVisual);
+imported Array1OfSurfaceStyleElementSelect;
+imported transient class HArray1OfSurfaceStyleElementSelect;
 
 -- Instantiated class made by FMA
 
-class Array1OfDirectionCountSelect instantiates Array1 from TCollection (DirectionCountSelect);
-class HArray1OfDirectionCountSelect 
-    instantiates HArray1 from TCollection (DirectionCountSelect, 
-    	    	    	 Array1OfDirectionCountSelect from StepVisual);
+imported Array1OfDirectionCountSelect;
+imported transient class HArray1OfDirectionCountSelect;
 
 -- Removed from CC1-Rev2 to CC1-Rev4, re-added CC2-Rev4
-class Array1OfBoxCharacteristicSelect 
-    instantiates Array1 from TCollection (BoxCharacteristicSelect);
-class HArray1OfBoxCharacteristicSelect
-    instantiates HArray1 from TCollection (BoxCharacteristicSelect,
-                         Array1OfBoxCharacteristicSelect);
+imported Array1OfBoxCharacteristicSelect;
+imported transient class HArray1OfBoxCharacteristicSelect;
 
 --	Protocol returns Protocol from StepVisual;
 

@@ -1,0 +1,7 @@
+Bnd_Array1OfBox.hxx
+Bnd_HArray1OfBox.hxx
+Bnd_Array1OfSphere.hxx
+Bnd_HArray1OfSphere.hxx
+Bnd_Array1OfBox2d.hxx
+Bnd_HArray1OfBox2d.hxx
+Bnd_SeqOfBox.hxx

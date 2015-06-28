@@ -1,1 +1,7 @@
 Draft_Modification_1.cxx
+Draft_DataMapOfFaceFaceInfo.hxx
+Draft_DataMapIteratorOfDataMapOfFaceFaceInfo.hxx
+Draft_DataMapOfEdgeEdgeInfo.hxx
+Draft_DataMapIteratorOfDataMapOfEdgeEdgeInfo.hxx
+Draft_DataMapOfVertexVertexInfo.hxx
+Draft_DataMapIteratorOfDataMapOfVertexVertexInfo.hxx

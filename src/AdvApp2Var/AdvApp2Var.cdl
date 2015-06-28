@@ -99,8 +99,7 @@ is
 
     class Patch from AdvApp2Var;
 
-    class Strip from AdvApp2Var instantiates
-     	    	    Sequence from TCollection (Iso from  AdvApp2Var); 
+    imported Strip; 
     ---Purpose :
     -- set of constraints along a same type of Iso on the same level
 
@@ -108,12 +107,9 @@ is
     --  
     --  Structured Data
 
-    class SequenceOfNode from AdvApp2Var instantiates
-    	    	    	 Sequence from TCollection (Node  from  AdvApp2Var); 
-    class SequenceOfPatch from AdvApp2Var instantiates
-    	    	    	 Sequence from TCollection (Patch from  AdvApp2Var); 
-    class SequenceOfStrip from AdvApp2Var instantiates
-    	    	    	 Sequence from TCollection (Strip from  AdvApp2Var);
+    imported SequenceOfNode; 
+    imported SequenceOfPatch; 
+    imported SequenceOfStrip;
 
     --
     --

@@ -39,26 +39,21 @@ is
 
     class Zone;
 
-    class SequenceOfBasicElt instantiates Sequence from TCollection
-                                                         (BasicElt from MAT); 
+    imported SequenceOfBasicElt; 
 						     
-    class SequenceOfArc instantiates Sequence from TCollection
-                                                         (Arc from  MAT) ;  
+    imported SequenceOfArc;  
 
-    class DataMapOfIntegerArc instantiates
-    	DataMap from TCollection(Integer          from Standard,
-	    	    	    	 Arc              from MAT     ,
-				 MapIntegerHasher from TColStd);
+    imported DataMapOfIntegerArc;
 
-    class DataMapOfIntegerBasicElt instantiates
-    	DataMap from TCollection(Integer          from Standard,
-	    	    	    	 BasicElt         from MAT     ,
-				 MapIntegerHasher from TColStd);
+    imported DataMapIteratorOfDataMapOfIntegerArc;
+
+    imported DataMapOfIntegerBasicElt;
+
+    imported DataMapIteratorOfDataMapOfIntegerBasicElt;
  
-    class DataMapOfIntegerNode instantiates
-    	DataMap from TCollection(Integer          from Standard,
-	    	    	    	 Node             from MAT     ,
-				 MapIntegerHasher from TColStd);
+    imported DataMapOfIntegerNode;
+ 
+    imported DataMapIteratorOfDataMapOfIntegerNode;
  
  
     --------------------------------------------------- 
@@ -69,10 +64,9 @@ is
 
     class Bisector;
 	
-    class DataMapOfIntegerBisector instantiates
-    	DataMap from TCollection(Integer          from Standard,
-	    	    	    	 Bisector         from MAT     ,
-				 MapIntegerHasher from TColStd);
+    imported DataMapOfIntegerBisector;
+	
+    imported DataMapIteratorOfDataMapOfIntegerBisector;
 				 
     class ListOfBisector instantiates TList from MAT (Bisector from MAT);
     

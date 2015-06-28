@@ -1,0 +1,8 @@
+
+
+#ifndef TopTools_DataMapIteratorOfDataMapOfShapeReal_HeaderFile
+#define TopTools_DataMapIteratorOfDataMapOfShapeReal_HeaderFile
+
+#include <TopTools_DataMapOfShapeReal.hxx>
+
+#endif

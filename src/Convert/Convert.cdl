@@ -134,8 +134,7 @@ enumeration  ParameterisationType is
      class TorusToBSplineSurface;
      class SphereToBSplineSurface;
 
-  class SequenceOfArray1OfPoles 
-    instantiates Sequence from TCollection( HArray1OfPnt from TColgp); 
+  imported SequenceOfArray1OfPoles; 
 
   class CompBezierCurvesToBSplineCurve;
 

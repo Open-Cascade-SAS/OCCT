@@ -61,10 +61,8 @@ is
     class TransientProcess;    -- inherits TransferForTransient
     class ActorOfTransientProcess;
 
-    class SequenceOfFinder instantiates
-    	 Sequence from TCollection (Finder);
-    class HSequenceOfFinder instantiates
-    	HSequence from TCollection (Finder,SequenceOfFinder);
+    imported SequenceOfFinder;
+    imported transient class HSequenceOfFinder;
 
     class ProcessForFinder      instantiates TransferProcess
     	(Finder,     FindHasher,   HSequenceOfFinder);
@@ -81,10 +79,8 @@ is
     
     class MapContainer;
 
-    class SequenceOfBinder instantiates
-    	 Sequence from TCollection (Binder);
-    class HSequenceOfBinder instantiates
-    	HSequence from TCollection (Binder,SequenceOfBinder);
+    imported SequenceOfBinder;
+    imported transient class HSequenceOfBinder;
 
     enumeration StatusResult is  StatusVoid, StatusDefined, StatusUsed;
     ---Purpose : result status of transferring an entity (see Transcriptor)

@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeListOfC2DF_HeaderFile
+#define TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeListOfC2DF_HeaderFile
+
+#include <TopOpeBRepTool_DataMapOfShapeListOfC2DF.hxx>
+
+#endif

@@ -1,2 +1,8 @@
 Units_CMPLRS.edl
 Units_Operators.hxx
+Units_UtsSequence.hxx
+Units_UnitsSequence.hxx
+Units_TksSequence.hxx
+Units_TokensSequence.hxx
+Units_QtsSequence.hxx
+Units_QuantitiesSequence.hxx

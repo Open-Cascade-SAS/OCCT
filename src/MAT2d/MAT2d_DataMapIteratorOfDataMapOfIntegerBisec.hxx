@@ -1,0 +1,8 @@
+
+
+#ifndef MAT2d_DataMapIteratorOfDataMapOfIntegerBisec_HeaderFile
+#define MAT2d_DataMapIteratorOfDataMapOfIntegerBisec_HeaderFile
+
+#include <MAT2d_DataMapOfIntegerBisec.hxx>
+
+#endif

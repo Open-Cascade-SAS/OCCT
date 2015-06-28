@@ -1,2 +1,4 @@
 PCDM_DOMHeaderParser.hxx
 PCDM_DOMHeaderParser.cxx
+PCDM_SequenceOfDocument.hxx
+PCDM_SequenceOfReference.hxx

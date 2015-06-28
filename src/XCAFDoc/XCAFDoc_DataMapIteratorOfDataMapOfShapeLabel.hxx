@@ -1,0 +1,8 @@
+
+
+#ifndef XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel_HeaderFile
+#define XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel_HeaderFile
+
+#include <XCAFDoc_DataMapOfShapeLabel.hxx>
+
+#endif

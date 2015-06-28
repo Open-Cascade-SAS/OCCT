@@ -51,15 +51,9 @@ is
     class D1;
     class D2;
     class D3;
-    class SequenceOfPinpointConstraint instantiates Sequence from TCollection  
-                                       (PinpointConstraint from Plate);
-    class SequenceOfLinearXYZConstraint instantiates Sequence from TCollection  
-                                       (LinearXYZConstraint from Plate);
-    class SequenceOfLinearScalarConstraint instantiates Sequence from TCollection  
-                                       (LinearScalarConstraint from Plate);
-    class Array1OfPinpointConstraint instantiates Array1 from TCollection
-                                       (PinpointConstraint from Plate);    
-    class HArray1OfPinpointConstraint instantiates HArray1 from TCollection
-                                       (PinpointConstraint         from Plate,
-                                        Array1OfPinpointConstraint from Plate);    
+    imported SequenceOfPinpointConstraint;
+    imported SequenceOfLinearXYZConstraint;
+    imported SequenceOfLinearScalarConstraint;
+    imported Array1OfPinpointConstraint;    
+    imported transient class HArray1OfPinpointConstraint;    
 end Plate;

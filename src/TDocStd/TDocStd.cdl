@@ -95,19 +95,17 @@ is
 
     class CompoundDelta;
 
-    class LabelIDMapDataMap instantiates DataMap from TCollection (Label from TDF,
-    	    	    	                                           IDMap from TDF,
-    	    	    	    	    	    	    	    	   LabelMapHasher from TDF);
+    imported LabelIDMapDataMap;
+
+    imported DataMapIteratorOfLabelIDMapDataMap;
 
 	class ApplicationDelta;
 
     	class MultiTransactionManager;
 
-	class SequenceOfApplicationDelta instantiates
-    	      Sequence from TCollection(ApplicationDelta from TDocStd);	
+	imported SequenceOfApplicationDelta;	
 
-	class SequenceOfDocument instantiates
-    	      Sequence from TCollection(Document from TDocStd);	
+	imported SequenceOfDocument;	
 
     ---Purpose: specific GUID of this package
     --          =============================

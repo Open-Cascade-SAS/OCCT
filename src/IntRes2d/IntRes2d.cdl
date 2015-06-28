@@ -48,11 +48,9 @@ is
 
     enumeration Situation is Inside, Outside, Unknown;
 
-    class SequenceOfIntersectionPoint instantiates
-    	       Sequence from TCollection (IntersectionPoint);
+    imported SequenceOfIntersectionPoint;
 
-    class SequenceOfIntersectionSegment instantiates
-    	       Sequence from TCollection (IntersectionSegment);
+    imported SequenceOfIntersectionSegment;
 
 
 end IntRes2d; 

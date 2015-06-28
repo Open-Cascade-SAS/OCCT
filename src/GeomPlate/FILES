@@ -1,0 +1,9 @@
+GeomPlate_Array1OfHCurveOnSurface.hxx
+GeomPlate_HArray1OfHCurveOnSurface.hxx
+GeomPlate_Array1OfSequenceOfReal.hxx
+GeomPlate_HArray1OfSequenceOfReal.hxx
+GeomPlate_SequenceOfCurveConstraint.hxx
+GeomPlate_SequenceOfPointConstraint.hxx
+GeomPlate_HSequenceOfCurveConstraint.hxx
+GeomPlate_HSequenceOfPointConstraint.hxx
+GeomPlate_SequenceOfAij.hxx

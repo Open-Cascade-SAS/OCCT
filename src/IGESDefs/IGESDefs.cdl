@@ -65,10 +65,9 @@ is
 
         -- Instantiations
 
-     class  Array1OfTabularData instantiates  Array1 from TCollection(TabularData);
+     imported Array1OfTabularData;
 
-     class HArray1OfTabularData instantiates HArray1 from TCollection
-    	(TabularData,Array1OfTabularData);
+     imported transient class HArray1OfTabularData;
      class HArray1OfHArray1OfTextDisplayTemplate instantiates
     --	HArray1 (HArray1OfTextDisplayTemplate,Array1OfHArray1OfTextDisplayTemplate);
       JaggedArray from Interface (HArray1OfTextDisplayTemplate from IGESGraph);

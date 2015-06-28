@@ -121,59 +121,49 @@ is
 	
 --- Instantiations
 
-class Array2OfCurveElementPurposeMember instantiates Array2 from TCollection (CurveElementPurposeMember);
-class HArray2OfCurveElementPurposeMember instantiates HArray2 from TCollection (CurveElementPurposeMember,Array2OfCurveElementPurposeMember from StepElement);
+imported Array2OfCurveElementPurposeMember;
+imported transient class HArray2OfCurveElementPurposeMember;
 
-class Array2OfSurfaceElementPurposeMember instantiates Array2 from TCollection (SurfaceElementPurposeMember);
-class HArray2OfSurfaceElementPurposeMember instantiates HArray2 from TCollection (SurfaceElementPurposeMember,Array2OfSurfaceElementPurposeMember from StepElement);
+imported Array2OfSurfaceElementPurposeMember;
+imported transient class HArray2OfSurfaceElementPurposeMember;
 
-class Array1OfVolumeElementPurposeMember instantiates Array1 from TCollection (VolumeElementPurposeMember);
-class HArray1OfVolumeElementPurposeMember instantiates HArray1 from TCollection (VolumeElementPurposeMember,Array1OfVolumeElementPurposeMember from StepElement);
+imported Array1OfVolumeElementPurposeMember;
+imported transient class HArray1OfVolumeElementPurposeMember;
 
-class Array2OfSurfaceElementPurpose instantiates Array2 from TCollection (SurfaceElementPurpose);
-class HArray2OfSurfaceElementPurpose instantiates HArray2 from TCollection (SurfaceElementPurpose, Array2OfSurfaceElementPurpose from StepElement);
+imported Array2OfSurfaceElementPurpose;
+imported transient class HArray2OfSurfaceElementPurpose;
 
-class Array1OfMeasureOrUnspecifiedValue instantiates Array1 from TCollection (MeasureOrUnspecifiedValue);
-class HArray1OfMeasureOrUnspecifiedValue instantiates HArray1 from TCollection (MeasureOrUnspecifiedValue, Array1OfMeasureOrUnspecifiedValue from StepElement);
+imported Array1OfMeasureOrUnspecifiedValue;
+imported transient class HArray1OfMeasureOrUnspecifiedValue;
 
-class Array1OfSurfaceSection instantiates Array1 from TCollection (SurfaceSection);
-class HArray1OfSurfaceSection instantiates HArray1 from TCollection (SurfaceSection, Array1OfSurfaceSection from StepElement);
+imported Array1OfSurfaceSection;
+imported transient class HArray1OfSurfaceSection;
 
-class Array1OfVolumeElementPurpose instantiates Array1 from TCollection (VolumeElementPurpose);
-class HArray1OfVolumeElementPurpose instantiates HArray1 from TCollection (VolumeElementPurpose, Array1OfVolumeElementPurpose from StepElement);
+imported Array1OfVolumeElementPurpose;
+imported transient class HArray1OfVolumeElementPurpose;
 
-class Array1OfCurveElementEndReleasePacket instantiates Array1 from TCollection (CurveElementEndReleasePacket);
-class HArray1OfCurveElementEndReleasePacket instantiates HArray1 from TCollection (CurveElementEndReleasePacket, Array1OfCurveElementEndReleasePacket from StepElement);
+imported Array1OfCurveElementEndReleasePacket;
+imported transient class HArray1OfCurveElementEndReleasePacket;
 
-class Array1OfCurveElementSectionDefinition instantiates Array1 from TCollection (CurveElementSectionDefinition);
-class HArray1OfCurveElementSectionDefinition instantiates HArray1 from TCollection (CurveElementSectionDefinition, Array1OfCurveElementSectionDefinition from StepElement);
+imported Array1OfCurveElementSectionDefinition;
+imported transient class HArray1OfCurveElementSectionDefinition;
 
 
-class SequenceOfElementMaterial instantiates Sequence from TCollection (ElementMaterial);
-class HSequenceOfElementMaterial instantiates HSequence from TCollection (ElementMaterial, SequenceOfElementMaterial from StepElement);
+imported SequenceOfElementMaterial;
+imported transient class HSequenceOfElementMaterial;
 
-class SequenceOfCurveElementSectionDefinition instantiates Sequence
-     from TCollection (CurveElementSectionDefinition);
-class HSequenceOfCurveElementSectionDefinition instantiates HSequence
-     from TCollection (CurveElementSectionDefinition, SequenceOfCurveElementSectionDefinition from StepElement);
+imported SequenceOfCurveElementSectionDefinition;
+imported transient class HSequenceOfCurveElementSectionDefinition;
 
-class SequenceOfCurveElementPurposeMember instantiates Sequence
-     from TCollection (CurveElementPurposeMember);
-class HSequenceOfCurveElementPurposeMember instantiates HSequence
-     from TCollection (CurveElementPurposeMember, SequenceOfCurveElementPurposeMember from StepElement);
-class Array1OfHSequenceOfCurveElementPurposeMember instantiates Array1
-     from TCollection (HSequenceOfCurveElementPurposeMember);
-class HArray1OfHSequenceOfCurveElementPurposeMember instantiates HArray1
-     from TCollection (HSequenceOfCurveElementPurposeMember, Array1OfHSequenceOfCurveElementPurposeMember from StepElement);
+imported SequenceOfCurveElementPurposeMember;
+imported transient class HSequenceOfCurveElementPurposeMember;
+imported Array1OfHSequenceOfCurveElementPurposeMember;
+imported transient class HArray1OfHSequenceOfCurveElementPurposeMember;
 
-class SequenceOfSurfaceElementPurposeMember instantiates Sequence
-     from TCollection (SurfaceElementPurposeMember);
-class HSequenceOfSurfaceElementPurposeMember instantiates HSequence
-     from TCollection (SurfaceElementPurposeMember, SequenceOfSurfaceElementPurposeMember from StepElement);
-class Array1OfHSequenceOfSurfaceElementPurposeMember instantiates Array1
-     from TCollection (HSequenceOfSurfaceElementPurposeMember);
-class HArray1OfHSequenceOfSurfaceElementPurposeMember instantiates HArray1
-     from TCollection (HSequenceOfSurfaceElementPurposeMember, Array1OfHSequenceOfSurfaceElementPurposeMember from StepElement);
+imported SequenceOfSurfaceElementPurposeMember;
+imported transient class HSequenceOfSurfaceElementPurposeMember;
+imported Array1OfHSequenceOfSurfaceElementPurposeMember;
+imported transient class HArray1OfHSequenceOfSurfaceElementPurposeMember;
 
 
 end;

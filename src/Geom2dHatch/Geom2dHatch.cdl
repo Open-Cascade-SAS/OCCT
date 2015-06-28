@@ -36,19 +36,17 @@ is
     class Elements;
     class Hatching;
     
-    class Hatchings instantiates DataMap from TCollection
-    (Integer          from Standard,
-     Hatching         from Geom2dHatch,
-     MapIntegerHasher from TColStd) ;
+    imported Hatchings;
+    
+    imported DataMapIteratorOfHatchings;
 
     class Classifier instantiates FaceClassifier from  TopClass 
     (Elements    from Geom2dHatch,
      Curve       from Geom2dAdaptor,
      Intersector from Geom2dHatch);
 
-    private class MapOfElements instantiates DataMap from TCollection
-    (Integer          from Standard,
-     Element          from Geom2dHatch,
-     MapIntegerHasher from TColStd);
+    imported MapOfElements;
+
+    imported DataMapIteratorOfMapOfElements;
 
 end Geom2dHatch ;

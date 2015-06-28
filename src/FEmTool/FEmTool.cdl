@@ -48,22 +48,19 @@ is
     --           which gives Index  of Freedom's degree in the
     --           assembly problem.
    
-    class  AssemblyTable
-    instantiates Array2 from TCollection (HArray1OfInteger from  TColStd);     
-    class  HAssemblyTable   
-    instantiates HArray2 from TCollection (HArray1OfInteger from  TColStd,
-    	    	    	                   AssemblyTable  from  FEmTool); 
+    imported AssemblyTable;     
+    imported transient class HAssemblyTable; 
 					    
     ---Purpose:  To  define  list  of  segments with  non-zero  coefficients   
     --           of constraint 
         
-    class  ListOfVectors  
-    instantiates  List  from  TCollection  (HArray1OfReal  from  TColStd); 
+    imported ListOfVectors;
+        
+    imported ListIteratorOfListOfVectors; 
 
     ---Purpose:  To  define  sequence  of  constraints 
     
-    class  SeqOfLinConstr  
-    instantiates  Sequence  from  TCollection  (ListOfVectors  from  FEmTool); 
+    imported SeqOfLinConstr; 
       
      
 end FEmTool;

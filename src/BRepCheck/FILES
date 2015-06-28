@@ -1,0 +1,6 @@
+BRepCheck_ListOfStatus.hxx
+BRepCheck_ListIteratorOfListOfStatus.hxx
+BRepCheck_DataMapOfShapeListOfStatus.hxx
+BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus.hxx
+BRepCheck_DataMapOfShapeResult.hxx
+BRepCheck_DataMapIteratorOfDataMapOfShapeResult.hxx

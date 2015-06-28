@@ -27,36 +27,20 @@ uses TCollection, Geom2d
 is
 
 
-    class Array1OfCurve 
-    	instantiates Array1 from TCollection (Curve from Geom2d);
-    class Array1OfBezierCurve 
-    	instantiates Array1 from TCollection (BezierCurve from Geom2d);
-    class Array1OfBSplineCurve 
-    	instantiates Array1 from TCollection (BSplineCurve from Geom2d);
+    imported Array1OfCurve;
+    imported Array1OfBezierCurve;
+    imported Array1OfBSplineCurve;
 
-    class HArray1OfCurve
-    	instantiates HArray1 from TCollection (Curve from Geom2d,
-    	    	    	    	Array1OfCurve from TColGeom2d);
-    class HArray1OfBezierCurve  
-    	instantiates HArray1 from TCollection (BezierCurve from Geom2d,
-    	    	    	    	Array1OfBezierCurve from TColGeom2d);
-    class HArray1OfBSplineCurve 
-    	instantiates HArray1 from TCollection (BSplineCurve from Geom2d,
-    	    	    	    	Array1OfBSplineCurve from TColGeom2d);
+    imported transient class HArray1OfCurve;
+    imported transient class HArray1OfBezierCurve;
+    imported transient class HArray1OfBSplineCurve;
 
-    class SequenceOfGeometry  
-    	instantiates Sequence from TCollection (Geometry from Geom2d);
-    class SequenceOfCurve  
-    	instantiates Sequence from TCollection (Curve from Geom2d);
-    class SequenceOfBoundedCurve  
-    	instantiates Sequence from TCollection (BoundedCurve from Geom2d);
+    imported SequenceOfGeometry;
+    imported SequenceOfCurve;
+    imported SequenceOfBoundedCurve;
 
-    class HSequenceOfCurve  
-    	instantiates HSequence from TCollection (Curve from Geom2d,
-    	    	    	    	SequenceOfCurve from TColGeom2d);
-    class HSequenceOfBoundedCurve  
-    	instantiates HSequence from TCollection (BoundedCurve from Geom2d,
-    	    	    	    	SequenceOfBoundedCurve from TColGeom2d);
+    imported transient class HSequenceOfCurve;
+    imported transient class HSequenceOfBoundedCurve;
 
 
 end TColGeom2d;

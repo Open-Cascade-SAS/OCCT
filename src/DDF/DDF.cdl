@@ -45,8 +45,9 @@ is
 
     class Transaction;
 
-    class TransactionStack
-    	instantiates List from TCollection (Transaction from DDF);
+    imported TransactionStack;
+
+    imported ListIteratorOfTransactionStack;
 
     -- ----------------------------------------------------------------------
     -- Package methods

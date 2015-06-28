@@ -43,15 +43,18 @@ uses
 is
     
     class Loop;
-    class ListOfLoop instantiates List from TCollection(Loop);
+    imported ListOfLoop;
+    imported ListIteratorOfListOfLoop;
     class LoopSet;
     deferred class LoopClassifier;
     enumeration LoopEnum is ANYLOOP,BOUNDARY,BLOCK end LoopEnum;
-    class ListOfListOfLoop instantiates List from TCollection(ListOfLoop);
+    imported ListOfListOfLoop;
+    imported ListIteratorOfListOfListOfLoop;
     class AreaBuilder;
 
     class Pave;
-    class ListOfPave instantiates List from TCollection(Pave);
+    imported ListOfPave;
+    imported ListIteratorOfListOfPave;
     class PaveSet;
     class PaveClassifier;
     class Area1dBuilder;
@@ -85,10 +88,10 @@ is
     class SolidBuilder;
     
     class ShapeListOfShape;
-    class ListOfShapeListOfShape instantiates List from TCollection(ShapeListOfShape);
-    class DataMapOfShapeListOfShapeListOfShape
-    instantiates DataMap from TCollection
-    (Shape from TopoDS,ListOfShapeListOfShape,ShapeMapHasher from TopTools);
+    imported ListOfShapeListOfShape;
+    imported ListIteratorOfListOfShapeListOfShape;
+    imported DataMapOfShapeListOfShapeListOfShape;
+    imported DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape;
 
     class GTopo; pointer PGTopo to GTopo from TopOpeBRepBuild;
     class GIter;
@@ -108,10 +111,7 @@ is
     class  CorrectFace2d; 
     class  VertexInfo; 
     class  Tools2d;	     
-    class  IndexedDataMapOfShapeVertexInfo instantiates 
-    	      IndexedDataMap from TCollection (Shape          from TopoDS,
-	                                       VertexInfo     from TopOpeBRepBuild,
-	                                       ShapeMapHasher from TopTools);  
+    imported IndexedDataMapOfShapeVertexInfo;  
    		 
 --modified by NIZNHY-PKV Thu Feb 10 11:25:19 2000  to
 

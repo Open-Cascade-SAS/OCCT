@@ -7,3 +7,5 @@ DDF_BrowserCommands.cxx
 DDF_IOStream.cxx
 DDF_IOStream.hxx
 FILES
+DDF_TransactionStack.hxx
+DDF_ListIteratorOfTransactionStack.hxx

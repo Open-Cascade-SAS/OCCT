@@ -133,99 +133,87 @@ is
     -- Lists
     -- -----
 
-    class IDList instantiates List from TCollection
-    	(GUID from Standard);
+    imported IDList;
 
-    class AttributeList instantiates List from TCollection
-    	(Attribute from TDF);
+    imported ListIteratorOfIDList;
 
-    class LabelList instantiates List from TCollection
-    	(Label from TDF);
+    imported AttributeList;
 
-    class AttributeDeltaList  instantiates List from TCollection
-    	(AttributeDelta from TDF);
+    imported ListIteratorOfAttributeList;
 
-    class DeltaList instantiates List from TCollection
-    	(Delta from TDF);
+    imported LabelList;
+
+    imported ListIteratorOfLabelList;
+
+    imported AttributeDeltaList;
+
+    imported ListIteratorOfAttributeDeltaList;
+
+    imported DeltaList;
+
+    imported ListIteratorOfDeltaList;
 
 
     -- Sequences
     -- ---------
 
-    class AttributeSequence instantiates Sequence from TCollection
-    	(Attribute from TDF);
+    imported AttributeSequence;
 
-    class LabelSequence instantiates Sequence from TCollection
-    	(Label from TDF);
+    imported LabelSequence;
 
     -- Arrays
     -- ------
 
-    class AttributeArray1 instantiates Array1 from TCollection
-    	(Attribute from TDF);
+    imported AttributeArray1;
 
-    class HAttributeArray1 instantiates HArray1 from TCollection
-    	(Attribute from TDF,
-    	 AttributeArray1 from TDF);
+    imported transient class HAttributeArray1;
 
 
 
     -- Maps
     -- ----
 
-    class IDMap instantiates Map from TCollection
-    	(GUID from Standard,
-    	 GUID from Standard);
+    imported IDMap;
 
-    class AttributeMap instantiates Map from TCollection
-    	(Attribute from TDF,
-    	 MapTransientHasher from TColStd);
+    imported MapIteratorOfIDMap;
 
-    class AttributeDataMap instantiates DataMap from TCollection
-    	(Attribute from TDF,
-    	 Attribute from TDF,
-    	 MapTransientHasher from TColStd);
+    imported AttributeMap;
 
-    class AttributeDoubleMap instantiates DoubleMap from TCollection
-    	(Attribute from TDF,
-    	 Attribute from TDF,
-    	 MapTransientHasher from TColStd,
-    	 MapTransientHasher from TColStd);
+    imported MapIteratorOfAttributeMap;
 
-    class AttributeIndexedMap instantiates IndexedMap from TCollection
-    	(Attribute from TDF,
-    	 MapTransientHasher from TColStd);
+    imported AttributeDataMap;
+
+    imported DataMapIteratorOfAttributeDataMap;
+
+    imported AttributeDoubleMap;
+
+    imported DoubleMapIteratorOfAttributeDoubleMap;
+
+    imported AttributeIndexedMap;
 
 
-    class LabelMap instantiates Map from TCollection
-    	(Label from TDF,
-    	 LabelMapHasher from TDF);
+    imported LabelMap;
 
-    class LabelDataMap instantiates DataMap from TCollection
-    	(Label from TDF,
-    	 Label from TDF,
-    	 LabelMapHasher from TDF);
 
-    class LabelDoubleMap instantiates DoubleMap from TCollection
-    	(Label from TDF,
-    	 Label from TDF,
-    	 LabelMapHasher from TDF,
-    	 LabelMapHasher from TDF);
+    imported MapIteratorOfLabelMap;
 
-    class LabelIndexedMap instantiates IndexedMap from TCollection
-    	(Label from TDF,
-    	 LabelMapHasher from TDF);
+    imported LabelDataMap;
 
-    class LabelIntegerMap instantiates DataMap from TCollection
-    	(Label from TDF,
-	 Integer from Standard,
-    	 LabelMapHasher from TDF);
+    imported DataMapIteratorOfLabelDataMap;
 
-    class GUIDProgIDMap instantiates DoubleMap from TCollection
-    	(GUID from Standard,
-    	 ExtendedString from TCollection,
-	 GUID from Standard,
-         ExtendedString from TCollection);
+    imported LabelDoubleMap;
+
+    imported DoubleMapIteratorOfLabelDoubleMap;
+
+    imported LabelIndexedMap;
+
+    imported LabelIntegerMap;
+
+    imported DataMapIteratorOfLabelIntegerMap;
+
+    imported GUIDProgIDMap;
+
+    imported DoubleMapIteratorOfGUIDProgIDMap;
 
     ---Category: Package methods
     --           ==============================================================

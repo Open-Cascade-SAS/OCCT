@@ -1,0 +1,8 @@
+
+
+#ifndef IntTools_ListIteratorOfListOfSurfaceRangeSample_HeaderFile
+#define IntTools_ListIteratorOfListOfSurfaceRangeSample_HeaderFile
+
+#include <IntTools_ListOfSurfaceRangeSample.hxx>
+
+#endif

@@ -1,0 +1,8 @@
+
+
+#ifndef TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger_HeaderFile
+#define TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger_HeaderFile
+
+#include <TColStd_DataMapOfAsciiStringInteger.hxx>
+
+#endif

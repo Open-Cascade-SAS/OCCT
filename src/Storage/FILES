@@ -1,3 +1,16 @@
 Storage_Macros.hxx
 Storage_BucketOfPersistent.hxx
 Storage_Position.hxx
+Storage_SeqOfRoot.hxx
+Storage_HSeqOfRoot.hxx
+Storage_PType.hxx
+Storage_MapOfPers.hxx
+Storage_DataMapIteratorOfMapOfPers.hxx
+Storage_MapOfCallBack.hxx
+Storage_DataMapIteratorOfMapOfCallBack.hxx
+Storage_ArrayOfCallBack.hxx
+Storage_HArrayOfCallBack.hxx
+Storage_ArrayOfSchema.hxx
+Storage_HArrayOfSchema.hxx
+Storage_PArray.hxx
+Storage_HPArray.hxx

@@ -133,15 +133,11 @@ is
     --	instantiation of Sequence of Trsf
     --		
 
-    class SequenceOfTrsf
-    	instantiates Sequence  from TCollection (Trsf from gp); 
+    imported SequenceOfTrsf; 
 
-    class SequenceOfAx2
-    	instantiates Sequence from TCollection (Ax2 from gp);
+    imported SequenceOfAx2;
 
-    class HSequenceOfAx2
-    	instantiates HSequence from TCollection (Ax2 from gp,
-	    	    	    	    	    	 SequenceOfAx2 from GeomFill);
+    imported transient class HSequenceOfAx2;
 
     --
     -- private classes
@@ -189,19 +185,13 @@ is
     class  Sweep; 
     class  SectionPlacement;
 
-    class  Array1OfSectionLaw  
-    	instantiates Array1  from TCollection (SectionLaw from GeomFill);  
+    imported Array1OfSectionLaw;  
 	 
-    class  HArray1OfSectionLaw  
-    	instantiates HArray1 from TCollection (SectionLaw from GeomFill, 
-                                     Array1OfSectionLaw  from  GeomFill);  
+    imported transient class HArray1OfSectionLaw;  
 				     
-    class  Array1OfLocationLaw  
-    	instantiates Array1  from TCollection (LocationLaw from GeomFill);  
+    imported Array1OfLocationLaw;  
 	 
-    class  HArray1OfLocationLaw  
-    	instantiates HArray1 from TCollection (LocationLaw from GeomFill, 
-                                     	       Array1OfLocationLaw  from  GeomFill);     
+    imported transient class HArray1OfLocationLaw;     
 
     --	package methods
     --		

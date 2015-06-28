@@ -88,18 +88,15 @@ is
 
   --  class  Sewing; now it is in BRepBuilderAPI
     
-    class DataMapOfShapeBoolean instantiates
-        DataMap from TCollection(Shape          from TopoDS,
-                                 Boolean        from Standard,
-                                 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeBoolean;
+    
+    imported DataMapIteratorOfDataMapOfShapeBoolean;
 
-    class DataMapOfShapeInterference instantiates
-        DataMap from TCollection(Shape          from TopoDS,
-                                 Interference   from TopOpeBRepDS,
-                                 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeInterference;
 
-    class  SequenceOfSequenceOfInteger  instantiates   
-        Sequence  from  TCollection(SequenceOfInteger  from  TColStd);
+    imported DataMapIteratorOfDataMapOfShapeInterference;
+
+    imported SequenceOfSequenceOfInteger;
 
     ConcatenateWire(Wire   :   Wire  from TopoDS;
                     Option :   Shape from GeomAbs; 

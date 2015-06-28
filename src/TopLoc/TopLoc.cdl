@@ -43,16 +43,13 @@ is
     
     class Location;
 
-    class MapLocationHasher instantiates
-    	  MapHasher from TCollection(Location from TopLoc); 
+    imported MapLocationHasher; 
 	  
-    class MapOfLocation instantiates
-    	  Map from TCollection(Location          from TopLoc,
-	    	    	       MapLocationHasher from TopLoc);
+    imported MapOfLocation;
+	  
+    imported MapIteratorOfMapOfLocation;
     	
-    class IndexedMapOfLocation instantiates
-    	  IndexedMap from TCollection(Location          from TopLoc,
-	    	 		      MapLocationHasher from TopLoc);
+    imported IndexedMapOfLocation;
     	
 end TopLoc;
 

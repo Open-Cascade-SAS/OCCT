@@ -1,0 +1,4 @@
+BRepMAT2d_DataMapOfShapeSequenceOfBasicElt.hxx
+BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt.hxx
+BRepMAT2d_DataMapOfBasicEltShape.hxx
+BRepMAT2d_DataMapIteratorOfDataMapOfBasicEltShape.hxx

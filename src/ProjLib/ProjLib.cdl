@@ -103,11 +103,9 @@ is
          -- Normal projection of a curve on a surface
          -- Computes the different parts
          -----------------------------------------------   	    
-    class SequenceOfHSequenceOfPnt 
-    	instantiates  Sequence  from TCollection  (HSequenceOfPnt  from  TColgp); 
+    imported SequenceOfHSequenceOfPnt; 
  
-    class HSequenceOfHSequenceOfPnt 
-    	instantiates  HSequence  from TCollection  (HSequenceOfPnt  from  TColgp,SequenceOfHSequenceOfPnt  from  ProjLib);  
+    imported transient class HSequenceOfHSequenceOfPnt;  
     class CompProjectedCurve; 
     class HCompProjectedCurve 
     	instantiates  GenHCurve2d  from  Adaptor2d  (CompProjectedCurve); 

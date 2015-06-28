@@ -14,3 +14,5 @@ ViewerTest.hxx
 ViewerTest.cxx
 ViewerTest_CmdParser.hxx
 ViewerTest_CmdParser.cxx
+ViewerTest_DoubleMapOfInteractiveAndName.hxx
+ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx

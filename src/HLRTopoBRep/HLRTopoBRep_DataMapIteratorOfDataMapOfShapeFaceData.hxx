@@ -1,0 +1,8 @@
+
+
+#ifndef HLRTopoBRep_DataMapIteratorOfDataMapOfShapeFaceData_HeaderFile
+#define HLRTopoBRep_DataMapIteratorOfDataMapOfShapeFaceData_HeaderFile
+
+#include <HLRTopoBRep_DataMapOfShapeFaceData.hxx>
+
+#endif

@@ -120,14 +120,14 @@ is
 
     -- Instantiations
 
-    class  Array1OfLoop       instantiates  Array1 from TCollection (Loop);
-    class  Array1OfFace       instantiates  Array1 from TCollection (Face);
-    class  Array1OfShell      instantiates  Array1 from TCollection (Shell);
-    class  Array1OfVertexList instantiates  Array1 from TCollection (VertexList);
-    class HArray1OfLoop       instantiates HArray1 from TCollection (Loop,Array1OfLoop);
-    class HArray1OfFace       instantiates HArray1 from TCollection (Face,Array1OfFace);
-    class HArray1OfShell      instantiates HArray1 from TCollection (Shell,Array1OfShell);
-    class HArray1OfVertexList instantiates HArray1 from TCollection (VertexList,Array1OfVertexList);
+    imported Array1OfLoop;
+    imported Array1OfFace;
+    imported Array1OfShell;
+    imported Array1OfVertexList;
+    imported transient class HArray1OfLoop;
+    imported transient class HArray1OfFace;
+    imported transient class HArray1OfShell;
+    imported transient class HArray1OfVertexList;
 
     --  Package methods
 

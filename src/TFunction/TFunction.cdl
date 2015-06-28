@@ -40,15 +40,11 @@ is
 
     class Logbook;
 
-    class DataMapOfGUIDDriver
-    instantiates DataMap from TCollection(GUID   from Standard, 
-	    	 		       	  Driver from TFunction, 
-				          GUID   from Standard);
-    class Array1OfDataMapOfGUIDDriver
-    instantiates Array1 from TCollection(DataMapOfGUIDDriver from TFunction);
-    class HArray1OfDataMapOfGUIDDriver
-    instantiates HArray1 from TCollection(DataMapOfGUIDDriver from TFunction,
-    	    	    	    	    	  Array1OfDataMapOfGUIDDriver from TFunction);
+    imported DataMapOfGUIDDriver;
+
+    imported DataMapIteratorOfDataMapOfGUIDDriver;
+    imported Array1OfDataMapOfGUIDDriver;
+    imported transient class HArray1OfDataMapOfGUIDDriver;
 
     class Function; 
     class GraphNode;
@@ -57,14 +53,10 @@ is
     class IFunction;
     class Iterator;
 
-    class DataMapOfLabelListOfLabel
-    instantiates DataMap from TCollection(Label          from TDF, 
-	    	 		       	  LabelList      from TDF, 
-				          LabelMapHasher from TDF);     
-    class DoubleMapOfIntegerLabel
-    instantiates DoubleMap from TCollection(Integer from Standard,
-    	    	    	    	    	    Label from TDF,
-					    MapIntegerHasher from TColStd,
-					    LabelMapHasher from TDF);
+    imported DataMapOfLabelListOfLabel;
+
+    imported DataMapIteratorOfDataMapOfLabelListOfLabel;     
+    imported DoubleMapOfIntegerLabel;
+    imported DoubleMapIteratorOfDoubleMapOfIntegerLabel;
 
 end TFunction;    

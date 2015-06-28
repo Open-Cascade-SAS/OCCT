@@ -167,12 +167,15 @@ is
 
 
 
-    class NamedShapeHasher instantiates MapHasher from TCollection(NamedShape from TNaming) ;
+    imported NamedShapeHasher;
 	
-    class MapOfNamedShape  instantiates Map from TCollection(NamedShape from TNaming,
-	                                                     NamedShapeHasher from TNaming) ;
+    imported MapOfNamedShape;
+	
+    imported MapIteratorOfMapOfNamedShape;
 		
-    class ListOfNamedShape instantiates List from TCollection (NamedShape from TNaming); 
+    imported ListOfNamedShape;
+		
+    imported ListIteratorOfListOfNamedShape; 
 	 
 
     ---Category: classes to store selected shape (involve naming algorithm)
@@ -221,10 +224,9 @@ is
 	
     pointer PtrRefShape to RefShape  from TNaming; 
 	
-    private class DataMapOfShapePtrRefShape instantiates 
-    	DataMap from TCollection (Shape          from TopoDS,
-    	    	    	    	  PtrRefShape    from TNaming,
-    	    	    	  	  ShapeMapHasher from TopTools);
+    imported DataMapOfShapePtrRefShape;
+	
+    imported DataMapIteratorOfDataMapOfShapePtrRefShape;
     
 
     pointer PtrDataMapOfShapePtrRefShape to DataMapOfShapePtrRefShape from TNaming;
@@ -244,14 +246,15 @@ is
 
     private class IteratorOnShapesSet;
 
-    private class DataMapOfShapeShapesSet instantiates DataMap from TCollection 
-    	    	    	    	    	    	      (Shape          from TopoDS,
-    	    	    	    	                       ShapesSet      from TNaming,
-    	    	    	  	                       ShapeMapHasher from TopTools);    
+    imported DataMapOfShapeShapesSet;
+
+    imported DataMapIteratorOfDataMapOfShapeShapesSet;    
 							     
-    private class ListOfMapOfShape instantiates List from TCollection (MapOfShape from TopTools);					     
-    private  class ListOfIndexedDataMapOfShapeListOfShape instantiates List from TCollection 
-    	                  (IndexedDataMapOfShapeListOfShape from TopTools);
+    imported ListOfMapOfShape;
+							     
+    imported ListIteratorOfListOfMapOfShape;					     
+    imported ListOfIndexedDataMapOfShapeListOfShape;
+    imported ListIteratorOfListOfIndexedDataMapOfShapeListOfShape;
 	
 
     private class NamingTool;

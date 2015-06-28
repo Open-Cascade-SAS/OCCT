@@ -63,17 +63,14 @@ is
     class ContextTool;
 
     --- skl 15.01.2004
-    class DataMapOfAsciiStringTransient instantiates 
-    	  DataMap from TCollection (AsciiString from TCollection,
-	    	    	    	    Transient from Standard,
-				    AsciiString from TCollection);
+    imported DataMapOfAsciiStringTransient;
+    imported DataMapIteratorOfDataMapOfAsciiStringTransient;
 
     class PointHasher;
                                                                                                             
-    class DataMapOfPointTransient instantiates
-    	  DataMap from TCollection (Pnt from gp,
-	                            Transient,
-		               	    PointHasher from STEPConstruct);
+    imported DataMapOfPointTransient;
+                                                                                                            
+    imported DataMapIteratorOfDataMapOfPointTransient;
 
 
     FindEntity (FinderProcess: FinderProcess from Transfer; Shape: Shape from TopoDS)

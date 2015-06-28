@@ -1,0 +1,8 @@
+
+
+#ifndef ExprIntrp_ListIteratorOfStackOfGeneralRelation_HeaderFile
+#define ExprIntrp_ListIteratorOfStackOfGeneralRelation_HeaderFile
+
+#include <ExprIntrp_StackOfGeneralRelation.hxx>
+
+#endif

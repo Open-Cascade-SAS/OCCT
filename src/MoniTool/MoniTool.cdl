@@ -63,30 +63,20 @@ is
         ValueMisc, ValueInteger, ValueReal, ValueIdent, ValueVoid,   ValueText,
         ValueEnum, ValueLogical, ValueSub,  ValueHexa,  ValueBinary;
 
-    class DataMapOfShapeTransient instantiates
-          DataMap from TCollection 
-            (Shape           from TopoDS,
-             Transient       from Standard,
-             ShapeMapHasher  from TopTools);
+    imported DataMapOfShapeTransient;
 
-    class IndexedDataMapOfShapeTransient instantiates
-          IndexedDataMap from TCollection 
-            (Shape           from TopoDS,
-             Transient       from Standard,
-             ShapeMapHasher  from TopTools);
+    imported DataMapIteratorOfDataMapOfShapeTransient;
 
-    class SequenceOfElement instantiates
-         Sequence from TCollection (Element);
-    class HSequenceOfElement instantiates
-        HSequence from TCollection (Element,SequenceOfElement);
+    imported IndexedDataMapOfShapeTransient;
+
+    imported SequenceOfElement;
+    imported transient class HSequenceOfElement;
 
     -- Timers
     class Timer;
     class TimerSentry;
     class MTHasher;
-    class DataMapOfTimer instantiates DataMap from TCollection 
-		    (CString   from Standard,
-	             Timer     from MoniTool,
-		     MTHasher  from MoniTool);
+    imported DataMapOfTimer;
+    imported DataMapIteratorOfDataMapOfTimer;
 
 end MoniTool;

@@ -1,0 +1,6 @@
+IGESGeom_Array1OfBoundary.hxx
+IGESGeom_Array1OfCurveOnSurface.hxx
+IGESGeom_Array1OfTransformationMatrix.hxx
+IGESGeom_HArray1OfBoundary.hxx
+IGESGeom_HArray1OfCurveOnSurface.hxx
+IGESGeom_HArray1OfTransformationMatrix.hxx

@@ -56,8 +56,7 @@ is
 	 
     private class ParameterAndOrientation;
 
-    private class SequenceOfParameterAndOrientation instantiates
-    	Sequence from TCollection(ParameterAndOrientation);
+    imported SequenceOfParameterAndOrientation;
 
     AdjustPeriodic(thePar    : Real from Standard;
             	   theParMin : Real from Standard;

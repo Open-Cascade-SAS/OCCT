@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRep_DataMapIteratorOfDataMapOfTopolTool_HeaderFile
+#define TopOpeBRep_DataMapIteratorOfDataMapOfTopolTool_HeaderFile
+
+#include <TopOpeBRep_DataMapOfTopolTool.hxx>
+
+#endif

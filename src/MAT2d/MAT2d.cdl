@@ -47,57 +47,47 @@ is
 
     class CutCurve;   
 
-    class SequenceOfConnexion instantiates Sequence  from TCollection
-    	    	    	    	    	    	     (Connexion from  MAT2d); 
+    imported SequenceOfConnexion; 
 
-    class DataMapOfIntegerSequenceOfConnexion instantiates DataMap 
-                   from TCollection (Integer              from Standard,
-				     SequenceOfConnexion  from MAT2d,
-				     MapIntegerHasher     from TColStd);
+    imported DataMapOfIntegerSequenceOfConnexion;
+
+    imported DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion;
                                          
-    class Array2OfConnexion  instantiates Array2 from TCollection
-   	    	    	    	    	    	     (Connexion from  MAT2d); 
+    imported Array2OfConnexion; 
                
 
-    class DataMapOfIntegerBisec  instantiates DataMap from TCollection 
-    	                                   (Integer          from Standard,
-					    Bisec            from Bisector,
-					    MapIntegerHasher from TColStd); 
+    imported DataMapOfIntegerBisec;
+               
+
+    imported DataMapIteratorOfDataMapOfIntegerBisec; 
 					    
-    class DataMapOfIntegerPnt2d  instantiates DataMap from TCollection 
-    	                                   (Integer          from Standard,
-					    Pnt2d            from gp,
-					    MapIntegerHasher from TColStd);  
+    imported DataMapOfIntegerPnt2d;
+					    
+    imported DataMapIteratorOfDataMapOfIntegerPnt2d;  
 	    
-    class DataMapOfIntegerVec2d  instantiates DataMap from TCollection 
-    	                                   (Integer          from Standard,
-					    Vec2d            from gp,
-					    MapIntegerHasher from TColStd); 
+    imported DataMapOfIntegerVec2d;
+	    
+    imported DataMapIteratorOfDataMapOfIntegerVec2d; 
 
-    class SequenceOfSequenceOfCurve  instantiates Sequence from TCollection 
-    	                                    (SequenceOfCurve from TColGeom2d); 
+    imported SequenceOfSequenceOfCurve; 
 					    
-    class SequenceOfSequenceOfGeometry instantiates Sequence from TCollection
-    	                                (SequenceOfGeometry from  TColGeom2d); 
+    imported SequenceOfSequenceOfGeometry; 
 
-    class DataMapOfIntegerConnexion instantiates DataMap from TCollection 
-    	                                   (Integer          from Standard,
-					    Connexion        from MAT2d,
-					    MapIntegerHasher from TColStd);
+    imported DataMapOfIntegerConnexion;
+
+    imported DataMapIteratorOfDataMapOfIntegerConnexion;
 
     class BiInt;
 	
     class MapBiIntHasher;
     
-    class DataMapOfBiIntSequenceOfInteger instantiates DataMap 
-         from TCollection (BiInt               from MAT2d,
-			   SequenceOfInteger   from TColStd,
-			   MapBiIntHasher      from MAT2d);
+    imported DataMapOfBiIntSequenceOfInteger;
+    
+    imported DataMapIteratorOfDataMapOfBiIntSequenceOfInteger;
         
-    class DataMapOfBiIntInteger instantiates DataMap 
-         from TCollection (BiInt               from MAT2d,
-			   Integer             from Standard,
-			   MapBiIntHasher      from MAT2d);
+    imported DataMapOfBiIntInteger;
+        
+    imported DataMapIteratorOfDataMapOfBiIntInteger;
 end MAT2d;
 
 

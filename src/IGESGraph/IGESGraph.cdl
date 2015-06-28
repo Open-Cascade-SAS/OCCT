@@ -88,18 +88,13 @@ is
 
     -- The class instantiations :
 
-    class  Array1OfColor  instantiates   Array1 from TCollection (Color);
-    class  Array1OfTextDisplayTemplate instantiates
-    	  Array1 from TCollection (TextDisplayTemplate);
-    class  Array1OfTextFontDef         instantiates
-    	  Array1 from TCollection (TextFontDef);
+    imported Array1OfColor;
+    imported Array1OfTextDisplayTemplate;
+    imported Array1OfTextFontDef;
 
-    class HArray1OfColor  instantiates  HArray1 from TCollection
-    	     (Color,Array1OfColor);
-    class HArray1OfTextDisplayTemplate instantiates HArray1 from TCollection
-    	     (TextDisplayTemplate,Array1OfTextDisplayTemplate);
-    class HArray1OfTextFontDef         instantiates HArray1 from TCollection
-    	     (TextFontDef,Array1OfTextFontDef);
+    imported transient class HArray1OfColor;
+    imported transient class HArray1OfTextDisplayTemplate;
+    imported transient class HArray1OfTextFontDef;
 
     -- Package Methods
 

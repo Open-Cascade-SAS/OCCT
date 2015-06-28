@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape_HeaderFile
+#define TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape_HeaderFile
+
+#include <TopOpeBRepDS_DataMapOfInterferenceShape.hxx>
+
+#endif

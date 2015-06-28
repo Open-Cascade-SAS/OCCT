@@ -667,21 +667,16 @@ is
     	 class Convert;
 
 
-	class Array1OfCoefficient instantiates
-			Array1 from TCollection (Coefficient from Quantity);
+	imported Array1OfCoefficient;
 	---Category: Instantiated classes
 
-	class Array2OfColor instantiates
-			Array2 from TCollection (Color from Quantity);
+	imported Array2OfColor;
 	---Category: Instantiated classes
 
-	class Array1OfColor instantiates
-			Array1 from TCollection (Color from Quantity);
+	imported Array1OfColor;
 	---Category: Instantiated classes
 
-	class HArray1OfColor instantiates
-			HArray1 from TCollection (Color from Quantity,
-						  Array1OfColor from Quantity);
+	imported transient class HArray1OfColor;
 	---Category: Instantiated classes
 
 

@@ -1,0 +1,4 @@
+BRep_ListOfCurveRepresentation.hxx
+BRep_ListIteratorOfListOfCurveRepresentation.hxx
+BRep_ListOfPointRepresentation.hxx
+BRep_ListIteratorOfListOfPointRepresentation.hxx

@@ -153,31 +153,30 @@ is
 
     class NamedData;         
          					       
-    class ListOfExtendedString instantiates List from TCollection ( ExtendedString from TCollection );	 
+    imported ListOfExtendedString;
+         					       
+    imported ListIteratorOfListOfExtendedString;	 
 
       
     --  Extension
-    class ListOfByte instantiates List from TCollection(Byte from Standard);
+    imported ListOfByte;
+    imported ListIteratorOfListOfByte;
 
-    class LabelArray1 instantiates Array1 from TCollection(Label from TDF); 
+    imported LabelArray1; 
     
-    class HLabelArray1 instantiates HArray1 from TCollection(Label from TDF, LabelArray1 from TDataStd);
+    imported transient class HLabelArray1;
 
-    class DataMapOfStringReal instantiates DataMap from TCollection(ExtendedString from TCollection,
-    	    	    	    	    	    	    	    	    Real from Standard,
-								    ExtendedString from TCollection);
-    class DataMapOfStringString instantiates DataMap from TCollection(ExtendedString from TCollection,
-    	    	    	    	    	    	    	    	      ExtendedString from TCollection,
-								      ExtendedString from TCollection);
-    class DataMapOfStringByte instantiates DataMap from TCollection(ExtendedString from TCollection,
-    	    	    	    	    	    	    	    	    Byte from Standard,
-								    ExtendedString from TCollection);
-    class DataMapOfStringHArray1OfInteger instantiates DataMap from TCollection(ExtendedString from TCollection,
-    	    	    	    	    	    	    	    	       	    	HArray1OfInteger from TColStd,
-								       	    	ExtendedString from TCollection);
-    class DataMapOfStringHArray1OfReal instantiates DataMap from TCollection(ExtendedString from TCollection,
-    	    	    	    	    	    	    	    	       	     HArray1OfReal from TColStd,
-								       	     ExtendedString from TCollection);
+    imported DataMapOfStringReal;
+
+    imported DataMapIteratorOfDataMapOfStringReal;
+    imported DataMapOfStringString;
+    imported DataMapIteratorOfDataMapOfStringString;
+    imported DataMapOfStringByte;
+    imported DataMapIteratorOfDataMapOfStringByte;
+    imported DataMapOfStringHArray1OfInteger;
+    imported DataMapIteratorOfDataMapOfStringHArray1OfInteger;
+    imported DataMapOfStringHArray1OfReal;
+    imported DataMapIteratorOfDataMapOfStringHArray1OfReal;
 
     class HDataMapOfStringInteger;   
     

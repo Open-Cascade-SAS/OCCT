@@ -227,26 +227,21 @@ is
 
     ---Category: instantiations of classes from TCollection...
 
-    class SequenceOfFilter instantiates Sequence from TCollection
-    (Filter from SelectMgr);
+    imported SequenceOfFilter;
 
-    class ListOfFilter instantiates List from TCollection
-    (Filter from SelectMgr);
+    imported ListOfFilter;
 
-    class SequenceOfOwner instantiates Sequence from TCollection
-    (EntityOwner from SelectMgr);
+    imported ListIteratorOfListOfFilter;
 
-    class SequenceOfSelector instantiates Sequence from TCollection
-        (ViewerSelector from SelectMgr);
+    imported SequenceOfOwner;
 
-    class DataMapOfObjectSelectors instantiates DataMap from TCollection
-    (SelectableObject from SelectMgr,SequenceOfSelector,MapTransientHasher from TColStd);
+    imported SequenceOfSelector;
 
-    private class IndexedDataMapOfOwnerCriterion
-        instantiates IndexedDataMap from TCollection
-                            (EntityOwner        from SelectBasics,
-                             SortCriterion      from SelectMgr,
-                             MapTransientHasher from TColStd);
+    imported DataMapOfObjectSelectors;
+
+    imported DataMapIteratorOfDataMapOfObjectSelectors;
+
+    imported IndexedDataMapOfOwnerCriterion;
 
     private class SortCriterion;
 

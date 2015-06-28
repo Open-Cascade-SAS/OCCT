@@ -5,3 +5,5 @@ IntPatch_ImpImpIntersection_3.gxx
 IntPatch_ImpImpIntersection_4.gxx
 IntPatch_ImpImpIntersection_5.gxx
 IntPatch_ImpImpIntersection_6.gxx
+IntPatch_SequenceOfPoint.hxx
+IntPatch_SequenceOfLine.hxx

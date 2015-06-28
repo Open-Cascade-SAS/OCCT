@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepDS_ListIteratorOfListOfInterference_HeaderFile
+#define TopOpeBRepDS_ListIteratorOfListOfInterference_HeaderFile
+
+#include <TopOpeBRepDS_ListOfInterference.hxx>
+
+#endif

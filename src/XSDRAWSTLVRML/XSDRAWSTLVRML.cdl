@@ -27,11 +27,13 @@ is
 
     class DrawableMesh;
 
-    class ElemNodesMap instantiates DataMap from TCollection
-            ( Integer from Standard, DataMapOfIntegerInteger from TColStd, MapIntegerHasher from TColStd );
+    imported ElemNodesMap;
 
-    class CoordsMap instantiates DataMap from TCollection
-            ( Integer from Standard, DataMapOfIntegerReal from TColStd, MapIntegerHasher from TColStd );
+    imported DataMapIteratorOfElemNodesMap;
+
+    imported CoordsMap;
+
+    imported DataMapIteratorOfCoordsMap;
 
     InitCommands (theCommands : in out Interpretor from Draw);
     ---Purpose : Inits commands for writing to STL and VRML formats

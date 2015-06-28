@@ -1,0 +1,8 @@
+
+
+#ifndef BRepAlgo_DataMapIteratorOfDataMapOfShapeInterference_HeaderFile
+#define BRepAlgo_DataMapIteratorOfDataMapOfShapeInterference_HeaderFile
+
+#include <BRepAlgo_DataMapOfShapeInterference.hxx>
+
+#endif

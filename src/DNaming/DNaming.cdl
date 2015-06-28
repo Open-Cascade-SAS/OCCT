@@ -59,10 +59,9 @@ is
      
     class  Line3DDriver;
     
-    class DataMapOfShapeOfName instantiates
-    	DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	 AsciiString    from TCollection,
-                                 ShapeMapHasher from TopTools);  	 
+    imported DataMapOfShapeOfName;
+    
+    imported DataMapIteratorOfDataMapOfShapeOfName;  	 
 				  
 
     GetReal  (theFunction : Function from TFunction; thePosition : Integer from Standard) 

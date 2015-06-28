@@ -53,36 +53,28 @@ is
     class DictionaryOfExternFile instantiates 
     	  Dictionary from Dico (ExternFile from STEPCAFControl);
 
-    class DataMapOfShapeSDR instantiates 
-    	  DataMap from TCollection (Shape from TopoDS,
-	    	    	    	    ShapeDefinitionRepresentation from StepShape,
-				    ShapeMapHasher from TopTools);
+    imported DataMapOfShapeSDR;
+
+    imported DataMapIteratorOfDataMapOfShapeSDR;
 
     --- skl
-    class DataMapOfShapePD instantiates 
-    	  DataMap from TCollection (Shape from TopoDS,
-	    	    	    	    ProductDefinition from StepBasic,
-				    ShapeMapHasher from TopTools);
+    imported DataMapOfShapePD;
+    imported DataMapIteratorOfDataMapOfShapePD;
 
-    class DataMapOfSDRExternFile instantiates 
-    	  DataMap from TCollection (ShapeDefinitionRepresentation from StepShape,
-				    ExternFile from STEPCAFControl,
-				    MapTransientHasher from TColStd);
+    imported DataMapOfSDRExternFile;
+
+    imported DataMapIteratorOfDataMapOfSDRExternFile;
 
     --- skl
-    class DataMapOfPDExternFile instantiates 
-    	  DataMap from TCollection (ProductDefinition from StepBasic,
-				    ExternFile from STEPCAFControl,
-				    MapTransientHasher from TColStd);
+    imported DataMapOfPDExternFile;
+    imported DataMapIteratorOfDataMapOfPDExternFile;
 
-    class DataMapOfLabelShape instantiates
-    	  DataMap from TCollection (Label from TDF,
-				    Shape from TopoDS,
-	    	    	    	    LabelMapHasher from TDF);
+    imported DataMapOfLabelShape;
 
-    class DataMapOfLabelExternFile instantiates
-    	  DataMap from TCollection (Label from TDF,
-				    ExternFile from STEPCAFControl,
-	    	    	    	    LabelMapHasher from TDF);
+    imported DataMapIteratorOfDataMapOfLabelShape;
+
+    imported DataMapOfLabelExternFile;
+
+    imported DataMapIteratorOfDataMapOfLabelExternFile;
 
 end STEPCAFControl;

@@ -43,13 +43,11 @@ is
 
     private class Parameter;
 
-    private class SequenceOfParameter instantiates Sequence from TCollection
-    	    (Parameter from Hatch);
+    imported SequenceOfParameter;
 
     private class Line;
 
-    private class SequenceOfLine instantiates Sequence from TCollection
-    	    (Line from Hatch);
+    imported SequenceOfLine;
 	    
     class Hatcher;
 

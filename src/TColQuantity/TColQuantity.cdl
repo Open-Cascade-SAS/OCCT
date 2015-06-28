@@ -25,10 +25,8 @@ uses
     Quantity
     
 is
-    class Array1OfLength instantiates Array1 from TCollection (Length from Quantity);
-    class Array2OfLength instantiates Array2 from TCollection (Length from Quantity);
-    class HArray1OfLength        instantiates 
-    	HArray1 from TCollection  (Length from Quantity, Array1OfLength from TColQuantity); 
-    class HArray2OfLength        instantiates 
-    	HArray2 from TCollection  (Length from Quantity, Array2OfLength from TColQuantity); 
+    imported Array1OfLength;
+    imported Array2OfLength;
+    imported transient class HArray1OfLength; 
+    imported transient class HArray2OfLength; 
 end TColQuantity;

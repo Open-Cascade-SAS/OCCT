@@ -282,36 +282,36 @@ class ProductOrFormationOrDefinition;
 
     	--  Instantiations
 
-class Array1OfProductDefinition instantiates Array1 from TCollection (ProductDefinition);
-class HArray1OfProductDefinition instantiates HArray1 from TCollection (ProductDefinition,Array1OfProductDefinition from StepBasic);
+imported Array1OfProductDefinition;
+imported transient class HArray1OfProductDefinition;
 
-class Array1OfApproval instantiates Array1 from TCollection (Approval);
-class HArray1OfApproval instantiates HArray1 from TCollection (Approval,Array1OfApproval from StepBasic);
+imported Array1OfApproval;
+imported transient class HArray1OfApproval;
 
-class Array1OfUncertaintyMeasureWithUnit instantiates Array1 from TCollection (UncertaintyMeasureWithUnit);
-class HArray1OfUncertaintyMeasureWithUnit instantiates HArray1 from TCollection (UncertaintyMeasureWithUnit,Array1OfUncertaintyMeasureWithUnit from StepBasic);
+imported Array1OfUncertaintyMeasureWithUnit;
+imported transient class HArray1OfUncertaintyMeasureWithUnit;
 
-class Array1OfNamedUnit instantiates Array1 from TCollection (NamedUnit);
-class HArray1OfNamedUnit instantiates HArray1 from TCollection (NamedUnit,Array1OfNamedUnit from StepBasic);
+imported Array1OfNamedUnit;
+imported transient class HArray1OfNamedUnit;
 
-class Array1OfOrganization instantiates Array1 from TCollection (Organization);
-class HArray1OfOrganization instantiates HArray1 from TCollection (Organization,Array1OfOrganization from StepBasic);
+imported Array1OfOrganization;
+imported transient class HArray1OfOrganization;
 
-class Array1OfPerson instantiates Array1 from TCollection (Person);
-class HArray1OfPerson instantiates HArray1 from TCollection (Person,Array1OfPerson from StepBasic);
+imported Array1OfPerson;
+imported transient class HArray1OfPerson;
 
-class Array1OfProductContext instantiates Array1 from TCollection (ProductContext);
-class HArray1OfProductContext instantiates HArray1 from TCollection (ProductContext,Array1OfProductContext from StepBasic);
+imported Array1OfProductContext;
+imported transient class HArray1OfProductContext;
 
-class Array1OfProduct instantiates Array1 from TCollection (Product);
-class HArray1OfProduct instantiates HArray1 from TCollection (Product,Array1OfProduct from StepBasic);
+imported Array1OfProduct;
+imported transient class HArray1OfProduct;
 
-class Array1OfDerivedUnitElement instantiates Array1 from TCollection (DerivedUnitElement from StepBasic);
-class HArray1OfDerivedUnitElement instantiates HArray1 from TCollection (DerivedUnitElement from StepBasic,Array1OfDerivedUnitElement from StepBasic);
+imported Array1OfDerivedUnitElement;
+imported transient class HArray1OfDerivedUnitElement;
 
 -- Added from AP214 CC1 to CC2
-class Array1OfDocument instantiates Array1 from TCollection (Document);
-class HArray1OfDocument instantiates HArray1 from TCollection (Document,Array1OfDocument from StepBasic);
+imported Array1OfDocument;
+imported transient class HArray1OfDocument;
 
 --	Protocol returns Protocol from StepBasic;
 

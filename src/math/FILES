@@ -14,3 +14,4 @@ math_PSO.cxx
 math_BullardGenerator.hxx
 math_PSOParticlesPool.hxx
 math_PSOParticlesPool.cxx
+math_Array1OfValueAndWeight.hxx

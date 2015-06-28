@@ -1,1 +1,3 @@
 BRepTools_Debug.cxx
+BRepTools_MapOfVertexPnt2d.hxx
+BRepTools_DataMapIteratorOfMapOfVertexPnt2d.hxx

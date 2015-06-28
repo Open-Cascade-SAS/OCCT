@@ -41,20 +41,17 @@ is
 
     class Style;
 	
-    class DataMapOfShapeStyle instantiates
-    	DataMap from TCollection(Shape from TopoDS,
-	    	    	    	 Style from XCAFPrs,
-                                 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeStyle;
+	
+    imported DataMapIteratorOfDataMapOfShapeStyle;
 
-    class DataMapOfStyleShape instantiates
-    	DataMap from TCollection(Style from XCAFPrs,
-                                 Shape from TopoDS,
-	    	    	    	 Style from XCAFPrs);
+    imported DataMapOfStyleShape;
 
-    class DataMapOfStyleTransient instantiates
-    	DataMap from TCollection(Style from XCAFPrs,
-                                 Transient from Standard,
-	    	    	    	 Style from XCAFPrs);
+    imported DataMapIteratorOfDataMapOfStyleShape;
+
+    imported DataMapOfStyleTransient;
+
+    imported DataMapIteratorOfDataMapOfStyleTransient;
 
     ---Methods: Work with styles of the document
     

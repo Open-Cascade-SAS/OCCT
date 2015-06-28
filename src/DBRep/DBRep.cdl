@@ -43,18 +43,21 @@ is
 
     class Edge;
 	
-    class ListOfEdge instantiates 
-    List from TCollection(Edge from DBRep);
+    imported ListOfEdge;
+	
+    imported ListIteratorOfListOfEdge;
 
     class Face;
 	
-    class ListOfFace instantiates 
-    List from TCollection(Face from DBRep);
+    imported ListOfFace;
+	
+    imported ListIteratorOfListOfFace;
 
     class HideData;
 
-    class ListOfHideData instantiates
-    List from TCollection(HideData from DBRep);
+    imported ListOfHideData;
+
+    imported ListIteratorOfListOfHideData;
 
     class DrawableShape;
     

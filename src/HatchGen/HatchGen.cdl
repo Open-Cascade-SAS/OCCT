@@ -53,16 +53,13 @@ is
     deferred class IntersectionPoint ;
 
     class PointOnHatching ;
-    class PointsOnHatching instantiates Sequence from TCollection
-    	(PointOnHatching from HatchGen) ;
+    imported PointsOnHatching;
 
     class PointOnElement ;
-    class PointsOnElement instantiates Sequence from TCollection
-    	(PointOnElement) ;
+    imported PointsOnElement;
 	
     class Domain ;
-    class Domains instantiates Sequence from TCollection
-    	(Domain from HatchGen) ;
+    imported Domains;
 
 
 end HatchGen ;

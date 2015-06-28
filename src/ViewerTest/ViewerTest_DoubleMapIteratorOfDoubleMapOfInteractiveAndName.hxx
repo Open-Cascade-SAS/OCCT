@@ -1,0 +1,8 @@
+
+
+#ifndef ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName_HeaderFile
+#define ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName_HeaderFile
+
+#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+
+#endif

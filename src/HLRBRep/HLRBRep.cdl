@@ -90,11 +90,9 @@ is
     
     class FaceIterator;
 	
-    class Array1OfEData instantiates Array1           from TCollection
-    	(EdgeData from HLRBRep);
+    imported Array1OfEData;
 
-    class Array1OfFData instantiates Array1           from TCollection
-    	(FaceData from HLRBRep);
+    imported Array1OfFData;
 
     class Data;
 
@@ -104,8 +102,7 @@ is
 
     class ShapeBounds;
 
-    class SeqOfShapeBounds instantiates Sequence from TCollection
-    	(ShapeBounds from HLRBRep);
+    imported SeqOfShapeBounds;
 
     class EdgeInterferenceTool;
 
@@ -128,11 +125,13 @@ is
     class BiPoint;
     class BiPnt2D;
     
-    class ListOfBPoint instantiates List from TCollection (
-    	BiPoint from HLRBRep);
+    imported ListOfBPoint;
+    
+    imported ListIteratorOfListOfBPoint;
 
-    class ListOfBPnt2D instantiates List from TCollection (
-    	BiPnt2D from HLRBRep);
+    imported ListOfBPnt2D;
+
+    imported ListIteratorOfListOfBPnt2D;
 
     class PolyHLRToShape;
 

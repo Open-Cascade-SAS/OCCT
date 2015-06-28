@@ -1,0 +1,8 @@
+
+
+#ifndef XCAFPrs_DataMapIteratorOfDataMapOfStyleShape_HeaderFile
+#define XCAFPrs_DataMapIteratorOfDataMapOfStyleShape_HeaderFile
+
+#include <XCAFPrs_DataMapOfStyleShape.hxx>
+
+#endif

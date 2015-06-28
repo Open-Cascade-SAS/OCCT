@@ -67,7 +67,6 @@ is
 
     class AnalyticCurInf;
 
-    private class SequenceOfCIType instantiates Sequence from TCollection 
-						        (CIType  from  LProp); 
+    imported SequenceOfCIType; 
     
 end LProp;    

@@ -68,38 +68,28 @@ is
     --- instantiate classes:
     --  
 
-    class Array1OfConstraintCouple instantiates Array1 from TCollection
-            (ConstraintCouple);
+    imported Array1OfConstraintCouple;
 
-    class HArray1OfConstraintCouple instantiates HArray1 from TCollection
-    	    (ConstraintCouple,Array1OfConstraintCouple);
+    imported transient class HArray1OfConstraintCouple;
 
 
-    class Array1OfMultiPoint instantiates Array1 from TCollection
-    	    (MultiPoint);
+    imported Array1OfMultiPoint;
 	    
-    class HArray1OfMultiPoint instantiates HArray1 from TCollection
-    	     (MultiPoint,Array1OfMultiPoint);
+    imported transient class HArray1OfMultiPoint;
 
 
-    class Array1OfMultiCurve instantiates Array1 from TCollection
-    	     (MultiCurve);
+    imported Array1OfMultiCurve;
 
-    class HArray1OfMultiCurve instantiates HArray1 from TCollection
-    	     (MultiCurve, Array1OfMultiCurve);
+    imported transient class HArray1OfMultiCurve;
 
-    class SequenceOfMultiCurve instantiates Sequence from TCollection
-    	     (MultiCurve);
+    imported SequenceOfMultiCurve;
 
 
-    class Array1OfMultiBSpCurve instantiates Array1 from TCollection
-    	     (MultiBSpCurve);
+    imported Array1OfMultiBSpCurve;
 
-    class HArray1OfMultiBSpCurve instantiates HArray1 from TCollection
-    	     (MultiBSpCurve, Array1OfMultiBSpCurve);
+    imported transient class HArray1OfMultiBSpCurve;
 
-    class SequenceOfMultiBSpCurve instantiates Sequence from TCollection
-    	     (MultiBSpCurve);
+    imported SequenceOfMultiBSpCurve;
      
     
      BernsteinMatrix(NbPoles: in Integer    from Standard;

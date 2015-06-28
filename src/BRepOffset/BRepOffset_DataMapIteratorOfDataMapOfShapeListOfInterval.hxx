@@ -1,0 +1,8 @@
+
+
+#ifndef BRepOffset_DataMapIteratorOfDataMapOfShapeListOfInterval_HeaderFile
+#define BRepOffset_DataMapIteratorOfDataMapOfShapeListOfInterval_HeaderFile
+
+#include <BRepOffset_DataMapOfShapeListOfInterval.hxx>
+
+#endif

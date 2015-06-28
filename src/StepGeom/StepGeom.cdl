@@ -211,32 +211,32 @@ class SurfacePatch;
 class SurfaceBoundary;
 
 
-class Array1OfCurve instantiates Array1 from TCollection (Curve);
-class HArray1OfCurve instantiates HArray1 from TCollection (Curve,Array1OfCurve from StepGeom);
+imported Array1OfCurve;
+imported transient class HArray1OfCurve;
 
-class Array1OfCartesianPoint instantiates Array1 from TCollection (CartesianPoint);
-class HArray1OfCartesianPoint instantiates HArray1 from TCollection (CartesianPoint,Array1OfCartesianPoint from StepGeom);
+imported Array1OfCartesianPoint;
+imported transient class HArray1OfCartesianPoint;
 
-class Array2OfCartesianPoint instantiates Array2 from TCollection (CartesianPoint);
-class HArray2OfCartesianPoint instantiates HArray2 from TCollection (CartesianPoint,Array2OfCartesianPoint from StepGeom);
+imported Array2OfCartesianPoint;
+imported transient class HArray2OfCartesianPoint;
 
-class Array1OfCompositeCurveSegment instantiates Array1 from TCollection (CompositeCurveSegment);
-class HArray1OfCompositeCurveSegment instantiates HArray1 from TCollection (CompositeCurveSegment,Array1OfCompositeCurveSegment from StepGeom);
+imported Array1OfCompositeCurveSegment;
+imported transient class HArray1OfCompositeCurveSegment;
 
-class Array1OfBoundaryCurve instantiates Array1 from TCollection (BoundaryCurve);
-class HArray1OfBoundaryCurve instantiates HArray1 from TCollection (BoundaryCurve,Array1OfBoundaryCurve from StepGeom);
+imported Array1OfBoundaryCurve;
+imported transient class HArray1OfBoundaryCurve;
 
-class Array2OfSurfacePatch instantiates Array2 from TCollection (SurfacePatch);
-class HArray2OfSurfacePatch instantiates HArray2 from TCollection (SurfacePatch,Array2OfSurfacePatch from StepGeom);
+imported Array2OfSurfacePatch;
+imported transient class HArray2OfSurfacePatch;
 
-class Array1OfSurfaceBoundary instantiates Array1 from TCollection (SurfaceBoundary);
-class HArray1OfSurfaceBoundary instantiates HArray1 from TCollection (SurfaceBoundary,Array1OfSurfaceBoundary from StepGeom);
+imported Array1OfSurfaceBoundary;
+imported transient class HArray1OfSurfaceBoundary;
 
-class Array1OfPcurveOrSurface instantiates Array1 from TCollection (PcurveOrSurface);
-class HArray1OfPcurveOrSurface instantiates HArray1 from TCollection (PcurveOrSurface,Array1OfPcurveOrSurface from StepGeom);
+imported Array1OfPcurveOrSurface;
+imported transient class HArray1OfPcurveOrSurface;
 
-class Array1OfTrimmingSelect instantiates Array1 from TCollection (TrimmingSelect);
-class HArray1OfTrimmingSelect instantiates HArray1 from TCollection (TrimmingSelect,Array1OfTrimmingSelect from StepGeom);
+imported Array1OfTrimmingSelect;
+imported transient class HArray1OfTrimmingSelect;
 
 --	Protocol returns Protocol from StepGeom;
 

@@ -53,42 +53,28 @@ is
     OK,NOK
     end CheckStatus;
 
-    class DataMapOfCheckStatus 
-    instantiates DataMap from TCollection 
-    (Integer from Standard,
-     CheckStatus from TopOpeBRepDS,
-     MapIntegerHasher from TColStd);
+    imported DataMapOfCheckStatus;
+
+    imported DataMapIteratorOfDataMapOfCheckStatus;
 
     class Interference;
-    class ListOfInterference instantiates List from TCollection 
-    (Interference from TopOpeBRepDS);
+    imported ListOfInterference;
+    imported ListIteratorOfListOfInterference;
     class InterferenceIterator;
-    class DataMapOfInterferenceListOfInterference instantiates
-    DataMap from TCollection
-    (Interference       from TopOpeBRepDS,
-     ListOfInterference from TopOpeBRepDS,
-     MapTransientHasher from TColStd);
+    imported DataMapOfInterferenceListOfInterference;
+    imported DataMapIteratorOfDataMapOfInterferenceListOfInterference;
 
-    class DataMapOfInterferenceShape instantiates
-    DataMap from TCollection
-    (Interference       from TopOpeBRepDS,
-     Shape              from TopoDS,
-     MapTransientHasher from TColStd);
+    imported DataMapOfInterferenceShape;
 
-    class DataMapOfIntegerListOfInterference instantiates
-    DataMap from TCollection
-    (Integer from Standard,
-     ListOfInterference from TopOpeBRepDS,
-     MapIntegerHasher from TColStd);
+    imported DataMapIteratorOfDataMapOfInterferenceShape;
+
+    imported DataMapOfIntegerListOfInterference;
+
+    imported DataMapIteratorOfDataMapOfIntegerListOfInterference;
     
-    class Array1OfDataMapOfIntegerListOfInterference
-    instantiates Array1 from TCollection
-    (DataMapOfIntegerListOfInterference from TopOpeBRepDS);
+    imported Array1OfDataMapOfIntegerListOfInterference;
 
-    class HArray1OfDataMapOfIntegerListOfInterference
-    instantiates HArray1 from TCollection
-    (DataMapOfIntegerListOfInterference from TopOpeBRepDS,
-     Array1OfDataMapOfIntegerListOfInterference from TopOpeBRepDS);
+    imported transient class HArray1OfDataMapOfIntegerListOfInterference;
         
     class TKI;
     class Transition;
@@ -109,52 +95,36 @@ is
     class Curve;
     class Point;
     	
-    class IndexedDataMapOfVertexPoint instantiates IndexedDataMap from TCollection
-    (Shape from TopoDS,
-     Point from TopOpeBRepDS,
-     ShapeMapHasher from TopTools);
+    imported IndexedDataMapOfVertexPoint;
 
     class GeometryData;
     
     class SurfaceData;
-    class MapOfSurface instantiates DataMap from TCollection
-    (Integer from Standard,
-     SurfaceData from TopOpeBRepDS,
-     MapIntegerHasher from TColStd);
+    imported MapOfSurface;
+    imported DataMapIteratorOfMapOfSurface;
 
     class CurveData;
-    class MapOfCurve instantiates DataMap from TCollection
-    (Integer from Standard, 
-     CurveData from TopOpeBRepDS,
-     MapIntegerHasher from TColStd);
+    imported MapOfCurve;
+    imported DataMapIteratorOfMapOfCurve;
 
     class PointData;
-    class MapOfPoint instantiates DataMap from TCollection
-    (Integer from Standard, 
-     PointData from TopOpeBRepDS,
-     MapIntegerHasher from TColStd);
+    imported MapOfPoint;
+    imported DataMapIteratorOfMapOfPoint;
 
     class ShapeData;
-    class MapOfShapeData instantiates IndexedDataMap from TCollection
-    (Shape from TopoDS, 
-     ShapeData from TopOpeBRepDS, 
-     ShapeMapHasher from TopTools);
+    imported MapOfShapeData;
 
-    class ShapeSurface instantiates DataMap from TCollection
-    (Shape from TopoDS,
-     Surface from Geom,
-     ShapeMapHasher from TopTools);
+    imported ShapeSurface;
+
+    imported DataMapIteratorOfShapeSurface;
     
-    class DoubleMapOfIntegerShape instantiates DoubleMap from TCollection
-    (Integer from Standard,
-     Shape from TopoDS,
-     MapIntegerHasher from TColStd,
-     ShapeMapHasher from TopTools); -- for DSS
+    imported DoubleMapOfIntegerShape;
+    
+    imported DoubleMapIteratorOfDoubleMapOfIntegerShape; -- for DSS
 
-    class MapOfIntegerShapeData instantiates DataMap from TCollection
-    (Integer from Standard,
-     ShapeData from TopOpeBRepDS,
-     MapIntegerHasher from TColStd); -- for DSS
+    imported MapOfIntegerShapeData;
+
+    imported DataMapIteratorOfMapOfIntegerShapeData; -- for DSS
 
     class DSS; -- (DataStructure Shape) NYI
     
@@ -191,24 +161,19 @@ is
     class Association;
     
     class ListOfShapeOn1State;
-    class DataMapOfShapeListOfShapeOn1State 
-    instantiates DataMap from TCollection
-    (Shape from TopoDS,ListOfShapeOn1State,ShapeMapHasher from TopTools);
+    imported DataMapOfShapeListOfShapeOn1State;
+    imported DataMapIteratorOfDataMapOfShapeListOfShapeOn1State;
 
     class Explorer;
 
 --modified by NIZNHY-PKV Mon Sep 20 11:49:15 1999  f 
 	 
     class  ShapeWithState; 
-    class  IndexedDataMapOfShapeWithState  instantiates 
-      IndexedDataMap from TCollection  (Shape          from TopoDS, 
-    	    	    	                ShapeWithState from TopOpeBRepDS, 
-			                ShapeMapHasher from TopTools); 
+    imported IndexedDataMapOfShapeWithState; 
 
-    class  DataMapOfShapeState  instantiates 
-      DataMap from TCollection(Shape                   from TopoDS,
-      			       State                   from TopAbs,
-		               ShapeMapHasher          from TopTools);
+    imported DataMapOfShapeState;
+
+    imported DataMapIteratorOfDataMapOfShapeState;
         	 
 --modified by NIZNHY-PKV Mon Sep 20 11:49:20 1999  t	     
     

@@ -1,0 +1,8 @@
+
+
+#ifndef Resource_DataMapIteratorOfDataMapOfAsciiStringExtendedString_HeaderFile
+#define Resource_DataMapIteratorOfDataMapOfAsciiStringExtendedString_HeaderFile
+
+#include <Resource_DataMapOfAsciiStringExtendedString.hxx>
+
+#endif

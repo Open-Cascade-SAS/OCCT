@@ -57,8 +57,9 @@ uses
 is
     class BiPoint;
     
-    class ListOfBPoint             instantiates List         from TCollection
-    	(BiPoint from HLRAlgo);
+    imported ListOfBPoint;
+    
+    imported ListIteratorOfListOfBPoint;
 
     class PolyShellData;
 
@@ -74,33 +75,21 @@ is
 
     class TriangleData;
 
-    class Array1OfPHDat            instantiates Array1       from TCollection
-    	(PolyHidingData from HLRAlgo);
+    imported Array1OfPHDat;
 	
-    class HArray1OfPHDat           instantiates HArray1      from TCollection
-    	(PolyHidingData from HLRAlgo,
-         Array1OfPHDat  from HLRAlgo);
+    imported transient class HArray1OfPHDat;
 	
-    class Array1OfPISeg            instantiates Array1       from TCollection
-    	(PolyInternalSegment from HLRAlgo);
+    imported Array1OfPISeg;
 	
-    class HArray1OfPISeg           instantiates HArray1      from TCollection
-    	(PolyInternalSegment from HLRAlgo,
-         Array1OfPISeg       from HLRAlgo);
+    imported transient class HArray1OfPISeg;
 	
-    class Array1OfPINod            instantiates Array1       from TCollection
-    	(PolyInternalNode from HLRAlgo);
+    imported Array1OfPINod;
 	
-    class HArray1OfPINod           instantiates HArray1      from TCollection
-    	(PolyInternalNode from HLRAlgo,
-         Array1OfPINod    from HLRAlgo);
+    imported transient class HArray1OfPINod;
 	
-    class Array1OfTData            instantiates Array1       from TCollection
-    	(TriangleData from HLRAlgo);
+    imported Array1OfTData;
 	
-    class HArray1OfTData           instantiates HArray1      from TCollection
-    	(TriangleData  from HLRAlgo,
-         Array1OfTData from HLRAlgo);
+    imported transient class HArray1OfTData;
 	
     class PolyAlgo;
 
@@ -116,8 +105,9 @@ is
     	(Intersection from HLRAlgo, 
 	 Coincidence  from HLRAlgo);
 
-    class InterferenceList         instantiates List         from TCollection
-    	(Interference from HLRAlgo);
+    imported InterferenceList;
+
+    imported ListIteratorOfInterferenceList;
 	
     class EdgesBlock;
 

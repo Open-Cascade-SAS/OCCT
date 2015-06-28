@@ -70,13 +70,9 @@ is
     --------------------------------------------------    
     class IntersectionSegment;
     --------------------------------------------------
-    class SequenceOfPnt instantiates 
-    	Sequence from TCollection(
-	    IntersectionPoint from IntCurveSurface);
+    imported SequenceOfPnt;
     --------------------------------------------------	    
-    class SequenceOfSeg instantiates 
-    	Sequence from TCollection(
-	    IntersectionSegment from IntCurveSurface);
+    imported SequenceOfSeg;
     --------------------------------------------------    
     generic class HCurveTool;
     --------------------------------------------------

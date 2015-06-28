@@ -28,3 +28,11 @@ SelectMgr_SensitiveEntitySet.cxx
 SelectMgr_ViewerSelector.hxx
 SelectMgr_ViewerSelector.cxx
 SelectMgr_ViewerSelector.lxx
+SelectMgr_SequenceOfFilter.hxx
+SelectMgr_ListOfFilter.hxx
+SelectMgr_ListIteratorOfListOfFilter.hxx
+SelectMgr_SequenceOfOwner.hxx
+SelectMgr_SequenceOfSelector.hxx
+SelectMgr_DataMapOfObjectSelectors.hxx
+SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors.hxx
+SelectMgr_IndexedDataMapOfOwnerCriterion.hxx

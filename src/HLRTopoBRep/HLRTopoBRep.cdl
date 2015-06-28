@@ -41,20 +41,19 @@ uses
 is
     class VData;
 
-    class ListOfVData            instantiates List    from TCollection 
-    	(VData from HLRTopoBRep);
+    imported ListOfVData;
 
-    class MapOfShapeListOfVData  instantiates DataMap from TCollection
-    	(Shape          from TopoDS,
-         ListOfVData    from HLRTopoBRep,
-         ShapeMapHasher from TopTools);
+    imported ListIteratorOfListOfVData;
+
+    imported MapOfShapeListOfVData;
+
+    imported DataMapIteratorOfMapOfShapeListOfVData;
 
     class FaceData;
 
-    class DataMapOfShapeFaceData instantiates DataMap from TCollection
-    	(Shape          from TopoDS,
-	 FaceData       from HLRTopoBRep,
-	 ShapeMapHasher from TopTools);
+    imported DataMapOfShapeFaceData;
+
+    imported DataMapIteratorOfDataMapOfShapeFaceData;
 					
     class Data;
 

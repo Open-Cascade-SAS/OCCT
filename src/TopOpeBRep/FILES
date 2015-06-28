@@ -20,3 +20,12 @@ TopOpeBRep_DRAW.hxx
 TopOpeBRep_DRAW.cxx
 TopOpeBRep_sort.cxx
 TopOpeBRep_mergePDS.cxx
+TopOpeBRep_Array1OfVPointInter.hxx
+TopOpeBRep_HArray1OfVPointInter.hxx
+TopOpeBRep_Array1OfLineInter.hxx
+TopOpeBRep_HArray1OfLineInter.hxx
+TopOpeBRep_DataMapOfTopolTool.hxx
+TopOpeBRep_DataMapIteratorOfDataMapOfTopolTool.hxx
+TopOpeBRep_SequenceOfPoint2d.hxx
+TopOpeBRep_ListOfBipoint.hxx
+TopOpeBRep_ListIteratorOfListOfBipoint.hxx

@@ -70,9 +70,8 @@ is
 
     class ConstraintTools;
 
-    class DataMapOfGUIDDriver
-    instantiates DataMap from TCollection(GUID      from Standard, 
-	    	 		       	  Driver from TPrsStd, 
-				          GUID      from Standard); 
+    imported DataMapOfGUIDDriver;
+
+    imported DataMapIteratorOfDataMapOfGUIDDriver; 
 end TPrsStd;
 

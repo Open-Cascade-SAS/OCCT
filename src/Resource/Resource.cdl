@@ -39,15 +39,13 @@ is
     	-- Resource_Unicode class to convert a string
     	-- from one of these non ASCII format to Unicode, and vice versa.
 
-   class DataMapOfAsciiStringAsciiString instantiates
-    	 DataMap from TCollection(AsciiString from TCollection,
-	    	    	    	 AsciiString from TCollection,
-	    	    	    	 AsciiString from TCollection) ;
+   imported DataMapOfAsciiStringAsciiString;
 
-   class DataMapOfAsciiStringExtendedString instantiates
-    	 DataMap from TCollection(AsciiString from TCollection,
-	    	    	    	  ExtendedString from TCollection,
-	    	    	    	  AsciiString from TCollection) ;
+   imported DataMapIteratorOfDataMapOfAsciiStringAsciiString;
+
+   imported DataMapOfAsciiStringExtendedString;
+
+   imported DataMapIteratorOfDataMapOfAsciiStringExtendedString;
 	 
    class QuickSortOfArray1 instantiates
     	 QuickSort from SortTools(AsciiString from TCollection,

@@ -1,0 +1,8 @@
+
+
+#ifndef TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus_HeaderFile
+#define TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus_HeaderFile
+
+#include <TopOpeBRepDS_DataMapOfCheckStatus.hxx>
+
+#endif

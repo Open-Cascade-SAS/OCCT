@@ -26,49 +26,26 @@ is
 
 
 
-    class Array1OfCurve 
-    	instantiates Array1 from TCollection (Curve from Geom);
-    class Array1OfBezierCurve 
-    	instantiates Array1 from TCollection (BezierCurve from Geom);
-    class Array1OfBSplineCurve 
-    	instantiates Array1 from TCollection (BSplineCurve from Geom);
-    class Array1OfSurface 
-    	instantiates Array1 from TCollection (Surface from Geom);
+    imported Array1OfCurve;
+    imported Array1OfBezierCurve;
+    imported Array1OfBSplineCurve;
+    imported Array1OfSurface;
 
-    class HArray1OfCurve
-    	instantiates HArray1 from TCollection (Curve from Geom,
-    	    	    	    	Array1OfCurve from TColGeom);
-    class HArray1OfBezierCurve  
-    	instantiates HArray1 from TCollection (BezierCurve from Geom,
-    	    	    	    	Array1OfBezierCurve from TColGeom);
-    class HArray1OfBSplineCurve 
-    	instantiates HArray1 from TCollection (BSplineCurve from Geom,
-    	    	    	    	Array1OfBSplineCurve from TColGeom);
-    class HArray1OfSurface  
-    	instantiates HArray1 from TCollection (Surface from Geom,
-    	    	    	    	Array1OfSurface from TColGeom);
+    imported transient class HArray1OfCurve;
+    imported transient class HArray1OfBezierCurve;
+    imported transient class HArray1OfBSplineCurve;
+    imported transient class HArray1OfSurface;
 
-    class Array2OfSurface 
-    	instantiates Array2 from TCollection (Surface from Geom);
-    class Array2OfBezierSurface 
-    	instantiates Array2 from TCollection (BezierSurface from Geom);
+    imported Array2OfSurface;
+    imported Array2OfBezierSurface;
 
-    class HArray2OfSurface        
-    	instantiates HArray2 from TCollection (Surface from Geom,
-    	    	    	    	Array2OfSurface from TColGeom);
+    imported transient class HArray2OfSurface;
 
-    class SequenceOfCurve  
-    	instantiates Sequence from TCollection (Curve from Geom);
-    class SequenceOfBoundedCurve  
-    	instantiates Sequence from TCollection (BoundedCurve from Geom);
-    class SequenceOfSurface 
-    	instantiates Sequence from TCollection (Surface from Geom);
+    imported SequenceOfCurve;
+    imported SequenceOfBoundedCurve;
+    imported SequenceOfSurface;
 
-    class HSequenceOfCurve  
-    	instantiates HSequence from TCollection (Curve from Geom,
-    	    	    	    	SequenceOfCurve from TColGeom);
-    class HSequenceOfBoundedCurve  
-    	instantiates HSequence from TCollection (BoundedCurve from Geom,
-    	    	    	    	SequenceOfBoundedCurve from TColGeom);
+    imported transient class HSequenceOfCurve;
+    imported transient class HSequenceOfBoundedCurve;
 
 end TColGeom;

@@ -1,1 +1,7 @@
 DBRep_Debug.cxx
+DBRep_ListOfEdge.hxx
+DBRep_ListIteratorOfListOfEdge.hxx
+DBRep_ListOfFace.hxx
+DBRep_ListIteratorOfListOfFace.hxx
+DBRep_ListOfHideData.hxx
+DBRep_ListIteratorOfListOfHideData.hxx

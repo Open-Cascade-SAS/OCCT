@@ -90,14 +90,12 @@ is
 
     class GraphNode;
 
-    class GraphNodeSequence instantiates Sequence from TCollection
-    	(GraphNode from XCAFDoc);
+    imported GraphNodeSequence;
     	---Purpose: class for containing GraphNodes.
 	    	
-    class DataMapOfShapeLabel instantiates
-    	  DataMap from TCollection (Shape from TopoDS,
-	    	    	    	    Label from TDF,
-				    ShapeMapHasher from TopTools);
+    imported DataMapOfShapeLabel;
+	    	
+    imported DataMapIteratorOfDataMapOfShapeLabel;
 
 		
   	---Package methods: definition of GUIDs

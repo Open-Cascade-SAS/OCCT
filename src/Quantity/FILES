@@ -1,2 +1,6 @@
 Quantity_Color_1.hxx
 Quantity_Period.lxx
+Quantity_Array1OfCoefficient.hxx
+Quantity_Array2OfColor.hxx
+Quantity_Array1OfColor.hxx
+Quantity_HArray1OfColor.hxx

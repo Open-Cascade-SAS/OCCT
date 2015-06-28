@@ -68,3 +68,10 @@ Graphic3d_RenderingParams.hxx
 Graphic3d_NMapOfTransient.hxx
 Graphic3d_BSDF.hxx
 Graphic3d_BSDF.cxx
+Graphic3d_SequenceOfStructure.hxx
+Graphic3d_HSequenceOfStructure.hxx
+Graphic3d_Array1OfVector.hxx
+Graphic3d_Array1OfVertex.hxx
+Graphic3d_Array2OfVertex.hxx
+Graphic3d_ListOfShortReal.hxx
+Graphic3d_ListIteratorOfListOfShortReal.hxx

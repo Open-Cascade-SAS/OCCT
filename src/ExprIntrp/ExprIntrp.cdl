@@ -34,22 +34,23 @@ is
     
     private class Analysis;
     
-    class SequenceOfNamedFunction instantiates 
-    	Sequence from TCollection(NamedFunction from Expr);
+    imported SequenceOfNamedFunction;
 
-    class SequenceOfNamedExpression instantiates 
-    	Sequence from TCollection(NamedExpression from Expr);
+    imported SequenceOfNamedExpression;
 
     exception SyntaxError inherits Failure from Standard;
     
-    private class StackOfGeneralExpression instantiates 
-    	List from TCollection (GeneralExpression from Expr);
+    imported StackOfGeneralExpression;
     
-    private class StackOfGeneralRelation instantiates 
-    	List from TCollection (GeneralRelation from Expr);
+    imported ListIteratorOfStackOfGeneralExpression;
+    
+    imported StackOfGeneralRelation;
+    
+    imported ListIteratorOfStackOfGeneralRelation;
 
-    private class StackOfGeneralFunction instantiates 
-    	List from TCollection (GeneralFunction from Expr);
+    imported StackOfGeneralFunction;
+
+    imported ListIteratorOfStackOfGeneralFunction;
         
     Parse(gen : Generator; str : AsciiString from TCollection)
     returns Boolean

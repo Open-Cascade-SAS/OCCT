@@ -1,2 +1,5 @@
 FILES
 GUID.txt
+XCAFDoc_GraphNodeSequence.hxx
+XCAFDoc_DataMapOfShapeLabel.hxx
+XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel.hxx

@@ -24,7 +24,9 @@ is
 
     exception Failure inherits Failure from Standard;
 
-    class MapOfFunctions instantiates DataMap from TCollection(AsciiString from TCollection ,Function from OSD, AsciiString from TCollection);
+    imported MapOfFunctions;
+
+    imported DataMapIteratorOfMapOfFunctions;
 
 
     Load(aGUID: GUID from Standard; theVerbose: Boolean from Standard = Standard_True)
