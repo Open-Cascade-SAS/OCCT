@@ -29,7 +29,7 @@ static Standard_GUID BinXCAFRetrievalDriver("a78ff497-a779-11d5-aab4-0050044b1af
 //function :
 //purpose  : 
 //=======================================================================
-Handle(Standard_Transient) BinXCAFDrivers::Factory(const Standard_GUID& theGUID) {
+const Handle(Standard_Transient)& BinXCAFDrivers::Factory(const Standard_GUID& theGUID) {
 
   if (theGUID == BinXCAFStorageDriver)
   {
@@ -53,7 +53,8 @@ Handle(Standard_Transient) BinXCAFDrivers::Factory(const Standard_GUID& theGUID)
 
 
   Standard_Failure::Raise ("XCAFBinDrivers : unknown GUID");
-  return NULL;
+  static Handle(Standard_Transient) aNullHandle;
+  return aNullHandle;
 }
 
 //=======================================================================
@@ -70,7 +71,4 @@ Handle(BinMDF_ADriverTable) BinXCAFDrivers::AttributeDrivers(const Handle(CDM_Me
   return aTable;
 }
 
-#ifdef _MSC_VER
-#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
-#endif
 PLUGIN(BinXCAFDrivers)

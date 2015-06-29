@@ -26,4 +26,6 @@ is
     Factory(aGUID: GUID from Standard)
     returns Transient from Standard;
     ---Purpose: returns a DriverFactory.
+    ---C++: return const&
+
 end FWOSDriver;

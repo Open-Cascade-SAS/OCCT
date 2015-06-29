@@ -32,7 +32,7 @@ static Standard_GUID BinLRetrievalDriver("13a56836-8269-11d5-aab2-0050044b1af1")
 //function : Factory
 //purpose  : PLUGIN FACTORY
 //=======================================================================
-Handle(Standard_Transient) BinLDrivers::Factory(const Standard_GUID& theGUID)
+const Handle(Standard_Transient)& BinLDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == BinLStorageDriver)
   {
@@ -55,7 +55,8 @@ Handle(Standard_Transient) BinLDrivers::Factory(const Standard_GUID& theGUID)
   }
 
   Standard_Failure::Raise ("BinLDrivers : unknown GUID");
-  return NULL;
+  static Handle(Standard_Transient) aNullHandle;
+  return aNullHandle;
 }
 
 //=======================================================================
@@ -89,7 +90,4 @@ TCollection_AsciiString BinLDrivers::StorageVersion()
   return aVersionStr;
 }
 
-#ifdef _MSC_VER
-#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
-#endif
 PLUGIN(BinLDrivers)

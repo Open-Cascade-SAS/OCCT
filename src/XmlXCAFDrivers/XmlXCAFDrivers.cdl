@@ -33,6 +33,7 @@ is
 
     Factory (aGUID: GUID from Standard)
     returns Transient from Standard;
+    ---C++: return const &
         ---Purpose: Depending from the  ID, returns a list of  storage
         --          or retrieval attribute drivers. Used for plugin.
         --          

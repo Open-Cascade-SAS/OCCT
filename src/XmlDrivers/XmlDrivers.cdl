@@ -32,6 +32,7 @@ is
     class DocumentRetrievalDriver;
 
     Factory (theGUID : GUID from Standard) returns Transient from Standard;
+    ---C++: return const &
 
     AttributeDrivers (theMsgDriver: MessageDriver from CDM)
         returns ADriverTable from XmlMDF;

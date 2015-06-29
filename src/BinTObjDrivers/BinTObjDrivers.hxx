@@ -30,7 +30,7 @@ class BinTObjDrivers
  public:
   // ---------- PUBLIC METHODS ----------
 
-  Standard_EXPORT static Handle(Standard_Transient) Factory
+  Standard_EXPORT static const Handle(Standard_Transient)& Factory
                         (const Standard_GUID& aGUID);
   // Returns a driver corresponding to <aGUID>. Used for plugin.
 

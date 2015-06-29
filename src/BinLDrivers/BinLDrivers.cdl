@@ -35,6 +35,7 @@ is
     imported VectorOfDocumentSection;
 
     Factory (theGUID : GUID from Standard) returns Transient from Standard;
+    ---C++: return const &
 
     AttributeDrivers (MsgDrv : MessageDriver from CDM)
         returns ADriverTable from BinMDF;

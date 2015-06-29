@@ -25,7 +25,7 @@
 static Standard_GUID XSStorageDriver  ("f78ff496-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID XSRetrievalDriver("f78ff497-a779-11d5-aab4-0050044b1af1");
 
-Handle(Standard_Transient) XmlXCAFDrivers::Factory(const Standard_GUID& aGUID)
+const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& aGUID)
 {
   if(aGUID == XSStorageDriver)  
   {
@@ -50,7 +50,4 @@ Handle(Standard_Transient) XmlXCAFDrivers::Factory(const Standard_GUID& aGUID)
   return XmlDrivers::Factory (aGUID);
 }
 
-#ifdef _MSC_VER
-#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
-#endif
 PLUGIN(XmlXCAFDrivers)

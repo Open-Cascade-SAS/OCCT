@@ -40,7 +40,7 @@ static Standard_GUID XmlRetrievalDriver("03a56822-8269-11d5-aab2-0050044b1af1");
 //function : Factory
 //purpose  : PLUGIN FACTORY
 //=======================================================================
-Handle(Standard_Transient) XmlDrivers::Factory(const Standard_GUID& theGUID)
+const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlStorageDriver)
   {
@@ -64,7 +64,8 @@ Handle(Standard_Transient) XmlDrivers::Factory(const Standard_GUID& theGUID)
   }
  
   Standard_Failure::Raise ("XmlDrivers : unknown GUID");
-  return NULL;
+  static Handle(Standard_Transient) aNullHandle;
+  return aNullHandle;
 }
 
 //=======================================================================
@@ -86,10 +87,6 @@ Handle(XmlMDF_ADriverTable) XmlDrivers::AttributeDrivers
   //
   return aTable;
 }
-
-#ifdef _MSC_VER
-#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
-#endif
 
 // Declare entry point PLUGINFACTORY
 PLUGIN(XmlDrivers)

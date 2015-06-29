@@ -19,13 +19,9 @@
 
 #include <Plugin_Macro.hxx>
 
-#ifdef _MSC_VER
-#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
-#endif
-
 PLUGIN(FWOSDriver)
 
-Handle(Standard_Transient) FWOSDriver::Factory(const Standard_GUID& /*aGUID*/) {
+const Handle(Standard_Transient)& FWOSDriver::Factory(const Standard_GUID& /*aGUID*/) {
   static Handle(FWOSDriver_DriverFactory) f;
   if(f.IsNull()) f = new FWOSDriver_DriverFactory;
   return f;
