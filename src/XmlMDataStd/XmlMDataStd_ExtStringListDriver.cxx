@@ -126,7 +126,7 @@ void XmlMDataStd_ExtStringListDriver::Paste(const Handle(TDF_Attribute)& theSour
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastIndexString(), anU);
   
-  XmlObjMgt_Document aDoc = anElement.getOwnerDocument().Doc();
+  XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
   
   TDataStd_ListIteratorOfListOfExtendedString itr(anExtStringList->List());
   for (; itr.More(); itr.Next())

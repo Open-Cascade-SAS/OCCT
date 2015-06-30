@@ -175,7 +175,7 @@ void XmlMDataStd_ReferenceListDriver::Paste(const Handle(TDF_Attribute)& theSour
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastIndexString(), anU);
   if(anU == 0) return;
-  XmlObjMgt_Document aDoc = anElement.getOwnerDocument().Doc();
+  XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
   
   TDF_ListIteratorOfLabelList itr(aReferenceList->List());
   for (; itr.More(); itr.Next())

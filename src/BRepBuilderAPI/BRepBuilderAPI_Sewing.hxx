@@ -39,6 +39,9 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+
 class BRepTools_ReShape;
 class Standard_OutOfRange;
 class Standard_NoSuchObject;

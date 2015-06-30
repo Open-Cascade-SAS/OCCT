@@ -23,6 +23,10 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+
 class TopoDS_Shape;
 class Message_ProgressIndicator;
 class ShapeExtend_BasicMsgRegistrator;

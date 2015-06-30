@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Message_ProgressIndicator.hxx>
 
-#include <Standard_Boolean.hxx>
 class StlMesh_Mesh;
 class OSD_Path;
-class Message_ProgressIndicator;
-
 
 //! This package contains the methods to be used in
 //! the Stereo Lithograpy Application. The main

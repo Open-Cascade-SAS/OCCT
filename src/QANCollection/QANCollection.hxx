@@ -41,20 +41,7 @@ public:
   
   Standard_EXPORT static void CommandsStl (Draw_Interpretor& DI);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static void CommandsHandle (Draw_Interpretor& DI);
 
 };
 

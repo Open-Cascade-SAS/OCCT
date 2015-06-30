@@ -25,8 +25,9 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <IntSurf_Transition.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+
 class Adaptor3d_HVertex;
-class Adaptor2d_HCurve2d;
 class Standard_DomainError;
 class gp_Pnt;
 class IntSurf_Transition;

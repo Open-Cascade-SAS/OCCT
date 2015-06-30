@@ -24,6 +24,9 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+
 class Standard_NullObject;
 class Standard_NoSuchObject;
 class TopoDS_Shape;

@@ -18,10 +18,11 @@
 
 #include <MMgt_TShared.hxx>
 #include <Standard_Type.hxx>
-#include <LDOM_Document.hxx>
 
+class LDOM_Document;
 class LDOM_BasicElement;
 class LDOM_MemManager;
+class LDOMBasicString;
 
 // Define handle class for LDOM_MemManager
 DEFINE_STANDARD_HANDLE (LDOM_MemManager, MMgt_TShared)
@@ -63,8 +64,8 @@ class LDOM_MemManager : public MMgt_TShared
                                          const Standard_Integer theHashValue,
                                          const char             * theHashedStr);
 
-  LDOM_Document           Doc           () const
-                                { return LDOM_Document (* this); }
+//  LDOM_Document           Doc           () const
+//                                { return LDOM_Document (* this); }
 
   const LDOM_MemManager&  Self          () const
                                 { return * this; }

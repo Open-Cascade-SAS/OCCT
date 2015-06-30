@@ -155,7 +155,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
   anElement.setAttribute(::IsDeltaOn(), aExtStringArray->GetDelta()); 
 
   // store a set of elements with string in each of them
-  XmlObjMgt_Document aDoc = anElement.getOwnerDocument().Doc();
+  XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
   
   for ( Standard_Integer i = aL; i <= anU; i++ )
   {

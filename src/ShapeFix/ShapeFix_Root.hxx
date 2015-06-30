@@ -26,6 +26,9 @@
 #include <Message_Gravity.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
+
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+
 class ShapeBuild_ReShape;
 class ShapeExtend_BasicMsgRegistrator;
 class TopoDS_Shape;

@@ -22,9 +22,9 @@
 #include <Standard_Macro.hxx>
 #include <Standard_TypeDef.hxx>
 #include <LDOMString.hxx>
+#include <LDOM_MemManager.hxx>
 
 class LDOM_BasicNode;
-class LDOM_MemManager;
 
 //  LDOM_Node : base class for LDOM interface objects
 //              references LDOM_BasicNode - the real data stored in Document

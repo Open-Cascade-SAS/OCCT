@@ -21,14 +21,14 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Interface_BitMap.hxx>
+#include <Interface_InterfaceModel.hxx>
+
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Interface_BitMap.hxx>
 #include <TColStd_HArray1OfListOfInteger.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Standard_Type.hxx>
+
 class Interface_InterfaceModel;
 class Standard_DomainError;
 class Interface_GeneralLib;

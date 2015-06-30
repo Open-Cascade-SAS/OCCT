@@ -15,6 +15,7 @@
 
 #include <LDOM_BasicText.hxx>
 #include <LDOM_MemManager.hxx>
+#include <LDOM_CharacterData.hxx>
 
 //=======================================================================
 //function : LDOM_BasicText()

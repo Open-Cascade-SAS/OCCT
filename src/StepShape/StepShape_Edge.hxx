@@ -21,9 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_TopologicalRepresentationItem.hxx>
-class StepShape_Vertex;
-class TCollection_HAsciiString;
+#include <StepShape_Vertex.hxx>
 
+class TCollection_HAsciiString;
 
 class StepShape_Edge;
 DEFINE_STANDARD_HANDLE(StepShape_Edge, StepShape_TopologicalRepresentationItem)

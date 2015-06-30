@@ -261,7 +261,7 @@ void XmlMFunction_ScopeDriver::Paste (const Handle(TDF_Attribute)& theSource,
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastLabelIndex(), S->GetFunctions().Extent());
   
-  XmlObjMgt_Document aDoc = anElement.getOwnerDocument().Doc();
+  XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
   
   for (itrd.Initialize(S->GetFunctions()); itrd.More(); itrd.Next())
   {

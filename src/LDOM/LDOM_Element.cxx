@@ -16,6 +16,7 @@
 #include <LDOM_MemManager.hxx>
 #include <LDOM_BasicElement.hxx>
 #include <LDOM_BasicAttribute.hxx>
+#include <LDOM_Element.hxx>
 
 #include <Standard_ProgramError.hxx>
 

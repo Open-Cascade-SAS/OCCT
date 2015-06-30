@@ -19,6 +19,7 @@
 #include <LDOM_BasicAttribute.hxx>
 #include <LDOM_BasicText.hxx>
 #include <LDOM_MemManager.hxx>
+#include <LDOM_NodeList.hxx>
 
 //=======================================================================
 //function : Create

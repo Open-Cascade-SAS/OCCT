@@ -123,38 +123,42 @@ namespace opencascade {
     template <class T2>
     bool operator== (const handle<T2>& theHandle) const
     { 
-      return this->entity == theHandle.entity;
+      return get() == theHandle.get();
     }
 
     //! Check for equality
-    bool operator== (const Standard_Transient *thePtr) const
+    template <class T2>
+    bool operator== (const T2 *thePtr) const
     { 
-      return this->entity == thePtr;
+      return get() == thePtr;
     }
 
     //! Check for equality
-    friend bool operator== (const Standard_Transient *left, const handle& right)
+    template <class T2>
+    friend bool operator== (const T2 *left, const handle& right)
     {
-      return left == right.entity;
+      return left == right.get();
     }
 
     //! Check for inequality
     template <class T2>
     bool operator!= (const handle<T2>& theHandle) const
     {
-      return this->entity != theHandle.entity;
+      return get() != theHandle.get();
     }
 
     //! Check for inequality
-    bool operator!= (const Standard_Transient *thePtr) const
+    template <class T2>
+    bool operator!= (const T2 *thePtr) const
     {
-      return this->entity != thePtr;
+      return get() != thePtr;
     }
 
     //! Check for inequality
-    friend bool operator!= (const Standard_Transient *left, const handle& right)
+    template <class T2>
+    friend bool operator!= (const T2 *left, const handle& right)
     {
-      return left != right.entity;
+      return left != right.get();
     }
 
     //! Down casting operator

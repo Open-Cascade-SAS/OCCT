@@ -27,6 +27,9 @@
 #include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <Standard_Real.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+
 class ShapeFix_Solid;
 class TopoDS_Shape;
 class Message_ProgressIndicator;

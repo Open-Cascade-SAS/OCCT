@@ -177,7 +177,7 @@ void XmlMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
   anElement.setAttribute(::FirstIndexString(), aL);
   anElement.setAttribute(::LastIndexString(), anU);
   
-  XmlObjMgt_Document aDoc = anElement.getOwnerDocument().Doc();
+  XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
   
   for (Standard_Integer i = aL; i <= anU; i++)
   {

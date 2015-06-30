@@ -27,6 +27,9 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+
 class TopoDS_Face;
 class TopoDS_Wire;
 class TopoDS_Edge;

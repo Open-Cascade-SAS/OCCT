@@ -15,6 +15,7 @@
 
 #include <LDOM_BasicAttribute.hxx>
 #include <LDOM_MemManager.hxx>
+#include <LDOM_Attr.hxx>
 
 //=======================================================================
 //function : LDOM_BasicAttribute
