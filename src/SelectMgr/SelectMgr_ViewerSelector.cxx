@@ -23,19 +23,42 @@
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
 #include <SelectMgr_ViewerSelector.hxx>
-#include <SelectMgr_CompareResults.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SortCriterion.hxx>
 #include <SelectMgr_SensitiveEntitySet.hxx>
-#include <SortTools_QuickSortOfInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
+#include <algorithm>
+
+namespace {
+  // Comparison operator for sorting selection results
+  class CompareResults
+  {
+  public:
+   
+    CompareResults (const SelectMgr_IndexedDataMapOfOwnerCriterion& aMapOfCriterion)
+      : myMapOfCriterion (aMapOfCriterion)
+    {
+    }
+
+    Standard_Boolean operator() (Standard_Integer theLeft, Standard_Integer theRight) const
+    {
+      return myMapOfCriterion.FindFromIndex(theLeft) > myMapOfCriterion.FindFromIndex(theRight);
+    }
+
+  private:
+    void operator = (const CompareResults&);
+
+  private:
+    const SelectMgr_IndexedDataMapOfOwnerCriterion&  myMapOfCriterion;
+  };
+}
 
 //=======================================================================
 // function: SelectMgr_ToleranceMap
@@ -687,8 +710,8 @@ void SelectMgr_ViewerSelector::SortResult()
   for (I=1; I <= anExtent; I++)
     thearr(I)=I;
 
-  SortTools_QuickSortOfInteger::Sort (thearr,
-    SelectMgr_CompareResults(mystored));
+  std::sort (thearr.begin(), thearr.end(), CompareResults (mystored));
+
 }
 
 //=======================================================================

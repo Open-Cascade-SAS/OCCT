@@ -1,4 +1,3 @@
-SelectMgr_CompareResults.hxx
 SelectMgr_FrustumBuilder.hxx
 SelectMgr_FrustumBuilder.cxx
 SelectMgr_IndexedMapOfOwner.hxx

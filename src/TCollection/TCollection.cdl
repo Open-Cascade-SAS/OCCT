@@ -79,19 +79,6 @@ is
 
     enumeration Side is Left , Right;
     
-    deferred generic class Compare ;
-
-    private deferred class PrivCompareOfInteger 
-            instantiates Compare from TCollection(Integer from Standard); 
-
-    private deferred class PrivCompareOfReal 
-            instantiates Compare from TCollection(Real from Standard); 
-
-    class CompareOfInteger;
-	
-    class CompareOfReal;
-    
-
     NextPrimeForMap(I : Integer) returns Integer;
 	---Purpose: Returns a  prime number greater than  <I> suitable
 	-- to dimension a Map.  When  <I> becomes great there

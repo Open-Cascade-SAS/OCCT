@@ -37,8 +37,6 @@
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <SortTools_ShellSortOfReal.hxx>
-#include <TCollection_CompareOfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
@@ -448,10 +446,9 @@ static void filterParameters(const BRepMesh::IMapOfReal& theParams,
   for (j = 1; j <= anInitLen; j++)
     aParamArray(j) = theParams(j);
 
-  TCollection_CompareOfReal aCompare;
-  SortTools_ShellSortOfReal::Sort(aParamArray, aCompare);
+  std::sort (aParamArray.begin(), aParamArray.end());
 
-  // mandadory pre-filtering using the first (minimal) filter value
+  // mandatory pre-filtering using the first (minimal) filter value
   Standard_Real aP1, aP2;
   aP1 = aParamArray(1);
   aParamTmp.Append(aP1);

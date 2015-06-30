@@ -20,7 +20,7 @@
 
 package math
 
-uses StdFail, TColStd, TCollection, Standard,  SortTools
+uses StdFail, TColStd, TCollection, Standard
   	  
 is
 
@@ -86,13 +86,8 @@ is
     class EigenValuesSearcher;  -- for Kronrod method
     class ComputeGaussPointsAndWeights; 
     class ComputeKronrodPointsAndWeights; 
-    class ValueAndWeight; 
+    imported ValueAndWeight; 
     imported Array1OfValueAndWeight;
-    class CompareOfValueAndWeight; 
-    class QuickSortOfValueAndWeight
-    	instantiates QuickSort from SortTools (ValueAndWeight from math, 
-	    	    	    	    	       Array1OfValueAndWeight from math,
-	    	    	    	    	       CompareOfValueAndWeight from math);
 
 	class DoubleTab;
 

@@ -23,7 +23,9 @@ package Resource
     --          initialize a variable.
 
 uses
-    TCollection,MMgt,SortTools,TColStd
+    TCollection,
+	MMgt,
+	TColStd
 is 
 
    enumeration FormatType is     
@@ -47,11 +49,6 @@ is
 
    imported DataMapIteratorOfDataMapOfAsciiStringExtendedString;
 	 
-   class QuickSortOfArray1 instantiates
-    	 QuickSort from SortTools(AsciiString from TCollection,
-    	    	    	    	  Array1OfAsciiString from TColStd,
-	    	    	    	  LexicalCompare from Resource) ;
-				  
 ---Class:
    class LexicalCompare ;
    

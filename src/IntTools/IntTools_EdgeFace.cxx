@@ -23,8 +23,6 @@
 #include <IntTools_Range.hxx>
 #include <IntTools_Tools.hxx>
 #include <IntTools_Array1OfRange.hxx>
-#include <IntTools_QuickSortRange.hxx>
-#include <IntTools_CompareRange.hxx>
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Root.hxx>
 #include <IntTools_BeanFaceIntersector.hxx>
@@ -64,9 +62,7 @@
 #include <GeomAdaptor_HSurface.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 
-#ifdef WNT
-#pragma warning ( disable : 4101 )
-#endif
+#include <algorithm>
 
 static
   Standard_Boolean IsCoplanar (const BRepAdaptor_Curve&  ,
@@ -604,6 +600,17 @@ void IntTools_EdgeFace::PrepareArgsFuncArrays(const Standard_Real ta,
   AddDerivativePoints(anArgs, aFunc);
 
 }
+
+//=======================================================================
+
+namespace {
+  // Auxiliary: comparator function for sorting ranges
+  bool IntTools_RangeComparator (const IntTools_Range& theLeft, const IntTools_Range& theRight)
+  {
+    return theLeft.First() < theRight.First();
+  }
+}
+
 //=======================================================================
 //function : AddDerivativePoints
 //purpose  : 
@@ -719,9 +726,7 @@ void IntTools_EdgeFace::AddDerivativePoints
       anArray1OfRange(n+i).SetLast (aFSeq(i));
     }
     
-    IntTools_QuickSortRange aQuickSortRange;
-    IntTools_CompareRange aComparator;
-    aQuickSortRange.Sort (anArray1OfRange, aComparator);
+    std::sort (anArray1OfRange.begin(), anArray1OfRange.end(), IntTools_RangeComparator);
     
     // filling the  output arrays
     myArgsArray.Resize(k);

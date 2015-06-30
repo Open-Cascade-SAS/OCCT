@@ -25,7 +25,6 @@ uses
     TColStd, 
     BRepAdaptor, 
     BRepTopAdaptor,
-    SortTools, 
     TopTools, 
     math,
     gp, 
@@ -54,8 +53,6 @@ is
     class Range;         
     class CommonPrt; 
     class Root; 
-    class Compare; 
-    class CompareRange;     
 
     class  EdgeEdge;
 
@@ -115,18 +112,9 @@ is
      
     imported Array1OfRange; 
   
-    class  QuickSort         instantiates  
-     QuickSort from SortTools   (Root from IntTools, 
-                    Array1OfRoots from IntTools, 
-                    Compare from IntTools); 
-        
-    class  QuickSortRange    instantiates  
-     QuickSort from SortTools   (Range from IntTools, 
-                    Array1OfRange from IntTools, 
-                    CompareRange from IntTools); 
-    imported SequenceOfCommonPrts;        
-  
-    imported IndexedDataMapOfTransientAddress; 
+    imported SequenceOfCommonPrts; 			    
+	 
+    imported IndexedDataMapOfTransientAddress;	
     
 
     imported ListOfCurveRangeSample;

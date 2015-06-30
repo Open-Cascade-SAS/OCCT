@@ -16,9 +16,9 @@
 #include <math_ComputeKronrodPointsAndWeights.ixx>
 #include <math_EigenValuesSearcher.hxx>
 #include <math_Array1OfValueAndWeight.hxx>
-#include <math_CompareOfValueAndWeight.hxx>
-#include <math_QuickSortOfValueAndWeight.hxx>
 #include <Standard_ErrorHandler.hxx>
+
+#include <algorithm>
 
 math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const Standard_Integer Number)
 {
@@ -154,8 +154,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const S
 	VWarray(i) = EVW;
       }
 
-      math_CompareOfValueAndWeight theComparator;
-      math_QuickSortOfValueAndWeight::Sort(VWarray, theComparator);
+      std::sort (VWarray.begin(), VWarray.end());
       
       for (i = 1; i <= a2NP1; i++) {
 	myPoints->ChangeValue(i)  = VWarray(i).Value();

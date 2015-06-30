@@ -48,8 +48,6 @@ class BRepMesh_Edge;
 class BRepMesh_Vertex;
 class gp_Pnt;
 class BRepMesh_FaceAttribute;
-class TopTools_DataMapOfShapeReal;
-
 
 //! Algorithm to mesh a shape with respect of the <br>
 //! frontier the deflection and by option the shared <br>

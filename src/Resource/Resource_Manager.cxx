@@ -15,7 +15,6 @@
 #include <Resource_Manager.hxx>
 #include <Resource_Manager.ixx>
 #include <Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString.hxx>
-#include <Resource_QuickSortOfArray1.hxx>
 #include <Resource_LexicalCompare.hxx>
 
 #include <OSD_Path.hxx>
@@ -29,6 +28,8 @@
 #include <TColStd_Array1OfAsciiString.hxx>
 
 #include <errno.h>
+
+#include <algorithm>
 
 #define END      0
 #define EMPTY    1
@@ -286,8 +287,7 @@ Standard_Boolean Resource_Manager::Save() const
     for ( Index = 1; Iter.More(); Iter.Next())
       KeyArray(Index++)= Iter.Key();
 
-    Resource_LexicalCompare Comp;
-    Resource_QuickSortOfArray1::Sort(KeyArray, Comp);
+  std::sort (KeyArray.begin(), KeyArray.end());
 
     TCollection_AsciiString Line, Value;
     for (Index = 1 ; Index <= NbKey ; Index++) {

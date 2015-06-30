@@ -19,8 +19,6 @@
 #include <BRep_Tool.hxx>
 #include <IntTools_Root.hxx>
 #include <IntTools_Array1OfRoots.hxx>
-#include <IntTools_Compare.hxx>
-#include <IntTools_QuickSort.hxx>
 #include <IntTools_Root.hxx>
 
 #include <gce_MakeCirc.hxx>
@@ -32,9 +30,8 @@
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <gce_ErrorType.hxx>
 
-#ifdef WNT
-#pragma warning ( disable : 4101 )
-#endif
+#include <algorithm>
+
 //=======================================================================
 //function : IntTools::GetRadius
 //purpose  : 
@@ -201,25 +198,32 @@
 }
 
 //=======================================================================
+
+namespace {
+  // Auxiliary: comparator function for sorting roots
+  bool IntTools_RootComparator (const IntTools_Root& theLeft, const IntTools_Root& theRight)
+  {
+    return theLeft.Root() < theRight.Root();
+  }
+};
+
+//=======================================================================
 //function : SortRoots
 //purpose  : 
 //=======================================================================
   void IntTools::SortRoots(IntTools_SequenceOfRoots& mySequenceOfRoots,
-			   const Standard_Real myEpsT)
+			   const Standard_Real /*myEpsT*/)
 {
   Standard_Integer j, aNbRoots;
 
   aNbRoots=mySequenceOfRoots.Length();
 
-  IntTools_Array1OfRoots anArray1OfRoots(1, aNbRoots);
-  IntTools_Compare aComparator(myEpsT);
-  
+  IntTools_Array1OfRoots anArray1OfRoots(1, aNbRoots);  
   for (j=1; j<=aNbRoots; j++) {
     anArray1OfRoots(j)=mySequenceOfRoots(j);
   }
   
-  IntTools_QuickSort aQS;
-  aQS.Sort(anArray1OfRoots, aComparator);
+  std::sort (anArray1OfRoots.begin(), anArray1OfRoots.end(), IntTools_RootComparator);
   
   mySequenceOfRoots.Clear();
   for (j=1; j<=aNbRoots; j++) {
