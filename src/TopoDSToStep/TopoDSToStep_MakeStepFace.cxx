@@ -45,6 +45,7 @@
 #include <Geom_Circle.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 #include <Precision.hxx>
 #include <Geom2dAdaptor_Curve.hxx>

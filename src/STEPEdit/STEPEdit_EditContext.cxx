@@ -17,7 +17,7 @@
 
 #include <StepData_StepModel.hxx>
 #include <STEPConstruct_ContextTool.hxx>
-
+#include <StepBasic_ApplicationProtocolDefinition.hxx>
 
 STEPEdit_EditContext::STEPEdit_EditContext ()
 : IFSelect_Editor (5)

@@ -17,14 +17,10 @@
 #include <Geom_Vector.ixx>
 
 typedef Geom_Vector         Vector;
-typedef Handle(Geom_Vector) Handle(Vector);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
-
-
-
 
 void Geom_Vector::Reverse ()                  { gpVec.Reverse(); }
 
@@ -36,22 +32,22 @@ Standard_Real Geom_Vector::Z () const                  { return gpVec.Z(); }
 
 const gp_Vec& Geom_Vector::Vec () const              { return gpVec; }
 
-Handle(Vector) Geom_Vector::Reversed () const
+Handle(Geom_Vector) Geom_Vector::Reversed () const
 {
-  Handle(Vector) V = Handle(Vector)::DownCast(Copy());
+  Handle(Geom_Vector) V = Handle(Geom_Vector)::DownCast(Copy());
   V->Reverse();
   return V;
 }
 
 
-Standard_Real Geom_Vector::Angle (const Handle(Vector)& Other) const { 
+Standard_Real Geom_Vector::Angle (const Handle(Geom_Vector)& Other) const { 
 
   return gpVec.Angle (Other->Vec());
 }
 
 
 Standard_Real Geom_Vector::AngleWithRef (
-const Handle(Vector)& Other, const Handle(Vector)& VRef) const {
+const Handle(Geom_Vector)& Other, const Handle(Geom_Vector)& VRef) const {
 
    return gpVec.AngleWithRef (Other->Vec(), VRef->Vec());
 }
@@ -63,14 +59,14 @@ void Geom_Vector::Coord (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) c
 }
  
 
-Standard_Real Geom_Vector::Dot (const Handle(Vector)& Other) const  { 
+Standard_Real Geom_Vector::Dot (const Handle(Geom_Vector)& Other) const  { 
 
   return gpVec.Dot (Other->Vec());
 }
 
 
 Standard_Real Geom_Vector::DotCross (
-const Handle(Vector)& V1, const Handle(Vector)& V2) const {
+const Handle(Geom_Vector)& V1, const Handle(Geom_Vector)& V2) const {
 
   return gpVec.DotCross (V1->Vec(), V2->Vec());
 }

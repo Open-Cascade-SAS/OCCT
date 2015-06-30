@@ -20,7 +20,7 @@ package XSControl
     --           control of a session
 
 uses Standard , MMgt, TCollection , TColStd, Dico,
-     Interface, Transfer, IFSelect, Message,
+     Interface, Transfer, IFSelect, Message, MoniTool,
      TopoDS,    TopTools, TopAbs ,   Geom, Geom2d, gp
 
 is

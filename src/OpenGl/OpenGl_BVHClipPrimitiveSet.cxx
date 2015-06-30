@@ -16,6 +16,7 @@
 #include <OpenGl_BVHClipPrimitiveSet.hxx>
 
 #include <BVH_BinnedBuilder.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 // =======================================================================
 // function : OpenGl_BVHClipPrimitiveSet

@@ -137,7 +137,6 @@ typedef NCollection_DoubleMap<TopoDS_Shape, TCollection_AsciiString> DoubleMapOf
 typedef NCollection_DoubleMap<vtkSmartPointer<vtkActor>, TCollection_AsciiString> DoubleMapOfActorsAndNames;
 
 typedef IVtkDraw_HighlightAndSelectionPipeline PipelinePtr;
-typedef Handle(IVtkDraw_HighlightAndSelectionPipeline) Handle(PipelinePtr);
 
 //================================================================
 // GLOBAL VARIABLES

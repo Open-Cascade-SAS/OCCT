@@ -18,6 +18,8 @@
 
 #include <LDOMBasicString.hxx>
 
+class LDOM_MemManager;
+
 //  Class LDOMString
 //  Represents various object types which can be mapped to XML strings
 //  LDOMString is not an independent type: you must be sure that the owner

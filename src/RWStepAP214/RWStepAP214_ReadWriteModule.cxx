@@ -50,7 +50,9 @@ Handle(atype) result = *((Handle(atype)*) &start)
 #include <StepBasic_ApprovalRelationship.hxx>
 #include <StepBasic_ApprovalRole.hxx>
 #include <StepBasic_ApprovalStatus.hxx>
+#include <StepBasic_AreaUnit.hxx>
 #include <StepVisual_AreaInSet.hxx>
+#include <StepBasic_VolumeUnit.hxx>
 #include <StepAP214_AutoDesignActualDateAndTimeAssignment.hxx>
 #include <StepAP214_AutoDesignActualDateAssignment.hxx>
 #include <StepAP214_AutoDesignApprovalAssignment.hxx>

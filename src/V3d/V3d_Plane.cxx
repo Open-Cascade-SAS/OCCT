@@ -17,6 +17,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
+#include <Visual3d_ViewManager.hxx>
 #include <gp_Pln.hxx>
 
 

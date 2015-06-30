@@ -21,12 +21,11 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
-#include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <Standard_Transient.hxx>
 
-//! Forward declaration.
+class Graphic3d_GraphicDriver;
+class Graphic3d_StructureManager;
 
 //! Low-level graphic structure interface
 class Graphic3d_CStructure : public Standard_Transient

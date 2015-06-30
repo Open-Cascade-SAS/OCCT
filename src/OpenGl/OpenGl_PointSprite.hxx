@@ -17,6 +17,9 @@
 
 #include <OpenGl_Texture.hxx>
 
+class OpenGl_PointSprite;
+DEFINE_STANDARD_HANDLE(OpenGl_PointSprite, OpenGl_Texture)
+
 //! Point sprite resource. On modern hardware it will be texture with extra parameters.
 //! On ancient hardware sprites will be drawn using bitmaps.
 class OpenGl_PointSprite : public OpenGl_Texture

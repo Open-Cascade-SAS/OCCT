@@ -39,6 +39,9 @@ typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramL
 //! Map to declare per-program states of OCCT materials.
 typedef NCollection_DataMap<Handle(OpenGl_ShaderProgram), OpenGl_MaterialState> OpenGl_MaterialStates;
 
+class OpenGl_ShaderManager;
+DEFINE_STANDARD_HANDLE(OpenGl_ShaderManager, Standard_Transient)
+
 //! This class is responsible for managing shader programs.
 class OpenGl_ShaderManager : public Standard_Transient
 {

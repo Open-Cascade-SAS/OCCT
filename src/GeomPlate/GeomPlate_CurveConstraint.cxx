@@ -31,6 +31,7 @@
 #include <Approx_Curve2d.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BRepAdaptor_HSurface.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 //---------------------------------------------------------
 //         Constructeur vide

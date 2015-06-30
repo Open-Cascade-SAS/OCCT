@@ -52,11 +52,12 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
                                            Standard_Boolean theReplaceIfExists = Standard_True);
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
+namespace {
+
 //=======================================================================
 //function : VUserDraw
 //purpose  : Checks availability and operation of UserDraw feature
 //=======================================================================
-DEFINE_STANDARD_HANDLE(VUserDrawObj, AIS_InteractiveObject)
 
 class VUserDrawObj : public AIS_InteractiveObject
 {
@@ -126,7 +127,6 @@ private:
     friend class Element;
 };
 
-
 void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
                            const Handle(Prs3d_Presentation)& thePresentation,
                            const Standard_Integer /*theMode*/)
@@ -195,6 +195,8 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   glEnd();
   glPopAttrib();
 }
+
+} // end of anonymous namespace
 
 OpenGl_Element* VUserDrawCallback(const CALL_DEF_USERDRAW * theUserDraw)
 {

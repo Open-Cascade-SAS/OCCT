@@ -17,6 +17,8 @@
 #include <GeomToStep_MakeSweptSurface.ixx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_SweptSurface.hxx>
+#include <StepGeom_SurfaceOfLinearExtrusion.hxx>
+#include <StepGeom_SurfaceOfRevolution.hxx>
 #include <GeomToStep_MakeSweptSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>

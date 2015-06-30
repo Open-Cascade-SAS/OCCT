@@ -17,6 +17,9 @@
 #include <GeomToStep_MakeBoundedSurface.ixx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_BoundedSurface.hxx>
+#include <StepGeom_BSplineSurfaceWithKnots.hxx>
+#include <StepGeom_RectangularTrimmedSurface.hxx>
+#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
 #include <GeomToStep_MakeBoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>

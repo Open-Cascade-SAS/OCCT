@@ -31,18 +31,11 @@
 #include <Precision.hxx>
 
 
-typedef Handle(Geom2d_TrimmedCurve) Handle(TrimmedCurve);
 typedef Geom2d_TrimmedCurve         TrimmedCurve;
-typedef Handle(Geom2d_Curve)        Handle(Curve);
-typedef Handle(Geom2d_Geometry)     Handle(Geometry);
 typedef gp_Ax2d   Ax2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Trsf2d Trsf2d;
 typedef gp_Vec2d  Vec2d;
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -51,7 +44,7 @@ typedef gp_Vec2d  Vec2d;
 
 Handle(Geom2d_Geometry) Geom2d_TrimmedCurve::Copy () const 
 {
-  Handle(TrimmedCurve) Tc;
+  Handle(Geom2d_TrimmedCurve) Tc;
   Tc = new TrimmedCurve (basisCurve, uTrim1, uTrim2);
   return Tc;
 }
@@ -73,9 +66,9 @@ Geom2d_TrimmedCurve::Geom2d_TrimmedCurve (const Handle(Geom2d_Curve)& C,
   // kill trimmed basis curves
   Handle(Geom2d_TrimmedCurve) T = Handle(Geom2d_TrimmedCurve)::DownCast(C);
   if (!T.IsNull())
-    basisCurve = Handle(Curve)::DownCast(T->BasisCurve()->Copy());
+    basisCurve = Handle(Geom2d_Curve)::DownCast(T->BasisCurve()->Copy());
   else
-    basisCurve = Handle(Curve)::DownCast(C->Copy());
+    basisCurve = Handle(Geom2d_Curve)::DownCast(C->Copy());
 
   SetTrim(U1, U2, Sense, theAdjustPeriodic);
 }
@@ -160,7 +153,7 @@ void Geom2d_TrimmedCurve::SetTrim (const Standard_Real U1,
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom2d_TrimmedCurve::BasisCurve () const 
+Handle(Geom2d_Curve) Geom2d_TrimmedCurve::BasisCurve () const 
 { 
   return basisCurve;
 }

@@ -29,8 +29,7 @@ public:
   : IsDef (0),
     IsSet (0),
     MarkerType (Aspect_TOM_POINT),
-    Scale (0),
-    MarkerImage (NULL)
+    Scale (0)
   {
     memset (&Color, 0, sizeof(Color));
   }

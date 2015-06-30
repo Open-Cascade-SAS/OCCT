@@ -18,8 +18,8 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <Standard_DomainError.hxx>
 
-#include <IFSelect_Profile.hxx>
-#include <IFSelect_Option.hxx>
+#include <MoniTool_Profile.hxx>
+#include <MoniTool_Option.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <Interface_Macros.hxx>
@@ -29,7 +29,7 @@ static Handle(Dico_DictionaryOfInteger) thedico; // = new Dico_DictionaryOfInteg
 static TColStd_SequenceOfInteger   thenums, themodes;
 static TColStd_SequenceOfTransient theacts;
 
-static Handle(IFSelect_Profile) thealiases;
+static Handle(MoniTool_Profile) thealiases;
 
 
     void IFSelect_Activator::Adding
@@ -61,7 +61,6 @@ static Handle(IFSelect_Profile) thealiases;
   (const Standard_Integer number, const Standard_CString command) const
       {  Adding (this,number,command,1);  }
 
-
     void IFSelect_Activator::Remove (const Standard_CString command)
       {  thedico->RemoveItem(command);  }
 
@@ -76,10 +75,10 @@ static Handle(IFSelect_Profile) thealiases;
   (const Standard_CString conf,
    const Standard_CString command, const Standard_CString alias)
 {
-  if (thealiases.IsNull()) thealiases = new IFSelect_Profile;
-  Handle(IFSelect_Option) opt = thealiases->Option(command);
+  if (thealiases.IsNull()) thealiases = new MoniTool_Profile;
+  Handle(MoniTool_Option) opt = thealiases->Option(command);
   if (opt.IsNull()) {
-    opt = new IFSelect_Option(STANDARD_TYPE(TCollection_HAsciiString),command);
+    opt = new MoniTool_Option(STANDARD_TYPE(TCollection_HAsciiString),command);
     thealiases->AddOption (opt);
   }
   opt->Add (conf,new TCollection_HAsciiString(alias));
@@ -101,7 +100,7 @@ static Handle(IFSelect_Profile) thealiases;
   Handle(TCollection_HAsciiString) val;
   if (!thealiases->Value(command,val)) return str;
   str.AssignCat (val->ToCString());
-  return str;
+    return str;
 }
 
 

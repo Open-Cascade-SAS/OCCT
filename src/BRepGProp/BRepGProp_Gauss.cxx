@@ -176,7 +176,7 @@ Standard_Integer BRepGProp_Gauss::MaxSubs(const Standard_Integer theN,
 //function : Init
 //purpose  : 
 //=======================================================================
-void BRepGProp_Gauss::Init(Handle(Vector)&         theOutVec,
+void BRepGProp_Gauss::Init(NCollection_Handle<math_Vector>&         theOutVec,
                            const Standard_Real    theValue,
                            const Standard_Integer theFirst,
                            const Standard_Integer theLast)
@@ -227,10 +227,10 @@ Standard_Integer BRepGProp_Gauss::FillIntervalBounds(
   const TColStd_Array1OfReal& theKnots,
   const Standard_Integer      theNumSubs,
   InertiaArray&               theInerts,
-  Handle(Vector)&              theParam1,
-  Handle(Vector)&              theParam2,
-  Handle(Vector)&              theError,
-  Handle(Vector)&              theCommonError)
+  NCollection_Handle<math_Vector>&              theParam1,
+  NCollection_Handle<math_Vector>&              theParam2,
+  NCollection_Handle<math_Vector>&              theError,
+  NCollection_Handle<math_Vector>&              theCommonError)
 {
   const Standard_Integer aSize =
     Max(theKnots.Upper(), MaxSubs(theKnots.Upper() - 1, theNumSubs));
@@ -550,10 +550,10 @@ Standard_Real BRepGProp_Gauss::Compute(
   InertiaArray anInertiaU = new NCollection_Array1<Inertia>(1, SM);
 
   // Prepare Gauss points and weights
-  Handle(Vector) LGaussP[2];
-  Handle(Vector) LGaussW[2];
-  Handle(Vector) UGaussP[2];
-  Handle(Vector) UGaussW[2];
+  NCollection_Handle<math_Vector> LGaussP[2];
+  NCollection_Handle<math_Vector> LGaussW[2];
+  NCollection_Handle<math_Vector> UGaussP[2];
+  NCollection_Handle<math_Vector> UGaussW[2];
 
   const Standard_Integer aNbGaussPoint =
     RealToInt(Ceiling(ERROR_ALGEBR_RATIO * GPM));
@@ -568,14 +568,14 @@ Standard_Real BRepGProp_Gauss::Compute(
   UGaussW[0] = new math_Vector(1, GPM);
   UGaussW[1] = new math_Vector(1, aNbGaussPoint);
 
-  Handle(Vector) L1 = new math_Vector(1, SM);
-  Handle(Vector) L2 = new math_Vector(1, SM);
-  Handle(Vector) U1 = new math_Vector(1, SM);
-  Handle(Vector) U2 = new math_Vector(1, SM);
+  NCollection_Handle<math_Vector> L1 = new math_Vector(1, SM);
+  NCollection_Handle<math_Vector> L2 = new math_Vector(1, SM);
+  NCollection_Handle<math_Vector> U1 = new math_Vector(1, SM);
+  NCollection_Handle<math_Vector> U2 = new math_Vector(1, SM);
 
-  Handle(Vector) ErrL  = new math_Vector(1, SM, 0.0);
-  Handle(Vector) ErrU  = new math_Vector(1, SM, 0.0);
-  Handle(Vector) ErrUL = new math_Vector(1, SM, 0.0);
+  NCollection_Handle<math_Vector> ErrL  = new math_Vector(1, SM, 0.0);
+  NCollection_Handle<math_Vector> ErrU  = new math_Vector(1, SM, 0.0);
+  NCollection_Handle<math_Vector> ErrUL = new math_Vector(1, SM, 0.0);
 
   // Face parametrization in U and V direction
   Standard_Real BV1, BV2, BU1, BU2;
@@ -746,7 +746,7 @@ Standard_Real BRepGProp_Gauss::Compute(
                 if (Abs(u2 - u1) < EPS_PARAM)
                   continue;
 
-                Handle(Vector) aDummy;
+                NCollection_Handle<math_Vector> aDummy;
                 iUSubEnd = FillIntervalBounds(u1, u2, UKnots, NumSubs, anInertiaU, U1, U2, ErrU, aDummy);
                 UMaxSubs = BRepGProp_Gauss::MaxSubs(iUSubEnd);
 

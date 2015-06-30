@@ -30,13 +30,16 @@
 #include <HeaderSection_FileName.hxx>
 #include <HeaderSection_FileDescription.hxx>
 #include <HeaderSection_FileSchema.hxx>
+#include <HeaderSection_Protocol.hxx>
 
 #include <StepData_UndefinedEntity.hxx>
 #include <Interface_Macros.hxx>
 
 
 RWHeaderSection_GeneralModule::RWHeaderSection_GeneralModule ()
-	{ Interface_GeneralLib::SetGlobal(this, HeaderSection::Protocol()); }
+{ 
+  Interface_GeneralLib::SetGlobal(this, HeaderSection::Protocol());
+}
 
 void RWHeaderSection_GeneralModule::FillSharedCase(const Standard_Integer CN, const Handle(Standard_Transient)& ent, Interface_EntityIterator& iter) const
 {

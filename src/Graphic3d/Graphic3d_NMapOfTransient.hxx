@@ -17,9 +17,8 @@
 
 #include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Handle.hxx>
+#include <NCollection_Shared.hxx>
 
-typedef NCollection_Map<const Standard_Transient* >          Graphic3d_NMapOfTransient;
-typedef NCollection_Handle<Graphic3d_NMapOfTransient> Handle(Graphic3d_NMapOfTransient);
+typedef NCollection_Shared< NCollection_Map<const Standard_Transient* > > Graphic3d_NMapOfTransient;
 
 #endif // _Graphic3d_NMapOfTransient_HeaderFile

@@ -71,13 +71,8 @@
 #include <GeomAbs_Shape.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-typedef Handle(Geom_OffsetCurve)   Handle(OffsetCurve);
 typedef Geom_OffsetCurve           OffsetCurve;
-typedef Handle(Geom_Curve)         Handle(Curve);
-typedef Handle(Geom_Surface)       Handle(Surface);
-typedef Handle(Geom_OffsetSurface) Handle(OffsetSurface);
 typedef Geom_OffsetSurface         OffsetSurface;
-typedef Handle(Geom_Geometry)      Handle(Geometry);
 typedef gp_Dir  Dir;
 typedef gp_Vec  Vec;
 typedef gp_Pnt  Pnt;
@@ -210,7 +205,7 @@ static void derivatives(Standard_Integer MaxOrder,
 
 Handle(Geom_Geometry) Geom_OffsetSurface::Copy () const {
 
-  Handle(OffsetSurface) S;
+  Handle(Geom_OffsetSurface) S;
   S = new OffsetSurface (basisSurf, offsetValue);
   return S;
 }
@@ -240,13 +235,13 @@ Geom_OffsetSurface::Geom_OffsetSurface (const Handle(Geom_Surface)& theSurf,
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::SetBasisSurface (const Handle(Surface)& S,
+void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
   const Standard_Boolean isNotCheckC0)
 {
   Standard_Real aUf, aUl, aVf, aVl;
   S->Bounds(aUf, aUl, aVf, aVl);
 
-  Handle(Surface) aCheckingSurf = Handle(Surface)::DownCast(S->Copy());
+  Handle(Geom_Surface) aCheckingSurf = Handle(Geom_Surface)::DownCast(S->Copy());
   Standard_Boolean isTrimmed = Standard_False;
 
   while(aCheckingSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)) ||
@@ -429,7 +424,7 @@ Standard_Real Geom_OffsetSurface::VReversedParameter( const Standard_Real V) con
 //purpose  : 
 //=======================================================================
 
-Handle(Surface) Geom_OffsetSurface::BasisSurface () const 
+Handle(Geom_Surface) Geom_OffsetSurface::BasisSurface () const 
 {
   return basisSurf;
 }
@@ -1280,7 +1275,8 @@ Handle(Geom_Curve) Geom_OffsetSurface::UIso (const Standard_Real UU) const
     GeomAbs_Shape Cont = GeomAbs_C1;
     Standard_Integer MaxSeg = 100, MaxDeg =14;
 
-    Geom_OffsetSurface_UIsoEvaluator ev (this, UU);
+    Handle(Geom_OffsetSurface) me (this);
+    Geom_OffsetSurface_UIsoEvaluator ev (me, UU);
     AdvApprox_ApproxAFunction Approx(Num1, Num2, Num3, T1, T2, T3,
       V1, V2, Cont,
       MaxDeg,MaxSeg, ev);
@@ -1347,7 +1343,8 @@ Handle(Geom_Curve) Geom_OffsetSurface::VIso (const Standard_Real VV) const
     GeomAbs_Shape Cont = GeomAbs_C1;
     Standard_Integer MaxSeg = 100, MaxDeg =14;  
 
-    Geom_OffsetSurface_VIsoEvaluator ev (this, VV);
+    Handle(Geom_OffsetSurface) me (this);
+    Geom_OffsetSurface_VIsoEvaluator ev (me, VV);
     AdvApprox_ApproxAFunction Approx (Num1, Num2, Num3, T1, T2, T3,
       U1, U2, Cont, MaxDeg, MaxSeg, ev);
 
@@ -1447,13 +1444,13 @@ Standard_Real Geom_OffsetSurface::VPeriod() const
 Standard_Boolean Geom_OffsetSurface::IsUClosed () const { 
 
   Standard_Boolean UClosed;
-  Handle(Surface) SBasis = BasisSurface();
+  Handle(Geom_Surface) SBasis = BasisSurface();
 
   if (SBasis->IsKind (STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
     Handle(Geom_RectangularTrimmedSurface) St = 
       Handle(Geom_RectangularTrimmedSurface)::DownCast(SBasis);
 
-    Handle(Surface) S = Handle(Surface)::DownCast(St->BasisSurface());
+    Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(St->BasisSurface());
     if (S->IsKind (STANDARD_TYPE(Geom_ElementarySurface))) {
       UClosed = SBasis->IsUClosed();
     }
@@ -1461,7 +1458,7 @@ Standard_Boolean Geom_OffsetSurface::IsUClosed () const {
       Handle(Geom_SurfaceOfLinearExtrusion) Extru = 
         Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(S);
 
-      Handle(Curve) C = Extru->BasisCurve();
+      Handle(Geom_Curve) C = Extru->BasisCurve();
       if (C->IsKind (STANDARD_TYPE(Geom_Circle)) || C->IsKind (STANDARD_TYPE(Geom_Ellipse))) {
         UClosed = SBasis->IsUClosed();
       }
@@ -1480,7 +1477,7 @@ Standard_Boolean Geom_OffsetSurface::IsUClosed () const {
       Handle(Geom_SurfaceOfLinearExtrusion) Extru = 
         Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(SBasis);
 
-      Handle(Curve) C = Extru->BasisCurve();
+      Handle(Geom_Curve) C = Extru->BasisCurve();
       UClosed = (C->IsKind(STANDARD_TYPE(Geom_Circle)) || C->IsKind(STANDARD_TYPE(Geom_Ellipse)));
     }
     else if (SBasis->IsKind (STANDARD_TYPE(Geom_SurfaceOfRevolution))) { 
@@ -1500,13 +1497,13 @@ Standard_Boolean Geom_OffsetSurface::IsUClosed () const {
 Standard_Boolean Geom_OffsetSurface::IsVClosed () const {  
 
   Standard_Boolean VClosed;
-  Handle(Surface) SBasis = BasisSurface();
+  Handle(Geom_Surface) SBasis = BasisSurface();
 
   if (SBasis->IsKind (STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
     Handle(Geom_RectangularTrimmedSurface) St = 
       Handle(Geom_RectangularTrimmedSurface)::DownCast(SBasis);
 
-    Handle(Surface) S = Handle(Surface)::DownCast(St->BasisSurface());
+    Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(St->BasisSurface());
     if (S->IsKind (STANDARD_TYPE(Geom_ElementarySurface))) {
       VClosed = SBasis->IsVClosed();
     }

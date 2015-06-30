@@ -61,7 +61,7 @@ IVtkOCC_SelectableObject::IVtkOCC_SelectableObject()
 void IVtkOCC_SelectableObject::SetShape (const IVtkOCC_Shape::Handle& theShape)
 {
   myShape = theShape;
-  if (myShape)
+  if (! myShape.IsNull())
   {
     myShape->SetSelectableObject (this);
   }
@@ -78,7 +78,7 @@ void IVtkOCC_SelectableObject::SetShape (const IVtkOCC_Shape::Handle& theShape)
 void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode)
 {
-  if (!myShape)
+  if (myShape.IsNull())
   {
     return;
   }
@@ -143,7 +143,7 @@ void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selectio
 //============================================================================
 const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
 {
-  if (!myShape)
+  if (myShape.IsNull())
   {
     myBndBox.SetVoid();
     return myBndBox;

@@ -21,6 +21,7 @@
 
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Visual3d_Layer.hxx>
 

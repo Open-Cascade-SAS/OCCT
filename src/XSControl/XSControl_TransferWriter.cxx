@@ -14,6 +14,7 @@
 #include <XSControl_TransferWriter.ixx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Transfer_ActorOfFinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
 #include <XSControl_Utils.hxx>

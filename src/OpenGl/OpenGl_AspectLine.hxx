@@ -21,9 +21,9 @@
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Graphic3d_CAspectLine.hxx>
-
-
 #include <OpenGl_Element.hxx>
+
+class OpenGl_ShaderProgram;
 
 class OpenGl_AspectLine : public OpenGl_Element
 {

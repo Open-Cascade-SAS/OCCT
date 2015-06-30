@@ -19,11 +19,6 @@
 #include <XmlLDrivers.hxx>
 #include <XmlTObjDrivers.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (XmlTObjDrivers_DocumentStorageDriver,
-                           XmlLDrivers_DocumentStorageDriver)
-IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_DocumentStorageDriver,
-                           XmlLDrivers_DocumentStorageDriver)
-
 //=======================================================================
 //function : XmlTObjDrivers_DocumentStorageDriver
 //purpose  : 

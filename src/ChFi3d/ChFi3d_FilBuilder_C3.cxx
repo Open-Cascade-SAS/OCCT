@@ -45,6 +45,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>

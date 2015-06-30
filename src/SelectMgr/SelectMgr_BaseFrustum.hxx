@@ -38,7 +38,7 @@
 //! selection. It contains signatures of functions for detection of
 //! overlap by sensitive entity and initializes some data for building
 //! the selecting frustum
-class SelectMgr_BaseFrustum
+class SelectMgr_BaseFrustum : public Standard_Transient
 {
 public:
 
@@ -136,6 +136,8 @@ public:
   //! to the region defined by clipping planes
   virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
                                       const Standard_Real theDepth);
+
+  DEFINE_STANDARD_RTTI(SelectMgr_BaseFrustum, Standard_Transient)
 
 protected:
   Standard_Real    myPixelTolerance;      //!< Pixel tolerance

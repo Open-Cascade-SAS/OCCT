@@ -36,10 +36,10 @@
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_Edge.hxx>
 #include <StepShape_OrientedEdge.hxx>
+#include <StepShape_Vertex.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepGeom_Pcurve.hxx>
-//#include <StepGeom_Polyline.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
 #include <StepGeom_PcurveOrSurface.hxx>

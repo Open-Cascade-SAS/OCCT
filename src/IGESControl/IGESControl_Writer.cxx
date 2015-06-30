@@ -26,6 +26,7 @@
 #include <GeomToIGES_GeomCurve.hxx>
 #include <GeomToIGES_GeomSurface.hxx>
 #include <IGESData_IGESWriter.hxx>
+#include <IGESData_Protocol.hxx>
 #include <XSControl_TransferWriter.hxx>
 
 #include <Interface_Macros.hxx>

@@ -19,14 +19,11 @@
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
-#ifndef _WIN32
-  #include <string.h>
-#endif
-
 #include <OpenGl_GraduatedTrihedron.hxx>
 
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <gp_Ax3.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Utils.hxx>
@@ -34,6 +31,10 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Cylinder.hxx>
 #include <Precision.hxx>
+
+#ifndef _WIN32
+  #include <string.h>
+#endif
 
 namespace
 {

@@ -23,18 +23,12 @@
 #include <Standard_RangeError.hxx>
 
 typedef Geom_Parabola         Parabola;
-typedef Handle(Geom_Parabola) Handle(Parabola);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
 typedef gp_Vec  Vec;
 typedef gp_XYZ  XYZ;
-
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -43,7 +37,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_Parabola::Copy() const {
 
-   Handle(Parabola) Prb;
+   Handle(Geom_Parabola) Prb;
    Prb = new Parabola (pos, focalLength);
    return Prb;
 }

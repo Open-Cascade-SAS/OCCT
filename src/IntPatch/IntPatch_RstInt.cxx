@@ -189,9 +189,9 @@ static void GetLinePoint2d (const Handle(IntPatch_Line)& L,
 			    const Standard_Boolean OnFirst,
 			    Standard_Real& U, Standard_Real& V)
 {
+  Handle(IntPatch_WLine) wlin = Handle(IntPatch_WLine)::DownCast(L);
+  Handle(IntPatch_RLine) rlin = Handle(IntPatch_RLine)::DownCast(L);
   IntPatch_IType typL = L->ArcType();
-  const Handle(IntPatch_WLine)& wlin = (const Handle(IntPatch_WLine)&)L;
-  const Handle(IntPatch_RLine)& rlin = (const Handle(IntPatch_RLine)&)L;
   Standard_Integer Nbptlin = (typL == IntPatch_Walking
 			      ? wlin->NbPnts()
 			      : rlin->NbPnts());
@@ -446,7 +446,7 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 				       const Handle(Adaptor3d_HSurface)& OtherSurf,
 				       const Standard_Boolean OnFirst,
 				       const Standard_Real Tol,
-               const Standard_Boolean hasBeenAdded)
+                                       const Standard_Boolean hasBeenAdded)
  {
 
 // Domain est le domaine de restriction de la surface Surf.

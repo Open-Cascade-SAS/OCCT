@@ -522,7 +522,7 @@ void SelectMgr_SelectionManager::ClearSelectionStructures (const Handle(SelectMg
   if (!theObj->HasOwnPresentations())
     return;
 
-  if (theSelector == NULL)
+  if (theSelector.IsNull())
   {
     if (!(myGlobal.Contains (theObj) || myLocal.IsBound(theObj)))
       return;
@@ -582,7 +582,7 @@ void SelectMgr_SelectionManager::RestoreSelectionStructures (const Handle(Select
   if (!theObj->HasOwnPresentations())
     return;
 
-  if (theSelector == NULL)
+  if (theSelector.IsNull())
   {
     if (!(myGlobal.Contains (theObj) || myLocal.IsBound(theObj)))
       return;
@@ -632,7 +632,7 @@ void SelectMgr_SelectionManager::RestoreSelectionStructures (const Handle(Select
 //=======================================================================
 void SelectMgr_SelectionManager::rebuildSelectionStructures (const Handle(SelectMgr_ViewerSelector)& theSelector)
 {
-  if (theSelector == NULL)
+  if (theSelector.IsNull())
   {
     Handle(SelectMgr_ViewerSelector) aSelector;
     for(TColStd_MapIteratorOfMapOfTransient aSelectorsIter (mySelectors); aSelectorsIter.More(); aSelectorsIter.Next())
@@ -840,7 +840,7 @@ void SelectMgr_SelectionManager::loadMode (const Handle(SelectMgr_SelectableObje
   {
     Handle(SelectMgr_Selection) aNewSel = new SelectMgr_Selection (theMode);
     theObject->AddSelection (aNewSel, theMode);
-    if (theSelector == NULL)
+    if (theSelector.IsNull())
     {
       if (myGlobal.Contains (theObject))
       {

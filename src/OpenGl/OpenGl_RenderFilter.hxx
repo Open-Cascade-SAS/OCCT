@@ -19,6 +19,7 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
+class OpenGl_RenderFilter;
 DEFINE_STANDARD_HANDLE (OpenGl_RenderFilter, Standard_Transient)
 
 class OpenGl_Element;

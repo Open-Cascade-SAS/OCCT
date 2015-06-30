@@ -22,6 +22,7 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 
+class TObj_Object;
 class Standard_GUID;
 
 /**

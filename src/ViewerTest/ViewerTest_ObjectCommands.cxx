@@ -1927,8 +1927,6 @@ Handle(Geom_Circle) CreateCircle(gp_Pnt theCenter, Standard_Real theRadius)
   return aCircle;
 }
 
-DEFINE_STANDARD_HANDLE(FilledCircle, AIS_InteractiveObject)
-
 class FilledCircle : public AIS_InteractiveObject 
 {
 public:
@@ -3134,7 +3132,7 @@ static int VComputeHLR (Draw_Interpretor& di,
 
 // This class is a wrap for Graphic3d_ArrayOfPrimitives; it is used for
 // manipulating and displaying such an array with AIS context
-DEFINE_STANDARD_HANDLE(MyPArrayObject, AIS_InteractiveObject)
+
 class MyPArrayObject : public AIS_InteractiveObject
 {
 
@@ -4329,7 +4327,7 @@ static Standard_Integer VSelectionPrevious(Draw_Interpretor& /*theDI*/,
 //purpose : creates Triangle based on AIS_InteractiveObject. 
 //          This class was implemented for testing Select3D_SensitiveTriangle
 //===========================================================================
-DEFINE_STANDARD_HANDLE(Triangle, AIS_InteractiveObject)
+
 class Triangle: public AIS_InteractiveObject 
 {
 public: 
@@ -4523,7 +4521,7 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
 //class  : SegmentObject
 //purpose: creates segment based on AIS_InteractiveObject.
 //         This class was implemented for testing Select3D_SensitiveCurve
-DEFINE_STANDARD_HANDLE(SegmentObject, AIS_InteractiveObject)
+
 class SegmentObject: public AIS_InteractiveObject
 {
 public:
@@ -4902,7 +4900,7 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
 }
 
 // This class is used for testing markers.
-DEFINE_STANDARD_HANDLE(ViewerTest_MarkersArrayObject, AIS_InteractiveObject)
+
 class ViewerTest_MarkersArrayObject : public AIS_InteractiveObject
 {
 

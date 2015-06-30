@@ -57,7 +57,7 @@ IVtk_SelectionModeList IVtkOCC_ShapePickerAlgo::GetSelectionModes (
 {
   IVtk_SelectionModeList aRes;
 
-  if (theShape)
+  if (! theShape.IsNull())
   {
     // Get shape implementation from shape interface.
     Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
@@ -90,7 +90,7 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode (const IVtk_IShape::Handle& theSh
                                                 const IVtk_SelectionMode theMode,
                                                 const bool theIsTurnOn)
 {
-  if (!theShape)
+  if (theShape.IsNull())
   {
     return;
   }
@@ -305,14 +305,14 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
       Handle(IVtkOCC_SelectableObject) aSelectable =
         Handle(IVtkOCC_SelectableObject)::DownCast (anEntityOwner->Selectable());
 
-      if (!aSelectable)
+      if (aSelectable.IsNull())
       {
         anOutput << "Error: EntityOwner having null SelectableObject picked!";
         continue;
       }
 
       Handle(IVtkOCC_Shape) aSelShape = aSelectable->GetShape();
-      if (!aSelShape)
+      if (aSelShape.IsNull())
       {
         anOutput << "Error: SelectableObject with null OccShape pointer picked!";
         continue;

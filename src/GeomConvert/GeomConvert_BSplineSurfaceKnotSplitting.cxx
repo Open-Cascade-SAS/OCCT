@@ -21,17 +21,14 @@
 #include <Standard_RangeError.hxx>
 
 #include <BSplCLib.hxx>
-typedef Handle(Geom_BSplineSurface)     Handle(BSplineSurface);
+
 typedef TColStd_Array1OfInteger      Array1OfInteger;
 typedef TColStd_HArray1OfInteger HArray1OfInteger;
-
-
-
 
 GeomConvert_BSplineSurfaceKnotSplitting::
 GeomConvert_BSplineSurfaceKnotSplitting (
 
-const Handle(BSplineSurface)& BasisSurface, 
+const Handle(Geom_BSplineSurface)& BasisSurface, 
 const Standard_Integer        UContinuityRange,
 const Standard_Integer        VContinuityRange
 

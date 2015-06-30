@@ -22,22 +22,13 @@
 
 #include <BSplCLib.hxx>
 
-typedef Handle(Law_BSpline)             Handle(BSplineCurve);
 typedef TColStd_Array1OfInteger         Array1OfInteger;
 typedef TColStd_HArray1OfInteger        HArray1OfInteger;
 
-
-
-
 Law_BSplineKnotSplitting::
-Law_BSplineKnotSplitting (
-
-const Handle(BSplineCurve)& BasisCurve, 
-const Standard_Integer               ContinuityRange
-
-) {
-
-
+Law_BSplineKnotSplitting (const Handle(Law_BSpline)& BasisCurve, 
+                          const Standard_Integer ContinuityRange)
+{
   if (ContinuityRange < 0)  Standard_RangeError::Raise();
 
   Standard_Integer FirstIndex = BasisCurve->FirstUKnotIndex();

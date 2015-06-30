@@ -21,6 +21,7 @@
 
 #include <TDF_LabelNode.hxx>
 #include <TDF_TagSource.hxx>
+#include <TDF_Data.hxx>
 
 inline TDF_Label::TDF_Label()
 :myLabelNode(NULL)

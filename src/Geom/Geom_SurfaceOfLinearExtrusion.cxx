@@ -44,9 +44,7 @@
 #define  FMULTS   (BSplCLib::NoMults())
 
 typedef Geom_SurfaceOfLinearExtrusion         SurfaceOfLinearExtrusion;
-typedef Handle(Geom_SurfaceOfLinearExtrusion) Handle(SurfaceOfLinearExtrusion);
 typedef Geom_Curve                            Curve;
-typedef Handle(Geom_Curve)                    Handle(Curve);
 typedef gp_Dir  Dir;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
@@ -131,10 +129,10 @@ Handle(Geom_Geometry) Geom_SurfaceOfLinearExtrusion::Copy () const
 //=======================================================================
 
 Geom_SurfaceOfLinearExtrusion::Geom_SurfaceOfLinearExtrusion 
-  ( const Handle(Curve)& C, 
+  ( const Handle(Geom_Curve)& C, 
     const Dir& V) {
 
-   basisCurve = Handle(Curve)::DownCast(C->Copy());  // Copy 10-03-93
+   basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());  // Copy 10-03-93
    direction  = V;
    smooth     = C->Continuity();
  }
@@ -202,10 +200,10 @@ void Geom_SurfaceOfLinearExtrusion::SetDirection (const Dir& V) {
 //purpose  : 
 //=======================================================================
 
-void Geom_SurfaceOfLinearExtrusion::SetBasisCurve (const Handle(Curve)& C) {
+void Geom_SurfaceOfLinearExtrusion::SetBasisCurve (const Handle(Geom_Curve)& C) {
 
    smooth = C->Continuity();
-   basisCurve = Handle(Curve)::DownCast(C->Copy());  // Copy 10-03-93
+   basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());  // Copy 10-03-93
 }
 
 
@@ -491,11 +489,11 @@ Handle(Geom_Curve) Geom_SurfaceOfLinearExtrusion::UIso (const Standard_Real U) c
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_SurfaceOfLinearExtrusion::VIso (const Standard_Real V) const {
+Handle(Geom_Curve) Geom_SurfaceOfLinearExtrusion::VIso (const Standard_Real V) const {
     
   Vec Vdir (direction);
   Vdir.Multiply (V);
-  Handle(Curve) C;
+  Handle(Geom_Curve) C;
   C = Handle(Geom_Curve)::DownCast(basisCurve->Translated(Vdir));
   return C;
 }

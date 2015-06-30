@@ -16,7 +16,6 @@
 
 #include <Geom_Axis2Placement.ixx>
 
-typedef Handle(Geom_Axis2Placement) Handle(Axis2Placement);
 typedef Geom_Axis2Placement Axis2Placement;
 typedef gp_Ax1  Ax1;
 typedef gp_Dir  Dir;
@@ -32,7 +31,7 @@ typedef gp_Vec  Vec;
 
 Handle(Geom_Geometry) Geom_Axis2Placement::Copy() const {
 
-  Handle(Axis2Placement) A2;
+  Handle(Geom_Axis2Placement) A2;
   A2 = new Axis2Placement (axis.Location(), axis.Direction(), vxdir, vydir);
   return A2;
 }

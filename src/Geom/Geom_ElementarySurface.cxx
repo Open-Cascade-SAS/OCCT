@@ -16,21 +16,13 @@
 
 #include <Geom_ElementarySurface.ixx>
 
-
-
 typedef Geom_ElementarySurface         ElementarySurface;
-typedef Handle(Geom_ElementarySurface) Handle(ElementarySurface);
-typedef Handle(Geom_Surface)           Handle(Surface);
-
 typedef gp_Ax1 Ax1;
 typedef gp_Ax2 Ax2;
 typedef gp_Ax3 Ax3;
 typedef gp_Dir Dir;
 typedef gp_Pnt Pnt;
 typedef gp_Vec Vec;
-
-
-
 
 //=======================================================================
 //function : Continuity

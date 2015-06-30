@@ -16,13 +16,14 @@
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
-#include <IFSelect_Option.hxx>
+#include <MoniTool_Option.hxx>
 
 #include <IFSelect_SelectModelEntities.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
 #include <IFSelect_SelectPointed.hxx>
 #include <IFSelect_SelectSharing.hxx>
 #include <IFSelect_SelectShared.hxx>
+#include <IFSelect_ShareOut.hxx>
 #include <IFSelect_GraphCounter.hxx>
 #include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_ConnectedShapes.hxx>
@@ -98,10 +99,10 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
 
   //  Initialisation du Profile
 
-  theProfile = new IFSelect_Profile;
+  theProfile = new MoniTool_Profile;
 
 /*  essai option sur parametre
-  Handle(IFSelect_Option) optrdprec = new IFSelect_Option
+  Handle(MoniTool_Option) optrdprec = new MoniTool_Option
     (Interface_Static::Static ("read.precision.mode"),"readprecision.mode");
   optrdprec->AddBasic("default","File");
   optrdprec->AddBasic("Session");
@@ -109,24 +110,24 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
   theProfile->AddOption (optrdprec);
 */
 
-//  Handle(IFSelect_Option) optproto = new IFSelect_Option
+//  Handle(MoniTool_Option) optproto = new MoniTool_Option
 //    (STANDARD_TYPE(Interface_Protocol),"protocol");
 //  theProfile->AddOption (optproto);
 
-  Handle(IFSelect_Option) optsign  = new IFSelect_Option
+  Handle(MoniTool_Option) optsign  = new MoniTool_Option
     (STANDARD_TYPE(IFSelect_Signature),"sign-type");
   optsign->Add ("default",theSignType);
   theProfile->AddOption (optsign);
 
-//  Handle(IFSelect_Option) optwlib  = new IFSelect_Option
+//  Handle(MoniTool_Option) optwlib  = new MoniTool_Option
 //    (STANDARD_TYPE(IFSelect_WorkLibrary),"access");
 //  theProfile->AddOption (optwlib);
 
-  Handle(IFSelect_Option) optactrd = new IFSelect_Option
+  Handle(MoniTool_Option) optactrd = new MoniTool_Option
     (STANDARD_TYPE(Transfer_ActorOfTransientProcess),"tr-read");
   theProfile->AddOption (optactrd);
 
-  Handle(IFSelect_Option) optactwr = new IFSelect_Option
+  Handle(MoniTool_Option) optactwr = new MoniTool_Option
     (STANDARD_TYPE(Transfer_ActorOfFinderProcess),"tr-write");
   theProfile->AddOption (optactwr);
 
@@ -155,7 +156,7 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
   Standard_Boolean deja;
   Handle(Standard_Transient)& newadapt = listadapt()->NewItem (name,deja);
   if (deja) {
-    Handle(Standard_Transient) thisadapt = this;
+    Handle(Standard_Transient) thisadapt (this);
     if (newadapt->IsKind(thisadapt->DynamicType())) 
       {
       }
@@ -177,9 +178,9 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
     Handle(XSControl_Controller)  XSControl_Controller::Recorded
   (const Standard_CString name)
 {
-  Handle(XSControl_Controller) recorded;
+  Handle(Standard_Transient) recorded;
   if (!listadapt()->GetItem (name,recorded)) recorded.Nullify();
-  return recorded;
+  return Handle(XSControl_Controller)::DownCast (recorded);
 }
 
     Handle(TColStd_HSequenceOfHAsciiString)  XSControl_Controller::ListRecorded
@@ -211,7 +212,7 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
 
 //    ####    PROFILE    ####
 
-    Handle(IFSelect_Profile)  XSControl_Controller::Profile () const
+    Handle(MoniTool_Profile)  XSControl_Controller::Profile () const
       {  return theProfile;  }
 
     void  XSControl_Controller::DefineProfile
@@ -226,11 +227,15 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
 {
   if (!theProfile->SetCurrent (confname)) return Standard_False;
 
+  Handle(Standard_Transient) anItem;
 //  theProfile->Value("protocol",theAdaptorProtocol);
-  theProfile->Value("sign-type",theSignType);
+  if (theProfile->Value("sign-type",anItem))
+    theSignType = Handle(IFSelect_Signature)::DownCast (anItem);
 //  theProfile->Value("access",theAdaptorLibrary);
-  theProfile->Value("tr-read",theAdaptorRead);
-  theProfile->Value("tr-write",theAdaptorWrite);
+  if (theProfile->Value("tr-read",anItem))
+    theAdaptorRead = Handle(Transfer_ActorOfTransientProcess)::DownCast (anItem);
+  if (theProfile->Value("tr-write",anItem))
+    theAdaptorWrite = Handle(Transfer_ActorOfFinderProcess)::DownCast (anItem);
 
   return SettingProfile (confname);
 }
@@ -249,21 +254,21 @@ static TColStd_IndexedMapOfTransient&      mapadapt()
   theProfile->SetTypedValues();
 
 //   SignType
-  Handle(IFSelect_Signature) signtype;
+  Handle(Standard_Transient) signtype;
   theProfile->Value ("sign-type",signtype);
-  WS->SetSignType (signtype);
+  WS->SetSignType (Handle(IFSelect_Signature)::DownCast (signtype));
 
 //   ActorRead
 
-  Handle(Transfer_ActorOfTransientProcess) actrd;
+  Handle(Standard_Transient) actrd;
   theProfile->Value ("tr-read",actrd);
-  WS->TransferReader()->SetActor (actrd);
+  WS->TransferReader()->SetActor (Handle(Transfer_ActorOfTransientProcess)::DownCast (actrd));
 
 //   ActorWrite : dans le Controller meme
 
-  Handle(Transfer_ActorOfFinderProcess) actwr;
+  Handle(Standard_Transient) actwr;
   theProfile->Value ("tr-write",actwr);
-  theAdaptorWrite = actwr;
+  theAdaptorWrite = Handle (Transfer_ActorOfFinderProcess)::DownCast (actwr);
 
   return ApplyingProfile (WS,confname);
 }
@@ -557,7 +562,7 @@ static IFSelect_ReturnStatus TransferFinder
 //   Loading Options of the Profile
 
 //   Available Signatures
-  Handle(IFSelect_Option) optsign  = theProfile->Option ("sign-type");
+  Handle(MoniTool_Option) optsign  = theProfile->Option ("sign-type");
 //  Handle(TColStd_HSequenceOfHAsciiString) signs =
 //    WS->ItemNames (STANDARD_TYPE(IFSelect_Signature));
 //  Standard_Integer isign, nbsign = (signs.IsNull() ? 0 : signs->Length());
@@ -570,12 +575,12 @@ static IFSelect_ReturnStatus TransferFinder
   optsign->Switch ("default");  // garder courante la definition par defaut !
 
 //   Actor Read
-  Handle(IFSelect_Option) optacrd  = theProfile->Option ("tr-read");
+  Handle(MoniTool_Option) optacrd  = theProfile->Option ("tr-read");
   optacrd->Add ("default",theAdaptorRead);
   optacrd->Switch ("default");
 
 //   Actor Write
-  Handle(IFSelect_Option) optacwr  = theProfile->Option ("tr-write");
+  Handle(MoniTool_Option) optacwr  = theProfile->Option ("tr-write");
   optacwr->Add ("default",theAdaptorWrite);
   optacwr->Switch ("default");
 

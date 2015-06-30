@@ -19,6 +19,7 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
+class IVtk_Interface;
 DEFINE_STANDARD_HANDLE( IVtk_Interface, Standard_Transient )
 
 //! @class IVtk_Interface 

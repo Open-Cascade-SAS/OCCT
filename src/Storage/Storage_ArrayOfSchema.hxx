@@ -17,9 +17,9 @@
 #ifndef Storage_ArrayOfSchema_HeaderFile
 #define Storage_ArrayOfSchema_HeaderFile
 
-#include <Storage_Schema.hxx>
 #include <NCollection_Array1.hxx>
 
+class Storage_Schema;
 typedef NCollection_Array1<Handle(Storage_Schema)> Storage_ArrayOfSchema;
 
 

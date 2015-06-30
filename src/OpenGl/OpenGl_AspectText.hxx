@@ -26,6 +26,8 @@
 
 #include <OpenGl_Element.hxx>
 
+class OpenGl_ShaderProgram;
+
 //! Text representation parameters
 class OpenGl_AspectText : public OpenGl_Element
 {

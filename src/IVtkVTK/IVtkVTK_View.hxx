@@ -20,6 +20,7 @@
 
 class vtkRenderer;
 
+class IVtkVTK_View;
 DEFINE_STANDARD_HANDLE( IVtkVTK_View, IVtk_IView )
 
 //! @class IVtkVTK_View

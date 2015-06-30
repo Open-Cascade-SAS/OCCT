@@ -40,6 +40,10 @@
 #include <StepBasic_Person.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_SecurityClassification.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductRelatedProductCategory.hxx>
 #include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
 #include <StepAP203_HArray1OfClassifiedItem.hxx>
 #include <StepAP203_HArray1OfDateTimeItem.hxx>

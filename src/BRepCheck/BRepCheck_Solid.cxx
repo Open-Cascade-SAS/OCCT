@@ -41,7 +41,7 @@
 #include <BRepCheck.hxx>
 #include <BRepCheck_ListOfStatus.hxx>
 
-
+class BRepCheck_HSC;
 DEFINE_STANDARD_HANDLE(BRepCheck_HSC, MMgt_TShared);
 //=======================================================================
 //class    : BRepCheck_HSC

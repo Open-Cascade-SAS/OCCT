@@ -16,9 +16,9 @@
 #ifndef XCAFDoc_GraphNodeSequence_HeaderFile
 #define XCAFDoc_GraphNodeSequence_HeaderFile
 
-#include <XCAFDoc_GraphNode.hxx>
 #include <NCollection_Sequence.hxx>
 
+class XCAFDoc_GraphNode;
 typedef NCollection_Sequence<Handle(XCAFDoc_GraphNode)> XCAFDoc_GraphNodeSequence;
 
 

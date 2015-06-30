@@ -28,6 +28,7 @@ class Poly_Triangulation;
 class Poly_PolygonOnTriangulation;
 class TopoDS_Edge;
 class TopoDS_Face;
+class Geom2d_Curve;
 
 //! Auxiliary class implements functionality retrieving tessellated
 //! representation of an edge stored in polygon.

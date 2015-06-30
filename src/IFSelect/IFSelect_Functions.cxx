@@ -21,6 +21,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <IFSelect_SignType.hxx>
 #include <IFSelect_SignatureList.hxx>
+#include <IFSelect_ShareOut.hxx>
 #include <IFSelect_IntParam.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>

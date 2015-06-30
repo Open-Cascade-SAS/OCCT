@@ -22,9 +22,8 @@
 #include <SelectMgr_BaseFrustum.hxx>
 #include <SelectMgr_TriangularFrustum.hxx>
 
-typedef NCollection_Handle<SelectMgr_TriangularFrustum> SelectMgr_HTriangularFrustum;
-typedef NCollection_List<SelectMgr_HTriangularFrustum> SelectMgr_TriangFrustums;
-typedef NCollection_List<SelectMgr_HTriangularFrustum>::Iterator SelectMgr_TriangFrustumsIter;
+typedef NCollection_List<Handle(SelectMgr_TriangularFrustum)> SelectMgr_TriangFrustums;
+typedef NCollection_List<Handle(SelectMgr_TriangularFrustum)>::Iterator SelectMgr_TriangFrustumsIter;
 
 //! This class is used to handle polyline selection. The main principle of polyline selection
 //! algorithm is to split the polygon defined by polyline onto triangles. Than each of

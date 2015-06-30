@@ -19,6 +19,7 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 // =======================================================================
 // function : OpenGl_PriorityList

@@ -19,6 +19,7 @@
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_View.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>

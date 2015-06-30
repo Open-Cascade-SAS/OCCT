@@ -20,6 +20,9 @@
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_Resource.hxx>
 
+class OpenGl_ShaderObject;
+DEFINE_STANDARD_HANDLE(OpenGl_ShaderObject, OpenGl_Resource)
+
 //! Wrapper for OpenGL shader object.
 class OpenGl_ShaderObject : public OpenGl_Resource
 {

@@ -1238,7 +1238,7 @@ Standard_Boolean Visual3d_View::DisplayImmediate (const Handle(Graphic3d_Structu
     for (Standard_Integer aViewIter = 1; aViewIter <= aViews.Length(); ++aViewIter)
     {
       const Handle(Visual3d_View)& aView = aViews.Value (aViewIter);
-      if (aView.Access() != this)
+      if (aView != this)
       {
         aView->EraseImmediate (theStructure);
       }

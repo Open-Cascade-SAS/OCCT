@@ -18,6 +18,11 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <OpenGl_telem_util.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
+
+#include <OpenGl_PrinterContext.hxx>
+#include <OpenGl_Workspace.hxx>
+#include <OpenGl_View.hxx>
 
 #if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_FREEIMAGE)
   #include <NCollection_Handle.hxx>
@@ -28,10 +33,6 @@
   #endif
   typedef NCollection_Handle<fipImage> FipHandle;
 #endif
-
-#include <OpenGl_PrinterContext.hxx>
-#include <OpenGl_Workspace.hxx>
-#include <OpenGl_View.hxx>
 
 #ifdef _WIN32
 

@@ -173,7 +173,7 @@ TCollection_ExtendedString XmlLDrivers_DocumentRetrievalDriver::SchemaName() con
 //purpose  : pure virtual method definition
 //=======================================================================
 void XmlLDrivers_DocumentRetrievalDriver::Make (const Handle(PCDM_Document)&,
-                                               const Handle(CDM_Document&))
+                                               const Handle(CDM_Document)&)
 {
 }
 

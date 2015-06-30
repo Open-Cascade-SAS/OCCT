@@ -20,6 +20,7 @@
 
 #include <TObj_Common.hxx>
 
+class TObj_Object;
 
 /**
 * This class provides an iterator by objects in a partition.

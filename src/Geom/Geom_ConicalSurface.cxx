@@ -32,7 +32,6 @@
 #include <Geom_Circle.hxx>
 
 typedef Geom_ConicalSurface         ConicalSurface;
-typedef Handle(Geom_ConicalSurface) Handle(ConicalSurface);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Ax3  Ax3;
@@ -44,9 +43,6 @@ typedef gp_Trsf Trsf;
 typedef gp_Vec  Vec;
 typedef gp_XYZ  XYZ;
 
-
-
-
 //=======================================================================
 //function : Copy
 //purpose  : 
@@ -54,7 +50,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_ConicalSurface::Copy () const {
  
-   Handle(ConicalSurface) Cs;
+   Handle(Geom_ConicalSurface) Cs;
    Cs = new ConicalSurface (pos, semiAngle, radius);
    return Cs;
 }

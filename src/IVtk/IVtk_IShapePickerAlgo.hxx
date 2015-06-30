@@ -19,6 +19,7 @@
 #include <IVtk_IView.hxx>
 #include <IVtk_IShape.hxx>
 
+class IVtk_IShapePickerAlgo;
 DEFINE_STANDARD_HANDLE( IVtk_IShapePickerAlgo, IVtk_Interface )
 
 //! @class IVtk_IShapePickerAlgo 

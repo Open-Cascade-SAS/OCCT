@@ -81,6 +81,8 @@ public:
 
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
   void Clear();
+
+  DEFINE_STANDARD_RTTI(SelectMgr_TriangularFrustum,Standard_Transient)
 };
 
 #endif // _SelectMgr_TriangularFrustum_HeaderFile

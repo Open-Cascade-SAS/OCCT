@@ -19,6 +19,7 @@
 #include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
+class TDF_Attribute;
 typedef NCollection_IndexedMap<Handle(TDF_Attribute),TColStd_MapTransientHasher> TDF_AttributeIndexedMap;
 
 

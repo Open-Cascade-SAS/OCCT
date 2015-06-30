@@ -24,6 +24,7 @@
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 #if defined(HAVE_EGL) || defined(__ANDROID__)
   #include <EGL/egl.h>

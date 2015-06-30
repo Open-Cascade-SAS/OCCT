@@ -35,7 +35,15 @@
 #include <StepBasic_ProductType.hxx> //:i3
 #include <Interface_Static.hxx> //:j4
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_ProductRelatedProductCategory.hxx>
+#include <StepBasic_ProductCategoryRelationship.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
+#include <StepAP203_CcDesignSecurityClassification.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
+#include <StepAP203_CcDesignApproval.hxx>
 
 #include "stdio.h"
 

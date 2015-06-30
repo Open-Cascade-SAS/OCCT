@@ -31,6 +31,7 @@
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 #include <Geom2dAdaptor.hxx>
 

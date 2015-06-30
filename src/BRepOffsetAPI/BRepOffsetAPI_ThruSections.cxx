@@ -55,6 +55,7 @@
 
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_BezierCurve.hxx>

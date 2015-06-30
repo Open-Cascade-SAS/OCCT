@@ -24,17 +24,12 @@
 
 
 typedef Geom_Hyperbola         Hyperbola;
-typedef Handle(Geom_Hyperbola) Handle(Hyperbola);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
 typedef gp_Vec  Vec;
 typedef gp_Trsf Trsf;
 typedef gp_XYZ  XYZ;
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -43,7 +38,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_Hyperbola::Copy() const {
 
-  Handle(Hyperbola) H;
+  Handle(Geom_Hyperbola) H;
   H = new Hyperbola (pos, majorRadius, minorRadius);
   return H;
 }

@@ -16,8 +16,8 @@
 
 #include <Standard_NullObject.hxx>
 
+#include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-
 
 //==================================================
 // Function: SelectMgr_Selection

@@ -1131,7 +1131,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo
      const BOPDS_Curve& theNC,
      const Standard_Real theTolR3D,
      const BOPDS_IndexedMapOfPaveBlock& theMPBOnIn,
-     Handle(BOPDS_PaveBlock&) aPBOut)
+     Handle(BOPDS_PaveBlock)& aPBOut)
 {
   Standard_Boolean bRet;
   Standard_Real aT1, aT2, aTm, aTx;

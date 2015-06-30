@@ -395,11 +395,11 @@ void AIS_InteractiveContext::SetViewAffinity (const Handle(AIS_InteractiveObject
   anAffinity->SetVisible (aCView->ViewId, theIsVisible == Standard_True);
   if (theIsVisible)
   {
-    theView->View()->ChangeHiddenObjects()->Remove (theIObj);
+    theView->View()->ChangeHiddenObjects()->Remove (theIObj.get());
   }
   else
   {
-    theView->View()->ChangeHiddenObjects()->Add (theIObj);
+    theView->View()->ChangeHiddenObjects()->Add (theIObj.get());
   }
 }
 
@@ -2435,7 +2435,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   myMainVwr->Viewer()->UnregisterObject (theIObj);
   for (myMainVwr->InitDefinedViews(); myMainVwr->MoreDefinedViews(); myMainVwr->NextDefinedViews())
   {
-    myMainVwr->DefinedView()->View()->ChangeHiddenObjects()->Remove (theIObj);
+    myMainVwr->DefinedView()->View()->ChangeHiddenObjects()->Remove (theIObj.get());
   }
 
   if (theToUpdateviewer
@@ -2826,7 +2826,7 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
     theObj->Disconnect (theObjToDisconnect);
     mgrSelector->Remove (theObjToDisconnect);
   }
-  else if (theAssembly->IsInstance ("AIS_ConnectedInteractive") && theObjToDisconnect == NULL)
+  else if (theAssembly->IsInstance ("AIS_ConnectedInteractive") && theObjToDisconnect.IsNull())
   {
     const Handle(AIS_ConnectedInteractive)& theObj =
       Handle(AIS_ConnectedInteractive)::DownCast (theAssembly);

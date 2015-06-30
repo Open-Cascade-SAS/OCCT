@@ -20,6 +20,7 @@
 #include <Graphic3d_Structure.hxx>
 #include <V3d_View.hxx>
 
+class V3d_Plane;
 DEFINE_STANDARD_HANDLE (V3d_Plane, MMgt_TShared)
 
 //! Obsolete clip plane presentation class.

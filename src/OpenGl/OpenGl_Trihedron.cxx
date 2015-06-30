@@ -19,6 +19,7 @@
 
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Precision.hxx>

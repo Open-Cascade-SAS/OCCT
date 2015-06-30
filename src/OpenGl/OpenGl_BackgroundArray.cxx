@@ -18,6 +18,7 @@
 #include <Aspect_FillMethod.hxx>
 #include <NCollection_AlignedAllocator.hxx>
 #include <OpenGl_Texture.hxx>
+#include <Graphic3d_TextureParams.hxx>
 
 // =======================================================================
 // method  : Constructor

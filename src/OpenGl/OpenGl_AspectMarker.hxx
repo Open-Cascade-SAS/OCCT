@@ -23,7 +23,8 @@
 
 #include <OpenGl_Element.hxx>
 
-#include <Image_PixMap_Handle.hxx>
+class OpenGl_PointSprite;
+class OpenGl_ShaderProgram;
 
 class OpenGl_AspectMarker : public OpenGl_Element
 {

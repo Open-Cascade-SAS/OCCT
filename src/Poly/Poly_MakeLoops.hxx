@@ -20,7 +20,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <NCollection_BaseAllocator.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
 
 

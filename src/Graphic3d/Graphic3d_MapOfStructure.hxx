@@ -18,6 +18,7 @@
 
 #include <NCollection_Map.hxx>
 
+class Graphic3d_Structure;
 typedef NCollection_Map<Handle(Graphic3d_Structure)> Graphic3d_MapOfStructure;
 
 #endif // _Graphic3d_MapOfStructure

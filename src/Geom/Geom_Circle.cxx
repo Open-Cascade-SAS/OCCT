@@ -21,7 +21,6 @@
 #include <Standard_ConstructionError.hxx> 
 
 typedef Geom_Circle         Circle;
-typedef Handle(Geom_Circle) Handle(Circle);
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
@@ -38,7 +37,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_Circle::Copy() const {
 
-  Handle(Circle) C;
+  Handle(Geom_Circle) C;
   C = new Circle (pos, radius);
   return C;
 }

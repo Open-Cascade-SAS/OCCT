@@ -73,6 +73,9 @@ struct OpenGl_Matrix;
 class OpenGl_Structure;
 class OpenGl_StateCounter;
 
+class OpenGl_View;
+DEFINE_STANDARD_HANDLE(OpenGl_View,MMgt_TShared)
+
 class OpenGl_View : public MMgt_TShared
 {
  public:

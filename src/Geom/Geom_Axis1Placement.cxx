@@ -17,7 +17,6 @@
 #include <Geom_Axis1Placement.ixx>
 
 typedef Geom_Axis1Placement         Axis1Placement;
-typedef Handle(Geom_Axis1Placement) Handle(Axis1Placement);
 typedef gp_Ax2  Ax2;
 typedef gp_Dir  Dir;
 typedef gp_Pnt  Pnt;
@@ -31,7 +30,7 @@ typedef gp_Vec  Vec;
 
 Handle(Geom_Geometry) Geom_Axis1Placement::Copy() const {
 
-  Handle(Axis1Placement) A1;
+  Handle(Geom_Axis1Placement) A1;
   A1 = new Axis1Placement (axis);
   return A1;
 }
@@ -66,7 +65,7 @@ void Geom_Axis1Placement::Reverse()  { axis.Reverse(); }
 
 void Geom_Axis1Placement::Transform (const Trsf& T) { axis.Transform (T); }
 
-Handle(Axis1Placement) Geom_Axis1Placement::Reversed() const {
+Handle(Geom_Axis1Placement) Geom_Axis1Placement::Reversed() const {
 
    gp_Ax1 A1 = axis;
    A1.Reverse();

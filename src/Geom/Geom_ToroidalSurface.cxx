@@ -28,7 +28,6 @@
 #include <Standard_RangeError.hxx>
 
 typedef Geom_ToroidalSurface         ToroidalSurface;
-typedef Handle(Geom_ToroidalSurface) Handle(ToroidalSurface);
 typedef TColStd_Array1OfReal      Array1OfReal;
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
@@ -49,7 +48,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_ToroidalSurface::Copy () const {
  
-   Handle(ToroidalSurface) Cs;
+   Handle(Geom_ToroidalSurface) Cs;
    Cs = new ToroidalSurface (pos, majorRadius, minorRadius);
    return Cs;
 }

@@ -188,7 +188,8 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
       // if U1 and U2 coincide-->do nothing
       if (Abs (U1 - U2) <= Precision::PConfusion()) continue;
       Handle (Geom2d_TrimmedCurve) TrimPCurve = new Geom2d_TrimmedCurve (PCurve, U1, U2);
-      AddElement (TrimPCurve, TopologicalEdge.Orientation());
+      Geom2dAdaptor_Curve aGAC (TrimPCurve);
+      AddElement (aGAC, TopologicalEdge.Orientation());
     }
   }
 

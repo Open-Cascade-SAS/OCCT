@@ -19,11 +19,6 @@
 #include <BinLDrivers.hxx>
 #include <BinTObjDrivers.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (BinTObjDrivers_DocumentStorageDriver,
-                           BinLDrivers_DocumentStorageDriver)
-IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_DocumentStorageDriver,
-                           BinLDrivers_DocumentStorageDriver)
-
 //=======================================================================
 //function : BinTObjDrivers_DocumentStorageDriver
 //purpose  : 

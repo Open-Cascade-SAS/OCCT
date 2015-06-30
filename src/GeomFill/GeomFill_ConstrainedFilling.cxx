@@ -29,6 +29,7 @@
 #include <Law.hxx>
 #include <Law_Linear.hxx>
 #include <Law_BSpline.hxx>
+#include <Law_BSpFunc.hxx>
 #include <GeomFill_DegeneratedBound.hxx>
 #include <GeomFill_TgtOnCoons.hxx>
 

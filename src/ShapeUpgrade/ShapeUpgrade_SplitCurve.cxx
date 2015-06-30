@@ -57,7 +57,7 @@ ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve() : myStatus(0)
 //purpose  : 
 //=======================================================================
 
- void ShapeUpgrade_SplitCurve::SetSplitValues (const Handle(TColStd_HSequenceOfReal& SplitValues))
+ void ShapeUpgrade_SplitCurve::SetSplitValues (const Handle(TColStd_HSequenceOfReal)& SplitValues)
 {
   Standard_Real precision = Precision::PConfusion();
   if(SplitValues.IsNull()) return;

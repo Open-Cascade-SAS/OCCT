@@ -37,10 +37,7 @@
 #include <gp_XY.hxx>
 #include <Precision.hxx>
 
-typedef Handle(Geom2d_OffsetCurve) Handle(OffsetCurve);
 typedef Geom2d_OffsetCurve         OffsetCurve;
-typedef Handle(Geom2d_Geometry)    Handle(Geometry);
-typedef Handle(Geom2d_Curve)       Handle(Curve);
 typedef Geom2d_Curve               Curve;
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;
@@ -70,7 +67,7 @@ static Standard_Boolean AdjustDerivative(const Handle(Geom2d_Curve)& theCurve, S
 
 Handle(Geom2d_Geometry) Geom2d_OffsetCurve::Copy () const 
 {
-  Handle(OffsetCurve) C;
+  Handle(Geom2d_OffsetCurve) C;
   C = new OffsetCurve (basisCurve, offsetValue);
   return C;
 }
@@ -116,7 +113,7 @@ Standard_Real Geom2d_OffsetCurve::ReversedParameter( const Standard_Real U) cons
 //purpose  : 
 //=======================================================================
 
-void Geom2d_OffsetCurve::SetBasisCurve (const Handle(Curve)& C,
+void Geom2d_OffsetCurve::SetBasisCurve (const Handle(Geom2d_Curve)& C,
                                         const Standard_Boolean isNotCheckC0) 
 {
   const Standard_Real aUf = C->FirstParameter(),
@@ -189,7 +186,7 @@ void Geom2d_OffsetCurve::SetOffsetValue (const Standard_Real D) { offsetValue = 
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom2d_OffsetCurve::BasisCurve () const 
+Handle(Geom2d_Curve) Geom2d_OffsetCurve::BasisCurve () const 
 { 
   return basisCurve;
 }

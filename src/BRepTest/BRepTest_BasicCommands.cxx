@@ -48,6 +48,7 @@
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
 #include <DrawTrSurf.hxx>
 
+#include <Geom_Plane.hxx>
 
 #include <Draw_Segment3D.hxx>
 #include <Draw_Marker3D.hxx>

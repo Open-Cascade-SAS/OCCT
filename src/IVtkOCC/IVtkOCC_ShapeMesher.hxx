@@ -34,6 +34,7 @@ typedef NCollection_DataMap <TopoDS_Shape, IVtk_MeshType, TopTools_ShapeMapHashe
 typedef NCollection_Sequence <gp_Pnt> IVtk_Polyline;
 typedef NCollection_List <IVtk_Polyline> IVtk_PolylineList;
 
+class IVtkOCC_ShapeMesher;
 DEFINE_STANDARD_HANDLE( IVtkOCC_ShapeMesher, IVtk_IShapeMesher )
 
 //! @class IVtkOCC_ShapeMesher 

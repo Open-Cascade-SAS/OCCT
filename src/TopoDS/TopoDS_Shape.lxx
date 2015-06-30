@@ -452,7 +452,7 @@ inline TopoDS_Shape TopoDS_Shape::EmptyCopied() const
 //purpose  : 
 //=======================================================================
 
-inline void TopoDS_Shape::TShape (const Handle(TopoDS_TShape& TS))
+inline void TopoDS_Shape::TShape (const Handle(TopoDS_TShape)& TS)
 {
   myTShape = TS;
 }

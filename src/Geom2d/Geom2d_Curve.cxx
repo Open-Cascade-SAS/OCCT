@@ -19,7 +19,6 @@
 
 
 typedef Geom2d_Curve         Curve;
-typedef Handle(Geom2d_Curve) Handle(Curve);
 
 
 //=======================================================================
@@ -29,7 +28,7 @@ typedef Handle(Geom2d_Curve) Handle(Curve);
 
 Handle(Geom2d_Curve) Geom2d_Curve::Reversed () const
 {
-  Handle(Curve) C = Handle(Curve)::DownCast(Copy());
+  Handle(Geom2d_Curve) C = Handle(Geom2d_Curve)::DownCast(Copy());
   C->Reverse();
   return C;
 }

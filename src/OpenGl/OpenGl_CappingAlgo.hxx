@@ -22,7 +22,7 @@
 #include <Graphic3d_SequenceOfGroup.hxx>
 
 // Forward declaration
-
+class OpenGl_CappingAlgoFilter;
 DEFINE_STANDARD_HANDLE (OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 
 //! Capping surface rendering algorithm.

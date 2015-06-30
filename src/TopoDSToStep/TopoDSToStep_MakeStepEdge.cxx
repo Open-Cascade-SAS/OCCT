@@ -37,7 +37,7 @@
 
 #include <StepShape_Vertex.hxx>
 #include <StepShape_EdgeCurve.hxx>
-#include <StepGeom_Curve.hxx>
+#include <StepGeom_Line.hxx>
 #include <StepGeom_HArray1OfPcurveOrSurface.hxx>
 #include <StepGeom_SeamCurve.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
@@ -236,7 +236,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
       //Points.SetValue(Nbpt, BRep_Tool::Pnt(Vlast));
       Mult.SetValue(1,2);
       Mult.SetValue(Nbpt,2);
-      Handle(Geom_BSplineCurve) Bs = 
+      Handle(Geom_Curve) Bs = 
 	new Geom_BSplineCurve(Points, Knots, Mult, 1);
       GeomToStep_MakeCurve MkCurve(Bs);
       Gpms = MkCurve.Value();

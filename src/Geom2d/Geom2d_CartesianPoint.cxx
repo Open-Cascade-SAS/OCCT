@@ -17,7 +17,6 @@
 #include <Geom2d_CartesianPoint.ixx>
 
 typedef Geom2d_CartesianPoint         CartesianPoint;
-typedef Handle(Geom2d_CartesianPoint) Handle(CartesianPoint);
 typedef gp_Ax2d   Ax2d;
 typedef gp_Vec2d  Vec2d;
 typedef gp_Trsf2d Trsf2d;
@@ -33,7 +32,7 @@ Geom2d_CartesianPoint::Geom2d_CartesianPoint (const Standard_Real X, const Stand
 
 Handle(Geom2d_Geometry) Geom2d_CartesianPoint::Copy() const {
 
-  Handle(CartesianPoint) P;
+  Handle(Geom2d_CartesianPoint) P;
   P = new CartesianPoint (gpPnt2d);
   return P; 
 }

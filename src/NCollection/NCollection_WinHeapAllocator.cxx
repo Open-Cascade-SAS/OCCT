@@ -20,11 +20,6 @@
   #include <windows.h>
 #endif
 
-IMPLEMENT_STANDARD_HANDLE (NCollection_WinHeapAllocator,
-                           NCollection_BaseAllocator)
-IMPLEMENT_STANDARD_RTTIEXT(NCollection_WinHeapAllocator,
-                           NCollection_BaseAllocator)
-
 //=======================================================================
 //function : NCollection_WinHeapAllocator
 //purpose  : Main constructor

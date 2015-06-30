@@ -46,6 +46,7 @@
 #include <TColStd_HSequenceOfExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
 
 namespace
 {

@@ -14,6 +14,7 @@
 #include <Transfer_ActorOfFinderProcess.ixx>
 #include <Transfer_TransientMapper.hxx>
 #include <Transfer_FinderProcess.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
 
 Transfer_ActorOfFinderProcess::Transfer_ActorOfFinderProcess ()    {  themodetrans = 0;  }
 

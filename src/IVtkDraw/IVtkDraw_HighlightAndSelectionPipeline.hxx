@@ -16,17 +16,8 @@
 #ifndef _IVtkDraw_HighlightAndSelectionPipeline_HeaderFile
 #define _IVtkDraw_HighlightAndSelectionPipeline_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-#ifndef _Handle_MMgt_TShared_HeaderFile
-#endif
-
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Handle.hxx>
+#include <NCollection_Shared.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -43,6 +34,7 @@
 typedef NCollection_DataMap <IVtk_IdType, vtkSmartPointer<IVtkTools_DisplayModeFilter> > DisplayModeFiltersMap;
 typedef NCollection_DataMap <IVtk_IdType, vtkSmartPointer<IVtkTools_SubPolyDataFilter> > SubShapesFiltersMap;
 
+class IVtkDraw_HighlightAndSelectionPipeline;
 DEFINE_STANDARD_HANDLE(IVtkDraw_HighlightAndSelectionPipeline, Standard_Transient)
 
 class IVtkDraw_HighlightAndSelectionPipeline : public Standard_Transient
@@ -121,6 +113,6 @@ private:
 
 //! Mapping between OCCT topological shape IDs and their correspondent
 //! visualization pipelines.
-typedef NCollection_DataMap<IVtk_IdType, Handle(IVtkDraw_HighlightAndSelectionPipeline)> ShapePipelineMap;
+typedef NCollection_Shared< NCollection_DataMap<IVtk_IdType, Handle(IVtkDraw_HighlightAndSelectionPipeline)> > ShapePipelineMap;
 
 #endif

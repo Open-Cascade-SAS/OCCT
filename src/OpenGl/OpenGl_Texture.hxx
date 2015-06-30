@@ -20,6 +20,7 @@
 #include <Graphic3d_TypeOfTexture.hxx>
 
 class OpenGl_Context;
+class Graphic3d_TextureParams;
 class Image_PixMap;
 
 //! Selects preferable texture format for specified parameters.
@@ -144,6 +145,9 @@ private:
   GLint myChannels; //!< Number of channels for each pixel (from 1 to 4)
 
 };
+
+class OpenGl_Texture;
+DEFINE_STANDARD_HANDLE(OpenGl_Texture, OpenGl_Resource)
 
 //! Texture resource.
 class OpenGl_Texture : public OpenGl_Resource

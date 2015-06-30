@@ -1,5 +1,3 @@
-Handle_TObj_Model.hxx
-Handle_TObj_Object.hxx
 TObj_Application.cxx
 TObj_Application.hxx
 TObj_Assistant.cxx

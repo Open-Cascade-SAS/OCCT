@@ -173,6 +173,8 @@
 #include <StepShape_HArray1OfOrientedEdge.hxx>
 #include <StepShape_HArray1OfShell.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_Vertex.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>

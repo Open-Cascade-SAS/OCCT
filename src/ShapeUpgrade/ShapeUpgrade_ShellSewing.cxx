@@ -23,6 +23,7 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 
 #include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShellSewing

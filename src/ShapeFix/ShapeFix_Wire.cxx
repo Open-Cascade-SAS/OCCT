@@ -1940,8 +1940,7 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
   Seq2d->Append(t1);
   Seq2d->Append(t2);
   Seq2d->Append((t1+t2)/2);
-  Handle(TColStd_HSequenceOfReal) Seq3d = new TColStd_HSequenceOfReal;
-  Seq3d->Append(SFTP.Perform(Seq2d,Standard_False));
+  Handle(TColStd_HSequenceOfReal) Seq3d = SFTP.Perform(Seq2d,Standard_False);
   
   Standard_Real dist1 = pcurPnt.Distance(crv->Value(Seq3d->Value(1)));// correting Seq3d already project 
   Standard_Real dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));
@@ -2073,8 +2072,7 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
   Seq2d->Append(t1);
   Seq2d->Append(t2);
   Seq2d->Append((t1+t2)/2);
-  Handle (TColStd_HSequenceOfReal) Seq3d = new TColStd_HSequenceOfReal;
-  Seq3d->Append(SFTP.Perform(Seq2d,Standard_False));
+  Handle (TColStd_HSequenceOfReal) Seq3d = SFTP.Perform(Seq2d,Standard_False);
   
   Standard_Real dist1 = pcurPnt.Distance(crv->Value(Seq3d->Value(1)));// correting Seq3d already project 
   Standard_Real dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));

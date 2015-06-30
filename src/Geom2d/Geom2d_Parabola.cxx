@@ -24,18 +24,12 @@
 #include <Standard_RangeError.hxx>
 
 typedef Geom2d_Parabola         Parabola;
-typedef Handle(Geom2d_Parabola) Handle(Parabola);
 typedef gp_Ax2d   Ax2d;
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Vec2d  Vec2d;
 typedef gp_Trsf2d Trsf2d;
 typedef gp_XY     XY;
-
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -44,7 +38,7 @@ typedef gp_XY     XY;
 
 Handle(Geom2d_Geometry) Geom2d_Parabola::Copy() const 
 {
-  Handle(Parabola) Prb;
+  Handle(Geom2d_Parabola) Prb;
   Prb = new Parabola (pos, focalLength);
   return Prb;
 }

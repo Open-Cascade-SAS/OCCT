@@ -60,7 +60,7 @@
 
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 #include <TColgp_SequenceOfXY.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>

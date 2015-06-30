@@ -765,7 +765,7 @@ static gp_XYZ GetAnyNormal ( gp_XYZ orig )
 //purpose  : 
 //=======================================================================
 static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
-				const Handle(Geom_Curve) curve)
+				const Handle(Geom_Curve)& curve)
 {
   if ( curve->IsKind(STANDARD_TYPE(Geom_Line))) {
     seq.Append(curve->Value(0));

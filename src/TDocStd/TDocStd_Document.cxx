@@ -31,6 +31,7 @@
 #include <TDF_ListIteratorOfAttributeDeltaList.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Delta.hxx>
+#include <TDF_Reference.hxx>
 #include <TDocStd_CompoundDelta.hxx>
 #include <TDocStd_Owner.hxx>
 #include <TDocStd_Modified.hxx>

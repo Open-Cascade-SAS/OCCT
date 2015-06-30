@@ -64,6 +64,7 @@
 #include <Geom2d_Line.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <GeomLib.hxx>

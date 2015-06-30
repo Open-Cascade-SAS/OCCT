@@ -591,7 +591,6 @@ Standard_Integer  OCC165(Draw_Interpretor& di ,
 #include<BRepAlgo_Cut.hxx>
 
 #include<BRepPrimAPI_MakeHalfSpace.hxx>
-#include<Handle_Geom_CartesianPoint.hxx>
 #include<Geom_CartesianPoint.hxx>
 #include<AIS_Point.hxx>
 

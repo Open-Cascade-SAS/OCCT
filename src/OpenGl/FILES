@@ -1,6 +1,5 @@
 EXTERNLIB
 OpenGl_CMPLRS.edl
-Handle_OpenGl_GraphicDriver.hxx
 OpenGl_GraphicDriver.hxx
 OpenGl_GraphicDriver.cxx
 OpenGl_GraphicDriver_4.cxx
@@ -30,15 +29,12 @@ OpenGl_TextFormatter.hxx
 OpenGl_TextFormatter.cxx
 OpenGl_PointSprite.hxx
 OpenGl_PointSprite.cxx
-Handle_OpenGl_PointSprite.hxx
 OpenGl_PrimitiveArray.hxx
 OpenGl_PrimitiveArray.cxx
-Handle_OpenGl_Workspace.hxx
 OpenGl_Workspace.hxx
 OpenGl_Workspace.cxx
 OpenGl_Workspace_2.cxx
 OpenGl_Workspace_5.cxx
-Handle_OpenGl_View.hxx
 OpenGl_View.hxx
 OpenGl_View.cxx
 OpenGl_View_2.cxx
@@ -56,18 +52,15 @@ OpenGl_PrinterContext.hxx
 OpenGl_PrinterContext.cxx
 OpenGl_LineAttributes.hxx
 OpenGl_LineAttributes.cxx
-Handle_OpenGl_Window.hxx
 OpenGl_Window.hxx
 OpenGl_Window.cxx
 OpenGl_Window_1.mm
 OpenGl_AVIWriter.hxx
 OpenGl_AVIWriter.cxx
-Handle_OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_Texture.cxx
 OpenGl_Texture.hxx
-Handle_OpenGl_Texture.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
 OpenGl_telem_util.hxx
@@ -78,7 +71,6 @@ OpenGl_Font.cxx
 OpenGl_tgl_funcs.hxx
 OpenGl_Caps.hxx
 OpenGl_Caps.cxx
-Handle_OpenGl_Context.hxx
 OpenGl_Context.hxx
 OpenGl_Context.cxx
 OpenGl_Context_1.mm
@@ -141,9 +133,6 @@ OpenGl_ShaderManager.hxx
 OpenGl_ShaderManager.cxx
 OpenGl_ShaderStates.hxx
 OpenGl_ShaderStates.cxx
-Handle_OpenGl_ShaderObject.hxx
-Handle_OpenGl_ShaderProgram.hxx
-Handle_OpenGl_ShaderManager.hxx
 OpenGl_SceneGeometry.hxx
 OpenGl_SceneGeometry.cxx
 OpenGl_View_Raytrace.cxx
@@ -154,7 +143,6 @@ OpenGl_BVHTreeSelector.cxx
 OpenGl_BVHClipPrimitiveSet.cxx
 OpenGl_BVHClipPrimitiveSet.hxx
 OpenGl_ArbTexBindless.hxx
-Handle_OpenGl_Sampler.hxx
 OpenGl_Sampler.hxx
 OpenGl_Sampler.cxx
 OpenGl_Utils.hxx

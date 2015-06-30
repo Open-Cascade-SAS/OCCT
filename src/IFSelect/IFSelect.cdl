@@ -128,9 +128,6 @@ is
     class WorkSession;           -- a set of useful facilities
     deferred class WorkLibrary;  -- capability of user extents
 
-    alias Option  is  Option from MoniTool;                -- pre-defined values for a field
-    alias Profile is  Profile from MoniTool;               -- set of options bound/piloted together
-
     class SessionFile;
     deferred class SessionDumper;
     	class BasicDumper;

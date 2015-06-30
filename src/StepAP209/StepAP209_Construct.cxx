@@ -60,6 +60,7 @@
 #include <StepBasic_MechanicalContext.hxx>
 #include <StepBasic_DesignContext.hxx>
 #include <StepBasic_ApplicationProtocolDefinition.hxx>
+#include <StepBasic_ApplicationContext.hxx>
 
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 #include <StepRepr_StructuralResponseProperty.hxx>

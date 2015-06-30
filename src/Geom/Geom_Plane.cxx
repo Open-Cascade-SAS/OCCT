@@ -28,9 +28,6 @@
 #include <GeomAbs_UVSense.hxx>
 
 typedef Geom_Plane         Plane;
-typedef Handle(Geom_Plane) Handle(Plane);
-typedef Handle(Geom_Line)  Handle(Line);
-
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Ax3  Ax3;
@@ -42,8 +39,6 @@ typedef gp_Trsf Trsf;
 typedef gp_Vec  Vec;
 typedef gp_XYZ  XYZ;
 
-
-
 //=======================================================================
 //function : Copy
 //purpose  : 
@@ -51,7 +46,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_Plane::Copy () const {
  
-  Handle(Plane) Pl = new Plane ( pos);
+  Handle(Geom_Plane) Pl = new Plane ( pos);
   return Pl;
 }
 

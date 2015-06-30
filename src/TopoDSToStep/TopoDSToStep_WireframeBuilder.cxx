@@ -58,7 +58,7 @@
 #include <Standard_NullObject.hxx>
 
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Curve.hxx>
+#include <StepGeom_Line.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
 #include <StepGeom_SeamCurve.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
@@ -298,7 +298,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       Points.SetValue(Nbpt, BRep_Tool::Pnt(Vlast));
       Mult.SetValue(1,2);
       Mult.SetValue(Nbpt,2);
-      Handle(Geom_BSplineCurve) Bs = 
+      Handle(Geom_Curve) Bs = 
 	new Geom_BSplineCurve(Points, Knots, Mult, 1);
       GeomToStep_MakeCurve gtpC(Bs);
       Gpms = gtpC.Value();

@@ -96,9 +96,11 @@
 #include <StepVisual_StyledItem.hxx>
 #include <StepVisual_PresentationStyleByContext.hxx>
 #include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
+#include <StepVisual_PointStyle.hxx>
+#include <StepVisual_CurveStyle.hxx>
+#include <StepVisual_SurfaceStyleUsage.hxx>
 #include <TDF_AttributeSequence.hxx>
 #include <TColStd_MapOfTransient.hxx>
-// #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <StepRepr_SpecifiedHigherUsageOccurrence.hxx>
@@ -113,6 +115,7 @@
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepGeom_Surface.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_AdvancedFace.hxx>

@@ -4568,8 +4568,6 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-DEFINE_STANDARD_HANDLE(V3d_TextItem, Visual3d_LayerItem)
-
 // this class provides a presentation of text item in v3d view under-/overlayer
 class V3d_TextItem : public Visual3d_LayerItem
 {
@@ -4639,8 +4637,6 @@ void V3d_TextItem::RedrawLayerPrs ()
   myLayer->SetTextAttributes (myFontName.ToCString (), myType, mySubtitleColor);
   myLayer->DrawText (myText.ToCString (), myX1, myY1, myHeight);
 }
-
-DEFINE_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)
 
 // The Visual3d_LayerItem line item for "vlayerline" command
 // it provides a presentation of line with user-defined

@@ -18,6 +18,12 @@
 #include <Interface_EntityIterator.hxx>
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_SpecificModule.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_ColorEntity.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Message_Messenger.hxx>
 

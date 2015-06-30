@@ -48,6 +48,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 
 #include <BRepAdaptor_Surface.hxx>

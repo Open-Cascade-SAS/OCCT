@@ -16,12 +16,9 @@
 
 #include <Geom_Point.ixx>
 
-
-typedef Handle(Geom_Point) Handle(Point);
 typedef Geom_Point         Point;
 
-
-Standard_Real Geom_Point::Distance (const Handle(Point)& Other) const {
+Standard_Real Geom_Point::Distance (const Handle(Geom_Point)& Other) const {
 
   gp_Pnt P1 = this->Pnt ();
   gp_Pnt P2 = Other->Pnt ();
@@ -29,7 +26,7 @@ Standard_Real Geom_Point::Distance (const Handle(Point)& Other) const {
 }
 
 
-Standard_Real Geom_Point::SquareDistance (const Handle(Point)& Other) const {
+Standard_Real Geom_Point::SquareDistance (const Handle(Geom_Point)& Other) const {
 
   gp_Pnt P1 = this->Pnt ();
   gp_Pnt P2 = Other->Pnt ();

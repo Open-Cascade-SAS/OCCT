@@ -21,6 +21,8 @@ static Standard_CString schemaAP214DIS = "AUTOMOTIVE_DESIGN { 1 2 10303 214 0 1 
 static Standard_CString schemaAP214IS  = "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }";
 static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 
+#include <HeaderSection_Protocol.hxx>
+
 #include <StepBasic_Address.hxx>
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>
 #include <StepShape_AdvancedFace.hxx>

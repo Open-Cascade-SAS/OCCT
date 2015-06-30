@@ -22,6 +22,7 @@
 #include <IFSelect_SelectCombine.hxx>
 #include <IFSelect_SelectAnyType.hxx>
 #include <IFSelect_SelectAnyList.hxx>
+#include <IFSelect_ShareOut.hxx>
 #include <IFSelect_Dispatch.hxx>
 #include <IFSelect_Modifier.hxx>
 #include <IFSelect_Transformer.hxx>

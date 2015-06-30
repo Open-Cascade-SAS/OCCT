@@ -17,6 +17,7 @@
 
 #include <NCollection_List.hxx>   
 
+class BOPDS_PaveBlock;
 typedef NCollection_List<Handle(BOPDS_PaveBlock)> BOPDS_ListOfPaveBlock; 
 typedef BOPDS_ListOfPaveBlock::Iterator BOPDS_ListIteratorOfListOfPaveBlock;
 

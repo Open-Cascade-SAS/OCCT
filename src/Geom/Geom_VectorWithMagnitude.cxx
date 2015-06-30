@@ -17,17 +17,11 @@
 #include <Geom_VectorWithMagnitude.ixx>
 
 typedef Geom_VectorWithMagnitude         VectorWithMagnitude;
-typedef Handle(Geom_VectorWithMagnitude) Handle(VectorWithMagnitude);
 typedef Geom_Vector                      Vector;
-typedef Handle(Geom_Vector)              Handle(Vector);
-typedef Handle(Geom_Geometry)            Handle(Geometry);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
-
-
-
 
 //=======================================================================
 //function : Geom_VectorWithMagnitude
@@ -63,7 +57,7 @@ const Pnt& P1, const Pnt& P2) { gpVec = gp_Vec (P1, P2); }
 
 Handle(Geom_Geometry) Geom_VectorWithMagnitude::Copy() const {
 
-  Handle(VectorWithMagnitude) V;
+  Handle(Geom_VectorWithMagnitude) V;
   V = new VectorWithMagnitude (gpVec);
   return V; 
 }
@@ -128,7 +122,7 @@ Standard_Real Geom_VectorWithMagnitude::SquareMagnitude () const {
 //purpose  : 
 //=======================================================================
 
-void Geom_VectorWithMagnitude::Add (const Handle(Vector)& Other) { 
+void Geom_VectorWithMagnitude::Add (const Handle(Geom_Vector)& Other) { 
 
   gpVec.Add (Other->Vec());
 }
@@ -139,8 +133,8 @@ void Geom_VectorWithMagnitude::Add (const Handle(Vector)& Other) {
 //purpose  : 
 //=======================================================================
 
-Handle(VectorWithMagnitude) Geom_VectorWithMagnitude::Added (
-const Handle(Vector)& Other) const { 
+Handle(Geom_VectorWithMagnitude) Geom_VectorWithMagnitude::Added (
+const Handle(Geom_Vector)& Other) const { 
 
    gp_Vec V1 = gpVec;
    V1.Add (Other->Vec());
@@ -153,7 +147,7 @@ const Handle(Vector)& Other) const {
 //purpose  : 
 //=======================================================================
 
-void  Geom_VectorWithMagnitude::Cross (const Handle(Vector)& Other) { 
+void  Geom_VectorWithMagnitude::Cross (const Handle(Geom_Vector)& Other) { 
 
   gpVec.Cross (Other->Vec());
 }
@@ -165,8 +159,8 @@ void  Geom_VectorWithMagnitude::Cross (const Handle(Vector)& Other) {
 //purpose  : 
 //=======================================================================
 
-Handle(Vector) Geom_VectorWithMagnitude::Crossed (
-const Handle(Vector)& Other) const { 
+Handle(Geom_Vector) Geom_VectorWithMagnitude::Crossed (
+const Handle(Geom_Vector)& Other) const { 
 
   gp_Vec V (gpVec);
   V.Cross (Other->Vec());
@@ -180,7 +174,7 @@ const Handle(Vector)& Other) const {
 //=======================================================================
 
 void Geom_VectorWithMagnitude::CrossCross (
-const Handle(Vector)& V1, const Handle(Vector)& V2) {
+const Handle(Geom_Vector)& V1, const Handle(Geom_Vector)& V2) {
 
   gpVec.CrossCross (V1->Vec(), V2->Vec());
 }
@@ -191,8 +185,8 @@ const Handle(Vector)& V1, const Handle(Vector)& V2) {
 //purpose  : 
 //=======================================================================
 
-Handle(Vector) Geom_VectorWithMagnitude::CrossCrossed (
-const Handle(Vector)& V1, const Handle(Vector)& V2) const { 
+Handle(Geom_Vector) Geom_VectorWithMagnitude::CrossCrossed (
+const Handle(Geom_Vector)& V1, const Handle(Geom_Vector)& V2) const { 
 
   gp_Vec V (gpVec);
   V.CrossCross (V1->Vec(), V2->Vec());
@@ -216,7 +210,7 @@ void Geom_VectorWithMagnitude::Divide (const Standard_Real Scalar) {
 //purpose  : 
 //=======================================================================
 
-Handle(VectorWithMagnitude) Geom_VectorWithMagnitude::Divided (
+Handle(Geom_VectorWithMagnitude) Geom_VectorWithMagnitude::Divided (
 const Standard_Real Scalar) const { 
 
   gp_Vec V (gpVec);
@@ -230,7 +224,7 @@ const Standard_Real Scalar) const {
 //purpose  : 
 //=======================================================================
 
-Handle(VectorWithMagnitude) Geom_VectorWithMagnitude::Multiplied (
+Handle(Geom_VectorWithMagnitude) Geom_VectorWithMagnitude::Multiplied (
 const Standard_Real Scalar) const { 
 
   gp_Vec V (gpVec);
@@ -263,7 +257,7 @@ void Geom_VectorWithMagnitude::Normalize () { gpVec.Normalize (); }
 //purpose  : 
 //=======================================================================
 
-Handle(VectorWithMagnitude) Geom_VectorWithMagnitude::Normalized () const { 
+Handle(Geom_VectorWithMagnitude) Geom_VectorWithMagnitude::Normalized () const { 
 
   gp_Vec V (gpVec);
   V.Normalize ();
@@ -276,7 +270,7 @@ Handle(VectorWithMagnitude) Geom_VectorWithMagnitude::Normalized () const {
 //purpose  : 
 //=======================================================================
 
-void Geom_VectorWithMagnitude::Subtract (const Handle(Vector)& Other) { 
+void Geom_VectorWithMagnitude::Subtract (const Handle(Geom_Vector)& Other) { 
 
   gpVec.Subtract (Other->Vec());
 }
@@ -287,8 +281,8 @@ void Geom_VectorWithMagnitude::Subtract (const Handle(Vector)& Other) {
 //purpose  : 
 //=======================================================================
 
-Handle(VectorWithMagnitude) Geom_VectorWithMagnitude::Subtracted (
-const Handle(Vector)& Other) const { 
+Handle(Geom_VectorWithMagnitude) Geom_VectorWithMagnitude::Subtracted (
+const Handle(Geom_Vector)& Other) const { 
 
   gp_Vec V (gpVec);
   V.Subtract (Other->Vec());

@@ -186,8 +186,8 @@ static void UpdateEdge (const TopoDS_Edge& E,
 //=======================================================================
 
 static void ComputeCurve3d(TopoDS_Edge           Edge,
-			   Handle(Geom2d_Curve)  Curve,
-			   Handle(Geom_Surface)  Surf,
+			   const Handle(Geom2d_Curve)& Curve,
+			   const Handle(Geom_Surface)& Surf,
 			   const TopLoc_Location Loc,
 			   Standard_Real         Tol)
 {

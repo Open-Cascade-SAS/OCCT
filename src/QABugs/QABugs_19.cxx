@@ -1730,7 +1730,7 @@ static void DoIsNull(Draw_Interpretor& di)
   HT aHandle;
   //    QVERIFY (aHandle.IsNull());
   QCOMPARE (aHandle.IsNull(), Standard_True);
-  const T* p = aHandle.Access();
+  const T* p = aHandle.get();
 #if OCC_VERSION_HEX > 0x060700
   //QVERIFY (!p);
   //QVERIFY (p == 0);
@@ -1741,7 +1741,7 @@ static void DoIsNull(Draw_Interpretor& di)
   aHandle = new T;
   //QVERIFY (!aHandle.IsNull());
   QCOMPARE (!aHandle.IsNull(), Standard_True);
-  p = aHandle.Access();
+  p = aHandle.get();
   //QVERIFY (p);
   //QVERIFY (p != 0);
   QCOMPARE (p != NULL, Standard_True);

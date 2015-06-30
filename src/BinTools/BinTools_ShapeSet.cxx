@@ -23,6 +23,7 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Poly_Polygon2D.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>

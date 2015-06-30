@@ -19,8 +19,6 @@
 #include <Standard_ConstructionError.hxx>
 
 typedef Geom2d_Direction         Direction;
-typedef Handle(Geom2d_Direction) Handle(Direction);
-typedef Handle(Geom2d_Vector)    Handle(Vector);
 typedef gp_Ax2d   Ax2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Trsf2d Trsf2d;
@@ -31,7 +29,7 @@ typedef gp_Trsf2d Trsf2d;
 
 Handle(Geom2d_Geometry) Geom2d_Direction::Copy() const {
 
-  Handle(Direction) D;
+  Handle(Geom2d_Direction) D;
   D = new Direction (gpVec2d);
   return D; 
 }
@@ -88,7 +86,7 @@ Standard_Real Geom2d_Direction::Magnitude () const { return 1.0; }
 Standard_Real Geom2d_Direction::SquareMagnitude () const { return 1.0; }
 
 
-Standard_Real Geom2d_Direction::Crossed (const Handle(Vector)& Other) const {
+Standard_Real Geom2d_Direction::Crossed (const Handle(Geom2d_Vector)& Other) const {
 
    return gpVec2d.Crossed (Other->Vec2d());
 }

@@ -23,6 +23,7 @@
 #include <OpenGl_Structure.hxx>
 #include <OSD_Timer.hxx>
 #include <Standard_Assert.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 //! Use this macro to output BVH profiling info
 // #define RAY_TRACE_PRINT_INFO

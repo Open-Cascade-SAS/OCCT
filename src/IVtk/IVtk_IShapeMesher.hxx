@@ -20,6 +20,7 @@
 #include <IVtk_IShape.hxx>
 #include <IVtk_IShapeData.hxx>
 
+class IVtk_IShapeMesher;
 DEFINE_STANDARD_HANDLE( IVtk_IShapeMesher, IVtk_Interface )
 
 //! @class  IVtk_IShapeMesher 

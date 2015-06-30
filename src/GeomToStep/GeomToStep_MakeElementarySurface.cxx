@@ -17,6 +17,11 @@
 #include <GeomToStep_MakeElementarySurface.ixx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_ElementarySurface.hxx>
+#include <StepGeom_CylindricalSurface.hxx>
+#include <StepGeom_ConicalSurface.hxx>
+#include <StepGeom_SphericalSurface.hxx>
+#include <StepGeom_ToroidalSurface.hxx>
+#include <StepGeom_Plane.hxx>
 #include <GeomToStep_MakeElementarySurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_ConicalSurface.hxx>

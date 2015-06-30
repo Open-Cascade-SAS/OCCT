@@ -18,23 +18,14 @@
 
 
 typedef Geom2d_Transformation         Transformation;
-typedef Handle(Geom2d_Transformation) Handle(Transformation);
-
 typedef gp_Ax2d     Ax2d;
 typedef gp_Pnt2d    Pnt2d;
 typedef gp_TrsfForm TrsfForm;
 typedef gp_Vec2d    Vec2d;
 
-
-
-
-
-
-
-
 Handle(Geom2d_Transformation) Geom2d_Transformation::Copy() const {
 
-  Handle(Transformation) T;
+  Handle(Geom2d_Transformation) T;
   T = new Transformation (gpTrsf2d);
   return T; 
 }
@@ -49,21 +40,21 @@ Geom2d_Transformation::Geom2d_Transformation (const gp_Trsf2d& T)
 :  gpTrsf2d (T) { }
 
 
-Handle(Transformation) Geom2d_Transformation::Inverted () const {
+Handle(Geom2d_Transformation) Geom2d_Transformation::Inverted () const {
 
    return new Transformation (gpTrsf2d.Inverted());
 }
 
 
-Handle(Transformation) Geom2d_Transformation::Multiplied (
+Handle(Geom2d_Transformation) Geom2d_Transformation::Multiplied (
 
-const Handle(Transformation)& Other) const {
+const Handle(Geom2d_Transformation)& Other) const {
 
    return new Transformation (gpTrsf2d.Multiplied (Other->Trsf2d()));
 }
 
 
-Handle(Transformation) Geom2d_Transformation::Powered (const Standard_Integer N) const{
+Handle(Geom2d_Transformation) Geom2d_Transformation::Powered (const Standard_Integer N) const{
 
   gp_Trsf2d Temp = gpTrsf2d;
   Temp.Power (N);
@@ -168,7 +159,7 @@ void Geom2d_Transformation::Power (const Standard_Integer N) { gpTrsf2d.Power (N
 
 
 void Geom2d_Transformation::PreMultiply (
-const Handle(Transformation)& Other) {
+const Handle(Geom2d_Transformation)& Other) {
 
   gpTrsf2d.PreMultiply (Other->Trsf2d());
 }

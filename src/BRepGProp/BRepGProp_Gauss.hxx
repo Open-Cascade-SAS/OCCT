@@ -251,7 +251,7 @@ private: //! @name private methods
     const Standard_Integer theCoeff = 32);
 
   static void Init(
-    Handle(Vector)&         theOutVec,
+    NCollection_Handle<math_Vector>&         theOutVec,
     const Standard_Real    theValue,
     const Standard_Integer theFirst = 0,
     const Standard_Integer theLast  = 0);
@@ -268,10 +268,10 @@ private: //! @name private methods
     const TColStd_Array1OfReal& theKnots,
     const Standard_Integer      theNumSubs,
     InertiaArray&               theInerts,
-    Handle(Vector)&              theParam1,
-    Handle(Vector)&              theParam2,
-    Handle(Vector)&              theError,
-    Handle(Vector)&              theCommonError);
+    NCollection_Handle<math_Vector>&              theParam1,
+    NCollection_Handle<math_Vector>&              theParam2,
+    NCollection_Handle<math_Vector>&              theError,
+    NCollection_Handle<math_Vector>&              theCommonError);
 
 private: //! @name private fields
 

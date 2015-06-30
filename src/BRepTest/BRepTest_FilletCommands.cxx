@@ -634,7 +634,7 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
    for (i=1;i<=nb;i++)
     {Standard_Integer s=aRakk.NbSection(i);
     for (j=1;j<=s;j++)
-     {Handle(Geom_TrimmedCurve Sec);
+     {Handle(Geom_TrimmedCurve) Sec;
      aRakk.Section(i,j,Sec);
     Sprintf(localname, "%s%d%d" ,"sec",i,j);
      temp =localname;

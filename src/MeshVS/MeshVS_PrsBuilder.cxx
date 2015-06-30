@@ -28,7 +28,7 @@ MeshVS_PrsBuilder::MeshVS_PrsBuilder ( const Handle(MeshVS_Mesh)& Parent,
                                        const Standard_Integer Id,
                                        const MeshVS_BuilderPriority& Priority )
 {
-  if (Id<0 && Parent!=0 )
+  if (Id<0 && ! Parent.IsNull())
     myId = Parent->GetFreeId();
   else
     myId = Id;

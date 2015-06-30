@@ -140,7 +140,7 @@ Geom2dGcc_Circ2dTanOnRad::
 }
 
 Geom2dGcc_Circ2dTanOnRad::
-   Geom2dGcc_Circ2dTanOnRad (const Handle(Geom2d_Point&)     Point1     ,
+   Geom2dGcc_Circ2dTanOnRad (const Handle(Geom2d_Point)&     Point1     ,
 			     const Geom2dAdaptor_Curve&     OnCurve    ,
 			     const Standard_Real             Radius     ,
 			     const Standard_Real             Tolerance  ):

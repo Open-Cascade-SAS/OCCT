@@ -24,6 +24,7 @@
 #include <Geom_BoundedSurface.hxx>
 #include <StepToGeom_MakeSurface.hxx>
 #include <StepGeom_HArray1OfSurfaceBoundary.hxx>
+#include <StepGeom_BoundaryCurve.hxx>
 #include <StepToTopoDS_TranslateCompositeCurve.hxx>
 
 #include <TopoDS.hxx>

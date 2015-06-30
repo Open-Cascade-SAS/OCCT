@@ -25,8 +25,11 @@
 
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TypeOfReflection.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
+
+#include <Image_PixMap.hxx>
 
 namespace
 {

@@ -15,6 +15,7 @@
 
 #include <OpenGl_StructureShadow.hxx>
 
+#include <Graphic3d_GraphicDriver.hxx>
 
 //=======================================================================
 //function : OpenGl_StructureShadow

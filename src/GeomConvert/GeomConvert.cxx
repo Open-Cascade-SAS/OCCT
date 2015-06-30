@@ -1331,7 +1331,7 @@ void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(
      U2=BSKnots(j);
      j++;
      Handle(Geom_BSplineCurve) 
-       BSbis=Handle(Geom_BSplineCurve::DownCast(BS->Copy()));
+       BSbis=Handle(Geom_BSplineCurve)::DownCast(BS->Copy());
      BSbis->Segment(U1,U2);
      ArrayOfCurves(i)=BSbis;
    }

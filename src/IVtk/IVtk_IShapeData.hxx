@@ -19,6 +19,7 @@
 #include <IVtk_Interface.hxx>
 #include <IVtk_Types.hxx>
 
+class IVtk_IShapeData;
 DEFINE_STANDARD_HANDLE( IVtk_IShapeData, IVtk_Interface )
 
 //! @class IVtk_IShapeData

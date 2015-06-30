@@ -31,7 +31,6 @@
 #include <ElSLib.hxx>
 
 typedef Geom_CylindricalSurface         CylindricalSurface;
-typedef Handle(Geom_CylindricalSurface) Handle(CylindricalSurface);
 
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
@@ -53,7 +52,7 @@ typedef gp_XYZ  XYZ;
 
 Handle(Geom_Geometry) Geom_CylindricalSurface::Copy () const {
 
-   Handle(CylindricalSurface) Cs;
+   Handle(Geom_CylindricalSurface) Cs;
    Cs = new CylindricalSurface (pos, radius);
    return Cs;
 }

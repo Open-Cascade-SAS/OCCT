@@ -52,6 +52,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Polygon2D.hxx>
 
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressSentry.hxx>

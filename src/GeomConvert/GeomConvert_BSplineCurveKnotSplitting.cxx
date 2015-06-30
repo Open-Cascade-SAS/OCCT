@@ -20,16 +20,12 @@
 
 #include <BSplCLib.hxx>
 
-typedef Handle(Geom_BSplineCurve)        Handle(BSplineCurve);
 typedef TColStd_Array1OfInteger      Array1OfInteger;
 typedef TColStd_HArray1OfInteger      HArray1OfInteger;
 
-
-
-
 GeomConvert_BSplineCurveKnotSplitting::GeomConvert_BSplineCurveKnotSplitting (
 
-const Handle(BSplineCurve)& BasisCurve, 
+const Handle(Geom_BSplineCurve)& BasisCurve, 
 const Standard_Integer      ContinuityRange
 
 ) {

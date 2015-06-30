@@ -20,7 +20,7 @@
 #include <OpenGl_CappingPlaneResource.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Structure.hxx>
-
+#include <Graphic3d_GraphicDriver.hxx>
 
 namespace
 {

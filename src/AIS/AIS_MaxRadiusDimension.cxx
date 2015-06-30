@@ -41,6 +41,7 @@
 #include <BRepAdaptor_Curve.hxx>
 
 #include <Geom_Ellipse.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
@@ -323,7 +324,7 @@ void AIS_MaxRadiusDimension::ComputeSelection(const Handle(SelectMgr_Selection)&
 	    else 
 	      parStart = par;
 
-	    Handle(Geom_TrimmedCurve)TrimCurve;
+	    Handle(Geom_Curve)TrimCurve;
 	    if(myIsOffset)
 	      {
 		Handle(Geom_Curve) aCurve = myOffsetCurve;

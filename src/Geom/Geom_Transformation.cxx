@@ -16,7 +16,6 @@
 
 #include <Geom_Transformation.ixx>
 
-typedef Handle(Geom_Transformation) Handle(Transformation);
 typedef Geom_Transformation         Transformation;
 typedef gp_Ax1      Ax1;
 typedef gp_Ax2      Ax2;
@@ -24,9 +23,6 @@ typedef gp_Ax3      Ax3;
 typedef gp_Pnt      Pnt;
 typedef gp_TrsfForm TrsfForm;
 typedef gp_Vec      Vec;
-
-
-
 
 Geom_Transformation::Geom_Transformation () { }
 
@@ -37,7 +33,7 @@ Geom_Transformation::Geom_Transformation (const gp_Trsf& T)
 
 Handle(Geom_Transformation) Geom_Transformation::Copy() const {
 
-  Handle(Transformation) T;
+  Handle(Geom_Transformation) T;
   T = new Transformation (gpTrsf);
   return T; 
 }
@@ -104,13 +100,13 @@ Standard_Real Geom_Transformation::Value (const Standard_Integer Row, const Stan
 void Geom_Transformation::Invert () { gpTrsf.Invert(); }
 
 
-Handle(Transformation) Geom_Transformation::Inverted () const {
+Handle(Geom_Transformation) Geom_Transformation::Inverted () const {
 
    return new Transformation (gpTrsf.Inverted());
 }
 
 
-Handle(Transformation) Geom_Transformation::Multiplied (
+Handle(Geom_Transformation) Geom_Transformation::Multiplied (
 const Handle(Geom_Transformation)& Other) const {
 
    return new Transformation (gpTrsf.Multiplied (Other->Trsf()));
@@ -126,7 +122,7 @@ void Geom_Transformation::Multiply (const Handle(Geom_Transformation)& Other) {
 void Geom_Transformation::Power (const Standard_Integer N) { gpTrsf.Power (N); }
 
 
-Handle(Transformation) Geom_Transformation::Powered (const Standard_Integer N) const {
+Handle(Geom_Transformation) Geom_Transformation::Powered (const Standard_Integer N) const {
 
   gp_Trsf T = gpTrsf;
   T.Power (N);  

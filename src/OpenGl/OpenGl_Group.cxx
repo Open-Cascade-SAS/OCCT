@@ -43,7 +43,7 @@ OpenGl_Group::OpenGl_Group (const Handle(Graphic3d_Structure)& theStruct)
   myIsRaytracable (Standard_False)
 {
   Handle(OpenGl_Structure) aStruct = Handle(OpenGl_Structure)::DownCast (myStructure->CStructure());
-  if (aStruct == NULL)
+  if (aStruct.IsNull())
   {
     Graphic3d_GroupDefinitionError::Raise ("OpenGl_Group should be created by OpenGl_Structure!");
   }

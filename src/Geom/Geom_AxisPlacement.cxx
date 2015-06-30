@@ -16,7 +16,6 @@
 
 #include <Geom_AxisPlacement.ixx>
 
-typedef Handle(Geom_AxisPlacement) Handle(AxisPlacement);
 typedef gp_Ax1 Ax1;
 typedef gp_Dir Dir;
 typedef gp_Pnt Pnt;
@@ -34,7 +33,7 @@ void Geom_AxisPlacement::SetAxis (const Ax1& A1) { axis = A1; }
 
 void Geom_AxisPlacement::SetLocation (const Pnt& P) {axis.SetLocation (P);}
 
-Standard_Real Geom_AxisPlacement::Angle (const Handle(AxisPlacement)& Other) const {
+Standard_Real Geom_AxisPlacement::Angle (const Handle(Geom_AxisPlacement)& Other) const {
  return axis.Angle (Other->Axis());
 }
 

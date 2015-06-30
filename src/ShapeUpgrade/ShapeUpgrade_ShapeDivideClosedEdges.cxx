@@ -17,6 +17,7 @@
 #include <ShapeUpgrade_ClosedEdgeDivide.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
 #include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_SplitSurface.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideClosedEdges

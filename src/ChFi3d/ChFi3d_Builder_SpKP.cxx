@@ -580,7 +580,7 @@ static void FillSD (TopOpeBRepDS_DataStructure& DStr,
       for(;trouve;) {
 	const HatchGen_PointOnElement& PEtemp = pPH->Point(LeType);
 	IE = PEtemp.Index();
-	Handle(BRepAdaptor_HCurve2d) HE = Handle(BRepAdaptor_HCurve2d::DownCast(M(IE)));
+	Handle(BRepAdaptor_HCurve2d) HE = Handle(BRepAdaptor_HCurve2d)::DownCast(M(IE));
 	if(!HE.IsNull()) {
 	  const TopoDS_Edge& Etemp = HE->ChangeCurve2d().Edge();
 	  TopExp::Vertices(Etemp,V1,V2);

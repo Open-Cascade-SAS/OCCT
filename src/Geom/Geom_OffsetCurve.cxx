@@ -42,19 +42,12 @@
 #include <CSLib_Offset.hxx>
 
 typedef Geom_OffsetCurve         OffsetCurve;
-typedef Handle(Geom_OffsetCurve) Handle(OffsetCurve);
 typedef Geom_Curve               Curve;
-typedef Handle(Geom_Curve)       Handle(Curve);
-typedef Handle(Geom_Geometry)    Handle(Geometry);
-
 typedef gp_Dir  Dir;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
 typedef gp_Vec  Vec;
 typedef gp_XYZ  XYZ;
-
-
-
 
 //ordre de derivation maximum pour la recherche de la premiere 
 //derivee non nulle
@@ -79,7 +72,7 @@ static Standard_Boolean AdjustDerivative(
 
 Handle(Geom_Geometry) Geom_OffsetCurve::Copy () const {
 
- Handle(OffsetCurve) C;
+ Handle(Geom_OffsetCurve) C;
  C = new OffsetCurve (basisCurve, offsetValue, direction);
  return C;
 }
@@ -174,12 +167,12 @@ Standard_Real Geom_OffsetCurve::Period () const
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::SetBasisCurve (const Handle(Curve)& C,
+void Geom_OffsetCurve::SetBasisCurve (const Handle(Geom_Curve)& C,
                                       const Standard_Boolean isNotCheckC0)
 {
   const Standard_Real aUf = C->FirstParameter(),
                       aUl = C->LastParameter();
-  Handle(Curve) aCheckingCurve =  Handle(Curve)::DownCast(C->Copy());
+  Handle(Geom_Curve) aCheckingCurve =  Handle(Geom_Curve)::DownCast(C->Copy());
   Standard_Boolean isTrimmed = Standard_False;
 
   while(aCheckingCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)) ||
@@ -255,7 +248,7 @@ void Geom_OffsetCurve::SetBasisCurve (const Handle(Curve)& C,
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_OffsetCurve::BasisCurve () const 
+Handle(Geom_Curve) Geom_OffsetCurve::BasisCurve () const 
 { 
   return basisCurve;
 }

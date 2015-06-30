@@ -21,19 +21,13 @@
 #include <gp_XY.hxx>
 #include <Standard_RangeError.hxx>
 
-
 typedef Geom2d_Line         Line;
-typedef Handle(Geom2d_Line) Handle(Line);
 typedef gp_Ax2d   Ax2d;
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Vec2d  Vec2d;
 typedef gp_Trsf2d Trsf2d;
 typedef gp_XY     XY;
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -42,7 +36,7 @@ typedef gp_XY     XY;
 
 Handle(Geom2d_Geometry) Geom2d_Line::Copy() const 
 {
-  Handle(Line) L;
+  Handle(Geom2d_Line) L;
   L = new Line (pos);
   return L;
 }

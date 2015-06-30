@@ -16,7 +16,10 @@
 
 #include <GeomToStep_MakeCurve.ixx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_Curve.hxx>
+#include <StepGeom_Conic.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_BoundedCurve.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <GeomToStep_MakeCurve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom2d_Line.hxx>

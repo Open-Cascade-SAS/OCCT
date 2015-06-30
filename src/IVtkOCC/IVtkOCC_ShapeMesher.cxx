@@ -25,6 +25,8 @@
 #include <Hatch_Hatcher.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Dir2d.hxx>

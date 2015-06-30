@@ -16,6 +16,7 @@
 
 #include <ShapeUpgrade_ShapeDivideClosed.ixx>
 #include <ShapeUpgrade_ClosedFaceDivide.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideClosed

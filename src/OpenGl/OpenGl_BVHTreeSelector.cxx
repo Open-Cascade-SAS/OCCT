@@ -17,6 +17,7 @@
 
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_BVHClipPrimitiveSet.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 // =======================================================================
 // function : OpenGl_BVHTreeSelector

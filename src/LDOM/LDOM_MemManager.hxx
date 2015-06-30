@@ -21,6 +21,10 @@
 #include <LDOM_Document.hxx>
 
 class LDOM_BasicElement;
+class LDOM_MemManager;
+
+// Define handle class for LDOM_MemManager
+DEFINE_STANDARD_HANDLE (LDOM_MemManager, MMgt_TShared)
 
 //  Class LDOM_MemManager (underlying structure of LDOM_Document)
 //

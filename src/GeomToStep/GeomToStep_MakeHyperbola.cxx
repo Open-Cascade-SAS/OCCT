@@ -14,6 +14,8 @@
 #include <GeomToStep_MakeHyperbola.ixx>
 
 #include <StepGeom_Hyperbola.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Hypr2d.hxx>
 #include <Geom_Hyperbola.hxx>

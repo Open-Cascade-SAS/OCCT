@@ -22,6 +22,7 @@
 #include <GC_MakeSegment.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>

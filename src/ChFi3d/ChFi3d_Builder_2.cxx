@@ -34,6 +34,7 @@
 #include <ElCLib.hxx>
 
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2d_Curve.hxx>

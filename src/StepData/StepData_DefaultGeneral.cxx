@@ -14,6 +14,7 @@
 #include <StepData_DefaultGeneral.ixx>
 #include <StepData.hxx>
 #include <Interface_GeneralLib.hxx>
+#include <StepData_Protocol.hxx>
 #include <StepData_UndefinedEntity.hxx>
 #include <Interface_UndefinedContent.hxx>
 #include <Interface_Macros.hxx>

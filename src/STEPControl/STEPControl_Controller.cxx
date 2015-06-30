@@ -15,8 +15,8 @@
 //    gka 05.04.99 S4136: parameters definitions changed
 #include <STEPControl_Controller.ixx>
 #include <StepSelect_WorkLibrary.hxx>
-#include <IFSelect_Option.hxx>
-#include <IFSelect_Profile.hxx>
+#include <MoniTool_Option.hxx>
+#include <MoniTool_Profile.hxx>
 
 //#include <StepAP214.hxx>
 #include <RWStepAP214.hxx>
@@ -280,14 +280,14 @@ STEPControl_Controller::STEPControl_Controller ()
 
 //  ActorRead : on ajoute le cas Shape possible, a part du default
 //  ainsi, on l a tjrs sous la main
-  Handle(IFSelect_Option) optacrd = Profile()->Option("tr-read");
+  Handle(MoniTool_Option) optacrd = Profile()->Option("tr-read");
   optacrd->Add ("shape",theAdaptorRead);
 
 //  ActorWrite : on ajoute les cas possibles (NB : shape == default)
 //  On garde a part les cas shape compound (= shape traitee globale ou en
 //   assembly), peuvent etre utiles. Tandis que les autres cas sont
 //   susceptibles d etre remplaces si on fait du Model-Editor
-  Handle(IFSelect_Option) optacwr = Profile()->Option("tr-write");
+  Handle(MoniTool_Option) optacwr = Profile()->Option("tr-write");
   Handle(STEPControl_ActorWrite) ActWSh = new STEPControl_ActorWrite;
   ActWSh->SetGroupMode(0);
   optacwr->Add ("shape",ActWSh);

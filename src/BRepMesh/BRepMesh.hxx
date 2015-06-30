@@ -47,6 +47,7 @@
 class BRepMesh_Vertex;
 class TopoDS_Edge;
 class TopoDS_Vertex;
+class BRepMesh_FaceAttribute;
 class BRepMesh_VertexInspector;
 class BRepMesh_CircleInspector;
 class BRepMesh_Classifier;

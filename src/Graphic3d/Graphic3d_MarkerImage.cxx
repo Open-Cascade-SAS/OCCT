@@ -30,9 +30,7 @@ namespace
 // purpose  :
 // =======================================================================
 Graphic3d_MarkerImage::Graphic3d_MarkerImage (const Handle(Image_PixMap)& theImage)
-: myBitMap (NULL),
-  myImage  (theImage),
-  myImageAlpha (NULL),
+: myImage  (theImage),
   myMargin (1),
   myWidth  ((Standard_Integer )theImage->Width()),
   myHeight ((Standard_Integer )theImage->Height())
@@ -52,8 +50,6 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage (const Handle(TColStd_HArray1OfByte
                                               const Standard_Integer& theWidth,
                                               const Standard_Integer& theHeight)
 : myBitMap (theBitMap),
-  myImage  (NULL),
-  myImageAlpha (NULL),
   myMargin (1),
   myWidth  (theWidth),
   myHeight (theHeight)

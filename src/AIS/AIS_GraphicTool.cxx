@@ -28,7 +28,7 @@
 #include <Aspect_InteriorStyle.hxx>
 
 #include <Prs3d_ShadingAspect.hxx>
-
+#include <Prs3d_IsoAspect.hxx>
 
 static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
 					      const AIS_TypeOfAttribute Att)

@@ -32,7 +32,8 @@
 #include <BndLib_Add2dCurve.hxx>
 #include <Precision.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Geom_Curve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Geom_Surface.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>

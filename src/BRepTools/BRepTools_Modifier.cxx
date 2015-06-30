@@ -52,7 +52,7 @@
 #include <gp_Trsf.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <Message_ProgressSentry.hxx>
-
+#include <Geom_Surface.hxx>
 
 
 //=======================================================================

@@ -21,6 +21,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
+class IVtkOCC_Shape;
 DEFINE_STANDARD_HANDLE( IVtkOCC_Shape, IVtk_IShape )
 
 //! @class IVtkOCC_Shape

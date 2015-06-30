@@ -24,6 +24,8 @@
 #include <gp_Ax2.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Point.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 
 #include <STEPConstruct_Part.hxx>
 #include <STEPConstruct_Assembly.hxx>

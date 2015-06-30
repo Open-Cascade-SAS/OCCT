@@ -26,9 +26,6 @@
 
 typedef Geom_Circle                   Circle;
 typedef Geom_SphericalSurface         SphericalSurface;
-typedef Handle(Geom_SphericalSurface) Handle(SphericalSurface);
-typedef Handle(Geom_Curve)            Handle(Curve);
-typedef Handle(Geom_Circle)           Handle(Circle);
 typedef gp_Ax2  Ax2;
 typedef gp_Ax3  Ax3;
 typedef gp_Circ Circ;
@@ -38,9 +35,6 @@ typedef gp_Trsf Trsf;
 typedef gp_XYZ  XYZ;
 typedef gp_Vec  Vec;
 
-
-
-
 //=======================================================================
 //function : Copy
 //purpose  : 
@@ -48,7 +42,7 @@ typedef gp_Vec  Vec;
 
 Handle(Geom_Geometry) Geom_SphericalSurface::Copy () const {
  
-  Handle(SphericalSurface) Cs;
+  Handle(Geom_SphericalSurface) Cs;
   Cs = new SphericalSurface (pos, radius);
   return Cs;
 }
@@ -313,7 +307,7 @@ gp_Sphere Geom_SphericalSurface::Sphere () const {
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_SphericalSurface::UIso (const Standard_Real U) const 
+Handle(Geom_Curve) Geom_SphericalSurface::UIso (const Standard_Real U) const 
 {
   Handle(Geom_Circle) GC = new Geom_Circle(ElSLib::SphereUIso(pos,radius,U));
   Handle(Geom_TrimmedCurve) iso = new Geom_TrimmedCurve(GC,-M_PI/2.,M_PI/2);
@@ -326,7 +320,7 @@ Handle(Curve) Geom_SphericalSurface::UIso (const Standard_Real U) const
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_SphericalSurface::VIso (const Standard_Real V) const 
+Handle(Geom_Curve) Geom_SphericalSurface::VIso (const Standard_Real V) const 
 {
   Handle(Geom_Circle) 
     GC = new Geom_Circle(ElSLib::SphereVIso(pos,radius,V));

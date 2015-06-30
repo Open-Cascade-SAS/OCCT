@@ -49,6 +49,7 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <Precision.hxx>
 #include <Geom2d_TrimmedCurve.hxx>

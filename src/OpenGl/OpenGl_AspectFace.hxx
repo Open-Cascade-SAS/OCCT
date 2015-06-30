@@ -30,6 +30,8 @@
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_BSDF.hxx>
 
+class OpenGl_Texture;
+
 #define OPENGL_AMBIENT_MASK  (1<<0)
 #define OPENGL_DIFFUSE_MASK  (1<<1)
 #define OPENGL_SPECULAR_MASK (1<<2)

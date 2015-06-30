@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Visual3d_ViewManager.hxx>
+
 inline Standard_Boolean PrsMgr_PresentationManager::IsImmediateModeOn() const
 {
   return myImmediateModeOn > 0;

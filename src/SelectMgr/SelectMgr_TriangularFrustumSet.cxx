@@ -30,11 +30,6 @@
 // =======================================================================
 void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoints)
 {
-  for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
-  {
-    SelectMgr_HTriangularFrustum& aFrust = anIter.ChangeValue();
-    aFrust.Nullify();
-  }
   myFrustums.Clear();
 
   Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator (MEMORY_BLOCK_SIZE);
@@ -91,7 +86,7 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
       aPts[aVertIdx] = aVertex.Coord();
     }
 
-    SelectMgr_HTriangularFrustum aTrFrustum = new SelectMgr_TriangularFrustum();
+    Handle(SelectMgr_TriangularFrustum) aTrFrustum = new SelectMgr_TriangularFrustum();
     aTrFrustum->SetBuilder (myBuilder);
     aTrFrustum->Build (aPts[0], aPts[1], aPts[2]);
     myFrustums.Append (aTrFrustum);
@@ -112,7 +107,7 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustumSet::Transf
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    aRes->myFrustums.Append (NCollection_Handle<SelectMgr_TriangularFrustum>::DownCast (anIter.Value()->Transform (theTrsf)));
+    aRes->myFrustums.Append (Handle(SelectMgr_TriangularFrustum)::DownCast (anIter.Value()->Transform (theTrsf)));
   }
 
   return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);

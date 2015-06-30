@@ -24,6 +24,8 @@
 #include <Standard_TypeDef.hxx>
 #include <OpenGl_Matrix.hxx>
 
+class OpenGl_Workspace;
+
 //! This class contains logics related to tracking and modification of clipping plane
 //! state for particular OpenGl context. It contains information about enabled
 //! clipping planes and provides method to change clippings in context. The methods

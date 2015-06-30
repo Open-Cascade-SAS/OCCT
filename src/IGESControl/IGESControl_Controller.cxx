@@ -18,6 +18,7 @@
 #include <IGESSelect_WorkLibrary.hxx>
 #include <IGESToBRep_Actor.hxx>
 #include <IGESData_IGESModel.hxx>
+#include <IGESData_Protocol.hxx>
 #include <IGESSolid.hxx>
 #include <IGESAppli.hxx>
 

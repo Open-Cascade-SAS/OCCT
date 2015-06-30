@@ -197,9 +197,9 @@ void Message_Algorithm::SendStatusMessages (const Message_ExecStatus& theStatus,
       continue;
     }
 
-    Handle(Message_Msg) aMsgCustom = !myReportMessages.IsNull()
-                                    ? myReportMessages->Value (i)
-                                    : Handle(Message_Msg)();
+    NCollection_Handle<Message_Msg> aMsgCustom;
+    if (! myReportMessages.IsNull())
+      aMsgCustom = myReportMessages->Value (i);
     if (!aMsgCustom.IsNull())
     {
       // print custom message

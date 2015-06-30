@@ -38,6 +38,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Law_Linear.hxx>
 #include <BRepBlend_CSCircular.hxx>
 #include <BRepBlend_Line.hxx>

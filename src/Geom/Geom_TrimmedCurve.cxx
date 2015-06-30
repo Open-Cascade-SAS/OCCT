@@ -31,11 +31,7 @@
 #include <Precision.hxx>
 #include <ElCLib.hxx>
 
-
-typedef Handle(Geom_TrimmedCurve) Handle(TrimmedCurve);
 typedef Geom_TrimmedCurve         TrimmedCurve;
-typedef Handle(Geom_Curve)        Handle(Curve);
-typedef Handle(Geom_Geometry)     Handle(Geometry);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
@@ -49,7 +45,7 @@ typedef gp_Vec  Vec;
 
 Handle(Geom_Geometry) Geom_TrimmedCurve::Copy () const {
  
-  Handle(TrimmedCurve) Tc = new TrimmedCurve (basisCurve, uTrim1, uTrim2);
+  Handle(Geom_TrimmedCurve) Tc = new TrimmedCurve (basisCurve, uTrim1, uTrim2);
   return Tc;
 }
 
@@ -70,9 +66,9 @@ Geom_TrimmedCurve::Geom_TrimmedCurve (const Handle(Geom_Curve)& C,
   // kill trimmed basis curves
   Handle(Geom_TrimmedCurve) T = Handle(Geom_TrimmedCurve)::DownCast(C);
   if (!T.IsNull())
-    basisCurve = Handle(Curve)::DownCast(T->BasisCurve()->Copy());
+    basisCurve = Handle(Geom_Curve)::DownCast(T->BasisCurve()->Copy());
   else
-    basisCurve = Handle(Curve)::DownCast(C->Copy());
+    basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
 
   SetTrim(U1, U2, Sense, theAdjustPeriodic);
 }
@@ -207,7 +203,7 @@ GeomAbs_Shape Geom_TrimmedCurve::Continuity () const {
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_TrimmedCurve::BasisCurve () const { 
+Handle(Geom_Curve) Geom_TrimmedCurve::BasisCurve () const { 
 
   return basisCurve;
 }

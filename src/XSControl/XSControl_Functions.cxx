@@ -15,8 +15,8 @@
 
 #include <XSControl.hxx>
 #include <XSControl_Controller.hxx>
-#include <IFSelect_Profile.hxx>
-#include <IFSelect_Option.hxx>
+#include <MoniTool_Profile.hxx>
+#include <MoniTool_Option.hxx>
 #include <MoniTool_TypedValue.hxx>
 #include <Interface_Static.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
@@ -150,7 +150,7 @@ static IFSelect_ReturnStatus XSControl_xprofile(const Handle(IFSelect_SessionPil
   Handle(XSControl_WorkSession) WS = XSControl::Session(pilot);
   Handle(XSControl_Controller) control = WS->NormAdaptor();
   if (control.IsNull()) return IFSelect_RetFail;
-  Handle(IFSelect_Profile) prof = control->Profile();
+  Handle(MoniTool_Profile) prof = control->Profile();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   sout<<"Current Profile : "<<prof->Current().ToCString()<<endl;
 
@@ -267,7 +267,7 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
   Handle(XSControl_WorkSession) WS = XSControl::Session(pilot);
   Handle(XSControl_Controller) control = WS->NormAdaptor();
   if (control.IsNull()) return IFSelect_RetFail;
-  Handle(IFSelect_Profile) prof = control->Profile();
+  Handle(MoniTool_Profile) prof = control->Profile();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   sout<<"Current Profile : "<<prof->Current().ToCString()<<endl;
 
@@ -285,7 +285,7 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
     sout<<"Total : "<<nbopt<<" Options"<<endl;
     for (iopt = 1; iopt <= nbopt; iopt ++) {
       TCollection_AsciiString optname = optlist->Value(iopt);
-      Handle(IFSelect_Option) opt = prof->Option (optname.ToCString());
+      Handle(MoniTool_Option) opt = prof->Option (optname.ToCString());
       sout<<optname.ToCString()<<" : "<<opt->CaseName()<<endl;
     }
     return IFSelect_RetVoid;
@@ -294,7 +294,7 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
   //  xoption optname : description
 
   if (argc == 2) {
-    Handle(IFSelect_Option) opt = prof->Option (arg1);
+    Handle(MoniTool_Option) opt = prof->Option (arg1);
     if (opt.IsNull()) { sout<<"Not a recorded Option : "<<arg1<<endl; return IFSelect_RetError; }
 
     //  On va lister les valeurs admises
@@ -316,9 +316,9 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
       for (ial = 1; ial <= nbal; ial ++)  sout<<"  "<<aliases->Value(ial);
       if (!tv.IsNull()) {
         //  TypedValue : on peut afficher la valeur
-	Handle(TCollection_HAsciiString) str;
+	Handle(Standard_Transient) str;
 	opt->Item (acase.ToCString(),str);
-	if (!str.IsNull()) sout<<" - Value:"<<str->ToCString();
+	if (!str.IsNull()) sout<<" - Value:"<< Handle(TCollection_HAsciiString)::DownCast(str)->ToCString();
       }
 
       sout<<endl;
@@ -332,14 +332,14 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
     Handle(Interface_Static) param = Interface_Static::Static(parname);
     if (param.IsNull()) { sout<<"No static parameter is named "<<parname<<endl;
 			  return IFSelect_RetError; }
-    Handle(IFSelect_Option) opt = new IFSelect_Option(param,arg2);
+    Handle(MoniTool_Option) opt = new MoniTool_Option(param,arg2);
     prof->AddOption (opt);
     return IFSelect_RetDone;
   }
 
   //  xoption optname + case [val]
   if (argc >= 4 && arg2[0] == '+' && arg2[1] == '\0') {
-    Handle(IFSelect_Option) opt = prof->Option (arg1);
+    Handle(MoniTool_Option) opt = prof->Option (arg1);
     if (opt.IsNull()) { sout<<"Not a recorded Option : "<<arg1<<endl; return IFSelect_RetError; }
     Handle(MoniTool_TypedValue) tv = opt->TypedValue();
     if (tv.IsNull()) { sout<<"Option not for a Parameter : "<<arg1<<endl; return IFSelect_RetError; }
@@ -353,7 +353,7 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
 
   //  xoption optname newcase : edition
   if (argc == 3) {
-    Handle(IFSelect_Option) opt = prof->Option (arg1);
+    Handle(MoniTool_Option) opt = prof->Option (arg1);
     if (opt.IsNull()) { sout<<"Not a recorded Option : "<<arg1<<endl; return IFSelect_RetError; }
     if (!opt->Switch (arg2)) {
       sout<<"Option : "<<arg1<<" , Not a suitable case : "<<arg2<<endl;

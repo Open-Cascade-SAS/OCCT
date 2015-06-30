@@ -22,7 +22,11 @@
 #include <TopoDS_Shape.hxx>
 
 class VrmlData_Scene;
+class VrmlData_Coordinate;
 class TopoDS_Face;
+class Poly_Polygon3D;
+class Poly_Triangulation;
+
 /**
  * Algorithm converting one shape or a set of shapes to VrmlData_Scene.
  */

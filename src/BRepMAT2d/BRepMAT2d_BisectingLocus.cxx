@@ -30,7 +30,7 @@
 # include <MAT_ListOfBisector.hxx>
 # include <MAT_DataMapOfIntegerBasicElt.hxx>
 # include <MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx>
-# include <Geom2d_Curve.hxx>
+# include <Geom2d_TrimmedCurve.hxx>
 # include <gp_Pnt2d.hxx>
 # include <TColGeom2d_SequenceOfGeometry.hxx>
 # include <Precision.hxx>

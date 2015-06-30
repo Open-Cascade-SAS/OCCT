@@ -26,7 +26,8 @@
 #include <Geom2dConvert.hxx>
 #include <GeomToStep_MakeBSplineCurveWithKnots.hxx>
 #include <GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
-
+#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <StepGeom_BSplineCurveWithKnots.hxx>
 
 //=============================================================================
 // Creation d' une BoundedCurve de prostep a partir d' une BoundedCurve de Geom

@@ -27,6 +27,7 @@
 #include <TColgp_HArray1OfDir.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
+class AIS_PointCloud;
 DEFINE_STANDARD_HANDLE(AIS_PointCloud, AIS_InteractiveObject)
 
 //! Interactive object for set of points.

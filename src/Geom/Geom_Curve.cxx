@@ -17,17 +17,15 @@
 #include <Geom_Curve.ixx>
 
 typedef Geom_Curve         Curve;
-typedef Handle(Geom_Curve) Handle(Curve);
-
 
 //=======================================================================
 //function : Reversed
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_Curve::Reversed () const
+Handle(Geom_Curve) Geom_Curve::Reversed () const
 {
-  Handle(Curve) C = Handle(Curve)::DownCast(Copy());
+  Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast(Copy());
   C->Reverse();
   return C;
 }

@@ -13,6 +13,7 @@
 
 #include <IGESSelect_SelectFromDrawing.ixx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 #include <Interface_Macros.hxx>
 
 #define PourDrawing 404

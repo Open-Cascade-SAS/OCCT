@@ -19,9 +19,8 @@
 #include <OpenGl_GlCore11.hxx>
 #include <InterfaceGraphic_Aspect.hxx>
 #include <OpenGl_Caps.hxx>
-
-
 #include <MMgt_TShared.hxx>
+
 
 #if defined(__APPLE__)
   #import <TargetConditionals.h>
@@ -34,6 +33,12 @@
     struct UIView;
   #endif
 #endif
+
+class OpenGl_Context;
+class OpenGl_GraphicDriver;
+
+class OpenGl_Window;
+DEFINE_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
 
 //! This class represents low-level wrapper over window with GL context.
 //! The window itself should be provided to constructor.

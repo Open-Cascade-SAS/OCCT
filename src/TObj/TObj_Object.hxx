@@ -25,8 +25,17 @@
 #include <TDF_Label.hxx>
 #include <gp_XYZ.hxx>
 
+class TObj_Model;
 class TObj_Persistence;
+class TObj_ObjectIterator;
+class TObj_TNameContainer;
+class TCollection_HExtendedString;
+class TColStd_HArray1OfInteger;
+class TColStd_HArray1OfReal;
+class TColStd_HArray1OfExtendedString;
 
+class TObj_Object;
+DEFINE_STANDARD_HANDLE(TObj_Object,MMgt_TShared)
 
 //! Basis class for transient objects in OCAF-based models
 

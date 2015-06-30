@@ -14,6 +14,7 @@
 #include  <IGESSelect_SelectSingleViewFrom.ixx>
 #include <IGESSelect_ViewSorter.hxx>
 #include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Interface_Macros.hxx>
 
 

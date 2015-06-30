@@ -23,6 +23,7 @@
 class vtkIdTypeArray;
 class vtkPolyData;
 
+class IVtkVTK_ShapeData;
 DEFINE_STANDARD_HANDLE( IVtkVTK_ShapeData, IVtk_IShapeData )
 
 // macros to export static field in class

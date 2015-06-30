@@ -49,7 +49,7 @@ uses CString,  AsciiString, SequenceOfTransient, SequenceOfInteger,
      FinderProcess    from Transfer,
      Shape            from TopoDS,
      WorkLibrary      from IFSelect,
-     Profile          from IFSelect,
+     Profile          from MoniTool,
      WorkSession      from XSControl,
      ReturnStatus     from IFSelect
 
@@ -90,7 +90,7 @@ is
     --           rsc = False (D) : True Name attached to the Norm (long name)
     --           rsc = True : Name of the ressource set (i.e. short name)
 
-    Profile       (me) returns Profile from IFSelect;
+    Profile       (me) returns Profile from MoniTool;
     ---Purpose : Returns the Profile
     --           It starts with a first configuration Base (empty) and the
     --           following options :

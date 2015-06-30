@@ -90,6 +90,7 @@ struct OpenGl_Material
 
 };
 
+class OpenGl_RaytraceFilter;
 DEFINE_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
 
 //! Graphical ray-tracing filter.
@@ -126,6 +127,9 @@ public:
 
   DEFINE_STANDARD_RTTI(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
 };
+
+class OpenGl_Workspace;
+DEFINE_STANDARD_HANDLE(OpenGl_Workspace,OpenGl_Window)
 
 //! Represents window with GL context.
 //! Provides methods to render primitives and maintain GL state.

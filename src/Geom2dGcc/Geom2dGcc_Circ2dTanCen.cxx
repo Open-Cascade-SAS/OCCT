@@ -22,13 +22,14 @@
 #include <GccEnt_BadQualifier.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_Point.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
 #include <StdFail_NotDone.hxx>
 
 Geom2dGcc_Circ2dTanCen::
    Geom2dGcc_Circ2dTanCen (const Geom2dGcc_QualifiedCurve& Qualified1 ,
-			   const Handle(Geom2d_Point&)     PCenter    ,
+			   const Handle(Geom2d_Point)&     PCenter    ,
 			   const Standard_Real             Tolerance  ):
   cirsol(1,2)   ,
   qualifier1(1,2),

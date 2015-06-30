@@ -42,6 +42,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Handle.hxx>
 
+class AIS_Dimension;
 DEFINE_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 
 //! AIS_Dimension is a base class for 2D presentations of linear (length, diameter, radius)

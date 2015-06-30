@@ -21,6 +21,8 @@
 #include <BVH_SweepPlaneBuilder.hxx>
 #include <BVH_SpatialMedianBuilder.hxx>
 
+#include <Standard_Real.hxx>
+
 // Specific instantiations of struct templates to avoid compilation warnings
 
 template class BVH_Box<Standard_Real, 2>;

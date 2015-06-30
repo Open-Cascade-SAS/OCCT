@@ -17,14 +17,11 @@
 #include <Geom2d_Geometry.ixx>
 #include <Standard_ConstructionError.hxx>
 
-typedef Handle(Geom2d_Geometry) Handle(Geometry);
 typedef Geom2d_Geometry Geometry;
 typedef gp_Ax2d   Ax2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Vec2d  Vec2d;
 typedef gp_Trsf2d Trsf2d;
-
-
 
 void Geom2d_Geometry::Mirror (const gp_Pnt2d& P) {
    
@@ -74,67 +71,57 @@ void Geom2d_Geometry::Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2) {
 }
 
 
- Handle(Geometry) Geom2d_Geometry::Mirrored (const gp_Pnt2d& P) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+ Handle(Geom2d_Geometry) Geom2d_Geometry::Mirrored (const gp_Pnt2d& P) const
+ {
+  Handle(Geom2d_Geometry) G = Copy();
   G->Mirror (P);
   return G;
 }
 
 
-Handle(Geometry) Geom2d_Geometry::Mirrored (const gp_Ax2d& A) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+Handle(Geom2d_Geometry) Geom2d_Geometry::Mirrored (const gp_Ax2d& A) const
+{
+  Handle(Geom2d_Geometry) G = Copy();
   G->Mirror (A);
   return G;
 }
 
 
-Handle(Geometry) Geom2d_Geometry::Rotated (
-const gp_Pnt2d& P, const Standard_Real Ang) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+Handle(Geom2d_Geometry) Geom2d_Geometry::Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const
+{
+  Handle(Geom2d_Geometry) G = Copy();
   G->Rotate (P, Ang);
   return G;
 }
 
 
-Handle(Geometry) Geom2d_Geometry::Scaled (
-const gp_Pnt2d& P,  const Standard_Real S) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+Handle(Geom2d_Geometry) Geom2d_Geometry::Scaled (const gp_Pnt2d& P,  const Standard_Real S) const
+{
+  Handle(Geom2d_Geometry) G = Copy();
   G->Scale (P, S);
   return G;
 }
 
 
-Handle(Geometry) Geom2d_Geometry::Transformed (const gp_Trsf2d& T) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+Handle(Geom2d_Geometry) Geom2d_Geometry::Transformed (const gp_Trsf2d& T) const
+{
+  Handle(Geom2d_Geometry) G = Copy();
   G->Transform (T);
   return G;
 }
 
 
-Handle(Geometry) Geom2d_Geometry::Translated (const gp_Vec2d& V) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+Handle(Geom2d_Geometry) Geom2d_Geometry::Translated (const gp_Vec2d& V) const
+{
+  Handle(Geom2d_Geometry) G = Copy();
   G->Translate (V);
   return G;
 }
 
 
-Handle(Geometry) Geom2d_Geometry::Translated (
-const gp_Pnt2d& P1, const gp_Pnt2d& P2) const {
-
-  Handle(Geometry) me = this;
-  Handle(Geometry) G = me->Copy();
+Handle(Geom2d_Geometry) Geom2d_Geometry::Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const
+{
+  Handle(Geom2d_Geometry) G = Copy();
   G->Translate (P1, P2);
   return G;
 }

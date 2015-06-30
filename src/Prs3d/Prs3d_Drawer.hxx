@@ -39,6 +39,7 @@ class Prs3d_DatumAspect;
 class Prs3d_DimensionAspect;
 class TCollection_AsciiString;
 
+class Prs3d_Drawer;
 DEFINE_STANDARD_HANDLE(Prs3d_Drawer, MMgt_TShared)
 
 //! A graphic attribute manager which governs how

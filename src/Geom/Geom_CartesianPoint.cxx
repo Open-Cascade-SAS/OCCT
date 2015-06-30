@@ -17,13 +17,10 @@
 #include <Geom_CartesianPoint.ixx>
 
 typedef Geom_CartesianPoint         CartesianPoint;
-typedef Handle(Geom_CartesianPoint) Handle(CartesianPoint);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Vec  Vec;
 typedef gp_Trsf Trsf;
-
-
 
 //=======================================================================
 //function : Geom_CartesianPoint
@@ -49,7 +46,7 @@ const Standard_Real X, const Standard_Real Y, const Standard_Real Z) : gpPnt (X,
 
 Handle(Geom_Geometry) Geom_CartesianPoint::Copy() const {
 
-  Handle(CartesianPoint) P;
+  Handle(Geom_CartesianPoint) P;
   P = new CartesianPoint (gpPnt);
   return P; 
 }

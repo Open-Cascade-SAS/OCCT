@@ -32,6 +32,7 @@
 #include <GeomLib.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 

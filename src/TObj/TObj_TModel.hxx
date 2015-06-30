@@ -20,6 +20,8 @@
 
 #include <TDF_Attribute.hxx>
 
+class TObj_Model;
+class TObj_TModel;
 
 /** 
 * Attribute to store OCAF-based models in OCAF tree

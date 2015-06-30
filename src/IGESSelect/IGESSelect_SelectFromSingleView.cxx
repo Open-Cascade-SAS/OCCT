@@ -13,6 +13,7 @@
 
 #include <IGESSelect_SelectFromSingleView.ixx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 #include <Interface_Macros.hxx>
 
 

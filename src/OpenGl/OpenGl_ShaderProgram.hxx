@@ -29,6 +29,9 @@
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_ShaderObject.hxx>
 
+class OpenGl_ShaderProgram;
+DEFINE_STANDARD_HANDLE(OpenGl_ShaderProgram, OpenGl_Resource)
+
 //! The enumeration of OCCT-specific OpenGL/GLSL variables.
 enum OpenGl_StateVariable
 {

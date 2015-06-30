@@ -17,6 +17,7 @@
 
 #include <RWStepShape_RWSeamEdge.ixx>
 #include <StepShape_Edge.hxx>
+#include <StepShape_Vertex.hxx>
 #include <StepGeom_Pcurve.hxx>
 
 //=======================================================================

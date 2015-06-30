@@ -16,6 +16,8 @@
 
 #include <StepToTopoDS_PointPairHasher.ixx>
 
+#include <StepGeom_CartesianPoint.hxx>
+
 //=======================================================================
 //function : HashCode
 //purpose  : 

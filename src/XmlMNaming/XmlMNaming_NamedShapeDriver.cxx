@@ -61,7 +61,7 @@ IMPLEMENT_DOMSTRING (EvolReplaceString,   "replace")
 //=======================================================================
 
 XmlMNaming_NamedShapeDriver::XmlMNaming_NamedShapeDriver
-                        (const Handle(CDM_MessageDriver&) theMessageDriver)
+                        (const Handle(CDM_MessageDriver)& theMessageDriver)
      : XmlMDF_ADriver (theMessageDriver, NULL),
   myShapeSet (Standard_False) // triangles mode
 {}

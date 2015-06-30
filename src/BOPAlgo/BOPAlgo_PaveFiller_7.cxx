@@ -516,7 +516,7 @@ void BOPAlgo_PaveFiller::MakePCurves()
       }
       //
       Handle(BOPDS_CommonBlock) aCB=myDS->CommonBlock(aPB);
-      if (!aCB) {
+      if (aCB.IsNull()) {
         continue;
       }
       //

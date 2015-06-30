@@ -19,7 +19,7 @@
 #include <Interface_HGraph.hxx>
 #include <Interface_Graph.hxx>
 
-#include <IFSelect_Profile.hxx>
+#include <MoniTool_Profile.hxx>
 
 #include <Transfer_TransientProcess.hxx>
 #include <Transfer_ResultFromModel.hxx>

@@ -12,9 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <STEPEdit.ixx>
-//#include <StepData_FileProtocol.hxx>
+
 #include <StepAP214.hxx>
-//#include <HeaderSection.hxx>
+#include <StepAP214_Protocol.hxx>
 
 #include <APIHeaderSection_MakeHeader.hxx>
 

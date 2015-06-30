@@ -22,7 +22,7 @@
 #include <OpenGl_Matrix.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 
-
+class OpenGl_CappingPlaneResource;
 DEFINE_STANDARD_HANDLE (OpenGl_CappingPlaneResource, OpenGl_Resource)
 
 //! Container of graphical resources for rendering capping plane

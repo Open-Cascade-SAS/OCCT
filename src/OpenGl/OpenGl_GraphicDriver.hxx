@@ -66,6 +66,7 @@ class Image_PixMap;
 class OpenGl_Element;
 class OpenGl_Structure;
 class OpenGl_Text;
+class OpenGl_View;
 
 //! Tool class to implement consistent state counter
 //! for objects inside the same driver instance.
@@ -81,6 +82,9 @@ private:
 
   Standard_Size myCounter;
 };
+
+class OpenGl_GraphicDriver;
+DEFINE_STANDARD_HANDLE(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 //! This class defines an OpenGl graphic driver
 class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver

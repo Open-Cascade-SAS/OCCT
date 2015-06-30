@@ -24,8 +24,11 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_telem_util.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
-/* OCC22218 NOTE: project dependency on gl2ps is specified by macro */
+#include <Aspect_PolygonOffsetMode.hxx>
+#include <OpenGl_View.hxx>
+
 #ifdef HAVE_GL2PS
   #include <gl2ps.h>
   /* OCC22216 NOTE: linker dependency can be switched off by undefining macro.
@@ -34,9 +37,6 @@
   #pragma comment( lib, "gl2ps.lib" )
   #endif
 #endif
-
-#include <Aspect_PolygonOffsetMode.hxx>
-#include <OpenGl_View.hxx>
 
 /*----------------------------------------------------------------------*/
 

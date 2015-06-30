@@ -41,4 +41,3 @@ LDOMString.cxx
 LDOMString.hxx
 LDOM_OSStream.cxx
 LDOM_OSStream.hxx
-Handle_LDOM_MemManager.hxx

@@ -16,7 +16,10 @@
 
 #include <GeomToStep_MakeConic.ixx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_Conic.hxx>
+#include <StepGeom_Circle.hxx>
+#include <StepGeom_Ellipse.hxx>
+#include <StepGeom_Hyperbola.hxx>
+#include <StepGeom_Parabola.hxx>
 #include <GeomToStep_MakeConic.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>

@@ -21,6 +21,8 @@
 #include <Geom_Ellipse.hxx>
 #include <gp_Elips2d.hxx>
 #include <StepGeom_Ellipse.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
 

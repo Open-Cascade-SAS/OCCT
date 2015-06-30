@@ -42,20 +42,12 @@
 #include <Precision.hxx>
 #include <ElCLib.hxx>
 
-typedef Handle(Geom_Surface)           Handle(Surface);
-typedef Handle(Geom_Geometry)          Handle(Geometry);
 typedef Geom_RectangularTrimmedSurface RectangularTrimmedSurface;
-typedef Handle(Geom_RectangularTrimmedSurface) Handle(RectangularTrimmedSurface);
-
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
 typedef gp_Vec  Vec;
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -64,7 +56,7 @@ typedef gp_Vec  Vec;
 
 Handle(Geom_Geometry) Geom_RectangularTrimmedSurface::Copy () const {
 
-  Handle(RectangularTrimmedSurface) S;
+  Handle(Geom_RectangularTrimmedSurface) S;
 
   if ( isutrimmed && isvtrimmed ) 
     S = new RectangularTrimmedSurface (basisSurf,
@@ -91,7 +83,7 @@ Handle(Geom_Geometry) Geom_RectangularTrimmedSurface::Copy () const {
 
 Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface (
 
-const Handle(Surface)& S, 
+const Handle(Geom_Surface)& S, 
 const Standard_Real             U1, 
 const Standard_Real             U2, 
 const Standard_Real             V1,
@@ -111,9 +103,9 @@ const Standard_Boolean          VSense)
   Handle(Geom_RectangularTrimmedSurface) T =
     Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
   if (!T.IsNull())
-    basisSurf = Handle(Surface)::DownCast(T->BasisSurface()->Copy());
+    basisSurf = Handle(Geom_Surface)::DownCast(T->BasisSurface()->Copy());
   else
-    basisSurf = Handle(Surface)::DownCast(S->Copy());
+    basisSurf = Handle(Geom_Surface)::DownCast(S->Copy());
 
   Handle(Geom_OffsetSurface) O =
     Handle(Geom_OffsetSurface)::DownCast(basisSurf);
@@ -122,7 +114,7 @@ const Standard_Boolean          VSense)
     Handle(Geom_RectangularTrimmedSurface) S2 = 
            new Geom_RectangularTrimmedSurface( O->BasisSurface(),U1,U2, V1, V2, USense, VSense);
     Handle(Geom_OffsetSurface) OS = new Geom_OffsetSurface(S2, O->Offset());
-    basisSurf = Handle(Surface)::DownCast(OS);
+    basisSurf = Handle(Geom_Surface)::DownCast(OS);
   }  
 
   SetTrim( U1, U2, V1, V2, USense, VSense);
@@ -147,9 +139,9 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface (
   Handle(Geom_RectangularTrimmedSurface) T =
     Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
   if (!T.IsNull())
-    basisSurf = Handle(Surface)::DownCast(T->BasisSurface()->Copy());
+    basisSurf = Handle(Geom_Surface)::DownCast(T->BasisSurface()->Copy());
   else
-    basisSurf = Handle(Surface)::DownCast(S->Copy());
+    basisSurf = Handle(Geom_Surface)::DownCast(S->Copy());
 
   Handle(Geom_OffsetSurface) O =
     Handle(Geom_OffsetSurface)::DownCast(basisSurf);
@@ -158,7 +150,7 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface (
     Handle(Geom_RectangularTrimmedSurface) S2 = 
            new Geom_RectangularTrimmedSurface( O->BasisSurface(),Param1,Param2, UTrim, Sense);
     Handle(Geom_OffsetSurface) OS = new Geom_OffsetSurface(S2, O->Offset());
-    basisSurf = Handle(Surface)::DownCast(OS);
+    basisSurf = Handle(Geom_Surface)::DownCast(OS);
   }  
 
   SetTrim(Param1, Param2, UTrim, Sense);
@@ -380,7 +372,7 @@ Standard_Real Geom_RectangularTrimmedSurface::VReversedParameter( const Standard
 //purpose  : 
 //=======================================================================
 
-Handle(Surface) Geom_RectangularTrimmedSurface::BasisSurface () const
+Handle(Geom_Surface) Geom_RectangularTrimmedSurface::BasisSurface () const
 {
   return basisSurf;
 }

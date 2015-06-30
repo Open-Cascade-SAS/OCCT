@@ -67,6 +67,7 @@
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
 #include <TColStd_SequenceOfInteger.hxx>
@@ -75,6 +76,7 @@
 #include <Geom_BSplineSurface.hxx>
 #include <GeomPlate_SequenceOfAij.hxx>
 #include <GeomPlate_MakeApprox.hxx>
+#include <Geom_Plane.hxx>
 
 #ifdef DRAW
 #include <DrawTrSurf.hxx>

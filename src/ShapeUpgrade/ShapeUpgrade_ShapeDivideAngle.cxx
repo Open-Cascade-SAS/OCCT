@@ -17,6 +17,7 @@
 #include <ShapeUpgrade_ShapeDivideAngle.ixx>
 #include <ShapeUpgrade_SplitSurfaceAngle.hxx>
 #include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideAngle

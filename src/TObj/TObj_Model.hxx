@@ -18,12 +18,19 @@
 #ifndef TObj_Model_HeaderFile
 #define TObj_Model_HeaderFile
 
-
 #include <TDF_Label.hxx>
 #include <TObj_Partition.hxx>
 #include <Message_Messenger.hxx>
 
+class TObj_TNameContainer;
+class TObj_Partition;
+class TCollection_HExtendedString;
+class TDocStd_Document;
+class TObj_CheckModel;
+class TObj_Application;
 
+class TObj_Model;
+DEFINE_STANDARD_HANDLE(TObj_Model,MMgt_TShared)
 
 /**
 * Base class for OCAF based models.

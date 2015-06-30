@@ -31,6 +31,7 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <PrsMgr_PresentableObjectPointer.hxx>
+#include <SelectMgr_IndexedMapOfOwner.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>

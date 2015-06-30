@@ -38,10 +38,7 @@
 #define  FMULTS   (BSplCLib::NoMults())
 
 typedef Geom_SurfaceOfRevolution         SurfaceOfRevolution;
-typedef Handle(Geom_SurfaceOfRevolution) Handle(SurfaceOfRevolution);
-typedef Handle(Geom_Geometry)            Handle(Geometry);
 typedef Geom_Curve                       Curve;
-typedef Handle(Geom_Curve)               Handle(Curve);
 typedef gp_Ax1  Ax1;
 typedef gp_Ax2  Ax2;
 typedef gp_Dir  Dir;
@@ -50,6 +47,7 @@ typedef gp_Pnt  Pnt;
 typedef gp_Trsf Trsf;
 typedef gp_Vec  Vec;
 typedef gp_XYZ  XYZ;
+
 //=======================================================================
 //function : LocateSide
 //purpose  : This  method locates U parameter on basis BSpline curve 
@@ -135,10 +133,10 @@ Handle(Geom_Geometry) Geom_SurfaceOfRevolution::Copy () const {
 //=======================================================================
 
 Geom_SurfaceOfRevolution::Geom_SurfaceOfRevolution 
-  (const Handle(Curve)& C , 
+  (const Handle(Geom_Curve)& C , 
    const Ax1&           A1 ) : loc (A1.Location()) {
 
-  basisCurve = Handle(Curve)::DownCast(C->Copy());
+  basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
   direction  = A1.Direction();
   smooth     = C->Continuity();
 }
@@ -300,9 +298,9 @@ void Geom_SurfaceOfRevolution::SetDirection (const Dir& V) {
 //purpose  : 
 //=======================================================================
 
-void Geom_SurfaceOfRevolution::SetBasisCurve (const Handle(Curve)& C) {
+void Geom_SurfaceOfRevolution::SetBasisCurve (const Handle(Geom_Curve)& C) {
 
-   basisCurve = Handle(Curve)::DownCast(C->Copy());
+   basisCurve = Handle(Geom_Curve)::DownCast(C->Copy());
    smooth     = C->Continuity();
 }
 
@@ -1111,9 +1109,9 @@ Ax2 Geom_SurfaceOfRevolution::ReferencePlane() const {
 //purpose  : 
 //=======================================================================
 
-Handle(Curve) Geom_SurfaceOfRevolution::UIso (const Standard_Real U) const {
+Handle(Geom_Curve) Geom_SurfaceOfRevolution::UIso (const Standard_Real U) const {
 
-   Handle(Curve) C = Handle(Curve)::DownCast(basisCurve->Copy());
+   Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast(basisCurve->Copy());
    Ax1 RotAxis = Ax1 (loc, direction);
    C->Rotate (RotAxis, U);
    return C;

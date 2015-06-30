@@ -19,7 +19,6 @@
 
 
 typedef Geom2d_AxisPlacement          AxisPlacement;
-typedef Handle(Geom2d_AxisPlacement)  Handle(AxisPlacement);
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Trsf2d Trsf2d;
@@ -30,7 +29,7 @@ typedef gp_Vec2d  Vec2d;
 
 Handle(Geom2d_Geometry) Geom2d_AxisPlacement::Copy() const {
 
-  Handle(AxisPlacement) A;
+  Handle(Geom2d_AxisPlacement) A;
   A = new AxisPlacement (axis);
   return A;
 }
@@ -56,11 +55,11 @@ Pnt2d Geom2d_AxisPlacement::Location () const { return axis.Location(); }
 
 void Geom2d_AxisPlacement::Reverse()        { axis.Reverse(); }
 
-Handle(AxisPlacement) Geom2d_AxisPlacement::Reversed() const {
+Handle(Geom2d_AxisPlacement) Geom2d_AxisPlacement::Reversed() const {
 
   gp_Ax2d A = axis;
   A.Reverse();
-  Handle(AxisPlacement) Temp = new AxisPlacement (A);
+  Handle(Geom2d_AxisPlacement) Temp = new AxisPlacement (A);
   return Temp;
 }
 
@@ -76,7 +75,7 @@ void Geom2d_AxisPlacement::SetDirection (const Dir2d& V) {
   axis.SetDirection(V);
 }
 
-Standard_Real Geom2d_AxisPlacement::Angle (const Handle(AxisPlacement)& Other) const {
+Standard_Real Geom2d_AxisPlacement::Angle (const Handle(Geom2d_AxisPlacement)& Other) const {
 
   return axis.Angle (Other->Ax2d());
 }

@@ -22,6 +22,7 @@
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
+class AIS_RadiusDimension;
 DEFINE_STANDARD_HANDLE (AIS_RadiusDimension,AIS_Dimension)
 
 //! Radius dimension. Can be constructued:

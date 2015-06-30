@@ -34,6 +34,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
+class AIS_AngleDimension;
 DEFINE_STANDARD_HANDLE (AIS_AngleDimension, AIS_Dimension)
 
 //! Angle dimension. Can be constructed:

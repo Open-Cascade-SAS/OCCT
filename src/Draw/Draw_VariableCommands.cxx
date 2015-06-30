@@ -527,7 +527,7 @@ static Standard_Integer copy(Draw_Interpretor& , Standard_Integer n, const char*
 	D = D->Copy();
       else 
 	// clear old name
-	Draw::Set(a[i],Handle(Draw_Drawable3D()));
+	Draw::Set(a[i],Handle(Draw_Drawable3D)());
 
       Draw::Set(a[i+1],D);
     }

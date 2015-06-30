@@ -13,6 +13,7 @@
 
 #include <Transfer_ActorOfTransientProcess.ixx>
 #include <Transfer_TransientProcess.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
 
 Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess ()    {  }
 

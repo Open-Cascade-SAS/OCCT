@@ -35,6 +35,9 @@
 #include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Utils.hxx>
+#include <OpenGl_ShaderProgram.hxx>
+
+#include <NCollection_Shared.hxx>
 
 //! Forward declarations
 #if defined(__APPLE__)
@@ -121,6 +124,13 @@ typedef OpenGl_TmplCore43<OpenGl_GlCore42>     OpenGl_GlCore43;
 template<typename theBaseClass_t> struct OpenGl_TmplCore44;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43Back> OpenGl_GlCore44Back;
 typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
+
+class OpenGl_ShaderManager;
+class OpenGl_Sampler;
+class OpenGl_FrameBuffer;
+
+class OpenGl_Context;
+DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
 
 //! This class generalize access to the GL context and available extensions.
 //!
@@ -646,9 +656,9 @@ private: // system-dependent fields
 
 private: // context info
 
-  typedef NCollection_DataMap<TCollection_AsciiString, Standard_Integer> OpenGl_DelayReleaseMap;
-  typedef NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> OpenGl_ResourcesMap;
-  typedef NCollection_List<Handle(OpenGl_Resource)> OpenGl_ResourcesStack;
+  typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Standard_Integer> > OpenGl_DelayReleaseMap;
+  typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> > OpenGl_ResourcesMap;
+  typedef NCollection_Shared< NCollection_List<Handle(OpenGl_Resource)> > OpenGl_ResourcesStack;
 
   Handle(OpenGl_ResourcesMap)    mySharedResources; //!< shared resources with unique identification key
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release

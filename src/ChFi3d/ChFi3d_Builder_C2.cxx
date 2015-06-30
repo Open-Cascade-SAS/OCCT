@@ -93,7 +93,7 @@ static void Reduce(const Standard_Real& p1,
 {
   GeomAdaptor_Surface& s1 = hs1->ChangeSurface();
   GeomAdaptor_Surface& s2 = hs2->ChangeSurface();
-  const Handle(Geom_Surface&) surf = s1.Surface();
+  const Handle(Geom_Surface)& surf = s1.Surface();
   Standard_Real ud,uf,vd,vf;
   surf->Bounds(ud,uf,vd,vf);
   Standard_Real milmoins = 0.51*vd+0.49*vf, milplus = 0.49*vd+0.51*vf;

@@ -2515,7 +2515,7 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
     }
   }
 
-  if (myActiveProgram != NULL)
+  if (!myActiveProgram.IsNull())
   {
     myActiveProgram->SetUniform (this, "uPattern", aPattern);
     myActiveProgram->SetUniform (this, "uFactor",  theFactor);

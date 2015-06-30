@@ -14,6 +14,8 @@
 #include <GeomToStep_MakeParabola.ixx>
 
 #include <StepGeom_Parabola.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <gp_Parab.hxx>
 #include <gp_Parab2d.hxx>
 #include <Geom_Parabola.hxx>

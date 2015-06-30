@@ -17,17 +17,15 @@
 #include <Geom_Surface.ixx>
 
 typedef Geom_Surface         Surface;
-typedef Handle(Geom_Surface) Handle(Surface);
-
 
 //=======================================================================
 //function : UReversed
 //purpose  : 
 //=======================================================================
 
-Handle(Surface) Geom_Surface::UReversed () const
+Handle(Geom_Surface) Geom_Surface::UReversed () const
 {
-  Handle(Surface) S = Handle(Surface)::DownCast(Copy());
+  Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(Copy());
   S->UReverse();
   return S;
 }
@@ -38,9 +36,9 @@ Handle(Surface) Geom_Surface::UReversed () const
 //purpose  : 
 //=======================================================================
 
-Handle(Surface) Geom_Surface::VReversed () const
+Handle(Geom_Surface) Geom_Surface::VReversed () const
 {
-  Handle(Surface) S = Handle(Surface)::DownCast(Copy());
+  Handle(Geom_Surface) S = Handle(Geom_Surface)::DownCast(Copy());
   S->VReverse();
   return S;
 }

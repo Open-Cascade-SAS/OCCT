@@ -16,7 +16,9 @@
 
 #include <GeomToStep_MakeSurface.ixx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_Surface.hxx>
+#include <StepGeom_BoundedSurface.hxx>
+#include <StepGeom_ElementarySurface.hxx>
+#include <StepGeom_SweptSurface.hxx>
 #include <GeomToStep_MakeSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <GeomToStep_MakeBoundedSurface.hxx>

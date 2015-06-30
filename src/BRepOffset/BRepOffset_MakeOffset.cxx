@@ -92,6 +92,7 @@
 #include <BRepAdaptor_Curve2d.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
 #include <TopoDS_Wire.hxx>
 #include <BRepTools_Substitution.hxx>
 #include <Geom_TrimmedCurve.hxx>

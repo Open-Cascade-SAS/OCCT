@@ -404,12 +404,12 @@ Aspect_TypeOfLayer Visual3d_Layer::Type () const {
 }
 
 
-void Visual3d_Layer::AddLayerItem( const Handle(Visual3d_LayerItem&) Item )
+void Visual3d_Layer::AddLayerItem( const Handle(Visual3d_LayerItem)& Item )
 {
   MyListOfLayerItems.Append( Item );
 }
 
-void Visual3d_Layer::RemoveLayerItem( const Handle(Visual3d_LayerItem&) Item )
+void Visual3d_Layer::RemoveLayerItem( const Handle(Visual3d_LayerItem)& Item )
 {
   if ( MyListOfLayerItems.IsEmpty() )
     return;

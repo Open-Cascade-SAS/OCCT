@@ -22,6 +22,7 @@
 #include <gp_Pnt.hxx>
 #include <Graphic3d_Mat4d.hxx>
 
+class IVtk_IView;
 DEFINE_STANDARD_HANDLE( IVtk_IView, IVtk_Interface )
 
 //! @class IVtk_IView 

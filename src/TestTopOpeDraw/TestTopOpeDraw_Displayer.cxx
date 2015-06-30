@@ -325,7 +325,7 @@ TestTopOpeDraw_C3DDisplayer::TestTopOpeDraw_C3DDisplayer()
 //purpose  : 
 //=======================================================================
 
-TestTopOpeDraw_C3DDisplayer::TestTopOpeDraw_C3DDisplayer(const Handle(Geom_Curve& C))
+TestTopOpeDraw_C3DDisplayer::TestTopOpeDraw_C3DDisplayer(const Handle(Geom_Curve)& C)
 {
   InitC3DDisplayer();
   DisplayC3D(C);
@@ -349,7 +349,7 @@ void TestTopOpeDraw_C3DDisplayer::InitC3DDisplayer()
 //purpose  : 
 //=======================================================================
 
-void TestTopOpeDraw_C3DDisplayer::DisplayC3D(const Handle(Geom_Curve& C))
+void TestTopOpeDraw_C3DDisplayer::DisplayC3D(const Handle(Geom_Curve)& C)
 {
   if (C.IsNull()) return;
   Draw_ColorKind col = TestTopOpeDraw_TTOT::GeometryColor(TopOpeBRepDS_CURVE);
@@ -377,7 +377,7 @@ TestTopOpeDraw_C2DDisplayer::TestTopOpeDraw_C2DDisplayer()
 //=======================================================================
 
 TestTopOpeDraw_C2DDisplayer::TestTopOpeDraw_C2DDisplayer
-(const Handle(Geom2d_Curve& C))
+(const Handle(Geom2d_Curve)& C)
 {
   InitC2DDisplayer();
   DisplayC2D(C);
@@ -405,7 +405,7 @@ void TestTopOpeDraw_C2DDisplayer::InitC2DDisplayer()
 //purpose  : 
 //=======================================================================
 
-void TestTopOpeDraw_C2DDisplayer::DisplayC2D(const Handle(Geom2d_Curve& C))
+void TestTopOpeDraw_C2DDisplayer::DisplayC2D(const Handle(Geom2d_Curve)& C)
 {
   if (C.IsNull()) return;
   Handle(TestTopOpeDraw_DrawableC2D) D = new TestTopOpeDraw_DrawableC2D
@@ -421,7 +421,7 @@ void TestTopOpeDraw_C2DDisplayer::DisplayC2D(const Handle(Geom2d_Curve& C))
 //=======================================================================
 
 void TestTopOpeDraw_C2DDisplayer::DisplayC2D
-(const TCollection_AsciiString& namedbrep,const TCollection_AsciiString& namedisp,const Handle(Geom2d_Curve& C))
+(const TCollection_AsciiString& namedbrep,const TCollection_AsciiString& namedisp,const Handle(Geom2d_Curve)& C)
 {
   Handle(TestTopOpeDraw_DrawableC2D) D = new TestTopOpeDraw_DrawableC2D
     (C,myCol,namedisp.ToCString(),myNameColor,
@@ -447,7 +447,7 @@ TestTopOpeDraw_SurfaceDisplayer::TestTopOpeDraw_SurfaceDisplayer()
 //=======================================================================
 
 TestTopOpeDraw_SurfaceDisplayer::TestTopOpeDraw_SurfaceDisplayer
-(const Handle(Geom_Surface& S))
+(const Handle(Geom_Surface)& S)
 {
   InitSurfaceDisplayer();
   DisplaySurface(S);
@@ -476,7 +476,7 @@ void TestTopOpeDraw_SurfaceDisplayer::InitSurfaceDisplayer()
 //purpose  : 
 //=======================================================================
 
-void TestTopOpeDraw_SurfaceDisplayer::DisplaySurface(const Handle(Geom_Surface& S))
+void TestTopOpeDraw_SurfaceDisplayer::DisplaySurface(const Handle(Geom_Surface)& S)
 {
   if (S.IsNull()) return;
   Handle(TestTopOpeDraw_DrawableSUR) D;

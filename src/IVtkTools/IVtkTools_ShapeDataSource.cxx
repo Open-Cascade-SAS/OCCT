@@ -170,7 +170,7 @@ vtkSmartPointer<vtkIdTypeArray> IVtkTools_ShapeDataSource::SubShapeIDs()
 //================================================================
 IVtk_IdType IVtkTools_ShapeDataSource::GetId() const
 {
-  return myOccShape ? myOccShape->GetId() : -1;
+  return myOccShape.IsNull() ? -1 : myOccShape->GetId();
 }
 
 //================================================================

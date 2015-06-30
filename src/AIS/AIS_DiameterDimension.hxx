@@ -24,6 +24,7 @@
 #include <Standard_Macro.hxx>
 #include <Standard_Type.hxx>
 
+class AIS_DiameterDimension;
 DEFINE_STANDARD_HANDLE (AIS_DiameterDimension, AIS_Dimension)
 
 //! Diameter dimension. Can be constructued:

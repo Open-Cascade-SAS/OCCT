@@ -25,20 +25,13 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_RangeError.hxx>
 
-
-
 typedef Geom2d_Hyperbola         Hyperbola;
-typedef Handle(Geom2d_Hyperbola) Handle(Hyperbola);
 typedef gp_Ax2d   Ax2d;
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;
 typedef gp_Vec2d  Vec2d;
 typedef gp_Trsf2d Trsf2d;
 typedef gp_XY     XY;
-
-
-
-
 
 //=======================================================================
 //function : Copy
@@ -47,7 +40,7 @@ typedef gp_XY     XY;
 
 Handle(Geom2d_Geometry) Geom2d_Hyperbola::Copy() const 
 {
-  Handle(Hyperbola) H;
+  Handle(Geom2d_Hyperbola) H;
   H = new Hyperbola (pos, majorRadius, minorRadius);
   return H;
 }

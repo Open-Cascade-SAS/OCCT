@@ -35,6 +35,8 @@
 #include <Interface_ReportEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESDumper.hxx>
+#include <IGESSolid_Protocol.hxx>
+#include <IGESAppli_Protocol.hxx>
 
 #include <Interface_Check.hxx>
 

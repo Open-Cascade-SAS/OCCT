@@ -302,7 +302,7 @@ void OpenGl_Text::Release (OpenGl_Context* theCtx)
     Handle(OpenGl_Context) aCtx = theCtx;
     const TCollection_AsciiString aKey = myFont->ResourceKey();
     myFont.Nullify();
-    if (aCtx)
+    if (! aCtx.IsNull())
       aCtx->ReleaseResource (aKey, Standard_True);
   }
 }

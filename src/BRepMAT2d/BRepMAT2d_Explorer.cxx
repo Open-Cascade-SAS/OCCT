@@ -613,12 +613,12 @@ void AdjustCurveEnd(Handle(Geom2d_BoundedCurve)& theC2d, const gp_Pnt2d theP,
     if(isFirst)
     {
       gp_Pnt2d aP = theC2d->Value(theC2d->LastParameter());
-      theC2d = GCE2d_MakeSegment(theP, aP);
+      theC2d = GCE2d_MakeSegment(theP, aP).Value();
     }
     else
     {
       gp_Pnt2d aP = theC2d->Value(theC2d->FirstParameter());
-      theC2d = GCE2d_MakeSegment(aP, theP);
+      theC2d = GCE2d_MakeSegment(aP, theP).Value();
     }
   }
   else

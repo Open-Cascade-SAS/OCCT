@@ -21,6 +21,7 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 //=======================================================================
 //function : OpenGl_LayerList
