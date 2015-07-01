@@ -16,13 +16,28 @@
 #define _Standard_Type_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Handle.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_OStream.hxx>
 
 #include <typeinfo>
 
-// Define handle class
-DEFINE_STANDARD_HANDLE(Standard_Type, Standard_Transient)
+//! Helper macro to get instance of a type descriptor for a class in a legacy way.
+#define STANDARD_TYPE(theType) Standard_Type::Instance<theType>()
+
+//! Helper macro to be included in definition of the classes inheriting
+//! Standard_Transient to enable use of OCCT RTTI and smart pointers (handles).
+#define DEFINE_STANDARD_RTTI(Class,Base) \
+public: \
+  typedef Base base_type; \
+  static const char* get_type_name () { return #Class; } \
+  virtual const Handle(Standard_Type)& DynamicType() const { return STANDARD_TYPE(Class); }
+
+// forward declaration of type_instance class
+namespace opencascade {
+  template <typename T>
+  class type_instance;
+}
 
 //! This class provides legacy interface (type descriptor) to run-time type
 //! information (RTTI) for OCCT classes inheriting from Standard_Transient.
@@ -94,8 +109,8 @@ public:
   //!
   //! Note that this function is intended for use by opencascade::type_instance only. 
   Standard_EXPORT static 
-    const Standard_Type* Register (const char* theSystemName, const char* theName,
-                                   Standard_Size theSize, const Handle(Standard_Type)& theParent);
+    Standard_Type* Register (const char* theSystemName, const char* theName,
+                             Standard_Size theSize, const Handle(Standard_Type)& theParent);
 
   //! Destructor removes the type from the registry
   Standard_EXPORT ~Standard_Type ();
@@ -160,17 +175,6 @@ namespace opencascade {
   template <typename T>
   Handle(Standard_Type) type_instance<T>::myInstance (get());
 
-  //! Definition of dynamic cast function for handles
-  template <class H1, class H2>
-  H1 down_cast (const H2& theObject)
-  {
-    return ! theObject.IsNull() && theObject->IsKind (Standard_Type::Instance<typename H1::element_type>()) ? 
-                                   static_cast<typename H1::element_type*> (theObject.get()) : 0;
-/* alternative implementation using standard C++ RTTI is slower:
-    return dynamic_cast<typename H1::element_type*>(theObject.get());
-*/
-  }
-
 }
 
 //! Operator printing type descriptor to stream
@@ -179,5 +183,8 @@ inline Standard_OStream& operator << (Standard_OStream& theStream, const Handle(
   theType->Print (theStream);
   return theStream;
 }
+
+//! Definition of Handle_Standard_Type as typedef for compatibility
+DEFINE_STANDARD_HANDLE(Standard_Type,Standard_Transient)
 
 #endif // _Standard_Type_HeaderFile

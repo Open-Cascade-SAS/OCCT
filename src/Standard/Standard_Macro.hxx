@@ -19,9 +19,6 @@
 #ifndef _Standard_Macro_HeaderFile
 # define _Standard_Macro_HeaderFile
 
-// Standard OCC macros: Handle(), STANDARD_TYPE()
-# define   Handle(ClassName)      Handle_##ClassName
-
 #if defined(__cplusplus) && (__cplusplus >= 201100L)
   // part of C++11 standard
   #define Standard_OVERRIDE override

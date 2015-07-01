@@ -65,7 +65,7 @@ is
     
     class GUID;
 
-    deferred class Persistent ;
+    imported deferred class Persistent ;
 
     imported deferred class Transient ;
    	    imported transient class Type; -- inherits Transient

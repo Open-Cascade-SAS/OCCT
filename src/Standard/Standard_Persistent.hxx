@@ -12,19 +12,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//============================================================================
-// Title : Handle_Standard_Persistent.hxx 
-// Role  : This file just include <Standard_Persistent.hxx>
-//============================================================================
+#ifndef _Standard_Persistent_HeaderFile
+#define _Standard_Persistent_HeaderFile
 
-#ifndef _Handle_Standard_Persistent_HeaderFile
-#define _Handle_Standard_Persistent_HeaderFile
+#include <Standard_Type.hxx>
 
-#include <Standard_DefineHandle.hxx>
-#include <Standard_Persistent_proto.hxx>
+//! Root of "persistent" classes, a legacy support of
+//! object oriented databases, now outdated.
+class Standard_Persistent : public Standard_Transient
+{
+public:
+  DEFINE_STANDARD_ALLOC
+  
+  Standard_Persistent() : _typenum(0), _refnum(0) {}
 
-DEFINE_STANDARD_HANDLE(Standard_Persistent, Standard_Transient)
+  DEFINE_STANDARD_RTTI(Standard_Persistent,Standard_Transient)
 
-Standard_EXPORT Standard_Integer HashCode(const Handle(Standard_Persistent)&, const Standard_Integer);
+private:
+  Standard_Integer _typenum;
+  Standard_Integer _refnum;
 
-#endif
+  friend class Storage_Schema;
+};
+
+#endif // _Standard_Persistent_HeaderFile

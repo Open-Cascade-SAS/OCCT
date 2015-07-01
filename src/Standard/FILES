@@ -11,10 +11,6 @@ Standard_JmpBuf.hxx
 Standard_CMPLRS.edl
 Standard_Copy.tcl
 Standard_WOKSteps.edl
-Handle_Standard_Persistent.hxx
-Handle_Standard_Persistent.cxx
-Handle_Standard_Transient.cxx
-Handle_Standard_Transient.hxx
 Standard_Address.hxx
 Standard_Boolean.hxx
 Standard_Byte.hxx
@@ -27,12 +23,12 @@ Standard_Character.hxx
 Standard_ExtCharacter.hxx
 Standard_ExtString.cxx
 Standard_ExtString.hxx
-Standard_HashCode.cxx
+Standard_Handle.hxx
 Standard_IStream.hxx
 Standard_Integer.hxx
 Standard_Macro.hxx
 Standard_OStream.hxx
-Standard_Persistent_proto.hxx
+Standard_Persistent.hxx
 Standard_PrimitiveTypes.hxx
 Standard_Real.cxx
 Standard_Real.hxx
@@ -43,8 +39,6 @@ Standard_ShortReal.hxx
 Standard_Stream.hxx
 Standard_Time.hxx
 Standard_Transient.hxx
-Standard_Transient.cxx
-Standard_Transient_proto.hxx
 Standard_TypeDef.hxx
 Standard_Type.hxx
 Standard_Type.cxx

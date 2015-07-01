@@ -74,17 +74,23 @@ class NCollection_Handle : public Handle(Standard_Transient)
     : Handle(Standard_Transient) (theObject ? new Ptr (theObject) : 0) {}
   
   //! Cast handle to contained type
-  T* operator -> () { return ((Ptr*)ControlAccess())->myPtr; }
+  T* get () { return ((Ptr*)Handle(Standard_Transient)::get())->myPtr; }
+
+  //! Cast handle to contained type
+  const T* get () const { return ((Ptr*)Handle(Standard_Transient)::get())->myPtr; }
+
+  //! Cast handle to contained type
+  T* operator -> () { return get(); }
   
   //! Cast handle to contained type
-  const T* operator -> () const { return ((Ptr*)ControlAccess())->myPtr; }
+  const T* operator -> () const { return get(); }
   
   //! Cast handle to contained type
-  T& operator * () { return *((Ptr*)ControlAccess())->myPtr; }
+  T& operator * () { return *get(); }
   
   //! Cast handle to contained type
-  const T& operator * () const { return *((Ptr*)ControlAccess())->myPtr; }
-  
+  const T& operator * () const { return *get(); }
+
   //! Downcast arbitrary Handle to the argument type if contained
   //! object is Handle for this type; returns null otherwise
   static NCollection_Handle<T> DownCast (const Handle(Standard_Transient)& theOther)

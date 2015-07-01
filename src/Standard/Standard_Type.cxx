@@ -71,8 +71,8 @@ namespace {
   }
 }
 
-const Standard_Type* Standard_Type::Register (const char* theSystemName, const char* theName,
-                                              Standard_Size theSize, const Handle(Standard_Type)& theParent)
+Standard_Type* Standard_Type::Register (const char* theSystemName, const char* theName,
+                                        Standard_Size theSize, const Handle(Standard_Type)& theParent)
 {
   // Access to registry is protected by mutex; it should not happen often because
   // instances are cached by Standard_Type::Instance() (one per binary module)

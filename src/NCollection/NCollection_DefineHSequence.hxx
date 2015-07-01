@@ -25,7 +25,6 @@
 //      Declaration of Sequence class managed by Handle
 
 #define DEFINE_HSEQUENCE(HClassName, _SequenceType_)                           \
-DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)                              \
 class HClassName : public _SequenceType_, public MMgt_TShared {                \
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
@@ -44,7 +43,8 @@ class HClassName : public _SequenceType_, public MMgt_TShared {                \
      _SequenceType_::Append (theOther->ChangeSequence());                      \
    }                                                                           \
    DEFINE_STANDARD_RTTI (HClassName, MMgt_TShared)                              \
-};
+}; \
+DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared) 
 
 #define IMPLEMENT_HSEQUENCE(HClassName)                                        
 
