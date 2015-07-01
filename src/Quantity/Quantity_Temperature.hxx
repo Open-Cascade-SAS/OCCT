@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as a measure of the average kinetic energy
+//! of the molecules in a body.
+//! It is measured in degrees kelvin.
 typedef Standard_Real Quantity_Temperature;
-
 
 #endif // _Quantity_Temperature_HeaderFile

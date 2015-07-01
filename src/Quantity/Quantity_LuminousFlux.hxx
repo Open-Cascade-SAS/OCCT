@@ -19,7 +19,13 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_LuminousFlux;
+//! Defined as the rate of flow of radiant energy as evaluated
+//! by the luminous sensation it produces. This means it
+//! depends on the sensitivity of the receptor or observer. It
+//! is related to the radiant flux of the source by the
+//! spectral luminous efficiency.
+//! It is measured in lumens.
 
+typedef Standard_Real Quantity_LuminousFlux;
 
 #endif // _Quantity_LuminousFlux_HeaderFile

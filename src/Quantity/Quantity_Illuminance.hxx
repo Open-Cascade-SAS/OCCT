@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Illuminance;
+//! Defined as the incident luminous flux per unit area.
+//! It is measured in lux (lumen per square metre).
 
+typedef Standard_Real Quantity_Illuminance;
 
 #endif // _Quantity_Illuminance_HeaderFile

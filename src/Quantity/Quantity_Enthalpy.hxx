@@ -19,7 +19,12 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Enthalpy;
+//! Defined as the sum of the internal energy of a system plus
+//! the product of its pressure and volume. For a reversible
+//! process at constant pressure the change in enthalpy is
+//! equal to the quantity of heat absorbed (or lost).
+//! It is measured in joules.
 
+typedef Standard_Real Quantity_Enthalpy;
 
 #endif // _Quantity_Enthalpy_HeaderFile

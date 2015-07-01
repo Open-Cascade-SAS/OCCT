@@ -24,6 +24,7 @@
 #include <Standard_Address.hxx>
 #include <Standard_Size.hxx>
 #include <Standard_Integer.hxx>
+
 class Standard_ErrorHandlerCallback;
 class Standard_ErrorHandler;
 class Standard_GUID;
@@ -31,7 +32,8 @@ class Standard_Persistent;
 class Standard_Transient;
 class Standard_Failure;
 
-
+//! The package Standard provides global memory allocator and other basic
+//! services used by other OCCT components.
 
 class Standard 
 {
@@ -45,9 +47,17 @@ public:
   Standard_EXPORT static Standard_Address Allocate (const Standard_Size aSize);
   
   //! Deallocates memory blocks
-  //! aStorage - previously allocated memory block to be freed
-  Standard_EXPORT static void Free (const Standard_Address aStorage);
-template <typename T> static inline void Free (T*& thePtr) { Free ((void*)thePtr); thePtr = 0; }
+  //! @param thePtr - previously allocated memory block to be freed
+  Standard_EXPORT static void Free (const Standard_Address thePtr);
+
+  //! Template version of function Free(), nullifies the argument pointer
+  //! @param thePtr - previously allocated memory block to be freed
+  template <typename T>
+  static inline void Free (T*& thePtr) 
+  { 
+    Free ((void*)thePtr);
+    thePtr = 0;
+  }
   
   //! Reallocates memory blocks
   //! aStorage - previously allocated memory block
@@ -64,40 +74,22 @@ template <typename T> static inline void Free (T*& thePtr) { Free ((void*)thePtr
   //! Deallocates memory blocks
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
   Standard_EXPORT static void FreeAligned (const Standard_Address thePtrAligned);
-template <typename T> static inline void FreeAligned (T*& thePtrAligned) { FreeAligned ((void* )thePtrAligned); thePtrAligned = 0; }
+
+  //! Template version of function FreeAligned(), nullifies the argument pointer
+  //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
+  template <typename T>
+  static inline void FreeAligned (T*& thePtrAligned)
+  {
+    FreeAligned ((void* )thePtrAligned);
+    thePtrAligned = 0;
+  }
   
   //! Deallocates the storage retained on the free list
   //! and clears the list.
   //! Returns non-zero if some memory has been actually freed.
   Standard_EXPORT static Standard_Integer Purge();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class Standard_ErrorHandlerCallback;
-friend class Standard_ErrorHandler;
-friend class Standard_GUID;
-friend class Standard_Persistent;
-friend class Standard_Transient;
-friend class Standard_Failure;
-
 };
-
-
-
-
-
 
 
 #endif // _Standard_HeaderFile

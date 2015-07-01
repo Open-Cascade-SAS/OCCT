@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Inductance;
+//! Defined as numerically equal to the electromotive force
+//! induced when the current in a circuit changes at
+//! unit rate.
+//! It is measured in henrys (webers per ampere).
 
+typedef Standard_Real Quantity_Inductance;
 
 #endif // _Quantity_Inductance_HeaderFile

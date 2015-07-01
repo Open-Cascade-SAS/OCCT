@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Resistance;
+//! Defined as the ratio of the potential difference
+//! across a conductor to the current flowing through it.
+//! It is measured in ohms.
 
+typedef Standard_Real Quantity_Resistance;
 
 #endif // _Quantity_Resistance_HeaderFile

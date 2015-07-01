@@ -19,7 +19,12 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_SoundIntensity;
+//! Defined as the rate of flow of sound energy through
+//! a unit area normal to the flow. It is quantified as the
+//! square of the root-mean-square sound pressure, divided by
+//! the density of the medium and by the speed of sound.
+//! It is measured in watts per square metre.
 
+typedef Standard_Real Quantity_SoundIntensity;
 
 #endif // _Quantity_SoundIntensity_HeaderFile

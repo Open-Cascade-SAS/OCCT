@@ -22,6 +22,9 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
+//! This exception is raised when a method makes reference to
+//! an undefined inertia axis of symmetry.
+
 class GProp_UndefinedAxis;
 DEFINE_STANDARD_HANDLE(GProp_UndefinedAxis, Standard_DomainError)
 

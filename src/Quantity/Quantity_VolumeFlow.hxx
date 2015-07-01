@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_VolumeFlow;
+//! Defined as volume per unit time.
+//! It is measured in cubic metres per second.
 
+typedef Standard_Real Quantity_VolumeFlow;
 
 #endif // _Quantity_VolumeFlow_HeaderFile

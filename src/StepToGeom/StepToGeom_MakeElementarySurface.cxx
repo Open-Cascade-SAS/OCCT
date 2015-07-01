@@ -16,7 +16,11 @@
 
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <Geom_ElementarySurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <StepGeom_ConicalSurface.hxx>
 #include <StepGeom_CylindricalSurface.hxx>
 #include <StepGeom_ElementarySurface.hxx>

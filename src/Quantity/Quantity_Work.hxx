@@ -19,7 +19,14 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Work;
+//! In mechanics, the product of a force and the distance
+//! moved. In a rotating system, the product of the torque
+//! and the angular displacement. In a pressure system,
+//! the product of the pressure and the change in volume.
+//! In electrical terms, the product of a charge and the
+//! potential difference it traverses.
+//! It is measured in joules (newton-metres).
 
+typedef Standard_Real Quantity_Work;
 
 #endif // _Quantity_Work_HeaderFile

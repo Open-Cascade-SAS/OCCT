@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MolarConcentration;
+//! Defined as the concentration in moles per litre of
+//! solution. It is also called molarity.
 
+typedef Standard_Real Quantity_MolarConcentration;
 
 #endif // _Quantity_MolarConcentration_HeaderFile

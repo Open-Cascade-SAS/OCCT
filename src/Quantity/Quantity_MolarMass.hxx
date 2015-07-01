@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MolarMass;
+//! Defined as the mass of a given substance contained in one
+//! mole. One mole of any substance contains Avogadro's
+//! Constant of molecules.
+//! It is measured in kilograms per mole.
 
+typedef Standard_Real Quantity_MolarMass;
 
 #endif // _Quantity_MolarMass_HeaderFile

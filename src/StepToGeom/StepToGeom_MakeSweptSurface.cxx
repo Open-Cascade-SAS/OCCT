@@ -16,7 +16,8 @@
 
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <Geom_SweptSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <StepGeom_SurfaceOfLinearExtrusion.hxx>
 #include <StepGeom_SurfaceOfRevolution.hxx>
 #include <StepGeom_SweptSurface.hxx>

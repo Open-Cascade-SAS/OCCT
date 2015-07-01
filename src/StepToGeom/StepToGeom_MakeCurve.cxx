@@ -19,9 +19,11 @@
 //:o5 abv 17.02.99: bm4_sd_seal_c.stp #58720: translate surface_curve (3d only)
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <Geom_Curve.hxx>
+#include <Geom_Conic.hxx>
 #include <Geom_Direction.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepGeom_Conic.hxx>

@@ -19,7 +19,12 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_KinematicViscosity;
+//! Defined as the ratio of the dynamic viscosity
+//! to the fluid density. Used in modifying the motion of a
+//! perfect fluid to include terms due to a real fluid.
+//! It is quantified as area per unit time.
+//! It is measured in square metres per second.
 
+typedef Standard_Real Quantity_KinematicViscosity;
 
 #endif // _Quantity_KinematicViscosity_HeaderFile

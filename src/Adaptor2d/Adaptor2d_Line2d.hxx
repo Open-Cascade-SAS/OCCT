@@ -44,7 +44,7 @@ class gp_Parab2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
 
-
+//! Use by the TopolTool to trim a surface.
 
 class Adaptor2d_Line2d  : public Adaptor2d_Curve2d
 {

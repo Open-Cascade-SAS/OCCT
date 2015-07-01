@@ -19,7 +19,12 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Viscosity;
+//! Defined as the resistance to flow in a fluid.
+//! It is quantified as the product of pressure
+//! and time. For a liquid it generally decreases with
+//! temperature; for a gas it increases.
+//! It is measured in pascal-seconds.
 
+typedef Standard_Real Quantity_Viscosity;
 
 #endif // _Quantity_Viscosity_HeaderFile

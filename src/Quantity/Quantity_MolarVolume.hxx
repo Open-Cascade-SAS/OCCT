@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MolarVolume;
+//! Defined as the volume occupied by one mole of substance.
+//! One mole of any substance contains Avogadro's
+//! Constant of molecules.
+//! It is measured in cubic metres per mole.
 
+typedef Standard_Real Quantity_MolarVolume;
 
 #endif // _Quantity_MolarVolume_HeaderFile

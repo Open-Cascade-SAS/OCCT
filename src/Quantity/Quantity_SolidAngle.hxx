@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as an angle formed by three or more planes.
+//! It is measured in steradians.
 typedef Standard_Real Quantity_SolidAngle;
-
 
 #endif // _Quantity_SolidAngle_HeaderFile

@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as a difference in direction.
+//! It is measured in radians.
 typedef Standard_Real Quantity_PlaneAngle;
-
 
 #endif // _Quantity_PlaneAngle_HeaderFile

@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Force;
+//! Defined as the product of the mass of a body
+//! and the acceleration that the force produces.
+//! It is a vector quantity.
+//! It is measured in newtons.
 
+typedef Standard_Real Quantity_Force;
 
 #endif // _Quantity_Force_HeaderFile

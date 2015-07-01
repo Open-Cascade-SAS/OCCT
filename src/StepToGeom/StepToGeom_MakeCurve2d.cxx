@@ -18,7 +18,8 @@
 //:p0 abv 19.02.99: management of 'done' flag improved
 
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Curve.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <gp_Trsf2d.hxx>

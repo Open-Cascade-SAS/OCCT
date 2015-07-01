@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_KineticMoment;
+//! Defined as the product of momentum of a body
+//! and the distance of its centre of gravity from an axis.
+//! It is measured in kilogram-square-metres per second.
 
+typedef Standard_Real Quantity_KineticMoment;
 
 #endif // _Quantity_KineticMoment_HeaderFile

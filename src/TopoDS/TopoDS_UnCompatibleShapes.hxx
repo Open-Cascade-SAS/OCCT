@@ -22,6 +22,8 @@
 #include <Standard_SStream.hxx>
 #include <Standard_DomainError.hxx>
 
+//! An incorrect insertion was attempted.
+
 class TopoDS_UnCompatibleShapes;
 DEFINE_STANDARD_HANDLE(TopoDS_UnCompatibleShapes, Standard_DomainError)
 

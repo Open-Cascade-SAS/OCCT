@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_SurfaceTension;
+//! Defined as the force required to hold unit length
+//! of a plane liquid surface.
+//! It is measured in newtons per metre.
 
+typedef Standard_Real Quantity_SurfaceTension;
 
 #endif // _Quantity_SurfaceTension_HeaderFile

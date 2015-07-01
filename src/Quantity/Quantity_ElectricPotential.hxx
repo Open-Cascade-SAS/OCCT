@@ -19,7 +19,13 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_ElectricPotential;
+//! Defined as the work done in bringing unit positive
+//! charge from infinity to the point.
+//! It is measured in volts.
+//! Volts are in practice used to measure differences
+//! in potential e.g. the electromotive force generated when
+//! a conductor cuts a magnetic field.
 
+typedef Standard_Real Quantity_ElectricPotential;
 
 #endif // _Quantity_ElectricPotential_HeaderFile

@@ -20,6 +20,7 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_Sequence.hxx>
 
+//! This sequence used to store the bounding boxes of sub-Shapes.
 typedef NCollection_Sequence<Bnd_Box> Bnd_SeqOfBox;
 
 

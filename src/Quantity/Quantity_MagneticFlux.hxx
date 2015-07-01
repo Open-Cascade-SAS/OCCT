@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MagneticFlux;
+//! Defined as the product of a given area and the
+//! average magnetic flux density normal to it.
+//! It is measured in webers (tesla-square-metre).
 
+typedef Standard_Real Quantity_MagneticFlux;
 
 #endif // _Quantity_MagneticFlux_HeaderFile

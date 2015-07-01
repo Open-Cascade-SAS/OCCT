@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_ElectricCapacitance;
+//! Defined for a capacitor as the ratio of the charge on
+//! either conductor to the potential between them.
+//! It is measured in farads (coulomb per volt).
 
+typedef Standard_Real Quantity_ElectricCapacitance;
 
 #endif // _Quantity_ElectricCapacitance_HeaderFile

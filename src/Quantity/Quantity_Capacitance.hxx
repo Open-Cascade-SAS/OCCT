@@ -19,7 +19,14 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Capacitance;
+//! Defined as a measure of the increase in voltage on
+//! an isolated conductor by the addition of a charge.
+//! for two isolated conductors, it is the ratio of the charge
+//! on either conductor to the potential difference between
+//! them.
+//! It is measured in farads (coulomb per volt).
+//! In practice micro-, nano-, and pico-farads are used.
 
+typedef Standard_Real Quantity_Capacitance;
 
 #endif // _Quantity_Capacitance_HeaderFile

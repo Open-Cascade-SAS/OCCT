@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Consumption;
+//! Defined as a measure of fuel used per unit distance
+//! travelled, or distance travelled per unit of fuel.
+//! It is measured in litres per 100 kilometres or in
+//! miles per gallon (UK or US).
 
+typedef Standard_Real Quantity_Consumption;
 
 #endif // _Quantity_Consumption_HeaderFile

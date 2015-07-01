@@ -16,7 +16,10 @@
 
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <Geom2d_Conic.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <StepGeom_Circle.hxx>
 #include <StepGeom_Conic.hxx>
 #include <StepGeom_Ellipse.hxx>

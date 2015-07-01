@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Resistivity;
+//! Defined as the resistance of a conductor of unit
+//! cross-section per unit length.
+//! It is measured in Ohm-metres.
+//! It is the reciprocal of the conductivity.
 
+typedef Standard_Real Quantity_Resistivity;
 
 #endif // _Quantity_Resistivity_HeaderFile

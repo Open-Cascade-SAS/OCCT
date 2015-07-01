@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as a dimensionless quantity proportional to
+//! the number of specified particles of a substance.
+//! Amount of substance is measured in moles.
+//! For all substances the number of molecules in a mole
+//! is given by Avogadro's Constant.
 typedef Standard_Real Quantity_AmountOfSubstance;
-
 
 #endif // _Quantity_AmountOfSubstance_HeaderFile

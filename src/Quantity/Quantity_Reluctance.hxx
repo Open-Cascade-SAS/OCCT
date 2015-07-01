@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Reluctance;
+//! Defined as the ratio of the magnetomotive force applied
+//! to a magnetic circuit to the magnetic flux in the circuit.
+//! It is measured in reciprocal henrys.
+//! Its reciprocal is permanence.
 
+typedef Standard_Real Quantity_Reluctance;
 
 #endif // _Quantity_Reluctance_HeaderFile

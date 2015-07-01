@@ -19,7 +19,14 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_CoefficientOfExpansion;
+//! Defined as the proportional change in the length,
+//! area, or volume of a solid per degree of temperature.
+//! For a liquid the expansion of the container must be
+//! taken into account.
+//! For a gas there are coefficients for constant pressure
+//! and constant volume changes.
+//! It is measured in units of reciprocal degree kelvin.
 
+typedef Standard_Real Quantity_CoefficientOfExpansion;
 
 #endif // _Quantity_CoefficientOfExpansion_HeaderFile

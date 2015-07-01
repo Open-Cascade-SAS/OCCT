@@ -17,7 +17,7 @@
 //:n6 abv 15.02.99: S4132: adding translation of polyline
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>

@@ -19,7 +19,13 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MagneticFluxDensity;
+//! Defined as the magnetic flux passing through unit area
+//! of a magnetic field normal to the magnetic force.
+//! It is a vector quantity, the product of the permeability
+//! and the magnetic field strength and with a direction at any
+//! given point the same as that of the magnetic field.
+//! It is measured in teslas (webers per square metre).
 
+typedef Standard_Real Quantity_MagneticFluxDensity;
 
 #endif // _Quantity_MagneticFluxDensity_HeaderFile

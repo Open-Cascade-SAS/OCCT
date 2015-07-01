@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as the change of velocity per unit time.
+//! It is a vector quantity.
+//! It is measured in metres per second per second.
 typedef Standard_Real Quantity_Acceleration;
-
 
 #endif // _Quantity_Acceleration_HeaderFile

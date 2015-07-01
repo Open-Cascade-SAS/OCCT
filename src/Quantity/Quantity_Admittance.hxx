@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Admittance;
+//! Defined as the reciprocal of impedance.
+//! It is measured in Siemens (reciprocal Ohms).
+//! The square of the admittance is equal to the sum of the
+//! squares of the conductance and the susceptance.
 
+typedef Standard_Real Quantity_Admittance;
 
 #endif // _Quantity_Admittance_HeaderFile

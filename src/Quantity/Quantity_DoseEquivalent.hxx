@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_DoseEquivalent;
+//! Defined as the product of the absorbed dose and a
+//! quality factor related to the effect of a particular
+//! type of radiation on biological tissue.
+//! It is measured in sieverts.
 
+typedef Standard_Real Quantity_DoseEquivalent;
 
 #endif // _Quantity_DoseEquivalent_HeaderFile

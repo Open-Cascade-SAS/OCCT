@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Molarity;
+//! Defined as the concentration in moles per kilogram of
+//! solvent.
 
+typedef Standard_Real Quantity_Molarity;
 
 #endif // _Quantity_Molarity_HeaderFile

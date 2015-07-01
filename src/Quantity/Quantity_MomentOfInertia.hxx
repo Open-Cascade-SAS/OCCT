@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MomentOfInertia;
+//! Defined as the product of the mass of a body
+//! and the square of the distance of its centre of gravity
+//! from an axis.
+//! It is measured in kilogram-square-metres.
 
+typedef Standard_Real Quantity_MomentOfInertia;
 
 #endif // _Quantity_MomentOfInertia_HeaderFile

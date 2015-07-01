@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_ThermalConductivity;
+//! Defined as the rate at which heat passes through an
+//! area inside a body. Quantified as work per unit time
+//! per unit length per unit of temperature.
+//! It is measured in watts per metre per degee kelvin.
 
+typedef Standard_Real Quantity_ThermalConductivity;
 
 #endif // _Quantity_ThermalConductivity_HeaderFile

@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Pressure;
+//! Defined as the force perpendicular to a
+//! unit area. In a fluid it is defined as the product
+//! of the depth, density, and free fall acceleration.
+//! It is measured in pascals (newtons per square metre).
 
+typedef Standard_Real Quantity_Pressure;
 
 #endif // _Quantity_Pressure_HeaderFile

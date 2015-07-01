@@ -43,7 +43,8 @@ class Standard_OutOfRange;
 class GeomFill_SectionGenerator;
 class GeomFill_Line;
 
-
+//! Approximate a  BSplineSurface passing by all the
+//! curves described in the SectionGenerator
 
 class GeomFill_AppSurf  : public AppBlend_Approx
 {

@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Conductivity;
+//! Defined as the current density divided by the electrical
+//! field strength. It is also the reciprocal of resistivity.
+//! It is measured in Siemens per metre.
 
+typedef Standard_Real Quantity_Conductivity;
 
 #endif // _Quantity_Conductivity_HeaderFile

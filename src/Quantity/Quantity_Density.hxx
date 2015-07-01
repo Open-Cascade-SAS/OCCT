@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as mass per unit volume.
+//! It is measured in kilograms per cubic metre.
 typedef Standard_Real Quantity_Density;
-
 
 #endif // _Quantity_Density_HeaderFile

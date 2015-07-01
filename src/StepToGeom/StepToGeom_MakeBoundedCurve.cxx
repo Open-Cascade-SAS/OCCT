@@ -17,8 +17,8 @@
 //:n6 abv 15.02.99: S4132: adding translation of polyline
 //:p0 abv 19.02.99: management of 'done' flag improved; trimmed_curve treated
 
-#include <Geom_BoundedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <StepGeom_BezierCurve.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>

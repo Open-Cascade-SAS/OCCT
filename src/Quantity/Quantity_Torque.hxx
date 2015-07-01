@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Torque;
+//! Defined as the product of a force and the
+//! perpendicular distance to an axis or as the
+//! the product of a force couple.
+//! It is measured in newtons x metres.
 
+typedef Standard_Real Quantity_Torque;
 
 #endif // _Quantity_Torque_HeaderFile

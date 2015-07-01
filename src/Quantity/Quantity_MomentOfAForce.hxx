@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MomentOfAForce;
+//! Defined as the product of a force and the
+//! perpendicular distance to an axis.
+//! It is measured in newtons x metres.
 
+typedef Standard_Real Quantity_MomentOfAForce;
 
 #endif // _Quantity_MomentOfAForce_HeaderFile

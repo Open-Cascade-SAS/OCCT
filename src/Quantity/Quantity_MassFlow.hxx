@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MassFlow;
+//! Defined as mass per unit time.
+//! It is measured in kilograms per second.
 
+typedef Standard_Real Quantity_MassFlow;
 
 #endif // _Quantity_MassFlow_HeaderFile

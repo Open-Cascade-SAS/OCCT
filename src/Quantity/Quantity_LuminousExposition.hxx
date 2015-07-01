@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_LuminousExposition;
+//! Defined as the quantity of illuminance with time.
+//! It is measured in lux-seconds.
 
+typedef Standard_Real Quantity_LuminousExposition;
 
 #endif // _Quantity_LuminousExposition_HeaderFile

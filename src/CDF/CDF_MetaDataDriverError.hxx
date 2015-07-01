@@ -22,6 +22,10 @@
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
 
+//! This exception is used in the deferred methods.
+//! Programmer implementing such methods may use this
+//! exception or any exception inheriting MetaDataDriverError.
+
 class CDF_MetaDataDriverError;
 DEFINE_STANDARD_HANDLE(CDF_MetaDataDriverError, Standard_Failure)
 

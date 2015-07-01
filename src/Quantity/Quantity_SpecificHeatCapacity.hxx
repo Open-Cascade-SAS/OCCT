@@ -19,7 +19,17 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_SpecificHeatCapacity;
+//! Defined as the quantity of heat required to raise
+//! unit mass by one degree temperature. For a gas
+//! there are two values: one at constant pressure, the
+//! other at constant volume. Their ratio is linked to the
+//! speed of sound in the gas and to the number of
+//! degrees of freedom of the molecules.
+//! It is quantified as energy per unit mass per
+//! degree of temperature.
+//! It is measured in joules per kilogram per degree
+//! kelvin.
 
+typedef Standard_Real Quantity_SpecificHeatCapacity;
 
 #endif // _Quantity_SpecificHeatCapacity_HeaderFile

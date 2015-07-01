@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as spatial extension.
+//! It is measured in metres.
 typedef Standard_Real Quantity_Length;
-
 
 #endif // _Quantity_Length_HeaderFile

@@ -19,7 +19,7 @@
 
 #include <BRepBuilderAPI_Sewing.hxx>
 
+//! Sew the shapes along their common edges
 typedef BRepBuilderAPI_Sewing BRepOffsetAPI_Sewing;
-typedef Handle_BRepBuilderAPI_Sewing Handle_BRepOffsetAPI_Sewing;
 
 #endif // _BRepOffsetAPI_Sewing_HeaderFile

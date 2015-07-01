@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Luminance;
+//! It is defined the luminous flux per unit area per unit
+//! solid angle.
+//! It is measured in candelas per square metre.
 
+typedef Standard_Real Quantity_Luminance;
 
 #endif // _Quantity_Luminance_HeaderFile

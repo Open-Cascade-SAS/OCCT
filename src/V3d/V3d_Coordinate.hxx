@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! User-defined coordinate in the reference plane of
+//! view (Projection or Mapping).
 typedef Standard_Real V3d_Coordinate;
-
 
 #endif // _V3d_Coordinate_HeaderFile

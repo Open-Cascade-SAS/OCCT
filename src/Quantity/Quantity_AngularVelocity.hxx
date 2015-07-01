@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as the rate at which a body moves around an axis.
+//! It is quantified as change in direction per unit time.
+//! It is measured in radians per second.
 typedef Standard_Real Quantity_AngularVelocity;
-
 
 #endif // _Quantity_AngularVelocity_HeaderFile

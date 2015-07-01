@@ -44,6 +44,8 @@ class GeomFill_SweepSectionGenerator;
 class GeomFill_Line;
 
 
+//! Approximate a sweep surface passing  by  all the
+//! curves described in the SweepSectionGenerator.
 
 class GeomFill_AppSweep  : public AppBlend_Approx
 {

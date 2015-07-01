@@ -20,7 +20,8 @@
 #include <AdvApp2Var_Iso.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<AdvApp2Var_Iso> AdvApp2Var_Strip;
+//! Set of constraints along a same type of Iso on the same level
 
+typedef NCollection_Sequence<AdvApp2Var_Iso> AdvApp2Var_Strip;
 
 #endif

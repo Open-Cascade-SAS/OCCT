@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_LuminousIntensity;
+//! Defined as the luminous flux emitted per unit solid
+//! angle in a given direction by a point source.
+//! It is measured in candelas.
 
+typedef Standard_Real Quantity_LuminousIntensity;
 
 #endif // _Quantity_LuminousIntensity_HeaderFile

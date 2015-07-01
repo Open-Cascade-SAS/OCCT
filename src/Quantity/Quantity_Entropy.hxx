@@ -19,7 +19,16 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Entropy;
+//! Defined as a property which changes as a system undergoes
+//! reversible change. The change in entropy is quantified as
+//! the change in energy per degree of temperature. All real
+//! changes are at least partially irreversible so entropy
+//! is increased by change. Entropy can be viewed as a
+//! measure of the molecular disorder of a system, or as the
+//! unavailability of its internal energy to do work in a
+//! cyclical process.
+//! A change in entropy is measured in joules per degree kelvin.
 
+typedef Standard_Real Quantity_Entropy;
 
 #endif // _Quantity_Entropy_HeaderFile

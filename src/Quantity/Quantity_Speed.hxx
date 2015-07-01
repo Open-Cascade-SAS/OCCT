@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as distance covered per unit time.
+//! It is measured in metres per second.
 typedef Standard_Real Quantity_Speed;
-
 
 #endif // _Quantity_Speed_HeaderFile

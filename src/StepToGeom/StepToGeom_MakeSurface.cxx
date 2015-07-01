@@ -21,8 +21,9 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <Geom_ElementarySurface.hxx>
 #include <Geom_OffsetSurface.hxx>
-#include <Geom_Surface.hxx>
+#include <Geom_SweptSurface.hxx>
 #include <gp_Trsf.hxx>
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>

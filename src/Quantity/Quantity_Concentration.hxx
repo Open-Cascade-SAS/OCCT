@@ -19,7 +19,12 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Concentration;
+//! Defined as the strength of a mixture or solution. It can
+//! be measured as kilograms per litre of solvent or of
+//! solution. For certain purposes percentage by weight or
+//! volume can be used, and parts per million (ppm) is used
+//! for trace elements.
 
+typedef Standard_Real Quantity_Concentration;
 
 #endif // _Quantity_Concentration_HeaderFile

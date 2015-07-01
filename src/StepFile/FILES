@@ -1,10 +1,8 @@
 lex.step.c
 recfile.pc
 recfile.ph
-step.lex
 step.tab.c
 step.tab.h
-step.yacc
 StepFile_CallFailure.cxx
 StepFile_CallFailure.hxx
 StepFile_Read.cxx

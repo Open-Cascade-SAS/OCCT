@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_AbsorbedDose;
+//! Defined as the energy absorbed per unit mass in an
+//! irradiated medium.
+//! It is measured in grays.
 
+typedef Standard_Real Quantity_AbsorbedDose;
 
 #endif // _Quantity_AbsorbedDose_HeaderFile

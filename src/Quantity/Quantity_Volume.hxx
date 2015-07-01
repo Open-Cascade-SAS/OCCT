@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as an extension in three dimensions.
+//! It is measured in cubic metres.
 typedef Standard_Real Quantity_Volume;
-
 
 #endif // _Quantity_Volume_HeaderFile

@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_AcousticIntensity;
+//! Defined as a dimensionless comparison of sound pressure
+//! levels. The conventional unit, the bel, is the base ten
+//! logarithm of the ratio of the two pressures. In practice
+//! the decibel (one tenth of a bel) is used.
 
+typedef Standard_Real Quantity_AcousticIntensity;
 
 #endif // _Quantity_AcousticIntensity_HeaderFile

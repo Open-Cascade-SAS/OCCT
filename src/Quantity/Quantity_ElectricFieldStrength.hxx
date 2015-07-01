@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_ElectricFieldStrength;
+//! Defined as the force exerted on a unit charge at a
+//! given point in space.
+//! It is measured in volts per metre.
 
+typedef Standard_Real Quantity_ElectricFieldStrength;
 
 #endif // _Quantity_ElectricFieldStrength_HeaderFile

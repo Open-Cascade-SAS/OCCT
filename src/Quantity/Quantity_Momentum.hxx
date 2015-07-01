@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Momentum;
+//! Defined as the product of mass and velocity.
+//! It is a vector quantity.
+//! It is measured in kilogram-metres per second.
 
+typedef Standard_Real Quantity_Momentum;
 
 #endif // _Quantity_Momentum_HeaderFile

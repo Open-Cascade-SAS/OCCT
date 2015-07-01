@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_LuminousEfficacity;
+//! Defined as the ratio of luminous flux emitted by a
+//! source to the power it consumes.
+//! It is measured in lumens per watt.
 
+typedef Standard_Real Quantity_LuminousEfficacity;
 
 #endif // _Quantity_LuminousEfficacity_HeaderFile

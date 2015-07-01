@@ -19,7 +19,9 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_ElectricCurrent;
+//! Defined as the amount of charge flowing per unit time.
+//! It is measured in amperes (coulombs per second).
 
+typedef Standard_Real Quantity_ElectricCurrent;
 
 #endif // _Quantity_ElectricCurrent_HeaderFile

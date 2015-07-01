@@ -19,7 +19,10 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Activity;
+//! Defined as the number of atoms of a radioactive
+//! substance which disintegrate per unit time. It is
+//! measured in becquerels (one disintegration per second).
 
+typedef Standard_Real Quantity_Activity;
 
 #endif // _Quantity_Activity_HeaderFile

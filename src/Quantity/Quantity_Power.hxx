@@ -19,7 +19,14 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Power;
+//! Defined as the rate of expending energy or doing work.
+//! In mechanical terms it is the product of a force and
+//! the distance it moves per unit time.
+//! In electrical terms it is the product of the voltage
+//! and the current. For AC the root-mean-square values
+//! are multiplied by the cosine of the phase angle.
+//! It is measured in watts (joules per second).
 
+typedef Standard_Real Quantity_Power;
 
 #endif // _Quantity_Power_HeaderFile

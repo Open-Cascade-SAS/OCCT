@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_Impedance;
+//! Defined as the total opposition to the flow of current
+//! in a circuit. Includes the contributions of resistance,
+//! inductance, and capacitance.
+//! It is measured in Ohms.
 
+typedef Standard_Real Quantity_Impedance;
 
 #endif // _Quantity_Impedance_HeaderFile

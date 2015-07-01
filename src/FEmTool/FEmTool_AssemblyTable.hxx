@@ -20,6 +20,9 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <NCollection_Array2.hxx>
 
+//! To define the  table  [Freedom's degree] [Dimension,Element]
+//! which gives Index  of Freedom's degree in the assembly problem.
+
 typedef NCollection_Array2<Handle(TColStd_HArray1OfInteger)> FEmTool_AssemblyTable;
 
 

@@ -19,7 +19,12 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_MagneticFieldStrength;
+//! Described as a vector quantity, it is the ratio of the
+//! magnetic flux density to the permeability of the medium.
+//! Its integral along a closed line is equal to the
+//! magnetomotive force.
+//! It is measured in amperes per metre.
 
+typedef Standard_Real Quantity_MagneticFieldStrength;
 
 #endif // _Quantity_MagneticFieldStrength_HeaderFile

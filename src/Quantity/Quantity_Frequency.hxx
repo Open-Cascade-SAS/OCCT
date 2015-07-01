@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as the number of oscillations per unit time.
+//! It is measured in cycles per second.
 typedef Standard_Real Quantity_Frequency;
-
 
 #endif // _Quantity_Frequency_HeaderFile

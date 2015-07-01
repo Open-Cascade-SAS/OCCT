@@ -19,7 +19,11 @@
 
 #include <Standard_Real.hxx>
 
-typedef Standard_Real Quantity_ElectricCharge;
+//! Defined as a property of elementary particles. It is
+//! more commonly viewed as the product of electric current
+//! and time.
+//! It is measured in coulombs (ampere-second).
 
+typedef Standard_Real Quantity_ElectricCharge;
 
 #endif // _Quantity_ElectricCharge_HeaderFile

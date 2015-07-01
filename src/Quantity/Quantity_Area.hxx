@@ -19,7 +19,8 @@
 
 #include <Standard_Real.hxx>
 
+//! Defined as superficial extension.
+//! It is measured in square metres.
 typedef Standard_Real Quantity_Area;
-
 
 #endif // _Quantity_Area_HeaderFile
