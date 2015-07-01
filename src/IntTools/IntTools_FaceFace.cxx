@@ -285,24 +285,6 @@ static
   Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
                                const TopoDS_Face& aFace);
 
-//
-static
-  Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
-                            const Standard_Real aT,
-                            GeomAPI_ProjectPointOnSurf& theProjPS);
-static
-  Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
-                                const Standard_Real theFirst,
-                                const Standard_Real theLast,
-                                GeomAPI_ProjectPointOnSurf& theProjPS,
-                                const Standard_Real theEps);
-static
-  Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theCurve,
-                                const Standard_Real theFirst,
-                                const Standard_Real theLast,
-                                const TopoDS_Face& theFace,
-                                const Handle(IntTools_Context)& theContext);
-
 static
   void CorrectPlaneBoundaries(Standard_Real& aUmin,
                               Standard_Real& aUmax, 
@@ -825,10 +807,12 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
   aS1 = myHS1->ChangeSurface().Surface();
   aS2 = myHS2->ChangeSurface().Surface();
   //
-  for (i = 1; i <= aNbLin; ++i) {
+  for (i = 1; i <= aNbLin; ++i)
+  {
     const IntTools_Curve& aIC = mySeqOfCurve(i);
     const Handle(Geom_Curve)& aC3D = aIC.Curve();
-    if (aC3D.IsNull()) {
+    if (aC3D.IsNull())
+    {
       continue;
     }
     //
@@ -838,23 +822,21 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
     const Handle(Geom2d_Curve)& aC2D1 = aIC.FirstCurve2d();
     const Handle(Geom2d_Curve)& aC2D2 = aIC.SecondCurve2d();
     //
-    for (j = 0; j < 2; ++j) {
+    for (j = 0; j < 2; ++j)
+    {
       const Handle(Geom2d_Curve)& aC2D = !j ? aC2D1 : aC2D2;
       const Handle(Geom_Surface)& aS = !j ? aS1 : aS2;
       //
-      if (!aC2D.IsNull()) {
+      if (!aC2D.IsNull())
+      {
         if (IntTools_Tools::ComputeTolerance
-            (aC3D, aC2D, aS, aFirst, aLast, aD, aT)) {
-          if (aD > aDMax) {
+            (aC3D, aC2D, aS, aFirst, aLast, aD, aT))
+        {
+          if (aD > aDMax)
+          {
             aDMax = aD;
           }
         }
-      }
-      //
-      const TopoDS_Face& aF = !i ? myFace1 : myFace2;
-      aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
-      if (aD > aDMax) {
-        aDMax = aD;
       }
     }
   }
@@ -4836,97 +4818,7 @@ void RefineVector(gp_Vec2d& aV2D)
   }
   aV2D.SetCoord(aC[0], aC[1]);
 }
-//=======================================================================
-// Function : FindMaxDistance
-// purpose : 
-//=======================================================================
-Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theCurve,
-                              const Standard_Real theFirst,
-                              const Standard_Real theLast,
-                              const TopoDS_Face& theFace,
-                              const Handle(IntTools_Context)& theContext)
-{
-  Standard_Integer aNbS;
-  Standard_Real aT1, aT2, aDt, aD, aDMax, anEps;
-  //
-  aNbS = 11;
-  aDt = (theLast - theFirst) / aNbS;
-  aDMax = 0.;
-  anEps = 1.e-4 * aDt;
-  //
-  GeomAPI_ProjectPointOnSurf& aProjPS = theContext->ProjPS(theFace);
-  aT2 = theFirst;
-  for (;;) {
-    aT1 = aT2;
-    aT2 += aDt;
-    //
-    if (aT2 > theLast) {
-      break;
-    }
-    //
-    aD = FindMaxDistance(theCurve, aT1, aT2, aProjPS, anEps);
-    if (aD > aDMax) {
-      aDMax = aD;
-    }
-  }
-  //
-  return aDMax;
-}
-//=======================================================================
-// Function : FindMaxDistance
-// purpose : 
-//=======================================================================
-Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
-                              const Standard_Real theFirst,
-                              const Standard_Real theLast,
-                              GeomAPI_ProjectPointOnSurf& theProjPS,
-                              const Standard_Real theEps)
-{
-  Standard_Real aA, aB, aCf, aX, aX1, aX2, aF1, aF2, aF;
-  //
-  aCf = 0.61803398874989484820458683436564;//(sqrt(5.)-1)/2.;
-  aA = theFirst;
-  aB = theLast;
-  //
-  aX1 = aB - aCf * (aB - aA);
-  aF1 = MaxDistance(theC, aX1, theProjPS);
-  aX2 = aA + aCf * (aB - aA);
-  aF2 = MaxDistance(theC, aX2, theProjPS);
-  //
-  for (;;) {
-    if ((aB - aA) < theEps) {
-      break;
-    }
-    //
-    if (aF1 > aF2) {
-      aB = aX2;
-      aX2 = aX1;
-      aF2 = aF1;
-      aX1 = aB - aCf * (aB - aA); 
-      aF1 = MaxDistance(theC, aX1, theProjPS);
-    }
-    else {
-      aA = aX1;
-      aX1 = aX2;
-      aF1 = aF2;
-      aX2 = aA + aCf * (aB - aA);
-      aF2 = MaxDistance(theC, aX2, theProjPS);
-    }
-  }
-  //
-  aX = 0.5 * (aA + aB);
-  aF = MaxDistance(theC, aX, theProjPS);
-  //
-  if (aF1 > aF) {
-    aF = aF1;
-  }
-  //
-  if (aF2 > aF) {
-    aF = aF2;
-  }
-  //
-  return aF;
-}
+
 //=======================================================================
 // Function : MaxDistance
 // purpose : 
