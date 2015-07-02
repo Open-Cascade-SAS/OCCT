@@ -105,21 +105,27 @@ is
 
     -- computations
     --
-    Perform(me:out);
+    Perform(me:out;
+            isTheMultyTheradDisabled : Boolean from Standard = Standard_False);
     ---Purpose:
     -- Performs the calculation
-
+    -- If isTheMultyTheadDisabled == TRUE then computation will be made
+    --  without any parallelization.
+    
     CheckData(me:out)
     is protected;
     ---Purpose:
     -- Checks the data
 
     Compute(me:out;
-        thePCurve : Curve from Geom2d)
+        thePCurve : Curve from Geom2d;
+        isTheMultyTheradDisabled : Boolean from Standard)
     is protected;
     ---Purpose:
     -- Computes the max distance for the 3d curve <myCurve>
     -- and 2d curve <thePCurve>
+    -- If isTheMultyTheadDisabled == TRUE then computation will be made
+    --  without any parallelization.
 
     -- results
     --
@@ -156,6 +162,7 @@ fields
     -- source data
     myCurve   : Curve   from Geom;
     myPCurve  : Curve   from Geom2d;
+      -- 2nd p-curve (for closed surface)
     myPCurve2 : Curve   from Geom2d;
     mySurface : Surface from Geom;
     myFirst   : Real    from Standard;
