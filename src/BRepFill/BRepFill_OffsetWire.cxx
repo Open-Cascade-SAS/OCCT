@@ -1134,7 +1134,8 @@ void BRepFill_OffsetWire::PerformWithBiLo
       TV2->UpdateTolerance( 1.5*dist2 );
   }
 
-  FixHoles();
+  if (!myIsOpenResult)
+    FixHoles();
 
   myIsDone = Standard_True;
 }
@@ -1399,7 +1400,19 @@ void BRepFill_OffsetWire::MakeWires()
     CV  = VF = TopoDS::Vertex(MVE.FindKey(i));
     CE  = TopoDS::Edge(MVE(i).First());
     End = Standard_False;
-    MVE.ChangeFromKey(CV).RemoveFirst(); 
+    MVE.ChangeFromKey(CV).RemoveFirst();
+
+    if (myIsOpenResult && MVE.FindFromKey(CV).IsEmpty())
+    {
+      //MVE.UnBind(CV);
+      TopoDS_Shape LastShape = MVE.FindKey(MVE.Extent());
+      TopTools_ListOfShape LastList;
+      LastList.Append(MVE(MVE.Extent()));
+      MVE.RemoveLast();
+      if (MVE.FindIndex(CV) != 0)
+        MVE.Substitute(MVE.FindIndex(CV), LastShape, LastList);
+    }
+      
 
     //  Modified by Sergey KHROMOV - Thu Mar 14 11:29:59 2002 Begin
     Standard_Boolean isClosed = Standard_False;
@@ -1443,6 +1456,9 @@ void BRepFill_OffsetWire::MakeWires()
           CE = TopoDS::Edge(MVE.FindFromKey(CV).First());
           MVE.ChangeFromKey(CV).RemoveFirst();
         }
+        else if (myIsOpenResult)//CV was a vertex with one edge
+          End = Standard_True;
+        
         if (MVE.FindFromKey(CV).IsEmpty())
         {
           //MVE.UnBind(CV);
