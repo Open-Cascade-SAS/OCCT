@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC26352"
+puts "========"
+puts ""
+#############################################################################
+# Wrong intersection points found
+#############################################################################
+
+restore [locate_data_file bug26316_shape1.brep] b1
+restore [locate_data_file bug26316_shape2.brep] b2
+
+explode b1 f
+explode b2 f
+
+set log1 [bopcurves b1_10 b2_3]
+set log2 [bopcurves b1_10 b2_10]
+set log3 [bopcurves b1_11 b2_1]
+set log4 [bopcurves b1_11 b2_7]
+
+set search_str "has no 3d points"
+
+if { [regexp ${search_str} ${log1}] != 1 } {
+   puts "Error : Wrong intersection point found (1)"
+} else {
+   puts "OK : Good result obtained by intersection algorithm (1)"
+}
+
+if { [regexp ${search_str} ${log2}] != 1 } {
+   puts "Error : Wrong intersection point found (2)"
+} else {
+   puts "OK : Good result obtained by intersection algorithm (2)"
+}
+
+if { [regexp ${search_str} ${log3}] != 1 } {
+   puts "Error : Wrong intersection point found (3)"
+} else {
+   puts "OK : Good result obtained by intersection algorithm (3)"
+}
+
+if { [regexp ${search_str} ${log4}] != 1 } {
+   puts "Error : Wrong intersection point found (4)"
+} else {
+   puts "OK : Good result obtained by intersection algorithm (4)"
+}
