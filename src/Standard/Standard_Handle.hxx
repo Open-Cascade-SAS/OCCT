@@ -259,7 +259,7 @@ inline Standard_Integer HashCode (const Handle(T)& theHandle, const Standard_Int
   return ::HashCode (const_cast<Standard_Address>(static_cast<const void*>(theHandle.get())), theUpper);
 }
 
-//! For compatibility with previous versions of OCCT, defines typedef opencascade::handle<Class> Handle_Class
+//! For compatibility with previous versions of OCCT, defines typedef opencascade::handle<Class> Handle(Class)
 #define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) typedef Handle(C1) Handle_##C1;
 #define DEFINE_STANDARD_HANDLE(C1,C2) DEFINE_STANDARD_HANDLECLASS(C1,C2,Standard_Transient)
 #define DEFINE_STANDARD_PHANDLE(C1,C2) DEFINE_STANDARD_HANDLECLASS(C1,C2,Standard_Persistent)

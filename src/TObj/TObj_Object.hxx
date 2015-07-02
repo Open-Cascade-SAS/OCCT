@@ -21,21 +21,12 @@
 #include <TObj_Common.hxx>
 #include <TObj_DeletingMode.hxx>
 #include <TObj_SequenceOfObject.hxx>
-#include <Handle_TObj_Model.hxx>
-#include <Handle_TObj_Object.hxx>
 
 #include <TDF_Label.hxx>
 #include <gp_XYZ.hxx>
 
 class TObj_Persistence;
-class Handle(TObj_ObjectIterator);
-class Handle(TObj_TNameContainer);
 
-class Handle(TCollection_HAsciiString);
-class Handle(TCollection_HExtendedString);
-class Handle(TColStd_HArray1OfReal);
-class Handle(TColStd_HArray1OfInteger);
-class Handle(TColStd_HArray1OfExtendedString);
 
 //! Basis class for transient objects in OCAF-based models
 

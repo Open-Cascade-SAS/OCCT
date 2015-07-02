@@ -31,7 +31,6 @@
 #include <Standard_Type.hxx>
 #include <NCollection_TypeDef.hxx>
 
-class Handle(NCollection_BaseAllocator);
 
 /**
 * Purpose:     Basic class for memory allocation wizards.

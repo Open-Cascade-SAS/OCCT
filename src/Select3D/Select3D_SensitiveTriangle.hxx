@@ -24,7 +24,6 @@
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <Select3D_Pnt.hxx>
 #include <Select3D_SensitivePoly.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Standard_OStream.hxx>
 

@@ -16,7 +16,6 @@
 #ifndef _OpenGl_ShaderObject_Header
 #define _OpenGl_ShaderObject_Header
 
-#include <Handle_OpenGl_ShaderObject.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_Resource.hxx>

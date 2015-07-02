@@ -48,7 +48,6 @@
 // Section: General commands
 //=======================================================================
 
-class Handle(TObjDRAW_Model);
 
 //! simple model with redefined pure virtual method
 class TObjDRAW_Model : public TObj_Model
@@ -70,7 +69,6 @@ class TObjDRAW_Model : public TObj_Model
 DEFINE_STANDARD_HANDLE (TObjDRAW_Model,TObj_Model)
 
 
-class Handle(TObjDRAW_Object);
 
 //! simple object to check API and features of TObj_Object
 class TObjDRAW_Object : public TObj_Object

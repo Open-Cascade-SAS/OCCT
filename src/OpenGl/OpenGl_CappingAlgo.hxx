@@ -22,8 +22,6 @@
 #include <Graphic3d_SequenceOfGroup.hxx>
 
 // Forward declaration
-class Handle(OpenGl_Workspace);
-class Handle(Graphic3d_ClipPlane);
 
 DEFINE_STANDARD_HANDLE (OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 

@@ -23,8 +23,6 @@
 #include <Standard_Transient.hxx>
 #include <TopTools_MutexForShapeProvider.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
-#include <Handle_BRepAdaptor_HSurface.hxx>
-#include <Handle_Poly_Triangulation.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_Classifier.hxx>

@@ -22,7 +22,6 @@
 #include <Standard_Type.hxx>
 
 #include <Select3D_SensitiveSet.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <Standard_OStream.hxx>
 #include <NCollection_Sequence.hxx>
 
@@ -55,7 +54,7 @@ public:
   //! Sets the owner for all entities in wire
   Standard_EXPORT void Set (const Handle(SelectBasics_EntityOwner)& theOwnerId);
 
-  Standard_EXPORT Handle_Select3D_SensitiveEntity GetLastDetected() const;
+  Standard_EXPORT Handle(Select3D_SensitiveEntity) GetLastDetected() const;
 
   //! Returns bounding box of the wire. If location
   //! transformation is set, it will be applied

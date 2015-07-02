@@ -21,8 +21,6 @@
 #include <TObj_Object.hxx>
 #include <TObj_Persistence.hxx>
 
-class Handle(TCollection_HExtendedString);
-class Handle(TObj_Partition);
 
 /**
 * This class privides tool handling one of partitions (the set of

@@ -109,7 +109,6 @@
 #include <Geom_OffsetCurve.hxx>
 
 #include <TColStd_HSequenceOfReal.hxx>
-#include <Handle_Geom2dAdaptor_HCurve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>

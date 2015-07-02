@@ -22,8 +22,6 @@
 class Adaptor3d_Curve;
 class TopoDS_Edge;
 class TopoDS_Shape;
-class Handle(BRepAdaptor_HSurface);
-class Handle(Prs3d_Drawer);
 
 class Prs3d_WFShape : Prs3d_Root
 {

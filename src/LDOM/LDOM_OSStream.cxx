@@ -24,7 +24,7 @@
 //purpose  : Constructor
 //=======================================================================
 LDOM_SBuffer::LDOM_StringElem::LDOM_StringElem
-  ( const int theLength, const Handle_NCollection_BaseAllocator& theAlloc )
+  ( const int theLength, const Handle(NCollection_BaseAllocator)& theAlloc )
 : buf (reinterpret_cast<char*>(theAlloc->Allocate (theLength))),
   len (0),
   next(0)

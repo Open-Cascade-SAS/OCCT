@@ -126,6 +126,5 @@ class LDOM_MemManager : public MMgt_TShared
   DEFINE_STANDARD_RTTI (LDOM_MemManager, MMgt_TShared)
 };
 
-#include <Handle_LDOM_MemManager.hxx>
 
 #endif

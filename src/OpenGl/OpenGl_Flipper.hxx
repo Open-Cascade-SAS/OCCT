@@ -16,7 +16,6 @@
 
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Vec.hxx>
-#include <Handle_OpenGl_Workspace.hxx>
 
 class gp_Ax2;
 

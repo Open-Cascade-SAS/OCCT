@@ -24,8 +24,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MutexForShapeProvider.hxx>
 #include <Standard_Transient.hxx>
-#include <Handle_BRepAdaptor_HSurface.hxx>
-#include <Handle_Geom2d_Curve.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <BRepMesh_Triangle.hxx>

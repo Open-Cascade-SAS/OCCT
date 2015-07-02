@@ -22,8 +22,6 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <OpenGl_Element.hxx>
-#include <Handle_OpenGl_PointSprite.hxx>
-#include <Handle_OpenGl_ShaderProgram.hxx>
 
 #include <Image_PixMap_Handle.hxx>
 

@@ -38,7 +38,7 @@ public:
   Standard_EXPORT   static  void Commands (Draw_Interpretor& theCommands);
 
 private:
-  Standard_EXPORT   static const Handle_MMgt_TShared& WClass();
+  Standard_EXPORT   static const Handle(MMgt_TShared)& WClass();
 };
 
 #endif

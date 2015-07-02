@@ -19,10 +19,7 @@
 #define TObj_TModel_HeaderFile
 
 #include <TDF_Attribute.hxx>
-#include <Handle_TObj_Model.hxx>
 
-class Handle(TDF_RelocationTable);
-class Handle(TObj_TModel);
 
 /** 
 * Attribute to store OCAF-based models in OCAF tree

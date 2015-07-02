@@ -29,8 +29,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Handle_Geom2d_Curve.hxx>
-#include <Handle_Geom_Curve.hxx>
 #include <Standard_Real.hxx>
 
 class Standard_DomainError;

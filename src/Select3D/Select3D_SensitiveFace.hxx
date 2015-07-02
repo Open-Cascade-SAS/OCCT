@@ -25,7 +25,6 @@
 
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <Select3D_SensitiveSet.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <Standard_Boolean.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>

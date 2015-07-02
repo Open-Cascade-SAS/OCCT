@@ -17,7 +17,6 @@
 #define LDOMString_HeaderFile
 
 #include <LDOMBasicString.hxx>
-#include <Handle_LDOM_MemManager.hxx>
 
 //  Class LDOMString
 //  Represents various object types which can be mapped to XML strings

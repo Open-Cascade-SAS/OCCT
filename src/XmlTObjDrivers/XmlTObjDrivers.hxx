@@ -21,8 +21,6 @@
 #include <TObj_Common.hxx>
 #include <Standard_GUID.hxx>
 
-class Handle(XmlMDF_ADriverTable);
-class Handle(CDM_MessageDriver);
 
 // Class for registering storage/retrieval drivers for TObj XML persistence
 //

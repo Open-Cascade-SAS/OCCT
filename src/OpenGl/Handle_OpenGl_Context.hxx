@@ -17,7 +17,6 @@
 #define _Handle_OpenGl_Context_Header
 
 #include <Standard_Type.hxx>
-#include <Handle_Standard_Transient.hxx>
 
 class OpenGl_Context;
 DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)

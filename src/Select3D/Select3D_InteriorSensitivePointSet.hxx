@@ -18,7 +18,6 @@
 
 #include <NCollection_Vector.hxx>
 
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
@@ -92,7 +91,7 @@ protected:
 protected:
 
   Select3D_VectorOfHPoly          myPlanarPolygons;     //!< Vector of planar polygons
-  Handle_TColStd_HArray1OfInteger myPolygonsIdxs;       //!< Indexes array for BVH calculation
+  Handle(TColStd_HArray1OfInteger) myPolygonsIdxs;       //!< Indexes array for BVH calculation
   gp_Pnt                          myCOG;                //!< Center of the point set
   Select3D_BndBox3d               myBndBox;             //!< Bounding box of the point set
 };

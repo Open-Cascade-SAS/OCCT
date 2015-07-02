@@ -29,7 +29,6 @@
 #include <Standard_Mutex.hxx>
 
 struct VrmlData_InBuffer;
-class Handle(VrmlData_WorldInfo);
 class VrmlData_DataMapOfShapeAppearance;
 
 /**

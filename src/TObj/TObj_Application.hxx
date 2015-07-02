@@ -24,7 +24,6 @@
 #include <Message_Messenger.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
-class Handle(TObj_Application);
 
 //!
 //! This is a base class for OCAF based TObj models

@@ -28,7 +28,6 @@
 #include <OpenGl_Element.hxx>
 
 class OpenGl_GraphicDriver;
-class Handle(OpenGl_ShaderProgram);
 
 //! Class for rendering of arbitrary primitive array.
 class OpenGl_PrimitiveArray : public OpenGl_Element

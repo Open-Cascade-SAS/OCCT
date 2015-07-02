@@ -17,7 +17,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
-#include <Handle_Poly_Triangulation.hxx>
 #include <TColgp_Array1OfDir.hxx>
 
 class TopoDS_Shape;
@@ -40,7 +39,7 @@ public:
   //! @return true if shape is closed manifold Solid or compound of such Solids. <br>
   Standard_EXPORT static Standard_Boolean IsClosed(const TopoDS_Shape& theShape);
   
-  Standard_EXPORT static Handle_Poly_Triangulation Triangulation(const TopoDS_Face& aFace,
+  Standard_EXPORT static Handle(Poly_Triangulation) Triangulation(const TopoDS_Face& aFace,
                                                  TopLoc_Location& loc);
   
   Standard_EXPORT static void Normal(const TopoDS_Face& aFace,

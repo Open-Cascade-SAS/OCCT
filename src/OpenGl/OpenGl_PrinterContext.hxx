@@ -18,7 +18,6 @@
 
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <Handle_Standard_Transient.hxx>
 #include <OpenGl_Vec.hxx>
 
 //! Class provides specific information for redrawing view to offscreen buffer

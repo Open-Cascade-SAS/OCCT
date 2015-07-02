@@ -25,11 +25,8 @@
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Standard_Transient.hxx>
-#include <Handle_Graphic3d_GraphicDriver.hxx>
 
 //! Forward declaration.
-class Handle(Graphic3d_StructureManager);
-class Handle(Graphic3d_CStructure);
 
 //! Low-level graphic structure interface
 class Graphic3d_CStructure : public Standard_Transient

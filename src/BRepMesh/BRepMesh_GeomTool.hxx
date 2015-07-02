@@ -19,7 +19,6 @@
 #include <Standard_Macro.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GeomAbs_IsoType.hxx>
-#include <Handle_BRepAdaptor_HSurface.hxx>
 #include <TopoDS_Edge.hxx>
 #include <Precision.hxx>
 

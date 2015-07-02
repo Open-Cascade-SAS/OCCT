@@ -16,7 +16,6 @@
 #ifndef _Handle_OpenGl_PointSprite_Header
 #define _Handle_OpenGl_PointSprite_Header
 
-#include <Handle_OpenGl_Texture.hxx>
 
 class OpenGl_PointSprite;
 DEFINE_STANDARD_HANDLE(OpenGl_PointSprite, OpenGl_Texture)

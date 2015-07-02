@@ -21,13 +21,9 @@
 #include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
-#include <Handle_Graphic3d_Group.hxx>
-#include <Handle_Graphic3d_Structure.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <SelectMgr_ViewerSelector.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Handle_V3d_View.hxx>
-#include <Handle_SelectMgr_EntityOwner.hxx>
 #include <NCollection_Handle.hxx>
 
 class Graphic3d_Group;
@@ -103,9 +99,9 @@ private:
 
   void ComputeSensitivePrs (const Handle(SelectMgr_Selection)& theSel, const gp_Trsf& theLoc);
 
-  Handle_Graphic3d_Group myareagroup;
-  Handle_Graphic3d_Group mysensgroup;
-  Handle_Graphic3d_Structure mystruct;
+  Handle(Graphic3d_Group) myareagroup;
+  Handle(Graphic3d_Group) mysensgroup;
+  Handle(Graphic3d_Structure) mystruct;
   Graphic3d_SequenceOfHClipPlane myClipPlanes;
 };
 

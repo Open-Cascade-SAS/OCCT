@@ -48,7 +48,7 @@ namespace
     }
 
     //! Selectable() method modified to return myAssembly.
-    virtual Handle_SelectMgr_SelectableObject Selectable() const;
+    virtual Handle(SelectMgr_SelectableObject) Selectable() const;
 
     Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& PM,const Standard_Integer aMode) const;
 

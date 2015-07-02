@@ -25,7 +25,6 @@
 #include <Select3D_EntitySequence.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveSet.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 
 class SelectBasics_EntityOwner;

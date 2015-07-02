@@ -24,7 +24,6 @@
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Standard_OStream.hxx>
 

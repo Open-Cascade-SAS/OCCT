@@ -22,7 +22,6 @@
 #include <XmlLDrivers_DocumentStorageDriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 
-class Handle(CDM_MessageDriver);
 
 //  Block of comments describing class XmlTObjDrivers_DocumentStorageDriver
 //

@@ -19,7 +19,6 @@
 #include <BVH_PrimitiveSet.hxx>
 
 #include <Select3D_BndBox3d.hxx>
-#include <Handle_SelectMgr_SelectionManager.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_VectorTypes.hxx>
 

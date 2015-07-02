@@ -23,9 +23,6 @@
 
 class VrmlData_Scene;
 class TopoDS_Face;
-class Handle(Poly_Triangulation);
-class Handle(Poly_Polygon3D);
-class Handle(VrmlData_Coordinate);
 /**
  * Algorithm converting one shape or a set of shapes to VrmlData_Scene.
  */

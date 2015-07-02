@@ -18,7 +18,6 @@
 
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
-#include <Handle_Standard_Transient.hxx>
 
 //! Class to define graphic driver capabilities.
 //! Notice that these options will be ignored if particular functionality does not provided by GL driver

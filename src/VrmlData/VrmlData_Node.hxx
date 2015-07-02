@@ -30,7 +30,6 @@ struct VrmlData_InBuffer;
 class VrmlData_Scene;
 class gp_XY;
 class gp_XYZ;
-class Handle(VrmlData_Node);
 class TCollection_AsciiString;
 
 /**

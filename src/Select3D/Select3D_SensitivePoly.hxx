@@ -28,7 +28,6 @@
 #include <Select3D_SensitiveSet.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 
-#include <Handle_SelectBasics_EntityOwner.hxx>
 
 class Standard_ConstructionError;
 class Standard_OutOfRange;
@@ -115,7 +114,7 @@ protected:
 
   Select3D_PointData              myPolyg;              //!< Points of the poly
   mutable gp_Pnt                  myCOG;                //!< Center of the poly
-  Handle_TColStd_HArray1OfInteger mySegmentIndexes;     //!< Segment indexes for BVH tree build
+  Handle(TColStd_HArray1OfInteger) mySegmentIndexes;     //!< Segment indexes for BVH tree build
   Select3D_BndBox3d               myBndBox;             //!< Bounding box of the poly
   mutable Standard_Boolean        myIsComputed;         //!< Is true if all the points and data structures of polygon are initialized
 };

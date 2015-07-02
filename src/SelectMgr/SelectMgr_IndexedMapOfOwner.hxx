@@ -20,7 +20,6 @@
 #include <NCollection_IndexedMap.hxx>
 
 class SelectMgr_EntityOwner;
-class Handle(SelectMgr_EntityOwner);
 
 typedef NCollection_IndexedMap<Handle(SelectMgr_EntityOwner)> SelectMgr_IndexedMapOfOwner;
 typedef NCollection_Handle<NCollection_IndexedMap<Handle(SelectMgr_EntityOwner)> > Handle(SelectMgr_IndexedMapOfOwner);

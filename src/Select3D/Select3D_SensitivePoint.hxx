@@ -23,7 +23,6 @@
 
 #include <Select3D_Pnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <Standard_Boolean.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Standard_Real.hxx>

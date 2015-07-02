@@ -17,7 +17,6 @@
 #define _Handle_OpenGl_View_Header
 
 #include <Standard_Type.hxx>
-#include <Handle_MMgt_TShared.hxx>
 
 class OpenGl_View;
 

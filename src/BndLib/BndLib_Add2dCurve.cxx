@@ -49,7 +49,7 @@ class BndLib_Box2dCurve  {
 
   void SetCurve(const Handle(Geom2d_Curve)& aC);
 
-  const Handle_Geom2d_Curve& Curve() const;
+  const Handle(Geom2d_Curve)& Curve() const;
 
   void SetRange(const Standard_Real aT1,
 		const Standard_Real aT2);
@@ -95,10 +95,10 @@ class BndLib_Box2dCurve  {
   void PerformOnePoint();
   //-----------------------------
  protected:
-  Handle_Geom2d_Curve myCurve;
+  Handle(Geom2d_Curve) myCurve;
   Bnd_Box2d myBox;
   Standard_Integer myErrorStatus;
-  Handle_Geom2d_Curve myCurveBase;
+  Handle(Geom2d_Curve) myCurveBase;
   Standard_Real myOffsetBase;
   Standard_Boolean myOffsetFlag;
   Standard_Real myT1;

@@ -1975,7 +1975,6 @@ static Standard_Integer OCC24667 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
-#include <Handle_BRepTools_NurbsConvertModification.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepTools_NurbsConvertModification.hxx>
@@ -1985,7 +1984,7 @@ static TopoDS_Shape CreateTestShape (int& theShapeNb)
   BRep_Builder aBuilder;
   aBuilder.MakeCompound (aComp);
   //NURBS modifier is used to increase footprint of each shape
-  Handle_BRepTools_NurbsConvertModification aNurbsModif = new BRepTools_NurbsConvertModification;
+  Handle(BRepTools_NurbsConvertModification) aNurbsModif = new BRepTools_NurbsConvertModification;
   TopoDS_Shape aRefShape = BRepPrimAPI_MakeCylinder (50., 100.).Solid();
   BRepTools_Modifier aModifier (aRefShape, aNurbsModif);
   if (aModifier.IsDone()) {

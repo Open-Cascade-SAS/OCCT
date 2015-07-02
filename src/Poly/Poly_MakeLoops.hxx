@@ -23,7 +23,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_List.hxx>
 
-class Handle(NCollection_IncAllocator);
 
 /**
  * Make loops from a set of connected links. A link is represented by 

@@ -25,7 +25,6 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <OpenGl_Element.hxx>
-#include <Handle_OpenGl_ShaderProgram.hxx>
 
 //! Text representation parameters
 class OpenGl_AspectText : public OpenGl_Element

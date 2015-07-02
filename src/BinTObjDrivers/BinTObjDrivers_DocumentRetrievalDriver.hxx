@@ -22,7 +22,6 @@
 #include <BinLDrivers_DocumentRetrievalDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 
-class Handle(CDM_MessageDriver);
 
 // Retrieval driver of a TObj Bin document
 //

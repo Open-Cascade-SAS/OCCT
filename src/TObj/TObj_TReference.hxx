@@ -22,10 +22,7 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 
-class Handle(TObj_TReference);
-class Handle(TObj_Object);
 class Standard_GUID;
-class Handle(TDF_RelocationTable);
 
 /**
 * Attribute for storing references to the objects which implement

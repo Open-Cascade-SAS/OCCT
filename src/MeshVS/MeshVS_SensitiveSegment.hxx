@@ -21,7 +21,6 @@
 
 #include <gp_Pnt.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 
 class SelectBasics_EntityOwner;
 class gp_Pnt;

@@ -49,7 +49,7 @@ public:
   
   Standard_EXPORT void DrawOn(Draw_Display& theDisplay) const;
   
-  Standard_EXPORT virtual Handle_Draw_Drawable3D Copy() const;
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const;
   
   Standard_EXPORT virtual void Dump(Standard_OStream& theStream) const;
   

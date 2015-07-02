@@ -20,9 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <BRepMesh_IEdgeTool.hxx>
 #include <BRepMesh_EdgeParameterProvider.hxx>
-#include <Handle_Geom2d_Curve.hxx>
-#include <Handle_Poly_PolygonOnTriangulation.hxx>
-#include <Handle_Poly_Triangulation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>

@@ -36,10 +36,8 @@
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_SelectableObjectSet.hxx>
-#include <Handle_SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <Standard_OStream.hxx>
-#include <Handle_SelectBasics_SensitiveEntity.hxx>
 
 class SelectMgr_SelectionManager;
 class SelectMgr_Selection;
@@ -150,11 +148,11 @@ public:
   void Next();
 
   //! Returns the current selected entity detected by the selector;
-  Standard_EXPORT Handle_SelectMgr_EntityOwner Picked() const;
+  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked() const;
 
   //! Returns the picked element with the highest priority,
   //! and which is the closest to the last successful mouse position.
-  Standard_EXPORT Handle_SelectMgr_EntityOwner OnePicked();
+  Standard_EXPORT Handle(SelectMgr_EntityOwner) OnePicked();
 
   //! Set preference of selecting one object for OnePicked() method:
   //! - If True, objects with less depth (distance fron the view plane) are
@@ -170,7 +168,7 @@ public:
 
   //! Returns the  entity which is at rank <aRank>
   //!          in the list of stored ones.
-  Standard_EXPORT Handle_SelectMgr_EntityOwner Picked (const Standard_Integer aRank) const;
+  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked (const Standard_Integer aRank) const;
 
   Standard_EXPORT Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
 
@@ -306,7 +304,7 @@ protected:
 
 private:
 
-  Handle_TColStd_HArray1OfInteger              myIndexes;
+  Handle(TColStd_HArray1OfInteger)              myIndexes;
   Standard_Integer                             myCurRank;
   Standard_Boolean                             myIsLeftChildQueuedFirst;
   Standard_Integer                             myEntityIdx;

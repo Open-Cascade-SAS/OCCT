@@ -22,9 +22,7 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_Curve.hxx>
-#include <Handle_Geom_Curve.hxx>
 #include <Select3D_SensitivePoly.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <Standard_Boolean.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
@@ -77,7 +75,7 @@ private:
 
 private:
 
-  Handle_Geom_Curve myCurve;     //!< Curve points
+  Handle(Geom_Curve) myCurve;     //!< Curve points
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveCurve, Select3D_SensitivePoly)

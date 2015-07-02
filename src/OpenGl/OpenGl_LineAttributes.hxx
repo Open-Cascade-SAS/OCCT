@@ -23,7 +23,6 @@
 #include <Font_FontAspect.hxx>
 
 class OpenGl_Context;
-class Handle(OpenGl_Context);
 
 class OpenGl_LineAttributes : public OpenGl_Resource
 {

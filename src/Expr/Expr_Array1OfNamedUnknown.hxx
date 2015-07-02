@@ -17,7 +17,6 @@
 #ifndef Expr_Array1OfNamedUnknown_HeaderFile
 #define Expr_Array1OfNamedUnknown_HeaderFile
 
-#include <Handle_Expr_NamedUnknown.hxx>
 #include <NCollection_Array1.hxx>
 
 typedef NCollection_Array1<Handle(Expr_NamedUnknown)> Expr_Array1OfNamedUnknown;

@@ -25,7 +25,6 @@
 #include <NCollection_DataMap.hxx>
 
 class OpenGl_Structure;
-class Handle(OpenGl_Workspace);
 
 typedef NCollection_Sequence<OpenGl_Layer> OpenGl_SequenceOfLayers;
 typedef NCollection_DataMap<int, int> OpenGl_LayerSeqIds;

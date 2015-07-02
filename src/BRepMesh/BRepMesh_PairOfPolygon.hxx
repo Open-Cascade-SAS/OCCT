@@ -17,7 +17,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
-#include <Handle_Poly_PolygonOnTriangulation.hxx>
 
 class Poly_PolygonOnTriangulation;
 
@@ -62,21 +61,21 @@ public:
   }
 
   //! Returns first polygon on triangulation.
-  inline const Handle_Poly_PolygonOnTriangulation& First() const
+  inline const Handle(Poly_PolygonOnTriangulation)& First() const
   {
     return myFirst;
   }
 
   //! Returns last polygon on triangulation.
-  inline const Handle_Poly_PolygonOnTriangulation& Last() const
+  inline const Handle(Poly_PolygonOnTriangulation)& Last() const
   {
     return myLast;
   }
 
 private:
 
-  Handle_Poly_PolygonOnTriangulation myFirst;
-  Handle_Poly_PolygonOnTriangulation myLast;
+  Handle(Poly_PolygonOnTriangulation) myFirst;
+  Handle(Poly_PolygonOnTriangulation) myLast;
 };
 
 #endif

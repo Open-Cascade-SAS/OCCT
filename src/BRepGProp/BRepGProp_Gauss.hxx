@@ -52,7 +52,6 @@ class BRepGProp_Gauss
   };
 
   typedef NCollection_Handle< NCollection_Array1<Inertia> > InertiaArray;
-  typedef NCollection_Handle<math_Vector>                   Handle_Vector;
   typedef Standard_Real(*BRepGProp_GaussFunc)(const Standard_Real, const Standard_Real);
 
 public: //! @name public API
@@ -252,7 +251,7 @@ private: //! @name private methods
     const Standard_Integer theCoeff = 32);
 
   static void Init(
-    Handle_Vector&         theOutVec,
+    Handle(Vector)&         theOutVec,
     const Standard_Real    theValue,
     const Standard_Integer theFirst = 0,
     const Standard_Integer theLast  = 0);
@@ -269,10 +268,10 @@ private: //! @name private methods
     const TColStd_Array1OfReal& theKnots,
     const Standard_Integer      theNumSubs,
     InertiaArray&               theInerts,
-    Handle_Vector&              theParam1,
-    Handle_Vector&              theParam2,
-    Handle_Vector&              theError,
-    Handle_Vector&              theCommonError);
+    Handle(Vector)&              theParam1,
+    Handle(Vector)&              theParam2,
+    Handle(Vector)&              theError,
+    Handle(Vector)&              theCommonError);
 
 private: //! @name private fields
 

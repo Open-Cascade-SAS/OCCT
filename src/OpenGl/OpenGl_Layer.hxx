@@ -21,14 +21,12 @@
 
 #include <InterfaceGraphic_telem.hxx>
 
-#include <Handle_OpenGl_Workspace.hxx>
 #include <OpenGl_BVHClipPrimitiveSet.hxx>
 #include <OpenGl_BVHTreeSelector.hxx>
 
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <OpenGl_GlCore11.hxx>
 
-class Handle(OpenGl_Workspace);
 
 struct OpenGl_GlobalLayerSettings
 {

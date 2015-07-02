@@ -27,9 +27,7 @@
 typedef NCollection_SparseArray<Standard_Integer> TObj_TIntSparseArray_VecOfData;
 typedef NCollection_SparseArray<Standard_Integer> TObj_TIntSparseArray_MapOfData;
 
-class Handle(TObj_TIntSparseArray);
 class Standard_GUID;
-class Handle(TDF_RelocationTable);
 
 /**
  * OCAF Attribute to store a set of positive integer values in the OCAF tree.

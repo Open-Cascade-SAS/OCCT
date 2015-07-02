@@ -21,7 +21,6 @@
 
 #include <Select3D_BndBox3d.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
 
 class SelectBasics_EntityOwner;

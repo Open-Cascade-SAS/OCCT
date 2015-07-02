@@ -16,7 +16,6 @@
 #ifndef TDF_AttributeIndexedMap_HeaderFile
 #define TDF_AttributeIndexedMap_HeaderFile
 
-#include <Handle_TDF_Attribute.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 

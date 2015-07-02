@@ -22,7 +22,6 @@
 #include <BinLDrivers_DocumentStorageDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 
-class Handle(CDM_MessageDriver);
 
 //  Block of comments describing class BinTObjDrivers_DocumentStorageDriver
 //

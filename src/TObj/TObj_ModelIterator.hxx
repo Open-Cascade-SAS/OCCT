@@ -22,7 +22,6 @@
 #include <TObj_ObjectIterator.hxx>
 #include <TObj_SequenceOfIterator.hxx>
 
-class Handle(TObj_Model);
 
 /**
 * This class provides an iterator by all objects in the model.

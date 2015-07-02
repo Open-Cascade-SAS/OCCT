@@ -25,7 +25,6 @@
 
 #include <SelectMgr_TypeOfUpdate.hxx>
 #include <MMgt_TShared.hxx>
-#include <Handle_SelectBasics_SensitiveEntity.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <SelectMgr_TypeOfBVHUpdate.hxx>

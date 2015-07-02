@@ -48,11 +48,6 @@
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 
-#include <Handle_OpenGl_Context.hxx>
-#include <Handle_OpenGl_GraphicDriver.hxx>
-#include <Handle_OpenGl_Workspace.hxx>
-#include <Handle_OpenGl_View.hxx>
-#include <Handle_OpenGl_Texture.hxx>
 
 struct OPENGL_ZCLIP
 {
@@ -76,7 +71,6 @@ struct OPENGL_FOG
 
 struct OpenGl_Matrix;
 class OpenGl_Structure;
-class Handle(OpenGl_PrinterContext);
 class OpenGl_StateCounter;
 
 class OpenGl_View : public MMgt_TShared

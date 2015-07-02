@@ -22,7 +22,6 @@
 #include <OpenGl_Matrix.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 
-class Handle(OpenGl_Context);
 
 DEFINE_STANDARD_HANDLE (OpenGl_CappingPlaneResource, OpenGl_Resource)
 

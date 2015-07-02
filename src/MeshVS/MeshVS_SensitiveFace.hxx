@@ -21,7 +21,6 @@
 
 #include <gp_Pnt.hxx>
 #include <Select3D_SensitiveFace.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 
 class SelectBasics_EntityOwner;

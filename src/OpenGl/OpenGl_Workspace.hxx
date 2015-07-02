@@ -19,7 +19,6 @@
 #include <map>
 #include <set>
 
-#include <Handle_OpenGl_Workspace.hxx>
 #include <OpenGl_Window.hxx>
 
 #include <TColStd_Array2OfReal.hxx>
@@ -29,7 +28,6 @@
 #include <Graphic3d_TypeOfTexture.hxx>
 #include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Graphic3d_BufferType.hxx>
-#include <Handle_Graphic3d_TextureParams.hxx>
 
 #include <Aspect_CLayer2d.hxx>
 #include <Aspect_Handle.hxx>
@@ -53,8 +51,6 @@
 #include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_CappingAlgo.hxx>
 
-#include <Handle_OpenGl_View.hxx>
-#include <Handle_OpenGl_Texture.hxx>
 
 #include <OpenGl_ShaderObject.hxx>
 #include <OpenGl_ShaderProgram.hxx>

@@ -23,7 +23,7 @@
 
 
 //! Converts handle of array of Standard_Real into the pointer to Standard_Real
-static Standard_Real* ConvertArray(const Handle_TColStd_HArray2OfReal& theHArray)
+static Standard_Real* ConvertArray(const Handle(TColStd_HArray2OfReal)& theHArray)
 {
   const TColStd_Array2OfReal& anArray = theHArray->Array2();
   return (Standard_Real*) &(anArray(anArray.LowerRow(), anArray.LowerCol()));

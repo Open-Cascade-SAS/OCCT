@@ -24,10 +24,8 @@
 #include <TDF_Attribute.hxx>
 
 
-class Handle(TObj_TXYZ);
 class Standard_GUID;
 class TDF_Label;
-class Handle(TDF_RelocationTable);
 
 /*
 * Attribute for storing gp_XYZ

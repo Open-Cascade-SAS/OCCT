@@ -27,7 +27,6 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 
-class Handle(OpenGl_PrinterContext);
 
 //! Text rendering
 class OpenGl_Text : public OpenGl_Element

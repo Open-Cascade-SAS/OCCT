@@ -25,8 +25,6 @@
 
 #include <Select3D_SensitivePoly.hxx>
 #include <Select3D_Pnt.hxx>
-#include <Handle_Geom_Circle.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
@@ -112,7 +110,7 @@ private:
 
   Select3D_TypeOfSensitivity mySensType;     //!< True if type of selection is interior, false otherwise
   gp_Pnt                     myCenter3D;       //!< Center of a circle
-  Handle_Geom_Circle         myCircle;         //!< Points of the circle
+  Handle(Geom_Circle)         myCircle;         //!< Points of the circle
   Standard_Real              myStart;          //!< Sensitive arc parameter
   Standard_Real              myEnd;            //!< Sensitive arc parameter
 };

@@ -31,7 +31,6 @@
 #include <Bnd_Box.hxx>
 
 //! Forward declaration
-class Handle(Graphic3d_Camera);
 
 //! Camera class provides object-oriented approach to setting up projection
 //! and orientation properties of 3D view.

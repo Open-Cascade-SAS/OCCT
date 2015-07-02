@@ -17,7 +17,6 @@
 #define _Handle_OpenGl_Workspace_Header
 
 #include <Standard_Type.hxx>
-#include <Handle_OpenGl_Window.hxx>
 
 class OpenGl_Workspace;
 

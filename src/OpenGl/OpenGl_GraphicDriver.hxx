@@ -17,7 +17,6 @@
 #define _OpenGl_GraphicDriver_HeaderFile
 
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Handle_OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_PrinterContext.hxx>
 
@@ -27,8 +26,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Handle_OpenGl_View.hxx>
-#include <Handle_OpenGl_Workspace.hxx>
 
 #include <Aspect_Display.hxx>
 #include <Aspect_DisplayConnection.hxx>
@@ -66,7 +63,6 @@ class Quantity_Color;
 class Graphic3d_Vertex;
 class TCollection_ExtendedString;
 class Image_PixMap;
-class Handle(OpenGl_Workspace);
 class OpenGl_Element;
 class OpenGl_Structure;
 class OpenGl_Text;

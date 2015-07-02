@@ -21,7 +21,6 @@
 #include <TObj_Container.hxx>
 
 class TDF_Label;
-class Handle(TObj_Object);
 
 /** This class is intended to be a root of tools (one per class)
 *   to manage persistence of objects inherited from TObj_Object

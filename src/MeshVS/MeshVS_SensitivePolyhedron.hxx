@@ -25,7 +25,6 @@
 #include <gp_XY.hxx>
 #include <NCollection_List.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
 
@@ -51,7 +50,7 @@ public:
                                               const TColgp_Array1OfPnt& theNodes,
                                               const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo);
 
-  Standard_EXPORT virtual Handle_Select3D_SensitiveEntity GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;

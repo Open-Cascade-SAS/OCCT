@@ -23,7 +23,6 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 
-class Handle(TObj_Model);
 
 //! This class provides interface to the static data
 //! to be used during save or load models.

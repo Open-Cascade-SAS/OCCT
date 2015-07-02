@@ -53,7 +53,7 @@ class LDOM_SBuffer : public streambuf
 
     DEFINE_NCOLLECTION_ALLOC
 
-    LDOM_StringElem(const int, const Handle_NCollection_BaseAllocator&);
+    LDOM_StringElem(const int, const Handle(NCollection_BaseAllocator)&);
     ~LDOM_StringElem();
 
   private:

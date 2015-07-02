@@ -22,17 +22,11 @@
 #include <Draw_Interpretor.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Handle_V3d_View.hxx>
 #include <Standard_Boolean.hxx>
-#include <Handle_MMgt_TShared.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_HArray1OfShape.hxx>
-#include <Handle_AIS_InteractiveObject.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
-#include <Handle_V3d_Viewer.hxx>
-#include <Handle_AIS_InteractiveContext.hxx>
-#include <Handle_ViewerTest_EventManager.hxx>
 #include <Quantity_NameOfColor.hxx>
 
 class TCollection_AsciiString;

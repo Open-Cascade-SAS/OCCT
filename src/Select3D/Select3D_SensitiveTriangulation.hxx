@@ -25,7 +25,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
-#include <Handle_Poly_Triangulation.hxx>
 #include <TopLoc_Location.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Pnt.hxx>
@@ -34,7 +33,6 @@
 #include <Standard_Boolean.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Standard_OStream.hxx>
 #include <Select3D_SensitiveSet.hxx>
@@ -45,7 +43,6 @@ class SelectBasics_EntityOwner;
 class TopLoc_Location;
 class gp_Pnt;
 class Select3D_SensitiveEntity;
-class Handle(Select3D_SensitiveEntity);
 
 //! A framework to define selection of a sensitive entity made of a set of triangles.
 class Select3D_SensitiveTriangulation : public Select3D_SensitiveSet
@@ -77,9 +74,9 @@ public:
   //! Returns the amount of nodes in triangulation
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
 
-  Standard_EXPORT Handle_Select3D_SensitiveEntity GetConnected() Standard_OVERRIDE;
+  Standard_EXPORT Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
-  const Handle_Poly_Triangulation& Triangulation() const;
+  const Handle(Poly_Triangulation)& Triangulation() const;
 
   Standard_Boolean HasInitLocation() const;
 
@@ -137,14 +134,14 @@ public:
 
 private:
 
-  Handle_Poly_Triangulation       myTriangul;
+  Handle(Poly_Triangulation)       myTriangul;
   TopLoc_Location                 myInitLocation;
   gp_Pnt                          myCDG3D;              //!< Center of the whole triangulation
-  Handle_TColStd_HArray1OfInteger myFreeEdges;
+  Handle(TColStd_HArray1OfInteger) myFreeEdges;
   Standard_Boolean                mySensType;            //!< Type of sensitivity: boundary or interior
   Standard_Integer                myDetectedTr;
   Standard_Integer                myPrimitivesNb;       //!< Amount of free edges or triangles depending on sensitivity type
-  Handle_TColStd_HArray1OfInteger myBVHPrimIndexes;     //!< Indexes of edges or triangles for BVH build
+  Handle(TColStd_HArray1OfInteger) myBVHPrimIndexes;     //!< Indexes of edges or triangles for BVH build
   mutable Select3D_BndBox3d       myBndBox;             //!< Bounding box of the whole triangulation
 };
 

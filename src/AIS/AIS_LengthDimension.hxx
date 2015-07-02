@@ -48,8 +48,6 @@ class Bnd_Box;
 class gp_Dir;
 class TopoDS_Vertex;
 class Standard_Transient;
-class Handle(Standard_Type);
-class Handle(AIS_Relation);
 class AIS_LengthDimension;
 
 DEFINE_STANDARD_HANDLE (AIS_LengthDimension, AIS_Dimension)

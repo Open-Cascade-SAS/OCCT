@@ -21,11 +21,6 @@
 #include <Aspect_Display.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Handle_OpenGl_Context.hxx>
-#include <Handle_OpenGl_FrameBuffer.hxx>
-#include <Handle_OpenGl_Sampler.hxx>
-#include <Handle_OpenGl_ShaderManager.hxx>
-#include <Handle_OpenGl_ShaderProgram.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
@@ -652,11 +647,8 @@ private: // system-dependent fields
 private: // context info
 
   typedef NCollection_DataMap<TCollection_AsciiString, Standard_Integer> OpenGl_DelayReleaseMap;
-  typedef NCollection_Handle<OpenGl_DelayReleaseMap> Handle(OpenGl_DelayReleaseMap);
   typedef NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> OpenGl_ResourcesMap;
-  typedef NCollection_Handle<OpenGl_ResourcesMap> Handle(OpenGl_ResourcesMap);
   typedef NCollection_List<Handle(OpenGl_Resource)> OpenGl_ResourcesStack;
-  typedef NCollection_Handle<OpenGl_ResourcesStack> Handle(OpenGl_ResourcesStack);
 
   Handle(OpenGl_ResourcesMap)    mySharedResources; //!< shared resources with unique identification key
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release

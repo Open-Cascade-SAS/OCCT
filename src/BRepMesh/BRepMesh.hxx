@@ -39,7 +39,6 @@
 #include <BRepMesh_PairOfIndex.hxx>
 #include <BRepMesh_Circle.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <Handle_Poly_Triangulation.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -48,7 +47,6 @@
 class BRepMesh_Vertex;
 class TopoDS_Edge;
 class TopoDS_Vertex;
-class Handle_BRepMesh_FaceAttribute;
 class BRepMesh_VertexInspector;
 class BRepMesh_CircleInspector;
 class BRepMesh_Classifier;
@@ -99,7 +97,7 @@ namespace BRepMesh
 
   typedef NCollection_DataMap<Standard_Integer, Standard_Integer>                                   MapOfIntegerInteger;
   typedef NCollection_DataMap<TopoDS_Vertex, Standard_Integer, TopTools_ShapeMapHasher>             DMapOfVertexInteger;
-  typedef NCollection_DataMap<TopoDS_Face, Handle_BRepMesh_FaceAttribute, TopTools_ShapeMapHasher>  DMapOfFaceAttribute;
+  typedef NCollection_DataMap<TopoDS_Face, Handle(BRepMesh_FaceAttribute), TopTools_ShapeMapHasher>  DMapOfFaceAttribute;
   typedef NCollection_DataMap<TopoDS_Shape, BRepMesh_PairOfPolygon, TopTools_ShapeMapHasher>        DMapOfShapePairOfPolygon;
   typedef NCollection_DataMap<Standard_Integer, gp_Pnt>                                             DMapOfIntegerPnt;
   typedef NCollection_DataMap<Standard_Integer, ListOfXY>                                           DMapOfIntegerListOfXY;

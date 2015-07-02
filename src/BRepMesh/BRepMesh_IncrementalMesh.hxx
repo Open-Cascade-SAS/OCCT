@@ -21,7 +21,6 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <Handle_Poly_Triangulation.hxx>
 #include <BRepMesh.hxx>
 
 #include <vector>

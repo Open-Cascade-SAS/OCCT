@@ -23,7 +23,6 @@
 #include <Standard_Macro.hxx>
 #endif
 #ifndef _Handle_MMgt_TShared_HeaderFile
-#include <Handle_MMgt_TShared.hxx>
 #endif
 
 #include <NCollection_DataMap.hxx>
@@ -123,6 +122,5 @@ private:
 //! Mapping between OCCT topological shape IDs and their correspondent
 //! visualization pipelines.
 typedef NCollection_DataMap<IVtk_IdType, Handle(IVtkDraw_HighlightAndSelectionPipeline)> ShapePipelineMap;
-typedef NCollection_Handle<ShapePipelineMap> Handle(ShapePipelineMap);
 
 #endif

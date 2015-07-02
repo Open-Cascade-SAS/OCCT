@@ -23,10 +23,8 @@
 
 #include <TDF_Attribute.hxx>
 
-class Handle(TObj_TObject);
 class Standard_GUID;
 class TDF_Label;
-class Handle(TDF_RelocationTable);
 
 /** 
 * Purpose: OCAF Attribute to storing objects (interfaces) of OCAF-based 

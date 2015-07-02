@@ -21,7 +21,6 @@
 
 #include <Bnd_Box.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
 

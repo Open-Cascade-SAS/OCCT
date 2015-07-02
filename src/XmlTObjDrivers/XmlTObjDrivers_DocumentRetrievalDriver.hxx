@@ -22,7 +22,6 @@
 #include <XmlLDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 
-class Handle(CDM_MessageDriver);
 
 // Retrieval driver of a TObj XML document
 //

@@ -17,7 +17,6 @@
 #define _SelectMgr_SensitiveEntity_HeaderFile
 
 #include <SelectBasics_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_SensitiveEntity.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 

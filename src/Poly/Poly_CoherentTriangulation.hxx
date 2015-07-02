@@ -22,7 +22,6 @@
 #include <Poly_CoherentLink.hxx>
 #include <NCollection_Vector.hxx>
 
-class Handle(Poly_CoherentTriangulation);
 class Poly_CoherentTriangulation;
 template <class A> class NCollection_List;
 

@@ -22,9 +22,6 @@
 #include <BRepMesh_IEdgeTool.hxx>
 #include <BRepMesh_GeomTool.hxx>
 #include <BRepMesh_FaceAttribute.hxx>
-#include <Handle_Geom_Surface.hxx>
-#include <Handle_Geom2d_Curve.hxx>
-#include <Handle_BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 

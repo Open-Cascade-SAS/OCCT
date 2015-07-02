@@ -29,8 +29,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-class Handle(NCollection_IncAllocator);
-class Handle(Geom_Surface);
 
 //! This class performs fast sewing of surfaces (faces). It supposes
 //! that all surfaces are finite and are naturally restricted by their bounds.

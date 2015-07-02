@@ -19,8 +19,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-#include <Handle_TColStd_HArray1OfReal.hxx>
-#include <Handle_TColStd_HArray2OfReal.hxx>
 
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>

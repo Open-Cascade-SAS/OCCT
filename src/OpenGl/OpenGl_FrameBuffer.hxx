@@ -22,7 +22,6 @@
 #include <Standard_Boolean.hxx>
 #include <InterfaceGraphic.hxx>
 
-#include <Handle_OpenGl_FrameBuffer.hxx>
 
 //! Class implements FrameBuffer Object (FBO) resource
 //! intended for off-screen rendering.

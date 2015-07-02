@@ -18,7 +18,6 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-class Handle(NCollection_HeapAllocator);
 
 /**
  * Allocator that uses the global dynamic heap (malloc / free). 
