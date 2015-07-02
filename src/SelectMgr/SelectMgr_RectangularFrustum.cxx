@@ -44,13 +44,11 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   Standard_Real aD = DOT (anU, aW);
   Standard_Real anE = DOT (aV, aW);
   Standard_Real aCoef = anA * aC - aB * aB;
-  Standard_Real aSc, aSn, aSd = aCoef;
+  Standard_Real aSn = aCoef;
   Standard_Real aTc, aTn, aTd = aCoef;
 
   if (aCoef < Precision::Confusion())
   {
-    aSn = 0.0;
-    aSd = 1.0;
     aTn = anE;
     aTd = aC;
   }
@@ -60,13 +58,11 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
     aTn = (anA * anE - aB * aD);
     if (aSn < 0.0)
     {
-      aSn = 0.0;
       aTn = anE;
       aTd = aC;
     }
-    else if (aSn > aSd)
+    else if (aSn > aCoef)
     {
-      aSn = aSd;
       aTn = anE + aB;
       aTd = aC;
     }
@@ -75,28 +71,11 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   if (aTn < 0.0)
   {
     aTn = 0.0;
-    if (-aD < 0.0)
-      aSn = 0.0;
-    else if (-aD > anA)
-      aSn = aSd;
-    else {
-      aSn = -aD;
-      aSd = anA;
-    }
   }
   else if (aTn > aTd)
   {
     aTn = aTd;
-    if ((-aD + aB) < 0.0)
-      aSn = 0;
-    else if ((-aD + aB) > anA)
-      aSn = aSd;
-    else {
-      aSn = (-aD +  aB);
-      aSd = anA;
-    }
   }
-  aSc = (Abs (aSn) < Precision::Confusion() ? 0.0 : aSn / aSd);
   aTc = (Abs (aTn) < Precision::Confusion() ? 0.0 : aTn / aTd);
 
   SelectMgr_Vec3 aClosestPnt = myNearPickedPnt + myViewRayDir * aTc;
