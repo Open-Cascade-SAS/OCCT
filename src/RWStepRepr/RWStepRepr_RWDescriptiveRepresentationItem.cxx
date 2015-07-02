@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <RWStepRepr_RWDescriptiveRepresentationItem.ixx>
+#include <TCollection_HAsciiString.hxx>
 
 
 RWStepRepr_RWDescriptiveRepresentationItem::RWStepRepr_RWDescriptiveRepresentationItem () {}
@@ -26,7 +27,17 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep
 
 	// --- Number of Parameter Control ---
 
-	if (!data->CheckNbParams(num,2,ach,"descriptive_representation_item")) return;
+	//if (!data->CheckNbParams(num,2,ach,"descriptive_representation_item")) return;
+  // for the case when description is absent
+  if (data->NbParams(num) != 2 && data->NbParams(num) != 1)
+  {
+    Handle(TCollection_HAsciiString) errmess = new TCollection_HAsciiString(
+      "Count of Parameters is not 1 or 2 for descriptive_representation_item");
+    Handle(TCollection_HAsciiString) errmesso = new TCollection_HAsciiString(
+      "Count of Parameters is not %d or %d for %s");
+    ach->AddFail (errmess->ToCString(),errmesso->ToCString());
+    return;
+  }
 
 	// --- inherited field : name ---
 

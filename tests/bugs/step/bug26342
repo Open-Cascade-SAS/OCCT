@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC26342"
+puts "============"
+puts ""
+
+#######################################################################
+# No materials are read from STEP
+#######################################################################
+
+pload DCAF
+
+ReadStep D [locate_data_file OCC23251-dm1-oc-214.stp] res
+
+set dump_info [ XDumpDF D ]
+
+set XCAFDoc_Material_ID "efd212f8-6dfd-11d4-b9c8-0060b0ee281b"
+
+if { [regexp ${XCAFDoc_Material_ID} ${dump_info}] == 1  } {
+    puts "OK: materials are read from STEP"
+} else {
+    puts "Error : No materials are read from STEP"
+}
