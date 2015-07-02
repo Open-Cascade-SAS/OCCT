@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='@BUILD_CONFIGURATION@|@X_COMPILER_BITNESS@'">
+ <LocalDebuggerEnvironment>CASROOT=@CMAKE_SOURCE_DIR@
+PATH=@3RDPARTY_DLL_DIRS_FOR_PATH@;%PATH%
+ </LocalDebuggerEnvironment>
+ <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+ </PropertyGroup>
+</Project>

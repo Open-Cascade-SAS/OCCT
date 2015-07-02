@@ -57,11 +57,8 @@ if (${BUILD_BISON_FLEX_FILES})
   endforeach()
 endif()
 
-# group include files in folder install
-set (INSTALL_GROUP_INC ON CACHE BOOL "In include files grouped in install folder")
-
 # copy samples to install directory
-set (INSTALL_SAMPLES OFF CACHE BOOL "Copy samples to install directory")
+set (INSTALL_SAMPLES OFF CACHE BOOL "Copy OCCT samples to install directory")
 
 set (CMAKE_BUILD_TYPE ${BUILD_CONFIGURATION} CACHE INTERNAL "Build type of OCCT" FORCE )
 
@@ -260,6 +257,9 @@ if (3RDPARTY_INCLUDE_DIRS)
   include_directories (${3RDPARTY_INCLUDE_DIRS})
 endif()
 
+# include <cmake binary folder>/inc
+include_directories (${CMAKE_BINARY_DIR}/inc)
+
 if (3RDPARTY_LIBRARY_DIRS)
   list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
   string (REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
@@ -286,52 +286,30 @@ if (WIN32)
   set ("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${TAIL_OF_OUTPUT_VARNAME}" "${OUTPUT_BINARY_DIR}")
 endif()
 
+message (STATUS "\nInfo: Collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
+
+# (!) patch is not taken into account COLLECT_AND_INSTALL_OCCT_HEADER_FILES
+# collect all the headers to <binary dir>/inc folder
+COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${CMAKE_BINARY_DIR}" "${USED_TOOLKITS}")
+# apply patched header files
+#if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
+#  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${BUILD_PATCH_DIR}" "${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${CMAKE_BINARY_DIR}")
+#endif()
+
 if ("${INSTALL_DIR}" STREQUAL "")
   message (FATAL_ERROR "INSTALL_DIR variable is empty. It's required to define installation directory")
 else()
 
-  # inc,data,tests DIRECTORY
-  file (GLOB DIRS RELATIVE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/*)
-  foreach(CDIR ${DIRS})
-    file(GLOB HFiles "${CMAKE_SOURCE_DIR}/src/${CDIR}/*.[hgl]xx" "${CMAKE_SOURCE_DIR}/src/${CDIR}/*.h")
-    set (GROUP_CDIR "")
-    if (INSTALL_GROUP_INC)
-      set (GROUP_CDIR ${CDIR})
-    endif()
-    install(FILES ${HFiles} DESTINATION "${INSTALL_DIR}/inc/${GROUP_CDIR}")
-  endforeach(CDIR)
 
-  install (DIRECTORY "${CMAKE_SOURCE_DIR}/data"         DESTINATION  "${INSTALL_DIR}")
-  install (DIRECTORY "${CMAKE_SOURCE_DIR}/samples/tcl"  DESTINATION  "${INSTALL_DIR}/samples")
-  if (TESTS_INSTALL)
-    install (DIRECTORY "${CMAKE_SOURCE_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
+  OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
+  OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
+
+  if (INSTALL_SAMPLES)
+    OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
   endif()
 
-  # install patch inc, data, tests folder
-  if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
-    if (EXISTS "${BUILD_PATCH_DIR}/inc")
-      install (DIRECTORY "${BUILD_PATCH_DIR}/inc" DESTINATION  "${INSTALL_DIR}" )
-    else()
-      file (GLOB DIRS RELATIVE ${BUILD_PATCH_DIR}/src ${BUILD_PATCH_DIR}/src/*)
-      foreach(CDIR ${DIRS})
-        file(GLOB HFiles "${BUILD_PATCH_DIR}/src/${CDIR}/*.[hgl]xx" "${BUILD_PATCH_DIR}/src/${CDIR}/*.h")
-        if (INSTALL_GROUP_INC)
-          install(FILES ${HFiles} DESTINATION "${INSTALL_DIR}/inc/${CDIR}")
-        else()
-          install(FILES ${HFiles} DESTINATION "${INSTALL_DIR}/inc")
-        endif()
-      endforeach(CDIR)
-    endif()
-
-    if (EXISTS "${BUILD_PATCH_DIR}/data")
-      install (DIRECTORY "${BUILD_PATCH_DIR}/data"  DESTINATION  "${INSTALL_DIR}" )
-    endif()
-
-    if (TESTS_INSTALL)
-      if (EXISTS "${BUILD_PATCH_DIR}/tests")
-        install (DIRECTORY "${BUILD_PATCH_DIR}/tests" DESTINATION "${INSTALL_DIR}" )
-      endif()
-    endif()
+  if (TESTS_INSTALL)
+    OCCT_INSTALL_FILE_OR_DIR ("tests" "${INSTALL_DIR}")
   endif()
 
   if (WIN32)
@@ -358,7 +336,6 @@ else()
       gendoc(-refman -html)
     endif()
   endif()
-
 
   # DRAW.BAT or DRAW.SH
   if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
@@ -391,7 +368,6 @@ else()
   else()
     OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "${INSTALL_DIR}")
   endif()
-
 
   # write current custom.bat/sh
   OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.in" "${SUB_CUSTOM}" "${INSTALL_DIR}")
@@ -429,6 +405,27 @@ foreach (USED_TOOLKIT ${USED_TOOLKITS})
   endif()
 endforeach()
 
+# patch DRAWEXE
+if (MSVC AND 3RDPARTY_DLL_DIRS)
+  list (FIND USED_TOOLKITS DRAWEXE DRAWEXE_INDEX)
+  if (${DRAWEXE_INDEX} GREATER -1)
+    list (REMOVE_DUPLICATES 3RDPARTY_DLL_DIRS)
+    set (3RDPARTY_DLL_DIRS_FOR_PATH "")
+
+    foreach (3RDPARTY_DLL_DIR ${3RDPARTY_DLL_DIRS})
+      set (3RDPARTY_DLL_DIRS_FOR_PATH "${3RDPARTY_DLL_DIRS_FOR_PATH};${3RDPARTY_DLL_DIR}")
+    endforeach()
+
+    OCCT_MAKE_COMPILER_BITNESS()
+    set (X_COMPILER_BITNESS "x64")
+    if ("${COMPILER_BITNESS}" STREQUAL "32")
+      set (X_COMPILER_BITNESS "Win32")
+    endif()
+
+    configure_file (${CMAKE_SOURCE_DIR}/adm/templates/DRAWEXE.vcxproj.user.in ${CMAKE_BINARY_DIR}/src/DRAWEXE/DRAWEXE.vcxproj.user @ONLY)
+  endif()
+endif()
+
 # samples do not support patch usage
 if (BUILD_MFC_SAMPLES)
   set (OCCT_ROOT ${CMAKE_SOURCE_DIR})
@@ -447,8 +444,4 @@ if (BUILD_MFC_SAMPLES)
   add_subdirectory(samples/mfc/standard/08_HLR)
   add_subdirectory(samples/mfc/standard/09_Animation)
   add_subdirectory(samples/mfc/standard/10_Convert)
-endif()
-
-if (INSTALL_SAMPLES)
-  OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
 endif()

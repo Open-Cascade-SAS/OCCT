@@ -158,6 +158,38 @@ macro (OCCT_CONFIGURE_AND_INSTALL BEING_CONGIRUGED_FILE FINAL_NAME DESTINATION_P
   install(FILES "${OCCT_BINARY_DIR}/${FINAL_NAME}" DESTINATION  "${DESTINATION_PATH}")
 endmacro()
 
+macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_OCCT_DIR TEMPLATE_HEADER_PATH ROOT_TARGET_OCCT_DIR OCCT_USED_TOOLKITS)
+  set (OCCT_SOURCE_DIRS)
+
+  foreach (OCCT_USED_TOOLKIT ${OCCT_USED_TOOLKITS})
+    # append parent folder
+    list (APPEND OCCT_SOURCE_DIRS ${OCCT_USED_TOOLKIT})
+
+    # append all required package folders
+    set (OCCT_USED_TOOLKIT_DEPS)
+    if (EXISTS "${ROOT_OCCT_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES")
+      file (STRINGS "${ROOT_OCCT_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_USED_TOOLKIT_DEPS)
+    endif()
+
+    foreach (OCCT_USED_TOOLKIT_DEP ${OCCT_USED_TOOLKIT_DEPS})
+      list (APPEND OCCT_SOURCE_DIRS ${OCCT_USED_TOOLKIT_DEP})
+    endforeach()
+  endforeach()
+
+  foreach (OCCT_SOURCE_DIR ${OCCT_SOURCE_DIRS})
+    # get all header files from each src folder 
+    file (GLOB OCCT_HEADER_FILES "${ROOT_OCCT_DIR}/src/${OCCT_SOURCE_DIR}/*.[hgl]xx" "${ROOT_OCCT_DIR}/src/${OCCT_SOURCE_DIR}/*.h")
+
+    install (FILES ${OCCT_HEADER_FILES} DESTINATION "${INSTALL_DIR}/inc")
+
+    # create new file including found header
+    foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES})
+      get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
+      configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
+    endforeach()
+  endforeach()
+endmacro()
+
 macro (OCCT_COPY_FILE_OR_DIR BEING_COPIED_OBJECT DESTINATION_PATH)
   # first of all, copy original files
   file (COPY "${CMAKE_SOURCE_DIR}/${BEING_COPIED_OBJECT}" DESTINATION  "${DESTINATION_PATH}")

@@ -60,7 +60,6 @@ foreach (CDIR ${COMPILER_DIRECTORIES})
   endforeach()
 endforeach()
 
-list (APPEND COMPILER_DIRECTORIES "${OCCT_SOURCE_DIR}/src")
 list (FIND USED_TOOLKITS ${PROJECT_NAME} isFOUND)
 
 OCCT_MAKE_BUILD_POSTFIX()
@@ -91,6 +90,5 @@ if ("${USED_TOOLKITS}" STREQUAL "" OR NOT ${isFOUND} EQUAL -1)
 
   set_property (TARGET ${PROJECT_NAME} PROPERTY FOLDER "Modules/${CURRENT_MODULE}")
   set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}")
-  include_directories (${COMPILER_DIRECTORIES})
   target_link_libraries (${PROJECT_NAME} ${USED_LIBS})
 endif()
