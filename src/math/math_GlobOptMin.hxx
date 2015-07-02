@@ -1,6 +1,6 @@
 // Created on: 2014-01-20
 // Created by: Alexaner Malyshev
-// Copyright (c) 2014-2014 OPEN CASCADE SAS
+// Copyright (c) 2014-2015 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -16,9 +16,85 @@
 #ifndef _math_GlobOptMin_HeaderFile
 #define _math_GlobOptMin_HeaderFile
 
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_CellFilterNDim.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Type.hxx>
+
+class NCollection_CellFilter_NDimInspector
+{
+public:
+
+  //! Points and target type
+  typedef math_Vector Point;
+  typedef math_Vector Target;
+
+  NCollection_CellFilter_NDimInspector(const Standard_Integer theDim,
+                                       const Standard_Real theTol)
+  : myCurrent(1, theDim)
+  {
+    myTol = theTol * theTol;
+    myIsFind = Standard_False;
+    Dimension = theDim;
+  }
+
+  //! Access to co-ordinate
+  static Standard_Real Coord (int i, const Point &thePnt)
+  {
+    return thePnt(i + 1);
+  }
+
+  //! Auxiliary method to shift point by each coordinate on given value;
+  //! useful for preparing a points range for Inspect with tolerance
+  void Shift (const Point& thePnt,
+              const NCollection_Array1<Standard_Real> &theTol,
+              Point& theLowPnt,
+              Point& theUppPnt) const
+  {
+    for(Standard_Integer anIdx = 1; anIdx <= Dimension; anIdx++)
+    {
+      theLowPnt(anIdx) = thePnt(anIdx) - theTol(anIdx - 1);
+      theUppPnt(anIdx) = thePnt(anIdx) + theTol(anIdx - 1);
+    }
+  }
+
+  void ClearFind()
+  {
+    myIsFind = Standard_False;
+  }
+
+  Standard_Boolean isFind()
+  {
+    return myIsFind;
+  }
+
+  //! Set current point to search for coincidence
+  void SetCurrent (const math_Vector& theCurPnt)
+  { 
+    myCurrent = theCurPnt;
+  }
+
+  //! Implementation of inspection method
+  NCollection_CellFilter_Action Inspect (const Target& theObject)
+  {
+    Standard_Real aSqDist = (myCurrent - theObject).Norm2();
+
+    if(aSqDist < myTol)
+    {
+      myIsFind = Standard_True;
+    }
+
+    return CellFilter_Keep;
+  }
+
+private:
+  Standard_Real myTol;
+  math_Vector myCurrent;
+  Standard_Boolean myIsFind;
+  Standard_Integer Dimension;
+};
 
 //! This class represents Evtushenko's algorithm of global optimization based on nonuniform mesh.<br>
 //! Article: Yu. Evtushenko. Numerical methods for finding global extreme (case of a non-uniform mesh). <br>
@@ -69,6 +145,9 @@ public:
 
 private:
 
+  // Compute cell size.
+  void initCellSize();
+
   math_GlobOptMin & operator = (const math_GlobOptMin & theOther);
 
   Standard_Boolean computeLocalExtremum(const math_Vector& thePnt, Standard_Real& theVal, math_Vector& theOutPnt);
@@ -118,6 +197,11 @@ private:
   math_Vector myV; // Steps array.
   math_Vector myMaxV; // Max Steps array.
   math_Vector myExpandCoeff; // Define expand coefficient between neighboring indiced dimensions.
+
+  NCollection_Array1<Standard_Real> myCellSize;
+  Standard_Integer myMinCellFilterSol;
+  Standard_Boolean isFirstCellFilterInvoke;
+  NCollection_CellFilterNDim<NCollection_CellFilter_NDimInspector> myFilter;
 
   Standard_Real myF; // Current value of Global optimum.
 };

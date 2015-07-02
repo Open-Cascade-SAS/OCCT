@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC26184"
+puts "============"
+puts ""
+#######################################################################
+# GeomAPI_ExtremaCurveCurve hangs on parallel b-spline curves
+#######################################################################
+
+restore [locate_data_file bug26184_Curve_Extrema_1_12971.brep] a1
+restore [locate_data_file bug26184_Curve_Extrema_2_12971.brep] a2
+
+mkcurve c1 a1
+mkcurve c2 a2
+
+cpulimit 20
+
+dchrono h reset; dchrono h start
+extrema c1 c2
+dchrono h stop; dchrono h show
+
+regexp {CPU user time: (\d*)} [dchrono h show] dummy sec
+if {$sec > 10} {
+  puts "Error: too long computation time $sec seconds"
+} else {
+  puts "Computation time is OK"
+}

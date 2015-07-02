@@ -1,6 +1,6 @@
 // Created on: 2014-01-20
 // Created by: Alexaner Malyshev
-// Copyright (c) 2014-2014 OPEN CASCADE SAS
+// Copyright (c) 2014-2015 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -45,7 +45,9 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myTmp(1, myN),
   myV(1, myN),
   myMaxV(1, myN),
-  myExpandCoeff(1, myN)
+  myExpandCoeff(1, myN),
+  myCellSize(0, myN - 1),
+  myFilter(theFunc->NbVariables())
 {
   Standard_Integer i;
 
@@ -77,6 +79,11 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 
   myTol = theDiscretizationTol;
   mySameTol = theSameTol;
+
+  const Standard_Integer aMaxSquareSearchSol = 200;
+  Standard_Integer aSolNb = Standard_Integer(Pow(3.0, Standard_Real(myN)));
+  myMinCellFilterSol = Max(2 * aSolNb, aMaxSquareSearchSol);
+  initCellSize();
 
   myDone = Standard_False;
 }
@@ -121,6 +128,8 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
 
   myTol = theDiscretizationTol;
   mySameTol = theSameTol;
+
+  initCellSize();
 
   myDone = Standard_False;
 }
@@ -238,6 +247,7 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
       myE3 = - maxLength * myTol * myC / 4.0;
   }
 
+  isFirstCellFilterInvoke = Standard_True;
   computeGlobalExtremum(myN);
 
   myDone = Standard_True;
@@ -398,7 +408,6 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
   Standard_Boolean isInside = Standard_False;
   Standard_Real r;
 
-
   for(myX(j) = myA(j) + myE1; myX(j) < myB(j) + myE1; myX(j) += myV(j))
   {
     if (myX(j) > myB(j))
@@ -444,6 +453,8 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
         for(i = 1; i <= myN; i++)
           myY.Append(aStepBestPoint(i));
         mySolCount++;
+
+        isFirstCellFilterInvoke = Standard_True;
       }
 
       aRealStep = myE2 + Abs(myF - d) / myC;
@@ -500,20 +511,55 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
   math_Vector aTol(1, myN);
   aTol = (myB -  myA) * mySameTol;
 
-  for(i = 0; i < mySolCount; i++)
+  // C1 * n^2 = C2 * 3^dim * n
+  if (mySolCount < myMinCellFilterSol)
   {
-    isSame = Standard_True;
-    for(j = 1; j <= myN; j++)
+    for(i = 0; i < mySolCount; i++)
     {
-      if ((Abs(thePnt(j) - myY(i * myN + j))) > aTol(j))
+      isSame = Standard_True;
+      for(j = 1; j <= myN; j++)
       {
-        isSame = Standard_False;
-        break;
+        if ((Abs(thePnt(j) - myY(i * myN + j))) > aTol(j))
+        {
+          isSame = Standard_False;
+          break;
+        }
+      }
+      if (isSame == Standard_True)
+        return Standard_True;
+    }
+  }
+  else
+  {
+    NCollection_CellFilter_NDimInspector anInspector(myN, Precision::PConfusion());
+    if (isFirstCellFilterInvoke)
+    {
+      myFilter.Reset(myCellSize);
+
+      // Copy initial data into cell filter.
+      for(Standard_Integer aSolIdx = 0; aSolIdx < mySolCount; aSolIdx++)
+      {
+        math_Vector aVec(1, myN);
+        for(Standard_Integer aSolDim = 1; aSolDim <= myN; aSolDim++)
+          aVec(aSolDim) = myY(aSolIdx * myN + aSolDim);
+
+        myFilter.Add(aVec, aVec);
       }
     }
-    if (isSame == Standard_True)
-      return Standard_True;
 
+    isFirstCellFilterInvoke = Standard_False;
+
+    math_Vector aLow(1, myN), anUp(1, myN);
+    anInspector.Shift(thePnt, myCellSize, aLow, anUp);
+
+    anInspector.ClearFind();
+    anInspector.SetCurrent(thePnt);
+    myFilter.Inspect(aLow, anUp, anInspector);
+    if (!anInspector.isFind())
+    {
+      // Point is out of close cells, add new one.
+      myFilter.Add(thePnt, thePnt);
+    }
   }
   return Standard_False;
 }
@@ -555,4 +601,17 @@ void math_GlobOptMin::Points(const Standard_Integer theIndex, math_Vector& theSo
 
   for(j = 1; j <= myN; j++)
     theSol(j) = myY((theIndex - 1) * myN + j);
+}
+
+//=======================================================================
+//function : initCellSize
+//purpose  :
+//=======================================================================
+void math_GlobOptMin::initCellSize()
+{
+  for(Standard_Integer anIdx = 1; anIdx <= myN; anIdx++)
+  {
+    myCellSize(anIdx - 1) = (myGlobB(anIdx) - myGlobA(anIdx))
+      * Precision::PConfusion() / (2.0 * Sqrt(2.0));
+  }
 }

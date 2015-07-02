@@ -70,6 +70,7 @@ NCollection_SparseArray.hxx
 NCollection_SparseArrayBase.hxx
 NCollection_SparseArrayBase.cxx
 NCollection_CellFilter.hxx
+NCollection_CellFilterNDim.hxx
 NCollection_Handle.hxx
 NCollection_Handle.cxx
 

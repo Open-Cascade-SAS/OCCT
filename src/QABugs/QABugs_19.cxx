@@ -2273,7 +2273,7 @@ static Standard_Integer OCC25004 (Draw_Interpretor& theDI,
                                   Standard_Integer /*theNArg*/,
                                   const char** /*theArgs*/)
 {
-  math_MultipleVarFunction* aFunc = new BraninFunction();
+  BraninFunction aFunc;
 
   math_Vector aLower(1,2), aUpper(1,2);
   aLower(1) = -5;
@@ -2296,7 +2296,7 @@ static Standard_Integer OCC25004 (Draw_Interpretor& theDI,
       aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
       aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
 
-      aFunc->Value(aCurrPnt1, aFuncValues(idx));
+      aFunc.Value(aCurrPnt1, aFuncValues(idx));
       idx++;
     }
   }
@@ -2327,7 +2327,7 @@ static Standard_Integer OCC25004 (Draw_Interpretor& theDI,
         aLipConst = C;
     }
 
-  math_GlobOptMin aFinder(aFunc, aLower, aUpper, aLipConst);
+  math_GlobOptMin aFinder(&aFunc, aLower, aUpper, aLipConst);
   aFinder.Perform();
   //(-pi , 12.275), (pi , 2.275), (9.42478, 2.475)
 
