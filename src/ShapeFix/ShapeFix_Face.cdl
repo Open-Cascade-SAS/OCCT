@@ -209,7 +209,7 @@ is
         --          missing seam edge
         --          Returns True if missing seam was added
 
-    FixSmallAreaWire (me: mutable; theIsRemoveSmallFace: Boolean = Standard_False) returns Boolean;
+    FixSmallAreaWire (me: mutable; theIsRemoveSmallFace: Boolean) returns Boolean;
         ---Purpose: Detects wires with small area (that is less than 
         --          100*Precision::PConfusion(). Removes these wires if they are internal.
         --  Returns : True if at least one small wire removed,

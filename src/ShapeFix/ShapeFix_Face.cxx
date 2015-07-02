@@ -166,6 +166,7 @@ void ShapeFix_Face::ClearModes()
   myFixAddNaturalBoundMode   = -1;
   myFixMissingSeamMode       = -1;
   myFixSmallAreaWireMode     = -1;
+  myRemoveSmallAreaFaceMode  = -1;
   myFixIntersectingWiresMode = -1;
   myFixLoopWiresMode         = -1;
   myFixSplitFaceMode         = -1;
