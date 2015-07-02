@@ -137,7 +137,7 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
 	 Abs(Bs->LastParameter()  - U2) > Precision::Parametric(Tol)) {
 
 	Handle(Geom_Geometry) G = Bs->Copy();
-	Handle(Geom_BSplineCurve)& Bsaux = Handle(Geom_BSplineCurve)::DownCast (G);
+	Handle(Geom_BSplineCurve) Bsaux (Handle(Geom_BSplineCurve)::DownCast (G));
 	Standard_Real u1 = U1, u2 = U2;
 	//// modified by jgv, 24.10.01 for BUC61031 ////
 	if (Bsaux->IsPeriodic())

@@ -260,7 +260,7 @@ static Handle(Geom2d_Curve) Couture(const TopoDS_Edge& E,
   while (itcr.More()) {
     Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S,l)) {
-      Handle(BRep_GCurve)& GC = Handle(BRep_GCurve)::DownCast (cr);
+      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
       if (GC->IsCurveOnClosedSurface() && Eisreversed) 
 	return  GC->PCurve2();
       else

@@ -2244,7 +2244,7 @@ static void PutIntVertices(Handle(IntPatch_Line)&    Line,
   if(nbp < 3)
     return;
 
-  Handle(IntPatch_WLine)& WLine = Handle(IntPatch_WLine)::DownCast (Line);
+  Handle(IntPatch_WLine) WLine (Handle(IntPatch_WLine)::DownCast (Line));
   Standard_Integer ip = 0, iv = 0;
   gp_Pnt aPnt;
   IntPatch_Point thePnt;

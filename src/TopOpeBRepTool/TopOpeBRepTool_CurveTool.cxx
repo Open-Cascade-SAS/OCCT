@@ -341,9 +341,9 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   Standard_Integer iparmin = (Standard_Integer)parmin;
   Standard_Integer iparmax = (Standard_Integer)parmax;
 
-  Handle(Geom_BSplineCurve)&   HC3D = Handle(Geom_BSplineCurve)::DownCast (C3D);
-  Handle(Geom2d_BSplineCurve)& HPC1 = Handle(Geom2d_BSplineCurve)::DownCast (PC1);
-  Handle(Geom2d_BSplineCurve)& HPC2 = Handle(Geom2d_BSplineCurve)::DownCast (PC2);
+  Handle(Geom_BSplineCurve) HC3D (Handle(Geom_BSplineCurve)::DownCast (C3D));
+  Handle(Geom2d_BSplineCurve) HPC1 (Handle(Geom2d_BSplineCurve)::DownCast (PC1));
+  Handle(Geom2d_BSplineCurve) HPC2 (Handle(Geom2d_BSplineCurve)::DownCast (PC2));
 
 //--------------------- IFV - "improving" initial curves
 #ifdef CurveImprovement
@@ -452,21 +452,21 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
       if(CompPC1) Polpc1(NbPol) = PolPC1(nbpol);
       if(CompPC2) Polpc2(NbPol) = PolPC2(nbpol);
       
-      HC3D = new Geom_BSplineCurve(Polc3d, knots, mults, 1);
-      if(CompPC1) HPC1 = new Geom2d_BSplineCurve(Polpc1, knots, mults, 1);
-      if(CompPC2) HPC2 = new Geom2d_BSplineCurve(Polpc2, knots, mults, 1);
+      const_cast<Handle(Geom_Curve)&>(C3D) = new Geom_BSplineCurve(Polc3d, knots, mults, 1);
+      if(CompPC1) const_cast<Handle(Geom2d_Curve)&>(PC1) = new Geom2d_BSplineCurve(Polpc1, knots, mults, 1);
+      if(CompPC2) const_cast<Handle(Geom2d_Curve)&>(PC2) = new Geom2d_BSplineCurve(Polpc2, knots, mults, 1);
       iparmax = NbPol;
 
 #ifdef IFV
       sprintf(name,"C3Dmod_%d",NbCalls);
       nm = &name[0];
-      DrawTrSurf::Set(nm, HC3D);
+      DrawTrSurf::Set(nm, C3D);
       sprintf(name,"PC1mod_%d",NbCalls);
       nm = &name[0];
-      DrawTrSurf::Set(nm, HPC1);
+      DrawTrSurf::Set(nm, PC1);
       sprintf(name,"PC2mod_%d",NbCalls);
       nm = &name[0];
-      DrawTrSurf::Set(nm, HPC2);
+      DrawTrSurf::Set(nm, PC2);
 #endif
 
     }

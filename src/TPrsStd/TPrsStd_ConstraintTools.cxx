@@ -1845,20 +1845,12 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       BRepAdaptor_Curve CURVE(OE);
       if (CURVE.GetType() == GeomAbs_Line)  {
 	// Works only with line !!
-//#ifndef OCCT_DEBUG
         Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
         gp_Lin OLin = Handle(Geom_Line)::DownCast (aGeomGeometry)->Lin();
-//#else
-//	gp_Lin OLin = ((Handle(Geom_Line)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Lin();
-//#endif
 	TopoDS_Edge NE = TopoDS::Edge(S2);
 	CURVE.Initialize (NE);
-//#ifndef OCCT_DEBUG
         aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
         gp_Lin NLin = Handle(Geom_Line)::DownCast (aGeomGeometry)->Lin();
-//#else
-//	gp_Lin NLin = ((Handle(Geom_Line)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Lin();
-//#endif
 	gp_Dir TDir (NLin.Location().XYZ() - OLin.Location().XYZ());
 	aplane = new Geom_Plane (NLin.Location(),NLin.Direction()^TDir);
 
@@ -1876,12 +1868,8 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       }
       else
       if (CURVE.GetType() == GeomAbs_Circle)  {
-//#ifndef OCCT_DEBUG
         Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
         gp_Ax1 ax = Handle(Geom_Circle)::DownCast (aGeomGeometry)->Circ().Axis();
-//#else
-//	gp_Ax1 ax = ((Handle(Geom_Circle)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Circ().Axis();
-//#endif
 	aplane = new Geom_Plane (ax.Location(),ax.Direction());
 	is_planar = Standard_True;
       }
@@ -1902,12 +1890,8 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
 
       BRepBuilderAPI_MakeFace MkF (w1,Standard_True);
       if (MkF.IsDone())  {
-//#ifndef OCCT_DEBUG
         Handle(Geom_Surface) aGeomSurface = BRep_Tool::Surface(MkF.Face());
-        aplane = Handle(Geom_Plane)::DownCast (aGeomSurface) ;
-//#else
-//	aplane = ((Handle(Geom_Plane)&) BRep_Tool::Surface(MkF.Face()));
-//#endif
+        aplane = Handle(Geom_Plane)::DownCast (aGeomSurface);
 	is_planar = Standard_True;
       }
     }

@@ -1900,8 +1900,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
     if(IType == IntPatch_Walking) nbw++;
     else     if(IType == IntPatch_Restriction) { 
       nbr++;
-      Handle(IntPatch_RLine)& rlin =
-        Handle(IntPatch_RLine)::DownCast (line);
+      Handle(IntPatch_RLine) rlin (Handle(IntPatch_RLine)::DownCast (line));
       if(rlin->IsArcOnS1()) nbr1++;
       if(rlin->IsArcOnS2()) nbr2++;
     }
@@ -1937,8 +1936,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
       nbllc++;
       const Handle(IntPatch_Line)& LineK = LineConstructor.Line(k);
       if (LineK->ArcType() == IntPatch_Analytic) { 
-        Handle(IntPatch_ALine)& alin =
-          Handle(IntPatch_ALine)::DownCast (LineK);
+        Handle(IntPatch_ALine) alin (Handle(IntPatch_ALine)::DownCast (LineK));
         nbvtx=alin->NbVertex();
         nbva+=nbvtx;        nba++;
         for(v=1;v<=nbvtx;v++) { 
@@ -1946,8 +1944,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
         }
       }
       else if (LineK->ArcType() == IntPatch_Restriction) {
-        Handle(IntPatch_RLine)& rlin =
-          Handle(IntPatch_RLine)::DownCast (LineK);
+        Handle(IntPatch_RLine) rlin (Handle(IntPatch_RLine)::DownCast (LineK));
         nbvtx=rlin->NbVertex();
         nbvr+=nbvtx;        nbr++;
         for(v=1;v<=nbvtx;v++) { 
@@ -1955,8 +1952,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
         }
       }
       else if (LineK->ArcType() == IntPatch_Walking) {
-        Handle(IntPatch_WLine)& wlin =
-          Handle(IntPatch_WLine)::DownCast (LineK);
+        Handle(IntPatch_WLine) wlin (Handle(IntPatch_WLine)::DownCast (LineK));
         nbvtx=wlin->NbVertex();
         nbvw+=nbvtx;        nbw++;
         for(v=1;v<=nbvtx;v++) { 
@@ -1964,8 +1960,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
         }
       }
       else { 
-        Handle(IntPatch_GLine)& glin =
-          Handle(IntPatch_GLine)::DownCast (LineK);
+        Handle(IntPatch_GLine) glin (Handle(IntPatch_GLine)::DownCast (LineK));
         nbvtx=glin->NbVertex();
         nbvg+=nbvtx;        nbg++;
         for(v=1;v<=nbvtx;v++) { 

@@ -913,7 +913,7 @@ Standard_Real GeomAdaptor_Surface::UResolution(const Standard_Real R3d) const
     }
 	case GeomAbs_Torus:
     {
-      Handle(Geom_ToroidalSurface)& S = Handle(Geom_ToroidalSurface)::DownCast (mySurface);
+      Handle(Geom_ToroidalSurface) S (Handle(Geom_ToroidalSurface)::DownCast (mySurface));
       const Standard_Real R = S->MajorRadius() + S->MinorRadius();
       if(R>Precision::Confusion())
         Res = R3d/(2.*R);
@@ -921,7 +921,7 @@ Standard_Real GeomAdaptor_Surface::UResolution(const Standard_Real R3d) const
     }
 	case GeomAbs_Sphere:
     {
-      Handle(Geom_SphericalSurface)& S = Handle(Geom_SphericalSurface)::DownCast (mySurface);
+      Handle(Geom_SphericalSurface) S (Handle(Geom_SphericalSurface)::DownCast (mySurface));
       const Standard_Real R = S->Radius();
       if(R>Precision::Confusion())
         Res = R3d/(2.*R);
@@ -929,7 +929,7 @@ Standard_Real GeomAdaptor_Surface::UResolution(const Standard_Real R3d) const
     }
 	case GeomAbs_Cylinder:
     {
-      Handle(Geom_CylindricalSurface)& S = Handle(Geom_CylindricalSurface)::DownCast (mySurface);
+      Handle(Geom_CylindricalSurface) S (Handle(Geom_CylindricalSurface)::DownCast (mySurface));
       const Standard_Real R = S->Radius();
       if(R>Precision::Confusion())
         Res = R3d/(2.*R);
@@ -941,7 +941,7 @@ Standard_Real GeomAdaptor_Surface::UResolution(const Standard_Real R3d) const
         // Pas vraiment borne => resolution inconnue
         return Precision::Parametric(R3d);
       }
-      Handle(Geom_ConicalSurface)& S = Handle(Geom_ConicalSurface)::DownCast (mySurface);
+      Handle(Geom_ConicalSurface) S (Handle(Geom_ConicalSurface)::DownCast (mySurface));
       Handle(Geom_Curve) C = S->VIso(myVLast);
       const Standard_Real Rayon1 = Handle(Geom_Circle)::DownCast (C)->Radius();
       C = S->VIso(myVFirst);
@@ -999,7 +999,7 @@ Standard_Real GeomAdaptor_Surface::VResolution(const Standard_Real R3d) const
     }
 	case GeomAbs_Torus:
     {
-      Handle(Geom_ToroidalSurface)& S = Handle(Geom_ToroidalSurface)::DownCast (mySurface);
+      Handle(Geom_ToroidalSurface) S (Handle(Geom_ToroidalSurface)::DownCast (mySurface));
       const Standard_Real R = S->MinorRadius();
       if(R>Precision::Confusion())
         Res = R3d/(2.*R);
@@ -1007,7 +1007,7 @@ Standard_Real GeomAdaptor_Surface::VResolution(const Standard_Real R3d) const
     }
 	case GeomAbs_Sphere:
     {
-      Handle(Geom_SphericalSurface)& S = Handle(Geom_SphericalSurface)::DownCast (mySurface);
+      Handle(Geom_SphericalSurface) S (Handle(Geom_SphericalSurface)::DownCast (mySurface));
       const Standard_Real R = S->Radius();
       if(R>Precision::Confusion())
         Res = R3d/(2.*R);

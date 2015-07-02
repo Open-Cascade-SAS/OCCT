@@ -237,9 +237,6 @@ void AIS_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection)& 
     
     //=======================Pour les arcs======================    
   if(cu1.GetType() == GeomAbs_Circle) { 
-    BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);
-//    Handle(Geom_Circle) geom_circ1 = (Handle(Geom_Circle)&) BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);
-//JR/Hp
     Handle(Geom_Curve) aGeomCurve = BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);
     Handle(Geom_Circle) geom_circ1 = Handle(Geom_Circle)::DownCast (aGeomCurve) ;
 //    Handle(Geom_Circle) geom_circ1 = (const Handle(Geom_Circle)&) BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);

@@ -73,7 +73,7 @@ void V3d_Viewer::SetCurrentSelectedLight(const Handle(V3d_Light)& TheLight) {
 }
 
 void V3d_Viewer::ClearCurrentSelectedLight() {
-  MyCurrentSelectedLight = NULL;
+  MyCurrentSelectedLight.Nullify();
 }
 
 
@@ -104,7 +104,7 @@ void V3d_Viewer::SetDefaultLights()
 {
   while (MyDefinedLights.Extent() > 0)
   {
-    DelLight ((Handle(V3d_Light)&)MyDefinedLights.First());
+    DelLight (Handle(V3d_Light)::DownCast (MyDefinedLights.First()));
   }
 
   SetLightOn (new V3d_DirectionalLight (this, V3d_Zneg, Quantity_NOC_WHITE, Standard_True));
