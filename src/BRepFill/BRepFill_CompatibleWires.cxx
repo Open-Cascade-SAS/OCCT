@@ -60,6 +60,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
@@ -1248,10 +1249,12 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
     if (report || nbmin<nbmax) {
       // insertion of cuts
       Standard_Integer nbdec=(nbmax-1)*nbSects+1;
-      Standard_Real tol = 0.01;
       TColStd_Array1OfReal dec(1,nbdec);
       dec.Init(0);
       dec(2)=1;
+
+      TColStd_Array1OfReal WireLen(1, nbSects);
+      
       // calculate the table of cuts
       Standard_Integer j,k,l;
       for (i=1; i<=nbSects; i++) {
@@ -1265,6 +1268,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 	TColStd_Array1OfReal ACR(0,nbE);
 	ACR.Init(0);
 	BRepFill::ComputeACR(wire1, ACR);
+        WireLen(i) = ACR(0);
 	// insertion of ACR of the wire in the table of cuts
 	for (j=1; j<ACR.Length()-1; j++) {
 	  k=1;
@@ -1272,7 +1276,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 	    k++;
 	    if (k>nbdec) break;
 	  }
-	  if (dec(k-1)+tol<ACR(j)&& ACR(j)+tol<dec(k)) {
+	  if (dec(k-1)<ACR(j)&& ACR(j)<dec(k)) {
 	    for (l=nbdec-1;l>=k;l--) {
 	      dec(l+1)=dec(l);
 	    }
@@ -1293,10 +1297,38 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 	dec2(k) = dec(k);
       }
       
+      //Check of cuts: are all the new edges long enouph or not
+      TColStd_MapOfInteger CutsToRemove;
+      for (k = 1; k <= nbdec; k++)
+      {
+        Standard_Real Knot1 = dec2(k);
+        Standard_Real Knot2 = (k == nbdec)? 1. : dec2(k+1);
+        Standard_Real AllLengthsNull = Standard_True;
+        for (i = 1; i <= nbSects; i++)
+        {
+          Standard_Real EdgeLen = (Knot2 - Knot1) * WireLen(i);
+          if (EdgeLen > Precision::Confusion())
+          {
+            AllLengthsNull = Standard_False;
+            break;
+          }
+        }
+        if (AllLengthsNull)
+          CutsToRemove.Add(k);
+      }
+      Standard_Integer NewNbDec = nbdec - CutsToRemove.Extent();
+      TColStd_Array1OfReal dec3(1, NewNbDec);
+      i = 1;
+      for (k = 1; k <= nbdec; k++)
+        if (!CutsToRemove.Contains(k))
+          dec3(i++) = dec2(k);
+      ///////////////////
+      
       // insertion of cuts in each wire
       for (i=1; i<=nbSects; i++) {
 	const TopoDS_Wire& oldwire = TopoDS::Wire(myWork(i));
-	TopoDS_Wire newwire = BRepFill::InsertACR(oldwire, dec2, tol);
+        Standard_Real tol = Precision::Confusion() / WireLen(i);
+	TopoDS_Wire newwire = BRepFill::InsertACR(oldwire, dec3, tol);
 	BRepTools_WireExplorer anExp1,anExp2;
 	anExp1.Init(oldwire);
 	anExp2.Init(newwire);
