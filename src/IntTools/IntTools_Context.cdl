@@ -314,6 +314,15 @@ is
     returns Boolean from Standard;  
     ---Purpose: Returns true if the solid <theFace> has 
     --          infinite bounds     
+
+    SetPOnSProjectionTolerance(me:mutable; theValue: Real from Standard);
+    ---Purpose: Sets tolerance to be used for projection of point on surface.
+    --          Clears map of already cached projectors in order to maintain 
+    --          correct value for all projectors
+
+    clearCachedPOnSProjectors(me: mutable)
+    is private;
+    ---Purpose: Clears map of already cached projectors.
  
 fields 
     myAllocator  : BaseAllocator from BOPCol is protected;
@@ -326,6 +335,7 @@ fields
     myProjSDataMap:DataMapOfShapeAddress from BOPCol is protected;  
     myBndBoxDataMap:DataMapOfShapeAddress from BOPCol is protected;  
     myCreateFlag :Integer from Standard is protected; 
+    myPOnSTolerance :Real from Standard is protected;
      
 end Context;
 
