@@ -97,7 +97,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
 {
 
   Handle(TDF_Attribute) TDFAttribute = Attribute();
-  Handle(TDataStd_ByteArray) BackAtt = (*((Handle(TDataStd_ByteArray)*)&TDFAttribute));
+  Handle(TDataStd_ByteArray) BackAtt = Handle(TDataStd_ByteArray)::DownCast (TDFAttribute);
   if(BackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfByteArray::Apply: OldAtt is Null" <<endl;

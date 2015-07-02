@@ -263,6 +263,6 @@ Handle(TDF_DeltaOnModification) TDataStd_RealArray::DeltaOnModification
 (const Handle(TDF_Attribute)& OldAtt) const
 {
   if(myIsDelta)
-    return new TDataStd_DeltaOnModificationOfRealArray(*((Handle(TDataStd_RealArray)*)&OldAtt));
+    return new TDataStd_DeltaOnModificationOfRealArray(Handle(TDataStd_RealArray)::DownCast (OldAtt));
   else return new TDF_DefaultDeltaOnModification(OldAtt);
 }

@@ -253,7 +253,7 @@ static void PutInBounds (const TopoDS_Face&          F,
   Handle (Geom_Surface) S   = BRep_Tool::Surface(F,L);
 
   if (S->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
-    S = (*(Handle(Geom_RectangularTrimmedSurface)*)&S)->BasisSurface();
+    S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
   }
   //---------------
   // Recadre en U.
@@ -368,7 +368,7 @@ static void BuildPCurves (const TopoDS_Edge&  E,
   Handle( Geom_Surface ) theSurf = BRep_Tool::Surface( F );
   Handle( Standard_Type ) typS = theSurf->DynamicType();
   if (typS == STANDARD_TYPE(Geom_OffsetSurface))
-    typS = (*((Handle(Geom_OffsetSurface)*)&theSurf))->BasisSurface()->DynamicType();
+    typS = Handle(Geom_OffsetSurface)::DownCast (theSurf)->BasisSurface()->DynamicType();
   if (typS == STANDARD_TYPE(Geom_BezierSurface) || typS == STANDARD_TYPE(Geom_BSplineSurface))
     {
       gp_Pnt fpoint = AC.Value( AC.FirstParameter() );
@@ -902,18 +902,18 @@ static Standard_Boolean AreConnex(const TopoDS_Wire& W1,
       Standard_Real f, l;
       Handle(Geom_Curve) C1 = BRep_Tool::Curve( E1, f, l ); 
       if (C1->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-	C1 = (*((Handle(Geom_TrimmedCurve)*)&C1))->BasisCurve();
+	C1 = Handle(Geom_TrimmedCurve)::DownCast (C1)->BasisCurve();
       
       Handle(Geom_Curve) C2 = BRep_Tool::Curve( E2, f, l );
       if (C2->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-	C2 = (*((Handle(Geom_TrimmedCurve)*)&C2))->BasisCurve();
+	C2 = Handle(Geom_TrimmedCurve)::DownCast (C2)->BasisCurve();
 
       if (C1->IsInstance(STANDARD_TYPE(Geom_Line)) &&
 	  C2->IsInstance(STANDARD_TYPE(Geom_Line)))
 	{
-	  Handle(Geom_Line) L1 = *((Handle(Geom_Line)*) &C1);
+	  Handle(Geom_Line) L1 = Handle(Geom_Line)::DownCast (C1);
 	  gp_Ax1 Axis1 = L1->Position();
-	  Handle(Geom_Line) L2 = *((Handle(Geom_Line)*) &C2);
+	  Handle(Geom_Line) L2 = Handle(Geom_Line)::DownCast (C2);
 	  gp_Ax1 Axis2 = L2->Position();
 	  if (! Axis1.IsParallel( Axis2, Precision::Angular() ))
 	    return Standard_False;
@@ -959,11 +959,11 @@ static Standard_Boolean BSplineEdges(const TopoDS_Edge& E1,
 
   Handle(Geom_Curve) C1 = BRep_Tool::Curve( E1, first1, last1 ); 
   if (C1->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    C1 = (*((Handle(Geom_TrimmedCurve)*)&C1))->BasisCurve();
+    C1 = Handle(Geom_TrimmedCurve)::DownCast (C1)->BasisCurve();
 
   Handle(Geom_Curve) C2 = BRep_Tool::Curve( E2, first2, last2 );
   if (C2->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    C2 = (*((Handle(Geom_TrimmedCurve)*)&C2))->BasisCurve();
+    C2 = Handle(Geom_TrimmedCurve)::DownCast (C2)->BasisCurve();
 
   if (!C1->IsInstance(STANDARD_TYPE(Geom_BSplineCurve)) ||
       !C2->IsInstance(STANDARD_TYPE(Geom_BSplineCurve)))
@@ -1082,11 +1082,11 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge& E1,
 
   PCurve1 = BRep_Tool::CurveOnSurface( E1, F, first1, last1 );
   if (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve)))
-    PCurve1 = (*((Handle(Geom2d_TrimmedCurve)*)&PCurve1))->BasisCurve();
+    PCurve1 = Handle(Geom2d_TrimmedCurve)::DownCast (PCurve1)->BasisCurve();
 
   PCurve2 = BRep_Tool::CurveOnSurface( E2, F, first2, last2 );
   if (PCurve2->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve)))
-    PCurve2 = (*((Handle(Geom2d_TrimmedCurve)*)&PCurve2))->BasisCurve();
+    PCurve2 = Handle(Geom2d_TrimmedCurve)::DownCast (PCurve2)->BasisCurve();
       
   if (PCurve1 == PCurve2)
     {
@@ -1104,35 +1104,35 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge& E1,
       P2 = PCurve2->Value( last2 );
       if (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_Line)))
 	{
-	  Handle(Geom2d_Line) Lin1 = *((Handle(Geom2d_Line)*) &PCurve1);
+	  Handle(Geom2d_Line) Lin1 = Handle(Geom2d_Line)::DownCast (PCurve1);
 	  gp_Lin2d theLin = Lin1->Lin2d();
 	  first2 = ElCLib::Parameter( theLin, P1 );
 	  last2  = ElCLib::Parameter( theLin, P2 );
 	}
       else if (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_Circle)))
 	{
-	  Handle(Geom2d_Circle) Circ1 = *((Handle(Geom2d_Circle)*) &PCurve1);
+	  Handle(Geom2d_Circle) Circ1 = Handle(Geom2d_Circle)::DownCast (PCurve1);
 	  gp_Circ2d theCirc = Circ1->Circ2d();
 	  first2 = ElCLib::Parameter( theCirc, P1 );
 	  last2  = ElCLib::Parameter( theCirc, P2 );
 	}
       else if (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_Ellipse)))
 	{
-	  Handle(Geom2d_Ellipse) Ell1 = *((Handle(Geom2d_Ellipse)*) &PCurve1);
+	  Handle(Geom2d_Ellipse) Ell1 = Handle(Geom2d_Ellipse)::DownCast (PCurve1);
 	  gp_Elips2d theElips = Ell1->Elips2d();
 	  first2 = ElCLib::Parameter( theElips, P1 );
 	  last2  = ElCLib::Parameter( theElips, P2 );
 	}
       else if (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_Parabola)))
 	{
-	  Handle(Geom2d_Parabola) Parab1 = *((Handle(Geom2d_Parabola)*) &PCurve1);
+	  Handle(Geom2d_Parabola) Parab1 = Handle(Geom2d_Parabola)::DownCast (PCurve1);
 	  gp_Parab2d theParab = Parab1->Parab2d();
 	  first2 = ElCLib::Parameter( theParab, P1 );
 	  last2  = ElCLib::Parameter( theParab, P2 );
 	}
       else if (PCurve1->IsInstance(STANDARD_TYPE(Geom2d_Hyperbola)))
 	{
-	  Handle(Geom2d_Hyperbola) Hypr1 = *((Handle(Geom2d_Hyperbola)*) &PCurve1);
+	  Handle(Geom2d_Hyperbola) Hypr1 = Handle(Geom2d_Hyperbola)::DownCast (PCurve1);
 	  gp_Hypr2d theHypr = Hypr1->Hypr2d();
 	  first2 = ElCLib::Parameter( theHypr, P1 );
 	  last2  = ElCLib::Parameter( theHypr, P2 );
@@ -1187,11 +1187,11 @@ static TopoDS_Edge Glue(const TopoDS_Edge& E1,
 
   C1 = BRep_Tool::Curve( E1, first1, last1 ); 
   if (C1->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    C1 = (*((Handle(Geom_TrimmedCurve)*)&C1))->BasisCurve();
+    C1 = Handle(Geom_TrimmedCurve)::DownCast (C1)->BasisCurve();
 
   C2 = BRep_Tool::Curve( E2, first2, last2 );
   if (C2->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    C2 = (*((Handle(Geom_TrimmedCurve)*)&C2))->BasisCurve();
+    C2 = Handle(Geom_TrimmedCurve)::DownCast (C2)->BasisCurve();
 
   if (C1 == C2)
     {
@@ -1302,7 +1302,7 @@ static Standard_Boolean CheckIntersFF(const BOPDS_PDS& pDS,
 
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(F1);
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-    aSurf = (*((Handle(Geom_RectangularTrimmedSurface)*)&aSurf))->BasisSurface();
+    aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (aSurf)->BasisSurface();
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_Plane)))
     isPlane1 = Standard_True;
   else if (aSurf->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
@@ -1310,7 +1310,7 @@ static Standard_Boolean CheckIntersFF(const BOPDS_PDS& pDS,
 
   aSurf = BRep_Tool::Surface(F2);
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-    aSurf = (*((Handle(Geom_RectangularTrimmedSurface)*)&aSurf))->BasisSurface();
+    aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (aSurf)->BasisSurface();
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_Plane)))
     isPlane2 = Standard_True;
   else if (aSurf->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
@@ -1708,7 +1708,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
 
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(cpF1);
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-    aSurf = (*((Handle(Geom_RectangularTrimmedSurface)*)&aSurf))->BasisSurface();
+    aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (aSurf)->BasisSurface();
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_Plane)))
     addPCurve1 = Standard_False;
   else if (aSurf->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
@@ -1716,7 +1716,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
 
   aSurf = BRep_Tool::Surface(cpF2);
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
-    aSurf = (*((Handle(Geom_RectangularTrimmedSurface)*)&aSurf))->BasisSurface();
+    aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (aSurf)->BasisSurface();
   if (aSurf->IsInstance(STANDARD_TYPE(Geom_Plane)))
     addPCurve2 = Standard_False;
   else if (aSurf->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
@@ -2027,14 +2027,14 @@ void BRepOffset_Tool::InterOrExtent(const TopoDS_Face& F1,
 
   if (S1->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
     Handle(Geom_RectangularTrimmedSurface) RTS ;
-    RTS = *((Handle(Geom_RectangularTrimmedSurface)*) &S1);
+    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast (S1);
     if (RTS->BasisSurface()->DynamicType() == STANDARD_TYPE(Geom_Plane)) {
       S1 = RTS->BasisSurface();
     }
   }
   if (S2->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
     Handle(Geom_RectangularTrimmedSurface) RTS ;
-    RTS = *((Handle(Geom_RectangularTrimmedSurface)*) &S2);
+    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast (S2);
     if (RTS->BasisSurface()->DynamicType() == STANDARD_TYPE(Geom_Plane)) {
       S2 = RTS->BasisSurface();
     }
@@ -2582,7 +2582,7 @@ static void MakeFace(const Handle(Geom_Surface)& S,
   Standard_Boolean IsSuclosed = S->IsUClosed(), IsSvclosed = S->IsVClosed();
   if (S->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
     {
-      Handle(Geom_Surface) BasisSurf = (*((Handle(Geom_OffsetSurface)*)&S))->BasisSurface();
+      Handle(Geom_Surface) BasisSurf = Handle(Geom_OffsetSurface)::DownCast (S)->BasisSurface();
       IsSuclosed = BasisSurf->IsUClosed();
       IsSvclosed = BasisSurf->IsVClosed();
     }
@@ -2601,10 +2601,10 @@ static void MakeFace(const Handle(Geom_Surface)& S,
   Standard_Boolean vmindegen = isVminDegen, vmaxdegen = isVmaxDegen;
   Handle(Geom_Surface) theSurf = S;
   if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
-    theSurf = (*(Handle(Geom_RectangularTrimmedSurface)*)&S)->BasisSurface();
+    theSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
   if (theSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
     {
-      Handle(Geom_ConicalSurface) ConicalS = *((Handle(Geom_ConicalSurface)*) &theSurf);
+      Handle(Geom_ConicalSurface) ConicalS = Handle(Geom_ConicalSurface)::DownCast (theSurf);
       gp_Cone theCone = ConicalS->Cone();
       gp_Pnt theApex = theCone.Apex();
       Standard_Real Uapex, Vapex;
@@ -2837,7 +2837,7 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)& S,
 
   Standard_Boolean SurfaceChange = Standard_False;
   if ( S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    Handle(Geom_Surface) BS = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+    Handle(Geom_Surface) BS = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
     EnlargeGeometry(BS,U1,U2,V1,V2,IsV1degen,IsV2degen,
 		    uf1,uf2,vf1,vf2,GlobalEnlargeU,GlobalEnlargeVfirst,GlobalEnlargeVlast);
     if (!GlobalEnlargeVfirst)
@@ -2845,14 +2845,14 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)& S,
     if (!GlobalEnlargeVlast)
       V2 = vf2;
     if (!GlobalEnlargeVfirst || !GlobalEnlargeVlast)
-      //(*((Handle(Geom_RectangularTrimmedSurface)*)&S))->SetTrim( U1, U2, V1, V2 );
+      //Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->SetTrim( U1, U2, V1, V2 );
       S = new Geom_RectangularTrimmedSurface( BS, U1, U2, V1, V2 );
     else
       S = BS;
     SurfaceChange = Standard_True;
   }
   else if (S->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface)) {
-    Handle(Geom_Surface) Surf = (*((Handle(Geom_OffsetSurface)*)&S))->BasisSurface();
+    Handle(Geom_Surface) Surf = Handle(Geom_OffsetSurface)::DownCast (S)->BasisSurface();
     SurfaceChange = EnlargeGeometry(Surf,U1,U2,V1,V2,IsV1degen,IsV2degen,
 				    uf1,uf2,vf1,vf2,GlobalEnlargeU,GlobalEnlargeVfirst,GlobalEnlargeVlast);
     Handle(Geom_OffsetSurface)::DownCast(S)->SetBasisSurface(Surf);
@@ -2919,16 +2919,16 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)& S,
       if (enlargeU)
 	{
 	  if (enlargeUfirst)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), du, 1, Standard_True, Standard_False );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_False );
 	  if (enlargeUlast)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), du, 1, Standard_True, Standard_True );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_True );
 	}
       if (enlargeV)
 	{
 	  if (enlargeVfirst)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), dv, 1, Standard_False, Standard_False );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_False );
 	  if (enlargeVlast)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), dv, 1, Standard_False, Standard_True );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_True );
 	}
       S->Bounds( U1, U2, V1, V2 );
       SurfaceChange = Standard_True;
@@ -2985,16 +2985,16 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)& S,
       if (enlargeU)
 	{
 	  if (enlargeUfirst && uf1-u1 < duf)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), du, 1, Standard_True, Standard_False );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_False );
 	  if (enlargeUlast && u2-uf2 < duf)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), du, 1, Standard_True, Standard_True );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_True );
 	}
       if (enlargeV)
 	{
 	  if (enlargeVfirst && vf1-v1 < dvf)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), dv, 1, Standard_False, Standard_False );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_False );
 	  if (enlargeVlast && v2-vf2 < dvf)
-	    GeomLib::ExtendSurfByLength( *((Handle(Geom_BoundedSurface)*)&S), dv, 1, Standard_False, Standard_True );
+	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_True );
 	}
 
       S->Bounds( U1, U2, V1, V2 );
@@ -3116,7 +3116,7 @@ void BRepOffset_Tool::CheckBounds(const TopoDS_Face& F,
 
   Handle(Geom_Surface) theSurf = BRep_Tool::Surface(F);
   if (theSurf->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
-    theSurf = (*((Handle(Geom_RectangularTrimmedSurface)*)&theSurf))->BasisSurface();
+    theSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (theSurf)->BasisSurface();
 
   if (theSurf->DynamicType() == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion) ||
       theSurf->DynamicType() == STANDARD_TYPE(Geom_SurfaceOfRevolution) ||
@@ -3136,11 +3136,11 @@ void BRepOffset_Tool::CheckBounds(const TopoDS_Face& F,
 		  Standard_Real fpar, lpar;
 		  Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface(anEdge, F, fpar, lpar);
 		  if (aCurve->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
-		    aCurve = (*((Handle(Geom2d_TrimmedCurve)*)&aCurve))->BasisCurve();
+		    aCurve = Handle(Geom2d_TrimmedCurve)::DownCast (aCurve)->BasisCurve();
 		  
 		  Handle(Geom2d_Line) theLine;
 		  if (aCurve->DynamicType() == STANDARD_TYPE(Geom2d_Line))
-		    theLine = *((Handle(Geom2d_Line)*)&aCurve);
+		    theLine = Handle(Geom2d_Line)::DownCast (aCurve);
 		  else if (aCurve->DynamicType() == STANDARD_TYPE(Geom2d_BezierCurve) ||
 			   aCurve->DynamicType() == STANDARD_TYPE(Geom2d_BSplineCurve))
 		    {
@@ -3269,10 +3269,10 @@ Standard_Boolean BRepOffset_Tool::EnLargeFace
   //Special treatment for conical surfaces
   Handle(Geom_Surface) theSurf = S;
   if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
-    theSurf = (*(Handle(Geom_RectangularTrimmedSurface)*)&S)->BasisSurface();
+    theSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
   if (theSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
     {
-      Handle(Geom_ConicalSurface) ConicalS = *((Handle(Geom_ConicalSurface)*) &theSurf);
+      Handle(Geom_ConicalSurface) ConicalS = Handle(Geom_ConicalSurface)::DownCast (theSurf);
       gp_Cone theCone = ConicalS->Cone();
       gp_Pnt theApex = theCone.Apex();
       Standard_Real Uapex, Vapex;

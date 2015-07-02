@@ -411,7 +411,7 @@ Standard_Boolean AIS_LengthDimension::InitEdgeVertexLength (const TopoDS_Edge& t
 
   myFirstPoint = BRep_Tool::Pnt (theVertex);
 
-  const Handle(Geom_Line)& aGeomLine = (Handle(Geom_Line)&) aCurve;
+  Handle(Geom_Line) aGeomLine (Handle(Geom_Line)::DownCast (aCurve));
   const gp_Lin& aLin = aGeomLine->Lin();
 
   // Get direction of edge to build plane automatically.

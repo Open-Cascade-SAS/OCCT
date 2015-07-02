@@ -49,16 +49,16 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
     const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)
       Bspli = Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(SC);
-	return StepToGeom_MakeBSplineCurve::Convert(Bspli,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(Bspli,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnots))) {
     const Handle(StepGeom_BSplineCurveWithKnots)
       Bspli = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(SC);
-	return StepToGeom_MakeBSplineCurve::Convert(Bspli,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(Bspli,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_TrimmedCurve))) {
     const Handle(StepGeom_TrimmedCurve) L = Handle(StepGeom_TrimmedCurve)::DownCast(SC);
-	return StepToGeom_MakeTrimmedCurve::Convert(L,*((Handle(Geom_TrimmedCurve)*)&CC));
+	return StepToGeom_MakeTrimmedCurve::Convert(L,Handle(Geom_TrimmedCurve)::DownCast (CC));
   }
   // STEP BezierCurve, UniformCurve and QuasiUniformCurve are transformed into
   // STEP BSplineCurve before being mapped onto CAS.CADE/SF
@@ -82,7 +82,7 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
     Knots->SetValue(2, 1.);
     BSPL->SetKnotMultiplicities(Kmult);
     BSPL->SetKnots(Knots);
-	return StepToGeom_MakeBSplineCurve::Convert(BSPL,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(BSPL,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_UniformCurve))) {
     const Handle(StepGeom_UniformCurve) UC = Handle(StepGeom_UniformCurve)::DownCast(SC);
@@ -105,7 +105,7 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
     }
     BSPL->SetKnotMultiplicities(Kmult);
     BSPL->SetKnots(Knots);
-	return StepToGeom_MakeBSplineCurve::Convert(BSPL,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(BSPL,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformCurve))) {
     const Handle(StepGeom_QuasiUniformCurve) QUC = 
@@ -131,7 +131,7 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
     Kmult->SetValue(nbK, BSPL->Degree() + 1);
     BSPL->SetKnotMultiplicities(Kmult);
     BSPL->SetKnots(Knots);
-	return StepToGeom_MakeBSplineCurve::Convert(BSPL,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(BSPL,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_UniformCurveAndRationalBSplineCurve))) {
     const Handle(StepGeom_UniformCurveAndRationalBSplineCurve) RUC = 
@@ -153,7 +153,7 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
     RBSPL->Init(RUC->Name(), aDegree, RUC->ControlPointsList(), RUC->CurveForm(),
 		RUC->ClosedCurve(), RUC->SelfIntersect(), Kmult, Knots, StepGeom_ktUnspecified,
 		RUC->WeightsData());
-	return StepToGeom_MakeBSplineCurve::Convert(RBSPL,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(RBSPL,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformCurveAndRationalBSplineCurve))) {
     const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve) RQUC = 
@@ -177,11 +177,11 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
     RBSPL->Init(RQUC->Name(), aDegree, RQUC->ControlPointsList(), RQUC->CurveForm(),
 		RQUC->ClosedCurve(), RQUC->SelfIntersect(), Kmult, Knots, StepGeom_ktUnspecified,
 		RQUC->WeightsData());
-	return StepToGeom_MakeBSplineCurve::Convert(RBSPL,*((Handle(Geom_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve::Convert(RBSPL,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Polyline))) { //:n6 abv 15 Feb 99
     const Handle(StepGeom_Polyline) PL = Handle(StepGeom_Polyline)::DownCast (SC);
-    return StepToGeom_MakePolyline::Convert(PL,*((Handle(Geom_BSplineCurve)*)&CC));
+    return StepToGeom_MakePolyline::Convert(PL,Handle(Geom_BSplineCurve)::DownCast (CC));
   }
   return Standard_False;
 }

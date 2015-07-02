@@ -118,8 +118,8 @@ Standard_Boolean FUN_findPonF(const TopoDS_Edge& E,const TopOpeBRepDS_DataStruct
     Standard_Boolean pardef = Standard_False;
     
     Handle(TopOpeBRepDS_Interference)& I = itI.Value(); FDS_data(I,GT1,G1,ST1,S1);        
-    const Handle(TopOpeBRepDS_CurvePointInterference)& CPI = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I);
-    const Handle(TopOpeBRepDS_ShapeShapeInterference)& SSI = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I);
+    Handle(TopOpeBRepDS_CurvePointInterference) CPI (Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I));
+    Handle(TopOpeBRepDS_ShapeShapeInterference) SSI (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I));
     if      (!CPI.IsNull()) {
       par = CPI->Parameter(); pardef = Standard_True;
     }

@@ -2722,7 +2722,7 @@ void AppDef_Variational::AssemblingConstraints(const Handle(FEmTool_Curve)& Curv
   Standard_Real t, R1, R2;
 
   Handle(PLib_Base) myBase = Curve->Base();
-  Handle(PLib_HermitJacobi) myHermitJacobi = (*((Handle(PLib_HermitJacobi)*)&myBase));
+  Handle(PLib_HermitJacobi) myHermitJacobi = Handle(PLib_HermitJacobi)::DownCast (myBase);
   Standard_Integer Order = myHermitJacobi->NivConstr() + 1;
 
   Standard_Real UFirst, ULast, coeff, c0, mfact, mfact1;

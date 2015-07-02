@@ -212,7 +212,7 @@ void AIS_PerpendicularRelation::ComputeTwoEdgesPerpendicular(const Handle(Prs3d_
   Handle(Geom_Line) geom_lin2;
   if ( geom1->IsInstance(STANDARD_TYPE(Geom_Ellipse)) )
     {
-      const Handle(Geom_Ellipse)& geom_el = (Handle(Geom_Ellipse)&) geom1;
+      Handle(Geom_Ellipse) geom_el (Handle(Geom_Ellipse)::DownCast (geom1));
       // construct lines through focuses
       gp_Ax1 elAx = geom_el->XAxis();
       gp_Lin ll (elAx);
@@ -225,13 +225,13 @@ void AIS_PerpendicularRelation::ComputeTwoEdgesPerpendicular(const Handle(Prs3d_
     }
   else if ( geom1->IsInstance(STANDARD_TYPE(Geom_Line)) )
     {
-      geom_lin1 = (Handle(Geom_Line)&) geom1;
+      geom_lin1 = Handle(Geom_Line)::DownCast (geom1);
     }
   else return;
 
   if (geom2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
     {
-      const Handle(Geom_Ellipse)& geom_el = (Handle(Geom_Ellipse)&) geom2;
+      Handle(Geom_Ellipse) geom_el (Handle(Geom_Ellipse)::DownCast (geom2));
       // construct lines through focuses
       gp_Ax1 elAx = geom_el->XAxis();
       gp_Lin ll (elAx);
@@ -244,7 +244,7 @@ void AIS_PerpendicularRelation::ComputeTwoEdgesPerpendicular(const Handle(Prs3d_
     }
   else if ( geom2->IsInstance(STANDARD_TYPE(Geom_Line)) )
     {
-      geom_lin2 = (Handle(Geom_Line)&) geom2;
+      geom_lin2 = Handle(Geom_Line)::DownCast (geom2);
     }
   else return;
 
@@ -255,9 +255,9 @@ void AIS_PerpendicularRelation::ComputeTwoEdgesPerpendicular(const Handle(Prs3d_
   
   // 2d lines => projection of 3d on current plane
   Handle(Geom2d_Curve) aGeom2dCurve = GeomAPI::To2d(geom_lin1,myPlane->Pln());
-  Handle(Geom2d_Line) lin1_2d = (Handle(Geom2d_Line)&) aGeom2dCurve ;
+  Handle(Geom2d_Line) lin1_2d = Handle(Geom2d_Line)::DownCast (aGeom2dCurve) ;
   aGeom2dCurve = GeomAPI::To2d(geom_lin2,myPlane->Pln());
-  Handle(Geom2d_Line) lin2_2d = (Handle(Geom2d_Line)&) aGeom2dCurve ;
+  Handle(Geom2d_Line) lin2_2d = Handle(Geom2d_Line)::DownCast (aGeom2dCurve) ;
   IntAna2d_AnaIntersection inter(lin1_2d->Lin2d(),lin2_2d->Lin2d());
   if (!inter.IsDone()) return;
   if (!inter.NbPoints()) return;

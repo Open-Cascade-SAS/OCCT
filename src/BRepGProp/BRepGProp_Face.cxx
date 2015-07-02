@@ -617,7 +617,7 @@ void BRepGProp_Face::GetUKnots
       GeomAdaptor_Curve    aCurve;
       Handle(Geom_Surface) aSurf = mySurface.Surface().Surface();
 
-      aCurve.Load((*((Handle(Geom_SurfaceOfLinearExtrusion)*)&aSurf))->BasisCurve());
+      aCurve.Load(Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (aSurf)->BasisCurve());
       isCBSpline = aCurve.GetType() == GeomAbs_BSplineCurve;
     }
   }
@@ -643,7 +643,7 @@ void BRepGProp_Face::GetUKnots
       Handle(Geom_Surface)      aSurf = mySurface.Surface().Surface();
       Handle(Geom_BSplineCurve) aBSplCurve;
 
-      aCurve.Load((*((Handle(Geom_SurfaceOfLinearExtrusion)*)&aSurf))->BasisCurve());
+      aCurve.Load(Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (aSurf)->BasisCurve());
       aBSplCurve = aCurve.BSpline();
       aNbKnots   = aBSplCurve->NbKnots();
       aKnots     = new TColStd_HArray1OfReal(1, aNbKnots);

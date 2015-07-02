@@ -573,7 +573,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
     Standard_Boolean istrim = ( T == STANDARD_TYPE(Geom_RectangularTrimmedSurface) );
     if (istrim) {
       Handle(Geom_RectangularTrimmedSurface) 
-	hrts=*((Handle(Geom_RectangularTrimmedSurface)*)&Surf);
+	hrts=Handle(Geom_RectangularTrimmedSurface)::DownCast (Surf);
       Standard_Real oumin,oumax,ovmin,ovmax;
       hrts->Bounds(oumin,oumax,ovmin,ovmax);
       Standard_Real umin,umax,vmin,vmax;

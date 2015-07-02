@@ -1341,7 +1341,7 @@ static Standard_Integer mypoints (Draw_Interpretor& di, Standard_Integer /*n*/, 
 
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
   defl = Draw::Atof(a[3]);
-  const Handle(Geom_BSplineCurve)& aBS = Handle(Geom_BSplineCurve)::DownCast(C);
+  Handle(Geom_BSplineCurve) aBS (Handle(Geom_BSplineCurve)::DownCast(C));
 
   if(aBS.IsNull()) return 1;
 

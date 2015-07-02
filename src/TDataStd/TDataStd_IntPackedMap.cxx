@@ -209,7 +209,7 @@ Handle(TDF_DeltaOnModification) TDataStd_IntPackedMap::DeltaOnModification
 (const Handle(TDF_Attribute)& OldAttribute) const
 {
   if(myIsDelta)
-    return new TDataStd_DeltaOnModificationOfIntPackedMap(*((Handle(TDataStd_IntPackedMap)*)&OldAttribute));
+    return new TDataStd_DeltaOnModificationOfIntPackedMap(Handle(TDataStd_IntPackedMap)::DownCast (OldAttribute));
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 

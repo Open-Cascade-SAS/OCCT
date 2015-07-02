@@ -354,7 +354,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
           // On downcast aShape  de AIS_InteractiveObject a AIS_Trihedron
           // pour lui appliquer la methode SetSize()
-          Handle(AIS_Trihedron) aTrihedron = *(Handle(AIS_Trihedron)*) &aShape;
+          Handle(AIS_Trihedron) aTrihedron = Handle(AIS_Trihedron)::DownCast (aShape);
 
           // C'est bien un triedre,on chage sa valeur!
           aTrihedron->SetSize(value);
@@ -415,7 +415,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
         // On downcast aShape de AIS_InteractiveObject a AIS_Trihedron
         // pour lui appliquer la methode SetSize()
-        Handle(AIS_Trihedron) aTrihedron = *(Handle(AIS_Trihedron)*) &aShape;
+        Handle(AIS_Trihedron) aTrihedron = Handle(AIS_Trihedron)::DownCast (aShape);
 
         // C'est bien un triedre,on chage sa valeur
         aTrihedron->SetSize(value);
@@ -475,7 +475,7 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
     if (!ShapeA.IsNull() &&
       ShapeA->Type()==AIS_KOI_Datum  && ShapeA->Signature()==3  ) {
         // on le downcast
-        Handle(AIS_Trihedron) TrihedronA =((*(Handle(AIS_Trihedron)*)&ShapeA));
+        Handle(AIS_Trihedron) TrihedronA =(Handle(AIS_Trihedron)::DownCast (ShapeA));
         // on le charge dans le contexte et on active le mode Plane.
         TheAISContext()->Load(TrihedronA,0,Standard_False);
         TheAISContext()->Activate(TrihedronA,3);
@@ -496,7 +496,7 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
     theIOB = TheAISContext()->Interactive();
   }
   // on le downcast
-  Handle(AIS_Plane) PlaneB =((*(Handle(AIS_Plane)*)&theIOB));
+  Handle(AIS_Plane) PlaneB =(Handle(AIS_Plane)::DownCast (theIOB));
 
   // Fermeture du contexte local.
   TheAISContext()->CloseLocalContext(myCurrentIndex);
@@ -1796,15 +1796,15 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       }
     else {di <<"vline error: wrong type of 1st argument."<<"\n";return 1; }
     // Les deux parametres sont du bon type. On verifie que les points ne sont pas confondus
-    Handle(AIS_Point) theAISPointA= *(Handle(AIS_Point)*)& theShapeA;
-    Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
+    Handle(AIS_Point) theAISPointA= Handle(AIS_Point)::DownCast (theShapeA);
+    Handle(AIS_Point) theAISPointB= Handle(AIS_Point)::DownCast (theShapeB);
 
     Handle(Geom_Point ) myGeomPointBA=  theAISPointA->Component();
-    Handle(Geom_CartesianPoint ) myCartPointA= *((Handle(Geom_CartesianPoint)*)&  myGeomPointBA);
+    Handle(Geom_CartesianPoint ) myCartPointA= Handle(Geom_CartesianPoint)::DownCast (myGeomPointBA);
     //    Handle(Geom_CartesianPoint ) myCartPointA= *(Handle(Geom_CartesianPoint)*)& (theAISPointA->Component() ) ;
 
     Handle(Geom_Point ) myGeomPointB=  theAISPointB->Component();
-    Handle(Geom_CartesianPoint ) myCartPointB= *((Handle(Geom_CartesianPoint)*)&  myGeomPointB);
+    Handle(Geom_CartesianPoint ) myCartPointB= Handle(Geom_CartesianPoint)::DownCast (myGeomPointB);
     //    Handle(Geom_CartesianPoint ) myCartPointB= *(Handle(Geom_CartesianPoint)*)& (theAISPointB->Component() ) ;
 
     if (myCartPointB->X()==myCartPointA->X() && myCartPointB->Y()==myCartPointA->Y() && myCartPointB->Z()==myCartPointA->Z() ) {

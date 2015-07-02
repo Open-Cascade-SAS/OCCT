@@ -52,17 +52,17 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
   if (SS->IsKind(STANDARD_TYPE(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface))) { 
     const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) BS =
       Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)::DownCast(SS);
-	return StepToGeom_MakeBSplineSurface::Convert(BS,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(BS,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_BSplineSurfaceWithKnots))) {
     const Handle(StepGeom_BSplineSurfaceWithKnots) BS
       = Handle(StepGeom_BSplineSurfaceWithKnots)::DownCast(SS);
-	return StepToGeom_MakeBSplineSurface::Convert(BS,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(BS,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_RectangularTrimmedSurface))) {
     const Handle(StepGeom_RectangularTrimmedSurface) Sur = 
       Handle(StepGeom_RectangularTrimmedSurface)::DownCast(SS);
-    return StepToGeom_MakeRectangularTrimmedSurface::Convert(Sur,*((Handle(Geom_RectangularTrimmedSurface)*)&CS));
+    return StepToGeom_MakeRectangularTrimmedSurface::Convert(Sur,Handle(Geom_RectangularTrimmedSurface)::DownCast (CS));
   }
   // STEP BezierSurface, UniformSurface and QuasiUniformSurface are transformed
   // into STEP BSplineSurface before being mapped onto CAS.CADE/SF
@@ -93,7 +93,7 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
     BSPL->SetVMultiplicities(VKmult);
     BSPL->SetUKnots(UKnots);
     BSPL->SetVKnots(VKnots);
-	return StepToGeom_MakeBSplineSurface::Convert(BSPL,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(BSPL,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_UniformSurface))) {
     const Handle(StepGeom_UniformSurface) US = Handle(StepGeom_UniformSurface)::DownCast(SS);
@@ -125,7 +125,7 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
     }
     BSPL->SetVMultiplicities(VKmult);
     BSPL->SetVKnots(VKnots);
-	return StepToGeom_MakeBSplineSurface::Convert(BSPL,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(BSPL,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformSurface))) {
     const Handle(StepGeom_QuasiUniformSurface) QUS = 
@@ -162,7 +162,7 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
     VKmult->SetValue(nbKV, BSPL->VDegree() + 1);
     BSPL->SetVMultiplicities(VKmult);
     BSPL->SetVKnots(VKnots);
-	return StepToGeom_MakeBSplineSurface::Convert(BSPL,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(BSPL,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_UniformSurfaceAndRationalBSplineSurface))) {
     const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface) RUS = 
@@ -191,7 +191,7 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
 		RUS->UClosed(), RUS->VClosed(), RUS->SelfIntersect(), 
 		UKmult, VKmult, UKnots, VKnots, StepGeom_ktUnspecified,
 		RUS->WeightsData());
-	return StepToGeom_MakeBSplineSurface::Convert(RBSPL,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(RBSPL,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface))) {
     const Handle(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface) RQUS = 
@@ -223,7 +223,7 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
 		RQUS->SurfaceForm(), RQUS->UClosed(), RQUS->VClosed(), 
 		RQUS->SelfIntersect(), UKmult, VKmult, UKnots, VKnots, StepGeom_ktUnspecified,
 		RQUS->WeightsData());
-	return StepToGeom_MakeBSplineSurface::Convert(RBSPL,*((Handle(Geom_BSplineSurface)*)&CS));
+	return StepToGeom_MakeBSplineSurface::Convert(RBSPL,Handle(Geom_BSplineSurface)::DownCast (CS));
   }
 /* //:S4136: ass-tol2.stp #9861
   // UPDATE FMA 15-03-96

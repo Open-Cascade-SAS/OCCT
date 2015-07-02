@@ -1303,10 +1303,10 @@ Standard_Real ResolutionCoeff(const BRepAdaptor_Curve& theBAC,
   //
   switch (aCurveType) {
   case GeomAbs_Circle :
-    aResCoeff = 1. / (2 * (*((Handle(Geom_Circle)*)&aCurve))->Circ().Radius());
+    aResCoeff = 1. / (2 * Handle(Geom_Circle)::DownCast (aCurve)->Circ().Radius());
     break;
   case GeomAbs_Ellipse :
-    aResCoeff =  1. / (*((Handle(Geom_Ellipse)*)&aCurve))->MajorRadius();
+    aResCoeff =  1. / Handle(Geom_Ellipse)::DownCast (aCurve)->MajorRadius();
     break;
   case GeomAbs_Hyperbola :
   case GeomAbs_Parabola : 
@@ -1365,10 +1365,10 @@ Standard_Real Resolution(const Handle(Geom_Curve)& theCurve,
     break;
   }
   case GeomAbs_BezierCurve:
-    (*((Handle(Geom_BezierCurve)*)&theCurve))->Resolution(theR3D, aRes);
+    Handle(Geom_BezierCurve)::DownCast (theCurve)->Resolution(theR3D, aRes);
     break;
   case GeomAbs_BSplineCurve:
-    (*((Handle(Geom_BSplineCurve)*)&theCurve))->Resolution(theR3D, aRes);
+    Handle(Geom_BSplineCurve)::DownCast (theCurve)->Resolution(theR3D, aRes);
     break;
   default:
     aRes = theResCoeff * theR3D;

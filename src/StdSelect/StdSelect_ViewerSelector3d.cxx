@@ -517,16 +517,15 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(SelectMgr_Sel
     //==========================================================
     else if (Ent->DynamicType()==STANDARD_TYPE(Select3D_SensitiveTriangulation))
     {
-      const Handle(Poly_Triangulation)& PT =
-        (*((Handle(Select3D_SensitiveTriangulation)*) &Ent))->Triangulation();
+      Handle(Poly_Triangulation) PT (Handle(Select3D_SensitiveTriangulation)::DownCast (Ent)->Triangulation());
 
       const Poly_Array1OfTriangle& triangles = PT->Triangles();
       const TColgp_Array1OfPnt& Nodes = PT->Nodes();
       Standard_Integer n[3];
 
       TopLoc_Location iloc, bidloc;
-      if ((*((Handle(Select3D_SensitiveTriangulation)*) &Ent))->HasInitLocation())
-        bidloc = (*((Handle(Select3D_SensitiveTriangulation)*) &Ent))->GetInitLocation();
+      if (Handle(Select3D_SensitiveTriangulation)::DownCast (Ent)->HasInitLocation())
+        bidloc = Handle(Select3D_SensitiveTriangulation)::DownCast (Ent)->GetInitLocation();
 
       if (bidloc.IsIdentity())
         iloc = theLoc;

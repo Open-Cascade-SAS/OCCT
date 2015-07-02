@@ -290,7 +290,7 @@ static Standard_Integer OCC218bug (Draw_Interpretor& di, Standard_Integer argc, 
     // un AIS_PlaneTrihedron
     if (aShape->Type()==AIS_KOI_Datum && aShape->Signature()==4) {
       // On downcast aShape de AIS_InteractiveObject a AIS_PlaneTrihedron
-      theAISPlaneTri = *(Handle(AIS_PlaneTrihedron)*) &aShape;
+      theAISPlaneTri = Handle(AIS_PlaneTrihedron)::DownCast (aShape);
 
       theAISPlaneTri->SetXLabel(Xlabel);
       theAISPlaneTri->SetYLabel(Ylabel);

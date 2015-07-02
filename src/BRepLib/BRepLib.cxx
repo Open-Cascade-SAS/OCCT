@@ -976,7 +976,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   Handle(Standard_Type) TheType = C3d->DynamicType();
   if( TheType == STANDARD_TYPE(Geom_TrimmedCurve))
   {
-    const Handle(Geom_Curve)& gtC = (*((Handle(Geom_TrimmedCurve)*)&C3d))->BasisCurve();
+    Handle(Geom_Curve) gtC (Handle(Geom_TrimmedCurve)::DownCast (C3d)->BasisCurve());
     m_TrimmedPeriodical = gtC->IsPeriodic();
   }
   // modified by NIZHNY-OCC486  Tue Aug 27 17:15:17 2002 .
@@ -1323,7 +1323,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
         aB.SetVoid();
         BRepBndLib::Add(curf,aB);
         if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-          S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+          S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
         }
         GeomAdaptor_Surface AS(S);
         switch (AS.GetType()) {
@@ -1820,7 +1820,7 @@ void  BRepLib::SortFaces (const TopoDS_Shape& Sh,
     S = BRep_Tool::Surface(F, l);
     if (!S.IsNull()) {
       if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-        S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+        S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
       }
       GeomAdaptor_Surface AS(S);
       switch (AS.GetType()) {
@@ -1878,7 +1878,7 @@ void  BRepLib::ReverseSortFaces (const TopoDS_Shape& Sh,
     S = BRep_Tool::Surface(F, l);
     if (!S.IsNull()) {
       if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-        S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+        S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
       }
       GeomAdaptor_Surface AS(S);
       switch (AS.GetType()) {

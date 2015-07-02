@@ -541,7 +541,7 @@ void AIS_InteractiveContext::SetCurrentObject(const Handle(AIS_InteractiveObject
     sel->Init();
     while (sel->More()) {
       TR = sel->Value();
-      IO = *((Handle(AIS_InteractiveObject)*)&TR);
+      IO = Handle(AIS_InteractiveObject)::DownCast (TR);
       Unhilight(IO,Standard_False);
       IO->State(0);
       sel->Next();
@@ -675,7 +675,7 @@ void AIS_InteractiveContext::NextCurrent()
 Handle(AIS_InteractiveObject) AIS_InteractiveContext::Current() const 
 {
   Handle(Standard_Transient) TR = AIS_Selection::Selection(myCurrentName.ToCString())->Value();
-  Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&TR);
+  Handle(AIS_InteractiveObject) IO = Handle(AIS_InteractiveObject)::DownCast (TR);
   return IO;
 }
 
@@ -718,7 +718,7 @@ void AIS_InteractiveContext::HilightCurrents(const Standard_Boolean updateviewer
   sel->Init();
   while (sel->More()) {
     TR = sel->Value();
-    IO = *((Handle(AIS_InteractiveObject)*)&TR);
+    IO = Handle(AIS_InteractiveObject)::DownCast (TR);
     HilightWithColor(IO,mySelectionColor,Standard_False);
     sel->Next();
   }
@@ -740,7 +740,7 @@ void AIS_InteractiveContext::UnhilightCurrents(const Standard_Boolean updateview
   sel->Init();
   while (sel->More()) {
     TR = sel->Value();
-    IO = *((Handle(AIS_InteractiveObject)*)&TR);
+    IO = Handle(AIS_InteractiveObject)::DownCast (TR);
     Unhilight(IO,Standard_False);
     sel->Next();
   }
@@ -762,7 +762,7 @@ void AIS_InteractiveContext::ClearCurrents(const Standard_Boolean updateviewer)
   Handle(AIS_InteractiveObject) IO;
   for(S->Init();S->More();S->Next()){
     Tr = S->Value();
-    IO = (*((Handle(AIS_InteractiveObject)*)&Tr));
+    IO = Handle(AIS_InteractiveObject)::DownCast (Tr);
     IO->State(0);
     Unhilight(IO,Standard_False);
   }
@@ -787,7 +787,7 @@ void AIS_InteractiveContext::HilightSelected(const Standard_Boolean updateviewer
     sel->Init();
     while (sel->More()) {
       TR = sel->Value();
-      IO = *((Handle(AIS_InteractiveObject)*)&TR);
+      IO = Handle(AIS_InteractiveObject)::DownCast (TR);
       HilightWithColor(IO,mySelectionColor,Standard_False);
       sel->Next();
     }
@@ -815,7 +815,7 @@ void AIS_InteractiveContext::UnhilightSelected(const Standard_Boolean updateview
     sel->Init();
     while (sel->More()) {
       TR = sel->Value();
-      IO = *((Handle(AIS_InteractiveObject)*)&TR);
+      IO = Handle(AIS_InteractiveObject)::DownCast (TR);
       Unhilight(IO,Standard_False);
       sel->Next();
     }
@@ -1055,7 +1055,7 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::SelectedInteractive() cons
     if (AIS_Selection::Selection(myCurrentName.ToCString())->Extent() == 0)
       return NULL;
     Handle(Standard_Transient) TR  =AIS_Selection::Selection(myCurrentName.ToCString())->Value();
-    Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&TR);
+    Handle(AIS_InteractiveObject) IO = Handle(AIS_InteractiveObject)::DownCast (TR);
     return IO;}
   
   return  myLocalContexts(myCurLocalIndex)->SelectedInteractive();

@@ -776,7 +776,7 @@ static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
     seq.Append(curve->Value(M_PI));
   } else if ( curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
     //DeclareAndCast(Geom_TrimmedCurve, Trimmed, curve);
-    Handle(Geom_TrimmedCurve) Trimmed = *((Handle(Geom_TrimmedCurve) *) &curve);
+    Handle(Geom_TrimmedCurve) Trimmed = Handle(Geom_TrimmedCurve)::DownCast (curve);
 //     AppendControlPoles(seq,Trimmed->BasisCurve());
     Handle(Geom_Curve) aBaseCrv = Trimmed->BasisCurve();
     Standard_Boolean done = Standard_False;
@@ -811,14 +811,14 @@ static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
     }
   } else if ( curve->IsKind(STANDARD_TYPE(Geom_OffsetCurve))) {
     //DeclareAndCast(Geom_OffsetCurve, OffsetC, curve);
-    Handle(Geom_OffsetCurve) OffsetC = *((Handle(Geom_OffsetCurve) *) &curve);
+    Handle(Geom_OffsetCurve) OffsetC = Handle(Geom_OffsetCurve)::DownCast (curve);
 //     AppendControlPoles(seq,OffsetC->BasisCurve());
     seq.Append(curve->Value(curve->FirstParameter()));
     seq.Append(curve->Value((curve->FirstParameter() + curve->LastParameter())/2.));
     seq.Append(curve->Value(curve->LastParameter()));
   } else if ( curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve))) {
     //DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    Handle(Geom_BSplineCurve) BSpline = *((Handle(Geom_BSplineCurve) *) &curve);
+    Handle(Geom_BSplineCurve) BSpline = Handle(Geom_BSplineCurve)::DownCast (curve);
     TColgp_Array1OfPnt Poles(1,BSpline->NbPoles());
     BSpline->Poles(Poles);
     for(Standard_Integer i = 1; i <= BSpline->NbPoles(); i++)
@@ -826,7 +826,7 @@ static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
   } else if ( curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))  {
     //DeclareAndCast(Geom_BezierCurve, Bezier, curve);
     //Handle(Geom_BezierCurve) Bezier = Handle(Geom_BezierCurve)::DownCast(curve);
-    Handle(Geom_BezierCurve) Bezier = *((Handle(Geom_BezierCurve) *) &curve);
+    Handle(Geom_BezierCurve) Bezier = Handle(Geom_BezierCurve)::DownCast (curve);
     TColgp_Array1OfPnt Poles(1,Bezier->NbPoles());
     Bezier->Poles(Poles);
     for(Standard_Integer i = 1; i <= Bezier->NbPoles(); i++)
@@ -915,7 +915,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar (const TColgp_Array1OfPnt& pnts,
 
   if (curve->IsKind(STANDARD_TYPE(Geom_Line))) {
     //DeclareAndCast(Geom_Line, Line, curve);
-    Handle(Geom_Line) Line = *((Handle(Geom_Line) *) &curve);
+    Handle(Geom_Line) Line = Handle(Geom_Line)::DownCast (curve);
     gp_XYZ N1 = Line->Position().Direction().XYZ();
     if (noNorm) {
       Normal = GetAnyNormal(N1);
@@ -926,7 +926,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar (const TColgp_Array1OfPnt& pnts,
 
   if (curve->IsKind(STANDARD_TYPE(Geom_Conic))) {
     //DeclareAndCast(Geom_Conic, Conic, curve);
-    Handle(Geom_Conic) Conic = *((Handle(Geom_Conic) *) &curve);
+    Handle(Geom_Conic) Conic = Handle(Geom_Conic)::DownCast (curve);
     gp_XYZ N1 = Conic->Axis().Direction().XYZ();
     if (noNorm) {
       Normal = N1;
@@ -938,19 +938,19 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar (const TColgp_Array1OfPnt& pnts,
 
   if (curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
     //DeclareAndCast(Geom_TrimmedCurve, Trimmed, curve);
-    Handle(Geom_TrimmedCurve) Trimmed = *((Handle(Geom_TrimmedCurve) *) &curve);
+    Handle(Geom_TrimmedCurve) Trimmed = Handle(Geom_TrimmedCurve)::DownCast (curve);
     return IsPlanar(Trimmed->BasisCurve(),Normal,precision);
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_OffsetCurve))) {
     //DeclareAndCast(Geom_OffsetCurve, OffsetC, curve);
-    Handle(Geom_OffsetCurve) OffsetC = *((Handle(Geom_OffsetCurve) *) &curve);
+    Handle(Geom_OffsetCurve) OffsetC = Handle(Geom_OffsetCurve)::DownCast (curve);
     return IsPlanar(OffsetC->BasisCurve(),Normal,precision);
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve))) {
     //DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    Handle(Geom_BSplineCurve) BSpline = *((Handle(Geom_BSplineCurve) *) &curve);
+    Handle(Geom_BSplineCurve) BSpline = Handle(Geom_BSplineCurve)::DownCast (curve);
     TColgp_Array1OfPnt Poles(1,BSpline->NbPoles());
     BSpline->Poles(Poles);
     return IsPlanar(Poles,Normal,precision);
@@ -958,7 +958,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar (const TColgp_Array1OfPnt& pnts,
 
   if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve))) {
     //DeclareAndCast(Geom_BezierCurve, Bezier, curve);
-    Handle(Geom_BezierCurve) Bezier = *((Handle(Geom_BezierCurve) *) &curve);
+    Handle(Geom_BezierCurve) Bezier = Handle(Geom_BezierCurve)::DownCast (curve);
     TColgp_Array1OfPnt Poles(1,Bezier->NbPoles());
     Bezier->Poles(Poles);
     return IsPlanar(Poles,Normal,precision);
@@ -966,7 +966,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar (const TColgp_Array1OfPnt& pnts,
 
   if (curve->IsKind(STANDARD_TYPE(ShapeExtend_ComplexCurve))) {
     //DeclareAndCast(ShapeExtend_ComplexCurve, Complex, curve);
-    Handle(ShapeExtend_ComplexCurve) Complex = *((Handle(ShapeExtend_ComplexCurve) *) &curve);
+    Handle(ShapeExtend_ComplexCurve) Complex = Handle(ShapeExtend_ComplexCurve)::DownCast (curve);
     TColgp_SequenceOfPnt sequence;
     Standard_Integer i; // svv Jan11 2000 : porting on DEC
     for (i = 1; i <= Complex->NbCurves(); i++)

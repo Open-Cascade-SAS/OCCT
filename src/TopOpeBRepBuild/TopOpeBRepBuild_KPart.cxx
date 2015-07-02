@@ -949,7 +949,7 @@ static Standard_Boolean allIonsectionedges(const Handle(TopOpeBRepDS_HDataStruct
 {  
   TopOpeBRepDS_ListIteratorOfListOfInterference it1(HDS->DS().ShapeInterferences(f1));
   for (; it1.More(); it1.Next()){
-    const Handle(TopOpeBRepDS_ShapeShapeInterference)& SSI1 = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(it1.Value());    
+    Handle(TopOpeBRepDS_ShapeShapeInterference) SSI1 (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(it1.Value()));    
     Standard_Integer G1 = SSI1->Geometry();
     Standard_Boolean isgbound = SSI1->GBound();
     const TopoDS_Shape& e1 = HDS->Shape(G1);

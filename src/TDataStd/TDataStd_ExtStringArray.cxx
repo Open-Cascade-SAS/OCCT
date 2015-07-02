@@ -266,7 +266,7 @@ Handle(TDF_DeltaOnModification) TDataStd_ExtStringArray::DeltaOnModification
 (const Handle(TDF_Attribute)& OldAttribute) const
 {
   if(myIsDelta)
-    return new TDataStd_DeltaOnModificationOfExtStringArray(*((Handle(TDataStd_ExtStringArray)*)&OldAttribute));
+    return new TDataStd_DeltaOnModificationOfExtStringArray(Handle(TDataStd_ExtStringArray)::DownCast (OldAttribute));
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 

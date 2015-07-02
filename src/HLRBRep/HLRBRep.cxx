@@ -91,7 +91,7 @@ TopoDS_Edge HLRBRep::MakeEdge (const HLRBRep_Curve& ec,
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
     if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
       aCurve = (Handle(Geom_TrimmedCurve)::DownCast(aCurve))->BasisCurve();
-    const Handle(Geom_BSplineCurve)& BSplCurve = Handle(Geom_BSplineCurve)::DownCast(aCurve);
+    Handle(Geom_BSplineCurve) BSplCurve (Handle(Geom_BSplineCurve)::DownCast(aCurve));
     Handle(Geom_BSplineCurve) theCurve = Handle(Geom_BSplineCurve)::DownCast(BSplCurve->Copy());
     if (theCurve->IsPeriodic() && !GAcurve.IsClosed())
     {

@@ -269,7 +269,7 @@ const Handle(Geom2d_Curve)&  TopOpeBRepDS_Curve::Curve1()const
 {
   if ( ! mySCI1.IsNull() ) {
     return 
-      (*((Handle(TopOpeBRepDS_SurfaceCurveInterference)*)&mySCI1))->PCurve();
+      Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast (mySCI1)->PCurve();
   }
   else {
     static Handle(Geom2d_Curve) STALOC_Geom2dCurveNull1;
@@ -285,7 +285,7 @@ const Handle(Geom2d_Curve)&  TopOpeBRepDS_Curve::Curve1()const
 void TopOpeBRepDS_Curve::Curve1(const Handle(Geom2d_Curve)& PC1)
 {
   if ( ! mySCI1.IsNull() ) {
-    (*((Handle(TopOpeBRepDS_SurfaceCurveInterference)*)&mySCI1))->PCurve(PC1);
+    Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast (mySCI1)->PCurve(PC1);
   }
 }
 
@@ -299,7 +299,7 @@ const Handle(Geom2d_Curve)&  TopOpeBRepDS_Curve::Curve2()const
 {
   if ( ! mySCI2.IsNull() ) {
     return 
-      (*((Handle(TopOpeBRepDS_SurfaceCurveInterference)*)&mySCI2))->PCurve();
+      Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast (mySCI2)->PCurve();
   }
   else {
     static Handle(Geom2d_Curve) STALOC_Geom2dCurveNull2;
@@ -315,7 +315,7 @@ const Handle(Geom2d_Curve)&  TopOpeBRepDS_Curve::Curve2()const
 void TopOpeBRepDS_Curve::Curve2(const Handle(Geom2d_Curve)& PC2)
 {
   if ( ! mySCI2.IsNull() ) {
-    (*((Handle(TopOpeBRepDS_SurfaceCurveInterference)*)&mySCI2))->PCurve(PC2);
+    Handle(TopOpeBRepDS_SurfaceCurveInterference)::DownCast (mySCI2)->PCurve(PC2);
   }
 }
 

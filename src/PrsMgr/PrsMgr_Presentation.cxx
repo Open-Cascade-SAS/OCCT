@@ -307,7 +307,7 @@ void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)&
                                    const Handle(Graphic3d_Structure)&            theStructToFill)
 {
   theStructToFill->Clear();
-  const Handle(Prs3d_Presentation)& aPrs = *((Handle(Prs3d_Presentation)* )&theStructToFill);
+  Handle(Prs3d_Presentation) aPrs (Handle(Prs3d_Presentation)::DownCast (theStructToFill));
   myPresentableObject->Compute (Projector (theProjector), aPrs);
 }
 
@@ -356,7 +356,7 @@ void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)&
                                    const Handle(Graphic3d_Structure)&            theStructToFill)
 {
   // recompute HLR after transformation in all the case
-  Handle(Prs3d_Presentation) aPrs = *((Handle(Prs3d_Presentation)*)&theStructToFill);
+  Handle(Prs3d_Presentation) aPrs = Handle(Prs3d_Presentation)::DownCast (theStructToFill);
   theStructToFill->Clear();
   myPresentableObject->Compute (Projector (theProjector), theTrsf, aPrs);
 }
@@ -367,7 +367,7 @@ void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)&
 //=======================================================================
 Handle(Prs3d_Projector) PrsMgr_Presentation::Projector (const Handle(Graphic3d_DataStructureManager)& theProjector)
 {
-  const Handle(Graphic3d_Camera)& aCamera = Handle(Visual3d_View)::DownCast (theProjector)->Camera();
+  Handle(Graphic3d_Camera) aCamera (Handle(Visual3d_View)::DownCast (theProjector)->Camera());
   const gp_Dir aDir = aCamera->Direction().Reversed();
   const gp_Pnt anAt = aCamera->Center();
   const gp_Dir anUp = aCamera->Up();

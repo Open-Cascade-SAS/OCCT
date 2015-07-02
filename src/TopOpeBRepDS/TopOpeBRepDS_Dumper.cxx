@@ -91,7 +91,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::PrintType(const Handle(Geom_Curve)&
   else if (T==STANDARD_TYPE(Geom_Hyperbola))    OS<<"HYPERBOLA";
   else if (T==STANDARD_TYPE(Geom_BezierCurve))  OS<<"BEZIER";
   else if (T==STANDARD_TYPE(Geom_BSplineCurve)) 
-    OS<<"BSPLINE("<<(*((Handle(Geom_BSplineCurve)*)&C))->Degree()<<")";
+    OS<<"BSPLINE("<<Handle(Geom_BSplineCurve)::DownCast (C)->Degree()<<")";
   else if (T==STANDARD_TYPE(Geom_TrimmedCurve))
     {OS<<"TRIMMED ";PrintType(Handle(Geom_TrimmedCurve)::DownCast(C)->BasisCurve(),OS);}
   else if (T==STANDARD_TYPE(Geom_OffsetCurve))  OS<<"OFFSETCURVE";
@@ -126,7 +126,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::PrintType(const Handle(Geom2d_Curve)&
   else if (T==STANDARD_TYPE(Geom2d_Hyperbola))    OS<<"HYPERBOLA";
   else if (T==STANDARD_TYPE(Geom2d_BezierCurve))  OS<<"BEZIER";
   else if (T==STANDARD_TYPE(Geom2d_BSplineCurve)) 
-    OS<<"BSPLINE("<<(*((Handle(Geom2d_BSplineCurve)*)&C))->Degree()<<")";
+    OS<<"BSPLINE("<<Handle(Geom2d_BSplineCurve)::DownCast (C)->Degree()<<")";
   else if (T==STANDARD_TYPE(Geom2d_TrimmedCurve)) 
     {OS<<"TRIMMED ";PrintType(Handle(Geom2d_TrimmedCurve)::DownCast(C)->BasisCurve(),OS);}
   else if (T==STANDARD_TYPE(Geom2d_OffsetCurve))  OS<<"OFFSETCURVE";

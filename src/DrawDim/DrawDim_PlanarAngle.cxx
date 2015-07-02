@@ -119,14 +119,14 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   if (!curve1->IsKind(STANDARD_TYPE(Geom_Line)) || !curve2->IsKind(STANDARD_TYPE(Geom_Line))) return;
   Handle(Geom2d_Geometry) L1 = GeomAPI::To2d (curve1,plane);
   if (L1->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-    L1 = ((Handle(Geom2d_TrimmedCurve)&) L1)->BasisCurve();
+    L1 = Handle(Geom2d_TrimmedCurve)::DownCast (L1)->BasisCurve();
   }
-  gp_Lin2d l1 = ((Handle(Geom2d_Line)&) L1)->Lin2d();   
+  gp_Lin2d l1 = Handle(Geom2d_Line)::DownCast (L1)->Lin2d();   
   Handle(Geom2d_Geometry) L2 = GeomAPI::To2d (curve2,plane);
   if (L2->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-    L2 = ((Handle(Geom2d_TrimmedCurve)&) L2)->BasisCurve();
+    L2 = Handle(Geom2d_TrimmedCurve)::DownCast (L2)->BasisCurve();
   }
-  gp_Lin2d l2 = ((Handle(Geom2d_Line)&) L2)->Lin2d(); 
+  gp_Lin2d l2 = Handle(Geom2d_Line)::DownCast (L2)->Lin2d(); 
   //
   IntAna2d_AnaIntersection inter;
   inter.Perform(l1,l2);  
@@ -139,7 +139,7 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
 
   // retour au plan
   Handle(Geom_Curve) C = GeomAPI::To3d (new Geom2d_Circle(c),plane); 
-  gp_Circ circle = ((Handle(Geom_Circle)&) C)->Circ(); 
+  gp_Circ circle = Handle(Geom_Circle)::DownCast (C)->Circ(); 
   //
   Standard_Real p1=0., p2=0.;   
   angle =  Abs(angle);

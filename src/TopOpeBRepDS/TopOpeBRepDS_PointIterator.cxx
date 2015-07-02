@@ -86,10 +86,10 @@ Standard_Real  TopOpeBRepDS_PointIterator::Parameter()const
   const Handle(TopOpeBRepDS_Interference)& I = Value();
   Handle(Standard_Type) T = I->DynamicType(); 
   if      ( T == STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference) ) { 
-    return (*((Handle(TopOpeBRepDS_CurvePointInterference)*)&I))->Parameter();
+    return Handle(TopOpeBRepDS_CurvePointInterference)::DownCast (I)->Parameter();
   }
   else if ( T == STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference) ) {
-    return (*((Handle(TopOpeBRepDS_EdgeVertexInterference)*)&I))->Parameter();
+    return Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast (I)->Parameter();
   }
   else {
     Standard_ProgramError::Raise("TopOpeBRepDS_PointIterator::Parameter()");
@@ -127,7 +127,7 @@ Standard_Boolean TopOpeBRepDS_PointIterator::DiffOriented() const
 {
   const Handle(TopOpeBRepDS_Interference)& I = Value();
   if ( I->DynamicType() == STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference) ) {
-    return (*((Handle(TopOpeBRepDS_EdgeVertexInterference)*)&I))
+    return Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast (I)
       ->Config() == TopOpeBRepDS_DIFFORIENTED;
   }
   else {
@@ -146,7 +146,7 @@ Standard_Boolean TopOpeBRepDS_PointIterator::SameOriented() const
 {
   const Handle(TopOpeBRepDS_Interference)& I = Value();
   if ( I->DynamicType() == STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference) ) {
-    return (*((Handle(TopOpeBRepDS_EdgeVertexInterference)*)&I))
+    return Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast (I)
       ->Config() == TopOpeBRepDS_SAMEORIENTED;
   }
   else {

@@ -580,7 +580,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	    }
 	  if (TheSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
 	    {
-	      gp_Cone theCone = (*((Handle(Geom_ConicalSurface)*)&TheSurf))->Cone();
+	      gp_Cone theCone = Handle(Geom_ConicalSurface)::DownCast (TheSurf)->Cone();
 	      gp_Pnt apex = theCone.Apex();
 	      Standard_Real Uapex, Vapex;
 	      ElSLib::Parameters( theCone, apex, Uapex, Vapex );
@@ -604,7 +604,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                 Handle(Geom_Curve) uiso = TheSurf->UIso( uf1 );
                 if (BRepOffset_Tool::Gabarit( uiso ) > TolApex)
                 {
-                  Handle(Geom_Surface) BasisSurf = (*((Handle(Geom_OffsetSurface)*)&TheSurf))->BasisSurface();
+                  Handle(Geom_Surface) BasisSurf = Handle(Geom_OffsetSurface)::DownCast (TheSurf)->BasisSurface();
                   gp_Pnt Papex, Pfirst, Pquart, Pmid;
                   Papex = BasisSurf->Value( uf1, vf1 );
                   Pfirst = TheSurf->Value( uf1, vf1 );
@@ -621,7 +621,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   if (OffsetOutside)
                   {
                     TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(*((Handle(Geom_BoundedSurface)*)&TheSurf), length, 1,
+                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
                                                 Standard_True, Standard_False);
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
@@ -643,7 +643,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                 Handle(Geom_Curve) uiso = TheSurf->UIso( uf2 );
                 if (BRepOffset_Tool::Gabarit( uiso ) > TolApex)
                 {
-                  Handle(Geom_Surface) BasisSurf = (*((Handle(Geom_OffsetSurface)*)&TheSurf))->BasisSurface();
+                  Handle(Geom_Surface) BasisSurf = Handle(Geom_OffsetSurface)::DownCast (TheSurf)->BasisSurface();
                   gp_Pnt Papex, Pfirst, Pquart, Pmid;
                   Papex  = BasisSurf->Value( uf2, vf1 );
                   Pfirst = TheSurf->Value( uf2, vf1 );
@@ -660,7 +660,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   if (OffsetOutside)
                   {
                     TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(*((Handle(Geom_BoundedSurface)*)&TheSurf), length, 1,
+                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
                                                 Standard_True, Standard_True);
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
@@ -682,7 +682,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                 Handle(Geom_Curve) viso = TheSurf->VIso( vf1 );
                 if (BRepOffset_Tool::Gabarit( viso ) > TolApex)
                 {
-                  Handle(Geom_Surface) BasisSurf = (*((Handle(Geom_OffsetSurface)*)&TheSurf))->BasisSurface();
+                  Handle(Geom_Surface) BasisSurf = Handle(Geom_OffsetSurface)::DownCast (TheSurf)->BasisSurface();
                   gp_Pnt Papex, Pfirst, Pquart, Pmid;
                   Papex = BasisSurf->Value( uf1, vf1 );
                   Pfirst = TheSurf->Value( uf1, vf1 );
@@ -699,7 +699,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   if (OffsetOutside)
                   {
                     TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(*((Handle(Geom_BoundedSurface)*)&TheSurf), length, 1,
+                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
                                                 Standard_False, Standard_False);
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
@@ -723,7 +723,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                 Handle(Geom_Curve) viso = TheSurf->VIso( vf2 );
                 if (BRepOffset_Tool::Gabarit( viso ) > TolApex)
                 {
-                  Handle(Geom_Surface) BasisSurf = (*((Handle(Geom_OffsetSurface)*)&TheSurf))->BasisSurface();
+                  Handle(Geom_Surface) BasisSurf = Handle(Geom_OffsetSurface)::DownCast (TheSurf)->BasisSurface();
                   gp_Pnt Papex, Pfirst, Pquart, Pmid;
                   Papex = BasisSurf->Value( uf1, vf2 );
                   Pfirst = TheSurf->Value( uf1, vf2 );
@@ -740,7 +740,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   if (OffsetOutside)
                   {
                     TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(*((Handle(Geom_BoundedSurface)*)&TheSurf), length, 1,
+                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
                                                 Standard_False, Standard_True);
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );

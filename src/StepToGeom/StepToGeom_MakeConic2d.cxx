@@ -37,19 +37,19 @@ Standard_Boolean StepToGeom_MakeConic2d::Convert
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Circle))) {
     const Handle(StepGeom_Circle) Cir = Handle(StepGeom_Circle)::DownCast(SC);
-	return StepToGeom_MakeCircle2d::Convert(Cir,*((Handle(Geom2d_Circle)*)&CC));
+	return StepToGeom_MakeCircle2d::Convert(Cir,Handle(Geom2d_Circle)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Ellipse))) {
     const Handle(StepGeom_Ellipse) Ell = Handle(StepGeom_Ellipse)::DownCast(SC);
-	return StepToGeom_MakeEllipse2d::Convert(Ell,*((Handle(Geom2d_Ellipse)*)&CC));
+	return StepToGeom_MakeEllipse2d::Convert(Ell,Handle(Geom2d_Ellipse)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Hyperbola))) {
     const Handle(StepGeom_Hyperbola) Hyp = Handle(StepGeom_Hyperbola)::DownCast(SC);
-	return StepToGeom_MakeHyperbola2d::Convert(Hyp,*((Handle(Geom2d_Hyperbola)*)&CC));
+	return StepToGeom_MakeHyperbola2d::Convert(Hyp,Handle(Geom2d_Hyperbola)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Parabola))) {
     const Handle(StepGeom_Parabola) Par = Handle(StepGeom_Parabola)::DownCast(SC);
-	return StepToGeom_MakeParabola2d::Convert(Par,*((Handle(Geom2d_Parabola)*)&CC));
+	return StepToGeom_MakeParabola2d::Convert(Par,Handle(Geom2d_Parabola)::DownCast (CC));
   }
   // Attention : Other conic shall be implemented !
   return Standard_False;

@@ -146,7 +146,7 @@ Standard_Boolean Prs3d_ShapeTool::IsPlanarFace() const
 
   if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
     Handle(Geom_RectangularTrimmedSurface) 
-	RTS = *((Handle(Geom_RectangularTrimmedSurface)*)&S);
+	RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast (S);
     TheType = RTS->BasisSurface()->DynamicType();
   }
   return (TheType == STANDARD_TYPE(Geom_Plane));

@@ -116,13 +116,13 @@ void TopOpeBRep_LineInter::SetLine(const Handle(IntPatch_Line)& L,
 
   switch (type) {
   case IntPatch_Analytic :
-    myILA = *((Handle(IntPatch_ALine)*)&L); break;
+    myILA = Handle(IntPatch_ALine)::DownCast (L); break;
   case IntPatch_Restriction :
-    myILR = *((Handle(IntPatch_RLine)*)&L); break;
+    myILR = Handle(IntPatch_RLine)::DownCast (L); break;
   case IntPatch_Walking : 
-    myILW = *((Handle(IntPatch_WLine)*)&L); break;
+    myILW = Handle(IntPatch_WLine)::DownCast (L); break;
   default :  //"geometric" line
-    myILG = *((Handle(IntPatch_GLine)*)&L); break;
+    myILG = Handle(IntPatch_GLine)::DownCast (L); break;
   }
 
   // transform an analytic line to a walking line

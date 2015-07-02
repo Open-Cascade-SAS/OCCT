@@ -38,23 +38,23 @@ Standard_Boolean StepToGeom_MakeElementarySurface::Convert (const Handle(StepGeo
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_Plane))) {
     const Handle(StepGeom_Plane) Sur = Handle(StepGeom_Plane)::DownCast(SS);
-	return StepToGeom_MakePlane::Convert(Sur,*((Handle(Geom_Plane)*)&CS));
+	return StepToGeom_MakePlane::Convert(Sur,Handle(Geom_Plane)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_CylindricalSurface))) {
     const Handle(StepGeom_CylindricalSurface) Sur = Handle(StepGeom_CylindricalSurface)::DownCast(SS);
-    return StepToGeom_MakeCylindricalSurface::Convert(Sur,*((Handle(Geom_CylindricalSurface)*)&CS));
+    return StepToGeom_MakeCylindricalSurface::Convert(Sur,Handle(Geom_CylindricalSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_ConicalSurface))) {
     const Handle(StepGeom_ConicalSurface) Sur = Handle(StepGeom_ConicalSurface)::DownCast(SS);
-	return StepToGeom_MakeConicalSurface::Convert(Sur,*((Handle(Geom_ConicalSurface)*)&CS));
+	return StepToGeom_MakeConicalSurface::Convert(Sur,Handle(Geom_ConicalSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_SphericalSurface))) {
     const Handle(StepGeom_SphericalSurface) Sur = Handle(StepGeom_SphericalSurface)::DownCast(SS);
-    return StepToGeom_MakeSphericalSurface::Convert(Sur,*((Handle(Geom_SphericalSurface)*)&CS));
+    return StepToGeom_MakeSphericalSurface::Convert(Sur,Handle(Geom_SphericalSurface)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_ToroidalSurface))) {
     const Handle(StepGeom_ToroidalSurface) Sur = Handle(StepGeom_ToroidalSurface)::DownCast(SS);
-    return StepToGeom_MakeToroidalSurface::Convert(Sur,*((Handle(Geom_ToroidalSurface)*)&CS));
+    return StepToGeom_MakeToroidalSurface::Convert(Sur,Handle(Geom_ToroidalSurface)::DownCast (CS));
   }
   return Standard_False;
 }	 

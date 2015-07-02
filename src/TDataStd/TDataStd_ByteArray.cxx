@@ -238,7 +238,7 @@ Handle(TDF_DeltaOnModification) TDataStd_ByteArray::DeltaOnModification
 (const Handle(TDF_Attribute)& OldAttribute) const
 {
   if(myIsDelta)
-    return new TDataStd_DeltaOnModificationOfByteArray(*((Handle(TDataStd_ByteArray)*)&OldAttribute));
+    return new TDataStd_DeltaOnModificationOfByteArray(Handle(TDataStd_ByteArray)::DownCast (OldAttribute));
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 

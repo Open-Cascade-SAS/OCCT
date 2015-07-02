@@ -54,8 +54,7 @@ void BinMDF_ADriverTable::AssignIds
   myMapId.Clear();
   Standard_Integer i;
   for (i=1; i <= theTypes.Extent(); i++) {
-    const Handle(Standard_Type)& aType =
-      Handle(Standard_Type)::DownCast (theTypes(i));
+    Handle(Standard_Type) aType (Handle(Standard_Type)::DownCast (theTypes(i)));
     if (myMap.IsBound (aType)) {
       myMapId.Bind (aType, i);
     }

@@ -175,7 +175,7 @@ void BRepCheck_Edge::Minimum()
     }
 
     if (!myCref.IsNull()) {
-      const Handle(BRep_GCurve)& GCref = *((Handle(BRep_GCurve)*)&myCref);
+      Handle(BRep_GCurve) GCref (Handle(BRep_GCurve)::DownCast (myCref));
       Standard_Real First,Last;
       GCref->Range(First,Last);
       if (Last<=First) {
@@ -285,7 +285,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
         const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
         if (cr != myCref && cr->IsCurveOnSurface(Su,L)) {
           pcurvefound = Standard_True;
-          const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+          Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
           Standard_Real f,l;
           GC->Range(f,l);
           Standard_Real ff = f, ll = l;
@@ -601,8 +601,7 @@ BRepCheck_Status BRepCheck_Edge::
     }
 
     const Handle(BRep_CurveRepresentation) aCR = anITCR.Value();
-    const Handle(BRep_PolygonOnTriangulation)& aPT = 
-      Handle(BRep_PolygonOnTriangulation)::DownCast(aCR);
+    Handle(BRep_PolygonOnTriangulation) aPT (Handle(BRep_PolygonOnTriangulation)::DownCast(aCR));
 
     const TopLoc_Location aLL = theEdge.Location() * aPT->Location();
 

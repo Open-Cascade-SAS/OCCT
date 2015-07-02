@@ -94,7 +94,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
 {
 
   Handle(TDF_Attribute) TDFAttribute = Attribute();
-  Handle(TDataStd_IntegerArray) BackAtt = (*((Handle(TDataStd_IntegerArray)*)&TDFAttribute));
+  Handle(TDataStd_IntegerArray) BackAtt = Handle(TDataStd_IntegerArray)::DownCast (TDFAttribute);
   if(BackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfIntArray::Apply: OldAtt is Null" <<endl;

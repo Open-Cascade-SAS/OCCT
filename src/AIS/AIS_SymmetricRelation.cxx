@@ -241,7 +241,7 @@ void AIS_SymmetricRelation::ComputeSelection(const Handle(SelectMgr_Selection)& 
 //    Handle(Geom_Circle) geom_circ1 = (Handle(Geom_Circle)&) BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);
 //JR/Hp
     Handle(Geom_Curve) aGeomCurve = BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);
-    Handle(Geom_Circle) geom_circ1 = (Handle(Geom_Circle)&) aGeomCurve ;
+    Handle(Geom_Circle) geom_circ1 = Handle(Geom_Circle)::DownCast (aGeomCurve) ;
 //    Handle(Geom_Circle) geom_circ1 = (const Handle(Geom_Circle)&) BRep_Tool::Curve(TopoDS::Edge(myFShape),F,L);
     gp_Circ circ1(geom_circ1->Circ());
     gp_Pnt OffsetPnt(myPosition.X(),myPosition.Y(),myPosition.Z());
@@ -417,13 +417,13 @@ void AIS_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presenta
   myAxisDirAttach = laxis.Direction();
 
   if(cu1.GetType() == GeomAbs_Line){
-    const Handle(Geom_Line)& geom_lin1 = (Handle(Geom_Line)&) geom1;
+    Handle(Geom_Line) geom_lin1 (Handle(Geom_Line)::DownCast (geom1));
     gp_Lin l1(geom_lin1->Lin());
     myFDirAttach = l1.Direction();
   }
   gp_Circ circ;
   if(cu1.GetType() == GeomAbs_Circle){
-    const Handle(Geom_Circle)& geom_cir1 = (Handle(Geom_Circle)&) geom1;
+    Handle(Geom_Circle) geom_cir1 (Handle(Geom_Circle)::DownCast (geom1));
     gp_Circ c(geom_cir1->Circ());
     circ = c;
   }
@@ -444,13 +444,13 @@ void AIS_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presenta
 */
   Standard_Boolean idem = Standard_False;
   if (isInfinite1 && isInfinite2) { // geom1 et geom2 sont des lignes
-    const gp_Lin& line2 = ((Handle(Geom_Line)&) geom2)->Lin();
+    const gp_Lin& line2 = Handle(Geom_Line)::DownCast (geom2)->Lin();
     if (myAutomaticPosition) {
-      myFAttach = ((Handle(Geom_Line)&) geom1)->Lin().Location();      
+      myFAttach = Handle(Geom_Line)::DownCast (geom1)->Lin().Location();      
       mySAttach = ElCLib::Value(ElCLib::Parameter(line2,myFAttach),line2);
     }
     else {
-      const gp_Lin& line1 = ((Handle(Geom_Line)&) geom1)->Lin();
+      const gp_Lin& line1 = Handle(Geom_Line)::DownCast (geom1)->Lin();
       myFAttach = ElCLib::Value(ElCLib::Parameter(line1,myPosition),line1);
       mySAttach = ElCLib::Value(ElCLib::Parameter(line2,myFAttach),line2);
     }
@@ -486,12 +486,12 @@ void AIS_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presenta
   }
   else if (isInfinite1) {// geom1 et geom2 sont des lignes
     mySAttach = ptat21;
-    const gp_Lin& line1 = ((Handle(Geom_Line)&) geom1)->Lin();
+    const gp_Lin& line1 = Handle(Geom_Line)::DownCast (geom1)->Lin();
     myFAttach = ElCLib::Value(ElCLib::Parameter(line1,mySAttach),line1);
   }
   else if (isInfinite2) {// geom1 et geom2 sont des lignes
     myFAttach = ptat11;
-    const gp_Lin& line2 = ((Handle(Geom_Line)&) geom2)->Lin();
+    const gp_Lin& line2 = Handle(Geom_Line)::DownCast (geom2)->Lin();
     mySAttach = ElCLib::Value(ElCLib::Parameter(line2,myFAttach),line2);
   }
 
@@ -505,7 +505,7 @@ void AIS_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presenta
   gp_Pnt PjFAttach = ElCLib::Value(ElCLib::Parameter(laxis,myFAttach),laxis); 
  
   if (PjFAttach.IsEqual(myFAttach,Precision::Confusion())){
-    const Handle(Geom_Line)& geom_lin2 = (Handle(Geom_Line)&) geom2;
+    Handle(Geom_Line) geom_lin2 (Handle(Geom_Line)::DownCast (geom2));
     gp_Lin l2(geom_lin2->Lin());
     myFDirAttach = l2.Direction();
     gp_Pnt PntTempo;

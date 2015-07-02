@@ -101,7 +101,7 @@ void AIS_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)&
 
   // Calcul de la presentation de l'edge
   if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
-    const Handle(Geom_Line) & gl = (Handle(Geom_Line)&) ProjCurv;
+    Handle(Geom_Line) gl (Handle(Geom_Line)::DownCast (ProjCurv));
     if ( !isInfinite) {
       pf = ElCLib::Parameter(gl->Lin(),FirstP);
       pl = ElCLib::Parameter(gl->Lin(),LastP);
@@ -114,7 +114,7 @@ void AIS_Relation::ComputeProjEdgePresentation(const Handle(Prs3d_Presentation)&
     }
   }
   else if (ProjCurv->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
-    const Handle(Geom_Circle) & gc = (Handle(Geom_Circle)&) ProjCurv;
+    Handle(Geom_Circle) gc (Handle(Geom_Circle)::DownCast (ProjCurv));
     pf = ElCLib::Parameter(gc->Circ(),FirstP);
     pl = ElCLib::Parameter(gc->Circ(),LastP);
     BRepBuilderAPI_MakeEdge MakEd(gc->Circ(),pf, pl);

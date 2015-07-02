@@ -521,7 +521,7 @@ void TopOpeBRepBuild_WireEdgeSet::IsUVISO(const TopoDS_Edge& E,const TopoDS_Face
 
   Handle(Standard_Type) TheType = PC->DynamicType();
   if (TheType == STANDARD_TYPE(Geom2d_Line)) {
-    const Handle(Geom2d_Line)& HL = *((Handle(Geom2d_Line)*)&PC);
+    Handle(Geom2d_Line) HL (Handle(Geom2d_Line)::DownCast (PC));
     const gp_Dir2d&  D = HL->Direction();
     Standard_Real    tol = Precision::Angular();
 

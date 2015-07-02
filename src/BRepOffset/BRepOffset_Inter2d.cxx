@@ -847,7 +847,7 @@ static Standard_Boolean ExtendPCurve(const Handle(Geom2d_Curve)& aPCurve,
 {
   NewPCurve = aPCurve;
   if (NewPCurve->IsInstance(STANDARD_TYPE(Geom2d_TrimmedCurve)))
-    NewPCurve = (*((Handle(Geom2d_TrimmedCurve)*)&NewPCurve))->BasisCurve();
+    NewPCurve = Handle(Geom2d_TrimmedCurve)::DownCast (NewPCurve)->BasisCurve();
   
   Standard_Real FirstPar = NewPCurve->FirstParameter();
   Standard_Real LastPar  = NewPCurve->LastParameter();
@@ -857,7 +857,7 @@ static Standard_Boolean ExtendPCurve(const Handle(Geom2d_Curve)& aPCurve,
     {
       if (NewPCurve->IsInstance(STANDARD_TYPE(Geom2d_BezierCurve)))
 	{
-	  Handle(Geom2d_BezierCurve) aBezier = *((Handle(Geom2d_BezierCurve)*)&NewPCurve);
+	  Handle(Geom2d_BezierCurve) aBezier = Handle(Geom2d_BezierCurve)::DownCast (NewPCurve);
 	  if (aBezier->NbPoles() == 2)
 	    {
 	      TColgp_Array1OfPnt2d thePoles(1,2);
@@ -869,7 +869,7 @@ static Standard_Boolean ExtendPCurve(const Handle(Geom2d_Curve)& aPCurve,
 	}
       else if (NewPCurve->IsInstance(STANDARD_TYPE(Geom2d_BSplineCurve)))
 	{
-	  Handle(Geom2d_BSplineCurve) aBSpline = *((Handle(Geom2d_BSplineCurve)*)&NewPCurve);
+	  Handle(Geom2d_BSplineCurve) aBSpline = Handle(Geom2d_BSplineCurve)::DownCast (NewPCurve);
 	  if (aBSpline->NbKnots() == 2 && aBSpline->NbPoles() == 2)
 	    {
 	      TColgp_Array1OfPnt2d thePoles(1,2);
@@ -1190,7 +1190,7 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
 		  else if (MinSurf->IsInstance(STANDARD_TYPE(Geom_CylindricalSurface)) ||
 			   MinSurf->IsInstance(STANDARD_TYPE(Geom_ConicalSurface)))
 		    {
-		      Handle(Geom2d_Line) theLine = *((Handle(Geom2d_Line)*)&MinPC);
+		      Handle(Geom2d_Line) theLine = Handle(Geom2d_Line)::DownCast (MinPC);
 		      gp_Dir2d LineDir = theLine->Direction();
 		      if (LineDir.IsParallel( gp::DY2d(), Precision::Angular() ))
 			IsLine = Standard_True;
@@ -1251,13 +1251,13 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
 			if (theCurve->IsInstance(STANDARD_TYPE(Geom2d_Line)) &&
 			    theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
 			  {
-			    gp_Dir2d theDir = (*((Handle(Geom2d_Line)*)&theCurve))->Direction();
+			    gp_Dir2d theDir = Handle(Geom2d_Line)::DownCast (theCurve)->Direction();
 			    if (theDir.IsParallel(gp::DX2d(), Precision::Angular()) ||
 				theDir.IsParallel(gp::DY2d(), Precision::Angular()))
 			      {
 				Standard_Real U1, U2, V1, V2;
 				theSurf->Bounds(U1, U2, V1, V2);
-				gp_Pnt2d Origin = (*((Handle(Geom2d_Line)*)&theCurve))->Location();
+				gp_Pnt2d Origin = Handle(Geom2d_Line)::DownCast (theCurve)->Location();
 				if (Abs(Origin.X()-U1) <= Precision::Confusion() ||
 				    Abs(Origin.X()-U2) <= Precision::Confusion() ||
 				    Abs(Origin.Y()-V1) <= Precision::Confusion() ||

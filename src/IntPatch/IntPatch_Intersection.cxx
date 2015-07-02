@@ -104,7 +104,7 @@ static void JoinWLines(IntPatch_SequenceOfLine& theSlin,
 
   for(Standard_Integer aNumOfLine1 = 1; aNumOfLine1 <= theSlin.Length(); aNumOfLine1++)
   {
-    const Handle(IntPatch_WLine)& aWLine1 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine1));
+    Handle(IntPatch_WLine) aWLine1 (Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine1)));
 
     if(aWLine1.IsNull())
     {//We must have failed to join not-point-lines
@@ -130,7 +130,7 @@ static void JoinWLines(IntPatch_SequenceOfLine& theSlin,
     Standard_Boolean hasBeenRemoved = Standard_False;
     for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
     {
-      const Handle(IntPatch_WLine)& aWLine2 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine2));
+      Handle(IntPatch_WLine) aWLine2 (Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine2)));
 
       const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
       const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
@@ -518,7 +518,7 @@ static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
   }
   else//OffsetSurface
   {
-    const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&GS;
+    const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (GS);
     const Handle(Geom_Surface) bs = gos->BasisSurface();
     Handle(Geom_Curve) gcbs = bs->UIso(U);
     GeomAdaptor_Curve gac(gcbs);
@@ -588,7 +588,7 @@ static void FUN_GetViso(const Handle(Geom_Surface)& GS,
   }
   else//OffsetSurface
   {
-    const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&GS;
+    const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (GS);
     const Handle(Geom_Surface) bs = gos->BasisSurface();
     Handle(Geom_Curve) gcbs = bs->VIso(V);
     GeomAdaptor_Curve gac(gcbs);
@@ -663,7 +663,7 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_HSurface)& S1,
   else if(!S1->IsVPeriodic() && !S1->IsVClosed()) {
     if(T1 != GeomAbs_OffsetSurface) C1 = gs1->UIso(MS1[0]);
     else {
-      const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&gs1;
+      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (gs1);
       const Handle(Geom_Surface) bs = gos->BasisSurface();
       C1 = bs->UIso(MS1[0]);
     }
@@ -673,7 +673,7 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_HSurface)& S1,
   if(!S1->IsUPeriodic() && !S1->IsUClosed()) {
     if(T1 != GeomAbs_OffsetSurface) C1 = gs1->VIso(MS1[1]);
     else {
-      const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&gs1;
+      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (gs1);
       const Handle(Geom_Surface) bs = gos->BasisSurface();
       C1 = bs->VIso(MS1[1]);
     }
@@ -684,7 +684,7 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_HSurface)& S1,
   else if(!S2->IsVPeriodic() && !S2->IsVClosed()) {
     if(T2 != GeomAbs_OffsetSurface) C2 = gs2->UIso(MS2[0]);
     else {
-      const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&gs2;
+      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (gs2);
       const Handle(Geom_Surface) bs = gos->BasisSurface();
       C2 = bs->UIso(MS2[0]);
     }
@@ -694,7 +694,7 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_HSurface)& S1,
   if(!S2->IsUPeriodic() && !S2->IsUClosed()) {
     if(T2 != GeomAbs_OffsetSurface) C2 = gs2->VIso(MS2[1]);
     else {
-      const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&gs2;
+      const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (gs2);
       const Handle(Geom_Surface) bs = gos->BasisSurface();
       C2 = bs->VIso(MS2[1]);
     }
@@ -760,9 +760,9 @@ static void FUN_PL_Intersection(const Handle(Adaptor3d_HSurface)& S1,
     GeomProjLib::ProjectOnPlane(C2,GPln,gp_Dir(DV),Standard_True);
   if(C1Prj.IsNull() || C2Prj.IsNull()) return;
   Handle(Geom2d_Curve) C1Prj2d =
-    GeomProjLib::Curve2d(C1Prj,*(Handle(Geom_Surface) *)&GPln);
+    GeomProjLib::Curve2d(C1Prj,Handle(Geom_Surface)::DownCast (GPln));
   Handle(Geom2d_Curve) C2Prj2d =
-    GeomProjLib::Curve2d(C2Prj,*(Handle(Geom_Surface) *)&GPln);
+    GeomProjLib::Curve2d(C2Prj,Handle(Geom_Surface)::DownCast (GPln));
   Geom2dAPI_InterCurveCurve ICC(C1Prj2d,C2Prj2d,1.0e-7);
   if(ICC.NbPoints() > 0 )
   {
@@ -864,14 +864,14 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_HSurface)& S1,
   if(T1 != GeomAbs_OffsetSurface){ visoS1 = gs1->VIso(VM1); uisoS1 = gs1->UIso(UM1); }
   else
   {
-    const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&gs1;
+    const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (gs1);
     const Handle(Geom_Surface) bs = gos->BasisSurface();
     visoS1 = bs->VIso(VM1); uisoS1 = bs->UIso(UM1);
   }
   if(T2 != GeomAbs_OffsetSurface){ visoS2 = gs2->VIso(VM2); uisoS2 = gs2->UIso(UM2); }
   else
   {
-    const Handle(Geom_OffsetSurface) gos = *(Handle(Geom_OffsetSurface)*)&gs2;
+    const Handle(Geom_OffsetSurface) gos = Handle(Geom_OffsetSurface)::DownCast (gs2);
     const Handle(Geom_Surface) bs = gos->BasisSurface();
     visoS2 = bs->VIso(VM2); uisoS2 = bs->UIso(UM2);
   }
@@ -1451,7 +1451,7 @@ void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  
         {
           gp_Lin lin(sop.Value(ip),gp_Dir(v));
           Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-          slin.Append(*(Handle(IntPatch_Line) *)&gl);
+          slin.Append(Handle(IntPatch_Line)::DownCast (gl));
         }
 
         done = Standard_True;
@@ -1635,7 +1635,7 @@ void IntPatch_Intersection::
         {
           gp_Lin lin(sop.Value(ip),gp_Dir(v));
           Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-          slin.Append(*(Handle(IntPatch_Line) *)&gl);
+          slin.Append(Handle(IntPatch_Line)::DownCast (gl));
         }
 
         done = Standard_True;
@@ -1901,7 +1901,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
     else     if(IType == IntPatch_Restriction) { 
       nbr++;
       Handle(IntPatch_RLine)& rlin =
-        *((Handle(IntPatch_RLine) *)&line);
+        Handle(IntPatch_RLine)::DownCast (line);
       if(rlin->IsArcOnS1()) nbr1++;
       if(rlin->IsArcOnS2()) nbr2++;
     }
@@ -1938,7 +1938,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
       const Handle(IntPatch_Line)& LineK = LineConstructor.Line(k);
       if (LineK->ArcType() == IntPatch_Analytic) { 
         Handle(IntPatch_ALine)& alin =
-          *((Handle(IntPatch_ALine) *)&LineK);
+          Handle(IntPatch_ALine)::DownCast (LineK);
         nbvtx=alin->NbVertex();
         nbva+=nbvtx;        nba++;
         for(v=1;v<=nbvtx;v++) { 
@@ -1947,7 +1947,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
       }
       else if (LineK->ArcType() == IntPatch_Restriction) {
         Handle(IntPatch_RLine)& rlin =
-          *((Handle(IntPatch_RLine) *)&LineK);
+          Handle(IntPatch_RLine)::DownCast (LineK);
         nbvtx=rlin->NbVertex();
         nbvr+=nbvtx;        nbr++;
         for(v=1;v<=nbvtx;v++) { 
@@ -1956,7 +1956,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
       }
       else if (LineK->ArcType() == IntPatch_Walking) {
         Handle(IntPatch_WLine)& wlin =
-          *((Handle(IntPatch_WLine) *)&LineK);
+          Handle(IntPatch_WLine)::DownCast (LineK);
         nbvtx=wlin->NbVertex();
         nbvw+=nbvtx;        nbw++;
         for(v=1;v<=nbvtx;v++) { 
@@ -1965,7 +1965,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
       }
       else { 
         Handle(IntPatch_GLine)& glin =
-          *((Handle(IntPatch_GLine) *)&LineK);
+          Handle(IntPatch_GLine)::DownCast (LineK);
         nbvtx=glin->NbVertex();
         nbvg+=nbvtx;        nbg++;
         for(v=1;v<=nbvtx;v++) { 

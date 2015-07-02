@@ -79,7 +79,7 @@ BRepOffsetAPI_DraftAngle::BRepOffsetAPI_DraftAngle (const TopoDS_Shape& S)
 void BRepOffsetAPI_DraftAngle::Clear ()
 {
   if (!myModification.IsNull()) {
-    (*((Handle(Draft_Modification)*)&myModification))->Clear();
+    Handle(Draft_Modification)::DownCast (myModification)->Clear();
   }
 }
 
@@ -94,7 +94,7 @@ void BRepOffsetAPI_DraftAngle::Init (const TopoDS_Shape& S)
   myInitialShape = S;
   NotDone();
   if (!myModification.IsNull()) {
-    (*((Handle(Draft_Modification)*)&myModification))->Init(S);   
+    Handle(Draft_Modification)::DownCast (myModification)->Init(S);   
   }
   else {
     myModification = new Draft_Modification(S);
@@ -117,7 +117,7 @@ void BRepOffsetAPI_DraftAngle::Add(const TopoDS_Face& F,
   if ( Abs(Angle) <= 1.e-04 ) 
     return;
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  (*((Handle(Draft_Modification)*)&myModification))->Add(F,D,Angle,Plane, Flag);
+  Handle(Draft_Modification)::DownCast (myModification)->Add(F,D,Angle,Plane, Flag);
 }
 
 
@@ -129,7 +129,7 @@ void BRepOffsetAPI_DraftAngle::Add(const TopoDS_Face& F,
 Standard_Boolean BRepOffsetAPI_DraftAngle::AddDone () const
 {
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  return (*((Handle(Draft_Modification)*)&myModification))
+  return Handle(Draft_Modification)::DownCast (myModification)
     ->ProblematicShape().IsNull();
 }
 
@@ -142,7 +142,7 @@ Standard_Boolean BRepOffsetAPI_DraftAngle::AddDone () const
 void BRepOffsetAPI_DraftAngle::Remove(const TopoDS_Face& F)
 {
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  (*((Handle(Draft_Modification)*)&myModification))->Remove(F);
+  Handle(Draft_Modification)::DownCast (myModification)->Remove(F);
 }
 
 
@@ -154,7 +154,7 @@ void BRepOffsetAPI_DraftAngle::Remove(const TopoDS_Face& F)
 const TopoDS_Shape& BRepOffsetAPI_DraftAngle::ProblematicShape () const
 {
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  return (*((Handle(Draft_Modification)*)&myModification))->ProblematicShape();
+  return Handle(Draft_Modification)::DownCast (myModification)->ProblematicShape();
 }
 
 
@@ -166,7 +166,7 @@ const TopoDS_Shape& BRepOffsetAPI_DraftAngle::ProblematicShape () const
 Draft_ErrorStatus BRepOffsetAPI_DraftAngle::Status () const
 {
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  return (*((Handle(Draft_Modification)*)&myModification))->Error();
+  return Handle(Draft_Modification)::DownCast (myModification)->Error();
 }
 
 
@@ -179,7 +179,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::ConnectedFaces
    (const TopoDS_Face& F) const
 {
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  return (*((Handle(Draft_Modification)*)&myModification))->ConnectedFaces(F);
+  return Handle(Draft_Modification)::DownCast (myModification)->ConnectedFaces(F);
 }
 
 
@@ -191,7 +191,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::ConnectedFaces
 const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::ModifiedFaces() const
 {
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  return (*((Handle(Draft_Modification)*)&myModification))->ModifiedFaces();
+  return Handle(Draft_Modification)::DownCast (myModification)->ModifiedFaces();
 }
 
 //=======================================================================
@@ -203,7 +203,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::Generated(const TopoDS_Sha
 {
   myGenerated.Clear();
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  Handle(Draft_Modification) DMod = (*((Handle(Draft_Modification)*)&myModification));
+  Handle(Draft_Modification) DMod = Handle(Draft_Modification)::DownCast (myModification);
 
   if (S.ShapeType() == TopAbs_FACE) {
     Handle(Geom_Surface) Surf;
@@ -227,7 +227,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::Modified(const TopoDS_Shap
 {
   myGenerated.Clear();
   Standard_NullObject_Raise_if(myInitialShape.IsNull(),"");
-  Handle(Draft_Modification) DMod = (*((Handle(Draft_Modification)*)&myModification));
+  Handle(Draft_Modification) DMod = Handle(Draft_Modification)::DownCast (myModification);
 
   if (S.ShapeType() == TopAbs_FACE) {
     Handle(Geom_Surface) Surf;
@@ -254,8 +254,8 @@ const TopTools_ListOfShape& BRepOffsetAPI_DraftAngle::Modified(const TopoDS_Shap
 
 void BRepOffsetAPI_DraftAngle::Build()
 {
-  (*((Handle(Draft_Modification)*)&myModification))->Perform();
-  if (!(*((Handle(Draft_Modification)*)&myModification))->IsDone()) {
+  Handle(Draft_Modification)::DownCast (myModification)->Perform();
+  if (!Handle(Draft_Modification)::DownCast (myModification)->IsDone()) {
     NotDone();
   }
   else {

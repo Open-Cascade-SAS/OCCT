@@ -71,7 +71,7 @@ Handle(Storage_Schema) PCDM::Schema(const TCollection_ExtendedString& aSchemaNam
     Standard_NoSuchObject::Raise(aMsg);
   }
   Handle(Standard_Transient) t = Plugin::Load(UTL::GUID(UTL::Value(r,aSchemaName)));
-  return *((Handle(Storage_Schema)*)&t);
+  return Handle(Storage_Schema)::DownCast (t);
   
 }
 

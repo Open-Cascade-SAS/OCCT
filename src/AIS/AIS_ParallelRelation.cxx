@@ -248,7 +248,7 @@ void AIS_ParallelRelation::ComputeTwoEdgesParallel(const Handle(Prs3d_Presentati
 
   if (geom1->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
     {
-      const Handle(Geom_Ellipse)& geom_el1 = (Handle(Geom_Ellipse)&) geom1;
+      Handle(Geom_Ellipse) geom_el1 (Handle(Geom_Ellipse)::DownCast (geom1));
       // construct lines through focuses
       gp_Ax1 elAx = geom_el1->XAxis();
       l1 = gp_Lin(elAx);
@@ -260,14 +260,14 @@ void AIS_ParallelRelation::ComputeTwoEdgesParallel(const Handle(Prs3d_Presentati
     }
   else if (geom1->IsInstance(STANDARD_TYPE(Geom_Line)))
     {
-      const Handle(Geom_Line)& geom_lin1 = (Handle(Geom_Line)&) geom1;
+      Handle(Geom_Line) geom_lin1 (Handle(Geom_Line)::DownCast (geom1));
       l1 = geom_lin1->Lin();
     }
   else return;
 
   if (geom2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
     {
-      const Handle(Geom_Ellipse)& geom_el2 = (Handle(Geom_Ellipse)&) geom2;
+      Handle(Geom_Ellipse) geom_el2 (Handle(Geom_Ellipse)::DownCast (geom2));
       // construct lines through focuses
       gp_Ax1 elAx = geom_el2->XAxis();
       l2 = gp_Lin(elAx);
@@ -279,7 +279,7 @@ void AIS_ParallelRelation::ComputeTwoEdgesParallel(const Handle(Prs3d_Presentati
     }
   else if (geom2->IsInstance(STANDARD_TYPE(Geom_Line)))
     {
-      const Handle(Geom_Line)& geom_lin2 = (Handle(Geom_Line)&) geom2;
+      Handle(Geom_Line) geom_lin2 (Handle(Geom_Line)::DownCast (geom2));
       l2 = geom_lin2->Lin();
     }
   else return;

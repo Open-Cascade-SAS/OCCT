@@ -43,19 +43,19 @@ Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& 
 
 //#ifndef OCCT_DEBUG
   Handle(SelectMgr_SelectableObject) aSelectable = anObj->Selectable() ;
-  if( hasC && ((Handle(AIS_InteractiveObject)&) aSelectable)->HasColor() )
+  if( hasC && Handle(AIS_InteractiveObject)::DownCast (aSelectable)->HasColor() )
 //#else
 //  if(hasC && ((Handle(AIS_InteractiveObject)&) anObj->Selectable())->HasColor())
 //#endif
-    okstat =  (myCol == ((Handle(AIS_InteractiveObject)&) anObj)->Color());
+    okstat =  (myCol == Handle(AIS_InteractiveObject)::DownCast (anObj)->Color());
 
 //#ifndef OCCT_DEBUG
   aSelectable = anObj->Selectable() ;
-  if( hasW && ((Handle(AIS_InteractiveObject)&) aSelectable)->HasWidth() )
+  if( hasW && Handle(AIS_InteractiveObject)::DownCast (aSelectable)->HasWidth() )
 //#else
 //  if(hasW && ((Handle(AIS_InteractiveObject)&) anObj->Selectable())->HasWidth())
 //#endif
-    okstat =  (myWid == ((Handle(AIS_InteractiveObject)&) anObj)->Width()) && okstat;
+    okstat =  (myWid == Handle(AIS_InteractiveObject)::DownCast (anObj)->Width()) && okstat;
 
   return okstat;
   

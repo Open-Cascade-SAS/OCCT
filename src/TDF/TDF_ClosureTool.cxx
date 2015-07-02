@@ -35,9 +35,9 @@
 
 #include <Standard_TypeMismatch.hxx>
 
-#define DeclareAndSpeedCast(V,T,Vdown) Handle(T) Vdown = *((Handle(T)*)& V)
+#define DeclareAndSpeedCast(V,T,Vdown) Handle(T) Vdown = Handle(T)::DownCast (V)
 #define DeclareConstAndSpeedCast(V,T,Vdown) const Handle(T)& Vdown = (Handle(T)&) V
-#define SpeedCast(V,T,Vdown) Vdown = *((Handle(T)*)& V)
+#define SpeedCast(V,T,Vdown) Vdown = Handle(T)::DownCast (V)
 
 
 //=======================================================================

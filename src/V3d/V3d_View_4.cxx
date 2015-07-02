@@ -195,7 +195,7 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
   if (IsRectangular) {
     Standard_Real XS, YS;
     Handle(Aspect_RectangularGrid) theGrid =
-      *(Handle(Aspect_RectangularGrid) *) &MyGrid;
+      Handle(Aspect_RectangularGrid)::DownCast (MyGrid);
     XS = theGrid->XStep (), YS = theGrid->YStep ();
 
     // project point on plane to grid local space
@@ -215,7 +215,7 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
     Standard_Integer DN;
     Standard_Real Alpha;
     Handle(Aspect_CircularGrid) theGrid =
-      *(Handle(Aspect_CircularGrid) *) &MyGrid;
+      Handle(Aspect_CircularGrid)::DownCast (MyGrid);
     RS = theGrid->RadiusStep ();
     DN = theGrid->DivisionNumber ();
     Alpha = M_PI / Standard_Real (DN);

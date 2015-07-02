@@ -18,7 +18,7 @@
 
 #include <Interface_Macros.hxx>
 //#define DeclareAndCast(atype,result,start) \  NON car Name
-// Handle(atype) result = *((Handle(atype)*) &start)
+// Handle(atype) result = Handle(atype)::DownCast (start)
 
 #include <Interface_GeneralLib.hxx>
 #include <Interface_Category.hxx>

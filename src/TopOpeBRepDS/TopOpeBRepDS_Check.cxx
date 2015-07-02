@@ -478,8 +478,7 @@ Standard_Boolean CheckEdgeParameter(const Handle(TopOpeBRepDS_HDataStructure)& m
     it1.Initialize(LI);
     while (it1.More() ) {
       const Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
-      const Handle(TopOpeBRepDS_CurvePointInterference)& CPI =
-	Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I1);
+      Handle(TopOpeBRepDS_CurvePointInterference) CPI (Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I1));
       if(!CPI.IsNull()) {
 	Standard_Integer Param = 
 //#ifdef OCCT_DEBUG

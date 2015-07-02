@@ -544,7 +544,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(FF); Standard_Integer nLI = LI.Extent(); 
     if (nLI == 0) continue;
     for (TopOpeBRepDS_ListIteratorOfListOfInterference ILI(LI); ILI.More(); ILI.Next() ) {
-      const Handle(TopOpeBRepDS_ShapeShapeInterference)& SSI = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(ILI.Value()); 
+      Handle(TopOpeBRepDS_ShapeShapeInterference) SSI (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(ILI.Value())); 
       if (SSI.IsNull()) continue;      
       TopOpeBRepDS_Kind GT,ST;Standard_Integer GI,SI;FDS_data(SSI,GT,GI,ST,SI); 
       if (ST != TopOpeBRepDS_FACE) continue;      
@@ -590,7 +590,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(FF); Standard_Integer nLI = LI.Extent(); 
     if (nLI == 0) continue;
     for (TopOpeBRepDS_ListIteratorOfListOfInterference ILI(LI); ILI.More(); ILI.Next() ) {
-      const Handle(TopOpeBRepDS_ShapeShapeInterference)& SSI = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(ILI.Value()); 
+      Handle(TopOpeBRepDS_ShapeShapeInterference) SSI (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(ILI.Value())); 
       if (SSI.IsNull()) continue;      
       TopOpeBRepDS_Kind GT,ST;Standard_Integer GI,SI;FDS_data(SSI,GT,GI,ST,SI); 
       if (ST != TopOpeBRepDS_FACE) continue;      

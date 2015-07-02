@@ -251,7 +251,7 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
       {
         ComputeFrame();
         const Handle(Geom_Plane)& pl = myComponent;
-        const Handle(Geom_Plane)& thegoodpl = Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter));
+        Handle(Geom_Plane) thegoodpl (Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter)));
         GeomAdaptor_Surface surf(thegoodpl);
         StdPrs_Plane::Add(aPresentation,surf,myDrawer);
       }
@@ -531,8 +531,7 @@ void AIS_Plane::ComputeFrame()
     pl->D0 (U, V, myCenter);     
   }
   else {
-    const Handle(Geom_Plane)& thegoodpl = 
-      Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter));
+    Handle(Geom_Plane) thegoodpl (Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter)));
     ElSLib::Parameters(thegoodpl->Pln(),myPmin,U,V);
     
     U = 2.4*Abs(U);

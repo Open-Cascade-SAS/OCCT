@@ -81,7 +81,7 @@ void StdSelect_BRepSelectionTool::preBuildBVH (const Handle(SelectMgr_Selection)
 
     if (aSensitive->IsInstance ("Select3D_SensitiveGroup"))
     {
-      const Handle(Select3D_SensitiveGroup)& aGroup = Handle(Select3D_SensitiveGroup)::DownCast (aSensitive);
+      Handle(Select3D_SensitiveGroup) aGroup (Handle(Select3D_SensitiveGroup)::DownCast (aSensitive));
       const Select3D_EntitySequence& aSubEntities = aGroup->GetEntities();
       for (Select3D_EntitySequenceIter aSubEntitiesIter (aSubEntities); aSubEntitiesIter.More(); aSubEntitiesIter.Next())
       {

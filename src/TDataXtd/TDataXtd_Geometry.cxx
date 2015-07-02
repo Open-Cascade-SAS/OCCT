@@ -285,7 +285,7 @@ Standard_Boolean TDataXtd_Geometry::Plane(const Handle(TNaming_NamedShape)& NS, 
     Handle(Geom_Surface) surface = BRep_Tool::Surface (face);
     if (!surface.IsNull())  {
        if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) 
-	 surface = ((Handle(Geom_RectangularTrimmedSurface)&) surface)->BasisSurface();
+	 surface = Handle(Geom_RectangularTrimmedSurface)::DownCast (surface)->BasisSurface();
        Handle(Geom_Plane) S = Handle(Geom_Plane)::DownCast(surface);  
        if (!S.IsNull()) {
 	 G = S->Pln();
@@ -326,7 +326,7 @@ Standard_Boolean TDataXtd_Geometry::Cylinder(const Handle(TNaming_NamedShape)& N
     Handle(Geom_Surface) surface = BRep_Tool::Surface (face);
     if (!surface.IsNull())  {
       if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) 
-	surface = ((Handle(Geom_RectangularTrimmedSurface)&) surface)->BasisSurface();
+	surface = Handle(Geom_RectangularTrimmedSurface)::DownCast (surface)->BasisSurface();
       Handle(Geom_CylindricalSurface) S = Handle(Geom_CylindricalSurface)::DownCast(surface);
       if (!S.IsNull()) {
 	G = S->Cylinder();
@@ -401,7 +401,7 @@ TDataXtd_GeometryEnum  TDataXtd_Geometry::Type (const Handle(TNaming_NamedShape)
       Handle(Geom_Surface) surface = BRep_Tool::Surface (face);
       if (!surface.IsNull()) {
 	if (surface->IsInstance(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) { 
-	  surface = ((Handle(Geom_RectangularTrimmedSurface)&) surface)->BasisSurface();
+	  surface = Handle(Geom_RectangularTrimmedSurface)::DownCast (surface)->BasisSurface();
 	}
 	if (surface->IsInstance(STANDARD_TYPE(Geom_CylindricalSurface))) {
 	  type = TDataXtd_CYLINDER;

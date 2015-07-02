@@ -35,20 +35,20 @@ Standard_Boolean StepToGeom_MakeBoundedCurve2d::Convert (const Handle(StepGeom_B
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
     const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)
       Bspli = Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(SC);
-	return StepToGeom_MakeBSplineCurve2d::Convert(Bspli,*((Handle(Geom2d_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve2d::Convert(Bspli,Handle(Geom2d_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnots))) {
     const Handle(StepGeom_BSplineCurveWithKnots)
       Bspli = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(SC);
-	return StepToGeom_MakeBSplineCurve2d::Convert(Bspli,*((Handle(Geom2d_BSplineCurve)*)&CC));
+	return StepToGeom_MakeBSplineCurve2d::Convert(Bspli,Handle(Geom2d_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_TrimmedCurve))) {
     const Handle(StepGeom_TrimmedCurve) TC = Handle(StepGeom_TrimmedCurve)::DownCast(SC);
-	return StepToGeom_MakeTrimmedCurve2d::Convert(TC,*((Handle(Geom2d_BSplineCurve)*)&CC));
+	return StepToGeom_MakeTrimmedCurve2d::Convert(TC,Handle(Geom2d_BSplineCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Polyline))) { //:n6 abv 15 Feb 99
     const Handle(StepGeom_Polyline) PL = Handle(StepGeom_Polyline)::DownCast(SC);
-	return StepToGeom_MakePolyline2d::Convert(PL,*((Handle(Geom2d_BSplineCurve)*)&CC));
+	return StepToGeom_MakePolyline2d::Convert(PL,Handle(Geom2d_BSplineCurve)::DownCast (CC));
   }
   return Standard_False;
 }

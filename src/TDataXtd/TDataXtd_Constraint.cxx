@@ -212,7 +212,7 @@ void TDataXtd_Constraint::SetPlane(const Handle(TNaming_NamedShape)& plane)
 //=======================================================================
 const Handle(TNaming_NamedShape)&  TDataXtd_Constraint::GetPlane() const 
 {
-  return (Handle(TNaming_NamedShape)&) myPlane;
+  return Handle(TNaming_NamedShape)::DownCast (myPlane);
 }
 
 //=======================================================================

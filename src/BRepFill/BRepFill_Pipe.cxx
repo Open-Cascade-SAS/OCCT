@@ -917,13 +917,13 @@ void BRepFill_Pipe::DefineRealSegmax()
 	     C->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
 	{
 	  if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
-	    C = (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+	    C = Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
 	  if (C->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve))
-	    C = (*((Handle(Geom_OffsetCurve)*)&C))->BasisCurve();
+	    C = Handle(Geom_OffsetCurve)::DownCast (C)->BasisCurve();
 	}
       if (C->DynamicType() == STANDARD_TYPE(Geom_BSplineCurve))
 	{
-	  const Handle(Geom_BSplineCurve)& BC = *((Handle(Geom_BSplineCurve)*)&C);
+	  Handle(Geom_BSplineCurve) BC (Handle(Geom_BSplineCurve)::DownCast (C));
 	  Standard_Integer NbKnots = BC->NbKnots();
 	  Standard_Integer RealNbKnots = NbKnots;
 	  if (first > BC->FirstParameter())

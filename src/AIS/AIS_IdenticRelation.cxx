@@ -420,7 +420,7 @@ void AIS_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aS
 
 	  if ( isCircle ) // case of Circles
 	    {
-	      Handle(Geom_Circle) thecirc = (Handle(Geom_Circle)&) curv1;
+	      Handle(Geom_Circle) thecirc = Handle(Geom_Circle)::DownCast (curv1);
 	      Standard_Real udeb = ElCLib::Parameter(thecirc->Circ(),myFAttach);
 	      Standard_Real ufin = ElCLib::Parameter(thecirc->Circ(),mySAttach);
 	      Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
@@ -433,7 +433,7 @@ void AIS_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aS
 	    }
 	  else if ( curv1->IsInstance(STANDARD_TYPE(Geom_Ellipse)) ) // case of ellipses
 	    {
-	      Handle(Geom_Ellipse) theEll = (Handle(Geom_Ellipse)&) curv1;
+	      Handle(Geom_Ellipse) theEll = Handle(Geom_Ellipse)::DownCast (curv1);
 
 	      Standard_Real udeb = ElCLib::Parameter(theEll->Elips(),myFAttach);
 	      Standard_Real ufin = ElCLib::Parameter(theEll->Elips(),mySAttach);
@@ -510,9 +510,9 @@ void AIS_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Present
   if ( curv1->IsInstance(STANDARD_TYPE(Geom_Line)) && curv2->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
     // we take the line curv1 like support
     Handle(Geom_Line) thelin;
-    if (isInfinite1 && !isInfinite2) thelin = (Handle(Geom_Line)&) curv2;
-    else if (!isInfinite1 && isInfinite2) thelin = (Handle(Geom_Line)&) curv1;
-    else thelin = (Handle(Geom_Line)&) curv1;
+    if (isInfinite1 && !isInfinite2) thelin = Handle(Geom_Line)::DownCast (curv2);
+    else if (!isInfinite1 && isInfinite2) thelin = Handle(Geom_Line)::DownCast (curv1);
+    else thelin = Handle(Geom_Line)::DownCast (curv1);
     ComputeTwoLinesPresentation(aPrs, thelin, firstp1, lastp1, firstp2, lastp2, isInfinite1, isInfinite2);
   }
 
@@ -520,7 +520,7 @@ void AIS_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Present
   else if ( curv1->IsInstance(STANDARD_TYPE(Geom_Circle)) && curv2->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
     //gp_Pnt curpos;
     isCircle = Standard_True; // useful for ComputeSelection
-    const Handle(Geom_Circle)& thecirc = (Handle(Geom_Circle)&) curv1;
+    Handle(Geom_Circle) thecirc (Handle(Geom_Circle)::DownCast (curv1));
     ComputeTwoCirclesPresentation(aPrs, thecirc, firstp1, lastp1, firstp2, lastp2);
   }
 
@@ -528,7 +528,7 @@ void AIS_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Present
   //  Treatement of the case of ellipses
   else if ( curv1->IsInstance(STANDARD_TYPE(Geom_Ellipse)) && curv2->IsInstance(STANDARD_TYPE(Geom_Ellipse)) )
       {
-	const Handle(Geom_Ellipse)& theEll = (Handle(Geom_Ellipse)&) curv1;
+	Handle(Geom_Ellipse) theEll (Handle(Geom_Ellipse)::DownCast (curv1));
 	ComputeTwoEllipsesPresentation(aPrs, theEll, firstp1, lastp1, firstp2, lastp2);
       }
   // jfa 10/10/2000 end
@@ -1477,7 +1477,7 @@ void AIS_IdenticRelation::ComputeTwoVerticesPresentation(const Handle(Prs3d_Pres
       TColStd_ListIteratorOfListOfTransient it(Users());
       if (it.More())
 	{
-	  const Handle(AIS_Shape)& USER = Handle(AIS_Shape)::DownCast(it.Value());
+	  Handle(AIS_Shape) USER (Handle(AIS_Shape)::DownCast(it.Value()));
 	  if (!USER.IsNull())
 	    {
 	      const TopoDS_Shape& SH =USER->Shape();
@@ -1576,19 +1576,19 @@ Standard_Boolean AIS_IdenticRelation::ComputeDirection(const TopoDS_Wire& aWire,
 
     gp_Dir d1, d2;
     if ( curv1->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
-      d1 = ComputeCircleDirection((Handle(Geom_Circle)&) curv1, VERT);
+      d1 = ComputeCircleDirection(Handle(Geom_Circle)::DownCast (curv1), VERT);
     }
     else if (curv1->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
-      d1 = ComputeLineDirection((Handle(Geom_Line)&) curv1, firstp1);
+      d1 = ComputeLineDirection(Handle(Geom_Line)::DownCast (curv1), firstp1);
     }
     else 
       return Standard_False;
     
     if ( curv2->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
-      d2 = ComputeCircleDirection( (Handle(Geom_Circle)&) curv2, VERT);
+      d2 = ComputeCircleDirection( Handle(Geom_Circle)::DownCast (curv2), VERT);
     }
     else if (curv2->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
-      d2 =ComputeLineDirection( (Handle(Geom_Line)&) curv2, firstp2);
+      d2 =ComputeLineDirection( Handle(Geom_Line)::DownCast (curv2), firstp2);
     }
     else 
       return Standard_False;
@@ -1613,10 +1613,10 @@ Standard_Boolean AIS_IdenticRelation::ComputeDirection(const TopoDS_Wire& aWire,
     if ( !AIS::ComputeGeometry(VEdge, curv1, firstp1, lastp1) )
       return Standard_False; 
     if ( curv1->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
-      dF = ComputeCircleDirection( (Handle(Geom_Circle)&) curv1, VERT);
+      dF = ComputeCircleDirection( Handle(Geom_Circle)::DownCast (curv1), VERT);
     }
     else if (curv1->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
-      dF = ComputeLineDirection( (Handle(Geom_Line)&) curv1, firstp1);
+      dF = ComputeLineDirection( Handle(Geom_Line)::DownCast (curv1), firstp1);
     }
     else
       return Standard_False;
@@ -1704,16 +1704,16 @@ void AIS_IdenticRelation::ComputeOneEdgeOVertexPresentation(const Handle(Prs3d_P
     // we take the median of the edges connected to vertices
     gp_Dir myDir;
     if ( aCurve->IsKind(STANDARD_TYPE(Geom_Line))) {
-      myDir = ((Handle(Geom_Line)&) aCurve)->Lin().Direction();
+      myDir = Handle(Geom_Line)::DownCast (aCurve)->Lin().Direction();
       myDir.Cross(myPlane->Pln().Axis().Direction());
     }
     else if (aCurve->IsKind(STANDARD_TYPE(Geom_Circle))) {
-      Handle(Geom_Circle) CIR = (Handle(Geom_Circle)&) aCurve;
+      Handle(Geom_Circle) CIR = Handle(Geom_Circle)::DownCast (aCurve);
       myDir.SetXYZ(myFAttach.XYZ() - CIR->Location().XYZ());
     }
     // jfa 10/10/2000
     else if (aCurve->IsKind(STANDARD_TYPE(Geom_Ellipse))) {
-      Handle(Geom_Ellipse) CIR = (Handle(Geom_Ellipse)&) aCurve;
+      Handle(Geom_Ellipse) CIR = Handle(Geom_Ellipse)::DownCast (aCurve);
       myDir.SetXYZ(myFAttach.XYZ() - CIR->Location().XYZ());
     }
     // jfa 10/10/2000 end
@@ -1735,7 +1735,7 @@ void AIS_IdenticRelation::ComputeOneEdgeOVertexPresentation(const Handle(Prs3d_P
 				  curpos);
   if (myExtShape != 0) {
     if (!extCurv.IsNull()) { // the edge is not in the WP
-     ComputeProjEdgePresentation(aPrs,E,(Handle(Geom_Line)&) aCurve,ptonedge1,ptonedge2);
+     ComputeProjEdgePresentation(aPrs,E,Handle(Geom_Line)::DownCast (aCurve),ptonedge1,ptonedge2);
     }
   }
 }

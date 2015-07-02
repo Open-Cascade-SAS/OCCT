@@ -70,17 +70,17 @@ static Standard_Boolean IsLinear(const TopoDS_Edge& anEdge,
   Standard_Real fpar, lpar;
   Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
   if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
+    aCurve = Handle(Geom_TrimmedCurve)::DownCast (aCurve)->BasisCurve();
 
   gp_Pnt Pnt1, Pnt2;
   if (aCurve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
-    aLine = ((Handle(Geom_Line)&) aCurve)->Lin();
+    aLine = Handle(Geom_Line)::DownCast (aCurve)->Lin();
     return Standard_True;
   }
   else if (aCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
-    Handle(Geom_BezierCurve) theBezier = (Handle(Geom_BezierCurve)&) aCurve;
+    Handle(Geom_BezierCurve) theBezier = Handle(Geom_BezierCurve)::DownCast (aCurve);
     if (theBezier->NbPoles() == 2)
     {
       Pnt1 = theBezier->Pole(1);
@@ -91,7 +91,7 @@ static Standard_Boolean IsLinear(const TopoDS_Edge& anEdge,
   }
   else if (aCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    Handle(Geom_BSplineCurve) theBSpline = (Handle(Geom_BSplineCurve)&) aCurve;
+    Handle(Geom_BSplineCurve) theBSpline = Handle(Geom_BSplineCurve)::DownCast (aCurve);
     if (theBSpline->NbPoles() == 2)
     {
       Pnt1 = theBSpline->Pole(1);
@@ -838,7 +838,7 @@ void BRepOffsetAPI_MiddlePath::Build()
         Standard_Real fpar, lpar;
         Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
         if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-          aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
+          aCurve = Handle(Geom_TrimmedCurve)::DownCast (aCurve)->BasisCurve();
         Pnt1 = aCurve->Value(fpar);
         Pnt2 = aCurve->Value(lpar);
         Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve);

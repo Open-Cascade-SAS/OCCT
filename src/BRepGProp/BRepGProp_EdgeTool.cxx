@@ -42,7 +42,7 @@ Standard_Integer  BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& 
     {
     const GeomAdaptor_Curve& GAC = BAC.Curve();
     const Handle(Geom_Curve)& GC = GAC.Curve();
-    const Handle(Geom_BezierCurve)& GBZC = (*((Handle(Geom_BezierCurve)*)&GC));
+    Handle(Geom_BezierCurve) GBZC (Handle(Geom_BezierCurve)::DownCast (GC));
     Standard_Integer n = 2*(GBZC->NbPoles()) - 1;
     return n; 
     }
@@ -51,7 +51,7 @@ Standard_Integer  BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& 
     {
     const GeomAdaptor_Curve& GAC = BAC.Curve();
     const Handle(Geom_Curve)& GC = GAC.Curve();
-    const Handle(Geom_BSplineCurve)& GBSC = (*((Handle(Geom_BSplineCurve)*)&GC));
+    Handle(Geom_BSplineCurve) GBSC (Handle(Geom_BSplineCurve)::DownCast (GC));
     Standard_Integer n = 2*(GBSC->NbPoles()) - 1;
     return n; 
     }

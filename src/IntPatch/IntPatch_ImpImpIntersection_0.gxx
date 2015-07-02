@@ -530,10 +530,10 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 	      solpnt.SetArc(OnFirst,currentarc, currentparameter,
 			    Transline,Transarc);
 	      if (TheType == IntPatch_Analytic) {
-		(*((Handle(IntPatch_ALine)*)&lin))->AddVertex(solpnt);
+		Handle(IntPatch_ALine)::DownCast (lin)->AddVertex(solpnt);
 	      }
 	      else {
-		(*((Handle(IntPatch_GLine)*)&lin))->AddVertex(solpnt);
+		Handle(IntPatch_GLine)::DownCast (lin)->AddVertex(solpnt);
 	      }
 	      Done(i) = 1;
 	      
@@ -564,10 +564,10 @@ void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 			solpnt.SetArc(OnFirst,currentarc,currentparameter,
 				      Transline,Transarc);
 			if (TheType == IntPatch_Analytic) {
-			  (*((Handle(IntPatch_ALine)*)&lin))->AddVertex(solpnt);
+			  Handle(IntPatch_ALine)::DownCast (lin)->AddVertex(solpnt);
 			}
 			else {
-			  (*((Handle(IntPatch_GLine)*)&lin))->AddVertex(solpnt);
+			  Handle(IntPatch_GLine)::DownCast (lin)->AddVertex(solpnt);
 			}
 			Done(k) = 1;
 		      }
@@ -639,18 +639,18 @@ Standard_Boolean  MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBound
     const Handle(IntPatch_Line)& slinValueii = slin.Value(ii);
     TheType = slinValueii->ArcType();
     if (TheType == IntPatch_Analytic) {
-      nbvtx = (*((Handle(IntPatch_ALine)*)&slinValueii))->NbVertex();
+      nbvtx = Handle(IntPatch_ALine)::DownCast (slinValueii)->NbVertex();
     }
     else {
-      nbvtx = (*((Handle(IntPatch_GLine)*)&slinValueii))->NbVertex();
+      nbvtx = Handle(IntPatch_GLine)::DownCast (slinValueii)->NbVertex();
     }
     jj = 1;
     while (jj <= nbvtx) {
       if (TheType == IntPatch_Analytic) {
-	intpt = (*((Handle(IntPatch_ALine)*)&slinValueii))->Vertex(jj);
+	intpt = Handle(IntPatch_ALine)::DownCast (slinValueii)->Vertex(jj);
       }
       else {
-	intpt = (*((Handle(IntPatch_GLine)*)&slinValueii))->Vertex(jj);
+	intpt = Handle(IntPatch_GLine)::DownCast (slinValueii)->Vertex(jj);
       }
       if (intpt.IsMultiple() && 
           (( OnFirst && !intpt.IsOnDomS1()) ||
@@ -696,10 +696,10 @@ Standard_Boolean  MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBound
 
 
 	  if (TheType == IntPatch_Analytic) {
-	    (*((Handle(IntPatch_ALine)*)&slinValueii))->Replace(jj,intpt);
+	    Handle(IntPatch_ALine)::DownCast (slinValueii)->Replace(jj,intpt);
 	  }
 	  else {
-	    (*((Handle(IntPatch_GLine)*)&slinValueii))->Replace(jj,intpt);
+	    Handle(IntPatch_GLine)::DownCast (slinValueii)->Replace(jj,intpt);
 	  }
           localdone(Index) = 1;
 	  if (goon) {
@@ -726,10 +726,10 @@ Standard_Boolean  MultiplePoint (const IntPatch_SequenceOfPathPointOfTheSOnBound
 	            intpt.SetArc(OnFirst,currentarc,currentparameter,
                                  Transline,Transarc);
 	            if (TheType == IntPatch_Analytic) {
-	              (*((Handle(IntPatch_ALine)*)&slinValueii))->AddVertex(intpt);
+	              Handle(IntPatch_ALine)::DownCast (slinValueii)->AddVertex(intpt);
 	            }
 	            else {
-	              (*((Handle(IntPatch_GLine)*)&slinValueii))->AddVertex(intpt);
+	              Handle(IntPatch_GLine)::DownCast (slinValueii)->AddVertex(intpt);
 	            }
 		    UsedLine(ii) = 1;
 		    Retvalue = Standard_True;
@@ -799,18 +799,18 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 
   TheType = lin->ArcType();
   if (TheType == IntPatch_Analytic) {
-    nbvtx = (*((Handle(IntPatch_ALine)*)&lin))->NbVertex();
+    nbvtx = Handle(IntPatch_ALine)::DownCast (lin)->NbVertex();
   }
   else {
-    nbvtx = (*((Handle(IntPatch_GLine)*)&lin))->NbVertex();
+    nbvtx = Handle(IntPatch_GLine)::DownCast (lin)->NbVertex();
   }
   jj = 1;
   while (jj <= nbvtx) {
     if (TheType == IntPatch_Analytic) {
-      intpt = (*((Handle(IntPatch_ALine)*)&lin))->Vertex(jj);
+      intpt = Handle(IntPatch_ALine)::DownCast (lin)->Vertex(jj);
     }
     else {
-      intpt = (*((Handle(IntPatch_GLine)*)&lin))->Vertex(jj);
+      intpt = Handle(IntPatch_GLine)::DownCast (lin)->Vertex(jj);
     }
     if (!intpt.IsOnDomS2()) {
       if (currentpointonrst.Value().Distance(intpt.Value()) <= 
@@ -839,10 +839,10 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 	intpt.SetArc(Standard_False,currentarc,currentparameter,
 	             Transline,Transarc);
 	if (TheType == IntPatch_Analytic) {
-	  (*((Handle(IntPatch_ALine)*)&lin))->Replace(jj,intpt);
+	  Handle(IntPatch_ALine)::DownCast (lin)->Replace(jj,intpt);
 	}
 	else {
-	  (*((Handle(IntPatch_GLine)*)&lin))->Replace(jj,intpt);
+	  Handle(IntPatch_GLine)::DownCast (lin)->Replace(jj,intpt);
 	}
         Done(Index) = 1;
 
@@ -869,10 +869,10 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
 	          intpt.SetArc(Standard_False,currentarc,currentparameter,
                                Transline,Transarc);
 	          if (TheType == IntPatch_Analytic) {
-	            (*((Handle(IntPatch_ALine)*)&lin))->AddVertex(intpt);
+	            Handle(IntPatch_ALine)::DownCast (lin)->AddVertex(intpt);
 	          }
 	          else {
-	            (*((Handle(IntPatch_GLine)*)&lin))->AddVertex(intpt);
+	            Handle(IntPatch_GLine)::DownCast (lin)->AddVertex(intpt);
 	          }
                   Done(k) = 1;
                 }
@@ -891,10 +891,10 @@ Standard_Boolean PointOnSecondDom (const IntPatch_SequenceOfPathPointOfTheSOnBou
       jj = jj+1;
     }
     if (TheType == IntPatch_Analytic) {
-      nbvtx = (*((Handle(IntPatch_ALine)*)&lin))->NbVertex();
+      nbvtx = Handle(IntPatch_ALine)::DownCast (lin)->NbVertex();
     }
     else {
-      nbvtx = (*((Handle(IntPatch_GLine)*)&lin))->NbVertex();
+      nbvtx = Handle(IntPatch_GLine)::DownCast (lin)->NbVertex();
     }
   }
   return Retvalue;
@@ -934,18 +934,18 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
     typarc = lin->ArcType();
     if (typarc == IntPatch_Analytic) {
       Standard_Boolean foo;
-      lower = (*((Handle(IntPatch_ALine)*)&lin))->FirstParameter(foo);
-      upper = (*((Handle(IntPatch_ALine)*)&lin))->LastParameter(foo);
+      lower = Handle(IntPatch_ALine)::DownCast (lin)->FirstParameter(foo);
+      upper = Handle(IntPatch_ALine)::DownCast (lin)->LastParameter(foo);
     }
     else {
-      if ((*((Handle(IntPatch_GLine)*)&lin))->HasFirstPoint()) {
-	lower = (*((Handle(IntPatch_GLine)*)&lin))->FirstPoint().ParameterOnLine();
+      if (Handle(IntPatch_GLine)::DownCast (lin)->HasFirstPoint()) {
+	lower = Handle(IntPatch_GLine)::DownCast (lin)->FirstPoint().ParameterOnLine();
       }
       else {
 	lower = RealFirst();
       }
-      if ((*((Handle(IntPatch_GLine)*)&lin))->HasLastPoint()) {
-	upper = (*((Handle(IntPatch_GLine)*)&lin))->LastPoint().ParameterOnLine();
+      if (Handle(IntPatch_GLine)::DownCast (lin)->HasLastPoint()) {
+	upper = Handle(IntPatch_GLine)::DownCast (lin)->LastPoint().ParameterOnLine();
       }
       else {
 	upper = RealLast();
@@ -955,9 +955,9 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
     switch (typarc) {
     case IntPatch_Lin :
       {
-	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Line(),Psurf);
+	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Line(),Psurf);
 	if (para <= upper && para >= lower) {
-	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Line());
+	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Line());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
 	    distmin = dist;
@@ -969,11 +969,11 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
       break;
     case IntPatch_Circle :
       {
-	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Circle(),Psurf);
+	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Circle(),Psurf);
 	if ((para <= upper && para >= lower) ||
 	    (para + 2.*M_PI <=upper && para + 2.*M_PI >= lower) ||
 	    (para - 2.*M_PI <=upper && para - 2.*M_PI >= lower)) {
-	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Circle());
+	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Circle());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
 	    distmin = dist;
@@ -985,11 +985,11 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
       break;
     case IntPatch_Ellipse :
       {
-	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Ellipse(),Psurf);
+	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Ellipse(),Psurf);
 	if ((para <= upper && para >= lower) ||
 	    (para + 2.*M_PI <=upper && para + 2.*M_PI >= lower) ||
 	    (para - 2.*M_PI <=upper && para - 2.*M_PI >= lower)) {
-	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Ellipse());
+	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Ellipse());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
 	    distmin = dist;
@@ -1003,9 +1003,9 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
       {
 	
 #if 0 	
-	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Parabola(),Psurf);
+	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Parabola(),Psurf);
 	if (para <= upper && para >= lower) {
-	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Parabola());
+	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Parabola());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
 	    distmin = dist;
@@ -1018,7 +1018,7 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	//-- de la meilleure facon de calculer (axe X ou axe Y). Bilan : Si la parabole est tres 
 	//-- pointue (focal de l'ordre de 1e-2 et si le point est a un parametre grand, ca foire. )
 	//-- On ne peut pas modifier faciolement ds ElCLib car on ne passe pas la focale. ...
-	const gp_Parab& Parab=(*((Handle(IntPatch_GLine)*)&lin))->Parabola();
+	const gp_Parab& Parab=Handle(IntPatch_GLine)::DownCast (lin)->Parabola();
 	para = ElCLib::Parameter(Parab,Psurf);
 	if (para <= upper && para >= lower) {
 	  Standard_Integer amelioration=0;
@@ -1059,9 +1059,9 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
       break;
     case IntPatch_Hyperbola :
       {
-	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Hyperbola(),Psurf);
+	para = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Hyperbola(),Psurf);
 	if (para <= upper && para >= lower) {
-	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Hyperbola());
+	  pt = ElCLib::Value(para,Handle(IntPatch_GLine)::DownCast (lin)->Hyperbola());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
 	    distmin = dist;
@@ -1074,7 +1074,7 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 
     case IntPatch_Analytic :
       {
-	const Handle(IntPatch_ALine)& alin = (*((Handle(IntPatch_ALine)*)&lin));
+	Handle(IntPatch_ALine) alin (Handle(IntPatch_ALine)::DownCast (lin));
 	Standard_Boolean ok = alin->FindParameter(Psurf,para);
 	if (ok) {
 	  pt = alin->Value(para);
@@ -1238,28 +1238,28 @@ Standard_Boolean  SingleLine (const gp_Pnt& Psurf,
 
   switch (typarc) {
   case IntPatch_Lin :
-    parproj = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Line(),Psurf);
-    ElCLib::D1(parproj,(*((Handle(IntPatch_GLine)*)&lin))->Line(),ptproj,tgint);
+    parproj = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Line(),Psurf);
+    ElCLib::D1(parproj,Handle(IntPatch_GLine)::DownCast (lin)->Line(),ptproj,tgint);
     break;
   case IntPatch_Circle :
-    parproj = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Circle(),Psurf);
-    ElCLib::D1(parproj,(*((Handle(IntPatch_GLine)*)&lin))->Circle(),ptproj,tgint);
+    parproj = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Circle(),Psurf);
+    ElCLib::D1(parproj,Handle(IntPatch_GLine)::DownCast (lin)->Circle(),ptproj,tgint);
     break;
   case IntPatch_Ellipse :
-    parproj = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Ellipse(),Psurf);
-    ElCLib::D1(parproj,(*((Handle(IntPatch_GLine)*)&lin))->Ellipse(),ptproj,tgint);
+    parproj = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Ellipse(),Psurf);
+    ElCLib::D1(parproj,Handle(IntPatch_GLine)::DownCast (lin)->Ellipse(),ptproj,tgint);
     break;
   case IntPatch_Parabola :
-    parproj = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Parabola(),Psurf);
-    ElCLib::D1(parproj,(*((Handle(IntPatch_GLine)*)&lin))->Parabola(),ptproj,tgint);
+    parproj = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Parabola(),Psurf);
+    ElCLib::D1(parproj,Handle(IntPatch_GLine)::DownCast (lin)->Parabola(),ptproj,tgint);
     break;
   case IntPatch_Hyperbola :
-    parproj = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Hyperbola(),Psurf);
-    ElCLib::D1(parproj,(*((Handle(IntPatch_GLine)*)&lin))->Hyperbola(),ptproj,tgint);
+    parproj = ElCLib::Parameter(Handle(IntPatch_GLine)::DownCast (lin)->Hyperbola(),Psurf);
+    ElCLib::D1(parproj,Handle(IntPatch_GLine)::DownCast (lin)->Hyperbola(),ptproj,tgint);
     break;
   case IntPatch_Analytic :
     {
-      const Handle(IntPatch_ALine)& alin = (*((Handle(IntPatch_ALine)*)&lin));
+      Handle(IntPatch_ALine) alin (Handle(IntPatch_ALine)::DownCast (lin));
       Standard_Boolean ok = alin->FindParameter(Psurf,parproj);
       if (ok) {
 	gp_Pnt ptbid;
@@ -1460,36 +1460,36 @@ void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds& listedg,
 	const Handle(IntPatch_Line)& slinj = slin(j);
 	typ = slinj->ArcType();
 	if (typ == IntPatch_Analytic) {
-	  Nbpts = (*((Handle(IntPatch_ALine)*)&slinj))->NbVertex();
+	  Nbpts = Handle(IntPatch_ALine)::DownCast (slinj)->NbVertex();
 	}
 	else if (typ == IntPatch_Restriction) {
-	  Nbpts = (*((Handle(IntPatch_RLine)*)&slinj))->NbVertex();
+	  Nbpts = Handle(IntPatch_RLine)::DownCast (slinj)->NbVertex();
 	}
 	else {
-	  Nbpts = (*((Handle(IntPatch_GLine)*)&slinj))->NbVertex();
+	  Nbpts = Handle(IntPatch_GLine)::DownCast (slinj)->NbVertex();
 	}
 	for (k=1; k<=Nbpts;k++) {
 	  if (typ == IntPatch_Analytic) {
-	    ptvtx = (*((Handle(IntPatch_ALine)*)&slinj))->Vertex(k);
+	    ptvtx = Handle(IntPatch_ALine)::DownCast (slinj)->Vertex(k);
 	  }
 	  else if (typ == IntPatch_Restriction) {
-	    ptvtx = (*((Handle(IntPatch_RLine)*)&slinj))->Vertex(k);
+	    ptvtx = Handle(IntPatch_RLine)::DownCast (slinj)->Vertex(k);
 	  }
 	  else {
-	    ptvtx = (*((Handle(IntPatch_GLine)*)&slinj))->Vertex(k);
+	    ptvtx = Handle(IntPatch_GLine)::DownCast (slinj)->Vertex(k);
 	  }
 	  
 	  if (EdgeDegenere==Standard_False && dofirst) {
 	    if (ptvtx.Value().Distance(PStartf.Value()) <=TolArc) {
 	      ptvtx.SetMultiple(Standard_True);
 	      if (typ == IntPatch_Analytic) {
-		(*((Handle(IntPatch_ALine)*)&slinj))->Replace(k,ptvtx);
+		Handle(IntPatch_ALine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
 	      else if (typ == IntPatch_Restriction) {
-		(*((Handle(IntPatch_RLine)*)&slinj))->Replace(k,ptvtx);
+		Handle(IntPatch_RLine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
 	      else {
-		(*((Handle(IntPatch_GLine)*)&slinj))->Replace(k,ptvtx);
+		Handle(IntPatch_GLine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
 	      newptvtx = ptvtx;
 	      newptvtx.SetParameter(paramf);
@@ -1547,13 +1547,13 @@ void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds& listedg,
 	    if (ptvtx.Value().Distance(PStartl.Value()) <=TolArc) {
 	      ptvtx.SetMultiple(Standard_True);
 	      if (typ == IntPatch_Analytic) {
-		(*((Handle(IntPatch_ALine)*)&slinj))->Replace(k,ptvtx);
+		Handle(IntPatch_ALine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
 	      else if (typ == IntPatch_Restriction) {
-		(*((Handle(IntPatch_RLine)*)&slinj))->Replace(k,ptvtx);
+		Handle(IntPatch_RLine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
 	      else {
-		(*((Handle(IntPatch_GLine)*)&slinj))->Replace(k,ptvtx);
+		Handle(IntPatch_GLine)::DownCast (slinj)->Replace(k,ptvtx);
 	      }
 
 	      newptvtx = ptvtx;
@@ -1858,27 +1858,27 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 	Nbpt = seq_Pnt3d.Length();      // important que ce soit ici
 	typ2 = slinj->ArcType();
 	if (typ2 != IntPatch_Restriction) {
-	  //-- arcref = (*((Handle(IntPatch_RLine)*)&slini))->Arc();
-	  //-- OnFirst = (*((Handle(IntPatch_RLine)*)&slini))->IsOnFirstSurface();
+	  //-- arcref = Handle(IntPatch_RLine)::DownCast (slini)->Arc();
+	  //-- OnFirst = Handle(IntPatch_RLine)::DownCast (slini)->IsOnFirstSurface();
 
 	  //-- DES CHOSES A FAIRE ICI 
-	  if((*((Handle(IntPatch_RLine)*)&slini))->IsArcOnS1()) { 
+	  if(Handle(IntPatch_RLine)::DownCast (slini)->IsArcOnS1()) { 
 	    OnFirst=Standard_True;
-	    arcref= (*((Handle(IntPatch_RLine)*)&slini))->ArcOnS1();
+	    arcref= Handle(IntPatch_RLine)::DownCast (slini)->ArcOnS1();
 	  }
-	  else if((*((Handle(IntPatch_RLine)*)&slini))->IsArcOnS2()) { 
-	    arcref= (*((Handle(IntPatch_RLine)*)&slini))->ArcOnS2();
+	  else if(Handle(IntPatch_RLine)::DownCast (slini)->IsArcOnS2()) { 
+	    arcref= Handle(IntPatch_RLine)::DownCast (slini)->ArcOnS2();
 	    OnFirst=Standard_False;
 	  }
-	  if ((*((Handle(IntPatch_RLine)*)&slini))->HasFirstPoint()) {
-	    paramf = (*((Handle(IntPatch_RLine)*)&slini))->FirstPoint().ParameterOnLine();
+	  if (Handle(IntPatch_RLine)::DownCast (slini)->HasFirstPoint()) {
+	    paramf = Handle(IntPatch_RLine)::DownCast (slini)->FirstPoint().ParameterOnLine();
 	  }
 	  else {
 	    // cout << "Pas de param debut sur rst solution" << endl;
 	    paramf = RealFirst();
 	  }
-	  if ((*((Handle(IntPatch_RLine)*)&slini))->HasLastPoint()) {
-	    paraml = (*((Handle(IntPatch_RLine)*)&slini))->LastPoint().ParameterOnLine();
+	  if (Handle(IntPatch_RLine)::DownCast (slini)->HasLastPoint()) {
+	    paraml = Handle(IntPatch_RLine)::DownCast (slini)->LastPoint().ParameterOnLine();
 	  }
 	  else {
 	    // cout << "Pas de param debut sur rst solution" << endl;
@@ -1886,10 +1886,10 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 	  }
 
 	  if (typ2 == IntPatch_Analytic) {
-	    Nbvtx = (*((Handle(IntPatch_ALine)*)&slinj))->NbVertex();
+	    Nbvtx = Handle(IntPatch_ALine)::DownCast (slinj)->NbVertex();
 	  }
 	  else {
-	    Nbvtx = (*((Handle(IntPatch_GLine)*)&slinj))->NbVertex();
+	    Nbvtx = Handle(IntPatch_GLine)::DownCast (slinj)->NbVertex();
 	  }
 
 	  
@@ -1909,10 +1909,10 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 
 	  for (k=1; EdgeDegenere==Standard_False && k<=Nbvtx; k++) {
 	    if (typ2 == IntPatch_Analytic) {
-	      Ptvtx = (*((Handle(IntPatch_ALine)*)&slinj))->Vertex(k);
+	      Ptvtx = Handle(IntPatch_ALine)::DownCast (slinj)->Vertex(k);
 	    }
 	    else {
-	      Ptvtx = (*((Handle(IntPatch_GLine)*)&slinj))->Vertex(k);
+	      Ptvtx = Handle(IntPatch_GLine)::DownCast (slinj)->Vertex(k);
 	    }
 	    if ((OnFirst && !Ptvtx.IsOnDomS1()) ||
 		(!OnFirst && !Ptvtx.IsOnDomS2())) {
@@ -1960,15 +1960,15 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 		    for (int ri=1; ri<=Nblin; ri++) {
 		      const Handle(IntPatch_Line)& slinri = slin(ri);
 		      if (slinri->ArcType() == IntPatch_Restriction) {
-			if(OnFirst && (*((Handle(IntPatch_RLine)*)&slinri))->IsArcOnS1()) { 
-			  if(arcref == (*((Handle(IntPatch_RLine)*)&slinri))->ArcOnS1()) { 
-			    (*((Handle(IntPatch_RLine)*)&slinri))->AddVertex(newptvtx);
+			if(OnFirst && Handle(IntPatch_RLine)::DownCast (slinri)->IsArcOnS1()) { 
+			  if(arcref == Handle(IntPatch_RLine)::DownCast (slinri)->ArcOnS1()) { 
+			    Handle(IntPatch_RLine)::DownCast (slinri)->AddVertex(newptvtx);
 			    //printf("\n ImpImpIntersection_0.gxx CAS1 \n");
 			  }
 			}
-			else if(OnFirst==Standard_False && (*((Handle(IntPatch_RLine)*)&slinri))->IsArcOnS2()) { 
-			  if(arcref == (*((Handle(IntPatch_RLine)*)&slinri))->ArcOnS2()) { 
-			    (*((Handle(IntPatch_RLine)*)&slinri))->AddVertex(newptvtx);
+			else if(OnFirst==Standard_False && Handle(IntPatch_RLine)::DownCast (slinri)->IsArcOnS2()) { 
+			  if(arcref == Handle(IntPatch_RLine)::DownCast (slinri)->ArcOnS2()) { 
+			    Handle(IntPatch_RLine)::DownCast (slinri)->AddVertex(newptvtx);
 			    //printf("\n ImpImpIntersection_0.gxx CAS2 \n");
 			  }
 			}
@@ -1988,10 +1988,10 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 		newptvtx.SetMultiple(Standard_True);
 		
 		if (typ2 == IntPatch_Analytic) {
-		  (*((Handle(IntPatch_ALine)*)&slinj))->Replace(k,Ptvtx);
+		  Handle(IntPatch_ALine)::DownCast (slinj)->Replace(k,Ptvtx);
 		}
 		else {
-		  (*((Handle(IntPatch_GLine)*)&slinj))->Replace(k,Ptvtx);
+		  Handle(IntPatch_GLine)::DownCast (slinj)->Replace(k,Ptvtx);
 		}
 
 		if (Ptvtx.IsOnDomS1() || Ptvtx.IsOnDomS2()) {
@@ -2039,7 +2039,7 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
 		  }
 		} //-- if (Ptvtx.IsOnDomS1() || Ptvtx.IsOnDomS2())
 
-		(*((Handle(IntPatch_RLine)*)&slini))->AddVertex(newptvtx);
+		Handle(IntPatch_RLine)::DownCast (slini)->AddVertex(newptvtx);
 
 	      } //-- if (keeppoint)
 	    } //-- if ((OnFirst && !Ptvtx.IsOnDomS1())||(!OnFirst && !Ptvtx.IsOnDomS2()))

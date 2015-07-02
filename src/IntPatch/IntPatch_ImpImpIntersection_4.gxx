@@ -2893,8 +2893,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
   {
     for(Standard_Integer aNbLin = 1; aNbLin <= theSlin.Length(); aNbLin++)
     {
-      const Handle(IntPatch_WLine)& aWLine1 = 
-                Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNbLin));
+      Handle(IntPatch_WLine) aWLine1 (Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNbLin)));
 
       const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
       const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aWLine1->NbPnts());

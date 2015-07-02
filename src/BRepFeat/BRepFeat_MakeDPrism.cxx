@@ -1336,12 +1336,12 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
   typS2 = S2->DynamicType();
 
   if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S1 =  (*((Handle(Geom_RectangularTrimmedSurface)*)&S1))->BasisSurface();
+    S1 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S1)->BasisSurface();
     typS1 = S1->DynamicType();
   }
 
   if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S2 =  (*((Handle(Geom_RectangularTrimmedSurface)*)&S2))->BasisSurface();
+    S2 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S2)->BasisSurface();
     typS2 = S2->DynamicType();
   }
 
@@ -1354,8 +1354,8 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
   if (typS1 == STANDARD_TYPE(Geom_Plane)) {
     S1 = BRep_Tool::Surface(F1);  // to apply the location.
     S2 = BRep_Tool::Surface(F2);
-    gp_Pln pl1( (*((Handle(Geom_Plane)*)&S1))->Pln());
-    gp_Pln pl2( (*((Handle(Geom_Plane)*)&S2))->Pln());
+    gp_Pln pl1( Handle(Geom_Plane)::DownCast (S1)->Pln());
+    gp_Pln pl2( Handle(Geom_Plane)::DownCast (S2)->Pln());
 
     if (pl1.Position().IsCoplanar(pl2.Position(),tollin,tolang)) {
       ValRet = Standard_True;

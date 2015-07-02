@@ -193,7 +193,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
   }
   
   if (!myCref.IsNull()) {
-    const Handle(BRep_GCurve)& GCref = *((Handle(BRep_GCurve)*)&myCref);
+    Handle(BRep_GCurve) GCref (Handle(BRep_GCurve)::DownCast (myCref));
     Standard_Real First,Last;
     GCref->Range(First,Last);
     if (Last<=First) {
@@ -245,7 +245,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
       const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
       if (cr != myCref && cr->IsCurveOnSurface(Su,L)) {
         pcurvefound = Standard_True;
-        const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+        Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
         Standard_Real f,l;
         GC->Range(f,l);
         if (SameRange && (f != First || l != Last)) {
@@ -492,7 +492,7 @@ void CheckEdge (const TopoDS_Edge& Ed, const Standard_Real aMaxTol)
           
           TopAbs_Orientation orv = aVertex.Orientation();
           if (orv == TopAbs_FORWARD || orv == TopAbs_REVERSED) {
-            const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+            Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
             
             if (orv==TopAbs_FORWARD)
               Controlp = C->Value(GC->First());

@@ -325,8 +325,7 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
         myCurve2d = new  (TColGeom2d_HArray1OfCurve) (1, 2);
         CError =  new (TColStd_HArray2OfReal) (1,2, 1,2);
 
-        const Handle(Geom_BSplineSurface)& BSplSurf =
-          Handle(Geom_BSplineSurface)::DownCast(mySurface);
+        Handle(Geom_BSplineSurface) BSplSurf (Handle(Geom_BSplineSurface)::DownCast(mySurface));
         
         gp_Dir2d D(0., 1.);
         gp_Pnt2d P(BSplSurf->UKnot(1), 0);

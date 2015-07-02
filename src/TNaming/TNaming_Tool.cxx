@@ -587,7 +587,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
 #ifdef OCCT_DEBUG
 //      Standard_Integer nbExtArgs = extArgs.Extent();
 #endif
-      const Handle(TNaming_NamedShape)& anExtArg = Handle(TNaming_NamedShape)::DownCast(itr.Key());
+      Handle(TNaming_NamedShape) anExtArg (Handle(TNaming_NamedShape)::DownCast(itr.Key()));
       const Handle(TNaming_NamedShape)& aCurrentExtArg = TNaming_Tool::CurrentNamedShape(anExtArg);
       if (!aCurrentExtArg.IsNull() && !aCurrentExtArg->IsEmpty())
 	extArgs.Append(aCurrentExtArg);

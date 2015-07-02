@@ -93,7 +93,7 @@ Handle(Geom_Surface) BRep_Tool::Surface(const TopoDS_Face& F)
   Handle(Geom_Geometry) S1;
   if (!L.IsIdentity()) {
     S1 = S->Copy();
-    S = *((Handle(Geom_Surface)*)&S1);
+    S = Handle(Geom_Surface)::DownCast (S1);
     S->Transform(L.Transformation());
   }
   return S;
@@ -157,7 +157,7 @@ const Handle(Geom_Curve)&  BRep_Tool::Curve(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurve3D()) {
-      const Handle(BRep_Curve3D)& GC = *((Handle(BRep_Curve3D)*)&cr);
+      Handle(BRep_Curve3D) GC (Handle(BRep_Curve3D)::DownCast (cr));
       L = E.Location() * GC->Location();
       GC->Range(First,Last);
       return GC->Curve3D();
@@ -185,7 +185,7 @@ Handle(Geom_Curve)  BRep_Tool::Curve(const TopoDS_Edge& E,
     Handle(Geom_Geometry) C1;
     if ( !L.IsIdentity() ) {
       C1 = C->Copy();
-      C = *((Handle(Geom_Curve)*)&C1);
+      C = Handle(Geom_Curve)::DownCast (C1);
       C->Transform(L.Transformation());
     }
   }
@@ -236,7 +236,7 @@ const Handle(Poly_Polygon3D)& BRep_Tool::Polygon3D(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsPolygon3D()) {
-      const Handle(BRep_Polygon3D)& GC = *((Handle(BRep_Polygon3D)*)&cr);
+      Handle(BRep_Polygon3D) GC (Handle(BRep_Polygon3D)::DownCast (cr));
       L = E.Location() * GC->Location();
       return GC->Polygon3D();
     }
@@ -298,7 +298,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S,loc)) {
-      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
       GC->Range(First,Last);
       if (GC->IsCurveOnClosedSurface() && Eisreversed)
         return GC->PCurve2();
@@ -344,7 +344,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     {
       const gp_Trsf& T = aCurveLocation.Transformation();
       Handle(Geom_Geometry) GC3d = C3d->Transformed(T);
-      C3d = *((Handle(Geom_Curve)*)&GC3d);
+      C3d = Handle(Geom_Curve)::DownCast (GC3d);
       f = C3d->TransformedParameter(f, T);
       l = C3d->TransformedParameter(l, T);
     }
@@ -365,7 +365,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
 
     if (pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
       Handle(Geom2d_TrimmedCurve) TC = 
-        (*((Handle(Geom2d_TrimmedCurve)*)&pc));
+        Handle(Geom2d_TrimmedCurve)::DownCast (pc);
       pc = TC->BasisCurve();
     }
 
@@ -394,7 +394,7 @@ void  BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface()) {
-      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
       C = GC->PCurve();
       S = GC->Surface();
       L = E.Location() * GC->Location();
@@ -432,7 +432,7 @@ void  BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface()) {
-      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
       i++;
       if (i > Index) break;
       if (i == Index) {
@@ -533,8 +533,7 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsPolygonOnSurface()) {
-      const Handle(BRep_PolygonOnSurface)& PS = 
-        *((Handle(BRep_PolygonOnSurface)*)&cr);
+      Handle(BRep_PolygonOnSurface) PS (Handle(BRep_PolygonOnSurface)::DownCast (cr));
       P = PS->Polygon();
       S = PS->Surface();
       L = E.Location() * PS->Location();
@@ -568,8 +567,7 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsPolygonOnSurface()) {
-      const Handle(BRep_PolygonOnSurface)& PS = 
-        *((Handle(BRep_PolygonOnSurface)*)&cr);
+      Handle(BRep_PolygonOnSurface) PS (Handle(BRep_PolygonOnSurface)::DownCast (cr));
       i++;
       if (i > Index) break;
       if (i == Index) {
@@ -640,8 +638,7 @@ BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                   E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsPolygonOnTriangulation()) {
-      const Handle(BRep_PolygonOnTriangulation)& PT = 
-        *((Handle(BRep_PolygonOnTriangulation)*)&cr);
+      Handle(BRep_PolygonOnTriangulation) PT (Handle(BRep_PolygonOnTriangulation)::DownCast (cr));
       P = PT->PolygonOnTriangulation();
       T = PT->Triangulation();
       L = E.Location() * PT->Location();
@@ -676,8 +673,7 @@ BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                   E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsPolygonOnTriangulation()) {
-      const Handle(BRep_PolygonOnTriangulation)& PT = 
-        *((Handle(BRep_PolygonOnTriangulation)*)&cr);
+      Handle(BRep_PolygonOnTriangulation) PT (Handle(BRep_PolygonOnTriangulation)::DownCast (cr));
       i++;
       if (i > Index) break;
       if (i == Index) {
@@ -830,7 +826,7 @@ void  BRep_Tool::Range(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurve3D()) {
-      const Handle(BRep_Curve3D)& CR = *((Handle(BRep_Curve3D)*)&cr);
+      Handle(BRep_Curve3D) CR (Handle(BRep_Curve3D)::DownCast (cr));
       if (!CR->Curve3D().IsNull()) {
         First = CR->First(); 
         Last = CR->Last();
@@ -838,7 +834,7 @@ void  BRep_Tool::Range(const TopoDS_Edge& E,
       }
     }
     else if (cr->IsCurveOnSurface()) {
-      const Handle(BRep_GCurve)& CR = *((Handle(BRep_GCurve)*)&cr);
+      Handle(BRep_GCurve) CR (Handle(BRep_GCurve)::DownCast (cr));
       First = CR->First(); 
       Last = CR->Last();
       break;
@@ -867,7 +863,7 @@ void  BRep_Tool::Range(const TopoDS_Edge& E,
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S,l)) {
-      (*((Handle(BRep_GCurve)*)&cr))->Range(First,Last);
+      Handle(BRep_GCurve)::DownCast (cr)->Range(First,Last);
       break;
     }
     itcr.Next();
@@ -915,9 +911,9 @@ void  BRep_Tool::UVPoints(const TopoDS_Edge& E,
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S,l)) {
       if (cr->IsCurveOnClosedSurface() && Eisreversed)
-        (*((Handle(BRep_CurveOnClosedSurface)*)&cr))->UVPoints2(PFirst,PLast);
+        Handle(BRep_CurveOnClosedSurface)::DownCast (cr)->UVPoints2(PFirst,PLast);
       else
-        (*((Handle(BRep_CurveOnSurface)*)&cr))->UVPoints(PFirst,PLast);
+        Handle(BRep_CurveOnSurface)::DownCast (cr)->UVPoints(PFirst,PLast);
       return;
     }
     itcr.Next();
@@ -1005,10 +1001,10 @@ void  BRep_Tool::SetUVPoints(const TopoDS_Edge& E,
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S,l)) {
       if (cr->IsCurveOnClosedSurface() && Eisreversed)
-        (*((Handle(BRep_CurveOnClosedSurface)*) &cr))->
+        Handle(BRep_CurveOnClosedSurface)::DownCast (cr)->
           SetUVPoints2(PFirst,PLast);
       else
-        (*((Handle(BRep_CurveOnSurface)*) &cr))->
+        Handle(BRep_CurveOnSurface)::DownCast (cr)->
           SetUVPoints(PFirst,PLast);
     }
     itcr.Next();

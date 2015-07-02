@@ -633,7 +633,7 @@ void AIS_InteractiveObject::BoundingBox (Bnd_Box& theBndBox)
     {
       for (PrsMgr_ListOfPresentableObjectsIter aPrsIter (Children()); aPrsIter.More(); aPrsIter.Next())
       {
-        const Handle(AIS_InteractiveObject)& aChild = Handle(AIS_InteractiveObject)::DownCast (aPrsIter.Value());
+        Handle(AIS_InteractiveObject) aChild (Handle(AIS_InteractiveObject)::DownCast (aPrsIter.Value()));
         if (aChild.IsNull())
         {
           continue;

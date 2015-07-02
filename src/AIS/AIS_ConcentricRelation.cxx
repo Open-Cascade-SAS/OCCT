@@ -118,7 +118,7 @@ void AIS_ConcentricRelation::ComputeEdgeVertexConcentric(const Handle(Prs3d_Pres
   gp_Pnt P;
   AIS::ComputeGeometry(V,P, myPlane, isOnPlanVertex);
 
-  const Handle(Geom_Circle)& CIRCLE = (Handle(Geom_Circle)&) C;
+  Handle(Geom_Circle) CIRCLE (Handle(Geom_Circle)::DownCast (C));
   myCenter = CIRCLE->Location();
   myRad = Min(CIRCLE->Radius()/5.,15.);
   gp_Dir vec(p1.XYZ() - myCenter.XYZ() );
@@ -180,8 +180,8 @@ void AIS_ConcentricRelation::ComputeTwoEdgesConcentric(const Handle(Prs3d_Presen
     return;
   }
   
-  const Handle(Geom_Circle)& gcirc1 = (Handle(Geom_Circle)&) geom1;
-  const Handle(Geom_Circle)& gcirc2 = (Handle(Geom_Circle)&) geom2;
+  Handle(Geom_Circle) gcirc1 (Handle(Geom_Circle)::DownCast (geom1));
+  Handle(Geom_Circle) gcirc2 (Handle(Geom_Circle)::DownCast (geom2));
   
   myCenter = gcirc1->Location();
   

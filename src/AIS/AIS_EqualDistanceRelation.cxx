@@ -401,8 +401,8 @@ void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Prese
   
   if (cu1.GetType() == GeomAbs_Line && cu2.GetType() == GeomAbs_Line) 
     {
-      const Handle(Geom_Line)& geom_lin1 = (Handle(Geom_Line)&) geom1;
-      const Handle(Geom_Line)& geom_lin2 = (Handle(Geom_Line)&) geom2;
+      Handle(Geom_Line) geom_lin1 (Handle(Geom_Line)::DownCast (geom1));
+      Handle(Geom_Line) geom_lin2 (Handle(Geom_Line)::DownCast (geom2));
       const gp_Lin& l1 = geom_lin1->Lin();
       const gp_Lin& l2 = geom_lin2->Lin();
       
@@ -494,8 +494,8 @@ void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Prese
 }
   if (cu1.GetType() == GeomAbs_Circle && cu2.GetType() == GeomAbs_Circle){
     //Get first and last points of circles
-    const Handle(Geom_Circle)& aCir1 = Handle(Geom_Circle)::DownCast(geom1);
-    const Handle(Geom_Circle)& aCir2 = Handle(Geom_Circle)::DownCast(geom2);
+    Handle(Geom_Circle) aCir1 (Handle(Geom_Circle)::DownCast(geom1));
+    Handle(Geom_Circle) aCir2 (Handle(Geom_Circle)::DownCast(geom2));
     gp_Circ aCirc1 = aCir1->Circ();
     gp_Circ aCirc2 = aCir2->Circ();
 
@@ -725,7 +725,7 @@ void AIS_EqualDistanceRelation::ComputeOneEdgeOneVertexLength( const Handle( Prs
 
   if ( aCurve->IsInstance(STANDARD_TYPE(Geom_Line)) ) 
     {
-  const Handle(Geom_Line)& geom_lin = (Handle(Geom_Line)&) aCurve;
+  Handle(Geom_Line) geom_lin (Handle(Geom_Line)::DownCast (aCurve));
   const gp_Lin& l = geom_lin->Lin();
 
   // computation of Val

@@ -135,7 +135,7 @@ Handle(TopOpeBRepDS_Interference) TopOpeBRepDS_InterferenceTool::MakeFaceEdgeInt
 //=======================================================================
 Standard_Real TopOpeBRepDS_InterferenceTool::Parameter(const Handle(TopOpeBRepDS_Interference)& I)
 {
-  return (*((Handle(TopOpeBRepDS_CurvePointInterference)*)&I))->Parameter();
+  return Handle(TopOpeBRepDS_CurvePointInterference)::DownCast (I)->Parameter();
 }
 
 //=======================================================================
@@ -144,5 +144,5 @@ Standard_Real TopOpeBRepDS_InterferenceTool::Parameter(const Handle(TopOpeBRepDS
 //=======================================================================
 void TopOpeBRepDS_InterferenceTool::Parameter(const Handle(TopOpeBRepDS_Interference)& I,const Standard_Real Par)
 {
-  (*((Handle(TopOpeBRepDS_CurvePointInterference)*)&I))->Parameter(Par);
+  Handle(TopOpeBRepDS_CurvePointInterference)::DownCast (I)->Parameter(Par);
 }

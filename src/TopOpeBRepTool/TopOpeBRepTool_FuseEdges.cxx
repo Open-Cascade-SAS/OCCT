@@ -327,7 +327,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
       // if the curve is trimmed we get the basis curve to fit the new vertices
       // otherwise the makeedge will fail.
       if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve)) {
-	C = (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+	C = Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
       }
   
 #ifdef OCCT_DEBUG
@@ -618,7 +618,7 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
 
   if (!loc.IsIdentity()) {
     Handle(Geom_Geometry) GG1 = C1->Transformed(loc.Transformation());
-    C1 = *((Handle(Geom_Curve)*)&GG1);
+    C1 = Handle(Geom_Curve)::DownCast (GG1);
   }
   C2 = BRep_Tool::Curve(E2,loc,f2,l2);
   //modified by NIZNHY-PKV Mon Nov 15 16:24:38 1999
@@ -627,19 +627,19 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
 
   if (!loc.IsIdentity()) {
     Handle(Geom_Geometry) GG2 = C2->Transformed(loc.Transformation());
-    C2 = *((Handle(Geom_Curve)*)&GG2);
+    C2 = Handle(Geom_Curve)::DownCast (GG2);
   }
   
   typC1 = C1->DynamicType();
   typC2 = C2->DynamicType();
   
   if (typC1 == STANDARD_TYPE(Geom_TrimmedCurve)) {
-    C1 =  (*((Handle(Geom_TrimmedCurve)*)&C1))->BasisCurve();
+    C1 =  Handle(Geom_TrimmedCurve)::DownCast (C1)->BasisCurve();
     typC1 = C1->DynamicType();
   }
   
   if (typC2 == STANDARD_TYPE(Geom_TrimmedCurve)) {
-    C2 =  (*((Handle(Geom_TrimmedCurve)*)&C2))->BasisCurve();
+    C2 =  Handle(Geom_TrimmedCurve)::DownCast (C2)->BasisCurve();
     typC2 = C2->DynamicType();
   }
   
@@ -662,8 +662,8 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
   const Standard_Real tollin = Precision::Confusion();
   const Standard_Real tolang = Precision::Angular();
   if (typC1 == STANDARD_TYPE(Geom_Line)) {
-    gp_Lin li1( (*((Handle(Geom_Line)*)&C1))->Lin());
-    gp_Lin li2( (*((Handle(Geom_Line)*)&C2))->Lin());
+    gp_Lin li1( Handle(Geom_Line)::DownCast (C1)->Lin());
+    gp_Lin li2( Handle(Geom_Line)::DownCast (C2)->Lin());
     gp_Dir dir1(li1.Direction());
     gp_Dir dir2(li2.Direction());
 
@@ -682,8 +682,8 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
     return Standard_False;
   } 
   else if (typC1 == STANDARD_TYPE(Geom_Circle)) {
-    gp_Circ ci1 = (*((Handle(Geom_Circle)*)&C1))->Circ();
-    gp_Circ ci2 = (*((Handle(Geom_Circle)*)&C2))->Circ();
+    gp_Circ ci1 = Handle(Geom_Circle)::DownCast (C1)->Circ();
+    gp_Circ ci2 = Handle(Geom_Circle)::DownCast (C2)->Circ();
     if (Abs(ci1.Radius()-ci2.Radius()) <= tollin &&
 	ci1.Location().SquareDistance(ci2.Location()) <= tollin*tollin &&
 	ci1.Axis().IsParallel(ci2.Axis(),tolang) ) {
@@ -693,8 +693,8 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
     return Standard_False;
   }
   else if (typC1 == STANDARD_TYPE(Geom_Ellipse)) {
-    gp_Elips ci1 = (*((Handle(Geom_Ellipse)*)&C1))->Elips();
-    gp_Elips ci2 = (*((Handle(Geom_Ellipse)*)&C2))->Elips();
+    gp_Elips ci1 = Handle(Geom_Ellipse)::DownCast (C1)->Elips();
+    gp_Elips ci2 = Handle(Geom_Ellipse)::DownCast (C2)->Elips();
     
     if (Abs(ci1.MajorRadius()-ci2.MajorRadius()) <= tollin &&
 	Abs(ci1.MinorRadius()-ci2.MinorRadius()) <= tollin &&
@@ -714,8 +714,8 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
       return Standard_False;
     }
 
-    Handle(Geom_BSplineCurve) B1 = *((Handle(Geom_BSplineCurve)*)&C1);
-    Handle(Geom_BSplineCurve) B2 = *((Handle(Geom_BSplineCurve)*)&C2);
+    Handle(Geom_BSplineCurve) B1 = Handle(Geom_BSplineCurve)::DownCast (C1);
+    Handle(Geom_BSplineCurve) B2 = Handle(Geom_BSplineCurve)::DownCast (C2);
    
     Standard_Integer nbpoles = B1->NbPoles();
     if (nbpoles != B2->NbPoles()) {
@@ -787,8 +787,8 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
       return Standard_False;
     }
 
-    Handle(Geom_BezierCurve) B1 = *((Handle(Geom_BezierCurve)*)&C1);
-    Handle(Geom_BezierCurve) B2 = *((Handle(Geom_BezierCurve)*)&C2);
+    Handle(Geom_BezierCurve) B1 = Handle(Geom_BezierCurve)::DownCast (C1);
+    Handle(Geom_BezierCurve) B2 = Handle(Geom_BezierCurve)::DownCast (C2);
     
     Standard_Integer nbpoles = B1->NbPoles();
     if (nbpoles != B2->NbPoles()) {
@@ -939,16 +939,16 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::UpdatePCurve(const TopoDS_Edge& theOl
 	Handle(Geom2d_Curve) Curv2dR = BRep_Tool::CurveOnSurface(aFEdge,
 								 aFFace,cf,cl);
 	if (Curv2d->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
-	  Curv2d = (*((Handle(Geom2d_TrimmedCurve)*)&Curv2d))->BasisCurve();
+	  Curv2d = Handle(Geom2d_TrimmedCurve)::DownCast (Curv2d)->BasisCurve();
 	if (Curv2dR->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
-	  Curv2dR = (*((Handle(Geom2d_TrimmedCurve)*)&Curv2dR))->BasisCurve();
+	  Curv2dR = Handle(Geom2d_TrimmedCurve)::DownCast (Curv2dR)->BasisCurve();
 
 	B.UpdateEdge (theNewEdge,Curv2d,Curv2dR,Surf,loc,BRep_Tool::Tolerance(theNewEdge));
       }
       else {
 	// update the new edge 
 	if (Curv2d->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
-	  Curv2d = (*((Handle(Geom2d_TrimmedCurve)*)&Curv2d))->BasisCurve();
+	  Curv2d = Handle(Geom2d_TrimmedCurve)::DownCast (Curv2d)->BasisCurve();
 	Standard_Real f, l;
 	f = Curv2d->FirstParameter();
 	l = Curv2d->LastParameter();

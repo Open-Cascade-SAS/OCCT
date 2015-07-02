@@ -264,8 +264,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
                                              const Standard_Integer theEntityIdx,
                                              SelectMgr_SelectingVolumeManager& theMgr)
 {
-  const Handle(SelectMgr_EntityOwner)& anOwner =
-    Handle(SelectMgr_EntityOwner)::DownCast (theEntity->OwnerId());
+  Handle(SelectMgr_EntityOwner) anOwner (Handle(SelectMgr_EntityOwner)::DownCast (theEntity->OwnerId()));
 
   SelectBasics_PickResult aPickResult;
   if (theEntity->Matches (theMgr, aPickResult))
@@ -490,7 +489,7 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
 {
   Standard_Integer RankInMap = myIndexes->Value (myCurRank);
   const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(RankInMap);
-  Handle(SelectMgr_EntityOwner) Ownr = *((Handle(SelectMgr_EntityOwner)*) &toto);
+  Handle(SelectMgr_EntityOwner) Ownr = Handle(SelectMgr_EntityOwner)::DownCast (toto);
   return Ownr;
 }
 
@@ -521,7 +520,7 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
   if(More()){
     Standard_Integer RankInMap = myIndexes->Value (myIndexes->Lower());
     const Handle(SelectBasics_EntityOwner)& toto = mystored.FindKey(RankInMap);
-    Handle(SelectMgr_EntityOwner) Ownr = *((Handle(SelectMgr_EntityOwner)*) &toto);
+    Handle(SelectMgr_EntityOwner) Ownr = Handle(SelectMgr_EntityOwner)::DownCast (toto);
     return Ownr;
   }
 

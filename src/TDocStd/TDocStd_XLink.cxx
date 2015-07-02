@@ -227,8 +227,7 @@ Handle(TDF_Attribute) TDocStd_XLink::BackupCopy() const
 
 void TDocStd_XLink::Restore(const Handle(TDF_Attribute)& anAttribute) 
 {
-  const Handle(TDocStd_XLink)& xRef =
-    Handle(TDocStd_XLink)::DownCast(anAttribute);
+  Handle(TDocStd_XLink) xRef (Handle(TDocStd_XLink)::DownCast(anAttribute));
   if (!xRef.IsNull()) {
     myDocEntry = xRef->DocumentEntry();
     myLabelEntry = xRef->LabelEntry();
@@ -254,8 +253,7 @@ void TDocStd_XLink::Paste
 (const Handle(TDF_Attribute)& intoAttribute,
  const Handle(TDF_RelocationTable)& /*aRelocationTable*/) const
 {
-  const Handle(TDocStd_XLink)& xRef =
-    Handle(TDocStd_XLink)::DownCast(intoAttribute);
+  Handle(TDocStd_XLink) xRef (Handle(TDocStd_XLink)::DownCast(intoAttribute));
   if (!xRef.IsNull()) {
     xRef->DocumentEntry(myDocEntry);
     xRef->LabelEntry(myLabelEntry);

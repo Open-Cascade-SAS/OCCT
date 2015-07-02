@@ -63,18 +63,18 @@ Standard_Boolean StepToGeom_MakeSurface::Convert (const Handle(StepGeom_Surface)
     OCC_CATCH_SIGNALS
     if (SS->IsKind(STANDARD_TYPE(StepGeom_BoundedSurface))) {
       const Handle(StepGeom_BoundedSurface) S1 = Handle(StepGeom_BoundedSurface)::DownCast(SS);
-      return StepToGeom_MakeBoundedSurface::Convert(S1,*((Handle(Geom_BoundedSurface)*)&CS));
+      return StepToGeom_MakeBoundedSurface::Convert(S1,Handle(Geom_BoundedSurface)::DownCast (CS));
     }
     if (SS->IsKind(STANDARD_TYPE(StepGeom_ElementarySurface))) {
       const Handle(StepGeom_ElementarySurface) S1 = Handle(StepGeom_ElementarySurface)::DownCast(SS);
       if(S1->Position().IsNull())
         return Standard_False;
 
-      return StepToGeom_MakeElementarySurface::Convert(S1,*((Handle(Geom_ElementarySurface)*)&CS));
+      return StepToGeom_MakeElementarySurface::Convert(S1,Handle(Geom_ElementarySurface)::DownCast (CS));
     }
     if (SS->IsKind(STANDARD_TYPE(StepGeom_SweptSurface))) {
       const Handle(StepGeom_SweptSurface) S1 = Handle(StepGeom_SweptSurface)::DownCast(SS);
-      return StepToGeom_MakeSweptSurface::Convert(S1,*((Handle(Geom_SweptSurface)*)&CS));
+      return StepToGeom_MakeSweptSurface::Convert(S1,Handle(Geom_SweptSurface)::DownCast (CS));
     }
     if (SS->IsKind(STANDARD_TYPE(StepGeom_OffsetSurface))) { //:d4 abv 12 Mar 98
       const Handle(StepGeom_OffsetSurface) OS = Handle(StepGeom_OffsetSurface)::DownCast(SS);

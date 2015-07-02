@@ -79,7 +79,7 @@ Handle(AIS_Selection) AIS_Selection::Selection(const Standard_CString aName)
 //  Standard_Boolean found(Standard_False);
   for(Standard_Integer I =1; I<= AIS_Sel_GetSelections().Length();I++){
     curobj = AIS_Sel_GetSelections().Value(I);
-    Sel = *((Handle(AIS_Selection)*)&curobj);
+    Sel = Handle(AIS_Selection)::DownCast (curobj);
     if(Sel->myName.IsEqual(aName))
       return Sel;
   }
@@ -274,7 +274,7 @@ Standard_Integer AIS_Selection::Index(const Standard_CString aName)
   Handle (Standard_Transient) curobj;
   for(Standard_Integer I =1; I<= AIS_Sel_GetSelections().Length();I++){
     curobj = AIS_Sel_GetSelections().Value(I);
-    if((*((Handle(AIS_Selection)*)&curobj))->myName.IsEqual(aName))
+    if(Handle(AIS_Selection)::DownCast (curobj)->myName.IsEqual(aName))
       return I;
   }
   return 0;

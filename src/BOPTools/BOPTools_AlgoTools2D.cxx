@@ -793,7 +793,7 @@ Handle(Geom2d_Curve) BRep_Tool_CurveOnSurface
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S,loc)) {
-      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
       GC->Range(First,Last);
       if (GC->IsCurveOnClosedSurface() && Eisreversed)
         return GC->PCurve2();
@@ -837,7 +837,7 @@ Handle(Geom2d_Curve) BRep_Tool_CurveOnSurface
     if (!LC.IsIdentity()) {
       const gp_Trsf& T = LC.Transformation();
       Handle(Geom_Geometry) GPT = GP->Transformed(T);
-      Plane = *((Handle(Geom_Plane)*)&GPT);
+      Plane = Handle(Geom_Plane)::DownCast (GPT);
     }
     GeomAdaptor_Surface& GAS = HS->ChangeSurface();
     GAS.Load(Plane);
@@ -856,7 +856,7 @@ Handle(Geom2d_Curve) BRep_Tool_CurveOnSurface
 
     if (pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
       Handle(Geom2d_TrimmedCurve) TC = 
-        (*((Handle(Geom2d_TrimmedCurve)*)&pc));
+        Handle(Geom2d_TrimmedCurve)::DownCast (pc);
       pc = TC->BasisCurve();
     }
     First = f; Last = l;

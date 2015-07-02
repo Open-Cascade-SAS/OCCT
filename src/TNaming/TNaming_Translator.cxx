@@ -132,8 +132,8 @@ void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
 	 T == STANDARD_TYPE (TopoDS_TCompSolid)|| T == STANDARD_TYPE (TopoDS_TCompound))
 	{
 	  if(isWrite) {
-	    const Handle(TopoDS_TShape)& key = Handle(TopoDS_TShape)::DownCast(myMap.FindKey(i));
-	    const Handle(TopoDS_TShape)& item = Handle(TopoDS_TShape)::DownCast(myMap.FindFromIndex(i));
+	    Handle(TopoDS_TShape) key (Handle(TopoDS_TShape)::DownCast(myMap.FindKey(i)));
+	    Handle(TopoDS_TShape) item (Handle(TopoDS_TShape)::DownCast(myMap.FindFromIndex(i)));
 	    TopoDS_Shape S1; S1.TShape(key);
 	    TopoDS_Shape S2; S2.TShape(item);
 	    BRepTools::Write(S1, keyname.Cat(i).ToCString());

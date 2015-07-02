@@ -174,7 +174,7 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
 	      itpr.Next();
 	    }
 	    if (orv == TopAbs_FORWARD || orv == TopAbs_REVERSED) {
-	      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+	      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
 	      if (orv == TopAbs_FORWARD || multiple) {
 		Controlp = C->Value(GC->First());
 		Controlp.Transform(L.Transformation());

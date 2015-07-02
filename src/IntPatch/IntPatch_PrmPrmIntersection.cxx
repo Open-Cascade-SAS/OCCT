@@ -1621,7 +1621,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                     IntPatch_IType aType = aSLine->ArcType();
                     if( aType != IntPatch_Walking)
                       continue;
-                    const Handle(IntPatch_WLine)&  aWLine = (*((Handle(IntPatch_WLine)*)&aSLine));
+                    Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
                     Standard_Integer tnbV = aWLine->NbVertex();
                     Standard_Integer tiV;
                     for( tiV = 1; tiV <= tnbV; tiV++ ) {
@@ -1645,7 +1645,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
                   if( VDMin != 0 ) {
                     const Handle(IntPatch_Line)& aSLine = SLin.Value(WLDMin);
-                    const Handle(IntPatch_WLine)&  aWLine = (*((Handle(IntPatch_WLine)*)&aSLine));
+                    Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
                     Standard_Integer tiVpar = (Standard_Integer)aWLine->Vertex(VDMin).ParameterOnLine();
                     Standard_Integer ciVpar = (Standard_Integer)wline->Vertex(ciV).ParameterOnLine();
                     Standard_Real u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
@@ -2441,7 +2441,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
                             IntPatch_IType aType = aSLine->ArcType();
                             if( aType != IntPatch_Walking)
                               continue;
-                            const Handle(IntPatch_WLine)&  aWLine = (*((Handle(IntPatch_WLine)*)&aSLine));
+                            Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
                             Standard_Integer tnbV = aWLine->NbVertex();
                             Standard_Integer tiV;
                             for( tiV = 1; tiV <= tnbV; tiV++ )
@@ -2469,7 +2469,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
                           if( VDMin != 0 )
                           {
                             const Handle(IntPatch_Line)& aSLine = SLin.Value(WLDMin);
-                            const Handle(IntPatch_WLine)&  aWLine = (*((Handle(IntPatch_WLine)*)&aSLine));
+                            Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
                             Standard_Integer tiVpar = (Standard_Integer)aWLine->Vertex(VDMin).ParameterOnLine();
                             Standard_Integer ciVpar = (Standard_Integer)wline->Vertex(ciV).ParameterOnLine();
                             Standard_Real u11 = 0., u12 = 0., v11 = 0., v12 = 0.;

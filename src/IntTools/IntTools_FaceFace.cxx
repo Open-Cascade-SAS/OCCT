@@ -963,8 +963,7 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
     //
     const IntTools_Curve& aIC=mySeqOfCurve(1);
     const Handle(Geom_Curve)& aC3D=aIC.Curve();
-    const Handle(Geom_BSplineCurve)& aBS=
-      Handle(Geom_BSplineCurve)::DownCast(aC3D);
+    Handle(Geom_BSplineCurve) aBS (Handle(Geom_BSplineCurve)::DownCast(aC3D));
     if (aBS.IsNull()) {
       return;
     }
@@ -1061,8 +1060,7 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
   if(typl==IntPatch_Walking) {
     Handle(IntPatch_Line) anewL;
     //
-    const Handle(IntPatch_WLine)& aWLine=
-      Handle(IntPatch_WLine)::DownCast(L);
+    Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast(L));
     //DumpWLine(aWLine);
 
     anewL = ComputePurgedWLine(aWLine);
@@ -1071,7 +1069,7 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
     }
     L = anewL;
     
-    //const Handle(IntPatch_WLine)& aWLineX = Handle(IntPatch_WLine)::DownCast(L);
+    //Handle(IntPatch_WLine) aWLineX (Handle(IntPatch_WLine)::DownCast(L));
     //DumpWLine(aWLineX);
 
     //

@@ -355,7 +355,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
   Handle(Geom_Surface) S; 
   Handle(Geom_OffsetSurface) OffsetSur;
   if (Sr->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) {
-    OffsetSur = *((Handle(Geom_OffsetSurface)*)& Sr);
+    OffsetSur = Handle(Geom_OffsetSurface)::DownCast (Sr);
     S = OffsetSur->Surface();
     if (!S.IsNull()) { // Convert the equivalent surface.
       return SurfaceToBSplineSurface(S);

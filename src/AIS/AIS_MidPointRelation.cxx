@@ -212,7 +212,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
       else if ( curv->IsInstance(STANDARD_TYPE(Geom_Circle)) ) // case of circle
 	{
 	  // segment on circle
-	  Handle(Geom_Circle) thecirc = (Handle(Geom_Circle)&) curv;
+	  Handle(Geom_Circle) thecirc = Handle(Geom_Circle)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(thecirc->Circ(),myFirstPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(thecirc->Circ(),myFirstPnt2);
 	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
@@ -223,7 +223,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
       else if ( curv->IsInstance(STANDARD_TYPE(Geom_Ellipse)) ) // case of ellipse
 	{
 	  // segment on ellipse
-	  Handle(Geom_Ellipse) theEll = (Handle(Geom_Ellipse)&) curv;
+	  Handle(Geom_Ellipse) theEll = Handle(Geom_Ellipse)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(theEll->Elips(),myFirstPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(theEll->Elips(),myFirstPnt2);
 	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
@@ -247,7 +247,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
       else if ( curv->IsInstance(STANDARD_TYPE(Geom_Circle)) ) // case of circle
 	{
 	  // segment on circle
-	  Handle(Geom_Circle) thecirc = (Handle(Geom_Circle)&) curv;
+	  Handle(Geom_Circle) thecirc = Handle(Geom_Circle)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(thecirc->Circ(),mySecondPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(thecirc->Circ(),mySecondPnt2);
 	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
@@ -258,7 +258,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
       else if ( curv->IsInstance(STANDARD_TYPE(Geom_Ellipse)) ) // case of ellipse
 	{
 	  // segment on ellipse
-	  Handle(Geom_Ellipse) theEll = (Handle(Geom_Ellipse)&) curv;
+	  Handle(Geom_Ellipse) theEll = Handle(Geom_Ellipse)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(theEll->Elips(),mySecondPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(theEll->Elips(),mySecondPnt2);
 	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
@@ -302,7 +302,7 @@ void AIS_MidPointRelation::ComputeEdgeFromPnt(const Handle(Prs3d_Presentation)& 
       if ( !isInfinite ) ComputePointsOnLine(ptat1,ptat2,first);
       else
 	{
-	  const gp_Lin& line = ((Handle(Geom_Line)&) geom)->Lin();
+	  const gp_Lin& line = Handle(Geom_Line)::DownCast (geom)->Lin();
 	  ComputePointsOnLine(line,first);
 	}
       if ( first ) DsgPrs_MidPointPresentation::Add(aprs,myDrawer,ax,myMidPoint,myPosition,
@@ -312,7 +312,7 @@ void AIS_MidPointRelation::ComputeEdgeFromPnt(const Handle(Prs3d_Presentation)& 
     }
   else if ( geom->IsInstance(STANDARD_TYPE(Geom_Circle)) )
     {
-      const Handle(Geom_Circle)& geom_cir = (Handle(Geom_Circle)&) geom;
+      Handle(Geom_Circle) geom_cir (Handle(Geom_Circle)::DownCast (geom));
       gp_Circ circ (geom_cir->Circ());
       ComputePointsOnCirc(circ,ptat1,ptat2,first);
       if ( first ) DsgPrs_MidPointPresentation::Add(aprs,myDrawer,circ,myMidPoint,myPosition,
@@ -322,7 +322,7 @@ void AIS_MidPointRelation::ComputeEdgeFromPnt(const Handle(Prs3d_Presentation)& 
     }
   else if ( geom->IsInstance(STANDARD_TYPE(Geom_Ellipse)) )
     {
-      const Handle(Geom_Ellipse)& geom_ell = (Handle(Geom_Ellipse)&) geom;
+      Handle(Geom_Ellipse) geom_ell (Handle(Geom_Ellipse)::DownCast (geom));
       gp_Elips elips (geom_ell->Elips());
       ComputePointsOnElips(elips,ptat1,ptat2,first);
       if ( first ) DsgPrs_MidPointPresentation::Add(aprs,myDrawer,elips,myMidPoint,myPosition,

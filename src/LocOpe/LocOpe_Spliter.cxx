@@ -602,7 +602,7 @@ static void Select(const TopoDS_Edge& Ebase,
 
   if (!Loc.IsIdentity()) {
     Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-    C = *((Handle(Geom_Curve)*)&GG);
+    C = Handle(Geom_Curve)::DownCast (GG);
   }
   gp_Pnt Pt(C->Value((f+l)/2.));
 
@@ -615,7 +615,7 @@ static void Select(const TopoDS_Edge& Ebase,
     C = BRep_Tool::Curve(edg,Loc,f,l);
     if (!Loc.IsIdentity()) {
       Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-      C = *((Handle(Geom_Curve)*)&GG);
+      C = Handle(Geom_Curve)::DownCast (GG);
     }
     proj.Init(Pt,C,f,l);
     if (proj.NbPoints() > 0) {

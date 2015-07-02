@@ -1076,11 +1076,11 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
     }
     ais->SetMeasuredGeometry (TopoDS::Face (shape1), TopoDS::Face (shape2));
     if (isplan)
-      ais->SetCustomPlane (((Handle(Geom_Plane)&) ageom3)->Pln());
+      ais->SetCustomPlane (Handle(Geom_Plane)::DownCast (ageom3)->Pln());
     else if (!isCurvilinear)
     {
       gp_Pln aPlane;
-      aPlane.SetAxis (((Handle(Geom_Line)&) ageom3)->Position());
+      aPlane.SetAxis (Handle(Geom_Line)::DownCast (ageom3)->Position());
       ais->SetCustomPlane (aPlane);
     }
   }
@@ -1847,7 +1847,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
 	// Works only with line !!
 //#ifndef OCCT_DEBUG
         Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
-        gp_Lin OLin = ((Handle(Geom_Line)&) aGeomGeometry)->Lin();
+        gp_Lin OLin = Handle(Geom_Line)::DownCast (aGeomGeometry)->Lin();
 //#else
 //	gp_Lin OLin = ((Handle(Geom_Line)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Lin();
 //#endif
@@ -1855,7 +1855,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
 	CURVE.Initialize (NE);
 //#ifndef OCCT_DEBUG
         aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
-        gp_Lin NLin = ((Handle(Geom_Line)&)aGeomGeometry)->Lin();
+        gp_Lin NLin = Handle(Geom_Line)::DownCast (aGeomGeometry)->Lin();
 //#else
 //	gp_Lin NLin = ((Handle(Geom_Line)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Lin();
 //#endif
@@ -1878,7 +1878,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       if (CURVE.GetType() == GeomAbs_Circle)  {
 //#ifndef OCCT_DEBUG
         Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
-        gp_Ax1 ax = ((Handle(Geom_Circle)&) aGeomGeometry)->Circ().Axis();
+        gp_Ax1 ax = Handle(Geom_Circle)::DownCast (aGeomGeometry)->Circ().Axis();
 //#else
 //	gp_Ax1 ax = ((Handle(Geom_Circle)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Circ().Axis();
 //#endif
@@ -1904,7 +1904,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       if (MkF.IsDone())  {
 //#ifndef OCCT_DEBUG
         Handle(Geom_Surface) aGeomSurface = BRep_Tool::Surface(MkF.Face());
-        aplane = (Handle(Geom_Plane)&) aGeomSurface ;
+        aplane = Handle(Geom_Plane)::DownCast (aGeomSurface) ;
 //#else
 //	aplane = ((Handle(Geom_Plane)&) BRep_Tool::Surface(MkF.Face()));
 //#endif

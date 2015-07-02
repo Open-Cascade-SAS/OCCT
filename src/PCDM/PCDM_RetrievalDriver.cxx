@@ -173,7 +173,7 @@ void PCDM_RetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
     Standard_Failure::Raise(aMsg);
   }
   Handle(Standard_Persistent) theObject=theDocument->Object();
-  Handle(PCDM_Document) thePDocument = *((Handle(PCDM_Document)*)&theObject);
+  Handle(PCDM_Document) thePDocument = Handle(PCDM_Document)::DownCast (theObject);
 
 
   {

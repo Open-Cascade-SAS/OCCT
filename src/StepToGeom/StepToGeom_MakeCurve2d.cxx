@@ -43,15 +43,15 @@ Standard_Boolean StepToGeom_MakeCurve2d::Convert (const Handle(StepGeom_Curve)& 
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Line))) {
     const Handle(StepGeom_Line) L = Handle(StepGeom_Line)::DownCast(SC);
-	return StepToGeom_MakeLine2d::Convert(L,*((Handle(Geom2d_Line)*)&CC));
+	return StepToGeom_MakeLine2d::Convert(L,Handle(Geom2d_Line)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Conic))) {
     const Handle(StepGeom_Conic) L = Handle(StepGeom_Conic)::DownCast(SC);
-	return StepToGeom_MakeConic2d::Convert(L,*((Handle(Geom2d_Conic)*)&CC));
+	return StepToGeom_MakeConic2d::Convert(L,Handle(Geom2d_Conic)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BoundedCurve))) {
     const Handle(StepGeom_BoundedCurve) L = Handle(StepGeom_BoundedCurve)::DownCast(SC);
-	return StepToGeom_MakeBoundedCurve2d::Convert(L,*((Handle(Geom2d_BoundedCurve)*)&CC));
+	return StepToGeom_MakeBoundedCurve2d::Convert(L,Handle(Geom2d_BoundedCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_CurveReplica))) { //:n7 abv 16 Feb 99
     const Handle(StepGeom_CurveReplica) CR = Handle(StepGeom_CurveReplica)::DownCast(SC);

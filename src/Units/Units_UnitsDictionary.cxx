@@ -267,7 +267,7 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
         if(move) {
           Standard_Integer last = theunitssequence->Length();
           unit = theunitssequence->Value(last);
-          shiftedunit = *(Handle(Units_ShiftedUnit)*)&unit;
+          shiftedunit = Handle(Units_ShiftedUnit)::DownCast (unit);
           shiftedunit->Move(move);
         }
       }

@@ -339,7 +339,7 @@ Standard_Boolean Geom_OsculatingSurface::UOscSurf
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) 
     {
       Handle(Geom_BSplineSurface) BSur = 
-        *((Handle(Geom_BSplineSurface)*)& myBasisSurf);
+        Handle(Geom_BSplineSurface)::DownCast (myBasisSurf);
       NbUK = BSur->NbUKnots();
       NbVK = BSur->NbVKnots();
       TColStd_Array1OfReal UKnots(1,NbUK);
@@ -398,7 +398,7 @@ Standard_Boolean Geom_OsculatingSurface::VOscSurf
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) 
     {
       Handle(Geom_BSplineSurface) BSur = 
-        *((Handle(Geom_BSplineSurface)*)& myBasisSurf);
+        Handle(Geom_BSplineSurface)::DownCast (myBasisSurf);
       NbUK = BSur->NbUKnots();
       NbVK = BSur->NbVKnots();
       TColStd_Array1OfReal UKnots(1,NbUK);

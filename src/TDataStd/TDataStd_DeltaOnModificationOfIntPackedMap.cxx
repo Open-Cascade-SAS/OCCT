@@ -79,7 +79,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 {
 
   Handle(TDF_Attribute) aTDFAttribute = Attribute();
-  Handle(TDataStd_IntPackedMap) aBackAtt = (*((Handle(TDataStd_IntPackedMap)*)&aTDFAttribute));
+  Handle(TDataStd_IntPackedMap) aBackAtt = Handle(TDataStd_IntPackedMap)::DownCast (aTDFAttribute);
   if(aBackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" <<endl;

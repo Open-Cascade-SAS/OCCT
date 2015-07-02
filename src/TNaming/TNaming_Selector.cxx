@@ -153,7 +153,7 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
     }
 
     for(;cit.More();cit.Next()) {
-      const Handle(TNaming_NamedShape)& NS = Handle(TNaming_NamedShape)::DownCast(cit.Value()); 
+      Handle(TNaming_NamedShape) NS (Handle(TNaming_NamedShape)::DownCast(cit.Value())); 
       if(!NS.IsNull()) {  
 	TopoDS_Shape aS = TNaming_Tool::CurrentShape(NS);
 	if(aS.IsNull()) continue;

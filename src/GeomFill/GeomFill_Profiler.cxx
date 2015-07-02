@@ -142,7 +142,7 @@ void GeomFill_Profiler::AddCurve(const Handle(Geom_Curve)& Curve)
   //// modified by jgv, 19.01.05 for OCC7354 ////
   Handle(Geom_Curve) theCurve = Curve;
   if (theCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    theCurve = (*((Handle(Geom_TrimmedCurve)*)&theCurve))->BasisCurve();
+    theCurve = Handle(Geom_TrimmedCurve)::DownCast (theCurve)->BasisCurve();
   if (theCurve->IsKind(STANDARD_TYPE(Geom_Conic)))
     {
       GeomConvert_ApproxCurve appr(Curve, Precision::Confusion(), GeomAbs_C1, 16, 14);

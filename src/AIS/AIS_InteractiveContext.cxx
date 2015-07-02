@@ -213,7 +213,7 @@ void AIS_InteractiveContext::DisplayedObjects (AIS_ListOfInteractive& theListOfI
   for (TColStd_MapIteratorOfMapOfTransient aDispMapIter (aDispMap); aDispMapIter.More(); aDispMapIter.Next())
   {
     const Handle(Standard_Transient)& aTransient = aDispMapIter.Key();
-    anObj = *((Handle(AIS_InteractiveObject)* )&aTransient);
+    anObj = Handle(AIS_InteractiveObject)::DownCast (aTransient);
     theListOfIO.Append (anObj);
   }
 }
@@ -2821,15 +2821,13 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
 {
   if (theAssembly->IsInstance ("AIS_MultipleConnectedInteractive"))
   {
-    const Handle(AIS_MultipleConnectedInteractive)& theObj =
-      Handle(AIS_MultipleConnectedInteractive)::DownCast (theAssembly);
+    Handle(AIS_MultipleConnectedInteractive) theObj (Handle(AIS_MultipleConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect (theObjToDisconnect);
     mgrSelector->Remove (theObjToDisconnect);
   }
   else if (theAssembly->IsInstance ("AIS_ConnectedInteractive") && theObjToDisconnect.IsNull())
   {
-    const Handle(AIS_ConnectedInteractive)& theObj =
-      Handle(AIS_ConnectedInteractive)::DownCast (theAssembly);
+    Handle(AIS_ConnectedInteractive) theObj (Handle(AIS_ConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect();
     mgrSelector->Remove (theObj);
   }
@@ -2855,8 +2853,7 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
   AIS_MapOfObjectOwners anObjectOwnerMap;
   for (aSelection->Init(); aSelection->More(); aSelection->Next())
   {
-    const Handle(AIS_InteractiveObject)& anObj =
-      Handle(AIS_InteractiveObject)::DownCast (aSelection->Value());
+    Handle(AIS_InteractiveObject) anObj (Handle(AIS_InteractiveObject)::DownCast (aSelection->Value()));
     if (!anObj.IsNull())
     {
       if (anObj->IsInfinite())
@@ -2868,8 +2865,7 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
     }
     else
     {
-      const Handle(SelectMgr_EntityOwner)& anOwner =
-        Handle(SelectMgr_EntityOwner)::DownCast (aSelection->Value());
+      Handle(SelectMgr_EntityOwner) anOwner (Handle(SelectMgr_EntityOwner)::DownCast (aSelection->Value()));
       if (anOwner.IsNull())
         continue;
 

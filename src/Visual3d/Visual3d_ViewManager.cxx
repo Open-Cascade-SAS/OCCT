@@ -192,7 +192,7 @@ void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStruct
 #ifdef DOWNCAST
   Handle(Visual3d_View) theView = Handle(Visual3d_View)::DownCast (AProjector);
 #else
-  Handle(Visual3d_View) theView = *(Handle(Visual3d_View) *) &AProjector;
+  Handle(Visual3d_View) theView = Handle(Visual3d_View)::DownCast (AProjector);
 #endif
   Standard_Integer ViewId = theView->Identification ();
 

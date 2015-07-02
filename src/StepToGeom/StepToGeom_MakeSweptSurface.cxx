@@ -33,11 +33,11 @@ Standard_Boolean StepToGeom_MakeSweptSurface::Convert (const Handle(StepGeom_Swe
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_SurfaceOfLinearExtrusion))) {
     const Handle(StepGeom_SurfaceOfLinearExtrusion) Sur = Handle(StepGeom_SurfaceOfLinearExtrusion)::DownCast(SS);
-    return StepToGeom_MakeSurfaceOfLinearExtrusion::Convert(Sur,*((Handle(Geom_SurfaceOfLinearExtrusion)*)&CS));
+    return StepToGeom_MakeSurfaceOfLinearExtrusion::Convert(Sur,Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_SurfaceOfRevolution))) {
     const Handle(StepGeom_SurfaceOfRevolution) Sur = Handle(StepGeom_SurfaceOfRevolution)::DownCast(SS);
-    return StepToGeom_MakeSurfaceOfRevolution::Convert(Sur,*((Handle(Geom_SurfaceOfRevolution)*)&CS));
+    return StepToGeom_MakeSurfaceOfRevolution::Convert(Sur,Handle(Geom_SurfaceOfRevolution)::DownCast (CS));
   }
   return Standard_False;
 }	 

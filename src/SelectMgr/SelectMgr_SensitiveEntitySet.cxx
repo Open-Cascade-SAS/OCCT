@@ -106,8 +106,7 @@ Standard_Real SelectMgr_SensitiveEntitySet::Center (const Standard_Integer theIn
 {
   const Handle(SelectBasics_SensitiveEntity)& aBasicEntity =
     GetSensitiveById (theIndex)->BaseSensitive();
-  const Handle(Select3D_SensitiveEntity)& aSensitive =
-    Handle(Select3D_SensitiveEntity)::DownCast (aBasicEntity);
+  Handle(Select3D_SensitiveEntity) aSensitive (Handle(Select3D_SensitiveEntity)::DownCast (aBasicEntity));
   const gp_Pnt aCenter = aSensitive->CenterOfGeometry();
   Standard_Real aCenterCoord = 0.0;
   aCenterCoord = theAxis == 0 ? aCenter.X() :

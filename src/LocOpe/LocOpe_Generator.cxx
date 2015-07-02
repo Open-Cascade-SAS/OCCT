@@ -472,7 +472,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
     newface.Orientation(TopAbs_FORWARD);
     S = BRep_Tool::Surface(fac);
     if (S->DynamicType()== STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-      S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+      S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
     }
     P = Handle(Geom_Plane)::DownCast(S);
     TopoDS_Wire wir;
@@ -548,10 +548,10 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		    C = BRep_Tool::Curve(edg,loc,f,l);
 		    if (!loc.IsIdentity()) {
 		      Handle(Geom_Geometry) GG = C->Transformed(loc.Transformation());
-		      C = *((Handle(Geom_Curve)*)&GG);
+		      C = Handle(Geom_Curve)::DownCast (GG);
 		    }
 		    if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve)) {
-		      C = (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+		      C = Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
 		    }
 		    
 		    Handle(Geom2d_Curve) C2d = GeomProjLib::Curve2d(C,f,l,S,tol);
@@ -613,10 +613,10 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 	    C = BRep_Tool::Curve(newedg,loc,f,l);
 	    if (!loc.IsIdentity()) {
 	      Handle(Geom_Geometry) GG = C->Transformed(loc.Transformation());
-	      C = *((Handle(Geom_Curve)*)&GG);
+	      C = Handle(Geom_Curve)::DownCast (GG);
 	    }
 	    if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve)) {
-	      C = (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+	      C = Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
 	    }
 	    if (P.IsNull()) { // on met les courbes 2d si on n`est pas 
 	                      // sur un plan
@@ -707,10 +707,10 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		  C = BRep_Tool::Curve(edgbis,loc,f,l);
 		  if (!loc.IsIdentity()) {
 		    Handle(Geom_Geometry) GG = C->Transformed(loc.Transformation());
-		    C = *((Handle(Geom_Curve)*)&GG);
+		    C = Handle(Geom_Curve)::DownCast (GG);
 		  }
 		  if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve)) {
-		    C = (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+		    C = Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
 		  }
 		  prmvt = 
 		    BRep_Tool::Parameter(TopoDS::Vertex(it1.Value()),edgbis);
@@ -864,10 +864,10 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		  C = BRep_Tool::Curve(edg,loc,f,l);
 		  if (!loc.IsIdentity()) {
 		    Handle(Geom_Geometry) GG = C->Transformed(loc.Transformation());
-		    C = *((Handle(Geom_Curve)*)&GG);
+		    C = Handle(Geom_Curve)::DownCast (GG);
 		  }
 		  if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve)) {
-		    C =  (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+		    C =  Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
 		  }
 		  
 		  C2d = GeomProjLib::Curve2d(C,f,l,S,tol);
@@ -1074,12 +1074,12 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
   typS2 = S2->DynamicType();
 
   if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S1 =  (*((Handle(Geom_RectangularTrimmedSurface)*)&S1))->BasisSurface();
+    S1 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S1)->BasisSurface();
     typS1 = S1->DynamicType();
   }
 
   if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S2 =  (*((Handle(Geom_RectangularTrimmedSurface)*)&S2))->BasisSurface();
+    S2 =  Handle(Geom_RectangularTrimmedSurface)::DownCast (S2)->BasisSurface();
     typS2 = S2->DynamicType();
   }
 
@@ -1091,8 +1091,8 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
   Standard_Boolean ValRet = Standard_False;
   if (typS1 == STANDARD_TYPE(Geom_Plane)) {
 
-    gp_Pln pl1( (*((Handle(Geom_Plane)*)&S1))->Pln());
-    gp_Pln pl2( (*((Handle(Geom_Plane)*)&S2))->Pln());
+    gp_Pln pl1( Handle(Geom_Plane)::DownCast (S1)->Pln());
+    gp_Pln pl2( Handle(Geom_Plane)::DownCast (S2)->Pln());
 
     pl1.Transform(loc1.Transformation());
     pl2.Transform(loc2.Transformation());
@@ -1129,24 +1129,24 @@ Standard_Boolean ToFuse(const TopoDS_Edge& E1,
   C1 = BRep_Tool::Curve(E1,loc1,f,l);
   if (!loc1.IsIdentity()) {
     Handle(Geom_Geometry) CC1 = C1->Transformed(loc1.Transformation());
-    C1 = *((Handle(Geom_Curve)*)&CC1);
+    C1 = Handle(Geom_Curve)::DownCast (CC1);
   }
 
   C2 = BRep_Tool::Curve(E2,loc2,f,l);
   if (!loc2.IsIdentity()) {
     Handle(Geom_Geometry) CC2 = C2->Transformed(loc2.Transformation());
-    C2 = *((Handle(Geom_Curve)*)&CC2);
+    C2 = Handle(Geom_Curve)::DownCast (CC2);
   }
 
   typC1 = C1->DynamicType();
   typC2 = C2->DynamicType();
 
   if (typC1 == STANDARD_TYPE(Geom_TrimmedCurve)) {
-    C1 =  (*((Handle(Geom_TrimmedCurve)*)&C1))->BasisCurve();
+    C1 =  Handle(Geom_TrimmedCurve)::DownCast (C1)->BasisCurve();
     typC1 = C1->DynamicType();
   }
   if (typC2 == STANDARD_TYPE(Geom_TrimmedCurve)) {
-    C2 =  (*((Handle(Geom_TrimmedCurve)*)&C2))->BasisCurve();
+    C2 =  Handle(Geom_TrimmedCurve)::DownCast (C2)->BasisCurve();
     typC2 = C2->DynamicType();
   }
 
@@ -1156,8 +1156,8 @@ Standard_Boolean ToFuse(const TopoDS_Edge& E1,
 
   Standard_Boolean ValRet = Standard_False;
   if (typC1 == STANDARD_TYPE(Geom_Line)) {
-    gp_Lin li1( (*((Handle(Geom_Line)*)&C1))->Lin());
-    gp_Lin li2( (*((Handle(Geom_Line)*)&C2))->Lin());
+    gp_Lin li1( Handle(Geom_Line)::DownCast (C1)->Lin());
+    gp_Lin li2( Handle(Geom_Line)::DownCast (C2)->Lin());
 
     if (li1.Position().IsCoaxial(li2.Position(),tolang,tollin)) {
       ValRet = Standard_True;
@@ -1216,20 +1216,20 @@ Standard_Real NewParameter(const TopoDS_Edge& Edg,
   C = BRep_Tool::Curve(Edg,loc,f,l);
   if (!loc.IsIdentity()) {
     Handle(Geom_Geometry) GG = C->Transformed(loc.Transformation());
-    C = *((Handle(Geom_Curve)*)&GG);
+    C = Handle(Geom_Curve)::DownCast (GG);
   }
   typC = C->DynamicType();
   if (typC == STANDARD_TYPE(Geom_TrimmedCurve)) {
-    C =  (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
+    C =  Handle(Geom_TrimmedCurve)::DownCast (C)->BasisCurve();
     typC = C->DynamicType();
   }
 
   if (typC == STANDARD_TYPE(Geom_Line)) {
-    return ElCLib::Parameter( (*((Handle(Geom_Line)*)&C))->Lin(),P);
+    return ElCLib::Parameter( Handle(Geom_Line)::DownCast (C)->Lin(),P);
   }
   else if (typC == STANDARD_TYPE(Geom_Circle)) {
     Standard_Real prm = ElCLib::Parameter
-      ( (*((Handle(Geom_Circle)*)&C))->Circ(),P);
+      ( Handle(Geom_Circle)::DownCast (C)->Circ(),P);
     // Vtx vient d`une exploration de Edg orientee FORWARD
 
     TopAbs_Orientation orient = TopAbs::Reverse(Vtx.Orientation());

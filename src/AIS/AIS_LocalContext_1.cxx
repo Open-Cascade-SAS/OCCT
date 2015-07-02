@@ -533,11 +533,11 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 	Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(Ownr);
 	if(BROwnr.IsNull() || !BROwnr->ComesFromDecomposition()){
 	  Handle(SelectMgr_SelectableObject) SO  = Ownr->Selectable();
-	  IO = *((Handle(AIS_InteractiveObject)*)&SO);
+	  IO = Handle(AIS_InteractiveObject)::DownCast (SO);
 	}
       }
       Handle(SelectMgr_SelectableObject) SO = Ownr->Selectable();
-      Standard_Integer HM = GetHiMod(*((Handle(AIS_InteractiveObject)*)&SO));
+      Standard_Integer HM = GetHiMod(Handle(AIS_InteractiveObject)::DownCast (SO));
       if ( Ownr->IsAutoHilight() )
         Ownr->HilightWithColor(PM,myCTX->SelectionColor(),HM);
       else if ( aMap.IsBound (SO) )
@@ -585,7 +585,7 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
       Standard_Integer HM(0);
       if(Ownr->HasSelectable()){
 	Handle(SelectMgr_SelectableObject) SO  = Ownr->Selectable();
-	Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&SO);
+	Handle(AIS_InteractiveObject) IO = Handle(AIS_InteractiveObject)::DownCast (SO);
         anObjMap.Add (IO);
 
         HM = GetHiMod(IO);
@@ -667,7 +667,7 @@ HasShape() const
 {
   Handle(Standard_Transient) Tr = AIS_Selection::CurrentSelection()->Value();
   if( Tr.IsNull() ) return Standard_False;
-  Handle(SelectMgr_EntityOwner) EO = *((Handle(SelectMgr_EntityOwner)*)&Tr);
+  Handle(SelectMgr_EntityOwner) EO = Handle(SelectMgr_EntityOwner)::DownCast (Tr);
   Handle(StdSelect_BRepOwner) BRO = Handle(StdSelect_BRepOwner)::DownCast(EO);
   if(BRO.IsNull()) return Standard_False;
   Standard_Boolean hasshape = BRO->HasShape();
@@ -704,7 +704,7 @@ Standard_Boolean AIS_LocalContext::HasSelectedShape() const
 TopoDS_Shape AIS_LocalContext::SelectedShape() const 
 {
   Handle(Standard_Transient) aTr = AIS_Selection::CurrentSelection()->Value();
-  Handle(SelectMgr_EntityOwner) anEO = *((Handle(SelectMgr_EntityOwner)*)&aTr);
+  Handle(SelectMgr_EntityOwner) anEO = Handle(SelectMgr_EntityOwner)::DownCast (aTr);
   Handle(StdSelect_BRepOwner) aBRO = Handle(StdSelect_BRepOwner)::DownCast(anEO);
   if( aBRO.IsNull() ) 
   {
@@ -724,11 +724,11 @@ SelectedInteractive() const
   Handle(AIS_InteractiveObject) IO;
   Handle(Standard_Transient) Tr = AIS_Selection::CurrentSelection()->Value();
   if( !Tr.IsNull() ) {
-    Handle(SelectMgr_EntityOwner) EO = *((Handle(SelectMgr_EntityOwner)*)&Tr);
+    Handle(SelectMgr_EntityOwner) EO = Handle(SelectMgr_EntityOwner)::DownCast (Tr);
     Handle(SelectMgr_SelectableObject) SO;
     if(EO->HasSelectable()){
       SO = EO->Selectable();
-      IO = *((Handle(AIS_InteractiveObject)*)&SO);
+      IO = Handle(AIS_InteractiveObject)::DownCast (SO);
     }
   }
   return IO;
@@ -743,7 +743,7 @@ SelectedOwner() const
   Handle(SelectMgr_EntityOwner) EO;
   Handle(Standard_Transient) Tr = AIS_Selection::CurrentSelection()->Value();
   if( !Tr.IsNull() )
-  	EO = *((Handle(SelectMgr_EntityOwner)*)&Tr);
+  	EO = Handle(SelectMgr_EntityOwner)::DownCast (Tr);
   return EO;
 }
 
@@ -1016,7 +1016,7 @@ void AIS_LocalContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,
       SIOBJ->Init();
       if(SIOBJ->More()){
         Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->BaseSensitive()->OwnerId();
-	EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
+	EO = Handle(SelectMgr_EntityOwner)::DownCast (BO);
       }
     }
     if(EO.IsNull()) 
@@ -1054,7 +1054,7 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
       SIOBJ->Init();
       if(SIOBJ->More()){
         Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->BaseSensitive()->OwnerId();
-	EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
+	EO = Handle(SelectMgr_EntityOwner)::DownCast (BO);
       }
     }
     if(EO.IsNull())
@@ -1242,7 +1242,7 @@ AIS_LocalContext::DetectedInteractive() const
   Handle(AIS_InteractiveObject) Iobj;
   if(IsValidIndex(mylastindex)){
     Handle(SelectMgr_SelectableObject) SO = myMapOfOwner->FindKey(mylastindex)->Selectable();
-    Iobj = *((Handle(AIS_InteractiveObject)*) &SO);
+    Iobj = Handle(AIS_InteractiveObject)::DownCast (SO);
   }
   return Iobj;
 }
@@ -1420,7 +1420,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromIO
   for(; anIter.More(); anIter.Next()){
     const Handle(Standard_Transient)& Tr = anIter.Value();
     if(!Tr.IsNull()){
-      EO = *((Handle(SelectMgr_EntityOwner)*)&Tr);
+      EO = Handle(SelectMgr_EntityOwner)::DownCast (Tr);
       if(EO->HasSelectable()){
 	Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(EO);
 	if(BROwnr.IsNull() || !BROwnr->ComesFromDecomposition()){

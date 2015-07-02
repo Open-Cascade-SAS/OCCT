@@ -145,7 +145,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   const IntPatch_IType typl = L->ArcType();
   if(typl == IntPatch_Analytic)  {
     Standard_Real u1,v1,u2,v2;
-    Handle(IntPatch_ALine)& ALine =  *((Handle(IntPatch_ALine) *)&L);
+    Handle(IntPatch_ALine)& ALine =  Handle(IntPatch_ALine)::DownCast (L);
     seqp.Clear();
     nbvtx = GeomInt_LineTool::NbVertex(L);
     for(i=1;i<nbvtx;i++)   {
@@ -171,7 +171,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   } // if(typl == IntPatch_Analytic)  {
   else if(typl == IntPatch_Walking)  {
     Standard_Real u1,v1,u2,v2;
-    Handle(IntPatch_WLine)& WLine =  *((Handle(IntPatch_WLine) *)&L);
+    Handle(IntPatch_WLine)& WLine =  Handle(IntPatch_WLine)::DownCast (L);
     seqp.Clear();
     nbvtx = GeomInt_LineTool::NbVertex(L);
     for(i=1;i<nbvtx;i++)    { 
@@ -287,7 +287,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   else if (typl != IntPatch_Restriction)  {
     seqp.Clear();
     //
-    Handle(IntPatch_GLine)& GLine =  *((Handle(IntPatch_GLine) *)&L);
+    Handle(IntPatch_GLine)& GLine =  Handle(IntPatch_GLine)::DownCast (L);
     //
     if(typl == IntPatch_Circle || typl == IntPatch_Ellipse) { 
       TreatCircle(L, Tol);
@@ -726,7 +726,7 @@ void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
   IntPatch_IType aType;
   //
   aType=aLine->ArcType();
-  Handle(IntPatch_GLine)& aGLine=*((Handle(IntPatch_GLine) *)&aLine);
+  Handle(IntPatch_GLine)& aGLine=Handle(IntPatch_GLine)::DownCast (aLine);
   //
   bRejected=RejectMicroCircle(aGLine, aType, aTol);
   if (bRejected) {

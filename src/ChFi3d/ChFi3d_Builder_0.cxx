@@ -1702,7 +1702,7 @@ void  ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
       bs.Update(umin,vmin,umax,vmax);
       Standard_Boolean aIN = Standard_True;
       for(Standard_Integer ii = 1; ii <= 4 && aIN; ii++) {
-	if(bs.IsOut((*((Handle(Geom2d_BezierCurve)*) &Pcurv))->Pole(ii))) {
+	if(bs.IsOut(Handle(Geom2d_BezierCurve)::DownCast (Pcurv)->Pole(ii))) {
           aIN = Standard_False;
           TColgp_Array1OfPnt2d qoles(1,2);
           qoles(1)=UV1;
@@ -2009,8 +2009,7 @@ static void QueryAddVertexInEdge(TopOpeBRepDS_ListOfInterference& LI,
   TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
   for (; it.More(); it.Next() ) {
     const Handle(TopOpeBRepDS_Interference)& cur = it.Value();
-    const Handle(TopOpeBRepDS_CurvePointInterference)& cpi = 
-      Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(cur);
+    Handle(TopOpeBRepDS_CurvePointInterference) cpi (Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(cur));
     if(!cpi.IsNull()) {
       Standard_Integer newIV = cpi->Geometry();
       TopOpeBRepDS_Kind kv = cpi->GeometryType();

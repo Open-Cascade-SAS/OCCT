@@ -282,12 +282,12 @@ static void FUN_ReducerEdge3d(const Standard_Integer SIX, TopOpeBRepDS_DataStruc
       Standard_Boolean isevi = I1->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference));
       Standard_Boolean iscpi = I1->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference));
       if (isevi) {
-	const Handle(TopOpeBRepDS_EdgeVertexInterference)& EVI = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I1);
+	Handle(TopOpeBRepDS_EdgeVertexInterference) EVI (Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I1));
 	newI = new TopOpeBRepDS_EdgeVertexInterference(T,TopOpeBRepDS_FACE,IB1,G1,EVI->GBound(),
 			  TopOpeBRepDS_UNSHGEOMETRY,EVI->Parameter());	  
       }
       if (iscpi) {
-	const Handle(TopOpeBRepDS_CurvePointInterference)& CPI = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I1);
+	Handle(TopOpeBRepDS_CurvePointInterference) CPI (Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I1));
 	newI = new TopOpeBRepDS_CurvePointInterference(T,TopOpeBRepDS_FACE,IB1,TopOpeBRepDS_POINT,G1,CPI->Parameter());		
       }
 
@@ -384,7 +384,7 @@ static void FUN_ReducerSDEdge(const Standard_Integer SIX,const TopOpeBRepDS_Data
       } // it2
 
       if (complex1d) {
-	const Handle(TopOpeBRepDS_EdgeVertexInterference)& EVI = Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I1);
+	Handle(TopOpeBRepDS_EdgeVertexInterference) EVI (Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I1));
 	TopOpeBRepDS_Config cEIX=BDS.SameDomainOri(SIX), c1=BDS.SameDomainOri(IB1); 
 	TopOpeBRepDS_Config Conf = (cEIX == c1) ? TopOpeBRepDS_SAMEORIENTED : TopOpeBRepDS_DIFFORIENTED;
 	Handle(TopOpeBRepDS_Interference) newI = new TopOpeBRepDS_EdgeVertexInterference(T,TopOpeBRepDS_EDGE,IB1,G,EVI->GBound(),Conf,EVI->Parameter());	

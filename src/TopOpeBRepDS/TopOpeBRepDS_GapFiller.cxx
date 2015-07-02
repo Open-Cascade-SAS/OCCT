@@ -359,7 +359,7 @@ static Standard_Boolean Normal(const Handle(TopOpeBRepDS_GapTool)&      A,
     IC->GKGSKS(GK,IG,SK,IS);
     if (SK == TopOpeBRepDS_CURVE) {
       const TopOpeBRepDS_Curve& C = HDS->Curve(IS);
-      Standard_Real P   = (*((Handle(TopOpeBRepDS_CurvePointInterference)*)&IC))->Parameter();
+      Standard_Real P   = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast (IC)->Parameter();
       
       TopoDS_Shape S1,S2;
       C.GetShapes(S1,S2);

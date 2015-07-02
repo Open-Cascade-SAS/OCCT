@@ -25,7 +25,7 @@
 
 
 #define DeclareAndCast(atype,result,start) \
-Handle(atype) result = *((Handle(atype)*) &start)
+Handle(atype) result = Handle(atype)::DownCast (start)
 
 #include <StepBasic_Address.hxx>
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>

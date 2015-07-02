@@ -93,7 +93,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
 {
 
   Handle(TDF_Attribute) TDFAttribute = Attribute();
-  Handle(TDataStd_RealArray) BackAtt = (*((Handle(TDataStd_RealArray)*)&TDFAttribute));
+  Handle(TDataStd_RealArray) BackAtt = Handle(TDataStd_RealArray)::DownCast (TDFAttribute);
   if(BackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfRealArray::Apply: OldAtt is Null" <<endl;

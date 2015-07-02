@@ -188,30 +188,30 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge&  theEdge,
   if (!anEdgeLoc.IsIdentity())
   {
     Handle(Geom_Geometry) aGeometry = theCurve->Transformed (anEdgeLoc.Transformation());
-    theCurve = (Handle(Geom_Curve)&) aGeometry;
+    theCurve = Handle(Geom_Curve)::DownCast (aGeometry);
   }
 
   if (theCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
-    theCurve = ((Handle(Geom_TrimmedCurve)&) theCurve)->BasisCurve();
+    theCurve = Handle(Geom_TrimmedCurve)::DownCast (theCurve)->BasisCurve();
   }
 
   if (theCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
   {
-    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theCurve;
+    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theCurve);
     theFirstPnt = ElCLib::Value (aFirst, aLine->Lin());
     theLastPnt = ElCLib::Value (aLast, aLine->Lin());
   }
   else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
   {
-    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theCurve;
+    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theCurve);
 
     theFirstPnt = ElCLib::Value (aFirst, aCirc->Circ());
     theLastPnt = ElCLib::Value (aLast, aCirc->Circ());
   }
   else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Ellipse)))
   {
-    Handle(Geom_Ellipse) anEllipse = (Handle(Geom_Ellipse)&) theCurve;
+    Handle(Geom_Ellipse) anEllipse = Handle(Geom_Ellipse)::DownCast (theCurve);
     theFirstPnt = ElCLib::Value (aFirst, anEllipse->Elips());
     theLastPnt = ElCLib::Value (aLast, anEllipse->Elips());
   }
@@ -252,7 +252,7 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theEdge,
 
   if (theCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
-    theCurve = ((Handle(Geom_TrimmedCurve)&) theCurve)->BasisCurve();
+    theCurve = Handle(Geom_TrimmedCurve)::DownCast (theCurve)->BasisCurve();
   }
 
   if (!theIsInfinite)
@@ -306,19 +306,19 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theEdge,
   theIsOnPlane = Standard_True;
   if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
-    theExtCurve = ((Handle(Geom_TrimmedCurve)&) theExtCurve)->BasisCurve();
+    theExtCurve = Handle(Geom_TrimmedCurve)::DownCast (theExtCurve)->BasisCurve();
   }
 
   if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
   {
-    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theExtCurve;
+    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theExtCurve);
     theIsOnPlane = thePlane->Pln().Contains (aLine->Lin(),
                                              Precision::Confusion(),
                                              Precision::Angular());
   }
   else if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
   {
-    Handle(Geom_Circle) aCircle = (Handle(Geom_Circle)&) theExtCurve;
+    Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast (theExtCurve);
 
     gp_Ax3 aCircPos (aCircle->Position());
     theIsOnPlane = aCircPos.IsCoplanar (thePlane->Pln().Position(),
@@ -337,7 +337,7 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theEdge,
 
   if (theCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
   {
-    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theCurve;
+    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theCurve);
     if (!theIsInfinite)
     {
       theFirstPnt = ElCLib::Value (aFirst, aLine->Lin());
@@ -346,14 +346,14 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theEdge,
   }
   else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
   {
-    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theCurve;
+    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theCurve);
 
     theFirstPnt = ElCLib::Value (aFirst, aCirc->Circ());
     theLastPnt = ElCLib::Value (aLast, aCirc->Circ());
   }
   else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Ellipse)))
     {
-      Handle(Geom_Ellipse) anEllipse = (Handle(Geom_Ellipse)&) theCurve;
+      Handle(Geom_Ellipse) anEllipse = Handle(Geom_Ellipse)::DownCast (theCurve);
 
       theFirstPnt = ElCLib::Value (aFirst, anEllipse->Elips());
       theLastPnt = ElCLib::Value (aLast, anEllipse->Elips());
@@ -404,13 +404,13 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
   if (!aFirstEdgeLoc.IsIdentity())
   {
     Handle(Geom_Geometry) aGeomGeometry = theFirstCurve->Transformed (aFirstEdgeLoc.Transformation());
-    theFirstCurve = (Handle(Geom_Curve)&) aGeomGeometry;
+    theFirstCurve = Handle(Geom_Curve)::DownCast (aGeomGeometry);
   }
     
   if (!aSecondEdgeLoc.IsIdentity())
   {
     Handle(Geom_Geometry) aGeomGeometry = theSecondCurve->Transformed (aSecondEdgeLoc.Transformation());
-    theSecondCurve = (Handle(Geom_Curve)&) aGeomGeometry;
+    theSecondCurve = Handle(Geom_Curve)::DownCast (aGeomGeometry);
   }
 
   theFirstCurve = GeomProjLib::ProjectOnPlane (theFirstCurve, thePlane,
@@ -425,24 +425,24 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
 
   if (theFirstCurve->IsInstance (STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    theFirstCurve = ((Handle(Geom_TrimmedCurve)&) theFirstCurve)->BasisCurve();
+    theFirstCurve = Handle(Geom_TrimmedCurve)::DownCast (theFirstCurve)->BasisCurve();
   }
     
   if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
-    theSecondCurve = ((Handle(Geom_TrimmedCurve)&) theSecondCurve)->BasisCurve();
+    theSecondCurve = Handle(Geom_TrimmedCurve)::DownCast (theSecondCurve)->BasisCurve();
   }
 
   if (theFirstCurve->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
-    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theFirstCurve;
+    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theFirstCurve);
 
     theFirstPnt1 = ElCLib::Value (aFirst1, aLine->Lin());
     theLastPnt1 = ElCLib::Value (aLast1, aLine->Lin());
   }
   else if (theFirstCurve->IsInstance(STANDARD_TYPE(Geom_Circle)))
   {
-    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theFirstCurve;
+    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theFirstCurve);
       
     theFirstPnt1 = ElCLib::Value (aFirst1, aCirc->Circ());
     theLastPnt1 = ElCLib::Value (aLast1, aCirc->Circ());
@@ -454,14 +454,14 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
 
   if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
 {
-    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theSecondCurve;
+    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theSecondCurve);
 
     theFirstPnt2 = ElCLib::Value (aFirst2, aLine->Lin());
     theLastPnt2 = ElCLib::Value (aLast2, aLine->Lin());
   }
   else if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
   {
-    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theSecondCurve;
+    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theSecondCurve);
 
     theFirstPnt2 = ElCLib::Value (aFirst2, aCirc->Circ());
     theLastPnt2 = ElCLib::Value (aLast2, aCirc->Circ());
@@ -505,8 +505,8 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
   {
       if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType())
       {
-          gp_Lin aLin1 = ((Handle(Geom_Line)&) theFirstCurve)->Lin();
-          gp_Lin aLin2 = ((Handle(Geom_Line)&) theSecondCurve)->Lin();
+          gp_Lin aLin1 = Handle(Geom_Line)::DownCast (theFirstCurve)->Lin();
+          gp_Lin aLin2 = Handle(Geom_Line)::DownCast (theSecondCurve)->Lin();
 
           if (theIsInfinite1)
           {
@@ -597,11 +597,11 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
 
   if (theFirstCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
-    theFirstCurve = ((Handle(Geom_TrimmedCurve)&) theFirstCurve)->BasisCurve();
+    theFirstCurve = Handle(Geom_TrimmedCurve)::DownCast (theFirstCurve)->BasisCurve();
   }
   if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
-    theSecondCurve = ((Handle(Geom_TrimmedCurve)&) theSecondCurve)->BasisCurve();
+    theSecondCurve = Handle(Geom_TrimmedCurve)::DownCast (theSecondCurve)->BasisCurve();
   }
 
   aFirst1 = aFirstAdaptor.FirstParameter();
@@ -646,8 +646,8 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
   {
     if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType())
     {
-      gp_Lin aLin1 = ((Handle(Geom_Line)&) theFirstCurve)->Lin();
-      gp_Lin aLin2 = ((Handle(Geom_Line)&) theSecondCurve)->Lin();
+      gp_Lin aLin1 = Handle(Geom_Line)::DownCast (theFirstCurve)->Lin();
+      gp_Lin aLin2 = Handle(Geom_Line)::DownCast (theSecondCurve)->Lin();
 
       if (theExtIndex == 1)
       {
@@ -735,7 +735,7 @@ Standard_Boolean AIS::ComputeGeomCurve (Handle(Geom_Curve)& aCurve,
     aCurve = aGeomCurve;
     if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
+      aCurve = Handle(Geom_TrimmedCurve)::DownCast (aCurve)->BasisCurve();
     }
     if (! Precision::IsInfinite(first1) && ! Precision::IsInfinite(last1))
     {
@@ -1426,8 +1426,8 @@ void AIS::ComputeProjEdgePresentation (const Handle(Prs3d_Presentation)& aPresen
   // Calculate  presentation of the edge
   if (ProjCurve->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
     // CLE
-    // const Handle(Geom_Line) & gl = (Handle(Geom_Line)&) ProjCurve;
-    Handle(Geom_Line) gl = (Handle(Geom_Line)&) ProjCurve;
+    // Handle(Geom_Line) gl (Handle(Geom_Line)::DownCast (ProjCurve));
+    Handle(Geom_Line) gl = Handle(Geom_Line)::DownCast (ProjCurve);
     // ENDCLE
     if ( !isInfinite) {
       pf = ElCLib::Parameter(gl->Lin(),FirstP);
@@ -1442,8 +1442,8 @@ void AIS::ComputeProjEdgePresentation (const Handle(Prs3d_Presentation)& aPresen
   }
   else if (ProjCurve->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
     // CLE
-    // const Handle(Geom_Circle) & gc = (Handle(Geom_Circle)&) ProjCurve;
-    Handle(Geom_Circle) gc = (Handle(Geom_Circle)&) ProjCurve;
+    // Handle(Geom_Circle) gc (Handle(Geom_Circle)::DownCast (ProjCurve));
+    Handle(Geom_Circle) gc = Handle(Geom_Circle)::DownCast (ProjCurve);
     // ENDCLE
     pf = ElCLib::Parameter(gc->Circ(),FirstP);
     pl = ElCLib::Parameter(gc->Circ(),LastP);

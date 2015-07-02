@@ -422,7 +422,7 @@ Handle(TDF_DeltaOnModification) TNaming_NamedShape::DeltaOnModification
 (const Handle(TDF_Attribute)& anOldAttribute) const
 {
   
-  return new TNaming_DeltaOnModification(*((Handle(TNaming_NamedShape)*)&anOldAttribute));
+  return new TNaming_DeltaOnModification(Handle(TNaming_NamedShape)::DownCast (anOldAttribute));
 }
 
 //=======================================================================

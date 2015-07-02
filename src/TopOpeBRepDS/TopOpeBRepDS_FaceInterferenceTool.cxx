@@ -199,7 +199,7 @@ TopOpeBRepDS_FaceInterferenceTool::TopOpeBRepDS_FaceInterferenceTool
 void TopOpeBRepDS_FaceInterferenceTool::Init
 (const TopoDS_Shape& FFI,const TopoDS_Shape& EE,const Standard_Boolean EEisnew,const Handle(TopOpeBRepDS_Interference)& Iin)
 {
-  const Handle(TopOpeBRepDS_ShapeShapeInterference)& I = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin); if (I.IsNull()) return;  
+  Handle(TopOpeBRepDS_ShapeShapeInterference) I (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin)); if (I.IsNull()) return;  
   const TopoDS_Face& FI = TopoDS::Face(FFI);
   const TopoDS_Edge& E = TopoDS::Edge(EE);
 #ifdef OCCT_DEBUG
@@ -263,7 +263,7 @@ void TopOpeBRepDS_FaceInterferenceTool::Init
 void TopOpeBRepDS_FaceInterferenceTool::Add
 (const TopoDS_Shape& FFI,const TopoDS_Shape& FFT,const TopoDS_Shape& EE,const Standard_Boolean EEisnew,const Handle(TopOpeBRepDS_Interference)& Iin)
 {
-  const Handle(TopOpeBRepDS_ShapeShapeInterference)& I = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin); if (I.IsNull()) return;  
+  Handle(TopOpeBRepDS_ShapeShapeInterference) I (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(Iin)); if (I.IsNull()) return;  
   const TopoDS_Face& FI = TopoDS::Face(FFI);
   const TopoDS_Face& FT = TopoDS::Face(FFT);
   const TopoDS_Edge& E = TopoDS::Edge(EE);

@@ -109,7 +109,7 @@ void TNaming_DeltaOnModification::Apply()
 {
 
   Handle(TDF_Attribute) TDFAttribute = Attribute();
-  Handle(TNaming_NamedShape) NS = (*((Handle(TNaming_NamedShape)*)&TDFAttribute));
+  Handle(TNaming_NamedShape) NS = Handle(TNaming_NamedShape)::DownCast (TDFAttribute);
   
 
   // If there is no attribute, reinsert the previous. Otherwise a new one 

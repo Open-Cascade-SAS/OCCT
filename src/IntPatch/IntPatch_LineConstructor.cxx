@@ -199,7 +199,7 @@ static Standard_Real LocalFirstParameter (const Handle(IntPatch_Line)& L)
   switch (typl) {
   case IntPatch_Analytic:
     {
-      Handle(IntPatch_ALine)& alin = *((Handle(IntPatch_ALine) *)&L);
+      Handle(IntPatch_ALine)& alin = Handle(IntPatch_ALine)::DownCast (L);
       if (alin->HasFirstPoint()) {
 	firstp = alin->FirstPoint().ParameterOnLine();
       }
@@ -215,7 +215,7 @@ static Standard_Real LocalFirstParameter (const Handle(IntPatch_Line)& L)
 
   case IntPatch_Restriction:
     {
-      Handle(IntPatch_RLine)& rlin = *((Handle(IntPatch_RLine) *)&L);
+      Handle(IntPatch_RLine)& rlin = Handle(IntPatch_RLine)::DownCast (L);
       if (rlin->HasFirstPoint()) {
 	firstp = rlin->FirstPoint().ParameterOnLine();
       }
@@ -227,7 +227,7 @@ static Standard_Real LocalFirstParameter (const Handle(IntPatch_Line)& L)
    case IntPatch_Walking:
     {
       
-      Handle(IntPatch_WLine)& wlin = *((Handle(IntPatch_WLine) *) &L);
+      Handle(IntPatch_WLine)& wlin = Handle(IntPatch_WLine)::DownCast (L);
       if (wlin->HasFirstPoint()) {
 	firstp = wlin->FirstPoint().ParameterOnLine();
       }
@@ -239,7 +239,7 @@ static Standard_Real LocalFirstParameter (const Handle(IntPatch_Line)& L)
 	
   default:
     {
-      Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine) *)&L);
+      Handle(IntPatch_GLine)& glin = Handle(IntPatch_GLine)::DownCast (L);
       if (glin->HasFirstPoint()) {
 	firstp = glin->FirstPoint().ParameterOnLine();
       }
@@ -278,7 +278,7 @@ static Standard_Real LocalLastParameter (const Handle(IntPatch_Line)& L)
   switch (typl) {
   case IntPatch_Analytic:
     {
-      Handle(IntPatch_ALine)& alin = *((Handle(IntPatch_ALine) *)&L);
+      Handle(IntPatch_ALine)& alin = Handle(IntPatch_ALine)::DownCast (L);
 
       if (alin->HasLastPoint()) {
 	lastp = alin->LastPoint().ParameterOnLine();
@@ -295,7 +295,7 @@ static Standard_Real LocalLastParameter (const Handle(IntPatch_Line)& L)
 
   case IntPatch_Restriction:
     {
-      Handle(IntPatch_RLine)& rlin = *((Handle(IntPatch_RLine) *)&L);
+      Handle(IntPatch_RLine)& rlin = Handle(IntPatch_RLine)::DownCast (L);
       
       if (rlin->HasLastPoint()) {
 	lastp = rlin->LastPoint().ParameterOnLine();
@@ -307,7 +307,7 @@ static Standard_Real LocalLastParameter (const Handle(IntPatch_Line)& L)
     }
    case IntPatch_Walking:
     {
-      Handle(IntPatch_WLine)& wlin = *((Handle(IntPatch_WLine) *)&L);
+      Handle(IntPatch_WLine)& wlin = Handle(IntPatch_WLine)::DownCast (L);
 
       if (wlin->HasLastPoint()) {
 	lastp = wlin->LastPoint().ParameterOnLine();
@@ -320,7 +320,7 @@ static Standard_Real LocalLastParameter (const Handle(IntPatch_Line)& L)
 	
   default:
     {
-      Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine) *)&L);
+      Handle(IntPatch_GLine)& glin = Handle(IntPatch_GLine)::DownCast (L);
       
       if (glin->HasLastPoint()) {
 	lastp = glin->LastPoint().ParameterOnLine();
@@ -562,7 +562,7 @@ static void AddLine(const Handle(IntPatch_Line)& L,
   IntPatch_IType typl = L->ArcType();
   switch (typl) {
     case IntPatch_Analytic: { 
-      Handle(IntPatch_ALine)& ALine = *((Handle(IntPatch_ALine) *)&L);
+      Handle(IntPatch_ALine)& ALine = Handle(IntPatch_ALine)::DownCast (L);
       Handle(IntPatch_ALine) alig;
       if(L->TransitionOnS1() == IntSurf_Undecided)
 	alig = new IntPatch_ALine(ALine->Curve(),L->IsTangent());
@@ -582,7 +582,7 @@ static void AddLine(const Handle(IntPatch_Line)& L,
       break;
     }
     case IntPatch_Walking: {  //-- ****************************************
-      Handle(IntPatch_WLine)& WLine = *((Handle(IntPatch_WLine) *)&L);
+      Handle(IntPatch_WLine)& WLine = Handle(IntPatch_WLine)::DownCast (L);
       const Handle(IntSurf_LineOn2S)& Lori = WLine->Curve();
       Handle(IntSurf_LineOn2S) LineOn2S = new IntSurf_LineOn2S();
       Standard_Integer ParamMinOnLine = (Standard_Integer) WLine->Vertex(i).ParameterOnLine();   
@@ -623,7 +623,7 @@ static void AddLine(const Handle(IntPatch_Line)& L,
       break;
     }
     case IntPatch_Restriction: { 
-      Handle(IntPatch_RLine)& RLine = *((Handle(IntPatch_RLine) *)&L);
+      Handle(IntPatch_RLine)& RLine = Handle(IntPatch_RLine)::DownCast (L);
       IndexLastVertex=2;
       IndexFirstVertex=1;
       Handle(IntPatch_RLine) rlig;
@@ -661,7 +661,7 @@ static void AddLine(const Handle(IntPatch_Line)& L,
     case IntPatch_Hyperbola:
     case IntPatch_Circle:
     case IntPatch_Ellipse: { 
-      Handle(IntPatch_GLine)& GLine = *((Handle(IntPatch_GLine) *)&L);
+      Handle(IntPatch_GLine)& GLine = Handle(IntPatch_GLine)::DownCast (L);
       Handle(IntPatch_GLine) glig;
       switch (typl) {
       case IntPatch_Lin:
@@ -1195,7 +1195,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
   if(typl == IntPatch_Analytic) { 
     Standard_Real u1,v1,u2,v2;
     Handle(IntPatch_ALine)& ALine 
-      =  *((Handle(IntPatch_ALine) *)&L);
+      =  Handle(IntPatch_ALine)::DownCast (L);
     slin.Clear();
     nbvtx = ALine->NbVertex();
     //-- -------------------------------------------------------------------
@@ -1248,7 +1248,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
   else if(typl == IntPatch_Walking) { 
     Standard_Real u1,v1,u2,v2;
     Handle(IntPatch_WLine)& WLine 
-      =  *((Handle(IntPatch_WLine) *)&L);
+      =  Handle(IntPatch_WLine)::DownCast (L);
     slin.Clear();
     nbvtx = WLine->NbVertex();
     //-- -------------------------------------------------------------------
@@ -1408,7 +1408,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
   else if (typl != IntPatch_Restriction) { // JAG 01.07.96
     Standard_Real u1,v1,u2,v2;
     Handle(IntPatch_GLine)& GLine 
-      =  *((Handle(IntPatch_GLine) *)&L);
+      =  Handle(IntPatch_GLine)::DownCast (L);
     slin.Clear();
     nbvtx = GLine->NbVertex();
     //-- -------------------------------------------------------------------
@@ -1540,7 +1540,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
   }
   else {  //-- Restriction
     Handle(IntPatch_RLine)& RLine 
-      =  *((Handle(IntPatch_RLine) *)&L);
+      =  Handle(IntPatch_RLine)::DownCast (L);
     slin.Clear();
     Standard_Integer NbVtx    = RLine->NbVertex();
     Standard_Boolean RestOnS1 = RLine->IsArcOnS1();

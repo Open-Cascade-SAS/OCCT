@@ -896,7 +896,7 @@ Standard_Boolean DNaming::ComputeSweepDir (const TopoDS_Shape& theShape,
     cout<<"Surface Dynamic TYPE = "<<s<<endl;
 #endif
     if (aSurf->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) 
-      aSurf = ((Handle(Geom_RectangularTrimmedSurface)&) aSurf)->BasisSurface();
+      aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (aSurf)->BasisSurface();
     aPlane = Handle(Geom_Plane)::DownCast(aSurf);
   }
 

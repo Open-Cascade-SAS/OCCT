@@ -491,7 +491,7 @@ Standard_Boolean SelectMgr_SelectionManager::IsActivated (const Handle(SelectMgr
   {
     for (TColStd_MapIteratorOfMapOfTransient aSelectorIter (mySelectors); aSelectorIter.More(); aSelectorIter.Next())
     {
-      const Handle(SelectMgr_ViewerSelector)& aSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key());
+      Handle(SelectMgr_ViewerSelector) aSelector (Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key()));
       if (aSelector->Status (aSelection) == SelectMgr_SOS_Activated)
         return Standard_True;
     }
@@ -692,7 +692,7 @@ void SelectMgr_SelectionManager::RecomputeSelection (const Handle(SelectMgr_Sele
 
     for (TColStd_MapIteratorOfMapOfTransient aSelectorIter (mySelectors); aSelectorIter.More(); aSelectorIter.Next())
     {
-      const Handle(SelectMgr_ViewerSelector)& aCurSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key());
+      Handle(SelectMgr_ViewerSelector) aCurSelector (Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key()));
       if (aCurSelector->Status (aSelection) == SelectMgr_SOS_Activated)
       {
           ClearSelectionStructures (theObject, aSelMode, aCurSelector);
@@ -747,7 +747,7 @@ void SelectMgr_SelectionManager::Update (const Handle(SelectMgr_SelectableObject
 
     for (TColStd_MapIteratorOfMapOfTransient aSelectorIter (mySelectors); aSelectorIter.More(); aSelectorIter.Next())
     {
-      const Handle(SelectMgr_ViewerSelector)& aSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key());
+      Handle(SelectMgr_ViewerSelector) aSelector (Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorIter.Key()));
       Update (theObject, aSelector, Standard_False);
     }
   }

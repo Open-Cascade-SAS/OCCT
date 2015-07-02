@@ -341,9 +341,9 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   Standard_Integer iparmin = (Standard_Integer)parmin;
   Standard_Integer iparmax = (Standard_Integer)parmax;
 
-  Handle(Geom_BSplineCurve)&   HC3D = *((Handle(Geom_BSplineCurve)*)&C3D);
-  Handle(Geom2d_BSplineCurve)& HPC1 = *((Handle(Geom2d_BSplineCurve)*)&PC1);
-  Handle(Geom2d_BSplineCurve)& HPC2 = *((Handle(Geom2d_BSplineCurve)*)&PC2);
+  Handle(Geom_BSplineCurve)&   HC3D = Handle(Geom_BSplineCurve)::DownCast (C3D);
+  Handle(Geom2d_BSplineCurve)& HPC1 = Handle(Geom2d_BSplineCurve)::DownCast (PC1);
+  Handle(Geom2d_BSplineCurve)& HPC2 = Handle(Geom2d_BSplineCurve)::DownCast (PC2);
 
 //--------------------- IFV - "improving" initial curves
 #ifdef CurveImprovement
@@ -678,7 +678,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 
   Standard_Boolean bf, bl;
 
-  const Handle(Geom_BSplineCurve)& Curve = Handle(Geom_BSplineCurve)::DownCast(C3Dnew);
+  Handle(Geom_BSplineCurve) Curve (Handle(Geom_BSplineCurve)::DownCast(C3Dnew));
   if(!Curve.IsNull()) {
     GeomLib_CheckBSplineCurve cbsc(Curve, 1.e-7, 0.1);
     cbsc.NeedTangentFix(bf, bl);
@@ -694,7 +694,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
     cbsc.FixTangent(bf, bl);
   }
   
-  const Handle(Geom2d_BSplineCurve)& Curve2df = Handle(Geom2d_BSplineCurve)::DownCast(PC1new);
+  Handle(Geom2d_BSplineCurve) Curve2df (Handle(Geom2d_BSplineCurve)::DownCast(PC1new));
   if(!Curve2df.IsNull()) {
     GeomLib_Check2dBSplineCurve cbsc2df(Curve2df, 1.e-7, 0.1);
     cbsc2df.NeedTangentFix(bf, bl);
@@ -709,7 +709,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
     cbsc2df.FixTangent(bf, bl);
   }
   
-  const Handle(Geom2d_BSplineCurve)& Curve2ds = Handle(Geom2d_BSplineCurve)::DownCast(PC2new);
+  Handle(Geom2d_BSplineCurve) Curve2ds (Handle(Geom2d_BSplineCurve)::DownCast(PC2new));
   if(!Curve2ds.IsNull()) {
     GeomLib_Check2dBSplineCurve cbsc2ds(Curve2ds, 1.e-7, 0.1);
     cbsc2ds.NeedTangentFix(bf, bl);

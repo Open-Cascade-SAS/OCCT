@@ -1057,10 +1057,8 @@ void GeomLib::BuildCurve3d(const Standard_Real           Tolerance,
   Standard_Integer curve_not_computed = 1 ;
   MaxDeviation     = 0.0e0 ;
   AverageDeviation = 0.0e0 ;
-  const Handle(GeomAdaptor_HSurface) &     geom_adaptor_surface_ptr =
-  Handle(GeomAdaptor_HSurface)::DownCast(Curve.GetSurface()) ;
-  const Handle(Geom2dAdaptor_HCurve) &     geom_adaptor_curve_ptr =
-  Handle(Geom2dAdaptor_HCurve)::DownCast(Curve.GetCurve()) ;
+  Handle(GeomAdaptor_HSurface) geom_adaptor_surface_ptr (Handle(GeomAdaptor_HSurface)::DownCast(Curve.GetSurface()) );
+  Handle(Geom2dAdaptor_HCurve) geom_adaptor_curve_ptr (Handle(Geom2dAdaptor_HCurve)::DownCast(Curve.GetCurve()) );
    
   if (! geom_adaptor_curve_ptr.IsNull() &&
       ! geom_adaptor_surface_ptr.IsNull()) {

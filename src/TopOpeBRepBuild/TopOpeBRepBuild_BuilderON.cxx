@@ -400,7 +400,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 {
   const Handle(TopOpeBRepDS_HDataStructure)& HDS=myPB->DataStructure();
   const TopOpeBRepDS_DataStructure& BDS= HDS->DS();
-  const Handle(TopOpeBRepDS_ShapeShapeInterference)& SSI=Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I);
+  Handle(TopOpeBRepDS_ShapeShapeInterference) SSI (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I));
   TopAbs_State TB1,TB2;myPG->StatesON(TB1,TB2); TopAbs_State TB=TB1;
   TopOpeBRepDS_Kind GT,ST;Standard_Integer GI,SI;FDS_data(SSI,GT,GI,ST,SI);
   const TopOpeBRepDS_Transition& TFE=SSI->Transition(); Standard_Boolean EGBoundFOR=SSI->GBound();
@@ -1179,7 +1179,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     Standard_Boolean ssif = Standard_False; Handle(TopOpeBRepDS_ShapeShapeInterference) ssie3;
     TopOpeBRepDS_ListIteratorOfListOfInterference itssi(BDS.ShapeInterferences(FCX));
     for (;itssi.More();itssi.Next()) {
-      const Handle(TopOpeBRepDS_ShapeShapeInterference)& ssi = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(itssi.Value()); if (ssi.IsNull()) continue;
+      Handle(TopOpeBRepDS_ShapeShapeInterference) ssi (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(itssi.Value())); if (ssi.IsNull()) continue;
       TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; FDS_data(ssi,GT1,G1,ST1,S1);
       Standard_Boolean cond = (GT1 == TopOpeBRepDS_EDGE && ST1 == TopOpeBRepDS_FACE);
       cond = cond && (G1 == ie3); 

@@ -267,7 +267,7 @@ Handle(TDF_DeltaOnModification) TDataStd_IntegerArray::DeltaOnModification
 (const Handle(TDF_Attribute)& OldAttribute) const
 {
   if(myIsDelta)
-    return new TDataStd_DeltaOnModificationOfIntArray(*((Handle(TDataStd_IntegerArray)*)&OldAttribute));
+    return new TDataStd_DeltaOnModificationOfIntArray(Handle(TDataStd_IntegerArray)::DownCast (OldAttribute));
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 

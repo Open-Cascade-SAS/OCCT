@@ -541,7 +541,7 @@ Standard_Real Project(const TopoDS_Vertex& V,
   C = BRep_Tool::Curve(theEdge,Loc,f,l);
   if (!Loc.IsIdentity()) {
     Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-    C = *((Handle(Geom_Curve)*)&GG);
+    C = Handle(Geom_Curve)::DownCast (GG);
   }
   proj.Init(toproj,C,f,l);
   
@@ -570,7 +570,7 @@ Standard_Real Project(const TopoDS_Vertex&,
   /*
   if (!Loc.IsIdentity()) {
     Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-    C = *((Handle(Geom_Curve)*)&GG);
+    C = Handle(Geom_Curve)::DownCast (GG);
   }
   */
   proj.Init(p2d, PC, f, l);
@@ -636,7 +636,7 @@ void PutPCurve(const TopoDS_Edge& Edg,
   Handle(Geom_Curve) C = BRep_Tool::Curve(Edg,Loc,f,l);
   if (!Loc.IsIdentity()) {
     Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-    C = *((Handle(Geom_Curve)*)&GG);
+    C = Handle(Geom_Curve)::DownCast (GG);
   }
 
   if (C->DynamicType() != STANDARD_TYPE(Geom_TrimmedCurve)) {
@@ -835,7 +835,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
       C = BRep_Tool::Curve(Efrom,Loc,f,l);
       if (!Loc.IsIdentity()) {
 	Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-	C = *((Handle(Geom_Curve)*)&GG);
+	C = Handle(Geom_Curve)::DownCast (GG);
       }
       
       if (C->DynamicType() != STANDARD_TYPE(Geom_TrimmedCurve)) {
@@ -1000,7 +1000,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
     C = BRep_Tool::Curve(Efrom,Loc,f,l);
     if (!Loc.IsIdentity()) {
       Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-      C = *((Handle(Geom_Curve)*)&GG);
+      C = Handle(Geom_Curve)::DownCast (GG);
     }
 
     gp_Pnt pt;
@@ -1019,7 +1019,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
     C = BRep_Tool::Curve(Eto,Loc,f,l);
     if (!Loc.IsIdentity()) {
       Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-      C = *((Handle(Geom_Curve)*)&GG);
+      C = Handle(Geom_Curve)::DownCast (GG);
     }
     
     C->D1(prmproj,pt,d1t);
@@ -1038,7 +1038,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
       C = BRep_Tool::Curve(Efrom,Loc,f,l);
       if (!Loc.IsIdentity()) {
 	Handle(Geom_Geometry) GG = C->Transformed(Loc.Transformation());
-	C = *((Handle(Geom_Curve)*)&GG);
+	C = Handle(Geom_Curve)::DownCast (GG);
       }
       
       if (C->DynamicType() != STANDARD_TYPE(Geom_TrimmedCurve)) {

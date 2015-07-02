@@ -80,7 +80,7 @@ Standard_Boolean AIS_C0RegularityFilter::IsOk(const Handle(SelectMgr_EntityOwner
   if (Handle(StdSelect_BRepOwner)::DownCast(EO).IsNull())
     return Standard_False;
 
-  const TopoDS_Shape& aShape = ((Handle(StdSelect_BRepOwner)&)EO)->Shape();
+  const TopoDS_Shape& aShape = Handle(StdSelect_BRepOwner)::DownCast (EO)->Shape();
 
   if(aShape.ShapeType()!= TopAbs_EDGE)
     return Standard_False;

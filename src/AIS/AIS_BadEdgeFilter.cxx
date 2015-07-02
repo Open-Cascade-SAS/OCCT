@@ -59,7 +59,7 @@ Standard_Boolean AIS_BadEdgeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO
   if (myContour==0)
     return Standard_True;
 
-  const TopoDS_Shape& aShape = ((Handle(StdSelect_BRepOwner)&)EO)->Shape();
+  const TopoDS_Shape& aShape = Handle(StdSelect_BRepOwner)::DownCast (EO)->Shape();
 
   if (myBadEdges.IsBound(myContour)) {
     TopTools_ListIteratorOfListOfShape it(myBadEdges.Find(myContour));

@@ -286,8 +286,8 @@ static Standard_Boolean FindParameter(const Handle(IntPatch_Line)& L,
   // Dans le cas d une ligne de cheminement, il faudrait voir la projection
   // et le calcul de la tangente.
 
-  const Handle(IntPatch_RLine)&  rlin = (*((Handle(IntPatch_RLine)*)&L)); //-- aucune verification n est 
-  const Handle(IntPatch_WLine)&  wlin = (*((Handle(IntPatch_WLine)*)&L)); //-- faite au cast. 
+  Handle(IntPatch_RLine) rlin (Handle(IntPatch_RLine)::DownCast (L)); //-- aucune verification n est 
+  Handle(IntPatch_WLine) wlin (Handle(IntPatch_WLine)::DownCast (L)); //-- faite au cast. 
   gp_Pnt ptbid;
   gp_Vec d1u,d1v;
   gp_Pnt2d p2d;
@@ -462,8 +462,8 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
   Standard_Integer i,j,k;
   TColgp_SequenceOfPnt locpt;
   TColgp_SequenceOfPnt2d locpt2;
-  const Handle(IntPatch_RLine)&  rlin = (*((Handle(IntPatch_RLine)*)&L)); //-- aucune verification n est 
-  const Handle(IntPatch_WLine)&  wlin = (*((Handle(IntPatch_WLine)*)&L)); //-- faite au cast. 
+  Handle(IntPatch_RLine) rlin (Handle(IntPatch_RLine)::DownCast (L)); //-- aucune verification n est 
+  Handle(IntPatch_WLine) wlin (Handle(IntPatch_WLine)::DownCast (L)); //-- faite au cast. 
   Standard_Integer Nbvtx =0; 
   Standard_Integer Nbptlin =0;
   Standard_Real tolPLin = Surf->UResolution(Precision::Confusion());

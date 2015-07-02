@@ -199,10 +199,10 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve,
   Draw_Color                 Couleur;
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
-    curve = (*(Handle(Geom2d_TrimmedCurve)*)&aCurve)->BasisCurve();
+    curve = Handle(Geom2d_TrimmedCurve)::DownCast (aCurve)->BasisCurve();
     type = curve->DynamicType();    
     if (type == STANDARD_TYPE(Bisector_BisecAna)) {
-      curve =(*(Handle(Bisector_BisecAna)*)&curve)->Geom2dCurve(); 
+      curve =Handle(Bisector_BisecAna)::DownCast (curve)->Geom2dCurve(); 
       type = curve->DynamicType(); 
     }
     // PB of representation of semi_infinite curves.

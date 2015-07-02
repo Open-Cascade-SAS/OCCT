@@ -387,7 +387,7 @@ Handle(ViewerTest_EventManager) ViewerTest::CurrentEventManager()
   Handle(ViewerTest_EventManager) EM;
   if(theEventMgrs.IsEmpty()) return EM;
   Handle(Standard_Transient) Tr =  theEventMgrs.First();
-  EM = *((Handle(ViewerTest_EventManager)*)&Tr);
+  EM = Handle(ViewerTest_EventManager)::DownCast (Tr);
   return EM;
 }
 
@@ -440,7 +440,7 @@ Handle(AIS_Shape) GetAISShapeFromName(const char* name)
     if (!IO.IsNull()) {
       if(IO->Type()==AIS_KOI_Shape) {
         if(IO->Signature()==0){
-          retsh = *((Handle(AIS_Shape)*)&IO);
+          retsh = Handle(AIS_Shape)::DownCast (IO);
         }
         else
           cout << "an Object which is not an AIS_Shape "
@@ -4569,7 +4569,7 @@ TopoDS_Shape ViewerTest::PickShape(const TopAbs_ShapeEnum TheType,
       result = TheAISContext()->SelectedShape();
     else{
       Handle(AIS_InteractiveObject) IO = TheAISContext()->SelectedInteractive();
-      result = (*((Handle(AIS_Shape)*) &IO))->Shape();
+      result = Handle(AIS_Shape)::DownCast (IO)->Shape();
     }
   }
 
@@ -4636,7 +4636,7 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum TheType,
       thearr->SetValue(i,TheAISContext()->SelectedShape());
     else{
       Handle(AIS_InteractiveObject) IO = TheAISContext()->SelectedInteractive();
-      thearr->SetValue(i,(*((Handle(AIS_Shape)*) &IO))->Shape());
+      thearr->SetValue(i,Handle(AIS_Shape)::DownCast (IO)->Shape());
     }
   }
 
@@ -4765,7 +4765,7 @@ static int VPickSelected (Draw_Interpretor& , Standard_Integer theArgNb, const c
     else
     {
       Handle(AIS_InteractiveObject) IO = TheAISContext()->SelectedInteractive();
-      aShape = (*((Handle(AIS_Shape)*) &IO))->Shape();
+      aShape = Handle(AIS_Shape)::DownCast (IO)->Shape();
     }
 
     TCollection_AsciiString aCurrentName = aName;
@@ -4916,7 +4916,7 @@ static int VEraseType( Draw_Interpretor& , Standard_Integer argc, const char** a
     if(dimension_status == -1)
       TheAISContext()->Erase(curio,Standard_False);
     else {
-      AIS_KindOfDimension KOD = (*((Handle(AIS_Relation)*)&curio))->KindOfDimension();
+      AIS_KindOfDimension KOD = Handle(AIS_Relation)::DownCast (curio)->KindOfDimension();
       if ((dimension_status==0 && KOD == AIS_KOD_NONE)||
 	  (dimension_status==1 && KOD != AIS_KOD_NONE))
 	TheAISContext()->Erase(curio,Standard_False);
@@ -4949,7 +4949,7 @@ static int VDisplayType(Draw_Interpretor& , Standard_Integer argc, const char** 
     if(dimension_status == -1)
       TheAISContext()->Display(curio,Standard_False);
     else {
-      AIS_KindOfDimension KOD = (*((Handle(AIS_Relation)*)&curio))->KindOfDimension();
+      AIS_KindOfDimension KOD = Handle(AIS_Relation)::DownCast (curio)->KindOfDimension();
       if ((dimension_status==0 && KOD == AIS_KOD_NONE)||
 	  (dimension_status==1 && KOD != AIS_KOD_NONE))
 	TheAISContext()->Display(curio,Standard_False);

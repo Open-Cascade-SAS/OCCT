@@ -96,7 +96,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 {
 
   Handle(TDF_Attribute) TDFAttribute = Attribute();
-  Handle(TDataStd_ExtStringArray) BackAtt = (*((Handle(TDataStd_ExtStringArray)*)&TDFAttribute));
+  Handle(TDataStd_ExtStringArray) BackAtt = Handle(TDataStd_ExtStringArray)::DownCast (TDFAttribute);
   if(BackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfExtStringArray::Apply: OldAtt is Null" <<endl;

@@ -204,25 +204,25 @@ static Standard_Boolean ComputeTangencyPoint(const Handle(Geom_Curve)& GC1,
 	  gp_Vec aVector1,aVector2;
 	  if (GC1->IsInstance(STANDARD_TYPE(Geom_Circle)))
 	    {
-	      const Handle(Geom_Circle)& circle = (Handle(Geom_Circle)&) GC1;
+	      Handle(Geom_Circle) circle (Handle(Geom_Circle)::DownCast (GC1));
 	      Standard_Real par_inter = ElCLib::Parameter(circle->Circ(), P1);
 	      ElCLib::D1(par_inter,circle->Circ(),P1,aVector1);
 	    }
 	  else if (GC1->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
 	    {
-	      const Handle(Geom_Ellipse)& ellipse = (Handle(Geom_Ellipse)&) GC1;
+	      Handle(Geom_Ellipse) ellipse (Handle(Geom_Ellipse)::DownCast (GC1));
 	      Standard_Real par_inter = ElCLib::Parameter(ellipse->Elips(), P1);
 	      ElCLib::D1(par_inter,ellipse->Elips(),P1,aVector1);
 	    }
 	  if (GC2->IsInstance(STANDARD_TYPE(Geom_Circle)))
 	    {
-	      const Handle(Geom_Circle)& circle = (Handle(Geom_Circle)&) GC2;
+	      Handle(Geom_Circle) circle (Handle(Geom_Circle)::DownCast (GC2));
 	      Standard_Real par_inter = ElCLib::Parameter(circle->Circ(), P2);
 	      ElCLib::D1(par_inter,circle->Circ(),P2,aVector2);
 	    }
 	  else if (GC2->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
 	    {
-	      const Handle(Geom_Ellipse)& ellipse = (Handle(Geom_Ellipse)&) GC2;
+	      Handle(Geom_Ellipse) ellipse (Handle(Geom_Ellipse)::DownCast (GC2));
 	      Standard_Real par_inter = ElCLib::Parameter(ellipse->Elips(), P2);
 	      ElCLib::D1(par_inter,ellipse->Elips(),P2,aVector2);
 	    }
@@ -333,8 +333,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
     {
     case 12: // circle line      
        {
-	const Handle(Geom_Line)& line = (Handle(Geom_Line)&) copy1;
-	const Handle(Geom_Circle)& circle = (Handle(Geom_Circle)&) copy2;
+	Handle(Geom_Line) line (Handle(Geom_Line)::DownCast (copy1));
+	Handle(Geom_Circle) circle (Handle(Geom_Circle)::DownCast (copy2));
 
 	if ( !found )
 	  {
@@ -355,8 +355,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       break;
     case 21: // circle line
       {
-	const Handle(Geom_Circle)& circle = (Handle(Geom_Circle)&) copy1;
-	const Handle(Geom_Line)& line = (Handle(Geom_Line)&) copy2;
+	Handle(Geom_Circle) circle (Handle(Geom_Circle)::DownCast (copy1));
+	Handle(Geom_Line) line (Handle(Geom_Line)::DownCast (copy2));
       
 	if (!found)
 	  {
@@ -378,8 +378,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
     // jfa 19/10/2000 begin
     case 13: // line ellipse
       {
-	const Handle(Geom_Line)& line = (Handle(Geom_Line)&) copy1;
-	const Handle(Geom_Ellipse)& ellipse = (Handle(Geom_Ellipse)&) copy2;
+	Handle(Geom_Line) line (Handle(Geom_Line)::DownCast (copy1));
+	Handle(Geom_Ellipse) ellipse (Handle(Geom_Ellipse)::DownCast (copy2));
 
 	if (!found)
 	  {
@@ -399,8 +399,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       break;
     case 31: // ellipse line
       {
-	const Handle(Geom_Ellipse)& ellipse = (Handle(Geom_Ellipse)&) copy1;
-	const Handle(Geom_Line)& line = (Handle(Geom_Line)&) copy2;
+	Handle(Geom_Ellipse) ellipse (Handle(Geom_Ellipse)::DownCast (copy1));
+	Handle(Geom_Line) line (Handle(Geom_Line)::DownCast (copy2));
       
 	if (!found)
 	  {
@@ -420,8 +420,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       break;
     case 22: // circle circle
       {
-	const Handle(Geom_Circle)& circle1 = (Handle(Geom_Circle)&) copy1;
-	const Handle(Geom_Circle)& circle2 = (Handle(Geom_Circle)&) copy2;
+	Handle(Geom_Circle) circle1 (Handle(Geom_Circle)::DownCast (copy1));
+	Handle(Geom_Circle) circle2 (Handle(Geom_Circle)::DownCast (copy2));
 	Standard_Real R1 = circle1->Radius();
 	Standard_Real R2 = circle2->Radius();
 	myLength = Max(R1,R2)/5.0;
@@ -462,8 +462,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       break;
     case 23: // circle ellipse
       {
-	const Handle(Geom_Circle)&  circle  = (Handle(Geom_Circle)&)  copy1;
-	const Handle(Geom_Ellipse)& ellipse = (Handle(Geom_Ellipse)&) copy2;
+	Handle(Geom_Circle) circle (Handle(Geom_Circle)::DownCast (copy1));
+	Handle(Geom_Ellipse) ellipse (Handle(Geom_Ellipse)::DownCast (copy2));
 	Standard_Real R1 = circle->Radius();
 	Standard_Real R2 = ellipse->MajorRadius();
 	myLength = Max(R1,R2)/5.0;
@@ -492,8 +492,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       break;
     case 32: // ellipse circle
       {
-	const Handle(Geom_Ellipse)& ellipse = (Handle(Geom_Ellipse)&) copy1;
-	const Handle(Geom_Circle)&  circle  = (Handle(Geom_Circle)&) copy2;
+	Handle(Geom_Ellipse) ellipse (Handle(Geom_Ellipse)::DownCast (copy1));
+	Handle(Geom_Circle) circle (Handle(Geom_Circle)::DownCast (copy2));
 	Standard_Real R1 = ellipse->MajorRadius();
 	Standard_Real R2 = circle->Radius();
 	myLength = Max(R1,R2)/5.0;
@@ -522,8 +522,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       break;
     case 33: // ellipse ellipse
       {
-	const Handle(Geom_Ellipse)& ellipse1 = (Handle(Geom_Ellipse)&) copy1;
-	const Handle(Geom_Ellipse)& ellipse2 = (Handle(Geom_Ellipse)&) copy2;
+	Handle(Geom_Ellipse) ellipse1 (Handle(Geom_Ellipse)::DownCast (copy1));
+	Handle(Geom_Ellipse) ellipse2 (Handle(Geom_Ellipse)::DownCast (copy2));
 	Standard_Real R1 = ellipse1->MajorRadius();
 	Standard_Real R2 = ellipse2->MajorRadius();
 	myLength = Max(R1,R2)/5.0;

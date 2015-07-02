@@ -53,19 +53,19 @@ Standard_Boolean StepToGeom_MakeCurve::Convert (const Handle(StepGeom_Curve)& SC
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Line))) {
     const Handle(StepGeom_Line) L = Handle(StepGeom_Line)::DownCast(SC);
-    return StepToGeom_MakeLine::Convert(L,*((Handle(Geom_Line)*)&CC));
+    return StepToGeom_MakeLine::Convert(L,Handle(Geom_Line)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_TrimmedCurve))) {
     const Handle(StepGeom_TrimmedCurve) TC = Handle(StepGeom_TrimmedCurve)::DownCast(SC);
-    return StepToGeom_MakeTrimmedCurve::Convert(TC,*((Handle(Geom_TrimmedCurve)*)&CC));
+    return StepToGeom_MakeTrimmedCurve::Convert(TC,Handle(Geom_TrimmedCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Conic))) {
     const Handle(StepGeom_Conic) CO = Handle(StepGeom_Conic)::DownCast(SC);
-    return StepToGeom_MakeConic::Convert(CO,*((Handle(Geom_Conic)*)&CC));
+    return StepToGeom_MakeConic::Convert(CO,Handle(Geom_Conic)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BoundedCurve))) {
     const Handle(StepGeom_BoundedCurve) BC = Handle(StepGeom_BoundedCurve)::DownCast(SC);
-    return StepToGeom_MakeBoundedCurve::Convert(BC,*((Handle(Geom_BoundedCurve)*)&CC));
+    return StepToGeom_MakeBoundedCurve::Convert(BC,Handle(Geom_BoundedCurve)::DownCast (CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_CurveReplica))) { //:n7 abv 16 Feb 99
     const Handle(StepGeom_CurveReplica) CR = Handle(StepGeom_CurveReplica)::DownCast(SC);
