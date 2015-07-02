@@ -15,8 +15,8 @@
 
 #include <ShapeUpgrade_FixSmallBezierCurves.ixx>
 #include <TopoDS_Edge.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <TopExp.hxx>
@@ -57,7 +57,7 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)& C
       First = f;
     if(Last > l)
       Last =l;
-    Handle(Geom_TrimmedCurve) trc = new  Geom_TrimmedCurve(c3d,First,Last);
+    Handle(Geom_Curve) trc = new  Geom_TrimmedCurve(c3d,First,Last);
     GeomAbs_Shape aCont = (GeomAbs_Shape)trc->Continuity();
     if(aCont == GeomAbs_C3 || aCont == GeomAbs_CN)
       aCont = GeomAbs_C2;
@@ -95,7 +95,7 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)& C
       First = f;
     if(Last > l)
       Last =l;
-    Handle(Geom2d_TrimmedCurve) trc2d = new  Geom2d_TrimmedCurve(c2d,First,Last);
+    Handle(Geom2d_Curve) trc2d = new  Geom2d_TrimmedCurve(c2d,First,Last);
     GeomAbs_Shape aCont = (GeomAbs_Shape)trc2d->Continuity();
     try {
       OCC_CATCH_SIGNALS
@@ -132,7 +132,7 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)& C
 	First = f;
       if(Last > l)
 	Last =l;
-      Handle(Geom2d_TrimmedCurve) trc2d = new  Geom2d_TrimmedCurve(c2,First,Last);
+      Handle(Geom2d_Curve) trc2d = new  Geom2d_TrimmedCurve(c2,First,Last);
       GeomAbs_Shape aCont = trc2d->Continuity();
       Geom2dConvert_ApproxCurve AproxCurve2d(trc2d,prec,aCont,1,9);
       try {

@@ -84,7 +84,9 @@ void StepData_StepModel::AddHeaderEntity
 void StepData_StepModel::VerifyCheck(Handle(Interface_Check)& ach) const
 {
   Interface_GeneralLib lib(StepData::HeaderProtocol());
-  Interface_ShareTool sh(this,StepData::HeaderProtocol());
+  Handle(StepData_StepModel) me (this);
+  Handle(Interface_Protocol) aHP = StepData::HeaderProtocol();
+  Interface_ShareTool sh(me,aHP);
   Handle(Interface_GeneralModule) module;  Standard_Integer CN;
   for (Interface_EntityIterator iter = Header(); iter.More(); iter.Next()) {
     Handle(Standard_Transient) head = iter.Value();
@@ -115,7 +117,8 @@ void StepData_StepModel::DumpHeader
     << "   --"<<endl;
 
   Standard_SStream aSStream;
-  StepData_StepWriter SW(this);
+  Handle(StepData_StepModel) me (this);
+  StepData_StepWriter SW(me);
   SW.SendModel(stepro,Standard_True);    // envoi HEADER seul
   SW.Print(aSStream);
   S << aSStream.str().c_str();

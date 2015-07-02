@@ -26,6 +26,7 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <Geom_Surface.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <gp.hxx>
 #include <gp_Trsf.hxx>

@@ -82,8 +82,7 @@ void BRepAdaptor_Curve::Initialize(const TopoDS_Edge& E)
       Handle(Geom2dAdaptor_HCurve) HC = new Geom2dAdaptor_HCurve();
       HC->ChangeCurve2d().Load(PC,pf,pl);
       myConSurf = new Adaptor3d_HCurveOnSurface();
-      myConSurf->ChangeCurve().Load(HC);
-      myConSurf->ChangeCurve().Load(HS);
+      myConSurf->ChangeCurve().Load(HC, HS);
     }
     else {
       Standard_NullObject::Raise("BRepAdaptor_Curve::No geometry");
@@ -113,8 +112,7 @@ void BRepAdaptor_Curve::Initialize(const TopoDS_Edge& E,
   Handle(Geom2dAdaptor_HCurve) HC = new Geom2dAdaptor_HCurve();
   HC->ChangeCurve2d().Load(PC,pf,pl);
   myConSurf = new Adaptor3d_HCurveOnSurface();
-  myConSurf->ChangeCurve().Load(HC);
-  myConSurf->ChangeCurve().Load(HS);
+  myConSurf->ChangeCurve().Load(HC, HS);
   
   myTrsf = L.Transformation();
 }

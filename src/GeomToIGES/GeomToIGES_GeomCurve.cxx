@@ -591,7 +591,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve
     copystart->SetPosition (pos.Rotated (pos.Axis(), gp_Ax3 (pos).Direct() ? Udeb : 2 * M_PI - Udeb));
     Handle(Geom_BSplineCurve) Bspline;
     //:q3 abv 17 Mar 99: use GeomConvert_ApproxCurve for precise conversion
-    GeomConvert_ApproxCurve approx (copystart, Precision::Approximation(), 
+    const Handle(Geom_Curve)& aCopy = copystart; // to avoid ambiguity
+    GeomConvert_ApproxCurve approx (aCopy, Precision::Approximation(), 
 				    GeomAbs_C1, 100, 6 );
     if ( approx.HasResult() ) Bspline = approx.Curve();
     if ( Bspline.IsNull() ) 

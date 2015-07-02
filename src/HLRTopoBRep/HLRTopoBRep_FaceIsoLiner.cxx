@@ -127,7 +127,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
     else { 
       Handle (Geom2d_TrimmedCurve) TPC =
 	new Geom2d_TrimmedCurve (PC, U1, U2);
-      IndE = Hatcher.AddElement (TPC, newE.Orientation());
+      Geom2dAdaptor_Curve aGAC (TPC);
+      IndE = Hatcher.AddElement (aGAC, newE.Orientation());
     }
     SH(IndE) = newE;
     if (DS.IsOutLFaceEdge(TF,newE)) IL(IndE) = Standard_True;
@@ -150,7 +151,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
       else { 
 	Handle (Geom2d_TrimmedCurve) TPC =
 	  new Geom2d_TrimmedCurve (PC, U1, U2);
-	IndE = Hatcher.AddElement (TPC, TopAbs_INTERNAL);
+        Geom2dAdaptor_Curve aGAC (TPC);
+	IndE = Hatcher.AddElement (aGAC, TopAbs_INTERNAL);
       }
       SH(IndE) = newE;
       IL(IndE) = Standard_True;
@@ -183,7 +185,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
       gp_Pnt2d Ori (UPrm, 0.);
       Handle (Geom2d_Line) IsoLine = new Geom2d_Line (Ori, Dir);
       
-      Standard_Integer IndH = Hatcher.AddHatching (IsoLine);
+      Geom2dAdaptor_Curve aGAC (IsoLine);
+      Standard_Integer IndH = Hatcher.AddHatching (aGAC);
       Hatcher.Trim (IndH);
       if (Hatcher.TrimDone (IndH) && !Hatcher.TrimFailed (IndH))
 	Hatcher.ComputeDomains (IndH);
@@ -276,7 +279,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
       gp_Pnt2d Ori (0., VPrm);
       Handle (Geom2d_Line) IsoLine = new Geom2d_Line (Ori, Dir);
       
-      Standard_Integer IndH = Hatcher.AddHatching (IsoLine);
+      Geom2dAdaptor_Curve aGAC (IsoLine);
+      Standard_Integer IndH = Hatcher.AddHatching (aGAC);
       Hatcher.Trim (IndH);
       if (Hatcher.TrimDone (IndH) && !Hatcher.TrimFailed (IndH))
 	Hatcher.ComputeDomains (IndH);

@@ -51,7 +51,6 @@
 //  ....   Creation et Acces de base aux donnees atomiques du fichier    ....
 
 typedef TCollection_HAsciiString String;
-typedef Handle(TCollection_HAsciiString) Handle(String);
 static char txtmes[200];  // plus commode que redeclarer partout
 
 

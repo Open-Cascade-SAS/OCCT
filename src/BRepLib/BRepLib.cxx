@@ -586,8 +586,7 @@ Standard_Boolean  BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
       new Geom2dAdaptor_HCurve(AnAdaptor3dCurve2d) ;
     Handle(GeomAdaptor_HSurface) AnAdaptor3dSurfacePtr =
       new GeomAdaptor_HSurface (AnAdaptor3dSurface) ;
-    curve_on_surface_reference.Load( AnAdaptor3dCurve2dPtr) ;
-    curve_on_surface_reference.Load( AnAdaptor3dSurfacePtr) ;
+    curve_on_surface_reference.Load (AnAdaptor3dCurve2dPtr, AnAdaptor3dSurfacePtr);
     a_sampler.Initialize(curve_on_surface_reference,
       MinToleranceRequested * factor,
       current_first,
@@ -1232,7 +1231,9 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
         if(goodpc){
           //	  Approx_SameParameter SameP(HC,HC2d,HS,Tolerance);
           Standard_Real aTol = (isANA && isBSP) ? 1.e-7 : Tolerance;
-          Approx_SameParameter SameP(HC,HC2d,HS,aTol);
+          const Handle(Adaptor3d_HCurve)& aHCurv = HC; // to avoid ambiguity
+          const Handle(Adaptor2d_HCurve2d)& aHCurv2d = HC2d; // to avoid ambiguity
+          Approx_SameParameter SameP(aHCurv,aHCurv2d,HS,aTol);
 
           if (SameP.IsSameParameter()) {
             maxdist = Max(maxdist,SameP.TolReached());

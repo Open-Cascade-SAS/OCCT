@@ -18,7 +18,7 @@
 
 
 #include <GeomliteTest.hxx>
-#include <Geom2d_Curve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DrawTrSurf.hxx>

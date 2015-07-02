@@ -122,7 +122,8 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
 #endif
 	Handle(Geom2d_BSplineCurve) aBSplineCurve2d = 
 	  Geom2dConvert::CurveToBSplineCurve(theC2d);
-	GeomToStep_MakeBoundedCurve MkBoundedC(aBSplineCurve2d);
+        const Handle(Geom2d_BoundedCurve)& aBC2d = aBSplineCurve2d; // to avoid ambiguity
+	GeomToStep_MakeBoundedCurve MkBoundedC(aBC2d);
 	theCurve = MkBoundedC.Value();
       }
       else {
@@ -140,7 +141,8 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
 #endif
 	Handle(Geom2d_BSplineCurve) aBSplineCurve2d = 
 	  Geom2dConvert::CurveToBSplineCurve(theE2d);
-	GeomToStep_MakeBoundedCurve MkBoundedC(aBSplineCurve2d);
+        const Handle(Geom2d_BoundedCurve)& aBC2d = aBSplineCurve2d; // to avoid ambiguity
+	GeomToStep_MakeBoundedCurve MkBoundedC(aBC2d);
 	theCurve = MkBoundedC.Value();
       }
       else {

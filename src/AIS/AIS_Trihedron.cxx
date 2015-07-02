@@ -324,7 +324,8 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
   case 1:
     {  //origin : 
       Prior = 8;
-      eown= new SelectMgr_EntityOwner(myShapes[0],Prior);
+      const Handle(SelectMgr_SelectableObject)& anObj = myShapes[0]; // to avoid ambiguity
+      eown= new SelectMgr_EntityOwner(anObj,Prior);
       
       aSelection->Add(new Select3D_SensitivePoint (eown,myComponent->Location()));
       // If the trihedron's shapes display and selection modes are the same
@@ -342,7 +343,8 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
     {  //axes ... priority 7
       Prior = 7;
       for (Standard_Integer i=1; i<=3;i++){
-	eown= new SelectMgr_EntityOwner(myShapes[i],Prior);
+        const Handle(SelectMgr_SelectableObject)& anObj = myShapes[i]; // to avoid ambiguity
+	eown= new SelectMgr_EntityOwner(anObj,Prior);
 	aSelection->Add(new Select3D_SensitiveSegment(eown,PP(1),PP(i+1)));
 
       }
@@ -379,15 +381,18 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
       Prior =5;
       
       
-      eown= new SelectMgr_EntityOwner(myShapes[4],Prior);
+      const Handle(SelectMgr_SelectableObject)& anObj4 = myShapes[4]; // to avoid ambiguity
+      eown= new SelectMgr_EntityOwner(anObj4,Prior);
 //      PO(2) = PP(2);PO(3) = PP(3);
       aSelection->Add(new Select3D_SensitiveTriangle(eown,PP(1),PP(2),PP(3)));
 
-      eown= new SelectMgr_EntityOwner(myShapes[5],Prior);
+      const Handle(SelectMgr_SelectableObject)& anObj5 = myShapes[5]; // to avoid ambiguity
+      eown= new SelectMgr_EntityOwner(anObj5,Prior);
 //      PO(2) = PP(3);PO(3) = PP(4);
       aSelection->Add(new Select3D_SensitiveTriangle(eown,PP(1),PP(2),PP(4)));
 
-      eown= new SelectMgr_EntityOwner(myShapes[6],Prior);
+      const Handle(SelectMgr_SelectableObject)& anObj6 = myShapes[6]; // to avoid ambiguity
+      eown= new SelectMgr_EntityOwner(anObj6,Prior);
 //      PO(2) = PP(4);PO(3) = PP(2);
       aSelection->Add(new Select3D_SensitiveTriangle(eown,PP(1),PP(3),PP(4)));
       

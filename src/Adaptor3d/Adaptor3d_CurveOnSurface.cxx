@@ -744,6 +744,18 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_HCurve2d)& C)
 }
 
 //=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+void Adaptor3d_CurveOnSurface::Load (const Handle(Adaptor2d_HCurve2d)& C,
+                                     const Handle(Adaptor3d_HSurface)& S) 
+{
+  Load (C);
+  Load (S);
+}
+
+//=======================================================================
 //function : FirstParameter
 //purpose  : 
 //=======================================================================

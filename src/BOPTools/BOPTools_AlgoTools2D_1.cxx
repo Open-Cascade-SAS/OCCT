@@ -70,7 +70,7 @@ Standard_Integer BOPTools_AlgoTools2D::AttachExistingPCurve
   Standard_Integer iRet;
   Standard_Real aTol, aT11, aT12, aT21, aT22, aTolPPC;
   Handle(Geom2d_Curve) aC2Dold, aC2DoldC;
-  Handle(Geom2d_TrimmedCurve) aC2DT;
+  Handle(Geom2d_Curve) aC2DT;
   BRep_Builder aBB;
   //
   iRet=0;

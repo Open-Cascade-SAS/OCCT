@@ -30,6 +30,7 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <gp_Pln.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAPI.hxx>
@@ -637,9 +638,9 @@ static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120),  gp_Pnt(300, 300,300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320),  gp_Pnt(500, 500,500));
 
-  Handle(AIS_Shape) ais1 = new AIS_Shape(box1.Shape());
-  Handle(AIS_Shape) ais2 = new AIS_Shape(box2.Shape());
-  Handle(AIS_Shape) ais3 = new AIS_Shape(box3.Shape());
+  Handle(AIS_InteractiveObject) ais1 = new AIS_Shape(box1.Shape());
+  Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
+  Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
 
   aContext->Display(ais1);
   aContext->Display(ais2);

@@ -393,7 +393,8 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
   theProc->SetActor (theActor);
   Transfer_TransferOutput TP (theProc,theModel);
 
-  Interface_ShareFlags SH (theModel,protocol);
+  const Handle(Interface_Protocol) aProtocol = protocol; // to avoid ambiguity
+  Interface_ShareFlags SH (theModel, aProtocol);
   Standard_Integer nb = theModel->NbEntities();
   ShapeExtend_Explorer SBE;
 

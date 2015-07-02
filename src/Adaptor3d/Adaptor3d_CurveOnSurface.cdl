@@ -67,6 +67,11 @@ is
 	---Purpose: Changes the 2d curve.
     is static;
 
+    Load(me : in out; C : HCurve2d from Adaptor2d;
+                      S : HSurface from Adaptor3d)
+	---Purpose: Load both curve and surface.
+    is static;
+
     GetCurve(me) returns HCurve2d from Adaptor2d
        ---C++: return const &
     is static;

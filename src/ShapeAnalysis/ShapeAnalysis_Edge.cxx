@@ -832,16 +832,14 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
     Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(PC,f,l);
     //Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
     Adaptor3d_CurveOnSurface ACS;
-    ACS.Load(GHPC);
-    ACS.Load(GAHS);
+    ACS.Load(GHPC, GAHS);
     if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) ) {
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
     }
 
     if ( GC->IsCurveOnClosedSurface() ) {
       GHPC->ChangeCurve2d().Load ( GC->PCurve2(), f, l ); // same bounds
-      ACS.Load(GAHS); // sans doute inutile
-      ACS.Load(GHPC); // meme remarque...
+      ACS.Load(GHPC, GAHS); // sans doute inutile
       if ( ! ComputeDeviation ( AC3d, ACS, SameParameter, maxdev, NbControl-1 ) ) {
 	myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
       }

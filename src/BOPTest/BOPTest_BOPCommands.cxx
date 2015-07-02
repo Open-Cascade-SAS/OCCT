@@ -56,6 +56,9 @@
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
 
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
+
 //
 static BOPAlgo_PaveFiller* pPF=NULL;
 //

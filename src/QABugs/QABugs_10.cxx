@@ -46,6 +46,8 @@
 #include <ChFi3d_FilletShape.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {

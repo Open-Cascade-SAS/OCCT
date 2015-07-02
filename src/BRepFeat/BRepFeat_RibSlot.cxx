@@ -668,7 +668,7 @@ void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e,
 #endif
   Standard_Real f, l;
   Handle(Geom_Curve) cu = BRep_Tool::Curve(e, f, l);
-  Handle(Geom_TrimmedCurve) C = 
+  Handle(Geom_BoundedCurve) C = 
     new Geom_TrimmedCurve(cu, f, l);
 
   TopoDS_Edge E;
@@ -1105,7 +1105,8 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
       Standard_Real intpar;
       for(; ex1.More(); ex1.Next()) {
         const TopoDS_Face& f = TopoDS::Face(ex1.Current());
-        inter.Init(f,curve, BRep_Tool::Tolerance(f));
+        GeomAdaptor_Curve aGAC (curve);
+        inter.Init (f, aGAC, BRep_Tool::Tolerance(f));
         if(!inter.More()) continue;
         for(; inter.More(); inter.Next()) {
           gp_Pnt thePoint = inter.Pnt();

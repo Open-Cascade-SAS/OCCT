@@ -210,7 +210,8 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
   case 1:
     {  //origine
       Prior = 8;
-      eown= new SelectMgr_EntityOwner(myShapes[0],Prior);
+      const Handle(SelectMgr_SelectableObject)& anObj = myShapes[0]; // to avoid ambiguity
+      eown= new SelectMgr_EntityOwner(anObj,Prior);
       aSelection->Add(new Select3D_SensitivePoint(eown,myPlane->Location()));
 
       break;
@@ -219,7 +220,8 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
     { //axes ... priorite 7
       Prior = 7;
       for (Standard_Integer i=1; i<=2;i++){
-	eown= new SelectMgr_EntityOwner(myShapes[i],Prior);
+        const Handle(SelectMgr_SelectableObject)& anObj = myShapes[i]; // to avoid ambiguity
+	eown= new SelectMgr_EntityOwner(anObj,Prior);
 	aSelection->Add(new Select3D_SensitiveSegment(eown,PP(1),PP(i+1)));
 
       }

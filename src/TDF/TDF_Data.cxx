@@ -296,9 +296,10 @@ Standard_Integer TDF_Data::CommitTransaction
         }
         // --------------------------------------------------------- Modified.
         else {
+          const TDF_Attribute* anAttrPtr = aPtrCurrentAtt; // to avoid ambiguity
           TDF_Data_DeltaCreation
             ("Modification",
-             aPtrCurrentAtt->DeltaOnModification(backupAtt));
+             anAttrPtr->DeltaOnModification(backupAtt));
           if (aPtrCurrentAtt->myTransaction == backupAtt->myTransaction)
             aPtrCurrentAtt->RemoveBackup();
           attMod = attMod || (aPtrCurrentAtt->myTransaction > 0);

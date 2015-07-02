@@ -1020,7 +1020,7 @@ void AIS_LocalContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,
       }
     }
     if(EO.IsNull()) 
-      EO = new SelectMgr_EntityOwner(anIObj);
+      EO = new SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)anIObj);
   }
   
   ClearSelected(Standard_False);
@@ -1059,7 +1059,7 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
     }
     if(EO.IsNull())
     {
-      EO = new SelectMgr_EntityOwner(anIObj);
+      EO = new SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)anIObj);
     }
   }
   
@@ -1315,7 +1315,7 @@ Standard_Boolean AIS_LocalContext::IsValidForSelection(const Handle(AIS_Interact
   Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(anIObj);
   if( !shape.IsNull() ) 
     return myFilters->IsOk(new StdSelect_BRepOwner(shape->Shape(),shape));
-  return myFilters->IsOk(new SelectMgr_EntityOwner(anIObj));
+  return myFilters->IsOk(new SelectMgr_EntityOwner((const Handle(SelectMgr_SelectableObject)&)anIObj));
 }
 
 

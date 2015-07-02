@@ -814,8 +814,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
         if (cr->IsCurveOnClosedSurface()) {
           //checkclosed = Standard_True;
           GHPC->ChangeCurve2d().Load(cr->PCurve2(),f,l); // same bounds
-          ACS.Load(GAHS); // sans doute inutile
-          ACS.Load(GHPC); // meme remarque...
+          ACS.Load(GHPC, GAHS); // sans doute inutile
           ok = Validate(myHCurve->Curve(),ACS,Tol,SameParameter, aNewTol);
           if (ok) {
             if (aNewTol<aMaxTol) {

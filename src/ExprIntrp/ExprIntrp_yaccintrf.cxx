@@ -532,7 +532,8 @@ extern "C" void ExprIntrp_EndOfAssign()
   Handle(Expr_NamedUnknown) namu;
   if (namexp.IsNull()) {
     namu = new Expr_NamedUnknown(ExprIntrp_assname);
-    ExprIntrp_Recept.Use(namu);
+    const Handle(Expr_NamedExpression)& aNamedExpr = namu; // to resolve ambiguity
+    ExprIntrp_Recept.Use(aNamedExpr);
   }
   else {
     if (!namexp->IsKind(STANDARD_TYPE(Expr_NamedUnknown))) {
@@ -584,7 +585,8 @@ extern "C" void ExprIntrp_ConstantDefinition()
   const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
   Standard_Real val = aStr.RealValue();
   Handle(Expr_NamedConstant) theconst = new Expr_NamedConstant(name,val);
-  ExprIntrp_Recept.Use(theconst);
+  const Handle(Expr_NamedExpression) theexpr = theconst; // to resolve ambiguity
+  ExprIntrp_Recept.Use(theexpr);
   ExprIntrp_Recept.Push(theconst);
 }
 

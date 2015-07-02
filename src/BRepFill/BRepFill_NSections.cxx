@@ -112,7 +112,8 @@ static Handle(Geom_BSplineCurve) EdgeToBSpline (const TopoDS_Edge& theEdge)
     // special treatment of conic curve
     if (aTrimCurve->BasisCurve()->IsKind(STANDARD_TYPE(Geom_Conic)))
     {
-      GeomConvert_ApproxCurve anAppr (aTrimCurve, Precision::Confusion(), GeomAbs_C1, 16, 14);
+      const Handle(Geom_Curve)& aCurve = aTrimCurve; // to avoid ambiguity
+      GeomConvert_ApproxCurve anAppr (aCurve, Precision::Confusion(), GeomAbs_C1, 16, 14);
       if (anAppr.HasResult())
         aBSCurve = anAppr.Curve();
     }

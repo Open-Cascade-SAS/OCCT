@@ -423,7 +423,7 @@ void AIS_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aS
 	      Handle(Geom_Circle) thecirc = Handle(Geom_Circle)::DownCast (curv1);
 	      Standard_Real udeb = ElCLib::Parameter(thecirc->Circ(),myFAttach);
 	      Standard_Real ufin = ElCLib::Parameter(thecirc->Circ(),mySAttach);
-	      Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
+	      Handle(Geom_Curve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
       
 	      Handle(Select3D_SensitiveCurve) scurv = new Select3D_SensitiveCurve(own, thecu);
 	      aSelection->Add(scurv);
@@ -437,7 +437,7 @@ void AIS_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aS
 
 	      Standard_Real udeb = ElCLib::Parameter(theEll->Elips(),myFAttach);
 	      Standard_Real ufin = ElCLib::Parameter(theEll->Elips(),mySAttach);
-	      Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
+	      Handle(Geom_Curve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
       
 	      Handle(Select3D_SensitiveCurve) scurv = new Select3D_SensitiveCurve(own, thecu);
 	      aSelection->Add(scurv);

@@ -33,7 +33,8 @@ BRepTopAdaptor_Tool::BRepTopAdaptor_Tool(const TopoDS_Face& F,
 
   Handle(BRepAdaptor_HSurface) surface = new BRepAdaptor_HSurface();
   surface->ChangeSurface().Initialize(F,Standard_True);
-  myTopolTool->Initialize(surface);
+  const Handle(Adaptor3d_HSurface)& aSurf = surface; // to avoid ambiguity
+  myTopolTool->Initialize(aSurf);
   myHSurface = surface;
   myloaded=Standard_True;
 }
@@ -52,7 +53,8 @@ void BRepTopAdaptor_Tool::Init(const TopoDS_Face& F,
 { 
   Handle(BRepAdaptor_HSurface) surface = new BRepAdaptor_HSurface();
   surface->ChangeSurface().Initialize(F);
-  myTopolTool->Initialize(surface);
+  const Handle(Adaptor3d_HSurface)& aSurf = surface; // to avoid ambiguity
+  myTopolTool->Initialize(aSurf);
   myHSurface = surface;
   myloaded=Standard_True;
 }

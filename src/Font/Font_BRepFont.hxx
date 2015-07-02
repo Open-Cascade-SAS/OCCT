@@ -187,7 +187,7 @@ private:
   void init();
 
   //! Auxiliary method to create 3D curve
-  bool to3d (const Handle(Geom2d_Curve) theCurve2d,
+  bool to3d (const Handle(Geom2d_Curve)& theCurve2d,
              const GeomAbs_Shape        theContinuity,
              Handle(Geom_Curve)&        theCurve3d);
 

@@ -312,8 +312,8 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
 	if (CurOrder == GeomAbs_C0) {
 	  Handle( BRepAdaptor_HCurve ) HCurve = new BRepAdaptor_HCurve();
 	  HCurve->ChangeCurve().Initialize( CurEdge );
-	  
-	  Constr = new BRepFill_CurveConstraint(HCurve,
+	  const Handle(Adaptor3d_HCurve)& aHCurve = HCurve; // to avoid ambiguity
+	  Constr = new BRepFill_CurveConstraint(aHCurve,
 						CurOrder,
 						myNbPtsOnCur,
 						myTol3d );

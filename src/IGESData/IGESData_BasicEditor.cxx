@@ -55,7 +55,7 @@ void IGESData_BasicEditor::Init (const Handle(IGESData_Protocol)& protocol)
   theunit = Standard_False;
   theproto = protocol;
   themodel = GetCasted(IGESData_IGESModel,Interface_InterfaceModel::Template("iges"));
-  theglib = protocol;
+  theglib = Interface_GeneralLib (protocol);
   theslib = protocol;
 }
 
@@ -64,7 +64,7 @@ void IGESData_BasicEditor::Init (const Handle(IGESData_IGESModel)& model, const 
   theunit = Standard_False;
   theproto = protocol;
   themodel = model;
-  theglib = protocol;
+  theglib = Interface_GeneralLib (protocol);
   theslib = protocol;
 }
 

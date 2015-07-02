@@ -50,7 +50,7 @@ static Standard_Boolean IsMaxRC (const Handle(Geom2d_Curve)& C,
   Standard_Real         U,
   Standard_Real&        R);
 
-static void ReplaceByLineIfIsToSmall (Handle(Geom2d_Curve)& Bis,
+static void ReplaceByLineIfIsToSmall (Handle(Bisector_Curve)& Bis,
   Standard_Real&        UFirst,
   Standard_Real&        ULast);					
 //=============================================================================
@@ -115,7 +115,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     {
       if(aBS->Pole(1).Distance(aBS->Pole(2)) < 1.e-4)
       {
-        afirstcurve1 = GCE2d_MakeSegment(aBS->Pole(1), aBS->Pole(2));
+        afirstcurve1 = GCE2d_MakeSegment(aBS->Pole(1), aBS->Pole(2)).Value();
         Type1 = STANDARD_TYPE(Geom2d_Line);
       }
     }
@@ -138,7 +138,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     {
       if(aBS->Pole(1).Distance(aBS->Pole(2)) < 1.e-4)
       {
-        asecondcurve1 = GCE2d_MakeSegment(aBS->Pole(1), aBS->Pole(2));
+        asecondcurve1 = GCE2d_MakeSegment(aBS->Pole(1), aBS->Pole(2)).Value();
         Type2 = STANDARD_TYPE(Geom2d_Line);
       }
     }
@@ -633,7 +633,7 @@ const Handle(Geom2d_TrimmedCurve)&  Bisector_Bisec::ChangeValue()
 //purpose  : If the size of an algorithmic bissectrice is negligeable it is
 //           replaced by a half-straight.
 //=============================================================================
-static void ReplaceByLineIfIsToSmall (Handle(Geom2d_Curve)& Bis,
+static void ReplaceByLineIfIsToSmall (Handle(Bisector_Curve)& Bis,
   Standard_Real&        UFirst,
   Standard_Real&        ULast )
 

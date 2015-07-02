@@ -152,8 +152,8 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface& S,
 		     const Standard_Real  vmax,
 		     const Standard_Boolean checknaturalbounds = Standard_True);
 		      
-Standard_Boolean  ChFi3d_InterPlaneEdge (Handle(Adaptor3d_HSurface)& Plan,
-					 Handle(Adaptor3d_HCurve)&   C,
+Standard_Boolean  ChFi3d_InterPlaneEdge (const Handle(Adaptor3d_HSurface)& Plan,
+					 const Handle(Adaptor3d_HCurve)&   C,
 					 Standard_Real&            W,
 					 const Standard_Boolean    Sens,
 					 const Standard_Real tolc);
@@ -433,8 +433,8 @@ TopoDS_Edge ChFi3d_EdgeFromV1(const TopoDS_Vertex& V1,
 Standard_Real ChFi3d_ConvTol2dToTol3d(const Handle(Adaptor3d_HSurface)& S,
 				      const Standard_Real             tol2d);
 
-Standard_Boolean  ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
-				       Handle(Adaptor3d_HSurface)&   S2,
+Standard_Boolean  ChFi3d_ComputeCurves(const Handle(Adaptor3d_HSurface)&   S1,
+				       const Handle(Adaptor3d_HSurface)&   S2,
 				       const TColStd_Array1OfReal& Pardeb,
 				       const TColStd_Array1OfReal& Parfin,
 				       Handle(Geom_Curve)&         C3d,
@@ -446,8 +446,8 @@ Standard_Boolean  ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
 				       const Standard_Boolean      wholeCurv
 				        = Standard_True);
 
-Standard_Boolean ChFi3d_IntCS(Handle(Adaptor3d_HSurface)& S,
-			      Handle(Adaptor3d_HCurve)& C,
+Standard_Boolean ChFi3d_IntCS(const Handle(Adaptor3d_HSurface)& S,
+			      const Handle(Adaptor3d_HCurve)& C,
 			      gp_Pnt2d& p2dS,
 			      Standard_Real& wc);
 

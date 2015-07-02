@@ -189,7 +189,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
   ax.SetLocation(myMidPoint);
   Standard_Real rad = myFAttach.Distance(myMidPoint)/20.0;
   gp_Circ aCircleM (ax,rad);
-  Handle(Geom_Circle) thecir = new Geom_Circle(aCircleM);
+  Handle(Geom_Curve) thecir = new Geom_Circle(aCircleM);
   Handle(Select3D_SensitiveCurve) scurv = new Select3D_SensitiveCurve(own, thecir);
   aSel->Add(scurv);
 
@@ -215,7 +215,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
 	  Handle(Geom_Circle) thecirc = Handle(Geom_Circle)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(thecirc->Circ(),myFirstPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(thecirc->Circ(),myFirstPnt2);
-	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
+	  Handle(Geom_Curve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
 	  
 	  scurv = new Select3D_SensitiveCurve(own, thecu);
 	  aSel->Add(scurv);
@@ -226,7 +226,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
 	  Handle(Geom_Ellipse) theEll = Handle(Geom_Ellipse)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(theEll->Elips(),myFirstPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(theEll->Elips(),myFirstPnt2);
-	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
+	  Handle(Geom_Curve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
 	  
 	  scurv = new Select3D_SensitiveCurve(own, thecu);
 	  aSel->Add(scurv);
@@ -250,7 +250,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
 	  Handle(Geom_Circle) thecirc = Handle(Geom_Circle)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(thecirc->Circ(),mySecondPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(thecirc->Circ(),mySecondPnt2);
-	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
+	  Handle(Geom_Curve) thecu = new Geom_TrimmedCurve(thecirc,udeb,ufin);
 	  
 	  scurv = new Select3D_SensitiveCurve(own, thecu);
 	  aSel->Add(scurv);
@@ -261,7 +261,7 @@ void AIS_MidPointRelation::ComputeSelection(const Handle(SelectMgr_Selection)& a
 	  Handle(Geom_Ellipse) theEll = Handle(Geom_Ellipse)::DownCast (curv);
 	  Standard_Real udeb = ElCLib::Parameter(theEll->Elips(),mySecondPnt1);
 	  Standard_Real ufin = ElCLib::Parameter(theEll->Elips(),mySecondPnt2);
-	  Handle(Geom_TrimmedCurve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
+	  Handle(Geom_Curve) thecu = new Geom_TrimmedCurve(theEll,udeb,ufin);
 	  
 	  scurv = new Select3D_SensitiveCurve(own, thecu);
 	  aSel->Add(scurv);

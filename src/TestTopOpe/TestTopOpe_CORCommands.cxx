@@ -569,10 +569,12 @@ static Standard_Integer drawbnd2d(Draw_Interpretor& , Standard_Integer n, const 
   gp_Trsf2d tx; gp_Vec2d vx(umax-umin,0.); tx.SetTranslation(vx);
   gp_Trsf2d ty; gp_Vec2d vy(0.,vmax-vmin); ty.SetTranslation(vy);
   
-  Handle(Geom2d_TrimmedCurve) tcx = new Geom2d_TrimmedCurve(cx,0.,umax-umin);
-  Handle(Geom2d_TrimmedCurve) tcy = new Geom2d_TrimmedCurve(cy,0.,vmax-vmin);
-  Handle(Geom2d_TrimmedCurve) tccx = Handle(Geom2d_TrimmedCurve)::DownCast(tcx->Copy()); tccx->Transform(ty);
-  Handle(Geom2d_TrimmedCurve) tccy = Handle(Geom2d_TrimmedCurve)::DownCast(tcy->Copy()); tccy->Transform(tx);
+  Handle(Geom2d_Curve) tcx = new Geom2d_TrimmedCurve(cx,0.,umax-umin);
+  Handle(Geom2d_Curve) tcy = new Geom2d_TrimmedCurve(cy,0.,vmax-vmin);
+  Handle(Geom2d_Curve) tccx = Handle(Geom2d_Curve)::DownCast (tcx->Copy());
+  tccx->Transform(ty);
+  Handle(Geom2d_Curve) tccy = Handle(Geom2d_Curve)::DownCast (tcy->Copy());
+  tccy->Transform(tx);
   
   Draw_Color col(Draw_blanc);
   DrawTrSurf_CurveColor(col);

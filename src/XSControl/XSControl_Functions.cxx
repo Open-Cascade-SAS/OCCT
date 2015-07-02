@@ -332,7 +332,8 @@ static IFSelect_ReturnStatus XSControl_xoption(const Handle(IFSelect_SessionPilo
     Handle(Interface_Static) param = Interface_Static::Static(parname);
     if (param.IsNull()) { sout<<"No static parameter is named "<<parname<<endl;
 			  return IFSelect_RetError; }
-    Handle(MoniTool_Option) opt = new MoniTool_Option(param,arg2);
+    const Handle(MoniTool_TypedValue)& aparam = param; // to avoid ambiguity
+    Handle(MoniTool_Option) opt = new MoniTool_Option(aparam,arg2);
     prof->AddOption (opt);
     return IFSelect_RetDone;
   }

@@ -506,10 +506,10 @@ is
                 Spine           : Spine from ChFiDS; 
                 HS1,  HS3       : HSurface from BRepAdaptor; 
 		P1,  P3         : Pnt2d  from  gp;
-                I1              : in  out  TopolTool from Adaptor3d;
+                I1              : TopolTool from Adaptor3d;
                 HS2,  HS4       : HSurface from BRepAdaptor;   
 		P2,  P4         : Pnt2d  from  gp;
-                I2              : in  out  TopolTool from Adaptor3d;
+                I2              : TopolTool from Adaptor3d;
                 MaxStep         : Real from Standard;
                 Fleche          : Real from Standard;
                 TolGuide        : Real from Standard;

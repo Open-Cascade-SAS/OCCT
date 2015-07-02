@@ -414,8 +414,8 @@ void ShapeUpgrade_WireDivide::Perform ()
       else if(myEdgeDivide->HasCurve2d() && !Surf.IsNull()) {
 	Handle(Geom2d_Curve) c2d;
 	sae.PCurve ( E, myFace, c2d, af, al, Standard_False); 
-	Handle(GeomAdaptor_HSurface) AdS = new GeomAdaptor_HSurface(Surf);
-	Handle(Geom2dAdaptor_HCurve) AC2d  = new Geom2dAdaptor_HCurve(c2d,af,al);
+	Handle(Adaptor3d_HSurface) AdS = new GeomAdaptor_HSurface(Surf);
+	Handle(Adaptor2d_HCurve2d) AC2d  = new Geom2dAdaptor_HCurve(c2d,af,al);
 	AdCS.Load(AC2d);
 	AdCS.Load(AdS);
       }

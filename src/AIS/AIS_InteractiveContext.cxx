@@ -124,7 +124,8 @@ void AIS_InteractiveContext::Delete() const
 
   // let's remove one reference explicitly. this operation's supposed to
   // be performed when mgrSelector will be destroyed but anyway...
-  mgrSelector->Remove (myMainSel);
+  const Handle(SelectMgr_ViewerSelector)& aSelector = myMainSel; // to avoid ambiguity
+  mgrSelector->Remove (aSelector);
 
   Handle(AIS_InteractiveContext) aNullContext;
   for (AIS_DataMapIteratorOfDataMapOfIOStatus anObjIter (myObjects); anObjIter.More(); anObjIter.Next())
@@ -458,7 +459,8 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     myMainPM->Display(theIObj, theDispMode);
     if (theSelectionMode != -1)
     {
-      if (!mgrSelector->Contains (theIObj))
+      const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity
+      if (!mgrSelector->Contains (anObj))
       {
         mgrSelector->Load (theIObj);
       }
@@ -510,7 +512,8 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     }
     if (theSelectionMode != -1)
     {
-      if (!mgrSelector->Contains (theIObj))
+      const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity
+      if (!mgrSelector->Contains (anObj))
       {
         mgrSelector->Load (theIObj);
       }
@@ -563,7 +566,8 @@ void AIS_InteractiveContext::Load (const Handle(AIS_InteractiveObject)& theIObj,
     }
 
     // Register theIObj in the selection manager to prepare further activation of selection
-    if (!mgrSelector->Contains (theIObj))
+    const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity
+    if (!mgrSelector->Contains (anObj))
     {
       mgrSelector->Load (theIObj);
     }
@@ -2380,7 +2384,8 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   {
     // for cases when reference shape of connected interactives was not displayed
     // but its selection primitives were calculated
-    mgrSelector->Remove (theIObj);
+    const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity
+    mgrSelector->Remove (anObj);
     return;
   }
 
@@ -2429,7 +2434,8 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   }
 
   // remove IO from the selection manager to avoid memory leaks
-  mgrSelector->Remove (theIObj);
+  const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity
+  mgrSelector->Remove (anObj);
 
   myObjects.UnBind (theIObj);
   myMainVwr->Viewer()->UnregisterObject (theIObj);
@@ -2823,13 +2829,15 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
   {
     Handle(AIS_MultipleConnectedInteractive) theObj (Handle(AIS_MultipleConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect (theObjToDisconnect);
-    mgrSelector->Remove (theObjToDisconnect);
+    const Handle(SelectMgr_SelectableObject)& anObj = theObjToDisconnect; // to avoid ambiguity
+    mgrSelector->Remove (anObj);
   }
   else if (theAssembly->IsInstance ("AIS_ConnectedInteractive") && theObjToDisconnect.IsNull())
   {
     Handle(AIS_ConnectedInteractive) theObj (Handle(AIS_ConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect();
-    mgrSelector->Remove (theObj);
+    const Handle(SelectMgr_SelectableObject)& anObj = theObj; // to avoid ambiguity
+    mgrSelector->Remove (anObj);
   }
   else
     return;

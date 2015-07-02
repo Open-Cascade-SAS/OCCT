@@ -46,6 +46,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <DrawTrSurf_BSplineCurve.hxx>
 #include <DrawTrSurf_BSplineCurve2d.hxx>
 #include <TColgp_HArray1OfPnt.hxx>

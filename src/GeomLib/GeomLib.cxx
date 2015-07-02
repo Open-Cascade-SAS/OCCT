@@ -1438,8 +1438,9 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     GeomAbs_Shape UCont = GeomAbs_C1, VCont = GeomAbs_C1;
     Standard_Integer degU = 14, degV = 14;
     Standard_Integer nmax = 16;
-    Standard_Integer thePrec = 1;  
-    GeomConvert_ApproxSurface theApprox(Surface,Tol,UCont,VCont,degU,degV,nmax,thePrec);
+    Standard_Integer thePrec = 1; 
+    const Handle(Geom_Surface)& aSurf = Surface; // to resolve ambiguity
+    GeomConvert_ApproxSurface theApprox(aSurf,Tol,UCont,VCont,degU,degV,nmax,thePrec);
     if (theApprox.HasResult())
       BS = theApprox.Surface();
     else

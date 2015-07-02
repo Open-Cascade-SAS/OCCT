@@ -618,8 +618,8 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface& S,
 //function : ChFi3d_InterPlaneEdge
 //purpose  : 
 //=======================================================================
-Standard_Boolean  ChFi3d_InterPlaneEdge (Handle(Adaptor3d_HSurface)& Plan,
-  Handle(Adaptor3d_HCurve)&  C,
+Standard_Boolean  ChFi3d_InterPlaneEdge (const Handle(Adaptor3d_HSurface)& Plan,
+  const Handle(Adaptor3d_HCurve)&  C,
   Standard_Real& W,
   const Standard_Boolean Sens,
   const Standard_Real tolc)
@@ -1320,8 +1320,8 @@ void ChFi3d_ComputePCurv(const Handle(Geom_Curve)&   C3d,
   Standard_Real&              tolreached,
   const Standard_Boolean      reverse)
 {
-  /*szv:static*/ Handle(GeomAdaptor_HSurface) hs(new GeomAdaptor_HSurface(S));
-  /*szv:static*/ Handle(GeomAdaptor_HCurve) hc(new GeomAdaptor_HCurve(C3d,Pardeb,Parfin));
+  Handle(Adaptor3d_HSurface) hs(new GeomAdaptor_HSurface(S));
+  Handle(Adaptor3d_HCurve) hc(new GeomAdaptor_HCurve(C3d,Pardeb,Parfin));
   ChFi3d_ComputePCurv(hc,UV1,UV2,Pcurv,hs,Pardeb,Parfin,tol3d,tolreached,reverse);
 }
 //=======================================================================
@@ -1433,7 +1433,7 @@ Handle(GeomFill_Boundary) ChFi3d_mkbound(const Handle(Geom_Surface)& s,
   const Standard_Real ta,
   const Standard_Boolean isfreeboundary)
 {
-  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface(s);
+  Handle(Adaptor3d_HSurface) HS = new GeomAdaptor_HSurface(s);
   return ChFi3d_mkbound(HS,p1,p2,t3d,ta,isfreeboundary);
 }
 //=======================================================================
@@ -1636,7 +1636,8 @@ void  ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
     if(IFlag != 1) {
       hs->ChangeSurface().Load(Surf);
       hc->ChangeCurve().Load(C3d,Pardeb,Parfin);
-      ChFi3d_ComputePCurv(hc,UV1,UV2,Pcurv,hs,Pardeb,Parfin,tol3d,tolreached,Standard_False);
+      const Handle(Adaptor3d_HCurve)& aHCurve = hc; // to avoid ambiguity
+      ChFi3d_ComputePCurv(aHCurve,UV1,UV2,Pcurv,hs,Pardeb,Parfin,tol3d,tolreached,Standard_False);
     }
     else{
       Pcurv = new Geom2d_Line(UV1,gp_Vec2d(UV1,UV2));
@@ -1665,7 +1666,8 @@ void  ChFi3d_ComputeArete(const ChFiDS_CommonPoint&   P1,
     if(IFlag != 1) {
       hs->ChangeSurface().Load(Surf);
       hc->ChangeCurve().Load(C3d,Pardeb,Parfin);
-      ChFi3d_ComputePCurv(hc,UV1,UV2,Pcurv,hs,Pardeb,Parfin,tol3d,tolreached,Standard_False);
+      const Handle(Adaptor3d_HCurve)& aHCurve = hc; // to avoid ambiguity
+      ChFi3d_ComputePCurv(aHCurve,UV1,UV2,Pcurv,hs,Pardeb,Parfin,tol3d,tolreached,Standard_False);
     }
     else{
       Pcurv = new Geom2d_Line(UV1,gp_Vec2d(UV1,UV2));
@@ -3011,8 +3013,8 @@ static void CurveCleaner(Handle(Geom_BSplineCurve)& BS,
 //           <wholeCurv> means that the resulting curve is restricted by
 //           boundaries of input surfaces (eap 30 May occ354)
 //=======================================================================
-Standard_Boolean ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
-  Handle(Adaptor3d_HSurface)&   S2,
+Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_HSurface)&   S1,
+  const Handle(Adaptor3d_HSurface)&   S2,
   const TColStd_Array1OfReal& Pardeb,
   const TColStd_Array1OfReal& Parfin,
   Handle(Geom_Curve)&         C3d,
@@ -3488,10 +3490,10 @@ Standard_Boolean ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
 //
 //=======================================================================
 
-Standard_Boolean ChFi3d_IntCS(Handle(Adaptor3d_HSurface)& S,
-  Handle(Adaptor3d_HCurve)& C,
-  gp_Pnt2d& p2dS,
-  Standard_Real& wc)
+Standard_Boolean ChFi3d_IntCS(const Handle(Adaptor3d_HSurface)& S,
+                              const Handle(Adaptor3d_HCurve)& C,
+                              gp_Pnt2d& p2dS,
+                              Standard_Real& wc)
 {
   IntCurveSurface_HInter Intersection;
 

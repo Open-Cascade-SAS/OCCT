@@ -419,7 +419,8 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
       }
       //
       aCT2D=new Geom2d_TrimmedCurve(aC2D, aU1, aU2);
-      pHatcher->AddElement(aCT2D, aOrE);
+      Geom2dAdaptor_Curve aGAC (aCT2D);
+      pHatcher->AddElement(aGAC, aOrE);
     }// for (; aExp.More() ; aExp.Next()) {
     //
     anAdr=(Standard_Address)pHatcher;

@@ -74,7 +74,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
     if(C3D->IsKind(STANDARD_TYPE(Geom_Conic))) 
       MaxDeg = Min(MaxDeg,6);
  
-    Handle(Geom_TrimmedCurve) tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection agains parabols ets
+    Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection agains parabols ets
     try {
       OCC_CATCH_SIGNALS
       GeomConvert_ApproxCurve approx (tcurve, Tol3d, Continuity, MaxSegments, MaxDeg);
@@ -109,7 +109,7 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(G
 {
   Handle(Geom2d_BSplineCurve) aBSpline2d;
   if(C2D->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
-    Handle(Geom2d_TrimmedCurve) tcurve = new Geom2d_TrimmedCurve(C2D,First,Last); //protection agains parabols ets
+    Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(C2D,First,Last); //protection agains parabols ets
     Geom2dConvert_ApproxCurve approx (tcurve, Tol2d, Continuity, MaxSegments, MaxDegree);
     if ( approx.HasResult() )
       aBSpline2d = Handle(Geom2d_BSplineCurve)::DownCast(approx.Curve());
@@ -222,7 +222,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
     }
   }
     
-  Handle(Geom_RectangularTrimmedSurface) aSurface = new Geom_RectangularTrimmedSurface(S,UF,UL,VF,VL);
+  Handle(Geom_Surface) aSurface = new Geom_RectangularTrimmedSurface(S,UF,UL,VF,VL);
   Handle(Geom_BSplineSurface) errSpl;
   for(Standard_Integer cnt = (Continuity > GeomAbs_C3 ? GeomAbs_C3: Continuity); cnt >= 0 ; ) {
     try {

@@ -329,8 +329,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             }
             if (cr->IsCurveOnClosedSurface()) {
               GHPC->ChangeCurve2d().Load(cr->PCurve2(),f,l); // same bounds
-              ACS.Load(GAHS); // sans doute inutile
-              ACS.Load(GHPC); // meme remarque...
+              ACS.Load(GHPC, GAHS); // sans doute inutile
               ok = Validate(myHCurve->Curve(),ACS,Tol,SameParameter);
               if (!ok) {
                 BRepCheck::Add(lst,BRepCheck_InvalidCurveOnClosedSurface);

@@ -35,7 +35,7 @@
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <GC_MakeArcOfCircle.hxx>
-#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Law_Linear.hxx>
 #include <TopoDS.hxx>

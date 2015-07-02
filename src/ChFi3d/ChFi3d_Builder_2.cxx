@@ -587,12 +587,12 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
 		const Handle(BRepAdaptor_HSurface)& HS3,
 		const gp_Pnt2d&                     pp1,
 		const gp_Pnt2d&                     pp3,
-		Handle(Adaptor3d_TopolTool)&          It1,
+		const Handle(Adaptor3d_TopolTool)&          It1,
 		const Handle(BRepAdaptor_HSurface)& HS2,
 		const Handle(BRepAdaptor_HSurface)& HS4,
 		const gp_Pnt2d&                     pp2,
 		const gp_Pnt2d&                     pp4,
-		Handle(Adaptor3d_TopolTool)&          It2,
+		const Handle(Adaptor3d_TopolTool)&          It2,
 		const Standard_Real                 MaxStep,
 		const Standard_Real                 Fleche,
 		const Standard_Real                 /*TolGuide*/,
@@ -616,8 +616,8 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
   HSon1 = HS1;
   HSon2 = HS2;
   // Definition of the domain of path It1, It2
-  It1->Initialize(HS1);
-  It2->Initialize(HS2);
+  It1->Initialize((const Handle(Adaptor3d_HSurface)&)HSon1);
+  It2->Initialize((const Handle(Adaptor3d_HSurface)&)HSon2);
 
 
   TopAbs_Orientation Or1 = HS1->ChangeSurface().Face().Orientation();
@@ -659,14 +659,14 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
    Standard_Boolean reprise = Standard_False;
    if (! HS3.IsNull()) {
      HSon1 = HS3;
-     It1->Initialize(HS3); 
+     It1->Initialize((const Handle(Adaptor3d_HSurface)&)HS3); 
      Or1 = HS3->ChangeSurface().Face().Orientation();
      Soldep(1) = pp3.X(); Soldep(2) = pp3.Y();
      reprise = Standard_True;
    }
    else if (! HS4.IsNull()) {
      HSon2 = HS4;
-     It2->Initialize(HS4); 
+     It2->Initialize((const Handle(Adaptor3d_HSurface)&)HS4); 
      Or2 = HS4->ChangeSurface().Face().Orientation();
      Soldep(3) = pp4.X(); Soldep(4) = pp4.Y();
      reprise = Standard_True;
@@ -842,7 +842,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     f1forward.Orientation(TopAbs_FORWARD);
     f2forward.Orientation(TopAbs_FORWARD);
     PC = BRep_Tool::CurveOnSurface(cured,f1forward,Uf,Ul);
-    I1->Initialize(HS1);
+    I1->Initialize((const Handle(Adaptor3d_HSurface)&)HS1);
     PC->D1(woned, P1, derive);
     // There are ponts on the border, and internal points are found
     if (derive.Magnitude() > Precision::PConfusion()) {
@@ -866,7 +866,8 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     if(f1.IsSame(f2)) cured.Orientation(TopAbs_REVERSED);
     PC = BRep_Tool::CurveOnSurface(cured,f2forward,Uf,Ul);
     P2 = PC->Value(woned);
-    I2->Initialize(HS2);
+    const Handle(Adaptor3d_HSurface)& HSon2 = HS2; // to avoid ambiguity
+    I2->Initialize(HSon2);
 
     SolDep(1) = P1.X(); SolDep(2) = P1.Y();
     SolDep(3) = P2.X(); SolDep(4) = P2.Y();
@@ -908,8 +909,10 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     P1 = PC->Value(woned);
     PC = BRep_Tool::CurveOnSurface(cured,f2forward,Uf,Ul);
     P2 = PC->Value(woned);
-    I1->Initialize(HS1);
-    I2->Initialize(HS2);
+    const Handle(Adaptor3d_HSurface)& HSon1 = HS1; // to avoid ambiguity
+    const Handle(Adaptor3d_HSurface)& HSon2 = HS2; // to avoid ambiguity
+    I1->Initialize(HSon1);
+    I2->Initialize(HSon2);
     SolDep(1) = P1.X(); SolDep(2) = P1.Y();
     SolDep(3) = P2.X(); SolDep(4) = P2.Y();
     const BRepAdaptor_Curve& Ced = Spine->CurrentElementarySpine(iedge);
@@ -947,8 +950,10 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
 				   Stripe->OrientationOnFace1(),
 				   Stripe->OrientationOnFace2(),
 				   RC);
-	  I1->Initialize(HS1);
-	  I2->Initialize(HS2);
+          const Handle(Adaptor3d_HSurface)& HSon1 = HS1; // to avoid ambiguity
+          const Handle(Adaptor3d_HSurface)& HSon2 = HS2; // to avoid ambiguity
+	  I1->Initialize(HSon1);
+	  I2->Initialize(HSon2);
 	  if(PerformFirstSection(Spine,HGuide,Choix,HS1,HS2,
 				 I1,I2,w,SolDep,Pos1,Pos2)){
 	    P1.SetCoord(SolDep(1),SolDep(2));
@@ -2047,9 +2052,11 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       else Standard_Failure::Raise("PerformSetOfSurfOnElSpine : Chaining is impossible.");
     }
     
-    // Definition of the domain of path It1, It2
-    It1->Initialize(HS1);
-    It2->Initialize(HS2);
+    // Definition of the domain of patch It1, It2
+    const Handle(Adaptor3d_HSurface)& HSon1 = HS1; // to avoid ambiguity
+    const Handle(Adaptor3d_HSurface)& HSon2 = HS2; // to avoid ambiguity
+    It1->Initialize(HSon1);
+    It2->Initialize(HSon2);
     
     // Calculate one (several if singularity) SurfaData
     SD = new ChFiDS_SurfData();
@@ -2151,11 +2158,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       SD->ChangeIndexOfS2(DStr.AddShape(HS2->ChangeSurface().Face()));
       decroch1 = 0;
     }
-    else{            
+    else{ 
+      const Handle(Adaptor3d_TopolTool)& aTT1 = It1; // to avoid ambiguity
+      const Handle(Adaptor3d_TopolTool)& aTT2 = It2; // to avoid ambiguity
       CallPerformSurf(Stripe, Simul, SeqSD, SD,
 		      HGuide,Spine,
-		      HS1, HS3, pp1, pp3, It1,
-		      HS2, HS4, pp2, pp4, It2, 
+		      HS1, HS3, pp1, pp3, aTT1,
+		      HS2, HS4, pp2, pp4, aTT2, 
 		      MaxStep,locfleche,tolesp,
 		      First,Last,Inside,Inside,forward,
 		      RecS1,RecS2,Soldep,intf,intl, 
@@ -2334,8 +2343,10 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
       Or1   = HS1->ChangeSurface().Face().Orientation();
       Or2   = HS2->ChangeSurface().Face().Orientation();
       ChFi3d::NextSide(Or1,Or2,RefOr1,RefOr2,RefChoix);      
-      It1->Initialize(HS1);
-      It2->Initialize(HS2);
+      const Handle(Adaptor3d_HSurface)& HSon1 = HS1; // to avoid ambiguity
+      const Handle(Adaptor3d_HSurface)& HSon2 = HS2; // to avoid ambiguity
+      It1->Initialize(HSon1);
+      It2->Initialize(HSon2);
       
       Handle(ChFiDS_SurfData)   SD = new ChFiDS_SurfData();
       ChFiDS_SequenceOfSurfData LSD;

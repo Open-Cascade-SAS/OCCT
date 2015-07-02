@@ -142,7 +142,7 @@ static Standard_Integer  BUC60814(Draw_Interpretor& di, Standard_Integer argc, c
   }
   
   // TRIHEDRON
-  Handle(AIS_Trihedron) aTrihedron;
+  Handle(AIS_InteractiveObject) aTrihedron;
   Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
   aTrihedron=new AIS_Trihedron(aTrihedronAxis);
   myAISContext->Display(aTrihedron);
@@ -153,7 +153,7 @@ static Standard_Integer  BUC60814(Draw_Interpretor& di, Standard_Integer argc, c
   gp_Ax2 aAx2(P,V);
   
   Handle(Geom_Circle) ahCircle=new Geom_Circle(aAx2,20);
-  Handle(AIS_Circle)   aCircle=new AIS_Circle(ahCircle);
+  Handle(AIS_InteractiveObject)   aCircle=new AIS_Circle(ahCircle);
   myAISContext->Display(aCircle);
     
   myAISContext->SelectionColor(Quantity_NOC_BLUE1);

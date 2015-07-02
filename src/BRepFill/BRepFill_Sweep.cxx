@@ -350,7 +350,8 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
 	}
     }
 
-  Approx_SameParameter sp( HC3d, Pcurv, S, tol3d );
+  const Handle(Adaptor3d_HCurve)& aHCurve = HC3d; // to avoid ambiguity
+  Approx_SameParameter sp (aHCurve, Pcurv, S, tol3d );
   if(sp.IsDone() && !sp.IsSameParameter()) Pcurv = sp.Curve2d();
   else if(!sp.IsDone() && !sp.IsSameParameter()){
 #ifdef OCCT_DEBUG

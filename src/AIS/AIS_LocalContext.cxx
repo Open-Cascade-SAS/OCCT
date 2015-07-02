@@ -308,7 +308,8 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
   }
 
   // Deactivate selectable entities of interactive object
-  if (mySM->Contains (anInteractive))
+  const Handle(SelectMgr_SelectableObject)& anObj = anInteractive; // to avoid ambiguity
+  if (mySM->Contains (anObj))
   {
     TColStd_ListIteratorOfListOfInteger aModeIter (STAT->SelectionModes());
     for (; aModeIter.More(); aModeIter.Next())
@@ -475,9 +476,10 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
   }
 
   // Remove the interactive object from selection manager
-  if (mySM->Contains (aSelectable))
+  const Handle(SelectMgr_SelectableObject)& anObj = aSelectable; // to avoid ambiguity
+  if (mySM->Contains (anObj))
   {
-    mySM->Remove (aSelectable);
+    mySM->Remove (anObj);
   }
   ClearOutdatedSelection (aSelectable, Standard_True);
 

@@ -47,7 +47,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
 #include <DrawTrSurf.hxx>
-
 #include <Geom_Plane.hxx>
 
 #include <Draw_Segment3D.hxx>
@@ -440,7 +439,8 @@ static Standard_Integer findplane(Draw_Interpretor& di,Standard_Integer n,const 
   if (a_plane_finder.Found()) {
     //cout << " a plane is found "   ;
     di << " a plane is found \n";
-    DrawTrSurf::Set(a[2],a_plane_finder.Plane()) ;
+    const Handle(Geom_Geometry)& aSurf = a_plane_finder.Plane(); // to avoid ambiguity
+    DrawTrSurf::Set(a[2],aSurf) ;
   }
   return 0 ;
 }

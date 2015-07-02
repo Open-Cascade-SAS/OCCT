@@ -155,6 +155,7 @@ is
     --           pointer is 2*N-1)
     --           If <val> is Null, "0" will be sent
     --           If <negative> is True, "Pointer" is sent as negative
+	---C++: alias "template <class T> void Send (const Handle(T)& val, Standard_Boolean negative = Standard_False, typename std::enable_if<std::is_base_of<IGESData_IGESEntity, T>::value>::type * = 0) { Send ((const Handle(IGESData_IGESEntity)&)val, negative); }"
 
     SendString (me : in out; val : HAsciiString from TCollection);
     ---Purpose : sends a parameter under its exact form given as a string

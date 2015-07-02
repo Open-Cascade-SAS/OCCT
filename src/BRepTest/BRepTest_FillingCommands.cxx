@@ -164,7 +164,7 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
     Adaptor3d_CurveOnSurface ConS(C,S);
     Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
     Fronts->SetValue(i,HConS);
-    Handle(BRepFill_CurveConstraint) Cont
+    Handle(GeomPlate_CurveConstraint) Cont
       = new BRepFill_CurveConstraint(HConS,
 				     Tang->Value(i),
 				     NbPtsCur->Value(i));
@@ -251,7 +251,8 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
     if ((Conti==0)||(Conti==-1))
       { Handle(BRepAdaptor_HCurve) C = new BRepAdaptor_HCurve();
 	C->ChangeCurve().Initialize(E);
-	Handle(BRepFill_CurveConstraint) Cont= new BRepFill_CurveConstraint(C,Conti);
+        const Handle(Adaptor3d_HCurve)& aC = C; // to avoid ambiguity
+	Handle(GeomPlate_CurveConstraint) Cont= new BRepFill_CurveConstraint(aC,Conti);
 	Henri.Add(Cont);
      }
     else 
@@ -267,7 +268,7 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
 	C->ChangeCurve2d().Initialize(E,F);
 	Adaptor3d_CurveOnSurface ConS(C,S);
 	Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
-	Handle(BRepFill_CurveConstraint) Cont= new BRepFill_CurveConstraint(HConS,Conti);
+	Handle(GeomPlate_CurveConstraint) Cont= new BRepFill_CurveConstraint(HConS,Conti);
 	Henri.Add(Cont);
       }
   }
@@ -363,7 +364,7 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
     Adaptor3d_CurveOnSurface ConS(C,S);
     Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
     Fronts->SetValue(i,HConS);
-    Handle(BRepFill_CurveConstraint) Cont
+    Handle(GeomPlate_CurveConstraint) Cont
       = new BRepFill_CurveConstraint(HConS,
 				     Tang->Value(i),
 				     NbPtsCur->Value(i));
