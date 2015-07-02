@@ -1,4 +1,3 @@
-EXTERNLIB
 OSD.cxx
 OSD.hxx
 OSD_Chronometer.cxx

@@ -53,4 +53,3 @@ BRepMesh_WireChecker.cxx
 BRepMesh_WireChecker.hxx
 BRepMesh_WireInterferenceChecker.cxx
 BRepMesh_WireInterferenceChecker.hxx
-EXTERNLIB

@@ -34,7 +34,7 @@
 //=============================================================================
 GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const gp_Elips& E)
 {
-#include <GeomToStep_MakeEllipse_gen.pxx>
+#include "GeomToStep_MakeEllipse_gen.pxx"
 }
 
 
@@ -47,7 +47,7 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom_Ellipse)& Cer)
 {
   gp_Elips E;
   E = Cer->Elips();
-#include <GeomToStep_MakeEllipse_gen.pxx>
+#include "GeomToStep_MakeEllipse_gen.pxx"
 }
 
 

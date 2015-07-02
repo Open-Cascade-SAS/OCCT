@@ -1,9 +1,0 @@
-CSF_TclLibs
-CSF_TclTkLibs
-CSF_gdi32
-CSF_advapi32
-CSF_user32
-CSF_TBB
-CSF_objc
-CSF_Appkit
-CSF_IOKit

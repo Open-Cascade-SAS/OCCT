@@ -14,7 +14,7 @@
 
 #include <Graphic3d_CStructure.hxx>
 
-#include <Graphic3d_Structure.pxx>
+#include "Graphic3d_Structure.pxx"
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 

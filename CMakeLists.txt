@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.10 FATAL_ERROR)
+cmake_minimum_required (VERSION 2.8.12 FATAL_ERROR)
 
 set (CMAKE_SUPPRESS_REGENERATION TRUE)
 
@@ -28,16 +28,48 @@ project (OCCT)
 # Solution folder property
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Generate documentation
+# Overview and User Guides
+set (DOC_GENERATE_OVERVIEW OFF CACHE BOOL "Generate Overview and User Guides")
+if (NOT DOC_OVERVIEW_OUTPUT_FORMAT)
+  set (DOC_OVERVIEW_OUTPUT_FORMAT "html" CACHE STRING "Output format of Overview and User Guides" FORCE)
+  SET_PROPERTY (CACHE DOC_OVERVIEW_OUTPUT_FORMAT PROPERTY STRINGS html chm pdf)
+endif()
+# class Reference Manual
+set (DOC_GENERATE_REFMAN OFF CACHE BOOL "Generate class Reference Manual")
+
+# Tests
+set (TESTS_RUN OFF CACHE BOOL "Run tests or not")
+set (TESTS_INSTALL OFF CACHE BOOL "Copy tests to folder install")
+set (TESTS_SHAPES_DIR "" CACHE PATH "Directory that will contain shapes for tests" )
+
+# Find Bison and Flex executables to rebuild *.yacc and *.lex files if it is necessary (BUILD_BISON_FLEX_FILES is ON)
+set (BUILD_BISON_FLEX_FILES OFF CACHE BOOL "Build *.yacc/*.lex files")
+if (${BUILD_BISON_FLEX_FILES})
+  foreach (aTool BISON FLEX)
+    list (APPEND CMAKE_PROGRAM_PATH ${BUILD_BISON_FLEX_DIR})
+    find_package (${aTool})
+    if (NOT ${${aTool}_FOUND})
+      message ("Warning : set BUILD_BISON_FLEX_DIR directory")
+      set (BUILD_BISON_FLEX_DIR "" CACHE PATH "Filepath to BISON and FLEX executables")
+      set (BUILD_BISON_FLEX_FILES OFF)
+    endif()
+  endforeach()
+endif()
+
+# group include files in folder install
+set (INSTALL_GROUP_INC ON CACHE BOOL "In include files grouped in install folder")
+
+# copy samples to install directory
+set (INSTALL_SAMPLES OFF CACHE BOOL "Copy samples to install directory")
+
 set (CMAKE_BUILD_TYPE ${BUILD_CONFIGURATION} CACHE INTERNAL "Build type of OCCT" FORCE )
 
 # install dir of the built project
 set (INSTALL_DIR "" CACHE PATH "Directory that will contain install files of OCCT" )
 set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
 
-# whether install test bundle or not
-set (INSTALL_TESTS OFF CACHE BOOL "Is tests copy to install directory")
-
-set (BUILD_PATCH_DIR "" CACHE PATH "directory with OCCT patch")
+set (BUILD_PATCH_DIR "" CACHE PATH "directory with occt patch")
 
 # the list of being built toolkits
 set (BUILD_TOOLKITS "" CACHE STRING "Toolkits are also included in OCCT")
@@ -58,34 +90,68 @@ set (USE_VTK OFF CACHE BOOL "Is VTK used or not")
 if (NOT DEFINED ANDROID)
   set (USE_GL2PS OFF CACHE BOOL "Is gl2ps used or not")
   set (USE_TBB OFF CACHE BOOL "Is tbb used or not")
-  set (USE_OPENCL OFF CACHE BOOL "Is OpenCL used or not")
+  #set (USE_OPENCL OFF CACHE BOOL "Is OpenCL used or not")
 endif()
 
 # macro: include patched file if it exists
 macro (OCCT_INCLUDE_CMAKE_FILE BEING_INCLUDED_FILE)
   if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake")
-    include(${BUILD_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake)
+    include (${BUILD_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake)
   else()
-    include(${BEING_INCLUDED_FILE}.cmake)
+    include (${BEING_INCLUDED_FILE}.cmake)
   endif()
 endmacro()
 
 # include occt macros
-OCCT_INCLUDE_CMAKE_FILE ("adm/templates/occt_macros")
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 # BUILD_POSTFIX variable is used by all toolkit cmakelists.txt projects
 OCCT_MAKE_BUILD_POSTFIX()
 
 # include the patched or original list of modules
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_modules")
+# list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
+# list <OCCT_MODULES> will contain all modules
+OCCT_MODULES_AND_TOOLKITS (OCCT_MODULES)
 
-# include the list of being used toolkits. USED_TOOLKITS variable
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_toolkits")
+foreach (MODULE ${OCCT_MODULES})
+  set (BUILD_${MODULE} ON CACHE BOOL "include ${MODULE}")
+endforeach()
+
+if (NOT USE_VTK)
+  list (REMOVE_ITEM Visualization_TOOLKITS TKIVtk)
+  list (REMOVE_ITEM Draw_TOOLKITS TKIVtkDraw)
+endif()
+
+# accumulate used toolkits (first level) in USED_TOOLKITS variable
+list (APPEND USED_TOOLKITS ${BUILD_TOOLKITS})
+
+foreach (MODULE ${OCCT_MODULES})
+  if (BUILD_${MODULE})
+    list (APPEND USED_TOOLKITS ${${MODULE}_TOOLKITS})
+  endif()
+endforeach()
+
+# DRAWEXE excluded when library build is static
+if (NOT BUILD_SHARED_LIBS)
+  list (REMOVE_ITEM USED_TOOLKITS DRAWEXE)
+  message (STATUS "Info: DRAWEXE is not included due to ${BUILD_LIBRARY_TYPE} build library type")
+endif()
+
+# accumulate all used toolkits
+list (REMOVE_DUPLICATES USED_TOOLKITS)
+set (RAW_USED_TOOLKIT)
+foreach(USED_TOOLKIT ${USED_TOOLKITS})
+  OCCT_TOOLKIT_FULL_DEP (${USED_TOOLKIT} TOOLKIT_FULL_DEPS)
+  list (APPEND RAW_USED_TOOLKIT ${USED_TOOLKIT} ${TOOLKIT_FULL_DEPS})
+endforeach()
+
+list (REMOVE_DUPLICATES RAW_USED_TOOLKIT)
+set (USED_TOOLKITS ${RAW_USED_TOOLKIT})
 
 # include the patched or original list of definitions and flags
-OCCT_INCLUDE_CMAKE_FILE ("adm/templates/occt_defs_flags")
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_defs_flags")
 
-OCCT_INCLUDE_CMAKE_FILE ("adm/templates/3rdparty_macro")
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
 
 set (3RDPARTY_DIR_LABEL "The directory containing required 3rdparty products")
 if (NOT DEFINED 3RDPARTY_DIR)
@@ -108,7 +174,7 @@ OCCT_IS_PRODUCT_REQUIRED(CSF_TclLibs USE_TCL)
 
 if ("${USE_TCL}" STREQUAL ON)
   message (STATUS "Info: tcl is used by OCCT")
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/tcl")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tcl")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TCL")
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TK")
@@ -119,7 +185,7 @@ OCCT_IS_PRODUCT_REQUIRED(CSF_FREETYPE USE_FREETYPE)
 
 if ("${USE_FREETYPE}" STREQUAL ON)
   message (STATUS "Info: freetype is used by OCCT")
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freetype")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freetype")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREETYPE")
   OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2")
@@ -129,20 +195,20 @@ endif()
 # VTK
 if (USE_VTK)
   add_definitions (-DHAVE_VTK)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/vtk")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vtk")
 endif()
 
 # GLX
 if (USE_GLX)
   add_definitions (-DMACOSX_USE_GLX)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/glx")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/glx")
 endif()
 
 # FREEIMAGE
 if (USE_FREEIMAGE)
   add_definitions (-DHAVE_FREEIMAGE)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freeimage")
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freeimageplus")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freeimage")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freeimageplus")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGE")
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGEPLUS")
@@ -153,27 +219,27 @@ endif()
 # GL2PS
 if (USE_GL2PS)
   add_definitions (-DHAVE_GL2PS)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/gl2ps")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/gl2ps")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GL2PS")
   OCCT_CHECK_AND_UNSET ("INSTALL_GL2PS")
 endif()
 
 # OPENCL
-if (USE_OPENCL)
-  add_definitions (-DHAVE_OPENCL)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/opencl")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENCL")
-  OCCT_CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_HEADER")
-  OCCT_CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_LIB")
-  OCCT_CHECK_AND_UNSET ("INSTALL_OPENCL")
-endif()
+#if (USE_OPENCL)
+#  add_definitions (-DHAVE_OPENCL)
+#  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/opencl")
+#else()
+#  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENCL")
+#  OCCT_CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_HEADER")
+#  OCCT_CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_LIB")
+#  OCCT_CHECK_AND_UNSET ("INSTALL_OPENCL")
+#endif()
 
 # TBB
 if (USE_TBB)
   add_definitions (-DHAVE_TBB)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/tbb")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tbb")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBBMALLOC")
@@ -201,21 +267,43 @@ if (3RDPARTY_LIBRARY_DIRS)
   link_directories (${3RDPARTY_LIBRARY_DIRS})
 endif()
 
+# Get all used variables: OS_WITH_BIT, COMPILER, BUILD_POSTFIX
 OCCT_MAKE_BUILD_POSTFIX()
+OCCT_MAKE_OS_WITH_BITNESS()
+OCCT_MAKE_COMPILER_SHORT_NAME()
 
 # build directories
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib${BUILD_POSTFIX})
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib${BUILD_POSTFIX})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/bin${BUILD_POSTFIX})
+string (TOUPPER "${BUILD_CONFIGURATION}" TAIL_OF_OUTPUT_VARNAME)
+
+set (OUTPUT_LIBRARY_DIR ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX})
+set (OUTPUT_BINARY_DIR ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX})
+
+set ("CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${TAIL_OF_OUTPUT_VARNAME}" "${OUTPUT_LIBRARY_DIR}")
+set ("CMAKE_RUNTIME_OUTPUT_DIRECTORY_${TAIL_OF_OUTPUT_VARNAME}" "${OUTPUT_BINARY_DIR}")
+set ("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${TAIL_OF_OUTPUT_VARNAME}" "${OUTPUT_LIBRARY_DIR}")
+
+if (WIN32)
+  set ("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${TAIL_OF_OUTPUT_VARNAME}" "${OUTPUT_BINARY_DIR}")
+endif()
 
 if ("${INSTALL_DIR}" STREQUAL "")
   message (FATAL_ERROR "INSTALL_DIR variable is empty. It's required to define installation directory")
 else()
+
   # inc,data,tests DIRECTORY
-  install (DIRECTORY "${CMAKE_SOURCE_DIR}/inc"          DESTINATION  "${INSTALL_DIR}")
+  file (GLOB DIRS RELATIVE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/*)
+  foreach(CDIR ${DIRS})
+    file(GLOB HFiles "${CMAKE_SOURCE_DIR}/src/${CDIR}/*.[hgl]xx" "${CMAKE_SOURCE_DIR}/src/${CDIR}/*.h")
+    set (GROUP_CDIR "")
+    if (INSTALL_GROUP_INC)
+      set (GROUP_CDIR ${CDIR})
+    endif()
+    install(FILES ${HFiles} DESTINATION "${INSTALL_DIR}/inc/${GROUP_CDIR}")
+  endforeach(CDIR)
+
   install (DIRECTORY "${CMAKE_SOURCE_DIR}/data"         DESTINATION  "${INSTALL_DIR}")
   install (DIRECTORY "${CMAKE_SOURCE_DIR}/samples/tcl"  DESTINATION  "${INSTALL_DIR}/samples")
-  if (INSTALL_TESTS)
+  if (TESTS_INSTALL)
     install (DIRECTORY "${CMAKE_SOURCE_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
   endif()
 
@@ -223,15 +311,25 @@ else()
   if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
     if (EXISTS "${BUILD_PATCH_DIR}/inc")
       install (DIRECTORY "${BUILD_PATCH_DIR}/inc" DESTINATION  "${INSTALL_DIR}" )
+    else()
+      file (GLOB DIRS RELATIVE ${BUILD_PATCH_DIR}/src ${BUILD_PATCH_DIR}/src/*)
+      foreach(CDIR ${DIRS})
+        file(GLOB HFiles "${BUILD_PATCH_DIR}/src/${CDIR}/*.[hgl]xx" "${BUILD_PATCH_DIR}/src/${CDIR}/*.h")
+        if (INSTALL_GROUP_INC)
+          install(FILES ${HFiles} DESTINATION "${INSTALL_DIR}/inc/${CDIR}")
+        else()
+          install(FILES ${HFiles} DESTINATION "${INSTALL_DIR}/inc")
+        endif()
+      endforeach(CDIR)
     endif()
 
     if (EXISTS "${BUILD_PATCH_DIR}/data")
       install (DIRECTORY "${BUILD_PATCH_DIR}/data"  DESTINATION  "${INSTALL_DIR}" )
     endif()
 
-    if (INSTALL_TESTS)
+    if (TESTS_INSTALL)
       if (EXISTS "${BUILD_PATCH_DIR}/tests")
-        install (DIRECTORY "${BUILD_PATCH_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
+        install (DIRECTORY "${BUILD_PATCH_DIR}/tests" DESTINATION "${INSTALL_DIR}" )
       endif()
     endif()
   endif()
@@ -242,29 +340,48 @@ else()
     set (SCRIPT_EXT sh)
   endif()
 
-  # DRAW.BAT or DRAW.SH
-  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
-    install(FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
-            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
-  ELSE()
-    install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
-            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
-  ENDIF()
-
-  # set compiler short name
-  OCCT_MAKE_COMPILER_SHORT_NAME()
-
-  OCCT_MAKE_COMPILER_BITNESS()
-
-  SET(SUB_CUSTOM "custom_${COMPILER}_${COMPILER_BITNESS}_${BUILD_POSTFIX}.${SCRIPT_EXT}")
-
-  if (WIN32)
-    SET (ADDITIONAL_CUSTOM_CONTENT "\nif exist \"%~dp0${SUB_CUSTOM}\" (\n  call \"%~dp0${SUB_CUSTOM}\" %1 %2 %3 \n)")
-  else()
-    SET (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
+  # Creation of "START_TESTS" project
+  if (TESTS_RUN AND TESTS_INSTALL)
+    #set(BUILD_TESTING ON)
+    #enable_testing ()
+    #add_test(NAME RUN_TESTS COMMAND ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults)
+    add_custom_target(START_TESTS ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults DEPENDS INSTALL)
   endif()
 
-  # change custom.bat/sh
+  # Creation of "GenerateDocumentation" project
+  if (DOC_GENERATE_OVERVIEW OR DOC_GENERATE_REFMAN)
+    OCCT_INCLUDE_CMAKE_FILE("adm/cmake/occt_gendoc")
+    if(DOC_GENERATE_OVERVIEW)
+      gendoc(-overview -${DOC_OVERVIEW_OUTPUT_FORMAT})
+    endif()
+    if(DOC_GENERATE_REFMAN)
+      gendoc(-refman -html)
+    endif()
+  endif()
+
+
+  # DRAW.BAT or DRAW.SH
+  if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
+    install(FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  else()
+    install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  endif()
+  OCCT_COPY_FILE_OR_DIR ("adm/templates/draw.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
+
+  set (SUB_CUSTOM "custom_${COMPILER}_${COMPILER_BITNESS}.${SCRIPT_EXT}")
+  if ("${BUILD_CONFIGURATION}" STREQUAL "Debug")
+    set (SUB_CUSTOM "custom_${COMPILER}_${COMPILER_BITNESS}_${BUILD_POSTFIX}.${SCRIPT_EXT}")
+  endif()
+
+  if (WIN32)
+    set (ADDITIONAL_CUSTOM_CONTENT "\nif exist \"%~dp0${SUB_CUSTOM}\" (\n  call \"%~dp0${SUB_CUSTOM}\" %1 %2 %3 \n)")
+  else()
+    set (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
+  endif()
+
+   # change custom.bat/sh
   if (EXISTS "${INSTALL_DIR}/custom.${SCRIPT_EXT}")
     file (READ "${INSTALL_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
 
@@ -275,68 +392,49 @@ else()
     OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "${INSTALL_DIR}")
   endif()
 
+
   # write current custom.bat/sh
   OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.in" "${SUB_CUSTOM}" "${INSTALL_DIR}")
 
   if (BUILD_MFC_SAMPLES)
     OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR}")
+    OCCT_COPY_FILE_OR_DIR ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
   endif()
 
-  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}" "${INSTALL_DIR}")
+  OCCT_CONFIGURE ("adm/templates/env.build.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
+  OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.install.${SCRIPT_EXT}")
+  install(FILES "${CMAKE_BINARY_DIR}/env.install.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" RENAME "env.${SCRIPT_EXT}")
 endif()
 
 # RESOURCES
-OCCT_INSTALL_FILE_OR_DIR ("src/DrawResources"          "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/StdResource"            "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/SHMessage"              "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/Textures"               "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/Shaders"                "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/XSMessage"              "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/XSTEPResource"          "${INSTALL_DIR}/src")
-OCCT_INSTALL_FILE_OR_DIR ("src/XmlOcafResource"        "${INSTALL_DIR}/src")
-
-OCCT_INSTALL_FILE_OR_DIR ("src/UnitsAPI/Lexi_Expr.dat" "${INSTALL_DIR}/src/UnitsAPI")
-OCCT_INSTALL_FILE_OR_DIR ("src/UnitsAPI/Units.dat"     "${INSTALL_DIR}/src/UnitsAPI")
-OCCT_INSTALL_FILE_OR_DIR ("src/TObj/TObj.msg"          "${INSTALL_DIR}/src/TObj")
-
-
-#Toolkits uses variables: INSTALL_DIR, OS_WITH_BIT, COMPILER, BUILD_POSTFIX
-OCCT_MAKE_OS_WITH_BITNESS()
-
-# consider for patch existence
-set (IS_PATCH_CURRENT "NO")
-set (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
-if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
-  set (IS_PATCH_CURRENT "YES")
-  set (TK_ROOT_DIR ${BUILD_PATCH_DIR})
-endif()
+FILE_TO_LIST ("adm/RESOURCES" RESOURCES)
+foreach(RESOURCE ${RESOURCES})
+  get_filename_component(RESOURCE_FOLDER ${RESOURCE} DIRECTORY)
+  if(NOT "${RESOURCE_FOLDER}" STREQUAL "")
+    get_filename_component(RESOURCE_FOLDER ${RESOURCE_FOLDER} NAME)
+    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR}/src/${RESOURCE_FOLDER}")
+  else()
+    OCCT_INSTALL_FILE_OR_DIR ("src/${RESOURCE}" "${INSTALL_DIR}/src")
+  endif()
+endforeach()
 
 # include patched toolkit projects or original ones
-set (UNSUBDIRS "")
-if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/cmake/occt_inc_toolkits.cmake")
-  set (TK_ROOT_DIR ${BUILD_PATCH_DIR})
-  include (${BUILD_PATCH_DIR}/adm/cmake/occt_inc_toolkits.cmake)
-else()
-  set (IS_PATCH_CURRENT "NO")
-  set (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
-  include (adm/cmake/occt_inc_toolkits.cmake)
-endif()
-
-# include some required original occt_inc_toolkits
-if (NOT "${UNSUBDIRS}" STREQUAL "")
-  set (IS_PATCH_CURRENT "NO")
-  # add required subdirs
-  foreach (UNSUBDIR ${UNSUBDIRS})
-    add_subdirectory (${CMAKE_SOURCE_DIR}/${UNSUBDIR})
-  endforeach()
-endif()
+foreach (USED_TOOLKIT ${USED_TOOLKITS})
+  if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/src/${USED_TOOLKIT}")
+    add_subdirectory(${BUILD_PATCH_DIR}/src/${USED_TOOLKIT})
+  elseif (EXISTS "${CMAKE_SOURCE_DIR}/src/${USED_TOOLKIT}")
+    add_subdirectory (${CMAKE_SOURCE_DIR}/src/${USED_TOOLKIT})
+  else()
+    message (STATUS "${USED_TOOLKIT} is not included")
+  endif()
+endforeach()
 
 # samples do not support patch usage
-IF (BUILD_MFC_SAMPLES)
-  SET (OCCT_ROOT ${CMAKE_SOURCE_DIR})
+if (BUILD_MFC_SAMPLES)
+  set (OCCT_ROOT ${CMAKE_SOURCE_DIR})
 
-  SET (MFC_STANDARD_SAMPLES_DIR ${OCCT_ROOT}/samples/mfc/standard)
-  SET (COMMON_WINMAIN_FILE      ${MFC_STANDARD_SAMPLES_DIR}/Common/Winmain.cpp)
+  set (MFC_STANDARD_SAMPLES_DIR ${OCCT_ROOT}/samples/mfc/standard)
+  set (COMMON_WINMAIN_FILE      ${MFC_STANDARD_SAMPLES_DIR}/Common/Winmain.cpp)
 
   add_subdirectory(samples/mfc/standard/mfcsample)
   add_subdirectory(samples/mfc/standard/01_Geometry)
@@ -349,4 +447,8 @@ IF (BUILD_MFC_SAMPLES)
   add_subdirectory(samples/mfc/standard/08_HLR)
   add_subdirectory(samples/mfc/standard/09_Animation)
   add_subdirectory(samples/mfc/standard/10_Convert)
-ENDIF()
+endif()
+
+if (INSTALL_SAMPLES)
+  OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
+endif()

@@ -45,7 +45,7 @@ install (TARGETS Triangulation RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER
                                ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
                                LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
-include_directories (${OCCT_ROOT}/inc
+include_directories (${CMAKE_SOURCE_DIR}/src
                      ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation
                      ${Triangulation_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

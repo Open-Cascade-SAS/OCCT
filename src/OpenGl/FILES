@@ -1,4 +1,3 @@
-EXTERNLIB
 glext.h
 OpenGl_ArbDbg.hxx
 OpenGl_ArbFBO.hxx

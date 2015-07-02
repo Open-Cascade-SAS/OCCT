@@ -41,7 +41,7 @@ GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
 								      
 {
 #define Array1OfPnt_gen TColgp_Array1OfPnt
-#include <GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx>
+#include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
 #undef Array1OfPnt_gen
 }
 //=============================================================================
@@ -55,7 +55,7 @@ GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
 								      
 {
 #define Array1OfPnt_gen TColgp_Array1OfPnt2d
-#include <GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx>
+#include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
 #undef Array1OfPnt_gen
 }
 

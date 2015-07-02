@@ -15,4 +15,3 @@ DDataStd_TreeBrowser.cxx
 DDataStd_TreeBrowser.hxx
 DDataStd_TreeBrowser.tcl
 DDataStd_TreeCommands.cxx
-EXTERNLIB

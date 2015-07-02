@@ -35,7 +35,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector( const gp_Vec& V)
 {
   gp_Dir D = gp_Dir(V);
   Standard_Real lFactor = UnitsMethods::LengthFactor();
-#include <GeomToStep_MakeVector_gen.pxx>
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 //=============================================================================
 // Creation d' un vector de prostep a partir d' un Vec2d de gp
@@ -45,7 +45,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector( const gp_Vec2d& V)
 {
   gp_Dir2d D = gp_Dir2d(V);
   Standard_Real lFactor = 1.;
-#include <GeomToStep_MakeVector_gen.pxx>
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 
 //=============================================================================
@@ -59,7 +59,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector ( const Handle(Geom_Vector)&
   V = GVector->Vec();
   gp_Dir D = gp_Dir(V);
   Standard_Real lFactor = UnitsMethods::LengthFactor();
-#include <GeomToStep_MakeVector_gen.pxx>
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 
 //=============================================================================
@@ -73,7 +73,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector ( const Handle(Geom2d_Vector)&
   V = GVector->Vec2d();
   gp_Dir2d D = gp_Dir2d(V);
   Standard_Real lFactor = 1.;
-#include <GeomToStep_MakeVector_gen.pxx>
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 
 //=============================================================================

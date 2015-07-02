@@ -67,7 +67,7 @@ install (TARGETS Convert RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNE
                          ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
                          LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
-include_directories (${OCCT_ROOT}/inc
+include_directories (${CMAKE_SOURCE_DIR}/src
                      ${Convert_SRC_DIR}
                      ${ISESSION_SUBDIR}
                      ${WNT_SUBDIR}

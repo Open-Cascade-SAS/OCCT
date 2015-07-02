@@ -1,4 +1,3 @@
-EXTERNLIB
 Font_BRepFont.cxx
 Font_BRepFont.hxx
 Font_FontAspect.hxx

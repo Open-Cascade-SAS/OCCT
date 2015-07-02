@@ -34,7 +34,7 @@
 //=============================================================================
 GeomToStep_MakeCircle::GeomToStep_MakeCircle( const gp_Circ& C)
 {
-#include <GeomToStep_MakeCircle_gen.pxx>
+#include "GeomToStep_MakeCircle_gen.pxx"
 }
 
 
@@ -47,7 +47,7 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom_Circle)& Cer)
 {
   gp_Circ C;
   C = Cer->Circ();
-#include <GeomToStep_MakeCircle_gen.pxx>
+#include "GeomToStep_MakeCircle_gen.pxx"
 }
 
 

@@ -73,7 +73,7 @@ install (TARGETS Geometry RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITN
                           ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
                           LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
-include_directories (${OCCT_ROOT}/inc
+include_directories (${CMAKE_SOURCE_DIR}/src
                      ${Geometry_SRC_DIR}
                      ${Geometry_ISESSION2D_DIR}
                      ${Geometry_RESOURCE_DIR}

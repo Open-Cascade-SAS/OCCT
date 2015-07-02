@@ -72,7 +72,6 @@ Draw_Window.cxx
 Draw_Window.hxx
 Draw_Window_1.mm
 DrawRessource.h
-EXTERNLIB
 init.cxx
 init.h
 MainWindow.cxx

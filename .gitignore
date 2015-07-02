@@ -28,7 +28,6 @@ Release
 /adm/lin
 /adm/mac
 /adm/make
-/adm/cmake
 *.vcproj*user
 *.csproj*user
 *.ncb

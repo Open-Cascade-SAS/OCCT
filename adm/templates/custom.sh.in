@@ -9,6 +9,7 @@ if [ "$COMPILER" == "@COMPILER@" ]; then
       export GL2PS_DIR="@USED_3RDPARTY_GL2PS_DIR@"
       export TBB_DIR="@USED_3RDPARTY_TBB_DIR@"
       export VTK_DIR="@USED_3RDPARTY_VTK_DIR@"
+      export CSF_TestDataPath="@TESTS_SHAPES_DIR@"
     fi
   fi
 fi

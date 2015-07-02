@@ -1,4 +1,3 @@
-EXTERNLIB
 IVtkVTK_ShapeData.cxx
 IVtkVTK_ShapeData.hxx
 IVtkVTK_View.cxx

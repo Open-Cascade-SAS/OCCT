@@ -36,7 +36,7 @@
 GeomToStep_MakeLine::GeomToStep_MakeLine( const gp_Lin& L)
 {
 #define Vec_gen gp_Vec
-#include <GeomToStep_MakeLine_gen.pxx>
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 
@@ -47,7 +47,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine( const gp_Lin& L)
 GeomToStep_MakeLine::GeomToStep_MakeLine( const gp_Lin2d& L)
 {
 #define Vec_gen gp_Vec2d
-#include <GeomToStep_MakeLine_gen.pxx>
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 
@@ -60,7 +60,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine ( const Handle(Geom_Line)& Gline)
   gp_Lin L;
   L = Gline->Lin();
 #define Vec_gen gp_Vec
-#include <GeomToStep_MakeLine_gen.pxx>
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 
@@ -73,7 +73,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine ( const Handle(Geom2d_Line)& Gline)
   gp_Lin2d L;
   L = Gline->Lin2d();
 #define Vec_gen gp_Vec2d
-#include <GeomToStep_MakeLine_gen.pxx>
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 

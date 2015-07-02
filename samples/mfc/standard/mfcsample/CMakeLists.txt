@@ -142,7 +142,7 @@ install (TARGETS mfcsample RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BIT
                            ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
                            LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
-include_directories( ${OCCT_ROOT}/inc
+include_directories( ${CMAKE_SOURCE_DIR}/src
                      ${MFC_STANDARD_COMMON_SAMPLES_DIR}
                      ${COMMON_IE_DIR}
                      ${COMMON_ISESSION2D_DIR}
@@ -157,9 +157,7 @@ set (mfcsample_USED_LIBS  TKVRML
                           TKShHealing
                           TKSTEP
                           TKXSBase
-                          TKShapeSchema
                           FWOSPlugin
-                          PTKernel
                           TKBool
                           TKCAF
                           TKCDF
@@ -174,9 +172,7 @@ set (mfcsample_USED_LIBS  TKVRML
                           TKMath
                           TKOffset
                           TKOpenGl
-                          TKPCAF
                           TKPrim
-                          TKPShape
                           TKService
                           TKTopAlgo
                           TKMesh

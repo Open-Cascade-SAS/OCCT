@@ -67,7 +67,7 @@ install (TARGETS HLR RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/
                      ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
                      LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
-include_directories (${OCCT_ROOT}/inc
+include_directories (${CMAKE_SOURCE_DIR}/src
                      ${HLR_RESOURCE_DIR}
                      ${HLR_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

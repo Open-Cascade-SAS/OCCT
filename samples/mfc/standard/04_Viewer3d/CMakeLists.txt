@@ -67,7 +67,7 @@ install (TARGETS Viewer3d RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITN
                           ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
                           LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
-include_directories (${OCCT_ROOT}/inc
+include_directories (${CMAKE_SOURCE_DIR}/src
                      ${Viewer3d_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)
 

@@ -71,4 +71,3 @@ Aspect_WindowDefinitionError.hxx
 Aspect_WindowError.hxx
 Aspect_XAtom.hxx
 Aspect_XWD.hxx
-EXTERNLIB

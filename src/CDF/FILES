@@ -26,4 +26,3 @@ CDF_Timer.cxx
 CDF_Timer.hxx
 CDF_TryStoreStatus.hxx
 CDF_TypeOfActivation.hxx
-EXTERNLIB

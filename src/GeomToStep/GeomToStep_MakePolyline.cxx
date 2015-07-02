@@ -32,7 +32,7 @@
 GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt& P)
 {
   gp_Pnt P1;
-#include <GeomToStep_MakePolyline_gen.pxx>
+#include "GeomToStep_MakePolyline_gen.pxx"
 }
 
 //=============================================================================
@@ -42,7 +42,7 @@ GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt& P)
 GeomToStep_MakePolyline::GeomToStep_MakePolyline( const TColgp_Array1OfPnt2d& P)
 {
   gp_Pnt2d P1;
-#include <GeomToStep_MakePolyline_gen.pxx>
+#include "GeomToStep_MakePolyline_gen.pxx"
 }
 //=============================================================================
 // renvoi des valeurs

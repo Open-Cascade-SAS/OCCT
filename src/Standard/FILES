@@ -1,4 +1,3 @@
-EXTERNLIB
 Standard.cxx
 Standard.hxx
 Standard_AbortiveTransaction.hxx
