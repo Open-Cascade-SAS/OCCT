@@ -20,6 +20,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Handle_TColStd_HArray1OfReal.hxx>
+#include <BRepAdaptor_Curve.hxx>
 
 class gp_Pnt;
 class TopoDS_Edge;
@@ -63,6 +64,7 @@ private:
   Standard_Real                 myCurParam;
   Standard_Real                 myFoundParam;
 
+  BRepAdaptor_Curve             myCurveAdaptor;
   Extrema_LocateExtPC           myProjector;
 };
 

@@ -32,7 +32,8 @@ BRepMesh_EdgeParameterProvider::BRepMesh_EdgeParameterProvider(
   const Handle(TColStd_HArray1OfReal)& theParameters)
   : myParameters(theParameters),
     myIsSameParam(BRep_Tool::SameParameter(theEdge)),
-    myScale(1.)
+    myScale(1.),
+    myCurveAdaptor(theEdge, theFace)
 {
   if (myIsSameParam)
     return;
@@ -58,9 +59,8 @@ BRepMesh_EdgeParameterProvider::BRepMesh_EdgeParameterProvider(
       (aOldLastParam - myOldFirstParam);
   }
 
-  BRepAdaptor_Curve aCOnS(theEdge, theFace);
-  myProjector.Initialize(aCOnS, aCOnS.FirstParameter(),
-    aCOnS.LastParameter(), Precision::PConfusion());
+  myProjector.Initialize(myCurveAdaptor, myCurveAdaptor.FirstParameter(),
+    myCurveAdaptor.LastParameter(), Precision::PConfusion());
 }
 
 //=======================================================================
