@@ -81,204 +81,273 @@
 //static Standard_Integer compteur = 0;
 #endif
 
+struct aFuncStruct
+{
+  Handle(Adaptor3d_HSurface) mySurf; // Surface where to project.
+  Handle(Adaptor3d_HCurve)   myCurve; // Curve to project.
+  Handle(Adaptor2d_HCurve2d) myInitCurve2d; // Initial 2dcurve projection.
+  Standard_Real mySqProjOrtTol; // Used to filter non-orthogonal projected point.
+  Standard_Real myTolU;
+  Standard_Real myTolV;
+  Standard_Real myPeriod[2]; // U and V period correspondingly.
+};
+
+//=======================================================================
+//function : aFuncValue
+//purpose  : compute functional value in (theU,theV) point
+//=======================================================================
+static Standard_Real anOrthogSqValue(const gp_Pnt& aBasePnt,
+                                     const Handle(Adaptor3d_HSurface)& Surf,
+                                     const Standard_Real theU,
+                                     const Standard_Real theV)
+{
+  // Since find projection, formula is:
+  // F1 = Dot(S_U, Vec(aBasePnt, aProjPnt))
+  // F2 = Dot(S_V, Vec(aBasePnt, aProjPnt))
+
+  gp_Pnt aProjPnt;
+  gp_Vec aSu, aSv;
+
+  Surf->D1(theU, theV, aProjPnt, aSu, aSv);
+  gp_Vec aBaseVec(aBasePnt, aProjPnt);
+
+  if (aSu.SquareMagnitude() > Precision::SquareConfusion())
+    aSu.Normalize();
+
+  if (aSv.SquareMagnitude() > Precision::SquareConfusion())
+    aSv.Normalize();
+
+  Standard_Real aFirstPart = aSu.Dot(aBaseVec);
+  Standard_Real aSecondPart = aSv.Dot(aBaseVec);
+  return (aFirstPart * aFirstPart + aSecondPart * aSecondPart);
+}
+
 //=======================================================================
 //function : Value
 //purpose  : (OCC217 - apo)- Compute Point2d that project on polar surface(<Surf>) 3D<Curve>
 //            <InitCurve2d> use for calculate start 2D point.
 //=======================================================================
 
-static gp_Pnt2d Function_Value(const Standard_Real U,
-			       const Handle(Adaptor3d_HSurface)& Surf,    
-			       const Handle(Adaptor3d_HCurve)& Curve,
-			       const Handle(Adaptor2d_HCurve2d)& InitCurve2d,
-                               //OCC217
-			       const Standard_Real DistTol3d, const Standard_Real tolU, const Standard_Real tolV)
-			       //const Standard_Real Tolerance)
+static gp_Pnt2d Function_Value(const Standard_Real theU,
+                               const aFuncStruct& theData)
 {
-  //OCC217
-  //Standard_Real Tol3d = 100*Tolerance;
+  gp_Pnt2d p2d = theData.myInitCurve2d->Value(theU) ;
+  gp_Pnt p = theData.myCurve->Value(theU);
+  gp_Pnt aSurfPnt = theData.mySurf->Value(p2d.X(), p2d.Y());
+  Standard_Real aSurfPntDist = aSurfPnt.SquareDistance(p);
 
-  gp_Pnt2d p2d = InitCurve2d->Value(U) ;
-  gp_Pnt p = Curve->Value(U);
-//  Curve->D0(U,p) ;
   Standard_Real Uinf, Usup, Vinf, Vsup;
-  Uinf = Surf->Surface().FirstUParameter();
-  Usup = Surf->Surface().LastUParameter();
-  Vinf = Surf->Surface().FirstVParameter();
-  Vsup = Surf->Surface().LastVParameter();
+  Uinf = theData.mySurf->Surface().FirstUParameter();
+  Usup = theData.mySurf->Surface().LastUParameter();
+  Vinf = theData.mySurf->Surface().FirstVParameter();
+  Vsup = theData.mySurf->Surface().LastVParameter();
+
+  // Check case when curve is close to co-parametrized isoline on surf.
+  if (Abs (p2d.X() - Uinf) < Precision::PConfusion() ||
+      Abs (p2d.X() - Usup) < Precision::PConfusion() )
+  {
+    // V isoline.
+    gp_Pnt aPnt;
+    theData.mySurf->D0(p2d.X(), theU, aPnt);
+    if (aPnt.SquareDistance(p) < aSurfPntDist)
+      p2d.SetY(theU);
+  }
+
+  if (Abs (p2d.Y() - Vinf) < Precision::PConfusion() ||
+      Abs (p2d.Y() - Vsup) < Precision::PConfusion() )
+  {
+    // U isoline.
+    gp_Pnt aPnt;
+    theData.mySurf->D0(theU, p2d.Y(), aPnt);
+    if (aPnt.SquareDistance(p) < aSurfPntDist)
+      p2d.SetX(theU);
+  }
+
   Standard_Integer decalU = 0, decalV = 0;
   Standard_Real U0 = p2d.X(), V0 = p2d.Y();
-  
-  GeomAbs_SurfaceType Type = Surf->GetType();
+
+  GeomAbs_SurfaceType Type = theData.mySurf->GetType();
   if((Type != GeomAbs_BSplineSurface) && 
      (Type != GeomAbs_BezierSurface)  &&
-     (Type != GeomAbs_OffsetSurface)    ) {
+     (Type != GeomAbs_OffsetSurface)    )
+  {
+    // Analytical cases.
     Standard_Real S = 0., T = 0.;
-    switch (Type) {
-//    case GeomAbs_Plane:
-//      {
-//	gp_Pln Plane = Surf->Plane();
-//	ElSLib::Parameters( Plane, p, S, T);
-//	break;
-//      }
+    switch (Type)
+    {
     case GeomAbs_Cylinder:
       {
-	gp_Cylinder Cylinder = Surf->Cylinder();
-	ElSLib::Parameters( Cylinder, p, S, T);
-	if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
-	if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
-	S += decalU*2*M_PI;
-	break;
+        gp_Cylinder Cylinder = theData.mySurf->Cylinder();
+        ElSLib::Parameters( Cylinder, p, S, T);
+        if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
+        if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
+        S += decalU*2*M_PI;
+        break;
       }
     case GeomAbs_Cone:
       {
-	gp_Cone Cone = Surf->Cone();
-	ElSLib::Parameters( Cone, p, S, T);
-	if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
-	if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
-	S += decalU*2*M_PI;
-	break;
+        gp_Cone Cone = theData.mySurf->Cone();
+        ElSLib::Parameters( Cone, p, S, T);
+        if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
+        if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
+        S += decalU*2*M_PI;
+        break;
       }
     case GeomAbs_Sphere:
       {
-	gp_Sphere Sphere = Surf->Sphere();
-	ElSLib::Parameters( Sphere, p, S, T);
-	if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
-	if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
-	S += decalU*2*M_PI;
-	if(V0 < Vinf) decalV = -int((Vinf - V0)/(2*M_PI))-1;
-	if(V0 > (Vsup+(Vsup-Vinf))) decalV =  int((V0 - Vsup+(Vsup-Vinf))/(2*M_PI))+1;
-	T += decalV*2*M_PI;
-	if(0.4*M_PI < Abs(U0 - S) && Abs(U0 - S) < 1.6*M_PI) {
-	  T = M_PI - T;
-	  if(U0 < S)
-	    S -= M_PI;
-	  else
-	    S += M_PI;
-	}
-	break;
+        gp_Sphere Sphere = theData.mySurf->Sphere();
+        ElSLib::Parameters( Sphere, p, S, T);
+        if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
+        if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
+        S += decalU*2*M_PI;
+        if(V0 < Vinf) decalV = -int((Vinf - V0)/(2*M_PI))-1;
+        if(V0 > (Vsup+(Vsup-Vinf))) decalV =  int((V0 - Vsup+(Vsup-Vinf))/(2*M_PI))+1;
+        T += decalV*2*M_PI;
+        if(0.4*M_PI < Abs(U0 - S) && Abs(U0 - S) < 1.6*M_PI)
+        {
+          T = M_PI - T;
+          if(U0 < S)
+            S -= M_PI;
+          else
+            S += M_PI;
+        }
+        break;
       }
     case GeomAbs_Torus:
       {
-	gp_Torus Torus = Surf->Torus();
-	ElSLib::Parameters( Torus, p, S, T);
-	if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
-	if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
-	if(V0 < Vinf) decalV = -int((Vinf - V0)/(2*M_PI))-1;
-	if(V0 > Vsup) decalV =  int((V0 - Vsup)/(2*M_PI))+1;
-	S += decalU*2*M_PI; T += decalV*2*M_PI;
-	break;
+        gp_Torus Torus = theData.mySurf->Torus();
+        ElSLib::Parameters( Torus, p, S, T);
+        if(U0 < Uinf) decalU = -int((Uinf - U0)/(2*M_PI))-1;
+        if(U0 > Usup) decalU =  int((U0 - Usup)/(2*M_PI))+1;
+        if(V0 < Vinf) decalV = -int((Vinf - V0)/(2*M_PI))-1;
+        if(V0 > Vsup) decalV =  int((V0 - Vsup)/(2*M_PI))+1;
+        S += decalU*2*M_PI; T += decalV*2*M_PI;
+        break;
       }
     default:
       Standard_NoSuchObject::Raise("ProjLib_ComputeApproxOnPolarSurface::Value");
     }
     return gp_Pnt2d(S, T);
   }
-  
-  //////////////////
+
+  // Non-analytical case.
   Standard_Real Dist2Min = RealLast();
-  //OCC217
-  //Standard_Real tolU,tolV ;
-  //tolU = Tolerance;
-  //tolV = Tolerance;
-  
-  Standard_Real uperiod =0, vperiod = 0, u, v;
+  Standard_Real uperiod = theData.myPeriod[0],
+                vperiod = theData.myPeriod[1],
+                u, v;
   // U0 and V0 are the points within the initialized period 
   // (periode with u and v),
   // U1 and V1 are the points for construction of tops
   
-  if(Surf->IsUPeriodic() || Surf->IsUClosed()) {
-    uperiod =  Surf->LastUParameter() - Surf->FirstUParameter();
-  }
-  if(Surf->IsVPeriodic() || Surf->IsVClosed()) {
-    vperiod = Surf->LastVParameter() - Surf->FirstVParameter();
-  } 
-  if(U0 < Uinf) {
+  if(U0 < Uinf)
+  {
     if(!uperiod)
       U0 = Uinf;
-    else {
+    else
+    {
       decalU = int((Uinf - U0)/uperiod)+1;
       U0 += decalU*uperiod;
     }
   }
-  if(U0 > Usup) {
+  if(U0 > Usup)
+  {
     if(!uperiod)
       U0 = Usup;
-    else {
+    else
+    {
       decalU = -(int((U0 - Usup)/uperiod)+1);
       U0 += decalU*uperiod;
     }
   }
-  if(V0 < Vinf) {
+  if(V0 < Vinf)
+  {
     if(!vperiod)
       V0 = Vinf;
-    else {
+    else
+    {
       decalV = int((Vinf - V0)/vperiod)+1;
       V0 += decalV*vperiod;
     }
   }
-  if(V0 > Vsup) {
+  if(V0 > Vsup)
+  {
     if(!vperiod)
       V0 = Vsup;
-    else {
+    else
+    {
       decalV = -int((V0 - Vsup)/vperiod)-1;
       V0 += decalV*vperiod;
     }
   }
   
-  // The surface around U0 is reduced
+  // The surface around U0 is reduced.
   Standard_Real uLittle = (Usup - Uinf)/10, vLittle = (Vsup - Vinf)/10;
   Standard_Real uInfLi = 0, vInfLi = 0,uSupLi = 0, vSupLi = 0;
   if((U0 - Uinf) > uLittle) uInfLi = U0 - uLittle; else uInfLi = Uinf;
   if((V0 - Vinf) > vLittle) vInfLi = V0 - vLittle; else vInfLi = Vinf;
   if((Usup - U0) > uLittle) uSupLi = U0 + uLittle; else uSupLi = Usup;
   if((Vsup - V0) > vLittle) vSupLi = V0 + vLittle; else vSupLi = Vsup;
-  
-  //  const Adaptor3d_Surface GAS = Surf->Surface();
 
   GeomAdaptor_Surface SurfLittle;
-  if (Type == GeomAbs_BSplineSurface) {
-    Handle(Geom_Surface) GBSS(Surf->Surface().BSpline());
+  if (Type == GeomAbs_BSplineSurface)
+  {
+    Handle(Geom_Surface) GBSS(theData.mySurf->Surface().BSpline());
     SurfLittle.Load(GBSS, uInfLi, uSupLi, vInfLi, vSupLi);
   }
-  else if (Type == GeomAbs_BezierSurface) {
-    Handle(Geom_Surface) GS(Surf->Surface().Bezier());
+  else if (Type == GeomAbs_BezierSurface)
+  {
+    Handle(Geom_Surface) GS(theData.mySurf->Surface().Bezier());
     SurfLittle.Load(GS, uInfLi, uSupLi, vInfLi, vSupLi);
   }
-  else if (Type == GeomAbs_OffsetSurface) {
-    Handle(Geom_Surface) GS = GeomAdaptor::MakeSurface(Surf->Surface());
+  else if (Type == GeomAbs_OffsetSurface)
+  {
+    Handle(Geom_Surface) GS = GeomAdaptor::MakeSurface(theData.mySurf->Surface());
     SurfLittle.Load(GS, uInfLi, uSupLi, vInfLi, vSupLi);
   }
-  else {
+  else
+  {
     Standard_NoSuchObject::Raise("");
   }
 
-  Extrema_GenLocateExtPS  locext(p, SurfLittle, U0, V0, tolU, tolV);
-  if (locext.IsDone()) {
-    Dist2Min = locext.SquareDistance();
-    if (Dist2Min < DistTol3d * DistTol3d) {
-      (locext.Point()).Parameter(u, v);
-      gp_Pnt2d pnt(u - decalU*uperiod,v - decalV*vperiod);
-      return pnt;
-    }
-  } 
-  
-  Extrema_ExtPS  ext(p, SurfLittle, tolU, tolV) ;
-  if (ext.IsDone() && ext.NbExt()>=1 ) {
-    Dist2Min = ext.SquareDistance(1);
-    Standard_Integer GoodValue = 1;
-    for ( Standard_Integer i = 2 ; i <= ext.NbExt() ; i++ ) 
-      if( Dist2Min > ext.SquareDistance(i)) {
-	Dist2Min = ext.SquareDistance(i);
-	GoodValue = i;
-      }
-    if (Dist2Min < DistTol3d * DistTol3d) {
-      (ext.Point(GoodValue)).Parameter(u,v);
+  // Try to run simple search with initial point (U0, V0).
+  Extrema_GenLocateExtPS  locext(p, SurfLittle, U0, V0, theData.myTolU, theData.myTolV);
+  if (locext.IsDone()) 
+  {
+    locext.Point().Parameter(u, v);
+    Dist2Min = anOrthogSqValue(p, theData.mySurf, u, v);
+    if (Dist2Min < theData.mySqProjOrtTol && // Point is projection.
+        locext.SquareDistance() < aSurfPntDist + Precision::SquareConfusion()) // Point better than initial.
+    {
       gp_Pnt2d pnt(u - decalU*uperiod,v - decalV*vperiod);
       return pnt;
     }
   }
-  
+
+  // Perform whole param space search.
+  Extrema_ExtPS  ext(p, SurfLittle, theData.myTolU, theData.myTolV);
+  if (ext.IsDone() && ext.NbExt() >= 1)
+  {
+    Dist2Min = ext.SquareDistance(1);
+    Standard_Integer GoodValue = 1;
+    for (Standard_Integer i = 2 ; i <= ext.NbExt() ; i++ )
+    {
+      if( Dist2Min > ext.SquareDistance(i))
+      {
+        Dist2Min = ext.SquareDistance(i);
+        GoodValue = i;
+      }
+    }
+    ext.Point(GoodValue).Parameter(u, v);
+    Dist2Min = anOrthogSqValue(p, theData.mySurf, u, v);
+    if (Dist2Min < theData.mySqProjOrtTol && // Point is projection.
+        ext.SquareDistance(GoodValue) < aSurfPntDist + Precision::SquareConfusion()) // Point better than initial.
+    {
+      gp_Pnt2d pnt(u - decalU*uperiod,v - decalV*vperiod);
+      return pnt;
+    }
+  }
+
+  // Both searches return bad values, use point from initial 2dcurve.
   return p2d;
 }
 
@@ -290,11 +359,7 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
 
 class ProjLib_PolarFunction : public AppCont_Function
 {
-  Handle(Adaptor3d_HCurve)           myCurve;
-  Handle(Adaptor2d_HCurve2d)         myInitialCurve2d;
-  Handle(Adaptor3d_HSurface)         mySurface;
-  Standard_Real                      myTolU, myTolV;
-  Standard_Real                      myDistTol3d;
+  aFuncStruct myStruct;
 
   public :
 
@@ -302,40 +367,53 @@ class ProjLib_PolarFunction : public AppCont_Function
                         const Handle(Adaptor3d_HSurface)& Surf,
                         const Handle(Adaptor2d_HCurve2d)& InitialCurve2d,
                         const Standard_Real Tol3d)
-: myCurve(C),
-  myInitialCurve2d(InitialCurve2d),
-  mySurface(Surf),
-  myTolU(Surf->UResolution(Tol3d)),
-  myTolV(Surf->VResolution(Tol3d)),
-  myDistTol3d(100.0*Tol3d)
   {
     myNbPnt = 0;
     myNbPnt2d = 1;
+
+    myStruct.myPeriod[0] = 0.0;
+    myStruct.myPeriod[1] = 0.0;
+
+    // Compute once information about periodicity.
+    if(Surf->IsUPeriodic() || Surf->IsUClosed())
+    {
+      myStruct.myPeriod[0] =  Surf->LastUParameter() - Surf->FirstUParameter();
+    }
+    if(Surf->IsVPeriodic() || Surf->IsVClosed())
+    {
+      myStruct.myPeriod[1] = Surf->LastVParameter() - Surf->FirstVParameter();
+    }
+
+    myStruct.myCurve = C;
+    myStruct.myInitCurve2d = InitialCurve2d;
+    myStruct.mySurf = Surf;
+    myStruct.mySqProjOrtTol = 10000.0 * Tol3d * Tol3d;
+    myStruct.myTolU = Surf->UResolution(Tol3d);
+    myStruct.myTolV = Surf->VResolution(Tol3d);
   }
 
   ~ProjLib_PolarFunction() {}
 
   Standard_Real FirstParameter() const
   {
-    return myCurve->FirstParameter();
+    return myStruct.myCurve->FirstParameter();
   }
 
   Standard_Real LastParameter() const
   {
-    return myCurve->LastParameter();
+    return myStruct.myCurve->LastParameter();
   }
 
-  gp_Pnt2d Value(const Standard_Real t) const 
+  gp_Pnt2d Value(const Standard_Real t) const
   {
-  return Function_Value
-    (t,mySurface,myCurve,myInitialCurve2d,myDistTol3d,myTolU,myTolV);
+    return Function_Value(t, myStruct);
   }
 
   Standard_Boolean Value(const Standard_Real   theT,
                          NCollection_Array1<gp_Pnt2d>& thePnt2d,
                          NCollection_Array1<gp_Pnt>&   /*thePnt*/) const
   {
-    thePnt2d(1) = Function_Value(theT, mySurface, myCurve, myInitialCurve2d, myDistTol3d, myTolU, myTolV);
+    thePnt2d(1) = Function_Value(theT, myStruct);
     return Standard_True;
   }
 
@@ -1386,7 +1464,7 @@ Handle(Geom2d_BSplineCurve)
   Standard_Real Tol3d = myTolerance;
   Standard_Real DistTol3d = 1.0*Tol3d;
   Standard_Real TolU = Surf->UResolution(Tol3d), TolV = Surf->VResolution(Tol3d);
-  Standard_Real Tol2d = Sqrt(TolU*TolU + TolV*TolV);
+  Standard_Real Tol2d = Max(Sqrt(TolU*TolU + TolV*TolV), Precision::PConfusion());
 
   Standard_Integer i;
   GeomAbs_SurfaceType TheTypeS = Surf->GetType();
