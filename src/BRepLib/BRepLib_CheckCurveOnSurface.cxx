@@ -14,74 +14,107 @@
 
 #include <BRepLib_CheckCurveOnSurface.ixx>
 
-#include <math_GlobOptMin.hxx>
-#include <math_MultipleVarFunctionWithHessian.hxx>
-#include <math_Matrix.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HSurface.hxx>
+
+#include <BRep_Tool.hxx>
+
+#include <Geom2dAdaptor.hxx>
+#include <Geom2dAdaptor_GHCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+
+#include <GeomProjLib.hxx>
+
+#include <Geom_BSplineCurve.hxx>
 
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 
-#include <Geom2dAdaptor.hxx>
+#include <NCollection_Array1.hxx>
 
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-
-#include <GeomProjLib.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-
-#include <TopLoc_Location.hxx>
+#include <OSD_Parallel.hxx>
 
 #include <ProjLib_ProjectedCurve.hxx>
 
+#include <Standard_ErrorHandler.hxx>
+
+#include <TColStd_Array1OfReal.hxx>
+#include <TopoDS.hxx>
+
+#include <math_Matrix.hxx>
+#include <math_MultipleVarFunctionWithHessian.hxx>
+#include <math_NewtonMinimum.hxx>
+#include <math_PSO.hxx>
+#include <math_PSOParticlesPool.hxx>
+
+class BRepLib_CheckCurveOnSurface_TargetFunc;
+
+static 
+Standard_Boolean MinComputing(
+                BRepLib_CheckCurveOnSurface_TargetFunc& theFunction,
+                const Standard_Real theEpsilon, //1.0e-3
+                const Standard_Integer theNbParticles,
+                Standard_Real& theBestValue,
+                Standard_Real& theBestParameter);
+
+static Standard_Integer FillSubIntervals( const Handle(Geom_Curve)& theCurve3d,
+                                          const Handle(Geom2d_Curve)& theCurve2d,
+                                          const Standard_Real theFirst,
+                                          const Standard_Real theLast,
+                                          Standard_Integer &theNbParticles,
+                                          TColStd_Array1OfReal* const theSubIntervals = 0);
 
 //=======================================================================
-//class   : BRepLib_CheckCurveOnSurface_GlobOptFunc
-//purpose : provides necessary methods to be used in math_GlobOptMin
+//class   : BRepLib_CheckCurveOnSurface_TargetFunc
+//purpose : Target function (to be minimized)
 //=======================================================================
-class BRepLib_CheckCurveOnSurface_GlobOptFunc :
+class BRepLib_CheckCurveOnSurface_TargetFunc :
   public math_MultipleVarFunctionWithHessian
 {
  public:
-  BRepLib_CheckCurveOnSurface_GlobOptFunc
-    (BRepLib_CheckCurveOnSurface_GlobOptFunc&);
-  BRepLib_CheckCurveOnSurface_GlobOptFunc
-    (const Handle(Geom_Curve)& theC3D,
-     const Handle(Geom2d_Curve)& theC2D,
-     const Handle(Geom_Surface)& theSurf,
-     const Standard_Real theFirst,
-     const Standard_Real theLast)
-    :
-      myFirst(theFirst),
-      myLast(theLast)
+  BRepLib_CheckCurveOnSurface_TargetFunc( const Adaptor3d_Curve& theC3D,
+                                          const Adaptor3d_Curve& theAdCS,
+                                          const Standard_Real theFirst,
+                                          const Standard_Real theLast):
+  myCurve1(theC3D),
+  myCurve2(theAdCS),
+  myFirst(theFirst),
+  myLast(theLast)
   {
-    myCurve = new GeomAdaptor_HCurve(theC3D);
-    myPCurve = new Geom2dAdaptor_HCurve(theC2D);
-    mySurf = new GeomAdaptor_HSurface(theSurf);
   }
-  //
+  
+  //returns the number of parameters of the function
+  //(the function is one-dimension).
   virtual Standard_Integer NbVariables() const {
     return 1;
   }
-  //
+  
+  //returns value of the function when parameters are equal to theX
   virtual Standard_Boolean Value(const math_Vector& theX,
-                                 Standard_Real& theFVal) {
-    try {
-      const Standard_Real aPar = theX(1);
-      if (!CheckParameter(aPar))
+                                 Standard_Real& theFVal)
+  {
+    return Value(theX(1), theFVal);
+  }
+
+  //returns value of the one-dimension-function when parameter
+  //is equal to theX
+  Standard_Boolean Value( const  Standard_Real theX,
+                          Standard_Real& theFVal) const
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      if (!CheckParameter(theX))
         return Standard_False;
-      gp_Pnt aP1, aP2;
-      gp_Pnt2d aP2d;
-      //
-      myCurve->D0(aPar, aP1);
-      myPCurve->D0(aPar, aP2d);
-      mySurf->D0(aP2d.X(), aP2d.Y(), aP2);
-      //
+
+      const gp_Pnt  aP1(myCurve1.Value(theX)),
+                    aP2(myCurve2.Value(theX));
+      
       theFVal = -1.0*aP1.SquareDistance(aP2);
     }
     catch(Standard_Failure) {
@@ -90,44 +123,58 @@ class BRepLib_CheckCurveOnSurface_GlobOptFunc :
     //
     return Standard_True;
   }
-  //
-  virtual Standard_Integer GetStateNumber() {
+
+  //see analogical method for abstract owner class math_MultipleVarFunction
+  virtual Standard_Integer GetStateNumber()
+  {
     return 0;
   }
-  //
+  
+  //returns the gradient of the function when parameters are
+  //equal to theX
   virtual Standard_Boolean Gradient(const math_Vector& theX,
-                                    math_Vector& theGrad) {
-    try {
-      const Standard_Real aPar = theX(1);
-      if (!CheckParameter(aPar)) {
+                                    math_Vector& theGrad)
+  {
+    return Derive(theX(1), theGrad(1));
+  }
+
+  //returns 1st derivative of the the one-dimension-function when
+  //parameter is equal to theX
+  Standard_Boolean Derive(const Standard_Real theX, Standard_Real& theDeriv) const
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      if (!CheckParameter(theX))
+      {
         return Standard_False;
       }
       //
       gp_Pnt aP1, aP2;
-      gp_Vec aDC3D, aDSU, aDSV;
-      gp_Pnt2d aP2d;
-      gp_Vec2d aDC2D;
+      gp_Vec aDC1, aDC2;
       //
-      myCurve->D1(aPar, aP1, aDC3D);
-      myPCurve->D1(aPar, aP2d, aDC2D);
-      mySurf->D1(aP2d.X(), aP2d.Y(), aP2, aDSU, aDSV);
+      myCurve1.D1(theX, aP1, aDC1);
+      myCurve2.D1(theX, aP2, aDC2);
+
+      const gp_Vec aVec1(aP1, aP2), aVec2(aDC2-aDC1);
       //
-      aP1.SetXYZ(aP1.XYZ() - aP2.XYZ());
-      aP2.SetXYZ(aDC3D.XYZ() - aDC2D.X()*aDSU.XYZ() - aDC2D.Y()*aDSV.XYZ());
-      //
-      theGrad(1) = -2.0*aP1.XYZ().Dot(aP2.XYZ());
+      theDeriv = -2.0*aVec1.Dot(aVec2);
     }
-    catch(Standard_Failure) {
+    catch(Standard_Failure)
+    {
       return Standard_False;
     }
-    //
+
     return Standard_True;
   }
-  //   
+  
+  //returns value and gradient   
   virtual Standard_Boolean Values(const math_Vector& theX,
                                   Standard_Real& theVal,
-                                  math_Vector& theGrad) {
-    if (!Value(theX, theVal)) {
+                                  math_Vector& theGrad) 
+  {
+    if (!Value(theX, theVal))
+    {
       return Standard_False;
     }
     //
@@ -137,16 +184,20 @@ class BRepLib_CheckCurveOnSurface_GlobOptFunc :
     //
     return Standard_True;
   }
-  //
+
+  //returns value, gradient and hessian
   virtual Standard_Boolean Values(const math_Vector& theX,
                                   Standard_Real& theVal,
                                   math_Vector& theGrad,
-                                  math_Matrix& theHessian) {
-    if (!Value(theX, theVal)) {
+                                  math_Matrix& theHessian)
+  {
+    if (!Value(theX, theVal))
+    {
       return Standard_False;
     }
-    //    
-    if (!Gradient(theX, theGrad)) {
+    //
+    if (!Gradient(theX, theGrad))
+    {
       return Standard_False;
     }
     //
@@ -155,27 +206,117 @@ class BRepLib_CheckCurveOnSurface_GlobOptFunc :
     return Standard_True;
   }
   //
- private:
-
-  Standard_Boolean CheckParameter(const Standard_Real theParam) {
-    return ((myFirst <= theParam) && (theParam <= myLast));
+  Standard_Real FirstParameter() const
+  {
+    return myFirst;
   }
 
-  Handle(GeomAdaptor_HCurve) myCurve;
-  Handle(Geom2dAdaptor_HCurve) myPCurve;
-  Handle(GeomAdaptor_HSurface) mySurf;
-  Standard_Real myFirst;
-  Standard_Real myLast;
+  //
+  Standard_Real LastParameter() const
+  {
+    return myLast;
+  }
+  
+ private:
+  BRepLib_CheckCurveOnSurface_TargetFunc operator=(BRepLib_CheckCurveOnSurface_TargetFunc&);
+
+  //checks if the function can be computed when its parameter is
+  //equal to theParam
+   Standard_Boolean CheckParameter(const Standard_Real theParam) const
+   {
+     return ((myFirst <= theParam) && (theParam <= myLast));
+   }
+
+   const Adaptor3d_Curve& myCurve1;
+   const Adaptor3d_Curve& myCurve2;
+   const Standard_Real myFirst;
+   const Standard_Real myLast;
 };
 
-static 
-  void MinComputing(BRepLib_CheckCurveOnSurface_GlobOptFunc& theFunction,
-                    const Standard_Real theFirst,
-                    const Standard_Real theLast,
-                    const Standard_Real theEpsilon,
-                    Standard_Real& theBestValue,
-                    Standard_Real& theBestParameter);
+//=======================================================================
+//class   : BRepLib_CheckCurveOnSurface_Local
+//purpose : Created for parallelization possibility only
+//=======================================================================
+class BRepLib_CheckCurveOnSurface_Local
+{
+public:
+  BRepLib_CheckCurveOnSurface_Local(
+              const Handle(Geom_Curve)& theCurve3D,
+              const Handle(Geom2d_Curve)& theCurve2D,
+              const Handle(Geom_Surface)& theSurface,
+              const TColStd_Array1OfReal& theIntervalsArr,
+              const Standard_Real theEpsilonRange,
+              const Standard_Integer theNbParticles):
+  myCurve3D(theCurve3D),
+  myCurve2D(theCurve2D),
+  mySurface(theSurface),
+  mySubIntervals(theIntervalsArr),
+  myEpsilonRange(theEpsilonRange),
+  myNbParticles(theNbParticles),
+  myArrOfDist(theIntervalsArr.Lower(), theIntervalsArr.Upper()-1),
+  myArrOfParam(theIntervalsArr.Lower(), theIntervalsArr.Upper()-1)
+  {
+  }
+  
+  void operator()(const Standard_Integer& theIndex) const
+  {
+    //For every sub-interval (which is set by mySubIntervals array) this method
+    //computes optimal value of BRepLib_CheckCurveOnSurface_TargetFunc function.
+    //This optimal value will be put in corresponding (depending on theIndex - the
+    //identificator of the current interval in mySubIntervals array) cell of 
+    //myArrOfDist and myArrOfParam arrays.
+    const GeomAdaptor_Curve anAC(myCurve3D);
+    const Handle(Adaptor2d_HCurve2d) anAd2dC = new Geom2dAdaptor_GHCurve(myCurve2D);
+    const Handle(Adaptor3d_HSurface) anAdS = new GeomAdaptor_HSurface(mySurface);
 
+    const Adaptor3d_CurveOnSurface anACS(anAd2dC, anAdS);
+
+    BRepLib_CheckCurveOnSurface_TargetFunc aFunc( anAC, anACS,
+                                                  mySubIntervals.Value(theIndex),
+                                                  mySubIntervals.Value(theIndex+1));
+
+    Standard_Real aMinDist = RealLast(), aPar = 0.0;
+    if(!MinComputing(aFunc, myEpsilonRange, myNbParticles, aMinDist, aPar))
+    {
+      myArrOfDist(theIndex) = RealLast();
+      myArrOfParam(theIndex) = aFunc.FirstParameter();
+      return;
+    }
+
+    myArrOfDist(theIndex) = aMinDist;
+    myArrOfParam(theIndex) = aPar;
+  }
+
+  //Returns optimal value (inverse of square of maximal distance)
+  void OptimalValues(Standard_Real& theMinimalValue, Standard_Real& theParameter) const
+  {
+    //This method looks for the minimal value of myArrOfDist.
+
+    const Standard_Integer aStartInd = myArrOfDist.Lower();
+    theMinimalValue = myArrOfDist(aStartInd);
+    theParameter = myArrOfParam(aStartInd);
+    for(Standard_Integer i = aStartInd + 1; i <= myArrOfDist.Upper(); i++)
+    {
+      if(myArrOfDist(i) < theMinimalValue)
+      {
+        theMinimalValue = myArrOfDist(i);
+        theParameter = myArrOfParam(i);
+      }
+    }
+  }
+
+private:
+  BRepLib_CheckCurveOnSurface_Local operator=(BRepLib_CheckCurveOnSurface_Local&);
+  const Handle(Geom_Curve)& myCurve3D;
+  const Handle(Geom2d_Curve)& myCurve2D;
+  const Handle(Geom_Surface)& mySurface;
+
+  const TColStd_Array1OfReal& mySubIntervals;
+  const Standard_Real myEpsilonRange;
+  const Standard_Integer myNbParticles;
+  mutable NCollection_Array1<Standard_Real> myArrOfDist;
+  mutable NCollection_Array1<Standard_Real> myArrOfParam;
+};
 
 //=======================================================================
 //function : BRepLib_CheckCurveOnSurface
@@ -186,7 +327,7 @@ BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface()
   myFirst(0.),
   myLast(0.),
   myErrorStatus(0),
-  myMaxDistance(0.),
+  myMaxDistance(RealLast()),
   myMaxParameter(0.)
 {
 }
@@ -200,7 +341,7 @@ BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface
    const TopoDS_Face& theFace)
 :
   myErrorStatus(0),
-  myMaxDistance(0.),
+  myMaxDistance(RealLast()),
   myMaxParameter(0.)
 {
   Init(theEdge, theFace);
@@ -218,7 +359,7 @@ BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface
    const Standard_Real theLast)
 :
   myErrorStatus(0),
-  myMaxDistance(0.),
+  myMaxDistance(RealLast()),
   myMaxParameter(0.)
 {
   Init(the3DCurve, the2DCurve, theSurface, theFirst, theLast);
@@ -232,6 +373,16 @@ void BRepLib_CheckCurveOnSurface::Init
   (const TopoDS_Edge& theEdge,
    const TopoDS_Face& theFace)
 {
+  myCurve.Nullify();
+  myPCurve.Nullify();
+  myPCurve2.Nullify();
+  mySurface.Nullify();
+  myErrorStatus = 0;
+  myMaxDistance = RealLast();
+  myMaxParameter = 0.0;
+  myFirst = 0.0;
+  myLast = 0.0;
+
   if (theEdge.IsNull() || theFace.IsNull()) {
     return;
   }
@@ -241,69 +392,22 @@ void BRepLib_CheckCurveOnSurface::Init
     return;
   }
   //
-  Standard_Boolean isPCurveFound;
   TopLoc_Location aLocE, aLocF, aLocC2D;
   //
   // 3D curve initialization
-  myCurve = Handle(Geom_Curve)::
-    DownCast(BRep_Tool::Curve(theEdge, aLocE, myFirst, myLast)->Copy());
-  myCurve->Transform(aLocE.Transformation());
-  //
+  const Handle(Geom_Curve)& aC = BRep_Tool::Curve(theEdge, aLocE, myFirst, myLast);
+  myCurve = Handle(Geom_Curve)::DownCast(aC->Transformed(aLocE.Transformation()));
+
   // Surface initialization
   const Handle(Geom_Surface)& aS = BRep_Tool::Surface(theFace, aLocF);
-  mySurface = Handle(Geom_Surface)::
-    DownCast(aS->Copy()->Transformed(aLocF.Transformation()));
+  mySurface = Handle(Geom_Surface)::DownCast(aS->Transformed(aLocF.Transformation()));
   //
   // 2D curves initialization 
-  isPCurveFound = Standard_False;
-  aLocC2D = aLocF.Predivided(aLocE);
-  const Handle(BRep_TEdge)& aTE = *((Handle(BRep_TEdge)*)&theEdge.TShape());
-  BRep_ListIteratorOfListOfCurveRepresentation itcr(aTE->Curves());
-  //
-  for (; itcr.More(); itcr.Next()) {
-    const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
-    if (cr->IsCurveOnSurface(aS, aLocC2D)) {
-      isPCurveFound = Standard_True;
-      myPCurve = cr->PCurve();
-      //
-      if (cr->IsCurveOnClosedSurface()) {
-        myPCurve2 = cr->PCurve2();
-      }
-      break;
-    }
-  }
-  //
-  if (isPCurveFound) {
-    return;
-  }
-  //
-  Handle(Geom_Plane) aPlane;
-  Handle(Standard_Type) dtyp = mySurface->DynamicType();
-  //
-  if (dtyp == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    aPlane = Handle(Geom_Plane)::
-      DownCast(Handle(Geom_RectangularTrimmedSurface)::
-               DownCast(mySurface)->BasisSurface()->Copy());
-  }
-  else {
-    aPlane = Handle(Geom_Plane)::DownCast(mySurface->Copy());
-  }
-  //
-  if (aPlane.IsNull()) { // not a plane
-    return;
-  }
-  //
-  aPlane = Handle(Geom_Plane)::DownCast(aPlane);
-  //
-  Handle(GeomAdaptor_HSurface) aGAHS = new GeomAdaptor_HSurface(aPlane);
-  Handle(Geom_Curve) aProjOnPlane = 
-    GeomProjLib::ProjectOnPlane (new Geom_TrimmedCurve(myCurve, myFirst, myLast), 
-                                 aPlane, aPlane->Position().Direction(), 
-                                 Standard_True);
-  Handle(GeomAdaptor_HCurve) aHCurve = new GeomAdaptor_HCurve(aProjOnPlane);
-  //
-  ProjLib_ProjectedCurve aProj(aGAHS, aHCurve);
-  myPCurve = Geom2dAdaptor::MakeCurve(aProj);
+  myPCurve = BRep_Tool::CurveOnSurface(theEdge, theFace, myFirst, myLast);
+
+  if(BRep_Tool::IsClosed(theEdge, theFace))
+    myPCurve2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(theEdge.Reversed()),
+                                          theFace, myFirst, myLast);
 }
 
 //=======================================================================
@@ -319,32 +423,46 @@ void BRepLib_CheckCurveOnSurface::Init
 {
   myCurve = the3DCurve;
   myPCurve = the2DCurve;
+  myPCurve2.Nullify();
   mySurface = theSurface;
   myFirst = theFirst;
   myLast  = theLast;
+  myErrorStatus = 0;
+  myMaxDistance = RealLast();
+  myMaxParameter = 0.0;
 }
 
 //=======================================================================
 //function : Perform
-//purpose  : 
+//purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Perform()
+#ifndef HAVE_TBB
+//After fixing bug # 26365, this fragment should be deleted
+//(together the text "#ifdef HAVE_TBB")
+
+void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean)
 {
+  const Standard_Boolean isTheMTDisabled = Standard_True;
+#else
+void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isTheMTDisabled)
+{
+#endif
   try {
+    OCC_CATCH_SIGNALS
     //
     // 1. Check data
     CheckData();
     if (myErrorStatus) {
       return;
     }
-    //
+
     // 2. Compute the max distance
-    Compute(myPCurve);
+    Compute(myPCurve, isTheMTDisabled);
     //
     if (!myPCurve2.IsNull()) {
       // compute max distance for myPCurve2
       // (for the second curve on closed surface)
-      Compute(myPCurve2);
+      Compute(myPCurve2, isTheMTDisabled);
     }
   }
   catch (Standard_Failure) {
@@ -354,108 +472,252 @@ void BRepLib_CheckCurveOnSurface::Perform()
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Compute
-  (const Handle(Geom2d_Curve)& thePCurve)
+void BRepLib_CheckCurveOnSurface::Compute(const Handle(Geom2d_Curve)& thePCurve,
+                                          const Standard_Boolean isTheMTDisabled)
 {
-  Standard_Integer aNbIt, aStatus;
-  Standard_Real anEpsilonRange, aMinDelta;
-  Standard_Real aFirst, aLast;
-  Standard_Real aValue, aParam, aBP;
-  Standard_Real theMaxDist, theMaxPar;
-  //
-  anEpsilonRange = 1.e-3;
-  aMinDelta = 1.e-5;
-  aFirst = myFirst;
-  aLast  = myLast;
-  //
-  BRepLib_CheckCurveOnSurface_GlobOptFunc aFunc
-    (myCurve, thePCurve, mySurface, myFirst, myLast);
-  //
-  math_Vector anOutputParam(1, 1);
-  anOutputParam(1) = aFirst;
-  theMaxDist = 0.;
-  theMaxPar = aFirst;
-  aNbIt = 100;
-  aStatus = Standard_True;
-  //
-  MinComputing(aFunc, aFirst, aLast, anEpsilonRange, theMaxDist, theMaxPar);
-  //
-  while((aNbIt-- >= 0) && aStatus) {
-    aValue = theMaxDist;
-    aParam = theMaxPar;
-    aBP = theMaxPar - aMinDelta;
+  const Standard_Real anEpsilonRange = 1.e-3;
 
-    if((aBP - aFirst) > Precision::PConfusion())
-      MinComputing(aFunc, aFirst, aBP, anEpsilonRange, theMaxDist, theMaxPar);
-    //
-    if(theMaxDist < aValue) {
-      aLast = aBP;
-      aStatus = Standard_True;
-    }
-    else {
-      theMaxDist = aValue;
-      theMaxPar = aParam;
-      aStatus = Standard_False;
-    }
-    //
-    if(!aStatus) {
-      aBP = theMaxPar + aMinDelta;
+  Standard_Integer aNbParticles = 3;
 
-      if((aLast - aBP) > Precision::PConfusion())
-        MinComputing(aFunc, aBP, aLast, 1.0e-3, theMaxDist, theMaxPar);
-      //
-      if(theMaxDist < aValue) {
-        aFirst = aBP;
-        aStatus = Standard_True;
-      }
-      else {
-        theMaxDist = aValue;
-        theMaxPar = aParam;
-        aStatus = Standard_False;
-      }
-    }
+  //Polynomial function with degree n has not more than n-1 maxima and
+  //minima (degree of 1st derivative is equal to n-1 => 1st derivative has
+  //no greater than n-1 roots). Consequently, this function has
+  //maximum n monotonicity intervals. That is a good idea to try to put
+  //at least one particle in every monotonicity interval. Therefore,
+  //number of particles should be equal to n. 
+
+  const Standard_Integer aNbSubIntervals = 
+                              FillSubIntervals( myCurve, thePCurve,
+                                                myFirst, myLast, aNbParticles);
+
+  if(!aNbSubIntervals)
+  {
+    myErrorStatus = 3;
+    return;
   }
-  //
-  theMaxDist = sqrt(Abs(theMaxDist));
-  if (theMaxDist > myMaxDistance) {
-    myMaxDistance = theMaxDist;
-    myMaxParameter = theMaxPar;
-  }  
+
+  TColStd_Array1OfReal anIntervals(1, aNbSubIntervals+1);
+  FillSubIntervals(myCurve, thePCurve, myFirst, myLast, aNbParticles, &anIntervals);
+
+  BRepLib_CheckCurveOnSurface_Local aComp(myCurve, thePCurve,
+                                mySurface, anIntervals, anEpsilonRange, aNbParticles);
+
+  OSD_Parallel::For(anIntervals.Lower(), anIntervals.Upper(), aComp, isTheMTDisabled);
+
+  aComp.OptimalValues(myMaxDistance, myMaxParameter);
+
+  myMaxDistance = sqrt(Abs(myMaxDistance));
 }
 
 //=======================================================================
-// Function : MinComputing
-// purpose : 
+// Function : FillSubIntervals
+// purpose : Divides [theFirst, theLast] interval on parts
+//            in order to make searching-algorithm more precisely
+//            (fills theSubIntervals array).
+//            Returns number of subintervals.
 //=======================================================================
-void MinComputing
-  (BRepLib_CheckCurveOnSurface_GlobOptFunc& theFunction,
-   const Standard_Real theFirst,
-   const Standard_Real theLast,
-   const Standard_Real theEpsilon, //1.0e-3
-   Standard_Real& theBestValue,
-   Standard_Real& theBestParameter)
+Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
+                                  const Handle(Geom2d_Curve)& theCurve2d,
+                                  const Standard_Real theFirst,
+                                  const Standard_Real theLast,
+                                  Standard_Integer &theNbParticles,
+                                  TColStd_Array1OfReal* const theSubIntervals)
 {
-  const Standard_Real aStepMin = 1.0e-2;
-  math_Vector aFirstV(1, 1), aLastV(1, 1), anOutputParam(1, 1);
-  aFirstV(1) = theFirst;
-  aLastV(1) = theLast;
+  const Standard_Real anArrTempC[2] = {theFirst, theLast};
+  const TColStd_Array1OfReal anArrTemp(anArrTempC[0], 1, 2);
+
+  theNbParticles = 3;
+  Handle(Geom2d_BSplineCurve) aBS2DCurv;
+  Handle(Geom_BSplineCurve) aBS3DCurv;
+
   //
-  math_GlobOptMin aFinder(&theFunction, aFirstV, aLastV);
-  aFinder.SetTol(aStepMin, theEpsilon);
-  aFinder.Perform();
-  //
-  const Standard_Integer aNbExtr = aFinder.NbExtrema();
-  for(Standard_Integer i = 1; i <= aNbExtr; i++)
+  if (theCurve3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    Standard_Real aValue = 0.0;
-    aFinder.Points(i, anOutputParam);
-    theFunction.Value(anOutputParam, aValue);
-    //
-    if(aValue < theBestValue) {
-      theBestValue = aValue;
-      theBestParameter = anOutputParam(1);
+    aBS3DCurv = Handle(Geom_BSplineCurve)::
+                      DownCast(Handle(Geom_TrimmedCurve)::
+                      DownCast(theCurve3d)->BasisCurve());
+  }
+  else
+  {
+    aBS3DCurv = Handle(Geom_BSplineCurve)::DownCast(theCurve3d);
+  }
+
+
+  if (theCurve2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+  {
+    aBS2DCurv = Handle(Geom2d_BSplineCurve)::
+                      DownCast(Handle(Geom2d_TrimmedCurve)::
+                      DownCast(theCurve2d)->BasisCurve());
+  }
+  else
+  {
+    aBS2DCurv = Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d);
+  }
+
+  const TColStd_Array1OfReal &anArrKnots3D = !aBS3DCurv.IsNull() ? 
+                                              aBS3DCurv->Knots() :
+                                              anArrTemp;
+  const TColStd_Array1OfReal &anArrKnots2D = !aBS2DCurv.IsNull() ?
+                                              aBS2DCurv->Knots() :
+                                              anArrTemp;
+
+  Standard_Integer aNbSubIntervals = 1;
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+    const Standard_Integer  anIndMax3D = anArrKnots3D.Upper(),
+                            anIndMax2D = anArrKnots2D.Upper();
+
+    Standard_Integer  anIndex3D = anArrKnots3D.Lower(),
+                      anIndex2D = anArrKnots2D.Lower();
+
+    if(theSubIntervals)
+      theSubIntervals->ChangeValue(aNbSubIntervals) = theFirst;
+
+    while((anIndex3D <= anIndMax3D) && (anIndex2D <= anIndMax2D))
+    {
+      const Standard_Real aVal3D = anArrKnots3D.Value(anIndex3D),
+                          aVal2D = anArrKnots2D.Value(anIndex2D);
+      const Standard_Real aDelta = aVal3D - aVal2D;
+
+      if(aDelta < Precision::PConfusion())
+      {//aVal3D <= aVal2D
+        if((aVal3D > theFirst) && (aVal3D < theLast))
+        {
+          aNbSubIntervals++;
+        
+          if(theSubIntervals)
+            theSubIntervals->ChangeValue(aNbSubIntervals) = aVal3D;
+        }
+
+        anIndex3D++;
+
+        if(-aDelta < Precision::PConfusion())
+        {//aVal3D == aVal2D
+          anIndex2D++;
+        }
+      }
+      else
+      {//aVal2D < aVal3D
+        if((aVal2D > theFirst) && (aVal2D < theLast))
+        {
+          aNbSubIntervals++;
+          
+          if(theSubIntervals)
+            theSubIntervals->ChangeValue(aNbSubIntervals) = aVal2D;
+        }
+
+        anIndex2D++;
+      }
+    }
+
+    if(theSubIntervals)
+      theSubIntervals->ChangeValue(aNbSubIntervals+1) = theLast;
+
+    if(!aBS3DCurv.IsNull())
+    {
+      theNbParticles = Max(theNbParticles, aBS3DCurv->Degree());
+    }
+
+    if(!aBS2DCurv.IsNull())
+    {
+      theNbParticles = Max(theNbParticles, aBS2DCurv->Degree());
     }
   }
+  catch(Standard_Failure)
+  {
+#ifdef OCCT_DEBUG
+    cout << "ERROR! BRepLib_CheckCurveOnSurface.cxx, "
+            "FillSubIntervals(): Incorrect filling!" << endl;
+#endif
+
+    aNbSubIntervals = 0;
+  }
+
+  return aNbSubIntervals;
+}
+
+//=======================================================================
+//class   : MinComputing
+//purpose : Performs computing minimal value
+//=======================================================================
+Standard_Boolean MinComputing (
+                BRepLib_CheckCurveOnSurface_TargetFunc& theFunction,
+                const Standard_Real theEpsilon, //1.0e-3
+                const Standard_Integer theNbParticles,
+                Standard_Real& theBestValue,
+                Standard_Real& theBestParameter)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    //They are used for finding a position of theNbParticles worst places
+    const Standard_Integer aNbControlPoints = 3*theNbParticles;
+    //
+    math_Vector aParInf(1, 1), aParSup(1, 1), anOutputParam(1, 1), aStepPar(1,1);
+    aParInf(1) = theFunction.FirstParameter();
+    aParSup(1) = theFunction.LastParameter();
+    theBestParameter = aParInf(1);
+    theBestValue = RealLast();
+
+    const Standard_Real aDeltaParam = aParSup(1) - aParInf(1);
+    if(aDeltaParam < Precision::PConfusion())
+        return Standard_False;
+
+    aStepPar(1) = theEpsilon*aDeltaParam;
+
+    math_PSOParticlesPool aParticles(theNbParticles, 1);
+
+    const Standard_Real aStep = aDeltaParam/(aNbControlPoints-1);
+    Standard_Integer aCount = 1;
+    for(Standard_Real aPrm = aParInf(1); aCount <= aNbControlPoints; aCount++,
+                      aPrm = (aCount == aNbControlPoints)? aParSup(1) : aPrm+aStep)
+    {
+      Standard_Real aVal = RealLast();
+      theFunction.Value(aPrm, aVal);
+
+      PSO_Particle* aParticle = aParticles.GetWorstParticle();
+
+      if(aVal > aParticle->BestDistance)
+        continue;
+
+      aParticle->Position[0] = aPrm;
+      aParticle->BestPosition[0] = aPrm;
+      aParticle->Distance     = aVal;
+      aParticle->BestDistance = aVal;
+    }
+
+    math_PSO aPSO(&theFunction, aParInf, aParSup, aStepPar);
+    aPSO.Perform(aParticles, theNbParticles, theBestValue, anOutputParam);
+
+    //Here, anOutputParam contains parameter, which is near to optimal.
+    //It needs to be more precise. Precision is made by math_NewtonMinimum.
+    math_NewtonMinimum anA(theFunction);
+    anA.Perform(theFunction, anOutputParam);
+
+    if(!anA.IsDone())
+    {
+#ifdef OCCT_DEBUG
+      cout << "BRepLib_CheckCurveOnSurface::Compute(): No solution found!" << endl;
+#endif
+      return Standard_False;
+    }
+
+    anA.Location(anOutputParam);
+    theBestParameter =  anOutputParam(1);
+    theBestValue = anA.Minimum();
+  }
+  catch(Standard_Failure)
+  {
+#ifdef OCCT_DEBUG
+    cout << "BRepLib_CheckCurveOnSurface.cxx: Exception in MinComputing()!" << endl;
+#endif
+    return Standard_False;
+  }
+
+  return Standard_True;
 }
