@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Geom_Geometry.hxx>
+#include <Geom_Curve.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -31,7 +31,6 @@ class Geom_UndefinedDerivative;
 class Geom_UndefinedValue;
 class gp_Trsf;
 class gp_GTrsf2d;
-class Geom_Curve;
 class gp_Pnt;
 class gp_Vec;
 

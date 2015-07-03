@@ -25,17 +25,11 @@
 #include <Standard_Type.hxx>
 
 typedef Geom2d_Conic         Conic;
-typedef Handle(Geom2d_Conic) Handle(Conic);
 
 typedef gp_Ax2d  Ax2d;
 typedef gp_Dir2d Dir2d;
 typedef gp_Pnt2d Pnt2d;
 typedef gp_Vec2d Vec2d;
-
-
-
-
-
 
 //=======================================================================
 //function : SetAxis

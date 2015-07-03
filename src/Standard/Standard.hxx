@@ -17,10 +17,7 @@
 #ifndef _Standard_HeaderFile
 #define _Standard_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Standard_Address.hxx>
 #include <Standard_Size.hxx>
 #include <Standard_Integer.hxx>
@@ -49,7 +46,7 @@ public:
   //! Deallocates memory blocks
   //! @param thePtr - previously allocated memory block to be freed
   Standard_EXPORT static void Free (const Standard_Address thePtr);
-
+  
   //! Template version of function Free(), nullifies the argument pointer
   //! @param thePtr - previously allocated memory block to be freed
   template <typename T>
@@ -74,7 +71,7 @@ public:
   //! Deallocates memory blocks
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
   Standard_EXPORT static void FreeAligned (const Standard_Address thePtrAligned);
-
+  
   //! Template version of function FreeAligned(), nullifies the argument pointer
   //! @param thePtrAligned the memory block previously allocated with AllocateAligned()
   template <typename T>

@@ -103,7 +103,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsSeamCurve
  const Handle(StepShape_Edge)&         StepEdge,
  const Handle(StepShape_EdgeLoop)&     EdgeLoop)
 {
-  if (!Handle(StepGeom_SeamCurve)::DownCast(SurfCurve).IsNull())
+  if (SurfCurve->IsKind(STANDARD_TYPE(StepGeom_SeamCurve)))
     return Standard_True;
   
   if (SurfCurve->NbAssociatedGeometry() != 2) return Standard_False;

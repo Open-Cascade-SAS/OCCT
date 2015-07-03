@@ -202,10 +202,7 @@ TDataXtd_Constraint::TDataXtd_Constraint()
 void TDataXtd_Constraint::SetPlane(const Handle(TNaming_NamedShape)& plane)
 {
   // OCC2932 correction
-  Handle(TNaming_NamedShape) aPlane =
-    Handle(TNaming_NamedShape)::DownCast(myPlane);
-  if (aPlane.IsNull() == Standard_False && plane.IsNull() == Standard_False)
-    if ( aPlane -> Get() == plane->Get())
+  if (! myPlane.IsNull() && ! plane.IsNull() && myPlane->Get() == plane->Get())
       return;
 
   Backup();
@@ -218,7 +215,7 @@ void TDataXtd_Constraint::SetPlane(const Handle(TNaming_NamedShape)& plane)
 //=======================================================================
 const Handle(TNaming_NamedShape)&  TDataXtd_Constraint::GetPlane() const 
 {
-  return Handle(TNaming_NamedShape)::DownCast (myPlane);
+  return myPlane;
 }
 
 //=======================================================================

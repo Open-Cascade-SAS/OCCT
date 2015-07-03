@@ -222,6 +222,17 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
 }
 
 // =======================================================================
+// function : SetActiveView
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::SetActiveView (const Handle(OpenGl_View)& theView,
+                                      const Standard_Integer     theViewId)
+{
+  myView   = theView;
+  myViewId = theViewId;
+}
+
+// =======================================================================
 // function : SetImmediateModeDrawToFront
 // purpose  :
 // =======================================================================

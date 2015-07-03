@@ -20,12 +20,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
+
 class TCollection_ExtendedString;
 class TCollection_AsciiString;
 class TCollection_HAsciiString;

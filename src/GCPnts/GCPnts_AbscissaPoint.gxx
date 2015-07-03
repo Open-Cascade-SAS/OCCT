@@ -89,7 +89,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
     return;
   }
 
-  Standard_Real Ratio;
+  Standard_Real Ratio = 1.;
   GCPnts_AbscissaType Type = computeType(C,Ratio);
 
   switch (Type) {

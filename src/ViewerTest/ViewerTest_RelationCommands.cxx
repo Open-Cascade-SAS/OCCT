@@ -814,7 +814,6 @@ static int VDiameterDimBuilder(Draw_Interpretor& di, Standard_Integer argc, cons
 {
   // Declarations
   Standard_Integer aCurrentIndex;
-  Standard_Real aRadius;
 
   // Verification
   if (argc != 2)
@@ -866,9 +865,6 @@ static int VDiameterDimBuilder(Draw_Interpretor& di, Standard_Integer argc, cons
     di << "vdiameterdim error: the edge is not a circular one." << "\n";
     return 1;
   }
-
-  gp_Circ aCircle = aCurve.Circle();
-  aRadius = 2.0 * aCircle.Radius();
 
   // Construction of the diameter dimension.
   TheAISContext()->CloseLocalContext (aCurrentIndex);
@@ -1741,7 +1737,6 @@ static int VRadiusDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const 
 {
   // Declarations
   Standard_Integer aCurrentIndex;
-  Standard_Real aRadius;
   TopoDS_Edge anEdge;
   // Verification
   if (argc != 2)
@@ -1807,12 +1802,6 @@ static int VRadiusDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const 
   {
     di << argv[0] << " error: the edge is not a circular one." << "\n";
     return 1;
-  }
-  else
-  {
-    gp_Circ aCircle = aCurve.Circle();
-    aRadius = aCircle.Radius();
-    aRadius = Round (aRadius * 10.0) / 10.0;
   }
   // Close the context
   TheAISContext()->CloseLocalContext (aCurrentIndex);
@@ -2616,7 +2605,6 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
 
   Handle(AIS_InteractiveObject) aPickedObj;
   gp_Pnt aPoint (gp::Origin());
-  Standard_Integer aCurrentIndex = 0;
   Standard_Integer aMaxPickNum = 5;
 
   // Find object
@@ -2650,7 +2638,6 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
 
     // Open local context and get its index for recovery.
     TheAISContext()->OpenLocalContext();
-    aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
 
     // Loop that will be handle picking.
     Standard_Integer anArgNum = 5;

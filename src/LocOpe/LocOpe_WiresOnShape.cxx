@@ -594,7 +594,7 @@ void PutPCurve(const TopoDS_Edge& Edg,
   Handle(Standard_Type) styp = S->DynamicType();
 
   if (styp == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S = (*((Handle(Geom_RectangularTrimmedSurface)*)&(S)))->BasisSurface();
+    S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
     styp = S->DynamicType();
   }
 
@@ -823,7 +823,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
       S = BRep_Tool::Surface(Fac, LocFac);
       styp = S->DynamicType();
       if (styp == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-	S = (*((Handle(Geom_RectangularTrimmedSurface)*)&(S)))->BasisSurface();
+	S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
 	styp = S->DynamicType();
       }
       if (styp == STANDARD_TYPE(Geom_Plane)) {
@@ -1031,7 +1031,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
       S = BRep_Tool::Surface(Fac);
       styp = S->DynamicType();
       if (styp == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-	S = (*((Handle(Geom_RectangularTrimmedSurface)*)&(S)))->BasisSurface();
+	S = Handle(Geom_RectangularTrimmedSurface)::DownCast (S)->BasisSurface();
 	styp = S->DynamicType();
       }
       

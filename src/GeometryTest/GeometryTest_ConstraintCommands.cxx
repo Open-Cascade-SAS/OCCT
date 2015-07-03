@@ -753,7 +753,7 @@ static Standard_Integer gcarc (Draw_Interpretor& di,Standard_Integer n, const ch
     if (!strcmp(a[2], "seg")) {
       if (DrawTrSurf::GetPoint(a[3], P1)) {
         if (DrawTrSurf::GetPoint(a[4], P2)) {
-          Handle(Geom_Curve) theline = GC_MakeSegment(P1,P2).Value();
+          Handle(Geom_Curve) theline (GC_MakeSegment(P1,P2).Value());
           DrawTrSurf::Set(a[1], theline);
           return 1;
         }
@@ -767,12 +767,12 @@ static Standard_Integer gcarc (Draw_Interpretor& di,Standard_Integer n, const ch
             if (n>6) {
               DrawTrSurf::GetPoint(a[6], P4);
               gp_Vec V1 = gp_Vec(P2,P3);                                                    
-              Handle(Geom_Curve)thearc = GC_MakeArcOfCircle(P1,V1,P4).Value();
+              Handle(Geom_Curve)thearc (GC_MakeArcOfCircle(P1,V1,P4).Value());
               DrawTrSurf::Set(a[1], thearc);
               return 1;
             }
             else {
-              Handle(Geom_Curve)thearc = GC_MakeArcOfCircle(P1,P2,P3).Value();
+              Handle(Geom_Curve)thearc (GC_MakeArcOfCircle(P1,P2,P3).Value());
               DrawTrSurf::Set(a[1], thearc);
               return 1;
             }

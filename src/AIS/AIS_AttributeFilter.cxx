@@ -39,25 +39,16 @@ hasW(Standard_True){}
 
 Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj) const 
 {
-  if (Handle(AIS_InteractiveObject)::DownCast(anObj->Selectable()).IsNull()) return Standard_False;
+  Handle(AIS_InteractiveObject) aSelectable (Handle(AIS_InteractiveObject)::DownCast (anObj->Selectable()));
+  if (aSelectable.IsNull())
+    return Standard_False;
+  
   Standard_Boolean okstat = Standard_True;
-
-//#ifndef OCCT_DEBUG
-  Handle(SelectMgr_SelectableObject) aSelectable = anObj->Selectable() ;
-  if( hasC && Handle(AIS_InteractiveObject)::DownCast (aSelectable)->HasColor() )
-//#else
-//  if(hasC && ((Handle(AIS_InteractiveObject)&) anObj->Selectable())->HasColor())
-//#endif
+  if( hasC && aSelectable->HasColor() )
     okstat =  (myCol == Handle(AIS_InteractiveObject)::DownCast (anObj)->Color());
 
-//#ifndef OCCT_DEBUG
-  aSelectable = anObj->Selectable() ;
-  if( hasW && Handle(AIS_InteractiveObject)::DownCast (aSelectable)->HasWidth() )
-//#else
-//  if(hasW && ((Handle(AIS_InteractiveObject)&) anObj->Selectable())->HasWidth())
-//#endif
+  if( hasW && aSelectable->HasWidth() )
     okstat =  (myWid == Handle(AIS_InteractiveObject)::DownCast (anObj)->Width()) && okstat;
 
   return okstat;
-  
 }

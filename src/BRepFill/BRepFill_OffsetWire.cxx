@@ -1274,7 +1274,7 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
   Standard_Real    U1,U2;
   TopoDS_Vertex    V1,V2;
 
-  Handle(Geom2d_Curve) Bis = Bisec.Value();
+  Handle(Geom2d_Curve) Bis (Bisec.Value());
 
   U1 = Bis->FirstParameter();
   

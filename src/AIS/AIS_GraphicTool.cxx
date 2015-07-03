@@ -49,10 +49,10 @@ static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
     return Dr->VectorAspect();
     break;
   case AIS_TOA_UIso:
-    return Dr->UIsoAspect();
+    return Handle(Prs3d_LineAspect) (Dr->UIsoAspect());
     break;
   case AIS_TOA_VIso:
-    return Dr->VIsoAspect();
+    return Handle(Prs3d_LineAspect) (Dr->VIsoAspect());
     break;
   case AIS_TOA_Free:
     return Dr->FreeBoundaryAspect();

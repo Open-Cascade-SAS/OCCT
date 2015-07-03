@@ -108,9 +108,10 @@ IGESBasic_Group::IGESBasic_Group ()    {  InitTypeAndForm(402,1);  }
   (const Standard_Integer Index) const
       {  return theEntities->Value(Index);  }
 
-    Handle(Standard_Transient)  IGESBasic_Group::Value
-  (const Standard_Integer Index) const
-      {  return theEntities->Value(Index);  }
+Handle(Standard_Transient) IGESBasic_Group::Value (const Standard_Integer Index) const
+{ 
+  return Handle(Standard_Transient) (theEntities->Value(Index));
+}
 
     void  IGESBasic_Group::SetValue
   (const Standard_Integer Index, const Handle(IGESData_IGESEntity)& ent)

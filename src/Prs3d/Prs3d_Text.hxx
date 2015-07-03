@@ -23,11 +23,11 @@
 
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_TextAspect.hxx>
+
 class Prs3d_Presentation;
 class TCollection_ExtendedString;
 class gp_Pnt;
-class Prs3d_TextAspect;
-
 
 //! A framework to define the display of texts.
 class Prs3d_Text  : public Prs3d_Root

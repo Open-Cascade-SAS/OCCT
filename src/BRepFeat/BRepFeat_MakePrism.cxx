@@ -1226,8 +1226,7 @@ static Handle(Geom_Curve) TestCurve(const TopoDS_Shape& Base,
 //purpose  : face SameDomaine or not
 //=======================================================================
 
-Standard_Boolean ToFuse(const TopoDS_Face& F1,
-			const TopoDS_Face& F2)
+static Standard_Boolean ToFuse (const TopoDS_Face& F1, const TopoDS_Face& F2)
 {
   if (F1.IsNull() || F2.IsNull()) {
     return Standard_False;
@@ -1262,10 +1261,14 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
 
   Standard_Boolean ValRet = Standard_False;
   if (typS1 == STANDARD_TYPE(Geom_Plane)) {
-    S1 = BRep_Tool::Surface(F1);  // to apply the location.
-    S2 = BRep_Tool::Surface(F2);
     gp_Pln pl1( Handle(Geom_Plane)::DownCast (S1)->Pln());
     gp_Pln pl2( Handle(Geom_Plane)::DownCast (S2)->Pln());
+
+    // apply locations
+    if (! loc1.IsIdentity())
+      pl1.Transform (loc1.Transformation());
+    if (! loc2.IsIdentity())
+      pl2.Transform (loc2.Transformation());
 
     if (pl1.Position().IsCoplanar(pl2.Position(),tollin,tolang)) {
       ValRet = Standard_True;

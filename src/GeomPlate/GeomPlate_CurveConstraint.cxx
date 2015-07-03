@@ -312,7 +312,7 @@ void GeomPlate_CurveConstraint :: SetProjectedCurve (const Handle(Adaptor2d_HCur
 //---------------------------------------------------------
 Handle(Adaptor3d_HCurve) GeomPlate_CurveConstraint :: Curve3d () const
 { if (my3dCurve.IsNull())
-    return myFrontiere;
+    return Handle(Adaptor3d_HCurve) (myFrontiere);
   else
     return my3dCurve;
 }

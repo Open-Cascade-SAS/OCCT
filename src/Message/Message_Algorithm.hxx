@@ -21,15 +21,18 @@
 
 #include <Message_ExecStatus.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
-#include <Message_HArrayOfMsg.hxx>
 #include <MMgt_TShared.hxx>
 #include <Message_Status.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Message_Gravity.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
 #include <TColStd_HSequenceOfHExtendedString.hxx>
 #include <TColStd_SequenceOfHExtendedString.hxx>
+#include <Message_HArrayOfMsg.hxx>
+
 class Message_Messenger;
 class TCollection_AsciiString;
 class TCollection_HAsciiString;

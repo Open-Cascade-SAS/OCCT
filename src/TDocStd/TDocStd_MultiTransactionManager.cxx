@@ -194,7 +194,7 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
     else
       anOS << "There are " << myDocuments.Length() << " documents ( ";
     for(i = 1; i <= myDocuments.Length(); i++) {
-      Handle(Standard_Transient) aDoc = myDocuments.Value(i);
+      Handle(Standard_Transient) aDoc (myDocuments.Value(i));
       anOS << "\"" << aDoc.get();
       anOS << "\" ";
     }

@@ -134,6 +134,6 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d
 const Handle(StepGeom_Axis2Placement3d) &
       GeomToStep_MakeAxis2Placement3d::Value() const
 {
-  StdFail_NotDone_Raise_if(!done == Standard_True,"");
+  StdFail_NotDone_Raise_if(!done,"");
   return theAxis2Placement3d;
 }

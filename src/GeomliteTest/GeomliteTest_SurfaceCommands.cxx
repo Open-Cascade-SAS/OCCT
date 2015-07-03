@@ -644,8 +644,8 @@ static Standard_Integer convbz(Draw_Interpretor& di,
   Standard_Real Tol = Precision::Confusion();
   
   NbU = Draw::Atoi(a[2]);
-  if ( (Handle(Geom_Curve)::
-	DownCast(DrawTrSurf::Get(a[3]))).IsNull()) {	
+  Handle(Geom_Curve) aCurve (Handle(Geom_Curve)::DownCast(DrawTrSurf::Get(a[3])));
+  if (aCurve.IsNull()) {
     // Cas Surfacique
     NbV = Draw::Atoi(a[3]);
     if (n<4+NbU*NbV) {

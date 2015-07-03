@@ -51,13 +51,14 @@ Standard_Boolean AIS_BadEdgeFilter::ActsOn(const TopAbs_ShapeEnum aType) const
 
 Standard_Boolean AIS_BadEdgeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
 {
-  if (Handle(StdSelect_BRepOwner)::DownCast(EO).IsNull())
-    return Standard_True;
-
   if (myContour==0)
     return Standard_True;
 
-  const TopoDS_Shape& aShape = Handle(StdSelect_BRepOwner)::DownCast (EO)->Shape();
+  Handle(StdSelect_BRepOwner) aBO (Handle(StdSelect_BRepOwner)::DownCast(EO));
+  if (aBO.IsNull())
+    return Standard_True;
+
+  const TopoDS_Shape& aShape = aBO->Shape();
 
   if (myBadEdges.IsBound(myContour)) {
     TopTools_ListIteratorOfListOfShape it(myBadEdges.Find(myContour));

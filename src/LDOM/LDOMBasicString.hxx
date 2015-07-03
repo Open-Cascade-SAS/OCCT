@@ -21,6 +21,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+class LDOM_MemManager;
 class LDOM_NullPtr;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;

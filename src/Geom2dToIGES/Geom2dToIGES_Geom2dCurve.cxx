@@ -30,6 +30,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dToIGES_Geom2dCurve.hxx>
 #include <Geom2dToIGES_Geom2dEntity.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAPI.hxx>
 #include <GeomToIGES_GeomCurve.hxx>
 #include <gp.hxx>

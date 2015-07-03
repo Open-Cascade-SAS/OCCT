@@ -159,10 +159,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   //						     endPoint,
   //						     origin.Location(),
   //						     Standard_True).Value();
-  Handle(Geom_Curve) SpineCurve = GC_MakeArcOfCircle(circle,
-                                                     0.0,
-                                                     bend_angle,
-						     Standard_True).Value();
+  Handle(Geom_Curve) SpineCurve (GC_MakeArcOfCircle (circle, 0.0, bend_angle, Standard_True).Value());
 
   // SUPPORT:
   // - Use correct formula for scaling laws
@@ -500,10 +497,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   BRepBuilderAPI_MakeFace mkFace;
 
-  Handle(Geom_Curve) SpineCurve = GC_MakeArcOfCircle(circle,
-						     endPoint,
-						     origin.Location(),
-						     Standard_True).Value();
+  Handle(Geom_Curve) SpineCurve (GC_MakeArcOfCircle (circle, endPoint, origin.Location(), Standard_True).Value());
   Handle(Law_Linear) myLaw = new Law_Linear();
   Handle(Law_Linear) myLaw2 = new Law_Linear();
 

@@ -39,10 +39,10 @@ Handle(Aspect_Grid) V3d_Viewer::Grid() const
 {
   switch (myGridType)
   {
-    case Aspect_GT_Circular:    return myCGrid;
-    case Aspect_GT_Rectangular: return myRGrid;
+  case Aspect_GT_Circular:    return Handle(Aspect_Grid) (myCGrid);
+  case Aspect_GT_Rectangular: return Handle(Aspect_Grid) (myRGrid);
   }
-  return myRGrid;
+  return Handle(Aspect_Grid) (myRGrid);
 }
 
 // =======================================================================

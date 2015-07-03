@@ -25,6 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <TDF_LabelList.hxx>
 #include <Standard_OStream.hxx>
+
 class TDataStd_Real;
 class TDF_Attribute;
 class Standard_GUID;
@@ -207,18 +208,10 @@ private:
   TDataXtd_ConstraintEnum myType;
   Handle(TDataStd_Real) myValue;
   Handle(TDF_Attribute) myGeometries[4];
-  Handle(TDF_Attribute) myPlane;
+  Handle(TNaming_NamedShape) myPlane;
   Standard_Boolean myIsReversed;
   Standard_Boolean myIsInverted;
   Standard_Boolean myIsVerified;
-
-
 };
-
-
-
-
-
-
 
 #endif // _TDataXtd_Constraint_HeaderFile

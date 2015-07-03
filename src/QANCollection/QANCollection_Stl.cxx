@@ -489,6 +489,7 @@ void TestForwardIterator ()
 
   typename CollectionType::const_iterator::value_type ct = *cit;
   ct = *cit;
+  (void)ct;
 //  *cit2 = ct;
 //  *(cit2.operator-> ()) = t;
 

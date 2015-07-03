@@ -33,10 +33,6 @@
 #include <memory>
 #include <typeinfo>
 
-#if defined(__GNUC__) && __cplusplus < 201103L
-#include <tr1/memory>
-#endif
-
 // auxiliary macro to check and report status
 #define CHECK(di,ok,what) di << "Checking " << what << (ok ? ": OK\n" : ": Error\n")
 
@@ -393,7 +389,7 @@ static Standard_Integer QAHandleInc (Draw_Interpretor& theDI,
   }
 
   Handle(Standard_Transient) aHandle  = new Standard_Transient();
-  std::tr1::shared_ptr<Standard_Transient> aSharePtr (new Standard_Transient());
+  std::shared_ptr<Standard_Transient> aSharePtr (new Standard_Transient());
   theDI << "Time of creating and destroying " << aNbIters << " smart pointers to the same object, per item, ns:";
   {
     {
@@ -409,7 +405,7 @@ static Standard_Integer QAHandleInc (Draw_Interpretor& theDI,
     {
       QATimer aTimer (theDI, "\nsC++ shared_ptr: ", QATimer::ns, aNbIters);
       {
-        std::vector< std::tr1::shared_ptr<Standard_Transient> > aSharePointers (aNbIters);
+        std::vector< std::shared_ptr<Standard_Transient> > aSharePointers (aNbIters);
         for (Standard_Integer anIter = 0; anIter < aNbIters; ++anIter)
         {
           aSharePointers[anIter] = aSharePtr;
@@ -461,14 +457,14 @@ namespace
     template<typename TFrom>
     static void doShareCast (Draw_Interpretor& theDI,
                              const Standard_Integer        theNbIters,
-                             const std::tr1::shared_ptr<TFrom>& theSharePtr)
+                             const std::shared_ptr<TFrom>& theSharePtr)
     {
-      std::vector< std::tr1::shared_ptr<typename TTo::element_type> > aSharePointers (theNbIters);
+      std::vector< std::shared_ptr<typename TTo::element_type> > aSharePointers (theNbIters);
       {
         QATimer aTimer (theDI, " ", QATimer::ns, theNbIters);
         for (Standard_Integer anIter = 0; anIter < theNbIters; ++anIter)
         {
-          aSharePointers[anIter] = std::tr1::dynamic_pointer_cast<typename TTo::element_type, TFrom> (theSharePtr);
+          aSharePointers[anIter] = std::dynamic_pointer_cast<typename TTo::element_type, TFrom> (theSharePtr);
         }
       }
     }
@@ -524,7 +520,7 @@ namespace
     }
     theDI << "\nC++ dynamic_pointer_cast: ";
     {
-      std::tr1::shared_ptr<typename TAs::element_type> aPtr ((typename TAs::element_type* )theInst.Clone());
+      std::shared_ptr<typename TAs::element_type> aPtr ((typename TAs::element_type* )theInst.Clone());
       QA_TEST_CAST10(0, doShareCast);
       QA_TEST_CAST10(1, doShareCast);
       QA_TEST_CAST10(2, doShareCast);

@@ -53,9 +53,14 @@ StdSelect_TypeOfFace StdSelect_FaceFilter::Type() const
 Standard_Boolean StdSelect_FaceFilter::
 IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
 {
-  if (Handle(StdSelect_BRepOwner)::DownCast(EO).IsNull()) return Standard_False;
-  const TopoDS_Shape& anobj= Handle(StdSelect_BRepOwner)::DownCast (EO)->Shape();
-  if(anobj.ShapeType()!= TopAbs_FACE)return Standard_False;  
+  Handle(StdSelect_BRepOwner) aBO (Handle(StdSelect_BRepOwner)::DownCast(EO));
+  if (aBO.IsNull())
+    return Standard_False;
+
+  const TopoDS_Shape& anobj = aBO->Shape();
+  if(anobj.ShapeType()!= TopAbs_FACE)
+    return Standard_False;  
+
   switch(mytype) {
   case StdSelect_AnyFace:
     return Standard_True;

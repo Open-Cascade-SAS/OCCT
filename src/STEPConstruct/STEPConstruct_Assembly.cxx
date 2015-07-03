@@ -143,7 +143,7 @@ void STEPConstruct_Assembly::MakeRelationship ()
 
 Handle(Standard_Transient)  STEPConstruct_Assembly::ItemValue () const
 {
-  if (theval.IsNull()) return thesr;
+  if (theval.IsNull()) return Handle(Standard_Transient) (thesr);
   return theval;
 }
 

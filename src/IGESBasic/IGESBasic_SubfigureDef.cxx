@@ -61,8 +61,7 @@ IGESBasic_SubfigureDef::IGESBasic_SubfigureDef ()    {  }
   return theAssocEntities->Value(Index);
 }
 
-    Handle(Standard_Transient) IGESBasic_SubfigureDef::Value
-  (const Standard_Integer Index) const
+Handle(Standard_Transient) IGESBasic_SubfigureDef::Value (const Standard_Integer Index) const
 {
-  return theAssocEntities->Value(Index);
+  return Handle(Standard_Transient) (theAssocEntities->Value(Index));
 }

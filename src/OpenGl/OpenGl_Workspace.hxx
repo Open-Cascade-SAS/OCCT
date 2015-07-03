@@ -63,6 +63,7 @@ class OpenGl_FrameBuffer;
 class OpenGl_Structure;
 class OpenGl_TriangleSet;
 class OpenGl_Element;
+class OpenGl_View;
 class Image_PixMap;
 
 //! OpenGL material definition
@@ -148,11 +149,7 @@ public:
   virtual ~OpenGl_Workspace();
 
   void SetActiveView (const Handle(OpenGl_View)& theView,
-                      const Standard_Integer     theViewId)
-  {
-    myView   = theView;
-    myViewId = theViewId;
-  }
+                      const Standard_Integer     theViewId);
 
   const Handle(OpenGl_View)& ActiveView() const { return myView; }
 

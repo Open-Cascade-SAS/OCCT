@@ -78,10 +78,11 @@ Standard_Boolean AIS_C0RegularityFilter::ActsOn(const TopAbs_ShapeEnum aType) co
 
 Standard_Boolean AIS_C0RegularityFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
 {
-  if (Handle(StdSelect_BRepOwner)::DownCast(EO).IsNull())
+  Handle(StdSelect_BRepOwner) aBO (Handle(StdSelect_BRepOwner)::DownCast(EO));
+  if (aBO.IsNull())
     return Standard_False;
 
-  const TopoDS_Shape& aShape = Handle(StdSelect_BRepOwner)::DownCast (EO)->Shape();
+  const TopoDS_Shape& aShape = aBO->Shape();
 
   if(aShape.ShapeType()!= TopAbs_EDGE)
     return Standard_False;

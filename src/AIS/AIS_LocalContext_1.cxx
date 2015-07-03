@@ -1307,8 +1307,8 @@ void AIS_LocalContext::ClearSensitive(const Handle(V3d_View)& aviou)
 //=======================================================================
 Standard_Boolean AIS_LocalContext::IsShape(const Standard_Integer Index) const
 {
-  
-  if(Handle(StdSelect_BRepOwner)::DownCast(myMapOfOwner->FindKey(Index)).IsNull())
+  Handle(SelectMgr_EntityOwner) aEO (myMapOfOwner->FindKey(Index));
+  if (aEO.IsNull() || ! aEO->IsKind(STANDARD_TYPE(StdSelect_BRepOwner)))
     return Standard_False;
   return 
     ComesFromDecomposition(Index);

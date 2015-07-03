@@ -639,7 +639,7 @@ void XSControl_WorkSession::ClearBinders()
     Handle(Transfer_Binder) bnd = FP->MapItem ( i );
     if(!bnd.IsNull())
       aSeqBnd.Append(bnd);
-    Handle(Standard_Transient) ash = FP->Mapped(i);
+    Handle(Standard_Transient) ash (FP->Mapped(i));
     aSeqShapes.Append(ash);
   }
   //removing finder process containing result of translation.

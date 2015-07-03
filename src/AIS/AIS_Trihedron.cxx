@@ -130,7 +130,7 @@ void AIS_Trihedron::SetSize(const Standard_Real aValue)
   myDrawer->DatumAspect()->SetAxisLength(aValue,aValue,aValue);
   
   for(Standard_Integer i=4;i<=6;i++) 
-    (*((Handle(AIS_Plane)*)&myShapes[i]))->SetSize(aValue);
+    Handle(AIS_Plane)::DownCast (myShapes[i])->SetSize(aValue);
 
   Update();
   UpdateSelection();

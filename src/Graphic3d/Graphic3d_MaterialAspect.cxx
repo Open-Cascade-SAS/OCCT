@@ -128,7 +128,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
       myBSDF.Le = Graphic3d_Vec3 (static_cast<Standard_ShortReal> (myDiffuseColor.Red()),
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Green()),
                                   static_cast<Standard_ShortReal> (myDiffuseColor.Blue()));
-      myBSDF.Fresnel == Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.3f, 0.3f, 0.3f));
+      myBSDF.Fresnel = Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.3f, 0.3f, 0.3f));
       break;
     case Graphic3d_NOM_METALIZED:
       myShininess    = Standard_ShortReal (0.13);
@@ -368,7 +368,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
 
       myBSDF.Kr = Graphic3d_Vec3 (0.207843f, 0.207843f, 0.207843f);
       myBSDF.Le = Graphic3d_Vec3 (0.0f, 1.0f, 0.46f);
-      myBSDF.Fresnel == Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.3f, 0.3f, 0.3f));
+      myBSDF.Fresnel = Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.3f, 0.3f, 0.3f));
       break;
     case Graphic3d_NOM_OBSIDIAN:
       myMaterialType = Graphic3d_MATERIAL_PHYSIC;

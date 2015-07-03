@@ -43,6 +43,7 @@
 #include <STEPConstruct_Part.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>

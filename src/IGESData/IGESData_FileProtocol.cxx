@@ -41,7 +41,7 @@ IGESData_FileProtocol::IGESData_FileProtocol ()    {  }
   (const Standard_Integer num) const
 {
   Handle(IGESData_Protocol) res;
-  if (num == 1) return theresource;
+  if (num == 1) return Handle(Interface_Protocol) (theresource);
   else if (!thenext.IsNull()) return thenext->Resource(num-1);
   return res;  // Null
 }

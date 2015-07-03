@@ -17,18 +17,12 @@
 #ifndef _Adaptor3d_TopolTool_HeaderFile
 #define _Adaptor3d_TopolTool_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <MMgt_TShared.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Address.hxx>
+#include <Adaptor3d_HVertex.hxx>
+
 class Adaptor2d_HLine2d;
 class Adaptor3d_HVertex;
 class Adaptor3d_HSurface;

@@ -2900,21 +2900,22 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)& S,
 	      IsV2degen = Standard_True;
 	    }
 	}
-      S = new Geom_RectangularTrimmedSurface( S, u1, u2, v1, v2 );
+      Handle(Geom_BoundedSurface) aSurf = new Geom_RectangularTrimmedSurface( S, u1, u2, v1, v2 );
       if (enlargeU)
 	{
 	  if (enlargeUfirst)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_False );
+	    GeomLib::ExtendSurfByLength (aSurf, du, 1, Standard_True, Standard_False);
 	  if (enlargeUlast)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_True );
+	    GeomLib::ExtendSurfByLength (aSurf, du, 1, Standard_True, Standard_True);
 	}
       if (enlargeV)
 	{
 	  if (enlargeVfirst)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_False );
+	    GeomLib::ExtendSurfByLength (aSurf, dv, 1, Standard_False, Standard_False);
 	  if (enlargeVlast)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_True );
+	    GeomLib::ExtendSurfByLength (aSurf, dv, 1, Standard_False, Standard_True);
 	}
+      S = aSurf;
       S->Bounds( U1, U2, V1, V2 );
       SurfaceChange = Standard_True;
     }
@@ -2967,20 +2968,22 @@ static Standard_Boolean EnlargeGeometry(Handle(Geom_Surface)& S,
 	    }
 	}
 
+      Handle(Geom_BoundedSurface) aSurf = Handle(Geom_BoundedSurface)::DownCast (S);
       if (enlargeU)
 	{
 	  if (enlargeUfirst && uf1-u1 < duf)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_False );
+	    GeomLib::ExtendSurfByLength (aSurf, du, 1, Standard_True, Standard_False);
 	  if (enlargeUlast && u2-uf2 < duf)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), du, 1, Standard_True, Standard_True );
+	    GeomLib::ExtendSurfByLength (aSurf, du, 1, Standard_True, Standard_True);
 	}
       if (enlargeV)
 	{
 	  if (enlargeVfirst && vf1-v1 < dvf)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_False );
+	    GeomLib::ExtendSurfByLength (aSurf, dv, 1, Standard_False, Standard_False);
 	  if (enlargeVlast && v2-vf2 < dvf)
-	    GeomLib::ExtendSurfByLength( Handle(Geom_BoundedSurface)::DownCast (S), dv, 1, Standard_False, Standard_True );
+	    GeomLib::ExtendSurfByLength (aSurf, dv, 1, Standard_False, Standard_True);
 	}
+      S = aSurf;
 
       S->Bounds( U1, U2, V1, V2 );
       SurfaceChange = Standard_True;

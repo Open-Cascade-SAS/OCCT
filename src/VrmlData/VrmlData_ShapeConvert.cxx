@@ -375,7 +375,7 @@ Handle(VrmlData_Geometry) VrmlData_ShapeConvert::triToIndexedFaceSet
       new VrmlData_Normal (myScene, 0L, nNodes, arrVec);
     myScene.AddNode (aNormalNode, Standard_False);
     aFaceSet->SetNormals (aNormalNode);
-    return aFaceSet;
+    return Handle(VrmlData_Geometry) (aFaceSet);
   }
 
   Poly_Connect PC(theTri);
@@ -449,7 +449,7 @@ Handle(VrmlData_Geometry) VrmlData_ShapeConvert::triToIndexedFaceSet
     }
   }
 
-  return aFaceSet;
+  return Handle(VrmlData_Geometry) (aFaceSet);
 }
 
 //=======================================================================
@@ -492,7 +492,7 @@ Handle(VrmlData_Geometry) VrmlData_ShapeConvert::polToIndexedLineSet
   myScene.AddNode (aCoordNode, Standard_False);
   aLineSet->SetCoordinates (aCoordNode);
 
-  return aLineSet;
+  return Handle(VrmlData_Geometry) (aLineSet);
 }
 
 //=======================================================================

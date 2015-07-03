@@ -81,7 +81,7 @@ Handle(Aspect_ColorScale) V3d_LayerMgr::ColorScale() const
     that->myColorScaleLayerItem = new V3d_ColorScaleLayerItem( that->myColorScale );
   }
 
-  return myColorScale;
+  return Handle(Aspect_ColorScale) (myColorScale);
 }
 
 Standard_Boolean V3d_LayerMgr::Begin()

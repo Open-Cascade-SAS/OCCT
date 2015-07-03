@@ -29,17 +29,6 @@
 
 namespace
 {
-  //! Convert index data type from size
-  inline GLenum toGlIndexType (const Standard_Integer theStride)
-  {
-    switch (theStride)
-    {
-      case 2:  return GL_UNSIGNED_SHORT;
-      case 4:  return GL_UNSIGNED_INT;
-      default: return GL_NONE;
-    }
-  }
-
   //! Convert data type to GL info
   inline GLenum toGlDataType (const Graphic3d_TypeOfData theType,
                               GLint&                     theNbComp)

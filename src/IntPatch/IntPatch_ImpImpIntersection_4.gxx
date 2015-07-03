@@ -2567,7 +2567,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
           Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
           Standard_Boolean isForce = Standard_False;
 
-          if((aWLFindStatus[i] == WLFStatus_Absent))
+          if (aWLFindStatus[i] == WLFStatus_Absent)
           {
             if(((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1-aUSurf1l) < theTol2D))
             {

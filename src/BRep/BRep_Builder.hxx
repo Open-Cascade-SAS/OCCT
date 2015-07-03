@@ -22,9 +22,14 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Builder.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+
 class Standard_NullObject;
 class Standard_DomainError;
 class TopoDS_Face;

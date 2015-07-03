@@ -22,20 +22,16 @@
 #include <Standard_Handle.hxx>
 
 #include <AppParCurves_MultiPoint.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_OStream.hxx>
-class MMgt_TShared;
+#include <TColgp_HArray1OfVec.hxx>
+#include <TColgp_HArray1OfVec2d.hxx>
+
 class Standard_OutOfRange;
 class Standard_ConstructionError;
 class Standard_DimensionError;
 class gp_Vec;
 class gp_Vec2d;
-
 
 //! Describes a MultiPointConstraint used in a
 //! Multiline. MultiPointConstraints are composed
@@ -181,31 +177,11 @@ public:
   //! Is used to redefine the operator <<.
   Standard_EXPORT virtual void Dump (Standard_OStream& o) const Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
-
-  Handle(MMgt_TShared) ttabTang;
-  Handle(MMgt_TShared) ttabCurv;
-  Handle(MMgt_TShared) ttabTang2d;
-  Handle(MMgt_TShared) ttabCurv2d;
-
-
+  Handle(TColgp_HArray1OfVec) tabTang;
+  Handle(TColgp_HArray1OfVec) tabCurv;
+  Handle(TColgp_HArray1OfVec2d) tabTang2d;
+  Handle(TColgp_HArray1OfVec2d) tabCurv2d;
 };
-
-
-
-
-
-
 
 #endif // _AppDef_MultiPointConstraint_HeaderFile

@@ -65,9 +65,11 @@ StdSelect_TypeOfEdge StdSelect_EdgeFilter::Type() const
 //==================================================
 Standard_Boolean StdSelect_EdgeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& EO) const 
 {
-  if (Handle(StdSelect_BRepOwner)::DownCast(EO).IsNull()) return Standard_False;
-  
-  const TopoDS_Shape& sh = Handle(StdSelect_BRepOwner)::DownCast (EO)->Shape();
+  Handle(StdSelect_BRepOwner) aBO (Handle(StdSelect_BRepOwner)::DownCast(EO));
+  if (aBO.IsNull())
+    return Standard_False;
+
+  const TopoDS_Shape& sh = aBO->Shape();
   if(sh.ShapeType()!= TopAbs_EDGE) return Standard_False;
   
   switch(mytype){

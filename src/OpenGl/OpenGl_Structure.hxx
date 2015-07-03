@@ -24,6 +24,7 @@
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
 
+#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Group.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_Vec.hxx>

@@ -621,9 +621,9 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   Standard_Real length = Pfirst.Distance(Pint1);
                   if (OffsetOutside)
                   {
-                    TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
-                                                Standard_True, Standard_False);
+                    Handle(Geom_BoundedSurface) aSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
+                    GeomLib::ExtendSurfByLength (aSurf, length, 1, Standard_True, Standard_False);
+                    TheSurf = aSurf;
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
                     MinApex = TheSurf->Value( u1, vf1 );
@@ -660,9 +660,9 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   Standard_Real length = Pfirst.Distance(Pint1);
                   if (OffsetOutside)
                   {
-                    TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
-                                                Standard_True, Standard_True);
+                    Handle(Geom_BoundedSurface) aSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
+                    GeomLib::ExtendSurfByLength(aSurf, length, 1, Standard_True, Standard_True);
+                    TheSurf = aSurf;
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
                     MaxApex = TheSurf->Value( u2, vf1 );
@@ -699,9 +699,9 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   Standard_Real length = Pfirst.Distance(Pint1);
                   if (OffsetOutside)
                   {
-                    TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
-                                                Standard_False, Standard_False);
+                    Handle(Geom_BoundedSurface) aSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
+                    GeomLib::ExtendSurfByLength(aSurf, length, 1, Standard_False, Standard_False);
+                    TheSurf = aSurf;
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
                     MinApex = TheSurf->Value( uf1, v1 );
@@ -740,9 +740,9 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
                   Standard_Real length = Pfirst.Distance(Pint1);
                   if (OffsetOutside)
                   {
-                    TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
-                    GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)::DownCast (TheSurf), length, 1,
-                                                Standard_False, Standard_True);
+                    Handle(Geom_BoundedSurface) aSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2);
+                    GeomLib::ExtendSurfByLength(aSurf, length, 1, Standard_False, Standard_True);
+                    TheSurf = aSurf;
                     Standard_Real u1, u2, v1, v2;
                     TheSurf->Bounds( u1, u2, v1, v2 );
                     MaxApex = TheSurf->Value( uf1, v2 );

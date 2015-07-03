@@ -21,13 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom2d_Curve.hxx>
+
 class gp_Pnt;
 class gp_Pnt2d;
-class Geom_Geometry;
-class Geom2d_Curve;
 class Poly_Triangulation;
 class Poly_Polygon3D;
 class Poly_Polygon2D;
@@ -36,7 +36,6 @@ class Geom_BezierCurve;
 class Geom_BSplineCurve;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
-class Geom_Surface;
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
 class DrawTrSurf_Drawable;

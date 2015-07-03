@@ -207,7 +207,7 @@ void IGESDraw_ToolViewsVisible::OwnCheck
 {
   Standard_Integer res = 0;
   Standard_Integer nb = ent->NbDisplayedEntities();
-  Handle(IGESData_ViewKindEntity) entcomp = ent;
+  Handle(IGESData_ViewKindEntity) entcomp (ent);
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(IGESData_IGESEntity) displayed = ent->DisplayedEntity(i);
     if (entcomp != displayed->View()) res ++;
@@ -246,7 +246,7 @@ Standard_Boolean  IGESDraw_ToolViewsVisible::OwnCorrect
 //  Les entites affichees doivent referencer <ent>. Elles ont priorite.
   Standard_Boolean res = Standard_False;
   Standard_Integer nb = ent->NbDisplayedEntities();
-  Handle(IGESData_ViewKindEntity) entcomp = ent;
+  Handle(IGESData_ViewKindEntity) entcomp (ent);
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(IGESData_IGESEntity) displayed = ent->DisplayedEntity(i);
     if (entcomp != displayed->View()) res = Standard_True;

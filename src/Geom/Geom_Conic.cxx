@@ -25,7 +25,6 @@
 #include <Standard_Type.hxx>
 
 typedef Geom_Conic         Conic;
-typedef Handle(Geom_Conic) Handle(Conic);
 typedef gp_Ax1 Ax1;
 typedef gp_Ax2 Ax2;
 typedef gp_Pnt Pnt;

@@ -202,7 +202,7 @@ static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*
 
 static Standard_Integer OCC23595 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char** /*argv*/)
 {
-  const Handle(TDocStd_Application)& anApp = XCAFApp_Application::GetApplication();
+  Handle(TDocStd_Application) anApp = XCAFApp_Application::GetApplication();
   Handle(TDocStd_Document) aDoc;
   anApp->NewDocument ("XmlXCAF", aDoc);
   QCOMPARE (!aDoc.IsNull(), Standard_True);

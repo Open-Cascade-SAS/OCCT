@@ -276,7 +276,7 @@ const
 {
   Reverse = Standard_False;
 
-  Handle(Geom2d_Curve) Bis = theTool.GeomBis(anArc->GeomIndex()).Value();
+  Handle(Geom2d_Curve) Bis (theTool.GeomBis(anArc->GeomIndex()).Value());
 
   if (Bis->FirstParameter() <= -Precision::Infinite()) {
     Reverse = Standard_True;

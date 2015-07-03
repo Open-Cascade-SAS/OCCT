@@ -36,12 +36,16 @@ GeomFill_CoonsAlgPatch::GeomFill_CoonsAlgPatch
 {
   bound[0] = B1; bound[1] = B2; bound[2] = B3; bound[3] = B4; 
   Standard_Real deb0, deb1, fin0, fin1;
+
   B2->Bounds(deb1,fin1);
-  a[0] = new Law_Linear();
-  (*((Handle(Law_Linear)*) &a[0]))->Set(deb1,1.,fin1,0.);
+  Handle(Law_Linear) aLaw0 = new Law_Linear();
+  aLaw0->Set (deb1, 1., fin1, 0.);
+  a[0] = aLaw0;
+
   B1->Bounds(deb0,fin0);
-  a[1] = new Law_Linear();
-  (*((Handle(Law_Linear)*) &a[1]))->Set(deb0,0.,fin0,1.);
+  Handle(Law_Linear) aLaw1 = new Law_Linear();
+  aLaw1->Set (deb0, 0., fin0, 1.);
+  a[1] = aLaw1;
 
   gp_XYZ temp;
   temp = B4->Value(deb1).XYZ().Added(B1->Value(deb0).XYZ());

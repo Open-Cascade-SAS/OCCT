@@ -16,11 +16,6 @@
 #include <gp_Dir2d.hxx>
 #include <gp_XY.hxx>
 
-#include <Geom_UndefinedValue.hxx>
-#include <Geom_UndefinedDerivative.hxx>
-#include <Geom2d_UndefinedValue.hxx>
-#include <Geom2d_UndefinedDerivative.hxx>
-
 #include <Standard_NullValue.hxx>
 
 

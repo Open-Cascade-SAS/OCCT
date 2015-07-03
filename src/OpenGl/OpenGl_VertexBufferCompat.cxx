@@ -84,54 +84,6 @@ void OpenGl_VertexBufferCompat::Unbind (const Handle(OpenGl_Context)& ) const
   //
 }
 
-//! Convert GL type to Graphic3d enumeration
-static inline bool toGraphic3dDataType (const GLuint          theNbComponents,
-                                        const GLenum          theGlType,
-                                        Graphic3d_TypeOfData& theType)
-{
-  switch (theGlType)
-  {
-    case GL_UNSIGNED_BYTE:
-    {
-      if (theNbComponents == 4)
-      {
-        theType = Graphic3d_TOD_VEC4UB;
-        return true;
-      }
-      return false;
-    }
-    case GL_UNSIGNED_SHORT:
-    {
-      if (theNbComponents == 1)
-      {
-        theType = Graphic3d_TOD_USHORT;
-        return true;
-      }
-      return false;
-    }
-    case GL_UNSIGNED_INT:
-    {
-      if (theNbComponents == 1)
-      {
-        theType = Graphic3d_TOD_UINT;
-        return true;
-      }
-      return false;
-    }
-    case GL_FLOAT:
-    {
-      switch (theNbComponents)
-      {
-        case 2: theType = Graphic3d_TOD_VEC2; return true;
-        case 3: theType = Graphic3d_TOD_VEC3; return true;
-        case 4: theType = Graphic3d_TOD_VEC4; return true;
-      }
-      return false;
-    }
-  }
-  return false;
-}
-
 // =======================================================================
 // function : initLink
 // purpose  :

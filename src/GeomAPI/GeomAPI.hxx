@@ -21,8 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-class Geom2d_Curve;
-class Geom_Curve;
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+
 class gp_Pln;
 class GeomAPI_ProjectPointOnCurve;
 class GeomAPI_ProjectPointOnSurf;

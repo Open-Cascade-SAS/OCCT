@@ -81,8 +81,6 @@
 // the proximity of point to curve or surface. It is clear that this tolerance
 // value can't be too high to be not in conflict with previous rule.
 static const Standard_Real MAXTOLERANCEGEOM = 1.e-4;
-static const Standard_Real MAXTOLERANCEPARM = 1.e-3;
-static const Standard_Real UNKNOWNVALUE = 1.e+100;
 static const Standard_Real PARTOLERANCE = 1.e-9;
 
 //=======================================================================

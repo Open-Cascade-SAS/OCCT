@@ -2810,7 +2810,7 @@ inline void bndPresentation (Draw_Interpretor&                  theDI,
     }
     case BndAction_Show:
     {
-      Handle(Graphic3d_Structure) aPrs = thePrs->Presentation();
+      Handle(Graphic3d_Structure) aPrs (thePrs->Presentation());
       aPrs->CStructure()->HighlightColor.r = 0.988235f;
       aPrs->CStructure()->HighlightColor.g = 0.988235f;
       aPrs->CStructure()->HighlightColor.b = 0.988235f;
@@ -5267,8 +5267,11 @@ static Standard_Integer VLoadSelection (Draw_Interpretor& /*theDi*/,
   {
     const TCollection_AsciiString& aName = aNamesOfIO.Value (anIter);
 
-    const Handle(AIS_InteractiveObject)& aShape = GetMapOfAIS().IsBound2 (aName) ?
-      Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName)) : GetAISShapeFromName (aName.ToCString());
+    Handle(AIS_InteractiveObject) aShape;
+    if (GetMapOfAIS().IsBound2 (aName))
+      aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+    else
+      aShape = GetAISShapeFromName (aName.ToCString());
 
     if (!aShape.IsNull())
     {
