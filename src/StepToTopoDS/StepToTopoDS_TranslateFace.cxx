@@ -58,7 +58,7 @@
 #include <StepShape_OrientedEdge.hxx>
 #include <StepShape_PolyLoop.hxx>
 #include <StepShape_VertexLoop.hxx>
-#include <StepToGeom_MakeSurface.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS.hxx>
 #include <StepToTopoDS_NMTool.hxx>
 #include <StepToTopoDS_Tool.hxx>
@@ -154,8 +154,8 @@ void StepToTopoDS_TranslateFace::Init
 
   if (StepSurf->IsKind(STANDARD_TYPE(StepGeom_OffsetSurface))) //:d4 abv 12 Mar 98
     TP->AddWarning(StepSurf," Type OffsetSurface is out of scope of AP 214");
-  Handle(Geom_Surface) GeomSurf;
-  if (!StepToGeom_MakeSurface::Convert(StepSurf,GeomSurf))
+  Handle(Geom_Surface) GeomSurf = StepToGeom::MakeSurface (StepSurf);
+  if (GeomSurf.IsNull())
   {
     TP->AddFail(StepSurf," Surface has not been created");
     myError = StepToTopoDS_TranslateFaceOther;

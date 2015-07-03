@@ -28,10 +28,7 @@
 #include <StepRepr_MappedItem.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationMap.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <StepToGeom_MakeDirection.hxx>
-#include <StepToGeom_MakeTransformation3d.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_MakeTransformed.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
@@ -52,11 +49,11 @@ Standard_Boolean  StepToTopoDS_MakeTransformed::Compute
   if (Origin.IsNull() || Target.IsNull()) return Standard_False;
 
   // sln 23.10.2001 : If the directions have not been created do nothing.  
-  Handle(Geom_Axis2Placement) theOrig;
-  if (!StepToGeom_MakeAxis2Placement::Convert(Origin,theOrig))
+  Handle(Geom_Axis2Placement) theOrig = StepToGeom::MakeAxis2Placement (Origin);
+  if (theOrig.IsNull())
     return Standard_False;
-  Handle(Geom_Axis2Placement) theTarg;
-  if (!StepToGeom_MakeAxis2Placement::Convert(Target,theTarg))
+  Handle(Geom_Axis2Placement) theTarg = StepToGeom::MakeAxis2Placement (Target);
+  if (theTarg.IsNull())
     return Standard_False;
 
   const gp_Ax3 ax3Orig(theOrig->Ax2());
@@ -70,7 +67,7 @@ Standard_Boolean  StepToTopoDS_MakeTransformed::Compute
 Standard_Boolean  StepToTopoDS_MakeTransformed::Compute
   (const Handle(StepGeom_CartesianTransformationOperator3d)& Operator)
 {
-  return StepToGeom_MakeTransformation3d::Convert(Operator,theTrsf);
+  return StepToGeom::MakeTransformation3d (Operator, theTrsf);
 }
 
 const gp_Trsf&  StepToTopoDS_MakeTransformed::Transformation () const

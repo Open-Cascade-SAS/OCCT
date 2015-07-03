@@ -381,12 +381,12 @@ static Standard_Address GeomConvertTest (Standard_Address data)
   GeomConvert_ApproxSurface aGAS (info->surf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
   if (!aGAS.IsDone()) {
     cout << "Error: ApproxSurface is not done!" << endl;
-    return Standard_False;
+    return 0;
   }
   const Handle(Geom_BSplineSurface)& aBSurf = aGAS.Surface();
   if (aBSurf.IsNull()) {
     cout << "Error: BSplineSurface is not created!" << endl;
-    return Standard_False;
+    return 0;
   }
   cout << "Number of UPoles:" << aBSurf->NbUPoles();
   if (aBSurf->NbUPoles() == info->nbupoles)

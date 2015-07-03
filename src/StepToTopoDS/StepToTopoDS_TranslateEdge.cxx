@@ -47,9 +47,7 @@
 #include <StepShape_OrientedEdge.hxx>
 #include <StepShape_Vertex.hxx>
 #include <StepShape_VertexPoint.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-#include <StepToGeom_MakeCurve2d.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS.hxx>
 #include <StepToTopoDS_GeometricTool.hxx>
 #include <StepToTopoDS_NMTool.hxx>
@@ -150,7 +148,8 @@ static Handle(Geom_Curve) MakeCurve
 {
   Handle(Geom_Curve) C2 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C1));
   if (!C2.IsNull()) return C2;
-  if (StepToGeom_MakeCurve::Convert(C1,C2))
+  C2 = StepToGeom::MakeCurve (C1);
+  if (! C2.IsNull())
     TP->BindTransient (C1,C2);
   return C2;
 }
@@ -379,9 +378,8 @@ static void GetCartesianPoints ( const Handle(StepShape_EdgeCurve)& EC,
     const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(V);
     if ( VP.IsNull() ) continue;
     const Handle(StepGeom_CartesianPoint) P = Handle(StepGeom_CartesianPoint)::DownCast(VP->VertexGeometry());
-    Handle(Geom_CartesianPoint) CP;
-    StepToGeom_MakeCartesianPoint::Convert(P,CP);
-	( i==1 ? P1 : P2 ) = CP->Pnt();
+    Handle(Geom_CartesianPoint) CP = StepToGeom::MakeCartesianPoint (P);
+    ( i==1 ? P1 : P2 ) = CP->Pnt();
   }
 }
 
@@ -503,7 +501,8 @@ Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
   const Handle(StepRepr_DefinitionalRepresentation) DRI = PCU->ReferenceToCurve();
   if( DRI.IsNull()) return C2d;
   const Handle(StepGeom_Curve) StepCurve = Handle(StepGeom_Curve)::DownCast(DRI->ItemsValue(1));
-  if (StepToGeom_MakeCurve2d::Convert(StepCurve,C2d)) {
+  C2d = StepToGeom::MakeCurve2d (StepCurve);
+  if (! C2d.IsNull()) {
     // -- if the surface is a RectangularTrimmedSurface, 
     // -- send the BasisSurface.
     C2d = UnitsMethods::DegreeToRadian(C2d, ConvSurf);

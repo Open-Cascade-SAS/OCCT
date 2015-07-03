@@ -86,8 +86,7 @@
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
-#include <StepToGeom_MakeTransformation3d.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_Builder.hxx>
 #include <StepToTopoDS_DataMapOfTRI.hxx>
 #include <StepToTopoDS_MakeTransformed.hxx>
@@ -1327,7 +1326,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
       Handle(StepGeom_CartesianTransformationOperator3d) CartOp =
         Handle(StepGeom_CartesianTransformationOperator3d)::DownCast(mapit->MappingTarget());
       if ( ! CartOp.IsNull() ) {
-        ok = StepToGeom_MakeTransformation3d::Convert( CartOp, Trsf );
+        ok = StepToGeom::MakeTransformation3d (CartOp, Trsf);
       }
       else {
         Handle(StepGeom_Axis2Placement3d) Origin = 
@@ -1658,11 +1657,9 @@ Standard_Boolean STEPControl_ActorRead::ComputeTransformation (const Handle(Step
   // translate axis_placements taking units into account 
   Handle(StepRepr_Representation) oldSRContext = mySRContext;
   if ( OrigContext  != oldSRContext ) PrepareUnits(OrigContext,TP);
-  Handle(Geom_Axis2Placement) theOrig;
-  StepToGeom_MakeAxis2Placement::Convert(org,theOrig);
+  Handle(Geom_Axis2Placement) theOrig = StepToGeom::MakeAxis2Placement (org);
   if ( TargContext  != OrigContext  ) PrepareUnits(TargContext,TP);
-  Handle(Geom_Axis2Placement) theTarg;
-  StepToGeom_MakeAxis2Placement::Convert(trg,theTarg);
+  Handle(Geom_Axis2Placement) theTarg = StepToGeom::MakeAxis2Placement (trg);
   if ( oldSRContext != TargContext  ) PrepareUnits(oldSRContext,TP);
 
   gp_Ax3 ax3Orig(theOrig->Ax2());
@@ -1697,7 +1694,7 @@ Standard_Boolean STEPControl_ActorRead::ComputeSRRWT (const Handle(StepRepr_Repr
     // reset units (by Rep2 - ?)
     Handle(StepRepr_Representation) oldSRContext = mySRContext;
     if ( SRR->Rep2() != oldSRContext ) PrepareUnits(SRR->Rep2(),TP);
-    StepToGeom_MakeTransformation3d::Convert( CartOp, Trsf );
+    StepToGeom::MakeTransformation3d (CartOp, Trsf);
     if ( SRR->Rep2() != oldSRContext ) PrepareUnits(oldSRContext,TP);
     return Trsf.Form() != gp_Identity;
   }

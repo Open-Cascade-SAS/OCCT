@@ -66,9 +66,7 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <StepShape_Shell.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-#include <StepToGeom_MakeSurface.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_Builder.hxx>
 #include <StepToTopoDS_DataMapOfTRI.hxx>
 #include <StepToTopoDS_NMTool.hxx>
@@ -708,8 +706,8 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
 {
   TopoDS_Face res;
 
-  Handle(Geom_Surface) theSurf;
-  if (!StepToGeom_MakeSurface::Convert(surf,theSurf) || //:i6: protection
+  Handle(Geom_Surface) theSurf = StepToGeom::MakeSurface (surf);
+  if (theSurf.IsNull() || //:i6: protection
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) return res;
 
   BRepBuilderAPI_MakeFace myMkFace;
@@ -800,7 +798,7 @@ void StepToTopoDS_Builder::Init
 	Handle(Geom_Curve) aGeomCrv;
 	try {
 	  OCC_CATCH_SIGNALS
-      StepToGeom_MakeCurve::Convert(aCrv,aGeomCrv);
+          aGeomCrv = StepToGeom::MakeCurve (aCrv);
 	}
 	catch(Standard_Failure) {
 	  Handle(Message_Messenger) sout = TP->Messenger();
@@ -816,8 +814,8 @@ void StepToTopoDS_Builder::Init
     // try point
     else if ( ent->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)) ) {
       Handle(StepGeom_CartesianPoint) aPnt = Handle(StepGeom_CartesianPoint)::DownCast ( ent );
-      Handle(Geom_CartesianPoint) thePnt;
-      if (StepToGeom_MakeCartesianPoint::Convert(aPnt,thePnt)) {
+      Handle(Geom_CartesianPoint) thePnt = StepToGeom::MakeCartesianPoint (aPnt);
+      if (! thePnt.IsNull()) {
         BRepBuilderAPI_MakeVertex myMkVtx(thePnt->Pnt());
         if ( myMkVtx.IsDone() ) res = myMkVtx.Vertex();
       }

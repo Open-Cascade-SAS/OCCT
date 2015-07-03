@@ -63,8 +63,7 @@
 #include <StepShape_FaceBound.hxx>
 #include <StepShape_OrientedEdge.hxx>
 #include <StepShape_Vertex.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-#include <StepToGeom_MakeCurve2d.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS.hxx>
 #include <StepToTopoDS_GeometricTool.hxx>
 #include <StepToTopoDS_NMTool.hxx>
@@ -320,7 +319,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
         OCC_CATCH_SIGNALS
         C1 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C));
         if (C1.IsNull()) {
-          if (StepToGeom_MakeCurve::Convert(C,C1))
+          C1 = StepToGeom::MakeCurve (C);
+          if (! C1.IsNull())
             TP->BindTransient (C,C1);
           else
             TP->AddWarning(C,"Could not convert a curve. Curve definition is incorrect");

@@ -29,7 +29,7 @@
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_HArray1OfCartesianPoint.hxx>
 #include <StepShape_PolyLoop.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_PointPair.hxx>
 #include <StepToTopoDS_Tool.hxx>
 #include <StepToTopoDS_TranslatePolyLoop.hxx>
@@ -97,7 +97,7 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL, 
     Nb++;
     Poly->SetValue(Nb, PL->PolygonValue(1));
     P1 = Poly->Value(1);
-	StepToGeom_MakeCartesianPoint::Convert(P1,GP1);
+    GP1 = StepToGeom::MakeCartesianPoint (P1);
     if (aTool.IsVertexBound(P1)) {
       V1 = aTool.FindVertex(P1);
     }
@@ -110,7 +110,7 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL, 
       P2 = Poly->Value(i);
       if (P1 == P2) continue;  // peut arriver (KK)  CKY 9-DEC-1997
       StepToTopoDS_PointPair PP(P1, P2); 
-      StepToGeom_MakeCartesianPoint::Convert(P2,GP2);
+      GP2 = StepToGeom::MakeCartesianPoint (P2);
       TopoDS_Shape aBoundEdge;
       Standard_Boolean isbound = aTool.IsEdgeBound(PP);
       if ( !isbound) {

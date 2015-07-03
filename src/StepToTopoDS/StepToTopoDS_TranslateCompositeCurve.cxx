@@ -34,7 +34,7 @@
 #include <StepGeom_PcurveOrSurface.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
-#include <StepToGeom_MakeCurve.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_TranslateCompositeCurve.hxx>
 #include <StepToTopoDS_TranslateEdge.hxx>
 #include <TopoDS.hxx>
@@ -177,8 +177,8 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
     if ( ! crv.IsNull() ) {
       try {
         OCC_CATCH_SIGNALS
-        Handle(Geom_Curve) c3d;
-        if (StepToGeom_MakeCurve::Convert(crv,c3d)) {
+        Handle(Geom_Curve) c3d = StepToGeom::MakeCurve (crv);
+        if (! c3d.IsNull()) {
           BRepBuilderAPI_MakeEdge MkEdge ( c3d, c3d->FirstParameter(), c3d->LastParameter() );
           if (MkEdge.IsDone())
           {

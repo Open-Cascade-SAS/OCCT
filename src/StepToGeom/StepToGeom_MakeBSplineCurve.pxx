@@ -14,17 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-{
   Handle(StepGeom_BSplineCurveWithKnots)   BSCW;
   Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) BSCWR;
 
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
-    BSCWR = 
-      Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)
-	::DownCast(SC);
-    BSCW = 
-      Handle(StepGeom_BSplineCurveWithKnots)
-	::DownCast(BSCWR->BSplineCurveWithKnots());
+    BSCWR = Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(SC);
+    BSCW = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(BSCWR->BSplineCurveWithKnots());
   }
   else
     BSCW = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(SC);
@@ -89,14 +84,14 @@
   const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList = BSCW->ControlPointsList();
   Standard_Integer aSumMulDiff = aFMulDiff + aLMulDiff;
   Array1OfPnt_gen Poles(1,NbPoles - aSumMulDiff);
-  CartesianPoint_gen P;
   
   for (i = 1 + aFMulDiff; i<= NbPoles - aLMulDiff; ++i)
   {
-    if (StepToGeom_MakeCartesianPoint_gen::Convert(aControlPointsList->Value(i),P))
+    CartesianPoint_gen P = MakeCartesianPoint_gen (aControlPointsList->Value(i));
+    if (! P.IsNull())
       Poles.SetValue(i - aFMulDiff,P->Pnt_fonc());
     else
-      return Standard_False;
+      return 0;
   }
   
   // --- Does the Curve descriptor LOOKS like a periodic descriptor ? ---
@@ -119,7 +114,8 @@
     shouldBePeriodic = Standard_False;
     //cout << "Strange BSpline Curve Descriptor" << endl;
   }
-  
+
+  BSplineCurve_retour CC;
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
     const Handle(TColStd_HArray1OfReal)& aWeight = BSCWR->WeightsData();
     TColStd_Array1OfReal W(1,NbPoles);
@@ -135,5 +131,4 @@
   if ( SC->ClosedCurve() && CC->Degree() >1 && CC->IsClosed() ) {
     CC->SetPeriodic();
   }
-  return Standard_True;
-}
+  return CC;

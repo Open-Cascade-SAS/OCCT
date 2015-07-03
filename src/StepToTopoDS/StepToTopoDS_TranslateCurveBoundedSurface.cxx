@@ -27,7 +27,7 @@
 #include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepGeom_HArray1OfSurfaceBoundary.hxx>
-#include <StepToGeom_MakeSurface.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_TranslateCompositeCurve.hxx>
 #include <StepToTopoDS_TranslateCurveBoundedSurface.hxx>
 #include <TopoDS.hxx>
@@ -65,8 +65,9 @@ Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
   
   // translate basis surface 
   Handle(StepGeom_Surface) S = CBS->BasisSurface();
-  Handle(Geom_Surface) Surf;
-  if ( !StepToGeom_MakeSurface::Convert(S,Surf) ) {
+  Handle(Geom_Surface) Surf = StepToGeom::MakeSurface (S);
+  if (Surf.IsNull())
+  {
     TP->AddFail ( CBS, "Basis surface not translated" );
     return Standard_False;
   }

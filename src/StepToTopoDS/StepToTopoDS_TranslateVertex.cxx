@@ -24,7 +24,7 @@
 #include <StepGeom_Point.hxx>
 #include <StepShape_Vertex.hxx>
 #include <StepShape_VertexPoint.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom.hxx>
 #include <StepToTopoDS_NMTool.hxx>
 #include <StepToTopoDS_Tool.hxx>
 #include <StepToTopoDS_TranslateVertex.hxx>
@@ -91,8 +91,7 @@ void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
     const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(aVertex);
     const Handle(StepGeom_Point) P = VP->VertexGeometry();
     const Handle(StepGeom_CartesianPoint) P1 = Handle(StepGeom_CartesianPoint)::DownCast(P);
-    Handle(Geom_CartesianPoint) P2;
-    StepToGeom_MakeCartesianPoint::Convert(P1,P2);
+    Handle(Geom_CartesianPoint) P2 = StepToGeom::MakeCartesianPoint (P1);
     BRep_Builder B;
     TopoDS_Vertex V;
     B.MakeVertex(V, P2->Pnt(), Precision::Confusion()); //:S4136: preci
