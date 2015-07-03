@@ -266,14 +266,14 @@ p XmlObjMgt
 r StdResource
 r XmlOcafResource
 t FWOSPlugin
-t PTKernel
+
 t TKBin
 t TKBinL
 t TKBinTObj
 t TKCAF
 t TKCDF
 t TKLCAF
-t TKPShape
+
 t TKTObj
 t TKXml
 t TKXmlL
