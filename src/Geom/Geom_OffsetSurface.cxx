@@ -1625,16 +1625,33 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
   {
     Handle(Geom_ConicalSurface) C =
       Handle(Geom_ConicalSurface)::DownCast(Base);
-    Standard_Real Alpha = C->SemiAngle();
-    Standard_Real Radius = C->RefRadius() + offsetValue * Cos(Alpha);
-    gp_Ax3 Axis = C->Position();
-    if ( Radius >= 0.) {
-      gp_Vec Z( Axis.Direction());
-      Z *= - offsetValue * Sin(Alpha);
-      Axis.Translate(Z);
-      Result = new Geom_ConicalSurface(Axis, Alpha, Radius);
+    gp_Ax3 anAxis = C->Position();
+    Standard_Boolean isDirect = anAxis.Direct();
+    Standard_Real anAlpha = C->SemiAngle();
+    Standard_Real aRadius;
+    if (isDirect)
+    {
+      aRadius = C->RefRadius() + offsetValue * Cos (anAlpha);
     }
-    else 
+    else
+    {
+      aRadius = C->RefRadius() - offsetValue * Cos (anAlpha);
+    }
+    if (aRadius >= 0.)
+    {
+      gp_Vec aZ (anAxis.Direction());
+      if (isDirect)
+      {
+        aZ *= -offsetValue * Sin (anAlpha);
+      }
+      else
+      {
+        aZ *=  offsetValue * Sin (anAlpha);
+      }
+      anAxis.Translate (aZ);
+      Result = new Geom_ConicalSurface (anAxis, anAlpha, aRadius);
+    }
+    else
     {
       // surface degeneree      
     }
