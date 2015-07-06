@@ -1,0 +1,29 @@
+puts "============"
+puts "CR26369"
+puts "============"
+puts ""
+###################################################################################
+# Modeling Data - Geom_OffsetSurface direction is wrong for indirect conical surface
+###################################################################################
+
+restore [locate_data_file bug26369_conicsurf.brep] conic_face
+
+mksurface conic_surf conic_face
+offset conic_surf_offset conic_surf 0.05
+mkface conic_face_offset conic_surf_offset
+
+set sprops_s [sprops conic_face_offset]
+set cog_x  -0.00408684
+set cog_y   0.00408684
+set cog_z  -0.03213030
+set cog_tol 0.00000010
+
+regexp {X += +([-0-9.+eE]+)} $sprops_s full res_cog_x
+regexp {Y += +([-0-9.+eE]+)} $sprops_s full res_cog_y
+regexp {Z += +([-0-9.+eE]+)} $sprops_s full res_cog_z
+
+if { ([expr abs($cog_x - $res_cog_x)] > $cog_tol)
+  || ([expr abs($cog_y - $res_cog_y)] > $cog_tol)
+  || ([expr abs($cog_z - $res_cog_z)] > $cog_tol) } {
+  puts "Error: The center of gravity for offset of conical surface is wrong."
+}
