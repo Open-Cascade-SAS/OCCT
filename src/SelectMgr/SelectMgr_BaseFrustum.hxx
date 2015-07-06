@@ -44,30 +44,31 @@ public:
 
   //! Creates new selecting volume with pixel toletance set to 2,
   //! orthographic camera and empty frustum builder
-  SelectMgr_BaseFrustum();
+  Standard_EXPORT SelectMgr_BaseFrustum();
 
   virtual ~SelectMgr_BaseFrustum() {}
 
   //! Passes camera projection and orientation matrices to builder
-  void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
+  Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
 
   //! Passes camera projection and orientation matrices to builder
-  void SetCamera (const Graphic3d_Mat4d& theProjection,
-                  const Graphic3d_Mat4d& theOrientation,
-                  const Standard_Integer theIsOrthographic);
+  Standard_EXPORT void SetCamera (const Graphic3d_Mat4d& theProjection,
+                                  const Graphic3d_Mat4d& theOrientation,
+                                  const Standard_Integer theIsOrthographic);
 
-  void SetPixelTolerance (const Standard_Real theTol);
+  Standard_EXPORT void SetPixelTolerance (const Standard_Real theTol);
 
-  void SetWindowSize (const Standard_Integer theWidth, const Standard_Integer theHeight);
+  Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth, 
+                                      const Standard_Integer theHeight);
 
   //! Passes viewport parameters to builder
-  void SetViewport (const Standard_Real theX,
-                    const Standard_Real theY,
-                    const Standard_Real theWidth,
-                    const Standard_Real theHeight);
+  Standard_EXPORT void SetViewport (const Standard_Real theX,
+                                    const Standard_Real theY,
+                                    const Standard_Real theWidth,
+                                    const Standard_Real theHeight);
 
   //! Nullifies the builder created in the constructor and copies the pointer given
-  void SetBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder);
+  Standard_EXPORT void SetBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder);
 
 
   //! Builds volume according to the point and given pixel tolerance
