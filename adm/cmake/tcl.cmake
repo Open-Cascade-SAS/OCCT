@@ -297,12 +297,11 @@ endforeach()
 
 # install tcltk
 if (INSTALL_TCL)
-  # include occt macros. compiler_bitness, os_wiht_bit, compiler and build_postfix
+  # include occt macros. compiler_bitness, os_wiht_bit, compiler
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
   OCCT_MAKE_OS_WITH_BITNESS()
   OCCT_MAKE_COMPILER_SHORT_NAME()
-  OCCT_MAKE_BUILD_POSTFIX()
 
   if (WIN32)
     # tcl 8.6 requires zlib. install all dlls from tcl bin folder that may contain zlib also
@@ -310,17 +309,41 @@ if (INSTALL_TCL)
     # collect and install all dlls from tcl/tk dll dirs
     file (GLOB TCL_DLLS "${3RDPARTY_TCL_DLL_DIR}/*.dll")
     file (GLOB TK_DLLS  "${3RDPARTY_TK_DLL_DIR}/*.dll")
-    install (FILES ${TCL_DLLS} ${TK_DLLS} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX}")
+    install (FILES ${TCL_DLLS} ${TK_DLLS}
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (FILES ${TCL_DLLS} ${TK_DLLS}
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (FILES ${TCL_DLLS} ${TK_DLLS}
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
   else()
     get_filename_component(3RDPARTY_TCL_LIBRARY_REALPATH ${3RDPARTY_TCL_LIBRARY} REALPATH)
-    install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}")
+    install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
 
     get_filename_component(3RDPARTY_TK_LIBRARY_REALPATH ${3RDPARTY_TK_LIBRARY} REALPATH)
-    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}")
+    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
   endif()
 
   if (TCL_TCLSH_VERSION)
-    # tcl is required to install in lib folder (without ${BUILD_POSTFIX})
+    # tcl is required to install in lib folder (without)
     install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl8"                    DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
     install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl${TCL_TCLSH_VERSION}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
     install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tk${TCL_TCLSH_VERSION}"  DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")

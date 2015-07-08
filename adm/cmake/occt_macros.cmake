@@ -19,17 +19,6 @@ macro (OCCT_CHECK_AND_UNSET_GROUP VARNAME)
   endif()
 endmacro()
 
-# BUILD_POSTFIX, IS_BUILD_DEBUG variables
-macro (OCCT_MAKE_BUILD_POSTFIX)
-  if ("${BUILD_CONFIGURATION}" STREQUAL "Debug")
-    set (BUILD_POSTFIX "d")
-    set (IS_BUILD_DEBUG "")
-  else()
-    set (BUILD_POSTFIX "")
-    OCCT_CHECK_AND_UNSET (IS_BUILD_DEBUG)
-  endif()
-endmacro()
-
 # COMPILER_BITNESS variable
 macro (OCCT_MAKE_COMPILER_BITNESS)
   math (EXPR COMPILER_BITNESS "32 + 32*(${CMAKE_SIZEOF_VOID_P}/8)")

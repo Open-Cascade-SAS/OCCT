@@ -11,7 +11,7 @@ endif()
 # store ENV{FREETYPE_DIR}
 SET (CACHED_FREETYPE_DIR $ENV{FREETYPE_DIR})
 
-# include occt macros. compiler_bitness, os_wiht_bit, compiler and build_postfix
+# include occt macros. compiler_bitness, os_wiht_bit, compiler
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 OCCT_MAKE_COMPILER_SHORT_NAME()
@@ -209,14 +209,32 @@ endif()
 if (INSTALL_FREETYPE)
 
   OCCT_MAKE_OS_WITH_BITNESS()
-  OCCT_MAKE_BUILD_POSTFIX()
-
   if (WIN32)
-    install (FILES "${3RDPARTY_FREETYPE_DLL}"     DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX}")
+    install (FILES "${3RDPARTY_FREETYPE_DLL}"
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (FILES "${3RDPARTY_FREETYPE_DLL}"
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (FILES "${3RDPARTY_FREETYPE_DLL}"
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
   else()
     get_filename_component(ABS_PATH ${3RDPARTY_FREETYPE_LIBRARY} REALPATH)
     get_filename_component(FREETYPELIB ${3RDPARTY_FREETYPE_LIBRARY} NAME)
-    install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME ${FREETYPELIB}.6)
+
+    install (FILES "${ABS_PATH}"
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             RENAME ${FREETYPELIB}.6)
+    install (FILES "${ABS_PATH}"
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             RENAME ${FREETYPELIB}.6)
+    install (FILES "${ABS_PATH}"
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+             RENAME ${FREETYPELIB}.6)
   endif()
 
   set (USED_3RDPARTY_FREETYPE_DIR "")

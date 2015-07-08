@@ -45,7 +45,6 @@ if (NOT VTK_FOUND AND NOT 3RDPARTY_VTK_DIR OR NOT EXISTS "${3RDPARTY_VTK_DIR}")
   set (3RDPARTY_VTK_DIR "3RDPARTY_VTK_DIR-NOTFOUND" CACHE PATH "The directory containing vtk product" FORCE)
 endif()
 
-OCCT_MAKE_BUILD_POSTFIX()
 set(VTK_VERSION "")
 if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
   get_filename_component(3RDPARTY_VTK_DIR_NAME "${3RDPARTY_VTK_DIR}" NAME)
@@ -55,13 +54,11 @@ if (3RDPARTY_VTK_DIR AND EXISTS "${3RDPARTY_VTK_DIR}")
     set (3RDPARTY_VTK_INCLUDE_DIR "${3RDPARTY_VTK_DIR}/include/vtk-${VTK_VERSION}" CACHE FILEPATH "The directory containing includes of VTK" FORCE)
   endif()
   if (NOT 3RDPARTY_VTK_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_VTK_LIBRARY_DIR}")
-    if(EXISTS "${3RDPARTY_VTK_DIR}/lib${BUILD_POSTFIX}")
-      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_DIR}/lib${BUILD_POSTFIX}" CACHE FILEPATH "The directory containing libs of VTK" FORCE)
-    else()
-	  if (NOT "${BUILD_POSTFIX}" STREQUAL "" AND EXISTS "${3RDPARTY_VTK_DIR}/lib")
-	    set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_DIR}/lib" CACHE FILEPATH "The directory containing libs of VTK" FORCE)
-      endif()
-	endif()
+    if(EXISTS "${3RDPARTY_VTK_DIR}/lib")
+      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_DIR}/lib" CACHE FILEPATH "The directory containing libs of VTK" FORCE)
+    elseif (EXISTS "${3RDPARTY_VTK_DIR}/lib")
+      set (3RDPARTY_VTK_LIBRARY_DIR "${3RDPARTY_VTK_DIR}/lib" CACHE FILEPATH "The directory containing libs of VTK" FORCE)
+    endif()
   endif()
   if(3RDPARTY_VTK_LIBRARY_DIR)
     list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_VTK_LIBRARY_DIR}")
@@ -110,12 +107,10 @@ set (VTK_DLL_NAMES vtkCommonComputationalGeometry-${VTK_VERSION}.dll
 # search for dll directory
 if (WIN32)
   if (NOT 3RDPARTY_VTK_DLL_DIR OR NOT EXISTS "${3RDPARTY_VTK_DLL_DIR}")
-    if(EXISTS "${3RDPARTY_VTK_DIR}/bin${BUILD_POSTFIX}")
-      set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DIR}/bin${BUILD_POSTFIX}" CACHE FILEPATH "The directory containing dll of VTK" FORCE)
-    else()
-      if (NOT "${BUILD_POSTFIX}" STREQUAL "" AND EXISTS "${3RDPARTY_VTK_DIR}/bin")
-       set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DIR}/bin" CACHE FILEPATH "The directory containing dll of VTK" FORCE)
-      endif()
+    if(EXISTS "${3RDPARTY_VTK_DIR}/bin")
+      set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DIR}/bin" CACHE FILEPATH "The directory containing dll of VTK" FORCE)
+    elseif (EXISTS "${3RDPARTY_VTK_DIR}/bind")
+      set (3RDPARTY_VTK_DLL_DIR "${3RDPARTY_VTK_DIR}/bind" CACHE FILEPATH "The directory containing dll of VTK" FORCE)
     endif()
   endif()
 
@@ -144,7 +139,15 @@ if (INSTALL_VTK)
         if (NOT 3RDPARTY_VTK_DLL OR NOT EXISTS "${3RDPARTY_VTK_DLL}")
           list (APPEND 3RDPARTY_NOT_INCLUDED "${3RDPARTY_VTK_DLL}")
         else()
-          install (FILES ${3RDPARTY_VTK_DLL} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX}")
+          install (FILES ${3RDPARTY_VTK_DLL}
+                   CONFIGURATIONS Release
+                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+          install (FILES ${3RDPARTY_VTK_DLL}
+                   CONFIGURATIONS RelWithDebInfo
+                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+          install (FILES ${3RDPARTY_VTK_DLL}
+                   CONFIGURATIONS Debug
+                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
         endif()
       endforeach()
       OCCT_CHECK_AND_UNSET(3RDPARTY_VTK_DLL)
@@ -152,7 +155,18 @@ if (INSTALL_VTK)
   else ()
     foreach(VTK_DLL_NAME ${VTK_DLL_NAMES})
       string(REPLACE ".dll" ".so.1" VTK_DLL_NAME "${VTK_DLL_NAME}")
-      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME "lib${VTK_DLL_NAME}")
+      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
+              CONFIGURATIONS Release
+              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+              RENAME "lib${VTK_DLL_NAME}")
+      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
+              CONFIGURATIONS RelWithDebInfo
+              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+              RENAME "lib${VTK_DLL_NAME}")
+      install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
+              CONFIGURATIONS Debug
+              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+              RENAME "lib${VTK_DLL_NAME}")
     endforeach()
   endif()
 

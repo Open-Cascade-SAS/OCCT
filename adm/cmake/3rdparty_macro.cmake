@@ -1,11 +1,9 @@
 #
 
-# include occt macros. compiler_bitness, os_wiht_bit, compiler and build_postfix
+# include occt macros. compiler_bitness, os_wiht_bit, compiler
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEBUG)
-
-  OCCT_MAKE_BUILD_POSTFIX()
 
   # define 3RDPARTY_${PRODUCT_NAME}_DIR variable is it isn't defined
   if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DIR)
@@ -52,35 +50,13 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
   if (NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
     set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "${PRODUCT_NAME} library" FORCE)
 
-    # first of all, search for debug version of a library if build type is debug
-    if (DEFINED IS_BUILD_DEBUG)
-      find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME_DEBUG}
-                                                     PATHS
-                                                      "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}"
-                                                      "${3RDPARTY_${PRODUCT_NAME}_DIR}/lib"
-                                                      "${3RDPARTY_${PRODUCT_NAME}_DIR}/libd"
-                                                      ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_LIB}
-                                                     NO_DEFAULT_PATH)
-      # second search if previous one do not find anything
-      find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME_DEBUG})
-    endif()
-
-    # if build type is release or debug version of library isn't found - search for release version of one
-    if (NOT 3RDPARTY_${PRODUCT_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}")
-      set (3RDPARTY_${PRODUCT_NAME}_LIBRARY "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "${PRODUCT_NAME} library" FORCE)
-
-      if (DEFINED IS_BUILD_DEBUG)
-        message (STATUS "Warning: debug version of ${PRODUCT_NAME} library isn't found (${LIBRARY_NAME_DEBUG}) in ${3RDPARTY_${PRODUCT_NAME}_DIR}/lib(d). Search for release one")
-      endif()
-
-      find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME} PATHS
-                                                                      "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}"
-                                                                      "${3RDPARTY_${PRODUCT_NAME}_DIR}/lib"
-                                                                      ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_LIB}
-                                                                     NO_DEFAULT_PATH)
-      # second search if previous one do not find anything
-      find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME})
-    endif()
+    find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME} PATHS
+                                                                   "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}"
+                                                                   "${3RDPARTY_${PRODUCT_NAME}_DIR}/lib"
+                                                                   ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_LIB}
+                                                                   NO_DEFAULT_PATH)
+    # second search if previous one do not find anything
+    find_library (3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME})
   endif()
 
   if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR)
@@ -109,35 +85,14 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
     if (NOT 3RDPARTY_${PRODUCT_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
       set (3RDPARTY_${PRODUCT_NAME}_DLL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
 
-      if (DEFINED IS_BUILD_DEBUG)
-        find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME_DEBUG}"
-                                                   PATHS
-                                                    "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}"
-                                                    "${3RDPARTY_${PRODUCT_NAME}_DIR}/bin"
-                                                    "${3RDPARTY_${PRODUCT_NAME}_DIR}/bind"
-                                                    ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_DLL}
-                                                   NO_DEFAULT_PATH)
-
-        # second search if previous one do not find anything
-        find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME_DEBUG}")
-      endif()
-
-      if (NOT 3RDPARTY_${PRODUCT_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL}")
-        set (3RDPARTY_${PRODUCT_NAME}_DLL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND" CACHE FILEPATH "${PRODUCT_NAME} shared library" FORCE)
-
-        if (DEFINED IS_BUILD_DEBUG)
-          message (STATUS "Warning: debug version of ${PRODUCT_NAME} dll isn't found (${LIBRARY_NAME_DEBUG}) in ${3RDPARTY_${PRODUCT_NAME}_DIR}/bin(d). Search for release one")
-        endif()
-
-        find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME}" PATHS
-                                                                      "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}"
-                                                                      "${3RDPARTY_${PRODUCT_NAME}_DIR}/bin"
-                                                                      ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_DLL}
-                                                                     NO_DEFAULT_PATH)
+      find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME}" PATHS
+                                                                   "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}"
+                                                                   "${3RDPARTY_${PRODUCT_NAME}_DIR}/bin"
+                                                                   ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_DLL}
+                                                                   NO_DEFAULT_PATH)
 
         # second search if previous one do not find anything
         find_library (3RDPARTY_${PRODUCT_NAME}_DLL "${LIBRARY_NAME}")
-      endif()
     endif()
 
     if (NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DLL_DIR)
@@ -176,19 +131,49 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
   if (INSTALL_${PRODUCT_NAME})
     OCCT_MAKE_OS_WITH_BITNESS()
     OCCT_MAKE_COMPILER_SHORT_NAME()
-    OCCT_MAKE_BUILD_POSTFIX()
 
     if (WIN32)
-      install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}"     DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX}")
+      install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
+               CONFIGURATIONS Release
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+      install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
+               CONFIGURATIONS RelWithDebInfo
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+      install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
+               CONFIGURATIONS Debug
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+
     else()
       get_filename_component(ABS_PATH ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} REALPATH)
       if ("${PRODUCT_NAME}" STREQUAL "FREEIMAGE")
         get_filename_component(FREEIMLIB ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
-        install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME ${FREEIMLIB}.3)
+        install (FILES "${ABS_PATH}"
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 RENAME ${FREEIMLIB}.3)
+                 install (FILES "${ABS_PATH}"
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 RENAME ${FREEIMLIB}.3)
+        install (FILES "${ABS_PATH}"
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+                 RENAME ${FREEIMLIB}.3)
       endif()
       if("${PRODUCT_NAME}" STREQUAL "GL2PS")
         get_filename_component(GL2PSLIB ${3RDPARTY_${PRODUCT_NAME}_LIBRARY} NAME)
-        install (FILES "${ABS_PATH}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME ${GL2PSLIB}.1)
+        install (FILES "${ABS_PATH}"
+                 CONFIGURATIONS Release
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 RENAME ${GL2PSLIB}.1)
+        install (FILES "${ABS_PATH}"
+                 CONFIGURATIONS RelWithDebInfo
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 RENAME ${GL2PSLIB}.1)
+        install (FILES "${ABS_PATH}"
+                 CONFIGURATIONS Debug
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+                 RENAME ${GL2PSLIB}.1)
       endif()
     endif()
   else()

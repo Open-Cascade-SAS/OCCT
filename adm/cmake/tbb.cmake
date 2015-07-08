@@ -1,7 +1,5 @@
 # tbb
 
-OCCT_MAKE_BUILD_POSTFIX()
-
 if (NOT DEFINED INSTALL_TBB)
   set (INSTALL_TBB OFF CACHE BOOL "Is tbb required to be copied into install directory")
 endif()
@@ -60,7 +58,7 @@ if (WIN32 AND NOT DEFINED 3RDPARTY_TBBMALLOC_DLL_DIR)
   set (3RDPARTY_TBBMALLOC_DLL_DIR "" CACHE FILEPATH "The directory containing tbb malloc shared library")
 endif()
 
-# include occt macros. compiler_bitness, os_wiht_bit, compiler and build_postfix
+# include occt macros. compiler_bitness, os_wiht_bit, compiler
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 # search for product directory inside 3RDPARTY_DIR directory
@@ -100,8 +98,6 @@ OCCT_MAKE_COMPILER_SHORT_NAME()
 #  set (TBB_COMPILER_FOLER ${COMPILER})
 #endif()
 
-OCCT_MAKE_BUILD_POSTFIX()
-
 # search for tbb and tbb malloc library in defined 3rdparty directory
 foreach (LIBRARY_NAME TBB TBBMALLOC)
   if (NOT WIN32)
@@ -127,37 +123,14 @@ foreach (LIBRARY_NAME TBB TBBMALLOC)
   if (NOT 3RDPARTY_${LIBRARY_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${LIBRARY_NAME}_LIBRARY}")
     set (3RDPARTY_${LIBRARY_NAME}_LIBRARY "3RDPARTY_${LIBRARY_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "Path to library of ${LIBRARY_NAME}" FORCE)
 
-    # first of all, search for debug version of a library if build type is debug
-    if (DEFINED IS_BUILD_DEBUG)
-      find_library (3RDPARTY_${LIBRARY_NAME}_LIBRARY ${LIBRARY_NAME}_debug
-                                                     PATHS
-                                                      "${3RDPARTY_${LIBRARY_NAME}_LIBRARY_DIR}"
-                                                      "${3RDPARTY_TBB_DIR}/libd/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
-                                                      "${3RDPARTY_TBB_DIR}/lib/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
-                                                     NO_DEFAULT_PATH)
-
-      # second search if previous one do not find anything
-      find_library (3RDPARTY_${LIBRARY_NAME}_LIBRARY ${LIBRARY_NAME}_debug)
-    endif()
-
-    # if build type is release or debug version of library isn't found - search for release version of one
-    if (NOT 3RDPARTY_${LIBRARY_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${LIBRARY_NAME}_LIBRARY}")
-      set (3RDPARTY_${LIBRARY_NAME}_LIBRARY "3RDPARTY_${LIBRARY_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "Path to library of ${LIBRARY_NAME}" FORCE)
-
-      if (DEFINED IS_BUILD_DEBUG)
-        message (STATUS "Warning: debug version of ${LIBRARY_NAME} library isn't found (${LIBRARY_NAME}_debug) in ${3RDPARTY_TBB_DIR}/lib(d). Search for release one")
-      endif()
-
-      string (TOLOWER "${LIBRARY_NAME}" lower_LIBRARY_NAME)
-      find_library (3RDPARTY_${LIBRARY_NAME}_LIBRARY ${lower_LIBRARY_NAME}
-                                                     PATHS
-                                                      "${3RDPARTY_${LIBRARY_NAME}_LIBRARY_DIR}"
-                                                      "${3RDPARTY_TBB_DIR}/lib/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
-                                                     NO_DEFAULT_PATH)
+    string (TOLOWER "${LIBRARY_NAME}" lower_LIBRARY_NAME)
+    find_library (3RDPARTY_${LIBRARY_NAME}_LIBRARY ${lower_LIBRARY_NAME} PATHS
+                                                                         "${3RDPARTY_${LIBRARY_NAME}_LIBRARY_DIR}"
+                                                                         "${3RDPARTY_TBB_DIR}/lib/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
+                                                                         NO_DEFAULT_PATH)
 
       # second search if previous one do not find anything
       find_library (3RDPARTY_${LIBRARY_NAME}_LIBRARY ${LIBRARY_NAME})
-    endif()
   endif()
 
   if (NOT 3RDPARTY_${LIBRARY_NAME}_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_${LIBRARY_NAME}_LIBRARY_DIR}")
@@ -181,34 +154,13 @@ foreach (LIBRARY_NAME TBB TBBMALLOC)
     if (NOT 3RDPARTY_${LIBRARY_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${LIBRARY_NAME}_DLL}")
       set (3RDPARTY_${LIBRARY_NAME}_DLL "3RDPARTY_${LIBRARY_NAME}_DLL-NOTFOUND" CACHE FILEPATH "Path to shared library of ${LIBRARY_NAME}" FORCE)
 
-      if (DEFINED IS_BUILD_DEBUG)
-        find_library (3RDPARTY_${LIBRARY_NAME}_DLL ${LIBRARY_NAME}_debug
-                                       PATHS
-                                        "${3RDPARTY_${LIBRARY_NAME}_DLL_DIR}"
-                                        "${3RDPARTY_TBB_DIR}/bind/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
-                                        "${3RDPARTY_TBB_DIR}/bin/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
-                                       NO_DEFAULT_PATH)
-
-        # second search if previous one do not find anything
-        find_library (3RDPARTY_${LIBRARY_NAME}_DLL ${LIBRARY_NAME}_debug)
-      endif()
-
-      if (NOT 3RDPARTY_${LIBRARY_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${LIBRARY_NAME}_DLL}")
-        set (3RDPARTY_${LIBRARY_NAME}_DLL "3RDPARTY_${LIBRARY_NAME}_DLL-NOTFOUND" CACHE FILEPATH "Path to shared library of ${LIBRARY_NAME}" FORCE)
-
-        if (DEFINED IS_BUILD_DEBUG)
-          message (STATUS "Warning: debug version of ${LIBRARY_NAME} dll isn't found (${LIBRARY_NAME}_debug) in ${3RDPARTY_TBB_DIR}/bin(d). Search for release one")
-        endif()
-
-        find_library (3RDPARTY_${LIBRARY_NAME}_DLL ${LIBRARY_NAME}
-                                                   PATHS
-                                                    "${3RDPARTY_${LIBRARY_NAME}_DLL_DIR}"
-                                                    "${3RDPARTY_TBB_DIR}/bin/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
-                                                   NO_DEFAULT_PATH)
+      find_library (3RDPARTY_${LIBRARY_NAME}_DLL ${LIBRARY_NAME} PATHS
+                                                                 "${3RDPARTY_${LIBRARY_NAME}_DLL_DIR}"
+                                                                 "${3RDPARTY_TBB_DIR}/bin/${TBB_ARCH_NAME}/${TBB_COMPILER_FOLER}"
+                                                                 NO_DEFAULT_PATH)
 
         # second search if previous one do not find anything
         find_library (3RDPARTY_${LIBRARY_NAME}_DLL ${LIBRARY_NAME})
-      endif()
     endif()
 
     if (NOT 3RDPARTY_${LIBRARY_NAME}_DLL_DIR OR NOT EXISTS "${3RDPARTY_${LIBRARY_NAME}_DLL_DIR}")
@@ -247,12 +199,44 @@ if (INSTALL_TBB)
   OCCT_MAKE_COMPILER_SHORT_NAME()
 
   if (WIN32)
-    install (FILES ${3RDPARTY_TBB_DLL} ${3RDPARTY_TBBMALLOC_DLL} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX}")
+    install (FILES ${3RDPARTY_TBB_DLL} ${3RDPARTY_TBBMALLOC_DLL}
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (FILES ${3RDPARTY_TBB_DLL} ${3RDPARTY_TBBMALLOC_DLL}
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (FILES ${3RDPARTY_TBB_DLL} ${3RDPARTY_TBBMALLOC_DLL}
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
   else()
     get_filename_component(TBBLIB ${3RDPARTY_TBB_LIBRARY} NAME)
     get_filename_component(TBBMALLOCLIB ${3RDPARTY_TBBMALLOC_LIBRARY} NAME)
-    install (FILES ${3RDPARTY_TBB_LIBRARY}.2 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME ${TBBLIB}.2)
-    install (FILES ${3RDPARTY_TBBMALLOC_LIBRARY}.2 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME ${TBBMALLOCLIB}.2)
+
+    install (FILES ${3RDPARTY_TBB_LIBRARY}.2
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             RENAME ${TBBLIB}.2)
+    install (FILES ${3RDPARTY_TBB_LIBRARY}.2
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             RENAME ${TBBLIB}.2)
+    install (FILES ${3RDPARTY_TBB_LIBRARY}.2
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+             RENAME ${TBBLIB}.2)
+
+    install (FILES ${3RDPARTY_TBBMALLOC_LIBRARY}.2
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             RENAME ${TBBMALLOCLIB}.2)
+    install (FILES ${3RDPARTY_TBBMALLOC_LIBRARY}.2
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             RENAME ${TBBMALLOCLIB}.2)
+    install (FILES ${3RDPARTY_TBBMALLOC_LIBRARY}.2
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+             RENAME ${TBBMALLOCLIB}.2)
   endif()
 
   set (USED_3RDPARTY_TBB_DIR "")
