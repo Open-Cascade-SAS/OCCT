@@ -347,7 +347,6 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
                                      TopAbs_EDGE, 
                                      TopAbs_FACE, 
                                      aEFMap);
-                                    
   }
   //
   aItF.Initialize (myShapes);
@@ -501,7 +500,7 @@ void RefineShell(TopoDS_Shell& theShell,
                                    TopAbs_EDGE, 
                                    TopAbs_FACE, 
                                    aMEF);
-                                  
+  //
   aNbMEF=aMEF.Extent();
   for (i=1; i<=aNbMEF; ++i) {
     const TopoDS_Shape& aE=aMEF.FindKey(i);
@@ -531,7 +530,7 @@ void RefineShell(TopoDS_Shell& theShell,
     aLFP.Append(aF1);
     //
     // Trying to reach the branch point
-    for (;;)  {  
+    for (;;) {
       aItLFP.Initialize(aLFP);
       for (; aItLFP.More(); aItLFP.Next()) { 
         const TopoDS_Shape& aFP=aItLFP.Value();
@@ -540,6 +539,10 @@ void RefineShell(TopoDS_Shell& theShell,
         for (; aExp.More(); aExp.Next()) {
           const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
           if (aMEStop.Contains(aE)) {
+            continue;
+          }
+          //
+          if (aE.Orientation() == TopAbs_INTERNAL) {
             continue;
           }
           //
@@ -578,7 +581,7 @@ void RefineShell(TopoDS_Shell& theShell,
         aLFP.Append(aFP1);
       }
       aLFP1.Clear();
-    }// for (;;)  {
+    }// for (;;) {
     //
     aNbMFB=aMFB.Extent();
     if (aNbMFB) {
@@ -592,7 +595,7 @@ void RefineShell(TopoDS_Shell& theShell,
       aLShX.Append(aShX);
     }
   }//for (; aIt.More(); aIt.Next()) {
-}    
+}
 //=======================================================================
 //function : MakeShells
 //purpose  : 

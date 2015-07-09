@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC26379"
+puts "========"
+puts ""
+#######################################################
+# Wrong result produced by the volume maker algorithm
+#######################################################
+
+restore [locate_data_file OCC26379-csf_2.brep] cf
+mkvolume result cf -ni
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+set bug_info [vreadpixel 350 310 name]
+if {$bug_info != "DARKGOLDENROD3 1"} {
+  puts "ERROR: OCC26379 is reproduced. Volume is incorrect."
+}
+
+set square 6.60933e+006
+
+set only_screen 1
