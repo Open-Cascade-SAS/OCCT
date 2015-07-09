@@ -244,7 +244,7 @@ void BOPAlgo_MakerVolume::MakeBox(BOPCol_MapOfShape& theBoxFaces)
   //
   Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, anExt;
   //
-  anExt = myBBox.SquareExtent() * 0.5;
+  anExt = sqrt(myBBox.SquareExtent()) * 0.5;
   myBBox.Enlarge(anExt);
   myBBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
   //
