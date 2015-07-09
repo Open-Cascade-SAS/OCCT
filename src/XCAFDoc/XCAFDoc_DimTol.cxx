@@ -74,6 +74,7 @@ void XCAFDoc_DimTol::Set(const Standard_Integer kind,
                          const Handle(TCollection_HAsciiString)& aName,
                          const Handle(TCollection_HAsciiString)& aDescription) 
 {
+  Backup();
   myKind = kind;
   myVal = aVal;
   myName = aName;

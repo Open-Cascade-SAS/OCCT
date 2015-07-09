@@ -59,6 +59,43 @@ public:
   
   //! Returns internal XCAFDoc_ShapeTool tool
   Standard_EXPORT const Handle(XCAFDoc_ShapeTool)& ShapeTool();
+
+  //! Returns True if label belongs to a dimtoltable and
+  //! is a Dimension definition
+  Standard_EXPORT Standard_Boolean IsDimension (const TDF_Label& theLab) const;
+  
+  //! Returns a sequence of Dimensions labels currently stored
+  //! in the DGTtable
+  Standard_EXPORT void GetDimensionLabels (TDF_LabelSequence& theLabels) const;
+  
+  //! Sets a link with GUID
+  Standard_EXPORT void SetDimension (const TDF_Label& theFirstL, const TDF_Label& theSecondL, const TDF_Label& theDimTolL) const;
+  
+  //! Sets a link with GUID
+  Standard_EXPORT void SetDimension (const TDF_Label& theL, const TDF_Label& theDimTolL) const;
+  
+  //! Returns all Dimension labels defined for label ShapeL
+  Standard_EXPORT Standard_Boolean GetRefDimensionLabels (const TDF_Label& theShapeL, TDF_LabelSequence& theDimensions) const;
+  
+  //! Adds a dimension definition to a DGTtable and returns its label
+  Standard_EXPORT TDF_Label AddDimension() ;
+  
+  //! Returns True if label belongs to a dimtoltable and
+  //! is a DimTol definition
+  Standard_EXPORT Standard_Boolean IsGeomTolerance (const TDF_Label& theLab) const;
+  
+  //! Returns a sequence of Tolerance labels currently stored
+  //! in the DGTtable
+  Standard_EXPORT void GetGeomToleranceLabels (TDF_LabelSequence& theLabels) const;
+  
+  //! Sets a link with GUID
+  Standard_EXPORT void SetGeomTolerance (const TDF_Label& theL, const TDF_Label& theDimTolL) const;
+  
+  //! Returns all GeomTolerance labels defined for label ShapeL
+  Standard_EXPORT Standard_Boolean GetRefGeomToleranceLabels (const TDF_Label& theShapeL, TDF_LabelSequence& theDimTols) const;
+  
+  //! Adds a GeomTolerance definition to a DGTtable and returns its label
+  Standard_EXPORT TDF_Label AddGeomTolerance();
   
   //! Returns True if label belongs to a dimtoltable and
   //! is a DimTol definition
@@ -89,7 +126,7 @@ public:
   
   //! Returns ShapeL defined for label DimTolL
   //! Returns False if the DimTolL is not in DGTtable
-  Standard_EXPORT Standard_Boolean GetRefShapeLabel (const TDF_Label& DimTolL, TDF_Label& ShapeL) const;
+  Standard_EXPORT Standard_Boolean GetRefShapeLabel (const TDF_Label& DimTolL, TDF_LabelSequence& ShapeL) const;
   
   //! Returns all DimTol labels defined for label ShapeL
   Standard_EXPORT Standard_Boolean GetRefDGTLabels (const TDF_Label& ShapeL, TDF_LabelSequence& DimTols) const;
@@ -111,9 +148,16 @@ public:
   
   //! Adds a datum definition to a DGTtable and returns its label
   Standard_EXPORT TDF_Label AddDatum (const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aDescription, const Handle(TCollection_HAsciiString)& anIdentification) const;
+
+  //! Adds a datum definition to a DGTtable and returns its label
+  Standard_EXPORT TDF_Label AddDatum() ;
   
   //! Sets a link with GUID
   Standard_EXPORT void SetDatum (const TDF_Label& L, const TDF_Label& DatumL) const;
+
+  //! Sets a link with GUID for Datum
+  //! Sets connection between Datum and Tolerance
+  Standard_EXPORT void SetDatumToGeomTol (const TDF_Label& theL, const TDF_Label& theTolerL)  const;
   
   //! Sets a link with GUID for Datum
   //! Adds a Datum as necessary
@@ -125,7 +169,13 @@ public:
   Standard_EXPORT Standard_Boolean GetDatum (const TDF_Label& DatumL, Handle(TCollection_HAsciiString)& aName, Handle(TCollection_HAsciiString)& aDescription, Handle(TCollection_HAsciiString)& anIdentification) const;
   
   //! Returns all Datum labels defined for label DimTolL
-  Standard_EXPORT Standard_Boolean GetDatumTolerLabels (const TDF_Label& DimTolL, TDF_LabelSequence& Datums) const;
+  Standard_EXPORT Standard_Boolean GetDatumOfTolerLabels (const TDF_Label& DimTolL, TDF_LabelSequence& Datums) const;
+
+  //! Returns all GeomToleranses labels defined for label DatumL
+  Standard_EXPORT   Standard_Boolean GetTolerOfDatumLabels (const TDF_Label& theDatumL, TDF_LabelSequence& theTols)  const;
+
+  //! Returns Datum label defined for label ShapeL
+  Standard_EXPORT   Standard_Boolean GetRefDatumLabel (const TDF_Label& theShapeL, TDF_Label& theDatum)  const;
   
   Standard_EXPORT const Standard_GUID& ID() const;
   

@@ -15,6 +15,10 @@ XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel.hxx
 XCAFDoc_DataMapOfShapeLabel.hxx
 XCAFDoc_Datum.cxx
 XCAFDoc_Datum.hxx
+XCAFDoc_Dimension.cxx
+XCAFDoc_Dimension.hxx
+XCAFDoc_GeomTolerance.cxx
+XCAFDoc_GeomTolerance.hxx
 XCAFDoc_DimTol.cxx
 XCAFDoc_DimTol.hxx
 XCAFDoc_DimTolTool.cxx

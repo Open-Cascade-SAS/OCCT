@@ -2,6 +2,7 @@ project(TKXCAF)
 
 set (TOOLKIT_MODULES
   XCAFApp
+  XCAFDimTolObjects
   XCAFDoc
   XCAFPrs
 )

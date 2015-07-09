@@ -353,6 +353,7 @@ n VrmlAPI
 n VrmlConverter
 n VrmlData
 n XCAFApp
+n XCAFDimTolObjects
 n XCAFDoc
 n XCAFPrs
 n XSAlgo

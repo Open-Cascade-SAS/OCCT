@@ -26,6 +26,8 @@ class XCAFDoc_DocumentTool;
 class XCAFDoc_Location;
 class XCAFDoc_Color;
 class XCAFDoc_DimTol;
+class XCAFDoc_Dimension;
+class XCAFDoc_GeomTolerance;
 class XCAFDoc_Datum;
 class XCAFDoc_Material;
 class XCAFDoc_Volume;
@@ -73,6 +75,12 @@ public:
   
   //! Return GUIDs for TreeNode representing specified types of DGT
   Standard_EXPORT static Standard_GUID DimTolRefGUID();
+
+  //! Return GUIDs for TreeNode representing specified types of Dimension
+  Standard_EXPORT static   Standard_GUID DimensionRefGUID() ;
+
+  //! Return GUIDs for TreeNode representing specified types of GeomTolerance
+  Standard_EXPORT static   Standard_GUID GeomToleranceRefGUID() ;
   
   //! Return GUIDs for TreeNode representing specified types of datum
   Standard_EXPORT static Standard_GUID DatumRefGUID();

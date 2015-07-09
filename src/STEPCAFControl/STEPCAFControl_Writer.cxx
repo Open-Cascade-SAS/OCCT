@@ -2040,10 +2040,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   Standard_Integer i;
   for(i=1; i<=DGTLabels.Length(); i++) {
     TDF_Label DatumL = DGTLabels.Value(i);
-    TDF_Label ShapeL;
+    TDF_LabelSequence ShapeL;
     if(!DGTTool->GetRefShapeLabel(DatumL,ShapeL)) continue;
     // find target shape
-    TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(ShapeL);
+    TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(ShapeL.Value(1));
     TopLoc_Location Loc;
     TColStd_SequenceOfTransient seqRI;
     FindEntities( FP, aShape, Loc, seqRI );
@@ -2121,10 +2121,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   if(DGTLabels.Length()<=0) return Standard_False;
   for(i=1; i<=DGTLabels.Length(); i++) {
     TDF_Label DimTolL = DGTLabels.Value(i);
-    TDF_Label ShapeL;
+    TDF_LabelSequence ShapeL;
     if(!DGTTool->GetRefShapeLabel(DimTolL,ShapeL)) continue;
     // find target shape
-    TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(ShapeL);
+    TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(ShapeL.Value(1));
     TopLoc_Location Loc;
     TColStd_SequenceOfTransient seqRI;
     FindEntities( FP, aShape, Loc, seqRI );
@@ -2264,7 +2264,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     else if(kind<50) { //tolerance
       if(kind<35) { // tolerance with datum system
         TDF_LabelSequence DatumLabels;
-        DGTTool->GetDatumTolerLabels(DimTolL,DatumLabels);
+        DGTTool->GetDatumOfTolerLabels(DimTolL,DatumLabels);
         Standard_Integer NbDR = DatumLabels.Length();
         Handle(StepDimTol_HArray1OfDatumReference) HADR = new StepDimTol_HArray1OfDatumReference(1,NbDR);
         for(Standard_Integer j=1; j<=NbDR; j++) {

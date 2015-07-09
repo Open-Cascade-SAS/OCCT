@@ -1,0 +1,54 @@
+set dmod [XGetDatumModifiers D 0:1:4:2]
+set dname [XGetDatumName D 0:1:4:2]
+set type [XGetTypeOfTolerance D 0:1:4:1]
+set typev [XGetTypeOfToleranceValue D 0:1:4:1]
+set val [XGetToleranceValue D 0:1:4:1]
+set mat [XGetTolMaterialReq D 0:1:4:1]
+set zone [XGetTolZoneMod D 0:1:4:1]
+set zonev [XGetTolZoneModValue D 0:1:4:1]
+set mod [XGetTolModifier  D 0:1:4:1]
+set max [XGetTolMaxValue D  0:1:4:1]
+set dump [XDumpDGTs D all]
+
+  if { $c_dmod != 0 && [string compare $dmod $c_dmod] != 0} {
+   puts "Error wrong datum modif"
+  } else {
+    if { $c_dname !=  0 && [string compare $dname $c_dname] != 0} {
+     puts "Error wrong datum name"
+    } else {
+      if { $c_type !=  0 && [string compare $type $c_type] != 0} {
+       puts "Error wrong type"
+      } else {
+        if { $c_typev !=  0 && [string compare $typev $c_typev] != 0} {
+         puts "Error wrong type of value"
+        } else {
+          if { $c_mat !=  0 && [string compare $mat $c_mat] != 0} {
+           puts "Error wrong mat"
+          } else {
+            if { $c_zone !=  0 && [string compare $zone $c_zone] != 0} {
+             puts "Error wrong zone"
+            } else {
+              if { $c_zonev !=  0 && $zonev != $c_zonev } {
+               puts "Error wrong zome value"
+              } else {
+                if { $c_mod !=  0 && [string compare $mod $c_mod] != 0} {
+                 puts "Error wrong modifiers"
+                } else {
+                  if { $c_max !=  0 && $max != $c_max } {
+                   puts "Error wrong maxvalue"
+                  } else {
+                    if { $c_val !=  0 && $val != $c_val } {
+                     puts "Error wrong value"
+                    } else {
+                      puts "TEST COMPLETED"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+

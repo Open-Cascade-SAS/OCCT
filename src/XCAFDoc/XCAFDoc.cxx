@@ -89,6 +89,27 @@ Standard_GUID XCAFDoc::DimTolRefGUID()
   return ID;
 }
 
+//=======================================================================
+//function : DimensionRefGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::DimensionRefGUID()
+{
+  static Standard_GUID ID("efd212e3-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}
+
+//=======================================================================
+//function : GeomToleranceRefGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::GeomToleranceRefGUID()
+{
+  static Standard_GUID ID("efd213e3-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}
 
 //=======================================================================
 //function : DatumRefGUID

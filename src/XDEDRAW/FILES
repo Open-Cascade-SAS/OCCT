@@ -8,5 +8,7 @@ XDEDRAW_Layers.cxx
 XDEDRAW_Layers.hxx
 XDEDRAW_Props.cxx
 XDEDRAW_Props.hxx
+XDEDRAW_GDTs.cxx
+XDEDRAW_GDTs.hxx
 XDEDRAW_Shapes.cxx
 XDEDRAW_Shapes.hxx

@@ -1,0 +1,11 @@
+set c_dmod 0
+set c_dname 0
+set c_val 0
+set c_type 0
+set c_typev 0
+set c_mat 0
+set c_zone 0
+set c_zonev 0
+set c_mod 0
+set c_max 0
+set c_dump 0

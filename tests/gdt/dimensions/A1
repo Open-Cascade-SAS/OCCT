@@ -1,0 +1,14 @@
+
+box b 10 10 10
+explode b
+explode b_1
+
+NewDocument D
+XAddShape D b
+XAddDimension D b_1_1
+#0:1:4:1
+XSetDimensionType D 0:1:4:1 14
+XSetDimensionValue D 0:1:4:1 1.5
+
+set c_value "1.5"
+set c_type "Size_CurveLength"

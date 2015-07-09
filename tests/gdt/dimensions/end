@@ -1,0 +1,57 @@
+set value [XGetDimensionValue D 0:1:4:1]
+set type [XGetDimensionType D 0:1:4:1]
+set qualif [XGetDimensionQualifier D 0:1:4:1]
+set range [XGetDimensionRange D 0:1:4:1]
+set classtol [XGetDimensionClassOfTol D 0:1:4:1]
+set d [XGetDimensionNbOfDecimalPlaces D 0:1:4:1]
+set dir [XGetDimensionDir D 0:1:4:1]
+set pnts [XGetDimensionPoints D 0:1:4:1]
+set mod [XGetDimensionModifiers  D 0:1:4:1]
+set plusminus [XGetDimensionPlusMinusTol D  0:1:4:1]
+set dump [XDumpDGTs D all]
+
+if { $c_value != 0 && $value != $c_value} {
+ puts "Error wrong value"
+} else {
+  if { $c_type != 0 && [string compare $type $c_type] != 0} {
+   puts "Error wrong type"
+  } else {
+    if { $c_qalif !=  0 && [string compare $qualif $c_qalif] != 0} {
+     puts "Error wrong qualifier"
+    } else {
+      if { $c_classtol !=  0 && $classtol != $c_classtol} {
+       puts "Error wrong class of tolerance"
+      } else {
+        if { $c_d !=  0 && $d != $c_d} {
+         puts "Error wrong nbdigit"
+        } else {
+          if { $c_modif !=  0 && [string compare $modif $c_modif] != 0} {
+           puts "Error wrong modifiers"
+          } else {
+            if { $c_dir !=  0 && [string compare $dir $c_dir] != 0} {
+             puts "Error wrong direction"
+            } else {
+              if { $c_pnts !=  0 && [string compare $pnts $c_pnts] != 0} {
+               puts "Error wrong points"
+              } else {
+                if { $c_range !=  0 && [string compare $range $c_range] != 0} {
+                 puts "Error wrong range"
+                } else {
+                  if { $c_mod !=  0 && [string compare $mod $c_mod] != 0} {
+                   puts "Error wrong modifiers"
+                  } else {
+                    if { $c_plusminus !=  0 && [string compare $plusminus $c_plusminus] != 0} {
+                     puts "Error wrong modifiers"
+                    } else {
+                      puts "TEST COMPLETED"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
