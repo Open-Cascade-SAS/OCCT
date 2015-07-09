@@ -125,18 +125,16 @@ Standard_Boolean MyDirFunction::Value(const Standard_Real x,
     p = Dir->Value(i);
     P->Value(i) = p * x + P0->Value(i);
   }
-  if( F->Value(*P, *FV) ) {
+  if( F->Value(*P, *FV) )
+  {
 
-    Standard_Real aVal = 0.;
+    Standard_Real aVal = 0.0;
 
-    for(Standard_Integer i = FV->Lower(); i <= FV->Upper(); i++) {
+    for(Standard_Integer i = FV->Lower(); i <= FV->Upper(); i++)
+    {
       aVal = FV->Value(i);
-      if(aVal < 0.) {
-        if(aVal <= -1.e+100) // Precision::HalfInfinite() later
-          //       if(Precision::IsInfinite(Abs(FV->Value(i)))) {
-          //	fval = Precision::Infinite();
-          return Standard_False;
-      }
+      if(aVal <= -1.e+100) // Precision::HalfInfinite() later
+        return Standard_False;
       else if(aVal >= 1.e+100) // Precision::HalfInfinite() later
         return Standard_False;
     }
@@ -317,7 +315,8 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
 
   // (2) Si l'on a pas assez progresser on realise une recherche 
   //     en bonne et due forme, a partir des inits precedents
-  if ((fsol > 0.2*PValue) && (tol1d < 0.5)) {
+  if ((fsol > 0.2*PValue) && (tol1d < 0.5)) 
+  {
 
     if (tsol <0) {
       ax = tsol; bx = 0.0; cx = 1.0;
@@ -328,17 +327,52 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
     FSR_DEBUG(" minimisation dans la direction");
 
     math_BrentMinimum Sol(tol1d, 100, tol1d);
-    Sol.Perform(F, ax, bx, cx);
 
-    if(Sol.IsDone()) {
-      if (Sol.Minimum() <= Result) {
+    // Base invocation.
+    Sol.Perform(F, ax, bx, cx);
+    if(Sol.IsDone())
+    {
+      if (Sol.Minimum() <= Result)
+      {
         tsol = Sol.Location();
         good = Standard_True;
-        FSR_DEBUG("t= "<<tsol<<" F ="<< Sol.Minimum() << " OldF = "<<Result)
-      }
-    }
+        Result = Sol.Minimum();
+
+        // Objective function changes too fast ->
+        // perform additional computations.
+        if (Gradient.Norm2() > 1.0 / Precision::SquareConfusion() &&
+            tsol > ax && 
+            tsol < cx) // Solution inside of (ax, cx) interval.
+        {
+          // First and second part invocation.
+          Sol.Perform(F, ax, (ax + tsol) / 2.0, tsol);
+          if(Sol.IsDone())
+          {
+            if (Sol.Minimum() <= Result)
+            {
+              tsol = Sol.Location();
+              good = Standard_True;
+              Result = Sol.Minimum();
+            }
+          }
+
+          Sol.Perform(F, tsol, (cx + tsol) / 2.0, cx);
+          if(Sol.IsDone())
+          {
+            if (Sol.Minimum() <= Result)
+            {
+              tsol = Sol.Location();
+              good = Standard_True;
+              Result = Sol.Minimum();
+            }
+          }
+        }
+      } // if (Sol.Minimum() <= Result)
+    } // if(Sol.IsDone())
   }
-  if (good) {
+
+  if (good)
+  {
     // mise a jour du Delta
     Dir.Multiply(tsol);
   }

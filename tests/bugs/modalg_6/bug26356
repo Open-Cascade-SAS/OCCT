@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC26356"
+puts "========"
+puts ""
+#############################################
+# Wrong result done by projection algorithm
+#############################################
+
+restore [locate_data_file OCC26356-f.brep] b1
+restore [locate_data_file OCC26356-w.brep] b2
+
+explode b2 v
+
+point p1 31350.009765625 7100 -2.17374844144233e-013
+set bug_info_1 [projponf b1 p1 -min -g]
+set bug_info_1 [string trim [string range $bug_info_1 [expr {[string first "=" $bug_info_1] + 1}] [expr {[string length $bug_info_1] - 1}]]]
+set bug_info_1 [string trim [string range $bug_info_1 0 [expr {[string first " " $bug_info_1] - 1}]]]
+set bug_info_2 [projponf b1 p1 -minmax -g]
+set bug_info_2 [string trim [string range $bug_info_2 [expr {[string first "=" $bug_info_2] + 1}] [expr {[string length $bug_info_2] - 1}]]]
+set bug_info_2 [string trim [string range $bug_info_2 0 [expr {[string first " " $bug_info_2] - 1}]]]
+
+point p2 29200.099609375 7100 -2.17374753743702e-013
+set bug_info_3 [projponf b1 p2 -min -g]
+set bug_info_3 [string trim [string range $bug_info_3 [expr {[string first "=" $bug_info_3] + 1}] [expr {[string length $bug_info_3] - 1}]]]
+set bug_info_3 [string trim [string range $bug_info_3 0 [expr {[string first " " $bug_info_3] - 1}]]]
+set bug_info_4 [projponf b1 p2 -minmax -g]
+set bug_info_4 [string trim [string range $bug_info_4 [expr {[string first "=" $bug_info_4] + 1}] [expr {[string length $bug_info_4] - 1}]]]
+set bug_info_4 [string trim [string range $bug_info_4 0 [expr {[string first " " $bug_info_4] - 1}]]]
+
+if {$bug_info_1 != $bug_info_2} {
+  puts "ERROR: OCC26356 is reproduced."
+  puts "For point #1: distance min is: ${bug_info_1}, distance minmax is: ${bug_info_2}."
+}
+if {$bug_info_3 != $bug_info_4} {
+  puts "ERROR: OCC26356 is reproduced."
+  puts "For point #2: distance min is: ${bug_info_3}, distance minmax is: ${bug_info_4}."
+}
