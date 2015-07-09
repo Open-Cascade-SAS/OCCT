@@ -2263,12 +2263,24 @@ Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        the
   }
 
   // Set background colors (only gradient background supported)
-  if (myBgGradientArray != NULL)
+  if (myBgGradientArray != NULL
+   && myBgGradientArray->IsDefined())
   {
     theProgram->SetUniform (theGlContext,
       myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], myBgGradientArray->GradientColor (0));
     theProgram->SetUniform (theGlContext,
       myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], myBgGradientArray->GradientColor (1));
+  }
+  else
+  {
+    const OpenGl_Vec4 aBackColor (theCView.DefWindow.Background.r,
+                                  theCView.DefWindow.Background.g,
+                                  theCView.DefWindow.Background.b,
+                                  1.0f);
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], aBackColor);
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], aBackColor);
   }
 
   theProgram->SetUniform (theGlContext,

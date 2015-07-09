@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC26404"
+puts "========"
+puts ""
+###########################################################################################
+# Visualization, Ray Tracing - use solid background color when gradient color is disabled
+###########################################################################################
+
+box b 1 2 3
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vsetcolorbg 10 10 10
+vdisplay b
+vfit
+vraytrace 1
+set bug_info_1 [vreadpixel 50 50 rgb name]
+if {$bug_info_1 != "GRAY8"} {
+  puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #1)."
+}
+vsetgradientbg 255 0 0 0 0 255 1
+vsetgradientbg 255 0 0 0 0 255 0
+set bug_info_2 [vreadpixel 50 50 rgb name]
+if {$bug_info_2 != "GRAY8"} {
+  puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #2)."
+}
