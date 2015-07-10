@@ -314,3 +314,27 @@ function (OCCT_MODULES_AND_TOOLKITS MODULE_LIST)
   set (${MODULE_LIST} ${${MODULE_LIST}} PARENT_SCOPE)
 endfunction()
 
+# Returns OCCT version string from file Standard_Version.hxx (if available)
+function (OCCT_VERSION OCCT_VERSION_VAR)
+  set (OCC_VERSION_COMPLETE "7.1.0")
+  set (OCC_VERSION_DEVELOPMENT "")
+  
+  set (OCCT_VERSION_LOCALVAR "${OCC_VERSION_COMPLETE}.${OCC_VERSION_DEVELOPMENT}")
+
+  set (STANDARD_VERSION_FILE "${CMAKE_SOURCE_DIR}/src/Standard/Standard_Version.hxx")
+  if (EXISTS "${STANDARD_VERSION_FILE}")
+    foreach (SOUGHT_VERSION OCC_VERSION_COMPLETE OCC_VERSION_DEVELOPMENT)
+      file (STRINGS "${STANDARD_VERSION_FILE}" ${SOUGHT_VERSION} REGEX "^#define ${SOUGHT_VERSION} .*")
+      string (REGEX REPLACE ".*${SOUGHT_VERSION} .*\"([^ ]+)\".*" "\\1" ${SOUGHT_VERSION} "${${SOUGHT_VERSION}}" )
+    endforeach()
+    
+    if (NOT "${OCC_VERSION_DEVELOPMENT}" STREQUAL "")
+      set (OCCT_VERSION_LOCALVAR "${OCC_VERSION_COMPLETE}.${OCC_VERSION_DEVELOPMENT}")
+    else()
+      set (OCCT_VERSION_LOCALVAR "${OCC_VERSION_COMPLETE}")
+    endif()
+  endif()
+
+  set (${OCCT_VERSION_VAR} "${OCCT_VERSION_LOCALVAR}" PARENT_SCOPE)
+endfunction()
+

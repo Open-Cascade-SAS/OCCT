@@ -22,16 +22,6 @@ project (OCCT)
 # Solution folder property
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Generate documentation
-# Overview and User Guides
-set (DOC_GENERATE_OVERVIEW OFF CACHE BOOL "Generate Overview and User Guides")
-if (NOT DOC_OVERVIEW_OUTPUT_FORMAT)
-  set (DOC_OVERVIEW_OUTPUT_FORMAT "html" CACHE STRING "Output format of Overview and User Guides" FORCE)
-  SET_PROPERTY (CACHE DOC_OVERVIEW_OUTPUT_FORMAT PROPERTY STRINGS html chm pdf)
-endif()
-# class Reference Manual
-set (DOC_GENERATE_REFMAN OFF CACHE BOOL "Generate class Reference Manual")
-
 # Tests
 set (TESTS_RUN OFF CACHE BOOL "Run tests or not")
 set (TESTS_INSTALL OFF CACHE BOOL "Copy tests to folder install")
@@ -102,6 +92,9 @@ OCCT_MODULES_AND_TOOLKITS (OCCT_MODULES)
 foreach (MODULE ${OCCT_MODULES})
   set (BUILD_${MODULE} ON CACHE BOOL "include ${MODULE}")
 endforeach()
+
+# Overview
+set (BUILD_OCCT_OVERVIEW OFF CACHE BOOL "Build OCCT overview in HTML format")
 
 if (NOT USE_VTK)
   list (REMOVE_ITEM Visualization_TOOLKITS TKIVtk)
@@ -232,6 +225,25 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_TBB")
 endif()
 
+# Doxygen
+if (BUILD_OCCT_OVERVIEW)
+  if (NOT DEFINED INSTALL_OCCT_OVERVIEW)
+    set (INSTALL_OCCT_OVERVIEW OFF CACHE BOOL "Copy OCCT overview into install directory")
+  endif()
+
+  if (INSTALL_OCCT_OVERVIEW)
+    install (DIRECTORY "${CMAKE_BINARY_DIR}/doc/overview" DESTINATION  "${INSTALL_DIR}/doc")
+    install (FILES "${CMAKE_SOURCE_DIR}/dox/resources/overview.html" DESTINATION  "${INSTALL_DIR}")
+  endif()
+
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
+else()
+  OCCT_CHECK_AND_UNSET ("INSTALL_OCCT_OVERVIEW")
+
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_EXECUTABLE")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_DOT_EXECUTABLE")
+endif()
+
 string (REGEX REPLACE ";" " " 3RDPARTY_NOT_INCLUDED "${3RDPARTY_NOT_INCLUDED}")
 
 # check all 3rdparty paths
@@ -278,6 +290,15 @@ if (WIN32)
   set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 endif()
 
+if ("${INSTALL_DIR}" STREQUAL "")
+  get_filename_component (CMAKE_BINARY_DIR_PARENT ${CMAKE_BINARY_DIR} DIRECTORY)
+
+  set (INSTALL_DIR "${CMAKE_BINARY_DIR_PARENT}/install" CACHE PATH "Directory that will contain install files of OCCT" FORCE)
+  set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
+
+  message (STATUS "Info: INSTALL_DIR has been set as ${INSTALL_DIR}")
+endif()
+
 message (STATUS "\nInfo: Collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
 
 # (!) patch is not taken into account COLLECT_AND_INSTALL_OCCT_HEADER_FILES
@@ -287,15 +308,6 @@ COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR
 #if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
 #  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${BUILD_PATCH_DIR}" "${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${CMAKE_BINARY_DIR}")
 #endif()
-
-if ("${INSTALL_DIR}" STREQUAL "")
-  get_filename_component (CMAKE_BINARY_DIR_PARENT ${CMAKE_BINARY_DIR} DIRECTORY)
-
-  set (INSTALL_DIR "${CMAKE_BINARY_DIR_PARENT}/install" CACHE PATH "Directory that will contain install files of OCCT" FORCE)
-  set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
-
-  message (STATUS "INSTALL_DIR has been set as ${INSTALL_DIR}")
-endif()
 
 OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
 OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
@@ -320,17 +332,6 @@ if (TESTS_RUN AND TESTS_INSTALL)
   #enable_testing ()
   #add_test(NAME RUN_TESTS COMMAND ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults)
   add_custom_target(START_TESTS ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults DEPENDS INSTALL)
-endif()
-
-# Creation of "GenerateDocumentation" project
-if (DOC_GENERATE_OVERVIEW OR DOC_GENERATE_REFMAN)
-  OCCT_INCLUDE_CMAKE_FILE("adm/cmake/occt_gendoc")
-  if(DOC_GENERATE_OVERVIEW)
-    gendoc(-overview -${DOC_OVERVIEW_OUTPUT_FORMAT})
-  endif()
-  if(DOC_GENERATE_REFMAN)
-    gendoc(-refman -html)
-  endif()
 endif()
 
 # DRAW.BAT or DRAW.SH
@@ -396,6 +397,10 @@ foreach (USED_TOOLKIT ${USED_TOOLKITS})
     message (STATUS "${USED_TOOLKIT} is not included")
   endif()
 endforeach()
+
+if (BUILD_OCCT_OVERVIEW)
+  add_subdirectory (dox)
+endif()
 
 # patch DRAWEXE
 if (MSVC AND 3RDPARTY_DLL_DIRS)
