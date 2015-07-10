@@ -194,6 +194,7 @@ Standard_Boolean GeomLib_Tool::Parameter(const Handle(Geom_Curve)& Curve,
       }
     }
     if( iMin != 0 && Dist2Min <= aTol ) U = (extrema.Point(iMin)).Parameter();
+    else return Standard_False;
   }
   else { return Standard_False; }
 
