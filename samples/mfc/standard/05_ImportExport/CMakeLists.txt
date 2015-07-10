@@ -39,11 +39,17 @@ add_executable (ImportExport WIN32 ${ImportExport_SOURCE_FILES}
 
 set_property (TARGET ImportExport PROPERTY FOLDER Samples)
 
-install (TARGETS ImportExport RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_POSTFIX}"
-                              ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
-                              LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
+install (TARGETS ImportExport
+         CONFIGURATIONS Release
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS ImportExport
+         CONFIGURATIONS RelWithDebInfo
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS ImportExport
+         CONFIGURATIONS Debug
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 
-include_directories (${CMAKE_SOURCE_DIR}/src
+include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport
                      ${ImportExport_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

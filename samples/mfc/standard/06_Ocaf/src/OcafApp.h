@@ -11,6 +11,7 @@
 #include <OCC_App.h>
 #include "OcafDoc.h"
 #include "TOCAF_Application.hxx"
+#include <TOcaf_Application.hxx>
 
 
 class COcafApp : public OCC_App
@@ -27,14 +28,14 @@ public:
   //}}AFX_VIRTUAL
   void OnFileOpen();
 public:
-  Handle_TOcaf_Application GetApp() {return myApp;}
+  Handle(TOcaf_Application) GetApp() {return myApp;}
 
 private :
   BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView);
 
 private:
 
-  Handle_TOcaf_Application myApp;
+  Handle(TOcaf_Application) myApp;
   CMultiDocTemplate* pDocTemplateForView3d;
 
   DECLARE_MESSAGE_MAP()

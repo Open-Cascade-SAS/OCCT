@@ -23,11 +23,11 @@
 #include "GeomAPI_PointsToBSplineSurface.hxx"
 #include <stdio.h>
 #include <TColStd_HArray2OfReal.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <AIS_Point.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <TopoDS_Solid.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>

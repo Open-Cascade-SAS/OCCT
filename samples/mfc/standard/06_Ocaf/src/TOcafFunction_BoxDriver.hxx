@@ -19,9 +19,6 @@
 #ifndef _Standard_HeaderFile
 #include <Standard.hxx>
 #endif
-#ifndef _Handle_TOcafFunction_BoxDriver_HeaderFile
-#include <Handle_TOcafFunction_BoxDriver.hxx>
-#endif
 
 #ifndef _TFunction_Driver_HeaderFile
 #include <TFunction_Driver.hxx>
@@ -69,7 +66,8 @@ Standard_EXPORT ~TOcafFunction_BoxDriver();
 
  // Type management
  //
- Standard_EXPORT friend Handle_Standard_Type& TOcafFunction_BoxDriver_Type_();
+ //Standard_EXPORT friend Handle(Standard_Type)& TOcafFunction_BoxDriver_Type_();
+ Standard_EXPORT const Handle(TOcafFunction_BoxDriver) DownCast(const Handle(Standard_Transient)& AnObject);
  Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
  Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 

@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 #include "gp_Dir2d.hxx"
-
+class ISession_Direction;
 DEFINE_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 class ISession_Direction : public AIS_InteractiveObject  
 {
@@ -26,7 +26,7 @@ public:
   ISession_Direction (const gp_Pnt2d& aPnt2d,const gp_Vec2d& aVec2d);
 
   virtual ~ISession_Direction();
-  DEFINE_STANDARD_RTTI(ISession_Direction)
+  DEFINE_STANDARD_RTTI(ISession_Direction,AIS_InteractiveObject)
 
 private:
 

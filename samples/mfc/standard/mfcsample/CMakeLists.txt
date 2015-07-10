@@ -138,11 +138,23 @@ add_library ( mfcsample SHARED ${mfcsample_SOURCE_FILES}
 
 set_property (TARGET mfcsample PROPERTY FOLDER Samples)
 
-install (TARGETS mfcsample RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_POSTFIX}"
-                           ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
-                           LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
+install (TARGETS mfcsample
+         CONFIGURATIONS Release
+         RUNTIME DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin"
+         ARCHIVE DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+         LIBRARY DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+install (TARGETS mfcsample
+         CONFIGURATIONS RelWithDebInfo
+         RUNTIME DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin"
+         ARCHIVE DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+         LIBRARY DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+install (TARGETS mfcsample
+         CONFIGURATIONS Debug
+         RUNTIME DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind"
+         ARCHIVE DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+         LIBRARY DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
 
-include_directories( ${CMAKE_SOURCE_DIR}/src
+include_directories( ${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_COMMON_SAMPLES_DIR}
                      ${COMMON_IE_DIR}
                      ${COMMON_ISESSION2D_DIR}

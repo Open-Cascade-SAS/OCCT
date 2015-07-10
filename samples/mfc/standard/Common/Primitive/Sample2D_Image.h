@@ -12,7 +12,7 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-
+class Sample2D_Image;
 DEFINE_STANDARD_HANDLE(Sample2D_Image,AIS_TexturedShape)
 class Sample2D_Image : public AIS_TexturedShape {
 
@@ -28,7 +28,7 @@ Standard_EXPORT inline   Quantity_Factor GetScale() const;
 Standard_EXPORT inline   void SetScale(const Quantity_Factor aNewScale) ;
 Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theContext) ;
 
-DEFINE_STANDARD_RTTI(Sample2D_Image)
+DEFINE_STANDARD_RTTI(Sample2D_Image,AIS_TexturedShape)
 private:
   void MakeShape();
 protected:

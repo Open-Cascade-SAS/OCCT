@@ -39,11 +39,17 @@ add_executable ( Modeling WIN32 ${Modeling_SOURCE_FILES}
 
 set_property (TARGET Modeling PROPERTY FOLDER Samples)
 
-install (TARGETS Modeling RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_POSTFIX}"
-                          ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
-                          LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
+install (TARGETS Modeling
+         CONFIGURATIONS Release
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS Modeling
+         CONFIGURATIONS RelWithDebInfo
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS Modeling
+         CONFIGURATIONS Debug
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 
-include_directories (${CMAKE_SOURCE_DIR}/src
+include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/02_Modeling
                      ${Modeling_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

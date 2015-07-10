@@ -11,11 +11,7 @@ set (Ocaf_HEADER_FILES ${Ocaf_SRC_DIR}/NewBoxDlg.h
                        ${Ocaf_SRC_DIR}/OcafApp.h
                        ${Ocaf_SRC_DIR}/OcafDoc.h
                        ${Ocaf_SRC_DIR}/OcafMainFrm.h
-                       ${Ocaf_SRC_DIR}/Handle_TOcaf_Application.hxx
                        ${Ocaf_SRC_DIR}/TOcaf_Commands.hxx
-                       ${Ocaf_SRC_DIR}/Handle_TOcafFunction_BoxDriver.hxx
-                       ${Ocaf_SRC_DIR}/Handle_TOcafFunction_CutDriver.hxx
-                       ${Ocaf_SRC_DIR}/Handle_TOcafFunction_CylDriver.hxx
                        ${Ocaf_SRC_DIR}/StdAfx.h )
 set (Ocaf_SOURCE_FILES ${Ocaf_SRC_DIR}/NewBoxDlg.cpp
                        ${Ocaf_SRC_DIR}/NewCylDlg.cpp
@@ -55,11 +51,17 @@ add_executable (Ocaf WIN32 ${Ocaf_SOURCE_FILES}
 
 set_property (TARGET Ocaf PROPERTY FOLDER Samples)
 
-install (TARGETS Ocaf RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_POSTFIX}"
-                      ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
-                      LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
+install (TARGETS Ocaf
+         CONFIGURATIONS Release
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS Ocaf
+         CONFIGURATIONS RelWithDebInfo
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS Ocaf
+         CONFIGURATIONS Debug
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 
-include_directories (${CMAKE_SOURCE_DIR}/src
+include_directories (${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/06_Ocaf
                      ${Ocaf_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

@@ -18,9 +18,6 @@
 #ifndef _Standard_Integer_HeaderFile
 #include <Standard_Integer.hxx>
 #endif
-#ifndef _Handle_TDocStd_Document_HeaderFile
-#include <Handle_TDocStd_Document.hxx>
-#endif
 class TDocStd_Document;
 class DebugBrowser_Attr;
 class DebugBrowser_DFTree;

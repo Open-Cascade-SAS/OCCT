@@ -17,18 +17,13 @@
 #ifndef _Transfer_FinderProcess_HeaderFile
 #define _Transfer_FinderProcess_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Transfer_ProcessForFinder.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
+#include <Interface_InterfaceModel.hxx>
+
 class Interface_InterfaceModel;
 class Transfer_TransientMapper;
-class Standard_Transient;
 class Transfer_Finder;
 class Message_Messenger;
-
 
 class Transfer_FinderProcess;
 DEFINE_STANDARD_HANDLE(Transfer_FinderProcess, Transfer_ProcessForFinder)
@@ -79,28 +74,10 @@ public:
   //! Prints statistics on a given output, according mode
   Standard_EXPORT void PrintStats (const Standard_Integer mode, const Handle(Message_Messenger)& S) const;
 
-
-
-
   DEFINE_STANDARD_RTTI(Transfer_FinderProcess,Transfer_ProcessForFinder)
 
-protected:
-
-
-
-
 private:
-
-
   Handle(Interface_InterfaceModel) themodel;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Transfer_FinderProcess_HeaderFile

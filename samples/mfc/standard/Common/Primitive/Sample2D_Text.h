@@ -6,7 +6,7 @@
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <TCollection_AsciiString.hxx>
 
-
+class Sample2D_Text;
 DEFINE_STANDARD_HANDLE(Sample2D_Text,AIS_InteractiveObject)
 class Sample2D_Text : public AIS_InteractiveObject 
 {
@@ -38,7 +38,7 @@ inline   Standard_Boolean        GetIsZoomable() const { return myIsZoomable; }
 inline   void                    SetIsZoomable(const Standard_Boolean theIsZoomable) { myIsZoomable = theIsZoomable;}
 
 
-DEFINE_STANDARD_RTTI(Sample2D_Text)
+DEFINE_STANDARD_RTTI(Sample2D_Text,AIS_InteractiveObject)
 
 private: 
  

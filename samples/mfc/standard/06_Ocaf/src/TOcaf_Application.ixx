@@ -19,37 +19,11 @@
 #endif
 
 TOcaf_Application::~TOcaf_Application() {}
- 
-
-
-Standard_EXPORT Handle_Standard_Type& TOcaf_Application_Type_()
-{
-
-    static Handle_Standard_Type aType1 = STANDARD_TYPE(TDocStd_Application);
-  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(TDocStd_Application);
-  static Handle_Standard_Type aType2 = STANDARD_TYPE(CDF_Application);
-  if ( aType2.IsNull()) aType2 = STANDARD_TYPE(CDF_Application);
-  static Handle_Standard_Type aType3 = STANDARD_TYPE(CDM_Application);
-  if ( aType3.IsNull()) aType3 = STANDARD_TYPE(CDM_Application);
-  static Handle_Standard_Type aType4 = STANDARD_TYPE(Standard_Transient);
-  if ( aType4.IsNull()) aType4 = STANDARD_TYPE(Standard_Transient);
- 
-
-  static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,aType4,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("TOcaf_Application",
-			                                 sizeof(TOcaf_Application),
-			                                 1,
-			                                 (Standard_Address)_Ancestors,
-			                                 (Standard_Address)NULL);
-
-  return _aType;
-}
-
 
 // DownCast method
 //   allow safe downcasting
 //
-const Handle(TOcaf_Application) Handle(TOcaf_Application)::DownCast(const Handle(Standard_Transient)& AnObject) 
+const Handle(TOcaf_Application) TOcaf_Application::DownCast(const Handle(Standard_Transient)& AnObject) 
 {
   Handle(TOcaf_Application) _anOtherObject;
 
@@ -69,5 +43,5 @@ Standard_Boolean TOcaf_Application::IsKind(const Handle(Standard_Type)& AType) c
 { 
   return (STANDARD_TYPE(TOcaf_Application) == AType || TDocStd_Application::IsKind(AType)); 
 }
-Handle_TOcaf_Application::~Handle_TOcaf_Application() {}
+
 

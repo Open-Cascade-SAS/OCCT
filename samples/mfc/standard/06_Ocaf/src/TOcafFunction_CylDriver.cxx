@@ -116,34 +116,10 @@ Standard_Integer TOcafFunction_CylDriver::Execute(TFunction_Logbook& /*log*/) co
 
 TOcafFunction_CylDriver::~TOcafFunction_CylDriver() {}
  
-
-
-Standard_EXPORT Handle_Standard_Type& TOcafFunction_CylDriver_Type_()
-{
-
-    static Handle_Standard_Type aType1 = STANDARD_TYPE(TFunction_Driver);
-  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(TFunction_Driver);
-  static Handle_Standard_Type aType2 = STANDARD_TYPE(MMgt_TShared);
-  if ( aType2.IsNull()) aType2 = STANDARD_TYPE(MMgt_TShared);
-  static Handle_Standard_Type aType3 = STANDARD_TYPE(Standard_Transient);
-  if ( aType3.IsNull()) aType3 = STANDARD_TYPE(Standard_Transient);
- 
-
-  static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("TOcafFunction_CylDriver",
-			                                 sizeof(TOcafFunction_CylDriver),
-			                                 1,
-			                                 (Standard_Address)_Ancestors,
-			                                 (Standard_Address)NULL);
-
-  return _aType;
-}
-
-
 // DownCast method
 //   allow safe downcasting
 //
-const Handle(TOcafFunction_CylDriver) Handle(TOcafFunction_CylDriver)::DownCast(const Handle(Standard_Transient)& AnObject) 
+const Handle(TOcafFunction_CylDriver) TOcafFunction_CylDriver::DownCast(const Handle(Standard_Transient)& AnObject) 
 {
   Handle(TOcafFunction_CylDriver) _anOtherObject;
 
@@ -164,6 +140,5 @@ Standard_Boolean TOcafFunction_CylDriver::IsKind(const Handle(Standard_Type)& AT
   return (STANDARD_TYPE(TOcafFunction_CylDriver) == AType || TFunction_Driver::IsKind(AType)); 
 }
 
-Handle_TOcafFunction_CylDriver::~Handle_TOcafFunction_CylDriver() {}
 
 

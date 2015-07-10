@@ -46,11 +46,17 @@ add_executable (Animation WIN32 ${Animation_SOURCE_FILES}
 
 set_property (TARGET Animation PROPERTY FOLDER Samples)
 
-install (TARGETS Animation RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_POSTFIX}"
-                           ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
-                           LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
+install (TARGETS Animation
+         CONFIGURATIONS Release
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS Animation
+         CONFIGURATIONS RelWithDebInfo
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+install (TARGETS Animation
+         CONFIGURATIONS Debug
+         DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 
-include_directories (${CMAKE_SOURCE_DIR}/src
+include_directories (${CMAKE_BINARY_DIR}/inc
                      ${Animation_RESOURCE_DIR}
                      ${Animation_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)

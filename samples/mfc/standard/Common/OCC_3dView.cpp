@@ -79,7 +79,7 @@ OCC_3dView::OCC_3dView()
 
 OCC_3dView::~OCC_3dView()
 {
-  if (myView)
+	if (myView.IsNull())
   {
     myView->Remove();
   }

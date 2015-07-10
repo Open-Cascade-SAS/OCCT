@@ -6,7 +6,8 @@
 #include "GeomSources.h"
 #include "GeometryApp.h"
 #include "MainFrm.h"
-
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 GeomSources::GeomSources()
 {
 }
@@ -568,7 +569,7 @@ C->D1(param,P,V);                                   \n\
   AddSeparator(aDoc,Message);
   //--------------------------------------------------------------
 
-  DisplayCurve(aDoc,C);
+  DisplayCurve(aDoc,Handle(Geom2d_Curve)::DownCast(C));
   Handle(ISession_Direction) aDirection = new ISession_Direction(P,V);
   aDoc->GetISessionContext()->Display(aDirection, Standard_False);
 
@@ -889,7 +890,7 @@ if(NbResults>0){                                            \n\
   aString += Message2;
 
   DisplayPoint(aDoc,N,aString.ToCString(),false,0.5,0,-0.5);
-  DisplayCurve(aDoc,C,false);
+  DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(C),Quantity_NOC_YELLOW,false);
 
   if(NbResults>0)
   {
@@ -1052,7 +1053,7 @@ if (ICQ.IsDone()){                                        \n\
  DisplaySurface(aDoc,aSurface);
 
  Handle(Geom_Ellipse) anEllips = GC_MakeEllipse(EL).Value();
- DisplayCurve(aDoc,anEllips,false);
+ DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(anEllips),Quantity_NOC_YELLOW,false);
 
  TCollection_AsciiString aString;
 
@@ -1718,7 +1719,7 @@ gp_Ax2d C2DCircleXAxis = C2DCircle->XAxis();            \n\
  Message += aC2DEntityTypeName; Message += " \n";
 
  DisplayCurve(aDoc,circ2d,4,false);
- DisplayCurve(aDoc,C3D,false);
+ DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(C3D),Quantity_NOC_YELLOW,false);
  DisplayCurve(aDoc,C2D,5,false);
 
  Handle(ISession_Direction) aC3DCircleXAxisDirection = new ISession_Direction(C3DCircleXAxis.Location(),C3DCircleXAxis.Direction(),5.2);
@@ -2369,7 +2370,7 @@ Handle(Geom2d_TrimmedCurve) arc = GCE2d_MakeArcOfEllipse(EE,0.0,PI/4);  \n\
                                                                         \n");
   AddSeparator(aDoc,Message);
   //--------------------------------------------------------------
-  Handle(Geom2d_Curve) E = GCE2d_MakeEllipse(EE);
+  Handle(Geom2d_Ellipse) E = GCE2d_MakeEllipse(EE);
   Handle(ISession2D_Curve) aCurve = new ISession2D_Curve(E);
   aCurve->SetColorIndex(3);
   aCurve->SetTypeOfLine(Aspect_TOL_DOTDASH);
@@ -3126,7 +3127,7 @@ void GeomSources::gpTest40(CGeometryDoc* aDoc)
   GC_MakeSegment(gp_Pnt(1,1,1),gp_Pnt(5,5,5));
   Handle(Geom_TrimmedCurve) TC2 =
   GC_MakeSegment(gp_Pnt(1,1,0),gp_Pnt(4,5,6));
-  GeomFill_Pipe aPipe3(SPL1,TC1,TC2);
+  GeomFill_Pipe aPipe3(Handle(Geom_Curve)::DownCast(SPL1),TC1,TC2);
   aPipe3.Perform();
   Handle(Geom_Surface) aSurface3 = aPipe3.Surface();
   Standard_CString aSurfaceEntityTypeName3="Not Computed";
@@ -3949,30 +3950,30 @@ aSPL2Box.Get(  aSPL2Xmin, aSPL2Ymin, aSPL2Xmax,aSPL2Ymax);             \n\
   DisplayPoint(aDoc,gp_Pnt2d(aCXmin,aCYmin),Standard_CString("aCXmin,aCYmin"));
   DisplayPoint(aDoc,gp_Pnt2d(aCXmax,aCYmin),Standard_CString("aCXmax,aCYmin"));
 
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmin,aCYmax),gp_Pnt2d(aCXmax,aCYmax)) ,4); // X,Ymax
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmin,aCYmin),gp_Pnt2d(aCXmax,aCYmin)) ,4); // X,Ymin
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmin,aCYmin),gp_Pnt2d(aCXmin,aCYmax)) ,4); // Xmin,Y
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmax,aCYmin),gp_Pnt2d(aCXmax,aCYmax)) ,4); // Xmax,Y
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmin,aCYmax),gp_Pnt2d(aCXmax,aCYmax)).Value() ,4); // X,Ymax
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmin,aCYmin),gp_Pnt2d(aCXmax,aCYmin)).Value() ,4); // X,Ymin
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmin,aCYmin),gp_Pnt2d(aCXmin,aCYmax)).Value() ,4); // Xmin,Y
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aCXmax,aCYmin),gp_Pnt2d(aCXmax,aCYmax)).Value() ,4); // Xmax,Y
 
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmin,aSPL1Ymax),Standard_CString("aSPL1Xmin,aSPL1Ymax"));
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmax,aSPL1Ymax),Standard_CString("aSPL1Xmax,aSPL1Ymax"));
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),Standard_CString("aSPL1Xmin,aSPL1Ymin"));
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmax,aSPL1Ymin),Standard_CString("aSPL1Xmax,aSPL1Ymin"));
 
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymax),gp_Pnt2d(aSPL1Xmax,aSPL1Ymax)) ,4); // X,Ymax
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),gp_Pnt2d(aSPL1Xmax,aSPL1Ymin)) ,4); // X,Ymin
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),gp_Pnt2d(aSPL1Xmin,aSPL1Ymax)) ,4); // Xmin,Y
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmax,aSPL1Ymin),gp_Pnt2d(aSPL1Xmax,aSPL1Ymax)) ,4); // Xmax,Y
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymax),gp_Pnt2d(aSPL1Xmax,aSPL1Ymax)).Value() ,4); // X,Ymax
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),gp_Pnt2d(aSPL1Xmax,aSPL1Ymin)).Value() ,4); // X,Ymin
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),gp_Pnt2d(aSPL1Xmin,aSPL1Ymax)).Value() ,4); // Xmin,Y
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmax,aSPL1Ymin),gp_Pnt2d(aSPL1Xmax,aSPL1Ymax)).Value() ,4); // Xmax,Y
 
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmin,aSPL1Ymax),Standard_CString("aSPL2Xmin,aSPL2Ymax"));
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmax,aSPL1Ymax),Standard_CString("aSPL2Xmax,aSPL2Ymax"));
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),Standard_CString("aSPL2Xmin,aSPL2Ymin"));
   DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmax,aSPL1Ymin),Standard_CString("aSPL2Xmax,aSPL2Ymin"));
 
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymax),gp_Pnt2d(aSPL2Xmax,aSPL2Ymax)) ,4); // X,Ymax
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),gp_Pnt2d(aSPL2Xmax,aSPL2Ymin)) ,4); // X,Ymin
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),gp_Pnt2d(aSPL2Xmin,aSPL2Ymax)) ,4); // Xmin,Y
-  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmax,aSPL2Ymin),gp_Pnt2d(aSPL2Xmax,aSPL2Ymax)) ,4); // Xmax,Y
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymax),gp_Pnt2d(aSPL2Xmax,aSPL2Ymax)).Value() ,4); // X,Ymax
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),gp_Pnt2d(aSPL2Xmax,aSPL2Ymin)).Value() ,4); // X,Ymin
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),gp_Pnt2d(aSPL2Xmin,aSPL2Ymax)).Value() ,4); // Xmin,Y
+  DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmax,aSPL2Ymin),gp_Pnt2d(aSPL2Xmax,aSPL2Ymax)).Value() ,4); // Xmax,Y
 
   PostProcess(aDoc,ID_BUTTON_Test_48,TheDisplayType,Message);
 }
@@ -4029,29 +4030,29 @@ aBox.Get(  aXmin, aYmin,aZmin, aXmax,aYmax,aZmax);             \n\
   DisplayPoint(aDoc,gp_Pnt(aXmax,aYmin,aZmax),Standard_CString("aXmax,aYmin,aZmax"));
 
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmax,aZmin),
-    gp_Pnt(aXmax,aYmax,aZmin)) ,Quantity_NOC_RED); // X,Ymax,ZMin
+    gp_Pnt(aXmax,aYmax,aZmin)).Value() ,Quantity_NOC_RED); // X,Ymax,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmin),
-    gp_Pnt(aXmax,aYmin,aZmin)) ,Quantity_NOC_RED); // X,Ymin,ZMin
+    gp_Pnt(aXmax,aYmin,aZmin)).Value() ,Quantity_NOC_RED); // X,Ymin,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmin),
-    gp_Pnt(aXmin,aYmax,aZmin)) ,Quantity_NOC_RED); // Xmin,Y,ZMin
+    gp_Pnt(aXmin,aYmax,aZmin)).Value() ,Quantity_NOC_RED); // Xmin,Y,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmin,aZmin),
-    gp_Pnt(aXmax,aYmax,aZmin)) ,Quantity_NOC_RED); // Xmax,Y,ZMin
+    gp_Pnt(aXmax,aYmax,aZmin)).Value() ,Quantity_NOC_RED); // Xmax,Y,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmax,aZmax),
-    gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // X,Ymax,ZMax
+    gp_Pnt(aXmax,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // X,Ymax,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmax),
-    gp_Pnt(aXmax,aYmin,aZmax)) ,Quantity_NOC_RED); // X,Ymin,ZMax
+    gp_Pnt(aXmax,aYmin,aZmax)).Value() ,Quantity_NOC_RED); // X,Ymin,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmax),
-    gp_Pnt(aXmin,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmin,Y,ZMax
+    gp_Pnt(aXmin,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmin,Y,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmin,aZmax),
-    gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmax,Y,ZMax
+    gp_Pnt(aXmax,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmax,Y,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmin),
-    gp_Pnt(aXmin,aYmin,aZmax)) ,Quantity_NOC_RED); // Xmin,Ymin,Z
+    gp_Pnt(aXmin,aYmin,aZmax)).Value() ,Quantity_NOC_RED); // Xmin,Ymin,Z
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmin,aZmin),
-    gp_Pnt(aXmax,aYmin,aZmax)) ,Quantity_NOC_RED); // Xmax,Ymin,Z
+    gp_Pnt(aXmax,aYmin,aZmax)).Value() ,Quantity_NOC_RED); // Xmax,Ymin,Z
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmax,aZmin),
-    gp_Pnt(aXmin,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmin,Ymax,Z
+    gp_Pnt(aXmin,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmin,Ymax,Z
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmax,aZmin),
-    gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmax,Ymax,Z
+    gp_Pnt(aXmax,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmax,Ymax,Z
 
   PostProcess(aDoc,ID_BUTTON_Test_49,TheDisplayType,Message);
 }
@@ -4136,29 +4137,29 @@ aBox.Get(  aXmin, aYmin,aZmin, aXmax,aYmax,aZmax);             \n\
   //   DisplaySurface(aDoc,aSurf,Quantity_NOC_GREEN);
 
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmax,aZmin),
-    gp_Pnt(aXmax,aYmax,aZmin)) ,Quantity_NOC_RED); // X,Ymax,ZMin
+    gp_Pnt(aXmax,aYmax,aZmin)).Value() ,Quantity_NOC_RED); // X,Ymax,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmin),
-    gp_Pnt(aXmax,aYmin,aZmin)) ,Quantity_NOC_RED); // X,Ymin,ZMin
+    gp_Pnt(aXmax,aYmin,aZmin)).Value() ,Quantity_NOC_RED); // X,Ymin,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmin),
-    gp_Pnt(aXmin,aYmax,aZmin)) ,Quantity_NOC_RED); // Xmin,Y,ZMin
+    gp_Pnt(aXmin,aYmax,aZmin)).Value() ,Quantity_NOC_RED); // Xmin,Y,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmin,aZmin),
-    gp_Pnt(aXmax,aYmax,aZmin)) ,Quantity_NOC_RED); // Xmax,Y,ZMin
+    gp_Pnt(aXmax,aYmax,aZmin)).Value() ,Quantity_NOC_RED); // Xmax,Y,ZMin
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmax,aZmax),
-    gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // X,Ymax,ZMax
+    gp_Pnt(aXmax,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // X,Ymax,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmax),
-    gp_Pnt(aXmax,aYmin,aZmax)) ,Quantity_NOC_RED); // X,Ymin,ZMax
+    gp_Pnt(aXmax,aYmin,aZmax)).Value() ,Quantity_NOC_RED); // X,Ymin,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmax),
-    gp_Pnt(aXmin,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmin,Y,ZMax
+    gp_Pnt(aXmin,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmin,Y,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmin,aZmax),
-    gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmax,Y,ZMax
+    gp_Pnt(aXmax,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmax,Y,ZMax
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmin,aZmin),
-    gp_Pnt(aXmin,aYmin,aZmax)) ,Quantity_NOC_RED); // Xmin,Ymin,Z
+    gp_Pnt(aXmin,aYmin,aZmax)).Value() ,Quantity_NOC_RED); // Xmin,Ymin,Z
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmin,aZmin),
-    gp_Pnt(aXmax,aYmin,aZmax)) ,Quantity_NOC_RED); // Xmax,Ymin,Z
+    gp_Pnt(aXmax,aYmin,aZmax)).Value() ,Quantity_NOC_RED); // Xmax,Ymin,Z
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmin,aYmax,aZmin),
-    gp_Pnt(aXmin,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmin,Ymax,Z
+    gp_Pnt(aXmin,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmin,Ymax,Z
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmax,aZmin),
-    gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmax,Ymax,Z
+    gp_Pnt(aXmax,aYmax,aZmax)).Value() ,Quantity_NOC_RED); // Xmax,Ymax,Z
 
   PostProcess(aDoc,ID_BUTTON_Test_50,TheDisplayType,Message);
 }

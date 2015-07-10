@@ -15,11 +15,11 @@
 
 #include <OCCDemoDoc.h>
 #include <OCCDemo.h>
-class Handle_AIS_InteractiveObject;
-class Handle_AIS_Point;
-class Handle_Geom_Surface;
-class Handle_Geom_Curve;
-class Handle_Geom2d_Curve;
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Point.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 class Quantity_Color;
 
 class OCCDemo_Presentation

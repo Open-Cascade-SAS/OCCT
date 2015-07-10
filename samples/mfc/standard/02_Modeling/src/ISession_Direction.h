@@ -15,7 +15,7 @@
 #include "gp_Dir.hxx"
 #include "gp_Vec.hxx"
 #include "AIS_InteractiveObject.hxx"
-
+class ISession_Direction;
 DEFINE_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 class ISession_Direction : public AIS_InteractiveObject
 {
@@ -24,7 +24,7 @@ public:
     ISession_Direction(const gp_Pnt& aPnt,const gp_Pnt& aPnt2);
     ISession_Direction(const gp_Pnt& aPnt,const gp_Vec& aVec);
 
-  DEFINE_STANDARD_RTTI(ISession_Direction)
+  DEFINE_STANDARD_RTTI(ISession_Direction,AIS_InteractiveObject)
 
 private:
 
@@ -32,7 +32,7 @@ private:
                 const Handle(Prs3d_Presentation)& aPresentation,
                 const Standard_Integer aMode);
 
-  void ComputeSelection (const class Handle_SelectMgr_Selection &,const int){};
+  void ComputeSelection (const class Handle(SelectMgr_Selection) &,const int){};
 
 private:
 

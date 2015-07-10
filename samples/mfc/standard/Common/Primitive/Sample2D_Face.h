@@ -8,7 +8,7 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 
 #include <Standard_Macro.hxx>
-
+class Sample2D_Face;
 DEFINE_STANDARD_HANDLE(Sample2D_Face,AIS_InteractiveObject)
 class Sample2D_Face : public AIS_InteractiveObject {
 
@@ -21,7 +21,7 @@ public:
  // 
 Standard_EXPORT Sample2D_Face (const TopoDS_Shape& theFace);
 
-DEFINE_STANDARD_RTTI(Sample2D_Face)
+DEFINE_STANDARD_RTTI(Sample2D_Face,AIS_InteractiveObject)
 
 private:
 

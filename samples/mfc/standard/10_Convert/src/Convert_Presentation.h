@@ -10,8 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include <OCCDemo_Presentation.h>
-class Handle_Geom_Curve;
-class Handle_Geom_Surface;
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 
 class Quantity_Color;
 
@@ -41,7 +41,7 @@ private:
   void drawCurveAndItsBSpline (Handle_Geom_Curve theCurve, 
     const Standard_CString theName, TCollection_AsciiString& theText);
 
-  void drawSurfaceAndItsBSpline (Handle_Geom_Surface theSurface, 
+  void drawSurfaceAndItsBSpline (const Handle_Geom_Surface & theSurface, 
     const Standard_CString theName, TCollection_AsciiString& theText);
 
 private:

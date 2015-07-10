@@ -11,7 +11,7 @@
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
 #include "TopoDS_Shape.hxx"
-
+class ISession2D_Shape;
 DEFINE_STANDARD_HANDLE(ISession2D_Shape,AIS_InteractiveObject)
 
 class ISession2D_Shape : public AIS_InteractiveObject
@@ -41,7 +41,7 @@ public:
   { return Standard_True; }
 
 public:
-  DEFINE_STANDARD_RTTI(ISession2D_Shape)
+  DEFINE_STANDARD_RTTI(ISession2D_Shape,AIS_InteractiveObject)
 
 private:
   void BuildAlgo();

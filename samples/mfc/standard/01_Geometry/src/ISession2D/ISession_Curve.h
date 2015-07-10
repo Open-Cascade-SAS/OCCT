@@ -11,6 +11,7 @@
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
 #include "AIS_InteractiveObject.hxx"
+class ISession_Curve;
 DEFINE_STANDARD_HANDLE(ISession_Curve,AIS_InteractiveObject)
 
 class ISession_Curve : public AIS_InteractiveObject  
@@ -19,7 +20,7 @@ public:
   ISession_Curve(Handle(Geom_Curve)& aCurve);
   virtual ~ISession_Curve();
 
-  DEFINE_STANDARD_RTTI(ISession_Curve)
+  DEFINE_STANDARD_RTTI(ISession_Curve,AIS_InteractiveObject)
 
 private:
 

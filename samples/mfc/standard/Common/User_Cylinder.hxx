@@ -8,9 +8,10 @@
 #include <Standard_DefineHandle.hxx>
 #include <Standard_Macro.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-
+#include <Prs3d_Projector.hxx>
 // Handle definition
 //
+class User_Cylinder;
 DEFINE_STANDARD_HANDLE(User_Cylinder,AIS_InteractiveObject)
 
 class User_Cylinder: public AIS_InteractiveObject {
@@ -38,7 +39,7 @@ private:
 						
 // some methods like DynamicType() or IsKind()
 //
-DEFINE_STANDARD_RTTI(User_Cylinder)
+DEFINE_STANDARD_RTTI(User_Cylinder,AIS_InteractiveObject)
 private:
 //	Quantity_NameOfColor myCylindricalFaceColor;
 //	Quantity_NameOfColor myPlanarFaceColor;

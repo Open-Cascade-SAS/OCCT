@@ -23,7 +23,7 @@ class SelectMgr_Selection;
 #include "Geom2d_Curve.hxx"
 
 #include "AIS_InteractiveObject.hxx"
-
+class ISession2D_Curve;
 DEFINE_STANDARD_HANDLE(ISession2D_Curve,AIS_InteractiveObject)
 class ISession2D_Curve : public AIS_InteractiveObject {
 
@@ -59,7 +59,7 @@ public:
   inline   Standard_Real GetDiscretisation() const;
   inline   void SetDiscretisation(const Standard_Real aNewDiscretisation) ;
 
-  DEFINE_STANDARD_RTTI(ISession2D_Curve)
+  DEFINE_STANDARD_RTTI(ISession2D_Curve,AIS_InteractiveObject)
 
 private: 
 

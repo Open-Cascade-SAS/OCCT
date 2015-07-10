@@ -11,6 +11,7 @@
 #include <V3d_PositionalLight.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_SpotLight.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 #include <Graphic3d_ClipPlane.hxx>
 

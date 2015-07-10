@@ -278,7 +278,7 @@ void CModelingDoc::OnTranslation()
 	gp_Trsf theTransformation;
 	gp_Vec theVectorOfTranslation(-6,-6,6);
 
-	Handle (ISession_Direction) aDirection1 = new ISession_Direction(gp_Pnt(0,0,0),theVectorOfTranslation);
+	Handle(ISession_Direction) aDirection1 = new ISession_Direction(gp_Pnt(0,0,0),theVectorOfTranslation);
 	myAISContext->Display(aDirection1,Standard_False);
 
 	theTransformation.SetTranslation(theVectorOfTranslation);
@@ -4992,10 +4992,10 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			TopoDS_Edge Ed3 = BRepBuilderAPI_MakeEdge(C3,theSurface).Edge();
 			
 			C2 = GCE2d_MakeSegment(C1->Value(C1->FirstParameter()),
-								C3->Value(C3->FirstParameter()));
+								C3->Value(C3->FirstParameter())).Value();
 			TopoDS_Edge Ed2 = BRepBuilderAPI_MakeEdge(C2,theSurface).Edge();
 			C4 = GCE2d_MakeSegment(C1->Value(C1->LastParameter()),
-								C3->Value(C3->LastParameter()));
+								C3->Value(C3->LastParameter())).Value();
 			TopoDS_Edge Ed4 = BRepBuilderAPI_MakeEdge(C4,theSurface).Edge();
 			Ed2.Reverse();
 			Ed3.Reverse();
@@ -5004,10 +5004,10 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			BRepLib::BuildCurves3d(theFace);
 			if (!BRepAlgo::IsValid(theFace)){
 				C2 = GCE2d_MakeSegment(C1->Value(C1->LastParameter()),
-										C3->Value(C3->FirstParameter()));
+										C3->Value(C3->FirstParameter())).Value();
 				TopoDS_Edge Ed2 = BRepBuilderAPI_MakeEdge(C2,theSurface).Edge();
 				C4 = GCE2d_MakeSegment(C3->Value(C3->LastParameter()),
-								C1->Value(C1->FirstParameter()));
+								C1->Value(C1->FirstParameter())).Value();
 				TopoDS_Edge Ed4 = BRepBuilderAPI_MakeEdge(C4,theSurface).Edge();
 				Ed3.Reverse();
 				theWire = BRepBuilderAPI_MakeWire(Ed1,Ed2,Ed3,Ed4);

@@ -109,8 +109,10 @@
 #include <GC_MakeTranslation.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GC_MakeConicalSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <GC_MakePlane.hxx>
 #include <GC_MakeEllipse.hxx>
+#include <Geom_Ellipse.hxx>
 #include <GccAna_Circ2d2TanRad.hxx>
 #include <GccAna_Lin2d2Tan.hxx>
 #include <GccAna_Pnt2dBisec.hxx>
@@ -129,7 +131,6 @@
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Circle.hxx>
@@ -171,6 +172,7 @@
 #include <GeomAPI_IntCS.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>

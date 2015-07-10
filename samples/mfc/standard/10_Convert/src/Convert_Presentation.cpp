@@ -28,6 +28,7 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 
 // Initialization of global variable with an instance of this class
@@ -89,7 +90,7 @@ void Convert_Presentation::DoSample()
 // Function : Convert_Presentation::drawSurfaceAndItsBSpline
 // Purpose  : 
 //================================================================
-void Convert_Presentation::drawSurfaceAndItsBSpline(Handle_Geom_Surface theSurface, 
+void Convert_Presentation::drawSurfaceAndItsBSpline(const Handle_Geom_Surface & theSurface, 
                                                     const Standard_CString theName, 
                                                     TCollection_AsciiString& theText)
 {
@@ -140,7 +141,7 @@ void Convert_Presentation::drawCurveAndItsBSpline(Handle_Geom_Curve theCurve,
 
   Handle_Geom_BSplineCurve aBSpline = GeomConvert::CurveToBSplineCurve(theCurve);
 
-  drawCurve (aBSpline, BSplineColor);
+  drawCurve (Handle(Geom_Curve)::DownCast(aBSpline), BSplineColor);
 }
 
 
@@ -371,7 +372,7 @@ void Convert_Presentation::sampleRevolSurface()
   aPoles(4) = gp_Pnt(500, 500, 0);  aWeights(4) = 1;
 
   Handle(Geom_BezierCurve) aBezierCurve = new Geom_BezierCurve(aPoles, aWeights);
-  drawCurve(aBezierCurve);
+  drawCurve(Handle(Geom_Curve)::DownCast(aBezierCurve));
 
   // creating a surface of revolution of the bezier curve around Y axis
   gp_Ax1 anAx(gp_Pnt(0,0,0), gp_Dir(0,1,0));

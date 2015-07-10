@@ -12,7 +12,7 @@
 #include "OCC_3dBaseDoc.h"
 #include "ResultDialog.h"
 
-class Handle_AIS_Point;
+#include <AIS_Point.hxx>
 
 class CGeometryDoc : public OCC_3dBaseDoc
 {

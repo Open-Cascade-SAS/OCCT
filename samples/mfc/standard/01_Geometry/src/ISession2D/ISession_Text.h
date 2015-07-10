@@ -25,7 +25,7 @@
 
 class TCollection_AsciiString;
 class SelectMgr_Selection;
-
+class ISession_Text;
 DEFINE_STANDARD_HANDLE(ISession_Text,AIS_InteractiveObject)
 class ISession_Text : public AIS_InteractiveObject  
 {
@@ -69,7 +69,7 @@ inline   Quantity_Factor         GetScale() const;
 inline   void                    SetScale  (const Quantity_Factor aNewScale) ;
 
 
-DEFINE_STANDARD_RTTI(ISession_Text)
+DEFINE_STANDARD_RTTI(ISession_Text,AIS_InteractiveObject)
 
 private: 
 

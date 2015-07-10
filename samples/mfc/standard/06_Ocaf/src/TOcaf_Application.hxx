@@ -16,20 +16,13 @@
 #ifndef _TOcaf_Application_HeaderFile
 #define _TOcaf_Application_HeaderFile
 
-#ifndef _Handle_TOcaf_Application_HeaderFile
-#include <Handle_TOcaf_Application.hxx>
-#endif
-
 #ifndef _TDocStd_Application_HeaderFile
 #include <TDocStd_Application.hxx>
 #endif
 #ifndef _Standard_CString_HeaderFile
 #include <Standard_CString.hxx>
 #endif
-#ifndef _Handle_TDocStd_Document_HeaderFile
-#include <Handle_TDocStd_Document.hxx>
-#endif
-class TColStd_SequenceOfExtendedString;
+#include <TColStd_SequenceOfExtendedString.hxx>
 class TDocStd_Document;
 
 
@@ -49,7 +42,8 @@ Standard_EXPORT ~TOcaf_Application();
 
  // Type management
  //
- Standard_EXPORT friend Handle_Standard_Type& TOcaf_Application_Type_();
+ //Standard_EXPORT friend Handle_Standard_Type& TOcaf_Application_Type_();
+ Standard_EXPORT const Handle(TOcaf_Application) DownCast(const Handle(Standard_Transient)& AnObject);
  Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
  Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 

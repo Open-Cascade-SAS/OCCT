@@ -107,6 +107,7 @@
 #include <Geom2d_Line.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <GeomFill_BSplineCurves.hxx>
 #include <LocOpe_FindEdges.hxx>
 #include <TopoDS_Compound.hxx>
@@ -133,7 +134,7 @@
 #include <GeomPlate_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <GCE2d_MakeSegment.hxx>
-
+#include <Geom2d_TrimmedCurve.hxx>
 #include "ISession_Direction.h"
 
 #include <UnitsAPI.hxx>

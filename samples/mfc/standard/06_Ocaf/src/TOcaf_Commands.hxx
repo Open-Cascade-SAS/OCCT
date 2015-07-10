@@ -21,8 +21,8 @@
 #ifndef _Standard_Real_HeaderFile
 #include <Standard_Real.hxx>
 #endif
-#ifndef _Handle_TNaming_NamedShape_HeaderFile
-#include <Handle_TNaming_NamedShape.hxx>
+#ifndef _TNaming_NamedShape_HeaderFile
+#include <TNaming_NamedShape.hxx>
 #endif
 #ifndef _Standard_Integer_HeaderFile
 #include <Standard_Integer.hxx>
@@ -32,7 +32,6 @@ class gp_Pnt;
 class TopoDS_Shape;
 class TNaming_NamedShape;
 class gp_XYZ;
-class Handle_TDataStd_TreeNode;
 class TOcaf_Object;
 
 #ifndef _Standard_Macro_HeaderFile

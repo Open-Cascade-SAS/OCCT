@@ -12,7 +12,7 @@
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
 
-
+class ISession_Point;
 DEFINE_STANDARD_HANDLE(ISession_Point,AIS_InteractiveObject)
 class ISession_Point : public AIS_InteractiveObject  
 {
@@ -22,7 +22,7 @@ public:
   ISession_Point(const gp_Pnt2d& aPoint,Standard_Real Elevation = 0);
   ISession_Point(const gp_Pnt& aPoint);
   virtual ~ISession_Point();
-  DEFINE_STANDARD_RTTI(ISession_Point)
+  DEFINE_STANDARD_RTTI(ISession_Point,AIS_InteractiveObject)
 
 private :
 

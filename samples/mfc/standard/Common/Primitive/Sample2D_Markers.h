@@ -5,6 +5,7 @@
 #include <Standard_DefineHandle.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
+class Sample2D_Markers;
 DEFINE_STANDARD_HANDLE(Sample2D_Markers,AIS_InteractiveObject)
 class Sample2D_Markers : public AIS_InteractiveObject {
 
@@ -33,7 +34,7 @@ public:
                    const Standard_Real theScaleOrId=2.0);
 
 
-DEFINE_STANDARD_RTTI(Sample2D_Markers)
+DEFINE_STANDARD_RTTI(Sample2D_Markers,AIS_InteractiveObject)
 
 private: 
 

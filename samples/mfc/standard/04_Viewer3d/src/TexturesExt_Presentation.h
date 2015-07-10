@@ -10,9 +10,9 @@
 #endif // _MSC_VER > 1000
 
 #include "OCCDemo_Presentation.h"
+#include <AIS_TexturedShape.hxx>
 class TopoDS_Shape;
 class TCollection_AsciiString;
-class Handle_AIS_TexturedShape;
 
 class TexturesExt_Presentation : public OCCDemo_Presentation
 {

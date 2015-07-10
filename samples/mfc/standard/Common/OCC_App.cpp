@@ -63,7 +63,7 @@ void OCC_App::SetSamplePath(LPCTSTR aPath)
     SamplePath += "..";
   else{
     CString aCInitialDir(aPath);
-    SamplePath += "..\\" + aCInitialDir;
+    //SamplePath += "..\\" + aCInitialDir;
   }
 }
 /////////////////////////////////////////////////////////////////////////////
