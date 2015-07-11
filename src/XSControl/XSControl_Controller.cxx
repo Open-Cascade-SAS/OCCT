@@ -60,6 +60,11 @@
 #include <Interface_Macros.hxx>
 #include <Message_Messenger.hxx>
 #include <Message.hxx>
+#include <Interface_Protocol.hxx>
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_WorkLibrary.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_ActorOfFinderProcess.hxx>
 
 static Handle(Dico_DictionaryOfTransient)& listadapt()
 {

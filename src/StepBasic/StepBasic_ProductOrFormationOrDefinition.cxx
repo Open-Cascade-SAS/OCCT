@@ -16,6 +16,9 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <StepBasic_ProductOrFormationOrDefinition.ixx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinition.hxx>
 
 //=======================================================================
 //function : StepBasic_ProductOrFormationOrDefinition

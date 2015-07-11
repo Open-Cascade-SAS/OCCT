@@ -24,8 +24,6 @@
 #include <TShort_Array1OfShortReal.hxx> 
 #include <TShort_HArray1OfShortReal.hxx> 
 
-IMPLEMENT_STANDARD_HANDLE  (Poly_CoherentTriangulation, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT (Poly_CoherentTriangulation, Standard_Transient)
 
 //=======================================================================
 //function : Poly_CoherentTriangulation

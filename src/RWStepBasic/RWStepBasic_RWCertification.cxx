@@ -17,6 +17,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <RWStepBasic_RWCertification.ixx>
+#include <StepBasic_CertificationType.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWCertification

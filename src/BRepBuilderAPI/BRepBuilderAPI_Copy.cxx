@@ -113,16 +113,14 @@ public:
   }
 
 public:
-  DEFINE_STANDARD_RTTI(BRepBuilderAPI_Copy_Modification)
+  DEFINE_STANDARD_RTTI(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
 
 private: 
   Standard_Boolean myCopyGeom;
 };
 
 DEFINE_STANDARD_HANDLE(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
-IMPLEMENT_STANDARD_HANDLE(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
 
 //=======================================================================
 //function : BRepBuilderAPI_Copy

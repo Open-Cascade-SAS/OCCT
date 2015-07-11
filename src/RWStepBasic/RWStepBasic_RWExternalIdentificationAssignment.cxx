@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepBasic_RWExternalIdentificationAssignment.ixx>
+#include <StepBasic_IdentificationRole.hxx>
+#include <StepBasic_ExternalSource.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWExternalIdentificationAssignment

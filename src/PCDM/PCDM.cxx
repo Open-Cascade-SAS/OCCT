@@ -24,6 +24,7 @@
 #include <FSD_CmpFile.hxx>
 #include <FSD_File.hxx>
 #include <FSD_BinaryFile.hxx>
+#include <PCDM_StorageDriver.hxx>
 
 //=======================================================================
 //function : StorageDriver

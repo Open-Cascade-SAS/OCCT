@@ -16,6 +16,17 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <StepBasic_RoleSelect.ixx>
+#include <StepBasic_ActionAssignment.hxx>
+#include <StepBasic_ActionRequestAssignment.hxx>
+#include <StepBasic_ApprovalAssignment.hxx>
+#include <StepBasic_ApprovalDateTime.hxx>
+#include <StepBasic_CertificationAssignment.hxx>
+#include <StepBasic_ContractAssignment.hxx>
+#include <StepBasic_DocumentReference.hxx>
+#include <StepBasic_EffectivityAssignment.hxx>
+#include <StepBasic_GroupAssignment.hxx>
+#include <StepBasic_NameAssignment.hxx>
+#include <StepBasic_SecurityClassificationAssignment.hxx>
 
 //=======================================================================
 //function : StepBasic_RoleSelect

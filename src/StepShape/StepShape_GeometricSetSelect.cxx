@@ -13,6 +13,10 @@
 
 #include <StepShape_GeometricSetSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_Point.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
 
 StepShape_GeometricSetSelect::StepShape_GeometricSetSelect () {  }
 

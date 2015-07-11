@@ -13,6 +13,8 @@
 
 #include <StepGeom_VectorOrDirection.ixx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_Vector.hxx>
+#include <StepGeom_Direction.hxx>
 
 StepGeom_VectorOrDirection::StepGeom_VectorOrDirection () {  }
 

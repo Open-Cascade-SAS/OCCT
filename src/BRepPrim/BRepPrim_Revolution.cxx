@@ -18,6 +18,7 @@
 
 #include <Precision.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_Curve.hxx>
 
 //=======================================================================
 //function : BRepPrim_Revolution

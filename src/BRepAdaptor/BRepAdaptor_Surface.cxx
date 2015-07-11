@@ -19,6 +19,9 @@
 #include <BRepTools.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_HCurve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 //=======================================================================
 //function : BRepAdaptor_Surface

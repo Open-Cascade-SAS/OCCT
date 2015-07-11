@@ -21,8 +21,6 @@
 
 #include <Select3D_SensitiveSegment.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveWire, Select3D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveWire, Select3D_SensitiveEntity)
 
 //=====================================================
 // Function : Select3D_SensitiveWire

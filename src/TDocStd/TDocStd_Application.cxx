@@ -33,6 +33,7 @@
 // TDocStd_Owner attribute have pointer of closed TDocStd_Document
 
 #include <TDocStd_Owner.hxx>
+#include <TDocStd_Document.hxx>
 
 //=======================================================================
 //function : TDocStd_Application

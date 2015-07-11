@@ -30,6 +30,7 @@
 #include <TopOpeBRepTool_SC.hxx>
 #include <BRepLProp_SurfaceTool.hxx>
 #include <BRepLProp_SLProps.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 #ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL();

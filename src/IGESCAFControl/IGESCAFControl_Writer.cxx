@@ -45,6 +45,7 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <IGESData_IGESEntity.hxx>
 
 namespace
 {

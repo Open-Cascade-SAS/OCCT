@@ -13,6 +13,9 @@
 
 #include <StepVisual_CurveStyleFontSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_CurveStyleFont.hxx>
+#include <StepVisual_PreDefinedCurveFont.hxx>
+#include <StepVisual_ExternallyDefinedCurveFont.hxx>
 
 StepVisual_CurveStyleFontSelect::StepVisual_CurveStyleFontSelect () {  }
 

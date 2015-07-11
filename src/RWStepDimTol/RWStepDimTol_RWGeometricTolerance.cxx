@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepDimTol_RWGeometricTolerance.ixx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeometricTolerance

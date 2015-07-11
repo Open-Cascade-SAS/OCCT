@@ -29,8 +29,7 @@ VTK_MODULE_INIT(vtkRenderingOpenGL);
 VTK_MODULE_INIT(vtkInteractionStyle);
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtkVTK_View, IVtk_IView)
-IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_View, IVtk_IView)
+
 
 //================================================================
 // Function : Constructor

@@ -77,6 +77,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopoDS.hxx>
+#include <Geom_Surface.hxx>
 
 const Standard_Real SquareTolerance = Precision::SquareConfusion();
 

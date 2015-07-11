@@ -20,7 +20,7 @@
 #define _Select3D_SensitiveCircle_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Select3D_SensitivePoly.hxx>
@@ -103,7 +103,7 @@ public:
   //! Builds BVH tree for a circle's edge segments if needed
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveCircle)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveCircle, Select3D_SensitivePoly)
 
 private:
 

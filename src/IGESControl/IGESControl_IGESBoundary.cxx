@@ -50,6 +50,7 @@
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeAlgo_ToolContainer.hxx>
 #include <IGESGeom_BSplineCurve.hxx>
+#include <IGESData_IGESEntity.hxx>
 
 
 //=======================================================================

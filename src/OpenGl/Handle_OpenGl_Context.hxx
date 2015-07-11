@@ -16,7 +16,7 @@
 #ifndef _Handle_OpenGl_Context_Header
 #define _Handle_OpenGl_Context_Header
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Handle_Standard_Transient.hxx>
 
 class OpenGl_Context;

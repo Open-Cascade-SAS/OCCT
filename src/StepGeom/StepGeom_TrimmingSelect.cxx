@@ -14,6 +14,7 @@
 #include <StepGeom_TrimmingSelect.ixx>
 #include <StepGeom_TrimmingMember.hxx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 
 StepGeom_TrimmingSelect::StepGeom_TrimmingSelect () {  }
 

@@ -19,8 +19,6 @@
 #include <TObj_ReferenceIterator.hxx>
 #include <TObj_TReference.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_ReferenceIterator,TObj_LabelIterator)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_ReferenceIterator,TObj_LabelIterator)
 
 //=======================================================================
 //function : TObj_ObjectIterator

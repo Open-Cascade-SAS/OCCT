@@ -18,6 +18,8 @@
 #include <RWStepFEA_RWCurveElementIntervalLinearlyVarying.ixx>
 #include <StepElement_HArray1OfCurveElementSectionDefinition.hxx>
 #include <StepElement_CurveElementSectionDefinition.hxx>
+#include <StepFEA_CurveElementLocation.hxx>
+#include <StepBasic_EulerAngles.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWCurveElementIntervalLinearlyVarying

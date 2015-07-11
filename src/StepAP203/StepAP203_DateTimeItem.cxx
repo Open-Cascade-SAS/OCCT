@@ -17,6 +17,15 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <StepAP203_DateTimeItem.ixx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepAP203_ChangeRequest.hxx>
+#include <StepAP203_StartRequest.hxx>
+#include <StepAP203_Change.hxx>
+#include <StepAP203_StartWork.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepBasic_Contract.hxx>
+#include <StepBasic_SecurityClassification.hxx>
+#include <StepBasic_Certification.hxx>
 
 //=======================================================================
 //function : StepAP203_DateTimeItem

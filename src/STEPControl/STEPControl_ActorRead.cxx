@@ -123,6 +123,10 @@
 #include <TopExp_Explorer.hxx>
 #include <StepData_StepModel.hxx>
 #include <HeaderSection_FileName.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
 
 #define TRANSLOG
 

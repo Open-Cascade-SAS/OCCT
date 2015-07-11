@@ -16,6 +16,9 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepFEA_RWCurveElementIntervalConstant.ixx>
+#include <StepFEA_CurveElementLocation.hxx>
+#include <StepBasic_EulerAngles.hxx>
+#include <StepElement_CurveElementSectionDefinition.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWCurveElementIntervalConstant

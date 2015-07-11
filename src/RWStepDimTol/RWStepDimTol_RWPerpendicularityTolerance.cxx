@@ -18,6 +18,8 @@
 #include <RWStepDimTol_RWPerpendicularityTolerance.ixx>
 #include <StepDimTol_HArray1OfDatumReference.hxx>
 #include <StepDimTol_DatumReference.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWPerpendicularityTolerance

@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <StepShape_DimensionalCharacteristic.ixx>
+#include <StepShape_DimensionalLocation.hxx>
+#include <StepShape_DimensionalSize.hxx>
 
 //=======================================================================
 //function : StepShape_DimensionalCharacteristic

@@ -19,6 +19,7 @@
 
 
 #include <StepShape_CsgSolid.hxx>
+#include <StepShape_BooleanResult.hxx>
 
 
 RWStepShape_RWCsgSolid::RWStepShape_RWCsgSolid () {}

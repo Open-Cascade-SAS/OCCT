@@ -2373,6 +2373,8 @@ static int VTangentBuilder(Draw_Interpretor& di, Standard_Integer argc, const ch
 //Draw arg : vsymetric Name 
 //==============================================================================
 #include <AIS_SymmetricRelation.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Dimension.hxx>
 
 
 static int VSymmetricBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 

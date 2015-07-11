@@ -21,8 +21,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(BSplCLib_Cache, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
 //! Converts handle of array of Standard_Real into the pointer to Standard_Real
 static Standard_Real* ConvertArray(const Handle_TColStd_HArray2OfReal& theHArray)

@@ -90,6 +90,7 @@
 #include <XSAlgo_AlgoContainer.hxx>
 #include <ElCLib.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <StepGeom_Polyline.hxx>
 
 // ============================================================================
 // Method  : RemoveSinglePCurve

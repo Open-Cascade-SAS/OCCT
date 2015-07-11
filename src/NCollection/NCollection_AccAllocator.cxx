@@ -18,9 +18,6 @@
 #include <Standard_Assert.hxx>
 
 
-IMPLEMENT_STANDARD_HANDLE  (NCollection_AccAllocator, NCollection_BaseAllocator)
-IMPLEMENT_STANDARD_RTTIEXT (NCollection_AccAllocator, NCollection_BaseAllocator)
-
 //=======================================================================
 //function : NCollection_AccAllocator
 //purpose  : Constructor

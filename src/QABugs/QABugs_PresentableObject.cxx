@@ -24,6 +24,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Graphic3d_Structure.hxx>
 
 QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d)
      :AIS_InteractiveObject(theTypeOfPresentation3d)

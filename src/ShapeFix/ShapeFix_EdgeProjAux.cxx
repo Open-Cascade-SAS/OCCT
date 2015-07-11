@@ -45,6 +45,7 @@
 
 #include <Extrema_ExtPC.hxx>
 #include <gp_Pnt.hxx>
+#include <Geom2d_BoundedCurve.hxx>
 
 //=======================================================================
 //function : ShapeFix_EdgeProjAux

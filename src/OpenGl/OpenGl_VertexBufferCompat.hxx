@@ -85,7 +85,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_VertexBufferCompat) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_VertexBufferCompat, OpenGl_VertexBuffer) // Type definition
 
 };
 

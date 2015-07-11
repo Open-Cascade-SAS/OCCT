@@ -66,6 +66,7 @@
 
 // Used in I-DEAS-like STP processing (ssv; 15.11.2010)
 #include <TCollection_HAsciiString.hxx>
+#include <StepGeom_Polyline.hxx>
 
 //#define DEBUG
 

@@ -203,7 +203,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_Buffer) // Type definition
+  DEFINE_STANDARD_RTTI(Graphic3d_Buffer, NCollection_Buffer) // Type definition
 
 };
 

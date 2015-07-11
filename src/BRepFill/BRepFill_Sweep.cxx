@@ -118,6 +118,7 @@
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
 #include <DBRep.hxx>
+#include <Geom_BoundedSurface.hxx>
 static Standard_Boolean Affich = 0;
 #endif
 

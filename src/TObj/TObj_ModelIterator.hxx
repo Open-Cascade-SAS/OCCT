@@ -69,7 +69,7 @@ class TObj_ModelIterator : public TObj_ObjectIterator
     
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_ModelIterator)
+  DEFINE_STANDARD_RTTI(TObj_ModelIterator, TObj_ObjectIterator)
 };
 
 //! Define handle class for TObj_ObjectIterator

@@ -33,6 +33,8 @@
 #include <Geom_Line.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Message_Msg.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : ShapeCustom_ConvertToRevolution

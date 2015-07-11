@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_GTool.ixx>
+#include <Interface_GeneralModule.hxx>
 
 Interface_GTool::Interface_GTool  ()    {  }
 

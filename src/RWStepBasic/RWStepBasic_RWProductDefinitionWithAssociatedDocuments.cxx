@@ -22,6 +22,7 @@
 
 
 #include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
 
 
 RWStepBasic_RWProductDefinitionWithAssociatedDocuments::RWStepBasic_RWProductDefinitionWithAssociatedDocuments () {}

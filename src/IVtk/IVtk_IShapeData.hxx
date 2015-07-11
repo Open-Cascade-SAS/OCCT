@@ -30,7 +30,7 @@ public:
 
   virtual ~IVtk_IShapeData() { }
 
-  DEFINE_STANDARD_RTTI( IVtk_IShapeData )
+  DEFINE_STANDARD_RTTI(IVtk_IShapeData, IVtk_Interface)
 
   //! Insert a coordinate
   //! @param [in] theX X coordinate

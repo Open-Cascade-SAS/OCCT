@@ -49,6 +49,7 @@
 #include <BRep_GCurve.hxx>
 #include <TopoDS_Wire.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : BRepOffsetAPI_DraftAngle

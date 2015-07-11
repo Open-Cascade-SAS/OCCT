@@ -22,8 +22,6 @@
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_DeltaOnModification.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_TIntSparseArray,TDF_Attribute)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_TIntSparseArray,TDF_Attribute)
 
 //=======================================================================
 //function : TObj_TIntSparseArray

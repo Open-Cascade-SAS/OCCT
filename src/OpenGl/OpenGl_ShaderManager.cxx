@@ -28,11 +28,8 @@
 
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_SetOfShaderPrograms, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_SetOfShaderPrograms, Standard_Transient)
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_ShaderManager, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Standard_Transient)
+
 
 namespace
 {

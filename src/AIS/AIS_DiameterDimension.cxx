@@ -25,8 +25,6 @@
 #include <gce_MakeDir.hxx>
 #include <Standard_ProgramError.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_DiameterDimension, AIS_Dimension)
-IMPLEMENT_STANDARD_RTTIEXT (AIS_DiameterDimension, AIS_Dimension)
 
 namespace
 {

@@ -13,6 +13,8 @@
 
 #include <StepGeom_PcurveOrSurface.ixx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_Surface.hxx>
 
 StepGeom_PcurveOrSurface::StepGeom_PcurveOrSurface () {  }
 

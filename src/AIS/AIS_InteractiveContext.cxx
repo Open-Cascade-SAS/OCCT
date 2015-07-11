@@ -51,6 +51,8 @@
 #include <OSD_Environment.hxx>
 
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 
 namespace
 {

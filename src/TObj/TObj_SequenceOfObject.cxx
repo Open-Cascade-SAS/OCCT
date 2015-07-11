@@ -17,4 +17,3 @@
 
 #include <TObj_SequenceOfObject.hxx>
 
-IMPLEMENT_HSEQUENCE(TObj_HSequenceOfObject)

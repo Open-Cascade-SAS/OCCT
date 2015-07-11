@@ -16,8 +16,7 @@
 #include <IVtk_IShapeMesher.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtk_IShapeMesher, IVtk_Interface)
-IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher, IVtk_Interface)
+
 
 //! Excutes the mesh generation algorithms. To be defined in implementation class.
 void IVtk_IShapeMesher::initialize (const IVtk_IShape::Handle&     theShape,

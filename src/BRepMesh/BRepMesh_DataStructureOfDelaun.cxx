@@ -24,8 +24,6 @@
 #include <BRepTools.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (BRepMesh_DataStructureOfDelaun, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DataStructureOfDelaun, Standard_Transient)
 
 //=======================================================================
 //function : BRepMesh_DataStructureOfDelaun

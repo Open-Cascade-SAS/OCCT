@@ -18,6 +18,7 @@
 #include <StepFEA_SymmetricTensor43d.ixx>
 #include <StepFEA_SymmetricTensor43dMember.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : StepFEA_SymmetricTensor43d

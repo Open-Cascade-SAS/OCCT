@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_Protocol.ixx>
+#include <Standard_Transient.hxx>
 
 //  Gestion du Protocol actif : tres simple, une variable statique
 

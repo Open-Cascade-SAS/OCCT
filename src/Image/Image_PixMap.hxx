@@ -279,7 +279,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Image_PixMap) // Type definition
+  DEFINE_STANDARD_RTTI(Image_PixMap, Standard_Transient) // Type definition
 
 };
 

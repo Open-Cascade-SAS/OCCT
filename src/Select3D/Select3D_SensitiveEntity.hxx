@@ -18,7 +18,7 @@
 #define _Select3D_SensitiveEntity_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <Handle_SelectBasics_EntityOwner.hxx>
@@ -80,7 +80,7 @@ public:
   //! Clears up all resources and memory
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveEntity)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveEntity, SelectBasics_SensitiveEntity)
 
 protected:
 

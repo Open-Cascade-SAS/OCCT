@@ -22,6 +22,9 @@
 #include <Geom_Surface.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 //=======================================================================
 //function : BRepAdaptor_Curve

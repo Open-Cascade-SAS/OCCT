@@ -477,8 +477,6 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
   }
 };
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_LineAttributes, OpenGl_Resource)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_LineAttributes

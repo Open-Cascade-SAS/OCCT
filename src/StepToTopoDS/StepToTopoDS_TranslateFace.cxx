@@ -87,6 +87,7 @@
 
 // To proceed with I-DEAS-like STP (ssv; 15.11.2010)
 #include <TCollection_HAsciiString.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 //#define DEBUG
 

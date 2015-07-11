@@ -13,6 +13,7 @@
 
 #include <StepVisual_FillStyleSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_FillAreaStyleColour.hxx>
 
 StepVisual_FillStyleSelect::StepVisual_FillStyleSelect () {  }
 

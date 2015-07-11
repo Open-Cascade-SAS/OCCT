@@ -23,6 +23,8 @@
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
 
 //=======================================================================
 //function : FindEntity

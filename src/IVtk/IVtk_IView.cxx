@@ -16,5 +16,5 @@
 #include <IVtk_IView.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtk_IView, IVtk_Interface)
-IMPLEMENT_STANDARD_RTTIEXT(IVtk_IView, IVtk_Interface)
+
+

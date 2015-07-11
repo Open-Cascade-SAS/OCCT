@@ -32,6 +32,7 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
 
 static 
   void Analyse(const TColgp_Array2OfPnt& array2,

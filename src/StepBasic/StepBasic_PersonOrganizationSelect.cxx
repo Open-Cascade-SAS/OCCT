@@ -13,6 +13,9 @@
 
 #include <StepBasic_PersonOrganizationSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_Person.hxx>
+#include <StepBasic_Organization.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
 
 StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect () {  }
 

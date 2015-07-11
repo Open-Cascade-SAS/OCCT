@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWChange.ixx>
 #include <StepAP203_HArray1OfWorkItem.hxx>
 #include <StepAP203_WorkItem.hxx>
+#include <StepBasic_Action.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWChange

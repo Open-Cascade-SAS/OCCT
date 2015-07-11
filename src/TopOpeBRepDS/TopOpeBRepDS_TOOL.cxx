@@ -25,6 +25,7 @@
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 static void FUN_Raise()
 {

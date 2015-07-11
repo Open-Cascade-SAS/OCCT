@@ -17,8 +17,6 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (MeshVS_SensitiveFace, Select3D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveFace, Select3D_SensitiveEntity)
 
 //=======================================================================
 // name    : MeshVS_SensitiveFace::MeshVS_SensitiveFace

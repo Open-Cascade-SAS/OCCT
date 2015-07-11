@@ -27,7 +27,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_IndexBuffer) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_IndexBuffer, OpenGl_VertexBuffer) // Type definition
 
 };
 

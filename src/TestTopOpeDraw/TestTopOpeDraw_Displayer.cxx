@@ -29,6 +29,7 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <DBRep.hxx>
+#include <DBRep_DrawableShape.hxx>
 
 #ifdef WNT
 Standard_IMPORT Draw_Viewer dout;

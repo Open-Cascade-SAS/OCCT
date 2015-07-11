@@ -62,6 +62,7 @@
 #ifdef DRAW
 #include <TopOpeBRepTool_DRAW.hxx>
 #include <TopOpeBRepDS_DRAW.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #endif
 
 

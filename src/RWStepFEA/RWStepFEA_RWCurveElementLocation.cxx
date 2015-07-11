@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepFEA_RWCurveElementLocation.ixx>
+#include <StepFEA_FeaParametricPoint.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWCurveElementLocation

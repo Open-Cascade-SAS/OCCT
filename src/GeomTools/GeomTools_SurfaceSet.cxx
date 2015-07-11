@@ -46,6 +46,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Message_ProgressSentry.hxx>
+#include <Geom_Surface.hxx>
 
 #define PLANE           1
 #define CYLINDER        2

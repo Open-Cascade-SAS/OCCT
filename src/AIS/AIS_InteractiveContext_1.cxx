@@ -43,6 +43,7 @@
 
 #include <AIS_MapOfInteractive.hxx>
 #include <AIS_MapIteratorOfMapOfInteractive.hxx>
+#include <AIS_InteractiveObject.hxx>
 
 //=======================================================================
 //function : MoveTo

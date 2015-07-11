@@ -18,6 +18,8 @@
 #include <RWStepFEA_RWNodeWithSolutionCoordinateSystem.ixx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepFEA_FeaModel.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWNodeWithSolutionCoordinateSystem

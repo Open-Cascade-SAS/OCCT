@@ -619,7 +619,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_Camera);
+  DEFINE_STANDARD_RTTI(Graphic3d_Camera, Standard_Transient);
 
 };
 

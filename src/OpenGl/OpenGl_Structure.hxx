@@ -226,7 +226,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Structure) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_Structure, Graphic3d_CStructure) // Type definition
 
 };
 

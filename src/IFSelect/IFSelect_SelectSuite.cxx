@@ -13,6 +13,7 @@
 
 #include <IFSelect_SelectSuite.ixx>
 #include <IFSelect_SelectPointed.hxx>
+#include <IFSelect_SelectDeduct.hxx>
 #include <stdio.h>
 
 

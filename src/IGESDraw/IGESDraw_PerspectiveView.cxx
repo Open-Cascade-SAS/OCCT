@@ -18,6 +18,7 @@
 
 #include <IGESDraw_PerspectiveView.ixx>
 #include <gp_GTrsf.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 
 
 IGESDraw_PerspectiveView::IGESDraw_PerspectiveView ()    {  }

@@ -37,8 +37,6 @@
 #include <XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_Style.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (XCAFPrs_AISObject, AIS_ColoredShape)
-IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject, AIS_ColoredShape)
 
 //=======================================================================
 //function : XCAFPrs_AISObject

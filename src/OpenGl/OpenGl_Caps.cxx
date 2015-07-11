@@ -17,8 +17,6 @@
 
 #include <OpenGl_GlCore20.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Caps, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient)
 
 // =======================================================================
 // function : OpenGl_Caps

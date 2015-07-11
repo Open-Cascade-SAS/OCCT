@@ -13,6 +13,20 @@
 
 #include <StepAP214_AutoDesignReferencingItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_DocumentRelationship.hxx>
+#include <StepRepr_ExternallyDefinedRepresentation.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_MaterialDesignation.hxx>
+#include <StepVisual_PresentationArea.hxx>
+#include <StepVisual_PresentationView.hxx>
+#include <StepBasic_ProductCategory.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 
 StepAP214_AutoDesignReferencingItem::StepAP214_AutoDesignReferencingItem  ()    {  }
 

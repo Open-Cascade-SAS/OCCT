@@ -18,6 +18,7 @@
 
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 
 //=======================================================================

@@ -172,6 +172,12 @@
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_HArray1OfOrientedEdge.hxx>
 #include <StepShape_HArray1OfShell.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_AssemblyComponentUsage.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
 
 #ifdef OCCT_DEBUG
 //! Converts address of the passed shape (TShape) to string.

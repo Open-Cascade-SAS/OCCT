@@ -63,7 +63,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_CappingAlgoFilter)
+  DEFINE_STANDARD_RTTI(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 };
 
 #endif

@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepDimTol_RWGeometricToleranceRelationship.ixx>
+#include <StepDimTol_GeometricTolerance.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeometricToleranceRelationship

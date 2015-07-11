@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWCcDesignSpecificationReference.ixx>
 #include <StepAP203_HArray1OfSpecifiedItem.hxx>
 #include <StepAP203_SpecifiedItem.hxx>
+#include <StepBasic_Document.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignSpecificationReference

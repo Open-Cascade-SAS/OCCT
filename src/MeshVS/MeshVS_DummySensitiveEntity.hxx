@@ -17,7 +17,7 @@
 #define _MeshVS_DummySensitiveEntity_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Select3D_BndBox3d.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
@@ -48,7 +48,7 @@ public:
 
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(MeshVS_DummySensitiveEntity)
+  DEFINE_STANDARD_RTTI(MeshVS_DummySensitiveEntity, SelectBasics_SensitiveEntity)
 };
 
 DEFINE_STANDARD_HANDLE(MeshVS_DummySensitiveEntity, SelectBasics_SensitiveEntity)

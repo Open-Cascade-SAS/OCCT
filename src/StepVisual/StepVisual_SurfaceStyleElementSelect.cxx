@@ -13,6 +13,12 @@
 
 #include <StepVisual_SurfaceStyleElementSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_SurfaceStyleFillArea.hxx>
+#include <StepVisual_SurfaceStyleBoundary.hxx>
+#include <StepVisual_SurfaceStyleParameterLine.hxx>
+#include <StepVisual_SurfaceStyleSilhouette.hxx>
+#include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
+#include <StepVisual_SurfaceStyleControlGrid.hxx>
 
 StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect () {  }
 

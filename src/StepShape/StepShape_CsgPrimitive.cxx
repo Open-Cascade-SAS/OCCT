@@ -13,6 +13,12 @@
 
 #include <StepShape_CsgPrimitive.ixx>
 #include <Interface_Macros.hxx>
+#include <StepShape_Sphere.hxx>
+#include <StepShape_Block.hxx>
+#include <StepShape_RightAngularWedge.hxx>
+#include <StepShape_Torus.hxx>
+#include <StepShape_RightCircularCone.hxx>
+#include <StepShape_RightCircularCylinder.hxx>
 
 StepShape_CsgPrimitive::StepShape_CsgPrimitive () {  }
 

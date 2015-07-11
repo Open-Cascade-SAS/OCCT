@@ -13,6 +13,8 @@
 
 #include <StepVisual_InvisibilityContext.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_PresentationRepresentation.hxx>
+#include <StepVisual_PresentationSet.hxx>
 
 StepVisual_InvisibilityContext::StepVisual_InvisibilityContext () {  }
 

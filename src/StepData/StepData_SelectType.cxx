@@ -17,6 +17,7 @@
 #include <StepData_SelectReal.hxx>
 #include <StepData_SelectInt.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
 
 
 

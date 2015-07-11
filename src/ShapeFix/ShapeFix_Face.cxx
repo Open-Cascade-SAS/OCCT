@@ -106,6 +106,7 @@
 #include <TColStd_MapOfInteger.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <NCollection_Array1.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 #ifdef OCCT_DEBUG
 #define DEBUG

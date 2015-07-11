@@ -24,8 +24,6 @@
 #pragma warning (disable:4996)
 #endif
 
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Material, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Material, VrmlData_Node)
 
 //=======================================================================
 //function : VrmlData_Material()

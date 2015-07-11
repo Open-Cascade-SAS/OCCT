@@ -64,7 +64,7 @@ public:
                      gp_Pnt&                thePoint,
                      gp_Pnt2d&              theUV);
 
-  DEFINE_STANDARD_RTTI(BRepMesh_EdgeTessellationExtractor)
+  DEFINE_STANDARD_RTTI(BRepMesh_EdgeTessellationExtractor, BRepMesh_IEdgeTool)
 
 private:
 

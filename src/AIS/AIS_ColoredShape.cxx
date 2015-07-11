@@ -41,11 +41,8 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_ColoredDrawer, Prs3d_Drawer)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredDrawer, Prs3d_Drawer)
 
-IMPLEMENT_STANDARD_HANDLE (AIS_ColoredShape, AIS_Shape)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_ColoredShape, AIS_Shape)
+
 
 //=======================================================================
 //function : AIS_ColoredShape

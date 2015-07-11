@@ -20,6 +20,7 @@
 #include <Graphic3d_Structure.hxx>
 #include <Visual3d_View.hxx>
 #include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
 
 namespace
 {

@@ -93,6 +93,10 @@
 #include <TopoDS_Iterator.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom2d_BezierCurve.hxx>
 //=======================================================================
 //function : FixGaps3d
 //purpose  : 

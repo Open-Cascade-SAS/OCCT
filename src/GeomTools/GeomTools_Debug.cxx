@@ -20,6 +20,9 @@
 #include <GeomTools_Curve2dSet.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 // This file defines global functions not declared in any public header,
 // intended for use from debugger prompt (Command Window in Visual Studio)

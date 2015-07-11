@@ -2288,6 +2288,7 @@ void BiTgte_Blend::ComputeSurfaces()
 //purpose  : 
 //=======================================================================
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <Geom_Curve.hxx>
 
 void BiTgte_Blend::ComputeShape() 
 {

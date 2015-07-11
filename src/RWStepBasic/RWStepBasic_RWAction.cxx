@@ -17,6 +17,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <RWStepBasic_RWAction.ixx>
+#include <StepBasic_ActionMethod.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWAction

@@ -54,6 +54,7 @@
 #include <BndLib_Add2dCurve.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <BRepLib_MakeVertex.hxx>
+#include <Geom_Plane.hxx>
 
 
 static Standard_Boolean Project(const TopoDS_Vertex&,

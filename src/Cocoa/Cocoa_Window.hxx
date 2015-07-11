@@ -41,7 +41,7 @@
 #include <Aspect_Window.hxx>
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_GradientFillMethod.hxx>
@@ -155,7 +155,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Cocoa_Window)
+  DEFINE_STANDARD_RTTI(Cocoa_Window, Aspect_Window)
 
 };
 

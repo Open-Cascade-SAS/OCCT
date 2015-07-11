@@ -22,8 +22,6 @@
 #include <fstream>
 #include <iomanip>
 
-IMPLEMENT_STANDARD_HANDLE  (NCollection_IncAllocator,NCollection_BaseAllocator)
-IMPLEMENT_STANDARD_RTTIEXT (NCollection_IncAllocator,NCollection_BaseAllocator)
 
 namespace
 {

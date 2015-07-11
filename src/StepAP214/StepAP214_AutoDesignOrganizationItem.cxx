@@ -13,6 +13,8 @@
 
 #include <StepAP214_AutoDesignOrganizationItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_Document.hxx>
+#include <StepBasic_PhysicallyModeledProductDefinition.hxx>
 
 StepAP214_AutoDesignOrganizationItem::StepAP214_AutoDesignOrganizationItem ()  {  }
 

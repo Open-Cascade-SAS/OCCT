@@ -45,6 +45,8 @@
 #include <TopExp.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 
 
 //=======================================================================

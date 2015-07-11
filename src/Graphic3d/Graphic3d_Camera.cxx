@@ -24,8 +24,6 @@
 
 #include <NCollection_Sequence.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(Graphic3d_Camera, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Camera, Standard_Transient)
 
 namespace
 {

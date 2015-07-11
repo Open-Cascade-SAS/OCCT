@@ -24,8 +24,6 @@
 #include <fstream>
 #include <iomanip>
 
-IMPLEMENT_STANDARD_HANDLE(NCollection_BaseAllocator,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator,MMgt_TShared)
 
 //=======================================================================
 //function : Allocate

@@ -22,8 +22,6 @@
 #include <Graphic3d_AspectText3d.hxx>
 #include <Quantity_Color.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Prs3d_DimensionAspect, Prs3d_BasicAspect)
-IMPLEMENT_STANDARD_RTTIEXT (Prs3d_DimensionAspect, Prs3d_BasicAspect)
 
 //=======================================================================
 //function : Constructor

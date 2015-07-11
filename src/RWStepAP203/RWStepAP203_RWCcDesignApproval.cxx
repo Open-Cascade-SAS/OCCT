@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWCcDesignApproval.ixx>
 #include <StepAP203_HArray1OfApprovedItem.hxx>
 #include <StepAP203_ApprovedItem.hxx>
+#include <StepBasic_Approval.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignApproval

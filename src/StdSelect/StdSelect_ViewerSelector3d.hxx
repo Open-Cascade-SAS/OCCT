@@ -19,7 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Handle_Graphic3d_Group.hxx>
 #include <Handle_Graphic3d_Structure.hxx>
@@ -92,7 +92,7 @@ public:
   //! mark both included and overlapped entities as matched
   Standard_EXPORT void AllowOverlapDetection (const Standard_Boolean theIsToAllow);
 
-  DEFINE_STANDARD_RTTI(StdSelect_ViewerSelector3d)
+  DEFINE_STANDARD_RTTI(StdSelect_ViewerSelector3d, SelectMgr_ViewerSelector)
 
 protected:
 

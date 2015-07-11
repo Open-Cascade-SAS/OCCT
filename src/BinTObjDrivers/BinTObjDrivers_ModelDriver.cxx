@@ -26,8 +26,8 @@
 #include <TObj_Model.hxx>
 #include <TObj_Assistant.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(BinTObjDrivers_ModelDriver,BinMDF_ADriver)
-IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ModelDriver,BinMDF_ADriver);
+
+
 
 //=======================================================================
 //function : BinTObjDrivers_ModelDriver

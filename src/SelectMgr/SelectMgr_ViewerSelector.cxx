@@ -36,8 +36,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (SelectMgr_ViewerSelector, MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, MMgt_TShared)
 
 //=======================================================================
 // function: SelectMgr_ToleranceMap

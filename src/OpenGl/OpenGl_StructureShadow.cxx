@@ -16,9 +16,6 @@
 #include <OpenGl_StructureShadow.hxx>
 
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_StructureShadow, OpenGl_Structure)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure)
-
 //=======================================================================
 //function : OpenGl_StructureShadow
 //purpose  :

@@ -19,6 +19,7 @@
 
 #include <StepData_SelectArrReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 
 //=======================================================================

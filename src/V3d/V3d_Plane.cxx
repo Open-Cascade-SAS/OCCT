@@ -19,8 +19,6 @@
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <gp_Pln.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(V3d_Plane, MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane, MMgt_TShared)
 
 // =======================================================================
 // function : V3d_Plane

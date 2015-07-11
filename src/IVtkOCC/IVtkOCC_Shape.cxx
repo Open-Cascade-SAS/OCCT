@@ -17,8 +17,7 @@
 #include <TopExp.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtkOCC_Shape, IVtk_IShape)
-IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape, IVtk_IShape)
+
 
 //============================================================================
 // Method: Constructor

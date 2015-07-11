@@ -18,6 +18,7 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDataXtd_ConstraintEnum.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TNaming_NamedShape.hxx>
 // for symmetry midpoint the third argument is the axis or the point
 
 

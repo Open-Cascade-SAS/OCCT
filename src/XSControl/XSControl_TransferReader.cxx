@@ -51,6 +51,8 @@
 #include <Message_Messenger.hxx>
 
 #include <ShapeFix.hxx>
+#include <Transfer_ResultFromModel.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
 #include <stdio.h>
 
 

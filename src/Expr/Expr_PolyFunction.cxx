@@ -27,6 +27,7 @@
 #include <Expr_Operators.hxx>
 #include <Expr.hxx>
 #include <Standard_DimensionError.hxx>
+#include <Expr_NumericValue.hxx>
 
 Expr_PolyFunction::Expr_PolyFunction (const Handle(Expr_GeneralFunction)& func, const Expr_Array1OfGeneralExpression& exps)
 {

@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 //! Structure display state.
 class Graphic3d_ViewAffinity : public Standard_Transient
@@ -59,7 +59,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_ViewAffinity)
+  DEFINE_STANDARD_RTTI(Graphic3d_ViewAffinity, Standard_Transient)
 
 };
 

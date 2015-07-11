@@ -13,6 +13,8 @@
 
 #include <StepShape_SurfaceModel.ixx>
 #include <Interface_Macros.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepShape_FaceBasedSurfaceModel.hxx>
 
 StepShape_SurfaceModel::StepShape_SurfaceModel () {  }
 

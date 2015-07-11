@@ -17,7 +17,7 @@
 #define _MeshVS_SensitiveSegment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Select3D_SensitiveSegment.hxx>
@@ -36,7 +36,7 @@ public:
                                            const gp_Pnt& theFirstPnt,
                                            const gp_Pnt& theLastPnt);
 
-  DEFINE_STANDARD_RTTI(MeshVS_SensitiveSegment)
+  DEFINE_STANDARD_RTTI(MeshVS_SensitiveSegment, Select3D_SensitiveSegment)
 };
 
 DEFINE_STANDARD_HANDLE(MeshVS_SensitiveSegment, Select3D_SensitiveSegment)

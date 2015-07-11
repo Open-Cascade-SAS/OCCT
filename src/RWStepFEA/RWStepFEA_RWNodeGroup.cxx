@@ -18,6 +18,7 @@
 #include <RWStepFEA_RWNodeGroup.ixx>
 #include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <StepFEA_FeaModel.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWNodeGroup

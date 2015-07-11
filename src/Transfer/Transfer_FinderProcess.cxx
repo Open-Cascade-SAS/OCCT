@@ -15,6 +15,7 @@
 #include <Interface_MSG.hxx>
 #include <Transfer_Binder.hxx>
 #include <Interface_Check.hxx>
+#include <Transfer_TransientMapper.hxx>
 
 
 Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)

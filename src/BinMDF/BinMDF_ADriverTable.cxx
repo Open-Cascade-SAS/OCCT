@@ -18,6 +18,7 @@
 #include <BinMDF_StringIdMap.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <BinMDF_DataMapIteratorOfTypeADriverMap.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : BinMDF_ADriverTable

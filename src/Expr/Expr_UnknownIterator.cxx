@@ -18,6 +18,7 @@
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Expr.hxx>
+#include <Expr_NamedUnknown.hxx>
 
 Expr_UnknownIterator::Expr_UnknownIterator (const Handle(Expr_GeneralExpression)& exp)
 {

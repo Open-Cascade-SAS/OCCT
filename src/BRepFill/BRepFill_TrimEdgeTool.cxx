@@ -38,6 +38,7 @@
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <DBRep.hxx>
+#include <Geom2d_Point.hxx>
 static Standard_Boolean Affich       = Standard_False;
 static Standard_Boolean AffichInt    = Standard_False;
 static Standard_Integer intind       = 0;

@@ -87,7 +87,7 @@ public:
                                Standard_Real& theWidth,
                                Standard_Real& theHeight) const = 0;
 
-  DEFINE_STANDARD_RTTI( IVtk_IView )
+  DEFINE_STANDARD_RTTI(IVtk_IView, IVtk_Interface)
 };
 
 #endif // __IVTK_IVIEW_H__

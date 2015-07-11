@@ -14,6 +14,7 @@
 #include <Transfer_TransferIterator.ixx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
 
 static Handle(Standard_Transient)   nultrans;  // pour retour const&(Null)
 

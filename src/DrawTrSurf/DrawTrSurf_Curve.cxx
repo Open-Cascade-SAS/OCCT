@@ -23,6 +23,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Geom_Curve.hxx>
 
 Standard_Real DrawTrSurf_CurveLimit = 400;
 extern Standard_Boolean Draw_Bounds;

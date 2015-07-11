@@ -13,6 +13,15 @@
 
 #include <StepAP214_DocumentReferenceItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepRepr_DescriptiveRepresentationItem.hxx>
+#include <StepRepr_MaterialDesignation.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ShapeAspectRelationship.hxx>
 
 StepAP214_DocumentReferenceItem::StepAP214_DocumentReferenceItem () {  }
 

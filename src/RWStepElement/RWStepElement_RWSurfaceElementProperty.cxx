@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepElement_RWSurfaceElementProperty.ixx>
+#include <StepElement_SurfaceSectionField.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWSurfaceElementProperty

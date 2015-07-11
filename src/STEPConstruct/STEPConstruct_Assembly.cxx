@@ -42,6 +42,7 @@
 
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_Transformation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
 
 //=======================================================================
 //function : STEPConstruct_Assembly

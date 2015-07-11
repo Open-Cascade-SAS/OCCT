@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepBasic_RWRoleAssociation.ixx>
+#include <StepBasic_ObjectRole.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWRoleAssociation

@@ -128,7 +128,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_RaytraceFilter)
+  DEFINE_STANDARD_RTTI(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
 };
 
 //! Represents window with GL context.
@@ -396,7 +396,7 @@ protected: //! @name fields related to status
 
 public: //! @name type definition
 
-  DEFINE_STANDARD_RTTI(OpenGl_Workspace)
+  DEFINE_STANDARD_RTTI(OpenGl_Workspace, OpenGl_Window)
   DEFINE_STANDARD_ALLOC
 
 };

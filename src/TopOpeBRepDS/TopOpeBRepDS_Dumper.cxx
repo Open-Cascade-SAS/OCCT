@@ -55,6 +55,7 @@
 #include <string.h>
 
 #include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_Dumper::TopOpeBRepDS_Dumper

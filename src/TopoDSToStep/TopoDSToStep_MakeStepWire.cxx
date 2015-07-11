@@ -52,6 +52,7 @@
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeAnalysis_Edge.hxx>
+#include <StepShape_Vertex.hxx>
 
 // ----------------------------------------------------------------------------
 // Constructors

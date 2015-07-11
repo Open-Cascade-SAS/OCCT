@@ -22,9 +22,8 @@
 #include <Standard_GUID.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_DeltaOnAddition.hxx>
+#include <TDF_DeltaOnRemoval.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_TReference,TDF_Attribute)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_TReference,TDF_Attribute)
 
 //=======================================================================
 //function : TObj_TReference

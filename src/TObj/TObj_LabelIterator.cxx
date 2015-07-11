@@ -17,9 +17,7 @@
 
 #include <TObj_LabelIterator.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_LabelIterator,TObj_ObjectIterator)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_LabelIterator,TObj_ObjectIterator)
-     
+
 //=======================================================================
 //function : TObj_LabelIterator
 //purpose  : 

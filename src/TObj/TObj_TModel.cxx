@@ -20,8 +20,6 @@
 #include <Standard_GUID.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_TModel,TDF_Attribute)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_TModel,TDF_Attribute)
 
 //=======================================================================
 //function : GetID

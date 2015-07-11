@@ -41,6 +41,7 @@
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_kpresu.hxx>
 #include <Standard_ProgramError.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();

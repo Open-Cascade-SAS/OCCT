@@ -74,7 +74,7 @@ public:
   //! Returns the amount of points in set
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_InteriorSensitivePointSet)
+  DEFINE_STANDARD_RTTI(Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
 
 protected:
 

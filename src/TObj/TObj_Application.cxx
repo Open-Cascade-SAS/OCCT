@@ -25,8 +25,6 @@
 #include <Message_Msg.hxx>
 #include <stdio.h>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_Application,TDocStd_Application)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_Application,TDocStd_Application)
 
 //=======================================================================
 //function : GetInstance

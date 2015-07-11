@@ -13,6 +13,7 @@
 
 #include <Transfer_MultipleBinder.ixx>
 #include <Transfer_TransferFailure.hxx>
+#include <Standard_Transient.hxx>
 
 
 

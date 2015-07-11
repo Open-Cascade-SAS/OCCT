@@ -151,6 +151,13 @@
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
+#include <IGESGeom_SurfaceOfRevolution.hxx>
+#include <IGESGeom_TabulatedCylinder.hxx>
+#include <IGESGeom_RuledSurface.hxx>
+#include <IGESGeom_Plane.hxx>
+#include <IGESGeom_OffsetSurface.hxx>
+#include <IGESBasic_SingleParent.hxx>
 
 //=======================================================================
 //function : IGESToBRep_TopoSurface

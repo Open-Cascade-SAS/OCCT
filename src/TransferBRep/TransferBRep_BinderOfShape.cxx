@@ -14,6 +14,7 @@
 #include <TransferBRep_BinderOfShape.ixx>
 
 #include <TransferBRep_ShapeInfo.hxx>
+#include <TopoDS_Shape.hxx>
 
 
 TransferBRep_BinderOfShape::TransferBRep_BinderOfShape (){ }

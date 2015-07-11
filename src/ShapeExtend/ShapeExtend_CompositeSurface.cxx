@@ -16,6 +16,7 @@
 
 #include <ShapeExtend_CompositeSurface.ixx>
 #include <Precision.hxx>
+#include <Geom_Surface.hxx>
 
 //=======================================================================
 //function : ShapeExtend_CompositeSurface

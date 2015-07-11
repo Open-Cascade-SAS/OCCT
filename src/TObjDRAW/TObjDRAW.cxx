@@ -23,7 +23,7 @@
 #include <TObj_TNameContainer.hxx>
 
 #include <Message_MsgFile.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -64,13 +64,11 @@ class TObjDRAW_Model : public TObj_Model
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObjDRAW_Model)
+  DEFINE_STANDARD_RTTI(TObjDRAW_Model, TObj_Model)
 
 };
 DEFINE_STANDARD_HANDLE (TObjDRAW_Model,TObj_Model)
-     
-IMPLEMENT_STANDARD_HANDLE(TObjDRAW_Model,TObj_Model)
-IMPLEMENT_STANDARD_RTTIEXT(TObjDRAW_Model,TObj_Model)
+
 
 class Handle(TObjDRAW_Object);
 
@@ -141,15 +139,14 @@ class TObjDRAW_Object : public TObj_Object
 
  public:
   // Declaration of CASCADE RTTI
- DEFINE_STANDARD_RTTI (TObjDRAW_Object)
+ DEFINE_STANDARD_RTTI (TObjDRAW_Object, TObj_Object)
   
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (TObjDRAW_Object,TObj_Object)
 
-IMPLEMENT_STANDARD_HANDLE (TObjDRAW_Object,TObj_Object)
-IMPLEMENT_STANDARD_RTTIEXT(TObjDRAW_Object,TObj_Object)
+
 IMPLEMENT_TOBJOCAF_PERSISTENCE(TObjDRAW_Object)
 
 //=======================================================================

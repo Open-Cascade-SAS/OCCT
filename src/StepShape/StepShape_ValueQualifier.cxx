@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <StepShape_ValueQualifier.ixx>
+#include <StepShape_PrecisionQualifier.hxx>
+#include <StepShape_TypeQualifier.hxx>
 
 StepShape_ValueQualifier::StepShape_ValueQualifier  ()    {  }
 

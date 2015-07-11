@@ -18,8 +18,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Font_FTFont, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
 
 // =======================================================================
 // function : Font_FTFont

@@ -30,8 +30,6 @@
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <TopExp_Explorer.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (MeshTest_DrawableMesh, Draw_Drawable3D)
-IMPLEMENT_STANDARD_RTTIEXT(MeshTest_DrawableMesh, Draw_Drawable3D)
 
 typedef NCollection_Map<BRepMesh_Edge> BRepMesh_MapOfLinks;
 

@@ -76,6 +76,7 @@
 #include <gp_Pnt.hxx>
 #include <Extrema_ExtPC2d.hxx>
 #include <ShapeAnalysis.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : ShapeFix_ComposeShell

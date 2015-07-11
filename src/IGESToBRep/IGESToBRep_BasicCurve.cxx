@@ -97,6 +97,8 @@
 #include <Message_Msg.hxx>  
 #include <ShapeConstruct_Curve.hxx>
 #include <gp_Hypr.hxx>
+#include <IGESGeom_Line.hxx>
+#include <IGESGeom_CopiousData.hxx>
 
 //=======================================================================
 //function : CheckBSplineCurve

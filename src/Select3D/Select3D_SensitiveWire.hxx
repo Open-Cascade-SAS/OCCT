@@ -18,7 +18,7 @@
 #define _Select3D_SensitiveWire_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Select3D_SensitiveSet.hxx>
@@ -80,7 +80,7 @@ public:
   Standard_EXPORT virtual void Swap (const Standard_Integer theIdx1,
                                      const Standard_Integer theIdx2) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveWire)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveWire, Select3D_SensitiveSet)
 
 protected:
 

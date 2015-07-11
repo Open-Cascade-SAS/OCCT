@@ -48,6 +48,7 @@
 #include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
 #include <UnitsMethods.hxx>
 #include <Interface_Static.hxx>
+#include <StepBasic_ConversionBasedUnit.hxx>
 
 //=======================================================================
 //function : STEPConstruct_UnitContext

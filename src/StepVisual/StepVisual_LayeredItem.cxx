@@ -13,6 +13,8 @@
 
 #include <StepVisual_LayeredItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_PresentationRepresentation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 StepVisual_LayeredItem::StepVisual_LayeredItem () {  }
 

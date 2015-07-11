@@ -13,6 +13,9 @@
 
 #include <StepVisual_TextOrCharacter.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_AnnotationText.hxx>
+#include <StepVisual_CompositeText.hxx>
+#include <StepVisual_TextLiteral.hxx>
 
 StepVisual_TextOrCharacter::StepVisual_TextOrCharacter () {  }
 

@@ -17,7 +17,7 @@
 #define _OpenGl_View_Header
 
 #include <MMgt_TShared.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <TColStd_Array2OfReal.hxx>
 #include <NCollection_List.hxx>
@@ -752,7 +752,7 @@ protected: //! @name fields related to ray-tracing
 public:
 
   DEFINE_STANDARD_ALLOC
-  DEFINE_STANDARD_RTTI(OpenGl_View) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_View, MMgt_TShared) // Type definition
 
   friend class OpenGl_Workspace;
 

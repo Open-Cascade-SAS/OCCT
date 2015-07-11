@@ -87,7 +87,7 @@ class VrmlData_Sphere : public VrmlData_Geometry
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Sphere)
+DEFINE_STANDARD_RTTI (VrmlData_Sphere, VrmlData_Geometry)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

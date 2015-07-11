@@ -27,8 +27,6 @@
 #include <Graphic3d_CUserDraw.hxx>
 #include <Graphic3d_GroupDefinitionError.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Group, Graphic3d_Group)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group, Graphic3d_Group)
 
 // =======================================================================
 // function : OpenGl_Group

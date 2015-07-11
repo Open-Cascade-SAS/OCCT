@@ -38,7 +38,7 @@ public:
                      gp_Pnt&                thePoint,
                      gp_Pnt2d&              theUV) = 0;
 
-  DEFINE_STANDARD_RTTI(BRepMesh_IEdgeTool)
+  DEFINE_STANDARD_RTTI(BRepMesh_IEdgeTool, Standard_Transient)
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IEdgeTool, Standard_Transient)

@@ -19,8 +19,6 @@
 #include <Standard_Assert.hxx>
 #include <Image_PixMap.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_PointSprite, OpenGl_Texture)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PointSprite, OpenGl_Texture)
 
 // =======================================================================
 // function : OpenGl_PointSprite

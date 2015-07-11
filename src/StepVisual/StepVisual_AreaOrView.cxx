@@ -13,6 +13,8 @@
 
 #include <StepVisual_AreaOrView.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_PresentationArea.hxx>
+#include <StepVisual_PresentationView.hxx>
 
 StepVisual_AreaOrView::StepVisual_AreaOrView () {  }
 

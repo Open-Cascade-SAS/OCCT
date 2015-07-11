@@ -45,6 +45,7 @@
 #include <Message_ProgressIndicator.hxx>
 #include <errno.h>
 #include <OSD_OpenFile.hxx>
+#include <Geom_Geometry.hxx>
 
 IGESControl_Writer::IGESControl_Writer ()
     :  theTP (new Transfer_FinderProcess(10000)) ,

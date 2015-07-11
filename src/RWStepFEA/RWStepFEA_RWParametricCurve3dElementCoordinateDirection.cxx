@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepFEA_RWParametricCurve3dElementCoordinateDirection.ixx>
+#include <StepGeom_Direction.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWParametricCurve3dElementCoordinateDirection

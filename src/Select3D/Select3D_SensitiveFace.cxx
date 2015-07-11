@@ -25,8 +25,6 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveFace, Select3D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace, Select3D_SensitiveEntity)
 
 //==================================================
 // Function: Hide this constructor to the next version...

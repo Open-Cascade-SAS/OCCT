@@ -36,6 +36,7 @@
 #include <Draw_Color.hxx>
 #include <Draw_Segment3D.hxx>
 #include <gp.hxx>
+#include <Geom_Curve.hxx>
 
 Draw_Color DBRep_ColorOrientation (const TopAbs_Orientation);
 

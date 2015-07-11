@@ -27,6 +27,7 @@
 #include <Law_S.hxx>
 #include <Law_Interpol.hxx>
 #include <Standard_DomainError.hxx>
+#include <Law_Composite.hxx>
 
 //=======================================================================
 //function : ChFiDS_FilSpine

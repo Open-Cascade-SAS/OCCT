@@ -51,7 +51,6 @@
 ////////////////////////////////DEFINE_HARRAY1(QANCollection_HArray1,QANCollection_Array1)
 DEFINE_ARRAY1(QANCollection_Array1Perf,QANCollection_BaseColPerf,ItemType)
 DEFINE_HARRAY1(QANCollection_HArray1Perf,QANCollection_Array1Perf)
-IMPLEMENT_HARRAY1(QANCollection_HArray1Perf)
 
 #include <NCollection_DefineArray2.hxx>
 #include <NCollection_DefineHArray2.hxx>
@@ -59,7 +58,6 @@ IMPLEMENT_HARRAY1(QANCollection_HArray1Perf)
 ////////////////////////////////DEFINE_HARRAY2(QANCollection_HArray2,QANCollection_Array2)
 DEFINE_ARRAY2(QANCollection_Array2Perf,QANCollection_BaseColPerf,ItemType)
 DEFINE_HARRAY2(QANCollection_HArray2Perf,QANCollection_Array2Perf)
-IMPLEMENT_HARRAY2(QANCollection_HArray2Perf)
 
 #include <NCollection_DefineMap.hxx>
 #include <NCollection_DefineDataMap.hxx>
@@ -87,7 +85,6 @@ DEFINE_LIST(QANCollection_ListPerf,QANCollection_BaseColPerf,ItemType)
 ////////////////////////////////DEFINE_HSEQUENCE(QANCollection_HSequence,QANCollection_Sequence)
 DEFINE_SEQUENCE(QANCollection_SequencePerf,QANCollection_BaseColPerf,ItemType)
 DEFINE_HSEQUENCE(QANCollection_HSequencePerf,QANCollection_SequencePerf)
-IMPLEMENT_HSEQUENCE(QANCollection_HSequencePerf)
 
 static void printAllMeters (Draw_Interpretor& theDI)
 {

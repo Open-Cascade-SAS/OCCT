@@ -24,8 +24,6 @@ namespace
   static volatile Standard_Integer THE_MARKER_IMAGE_COUNTER = 0;
 };
 
-IMPLEMENT_STANDARD_HANDLE (Graphic3d_MarkerImage, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MarkerImage, Standard_Transient)
 
 // =======================================================================
 // function : Graphic3d_MarkerImage

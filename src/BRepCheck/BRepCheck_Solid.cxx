@@ -14,7 +14,7 @@
 
 #include <BRepCheck_Solid.ixx>
 //
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <MMgt_TShared.hxx>
 //
 #include <NCollection_Vector.hxx>
@@ -63,13 +63,14 @@ class BRepCheck_HSC : public MMgt_TShared {
       return mySC;
     };
   //
-  DEFINE_STANDARD_RTTI(BRepCheck_HSC);
+  DEFINE_STANDARD_RTTI(BRepCheck_HSC, MMgt_TShared);
 
  protected:
   BRepClass3d_SolidClassifier mySC;
 };
-IMPLEMENT_STANDARD_HANDLE(BRepCheck_HSC, MMgt_TShared);
-IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_HSC, MMgt_TShared);
+
+
+
 //
 //=======================================================================
 //class    : BRepCheck_ToolSolid

@@ -111,6 +111,9 @@
 #include <Approx_CurveOnSurface.hxx>
 
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_ElementarySurface.hxx>
 
 
 static Standard_Boolean Choose(const Draft_DataMapOfFaceFaceInfo&,

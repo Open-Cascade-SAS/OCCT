@@ -14,6 +14,8 @@
 #include <StepData_ECDescr.ixx>
 #include <TCollection_AsciiString.hxx>
 #include <StepData_Plex.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_Simple.hxx>
 
 StepData_ECDescr::StepData_ECDescr  ()    {  }
 

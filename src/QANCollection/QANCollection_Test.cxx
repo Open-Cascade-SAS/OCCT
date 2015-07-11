@@ -35,7 +35,6 @@
 ////////////////////////////////DEFINE_HARRAY1(QANCollection_HArray1,QANCollection_Array1)
 DEFINE_ARRAY1(QANCollection_Array1Func,QANCollection_BaseColFunc,ItemType)
 DEFINE_HARRAY1(QANCollection_HArray1Func,QANCollection_Array1Func)
-IMPLEMENT_HARRAY1(QANCollection_HArray1Func)
 
 #include <NCollection_DefineArray2.hxx>
 #include <NCollection_DefineHArray2.hxx>
@@ -43,7 +42,6 @@ IMPLEMENT_HARRAY1(QANCollection_HArray1Func)
 ////////////////////////////////DEFINE_HARRAY2(QANCollection_HArray2,QANCollection_Array2)
 DEFINE_ARRAY2(QANCollection_Array2Func,QANCollection_BaseColFunc,ItemType)
 DEFINE_HARRAY2(QANCollection_HArray2Func,QANCollection_Array2Func)
-IMPLEMENT_HARRAY2(QANCollection_HArray2Func)
 
 #include <NCollection_DefineMap.hxx>
 #include <NCollection_DefineDataMap.hxx>
@@ -71,7 +69,6 @@ DEFINE_LIST(QANCollection_ListFunc,QANCollection_BaseColFunc,ItemType)
 ////////////////////////////////DEFINE_HSEQUENCE(QANCollection_HSequence,QANCollection_Sequence)
 DEFINE_SEQUENCE(QANCollection_SequenceFunc,QANCollection_BaseColFunc,ItemType)
 DEFINE_HSEQUENCE(QANCollection_HSequenceFunc,QANCollection_SequenceFunc)
-IMPLEMENT_HSEQUENCE(QANCollection_HSequenceFunc)
 
 // HashCode and IsEquel must be defined for key types of maps
 Standard_Integer HashCode(const gp_Pnt thePnt, int theUpper)

@@ -118,6 +118,8 @@
 #include <ShapeFix.hxx>
 #include <ShapeFix_IntersectionTool.hxx>
 #include <ShapeFix_SplitTool.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeAnalysis_Wire.hxx>
 
 
 //#######################################################################

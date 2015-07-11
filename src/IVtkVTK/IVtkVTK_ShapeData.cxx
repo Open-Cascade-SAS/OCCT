@@ -26,8 +26,6 @@ const char* const IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS = "SUBSHAPE_IDS";
 const char* const IVtkVTK_ShapeData::ARRNAME_MESH_TYPES   = "MESH_TYPES";
 
 //! Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtkVTK_ShapeData, IVtk_IShapeData)
-IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_ShapeData, IVtk_IShapeData)
 
 
 //================================================================

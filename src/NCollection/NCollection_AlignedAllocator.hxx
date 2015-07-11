@@ -46,7 +46,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI (NCollection_AlignedAllocator)
+  DEFINE_STANDARD_RTTI (NCollection_AlignedAllocator, NCollection_BaseAllocator)
 
 };
 

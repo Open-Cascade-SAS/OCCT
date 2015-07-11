@@ -21,8 +21,6 @@
 #include <ElCLib.hxx>
 #include <gce_MakeDir.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_RadiusDimension, AIS_Dimension)
-IMPLEMENT_STANDARD_RTTIEXT (AIS_RadiusDimension, AIS_Dimension)
 
 namespace
 {

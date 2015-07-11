@@ -18,6 +18,7 @@
 #include <RWStepShape_RWConnectedFaceSubSet.ixx>
 #include <StepShape_HArray1OfFace.hxx>
 #include <StepShape_Face.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWConnectedFaceSubSet

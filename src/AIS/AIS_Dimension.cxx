@@ -73,8 +73,6 @@
 #include <UnitsAPI.hxx>
 #include <UnitsAPI_SystemUnits.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_Dimension, AIS_InteractiveObject)
 
 namespace
 {

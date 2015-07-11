@@ -30,6 +30,7 @@
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Approx_Curve2d.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 
 //---------------------------------------------------------
 //         Constructeur vide

@@ -100,7 +100,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI (Graphic3d_ShaderProgram)
+  DEFINE_STANDARD_RTTI (Graphic3d_ShaderProgram, Standard_Transient)
 
 private:
 

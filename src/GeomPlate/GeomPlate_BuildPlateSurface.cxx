@@ -94,6 +94,7 @@ static Standard_Integer NbProj = 0;
 // pour mes tests
 #ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
+#include <Geom_Surface.hxx>
 static Standard_Integer Affich=0;
 #endif
 

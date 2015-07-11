@@ -13,6 +13,8 @@
 
 #include <StepGeom_Axis2Placement.ixx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 
 StepGeom_Axis2Placement::StepGeom_Axis2Placement () {  }
 

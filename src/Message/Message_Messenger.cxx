@@ -15,6 +15,7 @@
 
 #include <Message_Messenger.ixx>
 #include <Message_PrinterOStream.hxx>
+#include <Message_Printer.hxx>
 
 //=======================================================================
 //function : Message_Messenger

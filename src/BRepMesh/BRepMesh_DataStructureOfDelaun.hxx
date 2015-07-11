@@ -15,7 +15,7 @@
 #define _BRepMesh_DataStructureOfDelaun_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <BRepMesh_VertexTool.hxx>
 #include <Standard_Transient.hxx>
 #include <BRepMesh_Triangle.hxx>
@@ -260,7 +260,7 @@ public: //! @name Auxilary API
     clearDeletedNodes();
   }
 
-  DEFINE_STANDARD_RTTI(BRepMesh_DataStructureOfDelaun)
+  DEFINE_STANDARD_RTTI(BRepMesh_DataStructureOfDelaun, Standard_Transient)
 
 private: 
 

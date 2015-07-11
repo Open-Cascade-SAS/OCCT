@@ -19,6 +19,7 @@
  
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_CircularGrid.hxx>
+#include <Aspect_RectangularGrid.hxx>
 
 #define MYEPSILON1 0.0001		// Comparison with 0.0
 #define MYEPSILON2 M_PI / 180.	// Delta between 2 angles

@@ -51,6 +51,8 @@
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom2d_BoundedCurve.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_WireDivide

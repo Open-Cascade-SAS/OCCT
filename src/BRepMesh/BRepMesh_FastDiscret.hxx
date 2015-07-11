@@ -15,7 +15,7 @@
 #define _BRepMesh_FastDiscret_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <BRepMesh_FastDiscret.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
@@ -175,7 +175,7 @@ public:
     return myBoundaryPoints->Extent();
   }
 
-  DEFINE_STANDARD_RTTI(BRepMesh_FastDiscret)
+  DEFINE_STANDARD_RTTI(BRepMesh_FastDiscret, Standard_Transient)
 
 private:
 

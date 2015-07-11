@@ -18,6 +18,7 @@
 #include <RWStepRepr_RWAssemblyComponentUsage.ixx>
 
 #include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepBasic_ProductDefinition.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWAssemblyComponentUsage

@@ -28,6 +28,7 @@
 #include <Precision.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <ShapeAnalysis_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve2d

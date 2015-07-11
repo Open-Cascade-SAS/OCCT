@@ -70,6 +70,12 @@
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeConstruct_Curve.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <IGESSolid_CylindricalSurface.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <IGESSolid_SphericalSurface.hxx>
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 //=======================================================================
 //function : CheckBSplineSurface

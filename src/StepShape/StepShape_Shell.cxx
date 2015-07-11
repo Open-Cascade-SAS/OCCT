@@ -13,6 +13,8 @@
 
 #include <StepShape_Shell.ixx>
 #include <Interface_Macros.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_ClosedShell.hxx>
 
 StepShape_Shell::StepShape_Shell () {  }
 

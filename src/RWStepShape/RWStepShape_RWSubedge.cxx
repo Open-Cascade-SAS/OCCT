@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepShape_RWSubedge.ixx>
+#include <StepShape_Vertex.hxx>
+#include <StepShape_Edge.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWSubedge

@@ -33,6 +33,8 @@
 #include <Interface_Static.hxx>
 #include <Interface_Macros.hxx>
 #include <UnitsMethods.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <IGESGeom_Boundary.hxx>
 
 
 IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_Protocol)&  protocol)

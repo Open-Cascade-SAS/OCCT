@@ -18,7 +18,7 @@
 #define _Select3D_SensitivePoint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Select3D_Pnt.hxx>
@@ -62,7 +62,7 @@ public:
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitivePoint)
+  DEFINE_STANDARD_RTTI(Select3D_SensitivePoint, Select3D_SensitiveEntity)
 
 private:
 

@@ -19,8 +19,6 @@
 #include <BRepMesh_Classifier.hxx>
 #include <BRepTools.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (BRepMesh_FaceAttribute, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceAttribute, Standard_Transient)
 
 //=======================================================================
 //function : Constructor

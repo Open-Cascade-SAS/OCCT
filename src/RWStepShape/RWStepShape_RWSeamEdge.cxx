@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepShape_RWSeamEdge.ixx>
+#include <StepShape_Edge.hxx>
+#include <StepGeom_Pcurve.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWSeamEdge

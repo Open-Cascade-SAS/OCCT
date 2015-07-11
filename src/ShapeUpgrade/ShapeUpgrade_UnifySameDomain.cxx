@@ -78,6 +78,10 @@
 #include <ShapeFix_Shell.hxx>
 #include <ShapeUpgrade_RemoveLocations.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_OffsetSurface.hxx>
 
 
 //=======================================================================

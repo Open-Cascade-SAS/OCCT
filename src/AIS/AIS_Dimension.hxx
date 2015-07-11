@@ -377,7 +377,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_Dimension)
+  DEFINE_STANDARD_RTTI(AIS_Dimension, AIS_InteractiveObject)
 
 protected:
 

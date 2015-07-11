@@ -31,32 +31,31 @@
 #include <BRepPrim_Builder.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <VrmlData_ArrayVec3d.hxx>
 
 #ifdef WNT
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)
 #endif
 
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Geometry, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Geometry, VrmlData_Node)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Box, VrmlData_Geometry)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Box, VrmlData_Geometry)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Cone, VrmlData_Geometry)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Cone, VrmlData_Geometry)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Cylinder, VrmlData_Geometry)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Cylinder, VrmlData_Geometry)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Sphere, VrmlData_Geometry)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Sphere, VrmlData_Geometry)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_ArrayVec3d, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_ArrayVec3d, VrmlData_Node)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Color, VrmlData_ArrayVec3d)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Color, VrmlData_ArrayVec3d)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Coordinate, VrmlData_ArrayVec3d)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Coordinate, VrmlData_ArrayVec3d)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Normal, VrmlData_ArrayVec3d)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Normal, VrmlData_ArrayVec3d)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_TextureCoordinate, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_TextureCoordinate, VrmlData_Node)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //=======================================================================
 //function : Value

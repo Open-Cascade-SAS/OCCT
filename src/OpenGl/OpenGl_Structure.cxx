@@ -27,8 +27,6 @@
 
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Structure, Graphic3d_CStructure)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Structure, Graphic3d_CStructure)
 
 //! Auxiliary class for bounding box presentation
 class OpenGl_BndBoxPrs : public OpenGl_Element

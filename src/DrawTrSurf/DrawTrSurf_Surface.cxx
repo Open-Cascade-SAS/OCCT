@@ -17,6 +17,7 @@
 #include <GeomAdaptor_HSurface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Precision.hxx>
+#include <Geom_Surface.hxx>
 
 Standard_Real DrawTrSurf_SurfaceLimit = 400;
 

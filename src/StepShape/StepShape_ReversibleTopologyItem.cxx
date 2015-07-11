@@ -13,6 +13,12 @@
 
 #include <StepShape_ReversibleTopologyItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepShape_Edge.hxx>
+#include <StepShape_Path.hxx>
+#include <StepShape_Face.hxx>
+#include <StepShape_FaceBound.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_OpenShell.hxx>
 
 StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem () {  }
 

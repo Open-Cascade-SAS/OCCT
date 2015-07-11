@@ -266,6 +266,7 @@ static void ComputeLambda(const math_Matrix& Constraint,
 }
 
 #include <Extrema_LocateExtPC.hxx>
+#include <Geom2d_Curve.hxx>
 //=======================================================================
 //function : RemovePointsFromArray
 //purpose  : 

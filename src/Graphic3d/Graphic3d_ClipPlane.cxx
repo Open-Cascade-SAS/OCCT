@@ -18,8 +18,6 @@
 #include <gp_Pln.hxx>
 #include <Standard_Atomic.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(Graphic3d_ClipPlane, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ClipPlane, Standard_Transient)
 
 namespace
 {

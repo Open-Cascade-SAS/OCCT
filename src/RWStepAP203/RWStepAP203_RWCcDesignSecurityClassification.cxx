@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWCcDesignSecurityClassification.ixx>
 #include <StepAP203_HArray1OfClassifiedItem.hxx>
 #include <StepAP203_ClassifiedItem.hxx>
+#include <StepBasic_SecurityClassification.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignSecurityClassification

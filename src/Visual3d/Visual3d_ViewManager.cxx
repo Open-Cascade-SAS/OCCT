@@ -72,6 +72,7 @@
 # include <Cocoa_Window.hxx>
 #else
 # include <Xw_Window.hxx>
+#include <Visual3d_View.hxx>
 #endif
 
 // views identifiers : possible range

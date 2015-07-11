@@ -114,6 +114,8 @@
 #include <TopExp.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepData_StepModel.hxx>
 
 // ============================================================================
 // Function: DumpWhatIs   

@@ -37,6 +37,7 @@
 #include <BRep_Builder.hxx>
 
 #include <TopExp_Explorer.hxx>
+#include <Geom_Surface.hxx>
 
 
 //=======================================================================

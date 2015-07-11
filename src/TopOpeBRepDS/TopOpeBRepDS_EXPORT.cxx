@@ -52,6 +52,9 @@
 
 #ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_reDEB.hxx>
+#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
+#include <TopOpeBRepDS_FaceEdgeInterference.hxx>
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 Standard_EXPORT void debse1(const Standard_Integer i) {cout<<"+ debse1 se"<<i<<endl;}
 Standard_EXPORT void debse2(const Standard_Integer i) {cout<<"+ debse2 se"<<i<<endl;}

@@ -28,8 +28,6 @@
 #pragma warning (disable:4996)
 #endif
 
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Group, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Group, VrmlData_Node)
 
 //=======================================================================
 //function : VrmlData_Group

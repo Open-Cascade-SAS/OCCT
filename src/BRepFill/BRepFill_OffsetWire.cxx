@@ -107,6 +107,7 @@
 #include <DrawTrSurf.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
 #include <DBRep.hxx>
+#include <Geom_Curve.hxx>
 static Standard_Boolean AffichGeom  = Standard_False;
 static Standard_Boolean Affich2d    = Standard_False;
 static Standard_Boolean AffichEdge  = Standard_False;

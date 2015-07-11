@@ -46,6 +46,7 @@
 #include <BinTools_Curve2dSet.hxx>
 #include <BinTools_CurveSet.hxx>
 #include <BinTools_SurfaceSet.hxx>
+#include <BRep_CurveOnSurface.hxx>
 #include <string.h>
 //#define MDTV_DEB 1
 const char* Version_1  = "Open CASCADE Topology V1 (c)";

@@ -33,6 +33,7 @@
 #include <BSplSLib.hxx>
 #include <BSplCLib.hxx>
 #include <Standard_RangeError.hxx>
+#include <Geom_Curve.hxx>
 
 #define  POLES    (poles->Array2())
 #define  WEIGHTS  (weights->Array2())

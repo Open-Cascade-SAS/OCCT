@@ -23,8 +23,6 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Prs3d_Drawer, MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(Prs3d_Drawer, MMgt_TShared)
 
 // =======================================================================
 // function : Prs3d_Drawer

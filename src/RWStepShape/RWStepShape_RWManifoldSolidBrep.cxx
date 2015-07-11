@@ -19,6 +19,7 @@
 
 
 #include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
 
 
 RWStepShape_RWManifoldSolidBrep::RWStepShape_RWManifoldSolidBrep () {}

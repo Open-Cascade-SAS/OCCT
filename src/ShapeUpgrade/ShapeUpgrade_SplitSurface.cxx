@@ -35,6 +35,7 @@
 #include <ShapeExtend.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Geom_Surface.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitSurface

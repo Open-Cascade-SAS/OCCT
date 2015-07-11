@@ -18,8 +18,6 @@
 
 #include <SelectMgr_Selection.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (SelectMgr_Selection, MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection, MMgt_TShared)
 
 //==================================================
 // Function: SelectMgr_Selection

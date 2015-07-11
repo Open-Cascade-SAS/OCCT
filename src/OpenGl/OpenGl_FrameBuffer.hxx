@@ -172,7 +172,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_FrameBuffer) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_FrameBuffer, OpenGl_Resource) // Type definition
 
 };
 

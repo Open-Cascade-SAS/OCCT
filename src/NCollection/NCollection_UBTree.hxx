@@ -482,7 +482,7 @@ class _HUBTREE : public _HPARENT                                        \
   ~_HUBTREE () { delete myTree; }                                       \
   /* Destructor */                                                      \
                                                                         \
-  DEFINE_STANDARD_RTTI (_HUBTREE)                                       \
+  DEFINE_STANDARD_RTTI (_HUBTREE, _HPARENT)                                       \
   /* Type management */                                                 \
                                                                         \
  private:                                                               \
@@ -496,8 +496,8 @@ class _HUBTREE : public _HPARENT                                        \
 };                                                                      \
 DEFINE_STANDARD_HANDLE (_HUBTREE, _HPARENT)
 
-#define IMPLEMENT_HUBTREE(_HUBTREE, _HPARENT)                           \
-IMPLEMENT_STANDARD_HANDLE (_HUBTREE, _HPARENT)                          \
-IMPLEMENT_STANDARD_RTTIEXT(_HUBTREE, _HPARENT)
+#define IMPLEMENT_HUBTREE(_HUBTREE, _HPARENT)                           
+
+
 
 #endif

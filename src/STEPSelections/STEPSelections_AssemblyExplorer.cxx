@@ -27,6 +27,10 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <STEPSelections_AssemblyComponent.hxx>
 
 
 STEPSelections_AssemblyExplorer::STEPSelections_AssemblyExplorer(const Interface_Graph &G):myGraph(G)

@@ -45,6 +45,8 @@
 #include <AIS_Selection.hxx>
 #include <Aspect_Grid.hxx>
 #include <AIS_Shape.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 
 static Standard_Integer GetHiMod(const Handle(AIS_InteractiveObject)& IO)
 {

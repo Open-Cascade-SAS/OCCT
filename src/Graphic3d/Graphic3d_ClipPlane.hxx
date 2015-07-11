@@ -220,7 +220,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_ClipPlane);
+  DEFINE_STANDARD_RTTI(Graphic3d_ClipPlane, Standard_Transient);
 };
 
 DEFINE_STANDARD_HANDLE (Graphic3d_ClipPlane, Standard_Transient)

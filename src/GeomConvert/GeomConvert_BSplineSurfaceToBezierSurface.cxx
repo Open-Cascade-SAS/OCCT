@@ -18,6 +18,7 @@
 
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 
 //=======================================================================

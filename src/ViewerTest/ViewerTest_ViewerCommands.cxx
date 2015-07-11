@@ -4576,7 +4576,7 @@ class V3d_TextItem : public Visual3d_LayerItem
 public:
 
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(V3d_TextItem)
+  DEFINE_STANDARD_RTTI(V3d_TextItem, Visual3d_LayerItem)
 
   // constructor
   Standard_EXPORT V3d_TextItem(const TCollection_AsciiString& theText,
@@ -4605,8 +4605,6 @@ private:
   TCollection_AsciiString  myFontName;
 };
 
-IMPLEMENT_STANDARD_HANDLE(V3d_TextItem, Visual3d_LayerItem)
-IMPLEMENT_STANDARD_RTTIEXT(V3d_TextItem, Visual3d_LayerItem)
 
 // create and add to display the text item
 V3d_TextItem::V3d_TextItem (const TCollection_AsciiString& theText,
@@ -4651,7 +4649,7 @@ class V3d_LineItem : public Visual3d_LayerItem
 {
 public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(V3d_LineItem)
+  DEFINE_STANDARD_RTTI(V3d_LineItem, Visual3d_LayerItem)
 
   // constructor
   Standard_EXPORT V3d_LineItem(Standard_Real X1, Standard_Real Y1,
@@ -4673,8 +4671,6 @@ private:
   Standard_Real       myTransparency;
 };
 
-IMPLEMENT_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)
-IMPLEMENT_STANDARD_RTTIEXT(V3d_LineItem, Visual3d_LayerItem)
 
 // default constructor for line item
 V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1,
@@ -6523,11 +6519,12 @@ public:
                             const Standard_ShortReal theXShift,
                             const Standard_ShortReal theYShift,
                             const Standard_ShortReal theAngle);
-  DEFINE_STANDARD_RTTI(OCC_TextureEnv);
+  DEFINE_STANDARD_RTTI(OCC_TextureEnv, Graphic3d_TextureEnv);
 };
 DEFINE_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv);
-IMPLEMENT_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv);
-IMPLEMENT_STANDARD_RTTIEXT(OCC_TextureEnv, Graphic3d_TextureEnv);
+
+
+
 
 OCC_TextureEnv::OCC_TextureEnv(const Standard_CString theFileName)
   : Graphic3d_TextureEnv(theFileName)

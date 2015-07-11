@@ -44,8 +44,6 @@
 
 #include FT_OUTLINE_H
 
-IMPLEMENT_STANDARD_HANDLE (Font_BRepFont, Font_FTFont)
-IMPLEMENT_STANDARD_RTTIEXT(Font_BRepFont, Font_FTFont)
 
 namespace
 {

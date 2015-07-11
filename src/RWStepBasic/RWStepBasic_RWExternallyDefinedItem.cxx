@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepBasic_RWExternallyDefinedItem.ixx>
+#include <StepBasic_ExternalSource.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWExternallyDefinedItem

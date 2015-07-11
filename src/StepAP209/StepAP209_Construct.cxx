@@ -115,6 +115,13 @@
 #include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepAP214_ApprovalItem.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <StepFEA_FeaModel.hxx>
+#include <StepFEA_ElementRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepBasic_ProductContext.hxx>
 
 //#include <.hxx>
 

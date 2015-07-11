@@ -48,6 +48,8 @@
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <TopExp_Explorer.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 
 static void SetThePCurve(const BRep_Builder& B,
 			 TopoDS_Edge& E,

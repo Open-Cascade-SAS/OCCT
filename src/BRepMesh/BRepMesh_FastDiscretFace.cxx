@@ -57,8 +57,6 @@
 
 #include <algorithm>
 
-IMPLEMENT_STANDARD_HANDLE (BRepMesh_FastDiscretFace, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscretFace, Standard_Transient)
 
 static Standard_Real FUN_CalcAverageDUV(TColStd_Array1OfReal& P, const Standard_Integer PLen)
 {

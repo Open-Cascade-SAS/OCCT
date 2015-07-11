@@ -333,7 +333,7 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_IndexedFaceSet)
+DEFINE_STANDARD_RTTI (VrmlData_IndexedFaceSet, VrmlData_Faceted)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

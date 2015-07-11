@@ -73,6 +73,7 @@
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Bnd_Box.hxx>
+#include <MeshVS_PrsBuilder.hxx>
 
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT

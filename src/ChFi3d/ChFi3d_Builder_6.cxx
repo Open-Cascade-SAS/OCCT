@@ -104,6 +104,7 @@
 #include <Draw_Marker3D.hxx>
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 static Standard_Integer IndexOfConge = 0;
 #endif
 

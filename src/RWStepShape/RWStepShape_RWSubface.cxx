@@ -18,6 +18,7 @@
 #include <RWStepShape_RWSubface.ixx>
 #include <StepShape_HArray1OfFaceBound.hxx>
 #include <StepShape_FaceBound.hxx>
+#include <StepShape_Face.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWSubface

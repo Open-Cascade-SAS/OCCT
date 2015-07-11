@@ -13,6 +13,9 @@
 
 #include <StepGeom_CurveOnSurface.ixx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
+#include <StepGeom_CompositeCurveOnSurface.hxx>
 
 StepGeom_CurveOnSurface::StepGeom_CurveOnSurface () {  }
 

@@ -29,7 +29,7 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -200,7 +200,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_LengthDimension)
+  DEFINE_STANDARD_RTTI(AIS_LengthDimension, AIS_Dimension)
 
 protected:
 

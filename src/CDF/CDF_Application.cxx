@@ -37,6 +37,7 @@
 #include <UTL.hxx>
 
 #include <CDF_Timer.hxx>
+#include <PCDM_Reader.hxx>
 
 #define theMetaDataDriver CDF_Session::CurrentSession()->MetaDataDriver()
 

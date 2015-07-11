@@ -24,8 +24,7 @@
 #include <TopoDS_Iterator.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE( IVtkOCC_SelectableObject, SelectMgr_SelectableObject )
-IMPLEMENT_STANDARD_RTTIEXT( IVtkOCC_SelectableObject, SelectMgr_SelectableObject )
+
 
 //============================================================================
 // Method:  Constructor

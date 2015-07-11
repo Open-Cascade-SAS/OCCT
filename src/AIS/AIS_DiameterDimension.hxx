@@ -22,7 +22,7 @@
 #include <gp_Circ.hxx>
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 DEFINE_STANDARD_HANDLE (AIS_DiameterDimension, AIS_Dimension)
 
@@ -129,7 +129,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_DiameterDimension)
+  DEFINE_STANDARD_RTTI(AIS_DiameterDimension, AIS_Dimension)
 
 protected:
 

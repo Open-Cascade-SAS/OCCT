@@ -37,6 +37,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
+#include <Geom_Curve.hxx>
 
 
 //#include <Standard_NotImplemented.hxx>

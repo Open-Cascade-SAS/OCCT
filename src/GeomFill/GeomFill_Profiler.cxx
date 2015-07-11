@@ -21,6 +21,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Conic.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
+#include <Geom_Curve.hxx>
 
 //=======================================================================
 //function : UnifyByInsertingAllKnots

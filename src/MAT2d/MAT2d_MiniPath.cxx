@@ -26,6 +26,7 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColGeom2d_SequenceOfGeometry.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Geom2d_Curve.hxx>
 
 //============================================================================
 //function : MAT2d_MiniPath()

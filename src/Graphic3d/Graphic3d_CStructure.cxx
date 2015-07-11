@@ -18,8 +18,6 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Graphic3d_CStructure, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
 
 //=============================================================================
 //function : Graphic3d_CStructure

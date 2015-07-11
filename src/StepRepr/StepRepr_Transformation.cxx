@@ -13,6 +13,8 @@
 
 #include <StepRepr_Transformation.ixx>
 #include <Interface_Macros.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_FunctionallyDefinedTransformation.hxx>
 
 StepRepr_Transformation::StepRepr_Transformation () {  }
 

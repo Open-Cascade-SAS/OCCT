@@ -28,6 +28,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
+#include <Geom_Conic.hxx>
 
 //=============================================================================
 // Creation d' une SurfaceOfRevolution de Geom a partir d' une

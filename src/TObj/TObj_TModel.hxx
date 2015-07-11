@@ -77,7 +77,7 @@ class TObj_TModel : public TDF_Attribute
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_TModel)
+  DEFINE_STANDARD_RTTI(TObj_TModel, TDF_Attribute)
 };
 
 //! Define handle class for TObj_TModel

@@ -16,7 +16,7 @@
 #define _Prs3d_Drawer_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Handle_Prs3d_IsoAspect.hxx>
 #include <Standard_Integer.hxx>
@@ -922,7 +922,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Prs3d_Drawer)
+  DEFINE_STANDARD_RTTI(Prs3d_Drawer, MMgt_TShared)
 
 };
 

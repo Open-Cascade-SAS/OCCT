@@ -33,6 +33,7 @@
 
 #ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_reDEB.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
 extern Standard_Boolean TopOpeBRepDS_GettraceEDSF();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 extern Standard_Boolean TopOpeBRep_GettraceEEFF();

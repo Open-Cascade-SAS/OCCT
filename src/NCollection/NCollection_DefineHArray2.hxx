@@ -18,7 +18,7 @@
 #ifndef NCollection_DefineHArray2_HeaderFile
 #define NCollection_DefineHArray2_HeaderFile
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <NCollection_DefineArray2.hxx>
 #include <MMgt_TShared.hxx>
 
@@ -44,12 +44,12 @@ class HClassName : public _Array2Type_, public MMgt_TShared {                  \
    HClassName  (const _Array2Type_& theOther) : _Array2Type_(theOther) {}      \
    const _Array2Type_& Array2 () const { return *this; }                       \
    _Array2Type_& ChangeArray2 ()       { return *this; }                       \
-   DEFINE_STANDARD_RTTI (HClassName)                              \
+   DEFINE_STANDARD_RTTI (HClassName, MMgt_TShared)                              \
 };                                                                             \
 DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)
 
-#define IMPLEMENT_HARRAY2(HClassName)                                          \
-IMPLEMENT_STANDARD_HANDLE  (HClassName, MMgt_TShared)                          \
-IMPLEMENT_STANDARD_RTTIEXT (HClassName, MMgt_TShared)
+#define IMPLEMENT_HARRAY2(HClassName)                                          
+
+
 
 #endif

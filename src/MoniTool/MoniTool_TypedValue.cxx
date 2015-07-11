@@ -21,6 +21,7 @@
 #include <Message_Messenger.hxx>
 
 #include <OSD_Path.hxx>
+#include <Standard_Transient.hxx>
 #include <stdio.h>
 
 

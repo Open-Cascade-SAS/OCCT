@@ -17,6 +17,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <RWStepRepr_RWConfigurationItem.ixx>
+#include <StepRepr_ProductConcept.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWConfigurationItem

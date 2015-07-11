@@ -35,6 +35,9 @@
 #include <StepToGeom_MakeCartesianPoint.hxx>
 #include <StepToGeom_MakeDirection.hxx>
 #include <StepToGeom_MakeTransformation3d.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
 
 
 StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed ()

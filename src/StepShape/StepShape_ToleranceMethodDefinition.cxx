@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <StepShape_ToleranceMethodDefinition.ixx>
+#include <StepShape_ToleranceValue.hxx>
+#include <StepShape_LimitsAndFits.hxx>
 
 StepShape_ToleranceMethodDefinition::StepShape_ToleranceMethodDefinition  ()    {  }
 

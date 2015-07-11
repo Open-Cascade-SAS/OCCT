@@ -80,6 +80,7 @@
 #include <GeomLib_Tool.hxx>
 #include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
+#include <Geom_Curve.hxx>
 
 //#ifdef WNT
 #include <stdio.h>

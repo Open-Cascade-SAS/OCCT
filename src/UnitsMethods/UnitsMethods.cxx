@@ -33,6 +33,8 @@
 #include <gp_Trsf2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom2d_BoundedCurve.hxx>
 
 static Standard_Real theLengthFactor     = 1.;
 static Standard_Real thePlaneAngleFactor = 1.;

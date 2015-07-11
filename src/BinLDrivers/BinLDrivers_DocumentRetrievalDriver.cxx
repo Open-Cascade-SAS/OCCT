@@ -27,6 +27,7 @@
 #include <TDF_Data.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
+#include <TDF_Attribute.hxx>
 
 #define SHAPESECTION_POS "SHAPE_SECTION_POS:"
 #define SIZEOFSHAPELABEL  18

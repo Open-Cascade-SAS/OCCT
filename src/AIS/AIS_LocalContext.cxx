@@ -38,6 +38,7 @@
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <Visual3d_View.hxx>
+#include <AIS_InteractiveObject.hxx>
 
 #include <stdio.h>
 

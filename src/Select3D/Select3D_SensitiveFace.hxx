@@ -21,7 +21,7 @@
 #ifndef _Select3D_SensitiveFace_HeaderFile
 #define _Select3D_SensitiveFace_HeaderFile
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <Select3D_SensitiveSet.hxx>
@@ -87,7 +87,7 @@ public:
   //! Returns the amount of sub-entities (points or planar convex polygons)
   Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveFace)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveFace, Select3D_SensitiveEntity)
 
 private:
 

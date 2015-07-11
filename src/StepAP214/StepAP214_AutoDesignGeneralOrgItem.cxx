@@ -13,6 +13,14 @@
 
 #include <StepAP214_AutoDesignGeneralOrgItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_ExternallyDefinedRepresentation.hxx>
+#include <StepAP214_AutoDesignDocumentReference.hxx>
 
 StepAP214_AutoDesignGeneralOrgItem::StepAP214_AutoDesignGeneralOrgItem () {  }
 

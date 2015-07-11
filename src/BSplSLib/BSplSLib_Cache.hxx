@@ -16,7 +16,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
 #include <Handle_TColStd_HArray1OfReal.hxx>
@@ -127,7 +127,7 @@ public:
                                 gp_Vec&        theCurvatureUV) const;
 
 
-  DEFINE_STANDARD_RTTI(BSplSLib_Cache)
+  DEFINE_STANDARD_RTTI(BSplSLib_Cache, Standard_Transient)
 
 protected:
   //! Normalizes the parameter for periodical B-splines

@@ -16,7 +16,7 @@
 #ifndef _OpenGl_RenderFilter_H__
 #define _OpenGl_RenderFilter_H__
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
 DEFINE_STANDARD_HANDLE (OpenGl_RenderFilter, Standard_Transient)
@@ -37,7 +37,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_RenderFilter)
+  DEFINE_STANDARD_RTTI(OpenGl_RenderFilter, Standard_Transient)
 };
 
 #endif

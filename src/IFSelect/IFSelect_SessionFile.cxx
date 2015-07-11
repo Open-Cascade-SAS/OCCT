@@ -34,6 +34,7 @@
 #include <stdio.h>
 
 #include <OSD_OpenFile.hxx>
+#include <IFSelect_GeneralModifier.hxx>
 
 
 static int deja = 0;

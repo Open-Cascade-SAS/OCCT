@@ -39,8 +39,6 @@
   #include <OpenGl_AVIWriter.hxx>
 #endif
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_Workspace,OpenGl_Window)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,OpenGl_Window)
 
 namespace
 {
@@ -1548,8 +1546,6 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
   return !toCopyBackToFront;
 }
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
 
 // =======================================================================
 // function : CanRender

@@ -16,7 +16,7 @@
 #ifndef __IVTK_INTERFACE_H__
 #define __IVTK_INTERFACE_H__
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
 DEFINE_STANDARD_HANDLE( IVtk_Interface, Standard_Transient )
@@ -32,7 +32,7 @@ class IVtk_Interface : public Standard_Transient
 
 public:
   typedef Handle(IVtk_Interface) Handle;
-  DEFINE_STANDARD_RTTI(IVtk_Interface)
+  DEFINE_STANDARD_RTTI(IVtk_Interface, Standard_Transient)
 
   virtual ~IVtk_Interface() { }
 };

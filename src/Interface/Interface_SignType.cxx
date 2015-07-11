@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_SignType.ixx>
+#include <Interface_InterfaceModel.hxx>
 
 TCollection_AsciiString  Interface_SignType::Text
   (const Handle(Standard_Transient)& ent,

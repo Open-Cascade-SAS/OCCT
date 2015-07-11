@@ -31,6 +31,7 @@
 #include <GeomTools_SurfaceSet.hxx>
 #include <GeomTools_CurveSet.hxx>
 #include <GeomTools_Curve2dSet.hxx>
+#include <Geom_Curve.hxx>
 Standard_EXPORT Standard_Boolean TopOpeBRep_GettracePROEDG();
 #endif
 

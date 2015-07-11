@@ -18,6 +18,8 @@
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_ModifiedGeometricTolerance.hxx>
 #include <StepDimTol_LimitCondition.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 
 
 //=======================================================================

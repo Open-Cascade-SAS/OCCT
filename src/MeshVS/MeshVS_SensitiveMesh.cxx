@@ -25,8 +25,6 @@
 #include <MeshVS_MeshOwner.hxx>
 #include <NCollection_Vec4.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 //=======================================================================
 // name    : MeshVS_SensitiveMesh::MeshVS_SensitiveMesh

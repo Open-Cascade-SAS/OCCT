@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepElement_RWAnalysisItemWithinRepresentation.ixx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_Representation.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWAnalysisItemWithinRepresentation

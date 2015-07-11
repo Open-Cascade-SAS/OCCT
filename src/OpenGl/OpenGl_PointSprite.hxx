@@ -54,7 +54,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_PointSprite) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_PointSprite, OpenGl_Texture) // Type definition
 
 };
 

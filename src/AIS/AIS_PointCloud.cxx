@@ -31,8 +31,6 @@
 #include <SelectMgr_Selection.hxx>
 #include <StdPrs_WFDeflectionRestrictedFace.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_PointCloud, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud, AIS_InteractiveObject)
 
 //==================================================
 // Function: AIS_PointCloud

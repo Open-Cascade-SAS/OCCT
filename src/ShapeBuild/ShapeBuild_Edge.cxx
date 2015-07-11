@@ -51,6 +51,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : CopyReplaceVertices

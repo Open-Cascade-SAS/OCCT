@@ -47,7 +47,8 @@
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <GCE2d_MakeArcOfCircle.hxx>
-#include <GCE2d_MakeSegment.hxx> 
+#include <GCE2d_MakeSegment.hxx>
+#include <Geom2d_BoundedCurve.hxx> 
 //
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:14 2002 Begin
 static TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,

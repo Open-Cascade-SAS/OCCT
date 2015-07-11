@@ -59,6 +59,7 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 
 #define BVH_PRIMITIVE_LIMIT 800000
 

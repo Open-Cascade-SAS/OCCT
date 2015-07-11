@@ -88,6 +88,11 @@
 #include <IGESToBRep_AlgoContainer.hxx>
 #include <IGESToBRep_ToolContainer.hxx>
 #include <Message_ProgressSentry.hxx>
+#include <IGESSolid_Face.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <IGESSolid_ManifoldSolid.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <IGESSolid_EdgeList.hxx>
 
 //=======================================================================
 //function : IGESToBRep_BRepEntity

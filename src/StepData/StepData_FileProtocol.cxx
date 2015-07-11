@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <StepData_FileProtocol.ixx>
+#include <Interface_Protocol.hxx>
 
 
 //static TCollection_AsciiString  thename("");

@@ -30,7 +30,7 @@ public:
 
 private: 
 
-  DEFINE_STANDARD_RTTI(Prs3d_PresentationShadow)
+  DEFINE_STANDARD_RTTI(Prs3d_PresentationShadow, Prs3d_Presentation)
 
 };
 

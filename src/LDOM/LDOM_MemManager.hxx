@@ -17,7 +17,7 @@
 #define LDOM_MemManager_HeaderFile
 
 #include <MMgt_TShared.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <LDOM_Document.hxx>
 
 class LDOM_BasicElement;
@@ -123,7 +123,7 @@ class LDOM_MemManager : public MMgt_TShared
 
  public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI (LDOM_MemManager)
+  DEFINE_STANDARD_RTTI (LDOM_MemManager, MMgt_TShared)
 };
 
 #include <Handle_LDOM_MemManager.hxx>

@@ -29,6 +29,7 @@
 #include <IGESToBRep.hxx>
 #include <IGESToBRep_TopoCurve.hxx>
 #include <ShapeFix_Wire.hxx>
+#include <IGESData_IGESEntity.hxx>
 
 //=======================================================================
 //function : IGESToBRep_IGESBoundary

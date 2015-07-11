@@ -21,8 +21,6 @@
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_ChildIterator.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_TObject,TDF_Attribute)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_TObject,TDF_Attribute)
 
 //=======================================================================
 //function : TObj_TObject

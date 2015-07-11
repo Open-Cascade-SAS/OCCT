@@ -83,6 +83,11 @@
 
 #ifdef DRAW 
 #include <DBRep.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <Geom_BoundedSurface.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <BRep_CurveOnSurface.hxx>
+#include <Geom_Surface.hxx>
 Standard_Boolean Inter2dAffichInt2d;
 static Standard_Integer NbF2d = 0;
 static Standard_Integer NbE2d = 0;

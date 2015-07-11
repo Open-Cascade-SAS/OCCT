@@ -19,6 +19,7 @@
 #include <RWStepGeom_RWCurveBoundedSurface.ixx>
 #include <StepGeom_HArray1OfSurfaceBoundary.hxx>
 #include <StepGeom_SurfaceBoundary.hxx>
+#include <StepGeom_Surface.hxx>
 
 //=======================================================================
 //function : RWStepGeom_RWCurveBoundedSurface

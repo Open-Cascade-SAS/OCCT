@@ -34,6 +34,8 @@
 #include <gp.hxx>
 #include <GeomLib.hxx>
 #include <TopAbs.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_Curve.hxx>
 
 //=======================================================================
 //function : BRepTools_GTrsfModification

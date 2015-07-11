@@ -19,6 +19,8 @@
 #include <RWStepAP203_RWCcDesignDateAndTimeAssignment.ixx>
 #include <StepAP203_HArray1OfDateTimeItem.hxx>
 #include <StepAP203_DateTimeItem.hxx>
+#include <StepBasic_DateAndTime.hxx>
+#include <StepBasic_DateTimeRole.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignDateAndTimeAssignment

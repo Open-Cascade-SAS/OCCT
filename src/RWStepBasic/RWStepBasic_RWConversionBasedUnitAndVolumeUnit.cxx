@@ -15,6 +15,8 @@
 // commercial license or contractual agreement.
 
 #include <RWStepBasic_RWConversionBasedUnitAndVolumeUnit.ixx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
 
 RWStepBasic_RWConversionBasedUnitAndVolumeUnit::RWStepBasic_RWConversionBasedUnitAndVolumeUnit ()
 {

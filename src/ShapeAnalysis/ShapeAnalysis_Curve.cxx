@@ -52,6 +52,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <Extrema_LocateExtPC.hxx>
+#include <Geom_BoundedCurve.hxx>
 
 //=======================================================================
 //function : ProjectOnSegments

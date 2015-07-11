@@ -65,6 +65,7 @@
 
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Geom_Curve.hxx>
 
 //modified by NIZNHY-PKV Thu May 05 09:01:57 2011f
 static 

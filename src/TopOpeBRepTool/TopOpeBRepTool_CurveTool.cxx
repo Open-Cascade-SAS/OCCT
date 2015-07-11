@@ -72,6 +72,7 @@ extern Standard_Boolean TopOpeBRepTool_GettraceCHKBSPL();
 #define CurveImprovement
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
+#include <Geom2d_Curve.hxx>
 static Standard_Integer NbCalls = 0;
 #endif
 //=======================================================================

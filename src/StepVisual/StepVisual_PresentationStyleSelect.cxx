@@ -13,6 +13,11 @@
 
 #include <StepVisual_PresentationStyleSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_PointStyle.hxx>
+#include <StepVisual_CurveStyle.hxx>
+#include <StepVisual_SurfaceStyleUsage.hxx>
+#include <StepVisual_FillAreaStyle.hxx>
+#include <StepVisual_TextStyle.hxx>
 
 StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect () {  }
 

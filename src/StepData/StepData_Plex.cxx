@@ -14,6 +14,8 @@
 #include <StepData_Plex.ixx>
 #include <TCollection_AsciiString.hxx>
 #include <Interface_InterfaceMismatch.hxx>
+#include <StepData_ECDescr.hxx>
+#include <StepData_Simple.hxx>
 
 
 static StepData_Field bid;

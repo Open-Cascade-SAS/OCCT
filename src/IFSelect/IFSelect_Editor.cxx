@@ -13,6 +13,7 @@
 
 #include <IFSelect_Editor.ixx>
 #include <Interface_MSG.hxx>
+#include <Interface_TypedValue.hxx>
 #include <string.h>
 
 

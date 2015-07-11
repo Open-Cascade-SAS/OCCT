@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepRepr_RWMakeFromUsageOption.ixx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWMakeFromUsageOption

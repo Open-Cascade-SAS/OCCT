@@ -149,6 +149,7 @@ static Standard_Integer OCC137_z (Draw_Interpretor& di, Standard_Integer argc, c
 #include <gp_Elips2d.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Circle.hxx>
+#include <AIS_InteractiveObject.hxx>
 
 static Standard_Integer OCC24303(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {

@@ -41,6 +41,7 @@
 
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
+#include <StepGeom_CompositeCurve.hxx>
 
 //=======================================================================
 //function : Create

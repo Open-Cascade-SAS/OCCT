@@ -54,6 +54,8 @@
 #include <Precision.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <BRepTools.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 //=======================================================================
 //function : ShapeAlgo_AlgoContainer

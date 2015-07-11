@@ -29,6 +29,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
 
 ShapeUpgrade_ConvertCurve3dToBezier::ShapeUpgrade_ConvertCurve3dToBezier()
 {

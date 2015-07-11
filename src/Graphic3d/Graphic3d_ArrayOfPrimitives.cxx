@@ -21,14 +21,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-IMPLEMENT_STANDARD_HANDLE (Graphic3d_Buffer, NCollection_Buffer)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Buffer, NCollection_Buffer)
 
-IMPLEMENT_STANDARD_HANDLE (Graphic3d_BoundBuffer, NCollection_Buffer)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
 
-IMPLEMENT_STANDARD_HANDLE (Graphic3d_IndexBuffer, Graphic3d_Buffer)
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
+
+
 
 Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOfPrimitiveArray theType,
                                                           const Standard_Integer               theMaxVertexs,

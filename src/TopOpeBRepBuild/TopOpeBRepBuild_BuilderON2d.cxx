@@ -27,6 +27,7 @@
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
 #include <Precision.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 
 #define M_OUT(st) (st == TopAbs_OUT)

@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWCcDesignCertification.ixx>
 #include <StepAP203_HArray1OfCertifiedItem.hxx>
 #include <StepAP203_CertifiedItem.hxx>
+#include <StepBasic_Certification.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignCertification

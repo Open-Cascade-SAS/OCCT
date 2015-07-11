@@ -17,7 +17,7 @@
 #define _MeshVS_SensitiveFace_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Select3D_SensitiveFace.hxx>
@@ -37,7 +37,7 @@ public:
                                         const TColgp_Array1OfPnt& thePoints,
                                         const Select3D_TypeOfSensitivity theSensType = Select3D_TOS_INTERIOR);
 
-  DEFINE_STANDARD_RTTI(MeshVS_SensitiveFace)
+  DEFINE_STANDARD_RTTI(MeshVS_SensitiveFace, Select3D_SensitiveFace)
 
 protected:
 

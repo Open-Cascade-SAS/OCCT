@@ -22,6 +22,7 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : getModels
@@ -151,14 +152,12 @@ class TObj_Assistant_UnknownType : public MMgt_TShared
     // Empty constructor
   
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Assistant_UnknownType)
+  DEFINE_STANDARD_RTTI(TObj_Assistant_UnknownType, MMgt_TShared)
 };
 
 // Define handle class for TObj_Assistant_UnknownType
 DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType,MMgt_TShared)
 
-IMPLEMENT_STANDARD_HANDLE(TObj_Assistant_UnknownType,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_Assistant_UnknownType,MMgt_TShared)
 
 //=======================================================================
 //function : BindType

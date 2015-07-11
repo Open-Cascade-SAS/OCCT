@@ -70,6 +70,9 @@
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
 #include <Approx_CurveOnSurface.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 #define NCONTROL 23
 

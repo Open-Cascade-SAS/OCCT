@@ -21,8 +21,6 @@
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Structure.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 
 namespace
 {

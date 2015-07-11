@@ -18,6 +18,8 @@
 #include <RWStepAP214_RWAppliedExternalIdentificationAssignment.ixx>
 #include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
 #include <StepAP214_ExternalIdentificationItem.hxx>
+#include <StepBasic_IdentificationRole.hxx>
+#include <StepBasic_ExternalSource.hxx>
 
 //=======================================================================
 //function : RWStepAP214_RWAppliedExternalIdentificationAssignment

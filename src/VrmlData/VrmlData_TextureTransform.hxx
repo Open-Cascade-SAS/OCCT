@@ -96,7 +96,7 @@ class VrmlData_TextureTransform : public VrmlData_Node
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_TextureTransform)
+DEFINE_STANDARD_RTTI (VrmlData_TextureTransform, VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

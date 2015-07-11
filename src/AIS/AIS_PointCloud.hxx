@@ -22,7 +22,7 @@
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Quantity_HArray1OfColor.hxx>
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Macro.hxx>
 #include <TColgp_HArray1OfDir.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
@@ -121,7 +121,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(AIS_PointCloud)
+  DEFINE_STANDARD_RTTI(AIS_PointCloud, AIS_InteractiveObject)
 
 };
 

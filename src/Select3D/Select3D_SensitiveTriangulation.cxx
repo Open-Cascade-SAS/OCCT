@@ -25,8 +25,6 @@
 
 #include <Select3D_SensitiveTriangulation.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveTriangulation, Select3D_SensitiveSet)
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangulation, Select3D_SensitiveSet)
 
 static Standard_Integer NbOfFreeEdges (const Handle(Poly_Triangulation)& theTriangulation)
 {

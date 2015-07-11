@@ -55,7 +55,7 @@
 #include <Image_PixMap.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Quantity_Array1OfColor.hxx>
 #include <Aspect_SequenceOfColor.hxx>
@@ -79,12 +79,11 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(MeshVS_ImageTexture2D)
+  DEFINE_STANDARD_RTTI(MeshVS_ImageTexture2D, Graphic3d_Texture2D)
 };
 
 DEFINE_STANDARD_HANDLE    (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
-IMPLEMENT_STANDARD_HANDLE (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
-IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ImageTexture2D, Graphic3d_Texture2D)
+
 
 //================================================================
 // Function : getNearestPow2

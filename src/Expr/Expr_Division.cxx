@@ -22,6 +22,7 @@
 #include <Expr_NumericValue.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr.hxx>
+#include <Expr_NamedUnknown.hxx>
 
 Expr_Division::Expr_Division (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {

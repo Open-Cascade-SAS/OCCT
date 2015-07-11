@@ -29,6 +29,8 @@
 #include <BRep_GCurve.hxx>
 #include <BRepTools.hxx>
 #include <Message_Msg.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : ShapeCustom_ConvertToBSpline

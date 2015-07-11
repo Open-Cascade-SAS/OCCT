@@ -20,8 +20,6 @@
 
 #include <cstdlib>
 
-IMPLEMENT_STANDARD_HANDLE (Image_Diff, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Image_Diff, Standard_Transient)
 
 //! POD structure for packed RGB color value (3 bytes)
 struct Image_ColorXXX24

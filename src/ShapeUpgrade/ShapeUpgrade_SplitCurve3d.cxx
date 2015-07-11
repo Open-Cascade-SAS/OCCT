@@ -29,6 +29,7 @@
 #include <Precision.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <ShapeAnalysis_Curve.hxx>
+#include <Geom_Curve.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve3d

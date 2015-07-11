@@ -45,6 +45,8 @@
 #include <Precision.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <StepGeom_Conic.hxx>
 
 // ----------------------------------------------------------------
 // ExtractParameter

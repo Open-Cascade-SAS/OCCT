@@ -24,6 +24,7 @@
 #include <TopOpeBRepDS.hxx>
 
 #include <TopOpeBRep_define.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
 
 
 Standard_Integer BREP_findPDSamongIDMOVP(const TopOpeBRepDS_Point& PDS,const TopOpeBRepDS_IndexedDataMapOfVertexPoint& IDMOVP)

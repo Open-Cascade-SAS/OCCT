@@ -627,7 +627,7 @@ class TObj_Object : public MMgt_TShared
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Object)
+  DEFINE_STANDARD_RTTI(TObj_Object, MMgt_TShared)
 };
 
 //! Define handle in separate file

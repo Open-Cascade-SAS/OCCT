@@ -102,8 +102,6 @@ namespace
 };
 #endif
 
-IMPLEMENT_STANDARD_HANDLE (Image_AlienPixMap, Image_PixMap)
-IMPLEMENT_STANDARD_RTTIEXT(Image_AlienPixMap, Image_PixMap)
 
 // =======================================================================
 // function : Image_AlienPixMap

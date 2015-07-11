@@ -30,6 +30,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <BSplCLib.hxx>
 #include <Precision.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 
 //=======================================================================

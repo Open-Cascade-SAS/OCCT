@@ -17,7 +17,7 @@
 #include <NCollection_Handle.hxx>
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
@@ -97,7 +97,7 @@ public:
   Standard_EXPORT virtual void Swap (const Standard_Integer theIdx1,
                                      const Standard_Integer theIdx2) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI (Select3D_SensitivePoly)
+  DEFINE_STANDARD_RTTI (Select3D_SensitivePoly, Select3D_SensitiveSet)
 
 private:
 

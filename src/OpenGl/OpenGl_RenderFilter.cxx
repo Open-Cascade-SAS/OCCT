@@ -15,5 +15,4 @@
 
 #include <OpenGl_RenderFilter.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_RenderFilter, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RenderFilter, Standard_Transient)
+

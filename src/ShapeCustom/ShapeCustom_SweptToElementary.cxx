@@ -44,6 +44,8 @@
 
 #include <BRepTools.hxx>
 #include <Message_Msg.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 
 //=======================================================================

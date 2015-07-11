@@ -16,5 +16,5 @@
 #include <IVtk_IShapeData.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtk_IShapeData, IVtk_Interface)
-IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeData, IVtk_Interface)
+
+

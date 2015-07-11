@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <XSControl.ixx>
+#include <XSControl_WorkSession.hxx>
 
 Handle(XSControl_WorkSession)  XSControl::Session
   (const Handle(IFSelect_SessionPilot)& pilot)

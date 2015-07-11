@@ -127,7 +127,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Image_PixMapData) // Type definition
+  DEFINE_STANDARD_RTTI(Image_PixMapData, NCollection_Buffer) // Type definition
 
 };
 

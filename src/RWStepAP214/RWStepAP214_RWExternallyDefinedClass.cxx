@@ -17,6 +17,7 @@
 
 #include <RWStepAP214_RWExternallyDefinedClass.ixx>
 #include <StepBasic_ExternallyDefinedItem.hxx>
+#include <StepBasic_ExternalSource.hxx>
 
 //=======================================================================
 //function : RWStepAP214_RWExternallyDefinedClass

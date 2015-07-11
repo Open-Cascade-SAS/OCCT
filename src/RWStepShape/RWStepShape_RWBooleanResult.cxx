@@ -22,6 +22,7 @@
 #include <StepShape_BooleanResult.hxx>
 
 #include <TCollection_AsciiString.hxx>
+#include <StepShape_SolidModel.hxx>
 
 
 // --- Enum : BooleanOperator ---

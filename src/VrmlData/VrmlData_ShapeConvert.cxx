@@ -44,6 +44,7 @@
 #include <TShort_Array1OfShortReal.hxx>
 #include <GeomLib.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
+#include <VrmlData_Appearance.hxx>
 
 //=======================================================================
 //function : IsEqual

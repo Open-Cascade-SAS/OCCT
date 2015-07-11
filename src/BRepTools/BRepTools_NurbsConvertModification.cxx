@@ -61,6 +61,9 @@
 #include <BRep_TEdge.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
                   const Standard_Real newU1,

@@ -16,6 +16,8 @@
 #include <Interface_MSG.hxx>
 #include <Message_Messenger.hxx>
 #include <Message.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfHAsciiString.hxx>
 
 IFSelect_EditForm::IFSelect_EditForm
   (const Handle(IFSelect_Editor)& editor,

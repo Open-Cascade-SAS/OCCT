@@ -17,6 +17,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <StepGeom_SurfaceBoundary.ixx>
+#include <StepGeom_BoundaryCurve.hxx>
+#include <StepGeom_DegeneratePcurve.hxx>
 
 //=======================================================================
 //function : StepGeom_SurfaceBoundary

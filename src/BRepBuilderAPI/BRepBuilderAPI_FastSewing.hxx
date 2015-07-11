@@ -100,7 +100,7 @@ public:
   //! Returns list of statuses. Print message if theOS != 0
   Standard_EXPORT FS_VARStatuses GetStatuses(Standard_OStream* const theOS = 0);
 
-  DEFINE_STANDARD_RTTI(BRepBuilderAPI_FastSewing)
+  DEFINE_STANDARD_RTTI(BRepBuilderAPI_FastSewing, Standard_Transient)
 
 protected:
   class NodeInspector;

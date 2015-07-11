@@ -19,11 +19,8 @@
 
 #include <algorithm>
 
-IMPLEMENT_STANDARD_HANDLE (Image_PixMap, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 
-IMPLEMENT_STANDARD_HANDLE (Image_PixMapData, NCollection_Buffer)
-IMPLEMENT_STANDARD_RTTIEXT(Image_PixMapData, NCollection_Buffer)
+
 
 // =======================================================================
 // function : Image_PixMap

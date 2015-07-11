@@ -75,8 +75,6 @@
 
 #define UVDEFLECTION 1.e-05
 
-IMPLEMENT_STANDARD_HANDLE (BRepMesh_FastDiscret, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscret, Standard_Transient)
 
 //=======================================================================
 //function : BRepMesh_FastDiscret

@@ -16,7 +16,7 @@
 #ifndef _OPENGL_PRINTERCONTEXT_H
 #define _OPENGL_PRINTERCONTEXT_H
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <Handle_Standard_Transient.hxx>
 #include <OpenGl_Vec.hxx>
@@ -83,7 +83,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_PrinterContext) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_PrinterContext, Standard_Transient) // Type definition
 
 };
 

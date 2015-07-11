@@ -283,7 +283,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Texture) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_Texture, OpenGl_Resource) // Type definition
 
 };
 

@@ -22,7 +22,7 @@
 #define TObj_Common_HeaderFile
 
 //! Basic CASCADE definitions
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 #include <MMgt_TShared.hxx>
 #include <TCollection_ExtendedString.hxx>

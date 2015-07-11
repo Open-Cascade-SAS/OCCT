@@ -35,6 +35,7 @@
 #include <StepBasic_ProductType.hxx> //:i3
 #include <Interface_Static.hxx> //:j4
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <StepBasic_ProductRelatedProductCategory.hxx>
 
 #include "stdio.h"
 

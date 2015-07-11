@@ -16,7 +16,7 @@
 #ifndef _OpenGl_Caps_H__
 #define _OpenGl_Caps_H__
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <Handle_Standard_Transient.hxx>
 
@@ -131,7 +131,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Caps) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_Caps, Standard_Transient) // Type definition
 
 };
 

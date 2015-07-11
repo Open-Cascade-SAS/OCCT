@@ -17,7 +17,7 @@
 #define _Select3D_SensitiveSet_Header
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <NCollection_Handle.hxx>
@@ -91,7 +91,7 @@ public:
   Standard_EXPORT Standard_Integer GetLeafNodeSize() const;
 
 public:
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveSet)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveSet, Select3D_SensitiveEntity)
 
 protected:
 

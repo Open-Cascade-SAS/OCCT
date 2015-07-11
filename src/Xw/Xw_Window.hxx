@@ -26,7 +26,7 @@
 #include <Aspect_Handle.hxx>
 #include <Aspect_TypeOfResize.hxx>
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_Parameter.hxx>
 #include <Quantity_Ratio.hxx>
@@ -122,7 +122,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Xw_Window)
+  DEFINE_STANDARD_RTTI(Xw_Window, Aspect_Window)
 
 };
 

@@ -18,6 +18,7 @@
 #include <RWStepAP214_RWAppliedGroupAssignment.ixx>
 #include <StepAP214_HArray1OfGroupItem.hxx>
 #include <StepAP214_GroupItem.hxx>
+#include <StepBasic_Group.hxx>
 
 //=======================================================================
 //function : RWStepAP214_RWAppliedGroupAssignment

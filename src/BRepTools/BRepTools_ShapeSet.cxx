@@ -55,6 +55,7 @@
 
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressSentry.hxx>
+#include <BRep_GCurve.hxx>
 
 #ifdef MacOS
 #define strcasecmp(p,q) strcmp(p,q)

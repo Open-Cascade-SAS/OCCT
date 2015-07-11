@@ -13,6 +13,7 @@
 
 #include <IFSelect_SignMultiple.ixx>
 #include <TCollection_AsciiString.hxx>
+#include <IFSelect_Signature.hxx>
 
 
 static TCollection_AsciiString theval;    // temporaire pour construire Value

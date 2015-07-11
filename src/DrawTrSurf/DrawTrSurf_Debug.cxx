@@ -21,6 +21,8 @@
 #include <GeomTools_Curve2dSet.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom2d_Curve.hxx>
 
 // This file defines global functions not declared in any public header,
 // intended for use from debugger prompt (Command Window in Visual Studio)

@@ -13,6 +13,9 @@
 
 #include <StepVisual_InvisibleItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_StyledItem.hxx>
+#include <StepVisual_PresentationLayerAssignment.hxx>
+#include <StepVisual_PresentationRepresentation.hxx>
 
 StepVisual_InvisibleItem::StepVisual_InvisibleItem () {  }
 

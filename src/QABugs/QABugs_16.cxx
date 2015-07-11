@@ -826,6 +826,7 @@ static Standard_Integer OCC710 (Draw_Interpretor& di, Standard_Integer argc, con
 }
 
 #include <ShapeFix_Shell.hxx>
+#include <AIS_InteractiveObject.hxx>
 static Standard_Integer OCC904 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 4) {

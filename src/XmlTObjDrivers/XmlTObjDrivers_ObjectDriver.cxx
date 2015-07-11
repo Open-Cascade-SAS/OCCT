@@ -24,8 +24,8 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(XmlTObjDrivers_ObjectDriver,XmlMDF_ADriver)
-IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ObjectDriver,XmlMDF_ADriver);
+
+
 
 //=======================================================================
 //function : XmlTObjDrivers_ObjectDriver

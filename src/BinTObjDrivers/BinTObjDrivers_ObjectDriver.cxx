@@ -25,8 +25,8 @@
 #include <TObj_TObject.hxx>
 #include <TObj_Persistence.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(BinTObjDrivers_ObjectDriver,BinMDF_ADriver)
-IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_ObjectDriver,BinMDF_ADriver);
+
+
 
 //=======================================================================
 //function : BinTObjDrivers_ObjectDriver

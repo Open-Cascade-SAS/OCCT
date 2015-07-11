@@ -48,7 +48,7 @@ public:
   Standard_EXPORT virtual void  Free (void* theAddress);
 
   // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI(NCollection_WinHeapAllocator)
+  DEFINE_STANDARD_RTTI(NCollection_WinHeapAllocator, NCollection_BaseAllocator)
 
 private:
   //! Copy constructor - prohibited

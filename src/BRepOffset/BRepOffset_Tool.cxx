@@ -144,6 +144,9 @@
 
 #ifdef DRAW
 #include <DBRep.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_BoundedCurve.hxx>
 Standard_Boolean AffichInter  = Standard_False;
 static Standard_Integer NbNewEdges  = 1;
 static Standard_Integer NbFaces     = 1;

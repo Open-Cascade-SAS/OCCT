@@ -13,6 +13,9 @@
 
 #include <StepVisual_StyleContextSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepVisual_PresentationSet.hxx>
 
 StepVisual_StyleContextSelect::StepVisual_StyleContextSelect () {  }
 

@@ -17,6 +17,7 @@
 
 #include <StepBasic_SourceItem.ixx>
 #include <StepData_SelectNamed.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_SourceItem

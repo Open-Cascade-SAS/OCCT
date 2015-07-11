@@ -13,7 +13,7 @@
 
 #include <AIS_Triangulation.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -27,9 +27,6 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 
-
-IMPLEMENT_STANDARD_HANDLE(AIS_Triangulation, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_Triangulation, AIS_InteractiveObject)
 
 AIS_Triangulation::AIS_Triangulation(const Handle(Poly_Triangulation)& Triangulation)
 {

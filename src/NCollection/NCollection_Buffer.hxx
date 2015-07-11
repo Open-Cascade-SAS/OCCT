@@ -130,7 +130,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(NCollection_Buffer) // Type definition
+  DEFINE_STANDARD_RTTI(NCollection_Buffer, Standard_Transient) // Type definition
 
 };
 

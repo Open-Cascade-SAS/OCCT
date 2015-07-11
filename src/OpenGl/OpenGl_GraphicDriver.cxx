@@ -38,8 +38,6 @@
   #include <EGL/egl.h>
 #endif
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 namespace
 {

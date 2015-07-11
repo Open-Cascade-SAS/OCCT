@@ -17,7 +17,7 @@
 #define _MeshVS_SensitivePolyhedron_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Handle_TColgp_HArray1OfPnt.hxx>
 #include <Handle_TColgp_HArray1OfPnt2d.hxx>
@@ -69,7 +69,7 @@ public:
 
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(MeshVS_SensitivePolyhedron)
+  DEFINE_STANDARD_RTTI(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 
 private:
 

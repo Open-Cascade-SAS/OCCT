@@ -22,8 +22,6 @@
 #include <Message_Status.hxx>
 #include <Message_Messenger.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_CheckModel,Message_Algorithm)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_CheckModel,Message_Algorithm)
 
 //=======================================================================
 //function : Perform

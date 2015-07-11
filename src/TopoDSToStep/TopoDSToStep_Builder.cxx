@@ -37,6 +37,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <Message_ProgressIndicator.hxx>
+#include <StepShape_Face.hxx>
 
 // ============================================================================
 // Method  : TopoDSToStep_Builder::TopoDSToStep_Builder

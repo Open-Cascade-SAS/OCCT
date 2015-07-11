@@ -30,6 +30,7 @@
 #include <TDF_ChildIterator.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <Storage_Schema.hxx>
+#include <TDF_Attribute.hxx>
 
 IMPLEMENT_DOMSTRING (TagString,         "tag")
 IMPLEMENT_DOMSTRING (LabelString,       "label")

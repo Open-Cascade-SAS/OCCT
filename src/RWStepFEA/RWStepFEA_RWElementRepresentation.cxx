@@ -20,6 +20,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <StepRepr_RepresentationContext.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWElementRepresentation

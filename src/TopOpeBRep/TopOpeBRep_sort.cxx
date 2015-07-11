@@ -18,6 +18,7 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <stdlib.h>
 #include <TopOpeBRep_define.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
 
 typedef TopOpeBRepDS_ListOfInterference* BOA_t;
 

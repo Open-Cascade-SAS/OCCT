@@ -54,6 +54,9 @@
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 #include <ShapeAnalysis_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom2d_BoundedCurve.hxx>
 
 
 //=======================================================================

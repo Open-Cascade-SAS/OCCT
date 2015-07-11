@@ -47,6 +47,7 @@
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
 #include <TopOpeBRepTool_ShapeClassifier.hxx>
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face& FF,const TopoDS_Face& FS,
 				    const TopoDS_Edge& EE,const Standard_Boolean EEofFF,

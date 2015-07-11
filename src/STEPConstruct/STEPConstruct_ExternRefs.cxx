@@ -71,6 +71,7 @@
 #include <StepBasic_Document.hxx>
 #include <StepBasic_ProductOrFormationOrDefinition.hxx>
 #include <StepBasic_ProductRelatedProductCategory.hxx>
+#include <StepBasic_ProductDefinition.hxx>
 
 
 //=======================================================================

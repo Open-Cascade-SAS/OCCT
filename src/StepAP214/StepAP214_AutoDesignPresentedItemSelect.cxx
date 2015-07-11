@@ -13,6 +13,12 @@
 
 #include <StepAP214_AutoDesignPresentedItemSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepBasic_DocumentRelationship.hxx>
 
 StepAP214_AutoDesignPresentedItemSelect::StepAP214_AutoDesignPresentedItemSelect ()    {  }
 

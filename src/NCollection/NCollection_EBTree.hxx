@@ -17,7 +17,7 @@
 #define NCollection_EBTree_HeaderFile
 
 #include <NCollection_UBTree.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <MMgt_TShared.hxx>
 #include <NCollection_List.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
@@ -208,13 +208,13 @@ class _HEBTREE : public _HUBTREE                                        \
   const EBTree& ETree () const { return (const EBTree&) Tree(); }       \
   EBTree&       ChangeETree () { return (EBTree&) ChangeTree(); }       \
                                                                         \
-  DEFINE_STANDARD_RTTI (_HEBTREE)                                       \
+  DEFINE_STANDARD_RTTI (_HEBTREE, _HUBTREE)                                       \
   /* Type management */                                                 \
 };                                                                      \
 DEFINE_STANDARD_HANDLE (_HEBTREE, _HUBTREE)
 
-#define IMPLEMENT_HEBTREE(_HEBTREE, _HUBTREE)                           \
-IMPLEMENT_STANDARD_HANDLE (_HEBTREE, _HUBTREE)                          \
-IMPLEMENT_STANDARD_RTTIEXT(_HEBTREE, _HUBTREE)
+#define IMPLEMENT_HEBTREE(_HEBTREE, _HUBTREE)                           
+
+
 
 #endif

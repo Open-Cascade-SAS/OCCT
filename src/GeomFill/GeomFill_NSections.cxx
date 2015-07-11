@@ -53,6 +53,7 @@
 #ifdef OCCT_DEBUG
 # ifdef DRAW
 #  include <DrawTrSurf.hxx>
+#include <Geom_Curve.hxx>
 # endif
 static Standard_Boolean Affich = 0;
 static Standard_Integer NbSurf = 0;

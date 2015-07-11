@@ -18,8 +18,6 @@
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_FrameBuffer, OpenGl_Resource)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_FrameBuffer

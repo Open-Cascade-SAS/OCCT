@@ -20,7 +20,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Graphic3d_NameOfTexture2D.hxx>
 #include <Image_PixMap.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
@@ -206,7 +206,7 @@ protected: //! @name texture mapping properties
 
 public:
 
-  DEFINE_STANDARD_RTTI (AIS_TexturedShape)
+  DEFINE_STANDARD_RTTI (AIS_TexturedShape, AIS_Shape)
 
 };
 

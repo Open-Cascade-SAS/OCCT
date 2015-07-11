@@ -45,6 +45,7 @@
 #include <Geom_BezierCurve.hxx>
 
 #include <Geom_CartesianPoint.hxx>
+#include <Geom_Curve.hxx>
 
 
 //===============================================================

@@ -49,7 +49,7 @@ class TObj_ObjectIterator : public MMgt_TShared
 
  public:
    //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_ObjectIterator)
+  DEFINE_STANDARD_RTTI(TObj_ObjectIterator, MMgt_TShared)
 };
 
 //! Define handle class for TObj_ObjectIterator

@@ -13,6 +13,21 @@
 
 #include <StepAP214_DateItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepAP214_AppliedPersonAndOrganizationAssignment.hxx>
+#include <StepAP214_AppliedOrganizationAssignment.hxx>
+#include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
+#include <StepBasic_DocumentFile.hxx>
+#include <StepBasic_Effectivity.hxx>
+#include <StepRepr_MaterialDesignation.hxx>
+#include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
+#include <StepVisual_PresentationArea.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
 
 StepAP214_DateItem::StepAP214_DateItem () {  }
 

@@ -16,6 +16,8 @@
 #include <StepData_UndefinedEntity.hxx>
 #include <StepData_Described.hxx>
 #include <Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_ECDescr.hxx>
 #include <stdio.h>
 
 

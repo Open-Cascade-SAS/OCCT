@@ -78,8 +78,6 @@ private:
 
 } // anonymous namespace
 
-IMPLEMENT_STANDARD_HANDLE (Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet, Select3D_SensitiveSet)
 
 // =======================================================================
 // function : Select3D_InteriorSensitivePointSet

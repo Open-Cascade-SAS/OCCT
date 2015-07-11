@@ -1770,11 +1770,10 @@ public:
     std::cerr << "QABugs_HandleClass[" << this << "] " << theArgVec[0] << "\n";
     return 0;
   }
-  DEFINE_STANDARD_RTTI(QABugs_HandleClass) // Type definition
+  DEFINE_STANDARD_RTTI(QABugs_HandleClass, Standard_Transient) // Type definition
 };
 DEFINE_STANDARD_HANDLE    (QABugs_HandleClass, Standard_Transient)
-IMPLEMENT_STANDARD_HANDLE (QABugs_HandleClass, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(QABugs_HandleClass, Standard_Transient)
+
 
 // Dummy class to test interface for compilation issues
 struct QABugs_NHandleClass
@@ -3581,6 +3580,7 @@ Standard_Integer xprojponf (Draw_Interpretor& di,
 //purpose  :
 //=======================================================================
 #include <BRepMesh_CircleTool.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 
 static Standard_Boolean inspect_point(const gp_XY&        thePoint,
                                       const gp_XY&        theCenter,

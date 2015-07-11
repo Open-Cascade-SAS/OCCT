@@ -55,8 +55,6 @@ namespace
 
 }
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_CappingPlaneResource, OpenGl_Resource)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_CappingPlaneResource

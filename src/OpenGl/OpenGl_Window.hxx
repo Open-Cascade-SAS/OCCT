@@ -102,7 +102,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Window) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_Window, MMgt_TShared) // Type definition
   DEFINE_STANDARD_ALLOC
 
 };

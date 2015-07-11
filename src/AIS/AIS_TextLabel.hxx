@@ -85,7 +85,7 @@ protected:
 public:
 
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(AIS_TextLabel);
+  DEFINE_STANDARD_RTTI(AIS_TextLabel, AIS_InteractiveObject);
 
 };
 

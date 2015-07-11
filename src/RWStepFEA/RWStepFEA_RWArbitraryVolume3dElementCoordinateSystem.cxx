@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem.ixx>
+#include <StepFEA_FeaAxis2Placement3d.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem

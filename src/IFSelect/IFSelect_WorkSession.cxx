@@ -65,6 +65,12 @@
 #include <Message_Messenger.hxx>
 #include <Message.hxx>
 #include <Standard_Failure.hxx>
+#include <IFSelect_SignatureList.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <IFSelect_Dispatch.hxx>
+#include <IFSelect_Modifier.hxx>
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_IntParam.hxx>
 
 #define Flag_Incorrect 2
 //  (Bit Map n0 2)

@@ -157,7 +157,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Font) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_Font, OpenGl_Resource) // Type definition
 
 };
 

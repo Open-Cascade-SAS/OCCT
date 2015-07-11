@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Transfer_SimpleBinderOfTransient.ixx>
+#include <Standard_Transient.hxx>
 
 //  "Handle(Standard_Transient)" : la classe de base pour le Resultat
 

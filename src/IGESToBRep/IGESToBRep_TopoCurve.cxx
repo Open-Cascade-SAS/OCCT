@@ -110,6 +110,9 @@
 #include <IGESToBRep.hxx>
 #include <IGESToBRep_AlgoContainer.hxx>
 #include <IGESToBRep_ToolContainer.hxx>
+#include <IGESGeom_Boundary.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESGeom_SplineCurve.hxx>
 
 //=======================================================================
 //function : IGESToBRep_TopoCurve

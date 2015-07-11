@@ -411,7 +411,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI (OpenGl_ShaderManager)
+  DEFINE_STANDARD_RTTI (OpenGl_ShaderManager, Standard_Transient)
 
 };
 

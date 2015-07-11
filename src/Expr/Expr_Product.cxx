@@ -26,6 +26,7 @@
 #include <Expr_NumericValue.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr.hxx>
+#include <Expr_NamedUnknown.hxx>
 
 Expr_Product::Expr_Product (const Expr_SequenceOfGeneralExpression& exps)
 {

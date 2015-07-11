@@ -667,6 +667,11 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 // added by skl 10.02.2004 for TRJ13
 #include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
 #include <StepBasic_MassMeasureWithUnit.hxx>
+#include <StepBasic_CharacterizedObject.hxx>
+#include <StepFEA_CurveElementEndCoordinateSystem.hxx>
+#include <StepFEA_SymmetricTensor22d.hxx>
+#include <StepFEA_SymmetricTensor42d.hxx>
+#include <StepFEA_SymmetricTensor43d.hxx>
 
 
 static int init = 0;

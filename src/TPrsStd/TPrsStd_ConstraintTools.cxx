@@ -90,6 +90,7 @@
 
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <AIS_Relation.hxx>
 
 static Standard_Boolean CheckShapesPair(const TopoDS_Shape& , const TopoDS_Shape& ); //ota
 

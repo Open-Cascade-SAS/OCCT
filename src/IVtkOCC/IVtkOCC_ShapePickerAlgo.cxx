@@ -22,8 +22,7 @@
 #include <StdSelect_BRepOwner.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtkOCC_ShapePickerAlgo, IVtk_IShapePickerAlgo)
-IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ShapePickerAlgo, IVtk_IShapePickerAlgo)
+
 
 //================================================================
 // Function : Constructor

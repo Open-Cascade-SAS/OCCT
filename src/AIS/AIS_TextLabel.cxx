@@ -23,8 +23,6 @@
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_TextLabel, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_TextLabel, AIS_InteractiveObject)
 
 //=======================================================================
 //function : AIS_TextLabel

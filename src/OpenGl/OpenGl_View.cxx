@@ -30,8 +30,6 @@
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_Mat4d.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_View,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,MMgt_TShared)
 
 /*----------------------------------------------------------------------*/
 

@@ -75,7 +75,7 @@ class VrmlData_ImageTexture : public VrmlData_Texture
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_ImageTexture)
+DEFINE_STANDARD_RTTI (VrmlData_ImageTexture, VrmlData_Texture)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

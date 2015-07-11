@@ -174,6 +174,7 @@ extern void ChFi3d_ResultChron(OSD_Chronometer & ch,Standard_Real& time);
 
 #include <GeomAdaptor_HCurve.hxx>
 #include <BRepAdaptor_HSurface.hxx>
+#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 
 //=======================================================================
 //function : ChFi3d_InPeriod

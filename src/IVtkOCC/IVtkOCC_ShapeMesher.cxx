@@ -45,8 +45,7 @@
 #include <TopExp_Explorer.hxx>
 
 // Handle implementation
-IMPLEMENT_STANDARD_HANDLE(IVtkOCC_ShapeMesher, IVtk_IShapeMesher)
-IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ShapeMesher, IVtk_IShapeMesher)
+
 
 //================================================================
 // Function : internalBuild

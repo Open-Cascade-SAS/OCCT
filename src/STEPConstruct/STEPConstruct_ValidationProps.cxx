@@ -59,6 +59,12 @@
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 #include <STEPConstruct.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
+#include <StepData_StepModel.hxx>
 
 //=======================================================================
 //function : STEPConstruct_ValidationProps

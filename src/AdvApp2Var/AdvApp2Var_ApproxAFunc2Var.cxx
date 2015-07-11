@@ -41,6 +41,7 @@
 #include <Convert_GridPolynomialToPoles.hxx>
 
 #include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 
 //=======================================================================

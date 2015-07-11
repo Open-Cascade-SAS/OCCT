@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepBasic_RWDocument.ixx>
+#include <StepBasic_DocumentType.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWDocument

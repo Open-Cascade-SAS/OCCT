@@ -16,7 +16,7 @@
 #ifndef _SelectMgr_FrustumBuilder_HeaderFile
 #define _SelectMgr_FrustumBuilder_HeaderFile
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Graphic3d_Camera.hxx>
 #include <Precision.hxx>
@@ -61,7 +61,7 @@ public:
                                         const Standard_Real& theY,
                                         const Standard_Real& theZ) const;
 
-  DEFINE_STANDARD_RTTI(SelectMgr_FrustumBuilder)
+  DEFINE_STANDARD_RTTI(SelectMgr_FrustumBuilder, Standard_Transient)
 
 private:
 

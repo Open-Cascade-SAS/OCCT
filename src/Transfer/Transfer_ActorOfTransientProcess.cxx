@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Transfer_ActorOfTransientProcess.ixx>
+#include <Transfer_TransientProcess.hxx>
 
 Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess ()    {  }
 

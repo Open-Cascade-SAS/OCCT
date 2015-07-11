@@ -26,6 +26,8 @@
 #include <Convert_GridPolynomialToPoles.hxx>
 #include <Precision.hxx>
 #include <PLib.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Surface.hxx>
 
 //=======================================================================
 //function : Geom_OffsetOsculatingSurface

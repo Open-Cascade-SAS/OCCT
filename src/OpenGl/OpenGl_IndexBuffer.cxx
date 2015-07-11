@@ -17,8 +17,6 @@
 #include <OpenGl_Context.hxx>
 #include <Standard_Assert.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_IndexBuffer, OpenGl_VertexBuffer)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_VertexBuffer)
 
 // =======================================================================
 // function : OpenGl_IndexBuffer

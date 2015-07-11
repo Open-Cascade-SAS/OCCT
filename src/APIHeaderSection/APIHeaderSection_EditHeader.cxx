@@ -15,6 +15,7 @@
 #include <Interface_TypedValue.hxx>
 
 #include <APIHeaderSection_MakeHeader.hxx>
+#include <StepData_StepModel.hxx>
 
 static Standard_Boolean IsTimeStamp
   (const Handle(TCollection_HAsciiString)& val)

@@ -19,9 +19,6 @@
 #include <TObj_Object.hxx>
 
 
-IMPLEMENT_STANDARD_HANDLE(TObj_OcafObjectIterator,TObj_LabelIterator)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_OcafObjectIterator,TObj_LabelIterator)
-
 //=======================================================================
 //function : TObj_OcafObjectIterator
 //purpose  :

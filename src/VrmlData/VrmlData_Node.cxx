@@ -23,26 +23,27 @@
 #include <VrmlData_InBuffer.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
+#include <VrmlData_Geometry.hxx>
+#include <VrmlData_TextureTransform.hxx>
+#include <VrmlData_Texture.hxx>
 
 #ifdef WNT
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)
 #endif
 
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Node, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Node, Standard_Transient)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_ShapeNode, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_ShapeNode, VrmlData_Node)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Texture, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Texture, VrmlData_Node)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_TextureTransform, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_TextureTransform, VrmlData_Node)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_ImageTexture, VrmlData_Texture)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_ImageTexture, VrmlData_Texture)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_Appearance, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_Appearance, VrmlData_Node)
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_UnknownNode, VrmlData_Node)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_UnknownNode, VrmlData_Node)
+
+
+
+
+
+
+
+
+
+
+
+
 
 static VrmlData_Scene MyDefaultScene;
 

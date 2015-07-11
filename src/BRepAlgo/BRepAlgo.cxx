@@ -45,6 +45,7 @@
 #include <TopoDS.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom_Curve.hxx>
 
 //Temporary
 #//include <DrawTrSurf.hxx>

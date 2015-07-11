@@ -167,6 +167,8 @@
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <StepBasic_ProductDefinition.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepVisual_PresentationRepresentation.hxx>
 
 //=======================================================================
 //function : GetLabelName

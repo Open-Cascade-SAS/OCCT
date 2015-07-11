@@ -213,7 +213,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Font_FTFont) // Type definition
+  DEFINE_STANDARD_RTTI(Font_FTFont, Standard_Transient) // Type definition
 
 };
 

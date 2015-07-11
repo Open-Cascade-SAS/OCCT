@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWStartRequest.ixx>
 #include <StepAP203_HArray1OfStartRequestItem.hxx>
 #include <StepAP203_StartRequestItem.hxx>
+#include <StepBasic_VersionedActionRequest.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWStartRequest

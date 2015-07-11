@@ -41,6 +41,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Message_ProgressSentry.hxx>
+#include <Geom_Curve.hxx>
 
 #define LINE      1
 #define CIRCLE    2

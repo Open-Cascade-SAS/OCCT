@@ -18,7 +18,7 @@
 #define _Select3D_SensitiveCurve_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Geom_Curve.hxx>
@@ -70,7 +70,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveCurve)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveCurve, Select3D_SensitivePoly)
 
 private:
 

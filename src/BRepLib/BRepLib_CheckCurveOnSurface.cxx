@@ -51,6 +51,8 @@
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 
 class BRepLib_CheckCurveOnSurface_TargetFunc;
 

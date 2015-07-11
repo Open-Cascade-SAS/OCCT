@@ -15,7 +15,7 @@
 #define _BRepMesh_DiscretRoot_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
 
@@ -73,7 +73,7 @@ public:
   Standard_EXPORT virtual void Perform() = 0;
 
 
-  DEFINE_STANDARD_RTTI(BRepMesh_DiscretRoot)
+  DEFINE_STANDARD_RTTI(BRepMesh_DiscretRoot, Standard_Transient)
 
 protected:
   

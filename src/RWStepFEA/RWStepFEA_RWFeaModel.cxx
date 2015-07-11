@@ -20,6 +20,7 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <TColStd_HArray1OfAsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <StepRepr_RepresentationContext.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaModel

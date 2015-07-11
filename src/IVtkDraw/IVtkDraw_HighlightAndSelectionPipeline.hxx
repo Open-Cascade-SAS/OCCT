@@ -50,7 +50,7 @@ class IVtkDraw_HighlightAndSelectionPipeline : public Standard_Transient
 {
 public:
 
-  DEFINE_STANDARD_RTTI(IVtkDraw_HighlightAndSelectionPipeline)
+  DEFINE_STANDARD_RTTI(IVtkDraw_HighlightAndSelectionPipeline, Standard_Transient)
 
 public:
 

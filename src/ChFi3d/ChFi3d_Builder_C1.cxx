@@ -149,6 +149,7 @@ extern void ChFi3d_ResultChron(OSD_Chronometer & ch,Standard_Real& time);
 #include <math_FunctionSample.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
+#include <Geom_BezierCurve.hxx>
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:08:19 2001 Begin
 Standard_Boolean isTangentFaces(const TopoDS_Edge &theEdge,
 				const TopoDS_Face &theFace1,

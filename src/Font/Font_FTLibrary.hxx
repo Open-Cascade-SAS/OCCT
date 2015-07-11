@@ -16,7 +16,7 @@
 #ifndef _Font_FTLibrary_H__
 #define _Font_FTLibrary_H__
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
 // inclusion template for FreeType
@@ -59,7 +59,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Font_FTLibrary) // Type definition
+  DEFINE_STANDARD_RTTI(Font_FTLibrary, Standard_Transient) // Type definition
 
 };
 

@@ -76,7 +76,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Aspect_DisplayConnection) // Type definition
+  DEFINE_STANDARD_RTTI(Aspect_DisplayConnection, Standard_Transient) // Type definition
 
 };
 

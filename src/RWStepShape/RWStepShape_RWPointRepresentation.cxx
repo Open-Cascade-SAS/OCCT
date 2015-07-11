@@ -18,6 +18,7 @@
 #include <RWStepShape_RWPointRepresentation.ixx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_RepresentationContext.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWPointRepresentation

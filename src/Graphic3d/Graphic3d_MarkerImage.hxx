@@ -77,7 +77,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_MarkerImage) // Type definition
+  DEFINE_STANDARD_RTTI(Graphic3d_MarkerImage, Standard_Transient) // Type definition
 
 };
 

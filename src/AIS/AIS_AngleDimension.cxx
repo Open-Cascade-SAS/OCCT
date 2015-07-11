@@ -49,9 +49,9 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard_ProgramError.hxx>
 #include <UnitsAPI.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_AngleDimension, AIS_Dimension)
-IMPLEMENT_STANDARD_RTTIEXT (AIS_AngleDimension, AIS_Dimension)
 
 namespace
 {

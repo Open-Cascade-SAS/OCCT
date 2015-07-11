@@ -86,6 +86,7 @@ static void Write(const TopoDS_Shape& shape,
 #include <TNaming_Tool.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
+#include <TNaming_NamedShape.hxx>
 //==========================================================================================
 inline static void MapOfOrientedShapes(const TopoDS_Shape& S, TopTools_MapOfOrientedShape& M) 
 {

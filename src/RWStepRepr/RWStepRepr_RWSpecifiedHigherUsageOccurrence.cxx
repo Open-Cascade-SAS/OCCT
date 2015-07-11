@@ -16,6 +16,9 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <RWStepRepr_RWSpecifiedHigherUsageOccurrence.ixx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepRepr_AssemblyComponentUsage.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWSpecifiedHigherUsageOccurrence

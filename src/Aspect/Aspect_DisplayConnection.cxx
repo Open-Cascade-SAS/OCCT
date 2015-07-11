@@ -16,8 +16,6 @@
 #include <Aspect_DisplayConnectionDefinitionError.hxx>
 #include <OSD_Environment.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Aspect_DisplayConnection, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection, Standard_Transient)
 
 // =======================================================================
 // function : Aspect_DisplayConnection

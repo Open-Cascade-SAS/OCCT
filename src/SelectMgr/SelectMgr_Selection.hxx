@@ -21,7 +21,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <SelectMgr_TypeOfUpdate.hxx>
 #include <MMgt_TShared.hxx>
@@ -133,7 +133,7 @@ public:
   //! Returns sensitivity of the selection
   Standard_EXPORT Standard_Real Sensitivity() const;
 
-  DEFINE_STANDARD_RTTI (SelectMgr_Selection)
+  DEFINE_STANDARD_RTTI (SelectMgr_Selection, MMgt_TShared)
 
 protected:
 

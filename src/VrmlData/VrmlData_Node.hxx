@@ -18,7 +18,7 @@
 
 #include <Standard_Type.hxx>
 #include <NCollection_List.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_TypeDef.hxx>
 #include <TCollection_AsciiString.hxx> 
 #include <VrmlData_ErrorStatus.hxx>
@@ -196,7 +196,7 @@ class VrmlData_Node : public Standard_Transient
 
  public:
 // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI (VrmlData_Node)
+  DEFINE_STANDARD_RTTI (VrmlData_Node, Standard_Transient)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

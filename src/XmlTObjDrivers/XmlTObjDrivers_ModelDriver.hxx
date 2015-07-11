@@ -54,7 +54,7 @@ class XmlTObjDrivers_ModelDriver : public XmlMDF_ADriver
   
  public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(XmlTObjDrivers_ModelDriver)
+  DEFINE_STANDARD_RTTI(XmlTObjDrivers_ModelDriver, XmlMDF_ADriver)
 };
 
 // Define handle class

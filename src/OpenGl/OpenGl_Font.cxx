@@ -20,8 +20,6 @@
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Font, OpenGl_Resource)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_Font

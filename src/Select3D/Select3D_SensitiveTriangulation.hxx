@@ -22,7 +22,7 @@
 #define _Select3D_SensitiveTriangulation_Header
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Handle_Poly_Triangulation.hxx>
@@ -111,7 +111,7 @@ public:
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
 public:
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangulation)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangulation, Select3D_SensitiveSet)
 
 protected:
 

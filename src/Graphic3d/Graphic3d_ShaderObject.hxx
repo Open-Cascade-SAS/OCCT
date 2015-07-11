@@ -61,7 +61,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI (Graphic3d_ShaderObject)
+  DEFINE_STANDARD_RTTI (Graphic3d_ShaderObject, Standard_Transient)
 
 protected:
 

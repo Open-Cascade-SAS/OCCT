@@ -71,6 +71,10 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <ShapeAnalysis.hxx>
 #include <Message_Msg.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 
 static GeomAbs_Shape IntegerToGeomAbsShape(const Standard_Integer i)
 {

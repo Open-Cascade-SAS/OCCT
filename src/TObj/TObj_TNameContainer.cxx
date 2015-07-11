@@ -18,8 +18,6 @@
 #include <TObj_TNameContainer.hxx>
 #include <Standard_GUID.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(TObj_TNameContainer,TDF_Attribute)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_TNameContainer,TDF_Attribute)
 
 //=======================================================================
 //function : TObj_TNameContainer

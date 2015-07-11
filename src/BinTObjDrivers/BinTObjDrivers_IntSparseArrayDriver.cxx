@@ -24,8 +24,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(BinTObjDrivers_IntSparseArrayDriver,BinMDF_ADriver)
-IMPLEMENT_STANDARD_RTTIEXT(BinTObjDrivers_IntSparseArrayDriver,BinMDF_ADriver)
 
 //=======================================================================
 //function : BinTObjDrivers_IntSparseArrayDriver

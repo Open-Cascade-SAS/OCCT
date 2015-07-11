@@ -75,6 +75,7 @@
 #include <Extrema_LocateExtPC.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomConvert.hxx>
+#include <Geom2d_BoundedCurve.hxx>
 
 //#ifdef OCCT_DEBUG
 //Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceFE();

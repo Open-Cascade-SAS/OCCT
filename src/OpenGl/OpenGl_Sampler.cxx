@@ -17,8 +17,6 @@
 #include <OpenGl_GlCore33.hxx>
 #include <Standard_Assert.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Sampler, OpenGl_Resource)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Sampler, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_Sampler

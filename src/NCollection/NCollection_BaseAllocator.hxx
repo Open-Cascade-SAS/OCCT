@@ -28,7 +28,7 @@
 #define NCollection_BaseAllocator_HeaderFile
 
 #include <MMgt_TShared.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <NCollection_TypeDef.hxx>
 
 class Handle(NCollection_BaseAllocator);
@@ -79,7 +79,7 @@ class NCollection_BaseAllocator : public MMgt_TShared
 
  public:
   // ---------- CasCade RunTime Type Information
-  DEFINE_STANDARD_RTTI(NCollection_BaseAllocator)
+  DEFINE_STANDARD_RTTI(NCollection_BaseAllocator, MMgt_TShared)
 };
 
 DEFINE_STANDARD_HANDLE(NCollection_BaseAllocator,MMgt_TShared)

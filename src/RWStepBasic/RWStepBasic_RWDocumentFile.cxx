@@ -17,6 +17,7 @@
 
 #include <RWStepBasic_RWDocumentFile.ixx>
 #include <StepBasic_CharacterizedObject.hxx>
+#include <StepBasic_DocumentType.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWDocumentFile

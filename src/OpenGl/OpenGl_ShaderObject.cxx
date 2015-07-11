@@ -20,8 +20,6 @@
 #include <Standard_Assert.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_ShaderObject, OpenGl_Resource)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderObject, OpenGl_Resource)
 
 // =======================================================================
 // function : OpenGl_ShaderObject

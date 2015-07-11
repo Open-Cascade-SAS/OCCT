@@ -16,8 +16,6 @@
 #include <LDOM_MemManager.hxx>
 #include <LDOMBasicString.hxx>
 
-IMPLEMENT_STANDARD_HANDLE  (LDOM_MemManager, MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT (LDOM_MemManager, MMgt_TShared)
 
 #define HASH_MASK 255
 #define MINIMAL_ROOM 3

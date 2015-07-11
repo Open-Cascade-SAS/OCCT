@@ -40,8 +40,6 @@
 #include <StdPrs_WFShape.hxx>
 #include <TopExp_Explorer.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (AIS_TexturedShape, AIS_Shape)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_TexturedShape, AIS_Shape)
 
 //=======================================================================
 //function : AIS_TexturedShape

@@ -15,7 +15,7 @@
 #define _BRepMesh_FastDiscretFace_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <BRepMesh_FastDiscretFace.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh.hxx>
@@ -64,7 +64,7 @@ public:
 
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 
-  DEFINE_STANDARD_RTTI(BRepMesh_FastDiscretFace)
+  DEFINE_STANDARD_RTTI(BRepMesh_FastDiscretFace, Standard_Transient)
 
 private:
 

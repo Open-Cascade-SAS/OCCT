@@ -19,6 +19,8 @@
 #include <RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.ixx>
 #include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
 #include <StepAP203_PersonOrganizationItem.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
+#include <StepBasic_PersonAndOrganizationRole.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignPersonAndOrganizationAssignment

@@ -15,6 +15,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <MoniTool_TypedValue.hxx>
+#include <MoniTool_Option.hxx>
 
 
 static Standard_Boolean IsCurrent (const Standard_CString name)

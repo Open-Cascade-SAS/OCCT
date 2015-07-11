@@ -17,7 +17,7 @@
 #define _MeshVS_SensitiveMesh_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Bnd_Box.hxx>
 #include <Select3D_SensitiveEntity.hxx>
@@ -50,7 +50,7 @@ public:
   //! Returns center of mesh
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(MeshVS_SensitiveMesh)
+  DEFINE_STANDARD_RTTI(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 private:
 

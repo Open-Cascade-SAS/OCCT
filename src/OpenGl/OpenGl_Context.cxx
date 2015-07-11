@@ -61,8 +61,6 @@
   #endif
 #endif
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Context, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
 
 namespace
 {

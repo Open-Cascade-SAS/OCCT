@@ -60,6 +60,8 @@
 
 #include <GeomAdaptor_HCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 
 static Standard_Real ComputeTolerance(TopoDS_Edge& E,
 				      const TopoDS_Face& F,

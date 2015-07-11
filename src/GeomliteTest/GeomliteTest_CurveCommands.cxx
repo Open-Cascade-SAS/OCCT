@@ -107,6 +107,7 @@
 #include <GeomAdaptor_HCurve.hxx>
 #include <Approx_CurvilinearParameter.hxx>
 #include <Approx_CurveOnSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #ifdef WNT
 Standard_IMPORT Draw_Viewer dout;
 #endif

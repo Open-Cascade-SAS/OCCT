@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepFEA_RWFeaAxis2Placement3d.ixx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaAxis2Placement3d

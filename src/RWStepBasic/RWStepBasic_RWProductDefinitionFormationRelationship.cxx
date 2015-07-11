@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepBasic_RWProductDefinitionFormationRelationship.ixx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWProductDefinitionFormationRelationship

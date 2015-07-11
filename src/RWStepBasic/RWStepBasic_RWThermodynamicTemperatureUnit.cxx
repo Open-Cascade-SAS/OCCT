@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepBasic_RWThermodynamicTemperatureUnit.ixx>
+#include <StepBasic_DimensionalExponents.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWThermodynamicTemperatureUnit

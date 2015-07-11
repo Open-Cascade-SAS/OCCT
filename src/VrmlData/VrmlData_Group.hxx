@@ -170,7 +170,7 @@ class VrmlData_Group : public VrmlData_Node
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (VrmlData_Group)
+DEFINE_STANDARD_RTTI (VrmlData_Group, VrmlData_Node)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

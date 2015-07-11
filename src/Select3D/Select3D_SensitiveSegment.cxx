@@ -19,8 +19,6 @@
 #include <TopLoc_Location.hxx>
 #include <Precision.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveSegment, Select3D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSegment, Select3D_SensitiveEntity)
 
 //=====================================================
 // Function : Create

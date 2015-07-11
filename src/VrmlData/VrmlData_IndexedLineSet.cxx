@@ -23,14 +23,14 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
+#include <VrmlData_Color.hxx>
+#include <VrmlData_Coordinate.hxx>
 
 #ifdef WNT
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)
 #endif
 
-IMPLEMENT_STANDARD_HANDLE  (VrmlData_IndexedLineSet, VrmlData_Geometry)
-IMPLEMENT_STANDARD_RTTIEXT (VrmlData_IndexedLineSet, VrmlData_Geometry)
 
 //=======================================================================
 //function : GetColor

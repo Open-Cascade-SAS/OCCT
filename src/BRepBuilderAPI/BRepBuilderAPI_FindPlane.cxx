@@ -34,6 +34,7 @@
 #include <Geom_Hyperbola.hxx> 
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
 
 
 

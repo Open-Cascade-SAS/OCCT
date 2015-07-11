@@ -51,7 +51,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(XCAFPrs_AISObject)
+  DEFINE_STANDARD_RTTI(XCAFPrs_AISObject, AIS_ColoredShape)
 
 };
 

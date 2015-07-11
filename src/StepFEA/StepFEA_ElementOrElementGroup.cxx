@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <StepFEA_ElementOrElementGroup.ixx>
+#include <StepFEA_ElementRepresentation.hxx>
+#include <StepFEA_ElementGroup.hxx>
 
 //=======================================================================
 //function : StepFEA_ElementOrElementGroup

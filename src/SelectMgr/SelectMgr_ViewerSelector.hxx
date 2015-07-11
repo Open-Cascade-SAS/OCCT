@@ -29,7 +29,7 @@
 #include <Handle_TColStd_HArray1OfInteger.hxx>
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 #include <SelectMgr_IndexedDataMapOfOwnerCriterion.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
@@ -248,7 +248,7 @@ public:
 
   friend class SelectMgr_SelectionManager;
 
-  DEFINE_STANDARD_RTTI(SelectMgr_ViewerSelector)
+  DEFINE_STANDARD_RTTI(SelectMgr_ViewerSelector, MMgt_TShared)
 
 protected:
 

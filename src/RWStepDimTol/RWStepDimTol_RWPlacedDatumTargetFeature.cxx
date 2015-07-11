@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepDimTol_RWPlacedDatumTargetFeature.ixx>
+#include <StepRepr_ProductDefinitionShape.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWPlacedDatumTargetFeature

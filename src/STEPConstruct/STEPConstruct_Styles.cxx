@@ -72,6 +72,8 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 #include <gp_Pnt.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepRepr_Representation.hxx>
 
 
 //=======================================================================

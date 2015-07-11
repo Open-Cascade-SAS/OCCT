@@ -26,6 +26,7 @@
 #include <TDocStd_Document.hxx>
 #include <CDF_Session.hxx>
 #include <Standard_DomainError.hxx>
+#include <TDocStd_Application.hxx>
 
 
 //=======================================================================

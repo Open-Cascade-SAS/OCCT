@@ -66,7 +66,7 @@ public:
                      gp_Pnt&                thePoint,
                      gp_Pnt2d&              theUV);
 
-  DEFINE_STANDARD_RTTI(BRepMesh_EdgeTessellator)
+  DEFINE_STANDARD_RTTI(BRepMesh_EdgeTessellator, BRepMesh_IEdgeTool)
 
 private:
 

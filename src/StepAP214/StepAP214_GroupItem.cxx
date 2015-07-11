@@ -13,6 +13,7 @@
 
 #include <StepAP214_GroupItem.ixx>
 #include <Interface_Macros.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
 
 StepAP214_GroupItem::StepAP214_GroupItem () {  }
 

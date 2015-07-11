@@ -18,6 +18,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 //=======================================================================
 //function : GeomLib_Check2dBSplineCurve
 //purpose  : 

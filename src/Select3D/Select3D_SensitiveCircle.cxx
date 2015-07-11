@@ -22,8 +22,6 @@
 
 #include <Select3D_SensitiveCircle.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Select3D_SensitiveCircle, Select3D_SensitivePoly)
-IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCircle, Select3D_SensitivePoly)
 
 static Standard_Integer GetCircleNbPoints (const Handle(Geom_Circle)& theCircle,
                                            const Standard_Integer theNbPnts)

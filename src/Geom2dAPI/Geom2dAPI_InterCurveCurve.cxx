@@ -22,6 +22,7 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 
 #include <Standard_NotImplemented.hxx>
+#include <Geom2d_Curve.hxx>
 
 //=======================================================================
 //function : Geom2dAPI_InterCurveCurve

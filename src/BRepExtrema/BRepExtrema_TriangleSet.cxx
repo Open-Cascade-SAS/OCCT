@@ -21,8 +21,6 @@
 #include <Poly_Triangulation.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (BRepExtrema_TriangleSet, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, Standard_Transient)
 
 //=======================================================================
 //function : BRepExtrema_TriangleSet

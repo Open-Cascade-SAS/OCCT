@@ -26,6 +26,7 @@
 #include <Select3D_SensitiveEntity.hxx>
 #include <TopLoc_Location.hxx>
 #include <NCollection_DataMap.hxx>
+#include <AIS_InteractiveObject.hxx>
 
 namespace
 {

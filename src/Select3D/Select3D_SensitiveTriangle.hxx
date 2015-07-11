@@ -18,7 +18,7 @@
 #define _Select3D_SensitiveTriangle_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Select3D_TypeOfSensitivity.hxx>
@@ -75,7 +75,7 @@ public:
 
   virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return myCentroid; }
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangle)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 
 private:
 

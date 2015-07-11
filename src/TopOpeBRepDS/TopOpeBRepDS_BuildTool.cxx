@@ -105,6 +105,7 @@ static void DUMPCURVES(const Handle(Geom_Curve)& C3D,const TopOpeBRepDS_Curve& C
 
 #ifdef DRAW
 #include <TopOpeBRepDS_DRAW.hxx>
+#include <Geom2d_Curve.hxx>
 #endif
 
 //-----------------------------------------------------------------------

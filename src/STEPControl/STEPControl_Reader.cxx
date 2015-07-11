@@ -68,6 +68,9 @@
 #include <StepRepr_RepresentationContext.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinitionFormationRelationship.hxx>
+#include <StepBasic_SiUnit.hxx>
   
 //=======================================================================
 //function : STEPControl_Reader

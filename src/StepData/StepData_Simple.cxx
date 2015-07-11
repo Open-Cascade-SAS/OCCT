@@ -13,6 +13,7 @@
 
 #include <StepData_Simple.ixx>
 #include <Interface_InterfaceMismatch.hxx>
+#include <StepData_ESDescr.hxx>
 
 StepData_Simple::StepData_Simple (const Handle(StepData_ESDescr)& descr)
     : StepData_Described (descr) , thefields (descr->NbFields())    {  }

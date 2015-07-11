@@ -25,6 +25,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors.hxx>
 #include <OSD_Environment.hxx>
+#include <SelectMgr_SelectableObject.hxx>
 
 static Standard_Integer FindIndex (const SelectMgr_SequenceOfSelector& theSelectorsSeq,
                                    const Handle(SelectMgr_ViewerSelector)& theSelector)

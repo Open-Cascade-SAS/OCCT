@@ -51,10 +51,8 @@
 #include <TDataStd_RealArray.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
+#include <TDF_TagSource.hxx>
 
-
-IMPLEMENT_STANDARD_HANDLE(TObj_Object,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(TObj_Object,MMgt_TShared)
 
 //=======================================================================
 //function : Constructor

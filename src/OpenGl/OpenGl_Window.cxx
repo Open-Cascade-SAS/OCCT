@@ -29,8 +29,6 @@
   #include <EGL/egl.h>
 #endif
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
 
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
 

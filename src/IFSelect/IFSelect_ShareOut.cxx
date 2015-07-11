@@ -14,6 +14,7 @@
 #include <IFSelect_ShareOut.ixx>
 #include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
+#include <IFSelect_Modifier.hxx>
 #include <stdio.h>
 
 

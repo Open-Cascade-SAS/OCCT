@@ -54,7 +54,7 @@ public:
   //! Destructor
   Standard_EXPORT ~IVtkVTK_ShapeData();
 
-  DEFINE_STANDARD_RTTI( IVtkVTK_ShapeData )
+  DEFINE_STANDARD_RTTI(IVtkVTK_ShapeData, IVtk_IShapeData)
 
   //! Insert a coordinate
   //! @param [in] theX X coordinate

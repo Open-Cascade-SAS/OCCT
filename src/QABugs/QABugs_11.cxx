@@ -5225,6 +5225,8 @@ Standard_Integer CR23403 (Draw_Interpretor& di, Standard_Integer argc, const cha
 
 #include <Quantity_NameOfColor.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <Geom_Curve.hxx>
+#include <AIS_InteractiveObject.hxx>
 Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   // Check the command arguments

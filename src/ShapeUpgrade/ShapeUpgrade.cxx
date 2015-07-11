@@ -21,6 +21,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <BSplCLib.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 /*
 // Debug state= True / False.

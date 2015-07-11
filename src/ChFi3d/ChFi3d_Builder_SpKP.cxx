@@ -61,6 +61,7 @@
 
 #include <ChFi3d_Builder.jxx>
 #include <ChFi3d_Builder_0.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GettraceDRAWFIL();
 extern void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,

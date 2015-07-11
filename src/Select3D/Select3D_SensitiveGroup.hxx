@@ -19,7 +19,7 @@
 #define _Select3D_SensitiveGroup_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
 #include <Select3D_EntitySequence.hxx>
@@ -121,7 +121,7 @@ public:
   //! Returns the length of vector of sensitive entities
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI(Select3D_SensitiveGroup)
+  DEFINE_STANDARD_RTTI(Select3D_SensitiveGroup, Select3D_SensitiveSet)
 
 private:
 

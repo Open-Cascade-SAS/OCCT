@@ -20,6 +20,11 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepFEA_FeaModel3d.hxx>
+#include <StepElement_Surface3dElementDescriptor.hxx>
+#include <StepElement_SurfaceElementProperty.hxx>
+#include <StepElement_ElementMaterial.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWSurface3dElementRepresentation

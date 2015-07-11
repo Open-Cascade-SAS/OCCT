@@ -25,6 +25,7 @@
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <StepShape_ClosedShell.hxx>
 
 //=============================================================================
 // Create a FacetedBrep of StepShape from a Shell of TopoDS

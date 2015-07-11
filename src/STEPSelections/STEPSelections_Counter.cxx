@@ -39,6 +39,11 @@
 #include <StepBasic_ProductRelatedProductCategory.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
 #include <StepRepr_RepresentationMap.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_GeometricSet.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_CompositeCurve.hxx>
 
 STEPSelections_Counter::STEPSelections_Counter()
 {

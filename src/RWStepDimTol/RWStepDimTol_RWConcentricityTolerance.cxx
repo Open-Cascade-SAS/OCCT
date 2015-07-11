@@ -18,6 +18,8 @@
 #include <RWStepDimTol_RWConcentricityTolerance.ixx>
 #include <StepDimTol_HArray1OfDatumReference.hxx>
 #include <StepDimTol_DatumReference.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWConcentricityTolerance

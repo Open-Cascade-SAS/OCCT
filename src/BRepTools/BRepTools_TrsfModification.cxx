@@ -31,6 +31,8 @@
 #include <TopoDS.hxx>
 #include <Precision.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_Curve.hxx>
 
 //=======================================================================
 //function : BRepTools_TrsfModification

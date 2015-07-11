@@ -17,6 +17,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <RWStepBasic_RWContract.ixx>
+#include <StepBasic_ContractType.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWContract

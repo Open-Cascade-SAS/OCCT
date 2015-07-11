@@ -57,6 +57,7 @@
 #include <ElCLib.hxx>
 
 #include <Bnd_Box2d.hxx>
+#include <IntPatch_PointLine.hxx>
 
 static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)&   Line,
   const Standard_Boolean         IsReversed,

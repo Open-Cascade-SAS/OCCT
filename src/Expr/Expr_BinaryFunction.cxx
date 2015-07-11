@@ -28,6 +28,7 @@
 #include <Expr_Sum.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr.hxx>
+#include <Expr_NumericValue.hxx>
 
 Expr_BinaryFunction::Expr_BinaryFunction (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {

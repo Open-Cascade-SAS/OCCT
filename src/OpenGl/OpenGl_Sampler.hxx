@@ -77,7 +77,7 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Sampler)
+  DEFINE_STANDARD_RTTI(OpenGl_Sampler, OpenGl_Resource)
 
 };
 

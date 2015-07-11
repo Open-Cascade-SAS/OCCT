@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <IFSelect_SelectType.ixx>
+#include <Standard_Transient.hxx>
 
 
 IFSelect_SelectType::IFSelect_SelectType ()

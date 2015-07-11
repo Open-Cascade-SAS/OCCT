@@ -30,6 +30,8 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BoundedSurface.hxx>
 
 #ifdef WNT
 #include <stdio.h>

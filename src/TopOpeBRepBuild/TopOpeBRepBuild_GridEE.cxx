@@ -43,6 +43,7 @@
 #include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepDS_Dumper.hxx>
 #include <Standard_ProgramError.hxx>
+#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 
 #ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOSG();

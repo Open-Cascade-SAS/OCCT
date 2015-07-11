@@ -35,8 +35,6 @@
 #include <math_Vector.hxx>
 #include <Adaptor3d_HSurfaceOfLinearExtrusion.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (Extrema_ExtPExtS, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(Extrema_ExtPExtS, Standard_Transient)
 
 static gp_Ax2 GetPosition (const Handle(Adaptor3d_HCurve)& C);
      

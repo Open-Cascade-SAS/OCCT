@@ -17,7 +17,7 @@
 #define Handle_LDOM_MemManager_HeaderFile
 
 #include <MMgt_TShared.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 class LDOM_MemManager;
 

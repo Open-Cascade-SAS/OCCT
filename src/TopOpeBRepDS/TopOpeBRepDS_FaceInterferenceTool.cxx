@@ -31,6 +31,7 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 #include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();

@@ -44,7 +44,7 @@ class NCollection_HeapAllocator : public NCollection_BaseAllocator
 
  public:
 // Declaration of CASCADE RTTI
-DEFINE_STANDARD_RTTI (NCollection_HeapAllocator)
+DEFINE_STANDARD_RTTI (NCollection_HeapAllocator, NCollection_BaseAllocator)
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

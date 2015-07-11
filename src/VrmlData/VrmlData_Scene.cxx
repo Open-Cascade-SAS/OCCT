@@ -43,6 +43,8 @@
 #include <BRep_Builder.hxx>
 #include <Precision.hxx>
 #include <Standard_Version.hxx>
+#include <VrmlData_WorldInfo.hxx>
+#include <VrmlData_Geometry.hxx>
 
 #ifdef WNT
 #define _CRT_SECURE_NO_DEPRECATE

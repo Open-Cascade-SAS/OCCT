@@ -707,7 +707,7 @@ private:
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_Context) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_Context, Standard_Transient) // Type definition
 
   friend class OpenGl_Window;
 

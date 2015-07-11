@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWChangeRequest.ixx>
 #include <StepAP203_HArray1OfChangeRequestItem.hxx>
 #include <StepAP203_ChangeRequestItem.hxx>
+#include <StepBasic_VersionedActionRequest.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWChangeRequest

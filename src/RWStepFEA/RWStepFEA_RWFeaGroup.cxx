@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepFEA_RWFeaGroup.ixx>
+#include <StepFEA_FeaModel.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaGroup

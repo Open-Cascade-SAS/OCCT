@@ -27,6 +27,7 @@
 #include <Expr_Product.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr.hxx>
+#include <Expr_NumericValue.hxx>
 
 Expr_UnaryFunction::Expr_UnaryFunction (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_GeneralExpression)& exp)
 {

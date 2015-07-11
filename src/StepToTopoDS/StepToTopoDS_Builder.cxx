@@ -85,6 +85,10 @@
 #include <Message_Messenger.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <STEPControl_ActorRead.hxx>
+#include <StepGeom_CurveBoundedSurface.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_FaceSurface.hxx>
 
 static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
 {

@@ -18,6 +18,7 @@
 
 #include <IGESDraw_View.ixx>
 #include <gp_GTrsf.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 
 
 IGESDraw_View::IGESDraw_View ()    {  }

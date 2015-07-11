@@ -356,7 +356,7 @@ class TObj_Model : public MMgt_TShared
 
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_Model)
+  DEFINE_STANDARD_RTTI(TObj_Model, MMgt_TShared)
 };
 
 //! The Model Handle is defined in a separate header file

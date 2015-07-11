@@ -18,6 +18,7 @@
 #include <RWStepFEA_RWElementGroup.ixx>
 #include <StepFEA_HArray1OfElementRepresentation.hxx>
 #include <StepFEA_ElementRepresentation.hxx>
+#include <StepFEA_FeaModel.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWElementGroup

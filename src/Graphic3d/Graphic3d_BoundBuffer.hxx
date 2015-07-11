@@ -65,7 +65,7 @@ public:
 
 public:
 
-  DEFINE_STANDARD_RTTI(Graphic3d_BoundBuffer) // Type definition
+  DEFINE_STANDARD_RTTI(Graphic3d_BoundBuffer, NCollection_Buffer) // Type definition
 
 };
 

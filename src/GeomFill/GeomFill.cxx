@@ -36,6 +36,7 @@
 #include <GeomFill_PolynomialConvertor.hxx>
 #include <GeomFill_QuasiAngularConvertor.hxx>
 #include <Precision.hxx>
+#include <Geom_Curve.hxx>
 
 
 //=======================================================================

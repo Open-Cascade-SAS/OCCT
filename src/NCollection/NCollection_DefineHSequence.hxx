@@ -18,7 +18,7 @@
 #ifndef NCollection_DefineHSequence_HeaderFile
 #define NCollection_DefineHSequence_HeaderFile
 
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <NCollection_DefineSequence.hxx>
 #include <MMgt_TShared.hxx>
 
@@ -43,11 +43,11 @@ class HClassName : public _SequenceType_, public MMgt_TShared {                \
    void Append (const Handle(HClassName)& theOther) {                          \
      _SequenceType_::Append (theOther->ChangeSequence());                      \
    }                                                                           \
-   DEFINE_STANDARD_RTTI (HClassName)                              \
+   DEFINE_STANDARD_RTTI (HClassName, MMgt_TShared)                              \
 };
 
-#define IMPLEMENT_HSEQUENCE(HClassName)                                        \
-IMPLEMENT_STANDARD_HANDLE  (HClassName, MMgt_TShared)                          \
-IMPLEMENT_STANDARD_RTTIEXT (HClassName, MMgt_TShared)
+#define IMPLEMENT_HSEQUENCE(HClassName)                                        
+
+
 
 #endif

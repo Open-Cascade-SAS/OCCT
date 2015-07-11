@@ -15,7 +15,7 @@
 #define _MeshTest_DrawableMesh_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Draw_Drawable3D.hxx>
@@ -60,7 +60,7 @@ public:
   
   Standard_EXPORT const Handle(BRepMesh_IncrementalMesh)& Mesher() const;
 
-  DEFINE_STANDARD_RTTI(MeshTest_DrawableMesh)
+  DEFINE_STANDARD_RTTI(MeshTest_DrawableMesh, Draw_Drawable3D)
 
 private: 
 

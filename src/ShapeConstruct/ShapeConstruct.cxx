@@ -48,6 +48,10 @@
 #include <Geom_Plane.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 //=======================================================================
 //function : ConvertCurveToBSpline

@@ -16,6 +16,7 @@
 
 #include <RWStepBasic_RWConversionBasedUnitAndAreaUnit.ixx>
 #include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
 
 RWStepBasic_RWConversionBasedUnitAndAreaUnit::RWStepBasic_RWConversionBasedUnitAndAreaUnit ()
 {

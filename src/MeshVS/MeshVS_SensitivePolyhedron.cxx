@@ -26,8 +26,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 
 //================================================================
 // Function : Constructor MeshVS_SensitivePolyhedron

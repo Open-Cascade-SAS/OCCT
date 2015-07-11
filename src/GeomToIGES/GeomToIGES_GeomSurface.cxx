@@ -102,6 +102,7 @@
 #include <IGESSolid_SphericalSurface.hxx>
 #include <IGESSolid_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_ElementarySurface.hxx>
 
 
 //=============================================================================

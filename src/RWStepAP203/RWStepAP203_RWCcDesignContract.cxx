@@ -19,6 +19,7 @@
 #include <RWStepAP203_RWCcDesignContract.ixx>
 #include <StepAP203_HArray1OfContractedItem.hxx>
 #include <StepAP203_ContractedItem.hxx>
+#include <StepBasic_Contract.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignContract

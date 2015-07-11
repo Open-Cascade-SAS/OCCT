@@ -16,6 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepDimTol_RWDatumReference.ixx>
+#include <StepDimTol_Datum.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWDatumReference

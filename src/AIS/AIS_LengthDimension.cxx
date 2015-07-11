@@ -34,8 +34,6 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(AIS_LengthDimension, AIS_Dimension)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_LengthDimension, AIS_Dimension)
 
 //=======================================================================
 //function : Constructor

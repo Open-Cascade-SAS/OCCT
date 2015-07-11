@@ -51,6 +51,7 @@
 #include <DrawTrSurf_Curve.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DrawTrSurf.hxx>
+#include <Draw_Marker3D.hxx>
 
 class TSEEpar {
 public:

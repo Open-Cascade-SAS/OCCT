@@ -13,6 +13,8 @@
 
 #include <StepAP214_PresentedItemSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
 
 StepAP214_PresentedItemSelect::StepAP214_PresentedItemSelect ()    {  }
 

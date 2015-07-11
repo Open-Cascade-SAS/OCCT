@@ -17,6 +17,7 @@
 
 #include <RWStepDimTol_RWCommonDatum.ixx>
 #include <StepDimTol_Datum.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWCommonDatum

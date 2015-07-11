@@ -40,6 +40,7 @@
 
 #ifdef DRAW
 #include <TopOpeBRepTool_DRAW.hxx>
+#include <Geom2d_Curve.hxx>
 #endif
 
 #ifdef OCCT_DEBUG

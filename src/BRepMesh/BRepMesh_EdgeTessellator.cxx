@@ -31,8 +31,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (BRepMesh_EdgeTessellator, BRepMesh_IEdgeTool)
-IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeTessellator, BRepMesh_IEdgeTool)
 
 //=======================================================================
 //function : Constructor

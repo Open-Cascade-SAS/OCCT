@@ -84,6 +84,7 @@
 #include <Geom_OffsetSurface.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
+#include <Geom_Line.hxx>
 
 
 //=============================================================================

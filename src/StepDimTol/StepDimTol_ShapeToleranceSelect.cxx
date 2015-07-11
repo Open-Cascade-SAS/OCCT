@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <StepDimTol_ShapeToleranceSelect.ixx>
+#include <StepDimTol_GeometricTolerance.hxx>
+#include <StepShape_PlusMinusTolerance.hxx>
 
 //=======================================================================
 //function : StepDimTol_ShapeToleranceSelect

@@ -16,6 +16,8 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <RWStepRepr_RWMaterialPropertyRepresentation.ixx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_DataEnvironment.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWMaterialPropertyRepresentation

@@ -62,7 +62,7 @@ class VUserDrawObj : public AIS_InteractiveObject
 {
 public:
     // CASCADE RTTI
-    DEFINE_STANDARD_RTTI(VUserDrawObj);
+    DEFINE_STANDARD_RTTI(VUserDrawObj, AIS_InteractiveObject);
 
     VUserDrawObj()
     {
@@ -125,8 +125,7 @@ private:
 
     friend class Element;
 };
-IMPLEMENT_STANDARD_HANDLE(VUserDrawObj, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(VUserDrawObj, AIS_InteractiveObject)
+
 
 void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
                            const Handle(Prs3d_Presentation)& thePresentation,

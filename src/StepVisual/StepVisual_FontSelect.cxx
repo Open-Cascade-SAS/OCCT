@@ -13,6 +13,8 @@
 
 #include <StepVisual_FontSelect.ixx>
 #include <Interface_Macros.hxx>
+#include <StepVisual_PreDefinedTextFont.hxx>
+#include <StepVisual_ExternallyDefinedTextFont.hxx>
 
 StepVisual_FontSelect::StepVisual_FontSelect () {  }
 

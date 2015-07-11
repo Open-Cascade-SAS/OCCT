@@ -96,6 +96,7 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <IntPatch_ALine.hxx>
 
 static
   void Parameters(const Handle(GeomAdaptor_HSurface)& HS1,

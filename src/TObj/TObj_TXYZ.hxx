@@ -87,7 +87,7 @@ class TObj_TXYZ : public TDF_Attribute
   
  public:
   //! CASCADE RTTI
-  DEFINE_STANDARD_RTTI(TObj_TXYZ)
+  DEFINE_STANDARD_RTTI(TObj_TXYZ, TDF_Attribute)
 };
 
 //! Define handle class for TObj_TXYZ

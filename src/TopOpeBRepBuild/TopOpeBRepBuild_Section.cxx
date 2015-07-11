@@ -156,6 +156,7 @@ static Standard_Boolean FUN_PinE(const gp_Pnt& P, const TopoDS_Edge& E)
 }
 
 #include <BRep_Tool.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 //-----------------------------------------------------------------------
 static Standard_Boolean FUN_EstaEE(const TopoDS_Edge& E, const TopAbs_State sta, const TopoDS_Edge& EE)
 //-----------------------------------------------------------------------

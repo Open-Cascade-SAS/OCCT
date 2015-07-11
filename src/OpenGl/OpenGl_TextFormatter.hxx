@@ -136,7 +136,7 @@ protected: //! @name temporary variables for formatting routines
 
 public:
 
-  DEFINE_STANDARD_RTTI(OpenGl_TextFormatter) // Type definition
+  DEFINE_STANDARD_RTTI(OpenGl_TextFormatter, Standard_Transient) // Type definition
 
 };
 

@@ -17,6 +17,7 @@
 #include <RWStepBasic_RWSiUnitAndVolumeUnit.ixx>
 #include <StepBasic_SiUnit.hxx>
 #include <RWStepBasic_RWSiUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
 
 RWStepBasic_RWSiUnitAndVolumeUnit::RWStepBasic_RWSiUnitAndVolumeUnit()
 {

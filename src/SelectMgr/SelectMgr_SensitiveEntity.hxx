@@ -19,7 +19,7 @@
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <Handle_SelectBasics_SensitiveEntity.hxx>
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
+#include <Standard_Type.hxx>
 
 //! The purpose of this class is to mark sensitive entities selectable or not
 //! depending on current active selection of parent object for proper BVH traverse
@@ -48,7 +48,7 @@ public:
   //! Marks entity as active for selection
   Standard_EXPORT void SetActiveForSelection() const;
 
-  DEFINE_STANDARD_RTTI(SelectMgr_SensitiveEntity) // Type definition
+  DEFINE_STANDARD_RTTI(SelectMgr_SensitiveEntity, Standard_Transient) // Type definition
 
 private:
 

@@ -38,6 +38,7 @@
 #include <Standard_ErrorHandler.hxx>
 
 #include <BinTools.hxx>
+#include <Geom2d_Curve.hxx>
 
 #define LINE      1
 #define CIRCLE    2

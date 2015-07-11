@@ -41,6 +41,18 @@
 #include <gp_Trsf2d.hxx>
 #include <Poly.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <DrawTrSurf_Curve.hxx>
+#include <DrawTrSurf_Curve2d.hxx>
+#include <DrawTrSurf_Surface.hxx>
+#include <DrawTrSurf_Drawable.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 static Draw_Color       PntColor(Draw_rouge);
 static Draw_Color       CurvColor(Draw_jaune);

@@ -1933,7 +1933,7 @@ class FilledCircle : public AIS_InteractiveObject
 {
 public:
     // CASCADE RTTI
-    DEFINE_STANDARD_RTTI(FilledCircle); 
+    DEFINE_STANDARD_RTTI(FilledCircle, AIS_InteractiveObject); 
 
     FilledCircle(gp_Pnt theCenter, Standard_Real theRadius);
     FilledCircle(Handle(Geom_Circle) theCircle);
@@ -1955,8 +1955,6 @@ protected:
 
 }; 
 
-IMPLEMENT_STANDARD_HANDLE(FilledCircle, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(FilledCircle, AIS_InteractiveObject)
 
 FilledCircle::FilledCircle(gp_Pnt theCenter, Standard_Real theRadius) 
 {
@@ -2656,6 +2654,7 @@ static int VDrawText (Draw_Interpretor& theDI,
 #include <TopExp_Explorer.hxx>
 #include <TopAbs.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
+#include <AIS_InteractiveObject.hxx>
 
 
 //===============================================================================================
@@ -3148,7 +3147,7 @@ public:
     myMarkerAspect = theMarkerAspect;
   }
 
-  DEFINE_STANDARD_RTTI(MyPArrayObject);
+  DEFINE_STANDARD_RTTI(MyPArrayObject, AIS_InteractiveObject);
 
 private:
 
@@ -3172,8 +3171,6 @@ protected:
 
 };
 
-IMPLEMENT_STANDARD_HANDLE(MyPArrayObject, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(MyPArrayObject, AIS_InteractiveObject)
 
 void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                               const Handle(Prs3d_Presentation)& aPresentation,
@@ -4337,7 +4334,7 @@ class Triangle: public AIS_InteractiveObject
 {
 public: 
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(Triangle);
+  DEFINE_STANDARD_RTTI(Triangle, AIS_InteractiveObject);
   Triangle (const gp_Pnt& theP1, 
             const gp_Pnt& theP2, 
             const gp_Pnt& theP3);
@@ -4353,8 +4350,7 @@ private:
   gp_Pnt myPoint2;
   gp_Pnt myPoint3;
 };
-IMPLEMENT_STANDARD_HANDLE(Triangle, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(Triangle, AIS_InteractiveObject)
+
 
 Triangle::Triangle (const gp_Pnt& theP1,
                     const gp_Pnt& theP2,
@@ -4532,7 +4528,7 @@ class SegmentObject: public AIS_InteractiveObject
 {
 public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(SegmentObject); 
+  DEFINE_STANDARD_RTTI(SegmentObject, AIS_InteractiveObject); 
   SegmentObject (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2);
 protected:
   void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
@@ -4545,8 +4541,7 @@ private:
   gp_Pnt myPoint1;
   gp_Pnt myPoint2;
 };
-IMPLEMENT_STANDARD_HANDLE(SegmentObject, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(SegmentObject, AIS_InteractiveObject)
+
 
 SegmentObject::SegmentObject (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
 {
@@ -4922,7 +4917,7 @@ public:
     myMarkerAspect = theMarkerAspect;
   }
 
-  DEFINE_STANDARD_RTTI(MyPArrayObject);
+  DEFINE_STANDARD_RTTI(MyPArrayObject, AIS_InteractiveObject);
 
 private:
 
@@ -4940,8 +4935,6 @@ protected:
   Handle(Graphic3d_AspectMarker3d) myMarkerAspect;
 };
 
-IMPLEMENT_STANDARD_HANDLE(ViewerTest_MarkersArrayObject, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_MarkersArrayObject, AIS_InteractiveObject)
 
 void ViewerTest_MarkersArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                               const Handle(Prs3d_Presentation)& aPresentation,
