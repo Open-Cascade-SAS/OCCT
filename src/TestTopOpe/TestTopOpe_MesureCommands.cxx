@@ -14,18 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpe.ixx>
 
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
-#include <TestTopOpeDraw_DrawableMesure.hxx>
 #include <DrawTrSurf_Curve.hxx>
-
-#include <TestTopOpeTools_Mesure.hxx>
-#include <TestTopOpeTools_HArray1OfMesure.hxx>
-#include <TestTopOpeDraw_Array1OfDrawableMesure.hxx>
-#include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
+#include <TColStd_Array1OfTransient.hxx>
+#include <TestTopOpe.hxx>
+#include <TestTopOpeDraw_Array1OfDrawableMesure.hxx>
+#include <TestTopOpeDraw_DrawableMesure.hxx>
+#include <TestTopOpeTools_HArray1OfMesure.hxx>
+#include <TestTopOpeTools_Mesure.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 
 #ifdef WNT
 Standard_IMPORT Draw_Viewer dout;

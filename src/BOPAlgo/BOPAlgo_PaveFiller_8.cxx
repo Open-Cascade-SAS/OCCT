@@ -15,39 +15,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
 
-#include <Precision.hxx>
-
-#include <NCollection_IncAllocator.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <ElCLib.hxx>
-
-#include <IntRes2d_IntersectionPoint.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dInt_GInter.hxx>
-
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPCol_ListOfInteger.hxx>
-
-#include <BOPDS_ShapeInfo.hxx>
+#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntTools_Context.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <Precision.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 static
   void MakeSplitEdge1 (const TopoDS_Edge&   aE,

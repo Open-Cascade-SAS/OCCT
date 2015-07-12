@@ -15,21 +15,25 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWVolume3dElementRepresentation.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWVolume3dElementRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <StepElement_Volume3dElementDescriptor.hxx>
+#include <StepFEA_FeaModel3d.hxx>
 #include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <StepFEA_Volume3dElementRepresentation.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
-#include <StepFEA_FeaModel3d.hxx>
-#include <StepElement_Volume3dElementDescriptor.hxx>
-#include <StepElement_ElementMaterial.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWVolume3dElementRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWVolume3dElementRepresentation::RWStepFEA_RWVolume3dElementRepresentation ()
 {
 }

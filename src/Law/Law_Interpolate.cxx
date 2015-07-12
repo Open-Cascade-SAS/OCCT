@@ -16,19 +16,20 @@
 
 // Programme cree 
 
-#include <Law_Interpolate.ixx>
-#include <Standard_ConstructionError.hxx>
-#include <PLib.hxx>
 #include <BSplCLib.hxx>
+#include <gp_Pnt.hxx>
+#include <Law_BSpline.hxx>
+#include <Law_Interpolate.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <gp_Pnt.hxx>
 
 //=======================================================================
 //function : CheckParameters
 //purpose  : 
 //=======================================================================
-
 static Standard_Boolean CheckParameters
 (const TColStd_Array1OfReal&  Parameters) 
 {

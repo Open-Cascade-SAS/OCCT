@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWCartesianTransformationOperator.ixx>
-#include <StepGeom_Direction.hxx>
-#include <StepGeom_CartesianPoint.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWCartesianTransformationOperator.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_CartesianTransformationOperator.hxx>
-
+#include <StepGeom_Direction.hxx>
 
 RWStepGeom_RWCartesianTransformationOperator::RWStepGeom_RWCartesianTransformationOperator () {}
 

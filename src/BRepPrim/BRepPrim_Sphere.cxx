@@ -14,18 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Sphere.ixx>
 
-#include <gp.hxx>
-#include <gp_Ax2d.hxx>
-#include <Precision.hxx>
-
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_Circle.hxx>
+#include <BRepPrim_Sphere.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TopoDS_Face.hxx>
 
 // parameters on the meridian
-
 #define PMIN (-0.5*M_PI)
 #define PMAX (0.5*M_PI)
 

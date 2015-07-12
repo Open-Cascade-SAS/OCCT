@@ -14,21 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DDataStd.ixx> 
+
+#include <DDataStd.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TDataStd.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataStd_RealEnum.hxx>
+#include <TDataXtd.hxx>
+#include <TDataXtd_Constraint.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
-#include <TDataStd.hxx>
-#include <TDataXtd.hxx>
-#include <TDataStd_RealEnum.hxx>
-#include <TDataStd_Real.hxx>
 #include <TNaming_NamedShape.hxx>
 
 //=======================================================================
 //function : AllCommands
 //purpose  : 
 //=======================================================================
-
 void DDataStd::AllCommands (Draw_Interpretor& theCommands)
 {   
   NamedShapeCommands (theCommands);  

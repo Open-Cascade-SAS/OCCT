@@ -17,7 +17,9 @@
 //                                                                        +
 //=========================================================================
 
-#include <Geom2dGcc.ixx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc.hxx>
+#include <Geom2dGcc_QualifiedCurve.hxx>
 
 Geom2dGcc_QualifiedCurve
   Geom2dGcc::Unqualified(const Geom2dAdaptor_Curve& Curve) {

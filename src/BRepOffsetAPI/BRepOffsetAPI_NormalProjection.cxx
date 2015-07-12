@@ -14,7 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_NormalProjection.ixx>
+
+#include <BRepOffsetAPI_NormalProjection.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 
 BRepOffsetAPI_NormalProjection::BRepOffsetAPI_NormalProjection()
 {

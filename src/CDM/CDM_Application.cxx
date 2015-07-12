@@ -14,14 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_Application.ixx>
+
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <CDM_MetaData.hxx>
 #include <CDM_NullMessageDriver.hxx>
+#include <CDM_Reference.hxx>
+#include <Resource_Manager.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 //=======================================================================
 //function : SetDocumentVersion
 //purpose  : 
 //=======================================================================
-
 void CDM_Application::SetDocumentVersion
                         (const Handle(CDM_Document)& aDocument,
                          const Handle(CDM_MetaData)& aMetaData) const

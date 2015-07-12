@@ -11,10 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_ConversionBasedUnitAndSolidAngleUnit.ixx>
-#include <StepBasic_ConversionBasedUnit.hxx>
-#include <StepBasic_SolidAngleUnit.hxx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_ConversionBasedUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndSolidAngleUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_SolidAngleUnit.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepBasic_ConversionBasedUnitAndSolidAngleUnit::StepBasic_ConversionBasedUnitAndSolidAngleUnit ()
 {

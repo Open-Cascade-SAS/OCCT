@@ -16,26 +16,25 @@
 
 //              .cxx
 
-#include <GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface.ixx>
-#include <StdFail_NotDone.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_BSplKnotDistribution.hxx>
+#include <GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
+#include <GeomToStep_MakeCartesianPoint.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <GeomToStep_MakeCartesianPoint.hxx>
 #include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <StepGeom_KnotType.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <GeomAbs_BSplKnotDistribution.hxx>
-#include <StepGeom_KnotType.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Creation d' une bspline_Surface_with_knots_and_rational_bspline_Surface de
 // prostep a partir d' une BSplineSurface de Geom
 //=============================================================================
-
 GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface( const
     Handle(Geom_BSplineSurface)& BS )

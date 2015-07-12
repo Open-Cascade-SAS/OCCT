@@ -19,16 +19,26 @@
 
 #define No_Standard_OutOfRange
 
-#include <gp_Trsf.ixx>
-#include <gp.hxx>
-#include <Standard_ConstructionError.hxx>
 
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Quaternion.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : gp_Trsf
 //purpose  : Constructor from 2d
 //=======================================================================
-
 gp_Trsf::gp_Trsf (const gp_Trsf2d& T) : 
 scale(T.ScaleFactor()),
 shape(T.Form()),

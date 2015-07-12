@@ -13,24 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_IntPackedMapDriver.ixx>
-#include <CDM_MessageDriver.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+
+#include <BinMDataStd.hxx>
+#include <BinMDataStd_IntPackedMapDriver.hxx>
 #include <BinMDF_ADriver.hxx>
-#include <TDataStd_IntPackedMap.hxx>
-#include <TDF_Attribute.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <BinMDataStd.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <TDataStd_IntPackedMap.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataStd_IntPackedMapDriver
 //purpose  :
 //=======================================================================
-
 BinMDataStd_IntPackedMapDriver::BinMDataStd_IntPackedMapDriver
                          (const Handle(CDM_MessageDriver)& theMessageDriver)
      : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_IntPackedMap)->Name())

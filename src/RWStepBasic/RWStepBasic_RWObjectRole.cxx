@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepBasic_RWObjectRole.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWObjectRole.hxx>
+#include <StepBasic_ObjectRole.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWObjectRole
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWObjectRole::RWStepBasic_RWObjectRole ()
 {
 }

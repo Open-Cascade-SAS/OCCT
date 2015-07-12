@@ -14,8 +14,12 @@
 
 #ifndef WNT
 
+
+#include <OSD_Directory.hxx>
+#include <OSD_File.hxx>
+#include <OSD_FileNode.hxx>
+#include <OSD_Protection.hxx>
 #include <OSD_WhoAmI.hxx>
-#include <OSD_Protection.ixx>
 
 #include <sys/stat.h>
 // Ci-joint le tableau de gestion des protection (Ajout et Retrait). Les 

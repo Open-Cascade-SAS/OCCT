@@ -12,10 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_BaseSequence.ixx>
+
+#include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_DomainError.hxx>
+#include <TCollection_BaseSequence.hxx>
 #include <TCollection_SeqNode.hxx>
 
 typedef void (*DelNode) (TCollection_SeqNode*);

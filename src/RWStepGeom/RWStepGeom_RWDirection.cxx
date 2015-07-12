@@ -11,9 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWDirection.ixx>
-#include <TColStd_HArray1OfReal.hxx>
 
+#include <Interface_Check.hxx>
+#include <Interface_ShareTool.hxx>
+#include <RWStepGeom_RWDirection.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Direction.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 RWStepGeom_RWDirection::RWStepGeom_RWDirection () {}
 

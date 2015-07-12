@@ -14,14 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_MakeFace.ixx>
 
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_MakeFace
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace()
 {
 }

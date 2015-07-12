@@ -11,14 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_ReportEntity.ixx>
 
+#include <Interface_Check.hxx>
+#include <Interface_ReportEntity.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Interface_ReportEntity
 //purpose  : 
 //=======================================================================
-
 Interface_ReportEntity::Interface_ReportEntity
   (const Handle(Standard_Transient)& unknown)
 {

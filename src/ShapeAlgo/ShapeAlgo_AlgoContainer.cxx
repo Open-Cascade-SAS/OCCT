@@ -13,55 +13,55 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAlgo_AlgoContainer.ixx>
-
-#include <GeomInt_WLApprox.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntPatch_WLine.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp.hxx>
-
+#include <BRepTools.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <gp_Pnt.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
 #include <Precision.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
+#include <ShapeAlgo_AlgoContainer.hxx>
+#include <ShapeAlgo_ToolContainer.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_Wire.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeConstruct.hxx>
 #include <ShapeCustom.hxx>
 #include <ShapeCustom_Surface.hxx>
-#include <ShapeAnalysis.hxx>
-#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix.hxx>
 #include <ShapeFix_Edge.hxx>
+#include <ShapeFix_Wire.hxx>
 #include <ShapeUpgrade.hxx>
 #include <ShapeUpgrade_ShapeDivideContinuity.hxx>
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeExtend_WireData.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TopExp.hxx>
-#include <gp_Pnt.hxx>
-#include <Precision.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <BRepTools.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ShapeAlgo_AlgoContainer
 //purpose  : 
 //=======================================================================
-
 ShapeAlgo_AlgoContainer::ShapeAlgo_AlgoContainer()
 {
   myTC = new ShapeAlgo_ToolContainer;

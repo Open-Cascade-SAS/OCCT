@@ -14,33 +14,23 @@
 // commercial license or contractual agreement.
 
 //-Version	
-
 //-Design	Declaration des variables specifiques aux fonds d'ecran.
-
 //-Warning	Un fond d'ecran est defini par une couleur.
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Aspect_Background.ixx>
+
+#include <Aspect_Background.hxx>
+#include <Quantity_Color.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //	-- la couleur associee au fond d'ecran
 //	MyColor	:	Color;
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
 Aspect_Background::Aspect_Background () {
 
 Quantity_Color MatraGray (Quantity_NOC_MATRAGRAY);

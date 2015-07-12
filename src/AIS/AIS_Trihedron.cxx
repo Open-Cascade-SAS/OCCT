@@ -14,42 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Trihedron.ixx>
+
+#include <AIS_Axis.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Plane.hxx>
+#include <AIS_Point.hxx>
+#include <AIS_Trihedron.hxx>
+#include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_DatumPrs.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitivePoint.hxx>
 #include <Geom_Axis2Placement.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Point.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <gp_Dir.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Point.hxx>
+#include <Geom_Transformation.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_TextAspect.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_Structure.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <AIS_Plane.hxx>
-#include <AIS_Axis.hxx>
-#include <AIS_Point.hxx>
-#include <UnitsAPI.hxx>
-
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <Quantity_Color.hxx>
 #include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitivePoint.hxx>
+#include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-
-
+#include <UnitsAPI.hxx>
 
 //=======================================================================
 //function : AIS_Trihedron

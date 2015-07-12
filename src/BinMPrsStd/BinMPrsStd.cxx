@@ -13,17 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMPrsStd.ixx>
-#include <CDM_MessageDriver.hxx>
+
 #include <BinMDF_ADriverTable.hxx>
+#include <BinMPrsStd.hxx>
 #include <BinMPrsStd_AISPresentationDriver.hxx>
 #include <BinMPrsStd_PositionDriver.hxx>
+#include <CDM_MessageDriver.hxx>
 
 //=======================================================================
 //function : AddDrivers
 //purpose  : 
 //=======================================================================
-
 void BinMPrsStd::AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable,
 				    const Handle(CDM_MessageDriver)&   aMessageDriver)
 {

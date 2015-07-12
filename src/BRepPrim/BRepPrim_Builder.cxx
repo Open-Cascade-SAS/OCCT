@@ -14,25 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Builder.ixx>
 
+#include <BRep_Builder.hxx>
+#include <BRepPrim_Builder.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <TopoDS.hxx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-
-#include <BRepTools.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : BRepPrim_Builder
 //purpose  : constructor
 //=======================================================================
-
 BRepPrim_Builder::BRepPrim_Builder () 
 {
 }

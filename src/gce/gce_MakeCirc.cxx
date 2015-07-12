@@ -14,18 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeCirc.ixx>
 
-#include <StdFail_NotDone.hxx>
-
+#include <Extrema_ExtElC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <gce_MakeCirc.hxx>
+#include <gce_MakeDir.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 
-#include <gce_MakeDir.hxx>
-
-#include <Extrema_POnCurv.hxx>
-#include <Extrema_ExtElC.hxx>
 //=======================================================================
 //function : gce_MakeCirc
 //purpose  : 

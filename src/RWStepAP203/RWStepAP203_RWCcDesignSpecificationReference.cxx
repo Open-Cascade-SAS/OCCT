@@ -16,16 +16,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepAP203_RWCcDesignSpecificationReference.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP203_RWCcDesignSpecificationReference.hxx>
+#include <StepAP203_CcDesignSpecificationReference.hxx>
 #include <StepAP203_HArray1OfSpecifiedItem.hxx>
 #include <StepAP203_SpecifiedItem.hxx>
 #include <StepBasic_Document.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignSpecificationReference
 //purpose  : 
 //=======================================================================
-
 RWStepAP203_RWCcDesignSpecificationReference::RWStepAP203_RWCcDesignSpecificationReference ()
 {
 }

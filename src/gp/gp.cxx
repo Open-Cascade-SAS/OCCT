@@ -12,13 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gp.ixx>
+
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 //=======================================================================
 //function : Origin
 //purpose  : 
 //=======================================================================
-
 const gp_Pnt&  gp::Origin()
 {
   static gp_Pnt gp_Origin(0,0,0);

@@ -11,10 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Category.ixx>
+
+#include <Interface_Category.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_GTool.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <Interface_GeneralModule.hxx>
 
 static int init = 0;
 static Standard_CString unspec = "unspecified";

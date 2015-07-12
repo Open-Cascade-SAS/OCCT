@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWSecurityClassification.ixx>
-#include <StepBasic_SecurityClassificationLevel.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWSecurityClassification.hxx>
 #include <StepBasic_SecurityClassification.hxx>
-
+#include <StepBasic_SecurityClassificationLevel.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWSecurityClassification::RWStepBasic_RWSecurityClassification () {}
 

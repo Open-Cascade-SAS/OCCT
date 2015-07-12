@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWProductCategory.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepBasic_RWProductCategory.hxx>
+#include <StepBasic_ProductCategory.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWProductCategory::RWStepBasic_RWProductCategory () {}
 

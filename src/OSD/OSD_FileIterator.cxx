@@ -14,14 +14,18 @@
 
 #ifndef WNT
 
-#include <OSD_FileIterator.ixx>
+
+#include <OSD_File.hxx>
+#include <OSD_FileIterator.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
 #include <OSD_WhoAmI.hxx>
+#include <TCollection_AsciiString.hxx>
 
+#include <dirent.h>
 #include <stdio.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-
-# include <dirent.h>
+#include <sys/types.h>
 # define NAMLEN(dirent) strlen((dirent)->d_name)
 # ifdef VMS
 extern char *vmsify PARAMS ((char *name, int type));
@@ -254,7 +258,12 @@ Standard_Integer OSD_FileIterator::Error()const{
 #define STRICT
 #include <windows.h>
 
-#include <OSD_FileIterator.ixx>
+
+#include <OSD_File.hxx>
+#include <OSD_FileIterator.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 #define _FD (  ( PWIN32_FIND_DATAW )myData  )

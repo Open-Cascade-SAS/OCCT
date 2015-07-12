@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeOneAxis.ixx>
+
 #include <BRepBuilderAPI.hxx>
 #include <BRepPrim_OneAxis.hxx>
+#include <BRepPrimAPI_MakeOneAxis.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 
 //=======================================================================
 //function : Face
 //purpose  : 
 //=======================================================================
-
 const TopoDS_Face&  BRepPrimAPI_MakeOneAxis::Face()
 {
   Build();

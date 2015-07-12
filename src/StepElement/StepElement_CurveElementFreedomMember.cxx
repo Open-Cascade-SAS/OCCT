@@ -15,7 +15,8 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_CurveElementFreedomMember.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_CurveElementFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 static Standard_CString ECEF = "ENUMERATED_CURVE_ELEMENT_FREEDOM";

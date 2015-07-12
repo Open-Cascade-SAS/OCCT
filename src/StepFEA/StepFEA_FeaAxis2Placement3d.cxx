@@ -15,13 +15,16 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaAxis2Placement3d.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FeaAxis2Placement3d.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaAxis2Placement3d
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaAxis2Placement3d::StepFEA_FeaAxis2Placement3d ()
 {
 }

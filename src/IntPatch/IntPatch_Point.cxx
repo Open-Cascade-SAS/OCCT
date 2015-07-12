@@ -14,12 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_Point.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HVertex.hxx>
+#include <gp_Pnt.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_Transition.hxx>
 #include <Standard_DomainError.hxx>
+
 #include <stdio.h>
-
-
 void IntPatch_Point::SetValue (const gp_Pnt& Pt,
                                const Standard_Real Tol,
                                const Standard_Boolean Tangent)

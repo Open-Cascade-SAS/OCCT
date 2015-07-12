@@ -13,40 +13,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_VectorPrsBuilder.ixx>
-
-#include <MeshVS_DisplayModeFlags.hxx>
-
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfPolygons.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_ArrayOfTriangleFans.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_Group.hxx>
-
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-
-#include <Precision.hxx>
-
-#include <gp_Ax3.hxx>
-
-#include <Prs3d_Root.hxx>
 
 #include <Aspect_TypeOfLine.hxx>
-
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfTriangleFans.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <MeshVS_Buffer.hxx>
+#include <MeshVS_DataMapIteratorOfDataMapOfIntegerVector.hxx>
 #include <MeshVS_DataSource.hxx>
+#include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
-#include <MeshVS_Mesh.hxx>
 #include <MeshVS_EntityType.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfIntegerVector.hxx>
-#include <MeshVS_Buffer.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_VectorPrsBuilder.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_VectorPrsBuilder

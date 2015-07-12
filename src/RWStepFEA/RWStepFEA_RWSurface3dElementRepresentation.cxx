@@ -15,22 +15,26 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWSurface3dElementRepresentation.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepFEA_HArray1OfNodeRepresentation.hxx>
-#include <StepFEA_NodeRepresentation.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepFEA_FeaModel3d.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWSurface3dElementRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_ElementMaterial.hxx>
 #include <StepElement_Surface3dElementDescriptor.hxx>
 #include <StepElement_SurfaceElementProperty.hxx>
-#include <StepElement_ElementMaterial.hxx>
+#include <StepFEA_FeaModel3d.hxx>
+#include <StepFEA_HArray1OfNodeRepresentation.hxx>
+#include <StepFEA_NodeRepresentation.hxx>
+#include <StepFEA_Surface3dElementRepresentation.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWSurface3dElementRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWSurface3dElementRepresentation::RWStepFEA_RWSurface3dElementRepresentation ()
 {
 }

@@ -14,21 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLib_DenominatorMultiplier.ixx>
+
+#include <BSplSLib.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomLib_DenominatorMultiplier.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <BSplSLib.hxx>
 #include <math_Matrix.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 //=======================================================================
 //function :GeomLib_DenominatorMultiplier 
 //purpose  : 
 //=======================================================================
-
 GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier
        (const Handle(Geom_BSplineSurface) & Surface,
         const TColStd_Array1OfReal &        KnotVector):mySurface(Surface),

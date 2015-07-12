@@ -12,7 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_ArrayOfPoints.ixx>
+
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Standard_Type.hxx>
 
 Graphic3d_ArrayOfPoints::Graphic3d_ArrayOfPoints (const Standard_Integer theMaxVertexs,
                                                   const Standard_Boolean theHasVColors,

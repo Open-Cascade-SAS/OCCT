@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_BooleanTree.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_BooleanTree.hxx>
 #include <Standard_DimensionError.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_BooleanTree::IGESSolid_BooleanTree ()    {  }
 

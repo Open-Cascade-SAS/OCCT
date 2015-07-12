@@ -14,19 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_FaceEdgeIntersector.ixx>
-#include <TopoDS.hxx>
+
 #include <BRep_Tool.hxx>
+#include <BRepIntCurveSurface_Inter.hxx>
 #include <Geom_Curve.hxx>
-#include <TopLoc_Location.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
-#include <BRepIntCurveSurface_Inter.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRep_FaceEdgeIntersector.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TopAbs.hxx>

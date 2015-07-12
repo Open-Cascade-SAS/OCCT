@@ -12,8 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Storage_RootData.ixx>
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Persistent.hxx>
+#include <Standard_Type.hxx>
 #include <Storage_DataMapIteratorOfMapOfPers.hxx>
+#include <Storage_Root.hxx>
+#include <Storage_RootData.hxx>
+#include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Storage_RootData::Storage_RootData() : myErrorStatus(Storage_VSOk)
 {

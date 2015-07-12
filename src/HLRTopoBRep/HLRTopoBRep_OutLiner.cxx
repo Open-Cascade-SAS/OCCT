@@ -14,29 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRTopoBRep_OutLiner.ixx>
-#include <HLRTopoBRep_DSFiller.hxx>
-#include <Contap_Contour.hxx>
+
 #include <BRep_Builder.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <Contap_Contour.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <HLRTopoBRep_Data.hxx>
+#include <HLRTopoBRep_DSFiller.hxx>
+#include <HLRTopoBRep_OutLiner.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopExp.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <Extrema_ExtPC.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : OutLiner
 //purpose  : 
 //=======================================================================
-
 HLRTopoBRep_OutLiner::HLRTopoBRep_OutLiner ()
 {}
 

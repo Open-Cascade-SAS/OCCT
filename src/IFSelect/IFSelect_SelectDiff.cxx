@@ -11,9 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectDiff.ixx>
-#include <IFGraph_Compare.hxx>
 
+#include <IFGraph_Compare.hxx>
+#include <IFSelect_SelectDiff.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectDiff::IFSelect_SelectDiff ()    {  }
 

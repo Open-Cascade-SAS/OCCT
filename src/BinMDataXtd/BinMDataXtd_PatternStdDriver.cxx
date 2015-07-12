@@ -15,11 +15,14 @@
 
 // modified     13.04.2009 Sergey Zaritchny
 
-#include <BinMDataXtd_PatternStdDriver.ixx>
-
-#include <TDataStd_Real.hxx>
+#include <BinMDataXtd_PatternStdDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
 #include <TDataXtd_PatternStd.hxx>
+#include <TDF_Attribute.hxx>
 #include <TNaming_NamedShape.hxx>
 
 //=======================================================================

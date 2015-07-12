@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWCurveElementEndRelease.ixx>
-#include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWCurveElementEndRelease.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepElement_CurveElementEndReleasePacket.hxx>
+#include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
+#include <StepFEA_CurveElementEndRelease.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWCurveElementEndRelease
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWCurveElementEndRelease::RWStepFEA_RWCurveElementEndRelease ()
 {
 }

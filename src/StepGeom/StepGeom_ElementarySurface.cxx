@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_ElementarySurface.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_ElementarySurface.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_ElementarySurface::StepGeom_ElementarySurface ()  {}
 

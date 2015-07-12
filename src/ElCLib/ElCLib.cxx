@@ -20,8 +20,29 @@
 
 #define No_Standard_OutOfRange
 
-#include <ElCLib.ixx>
+
+#include <ElCLib.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 
 static Standard_Real PIPI = M_PI + M_PI;
 

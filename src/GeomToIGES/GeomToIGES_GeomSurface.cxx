@@ -18,21 +18,17 @@
 //S4181 pdn 20.04.99 implementing of writing IGES elementary surfaces.
 //szv#10:PRO19566:05Oct99 workaround against weights array loss
 
-#include <GeomToIGES_GeomSurface.ixx>
-#include <GeomToIGES_GeomCurve.hxx>
-#include <GeomToIGES_GeomPoint.hxx>
-#include <GeomToIGES_GeomVector.hxx>
-
-#include <Geom_BSplineSurface.hxx>
+#include <gce_MakeLin.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <Geom_ConicalSurface.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Direction.hxx>
+#include <Geom_ElementarySurface.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -45,35 +41,14 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_SweptSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
-
 #include <GeomLProp_SLProps.hxx>
-
-#include <IGESConvGeom_GeomBuilder.hxx>
-
-#include <IGESData_IGESEntity.hxx>
-
-#include <IGESGeom_BoundedSurface.hxx>
-#include <IGESGeom_BSplineSurface.hxx>
-#include <IGESGeom_CircularArc.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
-#include <IGESGeom_Direction.hxx>
-#include <IGESGeom_Line.hxx>
-#include <IGESGeom_OffsetSurface.hxx>
-#include <IGESGeom_Plane.hxx>
-#include <IGESGeom_Point.hxx>
-#include <IGESGeom_RuledSurface.hxx>
-#include <IGESGeom_SurfaceOfRevolution.hxx>
-#include <IGESGeom_TabulatedCylinder.hxx>
-#include <IGESGeom_TransformationMatrix.hxx>
-
-#include <IGESSolid_PlaneSurface.hxx>
-#include <Interface_Macros.hxx>
-#include <Interface_Static.hxx>
-
-#include <gce_MakeLin.hxx>
-
+#include <GeomToIGES_GeomCurve.hxx>
+#include <GeomToIGES_GeomEntity.hxx>
+#include <GeomToIGES_GeomPoint.hxx>
+#include <GeomToIGES_GeomSurface.hxx>
+#include <GeomToIGES_GeomVector.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
@@ -87,28 +62,39 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-
+#include <IGESConvGeom_GeomBuilder.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_BoundedSurface.hxx>
+#include <IGESGeom_BSplineSurface.hxx>
+#include <IGESGeom_CircularArc.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Line.hxx>
+#include <IGESGeom_OffsetSurface.hxx>
+#include <IGESGeom_Plane.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESGeom_RuledSurface.hxx>
+#include <IGESGeom_SurfaceOfRevolution.hxx>
+#include <IGESGeom_TabulatedCylinder.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <IGESSolid_CylindricalSurface.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <IGESSolid_SphericalSurface.hxx>
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <Precision.hxx>
-
 #include <ShapeAnalysis.hxx>
-#include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
-
+#include <Standard_Failure.hxx>
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <IGESSolid_CylindricalSurface.hxx>
-#include <IGESSolid_ConicalSurface.hxx>
-#include <IGESSolid_SphericalSurface.hxx>
-#include <IGESSolid_ToroidalSurface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_ElementarySurface.hxx>
-
 
 //=============================================================================
 // GeomToIGES_GeomSurface
 //=============================================================================
-
 GeomToIGES_GeomSurface::GeomToIGES_GeomSurface()
 :GeomToIGES_GeomEntity()
 {

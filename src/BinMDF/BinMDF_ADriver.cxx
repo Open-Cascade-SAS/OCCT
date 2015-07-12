@@ -13,13 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDF_ADriver.ixx>
+
+#include <BinMDF_ADriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDF_ADriver
 //purpose  : Constructor
 //=======================================================================
-
 BinMDF_ADriver::BinMDF_ADriver (const Handle(CDM_MessageDriver)& theMsgDriver,
                                 const Standard_CString           theName)
      : myMessageDriver (theMsgDriver)

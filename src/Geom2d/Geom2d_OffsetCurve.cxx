@@ -16,26 +16,31 @@
 
 //  modified by Edward AGAPOV (eap) Jan 28 2002 --- DN(), occ143(BUC60654)
 
-
-
-#include <Geom2d_OffsetCurve.ixx>
-#include <gp.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_RangeError.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <CSLib_Offset.hxx>
-#include <Geom2d_UndefinedDerivative.hxx>
-#include <Geom2d_UndefinedValue.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Parabola.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_UndefinedDerivative.hxx>
+#include <Geom2d_UndefinedValue.hxx>
+#include <gp.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom2d_OffsetCurve         OffsetCurve;
 typedef Geom2d_Curve               Curve;

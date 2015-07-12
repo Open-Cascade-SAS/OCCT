@@ -22,16 +22,26 @@
 //              Correction de la methode D2 (faute de frappe dans le code)
 //              Correction de la methode D1 (D0 inutile)
 
-
-#include <GeomPlate_Surface.ixx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_UndefinedDerivative.hxx>
+#include <Geom_UndefinedValue.hxx>
+#include <GeomPlate_Surface.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <gp_XY.hxx>
-
+#include <Plate_Plate.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomPlate_Surface
 //purpose  : 
 //=======================================================================
-
 GeomPlate_Surface::GeomPlate_Surface(const Handle(Geom_Surface)& Surfinit,const Plate_Plate& Surfinter) : mySurfinter(Surfinter),mySurfinit(Surfinit)
 {
 }

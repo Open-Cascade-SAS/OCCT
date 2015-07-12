@@ -14,31 +14,22 @@
 // commercial license or contractual agreement.
 
 // Modified	27/12/98 : FMN ; PERF: OPTIMISATION LOADER (LOPTIM)
-
-
 //-Version	
-
 //-Design	Declaration des variables specifiques aux vecteurs
-
 //-Warning	Un vecteur est defini par ses composantes ou par
 //		deux points
 //		Il peut etre normalise
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Graphic3d_Vector.ixx>
 
+#include <Graphic3d_Vector.hxx>
+#include <Graphic3d_VectorError.hxx>
 #include <Standard_Boolean.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 #define Graphic3d_Vector_MyEpsilon 0.000001
 
 //	-- les coordonnees du vecteur

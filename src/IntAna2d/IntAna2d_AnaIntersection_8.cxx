@@ -14,9 +14,18 @@
 
 //============================================ IntAna2d_AnaIntersection_8.cxx
 //============================================================================
-#include <IntAna2d_AnaIntersection.jxx>
 
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_Conic.hxx>
+#include <IntAna2d_IntPoint.hxx>
 #include <IntAna2d_Outils.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 // -----------------------------------------------------------------
 // ------ Verification de la validite des points obtenus  ----------
@@ -33,7 +42,6 @@
 // --- Si un probleme est constate : Dupliquer le code entre les
 // --- commentaires VERIF-VALID
 // -----------------------------------------------------------------
-
 void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H,
 				       const IntAna2d_Conic& Conic)
   {

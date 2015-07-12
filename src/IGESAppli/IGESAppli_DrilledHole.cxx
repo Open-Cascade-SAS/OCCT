@@ -16,8 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_DrilledHole.ixx>
-
+#include <IGESAppli_DrilledHole.hxx>
+#include <Standard_Type.hxx>
 
 IGESAppli_DrilledHole::IGESAppli_DrilledHole ()    {  }
 

@@ -11,12 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_FreeFormEntity.ixx>
+
 #include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_FreeFormEntity.hxx>
 
 void StepData_FreeFormEntity::SetStepType (const Standard_CString typenam)
       {  thetype.Clear();  thetype.AssignCat (typenam);  }

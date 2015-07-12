@@ -14,8 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeCircle.ixx>
+
+#include <GC_MakeCircle.hxx>
 #include <gce_MakeCirc.hxx>
+#include <Geom_Circle.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
 GC_MakeCircle::GC_MakeCircle(const gp_Circ& C)

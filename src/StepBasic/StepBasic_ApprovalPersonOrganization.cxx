@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_ApprovalPersonOrganization.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepBasic_ApprovalRole.hxx>
+#include <StepBasic_PersonOrganizationSelect.hxx>
 
 StepBasic_ApprovalPersonOrganization::StepBasic_ApprovalPersonOrganization ()  {}
 

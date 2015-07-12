@@ -14,8 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Plate_LinearXYZConstraint.ixx>
 
+#include <Plate_LinearXYZConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
 
 Plate_LinearXYZConstraint::Plate_LinearXYZConstraint() {}
 

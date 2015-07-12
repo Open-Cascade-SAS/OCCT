@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepShape_DimensionalCharacteristicRepresentation.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_DimensionalCharacteristic.hxx>
+#include <StepShape_DimensionalCharacteristicRepresentation.hxx>
+#include <StepShape_ShapeDimensionRepresentation.hxx>
 
 //=======================================================================
 //function : StepShape_DimensionalCharacteristicRepresentation
 //purpose  : 
 //=======================================================================
-
 StepShape_DimensionalCharacteristicRepresentation::StepShape_DimensionalCharacteristicRepresentation ()
 {
 }

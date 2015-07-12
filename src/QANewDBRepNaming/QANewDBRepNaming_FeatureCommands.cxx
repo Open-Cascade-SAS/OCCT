@@ -14,83 +14,62 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewDBRepNaming.ixx>
-
-#include <Draw.hxx>
-#include <Draw_Interpretor.hxx>
-#include <QANewDBRepNaming.hxx>
-#include <DBRep.hxx>
-
-#include <DDocStd.hxx>
-
-#include <DDF.hxx>
-
-#include <TDocStd_Document.hxx>
-#include <TDataXtd_Geometry.hxx>
-
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_Builder.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
 
 #include <BRep_Tool.hxx>
-
-#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-
-#include <QANewModTopOpe_Limitation.hxx>
-#include <QANewModTopOpe_Intersection.hxx>
-
-#include <Standard_Assert.hxx>
-
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-
 #include <BRepLib.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-
+#include <BRepTools.hxx>
+#include <DBRep.hxx>
+#include <DDF.hxx>
+#include <DDocStd.hxx>
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
 #include <GCE2d_MakeLine.hxx>
-
-#include <gp_Pnt.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-
-#include <QANewBRepNaming_Fuse.hxx>
-#include <QANewBRepNaming_Cut.hxx>
 #include <QANewBRepNaming_Common.hxx>
+#include <QANewBRepNaming_Cut.hxx>
+#include <QANewBRepNaming_Fuse.hxx>
+#include <QANewBRepNaming_Gluing.hxx>
 #include <QANewBRepNaming_Intersection.hxx>
 #include <QANewBRepNaming_Limitation.hxx>
-
-#include <BRepTools.hxx>
-#include <TDF_LabelMap.hxx>
+#include <QANewDBRepNaming.hxx>
 #include <QANewModTopOpe_Glue.hxx>
-#include <QANewBRepNaming_Gluing.hxx>
+#include <QANewModTopOpe_Intersection.hxx>
+#include <QANewModTopOpe_Limitation.hxx>
+#include <Standard_Assert.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDF_LabelMap.hxx>
+#include <TDocStd_Document.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //==============================================================
 //function : QANewDBRepNaming_NameBooleanOperationFeat
 //purpose  : NameBooleanOperationFeat Doc Label Op = 1(Fuse), 2(Cut), 3(Common), 4(Inserction) 5(Limitation) DrawShape1 DrawShape2 [Forward = 0 || Reversed = 1 || BothSides = 2] 
 //==============================================================
-
 static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpretor& di,
 							      Standard_Integer nb, 
 							      const char ** arg)

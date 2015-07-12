@@ -14,31 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepTools_TrsfModification.ixx>
 
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <BRep_Tool.hxx>
-#include <gp_GTrsf2d.hxx>
-#include <gp_TrsfForm.hxx>
-
-#include <gp.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
+#include <gp.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_TrsfForm.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
-
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
-#include <Precision.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : BRepTools_TrsfModification
 //purpose  : 
 //=======================================================================
-
 BRepTools_TrsfModification::BRepTools_TrsfModification(const gp_Trsf& T) :
 myTrsf(T)
 {

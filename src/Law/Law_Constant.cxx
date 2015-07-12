@@ -16,13 +16,15 @@
 
 // pmn -> 17/01/1996 added : Continuity, (Nb)Interals, D2, Trim
 
-#include <Law_Constant.ixx>
+#include <Law_Constant.hxx>
+#include <Law_Function.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Law_Constant
 //purpose  : 
 //=======================================================================
-
 Law_Constant::Law_Constant()
 {
 }

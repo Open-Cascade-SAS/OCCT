@@ -14,26 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeBrepWithVoids.ixx>
-#include <TopoDSToStep.hxx>
-#include <TopoDSToStep_Builder.hxx>
-#include <TopoDSToStep_Tool.hxx>
+
+#include <BRepClass3d.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
-#include <StepShape_TopologicalRepresentationItem.hxx>
-#include <StepShape_OpenShell.hxx> //:d7
+#include <StdFail_NotDone.hxx>
+#include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
-#include <StepShape_OrientedClosedShell.hxx>
 #include <StepShape_HArray1OfOrientedClosedShell.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopoDS.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
-#include <BRepClass3d.hxx>
-#include <StdFail_NotDone.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDSToStep.hxx>
+#include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeBrepWithVoids.hxx>
+#include <TopoDSToStep_Tool.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
 
+//:d7
 #ifdef OCCT_DEBUG
 #define DEBUG
 #endif

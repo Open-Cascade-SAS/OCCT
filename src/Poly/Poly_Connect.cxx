@@ -14,18 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Poly_Connect.ixx>
+
+#include <Poly_Connect.hxx>
 #include <Poly_Triangle.hxx>
-
+#include <Poly_Triangulation.hxx>
 #include <Standard.hxx>
-
 
 //=======================================================================
 //function : Poly_Connect
 //purpose  : 
 //=======================================================================
 // this structure records one of the edges starting from a node
-
 //typedef struct polyedge {
 struct polyedge {
     polyedge* next;             // the next edge in the list

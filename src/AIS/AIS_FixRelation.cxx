@@ -14,54 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_FixRelation.ixx>
-
+#include <AIS.hxx>
+#include <AIS_FixRelation.hxx>
 #include <AIS_Shape.hxx>
-
-#include <TopAbs_ShapeEnum.hxx>
-
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
+#include <DsgPrs_FixPresentation.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_ListIteratorOfListOfTransient.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Plane.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_XYZ.hxx>
-
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-
-#include <Precision.hxx>
-
-#include <Standard_DomainError.hxx>
-
-#include <DsgPrs_FixPresentation.hxx>
-
-#include <AIS.hxx>
 
 static Standard_Boolean InDomain(const Standard_Real fpar,
 					const Standard_Real lpar,

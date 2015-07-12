@@ -16,8 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_EdgeList.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_EdgeList.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_EdgeList::IGESSolid_EdgeList ()    {  }
 

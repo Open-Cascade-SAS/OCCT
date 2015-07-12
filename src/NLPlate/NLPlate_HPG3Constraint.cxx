@@ -14,7 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <NLPlate_HPG3Constraint.ixx>
+
+#include <gp_XY.hxx>
+#include <NLPlate_HPG3Constraint.hxx>
+#include <Plate_D1.hxx>
+#include <Plate_D2.hxx>
+#include <Plate_D3.hxx>
+#include <Standard_Type.hxx>
 
 NLPlate_HPG3Constraint::NLPlate_HPG3Constraint(const gp_XY& UV,const Plate_D1& D1T,const Plate_D2& D2T,const Plate_D3& D3T)
 :NLPlate_HPG2Constraint(UV,D1T,D2T),myG3Target(D3T)

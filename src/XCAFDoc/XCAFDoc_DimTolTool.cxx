@@ -11,24 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_DimTolTool.ixx>
 
+#include <Precision.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_ChildIDIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 #include <XCAFDoc.hxx>
-#include <XCAFDoc_DimTol.hxx>
 #include <XCAFDoc_Datum.hxx>
+#include <XCAFDoc_DimTol.hxx>
+#include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDF_ChildIDIterator.hxx>
-#include <Precision.hxx>
-
+#include <XCAFDoc_ShapeTool.hxx>
 
 //=======================================================================
 //function : XCAFDoc_DimTolTool
 //purpose  : 
 //=======================================================================
-
 XCAFDoc_DimTolTool::XCAFDoc_DimTolTool()
 {
 }

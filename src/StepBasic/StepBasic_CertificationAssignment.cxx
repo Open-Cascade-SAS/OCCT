@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepBasic_CertificationAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Certification.hxx>
+#include <StepBasic_CertificationAssignment.hxx>
 
 //=======================================================================
 //function : StepBasic_CertificationAssignment
 //purpose  : 
 //=======================================================================
-
 StepBasic_CertificationAssignment::StepBasic_CertificationAssignment ()
 {
 }

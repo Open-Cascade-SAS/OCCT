@@ -12,68 +12,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_AlgoTools3D.ixx>
 
 #include <Bnd_Box.hxx>
-#include <Poly_Triangulation.hxx>
-
-#include <gp_Vec2d.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Cylinder.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dHatch_Hatcher.hxx>
-#include <HatchGen_Domain.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_TVertex.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
 #include <BRep_PointRepresentation.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_CurveRepresentation.hxx>
 #include <BRep_TFace.hxx>
-
-#include <BRepTools.hxx>
-#include <BRepBndLib.hxx>
+#include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
 #include <BRepAdaptor_Surface.hxx>
-
+#include <BRepBndLib.hxx>
+#include <BRepGProp.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Hatcher.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <GProp_GProps.hxx>
+#include <HatchGen_Domain.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_Tools.hxx>
+#include <Poly_Triangulation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-
-#include <IntTools_Tools.hxx>
-#include <IntTools_Context.hxx>
-
-#include <BOPTools_AlgoTools2D.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 static void Add(const TopoDS_Shape& aS,
                 BOPCol_IndexedMapOfShape& myShapes, 

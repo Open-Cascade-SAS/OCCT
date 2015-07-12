@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Hatch_Line.ixx>
+
+#include <gp_Lin2d.hxx>
+#include <Hatch_Hatcher.hxx>
+#include <Hatch_Line.hxx>
 #include <Hatch_Parameter.hxx>
 
 //=======================================================================
 //function : Hatch_Line
 //purpose  : 
 //=======================================================================
-
 Hatch_Line::Hatch_Line()
 {
 }

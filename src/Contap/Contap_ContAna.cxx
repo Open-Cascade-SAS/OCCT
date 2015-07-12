@@ -14,10 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Contap_ContAna.ixx>
 
-#include <gp_XYZ.hxx>
+#include <Contap_ContAna.hxx>
 #include <gp.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 #define Tolpetit 1.e-8
 

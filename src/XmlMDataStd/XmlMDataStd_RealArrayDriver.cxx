@@ -15,16 +15,20 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-# include <stdio.h>
-#include <XmlMDataStd_RealArrayDriver.ixx>
-#include <TDataStd_RealArray.hxx>
-#include <XmlObjMgt.hxx>
-#include <XmlMDataStd.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfMemory.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TDataStd_RealArray.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd.hxx>
+#include <XmlMDataStd_RealArrayDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
+#include <stdio.h>
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString, "last")
 IMPLEMENT_DOMSTRING (IsDeltaOn,       "delta")

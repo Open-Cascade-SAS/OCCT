@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_LoopSet.ixx>
+
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_LoopSet.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_LoopSet
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_LoopSet::TopOpeBRepBuild_LoopSet() : 
 myLoopIndex(1), myNbLoop(0)
 {

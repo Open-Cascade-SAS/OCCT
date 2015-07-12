@@ -14,33 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Contap_Contour.ixx>
 
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HSurfaceTool.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <Bnd_Box.hxx>
+#include <BndLib_AddSurface.hxx>
+#include <Contap_ContAna.hxx>
+#include <Contap_Contour.hxx>
+#include <Contap_HContTool.hxx>
+#include <Contap_HCurve2dTool.hxx>
+#include <Contap_Line.hxx>
+#include <Contap_SurfFunction.hxx>
+#include <Contap_SurfProps.hxx>
+#include <Contap_TheIWalking.hxx>
+#include <Contap_ThePathPointOfTheSearch.hxx>
+#include <Contap_TheSegmentOfTheSearch.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-
-#include <math_FunctionSetRoot.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <IntSurf.hxx>
 #include <IntSurf_InteriorPoint.hxx>
 #include <IntSurf_SequenceOfPathPoint.hxx>
-
-#include <TopTrans_CurveTransition.hxx>
-
+#include <math_FunctionSetRoot.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-
-#include <BndLib_AddSurface.hxx>
-#include <Bnd_Box.hxx>
-
-#include <Adaptor3d_HSurfaceTool.hxx>
-
-#include <Contap_ContAna.hxx>
-#include <Contap_HContTool.hxx>
-#include <Contap_HCurve2dTool.hxx>
-#include <Contap_SurfProps.hxx>
-#include <Contap_TheIWalking.hxx>
-#include <Contap_TheSegmentOfTheSearch.hxx>
-#include <Contap_ThePathPointOfTheSearch.hxx>
+#include <TopTrans_CurveTransition.hxx>
 
 #define Tolpetit 1.e-10  // pour dist au carre
 

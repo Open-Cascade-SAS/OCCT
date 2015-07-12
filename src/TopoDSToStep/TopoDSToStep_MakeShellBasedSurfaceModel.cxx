@@ -14,35 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeShellBasedSurfaceModel.ixx>
+
+#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_HArray1OfShell.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_Shell.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeShellBasedSurfaceModel.hxx>
 #include <TopoDSToStep_Tool.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
-#include <StepShape_Shell.hxx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_ClosedShell.hxx>
-#include <StepShape_TopologicalRepresentationItem.hxx>
-#include <StepShape_ConnectedFaceSet.hxx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_ClosedShell.hxx>
-#include <StepShape_FaceSurface.hxx>
-#include <StepShape_HArray1OfShell.hxx>
-#include <StepShape_HArray1OfFace.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-
-#include <TColStd_SequenceOfTransient.hxx>
-#include <StdFail_NotDone.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Create a ShellBasedSurfaceModel of StepShape from a Face of TopoDS
 //=============================================================================
-
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& aFace,
                                           const Handle(Transfer_FinderProcess)& FP)

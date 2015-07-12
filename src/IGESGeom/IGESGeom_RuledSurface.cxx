@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_RuledSurface.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_RuledSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_RuledSurface::IGESGeom_RuledSurface ()    {  }
 

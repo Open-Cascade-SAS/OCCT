@@ -17,16 +17,13 @@
 //:n3 abv 8 Feb 99: PRO17820: BRepTools::OuterWire() -> ShapeAnalysis::OuterWire
 //szv#4 S4163
 
-#include <BRepToIGES_BRShell.ixx>
-#include <BRepToIGES_BRWire.hxx>
-
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepToIGES_BREntity.hxx>
+#include <BRepToIGES_BRShell.hxx>
+#include <BRepToIGES_BRWire.hxx>
 #include <BRepTools.hxx>
-
-#include <gp.hxx>
-#include <gp_Trsf.hxx>
-
+#include <Geom2d_Curve.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -34,52 +31,40 @@
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <Geom2d_Curve.hxx>
-
 #include <GeomToIGES_GeomSurface.hxx>
-
+#include <gp.hxx>
+#include <gp_Trsf.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
-
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_HArray1OfCurveOnSurface.hxx>
-#include <IGESGeom_TrimmedSurface.hxx>
 #include <IGESGeom_SurfaceOfRevolution.hxx>
-
+#include <IGESGeom_TrimmedSurface.hxx>
 #include <Interface_Macros.hxx>
-
-#include <NCollection_Map.hxx>
+#include <Message_ProgressIndicator.hxx>
 #include <NCollection_IncAllocator.hxx>
-
+#include <NCollection_Map.hxx>
+#include <ShapeAlgo.hxx>
+#include <ShapeAlgo_AlgoContainer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-
-#include <TopLoc_Location.hxx>
-
-#include <TopTools_ShapeMapHasher.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
-
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-
-#include <ShapeAlgo.hxx>
-#include <ShapeAlgo_AlgoContainer.hxx>
-
-#include <Message_ProgressIndicator.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <Transfer_FinderProcess.hxx>
 
 //=============================================================================
 // BRepToIGES_BRShell
 //=============================================================================
-
 BRepToIGES_BRShell::BRepToIGES_BRShell()
 {
 }

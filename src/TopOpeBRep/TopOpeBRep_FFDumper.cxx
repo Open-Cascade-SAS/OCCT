@@ -14,25 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_FFDumper.ixx>
-#include <TopExp_Explorer.hxx>
+
+#include <BRep_Tool.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <IntPatch_GLine.hxx>
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
-#include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_VPointInterIterator.hxx>
-#include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRep.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <BRep_Tool.hxx>
-#include <TopOpeBRep_FFTransitionTool.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <TopOpeBRep_FacesFiller.hxx>
+#include <TopOpeBRep.hxx>
 #include <TopOpeBRep_define.hxx>
-#include <IntPatch_GLine.hxx>
+#include <TopOpeBRep_FacesFiller.hxx>
+#include <TopOpeBRep_FacesIntersector.hxx>
+#include <TopOpeBRep_FFDumper.hxx>
+#include <TopOpeBRep_FFTransitionTool.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRep_VPointInterIterator.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 

@@ -13,20 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe_Limitation.ixx>
 
 #include <BRep_Builder.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <QANewModTopOpe_Limitation.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopAbs.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Common.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Standard_ConstructionError.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-
 
 static TopoDS_Shape MakeCutTool(const TopoDS_Shape& theS2)
 {

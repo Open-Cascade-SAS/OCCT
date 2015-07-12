@@ -13,35 +13,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe_Glue.ixx>
-#include <Precision.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
+
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
+#include <BRepAlgo_EdgeConnector.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepLib.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <QANewModTopOpe_Glue.hxx>
+#include <QANewModTopOpe_Tools.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <BRepAlgo_EdgeConnector.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <BRep_Builder.hxx>
-#include <QANewModTopOpe_Tools.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 
 //=======================================================================
 //function : SplitEdgeComplete
 //purpose  : static
 //=======================================================================
-
 static void
 SplitEdgeComplete (const TopoDS_Edge& theEdge,
 		   TopTools_ListOfShape& theListSplits)

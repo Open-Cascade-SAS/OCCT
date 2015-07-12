@@ -14,15 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeExtend_CompositeSurface.ixx>
-#include <Precision.hxx>
+
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
 #include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : ShapeExtend_CompositeSurface
 //purpose  : 
 //=======================================================================
-
 ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface()
 {
 }

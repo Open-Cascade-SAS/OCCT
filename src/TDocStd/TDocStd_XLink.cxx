@@ -14,30 +14,32 @@
 // commercial license or contractual agreement.
 
 //      	--------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Sep 15 1997	Creation
 
-
-
-#include <TDocStd_XLink.ixx>
-
+#include <Standard_GUID.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
 #include <TDF_DeltaOnAddition.hxx>
 #include <TDF_DeltaOnRemoval.hxx>
-#include <TDF_Tool.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_Reference.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd.hxx>
 #include <TDocStd_Document.hxx>
+#include <TDocStd_XLink.hxx>
+#include <TDocStd_XLinkIterator.hxx>
 #include <TDocStd_XLinkRoot.hxx>
-
 
 //=======================================================================
 //function : TDocStd_XLink
 //purpose  : 
 //=======================================================================
-
 TDocStd_XLink::TDocStd_XLink()
 : myNext(NULL)
 {}

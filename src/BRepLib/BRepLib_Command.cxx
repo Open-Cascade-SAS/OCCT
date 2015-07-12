@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_Command.ixx>
+
+#include <BRepLib_Command.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : BRepLib_Command
 //purpose  : 
 //=======================================================================
-
 BRepLib_Command::BRepLib_Command() :
        myDone(Standard_False)
 {

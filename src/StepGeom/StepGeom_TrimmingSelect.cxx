@@ -11,10 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_TrimmingSelect.ixx>
-#include <StepGeom_TrimmingMember.hxx>
+
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <StepData_SelectMember.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_TrimmingMember.hxx>
+#include <StepGeom_TrimmingSelect.hxx>
 
 StepGeom_TrimmingSelect::StepGeom_TrimmingSelect () {  }
 

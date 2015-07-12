@@ -14,24 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_FaceInterferenceTool.ixx>
 
-#include <Extrema_ExtPS.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepLProp_SLProps.hxx>
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Precision.hxx>
+#include <Extrema_ExtPS.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
+#include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_FaceInterferenceTool.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
+#include <TopOpeBRepTool_TOOL.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();

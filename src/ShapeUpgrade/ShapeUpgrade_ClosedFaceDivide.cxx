@@ -14,35 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ClosedFaceDivide.ixx>
+
+#include <Bnd_Box2d.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_ComposeShell.hxx>
+#include <ShapeUpgrade_ClosedFaceDivide.hxx>
+#include <ShapeUpgrade_SplitSurface.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
-#include <ShapeExtend_WireData.hxx>
-#include <TopoDS_Edge.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <Geom2d_Curve.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <Bnd_Box2d.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <BRep_Tool.hxx>
-#include <ShapeUpgrade_SplitSurface.hxx>
-#include <ShapeExtend_CompositeSurface.hxx>
-#include <ShapeFix_ComposeShell.hxx>
-#include <TopExp_Explorer.hxx>
-#include <ShapeAnalysis_Surface.hxx>
-#include <ShapeAnalysis.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <ShapeAnalysis.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ClosedFaceDivide
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ClosedFaceDivide::ShapeUpgrade_ClosedFaceDivide():
        ShapeUpgrade_FaceDivide()
 {

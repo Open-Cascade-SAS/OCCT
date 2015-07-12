@@ -16,15 +16,26 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ToolSolidAssembly.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESGeom_TransformationMatrix.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESGeom_HArray1OfTransformationMatrix.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESGeom_HArray1OfTransformationMatrix.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <IGESSolid_SolidAssembly.hxx>
+#include <IGESSolid_ToolSolidAssembly.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESSolid_ToolSolidAssembly::IGESSolid_ToolSolidAssembly ()    {  }
 

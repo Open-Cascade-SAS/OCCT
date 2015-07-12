@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AppliedDocumentReference.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepAP214_AppliedDocumentReference.hxx>
+#include <StepAP214_DocumentReferenceItem.hxx>
+#include <StepBasic_Document.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepAP214_AppliedDocumentReference::StepAP214_AppliedDocumentReference ()    {  }
 

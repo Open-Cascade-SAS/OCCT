@@ -13,79 +13,67 @@
 
 //gka 06.01.99 S3767 new function TPSTAT (first version)
 //pdn 11.01.99 putting "return" statement for compilation on NT
-#include <XSDRAWIGES.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <Interface_Static.hxx>
-
-#include <IGESControl_Writer.hxx>
+#include <DBRep.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_ProgressIndicator.hxx>
+#include <DrawTrSurf.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <IFSelect_Functions.hxx>
+#include <IFSelect_SessionPilot.hxx>
 #include <IGESControl_Controller.hxx>
-#include <IGESData_BasicEditor.hxx>
-
+#include <IGESControl_Reader.hxx>
+#include <IGESControl_Writer.hxx>
 #include <IGESData.hxx>
-#include <IGESData_Protocol.hxx>
-// #include <IGESData_IGESWriter.hxx>
-#include <IGESData_IGESEntity.hxx>         // pour igeslist
+#include <IGESData_BasicEditor.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-
-#include <Interface_Check.hxx>
-#include <Interface_CheckTool.hxx>
-#include <Interface_CheckIterator.hxx>
-
-#include <stdio.h>
-#include <TCollection_HAsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-
+#include <IGESData_Protocol.hxx>
+#include <IGESSelect_Activator.hxx>
 #include <IGESToBRep.hxx>
 #include <IGESToBRep_Actor.hxx>
 #include <IGESToBRep_Reader.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_CheckTool.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <TColStd_MapOfTransient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_TransferOutput.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <XSControl.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <XSDRAW.hxx>
+#include <XSDRAW_Commands.hxx>
+#include <XSDRAWIGES.hxx>
 
-#include <Draw_Appli.hxx>
-#include <DrawTrSurf.hxx>
-#include <DBRep.hxx>
+#include <stdio.h>
+// #include <IGESData_IGESWriter.hxx>
+// pour igeslist
 //#include <GeometryTest.hxx>  essai CKY 4-AUT-1998
 //#include <BRepTest.hxx>      essai CKY 4-AUT-1998
 //#include <MeshTest.hxx>      essai CKY 4-AUT-1998
-
 // Init functions
-
-#include <IGESSelect_Activator.hxx>
-#include <XSDRAW.hxx>
-#include <XSDRAW_Commands.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <Transfer_TransferOutput.hxx>
-#include <Transfer_FinderProcess.hxx>
-#include <XSControl_WorkSession.hxx>
-
 // + tplosttrim
-#include <IFSelect_SessionPilot.hxx>
-#include <XSControl.hxx>
-#include <Transfer_IteratorOfProcessForTransient.hxx>
-#include <TColStd_MapOfTransient.hxx>
-#include <IFSelect_Functions.hxx>
-#include <TColStd_MapIteratorOfMapOfTransient.hxx>
-#include <IGESControl_Reader.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <Draw_ProgressIndicator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Message_ProgressSentry.hxx>
-
 //--------------------------------------------------------------
 // Function : igesbrep
 //--------------------------------------------------------------
-
 static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   DeclareAndCast(IGESControl_Controller,ctl,XSDRAW::Controller());

@@ -14,18 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAdaptor_CompCurve.ixx>
 
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HCompCurve.hxx>
+#include <BRepAdaptor_HCurve.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <TopAbs_Orientation.hxx>
-
-#include <GCPnts_AbscissaPoint.hxx>
 #include <ElCLib.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
 
 BRepAdaptor_CompCurve::BRepAdaptor_CompCurve()
 : TFirst  (0.0),

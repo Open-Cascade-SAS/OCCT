@@ -18,35 +18,41 @@
 //              - use of optimisation in SelectMgr_ViewerSelector
 //              -> Best management in detected entities...
 
-#include <AIS_LocalContext.jxx>
-#include <StdSelect_BRepOwner.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_MapOfTransient.hxx>
-#include <TColStd_MapIteratorOfMapOfTransient.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_ShadingAspect.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_LocalContext.hxx>
 #include <AIS_LocalStatus.hxx>
+#include <AIS_Selection.hxx>
+#include <AIS_Shape.hxx>
+#include <Aspect_Grid.hxx>
+#include <Geom_Transformation.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Select3D_SensitiveTriangulation.hxx>
-#include <StdSelect_ViewerSelector3d.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
-#include <Visual3d_View.hxx>
-
-#include <SelectMgr_Selection.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
 #include <OSD_Environment.hxx>
-
-#include <Geom_Transformation.hxx>
-#include <AIS_Selection.hxx>
-#include <Aspect_Grid.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_InteractiveObject.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Select3D_SensitiveTriangulation.hxx>
+#include <SelectBasics_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <SelectMgr_OrFilter.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <SelectMgr_SequenceOfOwner.hxx>
+#include <Standard_Transient.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <TColStd_MapOfTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <V3d_View.hxx>
+#include <Visual3d_View.hxx>
 
 static Standard_Integer GetHiMod(const Handle(AIS_InteractiveObject)& IO)
 {

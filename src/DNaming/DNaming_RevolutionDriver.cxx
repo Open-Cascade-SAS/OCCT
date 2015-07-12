@@ -13,56 +13,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_RevolutionDriver.ixx>
-
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Ax2.hxx>
-#include <Geom_Line.hxx>
 
 #include <BRep_Tool.hxx>
-#include <BRepGProp.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Shell.hxx>
-#include <BRepCheck_Analyzer.hxx>
-#include <BRepPrimAPI_MakeRevol.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
-#include <GProp_GProps.hxx>
-#include <Precision.hxx>
 #include <BRepCheck_Wire.hxx>
+#include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
-#include <BRepCheck_Analyzer.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS_Solid.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <DNaming.hxx>
+#include <DNaming_RevolutionDriver.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <GProp_GProps.hxx>
+#include <ModelDefinitions.hxx>
+#include <Precision.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-
-// OCAF
+#include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_TagSource.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
 #include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TFunction_Function.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_TagSource.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-#include <DNaming.hxx>
-#include <ModelDefinitions.hxx>
-
+// OCAF
 //=======================================================================
 //function : DNaming_RevolutionDriver
 //purpose  : Constructor

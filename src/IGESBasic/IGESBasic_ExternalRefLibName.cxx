@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_ExternalRefLibName.ixx>
-
+#include <IGESBasic_ExternalRefLibName.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESBasic_ExternalRefLibName::IGESBasic_ExternalRefLibName ()    {  }
 

@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaMassDensity.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FeaMassDensity.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaMassDensity
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaMassDensity::StepFEA_FeaMassDensity ()
 {
 }

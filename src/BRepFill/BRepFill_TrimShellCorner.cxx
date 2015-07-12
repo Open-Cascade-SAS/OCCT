@@ -13,58 +13,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_TrimShellCorner.ixx>
 
-#include <BRepAlgoAPI_Section.hxx>
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPDS_DS.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <BRepFill_TrimShellCorner.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeWire.hxx>
 #include <BRepTools_ReShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Compound.hxx>
-
+#include <gce_MakeLin.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <GeomLib.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntTools_BeanFaceIntersector.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Range.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <gp_Pnt2d.hxx>
-
-#include <TopLoc_Location.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_Array1OfListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-
-#include <gp_Pln.hxx>
-#include <TopoDS_Iterator.hxx>
+#include <IntTools_Tools.hxx>
+#include <TColgp_Array1OfDir.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-#include <TColgp_Array1OfDir.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <GCPnts_UniformAbscissa.hxx>
-#include <GeomLib.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <gce_MakeLin.hxx>
-
-#include <IntTools_Tools.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPDS_DS.hxx>
-#include <BOPAlgo_BOP.hxx>
-
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 static Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
                                          const Standard_Integer   theEIndex1,

@@ -13,17 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_DocumentTool.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF_Data.hxx>
-#include <TDF_Tool.hxx>
 #include <TDataStd_TreeNode.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
+#include <TDocStd_Document.hxx>
+#include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_DimTolTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_MaterialTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& XCAFDoc_DocumentTool::GetID() 
 {
   static Standard_GUID DocumentToolID ("efd212ec-6dfd-11d4-b9c8-0060b0ee281b");

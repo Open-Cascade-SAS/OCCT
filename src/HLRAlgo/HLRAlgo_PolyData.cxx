@@ -17,7 +17,11 @@
 #ifndef No_Exception
 //#define No_Exception
 #endif
-#include <HLRAlgo_PolyData.ixx>
+
+
+#include <HLRAlgo_EdgeStatus.hxx>
+#include <HLRAlgo_PolyData.hxx>
+#include <Standard_Type.hxx>
 
 #define EMskGrALin1  ((Standard_Boolean)   8)
 #define EMskGrALin2  ((Standard_Boolean)  16)

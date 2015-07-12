@@ -14,14 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include<LocalAnalysis.ixx>
-#include<LocalAnalysis_SurfaceContinuity.hxx>
-#include<LocalAnalysis_CurveContinuity.hxx>
 
+#include <LocalAnalysis.hxx>
+#include <LocalAnalysis_CurveContinuity.hxx>
+#include <LocalAnalysis_SurfaceContinuity.hxx>
 
 /*********************************************************************************/
 /*********************************************************************************/
-
 void LocalAnalysis::Dump(const LocalAnalysis_SurfaceContinuity& surfconti, Standard_OStream& o)
 { if (!surfconti.IsDone()) 
       { o<<"Problem in the computation "<<endl;

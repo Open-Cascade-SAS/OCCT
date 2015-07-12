@@ -12,11 +12,9 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
- 
      FONCTION :
      ----------
         Classe V3d_PositionalLight :
- 
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
       00-09-92 : GG  ; Creation.
@@ -26,41 +24,40 @@
       21-01-98 : CAL ; Window de Xw et WNT remplacee par Aspect_Window
       23-02-98 : FMN ; Remplacement PI par Standard_PI
       30-03-98 : ZOV ; PRO6774 (reconstruction of the class hierarchy and suppressing useless methods)
-
 ************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
  */
 
-#include <V3d.hxx>
-#include <V3d_PositionalLight.ixx>
-#include <Graphic3d_Vector.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_ViewManager.hxx>
-#include <Visual3d_ContextPick.hxx>
-#include <V3d_BadValue.hxx>
-#include <gp_Dir.hxx>
+#include <Aspect_Window.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Aspect_Window.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <V3d.hxx>
+#include <V3d_BadValue.hxx>
+#include <V3d_PositionalLight.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_ContextPick.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 //-Declarations
-
 //-Constructors
-
 V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2):V3d_PositionLight(VM) {
 
   Quantity_Color C(Name) ;

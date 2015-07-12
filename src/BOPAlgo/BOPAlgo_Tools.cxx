@@ -12,13 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_Tools.ixx>
-#include <BOPDS_DS.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_IndexedMapOfPaveBlock.hxx>
+
+#include <BOPAlgo_Tools.hxx>
+#include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
-#include <BOPCol_IndexedMapOfInteger.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_IndexedMapOfPaveBlock.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
 
 //=======================================================================
 //function : MakeBlocksCnx

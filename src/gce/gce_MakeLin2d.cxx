@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeLin2d.ixx>
+
+#include <gce_MakeLin2d.hxx>
 #include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une ligne 2d de gp a partir d un Ax2d de gp.              +
 //=========================================================================
-
 gce_MakeLin2d::gce_MakeLin2d(const gp_Ax2d& A)
 {
   TheLin2d = gp_Lin2d(A);

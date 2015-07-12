@@ -12,15 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PrsMgr_Presentation.ixx>
-#include <PrsMgr_PresentationManager.hxx>
-#include <PrsMgr_Prs.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
 
+#include <Geom_Transformation.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Visual3d_View.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
+#include <PrsMgr_PresentableObject.hxx>
+#include <PrsMgr_Presentation.hxx>
+#include <PrsMgr_PresentationManager.hxx>
+#include <PrsMgr_Prs.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <Visual3d_View.hxx>
 
 namespace
 {

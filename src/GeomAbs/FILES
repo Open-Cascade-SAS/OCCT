@@ -1,0 +1,9 @@
+GeomAbs_BSplKnotDistribution.hxx
+GeomAbs_CurveForm.hxx
+GeomAbs_CurveType.hxx
+GeomAbs_IsoType.hxx
+GeomAbs_JoinType.hxx
+GeomAbs_Shape.hxx
+GeomAbs_SurfaceForm.hxx
+GeomAbs_SurfaceType.hxx
+GeomAbs_UVSense.hxx

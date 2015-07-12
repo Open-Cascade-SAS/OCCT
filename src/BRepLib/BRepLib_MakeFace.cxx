@@ -14,45 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_MakeFace.ixx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAbs_CurveType.hxx>
-
-#include <Geom2d_Line.hxx>
 
 #include <BRep_Builder.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
-
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <TopAbs_State.hxx>
-
-#include <ElCLib.hxx>
-#include <Precision.hxx>
 #include <BRepLib.hxx>
-
 #include <BRepLib_FindSurface.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <Precision.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : BRepLib_MakeFace
 //purpose  : 
 //=======================================================================
-
 BRepLib_MakeFace::BRepLib_MakeFace() :
        myError(BRepLib_NoFace)
 {

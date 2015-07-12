@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWFillAreaStyle.ixx>
-#include <StepVisual_HArray1OfFillStyleSelect.hxx>
-#include <StepVisual_FillStyleSelect.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWFillAreaStyle.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepVisual_FillAreaStyle.hxx>
-
+#include <StepVisual_FillStyleSelect.hxx>
+#include <StepVisual_HArray1OfFillStyleSelect.hxx>
 
 RWStepVisual_RWFillAreaStyle::RWStepVisual_RWFillAreaStyle () {}
 

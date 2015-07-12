@@ -13,14 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_CollisionDetection.ixx>
-#include <Voxel_FastConverter.hxx>
 
-#include <Precision.hxx>
+#include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+#include <Precision.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-
-
+#include <Voxel_BoolDS.hxx>
+#include <Voxel_CollisionDetection.hxx>
+#include <Voxel_FastConverter.hxx>
 
 Voxel_CollisionDetection::Voxel_CollisionDetection()
 :myDeflection(0.1),

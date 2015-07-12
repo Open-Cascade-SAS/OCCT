@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWFreedomsList.ixx>
-#include <StepFEA_HArray1OfDegreeOfFreedom.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWFreedomsList.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepFEA_DegreeOfFreedom.hxx>
+#include <StepFEA_FreedomsList.hxx>
+#include <StepFEA_HArray1OfDegreeOfFreedom.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFreedomsList
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWFreedomsList::RWStepFEA_RWFreedomsList ()
 {
 }

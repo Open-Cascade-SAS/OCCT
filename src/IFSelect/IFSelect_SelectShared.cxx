@@ -11,10 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectShared.ixx>
+
+#include <IFSelect_SelectShared.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
-
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectShared::IFSelect_SelectShared ()    {  }
 

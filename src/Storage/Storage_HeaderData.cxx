@@ -12,7 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Storage_HeaderData.ixx>
+
+#include <Standard_Type.hxx>
+#include <Storage_HeaderData.hxx>
+#include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 Storage_HeaderData::Storage_HeaderData() : myNBObj(0), myErrorStatus(Storage_VSOk)
 {

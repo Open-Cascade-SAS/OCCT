@@ -12,8 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GProp_PrincipalProps.ixx>
 
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <GProp_UndefinedAxis.hxx>
 
 typedef gp_Vec Vec;
 typedef gp_Pnt Pnt;

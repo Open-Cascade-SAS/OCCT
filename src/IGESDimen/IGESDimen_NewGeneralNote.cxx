@@ -16,9 +16,15 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_NewGeneralNote.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDimen_NewGeneralNote.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote ()    {  }
 

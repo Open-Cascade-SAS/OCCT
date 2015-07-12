@@ -16,9 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_Node.ixx>
 #include <gp_GTrsf.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESAppli_Node.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
 
 IGESAppli_Node::IGESAppli_Node ()    {  }
 

@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWEffectivity.ixx>
 
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWEffectivity.hxx>
 #include <StepBasic_Effectivity.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity () {}
 

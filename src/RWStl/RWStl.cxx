@@ -14,26 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStl.ixx>
-#include <OSD_Protection.hxx>
-#include <OSD_File.hxx>
-#include <Message_ProgressSentry.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_TypeMismatch.hxx>
-#include <Precision.hxx>
-#include <StlMesh_MeshExplorer.hxx>
-#include <OSD.hxx>
-#include <OSD_Host.hxx>
-#include <gp_XYZ.hxx>
-#include <gp.hxx>
-#include <stdio.h>
-#include <gp_Vec.hxx>
-#include <OSD_OpenFile.hxx>
 
 #include <BRepBuilderAPI_CellFilter.hxx>
 #include <BRepBuilderAPI_VertexInspector.hxx>
+#include <gp.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <OSD.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Host.hxx>
+#include <OSD_OpenFile.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Protection.hxx>
+#include <Precision.hxx>
+#include <RWStl.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlMesh_MeshExplorer.hxx>
+#include <TCollection_AsciiString.hxx>
 
+#include <stdio.h>
 // A static method adding nodes to a mesh and keeping coincident (sharing) nodes.
 static Standard_Integer AddVertex(Handle(StlMesh_Mesh)& mesh,
                                   BRepBuilderAPI_CellFilter& filter, 

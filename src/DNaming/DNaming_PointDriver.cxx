@@ -13,28 +13,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_PointDriver.ixx>
-//OCCT
+
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <DNaming.hxx>
+#include <DNaming_PointDriver.hxx>
+#include <gp_Pnt.hxx>
+#include <ModelDefinitions.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_Label.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Pnt.hxx>
-#include <Standard_GUID.hxx>
+
+//OCCT
 // OCAF
-#include <TNaming.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_Real.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TFunction_Function.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Builder.hxx>
-
-#include <DNaming.hxx>
-#include <ModelDefinitions.hxx>
-
 //=======================================================================
 //function : DNaming_PointDriver
 //purpose  : Constructor

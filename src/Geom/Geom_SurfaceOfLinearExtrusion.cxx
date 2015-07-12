@@ -14,26 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAbs_CurveType.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.ixx>
-#include <Precision.hxx>
-#include <gp.hxx>
-#include <gp_Ax2d.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Lin.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Parabola.hxx>
+
+#include <BSplCLib.hxx>
+#include <BSplSLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <BSplSLib.hxx>
-#include <BSplCLib.hxx>
-#include <Standard_RangeError.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Geom_UndefinedDerivative.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 #define  POLES    (poles->Array2())
 #define  WEIGHTS  (weights->Array2())

@@ -14,38 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_FaceBuilder.ixx>
 
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-//#include <BRepAdaptor_Curve2d.hxx>
-#include <TopExp.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopOpeBRepBuild_WireEdgeClassifier.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_BlockBuilder.hxx>
-#include <TopOpeBRepBuild_LoopSet.hxx>
-#include <Standard_ProgramError.hxx>
-#include <Precision.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopOpeBRepBuild_define.hxx>
+#include <TopOpeBRepBuild_FaceBuilder.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_LoopSet.hxx>
+#include <TopOpeBRepBuild_ShapeSet.hxx>
+#include <TopOpeBRepBuild_WireEdgeClassifier.hxx>
+#include <TopOpeBRepBuild_WireEdgeSet.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfOrientedShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
+//#include <BRepAdaptor_Curve2d.hxx>
 #undef RM_HANGING
 // MSV: RM_HANGING behaviour: when state of wire is UNCLOSEDW we do not
 // remove the whole wire but remove the chains of hanging edges. This would

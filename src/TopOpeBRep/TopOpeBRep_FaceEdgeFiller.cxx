@@ -14,18 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_FaceEdgeFiller.ixx>
 
-#include <TopOpeBRep_PointGeomTool.hxx>
-#include <TopOpeBRepDS_InterferenceTool.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
 #include <gp_Pnt2d.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_FaceEdgeFiller.hxx>
+#include <TopOpeBRep_FaceEdgeIntersector.hxx>
+#include <TopOpeBRep_PointGeomTool.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_InterferenceTool.hxx>
+#include <TopOpeBRepDS_Point.hxx>
 
 #ifdef OCCT_DEBUG
 extern void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,

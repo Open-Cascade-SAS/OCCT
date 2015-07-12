@@ -17,13 +17,16 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRAlgo_WiresBlock.ixx>
+
+
+#include <HLRAlgo_EdgesBlock.hxx>
+#include <HLRAlgo_WiresBlock.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : HLRAlgo_WiresBlock
 //purpose  : 
 //=======================================================================
-
 HLRAlgo_WiresBlock::HLRAlgo_WiresBlock (const Standard_Integer NbWires) :
 myWires(1,NbWires)
 {}

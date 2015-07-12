@@ -16,15 +16,26 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_ToolCenterLine.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <gp_XY.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_HArray1OfXY.hxx>
-#include <IGESData_LineFontEntity.hxx>
+#include <gp_XY.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDimen_CenterLine.hxx>
+#include <IGESDimen_ToolCenterLine.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_HArray1OfXY.hxx>
 
 IGESDimen_ToolCenterLine::IGESDimen_ToolCenterLine ()    {  }
 

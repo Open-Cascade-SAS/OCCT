@@ -14,18 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectMgr_SelectionManager.ixx>
-#include <SelectMgr_ViewerSelector.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <SelectMgr_SequenceOfSelector.hxx>
-#include <TColStd_MapIteratorOfMapOfTransient.hxx>
-#include <TColStd_MapIteratorOfMapOfTransient.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors.hxx>
+
 #include <OSD_Environment.hxx>
+#include <SelectMgr_DataMapIteratorOfDataMapOfObjectSelectors.hxx>
 #include <SelectMgr_SelectableObject.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <SelectMgr_SequenceOfSelector.hxx>
+#include <SelectMgr_ViewerSelector.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
 
 static Standard_Integer FindIndex (const SelectMgr_SequenceOfSelector& theSelectorsSeq,
                                    const Handle(SelectMgr_ViewerSelector)& theSelector)

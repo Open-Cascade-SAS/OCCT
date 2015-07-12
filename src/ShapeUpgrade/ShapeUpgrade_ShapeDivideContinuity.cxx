@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ShapeDivideContinuity.ixx>
 
 #include <Precision.hxx>
+#include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_ShapeDivideContinuity.hxx>
 #include <ShapeUpgrade_SplitCurve2dContinuity.hxx>
 #include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
 #include <ShapeUpgrade_SplitSurfaceContinuity.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
-#include <ShapeUpgrade_FaceDivide.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideContinuity
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShapeDivideContinuity::ShapeUpgrade_ShapeDivideContinuity()
 {
   myCurve3dCriterion = GeomAbs_C1;

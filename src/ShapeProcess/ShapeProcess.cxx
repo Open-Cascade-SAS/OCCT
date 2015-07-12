@@ -13,18 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeProcess.ixx>
 
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <ShapeProcess.hxx>
+#include <ShapeProcess_Context.hxx>
+#include <ShapeProcess_DictionaryOfOperator.hxx>
+#include <ShapeProcess_Operator.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-
-#include <Message_Msg.hxx>
-#include <Message_Messenger.hxx>
-
-#include <ShapeProcess_Operator.hxx>
-#include <ShapeProcess_DictionaryOfOperator.hxx>
 
 static Handle(ShapeProcess_DictionaryOfOperator) dic;
 

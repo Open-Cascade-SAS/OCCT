@@ -13,26 +13,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlLDrivers_DocumentRetrievalDriver.ixx>
 
-#include <XmlLDrivers.hxx>
-#include <XmlMDF.hxx>
-#include <XmlObjMgt_RRelocationTable.hxx>
-#include <XmlObjMgt_Document.hxx>
-#include <XmlObjMgt.hxx>
-#include <XmlMDataStd.hxx>
-#include <LDOM_LDOMImplementation.hxx>
-#include <LDOM_DocumentType.hxx>
-#include <LDOMParser.hxx>
-
-#include <TDF_Data.hxx>
-#include <TDocStd_Owner.hxx>
-#include <TDocStd_Document.hxx>
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
 #include <CDM_MessageDriver.hxx>
 #include <CDM_MetaData.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <UTL.hxx>
+#include <LDOM_DocumentType.hxx>
+#include <LDOM_LDOMImplementation.hxx>
+#include <LDOMParser.hxx>
 #include <OSD_Path.hxx>
+#include <PCDM_Document.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Data.hxx>
+#include <TDocStd_Document.hxx>
+#include <TDocStd_Owner.hxx>
+#include <UTL.hxx>
+#include <XmlLDrivers.hxx>
+#include <XmlLDrivers_DocumentRetrievalDriver.hxx>
+#include <XmlMDataStd.hxx>
+#include <XmlMDF.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlMDF_ADriverTable.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Document.hxx>
+#include <XmlObjMgt_RRelocationTable.hxx>
 
 #ifdef WNT
 # include <tchar.h>

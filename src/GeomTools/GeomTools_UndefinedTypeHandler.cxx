@@ -14,7 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomTools_UndefinedTypeHandler.ixx>
+
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomTools_UndefinedTypeHandler.hxx>
+#include <Standard_Type.hxx>
 
 GeomTools_UndefinedTypeHandler::GeomTools_UndefinedTypeHandler()
 {

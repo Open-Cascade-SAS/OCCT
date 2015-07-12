@@ -15,29 +15,36 @@
 //svv#1 11.01.00 : porting on DEC
 //svv#2 21.02.00 : porting on SIL
 //smh#14 17.03.2000 : FRA62479 Clearing of gtool.
-#include <Interface_InterfaceModel.ixx>
-#include <Interface_GeneralModule.hxx>
-#include <TColStd_Array1OfTransient.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Interface_InterfaceMismatch.hxx>
+
 #include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx>
-#include <Standard_OutOfRange.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralLib.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_GTool.hxx>
+#include <Interface_InterfaceMismatch.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ReportEntity.hxx>
 #include <Interface_SignType.hxx>
 #include <Message_Messenger.hxx>
-#include <Interface_ReportEntity.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfTransient.hxx>
+#include <TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx>
 
 // Un Modele d`Interface est un ensemble ferme d`Entites d`interface : chacune
 // est dans un seul modele a la fois; elle y a un numero (Number) qui permet de
 // verifier qu`une entite est bien dans un seul modele, de definir des Map tres
 // performantes, de fournir un identifieur numerique
-
 // Il est a meme d`etre utilise dans des traitements de Graphe
-
 // STATICS : les TEMPLATES
-
-
 static const Handle(Dico_DictionaryOfTransient)& templates()
 {
   static  Handle(Dico_DictionaryOfTransient) atemp;

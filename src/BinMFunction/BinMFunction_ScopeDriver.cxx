@@ -13,24 +13,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMFunction_ScopeDriver.ixx>
-#include <CDM_MessageDriver.hxx>
-#include <TDF_Attribute.hxx>
-#include <TFunction_Scope.hxx>
+
 #include <BinMDF_ADriver.hxx>
+#include <BinMFunction_ScopeDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
+#include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
+#include <TFunction_Scope.hxx>
 
 //=======================================================================
 //function : BinMFunction_GraphNodeDriver
 //purpose  : 
 //=======================================================================
-
 BinMFunction_ScopeDriver::BinMFunction_ScopeDriver(const Handle(CDM_MessageDriver)& theMsgDriver)
 : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TFunction_Scope)->Name())
 {

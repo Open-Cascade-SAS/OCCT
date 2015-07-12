@@ -13,16 +13,18 @@
 
 //    rln 22.03.99: syntax correction in CombineVertex
 //szv#4 S4163
-#include <ShapeBuild_Vertex.ixx>
-#include <BRep_Tool.hxx>
-#include <Precision.hxx>
+
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_Vertex.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : CombineVertex
 //purpose  : 
 //=======================================================================
-
 TopoDS_Vertex ShapeBuild_Vertex::CombineVertex (const TopoDS_Vertex& V1,
 						const TopoDS_Vertex& V2,
 						const Standard_Real tolFactor) const

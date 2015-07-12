@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect_ShapeTypeFilter.ixx>
-#include <StdSelect_BRepOwner.hxx>
 
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_ShapeTypeFilter.hxx>
 
 //==================================================
 // Function: StdSelect_ShapeTypeFilter
 // Purpose : Constructeur
 //==================================================
-
 StdSelect_ShapeTypeFilter::StdSelect_ShapeTypeFilter(const TopAbs_ShapeEnum aType):
 myType(aType){}
 

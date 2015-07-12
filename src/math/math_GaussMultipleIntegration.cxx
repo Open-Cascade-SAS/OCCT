@@ -37,14 +37,16 @@ de Gauss.
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_GaussMultipleIntegration.ixx>
 #include <math.hxx>
-#include <math_Matrix.hxx>
-#include <math_Vector.hxx>
+#include <math_GaussMultipleIntegration.hxx>
 #include <math_IntegerVector.hxx>
+#include <math_Matrix.hxx>
 #include <math_MultipleVarFunction.hxx>
+#include <math_Vector.hxx>
+#include <StdFail_NotDone.hxx>
 
 class IntegrationFunction {
 

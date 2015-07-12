@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_TrimmedCurve.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_TrimmedCurve.hxx>
+#include <StepGeom_TrimmingSelect.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_TrimmedCurve::StepGeom_TrimmedCurve ()  {}
 

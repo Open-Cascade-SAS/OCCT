@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCPnts_AbscissaPoint.ixx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : GCPnts_AbscissaPoint
 //purpose  : 
 //=======================================================================
-
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint() 
 {
 }

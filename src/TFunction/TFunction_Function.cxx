@@ -14,19 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TFunction_Function.ixx>
+
+#include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TFunction_Function.hxx>
 #include <TFunction_GraphNode.hxx>
 #include <TFunction_Scope.hxx>
-
-#include <TDF_Label.hxx>
-#include <Standard_DomainError.hxx>
-
 
 //=======================================================================
 //function : GetID
 //purpose  : Static method to get an ID
 //=======================================================================
-
 const Standard_GUID&  TFunction_Function::GetID() 
 {  
   static Standard_GUID TFunction_FunctionID("5b35ca00-5b78-11d1-8940-080009dc3333");

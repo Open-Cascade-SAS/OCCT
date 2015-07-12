@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_Axis2Placement2d.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_Axis2Placement2d::StepGeom_Axis2Placement2d ()  {}
 

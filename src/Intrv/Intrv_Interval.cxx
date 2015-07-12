@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intrv_Interval.ixx>
+
+#include <Intrv_Interval.hxx>
 
 //                   **-----------****             Other
 //     ***-----*                                   Before
@@ -30,12 +31,10 @@
 //                         ***-----------------*   OverlappingAtEnd
 //                                  ***--------*   JustAfter
 //                                       ***---*   After
-
 //=======================================================================
 //function : Intrv_Interval
 //purpose  : 
 //=======================================================================
-
 Intrv_Interval::Intrv_Interval 
   () : myStart(RealFirst()), myEnd  (RealLast ())
 {

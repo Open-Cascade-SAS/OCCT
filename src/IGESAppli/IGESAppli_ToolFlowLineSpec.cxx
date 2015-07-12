@@ -16,13 +16,24 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_ToolFlowLineSpec.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
+#include <IGESAppli_FlowLineSpec.hxx>
+#include <IGESAppli_ToolFlowLineSpec.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec ()    {  }
 

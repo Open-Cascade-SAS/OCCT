@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWBoxedHalfSpace.ixx>
-#include <StepShape_BoxDomain.hxx>
-#include <StepGeom_Surface.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWBoxedHalfSpace.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepShape_BoxDomain.hxx>
 #include <StepShape_BoxedHalfSpace.hxx>
-
 
 RWStepShape_RWBoxedHalfSpace::RWStepShape_RWBoxedHalfSpace () {}
 

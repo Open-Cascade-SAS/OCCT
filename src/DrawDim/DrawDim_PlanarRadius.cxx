@@ -14,25 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_PlanarRadius.ixx>
-#include <DrawDim.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Circle.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Circ.hxx>
+
 #include <BRep_Tool.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <DrawDim.hxx>
+#include <DrawDim_PlanarRadius.hxx>
 #include <ElCLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : DrawDim_PlanarRadius
 //purpose  : 
 //=======================================================================
-
 DrawDim_PlanarRadius::DrawDim_PlanarRadius(const TopoDS_Face& face, const TopoDS_Shape& c)
 {
   myPlane  = face;

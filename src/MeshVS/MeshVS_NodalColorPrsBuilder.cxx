@@ -14,54 +14,52 @@
 // commercial license or contractual agreement.
 
 #define _POLYGONES_
+
 // if define _POLYGONES_ ColorPrsBuilder use ArrayOfPolygons for drawing faces
 
-#include <MeshVS_NodalColorPrsBuilder.ixx>
-
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
+#include <Aspect_SequenceOfColor.hxx>
+#include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TextureParams.hxx>
-
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_LineAspect.hxx>
-
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-
-#include <MeshVS_DisplayModeFlags.hxx>
-#include <MeshVS_DrawerAttribute.hxx>
+#include <Graphic3d_TypeOfTextureMode.hxx>
+#include <Image_PixMap.hxx>
+#include <MeshVS_Buffer.hxx>
 #include <MeshVS_DataSource.hxx>
+#include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_Drawer.hxx>
+#include <MeshVS_DrawerAttribute.hxx>
+#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshPrsBuilder.hxx>
-#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
-#include <MeshVS_Buffer.hxx>
-#include <MeshVS_Tool.hxx>
+#include <MeshVS_NodalColorPrsBuilder.hxx>
 #include <MeshVS_SymmetricPairHasher.hxx>
-
-#include <gp_Pnt.hxx>
-#include <Image_PixMap.hxx>
-#include <Graphic3d_Texture2D.hxx>
-#include <Graphic3d_TypeOfTextureMode.hxx>
-#include <Standard_Type.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Quantity_Array1OfColor.hxx>
-#include <Aspect_SequenceOfColor.hxx>
-
+#include <MeshVS_Tool.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
+#include <Quantity_Array1OfColor.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 /*
   Class       : MeshVS_ImageTexture2D

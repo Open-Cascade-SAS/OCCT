@@ -14,17 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRTopoBRep_Data.ixx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <HLRTopoBRep_VData.hxx>
+
+#include <HLRTopoBRep_Data.hxx>
 #include <HLRTopoBRep_ListOfVData.hxx>
+#include <HLRTopoBRep_VData.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : HLRTopoBRep_Data
 //purpose  : 
 //=======================================================================
-
 HLRTopoBRep_Data::HLRTopoBRep_Data ()
 {
   Clear();

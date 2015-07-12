@@ -14,7 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_SurfData.ixx>
+
+#include <ChFiDS_CommonPoint.hxx>
+#include <ChFiDS_FaceInterference.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <gp_Pnt2d.hxx>
+#include <MMgt_TShared.hxx>
+#include <Standard_Type.hxx>
 
 ChFiDS_SurfData::ChFiDS_SurfData () : 
 indexOfS1(0),indexOfS2(0),indexOfConge(0),

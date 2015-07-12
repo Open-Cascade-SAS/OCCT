@@ -19,15 +19,23 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <Expr_UnaryFunction.ixx>
-#include <Expr_InvalidFunction.hxx>
-#include <Expr_Array1OfNamedUnknown.hxx>
-#include <Expr_Array1OfGeneralExpression.hxx>
-#include <Expr_FunctionDerivative.hxx>
-#include <Expr_Product.hxx>
-#include <Expr_Operators.hxx>
+
 #include <Expr.hxx>
+#include <Expr_Array1OfGeneralExpression.hxx>
+#include <Expr_Array1OfNamedUnknown.hxx>
+#include <Expr_FunctionDerivative.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralFunction.hxx>
+#include <Expr_InvalidFunction.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NotEvaluable.hxx>
 #include <Expr_NumericValue.hxx>
+#include <Expr_Operators.hxx>
+#include <Expr_Product.hxx>
+#include <Expr_UnaryFunction.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_UnaryFunction::Expr_UnaryFunction (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_GeneralExpression)& exp)
 {

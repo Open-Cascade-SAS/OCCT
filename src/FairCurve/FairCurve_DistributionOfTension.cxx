@@ -18,16 +18,14 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <FairCurve_DistributionOfTension.ixx>
 
-
-#include <gp_XY.hxx>
+#include <BSplCLib.hxx>
+#include <FairCurve_BattenLaw.hxx>
+#include <FairCurve_DistributionOfTension.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <BSplCLib.hxx>
-
-
 
  FairCurve_DistributionOfTension::FairCurve_DistributionOfTension(const Standard_Integer BSplOrder,
 								  const Handle(TColStd_HArray1OfReal)& FlatKnots, 

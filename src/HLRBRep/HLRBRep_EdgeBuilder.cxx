@@ -17,19 +17,21 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRBRep_EdgeBuilder.ixx>
 
-#include <TopAbs.hxx>
+
+#include <HLRAlgo_Intersection.hxx>
+#include <HLRBRep_AreaLimit.hxx>
+#include <HLRBRep_EdgeBuilder.hxx>
+#include <HLRBRep_VertexList.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <TopAbs.hxx>
 
 //=======================================================================
 //function : HLRBRep_EdgeBuilder
 //purpose  : 
 //=======================================================================
-
-
 HLRBRep_EdgeBuilder::HLRBRep_EdgeBuilder (HLRBRep_VertexList& VList)
 {
   // at creation the EdgeBuilder explore the VertexList

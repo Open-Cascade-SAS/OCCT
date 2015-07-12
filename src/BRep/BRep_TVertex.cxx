@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_TVertex.ixx>
+
+#include <BRep_TVertex.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
+#include <TopoDS_TShape.hxx>
 
 //=======================================================================
 //function : BRep_TVertex
 //purpose  : 
 //=======================================================================
-
 BRep_TVertex::BRep_TVertex() :
        TopoDS_TVertex(),
        myTolerance(RealEpsilon())

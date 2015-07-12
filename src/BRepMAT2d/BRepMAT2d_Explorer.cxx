@@ -14,41 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMAT2d_Explorer.ixx>
-#include <MAT2d_SequenceOfSequenceOfCurve.hxx>
-#include <TColGeom2d_SequenceOfCurve.hxx>
-#include <TopoDS_Wire.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <TopLoc_Location.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>  
-#include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAPI.hxx>
-#include <BRep_Tool.hxx>
-#include <gp.hxx>
-#include <gp_Pln.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
 
-#include <Precision.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dConvert.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TopExp.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepLib.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_BezierCurve.hxx>
+#include <BRepMAT2d_Explorer.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <GCE2d_MakeArcOfCircle.hxx>
 #include <GCE2d_MakeSegment.hxx>
-#include <Geom2d_BoundedCurve.hxx> 
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAPI.hxx>
+#include <gp.hxx>
+#include <gp_Pln.hxx>
+#include <MAT2d_SequenceOfSequenceOfCurve.hxx>
+#include <Precision.hxx>
+#include <TColGeom2d_SequenceOfCurve.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_IndexedDataMapOfShapeShape.hxx>
+
 //
 //  Modified by Sergey KHROMOV - Thu Dec  5 10:38:14 2002 Begin
 static TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,

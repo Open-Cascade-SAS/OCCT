@@ -13,57 +13,61 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSAlgo_AlgoContainer.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <Message_ListOfMsg.hxx>
-#include <Message_ListIteratorOfListOfMsg.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-
-#include <ShapeProcess.hxx>
-#include <ShapeProcess_ShapeContext.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Interface_Static.hxx>
+#include <Message_ListIteratorOfListOfMsg.hxx>
+#include <Message_ListOfMsg.hxx>
+#include <Message_Msg.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Resource_Manager.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeAlgo_ToolContainer.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
+#include <ShapeCustom.hxx>
 #include <ShapeExtend_DataMapOfShapeListOfMsg.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
-#include <ShapeFix_Shape.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeAnalysis_Edge.hxx>
 #include <ShapeFix_Edge.hxx>
-#include <UnitsMethods.hxx>
-#include <ShapeCustom.hxx>
-
-#include <TransferBRep.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TransferBRep_ShapeBinder.hxx>
+#include <ShapeFix_Shape.hxx>
+#include <ShapeProcess.hxx>
+#include <ShapeProcess_ShapeContext.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <Transfer_FinderProcess.hxx>
 #include <Transfer_TransientListBinder.hxx>
-#include <Resource_Manager.hxx>
-#include <Interface_Static.hxx>
-#include <Message_Msg.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <UnitsMethods.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ToolContainer.hxx>
 
 //=======================================================================
 //function : XSAlgo_AlgoContainer
 //purpose  : 
 //=======================================================================
-
 XSAlgo_AlgoContainer::XSAlgo_AlgoContainer()
 {
   myTC = new XSAlgo_ToolContainer;

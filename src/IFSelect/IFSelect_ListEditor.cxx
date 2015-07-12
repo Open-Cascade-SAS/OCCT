@@ -11,7 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_ListEditor.ixx>
+
+#include <IFSelect_ListEditor.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_TypedValue.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IFSelect_ListEditor::IFSelect_ListEditor  ()
 : themax (0) , thetouc (0)  {  }

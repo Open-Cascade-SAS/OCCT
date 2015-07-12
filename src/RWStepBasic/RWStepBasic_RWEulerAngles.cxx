@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepBasic_RWEulerAngles.ixx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWEulerAngles.hxx>
 #include <Standard_Real.hxx>
+#include <StepBasic_EulerAngles.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWEulerAngles
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWEulerAngles::RWStepBasic_RWEulerAngles ()
 {
 }

@@ -17,28 +17,38 @@
 //--------------------------------------------------------------------
 //pdn 20.04.99 STC22655 avoid of exceptions on empty loops
 
-#include <IGESSolid_ToolLoop.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
 #include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
+#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <IGESSolid_EdgeList.hxx>
-#include <IGESSolid_VertexList.hxx>
-#include <Interface_Macros.hxx>
-#include <stdio.h>
-
-// MGE 03/08/98
-#include <Message_Msg.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
 #include <IGESData_Status.hxx>
+#include <IGESSolid_EdgeList.hxx>
+#include <IGESSolid_Loop.hxx>
+#include <IGESSolid_ToolLoop.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
+#include <stdio.h>
+// MGE 03/08/98
 //=======================================================================
 //function : IGESSolid_ToolLoop
 //purpose  : 
 //=======================================================================
-
 IGESSolid_ToolLoop::IGESSolid_ToolLoop ()
 {
 }

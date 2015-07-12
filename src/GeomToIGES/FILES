@@ -1,0 +1,10 @@
+GeomToIGES_GeomCurve.cxx
+GeomToIGES_GeomCurve.hxx
+GeomToIGES_GeomEntity.cxx
+GeomToIGES_GeomEntity.hxx
+GeomToIGES_GeomPoint.cxx
+GeomToIGES_GeomPoint.hxx
+GeomToIGES_GeomSurface.cxx
+GeomToIGES_GeomSurface.hxx
+GeomToIGES_GeomVector.cxx
+GeomToIGES_GeomVector.hxx

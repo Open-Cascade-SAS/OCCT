@@ -11,33 +11,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SessionFile.ixx>
-#include <IFSelect_SessionDumper.hxx>
+
+#include <Dico_DictionaryOfInteger.hxx>
 #include <IFSelect_BasicDumper.hxx>
-#include <IFSelect_IntParam.hxx>
-#include <IFSelect_Selection.hxx>
-#include <IFSelect_SelectExtract.hxx>
-#include <IFSelect_SelectDeduct.hxx>
-#include <IFSelect_SelectControl.hxx>
-#include <IFSelect_SelectCombine.hxx>
-#include <IFSelect_SelectAnyType.hxx>
-#include <IFSelect_SelectAnyList.hxx>
-#include <IFSelect_ShareOut.hxx>
 #include <IFSelect_Dispatch.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <IFSelect_IntParam.hxx>
 #include <IFSelect_Modifier.hxx>
+#include <IFSelect_SelectAnyList.hxx>
+#include <IFSelect_SelectAnyType.hxx>
+#include <IFSelect_SelectCombine.hxx>
+#include <IFSelect_SelectControl.hxx>
+#include <IFSelect_SelectDeduct.hxx>
+#include <IFSelect_SelectExtract.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_SessionDumper.hxx>
+#include <IFSelect_SessionFile.hxx>
+#include <IFSelect_ShareOut.hxx>
 #include <IFSelect_Transformer.hxx>
+#include <IFSelect_WorkSession.hxx>
+#include <Interface_Macros.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <OSD_OpenFile.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <Interface_Macros.hxx>
 #include <stdio.h>
-
-#include <OSD_OpenFile.hxx>
-#include <IFSelect_GeneralModifier.hxx>
-
-
 static int deja = 0;
 
 

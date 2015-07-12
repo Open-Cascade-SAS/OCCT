@@ -14,15 +14,16 @@
 
 #ifndef WNT
 
-#include <OSD_Directory.ixx>
-#include <OSD_WhoAmI.hxx>
-#include <OSD_Protection.hxx>
 
-#include <sys/stat.h>
+#include <OSD_Directory.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Protection.hxx>
+#include <OSD_WhoAmI.hxx>
+
 #include <errno.h>
 #include <stdio.h>
+#include <sys/stat.h>
 #include <unistd.h>
-
 const OSD_WhoAmI Iam = OSD_WDirectory;
 
 

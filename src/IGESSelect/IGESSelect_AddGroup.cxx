@@ -11,15 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_AddGroup.ixx>
-#include <Interface_Check.hxx>
-#include <Interface_EntityIterator.hxx>
+
+#include <IFSelect_ContextModif.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_AddGroup.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_AddGroup::IGESSelect_AddGroup ()
     : IGESSelect_ModelModifier (Standard_True)    {  }

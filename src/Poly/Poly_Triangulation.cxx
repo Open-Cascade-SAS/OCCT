@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Poly_Triangulation.ixx>
+
 #include <gp_Pnt.hxx>
 #include <Poly_Triangle.hxx>
-
+#include <Poly_Triangulation.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Poly_Triangulation
 //purpose  : 
 //=======================================================================
-
 Poly_Triangulation::Poly_Triangulation(const Standard_Integer NbNodes, 
                                        const Standard_Integer NbTriangles,
                                        const Standard_Boolean UVNodes) :

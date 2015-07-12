@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeDir.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <gce_MakeDir.hxx>
 #include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une direction 3d (Dir) de gp a partir de 2 Pnt de gp.     +
 //=========================================================================
-
 gce_MakeDir::gce_MakeDir(const gp_Pnt& P1,
 			 const gp_Pnt& P2)
 {

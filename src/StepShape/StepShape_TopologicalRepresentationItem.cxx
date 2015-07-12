@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_TopologicalRepresentationItem.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
 
 StepShape_TopologicalRepresentationItem::StepShape_TopologicalRepresentationItem ()  {}
 

@@ -15,13 +15,16 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_DocumentFile.ixx>
+#include <Standard_Type.hxx>
 #include <StepBasic_CharacterizedObject.hxx>
+#include <StepBasic_DocumentFile.hxx>
+#include <StepBasic_DocumentType.hxx>
+#include <TCollection_HAsciiString.hxx>
+
 //=======================================================================
 //function : StepBasic_DocumentFile
 //purpose  : 
 //=======================================================================
-
 StepBasic_DocumentFile::StepBasic_DocumentFile ()
 {
   theCharacterizedObject = new StepBasic_CharacterizedObject;

@@ -14,19 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_MakeShape.ixx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 
+#include <BRepBuilderAPI_MakeShape.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_MakeShape
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_MakeShape::BRepBuilderAPI_MakeShape()
 {
 }

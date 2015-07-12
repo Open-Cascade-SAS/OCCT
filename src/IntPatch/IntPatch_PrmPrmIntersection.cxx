@@ -17,29 +17,31 @@
 // modified by Edward AGAPOV (eap) Tue Jan 22 12:29:55 2002
 // modified by Oleg FEDYAED  (ofv) Fri Nov 29 16:08:02 2002
 
-#include <IntPatch_PrmPrmIntersection.ixx>
-
-#include <IntPatch_InterferencePolyhedron.hxx>
-#include <IntWalk_PWalking.hxx>
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_RstInt.hxx>
-
-#include <IntPatch_Line.hxx>
-
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <Intf_PIType.hxx>
 #include <Intf_SectionLine.hxx>
-#include <Intf_TangentZone.hxx>
 #include <Intf_SectionPoint.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
+#include <Intf_TangentZone.hxx>
+#include <IntPatch_InterferencePolyhedron.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_Polyhedron.hxx>
+#include <IntPatch_PrmPrmIntersection.hxx>
+#include <IntPatch_PrmPrmIntersection_T3Bits.hxx>
+#include <IntPatch_RstInt.hxx>
+#include <IntPatch_WLine.hxx>
 #include <IntPolyh_Intersection.hxx>
-
-#include <TColStd_SequenceOfInteger.hxx>
+#include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntWalk_PWalking.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 static void SectionPointToParameters(const Intf_SectionPoint& Sp,
                                      const IntPatch_Polyhedron& Surf1,

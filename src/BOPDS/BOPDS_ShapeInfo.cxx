@@ -12,11 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_ShapeInfo.ixx>
+
+#include <Bnd_Box.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <TopoDS_Shape.hxx>
 
 #include <stdio.h>
-#include <BOPCol_ListOfInteger.hxx>
-
 static 
   void DumpType(const TopAbs_ShapeEnum aTS);
 

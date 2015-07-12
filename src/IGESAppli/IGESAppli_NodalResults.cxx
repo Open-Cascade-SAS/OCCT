@@ -16,10 +16,13 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_NodalResults.ixx>
+#include <IGESAppli_NodalResults.hxx>
+#include <IGESAppli_Node.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-
 
 IGESAppli_NodalResults::IGESAppli_NodalResults ()    {  }
 

@@ -16,11 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_LeaderArrow.ixx>
+#include <gp_GTrsf.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <gp_GTrsf.hxx>
-
+#include <Standard_Type.hxx>
 
 IGESDimen_LeaderArrow::IGESDimen_LeaderArrow ()    {  }
 

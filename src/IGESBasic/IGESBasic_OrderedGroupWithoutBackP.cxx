@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_OrderedGroupWithoutBackP.ixx>
-
+#include <IGESBasic_OrderedGroupWithoutBackP.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_OrderedGroupWithoutBackP::IGESBasic_OrderedGroupWithoutBackP ()
       {  InitTypeAndForm(402,15);  }

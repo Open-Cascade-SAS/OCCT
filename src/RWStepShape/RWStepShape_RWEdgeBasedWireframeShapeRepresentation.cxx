@@ -15,16 +15,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepShape_RWEdgeBasedWireframeShapeRepresentation.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWEdgeBasedWireframeShapeRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepShape_EdgeBasedWireframeShapeRepresentation.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWEdgeBasedWireframeShapeRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepShape_RWEdgeBasedWireframeShapeRepresentation::RWStepShape_RWEdgeBasedWireframeShapeRepresentation ()
 {
 }

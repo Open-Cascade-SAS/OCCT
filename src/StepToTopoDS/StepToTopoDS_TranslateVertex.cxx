@@ -16,30 +16,29 @@
 
 //:   gka 09.04.99: S4136: eliminate BRepAPI::Precision()
 
-#include <StepToTopoDS_TranslateVertex.ixx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <TopoDS.hxx>
-
-#include <TopoDS_Vertex.hxx>
 #include <BRep_Builder.hxx>
-//#include <BRepAPI.hxx>
-
-#include <StepGeom_Point.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepShape_VertexPoint.hxx>
-#include <StepShape_Vertex.hxx>
-
 #include <Geom_CartesianPoint.hxx>
 #include <Precision.hxx>
-
-// For I-DEAS-like processing (ssv; 15.11.2010)
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Point.hxx>
+#include <StepShape_Vertex.hxx>
+#include <StepShape_VertexPoint.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToTopoDS_NMTool.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateVertex.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
+//#include <BRepAPI.hxx>
+// For I-DEAS-like processing (ssv; 15.11.2010)
 // ============================================================================
 // Method  : StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex
 // Purpose : Empty Constructor
 // ============================================================================
-
 StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
 {
   done = Standard_False;

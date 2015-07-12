@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWOrientedOpenShell.ixx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_HArray1OfFace.hxx>
-#include <StepShape_Face.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWOrientedOpenShell.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_Face.hxx>
+#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_OpenShell.hxx>
 #include <StepShape_OrientedOpenShell.hxx>
-
 
 RWStepShape_RWOrientedOpenShell::RWStepShape_RWOrientedOpenShell () {}
 

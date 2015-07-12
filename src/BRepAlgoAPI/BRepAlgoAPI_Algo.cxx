@@ -12,10 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgoAPI_Algo.ixx>
 
-#include <Standard_NotImplemented.hxx>
+#include <BRepAlgoAPI_Algo.hxx>
+#include <Message_ProgressIndicator.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 // function: 

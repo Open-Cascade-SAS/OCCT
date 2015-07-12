@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepShape_AngularLocation.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepShape_AngularLocation.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_AngularLocation
 //purpose  : 
 //=======================================================================
-
 StepShape_AngularLocation::StepShape_AngularLocation ()
 {
 }

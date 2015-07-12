@@ -16,13 +16,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepRepr_ProductConcept.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ProductConceptContext.hxx>
+#include <StepRepr_ProductConcept.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_ProductConcept
 //purpose  : 
 //=======================================================================
-
 StepRepr_ProductConcept::StepRepr_ProductConcept ()
 {
   defDescription = Standard_False;

@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_FaceAreaBuilder.ixx>
+
+#include <TopOpeBRepBuild_FaceAreaBuilder.hxx>
+#include <TopOpeBRepBuild_LoopClassifier.hxx>
+#include <TopOpeBRepBuild_LoopSet.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_FaceAreaBuilder
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_FaceAreaBuilder::TopOpeBRepBuild_FaceAreaBuilder()
 {
 }

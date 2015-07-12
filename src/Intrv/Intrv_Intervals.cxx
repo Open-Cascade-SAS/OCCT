@@ -17,7 +17,11 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <Intrv_Intervals.ixx>
+
+
+#include <Intrv_Interval.hxx>
+#include <Intrv_Intervals.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //                   **---------****             Other
 //     ***-----*                                 IsBefore
@@ -33,12 +37,10 @@
 //                       ***-----------------*   IsOverlappingAtEnd
 //                                ***--------*   IsJustAfter
 //                                     ***---*   IsAfter
-
 //=======================================================================
 //function : Intrv_Intervals
 //purpose  :
 //=======================================================================
-
 Intrv_Intervals::Intrv_Intervals ()
 {}
 

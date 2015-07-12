@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWSurfaceSectionFieldConstant.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWSurfaceSectionFieldConstant.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepElement_SurfaceSection.hxx>
+#include <StepElement_SurfaceSectionFieldConstant.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWSurfaceSectionFieldConstant
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWSurfaceSectionFieldConstant::RWStepElement_RWSurfaceSectionFieldConstant ()
 {
 }

@@ -14,19 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-# include <MAT_Graph.ixx>
-# include <MAT_SequenceOfArc.hxx>
-# include <MAT_Arc.hxx>
-# include <MAT_Node.hxx>
-# include <MAT_BasicElt.hxx>
-# include <MAT_Zone.hxx>
-# include <MAT_DataMapOfIntegerBasicElt.hxx>
-# include <MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx>
-# include <MAT_DataMapOfIntegerArc.hxx>
-# include <MAT_SequenceOfArc.hxx>
-# include <MAT_Bisector.hxx>
-# include <MAT_Edge.hxx>
-# include <Precision.hxx>
+
+#include <MAT_Arc.hxx>
+#include <MAT_BasicElt.hxx>
+#include <MAT_Bisector.hxx>
+#include <MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx>
+#include <MAT_DataMapOfIntegerArc.hxx>
+#include <MAT_DataMapOfIntegerBasicElt.hxx>
+#include <MAT_Edge.hxx>
+#include <MAT_Graph.hxx>
+#include <MAT_ListOfBisector.hxx>
+#include <MAT_Node.hxx>
+#include <MAT_SequenceOfArc.hxx>
+#include <MAT_Zone.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 
 //------------------
 // functions static.

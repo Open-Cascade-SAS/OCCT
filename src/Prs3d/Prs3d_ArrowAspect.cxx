@@ -12,7 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_ArrowAspect.ixx>
+
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_InvalidAngle.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 Prs3d_ArrowAspect::Prs3d_ArrowAspect () 
      : myAngle(M_PI/180.*10), myLength(1.) {

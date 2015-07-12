@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_CompositeTextWithExtent.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_CompositeTextWithExtent.hxx>
+#include <StepVisual_PlanarExtent.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_CompositeTextWithExtent::StepVisual_CompositeTextWithExtent ()  {}
 

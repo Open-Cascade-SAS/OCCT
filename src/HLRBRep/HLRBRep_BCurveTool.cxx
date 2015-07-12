@@ -14,20 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_BCurveTool.ixx>
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAbs_Shape.hxx>
+
+#include <BRepAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <HLRBRep_BCurveTool.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : NbSamples
 //purpose  : 
 //=======================================================================
-
 Standard_Integer
 HLRBRep_BCurveTool::NbSamples (const BRepAdaptor_Curve& C,
 			       const Standard_Real U0,

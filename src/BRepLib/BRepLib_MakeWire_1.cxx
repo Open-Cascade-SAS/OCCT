@@ -14,32 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_MakeWire.ixx>
-#include <BRepLib.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapOfOrientedShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Compound.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Pnt.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  : Add the list of edges to the current wire
 //=======================================================================
-
 void  BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
 {
   myError = BRepLib_WireDone;

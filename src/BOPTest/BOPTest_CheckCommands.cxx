@@ -12,40 +12,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
 
-#include <vector>
-#include <algorithm>
-#include <functional>
-
+#include <BOPAlgo_ArgumentAnalyzer.hxx>
+#include <BOPAlgo_CheckerSI.hxx>
+#include <BOPAlgo_CheckResult.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_MapOfPassKey.hxx>
+#include <BOPTest.hxx>
+#include <BOPTest_Objects.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <OSD_Timer.hxx>
 #include <TCollection_AsciiString.hxx>
-
 #include <TopExp_Explorer.hxx>
-
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
-
-#include <DBRep.hxx>
-#include <Draw.hxx>
-
-#include <BOPCol_ListOfShape.hxx>
-
-#include <BOPDS_DS.hxx>
-#include <BOPDS_MapOfPassKey.hxx>
-
-#include <BOPAlgo_CheckerSI.hxx>
-#include <BOPAlgo_ArgumentAnalyzer.hxx>
-#include <BOPAlgo_CheckResult.hxx>
-#include <BOPTools_AlgoTools.hxx>
-
-#include <OSD_Timer.hxx>
-#include <BOPTest_Objects.hxx>
-
+#include <algorithm>
+#include <functional>
+#include <vector>
 //
 static 
   void MakeShapeForFullOutput (const TCollection_AsciiString&,

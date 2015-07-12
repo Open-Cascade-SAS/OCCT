@@ -11,11 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_StrongComponants.ixx>
-//#include <IFGraph_SortedStrongs.hxx>
+
+#include <IFGraph_StrongComponants.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 
+//#include <IFGraph_SortedStrongs.hxx>
 IFGraph_StrongComponants::IFGraph_StrongComponants
   (const Interface_Graph& agraph, const Standard_Boolean whole)
       : IFGraph_SubPartsIterator (agraph, whole)    {  }

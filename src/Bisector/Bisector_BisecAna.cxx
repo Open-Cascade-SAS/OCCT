@@ -17,34 +17,42 @@
 //  Modified by skv - Fri Jul  1 16:23:17 2005 IDEM(Airbus)
 //  Modified by skv - Wed Jul  7 17:21:09 2004 IDEM(Airbus)
 
-#include <Bisector_BisecAna.ixx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <GccInt_IType.hxx>
-#include <GccInt_BLine.hxx>
+#include <Bisector_BisecAna.hxx>
+#include <ElCLib.hxx>
 #include <GccAna_Circ2dBisec.hxx>
-#include <GccAna_Pnt2dBisec.hxx>
 #include <GccAna_CircLin2dBisec.hxx>
-#include <GccAna_Lin2dBisec.hxx>
 #include <GccAna_CircPnt2dBisec.hxx>
+#include <GccAna_Lin2dBisec.hxx>
 #include <GccAna_LinPnt2dBisec.hxx>
+#include <GccAna_Pnt2dBisec.hxx>
+#include <GccInt_Bisec.hxx>
+#include <GccInt_BLine.hxx>
+#include <GccInt_IType.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_Point.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
-#include <ElCLib.hxx>
-#include <StdFail_NotDone.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <IntRes2d_Domain.hxx>
-#include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
+#include <StdFail_NotDone.hxx>
 
 static Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
 				   const Standard_Real   Tolerance);

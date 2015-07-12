@@ -1,4 +1,7 @@
+BSplSLib.cxx
+BSplSLib.hxx
+BSplSLib.lxx
 BSplSLib_BzSyntaxes.cxx
-BSplSLib_EvaluatorFunction.hxx
-BSplSLib_Cache.hxx
 BSplSLib_Cache.cxx
+BSplSLib_Cache.hxx
+BSplSLib_EvaluatorFunction.hxx

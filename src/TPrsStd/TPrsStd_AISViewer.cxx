@@ -14,14 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TPrsStd_AISViewer.ixx>
+
+#include <AIS_InteractiveContext.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TPrsStd_AISViewer.hxx>
+#include <V3d_Viewer.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TPrsStd_AISViewer::GetID () 
 {  
   static Standard_GUID TPrsStd_AISViewerID("04fb4d05-5690-11d1-8940-080009dc3333");

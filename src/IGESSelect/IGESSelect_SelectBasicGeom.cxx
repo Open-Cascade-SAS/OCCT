@@ -11,25 +11,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SelectBasicGeom.ixx>
+
+#include <IGESBasic_Group.hxx>
+#include <IGESBasic_SingleParent.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <IGESGeom_Plane.hxx>
+#include <IGESGeom_Boundary.hxx>
+#include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
+#include <IGESGeom_Plane.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
-#include <IGESGeom_BoundedSurface.hxx>
-#include <IGESGeom_Boundary.hxx>
-#include <IGESBasic_SingleParent.hxx>
-#include <IGESBasic_Group.hxx>
-#include <IGESSolid_ManifoldSolid.hxx>
-#include <IGESSolid_Shell.hxx>
+#include <IGESSelect_SelectBasicGeom.hxx>
+#include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_Face.hxx>
 #include <IGESSolid_Loop.hxx>
-#include <IGESSolid_EdgeList.hxx>
-
+#include <IGESSolid_ManifoldSolid.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_SelectBasicGeom::IGESSelect_SelectBasicGeom
   (const Standard_Integer mode)

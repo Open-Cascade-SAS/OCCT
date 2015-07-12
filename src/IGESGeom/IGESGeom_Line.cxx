@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_Line.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESGeom_Line.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_Line::IGESGeom_Line ()    {  }
 

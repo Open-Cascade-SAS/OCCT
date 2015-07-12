@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepShape_RWConnectedEdgeSet.ixx>
-#include <StepShape_HArray1OfEdge.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWConnectedEdgeSet.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_ConnectedEdgeSet.hxx>
 #include <StepShape_Edge.hxx>
+#include <StepShape_HArray1OfEdge.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWConnectedEdgeSet
 //purpose  : 
 //=======================================================================
-
 RWStepShape_RWConnectedEdgeSet::RWStepShape_RWConnectedEdgeSet ()
 {
 }

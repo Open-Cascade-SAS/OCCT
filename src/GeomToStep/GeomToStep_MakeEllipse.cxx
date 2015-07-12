@@ -14,22 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeEllipse.ixx>
-#include <GeomToStep_MakeAxis2Placement3d.hxx>
-#include <GeomToStep_MakeAxis2Placement2d.hxx>
-#include <StdFail_NotDone.hxx>
+
+#include <Geom2d_Ellipse.hxx>
 #include <Geom_Ellipse.hxx>
+#include <GeomToStep_MakeAxis2Placement2d.hxx>
+#include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakeEllipse.hxx>
+#include <gp_Elips.hxx>
 #include <gp_Elips2d.hxx>
-#include <StepGeom_Ellipse.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Ellipse.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d'une ellipse de prostep a partir d'une ellipse 3d de gp
 //=============================================================================
-
 GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const gp_Elips& E)
 {
 #include <GeomToStep_MakeEllipse_gen.pxx>

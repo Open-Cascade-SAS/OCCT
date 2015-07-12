@@ -14,7 +14,14 @@
 
 // Modif jcv 14/12/90 suite a la premiere revue de projet
 
-#include <gp_Hypr.ixx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
 
 void gp_Hypr::Mirror (const gp_Pnt& P)
 { pos.Mirror(P); }

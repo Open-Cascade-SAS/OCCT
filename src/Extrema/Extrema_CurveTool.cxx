@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_CurveTool.ixx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Extrema_CurveTool.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 //=======================================================================
 //function : IsPeriodic
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean Extrema_CurveTool::IsPeriodic(const Adaptor3d_Curve& C)
 {
   GeomAbs_CurveType aType = GetType(C);

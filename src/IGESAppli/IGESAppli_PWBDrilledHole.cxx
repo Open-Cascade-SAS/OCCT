@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_PWBDrilledHole.ixx>
+#include <IGESAppli_PWBDrilledHole.hxx>
+#include <Standard_Type.hxx>
 
 IGESAppli_PWBDrilledHole::IGESAppli_PWBDrilledHole ()    {  }
 

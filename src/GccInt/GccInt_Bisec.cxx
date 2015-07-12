@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccInt_Bisec.ixx>
+
+#include <GccInt_Bisec.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 
 gp_Circ2d GccInt_Bisec::
   Circle() const { 

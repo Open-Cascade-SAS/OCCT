@@ -15,13 +15,16 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_GeometricTolerance.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepDimTol_GeometricTolerance.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepDimTol_GeometricTolerance
 //purpose  : 
 //=======================================================================
-
 StepDimTol_GeometricTolerance::StepDimTol_GeometricTolerance ()
 {
 }

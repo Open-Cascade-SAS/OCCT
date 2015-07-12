@@ -11,15 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPSelections_SelectForTransfer.ixx>
+
 #include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Type.hxx>
+#include <STEPSelections_SelectForTransfer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <XSControl_TransferReader.hxx>
+
 //=======================================================================
 //function : STEPSelections_SelectForTransfer
 //purpose  : 
 //=======================================================================
-
 STEPSelections_SelectForTransfer::STEPSelections_SelectForTransfer()
 {
   

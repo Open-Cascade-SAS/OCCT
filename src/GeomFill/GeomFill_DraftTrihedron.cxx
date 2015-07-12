@@ -14,11 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_DraftTrihedron.ixx>
 
-#include <Precision.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <Adaptor3d_HCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomFill_DraftTrihedron.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : DDeriv

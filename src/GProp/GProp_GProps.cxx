@@ -12,14 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GProp_GProps.ixx>
-#include <GProp.hxx>
-#include <math_Jacobi.hxx>
-#include <gp.hxx>
-#include <gp.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Vec.hxx>
 
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <GProp.hxx>
+#include <GProp_GProps.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <math_Jacobi.hxx>
+#include <Standard_DomainError.hxx>
 
 GProp_GProps::GProp_GProps () : g (gp::Origin()) , loc (gp::Origin()), dim (0.0) 
 { 

@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAutoDesignPresentedItem.ixx>
-#include <StepAP214_HArray1OfAutoDesignPresentedItemSelect.hxx>
-#include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepAP214_RWAutoDesignPresentedItem.hxx>
 #include <StepAP214_AutoDesignPresentedItem.hxx>
-
+#include <StepAP214_AutoDesignPresentedItemSelect.hxx>
+#include <StepAP214_HArray1OfAutoDesignPresentedItemSelect.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignPresentedItem::RWStepAP214_RWAutoDesignPresentedItem () {}
 

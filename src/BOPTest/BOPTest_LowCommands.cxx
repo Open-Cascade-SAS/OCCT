@@ -13,35 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
 
-#include <stdio.h>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopAbs_State.hxx>
-
-#include <TCollection_AsciiString.hxx>
-
-#include <BRepClass3d_SolidClassifier.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-
-#include <BRep_Tool.hxx>
+#include <BOPTest.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
 #include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_GCurve.hxx>
-
-#include <Draw.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 #include <DBRep.hxx>
+#include <Draw.hxx>
 #include <DrawTrSurf.hxx>
-
-#include <BOPTools_AlgoTools2D.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntTools_FClass2d.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
+#include <stdio.h>
 static
   void PrintState (Draw_Interpretor& aDI,
                    const TopAbs_State& aState);

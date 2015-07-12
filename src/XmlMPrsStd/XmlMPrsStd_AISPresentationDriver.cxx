@@ -13,11 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMPrsStd_AISPresentationDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TPrsStd_AISPresentation.hxx>
+#include <XmlMPrsStd_AISPresentationDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (GuidString,        "guid")
 IMPLEMENT_DOMSTRING (IsDisplayedString, "isdisplayed")

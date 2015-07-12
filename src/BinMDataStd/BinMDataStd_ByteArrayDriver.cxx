@@ -13,11 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_ByteArrayDriver.ixx>
-#include <TDataStd_ByteArray.hxx>
-#include <TColStd_HArray1OfByte.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+
 #include <BinMDataStd.hxx>
+#include <BinMDataStd_ByteArrayDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfByte.hxx>
+#include <TDataStd_ByteArray.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataStd_ByteArrayDriver
 //purpose  : Constructor

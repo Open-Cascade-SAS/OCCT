@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_Coordinate3.ixx>
+
+#include <Standard_Type.hxx>
+#include <Vrml_Coordinate3.hxx>
 
 Vrml_Coordinate3::Vrml_Coordinate3(const Handle(TColgp_HArray1OfVec)& aPoint)
 {

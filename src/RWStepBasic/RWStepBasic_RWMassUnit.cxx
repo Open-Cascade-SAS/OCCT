@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepBasic_RWMassUnit.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWMassUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_MassUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWMassUnit
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWMassUnit::RWStepBasic_RWMassUnit ()
 {
 }

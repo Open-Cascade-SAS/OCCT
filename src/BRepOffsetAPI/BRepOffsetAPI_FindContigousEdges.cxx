@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_FindContigousEdges.ixx>
 
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <BRepOffsetAPI_FindContigousEdges.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 BRepOffsetAPI_FindContigousEdges::BRepOffsetAPI_FindContigousEdges(const Standard_Real tolerance,
 						       const Standard_Boolean option)
 {

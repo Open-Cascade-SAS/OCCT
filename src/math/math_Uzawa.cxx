@@ -27,12 +27,15 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_Uzawa.ixx>
 #include <math_Crout.hxx>
+#include <math_Matrix.hxx>
+#include <math_Uzawa.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
-
+#include <StdFail_NotDone.hxx>
 
 math_Uzawa::math_Uzawa(const math_Matrix& Cont, const math_Vector& Secont,
 		       const math_Vector& StartingPoint,

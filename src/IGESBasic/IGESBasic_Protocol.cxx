@@ -11,27 +11,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESBasic_Protocol.ixx>
 
 #include <IGESBasic_AssocGroupType.hxx>
+#include <IGESBasic_ExternalReferenceFile.hxx>
 #include <IGESBasic_ExternalRefFile.hxx>
 #include <IGESBasic_ExternalRefFileIndex.hxx>
 #include <IGESBasic_ExternalRefFileName.hxx>
 #include <IGESBasic_ExternalRefLibName.hxx>
 #include <IGESBasic_ExternalRefName.hxx>
-#include <IGESBasic_ExternalReferenceFile.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_Hierarchy.hxx>
 #include <IGESBasic_Name.hxx>
 #include <IGESBasic_OrderedGroup.hxx>
 #include <IGESBasic_OrderedGroupWithoutBackP.hxx>
+#include <IGESBasic_Protocol.hxx>
 #include <IGESBasic_SingleParent.hxx>
 #include <IGESBasic_SingularSubfigure.hxx>
 #include <IGESBasic_SubfigureDef.hxx>
-
 #include <IGESData.hxx>
 #include <IGESData_Protocol.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,

@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <HatchGen_PointOnElement.hxx>
+#include <HatchGen_PointOnHatching.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <Standard_Stream.hxx>
-#include <HatchGen_PointOnHatching.ixx>
 
 #define RAISE_IF_NOSUCHOBJECT 0
 

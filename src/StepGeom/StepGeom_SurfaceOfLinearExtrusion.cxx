@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_SurfaceOfLinearExtrusion.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_SurfaceOfLinearExtrusion.hxx>
+#include <StepGeom_Vector.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_SurfaceOfLinearExtrusion::StepGeom_SurfaceOfLinearExtrusion ()  {}
 

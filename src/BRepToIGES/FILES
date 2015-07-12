@@ -1,0 +1,8 @@
+BRepToIGES_BREntity.cxx
+BRepToIGES_BREntity.hxx
+BRepToIGES_BRShell.cxx
+BRepToIGES_BRShell.hxx
+BRepToIGES_BRSolid.cxx
+BRepToIGES_BRSolid.hxx
+BRepToIGES_BRWire.cxx
+BRepToIGES_BRWire.hxx

@@ -17,14 +17,23 @@
 //  Complement : CKY, alimentation du TransientProcess
 //    (Bind general;  BindVertex ?)
 
-#include <StepToTopoDS_Tool.ixx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <StepToTopoDS_PointPair.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::StepToTopoDS_Tool
 // Purpose : Empty Constructor
 // ============================================================================
-
 StepToTopoDS_Tool::StepToTopoDS_Tool() {}
 
 // ============================================================================

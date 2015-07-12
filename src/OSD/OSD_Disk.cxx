@@ -14,7 +14,10 @@
 
 #ifndef _WIN32
 
-#include <OSD_Disk.ixx>
+
+#include <OSD_Disk.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
 #include <OSD_WhoAmI.hxx>
 
 const OSD_WhoAmI Iam = OSD_WDisk;
@@ -154,7 +157,11 @@ Standard_Integer OSD_Disk::Error()const{
 //-------------------------------------------------------------------------------
 
 #define STRICT
-#include <OSD_Disk.ixx>
+
+
+#include <OSD_Disk.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
 #include <Standard_ProgramError.hxx>
 
 #include <windows.h>

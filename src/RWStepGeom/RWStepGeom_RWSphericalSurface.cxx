@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWSphericalSurface.ixx>
-#include <StepGeom_Axis2Placement3d.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWSphericalSurface.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_SphericalSurface.hxx>
-
 
 RWStepGeom_RWSphericalSurface::RWStepGeom_RWSphericalSurface () {}
 

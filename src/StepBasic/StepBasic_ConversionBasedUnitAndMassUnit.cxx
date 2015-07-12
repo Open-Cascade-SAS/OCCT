@@ -11,16 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_ConversionBasedUnitAndMassUnit.ixx>
-#include <StepBasic_ConversionBasedUnit.hxx>
-#include <StepBasic_MassUnit.hxx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_ConversionBasedUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_MassUnit.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_ConversionBasedUnitAndMassUnit
 //purpose  : 
 //=======================================================================
-
 StepBasic_ConversionBasedUnitAndMassUnit::StepBasic_ConversionBasedUnitAndMassUnit ()
 {
 }

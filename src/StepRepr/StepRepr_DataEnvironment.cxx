@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepRepr_DataEnvironment.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_DataEnvironment.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_DataEnvironment
 //purpose  : 
 //=======================================================================
-
 StepRepr_DataEnvironment::StepRepr_DataEnvironment ()
 {
 }

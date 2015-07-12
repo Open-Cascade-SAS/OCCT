@@ -13,16 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_GraphNode.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <XCAFDoc_GraphNode.hxx>
 
 //     class  methods working on the node:
 //     ===================================
-
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean XCAFDoc_GraphNode::Find(const TDF_Label& L,
 					 Handle(XCAFDoc_GraphNode)& G)
 {

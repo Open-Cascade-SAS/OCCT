@@ -14,22 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeAxis2Placement2d.ixx>
-#include <StepGeom_Direction.hxx>
-#include <GeomToStep_MakeDirection.hxx>
-#include <StepGeom_CartesianPoint.hxx>
+
+#include <GeomToStep_MakeAxis2Placement2d.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
-#include <StdFail_NotDone.hxx>
+#include <GeomToStep_MakeDirection.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax22d.hxx>
-
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Creation d' un axis2_placement_2d de prostep a partir d' un Ax2 de gp
 //=============================================================================
-
 GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d
 ( const gp_Ax2& A)
 {

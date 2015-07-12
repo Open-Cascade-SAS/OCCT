@@ -12,25 +12,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_Circ2dTanCenGeo.ixx>
 
-#include <StdFail_NotDone.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_Failure.hxx>
+#include <Extrema_ExtPC2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <Geom2dGcc_Circ2dTanCenGeo.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_QCurve.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Extrema_POnCurv2d.hxx>
-
-#include <Geom2dGcc_CurveTool.hxx>
-#include <Extrema_ExtPC2d.hxx>
 
 //=========================================================================
 //   Creation d un cercle tangent a une courbe centre en un point.        +
 //=========================================================================
-
 Geom2dGcc_Circ2dTanCenGeo::
 Geom2dGcc_Circ2dTanCenGeo (const Geom2dGcc_QCurve&  Qualified1,
                            const gp_Pnt2d&          Pcenter   ,

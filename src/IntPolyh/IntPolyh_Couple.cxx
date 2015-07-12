@@ -14,9 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPolyh_Couple.ixx>
-#include <stdio.h>
 
+#include <IntPolyh_Couple.hxx>
+
+#include <stdio.h>
 IntPolyh_Couple::IntPolyh_Couple() : t1(-1),t2(-1),ia(0),angle(-2.0) {  } 
 
 IntPolyh_Couple::IntPolyh_Couple(const Standard_Integer a,const Standard_Integer b) : t1(a),t2(b),ia(0),angle(-2.0) {  }

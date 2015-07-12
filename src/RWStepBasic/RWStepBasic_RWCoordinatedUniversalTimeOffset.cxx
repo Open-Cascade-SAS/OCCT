@@ -11,11 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWCoordinatedUniversalTimeOffset.ixx>
+
+#include <Interface_Check.hxx>
+#include <RWStepBasic_RWCoordinatedUniversalTimeOffset.hxx>
 #include <StepBasic_AheadOrBehind.hxx>
-
+#include <StepBasic_CoordinatedUniversalTimeOffset.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : AheadOrBehind ---
 static TCollection_AsciiString aobAhead(".AHEAD.");

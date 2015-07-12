@@ -11,10 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_ESDescr.ixx>
-#include <StepData_Simple.hxx>
-#include <Interface_Macros.hxx>
 
+#include <Dico_DictionaryOfInteger.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_Described.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_PDescr.hxx>
+#include <StepData_Simple.hxx>
+#include <TCollection_AsciiString.hxx>
 
 StepData_ESDescr::StepData_ESDescr  (const Standard_CString name)
 :  thenom (name)    {  thenames = new Dico_DictionaryOfInteger;  }

@@ -16,7 +16,9 @@
 
 //---------- All Systems except windowsNT : ----------------------------------
 
-#include <OSD_EnvironmentIterator.ixx>
+#include <OSD_Environment.hxx>
+#include <OSD_EnvironmentIterator.hxx>
+#include <OSD_OSDError.hxx>
 #include <OSD_WhoAmI.hxx>
 
 //const OSD_WhoAmI Iam = OSD_WEnvironmentIterator;
@@ -97,7 +99,10 @@ Standard_Integer OSD_EnvironmentIterator::Error()const{
 #define STRICT
 #include <windows.h>
 
-#include <OSD_EnvironmentIterator.ixx>
+
+#include <OSD_Environment.hxx>
+#include <OSD_EnvironmentIterator.hxx>
+#include <OSD_OSDError.hxx>
 
 OSD_EnvironmentIterator :: OSD_EnvironmentIterator () {
 

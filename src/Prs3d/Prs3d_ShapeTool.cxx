@@ -14,30 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_ShapeTool.ixx>
 
-#include <BRepTools.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <BRepBndLib.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepTools.hxx>
 #include <Geom_Plane.hxx>
-
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Prs3d_ShapeTool.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : Prs3d_ShapeTool
 //purpose  : 
 //=======================================================================
-
 Prs3d_ShapeTool::Prs3d_ShapeTool (const TopoDS_Shape& theShape,
                                   const Standard_Boolean theAllVertices)
 : myShape (theShape)

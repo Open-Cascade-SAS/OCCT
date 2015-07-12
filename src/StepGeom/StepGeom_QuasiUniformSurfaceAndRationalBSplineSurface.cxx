@@ -11,12 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface.ixx>
 
+#include <Standard_Type.hxx>
 #include <StepGeom_QuasiUniformSurface.hxx>
-
+#include <StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface.hxx>
 #include <StepGeom_RationalBSplineSurface.hxx>
-
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface ()  {}
 

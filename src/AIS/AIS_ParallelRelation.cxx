@@ -14,48 +14,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_ParallelRelation.ixx>
-
-#include <Standard_NotImplemented.hxx>
-#include <Standard_DomainError.hxx>
-
-#include <Precision.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-
-#include <DsgPrs_LengthPresentation.hxx>
-
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_DimensionAspect.hxx>
 
 #include <AIS.hxx>
-
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveBox.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
+#include <AIS_ParallelRelation.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
-
-#include <gp_Lin.hxx>
-#include <gp_Pnt.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <DsgPrs_LengthPresentation.hxx>
 #include <ElCLib.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Dir.hxx>
+#include <gce_MakeLin.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
-
-#include <gce_MakeLin.hxx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Ellipse.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Constructor

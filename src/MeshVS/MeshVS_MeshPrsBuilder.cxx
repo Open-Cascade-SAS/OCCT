@@ -13,48 +13,46 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_MeshPrsBuilder.ixx>
 
-#include <Prs3d_Root.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
-
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_ArrayOfPolygons.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Group.hxx>
-
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapOfInteger.hxx>
-
-#include <Quantity_NameOfColor.hxx>
 #include <Aspect_InteriorStyle.hxx>
-#include <Select3D_SensitivePoint.hxx>
-
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <MeshVS_Buffer.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_Drawer.hxx>
-#include <MeshVS_Mesh.hxx>
-#include <MeshVS_Tool.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
 #include <MeshVS_MapOfTwoNodes.hxx>
-#include <MeshVS_Buffer.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_MeshPrsBuilder.hxx>
 #include <MeshVS_SymmetricPairHasher.hxx>
-
+#include <MeshVS_Tool.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Quantity_NameOfColor.hxx>
+#include <Select3D_SensitivePoint.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <TColStd_MapIntegerHasher.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_MeshPrsBuilder

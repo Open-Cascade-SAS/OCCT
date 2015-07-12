@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_FloatDS.ixx>
+
+#include <Voxel_FloatDS.hxx>
 
 #include <stdlib.h>
-
 // Empty constructor
 Voxel_FloatDS::Voxel_FloatDS():Voxel_DS()
 {

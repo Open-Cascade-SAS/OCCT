@@ -14,36 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_FaceConnect.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
+#include <Geom2d_Curve.hxx>
 #include <gp_Pnt.hxx>
-
-#include <ShapeBuild_ReShape.hxx>
-
-#include <ShapeFix_Face.hxx>
-#include <ShapeFix_Wire.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
-#include <Geom2d_Curve.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeFix_Face.hxx>
+#include <ShapeFix_FaceConnect.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+
 #ifdef OCCT_DEBUG
 #include <TopTools_MapOfShape.hxx>
 #endif

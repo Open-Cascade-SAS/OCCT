@@ -17,44 +17,36 @@
 //szv#4 S4163
 //eap: Tue Aug 29 11:02:56 2000: Shape Processing moved to upper levels
 
-#include <BRepToIGES_BREntity.ixx>
-
-#include <BRepToIGES_BRWire.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepToIGES_BREntity.hxx>
 #include <BRepToIGES_BRShell.hxx>
 #include <BRepToIGES_BRSolid.hxx>
-
-#include <BRep_Builder.hxx>
-
-#include <gp_Trsf.hxx>
-
+#include <BRepToIGES_BRWire.hxx>
 #include <Geom_Geometry.hxx>
-
+#include <gp_Trsf.hxx>
 #include <IGESData_IGESEntity.hxx>
-
+#include <IGESData_IGESModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-
-//#include <ShapeCustom.hxx>
-
+#include <Standard_Transient.hxx>
 #include <TopLoc_Location.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-
 #include <Transfer_FinderProcess.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TransferBRep_OrientedShapeMapper.hxx>
-#include <Transfer_TransientMapper.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientMapper.hxx>
+#include <TransferBRep_OrientedShapeMapper.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 
+//#include <ShapeCustom.hxx>
 char Name[100];
 
 //=======================================================================

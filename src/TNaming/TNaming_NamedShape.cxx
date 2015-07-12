@@ -14,45 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_NamedShape.ixx>
-#include <TNaming_Builder.ixx>
 
-#include <TDF_Label.hxx>
-#include <TDF_Data.hxx>
-#include <TDF_DeltaOnAddition.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
 #include <TDF_AttributeIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_DeltaOnAddition.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_DeltaOnRemoval.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_CopyShape.hxx>
+#include <TNaming_DeltaOnModification.hxx>
+#include <TNaming_DeltaOnRemoval.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_NewShapeIterator.hxx>
+#include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_PtrNode.hxx>
 #include <TNaming_PtrRefShape.hxx>
 #include <TNaming_RefShape.hxx>
-#include <TNaming_UsedShapes.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_NewShapeIterator.hxx>
-#include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_SameShapeIterator.hxx>
-
-#include <TNaming_DeltaOnModification.hxx>
-#include <TNaming_DeltaOnRemoval.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NullObject.hxx>
-
-#include <gp_Pnt.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <TNaming_Tool.hxx>
+#include <TNaming_UsedShapes.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
 // Defines the nodes classes
-
-#include <Standard.hxx>
-#include <TNaming_CopyShape.hxx>
-
 //#define MDTV_DEB_HASL
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TNaming_NamedShape::GetID() 
 {
   static Standard_GUID TNaming_NamedShapeID("c4ef4200-568f-11d1-8940-080009dc3333");

@@ -11,35 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_ErrorHandler.hxx>
-#include <TransferBRep.ixx>
-#include <Standard_Failure.hxx>
-#include <Interface_Macros.hxx>
 
-#include <TransferBRep_BinderOfShape.hxx>
-#include <TransferBRep_ShapeListBinder.hxx>
-#include <Transfer_Binder.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepLib.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Msg.hxx>
+#include <Message_Printer.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_HShape.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
-#include <TransferBRep_ShapeBinder.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_FinderProcess.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_BinderOfShape.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
+#include <TransferBRep_ShapeListBinder.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <TransferBRep_TransferResultInfo.hxx>
 
-#include <TopoDS_Iterator.hxx>
-//#include <TransferBRep_Analyzer.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepLib.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
-#include <Interface_Check.hxx>
-
 #include <stdio.h>
-
+//#include <TransferBRep_Analyzer.hxx>
 static void  ShapeAppend
   (const Handle(Transfer_Binder)& binder,
    const Handle(TopTools_HSequenceOfShape)& shapes)

@@ -14,90 +14,71 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <algorithm>
 
-#include <GeomInt_IntSS.ixx>
-
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <Bnd_Box2d.hxx>
+#include <ElSLib.hxx>
+#include <Extrema_ExtPS.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 #include <GeomInt.hxx>
-
-#include <Precision.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <GeomLib_Check2dBSplineCurve.hxx>
+#include <GeomLib_CheckBSplineCurve.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Pln.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfListOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
-#include <Adaptor3d_TopolTool.hxx>
-#include <IntPatch_Line.hxx>
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_GLine.hxx>
-#include <IntPatch_RLine.hxx>
+#include <IntPatch_ALine.hxx>
 #include <IntPatch_ALineToWLine.hxx>
+#include <IntPatch_GLine.hxx>
 #include <IntPatch_IType.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_StdAllocator.hxx>
-#include <vector>
-
-#include <AppParCurves_MultiBSpCurve.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAbs_CurveType.hxx>
-
-#include <GeomAdaptor.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-#include <Geom2dAdaptor.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-
-#include <GeomLib_CheckBSplineCurve.hxx>
-#include <GeomLib_Check2dBSplineCurve.hxx>
-#include <GeomProjLib.hxx>
-#include <Approx_CurveOnSurface.hxx>
-
-#include <ElSLib.hxx>
-
-#include <GeomInt_WLApprox.hxx>
-#include <Extrema_ExtPS.hxx>
-
-#include <GeomAdaptor_HSurface.hxx>
-#include <gp_Lin2d.hxx>
-#include <Geom2d_Line.hxx>
-#include <IntPatch_RLine.hxx>
-#include <Geom2dAdaptor.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Approx_CurveOnSurface.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomProjLib.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <IntPatch_ALine.hxx>
+#include <TColStd_Array1OfListOfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
+#include <algorithm>
+#include <vector>
 static
   void Parameters(const Handle(GeomAdaptor_HSurface)& HS1,
 		  const Handle(GeomAdaptor_HSurface)& HS2,

@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLib_Check2dBSplineCurve.ixx>
+
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <GeomLib_Check2dBSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+
 //=======================================================================
 //function : GeomLib_Check2dBSplineCurve
 //purpose  : 
 //=======================================================================
-
 GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const Handle(Geom2d_BSplineCurve)& Curve,
 						     const Standard_Real Tolerance,
 						     const Standard_Real AngularTolerance)

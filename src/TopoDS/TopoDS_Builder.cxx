@@ -14,22 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDS_Builder.ixx>
 
+#include <Standard_NullObject.hxx>
+#include <TopoDS_Builder.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_FrozenShape.hxx>
+#include <TopoDS_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_TCompound.hxx>
 #include <TopoDS_TShape.hxx>
 #include <TopoDS_TWire.hxx>
-#include <TopoDS_TCompound.hxx>
-#include <TopoDS_ListIteratorOfListOfShape.hxx>
-
-#include <TopoDS_FrozenShape.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
-
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : MakeShape
 //purpose  : Make a Shape from a TShape
 //=======================================================================
-
 void TopoDS_Builder::MakeShape (TopoDS_Shape& S, 
                                 const Handle(TopoDS_TShape)& T) const
 {

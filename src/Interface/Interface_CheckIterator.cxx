@@ -11,10 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_CheckIterator.ixx> 
-#include <Standard_NoSuchObject.hxx>
-#include <TCollection_HAsciiString.hxx>
 
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_IntVal.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static const Handle(Interface_Check)& nulcheck ()
 {

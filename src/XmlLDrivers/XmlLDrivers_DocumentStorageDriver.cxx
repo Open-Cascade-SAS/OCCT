@@ -13,38 +13,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlLDrivers_DocumentStorageDriver.ixx>
 
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <CDM_NullMessageDriver.hxx>
+#include <LDOM_DocumentType.hxx>
+#include <LDOM_LDOMImplementation.hxx>
+#include <LDOM_XmlWriter.hxx>
+#include <OSD_Environment.hxx>
+#include <OSD_File.hxx>
+#include <OSD_OpenFile.hxx>
+#include <PCDM.hxx>
+#include <PCDM_ReadWriter.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <Storage_Data.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TDocStd_Document.hxx>
 #include <XmlLDrivers.hxx>
+#include <XmlLDrivers_DocumentStorageDriver.hxx>
 #include <XmlLDrivers_NamespaceDef.hxx>
 #include <XmlMDF.hxx>
 #include <XmlMDF_ADriverTable.hxx>
-
 #include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 
-#include <LDOM_XmlWriter.hxx>
-#include <LDOM_LDOMImplementation.hxx>
-#include <LDOM_DocumentType.hxx>
-#include <XmlObjMgt_Document.hxx>
-
-#include <Storage_Data.hxx>
-#include <PCDM.hxx>
-#include <PCDM_ReadWriter.hxx>
-#include <CDM_NullMessageDriver.hxx>
-#include <CDM_Document.hxx>
-#include <CDM_Application.hxx>
-#include <TDocStd_Document.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-
 #include <locale.h>
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
-
-#include <OSD_File.hxx>
-#include <OSD_Environment.hxx>
-#include <OSD_OpenFile.hxx>
-
 #define STORAGE_VERSION      "STORAGE_VERSION: "
 #define REFERENCE_COUNTER    "REFERENCE_COUNTER: "
 #define MODIFICATION_COUNTER "MODIFICATION_COUNTER: "

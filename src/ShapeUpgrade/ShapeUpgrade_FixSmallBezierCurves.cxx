@@ -13,35 +13,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_FixSmallBezierCurves.ixx>
-#include <TopoDS_Edge.hxx>
-#include <Geom_BSplineCurve.hxx>
+
+#include <BRep_Tool.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <gp_Pnt.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <TopExp.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Pnt2d.hxx>
-#include <Geom2dConvert_ApproxCurve.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <ShapeExtend.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom_Surface.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <TopLoc_Location.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
-#include <ShapeUpgrade_SplitCurve3d.hxx>
-#include <ShapeUpgrade_SplitCurve2d.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomConvert_ApproxCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade_FixSmallBezierCurves.hxx>
+#include <ShapeUpgrade_SplitCurve2d.hxx>
+#include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom2d_HArray1OfCurve.hxx>
+#include <TColGeom_HArray1OfCurve.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+
 ShapeUpgrade_FixSmallBezierCurves::ShapeUpgrade_FixSmallBezierCurves()
 {
 }

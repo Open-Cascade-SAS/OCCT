@@ -11,15 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_EditHeader.ixx>
-#include <Interface_TypedValue.hxx>
-#include <Interface_Static.hxx>
 
+#include <IFSelect_EditForm.hxx>
+#include <IGESData_BasicEditor.hxx>
+#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
-#include <IGESData_GlobalSection.hxx>
-#include <IGESData_BasicEditor.hxx>
-
+#include <IGESSelect_EditHeader.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Static.hxx>
+#include <Interface_TypedValue.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static Standard_Boolean IsTimeStamp
   (const Handle(TCollection_HAsciiString)& val)

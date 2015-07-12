@@ -16,10 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_RectArraySubfigure.ixx>
-#include <Standard_DimensionMismatch.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDraw_RectArraySubfigure.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDraw_RectArraySubfigure::IGESDraw_RectArraySubfigure ()    {  }
 

@@ -13,14 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMXCAFDoc_CentroidDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-#include <XCAFDoc_Centroid.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <gp_XYZ.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <XCAFDoc_Centroid.hxx>
+#include <XmlMXCAFDoc_CentroidDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 #include <stdio.h>
-
 //=======================================================================
 //function : XmlMXCAFDoc_CentroidDriver
 //purpose  : Constructor

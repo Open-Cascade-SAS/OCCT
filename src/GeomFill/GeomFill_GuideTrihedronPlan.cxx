@@ -14,33 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_GuideTrihedronPlan.ixx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-//#include <gp_Trsf2d.hxx>
-//#include <Bnd_Box2d.hxx>
-#include <ElCLib.hxx>
 
 #include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <ElCLib.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
-
-#include <Geom_Plane.hxx>
-
-#include <IntCurveSurface_IntersectionPoint.hxx>
-#include <IntCurveSurface_HInter.hxx>
-
 #include <GeomFill_Frenet.hxx>
+#include <GeomFill_GuideTrihedronPlan.hxx>
 #include <GeomFill_PlanFunc.hxx>
-
-#include <math_Vector.hxx>
-
+#include <GeomFill_TrihedronLaw.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <IntCurveSurface_HInter.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
 #include <math_FunctionRoot.hxx>
 #include <math_Matrix.hxx>
-
+#include <math_Vector.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
+//#include <gp_Trsf2d.hxx>
+//#include <Bnd_Box2d.hxx>
 #if DRAW
 #include <DrawTrSurf.hxx>
 #endif

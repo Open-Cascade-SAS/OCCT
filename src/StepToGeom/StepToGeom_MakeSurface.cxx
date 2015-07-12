@@ -19,39 +19,36 @@
 //:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
 //sln 03.10.01. BUC61003. creation of  offset surface is corrected
 
-#include <StepToGeom_MakeSurface.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <StepGeom_Surface.hxx>
-#include <StepToGeom_MakeSurface.hxx>
-#include <StepGeom_BoundedSurface.hxx>
-#include <StepToGeom_MakeBoundedSurface.hxx>
-#include <StepGeom_ElementarySurface.hxx>
-#include <StepToGeom_MakeElementarySurface.hxx>
-#include <StepGeom_SweptSurface.hxx>
-#include <StepToGeom_MakeSweptSurface.hxx>
-
-//:d4
-#include <StepGeom_OffsetSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <StepGeom_SurfaceReplica.hxx>
-#include <StepGeom_CartesianTransformationOperator3d.hxx>
-#include <StepToGeom_MakeTransformation3d.hxx>
-#include <UnitsMethods.hxx>
-
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <TopoDS_Face.hxx>
-#include <ShapeAlgo.hxx>
-#include <ShapeAlgo_AlgoContainer.hxx>
-#include <TopoDS.hxx>
-#include <BRep_Tool.hxx>  
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Trsf.hxx>
 #include <Precision.hxx>
+#include <ShapeAlgo.hxx>
+#include <ShapeAlgo_AlgoContainer.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <StepGeom_BoundedSurface.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepGeom_ElementarySurface.hxx>
+#include <StepGeom_OffsetSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfaceReplica.hxx>
+#include <StepGeom_SweptSurface.hxx>
+#include <StepToGeom_MakeBoundedSurface.hxx>
+#include <StepToGeom_MakeElementarySurface.hxx>
+#include <StepToGeom_MakeSurface.hxx>
+#include <StepToGeom_MakeSweptSurface.hxx>
+#include <StepToGeom_MakeTransformation3d.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <UnitsMethods.hxx>
 
+//:d4
 //=============================================================================
 // Creation d' une Surface de Geom a partir d' une Surface de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeSurface::Convert (const Handle(StepGeom_Surface)& SS, Handle(Geom_Surface)& CS)
 {
    // sln 01.10.2001 BUC61003. If entry shell is NULL do nothing

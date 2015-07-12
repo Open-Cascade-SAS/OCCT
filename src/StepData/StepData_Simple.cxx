@@ -11,9 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_Simple.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceMismatch.hxx>
+#include <Standard_Type.hxx>
 #include <StepData_ESDescr.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_FieldListN.hxx>
+#include <StepData_Simple.hxx>
 
 StepData_Simple::StepData_Simple (const Handle(StepData_ESDescr)& descr)
     : StepData_Described (descr) , thefields (descr->NbFields())    {  }

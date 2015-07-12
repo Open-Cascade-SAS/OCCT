@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_Dimensions.ixx>
-#include <Units_UnitsDictionary.hxx>
+
+#include <Standard_Type.hxx>
 #include <Units.hxx>
+#include <Units_Dimensions.hxx>
 #include <Units_Operators.hxx>
+#include <Units_UnitsDictionary.hxx>
 
 //=======================================================================
 //function : Units_Dimensions
 //purpose  : 
 //=======================================================================
-
 Units_Dimensions::Units_Dimensions(const Standard_Real amass                     ,
 				   const Standard_Real alength                   ,
 				   const Standard_Real atime                     ,

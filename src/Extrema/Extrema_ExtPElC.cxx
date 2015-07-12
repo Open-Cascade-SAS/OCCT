@@ -12,14 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtPElC.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <ElCLib.hxx>
+#include <Extrema_ExtPElC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
-#include <ElCLib.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : Extrema_ExtPElC

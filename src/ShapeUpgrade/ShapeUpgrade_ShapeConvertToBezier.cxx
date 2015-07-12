@@ -16,43 +16,41 @@
 
 // 15.06 2000 gka fix against small edges ; merging ends pcurves and 3d curves
 
-
-#include <ShapeUpgrade_ShapeConvertToBezier.ixx>
-#include <ShapeUpgrade_WireDivide.hxx>
-#include <ShapeUpgrade_ConvertCurve3dToBezier.hxx>
-#include <ShapeUpgrade_ConvertCurve2dToBezier.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <GeomLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeBuild_Edge.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Precision.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <GeomLib.hxx>
-#include <TopoDS_Edge.hxx>
-#include <ShapeUpgrade_ConvertSurfaceToBezierBasis.hxx>
-#include <TopExp.hxx>
-#include <TopExp.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
-#include <ShapeFix_Wire.hxx>
 #include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <ShapeUpgrade_ConvertCurve2dToBezier.hxx>
+#include <ShapeUpgrade_ConvertCurve3dToBezier.hxx>
+#include <ShapeUpgrade_ConvertSurfaceToBezierBasis.hxx>
+#include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_FixSmallBezierCurves.hxx>
+#include <ShapeUpgrade_ShapeConvertToBezier.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <ShapeUpgrade_FixSmallBezierCurves.hxx>
-#include <ShapeUpgrade_FixSmallBezierCurves.hxx>
-#include <ShapeUpgrade_FixSmallBezierCurves.hxx>
-#include <BRepTools.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeConvertToBezier
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShapeConvertToBezier::ShapeUpgrade_ShapeConvertToBezier()
 {
   myLevel = 0;

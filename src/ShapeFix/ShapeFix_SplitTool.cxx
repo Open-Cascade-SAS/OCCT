@@ -13,33 +13,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_SplitTool.ixx>
 
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
-#include <ShapeFix_Edge.hxx>
 #include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend_WireData.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <gp_Pnt.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeFix_SplitTool.hxx>
 #include <TopExp_Explorer.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ShapeFix_SplitTool()
 //purpose  : Constructor
 //=======================================================================
-
 ShapeFix_SplitTool::ShapeFix_SplitTool()
 {
 }

@@ -14,18 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_Unit.ixx>
-#include <Units.hxx>
-#include <Units_UnitsDictionary.hxx>
-#include <TCollection_HAsciiString.hxx>
+
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Units.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_Token.hxx>
+#include <Units_Unit.hxx>
+#include <Units_UnitsDictionary.hxx>
 
 //=======================================================================
 //function : Units_Unit
 //purpose  : 
 //=======================================================================
-
 Units_Unit::Units_Unit(const Standard_CString aname,
 		       const Standard_CString asymbol,
 		       const Standard_Real avalue,

@@ -16,28 +16,27 @@
 
 // Modified by rmi, Wed Jan 14 08:17:35 1998
 
-
-#include <CDF_Application.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <Standard_ProgramError.hxx>
-#include <Standard_GUID.hxx>
-#include <CDM_MetaData.hxx>
-#include <CDM_CanCloseStatus.hxx>
-#include <CDF_Session.hxx>
+#include <CDF_Application.hxx>
 #include <CDF_Directory.hxx>
 #include <CDF_MetaDataDriver.hxx>
+#include <CDF_Session.hxx>
+#include <CDF_Timer.hxx>
+#include <CDM_CanCloseStatus.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
+#include <PCDM_Reader.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
-
-
 #include <Plugin.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
-
-#include <CDF_Timer.hxx>
-#include <PCDM_Reader.hxx>
 
 #define theMetaDataDriver CDF_Session::CurrentSession()->MetaDataDriver()
 

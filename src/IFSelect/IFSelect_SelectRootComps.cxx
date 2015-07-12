@@ -11,10 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectRootComps.ixx>
-#include <IFGraph_StrongComponants.hxx>
-#include <IFGraph_Cumulate.hxx>
 
+#include <IFGraph_Cumulate.hxx>
+#include <IFGraph_StrongComponants.hxx>
+#include <IFSelect_SelectRootComps.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectRootComps::IFSelect_SelectRootComps ()    {  }
 

@@ -16,57 +16,48 @@
 //#74 rln,pdn 11.03.99 S4135: Setting minimum and maximum tolerances according to static parameters
 // sln 13.06.2002 OCC448 : Correction in  method TransferGeometry to avoid transfering invisiable sub entities
 
-#include <Standard_ErrorHandler.hxx>
-#include <IGESToBRep_CurveAndSurface.ixx>
-#include <Standard_Failure.hxx>
-
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_TopoCurve.hxx>
-#include <IGESToBRep_TopoSurface.hxx>
-#include <IGESToBRep_BRepEntity.hxx>
-
+#include <BRep_Builder.hxx>
+#include <BRepLib.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
-
-#include <IGESBasic_SubfigureDef.hxx>
 #include <IGESBasic_SingularSubfigure.hxx>
-
+#include <IGESBasic_SubfigureDef.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
 #include <IGESData_ToolLocation.hxx>
-
-#include <BRep_Builder.hxx>
-
-#include <BRepLib.hxx>
-
-#include <gp_Trsf.hxx>
-#include <gp_GTrsf.hxx>
-#include <gp_Vec.hxx>
-#include <Precision.hxx>
-
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_BRepEntity.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <IGESToBRep_TopoCurve.hxx>
+#include <IGESToBRep_TopoSurface.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 #include <TransferBRep_ShapeListBinder.hxx>
+
 #include <stdio.h>
-
-#include <Message_Msg.hxx>
-#include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
-#include <GeomAdaptor_Surface.hxx>
-
 //=======================================================================
 //function : IGESToBRep_CurveAndSurface
 //purpose  :
 //=======================================================================
-
 IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface()
 : myEps         (1.e-04),
   myEpsCoeff    (1.e-06),

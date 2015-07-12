@@ -16,8 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_RegionRestriction.ixx>
-
+#include <IGESAppli_RegionRestriction.hxx>
+#include <Standard_Type.hxx>
 
 IGESAppli_RegionRestriction::IGESAppli_RegionRestriction ()    {  }
 

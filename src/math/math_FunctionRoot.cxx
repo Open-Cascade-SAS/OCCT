@@ -16,15 +16,15 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <Standard_Failure.hxx>
-#include <math_FunctionRoot.ixx>
+#include <math_FunctionRoot.hxx>
 #include <math_FunctionSetRoot.hxx>
-
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_FunctionWithDerivative.hxx>
-
+#include <Standard_Failure.hxx>
+#include <StdFail_NotDone.hxx>
 
 class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives {
 

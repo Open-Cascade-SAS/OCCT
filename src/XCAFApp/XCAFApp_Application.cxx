@@ -13,17 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFApp_Application.ixx>
-#include <TPrsStd_DriverTable.hxx>
-#include <XCAFPrs_Driver.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
+
+#include <Standard_Type.hxx>
 #include <TDF_Label.hxx>
+#include <TDocStd_Document.hxx>
+#include <TPrsStd_DriverTable.hxx>
+#include <XCAFApp_Application.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFPrs_Driver.hxx>
 
 //=======================================================================
 //function : GetApplication
 //purpose  : 
 //=======================================================================
-
 Handle(XCAFApp_Application) XCAFApp_Application::GetApplication() 
 {
   static Handle(XCAFApp_Application) locApp;

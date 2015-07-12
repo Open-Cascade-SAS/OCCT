@@ -14,21 +14,19 @@
 
 //JCV 16/10/91
 
-
-#include <Convert_EllipseToBSplineCurve.ixx>
-
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
+#include <Convert_EllipseToBSplineCurve.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Elips2d.hxx>
 #include <gp_Trsf2d.hxx>
-
 #include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //Attention :
 //To avoid use of persistent tables in the fields
@@ -38,8 +36,6 @@
 //nbKnots and nbPoles are present and updated in the 
 //constructor of an arc of B-spline circle to take into account 
 //the real number of poles and nodes.
-
-
 // parameterization :
 // Reference : Rational B-spline for Curve and Surface Representation
 //             Wayne Tiller  CADG September 1983
@@ -47,12 +43,10 @@
 // y(t) =  2 t / (1 + t^2)
 // then t = Sqrt(2) u /  ((Sqrt(2) - 2) u + 2)
 // => u = 2 t / (Sqrt(2) + (2 - Sqrt(2)) t)
-
 //=======================================================================
 //function : Convert_EllipseToBSplineCurve
 //purpose  : this constructs a periodic Ellipse 
 //=======================================================================
-
 Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve 
   (const gp_Elips2d& E, const Convert_ParameterisationType Parameterisation)
 :Convert_ConicToBSplineCurve(0,0,0){

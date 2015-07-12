@@ -12,10 +12,6 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <ShapeAnalysis_Geom.ixx>
-
-#include <GProp_PGProps.hxx>
-#include <GProp_PrincipalProps.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
@@ -24,15 +20,17 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-
+#include <GProp_PGProps.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <ShapeAnalysis_Geom.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : NearestPlane
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean ShapeAnalysis_Geom::NearestPlane(const TColgp_Array1OfPnt& Pnts,
 						   gp_Pln& aPln, Standard_Real& Dmax)
 {

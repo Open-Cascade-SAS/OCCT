@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-# include <MAT2d_BiInt.ixx>
+
+#include <MAT2d_BiInt.hxx>
 
 MAT2d_BiInt::MAT2d_BiInt(const Standard_Integer I1,
 			 const Standard_Integer I2)

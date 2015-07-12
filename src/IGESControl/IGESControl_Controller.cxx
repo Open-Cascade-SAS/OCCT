@@ -14,66 +14,65 @@
 //#58 rln 28.12.98 changing default values for Global Section
 //sln 14.01.2002 OCC51 : verifying whether entry model of method ActorRead is IGESDatat_IGESModel 
 
-#include <IGESControl_Controller.ixx>
-#include <IGESSelect_WorkLibrary.hxx>
-#include <IGESToBRep_Actor.hxx>
-#include <IGESData_IGESModel.hxx>
-#include <IGESData_Protocol.hxx>
-#include <IGESSolid.hxx>
-#include <IGESAppli.hxx>
-
-#include <Interface_Static.hxx>
-#include <IGESSelect_AutoCorrect.hxx>
-#include <IGESSelect_ComputeStatus.hxx>
-#include <IGESSelect_UpdateFileName.hxx>
-#include <IGESSelect_SetGlobalParameter.hxx>
-#include <IGESSelect_FloatFormat.hxx>
-#include <IGESSelect_SelectBypassGroup.hxx>
-#include <IGESSelect_SelectBypassSubfigure.hxx>
-#include <IGESSelect_SelectBasicGeom.hxx>
-#include <IGESSelect_SelectFaces.hxx>
-#include <IGESSelect_SelectPCurves.hxx>
-#include <IGESSelect_SelectVisibleStatus.hxx>
-#include <IGESSelect_SelectSubordinate.hxx>
-#include <IFSelect_SelectType.hxx>
-#include <IGESBasic_SubfigureDef.hxx>
-#include <IGESSelect_IGESTypeForm.hxx>
-#include <IGESSelect_SignStatus.hxx>
-#include <IGESSelect_SignLevelNumber.hxx>
-#include <IGESSelect_SignColor.hxx>
-#include <IGESSelect_IGESName.hxx>
-#include <IFSelect_SignType.hxx>
-#include <IFSelect_SignMultiple.hxx>
-#include <IGESSelect_CounterOfLevelNumber.hxx>
-#include <IFSelect_SignCounter.hxx>
-#include <IGESSelect_EditHeader.hxx>
-#include <IGESSelect_EditDirPart.hxx>
 #include <IFSelect_EditForm.hxx>
-#include <IGESSelect_RemoveCurves.hxx>
-#include <IGESSelect_SetLabel.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-
-#include <IGESControl_ActorWrite.hxx>
-#include <IGESControl_AlgoContainer.hxx>
-
-#include <XSAlgo.hxx>
-#include <Interface_Macros.hxx>
-#include <IGESToBRep.hxx>
-#include <IFSelect_SelectModelEntities.hxx>
 #include <IFSelect_SelectModelEntities.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
+#include <IFSelect_SelectType.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <IFSelect_SignMultiple.hxx>
+#include <IFSelect_SignType.hxx>
+#include <IGESAppli.hxx>
+#include <IGESBasic_SubfigureDef.hxx>
+#include <IGESControl_ActorWrite.hxx>
+#include <IGESControl_AlgoContainer.hxx>
+#include <IGESControl_Controller.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESSelect_AutoCorrect.hxx>
+#include <IGESSelect_ComputeStatus.hxx>
+#include <IGESSelect_CounterOfLevelNumber.hxx>
+#include <IGESSelect_EditDirPart.hxx>
+#include <IGESSelect_EditHeader.hxx>
+#include <IGESSelect_FloatFormat.hxx>
+#include <IGESSelect_IGESName.hxx>
+#include <IGESSelect_IGESTypeForm.hxx>
+#include <IGESSelect_RemoveCurves.hxx>
+#include <IGESSelect_SelectBasicGeom.hxx>
+#include <IGESSelect_SelectBypassGroup.hxx>
+#include <IGESSelect_SelectBypassSubfigure.hxx>
+#include <IGESSelect_SelectFaces.hxx>
+#include <IGESSelect_SelectPCurves.hxx>
+#include <IGESSelect_SelectSubordinate.hxx>
+#include <IGESSelect_SelectVisibleStatus.hxx>
+#include <IGESSelect_SetGlobalParameter.hxx>
+#include <IGESSelect_SetLabel.hxx>
+#include <IGESSelect_SignColor.hxx>
+#include <IGESSelect_SignLevelNumber.hxx>
+#include <IGESSelect_SignStatus.hxx>
+#include <IGESSelect_UpdateFileName.hxx>
+#include <IGESSelect_WorkLibrary.hxx>
+#include <IGESSolid.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_Actor.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <XSAlgo.hxx>
 #include <XSControl_SelectForTransfer.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //szv#4:S4163:12Mar99 never referenced
 //static const Standard_CString thelong  = "IGES";
 //static const Standard_CString theshort = "iges";
-
 //=======================================================================
 //function : IGESControl_Controller
 //purpose  : 
 //=======================================================================
-
 IGESControl_Controller::IGESControl_Controller (const Standard_Boolean mod)
 //JR/Hp
      : XSControl_Controller ((Standard_CString ) (mod ? "FNES" : "IGES") , (Standard_CString ) (mod ? "fnes" : "iges") ) ,

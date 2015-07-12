@@ -12,15 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_PaveBlock.ixx>
-#include <BOPDS_ListOfPave.hxx>
-#include <BOPDS_VectorOfPave.hxx>
 
-#include <Standard.hxx>
+#include <Bnd_Box.hxx>
+#include <BOPDS_ListOfPave.hxx>
+#include <BOPDS_Pave.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_VectorOfPave.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
 
 #include <algorithm>
-
 #ifdef WNT
 #pragma warning ( disable : 4291 )
 #endif

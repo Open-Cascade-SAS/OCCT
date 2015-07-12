@@ -14,26 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_PoleCurve.ixx>
 
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <StdPrs_PoleCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
-
 void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 			    const Adaptor3d_Curve&               aCurve,
 			    const Handle (Prs3d_Drawer)&       aDrawer) 

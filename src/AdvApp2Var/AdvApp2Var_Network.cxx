@@ -18,17 +18,16 @@
 //   by:	Joelle CHAUVET
 //		G1135 : empty constructor
 
-
-#include <AdvApp2Var_Network.ixx>
+#include <AdvApp2Var_Network.hxx>
 #include <AdvApp2Var_Patch.hxx>
 #include <AdvApp2Var_SequenceOfPatch.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
 //==========================================================================================
 //function : AdvApp2Var_Network
 //purpose  : 
 //==========================================================================================
-
 AdvApp2Var_Network::AdvApp2Var_Network()
 {
 }

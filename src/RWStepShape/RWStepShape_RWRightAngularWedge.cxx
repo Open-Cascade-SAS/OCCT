@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWRightAngularWedge.ixx>
-#include <StepGeom_Axis2Placement3d.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWRightAngularWedge.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepShape_RightAngularWedge.hxx>
-
 
 RWStepShape_RWRightAngularWedge::RWStepShape_RWRightAngularWedge () {}
 

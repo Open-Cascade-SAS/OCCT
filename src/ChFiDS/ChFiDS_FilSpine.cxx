@@ -14,26 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_FilSpine.ixx>
+
+#include <ChFiDS_FilSpine.hxx>
+#include <ChFiDS_HElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfHElSpine.hxx>
-#include <Precision.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <gp_XY.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <ElCLib.hxx>
-#include <Law_ListIteratorOfLaws.hxx>
-#include <Law_Constant.hxx>
-#include <Law_S.hxx>
-#include <Law_Interpol.hxx>
-#include <Standard_DomainError.hxx>
+#include <gp_XY.hxx>
 #include <Law_Composite.hxx>
+#include <Law_Constant.hxx>
+#include <Law_Function.hxx>
+#include <Law_Interpol.hxx>
+#include <Law_ListIteratorOfLaws.hxx>
+#include <Law_S.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ChFiDS_FilSpine
 //purpose  : 
 //=======================================================================
-
 ChFiDS_FilSpine::ChFiDS_FilSpine() {}
 
 ChFiDS_FilSpine::ChFiDS_FilSpine(const Standard_Real Tol) :

@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWPolyLoop.ixx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWPolyLoop.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray1OfCartesianPoint.hxx>
 #include <StepShape_PolyLoop.hxx>
-
 
 RWStepShape_RWPolyLoop::RWStepShape_RWPolyLoop () {}
 

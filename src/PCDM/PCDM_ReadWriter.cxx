@@ -14,16 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PCDM_ReadWriter.ixx>
-#include <PCDM_ReadWriter_1.hxx>
-#include <Storage_Schema.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Storage_HeaderData.hxx>
-#include <Storage_TypeData.hxx>
-#include <UTL.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <PCDM.hxx>
 #include <PCDM_DOMHeaderParser.hxx>
+#include <PCDM_ReadWriter.hxx>
+#include <PCDM_ReadWriter_1.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Type.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_Data.hxx>
+#include <Storage_HeaderData.hxx>
+#include <Storage_Schema.hxx>
+#include <Storage_TypeData.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <UTL.hxx>
 
 #define FILE_FORMAT "FILE_FORMAT: "
 

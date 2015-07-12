@@ -12,8 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Storage_Data.ixx>
+
+#include <Standard_Persistent.hxx>
+#include <Standard_Type.hxx>
+#include <Storage_Data.hxx>
+#include <Storage_HeaderData.hxx>
+#include <Storage_InternalData.hxx>
 #include <Storage_Root.hxx>
+#include <Storage_RootData.hxx>
+#include <Storage_Schema.hxx>
+#include <Storage_TypeData.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 Storage_Data::Storage_Data()
 {

@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Contap_SurfProps.ixx>
 
-#include <ElSLib.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
+#include <Contap_SurfProps.hxx>
+#include <ElSLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 //=======================================================================
 //function : Normale
 //purpose  : 
 //=======================================================================
-
 void Contap_SurfProps::Normale(const Handle(Adaptor3d_HSurface)& S, 
                                const Standard_Real U, 
                                const Standard_Real V,

@@ -11,18 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAppliedOrganizationAssignment.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAppliedOrganizationAssignment.hxx>
+#include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_HArray1OfOrganizationItem.hxx>
 #include <StepAP214_OrganizationItem.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationRole.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepAP214_AppliedOrganizationAssignment.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAppliedOrganizationAssignment::RWStepAP214_RWAppliedOrganizationAssignment () {}
 

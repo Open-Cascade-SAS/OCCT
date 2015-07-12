@@ -16,21 +16,32 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ToolDrawingWithRotation.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <gp_XY.hxx>
 #include <gp_Pnt2d.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfXY.hxx>
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
+#include <gp_XY.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <IGESDraw_View.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESDraw_DrawingWithRotation.hxx>
+#include <IGESDraw_HArray1OfViewKindEntity.hxx>
 #include <IGESDraw_PerspectiveView.hxx>
+#include <IGESDraw_ToolDrawingWithRotation.hxx>
+#include <IGESDraw_View.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_HArray1OfXY.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 IGESDraw_ToolDrawingWithRotation::IGESDraw_ToolDrawingWithRotation ()    {  }
 

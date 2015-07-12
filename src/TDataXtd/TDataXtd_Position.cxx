@@ -13,8 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_Position.ixx>
+
+#include <gp_Pnt.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Position.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : Set (class method)

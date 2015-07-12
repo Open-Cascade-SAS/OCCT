@@ -12,8 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include<BRepGProp_Sinert.ixx>
-#include<BRepGProp_Gauss.hxx>
+
+#include <BRepGProp_Domain.hxx>
+#include <BRepGProp_Face.hxx>
+#include <BRepGProp_Gauss.hxx>
+#include <BRepGProp_Sinert.hxx>
+#include <gp_Pnt.hxx>
 
 //=======================================================================
 //function : BRepGProp_Sinert

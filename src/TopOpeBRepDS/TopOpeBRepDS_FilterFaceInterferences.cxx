@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Filter.ixx>
-#include <TopOpeBRepDS_DataStructure.hxx>
+
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
-#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
-#include <TopOpeBRepDS_define.hxx>
-#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_Filter.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();

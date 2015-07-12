@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TFunction_DriverTable.ixx>
 
-#include <TFunction_DataMapOfGUIDDriver.hxx>
-#include <TFunction_DataMapIteratorOfDataMapOfGUIDDriver.hxx>
-#include <TFunction_Driver.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDF.hxx>
-
+#include <TFunction_DataMapIteratorOfDataMapOfGUIDDriver.hxx>
+#include <TFunction_DataMapOfGUIDDriver.hxx>
+#include <TFunction_Driver.hxx>
+#include <TFunction_DriverTable.hxx>
 
 static Handle(TFunction_DriverTable) DT;
 

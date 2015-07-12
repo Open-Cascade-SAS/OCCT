@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HeaderSection.ixx>
 
-#include <Interface_Statics.hxx>
+#include <HeaderSection.hxx>
 #include <HeaderSection_Protocol.hxx>
+#include <Interface_Statics.hxx>
 
 StaticHandle(HeaderSection_Protocol, proto);
 

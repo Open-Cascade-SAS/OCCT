@@ -12,10 +12,10 @@
 // commercial license or contractual agreement.
 
 //#52 rln 23.12.98
-#include <Interface_FloatWriter.ixx>
+
+#include <Interface_FloatWriter.hxx>
+
 #include <stdio.h>
-
-
 Interface_FloatWriter::Interface_FloatWriter (const Standard_Integer chars)
 {
   SetDefaults(chars);

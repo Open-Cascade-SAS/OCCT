@@ -16,22 +16,30 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_ToolTransformationMatrix.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 #include <gp_GTrsf.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESGeom_ToolTransformationMatrix.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 // MGE 03/08/98
-#include <Message_Msg.hxx>
-
-
 //=======================================================================
 //function : IGESGeom_ToolTransformationMatrix
 //purpose  : 
 //=======================================================================
-
 IGESGeom_ToolTransformationMatrix::IGESGeom_ToolTransformationMatrix ()
 {
 }

@@ -11,7 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_SelectForTransfer.ixx>
+
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <XSControl_SelectForTransfer.hxx>
+#include <XSControl_TransferReader.hxx>
 
 XSControl_SelectForTransfer::XSControl_SelectForTransfer ()    {  }
 

@@ -13,11 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPolyh_Intersection.ixx>
-#include <IntPolyh_PMaillageAffinage.hxx>
-#include <IntPolyh_MaillageAffinage.hxx>
+
+#include <Adaptor3d_HSurface.hxx>
 #include <IntPolyh_ArrayOfCouples.hxx>
 #include <IntPolyh_Couple.hxx>
+#include <IntPolyh_Intersection.hxx>
+#include <IntPolyh_MaillageAffinage.hxx>
+#include <IntPolyh_PMaillageAffinage.hxx>
 #include <IntPolyh_Triangle.hxx>
 
 Standard_Integer MYPRINT1   = 0;

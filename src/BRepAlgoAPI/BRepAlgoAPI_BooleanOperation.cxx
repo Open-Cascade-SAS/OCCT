@@ -14,39 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgoAPI_BooleanOperation.ixx>
 
-///XXXXXXXXXX
-#include <stdio.h>
-#include <TCollection_AsciiString.hxx>
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Section.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_Interf.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_PDS.hxx>
+#include <BOPDS_VectorOfCurve.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Check.hxx>
+#include <BRepLib_FuseEdges.hxx>
 #include <BRepTools.hxx>
 #include <OSD_File.hxx>
-//XXXXXXXXXX
-
+#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
-
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfIntegerListOfShape.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-#include <BRepAlgoAPI_Check.hxx>
-
-#include <BRepLib_FuseEdges.hxx>
-
-#include <BOPDS_PDS.hxx>
-#include <BOPDS_DS.hxx>
-#include <BOPDS_VectorOfCurve.hxx>
-#include <BOPDS_Interf.hxx>
-#include <BOPDS_Curve.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
-
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_BOP.hxx>
-#include <BOPAlgo_Section.hxx>
-
+#include <stdio.h>
+///XXXXXXXXXX
+//XXXXXXXXXX
 //XXXX
 //=======================================================================
 //class : BRepAlgoAPI_DumpOper

@@ -14,55 +14,55 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_CompatibleWires.ixx>
 
-#include <BRepAdaptor_Curve.hxx>
-
-#include <BRepFill.hxx>
-#include <BRepLib.hxx>
-#include <BRepLib_FindSurface.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepCheck_Wire.hxx>
-#include <BRepExtrema_DistShapeShape.hxx>
 #include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepLProp.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepCheck_Wire.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepFill.hxx>
+#include <BRepFill_CompatibleWires.hxx>
 #include <BRepGProp.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_FindSurface.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepLProp.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Vec.hxx>
 #include <GProp_GProps.hxx>
 #include <GProp_PrincipalProps.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
 #include <Precision.hxx>
-#include <TopAbs.hxx> 
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfVec.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>    
-
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <TColgp_HArray1OfVec.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_MapOfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 
 #ifdef OCCT_DEBUG_EFV
 static void EdgesFromVertex (const TopoDS_Wire&   W,

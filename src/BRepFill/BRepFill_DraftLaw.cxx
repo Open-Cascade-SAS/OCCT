@@ -14,23 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_DraftLaw.ixx>
 
+#include <BRepFill_DraftLaw.hxx>
+#include <GeomFill_HArray1OfLocationLaw.hxx>
 #include <GeomFill_LocationDraft.hxx>
 #include <GeomFill_LocationLaw.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
-
-#include <gp_Vec.hxx>
 #include <gp_Mat.hxx>
-#include <gp_XYZ.hxx>
 #include <gp_Trsf.hxx>
-
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ToG0
 //purpose  : Cacul une tranformation T tq T.M2 = M1
 //=======================================================================
-
 static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T) {
   T =  M2.Inverted();
   T *= M1;

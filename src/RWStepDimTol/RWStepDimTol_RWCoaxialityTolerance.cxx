@@ -15,17 +15,21 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepDimTol_RWCoaxialityTolerance.ixx>
-#include <StepDimTol_HArray1OfDatumReference.hxx>
-#include <StepDimTol_DatumReference.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepDimTol_RWCoaxialityTolerance.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepDimTol_CoaxialityTolerance.hxx>
+#include <StepDimTol_DatumReference.hxx>
+#include <StepDimTol_HArray1OfDatumReference.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWCoaxialityTolerance
 //purpose  : 
 //=======================================================================
-
 RWStepDimTol_RWCoaxialityTolerance::RWStepDimTol_RWCoaxialityTolerance ()
 {
 }

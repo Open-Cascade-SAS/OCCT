@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLProp_CurveTool.ixx>
+
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepLProp_CurveTool.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 //=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
-
 void BRepLProp_CurveTool::Value(const BRepAdaptor_Curve& C, 
 				const Standard_Real U, 
 				gp_Pnt& P)

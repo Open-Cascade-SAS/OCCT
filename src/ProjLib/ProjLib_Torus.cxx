@@ -14,21 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ProjLib_Torus.ixx>
 
-#include <Precision.hxx>
 #include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-
 #include <Precision.hxx>
+#include <ProjLib_Torus.hxx>
+#include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
 //function : ProjLib_Torus
 //purpose  : 
 //=======================================================================
-
 ProjLib_Torus::ProjLib_Torus()
 {
 }

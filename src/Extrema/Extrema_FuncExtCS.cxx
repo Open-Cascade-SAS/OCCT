@@ -14,44 +14,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_FuncExtCS.ixx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Extrema_FuncExtCS.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_TypeMismatch.hxx>
+#include <math_Matrix.hxx>
 #include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
 
 /*-----------------------------------------------------------------------------
  Fonction permettant de rechercher une distance extremale entre une courbe C 
 et une surface S.
  Cette classe herite de math_FunctionWithDerivative et est utilisee par
 les algorithmes math_FunctionRoot et math_FunctionRoots.
-
 { F1(t,u,v) = (C(t)-S(u,v)).Dtc(t) }
 { F2(t,u,v) = (C(t)-S(u,v)).Dus(u,v) }
 { F3(t,u,v) = (C(t)-S(u,v)).Dvs(u,v) }
-
 { Dtf1(t,u,v) = Dtc(t).Dtc(t)+(C(t)-S(u,v)).Dttc(t) 
               = ||Dtc(t)||**2+(C(t)-S(u,v)).Dttc(t) }
 { Duf1(t,u,v) = -Dus(u,v).Dtc(t) }
 { Dvf1(t,u,v) = -Dvs(u,v).Dtc(t) }
-
 { Dtf2(t,u,v) = Dtc(t).Dus(u,v) }
 { Duf2(t,u,v) = -Dus(u,v).Dus(u,v)+(C(t)-S(u,v)).Duus(u,v)
               = -||Dus(u,v)||**2+(C(t)-S(u,v)).Duus(u,v) }
 { Dvf2(t,u,v) = -Dvs(u,v).Dus(u,v)+(C(t)-S(u,v)).Duvs(u,v) }
-
 { Dtf3(t,u,v) = Dtc(t).Dvs(u,v) }
 { Duf3(t,u,v) = -Dus(u,v).Dvs(u,v)+(C(t)-S(u,v)).Duvs(u,v) }
 { Dvf3(t,u,v) = -Dvs(u,v).Dvs(u,v)+(C(t)-S(u,v)).Dvvs(u,v) }
-
 ----------------------------------------------------------------------------*/
-
-
-
 //=======================================================================
 //function : Extrema_FuncExtCS
 //purpose  : 
 //=======================================================================
-
  Extrema_FuncExtCS::Extrema_FuncExtCS()
 {
   myCinit = Standard_False;

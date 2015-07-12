@@ -15,23 +15,21 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWCurveElementSectionDerivedDefinitions.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWCurveElementSectionDerivedDefinitions.hxx>
+#include <Standard_Real.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_CurveElementSectionDerivedDefinitions.hxx>
 #include <StepElement_HArray1OfMeasureOrUnspecifiedValue.hxx>
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Real.hxx>
-#include <StepElement_HArray1OfMeasureOrUnspecifiedValue.hxx>
-#include <StepElement_MeasureOrUnspecifiedValue.hxx>
-#include <StepElement_HArray1OfMeasureOrUnspecifiedValue.hxx>
-#include <StepElement_MeasureOrUnspecifiedValue.hxx>
-#include <StepElement_HArray1OfMeasureOrUnspecifiedValue.hxx>
-#include <StepElement_MeasureOrUnspecifiedValue.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWCurveElementSectionDerivedDefinitions
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWCurveElementSectionDerivedDefinitions::RWStepElement_RWCurveElementSectionDerivedDefinitions ()
 {
 }

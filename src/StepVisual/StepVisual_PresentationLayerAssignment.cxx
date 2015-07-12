@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_PresentationLayerAssignment.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_LayeredItem.hxx>
+#include <StepVisual_PresentationLayerAssignment.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_PresentationLayerAssignment::StepVisual_PresentationLayerAssignment ()  {}
 

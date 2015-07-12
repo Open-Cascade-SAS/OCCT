@@ -20,28 +20,33 @@
 static TCollection_AsciiString PRODINS("dins ");
 #endif
 
-#include <TopOpeBRepBuild_WireEdgeSet.ixx>
-#include <TopoDS.hxx>
+
 #include <BRep_Tool.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Pnt2d.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <Precision.hxx>
-#include <gp_Dir2d.hxx>
-#include <TopAbs.hxx>
-#include <Standard_ProgramError.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <TopOpeBRepTool_CurveTool.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_define.hxx>
+#include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_CurveTool.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i);

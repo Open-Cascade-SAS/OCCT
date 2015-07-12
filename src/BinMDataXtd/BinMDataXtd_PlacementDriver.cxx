@@ -13,19 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataXtd_PlacementDriver.ixx>
-#include <CDM_MessageDriver.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDataXtd_Placement.hxx>
+
+#include <BinMDataXtd_PlacementDriver.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Placement.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataXtd_PlacementDriver
 //purpose  : 
 //=======================================================================
-
 BinMDataXtd_PlacementDriver::BinMDataXtd_PlacementDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataXtd_Placement)->Name())

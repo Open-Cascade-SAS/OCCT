@@ -14,24 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_VPointInter.ixx>
 
-#include <Standard_DomainError.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <TopOpeBRep_FFTransitionTool.hxx>
-#include <TopOpeBRepDS_Transition.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HVertex.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_HCurve2d.hxx>
 #include <BRepTopAdaptor_HVertex.hxx>
-#include <Adaptor3d_HVertex.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <IntPatch_Point.hxx>
 #include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_FFTransitionTool.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 

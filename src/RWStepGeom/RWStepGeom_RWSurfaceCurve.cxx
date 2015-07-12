@@ -11,20 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWSurfaceCurve.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepGeom_RWSurfaceCurve.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_HArray1OfPcurveOrSurface.hxx>
 #include <StepGeom_PcurveOrSurface.hxx>
 #include <StepGeom_PreferredSurfaceCurveRepresentation.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
 #include <StepGeom_SurfaceCurve.hxx>
-
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : PreferredSurfaceCurveRepresentation ---
 static TCollection_AsciiString pscrPcurveS2(".PCURVE_S2.");

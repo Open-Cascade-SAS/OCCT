@@ -14,7 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_GlobalStatus.ixx>
+
+#include <AIS_GlobalStatus.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 AIS_GlobalStatus::AIS_GlobalStatus():

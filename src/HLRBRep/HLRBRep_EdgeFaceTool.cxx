@@ -14,21 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_EdgeFaceTool.ixx>
-#include <HLRBRep_Curve.hxx>
-#include <HLRBRep_Surface.hxx>
-#include <BRepExtrema_ExtPF.hxx>
-#include <BRepLib_MakeVertex.hxx>
+
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <BRepExtrema_ExtPF.hxx>
+#include <BRepLib_MakeVertex.hxx>
 #include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <HLRBRep_Curve.hxx>
+#include <HLRBRep_EdgeFaceTool.hxx>
+#include <HLRBRep_Surface.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : CurvatureDirection
 //purpose  : 
 //=======================================================================
-
 Standard_Real HLRBRep_EdgeFaceTool::CurvatureValue
  (const Standard_Address F,
   const Standard_Real U,

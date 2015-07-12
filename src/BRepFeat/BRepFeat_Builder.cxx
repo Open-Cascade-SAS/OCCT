@@ -13,44 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_Builder.ixx>
 
-#include <Precision.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <Geom_Curve.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
-#include <BRepBndLib.hxx>
-
-#include <IntTools_Tools.hxx>
-
+#include <BOPAlgo_BuilderFace.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPDS_DS.hxx>
-#include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_Pave.hxx>
 #include <BOPDS_ListOfPave.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
-
-#include <BOPAlgo_BuilderFace.hxx>
-
+#include <BOPDS_Pave.hxx>
+#include <BOPDS_ShapeInfo.hxx>
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_MapOfSet.hxx>
-
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepFeat_Builder.hxx>
+#include <Geom_Curve.hxx>
+#include <IntTools_Tools.hxx>
+#include <Precision.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : 

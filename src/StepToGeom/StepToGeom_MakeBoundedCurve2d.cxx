@@ -17,19 +17,20 @@
 //:n6 abv 15.02.99: S4132: adding translation of polyline
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <StepToGeom_MakeBoundedCurve2d.ixx>
-#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
-#include <StepGeom_TrimmedCurve.hxx>
-#include <StepToGeom_MakeTrimmedCurve2d.hxx>
-#include <StepToGeom_MakeBSplineCurve2d.hxx>
+#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_Polyline.hxx>
+#include <StepGeom_TrimmedCurve.hxx>
+#include <StepToGeom_MakeBoundedCurve2d.hxx>
+#include <StepToGeom_MakeBSplineCurve2d.hxx>
 #include <StepToGeom_MakePolyline2d.hxx>
+#include <StepToGeom_MakeTrimmedCurve2d.hxx>
 
 //=============================================================================
 // Creation d' une BoundedCurve de Geom a partir d' une BoundedCurve de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeBoundedCurve2d::Convert (const Handle(StepGeom_BoundedCurve)& SC, Handle(Geom2d_BoundedCurve)& CC)
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {

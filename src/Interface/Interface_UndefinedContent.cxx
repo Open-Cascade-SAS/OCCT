@@ -11,11 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_UndefinedContent.ixx>
-#include <Interface_InterfaceMismatch.hxx>
-#include <Interface_InterfaceError.hxx>
-#include <Standard_NoSuchObject.hxx>
 
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityList.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_InterfaceMismatch.hxx>
+#include <Interface_UndefinedContent.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 #define Content_TypeField 31
 #define Content_LocalField 7

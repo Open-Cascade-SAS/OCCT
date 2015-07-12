@@ -13,36 +13,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_SphereDriver.ixx>
 
+#include <BRep_Tool.hxx>
+#include <BRepAlgo.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <DNaming.hxx>
+#include <DNaming_SphereDriver.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
-
-#include <BRepPrimAPI_MakeSphere.hxx>
-#include <TopLoc_Location.hxx>
-#include <BRepAlgo.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <gp_Vec.hxx>
+#include <ModelDefinitions.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListOfInteger.hxx>
-
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_UAttribute.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TNaming.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Builder.hxx>
+#include <TDF_Label.hxx>
 #include <TFunction_Function.hxx>
-
-#include <DNaming.hxx>
-#include <ModelDefinitions.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 //=======================================================================
 //function : DNaming_SphereDriver

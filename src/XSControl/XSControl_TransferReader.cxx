@@ -13,54 +13,54 @@
 
 //:   abv 09.04.99: S4136: remove parameter lastpreci
 // szv#11:CASCADE30:01Feb00 BRepBuilderAPI::Precision(p) removed
-#include <XSControl_TransferReader.ixx>
+
+#include <BRepBuilderAPI.hxx>
+#include <BRepLib.hxx>
+#include <Dico_DictionaryOfTransient.hxx>
+#include <IFSelect_CheckCounter.hxx>
+#include <IFSelect_SignatureList.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_MSG.hxx>
+#include <Interface_SignLabel.hxx>
+#include <Interface_Static.hxx>
+#include <Message_Messenger.hxx>
+#include <ShapeFix.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopoDS_HShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_ResultFromModel.hxx>
 #include <Transfer_ResultFromTransient.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferOutput.hxx>
-
+#include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_BinderOfShape.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
-#include <TopoDS_HShape.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_TransferReader.hxx>
 #include <XSControl_Utils.hxx>
-#include <TopTools_MapOfShape.hxx>
 
-//  Precision :
-#include <Interface_Static.hxx>
-#include <BRepBuilderAPI.hxx>
-
-//  Pour les regularites
-#include <BRepLib.hxx>
-
-#include <Interface_EntityIterator.hxx>
-#include <IFSelect_SignatureList.hxx>
-#include <Interface_MSG.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
-
-#include <Transfer_IteratorOfProcessForTransient.hxx>
-#include <IFSelect_CheckCounter.hxx>
-
-#include <Interface_InterfaceModel.hxx>
-#include <Interface_SignLabel.hxx>
-#include <Interface_Check.hxx>
-
-#include <Message_Messenger.hxx>
-
-#include <ShapeFix.hxx>
-#include <Transfer_ResultFromModel.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
 #include <stdio.h>
-
-
+//  Precision :
+//  Pour les regularites
 //=======================================================================
 //function : XSControl_TransferReader
 //purpose  : 
 //=======================================================================
-
 XSControl_TransferReader::XSControl_TransferReader ()
 {
 }

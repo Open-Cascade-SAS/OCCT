@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_DataInfo.ixx>
+
+#include <Standard_Transient.hxx>
+#include <Transfer_DataInfo.hxx>
 
 Handle(Standard_Type)  Transfer_DataInfo::Type
   (const Handle(Standard_Transient)& ent)

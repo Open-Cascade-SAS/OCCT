@@ -14,7 +14,15 @@
 
 #define No_Standard_OutOfRange
 
-#include <gp_Hypr2d.ixx>
+
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
 
 void gp_Hypr2d::Coefficients (Standard_Real& A, 
 			      Standard_Real& B, 

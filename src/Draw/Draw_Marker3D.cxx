@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Marker3D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Marker3D.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Marker3D
 //purpose  : 
 //=======================================================================
-
 Draw_Marker3D::Draw_Marker3D(const gp_Pnt& P, const Draw_MarkerShape T,
 			     const Draw_Color& C, const Standard_Integer S) :
        myPos(P), myCol(C), myTyp(T), mySiz(S), myIsRSiz(Standard_False)

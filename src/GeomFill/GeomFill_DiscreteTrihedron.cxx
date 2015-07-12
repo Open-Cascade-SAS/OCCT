@@ -13,15 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_DiscreteTrihedron.ixx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <GeomFill_DiscreteTrihedron.hxx>
 #include <GeomFill_Frenet.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <GeomFill_HSequenceOfAx2.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <GeomFill_HSequenceOfAx2.hxx>
-
 
 static const Standard_Real TolConf = Precision::Confusion();
 

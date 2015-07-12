@@ -14,26 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeBSplineSurfaceWithKnots.ixx>
-#include <StdFail_NotDone.hxx>
+
 #include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_BSplKnotDistribution.hxx>
+#include <GeomToStep_MakeBSplineSurfaceWithKnots.hxx>
+#include <GeomToStep_MakeCartesianPoint.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <GeomToStep_MakeCartesianPoint.hxx>
 #include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <StepGeom_KnotType.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <GeomAbs_BSplKnotDistribution.hxx>
-#include <StepGeom_KnotType.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Creation d' une bspline_Surface_with_knots_and_rational_bspline_Surface de
 // prostep a partir d' une BSplineSurface de Geom
 //=============================================================================
-
 GeomToStep_MakeBSplineSurfaceWithKnots::
   GeomToStep_MakeBSplineSurfaceWithKnots( const
     Handle(Geom_BSplineSurface)& BS )

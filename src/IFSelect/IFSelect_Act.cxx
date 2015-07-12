@@ -11,7 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Act.ixx>
+
+#include <IFSelect_Act.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 static TCollection_AsciiString thedefgr, thedefil;

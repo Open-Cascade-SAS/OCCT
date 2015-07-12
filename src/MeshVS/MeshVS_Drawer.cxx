@@ -13,7 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_Drawer.ixx>
+
+#include <Graphic3d_MaterialAspect.hxx>
+#include <MeshVS_Drawer.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //================================================================
 // Function : Assign

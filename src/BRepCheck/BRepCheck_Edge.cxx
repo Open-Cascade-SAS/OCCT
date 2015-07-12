@@ -14,58 +14,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepCheck_Edge.ixx>
-#include <TColStd_Array1OfTransient.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 
-#include <BRepAdaptor_Curve.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Bnd_Box.hxx>
-
-#include <BRepCheck_ListOfStatus.hxx>
-#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-
+#include <BRep_CurveOnSurface.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_PolygonOnTriangulation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
-
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_CurveOnSurface.hxx>
-
-#include <BRep_PolygonOnTriangulation.hxx>
-
 #include <BRep_Tool.hxx>
-
-#include <TopExp_Explorer.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_TrimmedCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepCheck.hxx>
+#include <BRepCheck_Edge.hxx>
+#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <BRepCheck_ListOfStatus.hxx>
+#include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
-
+#include <Geom2dAdaptor.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-
-#include <ProjLib_ProjectedCurve.hxx>
 #include <GeomProjLib.hxx>
-#include <Extrema_LocateExtPC.hxx>
-
-#include <BRepCheck.hxx>
-#include <Geom2dAdaptor.hxx>
-#include <TopoDS.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_Face.hxx>
-#include <Precision.hxx>
-
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Geom_Curve.hxx>
+#include <Precision.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfTransient.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 //modified by NIZNHY-PKV Thu May 05 09:01:57 2011f
 static 

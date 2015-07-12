@@ -13,21 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinLDrivers_DocumentRetrievalDriver.ixx>
+
 #include <BinLDrivers.hxx>
+#include <BinLDrivers_DocumentRetrievalDriver.hxx>
+#include <BinLDrivers_DocumentSection.hxx>
 #include <BinLDrivers_Marker.hxx>
-#include <BinMDF_ADriver.hxx>
 #include <BinMDataStd.hxx>
+#include <BinMDF_ADriver.hxx>
+#include <BinMDF_ADriverTable.hxx>
 #include <BinObjMgt_Persistent.hxx>
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
+#include <PCDM_Document.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
+#include <Storage_HeaderData.hxx>
 #include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
-#include <TDF_Attribute.hxx>
 
 #define SHAPESECTION_POS "SHAPE_SECTION_POS:"
 #define SIZEOFSHAPELABEL  18

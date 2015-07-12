@@ -13,13 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe_ReShaper.ixx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
+
 #include <BRep_Builder.hxx>
-#include <TopoDS_Iterator.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+#include <QANewModTopOpe_ReShaper.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 QANewModTopOpe_ReShaper::QANewModTopOpe_ReShaper(const TopoDS_Shape& TheInitialShape):
        myInitShape(TheInitialShape)

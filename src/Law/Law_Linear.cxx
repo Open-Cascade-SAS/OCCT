@@ -16,8 +16,10 @@
 
 // pmn -> 17/01/1996 added : Continuity, (Nb)Interals, D2, Trim
 
-#include <Law_Linear.ixx>
-
+#include <Law_Function.hxx>
+#include <Law_Linear.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 Law_Linear::Law_Linear () {}
 

@@ -11,8 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_GeneralModule.ixx>
 
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 void  Interface_GeneralModule::FillShared
   (const Handle(Interface_InterfaceModel)& /*model*/,

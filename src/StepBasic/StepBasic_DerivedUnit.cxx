@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_DerivedUnit.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_DerivedUnit.hxx>
+#include <StepBasic_DerivedUnitElement.hxx>
 
 StepBasic_DerivedUnit::StepBasic_DerivedUnit  ()    {  }
 

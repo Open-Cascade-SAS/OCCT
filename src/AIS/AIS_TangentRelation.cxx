@@ -14,44 +14,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_TangentRelation.ixx>
+#include <AIS.hxx>
+#include <AIS_Shape.hxx>
+#include <AIS_TangentRelation.hxx>
+#include <Bnd_Box.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <DsgPrs_TangentPresentation.hxx>
-
+#include <ElCLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-
-
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-
-#include <ElCLib.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-
-#include <AIS.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <AIS_Shape.hxx>
-#include <Bnd_Box.hxx>
-#include <Precision.hxx>
-#include <Geom_Ellipse.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : Constructor

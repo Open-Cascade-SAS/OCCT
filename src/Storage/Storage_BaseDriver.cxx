@@ -12,7 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Storage_BaseDriver.ixx>
+
+#include <Storage_BaseDriver.hxx>
+#include <Storage_StreamExtCharParityError.hxx>
+#include <Storage_StreamFormatError.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_StreamWriteError.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 Storage_BaseDriver::Storage_BaseDriver() : myOpenMode(Storage_VSNone)
 {

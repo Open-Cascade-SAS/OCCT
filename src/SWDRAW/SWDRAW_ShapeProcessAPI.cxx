@@ -14,20 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SWDRAW_ShapeProcessAPI.ixx>
 
-#include <SWDRAW.hxx>
 #include <DBRep.hxx>
-#include <TopoDS_Shape.hxx>
-#include <ShapeProcessAPI_ApplySequence.hxx>
 #include <ShapeProcess_ShapeContext.hxx>
-#include <stdio.h>
+#include <ShapeProcessAPI_ApplySequence.hxx>
+#include <SWDRAW.hxx>
+#include <SWDRAW_ShapeProcessAPI.hxx>
+#include <TopoDS_Shape.hxx>
 
+#include <stdio.h>
 //=======================================================================
 //function : ApplySequence
 //purpose  : 
 //=======================================================================
-
 static Standard_Integer ApplySequence(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 4) { di<<"Specify result, shape, resource name and prefix (optional)"<<"\n"; return 1 /* Error */; }

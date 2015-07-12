@@ -15,7 +15,9 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepFEA_SymmetricTensor23d.ixx>
+#include <Standard_Transient.hxx>
+#include <StepData_SelectMember.hxx>
+#include <StepFEA_SymmetricTensor23d.hxx>
 #include <StepFEA_SymmetricTensor23dMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -23,7 +25,6 @@
 //function : StepFEA_SymmetricTensor23d
 //purpose  : 
 //=======================================================================
-
 StepFEA_SymmetricTensor23d::StepFEA_SymmetricTensor23d ()
 {
 }

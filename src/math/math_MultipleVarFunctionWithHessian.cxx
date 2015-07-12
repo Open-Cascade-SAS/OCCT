@@ -14,4 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_MultipleVarFunctionWithHessian.ixx>
+
+#include <math_Matrix.hxx>
+#include <math_MultipleVarFunctionWithHessian.hxx>

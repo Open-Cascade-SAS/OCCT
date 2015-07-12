@@ -14,7 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_Stripe.ixx>
+
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Standard_Type.hxx>
 
 ChFiDS_Stripe::ChFiDS_Stripe ():
        begfilled(/*Standard_False*/0), // eap, Apr 29 2002, occ293

@@ -14,32 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-
-#include <AIS_EqualRadiusRelation.ixx>
 
 #include <AIS.hxx>
-#include <DsgPrs_EqualRadiusPresentation.hxx>
+#include <AIS_EqualRadiusRelation.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <TopoDS.hxx>
-#include <gp_Circ.hxx>
-#include <Geom_Circle.hxx>
+#include <DsgPrs_EqualRadiusPresentation.hxx>
 #include <ElCLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <gp_Circ.hxx>
+#include <Precision.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveBox.hxx>
-#include <Precision.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_Drawer.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : AIS_EqualRadiusRelation
 //purpose  : 
 //=======================================================================
-
 AIS_EqualRadiusRelation::AIS_EqualRadiusRelation( const TopoDS_Edge& aFirstEdge,
 						  const TopoDS_Edge& aSecondEdge,
 						  const Handle( Geom_Plane )& aPlane )

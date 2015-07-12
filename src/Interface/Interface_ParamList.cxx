@@ -13,13 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_ParamList.ixx>
+
+#include <Interface_FileParameter.hxx>
+#include <Interface_ParamList.hxx>
+#include <Standard_OutOfMemory.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Interface_ParamList
 //purpose  : 
 //=======================================================================
-
 Interface_ParamList::Interface_ParamList(const Standard_Integer theIncrement) :
         myVector (theIncrement)
 {

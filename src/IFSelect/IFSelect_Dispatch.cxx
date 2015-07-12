@@ -11,9 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Dispatch.ixx>
-#include <IFGraph_Compare.hxx>
 
+#include <IFGraph_Compare.hxx>
+#include <IFGraph_SubPartsIterator.hxx>
+#include <IFSelect_Dispatch.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_SelectionIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 void  IFSelect_Dispatch::SetRootName
   (const Handle(TCollection_HAsciiString)& name)

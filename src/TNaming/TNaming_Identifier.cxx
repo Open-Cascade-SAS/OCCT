@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_Identifier.ixx>
-#include <TNaming_Localizer.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_UsedShapes.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_MapOfNamedShape.hxx>
-#include <TNaming_MapIteratorOfMapOfNamedShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
+
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_Identifier.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_Localizer.hxx>
+#include <TNaming_MapIteratorOfMapOfNamedShape.hxx>
+#include <TNaming_MapOfNamedShape.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TNaming_UsedShapes.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //#define MDTV_DEB_IDF
 #ifdef OCCT_DEBUG_IDF

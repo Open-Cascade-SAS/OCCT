@@ -13,11 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMXCAFDoc_DimTolDriver.ixx>
-#include <XmlObjMgt.hxx>
-#include <XCAFDoc_DimTol.hxx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TDF_Attribute.hxx>
+#include <XCAFDoc_DimTol.hxx>
+#include <XmlMXCAFDoc_DimTolDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (NameIndexString,  "name")
 IMPLEMENT_DOMSTRING (DescrIndexString, "descr")

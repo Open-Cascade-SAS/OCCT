@@ -11,9 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_IntParam.ixx>
-#include <Interface_Static.hxx>
 
+#include <IFSelect_IntParam.hxx>
+#include <Interface_Static.hxx>
+#include <Standard_Type.hxx>
 
 IFSelect_IntParam::IFSelect_IntParam ()
       {  theval = 0;  }

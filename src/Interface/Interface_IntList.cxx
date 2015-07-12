@@ -12,7 +12,8 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <Interface_IntList.ixx>
+
+#include <Interface_IntList.hxx>
 
 //   Organisation des donnees :
 //   theents vaut : 0 pas de reference
@@ -23,13 +24,11 @@
 //   de <rank>+1 a <rank>+nb , <rank>+1 a <rank>+nb-1 sont negatifs et
 //    <rank>+nb est negatif
 //   un zero signifie : place libre
-
 //   Pre-reservation : <rank> note le nombre courant, en positif strict
 //   Il faut alors l incrementer a chaque ajout
 //   Usage contextuel, il faut demander SetNumber(num < 0) pour exploiter cette
 //   info et Add(ref < 0) pour la gerer.
 //   Si elle n est pas presente, on bascule en mode courant
-
 Interface_IntList::Interface_IntList ()
 {
   thenbe = thenbr = thenum = thecount = therank = 0;

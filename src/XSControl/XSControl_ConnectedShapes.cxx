@@ -11,11 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_ConnectedShapes.ixx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TransferBRep.hxx>
 
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <XSControl_ConnectedShapes.hxx>
+#include <XSControl_TransferReader.hxx>
 
 XSControl_ConnectedShapes::XSControl_ConnectedShapes ()
     : IFSelect_SelectExplore (1)    {  }

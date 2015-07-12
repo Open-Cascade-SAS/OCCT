@@ -14,21 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_EqualRadiusPresentation.ixx>
 
 #include <DsgPrs.hxx>
+#include <DsgPrs_EqualRadiusPresentation.hxx>
+#include <gce_MakeDir.hxx>
+#include <Geom_Plane.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Precision.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
-#include <gp_Dir.hxx>
-#include <gce_MakeDir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pln.hxx>
-#include <Precision.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <Prs3d_Text.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 void DsgPrs_EqualRadiusPresentation::Add( const Handle( Prs3d_Presentation )& aPresentation,
 					  const Handle( Prs3d_Drawer )& aDrawer,

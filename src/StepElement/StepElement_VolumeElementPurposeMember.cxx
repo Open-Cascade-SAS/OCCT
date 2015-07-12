@@ -15,7 +15,8 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_VolumeElementPurposeMember.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_VolumeElementPurposeMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 static Standard_CString EVEP = "ENUMERATED_VOLUME_ELEMENT_PURPOSE";

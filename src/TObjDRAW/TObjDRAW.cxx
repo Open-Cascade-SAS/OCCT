@@ -13,32 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TObjDRAW.ixx>
-#include <stdio.h>
-
-#include <TObj_Model.hxx>
-#include <TObj_TModel.hxx>
-#include <TObj_Object.hxx>
-#include <TObj_ObjectIterator.hxx>
-#include <TObj_TNameContainer.hxx>
-
-#include <Message_MsgFile.hxx>
-#include <Standard_Type.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TCollection_ExtendedString.hxx>
-
-#include <Draw.hxx>
 
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
-
-#include <TDF_Tool.hxx>
-#include <TDF_Data.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDocStd_Document.hxx>
-
+#include <Draw.hxx>
 #include <Draw_PluginMacro.hxx>
+#include <Message_MsgFile.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Tool.hxx>
+#include <TDocStd_Document.hxx>
+#include <TObj_Model.hxx>
+#include <TObj_Object.hxx>
+#include <TObj_ObjectIterator.hxx>
+#include <TObj_TModel.hxx>
+#include <TObj_TNameContainer.hxx>
+#include <TObjDRAW.hxx>
 
+#include <stdio.h>
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
 #pragma warning(4:4190)

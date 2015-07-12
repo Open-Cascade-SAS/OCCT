@@ -16,15 +16,20 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_Drawing.ixx>
-#include <IGESDraw_View.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_PerspectiveView.hxx>
-
-#include <IGESGraph_DrawingUnits.hxx>
+#include <IGESDraw_View.hxx>
 #include <IGESGraph_DrawingSize.hxx>
-
+#include <IGESGraph_DrawingUnits.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDraw_Drawing::IGESDraw_Drawing ()    {  }
 

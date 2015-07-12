@@ -11,21 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_MaterialTool.ixx>
 
-#include <XCAFDoc.hxx>
-#include <XCAFDoc_Material.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <TDataStd_TreeNode.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_ChildIDIterator.hxx>
-
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <XCAFDoc.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_Material.hxx>
+#include <XCAFDoc_MaterialTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 //=======================================================================
 //function : XCAFDoc_MaterialTool
 //purpose  : 
 //=======================================================================
-
 XCAFDoc_MaterialTool::XCAFDoc_MaterialTool()
 {
 }

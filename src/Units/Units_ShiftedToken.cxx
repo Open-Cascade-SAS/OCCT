@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_ShiftedToken.ixx>
+
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Units_Dimensions.hxx>
+#include <Units_ShiftedToken.hxx>
+#include <Units_Token.hxx>
 
 //=======================================================================
 //function : Units_ShiftedToken
 //purpose  : 
 //=======================================================================
-
 Units_ShiftedToken::Units_ShiftedToken(const Standard_CString aword,
 				       const Standard_CString amean,
 				       const Standard_Real avalue,

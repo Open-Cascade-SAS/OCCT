@@ -25,39 +25,40 @@
 //S4181 pdn 15.04.99 implementing of reading IGES elementary surfaces. (instead of shift, reverce and 
 //scale factors the transformation matrix and scale factor used)
 
-#include <IGESControl_IGESBoundary.ixx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Precision.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeAnalysis_Wire.hxx>
-#include <ShapeAnalysis_ShapeTolerance.hxx>
-#include <ShapeFix_Edge.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <ShapeFix_ShapeTolerance.hxx>
+#include <IGESControl_IGESBoundary.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_BSplineCurve.hxx>
 #include <IGESToBRep.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
 #include <IGESToBRep_TopoCurve.hxx>
-#include <Message_Msg.hxx>
 #include <Interface_Static.hxx>
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeAlgo_ToolContainer.hxx>
-#include <IGESGeom_BSplineCurve.hxx>
-#include <IGESData_IGESEntity.hxx>
-
+#include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : IGESControl_IGESBoundary
 //purpose  : 
 //=======================================================================
-
 IGESControl_IGESBoundary::IGESControl_IGESBoundary() : IGESToBRep_IGESBoundary()
 {
 }

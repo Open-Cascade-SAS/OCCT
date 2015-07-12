@@ -12,17 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_CSFunction.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-#include <IntPatch_HCurve2dTool.hxx>
-
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <IntPatch_CSFunction.hxx>
+#include <IntPatch_HCurve2dTool.hxx>
+#include <math_Matrix.hxx>
 
 #ifndef OCCT_DEBUG
 #define No_Standard_RangeError

@@ -15,7 +15,8 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepFEA_DegreeOfFreedomMember.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_DegreeOfFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 static Standard_CString anEnumeratedCurveElementFreedom = "ENUMERATED_DEGREE_OF_FREEDOM";

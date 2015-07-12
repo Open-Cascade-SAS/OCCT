@@ -14,19 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_REGUS.ixx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS.hxx>
+
 #include <BRep_Tool.hxx>
 #include <Precision.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
-#include <TopOpeBRepTool_REGUW.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
 #include <TopOpeBRepTool_CLASSI.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_connexity.hxx>
+#include <TopOpeBRepTool_define.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_REGUS.hxx>
+#include <TopOpeBRepTool_REGUW.hxx>
+#include <TopOpeBRepTool_TOOL.hxx>
 
 #ifdef DRAW
 #include <TopOpeBRepTool_DRAW.hxx>

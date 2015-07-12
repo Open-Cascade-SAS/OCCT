@@ -14,9 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPolyh_Edge.ixx>
-#include <stdio.h>
 
+#include <IntPolyh_Edge.hxx>
+
+#include <stdio.h>
 IntPolyh_Edge::IntPolyh_Edge() : p1(-1),p2(-1),t1(-1),t2(-1),ia(-1) { } 
 
 IntPolyh_Edge::IntPolyh_Edge(const Standard_Integer a, const Standard_Integer b, 

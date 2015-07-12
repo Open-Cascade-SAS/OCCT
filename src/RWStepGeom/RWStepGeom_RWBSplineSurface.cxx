@@ -11,20 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWBSplineSurface.ixx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_BSplineSurfaceForm.hxx>
-#include <StepData_Logical.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWBSplineSurface.hxx>
+#include <StepData_Logical.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepGeom_BSplineSurface.hxx>
-
+#include <StepGeom_BSplineSurfaceForm.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray2OfCartesianPoint.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : BSplineSurfaceForm ---
 static TCollection_AsciiString bssfSurfOfLinearExtrusion(".SURF_OF_LINEAR_EXTRUSION.");

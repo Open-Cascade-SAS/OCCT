@@ -13,29 +13,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XDEDRAW_Layers.ixx>
 
-#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
-
+#include <Draw.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
-#include <TopoDS_Shape.hxx>
-
-#include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
-
+#include <TopoDS_Shape.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XDEDRAW_Layers.hxx>
 
 //=======================================================================
 // Section: Work with layers
 //=======================================================================
-
 static Standard_Integer addLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc!=3) {

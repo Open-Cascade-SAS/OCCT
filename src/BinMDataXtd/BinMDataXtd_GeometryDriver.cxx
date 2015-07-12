@@ -15,8 +15,12 @@
 
 // modified     13.04.2009 Sergey Zaritchny
 
-#include <BinMDataXtd_GeometryDriver.ixx>
+#include <BinMDataXtd_GeometryDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataXtd_Geometry.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataXtd_GeometryDriver

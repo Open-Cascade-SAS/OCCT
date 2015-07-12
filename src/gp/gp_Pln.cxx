@@ -19,8 +19,17 @@
 // JCV 07/92 Introduction de la method Dump 
 // LBO 08/93 Passage aux Ax3
 
-#include <gp_Pln.ixx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
 
 gp_Pln::gp_Pln (const gp_Pnt& P,
 		const gp_Dir& V)

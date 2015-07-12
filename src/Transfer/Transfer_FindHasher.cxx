@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_FindHasher.ixx>
 
+#include <Transfer_Finder.hxx>
+#include <Transfer_FindHasher.hxx>
 
 Standard_Integer  Transfer_FindHasher::HashCode
   (const Handle(Transfer_Finder)& K, const Standard_Integer Upper)

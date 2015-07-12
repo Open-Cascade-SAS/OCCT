@@ -14,21 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeProcessAPI_ApplySequence.ixx>
-#include <TCollection_AsciiString.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Resource_Manager.hxx>
 #include <ShapeProcess.hxx>
 #include <ShapeProcess_OperLibrary.hxx>
+#include <ShapeProcess_ShapeContext.hxx>
+#include <ShapeProcessAPI_ApplySequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 
 //=======================================================================
 //function : ShapeProcessAPI_ApplySequence
 //purpose  : 
 //=======================================================================
-
 ShapeProcessAPI_ApplySequence::ShapeProcessAPI_ApplySequence(const Standard_CString rscName, 
 							     const Standard_CString seqName)
 {

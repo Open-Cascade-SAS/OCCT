@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWRightCircularCylinder.ixx>
-#include <StepGeom_Axis1Placement.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWRightCircularCylinder.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Axis1Placement.hxx>
 #include <StepShape_RightCircularCylinder.hxx>
-
 
 RWStepShape_RWRightCircularCylinder::RWStepShape_RWRightCircularCylinder () {}
 

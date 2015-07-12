@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_Ellipsoid.ixx>
+#include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESSolid_Ellipsoid.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_Ellipsoid::IGESSolid_Ellipsoid ()    {  }
 

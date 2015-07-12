@@ -24,18 +24,23 @@
 //                                                  Courbes.              +
 //=========================================================================
 
-#include <Geom2dGcc_Circ2d2TanOnIter.ixx>
-
-#include <gp_Dir2d.hxx>
-#include <gp_Ax2d.hxx>
-#include <gp.hxx>
-#include <StdFail_NotDone.hxx>
-#include <GccEnt_BadQualifier.hxx>
-#include <math_FunctionSetRoot.hxx>
 #include <ElCLib.hxx>
-
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc_Circ2d2TanOnIter.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_FunctionTanCuCuOnCu.hxx>
+#include <Geom2dGcc_QCurve.hxx>
+#include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <StdFail_NotDone.hxx>
 
 Geom2dGcc_Circ2d2TanOnIter::
 Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 , 

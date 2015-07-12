@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWTopologicalRepresentationItem.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepShape_RWTopologicalRepresentationItem.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
 
 RWStepShape_RWTopologicalRepresentationItem::RWStepShape_RWTopologicalRepresentationItem () {}
 

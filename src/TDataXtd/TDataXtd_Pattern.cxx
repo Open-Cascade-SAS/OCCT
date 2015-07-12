@@ -13,12 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_Pattern.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Pattern.hxx>
+
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataXtd_Pattern::GetID()
 {
   static Standard_GUID myID("2a96b618-ec8b-11d0-bee7-080009dc3333");

@@ -13,46 +13,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XDEDRAW_Common.ixx>
-#include <TCollection_ExtendedString.hxx>
 
-#include <Interface_Macros.hxx>
-#include <XSControl_WorkSession.hxx>
-#include <IGESControl_Controller.hxx>
-#include <STEPControl_Controller.hxx>
-
+#include <DDocStd.hxx>
+#include <DDocStd_DrawDocument.hxx>
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <XSDRAW.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <IGESCAFControl_Reader.hxx>
+#include <IGESCAFControl_Writer.hxx>
+#include <IGESControl_Controller.hxx>
+#include <Interface_Macros.hxx>
+#include <STEPCAFControl_DictionaryOfExternFile.hxx>
+#include <STEPCAFControl_ExternFile.hxx>
+#include <STEPCAFControl_IteratorOfDictionaryOfExternFile.hxx>
+#include <STEPCAFControl_Reader.hxx>
+#include <STEPCAFControl_Writer.hxx>
+#include <STEPControl_Controller.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Data.hxx>
+#include <TDocStd_Application.hxx>
+#include <TDocStd_Document.hxx>
 #include <XDEDRAW.hxx>
+#include <XDEDRAW_Common.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <XSDRAW.hxx>
+#include <XSDRAW_Vars.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
 
-#include <TDocStd_Document.hxx>
-#include <DDocStd_DrawDocument.hxx>
-#include <DDocStd.hxx>
-#include <TDocStd_Application.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDF_Data.hxx>
-
-#include <IGESCAFControl_Reader.hxx>
-#include <IGESCAFControl_Writer.hxx>
-#include <STEPCAFControl_Reader.hxx>
-#include <STEPCAFControl_Writer.hxx>
-
-#include <Dico_DictionaryOfTransient.hxx>
-#include <STEPCAFControl_DictionaryOfExternFile.hxx>
-#include <STEPCAFControl_ExternFile.hxx>
-#include <IFSelect_SessionPilot.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <STEPCAFControl_IteratorOfDictionaryOfExternFile.hxx>
-#include <XSDRAW_Vars.hxx>
 #include <stdio.h>
-
 //============================================================
 // Support for several models in DRAW
 //============================================================
-
 static Handle(Dico_DictionaryOfTransient) thedictws = new Dico_DictionaryOfTransient;
 
 static Standard_Boolean ClearDicWS()

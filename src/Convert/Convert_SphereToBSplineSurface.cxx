@@ -14,10 +14,11 @@
 
 //JCV 16/10/91
 
-#include <Convert_SphereToBSplineSurface.ixx>
-
+#include <Convert_SphereToBSplineSurface.hxx>
 #include <gp.hxx>
+#include <gp_Sphere.hxx>
 #include <gp_Trsf.hxx>
+#include <Standard_DomainError.hxx>
 
 static const Standard_Integer TheUDegree  = 2;
 static const Standard_Integer TheVDegree  = 2;

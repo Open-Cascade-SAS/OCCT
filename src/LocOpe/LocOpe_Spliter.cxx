@@ -16,45 +16,41 @@
 
 //  Modified by skv - Mon May 31 12:34:09 2004 OCC5865
 
-#include <LocOpe_Spliter.ixx>
-
-//#include <LocOpe_ProjectedWires.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-
-#include <LocOpe_BuildWires.hxx>
-
-#include <gp_Vec2d.hxx>
-#include <gp_Vec.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools_Substitution.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <BRep_Tool.hxx>
-
-#include <BRepTools_Substitution.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <LocOpe_BuildWires.hxx>
+#include <LocOpe_Spliter.hxx>
 #include <LocOpe_SplitShape.hxx>
-
-#include <BRep_Builder.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-
+#include <LocOpe_WiresOnShape.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
-
+//#include <LocOpe_ProjectedWires.hxx>
 //  Modified by skv - Mon May 31 13:00:30 2004 OCC5865 Begin
 // static void RebuildWires(TopTools_ListOfShape&);
 static void RebuildWires(TopTools_ListOfShape&,

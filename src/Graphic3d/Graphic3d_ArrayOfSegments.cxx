@@ -12,7 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_ArrayOfSegments.ixx>
+
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Standard_Type.hxx>
 
 Graphic3d_ArrayOfSegments::Graphic3d_ArrayOfSegments (const Standard_Integer theMaxVertexs,
                                                       const Standard_Integer theMaxEdges,

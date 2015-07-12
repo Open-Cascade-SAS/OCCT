@@ -11,18 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWFaceBound.ixx>
-#include <StepShape_Loop.hxx>
-#include <StepShape_EdgeLoop.hxx>
-#include <StepShape_OrientedEdge.hxx>
-#include <StepShape_Edge.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <Interface_ShareTool.hxx>
+#include <RWStepShape_RWFaceBound.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_Edge.hxx>
+#include <StepShape_EdgeLoop.hxx>
 #include <StepShape_FaceBound.hxx>
-
+#include <StepShape_Loop.hxx>
+#include <StepShape_OrientedEdge.hxx>
 
 RWStepShape_RWFaceBound::RWStepShape_RWFaceBound () {}
 

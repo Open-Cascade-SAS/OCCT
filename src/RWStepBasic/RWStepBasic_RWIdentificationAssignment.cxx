@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepBasic_RWIdentificationAssignment.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWIdentificationAssignment.hxx>
+#include <StepBasic_IdentificationAssignment.hxx>
 #include <StepBasic_IdentificationRole.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWIdentificationAssignment
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWIdentificationAssignment::RWStepBasic_RWIdentificationAssignment ()
 {
 }

@@ -1,3 +1,15 @@
-XmlObjMgt_Element.hxx
+XmlObjMgt.cxx
+XmlObjMgt.hxx
+XmlObjMgt_Array1.cxx
+XmlObjMgt_Array1.hxx
+XmlObjMgt_Array1.lxx
 XmlObjMgt_Document.hxx
 XmlObjMgt_DOMString.hxx
+XmlObjMgt_Element.hxx
+XmlObjMgt_GP.cxx
+XmlObjMgt_GP.hxx
+XmlObjMgt_Persistent.cxx
+XmlObjMgt_Persistent.hxx
+XmlObjMgt_Persistent.lxx
+XmlObjMgt_RRelocationTable.hxx
+XmlObjMgt_SRelocationTable.hxx

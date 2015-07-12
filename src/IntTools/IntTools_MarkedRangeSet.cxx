@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_MarkedRangeSet.ixx>
+
+#include <IntTools_CArray1OfReal.hxx>
+#include <IntTools_MarkedRangeSet.hxx>
+#include <IntTools_Range.hxx>
 
 IntTools_MarkedRangeSet::IntTools_MarkedRangeSet() :
 myRangeNumber(0)

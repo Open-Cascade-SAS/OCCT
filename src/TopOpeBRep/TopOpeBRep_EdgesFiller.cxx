@@ -14,22 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_EdgesFiller.ixx>
-#include <TopOpeBRep_PointGeomTool.hxx>
-#include <TopOpeBRep_Point2d.hxx>
 
-#include <TopOpeBRepDS_Transition.hxx>
-#include <TopOpeBRepDS_Config.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
-#include <TopOpeBRepDS_TKI.hxx>
-#include <TopOpeBRepDS_InterferenceTool.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
-#include <TopOpeBRepDS.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
-
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_EdgesFiller.hxx>
+#include <TopOpeBRep_EdgesIntersector.hxx>
+#include <TopOpeBRep_Point2d.hxx>
+#include <TopOpeBRep_PointGeomTool.hxx>
+#include <TopOpeBRepDS.hxx>
+#include <TopOpeBRepDS_Config.hxx>
+#include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_InterferenceTool.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_TKI.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_reDEB.hxx>

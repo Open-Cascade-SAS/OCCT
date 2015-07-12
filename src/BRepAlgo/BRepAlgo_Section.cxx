@@ -14,20 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_Section.ixx>
-#include <BRepBuilderAPI_MakeShell.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TopoDS.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
+
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
+#include <BRepAlgo_Section.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeShell.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pln.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepBuild_Tools.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static TopoDS_Shape MakeShape(const Handle(Geom_Surface)& );
 

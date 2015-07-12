@@ -14,28 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_SweepSectionGenerator.ixx>
 
-#include <GeomFill_Profiler.hxx>
-
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Ax2.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <GeomConvert.hxx>
-#include <Precision.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <ElCLib.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <GeomConvert.hxx>
+#include <GeomFill_Profiler.hxx>
+#include <GeomFill_SweepSectionGenerator.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_RangeError.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
-
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <Geom_BSplineCurve.hxx>

@@ -14,8 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dHatch_Hatcher.ixx>
 
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Classifier.hxx>
+#include <Geom2dHatch_Element.hxx>
+#include <Geom2dHatch_Hatcher.hxx>
+#include <Geom2dHatch_Hatching.hxx>
+#include <Geom2dHatch_Intersector.hxx>
 #include <HatchGen_Domain.hxx>
 #include <HatchGen_Domains.hxx>
 #include <HatchGen_PointOnElement.hxx>
@@ -24,12 +29,11 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TopAbs.hxx>
 #include <TopTrans_CurveTransition.hxx>
-
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dHatch_Intersector.hxx>
-#include <Geom2dHatch_Classifier.hxx>
 
 #define RAISE_IF_NOSUCHOBJECT 0
 #define TRACE_HATCHER 0

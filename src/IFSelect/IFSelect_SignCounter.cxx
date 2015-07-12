@@ -11,9 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SignCounter.ixx>
-#include <Interface_EntityIterator.hxx>
 
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IFSelect_SignCounter::IFSelect_SignCounter
   (const Standard_Boolean withmap, const Standard_Boolean withlist)

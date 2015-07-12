@@ -14,18 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeCircle.ixx>
-#include <StepGeom_Circle.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
+
 #include <Geom_Axis2Placement.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Circle.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeCircle.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un Circle de Geom a partir d' un Circle de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeCircle::Convert
     (const Handle(StepGeom_Circle)& SC,
      Handle(Geom_Circle)& CC)

@@ -12,4 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntImpParGen_ImpTool.ixx>
+
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntImpParGen_ImpTool.hxx>

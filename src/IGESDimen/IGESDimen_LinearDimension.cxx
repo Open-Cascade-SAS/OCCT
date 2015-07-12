@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_LinearDimension.ixx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <IGESDimen_LinearDimension.hxx>
+#include <IGESDimen_WitnessLine.hxx>
 #include <Standard_OutOfRange.hxx>
-
+#include <Standard_Type.hxx>
 
 IGESDimen_LinearDimension::IGESDimen_LinearDimension ()    {  }
 

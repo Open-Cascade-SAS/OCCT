@@ -14,16 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_Lin2d2Tan.ixx>
-#include <Geom2dGcc_QCurve.hxx>
+
 #include <GccAna_Lin2d2Tan.hxx>
-#include <Geom2dGcc_Lin2d2TanIter.hxx>
-#include <Geom2d_Circle.hxx>
+#include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <StdFail_NotDone.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_Lin2d2Tan.hxx>
+#include <Geom2dGcc_Lin2d2TanIter.hxx>
+#include <Geom2dGcc_QCurve.hxx>
+#include <Geom2dGcc_QualifiedCurve.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Geom2dGcc_CurveTool.hxx>
+#include <StdFail_NotDone.hxx>
 
 //  Modified by Sergey KHROMOV - Wed Oct 16 11:44:41 2002 Begin
 Geom2dGcc_Lin2d2Tan::

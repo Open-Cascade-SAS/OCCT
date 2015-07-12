@@ -15,17 +15,21 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepAP214_RWAppliedExternalIdentificationAssignment.ixx>
-#include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAppliedExternalIdentificationAssignment.hxx>
+#include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepAP214_ExternalIdentificationItem.hxx>
-#include <StepBasic_IdentificationRole.hxx>
+#include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
 #include <StepBasic_ExternalSource.hxx>
+#include <StepBasic_IdentificationRole.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP214_RWAppliedExternalIdentificationAssignment
 //purpose  : 
 //=======================================================================
-
 RWStepAP214_RWAppliedExternalIdentificationAssignment::RWStepAP214_RWAppliedExternalIdentificationAssignment ()
 {
 }

@@ -14,14 +14,13 @@
 // commercial license or contractual agreement.
 
 //      	-------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Nov 14 1997	Creation
 
-
-
-#include <TDF.ixx>
+#include <Standard_GUID.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF.hxx>
 #include <TDF_GUIDProgIDMap.hxx>
 
 static TDF_GUIDProgIDMap guidprogidmap;

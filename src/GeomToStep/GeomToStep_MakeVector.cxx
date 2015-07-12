@@ -14,21 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeVector.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <Geom2d_Vector.hxx>
+#include <Geom_Vector.hxx>
+#include <GeomToStep_MakeDirection.hxx>
+#include <GeomToStep_MakeVector.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Vec.hxx>
-#include <Geom_Vector.hxx>
+#include <gp_Vec2d.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_Vector.hxx>
-#include <GeomToStep_MakeDirection.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un vector de prostep a partir d' un Vec de gp
 //=============================================================================
-
 GeomToStep_MakeVector::GeomToStep_MakeVector( const gp_Vec& V)
 {
   gp_Dir D = gp_Dir(V);

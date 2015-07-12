@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion.hxx>
+#include <StepFEA_SymmetricTensor23d.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion::StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion ()
 {
 }

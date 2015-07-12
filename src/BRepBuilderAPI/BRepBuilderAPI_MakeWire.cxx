@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_MakeWire.ixx>
 
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_MakeWire
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_MakeWire::BRepBuilderAPI_MakeWire()
 {
 }

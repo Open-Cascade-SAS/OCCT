@@ -17,25 +17,30 @@
 #ifndef No_Exception
 // #define No_Exception
 #endif
-#include <HLRAlgo_Projector.ixx>
-#include <Precision.hxx>
+
+
+#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
 
 // formula for derivating a perspective, from Mathematica
-
 //        X'[t]      X[t] Z'[t]                                     
 // D1 =  -------- + -------------                                   
 //           Z[t]          Z[t] 2                                   
 //       1 - ----   f (1 - ----)                                    
 //            f             f                                       
-
 //=======================================================================
 //function : HLRAlgo_Projector
 //purpose  : 
 //=======================================================================
-
 HLRAlgo_Projector::HLRAlgo_Projector () :
        myPersp(Standard_False),myFocus(0)
 {

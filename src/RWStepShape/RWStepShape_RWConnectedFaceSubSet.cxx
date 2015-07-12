@@ -15,16 +15,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepShape_RWConnectedFaceSubSet.ixx>
-#include <StepShape_HArray1OfFace.hxx>
-#include <StepShape_Face.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWConnectedFaceSubSet.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
+#include <StepShape_ConnectedFaceSubSet.hxx>
+#include <StepShape_Face.hxx>
+#include <StepShape_HArray1OfFace.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWConnectedFaceSubSet
 //purpose  : 
 //=======================================================================
-
 RWStepShape_RWConnectedFaceSubSet::RWStepShape_RWConnectedFaceSubSet ()
 {
 }

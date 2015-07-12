@@ -11,34 +11,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
-#include <VrmlAPI_Writer.ixx>
-#include <Vrml_Material.hxx>
-#include <Quantity_HArray1OfColor.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+
+#include <BRep_Tool.hxx>
+#include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Quantity_HArray1OfColor.hxx>
+#include <Standard_Stream.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <Vrml.hxx>
+#include <Vrml_Group.hxx>
+#include <Vrml_Instancing.hxx>
+#include <Vrml_Material.hxx>
+#include <Vrml_Separator.hxx>
+#include <VrmlAPI_Writer.hxx>
+#include <VrmlConverter_Drawer.hxx>
 #include <VrmlConverter_IsoAspect.hxx>
 #include <VrmlConverter_LineAspect.hxx>
 #include <VrmlConverter_PointAspect.hxx>
-#include <VrmlConverter_ShadingAspect.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <Vrml.hxx>
 #include <VrmlConverter_Projector.hxx>
 #include <VrmlConverter_ShadedShape.hxx>
-#include <Vrml_Group.hxx>
-#include <Vrml_Instancing.hxx>
-#include <Vrml_Separator.hxx>
+#include <VrmlConverter_ShadingAspect.hxx>
 #include <VrmlConverter_WFDeflectionShape.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_ShapeConvert.hxx>
-#include <OSD_OpenFile.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <Poly_Triangulation.hxx>
-#include <BRep_Tool.hxx>
 
 VrmlAPI_Writer::VrmlAPI_Writer()
 {

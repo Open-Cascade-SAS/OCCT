@@ -15,17 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepAP214_ExternalIdentificationItem.ixx>
-#include <StepBasic_DocumentFile.hxx>
+#include <Standard_Transient.hxx>
+#include <StepAP214_ExternalIdentificationItem.hxx>
 #include <StepAP214_ExternallyDefinedClass.hxx>
 #include <StepAP214_ExternallyDefinedGeneralProperty.hxx>
+#include <StepBasic_DocumentFile.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 
 //=======================================================================
 //function : StepAP214_ExternalIdentificationItem
 //purpose  : 
 //=======================================================================
-
 StepAP214_ExternalIdentificationItem::StepAP214_ExternalIdentificationItem ()
 {
 }

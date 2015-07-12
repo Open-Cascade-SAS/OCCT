@@ -17,20 +17,22 @@
 // Modified by vro, Thu Dec 21 10:34:49 2000
 // Modified by vro, Thu Dec 21 10:34:59 2000
 
-#include <QANewBRepNaming_Prism.ixx>
+#include <BRep_Tool.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-#include <TNaming_Builder.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
+#include <QANewBRepNaming_Prism.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_TagSource.hxx>
-#include <Standard_NullObject.hxx>
-#include <TopoDS_Iterator.hxx>
+#include <TNaming_Builder.hxx>
 #include <TopExp.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <BRep_Tool.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>

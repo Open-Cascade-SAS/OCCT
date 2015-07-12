@@ -15,18 +15,22 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWElementRepresentation.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWElementRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_ElementRepresentation.hxx>
 #include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWElementRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWElementRepresentation::RWStepFEA_RWElementRepresentation ()
 {
 }

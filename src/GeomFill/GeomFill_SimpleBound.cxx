@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_SimpleBound.ixx>
-#include <Law_BSpFunc.hxx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <GeomFill_SimpleBound.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Law.hxx>
+#include <Law_BSpFunc.hxx>
+#include <Law_Function.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomFill_SimpleBound
 //purpose  : 
 //=======================================================================
-
 GeomFill_SimpleBound::GeomFill_SimpleBound
 (const Handle(Adaptor3d_HCurve)& Curve,
  const Standard_Real           Tol3d,

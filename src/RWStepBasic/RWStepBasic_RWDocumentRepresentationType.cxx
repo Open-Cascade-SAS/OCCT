@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepBasic_RWDocumentRepresentationType.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWDocumentRepresentationType.hxx>
 #include <StepBasic_Document.hxx>
+#include <StepBasic_DocumentRepresentationType.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWDocumentRepresentationType
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWDocumentRepresentationType::RWStepBasic_RWDocumentRepresentationType ()
 {
 }

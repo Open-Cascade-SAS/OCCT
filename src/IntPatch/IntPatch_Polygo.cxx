@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_Polygo.ixx>
+
+#include <gp_Pnt2d.hxx>
+#include <IntPatch_Polygo.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Initialize
 //purpose  : 
 //=======================================================================
-
 IntPatch_Polygo::IntPatch_Polygo (const Standard_Real theError)
 : myError(theError)
 {}

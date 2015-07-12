@@ -11,17 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_CheckCounter.ixx>
-#include <Standard_Transient.hxx>
+
+#include <IFSelect_CheckCounter.hxx>
 #include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <MoniTool_SignText.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+
 #include <stdio.h>
-
-
 //=======================================================================
 //function : IFSelect_CheckCounter
 //purpose  : 
 //=======================================================================
-
 IFSelect_CheckCounter::IFSelect_CheckCounter(const Standard_Boolean withlist)
      : IFSelect_SignatureList (withlist)
 {

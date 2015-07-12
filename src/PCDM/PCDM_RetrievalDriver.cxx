@@ -14,26 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PCDM_RetrievalDriver.ixx>
-#include <PCDM_BaseDriverPointer.hxx>
+
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <CDM_MetaData.hxx>
 #include <PCDM.hxx>
-#include <PCDM_TypeOfFileDriver.hxx>
-#include <Storage_Data.hxx>
-#include <Storage_HeaderData.hxx>
-#include <Storage_Schema.hxx>
-#include <Storage_Root.hxx>
-#include <TCollection_AsciiString.hxx>
-
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <Standard_TypeMismatch.hxx>
-
+#include <PCDM_BaseDriverPointer.hxx>
+#include <PCDM_Document.hxx>
+#include <PCDM_DriverError.hxx>
 #include <PCDM_ReadWriter.hxx>
+#include <PCDM_RetrievalDriver.hxx>
+#include <PCDM_TypeOfFileDriver.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <PCDM.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <Storage_Data.hxx>
+#include <Storage_HeaderData.hxx>
 #include <Storage_HSeqOfRoot.hxx>
-#include <locale.h>
+#include <Storage_Root.hxx>
+#include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
 
+#include <locale.h>
 void PCDM_RetrievalDriver::RaiseIfUnknownTypes(const Handle(Storage_Schema)& aSchema, const TCollection_ExtendedString& aFileName) {
 
   PCDM_BaseDriverPointer theFileDriver;

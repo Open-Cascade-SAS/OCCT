@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepShape_DimensionalLocationWithPath.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepShape_DimensionalLocationWithPath.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_DimensionalLocationWithPath
 //purpose  : 
 //=======================================================================
-
 StepShape_DimensionalLocationWithPath::StepShape_DimensionalLocationWithPath ()
 {
 }

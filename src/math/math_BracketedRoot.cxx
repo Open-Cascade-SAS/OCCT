@@ -12,13 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_BracketedRoot.ixx>
+
+#include <math_BracketedRoot.hxx>
 #include <math_Function.hxx>
+#include <StdFail_NotDone.hxx>
 
 // reference algorithme:  
 //                   Brent method 
 //                   numerical recipes in C  p 269
-
 math_BracketedRoot::math_BracketedRoot (math_Function& F, 
                                            const Standard_Real Bound1, 
                                            const Standard_Real Bound2, 

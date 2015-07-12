@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepDS_ShapeShapeInterference.ixx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_ShapeShapeInterference
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_ShapeShapeInterference::TopOpeBRepDS_ShapeShapeInterference
   (const TopOpeBRepDS_Transition& T,
    const TopOpeBRepDS_Kind        ST, 

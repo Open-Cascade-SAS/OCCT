@@ -14,41 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_FunctionGuide.ixx>
 
-#include <GeomFill_SectionLaw.hxx>
-
-#include <Geom_TrimmedCurve.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
-
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
+#include <GeomFill_FunctionGuide.hxx>
+#include <GeomFill_SectionLaw.hxx>
 #include <GeomTools.hxx>
-
-#include <Precision.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
-
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <math_Matrix.hxx>
+#include <Precision.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <Geom_Curve.hxx>
-
 
 //#include <Standard_NotImplemented.hxx>
-
 //==============================================
 //   Calcul de la valeur de la fonction :
 //                      G(w) - S(teta,v) = 0
 // ou G : guide   et   S : surface de revolution 
 //==============================================
-
-
 //==============================================
 // Function : FunctionGuide
 // Purpose : Initialisation de la section et de la surface d'arret

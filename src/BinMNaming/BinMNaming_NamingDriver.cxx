@@ -13,24 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMNaming_NamingDriver.ixx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <CDM_MessageDriver.hxx>
-#include <TDF_Attribute.hxx>
-#include  <TNaming_Iterator.hxx>
-#include <TNaming_NameType.hxx>
-#include <TNaming_Naming.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
+
 #include <BinMDF_ADriver.hxx>
+#include <BinMNaming.hxx>
+#include <BinMNaming_NamingDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
-#include <BinMNaming.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_NameType.hxx>
+#include <TNaming_Naming.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 
 #define  NULL_ENTRY "0:0"
 #define  OBSOLETE_NUM (int)sizeof(Standard_Integer)

@@ -16,30 +16,34 @@
 
 //    gka  01.06.99 S4205: changing order of splitting surface/curves for converting to bezier
 
-#include <ShapeUpgrade_FaceDivide.ixx>
-#include <Precision.hxx>
-#include <ShapeExtend.hxx>
-#include <ShapeBuild_Edge.hxx>
+#include <Bnd_Box2d.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <ShapeFix_ComposeShell.hxx>
 #include <BRepTools.hxx>
-#include <ShapeExtend_CompositeSurface.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Bnd_Box2d.hxx>
+#include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Edge.hxx>
+#include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeFix_ComposeShell.hxx>
+#include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_SplitSurface.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_FaceDivide
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_FaceDivide::ShapeUpgrade_FaceDivide():
        ShapeUpgrade_Tool(), myStatus(0)
 {

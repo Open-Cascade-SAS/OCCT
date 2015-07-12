@@ -13,56 +13,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_MiddlePath.ixx>
-#include <BRepOffsetAPI_MiddlePath.hxx>
 
-#include <ShapeUpgrade_UnifySameDomain.hxx>
-
-#include <gp_Lin.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <gce_MakeLin.hxx>
-
-#include <BRepLib_MakeWire.hxx>
-
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS.hxx>
-#include <BRepTools.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <BRep_Builder.hxx>
-#include <Precision.hxx>
-#include <TopExp_Explorer.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepGProp.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepOffsetAPI_MiddlePath.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <GC_MakeCircle.hxx>
+#include <GCE2d_MakeLine.hxx>
+#include <gce_MakeLin.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <GCE2d_MakeLine.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
-#include <gp_Circ.hxx>
-#include <GC_MakeCircle.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <GeomLib.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <GeomLib.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Lin.hxx>
+#include <GProp_GProps.hxx>
+#include <Precision.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 static Standard_Boolean IsLinear(const TopoDS_Edge& anEdge,
                                  gp_Lin& aLine)

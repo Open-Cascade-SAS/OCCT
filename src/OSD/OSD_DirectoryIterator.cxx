@@ -14,15 +14,18 @@
 
 #ifndef WNT
 
-#include <OSD_DirectoryIterator.ixx>
+
+#include <OSD_Directory.hxx>
+#include <OSD_DirectoryIterator.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
 #include <OSD_WhoAmI.hxx>
+#include <TCollection_AsciiString.hxx>
 
-#include <stdio.h>
 #include <dirent.h>
+#include <stdio.h>
 #include <sys/stat.h>
-
 //const OSD_WhoAmI Iam = OSD_WDirectoryIterator;
-
 OSD_DirectoryIterator::OSD_DirectoryIterator() {
 
  myDescr = NULL ;
@@ -178,7 +181,12 @@ Standard_Integer OSD_DirectoryIterator::Error()const{
 #define STRICT
 #include <windows.h>
 
-#include <OSD_DirectoryIterator.ixx>
+
+#include <OSD_Directory.hxx>
+#include <OSD_DirectoryIterator.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 #define _FD (  ( PWIN32_FIND_DATAW )myData  )

@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepBasic_RWProductDefinitionRelationship.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWProductDefinitionRelationship.hxx>
 #include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWProductDefinitionRelationship
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWProductDefinitionRelationship::RWStepBasic_RWProductDefinitionRelationship ()
 {
 }

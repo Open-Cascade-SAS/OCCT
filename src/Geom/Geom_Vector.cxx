@@ -14,7 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_Vector.ixx>
+
+#include <Geom_Vector.hxx>
+#include <gp_Vec.hxx>
+#include <gp_VectorWithNullMagnitude.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_Vector         Vector;
 typedef gp_Ax1  Ax1;

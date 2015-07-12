@@ -11,17 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_DefaultGeneral.ixx>
-#include <IGESData_UndefinedEntity.hxx>
-#include <IGESData_FreeFormatEntity.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-#include <Interface_UndefinedContent.hxx>
-#include <Interface_GeneralLib.hxx>
+
 #include <IGESData.hxx>
+#include <IGESData_DefaultGeneral.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_FreeFormatEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_Protocol.hxx>
+#include <IGESData_UndefinedEntity.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralLib.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Interface_ShareTool.hxx>
+#include <Interface_UndefinedContent.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfInteger.hxx>
 
 IGESData_DefaultGeneral::IGESData_DefaultGeneral ()
 {  Interface_GeneralLib::SetGlobal(this, IGESData::Protocol());  }

@@ -11,25 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_RebuildDrawings.ixx>
-#include <IGESSelect_ViewSorter.hxx>
+
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IFSelect_ContextModif.hxx>
 #include <IFSelect_PacketList.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 #include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_DrawingWithRotation.hxx>
 #include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <TColgp_HArray1OfXY.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <gp_XY.hxx>
-#include <gp_Pnt2d.hxx>
-
+#include <IGESSelect_RebuildDrawings.hxx>
+#include <IGESSelect_ViewSorter.hxx>
+#include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-
-#include <TColStd_Array1OfInteger.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_HArray1OfXY.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 #define PourDrawing 404
 

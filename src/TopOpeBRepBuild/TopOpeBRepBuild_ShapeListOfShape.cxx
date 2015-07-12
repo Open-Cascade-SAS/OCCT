@@ -14,7 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_ShapeListOfShape.ixx>
+
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_ShapeListOfShape.hxx>
 
 #define MTTdmiomoslos TopTools_DataMapIteratorOfDataMapOfShapeListOfShape
 #define MTTdmoslos TopTools_DataMapOfShapeListOfShape

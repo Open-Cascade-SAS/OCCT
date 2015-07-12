@@ -11,20 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_Binder.ixx>
-#include <Transfer_VoidBinder.hxx>
-#include <Transfer_TransferFailure.hxx>
 
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_IntVal.hxx>
 #include <Geom2d_CartesianPoint.hxx>
-
+#include <Interface_Check.hxx>
+#include <Interface_IntVal.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransferFailure.hxx>
+#include <Transfer_VoidBinder.hxx>
 
 //=======================================================================
 //function : Transfer_Binder
 //purpose  : 
 //=======================================================================
-
 Transfer_Binder::Transfer_Binder ()
 {  
   thestatus = Transfer_StatusVoid; 

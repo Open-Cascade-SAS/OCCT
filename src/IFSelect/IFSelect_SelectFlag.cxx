@@ -11,8 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectFlag.ixx>
 
+#include <IFSelect_SelectFlag.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectFlag::IFSelect_SelectFlag (const Standard_CString flagname)
     : thename (flagname)    {  }

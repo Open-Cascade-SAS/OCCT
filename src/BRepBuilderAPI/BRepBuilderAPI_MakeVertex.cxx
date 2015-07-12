@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_MakeVertex.ixx>
-#include <BRepBuilderAPI.hxx>
+
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <gp_Pnt.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_MakeVertex
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_MakeVertex::BRepBuilderAPI_MakeVertex(const gp_Pnt& P)
 : myMakeVertex(P)
 {

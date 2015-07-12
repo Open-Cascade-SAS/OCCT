@@ -12,9 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GProp_PEquation.ixx>
-#include <GProp_PrincipalProps.hxx>
+
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <GProp_PEquation.hxx>
 #include <GProp_PGProps.hxx>
+#include <GProp_PrincipalProps.hxx>
+#include <Standard_NoSuchObject.hxx>
 
 GProp_PEquation::GProp_PEquation(const TColgp_Array1OfPnt& Pnts, 
 				       const Standard_Real Tol) 

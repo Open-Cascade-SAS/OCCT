@@ -14,57 +14,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_Filling.ixx>
-#include <BRepFill_EdgeFaceAndOrder.hxx>
-#include <BRepFill_FaceAndOrder.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepFill_CurveConstraint.hxx>
 
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-
-#include <GeomPlate_MakeApprox.hxx>
-#include <GeomPlate_CurveConstraint.hxx>
-#include <GeomPlate_PointConstraint.hxx>
-
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeEdge2d.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_CurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <TopExp.hxx>
 #include <BRep_Tool.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <Precision.hxx>
-#include <GeomProjLib.hxx>
-#include <BRepTools.hxx>
-#include <BRep_Builder.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepFill_CurveConstraint.hxx>
+#include <BRepFill_EdgeFaceAndOrder.hxx>
+#include <BRepFill_FaceAndOrder.hxx>
+#include <BRepFill_Filling.hxx>
 #include <BRepLib.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeEdge2d.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-
-#include <TColgp_SequenceOfXY.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomPlate_CurveConstraint.hxx>
+#include <GeomPlate_MakeApprox.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
-#include <BRep_TVertex.hxx>
+#include <GeomPlate_PointConstraint.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColGeom2d_HArray1OfCurve.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColgp_SequenceOfXY.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static gp_Vec MakeFinVec( const TopoDS_Wire aWire, const TopoDS_Vertex aVertex )
 {

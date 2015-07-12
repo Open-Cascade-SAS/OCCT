@@ -16,19 +16,20 @@
 
 // sln 23.10.2001. CTS23496: If problems with creation of direction occur default direction is used
 
-#include <StepToGeom_MakeAxisPlacement.ixx>
-#include <StepToGeom_MakeCartesianPoint2d.hxx>
-#include <StepToGeom_MakeDirection2d.hxx>
+#include <Geom2d_AxisPlacement.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Direction.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepToGeom_MakeAxisPlacement.hxx>
+#include <StepToGeom_MakeCartesianPoint2d.hxx>
+#include <StepToGeom_MakeDirection2d.hxx>
 
 //=============================================================================
 // Creation d' un AxisPlacement de Geom2d a partir d' un axis2_placement_3d
 // de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeAxisPlacement::Convert
   (const Handle(StepGeom_Axis2Placement2d)& SA,
    Handle(Geom2d_AxisPlacement)& CA)

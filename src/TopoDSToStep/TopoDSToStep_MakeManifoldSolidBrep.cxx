@@ -14,19 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeManifoldSolidBrep.ixx>
+
+#include <BRepClass3d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeManifoldSolidBrep.hxx>
 #include <TopoDSToStep_Tool.hxx>
-#include <BRepClass3d.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <StepShape_ClosedShell.hxx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_HArray1OfFace.hxx>
 
 static Handle(StepShape_ManifoldSolidBrep) MakeManifoldSolidBrep (const TopoDS_Shell& aShell,
 								  const Handle(Transfer_FinderProcess)& FP)

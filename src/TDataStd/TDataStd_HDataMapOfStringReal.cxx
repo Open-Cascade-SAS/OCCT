@@ -13,7 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_HDataMapOfStringReal.ixx>
+
+#include <Standard_Type.hxx>
+#include <TDataStd_HDataMapOfStringReal.hxx>
+
 //=======================================================================
 //function : TDataStd_HDataMapOfStringReal
 //purpose  : Constructor of empty map

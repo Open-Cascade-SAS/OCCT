@@ -11,8 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectDeduct.ixx>
 
+#include <IFSelect_SelectDeduct.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_SelectionIterator.hxx>
+#include <IFSelect_SelectPointed.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Standard_Type.hxx>
 
 void  IFSelect_SelectDeduct::SetInput (const Handle(IFSelect_Selection)& sel)
       {  thesel = sel;  }

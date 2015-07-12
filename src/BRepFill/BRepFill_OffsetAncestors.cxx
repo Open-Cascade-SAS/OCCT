@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_OffsetAncestors.ixx>
 
+#include <BRepFill_OffsetAncestors.hxx>
+#include <BRepFill_OffsetWire.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : BRepFill_OffsetAncestors
 //purpose  : 
 //=======================================================================
-
 BRepFill_OffsetAncestors::BRepFill_OffsetAncestors()
 :myIsPerform(Standard_False)
 {

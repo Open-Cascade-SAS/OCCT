@@ -12,42 +12,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_Section.ixx>
 
-#include <NCollection_IncAllocator.hxx>
-
-#include <TopAbs_ShapeEnum.hxx>
-
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <TopExp_Explorer.hxx>
-
+#include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Section.hxx>
+#include <BOPCol_DataMapOfShapeShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
-
-#include <BOPDS_DS.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_VectorOfListOfPaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfFaceInfo.hxx>
-//
+#include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
-#include <BOPTools_AlgoTools.hxx>
-//
-#include <BOPAlgo_BuilderSolid.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
+//
+//
 //=======================================================================
 //function : 
 //purpose  : 

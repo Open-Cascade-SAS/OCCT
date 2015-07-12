@@ -14,7 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_SiUnitAndVolumeUnit.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_SiUnitAndVolumeUnit.hxx>
+#include <StepBasic_VolumeUnit.hxx>
 
 StepBasic_SiUnitAndVolumeUnit::StepBasic_SiUnitAndVolumeUnit()
 {

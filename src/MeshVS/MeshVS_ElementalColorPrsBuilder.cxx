@@ -13,43 +13,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_ElementalColorPrsBuilder.ixx>
 
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
-
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_LineAspect.hxx>
-
-#include <TColStd_MapOfInteger.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-
-#include <MeshVS_DisplayModeFlags.hxx>
-#include <MeshVS_DataSource.hxx>
-#include <MeshVS_Mesh.hxx>
+#include <MeshVS_Buffer.hxx>
+#include <MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx>
+#include <MeshVS_DataMapIteratorOfDataMapOfIntegerColor.hxx>
+#include <MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors.hxx>
+#include <MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger.hxx>
 #include <MeshVS_DataMapOfColorMapOfInteger.hxx>
 #include <MeshVS_DataMapOfTwoColorsMapOfInteger.hxx>
+#include <MeshVS_DataSource.hxx>
+#include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfIntegerColor.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx>
-#include <MeshVS_MeshPrsBuilder.hxx>
-#include <MeshVS_Buffer.hxx>
+#include <MeshVS_ElementalColorPrsBuilder.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_MeshPrsBuilder.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_ElementalColorPrsBuilder

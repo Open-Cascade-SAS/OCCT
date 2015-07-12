@@ -12,25 +12,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Resource_Manager.hxx>
-#include <Resource_Manager.ixx>
+
+#include <OSD_Directory.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Protection.hxx>
 #include <Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString.hxx>
 #include <Resource_LexicalCompare.hxx>
-
-#include <OSD_Path.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_Protection.hxx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <TCollection_ExtendedString.hxx>
+#include <Resource_Manager.hxx>
+#include <Resource_NoSuchResource.hxx>
 #include <Resource_Unicode.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 
-#include <errno.h>
-
 #include <algorithm>
-
+#include <errno.h>
 #define END      0
 #define EMPTY    1
 #define COMMENT  2

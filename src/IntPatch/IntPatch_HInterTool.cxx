@@ -14,18 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_HInterTool.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HVertex.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
-#include <Standard_OutOfRange.hxx>
-
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntPatch_HInterTool.hxx>
+#include <Standard_OutOfRange.hxx>
 
 IntPatch_HInterTool::IntPatch_HInterTool() :
     uinf (0.), vinf (0.), usup (0.), vsup (0.)

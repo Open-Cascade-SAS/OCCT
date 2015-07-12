@@ -11,18 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_RebuildGroups.ixx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+
+#include <IFSelect_ContextModif.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_OrderedGroup.hxx>
 #include <IGESBasic_OrderedGroupWithoutBackP.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_RebuildGroups.hxx>
+#include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 IGESSelect_RebuildGroups::IGESSelect_RebuildGroups ()
     : IGESSelect_ModelModifier (Standard_True)    {  }

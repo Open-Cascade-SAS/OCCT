@@ -14,24 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PCDM_ReadWriter_1.ixx>
-#include <UTL.hxx>
+
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <CDM_MetaData.hxx>
+#include <CDM_ReferenceIterator.hxx>
+#include <OSD_Path.hxx>
+#include <PCDM.hxx>
+#include <PCDM_BaseDriverPointer.hxx>
+#include <PCDM_ReadWriter_1.hxx>
+#include <PCDM_Reference.hxx>
+#include <PCDM_TypeOfFileDriver.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Type.hxx>
 #include <Storage_Data.hxx>
+#include <Storage_HeaderData.hxx>
+#include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <CDM_Document.hxx>
-#include <CDM_ReferenceIterator.hxx>
-#include <CDM_MetaData.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
-#include <Storage_Schema.hxx>
-#include <Storage_HeaderData.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <PCDM_Reference.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <OSD_Path.hxx>
-#include <PCDM_BaseDriverPointer.hxx>
-#include <PCDM.hxx>
-#include <PCDM_TypeOfFileDriver.hxx>
+#include <TColStd_SequenceOfExtendedString.hxx>
+#include <UTL.hxx>
 
 #define START_REF "START_REF"
 #define END_REF "END_REF"

@@ -14,19 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_MultipleConnectedInteractive.ixx>
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_InteractiveContext.hxx>
-
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_MultipleConnectedInteractive.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_Presentation.hxx>
-#include <SelectMgr_EntityOwner.hxx>
 #include <Select3D_SensitiveEntity.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
-#include <NCollection_DataMap.hxx>
-#include <AIS_InteractiveObject.hxx>
 
 namespace
 {

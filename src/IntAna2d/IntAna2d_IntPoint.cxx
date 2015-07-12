@@ -14,7 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntAna2d_IntPoint.ixx>
+
+#include <gp_Pnt2d.hxx>
+#include <IntAna2d_IntPoint.hxx>
 #include <Standard_DomainError.hxx>
 
 IntAna2d_IntPoint::IntAna2d_IntPoint (const Standard_Real X, const Standard_Real Y, 

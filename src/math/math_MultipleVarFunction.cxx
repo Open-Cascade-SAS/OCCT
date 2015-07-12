@@ -12,8 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <math_MultipleVarFunction.hxx>
 #include <Standard_Integer.hxx>
-#include <math_MultipleVarFunction.ixx>
 
 //=======================================================================
 //function : ~math_MultipleVarFunction

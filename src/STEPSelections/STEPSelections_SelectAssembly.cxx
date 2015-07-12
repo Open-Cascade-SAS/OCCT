@@ -14,14 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPSelections_SelectAssembly.ixx>
+
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_Macros.hxx>
-#include <StepShape_ContextDependentShapeRepresentation.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <StepRepr_MappedItem.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <STEPSelections_SelectAssembly.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <TCollection_AsciiString.hxx>
 
 STEPSelections_SelectAssembly::STEPSelections_SelectAssembly():IFSelect_SelectExplore (-1){ }
 

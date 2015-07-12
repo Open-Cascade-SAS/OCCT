@@ -18,80 +18,71 @@
 //abv,pdn 05.05.99 S4174: new commands for testing ShapeDivide added, some removed
 //pdn,gka 10.06.99 S4189: command DT_ShapeConvertRev added
 
-#include <SWDRAW_ShapeUpgrade.ixx>
-//#include <SWDRAW_ShapeUpgrade.hxx>
-
-#include <Draw.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepTools.hxx>
 #include <DBRep.hxx>
-#include <ShapeUpgrade.hxx>
-#include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
-#include <ShapeUpgrade_SplitCurve2dContinuity.hxx>
-#include <ShapeUpgrade_SplitSurfaceContinuity.hxx>
-//#include <ShapeUpgrade_SupportModification.hxx>
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DrawTrSurf.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeCustom.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeFix.hxx>
+#include <ShapeFix_ComposeShell.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_RemoveInternalWires.hxx>
+#include <ShapeUpgrade_RemoveLocations.hxx>
+#include <ShapeUpgrade_ShapeConvertToBezier.hxx>
+#include <ShapeUpgrade_ShapeDivideAngle.hxx>
+#include <ShapeUpgrade_ShapeDivideArea.hxx>
+#include <ShapeUpgrade_ShapeDivideClosed.hxx>
+#include <ShapeUpgrade_ShapeDivideContinuity.hxx>
+#include <ShapeUpgrade_SplitCurve2dContinuity.hxx>
+#include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
+#include <ShapeUpgrade_SplitSurfaceContinuity.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
+#include <SWDRAW.hxx>
+#include <SWDRAW_ShapeUpgrade.hxx>
+#include <TColGeom2d_HArray1OfCurve.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <TColGeom_HArray2OfSurface.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColGeom_HArray2OfSurface.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <BRepBuilderAPI.hxx>
-#include <SWDRAW.hxx>
-#include <ShapeUpgrade_ShapeDivideArea.hxx>
 
-#include <stdio.h> 
+#include <stdio.h>
+//#include <SWDRAW_ShapeUpgrade.hxx>
+//#include <ShapeUpgrade_SupportModification.hxx>
 //#include <ShapeExtend_WireData.hxx>
 //#include <ShapeAnalysis_Shell.hxx>
 //#include <ShapeAnalysis_WireOrder.hxx>
 //#include <ShapeAnalysis_Wire.hxx>
 //#include <ShapeUpgrade_ShellSewing.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <BRep_Tool.hxx>
-#include <ShapeExtend_CompositeSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <TColGeom_HArray2OfSurface.hxx>
-#include <ShapeFix_ComposeShell.hxx>
-#include <Precision.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <BRepTools.hxx>
-#include <ShapeFix.hxx>
-#include <ShapeUpgrade_ShapeDivideContinuity.hxx>
-#include <ShapeUpgrade_ShapeDivideAngle.hxx>
-#include <ShapeUpgrade_ShapeConvertToBezier.hxx>
-#include <ShapeCustom.hxx>
-#include <ShapeUpgrade_ShapeDivideClosed.hxx>
-#include <ShapeUpgrade_RemoveInternalWires.hxx>
-#include <ShapeUpgrade_RemoveLocations.hxx>
-#include <ShapeUpgrade_UnifySameDomain.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-
 // the plane (equation z=0) shared by PlaneDividedFaceContinuity and PlaneGridShell
 //static Handle(Geom_Plane) ThePlane= new Geom_Plane(0,0,1,0);
-
-
 //=======================================================================
 //function : DT_ShapeDivide 
 //purpose  : 
 //=======================================================================
-
 static Standard_Integer DT_ShapeDivide (Draw_Interpretor& di,
 					Standard_Integer n, const char** a)
 {

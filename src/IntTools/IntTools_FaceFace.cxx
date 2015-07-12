@@ -13,112 +13,95 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_FaceFace.ixx>
 
-#include <Precision.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_Array1OfListOfInteger.hxx>
-
-#include <gp_Lin2d.hxx>
-#include <gp_Ax22d.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Torus.hxx>
-#include <gp_Cylinder.hxx>
-
+#include <Adaptor2d_HLine2d.hxx>
+#include <Adaptor3d_SurfacePtr.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <Approx_CurveOnSurface.hxx>
 #include <Bnd_Box.hxx>
-
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
-#include <IntAna_QuadQuadGeo.hxx>
-
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_ListOfPntOn2S.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <ProjLib_Plane.hxx>
-
-#include <IntPatch_GLine.hxx>
-#include <IntPatch_RLine.hxx>
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_ALine.hxx>
-#include <IntPatch_ALineToWLine.hxx>
-
-#include <ElSLib.hxx>
+#include <BndLib_AddSurface.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTools.hxx>
 #include <ElCLib.hxx>
-
+#include <ElSLib.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <Extrema_POnCurv.hxx>
-#include <BndLib_AddSurface.hxx>
-
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Adaptor2d_HLine2d.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAbs_CurveType.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Conic.hxx>
-
-#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Curve.hxx>
 #include <Geom2d_Circle.hxx>
-
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Geom2dAdaptor.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomLib_CheckBSplineCurve.hxx>
-#include <GeomLib_Check2dBSplineCurve.hxx>
-
-#include <GeomInt_WLApprox.hxx>
-#include <GeomProjLib.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
+#include <GeomInt.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <GeomLib_Check2dBSplineCurve.hxx>
+#include <GeomLib_CheckBSplineCurve.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Torus.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
+#include <IntPatch_ALine.hxx>
+#include <IntPatch_ALineToWLine.hxx>
+#include <IntPatch_GLine.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
+#include <IntSurf_ListOfPntOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntTools_Context.hxx>
 #include <IntTools_Curve.hxx>
-#include <IntTools_Tools.hxx>
+#include <IntTools_FaceFace.hxx>
+#include <IntTools_PntOn2Faces.hxx>
+#include <IntTools_PntOnFace.hxx>
 #include <IntTools_Tools.hxx>
 #include <IntTools_TopolTool.hxx>
-#include <IntTools_PntOnFace.hxx>
-#include <IntTools_PntOn2Faces.hxx>
-#include <IntTools_Context.hxx>
-#include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
-#include <GeomInt.hxx>
-
-#include <Approx_CurveOnSurface.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomInt_IntSS.hxx>
+#include <Precision.hxx>
+#include <ProjLib_Plane.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfListOfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 static
   void RefineVector(gp_Vec2d& aV2D);

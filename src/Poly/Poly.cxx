@@ -14,20 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
-#include <Poly.ixx>
+
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Poly_Triangle.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <gp_XY.hxx>
+#include <Poly.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_ListOfTriangulation.hxx>
-
-#include <Poly_Polygon3D.hxx>
 #include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_Triangle.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
+#include <Standard_Stream.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TShort_Array1OfShortReal.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 
@@ -35,7 +36,6 @@
 //function : Catenate
 //purpose  : Join several triangulations to one new triangulation object
 //=======================================================================
-
 Handle(Poly_Triangulation) Poly::Catenate (const Poly_ListOfTriangulation& lstTri)
 {
   Standard_Integer nNodes(0);

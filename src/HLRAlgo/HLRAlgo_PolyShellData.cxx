@@ -17,10 +17,13 @@
 #ifndef No_Exception
 //#define No_Exception
 #endif
-#include <HLRAlgo_PolyShellData.ixx>
-#include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
+
+
 #include <HLRAlgo_BiPoint.hxx>
+#include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
 #include <HLRAlgo_PolyData.hxx>
+#include <HLRAlgo_PolyShellData.hxx>
+#include <Standard_Type.hxx>
 
 #define PntX1  ((Standard_Real*)Coordinates)[ 0]
 #define PntY1  ((Standard_Real*)Coordinates)[ 1]

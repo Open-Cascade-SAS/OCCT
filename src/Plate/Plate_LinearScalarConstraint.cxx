@@ -14,9 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Plate_LinearScalarConstraint.ixx>
-#include <Standard_DimensionMismatch.hxx>
 
+#include <gp_XYZ.hxx>
+#include <Plate_LinearScalarConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint() {}
 

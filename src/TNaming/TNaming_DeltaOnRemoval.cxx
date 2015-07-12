@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_DeltaOnRemoval.ixx>
-#include <TNaming_DeltaOnModification.hxx>
+
+#include <Standard_Type.hxx>
 #include <TDF_DeltaOnRemoval.hxx>
+#include <TNaming_DeltaOnModification.hxx>
+#include <TNaming_DeltaOnRemoval.hxx>
+#include <TNaming_NamedShape.hxx>
 
 //=======================================================================
 //function : TNaming_DeltaOnModification
 //purpose  : 
 //=======================================================================
-
 TNaming_DeltaOnRemoval::TNaming_DeltaOnRemoval(const Handle(TNaming_NamedShape)& NS)
 :TDF_DeltaOnRemoval(NS)
 {

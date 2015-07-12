@@ -11,19 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_ErrorHandler.hxx>
-#include <StepSelect_Activator.ixx>
-#include <Interface_Macros.hxx>
-#include <Standard_Failure.hxx>
 
+#include <IFSelect_SessionPilot.hxx>
 #include <IFSelect_WorkSession.hxx>
 #include <Interface_Macros.hxx>
-#include <StepData_UndefinedEntity.hxx>
-#include <StepData_Simple.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
 #include <StepData_Plex.hxx>
-
+#include <StepData_Simple.hxx>
+#include <StepData_UndefinedEntity.hxx>
+#include <StepSelect_Activator.hxx>
 #include <StepSelect_FloatFormat.hxx>
-
 
 static int initActivator = 0;
 

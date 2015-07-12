@@ -12,15 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PLib_JacobiPolynomial.ixx>
 
 #include <math.hxx>
 #include <math_Vector.hxx>
-#include <TColStd_Array2OfReal.hxx> 
 #include <PLib.hxx>
-#include <Standard_ConstructionError.hxx>
-
+#include <PLib_JacobiPolynomial.hxx>
 #include <PLib_JacobiPolynomial_0.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 // The possible values for NbGaussPoints
 const Standard_Integer NDEG8=8,   NDEG10=10, NDEG15=15, NDEG20=20, NDEG25=25, 

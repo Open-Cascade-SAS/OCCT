@@ -16,25 +16,31 @@
 
 //#define No_Standard_OutOfRange
 
-#include <HLRBRep_Data.ixx>
-
-#include <StdFail_UndefinedDerivative.hxx>
-#include <Precision.hxx>
-#include <gp_Dir.hxx>
+#include <BRepTopAdaptor_Tool.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <HLRAlgo.hxx>
+#include <HLRAlgo_Interference.hxx>
+#include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <HLRBRep_Data.hxx>
+#include <HLRBRep_EdgeData.hxx>
+#include <HLRBRep_EdgeFaceTool.hxx>
+#include <HLRBRep_FaceData.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <StdFail_UndefinedDerivative.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <HLRAlgo.hxx>
-#include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
-#include <HLRBRep_EdgeFaceTool.hxx>
-#include <ElCLib.hxx>
-#include <gp.hxx>
-#include <stdio.h>
-#include <BRepTopAdaptor_Tool.hxx>
 
+#include <stdio.h>
 Standard_Integer nbOkIntersection;
 Standard_Integer nbPtIntersection;
 Standard_Integer nbSegIntersection;

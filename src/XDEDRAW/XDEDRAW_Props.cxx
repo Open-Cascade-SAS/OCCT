@@ -15,57 +15,49 @@
 
 // OCC532 sln 24.07.2002. Add epsilon parameter to SetProps function
 
-#include <XDEDRAW_Props.ixx>
-
-#include <Draw.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepGProp.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <TopoDS_Shape.hxx>
-
+#include <Draw.hxx>
+#include <gp_Pln.hxx>
 #include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-
-#include <TDF_Tool.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
-#include <TDocStd_Document.hxx>
-#include <TDataStd_Name.hxx>
-
-#include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFDoc_Area.hxx>
-#include <XCAFDoc_Volume.hxx>
-#include <XCAFDoc_Centroid.hxx>
-#include <XCAFDoc_MaterialTool.hxx>
-#include <XCAFDoc_Location.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <TNaming_NamedShape.hxx>
-
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <gp_Pln.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <Poly_Triangulation.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <Standard_Stream.hxx>
-#include <stdio.h>
+#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <XCAFDoc.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelSequence.hxx>
+#include <TDF_Tool.hxx>
+#include <TDocStd_Document.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <XCAFDoc.hxx>
+#include <XCAFDoc_Area.hxx>
+#include <XCAFDoc_Centroid.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_Location.hxx>
+#include <XCAFDoc_MaterialTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_Volume.hxx>
+#include <XDEDRAW_Props.hxx>
 
-
+#include <stdio.h>
 // --------------------- VolumeFix Begin ---
-
 //=======================================================================
 //function : TetraVol
 //purpose  : auxilary

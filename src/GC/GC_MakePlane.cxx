@@ -14,14 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakePlane.ixx>
-#include <gce_MakePln.hxx>
-#include <gp.hxx>
-#include <gp_Ax3.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_NotImplemented.hxx>
 
+#include <GC_MakePlane.hxx>
+#include <gce_MakePln.hxx>
+#include <Geom_Plane.hxx>
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 
 GC_MakePlane::GC_MakePlane(const gp_Ax2& ) //A2)
 {

@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_SpecificModule.ixx>
 
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_SpecificModule.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
 
 Standard_Boolean  IGESData_SpecificModule::OwnCorrect
   (const Standard_Integer , const Handle(IGESData_IGESEntity)& ) const

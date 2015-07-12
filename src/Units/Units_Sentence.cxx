@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_NoSuchType.hxx>
-#include <Units_Sentence.ixx>
-#include <Units_Token.hxx>
-#include <Units_ShiftedToken.hxx>
-#include <Units_TokensSequence.hxx>
-#include <Units_Operators.hxx>
 
+#include <Units_Lexicon.hxx>
+#include <Units_NoSuchType.hxx>
+#include <Units_Operators.hxx>
+#include <Units_Sentence.hxx>
+#include <Units_ShiftedToken.hxx>
+#include <Units_Token.hxx>
+#include <Units_TokensSequence.hxx>
 
 static Handle(Units_Token) CreateTokenForNumber(const Standard_CString str)
 {

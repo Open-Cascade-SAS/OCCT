@@ -14,7 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_WireEdgeClassifier.ixx>
+
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_BlockBuilder.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_WireEdgeClassifier.hxx>
 
 #ifdef DRAW
 #include <DBRep.hxx>

@@ -15,16 +15,15 @@
 
 //AGV 130202: Changed prototype LDOM_Node::getOwnerDocument()
 
-#include <XmlObjMgt_Persistent.ixx>
-#include <XmlObjMgt_Document.hxx>
-#include <XmlObjMgt.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Document.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlObjMgt_Persistent
 //purpose  : empty constructor
 //=======================================================================
-
 XmlObjMgt_Persistent::XmlObjMgt_Persistent ()
      : myID (0)
 {}

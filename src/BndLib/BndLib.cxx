@@ -12,16 +12,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BndLib.ixx>
 
+#include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib.hxx>
 #include <ElCLib.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_XY.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Standard_Failure.hxx>
-
 
 static 
   Standard_Integer ComputeBox(const gp_Hypr& aHypr, 

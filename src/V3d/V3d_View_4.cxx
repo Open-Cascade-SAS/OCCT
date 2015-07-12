@@ -11,15 +11,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <V3d_View.jxx>
 
-#include <TColStd_Array2OfReal.hxx>
-
-#include <gp_Dir2d.hxx>
- 
-#include <V3d_RectangularGrid.hxx>
-#include <V3d_CircularGrid.hxx>
+#include <Aspect_ColorScale.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Grid.hxx>
 #include <Aspect_RectangularGrid.hxx>
+#include <Aspect_Window.hxx>
+#include <Bnd_Box.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <V3d_BadValue.hxx>
+#include <V3d_CircularGrid.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_Light.hxx>
+#include <V3d_RectangularGrid.hxx>
+#include <V3d_UnMapped.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_View.hxx>
 
 #define MYEPSILON1 0.0001		// Comparison with 0.0
 #define MYEPSILON2 M_PI / 180.	// Delta between 2 angles

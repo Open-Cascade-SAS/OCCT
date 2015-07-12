@@ -14,8 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
 #include <ElCLib.hxx>
-#include <IntCurve_ProjectOnPConicTool.ixx>
+#include <gp_Pnt2d.hxx>
+#include <IntCurve_PConic.hxx>
+#include <IntCurve_ProjectOnPConicTool.hxx>
 
 Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
                                        (const IntCurve_PConic& ThePConic,

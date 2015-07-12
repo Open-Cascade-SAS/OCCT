@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_PinNumber.ixx>
-
+#include <IGESAppli_PinNumber.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_PinNumber::IGESAppli_PinNumber ()    {  }
 

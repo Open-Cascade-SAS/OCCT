@@ -12,10 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectMgr_AndFilter.ixx>
 
+#include <SelectMgr_AndFilter.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <SelectMgr_ListIteratorOfListOfFilter.hxx>
+#include <Standard_Type.hxx>
 
 SelectMgr_AndFilter::SelectMgr_AndFilter()
 {

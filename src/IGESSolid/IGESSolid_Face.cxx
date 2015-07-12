@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_Face.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_Face.hxx>
+#include <IGESSolid_Loop.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_Face::IGESSolid_Face ()    {  }
 

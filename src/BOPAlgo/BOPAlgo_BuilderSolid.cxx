@@ -15,66 +15,66 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 //
-#include <BOPAlgo_BuilderSolid.ixx>
-//
-#include <NCollection_List.hxx>
-#include <NCollection_DataMap.hxx>
-#include <NCollection_UBTreeFiller.hxx>
-#include <NCollection_IncAllocator.hxx>
-//
-#include <gp_Pnt2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-//
-#include <TColStd_MapIntegerHasher.hxx>
-//
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-//
-#include <TopAbs.hxx>
-//
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Compound.hxx>
 
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-//
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-//
-#include <BRepBndLib.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-//
+
+#include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_ShellSplitter.hxx>
+#include <BOPCol_BoxBndTree.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfOrientedShape.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_BoxBndTree.hxx>
-#include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-//
 #include <BOPTools.hxx>
-#include <BOPTools_CoupleOfShape.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
-//
+#include <BOPTools_CoupleOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <IntTools_Context.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+#include <TColStd_MapIntegerHasher.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+
 //
-#include <BOPAlgo_ShellSplitter.hxx>
-
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 static
   Standard_Boolean IsGrowthShell(const TopoDS_Shape& ,
                                  const BOPCol_IndexedMapOfShape& );

@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_PresentationArea.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_PresentationArea.hxx>
 
 StepVisual_PresentationArea::StepVisual_PresentationArea ()  {}
 

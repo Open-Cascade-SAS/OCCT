@@ -11,18 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_RemoveCurves.ixx>
-#include <Interface_Macros.hxx>
-#include <IGESGeom_TrimmedSurface.hxx>
+
+#include <IFSelect_ContextModif.hxx>
+#include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
-#include <IGESGeom_Boundary.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
+#include <IGESSelect_RemoveCurves.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-
-
 
 IGESSelect_RemoveCurves::IGESSelect_RemoveCurves (const Standard_Boolean UV)
     : IGESSelect_ModelModifier (Standard_True)  ,  theUV (UV)    {  }

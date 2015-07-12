@@ -14,19 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_BoundSortBox2d.ixx>
-#include <Standard_NullValue.hxx>
-#include <Bnd_Array1OfBox.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
-#include <TColStd_Array1OfListOfInteger.hxx>
 
+#include <Bnd_Array1OfBox.hxx>
+#include <Bnd_BoundSortBox2d.hxx>
+#include <Bnd_Box2d.hxx>
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_NullValue.hxx>
+#include <TColStd_Array1OfListOfInteger.hxx>
+#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 //=======================================================================
 //function : Bnd_BoundSortBox2d
 //purpose  : 
 //=======================================================================
-
 Bnd_BoundSortBox2d::Bnd_BoundSortBox2d()
      : discrX(0), discrY(0)
 {}

@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeExtend.ixx>
+
 #include <Message_MsgFile.hxx>
+#include <ShapeExtend.hxx>
 
 //=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
-
 void ShapeExtend::Init()
 {
   static Standard_Boolean init = Standard_False;

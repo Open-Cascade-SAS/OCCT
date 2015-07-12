@@ -11,19 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_MultipleBinder.ixx>
-#include <Transfer_TransferFailure.hxx>
+
+#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <Transfer_MultipleBinder.hxx>
+#include <Transfer_TransferFailure.hxx>
 
 // Resultat Multiple
 // Possibilite de definir un Resultat Multiple : plusieurs objets resultant
 //  d un Transfert, sans pouvoir les distinguer
 //  N.B. : Pour l heure, tous Transients (pourra evoluer)
-
-
-
 Transfer_MultipleBinder::Transfer_MultipleBinder ()      { }
 
 

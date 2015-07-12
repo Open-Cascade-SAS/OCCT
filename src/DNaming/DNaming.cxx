@@ -14,60 +14,68 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming.ixx>
 
+#include <BRep_Tool.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepBuilderAPI_MakeShape.hxx>
+#include <BRepLib_FindSurface.hxx>
+#include <BRepTools.hxx>
 #include <DDF.hxx>
 #include <DDF_Data.hxx>
+#include <DNaming.hxx>
 #include <Draw.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Vec.hxx>
+#include <ModelDefinitions.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataStd_UAttribute.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_LabelList.hxx>
 #include <TDF_LabelMap.hxx>
-#include <TDF_Tool.hxx>
+#include <TDF_Reference.hxx>
 #include <TDF_TagSource.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_NamedShape.hxx>
+#include <TDF_Tool.hxx>
+#include <TFunction_Function.hxx>
 #include <TNaming_Builder.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <BRepTools.hxx>
-#include <TDF_Reference.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Pln.hxx>
-#include <TopoDS_Edge.hxx>
-#include <Geom_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <BRepLib_FindSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <ModelDefinitions.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : DNaming_DFandUS
 //purpose  : 
 //=======================================================================
-
 // Standard_Boolean DNaming_DFandUS(char* a,
 // 				 Handle(TDF_Data)&           ND,
 // 				 Handle(TNaming_UsedShapes)& US) 
@@ -78,12 +86,10 @@
 //   ND->Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
 //   return 1;
 // }
-
 //=======================================================================
 //function : GetShape
 //purpose  : 
 //=======================================================================
-
 void DNaming::GetShape (const Standard_CString      LabelName,
 			const Handle(TDF_Data)&     DF,
 			TopTools_ListOfShape&       L)

@@ -14,32 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDocStd_Application.ixx>
 
-#include <CDF_Session.hxx>
-#include <CDF_DirectoryIterator.hxx>
 #include <CDF_Directory.hxx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_DomainError.hxx>
-#include <Plugin_Failure.hxx>
-#include <TDF_Label.hxx>
+#include <CDF_DirectoryIterator.hxx>
+#include <CDF_Session.hxx>
 #include <CDF_Store.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Plugin_Failure.hxx>
+#include <Resource_Manager.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Label.hxx>
+#include <TDocStd_Application.hxx>
+#include <TDocStd_Document.hxx>
+#include <TDocStd_Owner.hxx>
 #include <TDocStd_PathParser.hxx>
 
-#include <CDM_MessageDriver.hxx>
-
 // TDocStd_Owner attribute have pointer of closed TDocStd_Document
-
-#include <TDocStd_Owner.hxx>
-#include <TDocStd_Document.hxx>
-
 //=======================================================================
 //function : TDocStd_Application
 //purpose  :
 //=======================================================================
-
 TDocStd_Application::TDocStd_Application()
      : myIsDriverLoaded (Standard_True)
 {

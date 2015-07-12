@@ -16,14 +16,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepBasic_RWProductConceptContext.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWProductConceptContext.hxx>
 #include <StepBasic_ApplicationContext.hxx>
+#include <StepBasic_ProductConceptContext.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWProductConceptContext
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWProductConceptContext::RWStepBasic_RWProductConceptContext ()
 {
 }

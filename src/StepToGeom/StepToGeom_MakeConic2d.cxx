@@ -16,13 +16,14 @@
 
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <StepToGeom_MakeConic2d.ixx>
-#include <StepGeom_Conic.hxx>
+#include <Geom2d_Conic.hxx>
 #include <StepGeom_Circle.hxx>
+#include <StepGeom_Conic.hxx>
 #include <StepGeom_Ellipse.hxx>
 #include <StepGeom_Hyperbola.hxx>
 #include <StepGeom_Parabola.hxx>
 #include <StepToGeom_MakeCircle2d.hxx>
+#include <StepToGeom_MakeConic2d.hxx>
 #include <StepToGeom_MakeEllipse2d.hxx>
 #include <StepToGeom_MakeHyperbola2d.hxx>
 #include <StepToGeom_MakeParabola2d.hxx>
@@ -30,7 +31,6 @@
 //=============================================================================
 // Creation d' une Conic de Geom2d a partir d' une Conic de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeConic2d::Convert
     (const Handle(StepGeom_Conic)& SC,
      Handle(Geom2d_Conic)& CC)

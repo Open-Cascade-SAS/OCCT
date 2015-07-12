@@ -14,21 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Sphere.ixx>
+
+#include <BRep_Tool.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-#include <TNaming_Builder.hxx>
+#include <QANewBRepNaming_Sphere.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_TagSource.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Edge.hxx>
-#include <Standard_NullObject.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <BRep_Tool.hxx>
+#include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>

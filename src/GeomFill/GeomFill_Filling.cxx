@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Filling.ixx>
 
+#include <GeomFill_Filling.hxx>
 #include <gp_Pnt.hxx>
+#include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
 //function : GeomFill_Filling
 //purpose  : 
 //=======================================================================
-
 GeomFill_Filling::GeomFill_Filling()
 {
 }

@@ -16,110 +16,102 @@
 
 //  Modified by skv - Tue Mar 15 16:20:43 2005
 // Add methods for supporting history.
-
 //  Modified by skv - Mon Jan 12 11:50:02 2004 OCC4455
 
-#include <BRepOffset_MakeOffset.ixx>
-#include <BRepOffset_Analyse.hxx>
-#include <BRepOffset_DataMapOfShapeOffset.hxx> 
-#include <BRepOffset_DataMapOfShapeMapOfShape.hxx>
-#include <BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx>
-#include <BRepOffset_Interval.hxx>
-#include <BRepOffset_ListOfInterval.hxx>
-#include <BRepOffset_Offset.hxx>
-#include <BRepOffset_Tool.hxx>
-#include <BRepOffset_Inter2d.hxx>
-#include <BRepOffset_Inter3d.hxx>
-#include <BRepOffset_MakeLoops.hxx>
-
-
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepCheck_Edge.hxx>
-#include <BRepCheck_Vertex.hxx>
-#include <BRepLib.hxx>
-#include <BRepLib_MakeVertex.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
+#include <BRep_PointRepresentation.hxx>
+#include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
-#include <BRepTools_Quilt.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgo_AsDes.hxx>
+#include <BRepAlgo_Image.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepCheck_Edge.hxx>
+#include <BRepCheck_Vertex.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepGProp.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_FindSurface.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepOffset_Analyse.hxx>
+#include <BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx>
+#include <BRepOffset_DataMapOfShapeMapOfShape.hxx>
+#include <BRepOffset_DataMapOfShapeOffset.hxx>
+#include <BRepOffset_Inter2d.hxx>
+#include <BRepOffset_Inter3d.hxx>
+#include <BRepOffset_Interval.hxx>
+#include <BRepOffset_ListOfInterval.hxx>
+#include <BRepOffset_MakeLoops.hxx>
+#include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffset_Offset.hxx>
+#include <BRepOffset_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_Quilt.hxx>
+#include <BRepTools_Substitution.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <GC_MakeCylindricalSurface.hxx>
+#include <GCE2d_MakeLine.hxx>
+#include <gce_MakeCone.hxx>
+#include <gce_MakeDir.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomFill_Generator.hxx>
+#include <GeomLib.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
-
+#include <GProp_GProps.hxx>
+#include <IntTools_FClass2d.hxx>
+#include <NCollection_List.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeReal.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Precision.hxx>
-
-#include <TopTools_SequenceOfShape.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRepTools.hxx>
-#include <gp_Cone.hxx>
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
-#include <gp_Lin2d.hxx>
-#include <GCE2d_MakeLine.hxx>
-#include <Geom2d_Line.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <Geom_Circle.hxx>
-
-#include <BRep_PointRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <BRepTools_Substitution.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeReal.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <gce_MakeDir.hxx>
-#include <GC_MakeCylindricalSurface.hxx>
-#include <gce_MakeCone.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <GeomLib.hxx>
-#include <GeomFill_Generator.hxx>
-#include <Geom_Plane.hxx>
-#include <IntTools_FClass2d.hxx>
-#include <BRepLib_FindSurface.hxx>
-#include <BRepCheck_Analyzer.hxx>
-#include <NCollection_List.hxx>
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-// POP for NT
 #include <stdio.h>
-
+// POP for NT
 #ifdef DRAW
 
 #include <DBRep.hxx>

@@ -11,12 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_UndefinedEntity.ixx>
-#include <Interface_ParamType.hxx>
-#include <TCollection_AsciiString.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Interface_ParamType.hxx>
+#include <Interface_UndefinedContent.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepData_UndefinedEntity.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepData_UndefinedEntity::StepData_UndefinedEntity ()
       {  thecont = new Interface_UndefinedContent;  thesub = Standard_False;  }

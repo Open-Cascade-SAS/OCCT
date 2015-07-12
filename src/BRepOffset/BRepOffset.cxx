@@ -14,31 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffset.ixx>
 
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <BRepOffset.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax3.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <gp_Ax1.hxx>
-
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
 
 //=======================================================================
 //function : Surface
 //purpose  : 
 //=======================================================================
-
 Handle(Geom_Surface) BRepOffset::Surface(const Handle(Geom_Surface)& Surface,
 					 const Standard_Real Offset,
 					       BRepOffset_Status& Status)

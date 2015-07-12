@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_DirPart.ixx>
+
+#include <IGESData_DirPart.hxx>
+#include <IGESData_IGESType.hxx>
 #include <Standard_PCharacter.hxx>
-
-
 
 IGESData_DirPart::IGESData_DirPart ()  {  }
 

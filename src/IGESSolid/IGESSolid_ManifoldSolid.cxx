@@ -16,8 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ManifoldSolid.ixx>
-
+#include <IGESSolid_ManifoldSolid.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_ManifoldSolid::IGESSolid_ManifoldSolid ()    {  }
 

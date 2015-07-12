@@ -16,12 +16,14 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_Jacobi.ixx>
-
-#include <math_Recipes.hxx>
+#include <math_Jacobi.hxx>
+#include <math_Matrix.hxx>
 #include <math_NotSquare.hxx>
+#include <math_Recipes.hxx>
+#include <StdFail_NotDone.hxx>
 
 math_Jacobi::math_Jacobi(const math_Matrix& A) : AA(1, A.RowNumber(), 
 						      1, A.RowNumber()),

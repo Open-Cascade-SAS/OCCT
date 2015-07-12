@@ -13,43 +13,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_AnglePresentation.ixx>
-#include <gp_Lin.hxx>
-#include <gp_Dir.hxx>
-#include <ElCLib.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Text.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 
-#include <ElCLib.hxx>
-
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
+#include <Aspect_AspectMarker.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
-#include <Aspect_AspectMarker.hxx>
-#include <Quantity_Color.hxx>
 #include <DsgPrs.hxx>
-#include <Precision.hxx>
-
+#include <DsgPrs_AnglePresentation.hxx>
+#include <ElCLib.hxx>
+#include <GC_MakeCircle.hxx>
+#include <gce_MakePln.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <GC_MakeCircle.hxx>
-#include <gce_MakePln.hxx>
-
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
+#include <Quantity_Color.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <UnitsAPI.hxx>
 
 #include <stdio.h>
-
 //------------------------------------------------------------------------------------------------------------------
 // Returns 1 if C is above of CMin; 0 if C is bitween CMin and CMax; -1 if C is Below CMax   
 //-----------------------------------------------------------------------------------------------------------------

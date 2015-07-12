@@ -13,19 +13,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinDrivers.ixx>
+
+#include <BinDrivers.hxx>
+#include <BinDrivers_DocumentRetrievalDriver.hxx>
+#include <BinDrivers_DocumentStorageDriver.hxx>
 #include <BinLDrivers.hxx>
-#include <BinMDF.hxx>
 #include <BinMDataStd.hxx>
 #include <BinMDataXtd.hxx>
-#include <BinMNaming.hxx>
+#include <BinMDF.hxx>
+#include <BinMDF_ADriverTable.hxx>
 #include <BinMDocStd.hxx>
 #include <BinMFunction.hxx>
+#include <BinMNaming.hxx>
 #include <BinMPrsStd.hxx>
-#include <Standard_Failure.hxx>
-#include <BinDrivers_DocumentStorageDriver.hxx>
-#include <BinDrivers_DocumentRetrievalDriver.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <Plugin_Macro.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static Standard_GUID BinStorageDriver  ("03a56835-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID BinRetrievalDriver("03a56836-8269-11d5-aab2-0050044b1af1");

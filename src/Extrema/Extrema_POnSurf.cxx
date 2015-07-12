@@ -12,4 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_POnSurf.ixx>
+
+#include <Extrema_POnSurf.hxx>
+#include <gp_Pnt.hxx>

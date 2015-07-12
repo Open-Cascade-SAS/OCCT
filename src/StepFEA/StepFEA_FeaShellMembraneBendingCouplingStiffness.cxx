@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaShellMembraneBendingCouplingStiffness.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FeaShellMembraneBendingCouplingStiffness.hxx>
+#include <StepFEA_SymmetricTensor42d.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaShellMembraneBendingCouplingStiffness
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaShellMembraneBendingCouplingStiffness::StepFEA_FeaShellMembraneBendingCouplingStiffness ()
 {
 }

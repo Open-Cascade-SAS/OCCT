@@ -13,25 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools.ixx>
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <BRep_Tool.hxx>
-#include <IntTools_Root.hxx>
-#include <IntTools_Array1OfRoots.hxx>
-#include <IntTools_Root.hxx>
 
-#include <gce_MakeCirc.hxx>
-#include <gp_Circ.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <IntTools_CArray1OfReal.hxx>
-#include <TColStd_ListOfReal.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <BRepGProp.hxx>
 #include <gce_ErrorType.hxx>
+#include <gce_MakeCirc.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <GProp_GProps.hxx>
+#include <IntTools.hxx>
+#include <IntTools_Array1OfRoots.hxx>
+#include <IntTools_CArray1OfReal.hxx>
+#include <IntTools_Root.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <TColStd_ListOfReal.hxx>
+#include <TopoDS_Edge.hxx>
 
 #include <algorithm>
-
 //=======================================================================
 //function : IntTools::GetRadius
 //purpose  : 

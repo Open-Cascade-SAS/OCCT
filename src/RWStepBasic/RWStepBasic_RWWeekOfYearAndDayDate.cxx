@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWWeekOfYearAndDayDate.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepBasic_RWWeekOfYearAndDayDate.hxx>
+#include <StepBasic_WeekOfYearAndDayDate.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWWeekOfYearAndDayDate::RWStepBasic_RWWeekOfYearAndDayDate () {}
 

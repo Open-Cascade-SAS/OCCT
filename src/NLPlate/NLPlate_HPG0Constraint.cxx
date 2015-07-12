@@ -14,7 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <NLPlate_HPG0Constraint.ixx>
+
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <NLPlate_HPG0Constraint.hxx>
+#include <Standard_Type.hxx>
 
 NLPlate_HPG0Constraint::NLPlate_HPG0Constraint(const gp_XY& UV,const gp_XYZ& Value)
 :myXYZTarget(Value)

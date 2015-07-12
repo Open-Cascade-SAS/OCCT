@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_MappedItem.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_RepresentationMap.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepRepr_MappedItem::StepRepr_MappedItem ()  {}
 

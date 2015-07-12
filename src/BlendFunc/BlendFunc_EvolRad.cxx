@@ -14,23 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_EvolRad.ixx>
 
-#include <math_Gauss.hxx>
-#include <math_SVD.hxx>
-#include <gp.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
+#include <BlendFunc_EvolRad.hxx>
+#include <CSLib.hxx>
+#include <CSLib_NormalStatus.hxx>
+#include <ElCLib.hxx>
 #include <GeomFill.hxx>
+#include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Law_Function.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <math_SVD.hxx>
+#include <Precision.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 #include <TColgp_Array2OfVec.hxx>
-#include <CSLib.hxx>
-#include <CSLib_NormalStatus.hxx>
-
-#include <ElCLib.hxx>
-#include <Precision.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
 #define Eps 1.e-15
 

@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_Sphere.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESSolid_Sphere.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_Sphere::IGESSolid_Sphere ()    {  }
 

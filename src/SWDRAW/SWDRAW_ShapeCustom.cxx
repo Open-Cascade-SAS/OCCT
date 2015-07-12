@@ -14,51 +14,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SWDRAW_ShapeCustom.ixx>
 
-#include <Draw.hxx>
+#include <BRep_Tool.hxx>
 #include <DBRep.hxx>
-#include <SWDRAW.hxx>
-#include <TopoDS_Shape.hxx>
+#include <Draw.hxx>
+#include <DrawTrSurf.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <ShapeCustom.hxx>
 #include <ShapeCustom_BSplineRestriction.hxx>
 #include <ShapeCustom_RestrictionParameters.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Edge.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
+#include <ShapeFix.hxx>
+#include <SWDRAW.hxx>
+#include <SWDRAW_ShapeCustom.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfInteger.hxx>
 #include <TopAbs.hxx>
-#include <DrawTrSurf.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
-#include <Geom_SweptSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_SweptSurface.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <ShapeFix.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <TColStd_Array2OfInteger.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 static Standard_Integer ContToInteger( const GeomAbs_Shape Cont)
 {

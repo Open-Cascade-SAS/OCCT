@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_STAT.ixx>
+
+#include <Interface_STAT.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static Interface_STAT statvoid("");
 static Interface_STAT statact ("");

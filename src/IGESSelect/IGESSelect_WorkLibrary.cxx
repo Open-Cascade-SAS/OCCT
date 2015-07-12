@@ -11,39 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
 
-#include <IGESSelect_WorkLibrary.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-
-#include <IGESSolid.hxx>
+#include <IFSelect_ContextWrite.hxx>
+#include <IFSelect_GeneralModifier.hxx>
 #include <IGESAppli.hxx>
-#include <IGESDefs.hxx>
-
-#include <IGESData_IGESWriter.hxx>
-#include <IGESData_IGESModel.hxx>
-#include <IGESData_Protocol.hxx>
+#include <IGESAppli_Protocol.hxx>
 #include <IGESData_FileProtocol.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESDefs.hxx>
 #include <IGESFile_Read.hxx>
 #include <IGESSelect_Dumper.hxx>
-#include <IFSelect_GeneralModifier.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
 #include <IGESSelect_FileModifier.hxx>
-
-#include <Interface_ReportEntity.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_IGESDumper.hxx>
+#include <IGESSelect_WorkLibrary.hxx>
+#include <IGESSolid.hxx>
 #include <IGESSolid_Protocol.hxx>
-#include <IGESAppli_Protocol.hxx>
-
 #include <Interface_Check.hxx>
-
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ReportEntity.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <OSD_OpenFile.hxx>
-#include <errno.h>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfInteger.hxx>
 
+#include <errno.h>
 static int deja = 0;
 static  Handle(IGESData_FileProtocol) IGESProto;
 

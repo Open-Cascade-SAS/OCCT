@@ -14,35 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMAT2d_LinkTopoBilo.ixx>
-#include <TopAbs.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx> 
-#include <TopTools_SequenceOfShape.hxx>
-#include <Standard_Type.hxx>
-#include <Geom2d_Geometry.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_CartesianPoint.hxx>
-#include <TColGeom2d_SequenceOfCurve.hxx>
-#include <MAT_Graph.hxx>
-#include <MAT_BasicElt.hxx>
-#include <MAT_SequenceOfBasicElt.hxx>
+
+#include <BRepMAT2d_BisectingLocus.hxx>
 #include <BRepMAT2d_DataMapOfShapeSequenceOfBasicElt.hxx>
+#include <BRepMAT2d_Explorer.hxx>
+#include <BRepMAT2d_LinkTopoBilo.hxx>
 #include <BRepTools_WireExplorer.hxx>
+#include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <gp_Pnt2d.hxx>
+#include <MAT_BasicElt.hxx>
+#include <MAT_Graph.hxx>
+#include <MAT_SequenceOfBasicElt.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom2d_SequenceOfCurve.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <Precision.hxx>
-#include <gp_Pnt2d.hxx>
-
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 //=======================================================================
 //function : BRepMAT2d_LinkTopoBilo
 //purpose  : 
 //=======================================================================
-
 BRepMAT2d_LinkTopoBilo::BRepMAT2d_LinkTopoBilo()
 {
 }

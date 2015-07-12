@@ -15,15 +15,17 @@
 
 // modified   13.04.2009 Sergey Zaritchny
 
-#include <BinMDataXtd.ixx>
+#include <BinMDataXtd.hxx>
+#include <BinMDataXtd_AxisDriver.hxx>
 #include <BinMDataXtd_ConstraintDriver.hxx>
 #include <BinMDataXtd_GeometryDriver.hxx>
 #include <BinMDataXtd_PatternStdDriver.hxx>
-#include <BinMDataXtd_ShapeDriver.hxx>
-#include <BinMDataXtd_PointDriver.hxx>
-#include <BinMDataXtd_AxisDriver.hxx>
-#include <BinMDataXtd_PlaneDriver.hxx>
 #include <BinMDataXtd_PlacementDriver.hxx>
+#include <BinMDataXtd_PlaneDriver.hxx>
+#include <BinMDataXtd_PointDriver.hxx>
+#include <BinMDataXtd_ShapeDriver.hxx>
+#include <BinMDF_ADriverTable.hxx>
+#include <CDM_MessageDriver.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================

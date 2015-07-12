@@ -13,26 +13,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_WireSplitter.ixx>
 
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
+#include <BOPAlgo_WireEdgeSet.hxx>
+#include <BOPAlgo_WireSplitter.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_Parallel.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_NCVector.hxx>
-
+#include <BOPCol_Parallel.hxx>
 #include <BOPTools.hxx>
-
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : 

@@ -16,10 +16,13 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_GeneralSymbol.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_GeneralSymbol.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfRange.hxx>
-
+#include <Standard_Type.hxx>
 
 IGESDimen_GeneralSymbol::IGESDimen_GeneralSymbol ()    {  }
 

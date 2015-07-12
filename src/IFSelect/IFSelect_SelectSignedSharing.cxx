@@ -11,8 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectSignedSharing.ixx>
 
+#include <IFSelect_SelectSignedSharing.hxx>
+#include <IFSelect_Signature.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectSignedSharing::IFSelect_SelectSignedSharing
   (const Handle(IFSelect_Signature)& matcher,

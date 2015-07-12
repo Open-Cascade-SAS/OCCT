@@ -19,9 +19,8 @@
 // Purpose  : Magic Constructor.
 //=======================================================================
 
-#include <Geom2dHatch_Element.ixx>
-
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Element.hxx>
 
 Geom2dHatch_Element::Geom2dHatch_Element (const Geom2dHatch_Element& Other) 
 : myCurve(Other.myCurve), myOrientation(Other.myOrientation) { 

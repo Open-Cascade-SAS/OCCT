@@ -12,12 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_Set.ixx>
-#include <TopoDS_Shape.hxx>
+
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPTools_Set.hxx>
+#include <BRep_Tool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
-#include <BRep_Tool.hxx>
-#include <BOPCol_MapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 static 
   Standard_Integer NormalizedIds(const Standard_Integer aId,

@@ -1,0 +1,85 @@
+// Created on: 2001-09-11
+// Created by: Julia DOROVSKIKH
+// Copyright (c) 2001-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _XmlMXCAFDoc_LocationDriver_HeaderFile
+#define _XmlMXCAFDoc_LocationDriver_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <TopTools_LocationSetPtr.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <Standard_Boolean.hxx>
+#include <XmlObjMgt_RRelocationTable.hxx>
+#include <XmlObjMgt_SRelocationTable.hxx>
+#include <XmlObjMgt_Element.hxx>
+class CDM_MessageDriver;
+class TDF_Attribute;
+class XmlObjMgt_Persistent;
+class TopLoc_Location;
+
+
+class XmlMXCAFDoc_LocationDriver;
+DEFINE_STANDARD_HANDLE(XmlMXCAFDoc_LocationDriver, XmlMDF_ADriver)
+
+//! Attribute Driver.
+class XmlMXCAFDoc_LocationDriver : public XmlMDF_ADriver
+{
+
+public:
+
+  
+  Standard_EXPORT XmlMXCAFDoc_LocationDriver(const Handle(CDM_MessageDriver)& theMessageDriver);
+  
+  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const;
+  
+  Standard_EXPORT Standard_Boolean Paste (const XmlObjMgt_Persistent& Source, const Handle(TDF_Attribute)& Target, XmlObjMgt_RRelocationTable& RelocTable) const;
+  
+  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Source, XmlObjMgt_Persistent& Target, XmlObjMgt_SRelocationTable& RelocTable) const;
+  
+  //! Translate a non storable Location to a storable Location.
+  Standard_EXPORT void Translate (const TopLoc_Location& theLoc, XmlObjMgt_Element& theParent, XmlObjMgt_SRelocationTable& theMap) const;
+  
+  //! Translate a storable Location to a non storable Location.
+  Standard_EXPORT Standard_Boolean Translate (const XmlObjMgt_Element& theParent, TopLoc_Location& theLoc, XmlObjMgt_RRelocationTable& theMap) const;
+  
+    void SetSharedLocations (const TopTools_LocationSetPtr& theLocations);
+
+
+
+
+  DEFINE_STANDARD_RTTI(XmlMXCAFDoc_LocationDriver,XmlMDF_ADriver)
+
+protected:
+
+
+
+
+private:
+
+
+  TopTools_LocationSetPtr myLocations;
+
+
+};
+
+
+#include <XmlMXCAFDoc_LocationDriver.lxx>
+
+
+
+
+
+#endif // _XmlMXCAFDoc_LocationDriver_HeaderFile

@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignOrganizationItem.ixx>
+
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <StepAP214_AutoDesignOrganizationItem.hxx>
 #include <StepBasic_Document.hxx>
 #include <StepBasic_PhysicallyModeledProductDefinition.hxx>
 

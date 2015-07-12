@@ -15,19 +15,18 @@
 // commercial license or contractual agreement.
 
 // **************************************************************
-
-
 // Modif : DFO 05/11/96
-#include <Draw.ixx>
-#include <Draw_Appli.hxx>
 
+#include <Draw.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Display.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Grid.hxx>
-#include <Draw_Display.hxx>
-#include <Draw_Text3D.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Draw_Text2D.hxx>
-
+#include <Draw_Text3D.hxx>
 #include <Standard_Stream.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
 #ifdef _WIN32

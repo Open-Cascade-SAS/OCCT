@@ -11,12 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_FacetedBrepAndBrepWithVoids.ixx>
 
-#include <StepShape_FacetedBrep.hxx>
-
+#include <Standard_Type.hxx>
 #include <StepShape_BrepWithVoids.hxx>
-
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_FacetedBrep.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_FacetedBrepAndBrepWithVoids::StepShape_FacetedBrepAndBrepWithVoids ()  {}
 

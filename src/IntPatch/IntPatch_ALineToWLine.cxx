@@ -14,30 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_ALineToWLine.ixx>
 
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <IntSurf_Situation.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <Precision.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-
-#include <Adaptor2d_HCurve2d.hxx> 
+#include <Adaptor2d_HCurve2d.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
-#include <gp_Lin2d.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <gp_Cone.hxx>
-
+#include <IntPatch_ALine.hxx>
+#include <IntPatch_ALineToWLine.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_Quadric.hxx>
+#include <IntSurf_Situation.hxx>
+#include <IntSurf_TypeTrans.hxx>
+#include <Precision.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 static 
   gp_Pnt DefineDU(const Handle(IntPatch_ALine)& aline, 

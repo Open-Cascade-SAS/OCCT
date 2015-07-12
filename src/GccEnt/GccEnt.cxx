@@ -17,7 +17,11 @@
 //                                                                        +
 //=========================================================================
 
-#include <GccEnt.ixx>
+#include <GccEnt.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin2d.hxx>
 
 GccEnt_QualifiedLin
   GccEnt::Unqualified(const gp_Lin2d& Line) {

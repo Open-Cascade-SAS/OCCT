@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepVisual_ExternallyDefinedCurveFont.ixx>
+#include <Standard_Type.hxx>
+#include <StepVisual_ExternallyDefinedCurveFont.hxx>
 
 //=======================================================================
 //function : StepVisual_ExternallyDefinedCurveFont
 //purpose  : 
 //=======================================================================
-
 StepVisual_ExternallyDefinedCurveFont::StepVisual_ExternallyDefinedCurveFont ()
 {
 }

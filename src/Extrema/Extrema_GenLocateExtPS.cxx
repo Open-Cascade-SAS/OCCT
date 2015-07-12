@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_GenLocateExtPS.ixx>
+
+#include <Adaptor3d_Surface.hxx>
 #include <Extrema_FuncExtPS.hxx>
-#include <StdFail_NotDone.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <gp.hxx>
+#include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
 #include <math_Vector.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=============================================================================
-
 Extrema_GenLocateExtPS::Extrema_GenLocateExtPS () { myDone = Standard_False; }
 //=============================================================================
 

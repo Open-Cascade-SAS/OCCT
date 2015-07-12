@@ -15,7 +15,8 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_CurveElementPurposeMember.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_CurveElementPurposeMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 static Standard_CString ECEP = "ENUMERATED_CURVE_ELEMENT_PURPOSE";

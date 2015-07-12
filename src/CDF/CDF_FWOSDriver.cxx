@@ -11,16 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_FWOSDriver.ixx>
-#include <TCollection_ExtendedString.hxx>
-#include <OSD_Path.hxx>
+
+#include <CDF_FWOSDriver.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
 #include <OSD_Directory.hxx>
-#include <OSD_Protection.hxx>
-#include <OSD_SingleProtection.hxx>
 #include <OSD_File.hxx>
 #include <OSD_FileNode.hxx>
-#include <UTL.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Protection.hxx>
+#include <OSD_SingleProtection.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <UTL.hxx>
+
 #ifdef WNT
 #include <tchar.h>
 #endif  // WNT

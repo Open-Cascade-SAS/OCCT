@@ -14,11 +14,11 @@
 
 //JCV 16/10/91
 
-
-#include <Convert_CylinderToBSplineSurface.ixx>
-
+#include <Convert_CylinderToBSplineSurface.hxx>
 #include <gp.hxx>
+#include <gp_Cylinder.hxx>
 #include <gp_Trsf.hxx>
+#include <Standard_DomainError.hxx>
 
 static const Standard_Integer TheUDegree  = 2;
 static const Standard_Integer TheVDegree  = 1;

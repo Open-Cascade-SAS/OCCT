@@ -14,9 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntCurve_PConic.ixx>
 
-
+#include <gp_Ax22d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <IntCurve_PConic.hxx>
 
 IntCurve_PConic::IntCurve_PConic(const IntCurve_PConic& PC) : 
        axe(PC.axe) , prm1(PC.prm1) , 

@@ -12,4 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_SetMapHasher.ixx>
+
+#include <BOPTools_Set.hxx>
+#include <BOPTools_SetMapHasher.hxx>

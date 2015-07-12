@@ -14,34 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Builder.jxx>
 
-#include <TopOpeBRepBuild_GTool.hxx>
-#include <TopOpeBRepTool.hxx>
-#include <TopOpeBRepTool_ShapeExplorer.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS.hxx>
-#include <Precision.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <gp_Pnt.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepClass3d.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
+#include <BRepTools.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRepBuild_Builder.hxx>
+#include <TopOpeBRepBuild_define.hxx>
+#include <TopOpeBRepBuild_EdgeBuilder.hxx>
+#include <TopOpeBRepBuild_FaceBuilder.hxx>
+#include <TopOpeBRepBuild_GTool.hxx>
+#include <TopOpeBRepBuild_GTopo.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepBuild_kpresu.hxx>
+#include <TopOpeBRepBuild_PaveSet.hxx>
+#include <TopOpeBRepBuild_ShapeSet.hxx>
+#include <TopOpeBRepBuild_ShellFaceSet.hxx>
+#include <TopOpeBRepBuild_SolidBuilder.hxx>
+#include <TopOpeBRepBuild_WireEdgeSet.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_connex.hxx>
+#include <TopOpeBRepDS_CurveIterator.hxx>
+#include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_PointIterator.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopOpeBRepDS_SurfaceIterator.hxx>
+#include <TopOpeBRepTool.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
-#include <TopOpeBRepDS_connex.hxx>
-#include <TopOpeBRepBuild_define.hxx>
-#include <TopOpeBRepBuild_kpresu.hxx>
-#include <Standard_ProgramError.hxx>
-#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();

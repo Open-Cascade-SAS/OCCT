@@ -18,24 +18,20 @@
 // Modified: 18/06/1996 by PMN :  NULL reference.
 // Modified: 19/02/1997 by JCT :  EvalPoly2Var added
 
-#include <PLib.ixx>
-#include <NCollection_LocalArray.hxx>
-#include <math_Matrix.hxx> 
-#include <math_Gauss.hxx> 
-#include <Standard_ConstructionError.hxx>
 #include <GeomAbs_Shape.hxx>
-
-#include <math_Gauss.hxx>
 #include <math.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
 
 // To convert points array into Real ..
 // *********************************
-
 //=======================================================================
 //function : SetPoles
 //purpose  : 
 //=======================================================================
-
 void PLib::SetPoles(const TColgp_Array1OfPnt2d& Poles,
 		    TColStd_Array1OfReal& FP)
 {

@@ -12,19 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntSurf.ixx>
 
-#include <Precision.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
+#include <IntSurf.hxx>
 #include <IntSurf_Transition.hxx>
+#include <Precision.hxx>
 
 //--------------------------------------------------------------
 //-- IntSurf::MakeTransition(Vtgint,Vtgrst,Normale,Transline,Transarc);
 //-- 
-
-
 //-- tgFirst   = Tangente Ligne Intersection
 //-- tgSecond  = Tangenet Restriction
 //-- Normale   = Normale a la surface

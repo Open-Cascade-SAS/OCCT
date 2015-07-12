@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_BSplineCurve.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_BSplineCurve.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_BSplineCurve::StepGeom_BSplineCurve ()  {}
 

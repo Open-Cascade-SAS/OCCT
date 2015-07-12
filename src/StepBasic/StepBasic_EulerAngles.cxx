@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepBasic_EulerAngles.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_EulerAngles.hxx>
 
 //=======================================================================
 //function : StepBasic_EulerAngles
 //purpose  : 
 //=======================================================================
-
 StepBasic_EulerAngles::StepBasic_EulerAngles ()
 {
 }

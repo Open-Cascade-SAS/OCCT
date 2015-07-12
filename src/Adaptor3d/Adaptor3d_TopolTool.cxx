@@ -11,14 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-#include <Adaptor3d_TopolTool.ixx>
-#include <Precision.hxx>
-#include <GeomAdaptor_Surface.hxx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_HLine2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HVertex.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 
 #define myInfinite Precision::Infinite()
 

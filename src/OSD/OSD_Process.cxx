@@ -14,9 +14,14 @@
 
 #ifndef WNT
 
-#include <OSD_Process.ixx>
-#include <OSD_WhoAmI.hxx>
+
 #include <OSD_Environment.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Process.hxx>
+#include <OSD_WhoAmI.hxx>
+#include <Quantity_Date.hxx>
+#include <TCollection_AsciiString.hxx>
 
 const OSD_WhoAmI Iam = OSD_WProcess;
 

@@ -12,8 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_Line.ixx>
 
+#include <IntPatch_Line.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IntPatch_Line::IntPatch_Line (const Standard_Boolean Tang,
 			      const IntSurf_TypeTrans Trans1,

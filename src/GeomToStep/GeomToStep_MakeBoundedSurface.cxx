@@ -14,26 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeBoundedSurface.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_BoundedSurface.hxx>
-#include <StepGeom_BSplineSurfaceWithKnots.hxx>
-#include <StepGeom_RectangularTrimmedSurface.hxx>
-#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
-#include <GeomToStep_MakeBoundedSurface.hxx>
+
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_BezierSurface.hxx>
 #include <GeomConvert.hxx>
+#include <GeomToStep_MakeBoundedSurface.hxx>
 #include <GeomToStep_MakeBSplineSurfaceWithKnots.hxx>
 #include <GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
 #include <GeomToStep_MakeRectangularTrimmedSurface.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_BoundedSurface.hxx>
+#include <StepGeom_BSplineSurfaceWithKnots.hxx>
+#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
+#include <StepGeom_RectangularTrimmedSurface.hxx>
 
 //=============================================================================
 // Creation d' une BoundedSurface de prostep a partir d' une BoundedSurface
 // de Geom
 //=============================================================================
-
 GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface
   ( const Handle(Geom_BoundedSurface)& S)
 {

@@ -14,7 +14,14 @@
 
 // JCV 08/01/90 Modifs suite a l'introduction des classes XY et Mat2d dans gp
 
-#include <gp_Dir2d.ixx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
 
 Standard_Real gp_Dir2d::Angle (const gp_Dir2d& Other) const
 {

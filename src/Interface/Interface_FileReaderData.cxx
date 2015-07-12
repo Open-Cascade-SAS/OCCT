@@ -15,17 +15,22 @@
 //#10 smh 22.12.99 Protection (case of unexisting directory entry in file)
 //sln 21.01.2002 OCC133: Exception handling was added in method Interface_FileReaderData::BoundEntity
 //====================================================================
+
+#include <Interface_FileParameter.hxx>
+#include <Interface_FileReaderData.hxx>
+#include <Interface_ParamList.hxx>
+#include <Interface_ParamSet.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Interface_FileReaderData.ixx>
-
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //  Stoque les Donnees issues d un Fichier (Conservees sous forme Litterale)
 //  Chaque norme peut s en servir comme base (listes de parametres litteraux,
 //  entites associees) et y ajoute ses donnees propres.
-
 //  Travaille sous le controle de FileReaderTool
-
 //  Optimisation : Champs pas possibles, car Param est const. Dommage
 //  Donc, on suppose qu on lit un fichier a la fois (hypothese raisonnable)
 //  On note en champ un numero de fichier, par rapport auquel on optimise

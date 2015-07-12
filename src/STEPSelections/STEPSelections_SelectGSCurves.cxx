@@ -14,11 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPSelections_SelectGSCurves.ixx>
-#include <StepGeom_Curve.hxx>
+
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <StepGeom_CompositeCurve.hxx>
-#include <StepShape_GeometricSet.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
+#include <StepGeom_Curve.hxx>
+#include <STEPSelections_SelectGSCurves.hxx>
+#include <StepShape_GeometricSet.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static Standard_Integer flag;
 

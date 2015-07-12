@@ -14,21 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeTools_Mesure.ixx>
-#include <TestTopOpeTools_Mesure.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TestTopOpeTools_Mesure.hxx>
 
 //=======================================================================
 //function : TestTopOpeTools_Mesure
 //purpose  : 
 //=======================================================================
-
 TestTopOpeTools_Mesure::TestTopOpeTools_Mesure()
 :myPnts(new TColgp_HArray1OfPnt(1,100)),myNPnts(0){}
 

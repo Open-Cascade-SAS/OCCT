@@ -20,25 +20,22 @@
 //              Value (Appel a des distances remplace par le calcul
 //              de la distance au carre)
 
-
-#include <GeomPlate_PlateG0Criterion.ixx>
+#include <AdvApp2Var_Context.hxx>
 #include <AdvApp2Var_Criterion.hxx>
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <AdvApp2Var_Patch.hxx>
+#include <GeomPlate_PlateG0Criterion.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XY.hxx>
-#include <gp_Pnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <PLib.hxx>
-
-
+#include <TColgp_SequenceOfXY.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //============================================================================
 //function : GeomPlate_PlateG0Criterion 
 //purpose  :
 //============================================================================
-
-
 GeomPlate_PlateG0Criterion::
 GeomPlate_PlateG0Criterion(const TColgp_SequenceOfXY& Data,
 			   const TColgp_SequenceOfXYZ& G0Data,

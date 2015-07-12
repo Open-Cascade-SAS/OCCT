@@ -13,9 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_CommonPrt.ixx>
+
+#include <gp_Pnt.hxx>
+#include <IntTools_CommonPrt.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_SequenceOfRanges.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : IntTools_CommonPrt::IntTools_CommonPr

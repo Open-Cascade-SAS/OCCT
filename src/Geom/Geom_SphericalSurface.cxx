@@ -14,15 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_SphericalSurface.ixx>
 
-#include <gp_Circ.hxx>
-#include <gp_XYZ.hxx>
 #include <ElSLib.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_SphericalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_Circle                   Circle;
 typedef Geom_SphericalSurface         SphericalSurface;

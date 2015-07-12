@@ -16,17 +16,15 @@
 
 // Modifed:     Portage NT 7-5-97 DPF (strcasecmp)
 
-#include <TopOpeBRep.ixx>
+#include <TopOpeBRep.hxx>
 
 //#ifdef WNT
 //#define strcasecmp strcmp Already defined
 //#endif
-
 //=======================================================================
 //function : Print
 //purpose  : 
 //=======================================================================
-
 Standard_OStream& TopOpeBRep::Print
   (const TopOpeBRep_TypeLineCurve t, Standard_OStream& OS)
 {

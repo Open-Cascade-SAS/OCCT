@@ -12,7 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_ArrayOfPolylines.ixx>
+
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Standard_Type.hxx>
 
 Graphic3d_ArrayOfPolylines::Graphic3d_ArrayOfPolylines (const Standard_Integer theMaxVertexs,
                                                         const Standard_Integer theMaxBounds,

@@ -17,12 +17,16 @@
 #ifndef No_Exception
 //#define No_Exception
 #endif
-#include <HLRAlgo_PolyAlgo.ixx>
-#include <HLRAlgo_PolyShellData.hxx>
-#include <HLRAlgo_PolyData.hxx>
-#include <HLRAlgo_ListOfBPoint.hxx>
+
+
 #include <HLRAlgo_BiPoint.hxx>
+#include <HLRAlgo_EdgeStatus.hxx>
+#include <HLRAlgo_ListOfBPoint.hxx>
+#include <HLRAlgo_PolyAlgo.hxx>
+#include <HLRAlgo_PolyData.hxx>
+#include <HLRAlgo_PolyShellData.hxx>
 #include <Precision.hxx>
+#include <Standard_Type.hxx>
 
 #define EMskGrALin1  ((Standard_Boolean)   8)
 #define EMskGrALin2  ((Standard_Boolean)  16)

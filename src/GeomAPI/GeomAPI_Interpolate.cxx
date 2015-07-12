@@ -16,22 +16,23 @@
 
 // 08-Aug-95 : xab : interpolation uses BSplCLib::Interpolate
 
-#include <GeomAPI_Interpolate.ixx>
-#include <Standard_ConstructionError.hxx>
-#include <PLib.hxx>
 #include <BSplCLib.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAPI_Interpolate.hxx>
 #include <gp_Vec.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
 
 //=======================================================================
 //function : CheckPoints
 //purpose  : 
 //=======================================================================
-
 static Standard_Boolean CheckPoints(const TColgp_Array1OfPnt& PointArray,
 				    const Standard_Real    Tolerance) 
 {

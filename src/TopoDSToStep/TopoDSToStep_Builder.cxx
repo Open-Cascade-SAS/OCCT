@@ -14,36 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_Builder.ixx>
-
-#include <TopoDSToStep_Tool.hxx>
-
-#include <TopoDSToStep_MakeStepFace.hxx>
-
-#include <StepShape_ConnectedFaceSet.hxx>
-#include <StepShape_HArray1OfFace.hxx>
-#include <StepShape_ClosedShell.hxx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_FaceSurface.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-
-#include <TopExp_Explorer.hxx>
-
-#include <TColStd_SequenceOfTransient.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 #include <Message_ProgressIndicator.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_Face.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeStepFace.hxx>
+#include <TopoDSToStep_Tool.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 
 // ============================================================================
 // Method  : TopoDSToStep_Builder::TopoDSToStep_Builder
 // Purpose :
 // ============================================================================
-
 TopoDSToStep_Builder::TopoDSToStep_Builder()
 {
   done = Standard_False;

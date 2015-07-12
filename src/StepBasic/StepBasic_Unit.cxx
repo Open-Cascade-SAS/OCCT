@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_Unit.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepBasic_NamedUnit.hxx>
+#include <Standard_Transient.hxx>
 #include <StepBasic_DerivedUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <StepBasic_Unit.hxx>
 
 //=======================================================================
 //function : StepBasic_Unit
 //purpose  : 
 //=======================================================================
-
 StepBasic_Unit::StepBasic_Unit () {  }
 
 //=======================================================================

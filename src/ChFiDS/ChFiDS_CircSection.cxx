@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_CircSection.ixx>
+
+#include <ChFiDS_CircSection.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Lin.hxx>
 
 //=======================================================================
 //function : ChFiDS_CircSection
 //purpose  : 
 //=======================================================================
-
 ChFiDS_CircSection::ChFiDS_CircSection(){}
 
 

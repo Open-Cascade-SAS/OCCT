@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepElement_SurfaceElementProperty.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_SurfaceElementProperty.hxx>
+#include <StepElement_SurfaceSectionField.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepElement_SurfaceElementProperty
 //purpose  : 
 //=======================================================================
-
 StepElement_SurfaceElementProperty::StepElement_SurfaceElementProperty ()
 {
 }

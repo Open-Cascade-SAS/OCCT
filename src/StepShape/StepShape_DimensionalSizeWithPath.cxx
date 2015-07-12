@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepShape_DimensionalSizeWithPath.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepShape_DimensionalSizeWithPath.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_DimensionalSizeWithPath
 //purpose  : 
 //=======================================================================
-
 StepShape_DimensionalSizeWithPath::StepShape_DimensionalSizeWithPath ()
 {
 }

@@ -11,11 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_Cumulate.ixx>
+
 #include <IFGraph_AllShared.hxx>
+#include <IFGraph_Cumulate.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
-
-
+#include <Standard_Transient.hxx>
 
 // Calcul de cumul
 // Tres simple, on note les entites demandees, et a la fin
@@ -24,7 +26,6 @@
 // Les status demarrent a 2, ainsi a l ajout d une entite, on distingue bien
 // entre les entites nouvelles, liees a cet appel (statut temporaire 1) et les
 // autres (statut superieur ou egal a 2)
-
 IFGraph_Cumulate::IFGraph_Cumulate (const Interface_Graph& agraph)
       : thegraph (agraph)    {  }
 

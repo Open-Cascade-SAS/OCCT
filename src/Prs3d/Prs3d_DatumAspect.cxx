@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_DatumAspect.ixx>
+
+#include <Prs3d_DatumAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Standard_Type.hxx>
 
 Prs3d_DatumAspect::Prs3d_DatumAspect () {
 

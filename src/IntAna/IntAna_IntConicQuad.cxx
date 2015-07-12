@@ -23,24 +23,29 @@
 #define PERFORM void IntAna_IntConicQuad::Perform
 
 
-
-#include <IntAna_IntConicQuad.ixx>
-
-#include <IntAna_QuadQuadGeo.hxx>
-
+#include <ElCLib.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <IntAna_IntConicQuad.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
+#include <IntAna_Quadric.hxx>
 #include <IntAna_ResultType.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Ax3.hxx>
-
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
-#include <ElCLib.hxx>
-
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 static Standard_Real PIpPI = M_PI + M_PI;
 //=============================================================================

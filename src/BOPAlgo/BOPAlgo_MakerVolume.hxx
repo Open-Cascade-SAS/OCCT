@@ -1,0 +1,214 @@
+// Created by: Eugeny MALTCHIKOV
+// Copyright (c) 2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BOPAlgo_MakerVolume_HeaderFile
+#define _BOPAlgo_MakerVolume_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <Standard_Boolean.hxx>
+#include <Bnd_Box.hxx>
+#include <TopoDS_Solid.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPAlgo_Builder.hxx>
+#include <BOPCol_BaseAllocator.hxx>
+#include <BOPCol_MapOfShape.hxx>
+class TopoDS_Solid;
+class BOPAlgo_PaveFiller;
+
+
+
+//! The algorithm is to build solids from set of shapes.
+//! It uses the BOPAlgo_Builder algorithm to intersect the given shapes
+//! and build the images of faces (if needed) and BOPAlgo_BuilderSolid
+//! algorithm to build the solids.
+//!
+//! Steps of the algorithm:
+//! 1. Collect all faces: intersect the shapes if necessary and collect
+//! the images of faces, otherwise just collect the faces to the
+//! <myFaces> list;
+//! All faces on this step added twice, with orientation FORWARD
+//! and REVERSED;
+//!
+//! 2. Create bounding box covering all the faces from <myFaces> and
+//! create solid box from corner points of that bounding box
+//! (myBBox, mySBox). Add faces from that box to <myFaces>;
+//!
+//! 3. Build solids from <myFaces> using BOPAlgo_BuilderSolid algorithm;
+//!
+//! 4. Treat the result: Eliminate solid containig faces from <mySBox>;
+//!
+//! 5. Fill internal shapes: add internal vertices and edges into
+//! created solids;
+//!
+//! 6. Prepare the history.
+//!
+//! Fields:
+//! <myIntersect> - boolean flag. It defines whether intersect shapes
+//! from <myArguments> (if set to TRUE) or not (FALSE).
+//! The default value is TRUE. By setting it to FALSE
+//! the user should guarantee that shapes in <myArguments>
+//! do not interfere with each other, otherwise the result
+//! is unpredictable.
+//!
+//! <myBBox>      - bounding box, covering all faces from <myFaces>.
+//!
+//! <mySBox>      - Solid box created from the corner points of <myBBox>.
+//!
+//! <myFaces>     - the list is to keep the "final" faces, that will be
+//! given to the BOPAlgo_BuilderSolid algorithm.
+//! If the shapes have been interfered it should contain
+//! the images of the source shapes, otherwise its just
+//! the original faces.
+//! It also contains the faces from <mySBox>.
+//!
+//! Fields inherited from BOPAlgo_Builder:
+//!
+//! <myArguments> - list of the source shapes. The source shapes can have
+//! any type, but each shape must not be self-interfered.
+//!
+//! <myShape>     - Result shape:
+//! - empty compound - if no solids were created;
+//! - solid - if created only one solid;
+//! - compound of solids - if created more than one solid.
+//!
+//! Fields inherited from BOPAlgo_Algo:
+//!
+//! <myRunParallel> - Defines whether the parallel processing is
+//! switched on or not.
+//! <myErrorStatus> - Error status of the operation:
+//! 0   - operation successful;
+//! 100 - no shapes to process;
+//! 102 - BOPAlgo_PaveFiller algorithm has failed;
+//! 103 - BOPAlgo_BuilderSolid algorithm has failed.
+//!
+//! Example:
+//!
+//! BOPAlgo_MakerVolume aMV;
+//! //
+//! aMV.SetArguments(aLS); //source shapes
+//! aMV.SetRunParallel(bRunParallel); //parallel or single mode
+//! aMV.SetIntersect(bIntersect); //intersect or not the shapes from <aLS>
+//! //
+//! aMV.Perform(); //perform the operation
+//! if (aMV.ErrorStatus()) { //check error status
+//! return;
+//! }
+//! //
+//! const TopoDS_Shape& aResult = aMV.Shape();  //result of the operation
+class BOPAlgo_MakerVolume  : public BOPAlgo_Builder
+{
+public:
+
+  DEFINE_STANDARD_ALLOC
+
+  
+
+  //! Empty contructor.
+    BOPAlgo_MakerVolume();
+virtual ~BOPAlgo_MakerVolume();
+  
+
+  //! Empty contructor.
+    BOPAlgo_MakerVolume(const BOPCol_BaseAllocator& theAllocator);
+  
+
+  //! Clears the data.
+    virtual void Clear() Standard_OVERRIDE;
+  
+
+  //! Sets the flag myIntersect:
+  //! if <bIntersect> is TRUE the shapes from <myArguments> will be intersected.
+  //! if <bIntersect> is FALSE no intersection will be done.
+    void SetIntersect (const Standard_Boolean bIntersect);
+  
+
+  //! Returns the flag <myIntersect>.
+    Standard_Boolean IsIntersect() const;
+  
+
+  //! Returns the solid box <mySBox>.
+    const TopoDS_Solid& Box() const;
+  
+
+  //! Returns the processed faces <myFaces>.
+    const BOPCol_ListOfShape& Faces() const;
+  
+
+  //! Performs the operation.
+  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+
+
+
+
+protected:
+
+  
+
+  //! Checks the data.
+  Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
+  
+
+  //! Performs the operation.
+  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
+  
+
+  //! Collects all faces.
+  Standard_EXPORT void CollectFaces();
+  
+
+  //! Makes solid box.
+  Standard_EXPORT void MakeBox (BOPCol_MapOfShape& theBoxFaces);
+  
+
+  //! Builds solids.
+  Standard_EXPORT void BuildSolids (BOPCol_ListOfShape& theLSR);
+  
+
+  //! Removes the covering box.
+  Standard_EXPORT void RemoveBox (BOPCol_ListOfShape& theLSR, const BOPCol_MapOfShape& theBoxFaces);
+  
+
+  //! Fills the solids with internal shapes.
+  Standard_EXPORT void FillInternalShapes (const BOPCol_ListOfShape& theLSR);
+  
+
+  //! Builds the result.
+  Standard_EXPORT void BuildShape (const BOPCol_ListOfShape& theLSR);
+
+
+  Standard_Boolean myIntersect;
+  Bnd_Box myBBox;
+  TopoDS_Solid mySBox;
+  BOPCol_ListOfShape myFaces;
+
+
+private:
+
+
+
+
+
+};
+
+
+#include <BOPAlgo_MakerVolume.lxx>
+
+
+
+
+
+#endif // _BOPAlgo_MakerVolume_HeaderFile

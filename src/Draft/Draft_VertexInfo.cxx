@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draft_VertexInfo.ixx>
 
+#include <Draft_VertexInfo.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoMoreObject.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : Draft_VertexInfo
 //purpose  : 
 //=======================================================================
-
 Draft_VertexInfo::Draft_VertexInfo () {}
 
 

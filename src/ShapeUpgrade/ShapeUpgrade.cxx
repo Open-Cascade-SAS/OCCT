@@ -16,33 +16,30 @@
 
 //    abv 24.05.99 S4174: methods Debug() commented
 
-#include <ShapeUpgrade.ixx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <BSplCLib.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <ShapeUpgrade.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 /*
 // Debug state= True / False.
 static Standard_Boolean Dbg=Standard_False;
-
 void ShapeUpgrade::SetDebug(const Standard_Boolean State) 
 {
   Dbg=State;
 }
-
 Standard_Boolean ShapeUpgrade::Debug() 
 {
   return Dbg;
 }
 */
-
 //=======================================================================
 //function : C0BSplineToSequenceOfC1BSplineCurve
 //purpose  : 
 //=======================================================================
-
  Standard_Boolean ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(const Handle(Geom_BSplineCurve)& BS,
 	 							    Handle(TColGeom_HSequenceOfBoundedCurve)& seqBS) 
 {

@@ -16,8 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_TextFontDef.ixx>
-
+#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+#include <IGESGraph_TextFontDef.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESGraph_TextFontDef::IGESGraph_TextFontDef ()    {  }
 

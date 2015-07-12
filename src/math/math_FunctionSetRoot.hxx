@@ -1,0 +1,192 @@
+// Created on: 1991-05-14
+// Created by: Laurent PAINNOT
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _math_FunctionSetRoot_HeaderFile
+#define _math_FunctionSetRoot_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <Standard_Boolean.hxx>
+#include <math_Vector.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_Integer.hxx>
+#include <math_IntegerVector.hxx>
+#include <Standard_OStream.hxx>
+class StdFail_NotDone;
+class Standard_DimensionError;
+class math_FunctionSetWithDerivatives;
+class math_Matrix;
+
+
+//! The math_FunctionSetRoot class calculates the root
+//! of a set of N functions of M variables (N<M, N=M or N>M). Knowing
+//! an initial guess of the solution and using a minimization algorithm, a search
+//! is made in the Newton direction and then in the Gradient direction if there
+//! is no success in the Newton direction. This algorithm can also be
+//! used for functions minimization. Knowledge of all the partial
+//! derivatives (the Jacobian) is required.
+class math_FunctionSetRoot 
+{
+public:
+
+  DEFINE_STANDARD_ALLOC
+
+  
+  //! is used in a sub-class to initialize correctly all the fields
+  //! of this class.
+  //! The range (1, F.NbVariables()) must be especially
+  //! respected for all vectors and matrix declarations.
+  Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F, const math_Vector& Tolerance, const Standard_Integer NbIterations = 100);
+  
+  //! is used in a sub-class to initialize correctly all the fields
+  //! of this class.
+  //! The range (1, F.NbVariables()) must be especially
+  //! respected for all vectors and matrix declarations.
+  //! The method SetTolerance must be called after this
+  //! constructor.
+  Standard_EXPORT math_FunctionSetRoot(math_FunctionSetWithDerivatives& F, const Standard_Integer NbIterations = 100);
+  
+  //! Destructor alias.
+  Standard_EXPORT void Delete() const;
+  Standard_EXPORT virtual ~math_FunctionSetRoot();
+  
+  //! Initializes the tolerance values.
+  Standard_EXPORT void SetTolerance (const math_Vector& Tolerance);
+  
+  //! This routine is called at the end of each iteration
+  //! to check if the solution was found. It can be redefined
+  //! in a sub-class to implement a specific test to stop the iterations.
+  //! In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
+  //! for all unknowns.
+    virtual Standard_Boolean IsSolutionReached (math_FunctionSetWithDerivatives& F);
+  
+
+  //! Improves the root of function from the initial guess point.
+  //! The infinum and supremum may be given to constrain the solution.
+  //! In this case, the solution is found when: abs(Xi - Xi-1)(j) <= Tolerance(j)
+  //! for all unknowns.
+  Standard_EXPORT void Perform (math_FunctionSetWithDerivatives& theFunction, const math_Vector& theStartingPoint, const Standard_Boolean theStopOnDivergent = Standard_False);
+  
+
+  //! Improves the root of function from the initial guess point.
+  //! The infinum and supremum may be given to constrain the solution.
+  //! In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
+  //! for all unknowns.
+  Standard_EXPORT void Perform (math_FunctionSetWithDerivatives& theFunction, const math_Vector& theStartingPoint, const math_Vector& theInfBound, const math_Vector& theSupBound, const Standard_Boolean theStopOnDivergent = Standard_False);
+  
+
+  //! Returns true if the computations are successful, otherwise returns false.
+    Standard_Boolean IsDone() const;
+  
+  //! Returns the number of iterations really done
+  //! during the computation of the root.
+  //! Exception NotDone is raised if the root was not found.
+    Standard_Integer NbIterations() const;
+  
+  //! returns the stateNumber (as returned by
+  //! F.GetStateNumber()) associated to the root found.
+    Standard_Integer StateNumber() const;
+  
+  //! Returns the value of the root of function F.
+  //! Exception NotDone is raised if the root was not found.
+    const math_Vector& Root() const;
+  
+  //! Outputs the root vector in Root.
+  //! Exception NotDone is raised if the root was not found.
+  //! Exception DimensionError is raised if the range of Root
+  //! is not equal to the range of the StartingPoint.
+  Standard_EXPORT void Root (math_Vector& Root) const;
+  
+  //! Returns the matrix value of the derivative at the root.
+  //! Exception NotDone is raised if the root was not found.
+    const math_Matrix& Derivative() const;
+  
+  //! outputs the matrix value of the derivative
+  //! at the root in Der.
+  //! Exception NotDone is raised if the root was not found.
+  //! Exception DimensionError is raised if the column range
+  //! of <Der> is not equal to the range of the startingPoint.
+    void Derivative (math_Matrix& Der) const;
+  
+  //! returns the vector value of the error done
+  //! on the functions at the root.
+  //! Exception NotDone is raised if the root was not found.
+    const math_Vector& FunctionSetErrors() const;
+  
+  //! outputs the vector value of the error done
+  //! on the functions at the root in Err.
+  //! Exception NotDone is raised if the root was not found.
+  //! Exception DimensionError is raised if the range of Err
+  //! is not equal to the range of the StartingPoint.
+  Standard_EXPORT void FunctionSetErrors (math_Vector& Err) const;
+  
+  //! Prints on the stream o information on the current state
+  //! of the object.
+  //! Is used to redefine the operator <<.
+  Standard_EXPORT void Dump (Standard_OStream& o) const;
+  
+  Standard_EXPORT Standard_Boolean IsDivergent() const;
+
+
+
+
+protected:
+
+
+
+  math_Vector Delta;
+  math_Vector Sol;
+  math_Matrix DF;
+  math_Vector Tol;
+
+
+private:
+
+
+
+  Standard_Boolean Done;
+  Standard_Integer Kount;
+  Standard_Integer State;
+  Standard_Integer Itermax;
+  math_Vector InfBound;
+  math_Vector SupBound;
+  math_Vector SolSave;
+  math_Vector GH;
+  math_Vector DH;
+  math_Vector DHSave;
+  math_Vector FF;
+  math_Vector PreviousSolution;
+  math_Vector Save;
+  math_IntegerVector Constraints;
+  math_Vector Temp1;
+  math_Vector Temp2;
+  math_Vector Temp3;
+  math_Vector Temp4;
+  Standard_Boolean myIsDivergent;
+
+
+};
+
+
+#include <math_FunctionSetRoot.lxx>
+
+
+
+
+
+#endif // _math_FunctionSetRoot_HeaderFile

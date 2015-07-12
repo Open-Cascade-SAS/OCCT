@@ -14,46 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_PlanarAngle.ixx>
-#include <TCollection_AsciiString.hxx>
-#include <DrawDim.hxx>
-#include <Draw.hxx>
-#include <Draw_MarkerShape.hxx>
-#include <gp_Pnt.hxx>
-#include <gp.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <TopExp.hxx>
+
 #include <BRep_Tool.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt2d.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <DBRep_DrawableShape.hxx>
+#include <Draw.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_MarkerShape.hxx>
+#include <DrawDim.hxx>
+#include <DrawDim_PlanarAngle.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAPI.hxx>    
 #include <Geom2dAPI_InterCurveCurve.hxx>
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAPI.hxx>
+#include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TopoDS_Edge.hxx>
-#include <DBRep_DrawableShape.hxx>
+#include <TopExp.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : DrawDim_PlanarAngle
 //purpose  : 
 //=======================================================================
-
 DrawDim_PlanarAngle::DrawDim_PlanarAngle (const TopoDS_Face& face, 
 					  const TopoDS_Shape& line1,
 					  const TopoDS_Shape& line2)

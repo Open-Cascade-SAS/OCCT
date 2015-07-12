@@ -12,4 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_Curve.ixx>
+
+#include <Bnd_Box.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <IntTools_Curve.hxx>

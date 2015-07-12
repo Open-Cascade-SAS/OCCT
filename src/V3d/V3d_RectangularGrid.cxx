@@ -12,42 +12,40 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
- 
      FONCTION :
      ----------
         Classe V3d_CircularGrid :
- 
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
       16-08-98 : CAL ; S3892. Ajout grilles 3d.
       13-10-98 : CAL ; S3892. Ajout de la gestion de la taille des grilles 3d.
       23-10-98 : CAL ; PRO 15885. Patch K4403 et K4404
       03-11-98 : CAL ; PRO 16161. Patch K4418 et K4419
-
 ************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
  */
 
-#include <V3d_RectangularGrid.ixx>
-
-#include <TColStd_Array2OfReal.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-#include <Visual3d_ViewManager.hxx>
-#include <V3d_Viewer.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <V3d_RectangularGrid.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
  * Constant
  */
-
 #define MYMINMAX 25.
 #define MYFACTOR 50.
 

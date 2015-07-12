@@ -11,9 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_ShadingAspect.ixx>
-#include <Vrml_ShapeHints.hxx>
+
+#include <Standard_Type.hxx>
 #include <Vrml_Material.hxx>
+#include <Vrml_ShapeHints.hxx>
+#include <VrmlConverter_ShadingAspect.hxx>
 
 VrmlConverter_ShadingAspect::VrmlConverter_ShadingAspect()
 {

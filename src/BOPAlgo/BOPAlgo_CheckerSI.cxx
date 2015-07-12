@@ -16,33 +16,27 @@
 // commercial license or contractual agreement.
 
 //
-#include <BOPAlgo_CheckerSI.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <BRepBuilderAPI_Copy.hxx>
-#include <TopTools_ListOfShape.hxx>
-
+#include <BOPAlgo_CheckerSI.hxx>
 #include <BOPCol_MapOfShape.hxx>
-
 #include <BOPDS_DS.hxx>
-#include <BOPDS_IteratorSI.hxx>
-#include <BOPDS_PIteratorSI.hxx>
 #include <BOPDS_Interf.hxx>
+#include <BOPDS_IteratorSI.hxx>
 #include <BOPDS_MapOfPassKey.hxx>
 #include <BOPDS_PassKey.hxx>
-#include <BOPDS_VectorOfInterfVV.hxx>
-#include <BOPDS_VectorOfInterfVE.hxx>
-#include <BOPDS_VectorOfInterfVE.hxx>
-#include <BOPDS_VectorOfInterfVF.hxx>
+#include <BOPDS_PIteratorSI.hxx>
 #include <BOPDS_VectorOfInterfEF.hxx>
 #include <BOPDS_VectorOfInterfFF.hxx>
-
-#include <IntTools_Context.hxx>
-
+#include <BOPDS_VectorOfInterfVE.hxx>
+#include <BOPDS_VectorOfInterfVF.hxx>
+#include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+#include <IntTools_Context.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : 

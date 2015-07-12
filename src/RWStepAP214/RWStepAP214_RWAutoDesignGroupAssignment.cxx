@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAutoDesignGroupAssignment.ixx>
-#include <StepAP214_HArray1OfAutoDesignGroupedItem.hxx>
-#include <StepAP214_AutoDesignGroupedItem.hxx>
-#include <StepBasic_Group.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepAP214_RWAutoDesignGroupAssignment.hxx>
 #include <StepAP214_AutoDesignGroupAssignment.hxx>
-
+#include <StepAP214_AutoDesignGroupedItem.hxx>
+#include <StepAP214_HArray1OfAutoDesignGroupedItem.hxx>
+#include <StepBasic_Group.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignGroupAssignment::RWStepAP214_RWAutoDesignGroupAssignment () {}
 

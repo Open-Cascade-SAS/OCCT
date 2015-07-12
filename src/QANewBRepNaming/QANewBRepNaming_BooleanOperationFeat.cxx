@@ -14,43 +14,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_BooleanOperationFeat.ixx>
-#include <Standard_NullObject.hxx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepGProp.hxx>
+#include <Geom_Ellipse.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <GProp_GProps.hxx>
 #include <Precision.hxx>
+#include <QANewBRepNaming_BooleanOperationFeat.hxx>
+#include <QANewBRepNaming_Loader.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColgp_Array1OfDir.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TColgp_Array1OfDir.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepGProp.hxx>
-#include <GProp_GProps.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRep_Tool.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Cone.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <Geom_Ellipse.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_TagSource.hxx>
 #include <TDataStd_Integer.hxx>
-#include <TDataStd_Real.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_TagSource.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <gp.hxx>
-
-#include <QANewBRepNaming_Loader.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>

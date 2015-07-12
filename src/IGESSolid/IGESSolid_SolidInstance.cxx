@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_SolidInstance.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_SolidInstance.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_SolidInstance::IGESSolid_SolidInstance ()    {  }
 

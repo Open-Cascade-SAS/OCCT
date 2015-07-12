@@ -14,18 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Tools2d.ixx>
-#include <TopoDS_Wire.hxx>
+
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopOpeBRepBuild_VertexInfo.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRepBuild_Tools2d.hxx>
+#include <TopOpeBRepBuild_VertexInfo.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <stdio.h>
+#include <TopTools_ListOfShape.hxx>
 
+#include <stdio.h>
 static 
   void BuildPath (const TopoDS_Vertex& myVertex0,
 		  const TopoDS_Edge&   myEdge,

@@ -16,12 +16,13 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_Section.ixx>
+#include <gp_GTrsf.hxx>
+#include <gp_Pnt.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESDimen_Section.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <gp_GTrsf.hxx>
-
+#include <Standard_Type.hxx>
 
 IGESDimen_Section::IGESDimen_Section ()    {  }
 

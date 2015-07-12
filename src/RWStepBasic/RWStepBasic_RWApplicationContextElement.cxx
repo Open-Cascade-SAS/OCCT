@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWApplicationContextElement.ixx>
-#include <StepBasic_ApplicationContext.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWApplicationContextElement.hxx>
+#include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ApplicationContextElement.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWApplicationContextElement::RWStepBasic_RWApplicationContextElement () {}
 

@@ -16,21 +16,32 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_ToolNewGeneralNote.ixx>
-#include <IGESData_ParamCursor.hxx>
 #include <gp_XYZ.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDimen_NewGeneralNote.hxx>
+#include <IGESDimen_ToolNewGeneralNote.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_HArray1OfXYZ.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <IGESData_Dump.hxx>
-#include <Interface_Macros.hxx>
+
 #include <stdio.h>
-
-
 IGESDimen_ToolNewGeneralNote::IGESDimen_ToolNewGeneralNote ()    {  }
 
 

@@ -13,10 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_PrsBuilder.ixx>
 
-#include <Prs3d_Root.hxx>
+#include <MeshVS_DataSource.hxx>
+#include <MeshVS_Drawer.hxx>
 #include <MeshVS_Mesh.hxx>
+#include <MeshVS_PrsBuilder.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <SelectBasics_SensitiveEntity.hxx>
+#include <Standard_Type.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_PrsBuilder

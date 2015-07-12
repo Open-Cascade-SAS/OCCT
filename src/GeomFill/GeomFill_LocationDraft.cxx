@@ -14,29 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_LocationDraft.ixx>
 
-
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Line.hxx>
-
-#include <GeomFill_TrihedronLaw.hxx>
+#include <GeomFill_DraftTrihedron.hxx>
 #include <GeomFill_FunctionDraft.hxx>
+#include <GeomFill_LocationDraft.hxx>
+#include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_Tensor.hxx>
-
-#include <IntCurveSurface_IntersectionPoint.hxx>
-#include <IntCurveSurface_Intersection.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <IntCurveSurface_HInter.hxx>
-
+#include <IntCurveSurface_Intersection.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <math_Vector.hxx>
-#include <math_NewtonFunctionSetRoot.hxx>
-#include <math_Matrix.hxx>
 #include <math_Gauss.hxx>
-
+#include <math_Matrix.hxx>
+#include <math_NewtonFunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 //==================================================================
 //Function: GeomFill_LocationDraft

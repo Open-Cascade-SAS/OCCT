@@ -13,41 +13,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinTools_ShapeSet.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Precision.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <gp_Trsf.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Poly_Polygon2D.hxx>
-#include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_TVertex.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_PointRepresentation.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_CurveOnClosedSurface.hxx>
-#include <BRep_Polygon3D.hxx>
-#include <BRep_PolygonOnTriangulation.hxx>
-#include <BRep_PointOnCurve.hxx>
-#include <BRep_PointOnCurveOnSurface.hxx>
-#include <BRep_PointOnSurface.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_TFace.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
+
 #include <BinTools.hxx>
 #include <BinTools_Curve2dSet.hxx>
 #include <BinTools_CurveSet.hxx>
+#include <BinTools_LocationSet.hxx>
+#include <BinTools_ShapeSet.hxx>
 #include <BinTools_SurfaceSet.hxx>
+#include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_CurveOnSurface.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
+#include <BRep_PointOnCurve.hxx>
+#include <BRep_PointOnCurveOnSurface.hxx>
+#include <BRep_PointOnSurface.hxx>
+#include <BRep_PointRepresentation.hxx>
+#include <BRep_Polygon3D.hxx>
+#include <BRep_PolygonOnTriangulation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepTools.hxx>
+#include <gp_Trsf.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+
 #include <string.h>
 //#define MDTV_DEB 1
 const char* Version_1  = "Open CASCADE Topology V1 (c)";

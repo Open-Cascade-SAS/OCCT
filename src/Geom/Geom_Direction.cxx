@@ -14,9 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_Direction.ixx>
+
+#include <Geom_Direction.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Vector.hxx>
 #include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Trsf.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_Direction         Direction;
 typedef Geom_Vector            Vector;

@@ -13,23 +13,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe_Glue.ixx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <QANewModTopOpe_Tools.hxx>
+
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomProjLib.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#include <QANewModTopOpe_Glue.hxx>
+#include <QANewModTopOpe_Tools.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean isAnalitic(const TopoDS_Shape &theShape)
 {

@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_Polygon3D.ixx>
 
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_Polygon3D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_Polygon3D
 //purpose  : 
 //=======================================================================
-
 BRep_Polygon3D::BRep_Polygon3D(const Handle(Poly_Polygon3D)& P, 
 			       const TopLoc_Location&        L): 
 			       BRep_CurveRepresentation(L),

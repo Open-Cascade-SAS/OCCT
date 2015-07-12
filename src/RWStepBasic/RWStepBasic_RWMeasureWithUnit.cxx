@@ -11,22 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWMeasureWithUnit.ixx>
-#include <StepBasic_NamedUnit.hxx>
-#include <StepBasic_MeasureValueMember.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWMeasureWithUnit.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
-
+#include <StepBasic_NamedUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWMeasureWithUnit
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWMeasureWithUnit::RWStepBasic_RWMeasureWithUnit () {}
 
 //=======================================================================

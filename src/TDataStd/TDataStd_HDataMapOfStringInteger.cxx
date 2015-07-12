@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_HDataMapOfStringInteger.ixx>
+
+#include <Standard_Type.hxx>
+#include <TDataStd_HDataMapOfStringInteger.hxx>
 
 //=======================================================================
 //function : TDataStd_HDataMapOfStringInteger

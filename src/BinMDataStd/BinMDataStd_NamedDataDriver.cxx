@@ -13,26 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_NamedDataDriver.ixx>
-#include <TCollection_ExtendedString.hxx>
+
+#include <BinMDataStd_NamedDataDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
 #include <CDM_MessageDriver.hxx>
-#include <TDataStd_NamedData.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
+#include <TColStd_DataMapOfStringInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_DataMapOfStringInteger.hxx>
-#include <TDataStd_DataMapOfStringReal.hxx>
-#include <TDataStd_DataMapOfStringString.hxx>
-#include <TDataStd_DataMapOfStringByte.hxx>
-#include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
-#include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringString.hxx>
 #include <TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx>
 #include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx>
-
+#include <TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx>
+#include <TDataStd_DataMapIteratorOfDataMapOfStringString.hxx>
+#include <TDataStd_DataMapOfStringByte.hxx>
+#include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
+#include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
+#include <TDataStd_DataMapOfStringReal.hxx>
+#include <TDataStd_DataMapOfStringString.hxx>
+#include <TDataStd_NamedData.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataStd_NamedDataDriver

@@ -14,9 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_CompositeClassifier.ixx>
+
 #include <BRepTools.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_BlockBuilder.hxx>
+#include <TopOpeBRepBuild_CompositeClassifier.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
 
 #define MYBB ((TopOpeBRepBuild_BlockBuilder*)myBlockBuilder)
 

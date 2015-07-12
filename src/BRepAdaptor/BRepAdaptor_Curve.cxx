@@ -14,23 +14,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAdaptor_Curve.ixx>
 
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : BRepAdaptor_Curve
 //purpose  : 
 //=======================================================================
-
 BRepAdaptor_Curve::BRepAdaptor_Curve()
 {}
 

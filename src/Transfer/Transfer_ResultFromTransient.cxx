@@ -11,9 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_ResultFromTransient.ixx>
-#include <TColStd_HArray1OfInteger.hxx>
 
+#include <Interface_Check.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_ResultFromTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 static Handle(Interface_Check) voidcheck = new Interface_Check;
 

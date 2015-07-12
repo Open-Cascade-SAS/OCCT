@@ -17,16 +17,16 @@
 //  Modified by skv - Tue Mar 15 16:20:43 2005
 // Add methods for supporting history.
 
-#include <BRepOffsetAPI_MakeOffsetShape.ixx>
 #include <BRepOffset_MakeOffset.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : BRepOffsetAPI_MakeOffsetShape
 //purpose  : 
 //=======================================================================
-
 BRepOffsetAPI_MakeOffsetShape::BRepOffsetAPI_MakeOffsetShape()
 {
 }

@@ -11,8 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Modifier.ixx>
 
+#include <IFSelect_ContextModif.hxx>
+#include <IFSelect_Modifier.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 IFSelect_Modifier::IFSelect_Modifier (const Standard_Boolean grf)
     : IFSelect_GeneralModifier (grf)    {  }

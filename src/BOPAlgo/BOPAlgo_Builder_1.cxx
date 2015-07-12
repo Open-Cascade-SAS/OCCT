@@ -15,25 +15,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_Builder.ixx>
 
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <BRep_Builder.hxx>
-
-
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-
 #include <BOPDS_DS.hxx>
-#include <BOPDS_VectorOfListOfPaveBlock.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-
+#include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
+#include <IntTools_Context.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : FillImagesVertices

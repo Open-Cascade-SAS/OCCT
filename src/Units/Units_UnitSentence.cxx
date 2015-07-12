@@ -14,24 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_UnitSentence.ixx>
-#include <Units_UnitsDictionary.hxx>
+
+#include <TCollection_AsciiString.hxx>
+#include <Units.hxx>
+#include <Units_Operators.hxx>
+#include <Units_QuantitiesSequence.hxx>
 #include <Units_Quantity.hxx>
-#include <Units.hxx>
-#include <Units.hxx>
 #include <Units_Token.hxx>
 #include <Units_TokensSequence.hxx>
-#include <Units_UnitsSequence.hxx>
 #include <Units_Unit.hxx>
-#include <Units_QuantitiesSequence.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Units_Operators.hxx>
+#include <Units_UnitsDictionary.hxx>
+#include <Units_UnitSentence.hxx>
+#include <Units_UnitsSequence.hxx>
 
 //=======================================================================
 //function : Units_UnitSentence
 //purpose  : 
 //=======================================================================
-
 Units_UnitSentence::Units_UnitSentence (const Standard_CString astring)
  : Units_Sentence(Units::LexiconUnits(), astring)
 { 

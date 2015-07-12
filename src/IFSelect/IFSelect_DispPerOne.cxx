@@ -11,16 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_DispPerOne.ixx>
-#include <IFSelect_Selection.hxx>
-#include <IFGraph_SCRoots.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <Interface_EntityIterator.hxx>
 
+#include <IFGraph_SCRoots.hxx>
+#include <IFGraph_SubPartsIterator.hxx>
+#include <IFSelect_DispPerOne.hxx>
+#include <IFSelect_Selection.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //  Genere un paquet par racine (strong comp.) locale a la liste transmise
-
-
 IFSelect_DispPerOne::IFSelect_DispPerOne ()    {  }
 
     TCollection_AsciiString  IFSelect_DispPerOne::Label () const

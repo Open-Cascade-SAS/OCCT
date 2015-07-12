@@ -11,7 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TPrsStd_Driver.ixx>
+
+#include <AIS_InteractiveObject.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Label.hxx>
+#include <TPrsStd_Driver.hxx>
 
 TPrsStd_Driver::TPrsStd_Driver()
 {}

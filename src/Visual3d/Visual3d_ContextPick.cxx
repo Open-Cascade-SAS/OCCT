@@ -14,43 +14,31 @@
 // commercial license or contractual agreement.
 
 //-Version	
-
 //-Design	Declaration des variables specifiques aux contextes
 //		de reperage.
-
 //-Warning	Un contexte de reperage est defini par :
 //		- l'ouverture de la fenetre
 //		- la profondeur demandee
 //		- l'ordre de parcours des structures
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Visual3d_ContextPick.ixx>
+
+#include <Visual3d_ContextPick.hxx>
+#include <Visual3d_ContextPickDefinitionError.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //	-- ouverture ou taille de la fenetre de reperage
 //	MyAperture	:	Standard_Real;
-
 //	-- profondeur ou nombre de structures a reperer
 //	MyDepth		:	Standard_Integer;
-
 //	-- ordre de parcours des structures reperees
 //	MyOrder		:	TypeOfOrder;
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
 Visual3d_ContextPick::Visual3d_ContextPick ():
 MyAperture (4.0),
 MyDepth (10),

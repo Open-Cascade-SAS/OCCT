@@ -17,34 +17,31 @@
 //:p0 abv 19.02.99: management of 'done' flag improved
 //:p3 abv 23.02.99: bm4_id_punch_d.stp #1313: shift of parameters on ellipse with R1 < R2
 
-#include <StepToGeom_MakeTrimmedCurve2d.ixx>
-#include <gp_Pnt2d.hxx>
-#include <Geom2dConvert.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <gp_Pnt2d.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_Vector.hxx>
 #include <StepGeom_Circle.hxx>
 #include <StepGeom_Ellipse.hxx>
-#include <StepGeom_Parabola.hxx>
-#include <StepGeom_Hyperbola.hxx>
-#include <StepGeom_TrimmingSelect.hxx>
 #include <StepGeom_HArray1OfTrimmingSelect.hxx>
+#include <StepGeom_Hyperbola.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Parabola.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
-#include <StepToGeom_MakeTrimmedCurve2d.hxx>
+#include <StepGeom_TrimmingSelect.hxx>
+#include <StepGeom_Vector.hxx>
 #include <StepToGeom_MakeCartesianPoint2d.hxx>
 #include <StepToGeom_MakeCurve2d.hxx>
-
+#include <StepToGeom_MakeTrimmedCurve2d.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d'une Trimmed Curve de Geom2d a partir d' une Trimmed Curve de Step
 //=============================================================================
 // Shall be completed to treat trimming with points
-
 Standard_Boolean StepToGeom_MakeTrimmedCurve2d::Convert (const Handle(StepGeom_TrimmedCurve)& SC, Handle(Geom2d_BSplineCurve)& CC)
 {
   const Handle(StepGeom_Curve) BasisCurve = SC->BasisCurve();

@@ -14,30 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill.ixx>
-#include <GeomFill_Generator.hxx>
 
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
-
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Vec.hxx>
-
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
+#include <GeomFill.hxx>
+#include <GeomFill_Generator.hxx>
 #include <GeomFill_PolynomialConvertor.hxx>
 #include <GeomFill_QuasiAngularConvertor.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Geom_Curve.hxx>
-
 
 //=======================================================================
 //function : Surface

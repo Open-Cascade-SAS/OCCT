@@ -19,8 +19,13 @@
 #define No_Standard_ConstructionError
 #endif
 
-#include <gp_Mat2d.ixx>
+
+#include <gp_GTrsf2d.hxx>
+#include <gp_Mat2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 
 #define M00 ((Standard_Real*)M)[0]
 #define M01 ((Standard_Real*)M)[1]

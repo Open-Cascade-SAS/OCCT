@@ -16,17 +16,21 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.hxx>
+#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
 #include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
 #include <StepAP203_PersonOrganizationItem.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignPersonAndOrganizationAssignment
 //purpose  : 
 //=======================================================================
-
 RWStepAP203_RWCcDesignPersonAndOrganizationAssignment::RWStepAP203_RWCcDesignPersonAndOrganizationAssignment ()
 {
 }

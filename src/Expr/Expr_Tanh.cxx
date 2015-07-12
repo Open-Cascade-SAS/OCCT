@@ -14,14 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_Tanh.ixx>
-#include <Expr_NumericValue.hxx>
+
+#include <Expr.hxx>
 #include <Expr_ArgTanh.hxx>
 #include <Expr_Cosh.hxx>
-#include <Expr_Square.hxx>
 #include <Expr_Division.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NotEvaluable.hxx>
+#include <Expr_NumericValue.hxx>
 #include <Expr_Operators.hxx>
-#include <Expr.hxx>
+#include <Expr_Square.hxx>
+#include <Expr_Tanh.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_Tanh::Expr_Tanh(const Handle(Expr_GeneralExpression)& exp)
 {

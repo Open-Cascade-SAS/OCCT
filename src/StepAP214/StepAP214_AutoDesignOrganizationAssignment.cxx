@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignOrganizationAssignment.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
+#include <StepAP214_AutoDesignOrganizationAssignment.hxx>
+#include <StepBasic_Organization.hxx>
+#include <StepBasic_OrganizationRole.hxx>
 
 StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment ()  {}
 

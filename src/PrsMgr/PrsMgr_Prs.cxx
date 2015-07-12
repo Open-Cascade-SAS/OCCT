@@ -12,11 +12,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PrsMgr_Prs.ixx>
-#include <PrsMgr_Presentation.hxx>
-#include <Precision.hxx>
-#include <gp_Trsf.hxx>
+
 #include <Geom_Transformation.hxx>
+#include <gp_Trsf.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Precision.hxx>
+#include <PrsMgr_Presentation.hxx>
+#include <PrsMgr_Prs.hxx>
+#include <Standard_Type.hxx>
 
 PrsMgr_Prs::PrsMgr_Prs (const Handle(Graphic3d_StructureManager)& theStructManager,
                         const PrsMgr_PresentationPointer&         thePrs,

@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_GlobalUncertaintyAssignedContext.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepRepr_GlobalUncertaintyAssignedContext::StepRepr_GlobalUncertaintyAssignedContext ()  {}
 

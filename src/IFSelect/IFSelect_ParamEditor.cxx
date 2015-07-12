@@ -11,9 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_ParamEditor.ixx>
-#include <Interface_Static.hxx>
 
+#include <IFSelect_EditForm.hxx>
+#include <IFSelect_ParamEditor.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Static.hxx>
+#include <Interface_TypedValue.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IFSelect_ParamEditor::IFSelect_ParamEditor
   (const Standard_Integer nbmax, const Standard_CString label)

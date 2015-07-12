@@ -16,16 +16,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepAP203_RWChange.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP203_RWChange.hxx>
+#include <StepAP203_Change.hxx>
 #include <StepAP203_HArray1OfWorkItem.hxx>
 #include <StepAP203_WorkItem.hxx>
 #include <StepBasic_Action.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWChange
 //purpose  : 
 //=======================================================================
-
 RWStepAP203_RWChange::RWStepAP203_RWChange ()
 {
 }

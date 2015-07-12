@@ -12,22 +12,23 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
-
 FONCTION :
 --------
 Classe Visual3d_Layer :
-
 HISTORIQUE DES MODIFICATIONS :
 ----------------------------
 Novembre 1998 : CAL : Creation.
 ??-??-?? : ??? ; 
-
 ************************************************************************/
-
 // for the class
-#include <Visual3d_Layer.ixx>
 
+#include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TypeOfPrimitive.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_LayerDefinitionError.hxx>
+#include <Visual3d_LayerItem.hxx>
 #include <Visual3d_ViewManager.hxx>
 
 //-Aliases

@@ -14,14 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeArcOfCircle.ixx>
+
+#include <ElCLib.hxx>
+#include <Extrema_ExtElC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <GC_MakeArcOfCircle.hxx>
 #include <gce_MakeCirc.hxx>
 #include <gce_MakeLin.hxx>
 #include <Geom_Circle.hxx>
-#include <Extrema_ExtElC.hxx>
-#include <Extrema_POnCurv.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <StdFail_NotDone.hxx>
-#include <ElCLib.hxx>
 
 //=======================================================================
 //function : GC_MakeArcOfCircle

@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectBasics_SensitiveEntity.ixx>
+
+#include <SelectBasics_EntityOwner.hxx>
+#include <SelectBasics_SensitiveEntity.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 
 //=======================================================================

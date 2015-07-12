@@ -17,18 +17,20 @@
 //                and MAKING ANGLE A with a STRAIGHT LINE.                   +
 //=========================================================================
 
-#include <GccAna_Lin2dTanObl.ixx>
-
 #include <ElCLib.hxx>
-#include <StdFail_NotDone.hxx>
-#include <gp_XY.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
+#include <GccAna_Lin2dTanObl.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
 #include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a straight line passing by a point : ThePoint                +
@@ -38,7 +40,6 @@
 //   by angle TheAngle ==> D1.                                            +
 //   create straight line passing through ThePoint of direction D1.              +
 //=========================================================================
-
 GccAna_Lin2dTanObl::
    GccAna_Lin2dTanObl (const gp_Pnt2d&          ThePoint  ,
                        const gp_Lin2d&          TheLine   ,

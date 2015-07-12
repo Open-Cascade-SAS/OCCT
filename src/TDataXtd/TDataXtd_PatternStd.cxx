@@ -13,23 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_PatternStd.ixx>
-#include <TDataStd.hxx>
-#include <TDataXtd_Geometry.hxx>
-#include <TDF_Label.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Ax1.hxx>
-#include <TopoDS_Shape.hxx>
 
+#include <gp_Ax1.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDataXtd_PatternStd.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : GetPatternID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataXtd_PatternStd::GetPatternID() 
 {
   static Standard_GUID TDataXtd_PatternStdID("2a96b61b-ec8b-11d0-bee7-080009dc3333");

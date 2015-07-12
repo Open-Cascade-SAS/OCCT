@@ -13,67 +13,60 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSDRAWSTLVRML.ixx>
-#include <Draw_Interpretor.hxx>
-#include <TopoDS_Shape.hxx>
-#include <VrmlAPI.hxx>
-#include <OSD_Path.hxx>
-#include <StlAPI.hxx>
-#include <XSDRAW.hxx>
-#include <DBRep.hxx>
-#include <VrmlAPI_Writer.hxx>
-#include <Quantity_Color.hxx>
-#include <Quantity_HArray1OfColor.hxx>
-#include <StlAPI_Writer.hxx>
-#include <Draw_PluginMacro.hxx>
-#include <XSDRAW.hxx>
-#include <XSDRAWSTEP.hxx>
-#include <XSDRAWIGES.hxx>
+
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
-#include <Draw.hxx>
-#include <Draw_ProgressIndicator.hxx>
-#include <RWStl.hxx>
-#include <Quantity_Color.hxx>
-#include <V3d_View.hxx>
-#include <TCollection_AsciiString.hxx>
-
-#include <SelectMgr_SelectionManager.hxx>
-#include <StdSelect_ViewerSelector3d.hxx>
-
 #include <Aspect_TypeOfMarker.hxx>
+#include <Bnd_Box.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_PluginMacro.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
-
-#include <StlMesh_Mesh.hxx>
-#include <StlMesh_SequenceOfMeshTriangle.hxx>
-
-#include <MeshVS_Mesh.hxx>
-#include <MeshVS_MeshPrsBuilder.hxx>
-#include <MeshVS_TextPrsBuilder.hxx>
+#include <MeshVS_DataMapOfIntegerAsciiString.hxx>
+#include <MeshVS_DeformedDataSource.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
-#include <MeshVS_MeshEntityOwner.hxx>
-#include <MeshVS_DataMapOfIntegerAsciiString.hxx>
-#include <MeshVS_NodalColorPrsBuilder.hxx>
 #include <MeshVS_ElementalColorPrsBuilder.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_MeshEntityOwner.hxx>
+#include <MeshVS_MeshPrsBuilder.hxx>
+#include <MeshVS_NodalColorPrsBuilder.hxx>
+#include <MeshVS_PrsBuilder.hxx>
+#include <MeshVS_TextPrsBuilder.hxx>
 #include <MeshVS_VectorPrsBuilder.hxx>
-#include <MeshVS_DeformedDataSource.hxx>
-
+#include <OSD_Path.hxx>
+#include <Quantity_Color.hxx>
+#include <Quantity_HArray1OfColor.hxx>
+#include <Quantity_NameOfColor.hxx>
+#include <RWStl.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
+#include <StlAPI.hxx>
+#include <StlAPI_Writer.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlMesh_SequenceOfMeshTriangle.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TopoDS_Shape.hxx>
+#include <V3d_View.hxx>
+#include <ViewerTest.hxx>
+#include <VrmlAPI.hxx>
+#include <VrmlAPI_Writer.hxx>
+#include <VrmlData_DataMapOfShapeAppearance.hxx>
+#include <VrmlData_Scene.hxx>
+#include <VrmlData_ShapeConvert.hxx>
+#include <XSDRAW.hxx>
+#include <XSDRAWIGES.hxx>
+#include <XSDRAWSTEP.hxx>
+#include <XSDRAWSTLVRML.hxx>
 #include <XSDRAWSTLVRML_DataSource.hxx>
 #include <XSDRAWSTLVRML_DataSource3D.hxx>
 #include <XSDRAWSTLVRML_DrawableMesh.hxx>
-
-#include <Quantity_NameOfColor.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <VrmlData_Scene.hxx>
-#include <VrmlData_ShapeConvert.hxx>
-#include <VrmlData_DataMapOfShapeAppearance.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Bnd_Box.hxx>
-#include <MeshVS_PrsBuilder.hxx>
 
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT

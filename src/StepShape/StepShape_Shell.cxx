@@ -11,10 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_Shell.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepShape_OpenShell.hxx>
+#include <Standard_Transient.hxx>
 #include <StepShape_ClosedShell.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_Shell.hxx>
 
 StepShape_Shell::StepShape_Shell () {  }
 

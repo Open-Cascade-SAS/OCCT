@@ -11,32 +11,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_IsoCurve.ixx>
 
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HIsoCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HSurfaceOfRevolution.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <gp_Ax2.hxx>
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
+#include <Adaptor3d_IsoCurve.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-
 
 //=======================================================================
 //function : Adaptor3d_IsoCurve
 //purpose  : 
 //=======================================================================
-
 Adaptor3d_IsoCurve::Adaptor3d_IsoCurve()
 : myIso      (GeomAbs_NoneIso),
   myFirst    (0.0),

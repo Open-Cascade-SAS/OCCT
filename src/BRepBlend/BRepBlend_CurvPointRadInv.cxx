@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBlend_CurvPointRadInv.ixx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <BRepBlend_CurvPointRadInv.hxx>
+#include <gp_Pnt.hxx>
+#include <math_Matrix.hxx>
 
 //=======================================================================
 //function : BRepBlend_CurvPointRadInv
 //purpose  : 
 //=======================================================================
-
 BRepBlend_CurvPointRadInv::BRepBlend_CurvPointRadInv
 (const Handle(Adaptor3d_HCurve)& C1,
  const Handle(Adaptor3d_HCurve)& C2) : curv1(C1), curv2(C2)

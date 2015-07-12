@@ -14,19 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_FaceBuilder.ixx>
-#include <Precision.hxx>
-#include <gp_Pnt.hxx>
-#include <Geom2d_Line.hxx>
-#include <TopoDS_Wire.hxx>
 
+#include <BRep_Builder.hxx>
+#include <BRepPrim_FaceBuilder.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : BRepPrim_FaceBuilder
 //purpose  : 
 //=======================================================================
-
 BRepPrim_FaceBuilder::BRepPrim_FaceBuilder()
 {
 }

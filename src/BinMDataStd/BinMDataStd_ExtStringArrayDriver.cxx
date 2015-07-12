@@ -13,17 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_ExtStringArrayDriver.ixx>
-#include <TDataStd_ExtStringArray.hxx>
+
+#include <BinMDataStd.hxx>
+#include <BinMDataStd_ExtStringArrayDriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfExtendedString.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
-#include <BinMDataStd.hxx>
+#include <TDataStd_ExtStringArray.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataStd_ExtStringArrayDriver
 //purpose  : Constructor
 //=======================================================================
-
 BinMDataStd_ExtStringArrayDriver::BinMDataStd_ExtStringArrayDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_ExtStringArray)->Name())

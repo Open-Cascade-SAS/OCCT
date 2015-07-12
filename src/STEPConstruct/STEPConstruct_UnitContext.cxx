@@ -17,44 +17,44 @@
 //abv 17.11.99: renamed from StepPDR_MakeUnitAndToleranceContext and merged with STEPControl_Unit
 //abv 30.02.00: ability to write file in units other than MM
 
-#include <STEPConstruct_UnitContext.ixx>
-
-#include <TCollection_HAsciiString.hxx>
-
-#include <StepBasic_SiUnit.hxx>
-#include <StepBasic_SiPrefix.hxx>
-#include <StepBasic_NamedUnit.hxx>
-#include <StepBasic_LengthUnit.hxx>
-#include <StepBasic_PlaneAngleUnit.hxx>
-#include <StepBasic_SolidAngleUnit.hxx>
-#include <StepBasic_SiUnitAndLengthUnit.hxx>
-#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
-#include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
-#include <StepBasic_SiUnitAndAreaUnit.hxx>
-#include <StepBasic_SiUnitAndVolumeUnit.hxx>
-#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
-#include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_MeasureValueMember.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
-#include <StepBasic_LengthMeasureWithUnit.hxx>
-#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
-#include <StepBasic_SolidAngleMeasureWithUnit.hxx>
+#include <Interface_Static.hxx>
+#include <StepBasic_ConversionBasedUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndAreaUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndSolidAngleUnit.hxx>
-#include <StepBasic_ConversionBasedUnitAndAreaUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndVolumeUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_HArray1OfNamedUnit.hxx>
 #include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepBasic_LengthUnit.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
+#include <StepBasic_PlaneAngleUnit.hxx>
+#include <StepBasic_SiPrefix.hxx>
+#include <StepBasic_SiUnit.hxx>
+#include <StepBasic_SiUnitAndAreaUnit.hxx>
+#include <StepBasic_SiUnitAndLengthUnit.hxx>
+#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
+#include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
+#include <StepBasic_SiUnitAndVolumeUnit.hxx>
+#include <StepBasic_SolidAngleMeasureWithUnit.hxx>
+#include <StepBasic_SolidAngleUnit.hxx>
+#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <STEPConstruct_UnitContext.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
-#include <Interface_Static.hxx>
-#include <StepBasic_ConversionBasedUnit.hxx>
 
 //=======================================================================
 //function : STEPConstruct_UnitContext
 //purpose  : 
 //=======================================================================
-
 STEPConstruct_UnitContext::STEPConstruct_UnitContext() : done(Standard_False)
 {
   lengthDone = planeAngleDone = solidAngleDone = hasUncertainty = 

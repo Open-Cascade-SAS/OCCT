@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESCAFControl.ixx>
+
+#include <IGESCAFControl.hxx>
+#include <Quantity_Color.hxx>
 
 //=======================================================================
 //function : DecodeColor
 //purpose  : 
 //=======================================================================
-
 Quantity_Color IGESCAFControl::DecodeColor (const Standard_Integer color)
 {
   switch ( color ) {

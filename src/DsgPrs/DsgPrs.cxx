@@ -12,36 +12,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs.ixx>
 
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Aspect_AspectMarker.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
-#include <Aspect_AspectMarker.hxx>
-#include <Quantity_Color.hxx>
-
-#include <Precision.hxx>
+#include <DsgPrs.hxx>
 #include <ElCLib.hxx>
-
-#include <gp_Vec.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
 #include <gce_MakeLin.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Quantity_Color.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 			    const Handle(Prs3d_DimensionAspect)& LA,

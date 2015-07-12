@@ -14,27 +14,22 @@
 // commercial license or contractual agreement.
 
 //      	----------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Sep  8 1997	Creation
 
-
-
-#include <TDF_AttributeDelta.ixx>
-
 #include <Standard_GUID.hxx>
-
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
-
-#include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : TDF_AttributeDelta
 //purpose  : 
 //=======================================================================
-
 TDF_AttributeDelta::TDF_AttributeDelta
 (const Handle(TDF_Attribute)& anAttribute)
 : myAttribute(anAttribute),

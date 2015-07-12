@@ -11,13 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_DispPerDrawing.ixx>
+
+#include <IFGraph_SubPartsIterator.hxx>
+#include <IFSelect_PacketList.hxx>
 #include <IFSelect_Selection.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <IFSelect_PacketList.hxx>
+#include <IGESSelect_DispPerDrawing.hxx>
+#include <IGESSelect_ViewSorter.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_DispPerDrawing::IGESSelect_DispPerDrawing ()
       {  thesorter = new IGESSelect_ViewSorter;  }

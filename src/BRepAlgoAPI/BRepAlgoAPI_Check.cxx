@@ -13,9 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgoAPI_Check.ixx>
+
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
+#include <BRepAlgoAPI_Check.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepAlgoAPI_Check

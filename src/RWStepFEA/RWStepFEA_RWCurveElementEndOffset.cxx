@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWCurveElementEndOffset.ixx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWCurveElementEndOffset.hxx>
 #include <Standard_Real.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_CurveElementEndOffset.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWCurveElementEndOffset
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWCurveElementEndOffset::RWStepFEA_RWCurveElementEndOffset ()
 {
 }

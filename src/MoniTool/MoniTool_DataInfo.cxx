@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_DataInfo.ixx>
+
+#include <MoniTool_DataInfo.hxx>
+#include <Standard_Transient.hxx>
 
 Handle(Standard_Type)  MoniTool_DataInfo::Type
   (const Handle(Standard_Transient)& ent)

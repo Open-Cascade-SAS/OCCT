@@ -16,24 +16,24 @@
 
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <StepToGeom_MakeElementarySurface.ixx>
-#include <StepGeom_ElementarySurface.hxx>
-#include <StepGeom_CylindricalSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
 #include <StepGeom_ConicalSurface.hxx>
+#include <StepGeom_CylindricalSurface.hxx>
+#include <StepGeom_ElementarySurface.hxx>
+#include <StepGeom_Plane.hxx>
 #include <StepGeom_SphericalSurface.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
-#include <StepGeom_Plane.hxx>
-#include <StepToGeom_MakeCylindricalSurface.hxx>
 #include <StepToGeom_MakeConicalSurface.hxx>
+#include <StepToGeom_MakeCylindricalSurface.hxx>
+#include <StepToGeom_MakeElementarySurface.hxx>
+#include <StepToGeom_MakePlane.hxx>
 #include <StepToGeom_MakeSphericalSurface.hxx>
 #include <StepToGeom_MakeToroidalSurface.hxx>
-#include <StepToGeom_MakePlane.hxx>
 
 //=============================================================================
 // Creation d' une ElementarySurface de Geom a partir d' une 
 // ElementarySurface de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeElementarySurface::Convert (const Handle(StepGeom_ElementarySurface)& SS, Handle(Geom_ElementarySurface)& CS)
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_Plane))) {

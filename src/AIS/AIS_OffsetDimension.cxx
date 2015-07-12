@@ -14,35 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-
-#include <AIS_OffsetDimension.ixx>
 
 #include <AIS.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#include <AIS_OffsetDimension.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <DsgPrs_OffsetPresentation.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Precision.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Select3D_SensitiveBox.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <gce_MakeLin.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
@@ -51,6 +34,27 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Precision.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : AIS_OffsetDimension

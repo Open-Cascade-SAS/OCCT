@@ -41,7 +41,6 @@
 
 #define TEST 1
 
-#include <BRepBuilderAPI_Sewing.ixx>
 
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
@@ -49,9 +48,18 @@
 #include <BndLib_Add2dCurve.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_ListOfPointRepresentation.hxx>
+#include <BRep_PointOnCurve.hxx>
 #include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepBuilderAPI_BndBoxTreeSelector.hxx>
+#include <BRepBuilderAPI_CellFilter.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <BRepBuilderAPI_VertexInspector.hxx>
 #include <BRepLib.hxx>
+#include <BRepTools.hxx>
 #include <BRepTools_Quilt.hxx>
+#include <BRepTools_ReShape.hxx>
 #include <BSplCLib.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
@@ -68,25 +76,34 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-//#include <LocalAnalysis_SurfaceContinuity.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <NCollection_UBTreeFiller.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger.hxx>
 #include <TColStd_DataMapOfIntegerListOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
+#include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TopAbs.hxx>
@@ -94,12 +111,14 @@
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
@@ -110,26 +129,12 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <BRepTools.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <BRep_PointOnCurve.hxx>
-#include <BRep_ListOfPointRepresentation.hxx>
-#include <BRep_TVertex.hxx>
-#include <Message_ProgressSentry.hxx>
-#include <BRepBuilderAPI_VertexInspector.hxx>
-#include <BRepBuilderAPI_CellFilter.hxx>
-#include <BRepBuilderAPI_BndBoxTreeSelector.hxx>
-#include <NCollection_UBTreeFiller.hxx>
 
+//#include <LocalAnalysis_SurfaceContinuity.hxx>
 //=======================================================================
 //function : SameRange
 //purpose  : 
 //=======================================================================
-
 Handle(Geom2d_Curve) BRepBuilderAPI_Sewing::SameRange(const Handle(Geom2d_Curve)& CurvePtr,
 						const Standard_Real FirstOnCurve,
 						const Standard_Real LastOnCurve,

@@ -14,56 +14,59 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepTools_NurbsConvertModification.ixx>
 
-#include <BRepTools.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <GeomConvert.hxx>
-#include <Geom2dConvert.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-
-#include <BSplCLib.hxx>
 #include <Approx_SameParameter.hxx>
-#include <BRep_Tool.hxx>
-#include <Extrema_LocateExtPC.hxx>
-#include <OSD_Chronometer.hxx>
-#include <gp_GTrsf2d.hxx>
-#include <gp_TrsfForm.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <ProjLib_ComputeApprox.hxx>
-#include <ProjLib_ComputeApproxOnPolarSurface.hxx>
-#include <ElSLib.hxx>
-#include <BSplCLib.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_CylindricalSurface.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <BRep_TEdge.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_NurbsConvertModification.hxx>
+#include <BSplCLib.hxx>
+#include <ElSLib.hxx>
+#include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom_Curve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomConvert.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_TrsfForm.hxx>
+#include <OSD_Chronometer.hxx>
+#include <ProjLib_ComputeApprox.hxx>
+#include <ProjLib_ComputeApproxOnPolarSurface.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_ListIteratorOfListOfTransient.hxx>
+#include <TopAbs.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
                   const Standard_Real newU1,

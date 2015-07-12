@@ -14,14 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeLine.ixx>
+
+#include <GC_MakeLine.hxx>
 #include <gce_MakeLin.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Constructions of 3d geometrical elements from Geom.
 //=========================================================================
-
 GC_MakeLine::GC_MakeLine(const gp_Pnt& P ,
 			   const gp_Dir& V )
 {

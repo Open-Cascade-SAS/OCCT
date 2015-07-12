@@ -13,15 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_TreeNodeDriver.ixx>
-#include <TDataStd_TreeNode.hxx>
+
+#include <BinMDataStd_TreeNodeDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataStd_TreeNodeDriver
 //purpose  : Constructor
 //=======================================================================
-
 BinMDataStd_TreeNodeDriver::BinMDataStd_TreeNodeDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : BinMDF_ADriver (theMsgDriver, NULL)

@@ -14,23 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ConvertCurve2dToBezier.ixx>
-#include <Precision.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
+
 #include <Geom2d_BezierCurve.hxx>
-#include <ShapeExtend.hxx>
-#include <Geom2d_Line.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Conic.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
 #include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomTools.hxx>
+#include <Precision.hxx>
 #include <ShapeCustom_Curve2d.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade_ConvertCurve2dToBezier.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom2d_HArray1OfCurve.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 ShapeUpgrade_ConvertCurve2dToBezier::ShapeUpgrade_ConvertCurve2dToBezier()
 {

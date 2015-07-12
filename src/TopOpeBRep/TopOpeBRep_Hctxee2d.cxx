@@ -14,18 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_Hctxee2d.ixx>
-#include <TopOpeBRep_define.hxx>
-#include <TopOpeBRepTool_CurveTool.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <TopOpeBRepTool_2d.hxx>
-#include <TopOpeBRepTool_GEOMETRY.hxx>
-#include <TopOpeBRepTool_PROJECT.hxx>
+
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <Standard_Type.hxx>
+#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_Hctxee2d.hxx>
+#include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_CurveTool.hxx>
+#include <TopOpeBRepTool_GEOMETRY.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG
 #include <GeomTools_SurfaceSet.hxx>

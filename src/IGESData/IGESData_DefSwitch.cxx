@@ -11,13 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_DefSwitch.ixx>
+
+#include <IGESData_DefSwitch.hxx>
 
 //  DefSwitch : represente une definition, soit vide (-> valeur = 0),
 //  soit comme rang dans une table (-> valeur > 0 ce rang),
 //  soit comme reference (-> valeur < 0), la reference elle-meme est ailleurs
-
-
 //=======================================================================
 //function : IGESData_DefSwitch
 //purpose  : Default constructor.

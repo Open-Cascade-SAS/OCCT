@@ -12,8 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntAna2d_AnaIntersection.jxx>
+
 #include <ElCLib.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_Conic.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : Perform

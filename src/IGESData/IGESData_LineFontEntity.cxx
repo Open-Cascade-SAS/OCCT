@@ -11,5 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_LineFontEntity.ixx>
+
+#include <IGESData_LineFontEntity.hxx>
+#include <Standard_Type.hxx>
+
 // LineTypeEntity ne sert qu'au controle de type (pour le directory part)

@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccInt_BPoint.ixx>
-#include <Standard_DomainError.hxx>
+
+#include <GccInt_BPoint.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 GccInt_BPoint::
    GccInt_BPoint(const gp_Pnt2d& Point) {

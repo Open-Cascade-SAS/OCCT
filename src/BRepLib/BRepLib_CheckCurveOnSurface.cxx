@@ -12,47 +12,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_CheckCurveOnSurface.ixx>
 
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_HSurface.hxx>
-
 #include <BRep_Tool.hxx>
-
+#include <BRepLib_CheckCurveOnSurface.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor.hxx>
 #include <Geom2dAdaptor_GHCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-
-#include <GeomProjLib.hxx>
-
 #include <Geom_BSplineCurve.hxx>
-
+#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-
-#include <NCollection_Array1.hxx>
-
-#include <OSD_Parallel.hxx>
-
-#include <ProjLib_ProjectedCurve.hxx>
-
-#include <Standard_ErrorHandler.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TopoDS.hxx>
-
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomProjLib.hxx>
 #include <math_Matrix.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
+#include <NCollection_Array1.hxx>
+#include <OSD_Parallel.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 class BRepLib_CheckCurveOnSurface_TargetFunc;
 

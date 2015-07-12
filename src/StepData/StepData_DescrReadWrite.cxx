@@ -11,15 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_DescrReadWrite.ixx>
-#include <StepData_EDescr.hxx>
-#include <StepData_ECDescr.hxx>
-#include <StepData_ESDescr.hxx>
-#include <StepData_Simple.hxx>
-#include <StepData_Plex.hxx>
-#include <StepData_FieldListN.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+
+#include <Interface_Check.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_DescrReadWrite.hxx>
+#include <StepData_ECDescr.hxx>
+#include <StepData_EDescr.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_FieldListN.hxx>
+#include <StepData_Plex.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_Simple.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
 
 static TCollection_AsciiString nocp("?");
 

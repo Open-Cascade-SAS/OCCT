@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_FaceEdgeInterference.ixx>
+
+#include <Standard_Type.hxx>
+#include <TopOpeBRepDS_FaceEdgeInterference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_FaceEdgeInterference
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_FaceEdgeInterference::TopOpeBRepDS_FaceEdgeInterference
   (const TopOpeBRepDS_Transition& T, 
    const Standard_Integer         S, 

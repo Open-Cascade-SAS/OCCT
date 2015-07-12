@@ -14,19 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FEmTool_LinearJerk.ixx>
+
+#include <FEmTool_ElementsOfRefMatrix.hxx>
+#include <FEmTool_LinearJerk.hxx>
+#include <math.hxx>
+#include <math_GaussSetIntegration.hxx>
+#include <math_IntegerVector.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
 #include <PLib.hxx>
+#include <PLib_HermitJacobi.hxx>
+#include <PLib_JacobiPolynomial.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <PLib_JacobiPolynomial.hxx>
-#include <PLib_HermitJacobi.hxx>
-#include <FEmTool_ElementsOfRefMatrix.hxx>
-#include <math_IntegerVector.hxx>
-#include <math_Vector.hxx>
-#include <math_GaussSetIntegration.hxx>
-#include <math.hxx>
-#include <Standard_ConstructionError.hxx>
-
 
 FEmTool_LinearJerk::FEmTool_LinearJerk(const Standard_Integer WorkDegree,
 				       const GeomAbs_Shape ConstraintOrder):

@@ -14,27 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_EdgeOnSurfLaw.ixx>
 
-#include <BRepTools_WireExplorer.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-
-#include <GeomFill_LocationLaw.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
-#include <GeomFill_Darboux.hxx>
-#include <GeomFill_CurveAndTrihedron.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_HSurface.hxx>
-
+#include <BRepFill_EdgeOnSurfLaw.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <GeomFill_CurveAndTrihedron.hxx>
+#include <GeomFill_Darboux.hxx>
+#include <GeomFill_HArray1OfLocationLaw.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HArray1OfShape.hxx>
 
 BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
 					       const TopoDS_Shape& Surf)

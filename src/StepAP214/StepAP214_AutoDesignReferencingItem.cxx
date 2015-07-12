@@ -11,22 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignReferencingItem.ixx>
+
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <StepAP214_AutoDesignReferencingItem.hxx>
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_DocumentRelationship.hxx>
-#include <StepRepr_ExternallyDefinedRepresentation.hxx>
-#include <StepRepr_MappedItem.hxx>
-#include <StepRepr_MaterialDesignation.hxx>
-#include <StepVisual_PresentationArea.hxx>
-#include <StepVisual_PresentationView.hxx>
 #include <StepBasic_ProductCategory.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepRepr_ExternallyDefinedRepresentation.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_MaterialDesignation.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepVisual_PresentationArea.hxx>
+#include <StepVisual_PresentationView.hxx>
 
 StepAP214_AutoDesignReferencingItem::StepAP214_AutoDesignReferencingItem  ()    {  }
 

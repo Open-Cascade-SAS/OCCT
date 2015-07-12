@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Segment3D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Segment3D.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Segment3D
 //purpose  : 
 //=======================================================================
-
 Draw_Segment3D::Draw_Segment3D(const gp_Pnt& p1, 
 			       const gp_Pnt& p2, 
 			       const Draw_Color& col) :

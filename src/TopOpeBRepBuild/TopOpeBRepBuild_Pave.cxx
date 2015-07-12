@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Pave.ixx>
+
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_Pave.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_Pave
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_Pave::TopOpeBRepBuild_Pave
 (const TopoDS_Shape& V, const Standard_Real P, const Standard_Boolean B) :
 TopOpeBRepBuild_Loop(V),

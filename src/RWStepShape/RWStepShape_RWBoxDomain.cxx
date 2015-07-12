@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWBoxDomain.ixx>
-#include <StepGeom_CartesianPoint.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWBoxDomain.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <StepShape_BoxDomain.hxx>
-
 
 RWStepShape_RWBoxDomain::RWStepShape_RWBoxDomain () {}
 

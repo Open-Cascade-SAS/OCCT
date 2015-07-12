@@ -14,50 +14,37 @@
 // commercial license or contractual agreement.
 
 // Modified:    15/01/98 ; FMN : Ajout Hidden Line
-
-
 //-Version	
-
 //-Design	Declaration of variables specific to the context
 //		of tracing facets
-
 //-Warning	Context of tracing facets id defined by:
 //		- the style of the interior of the facet
 //		- the style of the border of the facet
 //		- the color
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Aspect_AspectFillArea.ixx>
+
+#include <Aspect_AspectFillArea.hxx>
+#include <Aspect_AspectFillAreaDefinitionError.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //	-- interior
 //	MyInteriorStyle	:	InteriorStyle;
 //	MyInteriorColor	:	Color;
-
 //	-- border
 //	MyEdgeColor	:	Color;
 //	MyEdgeType	:	TypeOfLine;
 //	MyEdgeWidth	:	Standard_Real;
-
 //	-- shading
 //	MyHatchStyle	:	HatchStyle;
-
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
 Aspect_AspectFillArea::Aspect_AspectFillArea () {
 
 	MyInteriorStyle	= Aspect_IS_EMPTY;

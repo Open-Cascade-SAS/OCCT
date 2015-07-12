@@ -15,22 +15,18 @@
 // prise en compte de l'unite choisi par l'utilisateur
 // pour l'ecriture du fichier IGES.
 
-#include <GeomToIGES_GeomPoint.ixx>
-
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Point.hxx>
+#include <GeomToIGES_GeomEntity.hxx>
+#include <GeomToIGES_GeomPoint.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-
-#include <Geom_Point.hxx>
-
 #include <IGESGeom_Point.hxx>
-
 #include <Interface_Macros.hxx>
-
 
 //=============================================================================
 // GeomToIGES_GeomPoint
 //=============================================================================
-
 GeomToIGES_GeomPoint::GeomToIGES_GeomPoint
 (const GeomToIGES_GeomEntity& GE)
 :GeomToIGES_GeomEntity(GE)

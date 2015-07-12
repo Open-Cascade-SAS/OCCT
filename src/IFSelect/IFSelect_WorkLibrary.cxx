@@ -11,14 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_WorkLibrary.ixx>
+
+#include <IFSelect_ContextWrite.hxx>
+#include <IFSelect_WorkLibrary.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-
 //  all deferred but Copy (virtual default)
-
 IFSelect_WorkLibrary::IFSelect_WorkLibrary ()  {  thelevdef = 0;  }
 
     Standard_Boolean  IFSelect_WorkLibrary::CopyModel

@@ -13,24 +13,24 @@
 
 //    abv 28.04.99 S4137: ading method Apply for work on all types of shapes
 
-#include <ShapeBuild_ReShape.ixx>
-
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <ShapeExtend.hxx>
 #include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 
 //=======================================================================
 //function : ShapeBuild_ReShape
 //purpose  : 
 //=======================================================================
-
 ShapeBuild_ReShape::ShapeBuild_ReShape()
 {
 }

@@ -21,82 +21,76 @@
 //:   abv 07.04.99: S4136: improve tolerance management and dealing with pcurves
 //    rln 02.06.99 removing #include <StepToTopoDS_DegeneratedTool.hxx>
 //    smh 31.01.01 BUC60810 : IsNull protection
-#include <StepToTopoDS_TranslateEdgeLoop.ixx>
-
-#include <StepToTopoDS.hxx>
-#include <StepToTopoDS_TranslateVertex.hxx>
-#include <StepToTopoDS_TranslateEdge.hxx>
-#include <StepToTopoDS_GeometricTool.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <StepToGeom_MakeCurve2d.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <StepShape_EdgeLoop.hxx>
-#include <StepShape_Edge.hxx>
-#include <StepShape_OrientedEdge.hxx>
-#include <StepShape_Vertex.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepShape_EdgeCurve.hxx>
-#include <StepGeom_Pcurve.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
-#include <StepRepr_DefinitionalRepresentation.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
 
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <BRep_TEdge.hxx>
 #include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-
-#include <TopLoc_Location.hxx>
-#include <TopAbs.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Curve.hxx>
-
-#include <Geom2d_Curve.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <ElCLib.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-
-#include <Precision.hxx>
 #include <Interface_Static.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <ShapeFix_EdgeProjAux.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeBuild_Edge.hxx>
-
+#include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeAlgo_ToolContainer.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_EdgeProjAux.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_PcurveOrSurface.hxx>
+#include <StepGeom_Polyline.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
+#include <StepRepr_DefinitionalRepresentation.hxx>
+#include <StepShape_Edge.hxx>
+#include <StepShape_EdgeCurve.hxx>
+#include <StepShape_EdgeLoop.hxx>
+#include <StepShape_FaceBound.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <StepShape_Vertex.hxx>
+#include <StepToGeom_MakeCurve.hxx>
+#include <StepToGeom_MakeCurve2d.hxx>
+#include <StepToTopoDS.hxx>
+#include <StepToTopoDS_GeometricTool.hxx>
+#include <StepToTopoDS_NMTool.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateEdge.hxx>
+#include <StepToTopoDS_TranslateEdgeLoop.hxx>
+#include <StepToTopoDS_TranslateVertex.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <Transfer_TransientProcess.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <ElCLib.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <StepGeom_Polyline.hxx>
 
 // ============================================================================
 // Method  : RemoveSinglePCurve
 // Purpose : 
 // ============================================================================
-
 static void RemoveSinglePCurve (const TopoDS_Edge& aEdge, const TopoDS_Face& aFace)
 {
   ShapeBuild_Edge().RemovePCurve (aEdge, aFace);

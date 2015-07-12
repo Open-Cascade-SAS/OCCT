@@ -14,53 +14,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat.ixx>
 
-//#include <BRepAlgo_Cut.hxx>
-
-#include <BRepBuilderAPI.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <BRepLProp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
-#include <Precision.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <GeomProjLib.hxx>
-#include <gp_Vec2d.hxx>
-#include <BRepTools.hxx>
-#include <Geom_Surface.hxx>
 #include <Bnd_Box.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepBndLib.hxx>
+#include <BRepBuilderAPI.hxx>
+#include <BRepFeat.hxx>
 #include <BRepLib_MakeFace.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
+#include <BRepLProp.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <ElSLib.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec2d.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_BuildShape.hxx>
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_PntFace.hxx>
-#include <LocOpe_BuildShape.hxx> 
-#include <ElSLib.hxx>
-
+#include <Precision.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-
-#include <LocOpe.hxx>
-
+//#include <BRepAlgo_Cut.hxx>
 #define NECHANTBARYC 11
 
 //=======================================================================

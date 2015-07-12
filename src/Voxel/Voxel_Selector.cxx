@@ -13,17 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_Selector.ixx>
 
-#include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
-
-#include <IntAna_Quadric.hxx>
+#include <gp_Pnt.hxx>
 #include <IntAna_IntConicQuad.hxx>
-
+#include <IntAna_Quadric.hxx>
 #include <TColStd_MapOfInteger.hxx>
+#include <V3d_View.hxx>
+#include <Voxel_BoolDS.hxx>
+#include <Voxel_ColorDS.hxx>
+#include <Voxel_ROctBoolDS.hxx>
+#include <Voxel_Selector.hxx>
 
 Voxel_Selector::Voxel_Selector():myVoxels(0)
 {

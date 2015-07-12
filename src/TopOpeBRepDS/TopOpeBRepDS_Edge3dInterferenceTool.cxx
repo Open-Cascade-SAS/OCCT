@@ -14,19 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Edge3dInterferenceTool.ixx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
+
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
+#include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_Edge3dInterferenceTool.hxx>
+#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepDS_define.hxx>
-#include <Standard_ProgramError.hxx>
 
 #define M_FORWARD(st) (st == TopAbs_FORWARD)
 #define M_REVERSED(st) (st == TopAbs_REVERSED)

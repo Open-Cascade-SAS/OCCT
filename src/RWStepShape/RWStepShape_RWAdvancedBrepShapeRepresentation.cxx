@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWAdvancedBrepShapeRepresentation.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepShape_RWAdvancedBrepShapeRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>
-
 
 RWStepShape_RWAdvancedBrepShapeRepresentation::RWStepShape_RWAdvancedBrepShapeRepresentation () {}
 

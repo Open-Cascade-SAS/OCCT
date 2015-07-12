@@ -14,30 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_Angle.ixx>
-#include <DrawDim.hxx>
 
-#include <BRepAdaptor_Surface.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Draw_Display.hxx>
+#include <DrawDim.hxx>
+#include <DrawDim_Angle.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
-#include <TopoDS.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Vertex.hxx> 
-#include <IntAna_QuadQuadGeo.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : DrawDim_Angle
 //purpose  : 
 //=======================================================================
-
 DrawDim_Angle::DrawDim_Angle(const TopoDS_Face& plane1, const TopoDS_Face& plane2)
 {
   myPlane1 = plane1;

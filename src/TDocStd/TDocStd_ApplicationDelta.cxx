@@ -13,15 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDocStd_ApplicationDelta.ixx>
+
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDocStd_ApplicationDelta.hxx>
 #include <TDocStd_Document.hxx>
 
 //=======================================================================
 //function : TDocStd_ApplicationDelta
 //purpose  : 
 //=======================================================================
-
 TDocStd_ApplicationDelta::TDocStd_ApplicationDelta() {}
 
 //=======================================================================

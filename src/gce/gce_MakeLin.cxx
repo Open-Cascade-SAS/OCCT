@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeLin.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <gce_MakeLin.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une ligne 3d de gp a partir d un Ax1 de gp.               +
 //=========================================================================
-
 gce_MakeLin::gce_MakeLin(const gp_Ax1& A1)
 {
   TheLin = gp_Lin(A1);

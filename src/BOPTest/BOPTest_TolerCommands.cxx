@@ -12,50 +12,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
-#include <stdio.h>
+
+#include <BOPTest.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepLib.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt2d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <Draw.hxx>
-#include <DBRep.hxx>
-#include <gp_Pnt2d.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Surface.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-
 #include <TopAbs_Orientation.hxx>
-
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-
-#include <BRep_TVertex.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_TFace.hxx>
-
-#include <TopLoc_Location.hxx>
-
-#include <BRepLib.hxx>
-
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-
+#include <stdio.h>
 //
 static 
   void ProcessVertex(const TopoDS_Vertex&,

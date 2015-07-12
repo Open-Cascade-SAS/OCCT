@@ -14,13 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_MakeEdge.ixx>
+
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_MakeEdge
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_MakeEdge::BRepBuilderAPI_MakeEdge()
 {}
 

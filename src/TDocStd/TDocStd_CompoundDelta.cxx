@@ -14,9 +14,9 @@
 
 //      	-------------
 
-
-
-#include <TDocStd_CompoundDelta.ixx>
+#include <Standard_Type.hxx>
+#include <TDocStd_CompoundDelta.hxx>
+#include <TDocStd_Document.hxx>
 
 //=======================================================================
 //function : TDocStd_CompoundDelta

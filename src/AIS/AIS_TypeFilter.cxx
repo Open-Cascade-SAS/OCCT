@@ -14,8 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_TypeFilter.ixx>
+
 #include <AIS_InteractiveObject.hxx>
+#include <AIS_TypeFilter.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
 
 AIS_TypeFilter::AIS_TypeFilter(const AIS_KindOfInteractive TheKind):
 myKind(TheKind){}

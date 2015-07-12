@@ -14,87 +14,88 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
 
-#include <BiTgte_Blend.ixx>
-
-// include - all hxx,
-//         - all small static functions.
-
-//======================== START STATIC FUNCTIONS ============
-#include <BiTgte_DataMapOfShapeBox.hxx>
+#include <AppCont_Function.hxx>
+#include <AppParCurves_MultiCurve.hxx>
+#include <Approx_FitAndDivide.hxx>
+#include <BiTgte_Blend.hxx>
 #include <BiTgte_CurveOnEdge.hxx>
-
+#include <BiTgte_DataMapOfShapeBox.hxx>
 #include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepTools.hxx>
-#include <BRepTools_Quilt.hxx>
-#include <BRepBuilderAPI_Sewing.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgo_AsDes.hxx>
+#include <BRepAlgo_Loop.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <BRepOffset_DataMapOfShapeOffset.hxx>
 #include <BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx>
-#include <BRepOffset_Offset.hxx>
-#include <BRepOffset_MakeLoops.hxx>
-#include <BRepOffset_Inter3d.hxx>
+#include <BRepOffset_DataMapOfShapeOffset.hxx>
 #include <BRepOffset_Inter2d.hxx>
+#include <BRepOffset_Inter3d.hxx>
 #include <BRepOffset_Interval.hxx>
 #include <BRepOffset_ListOfInterval.hxx>
+#include <BRepOffset_MakeLoops.hxx>
+#include <BRepOffset_Offset.hxx>
 #include <BRepOffset_Tool.hxx>
-#include <BRepAlgo_Loop.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_Quilt.hxx>
+#include <BSplCLib.hxx>
 #include <ChFi3d.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
+#include <Convert_CompBezierCurvesToBSplineCurve.hxx>
+#include <ElSLib.hxx>
 #include <Geom2d_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Sphere.hxx>
-
-#include <AppCont_Function.hxx>
-#include <Approx_FitAndDivide.hxx>
-#include <AppParCurves_MultiCurve.hxx>
-#include <BSplCLib.hxx>
-#include <Convert_CompBezierCurvesToBSplineCurve.hxx>
-#include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <Standard_NotImplemented.hxx>
-
-#include <BRepLib.hxx>
-#include <ElSLib.hxx>
-#include <GeomAPI.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-
 #include <OSD_Chronometer.hxx>
+#include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+
+#include <stdio.h>
+// include - all hxx,
+//         - all small static functions.
+//======================== START STATIC FUNCTIONS ============
 // variables for performance 
 Standard_Real t_mkcurve;
 extern void ChFi3d_InitChron(OSD_Chronometer& ch);

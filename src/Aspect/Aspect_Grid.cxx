@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Aspect_Grid.ixx>
 
+#include <Aspect_Grid.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 Aspect_Grid::Aspect_Grid(
 			       const Quantity_Length anXOrigin,

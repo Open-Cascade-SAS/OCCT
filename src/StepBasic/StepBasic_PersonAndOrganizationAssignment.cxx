@@ -11,7 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_PersonAndOrganizationAssignment.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
+#include <StepBasic_PersonAndOrganizationAssignment.hxx>
+#include <StepBasic_PersonAndOrganizationRole.hxx>
 
 void StepBasic_PersonAndOrganizationAssignment::Init(
 	const Handle(StepBasic_PersonAndOrganization)& aAssignedPersonAndOrganization,

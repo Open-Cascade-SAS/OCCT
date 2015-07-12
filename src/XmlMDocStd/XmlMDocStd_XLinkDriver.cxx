@@ -13,13 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDocStd_XLinkDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-
-#include <TDocStd_XLink.hxx>
-#include <TDF_Tool.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
+#include <TDocStd_XLink.hxx>
+#include <XmlMDocStd_XLinkDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (DocEntryString, "documentEntry")
 

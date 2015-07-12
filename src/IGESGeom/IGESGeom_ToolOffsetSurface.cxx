@@ -16,18 +16,29 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_ToolOffsetSurface.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <gp_XYZ.hxx>
 #include <gp_Vec.hxx>
-#include <IGESData_IGESEntity.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_Status.hxx>
+#include <IGESGeom_OffsetSurface.hxx>
+#include <IGESGeom_ToolOffsetSurface.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_DomainError.hxx>
 
 // MGE 31/07/98
-#include <Message_Msg.hxx>
-#include <IGESData_Status.hxx>
-
 IGESGeom_ToolOffsetSurface::IGESGeom_ToolOffsetSurface ()    {  }
 
 

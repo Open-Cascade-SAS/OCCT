@@ -14,10 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLProp_SurfaceTool.ixx>
+
 #include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-
+#include <GeomLProp_SurfaceTool.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 void  GeomLProp_SurfaceTool::Value(const Handle(Geom_Surface)& S,
 	    const Standard_Real U, const Standard_Real V, gp_Pnt& P)

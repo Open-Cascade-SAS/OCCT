@@ -11,18 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAppliedDateAssignment.ixx>
-#include <StepAP214_HArray1OfDateItem.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAppliedDateAssignment.hxx>
+#include <StepAP214_AppliedDateAssignment.hxx>
 #include <StepAP214_DateItem.hxx>
+#include <StepAP214_HArray1OfDateItem.hxx>
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateRole.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepAP214_AppliedDateAssignment.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAppliedDateAssignment::RWStepAP214_RWAppliedDateAssignment () {}
 

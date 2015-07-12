@@ -14,11 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_AddFileComment.ixx>
+
+#include <IFSelect_ContextWrite.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESSelect_AddFileComment.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+
 #include <stdio.h>
-
-
 IGESSelect_AddFileComment::IGESSelect_AddFileComment  ()
       {  thelist = new TColStd_HSequenceOfHAsciiString();  }
 

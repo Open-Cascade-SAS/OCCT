@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_Cut.ixx>
+
+#include <BRepAlgo_Cut.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepAlgo_Cut
 //purpose  : 
 //=======================================================================
-
 BRepAlgo_Cut::BRepAlgo_Cut(const TopoDS_Shape& S1, 
 			   const TopoDS_Shape& S2)
 : BRepAlgo_BooleanOperation(S1,S2)

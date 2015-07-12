@@ -14,15 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_GeomTool.ixx>
 
 #include <Precision.hxx>
+#include <TopOpeBRepTool_GeomTool.hxx>
 
 //=======================================================================
 //function : TopOpeBRepTool_GeomTool
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepTool_GeomTool::TopOpeBRepTool_GeomTool
    (const TopOpeBRepTool_OutCurveType TypeC3D, 
    const Standard_Boolean CompC3D,

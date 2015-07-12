@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSolid_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_Block.hxx>
 #include <IGESSolid_BooleanTree.hxx>
 #include <IGESSolid_ConeFrustum.hxx>
@@ -24,6 +23,7 @@
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_Ellipsoid.hxx>
 #include <IGESSolid_Face.hxx>
+#include <IGESSolid_GeneralModule.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_PlaneSurface.hxx>
@@ -36,10 +36,6 @@
 #include <IGESSolid_SolidOfRevolution.hxx>
 #include <IGESSolid_Sphere.hxx>
 #include <IGESSolid_SphericalSurface.hxx>
-#include <IGESSolid_ToroidalSurface.hxx>
-#include <IGESSolid_Torus.hxx>
-#include <IGESSolid_VertexList.hxx>
-
 #include <IGESSolid_ToolBlock.hxx>
 #include <IGESSolid_ToolBooleanTree.hxx>
 #include <IGESSolid_ToolConeFrustum.hxx>
@@ -64,14 +60,21 @@
 #include <IGESSolid_ToolToroidalSurface.hxx>
 #include <IGESSolid_ToolTorus.hxx>
 #include <IGESSolid_ToolVertexList.hxx>
-
-
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <IGESSolid_Torus.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESSolid_GeneralModule::IGESSolid_GeneralModule ()    {  }
 
 

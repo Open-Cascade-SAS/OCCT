@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_Comment.ixx>
 
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDataStd_Comment.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_Real.hxx>
-
 
 #define lid1 45
 #define lid2 36

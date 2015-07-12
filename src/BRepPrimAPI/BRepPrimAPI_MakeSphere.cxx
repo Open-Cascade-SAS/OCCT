@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeSphere.ixx>
+
 #include <BRepBuilderAPI.hxx>
-
-
+#include <BRepPrim_Sphere.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <gp.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Ax2.hxx>
-
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_DomainError.hxx>
 
 static gp_Ax2 SphereComputeAxes() { 
   static Standard_Integer firsttime=1;

@@ -18,7 +18,12 @@
 
 #define No_Standard_OutOfRange
 
-#include <gp_Ax2d.ixx>
+
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
 
 Standard_Boolean gp_Ax2d::IsCoaxial (const gp_Ax2d& Other, 

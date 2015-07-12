@@ -43,93 +43,89 @@
 //                one pcurve we make replace pcurve)
 // PTV 26.06.2002  Remove regressions after fix OCC450
 
-#include <ShapeFix_Wire.ixx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Precision.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_SphericalSurface.hxx> //S4135
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_Surface.hxx>  
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomAPI.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dConvert.hxx>
-
-#include <Bnd_Box2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Bnd_Array1OfBox2d.hxx>
+#include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <IntRes2d_SequenceOfIntersectionPoint.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <gp_Pln.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_GCurve.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepTools.hxx>
-
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <gp_Pln.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <Message_Msg.hxx>
-#include <ShapeExtend.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeBuild_Vertex.hxx>
-#include <ShapeBuild_ReShape.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <ShapeAnalysis.hxx>
-#include <ShapeConstruct_ProjectCurveOnSurface.hxx>  
-#include <ShapeAnalysis_TransferParametersProj.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_OffsetCurve.hxx>
-
-#include <TColStd_HSequenceOfReal.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
 #include <ShapeAnalysis_TransferParameters.hxx>
+#include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeAnalysis_WireOrder.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeBuild_Vertex.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix.hxx>
+#include <ShapeFix_Edge.hxx>
 #include <ShapeFix_IntersectionTool.hxx>
 #include <ShapeFix_SplitTool.hxx>
-#include <ShapeFix_Edge.hxx>
-#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
-
+//S4135
 //#######################################################################
 //  Constructors, initializations, modes, querying
 //#######################################################################
-
 //=======================================================================
 //function : ShapeFix_Wire
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Wire::ShapeFix_Wire() : myMaxTailAngleSine(0), myMaxTailWidth(-1)
 {
   myFixEdge = new ShapeFix_Edge;

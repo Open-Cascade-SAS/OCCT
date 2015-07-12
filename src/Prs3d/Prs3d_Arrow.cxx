@@ -12,16 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_Arrow.ixx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
+
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_Presentation.hxx>
 
 //=======================================================================
 //function : Draw
 //purpose  : 
 //=======================================================================
-
 void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
                        const gp_Pnt& aLocation,
                        const gp_Dir& aDirection,

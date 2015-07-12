@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_ExternalSource.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ExternalSource.hxx>
+#include <StepBasic_SourceItem.hxx>
 
 //=======================================================================
 //function : StepBasic_ExternalSource
 //purpose  : 
 //=======================================================================
-
 StepBasic_ExternalSource::StepBasic_ExternalSource ()
 {
 }

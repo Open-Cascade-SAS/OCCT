@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_ParamCursor.ixx>
+
+#include <IGESData_ParamCursor.hxx>
 #include <Interface_InterfaceError.hxx>
-
-
 
 IGESData_ParamCursor::IGESData_ParamCursor (const Standard_Integer num)
 {

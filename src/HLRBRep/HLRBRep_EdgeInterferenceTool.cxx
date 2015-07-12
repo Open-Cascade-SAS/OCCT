@@ -17,13 +17,18 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRBRep_EdgeInterferenceTool.ixx>
+
+
+#include <gp_Dir.hxx>
+#include <HLRAlgo_Interference.hxx>
+#include <HLRAlgo_Intersection.hxx>
+#include <HLRBRep_Data.hxx>
+#include <HLRBRep_EdgeInterferenceTool.hxx>
 
 //=======================================================================
 //function : HLRBRep_EdgeInterferenceTool
 //purpose  : 
 //=======================================================================
-
 HLRBRep_EdgeInterferenceTool::HLRBRep_EdgeInterferenceTool
   (const Handle(HLRBRep_Data)& DS) : myDS(DS)
 {

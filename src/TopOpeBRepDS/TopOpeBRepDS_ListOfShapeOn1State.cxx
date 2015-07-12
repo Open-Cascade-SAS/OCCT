@@ -14,15 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_ListOfShapeOn1State.ixx>
 
 #include <Standard_ProgramError.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_ListOfShapeOn1State
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_ListOfShapeOn1State::TopOpeBRepDS_ListOfShapeOn1State() 
 : mySplits(0)
 {

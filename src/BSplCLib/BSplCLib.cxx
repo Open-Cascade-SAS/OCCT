@@ -27,9 +27,14 @@
 // jct : 24-Apr-97 : correction on computation of Tbord and NewFlatKnots
 //                   in TangExtendToConstraint; Continuity can be equal to 0
 
-#include <BSplCLib.ixx>
-#include <PLib.hxx>
+#include <BSplCLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Matrix.hxx>
 #include <NCollection_LocalArray.hxx>
+#include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 

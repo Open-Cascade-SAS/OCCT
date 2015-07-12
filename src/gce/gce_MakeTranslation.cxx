@@ -14,12 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeTranslation.ixx>
+
+#include <gce_MakeTranslation.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 
 //=========================================================================
 //   Creation d une translation 3d de gp de vecteur de tanslation Vec.    +
 //=========================================================================
-
 gce_MakeTranslation::
   gce_MakeTranslation(const gp_Vec&  Vec ) {
    TheTranslation.SetTranslation(Vec);

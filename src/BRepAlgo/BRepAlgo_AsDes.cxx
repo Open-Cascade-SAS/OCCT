@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_AsDes.ixx>
+
+#include <BRepAlgo_AsDes.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : BRepAlgo_AsDes
 //purpose  : 
 //=======================================================================
-
 BRepAlgo_AsDes::BRepAlgo_AsDes()
 {
 }

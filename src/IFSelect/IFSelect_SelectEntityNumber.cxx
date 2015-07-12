@@ -11,9 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectEntityNumber.ixx>
-#include <Interface_InterfaceModel.hxx>
 
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_SelectEntityNumber.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectEntityNumber::IFSelect_SelectEntityNumber ()    {  }
 

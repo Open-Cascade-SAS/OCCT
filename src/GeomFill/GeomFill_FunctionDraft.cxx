@@ -14,21 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_FunctionDraft.ixx>
-#include <GeomAdaptor_HSurface.hxx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <GeomAdaptor_HCurve.hxx>
-//#include <Precision.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomFill_FunctionDraft.hxx>
+#include <GeomFill_Tensor.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <math_Matrix.hxx>
 
-
+//#include <Precision.hxx>
 //*******************************************************
 //   Calcul de la valeur de la fonction :
 //                      G(w(t)) - S(u(t),v(t)) = 0
 //  ou     G = generatrice   et   S = surface d'arret
 //   et de ses derivees
 //*******************************************************
-
-
 //*******************************************************
 // Function : FunctionDraft
 // Purpose : Initialisation de la section et de la surface d'arret

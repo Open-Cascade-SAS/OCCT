@@ -14,49 +14,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_EllipseRadiusDimension.ixx>
-
-#include <TCollection_ExtendedString.hxx>
-
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-
-#include <TopoDS.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-
-#include <Geom_Ellipse.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <Geom_Line.hxx>
-#include <GeomAPI.hxx>
-
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Elips.hxx>
 
 #include <AIS.hxx>
-
+#include <AIS_EllipseRadiusDimension.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
-
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : AIS_EllipseRadiusDimension
 //purpose  : 
 //=======================================================================
-
 AIS_EllipseRadiusDimension::AIS_EllipseRadiusDimension(const TopoDS_Shape& aShape, 
 						       const TCollection_ExtendedString& aText)
 :AIS_Relation()

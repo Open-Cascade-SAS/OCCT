@@ -14,23 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_Radius.ixx>
+
 #include <BRepAdaptor_Surface.hxx>
-#include <Geom_Surface.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Circ.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#include <Draw_Display.hxx>
+#include <DrawDim_Radius.hxx>
 #include <GC_MakeCircle.hxx>
-#include <TopoDS.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : DrawDim_Radius
 //purpose  : 
 //=======================================================================
-
 DrawDim_Radius::DrawDim_Radius(const TopoDS_Face& cylinder)
 {
   myCylinder = cylinder;

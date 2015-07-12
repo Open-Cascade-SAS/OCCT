@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_PlacedDatumTargetFeature.ixx>
+#include <Standard_Type.hxx>
+#include <StepDimTol_PlacedDatumTargetFeature.hxx>
 
 //=======================================================================
 //function : StepDimTol_PlacedDatumTargetFeature
 //purpose  : 
 //=======================================================================
-
 StepDimTol_PlacedDatumTargetFeature::StepDimTol_PlacedDatumTargetFeature ()
 {
 }

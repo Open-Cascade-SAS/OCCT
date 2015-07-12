@@ -22,35 +22,32 @@
 //    by:	Joelle CHAUVET
 //              correction sur le tri des valeurs propres quand valeurs egales
 
-
-#include <GeomPlate_BuildAveragePlane.ixx>
-#include <TColgp_Array1OfVec.hxx>
-#include <math_Matrix.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <math_Jacobi.hxx>
-#include <gp_Vec.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomLib.hxx>
+#include <GeomPlate_Aij.hxx>
+#include <GeomPlate_BuildAveragePlane.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
-#include <ElSLib.hxx>
-#include <Geom_Line.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <gp_Lin2d.hxx>
-#include <ElCLib.hxx>
-#include <GeomLib.hxx>
-
-#include <GeomPlate_Aij.hxx>
-
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <math_Jacobi.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : GeomPlate_BuildAveragePlane
 //purpose  : 
 //=======================================================================
-
-
 GeomPlate_BuildAveragePlane::
 GeomPlate_BuildAveragePlane(const Handle(TColgp_HArray1OfPnt)& Pts,
 			    const Standard_Integer NbBoundPoints,

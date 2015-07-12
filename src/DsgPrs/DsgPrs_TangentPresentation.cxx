@@ -14,20 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_TangentPresentation.ixx>
 
-#include <Graphic3d_Group.hxx>
+#include <DsgPrs_TangentPresentation.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
+#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
-#include <Geom_CartesianPoint.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <StdPrs_Point.hxx>
-#include <gp_Vec.hxx>
-#include <Prs3d_Arrow.hxx>
 
 void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
 				      const Handle(Prs3d_Drawer)& aDrawer,

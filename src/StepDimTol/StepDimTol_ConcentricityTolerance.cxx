@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_ConcentricityTolerance.ixx>
+#include <Standard_Type.hxx>
+#include <StepDimTol_ConcentricityTolerance.hxx>
 
 //=======================================================================
 //function : StepDimTol_ConcentricityTolerance
 //purpose  : 
 //=======================================================================
-
 StepDimTol_ConcentricityTolerance::StepDimTol_ConcentricityTolerance ()
 {
 }

@@ -11,16 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SelectFaces.ixx>
+
+#include <IGESBasic_Group.hxx>
+#include <IGESBasic_SingleParent.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_Plane.hxx>
-#include <IGESBasic_SingleParent.hxx>
-#include <IGESBasic_Group.hxx>
+#include <IGESSelect_SelectFaces.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
-
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_SelectFaces::IGESSelect_SelectFaces ()
     : IFSelect_SelectExplore (-1)    {  }

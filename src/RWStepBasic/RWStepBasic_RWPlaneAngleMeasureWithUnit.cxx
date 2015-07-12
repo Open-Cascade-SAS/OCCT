@@ -11,22 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWPlaneAngleMeasureWithUnit.ixx>
-#include <StepBasic_NamedUnit.hxx>
-#include <StepBasic_MeasureValueMember.hxx>
 
-#include <TCollection_AsciiString.hxx>
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWPlaneAngleMeasureWithUnit.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_NamedUnit.hxx>
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWPlaneAngleMeasureWithUnit
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWPlaneAngleMeasureWithUnit::RWStepBasic_RWPlaneAngleMeasureWithUnit () {}
 
 //=======================================================================

@@ -14,7 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_Axis1Placement.ixx>
+
+#include <Geom_Axis1Placement.hxx>
+#include <Geom_Geometry.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_Axis1Placement         Axis1Placement;
 typedef gp_Ax2  Ax2;

@@ -14,10 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MAT_Node.ixx>
-#include <MAT_BasicElt.hxx>
+
 #include <MAT_Arc.hxx>
+#include <MAT_BasicElt.hxx>
+#include <MAT_Node.hxx>
 #include <Precision.hxx>
+#include <Standard_Type.hxx>
 
 //=============================================================================
 //function : 

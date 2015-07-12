@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWSurfaceSectionFieldVarying.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWSurfaceSectionFieldVarying.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepElement_HArray1OfSurfaceSection.hxx>
 #include <StepElement_SurfaceSection.hxx>
+#include <StepElement_SurfaceSectionFieldVarying.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWSurfaceSectionFieldVarying
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWSurfaceSectionFieldVarying::RWStepElement_RWSurfaceSectionFieldVarying ()
 {
 }

@@ -13,7 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_DS.ixx>
+
+#include <Voxel_DS.hxx>
+#include <Voxel_Reader.hxx>
+#include <Voxel_Writer.hxx>
 
 // Empty constructor
 Voxel_DS::Voxel_DS()

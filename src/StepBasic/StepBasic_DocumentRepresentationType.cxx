@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_DocumentRepresentationType.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Document.hxx>
+#include <StepBasic_DocumentRepresentationType.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_DocumentRepresentationType
 //purpose  : 
 //=======================================================================
-
 StepBasic_DocumentRepresentationType::StepBasic_DocumentRepresentationType ()
 {
 }

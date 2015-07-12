@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Chronometer.ixx>
+
+#include <Draw_Chronometer.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <OSD_Timer.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Chronometer
 //purpose  : 
 //=======================================================================
-
 Draw_Chronometer::Draw_Chronometer() 
 {
 }

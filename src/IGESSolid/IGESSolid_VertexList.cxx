@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_VertexList.ixx>
+#include <gp_Pnt.hxx>
+#include <IGESSolid_VertexList.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_VertexList::IGESSolid_VertexList ()    {  }
 

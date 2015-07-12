@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDS_TCompound.ixx>
 
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TShape.hxx>
 
 //=======================================================================
 //function : ShapeType
 //purpose  : 
 //=======================================================================
-
 TopAbs_ShapeEnum TopoDS_TCompound::ShapeType() const
 {
   return TopAbs_COMPOUND;

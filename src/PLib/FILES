@@ -1,2 +1,15 @@
+PLib.cxx
+PLib.hxx
+PLib.lxx
+PLib_Base.cxx
+PLib_Base.hxx
+PLib_DoubleJacobiPolynomial.cxx
+PLib_DoubleJacobiPolynomial.hxx
+PLib_DoubleJacobiPolynomial.lxx
+PLib_HermitJacobi.cxx
+PLib_HermitJacobi.hxx
+PLib_HermitJacobi.lxx
+PLib_JacobiPolynomial.cxx
+PLib_JacobiPolynomial.hxx
+PLib_JacobiPolynomial.lxx
 PLib_JacobiPolynomial_0.hxx
-PLib_CMPLRS.edl

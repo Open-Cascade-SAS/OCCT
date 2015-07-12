@@ -14,30 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeConic.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_Circle.hxx>
-#include <StepGeom_Ellipse.hxx>
-#include <StepGeom_Hyperbola.hxx>
-#include <StepGeom_Parabola.hxx>
-#include <GeomToStep_MakeConic.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Parabola.hxx>
+
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_Conic.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Parabola.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Parabola.hxx>
 #include <GeomToStep_MakeCircle.hxx>
+#include <GeomToStep_MakeConic.hxx>
 #include <GeomToStep_MakeEllipse.hxx>
 #include <GeomToStep_MakeHyperbola.hxx>
 #include <GeomToStep_MakeParabola.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Circle.hxx>
+#include <StepGeom_Conic.hxx>
+#include <StepGeom_Ellipse.hxx>
+#include <StepGeom_Hyperbola.hxx>
+#include <StepGeom_Parabola.hxx>
 
 //=============================================================================
 // Creation d' une Conic de prostep a partir d' une Conic de Geom
 //=============================================================================
-
 GeomToStep_MakeConic::GeomToStep_MakeConic ( const Handle(Geom_Conic)& C)
 {
   done = Standard_True;

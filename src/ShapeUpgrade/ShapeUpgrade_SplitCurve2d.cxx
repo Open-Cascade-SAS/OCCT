@@ -14,27 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_SplitCurve2d.ixx>
-#include <ShapeUpgrade.hxx>
+
+#include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_SplitCurve2d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <ShapeExtend.hxx>
-#include <Precision.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <Geom2d_Curve.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom2d_HArray1OfCurve.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve2d
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 {
 }

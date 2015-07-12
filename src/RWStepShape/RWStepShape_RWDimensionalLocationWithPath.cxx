@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepShape_RWDimensionalLocationWithPath.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWDimensionalLocationWithPath.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepShape_DimensionalLocationWithPath.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWDimensionalLocationWithPath
 //purpose  : 
 //=======================================================================
-
 RWStepShape_RWDimensionalLocationWithPath::RWStepShape_RWDimensionalLocationWithPath ()
 {
 }

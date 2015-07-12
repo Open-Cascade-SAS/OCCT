@@ -11,12 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HeaderSection_Protocol.ixx>
 
-#include <HeaderSection_FileName.hxx>
 #include <HeaderSection_FileDescription.hxx>
+#include <HeaderSection_FileName.hxx>
 #include <HeaderSection_FileSchema.hxx>
-
+#include <HeaderSection_Protocol.hxx>
+#include <Standard_Type.hxx>
 #include <StepData_UndefinedEntity.hxx>
 
 static Standard_CString schemaName = "header_section";

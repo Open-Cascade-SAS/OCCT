@@ -16,10 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_CircularArc.ixx>
+#include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESGeom_CircularArc.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_CircularArc::IGESGeom_CircularArc ()    {  }
 

@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepShape_NonManifoldSurfaceShapeRepresentation.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_NonManifoldSurfaceShapeRepresentation.hxx>
 
 //=======================================================================
 //function : StepShape_NonManifoldSurfaceShapeRepresentation
 //purpose  : 
 //=======================================================================
-
 StepShape_NonManifoldSurfaceShapeRepresentation::StepShape_NonManifoldSurfaceShapeRepresentation ()
 {
 }

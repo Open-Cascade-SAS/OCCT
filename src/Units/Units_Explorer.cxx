@@ -14,18 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_Explorer.ixx>
+
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Units_Explorer.hxx>
+#include <Units_Unit.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <Units_UnitsSystem.hxx>
-#include <Units_Unit.hxx>
-
-#include <TColStd_HSequenceOfHAsciiString.hxx>
 
 //=======================================================================
 //function : Units_Explorer
 //purpose  : 
 //=======================================================================
-
 Units_Explorer::Units_Explorer()
 {
   thecurrentquantity = 1;

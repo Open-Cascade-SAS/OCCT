@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_GeometryData.ixx>
+
+#include <TopOpeBRepDS_GeometryData.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_GeometryData
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_GeometryData::TopOpeBRepDS_GeometryData()
 {
 }

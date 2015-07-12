@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_StripeMap.ixx>
+
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_StripeMap.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ChFiDS_StripeMap
 //purpose  : 
 //=======================================================================
-
 ChFiDS_StripeMap::ChFiDS_StripeMap() 
 {
 }

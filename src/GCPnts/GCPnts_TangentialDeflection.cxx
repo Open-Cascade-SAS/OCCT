@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCPnts_TangentialDeflection.ixx>
 
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <GCPnts_TangentialDeflection.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 inline static void D0 (const Adaptor3d_Curve& C, const Standard_Real U, gp_Pnt& P)

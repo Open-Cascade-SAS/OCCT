@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepRepr_RWMaterialPropertyRepresentation.ixx>
-#include <StepRepr_Representation.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWMaterialPropertyRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepRepr_DataEnvironment.hxx>
+#include <StepRepr_MaterialPropertyRepresentation.hxx>
+#include <StepRepr_Representation.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWMaterialPropertyRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWMaterialPropertyRepresentation::RWStepRepr_RWMaterialPropertyRepresentation ()
 {
 }

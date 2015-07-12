@@ -14,38 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
 #include <AIS.hxx>
-#include <Graphic3d_Group.hxx>
-
-#include <AIS_Relation.ixx>
-
 #include <AIS_GraphicTool.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <AIS_Relation.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <ElCLib.hxx>
 #include <Geom_CartesianPoint.hxx>
-
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
-#include <Prs3d_TextAspect.hxx>
-
-#include <StdPrs_WFDeflectionShape.hxx>
-#include <StdPrs_Point.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <ElCLib.hxx>
-#include <TopExp.hxx>
-
-
+#include <Graphic3d_Group.hxx>
 #include <Precision.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_Point.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : AIS_Relation

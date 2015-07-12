@@ -11,65 +11,59 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_Solid.ixx>
 
+#include <Bnd_Box2d.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <Message_Msg.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_FreeBounds.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_Shell.hxx>
+#include <ShapeFix_Solid.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-#include <Precision.hxx>
-#include <TopoDS_Shape.hxx>
-#include <ShapeBuild_ReShape.hxx> 
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS.hxx>
-#include <ShapeExtend.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <TopoDS_Wire.hxx>
-#include <ShapeExtend_WireData.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <Standard_Type.hxx>
+#include <TopAbs.hxx>
 #include <TopExp.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <gp_Pnt.hxx>
-#include <Bnd_Box2d.hxx>
-#include <ShapeAnalysis.hxx>
-#include <TopoDS_Edge.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom_Surface.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <Precision.hxx>
-#include <TopAbs.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <BRep_Builder.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_CompSolid.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopAbs.hxx>
-#include <BRep_Tool.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <Message_Msg.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
-#include <Geom_Curve.hxx>
-#include <ShapeAnalysis_FreeBounds.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 //======================================================
 //function : ShapeFix_Solid
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Solid::ShapeFix_Solid()
 {
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);

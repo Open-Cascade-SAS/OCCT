@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_ProgressScale.ixx>
+
+#include <Message_ProgressScale.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static const Standard_Real ZERO = 1e-10;
 static const Standard_Real INFINITE = 1e100;

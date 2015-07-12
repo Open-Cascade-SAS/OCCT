@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_TransformationMatrix.ixx>
+#include <gp_GTrsf.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfRange.hxx>
-
+#include <Standard_Type.hxx>
 
 IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix ()    {  }
 

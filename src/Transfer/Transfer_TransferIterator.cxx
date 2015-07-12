@@ -11,10 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_TransferIterator.ixx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
+
+#include <Interface_Check.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Transient.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransferIterator.hxx>
 
 static Handle(Standard_Transient)   nultrans;  // pour retour const&(Null)
 

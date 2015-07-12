@@ -14,38 +14,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_ConcentricRelation.ixx>
-
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
+#include <AIS.hxx>
+#include <AIS_ConcentricRelation.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <DsgPrs_ConcentricPresentation.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-
-#include <DsgPrs_ConcentricPresentation.hxx>
-
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-
-#include <GeomAbs_CurveType.hxx>
-#include <Geom_Circle.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <AIS.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 AIS_ConcentricRelation::AIS_ConcentricRelation(
 	const TopoDS_Shape& aFShape, 
 	const TopoDS_Shape& aSShape, 

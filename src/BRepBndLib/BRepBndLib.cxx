@@ -12,33 +12,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBndLib.ixx>
-#include <TopExp_Explorer.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRep_Tool.hxx> 
-#include <TopoDS.hxx>
+
+#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <Geom_Surface.hxx>
-#include <TopLoc_Location.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_Polygon3D.hxx>
 #include <BRep_Polygon3D.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <BndLib_Add3dCurve.hxx>
-
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  : Add a shape bounding to a box
 //=======================================================================
-
 void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTriangulation)
 {
   TopExp_Explorer ex;

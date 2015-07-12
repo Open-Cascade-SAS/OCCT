@@ -14,10 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakePln.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <gce_MakePln.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 
 gce_MakePln::gce_MakePln(const gp_Ax2& A2)
 {

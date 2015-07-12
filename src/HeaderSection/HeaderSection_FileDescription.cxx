@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HeaderSection_FileDescription.ixx>
 
+#include <HeaderSection_FileDescription.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 HeaderSection_FileDescription::HeaderSection_FileDescription ()  {}
 

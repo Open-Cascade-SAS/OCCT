@@ -16,10 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_DiameterDimension.ixx>
-#include <gp_XYZ.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESDimen_DiameterDimension.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_DiameterDimension::IGESDimen_DiameterDimension ()    {  }
 

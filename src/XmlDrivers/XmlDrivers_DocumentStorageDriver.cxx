@@ -13,11 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlDrivers_DocumentStorageDriver.ixx>
-#include <XmlDrivers.hxx>
-#include <XmlMNaming_NamedShapeDriver.hxx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <XmlDrivers.hxx>
+#include <XmlDrivers_DocumentStorageDriver.hxx>
+#include <XmlMDF_ADriverTable.hxx>
+#include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlObjMgt_Element.hxx>
+
 //=======================================================================
 //function : XmlDrivers_DocumentStorageDriver
 //purpose  : Constructor

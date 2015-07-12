@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_ManifoldSurfaceShapeRepresentation.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
 
 StepShape_ManifoldSurfaceShapeRepresentation::StepShape_ManifoldSurfaceShapeRepresentation ()  {}
 

@@ -12,26 +12,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2d3Tan.jxx>
 
 #include <ElCLib.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
-#include <IntAna2d_IntPoint.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <GccAna_LinPnt2dBisec.hxx>
+#include <GccAna_Circ2d3Tan.hxx>
 #include <GccAna_Lin2dBisec.hxx>
-#include <GccInt_IType.hxx>
+#include <GccAna_LinPnt2dBisec.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_BLine.hxx>
 #include <GccInt_BParab.hxx>
+#include <GccInt_IType.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to two straight lines and a point.      +
 //=========================================================================
-
 GccAna_Circ2d3Tan::
    GccAna_Circ2d3Tan (const GccEnt_QualifiedLin&  Qualified1 ,
                       const GccEnt_QualifiedLin&  Qualified2 ,

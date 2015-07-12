@@ -19,46 +19,46 @@
 //    abv 14.05.99 S4174: Adding method for exact computing of the boundary box 
 //    gka 21.06.99 S4208: adding method NextProject(Adaptor_Curve)
 //    msv 30.05.00 correct IsPlanar for a conic curve
-#include <ShapeAnalysis_Curve.ixx>
 
+#include <Adaptor3d_Curve.hxx>
+#include <Bnd_Box2d.hxx>
 #include <ElCLib.hxx>
-
+#include <Extrema_ExtPC.hxx>
+#include <Extrema_LocateExtPC.hxx>
+#include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_Geom2dCurveTool.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
 #include <Precision.hxx>
-
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeExtend_ComplexCurve.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <ShapeAnalysis.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <ShapeExtend_ComplexCurve.hxx>
-#include <Geom2d_Conic.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2dInt_Geom2dCurveTool.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom_Circle.hxx>
-#include <Extrema_LocateExtPC.hxx>
-#include <Geom_BoundedCurve.hxx>
 
 //=======================================================================
 //function : ProjectOnSegments
 //purpose  : 
 //=======================================================================
-
 static void ProjectOnSegments (const Adaptor3d_Curve& AC, const gp_Pnt& P3D,
 			       const Standard_Integer nbseg,
 			       Standard_Real& uMin, Standard_Real& uMax,

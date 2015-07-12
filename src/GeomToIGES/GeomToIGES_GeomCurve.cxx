@@ -21,26 +21,23 @@
 //:l5 abv 14.01.99: CTS22022-1: protection against exceptions in Segment()
 //:q3 abv 17.03.99: PRO17828: using GeomConvert_ApproxCurve for converting circle to bspline
 
-#include <GeomToIGES_GeomCurve.ixx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <Geom_Curve.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom_Conic.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Parabola.hxx>
-
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
-
+#include <GeomConvert_ApproxCurve.hxx>
+#include <GeomToIGES_GeomCurve.hxx>
+#include <GeomToIGES_GeomEntity.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
@@ -56,12 +53,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
-
 #include <IGESConvGeom_GeomBuilder.hxx>
-
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_ToolLocation.hxx>
-
 #include <IGESGeom_BSplineCurve.hxx>
 #include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
@@ -69,34 +63,27 @@
 #include <IGESGeom_CopiousData.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_Line.hxx>
-#include <IGESGeom_Point.hxx>
 #include <IGESGeom_OffsetCurve.hxx>
+#include <IGESGeom_Point.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
-
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-
 #include <Precision.hxx>
-
-#include <TColgp_HArray1OfXYZ.hxx>
+#include <ShapeCustom_BSplineRestriction.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-
+#include <TColgp_HArray1OfXYZ.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <BSplCLib.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
-
-#include <ShapeCustom_BSplineRestriction.hxx>
 
 // Pour toutes les courbes infinies soit 
 // Udeb <= -Precision::Infinite() et/ou Ufin >= Precision::Infinite()
 // on choisit arbitrairement de les construire entre 
 // Udeb = -Precision::Infinite() et Ufin = Precision::Infinite()
-
 //=============================================================================
 // GeomToIGES_GeomCurve
 //=============================================================================
-
 GeomToIGES_GeomCurve::GeomToIGES_GeomCurve()
 :GeomToIGES_GeomEntity()
 {

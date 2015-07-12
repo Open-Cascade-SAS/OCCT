@@ -14,94 +14,77 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_RibSlot.ixx>
+
+#include <Bnd_Box.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgo.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepFeat.hxx>
-
+#include <BRepFeat_Builder.hxx>
+#include <BRepFeat_RibSlot.hxx>
+#include <BRepIntCurveSurface_Inter.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <CSLib.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomLib.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <LocOpe.hxx>
-#include <LocOpe_Gluer.hxx>
-#include <LocOpe_FindEdges.hxx>
 #include <LocOpe_CSIntersector.hxx>
+#include <LocOpe_FindEdges.hxx>
+#include <LocOpe_Gluer.hxx>
 #include <LocOpe_PntFace.hxx>
-
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColGeom_SequenceOfCurve.hxx>
 #include <TopAbs.hxx>
-
-#include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
-
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 
-#include <TopOpeBRepBuild_HBuilder.hxx>
-
-#include <BRep_Tool.hxx>
-
-#include <BRepAlgo.hxx>
 //modified by NIZNHY-PKV Fri Mar 22 16:48:13 2002 f
 //#include <BRepAlgo_Cut.hxx>
 //#include <BRepAlgo_Fuse.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
 //modified by NIZNHY-PKV Fri Mar 22 16:48:16 2002 t
-
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepIntCurveSurface_Inter.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-
-#include <BRepLib_MakeVertex.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <BRepLib.hxx>
-
-#include <Bnd_Box.hxx>
-
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
-
-#include <GeomLib.hxx>
-#include <GeomAdaptor_Curve.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <GeomAPI.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-
-
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-#include <CSLib.hxx>
-
-#include <Precision.hxx>
-
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <BRepFeat_Builder.hxx>
-
-
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 extern Standard_Boolean BRepFeat_GettraceFEATRIB();

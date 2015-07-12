@@ -12,25 +12,26 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <ShapeFix_WireVertex.ixx>
 
+#include <BRep_Builder.hxx>
+#include <gp_Pnt.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_WireVertex.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_WireVertex.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <BRep_Builder.hxx>
 
-#include <ShapeAnalysis_Edge.hxx>
-
-#include <gp_Pnt.hxx> //ied_modif_for_compil_Nov-19-1998
-
+//ied_modif_for_compil_Nov-19-1998
 //=======================================================================
 //function : ShapeFix_WireVertex
 //purpose  : 
 //=======================================================================
-
 ShapeFix_WireVertex::ShapeFix_WireVertex()
 {
 }

@@ -13,20 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Aspect_ColorScale.ixx>
 
+#include <Aspect_ColorScale.hxx>
 #include <Aspect_SequenceOfColor.hxx>
 #include <Aspect_TypeOfColorScaleData.hxx>
 #include <Aspect_TypeOfColorScalePosition.hxx>
-
+#include <Precision.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
-#include <Precision.hxx>
-
 #include <stdio.h>
-
 Aspect_ColorScale::Aspect_ColorScale()
 : MMgt_TShared(),
 myMin( 0.0 ),

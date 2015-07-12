@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_Quantity.ixx>
-#include <Units_Unit.hxx>
-#include <Units_Operators.hxx>
 
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Units_Dimensions.hxx>
+#include <Units_Operators.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_Unit.hxx>
 
 //=======================================================================
 //function : IsEqual
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean Units_Quantity::IsEqual(const Standard_CString astring) const
 {
   return (Name() == astring);

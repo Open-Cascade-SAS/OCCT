@@ -21,49 +21,49 @@
 //:r4 abv 02.04.99 improving method FixSameParameter()
 //:s5 abv 22.04.99 Adding debug printouts in catch {} blocks
 //    abv 05.05.99 S4137: method CopyPCurves moved to ShapeBuild_Edge
-#include <ShapeFix_Edge.ixx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
-
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-
-#include <Geom_Curve.hxx>
-#include <GeomLib.hxx>
-
-#include <Precision.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS.hxx>
-
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeExtend.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeFix_ShapeTolerance.hxx>
 #include <Geom2d_OffsetCurve.hxx>
-#include <ShapeAnalysis_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
-#include <Geom2d_BoundedCurve.hxx>
-
+#include <Geom_Surface.hxx>
+#include <GeomLib.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ShapeFix_Edge
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Edge::ShapeFix_Edge()
 {
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);

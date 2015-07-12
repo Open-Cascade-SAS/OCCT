@@ -13,24 +13,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinLDrivers_DocumentStorageDriver.ixx>
+
 #include <BinLDrivers.hxx>
+#include <BinLDrivers_DocumentSection.hxx>
+#include <BinLDrivers_DocumentStorageDriver.hxx>
 #include <BinLDrivers_Marker.hxx>
 #include <BinMDF_ADriver.hxx>
+#include <BinMDF_ADriverTable.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Type.hxx>
 #include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 

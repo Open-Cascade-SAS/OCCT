@@ -22,68 +22,64 @@
 //		dans Init(Path, FirstSect, LastSect) :
 //		il faut placer les 2 sections au debut de la trajectoire
 
-#include <stdio.h>
-
-#include <GeomFill_Pipe.ixx>
-
-#include <GeomFill_Line.hxx>
-#include <GeomFill_SweepSectionGenerator.hxx>
-#include <GeomFill_AppSweep.hxx>
-#include <GeomFill_Profiler.hxx>
-#include <GeomFill_CircularBlendFunc.hxx>
-#include <GeomFill_UniformSection.hxx>
-#include <GeomFill_Fixed.hxx>
-#include <GeomFill_Frenet.hxx>
-#include <GeomFill_CorrectedFrenet.hxx>
-#include <GeomFill_ConstantBiNormal.hxx>
-#include <GeomFill_CurveAndTrihedron.hxx>
-#include <GeomFill_SectionPlacement.hxx>
-#include <GeomFill_Sweep.hxx>
-#include <GeomFill_NSections.hxx>
-
-#include <GeomFill_GuideTrihedronAC.hxx>
-
-#include <GeomFill_GuideTrihedronPlan.hxx>
-#include <GeomFill_LocationGuide.hxx>
-
-
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Approx_SweepApproximation.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_Plane.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
-
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomFill_AppSweep.hxx>
+#include <GeomFill_CircularBlendFunc.hxx>
+#include <GeomFill_ConstantBiNormal.hxx>
+#include <GeomFill_CorrectedFrenet.hxx>
+#include <GeomFill_CurveAndTrihedron.hxx>
+#include <GeomFill_Darboux.hxx>
+#include <GeomFill_Fixed.hxx>
+#include <GeomFill_Frenet.hxx>
+#include <GeomFill_GuideTrihedronAC.hxx>
+#include <GeomFill_GuideTrihedronPlan.hxx>
+#include <GeomFill_Line.hxx>
+#include <GeomFill_LocationGuide.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <GeomFill_NSections.hxx>
+#include <GeomFill_Pipe.hxx>
+#include <GeomFill_Profiler.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_SectionPlacement.hxx>
+#include <GeomFill_Sweep.hxx>
+#include <GeomFill_SweepSectionGenerator.hxx>
+#include <GeomFill_UniformSection.hxx>
+#include <GeomLib.hxx>
 #include <GeomLProp_CLProps.hxx>
-
-#include <Approx_SweepApproximation.hxx>
-
-#include <gp_Torus.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
-
+#include <gp_Dir.hxx>
+#include <gp_Torus.hxx>
 #include <Precision.hxx>
-#include <ElCLib.hxx>
-
-#include <GeomLib.hxx>
-
-#include <GeomFill_Darboux.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 
+#include <stdio.h>
 #ifdef OCCT_DEBUG
 static Standard_Boolean Affich = Standard_False;
 static Standard_Integer NbSections = 0;

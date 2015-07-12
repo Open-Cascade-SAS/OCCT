@@ -11,11 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SessionDumper.ixx>
+
 #include <IFSelect_BasicDumper.hxx>
-
-
-
+#include <IFSelect_SessionDumper.hxx>
+#include <IFSelect_SessionFile.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static Handle(IFSelect_SessionDumper)  thefirst;
 static int cefait = 0;

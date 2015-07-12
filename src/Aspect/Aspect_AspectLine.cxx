@@ -14,43 +14,33 @@
 // commercial license or contractual agreement.
 
 //-Version	
-
 //-Design	Declaration of variables specific to the context
 //		of line tracing
-
 //-Warning	A context of line tracing is defined by :
 //		- the color
 //		- the type of line
 //		- the thickness
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Aspect_AspectLine.ixx>
+
+#include <Aspect_AspectLine.hxx>
+#include <Aspect_AspectLineDefinitionError.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //	-- color
 //	MyColor	:	Color;
-
 //	-- type of line
 //	MyType	:	TypeOfLine;
-
 //	-- thickness
 //	MyWidth	:	Standard_Real;
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
 Aspect_AspectLine::Aspect_AspectLine () {
 
 	MyColor	= Quantity_NOC_YELLOW;

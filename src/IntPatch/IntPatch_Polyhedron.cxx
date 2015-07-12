@@ -14,19 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_Polyhedron.ixx>
 
-#include <IntPatch_HInterTool.hxx>
-
+#include <Adaptor3d_HSurface.hxx>
+#include <Bnd_Array1OfBox.hxx>
+#include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <IntPatch_HInterTool.hxx>
+#include <IntPatch_Polyhedron.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <Bnd_Array1OfBox.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Precision.hxx>
-#include <stdio.h>
 
+#include <stdio.h>
 #define MSG_DEBUG                   0
 
 #define LONGUEUR_MINI_EDGE_TRIANGLE 1e-14

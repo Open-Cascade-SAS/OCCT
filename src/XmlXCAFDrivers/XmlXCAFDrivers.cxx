@@ -13,14 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlXCAFDrivers.ixx>
-#include <XmlXCAFDrivers_DocumentStorageDriver.hxx>
-#include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
 
+#include <Plugin_Macro.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
 #include <XmlDrivers.hxx>
-#include <Plugin_Macro.hxx>
+#include <XmlXCAFDrivers.hxx>
+#include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
+#include <XmlXCAFDrivers_DocumentStorageDriver.hxx>
 
 static Standard_GUID XSStorageDriver  ("f78ff496-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID XSRetrievalDriver("f78ff497-a779-11d5-aab4-0050044b1af1");

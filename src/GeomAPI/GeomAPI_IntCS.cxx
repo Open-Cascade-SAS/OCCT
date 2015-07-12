@@ -14,19 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAPI_IntCS.ixx>
 
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
+#include <GeomAPI_IntCS.hxx>
+#include <gp_Pnt.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : GeomAPI_IntCS
 //purpose  : 
 //=======================================================================
-
 GeomAPI_IntCS::GeomAPI_IntCS()
 {
 }

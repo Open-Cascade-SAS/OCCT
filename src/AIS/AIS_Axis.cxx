@@ -14,26 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Axis.ixx>
+
+#include <AIS_Axis.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_DatumAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <StdPrs_Curve.hxx>
-#include <TopoDS.hxx>
+#include <DsgPrs_XYZAxisPresentation.hxx>
 #include <Geom_Axis1Placement.hxx>
+#include <Geom_Axis2Placement.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
-#include <Geom_Line.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <DsgPrs_XYZAxisPresentation.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Prs3d_DatumAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Quantity_Color.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_Curve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TopoDS.hxx>
 #include <UnitsAPI.hxx>
 
 //=======================================================================

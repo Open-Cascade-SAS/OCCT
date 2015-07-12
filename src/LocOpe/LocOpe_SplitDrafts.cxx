@@ -14,63 +14,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_SplitDrafts.ixx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
+#include <BRepGProp.hxx>
 #include <BRepTools_Substitution.hxx>
-
-#include <LocOpe_WiresOnShape.hxx>
-#include <LocOpe_Spliter.hxx>
-#include <LocOpe_SplitShape.hxx>
-#include <LocOpe_FindEdges.hxx>
-#include <LocOpe_BuildShape.hxx>
-
-
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-
+#include <Extrema_ExtPC.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomFill_Pipe.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <GProp_GProps.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
-#include <GeomInt_IntSS.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-
-#include <GeomFill_Pipe.hxx>
-
-#include <GProp_GProps.hxx>
-
-#include <Standard_ConstructionError.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
+#include <LocOpe_BuildShape.hxx>
+#include <LocOpe_FindEdges.hxx>
+#include <LocOpe_SplitDrafts.hxx>
+#include <LocOpe_Spliter.hxx>
+#include <LocOpe_SplitShape.hxx>
+#include <LocOpe_WiresOnShape.hxx>
 #include <Precision.hxx>
-#include <BRepGProp.hxx>
-#include <gp.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 static Standard_Boolean NewPlane(const TopoDS_Face&,
 				 const gp_Dir&,

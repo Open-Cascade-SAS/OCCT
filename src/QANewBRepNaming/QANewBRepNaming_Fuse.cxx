@@ -13,20 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Fuse.ixx>
-#include <TNaming_Builder.hxx>
+
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <QANewBRepNaming_Fuse.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TNaming_Tool.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : QANewBRepNaming_Fuse
 //purpose  : 
 //=======================================================================
-
 QANewBRepNaming_Fuse::QANewBRepNaming_Fuse() {}
 
 //=======================================================================

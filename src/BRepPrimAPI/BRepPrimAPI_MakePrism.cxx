@@ -17,11 +17,14 @@
 // Modified by skv - Fri Mar  4 15:50:09 2005
 // Add methods for supporting history.
 
-#include <BRepPrimAPI_MakePrism.ixx>
 #include <BRepLib.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepSweep_Prism.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Vec.hxx>
+#include <TopoDS_Shape.hxx>
 
 // perform checks on the argument
-
 static const TopoDS_Shape& check(const TopoDS_Shape& S)
 {
  BRepLib::BuildCurves3d(S);

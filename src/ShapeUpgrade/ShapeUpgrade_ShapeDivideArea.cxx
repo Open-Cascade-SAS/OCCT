@@ -11,15 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ShapeDivideArea.ixx>
-#include <ShapeUpgrade_FaceDivideArea.hxx>
+
 #include <Precision.hxx>
+#include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_FaceDivideArea.hxx>
+#include <ShapeUpgrade_ShapeDivideArea.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideArea
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShapeDivideArea::ShapeUpgrade_ShapeDivideArea():
        ShapeUpgrade_ShapeDivide()
 {

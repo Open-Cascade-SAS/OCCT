@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ConeFrustum.ixx>
+#include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESSolid_ConeFrustum.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_ConeFrustum::IGESSolid_ConeFrustum ()    {  }
 

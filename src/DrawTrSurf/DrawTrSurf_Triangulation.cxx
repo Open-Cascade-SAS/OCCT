@@ -14,24 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Triangulation.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <DrawTrSurf_Triangulation.hxx>
+#include <gp_Pnt.hxx>
+#include <Poly.hxx>
+#include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangle.hxx>
-#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <gp_Pnt.hxx>
-#include <Draw_Color.hxx>
-#include <Poly.hxx>
 
-//#ifdef WNT
 #include <stdio.h>
+//#ifdef WNT
 //#endif
-
 //=======================================================================
 //function : DrawTrSurf_Triangulation
 //purpose  : 
 //=======================================================================
-
 DrawTrSurf_Triangulation::DrawTrSurf_Triangulation
 (const Handle(Poly_Triangulation)& T): 
     myTriangulation(T), 

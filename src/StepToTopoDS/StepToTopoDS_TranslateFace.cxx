@@ -24,78 +24,74 @@
 //%19 pdn 17.04.99 using ShapeFix_Wire::FixEdgeCurves instead of ShapeFix_PCurves
 //    smh 31.01.01 Bad data in file : case of vertex loop on plane face
 // sln 01.10.2001 BUC61003. StepToTopoDS_TranslateFace::Init function is corrected (verifying  Handle(...).IsNull() is added)
-#include <StepToTopoDS_TranslateFace.ixx>
 
-#include <StepToTopoDS.hxx>
-
-#include <StepToGeom_MakeSurface.hxx>
-
-#include <StepToTopoDS_TranslateVertexLoop.hxx>
-#include <StepToTopoDS_TranslatePolyLoop.hxx>
-#include <StepToTopoDS_TranslateEdgeLoop.hxx>
-
-#include <StepShape_EdgeCurve.hxx>
-#include <StepShape_VertexLoop.hxx>
-#include <StepShape_EdgeLoop.hxx>
-#include <StepShape_PolyLoop.hxx>
-#include <StepGeom_Surface.hxx>
-#include <StepShape_FaceBound.hxx>
-#include <StepShape_FaceOuterBound.hxx>
-#include <StepShape_OrientedEdge.hxx>
-#include <StepShape_Edge.hxx>
-
-//#3 rln 16/02/98
+#include <BRep_Builder.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_TVertex.hxx>
-
-#include <Geom_BoundedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-//#include <GeomAdaptor_Curve.hxx>
-//#include <GeomAdaptor_CurveOnSurface.hxx>
-
-#include <Geom2d_Curve.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>//#3 rln 16/02/98
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>//rln 28/01/98
-
-#include <TopoDS_Wire.hxx>
-#include <BRepTools.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRep_Builder.hxx>//rln 28/01/98
 #include <BRep_Tool.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <Precision.hxx>
-
-//  Provisoire, pour VertexLoop
+#include <BRep_TVertex.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BoundedSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <StepGeom_OffsetSurface.hxx> //:d4
-#include <StepGeom_BSplineSurfaceForm.hxx>
-#include <StepGeom_BSplineSurface.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
-#include <TopoDS_Iterator.hxx>
-
-// To proceed with I-DEAS-like STP (ssv; 15.11.2010)
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_BSplineSurface.hxx>
+#include <StepGeom_BSplineSurfaceForm.hxx>
+#include <StepGeom_OffsetSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepShape_Edge.hxx>
+#include <StepShape_EdgeCurve.hxx>
+#include <StepShape_EdgeLoop.hxx>
+#include <StepShape_FaceBound.hxx>
+#include <StepShape_FaceOuterBound.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <StepShape_PolyLoop.hxx>
+#include <StepShape_VertexLoop.hxx>
+#include <StepToGeom_MakeSurface.hxx>
+#include <StepToTopoDS.hxx>
+#include <StepToTopoDS_NMTool.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateEdgeLoop.hxx>
+#include <StepToTopoDS_TranslateFace.hxx>
+#include <StepToTopoDS_TranslatePolyLoop.hxx>
+#include <StepToTopoDS_TranslateVertexLoop.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <Transfer_TransientProcess.hxx>
 
+//#3 rln 16/02/98
+//#include <GeomAdaptor_Curve.hxx>
+//#include <GeomAdaptor_CurveOnSurface.hxx>
+//#3 rln 16/02/98
+//rln 28/01/98
+//rln 28/01/98
+//  Provisoire, pour VertexLoop
+//:d4
+// To proceed with I-DEAS-like STP (ssv; 15.11.2010)
 //#define DEBUG
-
 // ============================================================================
 // Method  : StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace
 // Purpose : Empty Constructor
 // ============================================================================
-
 StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace()
 {
   done = Standard_False;

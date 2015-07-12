@@ -14,22 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Torus.ixx>
 
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Ax2d.hxx>
-#include <Precision.hxx>
-
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_Circle.hxx>
+#include <BRepPrim_Torus.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : BRepPrim_Torus
 //purpose  : 
 //=======================================================================
-
 BRepPrim_Torus::BRepPrim_Torus(const gp_Ax2& Position, 
 			       const Standard_Real Major, 
 			       const Standard_Real Minor) :

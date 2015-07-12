@@ -14,36 +14,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Macros.hxx>
-#include <STEPSelections_Counter.ixx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
+
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <StepShape_ContextDependentShapeRepresentation.hxx>
-#include <StepShape_FacetedBrep.hxx>
-#include <StepShape_BrepWithVoids.hxx>
-#include <StepShape_ClosedShell.hxx>
-#include <StepShape_OrientedClosedShell.hxx>
-#include <StepShape_ShellBasedSurfaceModel.hxx>
-#include <StepShape_Shell.hxx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
-#include <StepRepr_MappedItem.hxx>
-#include <StepShape_FaceSurface.hxx>
-#include <StepRepr_RepresentationRelationship.hxx>
-#include <StepRepr_ShapeRepresentationRelationship.hxx>
-#include <STEPConstruct_Assembly.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-#include <StepShape_GeometricCurveSet.hxx>
-#include <StepShape_GeometricSetSelect.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
 #include <StepBasic_ProductRelatedProductCategory.hxx>
+#include <STEPConstruct_Assembly.hxx>
+#include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
-#include <StepRepr_RepresentationMap.hxx>
-#include <StepShape_ManifoldSolidBrep.hxx>
-#include <StepShape_GeometricSet.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_Surface.hxx>
-#include <StepGeom_CompositeCurve.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_RepresentationMap.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <STEPSelections_Counter.hxx>
+#include <StepShape_BrepWithVoids.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepShape_FacetedBrep.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
+#include <StepShape_GeometricCurveSet.hxx>
+#include <StepShape_GeometricSet.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepShape_Shell.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
 
 STEPSelections_Counter::STEPSelections_Counter()
 {

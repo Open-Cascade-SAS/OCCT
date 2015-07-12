@@ -14,23 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeLine.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Vector.hxx>
+
+#include <Geom2d_Line.hxx>
+#include <Geom_Line.hxx>
+#include <GeomToStep_MakeCartesianPoint.hxx>
+#include <GeomToStep_MakeLine.hxx>
+#include <GeomToStep_MakeVector.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <GeomToStep_MakeLine.hxx>
-#include <GeomToStep_MakeCartesianPoint.hxx>
-#include <GeomToStep_MakeVector.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Vector.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 //=============================================================================
 // Creation d' une line de prostep a partir d' une Lin de gp
 //=============================================================================
-
 GeomToStep_MakeLine::GeomToStep_MakeLine( const gp_Lin& L)
 {
 #define Vec_gen gp_Vec

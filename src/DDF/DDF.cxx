@@ -14,25 +14,21 @@
 // commercial license or contractual agreement.
 
 //      	-------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Feb 10 1997	Creation
 
-
-
-#include <DDF.ixx>
-
+#include <DDF.hxx>
 #include <DDF_Data.hxx>
-
 #include <Draw.hxx>
-
+#include <Standard_GUID.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
-
+#include <TDF_Attribute.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
@@ -40,7 +36,6 @@
 //function : AddLabel
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean DDF::AddLabel 
 
 (

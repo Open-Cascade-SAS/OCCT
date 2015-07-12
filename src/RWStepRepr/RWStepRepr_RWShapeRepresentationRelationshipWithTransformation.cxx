@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepRepr_RWShapeRepresentationRelationshipWithTransformation.ixx>
-#include <StepRepr_Representation.hxx>
-#include <StepRepr_Transformation.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepRepr_RWShapeRepresentationRelationshipWithTransformation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_Representation.hxx>
 #include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
-
+#include <StepRepr_Transformation.hxx>
 
 RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::RWStepRepr_RWShapeRepresentationRelationshipWithTransformation () {}
 

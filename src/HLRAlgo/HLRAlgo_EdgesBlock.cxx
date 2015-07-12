@@ -17,13 +17,15 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRAlgo_EdgesBlock.ixx>
+
+
+#include <HLRAlgo_EdgesBlock.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : HLRAlgo_EdgesBlock
 //purpose  : 
 //=======================================================================
-
 HLRAlgo_EdgesBlock::HLRAlgo_EdgesBlock (const Standard_Integer NbEdges) :
   myEdges(1,NbEdges), myFlags(1,NbEdges)
 {}

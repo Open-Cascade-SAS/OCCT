@@ -14,20 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw_DrawableSUR.ixx>
-#include <Geom_RectangularTrimmedSurface.hxx>
+
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTools.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Text3D.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <gp.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp.hxx>
+#include <Standard_Type.hxx>
+#include <TestTopOpeDraw_DrawableSUR.hxx>
 
 //=======================================================================
 //function : TestTopOpeDraw_DrawableSUR
 //purpose  : 
 //=======================================================================
-
 TestTopOpeDraw_DrawableSUR::TestTopOpeDraw_DrawableSUR
 (const Handle(Geom_Surface)& S, const Draw_Color& IsoColor) :
  DrawTrSurf_Surface(S,0, 0, Draw_cyan, IsoColor,16,  0.01, 1),

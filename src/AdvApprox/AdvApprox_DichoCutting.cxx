@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApprox_DichoCutting.ixx>
+
+#include <AdvApprox_DichoCutting.hxx>
 #include <Precision.hxx>
 
 AdvApprox_DichoCutting::AdvApprox_DichoCutting()

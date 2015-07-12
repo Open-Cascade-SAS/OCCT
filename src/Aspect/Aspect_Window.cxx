@@ -15,31 +15,26 @@
 
 // Modified:    GG 28/11/00 G002
 //              Add BackgroundImage() and BackgroundFillMethod() methods
-
-
 //-Version
-
 //-Design       Creation d'une fenetre
-
 //-Warning
-
 //-References
-
 //-Language     C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Aspect_Window.ixx>
+
+#include <Aspect_Background.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Window.hxx>
+#include <Aspect_WindowDefinitionError.hxx>
+#include <Aspect_WindowError.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //-Destructors
-
 //-Constructors
-
 Aspect_Window::Aspect_Window()
 : MyBackground(),
   MyGradientBackground(),

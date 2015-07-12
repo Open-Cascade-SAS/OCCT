@@ -17,13 +17,16 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <IntAna_Int3Pln.ixx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_DomainError.hxx>
+
+#include <gp.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <IntAna_Int3Pln.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <gp.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
 
 IntAna_Int3Pln::IntAna_Int3Pln () : done(Standard_False) {}
 

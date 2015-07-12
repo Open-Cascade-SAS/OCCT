@@ -11,33 +11,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_SplitCommonVertex.ixx>
 
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
+#include <Message_Msg.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-#include <ShapeBuild_ReShape.hxx>
 #include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_SplitCommonVertex.hxx>
+#include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <Message_Msg.hxx>
-
+#include <TopTools_SequenceOfShape.hxx>
 
 //=======================================================================
 //function : ShapeFix_SplitCommonVertex
 //purpose  : 
 //=======================================================================
-
 ShapeFix_SplitCommonVertex::ShapeFix_SplitCommonVertex()
 {
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );

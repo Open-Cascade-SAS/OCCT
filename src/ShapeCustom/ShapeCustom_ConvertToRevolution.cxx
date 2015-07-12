@@ -11,36 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeCustom_ConvertToRevolution.ixx>
-#include <Geom_ElementarySurface.hxx>
+
 #include <BRep_Builder.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <TopoDS.hxx>
-#include <Precision.hxx>
-
-#include <BRep_TEdge.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Message_Msg.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
+#include <ShapeCustom_ConvertToRevolution.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ShapeCustom_ConvertToRevolution
 //purpose  : 
 //=======================================================================
-
 ShapeCustom_ConvertToRevolution::ShapeCustom_ConvertToRevolution()
 {
 }

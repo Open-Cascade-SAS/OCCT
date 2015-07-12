@@ -11,14 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SignatureList.ixx>
+
+#include <Dico_DictionaryOfInteger.hxx>
+#include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <Interface_MSG.hxx>
+#include <IFSelect_SignatureList.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
+#include <Interface_MSG.hxx>
 #include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
 
 IFSelect_SignatureList::IFSelect_SignatureList
   (const Standard_Boolean withlist)

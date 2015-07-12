@@ -14,22 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Drawable.ixx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_IsoCurve.hxx>
+#include <Draw_Display.hxx>
+#include <DrawTrSurf_Drawable.hxx>
 #include <GCPnts_UniformDeflection.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : DrawTrSurf_Drawable
 //purpose  : initialise the discretisation
 //=======================================================================
-
 DrawTrSurf_Drawable::DrawTrSurf_Drawable (
 
 const Standard_Integer discret,

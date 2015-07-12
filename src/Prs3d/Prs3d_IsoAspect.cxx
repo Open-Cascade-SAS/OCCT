@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_IsoAspect.ixx>
+
+#include <Prs3d_IsoAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 Prs3d_IsoAspect::Prs3d_IsoAspect(const Quantity_Color &aColor,
 			     const Aspect_TypeOfLine aType,

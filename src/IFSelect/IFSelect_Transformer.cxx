@@ -11,8 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Transformer.ixx>
 
+#include <IFSelect_Transformer.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Standard_Boolean  IFSelect_Transformer::ChangeProtocol
   (Handle(Interface_Protocol)& ) const

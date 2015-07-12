@@ -14,20 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_Edge3DLaw.ixx>
 
-#include <BRepTools_WireExplorer.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-
-#include <GeomFill_LocationLaw.hxx>
-#include <GeomFill_HArray1OfLocationLaw.hxx>
+#include <BRepFill_Edge3DLaw.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
+#include <GeomFill_HArray1OfLocationLaw.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HArray1OfShape.hxx>
 
 BRepFill_Edge3DLaw::BRepFill_Edge3DLaw(const TopoDS_Wire& Path,
 				     const Handle(GeomFill_LocationLaw)& Law)

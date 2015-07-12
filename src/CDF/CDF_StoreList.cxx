@@ -14,23 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_StoreList.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Macro.hxx>
-
+#include <CDF_Application.hxx>
+#include <CDF_MetaDataDriver.hxx>
+#include <CDF_MetaDataDriverError.hxx>
+#include <CDF_Session.hxx>
+#include <CDF_StoreList.hxx>
+#include <CDF_Timer.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
 #include <CDM_ReferenceIterator.hxx>
-
 #include <PCDM.hxx>
 #include <PCDM_Document.hxx>
 #include <PCDM_StorageDriver.hxx>
-
-#include <CDF_MetaDataDriverError.hxx>
-#include <CDF_MetaDataDriver.hxx>
-
-#include <CDF_Session.hxx>
-#include <CDF_Application.hxx>
-#include <CDF_Timer.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Macro.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 static void CAUGHT(TCollection_ExtendedString& status,const TCollection_ExtendedString& what) {
   Handle(Standard_Failure) F = Standard_Failure::Caught();

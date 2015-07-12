@@ -14,35 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_FindEdgesInFace.ixx>
 
 #include <BRep_Tool.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <BRepTopAdaptor_TopolTool.hxx>
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
-
+#include <BRepTopAdaptor_TopolTool.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <LocOpe_FindEdgesInFace.hxx>
 #include <Precision.hxx>
-
-
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
-
 void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh,
 				 const TopoDS_Face& F)
 {

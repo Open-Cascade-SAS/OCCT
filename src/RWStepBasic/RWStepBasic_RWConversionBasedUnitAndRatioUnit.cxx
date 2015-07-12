@@ -11,18 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWConversionBasedUnitAndRatioUnit.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWConversionBasedUnitAndRatioUnit.hxx>
 #include <StepBasic_ConversionBasedUnit.hxx>
-#include <StepBasic_RatioUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndRatioUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepBasic_ConversionBasedUnitAndRatioUnit.hxx>
-
+#include <StepBasic_RatioUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWConversionBasedUnitAndRatioUnit::RWStepBasic_RWConversionBasedUnitAndRatioUnit () {}
 

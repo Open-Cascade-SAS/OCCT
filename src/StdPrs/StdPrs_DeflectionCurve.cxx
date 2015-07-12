@@ -15,27 +15,27 @@
 // Great zoom leads to non-coincidence of
 // a point and non-infinite lines passing throught this point:
 
-#include <StdPrs_DeflectionCurve.ixx>
-
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <Prs3d.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <Precision.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Precision.hxx>
+#include <Prs3d.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <StdPrs_DeflectionCurve.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
-
 
 //==================================================================
 // function: GetDeflection

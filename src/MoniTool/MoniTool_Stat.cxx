@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_Stat.ixx>
+
+#include <MoniTool_Stat.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //static MoniTool_Stat Statvoid("");
 //static MoniTool_Stat Statact ("");
-
 //not Used
 //static Standard_CString voidname = "";
-
-
 MoniTool_Stat::MoniTool_Stat (const Standard_CString title)
 {
   thetit  = new TCollection_HAsciiString(title);

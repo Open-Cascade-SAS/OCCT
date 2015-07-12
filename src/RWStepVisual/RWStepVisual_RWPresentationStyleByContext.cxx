@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWPresentationStyleByContext.ixx>
-#include <StepVisual_StyleContextSelect.hxx>
-#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
-#include <StepVisual_PresentationStyleSelect.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWPresentationStyleByContext.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
 #include <StepVisual_PresentationStyleByContext.hxx>
-
+#include <StepVisual_PresentationStyleSelect.hxx>
+#include <StepVisual_StyleContextSelect.hxx>
 
 RWStepVisual_RWPresentationStyleByContext::RWStepVisual_RWPresentationStyleByContext () {}
 

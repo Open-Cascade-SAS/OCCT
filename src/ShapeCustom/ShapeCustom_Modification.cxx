@@ -11,18 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeCustom_Modification.ixx>
 
 #include <Message_Gravity.hxx>
 #include <Message_Msg.hxx>
+#include <ShapeCustom_Modification.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : SetMsgRegistrator
 //purpose  : 
 //=======================================================================
-
 void ShapeCustom_Modification::SetMsgRegistrator(const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg)
 {
   myMsgReg = msgreg;

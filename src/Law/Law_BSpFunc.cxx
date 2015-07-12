@@ -16,11 +16,14 @@
 
 // pmn -> 17/01/1996 added : Continuity, (Nb)Intervals, D2, Trim
 
-#include <Law_BSpFunc.ixx>
-
 #include <BSplCLib.hxx>
-#include <Precision.hxx>
+#include <Law_BSpFunc.hxx>
+#include <Law_BSpline.hxx>
 #include <Law_BSplineKnotSplitting.hxx>
+#include <Law_Function.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
 #define PosTol Precision::PConfusion()/2

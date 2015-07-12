@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_Datum.ixx>
+#include <Standard_Type.hxx>
+#include <StepDimTol_Datum.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepDimTol_Datum
 //purpose  : 
 //=======================================================================
-
 StepDimTol_Datum::StepDimTol_Datum ()
 {
 }

@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_MeasureRepresentationItem.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_Unit.hxx>
+#include <StepRepr_MeasureRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_MeasureRepresentationItem
 //purpose  : 
 //=======================================================================
-
 StepRepr_MeasureRepresentationItem::StepRepr_MeasureRepresentationItem() 
 {
   myMeasure = new StepBasic_MeasureWithUnit;

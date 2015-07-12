@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <HatchGen_Domain.hxx>
+#include <HatchGen_PointOnHatching.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_Stream.hxx>
-#include <HatchGen_Domain.ixx>
 
 //=======================================================================
 // Function : HatchGen_Domain
 // Purpose  : Constructor.
 //=======================================================================
-
 HatchGen_Domain::HatchGen_Domain () :
        myHasFirstPoint  (Standard_False) ,
        myHasSecondPoint (Standard_False)

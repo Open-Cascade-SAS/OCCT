@@ -14,7 +14,13 @@
 
 //Modif JCV 10/01/91
 
-#include <gp_Elips2d.ixx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_ConstructionError.hxx>
 
 void gp_Elips2d::Coefficients (Standard_Real& A, 
 			       Standard_Real& B, 

@@ -12,11 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_GUID.ixx>
-#include <Standard_RangeError.hxx>
-#include <Standard_IStream.hxx>
-#include <stdio.h>
 
+#include <Standard_GUID.hxx>
+#include <Standard_IStream.hxx>
+#include <Standard_RangeError.hxx>
+
+#include <stdio.h>
 #define Standard_GUID_SIZE 36
 #define Standard_GUID_SIZE_ALLOC Standard_GUID_SIZE+1
 

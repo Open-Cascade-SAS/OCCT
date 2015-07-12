@@ -12,45 +12,49 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
- 
      FONCTION :
      ----------
         Classe V3d_Viewer_3.cxx :
- 
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
       00-09-92 : GG  ; Creation.
       27-12-98 : FMN ; PERF: OPTIMISATION LOADER (LOPTIM)
-
      REMARQUES :
      -----------
- 
 ************************************************************************/
-
 //			-> Remove the grid plane axis when it is requested.
 //			-> Redraw the privilegied grid plane after any change
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
  */
 
-#include <V3d_Viewer.jxx>
-
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
+#include <Aspect_Background.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Grid.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Group.hxx>
-
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Quantity_Color.hxx>
+#include <V3d_BadValue.hxx>
+#include <V3d_CircularGrid.hxx>
+#include <V3d_Light.hxx>
+#include <V3d_RectangularGrid.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
  * Static variable
  */
-
 static TCollection_AsciiString _XLetter() {
     static TCollection_AsciiString XLetter("X");
 return XLetter;

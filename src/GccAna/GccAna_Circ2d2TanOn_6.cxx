@@ -14,20 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2d2TanOn.jxx>
 
 #include <ElCLib.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Ax2d.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
-#include <IntAna2d_IntPoint.hxx>
+#include <GccAna_Circ2d2TanOn.hxx>
 #include <GccAna_Circ2dBisec.hxx>
-#include <GccInt_IType.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_BCirc.hxx>
 #include <GccInt_BLine.hxx>
+#include <GccInt_IType.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to two circles C1 and C2.               +
@@ -42,7 +49,6 @@
 //  points among which we choose the solutions.   +
 //  The choice is made basing in Qualifiers of C1 and C2.  +
 //=========================================================================
-
 GccAna_Circ2d2TanOn::
    GccAna_Circ2d2TanOn (const GccEnt_QualifiedCirc& Qualified1 ,
                         const GccEnt_QualifiedCirc& Qualified2 ,

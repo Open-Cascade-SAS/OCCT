@@ -14,8 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_Texture1Dmanual.ixx>
+
+#include <Graphic3d_Texture1Dmanual.hxx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 // =======================================================================
 // function : Graphic3d_Texture1Dmanual

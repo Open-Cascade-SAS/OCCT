@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepRepr_RWRepresentationContext.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepRepr_RWRepresentationContext.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_RepresentationContext.hxx>
 
 RWStepRepr_RWRepresentationContext::RWStepRepr_RWRepresentationContext () {}
 

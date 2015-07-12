@@ -13,29 +13,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XDEDRAW_Colors.ixx>
 
-#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <TopoDS_Shape.hxx>
+#include <Draw.hxx>
 #include <Quantity_Color.hxx>
-
-#include <TDF_Tool.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
-
+#include <TopoDS_Shape.hxx>
+#include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFDoc_ColorTool.hxx>
+#include <XDEDRAW_Colors.hxx>
 
 //=======================================================================
 // Section: Work with colors
 //=======================================================================
-
 static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 6) {

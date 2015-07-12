@@ -11,14 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPEdit_EditSDR.ixx>
+
+#include <IFSelect_EditForm.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_TypedValue.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <StepData_StepModel.hxx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <STEPConstruct_Part.hxx>
-
+#include <StepData_StepModel.hxx>
+#include <STEPEdit_EditSDR.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 STEPEdit_EditSDR::STEPEdit_EditSDR ()
 : IFSelect_Editor (11)

@@ -14,46 +14,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFi3d_ChBuilder.ixx>
-#include <ChFi3d.hxx>
-#include <ChFi3d_Builder_0.hxx>
 
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
-#include <ChFiDS_Spine.hxx>
-#include <ChFiDS_ChamfSpine.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_ListOfStripe.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-#include <ChFiDS_Regul.hxx>
-#include <ChFiDS_ListIteratorOfRegularities.hxx>	
-#include <ChFiDS_SecHArray1.hxx>
-#include <ChFiDS_HData.hxx>
-#include <ChFiDS_CircSection.hxx>
-
+#include <Adaptor3d_TopolTool.hxx>
 #include <Blend_Point.hxx>
-#include <BRepBlend_Line.hxx>
+#include <BlendFunc_SectionShape.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Chamfer.hxx>
 #include <BRepBlend_ChamfInv.hxx>
 #include <BRepBlend_ChAsym.hxx>
 #include <BRepBlend_ChAsymInv.hxx>
-#include <BlendFunc_SectionShape.hxx>
+#include <BRepBlend_Line.hxx>
 #include <BRepBlend_Walking.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-
-
-#include <Extrema_GenLocateExtPS.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopAbs.hxx>
-
-#include <ElSLib.hxx>
 #include <BRepTools.hxx>
-
-#include <Standard_NotImplemented.hxx>
+#include <ChFi3d.hxx>
+#include <ChFi3d_Builder_0.hxx>
+#include <ChFi3d_ChBuilder.hxx>
+#include <ChFiDS_ChamfSpine.hxx>
+#include <ChFiDS_CircSection.hxx>
+#include <ChFiDS_HData.hxx>
+#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
+#include <ChFiDS_ListIteratorOfRegularities.hxx>
+#include <ChFiDS_ListOfStripe.hxx>
+#include <ChFiDS_Regul.hxx>
+#include <ChFiDS_SecHArray1.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <ElSLib.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GettraceCHRON();

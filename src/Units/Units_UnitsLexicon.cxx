@@ -14,20 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_UnitsLexicon.ixx>
-#include <Units.hxx>
-#include <Units_UnitsDictionary.hxx>
-#include <Units_Token.hxx>
+
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Units.hxx>
+#include <Units_Token.hxx>
+#include <Units_UnitsDictionary.hxx>
+#include <Units_UnitsLexicon.hxx>
 
-#include <sys/types.h>
 #include <sys/stat.h>
-
+#include <sys/types.h>
 //=======================================================================
 //function : Units_UnitsLexicon
 //purpose  : 
 //=======================================================================
-
 Units_UnitsLexicon::Units_UnitsLexicon() : Units_Lexicon()
 {}
 

@@ -13,16 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDocStd.ixx>
+
 #include <BinMDF_ADriverTable.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <BinMDocStd.hxx>
 #include <BinMDocStd_XLinkDriver.hxx>
+#include <CDM_MessageDriver.hxx>
 
 //=======================================================================
 //function : AddDrivers
 //purpose  : 
 //=======================================================================
-
 void BinMDocStd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
                               const Handle(CDM_MessageDriver)&   theMsgDriver)
 {

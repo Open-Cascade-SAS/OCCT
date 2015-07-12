@@ -14,19 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeometryTest.ixx>
 
 #include <Draw.hxx>
+#include <DrawFairCurve_Batten.hxx>
+#include <DrawFairCurve_MinimalVariation.hxx>
 #include <DrawTrSurf.hxx>
 #include <DrawTrSurf_Point.hxx>
-#include <gp_Pnt2d.hxx>
 #include <FairCurve_AnalysisCode.hxx>
 #include <FairCurve_Batten.hxx>
 #include <FairCurve_MinimalVariation.hxx>
-#include <DrawFairCurve_Batten.hxx>
-#include <DrawFairCurve_MinimalVariation.hxx>
-#include <string.h>
+#include <GeometryTest.hxx>
+#include <gp_Pnt2d.hxx>
 
+#include <string.h>
 //=======================================================================
 Standard_Boolean IsGoodNumber(Standard_Integer argc, Standard_Integer waiting, Draw_Interpretor& di)
 //=======================================================================

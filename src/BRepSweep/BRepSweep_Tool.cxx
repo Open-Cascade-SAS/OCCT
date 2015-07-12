@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepSweep_Tool.ixx>
+
+#include <BRepSweep_Tool.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepSweep_Tool
 //purpose  : 
 //=======================================================================
-
 BRepSweep_Tool::BRepSweep_Tool(const TopoDS_Shape& aShape)
 {
  TopExp::MapShapes(aShape,myMap);

@@ -14,22 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_GTransform.ixx>
 
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
+#include <BRepBuilderAPI_NurbsConvert.hxx>
 #include <BRepTools_GTrsfModification.hxx>
 #include <BRepTools_NurbsConvertModification.hxx>
-#include <BRepBuilderAPI_NurbsConvert.hxx>
 #include <gp.hxx>
-
-#include <TopTools_ListOfShape.hxx>
-#include <BRep_Builder.hxx>
+#include <gp_GTrsf.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+
 //=======================================================================
 //function : BRepBuilderAPI_GTransform
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_GTransform::BRepBuilderAPI_GTransform (const gp_GTrsf& T) :
   myGTrsf(T)
 {

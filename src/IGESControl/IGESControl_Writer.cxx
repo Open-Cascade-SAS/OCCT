@@ -14,40 +14,42 @@
 //cky 16.01.99 Remove couts.
 //rln 28.12.98 CCI60005
 
-#include <Standard_Stream.hxx>
-
-#include <IGESControl_Writer.ixx>
-#include <IGESControl_Controller.hxx>
-#include <IGESSelect_WorkLibrary.hxx>
+#include <Bnd_Box.hxx>
+#include <BndLib_Add3dCurve.hxx>
+#include <BndLib_AddSurface.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepToIGES_BREntity.hxx>
 #include <BRepToIGESBRep_Entity.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomToIGES_GeomCurve.hxx>
-#include <GeomToIGES_GeomSurface.hxx>
-#include <IGESData_IGESWriter.hxx>
-#include <IGESData_Protocol.hxx>
-#include <XSControl_TransferWriter.hxx>
-
-#include <Interface_Macros.hxx>
-#include <Interface_Static.hxx>
-#include <ShapeAnalysis_ShapeTolerance.hxx>
-
-#include <gp_XYZ.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <BndLib_Add3dCurve.hxx>
-#include <BndLib_AddSurface.hxx>
+#include <GeomToIGES_GeomCurve.hxx>
+#include <GeomToIGES_GeomSurface.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESControl_Controller.hxx>
+#include <IGESControl_Writer.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESSelect_WorkLibrary.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <OSD_OpenFile.hxx>
+#include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Transient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <errno.h>
-#include <OSD_OpenFile.hxx>
-#include <Geom_Geometry.hxx>
+#include <XSControl_TransferWriter.hxx>
 
+#include <errno.h>
 IGESControl_Writer::IGESControl_Writer ()
     :  theTP (new Transfer_FinderProcess(10000)) ,
        thest (Standard_False)

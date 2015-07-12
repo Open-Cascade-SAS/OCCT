@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_OffsetCurve3d.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepGeom_OffsetCurve3d.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d ()  {}
 

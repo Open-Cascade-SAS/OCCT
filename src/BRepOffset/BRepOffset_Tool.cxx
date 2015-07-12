@@ -14,134 +14,119 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
-
-#include <BRepOffset_Tool.ixx>
-
-#include <BRepAlgo_Tool.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-
-#include <BRepBndLib.hxx>
 
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add3dCurve.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepLib.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeVertex.hxx>
-#include <BRepLib_MakePolygon.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRepTools.hxx>
-#include <BRepTools_WireExplorer.hxx>
-
-#include <BRepTools_Modifier.hxx>
-#include <BRepTools_TrsfModification.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgo_AsDes.hxx>
+#include <BRepAlgo_Image.hxx>
+#include <BRepAlgo_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakePolygon.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepOffset_Analyse.hxx>
+#include <BRepOffset_Interval.hxx>
+#include <BRepOffset_ListOfInterval.hxx>
+#include <BRepOffset_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
 #include <Extrema_ExtPC.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs.hxx>
-#include <Standard_ConstructionError.hxx>
-
-#include <TopOpeBRepBuild_Builder.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_CurveExplorer.hxx>
-#include <TopOpeBRep_DSFiller.hxx>
-#include <TopOpeBRepTool_GeomTool.hxx>
-#include <TopOpeBRep_ShapeIntersector.hxx>
-#include <TopOpeBRep_FacesFiller.hxx>
-#include <TopOpeBRep_GeomTool.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
+#include <Extrema_ExtPC2d.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_Conic.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_Conic.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-
-#include <GeomLib.hxx>
-#include <GeomAPI.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dInt_GInter.hxx>
-
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomProjLib.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomConvert_ApproxCurve.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomInt_IntSS.hxx>
-#include <ProjLib_ProjectedCurve.hxx>
-#include <ProjLib_HProjectedCurve.hxx>
-
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
-
+#include <GeomLib.hxx>
+#include <GeomProjLib.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-
-
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-
-#include <BRep_TEdge.hxx>
-#include <Extrema_ExtPC2d.hxx>
-
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-
-//tma: for new boolean operation
-#include <TopTools_SequenceOfShape.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
-#include <Geom2dConvert_ApproxCurve.hxx>
-#include <TopoDS_Compound.hxx>
-#include <GCPnts_UniformAbscissa.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_CurveRepresentation.hxx>
-
-#include <BRepOffset_ListOfInterval.hxx>
-#include <BRepOffset_Interval.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <ProjLib_HProjectedCurve.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
 #include <ShapeCustom_Curve2d.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRep_DSFiller.hxx>
+#include <TopOpeBRep_FacesFiller.hxx>
+#include <TopOpeBRep_GeomTool.hxx>
+#include <TopOpeBRep_ShapeIntersector.hxx>
+#include <TopOpeBRepBuild_Builder.hxx>
+#include <TopOpeBRepDS_CurveExplorer.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepTool_GeomTool.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
-#include <BOPDS_DS.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPTools_AlgoTools2D.hxx>
-
+#include <stdio.h>
+//tma: for new boolean operation
 #ifdef DRAW
 #include <DBRep.hxx>
 #include <Geom2d_Conic.hxx>

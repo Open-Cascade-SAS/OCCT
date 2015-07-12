@@ -14,36 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_FixPresentation.ixx>
 
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-#include <Graphic3d_Vertex.hxx>
-
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Root.hxx>
-
+#include <Aspect_AspectMarker.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
-#include <Aspect_AspectMarker.hxx>
-
-#include <gp_Vec.hxx>
+#include <DsgPrs_FixPresentation.hxx>
+#include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Ax1.hxx>
-
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
 #include <Quantity_Color.hxx>
-
 
 //=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
-
 void DsgPrs_FixPresentation::Add(
 		       const Handle(Prs3d_Presentation)& aPresentation,
 		       const Handle(Prs3d_Drawer)& aDrawer,

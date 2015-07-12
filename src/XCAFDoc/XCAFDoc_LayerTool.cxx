@@ -13,20 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_LayerTool.ixx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_GraphNode.hxx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_UAttribute.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
-#include <TDataStd_UAttribute.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_GraphNode.hxx>
+#include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 XCAFDoc_LayerTool::XCAFDoc_LayerTool()
 {
 }

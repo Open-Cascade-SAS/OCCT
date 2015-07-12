@@ -14,14 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2d_Parabola.ixx>
 
-#include <Precision.hxx>
-#include <gp_XY.hxx>
 #include <ElCLib.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom2d_Parabola         Parabola;
 typedef gp_Ax2d   Ax2d;

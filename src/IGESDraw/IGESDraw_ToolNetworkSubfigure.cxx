@@ -16,17 +16,28 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ToolNetworkSubfigure.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
 #include <gp_XYZ.hxx>
-#include <IGESDraw_HArray1OfConnectPoint.hxx>
-#include <IGESGraph_TextDisplayTemplate.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <IGESDraw_NetworkSubfigureDef.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDraw_ConnectPoint.hxx>
+#include <IGESDraw_HArray1OfConnectPoint.hxx>
+#include <IGESDraw_NetworkSubfigure.hxx>
+#include <IGESDraw_NetworkSubfigureDef.hxx>
+#include <IGESDraw_ToolNetworkSubfigure.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESDraw_ToolNetworkSubfigure::IGESDraw_ToolNetworkSubfigure ()    {  }
 

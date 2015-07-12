@@ -16,19 +16,18 @@
 
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <StepToGeom_MakeSweptSurface.ixx>
-#include <StepGeom_SweptSurface.hxx>
-#include <StepToGeom_MakeSweptSurface.hxx>
+#include <Geom_SweptSurface.hxx>
 #include <StepGeom_SurfaceOfLinearExtrusion.hxx>
 #include <StepGeom_SurfaceOfRevolution.hxx>
+#include <StepGeom_SweptSurface.hxx>
 #include <StepToGeom_MakeSurfaceOfLinearExtrusion.hxx>
 #include <StepToGeom_MakeSurfaceOfRevolution.hxx>
+#include <StepToGeom_MakeSweptSurface.hxx>
 
 //=============================================================================
 // Creation d' une SweptSurface de prostep a partir d' une 
 // SweptSurface de Geom
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeSweptSurface::Convert (const Handle(StepGeom_SweptSurface)& SS, Handle(Geom_SweptSurface)& CS)
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_SurfaceOfLinearExtrusion))) {

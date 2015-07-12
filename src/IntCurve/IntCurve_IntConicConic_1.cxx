@@ -16,24 +16,27 @@
 
 // a modifier le cas de 2 points confondus ( Insert a la place d'append ? ) 
 
-#include <IntCurve_IntConicConic.jxx>
-
-#include <IntCurve_IConicTool.hxx>
-#include <IntCurve_PConic.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <gp.hxx>
-#include <IntCurve_IntConicConic_Tool.hxx>
-#include <IntImpParGen.hxx>
-#include <IntCurve_IntConicConic_1.hxx>
 #include <ElCLib.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
-
+#include <gp.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Precision.hxx>
+#include <IntCurve_IConicTool.hxx>
+#include <IntCurve_IntConicConic.hxx>
+#include <IntCurve_IntConicConic_1.hxx>
+#include <IntCurve_IntConicConic_Tool.hxx>
+#include <IntCurve_PConic.hxx>
+#include <IntImpParGen.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_TypeTrans.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 
 Standard_Boolean Affichage=Standard_False;
 Standard_Boolean AffichageGraph=Standard_True;

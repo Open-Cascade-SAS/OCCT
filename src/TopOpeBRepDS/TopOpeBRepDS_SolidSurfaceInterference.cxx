@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_SolidSurfaceInterference.ixx>
 
+#include <Standard_Type.hxx>
+#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_SolidSurfaceInterference
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_SolidSurfaceInterference::TopOpeBRepDS_SolidSurfaceInterference
   (const TopOpeBRepDS_Transition& T,
    const TopOpeBRepDS_Kind ST, 

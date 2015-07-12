@@ -14,49 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_Chamf3dDimension.ixx>
-
+#include <AIS.hxx>
+#include <AIS_Chamf3dDimension.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <DsgPrs_Chamf2dPresentation.hxx>
-
+#include <ElCLib.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <ProjLib.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
-
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <TopAbs_Orientation.hxx>
-
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
-
-#include <Geom_Line.hxx>
-
-#include <ElCLib.hxx>
-
-#include <Precision.hxx>
-
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-
-#include <BRepTools_WireExplorer.hxx>
-
-#include <AIS.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-#include <ProjLib.hxx>
-#include <Select3D_SensitiveBox.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Constructor

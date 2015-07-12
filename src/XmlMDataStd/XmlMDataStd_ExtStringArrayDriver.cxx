@@ -13,14 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_ExtStringArrayDriver.ixx>
 
-#include <TDataStd_ExtStringArray.hxx>
-
+#include <CDM_MessageDriver.hxx>
 #include <LDOM_MemManager.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_ExtStringArray.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd.hxx>
+#include <XmlMDataStd_ExtStringArrayDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
-#include <XmlMDataStd.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString, "last")

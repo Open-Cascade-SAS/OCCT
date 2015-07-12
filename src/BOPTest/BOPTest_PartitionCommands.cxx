@@ -12,31 +12,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
 
-#include <stdio.h>
-#include <string.h>
-
-#include <NCollection_IncAllocator.hxx>
-
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_Operation.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Section.hxx>
+#include <BOPTest.hxx>
+#include <BOPTest_DrawableShape.hxx>
+#include <BOPTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <Draw_Color.hxx>
 #include <DrawTrSurf.hxx>
-
-#include <TopoDS_Shape.hxx>
-//
-#include <BOPAlgo_Builder.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_Operation.hxx>
-#include <BOPAlgo_BOP.hxx>
-#include <BOPAlgo_Section.hxx>
-//
-#include <BOPTest_DrawableShape.hxx>
-#include <BOPTest_Objects.hxx>
-
+#include <NCollection_IncAllocator.hxx>
 #include <OSD_Timer.hxx>
+#include <TopoDS_Shape.hxx>
 
+#include <stdio.h>
+#include <string.h>
+//
+//
 static Standard_Integer bfillds  (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bbuild   (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bbop     (Draw_Interpretor&, Standard_Integer, const char**);

@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_BoundedCurve.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_BoundedCurve.hxx>
 
 StepGeom_BoundedCurve::StepGeom_BoundedCurve ()  {}
 

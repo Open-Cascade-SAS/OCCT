@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepDimTol_RWGeometricToleranceRelationship.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepDimTol_RWGeometricToleranceRelationship.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
+#include <StepDimTol_GeometricToleranceRelationship.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWGeometricToleranceRelationship
 //purpose  : 
 //=======================================================================
-
 RWStepDimTol_RWGeometricToleranceRelationship::RWStepDimTol_RWGeometricToleranceRelationship ()
 {
 }

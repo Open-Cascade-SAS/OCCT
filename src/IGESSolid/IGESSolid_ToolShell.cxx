@@ -16,24 +16,34 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ToolShell.ixx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_Status.hxx>
+#include <IGESSolid.hxx>
 #include <IGESSolid_Face.hxx>
 #include <IGESSolid_HArray1OfFace.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_Dump.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <IGESSolid_ToolShell.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-#include <IGESSolid.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 // MGE 03/08/98
-#include <Message_Msg.hxx>
-#include <IGESData_Status.hxx>
-
 //=======================================================================
 //function : IGESSolid_ToolShell
 //purpose  : 
 //=======================================================================
-
 IGESSolid_ToolShell::IGESSolid_ToolShell ()
 {
 }

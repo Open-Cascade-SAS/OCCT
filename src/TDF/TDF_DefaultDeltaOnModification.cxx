@@ -14,24 +14,20 @@
 // commercial license or contractual agreement.
 
 //      	----------------------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
-
-
-#include <TDF_DefaultDeltaOnModification.ixx>
-
-#include <TDF_Label.hxx>
 #include <Standard_GUID.hxx>
-
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DefaultDeltaOnModification.hxx>
+#include <TDF_Label.hxx>
 
 //=======================================================================
 //function : TDF_DefaultDeltaOnModification
 //purpose  : 
 //=======================================================================
-
 TDF_DefaultDeltaOnModification::TDF_DefaultDeltaOnModification
 (const Handle(TDF_Attribute)& anAttribute)
 : TDF_DeltaOnModification(anAttribute)

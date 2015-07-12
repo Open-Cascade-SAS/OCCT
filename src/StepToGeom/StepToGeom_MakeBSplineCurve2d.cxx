@@ -14,25 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeBSplineCurve2d.ixx>
+
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_CartesianPoint.hxx>
 #include <gp_Pnt2d.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <StepGeom_BSplineCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <StepToGeom_MakeBSplineCurve2d.hxx>
+#include <StepToGeom_MakeCartesianPoint2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepToGeom_MakeCartesianPoint2d.hxx>
-#include <Geom2d_CartesianPoint.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=============================================================================
 // Creation d' une BSplineCurve de Geom2d a partir d' une
 // BSplineCurveWithKnotsAndRationalBSplineCurve de Step
 //=============================================================================
-
 #define Array1OfPnt_gen                  TColgp_Array1OfPnt2d
 #define Pnt_gen                          gp_Pnt2d
 #define CartesianPoint_gen               Handle(Geom2d_CartesianPoint)

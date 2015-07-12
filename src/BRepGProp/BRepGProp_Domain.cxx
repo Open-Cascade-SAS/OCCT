@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGProp_Domain.ixx>
+
+#include <BRepGProp_Domain.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : Next
 //purpose  : Sets the index of the arc iterator to the next arc of curve.
 //=======================================================================
-
 void BRepGProp_Domain::Next () {
 
   // skip INTERNAL and EXTERNAL edges

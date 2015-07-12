@@ -14,9 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MAT_Bisector.ixx>
-#include <Precision.hxx>
 
+#include <MAT_Bisector.hxx>
+#include <MAT_Edge.hxx>
+#include <MAT_ListOfBisector.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 
 MAT_Bisector::MAT_Bisector()
 {

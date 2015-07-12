@@ -11,18 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignGroupedItem.ixx>
+
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <StepAP214_AutoDesignGroupedItem.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_ShapeAspect.hxx>
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>
 #include <StepShape_CsgShapeRepresentation.hxx>
 #include <StepShape_FacetedBrepShapeRepresentation.hxx>
 #include <StepShape_GeometricallyBoundedSurfaceShapeRepresentation.hxx>
 #include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
 #include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
-#include <StepRepr_Representation.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
-#include <StepRepr_ShapeAspect.hxx>
 #include <StepVisual_TemplateInstance.hxx>
 
 StepAP214_AutoDesignGroupedItem::StepAP214_AutoDesignGroupedItem () {  }

@@ -16,16 +16,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepAP203_RWCcDesignContract.ixx>
-#include <StepAP203_HArray1OfContractedItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP203_RWCcDesignContract.hxx>
+#include <StepAP203_CcDesignContract.hxx>
 #include <StepAP203_ContractedItem.hxx>
+#include <StepAP203_HArray1OfContractedItem.hxx>
 #include <StepBasic_Contract.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignContract
 //purpose  : 
 //=======================================================================
-
 RWStepAP203_RWCcDesignContract::RWStepAP203_RWCcDesignContract ()
 {
 }

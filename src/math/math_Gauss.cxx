@@ -16,15 +16,16 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_Gauss.ixx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <math_NotSquare.hxx>
 #include <math_Recipes.hxx>
-
-#include <math_NotSquare.hxx> 
-#include <StdFail_NotDone.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
 
 math_Gauss::math_Gauss(const math_Matrix& A, 
                            const Standard_Real MinPivot) 

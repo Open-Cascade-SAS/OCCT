@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESToBRep_AlgoContainer.ixx>
+
+#include <IGESToBRep_AlgoContainer.hxx>
+#include <IGESToBRep_ToolContainer.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : IGESToBRep_AlgoContainer
 //purpose  : 
 //=======================================================================
-
 IGESToBRep_AlgoContainer::IGESToBRep_AlgoContainer()
 {
   myTC = new IGESToBRep_ToolContainer;

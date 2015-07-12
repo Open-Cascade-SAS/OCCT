@@ -11,18 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDefs_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_AssociativityDef.hxx>
 #include <IGESDefs_AttributeDef.hxx>
 #include <IGESDefs_AttributeTable.hxx>
+#include <IGESDefs_GeneralModule.hxx>
 #include <IGESDefs_GenericData.hxx>
 #include <IGESDefs_MacroDef.hxx>
 #include <IGESDefs_TabularData.hxx>
-#include <IGESDefs_UnitsData.hxx>
-
 #include <IGESDefs_ToolAssociativityDef.hxx>
 #include <IGESDefs_ToolAttributeDef.hxx>
 #include <IGESDefs_ToolAttributeTable.hxx>
@@ -30,14 +28,19 @@
 #include <IGESDefs_ToolMacroDef.hxx>
 #include <IGESDefs_ToolTabularData.hxx>
 #include <IGESDefs_ToolUnitsData.hxx>
-
-
+#include <IGESDefs_UnitsData.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESDefs_GeneralModule::IGESDefs_GeneralModule ()    {  }
 
 

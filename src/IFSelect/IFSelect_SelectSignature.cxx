@@ -11,14 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectSignature.ixx>
 
+#include <IFSelect_SelectSignature.hxx>
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //  theexact : -1  OUI   0  NON une seule valeur  > 0 NON nb de valeurs
 //  signmode : 1 prendre si contenu, 2 refuser si contenu
 //             3 prendre si egal,    4 refuser si egal
 //  ou test numerique, ajouter : 16 <  24 <=  32 >  40 >=
-
 static Standard_Integer multsign
   (const TCollection_AsciiString& signtext,
    TColStd_SequenceOfAsciiString& signlist,

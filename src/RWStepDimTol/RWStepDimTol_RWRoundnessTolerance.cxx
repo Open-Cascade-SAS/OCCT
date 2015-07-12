@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepDimTol_RWRoundnessTolerance.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepDimTol_RWRoundnessTolerance.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepDimTol_RoundnessTolerance.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWRoundnessTolerance
 //purpose  : 
 //=======================================================================
-
 RWStepDimTol_RWRoundnessTolerance::RWStepDimTol_RWRoundnessTolerance ()
 {
 }

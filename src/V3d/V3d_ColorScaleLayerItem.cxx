@@ -12,12 +12,12 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
-
-
 ************************************************************************/
-
 // for the class
-#include <V3d_ColorScaleLayerItem.ixx>
+
+#include <Standard_Type.hxx>
+#include <V3d_ColorScale.hxx>
+#include <V3d_ColorScaleLayerItem.hxx>
 
 //
 //-Constructors

@@ -21,22 +21,22 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
-//#endif
 
+//#endif
 //math_FunctionSetRoot.cxx
 
-
-#include <math_FunctionSetRoot.ixx>
-#include <Standard_DimensionError.hxx>
+#include <math_BrentMinimum.hxx>
+#include <math_Function.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Gauss.hxx>
-#include <math_SVD.hxx>
 #include <math_GaussLeastSquare.hxx>
 #include <math_IntegerVector.hxx>
-#include <math_Function.hxx>
-#include <math_BrentMinimum.hxx>
-#include <math_FunctionSetWithDerivatives.hxx>
+#include <math_Matrix.hxx>
+#include <math_SVD.hxx>
 #include <Precision.hxx>
-
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //===========================================================================
 // - A partir d une solution de depart, recherche d une direction.( Newton la 
@@ -58,7 +58,6 @@
 //   Sinon
 //     On change de direction
 //============================================================================
-
 #define FSR_DEBUG(arg)
 // Uncomment the following code to have debug output to cout 
 //========================================================== 

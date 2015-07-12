@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_ElemHasher.ixx>
 
+#include <MoniTool_Element.hxx>
+#include <MoniTool_ElemHasher.hxx>
 
 Standard_Integer  MoniTool_ElemHasher::HashCode
   (const Handle(MoniTool_Element)& K, const Standard_Integer Upper)

@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPolyh_Triangle.ixx>
-#include <IntPolyh_Point.ixx>
-#include <IntPolyh_Edge.ixx>
-#include <IntPolyh_StartPoint.ixx>
-#include <IntPolyh_Couple.ixx>
-#include <stdio.h>
 
+#include <Adaptor3d_HSurface.hxx>
+#include <Bnd_Box.hxx>
+#include <IntPolyh_Couple.hxx>
+#include <IntPolyh_Edge.hxx>
+#include <IntPolyh_Point.hxx>
+#include <IntPolyh_StartPoint.hxx>
+#include <IntPolyh_Triangle.hxx>
+
+#include <stdio.h>
 #define MyTolerance 10.0e-7
 #define MyConfusionPrecision 10.0e-12
 #define SquareMyConfusionPrecision 10.0e-24

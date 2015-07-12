@@ -11,17 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TransferBRep_Reader.ixx>
 
-#include <Interface_Macros.hxx>
+#include <BRep_Builder.hxx>
+#include <Interface_CheckIterator.hxx>
 #include <Interface_CheckTool.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
 #include <Transfer_TransferOutput.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
-
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-#include <Message_Messenger.hxx>
+#include <TransferBRep_Reader.hxx>
 
 TransferBRep_Reader::TransferBRep_Reader ()
     : theDone (Standard_False) , theFilest (0) , theNewpr (Standard_False)

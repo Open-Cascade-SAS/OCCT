@@ -15,52 +15,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_Builder.ixx>
-//
-#include <NCollection_IncAllocator.hxx>
-//
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Compound.hxx>
-//
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-//
-#include <TopExp_Explorer.hxx>
-//
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_MapOfInteger.hxx>
+
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_BuilderFace.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPCol_DataMapOfIntegerListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-//
-#include <IntTools_Context.hxx>
-//
-#include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_VectorOfInterfFF.hxx>
 #include <BOPDS_Interf.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_VectorOfCurve.hxx>
+#include <BOPDS_VectorOfInterfFF.hxx>
 #include <BOPDS_VectorOfPoint.hxx>
-//
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
-#include <BOPAlgo_BuilderFace.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
+#include <BOPTools_DataMapOfShapeSet.hxx>
 #include <BOPTools_ListOfCoupleOfShape.hxx>
 #include <BOPTools_MapOfSet.hxx>
-#include <BOPTools_DataMapOfShapeSet.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <IntTools_Context.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
-
+//
+//
+//
+//
+//
+//
+//
+//
 static
   Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
                                      const BOPDS_FaceInfo& aFI2);

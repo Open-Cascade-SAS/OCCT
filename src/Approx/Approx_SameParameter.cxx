@@ -16,22 +16,31 @@
 
 //  Modified by skv - Wed Jun  2 11:49:59 2004 OCC5898
 
-#include <Approx_SameParameter.ixx>
-#include <TColStd_Array1OfReal.hxx>
-#include <BSplCLib.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <Approx_SameParameter.hxx>
+#include <BSplCLib.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <Extrema_LocateExtPC.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <Extrema_LocateExtPC.hxx>
-#include <AdvApprox_ApproxAFunction.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib_MakeCurvefromApprox.hxx>
 #include <Precision.hxx>
-#include <Extrema_ExtPC.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 #ifdef OCCT_DEBUG
 #ifdef DRAW

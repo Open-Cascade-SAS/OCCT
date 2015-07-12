@@ -13,17 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_NameDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_NameDriver.hxx>
 #include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
-#include <TDataStd_Name.hxx>
 
 //=======================================================================
 //function : XmlMDataStd_NameDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataStd_NameDriver::XmlMDataStd_NameDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

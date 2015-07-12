@@ -15,119 +15,111 @@
 //:n4 abv 11.02.99 S4132: recognition of GeometricSet (instead of GeometricCurveSet)
 //    gka 05.04.99 S4136: eliminate parameter lastpreci
 //gka,abv 14.04.99 S4136: maintain unit context, precision and maxtolerance values
-#include <STEPControl_ActorRead.ixx>
-#include <OSD_Timer.hxx>
-
-// #include <Interface_InterfaceModel.hxx>  // pour mise au point
-
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
-#include <StepShape_FacetedBrep.hxx>
-#include <StepShape_ShellBasedSurfaceModel.hxx>
-#include <StepShape_ManifoldSolidBrep.hxx>
-#include <StepShape_BrepWithVoids.hxx>
-#include <StepShape_GeometricSet.hxx>
-
-// MappedItem :
-#include <StepRepr_MappedItem.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepRepr_RepresentationMap.hxx>
-#include <StepToTopoDS_MakeTransformed.hxx>
-
-// FaceSurface :
-#include <StepShape_FaceSurface.hxx>
-#include <StepToTopoDS_Tool.hxx>
-#include <StepToTopoDS_DataMapOfTRI.hxx>
-#include <StepToTopoDS_TranslateFace.hxx>
-
-//  Unites :
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_GlobalUnitAssignedContext.hxx>
-#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
-//#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
-#include <StepBasic_ProductRelatedProductCategory.hxx>
-#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
-#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
-
-#include <STEPConstruct_UnitContext.hxx>
-#include <UnitsMethods.hxx>
-
-//  Representation Relationship & cie
-#include <Interface_Graph.hxx>
-#include <Interface_EntityIterator.hxx>
-#include <TransferBRep.hxx>
-#include <StepShape_ContextDependentShapeRepresentation.hxx>
-#include <StepRepr_ShapeRepresentationRelationship.hxx>
-#include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
-#include <StepRepr_Transformation.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 
 #include <BRep_Builder.hxx>
-#include <StepToTopoDS_Builder.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Shape.hxx>
-
-#include <TransferBRep_ShapeBinder.hxx>
-
-#include <Interface_Static.hxx>
-#include <Interface_Macros.hxx>
-#include <Interface_InterfaceModel.hxx>
-
-#include <StepBasic_ProductDefinition.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
-#include <STEPConstruct_Assembly.hxx>
-#include <Precision.hxx>
-#include <StepToGeom_MakeTransformation3d.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <BRepCheck_Shell.hxx>
+#include <BRepCheck_Status.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <gp_Ax3.hxx>
-#include <StepRepr_ShapeAspect.hxx>
-#include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
-#include <StepShape_EdgeBasedWireframeModel.hxx>
-#include <StepShape_FaceBasedSurfaceModel.hxx>
-
-#include <StepShape_AdvancedBrepShapeRepresentation.hxx>
-#include <StepShape_FacetedBrepShapeRepresentation.hxx>
-#include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
-#include <StepShape_EdgeBasedWireframeShapeRepresentation.hxx>
-#include <StepShape_GeometricallyBoundedSurfaceShapeRepresentation.hxx>
-#include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
-
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <gp_Trsf.hxx>
+#include <HeaderSection_FileName.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
-#include <StepRepr_HSequenceOfRepresentationItem.hxx>
-#include <StepBasic_ProductDefinition.hxx>
-#include <Standard_Failure.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <OSD_Timer.hxx>
+#include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductRelatedProductCategory.hxx>
+#include <STEPConstruct_Assembly.hxx>
+#include <STEPConstruct_UnitContext.hxx>
+#include <STEPControl_ActorRead.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepDimTol_DatumFeature.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
-
-// For non-manifold topology processing (ssv; 12.11.2010)
-#include <StepShape_NonManifoldSurfaceShapeRepresentation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <BRepCheck_Shell.hxx>
-#include <BRepCheck_Status.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-#include <StepData_StepModel.hxx>
-#include <HeaderSection_FileName.hxx>
-#include <StepGeom_GeometricRepresentationItem.hxx>
-#include <StepRepr_Representation.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_HSequenceOfRepresentationItem.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationMap.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
+#include <StepRepr_Transformation.hxx>
+#include <StepShape_AdvancedBrepShapeRepresentation.hxx>
+#include <StepShape_BrepWithVoids.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepShape_EdgeBasedWireframeModel.hxx>
+#include <StepShape_EdgeBasedWireframeShapeRepresentation.hxx>
+#include <StepShape_FaceBasedSurfaceModel.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepShape_FacetedBrep.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
+#include <StepShape_FacetedBrepShapeRepresentation.hxx>
+#include <StepShape_GeometricallyBoundedSurfaceShapeRepresentation.hxx>
+#include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
+#include <StepShape_GeometricSet.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
+#include <StepShape_NonManifoldSurfaceShapeRepresentation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeTransformation3d.hxx>
+#include <StepToTopoDS_Builder.hxx>
+#include <StepToTopoDS_DataMapOfTRI.hxx>
+#include <StepToTopoDS_MakeTransformed.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateFace.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
+#include <UnitsMethods.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 
+// #include <Interface_InterfaceModel.hxx>  // pour mise au point
+// MappedItem :
+// FaceSurface :
+//  Unites :
+//#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+//  Representation Relationship & cie
+// For non-manifold topology processing (ssv; 12.11.2010)
 #define TRANSLOG
 
 // ============================================================================

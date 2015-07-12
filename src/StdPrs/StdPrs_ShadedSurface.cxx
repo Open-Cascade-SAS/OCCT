@@ -14,23 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ShadedSurface.ixx>
 
+#include <Adaptor3d_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfTriangleStrips.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_IsoAspect.hxx>
 #include <Precision.hxx>
+#include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <StdPrs_ShadedSurface.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  :
 //=======================================================================
-
 void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
                                 const Adaptor3d_Surface&          theSurface,
                                 const Handle(Prs3d_Drawer)&       theDrawer)

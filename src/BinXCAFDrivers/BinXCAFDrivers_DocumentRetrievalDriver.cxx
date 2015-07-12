@@ -13,8 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinXCAFDrivers_DocumentRetrievalDriver.ixx>
+
+#include <BinMDF_ADriverTable.hxx>
 #include <BinXCAFDrivers.hxx>
+#include <BinXCAFDrivers_DocumentRetrievalDriver.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : 

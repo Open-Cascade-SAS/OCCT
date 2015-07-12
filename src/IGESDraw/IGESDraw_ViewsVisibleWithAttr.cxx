@@ -16,8 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ViewsVisibleWithAttr.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESDraw_ViewsVisibleWithAttr.hxx>
+#include <IGESGraph_Color.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDraw_ViewsVisibleWithAttr::IGESDraw_ViewsVisibleWithAttr ()    {  }
 

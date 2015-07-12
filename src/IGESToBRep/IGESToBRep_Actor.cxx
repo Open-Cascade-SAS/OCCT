@@ -11,29 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESToBRep_Actor.ixx>
-#include <IGESToBRep.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_IGESModel.hxx>
-#include <IGESData_GlobalSection.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
 
 #include <BRepLib.hxx>
-
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <ShapeExtend_Explorer.hxx>
-#include <ShapeFix_ShapeTolerance.hxx>
-
+#include <IGESData_GlobalSection.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_Actor.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-
 #include <Message_ProgressSentry.hxx>
-
+#include <ShapeExtend_Explorer.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
-
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 

@@ -12,13 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_ShadingAspect.ixx>
+
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Prs3d_ShadingAspect
 //purpose  : 
 //=======================================================================
-
 Prs3d_ShadingAspect::Prs3d_ShadingAspect () {
 
 

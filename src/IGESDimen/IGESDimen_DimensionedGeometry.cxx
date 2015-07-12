@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_DimensionedGeometry.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDimen_DimensionedGeometry.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_DimensionedGeometry::IGESDimen_DimensionedGeometry ()    {  }
 

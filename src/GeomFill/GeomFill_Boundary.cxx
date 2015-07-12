@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Boundary.ixx>
 
+#include <GeomFill_Boundary.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomFill_Boundary
 //purpose  : 
 //=======================================================================
-
 GeomFill_Boundary::GeomFill_Boundary(const Standard_Real Tol3d, 
 				     const Standard_Real Tolang):
  myT3d(Tol3d), myTang(Tolang)

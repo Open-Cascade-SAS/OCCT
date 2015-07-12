@@ -12,50 +12,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_WireSplitter.ixx>
 
-#include <Precision.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
+#include <BOPAlgo_WireEdgeSet.hxx>
+#include <BOPAlgo_WireSplitter.hxx>
+#include <BOPCol_DataMapOfShapeInteger.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_SequenceOfPnt2d.hxx>
+#include <BOPCol_SequenceOfReal.hxx>
+#include <BOPCol_SequenceOfShape.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-
 #include <Geom2dInt_GInter.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-
-#include <TopLoc_Location.hxx>
-
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
-#include <TopTools_ShapeMapHasher.hxx>
+#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_SequenceOfShape.hxx>
-#include <BOPCol_SequenceOfPnt2d.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_SequenceOfReal.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_MapOfShape.hxx>
-
-#include <BOPTools_AlgoTools2D.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 typedef NCollection_DataMap \
   <TopoDS_Shape, Standard_Boolean, TopTools_ShapeMapHasher> \

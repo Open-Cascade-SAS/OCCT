@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopLoc_SListOfItemLocation.ixx>
 
 #include <Standard_NoSuchObject.hxx>
+#include <TopLoc_ItemLocation.hxx>
+#include <TopLoc_SListNodeOfItemLocation.hxx>
+#include <TopLoc_SListOfItemLocation.hxx>
 
 //=======================================================================
 //function : TopLoc_SListOfItemLocation
 //purpose  : 
 //=======================================================================
-
 TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_ItemLocation& anItem,
 				     const TopLoc_SListOfItemLocation& aTail) : 
        myNode(new TopLoc_SListNodeOfItemLocation(anItem,aTail))

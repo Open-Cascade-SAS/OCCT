@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_GTool.ixx>
+
 #include <TopOpeBRepBuild_GIter.hxx>
+#include <TopOpeBRepBuild_GTool.hxx>
+#include <TopOpeBRepBuild_GTopo.hxx>
 
 //=======================================================================
 //function : GFusUnsh
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_GTopo TopOpeBRepBuild_GTool::GFusUnsh
 (const TopAbs_ShapeEnum t1, const TopAbs_ShapeEnum t2)
 {

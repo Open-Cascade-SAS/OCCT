@@ -11,21 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAnalysis_TransferParameters.ixx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <BRep_Tool.hxx>
-#include <gp.hxx>
-#include <ShapeBuild_Edge.hxx>
 
+#include <BRep_Tool.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <gp.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_TransferParameters.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : ShapeAnalysis_TransferParameters
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_TransferParameters::ShapeAnalysis_TransferParameters()
 {
   myScale = 1.;

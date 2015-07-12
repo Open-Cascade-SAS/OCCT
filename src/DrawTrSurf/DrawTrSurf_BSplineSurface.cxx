@@ -12,19 +12,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_BSplineSurface.ixx>
-#include <DrawTrSurf_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
+
+#include <Adaptor3d_IsoCurve.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <Draw_MarkerShape.hxx>
+#include <DrawTrSurf_BSplineCurve.hxx>
+#include <DrawTrSurf_BSplineSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Adaptor3d_IsoCurve.hxx>
 #include <gp_Pnt2d.hxx>
-
+#include <Standard_Type.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
-
-
 
 DrawTrSurf_BSplineSurface::DrawTrSurf_BSplineSurface (
    const Handle(Geom_BSplineSurface)& S)

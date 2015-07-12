@@ -11,42 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_RemoveLocations.ixx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Surface.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
-#include <Geom_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Pnt.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>  
-#include <Geom2d_Curve.hxx>
-#include <Geom_Geometry.hxx>
-#include <gp_Trsf.hxx>
 
+#include <BRep_Builder.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColStd_ListOfTransient.hxx>
-//#include <ShapeUpgrade_DataMapOfShapeListOfTransient.hxx>
-#include <ShapeBuild_Edge.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeUpgrade_RemoveLocations.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_ListIteratorOfListOfTransient.hxx>
+#include <TColStd_ListOfTransient.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 
+//#include <ShapeUpgrade_DataMapOfShapeListOfTransient.hxx>
 //=======================================================================
 //function : ShapeUpgrade_RemoveLocations
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_RemoveLocations::ShapeUpgrade_RemoveLocations()
 {
   myLevelRemoving = TopAbs_SHAPE;

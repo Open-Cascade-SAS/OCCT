@@ -16,20 +16,25 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDefs_AttributeDef.ixx>
-#include <Standard_DimensionMismatch.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDefs_AttributeDef.hxx>
+#include <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
 #include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //  For each Attribute Value, according to Attribute Type :
 // 0 -> Void, 1 -> Integer, 2 -> Real, 3 -> String, 4 -> Entity   6 -> Logical
-
-
 IGESDefs_AttributeDef::IGESDefs_AttributeDef ()    {  }
 
 

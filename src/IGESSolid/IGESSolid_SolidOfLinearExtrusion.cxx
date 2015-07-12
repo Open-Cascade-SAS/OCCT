@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_SolidOfLinearExtrusion.ixx>
+#include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_SolidOfLinearExtrusion.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_SolidOfLinearExtrusion::IGESSolid_SolidOfLinearExtrusion ()   { }
 

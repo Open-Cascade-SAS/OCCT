@@ -14,27 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_SplitSurfaceContinuity.ixx>
+
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <gp_Ax1.hxx>
 #include <Precision.hxx>
+#include <ShapeExtend.hxx>
 #include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
+#include <ShapeUpgrade_SplitSurfaceContinuity.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_HArray1OfCurve.hxx>
 #include <TColGeom_HArray2OfSurface.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Geom_SweptSurface.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <gp_Ax1.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <ShapeExtend.hxx>
+
 //======================================================================
 //function : ShapeUpgrade_SplitSurface
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitSurfaceContinuity::ShapeUpgrade_SplitSurfaceContinuity()
 {
   myCriterion = GeomAbs_C1;

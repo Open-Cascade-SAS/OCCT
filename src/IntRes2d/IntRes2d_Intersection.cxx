@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntRes2d_Intersection.ixx>
 
-#include <StdFail_NotDone.hxx>
-#include <Standard_OutOfRange.hxx>
+#include <IntRes2d_Intersection.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <IntRes2d_Position.hxx>
 #include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <IntRes2d_SequenceOfIntersectionSegment.hxx>
-#include <IntRes2d_Position.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 #define PARAMEQUAL(a,b) (Abs((a)-(b))< (1e-8))
 

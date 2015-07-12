@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Poly_PolygonOnTriangulation.ixx>
+
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Poly_PolygonOnTriangulation
 //purpose  : 
 //=======================================================================
-
 Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation
 (const TColStd_Array1OfInteger&    Nodes) :
     myDeflection(0.0),

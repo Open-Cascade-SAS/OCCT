@@ -12,21 +12,21 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <ShapeAnalysis_Shell.ixx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
+#include <ShapeAnalysis_Shell.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Clear
 //purpose  : 
 //=======================================================================
-
 void ShapeAnalysis_Shell::Clear() 
 {
   myShells.Clear();

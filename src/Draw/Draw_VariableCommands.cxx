@@ -14,25 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw.ixx>
 
-#include <Standard_Stream.hxx>
-#include <Standard_SStream.hxx>
-
-#include <Draw_Display.hxx>
+#include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <Draw_Number.hxx>
-#include <Draw_Axis3D.hxx>
 #include <Draw_Axis2D.hxx>
-#include <Draw_Grid.hxx>
+#include <Draw_Axis3D.hxx>
+#include <Draw_Display.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <Draw_SequenceOfDrawable3D.hxx>
+#include <Draw_Grid.hxx>
+#include <Draw_Number.hxx>
 #include <Draw_ProgressIndicator.hxx>
-
+#include <Draw_SequenceOfDrawable3D.hxx>
 #include <NCollection_Map.hxx>
+#include <Standard_SStream.hxx>
+#include <Standard_Stream.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <ios>
-
 #ifdef _WIN32
 extern Draw_Viewer dout;
 #endif

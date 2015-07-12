@@ -15,18 +15,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_Builder.ixx>
 
-#include <TopoDS_Iterator.hxx>
-
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-
 #include <BOPDS_DS.hxx>
-
-#include <BOPTools_AlgoTools.hxx>
 #include <BOPTools.hxx>
-
+#include <BOPTools_AlgoTools.hxx>
+#include <IntTools_Context.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Generated

@@ -15,79 +15,91 @@
 // commercial license or contractual agreement.
 
 // modif : jlr branchement F(t) pour Edge/Face
-
 //  Modified by skv - Wed Jun  9 17:16:26 2004 OCC5898
 //  modified by Edward AGAPOV (eap) Fri Feb  8 2002 (bug occ67 == BUC61052)
 //  ComputeData(), case where BRepBlend_Walking::Continu() can't get up to Target
 
-#include <stdio.h>
-
-#include <ChFi3d_Builder.jxx>
-#include <ChFi3d_Builder_0.hxx>
-
-#include <Precision.hxx>
-#include <math_Vector.hxx>
-#include <BSplCLib.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomLib.hxx>
-
+#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepTopAdaptor_TopolTool.hxx>
-#include <BRepTopAdaptor_HVertex.hxx>
-#include <BRep_Tool.hxx>
-
+#include <AppBlend_Approx.hxx>
 #include <Approx_SweepFunction.hxx>
+#include <Blend_CurvPointFuncInv.hxx>
+#include <Blend_FuncInv.hxx>
+#include <Blend_Function.hxx>
 #include <Blend_Point.hxx>
-#include <BRepBlend_Extremity.hxx>
-#include <BRepBlend_PointOnRst.hxx>
-#include <BRepBlend_Line.hxx>
-#include <BRepBlend_AppSurf.hxx>
-#include <BRepBlend_AppSurface.hxx>
+#include <Blend_RstRstFunction.hxx>
+#include <Blend_SurfCurvFuncInv.hxx>
+#include <Blend_SurfPointFuncInv.hxx>
+#include <Blend_SurfRstFunction.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_AppFunc.hxx>
 #include <BRepBlend_AppFuncRst.hxx>
 #include <BRepBlend_AppFuncRstRst.hxx>
-#include <BRepBlend_CSWalking.hxx>
-#include <BRepBlend_Walking.hxx>
-#include <BRepBlend_SurfRstLineBuilder.hxx>
-#include <BRepBlend_RstRstLineBuilder.hxx>
+#include <BRepBlend_AppSurf.hxx>
+#include <BRepBlend_AppSurface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
-
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-
-#include <ChFiDS_SurfData.hxx>
-#include <ChFiDS_FaceInterference.hxx>
+#include <BRepBlend_CSWalking.hxx>
+#include <BRepBlend_Extremity.hxx>
+#include <BRepBlend_Line.hxx>
+#include <BRepBlend_PointOnRst.hxx>
+#include <BRepBlend_RstRstLineBuilder.hxx>
+#include <BRepBlend_SurfRstLineBuilder.hxx>
+#include <BRepBlend_Walking.hxx>
+#include <BRepTopAdaptor_HVertex.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <BSplCLib.hxx>
+#include <ChFi3d_Builder.hxx>
+#include <ChFi3d_Builder_0.hxx>
 #include <ChFiDS_CommonPoint.hxx>
-
+#include <ChFiDS_FaceInterference.hxx>
+#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomLib.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <math_Vector.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TopExp.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
+#include <stdio.h>
 #ifdef OCCT_DEBUG
 // For measurements.
 #include <OSD_Chronometer.hxx>

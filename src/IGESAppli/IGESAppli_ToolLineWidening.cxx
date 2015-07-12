@@ -16,10 +16,21 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_ToolLineWidening.ixx>
-#include <IGESData_ParamCursor.hxx>
+#include <IGESAppli_LineWidening.hxx>
+#include <IGESAppli_ToolLineWidening.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
 #include <IGESData_LevelListEntity.hxx>
-
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESAppli_ToolLineWidening::IGESAppli_ToolLineWidening ()    {  }
 

@@ -11,10 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWPlusMinusTolerance.ixx>
-#include <StepShape_ToleranceMethodDefinition.hxx>
-#include <StepShape_DimensionalCharacteristic.hxx>
 
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWPlusMinusTolerance.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_DimensionalCharacteristic.hxx>
+#include <StepShape_PlusMinusTolerance.hxx>
+#include <StepShape_ToleranceMethodDefinition.hxx>
 
 RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance () {}
 

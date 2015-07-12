@@ -11,11 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepRepr_RWCompoundRepresentationItem.ixx>
-#include <TCollection_HAsciiString.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWCompoundRepresentationItem.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_CompoundRepresentationItem.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-
+#include <TCollection_HAsciiString.hxx>
 
 RWStepRepr_RWCompoundRepresentationItem::RWStepRepr_RWCompoundRepresentationItem  ()    {  }
 

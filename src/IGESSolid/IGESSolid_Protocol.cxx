@@ -11,36 +11,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSolid_Protocol.ixx>
-
-#include <IGESSolid_PlaneSurface.hxx>
-#include <IGESSolid_Block.hxx>
-#include <IGESSolid_RightAngularWedge.hxx>
-#include <IGESSolid_BooleanTree.hxx>
-#include <IGESSolid_SelectedComponent.hxx>
-#include <IGESSolid_ConeFrustum.hxx>
-#include <IGESSolid_Shell.hxx>
-#include <IGESSolid_ConicalSurface.hxx>
-#include <IGESSolid_SolidAssembly.hxx>
-#include <IGESSolid_Cylinder.hxx>
-#include <IGESSolid_SolidInstance.hxx>
-#include <IGESSolid_CylindricalSurface.hxx>
-#include <IGESSolid_SolidOfLinearExtrusion.hxx>
-#include <IGESSolid_EdgeList.hxx>
-#include <IGESSolid_SolidOfRevolution.hxx>
-#include <IGESSolid_Ellipsoid.hxx>
-#include <IGESSolid_Sphere.hxx>
-#include <IGESSolid_Face.hxx>
-#include <IGESSolid_SphericalSurface.hxx>
-#include <IGESSolid_ToroidalSurface.hxx>
-#include <IGESSolid_Loop.hxx>
-#include <IGESSolid_Torus.hxx>
-#include <IGESSolid_ManifoldSolid.hxx>
-#include <IGESSolid_VertexList.hxx>
 
 #include <IGESGeom.hxx>
 #include <IGESGeom_Protocol.hxx>
-
+#include <IGESSolid_Block.hxx>
+#include <IGESSolid_BooleanTree.hxx>
+#include <IGESSolid_ConeFrustum.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <IGESSolid_Cylinder.hxx>
+#include <IGESSolid_CylindricalSurface.hxx>
+#include <IGESSolid_EdgeList.hxx>
+#include <IGESSolid_Ellipsoid.hxx>
+#include <IGESSolid_Face.hxx>
+#include <IGESSolid_Loop.hxx>
+#include <IGESSolid_ManifoldSolid.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <IGESSolid_Protocol.hxx>
+#include <IGESSolid_RightAngularWedge.hxx>
+#include <IGESSolid_SelectedComponent.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <IGESSolid_SolidAssembly.hxx>
+#include <IGESSolid_SolidInstance.hxx>
+#include <IGESSolid_SolidOfLinearExtrusion.hxx>
+#include <IGESSolid_SolidOfRevolution.hxx>
+#include <IGESSolid_Sphere.hxx>
+#include <IGESSolid_SphericalSurface.hxx>
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <IGESSolid_Torus.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,

@@ -13,52 +13,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
 
-#include <stdio.h>
-
-#include <TCollection_AsciiString.hxx>
-
-#include <DBRep.hxx>
-#include <DrawTrSurf.hxx>
-#include <Draw_Color.hxx>
-#include <Draw.hxx>
-
-#include <NCollection_BaseAllocator.hxx>
-#include <NCollection_IncAllocator.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-//
-#include <BRep_Builder.hxx>
-
-#include <IntTools_FaceFace.hxx>
-#include <IntTools_Curve.hxx>
-#include <IntTools_PntOn2Faces.hxx>
-
-#include <BOPCol_ListOfShape.hxx>
-
-#include <BOPDS_DS.hxx>
-
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_MakerVolume.hxx>
+#include <BOPAlgo_Operation.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Section.hxx>
-
-#include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Section.hxx>
-
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPTest.hxx>
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
-
-#include <Geom_Curve.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <Draw_Color.hxx>
+#include <DrawTrSurf.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <IntTools_Curve.hxx>
+#include <IntTools_FaceFace.hxx>
+#include <IntTools_PntOn2Faces.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
+#include <stdio.h>
+//
 //
 static BOPAlgo_PaveFiller* pPF=NULL;
 //

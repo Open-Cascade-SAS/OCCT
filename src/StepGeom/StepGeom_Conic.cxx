@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_Conic.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Axis2Placement.hxx>
+#include <StepGeom_Conic.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_Conic::StepGeom_Conic ()  {}
 

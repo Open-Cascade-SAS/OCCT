@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_FunctionallyDefinedTransformation.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepRepr_FunctionallyDefinedTransformation.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepRepr_FunctionallyDefinedTransformation::StepRepr_FunctionallyDefinedTransformation ()  {}
 

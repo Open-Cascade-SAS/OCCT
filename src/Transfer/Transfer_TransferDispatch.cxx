@@ -11,12 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_TransferDispatch.ixx>
+
+#include <Interface_GeneralLib.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Transient.hxx>
 #include <Transfer_DispatchControl.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
-#include <Interface_Macros.hxx>
-
-
+#include <Transfer_TransferDispatch.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 Transfer_TransferDispatch::Transfer_TransferDispatch
   (const Handle(Interface_InterfaceModel)& amodel,

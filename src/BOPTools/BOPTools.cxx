@@ -12,9 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools.ixx>
-#include <TopExp_Explorer.hxx>
+
 #include <BOPCol_ListOfShape.hxx>
+#include <BOPTools.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : MapShapes

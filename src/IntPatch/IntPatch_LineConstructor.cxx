@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_LineConstructor.ixx>
 
-#include <IntPatch_GLine.hxx>
-#include <IntPatch_ALine.hxx>
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_RLine.hxx>
 #include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <IntPatch_ALine.hxx>
+#include <IntPatch_GLine.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_LineConstructor.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_WLine.hxx>
 
 #define XPU1009 1
 

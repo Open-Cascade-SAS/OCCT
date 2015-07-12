@@ -14,7 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_Curve.ixx>
+
+#include <Geom_Curve.hxx>
+#include <Geom_UndefinedDerivative.hxx>
+#include <Geom_UndefinedValue.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_Curve         Curve;
 

@@ -11,127 +11,115 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP209_Construct.ixx>
 
+#include <HeaderSection_FileDescription.hxx>
+#include <HeaderSection_FileName.hxx>
+#include <HeaderSection_FileSchema.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
+#include <OSD_Process.hxx>
+#include <Quantity_Date.hxx>
+#include <StepAP203_CcDesignApproval.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
+#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
+#include <StepAP203_CcDesignSecurityClassification.hxx>
+#include <StepAP203_HArray1OfApprovedItem.hxx>
+#include <StepAP203_HArray1OfClassifiedItem.hxx>
+#include <StepAP203_HArray1OfDateTimeItem.hxx>
+#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
+#include <StepAP209_Construct.hxx>
+#include <StepAP214_AppliedApprovalAssignment.hxx>
+#include <StepAP214_AppliedDateAndTimeAssignment.hxx>
+#include <StepAP214_AppliedPersonAndOrganizationAssignment.hxx>
+#include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
+#include <StepAP214_ApprovalItem.hxx>
+#include <StepAP214_DateAndTimeItem.hxx>
+#include <StepAP214_HArray1OfApprovalItem.hxx>
+#include <StepAP214_HArray1OfDateAndTimeItem.hxx>
+#include <StepAP214_HArray1OfPersonAndOrganizationItem.hxx>
+#include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
+#include <StepAP214_PersonAndOrganizationItem.hxx>
+#include <StepAP214_SecurityClassificationItem.hxx>
+#include <StepBasic_ApplicationContext.hxx>
+#include <StepBasic_ApplicationProtocolDefinition.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_ApprovalDateTime.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepBasic_ApprovalRole.hxx>
+#include <StepBasic_ApprovalStatus.hxx>
+#include <StepBasic_CalendarDate.hxx>
+#include <StepBasic_CoordinatedUniversalTimeOffset.hxx>
+#include <StepBasic_DateAndTime.hxx>
+#include <StepBasic_DateTimeRole.hxx>
+#include <StepBasic_DateTimeSelect.hxx>
+#include <StepBasic_DesignContext.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_HArray1OfNamedUnit.hxx>
+#include <StepBasic_HArray1OfProduct.hxx>
+#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
+#include <StepBasic_LocalTime.hxx>
+#include <StepBasic_MechanicalContext.hxx>
+#include <StepBasic_Organization.hxx>
+#include <StepBasic_Person.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
+#include <StepBasic_PersonAndOrganizationRole.hxx>
+#include <StepBasic_PersonOrganizationSelect.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductCategory.hxx>
+#include <StepBasic_ProductCategoryRelationship.hxx>
+#include <StepBasic_ProductContext.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionContext.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinitionFormationRelationship.hxx>
+#include <StepBasic_ProductRelatedProductCategory.hxx>
+#include <StepBasic_SecurityClassification.hxx>
+#include <StepBasic_SecurityClassificationLevel.hxx>
+#include <StepBasic_SiUnitAndMassUnit.hxx>
+#include <StepBasic_SiUnitAndThermodynamicTemperatureUnit.hxx>
+#include <StepBasic_SiUnitAndTimeUnit.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepElement_AnalysisItemWithinRepresentation.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <StepFEA_CoordinateSystemType.hxx>
+#include <StepFEA_Curve3dElementProperty.hxx>
+#include <StepFEA_Curve3dElementRepresentation.hxx>
+#include <StepFEA_CurveElementIntervalConstant.hxx>
+#include <StepFEA_ElementGeometricRelationship.hxx>
+#include <StepFEA_ElementRepresentation.hxx>
+#include <StepFEA_FeaAxis2Placement3d.hxx>
+#include <StepFEA_FeaModel.hxx>
+#include <StepFEA_FeaModel3d.hxx>
+#include <StepFEA_FeaModelDefinition.hxx>
+#include <StepFEA_HArray1OfCurveElementInterval.hxx>
+#include <StepFEA_Surface3dElementRepresentation.hxx>
+#include <StepFEA_Volume3dElementRepresentation.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <StepRepr_StructuralResponseProperty.hxx>
+#include <StepRepr_StructuralResponsePropertyDefinitionRepresentation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <OSD_Process.hxx>
-#include <Quantity_Date.hxx>
-
-#include <HeaderSection_FileName.hxx>
-#include <HeaderSection_FileSchema.hxx>
-#include <HeaderSection_FileDescription.hxx>
-
-#include <StepBasic_ProductDefinitionFormation.hxx>
-#include <StepBasic_ProductDefinitionFormationRelationship.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
-#include <StepBasic_ProductDefinitionContext.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
-#include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
-#include <StepBasic_SiUnitAndTimeUnit.hxx>
-#include <StepBasic_SiUnitAndMassUnit.hxx>
-#include <StepBasic_SiUnitAndThermodynamicTemperatureUnit.hxx>
-#include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_ApprovalStatus.hxx>
-#include <StepBasic_Approval.hxx>
-#include <StepBasic_SecurityClassificationLevel.hxx>
-#include <StepBasic_SecurityClassification.hxx>
-#include <StepBasic_CalendarDate.hxx>
-#include <StepBasic_CoordinatedUniversalTimeOffset.hxx>
-#include <StepBasic_LocalTime.hxx>
-#include <StepBasic_DateAndTime.hxx>
-#include <StepBasic_DateTimeRole.hxx>
-#include <StepBasic_ApprovalDateTime.hxx>
-#include <StepBasic_DateTimeSelect.hxx>
-#include <StepBasic_Person.hxx>
-#include <StepBasic_Organization.hxx>
-#include <StepBasic_PersonAndOrganization.hxx>
-#include <StepBasic_PersonAndOrganizationRole.hxx>
-#include <StepBasic_ApprovalRole.hxx>
-#include <StepBasic_ApprovalPersonOrganization.hxx>
-#include <StepBasic_PersonOrganizationSelect.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
-#include <StepBasic_ProductRelatedProductCategory.hxx>
-#include <StepBasic_ProductCategory.hxx>
-#include <StepBasic_ProductCategoryRelationship.hxx>
-#include <StepBasic_MechanicalContext.hxx>
-#include <StepBasic_DesignContext.hxx>
-#include <StepBasic_ApplicationProtocolDefinition.hxx>
-#include <StepBasic_ApplicationContext.hxx>
-
-#include <StepRepr_PropertyDefinitionRepresentation.hxx>
-#include <StepRepr_StructuralResponseProperty.hxx>
-#include <StepRepr_StructuralResponsePropertyDefinitionRepresentation.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_ShapeRepresentationRelationship.hxx>
-#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
-#include <StepRepr_GlobalUnitAssignedContext.hxx>
-
-#include <StepFEA_Curve3dElementRepresentation.hxx>
-#include <StepFEA_Surface3dElementRepresentation.hxx>
-#include <StepFEA_Volume3dElementRepresentation.hxx>
-#include <StepFEA_FeaModelDefinition.hxx>
-#include <StepFEA_HArray1OfCurveElementInterval.hxx>
-#include <StepFEA_CurveElementIntervalConstant.hxx>
-#include <StepFEA_Curve3dElementProperty.hxx>
-#include <StepFEA_ElementGeometricRelationship.hxx>
-#include <StepFEA_FeaModel3d.hxx>
-#include <StepFEA_FeaAxis2Placement3d.hxx>
-#include <StepFEA_CoordinateSystemType.hxx>
-
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
-
-#include <StepData_StepModel.hxx>
-
-#include <StepElement_AnalysisItemWithinRepresentation.hxx>
-
-#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
-#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Direction.hxx>
-
-#include <StepAP203_CcDesignApproval.hxx>
-#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
-#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
-#include <StepAP203_CcDesignSecurityClassification.hxx>
-#include <StepAP203_HArray1OfApprovedItem.hxx>
-#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
-#include <StepAP203_HArray1OfDateTimeItem.hxx>
-#include <StepAP203_HArray1OfClassifiedItem.hxx>
-
-#include <StepAP214_AppliedApprovalAssignment.hxx>
-#include <StepAP214_AppliedPersonAndOrganizationAssignment.hxx>
-#include <StepAP214_AppliedDateAndTimeAssignment.hxx>
-#include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
-#include <StepAP214_HArray1OfApprovalItem.hxx>
-#include <StepAP214_ApprovalItem.hxx>
-#include <StepAP214_HArray1OfPersonAndOrganizationItem.hxx>
-#include <StepAP214_PersonAndOrganizationItem.hxx>
-#include <StepAP214_HArray1OfDateAndTimeItem.hxx>
-#include <StepAP214_DateAndTimeItem.hxx>
-#include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
-#include <StepAP214_SecurityClassificationItem.hxx>
-#include <StepAP214_ApprovalItem.hxx>
-#include <StepElement_ElementMaterial.hxx>
-#include <StepFEA_FeaModel.hxx>
-#include <StepFEA_ElementRepresentation.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-#include <StepBasic_ProductDefinition.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepBasic_ProductContext.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //#include <.hxx>
-
-
 //=======================================================================
 //function : StepAP209_Construct
 //purpose  : 
 //=======================================================================
-
 StepAP209_Construct::StepAP209_Construct () 
 {
 }

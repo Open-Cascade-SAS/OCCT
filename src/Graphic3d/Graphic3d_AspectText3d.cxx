@@ -14,66 +14,46 @@
 // commercial license or contractual agreement.
 
 //    30/11/98 ; FMN : S3819. Textes always visible.   
-
-
 //-Version  
-
 //-Design Declaration of variables specific to the context
 //    of trace of texts 3d
-
 //-Warning  A context of trace of text is defined by :
 //    - the font used
 //    - the color
 //    - the scale
 //    - the space between characters
-
 //-References 
-
 //-Language C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Graphic3d_AspectText3d.ixx>
-
-#include <TCollection_AsciiString.hxx>
-#include <OSD_Environment.hxx>
 
 #include <Font_NameOfFont.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_AspectTextDefinitionError.hxx>
+#include <OSD_Environment.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //  -- la font utilisee
 //  MyFont    : NameOfFont;
-
 //  -- la couleur
 //  MyColor   : Color;
-
 //  -- l'echelle
 //  MyFactor  : Standard_Real;
-
 //  -- l'espace entre caracteres
 //  MySpace   : Standard_Real;
-
 //  -- le style
 //  MyStyle   : TypeOfStyleText;
-
 //  -- le display type
 //  MyDisplayType : TypeOfDisplayText;
-
 //  -- la couleur du sous-titrage et pour le fond en mode decalage.
 //  MyColorSubTitle : Color;
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
-
-
 Graphic3d_AspectText3d::Graphic3d_AspectText3d ():
 MyFont (Font_NOF_ASCII_MONO), MyColor (Quantity_NOC_YELLOW), MyFactor (1.0), MySpace (0.0), MyStyle (Aspect_TOST_NORMAL), MyDisplayType (Aspect_TODT_NORMAL), MyColorSubTitle (Quantity_NOC_WHITE) {
   MyTextZoomable = Standard_False;

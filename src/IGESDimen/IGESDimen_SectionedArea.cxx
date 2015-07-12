@@ -16,10 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_SectionedArea.ixx>
-#include <Standard_DimensionMismatch.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDimen_SectionedArea.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_SectionedArea::IGESDimen_SectionedArea ()    {  }
 

@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAutoDesignApprovalAssignment.ixx>
-#include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
-#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
-#include <StepBasic_Approval.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepAP214_RWAutoDesignApprovalAssignment.hxx>
 #include <StepAP214_AutoDesignApprovalAssignment.hxx>
-
+#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
+#include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignApprovalAssignment::RWStepAP214_RWAutoDesignApprovalAssignment () {}
 

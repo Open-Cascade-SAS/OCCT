@@ -14,29 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_GapFiller.ixx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
-#include <Precision.hxx>
-#include <TopOpeBRepDS_connex.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_MapOfTransient.hxx>
 
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-
-#include <gp.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-
 #include <Geom2d_Curve.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_MapOfTransient.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_Association.hxx>
+#include <TopOpeBRepDS_connex.hxx>
+#include <TopOpeBRepDS_GapFiller.hxx>
+#include <TopOpeBRepDS_GapTool.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceGAP();

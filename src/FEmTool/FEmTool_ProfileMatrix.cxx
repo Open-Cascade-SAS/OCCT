@@ -18,9 +18,13 @@
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
 
-#include <FEmTool_ProfileMatrix.ixx>
-#include <gp.hxx>
 
+#include <FEmTool_ProfileMatrix.hxx>
+#include <gp.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : :FEmTool_ProfileMatrix

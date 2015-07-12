@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_NamedExpression.ixx>
+
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_NamedExpression.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : GetName
 //purpose  : 
 //=======================================================================
-
 const TCollection_AsciiString& Expr_NamedExpression::GetName() const
 {
   return myName;

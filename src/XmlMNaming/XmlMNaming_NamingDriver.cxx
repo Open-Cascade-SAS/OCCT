@@ -13,16 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMNaming_NamingDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-#include <XmlMNaming.hxx>
-#include <TNaming_Name.hxx>
-#include <TNaming_Naming.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TNaming_Iterator.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
+#include <TNaming_Name.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Naming.hxx>
+#include <XmlMNaming.hxx>
+#include <XmlMNaming_NamingDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 static TopAbs_ShapeEnum ShapeEnumFromString (const XmlObjMgt_DOMString&);

@@ -14,19 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MAT2d_MiniPath.ixx>
-#include <MAT2d_Connexion.hxx>
-#include <MAT2d_Array2OfConnexion.hxx>
-#include <Extrema_POnCurv2d.hxx>
+
 #include <Extrema_ExtCC2d.hxx>
 #include <Extrema_ExtPC2d.hxx>
-#include <Geom2dAdaptor_Curve.hxx> 
-#include <Geom2d_Point.hxx> 
-#include <Geom2d_CartesianPoint.hxx> 
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColGeom2d_SequenceOfGeometry.hxx>
-#include <Standard_NotImplemented.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_Point.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <MAT2d_Array2OfConnexion.hxx>
+#include <MAT2d_Connexion.hxx>
+#include <MAT2d_MiniPath.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TColGeom2d_SequenceOfGeometry.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 //============================================================================
 //function : MAT2d_MiniPath()

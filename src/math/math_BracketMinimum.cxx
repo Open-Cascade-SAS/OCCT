@@ -12,11 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_BracketMinimum.ixx>
 
-#include <StdFail_NotDone.hxx>   // waiting for NotDone Exception
+#include <math_BracketMinimum.hxx>
 #include <math_Function.hxx>
+#include <StdFail_NotDone.hxx>
 
+// waiting for NotDone Exception
 #define GOLD           1.618034
 #define CGOLD          0.3819660
 #define GLIMIT         100.0

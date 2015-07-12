@@ -11,33 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESBasic_ReadWriteModule.ixx>
-#include <Interface_Macros.hxx>
 
 #include <IGESBasic_AssocGroupType.hxx>
+#include <IGESBasic_ExternalReferenceFile.hxx>
 #include <IGESBasic_ExternalRefFile.hxx>
 #include <IGESBasic_ExternalRefFileIndex.hxx>
 #include <IGESBasic_ExternalRefFileName.hxx>
 #include <IGESBasic_ExternalRefLibName.hxx>
 #include <IGESBasic_ExternalRefName.hxx>
-#include <IGESBasic_ExternalReferenceFile.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_Hierarchy.hxx>
 #include <IGESBasic_Name.hxx>
 #include <IGESBasic_OrderedGroup.hxx>
 #include <IGESBasic_OrderedGroupWithoutBackP.hxx>
+#include <IGESBasic_ReadWriteModule.hxx>
 #include <IGESBasic_SingleParent.hxx>
 #include <IGESBasic_SingularSubfigure.hxx>
 #include <IGESBasic_SubfigureDef.hxx>
-
 #include <IGESBasic_ToolAssocGroupType.hxx>
+#include <IGESBasic_ToolExternalReferenceFile.hxx>
 #include <IGESBasic_ToolExternalRefFile.hxx>
 #include <IGESBasic_ToolExternalRefFileIndex.hxx>
 #include <IGESBasic_ToolExternalRefFileName.hxx>
 #include <IGESBasic_ToolExternalRefLibName.hxx>
 #include <IGESBasic_ToolExternalRefName.hxx>
-#include <IGESBasic_ToolExternalReferenceFile.hxx>
 #include <IGESBasic_ToolGroup.hxx>
 #include <IGESBasic_ToolGroupWithoutBackP.hxx>
 #include <IGESBasic_ToolHierarchy.hxx>
@@ -47,14 +45,17 @@
 #include <IGESBasic_ToolSingleParent.hxx>
 #include <IGESBasic_ToolSingularSubfigure.hxx>
 #include <IGESBasic_ToolSubfigureDef.hxx>
-
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESBasic_ReadWriteModule::IGESBasic_ReadWriteModule ()    {  }
 
 

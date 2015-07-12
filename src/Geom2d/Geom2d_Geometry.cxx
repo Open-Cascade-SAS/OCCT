@@ -14,8 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2d_Geometry.ixx>
+
+#include <Geom2d_Geometry.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom2d_Geometry Geometry;
 typedef gp_Ax2d   Ax2d;

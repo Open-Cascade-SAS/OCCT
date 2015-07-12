@@ -14,61 +14,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_Generator.ixx>
 
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <BRep_Builder.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Dir2d.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepFill_Generator.hxx>
+#include <BRepLib.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomConvert.hxx>
+#include <GeomFill.hxx>
+#include <GeomFill_Generator.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Lin.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <GeomFill_Generator.hxx>
-
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <GeomFill.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
-#include <BRepLib.hxx>
-
-#include <TColgp_Array1OfPnt.hxx> 
-#include <TColgp_Array1OfPnt2d.hxx> 
-#include <Geom_BSplineCurve.hxx> 
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <GeomConvert.hxx>
-
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepTools.hxx>
+#include <Precision.hxx>
 #include <Standard_NullObject.hxx>
-
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 
 //=======================================================================
 //function : DetectKPart
 //purpose  : 
 //=======================================================================
-
 Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 			     const TopoDS_Edge& Edge2)
 {

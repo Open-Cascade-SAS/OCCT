@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_GeneralProperty.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_GeneralProperty.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_GeneralProperty
 //purpose  : 
 //=======================================================================
-
 StepBasic_GeneralProperty::StepBasic_GeneralProperty ()
 {
   defDescription = Standard_False;

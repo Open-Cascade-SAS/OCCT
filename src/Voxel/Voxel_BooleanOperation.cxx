@@ -13,8 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_BooleanOperation.ixx>
+
 #include <Precision.hxx>
+#include <Voxel_BoolDS.hxx>
+#include <Voxel_BooleanOperation.hxx>
+#include <Voxel_ColorDS.hxx>
+#include <Voxel_DS.hxx>
+#include <Voxel_FloatDS.hxx>
 
 Voxel_BooleanOperation::Voxel_BooleanOperation()
 {

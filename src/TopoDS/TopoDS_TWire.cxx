@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDS_TWire.ixx>
 
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
+#include <TopoDS_TShape.hxx>
+#include <TopoDS_TWire.hxx>
 
 //=======================================================================
 //function : ShapeType
 //purpose  : 
 //=======================================================================
-
 TopAbs_ShapeEnum TopoDS_TWire::ShapeType() const
 {
   return TopAbs_WIRE;

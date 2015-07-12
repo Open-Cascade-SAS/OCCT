@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_BlockIterator.ixx>
+
+#include <Standard_NoMoreObject.hxx>
+#include <TopOpeBRepBuild_BlockIterator.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_BlockIterator
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator() :
 myLower(0),
 myUpper(0),

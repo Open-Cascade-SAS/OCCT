@@ -14,17 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeRevolution.ixx>
+
 #include <BRepBuilderAPI.hxx>
-#include <GeomProjLib.hxx>
+#include <BRepPrim_Revolution.hxx>
+#include <BRepPrimAPI_MakeRevolution.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Ax2.hxx>
+#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : Project
 //purpose  : 
 //=======================================================================
-
 static Handle(Geom2d_Curve) Project(const Handle(Geom_Curve)& M,
 				    const gp_Ax3 Axis)
 {

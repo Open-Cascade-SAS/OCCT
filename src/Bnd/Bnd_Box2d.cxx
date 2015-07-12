@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_Box2d.ixx>
-#include <Standard_Stream.hxx>
-#include <gp.hxx>
-//-- #include <Precision.hxx> Precision::Infinite() -> 1e+100
 
+#include <Bnd_Box2d.hxx>
+#include <gp.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Stream.hxx>
+
+//-- #include <Precision.hxx> Precision::Infinite() -> 1e+100
 //=======================================================================
 //function : Update
 //purpose  : 
 //=======================================================================
-
 void Bnd_Box2d::Update (const Standard_Real x, const Standard_Real y, 
 			const Standard_Real X, const Standard_Real Y)
 {

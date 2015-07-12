@@ -14,14 +14,16 @@
 // commercial license or contractual agreement.
 
 //      	-------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Oct  1 1997	Creation
 
-
-
-#include <TDF_Transaction.ixx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NullObject.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Delta.hxx>
+#include <TDF_Transaction.hxx>
 
 #undef DEB_TRANSACTION
 #ifdef OCCT_DEBUG

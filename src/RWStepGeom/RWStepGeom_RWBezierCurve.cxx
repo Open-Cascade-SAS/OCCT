@@ -11,19 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWBezierCurve.ixx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_BSplineCurveForm.hxx>
-#include <StepData_Logical.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWBezierCurve.hxx>
+#include <StepData_Logical.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepGeom_BezierCurve.hxx>
-
-
+#include <StepGeom_BSplineCurveForm.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray1OfCartesianPoint.hxx>
 
 // --- Enum : BSplineCurveForm ---
 static TCollection_AsciiString bscfEllipticArc(".ELLIPTIC_ARC.");

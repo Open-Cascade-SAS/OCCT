@@ -14,28 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Approx_SweepApproximation.ixx>
-#include <gp_XYZ.hxx>
-#include <BSplCLib.hxx>
 
 #include <AdvApprox_ApproxAFunction.hxx>
+#include <AdvApprox_Cutting.hxx>
 #include <AdvApprox_DichoCutting.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
-
+#include <Approx_SweepApproximation.hxx>
+#include <Approx_SweepFunction.hxx>
+#include <BSplCLib.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-
 #include <TColStd_Array1OfReal.hxx>
-
-#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //class : Approx_SweepApproximation_Eval
 //purpose: evaluator class for approximation
 //=======================================================================
-
 class Approx_SweepApproximation_Eval : public AdvApprox_EvaluatorFunction
 {
  public:

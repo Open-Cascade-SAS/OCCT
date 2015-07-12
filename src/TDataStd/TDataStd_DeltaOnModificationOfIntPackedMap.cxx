@@ -13,12 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_DeltaOnModificationOfIntPackedMap.ixx>
-#include <TDF_DeltaOnModification.hxx>
-#include <TDF_Label.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
+
+#include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <TDataStd_DeltaOnModificationOfIntPackedMap.hxx>
+#include <TDataStd_IntPackedMap.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_Label.hxx>
 
 #ifdef OCCT_DEBUG
 #define MAXUP 1000

@@ -11,19 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DDocStd_DrawDocument.ixx>
 
-#include <TDocStd_Document.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_Data.hxx>
+#include <DDocStd_DrawDocument.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-
+#include <TDF_Data.hxx>
+#include <TDF_Tool.hxx>
+#include <TDocStd_Document.hxx>
 
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 Handle(DDocStd_DrawDocument) DDocStd_DrawDocument::Find (const Handle(TDocStd_Document)& /*Doc*/) 
 {
 Handle(DDocStd_DrawDocument)  adoc;

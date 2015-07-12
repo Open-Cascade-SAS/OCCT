@@ -13,24 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ClosedEdgeDivide.ixx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
+
 #include <BRep_Tool.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <ShapeUpgrade_SplitCurve3d.hxx>
-#include <ShapeUpgrade_SplitCurve2d.hxx>
-#include <gp_Pnt.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeUpgrade_ClosedEdgeDivide.hxx>
+#include <ShapeUpgrade_SplitCurve2d.hxx>
+#include <ShapeUpgrade_SplitCurve3d.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ClosedEdgeDivide
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ClosedEdgeDivide::ShapeUpgrade_ClosedEdgeDivide():
       ShapeUpgrade_EdgeDivide()
 {

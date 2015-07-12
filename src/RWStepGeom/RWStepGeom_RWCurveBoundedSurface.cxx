@@ -16,16 +16,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepGeom_RWCurveBoundedSurface.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepGeom_RWCurveBoundedSurface.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepGeom_HArray1OfSurfaceBoundary.hxx>
-#include <StepGeom_SurfaceBoundary.hxx>
 #include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfaceBoundary.hxx>
 
 //=======================================================================
 //function : RWStepGeom_RWCurveBoundedSurface
 //purpose  : 
 //=======================================================================
-
 RWStepGeom_RWCurveBoundedSurface::RWStepGeom_RWCurveBoundedSurface ()
 {
 }

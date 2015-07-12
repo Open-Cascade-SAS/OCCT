@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_OptValue.ixx>
+
+#include <MoniTool_OptValue.hxx>
+#include <MoniTool_Profile.hxx>
+#include <Standard_Transient.hxx>
 
 MoniTool_OptValue::MoniTool_OptValue (const Standard_CString opt)
     : theopt (opt)

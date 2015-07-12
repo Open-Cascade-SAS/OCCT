@@ -14,16 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_SurfaceOfLinearExtrusion.ixx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HSurfaceOfLinearExtrusion.hxx>
-#include <Precision.hxx>
+#include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Adaptor3d_SurfaceOfLinearExtrusion
 //purpose  : 
 //=======================================================================
-
 Adaptor3d_SurfaceOfLinearExtrusion::Adaptor3d_SurfaceOfLinearExtrusion()
 {}
 

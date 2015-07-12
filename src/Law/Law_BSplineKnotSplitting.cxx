@@ -14,13 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Law_BSplineKnotSplitting.ixx>
-
-
-#include <Law_BSplineKnotSplitting.ixx>
-#include <Standard_RangeError.hxx>
 
 #include <BSplCLib.hxx>
+#include <Law_BSpline.hxx>
+#include <Law_BSplineKnotSplitting.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_RangeError.hxx>
 
 typedef TColStd_Array1OfInteger         Array1OfInteger;
 typedef TColStd_HArray1OfInteger        HArray1OfInteger;

@@ -14,7 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_GraphicDriver.ixx>
+
+#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_TransformError.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp)
 : MyTraceLevel        (0),

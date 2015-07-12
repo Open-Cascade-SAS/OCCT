@@ -12,9 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Visual3d_Light.ixx>
 
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_LightDefinitionError.hxx>
+#include <Visual3d_View.hxx>
 
 // =======================================================================
 // function : Visual3d_Light

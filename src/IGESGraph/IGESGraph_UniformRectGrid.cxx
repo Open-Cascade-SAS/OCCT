@@ -16,8 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_UniformRectGrid.ixx>
-
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESGraph_UniformRectGrid.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_UniformRectGrid::IGESGraph_UniformRectGrid ()    {  }
 

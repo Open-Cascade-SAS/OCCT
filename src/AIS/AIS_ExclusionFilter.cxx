@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_ExclusionFilter.ixx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger.hxx>
+
+#include <AIS_ExclusionFilter.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
 
 //=======================================================================
 //function : AIS_ExclusionFilter
 //purpose  : Constructors
 //=======================================================================
-
 AIS_ExclusionFilter::AIS_ExclusionFilter(const Standard_Boolean ExclusionFlagOn):
 myIsExclusionFlagOn(ExclusionFlagOn)
 {

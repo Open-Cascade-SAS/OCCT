@@ -11,5 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_NameEntity.ixx>
+
+#include <IGESData_NameEntity.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+
 // NameEntity sert a decrire des entites "propriete nom" (Value a definir)

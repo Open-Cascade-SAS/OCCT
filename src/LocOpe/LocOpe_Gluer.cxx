@@ -14,38 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_Gluer.ixx>
 
-#include <LocOpe_Spliter.hxx>
-#include <LocOpe_GluedShape.hxx>
-#include <LocOpe_WiresOnShape.hxx>
-#include <LocOpe_Generator.hxx>
-#include <LocOpe.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepExtrema_ExtPF.hxx>
+#include <Extrema_ExtPS.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Extrema_ExtPS.hxx>
-#include <BRepExtrema_ExtPF.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
+#include <LocOpe.hxx>
+#include <LocOpe_Generator.hxx>
+#include <LocOpe_GluedShape.hxx>
+#include <LocOpe_Gluer.hxx>
+#include <LocOpe_Spliter.hxx>
+#include <LocOpe_WiresOnShape.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <Precision.hxx>
-
-
-#include <Standard_ConstructionError.hxx>
-
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static TopAbs_Orientation GetOrientation(const TopoDS_Face&,
 					 const TopoDS_Face&);

@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_ArbitraryVolume3dElementCoordinateSystem.hxx>
 #include <StepFEA_FeaAxis2Placement3d.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem ()
 {
 }

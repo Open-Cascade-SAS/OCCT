@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_BoundSortBox.ixx>
-#include <Standard_NullValue.hxx>
-#include <Standard_MultiplyDefined.hxx>
+
 #include <Bnd_Array1OfBox.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <Bnd_BoundSortBox.hxx>
+#include <Bnd_Box.hxx>
+#include <gp_Pln.hxx>
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_NullValue.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
+#include <stdio.h>
 //#if defined(WNT) || defined(LIN)
-# include <stdio.h>
 //#endif  // WNT
-
 //-- ================================================================================
 //--  lbr le 27 fev 97
 //--  
@@ -91,10 +93,6 @@
 //--          it takes much time to parse the tables. The slowly written, byut fastly read structures 
 //--          are thus better.
 //--         
-
-
-
-
 //=======================================================================
 #define VERIFICATION 0
 #define DEBUG 0

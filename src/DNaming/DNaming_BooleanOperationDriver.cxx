@@ -13,43 +13,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_BooleanOperationDriver.ixx>
-#include <TFunction_Function.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TNaming.hxx>
-#include <TNaming_NamedShape.hxx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 #include <BRepCheck_Analyzer.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Result.hxx>
+#include <BRepLib.hxx>
+#include <DNaming.hxx>
+#include <DNaming_BooleanOperationDriver.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <ModelDefinitions.hxx>
+#include <Precision.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
 #include <TDF_Label.hxx>
-#include <ModelDefinitions.hxx>
-
-#include <DNaming.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Section.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopExp_Explorer.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <BRepLib.hxx>
-#include <Precision.hxx>
-#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-#include <BRepCheck_Result.hxx>
-#include <BRepCheck_ListOfStatus.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <GeomAbs_SurfaceType.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean FixSameParameter(const TopoDS_Shape&    theShape,
 					     BRepCheck_Analyzer&    theAnalyzer,

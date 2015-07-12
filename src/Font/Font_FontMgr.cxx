@@ -13,18 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Font_FontMgr.ixx>
 
+#include <Font_FontMgr.hxx>
 #include <Font_FTLibrary.hxx>
-#include <OSD_Environment.hxx>
+#include <Font_SystemFont.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
+#include <OSD_Environment.hxx>
 #include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
 struct Font_FontMgr_FontAliasMapNode
 {
   const char *    EnumName;

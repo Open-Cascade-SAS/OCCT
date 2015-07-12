@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_CcDesignApproval.ixx>
+#include <Standard_Type.hxx>
+#include <StepAP203_CcDesignApproval.hxx>
+#include <StepBasic_Approval.hxx>
 
 //=======================================================================
 //function : StepAP203_CcDesignApproval
 //purpose  : 
 //=======================================================================
-
 StepAP203_CcDesignApproval::StepAP203_CcDesignApproval ()
 {
 }

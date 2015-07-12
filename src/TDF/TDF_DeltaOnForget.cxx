@@ -14,22 +14,19 @@
 // commercial license or contractual agreement.
 
 //      	---------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Nov  3 1997	Creation
 
-
-
-#include <TDF_DeltaOnForget.ixx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DeltaOnForget.hxx>
 #include <TDF_Label.hxx>
-
 
 //=======================================================================
 //function : TDF_DeltaOnForget
 //purpose  : 
 //=======================================================================
-
 TDF_DeltaOnForget::TDF_DeltaOnForget
 (const Handle(TDF_Attribute)& anAtt)
 : TDF_AttributeDelta(anAtt)

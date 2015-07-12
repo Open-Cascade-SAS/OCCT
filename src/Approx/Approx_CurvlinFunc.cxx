@@ -14,13 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Approx_CurvlinFunc.ixx>
+
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <GeomLib.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Approx_CurvlinFunc.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
+#include <GeomLib.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
 #ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>

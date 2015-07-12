@@ -13,9 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_RelationDriver.ixx>
+
+#include <BinMDataStd_RelationDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Relation.hxx>
 #include <TDataStd_Variable.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 
 //=======================================================================

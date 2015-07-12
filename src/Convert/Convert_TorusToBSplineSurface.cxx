@@ -14,10 +14,11 @@
 
 //JCV 16/10/91
 
-#include <Convert_TorusToBSplineSurface.ixx>
-
+#include <Convert_TorusToBSplineSurface.hxx>
 #include <gp.hxx>
+#include <gp_Torus.hxx>
 #include <gp_Trsf.hxx>
+#include <Standard_DomainError.hxx>
 
 static const Standard_Integer TheUDegree  = 2;
 static const Standard_Integer TheVDegree  = 2;

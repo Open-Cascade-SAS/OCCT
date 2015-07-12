@@ -16,18 +16,29 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_ToolCircularArc.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <gp_XY.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <Interface_MSG.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESGeom_CircularArc.hxx>
+#include <IGESGeom_ToolCircularArc.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-#include <stdio.h>
-
-// MGE 28/07/98
+#include <Interface_MSG.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
+#include <Standard_DomainError.hxx>
 
+#include <stdio.h>
+// MGE 28/07/98
 IGESGeom_ToolCircularArc::IGESGeom_ToolCircularArc ()    {  }
 
 

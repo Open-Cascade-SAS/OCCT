@@ -14,19 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw_DrawableMesure.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_CString.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TestTopOpeDraw_DrawableC3D.hxx>
 #include <TestTopOpeDraw_DrawableMesure.hxx>
 #include <TestTopOpeDraw_DrawableP3D.hxx>
 #include <TestTopOpeTools_Mesure.hxx>
-#include <Geom_Curve.hxx>
 #include <TopOpeBRepTool_CurveTool.hxx>
-#include <Standard_CString.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+
 #include <string.h>
-#include <Draw_Interpretor.hxx>
-
-
 static gp_Pnt PScale(const gp_Pnt& P,
 		     const Standard_Real ScaleX,
 		     const Standard_Real ScaleY)

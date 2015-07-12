@@ -16,32 +16,32 @@
 
 //    gka 30.04.99 S4137: extended for all types of surfaces
 
-#include <ShapeUpgrade_SplitSurface.ixx>
-#include <ShapeUpgrade.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <TColGeom_HArray2OfSurface.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <Precision.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
-#include <ShapeUpgrade_SplitCurve3d.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <gp_Ax1.hxx>
+#include <Precision.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_SplitCurve3d.hxx>
+#include <ShapeUpgrade_SplitSurface.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <ShapeExtend.hxx>
-#include <Geom_BezierSurface.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_HArray1OfCurve.hxx>
+#include <TColGeom_HArray2OfSurface.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Geom_Surface.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitSurface
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitSurface::ShapeUpgrade_SplitSurface() : myStatus(0)
 {
 }

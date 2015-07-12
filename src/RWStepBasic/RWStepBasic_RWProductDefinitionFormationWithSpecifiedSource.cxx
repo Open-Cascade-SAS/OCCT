@@ -11,18 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource.ixx>
-#include <StepBasic_Source.hxx>
-#include <StepBasic_Product.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource.hxx>
+#include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinitionFormationWithSpecifiedSource.hxx>
-
+#include <StepBasic_Source.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : Source ---
 static TCollection_AsciiString sBought(".BOUGHT.");

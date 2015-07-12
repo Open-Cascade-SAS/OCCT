@@ -11,10 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_Option.ixx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <TCollection_HAsciiString.hxx>
 
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <MoniTool_Option.hxx>
+#include <MoniTool_TypedValue.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 MoniTool_Option::MoniTool_Option
   (const Handle(Standard_Type)& atype, const Standard_CString aname)

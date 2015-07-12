@@ -20,64 +20,62 @@
 // 16-10-97 ; jct; on remet un Raise au lieu du cout sous debug (sinon plantage dans k1fab)
 // 03-11-97 ; jct; plus de reference a BRepAdaptor et BRepTools
 
-#include <stdio.h>
-
-#include <GeomPlate_BuildPlateSurface.ixx>
-
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <Extrema_ExtPS.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <GeomPlate_BuildAveragePlane.hxx>
+#include <GeomPlate_BuildPlateSurface.hxx>
+#include <GeomPlate_CurveConstraint.hxx>
+#include <GeomPlate_HArray1OfSequenceOfReal.hxx>
+#include <GeomPlate_MakeApprox.hxx>
+#include <GeomPlate_PointConstraint.hxx>
+#include <GeomPlate_SequenceOfAij.hxx>
+#include <GeomPlate_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <GCPnts_AbscissaPoint.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Law_Interpol.hxx>
-
-#include <Plate_PinpointConstraint.hxx>
-#include <Plate_Plate.hxx>
-#include <Plate_GtoCConstraint.hxx>
+#include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_D2.hxx>
 #include <Plate_FreeGtoCConstraint.hxx>
-
+#include <Plate_GtoCConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <Plate_Plate.hxx>
 #include <Precision.hxx>
-
-#include <GeomPlate_BuildAveragePlane.hxx>
-#include <GeomPlate_HArray1OfSequenceOfReal.hxx>
-// pour la verif G2
-#include <LocalAnalysis_SurfaceContinuity.hxx>
-
-// pour les intersection entre les courbes
-#include <Geom2dInt_GInter.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-
-// projection
-#include <Extrema_ExtPS.hxx>
-#include <Extrema_POnSurf.hxx>
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
-#include <Approx_CurveOnSurface.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomLProp_SLProps.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_RangeError.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColgp_SequenceOfVec.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomPlate_SequenceOfAij.hxx>
-#include <GeomPlate_MakeApprox.hxx>
-#include <Geom_Plane.hxx>
+#include <TColgp_SequenceOfVec.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
+#include <stdio.h>
+// pour la verif G2
+// pour les intersection entre les courbes
+// projection
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <Draw_Marker3D.hxx>

@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_DimensionTolerance.ixx>
+#include <IGESDimen_DimensionTolerance.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_DimensionTolerance::IGESDimen_DimensionTolerance ()    {  }
 

@@ -17,43 +17,43 @@
 //:s1 abv 22.04.99: PRO7226 #489490: protect against Null 3d curve
 //:s4 abv 26.04.99: sim6049.igs 21677: copy of curve is necessary to get True SP
 //    abv 06.05.99: S4137: adding methods GetTangent2d()
-#include <ShapeAnalysis_Edge.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <Precision.hxx>
-
-#include <GCPnts_AbscissaPoint.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepExtrema_DistShapeShape.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_TEdge.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_Builder.hxx>
-
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 #include <Extrema_LocateExtPC.hxx>
-
-#include <ShapeExtend.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <Geom_Plane.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
-
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeExtend.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ShapeAnalysis_Edge
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_Edge::ShapeAnalysis_Edge()
 {
   myStatus = 0;//ShapeExtend::EncodeStatus (ShapeExtend_OK);

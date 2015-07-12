@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntCurve_PConicTool.ixx>
+
 #include <ElCLib.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntCurve_PConic.hxx>
+#include <IntCurve_PConicTool.hxx>
 
 //----------------------------------------------------------------------
 gp_Pnt2d IntCurve_PConicTool::Value(const IntCurve_PConic& PConic,

@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepSweep_Builder.ixx>
+
+#include <BRep_Builder.hxx>
+#include <BRepSweep_Builder.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepSweep_Builder
 //purpose  : 
 //=======================================================================
-
 BRepSweep_Builder::BRepSweep_Builder(const BRep_Builder& aBuilder) :
        myBuilder(aBuilder)
 {

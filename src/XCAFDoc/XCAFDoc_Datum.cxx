@@ -11,16 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_Datum.ixx>
 
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-
+#include <XCAFDoc_Datum.hxx>
 
 //=======================================================================
 //function : XCAFDoc_Datum
 //purpose  : 
 //=======================================================================
-
 XCAFDoc_Datum::XCAFDoc_Datum()
 {
 }

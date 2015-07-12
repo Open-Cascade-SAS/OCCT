@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intf.ixx>
+
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <Intf.hxx>
 
 //=======================================================================
 //function : PlaneEquation
 //purpose  : 
 //=======================================================================
-
 void Intf::PlaneEquation (const gp_Pnt&  P1,
 			  const gp_Pnt&  P2,
 			  const gp_Pnt&  P3,

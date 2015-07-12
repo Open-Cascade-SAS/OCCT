@@ -14,7 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_CartesianPoint.ixx>
+
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Geometry.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_CartesianPoint         CartesianPoint;
 typedef gp_Ax1  Ax1;

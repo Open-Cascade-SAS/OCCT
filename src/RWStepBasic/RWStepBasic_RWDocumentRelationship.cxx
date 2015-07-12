@@ -12,15 +12,15 @@
 // commercial license or contractual agreement.
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
-#include <RWStepBasic_RWDocumentRelationship.ixx>
 
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
-#include <StepBasic_DocumentRelationship.hxx>
+#include <RWStepBasic_RWDocumentRelationship.hxx>
 #include <StepBasic_Document.hxx>
+#include <StepBasic_DocumentRelationship.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 RWStepBasic_RWDocumentRelationship::RWStepBasic_RWDocumentRelationship () {}
 

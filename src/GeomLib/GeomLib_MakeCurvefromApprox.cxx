@@ -14,21 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLib_MakeCurvefromApprox.ixx>
+
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomLib_MakeCurvefromApprox.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : GeomLib_MakeCurvefromApprox
 //purpose  : 
 //=======================================================================
-
 GeomLib_MakeCurvefromApprox::GeomLib_MakeCurvefromApprox
 (const AdvApprox_ApproxAFunction& Approx)
 :myApprox(Approx)

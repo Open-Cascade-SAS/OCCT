@@ -11,47 +11,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_IntersectionTool.ixx>
 
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <Bnd_Box2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Position.hxx>
+#include <NCollection_Sequence.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
 #include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_DataMapOfShapeBox2d.hxx>
+#include <ShapeFix_IntersectionTool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <NCollection_Sequence.hxx>
 
 //gka 06.09.04 BUG 6555 shape is modified always independently either intersection was fixed or not 
 //=======================================================================
 //function : ShapeFix_IntersectionTool
 //purpose  : 
 //=======================================================================
-
 ShapeFix_IntersectionTool::ShapeFix_IntersectionTool(const Handle(ShapeBuild_ReShape)& context,
                                                      const Standard_Real preci,
                                                      const Standard_Real maxtol)

@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepGeom_OrientedSurface.ixx>
+#include <Standard_Type.hxx>
+#include <StepGeom_OrientedSurface.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepGeom_OrientedSurface
 //purpose  : 
 //=======================================================================
-
 StepGeom_OrientedSurface::StepGeom_OrientedSurface ()
 {
 }

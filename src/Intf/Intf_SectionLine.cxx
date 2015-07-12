@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intf_SectionLine.ixx>
+
+#include <Intf_SectionLine.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Intf_SectionLine
 //purpose  : Construct
 //=======================================================================
-
 Intf_SectionLine::Intf_SectionLine ()
      : closed(Standard_False)
 {}

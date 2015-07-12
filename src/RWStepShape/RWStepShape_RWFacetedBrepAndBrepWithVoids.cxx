@@ -11,19 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWFacetedBrepAndBrepWithVoids.ixx>
-#include <StepShape_FacetedBrep.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWFacetedBrepAndBrepWithVoids.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
+#include <StepShape_FacetedBrep.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
 #include <StepShape_HArray1OfOrientedClosedShell.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
-
 
 RWStepShape_RWFacetedBrepAndBrepWithVoids::RWStepShape_RWFacetedBrepAndBrepWithVoids () {}
 

@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_ShiftedUnit.ixx>
-#include <Units_ShiftedToken.hxx>
+
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_ShiftedToken.hxx>
+#include <Units_ShiftedUnit.hxx>
+#include <Units_Token.hxx>
 
 //=======================================================================
 //function : Units_ShiftedUnit
 //purpose  : 
 //=======================================================================
-
 Units_ShiftedUnit::Units_ShiftedUnit(const Standard_CString aname,
 				     const Standard_CString asymbol,
 				     const Standard_Real avalue,

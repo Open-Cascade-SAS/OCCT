@@ -12,8 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_BissecNewton.ixx>
+
+#include <math_BissecNewton.hxx>
 #include <math_FunctionWithDerivative.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : math_BissecNewton

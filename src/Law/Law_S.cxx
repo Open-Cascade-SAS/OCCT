@@ -14,10 +14,11 @@
 
 // pmn -> modified 17/01/1996 : utilisation de Curve() et SetCurve()
 
-#include <Law_S.ixx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <Law_BSpline.hxx>
+#include <Law_S.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 Law_S::Law_S ()
 {}

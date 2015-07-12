@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_Collect.ixx>
 
-#include <TopoDS.hxx>
+#include <BRepBuilderAPI_Collect.hxx>
+#include <BRepBuilderAPI_MakeShape.hxx>
 #include <TopExp_Explorer.hxx>
-
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG

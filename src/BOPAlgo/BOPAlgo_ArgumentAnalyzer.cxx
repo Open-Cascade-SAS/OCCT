@@ -12,57 +12,46 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_ArgumentAnalyzer.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <TColStd_Array2OfBoolean.hxx>
-
-#include <gp_Pnt.hxx>
-
-#include <Geom_Surface.hxx>
-
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
-
-#include <BRep_TVertex.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_TFace.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRepExtrema_DistShapeShape.hxx>
-//
+#include <BOPAlgo_ArgumentAnalyzer.hxx>
+#include <BOPAlgo_BuilderFace.hxx>
+#include <BOPAlgo_CheckerSI.hxx>
+#include <BOPAlgo_Operation.hxx>
 #include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_SequenceOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-
-#include <IntTools_Range.hxx>
-#include <IntTools_EdgeEdge.hxx>
-#include <IntTools_CommonPrt.hxx>
-
-#include <IntTools_Context.hxx>
-
-#include <BOPTools.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
-#include <BOPTools_AlgoTools.hxx>
-
+#include <BOPCol_SequenceOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_MapOfPassKey.hxx>
+#include <BOPTools.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_CommonPrt.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_EdgeEdge.hxx>
+#include <IntTools_Range.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TColStd_Array2OfBoolean.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
-#include <BOPAlgo_Operation.hxx>
-#include <BOPAlgo_CheckerSI.hxx>
-#include <BOPAlgo_BuilderFace.hxx>
-
+//
 // ================================================================================
 // function: Constructor
 // purpose:

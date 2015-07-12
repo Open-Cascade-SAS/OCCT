@@ -16,14 +16,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepBasic_RWCertification.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWCertification.hxx>
+#include <StepBasic_Certification.hxx>
 #include <StepBasic_CertificationType.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWCertification
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWCertification::RWStepBasic_RWCertification ()
 {
 }

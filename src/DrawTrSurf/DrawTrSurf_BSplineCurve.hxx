@@ -1,0 +1,124 @@
+// Created on: 1992-05-22
+// Created by: Jean Claude VAUTHIER
+// Copyright (c) 1992-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _DrawTrSurf_BSplineCurve_HeaderFile
+#define _DrawTrSurf_BSplineCurve_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Type.hxx>
+
+#include <Standard_Boolean.hxx>
+#include <Draw_MarkerShape.hxx>
+#include <Draw_Color.hxx>
+#include <Standard_Integer.hxx>
+#include <DrawTrSurf_Curve.hxx>
+#include <Standard_Real.hxx>
+class Geom_BSplineCurve;
+class Draw_Color;
+class Draw_Display;
+class Draw_Drawable3D;
+
+
+class DrawTrSurf_BSplineCurve;
+DEFINE_STANDARD_HANDLE(DrawTrSurf_BSplineCurve, DrawTrSurf_Curve)
+
+
+class DrawTrSurf_BSplineCurve : public DrawTrSurf_Curve
+{
+
+public:
+
+  
+
+  //! creates a drawable BSpline curve from a BSpline curve of
+  //! package Geom.
+  Standard_EXPORT DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C);
+  
+
+  //! creates a drawable BSpline curve from a BSpline curve of
+  //! package Geom.
+  Standard_EXPORT DrawTrSurf_BSplineCurve(const Handle(Geom_BSplineCurve)& C, const Draw_Color& CurvColor, const Draw_Color& PolesColor, const Draw_Color& KnotsColor, const Draw_MarkerShape KnotsShape, const Standard_Integer KnotsSize, const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots, const Standard_Integer Discret, const Standard_Real Deflection, const Standard_Integer DrawMode);
+  
+  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+  
+  Standard_EXPORT void DrawOn (Draw_Display& dis, const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots) const;
+  
+  Standard_EXPORT void DrawOn (Draw_Display& dis, const Standard_Real U1, const Standard_Real U2, const Standard_Integer Pindex, const Standard_Boolean ShowPoles = Standard_True, const Standard_Boolean ShowKnots = Standard_True) const;
+  
+  Standard_EXPORT void ShowPoles();
+  
+  Standard_EXPORT void ShowKnots();
+  
+  Standard_EXPORT void ClearPoles();
+  
+  Standard_EXPORT void ClearKnots();
+  
+
+  //! Returns in <Index> the index of the first pole  of the
+  //! curve projected by the Display <D> at a distance lower
+  //! than <Prec> from <X,Y>. If no pole  is found  index is
+  //! set to 0, else index is always  greater than the input
+  //! value of index.
+  Standard_EXPORT void FindPole (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& Index) const;
+  
+  Standard_EXPORT void FindKnot (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& Index) const;
+  
+    void SetPolesColor (const Draw_Color& aColor);
+  
+    void SetKnotsColor (const Draw_Color& aColor);
+  
+    void SetKnotsShape (const Draw_MarkerShape Shape);
+  
+    Draw_MarkerShape KnotsShape() const;
+  
+    Draw_Color KnotsColor() const;
+  
+    Draw_Color PolesColor() const;
+  
+  //! For variable copy.
+  Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
+
+
+
+
+  DEFINE_STANDARD_RTTI(DrawTrSurf_BSplineCurve,DrawTrSurf_Curve)
+
+protected:
+
+
+
+
+private:
+
+
+  Standard_Boolean drawPoles;
+  Standard_Boolean drawKnots;
+  Draw_MarkerShape knotsForm;
+  Draw_Color knotsLook;
+  Standard_Integer knotsDim;
+  Draw_Color polesLook;
+
+
+};
+
+
+#include <DrawTrSurf_BSplineCurve.lxx>
+
+
+
+
+
+#endif // _DrawTrSurf_BSplineCurve_HeaderFile

@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_Texture1D.ixx>
+
+#include <Graphic3d_Texture1D.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
 static const char *NameOfTexture_to_FileName[] =

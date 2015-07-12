@@ -19,17 +19,18 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <FairCurve_Batten.ixx>
 
 #include <BSplCLib.hxx>
-#include <PLib.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <FairCurve_Batten.hxx>
 #include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_EnergyOfBatten.hxx>
 #include <FairCurve_Newton.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <math_Matrix.hxx>
+#include <PLib.hxx>
 #include <Precision.hxx>
-
 #include <Standard_NegativeValue.hxx>
 #include <Standard_NullValue.hxx>
 

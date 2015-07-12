@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_Normal.ixx>
+
+#include <Standard_Type.hxx>
+#include <Vrml_Normal.hxx>
 
 Vrml_Normal::Vrml_Normal(const Handle(TColgp_HArray1OfVec)& aVector)
 {

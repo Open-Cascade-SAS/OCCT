@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWAlignedCurve3dElementCoordinateSystem.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWAlignedCurve3dElementCoordinateSystem.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_AlignedCurve3dElementCoordinateSystem.hxx>
 #include <StepFEA_FeaAxis2Placement3d.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWAlignedCurve3dElementCoordinateSystem
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWAlignedCurve3dElementCoordinateSystem::RWStepFEA_RWAlignedCurve3dElementCoordinateSystem ()
 {
 }

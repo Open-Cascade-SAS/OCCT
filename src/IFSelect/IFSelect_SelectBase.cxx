@@ -11,9 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectBase.ixx>
 
-
+#include <IFSelect_SelectBase.hxx>
+#include <IFSelect_SelectionIterator.hxx>
+#include <Standard_Type.hxx>
 
 void  IFSelect_SelectBase::FillIterator
   (IFSelect_SelectionIterator& ) const 

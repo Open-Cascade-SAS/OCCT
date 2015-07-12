@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draft_FaceInfo.ixx>
-#include <Geom_RectangularTrimmedSurface.hxx>
 
+#include <Draft_FaceInfo.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Standard_DomainError.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : Draft_FaceInfo
 //purpose  : 
 //=======================================================================
-
 Draft_FaceInfo::Draft_FaceInfo ()
 {
 }

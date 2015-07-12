@@ -14,32 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw.ixx>
 
+#include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <OSD.hxx>
-#include <OSD_Environment.hxx>
-#include <OSD_Timer.hxx>
-
-#include <Draw_Window.hxx>
-#include <gp_Pnt2d.hxx>
-
-#include <Standard_Stream.hxx>
-#include <Standard_Version.hxx>
-
 #include <Draw_Drawable3D.hxx>
+#include <Draw_Failure.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_ProgressIndicator.hxx>
-
-#include <Plugin_MapOfFunctions.hxx>
+#include <Draw_Window.hxx>
+#include <gp_Pnt2d.hxx>
+#include <OSD.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_SharedLibrary.hxx>
+#include <OSD_Timer.hxx>
+#include <Plugin_MapOfFunctions.hxx>
 #include <Resource_Manager.hxx>
-#include <Draw_Failure.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Version.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <tcl.h>
-
 // on MSVC, use #pragma to define name of the Tcl library to link with,
 // depending on Tcl version number
 #ifdef _MSC_VER

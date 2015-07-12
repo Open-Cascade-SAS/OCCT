@@ -14,39 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_FClass2d.ixx>
-
-#include <stdio.h>
-
-#include <Precision.hxx>
-#include <gp_Pnt.hxx>
-#include <ElCLib.hxx>
-
-#include <Geom2dInt_Geom2dCurveTool.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 
 #include <BRep_Tool.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-#include <CSLib_Class2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <CSLib_Class2d.hxx>
+#include <ElCLib.hxx>
+#include <Geom2dInt_Geom2dCurveTool.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomInt.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntTools_FClass2d.hxx>
+#include <IntTools_Tools.hxx>
+#include <Precision.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+#include <TColgp_SequenceOfVec2d.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopExp.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <TColgp_SequenceOfVec2d.hxx>
-#include <IntTools_Tools.hxx>
-#include <GeomInt.hxx>
 
+#include <stdio.h>
 //=======================================================================
 //function : IntTools_FClass2d:IntTools:_FClass2d
 //purpose  : 

@@ -15,15 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepRepr_RWStructuralResponseProperty.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWStructuralResponseProperty.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_StructuralResponseProperty.hxx>
 
 //#include <StepRepr_RepresentedDefinition.hxx>
-
 //=======================================================================
 //function : RWStepRepr_RWStructuralResponseProperty
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWStructuralResponseProperty::RWStepRepr_RWStructuralResponseProperty ()
 {
 }

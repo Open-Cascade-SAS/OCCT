@@ -16,44 +16,55 @@
 
 // Modified by  XAB & Serguei Dec 97 (angle &deviation coeffts)
 
-#include <AIS_InteractiveContext.ixx>
-
-//#include <AIS_DataMapIteratorOfDataMapOfInteractiveInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <AIS_ConnectedInteractive.hxx>
+#include <AIS_DataMapIteratorOfDataMapOfILC.hxx>
+#include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
+#include <AIS_GlobalStatus.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_LocalContext.hxx>
 #include <AIS_LocalStatus.hxx>
-#include <Precision.hxx>
-#include <AIS_Selection.hxx>
-#include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
-#include <AIS_ConnectedInteractive.hxx>
-#include <AIS_MultipleConnectedInteractive.hxx>
-#include <AIS_DataMapIteratorOfDataMapOfILC.hxx>
-#include <AIS_GlobalStatus.hxx>
 #include <AIS_MapIteratorOfMapOfInteractive.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
-#include <Visual3d_ViewManager.hxx>
-#include <Visual3d_View.hxx>
-#include <Prs3d_ShadingAspect.hxx>
+#include <AIS_MultipleConnectedInteractive.hxx>
+#include <AIS_Selection.hxx>
 #include <AIS_Shape.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <HLRBRep.hxx>
-#include <Prs3d_IsoAspect.hxx>
-#include <Prs3d_DatumAspect.hxx>
-#include <Prs3d_PlaneAspect.hxx>
-#include <PrsMgr_PresentableObject.hxx>
-#include <Standard_Atomic.hxx>
-#include <StdSelect_ViewerSelector3d.hxx>
-#include <UnitsAPI.hxx>
-
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <HLRBRep.hxx>
 #include <OSD_Environment.hxx>
-
-#include <AIS_ListIteratorOfListOfInteractive.hxx>
-#include <AIS_InteractiveObject.hxx>
+#include <Precision.hxx>
+#include <Prs3d_BasicAspect.hxx>
+#include <Prs3d_DatumAspect.hxx>
+#include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PlaneAspect.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
+#include <PrsMgr_PresentableObject.hxx>
+#include <Quantity_Color.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <SelectMgr_OrFilter.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_Atomic.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <UnitsAPI.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
 
+//#include <AIS_DataMapIteratorOfDataMapOfInteractiveInteger.hxx>
 namespace
 {
   static volatile Standard_Integer THE_AIS_INDEX_SEL = 0;

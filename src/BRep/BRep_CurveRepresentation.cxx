@@ -14,15 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_CurveRepresentation.ixx>
-#include <TColStd_HArray1OfInteger.hxx>
 
+#include <BRep_CurveRepresentation.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_CurveRepresentation
 //purpose  : 
 //=======================================================================
-
 BRep_CurveRepresentation::BRep_CurveRepresentation(const TopLoc_Location& L):
        myLocation(L)
 {

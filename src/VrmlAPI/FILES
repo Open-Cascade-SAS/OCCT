@@ -1,0 +1,5 @@
+VrmlAPI.cxx
+VrmlAPI.hxx
+VrmlAPI_RepresentationOfShape.hxx
+VrmlAPI_Writer.cxx
+VrmlAPI_Writer.hxx

@@ -14,24 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeBSplineCurve.ixx>
+
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_CartesianPoint.hxx>
 #include <gp_Pnt.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <StepGeom_BSplineCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <StepToGeom_MakeBSplineCurve.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <Geom_CartesianPoint.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=============================================================================
 // Creation d' une BSplineCurve de Geom a partir d' une BSplineCurve de Step
 //=============================================================================
-
 #define Array1OfPnt_gen                  TColgp_Array1OfPnt
 #define Pnt_gen                          gp_Pnt
 #define Pnt_fonc                         Pnt

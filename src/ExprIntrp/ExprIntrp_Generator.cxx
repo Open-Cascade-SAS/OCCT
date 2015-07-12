@@ -14,11 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ExprIntrp_Generator.ixx>
-//#include <ExprIntrp_yaccanal.hxx>
+
+#include <Expr_NamedExpression.hxx>
+#include <Expr_NamedFunction.hxx>
 #include <ExprIntrp_Analysis.hxx>
+#include <ExprIntrp_Generator.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
+//#include <ExprIntrp_yaccanal.hxx>
 Standard_EXPORT ExprIntrp_Analysis ExprIntrp_Recept;
 
 

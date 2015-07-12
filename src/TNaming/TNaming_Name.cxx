@@ -14,60 +14,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_Name.ixx>
-#include <TNaming.hxx>
-#include <TNaming_NamingTool.hxx>
-#include <TNaming_Naming.hxx>
-#include <TNaming_ShapesSet.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_NewShapeIterator.hxx>
-#include <TNaming_ListOfNamedShape.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
 
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeSolid.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepTools.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelList.hxx>
 #include <TDF_LabelMap.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
+#include <TNaming_ListOfNamedShape.hxx>
+#include <TNaming_Name.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Naming.hxx>
+#include <TNaming_NamingTool.hxx>
+#include <TNaming_NCollections.hxx>
+#include <TNaming_NewShapeIterator.hxx>
+#include <TNaming_ShapesSet.hxx>
 #include <TNaming_Tool.hxx>
-
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TopoDS_Wire.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_HArray2OfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 // mpv modifications 08.04.2002
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_CompSolid.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <BRepBuilderAPI_MakeSolid.hxx>
-#include <TopTools_HArray2OfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 // end of mpv modifications 08.04.2002
-
-#include <TNaming_NCollections.hxx>
-
 #ifdef OCCT_DEBUG_DBGTOOLS_WRITE
 #define MDTV_DEB
 #define MDTV_DEB_OR

@@ -14,23 +14,32 @@
 // List of changes:
 //skl 29.01.2003 - deleted one space symbol at the begining
 //                 of strings from Header Section
-#include <StepData_StepWriter.ixx>
-#include <StepData_WriterLib.hxx>
-#include <StepData_ReadWriteModule.hxx>
-#include <StepData_Protocol.hxx>
-#include <StepData_UndefinedEntity.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <StepData_SelectMember.hxx>
-#include <StepData_SelectArrReal.hxx>
 
-#include <Interface_EntityIterator.hxx>
-#include <Interface_ReportEntity.hxx>
 #include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_FloatWriter.hxx>
 #include <Interface_InterfaceMismatch.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Interface_Macros.hxx>
-#include <stdio.h>
+#include <Interface_ReportEntity.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_FieldList.hxx>
+#include <StepData_PDescr.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_ReadWriteModule.hxx>
+#include <StepData_SelectArrReal.hxx>
+#include <StepData_SelectMember.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepData_UndefinedEntity.hxx>
+#include <StepData_WriterLib.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
+#include <stdio.h>
 #define StepLong 72
 // StepLong : longueur maxi d une ligne de fichier Step
 

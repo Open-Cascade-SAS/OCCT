@@ -14,10 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAPI_ProjectPointOnCurve.ixx>
 
+#include <Extrema_ExtPC.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : GeomAPI_ProjectPointOnCurve

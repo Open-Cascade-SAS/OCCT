@@ -16,30 +16,27 @@
 
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503
 
-
-#include <BndLib_AddSurface.ixx>
-
-
 #include <Adaptor3d_HSurface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Bnd_Box.hxx>
 #include <BndLib.hxx>
+#include <BndLib_AddSurface.hxx>
 #include <BSplCLib.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
 #include <ElSLib.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
-
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
-
 void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
 			    const Standard_Real Tol,
 			    Bnd_Box& B ) 

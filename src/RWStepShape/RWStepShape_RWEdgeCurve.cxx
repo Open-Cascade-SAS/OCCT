@@ -11,20 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWEdgeCurve.ixx>
-#include <StepGeom_Curve.hxx>
-#include <StepShape_Vertex.hxx>
-#include <StepShape_OrientedEdge.hxx>
-#include <StepShape_FaceBound.hxx>
-#include <StepShape_VertexPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
 
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Precision.hxx>
+#include <RWStepShape_RWEdgeCurve.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Curve.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_EdgeLoop.hxx>
-
-#include <Precision.hxx>
-
+#include <StepShape_FaceBound.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <StepShape_Vertex.hxx>
+#include <StepShape_VertexPoint.hxx>
 
 RWStepShape_RWEdgeCurve::RWStepShape_RWEdgeCurve () {}
 

@@ -16,9 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_LineWidening.ixx>
+#include <IGESAppli_LineWidening.hxx>
 #include <IGESData_LevelListEntity.hxx>
-
+#include <Standard_Type.hxx>
 
 IGESAppli_LineWidening::IGESAppli_LineWidening ()    {  }
 

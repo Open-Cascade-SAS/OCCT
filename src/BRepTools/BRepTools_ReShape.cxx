@@ -15,29 +15,28 @@
 //    sln 29.11.01 Bug24: correction iteration through map in method 'Status'
 //    sln 29.11.01 Bug22: correction of methods Replace and Value for case when mode myConsiderLocation is on
 
-#include <BRepTools_ReShape.ixx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools_ReShape.hxx>
+#include <Geom_Surface.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRep_Builder.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+
 //include <ShapeExtend.hxx>
 //#include <BRepTools_Edge.hxx>
-#include <TopoDS.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_GCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <TopLoc_Location.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <TopoDS_Edge.hxx>
-
-
 static void CopyRanges (const TopoDS_Shape& toedge, const TopoDS_Shape& fromedge,
 			const Standard_Real alpha, const Standard_Real beta) 
 {

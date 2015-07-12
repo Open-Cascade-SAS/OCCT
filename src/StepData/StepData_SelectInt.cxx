@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_SelectInt.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepData_SelectInt.hxx>
 
 StepData_SelectInt::StepData_SelectInt  ()    {  thekind = 0;  theval = 0;  }
 

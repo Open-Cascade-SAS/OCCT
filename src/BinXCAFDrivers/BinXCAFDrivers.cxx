@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinXCAFDrivers.ixx>
-#include <BinXCAFDrivers_DocumentStorageDriver.hxx>
-#include <BinXCAFDrivers_DocumentRetrievalDriver.hxx>
-#include <BinMXCAFDoc.hxx>
 
-#include <Standard_Failure.hxx>
 #include <BinDrivers.hxx>
+#include <BinMDF_ADriverTable.hxx>
+#include <BinMXCAFDoc.hxx>
+#include <BinXCAFDrivers.hxx>
+#include <BinXCAFDrivers_DocumentRetrievalDriver.hxx>
+#include <BinXCAFDrivers_DocumentStorageDriver.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <Plugin_Macro.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
 
 static Standard_GUID BinXCAFStorageDriver  ("a78ff496-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID BinXCAFRetrievalDriver("a78ff497-a779-11d5-aab4-0050044b1af1");

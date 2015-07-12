@@ -16,8 +16,8 @@
 // If either NO_CXX_EXCEPTION or OCC_CONVERT_SIGNALS is defined,
 // provide complete implementation
 
-#include <Standard_ErrorHandlerCallback.ixx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_ErrorHandlerCallback.hxx>
 
 #if defined(NO_CXX_EXCEPTION) || defined(OCC_CONVERT_SIGNALS)
 

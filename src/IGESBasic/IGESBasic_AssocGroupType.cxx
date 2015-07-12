@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_AssocGroupType.ixx>
-
+#include <IGESBasic_AssocGroupType.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESBasic_AssocGroupType::IGESBasic_AssocGroupType ()    {  }
 

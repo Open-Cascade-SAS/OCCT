@@ -14,29 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Builder1.ixx>
-#include <TopOpeBRepTool_ShapeExplorer.hxx>
+
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <TColStd_MapOfInteger.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <TopoDS.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_ShapeWithState.hxx>
-#include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
-#include <TopOpeBRepTool_2d.hxx>
-#include <Geom2d_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRep_Tool.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_Builder1.hxx>
+#include <TopOpeBRepBuild_GTopo.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepBuild_PaveSet.hxx>
+#include <TopOpeBRepBuild_ShellFaceSet.hxx>
 #include <TopOpeBRepBuild_Tools.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
+#include <TopOpeBRepBuild_WireEdgeSet.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopOpeBRepDS_ShapeWithState.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 //define parameter division number as 10*e^(-PI) = 0.43213918
 const Standard_Real PAR_T = 0.43213918;

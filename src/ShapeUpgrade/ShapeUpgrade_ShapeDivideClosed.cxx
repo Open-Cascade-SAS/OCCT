@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ShapeDivideClosed.ixx>
+
 #include <ShapeUpgrade_ClosedFaceDivide.hxx>
+#include <ShapeUpgrade_ShapeDivideClosed.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideClosed
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShapeDivideClosed::ShapeUpgrade_ShapeDivideClosed(const TopoDS_Shape& S):
      ShapeUpgrade_ShapeDivide(S)  
 {

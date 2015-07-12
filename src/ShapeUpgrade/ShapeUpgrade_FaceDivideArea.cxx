@@ -11,23 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_FaceDivideArea.ixx>
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <Precision.hxx> 
-#include <ShapeUpgrade_SplitSurfaceArea.hxx> 
-#include <TopoDS_Shape.hxx>
-#include <TopExp_Explorer.hxx>  
-#include <TopoDS.hxx>
-#include <ShapeExtend.hxx> 
-#include <ShapeBuild_ReShape.hxx>
+
 #include <BRep_Builder.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade_FaceDivideArea.hxx>
+#include <ShapeUpgrade_SplitSurfaceArea.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_FaceDivideArea
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_FaceDivideArea::ShapeUpgrade_FaceDivideArea()
 {
   myMaxArea = Precision::Infinite();

@@ -13,12 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_Writer.ixx>
-#include <Voxel_TypeDef.hxx>
 
+#include <OSD_OpenFile.hxx>
 #include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <OSD_OpenFile.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <Voxel_BoolDS.hxx>
+#include <Voxel_ColorDS.hxx>
+#include <Voxel_FloatDS.hxx>
+#include <Voxel_TypeDef.hxx>
+#include <Voxel_Writer.hxx>
 
 Voxel_Writer::Voxel_Writer():myFormat(Voxel_VFF_ASCII),myBoolVoxels(0),myColorVoxels(0),myFloatVoxels(0)
 {

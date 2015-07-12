@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeTranslation.ixx>
+
 #include <GC_MakeTranslation.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a 3D Geom translation of tanslation vector Vec.  +
 //=========================================================================
-
 GC_MakeTranslation::GC_MakeTranslation(const gp_Vec&  Vec ) {
   TheTranslation = new Geom_Transformation();
   TheTranslation->SetTranslation(Vec);

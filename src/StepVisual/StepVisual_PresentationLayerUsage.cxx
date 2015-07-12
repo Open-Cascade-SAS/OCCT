@@ -11,7 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_PresentationLayerUsage.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepVisual_PresentationLayerAssignment.hxx>
+#include <StepVisual_PresentationLayerUsage.hxx>
+#include <StepVisual_PresentationRepresentation.hxx>
 
 StepVisual_PresentationLayerUsage::StepVisual_PresentationLayerUsage  ()    {  }
 

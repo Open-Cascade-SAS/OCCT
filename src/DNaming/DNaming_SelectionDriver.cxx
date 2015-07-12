@@ -13,19 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_SelectionDriver.ixx>
-#include <TopAbs.hxx>
-#include <TopoDS_Shape.hxx>
+
+#include <DNaming_SelectionDriver.hxx>
+#include <ModelDefinitions.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Integer.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
+#include <TFunction_Function.hxx>
 #include <TFunction_Logbook.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TNaming_Selector.hxx>
 #include <TNaming_Tool.hxx>
-#include <TFunction_Function.hxx>
-#include <TDataStd_Integer.hxx>
-#include <ModelDefinitions.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS_Shape.hxx>
 
 //#define SEL_DEB 1
 #ifdef OCCT_DEBUG

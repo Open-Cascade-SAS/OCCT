@@ -14,17 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_Scope.ixx>
 
-#include <TDF_Label.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Scope.hxx>
 #include <TNaming_Tool.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : TNaming_Scope
 //purpose  : 
 //=======================================================================
-
 TNaming_Scope::TNaming_Scope () : myWithValid(Standard_False)
 {
 }

@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWLengthUnit.ixx>
-#include <StepBasic_DimensionalExponents.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWLengthUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_LengthUnit.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWLengthUnit::RWStepBasic_RWLengthUnit () {}
 

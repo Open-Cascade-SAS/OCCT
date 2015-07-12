@@ -11,26 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDraw_Protocol.ixx>
 
+#include <IGESDimen.hxx>
+#include <IGESDimen_Protocol.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_DrawingWithRotation.hxx>
-#include <IGESDraw_Protocol.hxx>
 #include <IGESDraw_LabelDisplay.hxx>
 #include <IGESDraw_NetworkSubfigure.hxx>
 #include <IGESDraw_NetworkSubfigureDef.hxx>
 #include <IGESDraw_PerspectiveView.hxx>
 #include <IGESDraw_Planar.hxx>
+#include <IGESDraw_Protocol.hxx>
 #include <IGESDraw_RectArraySubfigure.hxx>
 #include <IGESDraw_SegmentedViewsVisible.hxx>
 #include <IGESDraw_View.hxx>
 #include <IGESDraw_ViewsVisible.hxx>
 #include <IGESDraw_ViewsVisibleWithAttr.hxx>
-
-#include <IGESDimen.hxx>
-#include <IGESDimen_Protocol.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,

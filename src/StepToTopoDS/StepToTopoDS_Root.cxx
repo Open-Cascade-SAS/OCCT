@@ -16,15 +16,13 @@
 
 //    gka 13.04.99 S4136: add myPrecision and myMaxTol fields
 
-
-#include <StepToTopoDS_Root.ixx>
 #include <Precision.hxx>
+#include <StepToTopoDS_Root.hxx>
 
 //=======================================================================
 //function : StepToTopoDS_Root
 //purpose  : 
 //=======================================================================
-
 StepToTopoDS_Root::StepToTopoDS_Root () : done(Standard_False) 
 {
   myPrecision = myMaxTol = Precision::Confusion();

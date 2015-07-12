@@ -11,14 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWDocumentUsageConstraint.ixx>
 
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWDocumentUsageConstraint.hxx>
 #include <StepBasic_Document.hxx>
+#include <StepBasic_DocumentUsageConstraint.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 RWStepBasic_RWDocumentUsageConstraint::RWStepBasic_RWDocumentUsageConstraint () {}
 

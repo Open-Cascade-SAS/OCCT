@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Area3dBuilder.ixx>
 
+#include <TopOpeBRepBuild_Area3dBuilder.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_LoopClassifier.hxx>
+#include <TopOpeBRepBuild_LoopSet.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_Area3dBuilder
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_Area3dBuilder::TopOpeBRepBuild_Area3dBuilder()
 {
 }

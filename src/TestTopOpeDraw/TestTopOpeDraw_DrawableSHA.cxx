@@ -14,29 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw_DrawableSHA.ixx>
-#include <TestTopOpeDraw_DrawableSUR.hxx>
-#include <TestTopOpeDraw_DrawableC3D.hxx>
-#include <TestTopOpeDraw_DrawableP3D.hxx>
 
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTools.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Marker3D.hxx>
+#include <Draw_Segment3D.hxx>
+#include <Draw_Text3D.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Precision.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <Draw_Color.hxx>
-#include <Draw_Segment3D.hxx>
 #include <gp.hxx>
-#include <Geom_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <TestTopOpeDraw_DrawableC3D.hxx>
+#include <TestTopOpeDraw_DrawableP3D.hxx>
+#include <TestTopOpeDraw_DrawableSHA.hxx>
+#include <TestTopOpeDraw_DrawableSUR.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 Draw_Color DBRep_ColorOrientation (const TopAbs_Orientation);
 

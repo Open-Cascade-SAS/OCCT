@@ -14,35 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_SectionPlacement.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HCurve.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
+#include <BRepAdaptor_HCurve.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_SupportType.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
+#include <BRepFill_LocationLaw.hxx>
+#include <BRepFill_SectionPlacement.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
-#include <GeomFill_SectionPlacement.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomFill_LocationLaw.hxx>
-
+#include <GeomFill_SectionPlacement.hxx>
+#include <gp_Trsf.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <Precision.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 #ifdef OCCT_DEBUG
 static Standard_Boolean myDebug = Standard_False;

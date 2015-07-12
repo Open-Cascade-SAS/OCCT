@@ -12,27 +12,25 @@
 // commercial license or contractual agreement.
 
 // sln 04.10.2001. BUC61003. Correction of looking for items of complex entity
-#include <RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve.ixx>
-#include <StepGeom_BSplineCurveWithKnots.hxx>
-#include <StepGeom_RationalBSplineCurve.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_BSplineCurveForm.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_ShareTool.hxx>
+#include <RWStepGeom_RWBSplineCurveWithKnots.hxx>
+#include <RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <RWStepGeom_RWRationalBSplineCurve.hxx>
 #include <StepData_Logical.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_BSplineCurveForm.hxx>
+#include <StepGeom_BSplineCurveWithKnots.hxx>
+#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray1OfCartesianPoint.hxx>
+#include <StepGeom_KnotType.hxx>
+#include <StepGeom_RationalBSplineCurve.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <StepGeom_KnotType.hxx>
-
-#include <RWStepGeom_RWBSplineCurveWithKnots.hxx>
-#include <RWStepGeom_RWRationalBSplineCurve.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
-
-
 
 // --- Enum : BSplineCurveForm ---
 static TCollection_AsciiString bscfEllipticArc(".ELLIPTIC_ARC.");

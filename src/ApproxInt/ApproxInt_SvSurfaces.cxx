@@ -12,7 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ApproxInt_SvSurfaces.ixx>
+
+#include <ApproxInt_SvSurfaces.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 
 //=======================================================================
 //function : ~ApproxInt_SvSurfaces

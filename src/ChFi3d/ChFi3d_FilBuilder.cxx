@@ -16,53 +16,60 @@
 
 // Modified:    MPS :  (10-04-97) portage WNT pour GetFilletShape
 
-
-#include <ChFi3d_FilBuilder.ixx>
-#include <ChFi3d_Builder_0.hxx>
-#include <ChFi3d_SearchSing.hxx>
-
-#include <Law_Composite.hxx>
+#include <Adaptor3d_TopolTool.hxx>
 #include <Blend_Point.hxx>
-#include <BRepBlend_Walking.hxx>
-#include <BRepBlend_Line.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
+#include <BRepBlend_CurvPointRadInv.hxx>
 #include <BRepBlend_EvolRad.hxx>
 #include <BRepBlend_EvolRadInv.hxx>
-#include <BRepBlend_SurfRstConstRad.hxx>
-#include <BRepBlend_SurfRstEvolRad.hxx>
+#include <BRepBlend_Line.hxx>
 #include <BRepBlend_RstRstConstRad.hxx>
 #include <BRepBlend_RstRstEvolRad.hxx>
 #include <BRepBlend_SurfCurvConstRadInv.hxx>
 #include <BRepBlend_SurfCurvEvolRadInv.hxx>
 #include <BRepBlend_SurfPointConstRadInv.hxx>
 #include <BRepBlend_SurfPointEvolRadInv.hxx>
-#include <BRepBlend_CurvPointRadInv.hxx>
-#include <ChFiDS_SecHArray1.hxx>
-#include <ChFiDS_HData.hxx>
+#include <BRepBlend_SurfRstConstRad.hxx>
+#include <BRepBlend_SurfRstEvolRad.hxx>
+#include <BRepBlend_Walking.hxx>
+#include <ChFi3d_Builder_0.hxx>
+#include <ChFi3d_FilBuilder.hxx>
+#include <ChFi3d_SearchSing.hxx>
+#include <ChFiDS_ErrorStatus.hxx>
 #include <ChFiDS_FilSpine.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_ListOfStripe.hxx>
+#include <ChFiDS_HData.hxx>
+#include <ChFiDS_HElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_ListIteratorOfRegularities.hxx>
+#include <ChFiDS_ListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
-#include <ChFiDS_ErrorStatus.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <ChFiDS_SecHArray1.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
-#include <math_FunctionRoot.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <Precision.hxx>
-
-
-#include <GeomAdaptor_HCurve.hxx>
 #include <Geom_Curve.hxx>
-
+#include <GeomAdaptor_HCurve.hxx>
+#include <gp_XY.hxx>
+#include <Law_Composite.hxx>
+#include <Law_Function.hxx>
+#include <math_FunctionRoot.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+
 #ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GettraceCHRON();
 extern Standard_Real  t_computedata ,t_completedata; 

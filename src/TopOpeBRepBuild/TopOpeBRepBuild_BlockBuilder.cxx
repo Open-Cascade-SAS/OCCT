@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_BlockBuilder.ixx>
+
 #include <Standard_Failure.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_BlockBuilder.hxx>
+#include <TopOpeBRepBuild_BlockIterator.hxx>
+#include <TopOpeBRepBuild_ShapeSet.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_BlockBuilder
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_BlockBuilder::TopOpeBRepBuild_BlockBuilder()
 :myIsDone(Standard_False)
 {

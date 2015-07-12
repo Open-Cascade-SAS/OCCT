@@ -13,7 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_ReferenceArray.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_ReferenceArray.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : GetID

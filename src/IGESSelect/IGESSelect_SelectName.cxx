@@ -11,12 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SelectName.ixx>
+
 #include <IGESData_IGESEntity.hxx>
+#include <IGESSelect_SelectName.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+
 #include <stdio.h>
-
-
 IGESSelect_SelectName::IGESSelect_SelectName ()    {  }
 
 

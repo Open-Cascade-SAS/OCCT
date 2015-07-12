@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_ConversionBasedUnitAndVolumeUnit.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_ConversionBasedUnitAndVolumeUnit.hxx>
+#include <StepBasic_VolumeUnit.hxx>
 
 StepBasic_ConversionBasedUnitAndVolumeUnit::StepBasic_ConversionBasedUnitAndVolumeUnit()
 {

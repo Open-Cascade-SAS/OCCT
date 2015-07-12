@@ -38,17 +38,17 @@
 //   each iteration calculates at maximum 3 points
 //-------------------------------------------------------------------------
 
-#include <CPnts_UniformDeflection.ixx>
-
-#include  <StdFail_NotDone.hxx>
-#include  <Standard_DomainError.hxx>
-#include  <Standard_OutOfRange.hxx>
-#include  <Standard_ConstructionError.hxx>
-
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <CPnts_UniformDeflection.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 static inline void D03d(const Standard_Address C, const Standard_Real U,
 		      gp_Pnt& P)

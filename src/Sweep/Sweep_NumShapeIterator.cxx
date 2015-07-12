@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Sweep_NumShapeIterator.ixx>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Sweep_NumShape.hxx>
+#include <Sweep_NumShapeIterator.hxx>
 
 //=======================================================================
 //function : Sweep_NumShapeIterator
 //purpose  : 
 //=======================================================================
-
 Sweep_NumShapeIterator::Sweep_NumShapeIterator():
        myNumShape(0,TopAbs_SHAPE),
        myCurrentNumShape(0,TopAbs_SHAPE)

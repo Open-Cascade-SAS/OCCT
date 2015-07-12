@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_CurveOnSurface.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_CurveOnSurface::IGESGeom_CurveOnSurface ()    {  }
 

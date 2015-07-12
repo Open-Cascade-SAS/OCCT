@@ -11,18 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_TransferWriter.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
+#include <Transfer_FinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_TransferWriter.hxx>
 #include <XSControl_Utils.hxx>
-
-#include <Message_Messenger.hxx>
-#include <Interface_Macros.hxx>
-#include <Interface_Check.hxx>
-
 
 XSControl_TransferWriter::XSControl_TransferWriter ()
 {  theTransferWrite = new Transfer_FinderProcess;  theTransferMode = 0;  }

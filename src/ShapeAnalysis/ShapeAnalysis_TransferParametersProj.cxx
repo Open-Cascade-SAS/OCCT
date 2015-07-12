@@ -11,45 +11,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAnalysis_TransferParametersProj.ixx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2d_Curve.hxx>
+
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Geom_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <BRep_Tool.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TopLoc_Location.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <Precision.hxx>
-#include <ShapeBuild_Edge.hxx>
 #include <BRep_Builder.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <ShapeAnalysis.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <BRep_ListOfPointRepresentation.hxx>
-#include <BRep_TVertex.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_PointRepresentation.hxx>
-#include <BRep_PointOnSurface.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_ListOfPointRepresentation.hxx>
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
-#include <TopoDS.hxx>  
+#include <BRep_PointOnSurface.hxx>
+#include <BRep_PointRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
+#include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+
 //=======================================================================
 //function : ShapeAnalysis_TransferParametersProj
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_TransferParametersProj::ShapeAnalysis_TransferParametersProj()
 {
   myMaxTolerance = 1; //Precision::Infinite(); ?? pdn

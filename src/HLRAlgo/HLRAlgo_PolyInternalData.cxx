@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
-#include <HLRAlgo_PolyInternalData.ixx>
+
 #include <HLRAlgo_BiPoint.hxx>
+#include <HLRAlgo_PolyInternalData.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
 
 #define Tri1Node1 ((Standard_Integer*)Tri1Indices)[0]
 #define Tri1Node2 ((Standard_Integer*)Tri1Indices)[1]

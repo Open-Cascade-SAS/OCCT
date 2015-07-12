@@ -11,11 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <APIHeaderSection_EditHeader.ixx>
-#include <Interface_TypedValue.hxx>
 
+#include <APIHeaderSection_EditHeader.hxx>
 #include <APIHeaderSection_MakeHeader.hxx>
+#include <IFSelect_EditForm.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_TypedValue.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <StepData_StepModel.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static Standard_Boolean IsTimeStamp
   (const Handle(TCollection_HAsciiString)& val)

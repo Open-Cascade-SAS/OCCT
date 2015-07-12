@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_ObjectRole.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ObjectRole.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_ObjectRole
 //purpose  : 
 //=======================================================================
-
 StepBasic_ObjectRole::StepBasic_ObjectRole ()
 {
   defDescription = Standard_False;

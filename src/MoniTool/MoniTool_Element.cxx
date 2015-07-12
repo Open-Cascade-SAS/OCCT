@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_Element.ixx>
 
+#include <MoniTool_AttrList.hxx>
+#include <MoniTool_Element.hxx>
+#include <Standard_Type.hxx>
 
 void  MoniTool_Element::SetHashCode (const Standard_Integer code)
       {  thecode = code;  }

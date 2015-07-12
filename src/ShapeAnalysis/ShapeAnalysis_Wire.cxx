@@ -32,69 +32,66 @@
 //:s1 abv 22.04.99: PRO7226 #489490: ensure fixing of degenerated edge
 //#9 smh 14.12.99 BUC60615 Using tolerance of verteces during checking degenerated edge.
 
-#include <ShapeAnalysis_Wire.ixx>
-
-#include <Precision.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <GProp_GProps.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <IntRes2d_Transition.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
-
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <BRepGProp.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Bnd_Array1OfBox2d.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-
-#include <ShapeExtend.hxx>
+#include <BRepGProp.hxx>
+#include <BRepTools.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <gp_Pnt2d.hxx>
+#include <GProp_GProps.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <IntRes2d_Transition.hxx>
+#include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-
-#include <TopoDS.hxx>
-#include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Bnd_Array1OfBox2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
-#include <Bnd_Box2d.hxx>
-
-//szvsh addition
-#include <BRepGProp.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GProp_GProps.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <TopoDS_Wire.hxx>
-#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeBuild_Edge.hxx>
-#include <Geom_Plane.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopExp.hxx>
+#include <TopTools_ListOfShape.hxx>
 
+//szvsh addition
 //=======================================================================
 //function : ShapeAnalysis_Wire
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_Wire::ShapeAnalysis_Wire()
 {
   ClearStatuses();

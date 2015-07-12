@@ -13,13 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataXtd_ConstraintDriver.ixx>
 
-#include <TDataXtd_Constraint.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
+#include <TDataXtd_Constraint.hxx>
+#include <TDF_Attribute.hxx>
 #include <TNaming_NamedShape.hxx>
-
+#include <XmlMDataXtd_ConstraintDriver.hxx>
 #include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 static TDataXtd_ConstraintEnum    ConstraintTypeEnum
                                                 (const XmlObjMgt_DOMString&);

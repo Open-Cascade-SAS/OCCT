@@ -18,13 +18,17 @@
 
 #ifndef _WIN32
 
-#include <Standard_ProgramError.hxx>
-#include <OSD_OSDError.hxx>
-#include <OSD_WhoAmI.hxx>
-#include <OSD_FromWhere.hxx>
-#include <OSD_File.ixx>
 
+#include <OSD_File.hxx>
+#include <OSD_FromWhere.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Printer.hxx>
+#include <OSD_Protection.hxx>
+#include <OSD_WhoAmI.hxx>
 #include <Standard_PCharacter.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_AsciiString.hxx>
 
 const OSD_WhoAmI Iam = OSD_WFile;
 

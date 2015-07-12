@@ -14,58 +14,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepCheck_Face.ixx>
-
-#include <BRepCheck_ListOfStatus.hxx>
-#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-
-#include <BRep_TFace.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-
-//#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-//#include <Geom2dInt_GInter.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <GProp_GProps.hxx>
-
-#include <IntRes2d_Domain.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <gp_Pnt2d.hxx>
-
-
-
-#include <BRepCheck.hxx>
-#include <Precision.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <TopAbs_State.hxx>
 
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepCheck.hxx>
+#include <BRepCheck_Face.hxx>
+#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <GProp_GProps.hxx>
+#include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-
-#include <TopTools_OrientedShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopAbs_State.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_OrientedShapeMapHasher.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
+//#include <BRepAdaptor_Curve2d.hxx>
+//#include <Geom2dInt_GInter.hxx>
 typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_OrientedShapeMapHasher> DataMapOfShapeBox2d;
 
 static Standard_Boolean Intersect(const TopoDS_Wire&,

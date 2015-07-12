@@ -16,8 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDefs_AssociativityDef.ixx>
-
+#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+#include <IGESDefs_AssociativityDef.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDefs_AssociativityDef::IGESDefs_AssociativityDef ()    {  }
 

@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepRepr_RWExtension.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWExtension.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_Extension.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWExtension
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWExtension::RWStepRepr_RWExtension ()
 {
 }

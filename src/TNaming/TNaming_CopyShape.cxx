@@ -13,19 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_CopyShape.ixx>
+
+#include <TNaming_CopyShape.hxx>
+#include <TNaming_TranslateTool.hxx>
 #include <TopAbs.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <TopLoc_Datum3D.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopLoc_Datum3D.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : CopyTool
 //purpose  : Tool to copy a set of shape(s), using the aMap
 //=======================================================================
-
 void TNaming_CopyShape::CopyTool( const TopoDS_Shape& aShape,
 				 TColStd_IndexedDataMapOfTransientTransient&  aMap,
 				 TopoDS_Shape&       aResult)

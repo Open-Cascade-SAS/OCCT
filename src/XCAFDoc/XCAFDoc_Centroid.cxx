@@ -13,13 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_Centroid.ixx>
+
+#include <gp_Pnt.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <XCAFDoc_Centroid.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 XCAFDoc_Centroid::XCAFDoc_Centroid()
 {
 }

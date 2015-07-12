@@ -16,13 +16,13 @@
 
 // sln 22.10.2001. CTS23496: Direction is not created if it has null magnitude (StepToGeom_MakeDirection(...) function)
 
-#include <StepToGeom_MakeDirection.ixx>
+#include <Geom_Direction.hxx>
 #include <StepGeom_Direction.hxx>
+#include <StepToGeom_MakeDirection.hxx>
 
 //=============================================================================
 // Creation d' un Direction de Geom a partir d' un Direction de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeDirection::Convert (const Handle(StepGeom_Direction)& SD, Handle(Geom_Direction)& CD)
 {
   if (SD->NbDirectionRatios() >= 3)

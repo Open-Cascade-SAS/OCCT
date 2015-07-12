@@ -15,47 +15,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
 
-#include <NCollection_IncAllocator.hxx>
-//
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-//
 #include <Bnd_Box.hxx>
-//
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRep_Builder.hxx>
-//
-#include <IntTools_EdgeFace.hxx>
-#include <IntTools_Range.hxx>
-#include <IntTools_SequenceOfCommonPrts.hxx>
-#include <IntTools_CommonPrt.hxx>
-//
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-//
-#include <IntTools_Context.hxx>
-#include <IntTools_Tools.hxx>
-//
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_CoupleOfPaveBlocks.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DataMapOfPaveBlockListOfInteger.hxx>
+#include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_DataMapOfPaveBlockListOfInteger.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_Pave.hxx>
-#include <BOPDS_CoupleOfPaveBlocks.hxx>
-//
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
-//
-#include <BOPAlgo_Tools.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBndLib.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_CommonPrt.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_EdgeFace.hxx>
+#include <IntTools_Range.hxx>
+#include <IntTools_SequenceOfCommonPrts.hxx>
+#include <IntTools_Tools.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //=======================================================================
 //class    : BOPAlgo_EdgeFace
 //purpose  : 

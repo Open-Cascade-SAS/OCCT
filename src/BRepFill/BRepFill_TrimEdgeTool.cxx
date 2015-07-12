@@ -14,25 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_TrimEdgeTool.ixx>
-#include <BRep_Tool.hxx>
+
+#include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepFill_TrimEdgeTool.hxx>
+#include <ElCLib.hxx>
 #include <Geom2d_CartesianPoint.hxx>
-#include <Geom_Curve.hxx>
-#include <GeomProjLib.hxx>
-#include <Geom_TrimmedCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomProjLib.hxx>
 #include <gp_Pnt.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
-#include <Precision.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <ElCLib.hxx>
+#include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+
 #ifdef OCCT_DEBUG
 //#define DRAW
 #ifdef DRAW

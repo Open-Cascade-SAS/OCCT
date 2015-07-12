@@ -24,26 +24,33 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <IntAna_QuadQuadGeo.ixx>
 
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XYZ.hxx>
 #include <IntAna_IntConicQuad.hxx>
-#include <StdFail_NotDone.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
+#include <math_DirectPolynomialRoots.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <math_DirectPolynomialRoots.hxx>
-
-#include <gp.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
-
-#include <gp_Dir.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-
+#include <StdFail_NotDone.hxx>
 
 static
   gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D);

@@ -17,24 +17,29 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRBRep_Intersector.ixx>
-#include <HLRBRep_EdgeData.hxx>
-#include <HLRBRep_Curve.hxx>
-#include <HLRBRep_SurfaceTool.hxx>
-#include <HLRBRep_ThePolyhedronOfInterCSurf.hxx>
-#include <HLRBRep_ThePolygonOfInterCSurf.hxx>
-#include <gp.hxx>
+
+
 #include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
-
+#include <gp.hxx>
+#include <gp_Lin.hxx>
+#include <HLRBRep_Curve.hxx>
+#include <HLRBRep_CurveTool.hxx>
+#include <HLRBRep_EdgeData.hxx>
+#include <HLRBRep_Intersector.hxx>
+#include <HLRBRep_SurfaceTool.hxx>
+#include <HLRBRep_ThePolygonOfInterCSurf.hxx>
+#include <HLRBRep_ThePolyhedronOfInterCSurf.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <IntCurveSurface_IntersectionSegment.hxx>
 #include <IntImpParGen.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Position.hxx>
 #include <IntRes2d_Transition.hxx>
-
-#include <HLRBRep_CurveTool.hxx>
+#include <StdFail_UndefinedDerivative.hxx>
 
 #include <stdio.h>
-
 #define PERF 0
 
 #if PERF

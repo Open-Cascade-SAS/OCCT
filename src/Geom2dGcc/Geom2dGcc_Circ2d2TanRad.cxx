@@ -14,21 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_Circ2d2TanRad.ixx>
-#include <Geom2dAdaptor_Curve.hxx>
+
 #include <GccAna_Circ2d2TanRad.hxx>
-#include <Geom2dGcc_Circ2d2TanRadGeo.hxx>
-#include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_BadQualifier.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Line.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Lin2d.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
-#include <StdFail_NotDone.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Point.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc_Circ2d2TanRad.hxx>
+#include <Geom2dGcc_Circ2d2TanRadGeo.hxx>
+#include <Geom2dGcc_QCurve.hxx>
+#include <Geom2dGcc_QualifiedCurve.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 static const Standard_Integer aNbSolMAX = 16;
 

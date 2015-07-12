@@ -14,9 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtPRevS.ixx>
+
 #include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurfaceOfRevolution.hxx>
+#include <ElCLib.hxx>
 #include <Extrema_ExtPElC.hxx>
+#include <Extrema_ExtPRevS.hxx>
 #include <Extrema_GenExtPS.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -28,7 +31,9 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <ElCLib.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <StdFail_NotDone.hxx>
 
 static gp_Ax2 GetPosition (const Adaptor3d_SurfaceOfRevolution& S)//const Handle(Adaptor_HCurve)& C)
 {

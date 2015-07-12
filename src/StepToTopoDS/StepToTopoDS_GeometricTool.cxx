@@ -17,63 +17,63 @@
 //pdn 11.01.99 #144 bm1_pe_t4 protection of exceptions in draw
 //    abv 13.04.99 S4136: eliminate BRepAPI::Precision()
 
-#include <StepToTopoDS_GeometricTool.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <StepToTopoDS.hxx>
-//#include <StepToTopoDS_ExtPCOnS.hxx>
-#include <BRepTools_WireExplorer.hxx>
-
-#include <StepGeom_PcurveOrSurface.hxx>
-#include <StepGeom_Pcurve.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Vector.hxx>
-#include <StepGeom_Direction.hxx>
-#include <StepGeom_SeamCurve.hxx>
-#include <StepRepr_DefinitionalRepresentation.hxx>
-#include <StepShape_OrientedEdge.hxx>
-//#include <BRepAPI.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <BRep_Builder.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <gp_Vec2d.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_BoundedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_PcurveOrSurface.hxx>
+#include <StepGeom_SeamCurve.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
+#include <StepGeom_Vector.hxx>
+#include <StepRepr_DefinitionalRepresentation.hxx>
+#include <StepShape_Edge.hxx>
+#include <StepShape_EdgeLoop.hxx>
+#include <StepShape_OrientedEdge.hxx>
+#include <StepToTopoDS.hxx>
+#include <StepToTopoDS_GeometricTool.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
 #include <Transfer_TransientProcess.hxx>
 
-
+//#include <StepToTopoDS_ExtPCOnS.hxx>
+//#include <BRepAPI.hxx>
 // ----------------------------------------------------------------------------
 // Method  : HasPCurve
 // Purpose : returns true if the surface curve has at least one pcurve lying
 //on the surface
 // ----------------------------------------------------------------------------
-
 Standard_Integer StepToTopoDS_GeometricTool::PCurve
   (const Handle(StepGeom_SurfaceCurve)& SurfCurve,
    const Handle(StepGeom_Surface)&      BasisSurf,

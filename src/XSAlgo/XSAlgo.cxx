@@ -13,10 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSAlgo.ixx>
+
+#include <Interface_Static.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeProcess_OperLibrary.hxx>
-#include <Interface_Static.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 
 static Handle(XSAlgo_AlgoContainer) theContainer;
 

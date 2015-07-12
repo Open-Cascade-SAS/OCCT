@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_PointAspect.ixx>
+
+#include <Standard_Type.hxx>
+#include <Vrml_Material.hxx>
+#include <VrmlConverter_PointAspect.hxx>
 
 VrmlConverter_PointAspect::VrmlConverter_PointAspect()
 {

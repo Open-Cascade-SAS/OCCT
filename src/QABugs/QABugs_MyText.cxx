@@ -13,24 +13,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QABugs_MyText.ixx>
-#include <QABugs_MyText.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <Prs3d_Text.hxx>
-#include <Select3D_SensitiveBox.hxx>
-#include <SelectMgr_Selection.hxx>
+
 #include <Font_NameOfFont.hxx>
+#include <gp_Pnt.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <QABugs_MyText.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 /*************************************************************************
 *
 * CONSTRUCTION/DESTRUCTION
 *
 **************************************************************************/
-
-
 QABugs_MyText::QABugs_MyText(const TCollection_ExtendedString& aText, const gp_Pnt& aPosition, 
                                const Standard_CString aFont, const Quantity_NameOfColor aColor, const Standard_Real aHeight)
 {

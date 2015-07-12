@@ -1,3 +1,4 @@
+TObj.msg
 TObj_Application.cxx
 TObj_Application.hxx
 TObj_Assistant.cxx
@@ -44,4 +45,3 @@ TObj_TReference.cxx
 TObj_TReference.hxx
 TObj_TXYZ.cxx
 TObj_TXYZ.hxx
-TObj.msg

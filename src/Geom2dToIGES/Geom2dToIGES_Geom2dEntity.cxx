@@ -16,21 +16,16 @@
 
 //rln 06.01.98 new method SetUnit
 
-
-#include <Geom2dToIGES_Geom2dEntity.ixx>
-
 #include <Geom2dToIGES_Geom2dCurve.hxx>
+#include <Geom2dToIGES_Geom2dEntity.hxx>
 #include <Geom2dToIGES_Geom2dPoint.hxx>
 #include <Geom2dToIGES_Geom2dVector.hxx>
-
 #include <IGESData_IGESModel.hxx>
-
 
 //=======================================================================
 //function : Geom2dToIGES_Geom2dEntity
 //purpose  : 
 //=======================================================================
-
 Geom2dToIGES_Geom2dEntity::Geom2dToIGES_Geom2dEntity() :
       TheUnitFactor(0.)
 {  

@@ -19,58 +19,52 @@
 // Modif : Thu Jan 21 11:40:20 1999. Add trace context #if DEB
 //           add test to avoid loop while in NextConnexEdge (in case of a closed connex wire)
 
-
-#include <TopOpeBRepTool_FuseEdges.ixx>
-
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-
-#include <TopTools_DataMapOfIntegerListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopoDS.hxx>
-
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-
-
-#include <GeomLib.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BoundedCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepTools_Substitution.hxx>
+#include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <Precision.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Trsf2d.hxx>
-
-#include <BRepTools_Substitution.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib.hxx>
-#include <TopoDS_Face.hxx>
-
-#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <BSplCLib.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomLib.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepTool_FuseEdges.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape.hxx>
+#include <TopTools_DataMapOfIntegerListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceFE();

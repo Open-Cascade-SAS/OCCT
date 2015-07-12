@@ -13,20 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeProcess_Context.ixx>
 
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Resource_Manager.hxx>
+#include <ShapeProcess_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <sys/stat.h>
 
+#include <sys/stat.h>
 //=======================================================================
 //function : ShapeProcess_Context
 //purpose  : 
 //=======================================================================
-
 ShapeProcess_Context::ShapeProcess_Context() 
 {
   myMessenger = Message::DefaultMessenger();

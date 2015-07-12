@@ -12,39 +12,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_Geometry.ixx>
-#include <TDataStd.hxx>
-#include <TDataXtd.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
 
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopAbs.hxx>
 #include <BRep_Tool.hxx>
-
 #include <Geom_CartesianPoint.hxx>
-
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Ellipse.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
-
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <Standard_Failure.hxx>
-
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd.hxx>
+#include <TDataXtd.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataXtd_Geometry::GetID () 
 {
   static Standard_GUID TDataXtd_GeometryID ("2a96b604-ec8b-11d0-bee7-080009dc3333");

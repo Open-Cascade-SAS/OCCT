@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_Gluer.ixx>
+
+#include <BRepFeat_Gluer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : Build
 //purpose  : 
 //=======================================================================
-
 void BRepFeat_Gluer::Build()
 {
   myGluer.Perform();

@@ -13,7 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_PntOnFace.ixx>
+
+#include <gp_Pnt.hxx>
+#include <IntTools_PntOnFace.hxx>
+#include <TopoDS_Face.hxx>
+
 //=======================================================================
 //function : IntTools_PntOnFace::IntTools_PntOnFace
 //purpose  : 

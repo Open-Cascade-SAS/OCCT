@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_LineFontPredefined.ixx>
+#include <IGESGraph_LineFontPredefined.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_LineFontPredefined::IGESGraph_LineFontPredefined ()    {  }
 

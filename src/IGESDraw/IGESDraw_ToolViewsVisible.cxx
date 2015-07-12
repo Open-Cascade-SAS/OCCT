@@ -16,17 +16,28 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ToolViewsVisible.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESDraw_HArray1OfViewKindEntity.hxx>
+#include <IGESDraw_ToolViewsVisible.hxx>
+#include <IGESDraw_ViewsVisible.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+
 #include <stdio.h>
-
-
 IGESDraw_ToolViewsVisible::IGESDraw_ToolViewsVisible ()    {  }
 
 

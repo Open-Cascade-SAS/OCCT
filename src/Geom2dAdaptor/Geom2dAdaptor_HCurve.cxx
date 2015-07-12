@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAdaptor_HCurve.ixx>
+
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Geom2dAdaptor_HCurve
 //purpose  : 
 //=======================================================================
-
 Geom2dAdaptor_HCurve::Geom2dAdaptor_HCurve()
 {
 }

@@ -14,24 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_GluedShape.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-
+#include <LocOpe_GluedShape.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : LocOpe_GluedShape
 //purpose  : 
 //=======================================================================
-
 LocOpe_GluedShape::LocOpe_GluedShape ()
 {}
 

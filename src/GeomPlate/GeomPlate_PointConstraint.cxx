@@ -14,15 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomPlate_PointConstraint.ixx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <gp_Ax3.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <gp_Trsf.hxx>
-#include <Geom_Plane.hxx>
-#include <Extrema_POnSurf.hxx>
+
 #include <Extrema_ExtPS.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <GeomPlate_PointConstraint.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 //---------------------------------------------------------
 //         Constructeurs avec un point 

@@ -14,27 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <BndLib_Add2dCurve.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepTool.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_CORRISO.ixx>
+#include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_C2DF.hxx>
+#include <TopOpeBRepTool_CORRISO.hxx>
 #include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_PURGE.hxx>
-#include <TopOpeBRepTool_2d.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopExp_Explorer.hxx>
+#include <TopOpeBRepTool_TOOL.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <BndLib_Add2dCurve.hxx>
-#include <TopoDS.hxx>
-
-#include <BRep_TEdge.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceCORRISO();

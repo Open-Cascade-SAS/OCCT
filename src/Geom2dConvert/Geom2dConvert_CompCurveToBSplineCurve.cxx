@@ -14,18 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dConvert_CompCurveToBSplineCurve.ixx>
 
+#include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dConvert.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <gp_Vec2d.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <Precision.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : constructor

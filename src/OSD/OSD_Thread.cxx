@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OSD_Thread.ixx>
+
+#include <OSD_Thread.hxx>
 
 //=============================================
 // OSD_Thread::OSD_Thread
 //=============================================
-
 OSD_Thread::OSD_Thread ()
   : myFunc(0), myThread(0), myThreadId(0), myPriority(0)
 {}

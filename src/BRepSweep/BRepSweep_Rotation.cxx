@@ -14,54 +14,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepSweep_Rotation.ixx>
-#include <BRepTools_Quilt.hxx>
+
+#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRep_Tool.hxx>
+#include <BRepSweep_Rotation.hxx>
 #include <BRepTools.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
-#include <ElSLib.hxx>
+#include <BRepTools_Quilt.hxx>
 #include <ElCLib.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
+#include <ElSLib.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp.hxx>
-#include <gp_Trsf.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Circ2d.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Ax22d.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Cone.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
-#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-
-#include <GeomAdaptor_HCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
+#include <Sweep_NumShape.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 static Standard_Real ComputeTolerance(TopoDS_Edge& E,
 				      const TopoDS_Face& F,

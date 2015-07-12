@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_Chamf2dPresentation.ixx>
-
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_Text.hxx>
-
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 
 #include <DsgPrs.hxx>
+#include <DsgPrs_Chamf2dPresentation.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 void DsgPrs_Chamf2dPresentation::Add(
 			   const Handle(Prs3d_Presentation)& aPresentation,

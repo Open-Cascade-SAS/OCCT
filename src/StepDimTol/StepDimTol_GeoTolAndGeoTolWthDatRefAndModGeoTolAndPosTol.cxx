@@ -11,14 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
+#include <StepDimTol_ModifiedGeometricTolerance.hxx>
+#include <StepDimTol_PositionTolerance.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol
 //purpose  : 
 //=======================================================================
-
 StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol()
 {
 }

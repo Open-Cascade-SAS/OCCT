@@ -15,13 +15,16 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepRepr_MakeFromUsageOption.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepRepr_MakeFromUsageOption.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_MakeFromUsageOption
 //purpose  : 
 //=======================================================================
-
 StepRepr_MakeFromUsageOption::StepRepr_MakeFromUsageOption ()
 {
 }

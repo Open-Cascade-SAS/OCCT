@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepShape_Subface.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_Face.hxx>
+#include <StepShape_Subface.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_Subface
 //purpose  : 
 //=======================================================================
-
 StepShape_Subface::StepShape_Subface ()
 {
 }

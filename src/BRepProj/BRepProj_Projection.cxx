@@ -12,46 +12,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepProj_Projection.ixx>
 
-#include <BRepAlgo_Section.hxx>
-
-#include <Precision.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepTools_TrsfModification.hxx>
-#include <BRepTools_Modifier.hxx>
-#include <BRepLib_MakeVertex.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRep_Tool.hxx>
 #include <Bnd_Box.hxx>
-
-#include <BRepSweep_Prism.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgo_Section.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepFill_Generator.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepProj_Projection.hxx>
+#include <BRepSweep_Prism.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_FreeBounds.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Trsf.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <BRep_Builder.hxx>
-#include <ShapeAnalysis_FreeBounds.hxx>
-
-#include <Standard_NullObject.hxx>
-#include <Standard_ConstructionError.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : DistanceOut
 //purpose  : Compute the minimum distance between input shapes 
 //           (using Bounding Boxes of each Shape)
 //=======================================================================
-
 static Standard_Real DistanceOut (const TopoDS_Shape& S1, const TopoDS_Shape& S2) 
 {
   Bnd_Box BBox1, BBox2;

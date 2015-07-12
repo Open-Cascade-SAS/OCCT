@@ -14,19 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntImpParGen.ixx>
+
+#include <gp.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntImpParGen.hxx>
+#include <IntImpParGen_Tool.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Position.hxx>
 #include <IntRes2d_Transition.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Pnt2d.hxx>
-
-
-
-
-#include <IntImpParGen_Tool.hxx>
-#include <gp.hxx>
-
 
 #define TOLERANCE_ANGULAIRE     0.00000001
 #define DERIVEE_PREMIERE_NULLE  0.000000000001

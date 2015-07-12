@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_Hierarchy.ixx>
+#include <IGESBasic_Hierarchy.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_Hierarchy::IGESBasic_Hierarchy ()    {  }
 

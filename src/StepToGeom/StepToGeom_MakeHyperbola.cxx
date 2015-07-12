@@ -14,18 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeHyperbola.ixx>
-#include <StepGeom_Hyperbola.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
+
 #include <Geom_Axis2Placement.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <Geom_Hyperbola.hxx>
 #include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Hyperbola.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeHyperbola.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un Hyperbola de Geom a partir d' un Hyperbola de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeHyperbola::Convert
     (const Handle(StepGeom_Hyperbola)& SC,
      Handle(Geom_Hyperbola)& CC)

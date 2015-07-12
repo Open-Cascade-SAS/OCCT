@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeProcess_UOperator.ixx>
+
+#include <ShapeProcess_Context.hxx>
+#include <ShapeProcess_UOperator.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : ShapeProcess_UOperator
 //purpose  : 
 //=======================================================================
-
 ShapeProcess_UOperator::ShapeProcess_UOperator (const ShapeProcess_OperFunc func) : myFunc(func)
 {
 }

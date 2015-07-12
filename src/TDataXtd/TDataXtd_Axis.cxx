@@ -12,32 +12,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_Axis.ixx>
+
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp_Lin.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd.hxx>
 #include <TDataXtd.hxx>
+#include <TDataXtd_Axis.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TNaming_Builder.hxx>
-#include <TDF_Label.hxx>
+#include <TopAbs.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopAbs.hxx>
-#include <gp_Lin.hxx>
-#include <BRep_Tool.hxx>
-#include <TopLoc_Location.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <GeomAbs_CurveType.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataXtd_Axis::GetID () 
 {
   static Standard_GUID TDataXtd_AxisID("2a96b601-ec8b-11d0-bee7-080009dc3333");

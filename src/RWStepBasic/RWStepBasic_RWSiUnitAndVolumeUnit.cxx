@@ -14,10 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWSiUnitAndVolumeUnit.ixx>
-#include <StepBasic_SiUnit.hxx>
+
+#include <Interface_Check.hxx>
 #include <RWStepBasic_RWSiUnit.hxx>
+#include <RWStepBasic_RWSiUnitAndVolumeUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_SiUnit.hxx>
+#include <StepBasic_SiUnitAndVolumeUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWSiUnitAndVolumeUnit::RWStepBasic_RWSiUnitAndVolumeUnit()
 {

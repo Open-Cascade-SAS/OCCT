@@ -11,10 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_Transformation.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <Standard_Transient.hxx>
 #include <StepRepr_FunctionallyDefinedTransformation.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_Transformation.hxx>
 
 StepRepr_Transformation::StepRepr_Transformation () {  }
 

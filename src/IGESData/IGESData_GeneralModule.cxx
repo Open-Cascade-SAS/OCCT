@@ -11,19 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_GeneralModule.ixx>
-#include <Interface_GeneralLib.hxx>
+
 #include <IGESData.hxx>
-#include <IGESData_Protocol.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_TransfEntity.hxx>
 #include <IGESData_ColorEntity.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_GeneralModule.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralLib.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 void  IGESData_GeneralModule::FillSharedCase
   (const Standard_Integer CN, const Handle(Standard_Transient)& ent,

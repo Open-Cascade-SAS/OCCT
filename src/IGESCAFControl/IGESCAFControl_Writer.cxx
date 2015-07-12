@@ -13,40 +13,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESCAFControl_Writer.ixx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include <TDF_LabelSequence.hxx>
-#include <TopoDS_Shape.hxx>
-#include <XCAFDoc_ColorTool.hxx>
-#include <XCAFPrs.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TransferBRep.hxx>
-#include <Transfer_FinderProcess.hxx>
-#include <IGESGraph_Color.hxx>
+
 #include <IGESCAFControl.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <TDF_Label.hxx>
-#include <Transfer_TransientListBinder.hxx>
-#include <Standard_Transient.hxx>
-#include <XCAFDoc_LayerTool.hxx>
+#include <IGESCAFControl_Writer.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_NameEntity.hxx>
+#include <IGESGraph_Color.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
+#include <IGESSolid_Face.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfExtendedString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelSequence.hxx>
+#include <TDocStd_Document.hxx>
+#include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDataStd_Name.hxx>
-#include <IGESData_NameEntity.hxx>
-#include <IGESSolid_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <TColStd_HSequenceOfExtendedString.hxx>
-#include <NCollection_DataMap.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_IGESModel.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_TransientListBinder.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFPrs.hxx>
+#include <XCAFPrs_Style.hxx>
+#include <XSControl_WorkSession.hxx>
 
 namespace
 {

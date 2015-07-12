@@ -13,8 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_TickDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Tick.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_TickDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDataStd_TickDriver

@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeSurfaceOfRevolution.ixx>
+
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <GeomToStep_MakeAxis1Placement.hxx>
 #include <GeomToStep_MakeCurve.hxx>
+#include <GeomToStep_MakeSurfaceOfRevolution.hxx>
 #include <gp_Ax1.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepGeom_Axis1Placement.hxx>
 #include <StdFail_NotDone.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
+#include <StepGeom_Axis1Placement.hxx>
+#include <StepGeom_Curve.hxx>
 #include <StepGeom_SurfaceOfRevolution.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -29,7 +30,6 @@
 // Creation d' une surface_of_revolution de prostep a partir d' une
 // SurfaceOfRevolution de Geom
 //=============================================================================
-
 GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution
   ( const Handle(Geom_SurfaceOfRevolution)& S )
 	

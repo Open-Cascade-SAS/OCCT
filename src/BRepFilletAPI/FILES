@@ -1,0 +1,9 @@
+BRepFilletAPI_LocalOperation.cxx
+BRepFilletAPI_LocalOperation.hxx
+BRepFilletAPI_MakeChamfer.cxx
+BRepFilletAPI_MakeChamfer.hxx
+BRepFilletAPI_MakeFillet.cxx
+BRepFilletAPI_MakeFillet.hxx
+BRepFilletAPI_MakeFillet2d.cxx
+BRepFilletAPI_MakeFillet2d.hxx
+BRepFilletAPI_MakeFillet2d.lxx

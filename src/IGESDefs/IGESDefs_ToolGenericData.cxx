@@ -16,18 +16,29 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDefs_ToolGenericData.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDefs_GenericData.hxx>
+#include <IGESDefs_ToolGenericData.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
-#include <IGESData_Dump.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
 
 IGESDefs_ToolGenericData::IGESDefs_ToolGenericData ()    {  }
 

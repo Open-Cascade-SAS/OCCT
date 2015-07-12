@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Loop.ixx>
+
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_BlockIterator.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_Loop
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_Loop::TopOpeBRepBuild_Loop
 (const TopoDS_Shape& S) :
 myIsShape(Standard_True),myShape(S),myBlockIterator(0,0)

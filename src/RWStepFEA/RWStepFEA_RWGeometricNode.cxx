@@ -15,17 +15,21 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWGeometricNode.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWGeometricNode.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaModel.hxx>
+#include <StepFEA_GeometricNode.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWGeometricNode
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWGeometricNode::RWStepFEA_RWGeometricNode ()
 {
 }

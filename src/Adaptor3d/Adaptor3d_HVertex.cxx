@@ -11,12 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HVertex.ixx>
 
-#include <Precision.hxx>
-#include <ElCLib.hxx>
 #include <Adaptor2d_HCurve2d.hxx>
-
+#include <Adaptor3d_HVertex.hxx>
+#include <ElCLib.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 
 Adaptor3d_HVertex::Adaptor3d_HVertex ()
 {}

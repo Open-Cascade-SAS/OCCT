@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_CameraModelD3.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepVisual_CameraModelD3.hxx>
+#include <StepVisual_ViewVolume.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_CameraModelD3::StepVisual_CameraModelD3 ()  {}
 

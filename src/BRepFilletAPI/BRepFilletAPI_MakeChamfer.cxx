@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFilletAPI_MakeChamfer.ixx>
+
+#include <BRepFilletAPI_MakeChamfer.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <ChFiDS_Spine.hxx>
-#include <TopExp_Explorer.hxx>
-
-
 
 //=======================================================================
 //function : BRepFilletAPI_MakeChamfer

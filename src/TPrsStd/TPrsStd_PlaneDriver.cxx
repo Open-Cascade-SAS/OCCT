@@ -11,19 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TPrsStd_PlaneDriver.ixx>
 
-#include <TDF_Label.hxx>
-#include <TDataXtd_Plane.hxx>
-//#include <TDataStd_Datum.hxx>
-#include <TDataXtd_Geometry.hxx>
-#include <AIS_Plane.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Plane.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDataXtd_Plane.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TPrsStd_PlaneDriver.hxx>
 
+//#include <TDataStd_Datum.hxx>
 //=======================================================================
 //function :
 //purpose  : 

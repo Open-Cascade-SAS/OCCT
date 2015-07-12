@@ -14,32 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_FaceRestrictor.ixx>
 
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopOpeBRepBuild_WireToFace.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAlgo_FaceRestrictor.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomProjLib.hxx>
 #include <gp_Pnt2d.hxx>
-
 #include <Precision.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRepBuild_WireToFace.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : BRepAlgo_FaceRestrictor
 //purpose  : 
 //=======================================================================
-
 BRepAlgo_FaceRestrictor::BRepAlgo_FaceRestrictor()
 {}
 

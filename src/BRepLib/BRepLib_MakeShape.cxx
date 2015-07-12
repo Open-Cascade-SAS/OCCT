@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_MakeShape.ixx>
+
+#include <BRepLib_MakeShape.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepLib_MakeShape
 //purpose  : 
 //=======================================================================
-
 BRepLib_MakeShape::BRepLib_MakeShape()
 {
 }

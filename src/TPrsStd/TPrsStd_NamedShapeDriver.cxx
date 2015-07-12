@@ -13,23 +13,24 @@
 
 // last modified by SRN 01/08/2000    
 
-#include <TPrsStd_NamedShapeDriver.ixx>
-
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Shape.hxx>
+#include <Geom_Transformation.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <PrsMgr_Presentation.hxx>
+#include <PrsMgr_PresentationManager.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TDataStd.hxx>
 #include <TDF_Label.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <TDataStd.hxx>
-#include <Standard_GUID.hxx>
-#include <TPrsStd_DriverTable.hxx> 
 #include <TNaming_Tool.hxx>
 #include <TopLoc_Location.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <PrsMgr_Presentation.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <PrsMgr_PresentationManager.hxx>
-#include <Geom_Transformation.hxx>
+#include <TPrsStd_DriverTable.hxx>
+#include <TPrsStd_NamedShapeDriver.hxx>
 
 #undef OPTIM_UPDATE  // If this variable is defined there will be done
 //                      more otimized update of AIS_Shape. If an object was

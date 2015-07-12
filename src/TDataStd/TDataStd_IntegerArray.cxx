@@ -14,15 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_IntegerArray.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_DeltaOnModificationOfIntArray.hxx>
+#include <TDataStd_IntegerArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataStd_IntegerArray::GetID() 
 { 
   static Standard_GUID TDataStd_IntegerArrayID ("2a96b61d-ec8b-11d0-bee7-080009dc3333");

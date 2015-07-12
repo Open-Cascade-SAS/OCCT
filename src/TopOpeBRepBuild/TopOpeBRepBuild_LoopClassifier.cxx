@@ -14,7 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_LoopClassifier.ixx>
+
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_LoopClassifier.hxx>
 
 void TopOpeBRepBuild_LoopClassifier::Delete()
 {}

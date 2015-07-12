@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_MapContainer.ixx>
+
+#include <Standard_Type.hxx>
+#include <Transfer_MapContainer.hxx>
 
 Transfer_MapContainer::Transfer_MapContainer()
 {

@@ -14,23 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_BooleanOperation.ixx>
+
+#include <BRepAlgo_BooleanOperation.hxx>
+#include <QANewBRepNaming_BooleanOperation.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-
 #include <Standard_NullObject.hxx>
-
+#include <TDF_Label.hxx>
 #include <TNaming_Builder.hxx>
-
 #include <TopOpeBRepBuild_HBuilder.hxx>
-
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : QANewBRepNaming_BooleanOperation
 //purpose  : 
 //=======================================================================
-
 QANewBRepNaming_BooleanOperation::QANewBRepNaming_BooleanOperation()
 {}
 

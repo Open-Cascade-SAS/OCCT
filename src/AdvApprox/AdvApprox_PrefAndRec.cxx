@@ -14,11 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApprox_PrefAndRec.ixx>
 
+#include <AdvApprox_PrefAndRec.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
-
 
 AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const TColStd_Array1OfReal& RecCut,
 					   const TColStd_Array1OfReal& PrefCut,

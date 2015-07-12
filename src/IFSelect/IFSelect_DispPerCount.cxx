@@ -11,12 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_DispPerCount.ixx>
-#include <IFSelect_Selection.hxx>
-#include <IFGraph_SCRoots.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <Interface_EntityIterator.hxx>
 
+#include <IFGraph_SCRoots.hxx>
+#include <IFGraph_SubPartsIterator.hxx>
+#include <IFSelect_DispPerCount.hxx>
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_Selection.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_DispPerCount::IFSelect_DispPerCount ()    {  }
 

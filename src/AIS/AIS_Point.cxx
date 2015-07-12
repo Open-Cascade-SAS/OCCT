@@ -14,23 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Point.ixx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_PointAspect.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Quantity_Color.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <Select3D_SensitivePoint.hxx>
-#include <StdPrs_Point.hxx>
-#include <Geom_Point.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
 
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_Point.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <Geom_Point.hxx>
+#include <Geom_Transformation.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Quantity_Color.hxx>
+#include <Select3D_SensitivePoint.hxx>
+#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_Point.hxx>
+#include <TopoDS_Vertex.hxx>
+
 //=======================================================================
 //function : AIS_Point
 //purpose  : 

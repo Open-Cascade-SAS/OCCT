@@ -11,6 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_CompositeShapeAspect.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepRepr_CompositeShapeAspect.hxx>
 
 StepRepr_CompositeShapeAspect::StepRepr_CompositeShapeAspect ()    {  }

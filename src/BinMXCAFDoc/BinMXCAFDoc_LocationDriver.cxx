@@ -13,19 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMXCAFDoc_LocationDriver.ixx>
-#include <XCAFDoc_Location.hxx>
 
+#include <BinMDataStd.hxx>
+#include <BinMXCAFDoc_LocationDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <BinTools_LocationSet.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TopLoc_Datum3D.hxx>
 #include <TopLoc_Location.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Mat.hxx>
-#include <gp_XYZ.hxx>
+#include <XCAFDoc_Location.hxx>
+
 //#include <Precision.hxx>
-#include <BinMDataStd.hxx>
-#include <BinTools_LocationSet.hxx>
-
-
 //=======================================================================
 //function :
 //purpose  : 

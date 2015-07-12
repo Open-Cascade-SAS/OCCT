@@ -14,61 +14,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-
-#include <AIS_MinRadiusDimension.ixx>
-
-#include <AIS_EllipseRadiusDimension.hxx>
-#include <TCollection_ExtendedString.hxx>
-
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Prs3d_Text.hxx>
-
-#include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveCurve.hxx>
-#include <Select3D_SensitiveBox.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-
-#include <TopoDS.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-
-#include <Geom_Ellipse.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
 
 #include <AIS.hxx>
-
-#include <Precision.hxx>
+#include <AIS_EllipseRadiusDimension.hxx>
+#include <AIS_MinRadiusDimension.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <DsgPrs_EllipseRadiusPresentation.hxx>
-
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_Transformation.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Prs3d_Text.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveCurve.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : AIS_MinRadiusDimension
 //purpose  : 
 //=======================================================================
-
 AIS_MinRadiusDimension::AIS_MinRadiusDimension(const TopoDS_Shape& aShape, 
 					       const Standard_Real aVal, 
 					       const TCollection_ExtendedString& aText)

@@ -21,83 +21,75 @@
 //szv#4 S4163
 // abv 30.11.99: fix %30 pdn changed to produce SurfaceOfRevolution instead of DegenerateToroidalSurface
 
-#include <TopoDSToStep_MakeStepFace.ixx>
-
-#include <TopoDSToStep_MakeStepWire.hxx>
-#include <TopoDSToStep.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_ElementarySurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-#include <Precision.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Line.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-
-#include <StepRepr_DefinitionalRepresentation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
-#include <StepGeom_Surface.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
-#include <StepGeom_SeamCurve.hxx>
-#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
-#include <StepShape_HArray1OfFaceBound.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
-#include <StepGeom_Pcurve.hxx>
-#include <StepShape_Loop.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepShape_EdgeCurve.hxx>
-#include <StepShape_AdvancedFace.hxx>
-#include <StepShape_FaceBound.hxx>
-#include <StepShape_FaceOuterBound.hxx>
-#include <StepGeom_ToroidalSurface.hxx>
-#include <StepGeom_DegenerateToroidalSurface.hxx>
-
-#include <UnitsMethods.hxx>
-
-#include <GeomToStep_MakeSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomToStep_MakeCurve.hxx>
-
-#include <TColStd_SequenceOfTransient.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
-
+#include <GeomToStep_MakeSurface.hxx>
+#include <Interface_Static.hxx>
+#include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_DegenerateToroidalSurface.hxx>
+#include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
+#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_PcurveOrSurface.hxx>
+#include <StepGeom_SeamCurve.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
+#include <StepGeom_ToroidalSurface.hxx>
+#include <StepRepr_DefinitionalRepresentation.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepShape_AdvancedFace.hxx>
+#include <StepShape_EdgeCurve.hxx>
+#include <StepShape_FaceBound.hxx>
+#include <StepShape_FaceOuterBound.hxx>
+#include <StepShape_HArray1OfFaceBound.hxx>
+#include <StepShape_Loop.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDSToStep.hxx>
+#include <TopoDSToStep_MakeStepFace.hxx>
+#include <TopoDSToStep_MakeStepWire.hxx>
+#include <TopoDSToStep_Tool.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <UnitsMethods.hxx>
 
 // Processing of non-manifold topology (ssv; 10.11.2010)
-#include <TransferBRep.hxx>
-#include <Interface_Static.hxx>
-
 // ----------------------------------------------------------------------------
 // Constructors
 // ----------------------------------------------------------------------------
-
 TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace()
 {
   done = Standard_False;

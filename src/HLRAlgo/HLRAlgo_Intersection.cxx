@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRAlgo_Intersection.ixx>
+
+#include <HLRAlgo_Intersection.hxx>
 
 //=======================================================================
 //function : HLRAlgo_Intersection
 //purpose  : 
 //=======================================================================
-
 HLRAlgo_Intersection::HLRAlgo_Intersection()
 {}
 

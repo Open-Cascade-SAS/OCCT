@@ -13,16 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDF_Data.ixx>
 
+#include <NCollection_IncAllocator.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-
 #include <TDF_Attribute.hxx>
-#include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_Delta.hxx>
 #include <TDF_AttributeDelta.hxx>
+#include <TDF_AttributeIndexedMap.hxx>
+#include <TDF_AttributeIterator.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Delta.hxx>
 #include <TDF_DeltaOnAddition.hxx>
 #include <TDF_DeltaOnForget.hxx>
 #include <TDF_DeltaOnModification.hxx>
@@ -32,11 +35,7 @@
 #include <TDF_LabelNode.hxx>
 #include <TDF_LabelNodePtr.hxx>
 #include <TDF_Tool.hxx>
-
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NullObject.hxx>
-
-#include <NCollection_IncAllocator.hxx>
+#include <TDF_Transaction.hxx>
 
 #undef DEB_DELTA_CREATION
 #undef TDF_DATA_COMMIT_OPTIMIZED

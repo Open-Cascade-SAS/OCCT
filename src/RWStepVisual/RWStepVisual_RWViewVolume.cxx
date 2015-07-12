@@ -11,19 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWViewVolume.ixx>
-#include <StepVisual_CentralOrParallel.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepVisual_PlanarBox.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWViewVolume.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepVisual_CentralOrParallel.hxx>
+#include <StepVisual_PlanarBox.hxx>
 #include <StepVisual_ViewVolume.hxx>
-
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : CentralOrParallel ---
 static TCollection_AsciiString copCentral(".CENTRAL.");

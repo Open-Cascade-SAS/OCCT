@@ -11,43 +11,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe_Tools.ixx>
 
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepTools.hxx>
 #include <Geom_Surface.hxx>
-#include <IntTools_Context.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_DataMapOfIntegerShape.hxx>
-
+#include <IntTools_CommonPrt.hxx>
+#include <IntTools_Context.hxx>
+#include <NCollection_Array1.hxx>
+#include <QANewModTopOpe_Tools.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_IndexedMapOfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPDS_DS.hxx>
-#include <BOPAlgo_Builder.hxx>
-#include <BOPAlgo_BOP.hxx>
-#include <IntTools_CommonPrt.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapOfIntegerShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <BOPDS_CommonBlock.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
 
-#include <NCollection_Array1.hxx>
 #include <algorithm>
-
 static Standard_Boolean AddShapeToHistoryMap(const TopoDS_Shape& theOldShape,
                                              const TopoDS_Shape& theNewShape,
                                              TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap);

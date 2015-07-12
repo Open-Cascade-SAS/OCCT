@@ -14,21 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAPI_InterCurveCurve.ixx>
 
-#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-
 #include <Standard_NotImplemented.hxx>
-#include <Geom2d_Curve.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Geom2dAPI_InterCurveCurve
 //purpose  : 
 //=======================================================================
-
 Geom2dAPI_InterCurveCurve::Geom2dAPI_InterCurveCurve()
 {
   myIsDone = Standard_False;

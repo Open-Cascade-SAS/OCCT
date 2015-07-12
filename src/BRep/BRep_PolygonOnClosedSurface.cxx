@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_PolygonOnClosedSurface.ixx>
+
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_PolygonOnClosedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_PolygonOnClosedSurface
 //purpose  : 
 //=======================================================================
-
 BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const Handle(Poly_Polygon2D)& P1, 
 							 const Handle(Poly_Polygon2D)& P2, 
 							 const Handle(Geom_Surface)&   S, 

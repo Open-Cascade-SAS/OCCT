@@ -11,7 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_DateAssignment.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_Date.hxx>
+#include <StepBasic_DateAssignment.hxx>
+#include <StepBasic_DateRole.hxx>
 
 void StepBasic_DateAssignment::Init(
 	const Handle(StepBasic_Date)& aAssignedDate,

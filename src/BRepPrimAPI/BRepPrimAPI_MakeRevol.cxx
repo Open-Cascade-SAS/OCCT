@@ -17,13 +17,15 @@
 // Modified by skv - Fri Mar  4 15:50:09 2005
 // Add methods for supporting history.
 
-#include <BRepPrimAPI_MakeRevol.ixx>
-#include <BRepLib.hxx>
-#include <TopExp_Explorer.hxx>
 #include <BRep_TEdge.hxx>
+#include <BRepLib.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <BRepSweep_Revol.hxx>
+#include <gp_Ax1.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
 
 // perform checks on the argument
-
 static const TopoDS_Shape& check(const TopoDS_Shape& S)
 {
  BRepLib::BuildCurves3d(S);

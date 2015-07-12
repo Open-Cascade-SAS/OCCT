@@ -12,8 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntSurf_InteriorPoint.ixx>
 
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntSurf_InteriorPoint.hxx>
 
 IntSurf_InteriorPoint::IntSurf_InteriorPoint () {}
 

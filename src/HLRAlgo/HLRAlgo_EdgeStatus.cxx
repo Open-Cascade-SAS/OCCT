@@ -17,13 +17,15 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRAlgo_EdgeStatus.ixx>
+
+
+#include <HLRAlgo_EdgeStatus.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : HLRAlgo_EdgeStatus
 //purpose  : 
 //=======================================================================
-
 HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus ()
 {
 }

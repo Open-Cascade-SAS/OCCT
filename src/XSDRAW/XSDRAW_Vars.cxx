@@ -11,16 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSDRAW_Vars.ixx>
-#include <Geom_Geometry.hxx>
-#include <Geom2d_Curve.hxx>
 
-#include <DrawTrSurf.hxx>
 #include <DBRep.hxx>
-
+#include <DrawTrSurf.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
+#include <XSDRAW_Vars.hxx>
 
 XSDRAW_Vars::XSDRAW_Vars  ()    {  }
 

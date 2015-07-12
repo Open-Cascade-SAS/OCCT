@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_ShapeBounds.ixx>
+
+#include <HLRBRep_ShapeBounds.hxx>
+#include <HLRTopoBRep_OutLiner.hxx>
+#include <MMgt_TShared.hxx>
 
 //=======================================================================
 //function : HLRBRep_ShapeBounds
 //purpose  : 
 //=======================================================================
-
 HLRBRep_ShapeBounds::
 HLRBRep_ShapeBounds (const Handle(HLRTopoBRep_OutLiner)& S,
 		     const Handle(MMgt_TShared)& SData,

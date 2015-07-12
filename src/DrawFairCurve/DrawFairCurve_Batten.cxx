@@ -14,12 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawFairCurve_Batten.ixx>
 
-#include <FairCurve_Batten.hxx>
+#include <DrawFairCurve_Batten.hxx>
 #include <FairCurve_AnalysisCode.hxx>
-#include <GeomTools_Curve2dSet.hxx>
+#include <FairCurve_Batten.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <GeomTools_Curve2dSet.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
 
 DrawFairCurve_Batten::DrawFairCurve_Batten(const Standard_Address TheBatten)
                      : DrawTrSurf_BSplineCurve2d( ((FairCurve_Batten*)TheBatten)->Curve()),

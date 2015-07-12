@@ -11,9 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWHeaderSection_RWFileName.ixx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 
+#include <HeaderSection_FileName.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_HArray1OfHAsciiString.hxx>
+#include <RWHeaderSection_RWFileName.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWHeaderSection_RWFileName::RWHeaderSection_RWFileName () {}
 

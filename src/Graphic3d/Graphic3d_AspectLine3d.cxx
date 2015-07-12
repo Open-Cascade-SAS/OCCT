@@ -14,35 +14,27 @@
 // commercial license or contractual agreement.
 
 //-Version	
-
 //-Design	Declaration of variables specific to the context
 //		of tracing of lines 3d
-
 //-Warning	Context of tracing of lines 3d inherits the context
 //		defined by :
 //		- the color
 //		- the type of trait
 //		- the thickness
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Graphic3d_AspectLine3d.ixx>
+
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d () {
 }
 

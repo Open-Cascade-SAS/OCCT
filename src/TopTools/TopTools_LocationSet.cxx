@@ -14,21 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
-#include <TopTools_LocationSet.ixx>
-#include <TopLoc_Location.hxx>
-#include <Message_ProgressSentry.hxx>
 
 #include <GeomTools.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Vec.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Stream.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopTools_LocationSet.hxx>
 
 //=======================================================================
 //function : TopTools_LocationSet
 //purpose  : 
 //=======================================================================
-
 TopTools_LocationSet::TopTools_LocationSet() 
 {
 }

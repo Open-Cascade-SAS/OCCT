@@ -16,60 +16,52 @@
 
 // sln 19.11.2001. Bug 2: Correction of output of 'statshape' draw function.
 
-#include <SWDRAW_ShapeAnalysis.ixx>
-#include <stdio.h>
-#include <Draw.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepGProp.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 #include <DBRep.hxx>
+#include <Draw.hxx>
 #include <DrawTrSurf.hxx>
-#include <SWDRAW.hxx>
-#include <Precision.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepBuilderAPI.hxx>
-#include <ShapeAnalysis.hxx>
-#include <ShapeAnalysis_ShapeTolerance.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <ShapeAnalysis_Surface.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Wire.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Edge.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <TopExp.hxx>
 #include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <ShapeAnalysis_ShapeContents.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-#include <TColStd_MapOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
-
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_FreeBoundData.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeAnalysis_FreeBoundsProperties.hxx>
-#include <ShapeAnalysis_FreeBoundData.hxx>
-#include <ShapeFix_FreeBounds.hxx>
-
-#include <ShapeExtend_WireData.hxx>
+#include <ShapeAnalysis_ShapeContents.hxx>
+#include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <ShapeAnalysis_Surface.hxx>
 #include <ShapeAnalysis_Wire.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_FreeBounds.hxx>
+#include <SWDRAW.hxx>
+#include <SWDRAW_ShapeAnalysis.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
+#include <stdio.h>
 static Standard_Integer tolerance
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {

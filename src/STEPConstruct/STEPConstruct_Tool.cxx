@@ -13,15 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct_Tool.ixx>
+
+#include <Interface_Graph.hxx>
+#include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <STEPConstruct_Tool.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_TransientProcess.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //=======================================================================
 //function : STEPConstruct_Tool
 //purpose  : 
 //=======================================================================
-
 STEPConstruct_Tool::STEPConstruct_Tool () 
 {
 }

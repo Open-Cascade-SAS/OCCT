@@ -16,13 +16,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_CcDesignPersonAndOrganizationAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
+#include <StepBasic_PersonAndOrganizationRole.hxx>
 
 //=======================================================================
 //function : StepAP203_CcDesignPersonAndOrganizationAssignment
 //purpose  : 
 //=======================================================================
-
 StepAP203_CcDesignPersonAndOrganizationAssignment::StepAP203_CcDesignPersonAndOrganizationAssignment ()
 {
 }

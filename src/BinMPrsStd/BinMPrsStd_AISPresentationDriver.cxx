@@ -13,16 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMPrsStd_AISPresentationDriver.ixx>
-#include <TPrsStd_AISPresentation.hxx>
+
+#include <BinMPrsStd_AISPresentationDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TPrsStd_AISPresentation.hxx>
+
 //=======================================================================
 //function : BinMDataStd_AISPresentationDriver
 //purpose  : Constructor
 //=======================================================================
-
 BinMPrsStd_AISPresentationDriver::BinMPrsStd_AISPresentationDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TPrsStd_AISPresentation)->Name())

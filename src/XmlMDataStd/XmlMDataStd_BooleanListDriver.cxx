@@ -13,11 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_BooleanListDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_BooleanList.hxx>
 #include <TDataStd_ListIteratorOfListOfByte.hxx>
-#include <NCollection_LocalArray.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_BooleanListDriver.hxx>
 #include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")

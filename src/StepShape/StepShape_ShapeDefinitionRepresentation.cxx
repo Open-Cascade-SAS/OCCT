@@ -16,13 +16,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepShape_ShapeDefinitionRepresentation.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
 
 //=======================================================================
 //function : StepShape_ShapeDefinitionRepresentation
 //purpose  : 
 //=======================================================================
-
 StepShape_ShapeDefinitionRepresentation::StepShape_ShapeDefinitionRepresentation ()
 {
 }

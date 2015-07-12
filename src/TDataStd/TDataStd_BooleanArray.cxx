@@ -13,7 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_BooleanArray.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_BooleanArray.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 static Standard_Integer DegreeOf2(const Standard_Integer degree)
 {

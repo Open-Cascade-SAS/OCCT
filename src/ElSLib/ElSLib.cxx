@@ -21,10 +21,21 @@
 #define No_Exception
 #endif
 
-#include <ElSLib.ixx>
+
+#include <ElSLib.hxx>
 #include <gp.hxx>
-#include <gp_XYZ.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 
 static Standard_Real PIPI = M_PI + M_PI;
 

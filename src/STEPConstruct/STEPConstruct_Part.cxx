@@ -15,25 +15,26 @@
 //:k9 abv 6 Jan 99: TR10: eliminating duplicated APPLICATION_CONTEXT entities
 //:j4 gka 16.03.99 S4134
 //    abv 20.11.99 renamed from StepPDR_SDRtool
-#include <STEPConstruct_Part.ixx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Static.hxx>
 
+#include <Interface_Static.hxx>
+#include <StepBasic_ApplicationContext.hxx>
+#include <StepBasic_DesignContext.hxx>
+#include <StepBasic_HArray1OfProduct.hxx>
+#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepBasic_MechanicalContext.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductContext.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionFormationWithSpecifiedSource.hxx>
-#include <StepBasic_Product.hxx>
-#include <StepBasic_DesignContext.hxx>
-#include <StepBasic_ProductContext.hxx>
-#include <StepBasic_MechanicalContext.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
-#include <StepBasic_ApplicationContext.hxx>
+#include <StepBasic_ProductRelatedProductCategory.hxx>
 #include <StepBasic_ProductType.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
+#include <STEPConstruct_Part.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 // ------------------------------
 // Modification a faire : 
@@ -44,12 +45,10 @@
 // du ShapeDefinitionRepresentation.
 // Elles se trouvent dans Cc1 au niveau d`une entite racine !
 // ------------------------------
-
 //=======================================================================
 //function : STEPConstruct_Part
 //purpose  : 
 //=======================================================================
-
 STEPConstruct_Part::STEPConstruct_Part() 
 {
   myDone = Standard_False;

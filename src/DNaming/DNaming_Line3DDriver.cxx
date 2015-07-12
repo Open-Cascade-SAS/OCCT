@@ -13,43 +13,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_Line3DDriver.ixx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Trsf.hxx>
-#include <Precision.hxx>
-#include <Standard_GUID.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAlgo.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <DNaming.hxx>
+#include <DNaming_Line3DDriver.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <ModelDefinitions.hxx>
+#include <Precision.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <TopTools_Array1OfShape.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_AttributeMap.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_MapIteratorOfAttributeMap.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopAbs.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_AttributeMap.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TNaming.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TFunction_Function.hxx>
-#include <DNaming.hxx>
-#include <ModelDefinitions.hxx>
-#include <TDataStd_Name.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 //=======================================================================
 //function : DNaming_Line3DDriver

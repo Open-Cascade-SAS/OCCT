@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_SelectedComponent.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESSolid_BooleanTree.hxx>
+#include <IGESSolid_SelectedComponent.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_SelectedComponent::IGESSolid_SelectedComponent ()    {  }
 

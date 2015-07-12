@@ -13,14 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMPrsStd_PositionDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-#include <TDataXtd_Position.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <gp_XYZ.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Position.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMPrsStd_PositionDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 #include <stdio.h>
-
 //=======================================================================
 //function : XmlMPrsStd_PositionDriver
 //purpose  : Constructor

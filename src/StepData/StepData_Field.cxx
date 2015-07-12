@@ -11,30 +11,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_Field.ixx>
+
+#include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
-#include <StepData_SelectMember.hxx>
+#include <Standard_Transient.hxx>
+#include <StepData_Field.hxx>
 #include <StepData_SelectInt.hxx>
-#include <StepData_SelectReal.hxx>
+#include <StepData_SelectMember.hxx>
 #include <StepData_SelectNamed.hxx>
+#include <StepData_SelectReal.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_HArray2OfTransient.hxx>
 
 //  Le kind code le type de donnee, le mode d acces (direct ou via Select),
 //  l arite (simple, liste, carre)
-
 //  Valeurs pour Kind : 0 = Clear/Undefined
 //  KindInteger KindBoolean KindLogical KindEnum KindReal KindString KindEntity
 //  + KindSelect qui s y substitue et peut s y combiner
 //  + KindList et KindList2  qui peuvent s y combiner
 //  (sur masque KindArity et decalage ShiftArity)
-
 #define KindInteger 1
 #define KindBoolean 2
 #define KindLogical 3

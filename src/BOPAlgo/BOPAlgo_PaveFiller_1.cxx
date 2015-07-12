@@ -15,27 +15,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
-
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_BaseAllocator.hxx>
 
 #include <Bnd_Box.hxx>
-
-#include <TopoDS_Vertex.hxx>
-#include <BRepBndLib.hxx>
-
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
-#include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
-
+#include <BOPCol_MapOfInteger.hxx>
+#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPTools_AlgoTools.hxx>
-#include <BOPDS_VectorOfInterfVV.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <BOPAlgo_Tools.hxx>
-
+#include <BOPDS_VectorOfInterfVV.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BRepBndLib.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Context.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 // function: PerformVV

@@ -14,22 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dToIGES_Geom2dVector.ixx>
 
+#include <Geom2d_Direction.hxx>
 #include <Geom2d_Vector.hxx>
 #include <Geom2d_VectorWithMagnitude.hxx>
-#include <Geom2d_Direction.hxx>
-
+#include <Geom2dToIGES_Geom2dEntity.hxx>
+#include <Geom2dToIGES_Geom2dVector.hxx>
 #include <gp_XYZ.hxx>
-
 #include <IGESGeom_Direction.hxx>
-
 #include <Interface_Macros.hxx>
 
 //=============================================================================
 // Geom2dToIGES_Geom2dVector
 //=============================================================================
-
 Geom2dToIGES_Geom2dVector::Geom2dToIGES_Geom2dVector()
 :Geom2dToIGES_Geom2dEntity()
 {

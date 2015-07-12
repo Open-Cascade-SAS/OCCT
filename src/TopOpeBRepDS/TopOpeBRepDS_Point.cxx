@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Point.ixx>
+
+#include <gp_Pnt.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_Point
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_Point::TopOpeBRepDS_Point()
 : myKeep(Standard_True)
 {

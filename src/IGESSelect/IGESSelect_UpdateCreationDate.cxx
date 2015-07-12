@@ -12,14 +12,18 @@
 // commercial license or contractual agreement.
 
 //#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
-#include <IGESSelect_UpdateCreationDate.ixx>
+
+#include <IFSelect_ContextModif.hxx>
+#include <IGESData_GlobalSection.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_UpdateCreationDate.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
-#include <IGESData_GlobalSection.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <Interface_Check.hxx>
-
-
 
 IGESSelect_UpdateCreationDate::IGESSelect_UpdateCreationDate ()
     : IGESSelect_ModelModifier (Standard_False)    {  }

@@ -13,8 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Printer.ixx>
 
+#include <Draw_Printer.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -22,7 +23,6 @@
 //function : Draw_Printer
 //purpose  : 
 //=======================================================================
-
 Draw_Printer::Draw_Printer (const Draw_Interpretor& theTcl)
 : myTcl((Standard_Address)&theTcl)
 {

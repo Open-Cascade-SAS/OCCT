@@ -1,0 +1,78 @@
+// Created on: 1994-02-17
+// Created by: Bruno DUMORTIER
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomFill_Generator_HeaderFile
+#define _GeomFill_Generator_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <GeomFill_Profiler.hxx>
+#include <Standard_Real.hxx>
+class Geom_Surface;
+class StdFail_NotDone;
+class Standard_DomainError;
+
+
+//! Create a surface using generating lines.  Inherits
+//! profiler.  The  surface will be  a  BSplineSurface
+//! passing  by   all  the  curves  described  in  the
+//! generator. The VDegree of the resulting surface is
+//! 1.
+class GeomFill_Generator  : public GeomFill_Profiler
+{
+public:
+
+  DEFINE_STANDARD_ALLOC
+
+  
+  Standard_EXPORT GeomFill_Generator();
+  
+  //! Converts all curves to BSplineCurves.
+  //! Set them to the common profile.
+  //! Compute the surface (degv = 1).
+  //! <PTol> is used to compare 2 knots.
+  Standard_EXPORT virtual void Perform (const Standard_Real PTol) Standard_OVERRIDE;
+  
+    const Handle(Geom_Surface)& Surface() const;
+
+
+
+
+protected:
+
+
+
+
+
+private:
+
+
+
+  Handle(Geom_Surface) mySurface;
+
+
+};
+
+
+#include <GeomFill_Generator.lxx>
+
+
+
+
+
+#endif // _GeomFill_Generator_HeaderFile

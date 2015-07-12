@@ -11,15 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_DispPerSignature.ixx>
+
+#include <IFGraph_SubPartsIterator.hxx>
+#include <IFSelect_DispPerSignature.hxx>
 #include <IFSelect_Selection.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
+#include <IFSelect_SignCounter.hxx>
 #include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+
 #include <stdio.h>
-
-
 IFSelect_DispPerSignature::IFSelect_DispPerSignature ()    {  }
 
     Handle(IFSelect_SignCounter)  IFSelect_DispPerSignature::SignCounter () const

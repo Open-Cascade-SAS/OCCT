@@ -16,13 +16,11 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_FunctionSample.ixx>
-
-
+#include <math_FunctionSample.hxx>
 #include <Standard_OutOfRange.hxx>
-
 
 math_FunctionSample::math_FunctionSample (const Standard_Real A,
 					    const Standard_Real B,

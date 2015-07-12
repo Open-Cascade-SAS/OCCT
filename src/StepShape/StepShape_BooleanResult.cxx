@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_BooleanResult.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepShape_BooleanOperand.hxx>
+#include <StepShape_BooleanResult.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_BooleanResult::StepShape_BooleanResult ()  {}
 

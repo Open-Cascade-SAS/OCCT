@@ -16,9 +16,15 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_NodalDisplAndRot.ixx>
+#include <gp_XYZ.hxx>
+#include <IGESAppli_NodalDisplAndRot.hxx>
+#include <IGESAppli_Node.hxx>
+#include <IGESBasic_HArray1OfHArray1OfXYZ.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
-
 
 IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot ()    {  }
 

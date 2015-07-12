@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeElips.ixx>
+
+#include <gce_MakeElips.hxx>
 #include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Elips.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une Ellipse 3d de gp a partir de son Ax2 et de son        +
 //   grand rayon <MajorRadius> et son petit rayon <MinorRadius>.          +
 //=========================================================================
-
 gce_MakeElips::gce_MakeElips(const gp_Ax2&       A2          ,
 			     const Standard_Real MajorRadius ,
 			     const Standard_Real MinorRadius ) 

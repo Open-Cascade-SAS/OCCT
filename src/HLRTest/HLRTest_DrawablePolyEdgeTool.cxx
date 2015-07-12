@@ -16,13 +16,16 @@
 
 // Modified by cma, Mon Oct 23 16:11:46 1995
 
-#include <HLRTest_DrawablePolyEdgeTool.ixx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <HLRAlgo_EdgeIterator.hxx>
+#include <HLRAlgo_EdgeStatus.hxx>
 #include <HLRBRep_BiPoint.hxx>
 #include <HLRBRep_ListIteratorOfListOfBPoint.hxx>
-#include <HLRAlgo_EdgeStatus.hxx>
-#include <HLRAlgo_EdgeIterator.hxx>
-#include <Draw_Color.hxx>
+#include <HLRBRep_PolyAlgo.hxx>
+#include <HLRTest_DrawablePolyEdgeTool.hxx>
 #include <OSD_Chronometer.hxx>
+#include <Standard_Type.hxx>
 
 #define PntX1 ((Standard_Real*)Coordinates)[0]
 #define PntY1 ((Standard_Real*)Coordinates)[1]

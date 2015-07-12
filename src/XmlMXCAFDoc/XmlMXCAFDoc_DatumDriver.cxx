@@ -13,11 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMXCAFDoc_DatumDriver.ixx>
-#include <XmlObjMgt.hxx>
-#include <XCAFDoc_Datum.hxx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TDF_Attribute.hxx>
+#include <XCAFDoc_Datum.hxx>
+#include <XmlMXCAFDoc_DatumDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (DescrIndexString, "descr")
 IMPLEMENT_DOMSTRING (IdIndexString,    "ident")

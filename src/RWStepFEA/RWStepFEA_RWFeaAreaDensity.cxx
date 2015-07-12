@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWFeaAreaDensity.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWFeaAreaDensity.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_FeaAreaDensity.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaAreaDensity
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWFeaAreaDensity::RWStepFEA_RWFeaAreaDensity ()
 {
 }

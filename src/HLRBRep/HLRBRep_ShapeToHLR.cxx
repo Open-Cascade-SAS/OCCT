@@ -17,30 +17,33 @@
 #ifndef No_Exception
 // #define No_Exception
 #endif
-#include <HLRBRep_ShapeToHLR.ixx>
 
+
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_MapOfShapeTool.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <HLRBRep.hxx>
+#include <HLRBRep_Data.hxx>
+#include <HLRBRep_ShapeToHLR.hxx>
+#include <HLRTopoBRep_OutLiner.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
-#include <HLRBRep.hxx>
-#include <BRepTopAdaptor_MapOfShapeTool.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 // Function : Load
 // Purpose  : 
 //=======================================================================
-
 Handle(HLRBRep_Data) 
 HLRBRep_ShapeToHLR::Load(const Handle(HLRTopoBRep_OutLiner)& S,
 			 const HLRAlgo_Projector& P,

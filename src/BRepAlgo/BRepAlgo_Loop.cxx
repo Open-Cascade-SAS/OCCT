@@ -14,35 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
-
-#include <BRepAlgo_Loop.ixx>
 
 #include <BRep_Builder.hxx>
-#include <BRepAlgo_FaceRestrictor.hxx>
+#include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
-
+#include <BRep_TVertex.hxx>
+#include <BRepAlgo_FaceRestrictor.hxx>
+#include <BRepAlgo_Loop.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <TopExp.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-#include <BRep_TVertex.hxx>
-#include <BRep_TEdge.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
+#include <stdio.h>
 #ifdef DRAW
 #include <DBRep.hxx>
 #pragma comment(lib,"TKDraw")

@@ -14,22 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_MakePipe.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS.hxx>
+#include <BRepFill_Pipe.hxx>
+#include <BRepOffsetAPI_MakePipe.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 //=======================================================================
 //function : BRepOffsetAPI_MakePipe
 //purpose  : constructor
 //=======================================================================
-
 BRepOffsetAPI_MakePipe::BRepOffsetAPI_MakePipe(const TopoDS_Wire&  Spine ,
                                                const TopoDS_Shape& Profile)
      : myPipe(Spine, Profile)

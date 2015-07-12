@@ -14,20 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakePolyline2d.ixx>
-#include <StepToGeom_MakeCartesianPoint2d.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <Geom2d_CartesianPoint.hxx>
 
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Polyline.hxx>
+#include <StepToGeom_MakeCartesianPoint2d.hxx>
+#include <StepToGeom_MakePolyline2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : StepToGeom_MakePolyline2d
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean StepToGeom_MakePolyline2d::Convert (const Handle(StepGeom_Polyline)& SPL, Handle(Geom2d_BSplineCurve)& CC)
 {
   if (SPL.IsNull())

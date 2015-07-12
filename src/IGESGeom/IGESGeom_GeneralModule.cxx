@@ -11,14 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESGeom_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
-#include <IGESGeom_BSplineCurve.hxx>
-#include <IGESGeom_BSplineSurface.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
+#include <IGESGeom_BSplineCurve.hxx>
+#include <IGESGeom_BSplineSurface.hxx>
 #include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_ConicArc.hxx>
@@ -26,6 +25,7 @@
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_Direction.hxx>
 #include <IGESGeom_Flash.hxx>
+#include <IGESGeom_GeneralModule.hxx>
 #include <IGESGeom_Line.hxx>
 #include <IGESGeom_OffsetCurve.hxx>
 #include <IGESGeom_OffsetSurface.hxx>
@@ -36,13 +36,10 @@
 #include <IGESGeom_SplineSurface.hxx>
 #include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <IGESGeom_TabulatedCylinder.hxx>
-#include <IGESGeom_TransformationMatrix.hxx>
-#include <IGESGeom_TrimmedSurface.hxx>
-
-#include <IGESGeom_ToolBSplineCurve.hxx>
-#include <IGESGeom_ToolBSplineSurface.hxx>
 #include <IGESGeom_ToolBoundary.hxx>
 #include <IGESGeom_ToolBoundedSurface.hxx>
+#include <IGESGeom_ToolBSplineCurve.hxx>
+#include <IGESGeom_ToolBSplineSurface.hxx>
 #include <IGESGeom_ToolCircularArc.hxx>
 #include <IGESGeom_ToolCompositeCurve.hxx>
 #include <IGESGeom_ToolConicArc.hxx>
@@ -62,14 +59,20 @@
 #include <IGESGeom_ToolTabulatedCylinder.hxx>
 #include <IGESGeom_ToolTransformationMatrix.hxx>
 #include <IGESGeom_ToolTrimmedSurface.hxx>
-
-
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESGeom_GeneralModule::IGESGeom_GeneralModule ()    {  }
 
 

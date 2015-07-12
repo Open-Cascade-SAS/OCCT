@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_Prs.ixx>
-#include "Voxel_VisData.h"
 
-#include <Prs3d_Root.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <Voxel_Prs.hxx>
 
+#include "Voxel_VisData.h"
 Voxel_Prs::Voxel_Prs():AIS_InteractiveObject(PrsMgr_TOP_AllView),myVisData(0)
 {
 

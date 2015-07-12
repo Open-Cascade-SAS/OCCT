@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_CsgSolid.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepShape_CsgSelect.hxx>
+#include <StepShape_CsgSolid.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_CsgSolid::StepShape_CsgSolid ()  {}
 

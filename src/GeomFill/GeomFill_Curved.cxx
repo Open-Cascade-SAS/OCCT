@@ -14,21 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Curved.ixx>
 
+#include <GeomFill_Curved.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-
 #include <Standard_NotImplemented.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 //=======================================================================
 //function : GeomFill_Curved
 //purpose  : 
 //=======================================================================
-
 GeomFill_Curved::GeomFill_Curved()
 {
 }

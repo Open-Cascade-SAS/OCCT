@@ -15,10 +15,13 @@
 
 // modified     13.04.2009 Sergey Zaritchny
 
-#include <BinMDataXtd_ConstraintDriver.ixx>
-
-#include <TDataXtd_Constraint.hxx>
+#include <BinMDataXtd_ConstraintDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
+#include <TDataXtd_Constraint.hxx>
+#include <TDF_Attribute.hxx>
 #include <TNaming_NamedShape.hxx>
 
 //=======================================================================

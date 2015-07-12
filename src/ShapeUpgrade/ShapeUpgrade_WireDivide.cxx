@@ -19,46 +19,54 @@
 //    abv 14.07.99 dealing with edges without 3d curve
 //    svv 10.01.00 porting on DEC
 
-#include <ShapeUpgrade_WireDivide.ixx>
-#include <ShapeUpgrade.hxx>
-#include <BRep_Tool.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeAnalysis_Edge.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_TransferParameters.hxx>
+#include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_EdgeDivide.hxx>
+#include <ShapeUpgrade_FixSmallCurves.hxx>
+#include <ShapeUpgrade_SplitCurve2d.hxx>
+#include <ShapeUpgrade_SplitCurve3d.hxx>
+#include <ShapeUpgrade_WireDivide.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom2d_HArray1OfCurve.hxx>
+#include <TColGeom_HArray1OfCurve.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
-#include <gp_Pnt.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <ShapeExtend.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <ShapeAnalysis_TransferParametersProj.hxx>
-#include <ShapeUpgrade_FixSmallCurves.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Geom_BoundedCurve.hxx>
-#include <Geom2d_BoundedCurve.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_WireDivide
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_WireDivide::ShapeUpgrade_WireDivide():
        ShapeUpgrade_Tool(), myStatus(0)
 {

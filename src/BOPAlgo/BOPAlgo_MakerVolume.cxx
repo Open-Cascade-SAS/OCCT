@@ -12,28 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_MakerVolume.ixx>
-
-#include <NCollection_IncAllocator.hxx>
 
 #include <Bnd_Box.hxx>
-
-#include <TopoDS_Solid.hxx>
-
-#include <TopExp_Explorer.hxx>
-
-#include <BRepPrimAPI_MakeBox.hxx>
-
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-
-#include <BOPDS_DS.hxx>
-
-#include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_BuilderSolid.hxx>
-
+#include <BOPAlgo_MakerVolume.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPDS_DS.hxx>
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Solid.hxx>
 
 static
   void AddFace(const TopoDS_Shape& theF,

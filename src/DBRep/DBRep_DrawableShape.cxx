@@ -14,58 +14,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DBRep_DrawableShape.ixx>
 
-
-#include <Draw_Appli.hxx>
-
-#include <DBRep_Face.hxx>
-#include <DBRep_Edge.hxx>
-#include <DBRep_IsoBuilder.hxx>
-#include <DBRep_ListIteratorOfListOfFace.hxx>
-#include <DBRep_ListIteratorOfListOfEdge.hxx>
-#include <DBRep_ListIteratorOfListOfHideData.hxx>
-#include <DBRep_HideData.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRep_Tool.hxx>
-
-#include <BRepTools.hxx>
-
-#include <BRepMesh_IncrementalMesh.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-
-#include <HLRBRep.hxx>
-
-#include <gp_Lin2d.hxx>
-#include <gp_Trsf.hxx>
-
-#include <Poly_Polygon3D.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_Connect.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-
-#include <Precision.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Adaptor3d_HCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepTools.hxx>
+#include <DBRep_DrawableShape.hxx>
+#include <DBRep_Edge.hxx>
+#include <DBRep_Face.hxx>
+#include <DBRep_HideData.hxx>
+#include <DBRep_IsoBuilder.hxx>
+#include <DBRep_ListIteratorOfListOfEdge.hxx>
+#include <DBRep_ListIteratorOfListOfFace.hxx>
+#include <DBRep_ListIteratorOfListOfHideData.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Trsf.hxx>
+#include <HLRBRep.hxx>
+#include <Poly_Connect.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 static Standard_Real IsoRatio = 1.001;
 

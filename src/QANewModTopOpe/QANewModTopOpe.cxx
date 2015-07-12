@@ -13,28 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe.ixx>
-#include <TopAbs.hxx>
-#include <TopoDS_Iterator.hxx>
+
+#include <BRepCheck.hxx>
 #include <BRepCheck_Analyzer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <math_Matrix.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <BRepTools_Substitution.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 #include <BRepCheck_Result.hxx>
-#include <BRepCheck.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <BRepCheck_Wire.hxx>
+#include <BRepTools_Substitution.hxx>
+#include <math_Matrix.hxx>
+#include <QANewModTopOpe.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 

@@ -14,12 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_CornerState.ixx>
+
+#include <GeomFill_CornerState.hxx>
+
 //=======================================================================
 //function : GeomFill_CornerState
 //purpose  : 
 //=======================================================================
-
 GeomFill_CornerState::GeomFill_CornerState() :
  gap(RealLast()),
  isconstrained(0),

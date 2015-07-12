@@ -13,10 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_SurfaceRangeLocalizeData.ixx>
-#include <IntTools_ListIteratorOfListOfSurfaceRangeSample.hxx>
+
+#include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
 #include <IntTools_ListIteratorOfListOfBox.hxx>
+#include <IntTools_ListIteratorOfListOfSurfaceRangeSample.hxx>
 #include <IntTools_MapIteratorOfMapOfSurfaceSample.hxx>
+#include <IntTools_SurfaceRangeLocalizeData.hxx>
+#include <IntTools_SurfaceRangeSample.hxx>
 #include <Precision.hxx>
 
 IntTools_SurfaceRangeLocalizeData::IntTools_SurfaceRangeLocalizeData()

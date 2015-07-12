@@ -14,10 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <NLPlate_HPG0G2Constraint.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_D2.hxx>
-
-#include <NLPlate_HPG0G2Constraint.ixx>
+#include <Standard_Type.hxx>
 
 NLPlate_HPG0G2Constraint::NLPlate_HPG0G2Constraint(const gp_XY& UV, const gp_XYZ& Value, const Plate_D1& D1T, const Plate_D2& D2T)
 : NLPlate_HPG0G1Constraint(UV,Value,D1T), myG2Target(D2T)

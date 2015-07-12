@@ -37,14 +37,16 @@
 //--       pas etre mene a bien.  
 //----------------------------------------------------------------------
 
-#include <Precision.hxx>
-
-#include <IntAna_Curve.ixx>
-
-#include <Standard_DomainError.hxx>
-#include <math_DirectPolynomialRoots.hxx>
 #include <ElSLib.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <IntAna_Curve.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : IntAna_Curve

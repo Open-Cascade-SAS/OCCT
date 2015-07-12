@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_PaveClassifier.ixx>
-#include <TopOpeBRepBuild_Pave.hxx>
 
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Curve.hxx>
 #include <Precision.hxx>
 #include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_Pave.hxx>
+#include <TopOpeBRepBuild_PaveClassifier.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceVC();

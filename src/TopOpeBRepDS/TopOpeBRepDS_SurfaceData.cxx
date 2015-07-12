@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_SurfaceData.ixx>
+
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
+#include <TopOpeBRepDS_SurfaceData.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_SurfaceData
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_SurfaceData::TopOpeBRepDS_SurfaceData()
 {}
 

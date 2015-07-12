@@ -11,16 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_DimTol.ixx>
 
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-
+#include <XCAFDoc_DimTol.hxx>
 
 //=======================================================================
 //function : XCAFDoc_DimTol
 //purpose  : 
 //=======================================================================
-
 XCAFDoc_DimTol::XCAFDoc_DimTol()
 {
 }

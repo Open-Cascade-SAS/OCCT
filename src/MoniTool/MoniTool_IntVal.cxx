@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_IntVal.ixx>
+
+#include <MoniTool_IntVal.hxx>
+#include <Standard_Type.hxx>
 
 MoniTool_IntVal::MoniTool_IntVal  (const Standard_Integer val)    {  theval = val;  }
 

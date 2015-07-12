@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_Point.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESBasic_SubfigureDef.hxx>
+#include <IGESGeom_Point.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_Point::IGESGeom_Point ()     {  }
 

@@ -16,10 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_Flash.ixx>
-#include <Standard_OutOfRange.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_Flash.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_Flash::IGESGeom_Flash ()     {  }
 

@@ -14,52 +14,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
 
-#include <QANewDBRepNaming.ixx>
-
-#include <DDF.hxx>
-
-#include <TDF_Data.hxx>
-
-#include <Draw.hxx>
-
-#include <TDF_Label.hxx>
-#include <TNaming_Selector.hxx>
-#include <TopoDS_Shape.hxx>
-#include <ViewerTest.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_NamedShape.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
+#include <DBRep.hxx>
+#include <DDF.hxx>
+#include <Draw.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <QANewDBRepNaming.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TNaming.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TNaming_NamingTool.hxx>
-#include <DBRep.hxx>
-#include <TNaming_Naming.hxx>
-#include <TNaming_Name.hxx>
-#include <TopExp_Explorer.hxx>
-#include <ViewerTest.hxx>
-#include <TopTools_MapOfShape.hxx>
-
 #include <TNaming_Builder.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_XYZ.hxx>
+#include <TNaming_Name.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Naming.hxx>
+#include <TNaming_NamingTool.hxx>
+#include <TNaming_Selector.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <BRep_Tool.hxx>
-#include <Precision.hxx>
-#include <Standard_ErrorHandler.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <ViewerTest.hxx>
 
+#include <stdio.h>
 //////#include <Draw_PluginMacro.hxx>
 //////#include <DBrowser.hxx>
-
 static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor&,Standard_Integer,const char ** a);
 
 //static Standard_Integer QANewDBRepNaming_myCheckNaming(Draw_Interpretor&,Standard_Integer,const char ** a);

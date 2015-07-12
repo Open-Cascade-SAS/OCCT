@@ -14,23 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_WFSurface.ixx>
 
-
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <GeomAbs_IsoType.hxx>
-#include <Prs3d_IsoAspect.hxx>
-#include <Bnd_Box.hxx>
-#include <Precision.hxx>
-#include <BndLib_AddSurface.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <StdPrs_Curve.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-
-#include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <Bnd_Box.hxx>
+#include <BndLib_AddSurface.hxx>
+#include <GeomAbs_IsoType.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Precision.hxx>
+#include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx>
-
+#include <Prs3d_NListOfSequenceOfPnt.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <StdPrs_Curve.hxx>
+#include <StdPrs_WFSurface.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
 
 static void FindLimits(const Handle(Adaptor3d_HSurface)& surf ,
 		       const Standard_Real             aLimit,

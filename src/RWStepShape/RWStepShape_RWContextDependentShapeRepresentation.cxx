@@ -11,23 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWContextDependentShapeRepresentation.ixx>
-#include <StepRepr_ShapeRepresentationRelationship.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWContextDependentShapeRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
-// pour Share
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepShape_ContextDependentShapeRepresentation.hxx>
-
-
+// pour Share
 //=======================================================================
 //function : RWStepShape_RWContextDependentShapeRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepShape_RWContextDependentShapeRepresentation::RWStepShape_RWContextDependentShapeRepresentation()
 {
 }

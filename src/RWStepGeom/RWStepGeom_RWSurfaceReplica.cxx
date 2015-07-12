@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWSurfaceReplica.ixx>
-#include <StepGeom_Surface.hxx>
-#include <StepGeom_CartesianTransformationOperator3d.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWSurfaceReplica.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceReplica.hxx>
-
 
 RWStepGeom_RWSurfaceReplica::RWStepGeom_RWSurfaceReplica () {}
 

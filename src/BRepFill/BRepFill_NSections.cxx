@@ -14,51 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
 
-#include <BRepFill_NSections.ixx>
-
-#include <BRepFill.hxx>
-#include <BRepTools_WireExplorer.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepLProp.hxx>
-
-#include <BRepLib_MakeWire.hxx>
+#include <BRepFill.hxx>
+#include <BRepFill_NSections.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <TopExp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-
+#include <BRepLib_MakeWire.hxx>
+#include <BRepLProp.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Conic.hxx>
-#include <GeomFill_UniformSection.hxx>
-#include <GeomFill_EvolvedSection.hxx>
-#include <GeomFill_HArray1OfSectionLaw.hxx>
-#include <GeomFill_NSections.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <GeomFill_SectionGenerator.hxx>
-#include <GeomFill_Line.hxx>
-#include <GeomFill_AppSurf.hxx>
 #include <GeomConvert.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <BSplCLib.hxx>
-
+#include <GeomFill_AppSurf.hxx>
+#include <GeomFill_EvolvedSection.hxx>
+#include <GeomFill_HArray1OfSectionLaw.hxx>
+#include <GeomFill_Line.hxx>
+#include <GeomFill_NSections.hxx>
+#include <GeomFill_SectionGenerator.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_UniformSection.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_SequenceOfCurve.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Geom_BezierCurve.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_Array1OfShape.hxx>
 
-#include <Precision.hxx>
-
+#include <stdio.h>
 #ifdef OCCT_DEBUG
 static Standard_Boolean Affich = 0;
 #endif

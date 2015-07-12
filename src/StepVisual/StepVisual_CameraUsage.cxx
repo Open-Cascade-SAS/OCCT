@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_CameraUsage.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_CameraUsage.hxx>
 
 StepVisual_CameraUsage::StepVisual_CameraUsage ()  {}
 

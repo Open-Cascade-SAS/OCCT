@@ -12,18 +12,17 @@
 // commercial license or contractual agreement.
 
 //create  s4134 from CC2 to DIS
-#include <RWStepAP214_RWAppliedDateAndTimeAssignment.ixx>
-#include <StepAP214_HArray1OfDateAndTimeItem.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAppliedDateAndTimeAssignment.hxx>
+#include <StepAP214_AppliedDateAndTimeAssignment.hxx>
 #include <StepAP214_DateAndTimeItem.hxx>
+#include <StepAP214_HArray1OfDateAndTimeItem.hxx>
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_DateTimeRole.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepAP214_AppliedDateAndTimeAssignment.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAppliedDateAndTimeAssignment::RWStepAP214_RWAppliedDateAndTimeAssignment () {}
 

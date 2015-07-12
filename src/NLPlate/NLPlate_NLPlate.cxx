@@ -14,23 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <math_Gauss.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-
+#include <NLPlate_HGPPConstraint.hxx>
+#include <NLPlate_ListIteratorOfStackOfPlate.hxx>
+#include <NLPlate_NLPlate.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_D2.hxx>
 #include <Plate_D3.hxx>
-#include <Plate_Plate.hxx>
-#include <Plate_PinpointConstraint.hxx>
 #include <Plate_FreeGtoCConstraint.hxx>
-
-#include <NLPlate_ListIteratorOfStackOfPlate.hxx>
-
-#include <NLPlate_NLPlate.ixx>
-
+#include <Plate_PinpointConstraint.hxx>
+#include <Plate_Plate.hxx>
 
 NLPlate_NLPlate::NLPlate_NLPlate(const Handle(Geom_Surface)& InitialSurface) :
  myInitialSurface(InitialSurface),OK(Standard_False) {}

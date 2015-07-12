@@ -13,19 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_AsciiStringDriver.ixx>
-#include <CDM_MessageDriver.hxx>
+
+#include <BinMDataStd_AsciiStringDriver.hxx>
 #include <BinMDF_ADriver.hxx>
-#include <TDataStd_AsciiString.hxx>
-#include <TDF_Attribute.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataStd_AsciiStringDriver
 //purpose  :
 //=======================================================================
-
 BinMDataStd_AsciiStringDriver::BinMDataStd_AsciiStringDriver
                          (const Handle(CDM_MessageDriver)& theMessageDriver)
      : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_AsciiString)->Name())

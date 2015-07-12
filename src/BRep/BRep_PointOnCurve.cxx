@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_PointOnCurve.ixx>
 
+#include <BRep_PointOnCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_PointOnCurve
 //purpose  : 
 //=======================================================================
-
 BRep_PointOnCurve::BRep_PointOnCurve(const Standard_Real P,
 				     const Handle(Geom_Curve)& C, 
 				     const TopLoc_Location& L) :

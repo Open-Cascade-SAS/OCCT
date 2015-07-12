@@ -42,70 +42,59 @@
 // Modified:	Tue Nov  3 10:06:15 1998
 //              utilisation de BRepFill_CompatibleWires
 
-
-#include <BRepOffsetAPI_ThruSections.ixx>
-
-#include <Precision.hxx>
-#include <Standard_DomainError.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-
-#include <GeomAbs_Shape.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom2d_Line.hxx>
-#include <GeomFill_Line.hxx>
-#include <GeomFill_AppSurf.hxx>
-#include <GeomFill_SectionGenerator.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomConvert.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <BSplCLib.hxx>
-
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Iterator.hxx>
-
-
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools_WireExplorer.hxx>
-
-#include <BRepLib.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-
-#include <BRepFill_Generator.hxx>
-#include <BRepFill_CompatibleWires.hxx>
-
-#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_FindPlane.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepFill_CompatibleWires.hxx>
+#include <BRepFill_Generator.hxx>
+#include <BRepLib.hxx>
+#include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BSplCLib.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomConvert.hxx>
+#include <GeomConvert_ApproxCurve.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <GeomFill_AppSurf.hxx>
+#include <GeomFill_Line.hxx>
+#include <GeomFill_SectionGenerator.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NullObject.hxx>
-
+#include <TColgp_Array1OfPnt.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : PreciseUpar
 //purpose  : pins the u-parameter of surface close to U-knot
 //           to this U-knot
 //=======================================================================
-
 static Standard_Real PreciseUpar(const Standard_Real anUpar,
   const Handle(Geom_BSplineSurface)& aSurface)
 {

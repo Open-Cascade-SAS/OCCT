@@ -11,22 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
 
-#include <IFSelect_SessionPilot.ixx>
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_Selection.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <IFSelect_WorkLibrary.hxx>
+#include <IFSelect_WorkSession.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <OSD_OpenFile.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
-#include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <OSD_OpenFile.hxx>
-
 #include <stdio.h>
-
 #define MAXWORDS 200
 #define MAXCARS 1000
 

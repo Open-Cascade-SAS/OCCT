@@ -1,5 +1,9 @@
-IDNames.tcl
+DDocStd.cxx
+DDocStd.hxx
 DDocStd_ApplicationCommands.cxx
 DDocStd_DocumentCommands.cxx
-DDocStd_ToolsCommands.cxx
+DDocStd_DrawDocument.cxx
+DDocStd_DrawDocument.hxx
 DDocStd_MTMCommands.cxx
+DDocStd_ToolsCommands.cxx
+IDNames.tcl

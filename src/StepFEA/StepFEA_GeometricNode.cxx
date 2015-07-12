@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_GeometricNode.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_GeometricNode.hxx>
 
 //=======================================================================
 //function : StepFEA_GeometricNode
 //purpose  : 
 //=======================================================================
-
 StepFEA_GeometricNode::StepFEA_GeometricNode ()
 {
 }

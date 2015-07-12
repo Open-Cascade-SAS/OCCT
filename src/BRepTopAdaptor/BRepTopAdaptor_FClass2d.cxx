@@ -18,29 +18,29 @@
 
 #define No_Standard_OutOfRange
 
-#include <BRepTopAdaptor_FClass2d.ixx>
 
-#include <TopoDS_Edge.hxx>
-#include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <Geom2dInt_Geom2dCurveTool.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-#include <CSLib_Class2d.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <TopExp.hxx>
 #include <BRepAdaptor_Curve.hxx>
-
-#include <gp_Pnt.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <CSLib_Class2d.hxx>
 #include <ElCLib.hxx>
-
+#include <Geom2dInt_Geom2dCurveTool.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 #ifdef WNT
 #include <stdio.h>

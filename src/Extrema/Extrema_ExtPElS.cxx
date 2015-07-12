@@ -12,11 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtPElS.ixx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_NotImplemented.hxx>
+
 #include <ElSLib.hxx>
+#include <Extrema_ExtPElS.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+
 static const Standard_Real ExtPElS_MyEps = Epsilon(2. * M_PI);
 //=============================================================================
 

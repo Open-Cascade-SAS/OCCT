@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_WireSegment.ixx>
+
 #include <ShapeAnalysis_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_WireSegment.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ShapeFix_WireSegment
 //purpose  : 
 //=======================================================================
-
 ShapeFix_WireSegment::ShapeFix_WireSegment()
 {
   Clear();

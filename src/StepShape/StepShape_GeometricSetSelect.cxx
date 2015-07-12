@@ -11,12 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_GeometricSetSelect.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepGeom_Point.hxx>
+#include <Standard_Transient.hxx>
 #include <StepGeom_Curve.hxx>
-#include <StepGeom_Surface.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepGeom_Point.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
 
 StepShape_GeometricSetSelect::StepShape_GeometricSetSelect () {  }
 

@@ -11,38 +11,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeConstruct_MakeTriangulation.ixx>
 
-#include <TColStd_SequenceOfInteger.hxx>
-#include <Precision.hxx>
-
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
-#include <Geom_Plane.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Wire.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-
+#include <ShapeConstruct_MakeTriangulation.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 //=======================================================================
 //function : IsRightContour (static)
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean IsRightContour (const TColgp_SequenceOfPnt& pts, const Standard_Real prec)
 {
   Standard_Integer len = pts.Length();

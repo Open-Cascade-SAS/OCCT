@@ -28,85 +28,78 @@
 // abv 19.10.2001  FixAddNaturalBound improved and extracted as separate fix
 // skl,pdn 14.05.2002  OCC55 (correction precision for small faces)
 
-#include <ShapeFix_Face.ixx>
-
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
-
-#include <Precision.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GProp_GProps.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-
-#include <BRepGProp.hxx>
-#include <BRep_Tool.hxx>
+#include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <BRepTools.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-
-#include <Message_Msg.hxx>  
-#include <ShapeBuild_ReShape.hxx>
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeAnalysis.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <ShapeFix_Edge.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <Bnd_Box2d.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <ShapeAnalysis_Wire.hxx>
-#include <ShapeAnalysis_Surface.hxx>
-
-#include <ShapeExtend_CompositeSurface.hxx>
-#include <ShapeFix_ComposeShell.hxx>
-#include <TColGeom_HArray2OfSurface.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <Bnd_Box.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-
-#include <ShapeFix.hxx>
-#include <ShapeFix_DataMapOfShapeBox2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
+#include <BRepGProp.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <IntRes2d_Domain.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GProp_GProps.hxx>
+#include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_Transition.hxx>
-#include <TopTools_SequenceOfShape.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-
+#include <IntRes2d_Transition.hxx>
+#include <Message_Msg.hxx>
+#include <NCollection_Array1.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix.hxx>
+#include <ShapeFix_ComposeShell.hxx>
+#include <ShapeFix_DataMapOfShapeBox2d.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeFix_Face.hxx>
 #include <ShapeFix_IntersectionTool.hxx>
 #include <ShapeFix_SplitTool.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_HArray2OfSurface.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColStd_MapOfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <NCollection_Array1.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #define DEBUG

@@ -13,44 +13,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_ShapeTool.ixx>
-#include <XCAFDoc.hxx>
 
-#include <TDF_Tool.hxx>
+#include <BRep_Builder.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_SequenceOfHAsciiString.hxx>
+#include <TDataStd_ChildNodeIterator.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataStd_UAttribute.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_ChildIDIterator.hxx>
+#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_LabelSequence.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_ChildIDIterator.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
-
-#include <TDataStd_Name.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_ChildNodeIterator.hxx>
-#include <TDataStd_UAttribute.hxx>
-
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
-
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-
+#include <TopLoc_IndexedMapOfLocation.hxx>
 #include <TopLoc_Location.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-#include <XCAFDoc_Location.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TColStd_SequenceOfHAsciiString.hxx>
+#include <XCAFDoc.hxx>
 #include <XCAFDoc_GraphNode.hxx>
-#include <TopLoc_IndexedMapOfLocation.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Pnt.hxx>
+#include <XCAFDoc_Location.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 static Standard_Boolean theAutoNaming = Standard_True;
 

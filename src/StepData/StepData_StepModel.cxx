@@ -11,22 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_StepModel.ixx>
-#include <Standard_NoSuchObject.hxx>
-#include <StepData_Protocol.hxx>
-#include <StepData_StepWriter.hxx>
 
-#include <StepData.hxx>
+#include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_GeneralLib.hxx>
-#include <Interface_ShareTool.hxx>
 #include <Interface_GeneralModule.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TCollection_HAsciiString.hxx>
+
 #include <stdio.h>
-
-
 // Entete de fichier : liste d entites
-
 StepData_StepModel::StepData_StepModel ()  {  }
 
 

@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect_Prs.ixx>
+
+#include <Graphic3d_StructureManager.hxx>
+#include <Standard_Type.hxx>
+#include <StdSelect_Prs.hxx>
 
 StdSelect_Prs::
 StdSelect_Prs(const Handle(Graphic3d_StructureManager)& aStructureManager):

@@ -1,5 +1,4 @@
 EXTERNLIB
-QADraw.cdl
 QADraw.cxx
+QADraw.hxx
 QADraw_Additional.cxx
-QADraw_CMPLRS.edl

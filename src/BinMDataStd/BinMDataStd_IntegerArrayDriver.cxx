@@ -13,16 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_IntegerArrayDriver.ixx>
-#include <TDataStd_IntegerArray.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+
 #include <BinMDataStd.hxx>
+#include <BinMDataStd_IntegerArrayDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TDataStd_IntegerArray.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataStd_IntegerArrayDriver
 //purpose  : Constructor
 //=======================================================================
-
 BinMDataStd_IntegerArrayDriver::BinMDataStd_IntegerArrayDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_IntegerArray)->Name())

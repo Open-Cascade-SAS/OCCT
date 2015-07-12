@@ -11,7 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_ItemDefinedTransformation.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepRepr_ItemDefinedTransformation::StepRepr_ItemDefinedTransformation ()    {  }
 

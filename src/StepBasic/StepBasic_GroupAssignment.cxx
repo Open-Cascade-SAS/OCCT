@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_GroupAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Group.hxx>
+#include <StepBasic_GroupAssignment.hxx>
 
 //=======================================================================
 //function : StepBasic_GroupAssignment
 //purpose  : 
 //=======================================================================
-
 StepBasic_GroupAssignment::StepBasic_GroupAssignment ()
 {
 }

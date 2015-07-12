@@ -14,26 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomPlate_PlateG1Criterion.ixx>
+
+#include <AdvApp2Var_Context.hxx>
 #include <AdvApp2Var_Criterion.hxx>
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <AdvApp2Var_Patch.hxx>
+#include <GeomPlate_PlateG1Criterion.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XY.hxx>
-#include <gp_Pnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <PLib.hxx>
-
+#include <TColgp_SequenceOfXY.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //  static Standard_Boolean  first = Standard_True;
-
-
 //============================================================================
 //function : GeomPlate_PlateG1Criterion 
 //purpose  :
 //============================================================================
-
-
 GeomPlate_PlateG1Criterion::
 GeomPlate_PlateG1Criterion(const TColgp_SequenceOfXY& Data,
 			   const TColgp_SequenceOfXYZ& G1Data,

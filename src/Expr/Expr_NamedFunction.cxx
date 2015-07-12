@@ -14,12 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_NamedFunction.ixx>
-#include <Expr_NamedConstant.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Expr_FunctionDerivative.hxx>
-#include <Expr_NumericValue.hxx>
+
 #include <Expr.hxx>
+#include <Expr_FunctionDerivative.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralFunction.hxx>
+#include <Expr_NamedConstant.hxx>
+#include <Expr_NamedFunction.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NotEvaluable.hxx>
+#include <Expr_NumericValue.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_NamedFunction::Expr_NamedFunction (const TCollection_AsciiString& name, const Handle(Expr_GeneralExpression)& exp, const Expr_Array1OfNamedUnknown& vars) : 
                                  myVariables(vars.Lower(),vars.Upper())

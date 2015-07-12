@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_PresentationStyleAssignment.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_PresentationStyleAssignment.hxx>
+#include <StepVisual_PresentationStyleSelect.hxx>
 
 StepVisual_PresentationStyleAssignment::StepVisual_PresentationStyleAssignment ()  {}
 

@@ -18,25 +18,21 @@
 //szv#4 S4163
 //S4181 pdn implementing of writing IGES elementary surfaces.
 
-#include <BRepToIGES_BRWire.ixx>
-
 #include <BRep_Tool.hxx>
+#include <BRepToIGES_BREntity.hxx>
+#include <BRepToIGES_BRWire.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
-
-#include <gp.hxx>
-#include <gp_Ax2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Trsf2d.hxx>
-
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dToIGES_Geom2dCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
@@ -45,52 +41,43 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-
-#include <GeomToIGES_GeomPoint.hxx>
 #include <GeomToIGES_GeomCurve.hxx>
-
-#include <Geom2dToIGES_Geom2dCurve.hxx>
-
+#include <GeomToIGES_GeomPoint.hxx>
+#include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Trsf2d.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_Point.hxx>
-
 #include <Interface_Macros.hxx>
-
-#include <Precision.hxx>
-
-#include <ShapeAnalysis.hxx>
-
-#include <TColStd_HSequenceOfTransient.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shape.hxx>
-
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
 #include <Interface_Static.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
 #include <ShapeBuild_Edge.hxx>
-#include <Geom_OffsetSurface.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
-#include <Geom_Line.hxx>
-
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=============================================================================
 // BRepToIGES_BRWire
 //=============================================================================
-
 BRepToIGES_BRWire::BRepToIGES_BRWire()
 {
 }

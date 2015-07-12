@@ -18,71 +18,69 @@
 //    abv  22.07.99 implementing patch indices
 //    svv  10.01.00 porting on DEC
 
-#include <ShapeFix_ComposeShell.ixx>
-
-#include <Precision.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Dir2d.hxx>
-
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-
-#include <IntRes2d_IntersectionSegment.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_Domain.hxx>
-
-#include <Geom2dInt_GInter.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-
-#include <BRepTools.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-
-#include <ShapeExtend.hxx>
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeBuild_Vertex.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeAnalysis.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_WireOrder.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <ShapeFix_Edge.hxx>
-#include <ShapeFix_WireSegment.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <ShapeAnalysis_TransferParametersProj.hxx>
-#include <ShapeFix_Face.hxx>
-#include <ShapeAnalysis_Surface.hxx>
-#include <gp_Pnt.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 #include <Extrema_ExtPC2d.hxx>
-#include <ShapeAnalysis.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <ShapeAnalysis_TransferParameters.hxx>
+#include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <ShapeAnalysis_WireOrder.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeBuild_Vertex.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_ComposeShell.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeFix_Face.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <ShapeFix_WireSegment.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : ShapeFix_ComposeShell
 //purpose  : 
 //=======================================================================
-
 ShapeFix_ComposeShell::ShapeFix_ComposeShell () : 
        myStatus(0), myClosedMode(Standard_False)
 {

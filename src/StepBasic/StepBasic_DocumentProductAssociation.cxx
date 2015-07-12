@@ -15,13 +15,16 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepBasic_DocumentProductAssociation.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Document.hxx>
+#include <StepBasic_DocumentProductAssociation.hxx>
+#include <StepBasic_ProductOrFormationOrDefinition.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_DocumentProductAssociation
 //purpose  : 
 //=======================================================================
-
 StepBasic_DocumentProductAssociation::StepBasic_DocumentProductAssociation ()
 {
   defDescription = Standard_False;

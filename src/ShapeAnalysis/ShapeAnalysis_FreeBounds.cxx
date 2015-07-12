@@ -19,49 +19,45 @@
 //szv#4 S4163
 // 11.01.00 svv #1: porting on DEC  
 
-#include <ShapeAnalysis_FreeBounds.ixx>
-
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
-
+#include <gp_Pnt.hxx>
+#include <NCollection_UBTreeFiller.hxx>
 #include <Precision.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Iterator.hxx>
-
+#include <ShapeAnalysis.hxx>
+#include <ShapeAnalysis_BoxBndTree.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_FreeBounds.hxx>
+#include <ShapeAnalysis_Shell.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_Vertex.hxx>
+#include <ShapeExtend_Explorer.hxx>
+#include <ShapeExtend_WireData.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeExtend_Explorer.hxx>
-#include <ShapeBuild_Vertex.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeAnalysis.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_Wire.hxx>
-#include <ShapeAnalysis_Shell.hxx>
-
-#include <gp_Pnt.hxx> //ied_modif_for_compil_Nov-19-1998
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <ShapeAnalysis_BoxBndTree.hxx>
-#include <NCollection_UBTreeFiller.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TopTools_HArray1OfShape.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HArray1OfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
+//ied_modif_for_compil_Nov-19-1998
 //=======================================================================
 //function : ShapeAnalysis_FreeBounds
 //purpose  : Empty constructor
 //=======================================================================
-
 ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds() {}
 
 //=======================================================================

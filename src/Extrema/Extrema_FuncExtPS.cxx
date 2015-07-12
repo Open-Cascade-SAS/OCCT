@@ -16,13 +16,16 @@
 
 //  Modified by skv - Thu Sep 30 15:21:07 2004 OCC593
 
-
-#include <Extrema_FuncExtPS.ixx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <Standard_TypeMismatch.hxx>
-#include <Precision.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Extrema_FuncExtPS.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <GeomAbs_IsoType.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <math_Matrix.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
 
 Extrema_FuncExtPS::Extrema_FuncExtPS ()
 {

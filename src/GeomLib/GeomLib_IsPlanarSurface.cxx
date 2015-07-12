@@ -14,25 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLib_IsPlanarSurface.ixx>
 
-#include <GeomLib.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-
-#include <TColgp_HArray1OfPnt.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomLib.hxx>
+#include <GeomLib_IsPlanarSurface.hxx>
+#include <gp_Pln.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-
+#include <TColgp_HArray1OfPnt.hxx>
 
 static Standard_Boolean Controle(const TColgp_Array1OfPnt& P,
 			  const gp_Pln& Plan,

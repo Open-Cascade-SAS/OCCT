@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Text3D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Text3D.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Text3D
 //purpose  : 
 //=======================================================================
-
 Draw_Text3D::Draw_Text3D(const gp_Pnt& p, const Standard_CString T, 
 			 const Draw_Color& col) :
      myPoint(p), myColor(col), myText(T), mymoveX(0.0), mymoveY(0.0)

@@ -14,9 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FWOSDriver_DriverFactory.ixx>
 
 #include <CDF_FWOSDriver.hxx>
+#include <CDF_MetaDataDriver.hxx>
+#include <FWOSDriver_DriverFactory.hxx>
+#include <Standard_Type.hxx>
+
 FWOSDriver_DriverFactory::FWOSDriver_DriverFactory(){}
 
 

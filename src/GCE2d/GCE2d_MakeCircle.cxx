@@ -14,9 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeCircle.ixx>
+
+#include <GCE2d_MakeCircle.hxx>
 #include <gce_MakeCirc2d.hxx>
 #include <Geom2d_Circle.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& C)

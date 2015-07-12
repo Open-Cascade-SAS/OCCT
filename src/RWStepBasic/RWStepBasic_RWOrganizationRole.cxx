@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWOrganizationRole.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepBasic_RWOrganizationRole.hxx>
+#include <StepBasic_OrganizationRole.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWOrganizationRole::RWStepBasic_RWOrganizationRole () {}
 

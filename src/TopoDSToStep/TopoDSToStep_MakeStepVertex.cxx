@@ -14,28 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeStepVertex.ixx>
-
-#include <GeomToStep_MakeCartesianPoint.hxx>
 
 #include <BRep_Tool.hxx>
-
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepShape_VertexPoint.hxx>
-
+#include <GeomToStep_MakeCartesianPoint.hxx>
 #include <gp_Pnt.hxx>
+#include <Interface_Static.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <StepShape_VertexPoint.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDSToStep_MakeStepVertex.hxx>
+#include <TopoDSToStep_Tool.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 
-#include <TCollection_HAsciiString.hxx>
-
 // Processing of non-manifold topology (ssv; 11.11.2010)
-#include <TransferBRep.hxx>
-#include <Interface_Static.hxx>
-
 // ----------------------------------------------------------------------------
 // Constructors
 // ----------------------------------------------------------------------------
-
 TopoDSToStep_MakeStepVertex::TopoDSToStep_MakeStepVertex()
 {
   done = Standard_False;

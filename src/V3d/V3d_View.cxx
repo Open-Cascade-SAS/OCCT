@@ -12,11 +12,9 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
-
 FONCTION :
 ----------
 Classe V3d_View :
-
 HISTORIQUE DES MODIFICATIONS   :
 --------------------------------
 00-09-92 : GG  ; Creation.
@@ -54,7 +52,6 @@ ne marche pas. Contournement en appelant WNT_Window::Size(Int,Int).
 16-10-98 : CAL ; Retrait d'un TIMER si CSF_GraphicTimer est definie.
 06-11-98 : CAL ; PRO ?????. Probleme dans ZFitAll si un point dans la vue.
 29-OCT-98 : DCB : Adding ScreenCopy () method.
-
 REMARQUES :
 -----------
 About  FitAll() multiple. This probleme is caused by missing
@@ -63,48 +60,53 @@ projection is made in the plane (U,V), there is a difference
 after several Zoom - compared to the exact value (cf ZoomX).
 Don't forget that the matrices work in float and not in double.
 To solve the problem (for lack of a better solution) I make 2 passes.
-
 ************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
 * Includes
 */
 
-#include <Standard_TypeMismatch.hxx>
-#include <Standard_ShortReal.hxx>
-#include <Standard_Assert.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_DivideByZero.hxx>
-
-#include <NCollection_Array1.hxx>
-
-#include <Visual3d_ViewManager.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_Layer.hxx>
-
-#include <V3d.hxx>
-#include <V3d_View.ixx>
-#include <V3d_BadValue.hxx>
-#include <V3d_StereoDumpOptions.hxx>
-
-#include <Image_AlienPixMap.hxx>
-
+#include <Aspect_ColorScale.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Grid.hxx>
+#include <Aspect_Window.hxx>
+#include <Bnd_Box.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-
-#include <Bnd_Box.hxx>
-
-#include <Precision.hxx>
-
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
-#include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
+#include <Graphic3d_MapOfStructure.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Image_AlienPixMap.hxx>
+#include <NCollection_Array1.hxx>
+#include <Precision.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Assert.hxx>
+#include <Standard_DivideByZero.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_ShortReal.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <TColStd_HSequenceOfInteger.hxx>
+#include <V3d.hxx>
+#include <V3d_BadValue.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_Light.hxx>
+#include <V3d_StereoDumpOptions.hxx>
+#include <V3d_UnMapped.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 #define V3d_FLAG_COMPUTATION   0x00000004
 

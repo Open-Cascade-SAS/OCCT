@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopTools.ixx>
+
+#include <TopoDS_Shape.hxx>
+#include <TopTools.hxx>
 #include <TopTools_ShapeSet.hxx>
 
 //=======================================================================
 //function : Dump
 //purpose  : 
 //=======================================================================
-
 void  TopTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 {
   TopTools_ShapeSet SSet;

@@ -14,107 +14,96 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draft_Modification.jxx>
 
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
-#include <BRepLib_MakeFace.hxx>
-
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <Draft_DataMapIteratorOfDataMapOfFaceFaceInfo.hxx>
-#include <Draft_DataMapIteratorOfDataMapOfEdgeEdgeInfo.hxx>
-#include <Draft_DataMapIteratorOfDataMapOfVertexVertexInfo.hxx>
-#include <Draft_FaceInfo.hxx>
-#include <Draft_EdgeInfo.hxx>
-#include <Draft_VertexInfo.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Tool.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-
-#include <Geom2d_Line.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Parab.hxx>
-#include <gp_Hypr.hxx>
-
-#include <IntCurveSurface_HInter.hxx>
-#include <GeomInt_IntSS.hxx>
-#include <IntCurveSurface_IntersectionPoint.hxx>
-#include <IntAna_QuadQuadGeo.hxx>
-#include <IntAna_IntConicQuad.hxx>
-
-#include <Extrema_ExtPC.hxx>
-#include <BRepExtrema_ExtPC.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepExtrema_ExtCF.hxx>
-
-#include <Standard_DomainError.hxx>
-#include <Standard_Failure.hxx>
-#include <Standard_NotImplemented.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-
-#include <gp.hxx>
-#include <Precision.hxx>
+#include <BRepExtrema_ExtPC.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepTools.hxx>
+#include <Draft_DataMapIteratorOfDataMapOfEdgeEdgeInfo.hxx>
+#include <Draft_DataMapIteratorOfDataMapOfFaceFaceInfo.hxx>
+#include <Draft_DataMapIteratorOfDataMapOfVertexVertexInfo.hxx>
+#include <Draft_EdgeInfo.hxx>
+#include <Draft_FaceInfo.hxx>
+#include <Draft_Modification.hxx>
+#include <Draft_VertexInfo.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <BRepTools.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-
+#include <Extrema_ExtPC.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dConvert.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <GeomInt_IntSS.hxx>
 #include <GeomProjLib.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
-
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <IntAna_IntConicQuad.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
+#include <IntCurveSurface_HInter.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <Precision.hxx>
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
-#include <Approx_CurveOnSurface.hxx>
-
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_ElementarySurface.hxx>
-
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean Choose(const Draft_DataMapOfFaceFaceInfo&,
 			       Draft_DataMapOfEdgeEdgeInfo&,

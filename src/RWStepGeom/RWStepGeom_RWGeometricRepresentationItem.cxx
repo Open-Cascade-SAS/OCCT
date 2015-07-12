@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWGeometricRepresentationItem.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepGeom_RWGeometricRepresentationItem.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
 
 RWStepGeom_RWGeometricRepresentationItem::RWStepGeom_RWGeometricRepresentationItem () {}
 

@@ -17,34 +17,42 @@
 // Modified by cma, Tue Apr  1 11:39:48 1997
 // Modified by cma, Tue Apr  1 11:40:30 1997
 
-#include <Standard_Stream.hxx>
-#include <HLRBRep_PolyAlgo.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <CSLib.hxx>
-#include <CSLib_DerivativeStatus.hxx>
-#include <CSLib_NormalStatus.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
-#include <HLRAlgo_PolyShellData.hxx>
-#include <HLRAlgo_PolyData.hxx>
-#include <HLRAlgo_BiPoint.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <Precision.hxx>
+#include <CSLib.hxx>
+#include <CSLib_DerivativeStatus.hxx>
+#include <CSLib_NormalStatus.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <gp.hxx>
+#include <HLRAlgo_BiPoint.hxx>
+#include <HLRAlgo_EdgeStatus.hxx>
+#include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
+#include <HLRAlgo_PolyAlgo.hxx>
+#include <HLRAlgo_PolyData.hxx>
+#include <HLRAlgo_PolyInternalData.hxx>
+#include <HLRAlgo_PolyShellData.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <HLRBRep_PolyAlgo.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #define EMskOutLin1  ((Standard_Boolean)   1)
 #define EMskOutLin2  ((Standard_Boolean)   2)

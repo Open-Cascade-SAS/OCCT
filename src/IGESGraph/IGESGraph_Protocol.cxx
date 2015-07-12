@@ -11,25 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESGraph_Protocol.ixx>
-
-#include <IGESGraph_LineFontDefPattern.hxx>
-#include <IGESGraph_Color.hxx>
-#include <IGESGraph_LineFontPredefined.hxx>
-#include <IGESGraph_DefinitionLevel.hxx>
-#include <IGESGraph_LineFontDefTemplate.hxx>
-#include <IGESGraph_DrawingSize.hxx>
-#include <IGESGraph_NominalSize.hxx>
-#include <IGESGraph_DrawingUnits.hxx>
-#include <IGESGraph_Pick.hxx>
-#include <IGESGraph_TextDisplayTemplate.hxx>
-#include <IGESGraph_HighLight.hxx>
-#include <IGESGraph_TextFontDef.hxx>
-#include <IGESGraph_IntercharacterSpacing.hxx>
-#include <IGESGraph_UniformRectGrid.hxx>
 
 #include <IGESBasic.hxx>
 #include <IGESBasic_Protocol.hxx>
+#include <IGESGraph_Color.hxx>
+#include <IGESGraph_DefinitionLevel.hxx>
+#include <IGESGraph_DrawingSize.hxx>
+#include <IGESGraph_DrawingUnits.hxx>
+#include <IGESGraph_HighLight.hxx>
+#include <IGESGraph_IntercharacterSpacing.hxx>
+#include <IGESGraph_LineFontDefPattern.hxx>
+#include <IGESGraph_LineFontDefTemplate.hxx>
+#include <IGESGraph_LineFontPredefined.hxx>
+#include <IGESGraph_NominalSize.hxx>
+#include <IGESGraph_Pick.hxx>
+#include <IGESGraph_Protocol.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <IGESGraph_TextFontDef.hxx>
+#include <IGESGraph_UniformRectGrid.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,

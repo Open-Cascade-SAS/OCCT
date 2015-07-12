@@ -14,23 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeFacetedBrep.ixx>
+
+#include <BRepClass3d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_FacetedBrep.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeFacetedBrep.hxx>
 #include <TopoDSToStep_Tool.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <BRepClass3d.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <StepShape_ClosedShell.hxx>
 
 //=============================================================================
 // Create a FacetedBrep of StepShape from a Shell of TopoDS
 //=============================================================================
-
 TopoDSToStep_MakeFacetedBrep::
   TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& aShell,
 				    const Handle(Transfer_FinderProcess)& FP)

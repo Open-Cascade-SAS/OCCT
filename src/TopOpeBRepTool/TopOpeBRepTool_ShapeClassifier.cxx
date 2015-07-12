@@ -14,32 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_ShapeClassifier.ixx>
-#include <BRepClass_FaceClassifier.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
+
 #include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Geom_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepClass3d_SolidExplorer.hxx>
+#include <BRepClass_Edge.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepClass_FacePassiveClassifier.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
-#include <BRepClass_FacePassiveClassifier.hxx>
-#include <BRepClass3d_SolidExplorer.hxx>
-#include <BRepClass_Edge.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepTool_CurveTool.hxx>
 #include <TopOpeBRepTool_define.hxx>
-#include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_ShapeClassifier.hxx>
+#include <TopOpeBRepTool_SolidClassifier.hxx>
 
 //=======================================================================
 //function : TopOpeBRepTool_ShapeClassifier
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepTool_ShapeClassifier::TopOpeBRepTool_ShapeClassifier() :
 myP3Ddef(Standard_False),myP2Ddef(Standard_False)
 {

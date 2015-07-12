@@ -13,15 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd.ixx>
-#include <TDataXtd.ixx>
+
+#include <TDataXtd.hxx>
 #include <TDataXtd_Axis.hxx>
 #include <TDataXtd_Constraint.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <TDataXtd_PatternStd.hxx>
 #include <TDataXtd_Placement.hxx>
-#include <TDataXtd_Point.hxx>
 #include <TDataXtd_Plane.hxx>
+#include <TDataXtd_Point.hxx>
 #include <TDataXtd_Position.hxx>
 #include <TDataXtd_Shape.hxx>
 #include <TDF_IDList.hxx>
@@ -30,7 +30,6 @@
 //function : IDList
 //purpose  : 
 //=======================================================================
-
 void TDataXtd::IDList(TDF_IDList& anIDList)
 {  
   anIDList.Append(TDataXtd_Axis::GetID());

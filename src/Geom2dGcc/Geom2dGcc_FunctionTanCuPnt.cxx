@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_FunctionTanCuPnt.ixx>
 
-#include <gp_Vec2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_FunctionTanCuPnt.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-
-#include <Geom2dGcc_CurveTool.hxx>
+#include <gp_Vec2d.hxx>
 
 //=========================================================================
 //  soit P1 le point sur la courbe Geom2dAdaptor_Curve d abscisse u.      +
@@ -38,7 +38,6 @@
 //     f(u) = --------  -  --------------------------------               +
 //               N.N            N*N*N*CP1*CP1*CP1                         +
 //=========================================================================
-
 Geom2dGcc_FunctionTanCuPnt::
 Geom2dGcc_FunctionTanCuPnt(const Geom2dAdaptor_Curve& C      ,
                            const gp_Pnt2d& Point  ) {

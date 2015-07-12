@@ -11,18 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_TransientProcess.ixx>
-#include <Interface_Check.hxx>
-#include <Interface_MSG.hxx>
-#include <Transfer_Binder.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
 
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_MSG.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 //=======================================================================
 //function : Transfer_TransientProcess
 //purpose  : 
 //=======================================================================
-
 Transfer_TransientProcess::Transfer_TransientProcess
   (const Standard_Integer nb) : Transfer_ProcessForTransient (nb)  
 {  

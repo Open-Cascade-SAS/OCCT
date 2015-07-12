@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeTrimmedCone.ixx>
+
+#include <Extrema_ExtPElC.hxx>
 #include <GC_MakeConicalSurface.hxx>
-#include <StdFail_NotDone.hxx>
+#include <GC_MakeTrimmedCone.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <Extrema_ExtPElC.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a cone by four points.                                +
@@ -29,7 +31,6 @@
 //   The third gives the base radius.                              +
 //   the third and the fourth demi-angle.                          +
 //=========================================================================
-
 GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1 ,
 					 const gp_Pnt& P2 ,
 					 const gp_Pnt& P3 ,

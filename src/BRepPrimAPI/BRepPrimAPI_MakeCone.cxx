@@ -14,16 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeCone.ixx>
+
 #include <BRepBuilderAPI.hxx>
-
-
-
+#include <BRepPrim_Cone.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
 #include <gp.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Ax2.hxx>
-
-
+#include <gp_Dir.hxx>
+#include <Standard_DomainError.hxx>
 
 static gp_Ax2 ConeComputeAxes() { 
   static Standard_Integer firsttime=1;

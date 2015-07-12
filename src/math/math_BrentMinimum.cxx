@@ -12,8 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_BrentMinimum.ixx>
+
+#include <math_BrentMinimum.hxx>
 #include <math_Function.hxx>
+#include <StdFail_NotDone.hxx>
 
 #define CGOLD         0.3819660
 #ifdef MAX

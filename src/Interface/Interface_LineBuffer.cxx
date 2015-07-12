@@ -11,16 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_LineBuffer.ixx>
+
+#include <Interface_LineBuffer.hxx>
 #include <Standard_OutOfRange.hxx>
-
-
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //  LineBuffer, c est une String avec une Longueur reservee fixe au depart
 //  et une longueur effective <thelen>. theline(thelen+1) vaut '\0'
-
-
-
 Interface_LineBuffer::Interface_LineBuffer (const Standard_Integer size)
     : theline (size+1,' ')
 {

@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_FeaShellMembraneBendingCouplingStiffness.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness ()
 {
 }

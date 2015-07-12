@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_COutMessageDriver.ixx>
+
+#include <CDM_COutMessageDriver.hxx>
 #include <Standard_PCharacter.hxx>
+#include <Standard_Type.hxx>
+
 //=======================================================================
 //function : Write
 //purpose  : 
 //=======================================================================
-
 void CDM_COutMessageDriver::Write (const Standard_ExtString aString)
 {
   //    Find the length of the input string

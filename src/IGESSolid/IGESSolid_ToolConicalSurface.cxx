@@ -16,12 +16,23 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ToolConicalSurface.ixx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamCursor.hxx>
-#include <IGESGeom_Point.hxx>
+#include <IGESData_ParamReader.hxx>
 #include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <IGESSolid_ToolConicalSurface.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESSolid_ToolConicalSurface::IGESSolid_ToolConicalSurface ()    {  }
 

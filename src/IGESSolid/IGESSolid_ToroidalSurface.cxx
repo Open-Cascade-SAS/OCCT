@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ToroidalSurface.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface ()    {  }
 

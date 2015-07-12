@@ -14,15 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_Exponentiate.ixx>
-#include <Expr_NumericValue.hxx>
-#include <Expr_SequenceOfGeneralExpression.hxx>
-#include <Expr_Difference.hxx>
-#include <Expr_Product.hxx>
-#include <Expr_LogOfe.hxx>
-#include <Expr_Sum.hxx>
-#include <Expr_Operators.hxx>
+
 #include <Expr.hxx>
+#include <Expr_Difference.hxx>
+#include <Expr_Exponentiate.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_LogOfe.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NotEvaluable.hxx>
+#include <Expr_NumericValue.hxx>
+#include <Expr_Operators.hxx>
+#include <Expr_Product.hxx>
+#include <Expr_SequenceOfGeneralExpression.hxx>
+#include <Expr_Sum.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_Exponentiate::Expr_Exponentiate (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {

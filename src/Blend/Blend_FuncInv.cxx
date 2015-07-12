@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Blend_FuncInv.ixx>
+
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Blend_FuncInv.hxx>
+#include <math_Matrix.hxx>
 
 Standard_Integer Blend_FuncInv::NbVariables () const
 {

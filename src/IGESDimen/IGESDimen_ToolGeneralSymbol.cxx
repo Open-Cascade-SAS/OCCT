@@ -16,16 +16,27 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_ToolGeneralSymbol.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESDimen_LeaderArrow.hxx>
-#include <IGESDimen_GeneralNote.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_GeneralSymbol.hxx>
+#include <IGESDimen_HArray1OfLeaderArrow.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <IGESDimen_ToolGeneralSymbol.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESDimen_ToolGeneralSymbol::IGESDimen_ToolGeneralSymbol ()    {  }
 

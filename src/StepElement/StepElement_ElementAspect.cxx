@@ -15,7 +15,9 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_ElementAspect.ixx>
+#include <Standard_Transient.hxx>
+#include <StepData_SelectMember.hxx>
+#include <StepElement_ElementAspect.hxx>
 #include <StepElement_ElementAspectMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -23,7 +25,6 @@
 //function : StepElement_ElementAspect
 //purpose  : 
 //=======================================================================
-
 StepElement_ElementAspect::StepElement_ElementAspect ()
 {
 }

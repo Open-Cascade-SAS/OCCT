@@ -19,33 +19,29 @@
 //:o5 abv 17.02.99: bm4_sd_seal_c.stp #58720: translate surface_curve (3d only)
 //:p0 abv 19.02.99: management of 'done' flag improved
 
-#include <StepToGeom_MakeCurve.ixx>
-
-#include <Geom_OffsetCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Direction.hxx>
-
-#include <StepGeom_Curve.hxx>
-#include <StepGeom_TrimmedCurve.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_Conic.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepGeom_Conic.hxx>
+#include <StepGeom_Curve.hxx>
 #include <StepGeom_CurveReplica.hxx>
+#include <StepGeom_Line.hxx>
 #include <StepGeom_OffsetCurve3d.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
-
-#include <StepToGeom_MakeDirection.hxx>
-#include <StepToGeom_MakeTrimmedCurve.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-#include <StepToGeom_MakeLine.hxx>
-#include <StepToGeom_MakeConic.hxx>
+#include <StepGeom_TrimmedCurve.hxx>
 #include <StepToGeom_MakeBoundedCurve.hxx>
+#include <StepToGeom_MakeConic.hxx>
+#include <StepToGeom_MakeCurve.hxx>
+#include <StepToGeom_MakeDirection.hxx>
+#include <StepToGeom_MakeLine.hxx>
 #include <StepToGeom_MakeTransformation3d.hxx>
+#include <StepToGeom_MakeTrimmedCurve.hxx>
 
 //=============================================================================
 // Creation d' une Curve de Geom a partir d' une Curve de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeCurve::Convert (const Handle(StepGeom_Curve)& SC, Handle(Geom_Curve)& CC)
 {
   if (SC.IsNull()){

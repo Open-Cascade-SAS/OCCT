@@ -14,39 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_OffsetPresentation.ixx>
 
-#include <gp_Lin.hxx>
-#include <gp_Dir.hxx>
-
-#include <ElCLib.hxx>
-
-#include <gce_MakeLin.hxx>
-
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-
-#include <TCollection_AsciiString.hxx>
-
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_Vertex.hxx>
-
+#include <Aspect_AspectMarker.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
-#include <Aspect_AspectMarker.hxx>
-
-#include <Quantity_Color.hxx>
-
-#include <Prs3d_Text.hxx>
+#include <DsgPrs_OffsetPresentation.hxx>
+#include <ElCLib.hxx>
+#include <gce_MakeLin.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
 #include <Precision.hxx>
-
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
+#include <Quantity_Color.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
 				     const Handle(Prs3d_Drawer)& aDrawer,

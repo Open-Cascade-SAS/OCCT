@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntRes2d_IntersectionPoint.ixx>
+
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_Transition.hxx>
 
 IntRes2d_IntersectionPoint::IntRes2d_IntersectionPoint ():
       pt(),p1(RealLast()),p2(RealLast()),trans1(),trans2()

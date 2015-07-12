@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_AreaInSet.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_AreaInSet.hxx>
+#include <StepVisual_PresentationArea.hxx>
+#include <StepVisual_PresentationSet.hxx>
 
 StepVisual_AreaInSet::StepVisual_AreaInSet ()  {}
 

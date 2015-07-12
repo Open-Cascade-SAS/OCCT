@@ -11,23 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_DeflectionCurve.ixx>
-#include <gp_Pnt.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Bnd_Box.hxx>
+#include <BndLib_Add3dCurve.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Bnd_Box.hxx>
 #include <Precision.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Vrml_Material.hxx>
-#include <VrmlConverter_LineAspect.hxx>
-#include <Vrml_Separator.hxx>
 #include <Vrml_Coordinate3.hxx>
 #include <Vrml_IndexedLineSet.hxx>
-#include <Precision.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <BndLib_Add3dCurve.hxx>
+#include <Vrml_Material.hxx>
+#include <Vrml_Separator.hxx>
+#include <VrmlConverter_DeflectionCurve.hxx>
+#include <VrmlConverter_Drawer.hxx>
+#include <VrmlConverter_LineAspect.hxx>
 
 //==================================================================
 // function: FindLimits

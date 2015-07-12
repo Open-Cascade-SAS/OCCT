@@ -14,42 +14,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiKPart_ComputeData.jxx>
-#include <Precision.hxx>
+
+#include <Adaptor3d_HSurface.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <ChFiKPart_ComputeData.hxx>
+#include <ChFiKPart_ComputeData_Fcts.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <gp.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Cylinder.hxx>
-
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
-
-#include <ChFiKPart_ComputeData_Fcts.hxx>
-
+#include <Precision.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
 
 //=======================================================================
 //function : MakeFillet
 //purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
-
 Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 				      const Handle(ChFiDS_SurfData)& Data, 
 				      const gp_Pln& Pln, 

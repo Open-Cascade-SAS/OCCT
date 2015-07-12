@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepBasic_ContractAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Contract.hxx>
+#include <StepBasic_ContractAssignment.hxx>
 
 //=======================================================================
 //function : StepBasic_ContractAssignment
 //purpose  : 
 //=======================================================================
-
 StepBasic_ContractAssignment::StepBasic_ContractAssignment ()
 {
 }

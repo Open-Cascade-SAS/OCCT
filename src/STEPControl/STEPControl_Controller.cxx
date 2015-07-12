@@ -13,50 +13,49 @@
 
 //:j4 gka 16.03.99 S4134
 //    gka 05.04.99 S4136: parameters definitions changed
-#include <STEPControl_Controller.ixx>
-#include <StepSelect_WorkLibrary.hxx>
+
+#include <APIHeaderSection_EditHeader.hxx>
+#include <APIHeaderSection_MakeHeader.hxx>
+#include <HeaderSection.hxx>
+#include <IFSelect_EditForm.hxx>
+#include <IFSelect_SelectModelRoots.hxx>
+#include <IFSelect_SelectSignature.hxx>
+#include <IFSelect_SignAncestor.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <MoniTool_Option.hxx>
 #include <MoniTool_Profile.hxx>
-
-//#include <StepAP214.hxx>
-#include <RWStepAP214.hxx>
-
-#include <Standard_Version.hxx>
-#include <StepData_StepModel.hxx>
-#include <APIHeaderSection_MakeHeader.hxx>
-#include <StepData_FileProtocol.hxx>
-#include <HeaderSection.hxx>
 #include <RWHeaderSection.hxx>
-#include <IFSelect_SignCounter.hxx>
-#include <IFSelect_SelectSignature.hxx>
-#include <StepSelect_StepType.hxx>
-
-//  Pour NewModel et Write : definition de produit (temporaire ...)
+#include <RWStepAP214.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_Version.hxx>
 #include <STEPControl_ActorRead.hxx>
 #include <STEPControl_ActorWrite.hxx>
-
+#include <STEPControl_Controller.hxx>
+#include <StepData_FileProtocol.hxx>
+#include <StepData_StepModel.hxx>
 #include <STEPEdit.hxx>
 #include <STEPEdit_EditContext.hxx>
 #include <STEPEdit_EditSDR.hxx>
-
-#include <APIHeaderSection_EditHeader.hxx>
-#include <IFSelect_EditForm.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-
-#include <Interface_Static.hxx>
-#include <Interface_Macros.hxx>
-#include <IFSelect_SignAncestor.hxx>
-#include <STEPSelections_SelectFaces.hxx>
+#include <StepSelect_StepType.hxx>
+#include <StepSelect_WorkLibrary.hxx>
+#include <STEPSelections_SelectAssembly.hxx>
 #include <STEPSelections_SelectDerived.hxx>
+#include <STEPSelections_SelectFaces.hxx>
+#include <STEPSelections_SelectForTransfer.hxx>
 #include <STEPSelections_SelectGSCurves.hxx>
 #include <STEPSelections_SelectInstances.hxx>
-#include <STEPSelections_SelectAssembly.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
-#include <STEPSelections_SelectForTransfer.hxx>
-#include <IFSelect_SelectModelRoots.hxx>
+#include <XSControl_WorkSession.hxx>
 
-
+//#include <StepAP214.hxx>
+//  Pour NewModel et Write : definition de produit (temporaire ...)
 STEPControl_Controller::STEPControl_Controller ()
      : XSControl_Controller ("STEP", "step")
 {

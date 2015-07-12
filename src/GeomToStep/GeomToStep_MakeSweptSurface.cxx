@@ -14,23 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeSweptSurface.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_SweptSurface.hxx>
-#include <StepGeom_SurfaceOfLinearExtrusion.hxx>
-#include <StepGeom_SurfaceOfRevolution.hxx>
-#include <GeomToStep_MakeSweptSurface.hxx>
+
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_SweptSurface.hxx>
 #include <GeomToStep_MakeSurfaceOfLinearExtrusion.hxx>
 #include <GeomToStep_MakeSurfaceOfRevolution.hxx>
+#include <GeomToStep_MakeSweptSurface.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_SurfaceOfLinearExtrusion.hxx>
+#include <StepGeom_SurfaceOfRevolution.hxx>
+#include <StepGeom_SweptSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Creation d' une SweptSurface de prostep a partir d' une 
 // SweptSurface de Geom
 //=============================================================================
-
 GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface
   ( const Handle(Geom_SweptSurface)& S)
 {

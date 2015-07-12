@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepFEA_SymmetricTensor43dMember.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepFEA_SymmetricTensor43dMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 static Standard_CString AST = "ANISOTROPIC_SYMMETRIC_TENSOR4_3D";

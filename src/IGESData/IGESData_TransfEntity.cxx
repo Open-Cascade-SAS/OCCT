@@ -11,6 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_TransfEntity.ixx>
+
+#include <gp_GTrsf.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <Standard_Type.hxx>
+
 // TransfEntity ne sert que pour controle de Type, et fourniture par Value
 // de la GTrsf correspondante

@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Poly_Triangle.ixx>
+
+#include <Poly_Triangle.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Poly_Triangle
 //purpose  : 
 //=======================================================================
-
 Poly_Triangle::Poly_Triangle()
 {
   myNodes[0] =  myNodes[1] = myNodes[2] = 0;

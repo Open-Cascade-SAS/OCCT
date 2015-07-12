@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_CurveStyleFontPattern.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_CurveStyleFontPattern.hxx>
 
 StepVisual_CurveStyleFontPattern::StepVisual_CurveStyleFontPattern ()  {}
 

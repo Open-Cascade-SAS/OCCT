@@ -14,15 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Interference.hxx>
 
-#include <TopOpeBRepDS_SurfaceIterator.ixx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_SurfaceIterator.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_SurfaceIterator
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_SurfaceIterator::TopOpeBRepDS_SurfaceIterator
   (const TopOpeBRepDS_ListOfInterference& L) :
   TopOpeBRepDS_InterferenceIterator(L)

@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FreedomAndCoefficient.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_MeasureOrUnspecifiedValue.hxx>
+#include <StepFEA_DegreeOfFreedom.hxx>
+#include <StepFEA_FreedomAndCoefficient.hxx>
 
 //=======================================================================
 //function : StepFEA_FreedomAndCoefficient
 //purpose  : 
 //=======================================================================
-
 StepFEA_FreedomAndCoefficient::StepFEA_FreedomAndCoefficient ()
 {
 }

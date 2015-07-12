@@ -16,18 +16,19 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <StdFail_NotDone.hxx>
-#include <Standard_RangeError.hxx>  
 #include <math_DirectPolynomialRoots.hxx>
-#include <math_FunctionRoots.ixx>
+#include <math_FunctionRoots.hxx>
 #include <math_FunctionWithDerivative.hxx>
+#include <Standard_RangeError.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
-//#ifdef WNT
-#include <stdio.h>
-//#endif
 
+#include <stdio.h>
+//#ifdef WNT
+//#endif
 #define ITMAX  100
 #define EPS    1e-14
 #define EPSEPS 2e-14

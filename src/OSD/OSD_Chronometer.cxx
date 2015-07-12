@@ -14,11 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OSD_Chronometer.ixx>
+
+#include <OSD_Chronometer.hxx>
 #include <Standard_Stream.hxx>
 
 // ====================== PLATFORM-SPECIFIC PART ========================
-
 #ifndef WNT
 
 //---------- Systemes autres que WNT : ----------------------------------

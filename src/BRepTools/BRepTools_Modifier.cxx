@@ -16,20 +16,23 @@
 
 // IFV 04.06.99 - PRO18974 - processing of INTERNAL shapes.
 
-#include <BRepTools_Modifier.ixx>
-
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <BRepTools_Modification.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColStd_ListIteratorOfListOfTransient.hxx>
+#include <TColStd_ListOfTransient.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopExp_Explorer.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TColStd_ListOfTransient.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 #if 0
 #include <Poly_Triangulation.hxx>

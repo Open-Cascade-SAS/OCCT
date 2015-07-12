@@ -15,13 +15,14 @@
 
 //AGV 150202: Add parameter isClearText to SetStringValue()
 
-#include <XmlObjMgt.ixx>
-#include <XmlObjMgt_Document.hxx>
 #include <LDOM_Text.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Document.hxx>
 
 #include <errno.h>
 #include <stdio.h>
-
 static const char aRefPrefix [] = "/document/label";
 static const char aRefElem1  [] = "/label[@tag=";
 static const char aRefElem2  [] = "]";

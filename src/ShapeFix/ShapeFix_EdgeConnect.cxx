@@ -14,32 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_EdgeConnect.ixx>
 
+#include <BRep_Builder.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <ShapeFix_EdgeConnect.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <Precision.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Pnt.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //#define POSITION_USES_MEAN_POINT
-
 //=======================================================================
 //function : ShapeFix_EdgeConnect
 //=======================================================================
-
 ShapeFix_EdgeConnect::ShapeFix_EdgeConnect () {}
 
 //=======================================================================

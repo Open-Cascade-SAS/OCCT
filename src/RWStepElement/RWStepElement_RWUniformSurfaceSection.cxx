@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWUniformSurfaceSection.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWUniformSurfaceSection.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_UniformSurfaceSection.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWUniformSurfaceSection
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWUniformSurfaceSection::RWStepElement_RWUniformSurfaceSection ()
 {
 }

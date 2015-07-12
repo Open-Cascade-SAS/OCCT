@@ -13,30 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Fillet.ixx>
-#include <Standard_NullObject.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TDF_Label.hxx>
-#include <TNaming_Builder.hxx>
-#include <QANewBRepNaming_Loader.hxx>
 
-#include <BRepAdaptor_Surface.hxx>
 #include <Adaptor3d_HCurve.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <GProp_GProps.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <GProp_GProps.hxx>
+#include <QANewBRepNaming_Fillet.hxx>
+#include <QANewBRepNaming_Loader.hxx>
+#include <Standard_NullObject.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : QANewBRepNaming_Fillet
 //purpose  :
 //=======================================================================
-
 QANewBRepNaming_Fillet::QANewBRepNaming_Fillet()
 {}
 

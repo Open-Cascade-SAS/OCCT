@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion ()
 {
 }

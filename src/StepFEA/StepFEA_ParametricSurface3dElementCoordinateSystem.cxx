@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_ParametricSurface3dElementCoordinateSystem.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_ParametricSurface3dElementCoordinateSystem.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_ParametricSurface3dElementCoordinateSystem
 //purpose  : 
 //=======================================================================
-
 StepFEA_ParametricSurface3dElementCoordinateSystem::StepFEA_ParametricSurface3dElementCoordinateSystem ()
 {
 }

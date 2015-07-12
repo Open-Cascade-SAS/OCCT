@@ -11,18 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWCompositeCurveSegment.ixx>
-#include <StepGeom_TransitionCode.hxx>
-#include <StepGeom_Curve.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWCompositeCurveSegment.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
-
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_TransitionCode.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : TransitionCode ---
 static TCollection_AsciiString tcDiscontinuous(".DISCONTINUOUS.");

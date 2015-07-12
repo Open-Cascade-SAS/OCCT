@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRAlgo.ixx>
+
+#include <HLRAlgo.hxx>
 
 static const Standard_Real cosu0 = cos(0.*M_PI/14.);
 static const Standard_Real sinu0 = sin(0.*M_PI/14.);

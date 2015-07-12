@@ -11,10 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectRange.ixx>
+
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_SelectRange.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <stdio.h>
-
-
 IFSelect_SelectRange::IFSelect_SelectRange ()    {  }
 
     void  IFSelect_SelectRange::SetRange

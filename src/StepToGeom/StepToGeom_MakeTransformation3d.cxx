@@ -16,20 +16,21 @@
 
 // sln 23.10.2001. CTS23496: If problems with creation of direction occur default direction is used (StepToGeom_MakeTransformation3d(...) function)
 
-#include <StepToGeom_MakeTransformation3d.ixx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <StepToGeom_MakeDirection.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Direction.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Direction.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom_MakeDirection.hxx>
+#include <StepToGeom_MakeTransformation3d.hxx>
 
 //=======================================================================
 //function : StepToGeom_MakeTransformation3d
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean StepToGeom_MakeTransformation3d::Convert (const Handle(StepGeom_CartesianTransformationOperator3d)& SCTO, gp_Trsf& CT)
 {
   Handle(Geom_CartesianPoint) CP;

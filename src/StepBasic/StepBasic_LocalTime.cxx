@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_LocalTime.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_CoordinatedUniversalTimeOffset.hxx>
+#include <StepBasic_LocalTime.hxx>
 
 StepBasic_LocalTime::StepBasic_LocalTime ()  {}
 

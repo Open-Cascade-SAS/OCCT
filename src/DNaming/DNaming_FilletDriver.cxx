@@ -13,32 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_FilletDriver.ixx>
+
+#include <BRepAlgo.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <DNaming.hxx>
+#include <DNaming_FilletDriver.hxx>
+#include <ModelDefinitions.hxx>
 #include <Precision.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_Label.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <BRepAlgo.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TNaming.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TFunction_Function.hxx>
-#include <DNaming.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <ModelDefinitions.hxx>
-
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : FilletDriver

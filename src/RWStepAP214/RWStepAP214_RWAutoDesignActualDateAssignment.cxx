@@ -11,18 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAutoDesignActualDateAssignment.ixx>
-#include <StepAP214_HArray1OfAutoDesignDatedItem.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAutoDesignActualDateAssignment.hxx>
+#include <StepAP214_AutoDesignActualDateAssignment.hxx>
 #include <StepAP214_AutoDesignDatedItem.hxx>
+#include <StepAP214_HArray1OfAutoDesignDatedItem.hxx>
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateRole.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepAP214_AutoDesignActualDateAssignment.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignActualDateAssignment::RWStepAP214_RWAutoDesignActualDateAssignment () {}
 

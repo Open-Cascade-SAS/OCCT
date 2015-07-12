@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect_FaceFilter.ixx>
+
 #include <BRepAdaptor_Surface.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_FaceFilter.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS.hxx>
-#include <TopAbs.hxx>
-#include <StdSelect_BRepOwner.hxx>
+
 /*#include <.hxx>
 #include <.hxx>
 #include <.hxx>
@@ -28,7 +32,6 @@
 #include <.hxx>
 #include <.hxx>
 */
-
 StdSelect_FaceFilter::
 StdSelect_FaceFilter(const StdSelect_TypeOfFace aTypeOfFace):
 mytype(aTypeOfFace){}

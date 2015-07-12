@@ -16,23 +16,24 @@
 
 //  Modified by skv - Thu Sep  4 11:22:05 2003 OCC578
 
-#include <BRepClass3d_SClassifier.ixx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Vec.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepClass3d_Intersector3d.hxx>
-#include <TopoDS.hxx>
-
-#include <IntCurvesFace_Intersector.hxx>
-// modified by NIZHNY-MKK  Mon Jun 21 15:13:40 2004
-#include <Precision.hxx>
+#include <BRepClass3d_SClassifier.hxx>
+#include <BRepClass3d_SolidExplorer.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Surface.hxx>
-#include <BRep_Tool.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <IntCurvesFace_Intersector.hxx>
 #include <math_BullardGenerator.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 
+// modified by NIZHNY-MKK  Mon Jun 21 15:13:40 2004
 static
   Standard_Boolean FaceNormal (const TopoDS_Face& aF,
                                const Standard_Real U,

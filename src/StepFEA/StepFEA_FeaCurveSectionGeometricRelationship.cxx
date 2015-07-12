@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaCurveSectionGeometricRelationship.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_AnalysisItemWithinRepresentation.hxx>
+#include <StepElement_CurveElementSectionDefinition.hxx>
+#include <StepFEA_FeaCurveSectionGeometricRelationship.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaCurveSectionGeometricRelationship
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaCurveSectionGeometricRelationship::StepFEA_FeaCurveSectionGeometricRelationship ()
 {
 }

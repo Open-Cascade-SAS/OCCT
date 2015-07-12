@@ -13,9 +13,13 @@
 
 // Modified	23/02/98 : FMN ; Remplacement PI par Standard_PI
 
-#include <Aspect_CircularGrid.ixx>
+#include <Aspect_CircularGrid.hxx>
 #include <Aspect_Grid.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_NullValue.hxx>
 #include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
+
 Aspect_CircularGrid::Aspect_CircularGrid
      (const Quantity_Length aRadiusStep,
       const Standard_Integer aDivisionNumber,

@@ -14,11 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect_BRepOwner.ixx>
 
 #include <Graphic3d_StructureManager.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+#include <Standard_Type.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_Shape.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
 
 //==================================================
 // Function: 

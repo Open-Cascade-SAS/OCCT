@@ -14,7 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPSelections_AssemblyLink.ixx>
+
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <STEPSelections_AssemblyComponent.hxx>
+#include <STEPSelections_AssemblyLink.hxx>
 
 STEPSelections_AssemblyLink::STEPSelections_AssemblyLink()
 {

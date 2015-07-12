@@ -14,48 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_DraftAngle.ixx>
 
-#include <Draft_Modification.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Surface.hxx>
-#include <TopLoc_Location.hxx>
-
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <BRepLib.hxx>
-#include <BRepFill_DataMapOfShapeSequenceOfReal.hxx>
-#include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepTools.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TopOpeBRep_EdgesIntersector.hxx>
-#include <TopOpeBRep_Point2d.hxx>
-#include <Precision.hxx>
-#include <BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal.hxx>
-#include <BRepOffsetAPI_SequenceOfSequenceOfReal.hxx>
-#include <BRepOffsetAPI_SequenceOfSequenceOfShape.hxx>
-#include <BRepTools_Substitution.hxx>
 #include <BRep_Builder.hxx>
-#include <TopExp.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepLib_MakeVertex.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-#include <TopoDS_Wire.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
+#include <BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal.hxx>
+#include <BRepFill_DataMapOfShapeSequenceOfReal.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepOffsetAPI_DraftAngle.hxx>
+#include <BRepOffsetAPI_SequenceOfSequenceOfReal.hxx>
+#include <BRepOffsetAPI_SequenceOfSequenceOfShape.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_Substitution.hxx>
+#include <Draft_Modification.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRep_EdgesIntersector.hxx>
+#include <TopOpeBRep_Point2d.hxx>
+#include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 //=======================================================================
 //function : BRepOffsetAPI_DraftAngle
 //purpose  : 
 //=======================================================================
-
 BRepOffsetAPI_DraftAngle::BRepOffsetAPI_DraftAngle () {}
 
 

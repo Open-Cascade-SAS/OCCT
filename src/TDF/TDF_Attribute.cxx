@@ -14,27 +14,32 @@
 // commercial license or contractual agreement.
 
 //      	------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Feb  7 1997	Creation
 
-
-
-#include <TDF_Attribute.ixx>
-
+#include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_ImmutableObject.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
+#include <TDF_AttributeIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_DataSet.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_DefaultDeltaOnRemoval.hxx>
+#include <TDF_DeltaOnAddition.hxx>
 #include <TDF_DeltaOnForget.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_DeltaOnResume.hxx>
-#include <TDF_DataSet.hxx>
+#include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
+#include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
-
-#include <Standard_DomainError.hxx>
-#include <Standard_ImmutableObject.hxx>
 
 #undef TDF_DATA_COMMIT_OPTIMIZED
 

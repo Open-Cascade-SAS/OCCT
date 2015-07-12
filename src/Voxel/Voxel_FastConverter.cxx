@@ -13,28 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_FastConverter.ixx>
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <gp_Lin2d.hxx>
-#include <gce_MakePln.hxx>
-
-#include <ElSLib.hxx>
-#include <Poly_Triangulation.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <ElSLib.hxx>
+#include <gce_MakePln.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <Poly_Triangulation.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Voxel_BoolDS.hxx>
+#include <Voxel_ColorDS.hxx>
+#include <Voxel_FastConverter.hxx>
+#include <Voxel_ROctBoolDS.hxx>
 
 // Printing the progress in stdout.
 //#define CONV_DUMP
-
 Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 					 Voxel_ROctBoolDS&      voxels, 
 					 const Standard_Real    deflection,

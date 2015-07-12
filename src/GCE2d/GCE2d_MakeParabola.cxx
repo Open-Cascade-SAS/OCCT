@@ -14,8 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeParabola.ixx>
+
+#include <GCE2d_MakeParabola.hxx>
 #include <gce_MakeParab2d.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
 GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Parab2d& Prb)

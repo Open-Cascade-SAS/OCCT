@@ -17,31 +17,29 @@
 //:n6 abv 15.02.99: S4132: adding translation of polyline
 //:p0 abv 19.02.99: management of 'done' flag improved; trimmed_curve treated
 
-#include <StepToGeom_MakeBoundedCurve.ixx>
-
-#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
-#include <StepGeom_BSplineCurveWithKnots.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <StepGeom_BezierCurve.hxx>
-#include <StepGeom_UniformCurve.hxx>
-#include <StepGeom_UniformCurveAndRationalBSplineCurve.hxx>
+#include <StepGeom_BoundedCurve.hxx>
+#include <StepGeom_BSplineCurveWithKnots.hxx>
+#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <StepGeom_KnotType.hxx>
+#include <StepGeom_Polyline.hxx>
 #include <StepGeom_QuasiUniformCurve.hxx>
 #include <StepGeom_QuasiUniformCurveAndRationalBSplineCurve.hxx>
-#include <StepGeom_Polyline.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
-#include <StepGeom_KnotType.hxx>
+#include <StepGeom_UniformCurve.hxx>
+#include <StepGeom_UniformCurveAndRationalBSplineCurve.hxx>
+#include <StepToGeom_MakeBoundedCurve.hxx>
 #include <StepToGeom_MakeBSplineCurve.hxx>
-#include <StepGeom_Polyline.hxx>
 #include <StepToGeom_MakePolyline.hxx>
 #include <StepToGeom_MakeTrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 //=============================================================================
 // Creation d' une BoundedCurve de Geom a partir d' une BoundedCurve de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
     (const Handle(StepGeom_BoundedCurve)& SC,
      Handle(Geom_BoundedCurve)& CC)

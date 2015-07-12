@@ -14,16 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntCurvesFace_ShapeIntersector.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <IntCurvesFace_Intersector.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 #include <ElCLib.hxx>
-#include <TColStd_ListOfInteger.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <IntCurvesFace_Intersector.hxx>
+#include <IntCurvesFace_ShapeIntersector.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 //-- ================================================================================
 IntCurvesFace_ShapeIntersector::IntCurvesFace_ShapeIntersector() {

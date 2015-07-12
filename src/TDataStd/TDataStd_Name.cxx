@@ -14,19 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_Name.ixx>
 
-#include <TDF_Label.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_Tool.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataStd_Name::GetID () 
 {
   static Standard_GUID TDataStd_NameID("2a96b608-ec8b-11d0-bee7-080009dc3333");

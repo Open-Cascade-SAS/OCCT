@@ -11,16 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_TransferInput.ixx>
-#include <Transfer_Binder.hxx>
-#include <Transfer_IteratorOfProcessForTransient.hxx>
-#include <Transfer_IteratorOfProcessForFinder.hxx>
-#include <Transfer_VoidBinder.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
-#include <Transfer_MultipleBinder.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <Interface_Macros.hxx>
 
+#include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_IteratorOfProcessForFinder.hxx>
+#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_MultipleBinder.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransferFailure.hxx>
+#include <Transfer_TransferInput.hxx>
+#include <Transfer_TransferIterator.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <Transfer_VoidBinder.hxx>
 
 Transfer_TransferInput::Transfer_TransferInput ()    {  }
 

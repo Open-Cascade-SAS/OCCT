@@ -14,58 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-
-#include <AIS_IdenticRelation.ixx>
 
 #include <AIS.hxx>
+#include <AIS_IdenticRelation.hxx>
 #include <AIS_Shape.hxx>
-
 #include <BRep_Tool.hxx>
-
 #include <DsgPrs_IdenticPresentation.hxx>
-
 #include <ElCLib.hxx>
-
 #include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
 #include <Geom_TrimmedCurve.hxx>
-
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
-
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
-
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
-
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
-
 #include <TCollection_ExtendedString.hxx>
-
+#include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
-
 // jfa 15/10/2000
-#include <Geom_Ellipse.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
 static Standard_Real Modulo2PI(const Standard_Real ANGLE)
 {
   if ( ANGLE < 0 )          return Modulo2PI(ANGLE + 2*M_PI);

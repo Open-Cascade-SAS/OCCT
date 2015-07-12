@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakePlane.ixx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_Plane.hxx>
 #include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Plane.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakePlane.hxx>
 
 //=============================================================================
 // Creation d' un Plane de Geom a partir d' un plane de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakePlane::Convert (const Handle(StepGeom_Plane)& SP, Handle(Geom_Plane)& CP)
 {
   Handle(Geom_Axis2Placement) A;

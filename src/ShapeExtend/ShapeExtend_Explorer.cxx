@@ -12,20 +12,22 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <ShapeExtend_Explorer.ixx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shell.hxx>
+
+#include <BRep_Builder.hxx>
+#include <ShapeExtend_Explorer.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <BRep_Builder.hxx>
 
 //=======================================================================
 //function : ShapeExtend_Explorer
 //purpose  : 
 //=======================================================================
-
 ShapeExtend_Explorer::ShapeExtend_Explorer()
 {
 }

@@ -17,14 +17,20 @@
 
 #define No_Standard_OutOfRange
 
-#include <gp_Lin2d.ixx>
+
 #include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_ConstructionError.hxx>
 
 //=======================================================================
 //function : gp_Lin2d
 //purpose  : 
 //=======================================================================
-
 gp_Lin2d::gp_Lin2d (const Standard_Real A,
                     const Standard_Real B,
                     const Standard_Real C)

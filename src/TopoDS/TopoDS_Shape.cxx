@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDS_Shape.ixx>
+
+#include <Standard_DomainError.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_TShape.hxx>
 
 //=======================================================================
 //function : HashCode
 //purpose  : 
 //=======================================================================
-
 Standard_Integer TopoDS_Shape::HashCode(const Standard_Integer Upper) const
 {
   //PKV

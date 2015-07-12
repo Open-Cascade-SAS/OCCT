@@ -12,20 +12,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_Intersection.ixx>
 
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <IntPatch_ALine.hxx>
 #include <IntPatch_ALineToWLine.hxx>
 #include <IntPatch_GLine.hxx>
-#include <IntPatch_ALine.hxx>
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_RLine.hxx>
-#include <IntPatch_PrmPrmIntersection.hxx>
-#include <IntPatch_ImpPrmIntersection.hxx>
 #include <IntPatch_ImpImpIntersection.hxx>
+#include <IntPatch_ImpPrmIntersection.hxx>
+#include <IntPatch_Intersection.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntPatch_PrmPrmIntersection.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_WLine.hxx>
 #include <IntSurf_Quadric.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 #include <stdio.h>
-
 #define DEBUG 0 
 static const Standard_Integer aNbPointsInALine = 200;
 

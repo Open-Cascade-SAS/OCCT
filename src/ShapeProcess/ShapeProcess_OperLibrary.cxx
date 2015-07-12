@@ -13,57 +13,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeProcess_OperLibrary.ixx>
 
-#include <Precision.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
-
+#include <BRepTools_Modification.hxx>
+#include <BRepTools_Modifier.hxx>
 #include <Message_MsgFile.hxx>
 #include <Message_ProgressIndicator.hxx>
-
-#include <ShapeExtend_MsgRegistrator.hxx>
-#include <ShapeProcess.hxx>
-#include <ShapeProcess_UOperator.hxx>
-#include <ShapeProcess_ShapeContext.hxx>
-
-#include <BRepTools_Modifier.hxx>
-#include <BRepTools_Modification.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeCustom_BSplineRestriction.hxx>
+#include <ShapeCustom_ConvertToBSpline.hxx>
+#include <ShapeCustom_ConvertToRevolution.hxx>
 #include <ShapeCustom_DirectModification.hxx>
 #include <ShapeCustom_RestrictionParameters.hxx>
-#include <ShapeCustom_BSplineRestriction.hxx>
-#include <ShapeCustom_ConvertToRevolution.hxx>
 #include <ShapeCustom_SweptToElementary.hxx>
-#include <ShapeCustom_ConvertToBSpline.hxx>
-
 #include <ShapeExtend.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <ShapeUpgrade_ShapeDivideAngle.hxx>
-#include <ShapeUpgrade_ShapeConvertToBezier.hxx>
-#include <ShapeUpgrade_ShapeDivideContinuity.hxx>
-#include <ShapeUpgrade_ShapeDivideClosed.hxx>
-#include <ShapeUpgrade_ShapeDivideClosedEdges.hxx>
-
-#include <ShapeFix_ShapeTolerance.hxx>
-#include <ShapeFix_Shape.hxx>
+#include <ShapeExtend_MsgRegistrator.hxx>
+#include <ShapeFix.hxx>
 #include <ShapeFix_Face.hxx>
-#include <ShapeFix_Wire.hxx>
 #include <ShapeFix_FixSmallFace.hxx>
 #include <ShapeFix_FixSmallSolid.hxx>
-#include <ShapeFix_Wireframe.hxx>
-#include <ShapeFix.hxx>
+#include <ShapeFix_Shape.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeFix_SplitCommonVertex.hxx>
-
+#include <ShapeFix_Wire.hxx>
+#include <ShapeFix_Wireframe.hxx>
+#include <ShapeProcess.hxx>
+#include <ShapeProcess_OperLibrary.hxx>
+#include <ShapeProcess_ShapeContext.hxx>
+#include <ShapeProcess_UOperator.hxx>
+#include <ShapeUpgrade_ShapeConvertToBezier.hxx>
+#include <ShapeUpgrade_ShapeDivideAngle.hxx>
+#include <ShapeUpgrade_ShapeDivideClosed.hxx>
+#include <ShapeUpgrade_ShapeDivideClosedEdges.hxx>
+#include <ShapeUpgrade_ShapeDivideContinuity.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ApplyModifier
 //purpose  : Applies BRepTools_Modification to a shape,
 //           taking into account sharing of components of compounds
 //=======================================================================
-
 TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier (const TopoDS_Shape &S, 
                                                       const Handle(ShapeProcess_ShapeContext)& context,
                                                       const Handle(BRepTools_Modification) &M,

@@ -11,13 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_ResultFromModel.ixx>
-#include <TColStd_IndexedMapOfTransient.hxx>
-#include <Interface_Check.hxx>
-#include <Interface_Macros.hxx>
-#include <Transfer_Binder.hxx>
-#include <TCollection_HAsciiString.hxx>
 
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_IndexedMapOfTransient.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_ResultFromModel.hxx>
+#include <Transfer_ResultFromTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 Transfer_ResultFromModel::Transfer_ResultFromModel ()
       {  themnum = 0;  themchk = Interface_CheckAny;  }

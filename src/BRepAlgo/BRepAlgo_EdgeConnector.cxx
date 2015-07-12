@@ -14,23 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_EdgeConnector.ixx>
 
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS_Wire.hxx>
 #include <BRep_Builder.hxx>
-#include <TopOpeBRepBuild_ShapeSet.hxx>
-#include <TopOpeBRepBuild_BlockIterator.hxx>
-#include <TopOpeBRepBuild_BlockBuilder.hxx>
 #include <BRepAlgo_DataMapOfShapeBoolean.hxx>
+#include <BRepAlgo_EdgeConnector.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRepBuild_BlockBuilder.hxx>
+#include <TopOpeBRepBuild_BlockIterator.hxx>
+#include <TopOpeBRepBuild_ShapeSet.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : Create
 //purpose  : 
 //=======================================================================
-
 BRepAlgo_EdgeConnector::BRepAlgo_EdgeConnector()
 :myIsDone(Standard_False)
 {

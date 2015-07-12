@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_OffsetCurve.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_OffsetCurve.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_OffsetCurve::IGESGeom_OffsetCurve ()     {  }
 

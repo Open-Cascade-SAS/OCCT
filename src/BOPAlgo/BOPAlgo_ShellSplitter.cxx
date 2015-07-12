@@ -15,28 +15,27 @@
 // File: BOPAlgo_ShellSplitter.cxx
 // Created: Thu Jan 16 08:33:50 2014
 
-#include <BOPAlgo_ShellSplitter.ixx>
-//
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <BRep_Builder.hxx>
-#include <TopExp_Explorer.hxx>
-//
-#include <BOPCol_Parallel.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_MapOfOrientedShape.hxx>
-#include <BOPCol_NCVector.hxx>
+#include <BOPAlgo_ShellSplitter.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-//
-#include <IntTools_Context.hxx>
-//
+#include <BOPCol_IndexedMapOfShape.hxx>
+#include <BOPCol_MapOfOrientedShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_Parallel.hxx>
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <IntTools_Context.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
 
+//
+//
+//
+//
 //
 static
   void MakeShell(const BOPCol_ListOfShape& , 

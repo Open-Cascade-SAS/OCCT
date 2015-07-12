@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_EdgeData.ixx>
+
 #include <BRep_Tool.hxx>
+#include <HLRAlgo_EdgeStatus.hxx>
+#include <HLRBRep_Curve.hxx>
+#include <HLRBRep_EdgeData.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : EdgeData
 //purpose  : 
 //=======================================================================
-
 HLRBRep_EdgeData::HLRBRep_EdgeData () :
        myFlags(0),
        myHideCount(0)

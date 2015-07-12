@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_RoleAssociation.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ObjectRole.hxx>
+#include <StepBasic_RoleAssociation.hxx>
+#include <StepBasic_RoleSelect.hxx>
 
 //=======================================================================
 //function : StepBasic_RoleAssociation
 //purpose  : 
 //=======================================================================
-
 StepBasic_RoleAssociation::StepBasic_RoleAssociation ()
 {
 }

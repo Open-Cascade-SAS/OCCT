@@ -13,12 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMXCAFDoc_DatumDriver.ixx>
-#include <XCAFDoc_Datum.hxx>
 
+#include <BinMXCAFDoc_DatumDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TDF_Attribute.hxx>
+#include <XCAFDoc_Datum.hxx>
 
 //=======================================================================
 //function : Constructor

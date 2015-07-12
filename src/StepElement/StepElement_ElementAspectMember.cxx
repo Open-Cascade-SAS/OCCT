@@ -15,7 +15,8 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_ElementAspectMember.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_ElementAspectMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 static Standard_CString aElementVolume = "ELEMENT_VOLUME";

@@ -12,13 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Selection.ixx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
-
-#include <SelectMgr_EntityOwner.hxx>
 
 #include <AIS_InteractiveObject.hxx>
+#include <AIS_Selection.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
 
 #define MaxSizeOfResult 100000
 

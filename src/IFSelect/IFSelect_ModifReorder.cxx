@@ -11,9 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_ModifReorder.ixx>
-#include <Interface_ShareTool.hxx>
+
+#include <IFSelect_ContextModif.hxx>
+#include <IFSelect_ModifReorder.hxx>
+#include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_ModifReorder::IFSelect_ModifReorder (const Standard_Boolean rootlast)
     : IFSelect_Modifier (Standard_True)    {  thertl = rootlast;  }

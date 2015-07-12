@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Iso.ixx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <gp_Pnt.hxx>
+
 #include <AdvApp2Var_ApproxF2var.hxx>
-
-
+#include <AdvApp2Var_Context.hxx>
+#include <AdvApp2Var_Iso.hxx>
+#include <AdvApp2Var_Node.hxx>
+#include <gp_Pnt.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 //=======================================================================
 //function : AdvApp2Var_Iso
 //purpose  : 
 //=======================================================================
-
 AdvApp2Var_Iso::AdvApp2Var_Iso()  :
 myType(GeomAbs_IsoU),
 myConstPar(0.5),

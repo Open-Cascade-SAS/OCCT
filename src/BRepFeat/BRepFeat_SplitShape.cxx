@@ -14,16 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_SplitShape.ixx>
 
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <BRepFeat_SplitShape.hxx>
+#include <LocOpe_WiresOnShape.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : Build
 //purpose  : 
 //=======================================================================
-
 void BRepFeat_SplitShape::Build ()
 {
   mySShape.Perform(myWOnShape);

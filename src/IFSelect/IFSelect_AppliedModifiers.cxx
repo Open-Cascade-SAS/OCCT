@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_AppliedModifiers.ixx>
 
+#include <IFSelect_AppliedModifiers.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <Standard_Type.hxx>
 
 IFSelect_AppliedModifiers::IFSelect_AppliedModifiers
   (const Standard_Integer nbmax, const Standard_Integer nbent)

@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <HatchGen_PointOnElement.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Standard_Stream.hxx>
-#include <HatchGen_PointOnElement.ixx>
 
 //=======================================================================
 // Function : HatchGen_PointOnElement
 // Purpose  : Constructor.
 //=======================================================================
-
 HatchGen_PointOnElement::HatchGen_PointOnElement () :
        HatchGen_IntersectionPoint () ,
        myType (HatchGen_UNDETERMINED)

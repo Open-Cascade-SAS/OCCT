@@ -16,11 +16,15 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_CopiousData.ixx>
-#include <Standard_DimensionMismatch.hxx>
-#include <gp_XY.hxx>
 #include <gp_GTrsf.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XY.hxx>
+#include <IGESGeom_CopiousData.hxx>
+#include <Standard_DimensionMismatch.hxx>
 #include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_CopiousData::IGESGeom_CopiousData ()
 {

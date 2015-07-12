@@ -11,14 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SelectBypassGroup.ixx>
-#include <IGESData_IGESEntity.hxx>
+
 #include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_OrderedGroup.hxx>
 #include <IGESBasic_OrderedGroupWithoutBackP.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSelect_SelectBypassGroup.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #define TypePourGroup 402
 

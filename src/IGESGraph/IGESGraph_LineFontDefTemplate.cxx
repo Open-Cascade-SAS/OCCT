@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_LineFontDefTemplate.ixx>
-
+#include <IGESBasic_SubfigureDef.hxx>
+#include <IGESGraph_LineFontDefTemplate.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_LineFontDefTemplate::IGESGraph_LineFontDefTemplate ()    {  }
 

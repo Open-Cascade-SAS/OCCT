@@ -20,18 +20,19 @@
 //            bon appel a LocateParameter (PRO6973) et mise en conformite avec
 //            le cdl de LocateU, lorsque U est un noeud (PRO6988)
 
-#include <Law_BSpline.ixx>
-#include <gp.hxx>
 #include <BSplCLib.hxx>
 #include <BSplCLib_KnotDistribution.hxx>
 #include <BSplCLib_MultDistribution.hxx>
-
-#include <Standard_DimensionError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_RangeError.hxx>
-#include <Standard_NotImplemented.hxx>
+#include <gp.hxx>
+#include <Law_BSpline.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 #define  POLES    (poles->Array1())
 #define  KNOTS    (knots->Array1())

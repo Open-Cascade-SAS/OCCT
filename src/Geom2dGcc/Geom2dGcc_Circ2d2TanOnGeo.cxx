@@ -24,26 +24,28 @@
 //                                                  Courbes.              +
 //=========================================================================
 
-#include <Geom2dGcc_Circ2d2TanOnGeo.ixx>
-
+#include <Adaptor3d_OffsetCurve.hxx>
 #include <ElCLib.hxx>
 #include <GccAna_Circ2dBisec.hxx>
 #include <GccAna_CircLin2dBisec.hxx>
-#include <GccAna_Lin2dBisec.hxx>
 #include <GccAna_CircPnt2dBisec.hxx>
+#include <GccAna_Lin2dBisec.hxx>
 #include <GccAna_LinPnt2dBisec.hxx>
 #include <GccAna_Pnt2dBisec.hxx>
-
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_BHyper.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
-
-#include <Adaptor3d_OffsetCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dGcc_Circ2d2TanOnGeo.hxx>
 #include <Geom2dGcc_CurveToolGeo.hxx>
 #include <Geom2dInt_TheIntConicCurveOfGInter.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 Geom2dGcc_Circ2d2TanOnGeo::
 Geom2dGcc_Circ2d2TanOnGeo (const GccEnt_QualifiedCirc&     Qualified1 ,

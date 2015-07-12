@@ -11,25 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StlAPI_Reader.ixx>
-#include <RWStl.hxx>
-#include <StlMesh_Mesh.hxx>
-#include <OSD_Path.hxx>
+
 #include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <gp_Pnt.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shell.hxx>
+#include <OSD_Path.hxx>
+#include <RWStl.hxx>
+#include <StlAPI_Reader.hxx>
+#include <StlMesh_Mesh.hxx>
 #include <StlMesh_MeshExplorer.hxx>
-
-
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 StlAPI_Reader::StlAPI_Reader() {}
 

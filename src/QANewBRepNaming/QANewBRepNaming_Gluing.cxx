@@ -13,38 +13,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Gluing.ixx>
 
-#include <TopAbs.hxx>
 #include <BRep_Builder.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_TagSource.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TDF_ChildIDIterator.hxx>
-#include <TNaming_Selector.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_Tool.hxx>
-#include <TDF_AttributeMap.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
-#include <TDF_Tool.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
 #include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <QANewBRepNaming_Gluing.hxx>
+#include <QANewModTopOpe_Glue.hxx>
+#include <Standard_NullObject.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TDataStd_IntegerArray.hxx>
-
-#include <QANewModTopOpe_Glue.hxx>
+#include <TDF_AttributeMap.hxx>
+#include <TDF_ChildIDIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_MapIteratorOfAttributeMap.hxx>
+#include <TDF_MapIteratorOfLabelMap.hxx>
+#include <TDF_TagSource.hxx>
+#include <TDF_Tool.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Selector.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>

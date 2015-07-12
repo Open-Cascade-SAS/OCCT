@@ -14,7 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_FacesFiller.ixx>
+
+#include <gp_Pnt.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_FacesFiller.hxx>
+#include <TopOpeBRep_FacesIntersector.hxx>
+#include <TopOpeBRep_FFDumper.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_PointClassifier.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRep_VPointInterClassifier.hxx>
+#include <TopOpeBRep_VPointInterIterator.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef DRAW
 #include <TopOpeBRep_DRAW.hxx>

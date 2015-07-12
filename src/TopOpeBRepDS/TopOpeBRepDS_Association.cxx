@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Association.ixx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
+#include <Standard_Type.hxx>
+#include <TopOpeBRepDS_Association.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
 //=======================================================================
 //function : Contains
 //purpose  : 
 //=======================================================================
-
 static Standard_Boolean Contains (const TopOpeBRepDS_ListOfInterference& LI,
 				  const Handle(TopOpeBRepDS_Interference)& I)
 {

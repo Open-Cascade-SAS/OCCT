@@ -13,16 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlDrivers_DocumentRetrievalDriver.ixx>
 
-#include <XmlDrivers.hxx>
-#include <XmlMDataStd.hxx>
-#include <XmlMNaming.hxx>
-#include <XmlObjMgt_Element.hxx>
-#include <XmlMNaming_NamedShapeDriver.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <XmlMDF_ADriver.hxx>
 #include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <XmlDrivers.hxx>
+#include <XmlDrivers_DocumentRetrievalDriver.hxx>
+#include <XmlMDataStd.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlMDF_ADriverTable.hxx>
+#include <XmlMNaming.hxx>
+#include <XmlMNaming_NamedShapeDriver.hxx>
+#include <XmlObjMgt_Element.hxx>
+
 //=======================================================================
 //function : XmlDrivers_DocumentRetrievalDriver
 //purpose  : Constructor

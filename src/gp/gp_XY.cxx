@@ -12,7 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gp_XY.ixx>
+
+#include <gp_Mat2d.hxx>
+#include <gp_XY.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 
 Standard_Boolean gp_XY::IsEqual (const gp_XY& Other,
 				 const Standard_Real Tolerance) const

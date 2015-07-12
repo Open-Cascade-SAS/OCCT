@@ -14,21 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_GraphicTool.ixx>
 
-
-#include <Quantity_Color.hxx>
-#include <Prs3d_LineAspect.hxx>
+#include <AIS_GraphicTool.hxx>
 #include <Aspect_AspectLine.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_PlaneAspect.hxx>
-#include <Prs3d_DatumAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Aspect_InteriorStyle.hxx>
-
-#include <Prs3d_ShadingAspect.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Prs3d_DatumAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PlaneAspect.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Quantity_Color.hxx>
 
 static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
 					      const AIS_TypeOfAttribute Att)

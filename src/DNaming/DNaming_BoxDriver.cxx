@@ -13,23 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_BoxDriver.ixx>
-#include <TFunction_Function.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TNaming.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
+
 #include <BRepCheck_Analyzer.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS_Solid.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <DNaming.hxx>
+#include <DNaming_BoxDriver.hxx>
+#include <ModelDefinitions.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
 #include <TDF_Label.hxx>
-#include <ModelDefinitions.hxx>
-#include <DNaming.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Solid.hxx>
+
 //=======================================================================
 //function : DNaming_BoxDriver
 //purpose  : Constructor

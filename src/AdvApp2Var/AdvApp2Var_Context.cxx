@@ -14,9 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Context.ixx>
-#include <Standard_ConstructionError.hxx>
+
 #include <AdvApp2Var_ApproxF2var.hxx>
+#include <AdvApp2Var_Context.hxx>
+#include <Standard_ConstructionError.hxx>
 
 // Calculaton of parameters
 static Standard_Boolean lesparam(const Standard_Integer iordre,

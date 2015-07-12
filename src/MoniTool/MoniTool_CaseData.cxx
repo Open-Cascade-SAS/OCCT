@@ -11,25 +11,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_CaseData.ixx>
-#include <Standard_Failure.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TopoDS_HShape.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <Geom2d_CartesianPoint.hxx>
 
-#include <TopAbs.hxx>
-//#include <GeomTools.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <OSD_Timer.hxx>
-
-// definitions
 #include <Dico_DictionaryOfInteger.hxx>
 #include <Dico_DictionaryOfTransient.hxx>
+#include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <Message_Msg.hxx>
+#include <MoniTool_CaseData.hxx>
+#include <OSD_Timer.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS_HShape.hxx>
+#include <TopoDS_Shape.hxx>
 
+//#include <GeomTools.hxx>
+// definitions
 static Handle(Dico_DictionaryOfInteger)& defchecks()
 {
   static Handle(Dico_DictionaryOfInteger) defch;

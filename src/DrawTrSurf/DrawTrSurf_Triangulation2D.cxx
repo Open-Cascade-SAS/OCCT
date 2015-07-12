@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Triangulation2D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <DrawTrSurf_Triangulation2D.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Poly.hxx>
+#include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangle.hxx>
-#include <Poly_Array1OfTriangle.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <gp_Pnt2d.hxx>
-#include <Draw_Color.hxx>
-#include <Poly.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 #ifdef WNT
 #include <stdio.h>

@@ -11,8 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_HGraph.ixx>
 
+#include <Interface_GeneralLib.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_GTool.hxx>
+#include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 Interface_HGraph::Interface_HGraph (const Interface_Graph& agraph)
     :  thegraph(agraph)    {  }

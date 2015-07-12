@@ -12,27 +12,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntWalk_PWalking.ixx>
-
-#include <IntWalk_StatusDeflection.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-#include <IntImp_ComputeTangence.hxx>
 
 #include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
-
-#include <Precision.hxx>
-
-#include <math_FunctionSetRoot.hxx>
-#include <Geom_Surface.hxx>
-
-#include <Standard_Failure.hxx>
-#include <gp_Pnt2d.hxx>
-
 #include <Extrema_GenLocateExtPS.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntImp_ComputeTangence.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntWalk_PWalking.hxx>
+#include <IntWalk_StatusDeflection.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <Precision.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //==================================================================================
 // function : IntWalk_PWalking::IntWalk_PWalking

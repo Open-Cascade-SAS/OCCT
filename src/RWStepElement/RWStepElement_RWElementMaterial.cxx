@@ -15,7 +15,12 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWElementMaterial.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWElementMaterial.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_ElementMaterial.hxx>
 #include <StepRepr_HArray1OfMaterialPropertyRepresentation.hxx>
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 
@@ -23,7 +28,6 @@
 //function : RWStepElement_RWElementMaterial
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWElementMaterial::RWStepElement_RWElementMaterial ()
 {
 }

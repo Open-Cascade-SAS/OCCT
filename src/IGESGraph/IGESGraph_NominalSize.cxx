@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_NominalSize.ixx>
-
+#include <IGESGraph_NominalSize.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESGraph_NominalSize::IGESGraph_NominalSize ()    {  }
 

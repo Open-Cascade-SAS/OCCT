@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_AngularityTolerance.ixx>
+#include <Standard_Type.hxx>
+#include <StepDimTol_AngularityTolerance.hxx>
 
 //=======================================================================
 //function : StepDimTol_AngularityTolerance
 //purpose  : 
 //=======================================================================
-
 StepDimTol_AngularityTolerance::StepDimTol_AngularityTolerance ()
 {
 }

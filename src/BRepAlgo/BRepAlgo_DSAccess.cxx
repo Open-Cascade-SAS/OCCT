@@ -14,41 +14,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_DSAccess.ixx>
-#include <BRepAlgo_EdgeConnector.hxx>
 
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <BRepAlgo_BooleanOperations.hxx>
+#include <BRepAlgo_DSAccess.hxx>
+#include <BRepAlgo_EdgeConnector.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopOpeBRepDS_PointIterator.hxx>
+#include <TopOpeBRep_DSFiller.hxx>
+#include <TopOpeBRepBuild_FaceBuilder.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepDS_CheckStatus.hxx>
 #include <TopOpeBRepDS_Check.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_InterferenceIterator.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
-#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_CheckStatus.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_CurveIterator.hxx>
 #include <TopOpeBRepDS_Filter.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_InterferenceIterator.hxx>
+#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepDS_Reducer.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepTool_GeomTool.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopOpeBRepBuild_WireEdgeSet.hxx>
-#include <TopOpeBRepBuild_FaceBuilder.hxx>
-#include <TopOpeBRep_DSFiller.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #ifdef DRAW
 //#include <TestTopOpe.hxx>

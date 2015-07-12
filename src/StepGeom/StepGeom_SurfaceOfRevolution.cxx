@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_SurfaceOfRevolution.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Axis1Placement.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_SurfaceOfRevolution.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_SurfaceOfRevolution::StepGeom_SurfaceOfRevolution ()  {}
 

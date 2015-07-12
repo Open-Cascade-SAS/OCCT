@@ -14,35 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DDataStd.ixx>
-#include <DDF.hxx>
 
+#include <DDataStd.hxx>
+#include <DDataStd_TreeBrowser.hxx>
+#include <DDF.hxx>
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
-
-#include <TDF_Data.hxx>
-#include <TDF.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_Label.hxx>
-
-#include <DDataStd_TreeBrowser.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_ChildNodeIterator.hxx>
-
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TDataStd_ChildNodeIterator.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataXtd_Constraint.hxx>
+#include <TDF.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
 
 #include <stdio.h>
-
-
 //=======================================================================
 //TreeNode : SetNode
 //purpose  : SetNode (DOC Entry [ID]) 
 //=======================================================================
-
 static Standard_Integer DDataStd_SetNode (Draw_Interpretor& di, 
 					  Standard_Integer  n, 
 					  const char**            a)

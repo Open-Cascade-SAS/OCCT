@@ -14,24 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_BSplineCurves.ixx>
 
-#include <GeomFill_Filling.hxx>
-#include <GeomFill_Stretch.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomFill_BSplineCurves.hxx>
 #include <GeomFill_Coons.hxx>
 #include <GeomFill_Curved.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array2OfReal.hxx>
+#include <GeomFill_Filling.hxx>
+#include <GeomFill_Stretch.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-
-#include <Standard_NotImplemented.hxx>
-#include <BSplCLib.hxx>
-#include <Precision.hxx>
-#include <Geom_BSplineCurve.hxx>
-
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 //=======================================================================
 //function : Arrange
@@ -49,7 +48,6 @@
 //                  ----->-----
 //                   CC1 = C1
 //=======================================================================
-
 Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
 			 const Handle(Geom_BSplineCurve)& C2,
 			 const Handle(Geom_BSplineCurve)& C3,

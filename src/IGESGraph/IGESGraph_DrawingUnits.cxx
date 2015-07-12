@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_DrawingUnits.ixx>
-
+#include <IGESGraph_DrawingUnits.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESGraph_DrawingUnits::IGESGraph_DrawingUnits ()    {  }
 

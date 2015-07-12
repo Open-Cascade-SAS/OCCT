@@ -14,38 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo.ixx>
-#include <BRepTools_WireExplorer.hxx>
+
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAlgo.hxx>
+#include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <gp_Pnt.hxx>
-#include <GeomConvert.hxx>
-#include <GeomLProp.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <ElCLib.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomConvert.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <GeomLProp.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <ShapeFix_Shape.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <TColGeom_Array1OfBSplineCurve.hxx>
 #include <TColGeom_HArray1OfBSplineCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp.hxx>
-
 #include <TColGeom_SequenceOfCurve.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TColStd_SequenceOfReal.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfBoolean.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <ElCLib.hxx>
-#include <BRepLib.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
-#include <ShapeFix_Shape.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <Geom_Curve.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 //Temporary
 #//include <DrawTrSurf.hxx>

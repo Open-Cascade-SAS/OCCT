@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDS_TVertex.ixx>
 
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
+#include <TopoDS_TVertex.hxx>
 
 //=======================================================================
 //function : ShapeType
 //purpose  : 
 //=======================================================================
-
 TopAbs_ShapeEnum TopoDS_TVertex::ShapeType() const
 {
   return TopAbs_VERTEX;

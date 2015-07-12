@@ -11,18 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.ixx>
-#include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.hxx>
 #include <StepAP214_AutoDesignGeneralOrgItem.hxx>
+#include <StepAP214_AutoDesignPersonAndOrganizationAssignment.hxx>
+#include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepAP214_AutoDesignPersonAndOrganizationAssignment.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment::RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment () {}
 

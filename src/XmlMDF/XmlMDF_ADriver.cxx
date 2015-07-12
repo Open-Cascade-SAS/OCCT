@@ -13,13 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDF_ADriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDF_ADriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDF_ADriver::XmlMDF_ADriver (const Handle(CDM_MessageDriver)& theMsgDriver,
                                 const Standard_CString           theNS,
                                 const Standard_CString           theName)

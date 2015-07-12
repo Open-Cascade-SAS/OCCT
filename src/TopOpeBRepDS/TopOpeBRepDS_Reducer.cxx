@@ -12,10 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Reducer.ixx>
+
 #include <TopOpeBRepDS_EIR.hxx>
-#include <TopOpeBRepDS_FIR.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_FIR.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Reducer.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_Reducer

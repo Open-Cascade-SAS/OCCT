@@ -12,22 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_ShrunkRange.ixx>
 
-#include <Precision.hxx>
-
+#include <Bnd_Box.hxx>
+#include <BndLib_Add3dCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <ElCLib.hxx>
+#include <Geom_Curve.hxx>
 #include <gp.hxx>
 #include <gp_Circ.hxx>
-
-#include <Geom_Curve.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BndLib_Add3dCurve.hxx>
-#include <IntTools_Context.hxx>
 #include <gp_Lin.hxx>
-#include <ElCLib.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_ShrunkRange.hxx>
+#include <Precision.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : 

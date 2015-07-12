@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FreedomsList.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FreedomsList.hxx>
 
 //=======================================================================
 //function : StepFEA_FreedomsList
 //purpose  : 
 //=======================================================================
-
 StepFEA_FreedomsList::StepFEA_FreedomsList ()
 {
 }

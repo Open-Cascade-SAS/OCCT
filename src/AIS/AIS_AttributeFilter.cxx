@@ -14,10 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_AttributeFilter.ixx>
 
+#include <AIS_AttributeFilter.hxx>
 #include <AIS_InteractiveObject.hxx>
-
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
 
 AIS_AttributeFilter::AIS_AttributeFilter():
 hasC(Standard_False),

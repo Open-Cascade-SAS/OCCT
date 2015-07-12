@@ -17,25 +17,24 @@
 // modified by Michael KLOKOV  Wed Mar  6 15:01:25 2002
 // modified by  Eugeny MALTCHIKOV Wed Jul 04 11:13:01 2012 
 
-#include <BRepAlgoAPI_Section.ixx>
-
-
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Section.hxx>
+#include <BOPDS_DS.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeShell.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pln.hxx>
 #include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
-#include <BRep_Tool.hxx>
-
-#include <BOPDS_DS.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_BOP.hxx>
-#include <BOPAlgo_Section.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //
 static 

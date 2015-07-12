@@ -12,29 +12,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_SubIterator.ixx>
-//
+
 #include <Bnd_Box.hxx>
-//
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_UBTreeFiller.hxx>
-//
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shape.hxx>
-//
-#include <BOPCol_IndexedDataMapOfShapeBox.hxx>
+#include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerMapOfInteger.hxx>
+#include <BOPCol_IndexedDataMapOfShapeBox.hxx>
 #include <BOPCol_MapOfInteger.hxx>
-#include <BOPCol_BoxBndTree.hxx>
-//
+#include <BOPDS_DS.hxx>
 #include <BOPDS_IndexRange.hxx>
+#include <BOPDS_MapOfPassKeyBoolean.hxx>
 #include <BOPDS_PassKeyBoolean.hxx>
-#include <BOPDS_MapOfPassKeyBoolean.hxx>
+#include <BOPDS_SubIterator.hxx>
 #include <BOPDS_Tools.hxx>
-#include <BOPDS_MapOfPassKeyBoolean.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
+//
+//
+//
+//
+//
 //=======================================================================
 //function : 
 //purpose  : 

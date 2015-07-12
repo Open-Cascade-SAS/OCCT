@@ -12,8 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntSurf_LineOn2S.ixx>
 
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IntSurf_LineOn2S::IntSurf_LineOn2S (const IntSurf_Allocator& theAllocator) :
     mySeq (theAllocator)

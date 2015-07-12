@@ -11,18 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFDoc_ColorTool.ixx>
+
+#include <Quantity_Color.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataStd_UAttribute.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_ChildIDIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Color.hxx>
-
-#include <TDF_ChildIDIterator.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_Name.hxx>
-#include <TNaming_NamedShape.hxx>
+#include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_Color.hxx>
-#include <TDataStd_UAttribute.hxx>
 #include <XCAFDoc_GraphNode.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 #define AUTONAMING // automatically set names for labels
 

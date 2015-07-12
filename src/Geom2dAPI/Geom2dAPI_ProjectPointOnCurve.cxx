@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAPI_ProjectPointOnCurve.ixx>
 
+#include <Extrema_ExtPC2d.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : Geom2dAPI_ProjectPointOnCurve
 //purpose  : 
 //=======================================================================
-
 Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve()
 {
   myIsDone = Standard_False;

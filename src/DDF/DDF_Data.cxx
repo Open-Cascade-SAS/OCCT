@@ -14,34 +14,29 @@
 // commercial license or contractual agreement.
 
 //      	------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Feb 10 1997	Creation
 
-
-
-#include <DDF_Data.ixx>
 #include <DDF.hxx>
-
+#include <DDF_Data.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <Standard_GUID.hxx>
-
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-
 #include <TDF_Attribute.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_AttributeIterator.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
 #include <TDF_IDFilter.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
-
-
 
 //=======================================================================
 //function : DDF_Data
 //purpose  : 
 //=======================================================================
-
 DDF_Data::DDF_Data(const Handle(TDF_Data)& aDF) : myDF (aDF) {}
 
 

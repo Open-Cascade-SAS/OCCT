@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_EdgeVertexInterference.ixx>
+
+#include <Standard_Type.hxx>
+#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_EdgeVertexInterference
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_EdgeVertexInterference::TopOpeBRepDS_EdgeVertexInterference
   (const TopOpeBRepDS_Transition& T, 
    const TopOpeBRepDS_Kind        ST,

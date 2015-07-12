@@ -16,18 +16,29 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ToolSegmentedViewsVisible.ixx>
+#include <IGESBasic_HArray1OfLineFontEntity.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_LineFontEntity.hxx>
 #include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
 #include <IGESData_ViewKindEntity.hxx>
+#include <IGESDraw_HArray1OfViewKindEntity.hxx>
+#include <IGESDraw_SegmentedViewsVisible.hxx>
+#include <IGESDraw_ToolSegmentedViewsVisible.hxx>
 #include <IGESGraph_Color.hxx>
 #include <IGESGraph_HArray1OfColor.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <IGESBasic_HArray1OfLineFontEntity.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 IGESDraw_ToolSegmentedViewsVisible::IGESDraw_ToolSegmentedViewsVisible ()  {  }
 

@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_PointLine.ixx>
 
+#include <IntPatch_PointLine.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IntPatch_PointLine::IntPatch_PointLine (const Standard_Boolean Tang,
                                         const IntSurf_TypeTrans Trans1,

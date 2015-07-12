@@ -16,17 +16,21 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepAP203_RWCcDesignDateAndTimeAssignment.ixx>
-#include <StepAP203_HArray1OfDateTimeItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP203_RWCcDesignDateAndTimeAssignment.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
 #include <StepAP203_DateTimeItem.hxx>
+#include <StepAP203_HArray1OfDateTimeItem.hxx>
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_DateTimeRole.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP203_RWCcDesignDateAndTimeAssignment
 //purpose  : 
 //=======================================================================
-
 RWStepAP203_RWCcDesignDateAndTimeAssignment::RWStepAP203_RWCcDesignDateAndTimeAssignment ()
 {
 }

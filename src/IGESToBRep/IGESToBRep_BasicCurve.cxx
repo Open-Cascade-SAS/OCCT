@@ -24,66 +24,60 @@
 //sln 29.12.2001 OCC90 : Method checkBSplineCurve and varification before creation of bspline curves were added
 //=======================================================================
 
-
-#include <IGESToBRep_BasicCurve.ixx>
-
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
-
 #include <ElCLib.hxx>
-
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Transformation.hxx>
-#include <Geom_TrimmedCurve.hxx>
-
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Transformation.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_GTrsf.hxx>
+#include <gp_Hypr.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
-
-
+#include <IGESConvGeom.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_ToolLocation.hxx>
-
 #include <IGESGeom_BSplineCurve.hxx>
 #include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_ConicArc.hxx>
+#include <IGESGeom_CopiousData.hxx>
+#include <IGESGeom_Line.hxx>
 #include <IGESGeom_Point.hxx>
 #include <IGESGeom_SplineCurve.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
-
-#include <IGESConvGeom.hxx>
-
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_BasicCurve.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
 #include <Interface_Macros.hxx>
-
-#include <Precision.hxx>  
-
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
+#include <ShapeConstruct_Curve.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TColGeom_SequenceOfCurve.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
-
-#include <TColGeom_SequenceOfCurve.hxx>
-
+#include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -91,15 +85,7 @@
 #include <TColStd_SequenceOfInteger.hxx>
 
 //:36
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 // S3767
-#include <Message_Msg.hxx>  
-#include <ShapeConstruct_Curve.hxx>
-#include <gp_Hypr.hxx>
-#include <IGESGeom_Line.hxx>
-#include <IGESGeom_CopiousData.hxx>
-
 //=======================================================================
 //function : CheckBSplineCurve
 //purpose  : Check coincidede knots Check whether knots are in ascending 

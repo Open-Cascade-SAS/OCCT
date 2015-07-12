@@ -16,17 +16,19 @@
 
 //=======================================================================
 
-#include <StlMesh_MeshDomain.ixx>
-#include <StlMesh_MeshTriangle.hxx>
-#include <Precision.hxx>
 #include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_NullValue.hxx>
+#include <Standard_Type.hxx>
+#include <StlMesh_MeshDomain.hxx>
+#include <StlMesh_MeshTriangle.hxx>
 
 //=======================================================================
 //function : StlMesh_MeshDomain
 //design   : 
 //warning  : 
 //=======================================================================
-
 StlMesh_MeshDomain::StlMesh_MeshDomain() : deflection (Precision::Confusion ()), nbVertices (0), nbTriangles (0) 
 { 
 }

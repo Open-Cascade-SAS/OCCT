@@ -14,18 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_AsciiString.hxx>
-#include <TopOpeBRepBuild_GTopo.ixx>
 
 #include <Standard_ProgramError.hxx>
-#include <TopOpeBRepDS.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopAbs.hxx>
+#include <TopOpeBRepBuild_GTopo.hxx>
+#include <TopOpeBRepDS.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_GTopo
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo()
 {
   Reset();

@@ -16,16 +16,15 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_SVD.ixx>
+#include <math_Matrix.hxx>
 #include <math_Recipes.hxx>
-
-
-#include <StdFail_NotDone.hxx>
+#include <math_SVD.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_NotImplemented.hxx>
-
+#include <StdFail_NotDone.hxx>
 
 math_SVD::math_SVD (const math_Matrix& A) :
    U    (1, Max(A.RowNumber(),A.ColNumber()), 1, A.ColNumber()) ,

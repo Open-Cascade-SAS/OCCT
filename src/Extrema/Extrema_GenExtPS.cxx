@@ -16,35 +16,38 @@
 
 //  Modified by skv - Thu Sep 30 15:21:07 2004 OCC593
 
-
-#include <Extrema_GenExtPS.ixx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TColStd_Array2OfInteger.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <math_FunctionSetRoot.hxx>
-#include <math_Vector.hxx>
-#include <math_NewtonFunctionSetRoot.hxx>
-#include <GeomAbs_IsoType.hxx>
-#include <Bnd_Sphere.hxx>
-#include <Extrema_HUBTreeOfSphere.hxx>
-#include <Extrema_ExtFlag.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Array1OfSphere.hxx>
 #include <Bnd_HArray1OfSphere.hxx>
-#include <Precision.hxx>
+#include <Bnd_Sphere.hxx>
+#include <Extrema_ExtFlag.hxx>
+#include <Extrema_GenExtPS.hxx>
+#include <Extrema_HUBTreeOfSphere.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <Extrema_POnSurfParams.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
+#include <GeomAbs_IsoType.hxx>
+#include <gp_Pnt.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_NewtonFunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array2OfInteger.hxx>
+#include <TColStd_Array2OfReal.hxx>
+
 //IMPLEMENT_HARRAY1(Extrema_HArray1OfSphere)
-
-
 class Bnd_SphereUBTreeSelector : public Extrema_UBTreeOfSphere::Selector
 {
  public:

@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_CylindricalSurface.ixx>
-
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_CylindricalSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_CylindricalSurface::IGESSolid_CylindricalSurface ()    {  }
 

@@ -20,52 +20,44 @@
 //:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
 //%21 pdn 15.04.99 CTS22655
 
-#include <ShapeAnalysis.ixx>
-
-// PLANTAGE IsOuterBound, 15-SEP-1998
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
+#include <Bnd_Box2d.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRepGProp.hxx>
-
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_XY.hxx>
-#include <Geom2d_Curve.hxx>
 #include <GProp_GProps.hxx>
-
-#include <ShapeAnalysis_Edge.hxx>
-
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRep_Builder.hxx>
-
 #include <Precision.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Bnd_Box2d.hxx>
+#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
-
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <Precision.hxx>
-
-#include <BRepTools.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
+// PLANTAGE IsOuterBound, 15-SEP-1998
 //static Standard_Integer numpb = 0;
-
 //=======================================================================
 //function : AdjustByPeriod
 //purpose  : 
 //=======================================================================
-
 Standard_Real ShapeAnalysis::AdjustByPeriod(const Standard_Real Val,
 					    const Standard_Real ToVal,
 					    const Standard_Real Period)

@@ -14,29 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ProjLib_ProjectOnSurface.ixx>
 
-#include <AppCont_Function.hxx>
-#include <Approx_FitAndDivide.hxx>
-#include <AppParCurves_MultiCurve.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Extrema_POnSurf.hxx>
-#include <Precision.hxx>
-#include <BSplCLib.hxx>
-#include <PLib.hxx>
 #include <Adaptor3d_HCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <AppCont_Function.hxx>
+#include <AppParCurves_MultiCurve.hxx>
+#include <Approx_FitAndDivide.hxx>
+#include <BSplCLib.hxx>
 #include <Extrema_ExtPS.hxx>
-
+#include <Extrema_POnSurf.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <PLib.hxx>
+#include <Precision.hxx>
+#include <ProjLib_ProjectOnSurface.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : OnSurface_Value
 //purpose  : Evaluate current point of the projected curve
 //=======================================================================
-
 static gp_Pnt OnSurface_Value(const Standard_Real U,
 			      const Handle(Adaptor3d_HCurve)& myCurve,
 			      Extrema_ExtPS * myExtPS)

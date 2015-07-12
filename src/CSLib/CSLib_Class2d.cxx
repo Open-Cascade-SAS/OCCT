@@ -16,7 +16,8 @@
 
 //#define No_Standard_OutOfRange
 
-#include <CSLib_Class2d.ixx>
+#include <CSLib_Class2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Standard_ConstructionError.hxx>
 
 static inline 

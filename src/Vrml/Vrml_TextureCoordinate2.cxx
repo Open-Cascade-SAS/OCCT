@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_TextureCoordinate2.ixx>
+
+#include <Standard_Type.hxx>
+#include <Vrml_TextureCoordinate2.hxx>
 
 Vrml_TextureCoordinate2::Vrml_TextureCoordinate2()
 {

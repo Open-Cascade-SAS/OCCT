@@ -18,20 +18,28 @@
 //		ne traite que les GeomAdaptor_Surface;
 //              plus de reference a BRepAdaptor
 
-
-#include <GeomPlate_CurveConstraint.ixx>
-#include <GCPnts_AbscissaPoint.hxx>
 #include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor3d_HSurface.hxx>
-#include <GeomAdaptor.hxx>
-#include <Precision.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <ProjLib_ProjectedCurve.hxx>
 #include <Approx_Curve2d.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <BRepAdaptor_HSurface.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <GeomPlate_CurveConstraint.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Law_Function.hxx>
+#include <Precision.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 //---------------------------------------------------------
 //         Constructeur vide

@@ -14,39 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DBRep.ixx>
-#include <DBRep_DrawableShape.hxx>
-#include <Draw_Appli.hxx>
-#include <Draw.hxx>
-#include <Draw_Segment3D.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepTools.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepTools_ShapeSet.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRep_TEdge.hxx>
-#include <Precision.hxx>
-#include <Poly_Triangulation.hxx>
-#include <gp_Ax2.hxx>
 
-#include <TopExp.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepGProp.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_ShapeSet.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <DBRep.hxx>
+#include <DBRep_DrawableShape.hxx>
+#include <Draw.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_ProgressIndicator.hxx>
+#include <Draw_Segment3D.hxx>
+#include <gp_Ax2.hxx>
 #include <GProp.hxx>
 #include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Draw_ProgressIndicator.hxx>
-
-// memory management
+#include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
 #include <Standard.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+
 #include <stdio.h>
+// memory management
 #ifdef _WIN32
 extern Draw_Viewer dout;
 #endif

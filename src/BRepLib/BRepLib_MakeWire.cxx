@@ -14,27 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_MakeWire.ixx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <gp_Pnt.hxx>
+#include <BRepLib_MakeWire.hxx>
 #include <Geom_Curve.hxx>
 #include <gp.hxx>
-
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : BRepLib_MakeWire
 //purpose  : 
 //=======================================================================
-
 BRepLib_MakeWire::BRepLib_MakeWire() :
      myError(BRepLib_EmptyWire)
 {

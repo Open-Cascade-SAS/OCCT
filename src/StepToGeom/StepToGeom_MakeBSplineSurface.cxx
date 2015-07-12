@@ -14,26 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeBSplineSurface.ixx>
+
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <gp_Pnt.hxx>
+#include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <StepToGeom_MakeBSplineSurface.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <gp_Pnt.hxx>
 
 //=============================================================================
 // Creation d' une BSplineSurface de Geom a partir d' une
 // BSplineSurface de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeBSplineSurface::Convert
     (const Handle(StepGeom_BSplineSurface)& SS,
      Handle(Geom_BSplineSurface)& CS)

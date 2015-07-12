@@ -11,12 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.ixx>
 
+#include <Standard_Type.hxx>
 #include <StepGeom_GeometricRepresentationContext.hxx>
-
+#include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
-
+#include <StepRepr_ParametricRepresentationContext.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::StepGeom_GeometricRepresentationContextAndParametricRepresentationContext ()  {}
 

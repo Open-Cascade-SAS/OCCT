@@ -17,7 +17,20 @@
 // Approximation d une MultiLine de points decrite par le tool MLineTool.
 // avec criteres variationnels
 
-#include <AppDef_Variational.ixx>
+#include <AppDef_MultiLine.hxx>
+#include <AppDef_SmoothCriterion.hxx>
+#include <AppDef_Variational.hxx>
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <FEmTool_Assembly.hxx>
+#include <FEmTool_Curve.hxx>
+#include <gp_VectorWithNullMagnitude.hxx>
+#include <math_Matrix.hxx>
+#include <PLib_Base.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange

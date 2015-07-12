@@ -14,21 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intf_Tool.ixx>
-#include <gp_XY.hxx>
+
+#include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
+#include <ElCLib.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pln.hxx>
+#include <gp_XY.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna_IntConicQuad.hxx>
-#include <ElCLib.hxx>
+#include <Intf_Tool.hxx>
 #include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Intf_Tool
 //purpose  : 
 //=======================================================================
-
 Intf_Tool::Intf_Tool()
      : nbSeg(0)
 {}

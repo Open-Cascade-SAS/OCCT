@@ -14,17 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_BasicMap.ixx>
+
+#include <Standard_Stream.hxx>
 #include <TCollection.hxx>
+#include <TCollection_BasicMap.hxx>
 #include <TCollection_BasicMapIterator.hxx>
 #include <TCollection_MapNode.hxx>
-#include <Standard_Stream.hxx>
 
 //=======================================================================
 //function : TCollection_BasicMap
 //purpose  : 
 //=======================================================================
-
 TCollection_BasicMap::TCollection_BasicMap(const Standard_Integer NbBuckets, 
 					   const Standard_Boolean single) :
        myData1(NULL),

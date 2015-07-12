@@ -14,36 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_ConnectedInteractive.ixx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveEntity.hxx>
+#include <AIS_ConnectedInteractive.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Shape.hxx>
+#include <BRepTools.hxx>
 #include <Geom_Transformation.hxx>
-
+#include <gp_Trsf.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_Presentation.hxx>
-
-#include <StdSelect_BRepOwner.hxx>
-
+#include <Select3D_SensitiveEntity.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_HLRPolyShape.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
 #include <StdSelect.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_OrientedShapeMapHasher.hxx>
-
-#include <AIS_InteractiveContext.hxx>
-#include <BRepTools.hxx>
-#include <Precision.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <Standard_ProgramError.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
-#include <StdPrs_HLRPolyShape.hxx>
-#include <Prs3d_Drawer.hxx>
-
-#include <AIS_Shape.hxx>
-
-#include <NCollection_DataMap.hxx>
-
 
 //=======================================================================
 //function : AIS_ConnectedInteractive

@@ -14,27 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep.ixx>
-#include <BRepTools_Modifier.hxx>
-//#include <TopoDSToStep_DirectModification.hxx>
-//#include <TopoDSToStep_ConicalSurfModif.hxx>
 
+#include <BRep_Tool.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <Geom_Surface.hxx>
+#include <MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx>
+#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopLoc_Location.hxx>
-#include <Geom_Surface.hxx>
-#include <BRep_Tool.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TransferBRep.hxx>
-#include <Transfer_Binder.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Tool.hxx>
-#include <MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 
-
+//#include <TopoDSToStep_DirectModification.hxx>
+//#include <TopoDSToStep_ConicalSurfModif.hxx>
 Handle(TCollection_HAsciiString) 
 TopoDSToStep::DecodeBuilderError(const TopoDSToStep_BuilderError E)
 {

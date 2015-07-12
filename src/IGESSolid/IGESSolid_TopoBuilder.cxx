@@ -11,21 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSolid_TopoBuilder.ixx>
+
+#include <gp_XYZ.hxx>
+#include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
+#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESSolid_EdgeList.hxx>
+#include <IGESSolid_Face.hxx>
+#include <IGESSolid_HArray1OfFace.hxx>
+#include <IGESSolid_HArray1OfLoop.hxx>
+#include <IGESSolid_HArray1OfShell.hxx>
+#include <IGESSolid_HArray1OfVertexList.hxx>
+#include <IGESSolid_Loop.hxx>
+#include <IGESSolid_ManifoldSolid.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <IGESSolid_TopoBuilder.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <Interface_Macros.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESSolid_HArray1OfVertexList.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
-#include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
-#include <IGESSolid_HArray1OfLoop.hxx>
-#include <IGESSolid_HArray1OfFace.hxx>
-#include <IGESSolid_HArray1OfShell.hxx>
-#include <Interface_Macros.hxx>
-
-
-
 
 IGESSolid_TopoBuilder::IGESSolid_TopoBuilder ()    {  Clear();  }
 

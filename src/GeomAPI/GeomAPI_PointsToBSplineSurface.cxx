@@ -14,31 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAPI_PointsToBSplineSurface.ixx>
 
-#include <Geom_BSplineCurve.hxx>
-#include <GeomFill_SectionGenerator.hxx>
-#include <GeomFill_Line.hxx>
-#include <GeomFill_AppSurf.hxx>
-#include <GeomAPI_PointsToBSpline.hxx>
 #include <AppDef_BSplineCompute.hxx>
 #include <AppDef_MultiLine.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
-#include <BSplCLib.hxx>
-#include <Precision.hxx>
-#include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <math_Vector.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
-#include <AppParCurves_ConstraintCouple.hxx>
 #include <AppDef_Variational.hxx>
-
+#include <AppParCurves_ConstraintCouple.hxx>
+#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
+#include <GeomAPI_PointsToBSplineSurface.hxx>
+#include <GeomFill_AppSurf.hxx>
+#include <GeomFill_Line.hxx>
+#include <GeomFill_SectionGenerator.hxx>
+#include <gp_Pnt.hxx>
+#include <math_Vector.hxx>
+#include <Precision.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 
 //=======================================================================
 //function : GeomAPI_PointsToBSplineSurface
 //purpose  : 
 //=======================================================================
-
 GeomAPI_PointsToBSplineSurface::GeomAPI_PointsToBSplineSurface()
 : myIsDone ( Standard_False)
 {

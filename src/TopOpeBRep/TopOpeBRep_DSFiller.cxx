@@ -14,28 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_DSFiller.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS.hxx>
+#include <Precision.hxx>
 #include <TopExp.hxx>
-#include <TopOpeBRepDS_GapFiller.hxx>
-#include <TopOpeBRepDS_Filter.hxx>
-#include <TopOpeBRepDS_Reducer.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_DSFiller.hxx>
+#include <TopOpeBRep_EdgesFiller.hxx>
+#include <TopOpeBRep_FaceEdgeFiller.hxx>
+#include <TopOpeBRep_FacesFiller.hxx>
+#include <TopOpeBRep_ShapeIntersector.hxx>
+#include <TopOpeBRep_ShapeIntersector2d.hxx>
 #include <TopOpeBRepDS_connex.hxx>
-#include <TopOpeBRepDS_samdom.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_Filter.hxx>
+#include <TopOpeBRepDS_GapFiller.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
+#include <TopOpeBRepDS_Reducer.hxx>
+#include <TopOpeBRepDS_samdom.hxx>
+#include <TopOpeBRepDS_ShapeWithState.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepTool_box.hxx>
-#include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
-#include <Precision.hxx>
-
-#include <TopOpeBRep_define.hxx>
-
-#include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
-#include <TopOpeBRepDS_ShapeWithState.hxx>
+#include <TopOpeBRepTool_SC.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
 extern void BREP_sortonparameter(const Handle(TopOpeBRepDS_HDataStructure)& HDS);

@@ -14,16 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_Expression.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDataStd_Expression.hxx>
 #include <TDataStd_Variable.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataStd_Expression::GetID() 
 {  
   static Standard_GUID TDataStd_ExpressionID("ce24146a-8e57-11d1-8953-080009dc4425");

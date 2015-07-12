@@ -11,28 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_DirChecker.ixx>
-#include <IGESData_DefList.hxx>
-#include <stdio.h>
 
-//  Pour Correct :
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
 #include <IGESData_ColorEntity.hxx>
+#include <IGESData_DefList.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_LabelDisplayEntity.hxx>
-
-// MGE 23/07/98
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <Interface_Check.hxx>
 #include <Message_Msg.hxx>
 
+#include <stdio.h>
+//  Pour Correct :
+// MGE 23/07/98
 // Chaque critere est par defaut inhibe
-
-
 //=======================================================================
 //function : IGESData_DirChecker
 //purpose  : 
 //=======================================================================
-
 IGESData_DirChecker::IGESData_DirChecker ()
 {
   thetype = theform1 = theform2 = 0;

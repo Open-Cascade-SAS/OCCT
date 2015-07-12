@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepRepr_ShapeAspectRelationship.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_ShapeAspectRelationship.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_ShapeAspectRelationship
 //purpose  : 
 //=======================================================================
-
 StepRepr_ShapeAspectRelationship::StepRepr_ShapeAspectRelationship ()
 {
   defDescription = Standard_False;

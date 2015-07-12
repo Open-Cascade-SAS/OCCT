@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepRepr_RWMakeFromUsageOption.ixx>
-#include <StepBasic_ProductDefinition.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWMakeFromUsageOption.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_MakeFromUsageOption.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWMakeFromUsageOption
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWMakeFromUsageOption::RWStepRepr_RWMakeFromUsageOption ()
 {
 }

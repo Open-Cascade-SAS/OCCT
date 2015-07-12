@@ -15,15 +15,21 @@
 //:n5 abv 15 Feb 99: S4132 complex type bounded_curve + surface_curve -> surface_curve
 // :j4 gka 15.03.99 S4134
 // sln 03.10.2001. BUC61003. Correction of alphabetic order of complex entity's items 
-#include <RWStepAP214_ReadWriteModule.ixx>
-#include <Interface_ReaderLib.hxx>
-#include <StepData_WriterLib.hxx>
-#include <StepAP214_Protocol.hxx>
-//#include <Interface_Macros.hxx>
-#include <Interface_ParamType.hxx>
+
 #include <Dico_DictionaryOfInteger.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_ParamType.hxx>
+#include <Interface_ReaderLib.hxx>
+#include <RWStepAP214_ReadWriteModule.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepAP214_Protocol.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepData_WriterLib.hxx>
+#include <TCollection_AsciiString.hxx>
 
-
+//#include <Interface_Macros.hxx>
 #define DeclareAndCast(atype,result,start) \
 Handle(atype) result = Handle(atype)::DownCast (start)
 

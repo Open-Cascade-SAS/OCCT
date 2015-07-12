@@ -14,11 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_PlaneSet.ixx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
+
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Prs3d_PlaneSet.hxx>
+#include <Standard_Type.hxx>
 
 Prs3d_PlaneSet::Prs3d_PlaneSet(const Standard_Real Xdir,
 			       const Standard_Real Ydir,

@@ -13,17 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGProp_TFunction.ixx>
 
-#include <TColStd_HArray1OfReal.hxx>
+#include <BRepGProp_Face.hxx>
+#include <BRepGProp_TFunction.hxx>
+#include <gp_Pnt.hxx>
 #include <math_KronrodSingleIntegration.hxx>
 #include <Precision.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : Constructor.
 //purpose  : 
 //=======================================================================
-
 BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face   &theSurface,
                                          const gp_Pnt           &theVertex,
                                          const Standard_Boolean  IsByPoint,

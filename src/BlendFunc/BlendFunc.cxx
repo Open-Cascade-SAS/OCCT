@@ -18,29 +18,28 @@
 // 30/12/1996 PMN Ajout de GetMinimalWeight
 // 23/09/1997 PMN Supprimme GetCircle et GetTol (passe dans GeomFill)
 
-#include <BlendFunc.ixx>
-
-#include <gp_Circ.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax2.hxx>
-#include <TColgp_Array2OfVec.hxx>
-
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <GeomConvert.hxx>
-#include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <BlendFunc.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
-
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TColgp_Array2OfVec.hxx>
 
 //=======================================================================
 //function : GetShape
 //purpose  : 
 //=======================================================================
-
 void BlendFunc::GetShape (const BlendFunc_SectionShape SShape,
 			  const Standard_Real MaxAng,
 			  Standard_Integer& NbPoles,

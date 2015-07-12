@@ -14,9 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeElips2d.ixx>
+
+#include <gce_MakeElips2d.hxx>
 #include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Elips2d.hxx>
 #include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
@@ -25,7 +30,6 @@
 //   <CenterS1> donne le grand axe .                                      +
 //   <S1> donne le grand rayon et <S2> le petit rayon.                    +
 //=========================================================================
-
 gce_MakeElips2d::gce_MakeElips2d(const gp_Pnt2d&   S1     ,
 				 const gp_Pnt2d&   S2     ,
 				 const gp_Pnt2d&   Center ) 

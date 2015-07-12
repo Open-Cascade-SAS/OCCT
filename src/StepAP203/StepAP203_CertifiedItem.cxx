@@ -16,14 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_CertifiedItem.ixx>
+#include <Standard_Transient.hxx>
+#include <StepAP203_CertifiedItem.hxx>
 #include <StepRepr_SuppliedPartRelationship.hxx>
 
 //=======================================================================
 //function : StepAP203_CertifiedItem
 //purpose  : 
 //=======================================================================
-
 StepAP203_CertifiedItem::StepAP203_CertifiedItem ()
 {
 }

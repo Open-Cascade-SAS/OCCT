@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepRepr_RWGlobalUncertaintyAssignedContext.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWGlobalUncertaintyAssignedContext.hxx>
 #include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
-
 
 RWStepRepr_RWGlobalUncertaintyAssignedContext::RWStepRepr_RWGlobalUncertaintyAssignedContext () {}
 

@@ -11,9 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SignValidity.ixx>
-#include <Interface_Check.hxx>
 
+#include <IFSelect_SignValidity.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 static Standard_CString nulsign = "";
 

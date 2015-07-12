@@ -16,30 +16,29 @@
 
 #define No_Standard_OutOfRange
 
-#include <Convert_ConicToBSplineCurve.ixx>
+
+#include <BSplCLib.hxx>
+#include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_CosAndSinEvalFunction.hxx>
 #include <Convert_PolynomialCosAndSin.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <gp.hxx>
+#include <gp_Pnt2d.hxx>
+#include <PLib.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-
-#include <PLib.hxx>
-#include <BSplCLib.hxx>
-#include <Precision.hxx>
-#include <gp.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_ConstructionError.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : Convert_ConicToBSplineCurve
 //purpose  : 
 //=======================================================================
-
 Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve 
   (const Standard_Integer NbPoles,
    const Standard_Integer NbKnots,

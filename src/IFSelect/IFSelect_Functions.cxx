@@ -13,77 +13,71 @@
 
 //#58 rln 28.12.98 Versioning
 
-#include <IFSelect_Functions.ixx>
 #include <IFSelect_Act.hxx>
+#include <IFSelect_CheckCounter.hxx>
+#include <IFSelect_Dispatch.hxx>
+#include <IFSelect_DispGlobal.hxx>
+#include <IFSelect_DispPerCount.hxx>
+#include <IFSelect_DispPerFiles.hxx>
+#include <IFSelect_DispPerOne.hxx>
+#include <IFSelect_DispPerSignature.hxx>
+#include <IFSelect_EditForm.hxx>
+#include <IFSelect_Editor.hxx>
+#include <IFSelect_Functions.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <IFSelect_GraphCounter.hxx>
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_ListEditor.hxx>
+#include <IFSelect_Modifier.hxx>
+#include <IFSelect_ModifReorder.hxx>
+#include <IFSelect_SelectDeduct.hxx>
+#include <IFSelect_SelectDiff.hxx>
+#include <IFSelect_SelectEntityNumber.hxx>
+#include <IFSelect_SelectErrorEntities.hxx>
+#include <IFSelect_SelectIncorrectEntities.hxx>
+#include <IFSelect_SelectIntersection.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_SelectModelEntities.hxx>
+#include <IFSelect_SelectModelRoots.hxx>
+#include <IFSelect_SelectPointed.hxx>
+#include <IFSelect_SelectRange.hxx>
+#include <IFSelect_SelectRoots.hxx>
+#include <IFSelect_SelectShared.hxx>
+#include <IFSelect_SelectSharing.hxx>
+#include <IFSelect_SelectSignature.hxx>
+#include <IFSelect_SelectSuite.hxx>
+#include <IFSelect_SelectUnion.hxx>
+#include <IFSelect_SelectUnknownEntities.hxx>
+#include <IFSelect_SessionFile.hxx>
 #include <IFSelect_SessionPilot.hxx>
-
+#include <IFSelect_ShareOut.hxx>
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_SignatureList.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <IFSelect_SignType.hxx>
+#include <IFSelect_Transformer.hxx>
+#include <IFSelect_WorkLibrary.hxx>
+#include <IFSelect_WorkSession.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_MSG.hxx>
+#include <Interface_Static.hxx>
+#include <Interface_Version.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <IFSelect_SignType.hxx>
-#include <IFSelect_SignatureList.hxx>
-#include <IFSelect_ShareOut.hxx>
-#include <IFSelect_IntParam.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <Interface_Static.hxx>
-#include <Interface_EntityIterator.hxx>
 
-#include <IFSelect_WorkSession.hxx>
-#include <IFSelect_GeneralModifier.hxx>
-#include <IFSelect_Modifier.hxx>
-#include <IFSelect_WorkLibrary.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <IFSelect_SessionFile.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-
-#include <Interface_Category.hxx>
-#include <Interface_CheckIterator.hxx>
-#include <IFSelect_CheckCounter.hxx>
-#include <IFSelect_SignCounter.hxx>
-#include <IFSelect_GraphCounter.hxx>
-
-#include <IFSelect_Dispatch.hxx>
-#include <IFSelect_DispGlobal.hxx>
-#include <IFSelect_DispPerOne.hxx>
-#include <IFSelect_DispPerCount.hxx>
-#include <IFSelect_DispPerFiles.hxx>
-#include <IFSelect_DispPerSignature.hxx>
-#include <IFSelect_Selection.hxx>
-#include <IFSelect_SelectDeduct.hxx>
-#include <IFSelect_SelectModelEntities.hxx>
-#include <IFSelect_SelectModelRoots.hxx>
-#include <IFSelect_SelectEntityNumber.hxx>
-#include <IFSelect_SelectRoots.hxx>
-#include <IFSelect_SelectDiff.hxx>
-#include <IFSelect_SelectUnion.hxx>
-#include <IFSelect_SelectIntersection.hxx>
-#include <IFSelect_SelectShared.hxx>
-#include <IFSelect_SelectRange.hxx>
-#include <IFSelect_Signature.hxx>
-#include <IFSelect_SelectSignature.hxx>
-#include <IFSelect_SelectErrorEntities.hxx>
-#include <IFSelect_SelectUnknownEntities.hxx>
-#include <IFSelect_SelectIncorrectEntities.hxx>
-#include <IFSelect_SelectSharing.hxx>
-#include <IFSelect_SelectPointed.hxx>
-#include <IFSelect_SelectSuite.hxx>
-#include <IFSelect_ModifReorder.hxx>
-#include <IFSelect_Editor.hxx>
-#include <IFSelect_EditForm.hxx>
-#include <IFSelect_ListEditor.hxx>
-#include <IFSelect_Transformer.hxx>
-
-#include <Interface_Macros.hxx>
-#include <Interface_Version.hxx>
-#include <Interface_MSG.hxx>
 #include <stdio.h>
-
-
 //  Decomposition of a file name in its parts : prefix, root, suffix
-
 static void SplitFileName
   (const Standard_CString filename,
    TCollection_AsciiString& prefix,

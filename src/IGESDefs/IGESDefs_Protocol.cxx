@@ -11,18 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDefs_Protocol.ixx>
 
 #include <IGESDefs_AssociativityDef.hxx>
-#include <IGESDefs_MacroDef.hxx>
-#include <IGESDefs_UnitsData.hxx>
 #include <IGESDefs_AttributeDef.hxx>
-#include <IGESDefs_TabularData.hxx>
-#include <IGESDefs_GenericData.hxx>
 #include <IGESDefs_AttributeTable.hxx>
-
-#include  <IGESGraph.hxx>
-#include  <IGESGraph_Protocol.hxx>
+#include <IGESDefs_GenericData.hxx>
+#include <IGESDefs_MacroDef.hxx>
+#include <IGESDefs_Protocol.hxx>
+#include <IGESDefs_TabularData.hxx>
+#include <IGESDefs_UnitsData.hxx>
+#include <IGESGraph.hxx>
+#include <IGESGraph_Protocol.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype1,atype2,atype3,atype4,atype5,atype6,atype7;

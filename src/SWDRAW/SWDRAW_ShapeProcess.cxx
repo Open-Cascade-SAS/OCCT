@@ -14,22 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SWDRAW_ShapeProcess.ixx>
-#include <SWDRAW.hxx>
 
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
-#include <TopoDS_Shape.hxx>
-
 #include <ShapeProcess.hxx>
-#include <ShapeProcess_ShapeContext.hxx>
 #include <ShapeProcess_OperLibrary.hxx>
+#include <ShapeProcess_ShapeContext.hxx>
+#include <SWDRAW.hxx>
+#include <SWDRAW_ShapeProcess.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ApplySequence
 //purpose  : 
 //=======================================================================
-
 static Standard_Integer ApplySequence(Draw_Interpretor& di,
 				      Standard_Integer argc, const char** argv)
 {

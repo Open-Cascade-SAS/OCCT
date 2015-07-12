@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Curve.ixx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
-#include <TopOpeBRepDS_Dumper.hxx>
-#include <Precision.hxx>
 
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Precision.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_Dumper.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_Curve
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_Curve::TopOpeBRepDS_Curve() :
 myFirst(0.0), myLast(0.0),
 myRangeDefined(Standard_False),

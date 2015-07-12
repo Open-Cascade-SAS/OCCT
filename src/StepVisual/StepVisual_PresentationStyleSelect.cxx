@@ -11,12 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_PresentationStyleSelect.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepVisual_PointStyle.hxx>
+#include <Standard_Transient.hxx>
 #include <StepVisual_CurveStyle.hxx>
-#include <StepVisual_SurfaceStyleUsage.hxx>
 #include <StepVisual_FillAreaStyle.hxx>
+#include <StepVisual_PointStyle.hxx>
+#include <StepVisual_PresentationStyleSelect.hxx>
+#include <StepVisual_SurfaceStyleUsage.hxx>
 #include <StepVisual_TextStyle.hxx>
 
 StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect () {  }

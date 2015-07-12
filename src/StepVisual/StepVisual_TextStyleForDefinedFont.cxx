@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_TextStyleForDefinedFont.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_Colour.hxx>
+#include <StepVisual_TextStyleForDefinedFont.hxx>
 
 StepVisual_TextStyleForDefinedFont::StepVisual_TextStyleForDefinedFont ()  {}
 

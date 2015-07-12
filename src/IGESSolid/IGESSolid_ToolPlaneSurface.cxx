@@ -16,22 +16,31 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ToolPlaneSurface.ixx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamCursor.hxx>
-#include <IGESGeom_Point.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_Status.hxx>
 #include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <IGESSolid_ToolPlaneSurface.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_DomainError.hxx>
 
 // MGE 31/07/98
-#include <Message_Msg.hxx>
-#include <IGESData_Status.hxx>
-
 //=======================================================================
 //function : IGESSolid_ToolPlaneSurface
 //purpose  : 
 //=======================================================================
-
 IGESSolid_ToolPlaneSurface::IGESSolid_ToolPlaneSurface ()
 {
 }

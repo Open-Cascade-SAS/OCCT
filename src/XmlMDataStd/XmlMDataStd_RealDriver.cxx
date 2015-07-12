@@ -15,16 +15,19 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#include <stdio.h>
-#include <XmlMDataStd_RealDriver.ixx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_RealDriver.hxx>
 #include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
+#include <stdio.h>
 //=======================================================================
 //function : XmlMDataStd_RealDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataStd_RealDriver::XmlMDataStd_RealDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

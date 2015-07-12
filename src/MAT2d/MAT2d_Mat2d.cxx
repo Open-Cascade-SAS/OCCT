@@ -14,23 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MAT2d_Mat2d.ixx>
 
-#include <MAT_Edge.hxx>
-#include <MAT_ListOfEdge.hxx>
-#include <MAT_Bisector.hxx>
-#include <MAT_ListOfBisector.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <MAT_DataMapOfIntegerBisector.hxx>
-#include <Precision.hxx>
+#include <MAT2d_Mat2d.hxx>
 #include <MAT2d_Tool2d.hxx>
+#include <MAT_Bisector.hxx>
+#include <MAT_DataMapOfIntegerBisector.hxx>
+#include <MAT_Edge.hxx>
+#include <MAT_ListOfBisector.hxx>
+#include <MAT_ListOfEdge.hxx>
+#include <Precision.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
 
 //========================================================================
 //  function : MAT2d_Mat2d
 //  purpose  :
 //========================================================================
-
 MAT2d_Mat2d::MAT2d_Mat2d(const Standard_Boolean IsOpenResult)
 {
   myIsOpenResult = IsOpenResult;

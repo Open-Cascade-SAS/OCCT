@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignPresentedItem.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepAP214_AutoDesignPresentedItem.hxx>
+#include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 
 StepAP214_AutoDesignPresentedItem::StepAP214_AutoDesignPresentedItem ()  {}
 

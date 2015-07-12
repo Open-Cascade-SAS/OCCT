@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_BoundedSurface.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_Boundary.hxx>
+#include <IGESGeom_BoundedSurface.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_BoundedSurface::IGESGeom_BoundedSurface ()    {  }
 

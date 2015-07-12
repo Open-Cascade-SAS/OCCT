@@ -11,8 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_ReaderModule.ixx>
 
+#include <Interface_Check.hxx>
+#include <Interface_FileReaderData.hxx>
+#include <Interface_ReaderModule.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 Standard_Boolean Interface_ReaderModule::NewRead(const Standard_Integer,
                                                  const Handle(Interface_FileReaderData)&,

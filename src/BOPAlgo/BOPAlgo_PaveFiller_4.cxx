@@ -15,29 +15,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
-//
-#include <NCollection_IncAllocator.hxx>
-//
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepBndLib.hxx>
-//
+
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-//
-#include <IntTools_Context.hxx>
-//
-#include <BOPDS_Iterator.hxx>
-#include <BOPDS_VectorOfInterfVF.hxx>
-#include <BOPDS_Interf.hxx>
-#include <BOPDS_SubIterator.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
+#include <BOPDS_Interf.hxx>
+#include <BOPDS_Iterator.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_SubIterator.hxx>
+#include <BOPDS_VectorOfInterfVF.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Context.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
+//
+//
+//
+//
+//
 //=======================================================================
 //class    : BOPAlgo_VertexFace
 //purpose  : 

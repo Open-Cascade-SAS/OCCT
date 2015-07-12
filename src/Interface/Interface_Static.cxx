@@ -11,16 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Static.ixx>
 
 #include <Dico_DictionaryOfInteger.hxx>
 #include <Dico_DictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfInteger.hxx>
-
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_Static.hxx>
+#include <Message_Messenger.hxx>
 #include <OSD_Path.hxx>
-#include <stdio.h>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
+#include <stdio.h>
 static char defmess[31];
 
 //  Fonctions Satisfies offertes en standard ...

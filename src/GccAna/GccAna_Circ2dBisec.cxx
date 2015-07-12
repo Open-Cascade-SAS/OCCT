@@ -18,27 +18,27 @@
 //   CREATION of the BISSECTICE between two CIRCLES.                        +
 //=========================================================================
 
-#include <GccAna_Circ2dBisec.ixx>
-
-#include <gp_XY.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Hypr2d.hxx>
-#include <gp.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <GccInt_BParab.hxx>
-#include <GccInt_BLine.hxx>
-#include <GccInt_BElips.hxx>
-#include <GccInt_BCirc.hxx>
-#include <GccInt_BHyper.hxx>
+#include <GccAna_Circ2dBisec.hxx>
 #include <GccEnt_BadQualifier.hxx>
-#include <StdFail_NotDone.hxx>
+#include <GccInt_BCirc.hxx>
+#include <GccInt_BElips.hxx>
+#include <GccInt_BHyper.hxx>
+#include <GccInt_Bisec.hxx>
+#include <GccInt_BLine.hxx>
+#include <GccInt_BParab.hxx>
+#include <gp.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <Precision.hxx>
-//=========================================================================
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
+//=========================================================================
 GccAna_Circ2dBisec::
    GccAna_Circ2dBisec (const gp_Circ2d& Circ1    ,
 		       const gp_Circ2d& Circ2    ) {

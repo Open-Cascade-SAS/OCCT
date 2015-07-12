@@ -13,39 +13,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshTest.ixx>
-#include <Draw_Interpretor.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <BRepMesh_DiscretFactory.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_MapIteratorOfMapOfAsciiString.hxx>
-#include <BRepMesh_FactoryError.hxx>
-#include <BRepMesh_DiscretRoot.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
+
 #include <Bnd_Box.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepGProp.hxx>
+#include <BRepMesh_DiscretFactory.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <Draw.hxx>
+#include <BRepMesh_Edge.hxx>
+#include <BRepMesh_FactoryError.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <DBRep.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <Poly_Triangulation.hxx>
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <DrawTrSurf.hxx>
 #include <gp_Vec.hxx>
 #include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <DrawTrSurf.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
+#include <MeshTest.hxx>
 #include <MeshTest_CheckTopology.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Poly_Polygon2D.hxx>
-#include <Standard.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <TopoDS_Face.hxx>
-#include <BRepMesh_Edge.hxx>
 #include <NCollection_Map.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_MapIteratorOfMapOfAsciiString.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 static Standard_Integer mpnames           (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer mpsetdefaultname  (Draw_Interpretor& , Standard_Integer , const char** );

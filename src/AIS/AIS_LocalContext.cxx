@@ -16,32 +16,40 @@
 
 //Modified by ROB : Traque des UpdateConversion intempestifs.
 
-#include <AIS_LocalContext.ixx>
-#include <SelectMgr_OrFilter.hxx>
-#include <SelectMgr_CompositionFilter.hxx>
-#include <AIS_LocalStatus.hxx>
-#include <AIS_Shape.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <AIS_DataMapIteratorOfDataMapOfSelStat.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
-#include <AIS_DataMapIteratorOfDataMapOfSelStat.hxx>
-#include <TopAbs_ShapeEnum.hxx>
+#include <AIS_LocalContext.hxx>
+#include <AIS_LocalStatus.hxx>
+#include <AIS_Selection.hxx>
+#include <AIS_Shape.hxx>
+#include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Aspect_TypeOfMarker.hxx>
+#include <SelectMgr_CompositionFilter.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <SelectMgr_OrFilter.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
-#include <AIS_Selection.hxx>
-#include <V3d_Viewer.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <Visual3d_View.hxx>
-#include <AIS_InteractiveObject.hxx>
 
 #include <stdio.h>
-
 static TCollection_AsciiString AIS_Local_SelName(const Standard_Address address,
                                                  const Standard_Integer anIndex)
 {

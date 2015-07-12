@@ -12,40 +12,38 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
- 
      FONCTION :
      ----------
         Classe V3d_CircularGrid :
- 
      VERSION HISTORY  :
      --------------------------------
-
 ************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
  */
 
-#include <V3d_CircularGrid.ixx>
-
-#include <TColStd_Array2OfReal.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Visual3d_ViewManager.hxx>
-#include <V3d_Viewer.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <V3d_CircularGrid.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
  * Constant
  */
-
 #define DIVISION 8
 #define MYMINMAX 25.
 #define MYFACTOR 50.

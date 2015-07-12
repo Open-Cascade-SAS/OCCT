@@ -15,11 +15,15 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#include <XmlMDataStd_IntegerArrayDriver.ixx>
-#include <TDataStd_IntegerArray.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <XmlObjMgt.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_IntegerArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <XmlMDataStd.hxx>
+#include <XmlMDataStd_IntegerArrayDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")

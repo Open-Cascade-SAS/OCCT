@@ -14,15 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DDataStd_DrawPresentation.ixx>
-#include <Draw_Drawable3D.hxx>
+
+#include <DDataStd_DrawDriver.hxx>
+#include <DDataStd_DrawPresentation.hxx>
 #include <Draw.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <Draw_Viewer.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_DefaultDeltaOnRemoval.hxx>
 #include <TDF_DeltaOnAddition.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
-#include <DDataStd_DrawDriver.hxx>
 
 #ifndef WNT
 extern Draw_Viewer dout;

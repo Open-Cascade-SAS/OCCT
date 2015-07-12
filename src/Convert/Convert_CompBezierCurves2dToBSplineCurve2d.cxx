@@ -14,22 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Convert_CompBezierCurves2dToBSplineCurve2d.ixx>
 
-#include <Precision.hxx>
 #include <BSplCLib.hxx>
-#include <PLib.hxx>
+#include <Convert_CompBezierCurves2dToBSplineCurve2d.hxx>
+#include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp.hxx>
+#include <PLib.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
-
 
 //=======================================================================
 //function : Convert_CompBezierCurves2dToBSplineCurve2d
 //purpose  : 
 //=======================================================================
-
 Convert_CompBezierCurves2dToBSplineCurve2d::
 Convert_CompBezierCurves2dToBSplineCurve2d(
 	          const Standard_Real AngularTolerance) :

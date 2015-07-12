@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_DrawingSize.ixx>
+#include <IGESGraph_DrawingSize.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_DrawingSize::IGESGraph_DrawingSize ()    {  }
 

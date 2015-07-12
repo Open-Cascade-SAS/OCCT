@@ -14,50 +14,55 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeConstruct.ixx>
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
-#include <GeomConvert.hxx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Conic.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dConvert_ApproxCurve.hxx>
 #include <Geom2dConvert.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <GeomConvert_ApproxSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_ElementarySurface.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <ShapeConstruct_Curve.hxx>
-#include <Precision.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAPI.hxx>
+#include <GeomConvert.hxx>
+#include <GeomConvert_ApproxCurve.hxx>
+#include <GeomConvert_ApproxSurface.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
-#include <GeomAPI.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <Precision.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom_Plane.hxx>
+#include <ShapeConstruct.hxx>
+#include <ShapeConstruct_Curve.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom_ElementarySurface.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 //=======================================================================
 //function : ConvertCurveToBSpline
 //purpose  : 
 //=======================================================================
-
 Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geom_Curve)& C3D,
 								const Standard_Real First,
 								const Standard_Real Last,

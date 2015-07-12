@@ -16,14 +16,16 @@
 
 #define No_Standard_NoSuchObject
 
-#include <TopoDS_Iterator.ixx>
 
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : Initialize
 //purpose  : 
 //=======================================================================
-
 void TopoDS_Iterator::Initialize(const TopoDS_Shape& S,
                                  const Standard_Boolean cumOri,
                                  const Standard_Boolean cumLoc)

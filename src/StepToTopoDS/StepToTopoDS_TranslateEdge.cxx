@@ -17,65 +17,62 @@
 //:o0 abv 16.02.99: POLYLINE allowed as 3d curve of edge
 //gka,abv 05.04.99: S4136: improving tolerance management, eliminate BRepAPI::Precision()
 
-#include <StepToTopoDS_TranslateEdge.ixx>
-
-#include <StepToTopoDS.hxx>
-#include <StepToTopoDS_TranslateVertex.hxx>
-#include <StepToTopoDS_GeometricTool.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_CartesianPoint.hxx>
 #include <Geom_Curve.hxx>
-#include <GeomAbs_Shape.hxx>
-
 #include <Geom_Line.hxx>
-#include <gp_Vec.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
-
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeConstruct_Curve.hxx>
-
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_Polyline.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
+#include <StepRepr_DefinitionalRepresentation.hxx>
+#include <StepShape_Edge.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_OrientedEdge.hxx>
-#include <StepGeom_Curve.hxx>
-//#include <StepGeom_Polyline.hxx>
-#include <StepGeom_Pcurve.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
-#include <Transfer_TransientProcess.hxx>
-//#include <TransferBRep.hxx>
-
-#include <GeomAdaptor_Curve.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <Precision.hxx>
-
+#include <StepShape_Vertex.hxx>
+#include <StepShape_VertexPoint.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom_MakeCurve.hxx>
 #include <StepToGeom_MakeCurve2d.hxx>
-#include <StepRepr_DefinitionalRepresentation.hxx>
+#include <StepToTopoDS.hxx>
+#include <StepToTopoDS_GeometricTool.hxx>
+#include <StepToTopoDS_NMTool.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateEdge.hxx>
+#include <StepToTopoDS_TranslateVertex.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <Transfer_TransientProcess.hxx>
 #include <UnitsMethods.hxx>
 
+//#include <StepGeom_Polyline.hxx>
+//#include <TransferBRep.hxx>
 //:d8
-#include <StepShape_VertexPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <Geom_CartesianPoint.hxx>
-
 // Used in I-DEAS-like STP processing (ssv; 15.11.2010)
-#include <TCollection_HAsciiString.hxx>
-#include <StepGeom_Polyline.hxx>
-
 //#define DEBUG
-
-
 // ============================================================================
 // Method  : DecodeMakeEdgeError
 // Purpose : 
 // ============================================================================
-
 static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
 				const Handle(Standard_Transient)& orig,
 				const Handle(Geom_Curve)& myCurve,

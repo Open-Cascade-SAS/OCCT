@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWPresentationSize.ixx>
-#include <StepVisual_PresentationSizeAssignmentSelect.hxx>
-#include <StepVisual_PlanarBox.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWPresentationSize.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepVisual_PlanarBox.hxx>
 #include <StepVisual_PresentationSize.hxx>
-
+#include <StepVisual_PresentationSizeAssignmentSelect.hxx>
 
 RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize () {}
 

@@ -11,21 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDimen_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDimen_AngularDimension.hxx>
 #include <IGESDimen_BasicDimension.hxx>
 #include <IGESDimen_CenterLine.hxx>
 #include <IGESDimen_CurveDimension.hxx>
 #include <IGESDimen_DiameterDimension.hxx>
 #include <IGESDimen_DimensionDisplayData.hxx>
+#include <IGESDimen_DimensionedGeometry.hxx>
 #include <IGESDimen_DimensionTolerance.hxx>
 #include <IGESDimen_DimensionUnits.hxx>
-#include <IGESDimen_DimensionedGeometry.hxx>
 #include <IGESDimen_FlagNote.hxx>
 #include <IGESDimen_GeneralLabel.hxx>
+#include <IGESDimen_GeneralModule.hxx>
 #include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_GeneralSymbol.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
@@ -37,17 +37,15 @@
 #include <IGESDimen_RadiusDimension.hxx>
 #include <IGESDimen_Section.hxx>
 #include <IGESDimen_SectionedArea.hxx>
-#include <IGESDimen_WitnessLine.hxx>
-
 #include <IGESDimen_ToolAngularDimension.hxx>
 #include <IGESDimen_ToolBasicDimension.hxx>
 #include <IGESDimen_ToolCenterLine.hxx>
 #include <IGESDimen_ToolCurveDimension.hxx>
 #include <IGESDimen_ToolDiameterDimension.hxx>
 #include <IGESDimen_ToolDimensionDisplayData.hxx>
+#include <IGESDimen_ToolDimensionedGeometry.hxx>
 #include <IGESDimen_ToolDimensionTolerance.hxx>
 #include <IGESDimen_ToolDimensionUnits.hxx>
-#include <IGESDimen_ToolDimensionedGeometry.hxx>
 #include <IGESDimen_ToolFlagNote.hxx>
 #include <IGESDimen_ToolGeneralLabel.hxx>
 #include <IGESDimen_ToolGeneralNote.hxx>
@@ -62,14 +60,19 @@
 #include <IGESDimen_ToolSection.hxx>
 #include <IGESDimen_ToolSectionedArea.hxx>
 #include <IGESDimen_ToolWitnessLine.hxx>
-
-
+#include <IGESDimen_WitnessLine.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESDimen_GeneralModule::IGESDimen_GeneralModule ()    {  }
 
 

@@ -11,24 +11,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_ModelCopier.ixx>
-#include <IFSelect_Selection.hxx>
-#include <IFSelect_GeneralModifier.hxx>
-#include <IFSelect_Modifier.hxx>
+
+#include <IFSelect_AppliedModifiers.hxx>
 #include <IFSelect_ContextModif.hxx>
 #include <IFSelect_ContextWrite.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-#include <TCollection_HAsciiString.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <IFSelect_ModelCopier.hxx>
+#include <IFSelect_Modifier.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_ShareOut.hxx>
+#include <IFSelect_ShareOutResult.hxx>
+#include <IFSelect_WorkLibrary.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_GeneralLib.hxx>
-#include <Message_Messenger.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
 #include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfInteger.hxx>
+
 #include <stdio.h>
-
 //#define MISOPOINT
-
-
 IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
 
     void  IFSelect_ModelCopier::SetShareOut

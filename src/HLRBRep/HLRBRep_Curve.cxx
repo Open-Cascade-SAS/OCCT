@@ -14,26 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_Curve.ixx>
+
+#include <BRepAdaptor_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pln.hxx>
-#include <Precision.hxx>
-#include <ProjLib.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 #include <HLRAlgo.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_CLProps.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
+#include <HLRBRep_Curve.hxx>
+#include <Precision.hxx>
+#include <ProjLib.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_UndefinedDerivative.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TopoDS_Edge.hxx>
 
 //OCC155 // jfa 05.03.2002 // bad vectors projection
-
 //=======================================================================
 //function : HLRBRep_Curve
 //purpose  : 
 //=======================================================================
-
 HLRBRep_Curve::HLRBRep_Curve ()
 {}
 

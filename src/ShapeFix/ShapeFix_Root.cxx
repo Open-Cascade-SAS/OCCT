@@ -11,13 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_Root.ixx>
+
+#include <Message_Msg.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <ShapeFix_Root.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeFix_Root
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Root::ShapeFix_Root()
 {
   myPrecision = myMinTol = myMaxTol = Precision::Confusion();

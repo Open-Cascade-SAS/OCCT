@@ -17,27 +17,23 @@
 //gka 19.01.99 changing date parameters and  number of IGES version, adding parameter(ApllicationProtocol)
 //#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
 
-#include <stdio.h>
-#include <IGESData.ixx>
-#include <IGESData_Protocol.hxx>
+#include <IGESData.hxx>
 #include <IGESData_DefaultGeneral.hxx>
 #include <IGESData_DefaultSpecific.hxx>
-
-#include <TCollection_HAsciiString.hxx>
 #include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESModel.hxx>
+#include <IGESData_Protocol.hxx>
 #include <Interface_InterfaceModel.hxx>
-
 #include <Interface_Static.hxx>
+#include <Interface_Version.hxx>
 #include <Message_MsgFile.hxx>
+#include <OSD_Process.hxx>
+#include <Quantity_Date.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <OSD_Process.hxx>
+#include <TCollection_HAsciiString.hxx>
 
-#include <Interface_Version.hxx>
-#include <Quantity_Date.hxx>
-
-
+#include <stdio.h>
 static Handle(IGESData_Protocol) proto;
 
 static Handle(IGESData_DefaultGeneral)    stmod;

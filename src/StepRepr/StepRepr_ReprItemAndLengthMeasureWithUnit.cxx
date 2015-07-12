@@ -11,14 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepRepr_ReprItemAndLengthMeasureWithUnit.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepRepr_MeasureRepresentationItem.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
 
 //=======================================================================
 //function : StepRepr_ReprItemAndLengthMeasureWithUnit
 //purpose  : 
 //=======================================================================
-
 StepRepr_ReprItemAndLengthMeasureWithUnit::StepRepr_ReprItemAndLengthMeasureWithUnit()
 {
   myLengthMeasureWithUnit = new StepBasic_LengthMeasureWithUnit();

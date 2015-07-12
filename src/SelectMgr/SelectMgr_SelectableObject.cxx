@@ -14,27 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <SelectMgr_SelectableObject.ixx>
-#include <Standard_NoSuchObject.hxx>
-#include <SelectMgr_Selection.hxx>
+#include <Aspect_TypeOfMarker.hxx>
+#include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PlaneAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <PrsMgr_PresentableObjectPointer.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <Prs3d_PlaneAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <PrsMgr_PresentableObjectPointer.hxx>
 #include <SelectMgr_IndexedMapOfOwner.hxx>
-
+#include <SelectMgr_SelectableObject.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
-#include <gp_Pnt.hxx>
 
 static Standard_Integer Search (const SelectMgr_SequenceOfSelection& seq,
                                 const Handle (SelectMgr_Selection)& theSel)

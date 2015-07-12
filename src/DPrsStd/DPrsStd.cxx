@@ -14,23 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DPrsStd.ixx>
-#include <Draw_Interpretor.hxx>
-#include <Draw.hxx>
 
-#include <Draw_PluginMacro.hxx>
-#include <DNaming.hxx>
-#include <DDataStd.hxx> 
-#include <DDF.hxx> 
-#include <DDocStd.hxx>
-//#include <AppStdL_Application.hxx>
 #include <AppStd_Application.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <OSD_Path.hxx>
-#include <OSD_Environment.hxx>
+#include <DDataStd.hxx>
+#include <DDF.hxx>
+#include <DDocStd.hxx>
+#include <DNaming.hxx>
+#include <DPrsStd.hxx>
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_PluginMacro.hxx>
 #include <OSD_Directory.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
+#include <OSD_Path.hxx>
+#include <TCollection_AsciiString.hxx>
 
+//#include <AppStdL_Application.hxx>
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
 #pragma warning(4:4190)

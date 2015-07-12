@@ -12,7 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Storage_Root.ixx>
+
+#include <Standard_Persistent.hxx>
+#include <Standard_Type.hxx>
+#include <Storage_Root.hxx>
+#include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Storage_Root::Storage_Root() : myRef(0)
 {

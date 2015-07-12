@@ -12,18 +12,25 @@
 // commercial license or contractual agreement.
 
 //szv#9:PRO19565:04Oct99 loss of rotation matrix corrected
-#include <IGESData_ToolLocation.ixx>
+
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_GeneralModule.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESData_SingleParentEntity.hxx>
+#include <IGESData_ToolLocation.hxx>
+#include <IGESData_TransfEntity.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-#include <IGESData_TransfEntity.hxx>
-#include <IGESData_SingleParentEntity.hxx>
-#include <IGESData_GeneralModule.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax3.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 #define TYPEFORASSOC 402
 

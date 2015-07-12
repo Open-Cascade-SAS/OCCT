@@ -12,4 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_FunctionSetWithDerivatives.ixx>
+
+#include <math_FunctionSetWithDerivatives.hxx>
+#include <math_Matrix.hxx>

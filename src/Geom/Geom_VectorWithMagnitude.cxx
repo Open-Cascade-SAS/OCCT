@@ -14,7 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_VectorWithMagnitude.ixx>
+
+#include <Geom_Geometry.hxx>
+#include <Geom_Vector.hxx>
+#include <Geom_VectorWithMagnitude.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_VectorWithMagnitude         VectorWithMagnitude;
 typedef Geom_Vector                      Vector;

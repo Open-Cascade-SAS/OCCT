@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_FunctionTanCirCu.ixx>
 
-#include <gp_Vec2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_FunctionTanCirCu.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-
-#include <Geom2dGcc_CurveTool.hxx>
+#include <gp_Vec2d.hxx>
 
 //=========================================================================
 //  soit P1 le point sur la courbe Geom2dAdaptor_Curve d abscisse u.      +
@@ -50,7 +51,6 @@
 //                      by an average square distance between the circle  +
 //                      and the curve.                                    +
 //=========================================================================
-
 Geom2dGcc_FunctionTanCirCu::
 Geom2dGcc_FunctionTanCirCu(const gp_Circ2d& Circ   ,
                            const Geom2dAdaptor_Curve&  Curv   ) {

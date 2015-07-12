@@ -14,10 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_ConstRadInv.ixx>
 
-#include <Precision.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <BlendFunc.hxx>
+#include <BlendFunc_ConstRadInv.hxx>
+#include <math_Matrix.hxx>
+#include <Precision.hxx>
 
 #define Eps 1.e-15
 

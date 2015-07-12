@@ -14,4 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_PolyhedronTool.ixx>
+
+#include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
+#include <IntPatch_Polyhedron.hxx>
+#include <IntPatch_PolyhedronTool.hxx>
+#include <Standard_OutOfRange.hxx>

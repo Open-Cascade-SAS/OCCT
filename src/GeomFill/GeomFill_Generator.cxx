@@ -14,22 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Generator.ixx>
-
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomFill_Generator.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 //=======================================================================
 //function : GeomFill_Generator
 //purpose  : 
 //=======================================================================
-
 GeomFill_Generator::GeomFill_Generator()
 {
 }

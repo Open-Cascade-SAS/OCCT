@@ -14,20 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepSweep_Trsf.ixx>
-#include <Sweep_NumShapeIterator.hxx>
-#include <BRepSweep_Iterator.hxx>
-#include <BRepAdaptor_Curve.hxx>
+
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepLProp.hxx>
+#include <BRepSweep_Iterator.hxx>
+#include <BRepSweep_Trsf.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
+#include <Precision.hxx>
+#include <Sweep_NumShape.hxx>
+#include <Sweep_NumShapeIterator.hxx>
 #include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Precision.hxx>
 
 BRepSweep_Trsf::BRepSweep_Trsf(const BRep_Builder& aBuilder,
 			       const TopoDS_Shape& aGenShape,

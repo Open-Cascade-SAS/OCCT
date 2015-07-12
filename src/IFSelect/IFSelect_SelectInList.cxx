@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectInList.ixx>
+
+#include <IFSelect_SelectInList.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 // ....    Specialisation de SelectAnyList dans laquelle on traite une liste
 //         dont chaque item est une Entite
-
-
 void IFSelect_SelectInList::FillResult
   (const Standard_Integer n1, const Standard_Integer n2,
    const Handle(Standard_Transient)& ent,

@@ -11,29 +11,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSDRAW.ixx>
+
+#include <DBRep.hxx>
 #include <Dico_DictionaryOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <Draw_Appli.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IFSelect_SessionPilot.hxx>
-//#include <XSDRAW_Shape.hxx>
-#include <XSDRAW_Vars.hxx>
-#include <XSControl_Functions.hxx>
-#include <XSControl_FuncShape.hxx>
-#include <Draw_Appli.hxx>
-#include <XSControl.hxx>
-#include <XSControl_TransferWriter.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <TransferBRep.hxx>
-#include <DBRep.hxx>
-
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <stdio.h>
-
+#include <Interface_Protocol.hxx>
 #include <Message.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <XSControl.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_FuncShape.hxx>
+#include <XSControl_Functions.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <XSDRAW.hxx>
+#include <XSDRAW_Vars.hxx>
 
+#include <stdio.h>
+//#include <XSDRAW_Shape.hxx>
 static int deja = 0, dejald = 0;
 //unused variable 
 //static int okxset = 0;

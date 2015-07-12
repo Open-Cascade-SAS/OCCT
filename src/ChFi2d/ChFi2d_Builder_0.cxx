@@ -20,52 +20,43 @@
 //              des droites ou des cercles; fonction IsLineOrCircle
 //              (BUC60288)
 
-#include <ChFi2d.hxx>
-#include <ChFi2d_Builder.ixx>
-
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
+#include <ChFi2d.hxx>
+#include <ChFi2d_Builder.hxx>
 #include <ElCLib.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
-
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dInt_GInter.hxx>
-
-#include <IntRes2d_IntersectionPoint.hxx>
-
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Precision.hxx>
-
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 gp_Pnt ComputePoint(const TopoDS_Vertex& V,const TopoDS_Edge& E, 
 		    const Standard_Real D1, Standard_Real& Param1);

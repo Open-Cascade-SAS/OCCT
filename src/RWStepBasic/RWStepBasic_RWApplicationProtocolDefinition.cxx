@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWApplicationProtocolDefinition.ixx>
-#include <StepBasic_ApplicationContext.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWApplicationProtocolDefinition.hxx>
+#include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ApplicationProtocolDefinition.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWApplicationProtocolDefinition::RWStepBasic_RWApplicationProtocolDefinition () {}
 

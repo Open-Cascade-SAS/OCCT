@@ -11,11 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SignStatus.ixx>
+
 #include <IGESData_IGESEntity.hxx>
+#include <IGESSelect_SignStatus.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <stdio.h>
-
-
 static char theval[10];
 
     IGESSelect_SignStatus::IGESSelect_SignStatus ()

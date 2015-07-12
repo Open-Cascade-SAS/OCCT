@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_Material.ixx>
+
+#include <Standard_Type.hxx>
+#include <Vrml_Material.hxx>
 
 Vrml_Material::Vrml_Material(const Handle(Quantity_HArray1OfColor)& aAmbientColor, 
 			      const Handle(Quantity_HArray1OfColor)& aDiffuseColor, 

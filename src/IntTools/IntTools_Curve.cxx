@@ -11,9 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_Curve.ixx>
+
+#include <Geom2d_Curve.hxx>
 #include <Geom_BoundedCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Curve.hxx>
 
 //=======================================================================
 //function : IntTools_Curve::IntTools_Curve

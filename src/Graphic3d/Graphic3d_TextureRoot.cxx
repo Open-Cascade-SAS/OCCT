@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_TextureRoot.ixx>
+
 #include <Graphic3d_GraphicDriver.hxx>
-
+#include <Graphic3d_TextureParams.hxx>
+#include <Graphic3d_TextureRoot.hxx>
 #include <Image_AlienPixMap.hxx>
-
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
+#include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
-#include <OSD_File.hxx>
 #include <Standard_Atomic.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 namespace
 {

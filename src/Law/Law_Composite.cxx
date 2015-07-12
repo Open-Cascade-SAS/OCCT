@@ -16,19 +16,20 @@
 
 // pmn -> 17/01/1996 added : Continuity, (Nb)Intervals, D2, Trim
 
-#include <Law_Composite.ixx>
 #include <ElCLib.hxx>
-#include <Law_ListIteratorOfLaws.hxx>
+#include <Law_Composite.hxx>
+#include <Law_Function.hxx>
 #include <Law_Laws.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
+#include <Law_ListIteratorOfLaws.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : Law_Composite
 //purpose  : 
 //=======================================================================
-
 Law_Composite::Law_Composite() 
                 :  first(-1.e100),last(1.e100), 
 		   periodic(Standard_False),

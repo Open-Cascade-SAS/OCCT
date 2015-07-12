@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_Name.ixx>
-
+#include <IGESBasic_Name.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESBasic_Name::IGESBasic_Name ()    {  }
 

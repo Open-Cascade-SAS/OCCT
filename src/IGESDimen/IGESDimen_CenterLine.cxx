@@ -16,11 +16,13 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_CenterLine.ixx>
-#include <Standard_DimensionMismatch.hxx>
-#include <IGESData_LineFontEntity.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESDimen_CenterLine.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_CenterLine::IGESDimen_CenterLine ()    {  }
 

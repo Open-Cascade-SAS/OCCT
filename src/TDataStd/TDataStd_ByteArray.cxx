@@ -13,9 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_ByteArray.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_ByteArray.hxx>
 #include <TDataStd_DeltaOnModificationOfByteArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : GetID

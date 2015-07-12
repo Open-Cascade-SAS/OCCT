@@ -14,17 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_Transform.ixx>
 
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <gp.hxx>
-
+#include <gp_Trsf.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_Transform
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_Transform::BRepBuilderAPI_Transform (const gp_Trsf& T) :
   myTrsf(T)
 {

@@ -14,21 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_BooleanOperations.ixx>
-#include <TopOpeBRep_DSFiller.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepTool_GeomTool.hxx>
-#include <BRep_Tool.hxx>
+
+#include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgo_BooleanOperations.hxx>
+#include <BRepAlgo_DSAccess.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepTools_Substitution.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Geom_Surface.hxx>
 #include <TopLoc_Location.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_DSFiller.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepTool_GeomTool.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : Create

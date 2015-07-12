@@ -11,9 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWSiUnit.ixx>
-#include <StepBasic_DimensionalExponents.hxx>
 
+#include <Interface_Check.hxx>
+#include <RWStepBasic_RWSiUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_SiUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TCollection_AsciiString.hxx>
 
 // --- Enum : SiPrefix ---
 static TCollection_AsciiString spExa(".EXA.");

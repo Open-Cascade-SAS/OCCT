@@ -12,7 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Blend_Function.ixx>
+
+#include <Blend_Function.hxx>
+#include <Blend_Point.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_DomainError.hxx>
 
 Standard_Integer Blend_Function::NbVariables () const
 {

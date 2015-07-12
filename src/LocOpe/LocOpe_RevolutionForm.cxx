@@ -14,38 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_RevolutionForm.ixx>
-
-#include <BRepSweep_Revol.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <LocOpe_BuildShape.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Vec.hxx>
-
-#include <BRepTools_TrsfModification.hxx>
-#include <BRepTools_Modifier.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Circle.hxx>
-
 
 #include <BRepLib_MakeVertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-
+#include <BRepSweep_Revol.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <LocOpe.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
+#include <LocOpe_BuildShape.hxx>
+#include <LocOpe_RevolutionForm.hxx>
 #include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 //=======================================================================
 //function : LocOpe_Revol
 //purpose  : 
 //=======================================================================
-
 LocOpe_RevolutionForm::LocOpe_RevolutionForm() :  myDone(Standard_False)
 
 {}

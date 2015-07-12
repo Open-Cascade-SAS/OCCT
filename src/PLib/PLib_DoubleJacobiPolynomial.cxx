@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PLib_DoubleJacobiPolynomial.ixx>
-#include <PLib_JacobiPolynomial.hxx>
+
 #include <math_Vector.hxx>
+#include <PLib_DoubleJacobiPolynomial.hxx>
+#include <PLib_JacobiPolynomial.hxx>
 
 //=======================================================================
 //function : PLib_DoubleJacobiPolynomial
 //purpose  : 
 //=======================================================================
-
 PLib_DoubleJacobiPolynomial::PLib_DoubleJacobiPolynomial()
 
 {

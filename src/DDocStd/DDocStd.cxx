@@ -13,27 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DDocStd.ixx>
+
+#include <CDF_Session.hxx>
+#include <DBRep.hxx>
+#include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
-#include <TDocStd_Document.hxx>
-#include <Draw_Interpretor.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Draw.hxx>
-#include <TDF_Tool.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
-#include <DBRep.hxx>
-#include <TDocStd_Document.hxx>
-#include <CDF_Session.hxx>
-#include <Standard_DomainError.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Application.hxx>
-
+#include <TDocStd_Document.hxx>
 
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean DDocStd::Find (Handle(TDocStd_Application)& A,
 				const Standard_Boolean /*Complain*/)
 {  

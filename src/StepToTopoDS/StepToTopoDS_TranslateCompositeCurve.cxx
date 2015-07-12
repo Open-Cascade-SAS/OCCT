@@ -17,37 +17,36 @@
 //:o3 abv 17.02.99: r0301_db.stp #57082: apply FixReorder to composite curve
 //:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
 
-#include <StepToTopoDS_TranslateCompositeCurve.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <Interface_Static.hxx>
 #include <Precision.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <StepGeom_Pcurve.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
+#include <StepGeom_Pcurve.hxx>
+#include <StepGeom_PcurveOrSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
 #include <StepToGeom_MakeCurve.hxx>
+#include <StepToTopoDS_TranslateCompositeCurve.hxx>
 #include <StepToTopoDS_TranslateEdge.hxx>
-
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRep_Builder.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
-
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <StepGeom_CompositeCurve.hxx>
+#include <TopoDS_Wire.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 //=======================================================================
 //function : Create
 //purpose  : 
 //=======================================================================
-
 StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve () {}
 	
 //=======================================================================

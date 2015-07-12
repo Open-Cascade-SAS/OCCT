@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_ConicalSurface.ixx>
-
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_ConicalSurface::IGESSolid_ConicalSurface ()    {  }
 

@@ -14,7 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_SiUnitAndAreaUnit.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_AreaUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_SiUnitAndAreaUnit.hxx>
 
 StepBasic_SiUnitAndAreaUnit::StepBasic_SiUnitAndAreaUnit () 
 {

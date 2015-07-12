@@ -16,9 +16,11 @@
 // C matra datavision 1993
 // Updated :
 // -------------------------------------------------------------
+
+#include <Quantity_Date.hxx>
 #include <Quantity_DateDefinitionError.hxx>
+#include <Quantity_Period.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Quantity_Date.ixx>
 
 static int  month_table[12] = {
   31,     // January

@@ -11,8 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include  <TransferBRep_ShapeListBinder.ixx>
-#include  <TopoDS.hxx>
+
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TransferBRep_ShapeListBinder.hxx>
 
 TransferBRep_ShapeListBinder::TransferBRep_ShapeListBinder  ()
       {  theres = new TopTools_HSequenceOfShape();  }

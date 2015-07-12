@@ -11,11 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Selection.ixx>
+
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_SelectionIterator.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
-
-
+#include <Interface_InterfaceError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Standard_Boolean  IFSelect_Selection::HasUniqueResult () const 
       {  return Standard_False;  }    // eminemment redefinissable

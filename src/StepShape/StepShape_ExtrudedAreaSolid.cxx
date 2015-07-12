@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_ExtrudedAreaSolid.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_CurveBoundedSurface.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepShape_ExtrudedAreaSolid.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_ExtrudedAreaSolid::StepShape_ExtrudedAreaSolid ()  {}
 

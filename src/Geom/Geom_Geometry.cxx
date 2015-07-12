@@ -16,9 +16,14 @@
 
 //JCV 09/07/92 portage sur C1
 
-
-#include <Geom_Geometry.ixx>
+#include <Geom_Geometry.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_Geometry         Geometry;
 typedef gp_Pnt                Pnt;

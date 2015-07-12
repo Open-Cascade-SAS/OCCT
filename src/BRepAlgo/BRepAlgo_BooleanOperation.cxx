@@ -17,36 +17,35 @@
 #define TRC 0 
 #define MODIF 1 
 
-#include <BRepAlgo_BooleanOperation.ixx>
-#include <TopOpeBRep_DSFiller.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepTool_OutCurveType.hxx>
-#include <TopOpeBRepTool_GeomTool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepLib.hxx>
-#include <TopoDS.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
 
-//  sewing
-#include <BRepTools_Substitution.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgo_BooleanOperation.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_Edge.hxx>
 #include <BRepCheck_Shell.hxx>
-
-#include <TopOpeBRepDS_DSX.hxx>
-
-#include <TopOpeBRepBuild_Tools.hxx>
-#include <TopExp_Explorer.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepLib.hxx>
+#include <BRepTools_Substitution.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_DSFiller.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepBuild_Tools.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_DSX.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepTool_GeomTool.hxx>
+#include <TopOpeBRepTool_OutCurveType.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-
+//  sewing
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GetcontextNOSEW();
 #endif

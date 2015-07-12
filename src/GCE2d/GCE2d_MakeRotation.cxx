@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeRotation.ixx>
+
+#include <GCE2d_MakeRotation.hxx>
+#include <Geom2d_Transformation.hxx>
+#include <gp_Pnt2d.hxx>
 
 //=========================================================================
 //   Creation d une rotation 3d de gp d angle Angle par rapport a une     +
 //   droite Line.                                                         +
 //=========================================================================
-
 GCE2d_MakeRotation::GCE2d_MakeRotation(const gp_Pnt2d&     Point  ,
 				       const Standard_Real Angle ) {
   TheRotation = new Geom2d_Transformation();

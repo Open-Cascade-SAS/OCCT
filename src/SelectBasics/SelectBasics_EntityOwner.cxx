@@ -14,8 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectBasics_EntityOwner.ixx>
 
+#include <SelectBasics_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //========================================
 // Function : Create

@@ -16,9 +16,20 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_ToolHighLight.ixx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamCursor.hxx>
-
+#include <IGESData_ParamReader.hxx>
+#include <IGESGraph_HighLight.hxx>
+#include <IGESGraph_ToolHighLight.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESGraph_ToolHighLight::IGESGraph_ToolHighLight ()    {  }
 

@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWContextDependentInvisibility.ixx>
-#include <StepVisual_InvisibilityContext.hxx>
-#include <StepVisual_HArray1OfInvisibleItem.hxx>
-#include <StepVisual_InvisibleItem.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWContextDependentInvisibility.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepVisual_ContextDependentInvisibility.hxx>
-
+#include <StepVisual_HArray1OfInvisibleItem.hxx>
+#include <StepVisual_InvisibilityContext.hxx>
+#include <StepVisual_InvisibleItem.hxx>
 
 RWStepVisual_RWContextDependentInvisibility::RWStepVisual_RWContextDependentInvisibility () {}
 

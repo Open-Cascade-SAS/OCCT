@@ -1,1 +1,5 @@
 TopTrans_Array2OfOrientation.hxx
+TopTrans_CurveTransition.cxx
+TopTrans_CurveTransition.hxx
+TopTrans_SurfaceTransition.cxx
+TopTrans_SurfaceTransition.hxx

@@ -14,22 +14,19 @@
 // commercial license or contractual agreement.
 
 //      	-----------------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Oct 10 1997	Creation
 
-
-
-#include <TDF_DefaultDeltaOnRemoval.ixx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DefaultDeltaOnRemoval.hxx>
 #include <TDF_Label.hxx>
-
 
 //=======================================================================
 //function : TDF_DefaultDeltaOnRemoval
 //purpose  : 
 //=======================================================================
-
 TDF_DefaultDeltaOnRemoval::TDF_DefaultDeltaOnRemoval
 (const Handle(TDF_Attribute)& anAttribute)
 : TDF_DeltaOnRemoval(anAttribute)

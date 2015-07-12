@@ -16,9 +16,13 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_FiniteElement.ixx>
-#include <Standard_DimensionMismatch.hxx>
 #include <IGESAppli.hxx>
+#include <IGESAppli_FiniteElement.hxx>
+#include <IGESAppli_Node.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_FiniteElement::IGESAppli_FiniteElement ()    {  }
 

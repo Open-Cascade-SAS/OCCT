@@ -14,11 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeSphericalSurface.ixx>
-#include <GeomToStep_MakeAxis2Placement3d.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StdFail_NotDone.hxx>
+
 #include <Geom_SphericalSurface.hxx>
+#include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakeSphericalSurface.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_SphericalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
@@ -27,7 +28,6 @@
 // Creation d' une conical_surface de prostep a partir d' une SphericalSurface
 // de Geom
 //=============================================================================
-
 GeomToStep_MakeSphericalSurface::GeomToStep_MakeSphericalSurface
   ( const Handle(Geom_SphericalSurface)& S )
 	

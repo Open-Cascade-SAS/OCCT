@@ -14,18 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_XYZAxisPresentation.ixx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 
+#include <DsgPrs_XYZAxisPresentation.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_TextAspect.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
-
 void DsgPrs_XYZAxisPresentation::Add(
 		       const Handle(Prs3d_Presentation)& aPresentation,
 		       const Handle(Prs3d_LineAspect)& aLineAspect,	     

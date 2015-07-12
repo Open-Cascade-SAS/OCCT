@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_ParallelismTolerance.ixx>
+#include <Standard_Type.hxx>
+#include <StepDimTol_ParallelismTolerance.hxx>
 
 //=======================================================================
 //function : StepDimTol_ParallelismTolerance
 //purpose  : 
 //=======================================================================
-
 StepDimTol_ParallelismTolerance::StepDimTol_ParallelismTolerance ()
 {
 }

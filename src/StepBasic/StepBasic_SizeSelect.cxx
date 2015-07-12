@@ -11,16 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_SizeSelect.ixx>
-#include <StepBasic_SizeMember.hxx>
-#include <Interface_Macros.hxx>
 
+#include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <StepBasic_SizeMember.hxx>
+#include <StepBasic_SizeSelect.hxx>
+#include <StepData_SelectMember.hxx>
 
 //=======================================================================
 //function : StepBasic_SizeSelect
 //purpose  : 
 //=======================================================================
-
 StepBasic_SizeSelect::StepBasic_SizeSelect()
 {
 }

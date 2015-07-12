@@ -53,18 +53,20 @@
 /*
  * Includes
  */
-
 // for the class
-#include <Visual3d_ViewManager.ixx>
-
-#include <Standard_ErrorHandler.hxx>
 
 #include <Aspect_IdentDefinitionError.hxx>
-
+#include <Aspect_Window.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
-
+#include <Graphic3d_MapOfStructure.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Type.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 #if defined (_WIN32) || defined(__WIN32__)
 # include <WNT_Window.hxx>

@@ -15,13 +15,16 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepShape_Subedge.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_Edge.hxx>
+#include <StepShape_Subedge.hxx>
+#include <StepShape_Vertex.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_Subedge
 //purpose  : 
 //=======================================================================
-
 StepShape_Subedge::StepShape_Subedge ()
 {
 }

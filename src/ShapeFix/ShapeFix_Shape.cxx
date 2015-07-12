@@ -14,36 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_Shape.ixx>
 
-#include <Precision.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <BRepTools.hxx>
 #include <BRep_Builder.hxx>
-
-#include <ShapeFix.hxx>
+#include <BRepTools.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <Precision.hxx>
 #include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <ShapeFix.hxx>
 #include <ShapeFix_Edge.hxx>
-#include <ShapeFix_Wire.hxx>
 #include <ShapeFix_Face.hxx>
+#include <ShapeFix_Shape.hxx>
 #include <ShapeFix_Shell.hxx>
 #include <ShapeFix_Solid.hxx>
-
-#include <Message_ProgressSentry.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_Type.hxx>
+#include <TopAbs.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ShapeFix_Shape
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Shape::ShapeFix_Shape()
 {  
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);

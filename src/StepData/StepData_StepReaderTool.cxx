@@ -11,25 +11,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_StepReaderTool.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <StepData_StepModel.hxx>
 #include <Standard_Transient.hxx>
+#include <StepData_FileRecognizer.hxx>
+#include <StepData_Protocol.hxx>
 #include <StepData_ReadWriteModule.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepReaderTool.hxx>
 #include <StepData_UndefinedEntity.hxx>
-
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <Interface_Macros.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 //=======================================================================
 //function : StepData_StepReaderTool
 //purpose  : 
 //=======================================================================
-
 StepData_StepReaderTool::StepData_StepReaderTool
   (const Handle(StepData_StepReaderData)& reader,
    const Handle(StepData_Protocol)& protocol)

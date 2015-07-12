@@ -14,8 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_SingleRelation.ixx>
+
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralRelation.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_SingleRelation.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 void Expr_SingleRelation::SetFirstMember (const Handle(Expr_GeneralExpression)& exp)
 {

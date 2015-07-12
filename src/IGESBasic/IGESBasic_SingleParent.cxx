@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_SingleParent.ixx>
+#include <IGESBasic_SingleParent.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_SingleParent::IGESBasic_SingleParent ()    {  }
 

@@ -11,22 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPControl_Writer.ixx>
-#include <STEPControl_Controller.hxx>
-#include <STEPControl_ActorWrite.hxx>
-#include <XSControl_TransferWriter.hxx>
+
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Message_ProgressIndicator.hxx>
+#include <STEPControl_ActorWrite.hxx>
+#include <STEPControl_Controller.hxx>
+#include <STEPControl_Writer.hxx>
+#include <StepData_StepModel.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Transfer_FinderProcess.hxx>
-
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //=======================================================================
 //function : STEPControl_Writer
 //purpose  : 
 //=======================================================================
-
 STEPControl_Writer::STEPControl_Writer ()
 {
   STEPControl_Controller::Init();

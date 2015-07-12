@@ -13,13 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGProp_UFunction.ixx>
+
+#include <BRepGProp_Face.hxx>
+#include <BRepGProp_UFunction.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
 
 //=======================================================================
 //function : Constructor.
 //purpose  : 
 //=======================================================================
-
 BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face   &theSurface,
                                          const gp_Pnt           &theVertex,
                                          const Standard_Boolean  IsByPoint,

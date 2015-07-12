@@ -12,12 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FSD_CmpFile.ixx>
-#include <OSD.hxx>
 
-#include <Storage_StreamModeError.hxx>
-#include <Storage_StreamUnknownTypeError.hxx>
+#include <FSD_CmpFile.hxx>
+#include <OSD.hxx>
 #include <Standard_PCharacter.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_StreamExtCharParityError.hxx>
+#include <Storage_StreamFormatError.hxx>
+#include <Storage_StreamModeError.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_StreamUnknownTypeError.hxx>
+#include <Storage_StreamWriteError.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 const Standard_CString MAGICNUMBER = "CMPFILE";
 

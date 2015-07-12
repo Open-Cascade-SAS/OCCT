@@ -16,57 +16,51 @@
 
 // pdn 17.12.98 ie_exhaust-A.stp
 
-#include <ShapeFix_Shell.ixx>
-
-#include <Precision.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
+#include <Bnd_Array1OfBox.hxx>
+#include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
-#include <ShapeAnalysis_Shell.hxx>
-#include <ShapeExtend.hxx>
-#include <ShapeBuild_ReShape.hxx> 
-#include <Message_Msg.hxx>
-#include <Message_ProgressSentry.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
-#include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
-#include <Bnd_Array1OfBox.hxx>
+#include <Message_Msg.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_Shell.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <ShapeFix_Face.hxx>
+#include <ShapeFix_Shell.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 //=======================================================================
 //function : ShapeFix_Shell
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Shell::ShapeFix_Shell()
 {    
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);

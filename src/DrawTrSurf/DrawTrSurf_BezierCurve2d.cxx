@@ -12,13 +12,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_BezierCurve2d.ixx>
 
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <DrawTrSurf_BezierCurve2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
-
 
 DrawTrSurf_BezierCurve2d::DrawTrSurf_BezierCurve2d (
    const Handle(Geom2d_BezierCurve)& C) :

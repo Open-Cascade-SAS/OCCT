@@ -13,15 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_IntegerDriver.ixx>
-#include <XmlObjMgt.hxx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_IntegerDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDataStd_IntegerDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataStd_IntegerDriver::XmlMDataStd_IntegerDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

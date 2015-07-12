@@ -12,8 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntSurf_PntOn2S.ixx>
 
+#include <gp_Pnt.hxx>
+#include <IntSurf_PntOn2S.hxx>
 
 IntSurf_PntOn2S::IntSurf_PntOn2S () : pt(0,0,0),u1(0),v1(0),u2(0),v2(0) {};
 

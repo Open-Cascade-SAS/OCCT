@@ -13,13 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <V3d_LayerMgr.ixx>
 
+#include <Aspect_ColorScale.hxx>
 #include <Aspect_Window.hxx>
-#include <Visual3d_View.hxx>
-#include <V3d_ColorScale.hxx>
 #include <Font_NameOfFont.hxx>
-
+#include <Standard_Type.hxx>
+#include <V3d_ColorScale.hxx>
+#include <V3d_ColorScaleLayerItem.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_View.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_View.hxx>
 
 V3d_LayerMgr::V3d_LayerMgr( const Handle(V3d_View)& AView )
 : myView(AView.operator->())

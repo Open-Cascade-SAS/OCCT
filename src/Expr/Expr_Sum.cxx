@@ -19,11 +19,18 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <Expr_Sum.ixx>
-#include <Standard_OutOfRange.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Expr_NumericValue.hxx>
+
 #include <Expr.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NotEvaluable.hxx>
+#include <Expr_NumericValue.hxx>
+#include <Expr_Sum.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 Expr_Sum::Expr_Sum (const Expr_SequenceOfGeneralExpression& exps)
 {

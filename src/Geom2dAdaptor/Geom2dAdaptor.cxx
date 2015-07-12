@@ -14,29 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAdaptor.ixx>
 
-
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <gp_Lin2d.hxx>
+#include <Geom2dAdaptor.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
-#include <gp_Parab2d.hxx>
 #include <gp_Hypr2d.hxx>
-
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
 
 //=======================================================================
 //function : MakeCurve
 //purpose  : 
 //=======================================================================
-
 Handle(Geom2d_Curve) Geom2dAdaptor::MakeCurve
        (const Adaptor2d_Curve2d& HC)
 {

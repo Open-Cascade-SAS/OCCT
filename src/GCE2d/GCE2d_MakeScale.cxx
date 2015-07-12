@@ -14,12 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeScale.ixx>
+
+#include <GCE2d_MakeScale.hxx>
+#include <Geom2d_Transformation.hxx>
+#include <gp_Pnt2d.hxx>
 
 //=========================================================================
 //   Creation d un homothetie de gp de centre Point et de rapport Scale.  +
 //=========================================================================
-
 GCE2d_MakeScale::GCE2d_MakeScale(const gp_Pnt2d&     Point ,
 				 const Standard_Real Scale ) {
   TheScale = new Geom2d_Transformation();

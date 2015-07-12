@@ -11,13 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include  <IGESSelect_SelectSingleViewFrom.ixx>
-#include <IGESSelect_ViewSorter.hxx>
-#include <IGESData_IGESModel.hxx>
+
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_SelectSingleViewFrom.hxx>
+#include <IGESSelect_ViewSorter.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_SelectSingleViewFrom::IGESSelect_SelectSingleViewFrom ()    {  }
 

@@ -13,18 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QABugs_PresentableObject.ixx>
-#include <QABugs_PresentableObject.hxx>
 
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <Prs3d_Drawer.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_Structure.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <QABugs_PresentableObject.hxx>
+#include <Standard_Type.hxx>
 
 QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d)
      :AIS_InteractiveObject(theTypeOfPresentation3d)

@@ -12,16 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2dTanOnRad.jxx>
 
 #include <ElCLib.hxx>
+#include <GccAna_Circ2dTanOnRad.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <gp_Dir2d.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 //=========================================================================
 //   Circle tangent to straight line  Qualified1 (L1)                         +
@@ -37,7 +43,6 @@
 //  Create solutions cirsol with center P and radius Radius.          +
 //  Fill the fields.                                                +
 //=========================================================================
-
 GccAna_Circ2dTanOnRad::
    GccAna_Circ2dTanOnRad (const GccEnt_QualifiedLin& Qualified1,
                           const gp_Lin2d&            OnLine    ,

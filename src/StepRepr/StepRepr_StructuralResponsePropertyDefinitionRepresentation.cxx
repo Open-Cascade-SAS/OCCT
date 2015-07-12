@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepRepr_StructuralResponsePropertyDefinitionRepresentation.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_StructuralResponsePropertyDefinitionRepresentation.hxx>
 
 //=======================================================================
 //function : StepRepr_StructuralResponsePropertyDefinitionRepresentation
 //purpose  : 
 //=======================================================================
-
 StepRepr_StructuralResponsePropertyDefinitionRepresentation::StepRepr_StructuralResponsePropertyDefinitionRepresentation ()
 {
 }

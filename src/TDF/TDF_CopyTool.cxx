@@ -14,31 +14,29 @@
 // commercial license or contractual agreement.
 
 //      	---------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Mar 11 1997	Creation
 
-
-
-#include <TDF_CopyTool.ixx>
-
-#include <TDF_ClosureTool.hxx>
+#include <Standard_TypeMismatch.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_AttributeDataMap.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_AttributeMap.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_ClosureTool.hxx>
+#include <TDF_CopyTool.hxx>
 #include <TDF_DataMapIteratorOfAttributeDataMap.hxx>
 #include <TDF_DataMapIteratorOfLabelDataMap.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelDataMap.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
-
-#include <Standard_TypeMismatch.hxx>
+#include <TDF_RelocationTable.hxx>
 
 #define DeclareAndSpeedCast(V,T,Vdown) Handle(T) Vdown = Handle(T)::DownCast (V)
 #define DeclareConstAndSpeedCast(V,T,Vdown) const Handle(T)& Vdown = (Handle(T)&) V

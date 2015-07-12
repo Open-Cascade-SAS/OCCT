@@ -13,22 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewModTopOpe_Glue.ixx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
+
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <gp_Pnt.hxx>
+#include <QANewModTopOpe_Glue.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : PerformVertex
 //purpose  : 
 //=======================================================================
-
 void
 QANewModTopOpe_Glue::PerformVertex() 
 {

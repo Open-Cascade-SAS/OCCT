@@ -14,124 +14,91 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_MakeRevolutionForm.ixx>
 
-#include <BRepFeat.hxx>
-
-#include <LocOpe.hxx>
-#include <LocOpe_RevolutionForm.hxx>
-#include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_PntFace.hxx>
-#include <LocOpe_Gluer.hxx>
-#include <LocOpe_FindEdges.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pnt.hxx>
-
-#include <gp_Vec2d.hxx>
-#include <gp_Pnt2d.hxx>
-
-#include <Geom_Curve.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomProjLib.hxx>
-
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <Geom2dAPI_ExtremaCurveCurve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-
-
-#include <GeomAPI.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
-#include <TColgp_SequenceOfPnt.hxx>
-
-#include <TColGeom_SequenceOfCurve.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-
-#include <BRepTools_WireExplorer.hxx>
-
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-
-#include <TColGeom_Array1OfCurve.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-
-#include <BRepLib_MakeVertex.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgo.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepExtrema_ExtCF.hxx>
+#include <BRepExtrema_ExtPC.hxx>
+#include <BRepFeat.hxx>
+#include <BRepFeat_MakeRevolutionForm.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
-
-#include <BRepTools.hxx>
-
+#include <BRepLib_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-
-#include <BRepAlgo.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <CSLib.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAPI_ExtremaCurveCurve.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomLProp_CLProps.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_CSIntersector.hxx>
+#include <LocOpe_FindEdges.hxx>
+#include <LocOpe_Gluer.hxx>
+#include <LocOpe_PntFace.hxx>
+#include <LocOpe_RevolutionForm.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TColGeom_Array1OfCurve.hxx>
+#include <TColGeom_SequenceOfCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //modified by NIZNHY-PKV Fri Mar 22 16:56:15 2002
 //#include <BRepAlgo_Cut.hxx>
 //#include <BRepAlgo_Section.hxx>
 //#include <BRepAlgo_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Section.hxx>
-#include <BRepAlgoAPI_Common.hxx>
 //modified by NIZNHY-PKV Fri Mar 22 16:56:17 2002 t
-
-#include <BRepBuilderAPI_Transform.hxx>
-#include <BRepExtrema_ExtPC.hxx>
-#include <BRepExtrema_ExtCF.hxx>
-
-#include <BRepTools_Modifier.hxx>
-#include <BRepTools_TrsfModification.hxx>
-
-#include <BRepTopAdaptor_FClass2d.hxx>
-
-#include <Standard_ConstructionError.hxx>
-
-#include <Precision.hxx>
-
-
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-#include <CSLib.hxx>
-
-#include <GeomLProp_CLProps.hxx>
-
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 extern Standard_Boolean BRepFeat_GettraceFEATRIB();

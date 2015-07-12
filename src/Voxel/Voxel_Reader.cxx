@@ -13,15 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_Reader.ixx>
+
+#include <OSD_OpenFile.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Voxel_BoolDS.hxx>
 #include <Voxel_ColorDS.hxx>
 #include <Voxel_FloatDS.hxx>
-#include <Voxel_VoxelFileFormat.hxx>
+#include <Voxel_Reader.hxx>
 #include <Voxel_TypeDef.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <OSD_OpenFile.hxx>
+#include <Voxel_VoxelFileFormat.hxx>
 
 Voxel_Reader::Voxel_Reader():myBoolVoxels(0),myColorVoxels(0),myFloatVoxels(0)
 {

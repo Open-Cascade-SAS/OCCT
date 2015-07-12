@@ -11,9 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_FieldListD.ixx>
-#include <Standard_OutOfRange.hxx>
 
+#include <Standard_OutOfRange.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_FieldListD.hxx>
 
 StepData_FieldListD::StepData_FieldListD  (const Standard_Integer nb)
 {  if (nb > 0) thefields = new StepData_HArray1OfField (1,nb);  }

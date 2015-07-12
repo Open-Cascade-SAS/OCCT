@@ -13,18 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGProp_VinertGK.ixx>
 
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <math_KronrodSingleIntegration.hxx>
-
+#include <BRepGProp_Domain.hxx>
+#include <BRepGProp_Face.hxx>
 #include <BRepGProp_TFunction.hxx>
+#include <BRepGProp_VinertGK.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <math_KronrodSingleIntegration.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //==========================================================================
 //function : Constructor
 //==========================================================================
-
 BRepGProp_VinertGK::BRepGProp_VinertGK(BRepGProp_Face        &theSurface,
                                        const gp_Pnt          &theLocation,
                                        const Standard_Real    theTolerance,

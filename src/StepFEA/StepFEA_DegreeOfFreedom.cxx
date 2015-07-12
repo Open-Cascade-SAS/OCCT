@@ -15,7 +15,9 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_DegreeOfFreedom.ixx>
+#include <Standard_Transient.hxx>
+#include <StepData_SelectMember.hxx>
+#include <StepFEA_DegreeOfFreedom.hxx>
 #include <StepFEA_DegreeOfFreedomMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -23,7 +25,6 @@
 //function : StepFEA_DegreeOfFreedom
 //purpose  : 
 //=======================================================================
-
 StepFEA_DegreeOfFreedom::StepFEA_DegreeOfFreedom ()
 {
 }

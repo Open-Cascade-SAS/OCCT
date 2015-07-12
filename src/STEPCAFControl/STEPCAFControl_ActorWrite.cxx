@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPCAFControl_ActorWrite.ixx>
+
+#include <Standard_Type.hxx>
+#include <STEPCAFControl_ActorWrite.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : STEPCAFControl_ActorWrite
 //purpose  : 
 //=======================================================================
-
 STEPCAFControl_ActorWrite::STEPCAFControl_ActorWrite () : myStdMode(Standard_True)
 {
 }

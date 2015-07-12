@@ -11,41 +11,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_Dumper.ixx>
 
-#include <IGESSelect_DispPerSingleView.hxx>
-#include <IGESSelect_DispPerDrawing.hxx>
-//#include <IGESSelect_SelectIGESTypeForm.hxx>
-#include <IGESSelect_SelectVisibleStatus.hxx>
-#include <IGESSelect_SelectLevelNumber.hxx>
-#include <IGESSelect_SelectName.hxx>
-#include <IGESSelect_SelectFromSingleView.hxx>
-#include <IGESSelect_SelectFromDrawing.hxx>
-#include <IGESSelect_SelectSingleViewFrom.hxx>
-#include <IGESSelect_SelectDrawingFrom.hxx>
-#include <IGESSelect_SelectBypassGroup.hxx>
-#include <IGESSelect_FloatFormat.hxx>
-#include <IGESSelect_UpdateCreationDate.hxx>
-#include <IGESSelect_UpdateLastChange.hxx>
-#include <IGESSelect_SetVersion5.hxx>
-#include <IGESSelect_SetGlobalParameter.hxx>
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_SessionFile.hxx>
 #include <IGESSelect_AutoCorrect.hxx>
-#include <IGESSelect_ComputeStatus.hxx>
-#include <IGESSelect_RebuildDrawings.hxx>
-#include <IGESSelect_RebuildGroups.hxx>
 #include <IGESSelect_ChangeLevelList.hxx>
 #include <IGESSelect_ChangeLevelNumber.hxx>
+#include <IGESSelect_ComputeStatus.hxx>
+#include <IGESSelect_DispPerDrawing.hxx>
+#include <IGESSelect_DispPerSingleView.hxx>
+#include <IGESSelect_Dumper.hxx>
+#include <IGESSelect_FloatFormat.hxx>
+#include <IGESSelect_RebuildDrawings.hxx>
+#include <IGESSelect_RebuildGroups.hxx>
+#include <IGESSelect_SelectBypassGroup.hxx>
+#include <IGESSelect_SelectDrawingFrom.hxx>
+#include <IGESSelect_SelectFromDrawing.hxx>
+#include <IGESSelect_SelectFromSingleView.hxx>
+#include <IGESSelect_SelectLevelNumber.hxx>
+#include <IGESSelect_SelectName.hxx>
+#include <IGESSelect_SelectSingleViewFrom.hxx>
+#include <IGESSelect_SelectVisibleStatus.hxx>
+#include <IGESSelect_SetGlobalParameter.hxx>
+#include <IGESSelect_SetVersion5.hxx>
 #include <IGESSelect_SplineToBSpline.hxx>
-
+#include <IGESSelect_UpdateCreationDate.hxx>
+#include <IGESSelect_UpdateLastChange.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <IFSelect_IntParam.hxx>
 
-#include <Interface_Macros.hxx>
 #include <stdio.h>
-
-
-
+//#include <IGESSelect_SelectIGESTypeForm.hxx>
 IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
 
 

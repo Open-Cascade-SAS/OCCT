@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSAlgo_ToolContainer.ixx>
+
+#include <Standard_Type.hxx>
+#include <XSAlgo_ToolContainer.hxx>
 
 //=======================================================================
 //function : XSAlgo_ToolContainer
 //purpose  : 
 //=======================================================================
-
 XSAlgo_ToolContainer::XSAlgo_ToolContainer()
 {
 }

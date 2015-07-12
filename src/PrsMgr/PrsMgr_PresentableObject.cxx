@@ -14,14 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PrsMgr_PresentableObject.ixx>
-#include <PrsMgr_Presentation.hxx>
+
+#include <Geom_Transformation.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_TypeOfStructure.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
+#include <PrsMgr_PresentableObject.hxx>
+#include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <Graphic3d_TypeOfStructure.hxx>
-#include <Geom_Transformation.hxx>
 
 //=======================================================================
 //function : PrsMgr_PresentableObject

@@ -11,17 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_SubPartsIterator.ixx> 
-#include <TColStd_Array1OfInteger.hxx>
+
+#include <IFGraph_SubPartsIterator.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_GraphContent.hxx>
 #include <Interface_InterfaceError.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Standard_NoSuchObject.hxx>
-
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 // SubPartsIterator permet de regrouper les entites en plusieurs sous-parties
 // A chaque sous-partie est attache un Status : la 1re a 1, la 2e a 2, etc...
 // (consequence, les sous-parties sont necessairement disjointes)
-
 IFGraph_SubPartsIterator::IFGraph_SubPartsIterator
   (const Interface_Graph& agraph, const Standard_Boolean whole)
       : thegraph (agraph)

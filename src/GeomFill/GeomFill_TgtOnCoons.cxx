@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_TgtOnCoons.ixx>
+
 #include <GeomFill_Boundary.hxx>
+#include <GeomFill_CoonsAlgPatch.hxx>
+#include <GeomFill_TgtOnCoons.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomFill_TgtOnCoons
 //purpose  : 
 //=======================================================================
-
 GeomFill_TgtOnCoons::GeomFill_TgtOnCoons
 (const Handle(GeomFill_CoonsAlgPatch)& K, 
  const Standard_Integer I) : myK(K), ibound(I)

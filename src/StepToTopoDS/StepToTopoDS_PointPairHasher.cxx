@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToTopoDS_PointPairHasher.ixx>
 
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepToTopoDS_PointPair.hxx>
+#include <StepToTopoDS_PointPairHasher.hxx>
 
 //=======================================================================
 //function : HashCode
 //purpose  : 
 //=======================================================================
-
 Standard_Integer StepToTopoDS_PointPairHasher::HashCode
   (const StepToTopoDS_PointPair& P, const Standard_Integer Upper)
 {

@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWDocumentType.ixx>
 
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWDocumentType.hxx>
 #include <StepBasic_DocumentType.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 RWStepBasic_RWDocumentType::RWStepBasic_RWDocumentType () {}
 

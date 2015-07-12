@@ -14,24 +14,21 @@
 // commercial license or contractual agreement.
 
 //      	----------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Sep 15 1997	Creation
 
-
-
-#include <TDocStd_XLinkIterator.ixx>
+#include <Standard_NoMoreObject.hxx>
 #include <TDF_Data.hxx>
+#include <TDocStd_Document.hxx>
 #include <TDocStd_XLink.hxx>
+#include <TDocStd_XLinkIterator.hxx>
 #include <TDocStd_XLinkRoot.hxx>
-
 
 //=======================================================================
 //function : TDocStd_XLinkIterator
 //purpose  : 
 //=======================================================================
-
 TDocStd_XLinkIterator::TDocStd_XLinkIterator()
 : myValue(NULL)
 {}

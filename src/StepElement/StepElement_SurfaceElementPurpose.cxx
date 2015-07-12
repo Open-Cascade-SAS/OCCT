@@ -15,7 +15,9 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_SurfaceElementPurpose.ixx>
+#include <Standard_Transient.hxx>
+#include <StepData_SelectMember.hxx>
+#include <StepElement_SurfaceElementPurpose.hxx>
 #include <StepElement_SurfaceElementPurposeMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -23,7 +25,6 @@
 //function : StepElement_SurfaceElementPurpose
 //purpose  : 
 //=======================================================================
-
 StepElement_SurfaceElementPurpose::StepElement_SurfaceElementPurpose ()
 {
 }

@@ -14,12 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeTranslation.ixx>
+
+#include <GCE2d_MakeTranslation.hxx>
+#include <Geom2d_Transformation.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
 //=========================================================================
 //   Creation d une translation 3d de Geom2d de vecteur de tanslation Vec.  +
 //=========================================================================
-
 GCE2d_MakeTranslation::GCE2d_MakeTranslation(const gp_Vec2d&  Vec ) {
   TheTranslation = new Geom2d_Transformation();
   TheTranslation->SetTranslation(Vec);

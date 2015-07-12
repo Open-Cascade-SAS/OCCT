@@ -16,14 +16,12 @@
 
 // Modified by model, Thu Jun 25 10:40:27 1992
 
-#include <TopAbs.ixx>
-
+#include <TopAbs.hxx>
 
 //=======================================================================
 //function : TopAbs_Compose
 //purpose  : Compose two orientations
 //=======================================================================
-
 TopAbs_Orientation TopAbs::Compose(const TopAbs_Orientation O1,
                                    const TopAbs_Orientation O2)
 {

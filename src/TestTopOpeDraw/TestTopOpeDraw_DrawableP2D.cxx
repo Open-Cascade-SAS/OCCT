@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw_DrawableP2D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Text2D.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
+#include <TestTopOpeDraw_DrawableP2D.hxx>
 
 //=======================================================================
 //function : TestTopOpeDraw_DrawableP2D
 //purpose  : 
 //=======================================================================
-
 TestTopOpeDraw_DrawableP2D::TestTopOpeDraw_DrawableP2D 
 (const gp_Pnt2d& P,
  const Draw_Color& PColor,

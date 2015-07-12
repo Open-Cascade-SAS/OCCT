@@ -14,32 +14,31 @@
 // commercial license or contractual agreement.
 
 //      	---------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Oct  3 1997	Creation
 
-
-#include <DDF_Browser.ixx>
-
 #include <DDF_AttributeBrowser.hxx>
-
-#include <TDF_Tool.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_AttributeIterator.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDF.hxx>
-
-#include <TDataStd_Name.hxx>
-
+#include <DDF_Browser.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeIterator.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Communication convention with tcl:
 // tcl waits for a string of characters, being an information list.
 // In this list, each item is separated from another by a separator: '\'.
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 #define TDF_BrowserSeparator1 '\\'
 #define TDF_BrowserSeparator2 ' '
 #define TDF_BrowserSeparator3 '#'

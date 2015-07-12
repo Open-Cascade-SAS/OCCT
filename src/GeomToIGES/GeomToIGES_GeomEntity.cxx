@@ -16,17 +16,13 @@
 
 //rln 06.01.98 new method SetUnit
 
-
-#include <GeomToIGES_GeomEntity.ixx>
-
+#include <GeomToIGES_GeomEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-
 
 //=======================================================================
 //function : GeomToIGES_GeomEntity
 //purpose  : 
 //=======================================================================
-
 GeomToIGES_GeomEntity::GeomToIGES_GeomEntity()
 {
 }

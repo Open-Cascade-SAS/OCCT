@@ -19,23 +19,20 @@
 //  cf BUG PRO4481) 
 //rln 20.06.99 work-around
 
-#include <ShapeConstruct_CompBezierCurvesToBSplineCurve.ixx>
-
-#include <Precision.hxx>
 #include <BSplCLib.hxx>
-#include <PLib.hxx>
-#include <gp_Pnt.hxx>
 #include <gp.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <PLib.hxx>
+#include <Precision.hxx>
+#include <ShapeConstruct_CompBezierCurvesToBSplineCurve.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-
 
 //=======================================================================
 //function : ShapeConstruct_CompBezierCurvesToBSplineCurve
 //purpose  : 
 //=======================================================================
-
-
 ShapeConstruct_CompBezierCurvesToBSplineCurve::
 ShapeConstruct_CompBezierCurvesToBSplineCurve(
 	          const Standard_Real AngularTolerance) :

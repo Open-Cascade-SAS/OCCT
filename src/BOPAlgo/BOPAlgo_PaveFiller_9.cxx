@@ -12,24 +12,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
-//
+
 #include <Bnd_Box.hxx>
-
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <BOPCol_NCVector.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPCol_MapOfInteger.hxx>
+#include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-
-#include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
-
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Context.hxx>
 #include <IntTools_ShrunkRange.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
+//
 //=======================================================================
 //class    : BOPAlgo_ShrunkRange
 //purpose  : 

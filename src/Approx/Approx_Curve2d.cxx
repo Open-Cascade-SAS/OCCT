@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Approx_Curve2d.ixx>
-#include <AdvApprox_PrefAndRec.hxx>
+
+#include <Adaptor2d_HCurve2d.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <AdvApprox_PrefAndRec.hxx>
+#include <Approx_Curve2d.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Precision.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 
 //=======================================================================
 //class : Approx_Curve2d_Eval
 //purpose: evaluator class for approximation
 //=======================================================================
-
 class Approx_Curve2d_Eval : public AdvApprox_EvaluatorFunction
 {
  public:

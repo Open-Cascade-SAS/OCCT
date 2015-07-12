@@ -16,21 +16,22 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
-//#endif
 
-#include <math_FRPR.ixx>
+//#endif
 
 #include <math_BracketMinimum.hxx>
 #include <math_BrentMinimum.hxx>
+#include <math_FRPR.hxx>
 #include <math_Function.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 // l'utilisation de math_BrentMinumim pur trouver un minimum dans une direction
 // donnee n'est pas du tout optimale. voir peut etre interpolation cubique
 // classique et aussi essayer "recherche unidimensionnelle economique"
 // PROGRAMMATION MATHEMATIQUE (theorie et algorithmes) tome1 page 82.
-
 class DirFunctionTer : public math_Function {
 
      math_Vector *P0;

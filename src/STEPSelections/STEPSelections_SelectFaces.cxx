@@ -14,12 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPSelections_SelectFaces.ixx>
-#include <StepShape_FaceSurface.hxx>
-#include <StepGeom_Surface.hxx>
-#include <StepShape_GeometricSet.hxx>
-#include <StepGeom_Surface.hxx>
 
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepGeom_Surface.hxx>
+#include <STEPSelections_SelectFaces.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepShape_GeometricSet.hxx>
+#include <TCollection_AsciiString.hxx>
 
 STEPSelections_SelectFaces::STEPSelections_SelectFaces():IFSelect_SelectExplore (-1){ }
 

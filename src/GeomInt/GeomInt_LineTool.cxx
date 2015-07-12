@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomInt_LineTool.ixx>
 
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_RLine.hxx>
+#include <GeomInt_LineTool.hxx>
 #include <IntPatch_ALine.hxx>
 #include <IntPatch_GLine.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_WLine.hxx>
 #include <Precision.hxx>
-
 
 //=======================================================================
 //function : NbVertex

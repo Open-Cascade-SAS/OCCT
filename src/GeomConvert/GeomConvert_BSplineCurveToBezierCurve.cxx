@@ -14,18 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomConvert_BSplineCurveToBezierCurve.ixx>
 
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomConvert_BSplineCurveToBezierCurve.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Geom_BSplineCurve.hxx>
-
 
 //=======================================================================
 //function : GeomConvert_BSplineCurveToBezierCurve
 //purpose  : 
 //=======================================================================
-
 GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve (const Handle(Geom_BSplineCurve)& BasisCurve)
 {
   myCurve = Handle(Geom_BSplineCurve)::DownCast(BasisCurve->Copy());

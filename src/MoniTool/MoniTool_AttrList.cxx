@@ -11,11 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_AttrList.ixx>
+
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <MoniTool_AttrList.hxx>
 #include <MoniTool_IntVal.hxx>
 #include <MoniTool_RealVal.hxx>
+#include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 
 MoniTool_AttrList::MoniTool_AttrList ()    {  }
 

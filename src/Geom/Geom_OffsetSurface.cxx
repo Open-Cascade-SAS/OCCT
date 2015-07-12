@@ -19,57 +19,57 @@
 // Modified     15/11/96 : JPI : ajout equivalent surface pour les surfaces canoniques et modif des methodes D0 D1, ... UIso,VIso
 // Modified     18/11/96 : JPI : inversion de l'offsetValue dans UReverse et Vreverse
 
-#include <Geom_OffsetSurface.ixx>
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_XYZ.hxx>
-#include <BSplSLib.hxx>
-#include <BSplCLib.hxx>
-#include <CSLib.hxx>
-#include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_RangeError.hxx>
-#include <Geom_UndefinedValue.hxx>
-#include <Geom_UndefinedDerivative.hxx>
-
-#include <Geom_OffsetCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Geometry.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_ElementarySurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array2OfVec.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-
 #include <AdvApprox_ApproxAFunction.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <Convert_GridPolynomialToPoles.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
+#include <CSLib.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Geom_UndefinedDerivative.hxx>
+#include <Geom_UndefinedValue.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAbs_CurveType.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfVec.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfInteger.hxx>
 
 typedef Geom_OffsetCurve           OffsetCurve;
 typedef Geom_OffsetSurface         OffsetSurface;

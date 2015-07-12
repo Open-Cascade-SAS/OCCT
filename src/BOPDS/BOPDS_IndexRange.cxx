@@ -12,9 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_IndexRange.ixx>
-#include <stdio.h>
 
+#include <BOPDS_IndexRange.hxx>
+
+#include <stdio.h>
 //=======================================================================
 //function : Dump
 //purpose  : 

@@ -13,19 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_NoteBookDriver.ixx>
-#include <CDM_MessageDriver.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDataStd_NoteBook.hxx>
+
+#include <BinMDataStd_NoteBookDriver.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_NoteBook.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataStd_NoteBookDriver
 //purpose  : 
 //=======================================================================
-
 BinMDataStd_NoteBookDriver::BinMDataStd_NoteBookDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataStd_NoteBook)->Name())

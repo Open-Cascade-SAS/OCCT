@@ -14,44 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_SplitShape.ixx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapOfOrientedShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
+
 #include <BRep_Builder.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepClass_FaceExplorer.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <BRep_Builder.hxx>
-
-#include <BRepClass_FaceExplorer.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
 #include <Geom2d_Curve.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
-#include <BRepTools.hxx>
 #include <LocOpe.hxx>
+#include <LocOpe_SplitShape.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean IsInside(const TopoDS_Face&,
                                  const TopoDS_Wire&,

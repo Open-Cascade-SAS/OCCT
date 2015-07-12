@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepBasic_ActionRequestAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ActionRequestAssignment.hxx>
+#include <StepBasic_VersionedActionRequest.hxx>
 
 //=======================================================================
 //function : StepBasic_ActionRequestAssignment
 //purpose  : 
 //=======================================================================
-
 StepBasic_ActionRequestAssignment::StepBasic_ActionRequestAssignment ()
 {
 }

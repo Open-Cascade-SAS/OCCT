@@ -14,36 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
 
-#include <QADNaming.ixx>
-
+#include <BRep_Tool.hxx>
+#include <DBRep.hxx>
 #include <DDF.hxx>
-
 #include <Draw.hxx>
+#include <gp_Pnt.hxx>
+#include <QADNaming.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_LabelList.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_Tool.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_Tool.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <DBRep.hxx>
+#include <TNaming_Tool.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Pnt.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
+#include <stdio.h>
 //=======================================================================
 //function : GetShape
 //purpose  : 
 //=======================================================================
-
 void QADNaming::GetShape (const Standard_CString      LabelName,
 			const Handle(TDF_Data)&     DF,
 			TopTools_ListOfShape&       L)

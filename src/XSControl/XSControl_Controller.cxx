@@ -11,62 +11,64 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_Controller.ixx>
-#include <IFSelect_GeneralModifier.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <Dico_IteratorOfDictionaryOfInteger.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
-#include <MoniTool_Option.hxx>
 
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfInteger.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <IFSelect_DispPerCount.hxx>
+#include <IFSelect_DispPerFiles.hxx>
+#include <IFSelect_DispPerOne.hxx>
+#include <IFSelect_DispPerSignature.hxx>
+#include <IFSelect_EditForm.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <IFSelect_GraphCounter.hxx>
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_ParamEditor.hxx>
 #include <IFSelect_SelectModelEntities.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
 #include <IFSelect_SelectPointed.hxx>
-#include <IFSelect_SelectSharing.hxx>
 #include <IFSelect_SelectShared.hxx>
+#include <IFSelect_SelectSharing.hxx>
 #include <IFSelect_ShareOut.hxx>
-#include <IFSelect_GraphCounter.hxx>
-#include <XSControl_SelectForTransfer.hxx>
+#include <IFSelect_SignAncestor.hxx>
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_SignCategory.hxx>
+#include <IFSelect_SignCounter.hxx>
+#include <IFSelect_SignType.hxx>
+#include <IFSelect_SignValidity.hxx>
+#include <IFSelect_WorkLibrary.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_Static.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <MoniTool_Option.hxx>
+#include <MoniTool_Profile.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TColStd_IndexedMapOfTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_ActorOfFinderProcess.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientMapper.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 #include <XSControl_ConnectedShapes.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_SignTransferStatus.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 
-#include <IFSelect_SignType.hxx>
-#include <IFSelect_SignCounter.hxx>
-#include <IFSelect_SignCategory.hxx>
-#include <IFSelect_SignValidity.hxx>
-#include <IFSelect_SignAncestor.hxx>
-
-#include <IFSelect_DispPerOne.hxx>
-#include <IFSelect_DispPerCount.hxx>
-#include <IFSelect_DispPerFiles.hxx>
-#include <IFSelect_DispPerSignature.hxx>
-#include <IFSelect_IntParam.hxx>
-
 //  ParamEditor
-#include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <Interface_Static.hxx>
-#include <IFSelect_ParamEditor.hxx>
-#include <IFSelect_EditForm.hxx>
-#include <IFSelect_SelectModelRoots.hxx>
-
 //  Transferts
-#include <Transfer_Binder.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
-#include <Transfer_TransientMapper.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-
-#include <Standard_DomainError.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <Interface_Protocol.hxx>
-#include <IFSelect_Signature.hxx>
-#include <IFSelect_WorkLibrary.hxx>
-#include <Transfer_ActorOfTransientProcess.hxx>
-#include <Transfer_ActorOfFinderProcess.hxx>
-
 static Handle(Dico_DictionaryOfTransient)& listadapt()
 {
   static Handle(Dico_DictionaryOfTransient) listad;

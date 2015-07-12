@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepElement_CurveElementSectionDerivedDefinitions.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_CurveElementSectionDerivedDefinitions.hxx>
+#include <StepElement_MeasureOrUnspecifiedValue.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepElement_CurveElementSectionDerivedDefinitions
 //purpose  : 
 //=======================================================================
-
 StepElement_CurveElementSectionDerivedDefinitions::StepElement_CurveElementSectionDerivedDefinitions ()
 {
 }

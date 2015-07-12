@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_CircularBlendFunc.ixx>
-#include <GeomFill.hxx>
 
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <Precision.hxx>
 #include <Adaptor3d_HCurve.hxx>
-
-#include <TColStd_SequenceOfReal.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <GeomFill.hxx>
+#include <GeomFill_CircularBlendFunc.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
 #if DRAW
 #include <GeomAdaptor_HCurve.hxx>

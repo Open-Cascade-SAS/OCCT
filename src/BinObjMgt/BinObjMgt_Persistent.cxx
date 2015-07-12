@@ -13,11 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinObjMgt_Persistent.ixx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TDF_Tool.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
+
+#include <BinObjMgt_Persistent.hxx>
 #include <FSD_FileHeader.hxx>
+#include <Standard_GUID.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
 
 #define BP_INTSIZE         ((Standard_Integer)sizeof(Standard_Integer))
 #define BP_EXTCHARSIZE     ((Standard_Integer)sizeof(Standard_ExtCharacter))

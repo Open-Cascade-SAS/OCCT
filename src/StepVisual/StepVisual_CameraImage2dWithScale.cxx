@@ -11,6 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_CameraImage2dWithScale.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepVisual_CameraImage2dWithScale.hxx>
 
 StepVisual_CameraImage2dWithScale::StepVisual_CameraImage2dWithScale ()   {  }

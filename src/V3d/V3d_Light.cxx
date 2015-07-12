@@ -12,36 +12,33 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
- 
      FONCTION :
      ----------
         Classe V3d_SpotLight :
- 
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
       00-09-92 : GG  ; Creation.
-
 ************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
  */
 
+#include <Graphic3d_Structure.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 #include <V3d.hxx>
-#include <V3d_Light.ixx>
+#include <V3d_BadValue.hxx>
+#include <V3d_Light.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_Light.hxx>
 
 //-Declarations
-
-
 //-Aliases
-
 //-Global data definitions
-
 //-Local data definitions
-
 //-Constructors
-
 V3d_Light::V3d_Light(const Handle(V3d_Viewer)& VM) {
 
 	MyType = V3d_AMBIENT ;

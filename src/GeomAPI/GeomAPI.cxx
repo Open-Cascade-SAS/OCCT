@@ -14,37 +14,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAPI.ixx>
 
-#include <ProjLib_ProjectedCurve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor.hxx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAPI.hxx>
+#include <gp_Pln.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : To2d
 //purpose  : 
 //=======================================================================
-
 Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C,
 				   const gp_Pln& P)
 {

@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_ContextDependentInvisibility.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_ContextDependentInvisibility.hxx>
+#include <StepVisual_InvisibilityContext.hxx>
 
 StepVisual_ContextDependentInvisibility::StepVisual_ContextDependentInvisibility ()  {}
 

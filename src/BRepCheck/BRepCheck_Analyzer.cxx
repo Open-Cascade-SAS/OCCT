@@ -14,28 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepCheck_Analyzer.ixx>
 
-#include <BRepCheck_Vertex.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Edge.hxx>
-#include <BRepCheck_Wire.hxx>
 #include <BRepCheck_Face.hxx>
+#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
+#include <BRepCheck_Result.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <BRepCheck_Solid.hxx>
-#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-
+#include <BRepCheck_Vertex.hxx>
+#include <BRepCheck_Wire.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-
-
-
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : Init

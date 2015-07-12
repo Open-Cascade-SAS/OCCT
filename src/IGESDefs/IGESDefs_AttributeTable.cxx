@@ -16,22 +16,24 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDefs_AttributeTable.ixx>
-#include <Standard_DimensionMismatch.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_AttributeDef.hxx>
-#include <TCollection_HAsciiString.hxx>
+#include <IGESDefs_AttributeTable.hxx>
+#include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //  ATTENTION  ATTENTION : L Appellation "ROW" n est pas reconduite en l etat
 //  Le Numero d Attribut est donne en 1er (donc, en colonne du HArray2 et non
 //  en ligne), le numero de Colonne en 2e (donc, comme un numero de Ligne)
-
-
 IGESDefs_AttributeTable::IGESDefs_AttributeTable ()    {  }
 
 

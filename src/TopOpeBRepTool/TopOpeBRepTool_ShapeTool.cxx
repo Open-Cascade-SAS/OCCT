@@ -14,35 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_ShapeTool.ixx>
 
 #include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopAbs.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepLProp_CLProps.hxx>
+#include <BRepTools.hxx>
 #include <ElCLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <TopLoc_Location.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
+#include <TopAbs.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
-#include <gp_Dir2d.hxx>
-#include <Geom2d_Line.hxx>
-#include <BRepTools.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepLProp_CLProps.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 //=======================================================================
 //function : Tolerance
 //purpose  : 
 //=======================================================================
-
 Standard_Real TopOpeBRepTool_ShapeTool::Tolerance(const TopoDS_Shape& S)
 {
   if ( S.IsNull() ) return 0. ;

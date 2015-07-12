@@ -11,67 +11,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_FuncShape.ixx>
+
+#include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <IFSelect_Act.hxx>
+#include <IFSelect_CheckCounter.hxx>
+#include <IFSelect_Functions.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <ShapeExtend_Explorer.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-
-#include <XSControl.hxx>
-#include <XSControl_Controller.hxx>
-#include <XSControl_WorkSession.hxx>
-#include <XSControl_Vars.hxx>
-#include <IFSelect_Act.hxx>
-#include <IFSelect_SessionPilot.hxx>
-#include <IFSelect_Functions.hxx>
-
-#include <Interface_InterfaceModel.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <Transfer_FinderProcess.hxx>
-#include <Transfer_Finder.hxx>
-#include <Transfer_Binder.hxx>
-#include <Interface_CheckIterator.hxx>
-
-//#include <TransferBRep_Analyzer.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TransferBRep_ShapeBinder.hxx>
-#include <TransferBRep_ShapeListBinder.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
-
-#include <XSControl_ConnectedShapes.hxx>
-#include <XSControl_TransferWriter.hxx>
-#include <XSControl_TransferReader.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Transfer_ResultFromModel.hxx>
-
-#include <TopTools_HSequenceOfShape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-#include <TransferBRep.hxx>
-#include <BRepTools.hxx>
-
-#include <TopoDS.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TopExp_Explorer.hxx>
-
-#include <Geom_Geometry.hxx>
-#include <Geom2d_Curve.hxx>
-
-#include <IFSelect_CheckCounter.hxx>
-#include <ShapeExtend_Explorer.hxx>
-#include <Interface_Macros.hxx>
-#include <stdio.h>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_Finder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_ResultFromModel.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientListBinder.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
+#include <TransferBRep_ShapeListBinder.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <XSControl.hxx>
+#include <XSControl_ConnectedShapes.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_FuncShape.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_Vars.hxx>
+#include <XSControl_WorkSession.hxx>
 
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-
+#include <stdio.h>
+//#include <TransferBRep_Analyzer.hxx>
 //  ######################################################################
 //  ####                                                              ####
 //  ####                           COMMANDS                           ####
 //  ####                                                              ####
 //  ######################################################################
-
-
 //=======================================================================
 //function : XSControl_tpdraw
 //purpose  : 

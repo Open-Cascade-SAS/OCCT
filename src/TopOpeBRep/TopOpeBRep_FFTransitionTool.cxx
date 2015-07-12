@@ -14,22 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
-#include <TopAbs.hxx>
-#include <IntSurf_Transition.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <IntSurf_Situation.hxx>
-#include <TopOpeBRep_FFTransitionTool.ixx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
+
 #include <BRep_Tool.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Vec.hxx>
+#include <IntSurf_Situation.hxx>
+#include <IntSurf_Transition.hxx>
+#include <IntSurf_TypeTrans.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep_FFTransitionTool.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
+#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
+#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();

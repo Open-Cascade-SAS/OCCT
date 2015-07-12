@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_CoonsAlgPatch.ixx>
-#include <Law_Linear.hxx>
+
+#include <GeomFill_Boundary.hxx>
+#include <GeomFill_CoonsAlgPatch.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <Law_Function.hxx>
+#include <Law_Linear.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomFill_CoonsAlgPatch
 //purpose  : 
 //=======================================================================
-
 GeomFill_CoonsAlgPatch::GeomFill_CoonsAlgPatch
 (const Handle(GeomFill_Boundary)& B1, 
  const Handle(GeomFill_Boundary)& B2, 

@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_HighLight.ixx>
+#include <IGESGraph_HighLight.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_HighLight::IGESGraph_HighLight ()    {  }
 

@@ -11,6 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_DigitalDocument.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_DigitalDocument.hxx>
 
 StepBasic_DigitalDocument::StepBasic_DigitalDocument  ()    {  }

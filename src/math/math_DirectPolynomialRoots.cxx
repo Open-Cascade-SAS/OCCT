@@ -16,20 +16,17 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_DirectPolynomialRoots.ixx>
-
+#include <math_DirectPolynomialRoots.hxx>
 #include <Standard_RangeError.hxx>
-#include <StdFail_InfiniteSolutions.hxx> 
-
-
+#include <StdFail_InfiniteSolutions.hxx>
 
 // Reference pour solution equation 3ieme degre et 2ieme degre :
 //     ALGORITHMES NUMERIQUES ANALYSE ET MISE EN OEUVRE, tome 2
 //          (equations et systemes non lineaires)
 // J. VIGNES editions TECHNIP.
-
 const Standard_Real ZERO = 1.0e-30;
     const Standard_Real EPSILON = RealEpsilon();
     const Standard_Real RADIX = 2;

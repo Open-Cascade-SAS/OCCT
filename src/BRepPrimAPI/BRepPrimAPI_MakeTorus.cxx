@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeTorus.ixx>
-#include <BRepBuilderAPI.hxx>
 
+#include <BRepBuilderAPI.hxx>
+#include <BRepPrim_Torus.hxx>
+#include <BRepPrimAPI_MakeTorus.hxx>
+#include <gp_Ax2.hxx>
+#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrimAPI_MakeTorus
 //purpose  : 
 //=======================================================================
-
 BRepPrimAPI_MakeTorus::BRepPrimAPI_MakeTorus(const Standard_Real R1,
 				     const Standard_Real R2) :
        myTorus(R1, R2)

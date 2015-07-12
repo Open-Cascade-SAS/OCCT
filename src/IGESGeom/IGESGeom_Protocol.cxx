@@ -11,12 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESGeom_Protocol.ixx>
 
-#include <IGESGeom_BSplineCurve.hxx>
-#include <IGESGeom_BSplineSurface.hxx>
+#include <IGESBasic.hxx>
+#include <IGESBasic_Protocol.hxx>
 #include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
+#include <IGESGeom_BSplineCurve.hxx>
+#include <IGESGeom_BSplineSurface.hxx>
 #include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_ConicArc.hxx>
@@ -29,6 +30,7 @@
 #include <IGESGeom_OffsetSurface.hxx>
 #include <IGESGeom_Plane.hxx>
 #include <IGESGeom_Point.hxx>
+#include <IGESGeom_Protocol.hxx>
 #include <IGESGeom_RuledSurface.hxx>
 #include <IGESGeom_SplineCurve.hxx>
 #include <IGESGeom_SplineSurface.hxx>
@@ -36,9 +38,8 @@
 #include <IGESGeom_TabulatedCylinder.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
-
-#include <IGESBasic.hxx>
-#include <IGESBasic_Protocol.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,

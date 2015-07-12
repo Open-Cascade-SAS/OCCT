@@ -14,8 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_DirectoryIterator.ixx>
+
+#include <CDF_Directory.hxx>
+#include <CDF_DirectoryIterator.hxx>
 #include <CDF_Session.hxx>
+#include <CDM_Document.hxx>
+#include <Standard_NoSuchObject.hxx>
+
 CDF_DirectoryIterator::CDF_DirectoryIterator():myIterator(CDF_Session::CurrentSession()->Directory()->List()) {}
 
 

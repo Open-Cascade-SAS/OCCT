@@ -14,24 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
 
-#include <GeomFill_UniformSection.ixx>
-
-#include <GeomConvert.hxx>
 #include <Convert_ParameterisationType.hxx>
-
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-
-#include <GCPnts_AbscissaPoint.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <GeomConvert.hxx>
+#include <GeomFill_UniformSection.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
+#include <stdio.h>
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <Geom_Curve.hxx>

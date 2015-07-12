@@ -14,12 +14,14 @@
 
 #ifndef WNT
 
-#include <OSD_Error.ixx>
+
+#include <OSD_Error.hxx>
 #include <OSD_ErrorList.hxx>
+#include <OSD_OSDError.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <stdio.h>
-
 /* Created by Stephan GARNAUD (ARM) 1992 for Matra Datavision */
-
 OSD_Error::OSD_Error(){
  myErrno = 0;
 }

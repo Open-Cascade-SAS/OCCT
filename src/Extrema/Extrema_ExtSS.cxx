@@ -14,18 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtSS.ixx>
 
-#include <StdFail_NotDone.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
-#include <Precision.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-
-#include <Extrema_GenExtSS.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <ElCLib.hxx>
+#include <Extrema_ExtSS.hxx>
+#include <Extrema_GenExtSS.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <StdFail_InfiniteSolutions.hxx>
+#include <StdFail_NotDone.hxx>
 
 Extrema_ExtSS::Extrema_ExtSS() 
 {

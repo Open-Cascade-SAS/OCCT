@@ -13,19 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataXtd_PointDriver.ixx>
-#include <CDM_MessageDriver.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDataXtd_Point.hxx>
+
+#include <BinMDataXtd_PointDriver.hxx>
 #include <BinMDF_ADriver.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Point.hxx>
+#include <TDF_Attribute.hxx>
+
 //=======================================================================
 //function : BinMDataXtd_PointDriver
 //purpose  : 
 //=======================================================================
-
 BinMDataXtd_PointDriver::BinMDataXtd_PointDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataXtd_Point)->Name())

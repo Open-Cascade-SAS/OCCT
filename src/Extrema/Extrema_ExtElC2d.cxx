@@ -14,20 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtElC2d.ixx>
 
+#include <ElCLib.hxx>
+#include <Extrema_ExtElC2d.hxx>
+#include <Extrema_ExtPElC2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+#include <math_TrigonometricFunctionRoots.hxx>
+#include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
-#include <ElCLib.hxx>
-#include <math_TrigonometricFunctionRoots.hxx>
-#include <math_DirectPolynomialRoots.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Precision.hxx>
-#include <Extrema_ExtPElC2d.hxx>
 
 //=============================================================================
-
 Extrema_ExtElC2d::Extrema_ExtElC2d () { myDone = Standard_False; }
 //=============================================================================
 

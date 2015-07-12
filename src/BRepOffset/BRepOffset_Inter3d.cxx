@@ -16,38 +16,39 @@
 
 //  Modified by skv - Fri Dec 26 12:20:14 2003 OCC4455
 
-#include <BRepOffset_Inter3d.ixx>
-#include <BRepOffset_Tool.hxx>
-#include <BRepOffset_Interval.hxx>
-#include <BRepOffset_ListOfInterval.hxx>
-#include <BRepOffset_DataMapOfShapeOffset.hxx>
-#include <BRepOffset_Offset.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAlgo_AsDes.hxx>
+#include <BRepAlgo_Image.hxx>
 #include <BRepLib_MakeVertex.hxx>
-
+#include <BRepOffset_Analyse.hxx>
+#include <BRepOffset_DataMapOfShapeOffset.hxx>
+#include <BRepOffset_Inter3d.hxx>
+#include <BRepOffset_Interval.hxx>
+#include <BRepOffset_ListOfInterval.hxx>
+#include <BRepOffset_Offset.hxx>
+#include <BRepOffset_Tool.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepTool_BoxSort.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <Extrema_ExtPC.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <Precision.hxx>
-
-
 
 //=======================================================================
 //function : BRepOffset_Inter3d
 //purpose  : 
 //=======================================================================
-
 BRepOffset_Inter3d::BRepOffset_Inter3d(const Handle(BRepAlgo_AsDes)& AsDes, 
 				       const TopAbs_State              Side ,
 				       const Standard_Real             Tol)

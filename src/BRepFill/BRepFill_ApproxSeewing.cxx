@@ -14,27 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_ApproxSeewing.ixx>
 
-#include <AppParCurves_MultiCurve.hxx>
 #include <AppDef_Compute.hxx>
 #include <AppDef_MultiLine.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
+#include <AppParCurves_MultiCurve.hxx>
+#include <BRepFill_ApproxSeewing.hxx>
 #include <BSplCLib.hxx>
-#include <PLib.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <PLib.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : BRepFill_ApproxSeewing
 //purpose  : 
 //=======================================================================
-
 BRepFill_ApproxSeewing::BRepFill_ApproxSeewing() 
 :myIsDone(Standard_False)
 {

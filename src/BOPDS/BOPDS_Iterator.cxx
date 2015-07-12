@@ -15,24 +15,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_Iterator.ixx>
-//
+
 #include <Bnd_Box.hxx>
-//
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_UBTreeFiller.hxx>
-//
-#include <TopoDS_Shape.hxx>
-//
+#include <BOPCol_BoxBndTree.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-#include <BOPCol_BoxBndTree.hxx>
-//
+#include <BOPDS_DS.hxx>
 #include <BOPDS_IndexRange.hxx>
-#include <BOPDS_PassKeyBoolean.hxx>
+#include <BOPDS_Iterator.hxx>
 #include <BOPDS_MapOfPassKeyBoolean.hxx>
+#include <BOPDS_PassKeyBoolean.hxx>
 #include <BOPDS_Tools.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+#include <TopoDS_Shape.hxx>
 
+//
+//
+//
+//
+//
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 //class    : BOPDS_TreeSelector

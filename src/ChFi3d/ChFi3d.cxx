@@ -14,28 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFi3d.ixx>
-#include <ChFi3d_Builder_0.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRep_Tool.hxx>
 
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <ChFi3d.hxx>
+#include <ChFi3d_Builder_0.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : ConcaveSide
 //purpose  : calculate the concave face at the neighborhood of the border of
 //           2 faces.
 //=======================================================================
-
 Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1, 
 				     const BRepAdaptor_Surface& S2, 
 				     const TopoDS_Edge& E, 

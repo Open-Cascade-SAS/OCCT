@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_BiPnt2D.ixx>
+
+#include <gp_Pnt2d.hxx>
+#include <HLRBRep_BiPnt2D.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : HLRBRep_BiPnt2D
 //purpose  : 
 //=======================================================================
-
 HLRBRep_BiPnt2D::HLRBRep_BiPnt2D ()
 {
 }

@@ -12,18 +12,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Curve.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <DrawTrSurf_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomTools_CurveSet.hxx>
 #include <GeomLProp_CLProps.hxx>
-#include <Precision.hxx>
+#include <GeomTools_CurveSet.hxx>
 #include <gp.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Geom_Curve.hxx>
 
 Standard_Real DrawTrSurf_CurveLimit = 400;
 extern Standard_Boolean Draw_Bounds;

@@ -25,58 +25,53 @@
 //sln 29.12.2001 OCC90 : Method checkBSplineSurfaceStatus and varification of creation of bspline surfaces were added
 //=======================================================================
 
-#include <IGESToBRep_BasicSurface.ixx>
-
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
-
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_ToolLocation.hxx>
-
-#include <IGESGeom_SplineSurface.hxx>
-#include <IGESGeom_BSplineSurface.hxx>
-
-#include <IGESConvGeom.hxx>
-
-#include <Interface_Macros.hxx>  
-
-#include <gp_GTrsf.hxx>
-#include <gp_Trsf.hxx>
-
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>  
-#include <TColStd_SequenceOfInteger.hxx>  
-
-//:36
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <Precision.hxx>
-
-//S3767
-#include <Message_Msg.hxx>
-#include <IGESData_IGESModel.hxx> 
-//S4181
-#include <gp_Pln.hxx>
-#include <IGESGeom_Point.hxx>
-#include <IGESGeom_Direction.hxx>
-#include <Precision.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Cylinder.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Trsf.hxx>
+#include <IGESConvGeom.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_ToolLocation.hxx>
+#include <IGESGeom_BSplineSurface.hxx>
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESGeom_SplineSurface.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <IGESSolid_CylindricalSurface.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <IGESSolid_SphericalSurface.hxx>
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_BasicSurface.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeConstruct_Curve.hxx>
-#include <IGESSolid_PlaneSurface.hxx>
-#include <IGESSolid_CylindricalSurface.hxx>
-#include <IGESSolid_ConicalSurface.hxx>
-#include <IGESSolid_SphericalSurface.hxx>
-#include <IGESSolid_ToroidalSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
+//:36
+//S3767
+//S4181
 //=======================================================================
 //function : CheckBSplineSurface
 //purpose  : Check coincidede knots. Check whether knots are in ascending 

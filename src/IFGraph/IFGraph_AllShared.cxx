@@ -11,9 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_AllShared.ixx>
-#include <Interface_InterfaceModel.hxx>
 
+#include <IFGraph_AllShared.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
 
 IFGraph_AllShared::IFGraph_AllShared (const Interface_Graph& agraph)
       : thegraph (agraph)    {  }

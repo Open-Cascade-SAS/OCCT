@@ -14,15 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_CurveOnSurface.ixx>
-#include <Precision.hxx>
 
+#include <BRep_CurveOnSurface.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_CurveOnSurface
 //purpose  : 
 //=======================================================================
-
 BRep_CurveOnSurface::BRep_CurveOnSurface(const Handle(Geom2d_Curve)& PC, 
 					 const Handle(Geom_Surface)& S, 
 					 const TopLoc_Location& L) :

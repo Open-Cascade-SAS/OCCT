@@ -14,45 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_MakePipe.ixx>
 
+#include <Bnd_Box.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepFeat.hxx>
+#include <BRepFeat_MakePipe.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <LocOpe.hxx>
+#include <LocOpe_Pipe.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //modified by NIZNHY-PKV Thu Mar 21 17:54:27 2002 f
 //#include <BRepAlgo_Fuse.hxx>
 //#include <BRepAlgo_Cut.hxx> 
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Cut.hxx> 
 //modified by NIZNHY-PKV Thu Mar 21 17:54:30 2002 t
-
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-
-#include <LocOpe_Pipe.hxx>
-
-#include <BRep_Tool.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-
-#include <Bnd_Box.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS.hxx>
-
-#include <Standard_ConstructionError.hxx>
-
-#include <TopExp.hxx>
-#include <BRepBndLib.hxx>
-
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif

@@ -1,3 +1,6 @@
+Plugin.cxx
+Plugin.hxx
+Plugin_DataMapIteratorOfMapOfFunctions.hxx
+Plugin_Failure.hxx
 Plugin_Macro.hxx
 Plugin_MapOfFunctions.hxx
-Plugin_DataMapIteratorOfMapOfFunctions.hxx

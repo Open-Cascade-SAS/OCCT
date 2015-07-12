@@ -13,21 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlLDrivers.ixx>
 
-#include <XmlLDrivers_DocumentStorageDriver.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Plugin_Macro.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <XmlLDrivers.hxx>
 #include <XmlLDrivers_DocumentRetrievalDriver.hxx>
-#include <XmlMDF_ADriverTable.hxx>
-#include <XmlMDF.hxx>
+#include <XmlLDrivers_DocumentStorageDriver.hxx>
 #include <XmlMDataStd.hxx>
+#include <XmlMDF.hxx>
+#include <XmlMDF_ADriverTable.hxx>
 #include <XmlMDocStd.hxx>
 #include <XmlMFunction.hxx>
-#include <Standard_GUID.hxx>
 
 #include <locale.h>
 #include <time.h>
-#include <Plugin_Macro.hxx>
-
 static Standard_GUID XmlLStorageDriver  ("13a56820-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID XmlLRetrievalDriver("13a56822-8269-11d5-aab2-0050044b1af1");
 #define CURRENT_DOCUMENT_VERSION 7

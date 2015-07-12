@@ -16,11 +16,15 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_CurveDimension.ixx>
-#include <IGESGeom_Line.hxx>
-#include <gp_XYZ.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDimen_CurveDimension.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <IGESDimen_WitnessLine.hxx>
+#include <IGESGeom_Line.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_CurveDimension::IGESDimen_CurveDimension ()    {  }
 

@@ -12,10 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_BezierSurface.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <DrawTrSurf_BezierCurve.hxx>
+#include <DrawTrSurf_BezierSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 

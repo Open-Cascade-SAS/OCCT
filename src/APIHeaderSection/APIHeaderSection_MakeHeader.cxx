@@ -17,26 +17,22 @@
 //#58 rln 28.12.98 STEP header fields (NOTE: more parameterization is necessary)
 //pdn 11.01.99 including <stdio.h> for compilation on NT
 
-#include <stdio.h>
-#include <APIHeaderSection_MakeHeader.ixx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_EntityIterator.hxx>
-
-#include <HeaderSection_FileSchema.hxx>
-#include <HeaderSection_FileName.hxx>
+#include <APIHeaderSection_MakeHeader.hxx>
 #include <HeaderSection_FileDescription.hxx>
-
-#include <StepData_Protocol.hxx>
-
+#include <HeaderSection_FileName.hxx>
+#include <HeaderSection_FileSchema.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
-
-#include <Interface_MSG.hxx>
-#include <Interface_Version.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_MSG.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_Version.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_StepModel.hxx>
+#include <TCollection_HAsciiString.hxx>
 
+#include <stdio.h>
 // This is a generic header for any STEP sheme
-
-
 static Handle(TCollection_HAsciiString) nulstr;
 static Handle(Interface_HArray1OfHAsciiString) nularr;
 

@@ -14,26 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draft.ixx>
 
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_Plane.hxx>
 #include <BRep_Tool.hxx>
-
 #include <BRepTools.hxx>
+#include <Draft.hxx>
 #include <ElSLib.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Dir.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
-
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : Angle
 //purpose  : 
 //=======================================================================
-
 Standard_Real Draft::Angle(const TopoDS_Face& F,
 			   const gp_Dir& D)
 {

@@ -13,72 +13,64 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct_ExternRefs.ixx>
 
 #include <Interface_EntityIterator.hxx>
-
-#include <StepData_SelectNamed.hxx>
-
-#include <StepBasic_RoleAssociation.hxx>
-#include <StepBasic_DocumentRepresentationType.hxx>
-#include <StepBasic_DocumentRepresentationType.hxx>
-#include <StepBasic_DocumentFile.hxx>
-#include <StepBasic_ObjectRole.hxx>
-#include <StepBasic_SourceItem.hxx>
-#include <StepBasic_DocumentType.hxx>
-#include <StepBasic_IdentificationRole.hxx>
-#include <StepBasic_ExternalSource.hxx>
-#include <StepBasic_ExternalSource.hxx>
-
-#include <StepRepr_CharacterizedDefinition.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_DescriptiveRepresentationItem.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_PropertyDefinitionRepresentation.hxx>
-
-#include <StepShape_ShapeRepresentation.hxx>
-
+#include <StepAP203_ApprovedItem.hxx>
+#include <StepAP203_CcDesignApproval.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
+#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
+#include <StepAP203_DateTimeItem.hxx>
+#include <StepAP203_HArray1OfApprovedItem.hxx>
+#include <StepAP203_HArray1OfDateTimeItem.hxx>
+#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
+#include <StepAP203_PersonOrganizationItem.hxx>
 #include <StepAP214_AppliedDocumentReference.hxx>
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepAP214_ExternalIdentificationItem.hxx>
-#include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
 #include <StepAP214_HArray1OfDocumentReferenceItem.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepBasic_ProductDefinitionFormation.hxx>
-#include <StepBasic_ProductDefinitionContext.hxx>
-#include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
-#include <StepBasic_Product.hxx>
-#include <StepBasic_HArray1OfDocument.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
 #include <StepBasic_ApplicationContext.hxx>
-#include <StepRepr_CharacterizedDefinition.hxx>
-#include <StepRepr_RepresentedDefinition.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
-#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
-#include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
-#include <StepAP203_PersonOrganizationItem.hxx>
-#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
-#include <StepAP203_HArray1OfDateTimeItem.hxx>
-#include <StepAP203_DateTimeItem.hxx>
-#include <StepAP203_CcDesignApproval.hxx>
-#include <StepAP203_HArray1OfApprovedItem.hxx>
-#include <StepAP203_ApprovedItem.hxx>
-#include <StepBasic_DocumentProductEquivalence.hxx>
-#include <StepBasic_DocumentType.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
+#include <StepBasic_ApplicationProtocolDefinition.hxx>
 #include <StepBasic_Document.hxx>
+#include <StepBasic_DocumentFile.hxx>
+#include <StepBasic_DocumentProductEquivalence.hxx>
+#include <StepBasic_DocumentRepresentationType.hxx>
+#include <StepBasic_DocumentType.hxx>
+#include <StepBasic_ExternalSource.hxx>
+#include <StepBasic_HArray1OfDocument.hxx>
+#include <StepBasic_HArray1OfProduct.hxx>
+#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepBasic_IdentificationRole.hxx>
+#include <StepBasic_ObjectRole.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductContext.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionContext.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
 #include <StepBasic_ProductOrFormationOrDefinition.hxx>
 #include <StepBasic_ProductRelatedProductCategory.hxx>
-#include <StepBasic_ProductDefinition.hxx>
-
+#include <StepBasic_RoleAssociation.hxx>
+#include <StepBasic_SourceItem.hxx>
+#include <STEPConstruct_ExternRefs.hxx>
+#include <StepData_SelectNamed.hxx>
+#include <StepRepr_CharacterizedDefinition.hxx>
+#include <StepRepr_DescriptiveRepresentationItem.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_PropertyDefinitionRepresentation.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentedDefinition.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //=======================================================================
 //function : STEPConstruct_ExternRefs
 //purpose  : 
 //=======================================================================
-
 STEPConstruct_ExternRefs::STEPConstruct_ExternRefs ()
 {
 }

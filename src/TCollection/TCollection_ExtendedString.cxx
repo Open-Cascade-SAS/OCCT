@@ -12,16 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_ExtendedString.ixx>
+
 #include <Standard.hxx>
 #include <Standard_ExtString.hxx>
+#include <Standard_NegativeValue.hxx>
 #include <Standard_NullObject.hxx>
+#include <Standard_NumericError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
-#include <cstdio>
 #include <cctype>
-
+#include <cstdio>
 static
   Standard_PExtCharacter Allocate(const Standard_Size aLength);
 

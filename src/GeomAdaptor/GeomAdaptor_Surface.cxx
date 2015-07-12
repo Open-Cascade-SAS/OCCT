@@ -22,40 +22,52 @@
 #define No_Standard_OutOfRange
 #define PosTol (Precision::PConfusion()*0.5)
 
-#include <GeomAdaptor_Surface.ixx>
 
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HSurface.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_BSplineSurface.hxx> 
-#include <Geom_BezierSurface.hxx> 
-#include <Geom_OffsetSurface.hxx>
-//#include <GeomConvert_BSplineSurfaceKnotSplitting.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Circle.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Trsf.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib_Cache.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
+//#include <GeomConvert_BSplineSurfaceKnotSplitting.hxx>
 #define myBspl Handle(Geom_BSplineSurface)::DownCast (mySurface)
 #define myExtSurf Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (mySurface)
 #define myRevSurf Handle(Geom_SurfaceOfRevolution)::DownCast (mySurface)

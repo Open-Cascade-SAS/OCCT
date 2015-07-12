@@ -15,16 +15,18 @@
 
 // modified     13.04.2009 Sergey ZARITCHNY
 
-#include <BinMPrsStd_PositionDriver.ixx>
-#include <gp_Pnt.hxx>
-#include <TDataXtd_Position.hxx>
+#include <BinMPrsStd_PositionDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
 #include <CDM_MessageDriver.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Position.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataStd_PositionDriver
 //purpose  : Constructor
 //=======================================================================
-
 BinMPrsStd_PositionDriver::BinMPrsStd_PositionDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
      : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TDataXtd_Position)->Name())

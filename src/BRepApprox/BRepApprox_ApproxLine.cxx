@@ -14,15 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepApprox_ApproxLine.ixx>
 
+#include <BRepApprox_ApproxLine.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : BRepApprox_ApproxLine
 //purpose  : 
 //=======================================================================
-
 BRepApprox_ApproxLine::BRepApprox_ApproxLine
    (const Handle(Geom_BSplineCurve)&    CurveXYZ,
     const Handle(Geom2d_BSplineCurve)&  CurveUV1,

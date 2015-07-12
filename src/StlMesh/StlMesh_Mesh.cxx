@@ -16,17 +16,20 @@
 
 //=======================================================================
 
-#include <StlMesh_Mesh.ixx>
-#include <StlMesh_MeshDomain.hxx>
+#include <gp_XYZ.hxx>
 #include <Precision.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullValue.hxx>
+#include <Standard_Type.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlMesh_MeshDomain.hxx>
 
 //=======================================================================
 //function : StlMesh_Mesh
 //design   : 
 //warning  : 
 //=======================================================================
-
-
 StlMesh_Mesh::StlMesh_Mesh()
 : nbTriangles (0), nbVertices (0), xyzmax (-(Precision::Infinite()), -(Precision::Infinite()), -(Precision::Infinite())), xyzmin (Precision::Infinite(), Precision::Infinite(), Precision::Infinite())
 { }

@@ -14,25 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2d2TanRad.jxx>
 
 #include <ElCLib.hxx>
+#include <GccAna_Circ2d2TanRad.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Lin2d.hxx>
-#include <gp_Ax2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //   Circle passing by two points of given radius.
 //   ==============================================
-
 //==============================================================================
 //   Solution of the equation of second degree showing that the center of the  +
 //   circle is equidistant from two points.                                    +
 //==============================================================================
-
 GccAna_Circ2d2TanRad::
    GccAna_Circ2d2TanRad (const gp_Pnt2d&             Point1     ,
                          const gp_Pnt2d&             Point2     ,

@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepShape_FaceBasedSurfaceModel.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_FaceBasedSurfaceModel.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_FaceBasedSurfaceModel
 //purpose  : 
 //=======================================================================
-
 StepShape_FaceBasedSurfaceModel::StepShape_FaceBasedSurfaceModel ()
 {
 }

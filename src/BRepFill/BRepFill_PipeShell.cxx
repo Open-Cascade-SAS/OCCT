@@ -14,72 +14,73 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
-
-#include <BRepFill_PipeShell.ixx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <TopExp.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopLoc_Location.hxx>
-
+#include <BRepAdaptor_HCompCurve.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepFill.hxx>
+#include <BRepFill_ACRLaw.hxx>
+#include <BRepFill_CompatibleWires.hxx>
+#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
+#include <BRepFill_Edge3DLaw.hxx>
+#include <BRepFill_EdgeOnSurfLaw.hxx>
+#include <BRepFill_LocationLaw.hxx>
+#include <BRepFill_NSections.hxx>
+#include <BRepFill_PipeShell.hxx>
+#include <BRepFill_Section.hxx>
+#include <BRepFill_SectionLaw.hxx>
+#include <BRepFill_SectionPlacement.hxx>
+#include <BRepFill_ShapeLaw.hxx>
+#include <BRepFill_Sweep.hxx>
+#include <BRepGProp.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-
-#include <BRepFill.hxx>
-#include <BRepFill_Sweep.hxx>
-#include <BRepFill_SectionPlacement.hxx>
-#include <BRepFill_Edge3DLaw.hxx>
-#include <BRepFill_ACRLaw.hxx>
-#include <BRepFill_EdgeOnSurfLaw.hxx>
-#include <BRepFill_ShapeLaw.hxx>
-#include <BRepFill_CompatibleWires.hxx>
-#include <BRepFill_NSections.hxx>
-#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-
-#include <GeomFill_TrihedronLaw.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomFill_ConstantBiNormal.hxx>
 #include <GeomFill_CorrectedFrenet.hxx>
-#include <GeomFill_Frenet.hxx>
+#include <GeomFill_CurveAndTrihedron.hxx>
 #include <GeomFill_DiscreteTrihedron.hxx>
 #include <GeomFill_Fixed.hxx>
-#include <GeomFill_ConstantBiNormal.hxx>
-#include <GeomFill_SectionLaw.hxx>
-#include <GeomFill_CurveAndTrihedron.hxx>
+#include <GeomFill_Frenet.hxx>
 #include <GeomFill_GuideTrihedronAC.hxx>
 #include <GeomFill_GuideTrihedronPlan.hxx>
 #include <GeomFill_LocationGuide.hxx>
-
-//Specification Guide
-#include <GeomAdaptor_HCurve.hxx>
-
-#include <gp_Trsf.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Precision.hxx>
-
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <StdFail_NotDone.hxx>
-
-#include <BRepBuilderAPI_Copy.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-
 #include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
+#include <Law_Function.hxx>
 #include <Law_Interpol.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
+#include <stdio.h>
+//Specification Guide
 #ifdef DRAW
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>

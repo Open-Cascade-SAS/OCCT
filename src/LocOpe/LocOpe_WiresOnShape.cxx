@@ -14,48 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_WiresOnShape.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom2d_Curve.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Vec.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <BRepTools.hxx>
-#include <GeomProjLib.hxx>
-#include <LocOpe.hxx>
-#include <Precision.hxx>
-
-#include <Standard_ConstructionError.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRepLib.hxx>
-
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <Extrema_ExtCC.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
+#include <BRepTools.hxx>
+#include <Extrema_ExtCC.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
-
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_WiresOnShape.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean Project(const TopoDS_Vertex&,
                                 const gp_Pnt2d&,

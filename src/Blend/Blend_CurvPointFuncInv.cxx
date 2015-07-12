@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Blend_CurvPointFuncInv.ixx>
+
+#include <Blend_CurvPointFuncInv.hxx>
+#include <gp_Pnt.hxx>
+#include <math_Matrix.hxx>
 
 //=======================================================================
 //function : NbVariables
 //purpose  : 
 //=======================================================================
-
 Standard_Integer Blend_CurvPointFuncInv::NbVariables() const
 {
   return 2;

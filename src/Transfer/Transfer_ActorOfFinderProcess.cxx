@@ -11,10 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_ActorOfFinderProcess.ixx>
-#include <Transfer_TransientMapper.hxx>
+
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <Transfer_ActorOfFinderProcess.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_Finder.hxx>
 #include <Transfer_FinderProcess.hxx>
+#include <Transfer_ProcessForFinder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientMapper.hxx>
 
 Transfer_ActorOfFinderProcess::Transfer_ActorOfFinderProcess ()    {  themodetrans = 0;  }
 

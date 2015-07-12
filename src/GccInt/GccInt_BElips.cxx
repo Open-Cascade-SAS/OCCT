@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccInt_BElips.ixx>
-#include <Standard_DomainError.hxx>
+
+#include <GccInt_BElips.hxx>
 #include <gp_Elips2d.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 GccInt_BElips::
    GccInt_BElips(const gp_Elips2d& Ellipse) {

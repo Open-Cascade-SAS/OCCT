@@ -14,53 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_DPrism.ixx>
-
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <BRepLib_MakeVertex.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-
 #include <BRepLib.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <LocOpe_BuildShape.hxx>
-#include <LocOpe.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepTools.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Lin.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Curve.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_BuildShape.hxx>
+#include <LocOpe_DPrism.hxx>
 #include <Precision.hxx>
-#include <BSplCLib.hxx>
-#include <gp.hxx>
-#include <BRepTools.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();

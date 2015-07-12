@@ -11,20 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_HeaderTool.ixx>
-#include <Interface_ReaderLib.hxx>
-#include <Interface_Protocol.hxx>
-#include <StepData_Protocol.hxx>
 
+#include <Interface_Protocol.hxx>
+#include <Interface_ReaderLib.hxx>
+#include <StepData_FileProtocol.hxx>
+#include <StepData_HeaderTool.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //  HeaderTool prend en charge le Schema de Donnees utilise pour un Fichier
 //  Ce Schema peut etre compose de un ou plusieurs Protocoles, chacun etant
 //  designe par une String. Les Strings correspondent au type "SCHEMA_NAME"
 //  (typedef) et le Schema est une entite de Header de type "FILE_SCHEMA",
 //  il a cette forme dans le fichier :
-
-
-
 static Interface_ReaderLib lib;
 
 

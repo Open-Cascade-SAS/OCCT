@@ -14,8 +14,9 @@
 
 // AppDef_MyLineTool.cxx
 
-#include <AppDef_MyLineTool.ixx>
+#include <AppDef_MultiLine.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
+#include <AppDef_MyLineTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>

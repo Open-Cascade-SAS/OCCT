@@ -14,32 +14,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiKPart_ComputeData.jxx>
-#include <Precision.hxx>
-#include <gp.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Circ.hxx>
+
+#include <Adaptor3d_HSurface.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <ChFiKPart_ComputeData.hxx>
+#include <ChFiKPart_ComputeData_Fcts.hxx>
+#include <ElSLib.hxx>
 #include <gce_MakeCirc.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_SphericalSurface.hxx>
-#include <ElSLib.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <ChFiKPart_ComputeData_Fcts.hxx>
+#include <gp.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
 
 //=======================================================================
 //function : ChFiKPart_Sphere
 //purpose  : Construction of a spherical fillet the contours which of 
 //           are not all isos, from three tops.
 //=======================================================================
-
 Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
 				  const Handle(ChFiDS_SurfData)& Data, 
 				  const Handle(Adaptor3d_HSurface)& S1, 

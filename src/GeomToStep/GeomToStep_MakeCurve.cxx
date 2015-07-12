@@ -14,38 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeCurve.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_Conic.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_BoundedCurve.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <GeomToStep_MakeCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom2d_Line.hxx>
-#include <GeomToStep_MakeLine.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom2d_Conic.hxx>
-#include <GeomToStep_MakeConic.hxx>
-#include <Geom_BoundedCurve.hxx>
+
 #include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <GeomToStep_MakeBoundedCurve.hxx>
-
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-
-#include <Geom2dConvert.hxx>
 #include <Geom2d_Circle.hxx>
-#include <gp_Circ2d.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomToStep_MakeBoundedCurve.hxx>
+#include <GeomToStep_MakeConic.hxx>
+#include <GeomToStep_MakeCurve.hxx>
+#include <GeomToStep_MakeLine.hxx>
+#include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_BoundedCurve.hxx>
+#include <StepGeom_Conic.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Line.hxx>
 
 //=============================================================================
 // Creation d' une Curve de prostep a partir d' une Curve de Geom
 //=============================================================================
-
 GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom_Curve)& C)
 {
   done = Standard_True;

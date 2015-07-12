@@ -17,29 +17,31 @@
 //    abv 16.06.99 returning ReShape context; processing shared subshapes in compounds
 //    sln 29.11.01 Bug21: in method Perform(..) nullify location of compound's faces only if mode myConsiderLocation is on
 
-#include <ShapeUpgrade_ShapeDivide.ixx>
-#include <Precision.hxx>
-#include <ShapeExtend.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <BRep_Builder.hxx>
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_ShapeDivide.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Message_Msg.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivide
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShapeDivide::ShapeUpgrade_ShapeDivide() : myStatus(0)
 {
   myPrecision = myMinTol = Precision::Confusion();

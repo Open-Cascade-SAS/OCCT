@@ -14,20 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_MakePolygon.ixx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakePolygon.hxx>
 #include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : BRepLib_MakePolygon
 //purpose  : 
 //=======================================================================
-
 BRepLib_MakePolygon::BRepLib_MakePolygon() 
 {
 }

@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_AreaLimit.ixx>
+
+#include <HLRAlgo_Intersection.hxx>
+#include <HLRBRep_AreaLimit.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : HLRBRep_AreaLimit
 //purpose  : 
 //=======================================================================
-
 HLRBRep_AreaLimit::HLRBRep_AreaLimit(const HLRAlgo_Intersection& V, 
 				     const Standard_Boolean Boundary, 
 				     const Standard_Boolean Interference, 

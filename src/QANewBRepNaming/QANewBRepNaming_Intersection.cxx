@@ -13,12 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Intersection.ixx>
-#include <TNaming_Builder.hxx>
+
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <QANewBRepNaming_Intersection.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>

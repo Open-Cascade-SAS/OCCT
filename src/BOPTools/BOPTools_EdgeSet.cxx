@@ -12,4 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_EdgeSet.ixx>
+
+#include <BOPTools_EdgeSet.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>

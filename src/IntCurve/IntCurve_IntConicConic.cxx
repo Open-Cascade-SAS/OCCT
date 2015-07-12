@@ -16,20 +16,23 @@
 
 // Modified:    OFV Thu Nov  6 17:03:52 2003
 
-
-#include <IntCurve_IntConicConic.ixx>
-#include <IntCurve_IntConicConic_1.hxx>
+#include <ElCLib.hxx>
+#include <gp.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_Conic.hxx>
+#include <IntAna2d_IntPoint.hxx>
 #include <IntCurve_IConicTool.hxx>
+#include <IntCurve_IntConicConic.hxx>
+#include <IntCurve_IntConicConic_1.hxx>
 #include <IntCurve_PConic.hxx>
 #include <IntRes2d_Domain.hxx>
-#include <gp.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-
-#include <IntAna2d_AnaIntersection.hxx>
-#include <IntAna2d_IntPoint.hxx>
-#include <IntAna2d_Conic.hxx>
-#include <ElCLib.hxx>
 
 //=======================================================================
 // Perform() for
@@ -46,7 +49,6 @@
 //              Elipse    - Hyperbola
 //              Hyperbola - Hyperbola
 //=======================================================================
-
 static const Standard_Real PARAM_MAX_ON_PARABOLA  = 100000000.0;
 static const Standard_Real PARAM_MAX_ON_HYPERBOLA = 10000.0;
 static const Standard_Real TOL_EXACT_INTER        = 1.e-7;

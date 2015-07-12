@@ -15,72 +15,63 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepFill_Draft.ixx>
-
-#include <BRepFill_DraftLaw.hxx>
-#include <BRepFill_ShapeLaw.hxx>
-#include <BRepFill_Sweep.hxx>
-#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
-
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <Bnd_Box.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Mat.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-
-#include <GeomAdaptor_Surface.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-
-#include <GeomLProp_SLProps.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Geometry.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <GeomAdaptor_HSurface.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-
-#include <GeomFill_LocationDraft.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>  
-#include <TopoDS_Shell.hxx> 
-#include <TopoDS_Solid.hxx> 
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx> 
-#include <TopExp.hxx>
-#include <TopAbs.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <BRepLib_FindSurface.hxx>
 #include <BRep_Builder.hxx>
-
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_DSAccess.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
-
-#include <Precision.hxx> 
-#include <TColStd_Array1OfReal.hxx>
-
+#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
+#include <BRepFill_Draft.hxx>
+#include <BRepFill_DraftLaw.hxx>
+#include <BRepFill_SectionLaw.hxx>
+#include <BRepFill_ShapeLaw.hxx>
+#include <BRepFill_Sweep.hxx>
+#include <BRepLib_FindSurface.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <BRepTools.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomFill_LocationDraft.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <Precision.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 #ifdef DRAW
 #include <Geom_Circle.hxx>

@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWFeaMoistureAbsorption.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWFeaMoistureAbsorption.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_FeaMoistureAbsorption.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaMoistureAbsorption
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWFeaMoistureAbsorption::RWStepFEA_RWFeaMoistureAbsorption ()
 {
 }

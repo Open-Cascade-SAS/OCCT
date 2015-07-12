@@ -11,19 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWTextLiteral.ixx>
-#include <StepGeom_Axis2Placement.hxx>
-#include <StepVisual_TextPath.hxx>
-#include <StepVisual_FontSelect.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWTextLiteral.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Axis2Placement.hxx>
+#include <StepVisual_FontSelect.hxx>
 #include <StepVisual_TextLiteral.hxx>
-
+#include <StepVisual_TextPath.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 // --- Enum : TextPath ---
 static TCollection_AsciiString tpUp(".UP.");

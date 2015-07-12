@@ -26,43 +26,44 @@
 //#4  szv           S4163: optimizations
 //:r9 abv 09.04.99: id_turbine-C.stp #3865: check degenerated 2d point by recomputing to 3d instead of Resolution
 //:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
-#include <ShapeAnalysis_Surface.ixx>
 
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_IsoCurve.hxx>
+#include <Bnd_Box.hxx>
+#include <BndLib_Add3dCurve.hxx>
+#include <ElSLib.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_BezierSurface.hxx> //S4135
 #include <Geom_ConicalSurface.hxx>
-#include <Geom_OffsetSurface.hxx> //S4135
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
-
-#include <ElSLib.hxx>
-
+#include <GeomAbs_SurfaceForm.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-
+#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
-
+#include <ShapeAnalysis_Surface.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <ShapeAnalysis.hxx>
+#include <Standard_Type.hxx>
 
-#include <Adaptor3d_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Adaptor3d_IsoCurve.hxx>
-
-#include <GeomAbs_SurfaceForm.hxx>
-#include <BndLib_Add3dCurve.hxx>
-
-
+//S4135
+//S4135
 //=======================================================================
 //function : ShapeAnalysis_Surface
 //purpose  :
 //=======================================================================
-
 ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S) :
        mySurf (S),
        myExtOK(Standard_False), //:30

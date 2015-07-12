@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AppDef_MultiPointConstraint.ixx>
 
-#include <Standard_OutOfRange.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <MMgt_TShared.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <TColgp_HArray1OfVec2d.hxx>
-
 
 #define tabTang Handle(TColgp_HArray1OfVec)::DownCast (ttabTang)
 #define tabCurv Handle(TColgp_HArray1OfVec)::DownCast (ttabCurv)

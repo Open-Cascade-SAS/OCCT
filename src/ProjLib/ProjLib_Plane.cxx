@@ -14,15 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ProjLib_Plane.ixx>
 
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
+#include <ProjLib_Plane.hxx>
+#include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
 //function : ProjLib_Plane
 //purpose  : 
 //=======================================================================
-
 ProjLib_Plane::ProjLib_Plane()
 {
 }

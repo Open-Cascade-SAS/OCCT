@@ -16,13 +16,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_CcDesignDateAndTimeAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
+#include <StepBasic_DateAndTime.hxx>
+#include <StepBasic_DateTimeRole.hxx>
 
 //=======================================================================
 //function : StepAP203_CcDesignDateAndTimeAssignment
 //purpose  : 
 //=======================================================================
-
 StepAP203_CcDesignDateAndTimeAssignment::StepAP203_CcDesignDateAndTimeAssignment ()
 {
 }

@@ -12,15 +12,14 @@
 // commercial license or contractual agreement.
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
-#include <RWStepBasic_RWProductDefinitionFormation.ixx>
-#include <StepBasic_Product.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWProductDefinitionFormation.hxx>
+#include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWProductDefinitionFormation::RWStepBasic_RWProductDefinitionFormation () {}
 

@@ -12,17 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ToolRFace.ixx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
+
 #include <Adaptor2d_Curve2d.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <StdPrs_ToolRFace.hxx>
+#include <TopoDS.hxx>
 
 //=======================================================================
 //function : StdPrs_ToolRFace
 //purpose  : 
 //=======================================================================
-
 StdPrs_ToolRFace::StdPrs_ToolRFace()
 {
 }

@@ -15,23 +15,24 @@
 
 //AGV 150202: Changed prototype LDOM_Node::getOwnerDocument()
 
-#include <XmlMNaming_NamedShapeDriver.ixx>
-
-#include <XmlObjMgt.hxx>
-#include <XmlObjMgt_Array1.hxx>
-#include <XmlMNaming_Shape1.hxx>
-
+#include <BRepTools.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <LDOM_OSStream.hxx>
+#include <LDOM_Text.hxx>
+#include <Standard_SStream.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Iterator.hxx>
-
+#include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <BRepTools.hxx>
-#include <LDOM_Text.hxx>
-#include <LDOM_OSStream.hxx>
-
-#include <Standard_SStream.hxx>
+#include <TopTools_LocationSet.hxx>
+#include <XmlMNaming_NamedShapeDriver.hxx>
+#include <XmlMNaming_Shape1.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Array1.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 static TNaming_Evolution          EvolutionEnum   (const XmlObjMgt_DOMString&);
 static const XmlObjMgt_DOMString& EvolutionString (const TNaming_Evolution);

@@ -11,23 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_EditDirPart.ixx>
-#include <Interface_TypedValue.hxx>
-#include <Interface_Static.hxx>
-#include <Interface_Macros.hxx>
 
-#include <IGESData_IGESModel.hxx>
-
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_TransfEntity.hxx>
-#include <IGESData_LabelDisplayEntity.hxx>
+#include <IFSelect_EditForm.hxx>
 #include <IGESData_ColorEntity.hxx>
-
-
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESSelect_EditDirPart.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <Interface_TypedValue.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static  Handle(Interface_TypedValue) NewDefType(const Standard_CString name)
 {

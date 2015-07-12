@@ -14,20 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Darboux.ixx>
-#include <Adaptor3d_HCurve.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
+
 #include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurfacePtr.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_CurveOnSurfacePtr.hxx>
 #include <CSLib.hxx>
-#include <TColgp_Array2OfVec.hxx>
 #include <Geom_UndefinedValue.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomFill_Darboux.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array2OfVec.hxx>
 
 //=======================================================================
 //function : FDeriv

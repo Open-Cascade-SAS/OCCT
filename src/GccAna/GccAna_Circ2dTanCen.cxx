@@ -16,16 +16,18 @@
 //    Creation of a circle tangent to an element and having center in a point    +
 //================================================================================
 
-#include <GccAna_Circ2dTanCen.ixx>
-
 #include <ElCLib.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Lin2d.hxx>
+#include <GccAna_Circ2dTanCen.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
 #include <gp.hxx>
+#include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <GccEnt_BadQualifier.hxx>
 
 //========================================================================
 //     Creation of a circle tangent to a circle with center in a point.      +
@@ -38,8 +40,6 @@
 //          dist-C1.Radius() if the qualifier is Outside.               +
 //          a mix of these values if the qualifier is Unqualified.  +
 //========================================================================
-
-
 GccAna_Circ2dTanCen::
    GccAna_Circ2dTanCen (const GccEnt_QualifiedCirc& Qualified1,
                         const gp_Pnt2d&             Pcenter   ,

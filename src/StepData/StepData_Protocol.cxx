@@ -11,18 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_Protocol.ixx>
+
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_Described.hxx>
+#include <StepData_ECDescr.hxx>
+#include <StepData_EDescr.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_PDescr.hxx>
+#include <StepData_Protocol.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_UndefinedEntity.hxx>
-#include <StepData_Described.hxx>
-#include <Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx>
-#include <StepData_ESDescr.hxx>
-#include <StepData_ECDescr.hxx>
+
 #include <stdio.h>
-
-
 //  Le Protocol de base reconnait UnknownEntity
-
 //static TCollection_AsciiString  thename("(DEFAULT)");
 static Standard_CString thename = "(DEFAULT)";
 

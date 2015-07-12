@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <HLRTest_Projector.hxx>
 #include <Standard_Stream.hxx>
-#include <HLRTest_Projector.ixx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : HLRTest_Projector
 //purpose  : 
 //=======================================================================
-
 HLRTest_Projector::HLRTest_Projector (const HLRAlgo_Projector& P) :
 myProjector(P)
 {

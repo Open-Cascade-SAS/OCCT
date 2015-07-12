@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlLDrivers_NamespaceDef.ixx>
+
+#include <TCollection_AsciiString.hxx>
+#include <XmlLDrivers_NamespaceDef.hxx>
 
 //=======================================================================
 //function : XmlLDrivers_NamespaceDef
 //purpose  : Empty constructor
 //=======================================================================
-
 XmlLDrivers_NamespaceDef::XmlLDrivers_NamespaceDef ()
  {}
 

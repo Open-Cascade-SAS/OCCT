@@ -11,13 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_TransientElem.ixx>
 
+#include <MoniTool_DataInfo.hxx>
+#include <MoniTool_Element.hxx>
+#include <MoniTool_TransientElem.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_MapTransientHasher.hxx>
-#include <MoniTool_DataInfo.hxx>
-
 
 MoniTool_TransientElem::MoniTool_TransientElem (const Handle(Standard_Transient)& akey)
     : theval (akey)

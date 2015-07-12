@@ -11,30 +11,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <UnitsMethods.ixx>
 
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom2dConvert.hxx>
+#include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Parabola.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <gp.hxx>
-#include <gp_GTrsf2d.hxx>
-#include <gp_Trsf2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
-#include <Geom2d_Conic.hxx>
-#include <Geom2d_BoundedCurve.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <UnitsMethods.hxx>
 
 static Standard_Real theLengthFactor     = 1.;
 static Standard_Real thePlaneAngleFactor = 1.;

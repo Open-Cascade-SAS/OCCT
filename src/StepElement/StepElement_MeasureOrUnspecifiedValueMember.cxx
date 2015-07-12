@@ -15,9 +15,9 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <StepElement_MeasureOrUnspecifiedValueMember.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_MeasureOrUnspecifiedValueMember.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 static Standard_CString aContextDependedMeasure = "CONTEXT_DEPENDENT_MEASURE";
 static Standard_CString anUnspecifiedValue = "UNSPECIFIED_VALUE";

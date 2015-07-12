@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_EdgeInterferenceTool.ixx>
 
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
-#include <BRepLProp_CLProps.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS_Iterator.hxx>
+#include <BRepLProp_CLProps.hxx>
 #include <Precision.hxx>
-#include <TopoDS.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 #include <Standard_ProgramError.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
+#include <TopOpeBRepDS_EdgeInterferenceTool.hxx>
+#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePEI();

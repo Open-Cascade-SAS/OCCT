@@ -11,9 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDraw_SpecificModule.ixx>
-#include <Interface_Macros.hxx>
 
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_Drawing.hxx>
@@ -25,10 +25,7 @@
 #include <IGESDraw_Planar.hxx>
 #include <IGESDraw_RectArraySubfigure.hxx>
 #include <IGESDraw_SegmentedViewsVisible.hxx>
-#include <IGESDraw_View.hxx>
-#include <IGESDraw_ViewsVisible.hxx>
-#include <IGESDraw_ViewsVisibleWithAttr.hxx>
-
+#include <IGESDraw_SpecificModule.hxx>
 #include <IGESDraw_ToolCircArraySubfigure.hxx>
 #include <IGESDraw_ToolConnectPoint.hxx>
 #include <IGESDraw_ToolDrawing.hxx>
@@ -43,14 +40,16 @@
 #include <IGESDraw_ToolView.hxx>
 #include <IGESDraw_ToolViewsVisible.hxx>
 #include <IGESDraw_ToolViewsVisibleWithAttr.hxx>
-
-
+#include <IGESDraw_View.hxx>
+#include <IGESDraw_ViewsVisible.hxx>
+#include <IGESDraw_ViewsVisibleWithAttr.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESDraw_SpecificModule::IGESDraw_SpecificModule()    {  }
 
 

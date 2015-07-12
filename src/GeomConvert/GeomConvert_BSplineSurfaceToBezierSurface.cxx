@@ -14,18 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomConvert_BSplineSurfaceToBezierSurface.ixx>
 
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomConvert_BSplineSurfaceToBezierSurface.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <Geom_BSplineSurface.hxx>
-
 
 //=======================================================================
 //function : GeomConvert_BSplineSurfaceToBezierSurface
 //purpose  : 
 //=======================================================================
-
 GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSurface(const Handle(Geom_BSplineSurface)& BasisSurface)
 {
   mySurface = Handle(Geom_BSplineSurface)::DownCast(BasisSurface->Copy());

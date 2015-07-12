@@ -14,4 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_SLPropsATool.ixx>
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <HLRBRep_SLPropsATool.hxx>

@@ -16,24 +16,27 @@
 
 //  Modified by skv - Tue Aug  1 16:29:59 2006 OCC13116
 
-#include <Standard_NotImplemented.hxx>
-
-#include <ProjLib_Sphere.ixx>
-
 #include <ElCLib.hxx>
-#include <Precision.hxx>
 #include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Trsf2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Trsf2d.hxx>
-
+#include <Precision.hxx>
+#include <ProjLib_Sphere.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : ProjLib_Sphere
 //purpose  : 
 //=======================================================================
-
 ProjLib_Sphere::ProjLib_Sphere()
 {
 }

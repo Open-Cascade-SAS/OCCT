@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_SurfaceOfRevolution.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_Line.hxx>
+#include <IGESGeom_SurfaceOfRevolution.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_SurfaceOfRevolution::IGESGeom_SurfaceOfRevolution ()    {  }
 

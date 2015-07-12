@@ -17,19 +17,16 @@
 // Modified:	Fri Jul 10 11:23:35 1998
 //              JCT : Add WithRatio,MinM
 
-
-#include <GeomConvert_CompCurveToBSplineCurve.ixx>
-
+#include <Geom_BoundedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomConvert.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-#include <gp_Vec.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : constructor

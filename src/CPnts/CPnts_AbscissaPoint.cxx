@@ -23,23 +23,22 @@
 //  by succsessive iteration find the point and its associated parameter
 //  call to FunctionRoot
 
-#include <CPnts_AbscissaPoint.ixx>
-
-#include <math_GaussSingleIntegration.hxx>
-#include <math_FunctionRoot.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_ConstructionError.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <CPnts_AbscissaPoint.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_FunctionRoot.hxx>
+#include <math_GaussSingleIntegration.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 // auxiliary functions to compute the length of the derivative
-
 static Standard_Real f3d(const Standard_Real X, const Standard_Address C)
 {
   gp_Vec V = ((Adaptor3d_Curve*)C)->DN(X,1);

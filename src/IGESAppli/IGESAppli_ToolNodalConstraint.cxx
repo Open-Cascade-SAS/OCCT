@@ -16,14 +16,25 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_ToolNodalConstraint.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESDefs_HArray1OfTabularData.hxx>
+#include <IGESAppli_NodalConstraint.hxx>
 #include <IGESAppli_Node.hxx>
-#include <IGESDefs_TabularData.hxx>
+#include <IGESAppli_ToolNodalConstraint.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDefs_HArray1OfTabularData.hxx>
+#include <IGESDefs_TabularData.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESAppli_ToolNodalConstraint::IGESAppli_ToolNodalConstraint ()    {  }
 

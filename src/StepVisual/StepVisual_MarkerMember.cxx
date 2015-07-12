@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_MarkerMember.ixx>
+
+#include <Standard_Type.hxx>
 #include <StepData_EnumTool.hxx>
+#include <StepVisual_MarkerMember.hxx>
 #include <TCollection_AsciiString.hxx>
 
 static StepData_EnumTool tool

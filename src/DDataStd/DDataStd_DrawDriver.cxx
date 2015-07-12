@@ -14,56 +14,54 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DDataStd_DrawDriver.ixx>
 
-#include <Draw.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <DDataStd.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_Tool.hxx>
-#include <TNaming_Tool.hxx>
-#include <TopoDS.hxx>
-#include <DBRep.hxx>
-#include <Draw_Appli.hxx>
-#include <TNaming_Tool.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_Real.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <DBRep.hxx>
+#include <DBRep_DrawableShape.hxx>
+#include <DDataStd.hxx>
+#include <DDataStd_DrawDriver.hxx>
+#include <Draw.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Axis3D.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Marker3D.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TDF_Tool.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TDataStd.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Ax3.hxx>
-#include <Geom_Plane.hxx>
-// attribut affichable
-#include <TNaming_NamedShape.hxx>
-#include <TDataStd.hxx>
-#include <TDataXtd_GeometryEnum.hxx>
-#include <TDataXtd_Point.hxx>
-#include <TDataXtd_Axis.hxx>
-#include <TDataXtd_Plane.hxx>
-#include <TDataXtd_Geometry.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_LabelList.hxx> 
-#include <TDF_ListIteratorOfLabelList.hxx>
-// drawable object
-#include <DrawTrSurf_Surface.hxx>
-#include <Draw_Axis3D.hxx>
-#include <DrawDim_Distance.hxx>
-#include <DrawDim_Radius.hxx>
 #include <DrawDim_Angle.hxx>
-#include <DrawDim_PlanarDistance.hxx>
-#include <DrawDim_PlanarRadius.hxx>
+#include <DrawDim_Distance.hxx>
 #include <DrawDim_PlanarAngle.hxx>
 #include <DrawDim_PlanarDiameter.hxx>
-#include <DBRep_DrawableShape.hxx>
+#include <DrawDim_PlanarDistance.hxx>
+#include <DrawDim_PlanarRadius.hxx>
+#include <DrawDim_Radius.hxx>
+#include <DrawTrSurf_Surface.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Plane.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Pln.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDataStd.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataXtd_Axis.hxx>
+#include <TDataXtd_Constraint.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDataXtd_GeometryEnum.hxx>
+#include <TDataXtd_Plane.hxx>
+#include <TDataXtd_Point.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelList.hxx>
+#include <TDF_ListIteratorOfLabelList.hxx>
+#include <TDF_Tool.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
 
+// attribut affichable
+// drawable object
 static Standard_Integer DISCRET    = 100;
 static Standard_Integer NBISOS     = 10;
 static Standard_Real    THESIZE       = 1000.;

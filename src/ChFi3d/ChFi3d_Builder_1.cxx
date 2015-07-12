@@ -14,47 +14,65 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFi3d_Builder.jxx>
 
-#include <Precision.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepLProp_SLProps.hxx>
-
-#include <TopAbs.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <AppBlend_Approx.hxx>
+#include <Blend_CurvPointFuncInv.hxx>
+#include <Blend_FuncInv.hxx>
+#include <Blend_Function.hxx>
+#include <Blend_RstRstFunction.hxx>
+#include <Blend_SurfCurvFuncInv.hxx>
+#include <Blend_SurfPointFuncInv.hxx>
+#include <Blend_SurfRstFunction.hxx>
 #include <BRep_Tool.hxx>
-#include <TopExp.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBlend_Line.hxx>
+#include <BRepLProp_SLProps.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <ChFi3d.hxx>
+#include <ChFi3d_Builder.hxx>
+#include <ChFi3d_Builder_0.hxx>
+#include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
-#include <ChFiDS_State.hxx>
-#include <ChFiDS_Spine.hxx>
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_SurfData.hxx>
-#include <ChFiDS_Regul.hxx>
-#include <ChFiDS_ListIteratorOfRegularities.hxx>
+#include <ChFiDS_HElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-
-#include <ChFi3d.hxx>
-#include <ChFi3d_Builder_0.hxx>
-
+#include <ChFiDS_ListIteratorOfRegularities.hxx>
+#include <ChFiDS_Regul.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_State.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <LocalAnalysis_SurfaceContinuity.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TopAbs.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND(); 

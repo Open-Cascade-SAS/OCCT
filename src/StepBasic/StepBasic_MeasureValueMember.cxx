@@ -11,13 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_MeasureValueMember.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
 
 //=======================================================================
 //function : StepBasic_MeasureValueMember
 //purpose  : 
 //=======================================================================
-
 StepBasic_MeasureValueMember::StepBasic_MeasureValueMember()
 {
   thecase = 0;

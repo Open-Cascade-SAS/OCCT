@@ -14,11 +14,9 @@
 // commercial license or contractual agreement.
 
 //      	----------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Feb 13 1997	Creation
 
-
-
-#include <TDF_LabelMapHasher.ixx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelMapHasher.hxx>

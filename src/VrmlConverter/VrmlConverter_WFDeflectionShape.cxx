@@ -11,26 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_WFDeflectionShape.ixx>
+
 #include <Bnd_Box.hxx>
-#include <gp_Pnt.hxx>
-#include <Prs3d_ShapeTool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #include <BRepBndLib.hxx>
-#include <VrmlConverter_IsoAspect.hxx>
-#include <VrmlConverter_LineAspect.hxx>
-#include <VrmlConverter_WFDeflectionRestrictedFace.hxx>
-#include <VrmlConverter_DeflectionCurve.hxx>
-#include <TColgp_HArray1OfVec.hxx> 
-#include <BRep_Tool.hxx> 
-#include <VrmlConverter_PointAspect.hxx> 
-#include <Vrml_Separator.hxx>
+#include <gp_Pnt.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Precision.hxx>
+#include <Prs3d_ShapeTool.hxx>
+#include <TColgp_HArray1OfVec.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Vrml_Coordinate3.hxx>
 #include <Vrml_Material.hxx>
 #include <Vrml_PointSet.hxx>
-#include <Precision.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
+#include <Vrml_Separator.hxx>
+#include <VrmlConverter_DeflectionCurve.hxx>
+#include <VrmlConverter_Drawer.hxx>
+#include <VrmlConverter_IsoAspect.hxx>
+#include <VrmlConverter_LineAspect.hxx>
+#include <VrmlConverter_PointAspect.hxx>
+#include <VrmlConverter_WFDeflectionRestrictedFace.hxx>
+#include <VrmlConverter_WFDeflectionShape.hxx>
 
 //=========================================================================
 // function: Add

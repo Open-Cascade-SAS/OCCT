@@ -11,10 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_LevelListEntity.ixx>
+
+#include <IGESData_LevelListEntity.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+
 // LevelListEntity ne sert qu'au controle de type (pour le directory part)
-
-
 Standard_Boolean  IGESData_LevelListEntity::HasLevelNumber
   (const Standard_Integer level) const
 {

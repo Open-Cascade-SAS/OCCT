@@ -14,7 +14,13 @@
 
 // Modif jcv 14/12/90 suite a la premiere revue de projet
 
-#include <gp_Parab.ixx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
 
 void gp_Parab::Mirror (const gp_Pnt& P)
 { pos.Mirror (P); }

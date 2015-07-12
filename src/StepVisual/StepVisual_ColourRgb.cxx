@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_ColourRgb.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_ColourRgb.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_ColourRgb::StepVisual_ColourRgb ()  {}
 

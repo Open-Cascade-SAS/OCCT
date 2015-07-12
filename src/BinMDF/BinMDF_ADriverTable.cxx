@@ -13,18 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDF_ADriverTable.ixx>
-#include <Standard_NoSuchObject.hxx>
-#include <BinMDF_StringIdMap.hxx>
-#include <TCollection_HAsciiString.hxx>
+
+#include <BinMDF_ADriver.hxx>
+#include <BinMDF_ADriverTable.hxx>
 #include <BinMDF_DataMapIteratorOfTypeADriverMap.hxx>
+#include <BinMDF_StringIdMap.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : BinMDF_ADriverTable
 //purpose  : Constructor
 //=======================================================================
-
 BinMDF_ADriverTable::BinMDF_ADriverTable ()
 {
 }

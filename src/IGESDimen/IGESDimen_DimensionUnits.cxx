@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_DimensionUnits.ixx>
-
+#include <IGESDimen_DimensionUnits.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESDimen_DimensionUnits::IGESDimen_DimensionUnits ()    {  }
 

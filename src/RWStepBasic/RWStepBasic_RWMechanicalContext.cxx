@@ -14,15 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWMechanicalContext.ixx>
-#include <StepBasic_ApplicationContext.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWMechanicalContext.hxx>
+#include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_MechanicalContext.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWMechanicalContext::RWStepBasic_RWMechanicalContext () {}
 

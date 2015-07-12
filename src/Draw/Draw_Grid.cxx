@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Grid.ixx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
 
 #include <Draw_Appli.hxx>
-#include <Draw_ColorKind.hxx>
 #include <Draw_Color.hxx>
+#include <Draw_ColorKind.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Grid.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <Standard_Type.hxx>
 
 static Standard_Real MinimumStep = 1.e-3 ;
 static Standard_Real Ratio       = 200.0 ;

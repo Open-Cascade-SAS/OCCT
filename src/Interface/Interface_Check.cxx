@@ -11,20 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Check.ixx>
-#include <Standard_OutOfRange.hxx>
-#include <Message_Messenger.hxx>
+
+#include <Interface_Check.hxx>
 #include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 // Un Check est cree au depart sans liste de message : celle ci est creee
 // seulement si au moins une erreur doit y etre enregitree (Fail-Warning)
-
-
 //=======================================================================
 //function : Interface_Check
 //purpose  : 
 //=======================================================================
-
 Interface_Check::Interface_Check()
 {
 }    // construit a vide

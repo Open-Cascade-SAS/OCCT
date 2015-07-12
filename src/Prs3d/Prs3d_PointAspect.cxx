@@ -12,7 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_PointAspect.ixx>
+
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker aType,
 				  const Quantity_Color &aColor,

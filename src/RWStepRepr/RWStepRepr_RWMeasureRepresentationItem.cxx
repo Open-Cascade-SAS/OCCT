@@ -14,24 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepRepr_RWMeasureRepresentationItem.ixx>
-#include <StepRepr_MeasureRepresentationItem.hxx>
-#include <StepBasic_NamedUnit.hxx>
-#include <StepBasic_MeasureValueMember.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
 
-#include <TCollection_AsciiString.hxx>
-#include <string.h>
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_FloatWriter.hxx>
 #include <Interface_MSG.hxx>
+#include <RWStepRepr_RWMeasureRepresentationItem.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_MeasureRepresentationItem.hxx>
+#include <TCollection_AsciiString.hxx>
 
+#include <string.h>
 //=======================================================================
 //function : RWStepRepr_RWMeasureRepresentationItem
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWMeasureRepresentationItem::RWStepRepr_RWMeasureRepresentationItem () {}
 
 //=======================================================================

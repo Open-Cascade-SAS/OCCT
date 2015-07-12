@@ -14,13 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_CommonPoint.ixx>
+
+#include <ChFiDS_CommonPoint.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ChFiDS_CommonPoint
 //purpose  : 
 //=======================================================================
-
 ChFiDS_CommonPoint::ChFiDS_CommonPoint() : 
 tol(0.),
 isonarc(Standard_False),

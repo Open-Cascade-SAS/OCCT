@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_EffectivityAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Effectivity.hxx>
+#include <StepBasic_EffectivityAssignment.hxx>
 
 //=======================================================================
 //function : StepBasic_EffectivityAssignment
 //purpose  : 
 //=======================================================================
-
 StepBasic_EffectivityAssignment::StepBasic_EffectivityAssignment ()
 {
 }

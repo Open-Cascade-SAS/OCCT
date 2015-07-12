@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_Pick.ixx>
+#include <IGESGraph_Pick.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_Pick::IGESGraph_Pick ()    {  }
 

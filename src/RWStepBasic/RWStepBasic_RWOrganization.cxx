@@ -12,8 +12,12 @@
 // commercial license or contractual agreement.
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
-#include <RWStepBasic_RWOrganization.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepBasic_RWOrganization.hxx>
+#include <StepBasic_Organization.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWOrganization::RWStepBasic_RWOrganization () {}
 

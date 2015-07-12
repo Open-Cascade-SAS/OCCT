@@ -14,18 +14,14 @@
 
 //JCV 16/10/91
 
-
-
-#include <Convert_ElementarySurfaceToBSplineSurface.ixx>
-
+#include <Convert_ElementarySurfaceToBSplineSurface.hxx>
+#include <gp_Pnt.hxx>
 #include <Standard_OutOfRange.hxx>
-
 
 //=======================================================================
 //function : Convert_ElementarySurfaceToBSplineSurface
 //purpose  : 
 //=======================================================================
-
 Convert_ElementarySurfaceToBSplineSurface::
 Convert_ElementarySurfaceToBSplineSurface 
   (const Standard_Integer NbUPoles,

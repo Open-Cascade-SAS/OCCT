@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLib_CheckBSplineCurve.ixx>
+
 #include <Geom_BSplineCurve.hxx>
+#include <GeomLib_CheckBSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+
 //=======================================================================
 //function : GeomLib_CheckBSplineCurve
 //purpose  : 
 //=======================================================================
-
 GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const Handle(Geom_BSplineCurve)& Curve,
 						     const Standard_Real Tolerance,
 						     const Standard_Real AngularTolerance)

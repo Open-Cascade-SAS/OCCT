@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeCartesianPoint.ixx>
+
+#include <Geom_CartesianPoint.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un CartesianPoint de Geom a partir d' un CartesianPoint de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeCartesianPoint::Convert
   (const Handle(StepGeom_CartesianPoint)& SP,
    Handle(Geom_CartesianPoint)& CP)

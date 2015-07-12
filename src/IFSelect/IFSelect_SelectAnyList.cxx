@@ -11,13 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectAnyList.ixx>
+
+#include <IFSelect_IntParam.hxx>
+#include <IFSelect_SelectAnyList.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_InterfaceError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <stdio.h>
-
 // ....    Definition de liste : methodes "deferred" NbItems & FillResult
-
-
 void  IFSelect_SelectAnyList::SetRange
   (const Handle(IFSelect_IntParam)& rankfrom,
    const Handle(IFSelect_IntParam)& rankto)

@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_CommonBlock.ixx>
+
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 // function:  

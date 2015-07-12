@@ -11,9 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectType.ixx>
-#include <Standard_Transient.hxx>
 
+#include <IFSelect_SelectType.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IFSelect_SelectType::IFSelect_SelectType ()
       {  thetype = STANDARD_TYPE(Standard_Transient);  }

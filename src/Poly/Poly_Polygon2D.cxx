@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Poly_Polygon2D.ixx>
+
 #include <gp_Pnt2d.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Poly_Polygon2D
 //purpose  : 
 //=======================================================================
-
 Poly_Polygon2D::Poly_Polygon2D(const TColgp_Array1OfPnt2d& Nodes): 
     myDeflection(0.),
     myNodes(1, Nodes.Length())

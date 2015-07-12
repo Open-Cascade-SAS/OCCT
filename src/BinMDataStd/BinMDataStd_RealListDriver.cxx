@@ -13,10 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_RealListDriver.ixx>
-#include <TDataStd_RealList.hxx>
+
+#include <BinMDataStd_RealListDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <TDataStd_RealList.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataStd_RealListDriver

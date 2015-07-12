@@ -14,17 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRTest_DrawableEdgeTool.ixx>
-#include <HLRTest_ShapeData.hxx>
-#include <HLRBRep_Data.hxx>
+
+#include <Draw_Display.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
+#include <HLRBRep_Algo.hxx>
+#include <HLRBRep_Data.hxx>
+#include <HLRBRep_EdgeData.hxx>
 #include <HLRBRep_ShapeBounds.hxx>
+#include <HLRTest_DrawableEdgeTool.hxx>
+#include <HLRTest_ShapeData.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : HLRTest_DrawableEdgeTool
 //purpose  : 
 //=======================================================================
-
 HLRTest_DrawableEdgeTool::HLRTest_DrawableEdgeTool
   (const Handle(HLRBRep_Algo)& Alg,
    const Standard_Boolean Visible,

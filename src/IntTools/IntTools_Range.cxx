@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_Range.ixx>
+
+#include <IntTools_Range.hxx>
+
 //=======================================================================
 //function : IntTools_Range::IntTools_Range
 //purpose  : 

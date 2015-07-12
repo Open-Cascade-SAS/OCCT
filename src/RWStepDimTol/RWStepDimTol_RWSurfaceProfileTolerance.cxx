@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepDimTol_RWSurfaceProfileTolerance.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepDimTol_RWSurfaceProfileTolerance.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 
 //=======================================================================
 //function : RWStepDimTol_RWSurfaceProfileTolerance
 //purpose  : 
 //=======================================================================
-
 RWStepDimTol_RWSurfaceProfileTolerance::RWStepDimTol_RWSurfaceProfileTolerance ()
 {
 }

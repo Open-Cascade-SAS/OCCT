@@ -14,70 +14,59 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_MakeDPrism.ixx>
 
-#include <BRepFeat.hxx>
-#include <LocOpe.hxx>
-#include <LocOpe_CSIntersector.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
-#include <LocOpe_DPrism.hxx>
-#include <LocOpe_SequenceOfLin.hxx>
-#include <LocOpe_PntFace.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pln.hxx>
-
-#include <Precision.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
 #include <Bnd_Box.hxx>
-
-#include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepLib.hxx>
-
 #include <BRepAlgo.hxx>
-//modified by NIZNHY-PKV Thu Mar 21 17:49:46 2002 f
-//#include <BRepAlgo_Cut.hxx>
-//#include <BRepAlgo_Fuse.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
-//modified by NIZNHY-PKV Thu Mar 21 17:50:04 2002 t
-
+#include <BRepBndLib.hxx>
+#include <BRepFeat.hxx>
+#include <BRepFeat_MakeDPrism.hxx>
+#include <BRepLib.hxx>
 #include <BRepLib_MakeFace.hxx>
-
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_CSIntersector.hxx>
+#include <LocOpe_DPrism.hxx>
+#include <LocOpe_PntFace.hxx>
+#include <LocOpe_SequenceOfLin.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TColGeom_SequenceOfCurve.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-#include <Standard_ConstructionError.hxx>
-
-#include <TopExp.hxx>
-
-#include <BRepFeat.hxx>
-#include <TopAbs.hxx>
-
+//modified by NIZNHY-PKV Thu Mar 21 17:49:46 2002 f
+//#include <BRepAlgo_Cut.hxx>
+//#include <BRepAlgo_Fuse.hxx>
+//modified by NIZNHY-PKV Thu Mar 21 17:50:04 2002 t
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif

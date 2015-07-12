@@ -15,24 +15,26 @@
 
 // The original implementation copyright (c) RINA S.p.A.
 
-#include <Message_Algorithm.ixx>
-
 #include <Message.hxx>
+#include <Message_Algorithm.hxx>
+#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Message_MsgFile.hxx>
-#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-#include <TColStd_HSequenceOfHExtendedString.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_HSequenceOfHExtendedString.hxx>
+#include <TColStd_HSequenceOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 //=======================================================================
 //function : SetMessenger
 //purpose  :
 //=======================================================================
-
 Message_Algorithm::Message_Algorithm ()
 {
   myMessenger = Message::DefaultMessenger();

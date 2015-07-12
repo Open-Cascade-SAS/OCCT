@@ -16,27 +16,22 @@
 
 //  Modified by skv - Mon May 31 12:58:34 2004 OCC5865
 
-#include <LocOpe_BuildWires.ixx>
-
-
-
 #include <BRep_Builder.hxx>
+#include <LocOpe_BuildWires.hxx>
+#include <LocOpe_WiresOnShape.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-
+#include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-
-#include <Standard_ConstructionError.hxx>
-
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static Standard_Integer FindFirstEdge
    (const TopTools_IndexedDataMapOfShapeListOfShape&,

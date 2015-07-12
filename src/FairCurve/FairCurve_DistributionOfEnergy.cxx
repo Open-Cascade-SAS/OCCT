@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FairCurve_DistributionOfEnergy.ixx>
+
+#include <FairCurve_DistributionOfEnergy.hxx>
 
 Standard_Integer FairCurve_DistributionOfEnergy::NbVariables() const 
 {

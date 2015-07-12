@@ -15,83 +15,70 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
-//
-#include <Precision.hxx>
-#include <NCollection_IncAllocator.hxx>
+
 #include <Bnd_Box.hxx>
-
-#include <Geom_Curve.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPAlgo_Tools.hxx>
+#include <BOPCol_DataMapOfIntegerReal.hxx>
+#include <BOPCol_DataMapOfShapeInteger.hxx>
+#include <BOPCol_IndexedMapOfInteger.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfInteger.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_Parallel.hxx>
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_CoupleOfPaveBlocks.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_FaceInfo.hxx>
+#include <BOPDS_Interf.hxx>
+#include <BOPDS_Iterator.hxx>
+#include <BOPDS_ListOfPave.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_Point.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <BOPDS_VectorOfCurve.hxx>
+#include <BOPDS_VectorOfPoint.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
-
+#include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <IntSurf_ListOfPntOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_Curve.hxx>
+#include <IntTools_EdgeFace.hxx>
+#include <IntTools_FaceFace.hxx>
+#include <IntTools_PntOn2Faces.hxx>
+#include <IntTools_SequenceOfCurves.hxx>
+#include <IntTools_SequenceOfPntOn2Faces.hxx>
+#include <IntTools_ShrunkRange.hxx>
+#include <IntTools_Tools.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <Precision.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Compound.hxx>
 
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
-#include <BRepBuilderAPI_MakeVertex.hxx>
-
-#include <BRepBndLib.hxx>
-#include <BRepTools.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
-#include <IntTools_FaceFace.hxx>
-#include <IntTools_SequenceOfCurves.hxx>
-#include <IntTools_SequenceOfPntOn2Faces.hxx>
-#include <IntTools_Curve.hxx>
-#include <IntTools_PntOn2Faces.hxx>
-#include <IntTools_ShrunkRange.hxx>
-#include <IntTools_Context.hxx>
-#include <IntTools_Tools.hxx>
-#include <IntTools_EdgeFace.hxx>
-
-#include <IntSurf_ListOfPntOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
-
-#include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
-
-#include <BOPCol_MapOfInteger.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_IndexedMapOfInteger.hxx>
-#include <BOPCol_DataMapOfIntegerReal.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
-
-#include <BOPDS_Interf.hxx>
-#include <BOPDS_Iterator.hxx>
-#include <BOPDS_Curve.hxx>
-#include <BOPDS_Point.hxx>
-#include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_Curve.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_VectorOfCurve.hxx>
-#include <BOPDS_VectorOfPoint.hxx>
-#include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_PaveBlock.hxx>
-#include <BOPDS_ListOfPave.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
-#include <BOPDS_CoupleOfPaveBlocks.hxx>
-#include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_CommonBlock.hxx>
-#include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
-
-#include <BOPAlgo_Tools.hxx>
-
+//
 static void ToleranceFF(const BRepAdaptor_Surface& aBAS1,
                         const BRepAdaptor_Surface& aBAS2,
                         Standard_Real& aTolFF);

@@ -12,14 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Blend_AppFunction.ixx>
 
+#include <Blend_AppFunction.hxx>
+#include <Blend_Point.hxx>
+#include <gp_Pnt.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : Parameter
 //purpose  : 
 //=======================================================================
-
 Standard_Real Blend_AppFunction::Parameter(const Blend_Point& P) const
 {
   return P.Parameter();

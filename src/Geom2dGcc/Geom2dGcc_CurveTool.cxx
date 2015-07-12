@@ -12,18 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_CurveTool.ixx>
 
-#include <Geom2d_Line.hxx>
 #include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 
 //Template a respecter
-
-
 Standard_Real Geom2dGcc_CurveTool::
   EpsX (const Geom2dAdaptor_Curve& C  ,
 	const Standard_Real        Tol) {

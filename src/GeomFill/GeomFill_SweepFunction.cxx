@@ -21,12 +21,15 @@
 #endif
 
 
-#include <GeomFill_SweepFunction.ixx>
-
-#include <TColStd_SequenceOfReal.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_SweepFunction.hxx>
 #include <GeomLib.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
 //=======================================================================
 //function : GeomFill_SweepFunction

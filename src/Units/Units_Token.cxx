@@ -21,19 +21,19 @@
 //		because the compiler try to destroies the handle of HAsciiString to early
 //		due to inline use probably.
 //		See also Units_Token.lxx
-
 //		Mauvaise construction d'un token par copie
 //		plantatoire sur HP.
 
-#include <Units_Token.ixx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Units_Dimensions.hxx>
 #include <Units_Operators.hxx>
+#include <Units_Token.hxx>
 
 //=======================================================================
 //function : Units_Token
 //purpose  : 
 //=======================================================================
-
 Units_Token::Units_Token()
 {
   theword=" ";

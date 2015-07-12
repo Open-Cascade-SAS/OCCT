@@ -15,62 +15,49 @@
 //Jean-Claude Vauthier Novembre 1991
 //Passage sur C1 Aout 1992 et ajout transformation Bezier->BSpline
 
-
-#include <Geom2dConvert.ixx>
-
-#include <Convert_ConicToBSplineCurve.hxx>
+#include <BSplCLib.hxx>
 #include <Convert_CircleToBSplineCurve.hxx>
+#include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_EllipseToBSplineCurve.hxx>
 #include <Convert_HyperbolaToBSplineCurve.hxx>
 #include <Convert_ParabolaToBSplineCurve.hxx>
-
-
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Conic.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <gp.hxx>
-
 #include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Elips2d.hxx>
-#include <gp_Parab2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-
-#include <BSplCLib.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Geometry.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Conic.hxx>
-#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>            
-#include <Geom2dConvert_ApproxCurve.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <GeomAbs_Shape.hxx>
-
 #include <Hermit.hxx>
-
-#include <Precision.hxx>
-
 #include <PLib.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
-#include <Standard_OutOfRange.hxx>
-#include <Standard_DomainError.hxx>
-
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 typedef gp_Circ2d  Circ2d;
 typedef gp_Elips2d Elips2d;

@@ -14,41 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <AIS_SymmetricRelation.ixx>
 #include <AIS.hxx>
-
-#include <gce_MakeLin.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveBox.hxx>
-#include <Precision.hxx>
-#include <TopoDS.hxx>
+#include <AIS_SymmetricRelation.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Pnt.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <DsgPrs_SymmetricPresentation.hxx>
 #include <ElCLib.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Dir.hxx>
+#include <gce_MakeLin.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <TopExp_Explorer.hxx>
-
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
-
-#include <DsgPrs_SymmetricPresentation.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : AIS_SymmetricRelation

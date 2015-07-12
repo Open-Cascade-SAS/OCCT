@@ -13,58 +13,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_Mesh.ixx>
 
 #include <AIS_InteractiveContext.hxx>
-
-#include <Prs3d_Root.hxx>
-#include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-
-#include <Select3D_SensitivePoint.hxx>
-#include <SelectMgr_Selection.hxx>
-
 #include <Aspect_InteriorStyle.hxx>
-
-#include <Prs3d_PointAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-
-#include <SelectBasics_SensitiveEntity.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
-#include <Select3D_SensitiveGroup.hxx>
-#include <Select3D_SensitiveBox.hxx>
-
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_NameOfMaterial.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
 #include <Bnd_Box.hxx>
-
+#include <gp_Pnt.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_NameOfMaterial.hxx>
+#include <MeshVS_Buffer.hxx>
+#include <MeshVS_DataMapIteratorOfDataMapOfIntegerOwner.hxx>
 #include <MeshVS_DataSource.hxx>
+#include <MeshVS_Drawer.hxx>
+#include <MeshVS_DrawerAttribute.hxx>
+#include <MeshVS_DummySensitiveEntity.hxx>
+#include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshEntityOwner.hxx>
 #include <MeshVS_MeshOwner.hxx>
-#include <MeshVS_SensitiveMesh.hxx>
-#include <MeshVS_DummySensitiveEntity.hxx>
-#include <MeshVS_SensitiveSegment.hxx>
-#include <MeshVS_SensitiveFace.hxx>
-#include <MeshVS_DrawerAttribute.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfIntegerOwner.hxx>
-#include <MeshVS_SensitivePolyhedron.hxx>
+#include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_SelectionModeFlags.hxx>
-#include <MeshVS_Buffer.hxx>
-
+#include <MeshVS_SensitiveFace.hxx>
+#include <MeshVS_SensitiveMesh.hxx>
+#include <MeshVS_SensitivePolyhedron.hxx>
+#include <MeshVS_SensitiveSegment.hxx>
 #include <OSD_Timer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
+#include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveGroup.hxx>
+#include <Select3D_SensitivePoint.hxx>
+#include <SelectBasics_SensitiveEntity.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SequenceOfOwner.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_Mesh

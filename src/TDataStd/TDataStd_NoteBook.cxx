@@ -14,18 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_NoteBook.ixx>
-#include <TDF_TagSource.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDF_Label.hxx> 
+
 #include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_NoteBook.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_TagSource.hxx>
 
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean TDataStd_NoteBook::Find (const TDF_Label& current,
 					  Handle(TDataStd_NoteBook)& N) 
 {  

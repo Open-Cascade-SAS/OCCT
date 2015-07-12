@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepVisual_DraughtingModel.ixx>
+#include <Standard_Type.hxx>
+#include <StepVisual_DraughtingModel.hxx>
 
 //=======================================================================
 //function : StepVisual_DraughtingModel
 //purpose  : 
 //=======================================================================
-
 StepVisual_DraughtingModel::StepVisual_DraughtingModel ()
 {
 }

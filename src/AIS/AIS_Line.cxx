@@ -14,24 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Line.ixx>
+
+#include <AIS_GraphicTool.hxx>
+#include <AIS_Line.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Precision.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <StdPrs_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <GC_MakeSegment.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_Point.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <Quantity_Color.hxx>
-#include <AIS_GraphicTool.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_Curve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 #include <UnitsAPI.hxx>
 
 //==================================================================
@@ -49,8 +54,6 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
   Standard_Real Last  = aCurve.LastParameter();
   Standard_Boolean firstInf = Precision::IsNegativeInfinite(First);
   Standard_Boolean lastInf  = Precision::IsPositiveInfinite(Last);
-  
-
   if (firstInf || lastInf) {
     Standard_Real delta = 1;
     if (firstInf && lastInf) {
@@ -82,7 +85,6 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 }
 #endif
 */
-
 //=======================================================================
 //function : AIS_Line
 //purpose  : 

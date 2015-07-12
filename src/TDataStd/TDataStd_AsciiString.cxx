@@ -13,15 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_AsciiString.ixx>
+
 #include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDataStd_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : TDataStd_AsciiString
 //purpose  : 
 //=======================================================================
-
 TDataStd_AsciiString::TDataStd_AsciiString()
 {
   myString.Clear();

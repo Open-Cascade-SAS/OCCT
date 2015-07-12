@@ -15,15 +15,18 @@
 
 //AGV 150202: Changed prototype XmlObjMgt::SetStringValue()
 
-#include <XmlMDF_TagSourceDriver.ixx>
-#include <XmlObjMgt.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_TagSource.hxx>
+#include <XmlMDF_TagSourceDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDF_TagSourceDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDF_TagSourceDriver::XmlMDF_TagSourceDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataXtd_ShapeDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataXtd_Shape.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataXtd_ShapeDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDataXtd_ShapeDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataXtd_ShapeDriver::XmlMDataXtd_ShapeDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

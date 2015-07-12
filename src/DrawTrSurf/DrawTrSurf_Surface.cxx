@@ -12,12 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Surface.ixx>
-#include <GeomTools_SurfaceSet.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+
 #include <Adaptor3d_IsoCurve.hxx>
-#include <Precision.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <DrawTrSurf_Surface.hxx>
 #include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomTools_SurfaceSet.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 
 Standard_Real DrawTrSurf_SurfaceLimit = 400;
 

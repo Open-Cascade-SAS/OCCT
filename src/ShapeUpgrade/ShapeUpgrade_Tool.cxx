@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_Tool.ixx>
+
 #include <Precision.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeUpgrade_Tool.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_Tool
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_Tool::ShapeUpgrade_Tool()
 {
   myPrecision = myMinTol = Precision::Confusion();

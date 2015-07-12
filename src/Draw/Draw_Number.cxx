@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Number.ixx>
+
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <Draw_Number.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Number
 //purpose  : 
 //=======================================================================
-
 Draw_Number::Draw_Number(const Standard_Real V) :
        myValue(V)
 {

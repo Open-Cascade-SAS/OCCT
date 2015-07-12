@@ -13,30 +13,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_TextPrsBuilder.ixx>
-
-#include <MeshVS_DisplayModeFlags.hxx>
-
-#include <Graphic3d_Group.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
-
-#include <MeshVS_DataSource.hxx>
-#include <MeshVS_Drawer.hxx>
-#include <MeshVS_Mesh.hxx>
-#include <MeshVS_DrawerAttribute.hxx>
-#include <MeshVS_Buffer.hxx>
 
 #include <Font_NameOfFont.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <MeshVS_Buffer.hxx>
+#include <MeshVS_DataSource.hxx>
+#include <MeshVS_DisplayModeFlags.hxx>
+#include <MeshVS_Drawer.hxx>
+#include <MeshVS_DrawerAttribute.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_TextPrsBuilder.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_TextPrsBuilder

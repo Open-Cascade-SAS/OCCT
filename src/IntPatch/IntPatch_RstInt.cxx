@@ -25,26 +25,27 @@
 //--      - Pour rester coherent avec cette facon de faire, 
 //--      Chercher(Nbvtx++). 
 
-#include <IntPatch_RstInt.ixx>
-
-#include <IntSurf.hxx>
-
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Intf_SectionPoint.hxx>
 #include <Intf_TangentZone.hxx>
-#include <gp_Pnt2d.hxx>
-#include <Precision.hxx>
-
-#include <Adaptor2d_HCurve2d.hxx>
-#include <IntPatch_WLine.hxx>
-#include <IntPatch_RLine.hxx>
-#include <IntPatch_HInterTool.hxx>
-#include <IntPatch_SearchPnt.hxx>
-#include <IntPatch_PolyLine.hxx>
-#include <IntPatch_PolyArc.hxx>
 #include <IntPatch_CSFunction.hxx>
 #include <IntPatch_CurvIntSurf.hxx>
+#include <IntPatch_HInterTool.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_PolyArc.hxx>
+#include <IntPatch_PolyLine.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_RstInt.hxx>
+#include <IntPatch_SearchPnt.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntSurf.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
 
 #define myInfinite 1.e15 // the same as was in Adaptor3d_TopolTool
 

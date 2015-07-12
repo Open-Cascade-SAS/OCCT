@@ -14,12 +14,12 @@
 
 #ifndef WNT
 
-#include <OSD_LoadMode.hxx>
-#include <OSD_SharedLibrary.ixx>
+
 #include <OSD_Function.hxx>
+#include <OSD_LoadMode.hxx>
+#include <OSD_SharedLibrary.hxx>
 
 #include <stdio.h>
-
 #ifdef __some_crappy_system__
 /*
  * Values for 'mode' argument in dlopen().
@@ -187,12 +187,10 @@ void OSD_SharedLibrary::Destroy() {
 #endif
 #include <windows.h>
 
-#include <OSD_SharedLibrary.ixx>
 
 #include <OSD_Path.hxx>
-
+#include <OSD_SharedLibrary.hxx>
 #include <TCollection_AsciiString.hxx>
-
 
 static DWORD              lastDLLError;
 static Standard_Character errMsg[ 1024 ];

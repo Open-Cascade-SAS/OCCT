@@ -14,26 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Macro.hxx>
-#include <Standard_Stream.hxx>
-#include <Standard_SStream.hxx>
-#include <Standard_Version.hxx>
 
-#include <Draw.ixx>
+#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Chronometer.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <Draw_Printer.hxx>
-
+#include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-
-#include <OSD_MemInfo.hxx>
-#include <OSD_MAllocHook.hxx>
-#include <OSD_Chronometer.hxx>
 #include <OSD.hxx>
+#include <OSD_Chronometer.hxx>
 #include <OSD_Exception_CTRL_BREAK.hxx>
-#include <OSD_PerfMeter.h>
+#include <OSD_MAllocHook.hxx>
+#include <OSD_MemInfo.hxx>
+#include <Standard_Macro.hxx>
+#include <Standard_SStream.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Version.hxx>
+#include <TCollection_AsciiString.hxx>
 
+#include <OSD_PerfMeter.h>
 #ifdef _WIN32
 
 #include <windows.h>

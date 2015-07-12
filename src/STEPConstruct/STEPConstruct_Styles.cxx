@@ -14,73 +14,74 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct_Styles.ixx>
-#include <STEPConstruct.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-#include <TopoDS_Iterator.hxx>
-
-#include <XSControl_TransferReader.hxx>
-#include <XSControl_TransferWriter.hxx>
-#include <Interface_Graph.hxx>
-#include <Interface_Static.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <Interface_EntityIterator.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TransferBRep.hxx>
-#include <Transfer_Binder.hxx>
 
 #include <APIHeaderSection_MakeHeader.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <gp_Pnt.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Static.hxx>
+#include <Quantity_Color.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <STEPConstruct.hxx>
+#include <STEPConstruct_Styles.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <StepRepr_Transformation.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
+#include <StepVisual_Colour.hxx>
 #include <StepVisual_ColourRgb.hxx>
+#include <StepVisual_CurveStyle.hxx>
+#include <StepVisual_DraughtingModel.hxx>
+#include <StepVisual_DraughtingPreDefinedColour.hxx>
+#include <StepVisual_DraughtingPreDefinedCurveFont.hxx>
+#include <StepVisual_FillAreaStyle.hxx>
 #include <StepVisual_FillAreaStyleColour.hxx>
 #include <StepVisual_FillStyleSelect.hxx>
 #include <StepVisual_HArray1OfFillStyleSelect.hxx>
-#include <StepVisual_FillAreaStyle.hxx>
-#include <StepVisual_SurfaceStyleFillArea.hxx>
-#include <StepVisual_SurfaceStyleElementSelect.hxx>
-#include <StepVisual_HArray1OfSurfaceStyleElementSelect.hxx>
-#include <StepVisual_SurfaceSideStyle.hxx>
-#include <StepVisual_SurfaceStyleUsage.hxx>
-#include <StepVisual_PresentationStyleSelect.hxx>
-#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
-#include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
-#include <StepVisual_OverRidingStyledItem.hxx>
-#include <StepVisual_StyledItem.hxx>
+#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
+#include <StepVisual_HArray1OfSurfaceStyleElementSelect.hxx>
+#include <StepVisual_Invisibility.hxx>
+#include <StepVisual_InvisibleItem.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
+#include <StepVisual_OverRidingStyledItem.hxx>
 #include <StepVisual_PreDefinedColour.hxx>
 #include <StepVisual_PreDefinedItem.hxx>
-#include <StepVisual_CurveStyle.hxx>
-#include <StepVisual_DraughtingPreDefinedCurveFont.hxx>
-#include <StepVisual_SurfaceStyleBoundary.hxx>
-#include <StepVisual_DraughtingPreDefinedColour.hxx>
-#include <StepBasic_MeasureValueMember.hxx>
-#include <StepVisual_DraughtingModel.hxx>
+#include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_PresentationStyleByContext.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
-#include <StepRepr_ShapeRepresentationRelationship.hxx>
-#include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
-#include <StepRepr_Transformation.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
-#include <StepVisual_Invisibility.hxx>
+#include <StepVisual_PresentationStyleSelect.hxx>
+#include <StepVisual_StyledItem.hxx>
+#include <StepVisual_SurfaceSideStyle.hxx>
+#include <StepVisual_SurfaceStyleBoundary.hxx>
+#include <StepVisual_SurfaceStyleElementSelect.hxx>
+#include <StepVisual_SurfaceStyleFillArea.hxx>
+#include <StepVisual_SurfaceStyleUsage.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <StepVisual_InvisibleItem.hxx>
-#include <gp_Pnt.hxx>
-#include <StepData_StepModel.hxx>
-#include <StepRepr_Representation.hxx>
-
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_Binder.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //=======================================================================
 //function : STEPConstruct_Styles
 //purpose  : 
 //=======================================================================
-
 STEPConstruct_Styles::STEPConstruct_Styles () 
 {
 }

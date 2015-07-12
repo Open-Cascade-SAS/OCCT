@@ -16,10 +16,10 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math.ixx>
-
+#include <math.hxx>
 #include <math_ComputeGaussPointsAndWeights.hxx>
 
 Standard_Integer math::GaussPointsMax()

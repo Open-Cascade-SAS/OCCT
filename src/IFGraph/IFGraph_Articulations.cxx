@@ -11,14 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_Articulations.ixx>
+
+#include <IFGraph_Articulations.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
-
-
+#include <Standard_Transient.hxx>
 
 // Points d'Articulation d'un Graphe : ce sont les "passages obliges" du graphe
 // Algorithme tire du Sedgewick, p 392
-
 IFGraph_Articulations::IFGraph_Articulations
   (const Interface_Graph& agraph, const Standard_Boolean whole)
       :  thegraph (agraph)

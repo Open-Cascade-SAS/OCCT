@@ -13,13 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_ComputeKronrodPointsAndWeights.ixx>
-#include <math_EigenValuesSearcher.hxx>
+
 #include <math_Array1OfValueAndWeight.hxx>
+#include <math_ComputeKronrodPointsAndWeights.hxx>
+#include <math_EigenValuesSearcher.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 #include <algorithm>
-
 math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const Standard_Integer Number)
 {
   myIsDone = Standard_False;

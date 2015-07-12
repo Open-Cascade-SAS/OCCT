@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_SolidClassifier.ixx>
+
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <gp_Pnt.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopOpeBRepTool_SolidClassifier.hxx>
 
 //=======================================================================
 //function : TopOpeBRepTool_SolidClassifier

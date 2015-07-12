@@ -17,23 +17,24 @@
 //                     and PARALLEL to a STRAIGHT DROITE.                        +
 //========================================================================
 
-#include <GccAna_Lin2dTanPar.ixx>
-
 #include <ElCLib.hxx>
-#include <StdFail_NotDone.hxx>
-#include <gp_XY.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <Standard_OutOfRange.hxx>
+#include <GccAna_Lin2dTanPar.hxx>
 #include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //========================================================================
 //   Passing by a point :                                              +
 //   Create the straight line with origin ThePoint and                             + 
 //                          direction Lin1.Direction().                    +
 //========================================================================
-
 GccAna_Lin2dTanPar::
    GccAna_Lin2dTanPar (const gp_Pnt2d& ThePoint  ,
                        const gp_Lin2d& Lin1      ):

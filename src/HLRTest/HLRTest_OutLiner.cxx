@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRTest_OutLiner.ixx>
+
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <HLRTest_OutLiner.hxx>
+#include <HLRTopoBRep_OutLiner.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : HLRTest_OutLiner
 //purpose  : 
 //=======================================================================
-
 HLRTest_OutLiner::HLRTest_OutLiner (const TopoDS_Shape& S)
 {
   myOutLiner = new HLRTopoBRep_OutLiner(S);

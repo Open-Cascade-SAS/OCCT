@@ -11,12 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_ComputeStatus.ixx>
-#include <IGESData_Protocol.hxx>
-#include <IGESData_BasicEditor.hxx>
-#include <Interface_Check.hxx>
 
+#include <IFSelect_ContextModif.hxx>
+#include <IGESData_BasicEditor.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESSelect_ComputeStatus.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_ComputeStatus::IGESSelect_ComputeStatus ()
     : IGESSelect_ModelModifier (Standard_False)    {  }

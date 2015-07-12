@@ -14,15 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeRotation.ixx>
+
 #include <GC_MakeRotation.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une rotation 3d de gp d angle Angle par rapport a une     +
 //   droite Line.                                                         +
 //=========================================================================
-
 GC_MakeRotation::GC_MakeRotation(const gp_Lin&  Line  ,
 				   const Standard_Real     Angle ) {
   TheRotation = new Geom_Transformation();

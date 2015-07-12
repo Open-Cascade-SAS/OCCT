@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd_NameDriver.ixx>
+
+#include <BinMDataStd_NameDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDF_Attribute.hxx>
 
 //=======================================================================
 //function : BinMDataStd_NameDriver
 //purpose  :
 //=======================================================================
-
 BinMDataStd_NameDriver::BinMDataStd_NameDriver
                          (const Handle(CDM_MessageDriver)& theMessageDriver)
      : BinMDF_ADriver (theMessageDriver, STANDARD_TYPE(TDataStd_Name)->Name())

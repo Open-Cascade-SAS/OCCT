@@ -11,29 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_FacetedTool.ixx>
 
 #include <BRep_Tool.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDSToStep_FacetedTool.hxx>
 
 // ============================================================================
 // Method  :
 // Purpose :
 // ============================================================================
-
 TopoDSToStep_FacetedError TopoDSToStep_FacetedTool::CheckTopoDSShape
 (const TopoDS_Shape& aShape)
 {

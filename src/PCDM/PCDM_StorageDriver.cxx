@@ -14,21 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PCDM_StorageDriver.ixx>
+
+#include <CDM_Document.hxx>
+#include <FSD_CmpFile.hxx>
+#include <PCDM.hxx>
+#include <PCDM_Document.hxx>
+#include <PCDM_DriverError.hxx>
+#include <PCDM_ReadWriter.hxx>
+#include <PCDM_SequenceOfDocument.hxx>
+#include <PCDM_StorageDriver.hxx>
+#include <Resource_Manager.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 #include <Storage_Data.hxx>
 #include <Storage_OpenMode.hxx>
 #include <Storage_Schema.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
-#include <FSD_CmpFile.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <PCDM_ReadWriter.hxx>
-#include <Resource_Manager.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <PCDM_SequenceOfDocument.hxx>
-#include <PCDM.hxx>
-#include <locale.h>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_SequenceOfExtendedString.hxx>
 
+#include <locale.h>
 #define STORAGE_VERSION "STORAGE_VERSION:"
 
 

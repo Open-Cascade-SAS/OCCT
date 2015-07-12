@@ -14,34 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDF_CopyLabel.ixx>
-#include <TDF_Label.hxx>
-#include <TDF_AttributeMap.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_IDFilter.hxx>
-#include <TDF_DataSet.hxx>
+
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_AttributeMap.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
-#include <TDF_CopyTool.hxx>
+#include <TDF_ChildIterator.hxx>
 #include <TDF_ClosureMode.hxx>
 #include <TDF_ClosureTool.hxx>
-#include <TDF_Tool.hxx>
+#include <TDF_CopyLabel.hxx>
+#include <TDF_CopyTool.hxx>
 #include <TDF_Data.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_IDFilter.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelMap.hxx>
+#include <TDF_MapIteratorOfAttributeMap.hxx>
+#include <TDF_MapIteratorOfLabelMap.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 
 // The bug concerns the COPY operation of some attributes of a non-self-contained label.
 // The attributes making the label non-self-contained are not involved by the operation.
 // Therefore, these attributes shouldn't be considered by the COPY mechanism and
 // the label should be considered as a self-contained.
 // Correction of the bug consists of ignoring the attributes not involved by the COPY operation.
-
 //=======================================================================
 //function : TDF_CopyLabel
 //purpose  : 
 //=======================================================================
-
 TDF_CopyLabel::TDF_CopyLabel() 
      :myFilter(Standard_False), myIsDone(Standard_False)
 {  

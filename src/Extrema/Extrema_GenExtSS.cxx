@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_GenExtSS.ixx>
-#include <math_Vector.hxx>
+
+#include <Adaptor3d_Surface.hxx>
+#include <Extrema_GenExtSS.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <math_FunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : Extrema_GenExtSS
 //purpose  : 
 //=======================================================================
-
 Extrema_GenExtSS::Extrema_GenExtSS()
 {
   myDone = Standard_False;

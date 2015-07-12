@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_MapAsciiStringHasher.ixx>
+
+#include <Interface_MapAsciiStringHasher.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : HashCode
 //purpose  : 
 //=======================================================================
-
 Standard_Integer Interface_MapAsciiStringHasher::HashCode(const TCollection_AsciiString& K,
 						 const Standard_Integer Upper)
 {

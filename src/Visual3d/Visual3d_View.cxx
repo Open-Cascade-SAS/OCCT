@@ -16,21 +16,31 @@
   #include <windows.h>
 #endif
 
-#include <Visual3d_View.ixx>
 
+#include <Aspect_Background.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Window.hxx>
+#include <Bnd_Box.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
+#include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_Vector.hxx>
 #include <Graphic3d_Vertex.hxx>
-#include <Visual3d_DepthCueingDefinitionError.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_ZClippingDefinitionError.hxx>
 #include <OSD.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray2OfReal.hxx>
+#include <Visual3d_ContextView.hxx>
+#include <Visual3d_DepthCueingDefinitionError.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_TransformError.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewDefinitionError.hxx>
+#include <Visual3d_ViewManager.hxx>
+#include <Visual3d_ZClippingDefinitionError.hxx>
 
 #if defined(_WIN32)
   #include <WNT_Window.hxx>

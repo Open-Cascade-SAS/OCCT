@@ -21,22 +21,27 @@
 // 13-Jan-98 : alr : ajout des derivees pour contraintes G3 et approx. C2
 // 28-Avr-98 : alr : Prise en compte des Linear*Constraint, methodes SolveTI1,SolveTI2,SolveTI3
 
-#include <Standard_ErrorHandler.hxx>
-
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
+#include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <math_Gauss.hxx>
-
-#include <Plate_Plate.ixx>
-
+#include <Plate_FreeGtoCConstraint.hxx>
+#include <Plate_GlobalTranslationConstraint.hxx>
+#include <Plate_GtoCConstraint.hxx>
+#include <Plate_LinearScalarConstraint.hxx>
+#include <Plate_LinearXYZConstraint.hxx>
+#include <Plate_LineConstraint.hxx>
+#include <Plate_PinpointConstraint.hxx>
+#include <Plate_PlaneConstraint.hxx>
+#include <Plate_Plate.hxx>
+#include <Plate_SampledCurveConstraint.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 //=======================================================================
 //function : Plate_Plate
 //purpose  : 
 //=======================================================================
-
 Plate_Plate::Plate_Plate()
 : order(0), n_el(0), n_dim(0),
   solution(0),points(0),deru(0),derv(0),

@@ -11,7 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_Cylinder.ixx>
+
+#include <Vrml_Cylinder.hxx>
 
 Vrml_Cylinder::Vrml_Cylinder(const Vrml_CylinderParts aParts,
 			     const Standard_Real aRadius,

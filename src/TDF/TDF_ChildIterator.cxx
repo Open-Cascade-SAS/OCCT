@@ -14,15 +14,11 @@
 // commercial license or contractual agreement.
 
 //      	----------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Feb  7 1997	Creation
 
-
-
-#include <TDF_ChildIterator.ixx>
-
+#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
 #include <TDF_LabelNodePtr.hxx>

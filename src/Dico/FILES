@@ -1,0 +1,15 @@
+Dico_Dictionary.gxx
+Dico_DictionaryOfInteger.hxx
+Dico_DictionaryOfInteger_0.cxx
+Dico_DictionaryOfTransient.hxx
+Dico_DictionaryOfTransient_0.cxx
+Dico_Iterator.gxx
+Dico_IteratorOfDictionaryOfInteger.hxx
+Dico_IteratorOfDictionaryOfInteger_0.cxx
+Dico_IteratorOfDictionaryOfTransient.hxx
+Dico_IteratorOfDictionaryOfTransient_0.cxx
+Dico_StackItem.gxx
+Dico_StackItemOfDictionaryOfInteger.hxx
+Dico_StackItemOfDictionaryOfInteger_0.cxx
+Dico_StackItemOfDictionaryOfTransient.hxx
+Dico_StackItemOfDictionaryOfTransient_0.cxx

@@ -14,25 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeBoundedCurve.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_BoundedCurve.hxx>
-#include <GeomToStep_MakeBoundedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+
 #include <Geom2d_BezierCurve.hxx>
-#include <GeomConvert.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dConvert.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomConvert.hxx>
+#include <GeomToStep_MakeBoundedCurve.hxx>
 #include <GeomToStep_MakeBSplineCurveWithKnots.hxx>
 #include <GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
-#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
+#include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 
 //=============================================================================
 // Creation d' une BoundedCurve de prostep a partir d' une BoundedCurve de Geom
 //=============================================================================
-
 GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_BoundedCurve)& C)
 {
   done = Standard_True;

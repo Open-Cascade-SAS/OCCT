@@ -14,25 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_SplitCurve3dContinuity.ixx>
+
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Precision.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_SplitCurve3dContinuity.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Precision.hxx>
-#include <ShapeUpgrade.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom_Curve.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
+#include <Standard_Type.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
-#include <ShapeExtend.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve3dContinuity
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitCurve3dContinuity::ShapeUpgrade_SplitCurve3dContinuity()
 {
   myCriterion = GeomAbs_C1;

@@ -12,31 +12,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_EdgeEdge.ixx> 
-
-#include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
-
-#include <ElCLib.hxx>
-
-#include <TopoDS_Iterator.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
+#include <BOPCol_MapOfInteger.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-
+#include <ElCLib.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
 #include <IntTools_CommonPrt.hxx>
-
-#include <BOPCol_MapOfInteger.hxx>
+#include <IntTools_EdgeEdge.hxx>
+#include <IntTools_Range.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
 
 static 
   void BndBuildBox(const BRepAdaptor_Curve& theBAC,

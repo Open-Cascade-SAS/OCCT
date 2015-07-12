@@ -13,8 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_UAttributeDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_UAttribute.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_UAttributeDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (GuidString, "guid")
 

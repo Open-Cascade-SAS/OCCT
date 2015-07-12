@@ -14,11 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_Hctxff2d.ixx>
-#include <TopOpeBRep_define.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
+
+#include <BRepAdaptor_HSurface.hxx>
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_Hctxff2d.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
 
 //=======================================================================
 //function : TopOpeBRep_Hctxff2d

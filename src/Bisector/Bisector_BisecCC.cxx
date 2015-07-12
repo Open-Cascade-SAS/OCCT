@@ -14,36 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bisector_BisecCC.ixx>
-#include <Bisector_BisecPC.hxx>
+
 #include <Bisector.hxx>
+#include <Bisector_BisecCC.hxx>
+#include <Bisector_BisecPC.hxx>
 #include <Bisector_Curve.hxx>
 #include <Bisector_FunctionH.hxx>
 #include <Bisector_PointOnBis.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
+#include <Bisector_PolyBis.hxx>
+#include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dGcc.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>  
+#include <Geom2dLProp_CLProps2d.hxx>
 #include <gp.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <Precision.hxx>
+#include <math_BissecNewton.hxx>
 #include <math_FunctionRoot.hxx>
 #include <math_FunctionRoots.hxx>
-#include <math_BissecNewton.hxx>
-
-#include <Standard_OutOfRange.hxx>
+#include <Precision.hxx>
 #include <Standard_DivideByZero.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 static Standard_Boolean ProjOnCurve (const gp_Pnt2d& P,
   const Handle(Geom2d_Curve)& C,

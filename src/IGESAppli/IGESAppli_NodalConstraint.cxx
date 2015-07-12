@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_NodalConstraint.ixx>
+#include <IGESAppli_NodalConstraint.hxx>
+#include <IGESAppli_Node.hxx>
+#include <IGESDefs_TabularData.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESAppli_NodalConstraint::IGESAppli_NodalConstraint ()    {  }
 

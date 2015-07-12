@@ -14,7 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2d_CartesianPoint.ixx>
+
+#include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom2d_CartesianPoint         CartesianPoint;
 typedef gp_Ax2d   Ax2d;

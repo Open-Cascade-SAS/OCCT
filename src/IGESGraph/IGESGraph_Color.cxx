@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_Color.ixx>
-
+#include <IGESGraph_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESGraph_Color::IGESGraph_Color ()    {  }
 

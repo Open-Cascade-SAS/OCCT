@@ -14,44 +14,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_TOOL.ixx>
+
+#include <Bnd_Box.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepLProp_CLProps.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <Precision.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_IndexedMapOfReal.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <Precision.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Hypr.hxx>
-#include <gp_Parab.hxx>
-#include <TopOpeBRepTool_define.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepTool.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_C2DF.hxx>
+#include <TopOpeBRepTool_define.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
+#include <TopOpeBRepTool_TOOL.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_IndexedMapOfReal.hxx>
-#include <NCollection_Array1.hxx>
-#include <BRepLProp_CLProps.hxx>
-#include <GeomLProp_SLProps.hxx>
-#include <gp_Torus.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Sphere.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <ElCLib.hxx>
-#include <algorithm>
 
+#include <algorithm>
 #define M_FORWARD(sta)  (sta == TopAbs_FORWARD)
 #define M_REVERSED(sta) (sta == TopAbs_REVERSED)
 #define M_INTERNAL(sta) (sta == TopAbs_INTERNAL)

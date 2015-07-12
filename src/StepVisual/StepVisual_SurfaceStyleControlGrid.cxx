@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_SurfaceStyleControlGrid.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_CurveStyle.hxx>
+#include <StepVisual_SurfaceStyleControlGrid.hxx>
 
 StepVisual_SurfaceStyleControlGrid::StepVisual_SurfaceStyleControlGrid ()  {}
 

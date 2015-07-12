@@ -12,70 +12,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_AlgoTools2D.ixx>
 
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Precision.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
+#include <BOPTools.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomInt.hxx>
+#include <GeomProjLib.hxx>
 #include <gp.hxx>
-
+#include <gp_Cylinder.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-
-#include <Geom2dAdaptor.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <GeomProjLib.hxx>
-
-#include <TopLoc_Location.hxx>
-#include <TopExp.hxx>
-
-#include <ProjLib_ProjectedCurve.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-
-#include <BRepAdaptor_HSurface.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-
-#include <BRepTools.hxx>
-
-#include <BOPCol_IndexedMapOfShape.hxx>
-
-#include <BOPTools.hxx>
+#include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
-#include <gp_Cylinder.hxx>
+#include <Precision.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <GeomInt.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 static 
   Standard_Boolean CheckEdgeLength (const TopoDS_Edge& );

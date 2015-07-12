@@ -15,16 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepRepr_RWAssemblyComponentUsage.ixx>
-
-#include <StepRepr_ProductDefinitionShape.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepRepr_RWAssemblyComponentUsage.hxx>
 #include <StepBasic_ProductDefinition.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_AssemblyComponentUsage.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
 
 //=======================================================================
 //function : RWStepRepr_RWAssemblyComponentUsage
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWAssemblyComponentUsage::RWStepRepr_RWAssemblyComponentUsage ()
 {
 }

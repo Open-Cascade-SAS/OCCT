@@ -41,13 +41,14 @@ Etapes du calcul:
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_GaussSingleIntegration.ixx>
-
 #include <math.hxx>
-#include <math_Vector.hxx>
 #include <math_Function.hxx>
+#include <math_GaussSingleIntegration.hxx>
+#include <math_Vector.hxx>
+#include <StdFail_NotDone.hxx>
 
 math_GaussSingleIntegration::math_GaussSingleIntegration() : Done(Standard_False)  
 {

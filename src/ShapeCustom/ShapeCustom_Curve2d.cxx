@@ -15,18 +15,18 @@
 
 // Last modification:
 
-#include <ShapeCustom_Curve2d.ixx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <gp_Vec2d.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <ElCLib.hxx>
+#include <gp_Vec2d.hxx>
 #include <Precision.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-
+#include <ShapeCustom_Curve2d.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 //=======================================================================
 //function : GetLine

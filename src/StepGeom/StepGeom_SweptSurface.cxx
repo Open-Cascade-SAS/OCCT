@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_SweptSurface.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_SweptSurface.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_SweptSurface::StepGeom_SweptSurface ()  {}
 

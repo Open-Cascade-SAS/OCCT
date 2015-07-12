@@ -12,33 +12,34 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
- 
   V3d_PositionLight.cxx
   Created:    30-03-98  ZOV (ZELENKOV Oleg)
-
 ************************************************************************/
 
-#include <V3d.hxx>
-#include <V3d_PositionLight.ixx>
-#include <Graphic3d_Vector.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#include <V3d_SpotLight.hxx>
-#include <Visual3d_Light.hxx>
-#include <Visual3d_ViewManager.hxx>
-#include <Visual3d_ContextPick.hxx>
-#include <V3d_BadValue.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <V3d.hxx>
+#include <V3d_BadValue.hxx>
+#include <V3d_PositionLight.hxx>
+#include <V3d_SpotLight.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_ContextPick.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 V3d_PositionLight::V3d_PositionLight(const Handle(V3d_Viewer)& VM) : V3d_Light(VM) {
 }

@@ -21,40 +21,31 @@
 //                               facilement approchable ont de petites erreurs.
 // Modified     PMN 15/04/1997 : Gestion fine de la continuite aux lieux de decoupes 
 
-#include <math_Vector.hxx>
-#include <AdvApprox_ApproxAFunction.ixx>
-#include <AdvApprox_EvaluatorFunction.hxx>
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <AdvApprox_Cutting.hxx>
 #include <AdvApprox_DichoCutting.hxx>
+#include <AdvApprox_EvaluatorFunction.hxx>
 #include <AdvApprox_SimpleApprox.hxx>
-
-#include <Precision.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Convert_CompPolynomialToPoles.hxx>
 #include <BSplCLib.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
+#include <Convert_CompPolynomialToPoles.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray2OfPnt2d.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-
-
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
-
+#include <math_Vector.hxx>
 #include <PLib.hxx>
 #include <PLib_JacobiPolynomial.hxx>
-
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColgp_HArray2OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 #ifdef OCCT_DEBUG
 

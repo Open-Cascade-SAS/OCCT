@@ -14,23 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_C0RegularityFilter.ixx>
 
+#include <AIS_C0RegularityFilter.hxx>
+#include <BRep_Tool.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <BRep_Tool.hxx>
-#include <StdSelect_BRepOwner.hxx>
-
 
 //=======================================================================
 //function : AIS_C0RegularityFilter
 //purpose  : 
 //=======================================================================
-
 AIS_C0RegularityFilter::AIS_C0RegularityFilter(const TopoDS_Shape& aShape)
 {
   TopTools_IndexedDataMapOfShapeListOfShape SubShapes;

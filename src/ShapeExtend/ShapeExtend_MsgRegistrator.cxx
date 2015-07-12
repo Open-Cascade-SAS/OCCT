@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeExtend_MsgRegistrator.ixx>
+
 #include <Message_ListOfMsg.hxx>
+#include <Message_Msg.hxx>
+#include <ShapeExtend_MsgRegistrator.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeExtend_MsgRegistrator
 //purpose  : 
 //=======================================================================
-
 ShapeExtend_MsgRegistrator::ShapeExtend_MsgRegistrator() : ShapeExtend_BasicMsgRegistrator()
 {
 }

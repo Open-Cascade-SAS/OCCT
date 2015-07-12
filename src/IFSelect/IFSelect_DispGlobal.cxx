@@ -11,13 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_DispGlobal.ixx>
+
+#include <IFGraph_SubPartsIterator.hxx>
+#include <IFSelect_DispGlobal.hxx>
 #include <IFSelect_Selection.hxx>
 #include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 // Genere un seul paquet avec la sortie finale
-
-
 IFSelect_DispGlobal::IFSelect_DispGlobal ()    {  }
 
     TCollection_AsciiString  IFSelect_DispGlobal::Label () const

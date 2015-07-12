@@ -14,11 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_FunctionDerivative.ixx>
-#include <Expr_NumericValue.hxx>
+
+#include <Expr_FunctionDerivative.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralFunction.hxx>
 #include <Expr_NamedFunction.hxx>
-#include <Standard_OutOfRange.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NotEvaluable.hxx>
+#include <Expr_NumericValue.hxx>
+#include <Standard_DimensionMismatch.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_FunctionDerivative::Expr_FunctionDerivative (const Handle(Expr_GeneralFunction)& func, const Handle(Expr_NamedUnknown)& withX, const Standard_Integer deg)
 {

@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_AllConnected.ixx>
 
-
+#include <IFGraph_AllConnected.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
 
 // AllConnected prend toutes les Entites connectees a une Entite donnee
 // c-a-d toutes les "Shared" + toutes les "Sharings" et on recommence
 // Autrement dit le contenu du "Composant Connexe" du graphe d'ensemble
 // qui contient cette entite
 // Le calcul est effectue par GetFromEntity (Evaluate n'a rien a faire)
-
-
 IFGraph_AllConnected::IFGraph_AllConnected (const Interface_Graph& agraph)
       :  thegraph (agraph)    {  }
 

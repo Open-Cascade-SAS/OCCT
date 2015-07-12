@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_IdentificationAssignment.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_IdentificationAssignment.hxx>
+#include <StepBasic_IdentificationRole.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_IdentificationAssignment
 //purpose  : 
 //=======================================================================
-
 StepBasic_IdentificationAssignment::StepBasic_IdentificationAssignment ()
 {
 }

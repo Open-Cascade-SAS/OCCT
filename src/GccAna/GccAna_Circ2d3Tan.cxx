@@ -12,30 +12,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2d3Tan.ixx>
-#include <IntAna2d_AnaIntersection.hxx>
-#include <IntAna2d_IntPoint.hxx>
-#include <IntAna2d_Conic.hxx>
-#include <StdFail_NotDone.hxx>
+
 #include <ElCLib.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Dir2d.hxx>
+#include <GccAna_Circ2d3Tan.hxx>
 #include <GccAna_Circ2dBisec.hxx>
-#include <GccInt_IType.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_BCirc.hxx>
-#include <GccInt_BLine.hxx>
 #include <GccInt_BElips.hxx>
 #include <GccInt_BHyper.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <GccInt_BLine.hxx>
+#include <GccInt_IType.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_Conic.hxx>
+#include <IntAna2d_IntPoint.hxx>
 #include <math_DirectPolynomialRoots.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to three circles.                        +
 //=========================================================================
-
 GccAna_Circ2d3Tan::
   GccAna_Circ2d3Tan (const GccEnt_QualifiedCirc& Qualified1,
 		     const GccEnt_QualifiedCirc& Qualified2,

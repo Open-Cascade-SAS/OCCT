@@ -11,21 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWConversionBasedUnitAndMassUnit.ixx>
 
-#include <StepBasic_ConversionBasedUnit.hxx>
-#include <StepBasic_MassUnit.hxx>
-#include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWConversionBasedUnitAndMassUnit.hxx>
+#include <StepBasic_ConversionBasedUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
-
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_MassUnit.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWConversionBasedUnitAndMassUnit
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWConversionBasedUnitAndMassUnit::RWStepBasic_RWConversionBasedUnitAndMassUnit()
 {
 }

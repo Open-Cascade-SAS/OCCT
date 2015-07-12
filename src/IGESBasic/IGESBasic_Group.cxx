@@ -15,13 +15,14 @@
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-
 // ptv and rln 14.09.2000 BUC60743
 
-#include <IGESBasic_Group.ixx>
+#include <IGESBasic_Group.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfRange.hxx>
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_Group::IGESBasic_Group ()    {  InitTypeAndForm(402,1);  }
 

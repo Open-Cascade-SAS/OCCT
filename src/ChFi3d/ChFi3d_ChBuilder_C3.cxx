@@ -14,74 +14,67 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdFail_NotDone.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NotImplemented.hxx>
 
-#include <TColStd_ListOfInteger.hxx>
-#include <ChFi3d_ChBuilder.jxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepLib_MakeEdge.hxx>
 #include <ChFi3d_Builder_0.hxx>
-
-#include <ChFiKPart_ComputeData_Fcts.hxx>
-
-#include <ChFiDS_HData.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_Spine.hxx>
+#include <ChFi3d_ChBuilder.hxx>
 #include <ChFiDS_ChamfSpine.hxx>
-#include <ChFiDS_SurfData.hxx>
+#include <ChFiDS_HData.hxx>
+#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
-
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <ChFiKPart_ComputeData_Fcts.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomInt_IntSS.hxx>
 #include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Lin2d.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <Geom2dInt_GInter.hxx>
-
-#include <GeomInt_IntSS.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-
-#include <TopOpeBRepDS_HDataStructure.hxx>
-
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepLib_MakeEdge.hxx>
-
-#include <ProjLib_ProjectedCurve.hxx>
-
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-
-
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Precision.hxx>
-
-
-
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 
 //=======================================================================
 //function : CoPlanar
@@ -89,7 +82,6 @@
 //           la distance de PntD par rapport au plan passant par les trois 
 //           points PntA, PntB, PntC
 //=======================================================================
-
 static int CoPlanar(const gp_Pnt  PntA,
 	            const gp_Pnt  PntB,
 		    const gp_Pnt  PntC,

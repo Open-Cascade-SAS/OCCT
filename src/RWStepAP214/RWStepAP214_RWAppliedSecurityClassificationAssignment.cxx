@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAppliedSecurityClassificationAssignment.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAppliedSecurityClassificationAssignment.hxx>
+#include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
 #include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepBasic_SecurityClassification.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepAP214_RWAppliedSecurityClassificationAssignment::RWStepAP214_RWAppliedSecurityClassificationAssignment () {}
 

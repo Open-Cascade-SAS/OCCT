@@ -11,9 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_ActorDispatch.ixx>
-#include <Transfer_TransientProcess.hxx>
 
+#include <Interface_GeneralLib.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <Transfer_ActorDispatch.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransferDispatch.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 Transfer_ActorDispatch::Transfer_ActorDispatch
   (const Handle(Interface_InterfaceModel)& amodel,

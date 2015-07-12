@@ -16,13 +16,15 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_GaussSetIntegration.ixx>
 #include <math.hxx>
-#include <math_Vector.hxx>
 #include <math_FunctionSet.hxx>
-
+#include <math_GaussSetIntegration.hxx>
+#include <math_Vector.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
 
 math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet& F, 
                                                     const math_Vector& Lower,

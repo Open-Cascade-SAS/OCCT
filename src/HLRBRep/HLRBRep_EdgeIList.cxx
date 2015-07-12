@@ -17,16 +17,18 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRBRep_EdgeIList.ixx>
 
-#include <TopCnx_EdgeFaceTransition.hxx>
+
+#include <HLRAlgo_Interference.hxx>
 #include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
+#include <HLRBRep_EdgeIList.hxx>
+#include <HLRBRep_EdgeInterferenceTool.hxx>
+#include <TopCnx_EdgeFaceTransition.hxx>
 
 //=======================================================================
 //function : AddInterference
 //purpose  : insert an interference in a sorted list
 //=======================================================================
-
 void  HLRBRep_EdgeIList::
 AddInterference(HLRAlgo_InterferenceList& IL,
 		const HLRAlgo_Interference& I,

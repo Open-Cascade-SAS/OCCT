@@ -11,6 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_CartesianTransformationOperator2d.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepGeom_CartesianTransformationOperator2d.hxx>
 
 StepGeom_CartesianTransformationOperator2d::StepGeom_CartesianTransformationOperator2d  ()    {  }

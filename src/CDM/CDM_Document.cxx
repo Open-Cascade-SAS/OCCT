@@ -16,22 +16,26 @@
 
 // Modified by rmi, Tue Nov 18 08:17:41 1997
 
-
-#include <CDM_Document.ixx>
-
-#include <Standard_NullObject.hxx>
-
-#include <TCollection_ExtendedString.hxx>
-#include <Standard_ProgramError.hxx>
-
-#include <CDM_PresentationDirectory.hxx>
-#include <CDM_NamesDirectory.hxx>
-
-#include <CDM_ListOfDocument.hxx>
-#include <CDM_ListIteratorOfListOfDocument.hxx>
-
-#include <UTL.hxx>
+#include <CDM_Application.hxx>
 #include <CDM_DataMapIteratorOfMetaDataLookUpTable.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_ListIteratorOfListOfDocument.hxx>
+#include <CDM_ListOfDocument.hxx>
+#include <CDM_MetaData.hxx>
+#include <CDM_NamesDirectory.hxx>
+#include <CDM_PresentationDirectory.hxx>
+#include <CDM_Reference.hxx>
+#include <CDM_ReferenceIterator.hxx>
+#include <Resource_Manager.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <UTL.hxx>
 
 static CDM_PresentationDirectory& getPresentations() {
   static CDM_PresentationDirectory thePresentations;

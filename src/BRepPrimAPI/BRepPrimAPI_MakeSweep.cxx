@@ -14,4 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeSweep.ixx>
+
+#include <BRepPrimAPI_MakeSweep.hxx>
+#include <TopoDS_Shape.hxx>

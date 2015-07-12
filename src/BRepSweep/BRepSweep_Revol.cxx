@@ -14,17 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepSweep_Revol.ixx>
-#include <BRepSweep_Rotation.hxx>
-#include <Sweep_NumShape.hxx>
 
+#include <BRepSweep_Revol.hxx>
+#include <BRepSweep_Rotation.hxx>
+#include <gp_Ax1.hxx>
 #include <gp_Trsf.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Sweep_NumShape.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+
 //=======================================================================
 //function : BRepSweep_Revol
 //purpose  : 
 //=======================================================================
-
 BRepSweep_Revol::BRepSweep_Revol
   (const TopoDS_Shape& S, 
    const gp_Ax1& Ax, 

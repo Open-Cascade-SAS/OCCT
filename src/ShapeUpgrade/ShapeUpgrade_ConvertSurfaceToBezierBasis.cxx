@@ -16,32 +16,33 @@
 
 //   svv  10.01.00 porting on DEC
 
-#include <ShapeUpgrade_ConvertSurfaceToBezierBasis.ixx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <Precision.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColGeom_HArray2OfSurface.hxx>
-#include <ShapeExtend.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomConvert_BSplineSurfaceToBezierSurface.hxx>
-#include <TColGeom_Array2OfBezierSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <ShapeUpgrade_ConvertCurve3dToBezier.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_BezierCurve.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert_BSplineSurfaceToBezierSurface.hxx>
+#include <Precision.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_CompositeSurface.hxx>
+#include <ShapeUpgrade_ConvertCurve3dToBezier.hxx>
+#include <ShapeUpgrade_ConvertSurfaceToBezierBasis.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_Array2OfBezierSurface.hxx>
+#include <TColGeom_HArray1OfCurve.hxx>
+#include <TColGeom_HArray2OfSurface.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
-
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
 
 ShapeUpgrade_ConvertSurfaceToBezierBasis::ShapeUpgrade_ConvertSurfaceToBezierBasis()
 {

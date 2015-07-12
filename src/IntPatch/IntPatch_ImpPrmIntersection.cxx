@@ -14,28 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_ImpPrmIntersection.ixx>
-
-#include <Standard_ConstructionError.hxx>
-#include <IntPatch_SequenceOfLine.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf.hxx>
-#include <IntSurf_InteriorPoint.hxx>
 
 #include <Adaptor2d_HCurve2d.hxx>
-#include <IntSurf_PathPoint.hxx>
-#include <IntSurf_SequenceOfPathPoint.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <IntPatch_ArcFunction.hxx>
+#include <IntPatch_ImpPrmIntersection.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_RstInt.hxx>
+#include <IntPatch_SequenceOfLine.hxx>
 #include <IntPatch_TheIWalking.hxx>
 #include <IntPatch_TheIWLineOfTheIWalking.hxx>
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #include <IntPatch_TheSurfFunction.hxx>
-#include <IntPatch_RLine.hxx>
 #include <IntPatch_WLine.hxx>
-#include <IntPatch_ArcFunction.hxx>
-#include <IntPatch_RstInt.hxx>
+#include <IntSurf.hxx>
+#include <IntSurf_InteriorPoint.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PathPoint.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_SequenceOfPathPoint.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+
 #ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange

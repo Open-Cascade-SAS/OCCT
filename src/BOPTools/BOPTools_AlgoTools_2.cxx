@@ -12,25 +12,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_AlgoTools.ixx>
 
-#include <Precision.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <gp_Pnt.hxx>
-
-#include <Geom_Curve.hxx>
-#include <IntTools_Curve.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <GeomAbs_CurveType.hxx>
-
-#include <BRep_Tool.hxx>
+#include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom_Curve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_Curve.hxx>
+#include <IntTools_Range.hxx>
+#include <Precision.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
 
 static
   void TreatCompound(const TopoDS_Shape& theC1, 

@@ -14,21 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_SurfaceOfRevolution.ixx>
-#include <BSplSLib.hxx>
+
 #include <BSplCLib.hxx>
+#include <BSplSLib.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Ax2d.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Precision.hxx>
+#include <Standard_Type.hxx>
+
 #define  POLES    (poles->Array2())
 #define  WEIGHTS  (weights->Array2())
 #define  UKNOTS   (uknots->Array1())

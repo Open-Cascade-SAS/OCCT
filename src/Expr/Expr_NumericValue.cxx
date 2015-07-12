@@ -14,11 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_NumericValue.ixx>
+
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_NumericValue.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
-# include <stdio.h>
-
+#include <stdio.h>
 Expr_NumericValue::Expr_NumericValue(const Standard_Real val)
 {
   myValue = val;

@@ -16,15 +16,26 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_ToolFlash.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <gp_XY.hxx>
 #include <gp_Pnt2d.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_LineFontEntity.hxx>
+#include <gp_XY.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESGeom_Flash.hxx>
+#include <IGESGeom_ToolFlash.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESGeom_ToolFlash::IGESGeom_ToolFlash ()    {  }
 

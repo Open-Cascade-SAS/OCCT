@@ -15,13 +15,16 @@
 // include windows.h first to have all definitions available
 #include <windows.h>
 
-#include <WNT_Window.ixx>
 
-#include <Image_AlienPixMap.hxx>
 #include <Aspect_Convert.hxx>
+#include <Aspect_WindowDefinitionError.hxx>
+#include <Aspect_WindowError.hxx>
+#include <Image_AlienPixMap.hxx>
+#include <Standard_Type.hxx>
+#include <WNT_WClass.hxx>
+#include <WNT_Window.hxx>
 
 #include <stdio.h>
-
 // =======================================================================
 // function : WNT_Window
 // purpose  :

@@ -14,15 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_RealArray.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_DeltaOnModificationOfRealArray.hxx>
+#include <TDataStd_RealArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataStd_RealArray::GetID() 
 { 
   static Standard_GUID TDataStd_RealArrayID ("2a96b61e-ec8b-11d0-bee7-080009dc3333");

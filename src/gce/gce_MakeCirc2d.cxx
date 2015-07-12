@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeCirc2d.ixx>
-#include <StdFail_NotDone.hxx>
-#include <gp.hxx>
-#include <gp_Lin2d.hxx>
+
 #include <ElCLib.hxx>
+#include <gce_MakeCirc2d.hxx>
+#include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d un cercle 2d de gp passant par trois points.              +
@@ -40,7 +45,6 @@
 //      La solution a pour centre l intersection de ces deux droite et    +
 //      pour rayon la distance entre ce centre et l un des trois points.  +
 //=========================================================================
-
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d&  P1 ,
 			       const gp_Pnt2d&  P2 ,
 			       const gp_Pnt2d&  P3 )

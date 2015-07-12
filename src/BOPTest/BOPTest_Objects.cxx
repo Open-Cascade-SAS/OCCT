@@ -12,8 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest_Objects.ixx>
 
+#include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_Section.hxx>
+#include <BOPTest_Objects.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_IncAllocator.hxx>
 

@@ -14,13 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeMirror.ixx>
+
+#include <gce_MakeMirror.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 
 //=========================================================================
 //   Creation d une symetrie  de gp par rapport a un point.             +
 //=========================================================================
-
 gce_MakeMirror::gce_MakeMirror(const gp_Pnt&  Point ) 
 { 
   TheMirror.SetMirror(Point); 

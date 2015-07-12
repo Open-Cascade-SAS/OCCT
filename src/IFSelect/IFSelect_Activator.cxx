@@ -11,19 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Activator.ixx>
+
 #include <Dico_DictionaryOfInteger.hxx>
 #include <Dico_IteratorOfDictionaryOfInteger.hxx>
+#include <IFSelect_Activator.hxx>
+#include <IFSelect_SessionPilot.hxx>
+#include <Interface_Macros.hxx>
+#include <MoniTool_Option.hxx>
+#include <MoniTool_Profile.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
-#include <Standard_DomainError.hxx>
-
-#include <MoniTool_Profile.hxx>
-#include <MoniTool_Option.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <Interface_Macros.hxx>
-
 
 static Handle(Dico_DictionaryOfInteger) thedico; // = new Dico_DictionaryOfInteger;
 static TColStd_SequenceOfInteger   thenums, themodes;

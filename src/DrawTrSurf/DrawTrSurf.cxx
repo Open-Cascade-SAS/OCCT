@@ -14,45 +14,50 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
 
-#include <Draw_Color.hxx>
-#include <DrawTrSurf.ixx>
-#include <DrawTrSurf_Point.hxx>
-#include <DrawTrSurf_BezierSurface.hxx>
-#include <DrawTrSurf_BSplineSurface.hxx>
-#include <DrawTrSurf_BezierCurve.hxx>
-#include <DrawTrSurf_BSplineCurve.hxx>
-#include <DrawTrSurf_BezierCurve2d.hxx>
-#include <DrawTrSurf_BSplineCurve2d.hxx>
-#include <DrawTrSurf_Triangulation.hxx>
-#include <DrawTrSurf_Polygon3D.hxx>
-#include <DrawTrSurf_Polygon2D.hxx>
-#include <Draw_Appli.hxx>
 #include <Draw.hxx>
-
-#include <GeomTools_CurveSet.hxx>
-#include <GeomTools_Curve2dSet.hxx>
-#include <GeomTools_SurfaceSet.hxx>
-
-#include <gp_Pln.hxx>
-#include <gp_Ax2d.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Trsf2d.hxx>
-#include <Poly.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Color.hxx>
+#include <DrawTrSurf.hxx>
+#include <DrawTrSurf_BezierCurve.hxx>
+#include <DrawTrSurf_BezierCurve2d.hxx>
+#include <DrawTrSurf_BezierSurface.hxx>
+#include <DrawTrSurf_BSplineCurve.hxx>
+#include <DrawTrSurf_BSplineCurve2d.hxx>
+#include <DrawTrSurf_BSplineSurface.hxx>
 #include <DrawTrSurf_Curve.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
-#include <DrawTrSurf_Surface.hxx>
 #include <DrawTrSurf_Drawable.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <DrawTrSurf_Point.hxx>
+#include <DrawTrSurf_Polygon2D.hxx>
+#include <DrawTrSurf_Polygon3D.hxx>
+#include <DrawTrSurf_Surface.hxx>
+#include <DrawTrSurf_Triangulation.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomTools_Curve2dSet.hxx>
+#include <GeomTools_CurveSet.hxx>
+#include <GeomTools_SurfaceSet.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <Poly.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard_Stream.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static Draw_Color       PntColor(Draw_rouge);
 static Draw_Color       CurvColor(Draw_jaune);

@@ -15,10 +15,10 @@
 
 // Updated:
 
-#include <Font_SystemFont.ixx>
+#include <Font_SystemFont.hxx>
 #include <OSD_Path.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-
 
 Font_SystemFont::Font_SystemFont():
 MyFontName(),

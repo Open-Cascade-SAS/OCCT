@@ -20,36 +20,35 @@
 // Modified:    Mon Jan 18 11:06:46 1999
 //              mise au point de D1, D2 et IsConstant
 
-#include <stdio.h>
-
-#include <GeomFill_NSections.ixx>
-#include <GeomFill_SectionGenerator.hxx>
-#include <GeomFill_Line.hxx>
-#include <GeomFill_AppSurf.hxx>
-
-#include <GeomConvert.hxx>
+#include <BSplCLib.hxx>
 #include <Convert_ParameterisationType.hxx>
-
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-
-#include <GCPnts_AbscissaPoint.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColGeom_Array1OfCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <BSplCLib.hxx>
-#include <Precision.hxx>
-
-#include <gp_Lin.hxx>
+#include <GeomConvert.hxx>
+#include <GeomFill_AppSurf.hxx>
+#include <GeomFill_Line.hxx>
+#include <GeomFill_NSections.hxx>
+#include <GeomFill_SectionGenerator.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_Array1OfCurve.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
+#include <stdio.h>
 #ifdef OCCT_DEBUG
 # ifdef DRAW
 #  include <DrawTrSurf.hxx>

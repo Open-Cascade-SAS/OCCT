@@ -14,23 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_CurveConstraint.ixx>
-#include <GeomPlate_CurveConstraint.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <ProjLib_ProjectOnPlane.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomAPI.hxx>
-#include <Geom_Plane.hxx>
-#include <Precision.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRep_Tool.hxx>
 
-#include <Geom2dAdaptor_HCurve.hxx>
 #include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepFill_CurveConstraint.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAPI.hxx>
+#include <GeomPlate_CurveConstraint.hxx>
+#include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
+#include <ProjLib_ProjectOnPlane.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
+
 //---------------------------------------------------------
 //         Constructeurs avec courbe sur surface
 //---------------------------------------------------------

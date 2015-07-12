@@ -11,9 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SetLabel.ixx>
-#include <Interface_Macros.hxx>
+
+#include <IFSelect_ContextModif.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_SetLabel.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IGESSelect_SetLabel::IGESSelect_SetLabel

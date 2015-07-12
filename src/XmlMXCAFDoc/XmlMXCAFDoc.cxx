@@ -13,27 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMXCAFDoc.ixx>
 
+#include <CDM_MessageDriver.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <XmlMDF_ADriverTable.hxx>
+#include <XmlMNaming_NamedShapeDriver.hxx>
+#include <XmlMXCAFDoc.hxx>
 #include <XmlMXCAFDoc_AreaDriver.hxx>
 #include <XmlMXCAFDoc_CentroidDriver.hxx>
 #include <XmlMXCAFDoc_ColorDriver.hxx>
-#include <XmlMXCAFDoc_GraphNodeDriver.hxx>
-#include <XmlMXCAFDoc_LocationDriver.hxx>
-#include <XmlMXCAFDoc_VolumeDriver.hxx>
+#include <XmlMXCAFDoc_ColorToolDriver.hxx>
 #include <XmlMXCAFDoc_DatumDriver.hxx>
 #include <XmlMXCAFDoc_DimTolDriver.hxx>
-#include <XmlMXCAFDoc_MaterialDriver.hxx>
-
-#include <XmlMXCAFDoc_ColorToolDriver.hxx>
-#include <XmlMXCAFDoc_DocumentToolDriver.hxx>
-#include <XmlMXCAFDoc_LayerToolDriver.hxx>
-#include <XmlMXCAFDoc_ShapeToolDriver.hxx>
 #include <XmlMXCAFDoc_DimTolToolDriver.hxx>
+#include <XmlMXCAFDoc_DocumentToolDriver.hxx>
+#include <XmlMXCAFDoc_GraphNodeDriver.hxx>
+#include <XmlMXCAFDoc_LayerToolDriver.hxx>
+#include <XmlMXCAFDoc_LocationDriver.hxx>
+#include <XmlMXCAFDoc_MaterialDriver.hxx>
 #include <XmlMXCAFDoc_MaterialToolDriver.hxx>
-
-#include <XmlMNaming_NamedShapeDriver.hxx>
-#include <TNaming_NamedShape.hxx>
+#include <XmlMXCAFDoc_ShapeToolDriver.hxx>
+#include <XmlMXCAFDoc_VolumeDriver.hxx>
 
 //=======================================================================
 //function : AddDrivers

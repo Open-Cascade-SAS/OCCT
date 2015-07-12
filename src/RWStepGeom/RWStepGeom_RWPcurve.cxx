@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWPcurve.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepGeom_RWPcurve.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_Pcurve.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepGeom_Pcurve.hxx>
-
 
 RWStepGeom_RWPcurve::RWStepGeom_RWPcurve () {}
 

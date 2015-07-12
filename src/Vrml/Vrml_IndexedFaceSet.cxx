@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_IndexedFaceSet.ixx>
+
+#include <Standard_Type.hxx>
+#include <Vrml_IndexedFaceSet.hxx>
 
 Vrml_IndexedFaceSet::Vrml_IndexedFaceSet(const Handle(TColStd_HArray1OfInteger)& aCoordIndex, 
 					  const Handle(TColStd_HArray1OfInteger)& aMaterialIndex, 

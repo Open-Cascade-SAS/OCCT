@@ -16,12 +16,23 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_ToolExternalRefFile.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <IGESBasic_ExternalRefFile.hxx>
+#include <IGESBasic_ToolExternalRefFile.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESBasic_ToolExternalRefFile::IGESBasic_ToolExternalRefFile ()    {  }
 

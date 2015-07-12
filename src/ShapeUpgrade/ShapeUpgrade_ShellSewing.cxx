@@ -12,24 +12,23 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <ShapeUpgrade_ShellSewing.ixx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopExp_Explorer.hxx>
 
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-
 #include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeUpgrade_ShellSewing.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShellSewing
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShellSewing::ShapeUpgrade_ShellSewing()
 {
   myReShape = new ShapeBuild_ReShape;

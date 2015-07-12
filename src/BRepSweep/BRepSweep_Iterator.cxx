@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepSweep_Iterator.ixx>
+
+#include <BRepSweep_Iterator.hxx>
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepSweep_Iterator
 //purpose  : 
 //=======================================================================
-
 BRepSweep_Iterator::BRepSweep_Iterator()
 {
 }

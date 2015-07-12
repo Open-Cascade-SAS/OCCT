@@ -14,9 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWConversionBasedUnitAndVolumeUnit.ixx>
-#include <StepBasic_MeasureWithUnit.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWConversionBasedUnitAndVolumeUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndVolumeUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWConversionBasedUnitAndVolumeUnit::RWStepBasic_RWConversionBasedUnitAndVolumeUnit ()
 {

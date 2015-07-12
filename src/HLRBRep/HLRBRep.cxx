@@ -14,27 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep.ixx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepLib_MakeEdge2d.hxx>
+#include <BRepLib_MakeVertex.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <HLRBRep.hxx>
+#include <HLRBRep_Curve.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
 #include <TopExp.hxx>
-#include <BRepLib_MakeVertex.hxx>
-#include <BRep_Builder.hxx>
-
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : MakeEdge
 //purpose  : 
 //=======================================================================
-
 TopoDS_Edge HLRBRep::MakeEdge (const HLRBRep_Curve& ec,
                                const Standard_Real U1,
                                const Standard_Real U2)

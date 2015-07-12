@@ -12,15 +12,14 @@
 // commercial license or contractual agreement.
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
-#include <RWStepRepr_RWAssemblyComponentUsageSubstitute.ixx>
-#include <StepRepr_AssemblyComponentUsage.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepRepr_RWAssemblyComponentUsageSubstitute.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_AssemblyComponentUsage.hxx>
 #include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
-
 
 RWStepRepr_RWAssemblyComponentUsageSubstitute::RWStepRepr_RWAssemblyComponentUsageSubstitute () {}
 

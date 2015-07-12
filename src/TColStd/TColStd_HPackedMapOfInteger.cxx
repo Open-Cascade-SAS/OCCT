@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TColStd_HPackedMapOfInteger.ixx>
+
+#include <Standard_Type.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
 
 //! Constructor of empty map
 TColStd_HPackedMapOfInteger::TColStd_HPackedMapOfInteger (const Standard_Integer NbBuckets)

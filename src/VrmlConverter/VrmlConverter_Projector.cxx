@@ -11,21 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_Projector.ixx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Ax3.hxx>
+
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
-#include <Vrml_SFRotation.hxx>
-#include <Precision.hxx>
-#include <Vrml_MatrixTransform.hxx>
-#include <Vrml_TransformSeparator.hxx>
 #include <Vrml_Instancing.hxx>
+#include <Vrml_MatrixTransform.hxx>
+#include <Vrml_SFRotation.hxx>
+#include <Vrml_TransformSeparator.hxx>
+#include <VrmlConverter_Projector.hxx>
 
 VrmlConverter_Projector::VrmlConverter_Projector (const TopTools_Array1OfShape& Shapes,
 						  const Quantity_Length Focus,

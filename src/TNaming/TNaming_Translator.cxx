@@ -14,30 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_Translator.ixx>
 
-#include <TopoDS_Shape.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepTools.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <TopoDS_TShape.hxx>
-#include <BRepTools.hxx>
+#include <TNaming_CopyShape.hxx>
+#include <TNaming_Translator.hxx>
 #include <TopLoc_Datum3D.hxx>
-#include <BRep_TVertex.hxx>
-#include <BRep_TFace.hxx>
-#include <BRep_TEdge.hxx>
-#include <TopoDS_TWire.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TCompSolid.hxx>
+#include <TopoDS_TShape.hxx>
 #include <TopoDS_TShell.hxx>
 #include <TopoDS_TSolid.hxx>
-#include <TopoDS_TCompSolid.hxx>
-#include <TopoDS_TCompound.hxx>
-#include <TNaming_CopyShape.hxx>
+#include <TopoDS_TWire.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 
 //=======================================================================
 //function : TNaming_Translator
 //purpose  : 
 //=======================================================================
-
 TNaming_Translator::TNaming_Translator () :myIsDone(Standard_False) 
 {
   myDataMapOfResults.Clear();

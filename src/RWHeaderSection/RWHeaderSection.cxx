@@ -11,18 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWHeaderSection.ixx>
-/// #include <EuclidStandard.hxx>
-
-#include <StepData.hxx>
-
-#include <HeaderSection_Protocol.hxx>
 
 #include <HeaderSection.hxx>
-#include <RWHeaderSection_ReadWriteModule.hxx>
+#include <HeaderSection_Protocol.hxx>
+#include <RWHeaderSection.hxx>
 #include <RWHeaderSection_GeneralModule.hxx>
+#include <RWHeaderSection_ReadWriteModule.hxx>
+#include <StepData.hxx>
 
-
+/// #include <EuclidStandard.hxx>
 static Handle(RWHeaderSection_ReadWriteModule) rwm;
 static Handle(RWHeaderSection_GeneralModule) rwg;
 

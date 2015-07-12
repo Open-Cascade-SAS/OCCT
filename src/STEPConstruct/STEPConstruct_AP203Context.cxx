@@ -14,7 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct_AP203Context.ixx>
+
+#include <StepAP203_CcDesignApproval.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
+#include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
+#include <StepAP203_CcDesignSecurityClassification.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_ApprovalDateTime.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepBasic_ApprovalRole.hxx>
+#include <StepBasic_DateAndTime.hxx>
+#include <StepBasic_DateTimeRole.hxx>
+#include <StepBasic_PersonAndOrganization.hxx>
+#include <StepBasic_PersonAndOrganizationRole.hxx>
+#include <StepBasic_ProductCategoryRelationship.hxx>
+#include <StepBasic_SecurityClassificationLevel.hxx>
+#include <STEPConstruct_AP203Context.hxx>
+#include <STEPConstruct_Part.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
 
 #ifndef _WIN32
 # include <pwd.h>

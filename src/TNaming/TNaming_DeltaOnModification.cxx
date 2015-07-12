@@ -14,18 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_DeltaOnModification.ixx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_Evolution.hxx>
+
+#include <Standard_Type.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_DeltaOnModification.hxx>
+#include <TNaming_Evolution.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
 
 //=======================================================================
 //function : TNaming_DeltaOnModification
 //purpose  : 
 //=======================================================================
-
 TNaming_DeltaOnModification::TNaming_DeltaOnModification(const Handle(TNaming_NamedShape)& NS)
 : TDF_DeltaOnModification(NS)
 {

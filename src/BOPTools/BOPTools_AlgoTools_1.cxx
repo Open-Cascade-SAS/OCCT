@@ -12,77 +12,84 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTools_AlgoTools.ixx>
-//
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-//
-#include <Adaptor3d_HCurve.hxx>
+
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-//
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-//
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-//
-#include <Geom2d_Curve.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2dAdaptor.hxx>
-//
-#include <GeomProjLib.hxx>
-//
-#include <ProjLib_ProjectedCurve.hxx>
-#include <Extrema_LocateExtPC.hxx>
-//
-#include <IntRes2d_Domain.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-//
-#include <TopLoc_Location.hxx>
-//
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Wire.hxx>
-//
-#include <BRep_TVertex.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_Parallel.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
+#include <BRep_PointRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_PointRepresentation.hxx>
-#include <BRep_Builder.hxx>
-//
+#include <BRep_TVertex.hxx>
 #include <BRepAdaptor_Surface.hxx>
-//
+#include <BRepLib_CheckCurveOnSurface.hxx>
 #include <BRepTools_WireExplorer.hxx>
-//
+#include <Extrema_LocateExtPC.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_Curve.hxx>
+#include <IntTools_Range.hxx>
+#include <IntTools_Tools.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-//
-#include <IntTools_Tools.hxx>
-//
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
-#include <BRepLib_CheckCurveOnSurface.hxx>
+#include <TopTools_ListOfShape.hxx>
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 static 
   void CheckEdge (const TopoDS_Edge& E,
                   const Standard_Real aMaxTol);

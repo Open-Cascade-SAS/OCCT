@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeTools.ixx>
+
+#include <TestTopOpeTools.hxx>
 
 //=======================================================================
 //function : AllCommands
 //purpose  : 
 //=======================================================================
-
 void  TestTopOpeTools::AllCommands(Draw_Interpretor& theCommands)
 {
   TestTopOpeTools::TraceCommands(theCommands);

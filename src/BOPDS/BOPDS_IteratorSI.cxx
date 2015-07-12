@@ -12,36 +12,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_IteratorSI.ixx>
 
-#include <TopAbs_ShapeEnum.hxx>
-#include <gp_Pnt.hxx>
 #include <Bnd_Box.hxx>
-//
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
-
-#include <NCollection_UBTreeFiller.hxx>
-#include <NCollection_IncAllocator.hxx>
-
 #include <BOPCol_BoxBndTree.hxx>
-#include <BOPDS_IndexRange.hxx>
-#include <BOPDS_PassKeyBoolean.hxx>
-#include <BOPDS_MapOfPassKeyBoolean.hxx>
-#include <BOPDS_DS.hxx>
-
-#include <BOPCol_IndexedDataMapOfShapeBox.hxx>
-#include <BOPDS_Tools.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
+#include <BOPCol_DataMapOfShapeInteger.hxx>
+#include <BOPCol_IndexedDataMapOfShapeBox.hxx>
 #include <BOPCol_IndexedMapOfInteger.hxx>
-#include <BOPDS_ShapeInfo.hxx>
 #include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_IndexedMapOfInteger.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_IndexRange.hxx>
+#include <BOPDS_IteratorSI.hxx>
+#include <BOPDS_MapOfPassKeyBoolean.hxx>
+#include <BOPDS_PassKeyBoolean.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <BOPDS_Tools.hxx>
+#include <BRep_Tool.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
+//
 //=======================================================================
 //function : 
 //purpose  : 

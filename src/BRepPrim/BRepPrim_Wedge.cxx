@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Wedge.ixx>
 
-
+#include <BRepPrim_Wedge.hxx>
+#include <gp_Ax2.hxx>
+#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrim_Wedge
 //purpose  : 
 //=======================================================================
-
 BRepPrim_Wedge::BRepPrim_Wedge(const gp_Ax2& Axes, const Standard_Real dx, const Standard_Real dy, const Standard_Real dz) :
 BRepPrim_GWedge(BRepPrim_Builder(),Axes,dx,dy,dz)
 {

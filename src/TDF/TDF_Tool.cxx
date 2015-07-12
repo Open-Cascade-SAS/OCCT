@@ -14,25 +14,24 @@
 // commercial license or contractual agreement.
 
 //      	------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Mar 13 1997	Creation
 
-
-
-#include <TDF_Tool.ixx>
-
-#include <TDF_MapIteratorOfLabelMap.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_DataSet.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-
-#include <TColStd_ListOfInteger.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TDF_AttributeIndexedMap.hxx>
+#include <TDF_AttributeIterator.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_IDFilter.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_ListIteratorOfLabelList.hxx>
+#include <TDF_MapIteratorOfAttributeMap.hxx>
+#include <TDF_MapIteratorOfLabelMap.hxx>
+#include <TDF_Tool.hxx>
 
 #define TDF_TagSeparator ':'
 

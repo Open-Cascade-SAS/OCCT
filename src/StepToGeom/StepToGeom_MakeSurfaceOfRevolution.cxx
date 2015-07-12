@@ -14,27 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeSurfaceOfRevolution.ixx>
-#include <StepGeom_SurfaceOfRevolution.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
+
 #include <Geom_Axis1Placement.hxx>
-#include <StepToGeom_MakeAxis1Placement.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Ellipse.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <StepToGeom_MakeCurve.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
-#include <Geom_Conic.hxx>
+#include <gp_Pnt.hxx>
+#include <StepGeom_SurfaceOfRevolution.hxx>
+#include <StepToGeom_MakeAxis1Placement.hxx>
+#include <StepToGeom_MakeCurve.hxx>
+#include <StepToGeom_MakeSurfaceOfRevolution.hxx>
 
 //=============================================================================
 // Creation d' une SurfaceOfRevolution de Geom a partir d' une
 // SurfaceOfRevolution de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeSurfaceOfRevolution::Convert (const Handle(StepGeom_SurfaceOfRevolution)& SS, Handle(Geom_SurfaceOfRevolution)& CS)
 {
   Handle(Geom_Curve) C;

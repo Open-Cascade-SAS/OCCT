@@ -19,8 +19,15 @@
 
 #define No_Standard_OutOfRange
 
-#include <gp_Ax2.ixx>
+
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_ConstructionError.hxx>
 
 gp_Ax2::gp_Ax2 (const gp_Pnt& P, const gp_Dir& V) :
 axis(P,V)

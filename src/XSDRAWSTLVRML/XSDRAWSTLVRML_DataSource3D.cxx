@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSDRAWSTLVRML_DataSource3D.ixx>
 
-#include <StlMesh_SequenceOfMeshTriangle.hxx>
+#include <Standard_Type.hxx>
 #include <StlMesh_MeshTriangle.hxx>
+#include <StlMesh_SequenceOfMeshTriangle.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
-#include <TColStd_DataMapOfIntegerReal.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <TColStd_DataMapOfIntegerReal.hxx>
+#include <XSDRAWSTLVRML_DataSource3D.hxx>
 
 //================================================================
 // Function : Constructor

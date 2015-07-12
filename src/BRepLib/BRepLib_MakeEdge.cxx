@@ -17,33 +17,43 @@
 // Modified:	Wed Oct 23 09:17:47 1996
 //		check ponctuallity (PRO4896)
 
-#include <BRepLib_MakeEdge.ixx>
-#include <BRepLib.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <gp.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepLib.hxx>
+#include <BRepLib_MakeEdge.hxx>
 #include <ElCLib.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
-
+#include <StdFail_NotDone.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : Project
 //purpose  : project a vertex on a curve
 //=======================================================================
-
 static Standard_Boolean Project(const Handle(Geom_Curve)& C,
 				const TopoDS_Vertex& V,
 				Standard_Real& p)

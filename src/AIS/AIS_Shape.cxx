@@ -14,65 +14,58 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Shape.ixx>
-
-
-#include <Standard_ErrorHandler.hxx>
-#include <OSD_Timer.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <Quantity_Color.hxx>
-
-#include <gp_Pnt.hxx>
-#include <Bnd_Box.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepTools_ShapeSet.hxx>
-#include <BRepTools.hxx>
-#include <BRepBndLib.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <Aspect_TypeOfLine.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_SequenceOfGroup.hxx>
-
-#include <Prs3d.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_IsoAspect.hxx>
-
-#include <StdPrs_WFShape.hxx>
-#include <StdPrs_WFDeflectionShape.hxx>
-#include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_HLRShape.hxx>
-#include <StdPrs_HLRPolyShape.hxx>
-
-#include <PrsMgr_ModedPresentation.hxx>
-
-#include <Select3D_SensitiveEntity.hxx>
-#include <StdSelect.hxx>
-#include <StdSelect_BRepSelectionTool.hxx>
-#include <StdSelect_BRepOwner.hxx>
-#include <StdSelect_DisplayMode.hxx>
 
 #include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_Shape.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <Bnd_Box.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_ShapeSet.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_SequenceOfGroup.hxx>
+#include <Graphic3d_Structure.hxx>
 #include <HLRBRep.hxx>
+#include <OSD_Timer.hxx>
 #include <Precision.hxx>
-
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
+#include <Prs3d.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
+#include <Quantity_Color.hxx>
 #include <Select3D_SensitiveBox.hxx>
+#include <Select3D_SensitiveEntity.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_HLRPolyShape.hxx>
+#include <StdPrs_HLRShape.hxx>
+#include <StdPrs_ShadedShape.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_WFShape.hxx>
+#include <StdSelect.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_BRepSelectionTool.hxx>
+#include <StdSelect_DisplayMode.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 static Standard_Boolean myFirstCompute;
 

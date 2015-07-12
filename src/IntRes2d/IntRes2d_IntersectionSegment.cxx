@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntRes2d_IntersectionSegment.ixx>
+
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <Standard_DomainError.hxx>
 
 IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment ():
   

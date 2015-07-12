@@ -12,19 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_AsciiString.ixx>
-#include <TCollection_ExtendedString.hxx>
 
 #include <Standard.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_NegativeValue.hxx>
+#include <Standard_NullObject.hxx>
 #include <Standard_NumericError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
-#include <cstdio>
 #include <cctype>
+#include <cstdio>
 #include <cstring>
-
 // Shortcuts to standard allocate and reallocate functions
 static inline Standard_PCharacter Allocate(const Standard_Size aLength)
 {

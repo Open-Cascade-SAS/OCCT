@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_SphericalSurface.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_SphericalSurface.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_SphericalSurface::StepGeom_SphericalSurface ()  {}
 

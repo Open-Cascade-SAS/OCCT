@@ -16,8 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDefs_UnitsData.ixx>
-
+#include <IGESDefs_UnitsData.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESDefs_UnitsData::IGESDefs_UnitsData ()    {  }
 

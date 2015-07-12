@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_CcDesignContract.ixx>
+#include <Standard_Type.hxx>
+#include <StepAP203_CcDesignContract.hxx>
+#include <StepBasic_Contract.hxx>
 
 //=======================================================================
 //function : StepAP203_CcDesignContract
 //purpose  : 
 //=======================================================================
-
 StepAP203_CcDesignContract::StepAP203_CcDesignContract ()
 {
 }

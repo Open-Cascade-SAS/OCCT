@@ -13,8 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_Printer.ixx>
 
+#include <Message_Printer.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -22,7 +23,6 @@
 //function : Constructor
 //purpose  :
 //=======================================================================
-
 Message_Printer::Message_Printer()
 : myTraceLevel (Message_Info)
 {

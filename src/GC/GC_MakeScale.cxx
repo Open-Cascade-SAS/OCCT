@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeScale.ixx>
+
 #include <GC_MakeScale.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d un homothetie de gp de centre Point et de rapport Scale.  +
 //=========================================================================
-
 GC_MakeScale::GC_MakeScale(const gp_Pnt&  Point ,
 			     const Standard_Real     Scale ) {
   TheScale = new Geom_Transformation();

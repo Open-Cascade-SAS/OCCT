@@ -14,21 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_HBuilder.ixx>
-#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_CurveIterator.hxx>
-#include <TopOpeBRepDS_CurveExplorer.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TopTools_MapOfShape.hxx>
 #include <TopoDS.hxx>
-#include <Standard_ProgramError.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_CurveExplorer.hxx>
+#include <TopOpeBRepDS_CurveIterator.hxx>
+#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_HBuilder

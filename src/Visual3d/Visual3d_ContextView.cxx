@@ -13,13 +13,10 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
-
      FUNCTION :
      ----------
         Class Visual3d_ContextView.cxx :
-
 	Declaration of variables specific to view contexts.
-
 	A view context is defined by :
 		- the activity of aliasing
 		- the activity of depth-cueing
@@ -27,19 +24,21 @@
 		- the activity of defined light sources
 		- the required type of visualization
 		- the model of shading if required
-
-
 ************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes
  */
 
-#include <Visual3d_ContextView.ixx>
+#include <Graphic3d_TextureEnv.hxx>
+#include <Visual3d_ClipDefinitionError.hxx>
+#include <Visual3d_ContextView.hxx>
+#include <Visual3d_DepthCueingDefinitionError.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_LightDefinitionError.hxx>
+#include <Visual3d_ZClippingDefinitionError.hxx>
 
 /*----------------------------------------------------------------------*/
-
 Visual3d_ContextView::Visual3d_ContextView ():
 AliasingIsActive (Standard_False),
 ZcueingIsActive (Standard_False),

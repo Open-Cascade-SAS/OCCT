@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgoAPI_Cut.ixx>
 
+#include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepAlgoAPI_Cut

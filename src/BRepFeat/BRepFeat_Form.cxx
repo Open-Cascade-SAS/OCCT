@@ -14,57 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFeat_Form.ixx>
-
-#include <LocOpe.hxx>
-#include <LocOpe_Gluer.hxx>
-#include <LocOpe_FindEdges.hxx>
-#include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_SequenceOfCirc.hxx>
-#include <LocOpe_PntFace.hxx>
-#include <LocOpe_BuildShape.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Precision.hxx>
-
-#include <BRep_Tool.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRepTools_Modifier.hxx>
-#include <BRepTools_TrsfModification.hxx>
-#include <BRepFeat.hxx>
-#include <BRepCheck_Analyzer.hxx>
-#include <TopoDS.hxx>
 
 #include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepLib.hxx>
-
-#include <ElCLib.hxx>
-
+#include <BRep_Tool.hxx>
 #include <BRepAlgo.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepFeat.hxx>
+#include <BRepFeat_Builder.hxx>
+#include <BRepFeat_Form.hxx>
+#include <BRepLib.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <ElCLib.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_BuildShape.hxx>
+#include <LocOpe_CSIntersector.hxx>
+#include <LocOpe_FindEdges.hxx>
+#include <LocOpe_Gluer.hxx>
+#include <LocOpe_PntFace.hxx>
+#include <LocOpe_SequenceOfCirc.hxx>
+#include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+
 //modified by NIZNHY-PKV Thu Mar 21 17:30:25 2002 f
 //#include <BRepAlgo_Cut.hxx>
 //#include <BRepAlgo_Fuse.hxx>
-
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepFeat_Builder.hxx>
 //modified by NIZNHY-PKV Thu Mar 21 17:30:29 2002 t
-
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif

@@ -14,29 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Precision.hxx>
-#include <Approx_CurveOnSurface.ixx>
+
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <AdvApprox_DichoCutting.hxx>
+#include <AdvApprox_PrefAndRec.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <AdvApprox_ApproxAFunction.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <AdvApprox_PrefAndRec.hxx>
-#include <AdvApprox_DichoCutting.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //class : Approx_CurveOnSurface_Eval
 //purpose: evaluator class for approximation of both 2d and 3d curves
 //=======================================================================
-
 class Approx_CurveOnSurface_Eval : public AdvApprox_EvaluatorFunction
 {
  public:

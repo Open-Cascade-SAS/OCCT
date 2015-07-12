@@ -16,31 +16,30 @@
 //#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
 //#66 rln Setting IGES 5.3 by default
 //#73 rln 10.03.99 S4135: "read.scale.unit" is applied after translation
-#include <IGESData_GlobalSection.ixx>
-#include <Interface_ParamType.hxx>
-#include <Interface_FloatWriter.hxx>
-#include <Interface_FileReaderData.hxx>
+
+#include <gp_XYZ.hxx>
+#include <IGESData_BasicEditor.hxx>
+#include <IGESData_GlobalSection.hxx>
+#include <Interface_Check.hxx>
 #include <Interface_FileParameter.hxx>
+#include <Interface_FileReaderData.hxx>
+#include <Interface_FloatWriter.hxx>
+#include <Interface_ParamSet.hxx>
+#include <Interface_ParamType.hxx>
+#include <Interface_Static.hxx>
+#include <Message_Msg.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
-#include <Interface_Static.hxx>
-#include <IGESData_BasicEditor.hxx>
-#include <stdio.h>
-
-// MGE 21/07/98
-#include <Message_Msg.hxx>
-
+#include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
 
+#include <stdio.h>
+// MGE 21/07/98
 //  valeurs en MILLIMETRE pardefaut, reajustable
 //static Standard_Real convunit = 1000.;
-
-
 //  Routines locales copiant une string [l`ideal serait : astr = astr->Copy()]
 //    et transformant un CString (Hollerith ou non) en HAsciiString non Holl.
 //    et l inverse
-
-
 static void CopyString (Handle(TCollection_HAsciiString)& astr);
 
 static void MakeHollerith(const Handle(TCollection_HAsciiString)& astr,

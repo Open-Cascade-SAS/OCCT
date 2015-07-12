@@ -17,15 +17,15 @@
 // modified by Edward AGAPOV (eap) Thu Feb 14 2002 (occ139)
 // Add Prepend(), replace array with sequence
 
-#include <IntPolyh_StartPoint.ixx>
-#include <IntPolyh_SectionLine.ixx>
-#include <stdio.h>
+#include <IntPolyh_SectionLine.hxx>
+#include <IntPolyh_StartPoint.hxx>
+#include <IntPolyh_Triangle.hxx>
 
+#include <stdio.h>
 //=======================================================================
 //function : IntPolyh_SectionLine
 //purpose  : 
 //=======================================================================
-
 IntPolyh_SectionLine::IntPolyh_SectionLine() /*: n(0),nbstartpoints(0),ptr(0)*/ { }
 
 //=======================================================================

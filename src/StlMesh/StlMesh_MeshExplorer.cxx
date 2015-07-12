@@ -15,7 +15,12 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-#include <StlMesh_MeshExplorer.ixx>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlMesh_MeshExplorer.hxx>
 #include <StlMesh_MeshTriangle.hxx>
 
 //=======================================================================
@@ -23,8 +28,6 @@
 //design   : 
 //warning  : 
 //=======================================================================
-
-
 StlMesh_MeshExplorer::StlMesh_MeshExplorer(const Handle(StlMesh_Mesh)& M)
      : domainIndex (0), nbTriangles (0) ,triangleIndex (0)  { mesh = M;}
      

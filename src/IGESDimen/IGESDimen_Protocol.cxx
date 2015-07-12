@@ -11,36 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDimen_Protocol.ixx>
 
-#include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_AngularDimension.hxx>
-#include <IGESDimen_GeneralSymbol.hxx>
 #include <IGESDimen_BasicDimension.hxx>
-#include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDimen_CenterLine.hxx>
-#include <IGESDimen_LinearDimension.hxx>
 #include <IGESDimen_CurveDimension.hxx>
-#include <IGESDimen_NewDimensionedGeometry.hxx>
 #include <IGESDimen_DiameterDimension.hxx>
-#include <IGESDimen_NewGeneralNote.hxx>
 #include <IGESDimen_DimensionDisplayData.hxx>
-#include <IGESDimen_OrdinateDimension.hxx>
-#include <IGESDimen_DimensionTolerance.hxx>
-#include <IGESDimen_PointDimension.hxx>
-#include <IGESDimen_DimensionUnits.hxx>
-#include <IGESDimen_RadiusDimension.hxx>
 #include <IGESDimen_DimensionedGeometry.hxx>
+#include <IGESDimen_DimensionTolerance.hxx>
+#include <IGESDimen_DimensionUnits.hxx>
+#include <IGESDimen_FlagNote.hxx>
+#include <IGESDimen_GeneralLabel.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_GeneralSymbol.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <IGESDimen_LinearDimension.hxx>
+#include <IGESDimen_NewDimensionedGeometry.hxx>
+#include <IGESDimen_NewGeneralNote.hxx>
+#include <IGESDimen_OrdinateDimension.hxx>
+#include <IGESDimen_PointDimension.hxx>
+#include <IGESDimen_Protocol.hxx>
+#include <IGESDimen_RadiusDimension.hxx>
 #include <IGESDimen_Section.hxx>
 #include <IGESDimen_SectionedArea.hxx>
-#include <IGESDimen_FlagNote.hxx>
 #include <IGESDimen_WitnessLine.hxx>
-#include <IGESDimen_GeneralLabel.hxx>
-
 #include <IGESGeom.hxx>
-#include <IGESGraph.hxx>
 #include <IGESGeom_Protocol.hxx>
+#include <IGESGraph.hxx>
 #include <IGESGraph_Protocol.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 static int deja = 0;
 static Handle(Standard_Type) atype01,atype02,atype03,atype04,atype05,atype06,

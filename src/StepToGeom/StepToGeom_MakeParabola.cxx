@@ -14,18 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeParabola.ixx>
-#include <StepGeom_Parabola.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
+
 #include <Geom_Axis2Placement.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <Geom_Parabola.hxx>
 #include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Parabola.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeParabola.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un Parabola de Geom a partir d' un Parabola de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeParabola::Convert
     (const Handle(StepGeom_Parabola)& SC,
      Handle(Geom_Parabola)& CC)

@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_Curve3dElementProperty.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_Curve3dElementProperty.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_Curve3dElementProperty
 //purpose  : 
 //=======================================================================
-
 StepFEA_Curve3dElementProperty::StepFEA_Curve3dElementProperty ()
 {
 }

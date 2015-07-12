@@ -14,27 +14,26 @@
 // commercial license or contractual agreement.
 
 //      	------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Sep 15 1997	Creation
 
-
-
-#include <TDocStd_XLinkRoot.ixx>
-
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_RelocationTable.hxx>
 #include <TDocStd_XLink.hxx>
-
+#include <TDocStd_XLinkIterator.hxx>
+#include <TDocStd_XLinkRoot.hxx>
 
 //=======================================================================
 //             CLASS METHODS
 //=======================================================================
-
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDocStd_XLinkRoot::GetID() 
 {
   static Standard_GUID myID("5d587401-5690-11d1-8940-080009dc3333");

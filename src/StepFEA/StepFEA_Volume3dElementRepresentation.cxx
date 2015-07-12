@@ -15,13 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_Volume3dElementRepresentation.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <StepElement_Volume3dElementDescriptor.hxx>
+#include <StepFEA_FeaModel3d.hxx>
+#include <StepFEA_Volume3dElementRepresentation.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_Volume3dElementRepresentation
 //purpose  : 
 //=======================================================================
-
 StepFEA_Volume3dElementRepresentation::StepFEA_Volume3dElementRepresentation ()
 {
 }

@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataXtd_AxisDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataXtd_Axis.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataXtd_AxisDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDataXtd_AxisDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataXtd_AxisDriver::XmlMDataXtd_AxisDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

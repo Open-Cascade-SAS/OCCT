@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_NamedUnit.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_NamedUnit.hxx>
 
 StepBasic_NamedUnit::StepBasic_NamedUnit ()  {}
 

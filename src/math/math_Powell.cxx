@@ -16,14 +16,17 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_Powell.ixx>
 #include <math_BracketMinimum.hxx>
 #include <math_BrentMinimum.hxx>
 #include <math_Function.hxx>
+#include <math_Matrix.hxx>
 #include <math_MultipleVarFunction.hxx>
-
+#include <math_Powell.hxx>
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 namespace {
 static inline Standard_Real SQR (const Standard_Real a)

@@ -12,13 +12,19 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <Transfer_TransferOutput.ixx>
-#include <Transfer_Binder.hxx>
-#include <Interface_ShareFlags.hxx>
+
 #include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ShareFlags.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_Binder.hxx>
 #include <Transfer_TransferFailure.hxx>
-
-
+#include <Transfer_TransferOutput.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 Transfer_TransferOutput::Transfer_TransferOutput (const Handle(Transfer_ActorOfTransientProcess)& actor,
 						  const Handle(Interface_InterfaceModel)& amodel)

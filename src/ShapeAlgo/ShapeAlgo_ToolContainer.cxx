@@ -13,13 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAlgo_ToolContainer.ixx>
+
+#include <ShapeAlgo_ToolContainer.hxx>
+#include <ShapeFix_EdgeProjAux.hxx>
+#include <ShapeFix_Shape.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : ShapeAlgo_ToolContainer
 //purpose  : 
 //=======================================================================
-
 ShapeAlgo_ToolContainer::ShapeAlgo_ToolContainer()
 {
 }

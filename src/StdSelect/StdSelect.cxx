@@ -14,28 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect.ixx>
-#include <SelectMgr_Selection.hxx>
-#include <Graphic3d_StructureManager.hxx>
+
+#include <Aspect_TypeOfLine.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Select3D_SensitiveSegment.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Quantity_NameOfColor.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveFace.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax3.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <StdSelect.hxx>
 #include <StdSelect_BRepOwner.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 
 //=======================================================================
 //function : SetDrawerForBRepOwner
 //purpose  : 
 //=======================================================================
-
 void StdSelect::SetDrawerForBRepOwner(const Handle(SelectMgr_Selection)& /*Sel*/,
 				     const Handle(Prs3d_Drawer)& /*Drwr*/)
 {

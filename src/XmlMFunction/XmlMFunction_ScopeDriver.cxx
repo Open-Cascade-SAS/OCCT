@@ -13,21 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMFunction_ScopeDriver.ixx>
-#include <XmlObjMgt.hxx>
-#include <XmlObjMgt_Document.hxx>
+
+#include <CDM_MessageDriver.hxx>
 #include <LDOM_MemManager.hxx>
-
-#include <TColStd_ListOfInteger.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <TDF_Tool.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelList.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
-
-#include <TFunction_Scope.hxx>
+#include <TDF_Tool.hxx>
 #include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
+#include <TFunction_Scope.hxx>
+#include <XmlMFunction_ScopeDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Document.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (LastIDIndex,    "lastid")
 IMPLEMENT_DOMSTRING (LastLabelIndex, "lastlabel")

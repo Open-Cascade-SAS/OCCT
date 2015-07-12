@@ -14,15 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeMirror.ixx>
+
 #include <GC_MakeMirror.hxx>
+#include <Geom_Transformation.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une symetrie de Geom par rapport a un point.              +
 //=========================================================================
-
 GC_MakeMirror::GC_MakeMirror(const gp_Pnt&  Point ) {
   TheMirror = new Geom_Transformation();
   TheMirror->SetMirror(Point);

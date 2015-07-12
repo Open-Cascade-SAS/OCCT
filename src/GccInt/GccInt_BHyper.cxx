@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccInt_BHyper.ixx>
-#include <Standard_NotImplemented.hxx>
+
+#include <GccInt_BHyper.hxx>
 #include <gp_Hypr2d.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 
 GccInt_BHyper::
    GccInt_BHyper(const gp_Hypr2d& Hyper) {

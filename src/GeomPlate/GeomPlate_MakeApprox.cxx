@@ -14,32 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomPlate_MakeApprox.ixx>
-#include <GeomPlate_Surface.hxx>
-#include <GeomPlate_PlateG0Criterion.hxx>
-#include <GeomPlate_PlateG1Criterion.hxx>
 
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_Surface.hxx>
-
-#include <TColgp_SequenceOfXY.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_XY.hxx>
-#include <PLib.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-
-#include <AdvApp2Var_Criterion.hxx>
 #include <AdvApp2Var_ApproxAFunc2Var.hxx>
-#include <AdvApprox_PrefCutting.hxx>
+#include <AdvApp2Var_Criterion.hxx>
 #include <AdvApprox_Cutting.hxx>
 #include <AdvApprox_DichoCutting.hxx>
-
+#include <AdvApprox_PrefCutting.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomPlate_MakeApprox.hxx>
+#include <GeomPlate_PlateG0Criterion.hxx>
+#include <GeomPlate_PlateG1Criterion.hxx>
+#include <GeomPlate_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XY.hxx>
 #include <Plate_Plate.hxx>
+#include <PLib.hxx>
+#include <TColgp_SequenceOfXY.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 class GeomPlate_MakeApprox_Eval : public AdvApp2Var_EvaluatorFunc2Var
 {

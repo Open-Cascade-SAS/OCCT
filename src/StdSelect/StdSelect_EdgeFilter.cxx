@@ -14,19 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect_EdgeFilter.ixx>
+
 #include <BRepAdaptor_Curve.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS.hxx>
-#include <TopAbs.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_EdgeFilter.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+
 /*#include <.hxx>
 #include <.hxx>
 #include <.hxx>
 #include <.hxx>
 #include <.hxx>
 */
-
 //==================================================
 // Function: 
 // Purpose :

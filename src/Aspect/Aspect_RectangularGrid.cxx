@@ -13,8 +13,11 @@
 
 // Modified	23/02/98 : FMN ; Remplacement PI par Standard_PI
 
-#include <Aspect_RectangularGrid.ixx>
-
+#include <Aspect_RectangularGrid.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_NullValue.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
 
 Aspect_RectangularGrid::Aspect_RectangularGrid(
                                const Quantity_Length aXStep,

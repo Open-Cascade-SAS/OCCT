@@ -24,20 +24,21 @@
 
 #define No_Standard_OutOfRange
 
-#include <Convert_CompPolynomialToPoles.ixx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <PLib.hxx>
+
 #include <BSplCLib.hxx>
+#include <Convert_CompPolynomialToPoles.hxx>
+#include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
     const Standard_Integer                 NumCurves,
     const Standard_Integer                 Continuity, 

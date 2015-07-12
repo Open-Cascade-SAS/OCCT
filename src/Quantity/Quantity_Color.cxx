@@ -14,30 +14,24 @@
 // commercial license or contractual agreement.
 
 //-Version	
-
 //-Design	Declaration des variables specifiques aux couleurs
-
 //-Warning	Une couleur est definie, soit en RGB, soit en HLS,
 //		soit par un nom predefini extrait des noms X11.
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for Test method
-#include <Standard_ErrorHandler.hxx>
-
 // for the class
-#include <Quantity_Color.ixx>
+
+#include <Quantity_Color.hxx>
 #include <Quantity_Color_1.hxx>
+#include <Quantity_ColorDefinitionError.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TCollection_AsciiString.hxx>
 
-// for Test method (suite et fin)
 #include <string.h>
-
+// for Test method (suite et fin)
 void call_hlsrgb(float h, float l, float s, float& r, float& g, float& b);
 void call_rgbhls(float r, float g, float b, float& h, float& l, float& s);
 

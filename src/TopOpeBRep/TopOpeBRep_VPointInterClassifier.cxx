@@ -14,23 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_VPointInterClassifier.ixx>
 
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-#include <TopoDS.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 #include <Standard_ProgramError.hxx>
-#include <BRepAdaptor_Surface.hxx>
-//modified by NIZHNY-MKK  Fri Jun 16 15:04:09 2000.BEGIN
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopOpeBRep_PointClassifier.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRep_VPointInterClassifier.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
+
+//modified by NIZHNY-MKK  Fri Jun 16 15:04:09 2000.BEGIN
 //modified by NIZHNY-MKK  Fri Jun 16 15:04:09 2000.END
-
-
 //modified by NIZHNY-MKK  Mon Jun 19 11:47:48 2000.BEGIN
 static TopAbs_State SlowClassifyOnBoundary(const gp_Pnt& thePointToClassify, 
 					   const gp_Pnt2d& thePoint2dToClassify,

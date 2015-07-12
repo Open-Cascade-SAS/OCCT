@@ -18,34 +18,41 @@
 // + (-1) selection mode token into account 
 // (SAMTECH specific)
 
-#include <DsgPrs_XYZAxisPresentation.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <AIS_Line.hxx>
-#include <Geom_Line.hxx>
-
-#include <AIS_PlaneTrihedron.ixx>
-
+#include <AIS_PlaneTrihedron.hxx>
+#include <AIS_Point.hxx>
+#include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_DatumPrs.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitivePoint.hxx>
+#include <DsgPrs_XYZAxisPresentation.hxx>
 #include <Geom_Axis1Placement.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_CartesianPoint.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_DatumAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <UnitsAPI.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Quantity_Color.hxx>
+#include <Select3D_SensitivePoint.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <UnitsAPI.hxx>
 
 void  ExtremityPoints(TColgp_Array1OfPnt& PP,const Handle(Geom_Plane)& myPlane,const Handle(Prs3d_Drawer)& myDrawer);
 

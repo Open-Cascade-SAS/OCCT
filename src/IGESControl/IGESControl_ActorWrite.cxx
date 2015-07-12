@@ -11,24 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESControl_ActorWrite.ixx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <Interface_Macros.hxx>
-#include <IGESData_IGESModel.hxx>
-#include <IGESData_IGESEntity.hxx>
 
 #include <BRepToIGES_BREntity.hxx>
 #include <BRepToIGESBRep_Entity.hxx>
-
-#include <Transfer_TransientMapper.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomToIGES_GeomCurve.hxx>
 #include <GeomToIGES_GeomSurface.hxx>
+#include <IGESControl_ActorWrite.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <Standard_Type.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_Finder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientMapper.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <Interface_Static.hxx>
 
 IGESControl_ActorWrite::IGESControl_ActorWrite ()  {  ModeTrans() = 0;  }
 

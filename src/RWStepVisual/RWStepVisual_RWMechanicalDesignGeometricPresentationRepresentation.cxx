@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
-
 
 RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation () {}
 

@@ -14,20 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Cylinder.ixx>
 
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <Precision.hxx>
+#include <BRepPrim_Cylinder.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Line.hxx>
-#include <Geom2d_Line.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : BRepPrim_Cylinder
 //purpose  : 
 //=======================================================================
-
 BRepPrim_Cylinder::BRepPrim_Cylinder(const gp_Ax2& Position, 
 				     const Standard_Real Radius,
 				     const Standard_Real Height) : 

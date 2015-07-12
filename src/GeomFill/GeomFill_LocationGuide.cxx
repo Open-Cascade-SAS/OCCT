@@ -14,49 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_LocationGuide.ixx>
-#include <gp.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_GTrsf.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Pnt2d.hxx>
 
-#include <math_Vector.hxx>
-#include <math_Gauss.hxx>
-#include <math_FunctionSetRoot.hxx>
-#include <Precision.hxx>
-
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Curve.hxx>
-
-#include <Adaptor3d_SurfaceOfRevolution.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HSurface.hxx>
-
-#include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-
-
-#include <GeomFill_FunctionGuide.ixx>
-#include <GeomFill_UniformSection.hxx>
-#include <GeomFill_SectionPlacement.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomLib.hxx>
+#include <Adaptor3d_SurfaceOfRevolution.hxx>
 #include <ElCLib.hxx>
-
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-
 #include <Extrema_ExtCS.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomFill_FunctionGuide.hxx>
+#include <GeomFill_LocationGuide.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_SectionPlacement.hxx>
+#include <GeomFill_TrihedronWithGuide.hxx>
+#include <GeomFill_UniformSection.hxx>
+#include <GeomLib.hxx>
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 #if DRAW
 static Standard_Integer Affich = 0;

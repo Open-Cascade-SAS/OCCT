@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_AlignedSurface3dElementCoordinateSystem.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_AlignedSurface3dElementCoordinateSystem.hxx>
+#include <StepFEA_FeaAxis2Placement3d.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_AlignedSurface3dElementCoordinateSystem
 //purpose  : 
 //=======================================================================
-
 StepFEA_AlignedSurface3dElementCoordinateSystem::StepFEA_AlignedSurface3dElementCoordinateSystem ()
 {
 }

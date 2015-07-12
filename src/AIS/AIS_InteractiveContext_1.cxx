@@ -14,36 +14,44 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_InteractiveContext.jxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <StdSelect_ViewerSelector3d.hxx>
-#include <AIS_Selection.hxx>
-#include <AIS_StatusOfDetection.hxx>
-#include <AIS_StatusOfPick.hxx>
 
 #include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
-#include <AIS_LocalContext.hxx>
 #include <AIS_GlobalStatus.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_LocalContext.hxx>
+#include <AIS_MapIteratorOfMapOfInteractive.hxx>
+#include <AIS_MapOfInteractive.hxx>
+#include <AIS_Selection.hxx>
 #include <AIS_Shape.hxx>
-
+#include <AIS_StatusOfDetection.hxx>
+#include <AIS_StatusOfPick.hxx>
 #include <Aspect_Grid.hxx>
-
+#include <Prs3d_BasicAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Quantity_Color.hxx>
+#include <SelectBasics_SensitiveEntity.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <SelectMgr_OrFilter.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_Transient.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <V3d_AmbientLight.hxx>
+#include <V3d_DirectionalLight.hxx>
 #include <V3d_Light.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
-#include <V3d_DirectionalLight.hxx>
-#include <V3d_AmbientLight.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <Visual3d_View.hxx>
-
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
-
-#include <Prs3d_Presentation.hxx>
-
-#include <AIS_MapOfInteractive.hxx>
-#include <AIS_MapIteratorOfMapOfInteractive.hxx>
-#include <AIS_InteractiveObject.hxx>
 
 //=======================================================================
 //function : MoveTo

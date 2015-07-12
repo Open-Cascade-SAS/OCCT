@@ -11,31 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_IGESReaderTool.ixx>
-#include <IGESData_IGESReaderData.hxx>
-#include <IGESData_ParamCursor.hxx>
-#include <Interface_ReaderModule.hxx>
-#include <IGESData_ReadWriteModule.hxx>
-#include <IGESData_IGESModel.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_UndefinedEntity.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_TransfEntity.hxx>
-#include <IGESData_LabelDisplayEntity.hxx>
-#include <IGESData_ColorEntity.hxx>
-#include <Interface_FileParameter.hxx>
-#include <Interface_ParamList.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
-#include <stdio.h>
 
+#include <IGESData_ColorEntity.hxx>
+#include <IGESData_DirPart.hxx>
+#include <IGESData_FileRecognizer.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESReaderTool.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESData_ReadWriteModule.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_UndefinedEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_FileParameter.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ParamList.hxx>
+#include <Interface_ReaderModule.hxx>
+#include <Message_Msg.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_HAsciiString.hxx>
+
+#include <stdio.h>
 // MGE 17/06/98
 // To use Msg class
-#include <Message_Msg.hxx>
-
-
 IGESData_IGESReaderTool::IGESData_IGESReaderTool
   (const Handle(IGESData_IGESReaderData)& reader,
    const Handle(IGESData_Protocol)& protocol)

@@ -11,9 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StlAPI.ixx>
-#include <StlAPI_Writer.hxx>
+
+#include <StlAPI.hxx>
 #include <StlAPI_Reader.hxx>
+#include <StlAPI_Writer.hxx>
+#include <TopoDS_Shape.hxx>
 
 StlAPI_ErrorStatus StlAPI::Write(const TopoDS_Shape& aShape,
 		   const Standard_CString aFile,

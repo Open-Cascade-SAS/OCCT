@@ -14,53 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_LinearForm.ixx>
-
-
-#include <BRepSweep_Prism.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Compound.hxx>
 
 #include <BRep_Builder.hxx>
-
-#include <LocOpe_BuildShape.hxx>
-#include <LocOpe.hxx>
-
-#include <gp_Ax1.hxx>
-#include <gp_Trsf.hxx>
-
-#include <BRepTools_TrsfModification.hxx>
-#include <BRepTools_Modifier.hxx>
-
 #include <BRep_Tool.hxx>
-
 #include <BRepLib_MakeEdge.hxx>
-
-#include <Geom_Line.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-
 #include <BRepLib_MakeVertex.hxx>
-
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-
+#include <BRepSweep_Prism.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <BRepTools_TrsfModification.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_BuildShape.hxx>
+#include <LocOpe_LinearForm.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-
-
-
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
-
 void LocOpe_LinearForm::Perform(const TopoDS_Shape& Base,
 				const gp_Vec& V,
 				const gp_Pnt& Pnt1,

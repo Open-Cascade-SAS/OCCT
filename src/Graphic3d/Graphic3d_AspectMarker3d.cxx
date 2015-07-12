@@ -13,10 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_AspectMarker3d.ixx>
-#include <TColStd_Array1OfByte.hxx>
-#include <Image_PixMap.hxx>
+
+#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_MarkerImage.hxx>
+#include <Image_PixMap.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfByte.hxx>
 
 // =======================================================================
 // function : Graphic3d_AspectMarker3d

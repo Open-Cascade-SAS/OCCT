@@ -14,9 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_Timer.ixx>
-#include <stdlib.h>
 
+#include <CDF_Timer.hxx>
+
+#include <stdlib.h>
 CDF_Timer::CDF_Timer() {
   myTimer.Start();
 }

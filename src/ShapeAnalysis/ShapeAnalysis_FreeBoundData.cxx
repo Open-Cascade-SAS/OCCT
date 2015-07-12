@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAnalysis_FreeBoundData.ixx>
-#include <TopTools_HSequenceOfShape.hxx>
+
+#include <ShapeAnalysis_FreeBoundData.hxx>
+#include <Standard_Type.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 //=======================================================================
 //function : ShapeAnalysis_FreeBoundData
 //purpose  : Empty constructor
 //=======================================================================
-
 ShapeAnalysis_FreeBoundData::ShapeAnalysis_FreeBoundData()
 {
   myNotches = new TopTools_HSequenceOfShape();

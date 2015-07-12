@@ -14,28 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeSurface.ixx>
+
+#include <Geom_BoundedSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <GeomToStep_MakeBoundedSurface.hxx>
+#include <GeomToStep_MakeElementarySurface.hxx>
+#include <GeomToStep_MakeSurface.hxx>
+#include <GeomToStep_MakeSweptSurface.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Logical.hxx>
 #include <StepGeom_BoundedSurface.hxx>
 #include <StepGeom_ElementarySurface.hxx>
-#include <StepGeom_SweptSurface.hxx>
-#include <GeomToStep_MakeSurface.hxx>
-#include <Geom_BoundedSurface.hxx>
-#include <GeomToStep_MakeBoundedSurface.hxx>
-#include <Geom_ElementarySurface.hxx>
-#include <GeomToStep_MakeElementarySurface.hxx>
-#include <Geom_SweptSurface.hxx>
-#include <GeomToStep_MakeSweptSurface.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Geom_OffsetSurface.hxx>
 #include <StepGeom_OffsetSurface.hxx>
-#include <StepData_Logical.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SweptSurface.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une Surface de prostep a partir d' une Surface de Geom
 //=============================================================================
-
 GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S)
 {
   done = Standard_True;

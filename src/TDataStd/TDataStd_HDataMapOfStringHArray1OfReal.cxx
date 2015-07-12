@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_HDataMapOfStringHArray1OfReal.ixx>
+
+#include <Standard_Type.hxx>
+#include <TDataStd_HDataMapOfStringHArray1OfReal.hxx>
 
 //=======================================================================
 //function : TDataStd_HDataMapOfStringHArray1OfReal

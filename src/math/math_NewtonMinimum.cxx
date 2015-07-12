@@ -18,13 +18,16 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
-//#endif
 
-#include <math_NewtonMinimum.ixx>
-#include <Precision.hxx>
+//#endif
 
 #include <math_Gauss.hxx>
 #include <math_Jacobi.hxx>
+#include <math_MultipleVarFunctionWithHessian.hxx>
+#include <math_NewtonMinimum.hxx>
+#include <Precision.hxx>
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : math_NewtonMinimum

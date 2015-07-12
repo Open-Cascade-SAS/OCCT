@@ -11,13 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_ViewSorter.ixx>
+
+#include <IFSelect_PacketList.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
 #include <IGESData_ViewKindEntity.hxx>
+#include <IGESSelect_ViewSorter.hxx>
 #include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 #define PourDrawing 404
 

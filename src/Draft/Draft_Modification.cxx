@@ -14,51 +14,53 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draft_Modification.ixx>
 
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-
-#include <Draft_DataMapIteratorOfDataMapOfFaceFaceInfo.hxx>
+#include <BRepTools.hxx>
 #include <Draft_DataMapIteratorOfDataMapOfEdgeEdgeInfo.hxx>
-#include <Draft_FaceInfo.hxx>
+#include <Draft_DataMapIteratorOfDataMapOfFaceFaceInfo.hxx>
 #include <Draft_EdgeInfo.hxx>
+#include <Draft_FaceInfo.hxx>
+#include <Draft_Modification.hxx>
 #include <Draft_VertexInfo.hxx>
-
-#include <StdFail_NotDone.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-
-#include <TopoDS.hxx>
+#include <Standard_Type.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TopExp.hxx>
-#include <GeomProjLib.hxx>
-
-#include <Precision.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : Draft_Modification
 //purpose  : 
 //=======================================================================
-
 Draft_Modification::Draft_Modification (const TopoDS_Shape& S) :
        myComp(Standard_False),myShape(S)
 {

@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection.ixx>
+
+#include <TCollection.hxx>
 
 // The array of prime numbers used as consequtive steps for 
 // size of array of buckets in the map.
@@ -26,7 +27,6 @@
 // memory overhead in that case is only ~15% as compared with total size of
 // all auxiliary data structures (each map node takes ~24 bytes), 
 // and this proves to pay off in performance (see OCC13189).
-
 #define NB_PRIMES 12
 static const Standard_Integer Primes[NB_PRIMES+1] = {
      101,

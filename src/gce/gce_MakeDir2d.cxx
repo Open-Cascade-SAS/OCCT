@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeDir2d.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <gce_MakeDir2d.hxx>
 #include <gp.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation d une direction 2d (Dir2d) de gp a partir de 2 Pnt2d de gp. +
 //=========================================================================
-
 gce_MakeDir2d::gce_MakeDir2d(const gp_Pnt2d& P1,
 			     const gp_Pnt2d& P2)
 {

@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignActualDateAndTimeAssignment.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepAP214_AutoDesignActualDateAndTimeAssignment.hxx>
+#include <StepAP214_AutoDesignDateAndTimeItem.hxx>
+#include <StepBasic_DateAndTime.hxx>
+#include <StepBasic_DateTimeRole.hxx>
 
 StepAP214_AutoDesignActualDateAndTimeAssignment::StepAP214_AutoDesignActualDateAndTimeAssignment ()  {}
 

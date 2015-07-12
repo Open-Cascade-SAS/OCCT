@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_ElementGroup.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_ElementGroup.hxx>
+#include <StepFEA_FeaModel.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_ElementGroup
 //purpose  : 
 //=======================================================================
-
 StepFEA_ElementGroup::StepFEA_ElementGroup ()
 {
 }

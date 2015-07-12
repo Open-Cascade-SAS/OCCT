@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_FunctionTanObl.ixx>
-
-#include <gp_Vec2d.hxx>
-#include <gp_Pnt2d.hxx>
 
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_FunctionTanObl.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
 Geom2dGcc_FunctionTanObl::
 Geom2dGcc_FunctionTanObl(const Geom2dAdaptor_Curve& C,

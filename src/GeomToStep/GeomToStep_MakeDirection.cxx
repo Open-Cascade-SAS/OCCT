@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeDirection.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <Geom2d_Direction.hxx>
+#include <Geom_Direction.hxx>
+#include <GeomToStep_MakeDirection.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
-#include <Geom_Direction.hxx>
-#include <Geom2d_Direction.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_Direction.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=============================================================================
 // Creation d' une direction de prostep a partir d' une Dir de gp
 //=============================================================================
-
 GeomToStep_MakeDirection::GeomToStep_MakeDirection( const gp_Dir& D)
 {
   Handle(StepGeom_Direction) Dir = new StepGeom_Direction;

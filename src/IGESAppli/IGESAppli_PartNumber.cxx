@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_PartNumber.ixx>
-
+#include <IGESAppli_PartNumber.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_PartNumber::IGESAppli_PartNumber ()    {  }
 

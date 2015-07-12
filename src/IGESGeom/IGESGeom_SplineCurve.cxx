@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_SplineCurve.ixx>
-
+#include <IGESGeom_SplineCurve.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_SplineCurve::IGESGeom_SplineCurve ()    {  }
 

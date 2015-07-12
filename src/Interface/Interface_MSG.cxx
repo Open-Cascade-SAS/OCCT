@@ -11,23 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
 
-
-#include <Interface_MSG.ixx>
-#include <TCollection_HAsciiString.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_DictionaryOfInteger.hxx>
+#include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Interface_MSG.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
-
 #include <Standard_DomainError.hxx>
+#include <Standard_Stream.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfHAsciiString.hxx>
+
 #include <stdio.h>
-
-
 static Handle(Dico_DictionaryOfTransient) thedic;
 static Handle(Dico_DictionaryOfInteger)   thelist;
 static Handle(TColStd_HSequenceOfHAsciiString) thedup;

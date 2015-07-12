@@ -14,37 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_BuildShape.ixx>
 
-
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TColStd_MapOfInteger.hxx>
-
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-#include <gp_Pnt.hxx>
-
+#include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-
-#include <Standard_ConstructionError.hxx>
-
-
-#include <TopExp.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
+#include <gp_Pnt.hxx>
+#include <LocOpe_BuildShape.hxx>
 #include <Precision.hxx>
-
+#include <Standard_ConstructionError.hxx>
+#include <TColStd_MapIteratorOfMapOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static void Add(const Standard_Integer,
 		TColStd_MapOfInteger&,

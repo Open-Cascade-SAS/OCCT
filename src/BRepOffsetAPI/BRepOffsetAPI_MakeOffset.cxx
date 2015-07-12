@@ -14,28 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_MakeOffset.ixx>
-#include <BRepBuilderAPI_MakeFace.hxx>
+
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAlgo_FaceRestrictor.hxx>
-#include <Extrema_ExtPS.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepFill_OffsetWire.hxx>
+#include <BRepAlgo_FaceRestrictor.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepFill_ListIteratorOfListOfOffsetWire.hxx>
+#include <BRepFill_OffsetWire.hxx>
+#include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
-#include <gp_Pnt2d.hxx>
+#include <Extrema_ExtPS.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx> 
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Wire.hxx>
-
 #include <StdFail_NotDone.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+
 #ifdef OCCT_DEBUG
 #include <BRepTools.hxx>
 static Standard_Boolean AffichSpine = Standard_False;

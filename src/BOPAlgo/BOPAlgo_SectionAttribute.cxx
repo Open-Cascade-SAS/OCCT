@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_SectionAttribute.ixx>
+
+#include <BOPAlgo_SectionAttribute.hxx>
+
 //=======================================================================
 // function: BOPAlgo_SectionAttribute
 // purpose: 

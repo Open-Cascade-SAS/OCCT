@@ -13,22 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_Shape.ixx>
+
+#include <BRep_Builder.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd.hxx>
 #include <TDataXtd.hxx>
+#include <TDataXtd_Shape.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS_Solid.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TNaming.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Solid.hxx>
 
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean TDataXtd_Shape::Find (const TDF_Label& current,
 				      Handle(TDataXtd_Shape)& S) 
 {  

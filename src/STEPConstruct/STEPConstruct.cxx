@@ -13,24 +13,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct.ixx>
-#include <TransferBRep.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <Transfer_Binder.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
 
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
+#include <STEPConstruct.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 
 //=======================================================================
 //function : FindEntity
 //purpose  : 
 //=======================================================================
-
 Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity (const Handle(Transfer_FinderProcess) &FinderProcess,
 							       const TopoDS_Shape &Shape)
 {

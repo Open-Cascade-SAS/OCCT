@@ -14,27 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_OneAxis.ixx>
 
-#include <Precision.hxx>
-
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <BRepPrim_Builder.hxx>
 #include <BRepPrim_Direction.hxx>
-
-#include <gp_Pln.hxx>
-#include <gp_Lin2d.hxx>
+#include <BRepPrim_OneAxis.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-
+#include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 #undef Standard_True
 #undef Standard_False

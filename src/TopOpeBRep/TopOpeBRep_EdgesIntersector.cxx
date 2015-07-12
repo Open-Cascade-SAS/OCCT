@@ -19,34 +19,42 @@
 #include <TopOpeBRepTool_DRAW.hxx>
 #endif
 
-#include <TopOpeBRep_EdgesIntersector.ixx>
 
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <Precision.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Circ2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <TopLoc_Location.hxx>
-#include <Standard_Failure.hxx>
-#include <OSD_Chronometer.hxx>
-#include <TopOpeBRepTool_CurveTool.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <GeomTools_CurveSet.hxx>
 #include <GeomTools_Curve2dSet.hxx>
+#include <GeomTools_CurveSet.hxx>
 #include <GeomTools_SurfaceSet.hxx>
-#include <TopOpeBRepTool_2d.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
-#include <TopOpeBRepTool_tol.hxx>
-#include <TopOpeBRep_Point2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
+#include <OSD_Chronometer.hxx>
+#include <Precision.hxx>
+#include <Standard_Failure.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopOpeBRep_define.hxx>
+#include <TopOpeBRep_EdgesIntersector.hxx>
+#include <TopOpeBRep_Point2d.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
+#include <TopOpeBRepTool_2d.hxx>
+#include <TopOpeBRepTool_CurveTool.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
+#include <TopOpeBRepTool_tol.hxx>
+#include <TopOpeBRepTool_TOOL.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceNYI();

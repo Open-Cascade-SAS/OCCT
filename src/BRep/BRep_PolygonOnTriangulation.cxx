@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_PolygonOnTriangulation.ixx>
 
-
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_PolygonOnTriangulation.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_PolygonOnTriangulation
 //purpose  : 
 //=======================================================================
-
 BRep_PolygonOnTriangulation::BRep_PolygonOnTriangulation
 (const Handle(Poly_PolygonOnTriangulation)& P, 
  const Handle(Poly_Triangulation)&          T,

@@ -12,8 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <math_FunctionSet.hxx>
 #include <Standard_Integer.hxx>
-#include <math_FunctionSet.ixx>
 
 //=======================================================================
 //function : ~math_FunctionSet

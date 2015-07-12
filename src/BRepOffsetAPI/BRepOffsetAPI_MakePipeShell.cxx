@@ -14,11 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffsetAPI_MakePipeShell.ixx>
 
+#include <BRepFill_PipeShell.hxx>
+#include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <GeomFill_PipeError.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <Law_Function.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function :

@@ -16,16 +16,17 @@
 
 //=======================================================================
 
-#include <StlMesh_MeshTriangle.ixx>
-#include <Precision.hxx>
 #include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_Type.hxx>
+#include <StlMesh_MeshTriangle.hxx>
 
 //=======================================================================
 //function : StlMesh_MeshTriangle
 //design   : 
 //warning  : 
 //=======================================================================
-
 StlMesh_MeshTriangle::StlMesh_MeshTriangle()
      : MyV1 (0), MyV2 (0), MyV3 (0), MyXn (0.0), MyYn (0.0), MyZn (0.0) { }
 

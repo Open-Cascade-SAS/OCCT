@@ -11,14 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect.ixx>
-#include <IFSelect_SessionFile.hxx>
 
+#include <IFSelect.hxx>
+#include <IFSelect_SessionFile.hxx>
+#include <IFSelect_WorkSession.hxx>
 
 //  Methodes de confort, evitant de devoir connaitre SessionFile, qui est un
 //  Tool non destine a l export (en particulier, pas un Handle)
-
-
 Standard_Boolean  IFSelect::SaveSession
   (const Handle(IFSelect_WorkSession)& WS, const Standard_CString file)
 {

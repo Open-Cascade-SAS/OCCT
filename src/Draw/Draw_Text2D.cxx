@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Text2D.ixx>
 
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Text2D.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Text2D
 //purpose  : 
 //=======================================================================
-
 Draw_Text2D::Draw_Text2D(const gp_Pnt2d& p, const Standard_CString T, 
 			 const Draw_Color& col) :
        myPoint(p), myColor(col), myText(T), mymoveX(0), mymoveY(0)

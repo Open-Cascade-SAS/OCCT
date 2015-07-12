@@ -11,12 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_BezierCurveAndRationalBSplineCurve.ixx>
 
+#include <Standard_Type.hxx>
 #include <StepGeom_BezierCurve.hxx>
-
+#include <StepGeom_BezierCurveAndRationalBSplineCurve.hxx>
 #include <StepGeom_RationalBSplineCurve.hxx>
-
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_BezierCurveAndRationalBSplineCurve::StepGeom_BezierCurveAndRationalBSplineCurve ()  {}
 

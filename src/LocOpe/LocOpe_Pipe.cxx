@@ -14,43 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe_Pipe.ixx>
-
-#include <LocOpe.hxx>
-
-#include <LocOpe_BuildShape.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-#include <gp_Pln.hxx>
-
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
 #include <BSplCLib.hxx>
-
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomConvert.hxx>
+#include <gp_Pln.hxx>
+#include <LocOpe.hxx>
+#include <LocOpe_BuildShape.hxx>
+#include <LocOpe_Pipe.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 static TopAbs_Orientation Orientation(const TopoDS_Shape&,
 				      const TopoDS_Shape&);

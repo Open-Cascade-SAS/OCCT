@@ -15,14 +15,15 @@
 
 //AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
 
-#include <AppStdL_Application.ixx>
+#include <AppStdL_Application.hxx>
 #include <CDM_COutMessageDriver.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : AppStdL_Application
 //purpose  : 
 //=======================================================================
-
 AppStdL_Application::AppStdL_Application()
 {
   myMessageDriver = new CDM_COutMessageDriver;

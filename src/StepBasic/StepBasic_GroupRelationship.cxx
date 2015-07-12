@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_GroupRelationship.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_Group.hxx>
+#include <StepBasic_GroupRelationship.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_GroupRelationship
 //purpose  : 
 //=======================================================================
-
 StepBasic_GroupRelationship::StepBasic_GroupRelationship ()
 {
   defDescription = Standard_False;

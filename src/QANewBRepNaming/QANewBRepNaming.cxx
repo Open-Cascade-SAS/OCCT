@@ -13,22 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming.ixx>
 
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TDF_Label.hxx>
+#include <QANewBRepNaming.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_Label.hxx>
 #include <TNaming.hxx>
-#include <TNaming_Iterator.hxx>
 #include <TNaming_Builder.hxx>
+#include <TNaming_Iterator.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : CleanStructure
 //purpose  : 
 //=======================================================================
-
 void QANewBRepNaming::CleanStructure(const TDF_Label& theLabel) {
   
   TopTools_ListOfShape Olds;

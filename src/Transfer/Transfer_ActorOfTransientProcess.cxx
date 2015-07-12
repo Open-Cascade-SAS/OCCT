@@ -11,9 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_ActorOfTransientProcess.ixx>
-#include <Transfer_TransientProcess.hxx>
+
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_ProcessForTransient.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess ()    {  }
 

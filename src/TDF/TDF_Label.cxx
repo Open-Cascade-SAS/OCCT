@@ -13,27 +13,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDF_Label.ixx>
 
+#include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_ImmutableObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
+#include <TDF_IDFilter.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelMapHasher.hxx>
 #include <TDF_LabelNode.hxx>
 #include <TDF_LabelNodePtr.hxx>
 #include <TDF_Tool.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Standard_ImmutableObject.hxx>
-
 
 // Attribute methods ++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 //=======================================================================
 //function : Imported
 //purpose  : Sets imported and all its descendants.
 //=======================================================================
-
 void TDF_Label::Imported(const Standard_Boolean aStatus) const
 {
   if (IsNull()) Standard_NullObject::Raise("A null Label has no status.");

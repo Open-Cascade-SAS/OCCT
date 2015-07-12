@@ -14,22 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BiTgte_CurveOnEdge.ixx>
 
+#include <Adaptor3d_HCurve.hxx>
+#include <BiTgte_CurveOnEdge.hxx>
 #include <BiTgte_HCurveOnEdge.hxx>
 #include <BRep_Tool.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Standard_NotImplemented.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
-
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : BiTgte_CurveOnEdge
 //purpose  : 
 //======================================================================
-
 BiTgte_CurveOnEdge::BiTgte_CurveOnEdge()
 : myType(GeomAbs_OtherCurve)
 {

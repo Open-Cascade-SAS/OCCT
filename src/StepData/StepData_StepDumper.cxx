@@ -11,16 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_StepDumper.ixx>
-#include <StepData_ReadWriteModule.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Interface_GeneralModule.hxx>
-#include <Interface_EntityIterator.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <stdio.h>
 
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_InterfaceMismatch.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_ReadWriteModule.hxx>
+#include <StepData_StepDumper.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
+
+#include <stdio.h>
 StepData_StepDumper::StepData_StepDumper
   (const Handle(StepData_StepModel)& amodel,
    const Handle(StepData_Protocol)& protocol,

@@ -14,41 +14,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepCheck_Vertex.ixx>
 
-#include <BRepCheck_ListOfStatus.hxx>
-
-#include <BRep_TVertex.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_ListOfPointRepresentation.hxx>
+#include <BRep_PointRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
-
-#include <BRep_PointRepresentation.hxx>
-#include <BRep_ListOfPointRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-
 #include <BRep_Tool.hxx>
-
-#include <gp_Pnt2d.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepCheck.hxx>
+#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Vertex.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-
+#include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-
-#include <BRepCheck.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : BRepCheck_Vertex
 //purpose  : 
 //=======================================================================
-
 BRepCheck_Vertex::BRepCheck_Vertex(const TopoDS_Vertex& V)
 {
   Init(V);

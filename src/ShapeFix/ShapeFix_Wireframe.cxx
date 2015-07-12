@@ -14,52 +14,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeFix_Wireframe.ixx>
 
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
-
-//#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
-#include <ShapeBuild_ReShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <GeomAPI.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <Message_Msg.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_TransferParametersProj.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeConstruct.hxx>
+#include <ShapeConstruct_Curve.hxx>
 #include <ShapeFix.hxx>
 #include <ShapeFix_Edge.hxx>
-#include <ShapeConstruct_Curve.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <ShapeFix_Wireframe.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <gp_Pnt.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <BRep_Tool.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <gp_Pln.hxx>
-#include <GeomAPI.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <ShapeConstruct.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <ShapeAnalysis_TransferParametersProj.hxx>
-#include <Message_Msg.hxx>
 
+//#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 //=======================================================================
 //function : ShapeFix_Wireframe
 //purpose  : 
 //=======================================================================
-
 ShapeFix_Wireframe::ShapeFix_Wireframe()
 {
   ClearStatuses();

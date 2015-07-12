@@ -13,18 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMNaming_NamedShapeDriver.ixx>
-#include <Standard_DomainError.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Evolution.hxx>
-#include <TNaming_Builder.hxx>
-#include <TDF_Label.hxx>
-#include <TNaming_Iterator.hxx>
-#include <CDM_MessageDriver.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TCollection_AsciiString.hxx>
+
+#include <BinMNaming_NamedShapeDriver.hxx>
+#include <BinObjMgt_Persistent.hxx>
+#include <BinTools_LocationSet.hxx>
 #include <BinTools_ShapeSet.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_Evolution.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopoDS_Shape.hxx>
 
 #define SHAPESET "SHAPE_SECTION"
 #define FORMAT_NUMBER 3

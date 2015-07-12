@@ -11,10 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_FontSelect.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepVisual_PreDefinedTextFont.hxx>
+#include <Standard_Transient.hxx>
 #include <StepVisual_ExternallyDefinedTextFont.hxx>
+#include <StepVisual_FontSelect.hxx>
+#include <StepVisual_PreDefinedTextFont.hxx>
 
 StepVisual_FontSelect::StepVisual_FontSelect () {  }
 

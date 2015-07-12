@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_WFPoleSurface.ixx>
 
-#include <Graphic3d_Group.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <Prs3d_IsoAspect.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <StdPrs_WFPoleSurface.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 
 static void AddPoles(const Handle (Prs3d_Presentation)& aPresentation,
                      const TColgp_Array2OfPnt&          A,

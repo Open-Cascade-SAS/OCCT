@@ -11,13 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_Vars.ixx>
-#include <Geom_CartesianPoint.hxx>
+
+#include <Dico_DictionaryOfTransient.hxx>
 #include <Geom2d_CartesianPoint.hxx>
-#include <TopoDS_HShape.hxx>
-
+#include <Geom2d_Curve.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_HShape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <XSControl_Vars.hxx>
 
 XSControl_Vars::XSControl_Vars  ()
     {  thevars = new Dico_DictionaryOfTransient;  }

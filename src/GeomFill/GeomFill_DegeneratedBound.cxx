@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_DegeneratedBound.ixx>
+
+#include <GeomFill_DegeneratedBound.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomFill_DegeneratedBound
 //purpose  : 
 //=======================================================================
-
 GeomFill_DegeneratedBound::GeomFill_DegeneratedBound
 (const gp_Pnt& Point, 
  const Standard_Real First, 

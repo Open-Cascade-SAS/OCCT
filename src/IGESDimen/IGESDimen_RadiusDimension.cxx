@@ -16,9 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_RadiusDimension.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <IGESDimen_RadiusDimension.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_RadiusDimension::IGESDimen_RadiusDimension ()    {  }
 

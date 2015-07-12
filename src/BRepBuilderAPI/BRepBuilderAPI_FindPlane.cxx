@@ -14,35 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_FindPlane.ixx>
 
-#include <Precision.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pln.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TopoDS.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
 #include <BRep_Tool.hxx>
-
-#include <Geom_Line.hxx> 
-#include <Geom_Conic.hxx>
-#include <Geom_Circle.hxx> 
-#include <Geom_Ellipse.hxx> 
-#include <Geom_Parabola.hxx> 
-#include <Geom_Hyperbola.hxx> 
+#include <BRepBuilderAPI_FindPlane.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
-
-
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Plane.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_FindPlane
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_FindPlane::BRepBuilderAPI_FindPlane() 
 {
 }

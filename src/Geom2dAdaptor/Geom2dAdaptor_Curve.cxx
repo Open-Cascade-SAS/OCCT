@@ -21,38 +21,47 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 
-#include <Geom2dAdaptor_Curve.ixx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+
 #include <Adaptor2d_HCurve2d.hxx>
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Precision.hxx>
-#include <gp.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
+#include <CSLib_Offset.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Parabola.hxx>
 #include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_UndefinedValue.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
-#include <CSLib_Offset.hxx>
-//#include <Geom2dConvert_BSplineCurveKnotSplitting.hxx>
-
-#include <Standard_OutOfRange.hxx>
+#include <Geom2d_UndefinedValue.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_NullObject.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
+//#include <Geom2dConvert_BSplineCurveKnotSplitting.hxx>
 #define myBspl Handle(Geom2d_BSplineCurve)::DownCast (myCurve)
 #define PosTol Precision::PConfusion()/2
 

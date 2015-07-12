@@ -14,18 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_GenLocateExtCS.ixx>
 
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Extrema_FuncExtCS.hxx>
-#include <math_Vector.hxx>
+#include <Extrema_GenLocateExtCS.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : Extrema_GenLocateExtCS
 //purpose  : 
 //=======================================================================
-
 Extrema_GenLocateExtCS::Extrema_GenLocateExtCS()
 {
 }

@@ -13,19 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_IntPackedMapDriver.ixx>
-#include <XmlObjMgt.hxx>
-#include <XmlObjMgt_RRelocationTable.hxx>
-#include <XmlObjMgt_SRelocationTable.hxx>
+
 #include <CDM_MessageDriver.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <XmlMDF_ADriver.hxx>
-#include <TDF_Attribute.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_IntPackedMap.hxx>
-#include <NCollection_LocalArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <XmlMDataStd.hxx>
+#include <XmlMDataStd_IntPackedMapDriver.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
+#include <XmlObjMgt_RRelocationTable.hxx>
+#include <XmlObjMgt_SRelocationTable.hxx>
 
 IMPLEMENT_DOMSTRING (IntPackedMapSize, "mapsize")
 IMPLEMENT_DOMSTRING (IsDeltaOn,        "delta")

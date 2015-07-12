@@ -14,19 +14,20 @@
 
 #ifndef WNT
 
-#include <Standard_NullObject.hxx>
+
+#include <OSD_Environment.hxx>
+#include <OSD_OSDError.hxx>
+#include <OSD_WhoAmI.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Mutex.hxx>
-#include <OSD_Environment.ixx>
-#include <OSD_WhoAmI.hxx>
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <Standard_NullObject.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <errno.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 static const OSD_WhoAmI Iam = OSD_WEnvironment;
 
 // ----------------------------------------------------------------------

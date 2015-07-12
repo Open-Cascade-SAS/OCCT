@@ -16,54 +16,44 @@
 // 23.02.99 abv: method ShapeFix::FillFace() removed
 // 02.03.99 cky/rln: command edgeregul only accepts tolerance
 // 15.06.99 abv/pdn: command comptol added (from S4030)
-#include <SWDRAW_ShapeTool.ixx>
-
-#include <Draw.hxx>
-#include <DBRep.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <BRepBuilderAPI.hxx>
-
-// + edge, face
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-
-#include <BRepTools_WireExplorer.hxx>
-#include <TopoDS_Iterator.hxx>
 
 #include <BRep_Builder.hxx>
-
-
-
-// + edgeregul/updtol
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib.hxx>
-
-// + fillface
-#include <Geom_TrimmedCurve.hxx>
-#include <stdio.h>
-#include <Precision.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
 #include <DrawTrSurf.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <SWDRAW_ShapeTool.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
-
+#include <stdio.h>
+// + edge, face
+// + edgeregul/updtol
+// + fillface
 static Standard_Integer XSHAPE_edge
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {

@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_BSplineCurveWithKnots.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_BSplineCurveWithKnots.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_BSplineCurveWithKnots::StepGeom_BSplineCurveWithKnots ()  {}
 

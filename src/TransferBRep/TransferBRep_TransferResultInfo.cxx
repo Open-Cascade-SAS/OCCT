@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TransferBRep_TransferResultInfo.ixx>
+
+#include <Standard_Type.hxx>
+#include <TransferBRep_TransferResultInfo.hxx>
 
 //=======================================================================
 //function : TransferBRep_TransferResultInfo
 //purpose  : 
 //=======================================================================
-
 TransferBRep_TransferResultInfo::TransferBRep_TransferResultInfo()
 {
   Clear();

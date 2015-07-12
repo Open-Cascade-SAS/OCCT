@@ -14,13 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDocStd_Owner.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDocStd_Document.hxx>
+#include <TDocStd_Owner.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDocStd_Owner::GetID() 
 { 
   static Standard_GUID TDocStd_OwnerID ("2a96b617-ec8b-11d0-bee7-080009dc3333");

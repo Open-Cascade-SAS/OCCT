@@ -14,7 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBlend_AppFuncRst.ixx>
+
+#include <Blend_AppFunction.hxx>
+#include <Blend_Point.hxx>
+#include <Blend_SurfRstFunction.hxx>
+#include <BRepBlend_AppFuncRst.hxx>
+#include <BRepBlend_Line.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 BRepBlend_AppFuncRst::BRepBlend_AppFuncRst (Handle(BRepBlend_Line)& Line,
 					    Blend_SurfRstFunction& Func,

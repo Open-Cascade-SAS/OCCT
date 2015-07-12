@@ -14,77 +14,86 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFi3d_Builder.jxx>
-#include <ChFi3d.hxx>
-#include <ChFi3d_Builder_0.hxx>
 
-#include <Precision.hxx>
-
-#include <Standard_Failure.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <StdFail_NotDone.hxx>
-
-
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <GeomLib.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_BoundedCurve.hxx>
-
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-
+#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HCurveOnSurface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <AppBlend_Approx.hxx>
+#include <Blend_CurvPointFuncInv.hxx>
+#include <Blend_FuncInv.hxx>
+#include <Blend_Function.hxx>
+#include <Blend_RstRstFunction.hxx>
+#include <Blend_SurfCurvFuncInv.hxx>
+#include <Blend_SurfPointFuncInv.hxx>
+#include <Blend_SurfRstFunction.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
-
-#include <BRep_Tool.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <TopAbs.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-
-#include <ChFiDS_HData.hxx>
-#include <ChFiDS_SurfData.hxx>
+#include <BRepBlend_Line.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <ChFi3d.hxx>
+#include <ChFi3d_Builder.hxx>
+#include <ChFi3d_Builder_0.hxx>
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
-#include <ChFiDS_SequenceOfSurfData.hxx>
-#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_HData.hxx>
+#include <ChFiDS_HElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-
+#include <ChFiDS_SequenceOfSurfData.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomLib.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TopAbs.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_CurvePointInterference.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
+#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static void Reduce(const Standard_Real& p1,
 		   const Standard_Real& p2,

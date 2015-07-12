@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepBasic_DocumentProductEquivalence.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_DocumentProductEquivalence.hxx>
 
 //=======================================================================
 //function : StepBasic_DocumentProductEquivalence
 //purpose  : 
 //=======================================================================
-
 StepBasic_DocumentProductEquivalence::StepBasic_DocumentProductEquivalence ()
 {
 }

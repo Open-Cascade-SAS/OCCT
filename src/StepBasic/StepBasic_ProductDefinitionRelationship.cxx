@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepBasic_ProductDefinitionRelationship.ixx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_ProductDefinitionRelationship
 //purpose  : 
 //=======================================================================
-
 StepBasic_ProductDefinitionRelationship::StepBasic_ProductDefinitionRelationship ()
 {
   defDescription = Standard_False;

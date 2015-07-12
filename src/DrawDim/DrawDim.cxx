@@ -14,25 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim.ixx>
 
-#include <Draw_Text3D.hxx>
-#include <gp_Pnt.hxx>  
-#include <TCollection_AsciiString.hxx>
-#include <Geom_Curve.hxx>
 #include <BRep_Tool.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp_Explorer.hxx> 
-#include <TopoDS.hxx>
-#include <TopAbs.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Plane.hxx>
-#include <ElCLib.hxx>
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
+#include <Draw_Text3D.hxx>
+#include <DrawDim.hxx>
+#include <ElCLib.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+
 #ifdef WNT
 Standard_IMPORT Draw_Viewer dout;
 #endif

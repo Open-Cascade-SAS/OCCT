@@ -11,15 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_CounterOfLevelNumber.ixx>
+
+#include <Dico_DictionaryOfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
-#include <Dico_DictionaryOfInteger.hxx>
+#include <IGESSelect_CounterOfLevelNumber.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <stdio.h>
-
 #include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
+#include <stdio.h>
 IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber
   (const Standard_Boolean withmap, const Standard_Boolean withlist)
     : IFSelect_SignCounter (withmap,withlist)

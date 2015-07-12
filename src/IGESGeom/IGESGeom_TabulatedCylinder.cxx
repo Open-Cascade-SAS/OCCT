@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_TabulatedCylinder.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_TabulatedCylinder.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_TabulatedCylinder::IGESGeom_TabulatedCylinder ()    {  }
 

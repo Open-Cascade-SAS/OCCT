@@ -11,9 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_BitMap.ixx>
-#include <TCollection_AsciiString.hxx>
+
+#include <Interface_BitMap.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Interface_BitMap::Interface_BitMap()
 {

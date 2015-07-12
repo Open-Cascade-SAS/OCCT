@@ -14,15 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Line.ixx>
 
-
+#include <GeomFill_Line.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : GeomFill_Line
 //purpose  : 
 //=======================================================================
-
 GeomFill_Line::GeomFill_Line()
 {
   myNbPoints = 0;

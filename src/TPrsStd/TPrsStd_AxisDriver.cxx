@@ -11,20 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TPrsStd_AxisDriver.ixx>
 
-#include <TDF_Label.hxx>
-#include <TDataXtd_Axis.hxx>
-#include <TDataXtd_Geometry.hxx>
 #include <AIS_Axis.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <Geom_Line.hxx>
 #include <gp_Lin.hxx>
-#include <TNaming_Tool.hxx>
+#include <Standard_Type.hxx>
+#include <TDataXtd_Axis.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDF_Label.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
 #include <TopoDS_Shape.hxx>
-
-
+#include <TPrsStd_AxisDriver.hxx>
 
 //=======================================================================
 //function :

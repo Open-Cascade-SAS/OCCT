@@ -16,114 +16,103 @@
 //abv,gka 05.04.99: S4136: change parameters and update units
 // PTV    22.08.2002 OCC609 transfer solo vertices into step file.
 // PTV    16.09.2002 OCC725 transfer compound of vertices into one geometrical curve set.
-#include <STEPControl_ActorWrite.ixx>
-#include <STEPControl_StepModelType.hxx>
 
-//  Transfer
-#include <Transfer_SimpleBinderOfTransient.hxx>
-#include <gp_Ax2.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepGeom_Point.hxx>
-#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
-
-#include <STEPConstruct_Part.hxx>
+#include <gp_Ax2.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_MSG.hxx>
+#include <Interface_Static.hxx>
+#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <OSD_Timer.hxx>
+#include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <ShapeExtend_Explorer.hxx>
+#include <Standard_Type.hxx>
+#include <StepBasic_ApplicationProtocolDefinition.hxx>
+#include <StepBasic_HArray1OfProduct.hxx>
+#include <STEPConstruct_AP203Context.hxx>
 #include <STEPConstruct_Assembly.hxx>
 #include <STEPConstruct_ContextTool.hxx>
+#include <STEPConstruct_Part.hxx>
 #include <STEPConstruct_UnitContext.hxx>
-
-//  TransferShape
+#include <STEPControl_ActorWrite.hxx>
+#include <STEPControl_StepModelType.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepGeom_Point.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_ShapeRepresentationRelationship.hxx>
+#include <StepShape_AdvancedBrepShapeRepresentation.hxx>
+#include <StepShape_BrepWithVoids.hxx>
+#include <StepShape_FacetedBrep.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
+#include <StepShape_FacetedBrepShapeRepresentation.hxx>
+#include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
+#include <StepShape_GeometricCurveSet.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <StepShape_HArray1OfGeometricSetSelect.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
+#include <StepShape_NonManifoldSurfaceShapeRepresentation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <StepShape_VertexPoint.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Builder.hxx>
 #include <TopoDSToStep_FacetedTool.hxx>
-#include <TopoDSToStep_Tool.hxx>
-#include <TopoDSToStep_MakeManifoldSolidBrep.hxx>
 #include <TopoDSToStep_MakeBrepWithVoids.hxx>
 #include <TopoDSToStep_MakeFacetedBrep.hxx>
 #include <TopoDSToStep_MakeFacetedBrepAndBrepWithVoids.hxx>
 #include <TopoDSToStep_MakeGeometricCurveSet.hxx>
+#include <TopoDSToStep_MakeManifoldSolidBrep.hxx>
 #include <TopoDSToStep_MakeShellBasedSurfaceModel.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
-#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
-#include <StepShape_FacetedBrep.hxx>
-#include <StepShape_GeometricCurveSet.hxx>
-#include <StepShape_ShellBasedSurfaceModel.hxx>
-#include <StepShape_ManifoldSolidBrep.hxx>
-#include <StepShape_BrepWithVoids.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
-#include <StepRepr_GlobalUnitAssignedContext.hxx>
-#include <StepShape_AdvancedBrepShapeRepresentation.hxx>
-#include <StepShape_FacetedBrepShapeRepresentation.hxx>
-#include <StepShape_TopologicalRepresentationItem.hxx>
-#include <StepShape_ManifoldSurfaceShapeRepresentation.hxx>
-#include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
-#include <StepBasic_ApplicationProtocolDefinition.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <Transfer_TransientProcess.hxx>
+#include <TopoDSToStep_MakeStepVertex.hxx>
+#include <TopoDSToStep_Tool.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_Finder.hxx>
 #include <Transfer_FinderProcess.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
+#include <Transfer_SequenceOfBinder.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
-#include <OSD_Timer.hxx>
-
-#include <ShapeExtend_Explorer.hxx>  
-#include <ShapeAnalysis_ShapeTolerance.hxx>
-#include <Interface_MSG.hxx>
-#include <Interface_Static.hxx>
-
-#include <Interface_Macros.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-
-#include <BRep_Tool.hxx>
-#include <TopoDS_Iterator.hxx> //:d6
+#include <TransferBRep_ShapeMapper.hxx>
 #include <UnitsMethods.hxx>
-#include <STEPConstruct_AP203Context.hxx>
-#include <BRepTools_Modifier.hxx>
-
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <StepRepr_ShapeRepresentationRelationship.hxx>
-#include <Transfer_SequenceOfBinder.hxx>
 
-#include <TopoDSToStep_MakeStepVertex.hxx>
-#include <StepShape_VertexPoint.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
-#include <StepShape_HArray1OfGeometricSetSelect.hxx>
-#include <StepShape_GeometricSetSelect.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-
+//  Transfer
+//  TransferShape
+//:d6
 // Non-manifold topology processing (ssv; 10.11.2010)
-#include <StepShape_NonManifoldSurfaceShapeRepresentation.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopExp.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-#include <StepData_StepModel.hxx>
-
 // ============================================================================
 // Function: DumpWhatIs   
 // Purpose: Use it in debug mode to dump your shapes
 // ============================================================================
-
 #ifdef OCCT_DEBUG
 static void DumpWhatIs(const TopoDS_Shape& S) {
 

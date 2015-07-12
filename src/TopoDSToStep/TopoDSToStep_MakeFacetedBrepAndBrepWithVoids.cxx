@@ -14,30 +14,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeFacetedBrepAndBrepWithVoids.ixx>
-#include <TopoDSToStep.hxx>
-#include <TopoDSToStep_Builder.hxx>
-#include <TopoDSToStep_Tool.hxx>
+
+#include <BRepClass3d.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
-#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
-#include <StepShape_OrientedClosedShell.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
 #include <StepShape_HArray1OfOrientedClosedShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopoDS.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
-#include <BRepClass3d.hxx>
-#include <StdFail_NotDone.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDSToStep.hxx>
+#include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeFacetedBrepAndBrepWithVoids.hxx>
+#include <TopoDSToStep_Tool.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Create a FacetedBrepAndBrepWithVoids of StepShape from a Solid of TopoDS
 // containing more than one closed shell 
 //=============================================================================
-
 TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::
   TopoDSToStep_MakeFacetedBrepAndBrepWithVoids(const TopoDS_Solid& aSolid,
 				    const Handle(Transfer_FinderProcess)& FP)

@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_GCurve.ixx>
+
+#include <BRep_GCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_GCurve
 //purpose  : 
 //=======================================================================
-
 BRep_GCurve::BRep_GCurve(const TopLoc_Location& L, 
 			 const Standard_Real First, 
 			 const Standard_Real Last):

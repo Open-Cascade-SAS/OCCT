@@ -14,46 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Plane.ixx>
 
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-
-#include <Precision.hxx>
-#include <gp_Pnt.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_Plane.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <DsgPrs_ShadedPlanePresentation.hxx>
+#include <DsgPrs_XYZPlanePresentation.hxx>
 #include <ElSLib.hxx>
-
+#include <Geom_Axis2Placement.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
+#include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
-#include <Prs3d_DatumAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <StdPrs_Plane.hxx>
-#include <StdPrs_ShadedSurface.hxx>
-
-#include <Geom_Plane.hxx>
-#include <GeomAdaptor_Surface.hxx>
-
-#include <Aspect_TypeOfLine.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-
-#include <DsgPrs_XYZPlanePresentation.hxx>
-#include <DsgPrs_ShadedPlanePresentation.hxx>
-#include <UnitsAPI.hxx>
-
+#include <Quantity_Color.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
+#include <StdPrs_Plane.hxx>
 #include <StdPrs_ShadedShape.hxx>
-
-#include <Poly_Triangulation.hxx>
-
+#include <StdPrs_ShadedSurface.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <UnitsAPI.hxx>
 
 //=======================================================================
 //function : AIS_Plane

@@ -16,82 +16,73 @@
 // Purpose:     Update AIS object from a TDataXtd_Constraint.
 // Modified     Mon 30 10:15:43 1998 by SZY
 
-
-#include <TPrsStd_ConstraintTools.ixx>
-
-#include <stdio.h>
-#include <UnitsAPI.hxx>
-#include <TCollection_ExtendedString.hxx>
-
-#include <TNaming_Tool.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataXtd_Geometry.hxx>
-#include <TDF_Reference.hxx>
-
-
-#include <AIS_OffsetDimension.hxx>
-#include <AIS_LengthDimension.hxx>
-#include <AIS_ParallelRelation.hxx>
-#include <AIS_TangentRelation.hxx>
-#include <AIS_IdenticRelation.hxx>
 #include <AIS_AngleDimension.hxx>
-#include <AIS_RadiusDimension.hxx>
-#include <AIS_DiameterDimension.hxx>
-#include <AIS_FixRelation.hxx>
-#include <AIS_PerpendicularRelation.hxx>
 #include <AIS_ConcentricRelation.hxx>
-#include <AIS_SymmetricRelation.hxx>
-#include <AIS_MidPointRelation.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_EqualRadiusRelation.hxx>
+#include <AIS_DiameterDimension.hxx>
 #include <AIS_EqualDistanceRelation.hxx>
-#include <AIS_MinRadiusDimension.hxx> 
+#include <AIS_EqualRadiusRelation.hxx>
+#include <AIS_FixRelation.hxx>
+#include <AIS_IdenticRelation.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_LengthDimension.hxx>
 #include <AIS_MaxRadiusDimension.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <BRep_Tool.hxx>
+#include <AIS_MidPointRelation.hxx>
+#include <AIS_MinRadiusDimension.hxx>
+#include <AIS_OffsetDimension.hxx>
+#include <AIS_ParallelRelation.hxx>
+#include <AIS_PerpendicularRelation.hxx>
+#include <AIS_RadiusDimension.hxx>
+#include <AIS_Relation.hxx>
+#include <AIS_SymmetricRelation.hxx>
+#include <AIS_TangentRelation.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <GC_MakePlane.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <Geom_Circle.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Dir.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Cylinder.hxx>
 #include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Torus.hxx>
-#include <GC_MakePlane.hxx> 
-
-#include <Precision.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
-
-#include <Standard_ProgramError.hxx>
-#include <Standard_ErrorHandler.hxx>
-
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <AIS_Relation.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataXtd_Constraint.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Reference.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TPrsStd_ConstraintTools.hxx>
+#include <UnitsAPI.hxx>
 
+#include <stdio.h>
 static Standard_Boolean CheckShapesPair(const TopoDS_Shape& , const TopoDS_Shape& ); //ota
 
 //=======================================================================

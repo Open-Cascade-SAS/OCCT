@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_SweptAreaSolid.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_CurveBoundedSurface.hxx>
+#include <StepShape_SweptAreaSolid.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_SweptAreaSolid::StepShape_SweptAreaSolid ()  {}
 

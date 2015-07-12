@@ -14,58 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFi2d.hxx>
-#include <ChFi2d_Builder.ixx>
 
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-
+#include <ChFi2d.hxx>
+#include <ChFi2d_Builder.hxx>
 #include <ElCLib.hxx>
-
 #include <GccEnt_Position.hxx>
-
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dGcc_Circ2d2TanRad.hxx>
+#include <Geom2dGcc_QualifiedCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
-
-
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dGcc_Circ2d2TanRad.hxx>
-#include <Geom2dGcc_QualifiedCurve.hxx>
-
-#include <IntRes2d_IntersectionPoint.hxx>
-
+#include <gp_Circ2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Circ2d.hxx>
 #include <gp_Vec2d.hxx>
-
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Precision.hxx>
-
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static Standard_Boolean IsIssuedFrom(const TopoDS_Edge& E,
 				     const TopTools_IndexedMapOfShape& Map,

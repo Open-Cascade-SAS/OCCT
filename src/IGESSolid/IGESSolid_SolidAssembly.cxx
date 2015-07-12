@@ -16,8 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_SolidAssembly.ixx>
-
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <IGESSolid_SolidAssembly.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_SolidAssembly::IGESSolid_SolidAssembly ()    {  }
 

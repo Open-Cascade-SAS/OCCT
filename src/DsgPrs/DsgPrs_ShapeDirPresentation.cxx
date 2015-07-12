@@ -14,46 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_ShapeDirPresentation.ixx>
 
-#include <gp.hxx>
-#include <gp_Dir.hxx>
 #include <Bnd_Box.hxx>
-
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepClass_Edge.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <DsgPrs_ShapeDirPresentation.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomLProp_CLProps.hxx>
 #include <GeomLProp_SLProps.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-#include <BRepClass_Edge.hxx>
-#include <BRepBndLib.hxx>
-
-#include <Graphic3d_Group.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>
-
+#include <Prs3d_Presentation.hxx>
 #include <Quantity_Length.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : FindPointOnFace
 //purpose  : internal use
 //=======================================================================
-
 static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
 {
   // discredisation of the external contour and computing the center of gravity

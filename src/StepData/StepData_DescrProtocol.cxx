@@ -11,13 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_DescrProtocol.ixx>
-#include <StepData_DescrGeneral.hxx>
-#include <StepData_DescrReadWrite.hxx>
+
 #include <Interface_GeneralLib.hxx>
 #include <Interface_ReaderLib.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_DescrGeneral.hxx>
+#include <StepData_DescrProtocol.hxx>
+#include <StepData_DescrReadWrite.hxx>
 #include <StepData_WriterLib.hxx>
-
 
 StepData_DescrProtocol::StepData_DescrProtocol ()    {  }
 

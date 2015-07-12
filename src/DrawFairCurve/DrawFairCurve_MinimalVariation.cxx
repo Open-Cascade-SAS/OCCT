@@ -12,10 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawFairCurve_MinimalVariation.ixx>
 
-#include <FairCurve_MinimalVariation.hxx>
 #include <Draw_ColorKind.hxx>
+#include <DrawFairCurve_MinimalVariation.hxx>
+#include <FairCurve_MinimalVariation.hxx>
+#include <Standard_Type.hxx>
 
 DrawFairCurve_MinimalVariation::DrawFairCurve_MinimalVariation(const Standard_Address TheMVC)
                                : DrawFairCurve_Batten(TheMVC)

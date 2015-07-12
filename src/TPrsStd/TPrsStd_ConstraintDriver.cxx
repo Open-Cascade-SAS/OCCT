@@ -11,17 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TPrsStd_ConstraintDriver.ixx>
 
-#include <TDF_Label.hxx>
-#include <TDataXtd_Constraint.hxx>
-#include <TPrsStd_ConstraintTools.hxx>
-#include <Standard_ProgramError.hxx>
-#include <Standard_GUID.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataXtd_Position.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <AIS_Relation.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataXtd_Constraint.hxx>
+#include <TDataXtd_Position.hxx>
+#include <TDF_Label.hxx>
+#include <TPrsStd_ConstraintDriver.hxx>
+#include <TPrsStd_ConstraintTools.hxx>
 
 //=======================================================================
 //function :

@@ -14,28 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpe.ixx>
 
+#include <Bnd_Box.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
 #include <DBRep.hxx>
-#include <Draw_Interpretor.hxx>
-#include <Draw_Appli.hxx>
 #include <Draw.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Interpretor.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_Segment3D.hxx>
-#include <DrawTrSurf_Point.hxx>
 #include <DrawTrSurf.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <Bnd_Box.hxx>
+#include <DrawTrSurf_Point.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
-#include <BRepBndLib.hxx>
-#include <BRep_Tool.hxx>
 #include <Precision.hxx>
+#include <TestTopOpe.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;

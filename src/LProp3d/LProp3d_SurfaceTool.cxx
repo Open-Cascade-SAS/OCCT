@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LProp3d_SurfaceTool.ixx>
+
+#include <Adaptor3d_HSurface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <LProp3d_SurfaceTool.hxx>
 
 //=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
-
 void LProp3d_SurfaceTool::Value(const Handle(Adaptor3d_HSurface)& S, 
                                 const Standard_Real U, 
                                 const Standard_Real V, 

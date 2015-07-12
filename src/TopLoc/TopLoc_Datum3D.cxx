@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <gp_Trsf.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_Stream.hxx>
-#include <TopLoc_Datum3D.ixx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Datum3D.hxx>
 
 //=======================================================================
 //function : TopLoc_Datum3D
 //purpose  : Identity
 //=======================================================================
-
 TopLoc_Datum3D::TopLoc_Datum3D () 
 {
 }

@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_Planar.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDraw_Planar.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDraw_Planar::IGESDraw_Planar ()    {  }
 

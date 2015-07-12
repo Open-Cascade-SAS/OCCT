@@ -12,15 +12,14 @@
 // commercial license or contractual agreement.
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
-#include <RWStepRepr_RWRepresentationRelationship.ixx>
-#include <StepRepr_Representation.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepRepr_RWRepresentationRelationship.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationRelationship.hxx>
-
 
 RWStepRepr_RWRepresentationRelationship::RWStepRepr_RWRepresentationRelationship () {}
 

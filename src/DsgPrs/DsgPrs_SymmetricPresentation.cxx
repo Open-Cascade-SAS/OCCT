@@ -14,48 +14,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_SymmetricPresentation.ixx>
 
-#include <Precision.hxx>
-
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
+#include <DsgPrs_SymmetricPresentation.hxx>
+#include <ElCLib.hxx>
+#include <gce_MakeDir.hxx>
+#include <gce_MakeLin.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAPI.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-
-#include <ElCLib.hxx>
-
-#include <gce_MakeLin.hxx>
-#include <gce_MakeDir.hxx>
-
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_Group.hxx>
 #include <Graphic3d_Vertex.hxx>
-
+#include <IntAna2d_AnaIntersection.hxx>
+#include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
-
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <TCollection_AsciiString.hxx>
-
-#include <Geom2d_Line.hxx>
-
-#include <GeomAPI.hxx>
-
-#include <IntAna2d_AnaIntersection.hxx>
-
 
 //===================================================================
 //Function:Add

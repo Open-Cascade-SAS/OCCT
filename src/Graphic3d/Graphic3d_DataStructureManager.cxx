@@ -14,29 +14,20 @@
 // commercial license or contractual agreement.
 
 //              11/97 ; CAL : retrait des DataStructure
-
-
 //-Version	
-
 //-Design	
-
 //-Warning	
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Graphic3d_DataStructureManager.ixx>
+
+#include <Graphic3d_DataStructureManager.hxx>
+#include <Standard_Type.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //-Constructors
-
 Graphic3d_DataStructureManager::Graphic3d_DataStructureManager () {
 }
 

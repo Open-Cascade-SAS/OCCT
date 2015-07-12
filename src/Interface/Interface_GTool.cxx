@@ -11,8 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_GTool.ixx>
+
+#include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
+#include <Interface_GTool.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_SignType.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 Interface_GTool::Interface_GTool  ()    {  }
 

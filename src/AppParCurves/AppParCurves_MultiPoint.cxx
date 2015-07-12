@@ -12,11 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AppParCurves_MultiPoint.ixx>
+
+#include <AppParCurves_MultiPoint.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <MMgt_TShared.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
-
-#include <Standard_OutOfRange.hxx>
 
 #define tabPoint   Handle(TColgp_HArray1OfPnt)::DownCast (ttabPoint)
 #define tabPoint2d Handle(TColgp_HArray1OfPnt2d)::DownCast (ttabPoint2d)

@@ -14,16 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeCylinder.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <gce_MakeCylinder.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Cylinder.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //  Constructions d un cylindre de gp par son Ax2 A2 et son rayon         +
 //  Radius.                                                               +
 //=========================================================================
-
 gce_MakeCylinder::gce_MakeCylinder(const gp_Ax2&       A2     ,
 				   const Standard_Real Radius ) 
 {

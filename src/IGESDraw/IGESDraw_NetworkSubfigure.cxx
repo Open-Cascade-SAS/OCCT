@@ -16,10 +16,16 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_NetworkSubfigure.ixx>
-#include <Standard_DimensionMismatch.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_XYZ.hxx>
+#include <IGESDraw_ConnectPoint.hxx>
+#include <IGESDraw_NetworkSubfigure.hxx>
+#include <IGESDraw_NetworkSubfigureDef.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESDraw_NetworkSubfigure::IGESDraw_NetworkSubfigure ()    {  }
 

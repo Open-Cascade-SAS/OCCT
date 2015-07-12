@@ -12,28 +12,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
 
-#include <Extrema_ExtElC.ixx>
+#include <ElCLib.hxx>
+#include <Extrema_ExtElC.hxx>
+#include <Extrema_ExtPElC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+#include <math_TrigonometricFunctionRoots.hxx>
+#include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
-#include <ElCLib.hxx>
-#include <math_TrigonometricFunctionRoots.hxx>
-#include <math_DirectPolynomialRoots.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Precision.hxx>
-#include <Extrema_ExtPElC.hxx>
-#include <IntAna_QuadQuadGeo.hxx>
-#include <Extrema_ExtPElC.hxx>
 
-#include <gp_Pln.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax1.hxx>
-
+#include <stdio.h>
 static
   void RefineDir(gp_Dir& aDir);
 

@@ -13,10 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Cylinder.ixx>
-#include <TNaming_Builder.hxx>
+
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <QANewBRepNaming_Cylinder.hxx>
 #include <Standard_NullObject.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
 #include <TopoDS_Solid.hxx>
+
 #ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #endif

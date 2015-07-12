@@ -14,24 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DBRep_IsoBuilder.ixx>
 
-#include <Precision.hxx>
-#include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dHatch_Intersector.hxx>
+#include <BRepTools.hxx>
+#include <DBRep_Face.hxx>
+#include <DBRep_IsoBuilder.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <HatchGen_Domain.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Pnt2d.hxx>
+#include <TopoDS_Face.hxx>
 
 //  Modified by Sergey KHROMOV - Thu Nov  9 12:08:37 2000
 static Standard_Real IntersectorConfusion = 1.e-10 ; // -8 ;

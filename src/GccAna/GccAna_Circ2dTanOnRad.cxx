@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 // PRO12736 : bug quand OnLine // Ox, JCT 20/03/98
-
 //========================================================================
 //       circular tangent to element of type :      - Circle.            +
 //                                                  - Line.             +
@@ -23,16 +22,20 @@
 //              of given radius : Radius.                             +
 //========================================================================
 
-#include <GccAna_Circ2dTanOnRad.ixx>
-
 #include <ElCLib.hxx>
-#include <math_DirectPolynomialRoots.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_NegativeValue.hxx>
+#include <GccAna_Circ2dTanOnRad.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <math_DirectPolynomialRoots.hxx>
+#include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 typedef math_DirectPolynomialRoots Roots;
 

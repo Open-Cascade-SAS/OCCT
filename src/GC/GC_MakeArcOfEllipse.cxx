@@ -14,10 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GC_MakeArcOfEllipse.ixx>
-#include <Geom_Ellipse.hxx>
-#include <StdFail_NotDone.hxx>
+
 #include <ElCLib.hxx>
+#include <GC_MakeArcOfEllipse.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 
 GC_MakeArcOfEllipse::GC_MakeArcOfEllipse(const gp_Elips& Elips   ,
 					   const gp_Pnt&    P1   ,

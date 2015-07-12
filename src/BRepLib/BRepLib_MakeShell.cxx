@@ -14,37 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLib_MakeShell.ixx>
 
+#include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeFace.hxx>
-#include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <BRepLib_MakeShell.hxx>
 #include <Geom2d_Line.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <TColGeom2d_Array1OfCurve.hxx>
-#include <gp_Pnt.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <BRep_Builder.hxx>
-
-#include <TopExp_Explorer.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
-
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColGeom2d_Array1OfCurve.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
 
 //=======================================================================
 //function : BRepLib_MakeShell
 //purpose  : 
 //=======================================================================
-
 BRepLib_MakeShell::BRepLib_MakeShell() :
        myError(BRepLib_EmptyShell)
 {

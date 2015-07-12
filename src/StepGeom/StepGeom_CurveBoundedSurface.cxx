@@ -16,13 +16,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepGeom_CurveBoundedSurface.ixx>
+#include <Standard_Type.hxx>
+#include <StepGeom_CurveBoundedSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepGeom_CurveBoundedSurface
 //purpose  : 
 //=======================================================================
-
 StepGeom_CurveBoundedSurface::StepGeom_CurveBoundedSurface ()
 {
 }

@@ -15,36 +15,37 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepFill_LocationLaw.ixx>
-
-#include <BRepTools_WireExplorer.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <Adaptor3d_HCurve.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp.hxx>
-#include <TopLoc_Location.hxx>
-
-#include <GeomFill_LocationLaw.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Mat.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_Trsf.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepFill_LocationLaw.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Precision.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : Norm
 //purpose  : Norm of a Matrix
 //=======================================================================
-
 static Standard_Real Norm(const gp_Mat& M) {
   Standard_Real R, Norme;
   gp_XYZ Coord;

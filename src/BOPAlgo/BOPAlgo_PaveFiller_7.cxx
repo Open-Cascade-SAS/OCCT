@@ -15,53 +15,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
 
-#include <NCollection_IncAllocator.hxx>
-
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-
-#include <BRepBndLib.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
-#include <BOPCol_MapOfShape.hxx>
-
-#include <BOPDS_VectorOfListOfPaveBlock.hxx>
-#include <BOPDS_ListOfPaveBlock.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_CommonBlock.hxx>
-#include <BOPDS_Pave.hxx>
-#include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_VectorOfInterfFF.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_Interf.hxx>
+#include <BOPDS_Iterator.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_Pave.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_VectorOfCurve.hxx>
 #include <BOPDS_VectorOfFaceInfo.hxx>
-#include <BOPDS_FaceInfo.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_Curve.hxx>
-#include <BOPDS_Iterator.hxx>
-
+#include <BOPDS_VectorOfInterfFF.hxx>
+#include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Context.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 static
   Standard_Boolean IsBasedOnPlane(const TopoDS_Face& aF);

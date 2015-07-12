@@ -11,9 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSolid_SpecificModule.ixx>
-#include <Interface_Macros.hxx>
 
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_Block.hxx>
 #include <IGESSolid_BooleanTree.hxx>
 #include <IGESSolid_ConeFrustum.hxx>
@@ -33,12 +33,9 @@
 #include <IGESSolid_SolidInstance.hxx>
 #include <IGESSolid_SolidOfLinearExtrusion.hxx>
 #include <IGESSolid_SolidOfRevolution.hxx>
+#include <IGESSolid_SpecificModule.hxx>
 #include <IGESSolid_Sphere.hxx>
 #include <IGESSolid_SphericalSurface.hxx>
-#include <IGESSolid_ToroidalSurface.hxx>
-#include <IGESSolid_Torus.hxx>
-#include <IGESSolid_VertexList.hxx>
-
 #include <IGESSolid_ToolBlock.hxx>
 #include <IGESSolid_ToolBooleanTree.hxx>
 #include <IGESSolid_ToolConeFrustum.hxx>
@@ -63,14 +60,16 @@
 #include <IGESSolid_ToolToroidalSurface.hxx>
 #include <IGESSolid_ToolTorus.hxx>
 #include <IGESSolid_ToolVertexList.hxx>
-
-
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <IGESSolid_Torus.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESSolid_SpecificModule::IGESSolid_SpecificModule()    {  }
 
 

@@ -13,15 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_ReferenceListDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <LDOM_MemManager.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_ReferenceList.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_ListIteratorOfLabelList.hxx>
+#include <TDF_Tool.hxx>
+#include <XmlMDataStd_ReferenceListDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
-#include <LDOM_MemManager.hxx>
-
-#include <TDF_Tool.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_ReferenceList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")

@@ -13,25 +13,21 @@
 
 //#76 rln 11.03.99 S4135: compute average without weights according to tolerances
 //szv#4 S4163
-#include <ShapeAnalysis_ShapeTolerance.ixx>
 
 #include <BRep_Tool.hxx>
-
+#include <ShapeAnalysis_ShapeTolerance.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-
-#include <TopExp_Explorer.hxx>
-
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_MapOfShape.hxx>
-
 
 //=======================================================================
 //function : ShapeAnalysis_ShapeTolerance
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_ShapeTolerance::ShapeAnalysis_ShapeTolerance() : myNbTol (0)
 {
 }

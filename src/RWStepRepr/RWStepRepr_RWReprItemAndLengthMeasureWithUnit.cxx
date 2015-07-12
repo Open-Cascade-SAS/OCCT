@@ -11,18 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepRepr_RWReprItemAndLengthMeasureWithUnit.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepRepr_RWReprItemAndLengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
-#include <StepBasic_Unit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
-
+#include <StepBasic_Unit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
 
 //=======================================================================
 //function : RWSteprepr_RWReprItemAndLengthMeasureWithUnit
 //purpose  : 
 //=======================================================================
-
 RWStepRepr_RWReprItemAndLengthMeasureWithUnit::RWStepRepr_RWReprItemAndLengthMeasureWithUnit() {}
 
 

@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MAT_Edge.ixx>
+
+#include <MAT_Bisector.hxx>
+#include <MAT_Edge.hxx>
+#include <Standard_Type.hxx>
 
 MAT_Edge::MAT_Edge()
 {

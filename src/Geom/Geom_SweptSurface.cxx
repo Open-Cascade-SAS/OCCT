@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_SweptSurface.ixx>
+
+#include <Geom_Curve.hxx>
+#include <Geom_SweptSurface.hxx>
+#include <gp_Dir.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Continuity
 //purpose  : 
 //=======================================================================
-
 GeomAbs_Shape Geom_SweptSurface::Continuity () const { return smooth; }
 
 //=======================================================================

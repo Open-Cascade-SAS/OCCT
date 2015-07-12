@@ -18,22 +18,23 @@
 //   CREATION of the BISSECTICE between a CIRCLE and a POINT.               +
 //=========================================================================
 
-#include <GccAna_CircPnt2dBisec.ixx>
-
-#include <gp_XY.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Ax2d.hxx>
-#include <GccInt_BHyper.hxx>
+#include <GccAna_CircPnt2dBisec.hxx>
 #include <GccInt_BCirc.hxx>
 #include <GccInt_BElips.hxx>
+#include <GccInt_BHyper.hxx>
+#include <GccInt_Bisec.hxx>
 #include <GccInt_BLine.hxx>
+#include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <gp.hxx>
 
 //=========================================================================
-
 GccAna_CircPnt2dBisec::
    GccAna_CircPnt2dBisec (const gp_Circ2d& Circle ,
 		          const gp_Pnt2d&  Point  )

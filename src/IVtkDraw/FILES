@@ -1,7 +1,7 @@
 EXTERNLIB
-IVtkDraw.hxx
 IVtkDraw.cxx
-IVtkDraw_HighlightAndSelectionPipeline.hxx
+IVtkDraw.hxx
 IVtkDraw_HighlightAndSelectionPipeline.cxx
-IVtkDraw_Interactor.hxx
+IVtkDraw_HighlightAndSelectionPipeline.hxx
 IVtkDraw_Interactor.cxx
+IVtkDraw_Interactor.hxx

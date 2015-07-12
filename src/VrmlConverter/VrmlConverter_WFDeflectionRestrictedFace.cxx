@@ -11,23 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_WFDeflectionRestrictedFace.ixx>
-#include <Hatch_Hatcher.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <VrmlConverter_IsoAspect.hxx>
+
 #include <Adaptor2d_Curve2d.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <VrmlConverter_DeflectionCurve.hxx>
-#include <StdPrs_ToolRFace.hxx>
+#include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <Precision.hxx>
-#include <Vrml_Separator.hxx>
-#include <Vrml_Material.hxx>
-#include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <GCPnts_QuasiUniformDeflection.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Hatch_Hatcher.hxx>
+#include <Precision.hxx>
+#include <StdPrs_ToolRFace.hxx>
+#include <Vrml_Material.hxx>
+#include <Vrml_Separator.hxx>
+#include <VrmlConverter_DeflectionCurve.hxx>
+#include <VrmlConverter_Drawer.hxx>
+#include <VrmlConverter_IsoAspect.hxx>
+#include <VrmlConverter_WFDeflectionRestrictedFace.hxx>
 
 //==================================================================
 // function: GetDeflection

@@ -11,12 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_SignTransferStatus.ixx>
-#include <Transfer_Binder.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Interface_Check.hxx>
-//#include <stdio.h>
 
+#include <Interface_Check.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <XSControl_SignTransferStatus.hxx>
+#include <XSControl_TransferReader.hxx>
+
+//#include <stdio.h>
 static TCollection_AsciiString& themes()
 {
   static TCollection_AsciiString tm;

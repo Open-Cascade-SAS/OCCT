@@ -16,23 +16,27 @@
 
 //  Modified by skv - Mon May  5 15:06:39 2003 OCC616
 
-#include <Bisector_Inter.ixx>
-#include <IntRes2d_Intersection.hxx>
-#include <Bisector_Curve.hxx>
+#include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
 #include <Bisector_BisecCC.hxx>
 #include <Bisector_BisecPC.hxx>
+#include <Bisector_Curve.hxx>
 #include <Bisector_FunctionInter.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
+#include <Bisector_Inter.hxx>
+#include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <IntRes2d_Transition.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_Intersection.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <Precision.hxx>
+#include <IntRes2d_Transition.hxx>
 #include <math_BissecNewton.hxx>
-#include <ElCLib.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+
 #ifdef OCCT_DEBUG
 //#define DRAW
 #ifdef DRAW

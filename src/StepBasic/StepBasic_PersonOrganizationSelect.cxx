@@ -11,11 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_PersonOrganizationSelect.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepBasic_Person.hxx>
+#include <Standard_Transient.hxx>
 #include <StepBasic_Organization.hxx>
+#include <StepBasic_Person.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
+#include <StepBasic_PersonOrganizationSelect.hxx>
 
 StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect () {  }
 

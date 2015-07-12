@@ -14,10 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_RLine.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IntPatch_RLine::IntPatch_RLine (const Standard_Boolean Tang,
                                 const IntSurf_TypeTrans Trans1,

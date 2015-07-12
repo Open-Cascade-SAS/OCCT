@@ -12,20 +12,30 @@
 // commercial license or contractual agreement.
 
 // dce 21/01/99 S3767 : Suppression of general messages
-#include <Interface_FileReaderTool.ixx>
-#include <Interface_ReportEntity.hxx>
-#include <Interface_InterfaceMismatch.hxx>
+
+#include <Interface_Check.hxx>
 #include <Interface_CheckFailure.hxx>
+#include <Interface_FileReaderData.hxx>
+#include <Interface_FileReaderTool.hxx>
+#include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
+#include <Interface_InterfaceMismatch.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ReaderLib.hxx>
 #include <Interface_ReaderModule.hxx>
+#include <Interface_ReportEntity.hxx>
+#include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
-#include <Message.hxx>
-
-#include <Standard_OutOfRange.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_TypeMismatch.hxx>
+
 #ifdef WNT
 #include <OSD_Exception.hxx>
 #else

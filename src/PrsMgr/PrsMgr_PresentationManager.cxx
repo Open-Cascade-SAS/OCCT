@@ -12,18 +12,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PrsMgr_PresentationManager.ixx>
 
+#include <Geom_Transformation.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <Prs3d_PresentationShadow.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_Presentations.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_View.hxx>
 #include <Visual3d_Layer.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 // =======================================================================
 // function : PrsMgr_PresentationManager

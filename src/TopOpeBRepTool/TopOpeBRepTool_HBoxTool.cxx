@@ -14,18 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_HBoxTool.ixx>
 
+#include <Bnd_Box.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <gp_Pnt.hxx>
+#include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
-#include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
-#include <gp_Pnt.hxx>
-#include <BRepBndLib.hxx>
-#include <Standard_ProgramError.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_box.hxx>
 #include <TopOpeBRepTool_define.hxx>
-#include <Precision.hxx>
+#include <TopOpeBRepTool_HBoxTool.hxx>
 
 #ifdef OCCT_DEBUG
 #define TBOX TopOpeBRepTool_GettraceBOX()

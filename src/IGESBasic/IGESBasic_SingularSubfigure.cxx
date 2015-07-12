@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_SingularSubfigure.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_XYZ.hxx>
+#include <IGESBasic_SingularSubfigure.hxx>
+#include <IGESBasic_SubfigureDef.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_SingularSubfigure::IGESBasic_SingularSubfigure ()    {  }
 

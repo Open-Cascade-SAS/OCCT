@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_DirectoryDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Directory.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataStd_DirectoryDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDataStd_DirectoryDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataStd_DirectoryDriver::XmlMDataStd_DirectoryDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

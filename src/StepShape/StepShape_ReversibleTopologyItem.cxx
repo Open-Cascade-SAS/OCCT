@@ -11,14 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_ReversibleTopologyItem.ixx>
+
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <StepShape_ClosedShell.hxx>
 #include <StepShape_Edge.hxx>
-#include <StepShape_Path.hxx>
 #include <StepShape_Face.hxx>
 #include <StepShape_FaceBound.hxx>
-#include <StepShape_ClosedShell.hxx>
 #include <StepShape_OpenShell.hxx>
+#include <StepShape_Path.hxx>
+#include <StepShape_ReversibleTopologyItem.hxx>
 
 StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem () {  }
 

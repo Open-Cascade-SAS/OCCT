@@ -11,7 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_Described.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceMismatch.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_Described.hxx>
+#include <StepData_EDescr.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_Simple.hxx>
 
 StepData_Described::StepData_Described  (const Handle(StepData_EDescr)& descr)
 : thedescr (descr)    {  }

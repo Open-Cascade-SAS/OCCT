@@ -11,14 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_MeasureWithUnit.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_Unit.hxx>
 
 //=======================================================================
 //function : StepBasic_MeasureWithUnit
 //purpose  : 
 //=======================================================================
-
 StepBasic_MeasureWithUnit::StepBasic_MeasureWithUnit ()  {}
 
 //=======================================================================

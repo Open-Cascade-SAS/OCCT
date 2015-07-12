@@ -14,25 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_Tool.ixx>
 
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopExp.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAlgo_Tool.hxx>
+#include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Edge.hxx>
-
-
-
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : Deboucle3D
 //purpose  : 
 //=======================================================================
-
 TopoDS_Shape BRepAlgo_Tool::Deboucle3D(const TopoDS_Shape& S,
 					 const TopTools_MapOfShape& Boundary)
 {

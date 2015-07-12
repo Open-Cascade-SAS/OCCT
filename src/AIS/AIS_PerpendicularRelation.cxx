@@ -14,48 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-
-#include <AIS_PerpendicularRelation.ixx>
 
 #include <AIS.hxx>
-
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#include <AIS_PerpendicularRelation.hxx>
 #include <BRep_Tool.hxx>
-
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <DsgPrs_PerpenPresentation.hxx>
-
 #include <ElCLib.hxx>
-
+#include <gce_MakeDir.hxx>
 #include <Geom2d_Line.hxx>
-#include <GeomAPI.hxx>
-#include <Geom_Line.hxx>
+#include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
-
-#include <IntAna2d_AnaIntersection.hxx>
-#include <IntAna2d_IntPoint.hxx>
-
-#include <Precision.hxx>
-
-#include <Select3D_SensitiveSegment.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <gce_MakeDir.hxx>
-
+#include <Geom_Transformation.hxx>
+#include <GeomAPI.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Geom_Ellipse.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_IntPoint.hxx>
+#include <Precision.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Select3D_SensitiveSegment.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : Constructor

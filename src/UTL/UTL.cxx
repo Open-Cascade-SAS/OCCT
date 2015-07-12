@@ -14,17 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <UTL.ixx>
+
+#include <OSD_Environment.hxx>
+#include <OSD_File.hxx>
+#include <OSD_FileIterator.hxx>
 #include <OSD_Host.hxx>
 #include <OSD_Path.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Resource_Unicode.hxx>
-#include <OSD_Environment.hxx>
-#include <OSD_FileIterator.hxx>
-#include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
 #include <OSD_SingleProtection.hxx>
+#include <Resource_Manager.hxx>
+#include <Resource_Unicode.hxx>
+#include <Standard_GUID.hxx>
+#include <Storage_BaseDriver.hxx>
+#include <Storage_Data.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <UTL.hxx>
 
 TCollection_ExtendedString UTL::xgetenv(const Standard_CString aCString) {
   TCollection_ExtendedString x;

@@ -14,30 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_PurgeInternalEdges.ixx>
 
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-
+#include <BRepTools_Substitution.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NullObject.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepTool_PurgeInternalEdges.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopoDS.hxx>
-
-#include <BRepTools_Substitution.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : TopOpeBRepTool_PurgeInternalEdges
 //purpose  : Initializes some variables for the algorithm and perform
 // the computation of the internal edges of the shape
 //=======================================================================
-
 TopOpeBRepTool_PurgeInternalEdges::TopOpeBRepTool_PurgeInternalEdges(const TopoDS_Shape& theShape,const Standard_Boolean PerformNow):myShape(theShape),myIsDone(Standard_False)
 {
 //  if (theShape.ShapeType() != TopAbs_SHELL && theShape.ShapeType() != TopAbs_SOLID)

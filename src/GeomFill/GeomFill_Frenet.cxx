@@ -14,18 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Frenet.ixx>
-#include <GeomAbs_CurveType.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Precision.hxx>
-#include <GeomLib.hxx>
-#include <GeomFill_SnglrFunc.hxx>
-#include <Extrema_ExtPC.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <algorithm>
 
+#include <Adaptor3d_HCurve.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomFill_Frenet.hxx>
+#include <GeomFill_SnglrFunc.hxx>
+#include <GeomFill_TrihedronLaw.hxx>
+#include <GeomLib.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+
+#include <algorithm>
 static const Standard_Real NullTol = 1.e-10;
 static const Standard_Real MaxSingular = 1.e-5;
 

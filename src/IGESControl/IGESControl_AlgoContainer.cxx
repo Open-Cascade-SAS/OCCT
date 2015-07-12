@@ -13,14 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESControl_AlgoContainer.ixx>
+
+#include <IGESControl_AlgoContainer.hxx>
 #include <IGESControl_ToolContainer.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : IGESControl_AlgoContainer
 //purpose  : 
 //=======================================================================
-
 IGESControl_AlgoContainer::IGESControl_AlgoContainer():IGESToBRep_AlgoContainer()
 {
   SetToolContainer (new IGESControl_ToolContainer);

@@ -13,38 +13,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XDEDRAW_Shapes.ixx>
 
-#include <Draw.hxx>
+#include <BRep_Builder.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
-
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
-
+#include <Draw.hxx>
 #include <gp_Trsf.hxx>
-
-#include <TDF_Tool.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_AttributeSequence.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
-
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_Location.hxx>
-
-#include <TCollection_AsciiString.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XDEDRAW_Shapes.hxx>
 
 #include <stdio.h>
-#include <XCAFDoc_GraphNode.hxx>
-#include <TDF_AttributeSequence.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-
 //=======================================================================
 // Section: Work with shapes
 //=======================================================================
-
 static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc<3) {

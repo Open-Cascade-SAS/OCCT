@@ -14,20 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeConicalSurface.ixx>
-#include <Geom_ConicalSurface.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <gp_Ax2.hxx>
-#include <Precision.hxx>//#2(K3-3) rln
+#include <Precision.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_ConicalSurface.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeConicalSurface.hxx>
 #include <UnitsMethods.hxx>
 
+//#2(K3-3) rln
 //=============================================================================
 // Creation d' une ConicalSurface de Geom a partir d' une ConicalSurface de
 // Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeConicalSurface::Convert (const Handle(StepGeom_ConicalSurface)& SS, Handle(Geom_ConicalSurface)& CS)
 {
   Handle(Geom_Axis2Placement) A;

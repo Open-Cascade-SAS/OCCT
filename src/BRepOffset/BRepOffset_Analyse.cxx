@@ -14,39 +14,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepOffset_Analyse.ixx>
-#include <BRepOffset_Interval.hxx>
-#include <BRepOffset_Tool.hxx>
-#include <BRepOffset_ListIteratorOfListOfInterval.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
+
+#include <Adaptor3d_Surface.hxx>
 #include <BRep_Builder.hxx>
-
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepOffset_Analyse.hxx>
+#include <BRepOffset_Interval.hxx>
+#include <BRepOffset_ListIteratorOfListOfInterval.hxx>
+#include <BRepOffset_Tool.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <gp.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#include <Precision.hxx>
-#include <gp.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <Adaptor3d_Surface.hxx>
 //
 static void Correct2dPoint(const Adaptor3d_Surface& theS, gp_Pnt2d& theP2d);
 //

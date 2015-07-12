@@ -16,22 +16,33 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ToolLabelDisplay.ixx>
-#include <IGESData_ParamCursor.hxx>
 #include <gp_XYZ.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
 #include <IGESData_ViewKindEntity.hxx>
+#include <IGESDimen_HArray1OfLeaderArrow.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDraw_HArray1OfViewKindEntity.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <IGESDimen_HArray1OfLeaderArrow.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESData_Dump.hxx>
-#include <IGESDraw_View.hxx>
+#include <IGESDraw_LabelDisplay.hxx>
 #include <IGESDraw_PerspectiveView.hxx>
+#include <IGESDraw_ToolLabelDisplay.hxx>
+#include <IGESDraw_View.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_HArray1OfXYZ.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 IGESDraw_ToolLabelDisplay::IGESDraw_ToolLabelDisplay ()    {  }
 

@@ -14,21 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_HLRToShape.ixx>
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+
 #include <BRep_Builder.hxx>
-#include <HLRBRep.hxx>
-#include <HLRBRep_Data.hxx>
-#include <HLRBRep_ShapeBounds.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
+#include <HLRBRep.hxx>
+#include <HLRBRep_Algo.hxx>
+#include <HLRBRep_Data.hxx>
+#include <HLRBRep_EdgeData.hxx>
+#include <HLRBRep_HLRToShape.hxx>
+#include <HLRBRep_ShapeBounds.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 //=======================================================================
 //function : HLRBRep_HLRToShape
 //purpose  : 
 //=======================================================================
-
 HLRBRep_HLRToShape::HLRBRep_HLRToShape (const Handle(HLRBRep_Algo)& A) :
 myAlgo(A)
 {}

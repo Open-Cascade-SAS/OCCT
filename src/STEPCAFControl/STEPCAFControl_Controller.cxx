@@ -13,16 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPCAFControl_Controller.ixx>
-#include <STEPCAFControl_ActorWrite.hxx>
-#include <XSAlgo.hxx>
+
 #include <Interface_Static.hxx>
+#include <Standard_Type.hxx>
+#include <STEPCAFControl_ActorWrite.hxx>
+#include <STEPCAFControl_Controller.hxx>
+#include <XSAlgo.hxx>
 
 //=======================================================================
 //function : STEPCAFControl_Controller
 //purpose  : 
 //=======================================================================
-
 STEPCAFControl_Controller::STEPCAFControl_Controller ()
 {
   Handle(STEPCAFControl_ActorWrite) ActWrite = new STEPCAFControl_ActorWrite;

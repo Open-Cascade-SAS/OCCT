@@ -18,28 +18,31 @@
 //             avec discernement !
 // 19-09-97  : JPI correction derivee seconde
 
-
-#include <Geom_OffsetCurve.ixx>
-
-
-#include <gp.hxx>
-#include <gp_XYZ.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Parabola.hxx>
+#include <CSLib_Offset.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
 #include <Geom_Geometry.hxx>
-
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
+#include <gp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_RangeError.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <CSLib_Offset.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom_OffsetCurve         OffsetCurve;
 typedef Geom_Curve               Curve;

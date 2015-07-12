@@ -14,20 +14,26 @@
 // commercial license or contractual agreement.
 
 //-Version      
-
 //-Design       Declaration of variables specific to managers
-
 //-Warning      Manager manages a set of structures
-
 //-References   
-
 //-Language     C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Graphic3d_StructureManager.ixx>
+
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_InitialisationError.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_StructureManager.pxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+
 static Standard_Boolean Initialisation = Standard_True;
 static int StructureManager_ArrayId[StructureManager_MAX];
 static Standard_Integer StructureManager_CurrentId = 0;

@@ -11,22 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.ixx>
 
-#include <StepDimTol_HArray1OfDatumReference.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepDimTol_DatumReference.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
-#include <StepDimTol_ModifiedGeometricTolerance.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
+#include <StepDimTol_HArray1OfDatumReference.hxx>
 #include <StepDimTol_LimitCondition.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepDimTol_ModifiedGeometricTolerance.hxx>
 #include <StepRepr_ShapeAspect.hxx>
-
 
 //=======================================================================
 //function : RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol
 //purpose  : 
 //=======================================================================
-
 RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol()
 {
 }

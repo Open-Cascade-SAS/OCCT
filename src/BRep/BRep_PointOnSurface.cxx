@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_PointOnSurface.ixx>
 
+#include <BRep_PointOnSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_PointOnSurface
 //purpose  : 
 //=======================================================================
-
 BRep_PointOnSurface::BRep_PointOnSurface(const Standard_Real P1, 
 					 const Standard_Real P2, 
 					 const Handle(Geom_Surface)& S,

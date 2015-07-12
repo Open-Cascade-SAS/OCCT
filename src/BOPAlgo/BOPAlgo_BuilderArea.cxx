@@ -15,11 +15,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_BuilderArea.ixx>
 
+#include <BOPAlgo_BuilderArea.hxx>
 #include <BOPCol_ListOfShape.hxx>
-#include <TopoDS_Shape.hxx>
+#include <IntTools_Context.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : 

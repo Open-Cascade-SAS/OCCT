@@ -14,12 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_ChAsym.ixx>
 
-#include <math_Gauss.hxx>
-#include <math_SVD.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
+#include <BlendFunc_ChAsym.hxx>
 #include <ElCLib.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <math_SVD.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 
@@ -27,7 +35,6 @@
 //function : BlendFunc_ChAsym
 //purpose  : 
 //=======================================================================
-
 BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_HSurface)& S1,
                                    const Handle(Adaptor3d_HSurface)& S2,
                                    const Handle(Adaptor3d_HCurve)& C) :

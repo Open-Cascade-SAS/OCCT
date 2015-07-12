@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_LevelFunction.ixx>
-
+#include <IGESAppli_LevelFunction.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_LevelFunction::IGESAppli_LevelFunction ()    {  }
 

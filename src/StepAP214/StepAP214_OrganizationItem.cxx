@@ -11,22 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_OrganizationItem.ixx>
+
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
+#include <StepAP214_OrganizationItem.hxx>
 #include <StepBasic_Approval.hxx>
-#include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
 #include <StepBasic_DocumentFile.hxx>
-#include <StepRepr_MaterialDesignation.hxx>
-#include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
-#include <StepVisual_PresentationArea.hxx>
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
+#include <StepBasic_SecurityClassification.hxx>
+#include <StepRepr_AssemblyComponentUsageSubstitute.hxx>
+#include <StepRepr_MaterialDesignation.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
-#include <StepBasic_SecurityClassification.hxx>
+#include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
+#include <StepVisual_PresentationArea.hxx>
 
 StepAP214_OrganizationItem::StepAP214_OrganizationItem ()  {  }
 

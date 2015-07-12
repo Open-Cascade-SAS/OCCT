@@ -18,8 +18,19 @@
 
 #define No_Standard_OutOfRange
 
-#include <gp_Vec.ixx>
+
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_VectorWithNullMagnitude.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
 
 Standard_Boolean gp_Vec::IsEqual
 (const gp_Vec& Other, 

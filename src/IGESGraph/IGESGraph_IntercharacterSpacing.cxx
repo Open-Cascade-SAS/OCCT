@@ -16,7 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_IntercharacterSpacing.ixx>
+#include <IGESGraph_IntercharacterSpacing.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_IntercharacterSpacing::IGESGraph_IntercharacterSpacing ()    {  }
 

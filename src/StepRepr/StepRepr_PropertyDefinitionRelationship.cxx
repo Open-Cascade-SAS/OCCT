@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepRepr_PropertyDefinitionRelationship.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_PropertyDefinitionRelationship.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_PropertyDefinitionRelationship
 //purpose  : 
 //=======================================================================
-
 StepRepr_PropertyDefinitionRelationship::StepRepr_PropertyDefinitionRelationship ()
 {
 }

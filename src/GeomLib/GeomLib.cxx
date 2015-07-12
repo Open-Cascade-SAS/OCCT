@@ -28,7 +28,6 @@
 //                           dans le cas de valeurs proportionnelles des denominateurs
 //                           en umin umax et/ou vmin vmax.
 //              pmn 4/07/97  Gestion de la continuite dans BuildCurve3d (PRO9097)
-
 //              xab 10/07/97 on revient en arriere sur l'ajout du 26/06/97
 //              pmn 26/09/97 Ajout des parametres d'approx dans BuildCurve3d
 //              xab 29/09/97 on reintegre l'ajout du 26/06/97
@@ -40,103 +39,102 @@
 // References:   None	
 // Language:     C++2.0	
 // Purpose:	
-
 // Declarations:	
 
-#include <GeomLib.ixx>
-
-#include <Precision.hxx>
-#include <GeomConvert.hxx>
-#include <Hermit.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <GeomLib_MakeCurvefromApprox.hxx>
-#include <GeomLib_DenominatorMultiplier.hxx>
-#include <GeomLib_DenominatorMultiplierPtr.hxx>
-#include <GeomLib_PolyFunc.hxx>
-#include <GeomLib_LogSample.hxx>
-
-#include <AdvApprox_ApproxAFunction.hxx>
-#include <AdvApprox_PrefAndRec.hxx>
-
 #include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2dAdaptor_GHCurve.hxx>
-
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <AdvApprox_PrefAndRec.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
-#include <PLib.hxx>
-#include <math_Matrix.hxx>
-#include <math_Vector.hxx>
-#include <math_Jacobi.hxx>
+#include <CSLib.hxx>
+#include <CSLib_NormalStatus.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_GHCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BoundedCurve.hxx>
+#include <Geom_BoundedSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomConvert.hxx>
+#include <GeomConvert_ApproxSurface.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <GeomLib.hxx>
+#include <GeomLib_DenominatorMultiplier.hxx>
+#include <GeomLib_DenominatorMultiplierPtr.hxx>
+#include <GeomLib_LogSample.hxx>
+#include <GeomLib_MakeCurvefromApprox.hxx>
+#include <GeomLib_PolyFunc.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_TrsfForm.hxx>
+#include <gp_Vec.hxx>
+#include <Hermit.hxx>
 #include <math.hxx>
 #include <math_FunctionAllRoots.hxx>
 #include <math_FunctionSample.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
+#include <math_Jacobi.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+#include <PLib.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec.hxx>
+#include <TColgp_Array1OfXYZ.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfXYZ.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <gp_TrsfForm.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Elips2d.hxx>
-#include <gp_Hypr.hxx>
-#include <gp_Hypr2d.hxx>
-#include <gp_Parab.hxx>
-#include <gp_Parab2d.hxx>
-#include <gp_GTrsf2d.hxx>
-#include <gp_Trsf2d.hxx>
-
-#include <ElCLib.hxx>
-#include <Geom2dConvert.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomConvert_ApproxSurface.hxx>
-
-#include <CSLib.hxx>
-#include <CSLib_NormalStatus.hxx>
-
-
-#include <Standard_ConstructionError.hxx>
 
 //=======================================================================
 //function : ComputeLambda

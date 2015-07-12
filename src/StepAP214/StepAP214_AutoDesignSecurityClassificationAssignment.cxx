@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepAP214_AutoDesignSecurityClassificationAssignment.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepAP214_AutoDesignSecurityClassificationAssignment.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_SecurityClassification.hxx>
 
 StepAP214_AutoDesignSecurityClassificationAssignment::StepAP214_AutoDesignSecurityClassificationAssignment ()  {}
 

@@ -14,43 +14,33 @@
 // commercial license or contractual agreement.
 
 //-Version	
-
 //-Design	Declaration of variables specific to the context
 //		of tracing of markers
-
 //-Warning	Context of tracing of markers is defined by :
 //		- the color
 //		- the type
 //		- the scale
-
 //-References	
-
 //-Language	C++ 2.0
-
 //-Declarations
-
 // for the class
-#include <Aspect_AspectMarker.ixx>
+
+#include <Aspect_AspectMarker.hxx>
+#include <Aspect_AspectMarkerDefinitionError.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
 
 //-Aliases
-
 //-Global data definitions
-
 //	-- color
 //	MyColor	:	Color;
-
 //	-- type
 //	MyType	:	TypeOfMarker;
-
 //	-- scale
 //	MyScale	:	Standard_Real;
-
 //-Constructors
-
 //-Destructors
-
 //-Methods, in order
-
 Aspect_AspectMarker::Aspect_AspectMarker () {
 
 	MyColor	= Quantity_NOC_YELLOW;

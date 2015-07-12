@@ -14,10 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeToroidalSurface.ixx>
-#include <GeomToStep_MakeAxis2Placement3d.hxx>
-#include <StdFail_NotDone.hxx>
+
 #include <Geom_ToroidalSurface.hxx>
+#include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakeToroidalSurface.hxx>
+#include <StdFail_NotDone.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
@@ -26,7 +27,6 @@
 // Creation d' une toroidal_surface de prostep a partir d' une ToroidalSurface
 // de Geom
 //=============================================================================
-
 GeomToStep_MakeToroidalSurface::GeomToStep_MakeToroidalSurface
   ( const Handle(Geom_ToroidalSurface)& S )
 	

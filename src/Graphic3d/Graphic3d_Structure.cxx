@@ -13,23 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_Structure.ixx>
-#include <Graphic3d_Structure.pxx>
-
-#include <Graphic3d_GraphicDriver.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
-
-#include <Graphic3d_MapOfStructure.hxx>
-#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
-
-#include <Quantity_Color.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <Graphic3d_TextureMap.hxx>
 
 #include <Aspect_PolygonOffsetMode.hxx>
+#include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
+#include <Graphic3d_MapOfStructure.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_PriorityDefinitionError.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Structure.pxx>
+#include <Graphic3d_StructureDefinitionError.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_TransformError.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 #include <stdio.h>
-
 //=============================================================================
 //function : Graphic3d_Structure
 //purpose  :

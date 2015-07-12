@@ -13,41 +13,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DNaming_TransformationDriver.ixx>
-#include <Standard_NullObject.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
+
 #include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
-#include <TFunction_Function.hxx>
-#include <TFunction_Logbook.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <DNaming.hxx>
-#include <TDataStd_Real.hxx>
-#include <gp_Vec.hxx>
+#include <DNaming_TransformationDriver.hxx>
+#include <GeomLib_IsPlanarSurface.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pln.hxx>
-#include <GeomLib_IsPlanarSurface.hxx>
-#include <NCollection_Handle.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <ModelDefinitions.hxx>
+#include <NCollection_Handle.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDF_Label.hxx>
+#include <TFunction_Function.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #ifdef WNT
 #define EXCEPTION ...

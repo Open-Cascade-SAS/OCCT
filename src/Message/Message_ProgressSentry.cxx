@@ -11,13 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_ProgressSentry.ixx>
+
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : Message_ProgressSentry
 //purpose  : 
 //=======================================================================
-
 Message_ProgressSentry::Message_ProgressSentry (const Handle(Message_ProgressIndicator) &progress,
                                                   const Standard_CString name,
                                                   const Standard_Real min, 

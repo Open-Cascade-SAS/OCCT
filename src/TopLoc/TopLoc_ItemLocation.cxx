@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopLoc_ItemLocation.ixx>
+
+#include <TopLoc_Datum3D.hxx>
+#include <TopLoc_ItemLocation.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopLoc_SListOfItemLocation.hxx>
 
 //=======================================================================
 //function : TopLoc_ItemLocation
 //purpose  : constructor
 //=======================================================================
-
 TopLoc_ItemLocation::TopLoc_ItemLocation 
   (const Handle(TopLoc_Datum3D)& D, 
    const Standard_Integer P) :

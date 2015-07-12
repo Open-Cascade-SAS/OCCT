@@ -15,7 +15,6 @@
 
 //-Design	Declaration of variables specific to the context
 //		of tracing of facets 3D
-
 //-Warning	Ccontext of tracing of facets 3d inherits the context
 //		defined by :
 //		- the style of the interior of the facet
@@ -23,12 +22,15 @@
 //		- the color
 //		Additionally, it has more than one definition of material
 //		for internal and external faces.
-
 // for the class
-#include <Graphic3d_AspectFillArea3d.ixx>
 
 #include <Aspect_PolygonOffsetMode.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_TextureMap.hxx>
+#include <Quantity_Color.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_Type.hxx>
 
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d ():
 DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFaceRemovalActive (Standard_False),  MyTextureMapState(Standard_False), MyFrontMaterial (), MyBackMaterial ()

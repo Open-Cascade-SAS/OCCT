@@ -1,7 +1,12 @@
 FILES
-TestTopOpeTools_Trace.hxx
-TestTopOpeTools_Trace.cxx
-TestTopOpeTools_TraceCommands.cxx
-TestTopOpeTools_OtherCommands.cxx
+TestTopOpeTools.cxx
+TestTopOpeTools.hxx
 TestTopOpeTools_Array1OfMesure.hxx
 TestTopOpeTools_HArray1OfMesure.hxx
+TestTopOpeTools_Mesure.cxx
+TestTopOpeTools_Mesure.hxx
+TestTopOpeTools_OtherCommands.cxx
+TestTopOpeTools_PMesure.hxx
+TestTopOpeTools_Trace.cxx
+TestTopOpeTools_Trace.hxx
+TestTopOpeTools_TraceCommands.cxx

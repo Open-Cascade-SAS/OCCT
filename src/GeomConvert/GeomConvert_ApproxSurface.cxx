@@ -12,15 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomConvert_ApproxSurface.ixx>
 
-#include <GeomAdaptor_HSurface.hxx>
-#include <Precision.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <AdvApp2Var_ApproxAFunc2Var.hxx>
-#include <Standard_Real.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomConvert_ApproxSurface.hxx>
+#include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Real.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 class GeomConvert_ApproxSurface_Eval : public AdvApp2Var_EvaluatorFunc2Var
 {

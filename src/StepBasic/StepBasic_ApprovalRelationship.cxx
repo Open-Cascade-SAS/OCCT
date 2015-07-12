@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_ApprovalRelationship.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_ApprovalRelationship.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepBasic_ApprovalRelationship::StepBasic_ApprovalRelationship ()  {}
 

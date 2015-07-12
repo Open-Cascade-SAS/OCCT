@@ -14,25 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
-
-#include <BRepOffset_MakeLoops.ixx>
-#include <BRepAlgo_Loop.hxx>
-
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <BRepAlgo_AsDes.hxx>
+#include <BRepAlgo_Image.hxx>
+#include <BRepAlgo_Loop.hxx>
+#include <BRepOffset_Analyse.hxx>
+#include <BRepOffset_MakeLoops.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <BRep_TVertex.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
+#include <stdio.h>
 #ifdef DRAW
 #include <DBRep.hxx>
 Standard_Integer NbF = 1;

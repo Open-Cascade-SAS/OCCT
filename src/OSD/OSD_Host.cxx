@@ -14,10 +14,13 @@
 
 #ifndef WNT
 
-#include <Standard_NullObject.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <OSD_Host.ixx>
+
+#include <OSD_Host.hxx>
+#include <OSD_OSDError.hxx>
 #include <OSD_WhoAmI.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NullObject.hxx>
+#include <TCollection_AsciiString.hxx>
 
 const OSD_WhoAmI Iam = OSD_WHost;
 

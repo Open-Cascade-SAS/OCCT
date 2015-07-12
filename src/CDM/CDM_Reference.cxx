@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_Reference.ixx>
 
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
+#include <CDM_Reference.hxx>
+#include <Standard_Type.hxx>
 
 CDM_Reference::CDM_Reference(const Handle(CDM_Document)& aFromDocument, const Handle(CDM_Document)& aToDocument, const Standard_Integer aReferenceIdentifier, const Standard_Integer aToDocumentVersion):
 myToDocument(aToDocument),

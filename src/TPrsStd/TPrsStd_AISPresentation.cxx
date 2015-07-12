@@ -18,16 +18,22 @@
 // +---------------------------------------------------------------------------+
 // !      ivan ! SetMode                                 ! 5-04-2001! 3.0-00-1!
 // +---------------------------------------------------------------------------+
-#include <TPrsStd_AISPresentation.ixx>
 
-#include <TDF_DefaultDeltaOnRemoval.hxx>
-#include <TDF_DefaultDeltaOnModification.hxx>
-#include <TDF_DeltaOnAddition.hxx>
-#include <TDF_Tool.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TPrsStd_AISViewer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
+#include <TDF_DefaultDeltaOnModification.hxx>
+#include <TDF_DefaultDeltaOnRemoval.hxx>
+#include <TDF_DeltaOnAddition.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
+#include <TPrsStd_AISPresentation.hxx>
+#include <TPrsStd_AISViewer.hxx>
 #include <TPrsStd_Driver.hxx>
 #include <TPrsStd_DriverTable.hxx>
 

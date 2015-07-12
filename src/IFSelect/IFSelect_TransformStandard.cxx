@@ -11,19 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_TransformStandard.ixx>
-#include <IFSelect_Selection.hxx>
+
 #include <IFSelect_ContextModif.hxx>
+#include <IFSelect_Modifier.hxx>
+#include <IFSelect_Selection.hxx>
+#include <IFSelect_TransformStandard.hxx>
 #include <Interface_CheckIterator.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
+#include <Interface_CopyControl.hxx>
+#include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_Protocol.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+
 #include <stdio.h>
-
-
 IFSelect_TransformStandard::IFSelect_TransformStandard ()
       {  thecopy = Standard_True;  }
 

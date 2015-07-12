@@ -11,72 +11,66 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPControl_Reader.ixx>
-#include <STEPControl_Controller.hxx>
-#include <XSControl_Controller.hxx>
-#include <XSControl_TransferReader.hxx>
-#include <Interface_ShareFlags.hxx>
 
-#include <STEPControl_ActorRead.hxx>
-
-#include <StepBasic_ProductDefinition.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
+#include <Interface_ShareFlags.hxx>
 #include <Interface_Static.hxx>
-#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
-#include <StepBasic_ProductDefinitionContext.hxx>
 #include <StepBasic_ApplicationContext.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
-#include <StepBasic_DocumentProductEquivalence.hxx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
-#include <StepRepr_RepresentationRelationship.hxx>
-#include <StepRepr_ShapeAspect.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
-#include <StepRepr_RepresentationMap.hxx>
-#include <StepRepr_MappedItem.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-#include <StepBasic_SiUnitName.hxx>
-#include <StepBasic_SiPrefix.hxx>
-#include <StepRepr_GlobalUnitAssignedContext.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
-#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
-#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
-#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
-#include <StepBasic_NamedUnit.hxx>
 #include <StepBasic_ConversionBasedUnit.hxx>
-#include <StepBasic_SiUnitAndLengthUnit.hxx>
-#include <StepBasic_SiUnitAndLengthUnit.hxx>
-#include <StepBasic_SolidAngleUnit.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_DocumentProductEquivalence.hxx>
+#include <StepBasic_HArray1OfNamedUnit.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
-#include <StepBasic_SolidAngleMeasureWithUnit.hxx>
-#include <STEPConstruct_UnitContext.hxx>
-#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
-#include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
-#include <XSControl_WorkSession.hxx>
-#include <StepData_StepModel.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <TColStd_Array1OfAsciiString.hxx>
-#include <TColStd_Array1OfReal.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionContext.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionFormationRelationship.hxx>
+#include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
+#include <StepBasic_SiPrefix.hxx>
 #include <StepBasic_SiUnit.hxx>
-  
+#include <StepBasic_SiUnitAndLengthUnit.hxx>
+#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
+#include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
+#include <StepBasic_SiUnitName.hxx>
+#include <StepBasic_SolidAngleMeasureWithUnit.hxx>
+#include <StepBasic_SolidAngleUnit.hxx>
+#include <STEPConstruct_UnitContext.hxx>
+#include <STEPControl_ActorRead.hxx>
+#include <STEPControl_Controller.hxx>
+#include <STEPControl_Reader.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationMap.hxx>
+#include <StepRepr_RepresentationRelationship.hxx>
+#include <StepRepr_ShapeAspect.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_Array1OfAsciiString.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_WorkSession.hxx>
+
 //=======================================================================
 //function : STEPControl_Reader
 //purpose  : 
 //=======================================================================
-
 STEPControl_Reader::STEPControl_Reader ()
 {
   STEPControl_Controller::Init();

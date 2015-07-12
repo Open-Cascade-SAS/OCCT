@@ -14,19 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Hatch_Hatcher.ixx>
-#include <Hatch_Line.hxx>
-#include <IntAna2d_IntPoint.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
-#include <Hatch_Parameter.hxx>
+
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
+#include <Hatch_Hatcher.hxx>
+#include <Hatch_Line.hxx>
+#include <Hatch_Parameter.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_IntPoint.hxx>
 #include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Hatch_Hatcher
 //purpose  : 
 //=======================================================================
-
 Hatch_Hatcher::Hatch_Hatcher(const Standard_Real Tol,
 			     const Standard_Boolean Oriented) :
        myToler(Tol),

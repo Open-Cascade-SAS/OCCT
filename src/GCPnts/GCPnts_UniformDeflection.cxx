@@ -12,13 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCPnts_UniformDeflection.ixx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NotImplemented.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <GCPnts_UniformDeflection.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+
 // mask the return of a Adaptor2d_Curve2d as a gp_Pnt 
 static gp_Pnt Value(const Adaptor3d_Curve & C,
 		    const Standard_Real Parameter) 

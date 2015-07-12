@@ -11,13 +11,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <V3d_Viewer.jxx>
-#include <Visual3d_Light.hxx>
-#include <V3d_DirectionalLight.hxx>
-#include <V3d_PositionalLight.hxx>
+
+#include <Aspect_Background.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Grid.hxx>
+#include <gp_Ax3.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Quantity_Color.hxx>
+#include <V3d.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d.hxx>				       
+#include <V3d_CircularGrid.hxx>
+#include <V3d_DirectionalLight.hxx>
+#include <V3d_Light.hxx>
+#include <V3d_PositionalLight.hxx>
+#include <V3d_RectangularGrid.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_Light.hxx>
+#include <Visual3d_ViewManager.hxx>
+
 void V3d_Viewer::UpdateLights() {
 
   for (InitActiveViews();MoreActiveViews();NextActiveViews()){

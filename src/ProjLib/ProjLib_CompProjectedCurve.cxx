@@ -14,20 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ProjLib_CompProjectedCurve.ixx>
-#include <ProjLib_HCompProjectedCurve.hxx>
-#include <gp_XY.hxx>
-#include <gp_Mat2d.hxx>
-#include <Extrema_ExtPS.hxx>
-#include <Precision.hxx>
+
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <Extrema_ExtCS.hxx>
-#include <TColgp_HSequenceOfPnt.hxx>
+#include <Extrema_ExtPS.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
-#include <Extrema_POnSurf.hxx>
 #include <Extrema_POnCurv.hxx>
-#include <ProjLib_PrjResolve.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomLib.hxx>
+#include <gp_Mat2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
+#include <Precision.hxx>
+#include <ProjLib_CompProjectedCurve.hxx>
+#include <ProjLib_HCompProjectedCurve.hxx>
+#include <ProjLib_PrjResolve.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColgp_HSequenceOfPnt.hxx>
 
 #define FuncTol 1.e-10
 

@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_TimeMeasureWithUnit.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_TimeMeasureWithUnit.hxx>
 
 StepBasic_TimeMeasureWithUnit::StepBasic_TimeMeasureWithUnit ()  {}
 

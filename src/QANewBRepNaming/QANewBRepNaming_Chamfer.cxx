@@ -14,20 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Chamfer.ixx>
+
+#include <BRepFilletAPI_MakeChamfer.hxx>
+#include <QANewBRepNaming_Chamfer.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-
-#include <TNaming_Builder.hxx>
-
 #include <Standard_NullObject.hxx>
-
 #include <TDF_Label.hxx>
+#include <TNaming_Builder.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : QANewBRepNaming_Chamfer
 //purpose  : 
 //=======================================================================
-
 QANewBRepNaming_Chamfer::QANewBRepNaming_Chamfer()
 {}
 

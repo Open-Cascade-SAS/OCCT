@@ -12,17 +12,20 @@
 // commercial license or contractual agreement.
 
 // Modified by rmi, Thu Dec  4 14:24:24 1997
-#include <CDF_Store.ixx>
-#include <CDF_Session.hxx>
+
 #include <CDF_Application.hxx>
-#include <PCDM_StoreStatus.hxx>
-#include <CDF_StoreSetNameStatus.hxx>
-#include <Standard_ProgramError.hxx>
 #include <CDF_MetaDataDriver.hxx>
-#include <PCDM_StorageDriver.hxx>
-#include <PCDM.hxx>
-#include <TCollection_ExtendedString.hxx>
+#include <CDF_Session.hxx>
+#include <CDF_Store.hxx>
+#include <CDF_StoreList.hxx>
+#include <CDF_StoreSetNameStatus.hxx>
+#include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
+#include <PCDM.hxx>
+#include <PCDM_StorageDriver.hxx>
+#include <PCDM_StoreStatus.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #define theMetaDataDriver CDF_Session::CurrentSession()->MetaDataDriver()
 

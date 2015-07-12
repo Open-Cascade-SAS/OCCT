@@ -14,14 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_ChangeLevelList.ixx>
-#include <IGESData_LevelListEntity.hxx>
+
+#include <IFSelect_ContextModif.hxx>
+#include <IFSelect_IntParam.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Interface_Macros.hxx>
-#include <stdio.h>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESSelect_ChangeLevelList.hxx>
 #include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
-
+#include <stdio.h>
 IGESSelect_ChangeLevelList::IGESSelect_ChangeLevelList ()
     :  IGESSelect_ModelModifier (Standard_True)    {  }
 

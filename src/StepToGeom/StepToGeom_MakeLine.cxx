@@ -16,24 +16,23 @@
 
 // sln 22.10.2001. CTS23496: Line is not created if direction have not been succesfully created (StepToGeom_MakeLine(...) function)
 
-#include <StepToGeom_MakeLine.ixx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_Vector.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepToGeom_MakeVectorWithMagnitude.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_VectorWithMagnitude.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
 #include <Precision.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Vector.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom_MakeLine.hxx>
+#include <StepToGeom_MakeVectorWithMagnitude.hxx>
 
 //=============================================================================
 // Creation d' une Line de Geom a partir d' une Line de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeLine::Convert (const Handle(StepGeom_Line)& SC, Handle(Geom_Line)& CC)
 {
   Handle(Geom_CartesianPoint) P;

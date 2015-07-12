@@ -14,17 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2d2TanRad.jxx>
 
 #include <ElCLib.hxx>
+#include <GccAna_Circ2d2TanRad.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <GccEnt_BadQualifier.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 // circular tangent to a circle, a line and a given radius
 //==============================================================
@@ -38,7 +43,6 @@
 // Create the solution and add it to already found ones.                 +
 // Fill the fields.                                                      +
 //========================================================================
-
 GccAna_Circ2d2TanRad::
    GccAna_Circ2d2TanRad (const GccEnt_QualifiedCirc& Qualified1 ,
                          const GccEnt_QualifiedLin&  Qualified2 ,

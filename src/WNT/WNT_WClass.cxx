@@ -13,18 +13,20 @@
 // commercial license or contractual agreement.
 
 #include <windows.h>
-#include <WNT_WClass.ixx>
 
-#include <Standard_PCharacter.hxx>
+
 #include <InterfaceGraphic.hxx>
+#include <Standard_PCharacter.hxx>
+#include <Standard_Type.hxx>
+#include <WNT_ClassDefinitionError.hxx>
+#include <WNT_WClass.hxx>
+#include <WNT_Window.hxx>
 
 #include <string.h>
-
 //=======================================================================
 //function : WNT_WClass
 //purpose  : 
 //=======================================================================
-
 WNT_WClass::WNT_WClass (
                const Standard_CString aClassName,
                const Standard_Address aWndProc,

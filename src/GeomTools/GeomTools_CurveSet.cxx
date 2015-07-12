@@ -14,34 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
-#include <GeomTools_CurveSet.ixx>
-#include <GeomTools.hxx>
-#include <GeomTools_UndefinedTypeHandler.hxx>
 
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
-
-#include <gp_Lin.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomTools.hxx>
+#include <GeomTools_CurveSet.hxx>
+#include <GeomTools_UndefinedTypeHandler.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
-#include <gp_Parab.hxx>
 #include <gp_Hypr.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <Standard_Failure.hxx>
-#include <Standard_ErrorHandler.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressSentry.hxx>
-#include <Geom_Curve.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Stream.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 #define LINE      1
 #define CIRCLE    2

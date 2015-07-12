@@ -13,16 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_KronrodSingleIntegration.ixx>
-#include <math_Vector.hxx>
-#include <math.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 
+#include <math.hxx>
+#include <math_Function.hxx>
+#include <math_KronrodSingleIntegration.hxx>
+#include <math_Vector.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_SequenceOfReal.hxx>
 
 //==========================================================================
 //function : An empty constructor.
 //==========================================================================
-
 math_KronrodSingleIntegration::math_KronrodSingleIntegration() :
        myIsDone(Standard_False),
        myValue(0.),

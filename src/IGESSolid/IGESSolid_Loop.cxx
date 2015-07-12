@@ -17,10 +17,15 @@
 //--------------------------------------------------------------------
 //pdn 20.04.99 CTS22655 avoid of exceptions on empty loops
 
-#include <IGESSolid_Loop.ixx>
+#include <IGESBasic_HArray1OfHArray1OfIGESEntity.hxx>
+#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_EdgeList.hxx>
+#include <IGESSolid_Loop.hxx>
 #include <IGESSolid_VertexList.hxx>
-
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_Loop::IGESSolid_Loop ()    {  }
 

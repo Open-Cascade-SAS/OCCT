@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_Dimension.ixx>
-#include <Standard_DomainError.hxx>
-#include <Draw_Interpretor.hxx>
-#include <TCollection_AsciiString.hxx>
 
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Interpretor.hxx>
+#include <DrawDim_Dimension.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : DrawDim_Dimension
 //purpose  : 
 //=======================================================================
-
 DrawDim_Dimension::DrawDim_Dimension()
      : is_valued(Standard_False),
        myTextColor(Draw_blanc)

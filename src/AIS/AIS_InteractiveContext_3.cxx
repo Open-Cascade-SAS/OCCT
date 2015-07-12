@@ -15,13 +15,28 @@
 
 // Modified: 22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
 
-#include <AIS_InteractiveContext.jxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 #include <AIS_GlobalStatus.hxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_LocalContext.hxx>
+#include <Prs3d_BasicAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <SelectMgr_OrFilter.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-
+// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 //=======================================================================
 //function : SetPolygonOffsets 
 //purpose  : 

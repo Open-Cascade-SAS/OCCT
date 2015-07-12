@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI_Command.ixx>
+
+#include <BRepBuilderAPI_Command.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_Command
 //purpose  : 
 //=======================================================================
-
 BRepBuilderAPI_Command::BRepBuilderAPI_Command() :
        myDone(Standard_False)
 {

@@ -19,19 +19,14 @@
 // Author:	
 //		<pkv@PETREX>
 
-#include <BRepClass3d.ixx>
-
-
-#include <TopAbs_State.hxx>
-#include <TopAbs_Orientation.hxx>
-
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Iterator.hxx>
-
 #include <BRep_Builder.hxx>
+#include <BRepClass3d.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-
+#include <TopAbs_Orientation.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 
 static 
   Standard_Boolean IsInternal(const TopoDS_Shell& aSx);

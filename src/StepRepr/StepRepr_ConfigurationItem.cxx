@@ -16,13 +16,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepRepr_ConfigurationItem.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ConfigurationItem.hxx>
+#include <StepRepr_ProductConcept.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepRepr_ConfigurationItem
 //purpose  : 
 //=======================================================================
-
 StepRepr_ConfigurationItem::StepRepr_ConfigurationItem ()
 {
   defDescription = Standard_False;

@@ -11,18 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SelectBypassSubfigure.ixx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESBasic_SubfigureDef.hxx>
+
 #include <IGESBasic_SingularSubfigure.hxx>
-#include <IGESDraw_NetworkSubfigureDef.hxx>
-#include <IGESDraw_NetworkSubfigure.hxx>
-#include <IGESDraw_RectArraySubfigure.hxx>
+#include <IGESBasic_SubfigureDef.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
-
+#include <IGESDraw_NetworkSubfigure.hxx>
+#include <IGESDraw_NetworkSubfigureDef.hxx>
+#include <IGESDraw_RectArraySubfigure.hxx>
+#include <IGESSelect_SelectBypassSubfigure.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_SelectBypassSubfigure::IGESSelect_SelectBypassSubfigure
   (const Standard_Integer level)

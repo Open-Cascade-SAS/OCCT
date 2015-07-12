@@ -14,8 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo.ixx>
 
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAlgo.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -23,17 +25,18 @@
 #include <BRepCheck_Result.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <BRepLib.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
+#include <gp.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Compound.hxx>
-#include <gp.hxx>
 
 //=======================================================================
 //function : IsValid

@@ -11,15 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESAppli_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
 #include <IGESAppli_DrilledHole.hxx>
 #include <IGESAppli_ElementResults.hxx>
 #include <IGESAppli_FiniteElement.hxx>
 #include <IGESAppli_Flow.hxx>
 #include <IGESAppli_FlowLineSpec.hxx>
+#include <IGESAppli_GeneralModule.hxx>
 #include <IGESAppli_LevelFunction.hxx>
 #include <IGESAppli_LevelToPWBLayerMap.hxx>
 #include <IGESAppli_LineWidening.hxx>
@@ -27,14 +25,13 @@
 #include <IGESAppli_NodalDisplAndRot.hxx>
 #include <IGESAppli_NodalResults.hxx>
 #include <IGESAppli_Node.hxx>
-#include <IGESAppli_PWBArtworkStackup.hxx>
-#include <IGESAppli_PWBDrilledHole.hxx>
 #include <IGESAppli_PartNumber.hxx>
 #include <IGESAppli_PinNumber.hxx>
 #include <IGESAppli_PipingFlow.hxx>
+#include <IGESAppli_PWBArtworkStackup.hxx>
+#include <IGESAppli_PWBDrilledHole.hxx>
 #include <IGESAppli_ReferenceDesignator.hxx>
 #include <IGESAppli_RegionRestriction.hxx>
-
 #include <IGESAppli_ToolDrilledHole.hxx>
 #include <IGESAppli_ToolElementResults.hxx>
 #include <IGESAppli_ToolFiniteElement.hxx>
@@ -47,21 +44,27 @@
 #include <IGESAppli_ToolNodalDisplAndRot.hxx>
 #include <IGESAppli_ToolNodalResults.hxx>
 #include <IGESAppli_ToolNode.hxx>
-#include <IGESAppli_ToolPWBArtworkStackup.hxx>
-#include <IGESAppli_ToolPWBDrilledHole.hxx>
 #include <IGESAppli_ToolPartNumber.hxx>
 #include <IGESAppli_ToolPinNumber.hxx>
 #include <IGESAppli_ToolPipingFlow.hxx>
+#include <IGESAppli_ToolPWBArtworkStackup.hxx>
+#include <IGESAppli_ToolPWBDrilledHole.hxx>
 #include <IGESAppli_ToolReferenceDesignator.hxx>
 #include <IGESAppli_ToolRegionRestriction.hxx>
-
-
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESAppli_GeneralModule::IGESAppli_GeneralModule ()    {  }
 
 

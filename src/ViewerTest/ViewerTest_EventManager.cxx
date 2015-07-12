@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ViewerTest_EventManager.ixx>
+
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_Grid.hxx>
+#include <Standard_Type.hxx>
 #include <V3d_View.hxx>
+#include <ViewerTest_EventManager.hxx>
 
 //=======================================================================
 //function : ViewerTest_EventManager
 //purpose  :
 //=======================================================================
-
 ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&               theView,
                                                   const Handle(AIS_InteractiveContext)& theCtx)
 : myCtx  (theCtx),

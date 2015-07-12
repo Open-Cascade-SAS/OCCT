@@ -57,9 +57,9 @@ static StatistiquesBRepClass3d STAT;
 #endif
 
 
-
-#include <BRepClass3d_SolidClassifier.ixx>
-
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_DomainError.hxx>
 #include <TopoDS_Shape.hxx>
 
 BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier()

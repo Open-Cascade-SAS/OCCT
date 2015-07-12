@@ -16,23 +16,34 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDefs_ToolAttributeDef.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESGraph_TextDisplayTemplate.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
-#include <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDefs_AttributeDef.hxx>
+#include <IGESDefs_HArray1OfHArray1OfTextDisplayTemplate.hxx>
+#include <IGESDefs_ToolAttributeDef.hxx>
+#include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
+
 #include <stdio.h>
-
-
 IGESDefs_ToolAttributeDef::IGESDefs_ToolAttributeDef ()    {  }
 
 

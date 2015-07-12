@@ -14,29 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtCC2d.ixx>
-
-#include <Extrema_ExtElC2d.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Extrema_ExtElC.hxx>
-#include <ElCLib.hxx>
-#include <Standard_Failure.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Extrema_POnCurv2d.hxx>
-#include <Extrema_SequenceOfPOnCurv2d.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Precision.hxx>
 
 #include <Adaptor2d_Curve2d.hxx>
+#include <ElCLib.hxx>
 #include <Extrema_Curve2dTool.hxx>
-
+#include <Extrema_ECC2d.hxx>
+#include <Extrema_ExtCC2d.hxx>
+#include <Extrema_ExtElC.hxx>
+#include <Extrema_ExtElC2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <Extrema_SequenceOfPOnCurv2d.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_InfiniteSolutions.hxx>
+#include <StdFail_NotDone.hxx>
 
 Extrema_ExtCC2d::Extrema_ExtCC2d()
 {

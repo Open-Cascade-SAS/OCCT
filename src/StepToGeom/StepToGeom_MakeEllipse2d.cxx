@@ -17,18 +17,18 @@
 //:o9 abv 19.02.99: bm4_id_punch_b.stp #678: treatment of minR > maxR
 //                  NOTE: parametrisation of resulting ellipse shifted on pi/2
 
-#include <StepToGeom_MakeEllipse2d.ixx>
-#include <StepGeom_Ellipse.hxx>
-#include <StepGeom_Axis2Placement2d.hxx>
 #include <Geom2d_AxisPlacement.hxx>
-#include <StepToGeom_MakeAxisPlacement.hxx>
+#include <Geom2d_Ellipse.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax22d.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Ellipse.hxx>
+#include <StepToGeom_MakeAxisPlacement.hxx>
+#include <StepToGeom_MakeEllipse2d.hxx>
 
 //=============================================================================
 // Creation d' un Ellipse de Geom2d a partir d' un Ellipse de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeEllipse2d::Convert
     (const Handle(StepGeom_Ellipse)& SC,
      Handle(Geom2d_Ellipse)& CC)

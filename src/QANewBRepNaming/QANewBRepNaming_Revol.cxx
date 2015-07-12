@@ -14,30 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Revol.ixx>
+
+#include <BRep_Tool.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
 #include <QANewBRepNaming_Loader.hxx>
-
+#include <QANewBRepNaming_Revol.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Label.hxx>
 #include <TNaming_Builder.hxx>
-
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopExp.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <BRep_Tool.hxx>
-
-#include <TDF_Label.hxx>
-#include <TDataStd_Name.hxx>
-
-#include <Standard_NullObject.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 
 //=======================================================================
 //function : QANewBRepNaming_Revol
 //purpose  : 
 //=======================================================================
-
 QANewBRepNaming_Revol::QANewBRepNaming_Revol()
 {}
 

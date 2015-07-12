@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccInt_BCirc.ixx>
-#include <Standard_DomainError.hxx>
+
+#include <GccInt_BCirc.hxx>
 #include <gp_Circ2d.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 GccInt_BCirc::
    GccInt_BCirc(const gp_Circ2d& Circ) {

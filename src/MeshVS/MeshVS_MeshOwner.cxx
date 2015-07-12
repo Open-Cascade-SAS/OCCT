@@ -13,14 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_MeshOwner.ixx>
 
+#include <MeshVS_DataSource.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <MeshVS_MeshOwner.hxx>
+#include <PrsMgr_PresentationManager.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <MeshVS_Mesh.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-
 
 #ifndef MeshVS_PRSBUILDERHXX
 #include <MeshVS_PrsBuilder.hxx>

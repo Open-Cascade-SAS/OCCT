@@ -11,12 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_Editor.ixx>
+
+#include <Dico_DictionaryOfInteger.hxx>
+#include <IFSelect_EditForm.hxx>
+#include <IFSelect_Editor.hxx>
+#include <IFSelect_ListEditor.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_MSG.hxx>
 #include <Interface_TypedValue.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+
 #include <string.h>
-
-
 IFSelect_Editor::IFSelect_Editor (const Standard_Integer nbval)
     : thenbval (nbval) , themaxsh (0) , themaxco (0) , themaxla (0) ,
       thevalues (1,nbval) , theshorts (1,nbval) , themodes (1,nbval) ,

@@ -14,15 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Intf_Interference.ixx>
-#include <gp_Pnt2d.hxx>
+
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Intf_Interference.hxx>
+#include <Intf_SectionLine.hxx>
+#include <Intf_SectionPoint.hxx>
+#include <Intf_TangentZone.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Intf_Interference
 //purpose  : Initialize for a deferred interference.
 //=======================================================================
-
 Intf_Interference::Intf_Interference (const Standard_Boolean Self)
      : SelfIntf(Self)
 {}

@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepBasic_RWExternalSource.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWExternalSource.hxx>
+#include <StepBasic_ExternalSource.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWExternalSource
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource ()
 {
 }

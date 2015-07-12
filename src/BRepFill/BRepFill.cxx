@@ -34,64 +34,63 @@
 // Modified:	Mon Oct 12 09:42:33 1998
 //              number of edges in EdgesFromVertex (CTS21570) 
 
-#include <BRepFill.ixx>
-
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepExtrema_ExtPC.hxx>
+#include <BRepFill.hxx>
+#include <BRepGProp.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_FindSurface.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <BRepExtrema_ExtPC.hxx>
-#include <BRepExtrema_DistShapeShape.hxx>
-#include <BRep_Tool.hxx>
+#include <BRepLProp.hxx>
 #include <BRepTools_WireExplorer.hxx>
-
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <BRep_Builder.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt2d.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomFill_Generator.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
-#include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom2d_Line.hxx>
-#include <GeomFill_Generator.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <BRepLProp.hxx>
-#include <BRepGProp.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
 #include <GProp_GProps.hxx>
 #include <GProp_PrincipalProps.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_Array1OfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
-
-#include <TColStd_Array1OfInteger.hxx>
-#include <Standard_NoSuchObject.hxx>
-
 
 static void MakeWire(const TopTools_Array1OfShape& Edges,
 		     const Standard_Integer rangdeb,

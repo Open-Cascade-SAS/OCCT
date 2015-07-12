@@ -14,13 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccAna_Circ2d2TanOn.jxx>
 
 #include <ElCLib.hxx>
-#include <gp_Dir2d.hxx>
+#include <GccAna_Circ2d2TanOn.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
 #include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a circle passing by : 2 points Point1 and Point2.        +
@@ -33,7 +41,6 @@
 //   L1 with OnLine and the radius the distance between Point1 and the point   +
 //   calculated above.                                                   +
 //=========================================================================
-
 GccAna_Circ2d2TanOn::
    GccAna_Circ2d2TanOn (const gp_Pnt2d&      Point1     , 
                         const gp_Pnt2d&      Point2     ,

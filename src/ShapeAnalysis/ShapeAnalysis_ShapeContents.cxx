@@ -16,34 +16,32 @@
 
 //szv#4 S4163
 
-#include <ShapeAnalysis_ShapeContents.ixx>
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeAnalysis_Wire.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_ElementarySurface.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_ElementarySurface.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <ShapeAnalysis_ShapeContents.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-
-
-
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 ShapeAnalysis_ShapeContents::ShapeAnalysis_ShapeContents()
 {

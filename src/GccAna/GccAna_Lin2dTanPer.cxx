@@ -17,18 +17,21 @@
 //                      and ORTHOGONAL to a STRAIGHT LINE.                      +
 //=========================================================================
 
-#include <GccAna_Lin2dTanPer.ixx>
-
 #include <ElCLib.hxx>
-#include <StdFail_NotDone.hxx>
-#include <gp_XY.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <Standard_OutOfRange.hxx>
+#include <GccAna_Lin2dTanPer.hxx>
 #include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Straight line passing by point  : ThePoint and                       +
@@ -36,7 +39,6 @@
 //   Create the straight line of origin     : ThePoint                           +
 //                  and direction  : TheLin.Direction() turned by 90   +
 //=========================================================================
-
 GccAna_Lin2dTanPer::
    GccAna_Lin2dTanPer (const gp_Pnt2d& ThePnt    ,
                        const gp_Lin2d& TheLin    ):

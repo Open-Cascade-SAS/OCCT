@@ -12,7 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBlend_Line.ixx>
+
+#include <Blend_Point.hxx>
+#include <BRepBlend_Extremity.hxx>
+#include <BRepBlend_Line.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 BRepBlend_Line::BRepBlend_Line ():
   tras1(IntSurf_Undecided),tras2(IntSurf_Undecided),

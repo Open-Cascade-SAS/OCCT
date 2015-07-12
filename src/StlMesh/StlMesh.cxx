@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StlMesh.ixx>
-#include <StlMesh_SequenceOfMeshTriangle.hxx>
+
+#include <StlMesh.hxx>
+#include <StlMesh_Mesh.hxx>
 #include <StlMesh_MeshTriangle.hxx>
+#include <StlMesh_SequenceOfMeshTriangle.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 
 //=======================================================================
 //function : Merge
 //purpose  : 
 //=======================================================================
-
 Handle(StlMesh_Mesh) StlMesh::Merge(const Handle(StlMesh_Mesh)& mesh1, const Handle(StlMesh_Mesh)& mesh2)
 {
   Handle(StlMesh_Mesh) mergeMesh = new StlMesh_Mesh;

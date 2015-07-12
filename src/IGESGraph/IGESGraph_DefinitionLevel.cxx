@@ -16,9 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_DefinitionLevel.ixx>
+#include <IGESGraph_DefinitionLevel.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_DefinitionLevel::IGESGraph_DefinitionLevel ()    {  }
 

@@ -17,32 +17,31 @@
 //              modified 12-january-98
 //              Sergey ZARITCHNY
 //              szy
-#include <DsgPrs_DiameterPresentation.ixx>
 
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_Text.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-
+#include <Aspect_AspectMarker.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <Aspect_TypeOfMarker.hxx>
+#include <DsgPrs.hxx>
+#include <DsgPrs_DiameterPresentation.hxx>
+#include <ElCLib.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-
-#include <ElCLib.hxx>
-
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <Aspect_AspectMarker.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Vertex.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
+#include <Prs3d_TextAspect.hxx>
 #include <Quantity_Color.hxx>
-#include <DsgPrs.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 //==========================================================================
 // function : DsgPrs_DiameterPresentation::Add

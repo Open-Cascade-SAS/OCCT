@@ -15,16 +15,17 @@
 
 // modified     20.04.2009 Sergey Zaritchny
 
-#include <XmlMDataXtd.ixx>
-
-#include <XmlMDataXtd_ShapeDriver.hxx>
-#include <XmlMDataXtd_PointDriver.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <XmlMDataXtd.hxx>
 #include <XmlMDataXtd_AxisDriver.hxx>
-#include <XmlMDataXtd_PlaneDriver.hxx>
-#include <XmlMDataXtd_GeometryDriver.hxx>
 #include <XmlMDataXtd_ConstraintDriver.hxx>
-#include <XmlMDataXtd_PlacementDriver.hxx>
+#include <XmlMDataXtd_GeometryDriver.hxx>
 #include <XmlMDataXtd_PatternStdDriver.hxx>
+#include <XmlMDataXtd_PlacementDriver.hxx>
+#include <XmlMDataXtd_PlaneDriver.hxx>
+#include <XmlMDataXtd_PointDriver.hxx>
+#include <XmlMDataXtd_ShapeDriver.hxx>
+#include <XmlMDF_ADriverTable.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================

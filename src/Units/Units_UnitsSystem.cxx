@@ -16,29 +16,30 @@
 
 //              Convertir correctement les unites translatees
 
-#include <Units_UnitsSystem.ixx>
-#include <Units.hxx>
-#include <Units_UnitsDictionary.hxx>
-#include <Units_QuantitiesSequence.hxx>
-#include <Units_Explorer.hxx>
-#include <Units_Quantity.hxx>
-#include <Units_UnitsSequence.hxx>
-#include <Units_UnitSentence.hxx>
-#include <Units_Unit.hxx>
-#include <Units_ShiftedUnit.hxx>
-#include <Units_Token.hxx>
-#include <Units_ShiftedToken.hxx>
 #include <Resource_Manager.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Units.hxx>
+#include <Units_Explorer.hxx>
+#include <Units_NoSuchType.hxx>
+#include <Units_NoSuchUnit.hxx>
 #include <Units_Operators.hxx>
-
+#include <Units_QuantitiesSequence.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_ShiftedToken.hxx>
+#include <Units_ShiftedUnit.hxx>
+#include <Units_Token.hxx>
+#include <Units_Unit.hxx>
+#include <Units_UnitsDictionary.hxx>
+#include <Units_UnitSentence.hxx>
+#include <Units_UnitsSequence.hxx>
+#include <Units_UnitsSystem.hxx>
 
 //=======================================================================
 //function : Units_UnitsSystem
 //purpose  : 
 //=======================================================================
-
 Units_UnitsSystem::Units_UnitsSystem()
 {
   thequantitiessequence = new Units_QuantitiesSequence();

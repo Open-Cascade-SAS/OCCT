@@ -12,12 +12,11 @@
 // commercial license or contractual agreement.
 
 /***********************************************************************
-
-
 ************************************************************************/
-
 // for the class
-#include <Visual3d_LayerItem.ixx>
+
+#include <Standard_Type.hxx>
+#include <Visual3d_LayerItem.hxx>
 
 //
 //-Constructors

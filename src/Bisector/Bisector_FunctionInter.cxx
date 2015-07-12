@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bisector_FunctionInter.ixx>
-#include <Geom2d_Curve.hxx>
+
 #include <Bisector_BisecCC.hxx>
 #include <Bisector_BisecPC.hxx>
+#include <Bisector_Curve.hxx>
+#include <Bisector_FunctionInter.hxx>
+#include <Geom2d_Curve.hxx>
+#include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp.hxx>
 #include <Precision.hxx>
 
 //=============================================================================

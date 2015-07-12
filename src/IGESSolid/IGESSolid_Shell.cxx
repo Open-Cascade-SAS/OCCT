@@ -16,8 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_Shell.ixx>
-
+#include <IGESSolid_Face.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_Shell::IGESSolid_Shell ()    {  }
 

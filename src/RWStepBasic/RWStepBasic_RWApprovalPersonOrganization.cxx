@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWApprovalPersonOrganization.ixx>
-#include <StepBasic_PersonOrganizationSelect.hxx>
-#include <StepBasic_Approval.hxx>
-#include <StepBasic_ApprovalRole.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWApprovalPersonOrganization.hxx>
+#include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalPersonOrganization.hxx>
-
+#include <StepBasic_ApprovalRole.hxx>
+#include <StepBasic_PersonOrganizationSelect.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWApprovalPersonOrganization::RWStepBasic_RWApprovalPersonOrganization () {}
 

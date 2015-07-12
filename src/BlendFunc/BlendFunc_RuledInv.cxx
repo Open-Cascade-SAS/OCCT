@@ -14,8 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_RuledInv.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <BlendFunc_RuledInv.hxx>
+#include <math_Matrix.hxx>
 #include <Precision.hxx>
 
 BlendFunc_RuledInv::BlendFunc_RuledInv(const Handle(Adaptor3d_HSurface)& S1,

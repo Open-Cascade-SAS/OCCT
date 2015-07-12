@@ -12,34 +12,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Storage_Schema.ixx>
 
-#include <TColStd_HSequenceOfAsciiString.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
-
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Persistent.hxx>
+#include <Standard_Type.hxx>
 #include <Storage.hxx>
+#include <Storage_BaseDriver.hxx>
 #include <Storage_BucketOfPersistent.hxx>
-#include <Storage_InternalData.hxx>
-#include <Storage_TypedCallBack.hxx>
-#include <Storage_HPArray.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <Storage_Root.hxx>
+#include <Storage_CallBack.hxx>
+#include <Storage_Data.hxx>
 #include <Storage_DataMapIteratorOfMapOfCallBack.hxx>
 #include <Storage_DefaultCallBack.hxx>
 #include <Storage_HArrayOfCallBack.hxx>
-
-#include <Storage_StreamModeError.hxx>
-#include <Storage_StreamFormatError.hxx>
-#include <Storage_StreamWriteError.hxx>
-#include <Storage_StreamReadError.hxx>
-#include <Storage_StreamUnknownTypeError.hxx>
-#include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_HeaderData.hxx>
+#include <Storage_HPArray.hxx>
+#include <Storage_HSeqOfRoot.hxx>
+#include <Storage_InternalData.hxx>
+#include <Storage_Root.hxx>
+#include <Storage_RootData.hxx>
+#include <Storage_Schema.hxx>
 #include <Storage_StreamExtCharParityError.hxx>
-#include <Standard_ErrorHandler.hxx>
+#include <Storage_StreamFormatError.hxx>
+#include <Storage_StreamModeError.hxx>
+#include <Storage_StreamReadError.hxx>
+#include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_StreamUnknownTypeError.hxx>
+#include <Storage_StreamWriteError.hxx>
+#include <Storage_TypeData.hxx>
+#include <Storage_TypedCallBack.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
 
 #include <locale.h>
 #include <stdio.h>
-
 #define DATATYPE_MIGRATION
 
 #ifdef DATATYPE_MIGRATION

@@ -11,19 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_DefaultGeneral.ixx>
-#include <StepData.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_GeneralLib.hxx>
-#include <StepData_Protocol.hxx>
-#include <StepData_UndefinedEntity.hxx>
-#include <Interface_UndefinedContent.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ParamType.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Interface_UndefinedContent.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData.hxx>
+#include <StepData_DefaultGeneral.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_UndefinedEntity.hxx>
 
 //  DefaultGeneral de StepData  reconnait  UN SEUL TYPE : UndefinedEntity
-
-
 StepData_DefaultGeneral::StepData_DefaultGeneral ()
 {
   Interface_GeneralLib::SetGlobal (this, StepData::Protocol());

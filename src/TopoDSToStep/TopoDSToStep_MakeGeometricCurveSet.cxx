@@ -14,30 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeGeometricCurveSet.ixx>
-#include <TopoDSToStep.hxx>
-#include <TopoDSToStep_Builder.hxx>
-#include <TopoDSToStep_WireframeBuilder.hxx>
-#include <TopoDSToStep_Tool.hxx>
+
 #include <MoniTool_DataMapOfShapeTransient.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-
+#include <StdFail_NotDone.hxx>
+#include <StepShape_GeometricCurveSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
 #include <StepShape_HArray1OfGeometricSetSelect.hxx>
-
+#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <StdFail_NotDone.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDSToStep.hxx>
+#include <TopoDSToStep_Builder.hxx>
+#include <TopoDSToStep_MakeGeometricCurveSet.hxx>
+#include <TopoDSToStep_Tool.hxx>
+#include <TopoDSToStep_WireframeBuilder.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-
-#include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Create a GeometricCurveSet of StepShape from a Shape of TopoDS
 //=============================================================================
-
 TopoDSToStep_MakeGeometricCurveSet::TopoDSToStep_MakeGeometricCurveSet(
                                     const TopoDS_Shape& aShape,
 				    const Handle(Transfer_FinderProcess)& FP)

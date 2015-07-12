@@ -16,14 +16,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <RWStepBasic_RWContract.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWContract.hxx>
+#include <StepBasic_Contract.hxx>
 #include <StepBasic_ContractType.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWContract
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWContract::RWStepBasic_RWContract ()
 {
 }

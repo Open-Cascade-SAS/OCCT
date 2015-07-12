@@ -11,25 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESGraph_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESGraph_Color.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESGraph_DrawingSize.hxx>
 #include <IGESGraph_DrawingUnits.hxx>
+#include <IGESGraph_GeneralModule.hxx>
 #include <IGESGraph_HighLight.hxx>
 #include <IGESGraph_IntercharacterSpacing.hxx>
 #include <IGESGraph_LineFontDefPattern.hxx>
-#include <IGESGraph_LineFontPredefined.hxx>
 #include <IGESGraph_LineFontDefTemplate.hxx>
+#include <IGESGraph_LineFontPredefined.hxx>
 #include <IGESGraph_NominalSize.hxx>
 #include <IGESGraph_Pick.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
 #include <IGESGraph_TextFontDef.hxx>
-#include <IGESGraph_UniformRectGrid.hxx>
-
 #include <IGESGraph_ToolColor.hxx>
 #include <IGESGraph_ToolDefinitionLevel.hxx>
 #include <IGESGraph_ToolDrawingSize.hxx>
@@ -37,21 +35,26 @@
 #include <IGESGraph_ToolHighLight.hxx>
 #include <IGESGraph_ToolIntercharacterSpacing.hxx>
 #include <IGESGraph_ToolLineFontDefPattern.hxx>
-#include <IGESGraph_ToolLineFontPredefined.hxx>
 #include <IGESGraph_ToolLineFontDefTemplate.hxx>
+#include <IGESGraph_ToolLineFontPredefined.hxx>
 #include <IGESGraph_ToolNominalSize.hxx>
 #include <IGESGraph_ToolPick.hxx>
 #include <IGESGraph_ToolTextDisplayTemplate.hxx>
 #include <IGESGraph_ToolTextFontDef.hxx>
 #include <IGESGraph_ToolUniformRectGrid.hxx>
-
-
+#include <IGESGraph_UniformRectGrid.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESGraph_GeneralModule::IGESGraph_GeneralModule ()    {  }
 
 

@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SelectAnyType.ixx>
 
+#include <IFSelect_SelectAnyType.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 Standard_Boolean  IFSelect_SelectAnyType::Sort
   (const Standard_Integer , const Handle(Standard_Transient)& ent,

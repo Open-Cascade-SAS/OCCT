@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_ApprovalAssignment.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_Approval.hxx>
+#include <StepBasic_ApprovalAssignment.hxx>
 
 void StepBasic_ApprovalAssignment::Init(
 	const Handle(StepBasic_Approval)& aAssignedApproval)

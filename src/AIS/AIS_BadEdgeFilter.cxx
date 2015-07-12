@@ -16,21 +16,19 @@
 
 //		<g_design>
 
-
-#include <AIS_BadEdgeFilter.ixx>
-
+#include <AIS_BadEdgeFilter.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape.hxx>
-
-
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 //=======================================================================
 //function : AIS_BadEdgeFilter
 //purpose  : 
 //=======================================================================
-
 AIS_BadEdgeFilter::AIS_BadEdgeFilter()
 {
   myContour=0;

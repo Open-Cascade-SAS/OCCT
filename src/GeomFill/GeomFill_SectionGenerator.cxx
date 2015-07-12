@@ -14,17 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_SectionGenerator.ixx>
 
 #include <Geom_BSplineCurve.hxx>
-
-
+#include <GeomFill_SectionGenerator.hxx>
 
 //=======================================================================
 //function : GeomFill_SectionGenerator
 //purpose  : 
 //=======================================================================
-
 GeomFill_SectionGenerator::GeomFill_SectionGenerator()
 {
   if ( mySequence.Length() > 1 ) {

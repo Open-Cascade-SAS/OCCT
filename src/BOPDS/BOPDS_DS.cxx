@@ -12,52 +12,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPDS_DS.ixx>
-//
-#include <Standard_Assert.hxx>
-//
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_BaseAllocator.hxx>
 
-#include <gp_Pnt.hxx>
 #include <Bnd_Box.hxx>
-//
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-//
-#include <BRep_TVertex.hxx>
+#include <BOPCol_DataMapOfIntegerMapOfInteger.hxx>
+#include <BOPCol_DataMapOfShapeInteger.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPCol_MapOfInteger.hxx>
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPDS_DataMapOfPassKeyListOfPaveBlock.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_FaceInfo.hxx>
+#include <BOPDS_IndexRange.hxx>
+#include <BOPDS_MapOfPave.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_PassKey.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <BOPDS_VectorOfPave.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
-//
+#include <BRep_TVertex.hxx>
 #include <BRepBndLib.hxx>
-//
-#include <BOPCol_MapOfInteger.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_DataMapOfIntegerMapOfInteger.hxx>
-//
-#include <BOPDS_IndexRange.hxx>
-#include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_PassKey.hxx>
-#include <BOPDS_DataMapOfPassKeyListOfPaveBlock.hxx>
-#include <BOPDS_PassKey.hxx>
-#include <BOPDS_MapOfPave.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_VectorOfPave.hxx>
-
 #include <Geom_Curve.hxx>
-#include <BRep_Builder.hxx>
-#include <Precision.hxx>
-#include <IntTools_Tools.hxx>
-#include <BOPTools_AlgoTools.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <IntTools_Tools.hxx>
+#include <NCollection_BaseAllocator.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <Precision.hxx>
+#include <Standard_Assert.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 #include <algorithm>
-
+//
+//
+//
+//
+//
+//
+//
 //
 static
   inline void ResetShape(const TopoDS_Shape& aS);

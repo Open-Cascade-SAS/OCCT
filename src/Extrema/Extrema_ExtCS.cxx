@@ -16,29 +16,34 @@
 
 //  Modified by skv - Thu Jul  7 12:29:34 2005 OCC9134
 
-#include <Extrema_ExtCS.ixx>
-#include <Extrema_GenExtCS.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
-#include <Precision.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Torus.hxx>
-#include <gp_Lin.hxx>
-
-#include <ElCLib.hxx>
-#include <Extrema_ExtPElC.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <Extrema_ExtPElS.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Extrema_ExtPS.hxx>
+#include <ElCLib.hxx>
 #include <ElSLib.hxx>
+#include <Extrema_ExtCS.hxx>
+#include <Extrema_ExtPElC.hxx>
+#include <Extrema_ExtPElS.hxx>
+#include <Extrema_ExtPS.hxx>
+#include <Extrema_GenExtCS.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <StdFail_InfiniteSolutions.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 Extrema_ExtCS::Extrema_ExtCS() 
 {

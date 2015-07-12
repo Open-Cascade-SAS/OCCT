@@ -16,26 +16,26 @@
 
 //:   gka 09.04.99: S4136: improving tolerance management
 
-#include <StepToTopoDS_TranslateShell.ixx>
-
-#include <StepToTopoDS_TranslateFace.hxx>
-
-#include <StepShape_FaceSurface.hxx>
-
 #include <BRep_Builder.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-#include <Transfer_TransientProcess.hxx>
-
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressSentry.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepShape_ConnectedFaceSet.hxx>
+#include <StepShape_FaceSurface.hxx>
+#include <StepToTopoDS_NMTool.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateFace.hxx>
+#include <StepToTopoDS_TranslateShell.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <Transfer_TransientProcess.hxx>
 
 // ============================================================================
 // Method  : StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell
 // Purpose : Empty Constructor
 // ============================================================================
-
 StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
 {
   done = Standard_False;

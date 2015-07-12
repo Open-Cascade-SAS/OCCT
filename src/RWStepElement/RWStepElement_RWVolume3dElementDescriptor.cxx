@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWVolume3dElementDescriptor.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWVolume3dElementDescriptor.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepElement_HArray1OfVolumeElementPurposeMember.hxx>
+#include <StepElement_Volume3dElementDescriptor.hxx>
 #include <StepElement_VolumeElementPurposeMember.hxx>
 
 //=======================================================================
 //function : RWStepElement_RWVolume3dElementDescriptor
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWVolume3dElementDescriptor::RWStepElement_RWVolume3dElementDescriptor ()
 {
 }

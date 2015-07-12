@@ -15,13 +15,15 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaMoistureAbsorption.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FeaMoistureAbsorption.hxx>
+#include <StepFEA_SymmetricTensor23d.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaMoistureAbsorption
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaMoistureAbsorption::StepFEA_FeaMoistureAbsorption ()
 {
 }

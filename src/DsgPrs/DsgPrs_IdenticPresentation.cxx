@@ -14,28 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DsgPrs_IdenticPresentation.ixx>
 
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_Text.hxx>
-
-#include <TCollection_AsciiString.hxx>
-
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-
+#include <DsgPrs_IdenticPresentation.hxx>
 #include <ElCLib.hxx>
-
-#include <Precision.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Elips.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Precision.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresentation,
 				      const Handle(Prs3d_Drawer)& aDrawer,

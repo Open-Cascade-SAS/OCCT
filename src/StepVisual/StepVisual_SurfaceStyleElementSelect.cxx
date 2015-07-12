@@ -11,14 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_SurfaceStyleElementSelect.ixx>
+
 #include <Interface_Macros.hxx>
-#include <StepVisual_SurfaceStyleFillArea.hxx>
+#include <Standard_Transient.hxx>
 #include <StepVisual_SurfaceStyleBoundary.hxx>
-#include <StepVisual_SurfaceStyleParameterLine.hxx>
-#include <StepVisual_SurfaceStyleSilhouette.hxx>
-#include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
 #include <StepVisual_SurfaceStyleControlGrid.hxx>
+#include <StepVisual_SurfaceStyleElementSelect.hxx>
+#include <StepVisual_SurfaceStyleFillArea.hxx>
+#include <StepVisual_SurfaceStyleParameterLine.hxx>
+#include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
+#include <StepVisual_SurfaceStyleSilhouette.hxx>
 
 StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect () {  }
 

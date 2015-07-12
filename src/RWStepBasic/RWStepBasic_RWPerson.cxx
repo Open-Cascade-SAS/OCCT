@@ -11,9 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWPerson.ixx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 
+#include <Interface_Check.hxx>
+#include <Interface_HArray1OfHAsciiString.hxx>
+#include <RWStepBasic_RWPerson.hxx>
+#include <StepBasic_Person.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWPerson::RWStepBasic_RWPerson () {}
 

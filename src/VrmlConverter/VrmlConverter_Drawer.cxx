@@ -11,8 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_Drawer.ixx>
+
+#include <Standard_Type.hxx>
 #include <Vrml_Material.hxx>
+#include <VrmlConverter_Drawer.hxx>
+#include <VrmlConverter_IsoAspect.hxx>
+#include <VrmlConverter_LineAspect.hxx>
+#include <VrmlConverter_PointAspect.hxx>
+#include <VrmlConverter_ShadingAspect.hxx>
 
 VrmlConverter_Drawer::VrmlConverter_Drawer():
   myNbPoints(17),

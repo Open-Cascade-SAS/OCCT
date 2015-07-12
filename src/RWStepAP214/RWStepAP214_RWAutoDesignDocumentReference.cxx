@@ -11,13 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepAP214_RWAutoDesignDocumentReference.ixx>
 
-#include <StepBasic_Document.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <StepAP214_HArray1OfAutoDesignReferencingItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAutoDesignDocumentReference.hxx>
+#include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignReferencingItem.hxx>
-
+#include <StepAP214_HArray1OfAutoDesignReferencingItem.hxx>
+#include <StepBasic_Document.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 RWStepAP214_RWAutoDesignDocumentReference::RWStepAP214_RWAutoDesignDocumentReference  ()    {  }
 

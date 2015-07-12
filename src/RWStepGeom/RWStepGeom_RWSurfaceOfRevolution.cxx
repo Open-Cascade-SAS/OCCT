@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWSurfaceOfRevolution.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepGeom_RWSurfaceOfRevolution.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepGeom_Curve.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
 #include <StepGeom_SurfaceOfRevolution.hxx>
-
 
 RWStepGeom_RWSurfaceOfRevolution::RWStepGeom_RWSurfaceOfRevolution () {}
 

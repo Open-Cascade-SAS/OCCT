@@ -14,30 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Hermit.ixx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+
 #include <BSplCLib.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <PLib.hxx>
-#include <Standard_Boolean.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
+#include <Hermit.hxx>
+#include <PLib.hxx>
+#include <Precision.hxx>
+#include <Standard_Boolean.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_Real.hxx>
-#include <Precision.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 #include <algorithm>
-
 //=======================================================================
 //function : HermiteCoeff
 //purpose  : calculate  the Hermite coefficients of degree 3 from BS and
 //    	     store them in TAB(4 coefficients)
 //=======================================================================
-
 static void HermiteCoeff(const Handle(Geom_BSplineCurve)& BS,
 			 TColStd_Array1OfReal&            TAB)
      

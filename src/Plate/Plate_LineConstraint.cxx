@@ -14,7 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Plate_LineConstraint.ixx>
+
+#include <gp_Lin.hxx>
+#include <gp_XY.hxx>
+#include <Plate_LinearScalarConstraint.hxx>
+#include <Plate_LineConstraint.hxx>
 
 Plate_LineConstraint::Plate_LineConstraint(const gp_XY& point2d,
 					     const gp_Lin& lin,

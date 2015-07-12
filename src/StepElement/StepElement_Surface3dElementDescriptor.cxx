@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepElement_Surface3dElementDescriptor.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_Surface3dElementDescriptor.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepElement_Surface3dElementDescriptor
 //purpose  : 
 //=======================================================================
-
 StepElement_Surface3dElementDescriptor::StepElement_Surface3dElementDescriptor ()
 {
 }

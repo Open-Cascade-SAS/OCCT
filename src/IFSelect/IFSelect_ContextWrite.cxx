@@ -11,15 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_ContextWrite.ixx>
-#include <Standard_NoSuchObject.hxx>
 
+#include <IFSelect_AppliedModifiers.hxx>
+#include <IFSelect_ContextWrite.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
 
 //=======================================================================
 //function : IFSelect_ContextWrite
 //purpose  : 
 //=======================================================================
-
 IFSelect_ContextWrite::IFSelect_ContextWrite
   (const Handle(Interface_InterfaceModel)& model,
    const Handle(Interface_Protocol)& proto,

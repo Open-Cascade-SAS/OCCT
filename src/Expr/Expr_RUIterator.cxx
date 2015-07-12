@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_RUIterator.ixx>
+
+#include <Expr.hxx>
+#include <Expr_GeneralRelation.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Expr_RelationIterator.hxx>
+#include <Expr_RUIterator.hxx>
+#include <Expr_SingleRelation.hxx>
+#include <Expr_UnknownIterator.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Expr_RelationIterator.hxx>
-#include <Expr_UnknownIterator.hxx>
-#include <Expr_SingleRelation.hxx>
-#include <Expr.hxx>
 
 Expr_RUIterator::Expr_RUIterator (const Handle(Expr_GeneralRelation)& rel)
 {

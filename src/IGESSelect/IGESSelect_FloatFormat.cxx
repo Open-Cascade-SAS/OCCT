@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_FloatFormat.ixx>
+
+#include <IFSelect_ContextWrite.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESSelect_FloatFormat.hxx>
 #include <Interface_FloatWriter.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <stdio.h>
-
-
-
 IGESSelect_FloatFormat::IGESSelect_FloatFormat ()
     : thezerosup (Standard_True) , themainform ("%E") ,
       theformrange ("%f") , therangemin (0.1) , therangemax (1000.)

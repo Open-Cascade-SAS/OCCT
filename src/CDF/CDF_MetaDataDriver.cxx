@@ -14,16 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_MetaDataDriver.ixx>
-#include <CDF_Application.hxx>
-#include <CDF_Session.hxx>
 
+#include <CDF_Application.hxx>
+#include <CDF_MetaDataDriver.hxx>
+#include <CDF_Session.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
+#include <PCDM_ReferenceIterator.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 //=======================================================================
 //function : CDF_MetaDataDriver
 //purpose  : 
 //=======================================================================
-
 CDF_MetaDataDriver::CDF_MetaDataDriver() {}
 
 //=======================================================================

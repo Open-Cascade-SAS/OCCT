@@ -11,16 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_DefaultSpecific.ixx>
-#include <IGESData_UndefinedEntity.hxx>
-#include <Interface_UndefinedContent.hxx>
-#include <IGESData_SpecificLib.hxx>
-#include <IGESData.hxx>
-#include <IGESData_Protocol.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
 
+#include <IGESData.hxx>
+#include <IGESData_DefaultSpecific.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESData_SpecificLib.hxx>
+#include <IGESData_UndefinedEntity.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_UndefinedContent.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESData_DefaultSpecific::IGESData_DefaultSpecific ()
 {  IGESData_SpecificLib::SetGlobal(this, IGESData::Protocol());  }

@@ -23,8 +23,29 @@
 #pragma comment( lib, "comdlg32.lib"  )
 #endif
 
-#include <V3d_View.jxx>
+
+#include <Aspect_ColorScale.hxx>
+#include <Aspect_GradientBackground.hxx>
+#include <Aspect_Grid.hxx>
+#include <Aspect_Window.hxx>
+#include <Bnd_Box.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_MultiplyDefined.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <V3d_BadValue.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_Light.hxx>
+#include <V3d_UnMapped.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <Visual3d_View.hxx>
 
 #ifdef WNT
 struct Device

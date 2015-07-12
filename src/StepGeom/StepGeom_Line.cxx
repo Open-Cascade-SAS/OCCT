@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepGeom_Line.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Vector.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepGeom_Line::StepGeom_Line ()  {}
 

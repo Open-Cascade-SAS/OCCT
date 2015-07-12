@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakePlane.ixx>
-#include <GeomToStep_MakePlane.hxx>
-#include <StdFail_NotDone.hxx>
-#include <gp_Dir.hxx>
+
 #include <Geom_Plane.hxx>
-#include <StepGeom_Plane.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakePlane.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Plane.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //=============================================================================
 // Creation d' un plane de prostep a partir d' un Pln de gp
 //=============================================================================
-
 GeomToStep_MakePlane::GeomToStep_MakePlane( const gp_Pln& P)
 {
   Handle(StepGeom_Plane) Plan = new StepGeom_Plane;

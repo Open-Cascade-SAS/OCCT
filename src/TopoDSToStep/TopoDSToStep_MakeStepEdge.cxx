@@ -14,57 +14,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopoDSToStep_MakeStepEdge.ixx>
-
-#include <TopoDSToStep_MakeStepVertex.hxx>
-
-#include <Geom_Line.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <gp_Vec.hxx>
-
-#include <BRepLib.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-
-#include <StepShape_Vertex.hxx>
-#include <StepShape_EdgeCurve.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
-#include <StepGeom_SeamCurve.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
-
-#include <GeomToStep_MakeCurve.hxx>
-#include <GeomToStep_MakeLine.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomToStep_MakeCurve.hxx>
+#include <GeomToStep_MakeLine.hxx>
+#include <gp_Vec.hxx>
+#include <Interface_Static.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_SeamCurve.hxx>
+#include <StepGeom_SurfaceCurve.hxx>
+#include <StepShape_EdgeCurve.hxx>
+#include <StepShape_TopologicalRepresentationItem.hxx>
+#include <StepShape_Vertex.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDSToStep_MakeStepEdge.hxx>
+#include <TopoDSToStep_MakeStepVertex.hxx>
+#include <TopoDSToStep_Tool.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
 
 // Processing of non-manifold topology (ssv; 11.11.2010)
-#include <TransferBRep.hxx>
-#include <Interface_Static.hxx>
-
 // ----------------------------------------------------------------------------
 // Constructors
 // ----------------------------------------------------------------------------
-
 TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge()
 {
   done = Standard_False;

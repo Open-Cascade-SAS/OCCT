@@ -12,19 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
-#include <stdio.h>
 
-#include <Draw_Interpretor.hxx>
+#include <BOPTest.hxx>
+#include <BOPTest_Objects.hxx>
 #include <DBRep.hxx>
-//
+#include <Draw_Interpretor.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-//
 #include <TopTools_ListOfShape.hxx>
-//
-#include <BOPTest_Objects.hxx>
 
+#include <stdio.h>
+//
+//
+//
 static Standard_Integer baddobjects (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer bclearobjects (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer baddtools   (Draw_Interpretor& , Standard_Integer , const char** );

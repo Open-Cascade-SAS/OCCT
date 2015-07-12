@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_Translation.ixx>
+
+#include <gp_Vec.hxx>
+#include <Vrml_Translation.hxx>
 
 Vrml_Translation::Vrml_Translation()
 {

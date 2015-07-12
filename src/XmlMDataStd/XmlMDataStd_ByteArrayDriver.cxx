@@ -13,12 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataStd_ByteArrayDriver.ixx>
-#include <TDataStd_ByteArray.hxx>
-#include <TColStd_HArray1OfByte.hxx>
+
+#include <CDM_MessageDriver.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <XmlObjMgt.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfByte.hxx>
+#include <TDataStd_ByteArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <XmlMDataStd.hxx>
+#include <XmlMDataStd_ByteArrayDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString,  "last")

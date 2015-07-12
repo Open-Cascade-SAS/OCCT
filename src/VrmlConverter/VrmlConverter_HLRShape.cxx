@@ -11,22 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <VrmlConverter_HLRShape.ixx>
+
 #include <Bnd_Box.hxx>
-#include <StdPrs_HLRToolShape.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBndLib.hxx>
-#include <VrmlConverter_DeflectionCurve.hxx>
-#include <VrmlConverter_LineAspect.hxx>
 #include <Precision.hxx>
-#include <Vrml_Separator.hxx>
+#include <StdPrs_HLRToolShape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Vrml_Material.hxx>
+#include <Vrml_Separator.hxx>
+#include <VrmlConverter_DeflectionCurve.hxx>
+#include <VrmlConverter_Drawer.hxx>
+#include <VrmlConverter_HLRShape.hxx>
+#include <VrmlConverter_LineAspect.hxx>
+#include <VrmlConverter_Projector.hxx>
 
 //=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
-
 void VrmlConverter_HLRShape::Add(Standard_OStream&                          anOStream,
 				 const TopoDS_Shape&                        aShape,
 				 const Handle (VrmlConverter_Drawer)&       aDrawer,

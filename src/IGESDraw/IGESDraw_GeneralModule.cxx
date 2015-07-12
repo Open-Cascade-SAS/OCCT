@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESDraw_GeneralModule.ixx>
-#include <Interface_Macros.hxx>
-#include <Interface_Category.hxx>
 
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_DrawingWithRotation.hxx>
+#include <IGESDraw_GeneralModule.hxx>
 #include <IGESDraw_LabelDisplay.hxx>
 #include <IGESDraw_NetworkSubfigure.hxx>
 #include <IGESDraw_NetworkSubfigureDef.hxx>
@@ -26,10 +26,6 @@
 #include <IGESDraw_Planar.hxx>
 #include <IGESDraw_RectArraySubfigure.hxx>
 #include <IGESDraw_SegmentedViewsVisible.hxx>
-#include <IGESDraw_View.hxx>
-#include <IGESDraw_ViewsVisible.hxx>
-#include <IGESDraw_ViewsVisibleWithAttr.hxx>
-
 #include <IGESDraw_ToolCircArraySubfigure.hxx>
 #include <IGESDraw_ToolConnectPoint.hxx>
 #include <IGESDraw_ToolDrawing.hxx>
@@ -44,14 +40,21 @@
 #include <IGESDraw_ToolView.hxx>
 #include <IGESDraw_ToolViewsVisible.hxx>
 #include <IGESDraw_ToolViewsVisibleWithAttr.hxx>
-
-
+#include <IGESDraw_View.hxx>
+#include <IGESDraw_ViewsVisible.hxx>
+#include <IGESDraw_ViewsVisibleWithAttr.hxx>
+#include <Interface_Category.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESDraw_GeneralModule::IGESDraw_GeneralModule ()    {  }
 
 

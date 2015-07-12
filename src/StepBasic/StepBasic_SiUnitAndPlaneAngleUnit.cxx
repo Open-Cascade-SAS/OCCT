@@ -11,10 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_SiUnitAndPlaneAngleUnit.ixx>
-#include <StepBasic_SiUnit.hxx>
-#include <StepBasic_PlaneAngleUnit.hxx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_PlaneAngleUnit.hxx>
+#include <StepBasic_SiUnit.hxx>
+#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 
 StepBasic_SiUnitAndPlaneAngleUnit::StepBasic_SiUnitAndPlaneAngleUnit ()
 {

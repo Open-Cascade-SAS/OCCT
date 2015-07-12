@@ -14,39 +14,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_SectionPlacement.ixx>
 
-#include <GeomLib.hxx>
-#include <Geom_Plane.hxx>
-#include <GeomLProp_CLProps.hxx>
-#include <GeomAbs_CurveType.hxx> 
-#include <GeomAdaptor_HSurface.hxx>
-
-#include <gp_Ax3.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Trsf.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <Adaptor3d_HCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-
-#include <Precision.hxx>
-#include <gp.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Conic.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomFill_LocationLaw.hxx>
+#include <GeomFill_SectionPlacement.hxx>
+#include <GeomLib.hxx>
+#include <GeomLProp_CLProps.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom_BezierCurve.hxx>
-
-#include <Geom_CartesianPoint.hxx>
-#include <Geom_Curve.hxx>
-
+#include <Precision.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 
 //===============================================================
 // Function :

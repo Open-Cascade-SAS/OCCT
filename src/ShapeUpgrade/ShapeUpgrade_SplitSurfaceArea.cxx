@@ -11,15 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_SplitSurfaceArea.ixx>
-#include <TColStd_HSequenceOfReal.hxx>
+
 #include <GeomAdaptor_Surface.hxx>
+#include <ShapeUpgrade_SplitSurfaceArea.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitSurfaceArea
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitSurfaceArea::ShapeUpgrade_SplitSurfaceArea():
        ShapeUpgrade_SplitSurface()
 {

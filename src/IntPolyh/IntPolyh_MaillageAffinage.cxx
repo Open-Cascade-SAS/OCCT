@@ -17,31 +17,29 @@
 //  modified by Edward AGAPOV (eap) Tue Jan 22 2002 (bug occ53)
 //  - improve SectionLine table management (avoid memory reallocation)
 //  - some protection against arrays overflow
-
 //  modified by Edward AGAPOV (eap) Thu Feb 14 2002 (occ139)
 //  - make Section Line parts rightly connected (prepend 2nd part to the 1st)
 //  - TriangleShape() for debugging purpose
-
 //  Modified by skv - Thu Sep 25 17:42:42 2003 OCC567
 //  modified by ofv Thu Apr  8 14:58:13 2004 fip
 
-
-#include <IntPolyh_MaillageAffinage.ixx>
-
-#include <Precision.hxx>
-#include <gp_Pnt.hxx>
-#include <gp.hxx>
-
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
+#include <Adaptor3d_HSurface.hxx>
 #include <Bnd_BoundSortBox.hxx>
-#include <Bnd_HArray1OfBox.hxx> 
-
+#include <Bnd_Box.hxx>
+#include <Bnd_HArray1OfBox.hxx>
+#include <gp.hxx>
+#include <gp_Pnt.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
-
 #include <IntPolyh_ArrayOfCouples.hxx>
-#include <IntPolyh_Edge.hxx>
 #include <IntPolyh_Couple.hxx>
+#include <IntPolyh_Edge.hxx>
+#include <IntPolyh_MaillageAffinage.hxx>
+#include <IntPolyh_Point.hxx>
+#include <IntPolyh_SectionLine.hxx>
+#include <IntPolyh_StartPoint.hxx>
+#include <IntPolyh_Triangle.hxx>
+#include <Precision.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 static Standard_Real MyTolerance=10.0e-7;
 static Standard_Real MyConfusionPrecision=10.0e-12;

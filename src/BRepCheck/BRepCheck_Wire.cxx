@@ -20,63 +20,63 @@
 //   Check self-intersection in case of closed edge
 //  modified by eap Fri Dec 21 17:36:55 2001 (bug OCC35)
 //   Closed2d() added
-
 //  Modified by skv - Wed Jul 23 12:22:20 2003 OCC1764 
 
-#include <BRepCheck_Wire.ixx>
-#include <BRepCheck_ListOfStatus.hxx>
+#include <Bnd_Array1OfBox2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepCheck.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopLoc_Location.hxx>
-#include <TColGeom2d_Array1OfCurve.hxx>
+#include <BRepCheck_ListOfStatus.hxx>
+#include <BRepCheck_Wire.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Intersection.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Transition.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRepCheck.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_MapOfOrientedShape.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
-
-//Patch
 #include <Precision.hxx>
-#include <Bnd_Array1OfBox2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
-
-//#ifdef WNT
-#include <stdio.h>
-#include <BRepTools_WireExplorer.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom2d_Array1OfCurve.hxx>
 #include <TopExp.hxx>
-//#endif
-
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_HArray1OfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <ElCLib.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfOrientedShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
-
+#include <stdio.h>
+//Patch
+//#ifdef WNT
+//#endif
 static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape&,
                       const TopoDS_Shape&,   // edge
                       TopTools_MapOfShape&); // mapofedge

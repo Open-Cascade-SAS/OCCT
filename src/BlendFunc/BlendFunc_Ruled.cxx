@@ -14,16 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_Ruled.ixx>
 
-#include <math_Gauss.hxx>
-#include <gp_Pnt2d.hxx>
-#include <Precision.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
-
+#include <BlendFunc_Ruled.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
+#include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-
 
 BlendFunc_Ruled::BlendFunc_Ruled(const Handle(Adaptor3d_HSurface)& S1,
                                  const Handle(Adaptor3d_HSurface)& S2,

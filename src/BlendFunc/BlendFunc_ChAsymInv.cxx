@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_ChAsymInv.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <BlendFunc.hxx>
+#include <BlendFunc_ChAsymInv.hxx>
+#include <math_Matrix.hxx>
 #include <Precision.hxx>
 
 //=======================================================================
 //function : BlendFunc_ChAsymInv
 //purpose  : 
 //=======================================================================
-
-
 BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const Handle(Adaptor3d_HSurface)& S1,
                                          const Handle(Adaptor3d_HSurface)& S2,
                                          const Handle(Adaptor3d_HCurve)&   C) :

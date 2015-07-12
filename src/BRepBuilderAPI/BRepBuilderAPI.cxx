@@ -14,27 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBuilderAPI.ixx>
 
-#include <BRepLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepBuilderAPI.hxx>
+#include <BRepLib.hxx>
 #include <BRepTools.hxx>
+#include <Geom_Plane.hxx>
+#include <gp.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Compound.hxx>
-#include <gp.hxx>
-
 
 //=======================================================================
 //function : Plane
 //purpose  : 
 //=======================================================================
-
 void  BRepBuilderAPI::Plane(const Handle(Geom_Plane)& P)
 {
   BRepLib::Plane(P);

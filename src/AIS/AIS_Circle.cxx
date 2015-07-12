@@ -14,23 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_Circle.ixx>
+
+#include <AIS_Circle.hxx>
+#include <AIS_GraphicTool.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
+#include <GC_MakeArcOfCircle.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Transformation.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Quantity_Color.hxx>
+#include <Select3D_SensitiveCircle.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Select3D_SensitiveCircle.hxx>
+#include <Standard_Type.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 #include <TopoDS.hxx>
-#include <Geom_Circle.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GC_MakeArcOfCircle.hxx>
-#include <Quantity_Color.hxx>
-#include <AIS_GraphicTool.hxx>
 
 //=======================================================================
 //function : AIS_Circle

@@ -14,19 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_PolynomialConvertor.ixx>
-
-
-#include <PLib.hxx>
-#include <gp_Mat.hxx>
 
 #include <Convert_CompPolynomialToPoles.hxx>
-
+#include <GeomFill_PolynomialConvertor.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <PLib.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-
+#include <TColStd_HArray2OfReal.hxx>
 
 GeomFill_PolynomialConvertor::GeomFill_PolynomialConvertor(): 
 		    Ordre(8),

@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPConstruct_PointHasher.ixx>
+
+#include <gp_Pnt.hxx>
+#include <STEPConstruct_PointHasher.hxx>
 
 //=======================================================================
 //function : IsEqual

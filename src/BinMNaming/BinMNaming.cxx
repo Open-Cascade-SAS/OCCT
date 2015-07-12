@@ -13,10 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMNaming.ixx>
 
+#include <BinMDF_ADriverTable.hxx>
+#include <BinMNaming.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
 #include <BinMNaming_NamingDriver.hxx>
+#include <CDM_MessageDriver.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================

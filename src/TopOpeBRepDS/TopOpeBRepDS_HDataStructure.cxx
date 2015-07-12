@@ -14,28 +14,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_HDataStructure.ixx>
 
-#include <TopOpeBRepDS_EdgeInterferenceTool.hxx>
 #include <BRep_Tool.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_Type.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
-#include <TopOpeBRepDS_Transition.hxx>
-#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_Check.hxx>
-#include <TopOpeBRepTool_ShapeExplorer.hxx>
-#include <TopOpeBRepDS_Filter.hxx>
-#include <TopOpeBRepDS_Reducer.hxx>
-#include <TopOpeBRepDS_Dumper.hxx>
-#include <Standard_ProgramError.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_CurveIterator.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_Dumper.hxx>
+#include <TopOpeBRepDS_EdgeInterferenceTool.hxx>
+#include <TopOpeBRepDS_Filter.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
+#include <TopOpeBRepDS_ListOfInterference.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_PointIterator.hxx>
+#include <TopOpeBRepDS_Reducer.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
+#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
+#include <TopOpeBRepDS_SurfaceIterator.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
+#include <TopOpeBRepTool_ShapeExplorer.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceISTO();

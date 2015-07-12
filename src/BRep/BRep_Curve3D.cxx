@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_Curve3D.ixx>
+
+#include <BRep_Curve3D.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_Curve3D
 //purpose  : 
 //=======================================================================
-
 BRep_Curve3D::BRep_Curve3D(const Handle(Geom_Curve)& C,
 			   const TopLoc_Location& L) :
                            BRep_GCurve(L,

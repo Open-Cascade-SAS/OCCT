@@ -13,40 +13,43 @@
 
 //:i1 pdn 03.04.99  BUC60301  
 
-#include <XSControl_WorkSession.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <Interface_HGraph.hxx>
-#include <Interface_Graph.hxx>
-
-#include <MoniTool_Profile.hxx>
-
-#include <Transfer_TransientProcess.hxx>
-#include <Transfer_ResultFromModel.hxx>
-#include <Transfer_ResultFromTransient.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-
-#include <TransferBRep.hxx>
-#include <Transfer_Binder.hxx>
-#include <Transfer_Finder.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
-
-// tpent
-#include <Interface_IntVal.hxx>
-#include <Geom2d_Point.hxx>
 #include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
-
-#include <Interface_Macros.hxx>
+#include <Geom2d_Point.hxx>
 #include <Interface_Check.hxx>
-
+#include <Interface_CheckIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_IntVal.hxx>
+#include <Interface_Macros.hxx>
 #include <Message_Messenger.hxx>
+#include <MoniTool_Profile.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_Finder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_ResultFromModel.hxx>
+#include <Transfer_ResultFromTransient.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_Vars.hxx>
+#include <XSControl_WorkSession.hxx>
 
+// tpent
 //=======================================================================
 //function : XSControl_WorkSession
 //purpose  : 
 //=======================================================================
-
 XSControl_WorkSession::XSControl_WorkSession ()
 {
   theModeWriteShape = 0;

@@ -16,20 +16,20 @@
 
 //    gka 30.04.99 S4137: re-worked
 
-#include <ShapeUpgrade_SplitCurve.ixx>
 #include <Geom_BSplineCurve.hxx>
 #include <Precision.hxx>
+#include <ShapeExtend.hxx>
 #include <ShapeUpgrade.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <ShapeUpgrade_SplitCurve.hxx>
+#include <Standard_Type.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <ShapeExtend.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve() : myStatus(0)
 {
 }

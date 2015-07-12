@@ -14,8 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_MetaData.ixx>
+
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
+#include <CDM_Reference.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 static CDM_MetaDataLookUpTable& getLookUpTable(){
   static CDM_MetaDataLookUpTable theLookUpTable;

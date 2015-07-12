@@ -16,8 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_LevelToPWBLayerMap.ixx>
-
+#include <IGESAppli_LevelToPWBLayerMap.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_LevelToPWBLayerMap::IGESAppli_LevelToPWBLayerMap ()    {  }
 

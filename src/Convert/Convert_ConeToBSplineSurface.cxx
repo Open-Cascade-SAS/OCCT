@@ -14,10 +14,11 @@
 
 //JCV 16/10/91
 
-#include <Convert_ConeToBSplineSurface.ixx>
-
+#include <Convert_ConeToBSplineSurface.hxx>
 #include <gp.hxx>
+#include <gp_Cone.hxx>
 #include <gp_Trsf.hxx>
+#include <Standard_DomainError.hxx>
 
 static const Standard_Integer TheUDegree  = 2;
 static const Standard_Integer TheVDegree  = 1;

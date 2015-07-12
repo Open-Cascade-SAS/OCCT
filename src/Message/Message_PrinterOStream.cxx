@@ -13,19 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_PrinterOStream.ixx>
 
 #include <Message_Gravity.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
+#include <Message_PrinterOStream.hxx>
 #include <Standard_Mutex.hxx>
 #include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : Empty constructor, defaulting to cerr
 //=======================================================================
-
 Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel)
 : myStream  (&std::cout),
   myIsFile  (Standard_False),

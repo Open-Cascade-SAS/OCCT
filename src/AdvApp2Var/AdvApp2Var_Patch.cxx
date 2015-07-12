@@ -22,28 +22,28 @@
 //   by:	Joelle CHAUVET / Jean-Marc LACHAUME
 //		Initialisation de myCritValue pour OSF
 
-#include <AdvApp2Var_Patch.ixx>
-#include <AdvApp2Var_Node.hxx>
+#include <AdvApp2Var_ApproxF2var.hxx>
+#include <AdvApp2Var_Context.hxx>
+#include <AdvApp2Var_Criterion.hxx>
+#include <AdvApp2Var_Framework.hxx>
 #include <AdvApp2Var_Iso.hxx>
+#include <AdvApp2Var_MathBase.hxx>
+#include <AdvApp2Var_Node.hxx>
+#include <AdvApp2Var_Patch.hxx>
+#include <Convert_GridPolynomialToPoles.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <TColgp_Array2OfPnt.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <Convert_GridPolynomialToPoles.hxx>
-#include <Standard_ConstructionError.hxx>
-
-#include <AdvApp2Var_ApproxF2var.hxx>
-#include <AdvApp2Var_MathBase.hxx>
-
 
 //============================================================================
 //function : AdvApp2Var_Patch
 //purpose  :
 //============================================================================
-
 AdvApp2Var_Patch::AdvApp2Var_Patch() :
 myU0(0.),
 myU1(1.),

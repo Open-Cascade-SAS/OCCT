@@ -11,12 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_CopyTool.ixx>
-#include <Interface_GeneralModule.hxx>
-#include <Interface_ReportEntity.hxx>
-#include <Interface_InterfaceError.hxx>
-#include <TCollection_HAsciiString.hxx>
 
+#include <Interface_CopyControl.hxx>
+#include <Interface_CopyMap.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralLib.hxx>
+#include <Interface_GeneralModule.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Interface_ReportEntity.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 // Se souvenir qu une version plus riche de CopyTool existe : c est
 // TransferDispatch (package Transfer). Cette classe offre beaucoup plus de
@@ -27,11 +34,8 @@
 // Passe 2 : une fois tous les transferts faits, les relations "Imply" sont
 // mises, pour les entites designees ET QUI ONT ETE AUSSI TRANSFEREES, la
 // relation est reconduite (pas de nouveau Share)
-
-
 //  #####################################################################
 //  ....                        CONSTRUCTEURS                        ....
-
 Interface_CopyTool::Interface_CopyTool
   (const Handle(Interface_InterfaceModel)& amodel,
    const Interface_GeneralLib& lib)

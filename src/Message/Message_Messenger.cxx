@@ -13,15 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_Messenger.ixx>
-#include <Message_PrinterOStream.hxx>
+
+#include <Message_Messenger.hxx>
 #include <Message_Printer.hxx>
+#include <Message_PrinterOStream.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 //=======================================================================
 //function : Message_Messenger
 //purpose  : 
 //=======================================================================
-
 Message_Messenger::Message_Messenger ()
 {
   AddPrinter ( new Message_PrinterOStream );

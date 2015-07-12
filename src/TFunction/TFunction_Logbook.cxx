@@ -14,24 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TFunction_Logbook.ixx>
 
-#include <TDF_Tool.hxx>
+#include <Standard_OStream.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
-#include <TDF_ChildIterator.hxx>
-
-#include <TCollection_AsciiString.hxx>
-
-#include <Standard_OStream.hxx>
-
+#include <TDF_Tool.hxx>
+#include <TFunction_Logbook.hxx>
 
 //=======================================================================
 //function : TFunction_Logbook
 //purpose  : A Logbook creation
 //=======================================================================
-
 TFunction_Logbook::TFunction_Logbook():isDone(Standard_False)
 {}
 

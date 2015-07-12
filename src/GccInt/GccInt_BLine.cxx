@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GccInt_BLine.ixx>
-#include <Standard_DomainError.hxx>
+
+#include <GccInt_BLine.hxx>
 #include <gp_Lin2d.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
 
 GccInt_BLine::
    GccInt_BLine(const gp_Lin2d& Line) {

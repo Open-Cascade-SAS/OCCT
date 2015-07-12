@@ -13,23 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <V3d_ColorScale.ixx>
 
-#include <V3d_View.hxx>
-#include <V3d_LayerMgr.hxx>
-
-#include <Visual3d_View.hxx>
-#include <Visual3d_Layer.hxx>
-#include <Visual3d_ViewManager.hxx>
-
-#include <Aspect_Window.hxx>
 #include <Aspect_SequenceOfColor.hxx>
 #include <Aspect_TypeOfColorScaleData.hxx>
 #include <Aspect_TypeOfColorScalePosition.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
+#include <Aspect_Window.hxx>
 #include <Font_NameOfFont.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_SequenceOfExtendedString.hxx>
+#include <V3d_ColorScale.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_View.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
 
 V3d_ColorScale::V3d_ColorScale (const Handle(V3d_LayerMgr)& theMgr)
 : Aspect_ColorScale(),

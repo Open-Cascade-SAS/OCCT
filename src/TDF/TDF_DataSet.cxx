@@ -14,25 +14,22 @@
 // commercial license or contractual agreement.
 
 //      	---------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	Mar 11 1997	Creation
 
-
-
-#include <TDF_DataSet.ixx>
-
-#include <TDF_MapIteratorOfAttributeMap.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
+#include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
-
 
 //=======================================================================
 //function : TDF_DataSet
 //purpose  : Creates a DataSet.
 //=======================================================================
-
 TDF_DataSet::TDF_DataSet()
 {}
 

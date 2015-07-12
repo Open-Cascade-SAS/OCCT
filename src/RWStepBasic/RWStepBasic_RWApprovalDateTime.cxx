@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWApprovalDateTime.ixx>
-#include <StepBasic_DateTimeSelect.hxx>
-#include <StepBasic_Approval.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWApprovalDateTime.hxx>
+#include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalDateTime.hxx>
-
+#include <StepBasic_DateTimeSelect.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWApprovalDateTime::RWStepBasic_RWApprovalDateTime () {}
 

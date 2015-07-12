@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWPresentationLayerAssignment.ixx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepVisual_RWPresentationLayerAssignment.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepVisual_HArray1OfLayeredItem.hxx>
 #include <StepVisual_LayeredItem.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
 #include <StepVisual_PresentationLayerAssignment.hxx>
-
 
 RWStepVisual_RWPresentationLayerAssignment::RWStepVisual_RWPresentationLayerAssignment () {}
 

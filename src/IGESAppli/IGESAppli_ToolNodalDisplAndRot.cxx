@@ -16,19 +16,30 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_ToolNodalDisplAndRot.ixx>
-#include <IGESData_ParamCursor.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESAppli_HArray1OfNode.hxx>
+#include <IGESAppli_NodalDisplAndRot.hxx>
 #include <IGESAppli_Node.hxx>
+#include <IGESAppli_ToolNodalDisplAndRot.hxx>
+#include <IGESBasic_HArray1OfHArray1OfXYZ.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
 #include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_HArray1OfGeneralNote.hxx>
-#include <IGESAppli_HArray1OfNode.hxx>
-#include <gp_XYZ.hxx>
-#include <TColgp_HArray1OfXYZ.hxx>
-#include <IGESBasic_HArray1OfHArray1OfXYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_Dump.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_HArray1OfXYZ.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 IGESAppli_ToolNodalDisplAndRot::IGESAppli_ToolNodalDisplAndRot ()    {  }
 

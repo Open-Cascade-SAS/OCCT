@@ -14,9 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_Different.ixx>
+
 #include <Expr.hxx>
+#include <Expr_Different.hxx>
 #include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralRelation.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_Different::Expr_Different (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {

@@ -12,10 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OSD.ixx>
+
+#include <OSD.hxx>
 #include <Standard_Stream.hxx>
-#include <stdio.h>
+
 #include <math.h>
+#include <stdio.h>
 #if defined(isfinite)
 # define finite isfinite
 #endif

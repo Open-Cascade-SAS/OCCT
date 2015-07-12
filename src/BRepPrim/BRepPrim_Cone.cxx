@@ -14,20 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_Cone.ixx>
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <Precision.hxx>
+
+#include <BRepPrim_Cone.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Line.hxx>
-#include <Geom2d_Line.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
 #include <Standard_DomainError.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : BRepPrim_Cone
 //purpose  : 
 //=======================================================================
-
 BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle, 
 			     const gp_Ax2& Position, 
 			     const Standard_Real Height, 

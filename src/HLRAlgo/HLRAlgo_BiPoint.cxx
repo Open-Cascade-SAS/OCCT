@@ -17,7 +17,9 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRAlgo_BiPoint.ixx>
+
+
+#include <HLRAlgo_BiPoint.hxx>
 
 #define PntX1  myCoordinates[ 0]
 #define PntY1  myCoordinates[ 1]

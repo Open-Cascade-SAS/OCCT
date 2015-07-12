@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SWDRAW_ShapeExtend.ixx>
-#include <DBRep.hxx>
-#include <SWDRAW.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
-#include <ShapeExtend_Explorer.hxx>
-#include <TopoDS_Shape.hxx>
 
+#include <DBRep.hxx>
+#include <ShapeExtend_Explorer.hxx>
+#include <SWDRAW.hxx>
+#include <SWDRAW_ShapeExtend.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {

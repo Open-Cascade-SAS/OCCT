@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_ChangeRequest.ixx>
+#include <Standard_Type.hxx>
+#include <StepAP203_ChangeRequest.hxx>
+#include <StepBasic_VersionedActionRequest.hxx>
 
 //=======================================================================
 //function : StepAP203_ChangeRequest
 //purpose  : 
 //=======================================================================
-
 StepAP203_ChangeRequest::StepAP203_ChangeRequest ()
 {
 }

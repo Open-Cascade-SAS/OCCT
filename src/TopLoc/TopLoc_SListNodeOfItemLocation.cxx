@@ -12,5 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopLoc_SListNodeOfItemLocation.ixx>
 
+#include <Standard_Type.hxx>
+#include <TopLoc_ItemLocation.hxx>
+#include <TopLoc_SListNodeOfItemLocation.hxx>
+#include <TopLoc_SListOfItemLocation.hxx>

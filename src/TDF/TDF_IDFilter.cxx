@@ -14,15 +14,13 @@
 // commercial license or contractual agreement.
 
 //      	---------------------
-
 // Version:	0.0
 //Version	Date		Purpose
 //		0.0	May 26 1997	Creation
 
-
-
-#include <TDF_IDFilter.ixx>
-
+#include <Standard_GUID.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_IDFilter.hxx>
 #include <TDF_IDList.hxx>
 #include <TDF_ListIteratorOfIDList.hxx>
 #include <TDF_MapIteratorOfIDMap.hxx>

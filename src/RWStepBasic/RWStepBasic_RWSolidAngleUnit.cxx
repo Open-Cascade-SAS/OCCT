@@ -11,15 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepBasic_RWSolidAngleUnit.ixx>
-#include <StepBasic_DimensionalExponents.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepBasic_RWSolidAngleUnit.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SolidAngleUnit.hxx>
-
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 RWStepBasic_RWSolidAngleUnit::RWStepBasic_RWSolidAngleUnit () {}
 

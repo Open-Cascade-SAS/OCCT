@@ -12,8 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntSurf_PathPoint.ixx>
 
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <IntSurf_PathPoint.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_UndefinedDerivative.hxx>
 
 IntSurf_PathPoint::IntSurf_PathPoint ():
       ispass(Standard_True), istgt(Standard_True) 

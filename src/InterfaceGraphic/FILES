@@ -1,6 +1,6 @@
 InterfaceGraphic.hxx
 InterfaceGraphic_Aspect.hxx
 InterfaceGraphic_Graphic3d.hxx
-InterfaceGraphic_Visual3d.hxx
 InterfaceGraphic_telem.hxx
 InterfaceGraphic_tgl_all.hxx
+InterfaceGraphic_Visual3d.hxx

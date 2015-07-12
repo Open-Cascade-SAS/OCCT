@@ -29,71 +29,101 @@
 //#12 smh 12.12.99 FRA62468 - Using conversion to B-Spline for Offset surface
 //=======================================================================
 
-#include <IGESToBRep_TopoSurface.ixx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
-#include <IGESToBRep_TopoCurve.hxx>
-#include <IGESToBRep_BasicCurve.hxx>
-#include <IGESToBRep_BasicSurface.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepPrimAPI_MakeRevol.hxx>
-//S4054: ShapeTool_MakeWire -> ShapeExtend_WireData //:g8: BRepLib_MakeWire -> ShapeTool_MakeWire
-#include <BRepGProp.hxx>
-#include <BRepFill.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepFill.hxx>
+#include <BRepGProp.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepOffset_MakeOffset.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <BRepTools.hxx>
+#include <BSplCLib.hxx>
+#include <ElCLib.hxx>
 #include <ElSLib.hxx>
-
-#include <GProp.hxx>
-#include <GProp_GProps.hxx>
-
-#include <GeomAbs_Shape.hxx>
-
-#include <Geom2d_Line.hxx>
 #include <Geom2d_Curve.hxx>
-
+#include <Geom2d_Line.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Geom_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
-
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_ToolLocation.hxx>
-
-#include <IGESGeom_BSplineSurface.hxx>
-#include <IGESGeom_BoundedSurface.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
-#include <IGESGeom_Line.hxx>
-#include <IGESGeom_Point.hxx>
-#include <IGESGeom_Direction.hxx>
-
-#include <IGESSolid_CylindricalSurface.hxx>
-#include <IGESSolid_ConicalSurface.hxx>
-#include <IGESSolid_ToroidalSurface.hxx>
-#include <IGESSolid_SphericalSurface.hxx>
-#include <IGESSolid_PlaneSurface.hxx>
-
-#include <Interface_Macros.hxx>
-
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomConvert.hxx>
+#include <GeomLib.hxx>
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec.hxx>
+#include <GProp.hxx>
+#include <GProp_GProps.hxx>
+#include <IGESBasic_SingleParent.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_ToolLocation.hxx>
+#include <IGESGeom_BoundedSurface.hxx>
+#include <IGESGeom_BSplineSurface.hxx>
+#include <IGESGeom_CircularArc.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Line.hxx>
+#include <IGESGeom_OffsetSurface.hxx>
+#include <IGESGeom_Plane.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESGeom_RuledSurface.hxx>
+#include <IGESGeom_SurfaceOfRevolution.hxx>
+#include <IGESGeom_TabulatedCylinder.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
+#include <IGESSolid_ConicalSurface.hxx>
+#include <IGESSolid_CylindricalSurface.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <IGESSolid_SphericalSurface.hxx>
+#include <IGESSolid_ToroidalSurface.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_BasicCurve.hxx>
+#include <IGESToBRep_BasicSurface.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <IGESToBRep_TopoCurve.hxx>
+#include <IGESToBRep_TopoSurface.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Msg.hxx>
 #include <Precision.hxx>
-
+#include <ShapeAlgo.hxx>
+#include <ShapeAlgo_AlgoContainer.hxx>
+#include <ShapeAnalysis.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TopAbs.hxx>
-
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -103,67 +133,16 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopLoc_Location.hxx>
-
-#include <gp.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Torus.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <stdio.h>
-
+//S4054: ShapeTool_MakeWire -> ShapeExtend_WireData //:g8: BRepLib_MakeWire -> ShapeTool_MakeWire
 //:e3
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Line.hxx>
-#include <BRepTools.hxx>//#16
-#include <ShapeAnalysis.hxx>
+//#16
 //S4054
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomConvert.hxx>
-#include <GeomLib.hxx>
-#include <BSplCLib.hxx>
 //S3767
-#include <Message_Msg.hxx>
-#include <IGESData_IGESModel.hxx>
-
-#include <IGESGeom_CircularArc.hxx>
-#include <ElCLib.hxx>
-
-#include <BRepOffset_MakeOffset.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <ShapeAlgo.hxx>
-#include <ShapeAlgo_AlgoContainer.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <IGESGeom_TrimmedSurface.hxx>
-#include <IGESGeom_SurfaceOfRevolution.hxx>
-#include <IGESGeom_TabulatedCylinder.hxx>
-#include <IGESGeom_RuledSurface.hxx>
-#include <IGESGeom_Plane.hxx>
-#include <IGESGeom_OffsetSurface.hxx>
-#include <IGESBasic_SingleParent.hxx>
-
 //=======================================================================
 //function : IGESToBRep_TopoSurface
 //purpose  : 
 //=======================================================================
-
 IGESToBRep_TopoSurface::IGESToBRep_TopoSurface()
      :IGESToBRep_CurveAndSurface()
 {  

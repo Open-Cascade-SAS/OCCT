@@ -13,18 +13,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMXCAFDoc_LocationDriver.ixx>
 
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TopLoc_Datum3D.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopTools_LocationSet.hxx>
 #include <XCAFDoc_Location.hxx>
+#include <XmlMNaming.hxx>
+#include <XmlMXCAFDoc_LocationDriver.hxx>
+#include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_DOMString.hxx>
-#include <XmlObjMgt_Persistent.hxx>
-#include <XmlObjMgt.hxx>
 #include <XmlObjMgt_GP.hxx>
-#include <TopLoc_Datum3D.hxx>
-
-#include <XmlMNaming.hxx>
-#include <TopTools_LocationSet.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (DatumString,    "datum")
 IMPLEMENT_DOMSTRING (LocationString, "location")

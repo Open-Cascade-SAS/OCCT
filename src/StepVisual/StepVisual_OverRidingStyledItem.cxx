@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_OverRidingStyledItem.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepVisual_OverRidingStyledItem.hxx>
+#include <StepVisual_StyledItem.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_OverRidingStyledItem::StepVisual_OverRidingStyledItem ()  {}
 

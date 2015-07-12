@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWTypeQualifier.ixx>
 
+#include <Interface_Check.hxx>
+#include <RWStepShape_RWTypeQualifier.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_TypeQualifier.hxx>
 
 RWStepShape_RWTypeQualifier::RWStepShape_RWTypeQualifier () {}
 

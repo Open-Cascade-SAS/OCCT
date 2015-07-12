@@ -11,12 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_ReadWriteModule.ixx>
+
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESType.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_ReadWriteModule.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_FileReaderData.hxx>
 #include <Interface_Macros.hxx>
-
-
-
+#include <Standard_DomainError.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 Standard_Integer  IGESData_ReadWriteModule::CaseNum
   (const Handle(Interface_FileReaderData)& data,

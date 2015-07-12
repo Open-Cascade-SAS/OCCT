@@ -13,21 +13,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_Group.ixx>
 
+#include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
-#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_CStructure.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_GroupDefinitionError.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
-#include <Graphic3d_TransModeFlags.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Structure.pxx>
+#include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_TransModeFlags.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <NCollection_String.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-
-#include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_Structure.pxx>
+#include <TCollection_ExtendedString.hxx>
 
 #define MyContainsFacet myCBitFields.bool2
 

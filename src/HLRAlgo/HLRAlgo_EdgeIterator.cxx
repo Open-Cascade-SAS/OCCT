@@ -17,13 +17,15 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRAlgo_EdgeIterator.ixx>
+
+
+#include <HLRAlgo_EdgeIterator.hxx>
+#include <HLRAlgo_EdgeStatus.hxx>
 
 //=======================================================================
 //function : EdgeIterator
 //purpose  : 
 //=======================================================================
-
 HLRAlgo_EdgeIterator::HLRAlgo_EdgeIterator ()
 {}
 

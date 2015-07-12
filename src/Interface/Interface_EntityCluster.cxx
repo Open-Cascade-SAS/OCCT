@@ -11,21 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_EntityCluster.ixx>
-#include <Standard_OutOfRange.hxx>
+
+#include <Interface_EntityCluster.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_EntityList.hxx>
 #include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
 
 // Un Cluster, ce sont 4 entites qui se suivent (dans le principe, nombre fixe,
 // meme si pas 4). Elles sont remplies depuis 0. Il y a donc autant d Entites
 // que de Handles non Nuls, plus le fait qu ils sont remplis dans l ordre
-
 // Ainsi (avec Next), on consomme 5 Handles pour 4 Entites, avec une pointe
 // pour 1 et 2 Entites (on reste a 5 Handles)
-
 // Suppression : On retasse le Cluster pour que les Nulls soient tjrs a la fin
-
 //  ....                        CONSTRUCTEURS                        ....
-
 Interface_EntityCluster::Interface_EntityCluster ()    {  }
 
     Interface_EntityCluster::Interface_EntityCluster

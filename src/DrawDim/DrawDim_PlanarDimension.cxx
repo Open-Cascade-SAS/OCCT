@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_PlanarDimension.ixx>
-#include <Standard_DomainError.hxx>
-#include <Draw_Interpretor.hxx>
 
+#include <Draw_Interpretor.hxx>
+#include <DrawDim_PlanarDimension.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : SetPlane
 //purpose  : 
 //=======================================================================
-
 void DrawDim_PlanarDimension::SetPlane(const TopoDS_Face& plane)
 {
   myPlane = plane;

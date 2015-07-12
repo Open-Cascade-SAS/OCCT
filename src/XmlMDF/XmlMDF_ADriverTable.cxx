@@ -13,7 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDF_ADriverTable.ixx>
+
+#include <Standard_Type.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlMDF_ADriverTable.hxx>
 
 //=======================================================================
 //function : MDF_ADriverTable

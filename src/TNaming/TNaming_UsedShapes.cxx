@@ -14,20 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_UsedShapes.ixx>
 
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_AttributeDelta.hxx>
+#include <TDF_DataSet.hxx>
 #include <TDF_DeltaOnAddition.hxx>
+#include <TDF_DeltaOnRemoval.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_Builder.hxx>
 #include <TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx>
-#include <TNaming_RefShape.hxx>
 #include <TNaming_PtrNode.hxx>
-
+#include <TNaming_RefShape.hxx>
+#include <TNaming_UsedShapes.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TNaming_UsedShapes::GetID() 
 {
   static Standard_GUID TNaming_UsedShapesID("c4ef4201-568f-11d1-8940-080009dc3333");

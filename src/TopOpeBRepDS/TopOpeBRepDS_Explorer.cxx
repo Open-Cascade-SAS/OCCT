@@ -17,9 +17,17 @@
 #define No_Standard_NoMoreObject
 #define No_Standard_NoSuchObject
 
-#include <TopOpeBRepDS_Explorer.ixx>
-#include <TopOpeBRepDS_define.hxx>
+
+#include <Standard_NoMoreObject.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_Explorer.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_Explorer

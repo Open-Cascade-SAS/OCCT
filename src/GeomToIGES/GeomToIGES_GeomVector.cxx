@@ -15,33 +15,27 @@
 // prise en compte de l'unite choisi par l'utilisateur
 // pour l'ecriture du fichier IGES.
 
-#include <GeomToIGES_GeomVector.ixx>
-
+#include <Geom_Direction.hxx>
 #include <Geom_Vector.hxx>
 #include <Geom_VectorWithMagnitude.hxx>
-#include <Geom_Direction.hxx>
-
+#include <GeomToIGES_GeomEntity.hxx>
+#include <GeomToIGES_GeomVector.hxx>
 #include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_XYZ.hxx>
-
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_ToolLocation.hxx>
-
 #include <IGESGeom_CopiousData.hxx>
+#include <IGESGeom_Direction.hxx>
 #include <IGESGeom_Line.hxx>
 #include <IGESGeom_Point.hxx>
-
 #include <Interface_Macros.hxx>
-
-
 
 //=============================================================================
 // GeomToIGES_GeomVector
 //=============================================================================
-
 GeomToIGES_GeomVector::GeomToIGES_GeomVector()
 :GeomToIGES_GeomEntity()
 {

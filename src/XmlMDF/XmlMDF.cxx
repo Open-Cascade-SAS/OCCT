@@ -13,24 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDF.ixx>
-#include <XmlMDF_ADriver.hxx>
-#include <XmlMDF_TagSourceDriver.hxx>
-#include <XmlMDF_ReferenceDriver.hxx>
-#include <XmlMDF_DataMapIteratorOfTypeADriverMap.hxx>
 
-#include <XmlObjMgt_Persistent.hxx>
-#include <XmlObjMgt_DOMString.hxx>
-#include <XmlObjMgt_Document.hxx>
-
-#include <TDF_TagSource.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_Tool.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Storage_Schema.hxx>
+#include <TColStd_MapOfTransient.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <TColStd_MapOfTransient.hxx>
-#include <Storage_Schema.hxx>
-#include <TDF_Attribute.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_TagSource.hxx>
+#include <TDF_Tool.hxx>
+#include <XmlMDF.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlMDF_ADriverTable.hxx>
+#include <XmlMDF_DataMapIteratorOfTypeADriverMap.hxx>
+#include <XmlMDF_ReferenceDriver.hxx>
+#include <XmlMDF_TagSourceDriver.hxx>
+#include <XmlObjMgt_Document.hxx>
+#include <XmlObjMgt_DOMString.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (TagString,         "tag")
 IMPLEMENT_DOMSTRING (LabelString,       "label")

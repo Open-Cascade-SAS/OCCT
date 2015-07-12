@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESGeom_SpecificModule.ixx>
-#include <Interface_Macros.hxx>
 
-#include <IGESGeom_BSplineCurve.hxx>
-#include <IGESGeom_BSplineSurface.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
+#include <IGESGeom_BSplineCurve.hxx>
+#include <IGESGeom_BSplineSurface.hxx>
 #include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_ConicArc.hxx>
@@ -31,17 +31,15 @@
 #include <IGESGeom_Plane.hxx>
 #include <IGESGeom_Point.hxx>
 #include <IGESGeom_RuledSurface.hxx>
+#include <IGESGeom_SpecificModule.hxx>
 #include <IGESGeom_SplineCurve.hxx>
 #include <IGESGeom_SplineSurface.hxx>
 #include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <IGESGeom_TabulatedCylinder.hxx>
-#include <IGESGeom_TransformationMatrix.hxx>
-#include <IGESGeom_TrimmedSurface.hxx>
-
-#include <IGESGeom_ToolBSplineCurve.hxx>
-#include <IGESGeom_ToolBSplineSurface.hxx>
 #include <IGESGeom_ToolBoundary.hxx>
 #include <IGESGeom_ToolBoundedSurface.hxx>
+#include <IGESGeom_ToolBSplineCurve.hxx>
+#include <IGESGeom_ToolBSplineSurface.hxx>
 #include <IGESGeom_ToolCircularArc.hxx>
 #include <IGESGeom_ToolCompositeCurve.hxx>
 #include <IGESGeom_ToolConicArc.hxx>
@@ -61,14 +59,15 @@
 #include <IGESGeom_ToolTabulatedCylinder.hxx>
 #include <IGESGeom_ToolTransformationMatrix.hxx>
 #include <IGESGeom_ToolTrimmedSurface.hxx>
-
-
+#include <IGESGeom_TransformationMatrix.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
+#include <Interface_Macros.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Type.hxx>
 
 //  Each Module is attached to a Protocol : it must interprete Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
-
-
 IGESGeom_SpecificModule::IGESGeom_SpecificModule()    {  }
 
 

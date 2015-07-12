@@ -14,28 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_SplitCurve3d.ixx>
+
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Precision.hxx>
-#include <ShapeUpgrade.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade.hxx>
+#include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <ShapeExtend.hxx>
-#include <Precision.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <ShapeAnalysis_Curve.hxx>
-#include <Geom_Curve.hxx>
+#include <Standard_Type.hxx>
+#include <TColGeom_HArray1OfCurve.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitCurve3d
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 {
 }

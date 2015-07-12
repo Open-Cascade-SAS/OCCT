@@ -14,28 +14,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESToBRep_IGESBoundary.ixx>
-#include <TColStd_HSequenceOfTransient.hxx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Precision.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_TopoCurve.hxx>
-#include <ShapeFix_Wire.hxx>
+#include <gp_Trsf2d.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <IGESToBRep_IGESBoundary.hxx>
+#include <IGESToBRep_TopoCurve.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : IGESToBRep_IGESBoundary
 //purpose  : 
 //=======================================================================
-
 IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary()
 {
 }

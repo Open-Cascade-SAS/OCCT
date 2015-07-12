@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_GroupWithoutBackP.ixx>
-
+#include <IGESBasic_GroupWithoutBackP.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_GroupWithoutBackP::IGESBasic_GroupWithoutBackP ()
       {  InitTypeAndForm(402,7);  }

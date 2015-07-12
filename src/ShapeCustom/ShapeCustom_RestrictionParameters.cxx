@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeCustom_RestrictionParameters.ixx>
+
+#include <ShapeCustom_RestrictionParameters.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : ShapeCustom_RestrictionParameters
 //purpose  : 
 //=======================================================================
-
 ShapeCustom_RestrictionParameters::ShapeCustom_RestrictionParameters()
 {
   myGMaxSeg = 10000;

@@ -16,25 +16,24 @@
 
 #define No_Standard_OutOfRange
 
-#include <HLRBRep_Hider.ixx>
 
 #include <HLRAlgo_Coincidence.hxx>
 #include <HLRAlgo_Interference.hxx>
 #include <HLRAlgo_InterferenceList.hxx>
-#include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
 #include <HLRAlgo_Intersection.hxx>
-#include <HLRBRep_EdgeIList.hxx>
+#include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
+#include <HLRBRep_Data.hxx>
 #include <HLRBRep_EdgeBuilder.hxx>
-#include <HLRBRep_VertexList.hxx>
+#include <HLRBRep_EdgeIList.hxx>
 #include <HLRBRep_EdgeInterferenceTool.hxx>
+#include <HLRBRep_Hider.hxx>
+#include <HLRBRep_VertexList.hxx>
 #include <Standard_ErrorHandler.hxx>
-
 
 //=======================================================================
 //function : HLRBRep_Hider
 //purpose  : 
 //=======================================================================
-
 HLRBRep_Hider::
 HLRBRep_Hider (const Handle(HLRBRep_Data)& DS) :
   myDS(DS) 

@@ -12,26 +12,25 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <ShapeAnalysis_WireVertex.ixx>
 
 #include <BRep_Tool.hxx>
 #include <Geom_Curve.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
 #include <Precision.hxx>
-
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
+#include <ShapeAnalysis_WireVertex.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
-#include <gp_Pnt.hxx> //ied_modif_for_compil_Nov-19-1998
-
+//ied_modif_for_compil_Nov-19-1998
 //=======================================================================
 //function : ShapeAnalysis_WireVertex
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_WireVertex::ShapeAnalysis_WireVertex()
 {
   myDone = Standard_False;

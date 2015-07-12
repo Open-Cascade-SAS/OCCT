@@ -13,18 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinDrivers_DocumentStorageDriver.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <TCollection_AsciiString.hxx>
+
 #include <BinDrivers.hxx>
+#include <BinDrivers_DocumentStorageDriver.hxx>
+#include <BinLDrivers_DocumentSection.hxx>
 #include <BinMDF_ADriver.hxx>
+#include <BinMDF_ADriverTable.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TNaming_NamedShape.hxx>
+
 //=======================================================================
 //function : BinDrivers_DocumentStorageDriver
 //purpose  : Constructor
 //=======================================================================
-
 BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver ()
 {
 }

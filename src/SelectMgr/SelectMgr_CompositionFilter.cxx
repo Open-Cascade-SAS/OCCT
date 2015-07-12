@@ -14,8 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SelectMgr_CompositionFilter.ixx>
+
+#include <SelectMgr_CompositionFilter.hxx>
+#include <SelectMgr_Filter.hxx>
 #include <SelectMgr_ListIteratorOfListOfFilter.hxx>
+#include <Standard_Type.hxx>
 
 void SelectMgr_CompositionFilter::Add(const Handle(SelectMgr_Filter)& afilter)
 {

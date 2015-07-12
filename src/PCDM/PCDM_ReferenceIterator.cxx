@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PCDM_ReferenceIterator.ixx>
+
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <CDM_MetaData.hxx>
+#include <OSD_Path.hxx>
+#include <PCDM_Reference.hxx>
+#include <PCDM_ReferenceIterator.hxx>
+#include <PCDM_RetrievalDriver.hxx>
+#include <Standard_Type.hxx>
 #include <Storage_Data.hxx>
 #include <UTL.hxx>
-#include <CDM_Document.hxx>
-#include <CDM_Application.hxx>
-#include <PCDM_RetrievalDriver.hxx>
-#include <PCDM_Reference.hxx>
-#include <OSD_Path.hxx>
 
 #ifdef WNT
 # include <tchar.h>

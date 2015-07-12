@@ -11,8 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_Instancing.ixx>
+
 #include <TCollection_AsciiString.hxx>
+#include <Vrml_Instancing.hxx>
 
 Vrml_Instancing::Vrml_Instancing(const TCollection_AsciiString& aString)
 {

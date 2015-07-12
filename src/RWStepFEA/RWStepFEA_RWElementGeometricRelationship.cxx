@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWElementGeometricRelationship.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWElementGeometricRelationship.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepElement_AnalysisItemWithinRepresentation.hxx>
+#include <StepFEA_ElementGeometricRelationship.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWElementGeometricRelationship
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWElementGeometricRelationship::RWStepFEA_RWElementGeometricRelationship ()
 {
 }

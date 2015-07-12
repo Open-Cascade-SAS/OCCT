@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_OrientedOpenShell.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepShape_Face.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_OrientedOpenShell.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_OrientedOpenShell::StepShape_OrientedOpenShell ()  {}
 

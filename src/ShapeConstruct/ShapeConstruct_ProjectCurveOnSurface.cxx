@@ -28,52 +28,52 @@
 //szv#4 S4163
 //:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
 //#1  svv 11.01.00  Porting on DEC
-#include <ShapeConstruct_ProjectCurveOnSurface.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <algorithm>
-
-#include <Precision.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <NCollection_Sequence.hxx>
-
-#include <GeomAPI_PointsToBSpline.hxx>
-#include <Geom2dAPI_Interpolate.hxx>
-#include <GeomAPI_Interpolate.hxx>
-#include <Geom2dAdaptor.hxx>
-#include <Geom2d_Line.hxx>
+#include <Approx_CurveOnSurface.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dAdaptor.hxx>
+#include <Geom2dAPI_Interpolate.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BoundedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_SphericalSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
-#include <GeomProjLib.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
-
-#include <ShapeAnalysis_Curve.hxx>
-#include <ShapeAnalysis_Surface.hxx>
-#include <ShapeExtend.hxx>
-
-#include <ProjLib_ProjectedCurve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAPI_Interpolate.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
+#include <GeomProjLib.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Precision.hxx>
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
-#include <Approx_CurveOnSurface.hxx>
-#include <Geom_BoundedCurve.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <ShapeAnalysis_Curve.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
+#include <ShapeExtend.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
+#include <algorithm>
 #define NCONTROL 23
 
 //=======================================================================

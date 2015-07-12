@@ -14,13 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_PointRepresentation.ixx>
+
+#include <BRep_PointRepresentation.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_PointRepresentation
 //purpose  : 
 //=======================================================================
-
 BRep_PointRepresentation::BRep_PointRepresentation(const Standard_Real P,
 						   const TopLoc_Location& L) :
        myLocation(L),

@@ -13,43 +13,47 @@
 
 //    abv 09.04.99 S4136: eliminate parameter step.readaccept.void
 //    sln 04,10.2001. BUC61003. Prevent exception which may occur during reading of complex entity (if entity's items are not in alphabetical order)
-#include <StepData_StepReaderData.ixx>
-#include <StepData_StepModel.hxx>
+
+#include <Interface_Check.hxx>
 #include <Interface_FileParameter.hxx>
-#include <Interface_ParamList.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <Interface_Static.hxx>
-#include <Interface_Macros.hxx>
-
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_IndexedMapOfInteger.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <TColStd_HArray1OfTransient.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ParamList.hxx>
+#include <Interface_Static.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_EnumTool.hxx>
+#include <StepData_ESDescr.hxx>
+#include <StepData_Field.hxx>
+#include <StepData_FieldList.hxx>
+#include <StepData_PDescr.hxx>
+#include <StepData_SelectArrReal.hxx>
+#include <StepData_SelectInt.hxx>
 #include <StepData_SelectMember.hxx>
 #include <StepData_SelectNamed.hxx>
 #include <StepData_SelectReal.hxx>
-#include <StepData_SelectInt.hxx>
+#include <StepData_SelectType.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <StepData_SelectArrReal.hxx>
+#include <TColStd_IndexedMapOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 #include <stdio.h>
-
-
 // Le Header est constitue d entites analogues dans leur principe a celles
 // du Data, a ceci pres qu elles sont sans identifieur, et ne peuvent ni
 // referencer, ni etre referencees (que ce soit avec Header ou avec Data)
 // Ainsi, dans StepReaderData, le Header est constitue des "thenbhead" 1res Entites
-
-
 //  #########################################################################
 //  ....   Creation et Acces de base aux donnees atomiques du fichier    ....
-
 typedef TCollection_HAsciiString String;
 static char txtmes[200];  // plus commode que redeclarer partout
 

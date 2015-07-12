@@ -14,16 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_Session.ixx>
-#include <TCollection_ExtendedString.hxx>
-#include <CDF_MetaDataDriverFactory.hxx>
+
+#include <CDF_Application.hxx>
+#include <CDF_Directory.hxx>
 #include <CDF_FWOSDriver.hxx>
-#include <Plugin.hxx>
-#include <Standard_GUID.hxx>
+#include <CDF_MetaDataDriver.hxx>
+#include <CDF_MetaDataDriverFactory.hxx>
+#include <CDF_Session.hxx>
 #include <PCDM.hxx>
 #include <PCDM_Reader.hxx>
+#include <Plugin.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_MultiplyDefined.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 static Handle(CDF_Session) CS;
 

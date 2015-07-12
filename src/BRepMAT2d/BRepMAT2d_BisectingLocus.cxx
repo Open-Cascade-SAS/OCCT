@@ -14,28 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-# include <BRepMAT2d_BisectingLocus.ixx>
 
-# include <MAT2d_Mat2d.hxx>
-# include <MAT2d_Tool2d.hxx>
-# include <MAT2d_Circuit.hxx>
-# include <MAT2d_CutCurve.hxx>
-# include <MAT2d_BiInt.hxx>
-# include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
-# include <MAT_Graph.hxx>
-# include <MAT_Arc.hxx>
-# include <MAT_BasicElt.hxx>
-# include <MAT_Node.hxx>
-# include <MAT_Bisector.hxx>
-# include <MAT_ListOfBisector.hxx>
-# include <MAT_DataMapOfIntegerBasicElt.hxx>
-# include <MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx>
-# include <Geom2d_TrimmedCurve.hxx>
-# include <gp_Pnt2d.hxx>
-# include <TColGeom2d_SequenceOfGeometry.hxx>
-# include <Precision.hxx>
-
+#include <Bisector_Bisec.hxx>
+#include <BRepMAT2d_BisectingLocus.hxx>
+#include <BRepMAT2d_Explorer.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <MAT2d_BiInt.hxx>
+#include <MAT2d_Circuit.hxx>
+#include <MAT2d_CutCurve.hxx>
+#include <MAT2d_Mat2d.hxx>
+#include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
+#include <MAT2d_Tool2d.hxx>
+#include <MAT_Arc.hxx>
+#include <MAT_BasicElt.hxx>
+#include <MAT_Bisector.hxx>
+#include <MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx>
+#include <MAT_DataMapOfIntegerBasicElt.hxx>
+#include <MAT_Graph.hxx>
+#include <MAT_ListOfBisector.hxx>
+#include <MAT_Node.hxx>
+#include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <TColGeom2d_SequenceOfGeometry.hxx>
 
 static void CutSketch (MAT2d_SequenceOfSequenceOfGeometry&    Figure,
 		       MAT2d_DataMapOfBiIntInteger&           NbSect);

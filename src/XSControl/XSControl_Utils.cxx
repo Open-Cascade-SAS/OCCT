@@ -11,32 +11,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSControl_Utils.ixx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <Interface_Macros.hxx>
-#include <Interface_MSG.hxx>
-
-#include <TColStd_HSequenceOfAsciiString.hxx>
-#include <TColStd_HSequenceOfExtendedString.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
-
-#include <TransferBRep.hxx>
-#include <TransferBRep_ShapeBinder.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <TopoDS_HShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <Transfer_SimpleBinderOfTransient.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
-
+#include <Interface_HArray1OfHAsciiString.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_MSG.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TCollection_HExtendedString.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TColStd_HSequenceOfExtendedString.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_HShape.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Wire.hxx>
+#include <Transfer_SimpleBinderOfTransient.hxx>
+#include <TransferBRep.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <XSControl_Utils.hxx>
 
 static TCollection_AsciiString    bufasc;
 static TCollection_ExtendedString bufext;

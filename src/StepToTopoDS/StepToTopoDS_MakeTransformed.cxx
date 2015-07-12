@@ -14,32 +14,32 @@
 //:n7 abv 16.02.99: treatment of CARTESIAN_TRSF_OP_3D placed to StepGeom_MkTransformed3d
 // sln 23.10.2001. CTS23496: Verifying on error creation of directions is added (StepToTopoDS_MakeTransformed::Compute(...) function)
 
-#include <StepToTopoDS_MakeTransformed.ixx>
-#include <Transfer_Binder.hxx>
-#include <TransferBRep_ShapeBinder.hxx>
-
-#include <StepToGeom_MakeAxis2Placement.hxx>
 #include <Geom_Axis2Placement.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_TrsfForm.hxx>
-#include <TopLoc_Location.hxx>
-
-#include <StepRepr_RepresentationMap.hxx>
-#include <StepRepr_Representation.hxx>
-
-//  + pour CartesianOperator3d
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Direction.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_TrsfForm.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepGeom_Direction.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_MappedItem.hxx>
+#include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationMap.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
 #include <StepToGeom_MakeCartesianPoint.hxx>
 #include <StepToGeom_MakeDirection.hxx>
 #include <StepToGeom_MakeTransformation3d.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepGeom_CartesianTransformationOperator3d.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepToTopoDS_MakeTransformed.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
 
-
+//  + pour CartesianOperator3d
 StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed ()
 {
 }

@@ -12,8 +12,12 @@
 // commercial license or contractual agreement.
 
 //szv#4 S4163
-#include <Interface_ParamSet.ixx>
 
+#include <Interface_FileParameter.hxx>
+#include <Interface_ParamList.hxx>
+#include <Interface_ParamSet.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 Interface_ParamSet::Interface_ParamSet (const Standard_Integer nres, const Standard_Integer )//nst)
 {

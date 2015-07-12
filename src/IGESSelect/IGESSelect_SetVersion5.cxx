@@ -11,11 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESSelect_SetVersion5.ixx>
+
+#include <IFSelect_ContextModif.hxx>
 #include <IGESData_GlobalSection.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESSelect_SetVersion5.hxx>
 #include <Interface_Check.hxx>
-
-
+#include <Interface_CopyTool.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IGESSelect_SetVersion5::IGESSelect_SetVersion5 ()
     : IGESSelect_ModelModifier (Standard_False)    {  }

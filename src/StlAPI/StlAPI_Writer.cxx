@@ -11,13 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StlAPI_Writer.ixx>
-#include <StlTransfer.hxx>
-#include <TopoDS_Shape.hxx>
+
 #include <Bnd_Box.hxx>
-#include <RWStl.hxx>
 #include <BRepBndLib.hxx>
 #include <OSD_Path.hxx>
+#include <RWStl.hxx>
+#include <StlAPI_Writer.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlTransfer.hxx>
+#include <TopoDS_Shape.hxx>
 
 StlAPI_Writer::StlAPI_Writer()
 {

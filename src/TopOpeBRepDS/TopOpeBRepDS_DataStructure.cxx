@@ -14,21 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
+#include <Geom_Surface.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopoDS.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <TopOpeBRepDS_SurfaceData.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_CurveData.hxx>
-#include <TopOpeBRepDS_PointData.hxx>
-#include <TopOpeBRepDS_ShapeData.hxx>
-#include <TopOpeBRepDS_DataStructure.ixx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopOpeBRepDS_CurveExplorer.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_PointData.hxx>
+#include <TopOpeBRepDS_PointExplorer.hxx>
+#include <TopOpeBRepDS_ShapeData.hxx>
+#include <TopOpeBRepDS_ShapeWithState.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
+#include <TopOpeBRepDS_SurfaceData.hxx>
+#include <TopOpeBRepDS_SurfaceExplorer.hxx>
+#include <TopOpeBRepTool_ShapeTool.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //modified by NIZNHY-PKV Tue Oct 30 09:21:39 2001 f
-#include <Geom_Surface.hxx>
 //modified by NIZNHY-PKV Tue Oct 30 09:21:44 2001 t
-
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 #include <TCollection_AsciiString.hxx>

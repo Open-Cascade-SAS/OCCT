@@ -13,14 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMXCAFDoc_GraphNodeDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-
-#include <XCAFDoc_GraphNode.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_Label.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <Standard_PCharacter.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
+#include <XCAFDoc_GraphNode.hxx>
+#include <XmlMXCAFDoc_GraphNodeDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (TreeIdString,   "treeid")
 IMPLEMENT_DOMSTRING (ChildrenString, "children")

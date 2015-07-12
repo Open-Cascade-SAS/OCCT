@@ -16,18 +16,29 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_ToolNewDimensionedGeometry.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <gp_XYZ.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESDimen_NewDimensionedGeometry.hxx>
+#include <IGESDimen_ToolNewDimensionedGeometry.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESData_TransfEntity.hxx>
-#include <IGESData_Dump.hxx>
-#include <Interface_Macros.hxx>
-
 
 IGESDimen_ToolNewDimensionedGeometry::IGESDimen_ToolNewDimensionedGeometry ()
       {  }

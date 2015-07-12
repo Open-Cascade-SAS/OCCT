@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include  <IGESData_FileProtocol.ixx>
 
+#include <IGESData_FileProtocol.hxx>
+#include <IGESData_Protocol.hxx>
+#include <Interface_Protocol.hxx>
+#include <Standard_Type.hxx>
 
 IGESData_FileProtocol::IGESData_FileProtocol ()    {  }
 

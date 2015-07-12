@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepBasic_RWThermodynamicTemperatureUnit.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepBasic_RWThermodynamicTemperatureUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_ThermodynamicTemperatureUnit.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWThermodynamicTemperatureUnit
 //purpose  : 
 //=======================================================================
-
 RWStepBasic_RWThermodynamicTemperatureUnit::RWStepBasic_RWThermodynamicTemperatureUnit ()
 {
 }

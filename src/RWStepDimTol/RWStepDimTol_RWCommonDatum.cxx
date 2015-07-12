@@ -15,7 +15,12 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepDimTol_RWCommonDatum.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepDimTol_RWCommonDatum.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepDimTol_CommonDatum.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 
@@ -23,7 +28,6 @@
 //function : RWStepDimTol_RWCommonDatum
 //purpose  : 
 //=======================================================================
-
 RWStepDimTol_RWCommonDatum::RWStepDimTol_RWCommonDatum ()
 {
 }

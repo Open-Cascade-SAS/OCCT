@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
+
+#include <Geom2d_Curve.hxx>
+#include <IntSurf_Situation.hxx>
+#include <IntSurf_TypeTrans.hxx>
+#include <TopAbs.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
+#include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 #include <TopOpeBRepDS_FaceEdgeInterference.hxx>
-#include <TopAbs.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <IntSurf_Situation.hxx>
-#include <TopOpeBRepDS_define.hxx>
-#include <TopOpeBRepDS_InterferenceTool.ixx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_InterferenceTool.hxx>
+#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
+#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 //=======================================================================
 //function : MakeEdgeInterference

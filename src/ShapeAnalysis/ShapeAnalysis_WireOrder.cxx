@@ -15,26 +15,24 @@
 // pdn 11.03.99 S4135 changing reordering algorithm in order to make it independent on tolerance
 //szv#4 S4163
 //    pdn 09.05.99: S4174: preserve order of edges for complete torus
-#include <ShapeAnalysis_WireOrder.ixx>
 
-#include <Precision.hxx>
-
-#include <Standard_TypeMismatch.hxx>
-
-#include <TColgp_Array1OfXYZ.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
 #include <gp_Pnt.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_WireOrder.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TColgp_Array1OfXYZ.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
 
 //=======================================================================
 //function : ShapeAnalysis_WireOrder
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_WireOrder::ShapeAnalysis_WireOrder()
   : myKeepLoops(Standard_False) , myGap (0.) , myStat (0)  , myMode (Standard_True) 
 {

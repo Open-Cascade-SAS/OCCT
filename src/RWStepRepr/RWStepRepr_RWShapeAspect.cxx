@@ -12,16 +12,15 @@
 // commercial license or contractual agreement.
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
-#include <RWStepRepr_RWShapeAspect.ixx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepData_Logical.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepRepr_RWShapeAspect.hxx>
+#include <StepData_Logical.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_ShapeAspect.hxx>
-
 
 RWStepRepr_RWShapeAspect::RWStepRepr_RWShapeAspect () {}
 

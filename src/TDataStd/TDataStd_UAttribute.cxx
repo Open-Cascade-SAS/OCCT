@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_UAttribute.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd.hxx>
+#include <TDataStd_UAttribute.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
-
 Handle(TDataStd_UAttribute) TDataStd_UAttribute::Set (const TDF_Label& label, const Standard_GUID& guid )
 {
   Handle(TDataStd_UAttribute) A;  

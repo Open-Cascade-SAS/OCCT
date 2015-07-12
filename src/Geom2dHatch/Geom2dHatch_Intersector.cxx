@@ -14,18 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dHatch_Intersector.ixx>
+
 #include <ElCLib.hxx>
 #include <Geom2d_Line.hxx>
-#include <Precision.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Intersector.hxx>
 #include <Geom2dLProp_CLProps2d.hxx>
-
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <Precision.hxx>
 
 //=======================================================================
 //function : Geom2dHatch_Intersector
 //purpose  : 
 //=======================================================================
-
 Geom2dHatch_Intersector::Geom2dHatch_Intersector() :
 myConfusionTolerance(0.0),
 myTangencyTolerance(0.0)

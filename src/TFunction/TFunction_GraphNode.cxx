@@ -13,14 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TFunction_GraphNode.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TFunction_GraphNode.hxx>
 #include <TFunction_Scope.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : Static method to get an ID
 //=======================================================================
-
 const Standard_GUID&  TFunction_GraphNode::GetID() 
 {  
   static Standard_GUID TFunction_GraphNodeID("DD51FA86-E171-41a4-A2C1-3A0FBF286798");

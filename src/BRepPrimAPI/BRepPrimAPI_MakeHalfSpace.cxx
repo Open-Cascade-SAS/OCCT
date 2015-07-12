@@ -14,18 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrimAPI_MakeHalfSpace.ixx>
 
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepExtrema_ExtPF.hxx>
 #include <BRepLProp_SLProps.hxx>
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <BRep_Tool.hxx>
 
 //=======================================================================
 //function : FindExtrema
@@ -37,7 +42,6 @@
 //             - anOppositePnt : The corresponding point lying on the face
 //             - U,V : The parameters of <anOppositePnt> on the face <aFace>
 //=======================================================================
-
 static Standard_Real FindExtrema(const gp_Pnt&        aPnt,
 				 const TopoDS_Face&   aFace,
 				       Standard_Real& Dist,

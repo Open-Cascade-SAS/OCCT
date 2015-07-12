@@ -17,10 +17,14 @@
 //--------------------------------------------------------------------
 //#59 rln 29.12.98 PRO17015
 
-#include <IGESGeom_ConicArc.ixx>
+#include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESGeom_ConicArc.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_ConicArc::IGESGeom_ConicArc ()    {  }
 

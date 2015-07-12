@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_VPointInterIterator.ixx>
+
 #include <Standard_ProgramError.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRep_VPointInterIterator.hxx>
 
 //=======================================================================
 //function : VPointInterIterator
 //purpose  : 
 //=======================================================================
-
 TopOpeBRep_VPointInterIterator::TopOpeBRep_VPointInterIterator() : 
 myLineInter(NULL),myVPointIndex(0),myVPointNb(0),mycheckkeep(Standard_False)
 {}

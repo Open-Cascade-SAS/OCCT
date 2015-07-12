@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw.ixx>
+
 #include <DBRep.hxx>
+#include <TestTopOpeDraw.hxx>
 
 //=======================================================================
 //function : AllCommands
 //purpose  : 
 //=======================================================================
-
 void  TestTopOpeDraw::AllCommands(Draw_Interpretor& theCommands)
 {
   TestTopOpeDraw::OtherCommands(theCommands);

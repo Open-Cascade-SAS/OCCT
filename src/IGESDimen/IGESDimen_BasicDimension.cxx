@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_BasicDimension.ixx>
-
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
+#include <IGESDimen_BasicDimension.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_BasicDimension::IGESDimen_BasicDimension ()    {  }
 

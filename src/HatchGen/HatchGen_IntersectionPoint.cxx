@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HatchGen_IntersectionPoint.ixx>
+
+#include <HatchGen_IntersectionPoint.hxx>
 
 //=======================================================================
 // Function : HatchGen_IntersectionPoint
 // Purpose  : Constructor
 //=======================================================================
-
 HatchGen_IntersectionPoint::HatchGen_IntersectionPoint () :
        myIndex  (0) ,
        myParam  (RealLast()) ,

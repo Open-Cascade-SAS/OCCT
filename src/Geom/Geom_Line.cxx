@@ -14,20 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_Line.ixx>
 
-#include <Precision.hxx>
-#include <gp_XYZ.hxx>
 #include <ElCLib.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Precision.hxx>
 #include <Standard_RangeError.hxx>
-
-
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Copy
 //purpose  : 
 //=======================================================================
-
 Handle(Geom_Geometry) Geom_Line::Copy() const {
 
    Handle(Geom_Line) L;

@@ -30,26 +30,28 @@
 #include <Geom2d_Circle.hxx>
 #endif
 
-#include <MAT2d_Circuit.ixx>
-#include <Geom2d_TrimmedCurve.hxx>
+
+#include <Adaptor3d_OffsetCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
-#include <Geom2d_Geometry.hxx>      
-#include <TColStd_SequenceOfInteger.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+#include <MAT2d_BiInt.hxx>
+#include <MAT2d_Circuit.hxx>
+#include <MAT2d_Connexion.hxx>
+#include <MAT2d_DataMapIteratorOfDataMapOfBiIntSequenceOfInteger.hxx>
+#include <MAT2d_DataMapOfBiIntSequenceOfInteger.hxx>
+#include <MAT2d_DataMapOfIntegerConnexion.hxx>
+#include <MAT2d_MiniPath.hxx>
+#include <MAT2d_SequenceOfConnexion.hxx>
+#include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <MAT2d_BiInt.hxx>
-#include <MAT2d_MiniPath.hxx>
-#include <MAT2d_Connexion.hxx>
-#include <MAT2d_SequenceOfConnexion.hxx>
-#include <MAT2d_DataMapOfIntegerConnexion.hxx> 
-#include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
-#include <MAT2d_DataMapOfBiIntSequenceOfInteger.hxx>
-#include <MAT2d_DataMapIteratorOfDataMapOfBiIntSequenceOfInteger.hxx>
-#include <Precision.hxx>
-#include <Adaptor3d_OffsetCurve.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 #ifdef DRAW
   static Handle(DrawTrSurf_Curve2d) draw;

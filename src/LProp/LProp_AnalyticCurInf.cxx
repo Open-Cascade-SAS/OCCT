@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LProp_AnalyticCurInf.ixx>
+
 #include <ElCLib.hxx>
+#include <LProp_AnalyticCurInf.hxx>
+#include <LProp_CurAndInf.hxx>
 
 //=======================================================================
 //function : LProp_AnalyticCurInf
 //purpose  : 
 //=======================================================================
-
 LProp_AnalyticCurInf::LProp_AnalyticCurInf()
 {
 }

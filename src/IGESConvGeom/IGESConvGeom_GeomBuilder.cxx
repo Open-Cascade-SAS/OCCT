@@ -11,13 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESConvGeom_GeomBuilder.ixx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
+
+#include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESConvGeom_GeomBuilder.hxx>
+#include <IGESGeom_CopiousData.hxx>
+#include <IGESGeom_TransformationMatrix.hxx>
 #include <Interface_Translates.hxx>
 #include <Standard_DomainError.hxx>
-#include <gp.hxx>
-
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 static Standard_Real epsl = 1.E-10;
 static Standard_Real epsa = 1.E-10;

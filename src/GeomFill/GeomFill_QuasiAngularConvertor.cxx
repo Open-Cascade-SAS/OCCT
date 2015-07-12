@@ -14,19 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_QuasiAngularConvertor.ixx>
-
-
-#include <PLib.hxx>
-#include <gp_Mat.hxx>
-#include <gp_Ax1.hxx>
 
 #include <Convert_CompPolynomialToPoles.hxx>
-
+#include <GeomFill_QuasiAngularConvertor.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <PLib.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 #define NullAngle 1.e-6
 

@@ -14,31 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeElementarySurface.ixx>
-#include <StdFail_NotDone.hxx>
-#include <StepGeom_ElementarySurface.hxx>
-#include <StepGeom_CylindricalSurface.hxx>
-#include <StepGeom_ConicalSurface.hxx>
-#include <StepGeom_SphericalSurface.hxx>
-#include <StepGeom_ToroidalSurface.hxx>
-#include <StepGeom_Plane.hxx>
-#include <GeomToStep_MakeElementarySurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
+
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <GeomToStep_MakeCylindricalSurface.hxx>
 #include <GeomToStep_MakeConicalSurface.hxx>
+#include <GeomToStep_MakeCylindricalSurface.hxx>
+#include <GeomToStep_MakeElementarySurface.hxx>
+#include <GeomToStep_MakePlane.hxx>
 #include <GeomToStep_MakeSphericalSurface.hxx>
 #include <GeomToStep_MakeToroidalSurface.hxx>
-#include <GeomToStep_MakePlane.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_ConicalSurface.hxx>
+#include <StepGeom_CylindricalSurface.hxx>
+#include <StepGeom_ElementarySurface.hxx>
+#include <StepGeom_Plane.hxx>
+#include <StepGeom_SphericalSurface.hxx>
+#include <StepGeom_ToroidalSurface.hxx>
 
 //=============================================================================
 // Creation d' une ElementarySurface de prostep a partir d' une 
 // ElementarySurface de Geom
 //=============================================================================
-
 GeomToStep_MakeElementarySurface::GeomToStep_MakeElementarySurface
   ( const Handle(Geom_ElementarySurface)& S)
 {

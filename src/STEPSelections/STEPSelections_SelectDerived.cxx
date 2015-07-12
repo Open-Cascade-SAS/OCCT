@@ -14,11 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPSelections_SelectDerived.ixx>
-#include <StepData_ReadWriteModule.hxx>
-#include <RWStepAP214_GeneralModule.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+
+#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <RWStepAP214_GeneralModule.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_ReadWriteModule.hxx>
+#include <STEPSelections_SelectDerived.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
 
 STEPSelections_SelectDerived::STEPSelections_SelectDerived():StepSelect_StepType()
 {

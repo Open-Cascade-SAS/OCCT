@@ -14,17 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDocStd_Modified.ixx>
+
 #include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
-
-
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDocStd_Modified.hxx>
 
 //=======================================================================
 //function : IsEmpty
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean TDocStd_Modified::IsEmpty(const TDF_Label& access) 
 {
   Handle(TDocStd_Modified) MDF;

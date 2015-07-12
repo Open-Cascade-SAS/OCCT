@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_FeaMaterialPropertyRepresentationItem.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
 
 //=======================================================================
 //function : StepFEA_FeaMaterialPropertyRepresentationItem
 //purpose  : 
 //=======================================================================
-
 StepFEA_FeaMaterialPropertyRepresentationItem::StepFEA_FeaMaterialPropertyRepresentationItem ()
 {
 }

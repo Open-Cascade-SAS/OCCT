@@ -15,32 +15,26 @@
 
 // Modified     23/02/98 : FMN ; Remplacement PI par Standard_PI
 //              02.15.100 : JR : Clutter
-
-
 //-Version
-
 //-Design       
-
 //-Warning     
-
 //-References
-
 //-Language     C++ 2.1
-
 //-Declarations
-
 // for the class
-#include <V3d.ixx>
-#include <V3d_View.hxx>
 
-#include <Quantity_NameOfColor.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_Window.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_Structure.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Vector.hxx>
+#include <Quantity_NameOfColor.hxx>
+#include <V3d.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 

@@ -12,61 +12,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FilletSurf_InternalBuilder.ixx>
-#include <FilletSurf_StatusDone.hxx>
-#include <FilletSurf_ErrorTypeStatus.hxx>
-#include <FilletSurf_StatusType.hxx>
 
-#include <ChFi3d_FilBuilder.hxx>
-#include <ChFi3d_Builder_0.hxx>
-
-#include <ChFiDS_HData.hxx>
-#include <ChFiDS_FilSpine.hxx>
-#include <ChFiDS_HElSpine.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_ListOfStripe.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-#include <ChFiDS_SurfData.hxx>
-#include <ChFiDS_SequenceOfSurfData.hxx>
-#include <ChFiDS_FaceInterference.hxx>
-#include <ChFiDS_CommonPoint.hxx>
-#include <ChFiDS_CircSection.hxx>
-#include <ChFiDS_SecHArray1.hxx>
-
-#include <BRepBlend_Line.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
-
-#include <TopoDS.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <BRep_Tool.hxx>
-
-#include <BRepAdaptor_HCurve.hxx>
+#include <BRepBlend_Line.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <ChFi3d_Builder_0.hxx>
+#include <ChFi3d_FilBuilder.hxx>
+#include <ChFiDS_CircSection.hxx>
+#include <ChFiDS_CommonPoint.hxx>
+#include <ChFiDS_FaceInterference.hxx>
+#include <ChFiDS_FilSpine.hxx>
+#include <ChFiDS_HData.hxx>
+#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
+#include <ChFiDS_ListOfStripe.hxx>
+#include <ChFiDS_SecHArray1.hxx>
+#include <ChFiDS_SequenceOfSurfData.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <ElSLib.hxx>
+#include <FilletSurf_ErrorTypeStatus.hxx>
+#include <FilletSurf_InternalBuilder.hxx>
+#include <FilletSurf_StatusDone.hxx>
+#include <FilletSurf_StatusType.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAbs_Shape.hxx>
-
-#include <TopOpeBRepDS_HDataStructure.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-
-#include <ElSLib.hxx>
-
 #include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
-
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-#include <BRepExtrema_DistShapeShape.hxx> 
-
-#include <Standard_ConstructionError.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static Standard_Boolean isinlist(const TopoDS_Shape&         E,
 				 const TopTools_ListOfShape& L){

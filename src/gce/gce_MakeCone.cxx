@@ -14,15 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeCone.ixx>
-#include <StdFail_NotDone.hxx>
+
+#include <gce_MakeCone.hxx>
 #include <gp.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //  Construction d un cone par son axe , le rayon de sa base et le demi   +
 //  angle d ouverture.                                                    +
 //=========================================================================
-
 gce_MakeCone::gce_MakeCone(const gp_Ax2&       A2    ,
 			   const Standard_Real Ang   ,
 			   const Standard_Real Radius)

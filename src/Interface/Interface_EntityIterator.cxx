@@ -11,18 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_EntityIterator.ixx>
+
+#include <Interface_EntityIterator.hxx>
+#include <Interface_IntVal.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-
+#include <Standard_Transient.hxx>
 
 //  Iterateur pour ecriture for, ou while avec Next en fin :
 //  for (creer iterateur; iter.More(); iter.Next()) { val = iter.Value(); ... }
-
-
 // .... Definitions initiales : en particulier celles requises pour
 //      les outils de graphe (construction avec le graphe, avec un vertex)
-
 Interface_EntityIterator::Interface_EntityIterator ()
 {
 //  thecurr = new Interface_IntVal;

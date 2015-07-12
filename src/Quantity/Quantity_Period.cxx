@@ -17,9 +17,9 @@
 // Period class implementation.
 // Updated :
 // -------------------------------------------------------------
-#include <Quantity_PeriodDefinitionError.hxx>
-#include <Quantity_Period.ixx>
 
+#include <Quantity_Period.hxx>
+#include <Quantity_PeriodDefinitionError.hxx>
 
 // -----------------------------------------------------------
 // IsValid : Checks the validity of a date
@@ -31,8 +31,6 @@
 // 0 <= mis
 // 0 <= mics 
 // -----------------------------------------------------------
-
-
 Standard_Boolean Quantity_Period::IsValid(
                                         const Standard_Integer dd,
                                         const Standard_Integer hh,

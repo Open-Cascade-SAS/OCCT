@@ -15,14 +15,18 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWParametricCurve3dElementCoordinateDirection.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWParametricCurve3dElementCoordinateDirection.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepFEA_ParametricCurve3dElementCoordinateDirection.hxx>
 #include <StepGeom_Direction.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWParametricCurve3dElementCoordinateDirection
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWParametricCurve3dElementCoordinateDirection::RWStepFEA_RWParametricCurve3dElementCoordinateDirection ()
 {
 }

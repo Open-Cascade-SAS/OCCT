@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_CompositeCurve.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESGeom_CompositeCurve.hxx>
 #include <Standard_DimensionMismatch.hxx>
-
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_CompositeCurve::IGESGeom_CompositeCurve ()    {  }
 

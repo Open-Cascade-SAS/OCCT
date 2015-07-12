@@ -21,16 +21,18 @@
 // pmn  07-10-96 : Correction de DN dans le cas rationnal.
 // pmn  06-02-97 : Correction des poids dans RationalDerivative. (PRO700)
 
-#include <BSplSLib.ixx>
-#include <PLib.hxx>
-#include <NCollection_LocalArray.hxx>
 #include <BSplCLib.hxx>
-#include <TColgp_Array2OfXYZ.hxx>
-#include <TColgp_Array1OfXYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ConstructionError.hxx>
+#include <BSplSLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TColgp_Array1OfXYZ.hxx>
+#include <TColgp_Array2OfXYZ.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 // for null derivatives
 static Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};

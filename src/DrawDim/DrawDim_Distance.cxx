@@ -14,28 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawDim_Distance.ixx>
-#include <DrawDim.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS.hxx>
+
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <gp_Pln.hxx>
+#include <Draw_Display.hxx>
+#include <DrawDim.hxx>
+#include <DrawDim_Distance.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <BRep_Tool.hxx>
 #include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : DrawDim_Distance
 //purpose  : 
 //=======================================================================
-
 DrawDim_Distance::DrawDim_Distance (const TopoDS_Face& plane1,
 				    const TopoDS_Face& plane2)
 {

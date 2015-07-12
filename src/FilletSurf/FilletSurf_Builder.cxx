@@ -14,22 +14,24 @@
 
 // Modifed:     Portage NT 7-5-97 DPF (return)
 
-#include <FilletSurf_Builder.ixx>
-#include <FilletSurf_InternalBuilder.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
 #include <ChFi3d_FilletShape.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <StdFail_NotDone.hxx>
+#include <FilletSurf_Builder.hxx>
 #include <FilletSurf_ErrorTypeStatus.hxx>
+#include <FilletSurf_InternalBuilder.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : FilletSurf_Builder
 //purpose  : 
 //=======================================================================
-
 FilletSurf_Builder::FilletSurf_Builder(const TopoDS_Shape& S, 
 	                               const TopTools_ListOfShape& E, 
 				       const Standard_Real R,			       

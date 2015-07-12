@@ -12,25 +12,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_Circ2d2TanRadGeo.ixx>
 
+#include <Adaptor3d_OffsetCurve.hxx>
 #include <ElCLib.hxx>
+#include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dGcc_Circ2d2TanRadGeo.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_CurveToolGeo.hxx>
+#include <Geom2dGcc_QCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <GccEnt_BadQualifier.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-
-#include <Geom2dGcc_CurveTool.hxx>
-#include <Adaptor3d_OffsetCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2dGcc_CurveToolGeo.hxx>
-#include <Geom2dInt_GInter.hxx>
 
 static const Standard_Integer aNbSolMAX = 16;
 

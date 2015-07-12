@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepElement_Volume3dElementDescriptor.ixx>
+#include <Standard_Type.hxx>
+#include <StepElement_Volume3dElementDescriptor.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepElement_Volume3dElementDescriptor
 //purpose  : 
 //=======================================================================
-
 StepElement_Volume3dElementDescriptor::StepElement_Volume3dElementDescriptor ()
 {
 }

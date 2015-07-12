@@ -14,8 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDM_NullMessageDriver.ixx>
+
+#include <CDM_NullMessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+
 CDM_NullMessageDriver::CDM_NullMessageDriver() {}
 
 void CDM_NullMessageDriver::Write(const Standard_ExtString /*aString*/) {

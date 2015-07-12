@@ -16,9 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_ReferenceDesignator.ixx>
+#include <IGESAppli_ReferenceDesignator.hxx>
 #include <IGESData_LevelListEntity.hxx>
-
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ReferenceDesignator::IGESAppli_ReferenceDesignator ()    {  }
 

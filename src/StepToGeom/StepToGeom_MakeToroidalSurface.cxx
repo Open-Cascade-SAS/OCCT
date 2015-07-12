@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeToroidalSurface.ixx>
-#include <StepGeom_ToroidalSurface.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+
 #include <Geom_Axis2Placement.hxx>
-#include <gp_Ax2.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_ToroidalSurface.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeToroidalSurface.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une ToroidalSurface de Geom a partir d' une 
 // ToroidalSurface de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeToroidalSurface::Convert (const Handle(StepGeom_ToroidalSurface)& SS, Handle(Geom_ToroidalSurface)& CS)
 {
   Handle(Geom_Axis2Placement) A;

@@ -18,12 +18,15 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_Crout.ixx>
+#include <math_Crout.hxx>
+#include <math_Matrix.hxx>
 #include <math_NotSquare.hxx>
-#include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 math_Crout::math_Crout(const math_Matrix& A, const Standard_Real MinPivot):
                        InvA(1, A.RowNumber(), 1, A.ColNumber()) 

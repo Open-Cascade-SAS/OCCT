@@ -14,12 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdSelect_Shape.ixx>
 
+#include <Geom_Transformation.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Projector.hxx>
+#include <Standard_Type.hxx>
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
+#include <StdSelect_Shape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Shape.hxx>
 
 StdSelect_Shape::StdSelect_Shape (const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer):
   mysh     (theShape),

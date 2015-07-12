@@ -16,17 +16,27 @@
 
 //  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272
 
-
-#include <ProjLib_Projector.ixx>
-
 #include <ElCLib.hxx>
-
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Parab2d.hxx>
+#include <ProjLib_Projector.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
 
 //=======================================================================
 //function : ProjLib_Projector
 //purpose  : 
 //=======================================================================
-
 ProjLib_Projector::ProjLib_Projector()
 {
   isDone = Standard_False;

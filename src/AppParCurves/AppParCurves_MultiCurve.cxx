@@ -12,13 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AppParCurves_MultiCurve.ixx>
+
+#include <AppParCurves_MultiCurve.hxx>
+#include <AppParCurves_MultiPoint.hxx>
+#include <BSplCLib.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <BSplCLib.hxx>
-#include <PLib.hxx>
-
 
 AppParCurves_MultiCurve::AppParCurves_MultiCurve() {}
 

@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWTextStyleWithBoxCharacteristics.ixx>
-#include <Standard_Real.hxx>
-#include <StepVisual_TextStyleForDefinedFont.hxx>
 
-#include <StepVisual_HArray1OfBoxCharacteristicSelect.hxx>
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepVisual_RWTextStyleWithBoxCharacteristics.hxx>
+#include <Standard_Real.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepVisual_HArray1OfBoxCharacteristicSelect.hxx>
+#include <StepVisual_TextStyleForDefinedFont.hxx>
 #include <StepVisual_TextStyleWithBoxCharacteristics.hxx>
-
 
 RWStepVisual_RWTextStyleWithBoxCharacteristics::RWStepVisual_RWTextStyleWithBoxCharacteristics () {}
 

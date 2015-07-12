@@ -12,13 +12,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_ExtElSS.ixx>
-#include <Extrema_ExtPElS.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <StdFail_NotDone.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
-#include <Precision.hxx>
 
+#include <Extrema_ExtElSS.hxx>
+#include <Extrema_ExtPElS.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
+#include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_InfiniteSolutions.hxx>
+#include <StdFail_NotDone.hxx>
 
 Extrema_ExtElSS::Extrema_ExtElSS()
 {

@@ -16,10 +16,17 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_PerspectiveView.ixx>
 #include <gp_GTrsf.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_TransfEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
-
+#include <IGESDraw_PerspectiveView.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESDraw_PerspectiveView::IGESDraw_PerspectiveView ()    {  }
 

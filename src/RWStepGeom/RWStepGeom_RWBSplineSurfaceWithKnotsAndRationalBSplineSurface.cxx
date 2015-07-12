@@ -11,28 +11,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface.ixx>
-#include <StepGeom_BSplineSurfaceWithKnots.hxx>
-#include <StepGeom_RationalBSplineSurface.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_BSplineSurfaceForm.hxx>
+
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_ShareTool.hxx>
+#include <RWStepGeom_RWBSplineSurfaceWithKnots.hxx>
+#include <RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
+#include <RWStepGeom_RWRationalBSplineSurface.hxx>
 #include <StepData_Logical.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_BSplineSurfaceForm.hxx>
+#include <StepGeom_BSplineSurfaceWithKnots.hxx>
+#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <StepGeom_KnotType.hxx>
+#include <StepGeom_RationalBSplineSurface.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <StepGeom_KnotType.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-
-#include <RWStepGeom_RWBSplineSurfaceWithKnots.hxx>
-#include <RWStepGeom_RWRationalBSplineSurface.hxx>
-
-
-#include <Interface_EntityIterator.hxx>
-
-
-#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
-
-
 
 // --- Enum : BSplineSurfaceForm ---
 static TCollection_AsciiString bssfSurfOfLinearExtrusion(".SURF_OF_LINEAR_EXTRUSION.");

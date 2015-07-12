@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_WPointInter.ixx>
+
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <TopOpeBRep_WPointInter.hxx>
 
 //=======================================================================
 //function : WPointInter
 //purpose  : 
 //=======================================================================
-
 TopOpeBRep_WPointInter::TopOpeBRep_WPointInter()
 {}
 

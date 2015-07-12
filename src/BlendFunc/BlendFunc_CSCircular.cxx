@@ -18,17 +18,25 @@
 //                        + Utilisation de GeomFill::GetCircle dans Section.
 // Modified 23/06/1997 PMN : Pb de division par 0.
 
-#include <BlendFunc_CSCircular.ixx>
-
-#include <math_Gauss.hxx>
-
-#include <ElCLib.hxx>
-#include <gp.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
+#include <BlendFunc_CSCircular.hxx>
+#include <ElCLib.hxx>
 #include <GeomFill.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_DomainError.hxx>
+#include <gp.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Law_Function.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
 #include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
 
 #define Eps 1.e-15
 

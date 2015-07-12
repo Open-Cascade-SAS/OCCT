@@ -14,14 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Profiler.ixx>
-#include <GeomConvert.hxx>
+
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_Conic.hxx>
-#include <GeomConvert_ApproxCurve.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert.hxx>
+#include <GeomConvert_ApproxCurve.hxx>
+#include <GeomFill_Profiler.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : UnifyByInsertingAllKnots

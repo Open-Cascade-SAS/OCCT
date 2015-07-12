@@ -13,28 +13,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataXtd_Plane.ixx>
-#include <TDataStd.hxx>
-#include <TDataXtd.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_Builder.hxx>
-#include <TDF_Label.hxx>
-#include <gp_Pln.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopAbs.hxx>
+
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <GeomLib_IsPlanarSurface.hxx>
+#include <gp_Pln.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd.hxx>
+#include <TDataXtd.hxx>
+#include <TDataXtd_Plane.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataXtd_Plane::GetID () 
 {
   static Standard_GUID TDataXtd_PlaneID("2a96b60c-ec8b-11d0-bee7-080009dc3333");

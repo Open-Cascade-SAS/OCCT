@@ -15,10 +15,11 @@
 //Jean-Claude Vauthier 27 November 1991
 //Passage sur C1 Aout 1992
 
-#include <GeomConvert_BSplineCurveKnotSplitting.ixx>
-#include <Standard_RangeError.hxx>
-
 #include <BSplCLib.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomConvert_BSplineCurveKnotSplitting.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_RangeError.hxx>
 
 typedef TColStd_Array1OfInteger      Array1OfInteger;
 typedef TColStd_HArray1OfInteger      HArray1OfInteger;

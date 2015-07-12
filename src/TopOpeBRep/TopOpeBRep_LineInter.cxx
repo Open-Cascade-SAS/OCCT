@@ -14,31 +14,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_LineInter.ixx>
-
-#include <TopOpeBRep.hxx>
-#include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRep_VPointInterIterator.hxx>
-#include <TopOpeBRep_FFTransitionTool.hxx>
-
-#include <IntPatch_IType.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <IntPatch_ALineToWLine.hxx>
-#include <IntSurf_Quadric.hxx>
-#include <GeomAbs_SurfaceType.hxx> 
-#include <gp_Pnt.hxx>
 
 #include <Adaptor2d_HCurve2d.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <TopAbs.hxx>
-
-#include <Standard_ProgramError.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Pnt.hxx>
+#include <IntPatch_ALine.hxx>
+#include <IntPatch_ALineToWLine.hxx>
+#include <IntPatch_GLine.hxx>
+#include <IntPatch_IType.hxx>
+#include <IntPatch_Line.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntSurf_Quadric.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRep.hxx>
+#include <TopOpeBRep_Bipoint.hxx>
+#include <TopOpeBRep_FFTransitionTool.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_VPointInter.hxx>
+#include <TopOpeBRep_VPointInterIterator.hxx>
+#include <TopOpeBRep_WPointInter.hxx>
+#include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer&);

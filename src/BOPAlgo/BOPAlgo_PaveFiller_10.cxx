@@ -15,22 +15,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_PaveFiller.ixx>
 
-#include <gp_Pnt.hxx>
-
-#include <TopAbs_State.hxx>
-
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Solid.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_SectionAttribute.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_Interf.hxx>
+#include <BOPDS_IteratorSI.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-
+#include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
-
-#include <BOPDS_DS.hxx>
-#include <BOPDS_IteratorSI.hxx>
-#include <BOPDS_Interf.hxx>
+#include <TopAbs_State.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : PerformVZ

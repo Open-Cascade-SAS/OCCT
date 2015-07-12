@@ -25,100 +25,82 @@
 //CAS.CADE surface)
 //szv#9:PRO19565:04Oct99 missing location for standalone vertices corrected
 
-#include <IGESToBRep_TopoCurve.ixx>
-
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_BasicCurve.hxx>
-#include <IGESToBRep_BasicSurface.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
-#include <IGESToBRep_TopoSurface.hxx>
-#include <IGESGeom_CircularArc.hxx>//added by rln 32/12/97
-
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepTools.hxx>
-
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
-
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-
+#include <Geom_TrimmedCurve.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
+#include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_GTrsf.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_XY.hxx>
-
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
 #include <IGESData_ToolLocation.hxx>
-
+#include <IGESGeom_Boundary.hxx>
+#include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_OffsetCurve.hxx>
-
+#include <IGESGeom_Point.hxx>
+#include <IGESGeom_SplineCurve.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_AlgoContainer.hxx>
+#include <IGESToBRep_BasicCurve.hxx>
+#include <IGESToBRep_BasicSurface.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <IGESToBRep_IGESBoundary.hxx>
+#include <IGESToBRep_ToolContainer.hxx>
+#include <IGESToBRep_TopoCurve.hxx>
+#include <IGESToBRep_TopoSurface.hxx>
 #include <Interface_Macros.hxx>
-
-#include <Precision.hxx>  
-
+#include <Message_Msg.hxx>
+#include <Precision.hxx>
+#include <ShapeAlgo.hxx>
+#include <ShapeAlgo_AlgoContainer.hxx>
+#include <ShapeBuild_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
-
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-
+#include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
+#include <TColGeom_HSequenceOfBoundedCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-//#include <TColStd_Array1OfInteger.hxx>
-//#include <TColStd_Array1OfReal.hxx>
-
+#include <TCollection_HAsciiString.hxx>
 #include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 #include <stdio.h>
-#include <Geom_TrimmedCurve.hxx>
-
-#include <TColGeom_HSequenceOfBoundedCurve.hxx>
-#include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
+//added by rln 32/12/97
+//#include <TColStd_Array1OfInteger.hxx>
+//#include <TColStd_Array1OfReal.hxx>
 //#include <TColStd_HSequenceOfTransient.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <IGESToBRep_IGESBoundary.hxx>
-#include <Message_Msg.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <IGESData_IGESModel.hxx>  
-#include <ShapeAlgo.hxx>
-#include <ShapeAlgo_AlgoContainer.hxx>
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_AlgoContainer.hxx>
-#include <IGESToBRep_ToolContainer.hxx>
-#include <IGESGeom_Boundary.hxx>
-#include <IGESGeom_Point.hxx>
-#include <IGESGeom_SplineCurve.hxx>
-
 //=======================================================================
 //function : IGESToBRep_TopoCurve
 //purpose  : 
 //=======================================================================
-
 IGESToBRep_TopoCurve::IGESToBRep_TopoCurve()
 :IGESToBRep_CurveAndSurface()
 {  

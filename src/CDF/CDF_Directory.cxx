@@ -14,9 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CDF_Directory.ixx>
+
+#include <CDF_Directory.hxx>
+#include <CDF_DirectoryIterator.hxx>
+#include <CDM_Document.hxx>
 #include <CDM_ListIteratorOfListOfDocument.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+
 CDF_Directory::CDF_Directory () {}
 
 void CDF_Directory::Add(const Handle(CDM_Document)& aDocument) {

@@ -20,10 +20,12 @@
 //                         Celine
 //                         Voyage au bout de la nuit
 
-#include <TopOpeBRepBuild_AreaBuilder.ixx>
-
 #include <Standard_DomainError.hxx>
 #include <TopAbs.hxx>
+#include <TopOpeBRepBuild_AreaBuilder.hxx>
+#include <TopOpeBRepBuild_Loop.hxx>
+#include <TopOpeBRepBuild_LoopClassifier.hxx>
+#include <TopOpeBRepBuild_LoopSet.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();

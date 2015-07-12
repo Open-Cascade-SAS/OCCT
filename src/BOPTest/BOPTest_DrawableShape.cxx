@@ -13,45 +13,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest_DrawableShape.ixx>
-#include <stdio.h>
 
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Face.hxx>
-
-#include <TopExp_Explorer.hxx>
-
-
+#include <BOPTest_DrawableShape.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTools.hxx>
+#include <DBRep_DrawableShape.hxx>
+#include <Draw_Circle3D.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Segment3D.hxx>
+#include <Draw_Text3D.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Precision.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <Draw_Color.hxx>
-#include <Draw_Segment3D.hxx>
 #include <gp.hxx>
-#include <TopoDS_Shape.hxx>
-#include <DBRep_DrawableShape.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopoDS.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <Draw_Circle3D.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
-#include <Draw_Color.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
 #include <TopExp.hxx>
-#include <TopoDS_Edge.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
+#include <stdio.h>
 //=======================================================================
 //function : 
 //purpose  : 

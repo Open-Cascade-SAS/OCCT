@@ -14,61 +14,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewDBRepNaming.ixx>
-
-#include <Draw.hxx>
-#include <Draw_Interpretor.hxx>
-
-#include <DBRep.hxx>
-
-#include <DDF.hxx>
-
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_Builder.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <gp_Pln.hxx>
-
-#include <QANewBRepNaming_Box.hxx>
-#include <QANewBRepNaming_Cylinder.hxx>
-#include <QANewBRepNaming_Sphere.hxx>
-#include <QANewBRepNaming_Prism.hxx>
-#include <QANewBRepNaming_Revol.hxx>
-#include <QANewBRepNaming_ImportShape.hxx>
-
-#include <BRepPrimAPI_MakeCylinder.hxx>
-#include <BRepPrimAPI_MakeSphere.hxx>
-
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepPrimAPI_MakeRevol.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-
-#include <BRepAdaptor_Surface.hxx>
-
-#include <TDataXtd_Geometry.hxx>
-
-#include <TopExp.hxx>
 
 #include <BRep_Tool.hxx>
-
-#include <TopExp_Explorer.hxx>
-
-#include <QADNaming.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
-#include <QANewBRepNaming_Fillet.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <DBRep.hxx>
+#include <DDF.hxx>
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <gp_Pln.hxx>
+#include <QADNaming.hxx>
+#include <QANewBRepNaming_Box.hxx>
 #include <QANewBRepNaming_Chamfer.hxx>
+#include <QANewBRepNaming_Cylinder.hxx>
+#include <QANewBRepNaming_Fillet.hxx>
+#include <QANewBRepNaming_ImportShape.hxx>
+#include <QANewBRepNaming_Prism.hxx>
+#include <QANewBRepNaming_Revol.hxx>
+#include <QANewBRepNaming_Sphere.hxx>
+#include <QANewDBRepNaming.hxx>
+#include <TDataXtd_Geometry.hxx>
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : QANewDBRepNaming_NameBox
 //purpose  : NameCylinder Doc Label dx dy dz
 //=======================================================================
-
 static Standard_Integer QANewDBRepNaming_NameBox (Draw_Interpretor& di,
 						  Standard_Integer nb, 
 						  const char ** arg)

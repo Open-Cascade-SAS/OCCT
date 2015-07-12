@@ -14,50 +14,60 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_Naming.ixx>
 
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_MapIteratorOfMapOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDF_Data.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_IDFilter.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelList.hxx>
+#include <TDF_LabelMap.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_TagSource.hxx>
+#include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_Tool.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TNaming_Iterator.hxx>
-#include <TNaming_Scope.hxx>
-#include <TNaming_NamingTool.hxx>
-#include <TNaming_Name.hxx>
 #include <TNaming_Identifier.hxx>
+#include <TNaming_Iterator.hxx>
+#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
 #include <TNaming_Localizer.hxx>
+#include <TNaming_Name.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Naming.hxx>
+#include <TNaming_NamingTool.hxx>
 #include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
+#include <TNaming_Scope.hxx>
 #include <TNaming_Selector.hxx>
-#include <TNaming.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_Data.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_TagSource.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TNaming_Tool.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <Standard_DomainError.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TColStd_MapOfInteger.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
-#include <TopTools_HArray1OfShape.hxx>
-#include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_HArray1OfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+
 // #include <TNaming_NCollections.hxx>
-#include <NCollection_Map.hxx>   
-#include <NCollection_DataMap.hxx>
 typedef NCollection_Map<TopoDS_Shape> TNaming_MapOfShape; 
 typedef TNaming_MapOfShape::Iterator TNaming_MapIteratorOfMapOfShape;
 typedef NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape> TNaming_DataMapOfShapeMapOfShape; 

@@ -13,26 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMXCAFDoc.ixx>
 
+#include <BinMDF_ADriverTable.hxx>
+#include <BinMNaming_NamedShapeDriver.hxx>
+#include <BinMXCAFDoc.hxx>
 #include <BinMXCAFDoc_AreaDriver.hxx>
 #include <BinMXCAFDoc_CentroidDriver.hxx>
 #include <BinMXCAFDoc_ColorDriver.hxx>
-#include <BinMXCAFDoc_GraphNodeDriver.hxx>
-#include <BinMXCAFDoc_LocationDriver.hxx>
-#include <BinMXCAFDoc_VolumeDriver.hxx>
+#include <BinMXCAFDoc_ColorToolDriver.hxx>
 #include <BinMXCAFDoc_DatumDriver.hxx>
 #include <BinMXCAFDoc_DimTolDriver.hxx>
-#include <BinMXCAFDoc_MaterialDriver.hxx>
-
-#include <BinMXCAFDoc_ColorToolDriver.hxx>
-#include <BinMXCAFDoc_DocumentToolDriver.hxx>
-#include <BinMXCAFDoc_LayerToolDriver.hxx>
-#include <BinMXCAFDoc_ShapeToolDriver.hxx>
 #include <BinMXCAFDoc_DimTolToolDriver.hxx>
+#include <BinMXCAFDoc_DocumentToolDriver.hxx>
+#include <BinMXCAFDoc_GraphNodeDriver.hxx>
+#include <BinMXCAFDoc_LayerToolDriver.hxx>
+#include <BinMXCAFDoc_LocationDriver.hxx>
+#include <BinMXCAFDoc_MaterialDriver.hxx>
 #include <BinMXCAFDoc_MaterialToolDriver.hxx>
-
-#include <BinMNaming_NamedShapeDriver.hxx>
+#include <BinMXCAFDoc_ShapeToolDriver.hxx>
+#include <BinMXCAFDoc_VolumeDriver.hxx>
+#include <CDM_MessageDriver.hxx>
 #include <TNaming_NamedShape.hxx>
 
 //=======================================================================

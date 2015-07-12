@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MMgt_TShared.ixx>
+
+#include <MMgt_TShared.hxx>
+#include <Standard_OutOfMemory.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Delete

@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeSphericalSurface.ixx>
-#include <StepGeom_SphericalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_SphericalSurface.hxx>
 #include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_SphericalSurface.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeSphericalSurface.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une SphericalSurface de Geom a partir d' une 
 // SphericalSurface de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeSphericalSurface::Convert (const Handle(StepGeom_SphericalSurface)& SS, Handle(Geom_SphericalSurface)& CS)
 {
   Handle(Geom_Axis2Placement) A;

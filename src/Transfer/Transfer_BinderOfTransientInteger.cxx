@@ -11,7 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_BinderOfTransientInteger.ixx>
+
+#include <Standard_Type.hxx>
+#include <Transfer_BinderOfTransientInteger.hxx>
 
 Transfer_BinderOfTransientInteger::Transfer_BinderOfTransientInteger ()
     : theintval (0)    {  }

@@ -13,54 +13,51 @@
 
 //gka 06.01.99 S3767
 //abv 10.04.99 S4136: eliminate using BRepAPI::Precision()
-#include <IGESControl_Reader.ixx>
-#include <IGESControl_Controller.hxx>
-#include <XSControl_Controller.hxx>
-#include <XSControl_TransferReader.hxx>
-#include <Interface_ShareFlags.hxx>
 
-#include <IFSelect_Functions.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <IGESData_IGESModel.hxx>
-
-#include <Interface_Static.hxx>
-#include <Interface_Check.hxx>
-
-// S3767 dce 18/01/1999
-#include <Message_Msg.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <Transfer_IteratorOfProcessForTransient.hxx>
-#include <Transfer_Binder.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Interface_CheckIterator.hxx>
-#include <Transfer_IteratorOfProcessForTransient.hxx>
-#include <IFSelect_CheckCounter.hxx>//Transfer_Iterator.hxx>
-#include <Dico_DictionaryOfTransient.hxx>
+#include <BRepLib.hxx>
 #include <Dico_DictionaryOfInteger.hxx>
+#include <Dico_DictionaryOfTransient.hxx>
 #include <Dico_IteratorOfDictionaryOfInteger.hxx>
 #include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <Interface_Macros.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-#include <OSD_Timer.hxx>
-#include <Transfer_TransferOutput.hxx>
-#include <ShapeExtend_Explorer.hxx>
-#include <Message_Messenger.hxx>
-#include <Transfer_ActorOfTransientProcess.hxx>
-#include <IGESToBRep_Actor.hxx>
+#include <IFSelect_CheckCounter.hxx>
+#include <IFSelect_Functions.hxx>
+#include <IGESControl_Controller.hxx>
+#include <IGESControl_Reader.hxx>
 #include <IGESData_FileProtocol.hxx>
-#include <TransferBRep.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESToBRep_Actor.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareFlags.hxx>
+#include <Interface_Static.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_Msg.hxx>
+#include <OSD_Timer.hxx>
+#include <ShapeExtend_Explorer.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
-#include <BRepLib.hxx>
-// add of stdio.h for NT compilation
+#include <TColStd_HSequenceOfInteger.hxx>
+#include <TopoDS_Shape.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_TransferOutput.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_WorkSession.hxx>
+
 #include <stdio.h>
-
-
+// S3767 dce 18/01/1999
+//Transfer_Iterator.hxx>
+// add of stdio.h for NT compilation
 //=======================================================================
 //function : IGESControl_Reader
 //purpose  : 
 //=======================================================================
-
 IGESControl_Reader::IGESControl_Reader ()
 {
   IGESControl_Controller::Init();

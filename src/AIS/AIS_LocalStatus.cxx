@@ -12,9 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_LocalStatus.ixx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
+#include <AIS_LocalStatus.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 AIS_LocalStatus::AIS_LocalStatus(const Standard_Boolean IsTemp,
 				 const Standard_Boolean Decomp,

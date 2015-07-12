@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWManifoldSolidBrep.ixx>
-#include <StepShape_ClosedShell.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
-#include <StepShape_ManifoldSolidBrep.hxx>
+#include <RWStepShape_RWManifoldSolidBrep.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
-
+#include <StepShape_ManifoldSolidBrep.hxx>
 
 RWStepShape_RWManifoldSolidBrep::RWStepShape_RWManifoldSolidBrep () {}
 

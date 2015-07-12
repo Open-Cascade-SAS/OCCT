@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2d_Point.ixx>
+
+#include <Geom2d_Point.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom2d_Point Point;
 

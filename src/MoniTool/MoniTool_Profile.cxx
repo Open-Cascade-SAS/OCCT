@@ -11,12 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_Profile.ixx>
-#include <TCollection_HAsciiString.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
-#include <MoniTool_TypedValue.hxx>
-#include <MoniTool_Option.hxx>
 
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <MoniTool_Option.hxx>
+#include <MoniTool_Profile.hxx>
+#include <MoniTool_TypedValue.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 static Standard_Boolean IsCurrent (const Standard_CString name)
 {  return (name[0] == '.' && name[1] == '\0');  }

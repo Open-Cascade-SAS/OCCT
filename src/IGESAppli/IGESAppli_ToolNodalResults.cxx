@@ -16,17 +16,28 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESAppli_ToolNodalResults.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESDimen_GeneralNote.hxx>
-#include <IGESAppli_Node.hxx>
 #include <IGESAppli_HArray1OfNode.hxx>
+#include <IGESAppli_NodalResults.hxx>
+#include <IGESAppli_Node.hxx>
+#include <IGESAppli_ToolNodalResults.hxx>
+#include <IGESData_DirChecker.hxx>
+#include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <IGESData_Dump.hxx>
-#include <Interface_Macros.hxx>
-
 
 IGESAppli_ToolNodalResults::IGESAppli_ToolNodalResults ()    {  }
 

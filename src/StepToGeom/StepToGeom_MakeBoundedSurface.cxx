@@ -18,35 +18,29 @@
 //:j7 abv 05.04.99: S4136: ass-tol2.stp #9861: avoid using CheckSurfaceClosure
 //    rln 02.06.99 removing #include <StepToGeom_CheckSurfaceClosure.hxx>
 
-#include <StepToGeom_MakeBoundedSurface.ixx>
-
+#include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-
-//rln 02.06.99 #include <StepToGeom_CheckSurfaceClosure.hxx>
-
+#include <StepGeom_BezierSurface.hxx>
+#include <StepGeom_BoundedSurface.hxx>
+#include <StepGeom_BSplineSurfaceWithKnots.hxx>
+#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
+#include <StepGeom_KnotType.hxx>
+#include <StepGeom_QuasiUniformSurface.hxx>
+#include <StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface.hxx>
+#include <StepGeom_RectangularTrimmedSurface.hxx>
+#include <StepGeom_UniformSurface.hxx>
+#include <StepGeom_UniformSurfaceAndRationalBSplineSurface.hxx>
 #include <StepToGeom_MakeBoundedSurface.hxx>
 #include <StepToGeom_MakeBSplineSurface.hxx>
 #include <StepToGeom_MakeRectangularTrimmedSurface.hxx>
-
-#include <StepGeom_RectangularTrimmedSurface.hxx>
-#include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
-#include <StepGeom_BSplineSurfaceWithKnots.hxx>
-
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
-#include <StepGeom_BezierSurface.hxx>
-#include <StepGeom_UniformSurface.hxx>
-#include <StepGeom_QuasiUniformSurface.hxx>
-#include <StepGeom_UniformSurfaceAndRationalBSplineSurface.hxx>
-#include <StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface.hxx>
-#include <StepGeom_KnotType.hxx>
-
+//rln 02.06.99 #include <StepToGeom_CheckSurfaceClosure.hxx>
 //=============================================================================
 // Creation d' une BoundedSurface de Geom a partir d' une BoundedSurface
 // de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_BoundedSurface)& SS, Handle(Geom_BoundedSurface)& CS)
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface))) { 

@@ -16,19 +16,11 @@
 
 // Modified :   22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets 
 
-#include <AIS_InteractiveObject.ixx>
-
-#include <Aspect_PolygonOffsetMode.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
-#include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <AIS_GraphicTool.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <Aspect_PolygonOffsetMode.hxx>
+#include <Bnd_Box.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
@@ -36,14 +28,26 @@
 #include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_Structure.hxx>
-
+#include <Prs3d_BasicAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 //=======================================================================
 //function : AIS_InteractiveObject
 //purpose  : 
 //=======================================================================
-
 AIS_InteractiveObject::
 AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
 SelectMgr_SelectableObject(aTypeOfPresentation3d),

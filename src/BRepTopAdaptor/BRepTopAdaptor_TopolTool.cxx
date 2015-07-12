@@ -12,27 +12,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
 
-#include <BRepTopAdaptor_TopolTool.ixx>
-
-#include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HVertex.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepTopAdaptor_HVertex.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepClass_FaceExplorer.hxx>
-#include <TopoDS.hxx>
-#include <Precision.hxx>
-
 #include <BRepTopAdaptor_FClass2d.hxx>
-#include <BRep_Tool.hxx>
-
-#include <TColgp_Array2OfPnt.hxx>
+#include <BRepTopAdaptor_HVertex.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TopoDS.hxx>
 
 static 
   void Analyse(const TColgp_Array2OfPnt& array2,

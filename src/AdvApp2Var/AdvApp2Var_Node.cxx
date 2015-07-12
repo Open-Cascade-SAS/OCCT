@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Node.ixx>
+
+#include <AdvApp2Var_Node.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_XY.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-
 
 //=======================================================================
 //function : AdvApp2Var_Node
 //purpose  : 
 //=======================================================================
-
 AdvApp2Var_Node::AdvApp2Var_Node()  :
 myOrdInU(2),
 myOrdInV(2)

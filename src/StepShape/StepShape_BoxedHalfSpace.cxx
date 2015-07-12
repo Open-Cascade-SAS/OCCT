@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepShape_BoxedHalfSpace.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepShape_BoxDomain.hxx>
+#include <StepShape_BoxedHalfSpace.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepShape_BoxedHalfSpace::StepShape_BoxedHalfSpace ()  {}
 

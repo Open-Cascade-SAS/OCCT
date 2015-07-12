@@ -14,16 +14,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Stream.hxx>
-#include <HLRBRep_InternalAlgo.ixx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <HLRAlgo.hxx>
-#include <HLRBRep_ShapeToHLR.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <HLRBRep_Data.hxx>
 #include <HLRBRep_Hider.hxx>
-#include <stdio.h>
+#include <HLRBRep_InternalAlgo.hxx>
+#include <HLRBRep_ShapeBounds.hxx>
+#include <HLRBRep_ShapeToHLR.hxx>
+#include <HLRTopoBRep_OutLiner.hxx>
+#include <MMgt_TShared.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
+#include <stdio.h>
 extern Standard_Integer nbPtIntersection;   // total P.I.
 extern Standard_Integer nbSegIntersection;  // total S.I
 extern Standard_Integer nbClassification;   // total classification

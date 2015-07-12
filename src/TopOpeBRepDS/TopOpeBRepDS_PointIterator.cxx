@@ -14,17 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_PointIterator.ixx>
-#include <TopOpeBRepDS_Interference.hxx>
+
+#include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
-#include <Standard_ProgramError.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_PointIterator.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_PointIterator
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_PointIterator::TopOpeBRepDS_PointIterator
   (const TopOpeBRepDS_ListOfInterference& L) :
   TopOpeBRepDS_InterferenceIterator(L)

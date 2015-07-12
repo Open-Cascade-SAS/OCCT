@@ -12,16 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
 
-#include <stdio.h>
-#include <string.h>
-
+#include <BOPTest.hxx>
+#include <BOPTest_Objects.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 
-#include <BOPTest_Objects.hxx>
-
+#include <stdio.h>
+#include <string.h>
 static Standard_Integer boptions (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer brunparallel (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bfuzzyvalue (Draw_Interpretor&, Standard_Integer, const char**); 

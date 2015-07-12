@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_SplineSurface.ixx>
-
+#include <IGESGeom_SplineSurface.hxx>
+#include <Standard_DimensionMismatch.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_SplineSurface::IGESGeom_SplineSurface ()    {  }
 

@@ -16,66 +16,64 @@
 
 //  Modified by skv - Fri Feb  6 11:44:48 2004 OCC5073
 
-#include <GeomFill_Sweep.ixx>
-#include <GeomFill_SweepFunction.hxx>
+#include <AdvApprox_ApproxAFunction.hxx>
+#include <AdvApprox_PrefAndRec.hxx>
+#include <Approx_SweepApproximation.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomConvert_ApproxSurface.hxx>
+#include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_LocFunction.hxx>
-
-#include <Standard_ErrorHandler.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_GTrsf.hxx>
-#include <gp_Mat.hxx>
+#include <GeomFill_SectionLaw.hxx>
+#include <GeomFill_Sweep.hxx>
+#include <GeomFill_SweepFunction.hxx>
+#include <GeomLib.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Mat.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Sphere.hxx>
-
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-//#include <GeomLib_Array1OfMat.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomLib.hxx>
-
-#include <Geom2d_Line.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-
-#include <Approx_SweepApproximation.hxx>
-#include <AdvApprox_PrefAndRec.hxx>
-#include <AdvApprox_ApproxAFunction.hxx>
-#include <GeomConvert_ApproxSurface.hxx>
-
-#include <Precision.hxx>
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-
+//#include <GeomLib_Array1OfMat.hxx>
 //=======================================================================
 //class : GeomFill_Sweep_Eval
 //purpose: The evaluator for curve approximation
 //=======================================================================
-
 class GeomFill_Sweep_Eval : public AdvApprox_EvaluatorFunction
 {
  public:

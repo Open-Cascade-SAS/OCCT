@@ -14,22 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BlendFunc_Corde.ixx>
 
-#include <math_Gauss.hxx>
-
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <BlendFunc.hxx>
+#include <BlendFunc_Corde.hxx>
 #include <ElCLib.hxx>
 #include <gp.hxx>
-#include <BlendFunc.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-
 
 //=======================================================================
 //function : BlendFunc_Corde
 //purpose  : 
 //=======================================================================
-
 BlendFunc_Corde::BlendFunc_Corde(const Handle(Adaptor3d_HSurface)&   S,
                                  const Handle(Adaptor3d_HCurve)&     CG) :
     surf(S),guide(CG)

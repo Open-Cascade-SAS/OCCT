@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Box.ixx>
+
+#include <Draw_Box.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Box
 //purpose  : 
 //=======================================================================
-
 Draw_Box::Draw_Box(const gp_Pnt& p1, const gp_Pnt& p2, const Draw_Color& col) :
    myFirst(p1), myLast(p2),myColor(col)
 {

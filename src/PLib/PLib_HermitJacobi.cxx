@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PLib_HermitJacobi.ixx>
-#include <PLib.hxx>
+
 #include <NCollection_LocalArray.hxx>
+#include <PLib.hxx>
+#include <PLib_HermitJacobi.hxx>
+#include <PLib_JacobiPolynomial.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : PLib_HermitJacobi
 //purpose  : 
 //=======================================================================
-
 PLib_HermitJacobi::PLib_HermitJacobi(const Standard_Integer WorkDegree,
 				     const GeomAbs_Shape ConstraintOrder) :
                                      myH(1,2*(PLib::NivConstr(ConstraintOrder)+1),

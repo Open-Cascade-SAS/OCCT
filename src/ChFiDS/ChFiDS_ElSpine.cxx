@@ -14,17 +14,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_ElSpine.ixx>
-#include <Geom_BSplineCurve.hxx>
-#include <ElCLib.hxx>
-#include <Precision.hxx>
 
+#include <Adaptor3d_HCurve.hxx>
+#include <ChFiDS_ElSpine.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <ElCLib.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : ChFiDS_ElSpine
 //purpose  : 
 //=======================================================================
-
 ChFiDS_ElSpine::ChFiDS_ElSpine():periodic(0)
 {
   pfirstsav = Precision::Infinite();

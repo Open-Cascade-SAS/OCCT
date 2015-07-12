@@ -15,22 +15,33 @@
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-
 // UNFINISHED & UNSTARTED
-#include <IGESAppli_ToolElementResults.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <IGESBasic_HArray1OfHArray1OfReal.hxx>
-#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+
+#include <IGESAppli_ElementResults.hxx>
 #include <IGESAppli_FiniteElement.hxx>
 #include <IGESAppli_HArray1OfFiniteElement.hxx>
-#include <IGESDimen_GeneralNote.hxx>
+#include <IGESAppli_ToolElementResults.hxx>
+#include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
+#include <IGESBasic_HArray1OfHArray1OfReal.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
 #include <stdio.h>
-
-
 IGESAppli_ToolElementResults::IGESAppli_ToolElementResults ()    {  }
 
      

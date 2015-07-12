@@ -13,11 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMFunction_GraphNodeDriver.ixx>
-#include <XmlObjMgt.hxx>
 
-#include <TFunction_GraphNode.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
+#include <TDF_Attribute.hxx>
+#include <TFunction_GraphNode.hxx>
+#include <XmlMFunction_GraphNodeDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (LastPreviousIndex, "lastprev")
 IMPLEMENT_DOMSTRING (LastNextIndex,     "lastnext")

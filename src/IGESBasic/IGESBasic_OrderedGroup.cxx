@@ -16,8 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESBasic_OrderedGroup.ixx>
-
+#include <IGESBasic_OrderedGroup.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 IGESBasic_OrderedGroup::IGESBasic_OrderedGroup ()
       {  InitTypeAndForm(402,14);  }

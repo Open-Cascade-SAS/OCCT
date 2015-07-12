@@ -15,22 +15,26 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepFEA_RWCurve3dElementRepresentation.ixx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepFEA_RWCurve3dElementRepresentation.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_Curve3dElementDescriptor.hxx>
+#include <StepElement_ElementMaterial.hxx>
+#include <StepFEA_Curve3dElementProperty.hxx>
+#include <StepFEA_Curve3dElementRepresentation.hxx>
+#include <StepFEA_FeaModel3d.hxx>
 #include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
-#include <StepFEA_FeaModel3d.hxx>
-#include <StepElement_Curve3dElementDescriptor.hxx>
-#include <StepFEA_Curve3dElementProperty.hxx>
-#include <StepElement_ElementMaterial.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWCurve3dElementRepresentation
 //purpose  : 
 //=======================================================================
-
 RWStepFEA_RWCurve3dElementRepresentation::RWStepFEA_RWCurve3dElementRepresentation ()
 {
 }

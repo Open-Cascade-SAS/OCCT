@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepSelect_FloatFormat.ixx>
+
+#include <IFSelect_ContextWrite.hxx>
 #include <Interface_FloatWriter.hxx>
+#include <Standard_Type.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepSelect_FloatFormat.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <stdio.h>
-
-
-
 StepSelect_FloatFormat::StepSelect_FloatFormat ()
     : thezerosup (Standard_True) , themainform ("%E") ,
       theformrange ("%f") , therangemin (0.1) , therangemax (1000.)

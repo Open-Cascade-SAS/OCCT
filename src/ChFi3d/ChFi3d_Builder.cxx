@@ -14,53 +14,71 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFi3d_Builder.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
+#include <AppBlend_Approx.hxx>
+#include <Blend_CurvPointFuncInv.hxx>
+#include <Blend_FuncInv.hxx>
+#include <Blend_Function.hxx>
+#include <Blend_RstRstFunction.hxx>
+#include <Blend_SurfCurvFuncInv.hxx>
+#include <Blend_SurfPointFuncInv.hxx>
+#include <Blend_SurfRstFunction.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepBlend_Line.hxx>
+#include <BRepLib.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <ChFi3d.hxx>
+#include <ChFi3d_Builder.hxx>
+#include <ChFi3d_Builder_0.hxx>
+#include <ChFiDS_CommonPoint.hxx>
+#include <ChFiDS_HData.hxx>
+#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
+#include <ChFiDS_SequenceOfSurfData.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Precision.hxx>
+#include <ShapeFix.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_ErrorHandler.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-
 #include <TopAbs.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-
-#include <BRep_Tool.hxx>
-#include <ChFiDS_Stripe.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-#include <ChFiDS_SequenceOfSurfData.hxx>
-#include <ChFiDS_HData.hxx>
-
-#include <ChFi3d.hxx>
-
-#include <ChFi3d_Builder_0.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <BRepLib.hxx>
-#include <ShapeFix.hxx>
-#include <Precision.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 #ifdef DRAW
 #include <TestTopOpeTools.hxx>

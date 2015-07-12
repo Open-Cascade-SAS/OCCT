@@ -14,8 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_TrihedronWithGuide.ixx>
 
+#include <Adaptor3d_HCurve.hxx>
+#include <GeomFill_TrihedronWithGuide.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 Handle(Adaptor3d_HCurve) GeomFill_TrihedronWithGuide::Guide()const
 {

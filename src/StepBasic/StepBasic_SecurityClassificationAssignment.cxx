@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_SecurityClassificationAssignment.ixx>
+
+#include <Standard_Type.hxx>
+#include <StepBasic_SecurityClassification.hxx>
+#include <StepBasic_SecurityClassificationAssignment.hxx>
 
 void StepBasic_SecurityClassificationAssignment::Init(
 	const Handle(StepBasic_SecurityClassification)& aAssignedSecurityClassification)

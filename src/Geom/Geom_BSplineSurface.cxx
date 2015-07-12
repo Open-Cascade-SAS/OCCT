@@ -22,22 +22,31 @@
 // jct : 19-01-99 ; permutation de urational et vrational dans Rational.
 #define No_Standard_OutOfRange
 
-#include <Geom_BSplineSurface.ixx>
 
-#include <gp.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
-
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <Geom_UndefinedDerivative.hxx>
+#include <gp.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_DimensionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Precision.hxx>
+#include <Standard_RangeError.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : CheckSurfaceData
 //purpose  : Internal use only.
 //=======================================================================
-
 static void CheckSurfaceData
 (const TColgp_Array2OfPnt&      SPoles,
  const TColStd_Array1OfReal&    SUKnots,

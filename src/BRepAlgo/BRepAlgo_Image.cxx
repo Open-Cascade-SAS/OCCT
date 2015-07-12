@@ -14,19 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgo_Image.ixx>
 
+#include <BRepAlgo_Image.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopExp_Explorer.hxx>
 
 //=======================================================================
 //function : BRepAlgo_Image
 //purpose  : 
 //=======================================================================
-
 BRepAlgo_Image::BRepAlgo_Image()
 {
 }

@@ -12,18 +12,28 @@
 // commercial license or contractual agreement.
 
 //pdn S4135 05.04.99 comment uninitialized Interface_Static::IVal("iges.convert.read");
-#include <IGESData_ParamReader.ixx>
+
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESType.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_Status.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityList.hxx>
 #include <Interface_FileParameter.hxx>
 #include <Interface_FileReaderData.hxx>
+#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_ParamList.hxx>
 #include <Interface_Static.hxx>
-#include <stdio.h>
-#include <IGESData_Status.hxx>
-
-// MGE 03/08/98
 #include <Message_Msg.hxx>
+#include <TCollection_HAsciiString.hxx>
 
+#include <stdio.h>
+// MGE 03/08/98
 static Standard_Integer testconv = -1;  // cf parametre de session
 
 //  ....              Gestion generale (etat, courant ...)              ....

@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGraph_TextDisplayTemplate.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <IGESGraph_TextFontDef.hxx>
+#include <Standard_Type.hxx>
 
 IGESGraph_TextDisplayTemplate::IGESGraph_TextDisplayTemplate ()    {  }
 

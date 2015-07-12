@@ -14,20 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocalAnalysis_SurfaceContinuity.ixx>
+
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <gp.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-
+#include <gp_Vec.hxx>
+#include <LocalAnalysis_SurfaceContinuity.hxx>
+#include <StdFail_NotDone.hxx>
 
 /*********************************************************************************/
 /*********************************************************************************/
-
 void LocalAnalysis_SurfaceContinuity::SurfC0 (const GeomLProp_SLProps& Surf1, 
                                                const GeomLProp_SLProps& Surf2
 					       )  

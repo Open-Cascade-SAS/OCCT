@@ -14,9 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Axis2D.ixx>
-#include <gp_Vec2d.hxx>
+
+#include <Draw_Axis2D.hxx>
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
 #include <gp.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_Type.hxx>
 
 extern Standard_Boolean Draw_Bounds;
 

@@ -11,13 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_GraphCounter.ixx>
-#include <Interface_EntityIterator.hxx>
+
+#include <IFSelect_GraphCounter.hxx>
+#include <IFSelect_SelectDeduct.hxx>
 #include <IFSelect_SelectPointed.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Type.hxx>
+
 #include <stdio.h>
 #include <string.h>
-
-
 IFSelect_GraphCounter::IFSelect_GraphCounter
   (const Standard_Boolean withmap, const Standard_Boolean withlist)
   : IFSelect_SignCounter (withmap,withlist)  {  }

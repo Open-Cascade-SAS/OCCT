@@ -14,26 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeRectangularTrimmedSurface.ixx>
-#include <StdFail_NotDone.hxx>
 
-#include <GeomToStep_MakeSurface.hxx>
-#include <StepGeom_Surface.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <Geom_CylindricalSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
+#include <GeomToStep_MakeRectangularTrimmedSurface.hxx>
+#include <GeomToStep_MakeSurface.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_RectangularTrimmedSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
-#include <Geom_Plane.hxx>
 
 //=============================================================================
 // Creation d' une rectangular_trimmed_surface de STEP
 // a partir d' une RectangularTrimmedSurface de Geom
 //=============================================================================
-
 GeomToStep_MakeRectangularTrimmedSurface::
   GeomToStep_MakeRectangularTrimmedSurface( const
     Handle(Geom_RectangularTrimmedSurface)& RTSurf )

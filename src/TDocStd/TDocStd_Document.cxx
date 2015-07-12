@@ -11,35 +11,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDocStd_Document.ixx>
 
-#include <TDocStd.hxx>
-
-#include <TDocStd_XLink.hxx>
-#include <TDocStd_XLinkIterator.hxx>
-#include <TDocStd_Application.hxx>
-
-#include <TDocStd_Context.hxx>
-#include <TCollection_ExtendedString.hxx>
+#include <CDM_Document.hxx>
+#include <CDM_MetaData.hxx>
+#include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDF_AttributeIterator.hxx>
-#include <TDF_ListIteratorOfDeltaList.hxx>
-#include <TDF_AttributeList.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_AttributeDeltaList.hxx>
-#include <TDF_ListIteratorOfAttributeDeltaList.hxx>
-#include <TDF_Label.hxx>
+#include <TDF_AttributeIterator.hxx>
+#include <TDF_AttributeList.hxx>
+#include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>
-#include <TDF_Reference.hxx>
-#include <TDocStd_CompoundDelta.hxx>
-#include <TDocStd_Owner.hxx>
-#include <TDocStd_Modified.hxx>
-
 #include <TDF_IDMap.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_ListIteratorOfAttributeDeltaList.hxx>
+#include <TDF_ListIteratorOfAttributeList.hxx>
+#include <TDF_ListIteratorOfDeltaList.hxx>
+#include <TDF_Reference.hxx>
+#include <TDocStd.hxx>
+#include <TDocStd_Application.hxx>
+#include <TDocStd_CompoundDelta.hxx>
+#include <TDocStd_Context.hxx>
+#include <TDocStd_Document.hxx>
 #include <TDocStd_LabelIDMapDataMap.hxx>
-
-#include <CDM_MetaData.hxx>
+#include <TDocStd_Modified.hxx>
+#include <TDocStd_Owner.hxx>
+#include <TDocStd_XLink.hxx>
+#include <TDocStd_XLinkIterator.hxx>
 
 // List should have a RemoveLast...
 #define TDocStd_List_RemoveLast(theList) \

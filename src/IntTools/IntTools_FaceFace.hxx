@@ -1,0 +1,162 @@
+// Created on: 2000-11-23
+// Created by: Michael KLOKOV
+// Copyright (c) 2000-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _IntTools_FaceFace_HeaderFile
+#define _IntTools_FaceFace_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+
+#include <Standard_Boolean.hxx>
+#include <IntPatch_Intersection.hxx>
+#include <GeomInt_LineConstructor.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
+#include <IntTools_SequenceOfCurves.hxx>
+#include <TopoDS_Face.hxx>
+#include <IntTools_SequenceOfPntOn2Faces.hxx>
+#include <IntSurf_ListOfPntOn2S.hxx>
+class GeomAdaptor_HSurface;
+class IntTools_Context;
+class StdFail_NotDone;
+class TopoDS_Face;
+class Adaptor3d_TopolTool;
+
+
+//! This class provides the intersection of
+//! face's underlying surfaces.
+class IntTools_FaceFace 
+{
+public:
+
+  DEFINE_STANDARD_ALLOC
+
+  
+
+  //! Empty constructor.
+  Standard_EXPORT IntTools_FaceFace();
+  
+
+  //! Modifier
+  Standard_EXPORT void SetParameters (const Standard_Boolean ApproxCurves, const Standard_Boolean ComputeCurveOnS1, const Standard_Boolean ComputeCurveOnS2, const Standard_Real ApproximationTolerance);
+  
+
+  //! Intersects underliing surfaces of F1 and F2
+  //! Use sum of tolerance of F1 and F2 as intersection
+  //! criteria
+  Standard_EXPORT void Perform (const TopoDS_Face& F1, const TopoDS_Face& F2);
+  
+
+  //! Returns True if the intersection was successful
+  Standard_EXPORT Standard_Boolean IsDone() const;
+  
+
+  //! Returns sequence of 3d curves as result of intersection
+  Standard_EXPORT const IntTools_SequenceOfCurves& Lines() const;
+  
+
+  //! Returns sequence of 3d curves as result of intersection
+  Standard_EXPORT const IntTools_SequenceOfPntOn2Faces& Points() const;
+  
+
+  //! Returns tolerance reached during approximation.
+  //! If approximation was not done, returns zero.
+  Standard_EXPORT Standard_Real TolReached3d() const;
+  
+
+  //! Returns tolerance reached during approximation.
+  //! If approximation was not done, returns zero.
+  Standard_EXPORT Standard_Real TolReached2d() const;
+  
+
+  //! Returns first of processed faces
+  Standard_EXPORT const TopoDS_Face& Face1() const;
+  
+
+  //! Returns second of processed faces
+  Standard_EXPORT const TopoDS_Face& Face2() const;
+  
+
+  //! Returns True if faces are tangent
+  Standard_EXPORT Standard_Boolean TangentFaces() const;
+  
+
+  //! Provides post-processing the result lines.
+  //! <bToSplit> - the flag.
+  //! In case of <bToSplit> is true the closed 3D-curves will be splitted
+  //! on parts.
+  //! In case of <bToSplit> is false the closed 3D-curves remain untouched.
+  Standard_EXPORT void PrepareLines3D (const Standard_Boolean bToSplit = Standard_True);
+  
+  Standard_EXPORT void SetList (IntSurf_ListOfPntOn2S& ListOfPnts);
+  
+
+  //! Sets the intersecton context
+  Standard_EXPORT void SetContext (const Handle(IntTools_Context)& aContext);
+  
+
+  //! Gets the intersecton context
+  Standard_EXPORT const Handle(IntTools_Context)& Context() const;
+
+
+
+
+protected:
+
+  
+  Standard_EXPORT void MakeCurve (const Standard_Integer Index, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_TopolTool)& D2);
+  
+  Standard_EXPORT void ComputeTolReached3d();
+  
+  Standard_EXPORT Standard_Real ComputeTolerance();
+
+
+
+
+private:
+
+
+
+  Standard_Boolean myIsDone;
+  IntPatch_Intersection myIntersector;
+  GeomInt_LineConstructor myLConstruct;
+  Handle(GeomAdaptor_HSurface) myHS1;
+  Handle(GeomAdaptor_HSurface) myHS2;
+  Standard_Integer myNbrestr;
+  Standard_Real myTolReached2d;
+  Standard_Real myTolReached3d;
+  Standard_Boolean myApprox;
+  Standard_Boolean myApprox1;
+  Standard_Boolean myApprox2;
+  Standard_Real myTolApprox;
+  IntTools_SequenceOfCurves mySeqOfCurve;
+  Standard_Boolean myTangentFaces;
+  TopoDS_Face myFace1;
+  TopoDS_Face myFace2;
+  IntTools_SequenceOfPntOn2Faces myPnts;
+  IntSurf_ListOfPntOn2S myListOfPnts;
+  Handle(IntTools_Context) myContext;
+
+
+};
+
+
+
+
+
+
+
+#endif // _IntTools_FaceFace_HeaderFile

@@ -14,15 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw_DrawableC2D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Draw_Text2D.hxx>
+#include <Geom2d_Curve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_Type.hxx>
+#include <TestTopOpeDraw_DrawableC2D.hxx>
 #include <TopOpeBRepTool_define.hxx>
 
 //=======================================================================
 //function : TestTopOpeDraw_DrawableC2D
 //purpose  : 
 //=======================================================================
-
 TestTopOpeDraw_DrawableC2D::TestTopOpeDraw_DrawableC2D
 (const Handle(Geom2d_Curve)& C, const Draw_Color& CColor, 
  const Standard_CString Text, const Draw_Color& TextColor,

@@ -16,8 +16,14 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDimen_PointDimension.ixx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_LeaderArrow.hxx>
+#include <IGESDimen_PointDimension.hxx>
+#include <IGESGeom_CircularArc.hxx>
+#include <IGESGeom_CompositeCurve.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Type.hxx>
 
 IGESDimen_PointDimension::IGESDimen_PointDimension ()    {  }
 

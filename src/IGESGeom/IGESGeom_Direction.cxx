@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESGeom_Direction.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESGeom_Direction.hxx>
+#include <Standard_Type.hxx>
 
 IGESGeom_Direction::IGESGeom_Direction ()    {  }
 

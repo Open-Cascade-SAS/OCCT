@@ -20,40 +20,38 @@
 //:p3 abv 23.02.99: bm4_id_punch_d.stp #1313: shift of parameters on ellipse with R1 < R2
 //    abv 09.02.99: S4136: eliminate using BRepAPI::Precision()
 
-#include <StepToGeom_MakeTrimmedCurve.ixx>
-#include <gp_Pnt.hxx>
+#include <ElCLib.hxx>
+#include <Geom_BoundedCurve.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Curve.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Line.hxx>
-#include <StepGeom_Vector.hxx>
-#include <StepGeom_Circle.hxx>
-#include <StepGeom_Ellipse.hxx>
-#include <StepGeom_Parabola.hxx>
-#include <StepGeom_Hyperbola.hxx>
-#include <StepGeom_TrimmingSelect.hxx>
-#include <StepGeom_HArray1OfTrimmingSelect.hxx>
-#include <StepGeom_TrimmedCurve.hxx>
-#include <StepToGeom_MakeTrimmedCurve.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-//#include <GeomAPI_ProjectPointOnCurve.hxx>
-//#include <BRepAPI.hxx>
-#include <ElCLib.hxx>
-
-#include <UnitsMethods.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
-#include <Geom_BoundedCurve.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Circle.hxx>
 #include <StepGeom_Conic.hxx>
+#include <StepGeom_Ellipse.hxx>
+#include <StepGeom_HArray1OfTrimmingSelect.hxx>
+#include <StepGeom_Hyperbola.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Parabola.hxx>
+#include <StepGeom_TrimmedCurve.hxx>
+#include <StepGeom_TrimmingSelect.hxx>
+#include <StepGeom_Vector.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom_MakeCurve.hxx>
+#include <StepToGeom_MakeTrimmedCurve.hxx>
+#include <UnitsMethods.hxx>
 
+//#include <GeomAPI_ProjectPointOnCurve.hxx>
+//#include <BRepAPI.hxx>
 // ----------------------------------------------------------------
 // ExtractParameter
 // ----------------------------------------------------------------
 //:o6 abv 18 Feb 99: parameter Factor added
 //:p3 abv 23 Feb 99: parameter Shift added
-
 static Standard_Boolean  ExtractParameter
 (const Handle(Geom_Curve) &  aGeomCurve,
  const Handle(StepGeom_HArray1OfTrimmingSelect) & TS,

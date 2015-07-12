@@ -11,22 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface.ixx>
-#include <StepGeom_BezierSurface.hxx>
-#include <StepGeom_RationalBSplineSurface.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_BSplineSurfaceForm.hxx>
-#include <StepData_Logical.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWBezierSurfaceAndRationalBSplineSurface.hxx>
+#include <StepData_Logical.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_BezierSurface.hxx>
 #include <StepGeom_BezierSurfaceAndRationalBSplineSurface.hxx>
-
-
+#include <StepGeom_BSplineSurfaceForm.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_HArray2OfCartesianPoint.hxx>
+#include <StepGeom_RationalBSplineSurface.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 // --- Enum : BSplineSurfaceForm ---
 static TCollection_AsciiString bssfSurfOfLinearExtrusion(".SURF_OF_LINEAR_EXTRUSION.");

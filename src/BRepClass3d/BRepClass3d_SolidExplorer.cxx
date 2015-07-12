@@ -24,46 +24,47 @@
 #define REJECTION 1
 
 //-- To printf on NT
-#include <stdio.h>
-
-#include <BRepClass3d_SolidExplorer.ixx>
-#include <gp.hxx>
-#include <TopoDS.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepTools.hxx>
-#include <Geom2d_Curve.hxx>
-#include <gp_Vec2d.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepClass_FacePassiveClassifier.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRepClass_Edge.hxx>
 
 #include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_HSurface.hxx>
-
-#include <ElCLib.hxx>
-
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepClass3d_DataMapIteratorOfMapOfInter.hxx>
-#include <Precision.hxx>
-//OCC454(apo)->
-#include <Extrema_ExtPS.hxx>
-#include <BRep_Tool.hxx> 
+#include <BRepClass3d_SolidExplorer.hxx>
+#include <BRepClass_Edge.hxx>
 #include <BRepClass_FaceClassifier.hxx>
+#include <BRepClass_FacePassiveClassifier.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
+#include <ElCLib.hxx>
+#include <Extrema_ExtPS.hxx>
+#include <Geom2d_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <IntCurvesFace_Intersector.hxx>
+#include <Precision.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+
+#include <stdio.h>
+//OCC454(apo)->
 //<-OCC454(apo)
-#include <BRepTopAdaptor_FClass2d.hxx> 
-
-
 //=======================================================================
 //function : FindAPointInTheFace
 //purpose  : Compute a point P in the face  F. Param is a Real in
 //           ]0,1[ and   is  used to  initialise  the algorithm. For
 //           different values , different points are returned.
 //=======================================================================
-
 Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
 (const TopoDS_Face& _face,
  gp_Pnt& APoint_,

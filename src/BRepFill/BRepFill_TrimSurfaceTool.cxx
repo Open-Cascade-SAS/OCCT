@@ -14,53 +14,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <stdio.h>
-
-#include <BRepFill_TrimSurfaceTool.ixx>
-
-#include <Precision.hxx>
 
 #include <Adaptor3d_SurfaceOfRevolution.hxx>
 #include <AppParCurves_MultiCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepFill_ApproxSeewing.hxx>
 #include <BRepFill_ComputeCLine.hxx>
 #include <BRepFill_MultiLine.hxx>
+#include <BRepFill_TrimSurfaceTool.hxx>
 #include <BRepIntCurveSurface_Inter.hxx>
-#include <BRepFill_ApproxSeewing.hxx>
-#include <BRep_Tool.hxx>
-#include <ElCLib.hxx>
 #include <BSplCLib.hxx>
-#include <PLib.hxx>
-#include <gp.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Torus.hxx>
-#include <gp_Cylinder.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
+#include <ElCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
+#include <gp.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
+#include <PLib.hxx>
 #include <Precision.hxx>
-#include <StdFail_NotDone.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TopAbs_State.hxx>
 #include <TopExp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
+#include <stdio.h>
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <DBRep.hxx>

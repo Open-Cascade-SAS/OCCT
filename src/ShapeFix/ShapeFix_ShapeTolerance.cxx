@@ -13,26 +13,23 @@
 
 // 25.12.98 pdn: adding empty constructor
 
-#include <ShapeFix_ShapeTolerance.ixx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_TVertex.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-
+#include <BRep_Tool.hxx>
+#include <BRep_TVertex.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 ShapeFix_ShapeTolerance::ShapeFix_ShapeTolerance()
 {
 }  

@@ -15,23 +15,27 @@
 //    abv 28.04.99  S4137: added method Add(WireData), method SetLast fixed
 //    abv 05.05.99  S4174: protection against INTERNAL/EXTERNAL edges
 
-#include <ShapeExtend_WireData.ixx>
-#include <Geom2d_Curve.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepTools_WireExplorer.hxx>
+#include <Geom2d_Curve.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 //=======================================================================
 //function : ShapeExtend_WireData
 //purpose  : 
 //=======================================================================
-
 ShapeExtend_WireData::ShapeExtend_WireData()
 {
   Clear();  

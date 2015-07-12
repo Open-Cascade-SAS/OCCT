@@ -15,15 +15,19 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepShape_RWFaceBasedSurfaceModel.ixx>
-#include <StepShape_HArray1OfConnectedFaceSet.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepShape_RWFaceBasedSurfaceModel.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
+#include <StepShape_FaceBasedSurfaceModel.hxx>
+#include <StepShape_HArray1OfConnectedFaceSet.hxx>
 
 //=======================================================================
 //function : RWStepShape_RWFaceBasedSurfaceModel
 //purpose  : 
 //=======================================================================
-
 RWStepShape_RWFaceBasedSurfaceModel::RWStepShape_RWFaceBasedSurfaceModel ()
 {
 }

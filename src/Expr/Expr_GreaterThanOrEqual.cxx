@@ -14,9 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_GreaterThanOrEqual.ixx>
-#include <Expr_NumericValue.hxx>
+
 #include <Expr.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralRelation.hxx>
+#include <Expr_GreaterThanOrEqual.hxx>
+#include <Expr_NumericValue.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Expr_GreaterThanOrEqual::Expr_GreaterThanOrEqual (const Handle(Expr_GeneralExpression)& exp1, const Handle(Expr_GeneralExpression)& exp2)
 {

@@ -12,15 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_BSplineCurve.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <Draw_MarkerShape.hxx>
+#include <DrawTrSurf_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
-
-
+#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
-
 
 DrawTrSurf_BSplineCurve::DrawTrSurf_BSplineCurve (
    const Handle(Geom_BSplineCurve)& C) :

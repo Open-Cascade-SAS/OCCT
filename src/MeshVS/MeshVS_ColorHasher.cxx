@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshVS_ColorHasher.ixx>
+
+#include <MeshVS_ColorHasher.hxx>
+#include <Quantity_Color.hxx>
 
 //================================================================
 // Function : HashCode

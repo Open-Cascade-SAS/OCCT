@@ -13,45 +13,41 @@
 
 //:r5 abv 06.04.99: ec_turbine-A.stp, #4313: protect against null curve
 //    abv 09.04.99  S4136: add parameter preci (to eliminate BRepAPI::Precision)
-#include <ShapeFix_EdgeProjAux.ixx>
-
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <ElCLib.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
+#include <BRep_Tool.hxx>
+#include <ElCLib.hxx>
+#include <Extrema_ExtPC.hxx>
+#include <Geom2d_BoundedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx> 
 #include <Geom_SphericalSurface.hxx>
-
-#include <BRep_Tool.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp.hxx>
-
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-
-#include <Extrema_ExtPC.hxx>
-#include <gp_Pnt.hxx>
-#include <Geom2d_BoundedCurve.hxx>
+#include <ShapeFix_EdgeProjAux.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <Standard_Type.hxx>
+#include <TopExp.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : ShapeFix_EdgeProjAux
 //purpose  : 
 //=======================================================================
-
 ShapeFix_EdgeProjAux::ShapeFix_EdgeProjAux ()
 {
   myFirstDone = myLastDone = Standard_False;

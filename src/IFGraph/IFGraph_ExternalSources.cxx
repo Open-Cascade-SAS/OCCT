@@ -11,9 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFGraph_ExternalSources.ixx>
 
-
+#include <IFGraph_ExternalSources.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Standard_Transient.hxx>
 
 // ExternalSources exploite les resultats stockes dans le Graphe sur Sharings
 // Soit les "Sharings" des entites notees par GetFromEntity et GetFromIter
@@ -21,8 +23,6 @@
 // Les status :
 // - Les entites de depart sont au Status 0
 // - Les entites Sharing NOUVELLES (ExternalSources) sont au Status 1
-
-
 IFGraph_ExternalSources::IFGraph_ExternalSources
   (const Interface_Graph& agraph)
       : thegraph (agraph)    {  }

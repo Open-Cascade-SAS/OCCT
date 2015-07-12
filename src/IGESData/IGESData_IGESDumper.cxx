@@ -11,21 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_IGESDumper.ixx>
-#include <Interface_InterfaceError.hxx>
-#include <Interface_Macros.hxx>
-#include <Interface_MSG.hxx>
-#include <Interface_EntityIterator.hxx>
+
+#include <IGESData_ColorEntity.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_Protocol.hxx>
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_SpecificModule.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
-#include <IGESData_LabelDisplayEntity.hxx>
-#include <IGESData_ColorEntity.hxx>
-#include <TCollection_HAsciiString.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_InterfaceError.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_MSG.hxx>
 #include <Message_Messenger.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESData_IGESDumper::IGESData_IGESDumper
   (const Handle(IGESData_IGESModel)& model,

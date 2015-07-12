@@ -17,40 +17,30 @@
 #define OPTIMISATION 1 
 
 
-#include <IntCurvesFace_Intersector.ixx>
-
-#include <IntCurveSurface_ThePolyhedronToolOfHInter.hxx>
-#include <Bnd_BoundSortBox.hxx>
-
-#include <IntCurveSurface_IntersectionPoint.hxx>
-#include <gp_Lin.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopAbs.hxx>
-
-
-#include <IntCurveSurface_HInter.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <Geom_Line.hxx>
-#include <gp_Pnt2d.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-
-#include <GeomAdaptor_Curve.hxx>
-
-#include <GeomAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-
-
-
-#include <Adaptor3d_HSurfaceTool.hxx>
-#include <IntCurveSurface_TheHCurveTool.hxx>
 #include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurfaceTool.hxx>
+#include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
-#include <Intf_Tool.hxx>
-#include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
-#include <IntCurveSurface_ThePolygonOfHInter.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <Geom_Line.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntCurvesFace_Intersector.hxx>
+#include <IntCurveSurface_HInter.hxx>
+#include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_SequenceOfPnt.hxx>
-
-
+#include <IntCurveSurface_TheHCurveTool.hxx>
+#include <IntCurveSurface_ThePolygonOfHInter.hxx>
+#include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
+#include <IntCurveSurface_ThePolyhedronToolOfHInter.hxx>
+#include <Intf_Tool.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : SurfaceType

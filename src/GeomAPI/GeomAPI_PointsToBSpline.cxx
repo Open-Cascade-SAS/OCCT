@@ -14,25 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAPI_PointsToBSpline.ixx>
 
 #include <AppDef_BSplineCompute.hxx>
 #include <AppDef_MultiLine.hxx>
-#include <AppParCurves_MultiBSpCurve.hxx>
-#include <math_Vector.hxx>
-#include <BSplCLib.hxx>
-#include <AppDef_MultiLine.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
-#include <AppParCurves_HArray1OfConstraintCouple.hxx>
-#include <AppParCurves_Constraint.hxx>
 #include <AppDef_Variational.hxx>
-
+#include <AppParCurves_Constraint.hxx>
+#include <AppParCurves_HArray1OfConstraintCouple.hxx>
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
+#include <math_Vector.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : GeomAPI_PointsToBSpline
 //purpose  : 
 //=======================================================================
-
 GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline()
 {
   myIsDone = Standard_False;

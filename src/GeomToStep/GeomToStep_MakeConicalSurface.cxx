@@ -14,22 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeConicalSurface.ixx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <GeomToStep_MakeAxis2Placement3d.hxx>
-#include <StdFail_NotDone.hxx>
+
 #include <Geom_ConicalSurface.hxx>
+#include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakeConicalSurface.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ConicalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-
-#include <Standard_DomainError.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une conical_surface de prostep a partir d' une ConicalSurface
 // de Geom
 //=============================================================================
-
 GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface
   ( const Handle(Geom_ConicalSurface)& CS )
 	

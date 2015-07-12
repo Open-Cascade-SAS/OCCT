@@ -14,10 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntPatch_ArcFunction.ixx>
 
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <gp_Pnt.hxx>
+#include <IntPatch_ArcFunction.hxx>
 #include <IntPatch_HInterTool.hxx>
-
+#include <IntSurf_Quadric.hxx>
 
 IntPatch_ArcFunction::IntPatch_ArcFunction ()
 {}

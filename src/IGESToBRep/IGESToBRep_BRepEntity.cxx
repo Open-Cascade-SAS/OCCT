@@ -22,47 +22,52 @@
 //S4181 pdn 20.04.99 implementing of reading IGES elementary surfaces.
 //pdn 20.04.99 CTS22655 avoid of exceptions in case of empty loops
 
-#include <Standard_ErrorHandler.hxx>
-#include <IGESToBRep_BRepEntity.ixx>
-#include <IGESToBRep.hxx>
-#include <IGESToBRep_BasicCurve.hxx>
-#include <IGESToBRep_BasicSurface.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
-#include <IGESToBRep_TopoCurve.hxx>
-#include <IGESToBRep_TopoSurface.hxx>
-
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
-
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
-
+#include <gp_Trsf2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <IGESBasic_SingleParent.hxx>
-
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
 #include <IGESData_ToolLocation.hxx>
-
 #include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_Plane.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
-
+#include <IGESSolid_EdgeList.hxx>
+#include <IGESSolid_Face.hxx>
+#include <IGESSolid_Loop.hxx>
+#include <IGESSolid_ManifoldSolid.hxx>
+#include <IGESSolid_Shell.hxx>
+#include <IGESSolid_VertexList.hxx>
+#include <IGESToBRep.hxx>
+#include <IGESToBRep_AlgoContainer.hxx>
+#include <IGESToBRep_BasicCurve.hxx>
+#include <IGESToBRep_BasicSurface.hxx>
+#include <IGESToBRep_BRepEntity.hxx>
+#include <IGESToBRep_CurveAndSurface.hxx>
+#include <IGESToBRep_IGESBoundary.hxx>
+#include <IGESToBRep_ToolContainer.hxx>
+#include <IGESToBRep_TopoCurve.hxx>
+#include <IGESToBRep_TopoSurface.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Message_Msg.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <Precision.hxx>
-
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-
 #include <TopExp.hxx>
-
 #include <TopLoc_Location.hxx>
-
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -72,28 +77,11 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-
 #include <Transfer_TransientProcess.hxx>
 
 #include <stdio.h>
-#include <gp_Vec2d.hxx>//rln
-
-#include <ShapeExtend_WireData.hxx>
-#include <ShapeBuild_Edge.hxx>
-#include <IGESToBRep_IGESBoundary.hxx>
-#include <Message_Msg.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <IGESData_IGESModel.hxx>  
+//rln
 //#include <ShapeFix_Face.hxx>
-#include <IGESToBRep_AlgoContainer.hxx>
-#include <IGESToBRep_ToolContainer.hxx>
-#include <Message_ProgressSentry.hxx>
-#include <IGESSolid_Face.hxx>
-#include <IGESSolid_Shell.hxx>
-#include <IGESSolid_ManifoldSolid.hxx>
-#include <IGESSolid_VertexList.hxx>
-#include <IGESSolid_EdgeList.hxx>
-
 //=======================================================================
 //function : IGESToBRep_BRepEntity
 //purpose  : 

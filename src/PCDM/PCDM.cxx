@@ -14,24 +14,29 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <PCDM.ixx>
-#include <Plugin.hxx>
-#include <Standard_SStream.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Resource_Manager.hxx>
-#include <Standard_GUID.hxx>
-#include <UTL.hxx>
+
+#include <CDM_Application.hxx>
+#include <CDM_Document.hxx>
+#include <FSD_BinaryFile.hxx>
 #include <FSD_CmpFile.hxx>
 #include <FSD_File.hxx>
-#include <FSD_BinaryFile.hxx>
+#include <PCDM.hxx>
 #include <PCDM_StorageDriver.hxx>
+#include <Plugin.hxx>
+#include <Resource_Manager.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_SStream.hxx>
+#include <Storage_Schema.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <UTL.hxx>
 
 //=======================================================================
 //function : StorageDriver
 //purpose  : gets   in the  EuclidDesktop   resource  the plugin
 //           identifier of the driver plugs the driver.
 //=======================================================================
-
 Handle(PCDM_StorageDriver) PCDM::StorageDriver(const Handle(CDM_Document)& aDocument) {
   
   if(!PCDM::FindStorageDriver(aDocument)) {    

@@ -19,15 +19,12 @@
 //              Condition d'extraction corrigee
 //              + positionnement par EvalPoly2Var
 
-
-#include <Convert_GridPolynomialToPoles.ixx>
-
-#include <StdFail_NotDone.hxx>
-#include <Standard_DomainError.hxx>
-#include <PLib.hxx>
-#include <BSplSLib.hxx>
 #include <BSplCLib.hxx>
-
+#include <BSplSLib.hxx>
+#include <Convert_GridPolynomialToPoles.hxx>
+#include <PLib.hxx>
+#include <Standard_DomainError.hxx>
+#include <StdFail_NotDone.hxx>
 
 Convert_GridPolynomialToPoles::
 Convert_GridPolynomialToPoles(

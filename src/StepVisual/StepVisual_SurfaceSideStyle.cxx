@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_SurfaceSideStyle.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_SurfaceSideStyle.hxx>
+#include <StepVisual_SurfaceStyleElementSelect.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_SurfaceSideStyle::StepVisual_SurfaceSideStyle ()  {}
 

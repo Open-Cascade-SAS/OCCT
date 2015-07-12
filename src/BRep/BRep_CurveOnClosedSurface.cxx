@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_CurveOnClosedSurface.ixx>
+
+#include <BRep_CurveOnClosedSurface.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-
-
+#include <Standard_Type.hxx>
+#include <TopLoc_Location.hxx>
 
 //=======================================================================
 //function : BRep_CurveOnClosedSurface
 //purpose  : 
 //=======================================================================
-
 BRep_CurveOnClosedSurface::BRep_CurveOnClosedSurface
   (const Handle(Geom2d_Curve)& PC1, 
    const Handle(Geom2d_Curve)& PC2,

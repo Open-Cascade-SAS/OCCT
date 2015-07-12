@@ -16,11 +16,15 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_Householder.ixx>
+#include <math_Householder.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 // Cette classe decrit la methode de Householder qui transforme A en un
 // produit de matrice orthogonale par une triangulaire superieure. Les seconds
@@ -29,12 +33,10 @@
 // 90 du livre "Introduction a l'analyse numerique matricielle et a 
 // l'optimisation." par P.G. CIARLET, edition MASSON. Les secondes 
 // references sont celles du sous-programme HOUSEO d'Euclid.
-
 // A la difference du sous-programme Houseo, la premiere colonne n'est pas 
 // traitee separement. Les tests effectues ont montre que le code effectue
 // specialement pour celle-ci etait plus long qu'une simple recopie. C'est
 // donc cette solution de recopie initiale qui a ete retenue.
-
 math_Householder::math_Householder(const math_Matrix& A, const math_Vector& B,
                                    const Standard_Real EPS):
                                    Sol(1, A.ColNumber(), 1, 1),

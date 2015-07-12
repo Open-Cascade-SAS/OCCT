@@ -13,12 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMFunction_FunctionDriver.ixx>
 
-#include <XmlObjMgt.hxx>
-
-#include <TFunction_Function.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
+#include <TFunction_Function.hxx>
+#include <XmlMFunction_FunctionDriver.hxx>
+#include <XmlObjMgt.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (GuidString, "guid")
 IMPLEMENT_DOMSTRING (FailureString, "failure")

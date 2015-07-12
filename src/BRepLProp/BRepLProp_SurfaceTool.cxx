@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLProp_SurfaceTool.ixx>
+
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepLProp_SurfaceTool.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 //=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
-
 void BRepLProp_SurfaceTool::Value(const BRepAdaptor_Surface& S, 
 				  const Standard_Real U, 
 				  const Standard_Real V, 

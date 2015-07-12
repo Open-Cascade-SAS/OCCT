@@ -14,8 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntRes2d_Transition.ixx>
 
+#include <IntRes2d_Transition.hxx>
+#include <Standard_DomainError.hxx>
 
 IntRes2d_Transition::IntRes2d_Transition() : tangent(Standard_True),
                                              posit(IntRes2d_Middle),

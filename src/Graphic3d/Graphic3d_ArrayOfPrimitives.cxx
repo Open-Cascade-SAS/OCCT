@@ -12,20 +12,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_ArrayOfPrimitives.ixx>
-#include <Standard.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <OSD_Environment.hxx>
+
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_InitialisationError.hxx>
 #include <NCollection_AlignedAllocator.hxx>
+#include <OSD_Environment.hxx>
+#include <Quantity_Color.hxx>
+#include <Standard.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
 #include <stdlib.h>
-
-
-
-
-
-
 Graphic3d_ArrayOfPrimitives::Graphic3d_ArrayOfPrimitives (const Graphic3d_TypeOfPrimitiveArray theType,
                                                           const Standard_Integer               theMaxVertexs,
                                                           const Standard_Integer               theMaxBounds,

@@ -16,42 +16,45 @@
 
 // :j4 16.03.99 gka S4134
 // abv 18.11.99 renamed from StepPDR_ContextTool
-#include <STEPConstruct_ContextTool.ixx>
-#include <StepData_StepModel.hxx>
 
-#include <Interface_Macros.hxx>
-
-#include <StepBasic_ProductDefinition.hxx>
-//#include <StepBasic_ProductDefinitionContext.hxx>
-#include <StepBasic_ProductDefinitionFormation.hxx>
-#include <StepBasic_Product.hxx>
-#include <StepBasic_ProductContext.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
-#include <StepBasic_ApplicationContext.hxx>
-#include <StepBasic_ApplicationProtocolDefinition.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
-
-#include <StepBasic_HArray1OfProduct.hxx>
-#include <StepBasic_ProductType.hxx> //:i3
-#include <Interface_Static.hxx> //:j4
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
-#include <StepBasic_ApprovalPersonOrganization.hxx>
-#include <StepBasic_ApprovalDateTime.hxx>
-#include <StepBasic_ProductRelatedProductCategory.hxx>
-#include <StepBasic_ProductCategoryRelationship.hxx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <StepAP203_CcDesignApproval.hxx>
+#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
 #include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
 #include <StepAP203_CcDesignSecurityClassification.hxx>
-#include <StepAP203_CcDesignDateAndTimeAssignment.hxx>
-#include <StepAP203_CcDesignApproval.hxx>
+#include <StepBasic_ApplicationContext.hxx>
+#include <StepBasic_ApplicationProtocolDefinition.hxx>
+#include <StepBasic_ApprovalDateTime.hxx>
+#include <StepBasic_ApprovalPersonOrganization.hxx>
+#include <StepBasic_HArray1OfProduct.hxx>
+#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductCategoryRelationship.hxx>
+#include <StepBasic_ProductContext.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionFormation.hxx>
+#include <StepBasic_ProductRelatedProductCategory.hxx>
+#include <StepBasic_ProductType.hxx>
+#include <STEPConstruct_AP203Context.hxx>
+#include <STEPConstruct_Assembly.hxx>
+#include <STEPConstruct_ContextTool.hxx>
+#include <STEPConstruct_Part.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepRepr_PropertyDefinition.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 #include "stdio.h"
-
+//#include <StepBasic_ProductDefinitionContext.hxx>
+//:i3
+//:j4
 //=======================================================================
 //function : STEPConstruct_ContextTool
 //purpose  :
 //=======================================================================
-
 STEPConstruct_ContextTool::STEPConstruct_ContextTool ()
 {
 }

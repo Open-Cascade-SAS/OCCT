@@ -14,25 +14,31 @@
 
 // Modified:     22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
 
-#include <Prs3d_Presentation.ixx>
-#include <TColStd_Array2OfReal.hxx>
-#include <Graphic3d_Structure.hxx>
+#include <Aspect_InteriorStyle.hxx>
+#include <Aspect_PolygonOffsetMode.hxx>
 #include <Aspect_TypeOfHighlightMethod.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <Geom_Transformation.hxx>
 #include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_Real.hxx>
-#include <Aspect_InteriorStyle.hxx>
-#include <Aspect_TypeOfLine.hxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-#include <Aspect_PolygonOffsetMode.hxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-#include <Graphic3d_NameOfMaterial.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_DataStructureManager.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_NameOfMaterial.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
-
+// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 static void MakeGraphicTrsf (const Handle(Geom_Transformation)& aGeomTrsf,
                              TColStd_Array2OfReal& Array){
   for (Standard_Integer i=1; i<=3; i++){

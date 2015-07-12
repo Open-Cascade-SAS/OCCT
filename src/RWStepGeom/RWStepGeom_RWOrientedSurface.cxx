@@ -15,13 +15,17 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepGeom_RWOrientedSurface.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepGeom_RWOrientedSurface.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_OrientedSurface.hxx>
 
 //=======================================================================
 //function : RWStepGeom_RWOrientedSurface
 //purpose  : 
 //=======================================================================
-
 RWStepGeom_RWOrientedSurface::RWStepGeom_RWOrientedSurface ()
 {
 }

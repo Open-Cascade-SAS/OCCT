@@ -16,7 +16,8 @@
 
 //		<design>
 
-#include <Transfer_VoidBinder.ixx>
+#include <Standard_Type.hxx>
+#include <Transfer_VoidBinder.hxx>
 
 Transfer_VoidBinder::Transfer_VoidBinder ()    {  }
 

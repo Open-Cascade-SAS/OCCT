@@ -11,15 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Interface_Graph.ixx> 
+
+#include <Interface_BitMap.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_GTool.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
 #include <Interface_ReportEntity.hxx>
-#include <Standard_DomainError.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <Interface_ShareTool.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_Transient.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <Interface_GTool.hxx>
 
 // Flags : 0 = Presence, 1 = Sharing Error
 #define Graph_Present 0

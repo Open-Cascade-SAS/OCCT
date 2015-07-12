@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_Finder.ixx>
-#include <Interface_IntVal.hxx>
-#include <Geom2d_CartesianPoint.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Dico_IteratorOfDictionaryOfTransient.hxx>
 
+#include <Dico_DictionaryOfTransient.hxx>
+#include <Dico_IteratorOfDictionaryOfTransient.hxx>
+#include <Geom2d_CartesianPoint.hxx>
+#include <Interface_IntVal.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Transfer_Finder.hxx>
 
 void  Transfer_Finder::SetHashCode (const Standard_Integer code)
       {  thecode = code;  }

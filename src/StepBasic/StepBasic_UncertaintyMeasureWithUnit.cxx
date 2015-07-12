@@ -11,14 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_UncertaintyMeasureWithUnit.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_MeasureValueMember.hxx>
+#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <StepBasic_Unit.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepBasic_UncertaintyMeasureWithUnit
 //purpose  : 
 //=======================================================================
-
 StepBasic_UncertaintyMeasureWithUnit::StepBasic_UncertaintyMeasureWithUnit ()  {}
 
 //=======================================================================

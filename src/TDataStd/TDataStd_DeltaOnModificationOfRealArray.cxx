@@ -13,14 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_DeltaOnModificationOfRealArray.ixx>
+
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TDataStd_DeltaOnModificationOfRealArray.hxx>
 #include <TDataStd_RealArray.hxx>
+#include <TDF_AttributeIterator.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TDF_AttributeIterator.hxx>
+
 #ifdef OCCT_DEBUG
 #define MAXUP 1000
 #endif

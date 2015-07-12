@@ -14,13 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gce_MakeRotation.ixx>
+
+#include <gce_MakeRotation.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 
 //=========================================================================
 //   Creation d une rotation 3d de gp d angle Angle par rapport a une     +
 //   droite Line.                                                         +
 //=========================================================================
-
 gce_MakeRotation::
   gce_MakeRotation(const gp_Lin&  Line  ,
 		   const Standard_Real     Angle ) {

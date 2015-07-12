@@ -16,8 +16,16 @@
 
 #define _ExprIntrp_Analysis_SourceFile
 
-#include <ExprIntrp_Analysis.ixx>
+
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_GeneralFunction.hxx>
+#include <Expr_GeneralRelation.hxx>
+#include <Expr_NamedExpression.hxx>
+#include <Expr_NamedFunction.hxx>
 #include <Expr_NamedUnknown.hxx>
+#include <ExprIntrp_Analysis.hxx>
+#include <ExprIntrp_Generator.hxx>
+#include <TCollection_AsciiString.hxx>
 
 ExprIntrp_Analysis::ExprIntrp_Analysis() {}
 

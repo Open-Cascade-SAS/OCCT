@@ -14,8 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpeDraw_DrawableC3D.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Draw_Text3D.hxx>
+#include <Geom_Curve.hxx>
+#include <gp_Pnt.hxx>
+#include <Standard_Type.hxx>
+#include <TestTopOpeDraw_DrawableC3D.hxx>
 #include <TopOpeBRepTool_define.hxx>
 
 //=======================================================================

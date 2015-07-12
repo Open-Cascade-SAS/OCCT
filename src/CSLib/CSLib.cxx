@@ -14,18 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <CSLib.ixx>
 
+#include <CSLib.hxx>
+#include <CSLib_NormalPolyDef.hxx>
 #include <gp.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
+#include <math_FunctionRoots.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <TColgp_Array2OfVec.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <math_FunctionRoots.hxx>
-#include <CSLib_NormalPolyDef.hxx>
-
+#include <TColStd_Array2OfReal.hxx>
 
 #define D1uD1vRatioIsNull   CSLib_D1uD1vRatioIsNull 
 #define D1vD1uRatioIsNull   CSLib_D1vD1uRatioIsNull

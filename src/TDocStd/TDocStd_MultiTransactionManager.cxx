@@ -13,15 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDocStd_MultiTransactionManager.ixx>
-#include <TDocStd_Document.hxx>
+
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TDocStd_ApplicationDelta.hxx>
+#include <TDocStd_Document.hxx>
+#include <TDocStd_MultiTransactionManager.hxx>
 
 //=======================================================================
 //function : TDocStd_MultiTransactionManager
 //purpose  : Constructor
 //=======================================================================
-
 TDocStd_MultiTransactionManager::TDocStd_MultiTransactionManager ()
 {
   myUndoLimit = 0;

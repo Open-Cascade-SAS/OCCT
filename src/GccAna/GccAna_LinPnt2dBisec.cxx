@@ -18,19 +18,20 @@
 //   CREATION of the BISSECTRICE between a DROITE and POINTS.             +
 //=========================================================================
 
-#include <GccAna_LinPnt2dBisec.ixx>
-
-#include <gp_XY.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Ax2d.hxx>
-#include <GccInt_BParab.hxx>
+#include <GccAna_LinPnt2dBisec.hxx>
+#include <GccInt_Bisec.hxx>
 #include <GccInt_BLine.hxx>
+#include <GccInt_BParab.hxx>
+#include <gp.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <gp.hxx>
 
 //=========================================================================
-
 GccAna_LinPnt2dBisec::
    GccAna_LinPnt2dBisec (const gp_Lin2d& Line1 ,
 		         const gp_Pnt2d& Point2) {

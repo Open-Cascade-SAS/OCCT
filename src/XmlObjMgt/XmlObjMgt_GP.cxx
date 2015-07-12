@@ -13,10 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlObjMgt_GP.ixx>
-#include <stdio.h>
-#include <errno.h>
 
+#include <gp_Mat.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_XYZ.hxx>
+#include <XmlObjMgt_GP.hxx>
+
+#include <errno.h>
+#include <stdio.h>
 static const char * Translate (const char * theStr, gp_Mat& M);
 static const char * Translate (const char * theStr, gp_XYZ& P);
 

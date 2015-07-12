@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESToBRep_ToolContainer.ixx>
+
+#include <IGESToBRep_IGESBoundary.hxx>
+#include <IGESToBRep_ToolContainer.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : IGESToBRep_ToolContainer
 //purpose  : 
 //=======================================================================
-
 IGESToBRep_ToolContainer::IGESToBRep_ToolContainer()
 {
 }

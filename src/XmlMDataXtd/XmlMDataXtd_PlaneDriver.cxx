@@ -13,14 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataXtd_PlaneDriver.ixx>
+
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataXtd_Plane.hxx>
+#include <TDF_Attribute.hxx>
+#include <XmlMDataXtd_PlaneDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 //=======================================================================
 //function : XmlMDataXtd_PlaneDriver
 //purpose  : Constructor
 //=======================================================================
-
 XmlMDataXtd_PlaneDriver::XmlMDataXtd_PlaneDriver
                         (const Handle(CDM_MessageDriver)& theMsgDriver)
       : XmlMDF_ADriver (theMsgDriver, NULL)

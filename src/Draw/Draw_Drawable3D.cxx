@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Drawable3D.ixx>
+
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : Draw_Drawable3D
 //purpose  : 
 //=======================================================================
-
 Draw_Drawable3D::Draw_Drawable3D() :
   isVisible(Standard_False),
   isProtected(Standard_False),

@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepDimTol_FlatnessTolerance.ixx>
+#include <Standard_Type.hxx>
+#include <StepDimTol_FlatnessTolerance.hxx>
 
 //=======================================================================
 //function : StepDimTol_FlatnessTolerance
 //purpose  : 
 //=======================================================================
-
 StepDimTol_FlatnessTolerance::StepDimTol_FlatnessTolerance ()
 {
 }

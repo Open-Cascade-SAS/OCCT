@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_ArrayOfQuadrangles.ixx>
+
+#include <Graphic3d_ArrayOfQuadrangles.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 Graphic3d_ArrayOfQuadrangles::Graphic3d_ArrayOfQuadrangles (const Standard_Integer theMaxVertexs,
                                                             const Standard_Integer theMaxEdges,

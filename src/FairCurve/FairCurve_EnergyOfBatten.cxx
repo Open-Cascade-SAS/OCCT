@@ -19,10 +19,11 @@
 #define No_Standard_OutOfRange
 #endif
 
-#include <FairCurve_EnergyOfBatten.ixx>
 
-#include <math_IntegerVector.hxx>
+#include <FairCurve_BattenLaw.hxx>
+#include <FairCurve_EnergyOfBatten.hxx>
 #include <math_GaussSetIntegration.hxx>
+#include <math_IntegerVector.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 
 //=======================================================================

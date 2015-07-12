@@ -14,18 +14,19 @@
 
 //JCV 16/10/91
 
-#include <Convert_CircleToBSplineCurve.ixx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
-#include <Precision.hxx>
+#include <Convert_CircleToBSplineCurve.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Trsf2d.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //Attention :
 //To avoid use of persistent tables in the fields
@@ -35,8 +36,6 @@
 //nbKnots and nbPoles are present and updated in the 
 //constructor of an arc of B-spline circle to take into account 
 //the real number of poles and nodes.
-
-
 // parametrization :
 // Reference : Rational B-spline for Curve and Surface Representation
 //             Wayne Tiller  CADG September 1983
@@ -44,12 +43,10 @@
 // y(t) =  2 t / (1 + t^2)
 // then t = Sqrt(2) u /  ((Sqrt(2) - 2) u + 2)
 // => u = 2 t / (Sqrt(2) + (2 - Sqrt(2)) t)
-
 //=======================================================================
 //function : Convert_CircleToBSplineCurve
 //purpose  : this constructs a periodic circle 
 //=======================================================================
-
 Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve 
   (const gp_Circ2d& C, const Convert_ParameterisationType Parameterisation)
 :Convert_ConicToBSplineCurve(0,0,0){

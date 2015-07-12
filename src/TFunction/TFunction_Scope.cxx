@@ -13,14 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TFunction_Scope.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TFunction_Scope.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : Static method to get an ID
 //=======================================================================
-
 const Standard_GUID&  TFunction_Scope::GetID() 
 {  
   static Standard_GUID TFunction_ScopeID("F2DE4EFF-7FE8-40a3-AAD5-5B6DDEA83469");

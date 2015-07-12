@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_ShapeData.ixx>
+
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_ShapeData.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_ShapeData
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepDS_ShapeData::TopOpeBRepDS_ShapeData() :
   mySameDomainRef(0),
   mySameDomainOri(TopOpeBRepDS_UNSHGEOMETRY),

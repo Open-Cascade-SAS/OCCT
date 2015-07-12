@@ -14,16 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_Directory.ixx>
-#include <TDataStd.hxx>
-#include <TDF_TagSource.hxx>
+
 #include <Standard_DomainError.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TDataStd.hxx>
+#include <TDataStd_Directory.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_DataSet.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
+#include <TDF_TagSource.hxx>
 
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean TDataStd_Directory::Find (const TDF_Label& current,
 					  Handle(TDataStd_Directory)& D) 
 {  

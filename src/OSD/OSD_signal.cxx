@@ -11,7 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OSD.ixx>
+
+#include <OSD.hxx>
 
 #ifndef _WIN32
 

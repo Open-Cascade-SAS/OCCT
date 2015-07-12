@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepRepr_ShapeAspectTransition.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ShapeAspectTransition.hxx>
 
 //=======================================================================
 //function : StepRepr_ShapeAspectTransition
 //purpose  : 
 //=======================================================================
-
 StepRepr_ShapeAspectTransition::StepRepr_ShapeAspectTransition ()
 {
 }

@@ -16,15 +16,18 @@
 
 #define No_Standard_OutOfRange
 
-#include <HLRBRep_Algo.ixx>
+
+#include <HLRBRep_Algo.hxx>
 #include <HLRBRep_ShapeBounds.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
+#include <MMgt_TShared.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : HLRBRep_Algo
 //purpose  : 
 //=======================================================================
-
 HLRBRep_Algo::HLRBRep_Algo ()
 {}
 

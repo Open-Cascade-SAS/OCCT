@@ -12,57 +12,47 @@
 // commercial license or contractual agreement.
 
 //:k8 abv 6 Jan 98: using parameter "step.group" for writing assemblies/shapes
-#include <XSDRAWSTEP.ixx>
-#include <STEPControl_Controller.hxx>
-#include <STEPControl_ActorWrite.hxx>
-#include <STEPControl_Reader.hxx>
-#include <STEPControl_Writer.hxx>
-#include <STEPControl_StepModelType.hxx>
-#include <XSDRAW.hxx>
-#include <StepSelect_Activator.hxx>
-
-#include <Draw_Appli.hxx>
-#include <Draw_Interpretor.hxx>
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
 
 #include <DBRep.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-#include <Interface_Macros.hxx>
+#include <Draw_Appli.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_ProgressIndicator.hxx>
+#include <IFSelect_SessionPilot.hxx>
 #include <Interface_InterfaceModel.hxx>
-
-//  Pour le transfert (write)
-//  Pour NewModel et Write : definition de produit (temporaire ...)
-#include <Transfer_FinderProcess.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-
-#include <XSControl_Controller.hxx>
-#include <XSControl_WorkSession.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <STEPControl_ActorWrite.hxx>
+#include <STEPControl_Controller.hxx>
+#include <STEPControl_Reader.hxx>
+#include <STEPControl_StepModelType.hxx>
+#include <STEPControl_Writer.hxx>
 #include <StepData_StepModel.hxx>
-
-#include <TopoDS.hxx>
-
-// steptrans
-#include <StepToTopoDS_MakeTransformed.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
+#include <StepSelect_Activator.hxx>
+#include <STEPSelections_AssemblyExplorer.hxx>
+#include <STEPSelections_Counter.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
+#include <StepToTopoDS_MakeTransformed.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep_ShapeMapper.hxx>
+#include <XSControl_Controller.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <XSDRAW.hxx>
+#include <XSDRAWSTEP.hxx>
 
 #include <stdio.h>
-#include <Interface_Static.hxx>
-#include <IFSelect_SessionPilot.hxx>
-#include <STEPSelections_Counter.hxx>
-#include <STEPSelections_AssemblyExplorer.hxx>
-
-#include <Draw_ProgressIndicator.hxx>
-#include <Transfer_TransientProcess.hxx>
-
-#include <TopExp_Explorer.hxx>
-#include <XSControl_TransferWriter.hxx>
-#include <Message_ProgressSentry.hxx>
-
-
+//  Pour le transfert (write)
+//  Pour NewModel et Write : definition de produit (temporaire ...)
+// steptrans
 extern "C" {
 static void cleanpilot ()
 {

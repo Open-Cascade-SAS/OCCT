@@ -14,28 +14,39 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_InteractiveContext.jxx>
 
-#include <AIS_LocalContext.hxx>
-
-#include <AIS_GlobalStatus.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-#include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
 #include <AIS_DataMapIteratorOfDataMapOfILC.hxx>
-#include <Graphic3d_StructureManager.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
-#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
+#include <AIS_DataMapIteratorOfDataMapOfIOStatus.hxx>
+#include <AIS_GlobalStatus.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_LocalContext.hxx>
 #include <AIS_Selection.hxx>
-
+#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
+#include <Graphic3d_MapOfStructure.hxx>
+#include <Graphic3d_Structure.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Prs3d_BasicAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Quantity_Color.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Filter.hxx>
+#include <SelectMgr_OrFilter.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_Transient.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 
 //=======================================================================
 //function : OpenLocalContext
 //purpose  : 
 //=======================================================================
-
 Standard_Integer AIS_InteractiveContext::
 OpenLocalContext(const Standard_Boolean UseDisplayedObjects, 
                  const Standard_Boolean AllowShapeDecomposition, 

@@ -11,35 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_BasicDumper.ixx>
-#include <IFSelect_IntParam.hxx>
-#include <IFSelect_WorkSession.hxx>
-#include <IFSelect_ShareOut.hxx>
 
-#include <IFSelect_SelectModelRoots.hxx>
-#include <IFSelect_SelectModelEntities.hxx>
-#include <IFSelect_SelectEntityNumber.hxx>
-#include <IFSelect_SelectPointed.hxx>
-#include <IFSelect_SelectUnion.hxx>
-#include <IFSelect_SelectIntersection.hxx>
-#include <IFSelect_SelectDiff.hxx>
-#include <IFSelect_SelectUnknownEntities.hxx>
-#include <IFSelect_SelectErrorEntities.hxx>
-#include <IFSelect_SelectIncorrectEntities.hxx>
-#include <IFSelect_SelectRoots.hxx>
-#include <IFSelect_SelectRootComps.hxx>
-#include <IFSelect_SelectRange.hxx>
-//#include <IFSelect_SelectTextType.hxx>
-#include <IFSelect_SelectShared.hxx>
-#include <IFSelect_SelectSharing.hxx>
-#include <IFSelect_DispPerOne.hxx>
+#include <IFSelect_BasicDumper.hxx>
 #include <IFSelect_DispGlobal.hxx>
 #include <IFSelect_DispPerCount.hxx>
-#include <IFSelect_TransformStandard.hxx>
+#include <IFSelect_DispPerOne.hxx>
+#include <IFSelect_IntParam.hxx>
 #include <IFSelect_Modifier.hxx>
-
+#include <IFSelect_SelectDiff.hxx>
+#include <IFSelect_SelectEntityNumber.hxx>
+#include <IFSelect_SelectErrorEntities.hxx>
+#include <IFSelect_SelectIncorrectEntities.hxx>
+#include <IFSelect_SelectIntersection.hxx>
+#include <IFSelect_SelectModelEntities.hxx>
+#include <IFSelect_SelectModelRoots.hxx>
+#include <IFSelect_SelectPointed.hxx>
+#include <IFSelect_SelectRange.hxx>
+#include <IFSelect_SelectRootComps.hxx>
+#include <IFSelect_SelectRoots.hxx>
+#include <IFSelect_SelectShared.hxx>
+#include <IFSelect_SelectSharing.hxx>
+#include <IFSelect_SelectUnion.hxx>
+#include <IFSelect_SelectUnknownEntities.hxx>
+#include <IFSelect_SessionFile.hxx>
+#include <IFSelect_ShareOut.hxx>
+#include <IFSelect_TransformStandard.hxx>
+#include <IFSelect_WorkSession.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
+//#include <IFSelect_SelectTextType.hxx>
 #define FIRSTCHAR 1
 // Param litteral "own" sous la forme  :"<val>" -> first = 3
 // A present, forme simplifiee         : <val>  directement -> first = 1

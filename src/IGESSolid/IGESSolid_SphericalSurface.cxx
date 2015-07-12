@@ -16,9 +16,12 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_SphericalSurface.ixx>
 #include <gp_GTrsf.hxx>
-
+#include <gp_Pnt.hxx>
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_SphericalSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_SphericalSurface::IGESSolid_SphericalSurface ()    {  }
 

@@ -26,27 +26,31 @@
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
 
-#include <Geom_BezierSurface.ixx>
-#include <Geom_BezierCurve.hxx>
 
-#include <gp.hxx>
-#include <gp_XYZ.hxx>
-#include <PLib.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Geometry.hxx>
+#include <gp.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <PLib.hxx>
 #include <Precision.hxx>
-
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_RangeError.hxx>
-#include <Standard_DimensionError.hxx>
-#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
 //=======================================================================
 //function : Rational
 //purpose  : check rationality of an array of weights
 //=======================================================================
-
 static void Rational(const TColStd_Array2OfReal& Weights,
 		     Standard_Boolean& Urational,
 		     Standard_Boolean& Vrational)

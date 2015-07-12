@@ -14,11 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Expr_BinaryExpression.ixx>
-#include <Expr_NamedUnknown.hxx>
-#include <Expr_InvalidOperand.hxx>
-#include <Standard_OutOfRange.hxx>
 
+#include <Expr_BinaryExpression.hxx>
+#include <Expr_GeneralExpression.hxx>
+#include <Expr_InvalidOperand.hxx>
+#include <Expr_NamedUnknown.hxx>
+#include <Standard_NumericError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_Type.hxx>
 
 void Expr_BinaryExpression::SetFirstOperand (const Handle(Expr_GeneralExpression)& exp)
 {

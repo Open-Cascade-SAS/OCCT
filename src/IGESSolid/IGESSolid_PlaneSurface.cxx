@@ -16,8 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESSolid_PlaneSurface.ixx>
-
+#include <IGESGeom_Direction.hxx>
+#include <IGESGeom_Point.hxx>
+#include <IGESSolid_PlaneSurface.hxx>
+#include <Standard_Type.hxx>
 
 IGESSolid_PlaneSurface::IGESSolid_PlaneSurface ()    {  }
 

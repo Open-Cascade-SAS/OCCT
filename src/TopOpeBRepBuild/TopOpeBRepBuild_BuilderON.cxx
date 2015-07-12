@@ -14,23 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_BuilderON.ixx>
 
-#include <TopOpeBRepTool_EXPORT.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
-#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepLProp_SLProps.hxx>
+#include <BRepLProp_SurfaceTool.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <Precision.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_BuilderON.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepDS_connex.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <Precision.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <TopOpeBRepTool_SC.hxx>
-#include <BRepLProp_SurfaceTool.hxx>
-#include <BRepLProp_SLProps.hxx>
+#include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
+#include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_SC.hxx>
+#include <TopOpeBRepTool_TOOL.hxx>
 
 #ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL();

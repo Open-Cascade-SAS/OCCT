@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_TextStyleWithBoxCharacteristics.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_BoxCharacteristicSelect.hxx>
+#include <StepVisual_TextStyleForDefinedFont.hxx>
+#include <StepVisual_TextStyleWithBoxCharacteristics.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_TextStyleWithBoxCharacteristics::StepVisual_TextStyleWithBoxCharacteristics ()  {}
 

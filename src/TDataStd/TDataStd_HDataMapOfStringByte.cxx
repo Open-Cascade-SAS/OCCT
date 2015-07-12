@@ -13,7 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_HDataMapOfStringByte.ixx>
+
+#include <Standard_Type.hxx>
+#include <TDataStd_HDataMapOfStringByte.hxx>
 
 //=======================================================================
 //function : TDataStd_HDataMapOfStringByte

@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Voxel_BoolDS.ixx>
+
+#include <Voxel_BoolDS.hxx>
 
 #include <stdlib.h>
-
 static Standard_Byte gbits[8] = {1, 2, 4, 8, 16, 32, 64, 128};
 static Standard_Byte gnbits[8] = {255-1, 255-2, 255-4, 255-8, 255-16, 255-32, 255-64, 255-128};
 

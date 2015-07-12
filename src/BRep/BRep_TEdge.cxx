@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRep_TEdge.ixx>
-#include <TopAbs.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
+
 #include <BRep_CurveOn2Surfaces.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <Standard_Type.hxx>
+#include <TopAbs.hxx>
+#include <TopoDS_TShape.hxx>
 
 static const Standard_Integer ParameterMask       = 1;
 static const Standard_Integer RangeMask           = 2;

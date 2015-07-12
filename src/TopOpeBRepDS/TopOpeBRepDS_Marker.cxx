@@ -14,11 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_Marker.ixx>
+
+#include <Standard_Type.hxx>
 #include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepDS_Marker.hxx>
+
 //#include <TopExp.hxx>
 //#include <TopTools_IndexedMapOfShape.hxx>
-
 TopOpeBRepDS_Marker::TopOpeBRepDS_Marker()
 {
   Reset();

@@ -11,17 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESData_IGESReaderData.ixx>
-#include <IGESData_IGESModel.hxx>
+
+#include <IGESData_DirPart.hxx>
+#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESType.hxx>
 #include <IGESData_UndefinedEntity.hxx>
+#include <Interface_Check.hxx>
 #include <Interface_FileParameter.hxx>
-#include <Interface_ParamList.hxx>
-#include <Interface_ParamType.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <Interface_Macros.hxx>
-
-
+#include <Interface_ParamList.hxx>
+#include <Interface_ParamSet.hxx>
+#include <Interface_ParamType.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESData_IGESReaderData::IGESData_IGESReaderData
   (const Standard_Integer nbe, const Standard_Integer nbp)

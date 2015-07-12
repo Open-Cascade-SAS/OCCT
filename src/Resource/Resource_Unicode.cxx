@@ -14,10 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Resource_Unicode.ixx>
+
 #include <Resource_ConvertUnicode.hxx>
 #include <Resource_Manager.hxx>
+#include <Resource_Unicode.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #define isjis(c) (((c)>=0x21 && (c)<=0x7e))
 #define iseuc(c) (((c)>=0xa1 && (c)<=0xfe))

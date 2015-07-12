@@ -14,33 +14,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepBuild_Builder.ixx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
-#include <TopOpeBRepBuild_GTool.hxx>
-#include <TopOpeBRepDS_SurfaceIterator.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepDS_CurveExplorer.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_Config.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <TopOpeBRepTool_ShapeExplorer.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
-#include <TopOpeBRepDS_Filter.hxx>
-#include <TopOpeBRepDS_Reducer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
+#include <TopOpeBRepBuild_EdgeBuilder.hxx>
+#include <TopOpeBRepBuild_FaceBuilder.hxx>
+#include <TopOpeBRepBuild_GTool.hxx>
+#include <TopOpeBRepBuild_GTopo.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepBuild_PaveSet.hxx>
+#include <TopOpeBRepBuild_ShapeSet.hxx>
+#include <TopOpeBRepBuild_ShellFaceSet.hxx>
+#include <TopOpeBRepBuild_SolidBuilder.hxx>
+#include <TopOpeBRepBuild_WireEdgeSet.hxx>
+#include <TopOpeBRepDS_BuildTool.hxx>
+#include <TopOpeBRepDS_Config.hxx>
+#include <TopOpeBRepDS_Curve.hxx>
+#include <TopOpeBRepDS_CurveExplorer.hxx>
+#include <TopOpeBRepDS_CurveIterator.hxx>
+#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_Filter.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+#include <TopOpeBRepDS_PointIterator.hxx>
+#include <TopOpeBRepDS_Reducer.hxx>
+#include <TopOpeBRepDS_Surface.hxx>
+#include <TopOpeBRepDS_SurfaceIterator.hxx>
+#include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCU();

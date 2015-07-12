@@ -13,14 +13,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_NamedData.ixx>
 
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringString.hxx>
 #include <TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx>
 #include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx>
+#include <TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx>
+#include <TDataStd_DataMapIteratorOfDataMapOfStringString.hxx>
+#include <TDataStd_HDataMapOfStringByte.hxx>
+#include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
+#include <TDataStd_HDataMapOfStringHArray1OfReal.hxx>
+#include <TDataStd_HDataMapOfStringInteger.hxx>
+#include <TDataStd_HDataMapOfStringReal.hxx>
+#include <TDataStd_HDataMapOfStringString.hxx>
+#include <TDataStd_NamedData.hxx>
+#include <TDF_Attribute.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 #ifdef WNT
 #define EXCEPTION ...

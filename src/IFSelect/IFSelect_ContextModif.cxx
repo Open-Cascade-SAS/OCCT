@@ -11,18 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_ContextModif.ixx>
-#include <IFSelect_Selection.hxx>
-#include <Message_Messenger.hxx>
-#include <Message.hxx>
-#include <Standard_NoSuchObject.hxx>
 
+#include <IFSelect_ContextModif.hxx>
+#include <IFSelect_GeneralModifier.hxx>
+#include <IFSelect_Selection.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CheckIterator.hxx>
+#include <Interface_CopyControl.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_Protocol.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Transient.hxx>
 
 //=======================================================================
 //function : IFSelect_ContextModif
 //purpose  : 
 //=======================================================================
-
 IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph,
                                              const Interface_CopyTool& TC,
                                              const Standard_CString filename)

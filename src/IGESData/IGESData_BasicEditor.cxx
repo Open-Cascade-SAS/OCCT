@@ -12,30 +12,29 @@
 // commercial license or contractual agreement.
 
 //#73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
-#include <IGESData_BasicEditor.ixx>
 
-#include <Interface_Graph.hxx>
-#include <Interface_EntityIterator.hxx>
-#include <IGESData_GeneralModule.hxx>
-#include <IGESData_SpecificModule.hxx>
-
-#include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <IGESData_LineFontEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESData_TransfEntity.hxx>
-#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_BasicEditor.hxx>
 #include <IGESData_ColorEntity.hxx>
 #include <IGESData_DirChecker.hxx>
-
-#include <Interface_Static.hxx>
-#include <Interface_Macros.hxx>
-#include <UnitsMethods.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
+#include <IGESData_GeneralModule.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_Protocol.hxx>
+#include <IGESData_SpecificModule.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 #include <IGESGeom_Boundary.hxx>
-
+#include <IGESGeom_CurveOnSurface.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <Interface_Graph.hxx>
+#include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <UnitsMethods.hxx>
 
 IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_Protocol)&  protocol)
 {

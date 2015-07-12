@@ -14,19 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeCylindricalSurface.ixx>
-#include <Geom_CylindricalSurface.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <StepToGeom_MakeAxis2Placement.hxx>
+
 #include <Geom_Axis2Placement.hxx>
+#include <Geom_CylindricalSurface.hxx>
 #include <gp_Ax2.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_CylindricalSurface.hxx>
+#include <StepToGeom_MakeAxis2Placement.hxx>
+#include <StepToGeom_MakeCylindricalSurface.hxx>
 #include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une CylindricalSurface de Geom a partir d' une 
 // CylindricalSurface de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeCylindricalSurface::Convert (const Handle(StepGeom_CylindricalSurface)& SS, Handle(Geom_CylindricalSurface)& CS)
 {
   Handle(Geom_Axis2Placement) A;

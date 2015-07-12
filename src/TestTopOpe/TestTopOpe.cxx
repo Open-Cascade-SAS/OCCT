@@ -14,17 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpe.ixx>
-#include <TestTopOpeTools.hxx>
-#include <TestTopOpeDraw.hxx>
-#include <TestTopOpe_HDSDisplayer.hxx>
-#include <TestTopOpe_BOOP.hxx>
-#include <TopOpeBRepDS_DSX.hxx>
-#include <TopOpeBRepDS_Dumper.hxx>
+
+#include <BOPTest.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
-#include <BOPTest.hxx>
 #include <SWDRAW.hxx>
+#include <TestTopOpe.hxx>
+#include <TestTopOpe_BOOP.hxx>
+#include <TestTopOpe_HDSDisplayer.hxx>
+#include <TestTopOpeDraw.hxx>
+#include <TestTopOpeTools.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_DSX.hxx>
+#include <TopOpeBRepDS_Dumper.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+
 #ifdef WNT
 #pragma warning(4:4190)
 #endif

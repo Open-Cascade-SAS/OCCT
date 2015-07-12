@@ -14,9 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Plate_SampledCurveConstraint.ixx>
+
+#include <Plate_LinearXYZConstraint.hxx>
 #include <Plate_PinpointConstraint.hxx>
+#include <Plate_SampledCurveConstraint.hxx>
 #include <Plate_SequenceOfPinpointConstraint.hxx>
+#include <Standard_DimensionMismatch.hxx>
 
 static inline Standard_Real B0( Standard_Real t)
 {

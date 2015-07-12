@@ -21,25 +21,29 @@
 //                  de rayon donne : Radius.                             +
 //========================================================================
 
-#include <Geom2dGcc_Circ2dTanOnRadGeo.ixx>
-
+#include <Adaptor3d_OffsetCurve.hxx>
 #include <ElCLib.hxx>
-#include <math_DirectPolynomialRoots.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_NegativeValue.hxx>
-#include <gp_Dir2d.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <GccEnt_BadQualifier.hxx>
+#include <GccEnt_QualifiedCirc.hxx>
+#include <GccEnt_QualifiedLin.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dGcc_Circ2dTanOnRadGeo.hxx>
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Geom2dGcc_CurveToolGeo.hxx>
+#include <Geom2dGcc_QCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-
-#include <Geom2dGcc_CurveTool.hxx>
-#include <Adaptor3d_OffsetCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2dGcc_CurveToolGeo.hxx>
-#include <Geom2dInt_GInter.hxx>
-
+#include <math_DirectPolynomialRoots.hxx>
+#include <Standard_NegativeValue.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 //=========================================================================
 //  Cercle tangent  :  a un cercle Qualified1 (C1).                       +
@@ -57,7 +61,6 @@
 //                   - de centre Pntcen(xc,yc)                            +
 //                   - de rayon Radius.                                   +
 //=========================================================================
-
 Geom2dGcc_Circ2dTanOnRadGeo::
 Geom2dGcc_Circ2dTanOnRadGeo (const Geom2dGcc_QCurve& Qualified1, 
                              const gp_Lin2d&     OnLine    ,

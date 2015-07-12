@@ -11,26 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomToStep_MakeHyperbola.ixx>
 
-#include <StepGeom_Hyperbola.hxx>
-#include <StepGeom_Axis2Placement2d.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
-#include <gp_Hypr.hxx>
-#include <gp_Hypr2d.hxx>
+#include <Geom2d_Hyperbola.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <GeomToStep_MakeAxis2Placement2d.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
+#include <GeomToStep_MakeHyperbola.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Hypr2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Hyperbola.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <UnitsMethods.hxx>
-
 
 //=============================================================================
 // Creation d'une hyperbola de prostep a partir d'une hyperbola de
 // Geom2d
 //=============================================================================
-
 GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const Handle(Geom2d_Hyperbola)& C)
 {
   gp_Hypr2d gpHyp;

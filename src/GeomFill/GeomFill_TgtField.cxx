@@ -14,13 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_TgtField.ixx>
+
+#include <GeomFill_TgtField.hxx>
+#include <gp_Vec.hxx>
+#include <Law_BSpline.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : IsScalable
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean GeomFill_TgtField::IsScalable() const 
 {
   return 0;

@@ -20,76 +20,79 @@
 //:o7 abv 18.02.99: bm1_sy_fuel.stp #1427(items 1,2) protection against null entity
 //abv,gka 05.04.99 S4136: parameter names changed; avoid extra call to FixSameParameter
 
-#include <stdio.h>
-#include <StepToTopoDS_Builder.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <Interface_Static.hxx>
-#include <TransferBRep.hxx>
-
-#include <StepToTopoDS_Tool.hxx>
-#include <StepToTopoDS_DataMapOfTRI.hxx>
-#include <StepToTopoDS_TranslateShell.hxx>
-#include <StepToTopoDS_TranslateCompositeCurve.hxx>
-#include <StepToTopoDS_TranslateCurveBoundedSurface.hxx>
-
-//#include <StepShape_VertexShell.hxx>
-#include <StepShape_Shell.hxx>
-#include <StepShape_OpenShell.hxx>
-#include <StepShape_OrientedClosedShell.hxx> //:e0
-#include <StepGeom_Surface.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_CompositeCurve.hxx>
-#include <StepGeom_RectangularCompositeSurface.hxx>
-#include <StepGeom_SurfacePatch.hxx>
-#include <StepShape_GeometricSetSelect.hxx>
-#include <StepToGeom_MakeCurve.hxx>
-#include <StepToGeom_MakeCartesianPoint.hxx>
-#include <StepToGeom_MakeSurface.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_BoundedSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_CartesianPoint.hxx>
-
-#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepLib.hxx>
-#include <BRep_Builder.hxx>
-#include <Precision.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopExp_Explorer.hxx>
-
+#include <Geom_BoundedSurface.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
-
-#include <ShapeFix_ShapeTolerance.hxx>
-#include <StepShape_ConnectedEdgeSet.hxx>
-#include <StepShape_EdgeBasedWireframeModel.hxx>
-#include <StepShape_HArray1OfConnectedEdgeSet.hxx>
-#include <StepToTopoDS_TranslateEdge.hxx>
-#include <StepShape_HArray1OfEdge.hxx>
-#include <TopoDS.hxx>
-#include <StepShape_HArray1OfConnectedFaceSet.hxx>
-#include <StepToTopoDS_TranslateFace.hxx>
-#include <StepShape_HArray1OfFace.hxx>
-
-#include <STEPControl_ActorRead.hxx>
-
-#include <Message_ProgressSentry.hxx>
+#include <Geom_Surface.hxx>
+#include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
-#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Message_ProgressSentry.hxx>
+#include <Precision.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <StdFail_NotDone.hxx>
 #include <STEPControl_ActorRead.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CompositeCurve.hxx>
+#include <StepGeom_Curve.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepGeom_RectangularCompositeSurface.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepGeom_SurfacePatch.hxx>
+#include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
+#include <StepShape_ConnectedEdgeSet.hxx>
+#include <StepShape_EdgeBasedWireframeModel.hxx>
+#include <StepShape_FaceBasedSurfaceModel.hxx>
 #include <StepShape_FaceSurface.hxx>
+#include <StepShape_FacetedBrep.hxx>
+#include <StepShape_FacetedBrepAndBrepWithVoids.hxx>
+#include <StepShape_GeometricSet.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
+#include <StepShape_HArray1OfConnectedEdgeSet.hxx>
+#include <StepShape_HArray1OfConnectedFaceSet.hxx>
+#include <StepShape_HArray1OfEdge.hxx>
+#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_OpenShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
+#include <StepShape_Shell.hxx>
+#include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepToGeom_MakeCartesianPoint.hxx>
+#include <StepToGeom_MakeCurve.hxx>
+#include <StepToGeom_MakeSurface.hxx>
+#include <StepToTopoDS_Builder.hxx>
+#include <StepToTopoDS_DataMapOfTRI.hxx>
+#include <StepToTopoDS_NMTool.hxx>
+#include <StepToTopoDS_Tool.hxx>
+#include <StepToTopoDS_TranslateCompositeCurve.hxx>
+#include <StepToTopoDS_TranslateCurveBoundedSurface.hxx>
+#include <StepToTopoDS_TranslateEdge.hxx>
+#include <StepToTopoDS_TranslateFace.hxx>
+#include <StepToTopoDS_TranslateShell.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
 
+#include <stdio.h>
+//#include <StepShape_VertexShell.hxx>
+//:e0
 static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
 {
   //:S4136

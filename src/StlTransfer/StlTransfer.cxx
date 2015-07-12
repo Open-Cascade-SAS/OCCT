@@ -14,32 +14,34 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-#include <StlTransfer.ixx>
+
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <CSLib.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
+#include <Poly_Connect.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TopoDS_Face.hxx>
-#include <Poly_Connect.hxx>
+#include <StlMesh_Mesh.hxx>
+#include <StlTransfer.hxx>
 #include <TColgp_Array1OfDir.hxx>
-#include <Poly_Triangulation.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <TopLoc_Location.hxx>
-#include <Geom_Surface.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
-#include <CSLib.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <CSLib.hxx>
-#include <gp_Dir.hxx>
-#include <gp_XYZ.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
-#include <TopAbs.hxx>
-#include <Precision.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
-//function computes normals for surface
+#include <TopAbs.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
+//function computes normals for surface
 static void Normal(const TopoDS_Face&  aFace,
 		   Poly_Connect&       pc,
 		   TColgp_Array1OfDir& Nor)

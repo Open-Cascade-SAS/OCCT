@@ -14,24 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLib_Interpolate.ixx>
 
-#include <Standard_ConstructionError.hxx>
-#include <PLib.hxx>
 #include <BSplCLib.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomLib_Interpolate.hxx>
 #include <gp_Vec.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : GeomLib_Interpolate
 //purpose  : 
 //=======================================================================
-
 GeomLib_Interpolate::GeomLib_Interpolate
 (const Standard_Integer      Degree,
  const Standard_Integer      NumPoints,

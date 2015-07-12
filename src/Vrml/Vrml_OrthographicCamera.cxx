@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Vrml_OrthographicCamera.ixx>
+
+#include <gp_Vec.hxx>
+#include <Vrml_OrthographicCamera.hxx>
+#include <Vrml_SFRotation.hxx>
 
 Vrml_OrthographicCamera::Vrml_OrthographicCamera():
   myFocalDistance(5),

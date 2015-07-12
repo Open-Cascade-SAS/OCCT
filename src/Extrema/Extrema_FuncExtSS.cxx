@@ -14,52 +14,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Extrema_FuncExtSS.ixx>
-#include <Standard_TypeMismatch.hxx>
-#include <gp_Vec.hxx>
 
+#include <Adaptor3d_Surface.hxx>
+#include <Extrema_FuncExtSS.hxx>
+#include <Extrema_POnSurf.hxx>
+#include <gp_Vec.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <Standard_TypeMismatch.hxx>
 
 /*----------------------------------------------------------------------------
  Si on note Du1s et Dv1s, les derivees en u1 et v1, les 2 fonctions a annuler sont:
  Si on note Du2s et Dv2s, les derivees en u2 et v2, les 2 fonctions a annuler sont:
-
  { F1(u1,v1,u2,v2) = (S1(u1,v1)-S2(u2,v2)).Du1s1(u1,v1) }
  { F2(u1,v1,u2,v2) = (S1(u1,v1)-S2(u2,v2)).Dv1s1(u1,v1) }
  { F3(u1,v1,u2,v2) = (S1(u1,v1)-S2(u2,v2)).Du2s2(u2,v2) }
  { F4(u1,v1,u2,v2) = (S1(u1,v1)-S2(u2,v2)).Dv2s2(u2,v2) }
-
  { du1f1(u1,v1,u2,v2) = Du1s1(u1,v1).Du1s1(u1,v1)+(S1(u1,v1)-S2(u2,v2)).Du1u1s1(u1,v1) 
                       = ||Du1s1(u1,v1)||**2      +(S1(u1,v1)-S2(u2,v2)).Du1u1s1(u1,v1) }
  { dv1f1(u1,v1,u2,v2) = Dv1s1(u1,v1).Du1s1(u1,v1)+(S1(u1,v1)-S2(u2,v2)).Du1v1s1(u1,v1) }
  { du2f1(u1,v1,u2,v2) = -Du2s2(u2,v2).Du1s1(u1,v1) }
  { dv2f1(u1,v1,u2,v2) = -Dv2s2(u2,v2).Du1s1(u1,v1) }
-
  { du1f2(u1,v1,u2,v2) = Du1s1(u1,v1).Dv1s1(u1,v1)+(S1(u1,v1)-S2(u2,v2)).Du1v1s1(u1,v1) }
  { dv1f2(u1,v1,u2,v2) = Dv1s1(u1,v1).Dv1s1(u1,v1)+(S1(u1,v1)-S2(u2,v2)).Dv1v1s1(u1,v1) 
                       = ||Dv1s1(u1,v1)||**2      +(S1(u1,v1)-S2(u2,v2)).Dv1v1s1(u1,v1) }
  { du2f2(u1,v1,u2,v2) = -Du2s2(u2,v2).Dv1s1(u1,v1) }
  { dv2f2(u1,v1,u2,v2) = -Dv2s2(u2,v2).Dv1s1(u1,v1) }
-
  { du1f3(u1,v1,u2,v2) = Du1s1(u1,v1).Du2s2(u2,v2) }
  { dv1f3(u1,v1,u2,v2) = Dv1s1(u1,v1).Du2s2(u2,v2) }
  { du2f3(u1,v1,u2,v2) = -Du2s2(u2,v2).Du2s2(u2,v2)+(S1(u1,v1)-S2(u2,v2)).Du2u2s2(u2,v2) 
                       = -||Du2s2(u2,v2)||**2      +(S1(u1,v1)-S2(u2,v2)).Du2u2s2(u2,v2) }
  { dv2f3(u1,v1,u2,v2) = -Dv2s2(u2,v2).Du2s2(u2,v2)+(S1(u1,v1)-S2(u2,v2)).Dv2u2s2(u2,v2) }
-
  { du1f4(u1,v1,u2,v2) = Du1s1(u1,v1).Dv2s2(u2,v2) }
  { dv1f4(u1,v1,u2,v2) = Dv1s1(u1,v1).Dv2s2(u2,v2) }
  { du2f4(u1,v1,u2,v2) = -Du2s2(u2,v2).Dv2s2(u2,v2)+(S1(u1,v1)-S2(u2,v2)).Du2v2s2(u2,v2) }
  { dv2f4(u1,v1,u2,v2) = -Dv2s2(u2,v2).Dv2s2(u2,v2)+(S1(u1,v1)-S2(u2,v2)).Dv2v2s2(u2,v2) 
                       = -||Dv2s2(u2,v2)||**2      +(S1(u1,v1)-S2(u2,v2)).Dv2v2s2(u2,v2) }
-
 ----------------------------------------------------------------------------*/
-
-
 //=======================================================================
 //function : Extrema_FuncExtSS
 //purpose  : 
 //=======================================================================
-
 Extrema_FuncExtSS::Extrema_FuncExtSS ()
 {
   myS1init = Standard_False;

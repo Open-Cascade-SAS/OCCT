@@ -14,17 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_ShapeExplorer.ixx>
-#include <TopAbs.hxx>
+
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-
+#include <TopAbs.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 //=======================================================================
 //function : TopOpeBRepTool_ShapeExplorer
 //purpose  : 
 //=======================================================================
-
 TopOpeBRepTool_ShapeExplorer::TopOpeBRepTool_ShapeExplorer() : 
    myIndex(0),
    myNbShapes(0)

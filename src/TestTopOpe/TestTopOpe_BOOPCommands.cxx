@@ -14,15 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TestTopOpe.ixx>
 
-#include <TestTopOpe_BOOP.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <Draw.hxx>
 #include <DBRep.hxx>
+#include <Draw.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <TestTopOpe.hxx>
+#include <TestTopOpe_BOOP.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 
 extern void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d);
 #ifdef OCCT_DEBUG

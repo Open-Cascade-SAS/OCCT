@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <math_EigenValuesSearcher.ixx>
+
+#include <math_EigenValuesSearcher.hxx>
+#include <StdFail_NotDone.hxx>
 
 //==========================================================================
 //function : pythag
 //           Computation of sqrt(x*x + y*y).
 //==========================================================================
-
 static inline Standard_Real pythag(const Standard_Real x,
 				   const Standard_Real y)
 {

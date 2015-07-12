@@ -14,25 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <LocOpe.ixx>
 
-#include <TopExp_Explorer.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-#include <Geom2d_Curve.hxx>
-#include <gp_Pnt2d.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
-
-#include <TopTools_MapOfShape.hxx>
-
-#include <TopExp.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
+#include <gp_Pnt2d.hxx>
+#include <LocOpe.hxx>
 #include <Precision.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #define NECHANT 10
 

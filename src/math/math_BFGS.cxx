@@ -16,15 +16,17 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
+
 //#endif
 
-#include <math_BFGS.ixx>
-
+#include <math_BFGS.hxx>
 #include <math_BracketMinimum.hxx>
 #include <math_BrentMinimum.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_Matrix.hxx>
+#include <math_MultipleVarFunctionWithGradient.hxx>
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 #define R 0.61803399
 #define C (1.0-R)

@@ -14,25 +14,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepPrim_GWedge.ixx>
 
-#include <Precision.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Lin.hxx>
-#include <ElSLib.hxx>
-#include <ElCLib.hxx>
-
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <BRepPrim_Builder.hxx>
 #include <BRepPrim_Direction.hxx>
-
+#include <BRepPrim_GWedge.hxx>
+#include <ElCLib.hxx>
+#include <ElSLib.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 #undef Standard_True
 #undef Standard_False

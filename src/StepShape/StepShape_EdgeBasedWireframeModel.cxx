@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepShape_EdgeBasedWireframeModel.ixx>
+#include <Standard_Type.hxx>
+#include <StepShape_EdgeBasedWireframeModel.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 //=======================================================================
 //function : StepShape_EdgeBasedWireframeModel
 //purpose  : 
 //=======================================================================
-
 StepShape_EdgeBasedWireframeModel::StepShape_EdgeBasedWireframeModel ()
 {
 }

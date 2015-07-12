@@ -13,41 +13,38 @@
 
 //abv 06.01.99 fix of misprint
 //:p6 abv 26.02.99: make ConvertToPeriodic() return Null if nothing done
-#include <ShapeCustom_Surface.ixx>
-
-#include <gp_Ax3.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Cylinder.hxx>
 
 #include <ElSLib.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <Geom_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-
+#include <gp_Ax3.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <ShapeAnalysis_Geom.hxx>
 #include <ShapeAnalysis_Surface.hxx>
+#include <ShapeCustom_Surface.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 //=======================================================================
 //function : ShapeCustom_Surface
 //purpose  : 
 //=======================================================================
-
 ShapeCustom_Surface::ShapeCustom_Surface() : myGap (0)
 {
 }

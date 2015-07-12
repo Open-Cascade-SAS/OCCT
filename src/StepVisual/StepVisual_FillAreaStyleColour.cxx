@@ -11,8 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_FillAreaStyleColour.ixx>
 
+#include <Standard_Type.hxx>
+#include <StepVisual_Colour.hxx>
+#include <StepVisual_FillAreaStyleColour.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 StepVisual_FillAreaStyleColour::StepVisual_FillAreaStyleColour ()  {}
 

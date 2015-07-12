@@ -14,44 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepToIGES_BRSolid.ixx>
-#include <BRepToIGES_BRShell.hxx>
-#include <BRepToIGES_BRWire.hxx>
 
 #include <BRep_Tool.hxx>
+#include <BRepToIGES_BREntity.hxx>
+#include <BRepToIGES_BRShell.hxx>
+#include <BRepToIGES_BRSolid.hxx>
+#include <BRepToIGES_BRWire.hxx>
 #include <BRepTools.hxx>
-
 #include <IGESBasic_Group.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
-
 #include <Interface_Macros.hxx>
-
 #include <TColStd_HSequenceOfTransient.hxx>
-
-
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-
 // At first only the geometry is translated (point, curve...)
-
 //=============================================================================
 // BRepToIGES_BRSolid
 //=============================================================================
-
 BRepToIGES_BRSolid::BRepToIGES_BRSolid()
 {
 }

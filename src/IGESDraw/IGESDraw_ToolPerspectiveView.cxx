@@ -16,16 +16,27 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESDraw_ToolPerspectiveView.ixx>
-#include <IGESData_ParamCursor.hxx>
-#include <IGESData_TransfEntity.hxx>
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
+#include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
+#include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESReaderData.hxx>
+#include <IGESData_IGESWriter.hxx>
+#include <IGESData_ParamCursor.hxx>
+#include <IGESData_ParamReader.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESDraw_PerspectiveView.hxx>
+#include <IGESDraw_ToolPerspectiveView.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_CopyTool.hxx>
+#include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-
+#include <Interface_ShareTool.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_DomainError.hxx>
 
 IGESDraw_ToolPerspectiveView::IGESDraw_ToolPerspectiveView ()    {  }
 

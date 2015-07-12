@@ -14,18 +14,17 @@
 
 //JCV 16/10/91
 
-
-#include <Convert_HyperbolaToBSplineCurve.ixx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
+#include <Convert_HyperbolaToBSplineCurve.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Hypr2d.hxx>
 #include <gp_Trsf2d.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 static Standard_Integer TheDegree  = 2;
 static Standard_Integer MaxNbKnots = 2;

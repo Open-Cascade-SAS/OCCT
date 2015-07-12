@@ -14,26 +14,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <QANewBRepNaming_Loader.ixx>
 
-#include <TNaming.hxx>
-#include <TDF_Label.hxx>
-#include <TNaming_Builder.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <BRepBuilderAPI_MakeShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopExp.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepBuilderAPI_MakeShape.hxx>
+#include <QANewBRepNaming_Loader.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDF_Label.hxx>
+#include <TNaming.hxx>
+#include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : LoadGeneratedShapes
@@ -45,7 +46,6 @@
 //           data-structure. The <builder> is used to store the
 //           set of evolutions in the data-framework of TDF.
 //=======================================================================
-
 void QANewBRepNaming_Loader::LoadGeneratedShapes (BRepBuilderAPI_MakeShape& MS, 
 					     const TopoDS_Shape&     ShapeIn,
 					     const TopAbs_ShapeEnum  KindOfShape,

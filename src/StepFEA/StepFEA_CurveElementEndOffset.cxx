@@ -15,13 +15,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <StepFEA_CurveElementEndOffset.ixx>
+#include <Standard_Type.hxx>
+#include <StepFEA_CurveElementEndCoordinateSystem.hxx>
+#include <StepFEA_CurveElementEndOffset.hxx>
 
 //=======================================================================
 //function : StepFEA_CurveElementEndOffset
 //purpose  : 
 //=======================================================================
-
 StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset ()
 {
 }

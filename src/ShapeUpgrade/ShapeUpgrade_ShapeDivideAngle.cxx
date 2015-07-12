@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_ShapeDivideAngle.ixx>
-#include <ShapeUpgrade_SplitSurfaceAngle.hxx>
+
 #include <ShapeUpgrade_FaceDivide.hxx>
+#include <ShapeUpgrade_ShapeDivideAngle.hxx>
+#include <ShapeUpgrade_SplitSurfaceAngle.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivideAngle
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle (const Standard_Real MaxAngle)
 {
   InitTool ( MaxAngle );

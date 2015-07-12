@@ -14,15 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_Lexicon.ixx>
-#include <Units_Token.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
+
 #include <OSD.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Units_Lexicon.hxx>
+#include <Units_Token.hxx>
 
-#include <sys/types.h>
 #include <sys/stat.h>
-
+#include <sys/types.h>
 #ifdef WNT
 # include <stdio.h>
 #else

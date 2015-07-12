@@ -15,7 +15,12 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <RWStepElement_RWCurve3dElementDescriptor.ixx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepElement_RWCurve3dElementDescriptor.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepElement_Curve3dElementDescriptor.hxx>
 #include <StepElement_CurveElementPurposeMember.hxx>
 #include <StepElement_HArray1OfHSequenceOfCurveElementPurposeMember.hxx>
 #include <StepElement_HSequenceOfCurveElementPurposeMember.hxx>
@@ -24,7 +29,6 @@
 //function : RWStepElement_RWCurve3dElementDescriptor
 //purpose  : 
 //=======================================================================
-
 RWStepElement_RWCurve3dElementDescriptor::RWStepElement_RWCurve3dElementDescriptor ()
 {
 }

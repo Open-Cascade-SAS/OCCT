@@ -14,12 +14,13 @@
 
 // pmn -> modified 17/01/1996 : utilisation de Curve() et SetCurve()
 
-#include <Law_Interpol.ixx>
-#include <Precision.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
+#include <Law_Interpol.hxx>
 #include <Law_Interpolate.hxx>
+#include <Precision.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 #ifdef OCCT_DEBUG
 #ifdef DRAW

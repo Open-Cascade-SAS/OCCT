@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRep_WPointInterIterator.ixx>
+
 #include <Standard_ProgramError.hxx>
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_WPointInter.hxx>
+#include <TopOpeBRep_WPointInterIterator.hxx>
 
 //=======================================================================
 //function : WPointIterator
 //purpose  : 
 //=======================================================================
-
 TopOpeBRep_WPointInterIterator::TopOpeBRep_WPointInterIterator() :
 myLineInter(NULL),myWPointIndex(0),myWPointNb(0)
 {

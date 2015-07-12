@@ -13,7 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XSDRAWSTLVRML_DrawableMesh.ixx>
+
+#include <Draw_Display.hxx>
+#include <MeshVS_Mesh.hxx>
+#include <Standard_Type.hxx>
+#include <XSDRAWSTLVRML_DrawableMesh.hxx>
 
 //================================================================
 // Function : DrawOn

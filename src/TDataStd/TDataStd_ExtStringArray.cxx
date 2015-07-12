@@ -13,15 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDataStd_ExtStringArray.ixx>
+
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TDataStd_DeltaOnModificationOfExtStringArray.hxx>
+#include <TDataStd_ExtStringArray.hxx>
+#include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
+#include <TDF_DeltaOnModification.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_RelocationTable.hxx>
 
 //=======================================================================
 //function : GetID
 //purpose  : 
 //=======================================================================
-
 const Standard_GUID& TDataStd_ExtStringArray::GetID() 
 { 
   static Standard_GUID anExtStringArrayID ("2a96b624-ec8b-11d0-bee7-080009dc3333");

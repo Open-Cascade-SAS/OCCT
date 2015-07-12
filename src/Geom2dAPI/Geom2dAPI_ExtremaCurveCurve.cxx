@@ -14,28 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dAPI_ExtremaCurveCurve.ixx>
 
-#include <Geom2dAdaptor_Curve.hxx>
+#include <Extrema_ExtCC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
-
+#include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dAPI_ExtremaCurveCurve.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : Geom2dAPI_ExtremaCurveCurve
 //purpose  : 
 //=======================================================================
-
 //Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve()
 //{
 //}
-
-
 //=======================================================================
 //function : Geom2dAPI_ExtremaCurveCurve
 //purpose  : 
 //=======================================================================
-
 Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve
   (const Handle(Geom2d_Curve)& C1,
    const Handle(Geom2d_Curve)& C2,

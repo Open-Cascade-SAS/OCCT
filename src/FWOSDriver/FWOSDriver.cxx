@@ -14,10 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FWOSDriver.ixx>
-#include <FWOSDriver_DriverFactory.hxx>
 
+#include <FWOSDriver.hxx>
+#include <FWOSDriver_DriverFactory.hxx>
 #include <Plugin_Macro.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Transient.hxx>
 
 PLUGIN(FWOSDriver)
 

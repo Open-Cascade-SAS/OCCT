@@ -11,10 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_SiUnitAndTimeUnit.ixx>
-#include <StepBasic_SiUnit.hxx>
-#include <StepBasic_TimeUnit.hxx>
 
+#include <Standard_Type.hxx>
+#include <StepBasic_DimensionalExponents.hxx>
+#include <StepBasic_SiUnit.hxx>
+#include <StepBasic_SiUnitAndTimeUnit.hxx>
+#include <StepBasic_TimeUnit.hxx>
 
 StepBasic_SiUnitAndTimeUnit::StepBasic_SiUnitAndTimeUnit ()  
 {

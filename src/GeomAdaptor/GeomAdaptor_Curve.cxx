@@ -21,36 +21,45 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 
-#include <GeomAdaptor_Curve.ixx>
 
-#include <GeomAdaptor_HCurve.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Precision.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
+#include <CSLib_Offset.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Ellipse.hxx>
-#include <Geom_Parabola.hxx>
 #include <Geom_Hyperbola.hxx>
-//#include <GeomConvert_BSplineCurveKnotSplitting.hxx>
-
-#include <Standard_OutOfRange.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_NotImplemented.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <CSLib_Offset.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
+//#include <GeomConvert_BSplineCurveKnotSplitting.hxx>
 #define myBspl Handle(Geom_BSplineCurve)::DownCast (myCurve)
 #define PosTol Precision::PConfusion()/2
 

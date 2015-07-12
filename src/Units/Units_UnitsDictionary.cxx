@@ -14,36 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Units_UnitsDictionary.ixx>
-#include <Units.hxx>
 
+#include <OSD.hxx>
 #include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Units.hxx>
+#include <Units_Dimensions.hxx>
+#include <Units_MathSentence.hxx>
+#include <Units_Operators.hxx>
+#include <Units_QuantitiesSequence.hxx>
+#include <Units_Quantity.hxx>
+#include <Units_ShiftedUnit.hxx>
+#include <Units_Token.hxx>
+#include <Units_TokensSequence.hxx>
+#include <Units_Unit.hxx>
+#include <Units_UnitsDictionary.hxx>
+#include <Units_UnitSentence.hxx>
+#include <Units_UnitsLexicon.hxx>
+#include <Units_UnitsSequence.hxx>
 
 #include <stdio.h>
 #include <sys/stat.h>
-
-#include <Units_Token.hxx>
-#include <Units_TokensSequence.hxx>
-#include <Units_UnitsSequence.hxx>
-#include <Units_Unit.hxx>
-#include <Units_ShiftedUnit.hxx>
-#include <Units_Dimensions.hxx>
-#include <Units_QuantitiesSequence.hxx>
-#include <Units_Quantity.hxx>
-#include <Units_MathSentence.hxx>
-#include <Units_UnitSentence.hxx>
-#include <Units_UnitsLexicon.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <Units_Operators.hxx>
-#include <OSD.hxx>
-
 //=======================================================================
 //function : Units_UnitsDictionary
 //purpose  : 
 //=======================================================================
-
 Units_UnitsDictionary::Units_UnitsDictionary()
 { }
 

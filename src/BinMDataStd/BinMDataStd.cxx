@@ -13,33 +13,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinMDataStd.ixx>
-#include <BinMDataStd_IntegerDriver.hxx>
-#include <BinMDataStd_RealDriver.hxx>
-#include <BinMDataStd_IntegerArrayDriver.hxx>
-#include <BinMDataStd_RealArrayDriver.hxx>
-#include <BinMDataStd_NameDriver.hxx>
+
+#include <BinMDataStd.hxx>
+#include <BinMDataStd_AsciiStringDriver.hxx>
+#include <BinMDataStd_BooleanArrayDriver.hxx>
+#include <BinMDataStd_BooleanListDriver.hxx>
+#include <BinMDataStd_ByteArrayDriver.hxx>
 #include <BinMDataStd_CommentDriver.hxx>
+#include <BinMDataStd_DirectoryDriver.hxx>
 #include <BinMDataStd_ExpressionDriver.hxx>
+#include <BinMDataStd_ExtStringArrayDriver.hxx>
+#include <BinMDataStd_ExtStringListDriver.hxx>
+#include <BinMDataStd_IntegerArrayDriver.hxx>
+#include <BinMDataStd_IntegerDriver.hxx>
+#include <BinMDataStd_IntegerListDriver.hxx>
+#include <BinMDataStd_IntPackedMapDriver.hxx>
+#include <BinMDataStd_NamedDataDriver.hxx>
+#include <BinMDataStd_NameDriver.hxx>
+#include <BinMDataStd_NoteBookDriver.hxx>
+#include <BinMDataStd_RealArrayDriver.hxx>
+#include <BinMDataStd_RealDriver.hxx>
+#include <BinMDataStd_RealListDriver.hxx>
+#include <BinMDataStd_ReferenceArrayDriver.hxx>
+#include <BinMDataStd_ReferenceListDriver.hxx>
 #include <BinMDataStd_RelationDriver.hxx>
+#include <BinMDataStd_TickDriver.hxx>
 #include <BinMDataStd_TreeNodeDriver.hxx>
 #include <BinMDataStd_UAttributeDriver.hxx>
 #include <BinMDataStd_VariableDriver.hxx>
-#include <BinMDataStd_DirectoryDriver.hxx>
-#include <BinMDataStd_NoteBookDriver.hxx>
-#include <BinMDataStd_ExtStringArrayDriver.hxx>
-#include <BinMDataStd_TickDriver.hxx>
-#include <BinMDataStd_IntegerListDriver.hxx>
-#include <BinMDataStd_RealListDriver.hxx>
-#include <BinMDataStd_ExtStringListDriver.hxx>
-#include <BinMDataStd_BooleanListDriver.hxx>
-#include <BinMDataStd_ReferenceListDriver.hxx>
-#include <BinMDataStd_BooleanArrayDriver.hxx>
-#include <BinMDataStd_ReferenceArrayDriver.hxx>
-#include <BinMDataStd_ByteArrayDriver.hxx>
-#include <BinMDataStd_NamedDataDriver.hxx>
-#include <BinMDataStd_AsciiStringDriver.hxx>
-#include <BinMDataStd_IntPackedMapDriver.hxx>
+#include <BinMDF_ADriverTable.hxx>
+#include <CDM_MessageDriver.hxx>
 
 static Standard_Integer myDocumentVersion = -1;
 //=======================================================================

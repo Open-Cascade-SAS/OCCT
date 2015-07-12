@@ -14,4 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomAdaptor_HSurface.ixx>
+
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>

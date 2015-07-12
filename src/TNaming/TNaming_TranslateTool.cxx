@@ -14,52 +14,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TNaming_TranslateTool.ixx>
+
 #include <BRep_Builder.hxx>
-#include <TopoDS.hxx>
-#include <BRep_TVertex.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_ListOfPointRepresentation.hxx>
-#include <BRep_PointRepresentation.hxx>
-#include <BRep_PointOnCurve.hxx>
-#include <BRep_PointOnCurveOnSurface.hxx>
-#include <TNaming_CopyShape.hxx>
-#include <BRep_TFace.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_PointOnSurface.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_Curve3D.hxx>
+#include <BRep_CurveOn2Surfaces.hxx>
+#include <BRep_CurveOnClosedSurface.hxx>
+#include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_Curve3D.hxx>
-#include <BRep_CurveOnSurface.hxx>
-#include <BRep_CurveOnClosedSurface.hxx>
-#include <BRep_CurveOn2Surfaces.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
+#include <BRep_ListOfCurveRepresentation.hxx>
+#include <BRep_ListOfPointRepresentation.hxx>
+#include <BRep_PointOnCurve.hxx>
+#include <BRep_PointOnCurveOnSurface.hxx>
+#include <BRep_PointOnSurface.hxx>
+#include <BRep_PointRepresentation.hxx>
 #include <BRep_Polygon3D.hxx>
 #include <BRep_PolygonOnClosedSurface.hxx>
-#include <BRep_PolygonOnSurface.hxx>
 #include <BRep_PolygonOnClosedTriangulation.hxx>
+#include <BRep_PolygonOnSurface.hxx>
 #include <BRep_PolygonOnTriangulation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_TFace.hxx>
+#include <BRep_TVertex.hxx>
 #include <Standard_NullObject.hxx>
-
+#include <Standard_Type.hxx>
+#include <Standard_TypeMismatch.hxx>
+#include <TNaming_CopyShape.hxx>
+#include <TNaming_TranslateTool.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : TNaming_TranslateTool
-
 //purpose  : 
 //=======================================================================
-
 //TNaming_TranslateTool::TNaming_TranslateTool
 //(const MgtBRep_TriangleMode aTriMode) : 
 //myTriangleMode(aTriMode)
 //{
 //}
-
 //=======================================================================
 //function : Add
 //purpose  : Adds S2 in S1
 //=======================================================================
-
 void TNaming_TranslateTool::Add(TopoDS_Shape& S1,
 				const TopoDS_Shape& S2) const 
 {

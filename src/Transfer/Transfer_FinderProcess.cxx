@@ -11,12 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Transfer_FinderProcess.ixx>
-#include <Interface_MSG.hxx>
-#include <Transfer_Binder.hxx>
-#include <Interface_Check.hxx>
-#include <Transfer_TransientMapper.hxx>
 
+#include <Interface_Check.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Interface_MSG.hxx>
+#include <Message_Messenger.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_Finder.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Transfer_TransientMapper.hxx>
 
 Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)
     : Transfer_ProcessForFinder (nb)    {  }

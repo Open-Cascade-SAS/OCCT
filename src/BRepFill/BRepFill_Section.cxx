@@ -14,12 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_Section.ixx>
 
-#include <TopoDS.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepFill_Section.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 
 BRepFill_Section::BRepFill_Section() :islaw(0), contact(0), correction(0)
 {

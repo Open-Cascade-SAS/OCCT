@@ -11,17 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntTools_TopolTool.ixx>
 
-#include <Standard_NotImplemented.hxx>
-#include <Precision.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <Geom_BSplineSurface.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <ElSLib.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cone.hxx>
-#include <ElSLib.hxx>
-
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <IntTools_TopolTool.hxx>
+#include <Precision.hxx>
+#include <Standard_DomainError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 static void Analyse(const TColgp_Array2OfPnt& array2,

@@ -11,21 +11,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_ProgressIndicator.ixx>
-#include <Draw_Interpretor.hxx>
+
 #include <Draw.hxx>
-#include <Message_ProgressScale.hxx>
-#include <Message_Messenger.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_ProgressScale.hxx>
+#include <Standard_Type.hxx>
 
-#include <time.h>
 #include <stdio.h>
-
+#include <time.h>
 //=======================================================================
 //function : Draw_ProgressIndicator
 //purpose  : 
 //=======================================================================
-
 Draw_ProgressIndicator::Draw_ProgressIndicator(const Draw_Interpretor &di,
                                                    const Standard_Integer updateTime) :
        myTextMode ( DefaultTextMode() ),

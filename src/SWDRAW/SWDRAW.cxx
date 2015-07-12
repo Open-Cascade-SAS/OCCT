@@ -11,31 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SWDRAW.ixx>
 
-#include <Draw.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
 #include <DBRep.hxx>
-
-#include <SWDRAW_ShapeTool.hxx>
+#include <Draw.hxx>
+#include <Draw_ProgressIndicator.hxx>
+#include <Draw_Window.hxx>
+#include <gp_Trsf.hxx>
+#include <ShapeProcess_OperLibrary.hxx>
+#include <SWDRAW.hxx>
 #include <SWDRAW_ShapeAnalysis.hxx>
 #include <SWDRAW_ShapeCustom.hxx>
 #include <SWDRAW_ShapeExtend.hxx>
 #include <SWDRAW_ShapeFix.hxx>
-#include <SWDRAW_ShapeUpgrade.hxx>
 #include <SWDRAW_ShapeProcess.hxx>
 #include <SWDRAW_ShapeProcessAPI.hxx>
+#include <SWDRAW_ShapeTool.hxx>
+#include <SWDRAW_ShapeUpgrade.hxx>
 
 //#72 rln 09.03.99 Packaging of SWDRAW
-
-#include <ShapeProcess_OperLibrary.hxx>
-#include <BRepTools.hxx>
-#include <Draw_Window.hxx>
-#include <BRep_Builder.hxx>
-#include <gp_Trsf.hxx>
-
 //  for NSPApply -- CKY 12 JUL 2001
-#include <Draw_ProgressIndicator.hxx>
-
 static int dejadraw = 0;
 
 //#72 rln 09.03.99 Packaging of SWDRAW

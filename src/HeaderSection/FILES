@@ -1,0 +1,12 @@
+HeaderSection.cxx
+HeaderSection.hxx
+HeaderSection_FileDescription.cxx
+HeaderSection_FileDescription.hxx
+HeaderSection_FileName.cxx
+HeaderSection_FileName.hxx
+HeaderSection_FileSchema.cxx
+HeaderSection_FileSchema.hxx
+HeaderSection_HeaderRecognizer.cxx
+HeaderSection_HeaderRecognizer.hxx
+HeaderSection_Protocol.cxx
+HeaderSection_Protocol.hxx

@@ -12,23 +12,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2dGcc_CurveToolGeo.ixx>
-
-#include <Standard_Failure.hxx>
-#include <gp.hxx>
-#include <Geom2d_Line.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Extrema_POnCurv2d.hxx>
-#include <gp_Vec.hxx>
-
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 
 #include <Adaptor3d_OffsetCurve.hxx>
+#include <Extrema_POnCurv2d.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2dGcc_CurveToolGeo.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <gp.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+#include <Standard_Failure.hxx>
 
 GeomAbs_CurveType Geom2dGcc_CurveToolGeo::
 TheType(const Adaptor3d_OffsetCurve& ) {

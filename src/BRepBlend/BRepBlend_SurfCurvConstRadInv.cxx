@@ -14,13 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepBlend_SurfCurvConstRadInv.ixx>
+
+#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
+#include <BRepBlend_SurfCurvConstRadInv.hxx>
+#include <math_Matrix.hxx>
 
 //=======================================================================
 //function : BRepBlend_SurfCurvConstRadInv
 //purpose  : 
 //=======================================================================
-
 BRepBlend_SurfCurvConstRadInv::BRepBlend_SurfCurvConstRadInv
 (const Handle(Adaptor3d_HSurface)& S,
  const Handle(Adaptor3d_HCurve)& C,

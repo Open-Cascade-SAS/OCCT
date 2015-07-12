@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_Coons.ixx>
 
 #include <BSplCLib.hxx>
+#include <GeomFill_Coons.hxx>
 #include <PLib.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray2OfReal.hxx>
@@ -25,7 +25,6 @@
 //function : GeomFill_Coons
 //purpose  : 
 //=======================================================================
-
 GeomFill_Coons::GeomFill_Coons()
 {
 }

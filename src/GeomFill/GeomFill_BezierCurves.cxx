@@ -14,23 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomFill_BezierCurves.ixx>
 
-#include <GeomFill_Filling.hxx>
-#include <GeomFill_Stretch.hxx>
-#include <GeomFill_Coons.hxx>
-#include <GeomFill_Curved.hxx>
-
-#include <Precision.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <GeomFill_BezierCurves.hxx>
+#include <GeomFill_Coons.hxx>
+#include <GeomFill_Curved.hxx>
+#include <GeomFill_Filling.hxx>
+#include <GeomFill_Stretch.hxx>
+#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
-
+#include <TColStd_Array2OfReal.hxx>
 
 //=======================================================================
 //function : SetSameWeights
@@ -44,7 +42,6 @@
 //              the geometry of the curve.
 //              Only the length of the derivatives are changed.
 //=======================================================================
-
 void SetSameWeights(TColStd_Array1OfReal& W1, 
 		    TColStd_Array1OfReal& W2, 
 		    TColStd_Array1OfReal& W3, 

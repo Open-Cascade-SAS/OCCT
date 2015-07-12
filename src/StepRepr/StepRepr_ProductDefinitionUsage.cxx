@@ -15,13 +15,13 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <StepRepr_ProductDefinitionUsage.ixx>
+#include <Standard_Type.hxx>
+#include <StepRepr_ProductDefinitionUsage.hxx>
 
 //=======================================================================
 //function : StepRepr_ProductDefinitionUsage
 //purpose  : 
 //=======================================================================
-
 StepRepr_ProductDefinitionUsage::StepRepr_ProductDefinitionUsage ()
 {
 }

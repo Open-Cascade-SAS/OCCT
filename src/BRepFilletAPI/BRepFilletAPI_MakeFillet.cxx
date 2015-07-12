@@ -14,22 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Precision.hxx>
-#include <BRepFilletAPI_MakeFillet.ixx>
-#include <TopExp_Explorer.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <ChFiDS_Spine.hxx>
+
+#include <BRepFilletAPI_MakeFillet.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
+#include <ChFiDS_Spine.hxx>
+#include <Geom_Surface.hxx>
+#include <Law_Function.hxx>
+#include <Law_Interpol.hxx>
 #include <Law_Linear.hxx>
 #include <Law_S.hxx>
-#include <Law_Interpol.hxx>
+#include <Precision.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <StdFail_NotDone.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepBuild_HBuilder.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : BRepFilletAPI_MakeFillet
 //purpose  : 
 //=======================================================================
-
 BRepFilletAPI_MakeFillet::BRepFilletAPI_MakeFillet(const TopoDS_Shape& S,
 				       const ChFi3d_FilletShape FShape):
    myBuilder(S,FShape)

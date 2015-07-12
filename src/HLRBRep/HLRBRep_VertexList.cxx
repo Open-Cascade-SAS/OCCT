@@ -17,17 +17,19 @@
 #ifndef No_Exception
 #define No_Exception
 #endif
-#include <HLRBRep_VertexList.ixx>
 
+
+#include <HLRAlgo_Intersection.hxx>
+#include <HLRBRep_EdgeInterferenceTool.hxx>
+#include <HLRBRep_VertexList.hxx>
+#include <Standard_DomainError.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : HLRBRep_VertexList
 //purpose  : 
 //=======================================================================
-
 HLRBRep_VertexList::
 HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool& T, 
 		   const HLRAlgo_ListIteratorOfInterferenceList& I) :

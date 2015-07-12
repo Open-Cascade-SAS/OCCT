@@ -12,29 +12,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPTest.ixx>
 
-#include <stdio.h>
-#include <string.h>
-
-#include <DBRep.hxx>
-#include <Draw.hxx>
-
-#include <TopoDS_Shape.hxx>
-
-#include <TopTools_ListOfShape.hxx>
-
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPTest_Objects.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPTest.hxx>
+#include <BOPTest_Objects.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_BuilderAlgo.hxx>
 #include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ListOfShape.hxx>
 
+#include <stdio.h>
+#include <string.h>
 static 
   void ConvertList(const BOPCol_ListOfShape& aLSB,
                    TopTools_ListOfShape& aLS);

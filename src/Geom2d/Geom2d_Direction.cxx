@@ -14,9 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom2d_Direction.ixx>
+
+#include <Geom2d_Direction.hxx>
+#include <Geom2d_Geometry.hxx>
+#include <Geom2d_Vector.hxx>
 #include <gp.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Trsf2d.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Type.hxx>
 
 typedef Geom2d_Direction         Direction;
 typedef gp_Ax2d   Ax2d;

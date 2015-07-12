@@ -14,23 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeUpgrade_SplitSurfaceAngle.ixx>
-#include <Geom_SurfaceOfRevolution.hxx>
+
 #include <Geom_ConicalSurface.hxx>
-#include <Geom_ToroidalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <ShapeExtend.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <Precision.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeUpgrade_SplitSurfaceAngle.hxx>
+#include <Standard_Type.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_SplitSurfaceAngle
 //purpose  : 
 //=======================================================================
-
 ShapeUpgrade_SplitSurfaceAngle::ShapeUpgrade_SplitSurfaceAngle (const Standard_Real MaxAngle)
 {
   myMaxAngle = MaxAngle;

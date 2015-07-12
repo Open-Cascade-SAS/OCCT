@@ -16,13 +16,14 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <StepAP203_CcDesignSecurityClassification.ixx>
+#include <Standard_Type.hxx>
+#include <StepAP203_CcDesignSecurityClassification.hxx>
+#include <StepBasic_SecurityClassification.hxx>
 
 //=======================================================================
 //function : StepAP203_CcDesignSecurityClassification
 //purpose  : 
 //=======================================================================
-
 StepAP203_CcDesignSecurityClassification::StepAP203_CcDesignSecurityClassification ()
 {
 }

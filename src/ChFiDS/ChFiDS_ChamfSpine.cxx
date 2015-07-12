@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ChFiDS_ChamfSpine.ixx>
+
+#include <ChFiDS_ChamfSpine.hxx>
+#include <Standard_Type.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 
 //=======================================================================
 //function : ChFiDS_ChamfSpine
 //purpose  : 
 //=======================================================================
-
 ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(){}
 
 ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol):

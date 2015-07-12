@@ -12,8 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IntAna2d_Conic.ixx>
 
+#include <gp_Ax2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_XY.hxx>
+#include <IntAna2d_Conic.hxx>
 
 IntAna2d_Conic::IntAna2d_Conic (const gp_Lin2d& L) {
 

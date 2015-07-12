@@ -14,41 +14,38 @@
 //:k8 abv 06.01.99: TR10: writing unique names for NAUOs
 // :j4 16.03.99 gka S4134
 // abv 18.11.99 renamed from StepPDR_MakeItem
-#include <STEPConstruct_Assembly.ixx>
 
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <StepBasic_ApplicationContext.hxx>
+#include <StepBasic_DesignContext.hxx>
+#include <StepBasic_HArray1OfProductContext.hxx>
+#include <StepBasic_MechanicalContext.hxx>
+#include <StepBasic_Product.hxx>
+#include <StepBasic_ProductDefinition.hxx>
+#include <StepBasic_ProductDefinitionFormationWithSpecifiedSource.hxx>
+#include <STEPConstruct_Assembly.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepRepr_CharacterizedDefinition.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
+#include <StepRepr_ProductDefinitionShape.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
+#include <StepRepr_Transformation.hxx>
+#include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepShape_ShapeDefinitionRepresentation.hxx>
+#include <StepShape_ShapeRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //  ProductDefinition (pour Relationship)
-#include <StepBasic_ProductDefinition.hxx>
-#include <StepBasic_DesignContext.hxx>
-#include <StepBasic_ProductDefinitionFormationWithSpecifiedSource.hxx>
-
-#include <StepBasic_Product.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
-#include <StepBasic_MechanicalContext.hxx>
-#include <StepBasic_ApplicationContext.hxx>
-
 //  ContextDependentShapeRepresentation qui contient la Relationship
-#include <StepRepr_NextAssemblyUsageOccurrence.hxx>
-#include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepRepr_CharacterizedDefinition.hxx>
-#include <StepShape_ContextDependentShapeRepresentation.hxx>
-
 //  Relationship
-#include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepShape_ShapeRepresentation.hxx>
-
-#include <StepRepr_ItemDefinedTransformation.hxx>
-#include <StepRepr_Transformation.hxx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
-
 //=======================================================================
 //function : STEPConstruct_Assembly
 //purpose  : 
 //=======================================================================
-
 STEPConstruct_Assembly::STEPConstruct_Assembly ()
 {  
 }

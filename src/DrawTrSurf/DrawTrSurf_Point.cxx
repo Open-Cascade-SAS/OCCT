@@ -14,14 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Point.ixx>
+
+#include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
+#include <DrawTrSurf_Point.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Standard_Stream.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : DrawTrSurf_Point
 //purpose  : 
 //=======================================================================
-
 DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt& P, 
 				   const Draw_MarkerShape Shape,
 				   const Draw_Color& Col) :

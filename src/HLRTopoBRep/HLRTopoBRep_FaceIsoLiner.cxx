@@ -14,31 +14,36 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRTopoBRep_FaceIsoLiner.ixx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTools.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dHatch_Hatcher.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <gp_Pnt.hxx>
+#include <HatchGen_Domain.hxx>
+#include <HatchGen_ErrorStatus.hxx>
+#include <HatchGen_PointOnElement.hxx>
+#include <HatchGen_PointOnHatching.hxx>
+#include <HLRTopoBRep_Data.hxx>
+#include <HLRTopoBRep_FaceIsoLiner.hxx>
+#include <Precision.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-//#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepTools.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dHatch_Hatcher.hxx>
-#include <Geom2dHatch_Intersector.hxx>
-#include <HatchGen_ErrorStatus.hxx>
-#include <HatchGen_Domain.hxx>
-#include <HatchGen_PointOnHatching.hxx>
-#include <HatchGen_PointOnElement.hxx>
-#include <Precision.hxx>
 
+//#include <BRepAdaptor_Curve2d.hxx>
 const Standard_Real IntersectorConfusion = 1.e-10;
 const Standard_Real IntersectorTangency  = 1.e-10;
 const Standard_Real HatcherConfusion2d   = 1.e-8;

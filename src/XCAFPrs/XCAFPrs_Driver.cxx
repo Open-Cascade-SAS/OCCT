@@ -13,18 +13,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFPrs_Driver.ixx>
-#include <XCAFPrs_AISObject.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
 
+#include <AIS_InteractiveObject.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Type.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFPrs_AISObject.hxx>
+#include <XCAFPrs_Driver.hxx>
 
 //=======================================================================
 //function : Update
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean XCAFPrs_Driver::Update (const TDF_Label& L,
 					 Handle(AIS_InteractiveObject)& ais)
 

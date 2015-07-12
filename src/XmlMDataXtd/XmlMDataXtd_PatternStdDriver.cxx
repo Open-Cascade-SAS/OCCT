@@ -13,12 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlMDataXtd_PatternStdDriver.ixx>
 
-#include <TDataStd_Real.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
+#include <TDataStd_Real.hxx>
 #include <TDataXtd_PatternStd.hxx>
+#include <TDF_Attribute.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <XmlMDataXtd_PatternStdDriver.hxx>
+#include <XmlObjMgt_Persistent.hxx>
 
 IMPLEMENT_DOMSTRING (SignatureString,           "signature")
 IMPLEMENT_DOMSTRING (Axis1RevString,            "axis1reversed")

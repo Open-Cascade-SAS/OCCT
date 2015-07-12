@@ -15,16 +15,20 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <RWStepAP214_RWAppliedGroupAssignment.ixx>
-#include <StepAP214_HArray1OfGroupItem.hxx>
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include <RWStepAP214_RWAppliedGroupAssignment.hxx>
+#include <StepAP214_AppliedGroupAssignment.hxx>
 #include <StepAP214_GroupItem.hxx>
+#include <StepAP214_HArray1OfGroupItem.hxx>
 #include <StepBasic_Group.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
 
 //=======================================================================
 //function : RWStepAP214_RWAppliedGroupAssignment
 //purpose  : 
 //=======================================================================
-
 RWStepAP214_RWAppliedGroupAssignment::RWStepAP214_RWAppliedGroupAssignment ()
 {
 }

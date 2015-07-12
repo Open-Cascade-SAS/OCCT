@@ -14,11 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Prs3d_Text.ixx>
+
+#include <gp_Pnt.hxx>
+#include <Graphic3d_Group.hxx>
 #include <Graphic3d_Vertex.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Graphic3d_Group.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 void Prs3d_Text::Draw (
 		       const Handle(Prs3d_Presentation)& aPresentation,

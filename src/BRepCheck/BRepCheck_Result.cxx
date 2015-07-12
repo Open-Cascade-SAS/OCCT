@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepCheck_Result.ixx>
-#include <BRepCheck.hxx>
 
+#include <BRepCheck.hxx>
+#include <BRepCheck_Result.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : BRepCheck_Result
 //purpose  : 
 //=======================================================================
-
 BRepCheck_Result::BRepCheck_Result() :
    myMin(Standard_False),myBlind(Standard_False)
 {

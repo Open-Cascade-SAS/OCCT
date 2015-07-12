@@ -13,38 +13,41 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TDF_Label.hxx>
-#include <IGESCAFControl_Reader.ixx>
-#include <TopoDS_Shape.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XSControl_TransferReader.hxx>
-#include <XCAFDoc_ColorTool.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <Transfer_Binder.hxx>
-#include <TransferBRep.hxx>
-#include <Quantity_Color.hxx>
+
+#include <BRep_Builder.hxx>
+#include <IGESBasic_SubfigureDef.hxx>
 #include <IGESCAFControl.hxx>
+#include <IGESCAFControl_Reader.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
 #include <IGESGraph_Color.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_MapOfShape.hxx>
+#include <Quantity_Color.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDataStd_Name.hxx>
-#include <XCAFDoc_LayerTool.hxx>
-#include <IGESData_LevelListEntity.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <XCAFDoc_ShapeMapTool.hxx>
-#include <IGESBasic_SubfigureDef.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_Label.hxx>
+#include <TDocStd_Document.hxx>
 #include <TopoDS_Compound.hxx>
-#include <BRep_Builder.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <TransferBRep.hxx>
+#include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_ShapeMapTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_WorkSession.hxx>
 
 //=======================================================================
 //function : IGESCAFControl_Reader
 //purpose  : 
 //=======================================================================
-
 IGESCAFControl_Reader::IGESCAFControl_Reader () :
        myColorMode( Standard_True ),
        myNameMode ( Standard_True ),

@@ -14,18 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepToGeom_MakeParabola2d.ixx>
-#include <StepGeom_Parabola.hxx>
-#include <StepGeom_Axis2Placement2d.hxx>
+
 #include <Geom2d_AxisPlacement.hxx>
-#include <StepToGeom_MakeAxisPlacement.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax22d.hxx>
+#include <StepGeom_Axis2Placement2d.hxx>
+#include <StepGeom_Parabola.hxx>
+#include <StepToGeom_MakeAxisPlacement.hxx>
+#include <StepToGeom_MakeParabola2d.hxx>
 
 //=============================================================================
 // Creation d' un Parabola de Geom2d a partir d' un Parabola de Step
 //=============================================================================
-
 Standard_Boolean StepToGeom_MakeParabola2d::Convert
     (const Handle(StepGeom_Parabola)& SC,
      Handle(Geom2d_Parabola)& CC)

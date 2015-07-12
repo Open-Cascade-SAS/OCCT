@@ -14,14 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeomLProp.ixx>
-#include <Precision.hxx>
-#include <Geom_TrimmedCurve.hxx>
+
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomLProp.hxx>
 #include <GeomLProp_CLProps.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
-#include <GeomAbs_Shape.hxx>
+#include <Precision.hxx>
 
 Standard_Integer GeomAbsToInteger(const GeomAbs_Shape  gcont) 
 {

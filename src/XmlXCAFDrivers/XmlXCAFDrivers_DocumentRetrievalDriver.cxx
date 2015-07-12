@@ -13,10 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XmlXCAFDrivers_DocumentRetrievalDriver.ixx>
 
+#include <CDM_MessageDriver.hxx>
+#include <Standard_Type.hxx>
 #include <XmlDrivers.hxx>
+#include <XmlMDF_ADriverTable.hxx>
 #include <XmlMXCAFDoc.hxx>
+#include <XmlXCAFDrivers_DocumentRetrievalDriver.hxx>
 
 //=======================================================================
 //function : XmlXCAFDrivers_DocumentRetrievalDriver

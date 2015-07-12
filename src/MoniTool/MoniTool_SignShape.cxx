@@ -11,10 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MoniTool_SignShape.ixx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_HShape.hxx>
 
+#include <MoniTool_SignShape.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopoDS_HShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 MoniTool_SignShape::MoniTool_SignShape ()    {  }
 

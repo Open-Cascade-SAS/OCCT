@@ -14,19 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepLProp.ixx>
-#include <Precision.hxx>
+
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepLProp.hxx>
 #include <BRepLProp_CLProps.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
-#include <TopoDS_Edge.hxx>
+#include <Precision.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopoDS_Edge.hxx>
 
 //=======================================================================
 //function : Continuity
 //purpose  : 
 //=======================================================================
-
 GeomAbs_Shape BRepLProp::Continuity(const BRepAdaptor_Curve& C1, 
 				    const BRepAdaptor_Curve& C2, 
 				    const Standard_Real u1, 

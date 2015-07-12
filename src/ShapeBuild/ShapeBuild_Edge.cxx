@@ -14,50 +14,53 @@
 //#4  szv          S4163: optimizing
 //    pdn 20.04.99 S4181  Moving algorithm for transforming pcurves from IGES processor
 //    abv 05.05.99 S4137: adding methods for copying ranges, reassigning pcurves etc.
-#include <ShapeBuild_Edge.ixx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_GCurve.hxx>
-#include <BRepLib.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_GTrsf2d.hxx>
-#include <gp_Pln.hxx>
-#include <ElCLib.hxx>
-#include <Precision.hxx>
-
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Conic.hxx>
-#include <Geom2dConvert.hxx>
-#include <Geom2dConvert_ApproxCurve.hxx>
-#include <GeomAPI.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <BRep_Curve3D.hxx>
 #include <BRep_CurveOnSurface.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <TopTools_SequenceOfShape.hxx>
+#include <BRep_GCurve.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepLib.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dConvert.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAPI.hxx>
+#include <gp_GTrsf2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf2d.hxx>
+#include <Precision.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+#include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
 //=======================================================================
 //function : CopyReplaceVertices
 //purpose  : 
 //=======================================================================
-
 TopoDS_Edge ShapeBuild_Edge::CopyReplaceVertices (const TopoDS_Edge& edge,
   const TopoDS_Vertex& V1,
   const TopoDS_Vertex& V2) const

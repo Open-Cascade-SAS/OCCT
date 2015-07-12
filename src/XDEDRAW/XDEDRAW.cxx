@@ -13,89 +13,79 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XDEDRAW.ixx>
-#include <stdio.h>
 
-#include <TCollection_ExtendedString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfExtendedString.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <Quantity_Color.hxx>
-
-#include <TopoDS_Shape.hxx>
-
-#include <Draw.hxx>
-#include <DBRep.hxx>
-#include <V3d_Viewer.hxx>
-#include <V3d_View.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
-
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Trihedron.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <DBRep.hxx>
 #include <DDF_Browser.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
-
+#include <Draw.hxx>
+#include <Draw_PluginMacro.hxx>
+#include <Geom_Axis2Placement.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Quantity_Color.hxx>
 #include <STEPCAFControl_Controller.hxx>
-
-#include <TDF_Tool.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HSequenceOfExtendedString.hxx>
+#include <TDataStd_AsciiString.hxx>
+#include <TDataStd_ByteArray.hxx>
+#include <TDataStd_Comment.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDataStd_IntegerArray.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_Real.hxx>
+#include <TDataStd_RealArray.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataStd_UAttribute.hxx>
+#include <TDF_AttributeIterator.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_LabelSequence.hxx>
-#include <TDF_AttributeIterator.hxx>
 #include <TDF_Reference.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
-#include <TDataStd_UAttribute.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataStd_Comment.hxx>
-#include <TDataStd_AsciiString.hxx>
+#include <TDocStd_Owner.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TDataStd_IntegerArray.hxx>
-#include <TDataStd_RealArray.hxx>
-#include <TDataStd_ByteArray.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TPrsStd_AISPresentation.hxx>
-#include <TPrsStd_NamedShapeDriver.hxx>
 #include <TPrsStd_AISViewer.hxx>
-
+#include <TPrsStd_NamedShapeDriver.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <ViewerTest.hxx>
+#include <XCAFApp_Application.hxx>
 #include <XCAFDoc.hxx>
-#include <XCAFDoc_Color.hxx>
-#include <XCAFDoc_Volume.hxx>
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_Color.hxx>
 #include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_DimTol.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_LayerTool.hxx>
-#include <XCAFDoc_DimTol.hxx>
 #include <XCAFDoc_Material.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_Volume.hxx>
+#include <XCAFPrs.hxx>
 #include <XCAFPrs_Driver.hxx>
-#include <XCAFApp_Application.hxx>
-
-#include <XDEDRAW_Shapes.hxx>
+#include <XDEDRAW.hxx>
 #include <XDEDRAW_Colors.hxx>
+#include <XDEDRAW_Common.hxx>
 #include <XDEDRAW_Layers.hxx>
 #include <XDEDRAW_Props.hxx>
-#include <XDEDRAW_Common.hxx>
+#include <XDEDRAW_Shapes.hxx>
+#include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
-#include <XSDRAW.hxx>
-#include <XCAFPrs.hxx>
-#include <ViewerTest.hxx>
-#include <Draw_PluginMacro.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-
-#include <AIS_InteractiveObject.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <TDocStd_Owner.hxx>
-#include <Geom_Axis2Placement.hxx>
-#include <AIS_Trihedron.hxx>
-
+#include <stdio.h>
 #define ZVIEW_SIZE 1000000.0
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT

@@ -11,16 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepGeom_RWRectangularCompositeSurface.ixx>
-#include <StepGeom_HArray2OfSurfacePatch.hxx>
-#include <StepGeom_SurfacePatch.hxx>
 
-
+#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-
-
+#include <RWStepGeom_RWRectangularCompositeSurface.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <StepGeom_HArray2OfSurfacePatch.hxx>
 #include <StepGeom_RectangularCompositeSurface.hxx>
-
+#include <StepGeom_SurfacePatch.hxx>
 
 RWStepGeom_RWRectangularCompositeSurface::RWStepGeom_RWRectangularCompositeSurface () {}
 

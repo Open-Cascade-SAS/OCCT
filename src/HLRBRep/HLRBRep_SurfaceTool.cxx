@@ -13,8 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <HLRBRep_SurfaceTool.ixx>
+
+#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <HLRBRep_SurfaceTool.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 Standard_Integer  HLRBRep_SurfaceTool::NbSamplesU(const Standard_Address S) { 
   Standard_Integer nbs;

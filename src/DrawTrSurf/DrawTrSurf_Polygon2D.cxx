@@ -14,16 +14,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <DrawTrSurf_Polygon2D.ixx>
-#include <Poly.hxx>
+
 #include <Draw_Color.hxx>
+#include <Draw_Display.hxx>
+#include <Draw_Drawable3D.hxx>
 #include <Draw_MarkerShape.hxx>
+#include <DrawTrSurf_Polygon2D.hxx>
+#include <Poly.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : DrawTrSurf_Polygon2D
 //purpose  : 
 //=======================================================================
-
 DrawTrSurf_Polygon2D::DrawTrSurf_Polygon2D(const Handle(Poly_Polygon2D)& P):
    myPolygon2D(P),
    myNodes(Standard_False)

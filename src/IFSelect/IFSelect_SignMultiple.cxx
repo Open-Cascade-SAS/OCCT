@@ -11,10 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IFSelect_SignMultiple.ixx>
-#include <TCollection_AsciiString.hxx>
-#include <IFSelect_Signature.hxx>
 
+#include <IFSelect_Signature.hxx>
+#include <IFSelect_SignMultiple.hxx>
+#include <Interface_InterfaceModel.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static TCollection_AsciiString theval;    // temporaire pour construire Value
 

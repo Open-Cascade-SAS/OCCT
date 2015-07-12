@@ -11,69 +11,62 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ShapeAnalysis_CheckSmallFace.ixx>
-#include <Standard_ErrorHandler.hxx>  
-#include <TopTools_ListOfShape.hxx>
-#include <TColStd_ListOfReal.hxx>
-#include <ShapeExtend.hxx>
-#include <gp_Pnt.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
-#include <BRep_Tool.hxx>
 
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-
-#include <ShapeAnalysis_Curve.hxx>
-//#include <GeomLProp_SLProps.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom_ElementarySurface.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Vec.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TopTools_Array1OfShape.hxx>
-
-#include <TColgp_Array2OfPnt.hxx>
-
-#include <TColgp_SequenceOfXYZ.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
-#include <Precision.hxx>
-#include <TopoDS_Wire.hxx>
-//#include <ShapeFix_Wire.hxx>
-#include <Geom_Line.hxx>
-#include <TopExp.hxx>
-#include <ElCLib.hxx>
-#include <TopoDS_Builder.hxx>
-#include <TopoDS_Compound.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Geom2d_Curve.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
-#include <GeomLib.hxx>
-
+#include <BRepTools.hxx>
+#include <ElCLib.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_ElementarySurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <ShapeAnalysis_WireOrder.hxx>
-#include <ShapeExtend_WireData.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomLib.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Precision.hxx>
+#include <ShapeAnalysis_CheckSmallFace.hxx>
+#include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Wire.hxx>
+#include <ShapeAnalysis_WireOrder.hxx>
+#include <ShapeExtend.hxx>
+#include <ShapeExtend_WireData.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <TColStd_ListOfReal.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Builder.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopTools_Array1OfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
-#include <TopoDS_Iterator.hxx> 
+#include <TopTools_ListOfShape.hxx>
+
+//#include <GeomLProp_SLProps.hxx>
+//#include <ShapeFix_Wire.hxx>
 //=======================================================
 //function : ShapeAnalysis_CheckSmallFace
 //purpose  : 
 //=======================================================================
-
 ShapeAnalysis_CheckSmallFace::ShapeAnalysis_CheckSmallFace()
 {
   myStatusSpot = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
