@@ -496,6 +496,11 @@ void AIS_Dimension::DrawText (const Handle(Prs3d_Presentation)& thePresentation,
     if (myDrawer->DimensionAspect()->IsTextShaded())
     {
       // Setting text shading and color parameters
+      if (!myDrawer->HasOwnShadingAspect())
+      {
+        myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+      }
+
       Graphic3d_MaterialAspect aShadeMat (Graphic3d_NOM_DEFAULT);
       aShadeMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
       aShadeMat.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
@@ -509,8 +514,14 @@ void AIS_Dimension::DrawText (const Handle(Prs3d_Presentation)& thePresentation,
     }
     else
     {
-      // setting color for text
+      // Setting color for text
+      if (!myDrawer->HasOwnFreeBoundaryAspect())
+      {
+        myDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (aColor, Aspect_TOL_SOLID, 1.0));
+      }
+
       myDrawer->FreeBoundaryAspect()->Aspect()->SetColor (aColor);
+
       // drawing text
       StdPrs_WFShape::Add (thePresentation, aTextShape, myDrawer);
     }
