@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC26448"
+puts "============"
+puts ""
+#######################################################################
+# Method Prepend() of sequence breaks it if argument is empty sequence
+#######################################################################
+
+pload QAcommands
+OCC26448
