@@ -21,6 +21,8 @@ BOPCol_IndexedDataMapOfShapeInteger.hxx
 BOPCol_IndexedDataMapOfShapeListOfShape.hxx
 BOPCol_IndexedMapOfInteger.hxx
 BOPCol_IndexedMapOfShape.hxx
+BOPCol_IndexedDataMapOfShapeShape.hxx
+BOPCol_IndexedMapOfOrientedShape.hxx
 BOPCol_ListOfInteger.hxx
 BOPCol_ListOfListOfShape.hxx
 BOPCol_ListOfShape.hxx

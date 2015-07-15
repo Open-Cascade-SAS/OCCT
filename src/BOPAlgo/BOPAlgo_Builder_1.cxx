@@ -141,19 +141,19 @@
     aType=aS.ShapeType();
     if (aType==theType) {
       if (myImages.IsBound(aS)){
-	const BOPCol_ListOfShape& aLSIm=myImages.Find(aS);
-	aItIm.Initialize(aLSIm);
-	for (; aItIm.More(); aItIm.Next()) {
-	  const TopoDS_Shape& aSIm=aItIm.Value();
-	  if (aM.Add(aSIm)) {
-	    aBB.Add(myShape, aSIm);
-	  }
-	}
+        const BOPCol_ListOfShape& aLSIm=myImages.Find(aS);
+        aItIm.Initialize(aLSIm);
+        for (; aItIm.More(); aItIm.Next()) {
+          const TopoDS_Shape& aSIm=aItIm.Value();
+          if (aM.Add(aSIm)) {
+            aBB.Add(myShape, aSIm);
+          }
+        }
       }
       else {
-	if (aM.Add(aS)) {
-	  aBB.Add(myShape, aS);
-	}
+        if (aM.Add(aS)) {
+          aBB.Add(myShape, aS);
+        }
       }
     }
   }
@@ -286,9 +286,9 @@
       const BOPCol_ListOfShape& aLFIm=myImages.Find(aSX);
       aItIm.Initialize(aLFIm);
       for (; aItIm.More(); aItIm.Next()) {
-	TopoDS_Shape aSXIm=aItIm.Value();
-	aSXIm.Orientation(aOrX);
-	aBB.Add(aCIm, aSXIm);
+        TopoDS_Shape aSXIm=aItIm.Value();
+        aSXIm.Orientation(aOrX);
+        aBB.Add(aCIm, aSXIm);
       }
     }
     else {

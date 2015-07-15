@@ -138,15 +138,14 @@ static
                                           const Standard_Integer nF,
                                           BOPDS_ListOfPaveBlock& aLPBOut)
 {
-  Standard_Integer nV1, nV2;
-  BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
+  Standard_Integer i, aNbPBOn, aNbPBIn, aNbPBSc, nV1, nV2;
   //
   const BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
   // In
   const BOPDS_IndexedMapOfPaveBlock& aMPBIn=aFI.PaveBlocksIn();
-  aItMPB.Initialize(aMPBIn);
-  for(; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+  aNbPBIn = aMPBIn.Extent();
+  for (i = 1; i <= aNbPBIn; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = aMPBIn(i);
     aPB->Indices(nV1, nV2);
     if (nV==nV1 || nV==nV2) {
       aLPBOut.Append(aPB);
@@ -154,9 +153,9 @@ static
   }
   // On
   const BOPDS_IndexedMapOfPaveBlock& aMPBOn=aFI.PaveBlocksOn();
-  aItMPB.Initialize(aMPBOn);
-  for(; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+  aNbPBOn = aMPBOn.Extent();
+  for (i = 1; i <= aNbPBOn; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = aMPBOn(i);
     aPB->Indices(nV1, nV2);
     if (nV==nV1 || nV==nV2) {
       aLPBOut.Append(aPB);
@@ -164,9 +163,9 @@ static
   }
   // Sections
   const BOPDS_IndexedMapOfPaveBlock& aMPBSc=aFI.PaveBlocksSc();
-  aItMPB.Initialize(aMPBSc);
-  for(; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+  aNbPBSc = aMPBSc.Extent();
+  for (i = 1; i <= aNbPBSc; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = aMPBSc(i);
     aPB->Indices(nV1, nV2);
     if (nV==nV1 || nV==nV2) {
       aLPBOut.Append(aPB);

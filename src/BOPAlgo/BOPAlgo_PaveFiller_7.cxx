@@ -15,10 +15,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
-#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
 #include <BOPDS_CommonBlock.hxx>
@@ -54,6 +53,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
+
 
 static
   Standard_Boolean IsBasedOnPlane(const TopoDS_Face& aF);
@@ -464,8 +464,8 @@ void BOPAlgo_PaveFiller::MakePCurves()
 {
   Standard_Boolean bHasPC;
   Standard_Integer i, nF1, nF2, aNbC, k, nE, aNbFF, aNbFI, nEx;
+  Standard_Integer j, aNbPBIn, aNbPBOn;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
-  BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
   TopoDS_Face aF1F, aF2F;
   BOPAlgo_VectorOfMPC aVMPC;
   //
@@ -483,9 +483,9 @@ void BOPAlgo_PaveFiller::MakePCurves()
     aF1F.Orientation(TopAbs_FORWARD);
     // In
     const BOPDS_IndexedMapOfPaveBlock& aMPBIn=aFI.PaveBlocksIn();
-    aItMPB.Initialize(aMPBIn);
-    for(; aItMPB.More(); aItMPB.Next()) {
-      const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+    aNbPBIn = aMPBIn.Extent();
+    for (j = 1; j <= aNbPBIn; ++j) {
+      const Handle(BOPDS_PaveBlock)& aPB = aMPBIn(j);
       nE=aPB->Edge();
       const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE)));
       //
@@ -497,9 +497,9 @@ void BOPAlgo_PaveFiller::MakePCurves()
     //
     // On
     const BOPDS_IndexedMapOfPaveBlock& aMPBOn=aFI.PaveBlocksOn();
-    aItMPB.Initialize(aMPBOn);
-    for(; aItMPB.More(); aItMPB.Next()) {
-      const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+    aNbPBOn = aMPBOn.Extent();
+    for (j = 1; j <= aNbPBOn; ++j) {
+      const Handle(BOPDS_PaveBlock)& aPB = aMPBOn(j);
       nE=aPB->Edge();
       const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE)));
       bHasPC=BOPTools_AlgoTools2D::HasCurveOnSurface (aE, aF1F);
@@ -707,10 +707,9 @@ void BOPAlgo_PaveFiller::Prepare()
     TopAbs_FACE
   };
   Standard_Boolean bJustAdd, bIsBasedOnPlane;
-  Standard_Integer i, aNb, n1, nF;
+  Standard_Integer i, aNb, n1, nF, aNbF;
   TopExp_Explorer aExp;
-  BOPCol_MapOfShape aMF;
-  BOPCol_MapIteratorOfMapOfShape aItMF;
+  BOPCol_IndexedMapOfShape aMF;
   //
   myErrorStatus=0;
   //
@@ -728,15 +727,15 @@ void BOPAlgo_PaveFiller::Prepare()
     }
   }
   //
-  if (aMF.IsEmpty()) {
+  aNbF = aMF.Extent();
+  if (!aNbF) {
     return;
   }
   //
   BOPAlgo_VectorOfBPC aVBPC;
   //
-  aItMF.Initialize(aMF);
-  for (; aItMF.More(); aItMF.Next()) {
-    const TopoDS_Face& aF=*((TopoDS_Face *)&aItMF.Key());
+  for (i = 1; i <= aNbF; ++i) {
+    const TopoDS_Face& aF = *(TopoDS_Face*)&aMF(i);
     aExp.Init(aF, aType[1]);
     for (; aExp.More(); aExp.Next()) {
       const TopoDS_Edge& aE=*((TopoDS_Edge *)&aExp.Current());

@@ -12,13 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_Operation.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_SequenceOfShape.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_MapOfPassKey.hxx>
@@ -50,8 +50,6 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-
-//
 // ================================================================================
 // function: Constructor
 // purpose:
@@ -814,10 +812,9 @@ void BOPAlgo_ArgumentAnalyzer::TestMergeEdge()
 // ================================================================================
 void BOPAlgo_ArgumentAnalyzer::TestContinuity() 
 {
-  Standard_Integer i;
+  Standard_Integer i, j, aNbS;
   Standard_Real f, l;
   TopExp_Explorer aExp;
-  BOPCol_MapIteratorOfMapOfShape aIt;
   //
   for (i = 0; i < 2; ++i) {
     const TopoDS_Shape& aS = !i ? myShape1 : myShape2;
@@ -825,7 +822,7 @@ void BOPAlgo_ArgumentAnalyzer::TestContinuity()
       continue;
     }
     //
-    BOPCol_MapOfShape aMS;
+    BOPCol_IndexedMapOfShape aMS;
     //Edges
     aExp.Init(aS, TopAbs_EDGE);
     for (; aExp.More(); aExp.Next()) {
@@ -849,9 +846,9 @@ void BOPAlgo_ArgumentAnalyzer::TestContinuity()
     }
     //
     //add shapes with continuity C0 to result
-    aIt.Initialize(aMS);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aFS = aIt.Value();
+    aNbS = aMS.Extent();
+    for (j = 1; j <= aNbS; ++j) {
+      const TopoDS_Shape& aFS = aMS(j);
       BOPAlgo_CheckResult aResult;
       if(i == 0) {
         aResult.SetShape1(myShape1);

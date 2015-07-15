@@ -15,14 +15,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Bnd_Box.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPCol_DataMapOfIntegerReal.hxx>
 #include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfInteger.hxx>

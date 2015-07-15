@@ -12,10 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BOPAlgo_WireEdgeSet.hxx>
 #include <BOPAlgo_WireSplitter.hxx>
-#include <BOPCol_DataMapOfShapeInteger.hxx>
+#include <BOPCol_IndexedDataMapOfShapeInteger.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
@@ -49,7 +48,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-
 typedef NCollection_DataMap \
   <TopoDS_Shape, Standard_Boolean, TopTools_ShapeMapHasher> \
   BOPCol_DataMapOfShapeBoolean; 
@@ -841,8 +839,7 @@ void RefineAngles(const TopoDS_Face& myFace,
                   BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap)
 {
   Standard_Integer aNb, i;
-  BOPCol_DataMapOfShapeInteger aMSI;
-  BOPCol_DataMapIteratorOfDataMapOfShapeInteger aItMSI;
+  BOPCol_IndexedDataMapOfShapeInteger aMSI;
   BOPCol_MapOfShape aMBE;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
@@ -850,32 +847,29 @@ void RefineAngles(const TopoDS_Face& myFace,
   aIt.Initialize(myEdges);
   for(; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aE=aIt.Value();
-    if(aMSI.IsBound(aE)) {
-      Standard_Integer& iCnt=aMSI.ChangeFind(aE);
+    if(aMSI.Contains(aE)) {
+      Standard_Integer& iCnt = aMSI.ChangeFromKey(aE);
       ++iCnt;
     }
     else {
-      Standard_Integer iCnt=1;
-      aMSI.Bind(aE, iCnt);
+      Standard_Integer iCnt = 1;
+      aMSI.Add(aE, iCnt);
     }
   }
   //
-  aItMSI.Initialize(aMSI);
-  for(; aItMSI.More(); aItMSI.Next()) {
-    Standard_Integer iCnt;
-    //
-    const TopoDS_Shape& aE=aItMSI.Key();
-    iCnt=aItMSI.Value();
-    if (iCnt==1) {
+  aNb = aMSI.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    Standard_Integer iCnt = aMSI(i);
+    if (iCnt == 1) {
+      const TopoDS_Shape& aE = aMSI.FindKey(i);
       aMBE.Add(aE);
     }
-    
   }
   //
   aMSI.Clear();
   //
-  aNb=mySmartMap.Extent();
-  for (i=1; i<=aNb; ++i) {
+  aNb = mySmartMap.Extent();
+  for (i = 1; i <= aNb; ++i) {
     const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&mySmartMap.FindKey(i)); 
     BOPAlgo_ListOfEdgeInfo& aLEI=mySmartMap(i);
     //

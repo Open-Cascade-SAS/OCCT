@@ -265,7 +265,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
   BOPCol_MapOfShape aMFence;
   Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListOfShape aLFIm(myAllocator);
-  BOPCol_MapIteratorOfMapOfShape aItMS;
   BOPAlgo_VectorOfBuilderFace aVBF;
   //
   myErrorStatus=0;
@@ -867,27 +866,27 @@ Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
                                    const BOPDS_FaceInfo& aFI2)
 {
   Standard_Boolean bRet;
-  BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
+  Standard_Integer i, aNbPB;
   //
   bRet=Standard_False;
-  const BOPDS_IndexedMapOfPaveBlock& aMPBOn1=aFI1.PaveBlocksOn();
-  const BOPDS_IndexedMapOfPaveBlock& aMPBIn1=aFI1.PaveBlocksIn();
+  const BOPDS_IndexedMapOfPaveBlock& aMPBOn1 = aFI1.PaveBlocksOn();
+  const BOPDS_IndexedMapOfPaveBlock& aMPBIn1 = aFI1.PaveBlocksIn();
   //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBOn2=aFI2.PaveBlocksOn();
-  aItMPB.Initialize(aMPBOn2);
-  for (; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-    bRet=aMPBOn1.Contains(aPB) || aMPBIn1.Contains(aPB);
+  const BOPDS_IndexedMapOfPaveBlock& aMPBOn2 = aFI2.PaveBlocksOn();
+  aNbPB = aMPBOn2.Extent();
+  for (i = 1; i <= aNbPB; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = aMPBOn2(i);
+    bRet = aMPBOn1.Contains(aPB) || aMPBIn1.Contains(aPB);
     if (bRet) {
       return bRet;
     }
   }
   //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBIn2=aFI2.PaveBlocksIn();
-  aItMPB.Initialize(aMPBIn2);
-  for (; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-    bRet=aMPBOn1.Contains(aPB) || aMPBIn1.Contains(aPB);
+  const BOPDS_IndexedMapOfPaveBlock& aMPBIn2 = aFI2.PaveBlocksIn();
+  aNbPB = aMPBIn2.Extent();
+  for (i = 1; i <= aNbPB; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = aMPBIn2(i);
+    bRet = aMPBOn1.Contains(aPB) || aMPBIn1.Contains(aPB);
     if (bRet) {
       return bRet;
     }

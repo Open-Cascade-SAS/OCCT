@@ -118,7 +118,6 @@ void BOPAlgo_WireSplitter::MakeConnexityBlocks()
   TopoDS_Iterator aItE;
   TopoDS_Shape aER;
   BOPCol_ListIteratorOfListOfShape aIt;
-  BOPCol_MapIteratorOfMapOfShape aItM;
   //
   BOPCol_IndexedDataMapOfShapeListOfShape aMVE(100, myAllocator);
   BOPCol_IndexedMapOfShape aMVP(100, myAllocator);
@@ -182,7 +181,7 @@ void BOPAlgo_WireSplitter::MakeConnexityBlocks()
             }
           }
         }
-      }//for (; aItM.More(); aItM.Next()) {
+      }//for (k=1; k<=aNbVP; ++k) {
       //
       aNbVP=aMVAdd.Extent();
       if (!aNbVP) {
