@@ -19,6 +19,8 @@ BOPCol_DataMapOfShapeListOfShape.hxx
 BOPCol_MapOfOrientedShape.hxx
 BOPCol_IndexedDataMapOfShapeListOfShape.hxx
 BOPCol_IndexedMapOfShape.hxx
+BOPCol_IndexedDataMapOfShapeShape.hxx
+BOPCol_IndexedMapOfOrientedShape.hxx
 BOPCol_ListOfListOfShape.hxx
 BOPCol_SequenceOfShape.hxx
 BOPCol_SequenceOfPnt2d.hxx

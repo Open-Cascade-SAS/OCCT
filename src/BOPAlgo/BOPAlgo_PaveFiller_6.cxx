@@ -65,8 +65,6 @@
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeInteger.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPCol_DataMapOfIntegerReal.hxx>
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>

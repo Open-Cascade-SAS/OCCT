@@ -801,7 +801,6 @@ void BOPAlgo_Builder::BuildSplitSolids
   Standard_Integer i, aNbS;
   TopExp_Explorer aExp;
   BOPCol_ListIteratorOfListOfShape aIt;
-  BOPCol_DataMapIteratorOfDataMapOfShapeShape aIt1;
   //
   Handle(NCollection_IncAllocator) aAlr0;
   aAlr0=new NCollection_IncAllocator();
@@ -933,7 +932,6 @@ void BOPAlgo_Builder::FillInternalShapes()
   TopAbs_State aState; 
   TopoDS_Iterator aItS;
   BRep_Builder aBB;
-  BOPCol_MapIteratorOfMapOfShape aItM;
   BOPCol_ListIteratorOfListOfShape aIt, aIt1;
   //
   Handle(NCollection_IncAllocator) aAllocator;
@@ -942,12 +940,13 @@ void BOPAlgo_Builder::FillInternalShapes()
   //
   BOPCol_IndexedDataMapOfShapeListOfShape aMSx(100, aAllocator);
   BOPCol_IndexedMapOfShape aMx(100, aAllocator);
-  BOPCol_MapOfShape aMSI(100, aAllocator);
+  BOPCol_IndexedMapOfShape aMSI(100, aAllocator);
   BOPCol_MapOfShape aMFence(100, aAllocator);
   BOPCol_MapOfShape aMSOr(100, aAllocator);
   BOPCol_ListOfShape aLSd(aAllocator);
   BOPCol_ListOfShape aLArgs(aAllocator);
   BOPCol_ListOfShape aLSC(aAllocator);
+  BOPCol_ListOfShape aLSI(aAllocator);
   //
   // 1. Shapes to process
   //
@@ -1066,20 +1065,23 @@ void BOPAlgo_Builder::FillInternalShapes()
   //
   // 3. Some shapes of aMSI can be already tied with faces of 
   //    split solids
-  aItM.Initialize(aMSI); 
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aSI=aItM.Key();
+  aNbSI = aMSI.Extent();
+  for (i = 1; i <= aNbSI; ++i) {
+    const TopoDS_Shape& aSI = aMSI(i);
     if (aMSx.Contains(aSI)) {
       const BOPCol_ListOfShape &aLSx=aMSx.FindFromKey(aSI);
-      aNbSx=aLSx.Extent();
-      if (aNbSx) {
-        aMSI.Remove(aSI);
+      aNbSx = aLSx.Extent();
+      if (!aNbSx) {
+        aLSI.Append(aSI);
       }
+    }
+    else {
+      aLSI.Append(aSI);
     }
   }
   //
   // 4. Just check it
-  aNbSI=aMSI.Extent();
+  aNbSI = aLSI.Extent();
   if (!aNbSI) {
     return;
   }
@@ -1090,49 +1092,52 @@ void BOPAlgo_Builder::FillInternalShapes()
   for (; aIt.More(); aIt.Next()) {
     TopoDS_Solid aSd=TopoDS::Solid(aIt.Value());
     //
-    aItM.Initialize(aMSI); 
-    for (; aItM.More(); aItM.Next()) {
-      TopoDS_Shape aSI=aItM.Key();
+    aIt1.Initialize(aLSI);
+    for (; aIt1.More();) {
+      TopoDS_Shape aSI = aIt1.Value();
       aSI.Orientation(TopAbs_INTERNAL);
       //
       aState=BOPTools_AlgoTools::ComputeStateByOnePoint
         (aSI, aSd, 1.e-11, myContext);
-      if (aState==TopAbs_IN) {
+      //
+      if (aState != TopAbs_IN) {
+        aIt1.Next();
+        continue;
+      }
+      //
+      if(aMSOr.Contains(aSd)) {
         //
-        if(aMSOr.Contains(aSd)) {
-          //
-          TopoDS_Solid aSdx;
-          //
-          aBB.MakeSolid(aSdx);
-          aItS.Initialize(aSd);
-          for (; aItS.More(); aItS.Next()) {
-            const TopoDS_Shape& aSh=aItS.Value();
-            aBB.Add(aSdx, aSh);
-          }
-          //
-          aBB.Add(aSdx, aSI);
-          //
-          if (myImages.IsBound(aSdx)) {
-            BOPCol_ListOfShape& aLS=myImages.ChangeFind(aSdx);
-            aLS.Append(aSdx);
-          } 
-          else {
-            BOPCol_ListOfShape aLS;
-            aLS.Append(aSdx);
-            myImages.Bind(aSd, aLS);
-          }
-          //
-          aMSOr.Remove(aSd);
-          aSd=aSdx;
+        TopoDS_Solid aSdx;
+        //
+        aBB.MakeSolid(aSdx);
+        aItS.Initialize(aSd);
+        for (; aItS.More(); aItS.Next()) {
+          const TopoDS_Shape& aSh=aItS.Value();
+          aBB.Add(aSdx, aSh);
         }
+        //
+        aBB.Add(aSdx, aSI);
+        //
+        if (myImages.IsBound(aSdx)) {
+          BOPCol_ListOfShape& aLS=myImages.ChangeFind(aSdx);
+          aLS.Append(aSdx);
+        } 
         else {
-          aBB.Add(aSd, aSI);
+          BOPCol_ListOfShape aLS;
+          aLS.Append(aSdx);
+          myImages.Bind(aSd, aLS);
         }
         //
-        aMSI.Remove(aSI);
-      } //if (aState==TopAbs_IN) {
-    }// for (; aItM.More(); aItM.Next()) {
-  }//for (; aIt1.More(); aIt1.Next()) {
+        aMSOr.Remove(aSd);
+        aSd=aSdx;
+      }
+      else {
+        aBB.Add(aSd, aSI);
+      }
+      //
+      aLSI.Remove(aIt1);
+    }//for (; aIt1.More();) {
+  }//for (; aIt.More(); aIt.Next()) {
   //
   //-----------------------------------------------------scope t
   aLArgs.Clear();

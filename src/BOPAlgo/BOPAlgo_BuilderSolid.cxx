@@ -15,16 +15,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 //
-#include <BOPAlgo_BuilderSolid.ixx>
-//
-#include <NCollection_List.hxx>
-#include <NCollection_DataMap.hxx>
-#include <NCollection_UBTreeFiller.hxx>
-#include <NCollection_IncAllocator.hxx>
-//
-#include <gp_Pnt2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
+#include <BOPAlgo_BuilderSolid.hxx>
+#include <BOPAlgo_ShellSplitter.hxx>
+#include <BOPCol_BoxBndTree.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BOPCol_DataMapOfShapeShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeShape.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfOrientedShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_Parallel.hxx>
+#include <BOPTools.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
+#include <BOPTools_CoupleOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 //
@@ -47,34 +61,12 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-//
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-//
-#include <BRepBndLib.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-//
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfOrientedShape.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_BoxBndTree.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
-//
-#include <BOPTools.hxx>
-#include <BOPTools_CoupleOfShape.hxx>
-#include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
-//
+#include <Precision.hxx>
 #include <IntTools_Context.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+
 //
-#include <BOPAlgo_ShellSplitter.hxx>
-
-
 static
   Standard_Boolean IsGrowthShell(const TopoDS_Shape& ,
                                  const BOPCol_IndexedMapOfShape& );
@@ -86,7 +78,7 @@ static
                             const TopoDS_Shape& ,
                             Handle(IntTools_Context)& );
 static
-  void MakeInternalShells(const BOPCol_MapOfShape& ,
+  void MakeInternalShells(const BOPCol_IndexedMapOfShape& ,
                           BOPCol_ListOfShape& );
 
 //=======================================================================
@@ -261,14 +253,7 @@ typedef BOPCol_ContextCnt
   Handle(IntTools_Context)> BOPAlgo_FaceSolidCnt;
 //
 //=======================================================================
-typedef NCollection_DataMap
-  <TopoDS_Shape, 
-  gp_Pnt, 
-  TopTools_ShapeMapHasher> BOPAlgo_DataMapOfShapePnt; 
 
-typedef BOPAlgo_DataMapOfShapePnt::Iterator 
-  BOPAlgo_DataMapIteratorOfDataMapOfShapePnt; 
-//
 //=======================================================================
 //function : 
 //purpose  : 
@@ -448,10 +433,9 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
 //=======================================================================
 void BOPAlgo_BuilderSolid::PerformLoops()
 {
-  Standard_Integer iErr;
+  Standard_Integer iErr, i, aNbSh;
   BOPCol_ListIteratorOfListOfShape aIt;
   TopoDS_Iterator aItS;
-  BOPCol_MapIteratorOfMapOfOrientedShape aItM;
   Handle(NCollection_BaseAllocator) aAlr;
   // 
   myErrorStatus=0;
@@ -512,9 +496,9 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   }
   // 
   // b. collect all edges that are to avoid
-  aItM.Initialize(myShapesToAvoid);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aF=aItM.Key();
+  aNbSh = myShapesToAvoid.Extent();
+  for (i = 1; i <= aNbSh; ++i) {
+    const TopoDS_Shape& aF = myShapesToAvoid(i);
     aMP.Add(aF);
   }
   //
@@ -536,17 +520,16 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   aEFMap.Clear();
   AddedFacesMap.Clear();
   //
-  aItM.Initialize(myShapesToAvoid);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aFF=aItM.Key();
+  aNbSh = myShapesToAvoid.Extent();
+  for (i = 1; i <= aNbSh; ++i) {
+    const TopoDS_Shape& aFF = myShapesToAvoid(i);
     BOPTools::MapShapesAndAncestors(aFF, 
         TopAbs_EDGE, TopAbs_FACE, 
         aEFMap);
   }
   //
-  aItM.Initialize(myShapesToAvoid);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aFF=aItM.Key();
+  for (i = 1; i <= aNbSh; ++i) {
+    const TopoDS_Shape& aFF = myShapesToAvoid(i);
     if (!AddedFacesMap.Add(aFF)) {
       continue;
     }
@@ -585,11 +568,11 @@ void BOPAlgo_BuilderSolid::PerformLoops()
 void BOPAlgo_BuilderSolid::PerformAreas()
 {
   Standard_Boolean bIsGrowth, bIsHole;
-  Standard_Integer k;
+  Standard_Integer i, k, aNbInOut, aNbMSH;
   BRep_Builder aBB; 
   BOPCol_ListIteratorOfListOfShape aItLS;
   BOPCol_ListOfShape aNewSolids, aHoleShells; 
-  BOPCol_DataMapOfShapeShape aInOutMap;
+  BOPCol_IndexedDataMapOfShapeShape aInOutMap;
   BOPCol_IndexedMapOfShape aMHF;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   BOPCol_BoxBndTreeSelector aSelector;
@@ -597,10 +580,8 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   NCollection_UBTreeFiller 
     <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   BOPAlgo_DataMapOfIntegerBSSB aDMISB(100);
+  BOPCol_IndexedDataMapOfShapeListOfShape aMSH;
   BOPAlgo_DataMapIteratorOfDataMapOfIntegerBSSB aItDMISB;
-  BOPCol_DataMapOfShapeListOfShape aMSH;
-  BOPCol_DataMapIteratorOfDataMapOfShapeShape aItDMSS;
-  BOPCol_DataMapIteratorOfDataMapOfShapeListOfShape aItMSH;
   //
   myErrorStatus=0;
   //
@@ -698,42 +679,41 @@ void BOPAlgo_BuilderSolid::PerformAreas()
         continue;
       }
       //
-      if (aInOutMap.IsBound (aHole)){
-        const TopoDS_Shape& aSolidWas=aInOutMap(aHole);
+      if (aInOutMap.Contains (aHole)){
+        const TopoDS_Shape& aSolidWas = aInOutMap.FindFromKey(aHole);
         if (IsInside(aSolid, aSolidWas, myContext)) {
-          aInOutMap.UnBind(aHole);
-          aInOutMap.Bind (aHole, aSolid);
+          aInOutMap.ChangeFromKey(aHole) = aSolid;
         }
       }
       else{
-        aInOutMap.Bind(aHole, aSolid);
+        aInOutMap.Add(aHole, aSolid);
       }
     }
-  }//for (; aItDMISB.More(); aItDMISB.Next()) {
+  }//for (i = 1; i <= aNbDMISB; ++i) {
   //
   // 5. Map [Solid/Holes] -> aMSH 
-  aItDMSS.Initialize(aInOutMap);
-  for (; aItDMSS.More(); aItDMSS.Next()) {
-    const TopoDS_Shape& aHole=aItDMSS.Key();
-    const TopoDS_Shape& aSolid=aItDMSS.Value();
+  aNbInOut = aInOutMap.Extent();
+  for (i = 1; i <= aNbInOut; ++i) {
+    const TopoDS_Shape& aHole = aInOutMap.FindKey(i);
+    const TopoDS_Shape& aSolid = aInOutMap(i);
     //
-    if (aMSH.IsBound(aSolid)) {
-      BOPCol_ListOfShape& aLH=aMSH.ChangeFind(aSolid);
+    if (aMSH.Contains(aSolid)) {
+      BOPCol_ListOfShape& aLH = aMSH.ChangeFromKey(aSolid);
       aLH.Append(aHole);
     }
     else {
       BOPCol_ListOfShape aLH;
       aLH.Append(aHole);
-      aMSH.Bind(aSolid, aLH);
+      aMSH.Add(aSolid, aLH);
     }
   }
   //
   // 6. Add aHoles to Solids
-  aItMSH.Initialize(aMSH);
-  for (; aItMSH.More(); aItMSH.Next()) {
-    TopoDS_Solid aSolid=(*(TopoDS_Solid*)(&aItMSH.Key()));
+  aNbMSH = aMSH.Extent();
+  for (i = 1; i <= aNbMSH; ++i) {
+    TopoDS_Solid aSolid=(*(TopoDS_Solid*)(&(aMSH.FindKey(i))));
+    const BOPCol_ListOfShape& aLH = aMSH(i);
     //
-    const BOPCol_ListOfShape& aLH=aItMSH.Value();
     aItLS.Initialize(aLH);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aHole = aItLS.Value();
@@ -758,7 +738,7 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   aItLS.Initialize(aHoleShells);
   for (; aItLS.More(); aItLS.Next()) {
     const TopoDS_Shape& aHole = aItLS.Value();
-    if (!aInOutMap.IsBound(aHole)){
+    if (!aInOutMap.Contains(aHole)){
       TopoDS_Solid aSolid;
       //
       aBB.MakeSolid(aSolid);
@@ -787,7 +767,7 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
   TopoDS_Iterator aIt;
   TopExp_Explorer aExp;
   BOPCol_ListIteratorOfListOfShape  aItLS;
-  BOPCol_MapOfShape aMFs;
+  BOPCol_IndexedMapOfShape aMFs;
   BOPCol_ListOfShape aLSI;
   BOPAlgo_VectorOfFaceSolid aVFS;
   BOPAlgo_VectorOfFacePnt aVFP;
@@ -807,7 +787,9 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Face& aF=*((TopoDS_Face*)&aIt.Value());
       //
-      if (aMFs.Add(aF)) {
+      if (!aMFs.Contains(aF)) {
+        aMFs.Add(aF);
+        //
         gp_Pnt aP;
         gp_Pnt2d aP2D;
         //
@@ -985,27 +967,25 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
 //function : MakeInternalShells
 //purpose  : 
 //=======================================================================
-void MakeInternalShells(const BOPCol_MapOfShape& theMF,
+void MakeInternalShells(const BOPCol_IndexedMapOfShape& theMF,
                         BOPCol_ListOfShape& theShells)
 {
-  BOPCol_ListIteratorOfListOfShape aItF;
+  Standard_Integer i, aNbF;
   BRep_Builder aBB;
-  //
+  BOPCol_ListIteratorOfListOfShape aItF;
   BOPCol_IndexedDataMapOfShapeListOfShape aMEF;
-  BOPCol_MapIteratorOfMapOfShape aItM;
   BOPCol_MapOfShape aAddedFacesMap;
   //
-  aItM.Initialize(theMF);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aF=aItM.Key();
+  aNbF = theMF.Extent();
+  for (i = 1; i <= aNbF; ++i) {
+    TopoDS_Shape aF = theMF(i);
     BOPTools::MapShapesAndAncestors(aF, 
         TopAbs_EDGE, TopAbs_FACE, 
         aMEF);
   }
   //
-  aItM.Initialize(theMF);
-  for (; aItM.More(); aItM.Next()) {
-    TopoDS_Shape aFF=aItM.Key();
+  for (i = 1; i <= aNbF; ++i) {
+    TopoDS_Shape aFF = theMF(i);
     if (!aAddedFacesMap.Add(aFF)) {
       continue;
     }

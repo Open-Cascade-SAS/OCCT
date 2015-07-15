@@ -25,7 +25,7 @@ uses
     Shape from TopoDS, 
     BaseAllocator from BOPCol, 
     ListOfShape from BOPCol,
-    MapOfOrientedShape from BOPCol, 
+    IndexedMapOfOrientedShape from BOPCol, 
     Context  from IntTools 
     
 --raises
@@ -73,7 +73,7 @@ fields
     myLoopsInternal  :  ListOfShape from BOPCol is protected;
     
     myAreas          :  ListOfShape from BOPCol is protected;  
-    myShapesToAvoid  :  MapOfOrientedShape from BOPCol is protected;  
+    myShapesToAvoid  :  IndexedMapOfOrientedShape from BOPCol is protected;  
  
 end BuilderArea; 
 

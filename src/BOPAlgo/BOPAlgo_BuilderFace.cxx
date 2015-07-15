@@ -16,16 +16,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_BuilderFace.ixx>
-//
-#include <NCollection_UBTreeFiller.hxx>
-#include <NCollection_DataMap.hxx>
-//
-#include <TColStd_MapIntegerHasher.hxx>
-//
-#include <gp_Pnt2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
+#include <Bnd_Box.hxx>
+#include <BOPAlgo_BuilderFace.hxx>
+#include <BOPAlgo_WireEdgeSet.hxx>
+#include <BOPAlgo_WireSplitter.hxx>
+#include <BOPCol_Box2DBndTree.hxx>
+#include <BOPCol_DataMapOfShapeListOfShape.hxx>
+#include <BOPCol_DataMapOfShapeShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_MapOfOrientedShape.hxx>
+#include <BOPTools.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepTools.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 //
@@ -58,18 +67,8 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPAlgo_WireEdgeSet.hxx>
+#include <NCollection_UBTreeFiller.hxx>
 //
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPTools.hxx>
-#include <BOPCol_ListOfShape.hxx>
-//
-#include <BOPCol_DataMapOfShapeShape.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_Box2DBndTree.hxx>
-//
-#include <BOPAlgo_WireSplitter.hxx>
-
 static
   Standard_Boolean IsGrowthWire(const TopoDS_Shape& ,
                                 const BOPCol_IndexedMapOfShape& );
@@ -79,7 +78,7 @@ static
                             const TopoDS_Shape& ,
                             Handle(IntTools_Context)& );
 static
-  void MakeInternalWires(const BOPCol_MapOfShape& ,
+  void MakeInternalWires(const BOPCol_IndexedMapOfShape& ,
                          BOPCol_ListOfShape& );
 static 
   void GetWire(const TopoDS_Shape& , 
@@ -132,8 +131,7 @@ class BOPAlgo_ShapeBox2D {
 //
 typedef NCollection_IndexedDataMap 
   <Standard_Integer, 
-  BOPAlgo_ShapeBox2D, 
-  TColStd_MapIntegerHasher>  BOPAlgo_IndexedDataMapOfIntegerShapeBox2D; 
+  BOPAlgo_ShapeBox2D>  BOPAlgo_IndexedDataMapOfIntegerShapeBox2D; 
 
 typedef NCollection_IndexedDataMap 
   <TopoDS_Shape, 
@@ -333,9 +331,8 @@ void BOPAlgo_BuilderFace::PerformLoops()
   myErrorStatus=0;
   //
   Standard_Boolean bFlag;
-  Standard_Integer iErr, aNbEA;
+  Standard_Integer i, iErr, aNbEA;
   BOPCol_ListIteratorOfListOfShape aIt;
-  BOPCol_MapIteratorOfMapOfOrientedShape aItM;
   BOPCol_IndexedDataMapOfShapeListOfShape aVEMap;
   BOPCol_MapOfOrientedShape aMAdded;
   TopoDS_Iterator aItW;
@@ -384,9 +381,9 @@ void BOPAlgo_BuilderFace::PerformLoops()
   }
   // 
   // b. collect all edges that are to avoid
-  aItM.Initialize(myShapesToAvoid);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aE=aItM.Key();
+  aNbEA = myShapesToAvoid.Extent();
+  for (i = 1; i <= aNbEA; ++i) {
+    const TopoDS_Shape& aE = myShapesToAvoid(i);
     aMEP.Add(aE);
   }
   //
@@ -402,10 +399,9 @@ void BOPAlgo_BuilderFace::PerformLoops()
   // 2. Internal Wires
   myLoopsInternal.Clear();
   //
-  aNbEA=myShapesToAvoid.Extent();
-  aItM.Initialize(myShapesToAvoid);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aEE=aItM.Key();
+  aNbEA = myShapesToAvoid.Extent();
+  for (i = 1; i <= aNbEA; ++i) {
+    const TopoDS_Shape& aEE = myShapesToAvoid(i);
     BOPTools::MapShapesAndAncestors(aEE, 
                                     TopAbs_VERTEX, 
                                     TopAbs_EDGE, 
@@ -413,9 +409,8 @@ void BOPAlgo_BuilderFace::PerformLoops()
   }
   //
   bFlag=Standard_True;
-  aItM.Initialize(myShapesToAvoid);
-  for (; aItM.More()&&bFlag; aItM.Next()) {
-    const TopoDS_Shape& aEE=aItM.Key();
+  for (i = 1; (i <= aNbEA) && bFlag; ++i) {
+    const TopoDS_Shape& aEE = myShapesToAvoid(i);
     if (!aMAdded.Add(aEE)) {
       continue;
     }
@@ -447,7 +442,7 @@ void BOPAlgo_BuilderFace::PerformLoops()
     }//for (; aItW.More(); aItW.Next()) {
     aW.Closed(BRep_Tool::IsClosed(aW));
     myLoopsInternal.Append(aW);
-  }//for (; aItM.More(); aItM.Next()) {
+  }//for (i = 1; (i <= aNbEA) && bFlag; ++i) {
 }
 //=======================================================================
 //function : PerformAreas
@@ -706,11 +701,11 @@ void BOPAlgo_BuilderFace::PerformInternalShapes()
   }
   // 
   //Standard_Real aTol;
+  Standard_Integer i;
   BRep_Builder aBB;
   BOPCol_ListIteratorOfListOfShape aIt1, aIt2;
   TopoDS_Iterator aIt; 
-  BOPCol_MapOfShape aME, aMEP;
-  BOPCol_MapIteratorOfMapOfShape aItME;
+  BOPCol_IndexedMapOfShape aME1, aME2, aMEP;
   BOPCol_IndexedDataMapOfShapeListOfShape aMVE;
   BOPCol_ListOfShape aLSI;
   //
@@ -721,10 +716,9 @@ void BOPAlgo_BuilderFace::PerformInternalShapes()
     aIt.Initialize(aWire);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aE=aIt.Value();
-      aME.Add(aE);
+      aME1.Add(aE);
     }
   }
-  aNbWI=aME.Extent();
   //
   // 2 Process faces
   aIt2.Initialize(myAreas);
@@ -735,12 +729,16 @@ void BOPAlgo_BuilderFace::PerformInternalShapes()
     BOPTools::MapShapesAndAncestors(aF, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
     //
     // 2.1 Separate faces to process aMEP
+    aME2.Clear();
     aMEP.Clear();
-    aItME.Initialize(aME);
-    for (; aItME.More(); aItME.Next()) {
-      const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&aItME.Key()));
+    aNbWI = aME1.Extent();
+    for (i = 1; i <= aNbWI; ++i) {
+      const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&aME1(i)));
       if (IsInside(aE, aF, myContext)) {
         aMEP.Add(aE);
+      }
+      else {
+        aME2.Add(aE);
       }
     }
     //
@@ -756,13 +754,9 @@ void BOPAlgo_BuilderFace::PerformInternalShapes()
     }
     //
     // 2.4 Remove faces aMFP from aMF
-    aItME.Initialize(aMEP);
-    for (; aItME.More(); aItME.Next()) {
-      const TopoDS_Shape& aE=aItME.Key();
-      aME.Remove(aE);
-    }
+    aME1 = aME2;
     //
-    aNbWI=aME.Extent();
+    aNbWI = aME1.Extent();
     if (!aNbWI) {
       break;
     }
@@ -772,24 +766,23 @@ void BOPAlgo_BuilderFace::PerformInternalShapes()
 //function : MakeInternalWires
 //purpose  : 
 //=======================================================================
-void MakeInternalWires(const BOPCol_MapOfShape& theME,
+void MakeInternalWires(const BOPCol_IndexedMapOfShape& theME,
                        BOPCol_ListOfShape& theWires)
 {
-  BOPCol_MapIteratorOfMapOfShape aItM;
+  Standard_Integer i, aNbE;
   BOPCol_MapOfShape aAddedMap;
   BOPCol_ListIteratorOfListOfShape aItE;
   BOPCol_IndexedDataMapOfShapeListOfShape aMVE;
   BRep_Builder aBB;
   //
-  aItM.Initialize(theME);
-  for (; aItM.More(); aItM.Next()) {
-    const TopoDS_Shape& aE=aItM.Key();
+  aNbE = theME.Extent();
+  for (i = 1; i <= aNbE; ++i) {
+    const TopoDS_Shape& aE = theME(i);
     BOPTools::MapShapesAndAncestors(aE, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
   }
   //
-  aItM.Initialize(theME);
-  for (; aItM.More(); aItM.Next()) {
-    TopoDS_Shape aEE=aItM.Key();
+  for (i = 1; i <= aNbE; ++i) {
+    TopoDS_Shape aEE = theME(i);
     if (!aAddedMap.Add(aEE)) {
       continue;
     }

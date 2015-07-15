@@ -14,15 +14,19 @@
 
 #include <BOPAlgo_WireSplitter.ixx>
 
-#include <Precision.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
-
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
+#include <BOPAlgo_WireEdgeSet.hxx>
+#include <BOPAlgo_WireSplitter.hxx>
+#include <BOPCol_IndexedDataMapOfShapeInteger.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_SequenceOfPnt2d.hxx>
+#include <BOPCol_SequenceOfReal.hxx>
+#include <BOPCol_SequenceOfShape.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -42,9 +46,6 @@
 #include <BRep_Builder.hxx>
 
 #include <TopTools_ShapeMapHasher.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
 #include <BRepAdaptor_Surface.hxx>
 
 #include <BOPCol_ListOfShape.hxx>
@@ -848,8 +849,7 @@ void RefineAngles(const TopoDS_Face& myFace,
                   BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap)
 {
   Standard_Integer aNb, i;
-  BOPCol_DataMapOfShapeInteger aMSI;
-  BOPCol_DataMapIteratorOfDataMapOfShapeInteger aItMSI;
+  BOPCol_IndexedDataMapOfShapeInteger aMSI;
   BOPCol_MapOfShape aMBE;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
@@ -857,32 +857,29 @@ void RefineAngles(const TopoDS_Face& myFace,
   aIt.Initialize(myEdges);
   for(; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aE=aIt.Value();
-    if(aMSI.IsBound(aE)) {
-      Standard_Integer& iCnt=aMSI.ChangeFind(aE);
+    if(aMSI.Contains(aE)) {
+      Standard_Integer& iCnt = aMSI.ChangeFromKey(aE);
       ++iCnt;
     }
     else {
-      Standard_Integer iCnt=1;
-      aMSI.Bind(aE, iCnt);
+      Standard_Integer iCnt = 1;
+      aMSI.Add(aE, iCnt);
     }
   }
   //
-  aItMSI.Initialize(aMSI);
-  for(; aItMSI.More(); aItMSI.Next()) {
-    Standard_Integer iCnt;
-    //
-    const TopoDS_Shape& aE=aItMSI.Key();
-    iCnt=aItMSI.Value();
-    if (iCnt==1) {
+  aNb = aMSI.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    Standard_Integer iCnt = aMSI(i);
+    if (iCnt == 1) {
+      const TopoDS_Shape& aE = aMSI.FindKey(i);
       aMBE.Add(aE);
     }
-    
   }
   //
   aMSI.Clear();
   //
-  aNb=mySmartMap.Extent();
-  for (i=1; i<=aNb; ++i) {
+  aNb = mySmartMap.Extent();
+  for (i = 1; i <= aNb; ++i) {
     const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&mySmartMap.FindKey(i)); 
     BOPAlgo_ListOfEdgeInfo& aLEI=mySmartMap(i);
     //

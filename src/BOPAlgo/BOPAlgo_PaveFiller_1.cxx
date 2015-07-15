@@ -46,7 +46,6 @@
   Standard_Boolean bWithSubShape;
   Standard_Integer n1, n2, iFlag, nX, n, aSize, i, j, k, aNbBlocks;
   Handle(NCollection_IncAllocator) aAllocator;
-  BOPCol_DataMapIteratorOfDataMapOfIntegerListOfInteger aItMILI;
   BOPCol_ListIteratorOfListOfInteger aItLI, aItLI2;
   TopoDS_Vertex aVn;
   BOPDS_ShapeInfo aSIn;

@@ -37,7 +37,6 @@
 #include <BOPCol_DataMapOfShapeInteger.hxx>
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfInteger.hxx>
-#include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_IndexedMapOfInteger.hxx>
@@ -93,7 +92,6 @@ void BOPDS_IteratorSI::Intersect()
   TopAbs_ShapeEnum aTi, aTj;
   Handle(NCollection_IncAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfInteger aIt;
-  BOPCol_DataMapIteratorOfDataMapOfIntegerListOfInteger aItVSD;
   //
   //-----------------------------------------------------scope_1 f
   aAllocator=new NCollection_IncAllocator();
@@ -124,10 +122,10 @@ void BOPDS_IteratorSI::Intersect()
       const BOPCol_ListOfInteger& aLA=aSI.SubShapes();
       aIt.Initialize(aLA);
       for (; aIt.More(); aIt.Next()) {
-	iX=aIt.Value();
-	aPKXB.Clear();
-	aPKXB.SetIds(i, iX);
-	aMPA.Add(aPKXB);
+        iX=aIt.Value();
+        aPKXB.Clear();
+        aPKXB.SetIds(i, iX);
+        aMPA.Add(aPKXB);
       }
     }
     //
