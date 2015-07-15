@@ -68,6 +68,8 @@ void NCollection_BaseSequence::PAppend (NCollection_SeqNode * theItem)
 
 void NCollection_BaseSequence::PAppend(NCollection_BaseSequence& Other)
 {
+  if (Other.mySize == 0)
+    return;
   if (mySize == 0) {
     mySize         = Other.mySize;
     myFirstItem    = Other.myFirstItem;
@@ -113,6 +115,8 @@ void NCollection_BaseSequence::PPrepend (NCollection_SeqNode * theItem)
 
 void NCollection_BaseSequence::PPrepend (NCollection_BaseSequence& Other)
 {
+  if (Other.mySize == 0)
+    return;
   if (mySize == 0) {
     mySize         = Other.mySize;
     myFirstItem    = Other.myFirstItem;

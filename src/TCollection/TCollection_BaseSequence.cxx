@@ -67,6 +67,8 @@ void TCollection_BaseSequence::PAppend(const Standard_Address newnode)
 // ---------------------------------------------------
 void TCollection_BaseSequence::PAppend(TCollection_BaseSequence& Other)
 {
+  if (Other.Size == 0)
+    return;
   if (Size == 0) {
     Size         = Other.Size;
     FirstItem    = Other.FirstItem;
@@ -104,6 +106,8 @@ void TCollection_BaseSequence::PPrepend(const Standard_Address newnode)
 
 void TCollection_BaseSequence::PPrepend(TCollection_BaseSequence& Other)
 {
+  if (Other.Size == 0)
+    return;
   if (Size == 0) {
     Size         = Other.Size;
     FirstItem    = Other.FirstItem;

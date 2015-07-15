@@ -3663,6 +3663,22 @@ static Standard_Integer OCC24923(
   return 0;
 }
 
+static Standard_Integer OCC26448 (Draw_Interpretor& theDI, Standard_Integer, const char **)
+{
+  TColStd_SequenceOfReal aSeq1, aSeq2;
+  aSeq1.Append(11.);
+  aSeq1.Prepend (aSeq2);
+  theDI << "TCollection: 11 -> " << aSeq1.First() << "\n";
+
+  NCollection_Sequence<Standard_Real> nSeq1, nSeq2;
+  nSeq1.Append(11.);
+  nSeq1.Prepend (nSeq2);
+  theDI << "NCollection: 11 -> " << nSeq1.First() << "\n";
+
+  theDI << "OK";
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3734,5 +3750,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   theCommands.Add ("OCC26139", "OCC26139 [-boxsize value] [-boxgrid value] [-compgrid value]", __FILE__, OCC26139, group);
   theCommands.Add ("OCC26284", "OCC26284", __FILE__, OCC26284, group);
+  theCommands.Add ("OCC26448", "OCC26448: check method Prepend() of sequence", __FILE__, OCC26448, group);
   return;
 }
