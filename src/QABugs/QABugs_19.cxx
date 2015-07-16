@@ -3663,6 +3663,64 @@ static Standard_Integer OCC24923(
   return 0;
 }
 
+#include <TColGeom_Array1OfBSplineCurve.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColGeom_HArray1OfBSplineCurve.hxx>
+#include <GeomConvert.hxx>
+
+//=======================================================================
+//function : OCC26446
+//purpose  : 
+//=======================================================================
+Standard_Integer OCC26446 (Draw_Interpretor& di, 
+                           Standard_Integer n, 
+                           const char** a)
+{
+  if (n != 4) {
+    di << "Usage: OCC26446 r c1 c2" << "\n";
+    return 1;
+  }
+
+  Handle(Geom_BSplineCurve) aCurve1 =
+    Handle(Geom_BSplineCurve)::DownCast(DrawTrSurf::GetCurve(a[2]));
+  Handle(Geom_BSplineCurve) aCurve2 = 
+    Handle(Geom_BSplineCurve)::DownCast(DrawTrSurf::GetCurve(a[3]));
+
+  if (aCurve1.IsNull()) {
+    di << a[2] << " is not a BSpline curve" << "\n";
+	return 1;
+  }
+
+  if (aCurve2.IsNull()) {
+    di << a[3] << " is not a BSpline curve" << "\n";
+	return 1;
+  }
+
+  TColGeom_Array1OfBSplineCurve          aCurves     (0, 1);
+  TColStd_Array1OfReal                   aTolerances (0, 0);
+  Standard_Real                          aTolConf    = 1.e-3;
+  Standard_Real                          aTolClosure = Precision::Confusion();
+  Handle(TColGeom_HArray1OfBSplineCurve) aConcatCurves;
+  Handle(TColStd_HArray1OfInteger)       anIndices;
+
+  aCurves.SetValue(0, aCurve1);
+  aCurves.SetValue(1, aCurve2);
+  aTolerances.SetValue(0, aTolConf);
+
+  GeomConvert::ConcatC1(aCurves,
+                        aTolerances,
+                        anIndices,
+                        aConcatCurves,
+                        Standard_False,
+                        aTolClosure);
+
+  Handle(Geom_BSplineCurve) aResult =
+    aConcatCurves->Value(aConcatCurves->Lower());
+
+  DrawTrSurf::Set(a[1], aResult);
+  return 0;
+}
+
 static Standard_Integer OCC26448 (Draw_Interpretor& theDI, Standard_Integer, const char **)
 {
   TColStd_SequenceOfReal aSeq1, aSeq2;
@@ -3818,6 +3876,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24923", "OCC24923", __FILE__, OCC24923, group);
   theCommands.Add ("OCC26139", "OCC26139 [-boxsize value] [-boxgrid value] [-compgrid value]", __FILE__, OCC26139, group);
   theCommands.Add ("OCC26284", "OCC26284", __FILE__, OCC26284, group);
+  theCommands.Add ("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
   theCommands.Add ("OCC26448", "OCC26448: check method Prepend() of sequence", __FILE__, OCC26448, group);
   theCommands.Add ("OCC26407", "OCC26407 result_name", __FILE__, OCC26407, group);
   return;
