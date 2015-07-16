@@ -1226,13 +1226,14 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
        
        if (index==j)                                      //initialisation at the begining of the loop
 	 ArrayOfConcatenated->SetValue(i,Curve1);
-       else{
-	 GeomConvert_CompCurveToBSplineCurve   C(Handle(Geom_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(i)));
-	 fusion=C.Add(Curve1,
-		      local_tolerance(j-1));          //merge of two consecutive curves               
-	 if (fusion==Standard_False)
-	   Standard_ConstructionError::Raise("GeomConvert Concatenation Error") ;
-	 ArrayOfConcatenated->SetValue(i,C.BSplineCurve());
+       else
+       {
+         // Merge of two consecutive curves.
+         GeomConvert_CompCurveToBSplineCurve   C(Handle(Geom_BSplineCurve)::DownCast(ArrayOfConcatenated->Value(i)));
+         fusion=C.Add(Curve1, local_tolerance(j-1), Standard_True);
+         if (fusion==Standard_False)
+           Standard_ConstructionError::Raise("GeomConvert Concatenation Error");
+         ArrayOfConcatenated->SetValue(i,C.BSplineCurve());
        }
      }
      index=index+1+nb_vertexG1;
