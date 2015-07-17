@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC26426"
+puts "========"
+puts ""
+################################################################################################################
+# Draft angle algorithm modifies input argument + the result of the operation have very large tolerance values
+################################################################################################################
+
+restore [locate_data_file OCC26426-prism_shape.brep] b
+
+set bug_info_0 [tolerance b]
+set bug_info_0 [lindex $bug_info_0 1]
+set bug_info_0 [string trim [string range $bug_info_0 [expr {[string first "=" $bug_info_0] + 1}] [expr {[string length $bug_info_0] - 1}]]]
+
+explode b f
+depouille r b 0 0 -1 b_1 -10 0 0 -40 0 0 1
+
+set bug_info_1 [tolerance b]
+set bug_info_1 [lindex $bug_info_1 1]
+set bug_info_1 [string trim [string range $bug_info_1 [expr {[string first "=" $bug_info_1] + 1}] [expr {[string length $bug_info_1] - 1}]]]
+
+set bug_info_2 [tolerance r]
+set bug_info_2 [lindex $bug_info_2 1]
+set bug_info_2 [string trim [string range $bug_info_2 [expr {[string first "=" $bug_info_2] + 1}] [expr {[string length $bug_info_2] - 1}]]]
+
+if {$bug_info_0 < $bug_info_1} {
+  puts "ERROR: OCC26426 is reproduced. Tolerance has been increased (case 1)."
+}
+
+if {[expr {$bug_info_0 + 0.0000001}] < $bug_info_2} {
+  puts "ERROR: OCC26426 is reproduced. Tolerance has been increased (case 2)."
+}

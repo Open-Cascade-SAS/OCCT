@@ -1,5 +1,5 @@
 #D3---------------------------------------------
-puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_6"
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO OCC22803 Linux Windows: Error : The area of the resulting shape is"
 
 plane pt 0 0 0 1 0 0
