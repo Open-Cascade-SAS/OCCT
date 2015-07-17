@@ -478,16 +478,8 @@ namespace
   {
     #define QA_TEST_CAST10(theTens, theDoCast) \
       QACast<QA_HANDLE_NAME(theTens ## 0)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 1)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 2)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 3)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 4)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 5)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 6)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 7)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 8)>::theDoCast(theDI, theNbIters, aPtr); \
-      QACast<QA_HANDLE_NAME(theTens ## 9)>::theDoCast(theDI, theNbIters, aPtr);
-
+      QACast<QA_HANDLE_NAME(theTens ## 5)>::theDoCast(theDI, theNbIters, aPtr);
+ 
     typedef typename TAs::element_type aPtrType;
     TAs aDummy (new aPtrType());
     theDI << "Making a pointer:\n";
@@ -582,26 +574,9 @@ static Standard_Integer QAHandleCast (Draw_Interpretor& theDI,
   std::ios::fmtflags aFlags = std::cout.flags();
   std::cout.precision (5);
 
-  #define QA_TEST_CASTAS10(theTens) \
-    case 10 * theTens + 0: qaCastAs<QA_HANDLE_NAME(theTens ## 0)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 1: qaCastAs<QA_HANDLE_NAME(theTens ## 1)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 2: qaCastAs<QA_HANDLE_NAME(theTens ## 2)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 3: qaCastAs<QA_HANDLE_NAME(theTens ## 3)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 4: qaCastAs<QA_HANDLE_NAME(theTens ## 4)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 5: qaCastAs<QA_HANDLE_NAME(theTens ## 5)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 6: qaCastAs<QA_HANDLE_NAME(theTens ## 6)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 7: qaCastAs<QA_HANDLE_NAME(theTens ## 7)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 8: qaCastAs<QA_HANDLE_NAME(theTens ## 8)>(theDI, *aHandle, aNbIters); break; \
-    case 10 * theTens + 9: qaCastAs<QA_HANDLE_NAME(theTens ## 9)>(theDI, *aHandle, aNbIters); break;
-
   switch (aPtrTo)
   {
     // vc11 requires /bigobj option
-    //QA_TEST_CASTAS10(0)
-    //QA_TEST_CASTAS10(1)
-    //QA_TEST_CASTAS10(2)
-    //QA_TEST_CASTAS10(3)
-    //QA_TEST_CASTAS10(4)
     case 0:  qaCastAs<Handle(qaclass00_50)>(theDI, *aHandle, aNbIters); break;
     case 10: qaCastAs<Handle(qaclass10_50)>(theDI, *aHandle, aNbIters); break;
     case 20: qaCastAs<Handle(qaclass20_50)>(theDI, *aHandle, aNbIters); break;

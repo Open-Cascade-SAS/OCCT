@@ -1066,6 +1066,9 @@ proc osutils:csfList { theOS  theCsfMap } {
     # Note: Tcl library name depends on version and is chosen by #pragma
     set aCsfMap(CSF_QT)         "QtCore4.lib QtGui4.lib"
 
+    #-- VTK
+    set aCsfMap(CSF_VTK)         [osutils:vtkCsf "wnt"]
+
   } else {
 
     #-- Tcl/Tk configuration
@@ -1108,8 +1111,40 @@ proc osutils:csfList { theOS  theCsfMap } {
     set aCsfMap(CSF_GL2PS)          "gl2ps"
 
     #-- VTK
-    set aCsfMap(CSF_VTK)         "vtkCommonCore-6.1 vtkCommonDataModel-6.1 vtkCommonExecutionModel-6.1 vtkCommonMath-6.1 vtkCommonTransforms-6.1 vtkRenderingCore-6.1"
+    set aCsfMap(CSF_VTK)         [osutils:vtkCsf "unix"]
   }
+}
+
+# Returns string of library dependencies for generation of Visual Studio project or make lists.
+proc osutils:vtkCsf {{theOS ""}} {
+  set aVtkVer "6.1"
+
+  set aLibSuffix ""
+  set aPathSplitter ":"
+  
+  if {"$theOS" == "wnt"} {
+    set aPathSplitter ";"
+    set aLibSuffix ".lib"
+  }
+
+  set anOptIncs [split $::env(CSF_OPT_INC) "$aPathSplitter"]
+  foreach anIncItem $anOptIncs {
+    if {[regexp -- "vtk-(.*)$" [file tail $anIncItem] dummy aFoundVtkVer]} {
+      set aVtkVer $aFoundVtkVer
+    }
+  }
+
+  set aLibArray [list vtkCommonCore vtkCommonDataModel vtkCommonExecutionModel vtkCommonMath vtkCommonTransforms vtkRenderingCore \
+                      vtkRenderingOpenGL  vtkFiltersGeneral vtkIOCore vtkIOImage vtkImagingCore vtkInteractionStyle]
+
+  # Additional suffices for the libraries
+  set anIdx 0
+  foreach anItem $aLibArray {
+    lset aLibArray $anIdx $anItem-$aVtkVer$aLibSuffix
+    incr anIdx
+  }
+
+  return [join $aLibArray " "]
 }
 
 proc osutils:usedOsLibs { theToolKit theOS } {
@@ -1603,13 +1638,6 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     }
 
     set aUsedToolKits [concat $aCommonUsedTK [osutils:usedOsLibs $theToolKit "wnt"]]
-	#puts "\t 7 $WOKSteps_exec_link($theToolKit)"
-    if { [regexp {WOKStep_DLLink} [_get_options wnt WOKSteps_exec_link $theToolKit]] || [regexp {WOKStep_Libink} [_get_options wnt WOKSteps_exec_link $theToolKit]] } {
-      set aUsedToolKits [concat $aUsedToolKits "\/dll"]
-      set binext 2
-    } else {
-      set binext 1
-    }
 
     # correct names of referred third-party libraries that are named with suffix
     # depending on VC version
@@ -1647,12 +1675,9 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     regsub -all -- {__TKINC__}  $aProjTmpl $anIncPaths    aProjTmpl
     regsub -all -- {__TKDEFS__} $aProjTmpl $aTKDefines    aProjTmpl
     regsub -all -- {__FILES__}  $aProjTmpl $aFilesSection aProjTmpl
-    regsub -all -- {__CONF__}   $aProjTmpl $binext        aProjTmpl
-    if { $binext == 2 } {
-      regsub -all -- {__XQTEXT__} $aProjTmpl "dll" aProjTmpl
-    } else {
-      regsub -all -- {__XQTEXT__} $aProjTmpl "exe" aProjTmpl
-    }
+    regsub -all -- {__CONF__}   $aProjTmpl Application    aProjTmpl
+
+    regsub -all -- {__XQTEXT__} $aProjTmpl "exe" aProjTmpl
 
     set aFile [open [set aVcFilePath [file join $theOutDir ${aProjName}.[osutils:vcproj:ext $theVcVer]]] w]
     fconfigure $aFile -translation crlf

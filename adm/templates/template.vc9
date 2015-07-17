@@ -146,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-MP /bigobj"
+				AdditionalOptions="-MP"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				InlineFunctionExpansion="1"
@@ -244,7 +244,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-MP -favor:blend /bigobj"
+				AdditionalOptions="-MP -favor:blend"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
@@ -339,7 +339,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-MP -favor:blend /bigobj"
+				AdditionalOptions="-MP -favor:blend"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				InlineFunctionExpansion="1"

@@ -184,7 +184,7 @@ TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
 {
   std::string anAddrStr;
   std::ostringstream ost;
-  ost << theShape.TShape().Access();
+  ost << theShape.TShape().get();
   anAddrStr = ost.str();
 
   TCollection_AsciiString aStr =

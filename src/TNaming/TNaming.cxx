@@ -831,8 +831,8 @@ TopoDS_Shape TNaming::FindUniqueContext(const TopoDS_Shape& Selection, const Top
 #ifdef OCCT_DEBUG
   TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape it (aMap);
   for (;it.More();it.Next()) {
-    cout <<"FindUniqueContext: Key - " <<it.Key().ShapeType()<< " " << it.Key().TShape() <<" OR = " <<it.Key().Orientation() <<
-      "  Context - " << it.Value().ShapeType() << "  " << it.Value().TShape()  << " OR = " <<it.Value().Orientation() <<endl;
+    cout <<"FindUniqueContext: Key - " <<it.Key().ShapeType()<< " " << it.Key().TShape().get() <<" OR = " <<it.Key().Orientation() <<
+      "  Context - " << it.Value().ShapeType() << "  " << it.Value().TShape().get()  << " OR = " <<it.Value().Orientation() <<endl;
   }
 #endif
   if(aMap.IsBound(Selection))

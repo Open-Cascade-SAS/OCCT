@@ -418,7 +418,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape() <<endl;
+	    cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape().get() <<endl;
 	  }
 #endif
 	}
@@ -435,7 +435,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape() <<endl;
+	    cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape().get() <<endl;
 	  }
 #endif
 	}
@@ -504,7 +504,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape() <<endl;
+	    cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape().get() <<endl;
 	  }
 #endif
 	}
@@ -520,7 +520,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape() <<endl;
+	    cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape().get() <<endl;
 	  }
 #endif
 	}

@@ -142,8 +142,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
 	} else {
 #ifdef OCCT_DEBUG
 	  Write(aNS->Get(), "Selection_Result.brep");
-	  Handle(TopoDS_TShape) aTS = aNS->Get().TShape();
-	  cout << "TShape = " << (Standard_Address)aTS <<endl;
+	  cout << "TShape = " << aNS->Get().TShape().get() <<endl;
 #endif 
 	  if(aIsWire && aNS->Get().ShapeType()== TopAbs_COMPOUND) {
 	    TopoDS_Shape aWireShape;

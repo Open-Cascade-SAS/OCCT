@@ -23,31 +23,26 @@ if { $ratio > 1.05 } {
 }
 
 # Check performance of down casting at different nesting depths.
-# OCCT is expected to be at least twice faster on deep nesting on x64,
-# however can be slower on 32-bit
+# OCCT is expected to be the same as C++
 set depths {3 5 10 50}
-if { [regexp x86 [dversion]] } {
-  set thresholds {2. 1.5 1. 1.2}
-} else {
-  set thresholds {1.6 1.1 0.7 0.5}
-}
+set threshold_std 1.15
+set threshold_ptr 1.05
 for {set i 0} {$i < [llength $depths]} {incr i} {
   set depth [lindex $depths $i]
-  set threshold [lindex $thresholds $i]
   puts "\nTesting DownCast at nesting depth $depth"
 
   set res [QAHandleCast $depth 0 100000]
   set res_lines [split $res \n]
-  set time_occt [lindex [lindex [split [lindex $res_lines end-2] :] end] $depth]
-  set time_std  [lindex [lindex [split [lindex $res_lines end-1] :] end] $depth]
-  set time_ptr  [lindex [lindex [split [lindex $res_lines end  ] :] end] $depth]
+  set time_occt [lindex [lindex [split [lindex $res_lines end-2] :] end] end]
+  set time_std  [lindex [lindex [split [lindex $res_lines end-1] :] end] end]
+  set time_ptr  [lindex [lindex [split [lindex $res_lines end  ] :] end] end]
   set ratio_std [expr $time_occt / $time_std]
   set ratio_ptr [expr $time_occt / $time_ptr]
   
   puts "Ratio of time of OCCT DownCast() to dynamic_cast<>: $ratio_std"
   puts "Ratio of time of OCCT DownCast() to dynamic_pointer_cast<>: $ratio_ptr"
 
-  if { $ratio_std > $threshold || $ratio_ptr > $threshold } {
+  if { $ratio_std > $threshold_std || $ratio_ptr > $threshold_ptr } {
     puts "Error: OCCT DownCast() is expected to be faster!"
   }
 }

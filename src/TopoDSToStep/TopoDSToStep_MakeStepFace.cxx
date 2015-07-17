@@ -271,7 +271,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
       if (MkWire.IsDone()) Loop = Handle(StepShape_Loop)::DownCast(MkWire.Value());
       else {
 #ifdef OCCT_DEBUG
-	cout << TopoDSToStep::DecodeWireError(MkWire.Error()) << endl;
+	cout << TopoDSToStep::DecodeWireError(MkWire.Error())->String() << endl;
 #endif
 	FP->AddWarning(errShape, " a Wire not mapped");
 	continue;

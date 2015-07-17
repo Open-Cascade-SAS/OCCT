@@ -673,7 +673,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRe
   else if ( Name == "VOLUME_MEASURE" ) isArea = Standard_False; 
   else {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Measure " << Model()->StringLabel ( M ) << " is neither area not volume" << endl;
+    cout << "Warning: Measure " << Model()->StringLabel ( M )->String() << " is neither area not volume" << endl;
 #endif
     return Standard_False;
   }
@@ -696,7 +696,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropPnt (const Handle(StepRep
   Handle(StepGeom_CartesianPoint) P = Handle(StepGeom_CartesianPoint)::DownCast ( item );
   if ( P.IsNull() || P->NbCoordinates() != 3 ) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Point " << Model()->StringLabel ( P ) << " is not valid for centroid" << endl;
+    cout << "Warning: Point " << Model()->StringLabel ( P )->String() << " is not valid for centroid" << endl;
 #endif
     return Standard_False;;
   }
