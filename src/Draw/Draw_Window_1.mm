@@ -531,18 +531,12 @@ Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
                                   [NSNumber numberWithInt: NSJPEGFileType], @"jpg",
                                   [NSNumber numberWithInt: NSGIFFileType],  @"gif",
                                   nil];
-
-  NSBitmapImageFileType aFileType;
-
-  if ([aFileTypeDict valueForKey: aFileExtension] != nil)
-  {
-    aFileType = [[aFileTypeDict valueForKey: aFileExtension] intValue];
-  }
-  else
+  if ([aFileTypeDict valueForKey: aFileExtension] == NULL)
   {
     return Standard_False; // unsupported image extension
   }
 
+  NSBitmapImageFileType aFileType = (NSBitmapImageFileType )[[aFileTypeDict valueForKey: aFileExtension] intValue];
   NSBitmapImageRep* anImageRep = [NSBitmapImageRep imageRepWithData: [myImageBuffer TIFFRepresentation]];
 
   NSData* aData = [anImageRep representationUsingType: aFileType 

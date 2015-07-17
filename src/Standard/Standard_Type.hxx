@@ -162,6 +162,8 @@ namespace opencascade {
   template <typename T>
   const Handle(Standard_Type)& type_instance<T>::get ()
   {
+    (void)myInstance; // ensure that myInstance is instantiated
+
     // static variable inside function ensures that descriptors
     // are initialized in correct sequence
     static Handle(Standard_Type) anInstance =
