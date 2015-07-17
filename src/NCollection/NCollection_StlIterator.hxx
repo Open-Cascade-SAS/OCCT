@@ -107,13 +107,13 @@ protected: //! @name methods related to forward STL iterator
   // an appropriate method based on template arguments (at instantiation time).
 
   template<bool Condition>
-  typename opencascade::enable_if<!Condition, ItemType&>::type Reference()
+  typename opencascade::enable_if<!Condition, ItemType&>::type Reference() const
   {
     return myIterator.ChangeValue();
   }
 
   template<bool Condition>
-  typename opencascade::enable_if<Condition, const ItemType&>::type Reference()
+  typename opencascade::enable_if<Condition, const ItemType&>::type Reference() const
   {
     return myIterator.Value();
   }
@@ -134,13 +134,13 @@ public: //! @name methods related to forward STL iterator
   }
 
   //! Get reference to current item
-  typename NCollection_StlIterator::reference operator*()
+  typename NCollection_StlIterator::reference operator*() const
   {
     return Reference<IsConstant>();
   }
 
   //! Dereferencing operator
-  typename NCollection_StlIterator::pointer operator->()
+  typename NCollection_StlIterator::pointer operator->() const
   {
     return &Reference<IsConstant>();
   }
