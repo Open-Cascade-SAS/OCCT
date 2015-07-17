@@ -1639,7 +1639,21 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   // load GL_ARB_vertex_type_2_10_10_10_rev (added to OpenGL 3.3 core)
   const bool hasVertType21010101rev = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_vertex_type_2_10_10_10_rev"))
-       && FindProcShort (glVertexP2ui)
+       && FindProcShort (glVertexAttribP1ui)
+       && FindProcShort (glVertexAttribP1uiv)
+       && FindProcShort (glVertexAttribP2ui)
+       && FindProcShort (glVertexAttribP2uiv)
+       && FindProcShort (glVertexAttribP3ui)
+       && FindProcShort (glVertexAttribP3uiv)
+       && FindProcShort (glVertexAttribP4ui)
+       && FindProcShort (glVertexAttribP4uiv);
+
+  if ( hasVertType21010101rev
+   && !isCoreProfile)
+  {
+    // load deprecated functions
+    const bool hasVertType21010101revExt =
+          FindProcShort (glVertexP2ui)
        && FindProcShort (glVertexP2uiv)
        && FindProcShort (glVertexP3ui)
        && FindProcShort (glVertexP3uiv)
@@ -1668,15 +1682,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glColorP4ui)
        && FindProcShort (glColorP4uiv)
        && FindProcShort (glSecondaryColorP3ui)
-       && FindProcShort (glSecondaryColorP3uiv)
-       && FindProcShort (glVertexAttribP1ui)
-       && FindProcShort (glVertexAttribP1uiv)
-       && FindProcShort (glVertexAttribP2ui)
-       && FindProcShort (glVertexAttribP2uiv)
-       && FindProcShort (glVertexAttribP3ui)
-       && FindProcShort (glVertexAttribP3uiv)
-       && FindProcShort (glVertexAttribP4ui)
-       && FindProcShort (glVertexAttribP4uiv);
+       && FindProcShort (glSecondaryColorP3uiv);
+    (void )hasVertType21010101revExt;
+  }
 
   // load OpenGL 3.3 extra functions
   has33 = IsGlGreaterEqual (3, 3)
