@@ -55,36 +55,6 @@ public: //! @name GL_ARB_timer_query (added to OpenGL 3.3 core)
 
 public: //! @name GL_ARB_vertex_type_2_10_10_10_rev (added to OpenGL 3.3 core)
 
-  using theBaseClass_t::glVertexP2ui;
-  using theBaseClass_t::glVertexP2uiv;
-  using theBaseClass_t::glVertexP3ui;
-  using theBaseClass_t::glVertexP3uiv;
-  using theBaseClass_t::glVertexP4ui;
-  using theBaseClass_t::glVertexP4uiv;
-  using theBaseClass_t::glTexCoordP1ui;
-  using theBaseClass_t::glTexCoordP1uiv;
-  using theBaseClass_t::glTexCoordP2ui;
-  using theBaseClass_t::glTexCoordP2uiv;
-  using theBaseClass_t::glTexCoordP3ui;
-  using theBaseClass_t::glTexCoordP3uiv;
-  using theBaseClass_t::glTexCoordP4ui;
-  using theBaseClass_t::glTexCoordP4uiv;
-  using theBaseClass_t::glMultiTexCoordP1ui;
-  using theBaseClass_t::glMultiTexCoordP1uiv;
-  using theBaseClass_t::glMultiTexCoordP2ui;
-  using theBaseClass_t::glMultiTexCoordP2uiv;
-  using theBaseClass_t::glMultiTexCoordP3ui;
-  using theBaseClass_t::glMultiTexCoordP3uiv;
-  using theBaseClass_t::glMultiTexCoordP4ui;
-  using theBaseClass_t::glMultiTexCoordP4uiv;
-  using theBaseClass_t::glNormalP3ui;
-  using theBaseClass_t::glNormalP3uiv;
-  using theBaseClass_t::glColorP3ui;
-  using theBaseClass_t::glColorP3uiv;
-  using theBaseClass_t::glColorP4ui;
-  using theBaseClass_t::glColorP4uiv;
-  using theBaseClass_t::glSecondaryColorP3ui;
-  using theBaseClass_t::glSecondaryColorP3uiv;
   using theBaseClass_t::glVertexAttribP1ui;
   using theBaseClass_t::glVertexAttribP1uiv;
   using theBaseClass_t::glVertexAttribP2ui;
