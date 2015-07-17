@@ -18,6 +18,7 @@
 
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>
+#include <BVH_BinnedBuilder.hxx>
 #include <NCollection_StdAllocator.hxx>
 #include <OpenGl_TextureBufferArb.hxx>
 #include <OpenGl_Texture.hxx>
@@ -166,12 +167,7 @@ public:
 public:
 
   //! Creates new OpenGL element triangulation.
-  OpenGl_TriangleSet (const Standard_Size theArrayID)
-  : BVH_Triangulation<Standard_ShortReal, 3>(),
-    myArrayID (theArrayID)
-  {
-    //
-  }
+  OpenGl_TriangleSet (const Standard_Size theArrayID);
 
   //! Releases resources of OpenGL element triangulation.
   ~OpenGl_TriangleSet()

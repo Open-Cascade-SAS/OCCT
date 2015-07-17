@@ -47,6 +47,10 @@ public:
     //
   }
 
+  //! Reserves internal BVH storage, so that it
+  //! can contain specified number of tree nodes.
+  void Reserve (const Standard_Integer theNbNodes);
+
   //! Returns minimum point of the given node.
   BVH_VecNt& MinPoint (const Standard_Integer theNodeIndex)
   {
@@ -256,7 +260,7 @@ protected:
   //! Array of node data records.
   BVH_Array4i myNodeInfoBuffer;
 
-  //! Depth of constructed tree.
+  //! Current depth of BVH tree.
   Standard_Integer myDepth;
 
 };

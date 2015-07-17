@@ -13,15 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <NCollection_Vector.hxx>
+
 // =======================================================================
 // function : BVH_QueueBuilder
 // purpose  : Creates new BVH queue based builder
 // =======================================================================
 template<class T, int N>
 BVH_QueueBuilder<T, N>::BVH_QueueBuilder (const Standard_Integer theLeafNodeSize,
-                                          const Standard_Integer theMaxTreeDepth)
+                                          const Standard_Integer theMaxTreeDepth,
+                                          const Standard_Integer theNumOfThreads)
 : BVH_Builder<T, N> (theLeafNodeSize,
-                     theMaxTreeDepth)
+                     theMaxTreeDepth),
+  myNumOfThreads (theNumOfThreads)
 {
   //
 }
@@ -37,6 +41,56 @@ BVH_QueueBuilder<T, N>::~BVH_QueueBuilder()
 }
 
 // =======================================================================
+// function : AddChildren
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_QueueBuilder<T, N>::AddChildren (BVH_Tree<T, N>*                                        theBVH,
+                                          const Standard_Integer                                 theNode,
+                                          const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes& theSubNodes)
+{
+  Standard_Integer aChildren[] = { -1, -1 };
+
+  if (!theSubNodes.IsValid())
+  {
+    return;
+  }
+
+  // Add child nodes
+  {
+    Standard_Mutex::Sentry aSentry (myBuildQueue.myMutex);
+
+    for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
+    {
+      aChildren[anIdx] = theBVH->AddLeafNode (theSubNodes.Boxes[anIdx],
+                                              theSubNodes.Ranges[anIdx].Start,
+                                              theSubNodes.Ranges[anIdx].Final);
+    }
+
+    BVH_Builder<T, N>::UpdateDepth (theBVH, theBVH->Level (theNode) + 1);
+  }
+
+  // Set parameters of child nodes and generate new tasks
+  for (Standard_Integer anIdx = 0; anIdx < 2; ++anIdx)
+  {
+    const Standard_Integer aChildIndex = aChildren[anIdx];
+
+    theBVH->Level (aChildIndex) = theBVH->Level (theNode) + 1;
+
+    (anIdx == 0 ? theBVH->LeftChild (theNode) : theBVH->RightChild (theNode)) = aChildIndex;
+
+    // Check to see if the child node must be split
+    const Standard_Boolean isLeaf = theSubNodes.NbPrims (anIdx) <= BVH_Builder<T, N>::myLeafNodeSize
+                                 || theBVH->Level (aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
+
+    if (!isLeaf)
+    {
+      myBuildQueue.Enqueue (aChildIndex);
+    }
+  }
+}
+
+// =======================================================================
 // function : Build
 // purpose  : Builds BVH using specific algorithm
 // =======================================================================
@@ -45,10 +99,8 @@ void BVH_QueueBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
                                     BVH_Tree<T, N>*      theBVH,
                                     const BVH_Box<T, N>& theBox)
 {
-  if (theBVH == NULL)
-  {
-    return;
-  }
+  Standard_ASSERT_RETURN (theBVH != NULL,
+    "Error! BVH tree to construct is NULL", );
 
   theBVH->Clear();
   if (theSet->Size() == 0)
@@ -62,23 +114,38 @@ void BVH_QueueBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
     return;
   }
 
-  myTasksQueue.Append (aRoot);
-  for (Standard_Integer aTask = 0; aTask < myTasksQueue.Size(); ++aTask)
+  myBuildQueue.Enqueue (aRoot);
+
+  BVH_TypedBuildTool aBuildTool (theSet, theBVH, this);
+
+  if (myNumOfThreads > 1)
   {
-    BuildNode (theSet, theBVH, myTasksQueue.Value (aTask));
+    // Reserve the maximum possible number of nodes in the BVH
+    theBVH->Reserve (2 * theSet->Size() - 1);
+
+    NCollection_Vector<Handle(BVH_BuildThread)> aThreads;
+
+    // Run BVH build threads
+    for (Standard_Integer aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
+    {
+      aThreads.Append (new BVH_BuildThread (aBuildTool, myBuildQueue));
+      aThreads.Last()->Run();
+    }
+
+    // Wait until all threads finish their work
+    for (Standard_Integer aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)
+    {
+      aThreads.ChangeValue (aThreadIndex)->Wait();
+    }
+
+    // Free unused memory
+    theBVH->Reserve (theBVH->Length());
   }
+  else
+  {
+    BVH_BuildThread aThread (aBuildTool, myBuildQueue);
 
-  myTasksQueue.Clear();
-}
-
-// =======================================================================
-// function : BuildNode
-// purpose  : Builds BVH node for the given task info
-// =======================================================================
-template<class T, int N>
-void BVH_QueueBuilder<T, N>::BuildNode (BVH_Set<T, N>*         /* theSet */,
-                                        BVH_Tree<T, N>*        /* theBVH */,
-                                        const Standard_Integer /* theTask */)
-{
-  // needed to disable compile warnings
+    // Execute thread function inside current thread
+    aThread.execute();
+  }
 }

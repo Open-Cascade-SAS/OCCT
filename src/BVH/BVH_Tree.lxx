@@ -99,7 +99,10 @@ Standard_Integer BVH_Tree<T, N>::AddLeafNode (const BVH_Box<T, N>&   theAABB,
                                               const Standard_Integer theBegElem,
                                               const Standard_Integer theEndElem)
 {
-  return AddLeafNode (theAABB.CornerMin(), theAABB.CornerMax(), theBegElem, theEndElem);
+  return AddLeafNode (theAABB.CornerMin(),
+                      theAABB.CornerMax(),
+                      theBegElem,
+                      theEndElem);
 }
 
 // =======================================================================
@@ -111,7 +114,10 @@ Standard_Integer BVH_Tree<T, N>::AddInnerNode (const BVH_Box<T, N>&   theAABB,
                                                const Standard_Integer theLftChild,
                                                const Standard_Integer theRghChild)
 {
-  return AddInnerNode (theAABB.CornerMin(), theAABB.CornerMax(), theLftChild, theRghChild);
+  return AddInnerNode (theAABB.CornerMin(),
+                       theAABB.CornerMax(),
+                       theLftChild,
+                       theRghChild);
 }
 
 namespace BVH
@@ -166,4 +172,16 @@ T BVH_Tree<T, N>::EstimateSAH() const
   T aSAH = static_cast<T> (0.0);
   BVH::EstimateSAH (this, 0, static_cast<T> (1.0), aSAH);
   return aSAH;
+}
+
+// =======================================================================
+// function : Reserve
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Tree<T, N>::Reserve (const Standard_Integer theNbNodes)
+{
+  BVH::Array<T,                N>::Reserve (myMinPointBuffer, theNbNodes);
+  BVH::Array<T,                N>::Reserve (myMaxPointBuffer, theNbNodes);
+  BVH::Array<Standard_Integer, 4>::Reserve (myNodeInfoBuffer, theNbNodes);
 }

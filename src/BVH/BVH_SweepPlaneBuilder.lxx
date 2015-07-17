@@ -23,9 +23,11 @@
 // =======================================================================
 template<class T, int N>
 BVH_SweepPlaneBuilder<T, N>::BVH_SweepPlaneBuilder (const Standard_Integer theLeafNodeSize,
-                                                    const Standard_Integer theMaxTreeDepth)
+                                                    const Standard_Integer theMaxTreeDepth,
+                                                    const Standard_Integer theNumOfThreads)
 : BVH_QueueBuilder<T, N> (theLeafNodeSize,
-                          theMaxTreeDepth)
+                          theMaxTreeDepth,
+                          theNumOfThreads)
 {
   //
 }
@@ -45,9 +47,9 @@ BVH_SweepPlaneBuilder<T, N>::~BVH_SweepPlaneBuilder()
 // purpose  :
 // =======================================================================
 template<class T, int N>
-void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
-                                             BVH_Tree<T, N>*        theBVH,
-                                             const Standard_Integer theNode)
+typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
+                                                                                        BVH_Tree<T, N>*        theBVH,
+                                                                                        const Standard_Integer theNode)
 {
   const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive (theNode);
   const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive (theNode);
@@ -55,7 +57,7 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
 
   if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
   {
-    return; // node does not require partitioning
+    return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(); // node does not require partitioning
   }
 
   // Parameters for storing best split
@@ -118,7 +120,7 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
 
   if (aMinSplitAxis == -1)
   {
-    return;
+    return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(); // failed to find split axis
   }
 
   theBVH->SetInner (theNode);
@@ -144,49 +146,10 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
 
   const Standard_Integer aMiddle = aNodeBegPrimitive + aMinSplitIndex;
 
-  static const Standard_Integer aLftNode = 1;
-  static const Standard_Integer aRghNode = 2;
+  typedef typename BVH_QueueBuilder<T, N>::BVH_PrimitiveRange Range;
 
-  // Setting up tasks for child nodes
-  for (Standard_Integer aSide = aLftNode; aSide <= aRghNode; ++aSide)
-  {
-    typename BVH_Box<T, N>::BVH_VecNt aChildMinPoint = (aSide == aLftNode)
-                                                     ? aMinSplitBoxLft.CornerMin()
-                                                     : aMinSplitBoxRgh.CornerMin();
-    typename BVH_Box<T, N>::BVH_VecNt aChildMaxPoint = (aSide == aLftNode)
-                                                     ? aMinSplitBoxLft.CornerMax()
-                                                     : aMinSplitBoxRgh.CornerMax();
-
-    Standard_Integer aChildBegPrimitive = (aSide == aLftNode)
-                                        ? aNodeBegPrimitive
-                                        : aMiddle;
-    Standard_Integer aChildEndPrimitive = (aSide == aLftNode)
-                                        ? aMiddle - 1
-                                        : aNodeEndPrimitive;
-
-    Standard_Integer aChildIndex = theBVH->AddLeafNode (aChildMinPoint, aChildMaxPoint,
-                                                        aChildBegPrimitive, aChildEndPrimitive);
-
-    theBVH->Level (aChildIndex) = theBVH->Level (theNode) + 1;
-
-    // Check to see if child node must be split
-    const Standard_Integer aChildNbPimitives = (aSide == aLftNode)
-                                             ? aMiddle - aNodeBegPrimitive
-                                             : aNodeEndPrimitive - aMiddle + 1;
-
-    if (aSide == aLftNode)
-      theBVH->LeftChild (theNode) = aChildIndex;
-    else
-      theBVH->RightChild (theNode) = aChildIndex;
-
-    const Standard_Boolean isLeaf = aChildNbPimitives <= BVH_Builder<T, N>::myLeafNodeSize
-                                 || theBVH->Level (aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
-
-    if (!isLeaf)
-    {
-      BVH_QueueBuilder<T, N>::myTasksQueue.Append (aChildIndex);
-    }
-
-    BVH_Builder<T, N>::UpdateDepth (theBVH, theBVH->Level (aChildIndex));
-  }
+  return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes (aMinSplitBoxLft,
+                                                          aMinSplitBoxRgh,
+                                                          Range (aNodeBegPrimitive, aMiddle - 1),
+                                                          Range (aMiddle,     aNodeEndPrimitive));
 }

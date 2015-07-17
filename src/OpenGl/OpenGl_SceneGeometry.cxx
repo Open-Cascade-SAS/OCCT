@@ -13,16 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Assert.hxx>
+#include <OSD_Timer.hxx>
 #include <OSD_Parallel.hxx>
-
-#include <OpenGl_SceneGeometry.hxx>
-
+#include <Standard_Assert.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
-#include <OSD_Timer.hxx>
-#include <Standard_Assert.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
 //! Use this macro to output BVH profiling info
@@ -182,6 +179,18 @@ OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 }
 
 // =======================================================================
+// function : OpenGl_TriangleSet
+// purpose  : Creates new OpenGL element triangulation
+// =======================================================================
+OpenGl_TriangleSet::OpenGl_TriangleSet (const Standard_Size theArrayID)
+: BVH_Triangulation<Standard_ShortReal, 3>(),
+  myArrayID (theArrayID)
+{
+  myBuilder = new BVH_BinnedBuilder<Standard_ShortReal, 3 /* dim */, 48 /* bins */>
+    (5 /* leaf size */, 32 /* max height */, Standard_False, OSD_Parallel::NbLogicalProcessors() + 1 /* threads */);
+}
+
+// =======================================================================
 // function : Clear
 // purpose  : Clears ray-tracing geometry
 // =======================================================================
@@ -205,7 +214,7 @@ struct OpenGL_BVHParallelBuilder
   BVH_ObjectSet<Standard_ShortReal, 3>* Set;
 
   OpenGL_BVHParallelBuilder (BVH_ObjectSet<Standard_ShortReal, 3>* theSet)
-    : Set (theSet)
+  : Set (theSet)
   {
     //
   }

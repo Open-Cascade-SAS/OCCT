@@ -5,6 +5,10 @@ BVH_Box.hxx
 BVH_Box.lxx
 BVH_Builder.hxx
 BVH_Builder.lxx
+BVH_BuildQueue.hxx
+BVH_BuildQueue.cxx
+BVH_BuildThread.hxx
+BVH_BuildThread.cxx
 BVH_DistanceField.hxx
 BVH_DistanceField.lxx
 BVH_Geometry.hxx

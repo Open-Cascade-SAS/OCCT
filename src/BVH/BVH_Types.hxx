@@ -26,6 +26,11 @@
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vector.hxx>
 
+// GCC supports shrink function only in C++11 mode
+#if defined(_BVH_USE_STD_VECTOR_) && defined(_MSC_VER) && !defined(__INTEL_COMPILER)
+  #define _STD_VECTOR_SHRINK
+#endif
+
 namespace BVH
 {
   //! Tool class for selecting appropriate vector type (Eigen or NCollection).
@@ -179,6 +184,7 @@ namespace BVH
   {
     typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
 
+    //! Returns a const reference to the element with the given index.
     static inline const typename BVH::VectorType<T, N>::Type& Value (
         const BVH_ArrayNt& theArray, const Standard_Integer theIndex)
     {
@@ -189,6 +195,7 @@ namespace BVH
 #endif
     }
 
+    //! Returns a reference to the element with the given index.
     static inline typename BVH::VectorType<T, N>::Type& ChangeValue (
       BVH_ArrayNt& theArray, const Standard_Integer theIndex)
     {
@@ -199,6 +206,7 @@ namespace BVH
 #endif
     }
 
+    //! Adds the new element at the end of the array.
     static inline void Append (BVH_ArrayNt& theArray,
       const typename BVH::VectorType<T, N>::Type& theElement)
     {
@@ -209,6 +217,7 @@ namespace BVH
 #endif
     }
 
+    //! Returns the number of elements in the given array.
     static inline Standard_Integer Size (const BVH_ArrayNt& theArray)
     {
 #ifdef _BVH_USE_STD_VECTOR_
@@ -218,12 +227,34 @@ namespace BVH
 #endif
     }
 
+    //! Removes all elements from the given array.
     static inline void Clear (BVH_ArrayNt& theArray)
     {
 #ifdef _BVH_USE_STD_VECTOR_
       theArray.clear();
 #else
       theArray.Clear();
+#endif
+    }
+
+    //! Requests that the array capacity be at least enough to
+    //! contain given number of elements. This function has no
+    //! effect in case of NCollection based array.
+    static inline void Reserve (BVH_ArrayNt& theArray, const Standard_Integer theCount)
+    {
+#ifdef _BVH_USE_STD_VECTOR_
+      if (Size (theArray) == theCount)
+      {
+#ifdef _STD_VECTOR_SHRINK
+        theArray.shrink_to_fit();
+#endif
+      }
+      else
+      {
+        theArray.reserve (theCount);
+      }
+#else
+      // do nothing
 #endif
     }
   };

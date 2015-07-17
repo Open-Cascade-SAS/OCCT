@@ -26,17 +26,18 @@ public:
 
   //! Creates sweep plane SAH BVH builder.
   BVH_SweepPlaneBuilder (const Standard_Integer theLeafNodeSize = 5,
-                         const Standard_Integer theMaxTreeDepth = 32);
+                         const Standard_Integer theMaxTreeDepth = 32,
+                         const Standard_Integer theNumOfThreads = 1);
 
   //! Releases resources of sweep plane SAH BVH builder.
   virtual ~BVH_SweepPlaneBuilder();
 
 protected:
 
-  //! Builds specified BVH node.
-  virtual void BuildNode (BVH_Set<T, N>*         theSet,
-                          BVH_Tree<T, N>*        theBVH,
-                          const Standard_Integer theNode);
+  //! Performs splitting of the given BVH node.
+  typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BuildNode (BVH_Set<T, N>*         theSet,
+                                                             BVH_Tree<T, N>*        theBVH,
+                                                             const Standard_Integer theNode);
 
 };
 

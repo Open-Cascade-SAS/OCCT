@@ -20,7 +20,7 @@
 
 #include <algorithm>
 
-//! Stores parameters of single node bin (slice of AABB).
+//! Stores parameters of single bin (slice of AABB).
 template<class T, int N>
 struct BVH_Bin
 {
@@ -31,8 +31,12 @@ struct BVH_Bin
   BVH_Box<T, N>    Box;   //!< AABB of primitives in the bin
 };
 
-//! Performs building of BVH tree using binned SAH algorithm.
-//! Number of Bins controls tree's quality (greater - better) in cost of construction time.
+//! Performs construction of BVH tree using binned SAH algorithm. Number
+//! of bins controls BVH quality in cost of construction time (greater -
+//! better). For optimal results, use 32 - 48 bins. However, reasonable
+//! performance is provided even for 4 - 8 bins (it is only 10-20% lower
+//! in comparison with optimal settings). Note that multiple threads can
+//! be used only with thread safe BVH primitive sets.
 template<class T, int N, int Bins = 32>
 class BVH_BinnedBuilder : public BVH_QueueBuilder<T, N>
 {
@@ -46,17 +50,18 @@ public:
   //! Creates binned SAH BVH builder.
   BVH_BinnedBuilder (const Standard_Integer theLeafNodeSize = 5,
                      const Standard_Integer theMaxTreeDepth = 32,
-                     const Standard_Boolean theToUseMainAxis = Standard_False);
+                     const Standard_Boolean theDoMainSplits = 0,
+                     const Standard_Integer theNumOfThreads = 1);
 
   //! Releases resources of binned SAH BVH builder.
   virtual ~BVH_BinnedBuilder();
 
 protected:
 
-  //! Builds BVH node for specified task info.
-  virtual void BuildNode (BVH_Set<T, N>*         theSet,
-                          BVH_Tree<T, N>*        theBVH,
-                          const Standard_Integer theNode);
+  //! Performs splitting of the given BVH node.
+  typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BuildNode (BVH_Set<T, N>*         theSet,
+                                                             BVH_Tree<T, N>*        theBVH,
+                                                             const Standard_Integer theNode);
 
   //! Arranges node primitives into bins.
   virtual void GetSubVolumes (BVH_Set<T, N>*         theSet,
