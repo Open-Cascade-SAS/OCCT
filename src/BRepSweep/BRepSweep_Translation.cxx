@@ -153,15 +153,27 @@ TopoDS_Shape  BRepSweep_Translation::MakeEmptyGeneratingEdge
   //Call only in case of construction with copy.
   Standard_ConstructionError_Raise_if
     (!myCopy,"BRepSweep_Translation::MakeEmptyVertex");
-  TopLoc_Location L;
-  Standard_Real First,Last;
-  Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(aGenE),L,First,Last);
-  C = Handle(Geom_Curve)::DownCast(C->Copy());
-  C->Transform(L.Transformation());
-  if (aDirV.Index() == 2) C->Transform(myLocation.Transformation());
   TopoDS_Edge newE;
-  myBuilder.Builder().MakeEdge
-    (newE,C,BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
+  if(BRep_Tool::Degenerated(TopoDS::Edge(aGenE)))
+  {
+    myBuilder.Builder().MakeEdge(newE);
+    myBuilder.Builder().UpdateEdge(newE, BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
+    myBuilder.Builder().Degenerated(newE, Standard_True);
+  }
+  else
+  {
+    TopLoc_Location L;
+    Standard_Real First,Last;
+    Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(aGenE),L,First,Last);
+    if(!C.IsNull())
+    {
+      C = Handle(Geom_Curve)::DownCast(C->Copy());
+      C->Transform(L.Transformation());
+      if (aDirV.Index() == 2) C->Transform(myLocation.Transformation());
+    }
+    myBuilder.Builder().MakeEdge
+      (newE,C,BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
+  }
   return newE;
 }
 
@@ -301,12 +313,23 @@ void  BRepSweep_Translation::SetPCurve
 {
   //Set on edges of cap faces the same pcurves as 
   //edges of the generating face.
-  Standard_Real First,Last;
-  myBuilder.Builder().UpdateEdge
-    (TopoDS::Edge(aNewEdge),
-     BRep_Tool::CurveOnSurface
-       (TopoDS::Edge(aGenE),TopoDS::Face(aGenF),First,Last),
-     TopoDS::Face(aNewFace),Precision::PConfusion());
+  Standard_Boolean isclosed = BRep_Tool::IsClosed(TopoDS::Edge(aGenE), TopoDS::Face(aGenF));
+  if(isclosed)
+  {
+    Standard_Real First, Last;
+    TopoDS_Edge anE = TopoDS::Edge(aGenE.Oriented(TopAbs_FORWARD));
+    Handle(Geom2d_Curve) aC1 = BRep_Tool::CurveOnSurface(anE, TopoDS::Face(aGenF), First, Last);
+    anE.Reverse();
+    Handle(Geom2d_Curve) aC2 = BRep_Tool::CurveOnSurface(anE, TopoDS::Face(aGenF), First, Last);
+    myBuilder.Builder().UpdateEdge(TopoDS::Edge(aNewEdge), aC1, aC2, TopoDS::Face(aNewFace),Precision::PConfusion());
+  }
+  else
+  {
+    Standard_Real First,Last;
+    myBuilder.Builder().UpdateEdge(TopoDS::Edge(aNewEdge),
+      BRep_Tool::CurveOnSurface(TopoDS::Edge(aGenE),TopoDS::Face(aGenF),First,Last),
+         TopoDS::Face(aNewFace),Precision::PConfusion());
+  }
 }
 
 
