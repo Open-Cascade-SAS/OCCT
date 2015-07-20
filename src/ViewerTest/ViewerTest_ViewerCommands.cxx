@@ -660,7 +660,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 #if defined(_WIN32)
   VT_GetWindow() = new WNT_Window (aTitle.ToCString(),
                                     Handle(WNT_WClass)::DownCast (WClass()),
-                                    Draw_VirtualWindows ? WS_POPUPWINDOW : WS_OVERLAPPEDWINDOW,
+                                    Draw_VirtualWindows ? WS_POPUP : WS_OVERLAPPEDWINDOW,
                                     aPxLeft, aPxTop,
                                     aPxWidth, aPxHeight,
                                     Quantity_NOC_BLACK);

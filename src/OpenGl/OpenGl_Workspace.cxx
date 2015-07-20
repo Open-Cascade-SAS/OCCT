@@ -145,7 +145,8 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   NamedStatus (0),
   HighlightColor (&THE_WHITE_COLOR),
   //
-  myHasFboBlit (Standard_True),
+  myHasFboBlit   (Standard_True),
+  myToFlipOutput (Standard_False),
   //
   myViewId               (-1),
   myAntiAliasingMode     (3),
@@ -270,7 +271,8 @@ OpenGl_Workspace::~OpenGl_Workspace()
   nullifyGlResource (myImmediateSceneFbos[0], myGlContext);
   nullifyGlResource (myImmediateSceneFbos[1], myGlContext);
 
-  myFullScreenQuad.Release (myGlContext.operator->());
+  myFullScreenQuad    .Release (myGlContext.operator->());
+  myFullScreenQuadFlip.Release (myGlContext.operator->());
 }
 
 // =======================================================================
@@ -712,11 +714,52 @@ void OpenGl_Workspace::bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo)
 }
 
 // =======================================================================
+// function : initBlitQuad
+// purpose  :
+// =======================================================================
+OpenGl_VertexBuffer* OpenGl_Workspace::initBlitQuad (const Standard_Boolean theToFlip)
+{
+  OpenGl_VertexBuffer* aVerts = NULL;
+  if (!theToFlip)
+  {
+    aVerts = &myFullScreenQuad;
+    if (!aVerts->IsValid())
+    {
+      OpenGl_Vec4 aQuad[4] =
+      {
+        OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 0.0f),
+        OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 1.0f),
+        OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 0.0f),
+        OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 1.0f)
+      };
+      aVerts->Init (myGlContext, 4, 4, aQuad[0].GetData());
+    }
+  }
+  else
+  {
+    aVerts = &myFullScreenQuadFlip;
+    if (!aVerts->IsValid())
+    {
+      OpenGl_Vec4 aQuad[4] =
+      {
+        OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 1.0f),
+        OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 0.0f),
+        OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 1.0f),
+        OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 0.0f)
+      };
+      aVerts->Init (myGlContext, 4, 4, aQuad[0].GetData());
+    }
+  }
+  return aVerts;
+}
+
+// =======================================================================
 // function : blitBuffers
 // purpose  :
 // =======================================================================
-bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer* theReadFbo,
-                                    OpenGl_FrameBuffer* theDrawFbo)
+bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
+                                    OpenGl_FrameBuffer*    theDrawFbo,
+                                    const Standard_Boolean theToFlip)
 {
   if (theReadFbo == NULL)
   {
@@ -780,29 +823,19 @@ bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer* theReadFbo,
     myGlContext->core20fwd->glEnable (GL_DEPTH_TEST);
 
     DisableTexture();
-    if (!myFullScreenQuad.IsValid())
-    {
-      OpenGl_Vec4 aQuad[4] =
-      {
-        OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 0.0f),
-        OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 1.0f),
-        OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 0.0f),
-        OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 1.0f)
-      };
-      myFullScreenQuad.Init (myGlContext, 4, 4, aQuad[0].GetData());
-    }
 
+    OpenGl_VertexBuffer* aVerts = initBlitQuad (theToFlip);
     const Handle(OpenGl_ShaderManager)& aManager = myGlContext->ShaderManager();
-    if (myFullScreenQuad.IsValid()
+    if (aVerts->IsValid()
      && aManager->BindFboBlitProgram())
     {
       theReadFbo->ColorTexture()       ->Bind   (myGlContext, GL_TEXTURE0 + 0);
       theReadFbo->DepthStencilTexture()->Bind   (myGlContext, GL_TEXTURE0 + 1);
-      myFullScreenQuad.BindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
+      aVerts->BindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
 
       myGlContext->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
 
-      myFullScreenQuad.UnbindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
+      aVerts->UnbindVertexAttrib (myGlContext, Graphic3d_TOA_POS);
       theReadFbo->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
       theReadFbo->ColorTexture()       ->Unbind (myGlContext, GL_TEXTURE0 + 0);
     }
@@ -874,20 +907,10 @@ void OpenGl_Workspace::drawStereoPair (const Graphic3d_CView& theCView)
   myGlContext->core20fwd->glEnable (GL_DEPTH_TEST);
 
   DisableTexture();
-  if (!myFullScreenQuad.IsValid())
-  {
-    OpenGl_Vec4 aQuad[4] =
-    {
-      OpenGl_Vec4( 1.0f, -1.0f, 1.0f, 0.0f),
-      OpenGl_Vec4( 1.0f,  1.0f, 1.0f, 1.0f),
-      OpenGl_Vec4(-1.0f, -1.0f, 0.0f, 0.0f),
-      OpenGl_Vec4(-1.0f,  1.0f, 0.0f, 1.0f)
-    };
-    myFullScreenQuad.Init (myGlContext, 4, 4, aQuad[0].GetData());
-  }
+  OpenGl_VertexBuffer* aVerts = initBlitQuad (myToFlipOutput);
 
   const Handle(OpenGl_ShaderManager)& aManager = myGlContext->ShaderManager();
-  if (myFullScreenQuad.IsValid()
+  if (aVerts->IsValid()
    && aManager->BindStereoProgram (theCView.RenderParams.StereoMode))
   {
     if (theCView.RenderParams.StereoMode == Graphic3d_StereoMode_Anaglyph)
@@ -955,11 +978,11 @@ void OpenGl_Workspace::drawStereoPair (const Graphic3d_CView& theCView)
 
     aPair[0]->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + 0);
     aPair[1]->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + 1);
-    myFullScreenQuad.BindVertexAttrib (myGlContext, 0);
+    aVerts->BindVertexAttrib (myGlContext, 0);
 
     myGlContext->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
 
-    myFullScreenQuad.UnbindVertexAttrib (myGlContext, 0);
+    aVerts->UnbindVertexAttrib (myGlContext, 0);
     aPair[1]->ColorTexture()->Unbind (myGlContext, GL_TEXTURE0 + 1);
     aPair[0]->ColorTexture()->Unbind (myGlContext, GL_TEXTURE0 + 0);
   }
@@ -1032,6 +1055,11 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       if (myGlContext->core20fwd != NULL)
       {
         myMainSceneFbos[0]->Init (myGlContext, aSizeX, aSizeY);
+      }
+      if (myToFlipOutput
+       && myMainSceneFbos[0]->IsValid())
+      {
+        myImmediateSceneFbos[0]->InitLazy (myGlContext, aSizeX, aSizeY);
       }
     }
   }
@@ -1139,6 +1167,13 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   else
   {
     OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
+    OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
+    if (myToFlipOutput
+     && myImmediateSceneFbos[0]->IsValid())
+    {
+      anImmFbo = myImmediateSceneFbos[0].operator->();
+    }
+
   #if !defined(GL_ES_VERSION_2_0)
     if (aMainFbo     == NULL
      && aFrameBuffer == NULL)
@@ -1150,9 +1185,15 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
              aMainFbo != NULL ? aMainFbo : aFrameBuffer, aProjectType);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aMainFbo, aProjectType, aFrameBuffer))
+    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aMainFbo, aProjectType, anImmFbo))
     {
       toSwap = false;
+    }
+
+    if (anImmFbo != NULL
+     && anImmFbo != aFrameBuffer)
+    {
+      blitBuffers (anImmFbo, aFrameBuffer, myToFlipOutput);
     }
   }
 
@@ -1342,6 +1383,18 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
                                         const Aspect_CLayer2d& theCUnderLayer,
                                         const Aspect_CLayer2d& theCOverLayer)
 {
+  if (!myTransientDrawToFront
+   || !myBackBufferRestored
+   || (myGlContext->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
+  {
+    Redraw (theCView, theCUnderLayer, theCOverLayer);
+    return;
+  }
+  else if (!Activate())
+  {
+    return;
+  }
+
   const Handle(Graphic3d_Camera)& aCamera      = myView->Camera();
   Graphic3d_Camera::Projection    aProjectType = aCamera->ProjectionType();
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
@@ -1365,18 +1418,6 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     {
       aProjectType = Graphic3d_Camera::Projection_Perspective;
     }
-  }
-
-  if (!myTransientDrawToFront
-   || !myBackBufferRestored
-   || (myGlContext->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
-  {
-    Redraw (theCView, theCUnderLayer, theCOverLayer);
-    return;
-  }
-  else if (!Activate())
-  {
-    return;
   }
 
   bool toSwap = false;
@@ -1445,6 +1486,12 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   else
   {
     OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
+    OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
+    if (myToFlipOutput
+     && myImmediateSceneFbos[0]->IsValid())
+    {
+      anImmFbo = myImmediateSceneFbos[0].operator->();
+    }
   #if !defined(GL_ES_VERSION_2_0)
     if (aMainFbo == NULL)
     {
@@ -1454,8 +1501,13 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
     toSwap = redrawImmediate (theCView, theCUnderLayer, theCOverLayer,
                               aMainFbo,
                               aProjectType,
-                              aFrameBuffer,
+                              anImmFbo,
                               Standard_True) || toSwap;
+    if (anImmFbo != NULL
+     && anImmFbo != aFrameBuffer)
+    {
+      blitBuffers (anImmFbo, aFrameBuffer, myToFlipOutput);
+    }
   }
 
   // bind default FBO

@@ -1,16 +1,15 @@
-#include "BridgeFBO.hxx"
+#include <windows.h>
 
 // include required OCCT headers
 #include <Standard_Version.hxx>
 #include <Message_ProgressIndicator.hxx>
 //for OCC graphic
-#include <Aspect_DisplayConnection.hxx>
 #include <WNT_Window.hxx>
+#include <WNT_WClass.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <OpenGl_GraphicDriver.hxx>
-#include <OpenGl_CView.hxx>
+#include <D3DHost_GraphicDriver.hxx>
 //for object display
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
@@ -47,10 +46,13 @@
 #pragma comment(lib, "TKService.lib")
 #pragma comment(lib, "TKV3d.lib")
 #pragma comment(lib, "TKOpenGl.lib")
+#pragma comment(lib, "TKD3dHost.lib")
 #pragma comment(lib, "TKIGES.lib")
 #pragma comment(lib, "TKSTEP.lib")
 #pragma comment(lib, "TKStl.lib")
 #pragma comment(lib, "TKVrml.lib")
+
+#pragma comment(lib, "D3D9.lib")
 
 /// <summary>
 /// Proxy class encapsulating calls to OCCT C++ classes within
@@ -60,10 +62,7 @@ public ref class OCCTProxyD3D
 {
 public:
 
-  OCCTProxyD3D() : myBridgeFBO (NULL)
-  {
-    //
-  }
+  OCCTProxyD3D() {}
 
   // ============================================
   // Viewer functionality
@@ -73,9 +72,10 @@ public:
   ///Initialize a viewer
   /// </summary>
   /// <param name="theWnd">System.IntPtr that contains the window handle (HWND) of the control</param>
-  bool InitViewer (System::IntPtr theWnd)
+  bool InitViewer()
   {
-    myGraphicDriver() = new OpenGl_GraphicDriver (Handle(Aspect_DisplayConnection)());
+    myGraphicDriver() = new D3DHost_GraphicDriver();
+    myGraphicDriver()->ChangeOptions().buffersNoSwap = true;
     //myGraphicDriver()->ChangeOptions().contextDebug = true;
 
     TCollection_ExtendedString a3DName ("Visu3D");
@@ -87,76 +87,26 @@ public:
     myViewer()->SetDefaultLights();
     myViewer()->SetLightOn();
     myView() = myViewer()->CreateView();
-    Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (theWnd.ToPointer()));
+
+    static Handle(WNT_WClass) aWClass = new WNT_WClass ("OCC_Viewer", NULL, CS_OWNDC);
+    Handle(WNT_Window) aWNTWindow = new WNT_Window ("OCC_Viewer", aWClass, WS_POPUP, 64, 64, 64, 64);
+    aWNTWindow->SetVirtual (Standard_True);
     myView()->SetWindow(aWNTWindow);
-    if (!aWNTWindow->IsMapped())
-    {
-      aWNTWindow->Map();
-    }
     myAISContext() = new AIS_InteractiveContext (myViewer());
     myAISContext()->UpdateCurrentViewer();
     myView()->MustBeResized();
     return true;
   }
 
-  /// <summary> Initializes OCCT viewer for OpenGL-Direct3D interoperability. </summary>
-  bool InitViewer (System::IntPtr theHWND,
-                   System::IntPtr theD3DDevice)
-  {
-    if (!InitViewer (theHWND))
-    {
-      return false;
-    }
-
-    Graphic3d_CView*       aCView     = reinterpret_cast<Graphic3d_CView*> (myView()->View()->CView());
-    OpenGl_CView*          aCViewGl   = reinterpret_cast<OpenGl_CView*>    (aCView->ptrView);
-    Handle(OpenGl_Context) aGlContext = aCViewGl->WS->GetGlContext();
-    if (aGlContext.IsNull())
-    {
-      return false;
-    }
-    if (!aGlContext->IsCurrent())
-    {
-      aGlContext->MakeCurrent();
-    }
-
-    myBridgeFBO = new BridgeFBO();
-    if (!myBridgeFBO->Init (aGlContext, theD3DDevice.ToPointer()))
-    {
-      return false;
-    }
-
-    aCView->ptrFBO = myBridgeFBO;
-    return true;
-  }
-
   /// <summary> Resizes custom FBO for Direct3D output. </summary>
-  bool ResizeBridgeFBO (int theWinSizeX,
-                        int theWinSizeY,
-                        System::IntPtr theColorSurf,
-                        System::IntPtr theColorSurfShare)
+  System::IntPtr ResizeBridgeFBO (int theWinSizeX,
+                                  int theWinSizeY)
   {
-    if (myBridgeFBO == NULL)
-    {
-      return false;
-    }
-
-    OpenGl_CView* aCView = reinterpret_cast<OpenGl_CView*> (reinterpret_cast<Graphic3d_CView*> (myView()->View()->CView())->ptrView);
-    Handle(OpenGl_Context) aGlContext = aCView->WS->GetGlContext();
-    if (aGlContext.IsNull()
-    || !aGlContext->MakeCurrent())
-    {
-      return false;
-    }
-
-    myBridgeFBO->Resize (aGlContext, theWinSizeX, theWinSizeY);
-    if (!myBridgeFBO->RegisterD3DColorBuffer (aGlContext, theColorSurf.ToPointer(), theColorSurfShare.ToPointer()))
-    {
-      return false;
-    }
-
-    myView()->Camera()->SetAspect (Standard_Real (theWinSizeX) / Standard_Real (theWinSizeY));
-    return true;
+    Handle(WNT_Window) aWNTWindow = Handle(WNT_Window)::DownCast (myView()->Window());
+    aWNTWindow->SetPos (0, 0, theWinSizeX, theWinSizeY);
+    myView()->MustBeResized();
+    myView()->Invalidate();
+    return System::IntPtr(myGraphicDriver()->D3dColorSurface (myView()->View()));
   }
 
   /// <summary>
@@ -730,33 +680,6 @@ public:
   }
 
   /// <summary>
-  ///Create new view
-  /// </summary>
-  /// <param name="theWnd">System.IntPtr that contains the window handle (HWND) of the control</param>
-  void CreateNewView (System::IntPtr theWnd)
-  {
-    if (myAISContext().IsNull())
-    {
-      return;
-    }
-
-    myView() = myAISContext()->CurrentViewer()->CreateView();
-    if (myGraphicDriver().IsNull())
-    {
-      myGraphicDriver() = new OpenGl_GraphicDriver (Handle(Aspect_DisplayConnection)());
-      //myGraphicDriver()->ChangeOptions().contextDebug = true;
-    }
-    Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (theWnd.ToPointer()));
-    myView()->SetWindow (aWNTWindow);
-    Standard_Integer aWidth = 100, aHeight = 100;
-    aWNTWindow->Size (aWidth, aHeight);
-    if (!aWNTWindow->IsMapped())
-    {
-      aWNTWindow->Map();
-    }
-  }
-
-  /// <summary>
   ///Set AISContext
   /// </summary>
   bool SetAISContext (OCCTProxyD3D^ theViewer)
@@ -1047,7 +970,6 @@ private:
   NCollection_Haft<Handle_V3d_Viewer>             myViewer;
   NCollection_Haft<Handle_V3d_View>               myView;
   NCollection_Haft<Handle_AIS_InteractiveContext> myAISContext;
-  NCollection_Haft<Handle_OpenGl_GraphicDriver>   myGraphicDriver;
-  BridgeFBO*                                      myBridgeFBO;     //!< Provides output to Direct3D buffers
+  NCollection_Haft<Handle_D3DHost_GraphicDriver>  myGraphicDriver;
 
 };

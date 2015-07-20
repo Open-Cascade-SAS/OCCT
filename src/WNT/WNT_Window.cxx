@@ -204,6 +204,11 @@ void WNT_Window::Unmap() const
 // =======================================================================
 Aspect_TypeOfResize WNT_Window::DoResize() const
 {
+  if (IsVirtual())
+  {
+    return Aspect_TOR_UNKNOWN;
+  }
+
   int                 mask = 0;
   Aspect_TypeOfResize mode = Aspect_TOR_UNKNOWN;
   WINDOWPLACEMENT     wp;
@@ -266,9 +271,14 @@ Aspect_TypeOfResize WNT_Window::DoResize() const
 // =======================================================================
 Quantity_Ratio WNT_Window::Ratio() const
 {
-  RECT r;
-  GetClientRect ((HWND )myHWindow, &r);
-  return (Quantity_Ratio )((Quantity_Ratio )r.right / (Quantity_Ratio )r.bottom);
+  if (IsVirtual())
+  {
+    return Quantity_Ratio(aXRight - aXLeft)/ Quantity_Ratio(aYBottom - aYTop);
+  }
+
+  RECT aRect;
+  GetClientRect ((HWND )myHWindow, &aRect);
+  return Quantity_Ratio(aRect.right - aRect.left) / Quantity_Ratio(aRect.bottom - aRect.top);
 }
 
 // =======================================================================
@@ -278,6 +288,15 @@ Quantity_Ratio WNT_Window::Ratio() const
 void WNT_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
                            Standard_Integer& theX2, Standard_Integer& theY2) const
 {
+  if (IsVirtual())
+  {
+    theX1  = aXLeft;
+    theX2  = aXRight;
+    theY1  = aYTop;
+    theY2  = aYBottom;
+    return;
+  }
+
   RECT  aRect;
   ::GetClientRect ((HWND )myHWindow, &aRect);
 
@@ -307,6 +326,13 @@ void WNT_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
 void WNT_Window::Size (Standard_Integer& theWidth,
                        Standard_Integer& theHeight) const
 {
+  if (IsVirtual())
+  {
+    theWidth  = aXRight - aXLeft;
+    theHeight = aYBottom - aYTop;
+    return;
+  }
+
   RECT aRect;
   ::GetClientRect ((HWND )myHWindow, &aRect);
   theWidth  = aRect.right;

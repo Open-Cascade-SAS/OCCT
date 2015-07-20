@@ -202,6 +202,7 @@ n Graphic3d
 n Image
 n MeshVS
 n OpenGl
+n D3DHost
 n Prs3d
 n PrsMgr
 n Select3D
@@ -220,6 +221,7 @@ r Textures
 r Shaders
 t TKMeshVS
 t TKOpenGl
+t TKD3DHost
 t TKService
 t TKV3d
 t TKVoxel

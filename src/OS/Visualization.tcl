@@ -25,6 +25,14 @@ proc Visualization:toolkits { } {
       lappend aResult "TKIVtk"
     }
 
+    if { "$::tcl_platform(platform)" == "windows" } {
+      if { [info exists ::env(HAVE_D3D)] && "$::env(HAVE_D3D)" == "true" } {
+        lappend aResult "TKD3DHost"
+      } elseif { [info exists ::env(VCVER)] && "$::env(VCVER)" != "vc8" && "$::env(VCVER)" != "vc9" && "$::env(VCVER)" != "vc10" } {
+        lappend aResult "TKD3DHost"
+      }
+    }
+
     return $aResult
 }
 ;#

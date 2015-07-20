@@ -139,7 +139,10 @@ public:
   
   //! Invalidates view content but does not redraw it.
   Standard_EXPORT void Invalidate();
-  
+
+  //! Returns true if cached view content has been invalidated.
+  Standard_EXPORT Standard_Boolean IsInvalidated() const;
+
   //! Updates screen area in all cases.
   //! area is given by his xy min corner and size in pixel coordinates
   Standard_EXPORT void Redraw (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height);

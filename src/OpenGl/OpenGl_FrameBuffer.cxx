@@ -51,8 +51,8 @@ OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
-                                           const GLsizei   theViewportSizeX,
-                                           const GLsizei   theViewportSizeY)
+                                           const GLsizei   theSizeX,
+                                           const GLsizei   theSizeY)
 {
   if (theGlContext->arbFBO == NULL)
   {
@@ -63,13 +63,15 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   Release (theGlContext.operator->());
 
   // setup viewport sizes as is
-  myVPSizeX = theViewportSizeX;
-  myVPSizeY = theViewportSizeY;
+  myVPSizeX = theSizeX;
+  myVPSizeY = theSizeY;
+  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
+  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
   if (!myColorTexture->Init (theGlContext, myTextFormat,
                              GL_RGBA, GL_UNSIGNED_BYTE,
-                             myVPSizeX, myVPSizeY, Graphic3d_TOT_2D))
+                             aSizeX, aSizeY, Graphic3d_TOT_2D))
   {
     Release (theGlContext.operator->());
     return Standard_False;
@@ -79,7 +81,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   // instead of just trying to create such texture
   if (!myDepthStencilTexture->Init (theGlContext, GL_DEPTH24_STENCIL8,
                                     GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
-                                    myVPSizeX, myVPSizeY, Graphic3d_TOT_2D))
+                                    aSizeX, aSizeY, Graphic3d_TOT_2D))
   {
     TCollection_ExtendedString aMsg = TCollection_ExtendedString()
       + "Warning! Depth textures are not supported by hardware!";
@@ -91,7 +93,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 
     theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
     theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBufferId);
-    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, myVPSizeX, myVPSizeY);
+    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, aSizeX, aSizeY);
     theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
   }
 
@@ -150,8 +152,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& the
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& theGlCtx,
-                                                 const GLsizei                 theViewportSizeX,
-                                                 const GLsizei                 theViewportSizeY,
+                                                 const GLsizei                 theSizeX,
+                                                 const GLsizei                 theSizeY,
                                                  const GLuint                  theColorRBufferFromWindow)
 {
   if (theGlCtx->arbFBO == NULL)
@@ -163,8 +165,10 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   Release (theGlCtx.operator->());
 
   // setup viewport sizes as is
-  myVPSizeX = theViewportSizeX;
-  myVPSizeY = theViewportSizeY;
+  myVPSizeX = theSizeX;
+  myVPSizeY = theSizeY;
+  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
+  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
 
   // Create the render-buffers
   if (theColorRBufferFromWindow != NO_RENDERBUFFER)
@@ -175,12 +179,12 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   {
     theGlCtx->arbFBO->glGenRenderbuffers (1, &myGlColorRBufferId);
     theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlColorRBufferId);
-    theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_RGBA8, myVPSizeX, myVPSizeY);
+    theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_RGBA8, aSizeX, aSizeY);
   }
 
   theGlCtx->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
   theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBufferId);
-  theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, myVPSizeX, myVPSizeY);
+  theGlCtx->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, aSizeX, aSizeY);
 
   theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
 

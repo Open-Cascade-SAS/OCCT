@@ -167,7 +167,10 @@ public:
   
   //! Invalidates view content but does not redraw it.
   Standard_EXPORT void Invalidate() const;
-  
+
+  //! Returns true if cached view content has been invalidated.
+  Standard_EXPORT Standard_Boolean IsInvalidated() const;
+
   //! Redisplays the view area after esxposure.
   //! [x,y] define the min xy area position
   //! [width,height] the size of the area in pixel unit.

@@ -11,9 +11,6 @@ namespace IE_WPF_D3D
   /// </summary>
   class D3DViewer
   {
-    /// <summary> Direct3D renderer. </summary>
-    private IntPtr myD3DRender;
-
     /// <summary> Direct3D output image. </summary>
     private D3DImage myD3DImage = new D3DImage ();
 
@@ -60,24 +57,14 @@ namespace IE_WPF_D3D
 
       if (myD3DImage.IsFrontBufferAvailable)
       {
-        IntPtr aWinHandle;
-        IntPtr aD3DDevice;
-
-        // Initialize Direct3D device and render target
-        myD3DRender = Direct3DProxy.InitRender(out aWinHandle, out aD3DDevice);
-
         Viewer = new OCCViewer();
 
-        if (!Viewer.InitInterop (aWinHandle, aD3DDevice))
+        if (!Viewer.InitViewer())
         {
           MessageBox.Show ("Failed to initialize OpenGL-Direct3D interoperability!",
             "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
           myIsFailed = true;
-
-          if (myD3DRender != IntPtr.Zero)
-              Direct3DProxy.ReleaseRender(ref myD3DRender);
-
           return;
         }
 
@@ -87,32 +74,28 @@ namespace IE_WPF_D3D
       }
     }
 
-    /// <summary> Initializes Direct3D-OCCT rendering. </summary>
+    /// <summary> Releases Direct3D-OCCT rendering. </summary>
     public void StopRenderingScene ()
     {
       // This method is called when WPF loses its Direct3D device,
       // so we should just release our custom Direct3D scene
       CompositionTarget.Rendering -= OnRendering;
-
-      if (myD3DRender != IntPtr.Zero)
-          Direct3DProxy.ReleaseRender(ref myD3DRender);
-
       myColorSurf = IntPtr.Zero;
     }
 
-    /// <summary> Initializes Direct3D-OCCT rendering. </summary>
+    /// <summary> Performs Direct3D-OCCT rendering. </summary>
     private void OnRendering (object sender, EventArgs e)
     {
       UpdateScene ();
     }
 
-    /// <summary> Current size of rendering window. </summary>
-    private WndSize mySize = new WndSize(1, 1);
-
-    /// <summary> Initializes Direct3D-OCCT rendering. </summary>
+    /// <summary> Performs Direct3D-OCCT rendering. </summary>
     private void UpdateScene ()
     {
-      if (!myIsFailed && myD3DImage.IsFrontBufferAvailable && myColorSurf != IntPtr.Zero)
+      if (!myIsFailed
+        && myD3DImage.IsFrontBufferAvailable
+        && myColorSurf != IntPtr.Zero
+        && (myD3DImage.PixelWidth != 0 && myD3DImage.PixelHeight != 0))
       {
         myD3DImage.Lock ();
         {
@@ -120,7 +103,7 @@ namespace IE_WPF_D3D
           Viewer.View.RedrawView ();
 
           // Invalidate the updated region of the D3DImage
-          myD3DImage.AddDirtyRect(new Int32Rect(0, 0, mySize.cx, mySize.cy));
+          myD3DImage.AddDirtyRect(new Int32Rect(0, 0, myD3DImage.PixelWidth, myD3DImage.PixelHeight));
         }
         myD3DImage.Unlock ();
       }
@@ -129,23 +112,16 @@ namespace IE_WPF_D3D
     /// <summary> Resizes Direct3D surfaces and OpenGL FBO. </summary>
     public void Resize (int theSizeX, int theSizeY)
     {
-        mySize = new WndSize(theSizeX, theSizeY);
-
       if (!myIsFailed && myD3DImage.IsFrontBufferAvailable)
       {
-        IntPtr aColorSurfShare;
-
-        // Initialize Direct3D device and render target
-        Direct3DProxy.ResizeWindow(ref myD3DRender, ref mySize, out myColorSurf, out aColorSurfShare);
-
         // Set the back buffer for Direct3D WPF image
         myD3DImage.Lock ();
         {
+          myD3DImage.SetBackBuffer (D3DResourceType.IDirect3DSurface9, IntPtr.Zero);
+          myColorSurf = Viewer.View.ResizeBridgeFBO (theSizeX, theSizeY);
           myD3DImage.SetBackBuffer (D3DResourceType.IDirect3DSurface9, myColorSurf);
         }
         myD3DImage.Unlock ();
-
-        Viewer.View.ResizeBridgeFBO(mySize.cx, mySize.cy, myColorSurf, aColorSurfShare);
       }
     }
 

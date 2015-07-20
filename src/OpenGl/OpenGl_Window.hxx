@@ -47,26 +47,26 @@ class OpenGl_Window : public MMgt_TShared
 public:
 
   //! Main constructor - prepare GL context for specified window.
-  OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
-                 const CALL_DEF_WINDOW&        theCWindow,
-                 Aspect_RenderingContext       theGContext,
-                 const Handle(OpenGl_Caps)&    theCaps,
-                 const Handle(OpenGl_Context)& theShareCtx);
+  Standard_EXPORT OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
+                                 const CALL_DEF_WINDOW&        theCWindow,
+                                 Aspect_RenderingContext       theGContext,
+                                 const Handle(OpenGl_Caps)&    theCaps,
+                                 const Handle(OpenGl_Context)& theShareCtx);
 
   //! Destructor
-  virtual ~OpenGl_Window();
+  Standard_EXPORT virtual ~OpenGl_Window();
 
   //! Resizes the window.
-  void Resize (const CALL_DEF_WINDOW& theCWindow);
+  Standard_EXPORT virtual void Resize (const CALL_DEF_WINDOW& theCWindow);
 
   //! Reads depth component for current scene into specified buffer.
   void ReadDepths (const Standard_Integer theX,     const Standard_Integer theY,
                    const Standard_Integer theWidth, const Standard_Integer theHeight,
                    float* theDepths);
 
-  void SetBackgroundColor (const Standard_ShortReal theR,
-                           const Standard_ShortReal theG,
-                           const Standard_ShortReal theB);
+  Standard_EXPORT void SetBackgroundColor (const Standard_ShortReal theR,
+                                           const Standard_ShortReal theG,
+                                           const Standard_ShortReal theB);
 
   Standard_Integer Width()  const { return myWidth; }
   Standard_Integer Height() const { return myHeight; }
@@ -77,13 +77,13 @@ public:
 protected:
 
   //! Activates GL context and setup viewport.
-  void Init();
+  Standard_EXPORT void Init();
 
   //! Makes GL context for this window active in current thread
-  virtual Standard_Boolean Activate();
+  Standard_EXPORT virtual Standard_Boolean Activate();
 
-  void EnableFeatures() const;
-  void DisableFeatures() const;
+  Standard_EXPORT void EnableFeatures() const;
+  Standard_EXPORT void DisableFeatures() const;
 
 protected:
 

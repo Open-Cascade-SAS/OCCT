@@ -139,36 +139,37 @@ class OpenGl_Workspace : public OpenGl_Window
 public:
 
   //! Main constructor - prepare GL context for specified window.
-  OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
-                    const CALL_DEF_WINDOW&        theCWindow,
-                    Aspect_RenderingContext       theGContext,
-                    const Handle(OpenGl_Caps)&    theCaps,
-                    const Handle(OpenGl_Context)& theShareCtx);
+  Standard_EXPORT OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
+                                    const CALL_DEF_WINDOW&        theCWindow,
+                                    Aspect_RenderingContext       theGContext,
+                                    const Handle(OpenGl_Caps)&    theCaps,
+                                    const Handle(OpenGl_Context)& theShareCtx);
 
   //! Destructor
-  virtual ~OpenGl_Workspace();
+  Standard_EXPORT virtual ~OpenGl_Workspace();
 
-  void SetActiveView (const Handle(OpenGl_View)& theView,
-                      const Standard_Integer     theViewId);
+  Standard_EXPORT void SetActiveView (const Handle(OpenGl_View)& theView,
+                                      const Standard_Integer     theViewId);
 
   const Handle(OpenGl_View)& ActiveView() const { return myView; }
 
   Standard_Integer ActiveViewId() const { return myViewId; }
 
   //! Redraw the window.
-  void Redraw (const Graphic3d_CView& theCView,
-               const Aspect_CLayer2d& theCUnderLayer,
-               const Aspect_CLayer2d& theCOverLayer);
+  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView,
+                                       const Aspect_CLayer2d& theCUnderLayer,
+                                       const Aspect_CLayer2d& theCOverLayer);
 
   Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
-  void RedrawImmediate (const Graphic3d_CView& theCView,
-                        const Aspect_CLayer2d& theCUnderLayer,
-                        const Aspect_CLayer2d& theCOverLayer);
+  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView,
+                                                const Aspect_CLayer2d& theCUnderLayer,
+                                                const Aspect_CLayer2d& theCOverLayer);
 
-  void Invalidate (const Graphic3d_CView& /*theCView*/)
-  {
-    myBackBufferRestored = Standard_False;
-  }
+  //! Mark cached view content invalid (e.g. complete view redraw should be performed on next frame).
+  void Invalidate() { myBackBufferRestored = Standard_False; }
+
+  //! Return true if view content cache has been invalidated.
+  Standard_Boolean IsInvalidated() const { return !myBackBufferRestored; }
 
   //! Special method to perform printing.
   //! System-specific and currently only Win platform implemented.
@@ -295,11 +296,15 @@ protected:
   //! Copy content of Back buffer to the Front buffer
   void copyBackToFront();
 
-  //! Blit image from/to specified buffers.
-  bool blitBuffers (OpenGl_FrameBuffer* theReadFbo,
-                    OpenGl_FrameBuffer* theDrawFbo);
+  //! Initialize blit quad.
+  Standard_EXPORT OpenGl_VertexBuffer* initBlitQuad (const Standard_Boolean theToFlip);
 
-  virtual Standard_Boolean Activate();
+  //! Blit image from/to specified buffers.
+  Standard_EXPORT bool blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
+                                    OpenGl_FrameBuffer*    theDrawFbo,
+                                    const Standard_Boolean theToFlip = Standard_False);
+
+  Standard_EXPORT virtual Standard_Boolean Activate();
 
   void redraw1 (const Graphic3d_CView&               theCView,
                 const Aspect_CLayer2d&               theCUnderLayer,
@@ -344,8 +349,12 @@ protected: //! @name protected fields
   //! Special flag which is invalidated when myMainSceneFbos can not be blitted for some reason (e.g. driver bugs).
   Standard_Boolean           myHasFboBlit;
 
+  //! Flag to draw result image upside-down
+  Standard_Boolean           myToFlipOutput;
+
   //! Vertices for full-screen quad rendering.
   OpenGl_VertexBuffer        myFullScreenQuad;
+  OpenGl_VertexBuffer        myFullScreenQuadFlip;
 
   Handle(OpenGl_PrinterContext) myPrintContext;
   Handle(OpenGl_View)           myView;

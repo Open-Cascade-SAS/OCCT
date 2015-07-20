@@ -87,9 +87,9 @@ namespace IE_WPF_D3D
       DegenerateMode = true;
     }
 
-    public bool InitInterop (IntPtr theHWND, IntPtr theD3DDevice)
+    public bool InitViewer()
     {
-      return View.InitViewer (theHWND, theD3DDevice);
+      return View.InitViewer();
     }
 
     public void ImportModel (ModelFormat theFormat)

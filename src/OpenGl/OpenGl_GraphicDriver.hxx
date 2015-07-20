@@ -160,6 +160,7 @@ public:
                                         const Aspect_CLayer2d& theCUnderLayer,
                                         const Aspect_CLayer2d& theCOverLayer);
   Standard_EXPORT void Invalidate (const Graphic3d_CView& theCView);
+  Standard_EXPORT Standard_Boolean IsInvalidated (const Graphic3d_CView& theCView) const;
   Standard_EXPORT void RemoveView (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetLight (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetClipPlanes (const Graphic3d_CView& theCView);
@@ -325,6 +326,9 @@ public:
     return *myCaps.operator->();
   }
 
+  //! Specify swap buffer behavior.
+  Standard_EXPORT void SetBuffersNoSwap (const Standard_Boolean theIsNoSwap);
+
   //! VBO usage can be forbidden by this method even if it is supported by GL driver.
   //! Notice that disabling of VBO will cause rendering performance degradation.
   //! Warning! This method should be called only before any primitives are displayed in GL scene!
@@ -361,7 +365,7 @@ public:
 
   DEFINE_STANDARD_RTTI(OpenGl_GraphicDriver, Graphic3d_GraphicDriver)
 
-private:
+protected:
 
   Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
 #if defined(HAVE_EGL) || defined(__ANDROID__)
@@ -386,7 +390,7 @@ public:
   //! Returns unique ID for primitive arrays.
   const Standard_Size GetNextPrimitiveArrayUID() const { return myUIDGenerator.Increment(); }
 
-private:
+protected:
 
   mutable OpenGl_StateCounter myStateCounter; //!< State counter for OpenGl structures.
   mutable OpenGl_StateCounter myUIDGenerator; //!< Unique ID counter for primitive arrays.

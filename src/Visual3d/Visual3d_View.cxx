@@ -1032,6 +1032,15 @@ void Visual3d_View::Invalidate()
 }
 
 // =======================================================================
+// function : IsInvalidated
+// purpose  :
+// =======================================================================
+Standard_Boolean Visual3d_View::IsInvalidated() const
+{
+  return myGraphicDriver->IsInvalidated (MyCView);
+}
+
+// =======================================================================
 // function : Update
 // purpose  :
 // =======================================================================

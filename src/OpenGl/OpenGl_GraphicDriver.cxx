@@ -651,3 +651,12 @@ void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Graphic3d_CView
     aCView->View->ChangeGraduatedTrihedron().SetMinMax (theMin, theMax);
   }
 }
+
+// =======================================================================
+// function : SetBuffersNoSwap
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::SetBuffersNoSwap (const Standard_Boolean theIsNoSwap)
+{
+  myCaps->buffersNoSwap = theIsNoSwap;
+}

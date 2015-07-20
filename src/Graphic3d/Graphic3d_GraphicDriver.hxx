@@ -127,7 +127,10 @@ public:
   
   //! Invalidates content of the view but does not redraw it
   Standard_EXPORT virtual void Invalidate (const Graphic3d_CView& theCView) = 0;
-  
+
+  //! Returns true if cached view content has been invalidated.
+  Standard_EXPORT virtual Standard_Boolean IsInvalidated (const Graphic3d_CView& theCView) const = 0;
+
   //! call_togl_removeview
   Standard_EXPORT virtual void RemoveView (const Graphic3d_CView& ACView) = 0;
   

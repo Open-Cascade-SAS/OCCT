@@ -79,10 +79,10 @@ DEFINE_STANDARD_HANDLE(OpenGl_View,MMgt_TShared)
 class OpenGl_View : public MMgt_TShared
 {
  public:
-  OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext, OpenGl_StateCounter* theCounter);
-  virtual ~OpenGl_View ();
+  Standard_EXPORT OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext, OpenGl_StateCounter* theCounter);
+  Standard_EXPORT virtual ~OpenGl_View ();
 
-  void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx);
 
   void SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
                       const Handle(Graphic3d_TextureEnv)& theTexture);

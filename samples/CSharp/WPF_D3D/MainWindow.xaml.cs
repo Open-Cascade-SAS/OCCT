@@ -161,7 +161,7 @@ namespace IE_WPF_D3D
 
       ImageBrush anImage = new ImageBrush (aViwer.Image);
       
-      anImage.RelativeTransform = new ScaleTransform (1.0, -1.0, 0.5, 0.5);
+      //anImage.RelativeTransform = new ScaleTransform (1.0, -1.0, 0.5, 0.5);
 
       g.Background = anImage;
       g.MouseMove += new MouseEventHandler (g_MouseMove);

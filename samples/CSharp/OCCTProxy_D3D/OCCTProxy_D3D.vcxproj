@@ -190,12 +190,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BridgeFBO.cxx" />
-    <ClCompile Include="Direct3DProxy.cpp" />
     <ClCompile Include="OCCTProxyD3D.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BridgeFBO.hxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

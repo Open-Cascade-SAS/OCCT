@@ -143,8 +143,15 @@ void OpenGl_GraphicDriver::Invalidate (const Graphic3d_CView& theCView)
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
   if (aCView != NULL)
   {
-    aCView->WS->Invalidate (theCView);
+    aCView->WS->Invalidate();
   }
+}
+
+Standard_Boolean OpenGl_GraphicDriver::IsInvalidated (const Graphic3d_CView& theCView) const
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  return aCView == NULL
+      || aCView->WS->IsInvalidated();
 }
 
 Graphic3d_PtrFrameBuffer OpenGl_GraphicDriver::FBOCreate (const Graphic3d_CView& ACView, const Standard_Integer theWidth, const Standard_Integer theHeight)
