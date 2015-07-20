@@ -14,5 +14,5 @@
 
 inline Standard_Real StdSelect_ViewerSelector3d::PixelTolerance() const
 {
-  return mytolerance;
+  return myTolerances.Tolerance();
 }

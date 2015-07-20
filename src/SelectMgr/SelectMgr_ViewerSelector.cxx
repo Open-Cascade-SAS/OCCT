@@ -132,40 +132,12 @@ void SelectMgr_ToleranceMap::Decrement (const Standard_Real& theTolerance)
   }
 }
 
-//=======================================================================
-// function: Tolerance
-// purpose : Returns a current tolerance that must be applied
-//=======================================================================
-Standard_Real SelectMgr_ToleranceMap::Tolerance()
-{
-  return myCustomTolerance < 0.0 ? myLargestKey : myCustomTolerance;
-}
-
-//=======================================================================
-// function: SetCustomTolerance
-// purpose : Sets tolerance to the given one and disables adaptive checks
-//=======================================================================
-void SelectMgr_ToleranceMap::SetCustomTolerance (const Standard_Real theTolerance)
-{
-  myCustomTolerance = theTolerance;
-}
-
-//=======================================================================
-// function: ResetDefaults
-// purpose : Unsets a custom tolerance and enables adaptive checks
-//=======================================================================
-void SelectMgr_ToleranceMap::ResetDefaults()
-{
-  myCustomTolerance = -1.0;
-}
-
 //==================================================
 // Function: Initialize
 // Purpose :
 //==================================================
 SelectMgr_ViewerSelector::SelectMgr_ViewerSelector():
 preferclosest(Standard_True),
-mytolerance(2.0),
 myToUpdateTolerance (Standard_True),
 myCurRank (0),
 myIsLeftChildQueuedFirst (Standard_False),
@@ -189,7 +161,6 @@ void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theS
   theSelection->SetSelectionState (SelectMgr_SOS_Activated);
 
   myTolerances.Add (theSelection->Sensitivity());
-  mytolerance = myTolerances.Tolerance();
   myToUpdateTolerance = Standard_True;
 }
 
@@ -208,7 +179,6 @@ void SelectMgr_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& th
   theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
 
   myTolerances.Decrement (theSelection->Sensitivity());
-  mytolerance = myTolerances.Tolerance();
   myToUpdateTolerance = Standard_True;
 }
 
@@ -229,7 +199,7 @@ void SelectMgr_ViewerSelector::Clear()
 Standard_Boolean SelectMgr_ViewerSelector::isToScaleFrustum (const Handle(SelectBasics_SensitiveEntity)& theEntity)
 {
   return mySelectingVolumeMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point
-    && theEntity->SensitivityFactor() < myTolerances.Tolerance();
+    && sensitivity (theEntity) < myTolerances.Tolerance();
 }
 
 //=======================================================================
@@ -253,6 +223,17 @@ SelectMgr_SelectingVolumeManager SelectMgr_ViewerSelector::scaleAndTransform (co
   }
 
   return aMgr;
+}
+
+//=======================================================================
+// function: sensitivity
+// purpose : In case if custom tolerance is set, this method will return sum of entity
+//           sensitivity and custom tolerance.
+//=======================================================================
+Standard_Real SelectMgr_ViewerSelector::sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const
+{
+  return myTolerances.IsCustomTolSet() ?
+    theEntity->SensitivityFactor() + myTolerances.CustomTolerance() : theEntity->SensitivityFactor();
 }
 
 //=======================================================================
@@ -382,7 +363,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
             if (!aScaledTrnsfFrustums.IsBound (anEnt->DynamicType()))
             {
               aScaledTrnsfFrustums.Bind (anEnt->DynamicType(),
-                                         scaleAndTransform (anEnt->SensitivityFactor(), theObject->InversedTransformation()));
+                                         scaleAndTransform (sensitivity (anEnt), theObject->InversedTransformation()));
             }
 
             aTmpMgr = aScaledTrnsfFrustums.Find (anEnt->DynamicType());
@@ -825,7 +806,7 @@ void SelectMgr_ViewerSelector::RebuildSensitivesTree (const Handle(SelectMgr_Sel
 // purpose  : Marks all added sensitive entities of all objects as
 //            non-selectable
 //=======================================================================
-void SelectMgr_ViewerSelector::resetSelectionActivationStatus()
+void SelectMgr_ViewerSelector::ResetSelectionActivationStatus()
 {
   SelectMgr_MapOfObjectSensitivesIterator aSensitivesIter (myMapOfObjectSensitives);
   for ( ; aSensitivesIter.More(); aSensitivesIter.Next())
@@ -873,4 +854,16 @@ void SelectMgr_ViewerSelector::ActiveOwners (NCollection_List<Handle(SelectBasic
       }
     }
   }
+}
+
+//=======================================================================
+//function : AllowOverlapDetection
+//purpose  : Sets the detection type: if theIsToAllow is false,
+//           only fully included sensitives will be detected, otherwise
+//           the algorithm will mark both included and overlapped entities
+//           as matched
+//=======================================================================
+void SelectMgr_ViewerSelector::AllowOverlapDetection (const Standard_Boolean theIsToAllow)
+{
+  mySelectingVolumeMgr.AllowOverlapDetection (theIsToAllow);
 }

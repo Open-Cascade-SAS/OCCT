@@ -185,7 +185,6 @@ void IVtkOCC_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theSel
   theSelection->SetSelectionState (SelectMgr_SOS_Activated);
 
   myTolerances.Add (theSelection->Sensitivity());
-  mytolerance = myTolerances.Tolerance();
   myToUpdateTolerance = Standard_True;
 }
 
@@ -203,6 +202,5 @@ void IVtkOCC_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& theS
   theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
 
   myTolerances.Decrement (theSelection->Sensitivity());
-  mytolerance = myTolerances.Tolerance();
   myToUpdateTolerance = Standard_True;
 }

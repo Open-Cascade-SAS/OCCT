@@ -54,7 +54,7 @@ public:
   //! allows a better sensitivity for
   //! a specific entity in selection algorithms
   //! useful for small sized entities.
-    Standard_Real SensitivityFactor() const;
+  Standard_EXPORT Standard_Real SensitivityFactor() const;
   
   //! Returns the number of sub-entities or elements in
   //! sensitive entity. Is used to determine if entity is

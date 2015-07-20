@@ -93,13 +93,12 @@ StdSelect_ViewerSelector3d::StdSelect_ViewerSelector3d() {}
 //=======================================================================
 void StdSelect_ViewerSelector3d::SetPixelTolerance (const Standard_Real theTolerance)
 {
-  if (mytolerance != theTolerance)
+  if (myTolerances.Tolerance() != theTolerance)
   {
     if (theTolerance < 0.0)
       myTolerances.ResetDefaults();
     else
       myTolerances.SetCustomTolerance (theTolerance);
-    mytolerance = myTolerances.Tolerance();
     myToUpdateTolerance = Standard_True;
   }
 }
@@ -116,7 +115,7 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
 
   if(myToUpdateTolerance)
   {
-    mySelectingVolumeMgr.SetPixelTolerance (mytolerance);
+    mySelectingVolumeMgr.SetPixelTolerance (myTolerances.Tolerance());
     myToUpdateTolerance = Standard_False;
   }
 
@@ -654,26 +653,4 @@ Standard_Boolean StdSelect_ViewerSelector3d::HasDepthClipping (const Handle(Sele
 
   const Handle(SelectMgr_SelectableObject)& aSelectable = theOwner->Selectable();
   return (aSelectable->GetClipPlanes().Size() > 0);
-}
-
-//=======================================================================
-//function : ResetSelectionActivationStatus
-//purpose  : Marks all sensitive entities, stored in viewer selector,
-//           as inactive for selection
-//=======================================================================
-void StdSelect_ViewerSelector3d::ResetSelectionActivationStatus()
-{
-  resetSelectionActivationStatus();
-}
-
-//=======================================================================
-//function : AllowOverlapDetection
-//purpose  : Sets the detection type: if theIsToAllow is false,
-//           only fully included sensitives will be detected, otherwise
-//           the algorithm will mark both included and overlapped entities
-//           as matched
-//=======================================================================
-void StdSelect_ViewerSelector3d::AllowOverlapDetection (const Standard_Boolean theIsToAllow)
-{
-  mySelectingVolumeMgr.AllowOverlapDetection (theIsToAllow);
 }

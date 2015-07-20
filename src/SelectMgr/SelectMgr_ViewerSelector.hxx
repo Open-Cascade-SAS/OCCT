@@ -76,13 +76,19 @@ public:
   Standard_EXPORT void Decrement (const Standard_Real& theTolerance);
 
   //! Returns a current tolerance that must be applied
-  Standard_EXPORT Standard_Real Tolerance();
+  inline Standard_Real Tolerance() const;
 
   //! Sets tolerance to the given one and disables adaptive checks
-  Standard_EXPORT void SetCustomTolerance (const Standard_Real theTolerance);
+  inline void SetCustomTolerance (const Standard_Real theTolerance);
 
   //! Unsets a custom tolerance and enables adaptive checks
-  Standard_EXPORT void ResetDefaults();
+  inline void ResetDefaults();
+
+  //! Returns the value of custom tolerance regardless of it validity
+  inline Standard_Real CustomTolerance() const;
+
+  //! Returns true if custom tolerance value is greater than zero
+  inline Standard_Boolean IsCustomTolSet() const;
 
 private:
   NCollection_DataMap<Standard_Real, Standard_Integer> myTolerances;
@@ -242,6 +248,14 @@ public:
   //! Returns instance of selecting volume manager of the viewer selector
   Standard_EXPORT SelectMgr_SelectingVolumeManager& GetManager();
 
+  //! Marks all added sensitive entities of all objects as non-selectable
+  Standard_EXPORT void ResetSelectionActivationStatus();
+
+  //! Is used for rectangular selection only
+  //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the algorithm will
+  //! mark both included and overlapped entities as matched
+  Standard_EXPORT void AllowOverlapDetection (const Standard_Boolean theIsToAllow);
+
   friend class SelectMgr_SelectionManager;
 
   DEFINE_STANDARD_RTTI(SelectMgr_ViewerSelector, MMgt_TShared)
@@ -265,25 +279,26 @@ protected:
   //! Internal function that checks if there is possible overlap
   //! between some entity of selectable object theObject and
   //! current selecting volume
-  void traverseObject (const Handle(SelectMgr_SelectableObject)& theObject);
+  Standard_EXPORT void traverseObject (const Handle(SelectMgr_SelectableObject)& theObject);
 
   //! Internal function that checks if a particular sensitive
   //! entity theEntity overlaps current selecting volume precisely
-  void checkOverlap (const Handle(SelectBasics_SensitiveEntity)& theEntity,
-                     const Standard_Integer theEntityIdx,
-                     SelectMgr_SelectingVolumeManager& theMgr);
+  Standard_EXPORT void checkOverlap (const Handle(SelectBasics_SensitiveEntity)& theEntity,
+                                     const Standard_Integer theEntityIdx,
+                                     SelectMgr_SelectingVolumeManager& theMgr);
 
-  //! Marks all added sensitive entities of all objects as non-selectable
-  void resetSelectionActivationStatus();
+private:
 
   //! Checks if the entity given requires to scale current selecting frustum
   Standard_Boolean isToScaleFrustum (const Handle(SelectBasics_SensitiveEntity)& theEntity);
 
+  //! In case if custom tolerance is set, this method will return sum of entity sensitivity and
+  //! custom tolerance. Otherwise, pure entity sensitivity factor will be returned.
+  Standard_Real sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const;
+
   //! Applies given scale and transformation matrices to the default selecting volume manager
   SelectMgr_SelectingVolumeManager scaleAndTransform (const Standard_Real theScale,
                                                       const gp_Trsf& theTrsf);
-
-private:
 
   void Activate (const Handle(SelectMgr_Selection)& theSelection);
 
@@ -295,7 +310,6 @@ private:
 protected:
 
   Standard_Boolean preferclosest;
-  Standard_Real mytolerance;
   Standard_Boolean myToUpdateTolerance;
   SelectMgr_IndexedDataMapOfOwnerCriterion mystored;
   SelectMgr_SelectingVolumeManager mySelectingVolumeMgr;
@@ -304,7 +318,7 @@ protected:
 
 private:
 
-  Handle(TColStd_HArray1OfInteger)              myIndexes;
+  Handle(TColStd_HArray1OfInteger)             myIndexes;
   Standard_Integer                             myCurRank;
   Standard_Boolean                             myIsLeftChildQueuedFirst;
   Standard_Integer                             myEntityIdx;

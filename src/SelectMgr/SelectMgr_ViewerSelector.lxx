@@ -12,9 +12,57 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//=======================================================================
+// function: Tolerance
+// purpose : Returns a current tolerance that must be applied
+//=======================================================================
+inline Standard_Real SelectMgr_ToleranceMap::Tolerance() const
+{
+  if (myLargestKey < Precision::Confusion())
+    return 2.0; // default tolerance value
+
+  return myCustomTolerance < 0.0 ? myLargestKey : myLargestKey + myCustomTolerance;
+}
+
+//=======================================================================
+// function: SetCustomTolerance
+// purpose : Sets tolerance to the given one and disables adaptive checks
+//=======================================================================
+inline void SelectMgr_ToleranceMap::SetCustomTolerance (const Standard_Real theTolerance)
+{
+  myCustomTolerance = theTolerance;
+}
+
+//=======================================================================
+// function: CustomTolerance
+// purpose : Returns current value of custom tolerance regardless of it is set or not
+//=======================================================================
+inline Standard_Real SelectMgr_ToleranceMap::CustomTolerance() const
+{
+  return myCustomTolerance;
+}
+
+//=======================================================================
+// function: IsCustomTolSet
+// purpose : Checks if custom tolerance value is greater than zero
+//=======================================================================
+inline Standard_Boolean SelectMgr_ToleranceMap::IsCustomTolSet() const
+{
+  return myCustomTolerance > 0.0;
+}
+
+//=======================================================================
+// function: ResetDefaults
+// purpose : Unsets a custom tolerance and enables adaptive checks
+//=======================================================================
+inline void SelectMgr_ToleranceMap::ResetDefaults()
+{
+  myCustomTolerance = -1.0;
+}
+
 inline Standard_Real SelectMgr_ViewerSelector::Sensitivity() const
 {
-  return mytolerance;
+  return myTolerances.Tolerance();
 }
 
 inline void SelectMgr_ViewerSelector::Init() 
