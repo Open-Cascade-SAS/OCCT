@@ -76,6 +76,29 @@ Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    Nodes,
 }
 
 //=======================================================================
+//function : Copy
+//purpose  : 
+//=======================================================================
+
+Handle(Poly_Triangulation) Poly_Triangulation::Copy() const
+{
+  Handle(Poly_Triangulation) aCopy;
+  if (HasUVNodes())
+    aCopy = new Poly_Triangulation(Nodes(), UVNodes(), Triangles());
+  else
+    aCopy = new Poly_Triangulation(Nodes(), Triangles());
+  aCopy->Deflection(myDeflection);
+
+  if (HasNormals())
+  {
+    aCopy->myNormals = new TShort_HArray1OfShortReal(myNormals->Lower(), myNormals->Upper());
+    aCopy->myNormals->ChangeArray1().Assign (myNormals->Array1());
+  }
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Deflection
 //purpose  : 
 //=======================================================================

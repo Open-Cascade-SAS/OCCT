@@ -70,7 +70,8 @@ uses
     TColStd,
     TCollection,
     MMgt,
-    Message
+    Message,
+    Poly
 
 is
 

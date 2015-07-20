@@ -31,8 +31,9 @@ uses Face     from TopoDS,
      Surface  from Geom,
      Curve    from Geom,
      Curve    from Geom2d,
-     Pnt      from gp
+     Pnt      from gp,
 
+     Triangulation from Poly
 
 is
 
@@ -59,6 +60,16 @@ is
     
     	returns Boolean from Standard
 	is deferred;
+
+
+    NewTriangulation(me: mutable; F :     Face          from TopoDS; 
+                                  T : out Triangulation from Poly)
+    ---Purpose: Returns true if the face has been modified according to changed triangulation.
+    -- If the face has been modified:
+    -- - T is a new triangulation on the face
+        returns Boolean from Standard
+        is virtual;
+
 
 	
     NewCurve(me: mutable; E  :     Edge     from TopoDS;

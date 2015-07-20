@@ -84,6 +84,9 @@ is
         --   from Nodes on the surface approximated by the
         --   constructed triangulation.
 
+    Copy(me) returns Triangulation from Poly;
+        ---Purpose: Creates full copy of current triangulation.
+
     Deflection(me) returns Real;
         ---Purpose: Returns the deflection of this triangulation.    
     Deflection(me : mutable; D : Real);

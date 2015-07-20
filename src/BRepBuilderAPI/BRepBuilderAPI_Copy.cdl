@@ -37,21 +37,25 @@ is
        	returns Copy from BRepBuilderAPI;
 
 
-    Create(S: Shape from TopoDS; copyGeom: Boolean = Standard_True)
+    Create(S: Shape from TopoDS; copyGeom: Boolean = Standard_True; copyMesh: Boolean = Standard_False)
 	---Purpose: Constructs a copy framework and copies the shape S.
     	-- Use the function Shape to access the result.
+    	-- If copyMesh is True, triangulation contained in original shape will be 
+    	-- copied along with geometry (by default, triangulation gets lost).
     	-- If copyGeom is False, only topological objects will be copied, while 
-    	-- geometry will be shared with original shape.
+    	-- geometry and triangulation will be shared with original shape.
     	-- Note: the constructed framework can be reused to copy
     	-- other shapes: just specify them with the function Perform.
     	returns Copy from BRepBuilderAPI;
 
 
-    Perform(me: in out; S: Shape from TopoDS; copyGeom: Boolean = Standard_True)
+    Perform(me: in out; S: Shape from TopoDS; copyGeom: Boolean = Standard_True; copyMesh: Boolean = Standard_False)
 	---Purpose: Copies the shape S.
     	-- Use the function Shape to access the result.
+    	-- If copyMesh is True, triangulation contained in original shape will be 
+    	-- copied along with geometry (by default, triangulation gets lost).
     	-- If copyGeom is False, only topological objects will be copied, while 
-    	-- geometry will be shared with original shape.
+    	-- geometry and triangulation will be shared with original shape.
     	is static;
 
 

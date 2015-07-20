@@ -283,6 +283,20 @@ Standard_Boolean BRepTools_Modifier::Rebuild
 	B.NaturalRestriction(TopoDS::Face(result),
 			     BRep_Tool::NaturalRestriction(TopoDS::Face(S)));
       }
+
+      // update triangulation on the copied face
+      Handle(Poly_Triangulation) aTriangulation;
+      if (M->NewTriangulation(TopoDS::Face(S), aTriangulation))
+      {
+        if (rebuild) // the copied face already exists => update it
+          B.UpdateFace(TopoDS::Face(result), aTriangulation);
+        else
+        { // create new face with bare triangulation
+          B.MakeFace(TopoDS::Face(result), aTriangulation);
+          result.Location(S.Location());
+        }
+        rebuild = Standard_True;
+      }
     }
     break;
 

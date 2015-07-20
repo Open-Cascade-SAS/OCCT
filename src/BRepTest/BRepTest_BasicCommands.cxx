@@ -211,24 +211,39 @@ static Standard_Integer deform(Draw_Interpretor& di,Standard_Integer n,const cha
 static Standard_Integer tcopy(Draw_Interpretor& di,Standard_Integer n,const char** a)
 {
   Standard_Boolean copyGeom = Standard_True;
+  Standard_Boolean copyMesh = Standard_False;
   Standard_Integer iFirst = 1; // index of first shape argument
 
-  if (n > 1 && a[1][0] == '-' && a[1][1] == 'n' )
+  if (n > 1)
   {
-    copyGeom = Standard_False;
-    iFirst = 2;
+    for (Standard_Integer i = 1; i <= 2; i++)
+    {
+      if (a[i][0] != '-')
+        break;
+      if (a[i][1] == 'n')
+      {
+        copyGeom = Standard_False;
+        iFirst++;
+      }
+      else if (a[i][1] == 'm')
+      {
+        copyMesh = Standard_True;
+        iFirst++;
+      }
+    }
   }
 
   if (n < 3 || (n - iFirst) % 2) {
-    cout << "Use: " << a[0] << " [-n(ogeom)] shape1 copy1 [shape2 copy2 [...]]" << endl;
-    cout << "Option -n forbids copying of geometry (it will be shared)" << endl; 
+    cout << "Use: " << a[0] << " [-n(ogeom)] [-m(esh)] shape1 copy1 [shape2 copy2 [...]]" << endl;
+    cout << "Option -n forbids copying of geometry (it will be shared)" << endl;
+    cout << "Option -m forces copying of triangulation (disabled by default)" << endl;
     return 1;
   }
 
   BRepBuilderAPI_Copy cop;
   Standard_Integer nbPairs = (n - iFirst) / 2;
   for (Standard_Integer i=0; i < nbPairs; i++) {
-    cop.Perform(DBRep::Get(a[i+iFirst]), copyGeom);
+    cop.Perform(DBRep::Get(a[i+iFirst]), copyGeom, copyMesh);
     DBRep::Set(a[i+iFirst+1],cop.Shape());
     di << a[i+iFirst+1] << " ";
   }
@@ -869,7 +884,7 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  transform,g);
 
   theCommands.Add("tcopy",
-		  "tcopy [-n(ogeom)] name1 result1 [name2 result2 ...]",
+		  "tcopy [-n(ogeom)] [-m(esh)] name1 result1 [name2 result2 ...]",
 		  __FILE__,
 		  tcopy,g);
 

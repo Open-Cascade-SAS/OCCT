@@ -16,4 +16,9 @@
 
 #include <BRepTools_Modification.ixx>
 
+#include <Poly_Triangulation.hxx>
 
+Standard_Boolean BRepTools_Modification::NewTriangulation(const TopoDS_Face&, Handle(Poly_Triangulation)&)
+{
+  return Standard_False;
+}
