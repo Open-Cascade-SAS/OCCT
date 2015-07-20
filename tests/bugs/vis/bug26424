@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC26424"
+puts "========"
+puts ""
+################################################################
+# Text is not rendered within core profile on Windows platform
+################################################################
+
+vcaps -core
+vinit View1
+vclear
+vaxo
+vzbufftrihedron
+
+if { [array get env os_type] != "" } {
+   set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+  # Linux platform
+  set ok_color "GRAY85"
+} else {
+  # Windows platform
+  set ok_color "GRAY52"
+}
+
+set bug_info [vreadpixel 71 350 rgb name]
+if {$bug_info != $ok_color} {
+  puts "ERROR: OCC26424 is reproduced. Trihedron does non have text labels."
+}
+
+set only_screen 1

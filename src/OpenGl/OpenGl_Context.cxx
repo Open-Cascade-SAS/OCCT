@@ -1040,7 +1040,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     isCoreProfile = (theIsCoreProfile == Standard_True);
 
     // detect Core profile
-    if (isCoreProfile)
+    if (!isCoreProfile)
     {
       GLint aProfile = 0;
       ::glGetIntegerv (GL_CONTEXT_PROFILE_MASK, &aProfile);
