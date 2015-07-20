@@ -423,6 +423,16 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
     for (i=1; i <= nbFreeNodes; i++) {
       Standard_Integer iface, inode;
       aCheck.GetFreeNodeNum(i, iface, inode);
+
+      const TopoDS_Face& aFace = TopoDS::Face(aMapF.FindKey(iface));
+      TopLoc_Location aLoc;
+      Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
+      const TColgp_Array1OfPnt& aPoints = aT->Nodes();
+      const TColgp_Array1OfPnt2d& aPoints2d = aT->UVNodes();
+      const gp_Trsf& trsf = aLoc.Transformation();
+      DrawTrSurf::Set (name, aPoints(inode).Transformed(trsf));
+      DrawTrSurf::Set (name, aPoints2d(inode));
+
       di << "{" << iface << " " << inode << "} ";
     }
     di << "\n";
@@ -508,6 +518,32 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
     if (aFreeEdgeMap.Size() != 0)
     {
       di << "Not connected mesh inside face " << aFaceId << "\n";
+
+      const TColgp_Array1OfPnt& aPoints = aT->Nodes();
+      const TColgp_Array1OfPnt2d& aPoints2d = aT->UVNodes();
+      const gp_Trsf& trsf = aLoc.Transformation();
+
+      TColgp_Array1OfPnt pnts(1,2);
+      TColgp_Array1OfPnt2d pnts2d(1,2);
+      NCollection_Map<BRepMesh_Edge>::Iterator aMapIt(aFreeEdgeMap);
+      for (; aMapIt.More(); aMapIt.Next())
+      {
+        const BRepMesh_Edge& aLink = aMapIt.Key();
+        di << "{" << aLink.FirstNode() << " " << aLink.LastNode() << "} ";
+        pnts(1) = aPoints(aLink.FirstNode()).Transformed(trsf);
+        pnts(2) = aPoints(aLink.LastNode()).Transformed(trsf);
+        Handle(Poly_Polygon3D) poly = new Poly_Polygon3D (pnts);
+        DrawTrSurf::Set (name, poly);
+        DrawTrSurf::Set (name, pnts(1));
+        DrawTrSurf::Set (name, pnts(2));
+        pnts2d(1) = aPoints2d(aLink.FirstNode());
+        pnts2d(2) = aPoints2d(aLink.LastNode());
+        Handle(Poly_Polygon2D) poly2d = new Poly_Polygon2D (pnts2d);
+        DrawTrSurf::Set (name, poly2d);
+        DrawTrSurf::Set (name, pnts2d(1));
+        DrawTrSurf::Set (name, pnts2d(2));
+      }
+      di << "\n";
     }
   }
   return 0;
