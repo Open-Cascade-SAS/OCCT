@@ -62,13 +62,16 @@ void OpenGl_Font::Release (OpenGl_Context* theCtx)
     return;
   }
 
-  // application can not handle this case by exception - this is bug in code
-  Standard_ASSERT_RETURN (theCtx != NULL,
-    "OpenGl_Font destroyed without GL context! Possible GPU memory leakage...",);
-
   for (Standard_Integer anIter = 0; anIter < myTextures.Length(); ++anIter)
   {
     Handle(OpenGl_Texture)& aTexture = myTextures.ChangeValue (anIter);
+    if (aTexture->IsValid())
+    {
+      // application can not handle this case by exception - this is bug in code
+      Standard_ASSERT_RETURN (theCtx != NULL,
+        "OpenGl_Font destroyed without GL context! Possible GPU memory leakage...",);
+    }
+
     aTexture->Release (theCtx);
     aTexture.Nullify();
   }
@@ -94,7 +97,12 @@ bool OpenGl_Font::Init (const Handle(OpenGl_Context)& theCtx)
   myTileSizeY   = myFont->GlyphMaxSizeY();
 
   myLastTileId = -1;
-  return createTexture (theCtx);
+  if (!createTexture (theCtx))
+  {
+    Release (theCtx.operator->());
+    return false;
+  }
+  return true;
 }
 
 // =======================================================================
@@ -153,6 +161,11 @@ bool OpenGl_Font::renderGlyph (const Handle(OpenGl_Context)& theCtx,
   }
 
   Handle(OpenGl_Texture)& aTexture = myTextures.ChangeLast();
+  if (aTexture.IsNull()
+  || !aTexture->IsValid())
+  {
+    return false;
+  }
 
   const Image_PixMap& anImg = myFont->GlyphImage();
   const Standard_Integer aTileId = myLastTileId + 1;
@@ -184,7 +197,7 @@ bool OpenGl_Font::renderGlyph (const Handle(OpenGl_Context)& theCtx,
 
   glTexSubImage2D (GL_TEXTURE_2D, 0,
                    myLastTilePx.Left, myLastTilePx.Top, (GLsizei )anImg.SizeX(), (GLsizei )anImg.SizeY(),
-                   GL_ALPHA, GL_UNSIGNED_BYTE, anImg.Data());
+                   aTexture->GetFormat(), GL_UNSIGNED_BYTE, anImg.Data());
 
   OpenGl_Font::Tile aTile;
   aTile.uv.Left   = GLfloat(myLastTilePx.Left)                / GLfloat(aTexture->SizeX());

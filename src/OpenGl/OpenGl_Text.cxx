@@ -407,6 +407,8 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
             aTextAspect->SubtitleColor());
   }
 
+  aCtx->BindProgram (NULL);
+
   // restore aspects
   if (!aPrevTexture.IsNull())
   {
@@ -591,6 +593,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
           aMsg += "' - initialization of GL resources has failed!";
           theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
           aFontFt.Nullify();
+          aFont->Release (theCtx.operator->());
           aFont = new OpenGl_Font (aFontFt, theKey);
         }
       }
@@ -747,14 +750,14 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     theCtx->core15fwd->glActiveTexture (GL_TEXTURE0);
   }
 #if !defined(GL_ES_VERSION_2_0)
-  // setup alpha test
-  glAlphaFunc (GL_GEQUAL, 0.285f);
-  glEnable (GL_ALPHA_TEST);
-
   // activate texture unit
   GLint aTexEnvParam = GL_REPLACE;
   if (theCtx->core11 != NULL)
   {
+    // setup alpha test
+    glAlphaFunc (GL_GEQUAL, 0.285f);
+    glEnable (GL_ALPHA_TEST);
+
     glDisable (GL_TEXTURE_1D);
     glEnable  (GL_TEXTURE_2D);
     glGetTexEnviv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &aTexEnvParam);
@@ -875,7 +878,10 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   glDisable (GL_BLEND);
   glDisable (GL_STENCIL_TEST);
 #if !defined(GL_ES_VERSION_2_0)
-  glDisable (GL_ALPHA_TEST);
+  if (theCtx->core11 != NULL)
+  {
+    glDisable (GL_ALPHA_TEST);
+  }
   glDisable (GL_COLOR_LOGIC_OP);
 #endif
 
