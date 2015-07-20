@@ -66,6 +66,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 
+
+#include <TopExp_Explorer.hxx>
 static Standard_Real ComputeTolerance(TopoDS_Edge& E,
 				      const TopoDS_Face& F,
 				      const Handle(Geom2d_Curve)& C)
@@ -221,14 +223,26 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyGeneratingEdge
    const Sweep_NumShape& aDirV)
 {
   //call in case of construction with copy, or only when meridian touches myaxe.
-  Standard_Real First,Last;
-  TopLoc_Location Loc;
-  Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast
-    (BRep_Tool::Curve(TopoDS::Edge(aGenE),Loc,First,Last)->Copy());
-  C->Transform(Loc.Transformation());
-  TopoDS_Edge E;
-  if(aDirV.Index() == 2) C->Transform(myLocation.Transformation()); 
-  myBuilder.Builder().MakeEdge(E,C,BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
+  TopoDS_Edge E; 
+  if(BRep_Tool::Degenerated(TopoDS::Edge(aGenE)))
+  {
+    myBuilder.Builder().MakeEdge(E);
+    myBuilder.Builder().UpdateEdge(E, BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
+    myBuilder.Builder().Degenerated(E, Standard_True);
+  }
+  else
+  {
+    Standard_Real First,Last;
+    TopLoc_Location Loc;
+    Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast
+      (BRep_Tool::Curve(TopoDS::Edge(aGenE),Loc,First,Last)->Copy());
+    if(!C.IsNull())
+    {
+      C->Transform(Loc.Transformation());
+      if(aDirV.Index() == 2) C->Transform(myLocation.Transformation()); 
+    }
+    myBuilder.Builder().MakeEdge(E,C,BRep_Tool::Tolerance(TopoDS::Edge(aGenE)));
+  }
   if (aDirV.Index() == 1 && 
       IsInvariant(aGenE) && 
       myDirShapeTool.NbShapes() == 3) {
@@ -723,6 +737,7 @@ Standard_Boolean BRepSweep_Rotation::GGDShapeIsToAdd
    const TopoDS_Shape& aSubGenS,
    const Sweep_NumShape& aDirS )const
 {
+  Standard_Boolean aRes = Standard_True;
   if (aNewShape.ShapeType()==TopAbs_FACE &&
       aNewSubShape.ShapeType()==TopAbs_EDGE &&
       aGenS.ShapeType()==TopAbs_EDGE &&
@@ -734,11 +749,11 @@ Standard_Boolean BRepSweep_Rotation::GGDShapeIsToAdd
       return (!IsInvariant(aSubGenS));
     }
     else{
-      return Standard_True;
+      return aRes;
     }
   }
   else{
-    return Standard_True;
+    return aRes;
   }
 }
 
@@ -835,20 +850,33 @@ Standard_Boolean  BRepSweep_Rotation::HasShape
    const Sweep_NumShape& aDirS)const 
 {
   if(aDirS.Type()==TopAbs_EDGE&&
-     aGenS.ShapeType()==TopAbs_EDGE){
+     aGenS.ShapeType()==TopAbs_EDGE)
+  {
     // Verify that the edge has entrails
     const TopoDS_Edge& anEdge = TopoDS::Edge(aGenS);
-    Standard_Boolean hasGeom = !BRep_Tool::Degenerated(anEdge);
-    if (hasGeom)
-    { // The edge is not degenerated. Check if it has no curve
-      Standard_Real aPFirst, aPLast;
-      TopLoc_Location aLoc;
-      Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aLoc, aPFirst, aPLast);
-      hasGeom = !aCurve.IsNull();
+    //
+    if(BRep_Tool::Degenerated(anEdge)) return Standard_False;
+
+    Standard_Real aPFirst, aPLast;
+    TopLoc_Location aLoc;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aLoc, aPFirst, aPLast);
+    if(aCurve.IsNull()) return Standard_False;
+
+    if(IsInvariant(aGenS)) return Standard_False;
+
+    //Check seem edge
+    TopExp_Explorer FaceExp(myGenShape, TopAbs_FACE);
+    for (;FaceExp.More(); FaceExp.Next()) {
+      TopoDS_Face F = TopoDS::Face(FaceExp.Current());
+      if (BRepTools::IsReallyClosed(anEdge, F))
+          return Standard_False;
     }
-    return hasGeom && !IsInvariant(aGenS);
+
+    return Standard_True;
+      
   }
-  else{
+  else
+  {
     return Standard_True;
   }
 }
