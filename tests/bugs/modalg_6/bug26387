@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC26387"
+puts "========"
+puts ""
+##############################################################
+# BRepPrimAPI_MakePrism crash when extruding Paraboloid face
+##############################################################
+
+restore [locate_data_file OCC26387-Paraboloid.brep] p
+prism r p 0 0 5 c
+checkshape r
