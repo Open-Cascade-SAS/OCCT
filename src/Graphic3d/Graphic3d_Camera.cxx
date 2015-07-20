@@ -1040,7 +1040,9 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   aPntsToMeasure.Append (gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[2]));
   aPntsToMeasure.Append (gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]));
 
-  if (!theMinMax.IsVoid() && !theMinMax.IsWhole())
+  Standard_Boolean isFiniteMinMax = !theMinMax.IsVoid() && !theMinMax.IsWhole();
+
+  if (isFiniteMinMax)
   {
     Standard_Real aMinMax[6];
     theMinMax.Get (aMinMax[0], aMinMax[1], aMinMax[2], aMinMax[3], aMinMax[4], aMinMax[5]);
@@ -1060,10 +1062,10 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   gp_Pnt aCamEye = myEye;
   gp_Pln aCamPln (aCamEye, aCamDir);
 
-  Standard_Real aModelMinDist   = RealLast();
-  Standard_Real aModelMaxDist   = RealFirst();
-  Standard_Real aGraphicMinDist = RealLast();
-  Standard_Real aGraphicMaxDist = RealFirst();
+  Standard_Real aModelMinDist = RealLast();
+  Standard_Real aModelMaxDist = RealFirst();
+  Standard_Real aGraphMinDist = RealLast();
+  Standard_Real aGraphMaxDist = RealFirst();
 
   const gp_XYZ& anAxialScale = myAxialScale;
 
@@ -1087,16 +1089,16 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
     }
 
     // The first eight points are from theGraphicBB, the last eight points are from theMinMax (can be absent).
-    Standard_Real& aChangeMinDist = aCounter >= 8 ? aModelMinDist : aGraphicMinDist;
-    Standard_Real& aChangeMaxDist = aCounter >= 8 ? aModelMaxDist : aGraphicMaxDist;
+    Standard_Real& aChangeMinDist = aCounter >= 8 ? aModelMinDist : aGraphMinDist;
+    Standard_Real& aChangeMaxDist = aCounter >= 8 ? aModelMaxDist : aGraphMaxDist;
     aChangeMinDist = Min (aDistance, aChangeMinDist);
     aChangeMaxDist = Max (aDistance, aChangeMaxDist);
     aCounter++;
   }
 
   // Compute depth of bounding box center.
-  Standard_Real aMidDepth  = (aGraphicMinDist + aGraphicMaxDist) * 0.5;
-  Standard_Real aHalfDepth = (aGraphicMaxDist - aGraphicMinDist) * 0.5;
+  Standard_Real aMidDepth  = (aGraphMinDist + aGraphMaxDist) * 0.5;
+  Standard_Real aHalfDepth = (aGraphMaxDist - aGraphMinDist) * 0.5;
 
   // Compute enlarged or shrank near and far z ranges.
   Standard_Real aZNear  = aMidDepth - aHalfDepth * theScaleFactor;
@@ -1109,27 +1111,6 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
     {
       SetZRange (DEFAULT_ZNEAR, DEFAULT_ZFAR);
       return;
-    }
-
-    // For better perspective the zNear value should not be less than zEpsilon (zFar).
-    // If zNear computed by graphical boundaries do not meet the rule (e.g. it is negative
-    // when computing it for grid) it could be increased up to minimum depth computed by
-    // application min max values. This means that z-fit can sacrifice presentation of
-    // non primary application graphical objects in favor of better perspective projection;
-    if (aZNear < zEpsilon (aZFar))
-    {
-      // Otherwise it should be increased up to zEpsilon (1.0) to avoid clipping of primary
-      // graphical objects.
-      if (aModelMinDist < zEpsilon (aZFar))
-      {
-        aMidDepth  = (aModelMinDist + aModelMaxDist) * 0.5;
-        aHalfDepth = (aModelMinDist - aModelMaxDist) * 0.5;
-        aZNear     = Max (zEpsilon(), aMidDepth - aHalfDepth * theScaleFactor);
-      }
-      else
-      {
-        aZNear = zEpsilon (aZFar);
-      }
     }
   }
 
@@ -1164,9 +1145,43 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
 
   if (!IsOrthographic())
   {
-    // Compensate zNear, zFar conversion errors for perspective projection.
-    aZNear -= aZFar * zEpsilon (aZNear) / (aZFar - zEpsilon (aZNear));
-    aZFar  += zEpsilon (aZFar);
+    // For perspective projection, the value of z in normalized device coordinates is non-linear
+    // function of eye z coordinate. For fixed-point depth representation resolution of z in
+    // model-view space will grow towards zFar plane and its scale depends mostly on how far is zNear
+    // against camera's eye. The purpose of the code below is to select most appropriate zNear distance
+    // to balance between clipping (less zNear, more chances to observe closely small models without clipping)
+    // and resolution of depth. A well applicable criteria to this is a ratio between resolution of z at center
+    // of model boundaries and the distance to that center point. The ratio is chosen empirically and validated
+    // by tests database. It is considered to be ~0.001 (0.1%) for 24 bit depth buffer, for less depth bitness
+    // the zNear will be placed similarly giving lower resolution.
+    // Approximation of the formula for respectively large z range is:
+    // zNear = [z * (1 + k) / (k * c)],
+    // where:
+    // z - distance to center of model boundaries;
+    // k - chosen ratio, c - capacity of depth buffer;
+    // k = 0.001, k * c = 1677.216, (1 + k) / (k * c) ~ 5.97E-4
+    //
+    // The function uses center of model boundaries computed from "theMinMax" boundaries (instead of using real
+    // graphical boundaries of all displayed objects). That means that it can sacrifice resolution of presentation
+    // of non primary ("infinite") application graphical objects in favor of better perspective projection of the
+    // small applicative objects measured with "theMinMax" values.
+    Standard_Real aZRange   = isFiniteMinMax ? aModelMaxDist - aModelMinDist : aGraphMaxDist - aGraphMinDist;
+    Standard_Real aZMin     = isFiniteMinMax ? aModelMinDist : aGraphMinDist;
+    Standard_Real aZ        = aZMin < 0 ? aZRange / 2.0 : aZRange / 2.0 + aZMin;
+    Standard_Real aZNearMin = aZ * 5.97E-4;
+    if (aZNear < aZNearMin)
+    {
+      // Clip zNear according to the minimum value matching the quality.
+      aZNear = aZNearMin;
+    }
+    else
+    {
+      // Compensate zNear conversion errors for perspective projection.
+      aZNear -= aZFar * zEpsilon (aZNear) / (aZFar - zEpsilon (aZNear));
+    }
+
+    // Compensate zFar conversion errors for perspective projection.
+    aZFar += zEpsilon (aZFar);
 
     // Ensure that after all the zNear is not a negative value.
     if (aZNear < zEpsilon())
