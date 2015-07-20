@@ -48,13 +48,13 @@ public:
   //! geometry will be shared with original shape.
   //! Note: the constructed framework can be reused to copy
   //! other shapes: just specify them with the function Perform.
-  Standard_EXPORT BRepBuilderAPI_Copy(const TopoDS_Shape& S, const Standard_Boolean copyGeom = Standard_True);
+  Standard_EXPORT BRepBuilderAPI_Copy(const TopoDS_Shape& S, const Standard_Boolean copyGeom = Standard_True, const Standard_Boolean copyMesh = Standard_False);
   
   //! Copies the shape S.
   //! Use the function Shape to access the result.
   //! If copyGeom is False, only topological objects will be copied, while
   //! geometry will be shared with original shape.
-  Standard_EXPORT void Perform (const TopoDS_Shape& S, const Standard_Boolean copyGeom = Standard_True);
+  Standard_EXPORT void Perform (const TopoDS_Shape& S, const Standard_Boolean copyGeom = Standard_True, const Standard_Boolean copyMesh = Standard_False);
 
 
 
