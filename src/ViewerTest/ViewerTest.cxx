@@ -3535,10 +3535,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
                                     ? aCtx->DisplayMode()
                                     : 0);
         Standard_Integer aSelMode = -1;
-        if ( isSelectable ==  1
-         || (isSelectable == -1
-          && aCtx->GetAutoActivateSelection()
-          && aShape->GetTransformPersistenceMode() == 0))
+        if (isSelectable ==  1 || (isSelectable == -1 && aCtx->GetAutoActivateSelection()))
         {
           aSelMode = aShape->HasSelectionMode() ? aShape->SelectionMode() : -1;
         }
@@ -3589,10 +3586,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
                                 ? aCtx->DisplayMode()
                                 : 0);
     Standard_Integer aSelMode = -1;
-    if ( isSelectable ==  1
-     || (isSelectable == -1
-      && aCtx->GetAutoActivateSelection()
-      && aShape->GetTransformPersistenceMode() == 0))
+    if (isSelectable ==  1 || (isSelectable == -1 && aCtx->GetAutoActivateSelection()))
     {
       aSelMode = aShape->HasSelectionMode() ? aShape->SelectionMode() : -1;
     }

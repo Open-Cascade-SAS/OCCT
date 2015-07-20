@@ -38,6 +38,7 @@
 #include <Graphic3d_TypeOfConnection.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
+#include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_BndBox4d.hxx>
@@ -438,7 +439,10 @@ public:
   
   //! Get the current point of relative modelling transform persistence
   Standard_EXPORT gp_Pnt TransformPersistencePoint() const;
-  
+
+  //! @return transform persistence of the presentable object.
+  const Graphic3d_TransformPers& TransformPersistence() const;
+
   //! Sets if the structure location has mutable nature (content or location will be changed regularly).
   Standard_EXPORT void SetMutable (const Standard_Boolean theIsMutable);
   

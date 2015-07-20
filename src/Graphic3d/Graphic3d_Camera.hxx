@@ -19,6 +19,7 @@
 #include <Graphic3d_Mat4d.hxx>
 #include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_Vec3.hxx>
+#include <Graphic3d_WorldViewProjState.hxx>
 
 #include <NCollection_Handle.hxx>
 
@@ -31,6 +32,7 @@
 #include <Bnd_Box.hxx>
 
 //! Forward declaration
+class Graphic3d_WorldViewProjState;
 
 //! Camera class provides object-oriented approach to setting up projection
 //! and orientation properties of 3D view.
@@ -436,16 +438,23 @@ public:
 //! @name Camera modification state
 public:
 
+  //! @return projection modification state of the camera.
+  const Graphic3d_WorldViewProjState& WorldViewProjState() const
+  {
+    return myWorldViewProjState;
+  }
+
+
   //! Returns modification state of camera projection matrix
   Standard_Size ProjectionState() const
   {
-    return myProjectionState;
+    return myWorldViewProjState.ProjectionState();
   }
 
-  //! Returns modification state of camera model-view matrix
-  Standard_Size ModelViewState() const
+  //! Returns modification state of camera world view transformation matrix.
+  Standard_Size WorldViewState() const
   {
-    return myOrientationState;
+    return myWorldViewProjState.WorldViewState();
   }
 
 //! @name Lazily-computed orientation and projection matrices derived from camera parameters
@@ -613,13 +622,11 @@ private:
   mutable TransformMatrices<Standard_Real>      myMatricesD;
   mutable TransformMatrices<Standard_ShortReal> myMatricesF;
 
-  mutable Standard_Size myProjectionState;
-  mutable Standard_Size myOrientationState;
+  mutable Graphic3d_WorldViewProjState myWorldViewProjState;
 
 public:
 
   DEFINE_STANDARD_RTTI(Graphic3d_Camera, Standard_Transient);
-
 };
 
 DEFINE_STANDARD_HANDLE (Graphic3d_Camera, Standard_Transient)

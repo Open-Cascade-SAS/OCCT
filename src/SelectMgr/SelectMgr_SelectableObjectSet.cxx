@@ -32,13 +32,18 @@ SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 // function : Append
 // purpose  : Adds new object to the set and marks BVH tree for rebuild
 //=======================================================================
-void SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_SelectableObject)& theObject)
+Standard_Boolean SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_SelectableObject)& theObject)
 {
   Standard_Integer aSize = Size();
+
   if (aSize < myObjects.Add (theObject))
   {
     MarkDirty();
+
+    return Standard_True;
   }
+
+  return Standard_False;
 }
 
 //=======================================================================
@@ -46,7 +51,7 @@ void SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_SelectableObj
 // purpose  : Removes object theObject from set and marks BVH tree for
 //            rebuild
 //=======================================================================
-void SelectMgr_SelectableObjectSet::Remove (const Handle(SelectMgr_SelectableObject)& theObject)
+Standard_Boolean SelectMgr_SelectableObjectSet::Remove (const Handle(SelectMgr_SelectableObject)& theObject)
 {
   const Standard_Integer anIndex = myObjects.FindIndex (theObject);
 
@@ -60,7 +65,11 @@ void SelectMgr_SelectableObjectSet::Remove (const Handle(SelectMgr_SelectableObj
     myObjects.RemoveLast();
 
     MarkDirty();
+
+    return Standard_True;
   }
+
+  return Standard_False;
 }
 
 //=======================================================================
@@ -118,22 +127,4 @@ void SelectMgr_SelectableObjectSet::Swap (const Standard_Integer theIndex1,
 Standard_Integer SelectMgr_SelectableObjectSet::Size() const
 {
   return myObjects.Size();
-}
-
-//=======================================================================
-// function : GetObjectById
-// purpose  : Returns object from set by theIndex given
-//=======================================================================
-const Handle(SelectMgr_SelectableObject)& SelectMgr_SelectableObjectSet::GetObjectById (const Standard_Integer theIndex) const
-{
-  return myObjects.FindKey (theIndex + 1);
-}
-
-//=======================================================================
-// function : Contains
-// purpose  : Returns true if this objects set contains theObject given
-//=======================================================================
-Standard_Boolean SelectMgr_SelectableObjectSet::Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
-{
-  return myObjects.Contains (theObject);
 }

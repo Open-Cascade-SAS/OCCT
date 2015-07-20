@@ -118,7 +118,6 @@ public:
 OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager)
 : Graphic3d_CStructure (theManager),
   myTransformation     (NULL),
-  myTransPers          (NULL),
   myAspectLine         (NULL),
   myAspectFace         (NULL),
   myAspectMarker       (NULL),
@@ -141,7 +140,6 @@ OpenGl_Structure::~OpenGl_Structure()
 {
   Release (Handle(OpenGl_Context)());
   delete myTransformation;  myTransformation  = NULL;
-  delete myTransPers;       myTransPers       = NULL;
 }
 
 // =======================================================================
@@ -150,8 +148,6 @@ OpenGl_Structure::~OpenGl_Structure()
 // =======================================================================
 void OpenGl_Structure::UpdateAspects()
 {
-  SetTransformPersistence (TransformPersistence);
-
   if (ContextLine.IsDef)
     SetAspectLine (ContextLine);
 
@@ -192,22 +188,6 @@ void OpenGl_Structure::UpdateTransformation()
   {
     ++myModificationState;
   }
-}
-
-// =======================================================================
-// function : SetTransformPersistence
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::SetTransformPersistence(const CALL_DEF_TRANSFORM_PERSISTENCE &ATransPers)
-{
-  if (!myTransPers)
-    myTransPers = new TEL_TRANSFORM_PERSISTENCE;
-
-  myTransPers->mode = ATransPers.Flag;
-  myTransPers->pointX = ATransPers.Point.x;
-  myTransPers->pointY = ATransPers.Point.y;
-  myTransPers->pointZ = ATransPers.Point.z;
-  MarkAsNotCulled();
 }
 
 // =======================================================================
@@ -558,32 +538,40 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 
   // Apply local transformation
+  OpenGl_Mat4 aModelWorld;
   if (myTransformation)
   {
-    OpenGl_Matrix aModelWorld;
-    OpenGl_Transposemat3 (&aModelWorld, myTransformation);
-    aCtx->ModelWorldState.Push();
-    aCtx->ModelWorldState.SetCurrent (OpenGl_Mat4::Map ((Standard_ShortReal* )aModelWorld.mat));
+    OpenGl_Transposemat3 ((OpenGl_Matrix*)aModelWorld.ChangeData(), myTransformation);
 
-    Standard_ShortReal aScaleX = OpenGl_Vec3 (myTransformation->mat[0][0],
-                                              myTransformation->mat[0][1],
-                                              myTransformation->mat[0][2]).SquareModulus();
+    Standard_ShortReal aScaleX = OpenGl_Vec3 (aModelWorld.GetValue (0, 0),
+                                              aModelWorld.GetValue (1, 0),
+                                              aModelWorld.GetValue (2, 0)).SquareModulus();
     // Scale transform detected.
     if (Abs (aScaleX - 1.f) > Precision::Confusion())
     {
       aCtx->SetGlNormalizeEnabled (Standard_True);
     }
-  }
 
-  // Apply transform persistence
-  const TEL_TRANSFORM_PERSISTENCE *aTransPersistence = NULL;
-  if ( myTransPers && myTransPers->mode != 0 )
+    aCtx->ModelWorldState.Push();
+    aCtx->ModelWorldState.SetCurrent (aModelWorld);
+  }
+  if (TransformPersistence.Flags)
   {
-    aTransPersistence = theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, myTransPers, theWorkspace->Width(), theWorkspace->Height());
+    OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
+    OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
+    TransformPersistence.Apply (aProjection, aWorldView, theWorkspace->Width(), theWorkspace->Height());
+
+    aCtx->ProjectionState.Push();
+    aCtx->WorldViewState.Push();
+    aCtx->ProjectionState.SetCurrent (aProjection);
+    aCtx->WorldViewState.SetCurrent (aWorldView);
+    aCtx->ApplyProjectionMatrix();
+  }
+  if (aModelWorld || TransformPersistence.Flags)
+  {
+    aCtx->ApplyModelViewMatrix();
   }
 
-  // Take into account transform persistence
-  aCtx->ApplyModelViewMatrix();
 
   // Apply aspects
   const OpenGl_AspectLine *anAspectLine = theWorkspace->AspectLine (Standard_False);
@@ -692,11 +680,21 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     }
   }
 
-  // Apply local transformation
-  if (myTransformation)
+  // Restore local transformation
+  if (!aModelWorld.IsIdentity())
   {
     aCtx->ModelWorldState.Pop();
     aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
+  }
+  if (TransformPersistence.Flags)
+  {
+    aCtx->ProjectionState.Pop();
+    aCtx->WorldViewState.Pop();
+    aCtx->ApplyProjectionMatrix();
+  }
+  if (!aModelWorld.IsIdentity() || TransformPersistence.Flags)
+  {
+    aCtx->ApplyWorldViewMatrix();
   }
 
   // Restore highlight color
@@ -707,12 +705,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   theWorkspace->SetAspectFace (anAspectFace);
   theWorkspace->SetAspectMarker (anAspectMarker);
   theWorkspace->SetAspectText (anAspectText);
-
-  // Restore transform persistence
-  if ( myTransPers && myTransPers->mode != 0 )
-  {
-    theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, aTransPersistence, theWorkspace->Width(), theWorkspace->Height());
-  }
 
   // Apply highlight box
   if (!myHighlightBox.IsNull())

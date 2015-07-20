@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 #include <Standard_Type.hxx>
 
+#include <Graphic3d_SequenceOfStructure.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <SelectMgr_ViewerSelector.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -28,6 +29,7 @@
 
 class Graphic3d_Group;
 class Graphic3d_Structure;
+class Graphic3d_TransformPers;
 class V3d_View;
 class SelectMgr_EntityOwner;
 class SelectMgr_SelectableObjectSet;
@@ -89,11 +91,12 @@ protected:
 
 private:
 
-  void ComputeSensitivePrs (const Handle(SelectMgr_Selection)& theSel, const gp_Trsf& theLoc);
+  void ComputeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
+                            const Handle(SelectMgr_Selection)& theSel,
+                            const gp_Trsf& theLoc,
+                            const Graphic3d_TransformPers& theTransPers);
 
-  Handle(Graphic3d_Group) myareagroup;
-  Handle(Graphic3d_Group) mysensgroup;
-  Handle(Graphic3d_Structure) mystruct;
+  Graphic3d_SequenceOfStructure myStructs;
   Graphic3d_SequenceOfHClipPlane myClipPlanes;
 };
 

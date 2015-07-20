@@ -16,8 +16,9 @@
 #include <gp_Pln.hxx>
 #include <Standard_ShortReal.hxx>
 
-#include <Graphic3d_Vec4.hxx>
 #include <Graphic3d_Camera.hxx>
+#include <Graphic3d_Vec4.hxx>
+#include <Graphic3d_WorldViewProjState.hxx>
 
 #include <Standard_Atomic.hxx>
 #include <Standard_Assert.hxx>
@@ -50,9 +51,9 @@ namespace
   static Standard_Real zEpsilon (const Standard_Real theValue)
   {
     if (theValue == 0)
-	{
+    {
       return FLT_EPSILON;
-	}
+    }
     Standard_Real aLogRadix = Log10 (Abs (theValue)) / Log10 (FLT_RADIX);
     Standard_Real aExp = Floor (aLogRadix);
     return FLT_EPSILON * Pow (FLT_RADIX, aExp);
@@ -79,8 +80,9 @@ Graphic3d_Camera::Graphic3d_Camera()
   myIOD (0.05),
   myIODType (IODType_Relative)
 {
-  myProjectionState  = (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER);
-  myOrientationState = (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER);
+  myWorldViewProjState.Initialize ((Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER),
+                                   (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER),
+                                   this);
 }
 
 // =======================================================================
@@ -89,6 +91,8 @@ Graphic3d_Camera::Graphic3d_Camera()
 // =======================================================================
 Graphic3d_Camera::Graphic3d_Camera (const Handle(Graphic3d_Camera)& theOther)
 {
+  myWorldViewProjState.Initialize (this);
+
   Copy (theOther);
 }
 
@@ -98,17 +102,18 @@ Graphic3d_Camera::Graphic3d_Camera (const Handle(Graphic3d_Camera)& theOther)
 // =======================================================================
 void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOtherCamera)
 {
-  myFOVy            = theOtherCamera->myFOVy;
-  myZNear           = theOtherCamera->myZNear;
-  myZFar            = theOtherCamera->myZFar;
-  myAspect          = theOtherCamera->myAspect;
-  myScale           = theOtherCamera->myScale;
-  myZFocus          = theOtherCamera->myZFocus;
-  myZFocusType      = theOtherCamera->myZFocusType;
-  myIOD             = theOtherCamera->myIOD;
-  myIODType         = theOtherCamera->myIODType;
-  myProjType        = theOtherCamera->myProjType;
-  myProjectionState = theOtherCamera->myProjectionState;
+  myFOVy       = theOtherCamera->myFOVy;
+  myZNear      = theOtherCamera->myZNear;
+  myZFar       = theOtherCamera->myZFar;
+  myAspect     = theOtherCamera->myAspect;
+  myScale      = theOtherCamera->myScale;
+  myZFocus     = theOtherCamera->myZFocus;
+  myZFocusType = theOtherCamera->myZFocusType;
+  myIOD        = theOtherCamera->myIOD;
+  myIODType    = theOtherCamera->myIODType;
+  myProjType   = theOtherCamera->myProjType;
+
+  myWorldViewProjState.ProjectionState() = theOtherCamera->ProjectionState();
 
   InvalidateProjection();
 }
@@ -119,11 +124,12 @@ void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOther
 // =======================================================================
 void Graphic3d_Camera::CopyOrientationData (const Handle(Graphic3d_Camera)& theOtherCamera)
 {
-  myUp               = theOtherCamera->myUp;
-  myEye              = theOtherCamera->myEye;
-  myCenter           = theOtherCamera->myCenter;
-  myAxialScale       = theOtherCamera->myAxialScale;
-  myOrientationState = theOtherCamera->myOrientationState;
+  myUp         = theOtherCamera->myUp;
+  myEye        = theOtherCamera->myEye;
+  myCenter     = theOtherCamera->myCenter;
+  myAxialScale = theOtherCamera->myAxialScale;
+
+  myWorldViewProjState.WorldViewState() = theOtherCamera->WorldViewState();
 
   InvalidateOrientation();
 }
@@ -847,7 +853,7 @@ void Graphic3d_Camera::InvalidateProjection()
 {
   myMatricesD.ResetProjection();
   myMatricesF.ResetProjection();
-  myProjectionState = (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER);
+  myWorldViewProjState.ProjectionState() = (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER);
 }
 
 // =======================================================================
@@ -858,7 +864,7 @@ void Graphic3d_Camera::InvalidateOrientation()
 {
   myMatricesD.ResetOrientation();
   myMatricesF.ResetOrientation();
-  myOrientationState = (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER);
+  myWorldViewProjState.WorldViewState() = (Standard_Size)Standard_Atomic_Increment (&THE_STATE_COUNTER);
 }
 
 // =======================================================================

@@ -29,12 +29,12 @@
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
-#include <OpenGl_Utils.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 
 #if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)
   #include <OpenGl_AVIWriter.hxx>
@@ -421,9 +421,9 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
     OpenGl_Mat4 aTextureMat;
     const Graphic3d_Vec2& aScale = aParams->Scale();
     const Graphic3d_Vec2& aTrans = aParams->Translation();
-    OpenGl_Utils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
-    OpenGl_Utils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
-    OpenGl_Utils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
+    Graphic3d_TransformUtils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
+    Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
+    Graphic3d_TransformUtils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
     glLoadMatrixf (aTextureMat);
 
     GLint anEnvMode = GL_MODULATE; // lighting mode
@@ -1302,7 +1302,7 @@ void OpenGl_Workspace::copyBackToFront()
 #if !defined(GL_ES_VERSION_2_0)
 
   OpenGl_Mat4 aProjectMat;
-  OpenGl_Utils::Ortho2D<Standard_ShortReal> (aProjectMat,
+  Graphic3d_TransformUtils::Ortho2D (aProjectMat,
     0.f, static_cast<GLfloat> (myWidth), 0.f, static_cast<GLfloat> (myHeight));
 
   myGlContext->WorldViewState.Push();

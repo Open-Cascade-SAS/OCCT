@@ -24,6 +24,7 @@
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_WorldViewProjState.hxx>
 
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -53,8 +54,18 @@ public:
 
   //! Passes camera projection and orientation matrices to builder
   void SetCamera (const Graphic3d_Mat4d& theProjection,
-                  const Graphic3d_Mat4d& theOrientation,
-                  const Standard_Integer theIsOrthographic);
+                  const Graphic3d_Mat4d& theWorldView,
+                  const Standard_Integer theIsOrthographic,
+                  const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState());
+
+  //! @return current camera projection transformation common for all selecting volumes
+  const Graphic3d_Mat4d& ProjectionMatrix() const;
+
+  //! @return current camera world view transformation common for all selecting volumes
+  const Graphic3d_Mat4d& WorldViewMatrix() const;
+
+  //! @return current camera world view projection transformation state
+  const Graphic3d_WorldViewProjState& WorldViewProjState() const;
 
   void SetPixelTolerance (const Standard_Real theTol);
 

@@ -17,7 +17,7 @@
 #define _OpenGl_BVHTreeSelector_HeaderFile
 
 #include <Graphic3d_Camera.hxx>
-
+#include <Graphic3d_WorldViewProjState.hxx>
 #include <OpenGl_Vec.hxx>
 
 //! BVHTreeSelector class provides a possibility to store parameters of view volume,
@@ -30,7 +30,7 @@ public:
   //! Creates an empty selector object with parallel projection type by default.
   Standard_EXPORT OpenGl_BVHTreeSelector();
 
-  //! Retrieves view volume's planes equations and its vertices from projection and modelview matrices.
+  //! Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
   Standard_EXPORT void SetViewVolume (const Handle(Graphic3d_Camera)& theCamera);
 
   //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
@@ -44,17 +44,23 @@ public:
   //! Must be called at the beginning of each BVH tree traverse loop.
   Standard_EXPORT void CacheClipPtsProjections();
 
-  //! Returnes the state of projection matrix previously saved in selector.
-  Standard_EXPORT const Standard_Size ProjectionState() { return myProjectionState; }
+  //! Returns current projection matrix.
+  const OpenGl_Mat4& ProjectionMatrix() const
+  {
+    return myProjectionMat;
+  }
 
-  //! Returnes the link for changing the state of projection matrix.
-  Standard_EXPORT Standard_Size& ChangeProjectionState() { return myProjectionState; }
+  //! Returns current world view transformation matrix.
+  const OpenGl_Mat4& WorldViewMatrix() const
+  {
+    return myWorldViewMat;
+  }
 
-  //! Returnes the state of model view matrix previously saved in selector.
-  Standard_EXPORT const Standard_Size ModelViewState() { return myModelViewState; }
-
-  //! Returnes the link for changing the state of model view matrix.
-  Standard_EXPORT Standard_Size& ChangeModelViewState() { return myModelViewState; }
+  //! Returns state of current world view projection transformation matrices.
+  const Graphic3d_WorldViewProjState& WorldViewProjState() const
+  {
+    return myWorldViewProjState;
+  }
 
 protected:
 
@@ -94,8 +100,8 @@ protected:
 
 protected:
 
-  OpenGl_Vec4        myClipPlanes[PlanesNB];           //!< Plane equations
-  OpenGl_Vec4        myClipVerts[ClipVerticesNB];      //!< Vertices
+  OpenGl_Vec4 myClipPlanes[PlanesNB];      //!< Plane equations
+  OpenGl_Vec4 myClipVerts[ClipVerticesNB]; //!< Vertices
 
   // for caching clip points projections onto viewing area normals once per traverse
   // ORDER: TOP, BOTTOM, LEFT, RIGHT, NEAR, FAR
@@ -104,14 +110,15 @@ protected:
 
   // for caching clip points projections onto AABB normals once per traverse
   // ORDER: E0, E1, E2
-  Standard_ShortReal myMaxOrthoProjectionPts[3];       //!< Max view volume's vertices projections onto normalized dimensions of AABB
-  Standard_ShortReal myMinOrthoProjectionPts[3];       //!< Min view volume's vertices projections onto normalized dimensions of AABB
+  Standard_ShortReal myMaxOrthoProjectionPts[3]; //!< Max view volume's vertices projections onto normalized dimensions of AABB
+  Standard_ShortReal myMinOrthoProjectionPts[3]; //!< Min view volume's vertices projections onto normalized dimensions of AABB
 
-  Standard_Boolean   myIsProjectionParallel;
+  Standard_Boolean myIsProjectionParallel;
 
-  Standard_Size myProjectionState; //! Caches the state of projection matrix to prevent unnecessary updates.
-  Standard_Size myModelViewState;  //! Caches the state of model view matrix to prevent unnecessary updates.
+  OpenGl_Mat4 myProjectionMat;
+  OpenGl_Mat4 myWorldViewMat;
 
+  Graphic3d_WorldViewProjState myWorldViewProjState; //!< State of world view projection matrices.
 };
 
 #endif // _OpenGl_BVHTreeSelector_HeaderFile

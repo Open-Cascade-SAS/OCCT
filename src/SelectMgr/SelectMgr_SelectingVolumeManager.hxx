@@ -20,6 +20,7 @@
 
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_WorldViewProjState.hxx>
 
 #include <SelectMgr_BaseFrustum.hxx>
 #include <SelectMgr_RectangularFrustum.hxx>
@@ -53,8 +54,18 @@ public:
 
   //! Updates camera projection and orientation matrices in all selecting volumes
   Standard_EXPORT void SetCamera (const Graphic3d_Mat4d& theProjection,
-                                  const Graphic3d_Mat4d& theOrientation,
-                                  const Standard_Boolean theIsOrthographic);
+                                  const Graphic3d_Mat4d& theWorldView,
+                                  const Standard_Boolean theIsOrthographic,
+                                  const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState());
+
+  //! @return current projection transformation common for all selecting volumes
+  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
+
+  //! @return current world view transformation common for all selecting volumes
+  Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
+
+  //! @return current camera world view projection transformation state common for all selecting volumes
+  Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
 
   //! Updates viewport in all selecting volumes
   Standard_EXPORT void SetViewport (const Standard_Real theX,

@@ -57,10 +57,4 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   ContextFillArea.IsSet = 0,
   ContextMarker.IsSet   = 0,
   ContextText.IsSet     = 0;
-
-  TransformPersistence.IsSet   = 0;
-  TransformPersistence.Flag    = Graphic3d_TMF_None;
-  TransformPersistence.Point.x = 0.0;
-  TransformPersistence.Point.y = 0.0;
-  TransformPersistence.Point.z = 0.0;
 }

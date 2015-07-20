@@ -22,9 +22,11 @@
 #include <InterfaceGraphic_telem.hxx>
 
 #include <OpenGl_BVHClipPrimitiveSet.hxx>
+#include <OpenGl_BVHClipPrimitiveTrsfPersSet.hxx>
 #include <OpenGl_BVHTreeSelector.hxx>
 
 #include <Graphic3d_ZLayerSettings.hxx>
+#include <Graphic3d_Camera.hxx>
 #include <OpenGl_GlCore11.hxx>
 
 
@@ -33,6 +35,12 @@ struct OpenGl_GlobalLayerSettings
   GLint DepthFunc;
   GLboolean DepthMask;
 };
+
+//! Defines index map of OpenGL structures.
+typedef NCollection_IndexedMap<const OpenGl_Structure*> OpenGl_IndexedMapOfStructure;
+
+//! Defines array of indexed maps of OpenGL structures.
+typedef NCollection_Array1<OpenGl_IndexedMapOfStructure> OpenGl_ArrayOfIndexedMapOfStructure;
 
 //! Presentations list sorted within priorities.
 class OpenGl_Layer
@@ -103,12 +111,26 @@ protected:
 
 private:
 
+  //! Array of OpenGl_Structures by priority rendered in layer.
   OpenGl_ArrayOfIndexedMapOfStructure myArray;
-  Standard_Integer                    myNbStructures;
-  Graphic3d_ZLayerSettings            myLayerSettings;             //!< Layer setting flags
-  mutable OpenGl_BVHClipPrimitiveSet  myBVHPrimitives;             //!< Set of OpenGl_Structures for building BVH tree
-  mutable Standard_Boolean            myBVHIsLeftChildQueuedFirst; //!< Is needed for implementation of stochastic order of BVH traverse
-  mutable Standard_Boolean            myIsBVHPrimitivesNeedsReset; //!< Defines if the primitive set for BVH is outdated
+
+  //! Overall number of structures rendered in the layer.
+  Standard_Integer myNbStructures;
+
+  //! Layer setting flags.
+  Graphic3d_ZLayerSettings myLayerSettings;
+
+  //! Set of OpenGl_Structures structures for building BVH tree.
+  mutable OpenGl_BVHClipPrimitiveSet myBVHPrimitives;
+
+  //! Set of transform persistent OpenGl_Structures for building BVH tree.
+  mutable OpenGl_BVHClipPrimitiveTrsfPersSet myBVHPrimitivesTrsfPers;
+
+  //! Is needed for implementation of stochastic order of BVH traverse.
+  mutable Standard_Boolean myBVHIsLeftChildQueuedFirst;
+
+  //! Defines if the primitive set for BVH is outdated.
+  mutable Standard_Boolean myIsBVHPrimitivesNeedsReset;
 
 public:
 

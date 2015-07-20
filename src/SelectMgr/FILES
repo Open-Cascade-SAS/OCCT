@@ -29,6 +29,8 @@ SelectMgr_SelectableObject.hxx
 SelectMgr_SelectableObject.lxx
 SelectMgr_SelectableObjectSet.cxx
 SelectMgr_SelectableObjectSet.hxx
+SelectMgr_SelectableObjectTrsfPersSet.cxx
+SelectMgr_SelectableObjectTrsfPersSet.hxx
 SelectMgr_SelectingVolumeManager.cxx
 SelectMgr_SelectingVolumeManager.hxx
 SelectMgr_Selection.cxx

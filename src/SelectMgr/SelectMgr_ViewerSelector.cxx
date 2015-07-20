@@ -143,9 +143,7 @@ myCurRank (0),
 myIsLeftChildQueuedFirst (Standard_False),
 myEntityIdx (0)
 {
-  mySelectableObjects = new SelectMgr_SelectableObjectSet();
 }
-
 
 //==================================================
 // Function: Activate
@@ -163,7 +161,6 @@ void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theS
   myTolerances.Add (theSelection->Sensitivity());
   myToUpdateTolerance = Standard_True;
 }
-
 
 //==================================================
 // Function: Deactivate
@@ -300,8 +297,32 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 
   const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& aSensitivesTree = anEntitySet->BVH();
 
-  SelectMgr_SelectingVolumeManager aMgr = theObject->HasTransformation() ?
-    mySelectingVolumeMgr.Transform (theObject->InversedTransformation()) : mySelectingVolumeMgr;
+  gp_Trsf aInversedTrsf;
+
+  if (theObject->HasTransformation() || theObject->TransformPersistence().Flags)
+  {
+    if (!theObject->TransformPersistence().Flags)
+    {
+      aInversedTrsf = theObject->InversedTransformation();
+    }
+    else
+    {
+      const Graphic3d_Mat4d& aProjection = mySelectingVolumeMgr.ProjectionMatrix();
+      const Graphic3d_Mat4d& aWorldView  = mySelectingVolumeMgr.WorldViewMatrix();
+
+      gp_Trsf aTPers;
+      Graphic3d_Mat4d aMat = theObject->TransformPersistence().Compute (aProjection, aWorldView, 0, 0);
+      aTPers.SetValues (aMat.GetValue (0, 0), aMat.GetValue (0, 1), aMat.GetValue (0, 2), aMat.GetValue (0, 3),
+                        aMat.GetValue (1, 0), aMat.GetValue (1, 1), aMat.GetValue (1, 2), aMat.GetValue (1, 3),
+                        aMat.GetValue (2, 0), aMat.GetValue (2, 1), aMat.GetValue (2, 2), aMat.GetValue (2, 3));
+
+      aInversedTrsf = (aTPers * theObject->Transformation()).Inverted();
+    }
+  }
+
+  SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
+                                        ? mySelectingVolumeMgr.Transform (aInversedTrsf)
+                                        : mySelectingVolumeMgr;
 
   NCollection_DataMap<Handle(Standard_Type), SelectMgr_SelectingVolumeManager> aScaledTrnsfFrustums;
 
@@ -363,7 +384,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
             if (!aScaledTrnsfFrustums.IsBound (anEnt->DynamicType()))
             {
               aScaledTrnsfFrustums.Bind (anEnt->DynamicType(),
-                                         scaleAndTransform (sensitivity (anEnt), theObject->InversedTransformation()));
+                                         scaleAndTransform (sensitivity (anEnt), aInversedTrsf));
             }
 
             aTmpMgr = aScaledTrnsfFrustums.Find (anEnt->DynamicType());
@@ -392,45 +413,86 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
   mystored.Clear();
   myMapOfDetected.Clear();
 
-  if (mySelectableObjects->Size() == 0)
-    return;
-
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& anObjectsTree = mySelectableObjects->BVH();
-
-  Standard_Integer aNode = 0;
-  if (!mySelectingVolumeMgr.Overlaps (anObjectsTree->MinPoint (0),
-                                      anObjectsTree->MaxPoint (0)))
+  NCollection_Handle<BVH_Tree<Standard_Real, 3> > aBVHTree;
+  for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
-    return;
-  }
-  Standard_Integer aStack[32];
-  Standard_Integer aHead = -1;
-  for (;;)
-  {
-    if (!anObjectsTree->IsOuter (aNode))
+    const Standard_Boolean isTrsfPers = aBVHTreeIdx == 1;
+    if (isTrsfPers)
     {
-      const Standard_Integer aLeftChildIdx  = anObjectsTree->LeftChild  (aNode);
-      const Standard_Integer aRightChildIdx = anObjectsTree->RightChild (aNode);
-      const Standard_Boolean isLeftChildIn  =
-        mySelectingVolumeMgr.Overlaps (anObjectsTree->MinPoint (aLeftChildIdx),
-                                       anObjectsTree->MaxPoint (aLeftChildIdx));
-      const Standard_Boolean isRightChildIn =
-        mySelectingVolumeMgr.Overlaps (anObjectsTree->MinPoint (aRightChildIdx),
-                                       anObjectsTree->MaxPoint (aRightChildIdx));
-      if (isLeftChildIn
-        && isRightChildIn)
+      if (mySelectableObjectsTrsfPers.Size() == 0)
       {
-        aNode = aLeftChildIdx;
-        ++aHead;
-        aStack[aHead] = aRightChildIdx;
+        continue;
       }
-      else if (isLeftChildIn
-        || isRightChildIn)
+      const Graphic3d_Mat4d& aProjection            = mySelectingVolumeMgr.ProjectionMatrix();
+      const Graphic3d_Mat4d& aWorldView             = mySelectingVolumeMgr.WorldViewMatrix();
+      const Graphic3d_WorldViewProjState& aWVPState = mySelectingVolumeMgr.WorldViewProjState();
+      aBVHTree = mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aWVPState);
+    }
+    else
+    {
+      if (mySelectableObjects.Size() == 0)
       {
-        aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+        continue;
+      }
+      aBVHTree = mySelectableObjects.BVH();
+    }
+
+    Standard_Integer aNode = 0;
+    if (!mySelectingVolumeMgr.Overlaps (aBVHTree->MinPoint (0),
+                                        aBVHTree->MaxPoint (0)))
+    {
+      continue;
+    }
+
+    Standard_Integer aStack[32];
+    Standard_Integer aHead = -1;
+    for (;;)
+    {
+      if (!aBVHTree->IsOuter (aNode))
+      {
+        const Standard_Integer aLeftChildIdx  = aBVHTree->LeftChild  (aNode);
+        const Standard_Integer aRightChildIdx = aBVHTree->RightChild (aNode);
+        const Standard_Boolean isLeftChildIn  =
+          mySelectingVolumeMgr.Overlaps (aBVHTree->MinPoint (aLeftChildIdx),
+                                         aBVHTree->MaxPoint (aLeftChildIdx));
+        const Standard_Boolean isRightChildIn =
+          mySelectingVolumeMgr.Overlaps (aBVHTree->MinPoint (aRightChildIdx),
+                                         aBVHTree->MaxPoint (aRightChildIdx));
+        if (isLeftChildIn
+          && isRightChildIn)
+        {
+          aNode = aLeftChildIdx;
+          ++aHead;
+          aStack[aHead] = aRightChildIdx;
+        }
+        else if (isLeftChildIn
+          || isRightChildIn)
+        {
+          aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+        }
+        else
+        {
+          if (aHead < 0)
+          {
+            break;
+          }
+
+          aNode = aStack[aHead];
+          --aHead;
+        }
       }
       else
       {
+        Standard_Integer aStartIdx = aBVHTree->BegPrimitive (aNode);
+        Standard_Integer anEndIdx  = aBVHTree->EndPrimitive (aNode);
+        for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+        {
+          Handle(SelectMgr_SelectableObject) aSelectableObject =
+            isTrsfPers ? mySelectableObjectsTrsfPers.GetObjectById (anIdx)
+                       : mySelectableObjects.GetObjectById (anIdx);
+
+          traverseObject (aSelectableObject);
+        }
         if (aHead < 0)
         {
           break;
@@ -439,22 +501,6 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
         aNode = aStack[aHead];
         --aHead;
       }
-    }
-    else
-    {
-      Standard_Integer aStartIdx = anObjectsTree->BegPrimitive (aNode);
-      Standard_Integer anEndIdx = anObjectsTree->EndPrimitive (aNode);
-      for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
-      {
-        traverseObject (mySelectableObjects->GetObjectById (anIdx));
-      }
-      if (aHead < 0)
-      {
-        break;
-      }
-
-      aNode = aStack[aHead];
-      --aHead;
     }
   }
 
@@ -549,7 +595,8 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked(const Standard_In
 //==================================================
 Standard_Boolean SelectMgr_ViewerSelector::Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
 {
-  return mySelectableObjects->Contains (theObject);
+  return mySelectableObjects.Contains (theObject)
+      || mySelectableObjectsTrsfPers.Contains (theObject);
 }
 
 //==================================================
@@ -560,7 +607,7 @@ Standard_Boolean SelectMgr_ViewerSelector::Modes (const Handle(SelectMgr_Selecta
                                                   TColStd_ListOfInteger& theModeList,
                                                   const SelectMgr_StateOfSelection theWantedState) const
 {
-  Standard_Boolean hasActivatedStates = mySelectableObjects->Contains (theSelectableObject);
+  Standard_Boolean hasActivatedStates = Contains (theSelectableObject);
   for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
   {
       if (theWantedState == SelectMgr_SOS_Any)
@@ -583,7 +630,7 @@ Standard_Boolean SelectMgr_ViewerSelector::Modes (const Handle(SelectMgr_Selecta
 Standard_Boolean SelectMgr_ViewerSelector::IsActive (const Handle(SelectMgr_SelectableObject)& theSelectableObject,
                                                      const Standard_Integer theMode) const
 {
-  if (!mySelectableObjects->Contains (theSelectableObject))
+  if (!Contains (theSelectableObject))
     return Standard_False;
 
   for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
@@ -604,7 +651,7 @@ Standard_Boolean SelectMgr_ViewerSelector::IsActive (const Handle(SelectMgr_Sele
 Standard_Boolean SelectMgr_ViewerSelector::IsInside (const Handle(SelectMgr_SelectableObject)& theSelectableObject,
                                                      const Standard_Integer theMode) const
 {
-  if (!mySelectableObjects->Contains (theSelectableObject))
+  if (!Contains (theSelectableObject))
     return Standard_False;
 
   for (theSelectableObject->Init(); theSelectableObject->More(); theSelectableObject->Next())
@@ -656,7 +703,7 @@ TCollection_AsciiString SelectMgr_ViewerSelector::Status (const Handle(SelectMgr
     }
   }
 
-  if (mySelectableObjects->Contains (theSelectableObject))
+  if (!Contains (theSelectableObject))
   {
     aStatus = aStatus + "Not Present in the selector\n\n";
   }
@@ -711,7 +758,15 @@ void SelectMgr_ViewerSelector::AddSelectableObject (const Handle(SelectMgr_Selec
 {
   if (!myMapOfObjectSensitives.IsBound (theObject))
   {
-    mySelectableObjects->Append (theObject);
+    if (!theObject->TransformPersistence().Flags)
+    {
+      mySelectableObjects.Append (theObject);
+    }
+    else
+    {
+      mySelectableObjectsTrsfPers.Append (theObject);
+    }
+
     NCollection_Handle<SelectMgr_SensitiveEntitySet> anEntitySet = new SelectMgr_SensitiveEntitySet();
     myMapOfObjectSensitives.Bind (theObject, anEntitySet);
   }
@@ -746,8 +801,11 @@ void SelectMgr_ViewerSelector::RemoveSelectableObject (const Handle(SelectMgr_Se
 {
   if (myMapOfObjectSensitives.IsBound (theObject))
   {
+    if (!mySelectableObjects.Remove (theObject))
+    {
+      mySelectableObjectsTrsfPers.Remove (theObject);
+    }
     myMapOfObjectSensitives.UnBind (theObject);
-    mySelectableObjects->Remove (theObject);
   }
 }
 
@@ -773,11 +831,17 @@ void SelectMgr_ViewerSelector::RemoveSelectionOfObject (const Handle(SelectMgr_S
 //=======================================================================
 void SelectMgr_ViewerSelector::RebuildObjectsTree (const Standard_Boolean theIsForce)
 {
-  mySelectableObjects->MarkDirty();
+  mySelectableObjects.MarkDirty();
+  mySelectableObjectsTrsfPers.MarkDirty();
 
   if (theIsForce)
   {
-    mySelectableObjects->BVH();
+    const Graphic3d_Mat4d& aProjection            = mySelectingVolumeMgr.ProjectionMatrix();
+    const Graphic3d_Mat4d& aWorldView             = mySelectingVolumeMgr.WorldViewMatrix();
+    const Graphic3d_WorldViewProjState& aWVPState = mySelectingVolumeMgr.WorldViewProjState();
+
+    mySelectableObjects.BVH();
+    mySelectableObjectsTrsfPers.BVH (aProjection, aWorldView, aWVPState);
   }
 }
 
@@ -789,7 +853,7 @@ void SelectMgr_ViewerSelector::RebuildObjectsTree (const Standard_Boolean theIsF
 void SelectMgr_ViewerSelector::RebuildSensitivesTree (const Handle(SelectMgr_SelectableObject)& theObject,
                                                       const Standard_Boolean theIsForce)
 {
-  if (!mySelectableObjects->Contains (theObject))
+  if (!Contains (theObject))
     return;
 
   NCollection_Handle<SelectMgr_SensitiveEntitySet>& anEntitySet = myMapOfObjectSensitives.ChangeFind (theObject);

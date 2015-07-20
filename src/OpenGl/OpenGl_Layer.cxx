@@ -22,7 +22,7 @@
 #include <Graphic3d_GraphicDriver.hxx>
 
 // =======================================================================
-// function : OpenGl_PriorityList
+// function : OpenGl_Layer
 // purpose  :
 // =======================================================================
 OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities)
@@ -64,7 +64,14 @@ void OpenGl_Layer::Add (const OpenGl_Structure* theStruct,
   }
   else if (!isForChangePriority)
   {
-    myBVHPrimitives.Add (theStruct);
+    if (!theStruct->TransformPersistence.Flags)
+    {
+      myBVHPrimitives.Add (theStruct);
+    }
+    else
+    {
+      myBVHPrimitivesTrsfPers.Add (theStruct);
+    }
   }
   ++myNbStructures;
 }
@@ -97,7 +104,10 @@ bool OpenGl_Layer::Remove (const OpenGl_Structure* theStruct,
       if (!theStruct->IsAlwaysRendered()
        && !isForChangePriority)
       {
-        myBVHPrimitives.Remove (theStruct);
+        if (!myBVHPrimitives.Remove (theStruct))
+        {
+          myBVHPrimitivesTrsfPers.Remove (theStruct);
+        }
       }
       --myNbStructures;
       thePriority = aPriorityIter;
@@ -155,8 +165,28 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
 {
   if (myIsBVHPrimitivesNeedsReset)
   {
-    myBVHPrimitives.Assign (myArray);
+    myBVHPrimitives.Clear();
+    myBVHPrimitivesTrsfPers.Clear();
     myIsBVHPrimitivesNeedsReset = Standard_False;
+    for (Standard_Integer aPriorityIdx = 0, aNbPriorities = myArray.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
+    {
+      for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (myArray (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
+      {
+        const OpenGl_Structure* aStruct = aStructIter.Value();
+
+        if (aStruct->IsAlwaysRendered())
+          continue;
+
+        if (!aStruct->TransformPersistence.Flags)
+        {
+          myBVHPrimitives.Add (aStruct);
+        }
+        else
+        {
+          myBVHPrimitivesTrsfPers.Add (aStruct);
+        }
+      }
+    }
   }
 
   OpenGl_BVHTreeSelector& aSelector = theWorkspace->ActiveView()->BVHTreeSelector();
@@ -194,63 +224,92 @@ void OpenGl_Layer::renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace)
 void OpenGl_Layer::traverse (OpenGl_BVHTreeSelector& theSelector) const
 {
   // handle a case when all objects are infinite
-  if (myBVHPrimitives.Size() == 0)
+  if (myBVHPrimitives.Size() == 0 && myBVHPrimitivesTrsfPers.Size() == 0)
     return;
 
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVHTree = myBVHPrimitives.BVH();
-
-  Standard_Integer aNode = 0; // a root node
   theSelector.CacheClipPtsProjections();
-  if (!theSelector.Intersect (aBVHTree->MinPoint (0),
-                              aBVHTree->MaxPoint (0)))
-  {
-    return;
-  }
 
-  Standard_Integer aStack[32];
-  Standard_Integer aHead = -1;
-  for (;;)
+  NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> > aBVHTree;
+
+  for (Standard_Integer aBVHTreeIdx = 0; aBVHTreeIdx < 2; ++aBVHTreeIdx)
   {
-    if (!aBVHTree->IsOuter (aNode))
+    const Standard_Boolean isTrsfPers = aBVHTreeIdx == 1;
+    if (isTrsfPers)
     {
-      const Standard_Integer aLeftChildIdx  = aBVHTree->LeftChild  (aNode);
-      const Standard_Integer aRightChildIdx = aBVHTree->RightChild (aNode);
-      const Standard_Boolean isLeftChildIn  = theSelector.Intersect (aBVHTree->MinPoint (aLeftChildIdx),
-                                                                     aBVHTree->MaxPoint (aLeftChildIdx));
-      const Standard_Boolean isRightChildIn = theSelector.Intersect (aBVHTree->MinPoint (aRightChildIdx),
-                                                                     aBVHTree->MaxPoint (aRightChildIdx));
-      if (isLeftChildIn
-       && isRightChildIn)
+      if (myBVHPrimitivesTrsfPers.Size() == 0)
       {
-        aNode = myBVHIsLeftChildQueuedFirst ? aLeftChildIdx : aRightChildIdx;
-        aStack[++aHead] = myBVHIsLeftChildQueuedFirst ? aRightChildIdx : aLeftChildIdx;
-        myBVHIsLeftChildQueuedFirst = !myBVHIsLeftChildQueuedFirst;
+        continue;
       }
-      else if (isLeftChildIn
-            || isRightChildIn)
+      const OpenGl_Mat4& aProjection = theSelector.ProjectionMatrix();
+      const OpenGl_Mat4& aWorldView  = theSelector.WorldViewMatrix();
+      const Graphic3d_WorldViewProjState& aWVPState = theSelector.WorldViewProjState();
+      aBVHTree = myBVHPrimitivesTrsfPers.BVH (aProjection, aWorldView, aWVPState);
+    }
+    else
+    {
+      if (myBVHPrimitives.Size() == 0)
       {
-        aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+        continue;
+      }
+      aBVHTree = myBVHPrimitives.BVH();
+    }
+
+    Standard_Integer aNode = 0; // a root node
+
+    if (!theSelector.Intersect (aBVHTree->MinPoint (0),
+                                aBVHTree->MaxPoint (0)))
+    {
+      continue;
+    }
+
+    Standard_Integer aStack[32];
+    Standard_Integer aHead = -1;
+    for (;;)
+    {
+      if (!aBVHTree->IsOuter (aNode))
+      {
+        const Standard_Integer aLeftChildIdx  = aBVHTree->LeftChild  (aNode);
+        const Standard_Integer aRightChildIdx = aBVHTree->RightChild (aNode);
+        const Standard_Boolean isLeftChildIn  = theSelector.Intersect (aBVHTree->MinPoint (aLeftChildIdx),
+                                                                       aBVHTree->MaxPoint (aLeftChildIdx));
+        const Standard_Boolean isRightChildIn = theSelector.Intersect (aBVHTree->MinPoint (aRightChildIdx),
+                                                                       aBVHTree->MaxPoint (aRightChildIdx));
+        if (isLeftChildIn
+         && isRightChildIn)
+        {
+          aNode = myBVHIsLeftChildQueuedFirst ? aLeftChildIdx : aRightChildIdx;
+          aStack[++aHead] = myBVHIsLeftChildQueuedFirst ? aRightChildIdx : aLeftChildIdx;
+          myBVHIsLeftChildQueuedFirst = !myBVHIsLeftChildQueuedFirst;
+        }
+        else if (isLeftChildIn
+              || isRightChildIn)
+        {
+          aNode = isLeftChildIn ? aLeftChildIdx : aRightChildIdx;
+        }
+        else
+        {
+          if (aHead < 0)
+          {
+            break;
+          }
+
+          aNode = aStack[aHead--];
+        }
       }
       else
       {
+        Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
+        const OpenGl_Structure* aStruct =
+          isTrsfPers ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
+                     : myBVHPrimitives.GetStructureById (aIdx);
+        aStruct->MarkAsNotCulled();
         if (aHead < 0)
         {
-          return;
+          break;
         }
 
         aNode = aStack[aHead--];
       }
-    }
-    else
-    {
-      Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
-      myBVHPrimitives.GetStructureById (aIdx)->MarkAsNotCulled();
-      if (aHead < 0)
-      {
-        return;
-      }
-
-      aNode = aStack[aHead--];
     }
   }
 }

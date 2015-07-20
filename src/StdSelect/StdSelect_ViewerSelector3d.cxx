@@ -179,39 +179,51 @@ void StdSelect_ViewerSelector3d::Pick (const TColgp_Array1OfPnt2d& thePolyline,
 //=======================================================================
 void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theView)
 {
-  // Preparation des structures
-  if (mystruct.IsNull())
+  for (Standard_Integer anObjectIdx = 0; anObjectIdx <= mySelectableObjects.Size(); ++anObjectIdx)
   {
-    mystruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
-  }
+    const Handle (SelectMgr_SelectableObject)& anObj = mySelectableObjects.GetObjectById (anObjectIdx);
 
-  if (mysensgroup.IsNull())
-  {
-    mysensgroup = mystruct->NewGroup();
-  }
+    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
 
-  Quantity_Color aColor (Quantity_NOC_INDIANRED3);
-  Handle(Graphic3d_AspectMarker3d) aMarkerAspect =
-    new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, aColor, 2.0);
-
-  mysensgroup->SetPrimitivesAspect (aMarkerAspect);
-  mysensgroup->SetPrimitivesAspect (
-    new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
-
-  for (Standard_Integer anObjectIdx = 0; anObjectIdx <= mySelectableObjects->Size(); ++anObjectIdx)
-  {
-    const Handle (SelectMgr_SelectableObject)& anObject = mySelectableObjects->GetObjectById (anObjectIdx);
-    for (anObject->Init(); anObject->More(); anObject->Next())
+    for (anObj->Init(); anObj->More(); anObj->Next())
     {
-      if (anObject->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
+      if (anObj->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
       {
-        ComputeSensitivePrs (anObject->CurrentSelection(), anObject->Transformation());
+        ComputeSensitivePrs (aStruct, anObj->CurrentSelection(), anObj->Transformation(), Graphic3d_TransformPers());
       }
     }
+
+    myStructs.Append (aStruct);
   }
 
-  mysensgroup->Structure()->SetDisplayPriority (10);
-  mystruct->Display();
+  for (Standard_Integer anObjectIdx = 0; anObjectIdx <= mySelectableObjectsTrsfPers.Size(); ++anObjectIdx)
+  {
+    const Handle (SelectMgr_SelectableObject)& anObj = mySelectableObjectsTrsfPers.GetObjectById (anObjectIdx);
+
+    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+
+    if (!anObj->TransformPersistence().Flags || (anObj->TransformPersistence().Flags & Graphic3d_TMF_2d))
+    {
+      continue;
+    }
+
+    for (anObj->Init(); anObj->More(); anObj->Next())
+    {
+      if (anObj->CurrentSelection()->GetSelectionState() == SelectMgr_SOS_Activated)
+      {
+        ComputeSensitivePrs (aStruct, anObj->CurrentSelection(), anObj->Transformation(), anObj->TransformPersistence());
+      }
+    }
+
+    myStructs.Append (aStruct);
+  }
+
+  for (Standard_Integer aStructIdx = 1; aStructIdx <= myStructs.Length(); ++aStructIdx)
+  {
+    Handle(Graphic3d_Structure)& aStruct = myStructs.ChangeValue (aStructIdx);
+    aStruct->SetDisplayPriority (10);
+    aStruct->Display();
+  }
 
   theView->Update();
 }
@@ -222,19 +234,17 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
 //=======================================================================
 void StdSelect_ViewerSelector3d::ClearSensitive (const Handle(V3d_View)& theView)
 {
-  if (mysensgroup.IsNull())
+  for (Standard_Integer aStructIdx = 1; aStructIdx <= myStructs.Length(); ++aStructIdx)
   {
-    return;
+    myStructs.Value (aStructIdx)->Remove();
   }
 
-  mysensgroup->Clear();
+  myStructs.Clear();
 
-  if (theView.IsNull())
+  if (!theView.IsNull())
   {
-    return;
+    theView->Update();
   }
-
-  theView->Update();
 }
 
 //=======================================================================
@@ -246,32 +256,18 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
                                                    const Handle(V3d_View)& theView,
                                                    const Standard_Boolean theToClearOthers)
 {
-  if (mystruct.IsNull())
-  {
-    mystruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
-  }
-
-  if (mysensgroup.IsNull())
-  {
-    mysensgroup = mystruct->NewGroup();
-    Quantity_Color aColor (Quantity_NOC_INDIANRED3);
-    Handle(Graphic3d_AspectMarker3d) aMarkerAspect =
-      new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, aColor, 2.0);
-
-    mysensgroup-> SetPrimitivesAspect (aMarkerAspect);
-    mysensgroup->SetPrimitivesAspect (
-      new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
-  }
-
   if (theToClearOthers)
   {
-    mysensgroup->Clear();
+    ClearSensitive (theView);
   }
 
-  ComputeSensitivePrs (theSel, theTrsf);
+  Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
 
-  mystruct->SetDisplayPriority (10);
-  mystruct->Display();
+  ComputeSensitivePrs (aStruct, theSel, theTrsf, Graphic3d_TransformPers());
+
+  myStructs.Append (aStruct);
+  myStructs.Last()->SetDisplayPriority (10);
+  myStructs.Last()->Display();
 
   theView->Update();
 }
@@ -280,9 +276,30 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
 //function : ComputeSensitivePrs
 //purpose  :
 //=======================================================================
-void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(SelectMgr_Selection)& theSel,
-                                                      const gp_Trsf& theLoc)
+void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(Graphic3d_Structure)& theStructure,
+                                                      const Handle(SelectMgr_Selection)& theSel,
+                                                      const gp_Trsf& theLoc,
+                                                      const Graphic3d_TransformPers& theTransPers)
 {
+  theStructure->SetTransformPersistence (theTransPers.Flags, gp_Pnt (theTransPers.Point.x(),
+                                                                     theTransPers.Point.y(),
+                                                                     theTransPers.Point.z()));
+
+  Handle(Graphic3d_Group) aSensGroup  = theStructure->NewGroup();
+
+  Quantity_Color aColor (Quantity_NOC_INDIANRED3);
+  Handle(Graphic3d_AspectMarker3d) aMarkerAspect =
+    new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, aColor, 2.0);
+
+  aSensGroup->SetPrimitivesAspect (aMarkerAspect);
+  aSensGroup->SetPrimitivesAspect (
+    new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
+
+  Handle(Graphic3d_Group) anAreaGroup = theStructure->NewGroup();
+
+  anAreaGroup->SetPrimitivesAspect (
+    new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
+
   TColgp_SequenceOfPnt aSeqLines, aSeqFree;
   TColStd_SequenceOfInteger aSeqBnds;
 
@@ -509,7 +526,7 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(SelectMgr_Sel
         Handle(Select3D_SensitivePoint)::DownCast(Ent)->Point().Transformed (theLoc);
       Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
       anArrayOfPoints->AddVertex (P.X(), P.Y(), P.Z());
-      mysensgroup->AddPrimitiveArray (anArrayOfPoints);
+      aSensGroup->AddPrimitiveArray (anArrayOfPoints);
     }
     //============================================================
     // Triangulation : On met un petit offset ves l'interieur...
@@ -613,12 +630,12 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(SelectMgr_Sel
       aPrims->AddVertex(aSeqLines(i));
     for (i = 1; i <= aSeqBnds.Length(); i++)
       aPrims->AddBound(aSeqBnds(i));
-    myareagroup->AddPrimitiveArray(aPrims);
+    anAreaGroup->AddPrimitiveArray(aPrims);
   }
 
   if (aSeqFree.Length())
   {
-    mysensgroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
+    aSensGroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
     Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(aSeqFree.Length(),aSeqFree.Length()/2);
     for (i = 1; i <= aSeqFree.Length(); i++)
     {
@@ -626,8 +643,8 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(SelectMgr_Sel
       aPrims->AddVertex(aSeqLines(i++));
       aPrims->AddVertex(aSeqLines(i));
     }
-    mysensgroup->AddPrimitiveArray(aPrims);
-    mysensgroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
+    aSensGroup->AddPrimitiveArray(aPrims);
+    aSensGroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
   }
 }
 

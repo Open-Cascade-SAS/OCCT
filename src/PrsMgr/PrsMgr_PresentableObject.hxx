@@ -23,7 +23,6 @@
 #include <PrsMgr_Presentations.hxx>
 #include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_CTransPersStruct.hxx>
 #include <Standard_Boolean.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <PrsMgr_PresentableObjectPointer.hxx>
@@ -33,6 +32,7 @@
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_Integer.hxx>
+#include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Graphic3d_ClipPlane.hxx>
@@ -107,7 +107,10 @@ public:
   
   //! Gets  point  of  transform  persistence for  this  object
   Standard_EXPORT gp_Pnt GetTransformPersistencePoint() const;
-  
+
+  //! @return transform persistence of the presentable object.
+  const Graphic3d_TransformPers& TransformPersistence() const;
+
   Standard_EXPORT void SetTypeOfPresentation (const PrsMgr_TypeOfPresentation3d aType);
   
   //! flags the Prs of mode <AMode> to be Updated.
@@ -281,7 +284,7 @@ Standard_EXPORT virtual ~PrsMgr_PresentableObject();
 private:
 
 
-  Graphic3d_CTransPersStruct myTransformPersistence;
+  Graphic3d_TransformPers myTransformPersistence;
   PrsMgr_PresentableObjectPointer myParent;
   gp_Trsf myLocalTransformation;
   gp_Trsf myTransformation;

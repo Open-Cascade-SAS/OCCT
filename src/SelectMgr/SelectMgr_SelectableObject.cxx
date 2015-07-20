@@ -247,24 +247,19 @@ void SelectMgr_SelectableObject::ResetTransformation()
   PrsMgr_PresentableObject::ResetTransformation();
 }
 
-
 //=======================================================================
 //function : UpdateTransformation
 //purpose  : 
 //=======================================================================
-void SelectMgr_SelectableObject::UpdateTransformation() 
+void SelectMgr_SelectableObject::UpdateTransformation()
 {
-  
-  Handle(Select3D_SensitiveEntity) SE;
-  for(Init();More();Next()){
-    const Handle(SelectMgr_Selection) & Sel =  CurrentSelection();
-    Sel->UpdateStatus(SelectMgr_TOU_Partial);
-    Sel->UpdateBVHStatus (SelectMgr_TBU_Invalidate);
+  for (Init(); More(); Next())
+  {
+    CurrentSelection()->UpdateStatus (SelectMgr_TOU_Partial);
   }
+
   PrsMgr_PresentableObject::UpdateTransformation();
-
 }
-
 
 //=======================================================================
 //function : UpdateTransformation

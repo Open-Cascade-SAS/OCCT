@@ -22,12 +22,6 @@
 
 #include <OpenGl_Structure.hxx>
 
-//! Defines index map of OpenGL structures.
-typedef NCollection_IndexedMap<const OpenGl_Structure*> OpenGl_IndexedMapOfStructure;
-
-//! Defines array of indexed maps of OpenGL structures.
-typedef NCollection_Array1<OpenGl_IndexedMapOfStructure> OpenGl_ArrayOfIndexedMapOfStructure;
-
 //! Set of OpenGl_Structures for building BVH tree.
 class OpenGl_BVHClipPrimitiveSet : public BVH_PrimitiveSet<Standard_ShortReal, 4>
 {
@@ -54,15 +48,13 @@ public:
   virtual void Swap (const Standard_Integer theIdx1,
                      const Standard_Integer theIdx2);
 
-  //! Replaces the set by the given array taking into account
-  //! if each structure is cullable or not.
-  void Assign (const OpenGl_ArrayOfIndexedMapOfStructure& theStructs);
-
   //! Adds structure to the set.
-  void Add (const OpenGl_Structure* theStruct);
+  //! @return true if structure added, otherwise returns false (structure already in the set).
+  Standard_Boolean Add (const OpenGl_Structure* theStruct);
 
   //! Removes the given structure from the set.
-  void Remove (const OpenGl_Structure* theStruct);
+  //! @return true if structure removed, otherwise returns false (structure is not in the set).
+  Standard_Boolean Remove (const OpenGl_Structure* theStruct);
 
   //! Cleans the whole primitive set.
   void Clear();

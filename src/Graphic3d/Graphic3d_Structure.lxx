@@ -21,3 +21,12 @@ inline const Handle(Graphic3d_CStructure)& Graphic3d_Structure::CStructure() con
 {
   return myCStructure;
 }
+
+// =======================================================================
+// function : TransformPersistence
+// purpose  :
+// =======================================================================
+inline const Graphic3d_TransformPers& Graphic3d_Structure::TransformPersistence() const
+{
+  return myCStructure->TransformPersistence;
+}

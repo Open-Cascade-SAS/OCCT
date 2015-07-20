@@ -19,6 +19,7 @@
 #include <Standard_Type.hxx>
 
 #include <Graphic3d_Camera.hxx>
+#include <Graphic3d_WorldViewProjState.hxx>
 #include <Precision.hxx>
 #include <SelectMgr_VectorTypes.hxx>
 
@@ -31,11 +32,23 @@ public:
   //! Creates new frustum builder with empty matrices
   SelectMgr_FrustumBuilder();
 
-  //! Stores current orientation matrix
-  void SetOrientation (const Graphic3d_Mat4d& theOrientation);
+  //! Stores current world view transformation matrix
+  void SetWorldViewMatrix (const Graphic3d_Mat4d& theWorldViewMatrix);
+
+  //! @return current world view transformation matrix
+  const Graphic3d_Mat4d& WorldViewMatrix() const;
 
   //! Stores current projection matrix
-  void SetProjection (const Graphic3d_Mat4d& theProjection);
+  void SetProjectionMatrix (const Graphic3d_Mat4d& theProjection);
+
+  //! @return current projection matrix
+  const Graphic3d_Mat4d& ProjectionMatrix() const;
+
+  //! Stores current world view projection matrix state for the orientation and projection matrices
+  void SetWorldViewProjState (const Graphic3d_WorldViewProjState& theState);
+
+  //! @return current world view projection state
+  const Graphic3d_WorldViewProjState& WorldViewProjState() const;
 
   //! Stores current window width and height
   void SetWindowSize (const Standard_Integer theWidth,
@@ -70,8 +83,9 @@ private:
 
 private:
 
-  Graphic3d_Mat4d                   myOrientation;
+  Graphic3d_Mat4d                   myWorldView;
   Graphic3d_Mat4d                   myProjection;
+  Graphic3d_WorldViewProjState      myWorldViewProjState;
   Standard_Integer                  myWidth;
   Standard_Integer                  myHeight;
   NCollection_Vec4<Standard_Real>   myViewport;

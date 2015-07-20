@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_GlCore11.hxx>
-#include <OpenGl_Utils.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
@@ -24,9 +23,10 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_TransformPers.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <gp_Ax3.hxx>
 #include <OpenGl_AspectLine.hxx>
-#include <OpenGl_Utils.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Cylinder.hxx>
@@ -130,23 +130,23 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getNormal (const Handle(OpenGl_Con
   aProjMatrix .Convert (theContext->ProjectionState.Current());
 
   OpenGl_Vec3 aPoint1, aPoint2, aPoint3;
-  OpenGl_Utils::UnProject<Standard_ShortReal> ((Standard_ShortReal) aViewport[0],
-                                               (Standard_ShortReal) aViewport[1],
-                                               0.0f,
-                                               aModelMatrix, aProjMatrix, aViewport,
-                                               aPoint1.x(), aPoint1.y(), aPoint1.z());
+  Graphic3d_TransformUtils::UnProject<Standard_ShortReal> ((Standard_ShortReal) aViewport[0],
+                                                           (Standard_ShortReal) aViewport[1],
+                                                           0.0f,
+                                                           aModelMatrix, aProjMatrix, aViewport,
+                                                           aPoint1.x(), aPoint1.y(), aPoint1.z());
 
-  OpenGl_Utils::UnProject<Standard_ShortReal> ((Standard_ShortReal) (aViewport[0] + aViewport[2]),
-                                               (Standard_ShortReal) aViewport[1],
-                                               0.0f,
-                                               aModelMatrix, aProjMatrix, aViewport,
-                                               aPoint2.x(), aPoint2.y(), aPoint2.z());
+  Graphic3d_TransformUtils::UnProject<Standard_ShortReal> ((Standard_ShortReal) (aViewport[0] + aViewport[2]),
+                                                           (Standard_ShortReal) aViewport[1],
+                                                           0.0f,
+                                                           aModelMatrix, aProjMatrix, aViewport,
+                                                           aPoint2.x(), aPoint2.y(), aPoint2.z());
 
-  OpenGl_Utils::UnProject<Standard_ShortReal> ((Standard_ShortReal) aViewport[0],
-                                               (Standard_ShortReal) (aViewport[1] + aViewport[3]),
-                                               0.0f,
-                                               aModelMatrix, aProjMatrix, aViewport,
-                                               aPoint3.x(), aPoint3.y(), aPoint3.z());
+  Graphic3d_TransformUtils::UnProject<Standard_ShortReal> ((Standard_ShortReal) aViewport[0],
+                                                           (Standard_ShortReal) (aViewport[1] + aViewport[3]),
+                                                           0.0f,
+                                                           aModelMatrix, aProjMatrix, aViewport,
+                                                           aPoint3.x(), aPoint3.y(), aPoint3.z());
 
   const OpenGl_Vec3 aD1 = aPoint3 - aPoint1;
   const OpenGl_Vec3 aD2 = aPoint2 - aPoint1;
@@ -330,7 +330,7 @@ void OpenGl_GraduatedTrihedron::renderLine (const OpenGl_PrimitiveArray&    theL
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
   OpenGl_Mat4 aMat (theMat);
-  OpenGl_Utils::Translate (aMat, theXt, theYt, theZt);
+  Graphic3d_TransformUtils::Translate (aMat, theXt, theYt, theZt);
   aContext->WorldViewState.SetCurrent (aMat);
   aContext->ApplyWorldViewMatrix();
   theLine.Render (theWorkspace);
@@ -370,14 +370,14 @@ void OpenGl_GraduatedTrihedron::renderGridPlane (const Handle(OpenGl_Workspace)&
       aStart.ChangeData()[anIndex] = myMin.GetData()[anIndex];
     }
 
-    OpenGl_Utils::Translate (aMat, aStart.x(), aStart.y(), aStart.z());
+    Graphic3d_TransformUtils::Translate (aMat, aStart.x(), aStart.y(), aStart.z());
     aContext->WorldViewState.SetCurrent (aMat);
     aContext->ApplyWorldViewMatrix();
 
     const OpenGl_Vec3 aStepVec (myAxes[theIndex].Direction * aStep);
     for (Standard_Integer anIt = myData.ToDrawAxes() ? 1 : 0; anIt < aCurAspect.TickmarksNumber(); ++anIt)
     {
-      OpenGl_Utils::Translate (aMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
+      Graphic3d_TransformUtils::Translate (aMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
       aContext->WorldViewState.SetCurrent (aMat);
       aContext->ApplyWorldViewMatrix();
       anAxis.Line.Render (theWorkspace);
@@ -403,56 +403,57 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   aContext->ApplyWorldViewMatrix();
 
   // Render arrow
-
-  TEL_TRANSFORM_PERSISTENCE aTransMode;
-  aTransMode.mode = Graphic3d_TMF_ZoomPers;
   OpenGl_Vec3 anArrowVec = myMin + anAxis.Direction * (myMax - myMin);
-  aTransMode.pointX = anArrowVec.x();
-  aTransMode.pointY = anArrowVec.y();
-  aTransMode.pointZ = anArrowVec.z();
 
-  theWorkspace->ActiveView()->BeginTransformPersistence (aContext, &aTransMode, theWorkspace->Width(), theWorkspace->Height());
+  Graphic3d_TransformPers aTransMode;
+  aTransMode.Flags = Graphic3d_TMF_ZoomPers;
+  aTransMode.Point.x() = anArrowVec.x();
+  aTransMode.Point.y() = anArrowVec.y();
+  aTransMode.Point.z() = anArrowVec.z();
 
-  // NOTE:
-  // OpenGl_View applies Transform Persistence only in Projection Matrix.
+  const OpenGl_Mat4& aProjection = aContext->ProjectionState.Current();
+  const OpenGl_Mat4& aWorldView  = aContext->WorldViewState.Current();
+  const Standard_Integer aWidth  = theWorkspace->Width();
+  const Standard_Integer aHeight = theWorkspace->Height();
+
   // Take into account Transform Persistence
+  aContext->ModelWorldState.SetCurrent (aTransMode.Compute (aProjection, aWorldView, aWidth, aHeight));
   aContext->ApplyModelViewMatrix();
+
+  anAxis.Arrow.Render (theWorkspace);
 
   // Get current Model-View and Projection states
   OpenGl_Mat4 aModelMat;
   OpenGl_Mat4 aProjMat;
   GLint aViewport[4];
   aContext->core11fwd->glGetIntegerv (GL_VIEWPORT, aViewport);
-  aModelMat.Convert (aContext->ModelWorldState.Current() * aContext->WorldViewState.Current());
+  aModelMat.Convert (aContext->WorldViewState.Current() * aContext->ModelWorldState.Current());
   aProjMat .Convert (aContext->ProjectionState.Current());
 
-  // Get the window's (fixed) coordinates for before matrixes modifications
+  // Get the window's (fixed) coordinates for before matrices modifications
   OpenGl_Vec3 aEndPoint = -anAxis.Direction * myData.ArrowsLength();
   OpenGl_Vec3 aWinPoint;
-  OpenGl_Utils::Project<Standard_ShortReal> (aEndPoint.x(), aEndPoint.y(), aEndPoint.z(),
-                                             aModelMat, aProjMat, aViewport,
-                                             aWinPoint.x(), aWinPoint.y(), aWinPoint.z());
-  anAxis.Arrow.Render (theWorkspace);
-  theWorkspace->ActiveView()->EndTransformPersistence (aContext);
+  Graphic3d_TransformUtils::Project<Standard_ShortReal> (aEndPoint.x(), aEndPoint.y(), aEndPoint.z(),
+                                                         aModelMat, aProjMat, aViewport,
+                                                         aWinPoint.x(), aWinPoint.y(), aWinPoint.z());
 
-  // Get current Model-View and Projection states after the end of Transform Persistence
-  aModelMat.Convert (aContext->ModelWorldState.Current() * aContext->WorldViewState.Current());
+  aContext->ModelWorldState.SetIdentity();
+  aModelMat.Convert (aContext->WorldViewState.Current());
   aProjMat .Convert (aContext->ProjectionState.Current());
 
   // Get start point of zoom persistent arrow
   OpenGl_Vec3 anArrowStart;
-  OpenGl_Utils::UnProject<Standard_ShortReal> (aWinPoint.x(), aWinPoint.y(), aWinPoint.z(),
-                                               aModelMat, aProjMat, aViewport,
-                                               anArrowStart.x(), anArrowStart.y(), anArrowStart.z());
+  Graphic3d_TransformUtils::UnProject<Standard_ShortReal> (aWinPoint.x(), aWinPoint.y(), aWinPoint.z(),
+                                                           aModelMat, aProjMat, aViewport,
+                                                           anArrowStart.x(), anArrowStart.y(), anArrowStart.z());
   // Render axis line
-
   aModelMat = theMat;
-  OpenGl_Utils::Translate (aModelMat, myMin.x(), myMin.y(), myMin.z());
+  Graphic3d_TransformUtils::Translate (aModelMat, myMin.x(), myMin.y(), myMin.z());
 
   Standard_ShortReal aScaleFactor = ( (anArrowStart - myMin)*anAxis.Direction ).Modulus()
                                      / (anAxis.Direction * (myMax - myMin) ).Modulus();
   OpenGl_Vec3 aScaleAxes = anAxis.Direction * aScaleFactor;
-  OpenGl_Utils::Scale (aModelMat, aScaleAxes.x(), aScaleAxes.y(), aScaleAxes.z());
+  Graphic3d_TransformUtils::Scale (aModelMat, aScaleAxes.x(), aScaleAxes.y(), aScaleAxes.z());
 
   aContext->WorldViewState.SetCurrent (aModelMat);
   aContext->ApplyWorldViewMatrix();
@@ -491,16 +492,16 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
     OpenGl_Mat4 aModelMat (theMat);
 
     anAxis.InitTickmark (aContext, aDir * (Standard_ShortReal) aCurAspect.TickmarksLength() * theDpix);
-    OpenGl_Utils::Translate (aModelMat, theGridAxes.Ticks[theIndex].x(),
-                                        theGridAxes.Ticks[theIndex].y(),
-                                        theGridAxes.Ticks[theIndex].z());
+    Graphic3d_TransformUtils::Translate (aModelMat, theGridAxes.Ticks[theIndex].x(),
+                                                    theGridAxes.Ticks[theIndex].y(),
+                                                    theGridAxes.Ticks[theIndex].z());
     aContext->WorldViewState.SetCurrent (aModelMat);
     aContext->ApplyWorldViewMatrix();
     OpenGl_Vec3 aStepVec = anAxis.Direction * aStep;
     for (Standard_Integer anIter = 0; anIter <= aCurAspect.TickmarksNumber(); ++anIter)
     {
       anAxis.Tickmark.Render (theWorkspace);
-      OpenGl_Utils::Translate (aModelMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
+      Graphic3d_TransformUtils::Translate (aModelMat, aStepVec.x(), aStepVec.y(), aStepVec.z());
       aContext->WorldViewState.SetCurrent (aModelMat);
       aContext->ApplyWorldViewMatrix();
     }

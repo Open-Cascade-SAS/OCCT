@@ -132,7 +132,7 @@ void Graphic3d_Structure::CalculateBoundBox()
 {
   Graphic3d_BndBox4d aBox;
   addTransformed (aBox, Standard_True);
-  if (aBox.IsValid() && myCStructure->TransformPersistence.Flag == 0)
+  if (aBox.IsValid())
   {
     Graphic3d_Vec4 aMinPt (RealToShortReal (aBox.CornerMin().x()),
                            RealToShortReal (aBox.CornerMin().y()),
@@ -1689,14 +1689,10 @@ void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlag
 {
   if (IsDeleted()) return;
 
-  myCStructure->TransformPersistence.Flag    = theFlag;
-  myCStructure->TransformPersistence.Point.x = float (thePoint.X());
-  myCStructure->TransformPersistence.Point.y = float (thePoint.Y());
-  myCStructure->TransformPersistence.Point.z = float (thePoint.Z());
-  myCStructure->UpdateAspects();
-  CalculateBoundBox();
-
-  myCStructure->TransformPersistence.IsSet = 1;
+  myCStructure->TransformPersistence.Flags     = theFlag;
+  myCStructure->TransformPersistence.Point.x() = thePoint.X();
+  myCStructure->TransformPersistence.Point.y() = thePoint.Y();
+  myCStructure->TransformPersistence.Point.z() = thePoint.Z();
 }
 
 //=============================================================================
@@ -1705,7 +1701,7 @@ void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlag
 //=============================================================================
 Graphic3d_TransModeFlags Graphic3d_Structure::TransformPersistenceMode() const
 {
-  return myCStructure->TransformPersistence.Flag;
+  return myCStructure->TransformPersistence.Flags;
 }
 
 //=============================================================================
@@ -1715,9 +1711,9 @@ Graphic3d_TransModeFlags Graphic3d_Structure::TransformPersistenceMode() const
 gp_Pnt Graphic3d_Structure::TransformPersistencePoint() const
 {
   gp_Pnt aPnt (0.0, 0.0, 0.0);
-  aPnt.SetX (myCStructure->TransformPersistence.Point.x);
-  aPnt.SetY (myCStructure->TransformPersistence.Point.y);
-  aPnt.SetZ (myCStructure->TransformPersistence.Point.z);
+  aPnt.SetX (myCStructure->TransformPersistence.Point.x());
+  aPnt.SetY (myCStructure->TransformPersistence.Point.y());
+  aPnt.SetZ (myCStructure->TransformPersistence.Point.z());
   return aPnt;
 }
 

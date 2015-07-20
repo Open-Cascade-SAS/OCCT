@@ -40,7 +40,5 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
     }
   }
 
-  TransformPersistence.IsSet = myParent->TransformPersistence.IsSet;
-  TransformPersistence.Flag  = myParent->TransformPersistence.Flag;
-  TransformPersistence.Point = myParent->TransformPersistence.Point;
+  TransformPersistence = myParent->TransformPersistence;
 }

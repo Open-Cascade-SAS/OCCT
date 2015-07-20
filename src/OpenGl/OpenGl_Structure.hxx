@@ -115,8 +115,6 @@ public:
     return (OpenGl_GraphicDriver* )myGraphicDriver.operator->();
   }
 
-  void SetTransformPersistence (const CALL_DEF_TRANSFORM_PERSISTENCE &ATransPers);
-
   void SetAspectLine   (const CALL_DEF_CONTEXTLINE &theAspect);
   void SetAspectFace   (const CALL_DEF_CONTEXTFILLAREA& theAspect);
   void SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect);
@@ -165,7 +163,7 @@ public:
         || IsForHighlight
         || IsMutable
         || Is2dText
-        || TransformPersistence.Flag != 0;
+        || TransformPersistence.Flags != 0;
   }
 
   //! This method releases GL resources without actual elements destruction.
@@ -184,9 +182,6 @@ public:
 
   //! Returns OpenGL transformation matrix.
   const OpenGl_Matrix* Transformation() const { return myTransformation; }
-  
-  //! Returns OpenGL persistent translation.
-  const TEL_TRANSFORM_PERSISTENCE* PersistentTranslation() const { return myTransPers; }
 
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
@@ -207,7 +202,6 @@ protected:
 protected:
 
   OpenGl_Matrix*             myTransformation;
-  TEL_TRANSFORM_PERSISTENCE* myTransPers;
   OpenGl_AspectLine*         myAspectLine;
   OpenGl_AspectFace*         myAspectFace;
   OpenGl_AspectMarker*       myAspectMarker;

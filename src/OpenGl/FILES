@@ -40,6 +40,7 @@ OpenGl_GraduatedTrihedron.hxx
 OpenGl_GraduatedTrihedron.cxx
 OpenGl_Matrix.hxx
 OpenGl_Matrix.cxx
+OpenGl_MatrixState.hxx
 OpenGl_CView.hxx
 OpenGl_NamedStatus.hxx
 OpenGl_TextParam.hxx
@@ -60,7 +61,6 @@ OpenGl_Resource.hxx
 OpenGl_Resource.cxx
 OpenGl_telem_util.hxx
 OpenGl_telem_util.cxx
-OpenGl_transform_persistence.hxx
 OpenGl_Font.hxx
 OpenGl_Font.cxx
 OpenGl_tgl_funcs.hxx
@@ -68,6 +68,8 @@ OpenGl_BackgroundArray.cxx
 OpenGl_BackgroundArray.hxx
 OpenGl_BVHClipPrimitiveSet.cxx
 OpenGl_BVHClipPrimitiveSet.hxx
+OpenGl_BVHClipPrimitiveTrsfPersSet.cxx
+OpenGl_BVHClipPrimitiveTrsfPersSet.hxx
 OpenGl_BVHTreeSelector.cxx
 OpenGl_BVHTreeSelector.hxx
 OpenGl_CappingAlgo.cxx
@@ -143,7 +145,6 @@ OpenGl_StencilTest.cxx
 OpenGl_StencilTest.hxx
 OpenGl_TextureBufferArb.cxx
 OpenGl_TextureBufferArb.hxx
-OpenGl_Utils.hxx
 OpenGl_Vec.hxx
 OpenGl_VertexBuffer.cxx
 OpenGl_VertexBuffer.hxx

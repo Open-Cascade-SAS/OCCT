@@ -85,14 +85,4 @@ struct  TEL_POFFSET_PARAM
 };
 typedef TEL_POFFSET_PARAM* tel_poffset_param;
 
-struct TEL_TRANSFORM_PERSISTENCE
-{
-  int       mode;
-  float     pointX;
-  float     pointY;
-  float     pointZ;
-  DEFINE_STANDARD_ALLOC
-};
-typedef TEL_TRANSFORM_PERSISTENCE* tel_transform_persistence;
-
 #endif /* INTERFACEGRAPHIC_TELEM_H */

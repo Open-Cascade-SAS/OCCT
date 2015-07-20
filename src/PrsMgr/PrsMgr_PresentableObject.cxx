@@ -43,10 +43,7 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentat
   myHasOwnPresentations (Standard_True),
   myParent (NULL)
 {
-  myTransformPersistence.Flag = 0;
-  myTransformPersistence.Point.x = 0.0;
-  myTransformPersistence.Point.y = 0.0;
-  myTransformPersistence.Point.z = 0.0;
+  //
 }
 
 //=======================================================================
@@ -311,10 +308,10 @@ void PrsMgr_PresentableObject::UpdateTransformation(const Handle(Prs3d_Presentat
 void PrsMgr_PresentableObject::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag,
                                                         const gp_Pnt&                   thePoint)
 {
-  myTransformPersistence.Flag    = theFlag;
-  myTransformPersistence.Point.x = (Standard_ShortReal )thePoint.X();
-  myTransformPersistence.Point.y = (Standard_ShortReal )thePoint.Y();
-  myTransformPersistence.Point.z = (Standard_ShortReal )thePoint.Z();
+  myTransformPersistence.Flags     = theFlag;
+  myTransformPersistence.Point.x() = thePoint.X();
+  myTransformPersistence.Point.y() = thePoint.Y();
+  myTransformPersistence.Point.z() = thePoint.Z();
   for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
   {
     const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
@@ -341,18 +338,20 @@ void  PrsMgr_PresentableObject::SetTransformPersistence(
 //function : GetTransformPersistence
 //purpose  : 
 //=======================================================================
-Graphic3d_TransModeFlags  PrsMgr_PresentableObject::GetTransformPersistenceMode() const
+Graphic3d_TransModeFlags PrsMgr_PresentableObject::GetTransformPersistenceMode() const
 {
-  return myTransformPersistence.Flag;
+  return myTransformPersistence.Flags;
 }
 
 //=======================================================================
 //function : GetTransformPersistence
 //purpose  : 
 //=======================================================================
-gp_Pnt  PrsMgr_PresentableObject::GetTransformPersistencePoint() const
+gp_Pnt PrsMgr_PresentableObject::GetTransformPersistencePoint() const
 {
-  return gp_Pnt( myTransformPersistence.Point.x, myTransformPersistence.Point.y, myTransformPersistence.Point.z );
+  return gp_Pnt (myTransformPersistence.Point.x(),
+                 myTransformPersistence.Point.y(),
+                 myTransformPersistence.Point.z());
 }
 
 //=======================================================================

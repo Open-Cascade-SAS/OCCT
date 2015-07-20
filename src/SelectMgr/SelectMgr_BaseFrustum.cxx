@@ -33,8 +33,9 @@ SelectMgr_BaseFrustum::SelectMgr_BaseFrustum()
 //=======================================================================
 void SelectMgr_BaseFrustum::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 {
-  myBuilder->SetOrientation (theCamera->OrientationMatrix());
-  myBuilder->SetProjection (theCamera->ProjectionMatrix());
+  myBuilder->SetWorldViewMatrix (theCamera->OrientationMatrix());
+  myBuilder->SetProjectionMatrix (theCamera->ProjectionMatrix());
+  myBuilder->SetWorldViewProjState (theCamera->WorldViewProjState());
   myIsOrthographic = theCamera->IsOrthographic();
   myBuilder->InvalidateViewport();
 }
@@ -44,12 +45,44 @@ void SelectMgr_BaseFrustum::SetCamera (const Handle(Graphic3d_Camera)& theCamera
 // purpose  : Passes camera projection and orientation matrices to builder
 //=======================================================================
 void SelectMgr_BaseFrustum::SetCamera (const Graphic3d_Mat4d& theProjection,
-                                       const Graphic3d_Mat4d& theOrientation,
-                                       const Standard_Integer theIsOrthographic)
+                                       const Graphic3d_Mat4d& theWorldView,
+                                       const Standard_Integer theIsOrthographic,
+                                       const Graphic3d_WorldViewProjState& theWVPState)
 {
-  myBuilder->SetOrientation (theOrientation);
-  myBuilder->SetProjection (theProjection);
+  myBuilder->SetWorldViewMatrix (theWorldView);
+  myBuilder->SetProjectionMatrix (theProjection);
+  myBuilder->SetWorldViewProjState (theWVPState);
   myIsOrthographic = theIsOrthographic;
+}
+
+//=======================================================================
+// function : ProjectionMatrix
+// purpose  : Returns current camera projection transformation common for
+//            all selecting volumes
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_BaseFrustum::ProjectionMatrix() const
+{
+  return myBuilder->ProjectionMatrix();
+}
+
+//=======================================================================
+// function : WorldViewMatrix
+// purpose  : Returns current camera world view transformation common for
+//            all selecting volumes
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_BaseFrustum::WorldViewMatrix() const
+{
+  return myBuilder->WorldViewMatrix();
+}
+
+//=======================================================================
+// function : WorldViewProjState
+// purpose  : Returns current camera world view projection transformation
+//            state
+//=======================================================================
+const Graphic3d_WorldViewProjState& SelectMgr_BaseFrustum::WorldViewProjState() const
+{
+  return myBuilder->WorldViewProjState();
 }
 
 //=======================================================================

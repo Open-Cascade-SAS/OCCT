@@ -24,22 +24,27 @@
 // purpose  :
 // =======================================================================
 OpenGl_BVHTreeSelector::OpenGl_BVHTreeSelector()
-: myIsProjectionParallel (Standard_True),
-  myProjectionState      (0),
-  myModelViewState       (0)
+: myIsProjectionParallel (Standard_True)
 {
   //
 }
 
 // =======================================================================
-// function : SetClipVolume
-// purpose  : Retrieves view volume's planes equations and its vertices from projection and modelview matrices.
+// function : SetViewVolume
+// purpose  : Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
 // =======================================================================
 void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theCamera)
 {
+  if (myWorldViewProjState == theCamera->WorldViewProjState())
+  {
+    return;
+  }
+
   myIsProjectionParallel = theCamera->IsOrthographic();
-  const OpenGl_Mat4& aProjMat  = theCamera->ProjectionMatrixF();
-  const OpenGl_Mat4& aModelMat = theCamera->OrientationMatrixF();
+
+  myProjectionMat      = theCamera->ProjectionMatrixF();
+  myWorldViewMat       = theCamera->OrientationMatrixF();
+  myWorldViewProjState = theCamera->WorldViewProjState();
 
   Standard_ShortReal nLeft = 0.0f, nRight = 0.0f, nTop = 0.0f, nBottom = 0.0f;
   Standard_ShortReal fLeft = 0.0f, fRight = 0.0f, fTop = 0.0f, fBottom = 0.0f;
@@ -47,32 +52,32 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
   if (!myIsProjectionParallel)
   {
     // handle perspective projection
-    aNear   = aProjMat.GetValue (2, 3) / (- 1.0f + aProjMat.GetValue (2, 2));
-    aFar    = aProjMat.GetValue (2, 3) / (  1.0f + aProjMat.GetValue (2, 2));
+    aNear   = myProjectionMat.GetValue (2, 3) / (- 1.0f + myProjectionMat.GetValue (2, 2));
+    aFar    = myProjectionMat.GetValue (2, 3) / (  1.0f + myProjectionMat.GetValue (2, 2));
     // Near plane
-    nLeft   = aNear * (aProjMat.GetValue (0, 2) - 1.0f) / aProjMat.GetValue (0, 0);
-    nRight  = aNear * (aProjMat.GetValue (0, 2) + 1.0f) / aProjMat.GetValue (0, 0);
-    nTop    = aNear * (aProjMat.GetValue (1, 2) + 1.0f) / aProjMat.GetValue (1, 1);
-    nBottom = aNear * (aProjMat.GetValue (1, 2) - 1.0f) / aProjMat.GetValue (1, 1);
+    nLeft   = aNear * (myProjectionMat.GetValue (0, 2) - 1.0f) / myProjectionMat.GetValue (0, 0);
+    nRight  = aNear * (myProjectionMat.GetValue (0, 2) + 1.0f) / myProjectionMat.GetValue (0, 0);
+    nTop    = aNear * (myProjectionMat.GetValue (1, 2) + 1.0f) / myProjectionMat.GetValue (1, 1);
+    nBottom = aNear * (myProjectionMat.GetValue (1, 2) - 1.0f) / myProjectionMat.GetValue (1, 1);
     // Far plane
-    fLeft   = aFar  * (aProjMat.GetValue (0, 2) - 1.0f) / aProjMat.GetValue (0, 0);
-    fRight  = aFar  * (aProjMat.GetValue (0, 2) + 1.0f) / aProjMat.GetValue (0, 0);
-    fTop    = aFar  * (aProjMat.GetValue (1, 2) + 1.0f) / aProjMat.GetValue (1, 1);
-    fBottom = aFar  * (aProjMat.GetValue (1, 2) - 1.0f) / aProjMat.GetValue (1, 1);
+    fLeft   = aFar  * (myProjectionMat.GetValue (0, 2) - 1.0f) / myProjectionMat.GetValue (0, 0);
+    fRight  = aFar  * (myProjectionMat.GetValue (0, 2) + 1.0f) / myProjectionMat.GetValue (0, 0);
+    fTop    = aFar  * (myProjectionMat.GetValue (1, 2) + 1.0f) / myProjectionMat.GetValue (1, 1);
+    fBottom = aFar  * (myProjectionMat.GetValue (1, 2) - 1.0f) / myProjectionMat.GetValue (1, 1);
   }
   else
   {
     // handle orthographic projection
-    aNear   = (1.0f / aProjMat.GetValue (2, 2)) * (aProjMat.GetValue (2, 3) + 1.0f);
-    aFar    = (1.0f / aProjMat.GetValue (2, 2)) * (aProjMat.GetValue (2, 3) - 1.0f);
+    aNear   = (1.0f / myProjectionMat.GetValue (2, 2)) * (myProjectionMat.GetValue (2, 3) + 1.0f);
+    aFar    = (1.0f / myProjectionMat.GetValue (2, 2)) * (myProjectionMat.GetValue (2, 3) - 1.0f);
     // Near plane
-    nLeft   = ( 1.0f + aProjMat.GetValue (0, 3)) / (-aProjMat.GetValue (0, 0));
+    nLeft   = ( 1.0f + myProjectionMat.GetValue (0, 3)) / (-myProjectionMat.GetValue (0, 0));
     fLeft   = nLeft;
-    nRight  = ( 1.0f - aProjMat.GetValue (0, 3)) /   aProjMat.GetValue (0, 0);
+    nRight  = ( 1.0f - myProjectionMat.GetValue (0, 3)) /   myProjectionMat.GetValue (0, 0);
     fRight  = nRight;
-    nTop    = ( 1.0f - aProjMat.GetValue (1, 3)) /   aProjMat.GetValue (1, 1);
+    nTop    = ( 1.0f - myProjectionMat.GetValue (1, 3)) /   myProjectionMat.GetValue (1, 1);
     fTop    = nTop;
-    nBottom = (-1.0f - aProjMat.GetValue (1, 3)) /   aProjMat.GetValue (1, 1);
+    nBottom = (-1.0f - myProjectionMat.GetValue (1, 3)) /   myProjectionMat.GetValue (1, 1);
     fBottom = nBottom;
   }
 
@@ -81,18 +86,18 @@ void OpenGl_BVHTreeSelector::SetViewVolume (const Handle(Graphic3d_Camera)& theC
   OpenGl_Vec4 aRightBottomNear (nRight, nBottom, -aNear, 1.0f), aLeftTopFar     (fLeft,  fTop,    -aFar, 1.0f);
   OpenGl_Vec4 aRightTopNear    (nRight, nTop,    -aNear, 1.0f), aLeftBottomFar  (fLeft,  fBottom, -aFar, 1.0f);
 
-  const OpenGl_Mat4 aViewProj = aModelMat * aProjMat;
-  OpenGl_Mat4 anInvModelView;
-  aModelMat.Inverted(anInvModelView);
+  const OpenGl_Mat4 aViewProj = myWorldViewMat * myProjectionMat;
+  OpenGl_Mat4 anInvWorldView;
+  myWorldViewMat.Inverted(anInvWorldView);
 
-  myClipVerts[ClipVert_LeftTopNear]     = anInvModelView * aLeftTopNear;
-  myClipVerts[ClipVert_RightBottomFar]  = anInvModelView * aRightBottomFar;
-  myClipVerts[ClipVert_LeftBottomNear]  = anInvModelView * aLeftBottomNear;
-  myClipVerts[ClipVert_RightTopFar]     = anInvModelView * aRightTopFar;
-  myClipVerts[ClipVert_RightBottomNear] = anInvModelView * aRightBottomNear;
-  myClipVerts[ClipVert_LeftTopFar]      = anInvModelView * aLeftTopFar;
-  myClipVerts[ClipVert_RightTopNear]    = anInvModelView * aRightTopNear;
-  myClipVerts[ClipVert_LeftBottomFar]   = anInvModelView * aLeftBottomFar;
+  myClipVerts[ClipVert_LeftTopNear]     = anInvWorldView * aLeftTopNear;
+  myClipVerts[ClipVert_RightBottomFar]  = anInvWorldView * aRightBottomFar;
+  myClipVerts[ClipVert_LeftBottomNear]  = anInvWorldView * aLeftBottomNear;
+  myClipVerts[ClipVert_RightTopFar]     = anInvWorldView * aRightTopFar;
+  myClipVerts[ClipVert_RightBottomNear] = anInvWorldView * aRightBottomNear;
+  myClipVerts[ClipVert_LeftTopFar]      = anInvWorldView * aLeftTopFar;
+  myClipVerts[ClipVert_RightTopNear]    = anInvWorldView * aRightTopNear;
+  myClipVerts[ClipVert_LeftBottomFar]   = anInvWorldView * aLeftBottomFar;
 
   // UNNORMALIZED!
   myClipPlanes[Plane_Left]   = aViewProj.GetRow (3) + aViewProj.GetRow (0);

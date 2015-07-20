@@ -276,54 +276,32 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 #endif
 
+  Graphic3d_WorldViewProjState aWVPState = myCamera->WorldViewProjState();
+
   // Update states of OpenGl_BVHTreeSelector (frustum culling algorithm).
-  Standard_Boolean isProjectionMatUpdateNeeded  = Standard_False;
-  Standard_Boolean isOrientationMatUpdateNeeded = Standard_False;
-  if (myBVHSelector.ProjectionState() != myCamera->ProjectionState())
-  {
-    isProjectionMatUpdateNeeded = Standard_True;
-    myBVHSelector.ChangeProjectionState() = myCamera->ProjectionState();
-  }
-  if (myBVHSelector.ModelViewState() != myCamera->ModelViewState())
-  {
-    isOrientationMatUpdateNeeded = Standard_True;
-    myBVHSelector.ChangeModelViewState() = myCamera->ModelViewState();
-  }
+  myBVHSelector.SetViewVolume (myCamera);
 
-  if (isProjectionMatUpdateNeeded
-   || isOrientationMatUpdateNeeded)
-  {
-    myBVHSelector.SetViewVolume (myCamera);
-  }
-
-  const Handle(OpenGl_ShaderManager)& aManager   = aContext->ShaderManager();
-  const Standard_Boolean              isSameView = aManager->IsSameView (this); // force camera state update when needed
+  const Handle(OpenGl_ShaderManager)& aManager = aContext->ShaderManager();
   if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
   {
     aManager->UpdateLightSourceStateTo (&myLights);
     myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
   }
 
-  if (myProjectionState != myCamera->ProjectionState()
-  || !isSameView)
+  if (myWorldViewProjState != aWVPState)
   {
-    myProjectionState = myCamera->ProjectionState();
     aContext->ProjectionState.SetCurrent (myCamera->ProjectionMatrixF());
-    aContext->ApplyProjectionMatrix();
-  }
-
-  if (myModelViewState != myCamera->ModelViewState()
-  || !isSameView)
-  {
-    myModelViewState = myCamera->ModelViewState();
     aContext->WorldViewState.SetCurrent (myCamera->OrientationMatrixF());
+    aContext->ApplyProjectionMatrix();
     aContext->ApplyWorldViewMatrix();
+    myWorldViewProjState = aWVPState;
   }
 
   if (aManager->ModelWorldState().Index() == 0)
   {
     aContext->ShaderManager()->UpdateModelWorldStateTo (OpenGl_Mat4());
   }
+
 
   // ====================================
   //      Step 2: Redraw background

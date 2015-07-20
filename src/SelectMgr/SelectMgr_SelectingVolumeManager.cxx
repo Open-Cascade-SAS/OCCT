@@ -106,13 +106,44 @@ void SelectMgr_SelectingVolumeManager::SetCamera (const Handle(Graphic3d_Camera)
 //            selecting volumes
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::SetCamera (const Graphic3d_Mat4d& theProjection,
-                                                  const Graphic3d_Mat4d& theOrientation,
-                                                  const Standard_Boolean theIsOrthographic)
+                                                  const Graphic3d_Mat4d& theWorldView,
+                                                  const Standard_Boolean theIsOrthographic,
+                                                  const Graphic3d_WorldViewProjState& theWVPState)
 {
   for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
   {
-    mySelectingVolumes[anIdx]->SetCamera (theProjection, theOrientation, theIsOrthographic);
+    mySelectingVolumes[anIdx]->SetCamera (theProjection, theWorldView, theIsOrthographic, theWVPState);
   }
+}
+
+//=======================================================================
+// function : ProjectionMatrix
+// purpose  : Returns current projection transformation common for all
+//            selecting volumes
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::ProjectionMatrix() const
+{
+  return mySelectingVolumes[Frustum]->ProjectionMatrix();
+}
+
+//=======================================================================
+// function : WorldViewMatrix
+// purpose  : Returns current world view transformation common for all
+//            selecting volumes
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::WorldViewMatrix() const
+{
+  return mySelectingVolumes[Frustum]->WorldViewMatrix();
+}
+
+//=======================================================================
+// function : WorldViewProjState
+// purpose  : Returns current camera world view projection transformation
+//            state common for all selecting volumes
+//=======================================================================
+const Graphic3d_WorldViewProjState& SelectMgr_SelectingVolumeManager::WorldViewProjState() const
+{
+  return mySelectingVolumes[Frustum]->WorldViewProjState();
 }
 
 //=======================================================================

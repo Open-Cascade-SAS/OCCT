@@ -35,6 +35,7 @@
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_WorldViewProjState.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 #include <Visual3d_TypeOfModel.hxx>
@@ -116,12 +117,6 @@ class OpenGl_View : public MMgt_TShared
   Standard_Real Width () const { return myCamera->ViewDimensions().Y(); }
 
   Standard_Integer Backfacing () const { return myBackfacing; }
-
-  const TEL_TRANSFORM_PERSISTENCE * BeginTransformPersistence (const Handle(OpenGl_Context)& theCtx,
-                                                               const TEL_TRANSFORM_PERSISTENCE *theTransPers,
-                                                               Standard_Integer theWidth,
-                                                               Standard_Integer theHeight);
-  void EndTransformPersistence (const Handle(OpenGl_Context)& theCtx);
 
   //! Add structure to display list with specified priority.
   //! The structure will be added to associated with it z layer.
@@ -268,12 +263,8 @@ protected:
   OpenGl_LayerList             myZLayers;       //!< main list of displayed structure, sorted by layers
   OpenGl_IndexedMapOfStructure myImmediateList; //!< list of immediate structures rendered on top of main presentation
 
-  const TEL_TRANSFORM_PERSISTENCE *myTransPers;
-  Standard_Boolean myIsTransPers;
-
   //! Modification state
-  Standard_Size myProjectionState;
-  Standard_Size myModelViewState;
+  Graphic3d_WorldViewProjState myWorldViewProjState;
   OpenGl_StateCounter* myStateCounter;
 
   Standard_Size myCurrLightSourceState;

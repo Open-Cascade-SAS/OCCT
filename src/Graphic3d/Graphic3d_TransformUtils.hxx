@@ -1,6 +1,5 @@
-// Created on: 2014-09-30
-// Created by: Denis BOGOLEPOV
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Created on: 2015-06-18
+// Copyright (c) 2015 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,128 +12,52 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Utils_H__
-#define _OpenGl_Utils_H__
+#ifndef _Graphic3d_TransformUtils_HeaderFile
+#define _Graphic3d_TransformUtils_HeaderFile
 
-#include <OpenGl_Vec.hxx>
-#include <NCollection_Vector.hxx>
+#include <Graphic3d_Vec.hxx>
+#include <Standard_math.hxx> // M_PI
 
-//! Helper class that implements some functionality of GLU library.
-namespace OpenGl_Utils
+//! Helper class that implements transformation matrix functionality.
+namespace Graphic3d_TransformUtils
 {
+  template<class T> struct MatrixType {};
 
-  //! Matrix type selector.
-  template<class T>
-  struct MatrixType {
-    //
+  template<> struct MatrixType<Standard_Real> { typedef Graphic3d_Mat4d Mat4; };
+
+  template<> struct MatrixType<Standard_ShortReal> { typedef Graphic3d_Mat4 Mat4; };
+
+  template<class T> struct VectorType {};
+
+  template<> struct VectorType<Standard_Real> {
+    typedef Graphic3d_Vec2d Vec2;
+    typedef Graphic3d_Vec3d Vec3;
+    typedef Graphic3d_Vec4d Vec4;
   };
 
-  template<>
-  struct MatrixType<Standard_Real> {
-    typedef OpenGl_Mat4d Mat4;
-  };
-
-  template<>
-  struct MatrixType<Standard_ShortReal> {
-    typedef OpenGl_Mat4 Mat4;
-  };
-
-  //! Vector type selector.
-  template<class T>
-  struct VectorType {
-    //
-  };
-
-  template<>
-  struct VectorType<Standard_Real> {
-    typedef OpenGl_Vec2d Vec2;
-    typedef OpenGl_Vec3d Vec3;
-    typedef OpenGl_Vec4d Vec4;
-  };
-
-  template<>
-  struct VectorType<Standard_ShortReal> {
-    typedef OpenGl_Vec2 Vec2;
-    typedef OpenGl_Vec3 Vec3;
-    typedef OpenGl_Vec4 Vec4;
-  };
-
-  //! Software implementation for OpenGL matrix stack.
-  template<class T>
-  class MatrixState
-  {
-  public:
-
-    //! Constructs matrix state object.
-    MatrixState()
-    : myStack (8),
-      myStackHead (-1)
-    {
-      //
-    }
-
-    //! Pushes current matrix into stack.
-    void Push()
-    {
-      if (++myStackHead >= myStack.Size())
-      {
-        myStack.Append (myCurrent);
-      }
-      else
-      {
-        myStack.SetValue (myStackHead, myCurrent);
-      }
-    }
-
-    //! Pops matrix from stack to current.
-    void Pop()
-    {
-      Standard_ASSERT_RETURN (myStackHead != -1, "Matrix stack already empty when MatrixState.Pop() called.", );
-      myCurrent = myStack.Value (myStackHead--);
-    }
-
-    //! @return current matrix.
-    const typename MatrixType<T>::Mat4& Current()
-    {
-      return myCurrent;
-    }
-
-    //! Sets given matrix as current.
-    void SetCurrent (const typename MatrixType<T>::Mat4& theNewCurrent)
-    {
-      myCurrent = theNewCurrent;
-    }
-
-    //! Sets given matrix as current.
-    template <typename Other_t>
-    void SetCurrent (const typename MatrixType<Other_t>::Mat4& theNewCurrent)
-    {
-      myCurrent.Convert (theNewCurrent);
-    }
-
-    //! Sets current matrix to identity.
-    void SetIdentity()
-    {
-      myCurrent = typename MatrixType<T>::Mat4();
-    }
-
-  private:
-
-    NCollection_Vector<typename MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
-    typename MatrixType<T>::Mat4                     myCurrent;   //!< Current matrix
-    Standard_Integer                                 myStackHead; //!< Index of stack head
-
+  template<> struct VectorType<Standard_ShortReal> {
+    typedef Graphic3d_Vec2 Vec2;
+    typedef Graphic3d_Vec3 Vec3;
+    typedef Graphic3d_Vec4 Vec4;
   };
 
   //! Constructs a 3D orthographic projection matrix.
   template<class T>
   static void Ortho (typename MatrixType<T>::Mat4& theOut,
-    const T theLeft, const T theRight, const T theBottom, const T theTop, const T theZNear, const T theZFar);
+                     const T                       theLeft,
+                     const T                       theRight,
+                     const T                       theBottom,
+                     const T                       theTop,
+                     const T                       theZNear,
+                     const T                       theZFar);
 
   //! Constructs a 2D orthographic projection matrix.
   template<class T>
   static void Ortho2D (typename MatrixType<T>::Mat4& theOut,
-    const T theLeft, const T theRight, const T theBottom, const T theTop);
+                       const T                       theLeft,
+                       const T                       theRight,
+                       const T                       theBottom,
+                       const T                       theTop);
 
   //! Maps object coordinates to window coordinates.
   template<class T>
@@ -189,7 +112,6 @@ namespace OpenGl_Utils
                          T                             theX,
                          T                             theY,
                          T                             theZ);
-
 }
 
 // =======================================================================
@@ -197,11 +119,11 @@ namespace OpenGl_Utils
 // purpose  : Constructs a 4x4 rotation matrix
 // =======================================================================
 template<class T>
-void OpenGl_Utils::Rotate (typename MatrixType<T>::Mat4& theOut,
-                           T                             theA,
-                           T                             theX,
-                           T                             theY,
-                           T                             theZ)
+void Graphic3d_TransformUtils::Rotate (typename MatrixType<T>::Mat4& theOut,
+                                       T                             theA,
+                                       T                             theX,
+                                       T                             theY,
+                                       T                             theZ)
 {
   typename MatrixType<T>::Mat4 aMat;
   ConstructRotate (aMat, theA, theX, theY, theZ);
@@ -213,10 +135,10 @@ void OpenGl_Utils::Rotate (typename MatrixType<T>::Mat4& theOut,
 // purpose  : Constructs a 4x4 translation matrix
 // =======================================================================
 template<class T>
-void OpenGl_Utils::Translate (typename MatrixType<T>::Mat4& theOut,
-                              T                             theX,
-                              T                             theY,
-                              T                             theZ)
+void Graphic3d_TransformUtils::Translate (typename MatrixType<T>::Mat4& theOut,
+                                          T                             theX,
+                                          T                             theY,
+                                          T                             theZ)
 {
   theOut.ChangeValue (0, 3) = theOut.GetValue (0, 0) * theX +
                               theOut.GetValue (0, 1) * theY +
@@ -244,10 +166,10 @@ void OpenGl_Utils::Translate (typename MatrixType<T>::Mat4& theOut,
 // purpose  : Constructs a 4x4 scaling matrix
 // =======================================================================
 template<class T>
-void OpenGl_Utils::Scale (typename MatrixType<T>::Mat4& theOut,
-                          T                             theX,
-                          T                             theY,
-                          T                             theZ)
+void Graphic3d_TransformUtils::Scale (typename MatrixType<T>::Mat4& theOut,
+                                      T                             theX,
+                                      T                             theY,
+                                      T                             theZ)
 {
   theOut.ChangeValue (0, 0) *= theX;
   theOut.ChangeValue (1, 0) *= theX;
@@ -270,7 +192,11 @@ void OpenGl_Utils::Scale (typename MatrixType<T>::Mat4& theOut,
 // purpose  : Constructs a 4x4 rotation matrix
 // =======================================================================
 template<class T>
-void OpenGl_Utils::ConstructRotate (typename MatrixType<T>::Mat4& theOut, T theA, T theX, T theY, T theZ)
+void Graphic3d_TransformUtils::ConstructRotate (typename MatrixType<T>::Mat4& theOut,
+                                                T                             theA,
+                                                T                             theX,
+                                                T                             theY,
+                                                T                             theZ)
 {
   const T aSin = std::sin (theA * static_cast<T> (M_PI / 180.0));
   const T aCos = std::cos (theA * static_cast<T> (M_PI / 180.0));
@@ -287,7 +213,7 @@ void OpenGl_Utils::ConstructRotate (typename MatrixType<T>::Mat4& theOut, T theA
                                 && (theY == static_cast<T> (0.0))
                                 && (theZ != static_cast<T> (0.0));
 
-  if (isOnlyX) // Rotation only around X
+  if (isOnlyX) // Rotation only around X.
   {
     theOut.SetValue (1, 1, aCos);
     theOut.SetValue (2, 2, aCos);
@@ -305,7 +231,7 @@ void OpenGl_Utils::ConstructRotate (typename MatrixType<T>::Mat4& theOut, T theA
 
     return;
   }
-  else if (isOnlyY) // Rotation only around Y
+  else if (isOnlyY) // Rotation only around Y.
   {
     theOut.SetValue (0, 0, aCos);
     theOut.SetValue (2, 2, aCos);
@@ -323,7 +249,7 @@ void OpenGl_Utils::ConstructRotate (typename MatrixType<T>::Mat4& theOut, T theA
 
     return;
   }
-  else if (isOnlyZ) // Rotation only around Z
+  else if (isOnlyZ) // Rotation only around Z.
   {
     theOut.SetValue (0, 0, aCos);
     theOut.SetValue (1, 1, aCos);
@@ -346,7 +272,7 @@ void OpenGl_Utils::ConstructRotate (typename MatrixType<T>::Mat4& theOut, T theA
 
   if (aNorm <= static_cast<T> (1.0e-4))
   {
-    return; // negligible rotation
+    return; // Negligible rotation.
   }
 
   aNorm = static_cast<T> (1.0) / aNorm;
@@ -385,8 +311,13 @@ void OpenGl_Utils::ConstructRotate (typename MatrixType<T>::Mat4& theOut, T theA
 // purpose  : Constructs a 3D orthographic projection matrix
 // =======================================================================
 template<class T>
-void OpenGl_Utils::Ortho (typename MatrixType<T>::Mat4& theOut,
-  const T theLeft, const T theRight, const T theBottom, const T theTop, const T theZNear, const T theZFar)
+void Graphic3d_TransformUtils::Ortho (typename MatrixType<T>::Mat4& theOut,
+                                      const T                       theLeft,
+                                      const T                       theRight,
+                                      const T                       theBottom,
+                                      const T                       theTop,
+                                      const T                       theZNear,
+                                      const T                       theZFar)
 {
   theOut.InitIdentity();
 
@@ -410,8 +341,11 @@ void OpenGl_Utils::Ortho (typename MatrixType<T>::Mat4& theOut,
 // purpose  : Constructs a 2D orthographic projection matrix
 // =======================================================================
 template<class T>
-void OpenGl_Utils::Ortho2D (typename MatrixType<T>::Mat4& theOut,
-  const T theLeft, const T theRight, const T theBottom, const T theTop)
+void Graphic3d_TransformUtils::Ortho2D (typename MatrixType<T>::Mat4& theOut,
+                                        const T                       theLeft,
+                                        const T                       theRight,
+                                        const T                       theBottom,
+                                        const T                       theTop)
 {
   Ortho (theOut, theLeft, theRight, theBottom, theTop, static_cast<T> (-1.0), static_cast<T> (1.0));
 }
@@ -421,15 +355,15 @@ void OpenGl_Utils::Ortho2D (typename MatrixType<T>::Mat4& theOut,
 // purpose  : Maps object coordinates to window coordinates
 // =======================================================================
 template<class T>
-static Standard_Boolean OpenGl_Utils::Project (const T                             theObjX,
-                                               const T                             theObjY,
-                                               const T                             theObjZ,
-                                               const typename MatrixType<T>::Mat4& theModViewMat,
-                                               const typename MatrixType<T>::Mat4& theProjectMat,
-                                               const Standard_Integer              theViewport[4],
-                                               T&                                  theWinX,
-                                               T&                                  theWinY,
-                                               T&                                  theWinZ)
+static Standard_Boolean Graphic3d_TransformUtils::Project (const T                             theObjX,
+                                                           const T                             theObjY,
+                                                           const T                             theObjZ,
+                                                           const typename MatrixType<T>::Mat4& theModViewMat,
+                                                           const typename MatrixType<T>::Mat4& theProjectMat,
+                                                           const Standard_Integer              theViewport[4],
+                                                           T&                                  theWinX,
+                                                           T&                                  theWinY,
+                                                           T&                                  theWinZ)
 {
   typename VectorType<T>::Vec4 anIn (theObjX, theObjY, theObjZ, static_cast<T> (1.0));
 
@@ -446,12 +380,12 @@ static Standard_Boolean OpenGl_Utils::Project (const T                          
   anOut.y() *= anOut.w();
   anOut.z() *= anOut.w();
 
-  // Map x, y and z to range 0-1
+  // Map x, y and z to range 0-1.
   anOut.x() = anOut.x() * static_cast<T> (0.5) + static_cast<T> (0.5);
   anOut.y() = anOut.y() * static_cast<T> (0.5) + static_cast<T> (0.5);
   anOut.z() = anOut.z() * static_cast<T> (0.5) + static_cast<T> (0.5);
 
-  // Map x,y to viewport
+  // Map x,y to viewport.
   anOut.x() = anOut.x() * theViewport[2] + theViewport[0];
   anOut.y() = anOut.y() * theViewport[3] + theViewport[1];
 
@@ -467,15 +401,15 @@ static Standard_Boolean OpenGl_Utils::Project (const T                          
 // purpose  : Maps window coordinates to object coordinates
 // =======================================================================
 template<class T>
-static Standard_Boolean OpenGl_Utils::UnProject (const T                             theWinX,
-                                                 const T                             theWinY,
-                                                 const T                             theWinZ,
-                                                 const typename MatrixType<T>::Mat4& theModViewMat,
-                                                 const typename MatrixType<T>::Mat4& theProjectMat,
-                                                 const Standard_Integer              theViewport[4],
-                                                 T&                                  theObjX,
-                                                 T&                                  theObjY,
-                                                 T&                                  theObjZ)
+static Standard_Boolean Graphic3d_TransformUtils::UnProject (const T                             theWinX,
+                                                             const T                             theWinY,
+                                                             const T                             theWinZ,
+                                                             const typename MatrixType<T>::Mat4& theModViewMat,
+                                                             const typename MatrixType<T>::Mat4& theProjectMat,
+                                                             const Standard_Integer              theViewport[4],
+                                                             T&                                  theObjX,
+                                                             T&                                  theObjY,
+                                                             T&                                  theObjZ)
 {
   typename MatrixType<T>::Mat4 anUnviewMat;
 
@@ -486,11 +420,11 @@ static Standard_Boolean OpenGl_Utils::UnProject (const T                        
 
   typename VectorType<T>::Vec4 anIn (theWinX, theWinY, theWinZ, static_cast<T> (1.0));
 
-  // Map x and y from window coordinates
+  // Map x and y from window coordinates.
   anIn.x() = (anIn.x() - theViewport[0]) / theViewport[2];
   anIn.y() = (anIn.y() - theViewport[1]) / theViewport[3];
 
-  // Map to range -1 to 1
+  // Map to range -1 to 1.
   anIn.x() = anIn.x() * static_cast<T> (2.0) - static_cast<T> (1.0);
   anIn.y() = anIn.y() * static_cast<T> (2.0) - static_cast<T> (1.0);
   anIn.z() = anIn.z() * static_cast<T> (2.0) - static_cast<T> (1.0);
@@ -515,4 +449,4 @@ static Standard_Boolean OpenGl_Utils::UnProject (const T                        
   return Standard_True;
 }
 
-#endif // _OpenGl_Utils_H__
+#endif // _Graphic3d_TransformUtils_HeaderFile

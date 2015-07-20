@@ -35,37 +35,45 @@ public:
 
   //! Creates new empty objects set and initializes BVH tree
   //! builder to Binned builder with 1 element per list
-  SelectMgr_SelectableObjectSet();
+  Standard_EXPORT SelectMgr_SelectableObjectSet();
 
   //! Releases resources of selectable object set.
   virtual ~SelectMgr_SelectableObjectSet() { }
 
-  //! Adds new object to the set and marks BVH tree for rebuild
-  void Append (const Handle(SelectMgr_SelectableObject)& theObject);
+  //! Adds new object to the set and marks BVH tree for rebuild.
+  //! @return true if structure added, otherwise returns false (structure already in the set).
+  Standard_EXPORT Standard_Boolean Append (const Handle(SelectMgr_SelectableObject)& theObject);
 
-  //! Removes object theObject from set and marks BVH tree for rebuild
-  void Remove (const Handle(SelectMgr_SelectableObject)& theObject);
+  //! Removes object theObject from set and marks BVH tree for rebuild.
+  //! @return true if structure removed, otherwise returns false (structure is not in the set).
+  Standard_EXPORT Standard_Boolean Remove (const Handle(SelectMgr_SelectableObject)& theObject);
 
   //! Returns bounding box of object with index theIndex
-  virtual Select3D_BndBox3d Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   //! Returns center of object with index theIndex in the set
   //! along the given axis theAxis
-  virtual Standard_Real Center (const Standard_Integer theIndex,
-                                const Standard_Integer theAxis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Center (const Standard_Integer theIndex,
+                                                const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
-  virtual void Swap (const Standard_Integer theIndex1,
-                     const Standard_Integer theIndex2) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Swap (const Standard_Integer theIndex1,
+                                     const Standard_Integer theIndex2) Standard_OVERRIDE;
 
   //! Returns size of objects set
-  virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns object from set by theIndex given
-  const Handle(SelectMgr_SelectableObject)& GetObjectById (const Standard_Integer theIndex) const;
+  const Handle(SelectMgr_SelectableObject)& GetObjectById (const Standard_Integer theIndex) const
+  {
+    return myObjects.FindKey (theIndex + 1);
+  }
 
   //! Returns true if this objects set contains theObject given
-  Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
+  Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const
+  {
+    return myObjects.Contains (theObject);
+  }
 
 private:
 

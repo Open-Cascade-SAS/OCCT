@@ -24,28 +24,68 @@
 // purpose  : Creates new frustum builder with empty matrices
 //=======================================================================
 SelectMgr_FrustumBuilder::SelectMgr_FrustumBuilder()
-: myOrientation(),
+: myWorldView(),
   myProjection(),
+  myWorldViewProjState(),
   myWidth (INT_MAX),
   myHeight (INT_MAX),
-  myIsViewportSet (Standard_False) {}
-
-//=======================================================================
-// function : SetOrientation
-// purpose  : Stores current orientation matrix
-//=======================================================================
-void SelectMgr_FrustumBuilder::SetOrientation (const Graphic3d_Mat4d& theOrientation)
+  myIsViewportSet (Standard_False)
 {
-  myOrientation = theOrientation;
+  //
 }
 
 //=======================================================================
-// function : SetProjection
+// function : SetWorldViewMatrix
+// purpose  : Stores current world view transformation matrix
+//=======================================================================
+void SelectMgr_FrustumBuilder::SetWorldViewMatrix (const Graphic3d_Mat4d& theWorldView)
+{
+  myWorldView = theWorldView;
+}
+
+//=======================================================================
+// function : WorldViewMatrix
+// purpose  : Returns current world view transformation matrix
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_FrustumBuilder::WorldViewMatrix() const
+{
+  return myWorldView;
+}
+
+//=======================================================================
+// function : SetProjectionMatrix
 // purpose  : Stores current projection matrix
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetProjection (const Graphic3d_Mat4d& theProjection)
+void SelectMgr_FrustumBuilder::SetProjectionMatrix (const Graphic3d_Mat4d& theProjection)
 {
   myProjection = theProjection;
+}
+
+//=======================================================================
+// function : ProjectionMatrix
+// purpose  : Returns current projection matrix
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_FrustumBuilder::ProjectionMatrix() const
+{
+  return myProjection;
+}
+
+//=======================================================================
+// function : SetWorldViewProjState
+// purpose  : Stores current world view projection matrix state
+//=======================================================================
+void SelectMgr_FrustumBuilder::SetWorldViewProjState (const Graphic3d_WorldViewProjState& theState)
+{
+  myWorldViewProjState = theState;
+}
+
+//=======================================================================
+// function : WorldViewProjState
+// purpose  : Returns current world view projection matrix state
+//=======================================================================
+const Graphic3d_WorldViewProjState& SelectMgr_FrustumBuilder::WorldViewProjState() const
+{
+  return myWorldViewProjState;
 }
 
 //=======================================================================
@@ -131,7 +171,7 @@ SelectMgr_Vec3 SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
   Graphic3d_Mat4d aInvProj;
 
   // this case should never happen
-  if (!myOrientation.Inverted (aInvView) || !myProjection.Inverted (aInvProj))
+  if (!myWorldView.Inverted (aInvView) || !myProjection.Inverted (aInvProj))
   {
     return SelectMgr_Vec3 (0.0, 0.0, 0.0);
   }

@@ -55,7 +55,6 @@ Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
 Graphic3d_CStructurePtr.hxx
 Graphic3d_CTexture.hxx
-Graphic3d_CTransPersStruct.hxx
 Graphic3d_CUserDraw.hxx
 Graphic3d_CView.hxx
 Graphic3d_CycleError.hxx
@@ -143,6 +142,8 @@ Graphic3d_TextureParams.hxx
 Graphic3d_TextureRoot.cxx
 Graphic3d_TextureRoot.hxx
 Graphic3d_TransformError.hxx
+Graphic3d_TransformPers.hxx
+Graphic3d_TransformUtils.hxx
 Graphic3d_TransModeFlags.hxx
 Graphic3d_TypeOfBackground.hxx
 Graphic3d_TypeOfComposition.hxx
@@ -169,5 +170,6 @@ Graphic3d_Vertex.hxx
 Graphic3d_VerticalTextAlignment.hxx
 Graphic3d_ViewAffinity.cxx
 Graphic3d_ViewAffinity.hxx
+Graphic3d_WorldViewProjState.hxx
 Graphic3d_ZLayerId.hxx
 Graphic3d_ZLayerSettings.hxx

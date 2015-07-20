@@ -17,6 +17,10 @@
 inline PrsMgr_TypeOfPresentation3d PrsMgr_PresentableObject::TypeOfPresentation3d() const 
 {return myTypeOfPresentation3d;}
 
+inline const Graphic3d_TransformPers& PrsMgr_PresentableObject::TransformPersistence() const
+{
+  return myTransformPersistence;
+}
 
 inline const gp_Trsf& PrsMgr_PresentableObject::LocalTransformation() const
 {

@@ -19,9 +19,9 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Window.hxx>
-#include <OpenGl_Utils.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
@@ -788,7 +788,7 @@ void OpenGl_Window::ReadDepths (const Standard_Integer theX,     const Standard_
     return;
 
   OpenGl_Mat4 aProjectMat;
-  OpenGl_Utils::Ortho2D<Standard_ShortReal> (aProjectMat,
+  Graphic3d_TransformUtils::Ortho2D (aProjectMat,
     0.f, static_cast<GLfloat> (myWidth), 0.f, static_cast<GLfloat> (myHeight));
 
   myGlContext->WorldViewState.Push();

@@ -1,0 +1,81 @@
+puts "============"
+puts "CR26344"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - provide a support of zoom persistent selection"
+##########################################################################################
+
+vinit View1 w=409 h=409
+vtrihedron tri
+vpan 50 50
+
+box b1 50 50 50
+box b2 50 50 50
+box b3 100 100 100
+box b4 100 100 100
+box b5 100 100 100
+
+# 1) Zoom persistence
+vpoint p1 200 200 200
+
+vdisplay b1 -trsfPers zoom -trsfPersPos 200 200 200
+vdisplay b2 -trsfPers zoom -trsfPersPos 200 200 200
+vsetlocation b2 -50 -50 -50
+
+vmoveto 384 78
+if { ![checkcolor 384 78 0 1 1] } {
+  puts "Error picking zoom persistence object"
+}
+
+vmoveto 356 96
+if { ![checkcolor 356 96 0 1 1] } {
+  puts "Error picking zoom persistent object with location"
+}
+
+vselect 330 120 400 50
+
+if { ![checkcolor 384 78 0.8 0.8 0.8] || ![checkcolor 356 96 0.8 0.8 0.8] } {
+  puts "Error selecting zoom persistence object(s)"
+}
+
+# 2) Rotate persistence
+
+vdisplay b3 -trsfPers rotate -trsfPersPos -200 -200 -200
+vmoveto 160 200
+if { ![checkcolor 160 180 0 1 1] } {
+  puts "Error picking rotate persistence object"
+}
+vselect 130 230 190 170
+if { ![checkcolor 160 180 0.8 0.8 0.8] } {
+  puts "Error selecting rotate persistence object"
+}
+
+# 3) Pan persistence
+
+vdisplay b4 -trsfPers pan
+vmoveto 233 188
+if { ![checkcolor 233 188 0 1 1] } {
+  puts "Error picking pan persistence object"
+}
+vselect 200 230 270 140
+if { ![checkcolor 233 188 0.8 0.8 0.8] } {
+  puts "Error selecting pan persistence object"
+}
+
+# 4) Trihedron persistence
+
+vdisplay b5 -trsfPers trihedron -trsfPersPos -1 -1 300
+vmoveto 90 300
+if { ![checkcolor 90 300 0 1 1] } {
+  puts "Error picking trihedron persistence object"
+}
+vselect 50 380 140 280
+if { ![checkcolor 90 300 0.8 0.8 0.8] } {
+  puts "Error selecting trihedron persistence object"
+}
+
+vselect 50 380 400 50
+
+set only_screen 1

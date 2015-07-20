@@ -69,48 +69,28 @@ void OpenGl_BVHClipPrimitiveSet::Swap (const Standard_Integer theIdx1,
 }
 
 // =======================================================================
-// function : Assign
-// purpose  :
-// =======================================================================
-void OpenGl_BVHClipPrimitiveSet::Assign (const OpenGl_ArrayOfIndexedMapOfStructure& theStructs)
-{
-  myStructs.Clear();
-
-  for (Standard_Integer aPriorityIdx = 0, aNbPriorities = theStructs.Length(); aPriorityIdx < aNbPriorities; ++aPriorityIdx)
-  {
-    for (OpenGl_IndexedMapOfStructure::Iterator aStructIter (theStructs (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
-    {
-      const OpenGl_Structure* aStruct = aStructIter.Value();
-
-      if (!aStruct->IsAlwaysRendered())
-      {
-        myStructs.Add (aStruct);
-      }
-    }
-  }
-
-  MarkDirty();
-}
-
-// =======================================================================
 // function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveSet::Add (const OpenGl_Structure* theStruct)
+Standard_Boolean OpenGl_BVHClipPrimitiveSet::Add (const OpenGl_Structure* theStruct)
 {
   const Standard_Integer aSize = myStructs.Size();
 
   if (myStructs.Add (theStruct) > aSize) // new structure?
   {
     MarkDirty();
+
+    return Standard_True;
   }
+
+  return Standard_False;
 }
 
 // =======================================================================
 // function : Remove
 // purpose  :
 // =======================================================================
-void OpenGl_BVHClipPrimitiveSet::Remove (const OpenGl_Structure* theStruct)
+Standard_Boolean OpenGl_BVHClipPrimitiveSet::Remove (const OpenGl_Structure* theStruct)
 {
   const Standard_Integer anIndex = myStructs.FindIndex (theStruct);
 
@@ -119,7 +99,11 @@ void OpenGl_BVHClipPrimitiveSet::Remove (const OpenGl_Structure* theStruct)
     myStructs.Swap (Size(), anIndex);
     myStructs.RemoveLast();
     MarkDirty();
+
+    return Standard_True;
   }
+
+  return Standard_False;
 }
 
 // =======================================================================

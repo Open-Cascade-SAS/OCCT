@@ -45,4 +45,45 @@ typedef Graphic3d_Vec4d  OpenGl_Vec4d;
 typedef Graphic3d_Mat4   OpenGl_Mat4;
 typedef Graphic3d_Mat4d  OpenGl_Mat4d;
 
+namespace OpenGl
+{
+  //! Tool class for selecting appropriate vector type.
+  //! \tparam T Numeric data type
+  template<class T> struct VectorType
+  {
+    // Not implemented
+  };
+
+  template<> struct VectorType<Standard_Real>
+  {
+    typedef OpenGl_Vec2d Vec2;
+    typedef OpenGl_Vec3d Vec3;
+    typedef OpenGl_Vec4d Vec4;
+  };
+
+  template<> struct VectorType<Standard_ShortReal>
+  {
+    typedef OpenGl_Vec2 Vec2;
+    typedef OpenGl_Vec3 Vec3;
+    typedef OpenGl_Vec4 Vec4;
+  };
+
+  //! Tool class for selecting appropriate matrix type.
+  //! \tparam T Numeric data type
+  template<class T> struct MatrixType
+  {
+    // Not implemented
+  };
+
+  template<> struct MatrixType<Standard_Real>
+  {
+    typedef OpenGl_Mat4d Mat4;
+  };
+
+  template<> struct MatrixType<Standard_ShortReal>
+  {
+    typedef OpenGl_Mat4 Mat4;
+  };
+}
+
 #endif // _OpenGl_Vec_H__

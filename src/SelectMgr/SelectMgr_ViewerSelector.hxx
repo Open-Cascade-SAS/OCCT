@@ -36,6 +36,7 @@
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_SelectableObjectSet.hxx>
+#include <SelectMgr_SelectableObjectTrsfPersSet.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <Standard_OStream.hxx>
 
@@ -63,7 +64,7 @@ class SelectMgr_ToleranceMap
 public:
 
   //! Sets tolerance values to -1.0
-  SelectMgr_ToleranceMap();
+  Standard_EXPORT SelectMgr_ToleranceMap();
 
   Standard_EXPORT ~SelectMgr_ToleranceMap();
 
@@ -232,21 +233,21 @@ public:
                                               const Standard_Boolean theIsForce = Standard_False);
 
   //! Initializes internal iterator for stored detected sensitive entities
-  Standard_EXPORT void InitDetected();
+  void InitDetected();
 
   //! Makes a step along the map of detected sensitive entities and their owners
-  Standard_EXPORT void NextDetected();
+  void NextDetected();
 
   //! Returns true if iterator of map of detected sensitive entities has reached
   //! its end
-  Standard_EXPORT Standard_Boolean MoreDetected();
+  Standard_Boolean MoreDetected();
 
   //! Returns sensitive entity that was detected during the previous run of
   //! selection algorithm
   Standard_EXPORT const Handle(SelectBasics_SensitiveEntity)& DetectedEntity() const;
 
   //! Returns instance of selecting volume manager of the viewer selector
-  Standard_EXPORT SelectMgr_SelectingVolumeManager& GetManager();
+  SelectMgr_SelectingVolumeManager& GetManager();
 
   //! Marks all added sensitive entities of all objects as non-selectable
   Standard_EXPORT void ResetSelectionActivationStatus();
@@ -309,12 +310,13 @@ private:
 
 protected:
 
-  Standard_Boolean preferclosest;
-  Standard_Boolean myToUpdateTolerance;
-  SelectMgr_IndexedDataMapOfOwnerCriterion mystored;
-  SelectMgr_SelectingVolumeManager mySelectingVolumeMgr;
-  mutable NCollection_Handle<SelectMgr_SelectableObjectSet> mySelectableObjects;
-  SelectMgr_ToleranceMap myTolerances;
+  Standard_Boolean                              preferclosest;
+  Standard_Boolean                              myToUpdateTolerance;
+  SelectMgr_IndexedDataMapOfOwnerCriterion      mystored;
+  SelectMgr_SelectingVolumeManager              mySelectingVolumeMgr;
+  mutable SelectMgr_SelectableObjectSet         mySelectableObjects;
+  mutable SelectMgr_SelectableObjectTrsfPersSet mySelectableObjectsTrsfPers;
+  SelectMgr_ToleranceMap                        myTolerances;
 
 private:
 
