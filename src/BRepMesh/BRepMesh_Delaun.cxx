@@ -69,6 +69,13 @@ namespace {
   private:
     Handle(BRepMesh_DataStructureOfDelaun) myStructure;
   };
+
+  inline void UpdateBndBox(const gp_XY& thePnt1, const gp_XY& thePnt2, Bnd_B2d& theBox)
+  {
+    theBox.Add( thePnt1 );
+    theBox.Add( thePnt2 );
+    theBox.Enlarge(Precision);
+  }
 } // anonymous namespace
 
 //=======================================================================
@@ -424,6 +431,10 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
 
   BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
 
+  Standard_Real aTolU, aTolV;
+  myMeshData->Data()->GetTolerance(aTolU, aTolV);
+  const Standard_Real aSqTol = aTolU * aTolU + aTolV * aTolV;
+
   // Insertion of nodes :
   Standard_Boolean isModify = Standard_True;
   
@@ -447,20 +458,23 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
       // To add a node in the mesh it is necessary to check conditions: 
       // - the node should be within the boundaries of the mesh and so in an existing triangle
       // - all adjacent triangles should belong to a component connected with this triangle
-      if ( Contains( aCircleIt.Value(), aVertex, onEgdeId ) )
+      if ( Contains( aCircleIt.Value(), aVertex, aSqTol, onEgdeId ) )
       {
-        if ( onEgdeId == 0 )
+        if (onEgdeId != 0 && GetEdge(onEgdeId).Movability() != BRepMesh_Free)
         {
-          aTriangleId = aCircleIt.Value();
-          aCirclesList.Remove( aCircleIt );
-          break;
+          // We can skip free vertex too close to the frontier edge.
+          if (aVertex.Movability() == BRepMesh_Free)
+            continue;
+
+          // However, we should add vertex that have neighboring frontier edges.
         }
-        else if ( GetEdge( onEgdeId ).Movability() == BRepMesh_Free )
-        {
-          aTriangleId = aCircleIt.Value();
-          aCirclesList.Remove( aCircleIt );
-          break;
-        }
+
+        // Remove triangle even if it contains frontier edge in order 
+        // to prevent appearance of incorrect configurations like free 
+        // edge glued with frontier #26407
+        aTriangleId = aCircleIt.Value();
+        aCirclesList.Remove( aCircleIt );
+        break;
       }
     }
 
@@ -778,9 +792,8 @@ void BRepMesh_Delaun::fillBndBox(BRepMesh::SequenceOfBndB2d& theBoxes,
                                  const BRepMesh_Vertex&      theV1,
                                  const BRepMesh_Vertex&      theV2)
 {
-  Bnd_B2d aBox;      
-  aBox.Add( theV1.Coord() );
-  aBox.Add( theV2.Coord() );
+  Bnd_B2d aBox;
+  UpdateBndBox(theV1.Coord(), theV2.Coord(), aBox);
   theBoxes.Append( aBox );
 }
 
@@ -1035,8 +1048,8 @@ Standard_Boolean BRepMesh_Delaun::checkIntersection(
   const Standard_Boolean             isSkipLastEdge,
   Bnd_B2d&                           theLinkBndBox ) const
 {
-  theLinkBndBox.Add( GetVertex( theLink.FirstNode() ).Coord() );
-  theLinkBndBox.Add( GetVertex( theLink.LastNode()  ).Coord() );
+  UpdateBndBox(GetVertex(theLink.FirstNode()).Coord(),
+    GetVertex(theLink.LastNode()).Coord(), theLinkBndBox);
 
   Standard_Integer aPolyLen = thePolygon.Length();
   // Don't check intersection with the last link
@@ -1457,8 +1470,7 @@ Standard_Integer BRepMesh_Delaun::createAndReplacePolygonLink(
     theNodes[0], theNodes[1], BRepMesh_Free ) );
 
   Bnd_B2d aNewBox;
-  aNewBox.Add( thePnts[0] );
-  aNewBox.Add( thePnts[1] );
+  UpdateBndBox(thePnts[0].Coord(), thePnts[1].Coord(), aNewBox);
 
   switch ( theReplaceFlag )
   {
@@ -1858,8 +1870,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
       const gp_Pnt2d&         aLinkFirstVertex = aRefVertices[aRefLinkNodeIt];
 
       Bnd_B2d aBox;
-      aBox.Add( aLinkFirstVertex );
-      aBox.Add( aPivotVertex );
+      UpdateBndBox(aLinkFirstVertex.Coord(), aPivotVertex.Coord(), aBox);
 
       BRepMesh_Edge aCheckLink( aLinkFirstNode, aPivotNode, BRepMesh_Free );
 
@@ -1943,8 +1954,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
     thePolyBoxes.Split(aUsedLinkId, thePolyBoxesCut);
 
     Bnd_B2d aBox;
-    aBox.Add( aRefVertices[0] );
-    aBox.Add( aRefVertices[2] );
+    UpdateBndBox(aRefVertices[0].Coord(), aRefVertices[2].Coord(), aBox);
     thePolyBoxesCut.Prepend( aBox );
   }
   else
@@ -1958,9 +1968,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
     thePolygon.SetValue( 1, -aNewEdgesInfo[1] );
 
     Bnd_B2d aBox;
-    aBox.Add( aRefVertices[1] );
-    aBox.Add( aRefVertices[2] );
-
+    UpdateBndBox(aRefVertices[1].Coord(), aRefVertices[2].Coord(), aBox);
     thePolyBoxes.SetValue( 1, aBox );
   }
 }
@@ -2189,17 +2197,12 @@ BRepMesh::HMapOfInteger BRepMesh_Delaun::getEdgesByType(
 //=======================================================================
 Standard_Real BRepMesh_Delaun::calculateDist( const gp_XY            theVEdges[3],
                                               const gp_XY            thePoints[3],
-                                              const Standard_Integer theEdgesId[3],
                                               const BRepMesh_Vertex& theVertex,
                                               Standard_Real          theDistance[3],
                                               Standard_Real          theSqModulus[3],
                                               Standard_Integer&      theEdgeOn ) const
 {
-  Standard_Real aMinDist = -1;
-  if ( !theVEdges || !thePoints || !theEdgesId || 
-       !theDistance || !theSqModulus )
-    return aMinDist;
-    
+  Standard_Real aMinDist = RealLast();
   for( Standard_Integer i = 0; i < 3; ++i )
   {
     theSqModulus[i] = theVEdges[i].SquareModulus();
@@ -2211,9 +2214,9 @@ Standard_Real BRepMesh_Delaun::calculateDist( const gp_XY            theVEdges[3
     Standard_Real aDist = theDistance[i] * theDistance[i];
     aDist /= theSqModulus[i];
     
-    if ( aMinDist < 0 || aDist < aMinDist )
+    if ( aDist < aMinDist )
     {
-      theEdgeOn = theEdgesId[i];
+      theEdgeOn = i;
       aMinDist  = aDist;
     }
   }
@@ -2229,7 +2232,8 @@ Standard_Real BRepMesh_Delaun::calculateDist( const gp_XY            theVEdges[3
 //=======================================================================
 Standard_Boolean BRepMesh_Delaun::Contains( const Standard_Integer theTriangleId,
                                             const BRepMesh_Vertex& theVertex,
-                                            Standard_Integer&      theEdgeOn ) const
+                                            const Standard_Real    theSqTolerance,
+                                            Standard_Integer&      theEdgeOn) const
 {
   theEdgeOn = 0;
   
@@ -2264,34 +2268,24 @@ Standard_Boolean BRepMesh_Delaun::Contains( const Standard_Integer theTriangleId
   Standard_Real aDistance[3];
   Standard_Real aSqModulus[3];
 
-  Standard_Real aMinDist;  
-  aMinDist = calculateDist( aVEdges, aPoints, e, theVertex, aDistance, aSqModulus, theEdgeOn );
-  if ( aMinDist < 0 )
+  Standard_Real aSqMinDist;
+  Standard_Integer aEdgeOnId;
+  aSqMinDist = calculateDist( aVEdges, aPoints, theVertex, aDistance, aSqModulus, aEdgeOnId );
+  if ( aSqMinDist < 0 )
     return Standard_False;
-      
-  if ( aMinDist > Precision2 )
-  {
-    Standard_Integer anEdgeId = theEdgeOn;
-    theEdgeOn = 0;
-    
-    if ( anEdgeId != 0 ) 
-    {
-      Standard_Integer i = 0;
-      for ( ; i < 3; ++i )
-      {
-        if( e[i] == anEdgeId )
-          break;
-      }
-      
-      if( anEdges[i]->Movability() != BRepMesh_Free )
-        if ( aDistance[i] < ( aSqModulus[i] / 5. ) )
-          theEdgeOn = e[i];
-    }
-  }
 
-  return ( aDistance[0] + aDistance[1] + aDistance[2] != 0. &&
-            ( ( aDistance[0] >= 0. && aDistance[1] >= 0. && aDistance[2] >= 0. ) ||
-              ( aDistance[0] <= 0. && aDistance[1] <= 0. && aDistance[2] <= 0. ) ) );
+  const Standard_Boolean isNotFree = (anEdges[aEdgeOnId]->Movability() != BRepMesh_Free);
+  if ( aSqMinDist > theSqTolerance )
+  {
+    if (isNotFree && aDistance[aEdgeOnId] < ( aSqModulus[aEdgeOnId] / 5. ))
+      theEdgeOn = e[aEdgeOnId];
+  }
+  else if (isNotFree)
+    return Standard_False;
+  else
+    theEdgeOn = e[aEdgeOnId];
+
+  return (aDistance[0] >= 0. && aDistance[1] >= 0. && aDistance[2] >= 0.);
 }
 
 //=============================================================================
@@ -2355,3 +2349,71 @@ Standard_Real BRepMesh_Delaun::polyArea(const BRepMesh::SequenceOfInteger& thePo
 
   return aArea / 2.;
 }
+
+#ifdef DEB
+//=======================================================================
+//function : BRepMesh_DumpPoly
+//purpose  : 
+//=======================================================================
+#include <TopoDS_Compound.hxx>
+#include <BRep_Builder.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepTools.hxx>
+Standard_CString BRepMesh_DumpPoly(void*            thePolygon,
+                                   void*            theMeshHandlePtr,
+                                   Standard_CString theFileNameStr)
+{
+  if (thePolygon == 0 || theFileNameStr == 0)
+  {
+    return "Error: file name or polygon data is null";
+  }
+
+  BRepMesh::SequenceOfInteger& aPolygon = *(BRepMesh::SequenceOfInteger*)thePolygon;
+
+  Handle(BRepMesh_DataStructureOfDelaun) aMeshData = 
+    *(Handle(BRepMesh_DataStructureOfDelaun)*)theMeshHandlePtr;
+
+  if (aMeshData.IsNull())
+    return "Error: mesh data is empty";
+
+  TopoDS_Compound aMesh;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound(aMesh);
+
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    BRepMesh::SequenceOfInteger::Iterator aLinksIt(aPolygon);
+    for (; aLinksIt.More(); aLinksIt.Next())
+    {
+      const BRepMesh_Edge& aLink = aMeshData->GetLink(Abs(aLinksIt.Value()));
+
+      gp_Pnt aPnt[2];
+      for (Standard_Integer i = 0; i < 2; ++i)
+      {
+        const Standard_Integer aNodeId = 
+          (i == 0) ? aLink.FirstNode() : aLink.LastNode();
+
+        const gp_XY& aNode = aMeshData->GetNode(aNodeId).Coord();
+        aPnt[i] = gp_Pnt(aNode.X(), aNode.Y(), 0.);
+      }
+
+      if (aPnt[0].SquareDistance(aPnt[1]) < Precision::SquareConfusion())
+        continue;
+
+      aBuilder.Add(aMesh, BRepBuilderAPI_MakeEdge(aPnt[0], aPnt[1]));
+    }
+
+    if (!BRepTools::Write(aMesh, theFileNameStr))
+      return "Error: write failed";
+  }
+  catch (Standard_Failure)
+  {
+    return Standard_Failure::Caught()->GetMessageString();
+  }
+
+  return theFileNameStr;
+}
+#endif

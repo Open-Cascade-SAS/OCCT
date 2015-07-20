@@ -444,9 +444,13 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       Standard_Real deltaY = 1.0;
 
       {
+        Standard_Real aTolU, aTolV;
+        myAttribute->ChangeStructure()->Data()->GetTolerance(aTolU, aTolV);
+        const Standard_Real aTol = Sqrt(aTolU * aTolU + aTolV * aTolV);
+
         BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
-        BRepMesh_WireChecker aDFaceChecker(aFace, Precision::PConfusion(),
-          aInternalEdges, aVertexEdgeMap, myAttribute->ChangeStructure(),
+        BRepMesh_WireChecker aDFaceChecker(aFace, aTol, aInternalEdges, 
+          aVertexEdgeMap, myAttribute->ChangeStructure(),
           myumin, myumax, myvmin, myvmax, myInParallel );
 
         aDFaceChecker.ReCompute(aClassifier);

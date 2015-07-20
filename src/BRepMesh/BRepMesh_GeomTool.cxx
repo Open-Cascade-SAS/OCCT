@@ -223,10 +223,12 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
   };
 
   // Consider case when edges have shared vertex
-  if ( isConsiderEndPointTouch )
+  if ( aPointHash[0] < 0 || aPointHash[1] < 0 )
   {
-    if ( aPointHash[0] < 0 || aPointHash[1] < 0 )
+    if ( isConsiderEndPointTouch )
       return BRepMesh_GeomTool::EndPointTouch;
+
+    return BRepMesh_GeomTool::NoIntersection;
   }
 
   Standard_Integer aPosHash = 

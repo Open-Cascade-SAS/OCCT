@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC26407"
+puts "========"
+puts ""
+##########################################################################################
+# BRepMesh_Delaun should not take into account frontier edges on first pass of algorithm
+##########################################################################################
+
+pload QAcommands
+
+OCC26407 result

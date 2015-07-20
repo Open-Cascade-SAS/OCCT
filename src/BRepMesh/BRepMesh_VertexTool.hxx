@@ -80,6 +80,17 @@ public:
     myTolerance[1] = theToleranceY;
   }
 
+  //! Gets the tolerance to be used for identification of 
+  //! coincident vertices.
+  //! @param theToleranceX tolerance for X dimension.
+  //! @param theToleranceY tolerance for Y dimension.
+  Standard_EXPORT void GetTolerance(Standard_Real& theToleranceX,
+                                    Standard_Real& theToleranceY)
+  {
+    theToleranceX = myTolerance[0];
+    theToleranceY = myTolerance[1];
+  }
+
   //! Adds vertex with empty data to the tool.
   //! @param theVertex node to be added to the mesh.
   //! @param isForceAdd adds the given node to structure without 

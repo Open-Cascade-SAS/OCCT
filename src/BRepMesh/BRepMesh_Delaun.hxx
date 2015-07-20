@@ -114,10 +114,12 @@ public:
   }
 
   //! Test is the given triangle contains the given vertex.
-  //! If theEdgeOn != 0 the vertex lies onto the edge index
-  //! returned through this parameter.
+  //! @param theSqTolerance square tolerance to check closeness to some edge
+  //! @param theEdgeOn If it is != 0 the vertex lies onto the edge index
+  //!        returned through this parameter.
   Standard_EXPORT Standard_Boolean Contains (const Standard_Integer theTriangleId,
                                              const BRepMesh_Vertex& theVertex,
+                                             const Standard_Real    theSqTolerance,
                                              Standard_Integer&      theEdgeOn) const;
 
 private:
@@ -300,7 +302,6 @@ private:
   //! Calculates distances between the given point and edges of triangle.
   Standard_Real calculateDist (const gp_XY            theVEdges[3],
                                const gp_XY            thePoints[3],
-                               const Standard_Integer theEdgesId[3],
                                const BRepMesh_Vertex& theVertex,
                                Standard_Real          theDistance[3],
                                Standard_Real          theSqModulus[3],
