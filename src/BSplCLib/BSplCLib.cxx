@@ -234,6 +234,18 @@ void BSplCLib::LocateParameter
  const Standard_Real         UFirst,
  const Standard_Real         ULast)
 {
+  /*
+  Let Knots are distributed as follows (the array is sorted in ascending order):
+    
+      K1, K1,..., K1, K1, K2, K2,..., K2, K2,..., Kn, Kn,..., Kn
+           M1 times             M2 times             Mn times
+
+  NbKnots = sum(M1+M2+...+Mn)
+  If U <= K1 then KnotIndex should be equal to M1.
+  If U >= Kn then KnotIndex should be equal to NbKnots-Mn-1.
+  If Ki <= U < K(i+1) then KnotIndex should be equal to sum (M1+M2+...+Mi).
+  */
+
   Standard_Integer First,Last;
   if (FromK1 < ToK2) {
     First = FromK1;
@@ -257,10 +269,12 @@ void BSplCLib::LocateParameter
   
   BSplCLib::Hunt (Knots, NewU, KnotIndex);
   
-  Standard_Real Eps = Epsilon(U);
   Standard_Real val;
-  if (Eps < 0) Eps = - Eps;
-  Standard_Integer KLower = Knots.Lower();
+  const Standard_Integer  KLower = Knots.Lower(),
+                          KUpper = Knots.Upper();
+
+  const Standard_Real Eps = Epsilon(Min(Abs(Knots(KUpper)), Abs(U)));
+
   const Standard_Real *knots = &Knots(KLower);
   knots -= KLower;
   if ( KnotIndex < Knots.Upper()) {
