@@ -132,10 +132,15 @@ public:
   
   //! Computes the point at the distance <Abscissa> of
   //! the curve.
+  //! U0 is the parameter of the point from which the distance
+  //! is measured.
   Standard_EXPORT void Perform (const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Resolution);
   
   //! Computes the point at the distance <Abscissa> of
   //! the curve.
+  //! U0 is the parameter of the point from which the distance
+  //! is measured and Ui is the starting value for the iterative
+  //! process (should be close to the final solution).
   Standard_EXPORT void Perform (const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui, const Standard_Real Resolution);
   
   //! Computes the point at the distance <Abscissa> of
@@ -143,6 +148,9 @@ public:
   //! to use this method in right way it is necessary to call
   //! empty consructor. then call method Init with
   //! Tolerance = Resolution, then call AdvPermorm.
+  //! U0 is the parameter of the point from which the distance
+  //! is measured and Ui is the starting value for the iterative
+  //! process (should be close to the final solution).
   Standard_EXPORT void AdvPerform (const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui, const Standard_Real Resolution);
   
   //! True if the computation was successful, False otherwise.
