@@ -1163,14 +1163,15 @@ static Handle(Geom2d_Curve) ConcatPCurves(const TopoDS_Edge& E1,
 //=======================================================================
 
 static TopoDS_Edge Glue(const TopoDS_Edge& E1,
-			const TopoDS_Edge& E2,
-			const TopoDS_Vertex& Vfirst,
-			const TopoDS_Vertex& Vlast,
-			const Standard_Boolean After,
-			const TopoDS_Face& F1,
-			const Standard_Boolean addPCurve1,
-			const TopoDS_Face& F2,
-			const Standard_Boolean addPCurve2)
+                        const TopoDS_Edge& E2,
+                        const TopoDS_Vertex& Vfirst,
+                        const TopoDS_Vertex& Vlast,
+                        const Standard_Boolean After,
+                        const TopoDS_Face& F1,
+                        const Standard_Boolean addPCurve1,
+                        const TopoDS_Face& F2,
+                        const Standard_Boolean addPCurve2,
+                        const Standard_Real theGlueTol)
 {
   Standard_Real Tol = 1.e-7;
   GeomAbs_Shape Continuity = GeomAbs_C1;
@@ -1208,7 +1209,7 @@ static TopoDS_Edge Glue(const TopoDS_Edge& E1,
       Handle(Geom_TrimmedCurve) TC1 = new Geom_TrimmedCurve( C1, first1, last1 );
       Handle(Geom_TrimmedCurve) TC2 = new Geom_TrimmedCurve( C2, first2, last2 );
       GeomConvert_CompCurveToBSplineCurve Concat( TC1 );
-      Concat.Add( TC2, Precision::Confusion(), After );
+      Concat.Add( TC2, theGlueTol, After );
       newCurve = Concat.BSplineCurve();
       if (newCurve->Continuity() < GeomAbs_C1)
 	{
@@ -1496,6 +1497,7 @@ static TopoDS_Edge AssembleEdge(const BOPDS_PDS& pDS,
 				const TopTools_SequenceOfShape& EdgesForConcat)
 {
   TopoDS_Edge CurEdge = TopoDS::Edge( EdgesForConcat(1) );
+  Standard_Real aGlueTol = Precision::Confusion();
   for (Standard_Integer j = 2; j <= EdgesForConcat.Length(); j++)
     {
       TopoDS_Edge anEdge = TopoDS::Edge( EdgesForConcat(j) );
@@ -1520,6 +1522,7 @@ static TopoDS_Edge AssembleEdge(const BOPDS_PDS& pDS,
 	{
 	  TopoDS_Vertex CV, V11, V12, V21, V22;
 	  TopExp::CommonVertex( CurEdge, anEdge, CV );
+          aGlueTol = BRep_Tool::Tolerance(CV);
 	  TopExp::Vertices( CurEdge, V11, V12 );
 	  TopExp::Vertices( anEdge,  V21, V22 );
 	  if (V11.IsSame(CV) && V21.IsSame(CV))
@@ -1544,9 +1547,8 @@ static TopoDS_Edge AssembleEdge(const BOPDS_PDS& pDS,
 	    }
 	} //end of else (open wire)
       
-      TopoDS_Edge NewEdge = Glue(CurEdge, anEdge,
-				 Vfirst, Vlast, After,
-				 F1, addPCurve1, F2, addPCurve2);
+      TopoDS_Edge NewEdge = Glue(CurEdge, anEdge, Vfirst, Vlast, After,
+                                 F1, addPCurve1, F2, addPCurve2, aGlueTol);
       CurEdge = NewEdge;
     } //end of for (Standard_Integer j = 2; j <= EdgesForConcat.Length(); j++)
   
