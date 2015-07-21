@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC25775"
+puts "========"
+puts ""
+################################################################
+# "Default Gradient Backgound" in V3d_Viewer has no effect in new created V3d_View.
+################################################################
+
+pload ALL
+vsetdefaultbg 0 0 0 64 64 64 1
+vinit View1 w=400 h=400
+if { [checkcolor 399 100 0.25 0.25 0.25] != 1 } {
+  puts "Error: bug with default gradient color is reproduced."
+}
+
+vinit View2 w=400 h=400
+if { [checkcolor 399 100 0.25 0.25 0.25] != 1 } {
+  puts "Error: bug with default gradient color is reproduced."
+}
+
+vsetdefaultbg 128 128 128
+vinit View3
+if { [checkcolor 100 100 0.5 0.5 0.5] != 1 } {
+  puts "Error: bug with default background color is reproduced."
+}
