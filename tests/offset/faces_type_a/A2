@@ -1,10 +1,7 @@
-puts "TODO OCC23068 ALL: An exception was caught"
-puts "TODO OCC23068 ALL: \\*\\* Exception \\*\\*"
-puts "TODO OCC23068 ALL: TEST INCOMPLETE"
 #old file fritesb
 
 restore [locate_data_file fritehaut] s
 OFFSETSHAPE -.004 {s_3} $calcul $type
 
 
-set volume 0
+set volume 0.000514386

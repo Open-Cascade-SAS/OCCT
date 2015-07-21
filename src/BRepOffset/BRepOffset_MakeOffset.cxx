@@ -657,8 +657,6 @@ static void EvalMax(const TopoDS_Shape& S, Standard_Real& Tol)
     Standard_Real        TolV = BRep_Tool::Tolerance(V); 
     if (TolV > Tol) Tol = TolV;
   }
-  //Patch
-  Tol *= 5.;
 }
 
 //=======================================================================
@@ -688,10 +686,9 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
   // Preanalyse.
   // ------------
   EvalMax(myShape,myTol);
-  if (myTol > Abs(myOffset*0.5)) {
-    Standard_ConstructionError::Raise("BRepOffset_MakeOffset : Tol > Offset");
-  }
-  Standard_Real TolAngle = 4*ASin(myTol/Abs(myOffset*0.5));
+  // There are possible second variant: analytical continuation of arcsin.
+  Standard_Real TolAngleCoeff = Min(myTol/Abs(myOffset*0.5), 1.0);
+  Standard_Real TolAngle = 4*ASin(TolAngleCoeff);
   myAnalyse.Perform(myShape,TolAngle);
   //---------------------------------------------------
   // Construction of Offset from preanalysis.

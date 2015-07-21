@@ -1767,8 +1767,20 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
     CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,NStatus,Normal,OrderU,OrderV);
     if (NStatus == CSLib_Defined) 
       P.SetXYZ(P.XYZ() + offsetValue * signe * Normal.XYZ());
-    else 
+    else
+    {
+      if (NStatus == CSLib_InfinityOfSolutions &&
+          D1U.SquareMagnitude() + D1V.SquareMagnitude() > MagTol * MagTol)
+      {
+        // Use non-null derivative as normal direction in degenerated case.
+        gp_Vec aNorm = D1U.SquareMagnitude() > MagTol * MagTol ? D1U : D1V;
+        aNorm.Normalize();
+
+        P.SetXYZ(P.XYZ() + offsetValue * signe * aNorm.XYZ());
+        return;
+      }
       Geom_UndefinedValue::Raise();
+    }
 
   }
 }
@@ -1777,21 +1789,70 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
 //function : 
 //purpose  : private
 //=======================================================================/
-void Geom_OffsetSurface::SetD1(const Standard_Real U, const Standard_Real V, 
-  Pnt& P, 
-  Vec& D1U, Vec& D1V,
-  const Vec& d2u, const Vec& d2v, const Vec& d2uv ) const
+void Geom_OffsetSurface::SetD1(const Standard_Real U,
+                               const Standard_Real V, 
+                               Pnt& P,
+                               Vec& D1U, Vec& D1V, // First derivative
+                               const Vec& D2UU, const Vec& D2VV, const Vec& D2UV ) const // Second derivative
 {
-
   Standard_Real MagTol=0.000000001;
+
+  // Check offset side.
+  Handle(Geom_BSplineSurface) L;
+  Standard_Boolean AlongU = Standard_False,
+                   AlongV = Standard_False;
+  Standard_Boolean IsOpposite=Standard_False;
+  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
+  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
+  Standard_Real signe = 1.0;
+  if ((AlongV || AlongU) && IsOpposite) 
+    signe = -1.0;
+
   Dir Normal;
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
   Standard_Integer MaxOrder;
   if (NStatus == CSLib_Defined) 
+  {
     MaxOrder=0;
+
+    if (!AlongV && !AlongU)
+    {
+      // AlongU or AlongV leads to more complex D1 computation
+      // Try to compute D0 and D1 much simpler
+      P.SetXYZ(P.XYZ() + offsetValue * signe * Normal.XYZ());
+
+      gp_Vec aN0(Normal.XYZ()), aN1U, aN1V;
+      Standard_Real aScale = (D1U^D1V).Dot(aN0);
+      aN1U.SetX(D2UU.Y() * D1V.Z() + D1U.Y() * D2UV.Z() 
+              - D2UU.Z() * D1V.Y() - D1U.Z() * D2UV.Y());
+      aN1U.SetY((D2UU.X() * D1V.Z() + D1U.X() * D2UV.Z() 
+               - D2UU.Z() * D1V.X() - D1U.Z() * D2UV.X() ) * -1.0);
+      aN1U.SetZ(D2UU.X() * D1V.Y() + D1U.X() * D2UV.Y() 
+              - D2UU.Y() * D1V.X() - D1U.Y() * D2UV.X());
+      Standard_Real aScaleU = aN1U.Dot(aN0);
+      aN1U.Subtract(aScaleU * aN0);
+      aN1U /= aScale;
+
+      aN1V.SetX(D2UV.Y() * D1V.Z() + D2VV.Z() * D1U.Y() 
+              - D2UV.Z() * D1V.Y() - D2VV.Y() * D1U.Z());
+      aN1V.SetY((D2UV.X() * D1V.Z() + D2VV.Z() * D1U.X() 
+               - D2UV.Z() * D1V.X() - D2VV.X() * D1U.Z()) * -1.0);
+      aN1V.SetZ(D2UV.X() * D1V.Y() + D2VV.Y() * D1U.X() 
+              - D2UV.Y() * D1V.X() - D2VV.X() * D1U.Y());
+      Standard_Real aScaleV = aN1V.Dot(aN0);
+      aN1V.Subtract(aScaleV * aN0);
+      aN1V /= aScale;
+
+      D1U += offsetValue * signe * aN1U;
+      D1V += offsetValue * signe * aN1V;
+
+      return;
+    }
+  }
   else 
     MaxOrder=3;
+
   Standard_Integer OrderU,OrderV;
   TColgp_Array2OfVec DerNUV(0,MaxOrder+1,0,MaxOrder+1);
   TColgp_Array2OfVec DerSurf(0,MaxOrder+2,0,MaxOrder+2);
@@ -1799,17 +1860,9 @@ void Geom_OffsetSurface::SetD1(const Standard_Real U, const Standard_Real V,
   Bounds(Umin,Umax,Vmin,Vmax);
   DerSurf.SetValue(1, 0, D1U);
   DerSurf.SetValue(0, 1, D1V);
-  DerSurf.SetValue(1, 1, d2uv);
-  DerSurf.SetValue(2, 0, d2u);
-  DerSurf.SetValue(0, 2, d2v);
-  Handle(Geom_BSplineSurface) L;
-  Standard_Boolean AlongU = Standard_False,
-    AlongV = Standard_False;
-  Standard_Boolean IsOpposite=Standard_False;
-  Standard_Real signe = 1.;
-  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
-  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
-  if ((AlongV || AlongU) && IsOpposite) signe = -1;
+  DerSurf.SetValue(1, 1, D2UV);
+  DerSurf.SetValue(2, 0, D2UU);
+  DerSurf.SetValue(0, 2, D2VV);
   derivatives(MaxOrder,2,U,V,basisSurf,1,1,AlongU,AlongV,L,DerNUV,DerSurf);
 
   CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,NStatus,Normal,OrderU,OrderV);
@@ -1821,7 +1874,6 @@ void Geom_OffsetSurface::SetD1(const Standard_Real U, const Standard_Real V,
     + offsetValue * signe * CSLib::DNNormal(1,0,DerNUV,OrderU,OrderV);
   D1V = DerSurf(0,1)
     + offsetValue * signe * CSLib::DNNormal(0,1,DerNUV,OrderU,OrderV);
-
 }
 
 //=======================================================================
