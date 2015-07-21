@@ -53,8 +53,8 @@ Standard_Boolean Select3D_SensitiveSet::Matches (SelectBasics_SelectingVolumeMan
 
   thePickResult = SelectBasics_PickResult (RealLast(), RealLast());
 
-  if (!theMgr.Overlaps (aBVH->MinPoint (0),
-                        aBVH->MaxPoint (0)))
+  if (myContent->Size() < 1 || !theMgr.Overlaps (aBVH->MinPoint (0),
+                                                 aBVH->MaxPoint (0)))
   {
     return Standard_False;
   }
