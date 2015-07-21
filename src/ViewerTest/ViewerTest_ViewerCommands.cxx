@@ -200,6 +200,14 @@ static OpenGl_Caps ViewerTest_myDefaultCaps;
 
 static void OSWindowSetup();
 
+static struct
+{
+  Quantity_Color FlatColor;
+  Quantity_Color GradientColor1;
+  Quantity_Color GradientColor2;
+  Aspect_GradientFillMethod FillMethod;
+} ViewerTest_DefaultBackground = { Quantity_NOC_BLACK, Quantity_NOC_BLACK, Quantity_NOC_BLACK, Aspect_GFM_NONE };
+
 //==============================================================================
 //  EVENT GLOBAL VARIABLES
 //==============================================================================
@@ -641,10 +649,10 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     toCreateViewer = Standard_True;
     TCollection_ExtendedString NameOfWindow("Viewer3D");
     a3DViewer = new V3d_Viewer(aGraphicDriver, NameOfWindow.ToExtString());
-
-    NameOfWindow = TCollection_ExtendedString("Collector");
-
-    a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
+    a3DViewer->SetDefaultBackgroundColor (ViewerTest_DefaultBackground.FlatColor);
+    a3DViewer->SetDefaultBgGradientColors (ViewerTest_DefaultBackground.GradientColor1,
+                                           ViewerTest_DefaultBackground.GradientColor2,
+                                           ViewerTest_DefaultBackground.FillMethod);
   }
 
   // AIS context setup
@@ -2911,6 +2919,57 @@ static int VSetColorBg(Draw_Interpretor& di, Standard_Integer argc, const char**
     Handle(V3d_View) V3dView = ViewerTest::CurrentView();
     V3dView->SetBackgroundColor( aColor );
     V3dView->Update();
+  }
+
+  return 0;
+}
+
+//==============================================================================
+//function : VSetDefaultBg
+//purpose  : Set default viewer background fill color
+//==============================================================================
+static int VSetDefaultBg (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 4
+   && theArgNb != 8)
+  {
+    std::cout << "Error: wrong syntax! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  ViewerTest_DefaultBackground.FillMethod =
+    theArgNb == 4 ? Aspect_GFM_NONE
+                  : (Aspect_GradientFillMethod) Draw::Atoi (theArgVec[7]);
+
+  if (theArgNb == 4)
+  {
+    Standard_Real R = Draw::Atof (theArgVec[1]) / 255.;
+    Standard_Real G = Draw::Atof (theArgVec[2]) / 255.;
+    Standard_Real B = Draw::Atof (theArgVec[3]) / 255.;
+    ViewerTest_DefaultBackground.FlatColor.SetValues (R, G, B, Quantity_TOC_RGB);
+  }
+  else
+  {
+    Standard_Real R1 = Draw::Atof (theArgVec[1]) / 255.;
+    Standard_Real G1 = Draw::Atof (theArgVec[2]) / 255.;
+    Standard_Real B1 = Draw::Atof (theArgVec[3]) / 255.;
+    ViewerTest_DefaultBackground.GradientColor1.SetValues (R1, G1, B1, Quantity_TOC_RGB);
+
+    Standard_Real R2 = Draw::Atof (theArgVec[4]) / 255.;
+    Standard_Real G2 = Draw::Atof (theArgVec[5]) / 255.;
+    Standard_Real B2 = Draw::Atof (theArgVec[6]) / 255.;
+    ViewerTest_DefaultBackground.GradientColor2.SetValues (R2, G2, B2, Quantity_TOC_RGB);
+  }
+
+  for (NCollection_DoubleMap<TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
+       anIter (ViewerTest_myContexts); anIter.More(); anIter.Next())
+  {
+    const Handle(V3d_Viewer)& aViewer = anIter.Value()->CurrentViewer();
+    aViewer->SetDefaultBackgroundColor (ViewerTest_DefaultBackground.FlatColor);
+    aViewer->SetDefaultBgGradientColors (ViewerTest_DefaultBackground.GradientColor1,
+                                         ViewerTest_DefaultBackground.GradientColor2,
+                                         ViewerTest_DefaultBackground.FillMethod);
   }
 
   return 0;
@@ -8775,6 +8834,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vsetcolorbg",
     "vsetcolorbg     : vsetcolorbg r g b : Set background color",
     __FILE__,VSetColorBg,group);
+  theCommands.Add("vsetdefaultbg",
+    "vsetdefaultbg r g b\n"
+    "\n\t\t: vsetdefaultbg r1 g1 b1 r2 g2 b2 fillmode"
+    "\n\t\t: Set default viewer background fill color (flat/gradient).",
+    __FILE__,VSetDefaultBg,group);
   theCommands.Add("vscale",
     "vscale          : vscale X Y Z",
     __FILE__,VScale,group);
