@@ -869,8 +869,16 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell& shell,co
   myShell = shell;
   myShape = shell;
   Standard_Integer aNumMultShell =0;
-  for (TopoDS_Iterator iter(shell); iter.More(); iter.Next()) 
-    Lface.Append(iter.Value());
+  Standard_Integer nbF = 0;
+  TopTools_MapOfShape aMapAdded;
+  for (TopoDS_Iterator iter(shell); iter.More(); iter.Next(),nbF++) 
+  {
+    if(aMapAdded.Add(iter.Value()))
+      Lface.Append(iter.Value());
+  }
+  if(Lface.Length() < nbF)
+    done = Standard_True;
+
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
   TopExp::MapShapesAndAncestors(myShell,TopAbs_EDGE,TopAbs_FACE,aMapEdgeFaces);
   TopTools_MapOfShape aMapMultiConnectEdges;

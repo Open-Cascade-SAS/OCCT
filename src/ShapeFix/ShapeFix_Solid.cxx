@@ -350,13 +350,30 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape aShape,TopTools_IndexedM
     BRep_Builder aB;
     aB.MakeCompSolid(aCompSolid);
     isDone = (aShape.ShapeType() != TopAbs_COMPSOLID || isDone);
+    Standard_Integer nbSol = 0;
+
     for(TopTools_ListIteratorOfListOfShape lItSh(lshells);lItSh.More(); lItSh.Next()) {
       if(ShellSolid.Contains(lItSh.Value())) {
-        for(TopExp_Explorer aExpSol(ShellSolid.FindFromKey(lItSh.Value()),TopAbs_SOLID);aExpSol.More(); aExpSol.Next())
+        const TopoDS_Shape& aShape = ShellSolid.FindFromKey(lItSh.Value());
+        TopExp_Explorer aExpSol(aShape, TopAbs_SOLID);
+       
+        for(;aExpSol.More(); aExpSol.Next())
+        {
           aB.Add(aCompSolid,aExpSol.Current());
-        ShellSolid.ChangeFromKey(lItSh.Value()) = aCompSolid;
+          nbSol++;
+        }
+      
       }
     }
+    if(nbSol >1)
+    {
+      for(TopTools_ListIteratorOfListOfShape lItSh1(lshells);lItSh1.More(); lItSh1.Next()) 
+      {
+        if(ShellSolid.Contains(lItSh1.Value())) 
+          ShellSolid.ChangeFromKey(lItSh1.Value()) = aCompSolid;
+      }
+    }
+    
   }
   for(Standard_Integer kk =1 ; kk <= ShellSolid.Extent();kk++)
     if(!aMapSolids.Contains(ShellSolid.FindFromIndex(kk)))
@@ -454,6 +471,8 @@ Standard_Boolean ShapeFix_Solid::Perform(const Handle(Message_ProgressIndicator)
       mySolid  = TopoDS::Solid(tmpShape);
     }
     else {
+      status = Standard_True;
+      myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
       TopoDS_Iterator aIt(tmpShape,Standard_False);
       Context()->Replace(tmpShape,aIt.Value());
       SendFail (Message_Msg ("FixAdvSolid.FixShell.MSG10")); // Solid can not be created from open shell. 
