@@ -1,0 +1,44 @@
+puts "========"
+puts "OCC26310"
+puts "========"
+puts ""
+#################################################
+# Very slow boolean cut operations on cylinders
+#################################################
+
+if { [regexp {Debug mode} [dversion]] } {
+    set max_time 0.3
+} else {
+    set max_time 0.15
+}
+
+set maxToler 1.5e-5
+
+restore [locate_data_file OCC26310-b1.brep] b1 
+restore [locate_data_file OCC26310-b2.brep] b2 
+
+explode b1 f
+explode b2 f
+
+dchrono cr reset
+dchrono cr start
+set log1 [bopcurves b1_1 b2_1 -2d]
+dchrono cr stop
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)} ${log1} full Toler
+
+puts "TolReached = $Toler"
+
+if { $Toler > $maxToler } {
+  puts "Error: Tolerance is too big ($Toler > $maxToler)"
+}
+
+set log2 [dchrono cr show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $log2 full sec
+
+if { $sec > ${max_time} } {
+    puts "Error: CPU user time is more than ${max_time} seconds"
+} else {
+    puts "OK: CPU user time is less than ${max_time} seconds"
+}
