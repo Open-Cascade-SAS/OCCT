@@ -531,6 +531,33 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     return pNode1->ChangeValue();
   }
 
+  //! Seek returns pointer to Item by Key. Returns
+  //! NULL if Key was not found.
+  const TheItemType* Seek(const TheKeyType& theKey1) const
+  {
+    return const_cast< NCollection_IndexedDataMap * >( this )->ChangeSeek(theKey1);
+    //NCollection_IndexedDataMap *pMap=(NCollection_IndexedDataMap *)this;
+    //return pMap->ChangeSeek(theKey1);
+  }
+
+  //! ChangeSeek returns modifiable pointer to Item by Key. Returns
+  //! NULL if Key was not found.
+  TheItemType* ChangeSeek (const TheKeyType& theKey1)
+  {
+    if (!IsEmpty()) 
+    {
+      IndexedDataMapNode * pNode1 = 
+        (IndexedDataMapNode *) myData1[Hasher::HashCode(theKey1,NbBuckets())];
+      while (pNode1)
+      {
+        if (Hasher::IsEqual (pNode1->Key1(), theKey1)) 
+          return &pNode1->ChangeValue();
+        pNode1 = (IndexedDataMapNode*) pNode1->Next();
+      }
+    }
+    return 0L;
+  }
+
   //! Find value for key with copying.
   //! @return true if key was found
   Standard_Boolean FindFromKey (const TheKeyType& theKey1,
