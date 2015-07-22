@@ -397,9 +397,11 @@ GeomAbs_BSplKnotDistribution Geom2d_BSplineCurve::KnotDistribution () const
 
 void Geom2d_BSplineCurve::Knots (TColStd_Array1OfReal& K) const
 {
-  Standard_DimensionError_Raise_if
-    (K.Length() != knots->Length(), "Geom2d_BSplineCurve::Knots");
-  K = knots->Array1();
+  Standard_DomainError_Raise_if (K.Lower() < knots->Lower() ||
+                                 K.Upper() > knots->Upper(),
+                                 "Geom2d_BSplineCurve::Knots");
+  for(Standard_Integer anIdx = K.Lower(); anIdx <= K.Upper(); anIdx++)
+    K(anIdx) = knots->Value(anIdx);
 }
 
 const TColStd_Array1OfReal& Geom2d_BSplineCurve::Knots() const
@@ -414,9 +416,11 @@ const TColStd_Array1OfReal& Geom2d_BSplineCurve::Knots() const
 
 void Geom2d_BSplineCurve::KnotSequence (TColStd_Array1OfReal& K) const
 {
-  Standard_DimensionError_Raise_if
-    (K.Length() != flatknots->Length(), "Geom2d_BSplineCurve::KnotSequence");
-  K = flatknots->Array1();
+  Standard_DomainError_Raise_if (K.Lower() < flatknots->Lower() ||
+                                 K.Upper() > flatknots->Upper(),
+                                 "Geom2d_BSplineCurve::KnotSequence");
+  for(Standard_Integer anIdx = K.Lower(); anIdx <= K.Upper(); anIdx++)
+    K(anIdx) = flatknots->Value(anIdx);
 }
 
 const TColStd_Array1OfReal& Geom2d_BSplineCurve::KnotSequence() const
