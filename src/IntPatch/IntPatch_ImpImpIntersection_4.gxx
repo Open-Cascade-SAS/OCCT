@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <algorithm>
+#include <Standard_DivideByZero.hxx>
 #include <IntAna_ListOfCurve.hxx>
 #include <IntAna_ListIteratorOfListOfCurve.hxx>
 #include <IntPatch_WLine.hxx>
@@ -82,8 +84,6 @@ static inline void MinMax(Standard_Real& theParMIN, Standard_Real& theParMAX)
 static void VBoundaryPrecise( const math_Matrix& theMatr,
                               const Standard_Real theV1AfterDecrByDelta,
                               const Standard_Real theV2AfterDecrByDelta,
-                              const Standard_Real theV1f,
-                              const Standard_Real theV2f,
                               Standard_Real& theV1Set,
                               Standard_Real& theV2Set)
 {
@@ -108,12 +108,12 @@ static void VBoundaryPrecise( const math_Matrix& theMatr,
 
   if(aDet*aDet1 > 0.0)
   {
-    theV1Set = Max(theV1AfterDecrByDelta, theV1f);
+    theV1Set = theV1AfterDecrByDelta;
   }
 
   if(aDet*aDet2 > 0.0)
   {
-    theV2Set = Max(theV2AfterDecrByDelta, theV2f);
+    theV2Set = theV2AfterDecrByDelta;
   }
 }
 
@@ -160,15 +160,25 @@ static Standard_Boolean StepComputing(const math_Matrix& theMatr,
                                       const Standard_Real theV2Cur,
                                       const Standard_Real theDeltaV1,
                                       const Standard_Real theDeltaV2,
-                                      const Standard_Real theV1f,
-                                      const Standard_Real theV1l,
-                                      const Standard_Real theV2f,
-                                      const Standard_Real theV2l,
                                       Standard_Real& theDeltaU1Found/*,
                                       Standard_Real& theDeltaU2Found,
                                       Standard_Real& theV1Found,
                                       Standard_Real& theV2Found*/)
 {
+#ifdef OCCT_DEBUG
+  bool flShow = false;
+
+  if(flShow)
+  {
+    printf("{%+10.20f*V1 + %+10.20f*V2 + %+10.20f*dU1 + %+10.20f*dU2 = %+10.20f\n",
+              theMatr(1,1), theMatr(1,2), theMatr(1,3), theMatr(1,4), theMatr(1,5));
+    printf("{%+10.20f*V1 + %+10.20f*V2 + %+10.20f*dU1 + %+10.20f*dU2 = %+10.20f\n",
+              theMatr(2,1), theMatr(2,2), theMatr(2,3), theMatr(2,4), theMatr(2,5));
+    printf("{%+10.20f*V1 + %+10.20f*V2 + %+10.20f*dU1 + %+10.20f*dU2 = %+10.20f\n",
+              theMatr(3,1), theMatr(3,2), theMatr(3,3), theMatr(3,4), theMatr(3,5));
+  }
+#endif
+
   Standard_Boolean isSuccess = Standard_False;
   theDeltaU1Found/* = theDeltaU2Found*/ = RealLast();
   //theV1Found = theV1set;
@@ -180,12 +190,12 @@ static Standard_Boolean StepComputing(const math_Matrix& theMatr,
 
   //By default, increasing V1(U1) and V2(U1) functions is
   //considered
-  Standard_Real aV1Set = Min(theV1Cur + theDeltaV1, theV1l),
-                aV2Set = Min(theV2Cur + theDeltaV2, theV2l);
+  Standard_Real aV1Set = theV1Cur + theDeltaV1,
+                aV2Set = theV2Cur + theDeltaV2;
 
-  //However, what is indead?
-  VBoundaryPrecise( theMatr, theV1Cur - theDeltaV1, theV2Cur - theDeltaV2,
-                    theV1f, theV2f, aV1Set, aV2Set);
+  //However, what is indeed?
+  VBoundaryPrecise( theMatr, theV1Cur - theDeltaV1,
+                    theV2Cur - theDeltaV2, aV1Set, aV2Set);
 
   aSyst.SetCol(2, theMatr.Col(3));
   aSyst.SetCol(3, theMatr.Col(4));
@@ -1213,37 +1223,81 @@ static Standard_Boolean CylCylMonotonicity( const Standard_Real theU1par,
   return Standard_True;
 }
 
+//=======================================================================
+//function : CylCylComputeParameters
+//purpose  : Computes U2 (U-parameter of the 2nd cylinder) and, if theDelta != 0,
+//            esimates the tolerance of U2-computing (estimation result is
+//            assigned to *theDelta value).
+//=======================================================================
 static Standard_Boolean CylCylComputeParameters(const Standard_Real theU1par,
                                                 const Standard_Integer theWLIndex,
                                                 const stCoeffsValue& theCoeffs,
-                                                Standard_Real& theU2)
+                                                Standard_Real& theU2,
+                                                Standard_Real* const theDelta = 0)
 {
-  Standard_Real aSign = 0.0;
+  //This formula is got from some experience and can be changed.
+  const Standard_Real aTol0 = Min(10.0*Epsilon(1.0)*theCoeffs.mB, aNulValue);
+  const Standard_Real aTol = 1.0 - aTol0;
 
-  switch(theWLIndex)
-  {
-  case 0: 
-    aSign = 1.0;
-    break;
-  case 1:
-    aSign = -1.0;
-    break;
-  default:
-    //Standard_Failure::Raise("Error. Range Error!!!!");
+  if(theWLIndex < 0 || theWLIndex > 1)
     return Standard_False;
+
+  const Standard_Real aSign = theWLIndex ? -1.0 : 1.0;
+
+  Standard_Real anArg = cos(theU1par - theCoeffs.mFI1);
+  anArg = theCoeffs.mB*anArg + theCoeffs.mC;
+
+  if(anArg > aTol)
+  {
+    if(theDelta)
+      *theDelta = 0.0;
+
+    anArg = 1.0;
+  }
+  else if(anArg < -aTol)
+  {
+    if(theDelta)
+      *theDelta = 0.0;
+
+    anArg = -1.0;
+  }
+  else if(theDelta)
+  {
+    //There is a case, when
+    //  const double aPar = 0.99999999999721167;
+    //  const double aFI2 = 2.3593296083566181e-006;
+
+    //Then
+    //  aPar - cos(aFI2) == -5.10703e-015 ==> cos(aFI2) == aPar. 
+    //Theoreticaly, in this case 
+    //  aFI2 == +/- acos(aPar).
+    //However,
+    //  acos(aPar) - aFI2 == 2.16362e-009.
+    //Error is quite big.
+
+    //This error should be estimated. Let use following way, which is based
+    //on expanding to Taylor series.
+
+    //  acos(p)-acos(p+x) = x/sqrt(1-p*p).
+
+    //If p == (1-d) (when p > 0) or p == (-1+d) (when p < 0) then
+    //  acos(p)-acos(p+x) = x/sqrt(d*(2-d)).
+
+    //Here always aTol0 <= d <= 1. Max(x) is considered (!) to be equal to aTol0.
+    //In this case
+    //  8*aTol0 <= acos(p)-acos(p+x) <= sqrt(2/(2-aTol0)-1),
+    //                                              because 0 < aTol0 < 1.
+    //E.g. when aTol0 = 1.0e-11,
+    //   8.0e-11 <= acos(p)-acos(p+x) < 2.24e-6.
+
+    const Standard_Real aDelta = Min(1.0-anArg, 1.0+anArg);
+    Standard_DivideByZero_Raise_if((aDelta*aDelta < RealSmall()) || (aDelta >= 2.0), 
+          "IntPatch_ImpImpIntersection_4.gxx, CylCylComputeParameters()");
+    *theDelta = aTol0/sqrt(aDelta*(2.0-aDelta));
   }
 
-  Standard_Real anArg = theCoeffs.mB * 
-                        cos(theU1par - theCoeffs.mFI1) +
-                        theCoeffs.mC;
-
-  if(aNulValue > 1.0 - anArg)
-    anArg = 1.0;
-
-  if(anArg + 1.0 < aNulValue)
-    anArg = -1.0;
-
-  theU2 = theCoeffs.mFI2 + aSign*acos(anArg);
+  theU2 = acos(anArg);
+  theU2 = theCoeffs.mFI2 + aSign*theU2;
 
   return Standard_True;
 }
@@ -1436,6 +1490,11 @@ Standard_Boolean InscribePoint( const Standard_Real theUfTarget,
                                 const Standard_Real thePeriod,
                                 const Standard_Boolean theFlForce)
 {
+  if(Precision::IsInfinite(theUGiven))
+  {
+    return Standard_False;
+  }
+
   if((theUfTarget - theUGiven <= theTol2D) &&
               (theUGiven - theUlTarget <= theTol2D))
   {//it has already inscribed
@@ -1471,6 +1530,9 @@ Standard_Boolean InscribePoint( const Standard_Real theUfTarget,
     return Standard_False;
   }
 
+  //Make theUGiven nearer to theUfTarget (in order to avoid
+  //excess iterations)
+  theUGiven += thePeriod*Floor((theUfTarget-theUGiven)/thePeriod);
   Standard_Real aDU = theUGiven - theUfTarget;
 
   if(aDU > 0.0)
@@ -1478,12 +1540,15 @@ Standard_Boolean InscribePoint( const Standard_Real theUfTarget,
   else
     aDU = +thePeriod;
 
-  while(((theUGiven - theUfTarget)*aDU < 0.0) && !((theUfTarget - theUGiven <= theTol2D) && (theUGiven - theUlTarget <= theTol2D)))
+  while(((theUGiven - theUfTarget)*aDU < 0.0) && 
+        !((theUfTarget - theUGiven <= theTol2D) &&
+        (theUGiven - theUlTarget <= theTol2D)))
   {
     theUGiven += aDU;
   }
   
-  return ((theUfTarget - theUGiven <= theTol2D) && (theUGiven - theUlTarget <= theTol2D));
+  return ((theUfTarget - theUGiven <= theTol2D) &&
+          (theUGiven - theUlTarget <= theTol2D));
 }
 
 //=======================================================================
@@ -1524,41 +1589,44 @@ static Standard_Boolean InscribeInterval(const Standard_Real theUfTarget,
 }
 
 //=======================================================================
-//function : InscribeAndSortArray
-//purpose  : Sort from Min to Max value
+//function : ExcludeNearElements
+//purpose  : Checks if theArr contains two almost equal elements.
+//            If it is true then one of equal elements will be excluded
+//            (made infinite).
+//           Returns TRUE if at least one element of theArr has been changed.
+//ATTENTION!!!
+//           1. Every not infinite element of theArr is considered to be 
+//            in [0, T] interval (where T is the period);
+//           2. theArr must be sorted in ascending order.
 //=======================================================================
-static void InscribeAndSortArray( Standard_Real theArr[],
-                                  const Standard_Integer theNOfMembers,
-                                  const Standard_Real theUf,
-                                  const Standard_Real theUl,
-                                  const Standard_Real theTol2D,
-                                  const Standard_Real thePeriod)
+static Standard_Boolean ExcludeNearElements(Standard_Real theArr[],
+                                            const Standard_Integer theNOfMembers,
+                                            const Standard_Real theTol)
 {
-  for(Standard_Integer i = 0; i < theNOfMembers; i++)
+  Standard_Boolean aRetVal = Standard_False;
+  for(Standard_Integer i = 1; i < theNOfMembers; i++)
   {
-    if(Precision::IsInfinite(theArr[i]))
+    Standard_Real &anA = theArr[i],
+                  &anB = theArr[i-1];
+
+    //Here, anA >= anB
+
+    if(Precision::IsInfinite(anA))
+      break;
+
+    if((anA-anB) < theTol)
     {
-      if(theArr[i] < 0.0)
-        theArr[i] = -theArr[i];
+      anA = (anA + anB)/2.0;
 
-      continue;
-    }
-
-    InscribePoint(theUf, theUl, theArr[i], theTol2D, thePeriod, Standard_False);
-
-    for(Standard_Integer j = i - 1; j >= 0; j--)
-    {
-
-      if(theArr[j+1] < theArr[j])
-      {
-        Standard_Real anUtemp = theArr[j+1];
-        theArr[j+1] = theArr[j];
-        theArr[j] = anUtemp;
-      }
+      //Make this element infinite an forget it
+      //(we will not use it in next iterations).
+      anB = Precision::Infinite();
+      aRetVal = Standard_True;
     }
   }
-}
 
+  return aRetVal;
+}
 
 //=======================================================================
 //function : AddPointIntoWL
@@ -1768,9 +1836,12 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
   if(!isTheFound1 && !isTheFound2)
     return Standard_True;
 
+  //We increase U1 parameter. Therefore, added point must have U1 parameter less than
+  //or equal to current (conditions "(anUpar1 < theU1)" and "(anUpar2 < theU1)").
+
   if(anUpar1 < anUpar2)
   {
-    if(isTheFound1)
+    if(isTheFound1 && (anUpar1 < theU1))
     {
       Standard_Real aU2 = theU2, aV1 = theV1, aV2 = theV2;
       if(!CylCylComputeParameters(anUpar1, theWLIndex, theCoeffs, aU2, aV1, aV2))
@@ -1794,8 +1865,12 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
         isTheFound1 = Standard_False;
       }
     }
+    else
+    {
+      isTheFound1 = Standard_False;
+    }
 
-    if(isTheFound2)
+    if(isTheFound2 && (anUpar2 < theU1))
     {
       Standard_Real aU2 = theU2, aV1 = theV1, aV2 = theV2;
       if(!CylCylComputeParameters(anUpar2, theWLIndex, theCoeffs, aU2, aV1, aV2))
@@ -1818,11 +1893,15 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
       {
         isTheFound2 = Standard_False;
       }
+    }
+    else
+    {
+      isTheFound2 = Standard_False;
     }
   }
   else
   {
-    if(isTheFound2)
+    if(isTheFound2 && (anUpar2 < theU1))
     {
       Standard_Real aU2 = theU2, aV1 = theV1, aV2 = theV2;
       if(!CylCylComputeParameters(anUpar2, theWLIndex, theCoeffs, aU2, aV1, aV2))
@@ -1846,8 +1925,12 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
         isTheFound2 = Standard_False;
       }
     }
+    else
+    {
+      isTheFound2 = Standard_False;
+    }
 
-    if(isTheFound1)
+    if(isTheFound1 && (anUpar1 < theU1))
     {
       Standard_Real aU2 = theU2, aV1 = theV1, aV2 = theV2;
       if(!CylCylComputeParameters(anUpar1, theWLIndex, theCoeffs, aU2, aV1, aV2))
@@ -1870,6 +1953,10 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
       {
         isTheFound1 = Standard_False;
       }
+    }
+    else
+    {
+      isTheFound1 = Standard_False;
     }
   }
 
@@ -2001,7 +2088,7 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
 
 //=======================================================================
 //function : CriticalPointsComputing
-//purpose  : 
+//purpose  : theNbCritPointsMax contains true number of critical points
 //=======================================================================
 static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
                                     const Standard_Real theUSurf1f,
@@ -2010,9 +2097,19 @@ static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
                                     const Standard_Real theUSurf2l,
                                     const Standard_Real thePeriod,
                                     const Standard_Real theTol2D,
-                                    const Standard_Integer theNbCritPointsMax,
+                                    Standard_Integer& theNbCritPointsMax,
                                     Standard_Real theU1crit[])
 {
+  //[0...1] - in these points parameter U1 goes through
+  //          the seam-edge of the first cylinder.
+  //[2...3] - First and last U1 parameter.
+  //[4...5] - in these points parameter U2 goes through
+  //          the seam-edge of the second cylinder.
+  //[6...9] - in these points an intersection line goes through
+  //          U-boundaries of the second surface.
+
+  theNbCritPointsMax = 10;
+
   theU1crit[0] = 0.0;
   theU1crit[1] = thePeriod;
   theU1crit[2] = theUSurf1f;
@@ -2029,31 +2126,86 @@ static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
       anArg = -1.0;
 
     theU1crit[4] = -acos(anArg) + theCoeffs.mFI1;
-    theU1crit[5] = acos(anArg) + theCoeffs.mFI1;
+    theU1crit[5] =  acos(anArg) + theCoeffs.mFI1;
   }
 
   Standard_Real aSf = cos(theUSurf2f - theCoeffs.mFI2);
   Standard_Real aSl = cos(theUSurf2l - theCoeffs.mFI2);
   MinMax(aSf, aSl);
 
-  theU1crit[6] = Abs((aSl - theCoeffs.mC) / theCoeffs.mB) < 1.0 ? -acos((aSl - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 : -Precision::Infinite();
-  theU1crit[7] = Abs((aSf - theCoeffs.mC) / theCoeffs.mB) < 1.0 ? -acos((aSf - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 : Precision::Infinite();
-  theU1crit[8] = Abs((aSf - theCoeffs.mC) / theCoeffs.mB) < 1.0 ?  acos((aSf - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 : -Precision::Infinite();
-  theU1crit[9] = Abs((aSl - theCoeffs.mC) / theCoeffs.mB) < 1.0 ?  acos((aSl - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 : Precision::Infinite();
+  //In accorance with pure mathematic, theU1crit[6] and [8]
+  //must be -Precision::Infinite() instead of used +Precision::Infinite()
+  theU1crit[6] = Abs((aSl - theCoeffs.mC) / theCoeffs.mB) < 1.0 ?
+                  -acos((aSl - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 :
+                  Precision::Infinite();
+  theU1crit[7] = Abs((aSf - theCoeffs.mC) / theCoeffs.mB) < 1.0 ?
+                  -acos((aSf - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 :
+                  Precision::Infinite();
+  theU1crit[8] = Abs((aSf - theCoeffs.mC) / theCoeffs.mB) < 1.0 ?
+                  acos((aSf - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 :
+                  Precision::Infinite();
+  theU1crit[9] = Abs((aSl - theCoeffs.mC) / theCoeffs.mB) < 1.0 ?
+                  acos((aSl - theCoeffs.mC) / theCoeffs.mB) + theCoeffs.mFI1 :
+                  Precision::Infinite();
 
-  //preparative treatment of array
-  InscribeAndSortArray(theU1crit, theNbCritPointsMax, 0.0, thePeriod, theTol2D, thePeriod);
-  for(Standard_Integer i = 1; i < theNbCritPointsMax; i++)
+  //preparative treatment of array. This array must have faled to contain negative
+  //infinity number
+
+  for(Standard_Integer i = 0; i < theNbCritPointsMax; i++)
   {
-    Standard_Real &a = theU1crit[i],
-                  &b = theU1crit[i-1];
-    const Standard_Real aRemain = fmod(Abs(a - b), thePeriod); // >= 0, because Abs(a - b) >= 0
-    if((Abs(a - b) < theTol2D) || (aRemain < theTol2D) || (Abs(aRemain - thePeriod) < theTol2D))
+    if(Precision::IsInfinite(theU1crit[i]))
     {
-      a = (a + b)/2.0;
-      b = Precision::Infinite();
+      continue;
     }
+
+    theU1crit[i] = fmod(theU1crit[i], thePeriod);
+    if(theU1crit[i] < 0.0)
+      theU1crit[i] += thePeriod;
   }
+
+  //Here all not infinite elements of theU1crit are in [0, thePeriod) range
+
+  do
+  {
+    std::sort(theU1crit, theU1crit + theNbCritPointsMax);
+  }
+  while(ExcludeNearElements(theU1crit, theNbCritPointsMax, theTol2D));
+
+  //Here all not infinite elements in theU1crit are different and sorted.
+
+  while(theNbCritPointsMax > 0)
+  {
+    Standard_Real &anB = theU1crit[theNbCritPointsMax-1];
+    if(Precision::IsInfinite(anB))
+    {
+      theNbCritPointsMax--;
+      continue;
+    }
+
+    //1st not infinte element is found
+
+    if(theNbCritPointsMax == 1)
+      break;
+
+    //Here theNbCritPointsMax > 1
+
+    Standard_Real &anA = theU1crit[0];
+
+    //Compare 1st and last significant elements of theU1crit
+    //They may still differs by period.
+
+    if (Abs(anB - anA - thePeriod) < theTol2D)
+    {//E.g. anA == 2.0e-17, anB == (thePeriod-1.0e-18)
+      anA = (anA + anB - thePeriod)/2.0;
+      anB = Precision::Infinite();
+      theNbCritPointsMax--;
+    }
+
+    //Out of "while(theNbCritPointsMax > 0)" cycle.
+    break;
+  }
+
+  //Attention! Here theU1crit may be unsorted.
 }
 
 //=======================================================================
@@ -2110,7 +2262,10 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
                       RealToInt(20.0*aCyl1.Radius())), aNbMaxPoints);
   const Standard_Real aPeriod = 2.0*M_PI;
   const Standard_Real aStepMin = theTol2D, 
-                      aStepMax = (aUSurf1l-aUSurf1f)/IntToReal(aNbPoints);
+                      aStepMax =  (aUSurf1l-aUSurf1f > M_PI/100.0) ?
+                                  (aUSurf1l-aUSurf1f)/IntToReal(aNbPoints) :
+                                  aUSurf1l-aUSurf1f;
+
   const Standard_Integer aNbWLines = 2;
 
   const stCoeffsValue anEquationCoeffs(aCyl1, aCyl2);
@@ -2289,13 +2444,6 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
   }
 
   //Critical points
-  //[0...1] - in these points parameter U1 goes through
-  //          the seam-edge of the first cylinder.
-  //[2...3] - First and last U1 parameter.
-  //[4...5] - in these points parameter U2 goes through
-  //          the seam-edge of the second cylinder.
-  //[6...9] - in these points an intersection line goes through
-  //          U-boundaries of the second surface.
   const Standard_Integer aNbCritPointsMax = 10;
   Standard_Real anU1crit[aNbCritPointsMax] = {Precision::Infinite(),
                                               Precision::Infinite(),
@@ -2308,9 +2456,9 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
                                               Precision::Infinite(),
                                               Precision::Infinite()};
 
+  Standard_Integer aNbCritPoints = aNbCritPointsMax;
   CriticalPointsComputing(anEquationCoeffs, aUSurf1f, aUSurf1l, aUSurf2f, aUSurf2l,
-                                      aPeriod, theTol2D, aNbCritPointsMax, anU1crit);
-
+                                      aPeriod, theTol2D, aNbCritPoints, anU1crit);
 
   //Getting Walking-line
 
@@ -2334,7 +2482,12 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
     const Standard_Boolean isDeltaPeriod  = IsEqual(anUl-anUf, aPeriod);
 
     //Inscribe and sort critical points
-    InscribeAndSortArray(anU1crit, aNbCritPointsMax, anUf, anUl, theTol2D, aPeriod);
+    for(Standard_Integer i = 0; i < aNbCritPoints; i++)
+    {
+      InscribePoint(anUf, anUl, anU1crit[i], theTol2D, aPeriod, Standard_False);
+    }
+
+    std::sort(anU1crit, anU1crit + aNbCritPoints);
 
     while(anUf < anUl)
     {
@@ -2357,17 +2510,20 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
         anUexpect[i] = anUf;
       }
       
-      Standard_Real anU1 = anUf;
-
       Standard_Real aCriticalDelta[aNbCritPointsMax];
-      for(Standard_Integer i = 0; i < aNbCritPointsMax; i++)
-        aCriticalDelta[i] = anU1 - anU1crit[i];
+      for(Standard_Integer aCritPID = 0; aCritPID < aNbCritPoints; aCritPID++)
+      { //We are not intersted in elements of aCriticalDelta array
+        //if their index is greater than or equal to aNbCritPoints
 
+        aCriticalDelta[aCritPID] = anUf - anU1crit[aCritPID];
+      }
+
+      Standard_Real anU1 = anUf;
       Standard_Boolean isFirst = Standard_True;
 
       while(anU1 <= anUl)
       {
-        for(Standard_Integer i = 0; i < aNbCritPointsMax; i++)
+        for(Standard_Integer i = 0; i < aNbCritPoints; i++)
         {
           if((anU1 - anU1crit[i])*aCriticalDelta[i] < 0.0)
           {
@@ -2392,7 +2548,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
             if(isDeltaPeriod)
             {
-              //if isAddedIntoWL* == TRUE WLine contains only one point
+              //if isAddedIntoWL[i] == TRUE WLine contains only one point
               //(which was end point of previous WLine). If we will
               //add point found on the current step WLine will contain only
               //two points. At that both these points will be equal to the
@@ -2422,11 +2578,33 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
         {
           const Standard_Integer aNbPntsWL =  aWLine[i].IsNull() ? 0 :
                                               aWLine[i]->Curve()->NbPoints();
+          
+          if( (aWLFindStatus[i] == WLFStatus_Broken) ||
+              (aWLFindStatus[i] == WLFStatus_Absent))
+          {//Begin and end of WLine must be on boundary point
+           //or on seam-edge strictly (if it is possible).
 
-          CylCylComputeParameters(anU1, i, anEquationCoeffs, aU2[i]);
+            Standard_Real aTol = theTol2D;
+            CylCylComputeParameters(anU1, i, anEquationCoeffs, aU2[i], &aTol);
+            InscribePoint(aUSurf2f, aUSurf2l, aU2[i], theTol2D, aPeriod, Standard_False);
 
-          InscribePoint(aUSurf2f, aUSurf2l, aU2[i], theTol2D, aPeriod, Standard_False);
+            aTol = Max(aTol, theTol2D);
 
+            if(Abs(aU2[i]) <= aTol)
+              aU2[i] = 0.0;
+            else if(Abs(aU2[i] - aPeriod) <= aTol)
+              aU2[i] = aPeriod;
+            else if(Abs(aU2[i] - aUSurf2f) <= aTol)
+              aU2[i] = aUSurf2f;
+            else if(Abs(aU2[i] - aUSurf2l) <= aTol)
+              aU2[i] = aUSurf2l;
+          }
+          else
+          {
+            CylCylComputeParameters(anU1, i, anEquationCoeffs, aU2[i]);
+            InscribePoint(aUSurf2f, aUSurf2l, aU2[i], theTol2D, aPeriod, Standard_False);
+          }
+          
           if(aNbPntsWL == 0)
           {//the line has not contained any points yet
             if(((aUSurf2f + aPeriod - aUSurf2l) <= 2.0*theTol2D) && 
@@ -2477,20 +2655,6 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
             }
           }
 
-          if( (aWLFindStatus[i] == WLFStatus_Broken) ||
-              (aWLFindStatus[i] == WLFStatus_Absent))
-          {//Begin and end of WLine must be on boundary point
-           //or on seam-edge strictly (if it is possible).
-            if(Abs(aU2[i]) <= theTol2D)
-              aU2[i] = 0.0;
-            else if(Abs(aU2[i] - aPeriod) <= theTol2D)
-              aU2[i] = aPeriod;
-            else if(Abs(aU2[i] - aUSurf2f) <= theTol2D)
-              aU2[i] = aUSurf2f;
-            else if(Abs(aU2[i] - aUSurf2l) <= theTol2D)
-              aU2[i] = aUSurf2l;
-          }
-
           CylCylComputeParameters(anU1, aU2[i], anEquationCoeffs, aV1[i], aV2[i]);
 
           if(isFirst)
@@ -2529,9 +2693,6 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
             {
               isBoundIntersect = Standard_True;
             }
-
-            aV1Prev[i] = aV1[i];
-            aV2Prev[i] = aV2[i];
 
             if(aWLFindStatus[i] == WLFStatus_Broken)
               isBroken = Standard_True;
@@ -2586,6 +2747,10 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
                                                  (Abs(aV1Prev[i] - aVSurf1l) <= theTol2D) ||
                                                  (Abs(aV2Prev[i] - aVSurf2f) <= theTol2D) ||
                                                  (Abs(aV2Prev[i] - aVSurf2l) <= theTol2D));
+
+
+          aV1Prev[i] = aV1[i];
+          aV2Prev[i] = aV2[i];
 
           if((aWLFindStatus[i] == WLFStatus_Exist) && (isFound1 || isFound2) && !isPrevVBound)
           {
@@ -2651,9 +2816,6 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
             }
           }
           
-          aV1Prev[i] = aV1[i];
-          aV2Prev[i] = aV2[i];
-
           if(aWLFindStatus[i] == WLFStatus_Broken)
             isBroken = Standard_True;
         }//for(Standard_Integer i = 0; i < aNbWLines; i++)
@@ -2723,15 +2885,29 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
           if(!isAdded)
           {
             Standard_Real anUmaxAdded = RealFirst();
-            for(Standard_Integer i = 0; i < aNbWLines; i++)
+            
             {
-              Standard_Real aU1c = 0.0, aV1c = 0.0;
-              if(isTheReverse)
-                aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS2(aU1c, aV1c);
-              else
-                aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS1(aU1c, aV1c);
+              Standard_Boolean isChanged = Standard_False;
+              for(Standard_Integer i = 0; i < aNbWLines; i++)
+              {
+                if(aWLFindStatus[i] == WLFStatus_Absent)
+                  continue;
 
-              anUmaxAdded = Max(anUmaxAdded, aU1c);
+                Standard_Real aU1c = 0.0, aV1c = 0.0;
+                if(isTheReverse)
+                  aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS2(aU1c, aV1c);
+                else
+                  aWLine[i]->Curve()->Value(aWLine[i]->NbPnts()).ParametersOnS1(aU1c, aV1c);
+
+                anUmaxAdded = Max(anUmaxAdded, aU1c);
+                isChanged = Standard_True;
+              }
+
+              if(!isChanged)
+              { //If anUmaxAdded were not changed in previous cycle then
+                //we would break existing WLines.
+                break;
+              }
             }
 
             for(Standard_Integer i = 0; i < aNbWLines; i++)
@@ -2794,7 +2970,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
                             anEquationCoeffs.mVecA2*aCosU2 + anEquationCoeffs.mVecB2*aSinU2 +
                             anEquationCoeffs.mVecD);
 
-            if(!StepComputing(aMatr, aV1[i], aV2[i], aDeltaV1, aDeltaV2, aVSurf1f, aVSurf1l, aVSurf2f, aVSurf2l, aStepTmp))
+            if(!StepComputing(aMatr, aV1[i], aV2[i], aDeltaV1, aDeltaV2, aStepTmp))
             {
               //To avoid cycling-up
               anUexpect[i] += aStepMax;
@@ -2887,8 +3063,8 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
   }
 
 
-//Delete the points in theSPnt, which
-//lie at least in one of the line in theSlin.
+  //Delete the points in theSPnt, which
+  //lie at least in one of the line in theSlin.
   for(Standard_Integer aNbPnt = 1; aNbPnt <= theSPnt.Length(); aNbPnt++)
   {
     for(Standard_Integer aNbLin = 1; aNbLin <= theSlin.Length(); aNbLin++)
