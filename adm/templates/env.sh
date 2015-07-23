@@ -14,6 +14,7 @@ fi
 
 # Reset values
 export CASDEB=""
+export TARGET="";
 export HAVE_TBB="false";
 export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
@@ -31,14 +32,16 @@ if [ -e "${aScriptPath}/custom.sh" ]; then source "${aScriptPath}/custom.sh"; fi
 
 # Read script arguments
 shopt -s nocasematch
-export TARGET="";
-if [[ "$2" == "cbp" ]]; then
-  export TARGET="cbp";
-elif [[ "$2" == "xcd" ]]; then
-  export TARGET="xcd";
-fi
-if [[ "$1" == "debug" ]]; then export CASDEB="d"; fi
-if [[ "$1" == "d" ]]; then export CASDEB="d"; fi
+for i in $*
+do
+  if [ "$i" == "d" ] || [ "$i" == "debug" ]; then
+    export CASDEB="d"
+  elif [ "$i" == "cbp" ]; then
+    export TARGET="cbp";
+  elif [ "$i" == "xcd" ] || [ "$i" == "xcode" ]; then
+    export TARGET="xcd";
+  fi
+done
 shopt -u nocasematch
 
 # ----- Setup Environment Variables -----

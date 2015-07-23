@@ -10,21 +10,6 @@ wnt cmplrs_c f -DWNT -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE -DHAVE_FREEIMAGE -DHA
 wnt cmplrs_c b -DWNT -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE -DHAVE_FREEIMAGE -DHAVE_GL2PS -DHAVE_TBB -DHAVE_OPENCL
 wnt cmplrs_c NIS (wnt cmplrs_c b) -DSILGL -DSILGL_VRS=50
 
-win csf CSF_TclLibs tcl86.lib
-win csf CSF_TclTkLibs tk86.lib
-win csf CSF_gdi32 gdi32.lib
-win csf CSF_advapi32 advapi32.lib
-win csf CSF_user32 user32.lib
-win csf CSF_advapi32 advapi32.lib
-win csf CSF_gdi32 gdi32.lib
-win csf CSF_user32 user32.lib
-win csf CSF_kernel32 kernel32.lib
-win csf CSF_OpenGlLibs opengl32.lib glu32.lib
-win csf CSF_wsock32 wsock32.lib
-win csf CSF_AviLibs ws2_32.lib vfw32.lib
-
-
-
 lin cmplrs_cxx f -DLIN -DLININTEL -DOCC_CONVERT_SIGNALS -D_GNU_SOURCE=1 -DHAVE_FREEIMAGE -DHAVE_GL2PS -DHAVE_TBB -DHAVE_OPENCL
 lin cmplrs_cxx b -DLIN -DLININTEL -DOCC_CONVERT_SIGNALS -D_GNU_SOURCE=1 -DHAVE_FREEIMAGE -DHAVE_GL2PS -DHAVE_TBB -DHAVE_OPENCL
 
