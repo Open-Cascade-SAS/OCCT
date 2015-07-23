@@ -13,95 +13,112 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntTools_FaceFace.hxx>
 
-#include <Adaptor2d_HLine2d.hxx>
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Adaptor3d_TopolTool.hxx>
-#include <Approx_CurveOnSurface.hxx>
-#include <Bnd_Box.hxx>
-#include <BndLib_AddSurface.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepTools.hxx>
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-#include <Extrema_ExtCC.hxx>
-#include <Extrema_POnCurv.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Conic.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_OffsetSurface.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <GeomInt.hxx>
-#include <GeomInt_IntSS.hxx>
-#include <GeomInt_WLApprox.hxx>
-#include <GeomLib_Check2dBSplineCurve.hxx>
-#include <GeomLib_CheckBSplineCurve.hxx>
-#include <GeomProjLib.hxx>
+#include <Precision.hxx>
+
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_Array1OfListOfInteger.hxx>
+
+#include <gp_Lin2d.hxx>
 #include <gp_Ax22d.hxx>
 #include <gp_Circ2d.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Lin2d.hxx>
 #include <gp_Torus.hxx>
+#include <gp_Cylinder.hxx>
+
+#include <Bnd_Box.hxx>
+
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TColgp_SequenceOfPnt2d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+
 #include <IntAna_QuadQuadGeo.hxx>
-#include <IntPatch_ALine.hxx>
-#include <IntPatch_ALineToWLine.hxx>
+
+#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <IntSurf_ListOfPntOn2S.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <ProjLib_Plane.hxx>
+
 #include <IntPatch_GLine.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_WLine.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
-#include <IntSurf_ListOfPntOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntTools_Context.hxx>
-#include <IntTools_Curve.hxx>
-#include <IntTools_FaceFace.hxx>
-#include <IntTools_PntOn2Faces.hxx>
-#include <IntTools_PntOnFace.hxx>
-#include <IntTools_Tools.hxx>
-#include <IntTools_TopolTool.hxx>
-#include <Precision.hxx>
-#include <ProjLib_Plane.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfListOfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <TopExp_Explorer.hxx>
+#include <IntPatch_ALine.hxx>
+#include <IntPatch_ALineToWLine.hxx>
+
+#include <ElSLib.hxx>
+#include <ElCLib.hxx>
+
+#include <Extrema_ExtCC.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <BndLib_AddSurface.hxx>
+
+#include <Adaptor3d_SurfacePtr.hxx>
+#include <Adaptor2d_HLine2d.hxx>
+
+#include <GeomAbs_SurfaceType.hxx>
+#include <GeomAbs_CurveType.hxx>
+
+#include <Geom_Surface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_Hyperbola.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Conic.hxx>
+
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Circle.hxx>
+
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <Geom2dAdaptor.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomLib_CheckBSplineCurve.hxx>
+#include <GeomLib_Check2dBSplineCurve.hxx>
+
+#include <GeomInt_WLApprox.hxx>
+#include <GeomProjLib.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
+#include <TopExp_Explorer.hxx>
+
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+#include <BRepAdaptor_Surface.hxx>
+
+#include <IntTools_Curve.hxx>
+#include <IntTools_Tools.hxx>
+#include <IntTools_Tools.hxx>
+#include <IntTools_TopolTool.hxx>
+#include <IntTools_PntOnFace.hxx>
+#include <IntTools_PntOn2Faces.hxx>
+#include <IntTools_Context.hxx>
+#include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
+#include <GeomInt.hxx>
+
+#include <Approx_CurveOnSurface.hxx>
+#include <GeomAdaptor.hxx>
+#include <GeomInt_IntSS.hxx>
 
 static
   void RefineVector(gp_Vec2d& aV2D);
@@ -267,6 +284,25 @@ static
 static
   Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
                                const TopoDS_Face& aFace);
+
+static
+  Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
+                            const Standard_Real aT,
+                            GeomAPI_ProjectPointOnSurf& theProjPS);
+
+static
+  Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
+                                const Standard_Real theFirst,
+                                const Standard_Real theLast,
+                                GeomAPI_ProjectPointOnSurf& theProjPS,
+                                const Standard_Real theEps);
+
+static
+  Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theCurve,
+                                const Standard_Real theFirst,
+                                const Standard_Real theLast,
+                                const TopoDS_Face& theFace,
+                                const Handle(IntTools_Context)& theContext);
 
 static
   void CorrectPlaneBoundaries(Standard_Real& aUmin,
@@ -821,8 +857,17 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
           }
         }
       }
+      else
+      {
+        const TopoDS_Face& aF = !j ? myFace1 : myFace2;
+        aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
+        if (aD > aDMax)
+        {
+          aDMax = aD;
+        }
       }
     }
+  }
   //
   return aDMax;
 }
@@ -831,9 +876,9 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
 //function :ComputeTolReached3d 
 //purpose  : 
 //=======================================================================
-  void IntTools_FaceFace::ComputeTolReached3d()
+void IntTools_FaceFace::ComputeTolReached3d()
 {
-  Standard_Integer aNbLin, i;
+  Standard_Integer aNbLin;
   GeomAbs_SurfaceType aType1, aType2;
   //
   aNbLin=myIntersector.NbLines();
@@ -844,8 +889,10 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
   aType1=myHS1->Surface().GetType();
   aType2=myHS2->Surface().GetType();
   //
-  if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
-    if (aNbLin==2){ 
+  if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder)
+  {
+    if (aNbLin==2)
+    { 
       Handle(IntPatch_Line) aIL1, aIL2;
       IntPatch_IType aTL1, aTL2;
       //
@@ -864,147 +911,19 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
         aL2=Handle(IntPatch_GLine)::DownCast(aIL2)->Line();
         aD=aL1.Distance(aL2);
         aD=0.5*aD;
-        if (aD<aDTresh) {
+        if (aD<aDTresh)
+        {//In order to avoid creation too thin face
           myTolReached3d=aD+dTol;
         }
-        return;
       }
     }
-    //ZZ
-    if (aNbLin) {// Check the distances
-      Standard_Real aDMax;
-      //
-      aDMax = ComputeTolerance();
-      if (aDMax > 0.) {
-        myTolReached3d = aDMax;
-      }
-    }// if (aNbLin) 
   }// if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
   //
-  //904/G3 f
-  else if (aType1==GeomAbs_Plane && aType2==GeomAbs_Plane) {
-    Standard_Real aTolF1, aTolF2, aTolFMax, aTolTresh;
-    //
-    aTolTresh=1.e-7;
-    //
-    aTolF1 = BRep_Tool::Tolerance(myFace1);
-    aTolF2 = BRep_Tool::Tolerance(myFace2);
-    aTolFMax=Max(aTolF1, aTolF2);
-    //
-    if (aTolFMax>aTolTresh) {
-      myTolReached3d=aTolFMax;
-    }
-  }//if (aType1==GeomAbs_Plane && aType2==GeomAbs_Plane) {
-  //t
-  //IFV Bug OCC20297 
-  else if((aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Plane) ||
-          (aType2 == GeomAbs_Cylinder && aType1 == GeomAbs_Plane)) {
-    if(aNbLin == 1) {
-      const Handle(IntPatch_Line)& aIL1 = myIntersector.Line(1);
-      if(aIL1->ArcType() == IntPatch_Circle) {
-        gp_Circ aCir = Handle(IntPatch_GLine)::DownCast(aIL1)->Circle();
-        gp_XYZ aCirDir = aCir.Axis().Direction().XYZ();
-        gp_XYZ aPlDir;
-        gp_Pln aPln;
-        if(aType1 == GeomAbs_Plane) {
-          aPln = myHS1->Surface().Plane();
-        }
-        else {
-          aPln = myHS2->Surface().Plane();
-        }
-        aPlDir = aPln.Axis().Direction().XYZ();
-        Standard_Real cs = aCirDir*aPlDir;
-        if(cs < 0.) aPlDir.Reverse();
-        Standard_Real eps = 1.e-14;
-        if(!aPlDir.IsEqual(aCirDir, eps)) {
-          Standard_Integer aNbP = 11;
-          Standard_Real dt = 2.*M_PI / (aNbP - 1), t;
-          for(t = 0.; t < 2.*M_PI; t += dt) {
-            Standard_Real d = aPln.Distance(ElCLib::Value(t, aCir)); 
-            if(myTolReached3d < d) myTolReached3d = d;
-          }
-          myTolReached3d *= 1.1;
-        }
-      } //aIL1->ArcType() == IntPatch_Circle
-    } //aNbLin == 1
-  } // aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Plane) 
-  //End IFV Bug OCC20297
-  //
-  else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
-           (aType2==GeomAbs_Plane && aType1==GeomAbs_Torus)) {
-    aNbLin=mySeqOfCurve.Length();
-    if (aNbLin!=1) {
-      return;
-    }
-    //
-    Standard_Integer aNbP;
-    Standard_Real aT, aT1, aT2, dT, aUT, aVT, aUP, aVP;
-    Standard_Real aDP, aDT, aDmax;
-    gp_Pln aPln;
-    gp_Torus aTorus;
-    gp_Pnt aP, aPP, aPT;
-    //
-    const IntTools_Curve& aIC=mySeqOfCurve(1);
-    const Handle(Geom_Curve)& aC3D=aIC.Curve();
-    Handle(Geom_BSplineCurve) aBS (Handle(Geom_BSplineCurve)::DownCast(aC3D));
-    if (aBS.IsNull()) {
-      return;
-    }
-    //
-    aT1=aBS->FirstParameter();
-    aT2=aBS->LastParameter();
-    //
-    aPln  =(aType1==GeomAbs_Plane) ? myHS1->Plane() : myHS2->Plane();
-    aTorus=(aType1==GeomAbs_Plane) ? myHS2->Torus() : myHS1->Torus();
-    //
-    aDmax=-1.;
-    aNbP=11;
-    dT=(aT2-aT1)/(aNbP-1);
-    for (i=0; i<aNbP; ++i) {
-      aT=aT1+i*dT;
-      if (i==aNbP-1) {
-        aT=aT2;
-      }
-      //
-      aC3D->D0(aT, aP);
-      //
-      ElSLib::Parameters(aPln, aP, aUP, aVP);
-      aPP=ElSLib::Value(aUP, aVP, aPln);
-      aDP=aP.SquareDistance(aPP);
-      if (aDP>aDmax) {
-        aDmax=aDP;
-      }
-      //
-      ElSLib::Parameters(aTorus, aP, aUT, aVT);
-      aPT=ElSLib::Value(aUT, aVT, aTorus);
-      aDT=aP.SquareDistance(aPT);
-      if (aDT>aDmax) {
-        aDmax=aDT;
-      }
-    }
-    //
-    if (aDmax > myTolReached3d*myTolReached3d) {
-      myTolReached3d=sqrt(aDmax);
-      myTolReached3d=1.1*myTolReached3d;
-    }
-  }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
-  //
-  else if ((aType1==GeomAbs_SurfaceOfRevolution && aType2==GeomAbs_Cylinder) ||
-           (aType2==GeomAbs_SurfaceOfRevolution && aType1==GeomAbs_Cylinder) ||
-           (aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
-           (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere) ||
-           (aType1==GeomAbs_Plane && aType2==GeomAbs_SurfaceOfExtrusion) ||
-           (aType2==GeomAbs_Plane && aType1==GeomAbs_SurfaceOfExtrusion) ||
-           (aType1==GeomAbs_Plane && aType2==GeomAbs_BSplineSurface) ||
-           (aType2==GeomAbs_Plane && aType1==GeomAbs_BSplineSurface) ||
-           !myApprox) {
-    //
-    Standard_Real aDMax;
-    //
-    aDMax = ComputeTolerance();
-    if (aDMax > myTolReached3d) {
-      myTolReached3d = aDMax;
-    }
+
+  Standard_Real aDMax = ComputeTolerance();
+  if (aDMax > myTolReached3d)
+  {
+    myTolReached3d = aDMax;
   }
 }
 
@@ -4779,6 +4698,99 @@ void RefineVector(gp_Vec2d& aV2D)
     }
   }
   aV2D.SetCoord(aC[0], aC[1]);
+}
+
+//=======================================================================
+// Function : FindMaxDistance
+// purpose : 
+//=======================================================================
+Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theCurve,
+                              const Standard_Real theFirst,
+                              const Standard_Real theLast,
+                              const TopoDS_Face& theFace,
+                              const Handle(IntTools_Context)& theContext)
+{
+  Standard_Integer aNbS;
+  Standard_Real aT1, aT2, aDt, aD, aDMax, anEps;
+  //
+  aNbS = 11;
+  aDt = (theLast - theFirst) / aNbS;
+  aDMax = 0.;
+  anEps = 1.e-4 * aDt;
+  //
+  GeomAPI_ProjectPointOnSurf& aProjPS = theContext->ProjPS(theFace);
+  aT2 = theFirst;
+  for (;;) {
+    aT1 = aT2;
+    aT2 += aDt;
+    //
+    if (aT2 > theLast) {
+      break;
+    }
+    //
+    aD = FindMaxDistance(theCurve, aT1, aT2, aProjPS, anEps);
+    if (aD > aDMax) {
+      aDMax = aD;
+    }
+  }
+  //
+  return aDMax;
+}
+
+//=======================================================================
+// Function : FindMaxDistance
+// purpose : 
+//=======================================================================
+Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
+                              const Standard_Real theFirst,
+                              const Standard_Real theLast,
+                              GeomAPI_ProjectPointOnSurf& theProjPS,
+                              const Standard_Real theEps)
+{
+  Standard_Real aA, aB, aCf, aX, aX1, aX2, aF1, aF2, aF;
+  //
+  aCf = 0.61803398874989484820458683436564;//(sqrt(5.)-1)/2.;
+  aA = theFirst;
+  aB = theLast;
+  //
+  aX1 = aB - aCf * (aB - aA);
+  aF1 = MaxDistance(theC, aX1, theProjPS);
+  aX2 = aA + aCf * (aB - aA);
+  aF2 = MaxDistance(theC, aX2, theProjPS);
+  //
+  for (;;) {
+    if ((aB - aA) < theEps) {
+      break;
+    }
+    //
+    if (aF1 > aF2) {
+      aB = aX2;
+      aX2 = aX1;
+      aF2 = aF1;
+      aX1 = aB - aCf * (aB - aA); 
+      aF1 = MaxDistance(theC, aX1, theProjPS);
+    }
+    else {
+      aA = aX1;
+      aX1 = aX2;
+      aF1 = aF2;
+      aX2 = aA + aCf * (aB - aA);
+      aF2 = MaxDistance(theC, aX2, theProjPS);
+    }
+  }
+  //
+  aX = 0.5 * (aA + aB);
+  aF = MaxDistance(theC, aX, theProjPS);
+  //
+  if (aF1 > aF) {
+    aF = aF1;
+  }
+  //
+  if (aF2 > aF) {
+    aF = aF2;
+  }
+  //
+  return aF;
 }
 
 //=======================================================================

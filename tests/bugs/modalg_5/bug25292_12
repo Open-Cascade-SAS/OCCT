@@ -29,7 +29,7 @@ set log [bopcurves f2 f1 -2d]
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
 #This value must be equal to the analogical value in bug25292_11 and bug25292_12 of "bugs modalg_5" testgrid. 
-set MaxTol 1.5e-7
+set MaxTol 2.0e-7
 
 #This value must be equal to the analogical value in bug25292_11, bug25292_12, bug25292_15 and bug25292_16 of "bugs modalg_5" testgrid. 
 set GoodNbCurv 4

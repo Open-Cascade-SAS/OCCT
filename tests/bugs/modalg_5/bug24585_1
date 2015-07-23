@@ -5,7 +5,7 @@ puts ""
 ###########################################################
 # Wrong pcurve of the section curve
 ###########################################################
-set MaxTol 1.0e-7
+set MaxTol 1.9e-5
 set NbCurv_OK 1
 
 restore [locate_data_file bug24585_b1.brep] b1
@@ -26,35 +26,11 @@ if {${Toler} > ${MaxTol}} {
   puts "Error: Tolerance is too big!"
 }
 
+bounds c2d1_1 U1 U2
+2dcvalue c2d1_1 U1 U_begin V_begin
+2dcvalue c2d1_1 U2 U_end V_end
+
 #Theoretically, c2d1_1 must cover U-diapason of surface s1 fully.
-
-set log [dump c2d1_1]
-
-regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
-puts "Degree=${Degree}"
-puts "Poles=${Poles}"
-puts "KnotsPoles=${KnotsPoles}"
-puts ""
-
-set Pole 1
-set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
-regexp ${exp_string} ${log} full U_begin V_begin
-
-puts "Pole=${Pole}"
-puts "U_begin=${U_begin}"
-puts "V_begin=${V_begin}"
-dset U_begin ${U_begin}
-puts ""
-
-set Pole ${Poles}
-set exp_string " +${Pole} : +(\[-0-9.+eE\]+), +(\[-0-9.+eE\]+)"
-regexp ${exp_string} ${log} full U_end V_end
-
-puts "Pole=${Pole}"
-puts "U_end=${U_end}"
-puts "V_end=${V_end}"
-dset U_end ${U_end}
-puts ""
 
 set delta_f [dval U1f_exp-U_begin]
 

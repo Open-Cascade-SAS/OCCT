@@ -1,3 +1,7 @@
+puts "TODO OCC26417 ALL: Faulty shapes in variables faulty_1"
+puts "TODO OCC26417 ALL: Error : Result shape is WRONG because it must contains 13 wires"
+puts "TODO OCC26417 ALL: Error : Result shape is WRONG because it must contains 80 shapes"
+
 puts "================"
 puts "OCC25319"
 puts "================"

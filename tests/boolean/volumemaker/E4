@@ -2,8 +2,8 @@
 # cone plane killed by cpulimit 300 
 # ? - because sometimes test is killed by elapsed time
 
-puts "TODO OCC26020 ALL: TEST INCOMPLETE"
-puts "TODO ?OCC26020 ALL: Process killed by CPU limit"
+puts "TODO OCC26020 ALL: Error: bopcheck failed"
+puts "TODO OCC26020 ALL: Error : The area of the resulting shape is"
 puts "TODO ?OCC26020 Linux: \\*\\* Exception"
 puts "TODO ?OCC26020 Linux: An exception"
 

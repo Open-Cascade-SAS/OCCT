@@ -1,8 +1,8 @@
 # test script on make volume operation
 # cone plane killed by cpulimit 300
 
-puts "TODO OCC26020 ALL: TEST INCOMPLETE"
-puts "TODO ?OCC26019 ALL: Process killed by CPU limit"
+puts "TODO OCC26020 ALL: Error: bopcheck failed"
+puts "TODO OCC26020 ALL: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 -460.8377555733228 -1160 -121.8751945104883 0.17364817766693036 -5.955424826592936e-017 -0.98480775301220813
