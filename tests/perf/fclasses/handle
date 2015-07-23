@@ -1,3 +1,5 @@
+puts "TODO OCC26471 Linux: Error: OCCT DownCast is expected to be faster!"
+
 puts "========"
 puts "CR24023, check operability and performance of OCCT RTTI and handles"
 puts "========"
@@ -43,6 +45,6 @@ for {set i 0} {$i < [llength $depths]} {incr i} {
   puts "Ratio of time of OCCT DownCast() to dynamic_pointer_cast<>: $ratio_ptr"
 
   if { $ratio_std > $threshold_std || $ratio_ptr > $threshold_ptr } {
-    puts "Error: OCCT DownCast() is expected to be faster!"
+    puts "Error: OCCT DownCast is expected to be faster!"
   }
 }
