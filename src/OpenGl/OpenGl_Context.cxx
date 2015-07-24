@@ -2625,13 +2625,16 @@ Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled (Standard_Boolean isEnabl
   myIsGlNormalizeEnabled = isEnabled;
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (isEnabled)
+  if (core11 != NULL)
   {
-    glEnable (GL_NORMALIZE);
-  }
-  else
-  {
-    glDisable (GL_NORMALIZE);
+    if (isEnabled)
+    {
+      ::glEnable  (GL_NORMALIZE);
+    }
+    else
+    {
+      ::glDisable (GL_NORMALIZE);
+    }
   }
 #endif
 
