@@ -1408,13 +1408,8 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   const Graphic3d_StereoMode aStereoMode = theCView.RenderParams.StereoMode;
   if (aProjectType == Graphic3d_Camera::Projection_Stereo)
   {
-    if (aFrameBuffer != NULL)
-    {
-      // implicitly switch to mono camera for image dump
-      aProjectType = Graphic3d_Camera::Projection_Perspective;
-    }
-    else if (myMainSceneFbos[0]->IsValid()
-         && !myMainSceneFbos[1]->IsValid())
+    if (myMainSceneFbos[0]->IsValid()
+    && !myMainSceneFbos[1]->IsValid())
     {
       aProjectType = Graphic3d_Camera::Projection_Perspective;
     }
