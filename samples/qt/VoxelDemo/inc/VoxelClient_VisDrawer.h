@@ -19,7 +19,7 @@
 #include "Voxel_VisData.h"
 #include <Graphic3d_BndBox4f.hxx>
 
-class Handle(OpenGl_GraphicDriver);
+#include <OpenGl_GraphicDriver.hxx>
 
 class VoxelClient_VisDrawer
 {
