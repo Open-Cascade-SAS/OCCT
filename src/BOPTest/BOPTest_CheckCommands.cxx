@@ -388,7 +388,9 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
   Standard_Boolean isS2 = Standard_False;
   Standard_Integer indxS2 = 0;
   Standard_Real aTolerance = 0;
-
+  Standard_Boolean bRunParallel;
+  //
+  bRunParallel=BOPTest_Objects::RunParallel(); 
   aTolerance=BOPTest_Objects::FuzzyValue();
   
   if(n >= 3) {
@@ -433,6 +435,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
   
   // init checker
   BOPAlgo_ArgumentAnalyzer aChecker;
+  aChecker.SetRunParallel(bRunParallel);
   aChecker.SetFuzzyValue(aTolerance);
   aChecker.SetShape1(aS1);
 
