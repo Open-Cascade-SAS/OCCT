@@ -1,0 +1,102 @@
+puts "========"
+puts "OCC26393"
+puts "========"
+puts ""
+#################################################################
+# Add draw commands to evaluate history of modifications of BOP
+#################################################################
+
+restore [locate_data_file OCC26393-w.brep] w
+restore [locate_data_file OCC26393-v1.brep] v0
+restore [locate_data_file OCC26393-v2.brep] v1
+
+bclearobjects
+bcleartools
+baddobjects w
+baddtools v0 v1
+bfillds
+bbuild r
+
+set bug_info [bmodified v0m v0]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "The shape has not been modified"} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work."
+}
+
+set bug_info [bmodified v1m v1]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "The shape has not been modified"} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work."
+}
+
+set bug_info [bisdeleted v0]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}
+
+set bug_info [bisdeleted v1]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}
+
+explode w e
+
+set bug_info [bmodified w1m w_1]
+if {$bug_info != ""} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work correctly."
+}
+
+set bug_info [bisdeleted w_1]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}
+
+set bug_info [bmodified w2m w_2]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "The shape has not been modified"} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work."
+}
+
+set bug_info [bisdeleted w_2]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}
+
+set bug_info [bmodified w3m w_3]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "The shape has not been modified"} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work."
+}
+
+set bug_info [bisdeleted w_3]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}
+
+set bug_info [bmodified w4m w_4]
+if {$bug_info != ""} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work correctly."
+}
+
+set bug_info [bisdeleted w_4]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}
+
+set bug_info [bmodified w5m w_5]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "The shape has not been modified"} {
+  puts "ERROR: OCC26393 is reproduced. Command bmodified does not work."
+}
+
+set bug_info [bisdeleted w_5]
+set bug_info [string trim [string range $bug_info 0 [expr {[string first "\n" $bug_info] - 1}]]]
+if {$bug_info != "Not deleted"} {
+  puts "ERROR: OCC26393 is reproduced. Command bisdeleted does not work."
+}

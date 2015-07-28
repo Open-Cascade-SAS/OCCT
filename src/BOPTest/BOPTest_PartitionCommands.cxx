@@ -162,6 +162,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
   //
+  BOPTest_Objects::SetBuilderDefault();
   BOPAlgo_Builder& aBuilder=BOPTest_Objects::Builder();
   aBuilder.Clear();
   //
@@ -323,6 +324,8 @@ Standard_Integer bbop(Draw_Interpretor& di,
     di << " null shape\n";
     return 0;
   }
+  //
+  BOPTest_Objects::SetBuilder(pBuilder);
   //
   DBRep::Set(a[1], aR);
   return 0;

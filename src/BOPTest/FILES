@@ -6,3 +6,6 @@ BOPTest_TolerCommands.cxx
 BOPTest_ObjCommands.cxx
 BOPTest_APICommands.cxx
 BOPTest_OptionCommands.cxx
+BOPTest_PartitionCommands.cxx
+BOPTest_TolerCommands.cxx
+BOPTest_HistoryCommands.cxx
