@@ -2778,7 +2778,7 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
   Standard_Integer i, nbVertices = aVertexNode.Extent();
   // Create map of node -> vertices
   TopTools_IndexedDataMapOfShapeListOfShape NodeVertices;
-  BRepBuilderAPI_CellFilter aFilter (Tolerance);
+  BRepBuilderAPI_CellFilter aFilter (BRepBuilderAPI_VertexInspector::Dimension, Tolerance);
   BRepBuilderAPI_VertexInspector anInspector (Tolerance);
   for (i = 1; i <= nbVertices; i++) {
     TopoDS_Shape vertex = aVertexNode.FindKey(i);

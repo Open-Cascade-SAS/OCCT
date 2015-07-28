@@ -25,6 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepMesh.hxx>
+#include <NCollection_Array1.hxx>
 
 class gp_Circ2d;
 
@@ -67,7 +68,8 @@ public:
   inline void SetCellSize(const Standard_Real theSizeX,
                           const Standard_Real theSizeY)
   {
-    Standard_Real aCellSize[2] = { theSizeX, theSizeY };
+    Standard_Real aCellSizeC[2] = { theSizeX, theSizeY };
+    NCollection_Array1<Standard_Real> aCellSize(aCellSizeC[0], 1, 2);
     myCellFilter.Reset(aCellSize, myAllocator);
   }
 

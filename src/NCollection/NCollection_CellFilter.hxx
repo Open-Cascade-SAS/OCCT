@@ -17,6 +17,8 @@
 #define NCollection_CellFilter_HeaderFile
 
 #include <Standard_Real.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_DataMap.hxx>
@@ -110,37 +112,29 @@ enum NCollection_CellFilter_Action
  *   Note that method Inspect() can be const and/or virtual.
  */
 
-template <class Inspector> 
-class NCollection_CellFilter
-{  
+template <class Inspector> class NCollection_CellFilter
+{
 public:
   typedef TYPENAME Inspector::Target Target;
   typedef TYPENAME Inspector::Point  Point;
 
 public:
 
-  //! Constructor; initialized by cell size.
+  //! Constructor; initialized by dimension count and cell size.
   //!
-  //! Note: the cell size must be ensured to be greater than 
+  //! Note: the cell size must be ensured to be greater than
   //! maximal co-ordinate of the involved points divided by INT_MAX,
   //! in order to avoid integer overflow of cell index.
   //! 
   //! By default cell size is 0, which is invalid; thus if default
   //! constructor is used, the tool must be initialized later with
   //! appropriate cell size by call to Reset()
-  NCollection_CellFilter (Standard_Real theCellSize=0,
-                          const Handle(NCollection_IncAllocator)& theAlloc=0) 
+  NCollection_CellFilter (const Standard_Integer theDim,
+                          const Standard_Real theCellSize = 0,
+                          const Handle(NCollection_IncAllocator)& theAlloc = 0)
+  : myCellSize(0, theDim - 1)
   {
-    Reset (theCellSize, theAlloc);
-  }
-
-  //! Constructor; initialized by cell sizes along each dimension.
-  //! Note: the cell size in each dimension must be ensured to be greater than 
-  //! maximal co-ordinate of the involved points by this dimension divided by INT_MAX,
-  //! in order to avoid integer overflow of cell index.
-  NCollection_CellFilter (Standard_Real theCellSize[],
-                          const Handle(NCollection_IncAllocator)& theAlloc=0) 
-  {
+    myDim = theDim;
     Reset (theCellSize, theAlloc);
   }
 
@@ -148,17 +142,16 @@ public:
   void Reset (Standard_Real theCellSize, 
               const Handle(NCollection_IncAllocator)& theAlloc=0)
   {
-    for (int i=0; i < Inspector::Dimension; i++)
-      myCellSize[i] = theCellSize;    
+    for (int i=0; i < myDim; i++)
+      myCellSize(i) = theCellSize;
     resetAllocator ( theAlloc );
   }
 
   //! Clear the data structures and set new cell sizes and allocator
-  void Reset (Standard_Real theCellSize[], 
+  void Reset (NCollection_Array1<Standard_Real> theCellSize, 
               const Handle(NCollection_IncAllocator)& theAlloc=0)
   {
-    for (int i=0; i < Inspector::Dimension; i++)
-      myCellSize[i] = theCellSize[i];
+    myCellSize = theCellSize;
     resetAllocator ( theAlloc );
   }
   
@@ -180,7 +173,7 @@ public:
     Cell aCellMax (thePntMax, myCellSize);
     Cell aCell = aCellMin;
     // add object recursively into all cells in range
-    iterateAdd (Inspector::Dimension-1, aCell, aCellMin, aCellMax, theTarget);
+    iterateAdd (myDim-1, aCell, aCellMin, aCellMax, theTarget);
   }
 
   //! Find a target object at a point and remove it from the structures.
@@ -204,7 +197,7 @@ public:
     Cell aCellMax (thePntMax, myCellSize);
     Cell aCell = aCellMin;
     // remove object recursively from all cells in range
-    iterateRemove (Inspector::Dimension-1, aCell, aCellMin, aCellMax, theTarget);
+    iterateRemove (myDim-1, aCell, aCellMin, aCellMax, theTarget);
   }
 
   //! Inspect all targets in the cell corresponding to the given point
@@ -225,7 +218,7 @@ public:
     Cell aCellMax (thePntMax, myCellSize);
     Cell aCell = aCellMin;
     // inspect object recursively into all cells in range
-    iterateInspect (Inspector::Dimension-1, aCell, 
+    iterateInspect (myDim-1, aCell, 
                     aCellMin, aCellMax, theInspector);
   }
 
@@ -238,7 +231,14 @@ protected:
   /**
    * Auxiliary class for storing points belonging to the cell as the list
    */
-  struct ListNode {
+  struct ListNode
+  {
+    ListNode()
+    {
+      // Empty constructor is forbidden.
+      Standard_NoSuchObject::Raise("NCollection_CellFilter::ListNode()");
+    }
+
     Target Object;
     ListNode *Next;
   };
@@ -251,17 +251,16 @@ protected:
   struct Cell
   {
   public:
-    //! Empty constructor -- required only for NCollection_Map,
-    //! therefore does not initialize index (avoid cycle)
-    Cell () : Objects(0) {}
 
     //! Constructor; computes cell indices
-    Cell (const Point& thePnt, const Standard_Real theCellSize[])
-      : Objects(0)
+    Cell (const Point& thePnt, 
+          const NCollection_Array1<Standard_Real>& theCellSize)
+      : index(theCellSize.Size()),
+        Objects(0)
     {
-      for (int i=0; i < Inspector::Dimension; i++)
+      for (int i = 0; i < theCellSize.Size(); i++)
       {
-          Standard_Real val = (Standard_Real)(Inspector::Coord(i, thePnt) / theCellSize[i]);
+          Standard_Real val = (Standard_Real)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
           //If the value of index is greater than
           //INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
           //of index is less than INT_MIN it is increased correspondingly for the absolute
@@ -273,13 +272,19 @@ protected:
     }
 
     //! Copy constructor: ensure that list is not deleted twice
-    Cell (const Cell& theOther) { (*this) = theOther; }
+    Cell (const Cell& theOther)
+      : index(theOther.index.Size())
+    {
+      (*this) = theOther;
+    }
 
     //! Assignment operator: ensure that list is not deleted twice
     void operator = (const Cell& theOther)
     {
-      for (int i=0; i < Inspector::Dimension; i++)
-        index[i] = theOther.index[i];
+      Standard_Integer myDim = Standard_Integer(theOther.index.Size());
+      for(Standard_Integer anIdx = 0; anIdx < myDim; anIdx++)
+        index[anIdx] = theOther.index[anIdx];
+
       Objects = theOther.Objects;
       ((Cell&)theOther).Objects = 0;
     }
@@ -296,7 +301,8 @@ protected:
     //! Compare cell with other one
     Standard_Boolean IsEqual (const Cell& theOther) const
     {
-      for (int i=0; i < Inspector::Dimension; i++) 
+      Standard_Integer myDim = Standard_Integer(theOther.index.Size());
+      for (int i=0; i < myDim; i++) 
         if ( index[i] != theOther.index[i] ) return Standard_False;
       return Standard_True;
     }
@@ -305,15 +311,16 @@ protected:
     Standard_Integer HashCode (const Standard_Integer theUpper) const
     {
       // number of bits per each dimension in the hash code
-      const Standard_Size aShiftBits = (BITS(long)-1) / Inspector::Dimension;
+      Standard_Integer myDim = Standard_Integer(index.Size());
+      const Standard_Size aShiftBits = (BITS(long)-1) / myDim;
       long aCode=0;
-      for (int i=0; i < Inspector::Dimension; i++)
+      for (int i=0; i < myDim; i++)
         aCode = ( aCode << aShiftBits ) ^ index[i];
       return (unsigned)aCode % theUpper;
     }
 
   public:
-    long index[Inspector::Dimension];
+    NCollection_LocalArray<long, 10> index;
     ListNode *Objects;
   };
 
@@ -452,9 +459,10 @@ protected:
   }
 
 protected:
+  Standard_Integer myDim;
   Handle(NCollection_BaseAllocator) myAllocator;
   NCollection_Map<Cell>             myCells;
-  Standard_Real                     myCellSize [Inspector::Dimension];
+  NCollection_Array1<Standard_Real> myCellSize;
 };
 
 /**
@@ -504,4 +512,3 @@ struct NCollection_CellFilter_InspectorXY
 };
 
 #endif
-

@@ -18,12 +18,12 @@
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <NCollection_CellFilterNDim.hxx>
+#include <NCollection_CellFilter.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Type.hxx>
 
-class NCollection_CellFilter_NDimInspector
+class NCollection_CellFilter_Inspector
 {
 public:
 
@@ -31,8 +31,8 @@ public:
   typedef math_Vector Point;
   typedef math_Vector Target;
 
-  NCollection_CellFilter_NDimInspector(const Standard_Integer theDim,
-                                       const Standard_Real theTol)
+  NCollection_CellFilter_Inspector(const Standard_Integer theDim,
+                                   const Standard_Real theTol)
   : myCurrent(1, theDim)
   {
     myTol = theTol * theTol;
@@ -201,7 +201,7 @@ private:
   NCollection_Array1<Standard_Real> myCellSize;
   Standard_Integer myMinCellFilterSol;
   Standard_Boolean isFirstCellFilterInvoke;
-  NCollection_CellFilterNDim<NCollection_CellFilter_NDimInspector> myFilter;
+  NCollection_CellFilter<NCollection_CellFilter_Inspector> myFilter;
 
   Standard_Real myF; // Current value of Global optimum.
 };

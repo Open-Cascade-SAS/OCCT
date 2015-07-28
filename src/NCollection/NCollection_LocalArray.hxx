@@ -20,12 +20,9 @@
 
 //! Auxiliary class optimizing creation of array buffer 
 //! (using stack allocation for small arrays).
-template<class theItem> class NCollection_LocalArray
+template<class theItem, Standard_Integer MAX_ARRAY_SIZE = 1024> class NCollection_LocalArray
 {
 public:
-
-  // 1K * sizeof (theItem)
-  static const size_t MAX_ARRAY_SIZE = 1024;
 
   NCollection_LocalArray (const size_t theSize)
   : myPtr (myBuffer)
@@ -34,7 +31,7 @@ public:
   }
 
   NCollection_LocalArray ()
-  : myPtr (myBuffer) {}
+  : myPtr (myBuffer), mySize(0) {}
 
   ~NCollection_LocalArray()
   {
@@ -48,6 +45,13 @@ public:
       myPtr = (theItem*)Standard::Allocate (theSize * sizeof(theItem));
     else
       myPtr = myBuffer;
+
+    mySize = theSize;
+  }
+
+  size_t Size() const
+  {
+    return mySize;
   }
 
   operator theItem*() const
@@ -72,6 +76,7 @@ protected:
 
   theItem  myBuffer[MAX_ARRAY_SIZE];
   theItem* myPtr;
+  size_t mySize;
 
 };
 

@@ -531,7 +531,7 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
   }
   else
   {
-    NCollection_CellFilter_NDimInspector anInspector(myN, Precision::PConfusion());
+    NCollection_CellFilter_Inspector anInspector(myN, Precision::PConfusion());
     if (isFirstCellFilterInvoke)
     {
       myFilter.Reset(myCellSize);
