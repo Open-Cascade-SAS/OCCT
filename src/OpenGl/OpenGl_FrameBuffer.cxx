@@ -62,6 +62,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   // clean up previous state
   Release (theGlContext.operator->());
 
+  myIsOwnBuffer = true;
+
   // setup viewport sizes as is
   myVPSizeX = theSizeX;
   myVPSizeY = theSizeY;
@@ -163,6 +165,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
 
   // clean up previous state
   Release (theGlCtx.operator->());
+
+  myIsOwnBuffer = true;
 
   // setup viewport sizes as is
   myVPSizeX = theSizeX;
