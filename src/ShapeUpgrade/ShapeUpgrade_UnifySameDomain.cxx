@@ -1168,201 +1168,187 @@ void ShapeUpgrade_UnifySameDomain::UnifyEdges()
   Standard_Real myTolerance = Precision::Confusion();
   TopoDS_Shape aResult = myContext->Apply(myShape);
 
-  // processing each solid
-  TopAbs_ShapeEnum aType = TopAbs_SOLID;
-  TopExp_Explorer exps (myShape, aType);
-  if (!exps.More()) {
-    aType = TopAbs_SHELL;
-    exps.Init(myShape, aType);
-  }
-  for (; exps.More(); exps.Next()) {
-    //TopoDS_Solid aSolid = TopoDS::Solid(exps.Current());
-    TopoDS_Shape aSolid = exps.Current();
+  TopTools_IndexedMapOfShape ChangedFaces;
 
-    TopTools_IndexedMapOfShape ChangedFaces;
+  // creating map of edge faces
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
+  TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
+  
+  // creating map of vertex edges
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEdgesVertex;
+  TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMapEdgesVertex);
 
-    // creating map of edge faces
-    TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
-    TopExp::MapShapesAndAncestors(aSolid, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
-   
-    // creating map of vertex edges
-    TopTools_IndexedDataMapOfShapeListOfShape aMapEdgesVertex;
-    TopExp::MapShapesAndAncestors(aSolid, TopAbs_VERTEX, TopAbs_EDGE, aMapEdgesVertex);
+  //Handle(ShapeBuild_ReShape) aContext = new ShapeBuild_ReShape;
+  TopoDS_Shape aRes = myShape;
+  //aRes = aContext->Apply(aSolid);
+  aRes = myContext->Apply(myShape);
 
-    //Handle(ShapeBuild_ReShape) aContext = new ShapeBuild_ReShape;
-    TopoDS_Shape aRes = aSolid;
-    //aRes = aContext->Apply(aSolid);
-    aRes = myContext->Apply(aSolid);
+  // processing each face
+  TopExp_Explorer exp;
+  for (exp.Init(aRes, TopAbs_FACE); exp.More(); exp.Next()) {
+    //TopoDS_Face aFace = TopoDS::Face(aContext->Apply(exp.Current().Oriented(TopAbs_FORWARD)));
+    TopoDS_Face aFace = TopoDS::Face(myContext->Apply(exp.Current().Oriented(TopAbs_FORWARD)));
+    TopTools_IndexedDataMapOfShapeListOfShape aMapFacesEdges;
 
-    // processing each face
-    TopExp_Explorer exp;
-    for (exp.Init(aRes, TopAbs_FACE); exp.More(); exp.Next()) {
-      //TopoDS_Face aFace = TopoDS::Face(aContext->Apply(exp.Current().Oriented(TopAbs_FORWARD)));
-      TopoDS_Face aFace = TopoDS::Face(myContext->Apply(exp.Current().Oriented(TopAbs_FORWARD)));
-      TopTools_IndexedDataMapOfShapeListOfShape aMapFacesEdges;
-
-      for (TopExp_Explorer expe(aFace,TopAbs_EDGE); expe.More(); expe.Next()) {
-        TopoDS_Edge edge = TopoDS::Edge(expe.Current());
-        if (!aMapEdgeFaces.Contains(edge)) continue;
-        const TopTools_ListOfShape& aList = aMapEdgeFaces.FindFromKey(edge);
-        TopTools_ListIteratorOfListOfShape anIter(aList);
-        for ( ; anIter.More(); anIter.Next()) {
-          TopoDS_Face face = TopoDS::Face(anIter.Value());
-          //TopoDS_Face face1 = TopoDS::Face(aContext->Apply(anIter.Value()));
-          TopoDS_Face face1 = TopoDS::Face(myContext->Apply(anIter.Value()));
-          if (face1.IsSame(aFace)) continue;
-          if (aMapFacesEdges.Contains(face)) {
-            aMapFacesEdges.ChangeFromKey(face).Append(edge);
-          }
-          else {
-            TopTools_ListOfShape ListEdges;
-            ListEdges.Append(edge);
-            aMapFacesEdges.Add(face,ListEdges);
-          }
+    for (TopExp_Explorer expe(aFace,TopAbs_EDGE); expe.More(); expe.Next()) {
+      TopoDS_Edge edge = TopoDS::Edge(expe.Current());
+      if (!aMapEdgeFaces.Contains(edge)) continue;
+      const TopTools_ListOfShape& aList = aMapEdgeFaces.FindFromKey(edge);
+      TopTools_ListIteratorOfListOfShape anIter(aList);
+      for ( ; anIter.More(); anIter.Next()) {
+        TopoDS_Face face = TopoDS::Face(anIter.Value());
+        //TopoDS_Face face1 = TopoDS::Face(aContext->Apply(anIter.Value()));
+        TopoDS_Face face1 = TopoDS::Face(myContext->Apply(anIter.Value()));
+        if (face1.IsSame(aFace)) continue;
+        if (aMapFacesEdges.Contains(face)) {
+          aMapFacesEdges.ChangeFromKey(face).Append(edge);
+        }
+        else {
+          TopTools_ListOfShape ListEdges;
+          ListEdges.Append(edge);
+          aMapFacesEdges.Add(face,ListEdges);
         }
       }
-
-      for (Standard_Integer i=1; i<=aMapFacesEdges.Extent(); i++) {
-        const TopTools_ListOfShape& ListEdges = aMapFacesEdges.FindFromIndex(i);
-        TopTools_SequenceOfShape SeqEdges;
-        ShapeAnalysis_Edge sae;
-        TopTools_ListIteratorOfListOfShape anIter(ListEdges);
-        Standard_Boolean IsSharedVertexPresent = Standard_False;
-        for ( ; anIter.More(); anIter.Next())
-          SeqEdges.Append(anIter.Value());
-        if (SeqEdges.Length()==1) 
-          continue;  
-        TopTools_SequenceOfShape SeqVertexes;
-        TopTools_MapOfShape  MapVertexes;
-        for (int k = 1; k <= SeqEdges.Length(); k++ )
-        {
-          TopoDS_Vertex aV1 = sae.FirstVertex(TopoDS::Edge(SeqEdges(k)));
-          TopoDS_Vertex aV2 = sae.LastVertex(TopoDS::Edge(SeqEdges(k)));
-          if (!MapVertexes.Add(aV1))
-            SeqVertexes.Append(aV1);
-          if (!MapVertexes.Add(aV2))
-            SeqVertexes.Append(aV2);
-        }
-
-        for (Standard_Integer k = 1; k <= SeqVertexes.Length() && !IsSharedVertexPresent; k++ )
-        {
-          const TopTools_ListOfShape& ListEdgesV1 = aMapEdgesVertex.FindFromKey(SeqVertexes(k));
-          TopTools_MapOfShape aMapOfEdges;
-          TopTools_ListIteratorOfListOfShape iter(ListEdgesV1);
-          for (; iter.More(); iter.Next())
-            aMapOfEdges.Add(iter.Value());
-          if (aMapOfEdges.Extent() > 2)
-            IsSharedVertexPresent = Standard_True;
-        }
-
-        if (IsSharedVertexPresent)
-          continue;
-        TopoDS_Edge E;
-        if ( MergeEdges(SeqEdges,aFace,Tol,myConcatBSplines,E) ) {
-          // now we have only one edge - aChain.Value(1)
-          // we have to replace old ListEdges with this new edge
-          //aContext->Replace(SeqEdges(1),E);
-          myContext->Replace(SeqEdges(1),E);
-          Standard_Integer j;
-          for (j = 2; j <= SeqEdges.Length(); j++) {
-            //aContext->Remove(SeqEdges(j));
-            myContext->Remove(SeqEdges(j));
-            //myOldNewMap.Bind(SeqEdges(j), E);
-          }
-          //for history
-          /*
-          for (j = 1; j <= SeqEdges.Length(); j++)
-          {
-            if (!myOldNewMap.IsBound(SeqEdges(j)))
-            {
-              TopTools_ListOfShape EmptyList;
-              myOldNewMap.Bind(SeqEdges(j), EmptyList);
-            }
-            myOldNewMap(SeqEdges(j)).Clear();
-            myOldNewMap(SeqEdges(j)).Append(E);
-          }
-          */
-          /////////////
-          
-          TopoDS_Face tmpF = TopoDS::Face(exp.Current());
-          if ( !ChangedFaces.Contains(tmpF) )
-            ChangedFaces.Add(tmpF);
-          tmpF = TopoDS::Face(aMapFacesEdges.FindKey(i));
-          if ( !ChangedFaces.Contains(tmpF) )
-            ChangedFaces.Add(tmpF);
-        }
-      }
-
-    } // end processing each face
-
-    // fix changed faces and replace them in the local context
-    for (Standard_Integer i=1; i<=ChangedFaces.Extent(); i++) {
-      //TopoDS_Face aFace = TopoDS::Face(aContext->Apply(ChangedFaces.FindKey(i)));
-      TopoDS_Face aFace = TopoDS::Face(myContext->Apply(ChangedFaces.FindKey(i)));
-      Handle(ShapeFix_Face) sff = new ShapeFix_Face(aFace);
-      sff->SetContext(myContext);
-      sff->SetPrecision(myTolerance);
-      sff->SetMinTolerance(myTolerance);
-      sff->SetMaxTolerance(Max(1.,myTolerance*1000.));
-      sff->Perform();
-      TopoDS_Shape aNewFace = sff->Face();
-      //aContext->Replace(aFace,aNewFace);
-      myContext->Replace(aFace,aNewFace);
-      //for history
-      /*
-      if (!myOldNewMap.IsBound(aFace))
-      {
-        TopTools_ListOfShape EmptyList;
-        myOldNewMap.Bind(aFace, EmptyList);
-      }
-      myOldNewMap(aFace).Clear();
-      myOldNewMap(aFace).Append(aNewFace);
-      */
-      /////////////
     }
 
-    if (ChangedFaces.Extent() > 0) {
-      // fix changed shell and replace it in the local context
-      //TopoDS_Shape aRes1 = aContext->Apply(aRes);
-      TopoDS_Shape aRes1 = myContext->Apply(aRes);
-      TopExp_Explorer expsh;
-      for (expsh.Init(aRes1, TopAbs_SHELL); expsh.More(); expsh.Next()) {
-        TopoDS_Shell aShell = TopoDS::Shell(expsh.Current());
-        Handle(ShapeFix_Shell) sfsh = new ShapeFix_Shell;
-        sfsh->FixFaceOrientation(aShell);
-        TopoDS_Shape aNewShell = sfsh->Shell();
-        //aContext->Replace(aShell,aNewShell);
-        myContext->Replace(aShell,aNewShell);
+    for (Standard_Integer i=1; i<=aMapFacesEdges.Extent(); i++) {
+      const TopTools_ListOfShape& ListEdges = aMapFacesEdges.FindFromIndex(i);
+      TopTools_SequenceOfShape SeqEdges;
+      ShapeAnalysis_Edge sae;
+      TopTools_ListIteratorOfListOfShape anIter(ListEdges);
+      Standard_Boolean IsSharedVertexPresent = Standard_False;
+      for ( ; anIter.More(); anIter.Next())
+        SeqEdges.Append(anIter.Value());
+      if (SeqEdges.Length()==1) 
+        continue;  
+      TopTools_SequenceOfShape SeqVertexes;
+      TopTools_MapOfShape  MapVertexes;
+      for (int k = 1; k <= SeqEdges.Length(); k++ )
+      {
+        TopoDS_Vertex aV1 = sae.FirstVertex(TopoDS::Edge(SeqEdges(k)));
+        TopoDS_Vertex aV2 = sae.LastVertex(TopoDS::Edge(SeqEdges(k)));
+        if (!MapVertexes.Add(aV1))
+          SeqVertexes.Append(aV1);
+        if (!MapVertexes.Add(aV2))
+          SeqVertexes.Append(aV2);
+      }
+
+      for (Standard_Integer k = 1; k <= SeqVertexes.Length() && !IsSharedVertexPresent; k++ )
+      {
+        const TopTools_ListOfShape& ListEdgesV1 = aMapEdgesVertex.FindFromKey(SeqVertexes(k));
+        TopTools_MapOfShape aMapOfEdges;
+        TopTools_ListIteratorOfListOfShape iter(ListEdgesV1);
+        for (; iter.More(); iter.Next())
+          aMapOfEdges.Add(iter.Value());
+        if (aMapOfEdges.Extent() > 2)
+          IsSharedVertexPresent = Standard_True;
+      }
+
+      if (IsSharedVertexPresent)
+        continue;
+      TopoDS_Edge E;
+      if ( MergeEdges(SeqEdges,aFace,Tol,myConcatBSplines,E) ) {
+        // now we have only one edge - aChain.Value(1)
+        // we have to replace old ListEdges with this new edge
+        //aContext->Replace(SeqEdges(1),E);
+        myContext->Replace(SeqEdges(1),E);
+        Standard_Integer j;
+        for (j = 2; j <= SeqEdges.Length(); j++) {
+          //aContext->Remove(SeqEdges(j));
+          myContext->Remove(SeqEdges(j));
+          //myOldNewMap.Bind(SeqEdges(j), E);
+        }
         //for history
         /*
-        if (!myOldNewMap.IsBound(aShell))
+        for (j = 1; j <= SeqEdges.Length(); j++)
         {
-          TopTools_ListOfShape EmptyList;
-          myOldNewMap.Bind(aShell, EmptyList);
+          if (!myOldNewMap.IsBound(SeqEdges(j)))
+          {
+            TopTools_ListOfShape EmptyList;
+            myOldNewMap.Bind(SeqEdges(j), EmptyList);
+          }
+          myOldNewMap(SeqEdges(j)).Clear();
+          myOldNewMap(SeqEdges(j)).Append(E);
         }
-        myOldNewMap(aShell).Clear();
-        myOldNewMap(aShell).Append(aNewShell);
         */
         /////////////
+        
+        TopoDS_Face tmpF = TopoDS::Face(exp.Current());
+        if ( !ChangedFaces.Contains(tmpF) )
+          ChangedFaces.Add(tmpF);
+        tmpF = TopoDS::Face(aMapFacesEdges.FindKey(i));
+        if ( !ChangedFaces.Contains(tmpF) )
+          ChangedFaces.Add(tmpF);
       }
-      //TopoDS_Shape aRes2 = aContext->Apply(aRes1);
-      TopoDS_Shape aRes2 = myContext->Apply(aRes1);
-      // put new solid into global context
-      myContext->Replace(aSolid,aRes2);
+    }
+
+  } // end processing each face
+
+  // fix changed faces and replace them in the local context
+  for (Standard_Integer i=1; i<=ChangedFaces.Extent(); i++) {
+    //TopoDS_Face aFace = TopoDS::Face(aContext->Apply(ChangedFaces.FindKey(i)));
+    TopoDS_Face aFace = TopoDS::Face(myContext->Apply(ChangedFaces.FindKey(i)));
+    Handle(ShapeFix_Face) sff = new ShapeFix_Face(aFace);
+    sff->SetContext(myContext);
+    sff->SetPrecision(myTolerance);
+    sff->SetMinTolerance(myTolerance);
+    sff->SetMaxTolerance(Max(1.,myTolerance*1000.));
+    sff->Perform();
+    TopoDS_Shape aNewFace = sff->Face();
+    //aContext->Replace(aFace,aNewFace);
+    myContext->Replace(aFace,aNewFace);
+    //for history
+    /*
+    if (!myOldNewMap.IsBound(aFace))
+    {
+      TopTools_ListOfShape EmptyList;
+      myOldNewMap.Bind(aFace, EmptyList);
+    }
+    myOldNewMap(aFace).Clear();
+    myOldNewMap(aFace).Append(aNewFace);
+    */
+    /////////////
+  }
+
+  if (ChangedFaces.Extent() > 0) {
+    // fix changed shell and replace it in the local context
+    //TopoDS_Shape aRes1 = aContext->Apply(aRes);
+    TopoDS_Shape aRes1 = myContext->Apply(aRes);
+    TopExp_Explorer expsh;
+    for (expsh.Init(aRes1, TopAbs_SHELL); expsh.More(); expsh.Next()) {
+      TopoDS_Shell aShell = TopoDS::Shell(expsh.Current());
+      Handle(ShapeFix_Shell) sfsh = new ShapeFix_Shell;
+      sfsh->FixFaceOrientation(aShell);
+      TopoDS_Shape aNewShell = sfsh->Shell();
+      //aContext->Replace(aShell,aNewShell);
+      myContext->Replace(aShell,aNewShell);
       //for history
       /*
-      if (!myOldNewMap.IsBound(aSolid))
+      if (!myOldNewMap.IsBound(aShell))
       {
         TopTools_ListOfShape EmptyList;
-        myOldNewMap.Bind(aSolid, EmptyList);
+        myOldNewMap.Bind(aShell, EmptyList);
       }
-      myOldNewMap(aSolid).Clear();
-      myOldNewMap(aSolid).Append(aRes2);
+      myOldNewMap(aShell).Clear();
+      myOldNewMap(aShell).Append(aNewShell);
       */
       /////////////
     }
-
-  } // end processing each solid
+    //TopoDS_Shape aRes2 = aContext->Apply(aRes1);
+    TopoDS_Shape aRes2 = myContext->Apply(aRes1);
+    myContext->Replace(myShape,aRes2);
+    //for history
+    /*
+    if (!myOldNewMap.IsBound(aSolid))
+    {
+      TopTools_ListOfShape EmptyList;
+      myOldNewMap.Bind(aSolid, EmptyList);
+    }
+    myOldNewMap(aSolid).Clear();
+    myOldNewMap(aSolid).Append(aRes2);
+    */
+    /////////////
+  }
 
   myShape = myContext->Apply(myShape);
 }
