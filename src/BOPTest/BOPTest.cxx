@@ -39,8 +39,9 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   BOPTest::TolerCommands     (theCommands);
   BOPTest::ObjCommands       (theCommands);
   BOPTest::PartitionCommands (theCommands);
-  BOPTest::APICommands      (theCommands);
-  BOPTest::OptionCommands   (theCommands);
+  BOPTest::APICommands       (theCommands);
+  BOPTest::OptionCommands    (theCommands);
+  BOPTest::HistoryCommands   (theCommands);
 }
 //=======================================================================
 //function : Factory
