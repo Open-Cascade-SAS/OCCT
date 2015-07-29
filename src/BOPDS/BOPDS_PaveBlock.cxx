@@ -234,21 +234,19 @@
 //purpose  : 
 //=======================================================================
   Standard_Boolean BOPDS_PaveBlock::ContainsParameter(const Standard_Real theT,
-                                                      const Standard_Real theTol)const
+                                                      const Standard_Real theTol,
+                                                      Standard_Integer& theInd) const
 {
   Standard_Boolean bRet;
-  Standard_Real dT;
   BOPDS_ListIteratorOfListOfPave aIt;
   //
-  bRet=Standard_False;
+  bRet = Standard_False;
   aIt.Initialize(myExtPaves);
   for (; aIt.More(); aIt.Next()) {
-    dT=aIt.Value().Parameter()-theT;
-    if (dT<0.) {
-      dT=-dT;
-    }
-    if (dT<theTol) {
-      bRet=!bRet;
+    const BOPDS_Pave& aPave = aIt.Value();
+    bRet = (Abs(aPave.Parameter() - theT) < theTol);
+    if (bRet) {
+      theInd = aPave.Index();
       break;
     }
   }

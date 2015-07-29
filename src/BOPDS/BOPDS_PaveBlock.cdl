@@ -186,13 +186,15 @@ is
 	 
     ContainsParameter(me; 
         thePrm:Real from Standard; 
-        theTol:Real from Standard) 
+        theTol:Real from Standard;
+        theInd: in out Integer from Standard) 
     returns Boolean from Standard; 
     ---Purpose: 
     --- Query 
     --- Returns true if the extra paves contain the pave 
     --- with given value of the parameter <thePrm> 
     ---  <theTol>  - the value of the tolerance to compare 
+    ---  <theInd>  - index of the found pave
  
     -- 
     -- shrunk data   
