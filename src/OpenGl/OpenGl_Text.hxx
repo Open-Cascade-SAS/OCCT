@@ -20,7 +20,7 @@
 
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_TextParam.hxx>
-#include <OpenGl_TextFormatter.hxx>
+#include <OpenGl_TextBuilder.hxx>
 
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_Vertex.hxx>

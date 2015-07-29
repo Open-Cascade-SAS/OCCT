@@ -16,11 +16,13 @@
 #ifndef _Font_FTFont_H__
 #define _Font_FTFont_H__
 
-#include <NCollection_Vec2.hxx>
-#include <NCollection_String.hxx>
-#include <Font_FTLibrary.hxx>
-#include <Image_PixMap.hxx>
 #include <Font_FontAspect.hxx>
+#include <Font_FTLibrary.hxx>
+#include <Graphic3d_HorizontalTextAlignment.hxx>
+#include <Graphic3d_VerticalTextAlignment.hxx>
+#include <Image_PixMap.hxx>
+#include <NCollection_String.hxx>
+#include <NCollection_Vec2.hxx>
 
 //! Wrapper over FreeType font.
 //! Notice that this class uses internal buffers for loaded glyphs
@@ -37,6 +39,11 @@ public:
     float Right;
     float Top;
     float Bottom;
+
+    NCollection_Vec2<float> TopLeft() const
+    {
+      return NCollection_Vec2<float> (Left, Top);
+    }
 
     NCollection_Vec2<float>& TopLeft (NCollection_Vec2<float>& theVec) const
     {
@@ -64,6 +71,16 @@ public:
       theVec.x() = Right;
       theVec.y() = Bottom;
       return theVec;
+    }
+
+    float Width () const
+    {
+      return Right - Left;
+    }
+
+    float Height () const
+    {
+      return Top - Bottom;
     }
 
   };
@@ -177,6 +194,13 @@ public:
     theRect.Right  = float(myFTFace->glyph->bitmap_left + (int )aBitmap.width);
     theRect.Bottom = float(myFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
   }
+
+  //! Computes bounding box of the given text using plain-text formatter (Font_TextFormatter).
+  //! Note that bounding box takes into account the text alignment options.
+  //! Its corners are relative to the text alignment anchor point, their coordinates can be negative.
+  Standard_EXPORT Rect BoundingBox (const NCollection_String&               theString,
+                                    const Graphic3d_HorizontalTextAlignment theAlignX,
+                                    const Graphic3d_VerticalTextAlignment   theAlignY);
 
 protected:
 

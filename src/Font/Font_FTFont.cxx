@@ -15,6 +15,8 @@
 
 #include <Font_FTFont.hxx>
 #include <Font_FontMgr.hxx>
+#include <Font_TextFormatter.hxx>
+
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -254,4 +256,26 @@ float Font_FTFont::AdvanceY (const Standard_Utf32Char theUCharNext)
     return fromFTPoints<float> (myFTFace->glyph->advance.y);
   }
   return fromFTPoints<float> (myKernAdvance.y + myFTFace->glyph->advance.y);
+}
+
+// =======================================================================
+// function : BoundingBox
+// purpose  :
+// =======================================================================
+Font_FTFont::Rect Font_FTFont::BoundingBox (const NCollection_String&               theString,
+                                            const Graphic3d_HorizontalTextAlignment theAlignX,
+                                            const Graphic3d_VerticalTextAlignment   theAlignY)
+{
+  Font_TextFormatter aFormatter;
+  aFormatter.SetupAlignment (theAlignX, theAlignY);
+  aFormatter.Reset();
+
+  aFormatter.Append (theString, *this);
+  aFormatter.Format();
+
+  Rect aBndBox;
+
+  aFormatter.BndBox (aBndBox);
+
+  return aBndBox;
 }

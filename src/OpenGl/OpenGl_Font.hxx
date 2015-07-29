@@ -71,6 +71,12 @@ public:
     return myFont;
   }
 
+  //! @return FreeType font instance specified on construction.
+  inline Handle(Font_FTFont)& FTFont()
+  {
+    return myFont;
+  }
+
   //! @return true if font was loaded successfully.
   inline bool IsValid() const
   {
@@ -115,18 +121,13 @@ public:
     return myLineSpacing;
   }
 
-  //! Compute glyph rectangle at specified pen position (on baseline)
-  //! and render it to texture if not already.
+  //! Render glyph to texture if not already.
   //! @param theCtx       active context
   //! @param theUChar     unicode symbol to render
-  //! @param theUCharNext next symbol to compute advance with kerning when available
   //! @param theGlyph     computed glyph position rectangle, texture ID and UV coordinates
-  //! @param thePen       pen position on baseline to place new glyph
-  Standard_EXPORT void RenderGlyph (const Handle(OpenGl_Context)& theCtx,
+  Standard_EXPORT bool RenderGlyph (const Handle(OpenGl_Context)& theCtx,
                                     const Standard_Utf32Char      theUChar,
-                                    const Standard_Utf32Char      theUCharNext,
-                                    Tile&                         theGlyph,
-                                    OpenGl_Vec2&                  thePen);
+                                    Tile&                         theGlyph);
 
 protected:
 

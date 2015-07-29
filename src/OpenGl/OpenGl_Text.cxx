@@ -466,8 +466,7 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                                             anObjZ);
 
     OpenGl_Utils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
-    OpenGl_Utils::Rotate<GLdouble> (aModViewMat, theTextAspect.Angle(), 0.0, 0.0, 1.0);
-
+    OpenGl_Utils::Rotate<GLdouble>    (aModViewMat, theTextAspect.Angle(), 0.0, 0.0, 1.0);
     if (!theTextAspect.IsZoomable())
     {
     #ifdef _WIN32
@@ -582,6 +581,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
     if (!aRequestedFont.IsNull())
     {
       aFontFt = new Font_FTFont (NULL);
+
       if (aFontFt->Init (aRequestedFont->FontPath()->ToCString(), theHeight))
       {
         aFont = new OpenGl_Font (aFontFt, theKey);
@@ -658,13 +658,21 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   if (myTextures.IsEmpty())
   {
-    OpenGl_TextFormatter aFormatter;
+    Font_TextFormatter aFormatter;
     aFormatter.SetupAlignment (myParams.HAlign, myParams.VAlign);
     aFormatter.Reset();
-    aFormatter.Append (theCtx, myString, *myFont.operator->());
+
+    aFormatter.Append (myString, *myFont->FTFont());
     aFormatter.Format();
 
-    aFormatter.Result (theCtx, myTextures, myVertsVbo, myTCrdsVbo);
+    OpenGl_TextBuilder aBuilder;
+    aBuilder.Perform (aFormatter,
+                      theCtx,
+                      *myFont.operator->(),
+                      myTextures,
+                      myVertsVbo,
+                      myTCrdsVbo);
+
     aFormatter.BndBox (myBndBox);
   }
 

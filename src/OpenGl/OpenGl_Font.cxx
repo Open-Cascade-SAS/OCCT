@@ -214,14 +214,12 @@ bool OpenGl_Font::renderGlyph (const Handle(OpenGl_Context)& theCtx,
 // function : RenderGlyph
 // purpose  :
 // =======================================================================
-void OpenGl_Font::RenderGlyph (const Handle(OpenGl_Context)& theCtx,
+bool OpenGl_Font::RenderGlyph (const Handle(OpenGl_Context)& theCtx,
                                const Standard_Utf32Char      theUChar,
-                               const Standard_Utf32Char      theUCharNext,
-                               OpenGl_Font::Tile&            theGlyph,
-                               OpenGl_Vec2&                  thePen)
+                               Tile&                         theGlyph)
 {
   Standard_Integer aTileId = 0;
-  if (!myGlyphMap.Find (theUChar, aTileId))
+  if (!myGlyphMap.Find (theUChar,aTileId))
   {
     if (renderGlyph (theCtx, theUChar))
     {
@@ -229,19 +227,16 @@ void OpenGl_Font::RenderGlyph (const Handle(OpenGl_Context)& theCtx,
     }
     else
     {
-      thePen.x() += myFont->AdvanceX (theUChar, theUCharNext);
-      return;
+      return false;
     }
+
     myGlyphMap.Bind (theUChar, aTileId);
   }
 
   const OpenGl_Font::Tile& aTile = myTiles.Value (aTileId);
-  theGlyph.px.Top    = thePen.y() + aTile.px.Top;
-  theGlyph.px.Bottom = thePen.y() + aTile.px.Bottom;
-  theGlyph.px.Left   = thePen.x() + aTile.px.Left;
-  theGlyph.px.Right  = thePen.x() + aTile.px.Right;
-  theGlyph.uv        = aTile.uv;
-  theGlyph.texture   = aTile.texture;
+  theGlyph.px      = aTile.px;
+  theGlyph.uv      = aTile.uv;
+  theGlyph.texture = aTile.texture;
 
-  thePen.x() += myFont->AdvanceX (theUChar, theUCharNext);
+  return true;
 }
