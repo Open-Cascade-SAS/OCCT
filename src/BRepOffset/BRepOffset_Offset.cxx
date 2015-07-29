@@ -536,11 +536,29 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
       TopTools_SequenceOfShape DegEdges;
       TopExp_Explorer Explo(Face, TopAbs_EDGE);
       for (; Explo.More(); Explo.Next())
-	{
-	  const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
-	  if (BRep_Tool::Degenerated(anEdge))
-	    DegEdges.Append(anEdge);
-	}
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
+
+        if (BRep_Tool::Degenerated(anEdge))
+        {
+          Standard_Real aF, aL;
+          Handle(Geom2d_Curve) c2d =  BRep_Tool::CurveOnSurface(anEdge, Face, aF, aL);
+
+          gp_Pnt2d aFPnt2d = c2d->Value(aF),
+                   aLPnt2d = c2d->Value(aL);
+
+          gp_Pnt aFPnt = S->Value(aFPnt2d.X(), aFPnt2d.Y()),
+                 aLPnt = S->Value(aLPnt2d.X(), aLPnt2d.Y());
+
+          //  aFPnt.SquareDistance(aLPnt) > Precision::SquareConfusion() -
+          // is a sufficient condition of troubles: non-singular case, but edge is degenerated.
+          // So, normal handling of degenerated edges is not applicable in case of non-singular point.
+          if (aFPnt.SquareDistance(aLPnt) < Precision::SquareConfusion())
+          {
+            DegEdges.Append(anEdge);
+          }
+        }
+      }
       if (!DegEdges.IsEmpty())
 	{
 	  const Standard_Real TolApex = 1.e-5;
@@ -1639,6 +1657,3 @@ BRepOffset_Status BRepOffset_Offset::Status() const
 {
   return myStatus;
 }
-
-
-
