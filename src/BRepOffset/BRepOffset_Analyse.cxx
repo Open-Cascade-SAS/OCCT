@@ -173,7 +173,7 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
   myShape = S;
 
   angle                = Angle;
-  Standard_Real SinTol = sin(Angle);
+  Standard_Real SinTol = Sin(Angle);
 
   // Build ancestors.
   BuildAncestors (S,ancestors);
