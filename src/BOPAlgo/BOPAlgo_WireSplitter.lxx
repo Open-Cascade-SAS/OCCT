@@ -13,6 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 
 #include <TopoDS_Edge.hxx>
 
@@ -85,7 +86,7 @@ typedef NCollection_IndexedDataMap<TopoDS_Shape, \
 //purpose  : 
 //=======================================================================
   inline void BOPAlgo_WireSplitter::MakeWire(BOPCol_ListOfShape& aLE, 
-					     TopoDS_Wire& aWire)
+                                             TopoDS_Wire& aWire)
 {
   BRep_Builder aBB;
   aBB.MakeWire(aWire);
@@ -94,4 +95,5 @@ typedef NCollection_IndexedDataMap<TopoDS_Shape, \
   for (; aIt.More(); aIt.Next()){
     aBB.Add(aWire, aIt.Value());
   }
+  aWire.Closed(BRep_Tool::IsClosed(aWire));
 }

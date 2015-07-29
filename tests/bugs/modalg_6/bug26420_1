@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC26420"
+puts "========"
+puts ""
+######################################################
+# BOPAlgo_Builder resets "Closed" flag in the result
+######################################################
+
+polyline pp 0 4 0 7 4 0 7 6 0 0 6 0 0 4 0
+vertex v0 5 4 0
+vertex v1 4 6 0
+bclearobjects
+bcleartools
+baddobjects v0 v1 pp
+bfillds
+bbuild r
+explode r w
+set bug_info [whatis r_1]
+if {[lindex $bug_info 8] != "Closed"} {
+  puts "ERROR: OCC26420 is reproduced. Flag CLOSED is not set."
+}

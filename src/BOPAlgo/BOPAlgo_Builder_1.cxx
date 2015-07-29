@@ -34,6 +34,12 @@
 #include <BOPDS_ShapeInfo.hxx>
 
 #include <BOPTools_AlgoTools.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <IntTools_Context.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 
 //=======================================================================
 //function : FillImagesVertices
@@ -240,6 +246,8 @@
       aBB.Add(aCIm, aSx);
     }
   }
+  //
+  aCIm.Closed(BRep_Tool::IsClosed(aCIm));
   //
   BOPCol_ListOfShape aLSIm(myAllocator);
   aLSIm.Append(aCIm);
