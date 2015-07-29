@@ -129,7 +129,8 @@ public:
   //! Selector
   //! Returns the pave indices  <theIndex1,theIndex2>
   //! of the pave block
-  Standard_EXPORT void Indices (Standard_Integer& theIndex1, Standard_Integer& theIndex2) const;
+  Standard_EXPORT void Indices (Standard_Integer& theIndex1, 
+                                Standard_Integer& theIndex2) const;
   
 
   //! Query
@@ -162,28 +163,36 @@ public:
   //! to create new pave blocks <theLPB>.
   //! <theFlag> - if true, the first pave and the second
   //! pave are used to produce new pave blocks.
-  Standard_EXPORT void Update (BOPDS_ListOfPaveBlock& theLPB, const Standard_Boolean theFlag = Standard_True);
+  Standard_EXPORT void Update (BOPDS_ListOfPaveBlock& theLPB, 
+                               const Standard_Boolean theFlag = Standard_True);
   
 
   //! Query
   //! Returns true if the extra paves contain the pave
   //! with given value of the parameter <thePrm>
   //! <theTol>  - the value of the tolerance to compare
-  Standard_EXPORT Standard_Boolean ContainsParameter (const Standard_Real thePrm, const Standard_Real theTol) const;
+  //! <theInd>  - index of the found pave
+  Standard_EXPORT Standard_Boolean ContainsParameter (const Standard_Real thePrm, 
+                                                      const Standard_Real theTol,
+                                                      Standard_Integer& theInd) const;
   
 
   //! Modifier
   //! Sets the shrunk data for the pave block
   //! <theTS1>,  <theTS2> - shrunk range
   //! <theBox> - the bounding box
-  Standard_EXPORT void SetShrunkData (const Standard_Real theTS1, const Standard_Real theTS2, const Bnd_Box& theBox);
+  Standard_EXPORT void SetShrunkData (const Standard_Real theTS1, 
+                                      const Standard_Real theTS2, 
+                                      const Bnd_Box& theBox);
   
 
   //! Selector
   //! Returns  the shrunk data for the pave block
   //! <theTS1>,  <theTS2> - shrunk range
   //! <theBox> - the bounding box
-  Standard_EXPORT void ShrunkData (Standard_Real& theTS1, Standard_Real& theTS2, Bnd_Box& theBox) const;
+  Standard_EXPORT void ShrunkData (Standard_Real& theTS1, 
+                                   Standard_Real& theTS2, 
+                                   Bnd_Box& theBox) const;
   
 
   //! Query

@@ -1725,41 +1725,70 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
    const Standard_Integer iCheckExtend)
 {
   Standard_Boolean bIsVertexOnLine;
-  Standard_Real aT, aTol, aTolNew;
-  BOPDS_Pave aPave;
+  Standard_Real aT, aTolV;
   //
-  const TopoDS_Vertex aV = (*(TopoDS_Vertex *)(&myDS->Shape(nV)));
+  const TopoDS_Vertex& aV = (*(TopoDS_Vertex *)(&myDS->Shape(nV)));
   Handle(BOPDS_PaveBlock)& aPB=aNC.ChangePaveBlock1();
   const IntTools_Curve& aIC = aNC.Curve();
   //
   bIsVertexOnLine=myContext->IsVertexOnLine(aV, aIC, aTolR3D, aT);
   if (!bIsVertexOnLine && iCheckExtend) {
-    aTol = BRep_Tool::Tolerance(aV);
+    aTolV = BRep_Tool::Tolerance(aV);
     //
-    ExtendedTolerance(nV, aMI, aTol, iCheckExtend);
-    bIsVertexOnLine=myContext->IsVertexOnLine(aV, aTol, aIC, aTolR3D, aT);
+    ExtendedTolerance(nV, aMI, aTolV, iCheckExtend);
+    bIsVertexOnLine=myContext->IsVertexOnLine(aV, aTolV, aIC, aTolR3D, aT);
   }
   //
   if (bIsVertexOnLine) {
-    aPave.SetIndex(nV);
-    aPave.SetParameter(aT);
+    // check if aPB contains the parameter aT
+    Standard_Boolean bExist;
+    Standard_Integer nVToUpdate;
+    Standard_Real aPTol, aDist, aTolVNew, aTolV2, aDTol;
+    TopoDS_Vertex aVToUpdate;
+    gp_Pnt aP1, aP2;
     //
-    aPB->AppendExtPave(aPave);
+    aTolV2 = 0.;
+    aDTol = 1.e-12;
     //
-    aTol = BRep_Tool::Tolerance(aV);
+    GeomAdaptor_Curve aGAC(aIC.Curve());
+    aPTol = aGAC.Resolution(aTolR3D);
     //
-    BOPTools_AlgoTools::UpdateVertex (aIC, aT, aV);
-    //
-    if (!aMVTol.IsBound(nV)) {
-      aTolNew = BRep_Tool::Tolerance(aV);
-      if (aTolNew > aTol) {
-        aMVTol.Bind(nV, aTol);
-      }
+    bExist = aPB->ContainsParameter(aT, aPTol, nVToUpdate);
+    if (bExist) {
+      // use existing pave
+      aP1 = BRep_Tool::Pnt(aV);
+      aTolV2 = BRep_Tool::Tolerance(aV);
+      aVToUpdate = (*(TopoDS_Vertex *)(&myDS->Shape(nVToUpdate)));
     }
-    // 
-    BOPDS_ShapeInfo& aSIDS=myDS->ChangeShapeInfo(nV);
-    Bnd_Box& aBoxDS=aSIDS.ChangeBox();
-    BRepBndLib::Add(aV, aBoxDS);
+    else {
+      // add new pave
+      BOPDS_Pave aPave;
+      aPave.SetIndex(nV);
+      aPave.SetParameter(aT);
+      aPB->AppendExtPave(aPave);
+      //
+      aP1 = aGAC.Value(aT);
+      nVToUpdate = nV;
+      aVToUpdate = aV;
+    }
+    //
+    aTolV = BRep_Tool::Tolerance(aVToUpdate);
+    aP2 = BRep_Tool::Pnt(aVToUpdate);
+    aDist = aP1.Distance(aP2);
+    aTolVNew = aDist - aTolV2;
+    //
+    if (aTolVNew > aTolV) {
+      BRep_Builder aBB;
+      aBB.UpdateVertex(aVToUpdate, aTolVNew+aDTol);
+      //
+      if (!aMVTol.IsBound(nVToUpdate)) {
+        aMVTol.Bind(nVToUpdate, aTolV);
+      }
+      // 
+      BOPDS_ShapeInfo& aSIDS=myDS->ChangeShapeInfo(nVToUpdate);
+      Bnd_Box& aBoxDS=aSIDS.ChangeBox();
+      BRepBndLib::Add(aVToUpdate, aBoxDS);
+    }
   }
 }
 
@@ -2179,7 +2208,7 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks
         }
         //
         if (bRebuild) {
-          nSp = SplitEdge(aPB->Edge(), nV[0], aT[0], nV[1], aT[1]);
+          nSp = SplitEdge(aPB->OriginalEdge(), nV[0], aT[0], nV[1], aT[1]);
           if (bCB) {
             aCB->SetEdge(nSp);
           }
