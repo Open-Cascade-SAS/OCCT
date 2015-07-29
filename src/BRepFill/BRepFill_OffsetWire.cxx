@@ -808,6 +808,24 @@ void BRepFill_OffsetWire::PerformWithBiLo
     }
   }
 
+  //Remove possible hanging arcs on vertices
+  if (myIsOpenResult && myJoinType == GeomAbs_Arc)
+  {
+    if (!myMap.IsEmpty() &&
+        myMap.FindKey(1).ShapeType() == TopAbs_VERTEX)
+    {
+      //myMap.RemoveFirst();
+      TopoDS_Shape LastShape = myMap.FindKey(myMap.Extent());
+      TopTools_ListOfShape LastList;
+      LastList.Append(myMap(myMap.Extent()));
+      myMap.RemoveLast();
+      if (!myMap.IsEmpty())
+        myMap.Substitute(1, LastShape, LastList);
+    }
+    if (!myMap.IsEmpty() &&
+        myMap.FindKey(myMap.Extent()).ShapeType() == TopAbs_VERTEX)
+      myMap.RemoveLast();
+  }
 
 #ifdef OCCT_DEBUG
 #ifdef DRAW
