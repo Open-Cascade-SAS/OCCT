@@ -397,12 +397,17 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
   math_Vector aStepBestPoint(1, myN);
   Standard_Boolean isInside = Standard_False;
   Standard_Real r;
+  Standard_Boolean isReached = Standard_False;
 
-
-  for(myX(j) = myA(j) + myE1; myX(j) < myB(j) + myE1; myX(j) += myV(j))
+  for(myX(j) = myA(j) + myE1; 
+     (myX(j) < myB(j) + myE1) && (!isReached);
+      myX(j) += myV(j))
   {
     if (myX(j) > myB(j))
+    {
       myX(j) = myB(j);
+      isReached = Standard_True;
+    }
 
     if (j == 1)
     {
