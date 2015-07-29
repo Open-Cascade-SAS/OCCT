@@ -666,7 +666,7 @@ static void EvalMax(const TopoDS_Shape& S, Standard_Real& Tol)
 
 void BRepOffset_MakeOffset::MakeOffsetShape()
 {  
-  myDone     = Standard_False;
+  myDone = Standard_False;
   //------------------------------------------
   // Construction of myShape without caps.
   //------------------------------------------
@@ -674,20 +674,40 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
   {
     RemoveCorks (myShape,myFaces);
   }
-  
+
   if (! IsConnectedShell(myShape))
     Standard_ConstructionError::Raise("BRepOffset_MakeOffset : Incorrect set of faces to remove, the remaining shell is not connected");
 
-  if (Abs(myOffset) < myTol) return;
+  if (Abs(myOffset) <= myTol)
+  {
+    // Check for face with non-null offset value.
+    Standard_Boolean isFound = Standard_False;
+    TopTools_DataMapIteratorOfDataMapOfShapeReal anIter(myFaceOffset);
+    for( ; anIter.More(); anIter.Next())
+    {
+      if (Abs(anIter.Value()) > myTol)
+      {
+        isFound = Standard_True;
+        break;
+      }
+    }
+
+    if (!isFound)
+    {
+      // No face with non-null offset found.
+      return;
+    }
+  }
 
   TopAbs_State       Side = TopAbs_IN;
   if (myOffset < 0.) Side = TopAbs_OUT;
+
   // ------------
   // Preanalyse.
   // ------------
   EvalMax(myShape,myTol);
   // There are possible second variant: analytical continuation of arcsin.
-  Standard_Real TolAngleCoeff = Min(myTol/Abs(myOffset*0.5), 1.0);
+  Standard_Real TolAngleCoeff = Min(myTol / (Abs(myOffset * 0.5) + Precision::Confusion()), 1.0);
   Standard_Real TolAngle = 4*ASin(TolAngleCoeff);
   myAnalyse.Perform(myShape,TolAngle);
   //---------------------------------------------------
@@ -1033,12 +1053,12 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   // Extension of neighbor edges of new edges and intersection between neighbors.
   //--------------------------------------------------------------------------------
   Handle(BRepAlgo_AsDes) AsDes2d = new BRepAlgo_AsDes();
-  for (Exp.Init(myShape,TopAbs_FACE) ; Exp.More(); Exp.Next()) {
+  for (Exp.Init(myShape,TopAbs_FACE) ; Exp.More(); Exp.Next())
+  {
     const TopoDS_Face& FI = TopoDS::Face(Exp.Current());
-//  Modified by skv - Mon Jan 12 11:50:02 2004 OCC4455 Begin
-//    BRepOffset_Inter2d::ConnexIntByInt (FI,MapSF(FI),MES,Build,AsDes2d,myTol);
-    BRepOffset_Inter2d::ConnexIntByInt (FI,MapSF(FI),MES,Build,AsDes2d,myOffset, myTol);
-//  Modified by skv - Mon Jan 12 11:50:03 2004 OCC4455 End
+    Standard_Real aCurrFaceTol = BRep_Tool::Tolerance(FI);
+    BRepOffset_Inter2d::ConnexIntByInt (FI, MapSF(FI), MES, Build, 
+                                        AsDes2d, myOffset, aCurrFaceTol);
   }
   //-----------------------------------------------------------
   // Great restriction of new edges and update of AsDes.
@@ -1114,17 +1134,21 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   }
   
   TopTools_ListIteratorOfListOfShape itLFE(LFE);
-  for (; itLFE.More(); itLFE.Next()) {
+  for (; itLFE.More(); itLFE.Next())
+  {
     const TopoDS_Face& NEF = TopoDS::Face(itLFE.Value());
-    BRepOffset_Inter2d::Compute(AsDes,NEF,NewEdges,myTol);
+    Standard_Real aCurrFaceTol = BRep_Tool::Tolerance(NEF);
+    BRepOffset_Inter2d::Compute(AsDes, NEF, NewEdges, aCurrFaceTol);
   }
   //----------------------------------------------
   // Intersections 2d on caps.
   //----------------------------------------------
   Standard_Integer i;
-  for (i = 1; i <= myFaces.Extent(); i++) {
+  for (i = 1; i <= myFaces.Extent(); i++)
+  {
     const TopoDS_Face& Cork = TopoDS::Face(myFaces(i));
-    BRepOffset_Inter2d::Compute(AsDes,Cork,NewEdges,myTol);
+    Standard_Real aCurrFaceTol = BRep_Tool::Tolerance(Cork);
+    BRepOffset_Inter2d::Compute(AsDes, Cork, NewEdges, aCurrFaceTol);
   }
 
   //-------------------------------
