@@ -434,6 +434,7 @@ void BOPAlgo_BuilderFace::PerformLoops()
         }//for (; aIt.More(); aIt.Next()) { 
       }//for (; aItE.More(); aItE.Next()) {
     }//for (; aItW.More(); aItW.Next()) {
+    aW.Closed(BRep_Tool::IsClosed(aW));
     myLoopsInternal.Append(aW);
   }//for (i = 1; (i <= aNbEA) && bFlag; ++i) {
 }
@@ -804,6 +805,7 @@ void MakeInternalWires(const BOPCol_IndexedMapOfShape& theME,
         }
       }
     }
+    aW.Closed(BRep_Tool::IsClosed(aW));
     theWires.Append(aW);
   }
 }
