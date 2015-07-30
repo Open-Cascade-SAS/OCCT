@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC26447"
+puts "============"
+puts ""
+##############################################################
+# Performance degradation intersecting cylindrical surfaces
+#############################################################
+
+cylinder c1 0 0 0 1 0 0 0 -1 0 100
+cylinder c2 0 0 0 0 1 0 1 0 0 100
+mkface f1 c1
+mkface f2 c2
+
+dchrono cr reset
+dchrono cr start
+
+for {set i 1} {$i <= 1000} {incr i} {
+  bopcurves f1 f2
+}
+
+dchrono cr stop
+if { [string compare $tcl_platform(platform) "windows"] == 0 } {
+  set max_time 7.5
+} else {
+  set max_time 4.5
+}
+set TimeList [dchrono cr show]
+regexp {Elapsed time: [-0-9.+eE]+ Hours [-0-9.+eE]+ Minutes ([-0-9.+eE]+) Seconds} $TimeList full ElapsedTime_sec
+
+if { ${ElapsedTime_sec} > ${max_time} } {
+  puts "Error: Elapsed time of intersecting is more than ${max_time} seconds"
+} else {
+  puts "OK: Elapsed time of intersecting is less than ${max_time} seconds"
+}
