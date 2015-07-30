@@ -3805,6 +3805,77 @@ static Standard_Integer OCC26407 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//=======================================================================
+//function : OCC26485
+//purpose  :
+//=======================================================================
+#include <Poly.hxx>
+static Standard_Integer OCC26485 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 2)
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get(theArgVec[1]);
+  if (aShape.IsNull())
+  {
+    theDI << "Failed. Null shape\n";
+    return 1;
+  }
+
+  Standard_Boolean isFailed = Standard_False;
+  TopExp_Explorer aExplorer(aShape, TopAbs_FACE);
+  for (; aExplorer.More(); aExplorer.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face( aExplorer.Current() );
+    TopLoc_Location L = TopLoc_Location();
+    const Handle(Poly_Triangulation)& aT = BRep_Tool::Triangulation( aFace , L );
+
+    if(aT.IsNull())
+      continue;
+
+    Poly::ComputeNormals(aT);
+    const TColgp_Array1OfPnt&       aVertices = aT->Nodes();
+    const TShort_Array1OfShortReal& aNormals  = aT->Normals();
+
+    // Number of nodes in the triangulation
+    int aVertexNb = aT->Nodes().Length();
+    if (aVertexNb*3 != aNormals.Length())
+    {
+      theDI << "Failed. Different number of normals vs. vertices\n";
+      return 1;
+    }
+
+    // Get each vertex index, checking common vertexes between shapes
+    for( int i=0; i < aVertexNb; i++ )
+    {
+      gp_Pnt aPoint = aVertices.Value( i+1 );
+      gp_Vec aNormal = gp_Vec(
+        aNormals.Value( i*3 + 1 ),
+        aNormals.Value( i*3 + 2 ),
+        aNormals.Value( i*3 + 3 ) );
+
+      if (aNormal.X() == 0 && aNormal.Y() == 0 && aNormal.Z() == 1)
+      {
+        char buf[256];
+        sprintf(buf, "fail_%d", i+1);
+        theDI << "Failed. Point " << buf << ": "
+              << aPoint.X() << " "
+              << aPoint.Y() << " "
+              << aPoint.Z() << "\n";
+
+        DrawTrSurf::Set (buf, aPoint);
+      }
+    }
+  }
+
+  theDI << (isFailed ? "Test failed" : "Test completed") << "\n";
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3879,5 +3950,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
   theCommands.Add ("OCC26448", "OCC26448: check method Prepend() of sequence", __FILE__, OCC26448, group);
   theCommands.Add ("OCC26407", "OCC26407 result_name", __FILE__, OCC26407, group);
+  theCommands.Add ("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
   return;
 }
