@@ -302,17 +302,6 @@ vec3 handleMaterial (in SMaterial theMaterial, in vec3 theInput, in vec3 theOutp
 }
 
 //=======================================================================
-// function : sampleSpecularReflection
-// purpose  : Samples specular BRDF, W = BRDF * cos(N, PSI) / PDF(PSI)
-//=======================================================================
-void sampleSpecularReflection (in vec3 theOutput, out vec3 theInput)
-{
-  theInput = vec3 (-theOutput.x,
-                   -theOutput.y,
-                    theOutput.z);
-}
-
-//=======================================================================
 // function : sampleLambertianReflection
 // purpose  : Samples Lambertian BRDF, W = BRDF * cos(N, PSI) / PDF(PSI)
 //=======================================================================
@@ -327,38 +316,51 @@ void sampleLambertianReflection (in vec3 theOutput, out vec3 theInput)
                    aTemp * sin (2.f * M_PI * aKsi1),
                    sqrt (1.f - aKsi2));
 
-  if (theOutput.z < 0.f)
-    theInput.z = -theInput.z;
+  theInput.z = mix (-theInput.z, theInput.z, step (0.f, theOutput.z));
 }
+
+// Types of bounces
+#define NON_SPECULAR_BOUNCE 0
+#define SPEC_REFLECT_BOUNCE 1
+#define SPEC_REFRACT_BOUNCE 2
+
+#define IS_NON_SPEC_BOUNCE(theBounce) (theBounce == 0)
+#define IS_ANY_SPEC_BOUNCE(theBounce) (theBounce != 0)
+#define IS_REFL_SPEC_BOUNCE(theBounce) (theBounce == 1)
+#define IS_REFR_SPEC_BOUNCE(theBounce) (theBounce == 2)
 
 //=======================================================================
 // function : sampleSpecularTransmission
 // purpose  : Samples specular BTDF, W = BRDF * cos(N, PSI) / PDF(PSI)
 //=======================================================================
 vec3 sampleSpecularTransmission (in vec3 theOutput, out vec3 theInput,
-  out bool isTransmit, in vec3 theThroughput, in vec3 theFresnelCoeffs)
+  out int theBounce, in vec3 theWeight, in vec3 theFresnelCoeffs)
 {
   vec3 aFresnel = fresnelMedia (theOutput.z, theFresnelCoeffs);
 
-  float aProbability = convolve (aFresnel, theThroughput);
+  float aProbability = convolve (aFresnel, theWeight);
+
+  // Check if transmission takes place
+  theBounce = RandFloat() <= aProbability ?
+    SPEC_REFLECT_BOUNCE : SPEC_REFRACT_BOUNCE;
 
   // Sample input direction
-  if (RandFloat() <= aProbability)
+  if (theBounce == SPEC_REFLECT_BOUNCE)
   {
     theInput = vec3 (-theOutput.x,
                      -theOutput.y,
                       theOutput.z);
 
-    isTransmit = false;
+    theWeight = aFresnel * (1.f / aProbability);
+  }
+  else
+  {
+    transmitted (theFresnelCoeffs.y, theOutput, theInput);
 
-    return aFresnel * (1.f / aProbability);
+    theWeight = (UNIT - aFresnel) * (1.f / (1.f - aProbability));
   }
 
-  transmitted (theFresnelCoeffs.y, theOutput, theInput);
-
-  isTransmit = true;
-
-  return (UNIT - aFresnel) * (1.f / (1.f - aProbability));
+  return theWeight;
 }
 
 //=======================================================================
@@ -430,98 +432,55 @@ vec3 sampleBlinnReflection (in vec3 theOutput, out vec3 theInput, in vec3 theFre
   return aFresnel * ((theExponent + 2.f) / (theExponent + 1.f) * aGeom / aCosThetaO);
 }
 
-// Enables expiremental russian roulette sampling
-// #define RUSSIAN_ROULETTE
-
 //=======================================================================
 // function : sampleMaterial
 // purpose  : Samples specified composite material (BSDF)
 //=======================================================================
-bool sampleMaterial (in SMaterial theMaterial,
+void sampleMaterial (in SMaterial theMaterial,
                      in vec3      theOutput,
-                     in vec3      theFactor,
                      out vec3     theInput,
-                     out vec3     theWeight,
-                     inout bool   isTransmit)
+                     inout vec3   theWeight,
+                     inout int    theBounce)
 {
-  theWeight = ZERO;
-
   // Compute the probability of ray reflection
-  float aPd = convolve (theMaterial.Kd.rgb, theFactor);
-  float aPs = convolve (theMaterial.Ks.rgb, theFactor);
-  float aPr = convolve (theMaterial.Kr.rgb, theFactor);
-  float aPt = convolve (theMaterial.Kt.rgb, theFactor);
+  float aPd = convolve (theMaterial.Kd.rgb, theWeight);
+  float aPs = convolve (theMaterial.Ks.rgb, theWeight);
+  float aPr = convolve (theMaterial.Kr.rgb, theWeight);
+  float aPt = convolve (theMaterial.Kt.rgb, theWeight);
 
   float aReflection = aPd + aPs + aPr + aPt;
 
-#ifndef RUSSIAN_ROULETTE
-  if (aReflection < 1e-2f)
-  {
-    return false; // path termination
-  }
-#else
-  float aSurvival = max (dot (theFactor, LUMA), 0.1f);
-
-  if (RandFloat() > aSurvival)
-  {
-    return false; // path termination
-  }
-#endif
-
-  isTransmit = false;
-
   // Choose BSDF component to sample
   float aKsi = aReflection * RandFloat();
+
+  theBounce = NON_SPECULAR_BOUNCE;
 
   if (aKsi < aPd) // diffuse reflection
   {
     sampleLambertianReflection (theOutput, theInput);
 
-#ifndef RUSSIAN_ROULETTE
-    theWeight = theMaterial.Kd.rgb * (aReflection / aPd);
-#else
-    theWeight = theMaterial.Kd.rgb * (aReflection / aPd / aSurvival);
-#endif
-
-    return false; // non-specular bounce
+    theWeight *= theMaterial.Kd.rgb * (aReflection / aPd);
   }
   else if (aKsi < aPd + aPs) //  glossy reflection
   {
-    theWeight = sampleBlinnReflection (theOutput, theInput, theMaterial.Fresnel, theMaterial.Ks.w);
-
-#ifndef RUSSIAN_ROULETTE
-    theWeight *= theMaterial.Ks.rgb * (aReflection / aPs);
-#else
-    theWeight *= theMaterial.Ks.rgb * (aReflection / aPs / aSurvival);
-#endif
-
-    return false; // non-specular bounce
+    theWeight *= theMaterial.Ks.rgb * (aReflection / aPs) *
+      sampleBlinnReflection (theOutput, theInput, theMaterial.Fresnel, theMaterial.Ks.w);
   }
   else if (aKsi < aPd + aPs + aPr) //  specular reflection
   {
-    theWeight = sampleSpecularReflection (theOutput, theInput, theMaterial.Fresnel);
+    theWeight *= theMaterial.Kr.rgb * (aReflection / aPr) *
+      sampleSpecularReflection (theOutput, theInput, theMaterial.Fresnel);
 
-#ifndef RUSSIAN_ROULETTE
-    theWeight *= theMaterial.Kr.rgb * (aReflection / aPr);
-#else
-    theWeight *= theMaterial.Kr.rgb * (aReflection / aPr / aSurvival);
-#endif
-
-    return true; // specular bounce
+    theBounce = SPEC_REFLECT_BOUNCE; // specular bounce
   }
   else //  specular transmission
   {
-    theWeight = sampleSpecularTransmission (theOutput, theInput,
-      isTransmit, theFactor, theMaterial.Fresnel);
-
-#ifndef RUSSIAN_ROULETTE
-    theWeight *= theMaterial.Kt.rgb * (aReflection / aPt);
-#else
-    theWeight *= theMaterial.Kt.rgb * (aReflection / aPt / aSurvival);
-#endif
-
-    return true; // specular bounce
+    theWeight *= theMaterial.Kt.rgb * (aReflection / aPt) *
+      sampleSpecularTransmission (theOutput, theInput, theBounce, theWeight, theMaterial.Fresnel);
   }
+
+  // path termination for extra small weights
+  theWeight = mix (theWeight, ZERO, float (aReflection < 1e-3f));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -532,11 +491,14 @@ bool sampleMaterial (in SMaterial theMaterial,
 // function : handlePointLight
 // purpose  :
 //=======================================================================
-float handlePointLight (in vec3 theInput, in vec3 theToLight, in float theRadius)
+float handlePointLight (in vec3 theInput, in vec3 theToLight, in float theRadius, in float theDistance)
 {
-  float aCosMax = sqrt (1.f - theRadius * theRadius / dot (theToLight, theToLight));
+  float aDistance = dot (theToLight, theToLight);
 
-  return step (aCosMax, dot (theInput, theToLight));
+  float aCosMax = inversesqrt (1.f + theRadius * theRadius / aDistance);
+
+  return float (aDistance < theDistance * theDistance) *
+    step (aCosMax, dot (theToLight, theInput) * inversesqrt (aDistance));
 }
 
 //=======================================================================
@@ -549,47 +511,29 @@ float handleDirectLight (in vec3 theInput, in vec3 theToLight, in float theCosMa
 }
 
 //=======================================================================
-// function : samplePointLight
-// purpose  :
+// function : sampleLight
+// purpose  : general sampling function for directional and point lights
 //=======================================================================
-vec3 samplePointLight (in vec3 theToLight, in float theRadius, inout float thePDF)
+vec3 sampleLight (in vec3 theToLight, in bool isDirectional, in float theSmoothness, inout float thePDF)
 {
   SLocalSpace aSpace = LocalSpace (theToLight);
 
-  float aCosMax = sqrt (1.f - theRadius * theRadius / dot (theToLight, theToLight));
+  // for point lights smoothness defines radius
+  float aCosMax = isDirectional ? theSmoothness :
+    inversesqrt (1.f + theSmoothness * theSmoothness / dot (theToLight, theToLight));
 
   float aKsi1 = RandFloat();
   float aKsi2 = RandFloat();
 
   float aTmp = 1.f - aKsi2 * (1.f - aCosMax);
 
-  vec3 anInput = vec3 (sqrt (1.f - aTmp * aTmp) * cos (2.f * M_PI * aKsi1),
-                       sqrt (1.f - aTmp * aTmp) * sin (2.f * M_PI * aKsi1),
+  vec3 anInput = vec3 (cos (2.f * M_PI * aKsi1),
+                       sin (2.f * M_PI * aKsi1),
                        aTmp);
 
-  thePDF *= (theRadius > 0.f) ? 1.f / (2.f * M_PI) / (1.f - aCosMax) : 1.f;
+  anInput.xy *= sqrt (1.f - aTmp * aTmp);
 
-  return normalize (fromLocalSpace (anInput, aSpace));
-}
-
-//=======================================================================
-// function : sampleDirectLight
-// purpose  :
-//=======================================================================
-vec3 sampleDirectLight (in vec3 theToLight, in float theCosMax, inout float thePDF)
-{
-  SLocalSpace aSpace = LocalSpace (theToLight);
-
-  float aKsi1 = RandFloat();
-  float aKsi2 = RandFloat();
-
-  float aTmp = 1.f - aKsi2 * (1.f - theCosMax);
-
-  vec3 anInput = vec3 (sqrt (1.f - aTmp * aTmp) * cos (2.f * M_PI * aKsi1),
-                       sqrt (1.f - aTmp * aTmp) * sin (2.f * M_PI * aKsi1),
-                       aTmp);
-
-  thePDF *= (theCosMax < 1.f) ? 1.f / (2.f * M_PI) / (1.f - theCosMax) : 1.f;
+  thePDF *= (aCosMax < 1.f) ? 1.f / (2.f * M_PI) / (1.f - aCosMax) : 1.f;
 
   return normalize (fromLocalSpace (anInput, aSpace));
 }
@@ -609,26 +553,26 @@ vec2 Latlong (in vec3 thePoint)
 }
 
 // =======================================================================
-// function : EnvironmentRadiance
-// purpose  :
+// function: intersectLight
+// purpose : Checks intersections with light sources
 // =======================================================================
-vec3 EnvironmentRadiance (in SRay theRay, in bool isSpecular, in bool isBackground)
+vec3 intersectLight (in SRay theRay, in bool isViewRay, in int theBounce, in float theDistance)
 {
   vec3 aRadiance = ZERO;
 
-  if (uSphereMapForBack != 0 || !isBackground)
+  if ((isViewRay || IS_REFR_SPEC_BOUNCE(theBounce)) && uSphereMapForBack == 0)
   {
-    aRadiance += FetchEnvironment (Latlong (theRay.Direct)).xyz;
+    aRadiance = BackgroundColor().xyz;
   }
   else
   {
-    aRadiance += BackgroundColor().xyz;
+    aRadiance = FetchEnvironment (Latlong (theRay.Direct)).xyz;
   }
 
   // Apply gamma correction (gamma is 2)
-  aRadiance *= aRadiance;
+  aRadiance = aRadiance * aRadiance * float (theDistance == MAXFLOAT);
 
-  for (int aLightIdx = 0; aLightIdx < uLightCount && isSpecular; ++aLightIdx)
+  for (int aLightIdx = 0; aLightIdx < uLightCount && (isViewRay || IS_ANY_SPEC_BOUNCE(theBounce)); ++aLightIdx)
   {
     vec4 aLight = texelFetch (
       uRaytraceLightSrcTexture, LIGHT_POS (aLightIdx));
@@ -637,9 +581,10 @@ vec3 EnvironmentRadiance (in SRay theRay, in bool isSpecular, in bool isBackgrou
 
     if (aLight.w != 0.f) // point light source
     {
-      aRadiance += aParam.rgb * handlePointLight (theRay.Direct, aLight.xyz - theRay.Origin, aParam.w /* radius */);
+      aRadiance += aParam.rgb * handlePointLight (
+        theRay.Direct, aLight.xyz - theRay.Origin, aParam.w /* radius */, theDistance);
     }
-    else // directional light source
+    else if (theDistance == MAXFLOAT) // directional light source
     {
       aRadiance += aParam.rgb * handleDirectLight (theRay.Direct, aLight.xyz, aParam.w /* angle cosine */);
     }
@@ -659,6 +604,9 @@ vec3 EnvironmentRadiance (in SRay theRay, in bool isSpecular, in bool isBackgrou
 #define MATERIAL_FRESNEL(index) (18 * index + 16)
 #define MATERIAL_ABSORPT(index) (18 * index + 17)
 
+// Enables expiremental russian roulette sampling
+#define RUSSIAN_ROULETTE
+
 //=======================================================================
 // function : PathTrace
 // purpose  : Calculates radiance along the given ray
@@ -670,28 +618,31 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
   vec3 aRadiance   = ZERO;
   vec3 aThroughput = UNIT;
 
-  bool isInMedium = false;
-  bool isSpecular = false;
-  bool isTransmit = false;
+  int aBounce = 0; // type of previous hit point
+  int aTrsfId = 0; // offset of object transform
 
-  int anObjectId; // ID of intersected triangle
+  bool isInMedium = false;
 
   for (int aDepth = 0; aDepth < NB_BOUNCES; ++aDepth)
   {
     SIntersect aHit = SIntersect (MAXFLOAT, vec2 (ZERO), ZERO);
 
-    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, anObjectId);
+    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, aTrsfId);
 
-    if (aTriIndex.x == -1)
+    // check implicit path
+    vec3 aLe = intersectLight (theRay,
+      aDepth == 0 /* is view ray */, aBounce, aHit.Time);
+
+    if (any (greaterThan (aLe, ZERO)) || aTriIndex.x == -1)
     {
-      return vec4 (aRadiance + aThroughput *
-        EnvironmentRadiance (theRay, isSpecular, aDepth == 0 || isTransmit), 0.f);
+      aRadiance += aThroughput * aLe; break; // terminate path
     }
 
-    vec3 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0).xyz;
-    vec3 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1).xyz;
-    vec3 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2).xyz;
+    vec3 aInvTransf0 = texelFetch (uSceneTransformTexture, aTrsfId + 0).xyz;
+    vec3 aInvTransf1 = texelFetch (uSceneTransformTexture, aTrsfId + 1).xyz;
+    vec3 aInvTransf2 = texelFetch (uSceneTransformTexture, aTrsfId + 2).xyz;
 
+    // compute geometrical normal
     aHit.Normal = normalize (vec3 (dot (aInvTransf0, aHit.Normal),
                                    dot (aInvTransf1, aHit.Normal),
                                    dot (aInvTransf2, aHit.Normal)));
@@ -711,9 +662,9 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       aThroughput *= aSrcColorRGBA.w;
     }
 
-    theRay.Origin += theRay.Direct * aHit.Time; // intersection point
+    theRay.Origin += theRay.Direct * aHit.Time; // get new intersection point
 
-    // Fetch material (BSDF)
+    // fetch material (BSDF)
     SMaterial aMaterial = SMaterial (
       vec4 (texelFetch (uRaytraceMaterialTexture, MATERIAL_KD      (aTriIndex.w))),
       vec3 (texelFetch (uRaytraceMaterialTexture, MATERIAL_KR      (aTriIndex.w))),
@@ -742,6 +693,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
     }
 #endif
 
+    // compute smooth normal
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
 
     aNormal = normalize (vec3 (dot (aInvTransf0, aNormal),
@@ -750,7 +702,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
 
     SLocalSpace aSpace = LocalSpace (aNormal);
 
-    // Account for self-emission (not stored in the material)
+    // account for self-emission (not stored in the material)
     aRadiance += aThroughput * texelFetch (
       uRaytraceMaterialTexture, MATERIAL_LE (aTriIndex.w)).rgb;
 
@@ -763,18 +715,13 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
       vec4 aParam = texelFetch (
         uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx));
 
-      float aPDF = 1.f / uLightCount, aDistance = MAXFLOAT;
+      // 'w' component is 0 for infinite light and 1 for point light
+      aLight.xyz -= mix (ZERO, theRay.Origin, aLight.w);
 
-      if (aLight.w != 0.f) // point light source
-      {
-        aDistance = length (aLight.xyz -= theRay.Origin);
+      float aPDF = 1.f / uLightCount, aDistance = length (aLight.xyz);
 
-        aLight.xyz = samplePointLight (aLight.xyz, aParam.w /* radius */, aPDF);
-      }
-      else // directional light source
-      {
-        aLight.xyz = sampleDirectLight (aLight.xyz, aParam.w /* angle cosine */, aPDF);
-      }
+      aLight.xyz = sampleLight (aLight.xyz * (1.f / aDistance),
+        aLight.w == 0.f /* is infinite */, aParam.w /* angle cosine */, aPDF);
 
       vec3 aContrib = (1.f / aPDF) * aParam.rgb /* Le */ * handleMaterial (
           aMaterial, toLocalSpace (aLight.xyz, aSpace), toLocalSpace (-theRay.Direct, aSpace));
@@ -787,17 +734,16 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
           -uSceneEpsilon, uSceneEpsilon, step (0.f, dot (aHit.Normal, aLight.xyz)));
 
         float aVisibility = SceneAnyHit (aShadow,
-          InverseDirection (aLight.xyz), aDistance);
+          InverseDirection (aLight.xyz), aLight.w == 0.f ? MAXFLOAT : aDistance);
 
         aRadiance += aVisibility * aThroughput * aContrib;
       }
     }
 
     vec3 anInput;
-    vec3 aWeight;
 
-    isSpecular = sampleMaterial (aMaterial,
-      toLocalSpace (-theRay.Direct, aSpace), aThroughput, anInput, aWeight, isTransmit);
+    sampleMaterial (aMaterial,
+      toLocalSpace (-theRay.Direct, aSpace), anInput, aThroughput, aBounce);
 
     if (isInMedium)
     {
@@ -805,14 +751,23 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
         aMaterial.Absorption.w * (UNIT - aMaterial.Absorption.rgb));
     }
 
-    isInMedium = isTransmit ? !isInMedium : isInMedium;
+    isInMedium = IS_REFR_SPEC_BOUNCE(aBounce) ? !isInMedium : isInMedium;
 
-    aThroughput *= aWeight;
-
+#ifndef RUSSIAN_ROULETTE
     if (all (lessThan (aThroughput, MIN_THROUGHPUT)))
     {
-      return vec4 (aRadiance, 0.f);
+      aDepth = INVALID_BOUNCES; // terminate path
     }
+#else
+    float aSurvive = aDepth < 3 ? 1.f : min (dot (LUMA, aThroughput), 0.95f);
+
+    if (RandFloat() > aSurvive)
+    {
+      aDepth = INVALID_BOUNCES; // terminate path
+    }
+
+    aThroughput /= aSurvive;
+#endif
 
     anInput = normalize (fromLocalSpace (anInput, aSpace));
 

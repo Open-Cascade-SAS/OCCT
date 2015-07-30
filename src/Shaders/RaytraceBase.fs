@@ -158,9 +158,9 @@ uint RandState;
 // purpose  : Applies hash function by Thomas Wang to randomize seeds
 //            (see http://www.burtleburtle.net/bob/hash/integer.html)
 // =======================================================================
-void SeedRand (in int theSeed, in int theSizeX)
+void SeedRand (in int theSeed, in int theSizeX, in int theRadius)
 {
-  RandState = uint (int (gl_FragCoord.y) * theSizeX + int (gl_FragCoord.x) + theSeed);
+  RandState = uint (int (gl_FragCoord.y) / theRadius * theSizeX + int (gl_FragCoord.x) / theRadius + theSeed);
 
   RandState = (RandState + 0x479ab41du) + (RandState <<  8);
   RandState = (RandState ^ 0xe4aa10ceu) ^ (RandState >>  5);
@@ -365,9 +365,7 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
 
   ivec4 aTriIndex = INALID_HIT;
 
-  bool toContinue = true;
-
-  while (toContinue)
+  for (bool toContinue = true; toContinue;)
   {
     ivec3 aData = texelFetch (uSceneNodeInfoTexture, aNode).xyz;
 
@@ -487,11 +485,9 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
   int aHead = theSentinel;  // stack pointer
   int aNode = theBVHOffset; // node to visit
 
-#ifdef TRANSPARENT_SHADOWS
-  float aFactor = 1.0f;
-#endif
+  float aFactor = 1.f;
 
-  while (true)
+  for (bool toContinue = true; toContinue;)
   {
     ivec4 aData = texelFetch (uSceneNodeInfoTexture, aNode);
 
@@ -545,15 +541,10 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
         }
         else
         {
-#ifdef TRANSPARENT_SHADOWS
-          if (aHead == theSentinel)
-            return aFactor;
-#else
-          if (aHead == theSentinel)
-            return 1.0f;
-#endif
+          toContinue = (aHead != theSentinel);
 
-          aNode = Stack[aHead--];
+          if (toContinue)
+            aNode = Stack[aHead--];
         }
       }
     }
@@ -580,45 +571,38 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
 #ifdef TRANSPARENT_SHADOWS
         if (aTime < theDistance)
         {
-          aFactor *= 1.0f - texelFetch (uRaytraceMaterialTexture, MATERIAL_TRAN (aTriangle.w)).x;
+          aFactor *= 1.f - texelFetch (uRaytraceMaterialTexture, MATERIAL_TRAN (aTriangle.w)).x;
         }
 #else
         if (aTime < theDistance)
-          return 0.0f;
+        {
+          aFactor = 0.f;
+        }
 #endif
       }
 
-#ifdef TRANSPARENT_SHADOWS
-      if (aHead == theSentinel || aFactor < 0.1f)
-        return aFactor;
-#else
-      if (aHead == theSentinel)
-        return 1.0f;
-#endif
+      toContinue = (aHead != theSentinel) && (aFactor > 0.1f);
 
-      aNode = Stack[aHead--];
+      if (toContinue)
+        aNode = Stack[aHead--];
     }
   }
 
-#ifdef TRANSPARENT_SHADOWS
   return aFactor;
-#else
-  return 1.0f;
-#endif
 }
 
 // =======================================================================
 // function : SceneNearestHit
 // purpose  : Finds intersection with nearest scene triangle
 // =======================================================================
-ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theHit, out int theObjectId)
+ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theHit, out int theTrsfId)
 {
   int aHead = -1; // stack pointer
   int aNode =  0; // node to visit
 
   ivec4 aHitObject = INALID_HIT;
 
-  while (true)
+  for (bool toContinue = true; toContinue;)
   {
     ivec4 aData = texelFetch (uSceneNodeInfoTexture, aNode);
 
@@ -635,12 +619,12 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       if (max (aTimes.x, max (aTimes.y, aTimes.z)) < theHit.Time)
       {
         // fetch object transformation
-        int anObjectId = aData.x - 1;
+        int aTrsfId = (aData.x - 1) * 4;
 
-        vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
-        vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
-        vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
-        vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
+        vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, aTrsfId + 0);
+        vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, aTrsfId + 1);
+        vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, aTrsfId + 2);
+        vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, aTrsfId + 3);
 
         SRay aTrsfRay = SRay (
           MatrixColMultiplyPnt (theRay.Origin, aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3),
@@ -660,14 +644,14 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
                               aTriIndex.z,  // vertex 2
                               aTriIndex.w); // material
 
-          theObjectId = anObjectId;
+          theTrsfId = aTrsfId;
         }
       }
 
-      if (aHead < 0)
-        return aHitObject;
+      toContinue = aHead >= 0;
 
-      aNode = Stack[aHead--];
+      if (toContinue)
+        aNode = Stack[aHead--];
     }
     else // if inner node
     {
@@ -716,10 +700,10 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
         }
         else
         {
-          if (aHead < 0)
-            return aHitObject;
+          toContinue = aHead >= 0;
 
-          aNode = Stack[aHead--];
+          if (toContinue)
+            aNode = Stack[aHead--];
         }
       }
     }
@@ -737,23 +721,21 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
   int aHead = -1; // stack pointer
   int aNode =  0; // node to visit
 
-#ifdef TRANSPARENT_SHADOWS
-  float aFactor = 1.0f;
-#endif
+  float aFactor = 1.f;
 
-  while (true)
+  for (bool toContinue = true; toContinue;)
   {
     ivec4 aData = texelFetch (uSceneNodeInfoTexture, aNode);
 
     if (aData.x != 0) // if leaf node
     {
       // fetch object transformation
-      int anObjectId = aData.x - 1;
+      int aTrsfId = (aData.x - 1) * 4;
 
-      vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
-      vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
-      vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
-      vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
+      vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, aTrsfId + 0);
+      vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, aTrsfId + 1);
+      vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, aTrsfId + 2);
+      vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, aTrsfId + 3);
 
       SRay aTrsfRay = SRay (
         MatrixColMultiplyPnt (theRay.Origin, aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3),
@@ -767,17 +749,16 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       aFactor *= ObjectAnyHit (
         aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theDistance, aHead);
 
-      if (aHead < 0 || aFactor < 0.1f)
-        return aFactor;
+      toContinue = aHead >= 0 && aFactor >= 0.1f;
 #else
-      bool isShadow = 0.0f == ObjectAnyHit (
+      aFactor = ObjectAnyHit (
         aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theDistance, aHead);
 
-      if (aHead < 0 || isShadow)
-        return isShadow ? 0.0f : 1.0f;
+      toContinue = aHead >= 0 && aFactor != 0.0f;
 #endif
 
-      aNode = Stack[aHead--];
+      if (toContinue)
+        aNode = Stack[aHead--];
     }
     else // if inner node
     {
@@ -789,7 +770,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
       vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
       vec3 aNodeMaxRgh = texelFetch (uSceneMaxPointTexture, aData.z).xyz;
-      
+
       vec3 aTime0 = (aNodeMinLft - theRay.Origin) * theInverse;
       vec3 aTime1 = (aNodeMaxLft - theRay.Origin) * theInverse;
 
@@ -800,7 +781,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       aTimeLft = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
       int aHitLft = int(aTimeLft <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeLft <= theDistance);
-      
+
       aTime0 = (aNodeMinRgh - theRay.Origin) * theInverse;
       aTime1 = (aNodeMaxRgh - theRay.Origin) * theInverse;
 
@@ -809,7 +790,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 
       aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeRgh = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
-      
+
       int aHitRgh = int(aTimeRgh <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeRgh <= theDistance);
 
       if (bool(aHitLft & aHitRgh))
@@ -826,25 +807,16 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
         }
         else
         {
-#ifdef TRANSPARENT_SHADOWS
-          if (aHead < 0)
-            return aFactor;
-#else
-          if (aHead < 0)
-            return 1.0f;
-#endif
+          toContinue = aHead >= 0;
 
-          aNode = Stack[aHead--];
+          if (toContinue)
+            aNode = Stack[aHead--];
         }
       }
     }
   }
 
-#ifdef TRANSPARENT_SHADOWS
   return aFactor;
-#else
-  return 1.0f;
-#endif
 }
 
 #define PI 3.1415926f
@@ -955,7 +927,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
   vec3 aResult = vec3 (0.0f);
   vec4 aWeight = vec4 (1.0f);
 
-  int anObjectId;
+  int aTrsfId;
 
   float anOpenGlDepth = ComputeOpenGlDepth (theRay);
 
@@ -963,7 +935,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
   {
     SIntersect aHit = SIntersect (MAXFLOAT, vec2 (ZERO), ZERO);
 
-    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, anObjectId);
+    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, aTrsfId);
 
     if (aTriIndex.x == -1)
     {
@@ -982,12 +954,14 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
         aColor = vec4 (BackgroundColor().rgb * aGlColor.w + ComputeOpenGlColor().rgb, aGlColor.w);
       }
 
-      return vec4 (aResult.xyz + aWeight.xyz * aColor.xyz, aWeight.w * aColor.w);
+      aResult += aWeight.xyz * aColor.xyz; aWeight.w *= aColor.w;
+
+      break; // terminate path
     }
 
-    vec3 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0).xyz;
-    vec3 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1).xyz;
-    vec3 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2).xyz;
+    vec3 aInvTransf0 = texelFetch (uSceneTransformTexture, aTrsfId + 0).xyz;
+    vec3 aInvTransf1 = texelFetch (uSceneTransformTexture, aTrsfId + 1).xyz;
+    vec3 aInvTransf2 = texelFetch (uSceneTransformTexture, aTrsfId + 2).xyz;
 
     aHit.Normal = normalize (vec3 (dot (aInvTransf0, aHit.Normal),
                                    dot (aInvTransf1, aHit.Normal),

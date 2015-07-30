@@ -5320,6 +5320,22 @@ static int VFps (Draw_Interpretor& theDI,
   theDI << "FPS: " << aFpsAver << "\n"
         << "CPU: " << (1000.0 * aCpuAver) << " msec\n";
 
+  // compute additional statistics in ray-tracing mode
+  Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
+
+  if (aParams.Method == Graphic3d_RM_RAYTRACING)
+  {
+    Standard_Integer aSizeX;
+    Standard_Integer aSizeY;
+
+    aView->Window()->Size (aSizeX, aSizeY);
+
+    // 1 shadow ray and 1 secondary ray pew each bounce
+    const Standard_Real aMRays = aSizeX * aSizeY * aFpsAver * aParams.RaytracingDepth * 2 / 1.0e6f;
+
+    theDI << "MRays/sec (upper bound): " << aMRays << "\n";
+  }
+
   return 0;
 }
 
@@ -8389,6 +8405,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "rayDepth:     " <<  aParams.RaytracingDepth                             << "\n";
     theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
     theDI << "GI:           " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
+    theDI << "blocked RNG:  " << (aParams.CoherentPathTracingMode     ? "on" : "off") << "\n";
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
@@ -8572,6 +8589,23 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       {
         aParams.RaytracingDepth = Min (aParams.RaytracingDepth, 10);
       }
+    }
+    else if (aFlag == "-blockedrng"
+          || aFlag == "-brng")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.CoherentPathTracingMode ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+        && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.CoherentPathTracingMode = toEnable;
     }
     else if (aFlag == "-env")
     {
@@ -9360,6 +9394,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-fsaa         on|off'  Enables/disables adaptive anti-aliasing"
     "\n      '-gleam        on|off'  Enables/disables transparency shadow effects"
     "\n      '-gi           on|off'  Enables/disables global illumination effects"
+    "\n      '-brng         on|off'  Enables/disables blocked RNG (fast coherent PT)"
     "\n      '-env          on|off'  Enables/disables environment map background"
     "\n      '-shadingModel model'   Controls shading model from enumeration"
     "\n                              color, flat, gouraud, phong"

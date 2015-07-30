@@ -170,7 +170,6 @@ class OpenGl_View : public MMgt_TShared
                const Aspect_CLayer2d&               theCOverLayer,
                const Standard_Boolean               theToDrawImmediate);
 
-
   void DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
 
   //! Returns list of OpenGL Z-layers.
@@ -334,6 +333,7 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uSphereMapEnabled,
     OpenGl_RT_uSphereMapForBack,
     OpenGl_RT_uTexSamplersArray,
+    OpenGl_RT_uBlockedRngEnabled,
 
     // sampled frame params
     OpenGl_RT_uSampleWeight,
@@ -502,10 +502,10 @@ protected: //! @name methods related to ray-tracing
                                          const Handle(OpenGl_Context)& theGlContext);
 
   //! Adds OpenGL groups to ray-traced scene geometry.
-  Standard_Boolean addRaytraceGroups (const OpenGl_Structure*       theStructure,
-                                      const Standard_Integer        theStructMat,
-                                      const Standard_ShortReal*     theTransform,
-                                      const Handle(OpenGl_Context)& theGlContext);
+  Standard_Boolean addRaytraceGroups (const OpenGl_Structure*        theStructure,
+                                      const OpenGl_RaytraceMaterial& theStructMat,
+                                      const Standard_ShortReal*      theTransform,
+                                      const Handle(OpenGl_Context)&  theGlContext);
 
   //! Creates ray-tracing material properties.
   OpenGl_RaytraceMaterial convertMaterial (const OpenGl_AspectFace*      theAspect,

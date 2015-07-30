@@ -407,15 +407,11 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
   }
 
   // Get structure material
-  Standard_Integer aStructMatID = -1;
+  OpenGl_RaytraceMaterial aStructMaterial;
 
   if (theStructure->AspectFace() != NULL)
   {
-    aStructMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
-
-    OpenGl_RaytraceMaterial aStructMaterial = convertMaterial (theStructure->AspectFace(), theGlContext);
-
-    myRaytraceGeometry.Materials.push_back (aStructMaterial);
+    aStructMaterial = convertMaterial (theStructure->AspectFace(), theGlContext);
   }
 
   Standard_ShortReal aStructTransform[16];
@@ -431,7 +427,7 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
     }
   }
 
-  Standard_Boolean aResult = addRaytraceGroups (theStructure, aStructMatID,
+  Standard_Boolean aResult = addRaytraceGroups (theStructure, aStructMaterial,
     theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
 
   // Process all connected OpenGL structures
@@ -439,7 +435,7 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
 
   if (anInstanced != NULL && anInstanced->IsRaytracable())
   {
-    aResult &= addRaytraceGroups (anInstanced, aStructMatID,
+    aResult &= addRaytraceGroups (anInstanced, aStructMaterial,
       theStructure->Transformation()->mat ? aStructTransform : NULL, theGlContext);
   }
 
@@ -452,32 +448,26 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
 // function : addRaytraceGroups
 // purpose  : Adds OpenGL groups to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*       theStructure,
-                                                 const Standard_Integer        theStructMat,
-                                                 const Standard_ShortReal*     theTransform,
-                                                 const Handle(OpenGl_Context)& theGlContext)
+Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        theStructure,
+                                                 const OpenGl_RaytraceMaterial& theStructMat,
+                                                 const Standard_ShortReal*      theTransform,
+                                                 const Handle(OpenGl_Context)&  theGlContext)
 {
   for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
   {
     // Get group material
-    Standard_Integer aGroupMatID = -1;
+    OpenGl_RaytraceMaterial aGroupMaterial;
     if (aGroupIter.Value()->AspectFace() != NULL)
     {
-      aGroupMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
-
-      OpenGl_RaytraceMaterial aGroupMaterial = convertMaterial (
+      aGroupMaterial = convertMaterial (
         aGroupIter.Value()->AspectFace(), theGlContext);
-
-      myRaytraceGeometry.Materials.push_back (aGroupMaterial);
     }
 
-    Standard_Integer aMatID = aGroupMatID < 0 ? theStructMat : aGroupMatID;
-    if (aMatID < 0)
-    {
-      aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
+    Standard_Integer aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
-      myRaytraceGeometry.Materials.push_back (OpenGl_RaytraceMaterial());
-    }
+    // Use group material if available, otherwise use structure material
+    myRaytraceGeometry.Materials.push_back (
+      aGroupIter.Value()->AspectFace() != NULL ? aGroupMaterial : theStructMat);
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
     for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
@@ -1573,6 +1563,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Graphic3d_CView& theC
         aShaderProgram->GetUniformLocation (theGlContext, "uSphereMapEnabled");
       myUniformLocations[anIndex][OpenGl_RT_uSphereMapForBack] =
         aShaderProgram->GetUniformLocation (theGlContext, "uSphereMapForBack");
+      myUniformLocations[anIndex][OpenGl_RT_uBlockedRngEnabled] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uBlockedRngEnabled");
 
       myUniformLocations[anIndex][OpenGl_RT_uSampleWeight] =
         aShaderProgram->GetUniformLocation (theGlContext, "uSampleWeight");
@@ -2255,6 +2247,12 @@ Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        the
     myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], theCView.RenderParams.IsShadowEnabled ?  1 : 0);
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uReflectEnabled], theCView.RenderParams.IsReflectionEnabled ?  1 : 0);
+
+  if (theCView.RenderParams.IsGlobalIlluminationEnabled)
+  {
+    theProgram->SetUniform (theGlContext,
+      myUniformLocations[theProgramId][OpenGl_RT_uBlockedRngEnabled], theCView.RenderParams.CoherentPathTracingMode ?  1 : 0);
+  }
 
   // Set array of 64-bit texture handles
   if (theGlContext->arbTexBindless != NULL && myRaytraceGeometry.HasTextures())
