@@ -28,6 +28,9 @@ public:
   //! Creates an object to visualise the shape label.
   Standard_EXPORT XCAFPrs_AISObject (const TDF_Label& theLabel);
 
+  //! Returns the label which was visualised by this presentation
+  Standard_EXPORT inline TDF_Label GetLabel() const { return myLabel; }
+
 protected:
 
   //! Redefined method to compute presentation.
