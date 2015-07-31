@@ -433,19 +433,7 @@ public:
   //! structure <AStructure> displayed in <me>
   //! with the type Graphic3d_TOS_COMPUTED.
   Standard_EXPORT void ReCompute (const Handle(Graphic3d_Structure)& AStructure);
-  
-  //! Add structure to the list of immediate presentations.
-  //! @return true if structure has not been registered in this view
-  Standard_EXPORT Standard_Boolean DisplayImmediate (const Handle(Graphic3d_Structure)& theStructure, const Standard_Boolean theIsSingleView = Standard_True);
-  
-  //! Removes the structure from the list of immediate presentations.
-  //! @return true if structure has been registered in view
-  Standard_EXPORT Standard_Boolean EraseImmediate (const Handle(Graphic3d_Structure)& theStructure);
-  
-  //! Clears list of immediate presentations.
-  //! @return true if list was not empty
-  Standard_EXPORT Standard_Boolean ClearImmediate();
-  
+
   //! Returns the identification number of the view <me>.
   Standard_EXPORT Standard_Integer Identification() const;
   
@@ -529,6 +517,11 @@ public:
   
   //! Returns map of objects hidden within this specific view (not viewer-wise).
   Standard_EXPORT Handle(Graphic3d_NMapOfTransient)& ChangeHiddenObjects();
+
+  //! Returns Standard_True in case if the structure with the given <theStructId> is
+  //! in list of structures to be computed and stores computed struct to <theComputedStruct>.
+  Standard_EXPORT Standard_Boolean IsComputed (const Standard_Integer theStructId,
+                                               Handle(Graphic3d_Structure)& theComputedStruct) const;
 
 friend class Visual3d_ViewManager;
 
@@ -642,7 +635,6 @@ private:
   Aspect_Background MyBackground;
   Aspect_GradientBackground MyGradientBackground;
   Graphic3d_MapOfStructure myStructsDisplayed;
-  Graphic3d_MapOfStructure myImmediateStructures;
   Graphic3d_GraduatedTrihedron myGTrihedron;
   Handle(Graphic3d_Camera) myDefaultCamera;
   Standard_Boolean myAutoZFitIsOn;

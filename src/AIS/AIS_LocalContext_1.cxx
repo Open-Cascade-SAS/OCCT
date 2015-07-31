@@ -482,7 +482,7 @@ void AIS_LocalContext::Hilight (const Handle(SelectMgr_EntityOwner)& theOwner,
   const Standard_Integer aHilightMode = GetHiMod (Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable()));
   myMainPM->BeginImmediateDraw();
   theOwner->HilightWithColor (myMainPM, myCTX->HilightColor(), aHilightMode);
-  myMainPM->EndImmediateDraw (theView);
+  myMainPM->EndImmediateDraw (theView->Viewer());
 }
 
 //==================================================
@@ -1397,7 +1397,7 @@ Standard_Boolean AIS_LocalContext::UnhilightLastDetected (const Handle(V3d_View)
                                       : 0;
 
   myMapOfOwner->FindKey (mylastindex)->Unhilight (myMainPM, aHilightMode);
-  myMainPM->EndImmediateDraw (theView);
+  myMainPM->EndImmediateDraw (theView->Viewer());
   mylastindex = 0;
   return Standard_True;
 }

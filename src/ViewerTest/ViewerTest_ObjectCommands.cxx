@@ -318,7 +318,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
     TheAISContext()->CloseLocalContext();
 
   // On set le booleen ThereIsCurrent
-  if (TheAISContext() -> NbCurrents() > 0) {ThereIsCurrent=Standard_True;}
+  if (TheAISContext() -> NbSelected() > 0) {ThereIsCurrent=Standard_True;}
   else {ThereIsCurrent=Standard_False;}
 
 
@@ -337,7 +337,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       Handle(AIS_InteractiveObject) aShape=
         Handle(AIS_InteractiveObject)::DownCast(it.Key1());
 
-      if (!aShape.IsNull() &&  TheAISContext()->IsCurrent(aShape) )
+      if (!aShape.IsNull() &&  TheAISContext()->IsSelected(aShape) )
       {
 
         // On verifie que l'AIS InteraciveObject selectionne est bien
@@ -493,7 +493,7 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
 
   Handle(AIS_InteractiveObject) theIOB;
   for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    theIOB = TheAISContext()->Interactive();
+    theIOB = TheAISContext()->SelectedInteractive();
   }
   // on le downcast
   Handle(AIS_Plane) PlaneB =(Handle(AIS_Plane)::DownCast (theIOB));
@@ -4177,16 +4177,21 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   }
 
   // Check the arguments
-  if (theArgc != 3 && theArgc != 4)
+  if (theArgc < 3 && theArgc > 5)
   {
     std::cerr << "vselmode error : expects at least 2 arguments.\n"
               << "Type help "<< theArgv[0] <<" for more information." << std::endl;
     return 1;
   }
 
+  TCollection_AsciiString aLastArg (theArgv[theArgc - 1]);
+  aLastArg.LowerCase();
+  Standard_Boolean isToOpenLocalCtx = aLastArg == "-local";
+
   // get objects to change selection mode
   AIS_ListOfInteractive aTargetIOs;
-  if (theArgc == 3)
+  Standard_Integer anArgNb = isToOpenLocalCtx ? theArgc - 1 : theArgc;
+  if (anArgNb == 3)
   {
     anAISContext->DisplayedObjects (aTargetIOs);
   }
@@ -4206,8 +4211,8 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
     }
   }
 
-  const Standard_Integer aSelectionMode = Draw::Atoi (theArgc == 3 ? theArgv[1] : theArgv[2]);
-  const Standard_Boolean toTurnOn       = Draw::Atoi (theArgc == 3 ? theArgv[2] : theArgv[3]);
+  const Standard_Integer aSelectionMode = Draw::Atoi (anArgNb == 3 ? theArgv[1] : theArgv[2]);
+  const Standard_Boolean toTurnOn       = Draw::Atoi (anArgNb == 3 ? theArgv[2] : theArgv[3]);
   if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
   {
     anAISContext->CloseLocalContext();
@@ -4220,6 +4225,12 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
       for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
       {
         const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+        TColStd_ListOfInteger anActiveModes;
+        anAISContext->ActivatedModes (anIO, anActiveModes);
+        if (!anActiveModes.IsEmpty())
+        {
+          anAISContext->Deactivate (anIO);
+        }
         if (!InList (anAISContext, anIO, aSelectionMode))
         {
           anAISContext->Activate (anIO);
@@ -4241,7 +4252,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
 
   if (aSelectionMode != 0 && toTurnOn) // Turn on specified mode
   {
-    if (!anAISContext->HasOpenedContext())
+    if (!anAISContext->HasOpenedContext() && isToOpenLocalCtx)
     {
       anAISContext->OpenLocalContext (Standard_False);
     }
@@ -4249,6 +4260,10 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
     for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
     {
       const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+      if (InList (anAISContext, anIO, 0))
+      {
+        anAISContext->Deactivate (anIO, 0);
+      }
       if (!InList (anAISContext, anIO, aSelectionMode))
       {
         anAISContext->Load (anIO, -1, Standard_True);
@@ -4259,11 +4274,6 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
 
   if (aSelectionMode != 0 && !toTurnOn) // Turn off specified mode
   {
-    if (!anAISContext->HasOpenedContext())
-    {
-      return 0;
-    }
-
     for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
     {
       const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();

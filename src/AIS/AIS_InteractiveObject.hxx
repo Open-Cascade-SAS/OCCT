@@ -263,41 +263,7 @@ public:
   //! This range can, however, be extended through the
   //! creation of new display modes.
     Standard_Integer DisplayMode() const;
-  
-  //! Allows you to change the selection mode of an
-  //! Interactive Object.
-  //! The default selection mode setting is 0.
-  //! For shapes, for example, the selection modes are as follows:
-  //! -   mode 0 - selection of the shape itself
-  //! -   mode 1 - selection of vertices
-  //! -   mode 2 - selection of edges
-  //! -   mode 3 - selection of wires
-  //! -   mode 4 - selection of faces
-  //! -   mode 5 - selection of shells
-  //! -   mode 6 - selection of solids
-  //! -   mode 7 - selection of compounds
-  //! For trihedra, on the other hand, the selection modes are the following four:
-  //! -   mode 0 - selection of a trihedron
-  //! -   mode 1 - selection of its origin
-  //! -   mode 2 - selection of its axes
-  //! -   mode 3 - selection of its planes
-  Standard_EXPORT Standard_Boolean HasSelectionMode() const;
-  
-  //! Returns the selection mode of the interactive object.
-  Standard_EXPORT Standard_Integer SelectionMode() const;
-  
-  //! You can change the default selection mode index
-  //! aMode of an Interactive Object.
-  //! This is only of interest if you decide that mode 0
-  //! adopted by convention will not do.
-  Standard_EXPORT void SetSelectionMode (const Standard_Integer aMode);
-  
-  //! You can change the default selection mode index of
-  //! an Interactive Object.
-  //! This is only of interest if you decide that the 0 mode
-  //! adopted by convention will not do.
-    void UnsetSelectionMode();
-  
+
   //! Returns the selection priority setting. -1 indicates that there is none.
   //! You can modify the selection priority of an owner to
   //! make one entity more selectionable than another one.
@@ -498,7 +464,7 @@ protected:
 
   
   //! The TypeOfPresention3d means that the interactive object
-  //! may have a presentation dependant of the view of Display
+  //! may have a presentation dependant of the view of Display.
   Standard_EXPORT AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
   Standard_Real myTransparency;
@@ -530,7 +496,6 @@ private:
   TColStd_ListOfTransient myUsers;
   Standard_Integer mySelPriority;
   Standard_Integer myDisplayMode;
-  Standard_Integer mySelectionMode;
   Standard_Integer mystate;
 
 

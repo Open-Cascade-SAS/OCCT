@@ -391,3 +391,12 @@ void AIS_MultipleConnectedInteractive::ComputeSelection (const Handle(SelectMgr_
     }
   }
 }
+
+//=======================================================================
+//function : GlobalSelOwner
+//purpose  :
+//=======================================================================
+Handle(SelectMgr_EntityOwner) AIS_MultipleConnectedInteractive::GlobalSelOwner() const
+{
+  return myAssemblyOwner;
+}

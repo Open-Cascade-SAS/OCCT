@@ -973,7 +973,6 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
     if (myGraphicDriver->IsDeviceLost())
     {
       myViewManager->RecomputeStructures();
-      myViewManager->RecomputeStructures (myImmediateStructures);
       myGraphicDriver->ResetDeviceLostFlag();
     }
 
@@ -1240,69 +1239,6 @@ void Visual3d_View::Disconnect (const Handle(Graphic3d_Structure)& theMother,
 }
 
 // ========================================================================
-// function : DisplayImmediate
-// purpose  :
-// ========================================================================
-Standard_Boolean Visual3d_View::DisplayImmediate (const Handle(Graphic3d_Structure)& theStructure,
-                                                  const Standard_Boolean             theIsSingleView)
-{
-  if (!myImmediateStructures.Add (theStructure))
-  {
-    return Standard_False;
-  }
-
-  if (theIsSingleView)
-  {
-    const Visual3d_SequenceOfView& aViews = myViewManager->DefinedViews();
-    for (Standard_Integer aViewIter = 1; aViewIter <= aViews.Length(); ++aViewIter)
-    {
-      const Handle(Visual3d_View)& aView = aViews.Value (aViewIter);
-      if (aView != this)
-      {
-        aView->EraseImmediate (theStructure);
-      }
-    }
-  }
-
-  myGraphicDriver->DisplayImmediateStructure (MyCView, theStructure);
-  return Standard_True;
-}
-
-// ========================================================================
-// function : EraseImmediate
-// purpose  :
-// ========================================================================
-Standard_Boolean Visual3d_View::EraseImmediate (const Handle(Graphic3d_Structure)& theStructure)
-{
-  const Standard_Boolean isErased = myImmediateStructures.Remove (theStructure);
-  if (isErased)
-  {
-    myGraphicDriver->EraseImmediateStructure (MyCView, *theStructure->CStructure());
-  }
-
-  return isErased;
-}
-
-// ========================================================================
-// function : ClearImmediate
-// purpose  :
-// ========================================================================
-Standard_Boolean Visual3d_View::ClearImmediate()
-{
-  if (myImmediateStructures.IsEmpty())
-  {
-    return Standard_False;
-  }
-
-  for (Graphic3d_MapOfStructure::Iterator aStructIter (myImmediateStructures); aStructIter.More(); aStructIter.Next())
-  {
-    myGraphicDriver->EraseImmediateStructure (MyCView, *aStructIter.Key()->CStructure());
-  }
-  myImmediateStructures.Clear();
-  return Standard_True;
-}
-
-// ========================================================================
 // function : Display
 // purpose  :
 // ========================================================================
@@ -1517,7 +1453,6 @@ void Visual3d_View::Erase (const Handle(Graphic3d_Structure)& theStruct,
                            const Aspect_TypeOfUpdate          theUpdateMode)
 {
   if ( IsDeleted()
-   ||  EraseImmediate (theStruct)
    || !IsDisplayed (theStruct))
   {
     return;
@@ -1557,9 +1492,32 @@ void Visual3d_View::Highlight (const Handle(Graphic3d_Structure)& theStruct,
   const Standard_Integer anIndex = IsComputed (theStruct);
   if (anIndex != 0)
   {
-    const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.ChangeValue (anIndex);
+    const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.Value (anIndex);
     aCompStruct->Highlight (theMethod, theStruct->HighlightColor(), Standard_False);
   }
+}
+
+// ========================================================================
+// function : IsComputed
+// purpose  :
+// ========================================================================
+Standard_Boolean Visual3d_View::IsComputed (const Standard_Integer theStructId,
+                                            Handle(Graphic3d_Structure)& theComputedStruct) const
+{
+  theComputedStruct.Nullify();
+  if (!ComputedMode())
+    return Standard_False;
+
+  const Standard_Integer aNbStructs = myStructsToCompute.Length();
+  for (Standard_Integer aStructIter = 1; aStructIter <= aNbStructs; ++aStructIter)
+  {
+    if (myStructsToCompute.Value (aStructIter)->Identification() == theStructId)
+    {
+      theComputedStruct = myStructsComputed (aStructIter);
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }
 
 // ========================================================================
@@ -1681,8 +1639,6 @@ Standard_Boolean Visual3d_View::ContainsFacet (const Graphic3d_MapOfStructure& t
 Bnd_Box Visual3d_View::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
   Bnd_Box aResult     = MinMaxValues (myStructsDisplayed,    theToIgnoreInfiniteFlag);
-  Bnd_Box anImmediate = MinMaxValues (myImmediateStructures, theToIgnoreInfiniteFlag);
-  aResult.Add (anImmediate);
   return aResult;
 }
 

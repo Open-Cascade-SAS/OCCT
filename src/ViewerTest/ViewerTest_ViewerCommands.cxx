@@ -688,6 +688,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   // View setup
   Handle(V3d_View) aView = a3DViewer->CreateView();
   aView->SetWindow (VT_GetWindow());
+  ViewerTest::GetAISContext()->RedrawImmediate (a3DViewer);
 
   ViewerTest::CurrentView(aView);
   ViewerTest_myViews.Bind (aViewNames.GetViewName(), aView);
@@ -1378,7 +1379,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
       aContext->DefaultDrawer()->SetTypeOfHLR(Prs3d_TOH_PolyAlgo);
     else
       aContext->DefaultDrawer()->SetTypeOfHLR(Prs3d_TOH_Algo);
-    if (aContext->NbCurrents()==0 || aContext->NbSelected() == 0)
+    if (aContext->NbSelected()==0)
     {
       AIS_ListOfInteractive aListOfShapes;
       aContext->DisplayedObjects(aListOfShapes);
@@ -1397,9 +1398,9 @@ void VT_ProcessKeyPress (const char* buf_ret)
     }
     else
     {
-      for (aContext->InitCurrent();aContext->MoreCurrent();aContext->NextCurrent())
+      for (aContext->InitSelected();aContext->MoreSelected();aContext->NextSelected())
       {
-        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aContext->Current());
+        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aContext->SelectedInteractive());
         if (aShape.IsNull())
           continue;
         if(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo)
@@ -1418,18 +1419,11 @@ void VT_ProcessKeyPress (const char* buf_ret)
     std::cout << "setup Shaded display mode" << std::endl;
 
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-    if(Ctx->NbCurrents()==0 ||
-      Ctx->NbSelected()==0)
+    if(Ctx->NbSelected()==0)
       Ctx->SetDisplayMode(AIS_Shaded);
     else{
-      if(Ctx->HasOpenedContext()){
-        for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-          Ctx->SetDisplayMode(Ctx->Interactive(),1,Standard_False);
-      }
-      else{
-        for(Ctx->InitCurrent();Ctx->MoreCurrent();Ctx->NextCurrent())
-          Ctx->SetDisplayMode(Ctx->Current(),1,Standard_False);
-      }
+      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
+        Ctx->SetDisplayMode(Ctx->SelectedInteractive(),1,Standard_False);
       Ctx->UpdateCurrentViewer();
     }
   }
@@ -1439,18 +1433,11 @@ void VT_ProcessKeyPress (const char* buf_ret)
     std::cout << "reset display mode to defaults" << std::endl;
 
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-    if(Ctx->NbCurrents()==0 ||
-      Ctx->NbSelected()==0)
+    if(Ctx->NbSelected()==0)
       Ctx->SetDisplayMode(AIS_WireFrame);
     else{
-      if(Ctx->HasOpenedContext()){
-        for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-          Ctx->UnsetDisplayMode(Ctx->Interactive(),Standard_False);
-      }
-      else{
-        for(Ctx->InitCurrent();Ctx->MoreCurrent();Ctx->NextCurrent())
-          Ctx->UnsetDisplayMode(Ctx->Current(),Standard_False);
-      }
+      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
+        Ctx->UnsetDisplayMode(Ctx->SelectedInteractive(),Standard_False);
       Ctx->UpdateCurrentViewer();
     }
 
@@ -1479,18 +1466,11 @@ void VT_ProcessKeyPress (const char* buf_ret)
   {
     std::cout << "setup WireFrame display mode" << std::endl;
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-    if(Ctx->NbCurrents()==0 ||
-      Ctx->NbSelected()==0)
+    if(Ctx->NbSelected()==0)
       Ctx->SetDisplayMode(AIS_WireFrame);
     else{
-      if(Ctx->HasOpenedContext()){
-        for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
-          Ctx->SetDisplayMode(Ctx->Interactive(),0,Standard_False);
-      }
-      else{
-        for(Ctx->InitCurrent();Ctx->MoreCurrent();Ctx->NextCurrent())
-          Ctx->SetDisplayMode(Ctx->Current(),0,Standard_False);
-      }
+      for(Ctx->InitSelected();Ctx->MoreSelected();Ctx->NextSelected())
+        Ctx->SetDisplayMode(Ctx->SelectedInteractive(),0,Standard_False);
       Ctx->UpdateCurrentViewer();
     }
   }
@@ -1542,7 +1522,6 @@ void VT_ProcessKeyPress (const char* buf_ret)
   {
     Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
     if (!aCtx.IsNull()
-     && aCtx->NbCurrents() > 0
      && aCtx->NbSelected() > 0)
     {
       Draw_Interprete ("verase");
@@ -3395,11 +3374,11 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
   {
     if (aFileName.Value (aLen - 2) == '.')
     {
-      aFormatStr = aFileName.SubString (aLen - 1, aLen);
+      aFormatStr = aFileName.ToCString() + aLen - 2;
     }
     else if (aFileName.Value (aLen - 3) == '.')
     {
-      aFormatStr = aFileName.SubString (aLen - 2, aLen);
+      aFormatStr = aFileName.ToCString() + aLen - 3;
     }
     else
     {
@@ -6242,14 +6221,7 @@ static Standard_Integer VChangeSelected (Draw_Interpretor& di,
       return 1;
     }
 
-    if(aContext->HasOpenedContext())
-    {
-      aContext->AddOrRemoveSelected(anAISObject);
-    }
-    else
-    {
-      aContext->AddOrRemoveCurrentObject(anAISObject);
-    }
+    aContext->AddOrRemoveSelected(anAISObject);
   }
   return 0;
 }

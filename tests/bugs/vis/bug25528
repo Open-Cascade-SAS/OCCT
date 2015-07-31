@@ -15,7 +15,7 @@ vdisplay b
 vfit
 
 # opening a local context for local selection
-vselmode b 4 1
+vselmode b 4 1 -local
 # Select a face just to simulate the scenario used in a real application
 vselect 200 200
 # This line should not lead to exception

@@ -134,6 +134,8 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
 					   const Standard_Integer aMode)
 {
   Standard_Integer M = (aMode < 0) ? myCurMode : aMode;
+  Graphic3d_ZLayerId aHiLayer = this == Selectable()->GlobalSelOwner().get() ?
+                                Graphic3d_ZLayerId_Top : Graphic3d_ZLayerId_Topmost;
   Handle(SelectMgr_SelectableObject) aSel = Selectable();
   if (myFromDecomposition)
   {
@@ -175,17 +177,17 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
     }
 
     // highlight with color and set layer
-    PM->Color (myPrsSh, aCol, M, aSel);
+    PM->Color (myPrsSh, aCol, M, aSel, aHiLayer);
   }
   else
   {
     if (!myPrsSh.IsNull())
     {
-      PM->Color (myPrsSh, aCol, M, aSel);
+      PM->Color (myPrsSh, aCol, M, aSel, aHiLayer);
     }
     else
     {
-      PM->Color (aSel, aCol, M);
+      PM->Color (aSel, aCol, M, NULL, aHiLayer);
     }
   }
 }

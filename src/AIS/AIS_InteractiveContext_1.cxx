@@ -38,6 +38,7 @@
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_Transient.hxx>
+#include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -52,6 +53,61 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <Visual3d_View.hxx>
+
+typedef NCollection_DataMap<Handle(AIS_InteractiveObject), NCollection_Handle<SelectMgr_SequenceOfOwner> > AIS_MapOfObjSelectedOwners;
+
+//=======================================================================
+//function : highlightWithColor
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightWithColor (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                 const Quantity_NameOfColor theColor,
+                                                 const Handle(V3d_Viewer)& theViewer)
+{
+  const Handle(AIS_InteractiveObject) anObj =
+    Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  if (anObj.IsNull())
+    return;
+  const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+
+  myMainPM->BeginImmediateDraw();
+  theOwner->HilightWithColor (myMainPM, theColor, aHiMode);
+  myMainPM->EndImmediateDraw (theViewer.IsNull() ? myMainVwr : theViewer);
+}
+
+//=======================================================================
+//function : highlightSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                const Quantity_NameOfColor theSelColor)
+{
+  const Handle(AIS_InteractiveObject) anObj =
+    Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  if (anObj.IsNull())
+    return;
+  const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+
+  if (!theOwner->IsAutoHilight())
+  {
+    AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+    const Handle(AIS_Selection)& aCurSel = AIS_Selection::CurrentSelection();
+    SelectMgr_SequenceOfOwner aSeq;
+    for (aCurSel->Init(); aCurSel->More(); aCurSel->Next())
+    {
+      const Handle(SelectMgr_EntityOwner) aSelOwnr =
+        Handle(SelectMgr_EntityOwner)::DownCast (aCurSel->Value());
+      if (aSelOwnr->Selectable() != anObj)
+        continue;
+      aSeq.Append (aSelOwnr);
+    }
+    anObj->HilightSelected (myMainPM, aSeq);
+  }
+  else
+  {
+    theOwner->HilightWithColor (myMainPM, theSelColor, aHiMode);
+  }
+}
 
 //=======================================================================
 //function : MoveTo
@@ -113,9 +169,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   {
     // does nothing if previously detected object is equal to the current one
     Handle(SelectMgr_EntityOwner) aNewPickedOwner = myMainSel->Picked (aNewDetected);
-    if (aNewPickedOwner->Selectable() == myLastPicked)
+    if (aNewPickedOwner == myLastPicked)
     {
-      return myLastPicked->State() == 1
+      return myLastPicked->IsSelected()
            ? AIS_SOD_Selected
            : AIS_SOD_OnlyOneDetected;
     }
@@ -125,56 +181,62 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     // is needed only if myToHilightSelected flag is true. In this case previously detected
     // object has been already highlighted with myHilightColor during previous MoveTo() 
     // method call. As result it is necessary to rehighligt it with mySelectionColor.
-    if (!myLastPicked.IsNull())
+    if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
     {
-      const Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-      if (myLastPicked->State() != 1)
+      myMainPM->ClearImmediateDraw();
+      const Handle(AIS_InteractiveObject) aLastPickedAIS = Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
+      const Standard_Integer aHiMod = aLastPickedAIS->HasHilightMode() ? aLastPickedAIS->HilightMode() : 0;
+      if (!myLastPicked->IsSelected())
       {
-        myMainPM->Unhighlight (myLastPicked, aHiMod);
+        myLastPicked->Unhilight (myMainPM, aHiMod);
         toUpdateViewer = Standard_True;
       }
       else if (myToHilightSelected)
       {
-        myMainPM->Color (myLastPicked, mySelectionColor, aHiMod);
+        highlightWithColor (aNewPickedOwner, mySelectionColor, theView->Viewer());
         toUpdateViewer = Standard_True;
       }
     }
 
     // initialize myLastPicked field with currently detected object
-    myLastPicked = Handle(AIS_InteractiveObject)::DownCast (aNewPickedOwner->Selectable());
+    myLastPicked = aNewPickedOwner;
     myLastinMain = myLastPicked;
 
     // highlight detected object if it is not selected or myToHilightSelected flag is true
-    if (!myLastPicked.IsNull())
+    if (myLastPicked->HasSelectable())
     {
-      if (myLastPicked->State() != 1 || myToHilightSelected)
+      if (!myLastPicked->IsSelected() || myToHilightSelected)
       {
-        const Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-        myMainPM->Color (myLastPicked, myHilightColor, aHiMod);
+        highlightWithColor (myLastPicked, myHilightColor, theView->Viewer());
         toUpdateViewer = Standard_True;
       }
 
-      aStatus = myLastPicked->State() == 1
+      aStatus = myLastPicked->IsSelected()
               ? AIS_SOD_Selected
               : AIS_SOD_OnlyOneDetected;
     }
   }
-  else 
+  else
   {
     // previously detected object is unhilighted if it is not selected or hilighted
     // with selection color if it is selected
     aStatus = AIS_SOD_Nothing;
-    if (!myLastPicked.IsNull())
+    if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
     {
-      Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-      if (myLastPicked->State() != 1)
+      myMainPM->ClearImmediateDraw();
+      const Handle(AIS_InteractiveObject) aLastPickedAIS = Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
+      Standard_Integer aHiMod = aLastPickedAIS->HasHilightMode() ? aLastPickedAIS->HilightMode() : 0;
+      if (!myLastPicked->IsSelected())
       {
-        myMainPM->Unhighlight (myLastPicked, aHiMod);
+        if (myLastPicked->IsAutoHilight())
+        {
+          myLastPicked->Unhilight (myMainPM, aHiMod);
+        }
         toUpdateViewer = Standard_True;
       }
       else if (myToHilightSelected)
       {
-        myMainPM->Color (myLastPicked, mySelectionColor, aHiMod);
+        highlightSelected (myLastPicked, mySelectionColor);
         toUpdateViewer = Standard_True;
       }
     }
@@ -220,7 +282,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
                                                      theView, toUpdateViewer);
   }
 
-  ClearCurrents (Standard_False);
+  ClearSelected (Standard_False);
 
   Handle(StdSelect_ViewerSelector3d) aSelector;
 
@@ -233,27 +295,19 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMi
   aSelector->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
 
-  AIS_MapOfInteractive anObjectsToSelect;
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    Handle(AIS_InteractiveObject) anObj = 
-      Handle(AIS_InteractiveObject)::DownCast (aSelector->Picked()->Selectable());
-    if (!anObj.IsNull())
-    {
-      anObjectsToSelect.Add (anObj);
-    }
+    const Handle(SelectMgr_EntityOwner)& aCurOwner = aSelector->Picked();
+    if (aCurOwner.IsNull() || !aCurOwner->HasSelectable() || !myFilters->IsOk (aCurOwner))
+      continue;
+
+    AIS_Selection::Select (aCurOwner);
+    aCurOwner->State (1);
   }
 
-  AIS_MapIteratorOfMapOfInteractive anIt (anObjectsToSelect);
-  for ( ; anIt.More(); anIt.Next())
-  {
-    AIS_Selection::Select (anIt.Key());
-    anIt.Key()->State (1);
-  }
+  HilightSelected (toUpdateViewer);
 
-  HilightCurrents (toUpdateViewer);
-
-  Standard_Integer aSelNum = NbCurrents();
+  Standard_Integer aSelNum = NbSelected();
 
   return (aSelNum == 0) ? AIS_SOP_NothingSelected
                         : (aSelNum == 1) ? AIS_SOP_OneSelected
@@ -277,7 +331,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
     return myLocalContexts(myCurLocalIndex)->Select (thePolyline, theView, toUpdateViewer);
   }
 
-  ClearCurrents (Standard_False);
+  ClearSelected (Standard_False);
 
   Handle(StdSelect_ViewerSelector3d) aSelector;
 
@@ -290,27 +344,20 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& the
   aSelector->Pick (thePolyline, theView);
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
 
-  AIS_MapOfInteractive anObjectsToSelect;
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    Handle(AIS_InteractiveObject) anObj = 
-      Handle( AIS_InteractiveObject )::DownCast (aSelector->Picked()->Selectable());
-    if (!anObj.IsNull())
-    {
-      anObjectsToSelect.Add (anObj);
-    }
+    const Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (aSelector->Picked());
+    if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
+      continue;
+
+    AIS_Selection::Select (anOwner);
+    anOwner->State (1);
   }
 
-  AIS_MapIteratorOfMapOfInteractive anIt (anObjectsToSelect);
-  for ( ; anIt.More(); anIt.Next())
-  {
-    AIS_Selection::Select (anIt.Key());
-    anIt.Key()->State (1);
-  }
+  HilightSelected (toUpdateViewer);
 
-  HilightCurrents (toUpdateViewer);
-
-  Standard_Integer aSelNum = NbCurrents();
+  Standard_Integer aSelNum = NbSelected();
 
   return (aSelNum == 0) ? AIS_SOP_NothingSelected
                         : (aSelNum == 1) ? AIS_SOP_OneSelected
@@ -332,16 +379,17 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
     }
     else
     {
-      myLocalContexts(myCurLocalIndex)->SetSelected (myLastPicked, toUpdateViewer);
+      myLocalContexts(myCurLocalIndex)->SetSelected (Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable()), toUpdateViewer);
       return AIS_SOP_OneSelected;
     }
   }
 
+  myMainPM->ClearImmediateDraw();
   if (myWasLastMain && !myLastinMain.IsNull())
   {
-    if(myLastinMain->State() != 1)
+    if(!myLastinMain->IsSelected())
     {
-      SetCurrentObject (myLastinMain,Standard_False);
+      SetSelected (myLastinMain, Standard_False);
       if(toUpdateViewer)
       {
         UpdateCurrentViewer();
@@ -352,16 +400,44 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
   {
     AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
     Handle(AIS_Selection) aSelection = AIS_Selection::CurrentSelection();
-    Handle(AIS_InteractiveObject) anObj;
+    NCollection_IndexedMap<Handle(AIS_InteractiveObject)> anObjToClear;
     for (aSelection->Init(); aSelection->More(); aSelection->Next())
     {
-      anObj = Handle(AIS_InteractiveObject)::DownCast (aSelection->Value());
-      anObj->State (0);
-      Unhilight (anObj,Standard_False);
-      if (myObjects.IsBound (anObj) && myObjects(anObj)->IsSubIntensityOn())
+      const Handle(SelectMgr_EntityOwner) anOwner
+        = Handle(SelectMgr_EntityOwner)::DownCast (aSelection->Value());
+
+      if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
+        continue;
+
+      const Handle(AIS_InteractiveObject) anObject =
+        Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+      anOwner->State (0);
+      if (anOwner == anObject->GlobalSelOwner())
       {
-        HilightWithColor (anObj, mySubIntensity, Standard_False);
+        Handle(AIS_GlobalStatus) aStatus = myObjects (anObject);
+        aStatus->SetHilightStatus (Standard_False);
+        aStatus->SetHilightColor (Quantity_NOC_WHITE);
+        anObject->State (0);
       }
+      if (!anOwner->IsAutoHilight())
+      {
+        if (!anObjToClear.Contains (anObject))
+          anObjToClear.Add (anObject);
+      }
+      else
+      {
+        const Standard_Integer aHiMode = anObject->HasHilightMode() ? anObject->HilightMode() : 0;
+        anOwner->Unhilight (myMainPM, aHiMode);
+        if (myObjects.IsBound (anObject) && myObjects(anObject)->IsSubIntensityOn())
+        {
+          anOwner->HilightWithColor (myMainPM, mySubIntensity, aHiMode);
+        }
+      }
+    }
+    while (!anObjToClear.IsEmpty())
+    {
+      anObjToClear.FindKey (anObjToClear.Size())->ClearSelected();
+      anObjToClear.RemoveLast();
     }
 
     AIS_Selection::Select();
@@ -371,7 +447,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean toUpdate
     }
   }
 
-  Standard_Integer aSelNum = NbCurrents();
+  Standard_Integer aSelNum = NbSelected();
 
   return (aSelNum == 0) ? AIS_SOP_NothingSelected
                         : (aSelNum == 1) ? AIS_SOP_OneSelected
@@ -401,16 +477,17 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Boolean toU
     }
   }
 
+  myMainPM->ClearImmediateDraw();
   if (myWasLastMain && !myLastinMain.IsNull())
   {
-    AddOrRemoveCurrentObject (myLastinMain, toUpdateViewer);
+    AddOrRemoveSelected (myLastinMain, toUpdateViewer);
   }
 
-  Standard_Integer aCurrentSelNum = NbCurrents();
+  Standard_Integer aSelNum = NbSelected();
 
-  return (aCurrentSelNum == 0) ? AIS_SOP_NothingSelected
-                               : (aCurrentSelNum == 1) ? AIS_SOP_OneSelected
-                                                       : AIS_SOP_SeveralSelected;
+  return (aSelNum == 0) ? AIS_SOP_NothingSelected
+                        : (aSelNum == 1) ? AIS_SOP_OneSelected
+                        : AIS_SOP_SeveralSelected;
 }
 
 //=======================================================================
@@ -430,7 +507,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
                                                           theView, toUpdateViewer);
   }
 
-  UnhilightCurrents (Standard_False);
+  UnhilightSelected (Standard_False);
 
   Handle(StdSelect_ViewerSelector3d) aSelector;
   if (theView->Viewer() == myMainVwr)
@@ -447,18 +524,18 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer the
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    Handle(AIS_InteractiveObject) anObjToSelect =  Handle(AIS_InteractiveObject)::DownCast (aSelector->Picked()->Selectable());
-    if (!anObjToSelect.IsNull())
-    {
-      AIS_SelectStatus aSelStatus = AIS_Selection::Select (anObjToSelect);
-      Standard_Integer aState = (aSelStatus == AIS_SS_Added) ? 1 : 0;
-      anObjToSelect->State (aState);
-    }
+    const Handle(SelectMgr_EntityOwner) anOwner =  Handle(SelectMgr_EntityOwner)::DownCast (aSelector->Picked());
+    if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
+      continue;
+
+    AIS_SelectStatus aSelStatus = AIS_Selection::Select (anOwner);
+    Standard_Integer aState = (aSelStatus == AIS_SS_Added) ? 1 : 0;
+    anOwner->State (aState);
   }
 
-  HilightCurrents (toUpdateViewer);
+  HilightSelected (toUpdateViewer);
 
-  Standard_Integer aSelNum = NbCurrents();
+  Standard_Integer aSelNum = NbSelected();
 
   return (aSelNum == 0) ? AIS_SOP_NothingSelected
                         : (aSelNum == 1) ? AIS_SOP_OneSelected
@@ -479,7 +556,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
     return myLocalContexts(myCurLocalIndex)->ShiftSelect (thePolyline, theView, toUpdateViewer);
   }
 
-  UnhilightCurrents (Standard_False);
+  UnhilightSelected (Standard_False);
 
   Handle(StdSelect_ViewerSelector3d) aSelector;
 
@@ -498,18 +575,18 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
   for (aSelector->Init(); aSelector->More(); aSelector->Next())
   {
-    Handle(AIS_InteractiveObject) anObjToSelect = Handle(AIS_InteractiveObject)::DownCast (aSelector->Picked()->Selectable());
-    if (!anObjToSelect.IsNull())
-    {
-      AIS_SelectStatus aSelStatus = AIS_Selection::Select (anObjToSelect);
-      Standard_Integer aState = (aSelStatus == AIS_SS_Added ) ? 1 : 0;
-      anObjToSelect->State (aState);
-    }
+    const Handle(SelectMgr_EntityOwner) anOwner =  Handle(SelectMgr_EntityOwner)::DownCast (aSelector->Picked());
+    if (anOwner.IsNull() || !anOwner->HasSelectable() || !myFilters->IsOk (anOwner))
+      continue;
+
+    AIS_SelectStatus aSelStatus = AIS_Selection::Select (anOwner);
+    Standard_Integer aState = (aSelStatus == AIS_SS_Added) ? 1 : 0;
+    anOwner->State (aState);
   }
 
-  HilightCurrents (toUpdateViewer);
+  HilightSelected (toUpdateViewer);
 
-  Standard_Integer aSelNum = NbCurrents();
+  Standard_Integer aSelNum = NbSelected();
 
   return (aSelNum == 0) ? AIS_SOP_NothingSelected
                         : (aSelNum == 1) ? AIS_SOP_OneSelected
@@ -518,403 +595,487 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d
 
 //=======================================================================
 //function : SetCurrentObject
-//purpose  : 
+//purpose  : OBSOLETE, please use SetSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-void AIS_InteractiveContext::SetCurrentObject(const Handle(AIS_InteractiveObject)& anIObj,
-					      const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::SetCurrentObject (const Handle(AIS_InteractiveObject)& theObject,
+                                               const Standard_Boolean theToUpdateViewer)
 {
-  // single case processing...
-  if(NbCurrents()==1 && anIObj->State()==1){
-    Quantity_NameOfColor HiCol;
-    Standard_Boolean HasHiCol;
-    if(IsHilighted(anIObj,HasHiCol,HiCol)){
-      if(HasHiCol && HiCol!= mySelectionColor) {
-	HilightWithColor(anIObj,mySelectionColor,updateviewer);
-      }
-    }
+  if (HasOpenedContext())
     return;
-  }
 
-
-  // 
-  if(!HasOpenedContext()) {
-    if(anIObj.IsNull()) return;
-    if(!myObjects.IsBound(anIObj)) 
-      Display(anIObj,Standard_False);
-    
-    AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
-    Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
-    Handle(Standard_Transient) TR;
-    Handle(AIS_InteractiveObject) IO;
-    sel->Init();
-    while (sel->More()) {
-      TR = sel->Value();
-      IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-      Unhilight(IO,Standard_False);
-      IO->State(0);
-      sel->Next();
-    }
-    
-    // added to avoid untimely viewer update...
-    AIS_Selection::ClearAndSelect(anIObj);
-    anIObj->State(1);
-    Quantity_NameOfColor HiCol;
-    Standard_Boolean HasHiCol;
-    if(IsHilighted(anIObj,HasHiCol,HiCol)){
-      if(HasHiCol && HiCol!= mySelectionColor) {
-	  HilightWithColor(anIObj,mySelectionColor,Standard_False);
-      }
-    }
-    else{
-	HilightWithColor(anIObj,mySelectionColor,Standard_False);
-    }
-    if (updateviewer) 
-      UpdateCurrentViewer();
-  }
-  else{
-#ifdef OCCT_DEBUG
-    cout<<"Nothing Done : Opened Local Context"<<endl;
-#endif
-  }
+  SetSelected (theObject, theToUpdateViewer);
 }
 
 //=======================================================================
 //function : AddOrRemoveCurrentObject
-//purpose  : 
+//purpose  : OBSOLETE, please use AddOrRemoveSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
-void AIS_InteractiveContext::
-AddOrRemoveCurrentObject(const Handle(AIS_InteractiveObject)& anIObj,
-			 const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::AddOrRemoveCurrentObject (const Handle(AIS_InteractiveObject)& theObj,
+                                                       const Standard_Boolean theIsToUpdateViewer)
 {
-  if(anIObj.IsNull()) return;
-//OCC5682 to remove an object from neutral point even if Local Context is opened (Remove method)
-  if(!HasOpenedContext() /*OCC5682*/|| myObjects.IsBound(anIObj)) {
-    
-    AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
-    Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
+  if (HasOpenedContext())
+    return;
 
-    AIS_SelectStatus SelStat = AIS_Selection::Select(anIObj);
-    
-    Standard_Integer mod = (SelStat==AIS_SS_Added) ? 1 : 0;
-    anIObj->State(mod);
-    if(mod==1)
-      HilightWithColor(anIObj,mySelectionColor,Standard_False);
-    else 
-      Unhilight(anIObj,Standard_False);
-    
-    
-    if(updateviewer) 
-      UpdateCurrentViewer();
-  }
-  else{
-#ifdef OCCT_DEBUG
-    cout<<"Nothing Done : Opened Local Context"<<endl;
-#endif
-  }
+  AddOrRemoveSelected (theObj, theIsToUpdateViewer);
 }
 //=======================================================================
 //function : UpdateCurrent
-//purpose  : 
+//purpose  : OBSOLETE, please use UpdateSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
 void AIS_InteractiveContext::UpdateCurrent()
 {
-  HilightCurrents();
+  UpdateSelected();
 }
 
 //=======================================================================
 //function : IsCurrent
-//purpose  : 
+//purpose  : OBSOLETE, please use IsSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
-Standard_Boolean AIS_InteractiveContext::IsCurrent(const Handle(AIS_InteractiveObject)& anIObj) const 
+Standard_Boolean AIS_InteractiveContext::IsCurrent (const Handle(AIS_InteractiveObject)& theObject) const
 {
-
-  if (anIObj.IsNull()) return Standard_False;
-  return (anIObj->State()==1);
-  
-  //   Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
-  //   sel->Init();
-  //   while (sel->More()) {
-  //     if (anIObj == sel->Value()) return Standard_True;
-  //     sel->Next();
-  //   }
-  //   return Standard_False;
-
+  return IsSelected (theObject);
 }
 
 //=======================================================================
 //function : InitCurrent
-//purpose  : 
+//purpose  : OBSOLETE, please use InitSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
 void AIS_InteractiveContext::InitCurrent()
 {
-  AIS_Selection::Selection(myCurrentName.ToCString())->Init();
+  if (HasOpenedContext())
+    return;
+
+  InitSelected();
 }
 
 //=======================================================================
 //function : MoreCurrent
-//purpose  : 
+//purpose  : OBSOLETE, please use MoreSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
 Standard_Boolean AIS_InteractiveContext::MoreCurrent() const 
 {
-  return AIS_Selection::Selection(myCurrentName.ToCString())->More();
-
+  return !HasOpenedContext() && MoreSelected();
 }
 
 //=======================================================================
 //function : NextCurrent
-//purpose  : 
+//purpose  : OBSOLETE, please use NextSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
 void AIS_InteractiveContext::NextCurrent()
 {
-  AIS_Selection::Selection(myCurrentName.ToCString())->Next();
+  if (HasOpenedContext())
+    return;
+
+  NextSelected();
 }
 
 //=======================================================================
 //function : Current
-//purpose  : 
+//purpose  : OBSOLETE, please use SelectedInteractive() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
 Handle(AIS_InteractiveObject) AIS_InteractiveContext::Current() const 
 {
-  Handle(Standard_Transient) TR = AIS_Selection::Selection(myCurrentName.ToCString())->Value();
-  Handle(AIS_InteractiveObject) IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-  return IO;
-}
-
-//=======================================================================
-//function : FirstCurrentObject
-//purpose  : 
-//=======================================================================
-Handle(AIS_InteractiveObject) AIS_InteractiveContext::FirstCurrentObject()  
-{
-  Handle(AIS_InteractiveObject) IO ;
-  InitCurrent();
-  if(MoreCurrent()){
-    return Current();
-  }
-  return IO;
+  return HasOpenedContext() ? NULL : SelectedInteractive();
 }
 
 //=======================================================================
 //function : NbCurrents
-//purpose  : 
+//purpose  : OBSOLETE, please use NbSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
 Standard_Integer AIS_InteractiveContext::NbCurrents()
 {
-  Standard_Integer i(0);
-  for(InitCurrent();MoreCurrent();NextCurrent())
-    {i++;}
-  return i;
+  return HasOpenedContext() ? -1 : NbSelected();
 }
 
 //=======================================================================
 //function : HilightCurrents
-//purpose  : 
+//purpose  : OBSOLETE, please use HilightSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-void AIS_InteractiveContext::HilightCurrents(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::HilightCurrents (const Standard_Boolean theToUpdateViewer)
 {
-  AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
-  Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
-  Handle(Standard_Transient) TR;
-  Handle(AIS_InteractiveObject) IO;
-  sel->Init();
-  while (sel->More()) {
-    TR = sel->Value();
-    IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-    HilightWithColor(IO,mySelectionColor,Standard_False);
-    sel->Next();
-  }
-  if(updateviewer) 
-    UpdateCurrentViewer();
+  if (HasOpenedContext())
+    return;
+
+  HilightSelected (theToUpdateViewer);
 }
 
 //=======================================================================
 //function : UnhilightCurrents
-//purpose  : 
+//purpose  : OBSOLETE, please use UnhilightSelected() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
-void AIS_InteractiveContext::UnhilightCurrents(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::UnhilightCurrents (const Standard_Boolean theToUpdateViewer)
 {
-  AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
-  Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
-  Handle(Standard_Transient) TR;
-  Handle(AIS_InteractiveObject) IO;
-  sel->Init();
-  while (sel->More()) {
-    TR = sel->Value();
-    IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-    Unhilight(IO,Standard_False);
-    sel->Next();
-  }
-  if(updateviewer) 
-    UpdateCurrentViewer();
+  if (HasOpenedContext())
+    return;
+
+  UnhilightSelected (theToUpdateViewer);
 }
 
 //=======================================================================
 //function : ClearCurrents
-//purpose  : 
+//purpose  : OBSOLETE, please use ClearCurrents() instead
+//TODO     : Remove in process of local context deletion
 //=======================================================================
-
-void AIS_InteractiveContext::ClearCurrents(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::ClearCurrents(const Standard_Boolean theToUpdateViewer)
 {
-  if(NbCurrents()==0) return;
-  AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
-  Handle(AIS_Selection) S = AIS_Selection::CurrentSelection();
-  Handle(Standard_Transient) Tr;
-  Handle(AIS_InteractiveObject) IO;
-  for(S->Init();S->More();S->Next()){
-    Tr = S->Value();
-    IO = Handle(AIS_InteractiveObject)::DownCast (Tr);
-    IO->State(0);
-    Unhilight(IO,Standard_False);
-  }
-  AIS_Selection::Select();
-  if(updateviewer)
-    UpdateCurrentViewer();
+  if (HasOpenedContext())
+    return;
+
+  ClearSelected (theToUpdateViewer);
 }
 
 
 //=======================================================================
 //function : HilightSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_InteractiveContext::HilightSelected(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdateViewer)
 {
-  if(!HasOpenedContext()){
-    AIS_Selection::SetCurrentSelection(mySelectionName.ToCString());
-    Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
-    Handle(Standard_Transient) TR;
-    Handle(AIS_InteractiveObject) IO;
-    sel->Init();
-    while (sel->More()) {
-      TR = sel->Value();
-      IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-      HilightWithColor(IO,mySelectionColor,Standard_False);
-      sel->Next();
+  if (HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->HilightPicked (theToUpdateViewer);
+  }
+
+  // In case of selection without using local context
+  myMainPM->ClearImmediateDraw();
+  AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+  Handle(AIS_Selection) aSel = AIS_Selection::Selection (myCurrentName.ToCString());
+  AIS_MapOfObjSelectedOwners anObjOwnerMap;
+  for (aSel->Init(); aSel->More(); aSel->Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (aSel->Value());
+    if (!anOwner.IsNull() && anOwner->HasSelectable())
+    {
+      const Handle(AIS_InteractiveObject) anObj =
+        Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+      if (anOwner == anObj->GlobalSelOwner())
+      {
+        anObj->State (1);
+      }
+      anOwner->State (1);
+      if (!anOwner->IsAutoHilight())
+      {
+        NCollection_Handle<SelectMgr_SequenceOfOwner> aSeq;
+        if (anObjOwnerMap.Find (anObj, aSeq))
+        {
+          aSeq->Append (anOwner);
+        }
+        else
+        {
+          aSeq = new SelectMgr_SequenceOfOwner();
+          aSeq->Append (anOwner);
+          anObjOwnerMap.Bind (anObj, aSeq);
+        }
+      }
+      else
+      {
+        const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+        anOwner->HilightWithColor (myMainPM, mySelectionColor, aHiMode);
+      }
     }
   }
-  else
+
+  if (!anObjOwnerMap.IsEmpty())
+  {
+    for (AIS_MapOfObjSelectedOwners::Iterator anIter (anObjOwnerMap); anIter.More(); anIter.Next())
     {
-      myLocalContexts(myCurLocalIndex)->HilightPicked(updateviewer);
+      anIter.Key()->HilightSelected (myMainPM, *anIter.Value());
     }
-  if(updateviewer)
+    anObjOwnerMap.Clear();
+  }
+
+  if (theToUpdateViewer)
     UpdateCurrentViewer();
 }
 
 //=======================================================================
 //function : UnhilightSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_InteractiveContext::UnhilightSelected(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::UnhilightSelected (const Standard_Boolean theToUpdateViewer)
 {
-  if(!HasOpenedContext()){
-    AIS_Selection::SetCurrentSelection(mySelectionName.ToCString());
-    Handle(AIS_Selection) sel = AIS_Selection::Selection(myCurrentName.ToCString());
-    Handle(Standard_Transient) TR;
-    Handle(AIS_InteractiveObject) IO;
-    sel->Init();
-    while (sel->More()) {
-      TR = sel->Value();
-      IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-      Unhilight(IO,Standard_False);
-      sel->Next();
-    }
-    if(updateviewer)
-      UpdateCurrentViewer();
+  if (HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->UnhilightPicked (theToUpdateViewer);
   }
-  else
+
+  AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+  Handle(AIS_Selection) aSel = AIS_Selection::Selection (myCurrentName.ToCString());
+  for (aSel->Init(); aSel->More(); aSel->Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (aSel->Value());
+    if (!anOwner.IsNull() && anOwner->HasSelectable())
     {
-      myLocalContexts(myCurLocalIndex)->UnhilightPicked(updateviewer);
+      const Handle(AIS_InteractiveObject) anObj =
+        Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+      if (anOwner == anObj->GlobalSelOwner())
+      {
+        anObj->State (0);
+      }
+      anOwner->State (0);
+      const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HasHilightMode() : 0;
+      anOwner->Unhilight (myMainPM, aHiMode);
     }
+  }
+
+  if (theToUpdateViewer)
+    UpdateCurrentViewer();
 }
 
 
 //=======================================================================
 //function : ClearSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_InteractiveContext::ClearSelected(const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::ClearSelected (const Standard_Boolean theToUpdateViewer)
 {
-  if(!HasOpenedContext())
-    ClearCurrents(updateviewer);
-  else 
-    myLocalContexts(myCurLocalIndex)->ClearSelected(updateviewer);
-  
-}
+  if (HasOpenedContext())
+    return myLocalContexts (myCurLocalIndex)->ClearSelected (theToUpdateViewer);
 
-
-//=======================================================================
-//function : SetSelectedCurrent
-//purpose  : 
-//=======================================================================
-
-void AIS_InteractiveContext::SetSelectedCurrent()
-{
-
-
-#ifdef OCCT_DEBUG
-  cout<<"Not Yet Implemented"<<endl;
-#endif
-}
-
-//=======================================================================
-//function : UpdateSelection
-//purpose  : 
-//=======================================================================
-
-void AIS_InteractiveContext::UpdateSelected(const Standard_Boolean updateviewer)
-{
-  if(!HasOpenedContext()) {
-    HilightSelected();
-#ifndef BUG
+  if (NbSelected() == 0)
     return;
-#endif
+
+  AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+  Handle(AIS_Selection) aSel = AIS_Selection::CurrentSelection();
+  NCollection_IndexedMap<Handle(AIS_InteractiveObject)> anObjToClear;
+  for (aSel->Init(); aSel->More(); aSel->Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (aSel->Value());
+    if (!anOwner.IsNull() && anOwner->HasSelectable())
+    {
+      const Handle(AIS_InteractiveObject) anObj =
+        Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+      if (anOwner == anObj->GlobalSelOwner())
+      {
+        anObj->State (0);
+      }
+      anOwner->State (0);
+      if (!anOwner->IsAutoHilight())
+      {
+        if (!anObjToClear.Contains (anObj))
+          anObjToClear.Add (anObj);
+      }
+      else
+      {
+        const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+        anOwner->Unhilight (myMainPM, aHiMode);
+      }
+    }
   }
-  myLocalContexts(myCurLocalIndex)->UpdateSelected(updateviewer);
+
+  while (!anObjToClear.IsEmpty())
+  {
+    anObjToClear.FindKey (anObjToClear.Size())->ClearSelected();
+    anObjToClear.RemoveLast();
+  }
+
+  AIS_Selection::Select();
+  myMainPM->ClearImmediateDraw();
+
+  if (theToUpdateViewer)
+    UpdateCurrentViewer();
 }
 
 //=======================================================================
-//function : SetCurrentObject
-//purpose  : 
+//function : UpdateSelected
+//purpose  :
 //=======================================================================
-void AIS_InteractiveContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::UpdateSelected (const Standard_Boolean theToUpdateViewer)
 {
-  if(!HasOpenedContext()) 
-    SetCurrentObject(anIObj,updateviewer);
-  else
-    myLocalContexts(myCurLocalIndex)->SetSelected(anIObj,updateviewer);
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->UpdateSelected (theToUpdateViewer);
+  }
+
+  HilightSelected (theToUpdateViewer);
 }
 
+//=======================================================================
+//function : SetSelected
+//purpose  : Sets the whole object as selected and highlights it with selection color
+//=======================================================================
+void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& theObject,
+                                          const Standard_Boolean theToUpdateViewer)
+{
+  if(HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->SetSelected (theObject, theToUpdateViewer);
+  }
+
+  if (theObject.IsNull())
+    return;
+  if(!myObjects.IsBound (theObject))
+    Display (theObject, Standard_False);
+  if (theObject->HasSelection (0))
+    return;
+
+  if (NbSelected() == 1 && theObject->State() == 1)
+  {
+    Quantity_NameOfColor aHiCol;
+    Standard_Boolean hasHiCol = Standard_False;
+    if (IsHilighted (theObject, hasHiCol, aHiCol))
+    {
+      if (hasHiCol && aHiCol!= mySelectionColor)
+      {
+        HilightWithColor (theObject, mySelectionColor, theToUpdateViewer);
+      }
+    }
+    return;
+  }
+
+  AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+  Handle(AIS_Selection) aCurSel = AIS_Selection::Selection (myCurrentName.ToCString());
+  for (aCurSel->Init(); aCurSel->More(); aCurSel->Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (aCurSel->Value());
+    if (anOwner.IsNull() || !anOwner->HasSelectable())
+      continue;
+
+    Handle(AIS_InteractiveObject) aSelectable =
+      Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    Unhilight (aSelectable, Standard_False);
+    anOwner->State (0);
+    aSelectable->State (0);
+  }
+
+  // added to avoid untimely viewer update...
+  const Handle(SelectMgr_Selection)& aSel = theObject->Selection (0);
+  if (aSel->IsEmpty())
+    return;
+  aSel->Init();
+  Handle(SelectMgr_EntityOwner) anOwner =
+    Handle(SelectMgr_EntityOwner)::DownCast (aSel->Sensitive()->BaseSensitive()->OwnerId());
+  AIS_Selection::ClearAndSelect (anOwner);
+  theObject->State (1);
+  anOwner->State (1);
+  Quantity_NameOfColor aHiCol;
+  Standard_Boolean hasHiCol = Standard_False;
+  if (IsHilighted (theObject, hasHiCol, aHiCol))
+  {
+    if (hasHiCol && aHiCol!= mySelectionColor)
+    {
+      HilightWithColor (theObject, mySelectionColor, Standard_False);
+    }
+  }
+  else
+  {
+    HilightWithColor (theObject, mySelectionColor, Standard_False);
+  }
+
+  if (theToUpdateViewer)
+    UpdateCurrentViewer();
+}
+
+//=======================================================================
+//function : SetSelected
+//purpose  : Sets the whole object as selected and highlights it with selection color
+//=======================================================================
+void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                          const Standard_Boolean theToUpdateViewer)
+{
+  if (theOwner.IsNull() || !theOwner->HasSelectable())
+    return;
+
+  const Handle(AIS_InteractiveObject) anObject =
+    Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+
+  if (NbSelected() == 1 && theOwner->IsSelected())
+  {
+    Quantity_NameOfColor aCustomColor;
+    Standard_Boolean isCustomColorSet;
+    if (IsHilighted (theOwner, isCustomColorSet, aCustomColor))
+    {
+      if (isCustomColorSet && aCustomColor != mySelectionColor)
+      {
+        const Standard_Integer aHiMode = anObject->HasHilightMode() ? anObject->HilightMode() : 0;
+        theOwner->HilightWithColor (myMainPM, mySelectionColor, aHiMode);
+      }
+    }
+    return;
+  }
+
+  if (!myObjects.IsBound (anObject))
+    Display (anObject, Standard_False);
+
+  AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+  Handle(AIS_Selection) aCurSel = AIS_Selection::Selection (myCurrentName.ToCString());
+  for (aCurSel->Init(); aCurSel->More(); aCurSel->Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner =
+      Handle(SelectMgr_EntityOwner)::DownCast (aCurSel->Value());
+    if (!anOwner->HasSelectable())
+      continue;
+    const Standard_Integer aHiMode = anObject->HasHilightMode() ? anObject->HilightMode() : 0;
+    anOwner->Unhilight (myMainPM, aHiMode);
+    anOwner->State (0);
+  }
+
+  AIS_Selection::ClearAndSelect (theOwner);
+  theOwner->State (1);
+  Quantity_NameOfColor aCustomColor;
+  Standard_Boolean isCustomColorSet;
+  if (!IsHilighted (theOwner, isCustomColorSet, aCustomColor) || (isCustomColorSet && aCustomColor!= mySelectionColor))
+  {
+    highlightSelected (theOwner, mySelectionColor);
+  }
+
+  if (theToUpdateViewer)
+    UpdateCurrentViewer();
+}
+
+//=======================================================================
+//function : AddOrRemoveSelected
+//purpose  : Adds or removes current object from AIS selection and highlights/unhighlights it.
+//           Since this method makes sence only for neutral point selection of a whole object,
+//           if 0 selection of the object is empty this method simply does nothing.
+//=======================================================================
+void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(AIS_InteractiveObject)& theObject,
+                                                  const Standard_Boolean theToUpdateViewer)
+{
+  if (!theObject->HasInteractiveContext())
+    theObject->SetContext (this);
+
+  if (HasOpenedContext())
+    return myLocalContexts (myCurLocalIndex)->AddOrRemoveSelected (theObject, theToUpdateViewer);
+
+  if (theObject.IsNull() || !myObjects.IsBound (theObject) || !theObject->HasSelection (0))
+    return;
+
+  const Handle(SelectMgr_Selection)& aSel = theObject->Selection (0);
+
+  if (aSel->IsEmpty())
+    return;
+
+  aSel->Init();
+  const Handle(SelectMgr_EntityOwner) anOwner =
+    Handle(SelectMgr_EntityOwner)::DownCast (aSel->Sensitive()->BaseSensitive()->OwnerId());
+
+  if (anOwner.IsNull() || !anOwner->HasSelectable())
+    return;
+
+  AddOrRemoveSelected (anOwner, theToUpdateViewer);
+}
 //=======================================================================
 //function : AddOrRemoveSelected
 //purpose  : 
 //=======================================================================
 
-void AIS_InteractiveContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& anIObj,
-						 const Standard_Boolean updateviewer)
-{
-  if(!anIObj->HasInteractiveContext()) anIObj->SetContext(this);
-  if(!HasOpenedContext())
-    AddOrRemoveCurrentObject(anIObj,updateviewer);
-  else
-    myLocalContexts(myCurLocalIndex)->AddOrRemoveSelected(anIObj,updateviewer);
-  
-}
-//=======================================================================
-//function : AddOrRemoveSelected
-//purpose  : 
-//=======================================================================
-
-void AIS_InteractiveContext::AddOrRemoveSelected(const TopoDS_Shape& aShap,
+void AIS_InteractiveContext::AddOrRemoveSelected (const TopoDS_Shape& aShap,
 				            const Standard_Boolean updateviewer)
 { 
   if(!HasOpenedContext()) {
@@ -928,160 +1089,215 @@ void AIS_InteractiveContext::AddOrRemoveSelected(const TopoDS_Shape& aShap,
   if(updateviewer) UpdateCurrentViewer();
   
 }
+
 //=======================================================================
 //function : AddOrRemoveSelected
-//purpose  : 
+//purpose  : Allows to highlight or unhighlight the owner given depending on
+//           its selection status
 //=======================================================================
+void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                  const Standard_Boolean theToUpdateViewer)
+{
+  if (HasOpenedContext())
+    return myLocalContexts(myCurLocalIndex)->AddOrRemoveSelected (theOwner, theToUpdateViewer);
 
-void AIS_InteractiveContext::AddOrRemoveSelected(const Handle(SelectMgr_EntityOwner)& Own,
-						 const Standard_Boolean updateviewer)
-{ 
-  if(!HasOpenedContext()) {
-#ifdef OCCT_DEBUG
-    cout<<" Attempt to remove a selected ownr with no opened local context"<<endl;
-#endif
+  if (theOwner.IsNull() || !theOwner->HasSelectable())
     return;
-  }
-  
-  myLocalContexts(myCurLocalIndex)->AddOrRemoveSelected(Own,Standard_False);
-  if(updateviewer) UpdateCurrentViewer();
-  
-}
 
+  AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
+  Handle(AIS_Selection) aCurSel = AIS_Selection::Selection (myCurrentName.ToCString());
+
+  AIS_SelectStatus aSelStat = AIS_Selection::Select (theOwner);
+
+  Standard_Integer aState = aSelStat == AIS_SS_Added ?  1 : 0;
+  theOwner->State (aState);
+  const Handle(AIS_InteractiveObject) anObj =
+    Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  const Standard_Boolean isGlobal = anObj->GlobalSelOwner() == theOwner;
+  if (isGlobal)
+    anObj->State (aState);
+  const Handle(AIS_GlobalStatus)& aStatus = myObjects (anObj);
+  const Standard_Integer aHiMode = anObj->HasHilightMode() ? anObj->HilightMode() : 0;
+  if (aState == 1)
+  {
+    highlightSelected (theOwner, mySelectionColor);
+    if (isGlobal)
+    {
+      aStatus->SetHilightStatus (Standard_True);
+      aStatus->SetHilightColor (mySelectionColor);
+    }
+  }
+  else
+  {
+    if (theOwner->IsAutoHilight())
+      theOwner->Unhilight (myMainPM, aHiMode);
+    else
+      anObj->ClearSelected();
+    aStatus->SetHilightStatus (Standard_False);
+    aStatus->SetHilightColor (Quantity_NOC_WHITE);
+  }
+
+  if (theToUpdateViewer)
+    UpdateCurrentViewer();
+}
 
 
 //=======================================================================
 //function : IsSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean AIS_InteractiveContext::
-IsSelected(const Handle(AIS_InteractiveObject)& anIObj) const 
+Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(AIS_InteractiveObject)& theObj) const
 {
-  if (anIObj.IsNull()) return Standard_False;
-  
-  if(!HasOpenedContext()) 
-    return (anIObj->State()==1);
-  else 
-    return myLocalContexts(myCurLocalIndex)->IsSelected(anIObj);
+  if(HasOpenedContext())
+    return myLocalContexts(myCurLocalIndex)->IsSelected (theObj);
+
+  if (theObj.IsNull() || !myObjects.IsBound (theObj))
+    return Standard_False;
+
+  const Standard_Integer aGlobalSelMode = theObj->GlobalSelectionMode();
+  const TColStd_ListOfInteger& anActivatedModes = myObjects (theObj)->SelectionModes();
+  Standard_Boolean isGlobalModeActivated = Standard_False;
+  for (TColStd_ListIteratorOfListOfInteger aModeIter (anActivatedModes); aModeIter.More(); aModeIter.Next())
+  {
+    if (aModeIter.Value() == aGlobalSelMode)
+    {
+      isGlobalModeActivated = Standard_True;
+      break;
+    }
+  }
+  if (!theObj->HasSelection (aGlobalSelMode) || !isGlobalModeActivated)
+    return Standard_False;
+
+  return theObj->State() == 1;
 }
 
+//=======================================================================
+//function : IsSelected
+//purpose  : Returns true is the owner given is selected
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(SelectMgr_EntityOwner)& theOwner) const
+{
+  if (HasOpenedContext())
+    return myLocalContexts(myCurLocalIndex)->IsSelected (theOwner);
+
+  if (theOwner.IsNull())
+    return Standard_False;
+
+  return theOwner->IsSelected();
+}
 
 //=======================================================================
 //function : InitSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void AIS_InteractiveContext::InitSelected()
 {
-  if(!HasOpenedContext())
-    AIS_Selection::Selection(myCurrentName.ToCString())->Init();
-  else
-    myLocalContexts(myCurLocalIndex)->InitSelected();
+  if (HasOpenedContext())
+  {
+    myLocalContexts (myCurLocalIndex)->InitSelected();
+    return;
+  }
+
+  AIS_Selection::Selection (myCurrentName.ToCString())->Init();
 }
 
 //=======================================================================
 //function : MoreSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean AIS_InteractiveContext::MoreSelected() const 
+Standard_Boolean AIS_InteractiveContext::MoreSelected() const
 {
-  if(!HasOpenedContext())
-    return AIS_Selection::Selection(myCurrentName.ToCString())->More();
-  return myLocalContexts(myCurLocalIndex)->MoreSelected();
+  if (HasOpenedContext())
+    return myLocalContexts (myCurLocalIndex)->MoreSelected();
+
+  return AIS_Selection::Selection (myCurrentName.ToCString())->More();
 }
 
 //=======================================================================
 //function : NextSelected
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void AIS_InteractiveContext::NextSelected()
 {
-  if(!HasOpenedContext())
-    AIS_Selection::Selection(myCurrentName.ToCString())->Next();
-  else
-    myLocalContexts(myCurLocalIndex)->NextSelected();
+  if(HasOpenedContext())
+  {
+    return myLocalContexts (myCurLocalIndex)->NextSelected();
+    return;
+  }
+
+  AIS_Selection::Selection (myCurrentName.ToCString())->Next();
 }
 
 //=======================================================================
 //function : HasSelectedShape
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const 
+Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const
 {
-  if(!HasOpenedContext()) {
-    Handle(AIS_Shape) shape = 
-	Handle(AIS_Shape)::DownCast(SelectedInteractive());
-    if( !shape.IsNull() ) return Standard_True;
-    return Standard_False;
+  if(HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->HasSelectedShape();
   }
-  return myLocalContexts(myCurLocalIndex)->HasSelectedShape();
+
+  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (SelectedInteractive());
+  return !aShape.IsNull();
 }
 
 //=======================================================================
 //function : SelectedShape
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-TopoDS_Shape AIS_InteractiveContext::SelectedShape() const 
+TopoDS_Shape AIS_InteractiveContext::SelectedShape() const
 {
-  if (!HasOpenedContext())
-  {
-    TopoDS_Shape aResShape;
-    Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (SelectedInteractive());
-    if (!aShape.IsNull())
-    {
-      TopLoc_Location aLocTrsf = SelectedInteractive()->Transformation().Form() == gp_Identity ?
-                                 TopLoc_Location() : TopLoc_Location (SelectedInteractive()->Transformation());
-      aResShape = aShape->Shape().Located (aLocTrsf * aShape->Shape().Location());
-    }
-
-    return aResShape;
-  } 
-  else
+  if (HasOpenedContext())
   {
     return myLocalContexts (myCurLocalIndex)->SelectedShape();
   }
+
+  if (AIS_Selection::Selection (myCurrentName.ToCString())->Extent() == 0)
+    return TopoDS_Shape();
+
+  const Handle(StdSelect_BRepOwner) anOwner =
+    Handle(StdSelect_BRepOwner)::DownCast (AIS_Selection::Selection (myCurrentName.ToCString())->Value());
+  if (!anOwner->HasSelectable())
+    return TopoDS_Shape();
+
+  return anOwner->Shape().Located (anOwner->Location() * anOwner->Shape().Location());
 }
 
 //=======================================================================
-//function : Interactive
-//purpose  : 
+//function : SelectedInteractive
+//purpose  :
 //=======================================================================
-
-Handle(AIS_InteractiveObject) AIS_InteractiveContext::Interactive() const 
-{
-  return SelectedInteractive();
-}
-
 Handle(AIS_InteractiveObject) AIS_InteractiveContext::SelectedInteractive() const 
 {
-  if(!HasOpenedContext()){
-    if (AIS_Selection::Selection(myCurrentName.ToCString())->Extent() == 0)
-      return NULL;
-    Handle(Standard_Transient) TR  =AIS_Selection::Selection(myCurrentName.ToCString())->Value();
-    Handle(AIS_InteractiveObject) IO = Handle(AIS_InteractiveObject)::DownCast (TR);
-    return IO;}
-  
-  return  myLocalContexts(myCurLocalIndex)->SelectedInteractive();
-  
+  if (HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->SelectedInteractive();
+  }
+
+  const Handle(SelectMgr_EntityOwner) anOwner =
+    Handle(SelectMgr_EntityOwner)::DownCast (AIS_Selection::Selection (myCurrentName.ToCString())->Value());
+  if (anOwner.IsNull() || !anOwner->HasSelectable())
+    return NULL;
+
+  return Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
 }
 //=======================================================================
-//function : Interactive
-//purpose  : 
+//function : SelectedOwner
+//purpose  :
 //=======================================================================
-
-Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::SelectedOwner() const 
+Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::SelectedOwner() const
 {
-  if(!HasOpenedContext()){
-    Handle(SelectMgr_EntityOwner) Ownr;
-    return Ownr;
+  if(HasOpenedContext())
+  {
+    return myLocalContexts(myCurLocalIndex)->SelectedOwner();
   }
-  return  myLocalContexts(myCurLocalIndex)->SelectedOwner();
-  
+
+  Handle(AIS_Selection) aCurSel = AIS_Selection::Selection (myCurrentName.ToCString());
+
+  return aCurSel->Extent() > 0 ?
+    Handle(SelectMgr_EntityOwner)::DownCast (aCurSel->Value()) : NULL;
 }
 
 //=======================================================================
@@ -1127,46 +1343,49 @@ void AIS_InteractiveContext::EntityOwners(Handle(SelectMgr_IndexedMapOfOwner)& t
   }
 }
 
-Standard_Integer AIS_InteractiveContext::NbSelected() 
+//=======================================================================
+//function : NbSelected
+//purpose  :
+//=======================================================================
+Standard_Integer AIS_InteractiveContext::NbSelected()
 {
-  Standard_Integer i(0);
-  for(InitSelected();MoreSelected();NextSelected())
-    {i++;}
-  return i;
+  Standard_Integer aNbSelected = 0;
+  for (InitSelected(); MoreSelected(); NextSelected())
+  {
+    aNbSelected++;
+  }
+
+  return aNbSelected;
 }
 
 //=======================================================================
 //function : HasApplicative
-//purpose  : 
+//purpose  :
 //=======================================================================
-
   Standard_Boolean AIS_InteractiveContext::HasApplicative() const 
 {
-  return Interactive()->HasOwner();
+  return SelectedInteractive()->HasOwner();
 }
 
 //=======================================================================
 //function : Applicative
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 Handle(Standard_Transient) AIS_InteractiveContext::Applicative() const 
 {
-  return Interactive()->GetOwner();
+  return SelectedInteractive()->GetOwner();
 }
 
-
-
 //==================================================
-// Function: 
+// Function: HasDetected
 // Purpose :
 //==================================================
-Standard_Boolean AIS_InteractiveContext::HasDetected() const 
+Standard_Boolean AIS_InteractiveContext::HasDetected() const
 {
   if(HasOpenedContext())
     return myLocalContexts(myCurLocalIndex)->HasDetected();
-  else
-    return !myLastPicked.IsNull();
+
+  return !myLastPicked.IsNull();
 }
 
 //=======================================================================
@@ -1194,15 +1413,14 @@ AIS_InteractiveContext::DetectedShape() const
 
 //=======================================================================
 //function : DetectedInteractive
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(AIS_InteractiveObject) 
-AIS_InteractiveContext::DetectedInteractive() const 
+Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedInteractive() const
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
     return myLocalContexts(myCurLocalIndex)->DetectedInteractive();
-  return myLastPicked;
+
+  return Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
 }
 
 
@@ -1222,12 +1440,11 @@ Standard_Boolean AIS_InteractiveContext::HasNextDetected() const
 //=======================================================================
 Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::DetectedOwner() const
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
     return myLocalContexts(myCurLocalIndex)->DetectedOwner();
-  Handle(SelectMgr_EntityOwner) Ownr;
-  return Ownr;
-}
 
+  return myLastPicked;
+}
 
 //=======================================================================
 //function : HilightNextDetected
@@ -1338,4 +1555,32 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() co
   }
 
   return MoreDetected() ? myAISDetectedSeq(myAISCurDetected) : NULL;
+}
+
+//=======================================================================
+//function : FirstSelectedObject
+//purpose  :
+//=======================================================================
+Handle(AIS_InteractiveObject) AIS_InteractiveContext::FirstSelectedObject()
+{
+  Handle(AIS_InteractiveObject) anObject;
+
+  if (HasOpenedContext())
+    return anObject;
+
+  InitSelected();
+  if (MoreSelected())
+  {
+    return SelectedInteractive();
+  }
+  return anObject;
+}
+
+//=======================================================================
+//function : RedrawImmediate
+//purpose  : Redisplays immediate strucures of the viewer given according to their visibility
+//=======================================================================
+void AIS_InteractiveContext::RedrawImmediate (const Handle(V3d_Viewer)& theViewer)
+{
+  myMainPM->RedrawImmediate (theViewer);
 }

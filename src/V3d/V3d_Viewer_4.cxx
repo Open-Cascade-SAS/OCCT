@@ -100,7 +100,7 @@ void V3d_Viewer::DeactivateGrid()
     if (myGridEcho
     && !myGridEchoStructure.IsNull())
     {
-      ActiveView()->View()->EraseImmediate (myGridEchoStructure);
+      myGridEchoStructure->Erase();
     }
   }
   Update();
@@ -256,10 +256,7 @@ void V3d_Viewer::SetGridEcho (const Standard_Boolean theToShowGrid)
     return;
   }
 
-  for (InitActiveViews(); MoreActiveViews(); NextActiveViews())
-  {
-    ActiveView()->View()->EraseImmediate (myGridEchoStructure);
-  }
+  myGridEchoStructure->Erase();
 }
 
 // =======================================================================
@@ -323,7 +320,12 @@ void V3d_Viewer::ShowGridEcho (const Handle(V3d_View)& theView,
   anArrayOfPoints->AddVertex (theVertex.X(), theVertex.Y(), theVertex.Z());
   myGridEchoGroup->AddPrimitiveArray (anArrayOfPoints);
 
-  theView->View()->DisplayImmediate (myGridEchoStructure, Standard_True);
+  myGridEchoStructure->SetZLayer (Graphic3d_ZLayerId_Topmost);
+  myGridEchoStructure->SetInfiniteState (Standard_True);
+  myGridEchoStructure->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
+  myGridEchoStructure->CStructure()->ViewAffinity->SetVisible (Standard_False);
+  myGridEchoStructure->CStructure()->ViewAffinity->SetVisible (theView->View()->Identification(), true);
+  myGridEchoStructure->Display();
 }
 
 // =======================================================================
@@ -338,5 +340,7 @@ void V3d_Viewer::HideGridEcho (const Handle(V3d_View)& theView)
   }
 
   myGridEchoLastVert.SetCoord (ShortRealLast(), ShortRealLast(), ShortRealLast());
-  theView->View()->EraseImmediate (myGridEchoStructure);
+  const Handle(Graphic3d_ViewAffinity)& anAffinity = myGridEchoStructure->CStructure()->ViewAffinity;
+  if (!anAffinity.IsNull() && anAffinity->IsVisible (theView->View()->Identification()))
+    myGridEchoStructure->Erase();
 }

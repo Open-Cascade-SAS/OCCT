@@ -189,6 +189,12 @@ public:
   //! if they are a part of activated selection
   Standard_EXPORT Bnd_Box BndBoxOfSelected (Handle(SelectMgr_IndexedMapOfOwner)& theOwners);
 
+  //! Returns the mode for selection of object as a whole
+  inline Standard_Integer GlobalSelectionMode() const;
+
+  //! Returns the owner of mode for selection of object as a whole
+  Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const;
+
 
 friend class SelectMgr_SelectionManager;
 
@@ -199,6 +205,8 @@ protected:
 
   
   Standard_EXPORT SelectMgr_SelectableObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
+
+  inline void setGlobalSelMode (const Standard_Integer theMode);
 
   SelectMgr_SequenceOfSelection myselections;
   Handle(Prs3d_Drawer) myDrawer;
@@ -213,6 +221,7 @@ private:
   Standard_Boolean myAutoHilight;
   Handle(Prs3d_Presentation) mySelectionPrs;
   Handle(Prs3d_Presentation) myHilightPrs;
+  Standard_Integer myGlobalSelMode;
 
 
 };

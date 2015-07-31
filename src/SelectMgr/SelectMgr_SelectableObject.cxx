@@ -55,12 +55,13 @@ static Standard_Integer Search (const SelectMgr_SequenceOfSelection& seq,
 // Purpose :
 //==================================================
 
-SelectMgr_SelectableObject::SelectMgr_SelectableObject( const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
-  PrsMgr_PresentableObject (aTypeOfPresentation3d),
+SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
+: PrsMgr_PresentableObject (aTypeOfPresentation3d),
   myDrawer                 (new Prs3d_Drawer()),
   myHilightDrawer          (new Prs3d_Drawer()),
   myAssemblyOwner          (NULL),
-  myAutoHilight            (Standard_True)
+  myAutoHilight            (Standard_True),
+  myGlobalSelMode          (0)
 {
   InitDefaultHilightAttributes (myHilightDrawer);
   myHilightDrawer->Link (myDrawer);
@@ -633,4 +634,26 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected (Handle(SelectMgr_IndexedMa
   }
 
   return aBnd;
+}
+
+//=======================================================================
+//function : GlobalSelOwner
+//purpose  : Returns entity owner corresponding to selection of the object as a whole
+//=======================================================================
+Handle(SelectMgr_EntityOwner) SelectMgr_SelectableObject::GlobalSelOwner() const
+{
+   Handle(SelectMgr_EntityOwner) anOwner;
+
+  if (!HasSelection (myGlobalSelMode))
+    return anOwner;
+
+  const Handle(SelectMgr_Selection)& aGlobalSel = Selection (myGlobalSelMode);
+  if (aGlobalSel->IsEmpty())
+    return anOwner;
+
+  aGlobalSel->Init();
+  anOwner =
+    Handle(SelectMgr_EntityOwner)::DownCast (aGlobalSel->Sensitive()->BaseSensitive()->OwnerId());
+
+  return anOwner;
 }

@@ -55,10 +55,12 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
 {
 
   // the entities eventually detected just before the context was opened are unhighlighted...
-  if(!IsCurrent(myLastPicked)){
+  if(!IsSelected(myLastPicked)){
     if(!myLastPicked.IsNull()){
-      Standard_Integer HiMod = myLastPicked->HasHilightMode()?myLastPicked->HilightMode():0;
-      myMainPM->Unhighlight(myLastPicked,HiMod);
+      const Handle(AIS_InteractiveObject) aLastPickedAIS =
+        Handle(AIS_InteractiveObject)::DownCast (myLastPicked->Selectable());
+      Standard_Integer HiMod = aLastPickedAIS->HasHilightMode()?aLastPickedAIS->HilightMode():0;
+      myMainPM->Unhighlight (aLastPickedAIS, HiMod);
     }}
   
   if(!mylastmoveview.IsNull()){
@@ -750,7 +752,7 @@ Standard_Boolean AIS_InteractiveContext::ImmediateAdd (const Handle(AIS_Interact
 Standard_Boolean AIS_InteractiveContext::EndImmediateDraw (const Handle(V3d_View)& theView)
 {
   return HasOpenedContext()
-      && myLocalContexts (myCurLocalIndex)->EndImmediateDraw (theView);
+      && myLocalContexts (myCurLocalIndex)->EndImmediateDraw (theView->Viewer());
 }
 
 //=======================================================================
@@ -772,7 +774,7 @@ Standard_Boolean AIS_InteractiveContext::EndImmediateDraw()
   }
 
   Handle(V3d_View) aView = myMainVwr->ActiveView();
-  return myLocalContexts (myCurLocalIndex)->EndImmediateDraw (aView);
+  return myLocalContexts (myCurLocalIndex)->EndImmediateDraw (aView->Viewer());
 }
 
 

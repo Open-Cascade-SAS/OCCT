@@ -293,7 +293,7 @@ void CViewer2dDoc::OnBUTTONTestRect()
   Handle_AIS_Shape aRect2 = new AIS_Shape(W2); 
   myAISContext->Display(aRect2);
   myAISContext->SetColor(aRect2,Quantity_NOC_YELLOW);
-  myAISContext->SetSelectionMode(aRect2,2);
+  myAISContext->Activate(aRect2,2);
 
   FitAll2DViews(Standard_True); // Update Viewer
 }

@@ -28,7 +28,7 @@ public:
   //! Empty constructor.
   Graphic3d_ViewAffinity()
   {
-    ::memset (&myMask, 0xFF, sizeof(myMask));
+    SetVisible (Standard_True);
   }
 
   //! Return visibility flag.
@@ -36,6 +36,12 @@ public:
   {
     const unsigned int aBit = 1 << theViewId;
     return (myMask & aBit) != 0;
+  }
+
+  //! Setup visibility flag for all views.
+  void SetVisible (const Standard_Boolean theIsVisible)
+  {
+    ::memset (&myMask, theIsVisible ? 0xFF : 0x00, sizeof(myMask));
   }
 
   //! Setup visibility flag.

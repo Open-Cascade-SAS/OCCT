@@ -414,40 +414,6 @@ Standard_Boolean OpenGl_GraphicDriver::SetImmediateModeDrawToFront (const Graphi
 }
 
 // =======================================================================
-// function : DisplayImmediateStructure
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::DisplayImmediateStructure (const Graphic3d_CView&             theCView,
-                                                      const Handle(Graphic3d_Structure)& theStructure)
-{
-  OpenGl_CView* aCView = (OpenGl_CView* )theCView.ptrView;
-  if (aCView == NULL)
-  {
-    return;
-  }
-
-  aCView->View->DisplayImmediateStructure (theStructure);
-}
-
-// =======================================================================
-// function : EraseImmediateStructure
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::EraseImmediateStructure (const Graphic3d_CView&      theCView,
-                                                    const Graphic3d_CStructure& theCStructure)
-{
-  OpenGl_CView*     aCView     = (OpenGl_CView*     )theCView.ptrView;
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )&theCStructure;
-  if (aCView == NULL)
-  {
-    return;
-  }
-
-  aCView->View->EraseImmediateStructure (aStructure);
-}
-
-
-// =======================================================================
 // function : Print
 // purpose  :
 // =======================================================================

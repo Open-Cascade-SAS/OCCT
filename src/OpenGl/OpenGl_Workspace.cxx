@@ -761,7 +761,7 @@ bool OpenGl_Workspace::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
                                     OpenGl_FrameBuffer*    theDrawFbo,
                                     const Standard_Boolean theToFlip)
 {
-  if (theReadFbo == NULL)
+  if (theReadFbo == NULL || myGlContext->IsFeedback())
   {
     return false;
   }
@@ -1056,8 +1056,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       {
         myMainSceneFbos[0]->Init (myGlContext, aSizeX, aSizeY);
       }
-      if (myToFlipOutput
-       && myMainSceneFbos[0]->IsValid())
+      if (!myGlContext->caps->useSystemBuffer && myMainSceneFbos[0]->IsValid())
       {
         myImmediateSceneFbos[0]->InitLazy (myGlContext, aSizeX, aSizeY);
       }
@@ -1168,8 +1167,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   {
     OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
     OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
-    if (myToFlipOutput
-     && myImmediateSceneFbos[0]->IsValid())
+    if (!myGlContext->caps->useSystemBuffer && myImmediateSceneFbos[0]->IsValid())
     {
       anImmFbo = myImmediateSceneFbos[0].operator->();
     }
@@ -1482,8 +1480,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   {
     OpenGl_FrameBuffer* aMainFbo = myMainSceneFbos[0]->IsValid() ? myMainSceneFbos[0].operator->() : NULL;
     OpenGl_FrameBuffer* anImmFbo = aFrameBuffer;
-    if (myToFlipOutput
-     && myImmediateSceneFbos[0]->IsValid())
+    if (!myGlContext->caps->useSystemBuffer && myImmediateSceneFbos[0]->IsValid())
     {
       anImmFbo = myImmediateSceneFbos[0].operator->();
     }
@@ -1586,21 +1583,6 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
 
   myView->Render (myPrintContext, aWS, theDrawFbo, theProjection,
                   theCView, theCUnderLayer, theCOverLayer, Standard_True);
-  if (!myView->ImmediateStructures().IsEmpty())
-  {
-    myUseZBuffer = Standard_False;
-    glDisable (GL_DEPTH_TEST);
-  }
-  for (OpenGl_IndexedMapOfStructure::Iterator anIter (myView->ImmediateStructures()); anIter.More(); anIter.Next())
-  {
-    const OpenGl_Structure* aStructure = anIter.Value();
-    if (!aStructure->IsVisible())
-    {
-      continue;
-    }
-
-    aStructure->Render (aWS);
-  }
 
   return !toCopyBackToFront;
 }

@@ -96,7 +96,8 @@ public:
   //! may be decomposed into sub-shapes for dynamic selection.
   Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;
 
-
+  //! Returns the owner of mode for selection of object as a whole
+  Standard_EXPORT virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE;
 
 
   DEFINE_STANDARD_RTTI(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)

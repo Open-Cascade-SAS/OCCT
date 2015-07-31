@@ -324,40 +324,108 @@ void PrsMgr_PresentationManager::BeginImmediateDraw()
 // =======================================================================
 void PrsMgr_PresentationManager::ClearImmediateDraw()
 {
-  if (myImmediateView.IsNull())
-  {
-    myImmediateList.Clear();
-    return;
-  }
-
   for (PrsMgr_ListOfPresentations::Iterator anIter (myImmediateList); anIter.More(); anIter.Next())
   {
-    myImmediateView->View()->EraseImmediate (anIter.Value());
+    anIter.Value()->Erase();
+  }
+
+  for (PrsMgr_ListOfPresentations::Iterator anIter (myViewDependentImmediateList); anIter.More(); anIter.Next())
+  {
+    anIter.Value()->Erase();
   }
 
   myImmediateList.Clear();
-  myImmediateView.Nullify();
+  myViewDependentImmediateList.Clear();
+}
+
+// =======================================================================
+// function : displayImmediate
+// purpose  : Handles the structures from myImmediateList and its visibility
+//            in all views of the viewer given by setting proper affinity
+// =======================================================================
+void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& theViewer)
+{
+  for (theViewer->InitActiveViews(); theViewer->MoreActiveViews(); theViewer->NextActiveViews())
+  {
+    const Handle(Visual3d_View)& aView = theViewer->ActiveView()->View();
+    for (PrsMgr_ListOfPresentations::Iterator anIter (myImmediateList); anIter.More(); anIter.Next())
+    {
+      const Handle(Prs3d_Presentation)& aPrs = anIter.Value();
+      if (aPrs.IsNull())
+        continue;
+
+      Handle(Prs3d_Presentation) aViewDepPrs;
+      Handle(Prs3d_PresentationShadow) aShadowPrs = Handle(Prs3d_PresentationShadow)::DownCast (aPrs);
+      if (!aShadowPrs.IsNull() && aView->IsComputed (aShadowPrs->ParentId(), aViewDepPrs))
+      {
+        aShadowPrs.Nullify();
+        aShadowPrs = new Prs3d_PresentationShadow (myStructureManager, aViewDepPrs);
+        aShadowPrs->SetZLayer (aViewDepPrs->CStructure()->ZLayer());
+        aShadowPrs->SetClipPlanes (aViewDepPrs->GetClipPlanes());
+        aShadowPrs->CStructure()->IsForHighlight = 1;
+        aShadowPrs->Highlight (Aspect_TOHM_COLOR, aPrs->HighlightColor());
+        myViewDependentImmediateList.Append (aShadowPrs);
+      }
+      // handles custom highlight presentations which were defined in overriden
+      // HilightOwnerWithColor method of a custom AIS objects and maintain its
+      // visibility in different views on their own
+      else if (aShadowPrs.IsNull())
+      {
+        aPrs->Display();
+        continue;
+      }
+
+      if (!aShadowPrs->IsDisplayed())
+      {
+        aShadowPrs->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
+        aShadowPrs->CStructure()->ViewAffinity->SetVisible (Standard_False);
+        aShadowPrs->Display();
+      }
+
+      Standard_Integer aViewId = aView->Identification();
+      bool isParentVisible = aShadowPrs->ParentAffinity().IsNull() ?
+        Standard_True : aShadowPrs->ParentAffinity()->IsVisible (aViewId);
+      aShadowPrs->CStructure()->ViewAffinity->SetVisible (aViewId, isParentVisible);
+    }
+  }
 }
 
 // =======================================================================
 // function : EndImmediateDraw
 // purpose  :
 // =======================================================================
-void PrsMgr_PresentationManager::EndImmediateDraw (const Handle(V3d_View)& theView)
+void PrsMgr_PresentationManager::EndImmediateDraw (const Handle(V3d_Viewer)& theViewer)
 {
   if (--myImmediateModeOn > 0)
   {
     return;
   }
 
+  displayImmediate (theViewer);
+}
+
+// =======================================================================
+// function : RedrawImmediate
+// purpose  : Clears all immediate structures and redisplays with proper
+//            affinity
+//=======================================================================
+void PrsMgr_PresentationManager::RedrawImmediate (const Handle(V3d_Viewer)& theViewer)
+{
+  if (myImmediateList.IsEmpty())
+    return;
+
+  // Clear previously displayed structures
   for (PrsMgr_ListOfPresentations::Iterator anIter (myImmediateList); anIter.More(); anIter.Next())
   {
-    theView->View()->DisplayImmediate (anIter.Value(), Standard_True);
+    anIter.Value()->Erase();
   }
-  if (!myImmediateList.IsEmpty())
+  for (PrsMgr_ListOfPresentations::Iterator anIter (myViewDependentImmediateList); anIter.More(); anIter.Next())
   {
-    myImmediateView = theView;
+    anIter.Value()->Erase();
   }
+  myViewDependentImmediateList.Clear();
+
+  displayImmediate (theViewer);
 }
 
 // =======================================================================
@@ -526,11 +594,12 @@ void PrsMgr_PresentationManager::Transform (const Handle(PrsMgr_PresentableObjec
 void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                         const Quantity_NameOfColor              theColor,
                                         const Standard_Integer                  theMode,
-                                        const Handle(PrsMgr_PresentableObject)& theSelObj)
+                                        const Handle(PrsMgr_PresentableObject)& theSelObj,
+                                        const Standard_Integer theImmediateStructLayerId)
 {
   for (PrsMgr_ListOfPresentableObjectsIter anIter (thePrsObj->Children()); anIter.More(); anIter.Next())
   {
-    Color (anIter.Value(), theColor, theMode);
+    Color (anIter.Value(), theColor, theMode, NULL, theImmediateStructLayerId);
   }
   if (!thePrsObj->HasOwnPresentations())
   {
@@ -546,6 +615,9 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
   if (myImmediateModeOn > 0)
   {
     Handle(Prs3d_PresentationShadow) aShadow = new Prs3d_PresentationShadow (myStructureManager, aPrs->Presentation());
+    aShadow->SetZLayer (theImmediateStructLayerId);
+    aShadow->SetClipPlanes (aPrs->Presentation()->GetClipPlanes());
+    aShadow->CStructure()->IsForHighlight = 1;
     aShadow->Highlight (Aspect_TOHM_COLOR, theColor);
     AddToImmediateList (aShadow);
   }

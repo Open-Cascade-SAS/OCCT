@@ -90,7 +90,11 @@ void SelectMgr_EntityOwner::HilightWithColor(const Handle(PrsMgr_PresentationMan
 {
   if( HasSelectable() ) {
     if( IsAutoHilight() )
-      PM->Color(mySelectable,aColor,aMode);
+    {
+      const Graphic3d_ZLayerId aLayerId = mySelectable->GlobalSelOwner().get() == this ?
+        Graphic3d_ZLayerId_Top : Graphic3d_ZLayerId_Topmost;
+      PM->Color(mySelectable,aColor,aMode, NULL, aLayerId);
+    }
     else
       mySelectable->HilightOwnerWithColor( PM, aColor, this );
   }

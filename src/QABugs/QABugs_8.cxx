@@ -67,7 +67,7 @@ static Standard_Integer  OCC172 (Draw_Interpretor& di, Standard_Integer /*argc*/
   AIS_ListIteratorOfListOfInteractive It;
   for (It.Initialize(aListOfIO);It.More();It.Next())
     {
-      aContext->AddOrRemoveCurrentObject(It.Value());
+      aContext->AddOrRemoveSelected(It.Value());
     }
   
   return 0;	
@@ -96,29 +96,29 @@ static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, co
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120 + deltaY, 120),  gp_Pnt(300, 300 + deltaY,300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320 + deltaY, 320),  gp_Pnt(500, 500 + deltaY,500));
 
-  Handle(AIS_Shape) ais1 = new AIS_Shape(box1.Shape());
-  Handle(AIS_Shape) ais2 = new AIS_Shape(box2.Shape());
-  Handle(AIS_Shape) ais3 = new AIS_Shape(box3.Shape());
+  Handle(AIS_InteractiveObject) ais1 = new AIS_Shape(box1.Shape());
+  Handle(AIS_InteractiveObject) ais2 = new AIS_Shape(box2.Shape());
+  Handle(AIS_InteractiveObject) ais3 = new AIS_Shape(box3.Shape());
 
   aContext->Display(ais1);
   aContext->Display(ais2);
   aContext->Display(ais3);
 
-  aContext->AddOrRemoveCurrentObject(ais1);
-  aContext->AddOrRemoveCurrentObject(ais2);
-  aContext->AddOrRemoveCurrentObject(ais3);
+  aContext->AddOrRemoveSelected(ais1);
+  aContext->AddOrRemoveSelected(ais2);
+  aContext->AddOrRemoveSelected(ais3);
 
   //printf("\n No of currents = %d", aContext->NbCurrents());
 
-  aContext->InitCurrent();
+  aContext->InitSelected();
   
   //int count = 1;
-  while(aContext->MoreCurrent())
+  while(aContext->MoreSelected())
   {
     //printf("\n count is = %d",  count++);
-    Handle(AIS_InteractiveObject) ais = aContext->Current();
+    Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
     aContext->Remove(ais, UpdateViewer);
-    aContext->InitCurrent();
+    aContext->InitSelected();
   }
   
   return 0;	

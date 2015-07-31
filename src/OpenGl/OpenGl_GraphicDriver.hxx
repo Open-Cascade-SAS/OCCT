@@ -131,10 +131,6 @@ public: // Methods for graphical structures
 
   Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
                                                                 const Standard_Boolean theDrawToFrontBuffer);
-  Standard_EXPORT void DisplayImmediateStructure (const Graphic3d_CView&             theCView,
-                                                  const Handle(Graphic3d_Structure)& theStructure);
-  Standard_EXPORT void EraseImmediateStructure (const Graphic3d_CView&      theCView,
-                                                const Graphic3d_CStructure& theCStructure);
 
 public:
 

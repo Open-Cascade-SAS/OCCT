@@ -44,17 +44,6 @@ inline void AIS_InteractiveObject::UnsetDisplayMode()
 inline Standard_Integer AIS_InteractiveObject::DisplayMode() const 
 {return myDisplayMode;}
 
-inline Standard_Boolean AIS_InteractiveObject::HasSelectionMode() const 
-{return mySelectionMode!=-1;}
-
-inline void AIS_InteractiveObject::UnsetSelectionMode()
-{mySelectionMode =-1;}
-
-inline Standard_Integer AIS_InteractiveObject::SelectionMode() const 
-{return mySelectionMode;}
-
-
-
 inline Quantity_NameOfColor AIS_InteractiveObject::Color() const 
 {
   return myOwnColor.Name();

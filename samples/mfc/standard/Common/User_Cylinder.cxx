@@ -34,7 +34,6 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   BRepPrimAPI_MakeCylinder S(R,H);
   myShape = S.Shape();
   SetHilightMode(0);
-  SetSelectionMode(0);
   myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   myPlanarFaceColor = Quantity_NOC_FIREBRICK3;
   myCylindricalFaceColor = Quantity_NOC_GRAY;
@@ -48,7 +47,6 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   BRepBuilderAPI_NurbsConvert aNurbsConvert(S.Shape());
   myShape = aNurbsConvert.Shape();
   SetHilightMode(0);
-  SetSelectionMode(0);
   myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   myPlanarFaceColor = Quantity_NOC_FIREBRICK3;
   myCylindricalFaceColor = Quantity_NOC_KHAKI4;

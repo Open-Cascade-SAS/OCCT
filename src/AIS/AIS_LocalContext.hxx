@@ -47,6 +47,7 @@ class SelectMgr_Filter;
 class TCollection_AsciiString;
 class AIS_InteractiveObject;
 class V3d_View;
+class V3d_Viewer;
 class TopoDS_Shape;
 class SelectMgr_EntityOwner;
 class Standard_Transient;
@@ -329,7 +330,7 @@ public:
   Standard_EXPORT Standard_Boolean ImmediateAdd (const Handle(AIS_InteractiveObject)& theObj, const Standard_Integer theMode = 0);
   
   //! Allows rapid drawing of the view theView by avoiding an update of the whole background.
-  Standard_EXPORT Standard_Boolean EndImmediateDraw (const Handle(V3d_View)& theView);
+  Standard_EXPORT Standard_Boolean EndImmediateDraw (const Handle(V3d_Viewer)& theViewer);
   
   //! Returns true if Presentation Manager is accumulating transient list of presentations to be displayed in immediate mode.
   Standard_EXPORT Standard_Boolean IsImmediateModeOn() const;

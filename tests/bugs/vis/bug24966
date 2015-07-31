@@ -18,8 +18,8 @@ vertex p2 150 300 0
 edge e1 p1 p2
 
 vdisplay e1
-vselmode e1 2 1
-vselmode e1 1 1
+vselmode e1 2 1 -local
+vselmode e1 1 1 -local
 vselect 0 0 2500 2500
 verase -local
 

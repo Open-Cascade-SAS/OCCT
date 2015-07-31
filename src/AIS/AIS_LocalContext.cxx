@@ -319,10 +319,10 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
   const Handle(SelectMgr_SelectableObject)& anObj = anInteractive; // to avoid ambiguity
   if (mySM->Contains (anObj))
   {
-    TColStd_ListIteratorOfListOfInteger aModeIter (STAT->SelectionModes());
-    for (; aModeIter.More(); aModeIter.Next())
+    while (!STAT->SelectionModes().IsEmpty())
     {
-      mySM->Deactivate (anInteractive, aModeIter.Value(), myMainVS);
+      mySM->Deactivate (anInteractive, STAT->SelectionModes().Last(), myMainVS);
+      STAT->RemoveSelectionMode (STAT->SelectionModes().Last());
     }
   }
 
@@ -636,13 +636,6 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
       
   AIS_Selection::Select();
   AIS_Selection::Remove(mySelName.ToCString());
-
-  Handle(V3d_Viewer) aViewer = myCTX->CurrentViewer();
-  for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
-  {
-    Handle(V3d_View) aView = aViewer->ActiveView();
-    aView->View()->ClearImmediate();
-  }
 
   Handle(V3d_View) aDummyView;
   myMainVS->ClearSensitive (aDummyView);
@@ -1122,14 +1115,14 @@ Standard_Boolean AIS_LocalContext::ImmediateAdd (const Handle(AIS_InteractiveObj
 //function : EndImmediateDraw
 //purpose  :
 //=======================================================================
-Standard_Boolean AIS_LocalContext::EndImmediateDraw (const Handle(V3d_View)& theView)
+Standard_Boolean AIS_LocalContext::EndImmediateDraw (const Handle(V3d_Viewer)& theViewer)
 {
   if (!myMainPM->IsImmediateModeOn())
   {
     return Standard_False;
   }
 
-  myMainPM->EndImmediateDraw (theView);
+  myMainPM->EndImmediateDraw (theViewer);
   return Standard_True;
 }
 

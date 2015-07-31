@@ -64,7 +64,6 @@ myRecomputeEveryPrs(Standard_True),
 myCTXPtr(NULL),
 mySelPriority(-1),
 myDisplayMode (-1),
-mySelectionMode(0),
 mystate(0)
 {
   Handle (AIS_InteractiveContext) Bid;
@@ -197,18 +196,6 @@ void AIS_InteractiveObject::SetDisplayMode(const Standard_Integer aMode)
   if( AcceptDisplayMode(aMode) )
     myDisplayMode = aMode;
 }
-  
-
-//=======================================================================
-//function : 
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::SetSelectionMode(const Standard_Integer aMode)
-{
-  mySelectionMode = aMode;
-}
-
-
 
 //=======================================================================
 //function : 

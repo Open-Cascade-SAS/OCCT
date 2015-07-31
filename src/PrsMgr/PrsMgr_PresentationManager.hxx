@@ -27,8 +27,9 @@
 #include <Standard_Boolean.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
+#include <Graphic3d_ZLayerId.hxx>
 class Visual3d_ViewManager;
-class V3d_View;
+class V3d_Viewer;
 class Standard_NoSuchObject;
 class PrsMgr_PresentableObject;
 class Prs3d_Presentation;
@@ -116,18 +117,25 @@ public:
   //! Stores thePrs in the transient list of presentations to be displayed in immediate mode.
   //! Will be taken in account in EndImmediateDraw method.
   Standard_EXPORT void AddToImmediateList (const Handle(Prs3d_Presentation)& thePrs);
-  
-  //! Allows rapid drawing of the view theView by avoiding an update of the whole background.
-  Standard_EXPORT void EndImmediateDraw (const Handle(V3d_View)& theView);
-  
+
+  //! Allows rapid drawing of the each view in theViewer by avoiding an update of the whole background.
+  Standard_EXPORT void EndImmediateDraw (const Handle(V3d_Viewer)& theViewer);
+
+  //! Clears and redisplays immediate structures of the viewer taking into account its affinity.
+  Standard_EXPORT void RedrawImmediate (const Handle(V3d_Viewer)& theViewer);
+
   //! Returns true if Presentation Manager is accumulating transient list of presentations to be displayed in immediate mode.
-    Standard_Boolean IsImmediateModeOn() const;
-  
+  Standard_EXPORT Standard_Boolean IsImmediateModeOn() const;
+
   //! Highlights the graphic object thePrsObject in the color theColor.
   //! thePrsObject has the display mode theMode;
   //! this has the default value of 0, that is, the wireframe display mode.
-  Standard_EXPORT void Color (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Quantity_NameOfColor theColor = Quantity_NOC_YELLOW, const Standard_Integer theMode = 0, const Handle(PrsMgr_PresentableObject)& theSelObj = NULL);
-  
+  Standard_EXPORT void Color (const Handle(PrsMgr_PresentableObject)& thePrsObject,
+                              const Quantity_NameOfColor theColor = Quantity_NOC_YELLOW,
+                              const Standard_Integer theMode = 0,
+                              const Handle(PrsMgr_PresentableObject)& theSelObj = NULL,
+                              const Graphic3d_ZLayerId theImmediateStructLayerId = Graphic3d_ZLayerId_Topmost);
+
   //! highlights the boundbox of the presentation
   Standard_EXPORT void BoundBox (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
   
@@ -170,15 +178,15 @@ protected:
   Handle(Visual3d_ViewManager) myStructureManager;
   Standard_Integer myImmediateModeOn;
   PrsMgr_ListOfPresentations myImmediateList;
-  Handle(V3d_View) myImmediateView;
+  PrsMgr_ListOfPresentations myViewDependentImmediateList;
   Quantity_Color mySelectionColor;
 
 
 private:
 
-
-
-
+  //! Handles the structures from <myImmediateList> and displays it separating view-dependent structures and taking into account
+  //! structure visibility by setting proper affinity.
+  void displayImmediate (const Handle(V3d_Viewer)& theViewer);
 };
 
 

@@ -194,13 +194,7 @@ public:
   //! But it works in any case and is especially useful for view dump because the dump image is read from the back buffer.
   //! @return previous mode.
   Standard_EXPORT virtual Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView, const Standard_Boolean theDrawToFrontBuffer) = 0;
-  
-  //! Display structure in immediate mode on top of general presentation
-  Standard_EXPORT virtual void DisplayImmediateStructure (const Graphic3d_CView& theCView, const Handle(Graphic3d_Structure)& theStructure) = 0;
 
-  //! Erases immediate structure
-  Standard_EXPORT virtual void EraseImmediateStructure (const Graphic3d_CView& theCView, const Graphic3d_CStructure& theCStructure) = 0;
-  
   //! call_togl_layer2d
   Standard_EXPORT virtual void Layer (Aspect_CLayer2d& ACLayer) = 0;
   

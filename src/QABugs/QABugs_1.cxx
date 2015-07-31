@@ -417,13 +417,14 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
       di << argv[1] << " : No interactive object" << "\n";
       return 1;
     } 
-    AISObj->SetSelectionMode(SelectMode);
     if (!aContext->HasOpenedContext()) {
       aContext->OpenLocalContext();
     }
     aContext->Erase(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();
+    aContext->SetAutoActivateSelection (Standard_False);
     aContext->Display(AISObj, updateviewer);
+    aContext->Activate (AISObj, SelectMode);
     aContext->UpdateCurrentViewer();
   }
   return 0;
@@ -456,8 +457,10 @@ static Standard_Integer OCC74bug_get (Draw_Interpretor& di, Standard_Integer arg
       di << argv[1] << " : No interactive object" << "\n";
       return 1;
     } 
-    Standard_Integer SelectMode = AISObj->SelectionMode();
-    di << SelectMode << "\n";
+    TColStd_ListOfInteger anActivatedModes;
+    aContext->ActivatedModes (AISObj, anActivatedModes);
+    Standard_Integer aMode = anActivatedModes.IsEmpty() ? -1 : anActivatedModes.Last();
+    di << aMode << "\n";
   }
 
   return 0;

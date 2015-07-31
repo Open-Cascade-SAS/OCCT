@@ -128,12 +128,6 @@ class OpenGl_View : public MMgt_TShared
   //! Erase structure from display list.
   void EraseStructure (const Handle(Graphic3d_Structure)& theStructure);
 
-  //! Add structure to the list of immediate structures.
-  void DisplayImmediateStructure (const Handle(Graphic3d_Structure)& theStructure);
-
-  //! Erase structure from display list.
-  void EraseImmediateStructure (const OpenGl_Structure* theStructure);
-
   //! Insert a new top-level z layer with ID <theLayerId>
   void AddZLayer (const Graphic3d_ZLayerId theLayerId);
 
@@ -192,17 +186,10 @@ class OpenGl_View : public MMgt_TShared
   //! marks primitive set for rebuild.
   void InvalidateBVHData (const Standard_Integer theLayerId);
 
-  //! Returns list of immediate structures rendered on top of main presentation
-  const OpenGl_IndexedMapOfStructure& ImmediateStructures() const
-  {
-    return myImmediateList;
-  }
-
   //! Returns true if there are immediate structures to display
   bool HasImmediateStructures() const
   {
-    return !myImmediateList.IsEmpty()
-         || myZLayers.NbImmediateStructures() != 0;
+    return myZLayers.NbImmediateStructures() != 0;
   }
 
 protected:
@@ -260,7 +247,6 @@ protected:
   //View_LABDepthCueing - fixed index used
 
   OpenGl_LayerList             myZLayers;       //!< main list of displayed structure, sorted by layers
-  OpenGl_IndexedMapOfStructure myImmediateList; //!< list of immediate structures rendered on top of main presentation
 
   //! Modification state
   Graphic3d_WorldViewProjState myWorldViewProjState;

@@ -22,7 +22,9 @@
 //=======================================================================
 Prs3d_PresentationShadow::Prs3d_PresentationShadow (const Handle(Graphic3d_StructureManager)& theViewer,
                                                     const Handle(Prs3d_Presentation)&         thePrs)
-: Prs3d_Presentation (theViewer, thePrs)
+: Prs3d_Presentation (theViewer, thePrs),
+  myParentStructId (thePrs->Identification()),
+  myParentAffinity (thePrs->CStructure()->ViewAffinity)
 {
   //
 }

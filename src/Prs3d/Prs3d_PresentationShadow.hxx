@@ -28,9 +28,19 @@ public:
   Standard_EXPORT Prs3d_PresentationShadow (const Handle(Graphic3d_StructureManager)& theViewer,
                                             const Handle(Prs3d_Presentation)&         thePrs);
 
+  //! Returns the id of the parent presentation
+  Standard_EXPORT inline Standard_Integer ParentId() const { return myParentStructId; }
+
+  //! Returns view affinity of the parent presentation
+  Standard_EXPORT inline const Handle(Graphic3d_ViewAffinity)& ParentAffinity() const { return myParentAffinity; }
+
 private: 
 
   DEFINE_STANDARD_RTTI(Prs3d_PresentationShadow, Prs3d_Presentation)
+
+private:
+  Standard_Integer               myParentStructId;
+  Handle(Graphic3d_ViewAffinity) myParentAffinity;
 
 };
 

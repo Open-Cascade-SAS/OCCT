@@ -32,3 +32,21 @@ Attributes() const
 inline const Handle(Prs3d_Drawer)& SelectMgr_SelectableObject::
 HilightAttributes() const
 {return myHilightDrawer;}
+
+//=======================================================================
+//function : GlobalSelectionMode
+//purpose  :
+//=======================================================================
+inline Standard_Integer SelectMgr_SelectableObject::GlobalSelectionMode() const
+{
+  return myGlobalSelMode;
+}
+
+//=======================================================================
+//function : setGlobalSelMode
+//purpose  :
+//=======================================================================
+inline void SelectMgr_SelectableObject::setGlobalSelMode (const Standard_Integer theMode)
+{
+  myGlobalSelMode = theMode > 0 ? theMode : 0;
+}

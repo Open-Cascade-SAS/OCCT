@@ -218,24 +218,24 @@ static Standard_Integer OCC136 (Draw_Interpretor& di, Standard_Integer argc, con
   anAISCtx->EraseAll();
 
   //load primitives to context
-  Handle(AIS_Shape) aSh1 = new AIS_Shape(aBox);
+  Handle(AIS_InteractiveObject) aSh1 = new AIS_Shape(aBox);
   anAISCtx->Display(aSh1);
 
-  Handle(AIS_Shape) aSh2 = new AIS_Shape(aSphere);
+  Handle(AIS_InteractiveObject) aSh2 = new AIS_Shape(aSphere);
   anAISCtx->Display(aSh2);
 
-  Handle(AIS_Shape) aSh3 = new AIS_Shape(aCone);
+  Handle(AIS_InteractiveObject) aSh3 = new AIS_Shape(aCone);
   anAISCtx->Display(aSh3);
 
-  Handle(AIS_Shape) aSh4 = new AIS_Shape(aCyl);
+  Handle(AIS_InteractiveObject) aSh4 = new AIS_Shape(aCyl);
   anAISCtx->Display(aSh4);
 
   //set selected
-  anAISCtx->InitCurrent();
-  anAISCtx->AddOrRemoveCurrentObject(aSh1);
-  anAISCtx->AddOrRemoveCurrentObject(aSh2);
-  anAISCtx->AddOrRemoveCurrentObject(aSh3);
-  anAISCtx->AddOrRemoveCurrentObject(aSh4);
+  anAISCtx->InitSelected();
+  anAISCtx->AddOrRemoveSelected(aSh1);
+  anAISCtx->AddOrRemoveSelected(aSh2);
+  anAISCtx->AddOrRemoveSelected(aSh3);
+  anAISCtx->AddOrRemoveSelected(aSh4);
 
   //remove all this objects from context
   anAISCtx->Remove (aSh1, Standard_False);
@@ -739,12 +739,13 @@ static Standard_Integer OCC166 (Draw_Interpretor& di, Standard_Integer /*argc*/,
 
   BRepPrimAPI_MakeBox aBox(gp_Pnt(0, 0, 0), 100, 100, 100);
   Handle(AIS_Shape) anAISBox = new AIS_Shape(aBox.Shape());
+  myAISContext->SetAutoActivateSelection (Standard_False);
   myAISContext->Display(anAISBox, 1);
-  anAISBox->SetSelectionMode(-1);
   Standard_Integer myLocContInd = myAISContext->OpenLocalContext();
   myAISContext->CloseLocalContext(myLocContInd);
-  Standard_Integer aSelMode = ((Handle(AIS_InteractiveObject)) anAISBox)->SelectionMode();
-  if(aSelMode != -1)
+  TColStd_ListOfInteger anActivatedModes;
+  myAISContext->ActivatedModes (anAISBox, anActivatedModes);
+  if(anActivatedModes.Extent() != 1 || anActivatedModes.First() != -1 )
     return 1;
 
   return 0;
@@ -5258,7 +5259,7 @@ Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const cha
   Handle(Geom_Axis2Placement) trihedronAxis = new Geom_Axis2Placement(gp::XOY());
   Handle(AIS_Trihedron) trihedron = new AIS_Trihedron(trihedronAxis);
   if (aMode)
-    trihedron->UnsetSelectionMode(); // this line causes an exception on OpenLocalContext
+    aisContext->SetAutoActivateSelection (Standard_False); // if selection must not be activated
   trihedron->SetSize(20);
   trihedron->SetColor(Quantity_NOC_GRAY30);
   trihedron->SetArrowColor(Quantity_NOC_GRAY30);
