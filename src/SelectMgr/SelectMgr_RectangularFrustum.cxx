@@ -692,7 +692,25 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     SelectMgr_Vec3 aTrEdges[3] = { SelectMgr_Vec3 (thePnt2.X() - thePnt1.X(), thePnt2.Y() - thePnt1.Y(), thePnt2.Z() - thePnt1.Z()),
                                    SelectMgr_Vec3 (thePnt3.X() - thePnt2.X(), thePnt3.Y() - thePnt2.Y(), thePnt3.Z() - thePnt2.Z()),
                                    SelectMgr_Vec3 (thePnt1.X() - thePnt3.X(), thePnt1.Y() - thePnt3.Y(), thePnt1.Z() - thePnt3.Z()) };
-    SelectMgr_Vec3 anEdge = (aPnt1 - myNearPickedPnt) * (1.0 / DOT (aTriangleNormal, myViewRayDir));
+
+    Standard_Real anAlpha = DOT (aTriangleNormal, myViewRayDir);
+    if (Abs (anAlpha) < gp::Resolution())
+    {
+      // handle degenerated triangles: in this case, there is no possible way to detect overlap correctly.
+      if (aTriangleNormal.SquareModulus() < gp::Resolution())
+      {
+        theDepth = std::numeric_limits<Standard_Real>::max();
+        return Standard_False;
+      }
+
+      // handle the case when triangle normal and selecting frustum direction are orthogonal: for this case, overlap
+      // is detected correctly, and distance to triangle's plane can be measured as distance to its arbitrary vertex.
+      const SelectMgr_Vec3 aDiff = myNearPickedPnt - aPnt1;
+      theDepth = DOT (aTriangleNormal, aDiff);
+      return Standard_True;
+    }
+
+    SelectMgr_Vec3 anEdge = (aPnt1 - myNearPickedPnt) * (1.0 / anAlpha);
 
     Standard_Real aTime = DOT (aTriangleNormal, anEdge);
 
