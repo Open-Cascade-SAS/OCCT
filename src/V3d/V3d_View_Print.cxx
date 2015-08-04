@@ -24,7 +24,6 @@
 #endif
 
 
-#include <Aspect_ColorScale.hxx>
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_Window.hxx>

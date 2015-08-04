@@ -12,7 +12,7 @@ vinit View1
 vdisplay result
 vsetmaterial result SILVER
 vsettransparency result 0.6
-vcolorscale -demo
+vcolorscale cs -demo
 vsetdispmode result 1 
 
 set square 11309.6

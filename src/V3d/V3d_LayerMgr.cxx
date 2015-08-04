@@ -14,12 +14,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Aspect_ColorScale.hxx>
 #include <Aspect_Window.hxx>
 #include <Font_NameOfFont.hxx>
 #include <Standard_Type.hxx>
-#include <V3d_ColorScale.hxx>
-#include <V3d_ColorScaleLayerItem.hxx>
 #include <V3d_LayerMgr.hxx>
 #include <V3d_View.hxx>
 #include <Visual3d_Layer.hxx>
@@ -50,38 +47,6 @@ void V3d_LayerMgr::Compute()
 void V3d_LayerMgr::Resized()
 {
   Compute();
-}
-
-void V3d_LayerMgr::ColorScaleDisplay()
-{
-  if (ColorScaleIsDisplayed())
-    return;
-  ColorScale();
-  myColorScale->Display();
-  myOverlay->AddLayerItem( myColorScaleLayerItem );
-}
-
-void V3d_LayerMgr::ColorScaleErase()
-{
-  if ( !myColorScale.IsNull() )
-    myColorScale->Erase();
-  myOverlay->RemoveLayerItem( myColorScaleLayerItem );
-}
-
-Standard_Boolean V3d_LayerMgr::ColorScaleIsDisplayed() const
-{
-  return ( myColorScale.IsNull() ? Standard_False : myColorScale->IsDisplayed() );
-}
-
-Handle(Aspect_ColorScale) V3d_LayerMgr::ColorScale() const
-{
-  if ( myColorScale.IsNull() ) {
-    Handle(V3d_LayerMgr) that = this;
-    that->myColorScale = new V3d_ColorScale( this );
-    that->myColorScaleLayerItem = new V3d_ColorScaleLayerItem( that->myColorScale );
-  }
-
-  return Handle(Aspect_ColorScale) (myColorScale);
 }
 
 Standard_Boolean V3d_LayerMgr::Begin()

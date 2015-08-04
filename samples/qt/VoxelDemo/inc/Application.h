@@ -2,6 +2,7 @@
 #define APPLICATION_H
 
 #include <qmainwindow.h>
+#include <AIS_ColorScale.hxx>
 #include <AIS_Shape.hxx>
 #include <Voxel_Prs.hxx>
 #include <Voxel_BoolDS.hxx>
@@ -93,6 +94,7 @@ private:
 	Handle(Voxel_Prs) myVoxels;
 	Voxel_BoolDS* myBoolVoxels;
 	Voxel_ColorDS* myColorVoxels;
+  Handle(AIS_ColorScale) myColorScale;
 	int myNbX;
 	int myNbY;
 	int myNbZ;

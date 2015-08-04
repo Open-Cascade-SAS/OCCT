@@ -11,7 +11,7 @@ vinit View1 w=1024 h=512
 vsetdispmode 1
 vdisplay b
 vfit
-vcolorscale -range 10 20 100 -font 16 -textpos right -xy 0 0
+vcolorscale cs -range 10 20 100 -font 16 -textpos right -xy 0 0
 vmoveto 512 250
 
 set only_screen 1

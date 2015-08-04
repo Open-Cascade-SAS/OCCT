@@ -24,6 +24,8 @@ AIS_Circle.lxx
 AIS_ClearMode.hxx
 AIS_ColoredShape.cxx
 AIS_ColoredShape.hxx
+AIS_ColorScale.cxx
+AIS_ColorScale.hxx
 AIS_ConcentricRelation.cxx
 AIS_ConcentricRelation.hxx
 AIS_ConnectedInteractive.cxx

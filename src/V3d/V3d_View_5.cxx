@@ -24,7 +24,6 @@
  * Includes
  */
 
-#include <Aspect_ColorScale.hxx>
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_Window.hxx>
@@ -71,43 +70,4 @@ Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
 void V3d_View::SetLayerMgr(const Handle(V3d_LayerMgr)& aMgr)
 {
   MyLayerMgr = aMgr;
-}
-
-void V3d_View::ColorScaleDisplay()
-{
-  if ( MyLayerMgr.IsNull() )
-    MyLayerMgr = new V3d_LayerMgr( this );
-
-  MyLayerMgr->ColorScaleDisplay();
-  MustBeResized();
-  if ( !Window().IsNull() ) {
-    Standard_Integer aW( 0 ), aH( 0 );
-    Window()->Size( aW, aH );
-    Redraw( 0, 0, aW, aH );
-  }
-}
-
-void V3d_View::ColorScaleErase()
-{
-  if ( !MyLayerMgr.IsNull() )
-    MyLayerMgr->ColorScaleErase();
-}
-
-Standard_Boolean V3d_View::ColorScaleIsDisplayed() const
-{
-  Standard_Boolean aStatus = Standard_False;
-  if ( !MyLayerMgr.IsNull() )
-    aStatus = MyLayerMgr->ColorScaleIsDisplayed();
-
-  return aStatus;
-}
-
-Handle(Aspect_ColorScale) V3d_View::ColorScale() const
-{
-  if ( MyLayerMgr.IsNull() ) {
-    Handle(V3d_View) that = this;
-    that->MyLayerMgr = new V3d_LayerMgr( this );
-  }
-
-  return MyLayerMgr->ColorScale();
 }

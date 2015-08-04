@@ -86,7 +86,6 @@ class V3d_Viewer;
 class Quantity_Color;
 class Graphic3d_TextureEnv;
 class V3d_Light;
-class Aspect_ColorScale;
 class Bnd_Box;
 class Aspect_GradientBackground;
 class gp_Dir;
@@ -339,14 +338,6 @@ public:
   Standard_EXPORT void GraduatedTrihedronErase();
   
   Standard_EXPORT void SetLayerMgr (const Handle(V3d_LayerMgr)& aMgr);
-  
-  Standard_EXPORT void ColorScaleDisplay();
-  
-  Standard_EXPORT void ColorScaleErase();
-  
-  Standard_EXPORT Standard_Boolean ColorScaleIsDisplayed() const;
-  
-  Standard_EXPORT Handle(Aspect_ColorScale) ColorScale() const;
   
   //! modify the Projection of the view perpendicularly to
   //! the privileged plane of the viewer.

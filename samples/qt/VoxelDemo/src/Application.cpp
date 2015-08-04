@@ -33,7 +33,6 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
-#include <Aspect_ColorScale.hxx>
 
 #include <Windows.h>
 
@@ -311,6 +310,10 @@ Application::Application()
 
 	myBoolVoxels = 0;
 	myColorVoxels = 0;
+  myColorScale = new AIS_ColorScale;
+  myColorScale->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  myColorScale->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
+
 
     myDisplayedXMin = -DBL_MAX;
     myDisplayedXMax =  DBL_MAX;
@@ -437,7 +440,7 @@ void Application::open()
     if (myColorVoxels)
         displayColorScale();
     else
-        myViewer->getView()->ColorScaleErase();
+      myViewer->getIC()->Erase(myColorScale);
 
 	myViewer->getView()->FitAll();
 
@@ -858,7 +861,7 @@ void Application::testROctBoolDS()
     myVoxels->SetTriangulation(empty);
     myVoxels->SetROctBoolVoxels(ds2);
     myViewer->getIC()->Display(myVoxels, false);
-    myViewer->getView()->ColorScaleErase();
+    myViewer->getIC()->Erase(myColorScale);
 	myViewer->getView()->FitAll();
     myViewer->getSelector().SetVoxels(*ds2);
 }
@@ -1540,7 +1543,7 @@ void Application::convert(const int ivoxel)
     if (myColorVoxels)
         displayColorScale();
     else
-        myViewer->getView()->ColorScaleErase();
+      myViewer->getIC()->Erase(myColorScale);
 
 	myViewer->getView()->FitAll();
 }
@@ -1718,7 +1721,7 @@ void Application::display(Voxel_VoxelDisplayMode mode)
     if (myColorVoxels)
         displayColorScale();
     else
-        myViewer->getView()->ColorScaleErase();
+        myViewer->getIC()->Erase(myColorScale);
 
     myViewer->getIC()->Redisplay(myVoxels, true);
 }
@@ -1745,16 +1748,19 @@ void Application::displayNearestBoxes()
 
 void Application::displayColorScale()
 {
-	Handle(Aspect_ColorScale) color_scale = myViewer->getView()->ColorScale();
-	if (!color_scale.IsNull())
+  if (myColorScale.IsNull())
+  {
+    myColorScale = new AIS_ColorScale;
+  }
+	if (!myColorScale.IsNull())
 	{
         int nb_colors = 1<<4 /* 4 bits */;
-        color_scale->SetRange(0, nb_colors - 1);
-        color_scale->SetNumberOfIntervals(nb_colors);
-		color_scale->SetPosition(0.01, 0.5 - 0.01);
-		color_scale->SetSize(0.5 - 0.01, 0.5 - 0.01);
+        myColorScale->SetRange(0, nb_colors - 1);
+        myColorScale->SetNumberOfIntervals(nb_colors);
+		myColorScale->SetPosition(0.01, 0.5 - 0.01);
+		myColorScale->SetSize(0.5 - 0.01, 0.5 - 0.01);
 	}
-    myViewer->getView()->ColorScaleDisplay();
+  myViewer->getIC()->Display(myColorScale);
 }
 
 void Application::displayWaves()
@@ -1865,7 +1871,7 @@ void Application::initPrs()
         for (int icolor = 0; icolor < nb_colors; icolor++)
         {
             Quantity_Color color;
-            Aspect_ColorScale::FindColor(icolor, 0, nb_colors - 1, nb_colors, color);
+            AIS_ColorScale::FindColor(icolor, 0, nb_colors - 1, nb_colors, color);
             colors->SetValue(icolor, color);
         }
         myVoxels->SetColors(colors);

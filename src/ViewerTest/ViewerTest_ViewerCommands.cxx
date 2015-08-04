@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_GlCore20.hxx>
+#include <AIS_ColorScale.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -37,7 +38,6 @@
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_AmbientLight.hxx>
-#include <V3d_ColorScale.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_LayerMgr.hxx>
 #include <V3d_LayerMgrPointer.hxx>
@@ -3474,11 +3474,31 @@ static int VColorScale (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(V3d_ColorScale) aCS = Handle(V3d_ColorScale)::DownCast (aView->ColorScale());
-  if (aCS.IsNull())
+  Handle(AIS_ColorScale) aCS;
+  // find object
+  Handle(AIS_InteractiveObject) anIObj;
+  if (GetMapOfAIS().IsBound2 (theArgVec[1]))
   {
-    std::cout << "Error: color scale is undefined!\n";
-    return 1;
+    aCS = Handle(AIS_ColorScale)::DownCast (GetMapOfAIS().Find2 (theArgVec[1]));
+    if (aCS.IsNull())
+    {
+      std::cout << "Error: object '" << theArgVec[1] << "'is already defined and is not a color scale!\n";
+      return 1;
+    }
+  }
+  else
+  {
+    aCS = new AIS_ColorScale();
+    GetMapOfAIS().Bind (aCS,theArgVec[1]);
+  }
+
+  if (aCS->ZLayer() != Graphic3d_ZLayerId_TopOSD)
+  {
+    aCS->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  }
+  if (aCS->GetTransformPersistenceMode() != Graphic3d_TMF_2d)
+  {
+    aCS->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
   }
 
   Standard_Real                   aMinRange    = aCS->GetMin();
@@ -3492,7 +3512,12 @@ static int VColorScale (Draw_Interpretor& theDI,
 
   if (theArgNb <= 1)
   {
-    theDI << "Current color scale parameters:\n"
+    std::cout << "Error: wrong syntax at command '" << theArgVec[0] << "'!\n";
+    return 1;
+  }
+  if (theArgNb <= 2)
+  {
+    theDI << "Color scale parameters for '"<< theArgVec[1] << "':\n"
           << "Min range: " << aMinRange << "\n"
           << "Max range: " << aMaxRange << "\n"
           << "Number of intervals: " << aNbIntervals << "\n"
@@ -3517,41 +3542,8 @@ static int VColorScale (Draw_Interpretor& theDI,
     }
     return 0;
   }
-  Standard_CString        aFirstArg = theArgVec[1];
-  TCollection_AsciiString aFlag (aFirstArg);
-  aFlag.LowerCase();
-  if (aFlag == "-hide" ||
-      aFlag == "-erase")
-  {
-    if (theArgNb > 2)
-    {
-      std::cout << "Error: wrong syntax at argument '" << theArgVec[1] << "'!\n";
-      return 1;
-    }
-    if (!aView->ColorScaleIsDisplayed())
-    {
-      std::cout << "Error: color scale is not displayed!\n";
-      return 1;
-   }
-    else
-    {
-      aView->ColorScaleErase();
-      return 0;
-    }
-  }
-  else if (aFlag == "-show" ||
-           aFlag == "-display")
-  {
-    if (theArgNb > 2)
-    {
-      std::cout << "Error: wrong syntax at argument '" << theArgVec[1] << "'!\n";
-      return 1;
-    }
-    aView->ColorScaleDisplay();
-    return 0;
-  }
 
-  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  for (Standard_Integer anArgIter = 2; anArgIter < theArgNb; ++anArgIter)
   {
     Standard_CString        anArg = theArgVec[anArgIter];
     TCollection_AsciiString aFlag (anArg);
@@ -3699,7 +3691,7 @@ static int VColorScale (Draw_Interpretor& theDI,
       if (Quantity_Color::ColorFromName (theArgVec[anArgIter + 2], aColorName))
       {
         aCS->SetColor    (Quantity_Color (aColorName), anIndex);
-        aCS->SetColorType(Aspect_TOCSD_USER);
+        aCS->SetColorType (Aspect_TOCSD_USER);
         anArgIter += 2;
         continue;
       }
@@ -3867,8 +3859,8 @@ static int VColorScale (Draw_Interpretor& theDI,
       aMaxRange    = 100;
       aNbIntervals = 10;
       aLabPosition = Aspect_TOCSP_RIGHT;
-      aCS->SetColorType(Aspect_TOCSD_AUTO);
-      aCS->SetLabelType(Aspect_TOCSD_AUTO);
+      aCS->SetColorType (Aspect_TOCSD_AUTO);
+      aCS->SetLabelType (Aspect_TOCSD_AUTO);
     }
     else
     {
@@ -3883,11 +3875,8 @@ static int VColorScale (Draw_Interpretor& theDI,
   aCS->SetRange             (aMinRange, aMaxRange);
   aCS->SetNumberOfIntervals (aNbIntervals);
   aCS->SetLabelPosition     (aLabPosition);
-
-  if (!aView->ColorScaleIsDisplayed())
-  {
-    aView->ColorScaleDisplay();
-  }
+  aCS->SetToUpdate();
+  aContext->Display (aCS);
 
   return 0;
 }
@@ -8837,7 +8826,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : notice that EMF format requires patched gl2ps",
     __FILE__,VExport,group);
   theCommands.Add("vcolorscale",
-    "vcolorscale     : vcolorscale [-range RangeMin = 0 RangeMax = 100 Intervals = 10 -font HeightFont = 16  -textpos "
+    "vcolorscale     : vcolorscale name [-range RangeMin = 0 RangeMax = 100 Intervals = 10 -font HeightFont = 16  -textpos "
     "Position = left -xy X = 0 Y = 0] [-noupdate|-update]: draw color scale\n"
     "-demo/-demoversion draw a demoversion of color scale.\n"
     "-show/display display color scale.\n"

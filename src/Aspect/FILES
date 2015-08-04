@@ -13,8 +13,6 @@ Aspect_BadAccess.hxx
 Aspect_CircularGrid.cxx
 Aspect_CircularGrid.hxx
 Aspect_CLayer2d.hxx
-Aspect_ColorScale.cxx
-Aspect_ColorScale.hxx
 Aspect_Convert.hxx
 Aspect_Display.hxx
 Aspect_DisplayConnection.cxx

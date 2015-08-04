@@ -75,6 +75,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <AIS_ColorScale.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
@@ -4536,17 +4537,30 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
   Handle(V3d_View) V = ViewerTest::CurrentView();
+  static Handle(AIS_ColorScale) aCS;
+  if (aCS.IsNull())
+  {
+    aCS = new AIS_ColorScale();
+  }
+  if (aCS->ZLayer() != Graphic3d_ZLayerId_TopOSD)
+  {
+    aCS->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  }
+  if (aCS->GetTransformPersistenceMode() != Graphic3d_TMF_2d)
+  {
+    aCS->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
+  }
   if ( !V.IsNull() ) {
     if (mode == 0) {
-      V->ColorScaleDisplay();
+      aContext->Display (aCS);
     }
     if (mode == 1) {
-      V->ColorScaleErase();
+      aContext->Erase (aCS);
       V->UpdateLights();
       V->Update();
     }
     if (mode == 2) {
-      Standard_Boolean IsDisplayed = V->ColorScaleIsDisplayed();
+      Standard_Boolean IsDisplayed = aContext->IsDisplayed (aCS);
       if (IsDisplayed)
 	di <<"ColorScaleIsDisplayed = " << "1" << "\n";
       else

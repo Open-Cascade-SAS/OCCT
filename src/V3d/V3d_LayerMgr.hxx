@@ -45,14 +45,6 @@ public:
   
     Handle(V3d_View) View() const;
   
-  Standard_EXPORT void ColorScaleDisplay();
-  
-  Standard_EXPORT void ColorScaleErase();
-  
-  Standard_EXPORT Standard_Boolean ColorScaleIsDisplayed() const;
-  
-  Standard_EXPORT Handle(Aspect_ColorScale) ColorScale() const;
-  
   //! Recompute layer with objects
   Standard_EXPORT void Compute();
   
@@ -77,8 +69,6 @@ protected:
 
   V3d_ViewPointer myView;
   Handle(Visual3d_Layer) myOverlay;
-  Handle(V3d_ColorScale) myColorScale;
-  Handle(V3d_ColorScaleLayerItem) myColorScaleLayerItem;
 
 
 private:
