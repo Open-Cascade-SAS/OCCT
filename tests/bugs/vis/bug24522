@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC24522"
+puts "========"
+puts ""
+###########################################################################
+# Application crashes on view closing in case of using of clipping planes
+###########################################################################
+
+box b 1 1 1
+vdisplay b
+vfit
+vsetdispmode b 1
+vclipplane create p
+vclipplane change p equation 0 0 -1 -0.5
+vclipplane set p view Driver1/Viewer1/View1
+vclipplane change p capping on
+vclipplane unset p view Driver1/Viewer1/View1
+vclose View1
