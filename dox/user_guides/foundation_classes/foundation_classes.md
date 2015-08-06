@@ -746,7 +746,7 @@ then, the *Value*  function may be implemented as follows:
 Item  TCollection_Array1::Value (const Standard_Integer&index) const
 {
   // where r1 and r2 are  the lower and upper bounds of the array
-  if(index  r1 || index > r2) {
+  if(index < r1 || index > r2) {
     OutOfRange::Raise(“Index  out of range in Array1::Value”);
   }
   return contents[index];
@@ -754,26 +754,26 @@ Item  TCollection_Array1::Value (const Standard_Integer&index) const
 ~~~~~
 
 Here validity of the index is first verified using the Lower and Upper functions in order to protect the call. 
-Normally the caller ensures the index being in the valid  range before calling Value(). In this case the above implementation of Value is not optimal since the  test done in Value is  time-consuming and redundant. 
+Normally the caller ensures the index being in the valid  range before calling <i>Value()</i>. In this case the above implementation of *Value* is not optimal since the  test done in *Value* is  time-consuming and redundant. 
  
-It is a widely used practice to include that kind of  protections in a debug build of the program and exclude in release (optimized)  build. To support this practice, the macros Raise_if() are provided for every OCCT  exception class: 
+It is a widely used practice to include that kind of  protections in a debug build of the program and exclude in release (optimized)  build. To support this practice, the macros <i>Raise_if()</i> are provided for every OCCT  exception class: 
 ~~~~~
 <ErrorTypeName>_Raise_if(condition,  “Error message”); 
 ~~~~~
-where ErrorTypeName  is the exception type, condition  is the logical expression leading to the raise of the exception, and Error message is the associated  message. 
+where *ErrorTypeName* is the exception type, *condition*  is the logical expression leading to the raise of the exception, and *Error message* is the associated  message. 
   
-The entire call may be removed by defining one of the  pre-processor symbols No_Exception or No_<ErrorTypeName> at compile-time: 
+The entire call may be removed by defining one of the pre-processor symbols *No_Exception* or <i>No_<ErrorTypeName></i> at compile-time: 
 
 ~~~~~
 #define  No_Exception /* remove all raises */ 
 ~~~~~
 
-Using this syntax, the Value  function becomes: 
+Using this syntax, the *Value* function becomes: 
 
 ~~~~~
 Item  TCollection_Array1::Value (const Standard_Integer&index) const
      { 
-  OutOfRange_Raise_if(index  r1 || index > r2,
+  OutOfRange_Raise_if(index < r1 || index > r2,
                       “index out of range in  Array1::Value”);
   return contents[index];
 }
@@ -789,7 +789,7 @@ A handler of T exception type is a match for a raise  expression with an excepti
   * T and E are of the same type, or
   * T is a supertype of E.
   
-In order to handle system signals as exceptions, make sure  to insert macro OCC_CATCH_SIGNALS somewhere in the beginning of the relevant  code. The recommended location for it is first statement after opening brace of  try {} block. 
+In order to handle system signals as exceptions, make sure  to insert macro *OCC_CATCH_SIGNALS* somewhere in the beginning of the relevant  code. The recommended location for it is first statement after opening brace of  <i>try {}</i> block. 
 
 As an example, consider the exceptions of type *NumericError, Overflow, Underflow* and *ZeroDivide*,  where *NumericError* is the parent type of the three others. 
 
