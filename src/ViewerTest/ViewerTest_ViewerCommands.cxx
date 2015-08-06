@@ -20,6 +20,7 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <DBRep.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_NameOfTextureEnv.hxx>
@@ -71,6 +72,8 @@
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Root.hxx>
 
 #ifdef WNT
 #undef DrawText
@@ -4606,139 +4609,66 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
-// this class provides a presentation of text item in v3d view under-/overlayer
-class V3d_TextItem : public Visual3d_LayerItem
-{
-public:
-
-  // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(V3d_TextItem, Visual3d_LayerItem)
-
-  // constructor
-  Standard_EXPORT V3d_TextItem(const TCollection_AsciiString& theText,
-                               const Standard_Real theX1,
-                               const Standard_Real theY1,
-                               const Standard_Real theHeight,
-                               const TCollection_AsciiString& theFontName,
-                               const Quantity_Color& theColor,
-                               const Quantity_Color& theSubtitleColor,
-                               const Aspect_TypeOfDisplayText& theTypeOfDisplay,
-                               const Handle(Visual3d_Layer)& theLayer);
-
-  // redraw method
-  Standard_EXPORT void RedrawLayerPrs();
-
-private:
-
-  Standard_Real            myX1;
-  Standard_Real            myY1;
-  TCollection_AsciiString  myText;
-  Standard_Real            myHeight;
-  Handle(Visual3d_Layer)   myLayer;
-  Quantity_Color           myColor;
-  Quantity_Color           mySubtitleColor;
-  Aspect_TypeOfDisplayText myType;
-  TCollection_AsciiString  myFontName;
-};
-
-
-// create and add to display the text item
-V3d_TextItem::V3d_TextItem (const TCollection_AsciiString& theText,
-                            const Standard_Real theX1,
-                            const Standard_Real theY1,
-                            const Standard_Real theHeight,
-                            const TCollection_AsciiString& theFontName,
-                            const Quantity_Color& theColor,
-                            const Quantity_Color& theSubtitleColor,
-                            const Aspect_TypeOfDisplayText& theTypeOfDisplay,
-                            const Handle(Visual3d_Layer)& theLayer)
- : myX1 (theX1), myY1 (theY1),
-   myText (theText),
-   myHeight (theHeight),
-   myLayer (theLayer),
-   myColor (theColor),
-   mySubtitleColor (theSubtitleColor),
-   myType (theTypeOfDisplay),
-   myFontName (theFontName)
-{
-  if (!myLayer.IsNull ())
-    myLayer->AddLayerItem (this);
-}
-
-// render item
-void V3d_TextItem::RedrawLayerPrs ()
-{
-  if (myLayer.IsNull ())
-    return;
-
-  myLayer->SetColor (myColor);
-  myLayer->SetTextAttributes (myFontName.ToCString (), myType, mySubtitleColor);
-  myLayer->DrawText (myText.ToCString (), myX1, myY1, myHeight);
-}
-
 // The Visual3d_LayerItem line item for "vlayerline" command
 // it provides a presentation of line with user-defined
 // linewidth, linetype and transparency.
-class V3d_LineItem : public Visual3d_LayerItem
+class V3d_LineItem : public AIS_InteractiveObject
 {
 public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(V3d_LineItem, Visual3d_LayerItem)
+  DEFINE_STANDARD_RTTI(V3d_LineItem, AIS_InteractiveObject)
 
   // constructor
   Standard_EXPORT V3d_LineItem(Standard_Real X1, Standard_Real Y1,
                                Standard_Real X2, Standard_Real Y2,
-                               V3d_LayerMgrPointer theLayerMgr,
                                Aspect_TypeOfLine theType = Aspect_TOL_SOLID,
                                Standard_Real theWidth    = 0.5,
                                Standard_Real theTransp   = 1.0);
 
-  // redraw method
-  Standard_EXPORT   void RedrawLayerPrs();
+  private:
+
+  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+                const Handle(Prs3d_Presentation)& thePresentation,
+                const Standard_Integer theMode);
+
+  void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
+                         const Standard_Integer /*aMode*/){};
 
 private:
 
   Standard_Real       myX1, myY1, myX2, myY2;
-  V3d_LayerMgrPointer myLayerMgr;
   Aspect_TypeOfLine   myType;
   Standard_Real       myWidth;
-  Standard_Real       myTransparency;
 };
-
 
 // default constructor for line item
 V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1,
                            Standard_Real X2, Standard_Real Y2,
-                           V3d_LayerMgrPointer theLayerMgr,
                            Aspect_TypeOfLine theType,
                            Standard_Real theWidth,
                            Standard_Real theTransp) :
-  myX1(X1), myY1(Y1), myX2(X2), myY2(Y2), myLayerMgr(theLayerMgr),
-  myType(theType), myWidth(theWidth), myTransparency(theTransp)
+  myX1(X1), myY1(Y1), myX2(X2), myY2(Y2),
+  myType(theType), myWidth(theWidth)
 {
-  if (myLayerMgr && !myLayerMgr->Overlay().IsNull())
-    myLayerMgr->Overlay()->AddLayerItem (this);
+  SetTransparency (1-theTransp);
 }
 
 // render line
-void V3d_LineItem::RedrawLayerPrs ()
+void V3d_LineItem::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+                            const Handle(Prs3d_Presentation)& thePresentation,
+                            const Standard_Integer /*theMode*/)
 {
-  Handle (Visual3d_Layer) aOverlay;
-
-  if (myLayerMgr)
-    aOverlay = myLayerMgr->Overlay();
-
-  if (!aOverlay.IsNull())
-  {
-    Quantity_Color aColor(1.0, 0, 0, Quantity_TOC_RGB);
-    aOverlay->SetColor(aColor);
-    aOverlay->SetTransparency((Standard_ShortReal)myTransparency);
-    aOverlay->SetLineAttributes((Aspect_TypeOfLine)myType, myWidth);
-    aOverlay->BeginPolyline();
-    aOverlay->AddVertex(myX1, myY1);
-    aOverlay->AddVertex(myX2, myY2);
-    aOverlay->ClosePrimitive();
-  }
+  thePresentation->Clear();
+  Quantity_Color aColor (1.0, 0, 0, Quantity_TOC_RGB);
+  Standard_Integer aWidth, aHeight;
+  ViewerTest::CurrentView()->Window()->Size (aWidth, aHeight);
+  Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
+  Handle(Graphic3d_ArrayOfPolylines) aPrim = new Graphic3d_ArrayOfPolylines(5);
+  aPrim->AddVertex(myX1, aHeight-myY1, 0.);
+  aPrim->AddVertex(myX2, aHeight-myY2, 0.);
+  Handle(Prs3d_LineAspect) anAspect = new Prs3d_LineAspect (aColor, (Aspect_TypeOfLine)myType, myWidth);
+  aGroup->SetPrimitivesAspect (anAspect->Aspect());
+  aGroup->AddPrimitiveArray (aPrim);
 }
 
 //=============================================================================
@@ -4770,6 +4700,7 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
     return 1;
   }
 
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   // get the input params
   Standard_Real X1 = Draw::Atof(argv[1]);
   Standard_Real Y1 = Draw::Atof(argv[2]);
@@ -4816,121 +4747,23 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
       aLineType = Aspect_TOL_SOLID;
   }
 
-  // replace layer manager
-  Handle(V3d_LayerMgr) aMgr = new V3d_LayerMgr(aView);
-  aView->SetLayerMgr(aMgr);
+  static Handle (V3d_LineItem) aLine;
+  if (!aLine.IsNull())
+  {
+    aContext->Erase (aLine);
+  }
+  aLine = new V3d_LineItem (X1, Y1, X2, Y2,
+                            aLineType, aWidth,
+                            aTransparency);
 
-  // add line item
-  Handle (V3d_LineItem) anItem = new V3d_LineItem(X1, Y1, X2, Y2,
-                                                  aMgr.operator->(),
-                                                  aLineType, aWidth,
-                                                  aTransparency);
-
-  // update view
-  aView->MustBeResized();
-  aView->Redraw();
+  aLine->SetTransformPersistence (Graphic3d_TMF_2d,gp_Pnt(-1,-1,0));
+  aLine->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  aLine->SetToUpdate();
+  aContext->Display (aLine, Standard_True);
 
   return 0;
 }
 
-//=======================================================================
-//function : VOverlayText
-//purpose  : Test text displaying in view overlay
-//=======================================================================
-static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char**argv)
-{
-  // get the active view
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  if (aView.IsNull())
-  {
-    di << "No active view. Please call vinit.\n";
-    return 1;
-  }
-  else if (argc < 4 || argc > 13)
-  {
-    di << "Use: " << argv[0];
-    di << " text x y [height] [font_name] [text_color: R G B] [displayType]\n";
-    di << "[background_color: R G B]\n";
-    di << "  height - pixel height of the text (default=10.0)\n";
-    di << "  font_name - name of font (default=courier)\n";
-    di << "  text_color - R G B values of text color (default=255.0 255.0 255.0)\n";
-    di << "  display_type = {normal/subtitle/decal/blend/dimension}, (default=normal)\n";
-    di << "  background_color- R G B values used for subtitle and decal text\n";
-    di << "(default=255.0 255.0 255.0)\n";
-    return 1;
-  }
-
-  TCollection_AsciiString aText (argv[1]);
-  Standard_Real aPosX = Draw::Atof(argv[2]);
-  Standard_Real aPosY = Draw::Atof(argv[3]);
-  Standard_Real aHeight = (argc >= 5) ? Draw::Atof (argv[4]) : 10.0;
-
-  // font name
-  TCollection_AsciiString aFontName = "Courier";
-  if (argc >= 6)
-    aFontName = TCollection_AsciiString (argv[5]);
-
-  // text colors
-  Quantity_Parameter aColorRed   = 1.0;
-  Quantity_Parameter aColorGreen = 1.0;
-  Quantity_Parameter aColorBlue  = 1.0;
-  if (argc >= 9)
-  {
-    aColorRed   = Draw::Atof (argv[6])/255.;
-    aColorGreen = Draw::Atof (argv[7])/255.;
-    aColorBlue  = Draw::Atof (argv[8])/255.;
-  }
-
-  // display type
-  TCollection_AsciiString aDispStr;
-  if (argc >= 10)
-    aDispStr = TCollection_AsciiString (argv[9]);
-
-  Aspect_TypeOfDisplayText aTextType = Aspect_TODT_NORMAL;
-  if (aDispStr.IsEqual ("subtitle"))
-    aTextType = Aspect_TODT_SUBTITLE;
-  else if (aDispStr.IsEqual ("decal"))
-    aTextType = Aspect_TODT_DEKALE;
-  else if (aDispStr.IsEqual ("blend"))
-    aTextType = Aspect_TODT_BLEND;
-  else if (aDispStr.IsEqual ("dimension"))
-    aTextType = Aspect_TODT_DIMENSION;
-
-  // subtitle color
-  Quantity_Parameter aSubRed   = 1.0;
-  Quantity_Parameter aSubGreen = 1.0;
-  Quantity_Parameter aSubBlue  = 1.0;
-  if (argc == 13)
-  {
-    aSubRed   = Draw::Atof (argv[10])/255.;
-    aSubGreen = Draw::Atof (argv[11])/255.;
-    aSubBlue  = Draw::Atof (argv[12])/255.;
-  }
-
-  // check fo current overlay
-  Handle(Visual3d_Layer) anOverlay = aView->Viewer()->Viewer()->OverLayer ();
-  if (anOverlay.IsNull ())
-  {
-    Handle(V3d_LayerMgr) aMgr = new V3d_LayerMgr (aView);
-    anOverlay = aMgr->Overlay ();
-    aView->SetLayerMgr (aMgr);
-  }
-
-  Quantity_Color aTextColor (aColorRed, aColorGreen,
-    aColorBlue, Quantity_TOC_RGB);
-  Quantity_Color aSubtColor (aSubRed, aSubGreen,
-    aSubBlue, Quantity_TOC_RGB);
-
-  // add text item
-  Handle(V3d_TextItem) anItem = new V3d_TextItem (aText, aPosX, aPosY,
-    aHeight, aFontName, aTextColor, aSubtColor, aTextType, anOverlay);
-
-  // update view
-  aView->MustBeResized();
-  aView->Redraw();
-
-  return 0;
-}
 
 //==============================================================================
 //function : VGrid
@@ -9063,14 +8896,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "   vzlayer disable depthtest 1\n"
     "   vzlayer del 1\n",
     __FILE__,VZLayer,group);
-  theCommands.Add("voverlaytext",
-    "voverlaytext : text x y [height] [font_name] [text_color: R G B] [display_type] [background_color: R G B]"
-    " : height - pixel height of the text (default=10.0)"
-    " : font_name - name of font (default=courier)"
-    " : text_color - three values: RedColor GreenColor BlueColor (default = 255.0 255.0 255.0) "
-    " : display_type = {normal/subtitle/decal/blend}, (default=normal) "
-    " : background_color - three values: RedColor GreenColor BlueColor (default = 255.0 255.0 255.0), the parameter is defined for subtitle and decal display types ",
-    __FILE__,VOverlayText,group);
   theCommands.Add("vlayerline",
     "vlayerline : vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]",
     __FILE__,VLayerLine,group);

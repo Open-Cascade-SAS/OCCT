@@ -25,7 +25,7 @@ text2brep t "text" "Arial" 8
 vdisplay t
 
 # overlay objects
-voverlaytext "Overlay text!" 200 440 40
+vdrawtext t1 "Overlay text!" -2d -perspos -1 1 -pos 200 -440 0 -height 40
 
 # markers
 vpoint p 1 1 1

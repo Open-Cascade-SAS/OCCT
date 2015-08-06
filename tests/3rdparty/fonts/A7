@@ -4,21 +4,21 @@ puts "Test case prints overlay labels with different subtitle styles"
 puts "============"
 puts ""
 
-voverlaytext "Overlay Test Blend"    100  50 16 Times-Roman 255 255   0 blend    0 0 255
+vdrawtext t1 "Overlay Test Blend" -2d -perspos -1 1 -pos 100 -50 0 -height 16 -font Times-Roman -color 1 1 0 -disptype blend -subcolor 0 0 1
 
-voverlaytext "Overlay Test Decal"    100 100 16 Times-Roman 255 255   0 decal    0 0 255
+vdrawtext t2 "Overlay Test Decal" -2d -perspos -1 1 -pos 100 -100 0 -height 16 -font Times-Roman -color 1 1 0 -disptype decal -subcolor 0 0 1
 
-voverlaytext "Overlay Test Subtitle" 100 150 16 Times-Roman 255 255   0 subtitle 0 0 255
+vdrawtext t3 "Overlay Test Subtitle" -2d -perspos -1 1 -pos 100 -150 0 -height 16 -font Times-Roman -color 1 1 0 -disptype subtitle -subcolor 0 0 1
 
-voverlaytext "Overlay Test Normal"   100 200 16 Times-Roman   0 255 255 normal   0 0 255
+vdrawtext t4 "Overlay Test Normal" -2d -perspos -1 1 -pos 100 -200 0 -height 16 -font Times-Roman -color 0 1 1 -disptype normal -subcolor 0 0 1
 
-voverlaytext "    Overlay Test Normal  \n    Second line" 100 250 16 Times-Roman   0 255 255 normal   0 0 255
+vdrawtext t5 "    Overlay Test Normal  \n    Second line" -2d -perspos -1 1 -pos 100 -250 0 -height 16 -font Times-Roman -color 0 1 1 -disptype normal -subcolor 0 0 1
 
-voverlaytext "    Overlay Test Subtitle\n    Second line" 100 300 16 Times-Roman 255 255   0 subtitle 0 0 255
+vdrawtext t6 "    Overlay Test Subtitle\n    Second line" -2d -perspos -1 1 -pos 100 -300 0 -height 16 -font Times-Roman -color 1 1 0 -disptype subtitle -subcolor 0 0 1
 
-voverlaytext "    Overlay Test Decal   \n    Second line" 100 350 16 Times-Roman 255 255   0 decal    0 0 255
+vdrawtext t7 "    Overlay Test Decal   \n    Second line" -2d -perspos -1 1 -pos 100 -350 0 -height 16 -font Times-Roman -color 1 1 0 -disptype decal -subcolor 0 0 1
 
-voverlaytext "    Overlay Test Blend   \n    Second line" 100 400 16 Times-Roman 255 255   0 blend    0 0 255
+vdrawtext t8 "    Overlay Test Blend   \n    Second line" -2d -perspos -1 1 -pos 100 -400 0 -height 16 -font Times-Roman -color 1 1 0 -disptype blend -subcolor 0 0 1
 
 box b 1 2 3
 vsetdispmode 1

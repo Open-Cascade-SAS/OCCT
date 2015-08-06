@@ -43,6 +43,9 @@ public:
   //! Setup position.
   Standard_EXPORT void SetPosition (const gp_Pnt& thePosition);
 
+  //! Get position.
+  Standard_EXPORT gp_Pnt GetPosition () {return myPosition;};
+
   //! Setup horizontal justification.
   Standard_EXPORT void SetHJustification (const Graphic3d_HorizontalTextAlignment theHJust);
 
@@ -63,6 +66,19 @@ public:
 
   //! Setup font.
   Standard_EXPORT void SetFont (Standard_CString theFont);
+
+  //! Define the display type of the text.
+  //!
+  //! TODT_NORMAL     Default display. Text only.
+  //! TODT_SUBTITLE   There is a subtitle under the text.
+  //! TODT_DEKALE     The text is displayed with a 3D style.
+  //! TODT_BLEND      The text is displayed in XOR.
+  //! TODT_DIMENSION  Dimension line under text will be invisible.
+  Standard_EXPORT void SetDisplayType (const Aspect_TypeOfDisplayText theDisplayType);
+
+  //! Modifies the colour of the subtitle for the TODT_SUBTITLE TextDisplayType
+  //! and the colour of backgroubd for the TODT_DEKALE TextDisplayType.
+  Standard_EXPORT void SetColorSubTitle (const Quantity_Color& theColor);
 
 private:
 

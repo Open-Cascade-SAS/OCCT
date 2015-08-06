@@ -142,6 +142,24 @@ void AIS_TextLabel::SetFont (Standard_CString theFont)
 }
 
 //=======================================================================
+//function : SetDisplayType
+//purpose  :
+//=======================================================================
+void AIS_TextLabel::SetDisplayType (const Aspect_TypeOfDisplayText theDisplayType)
+{
+  myDrawer->TextAspect()->Aspect()->SetDisplayType(theDisplayType);
+}
+
+//=======================================================================
+//function : SetColorSubTitle
+//purpose  :
+//=======================================================================
+void AIS_TextLabel::SetColorSubTitle (const Quantity_Color& theColor)
+{
+  myDrawer->TextAspect()->Aspect()->SetColorSubTitle(theColor);
+}
+
+//=======================================================================
 //function : Compute
 //purpose  :
 //=======================================================================

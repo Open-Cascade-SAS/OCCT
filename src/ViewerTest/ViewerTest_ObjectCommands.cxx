@@ -132,6 +132,7 @@
 #include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
+#include <Prs3d_TextAspect.hxx>
 
 #include <Image_AlienPixMap.hxx>
 #include <TColStd_HArray1OfAsciiString.hxx>
@@ -2426,6 +2427,10 @@ static int VDrawText (Draw_Interpretor& theDI,
 
   aTextPrs->SetText (aText);
 
+  Graphic3d_TransModeFlags aTrsfPersFlags = Graphic3d_TMF_None;
+  gp_Pnt aTPPosition;
+  Aspect_TypeOfDisplayText aDisplayType = Aspect_TODT_NORMAL;
+
   for (; anArgIt < theArgsNb; ++anArgIt)
   {
     TCollection_AsciiString aParam (theArgVec[anArgIt]);
@@ -2612,6 +2617,105 @@ static int VDrawText (Draw_Interpretor& theDI,
 
       aTextPrs->SetFont (theArgVec[anArgIt]);
     }
+    else if (aParam == "-disptype"
+          || aParam == "-displaytype")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      aType.LowerCase();
+      if (aType == "subtitle")
+        aDisplayType = Aspect_TODT_SUBTITLE;
+      else if (aType == "decal")
+        aDisplayType = Aspect_TODT_DEKALE;
+      else if (aType == "blend")
+        aDisplayType = Aspect_TODT_BLEND;
+      else if (aType == "dimension")
+        aDisplayType = Aspect_TODT_DIMENSION;
+      else if (aType == "normal")
+        aDisplayType = Aspect_TODT_NORMAL;
+      else
+      {
+        std::cout << "Error: wrong display type '" << aType << "'.\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-subcolor"
+          || aParam == "-subtitlecolor")
+    {
+      if (anArgIt + 1 >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aColor (theArgVec[anArgIt + 1]);
+      Quantity_NameOfColor aNameOfColor = Quantity_NOC_BLACK;
+      if (Quantity_Color::ColorFromName (aColor.ToCString(), aNameOfColor))
+      {
+        anArgIt += 1;
+        aTextPrs->SetColorSubTitle (aNameOfColor);
+        continue;
+      }
+      else if (anArgIt + 3 >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aGreen (theArgVec[anArgIt + 2]);
+      TCollection_AsciiString aBlue  (theArgVec[anArgIt + 3]);
+      if (!aColor.IsRealValue()
+       || !aGreen.IsRealValue()
+       || !aBlue.IsRealValue())
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      const Graphic3d_Vec3d anRGB (aColor.RealValue(),
+                                   aGreen.RealValue(),
+                                   aBlue.RealValue());
+
+      aTextPrs->SetColorSubTitle (Quantity_Color (anRGB.r(), anRGB.g(), anRGB.b(), Quantity_TOC_RGB));
+      anArgIt += 3;
+    }
+    else if (aParam == "-2d")
+    {
+      aTrsfPersFlags = Graphic3d_TMF_2d;
+    }
+    else if (aParam == "-trsfperspos"
+          || aParam == "-perspos")
+    {
+      if (anArgIt + 2 >= theArgsNb)
+      {
+        std::cerr << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aX (theArgVec[++anArgIt]);
+      TCollection_AsciiString aY (theArgVec[++anArgIt]);
+      TCollection_AsciiString aZ = "0";
+      if (!aX.IsIntegerValue()
+       || !aY.IsIntegerValue())
+      {
+        std::cerr << "Error: wrong syntax at '" << aParam << "'.\n";
+        return 1;
+      }
+      if (anArgIt + 1 < theArgsNb)
+      {
+        TCollection_AsciiString aTemp = theArgVec[anArgIt + 1];
+        if (aTemp.IsIntegerValue())
+        {
+          aZ = aTemp;
+          ++anArgIt;
+        }
+      }
+      aTPPosition.SetCoord (aX.IntegerValue(), aY.IntegerValue(), aZ.IntegerValue());
+    }
     else
     {
       std::cout << "Error: unknown argument '" << aParam << "'\n";
@@ -2619,6 +2723,21 @@ static int VDrawText (Draw_Interpretor& theDI,
     }
   }
 
+  if (aTrsfPersFlags != Graphic3d_TMF_None)
+  {
+    aTextPrs->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+    aTextPrs->SetDisplayType (aDisplayType);
+    aTextPrs->SetZLayer(Graphic3d_ZLayerId_TopOSD);
+    if (aTextPrs->GetPosition().Z() != 0)
+    {
+      aTextPrs->SetPosition (gp_Pnt(aTextPrs->GetPosition().X(), aTextPrs->GetPosition().Y(), 0));
+    }
+  }
+  else if (aTrsfPersFlags != aTextPrs->TransformPersistence().Flags)
+  {
+    aTextPrs->SetTransformPersistence (aTrsfPersFlags);
+    aTextPrs->SetDisplayType (Aspect_TODT_NORMAL);
+  }
   ViewerTest::Display (aName, aTextPrs, Standard_False);
   return 0;
 }
@@ -6005,6 +6124,13 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-height height=16]"
                    "\n\t\t: [-aspect {regular|bold|italic|bolditalic}=regular]"
                    "\n\t\t: [-font font=Times]"
+                   "\n\t\t: [-2d]"
+                   "\n\t\t: [-perspos {X Y Z}=0 0 0], where"
+                   "\n\t\t X and Y define the coordinate origin in 2d space relative to the view window"
+                   "\n\t\t Example: X=0 Y=0 is center, X=1 Y=1 is upper right corner etc..."
+                   "\n\t\t Z coordinate defines the gap from border of view window (except center position)."
+                   "\n\t\t: [-disptype {blend|decal|subtitle|dimension|normal}=normal}"
+                   "\n\t\t: [-subcolor {R G B|name}=white]"
                    "\n\t\t: [-noupdate]"
                    "\n\t\t: Display text label at specified position.",
     __FILE__, VDrawText, group);
