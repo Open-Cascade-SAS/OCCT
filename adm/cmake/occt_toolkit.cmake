@@ -1,26 +1,11 @@
 # script for each OCCT toolkit
 
 # Get all used packages from toolkit
-foreach (TOOLKIT_MODULE ${TOOLKIT_MODULES})
+foreach (OCCT_PACKAGE ${TOOLKIT_MODULES})
   if (WIN32)
-    list (APPEND PRECOMPILED_DEFS "-D__${TOOLKIT_MODULE}_DLL")
+    list (APPEND PRECOMPILED_DEFS "-D__${OCCT_PACKAGE}_DLL")
   endif()
-  list (APPEND COMPILER_DIRECTORIES "${OCCT_SOURCE_DIR}/src/${TOOLKIT_MODULE}")
-endforeach()
-string (REGEX REPLACE ";" " " PRECOMPILED_DEFS "${PRECOMPILED_DEFS}")
-
-# Get from toolkits EXTERNLIB all used libs
-OCCT_TOOLKIT_DEP (${PROJECT_NAME} ${PROJECT_NAME}_DEPS)
-foreach (PROJECT_DEP ${${PROJECT_NAME}_DEPS})
-  IS_OCCT_TOOLKIT (${PROJECT_DEP} OCCT_MODULES FOUND_TOOLKIT)
-  if ("${FOUND_TOOLKIT}" STREQUAL "ON")
-    list (APPEND USED_LIBS "${PROJECT_DEP}")
-  endif()
-endforeach()
-
-# Get all source files from used packages
-foreach (CMP_DIR ${COMPILER_DIRECTORIES})
-  get_filename_component (CMP_DIR_NAME ${CMP_DIR} NAME)
+  # ${OCCT_SOURCE_DIR}/src/${OCCT_PACKAGE}
 
   set (SOURCE_FILES)
   set (HEADER_FILES)
@@ -29,12 +14,12 @@ foreach (CMP_DIR ${COMPILER_DIRECTORIES})
   if (${REBUILD_PLATFORM_DEPENDENT_CODE})
 
     # flex files
-    file (GLOB SOURCE_FILES_FLEX "${CMP_DIR}/*[.]lex") 
+    OCCT_ORIGIN_AND_PATCHED_FILES ("src/${OCCT_PACKAGE}" "*[.]lex" SOURCE_FILES_FLEX)
     list (LENGTH SOURCE_FILES_FLEX SOURCE_FILES_FLEX_LEN)
     list (SORT SOURCE_FILES_FLEX)
 
     # bison files
-    file (GLOB SOURCE_FILES_BISON "${CMP_DIR}/*[.]yacc") 
+    OCCT_ORIGIN_AND_PATCHED_FILES ("src/${OCCT_PACKAGE}" "*[.]yacc" SOURCE_FILES_BISON)
     list (LENGTH SOURCE_FILES_BISON SOURCE_FILES_BISON_LEN)
     list (SORT SOURCE_FILES_BISON)
 
@@ -64,30 +49,64 @@ foreach (CMP_DIR ${COMPILER_DIRECTORIES})
     endif()
   endif()
 
-  # header files 
-  file (STRINGS "${CMP_DIR}/FILES" HEADER_FILES_M   REGEX ".+[.]h")
-  file (STRINGS "${CMP_DIR}/FILES" HEADER_FILES_LXX REGEX ".+[.]lxx")
-  file (STRINGS "${CMP_DIR}/FILES" HEADER_FILES_GXX REGEX ".+[.]gxx")
+  # header files
+  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/FILES")
+    file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/FILES" HEADER_FILES_M   REGEX ".+[.]h")
+    file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/FILES" HEADER_FILES_LXX REGEX ".+[.]lxx")
+    file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/FILES" HEADER_FILES_GXX REGEX ".+[.]gxx")
+
+    file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/FILES" SOURCE_FILES_C REGEX ".+[.]c")
+    if(APPLE)
+      file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/FILES" SOURCE_FILES_M REGEX ".+[.]mm")
+    endif()
+  else()
+    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES"     HEADER_FILES_M   REGEX ".+[.]h")
+    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES"     HEADER_FILES_LXX REGEX ".+[.]lxx")
+    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES"     HEADER_FILES_GXX REGEX ".+[.]gxx")
+
+    file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES"     SOURCE_FILES_C REGEX ".+[.]c")
+    if(APPLE)
+      file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/FILES"   SOURCE_FILES_M REGEX ".+[.]mm")
+    endif()
+  endif()
+  
   list (APPEND HEADER_FILES ${HEADER_FILES_M} ${HEADER_FILES_LXX} ${SOURCE_FILES_GXX})
-
-  foreach(HEADER_FILE ${HEADER_FILES})
-    list (APPEND USED_INCFILES ${CMP_DIR}/${HEADER_FILE})
-    SOURCE_GROUP ("Header Files\\${CMP_DIR_NAME}" FILES ${CMP_DIR}/${HEADER_FILE})
-  endforeach()
-
-  # source files
-  file (STRINGS "${CMP_DIR}/FILES" SOURCE_FILES_C REGEX ".+[.]c")
   list (APPEND SOURCE_FILES ${SOURCE_FILES_C})
-
   if(APPLE)
-    file (STRINGS "${CMP_DIR}/FILES" SOURCE_FILES_M REGEX ".+[.]mm")
     list (APPEND SOURCE_FILES ${SOURCE_FILES_M})
   endif()
 
-  foreach(SOURCE_FILE ${SOURCE_FILES})
-    list (APPEND USED_SRCFILES ${CMP_DIR}/${SOURCE_FILE})
-    SOURCE_GROUP ("Source Files\\${CMP_DIR_NAME}" FILES ${CMP_DIR}/${SOURCE_FILE})
+  foreach(HEADER_FILE ${HEADER_FILES})
+    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${HEADER_FILE}")
+      message (STATUS "Info. consider patched file: ${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${HEADER_FILE}")
+      list (APPEND USED_INCFILES "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${HEADER_FILE}")
+      SOURCE_GROUP ("Header Files\\${OCCT_PACKAGE}" FILES "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${HEADER_FILE}")
+    else()
+      list (APPEND USED_INCFILES "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/${HEADER_FILE}")
+      SOURCE_GROUP ("Header Files\\${OCCT_PACKAGE}" FILES "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/${HEADER_FILE}")
+    endif()
   endforeach()
+
+  foreach(SOURCE_FILE ${SOURCE_FILES})
+    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${SOURCE_FILE}")
+      message (STATUS "Info. consider patched file: ${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${SOURCE_FILE}")
+      list (APPEND USED_SRCFILES "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${SOURCE_FILE}")
+      SOURCE_GROUP ("Source Files\\${OCCT_PACKAGE}" FILES "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_PACKAGE}/${SOURCE_FILE}")
+    else()
+      list (APPEND USED_SRCFILES "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/${SOURCE_FILE}")
+      SOURCE_GROUP ("Source Files\\${OCCT_PACKAGE}" FILES "${CMAKE_SOURCE_DIR}/src/${OCCT_PACKAGE}/${SOURCE_FILE}")
+    endif()
+  endforeach()
+endforeach()
+string (REGEX REPLACE ";" " " PRECOMPILED_DEFS "${PRECOMPILED_DEFS}")
+
+# Get from toolkits EXTERNLIB all used libs
+OCCT_TOOLKIT_DEP (${PROJECT_NAME} ${PROJECT_NAME}_DEPS)
+foreach (PROJECT_DEP ${${PROJECT_NAME}_DEPS})
+  IS_OCCT_TOOLKIT (${PROJECT_DEP} OCCT_MODULES FOUND_TOOLKIT)
+  if ("${FOUND_TOOLKIT}" STREQUAL "ON")
+    list (APPEND USED_LIBS "${PROJECT_DEP}")
+  endif()
 endforeach()
 
 # Create project for toolkit

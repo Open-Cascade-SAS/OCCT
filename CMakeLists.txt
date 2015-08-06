@@ -6,10 +6,10 @@ set (CMAKE_CONFIGURATION_TYPES Release Debug RelWithDebInfo CACHE INTERNAL "" FO
 
 # macro: include patched file if it exists
 macro (OCCT_INCLUDE_CMAKE_FILE BEING_INCLUDED_FILE)
-  if (NOT "${APPLY_OCCT_PATCH_DIR}" STREQUAL "" AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake")
+  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake")
     include (${APPLY_OCCT_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake)
   else()
-    include (${BEING_INCLUDED_FILE}.cmake)
+    include (${CMAKE_SOURCE_DIR}/${BEING_INCLUDED_FILE}.cmake)
   endif()
 endmacro()
 
@@ -143,7 +143,7 @@ if ("${3RDPARTY_DIR}" STREQUAL "")
 endif()
 
 # search for CSF_TclLibs variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED(CSF_TclLibs USE_TCL)
+OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
 
 if ("${USE_TCL}" STREQUAL ON)
   message (STATUS "Info: tcl is used by OCCT")
@@ -154,7 +154,7 @@ else()
 endif()
 
 # search for CSF_FREETYPE variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED(CSF_FREETYPE USE_FREETYPE)
+OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE USE_FREETYPE)
 
 if ("${USE_FREETYPE}" STREQUAL ON)
   message (STATUS "Info: freetype is used by OCCT")
@@ -169,6 +169,9 @@ endif()
 if (USE_VTK)
   add_definitions (-DHAVE_VTK)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vtk")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")
+  OCCT_CHECK_AND_UNSET ("INSTALL_VTK")
 endif()
 
 # GLX
@@ -227,7 +230,8 @@ if (BUILD_DOC_OcctOverview)
 
   if (INSTALL_DOC_OcctOverview)
     install (DIRECTORY "${CMAKE_BINARY_DIR}/doc/overview" DESTINATION  "${INSTALL_DIR}/doc")
-    install (FILES "${CMAKE_SOURCE_DIR}/dox/resources/overview.html" DESTINATION  "${INSTALL_DIR}")
+
+    OCCT_INSTALL_FILE_OR_DIR ("dox/resources/overview.html" "${INSTALL_DIR}")
   endif()
 
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
@@ -294,8 +298,9 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
 
 if (WIN32) 
-  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
-  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE        "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG          "${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
 endif()
 
 if ("${INSTALL_DIR}" STREQUAL "")
@@ -309,13 +314,8 @@ endif()
 
 message (STATUS "\nInfo: Collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
 
-# (!) patch is not taken into account COLLECT_AND_INSTALL_OCCT_HEADER_FILES
 # collect all the headers to <binary dir>/inc folder
-COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}")
-# apply patched header files
-#if (NOT "${APPLY_OCCT_PATCH_DIR}" STREQUAL "")
-#  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${APPLY_OCCT_PATCH_DIR}" "${CMAKE_SOURCE_DIR}/adm/templates/header.in" "${CMAKE_BINARY_DIR}")
-#endif()
+COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}")
 
 OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
 OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
@@ -335,7 +335,7 @@ else()
 endif()
 
 # DRAW.BAT or DRAW.SH
-if (NOT "${APPLY_OCCT_PATCH_DIR}" STREQUAL "" AND EXISTS "${APPLY_OCCT_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
+if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
   install (FILES "${APPLY_OCCT_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
           OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
 else()
@@ -372,7 +372,7 @@ OCCT_CONFIGURE ("adm/templates/custom.build.${SCRIPT_EXT}.in" "${SUB_CUSTOM_NAME
 
 if (BUILD_MODULE_OcctMfcSamples)
   OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR}")
-  OCCT_COPY_FILE_OR_DIR ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
+  OCCT_COPY_FILE_OR_DIR    ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
 endif()
 
 # env script for draw in building environment
@@ -404,8 +404,8 @@ install (FILES "${CMAKE_BINARY_DIR}/env.install.relwithdebinfo.${SCRIPT_EXT}"
          RENAME "env.${SCRIPT_EXT}")
 
 # copy DrawAppliInit from OCCT source to build directory
-if (EXISTS "${CMAKE_SOURCE_DIR}/DrawAppliInit" AND NOT EXISTS "${CMAKE_BINARY_DIR}/DrawAppliInit")
-  file (COPY "${CMAKE_SOURCE_DIR}/DrawAppliInit" DESTINATION "${CMAKE_BINARY_DIR}")
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/DrawAppliInit")
+  OCCT_COPY_FILE_OR_DIR (DrawAppliInit "${CMAKE_BINARY_DIR}")
 endif()
 
 # RESOURCES
@@ -422,17 +422,11 @@ endforeach()
 
 # include patched toolkit projects or original ones
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
-  if (NOT "${APPLY_OCCT_PATCH_DIR}" STREQUAL "" AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${BUILD_TOOLKIT}")
-    add_subdirectory(${APPLY_OCCT_PATCH_DIR}/src/${BUILD_TOOLKIT})
-  elseif (EXISTS "${CMAKE_SOURCE_DIR}/src/${BUILD_TOOLKIT}")
-    add_subdirectory (${CMAKE_SOURCE_DIR}/src/${BUILD_TOOLKIT})
-  else()
-    message (STATUS "${BUILD_TOOLKIT} is not included")
-  endif()
+  OCCT_ADD_SUBDIRECTORY ("src/${BUILD_TOOLKIT}")
 endforeach()
 
 if (BUILD_DOC_OcctOverview)
-  add_subdirectory (dox)
+  OCCT_ADD_SUBDIRECTORY (dox)
 endif()
 
 # patch DRAWEXE
@@ -452,7 +446,7 @@ if (MSVC AND 3RDPARTY_DLL_DIRS)
       set (X_COMPILER_BITNESS "Win32")
     endif()
 
-    configure_file (${CMAKE_SOURCE_DIR}/adm/templates/DRAWEXE.vcxproj.user.in ${CMAKE_BINARY_DIR}/src/DRAWEXE/DRAWEXE.vcxproj.user @ONLY)
+    OCCT_CONFIGURE ("adm/templates/DRAWEXE.vcxproj.user.in" "${CMAKE_BINARY_DIR}/src/DRAWEXE/DRAWEXE.vcxproj.user")
   endif()
 endif()
 

@@ -21,4 +21,4 @@ set (TOOLKIT_MODULES
   ExprIntrp
 )
 
-include(${OCCT_SOURCE_DIR}/adm/cmake/occt_toolkit.cmake)
+OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)

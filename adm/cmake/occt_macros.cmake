@@ -80,6 +80,29 @@ function (SUBDIRECTORY_NAMES MAIN_DIRECTORY RESULT)
   set (${RESULT} ${LOCAL_RESULT} PARENT_SCOPE)
 endfunction()
 
+function (OCCT_ORIGIN_AND_PATCHED_FILES RELATIVE_PATH SEARCH_TEMPLATE RESULT)
+
+  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}")
+    file (GLOB FOUND_FILES "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}/${SEARCH_TEMPLATE}")
+  endif()
+
+  file (GLOB ORIGIN_FILES "${CMAKE_SOURCE_DIR}/${RELATIVE_PATH}/${SEARCH_TEMPLATE}")
+  foreach (ORIGIN_FILE ${ORIGIN_FILES})
+    # check for existence of patched version of current file
+    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}")
+      get_filename_component (ORIGIN_FILE_NAME "${ORIGIN_FILE}" NAME)
+      if (EXISTS "${APPLY_OCCT_PATCH_DIR}/${RELATIVE_PATH}/${ORIGIN_FILE_NAME}")
+        continue()
+      endif()
+    endif()
+
+    # append origin version if patched one is not found
+    list (APPEND FOUND_FILES ${ORIGIN_FILE})
+  endforeach()
+
+  set (${RESULT} ${FOUND_FILES} PARENT_SCOPE)
+endfunction()
+
 function (FIND_PRODUCT_DIR ROOT_DIR PRODUCT_NAME RESULT)
   OCCT_MAKE_COMPILER_SHORT_NAME()
   OCCT_MAKE_COMPILER_BITNESS()
@@ -147,8 +170,16 @@ macro (OCCT_CONFIGURE_AND_INSTALL BEING_CONGIRUGED_FILE BUILD_NAME INSTALL_NAME 
   install(FILES "${OCCT_BINARY_DIR}/${BUILD_NAME}" DESTINATION  "${DESTINATION_PATH}" RENAME ${INSTALL_NAME})
 endmacro()
 
-macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_OCCT_DIR TEMPLATE_HEADER_PATH ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOOLKITS)
+macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOOLKITS)
   set (OCCT_SOURCE_DIRS)
+
+  # consider patched header.in template
+  set (TEMPLATE_HEADER_PATH "${CMAKE_SOURCE_DIR}/adm/templates/header.in")
+  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/adm/templates/header.in")
+    set (TEMPLATE_HEADER_PATH "${APPLY_OCCT_PATCH_DIR}/adm/templates/header.in")
+  endif()
+
+  set (ROOT_OCCT_DIR ${CMAKE_SOURCE_DIR})
 
   foreach (OCCT_USED_TOOLKIT ${OCCT_BUILD_TOOLKITS})
     # append parent folder
@@ -156,8 +187,10 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_OCCT_DIR TEMPLATE_HEADER_PATH 
 
     # append all required package folders
     set (OCCT_USED_TOOLKIT_DEPS)
-    if (EXISTS "${ROOT_OCCT_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES")
-      file (STRINGS "${ROOT_OCCT_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_USED_TOOLKIT_DEPS)
+    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES")
+      file (STRINGS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_USED_TOOLKIT_DEPS)
+    elseif (EXISTS "${CMAKE_SOURCE_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES")
+      file (STRINGS "${CMAKE_SOURCE_DIR}/src/${OCCT_USED_TOOLKIT}/PACKAGES" OCCT_USED_TOOLKIT_DEPS)
     endif()
 
     foreach (OCCT_USED_TOOLKIT_DEP ${OCCT_USED_TOOLKIT_DEPS})
@@ -166,9 +199,8 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_OCCT_DIR TEMPLATE_HEADER_PATH 
   endforeach()
 
   foreach (OCCT_SOURCE_DIR ${OCCT_SOURCE_DIRS})
-    # get all header files from each src folder 
-    file (GLOB OCCT_HEADER_FILES "${ROOT_OCCT_DIR}/src/${OCCT_SOURCE_DIR}/*.[hgl]xx" "${ROOT_OCCT_DIR}/src/${OCCT_SOURCE_DIR}/*.h")
-
+    # get all header files from each src folder
+    file (GLOB OCCT_HEADER_FILES "${CMAKE_SOURCE_DIR}/src/${OCCT_SOURCE_DIR}/*.[hgl]xx" "${CMAKE_SOURCE_DIR}/src/${OCCT_SOURCE_DIR}/*.h")
     install (FILES ${OCCT_HEADER_FILES} DESTINATION "${INSTALL_DIR}/inc")
 
     # create new file including found header
@@ -176,12 +208,26 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_OCCT_DIR TEMPLATE_HEADER_PATH 
       get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
       configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
     endforeach()
+
+    # consider pathed the source files
+    if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_SOURCE_DIR}")
+      file (GLOB PATCHED_OCCT_HEADER_FILES "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_SOURCE_DIR}/*.[hgl]xx" "${APPLY_OCCT_PATCH_DIR}/src/${OCCT_SOURCE_DIR}/*.h")
+      install (FILES ${PATCHED_OCCT_HEADER_FILES} DESTINATION "${INSTALL_DIR}/inc")
+
+      # create new patched file including found header
+      foreach (OCCT_HEADER_FILE ${PATCHED_OCCT_HEADER_FILES})
+        get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
+        configure_file ("${TEMPLATE_HEADER_PATH}" "${ROOT_TARGET_OCCT_DIR}/inc/${HEADER_FILE_NAME}" @ONLY)
+      endforeach()
+    endif()
   endforeach()
 endmacro()
 
 macro (OCCT_COPY_FILE_OR_DIR BEING_COPIED_OBJECT DESTINATION_PATH)
   # first of all, copy original files
-  file (COPY "${CMAKE_SOURCE_DIR}/${BEING_COPIED_OBJECT}" DESTINATION  "${DESTINATION_PATH}")
+  if (EXISTS "${CMAKE_SOURCE_DIR}/${BEING_COPIED_OBJECT}")
+    file (COPY "${CMAKE_SOURCE_DIR}/${BEING_COPIED_OBJECT}" DESTINATION  "${DESTINATION_PATH}")
+  endif()
 
   if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${BEING_COPIED_OBJECT}")
     # secondly, rewrite original files with patched ones
@@ -194,6 +240,16 @@ macro (OCCT_CONFIGURE BEING_CONGIRUGED_FILE FINAL_NAME)
     configure_file("${APPLY_OCCT_PATCH_DIR}/${BEING_CONGIRUGED_FILE}" "${FINAL_NAME}" @ONLY)
   else()
     configure_file("${CMAKE_SOURCE_DIR}/${BEING_CONGIRUGED_FILE}" "${FINAL_NAME}" @ONLY)
+  endif()
+endmacro()
+
+macro (OCCT_ADD_SUBDIRECTORY BEING_ADDED_DIRECTORY)
+  if (APPLY_OCCT_PATCH_DIR AND EXISTS "${APPLY_OCCT_PATCH_DIR}/${BEING_ADDED_DIRECTORY}/CMakeLists.txt")
+    add_subdirectory(${APPLY_OCCT_PATCH_DIR}/${BEING_ADDED_DIRECTORY})
+  elseif (EXISTS "${CMAKE_SOURCE_DIR}/${BEING_ADDED_DIRECTORY}/CMakeLists.txt")
+    add_subdirectory (${CMAKE_SOURCE_DIR}/${BEING_ADDED_DIRECTORY})
+  else()
+    message (STATUS "${BEING_ADDED_DIRECTORY} directory is not included")
   endif()
 endmacro()
 
