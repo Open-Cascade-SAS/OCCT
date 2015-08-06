@@ -2062,15 +2062,22 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& Pln,
   //
   gp_Pnt aTorLoc = aTorAx.Location();
   if (bParallel) {
-    Standard_Real aDt, X, Y, Z, A, B, C, D;
+    Standard_Real aDt, X, Y, Z, A, B, C, D, aDR, aTolNum;
+    //
+    aTolNum=myEPSILON_CYLINDER_DELTA_RADIUS;
     //
     Pln.Coefficients(A,B,C,D);
     aTorLoc.Coord(X,Y,Z);
     aDist = A*X + B*Y + C*Z + D;
     //
-    if ((Abs(aDist) - aRMin) > Tol) {
+    aDR=Abs(aDist) - aRMin;
+    if (aDR > aTolNum) {
       typeres=IntAna_Empty;
       return;
+    }
+    //
+    if (Abs(aDR) < aTolNum) {
+      aDist=aRMin;
     }
     //
     typeres = IntAna_Circle;
@@ -2080,7 +2087,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& Pln,
     param1 = aRMaj + aDt;
     dir1 = aTorAx.Direction();
     nbint = 1;
-    if ((Abs(aDist) < aRMin) && (aDt > Tol)) {
+    if ((aDR < -aTolNum) && (aDt > Tol)) {
       pt2 = pt1;
       param2 = aRMaj - aDt;
       dir2 = dir1;
