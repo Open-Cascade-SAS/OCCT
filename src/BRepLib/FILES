@@ -2,7 +2,6 @@ BRepLib.cxx
 BRepLib.hxx
 BRepLib_CheckCurveOnSurface.cxx
 BRepLib_CheckCurveOnSurface.hxx
-BRepLib_CheckCurveOnSurface.lxx
 BRepLib_Command.cxx
 BRepLib_Command.hxx
 BRepLib_EdgeError.hxx

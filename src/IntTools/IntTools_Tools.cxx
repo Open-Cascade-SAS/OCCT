@@ -789,10 +789,10 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
    Standard_Real& theMaxDist,
    Standard_Real& theMaxPar)
 {
-  BRepLib_CheckCurveOnSurface aCS;
+  GeomLib_CheckCurveOnSurface aCS;
   //
-  aCS.Init(theCurve3D, theCurve2D, theSurf, theFirst, theLast);
-  aCS.Perform();
+  aCS.Init(theCurve3D, theSurf, theFirst, theLast);
+  aCS.Perform(theCurve2D);
   if (!aCS.IsDone()) {
     return Standard_False;
   }
