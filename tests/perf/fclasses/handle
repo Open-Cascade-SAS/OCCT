@@ -27,8 +27,8 @@ if { $ratio > 1.05 } {
 # Check performance of down casting at different nesting depths.
 # OCCT is expected to be the same as C++
 set depths {3 5 10 50}
-set threshold_std 1.15
-set threshold_ptr 1.05
+set threshold_std 4.0
+set threshold_ptr 2.5
 for {set i 0} {$i < [llength $depths]} {incr i} {
   set depth [lindex $depths $i]
   puts "\nTesting DownCast at nesting depth $depth"
