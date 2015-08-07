@@ -31,7 +31,17 @@ class TopoDS_Shape;
 class ShapeUpgrade_UnifySameDomain;
 DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, MMgt_TShared)
 
-//! Unifies same domain faces and edges of specified shape
+//! This tool tries to unify faces and edges of the shape which lies on the same geometry.
+//! Faces/edges considering as 'same-domain' if a group of neighbouring faces/edges lying on coincident surfaces/curves.
+//! In this case these faces/edges can be unified into one face/edge.
+//! ShapeUpgrade_UnifySameDomain initialized by the shape and the next optional parameters:
+//! UnifyFaces - tries to unify all possible faces
+//! UnifyEdges - tries to unify all possible edges
+//! ConcatBSplines - if this flag set to true then all neighbouring edges which lays 
+//! on the BSpline or Bezier curves with C1 continuity on their common vertices will be merged into one common edge 
+//! The output result of tool is an unified shape
+//! All the modifications of initial shape are recorded during unifying.
+//! Method Generated() can be used to obtain the new (unified) shape from the old one 
 class ShapeUpgrade_UnifySameDomain : public MMgt_TShared
 {
 
@@ -43,6 +53,7 @@ public:
   
   Standard_EXPORT ShapeUpgrade_UnifySameDomain(const TopoDS_Shape& aShape, const Standard_Boolean UnifyEdges = Standard_True, const Standard_Boolean UnifyFaces = Standard_True, const Standard_Boolean ConcatBSplines = Standard_False);
   
+  //! Initializes with a shape
   Standard_EXPORT void Initialize (const TopoDS_Shape& aShape, const Standard_Boolean UnifyEdges = Standard_True, const Standard_Boolean UnifyFaces = Standard_True, const Standard_Boolean ConcatBSplines = Standard_False);
   
   //! Builds the resulting shape
@@ -51,6 +62,7 @@ public:
   //! Gives the resulting shape
   Standard_EXPORT const TopoDS_Shape& Shape() const;
   
+  //! Gets new common shape from the old one
   Standard_EXPORT TopoDS_Shape Generated (const TopoDS_Shape& aShape) const;
   
   //! this method makes if possible a common face from each

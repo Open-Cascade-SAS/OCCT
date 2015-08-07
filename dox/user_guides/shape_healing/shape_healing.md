@@ -1447,11 +1447,42 @@ Handle(Geom_Surface) newSurf  = ConvSurf.ConvertToPeriodic(Standard_False);
 Standard_Real maxdist = ConvSurf.Gap(); 
 ~~~~~
 
+@subsubsection occt_shg_4_4_9 Unify Same Domain
+
+*ShapeUpgrade_UnifySameDomain* tool allows unifying all possible faces and edges of a shape, which lies on the same geometry. Faces/edges are considered as 'same-domain' if the neighboring faces/edges lie on coincident surfaces/curves.  Such faces/edges can be unified into one face/edge.
+This tool takes an input shape and returns a new one. All modifications of the initial shape are recorded during the operation.
+ 
+The following options are available:
+
+  * If the flag *UnifyFaces* is set to TRUE, *UnifySameDomain* tries to unify all possible faces;
+  * If the flag *UnifyEdges* is set to TRUE, *UnifySameDomain* tries to unify all possible edges;
+  * if the flag *ConcatBSplines* is set to TRUE, all neighboring edges, which lie on the BSpline or Bezier curves with C1 continuity on their common vertices will be merged into one common edge. 
+
+By default, *UnifyFaces* and *UnifyEdges* are set to TRUE; *ConcatBSplines* is set to FALSE.
+
+The common methods of this tool are as follows:
+ 
+  * Method *Build()* is used to unify.
+  * Method *Shape()* is used to get the resulting shape.
+  * Method *Generated()* is used to get a new common shape from the old shape. If a group of edges has been unified into one common edge then method *Generated()* called on any edge from this group will return the common edge. The same goes for the faces.
+
+The example of the usage is given below:
+~~~~~
+ // 'Sh' is the initial shape
+ ShapeUpgrade_UnifySameDomain USD(Sh, true, true, true); // UnifyFaces mode on, UnifyEdges mode on, ConcatBSplines mode on.
+ USD.Build();
+ //get the result
+ TopoDS_Shape Result = USD.Shape(); 
+ //Let Sh1 as a part of Sh
+ //get the new (probably unified) shape form the Sh1
+ TopoDS_Shape ResSh1 = USD.Generated(Sh1);
+~~~~~ 
+
 @section occt_shg_5_ Auxiliary tools for repairing, analysis and upgrading
 
 @subsection occt_shg_5_1 Tool for rebuilding shapes
 
-  Class *ShapeBuild_ReShape* rebuilds a shape by making pre-defined substitutions on some of its components. During the first phase, it records requests to replace or remove some individual shapes. For each shape, the last given request is recorded. Requests may be applied as *Oriented* (i.e. only to an item with the same orientation) or not (the orientation of the replacing shape corresponds to that of the original one). Then these requests may be applied to any shape, which may contain one or more of these individual shapes. 
+  Class *ShapeBuild_ReShape* rebuilds a shape by making predefined substitutions on some of its components. During the first phase, it records requests to replace or remove some individual shapes. For each shape, the last given request is recorded. Requests may be applied as *Oriented* (i.e. only to an item with the same orientation) or not (the orientation of the replacing shape corresponds to that of the original one). Then these requests may be applied to any shape, which may contain one or more of these individual shapes. 
 
 This tool has a flag for taking the location of shapes into account (for keeping the structure of assemblies) (*ModeConsiderLocation*). If this mode is equal to Standard_True, the shared shapes with locations will be kept. If this mode is equal to Standard_False, some different shapes will be produced from one shape with different locations after rebuilding. By default, this mode is equal to Standard_False. 
 

@@ -526,6 +526,11 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
   return ResEdge;
 }
 
+//=======================================================================
+//function : MergeSubSeq
+//purpose  : Merges a sequence of edges into one edge if possible
+//=======================================================================
+
 static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& aChain, TopoDS_Edge& OutEdge, double Tol, Standard_Boolean ConcatBSplines) 
 {
   ShapeAnalysis_Edge sae;
@@ -729,6 +734,11 @@ static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& aChain, Topo
   return Standard_False;
 }
 
+//=======================================================================
+//function : IsMergingPossible
+//purpose  : Checks if merging of two edges is possible
+//=======================================================================
+
 static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2, 
                                           double Tol, const TopTools_MapOfShape& DegEdgeVrt)
 {
@@ -775,6 +785,12 @@ static Standard_Boolean IsMergingPossible(const TopoDS_Edge& edge1, const TopoDS
 
   return Standard_True;
 }
+
+//=======================================================================
+//function : GenerateSubSeq
+//purpose  : Generates sub-sequences of edges from sequence of edges
+//Edges from each subsequences can be merged into the one edge  
+//=======================================================================
 
 static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
                             NCollection_Sequence<SubSequenceOfEdges>& SeqOfSubSeqOfEdges,
@@ -892,6 +908,12 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
   return Standard_True;
 }
 
+//=======================================================================
+//function : MergeSeq
+//purpose  : Tries to unify the sequence of edges with the set of another edges 
+//which lies on the same geometry
+//=======================================================================
+
 static Standard_Boolean MergeSeq (const TopTools_SequenceOfShape& SeqEdges,
                                   const Standard_Real Tol,
                                   const Standard_Boolean ConcatBSplines,
@@ -922,6 +944,11 @@ static Standard_Boolean MergeSeq (const TopTools_SequenceOfShape& SeqEdges,
   else
     return Standard_False;
 }
+
+//=======================================================================
+//function : CheckSharedVertices
+//purpose  : Checks the sequence of edges on the presence of shared vertex 
+//=======================================================================
 
 static void CheckSharedVertices(const TopTools_SequenceOfShape& theSeqEdges, 
                                 const TopTools_IndexedDataMapOfShapeListOfShape& theMapEdgesVertex,
