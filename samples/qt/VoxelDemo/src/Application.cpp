@@ -322,6 +322,8 @@ Application::Application()
 	VoxelClient_VisDrawer::Init(myViewer->getGraphicDriver());
 
     resize( 450, 600 );
+
+    myViewer->getIC()->SetAutoActivateSelection (Standard_False);
 }
 
 Application::~Application()
@@ -1932,7 +1934,6 @@ void Application::load(const TopoDS_Shape& S)
 	{
 		myShape = new AIS_Shape(S);
 		myShape->SetDisplayMode(1);
-        myShape->UnsetSelectionMode();
 	}
 	else
 	{
@@ -2163,34 +2164,6 @@ void Application::displayCollisions()
     aisS25->SetDisplayMode(1);
     aisS26->SetDisplayMode(1);
     aisS27->SetDisplayMode(1);
-    aisB->  UnsetSelectionMode();
-    aisS1-> UnsetSelectionMode();
-    aisS2-> UnsetSelectionMode();
-    aisS3-> UnsetSelectionMode();
-    aisS4-> UnsetSelectionMode();
-    aisS5-> UnsetSelectionMode();
-    aisS6-> UnsetSelectionMode();
-    aisS7-> UnsetSelectionMode();
-    aisS8-> UnsetSelectionMode();
-    aisS9-> UnsetSelectionMode();
-    aisS10->UnsetSelectionMode();
-    aisS11->UnsetSelectionMode();
-    aisS12->UnsetSelectionMode();
-    aisS13->UnsetSelectionMode();
-    aisS14->UnsetSelectionMode();
-    aisS15->UnsetSelectionMode();
-    aisS16->UnsetSelectionMode();
-    aisS17->UnsetSelectionMode();
-    aisS18->UnsetSelectionMode();
-    aisS19->UnsetSelectionMode();
-    aisS20->UnsetSelectionMode();
-    aisS21->UnsetSelectionMode();
-    aisS22->UnsetSelectionMode();
-    aisS23->UnsetSelectionMode();
-    aisS24->UnsetSelectionMode();
-    aisS25->UnsetSelectionMode();
-    aisS26->UnsetSelectionMode();
-    aisS27->UnsetSelectionMode();
     aisS1-> SetTransparency(2.0 * transparency / 3.0);
     aisS2-> SetTransparency(transparency);
     aisS3-> SetTransparency(transparency);
