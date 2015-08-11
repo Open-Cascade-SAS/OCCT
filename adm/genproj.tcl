@@ -1080,7 +1080,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_QT)           "QtCore4.lib QtGui4.lib"
 
     # VTK
-    set aCsfMap(CSF_VTK)         [osutils:vtkCsf "wnt"]
+    set aLibsMap(CSF_VTK)         [osutils:vtkCsf "wnt"]
   } else {
     set aLibsMap(CSF_FREETYPE)     "freetype"
     if { "$theOS" == "mac" } {
@@ -1110,7 +1110,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aLibsMap(CSF_GL2PS)      "gl2ps"
     }
     if { "$::HAVE_VTK" == "true" } {
-      set aCsfMap(CSF_VTK)         [osutils:vtkCsf "unix"]
+      set aLibsMap(CSF_VTK)         [osutils:vtkCsf "unix"]
     }
   }
 }
