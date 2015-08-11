@@ -69,6 +69,12 @@ namespace opencascade {
       BeginScope();
     }
 
+    //! Move constructor
+    handle (handle&& theHandle) : entity(theHandle.entity)
+    {
+      theHandle.entity = 0;
+    }
+
     //! Destructor
     ~handle ()
     {
@@ -101,6 +107,13 @@ namespace opencascade {
     handle& operator= (const T* thePtr)
     {
       Assign (const_cast<T*>(thePtr));
+      return *this;
+    }
+
+    //! Move operator
+    handle& operator= (handle&& theHandle)
+    {
+      std::swap (this->entity, theHandle.entity);
       return *this;
     }
 
@@ -220,11 +233,27 @@ namespace opencascade {
       BeginScope();
     }
 
+    //! Generalized move constructor
+    template <class T2, typename = typename std::enable_if <is_base_but_not_same <T, T2>::value>::type>
+    handle (handle<T2>&& theHandle)
+      : entity(theHandle.entity)
+    {
+      theHandle.entity = 0;
+    }
+
     //! Generalized assignment operator
     template <class T2, typename = typename std::enable_if <is_base_but_not_same <T, T2>::value>::type>
     handle operator = (const handle<T2>& theHandle)
     {
       Assign (theHandle.entity);
+      return *this;
+    }
+
+    //! Generalized move operator
+    template <class T2, typename = typename std::enable_if <is_base_but_not_same <T, T2>::value>::type>
+    handle& operator= (handle<T2>&& theHandle)
+    {
+      std::swap (this->entity, theHandle.entity);
       return *this;
     }
 
@@ -260,6 +289,14 @@ namespace opencascade {
       BeginScope();
     }
 
+    //! Generalized move constructor
+    template <class T2>
+    handle (handle<T2>&& theHandle, typename std::enable_if <is_base_but_not_same <T, T2>::value>::type* = nullptr)
+      : entity(theHandle.entity)
+    {
+      theHandle.entity = 0;
+    }
+
     //! Generalized assignment operator.
     template <class T2>
     handle operator = (const handle<T2>& theHandle)
@@ -267,6 +304,16 @@ namespace opencascade {
       std::enable_if <is_base_but_not_same <T, T2>::value, void*>::type aTypeCheckHelperVar;
       (void)aTypeCheckHelperVar;
       Assign (theHandle.entity);
+      return *this;
+    }
+
+    //! Generalized move operator
+    template <class T2>
+    handle& operator= (handle<T2>&& theHandle)
+    {
+      std::enable_if <is_base_but_not_same <T, T2>::value, void*>::type aTypeCheckHelperVar;
+      (void)aTypeCheckHelperVar;
+      std::swap (this->entity, theHandle.entity);
       return *this;
     }
 
