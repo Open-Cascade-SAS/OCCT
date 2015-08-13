@@ -288,9 +288,9 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString filen
 //purpose  :
 //=======================================================================
 
-Standard_Boolean STEPCAFControl_Writer::Transfer (const Handle(TDocStd_Document) &doc,
+Standard_Boolean STEPCAFControl_Writer::Transfer( const Handle(TDocStd_Document) &doc,
 						  const STEPControl_StepModelType mode,
-						  const Standard_CString multi)
+						  const Standard_CString multi )
 {
   Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( doc->Main() );
   if ( STool.IsNull() ) return Standard_False;
@@ -306,15 +306,26 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (const Handle(TDocStd_Document)
 //purpose  :
 //=======================================================================
 
-Standard_Boolean STEPCAFControl_Writer::Transfer (const TDF_Label &L,
+Standard_Boolean STEPCAFControl_Writer::Transfer( const TDF_Label& L,
 						  const STEPControl_StepModelType mode,
-						  const Standard_CString multi)
+						  const Standard_CString multi )
 {
   TDF_LabelSequence labels;
   labels.Append ( L );
   return Transfer ( myWriter, labels, mode, multi );
 }
 
+//=======================================================================
+//function : Transfer
+//purpose  :
+//=======================================================================
+
+Standard_Boolean STEPCAFControl_Writer::Transfer( const TDF_LabelSequence& labels,
+						  const STEPControl_StepModelType mode,
+						  const Standard_CString multi )
+{
+  return Transfer( myWriter, labels, mode, multi );
+}
 
 //=======================================================================
 //function : Perform

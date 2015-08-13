@@ -33,7 +33,6 @@ class TCollection_AsciiString;
 class TopoDS_Shape;
 class XCAFPrs_Style;
 
-
 //! Provides a tool to write DECAF document to the
 //! IGES file. Besides transfer of shapes (including
 //! assemblies) provided by IGESControl, supports also
@@ -71,7 +70,15 @@ public:
   //! Transfers a document to a IGES model
   //! Returns True if translation is OK
   Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc);
-  
+
+  //! Transfers labels to a IGES model
+  //! Returns True if translation is OK
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& labels);
+
+  //! Transfers label to a IGES model
+  //! Returns True if translation is OK
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& label);
+
   Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc, const TCollection_AsciiString& filename);
   
   //! Transfers a document and writes it to a IGES file
@@ -97,12 +104,7 @@ public:
 
 
 protected:
-
-  
-  //! Transfers labels to a IGES model
-  //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& labels);
-  
+ 
   //! Reads colors from DECAF document and assigns them
   //! to corresponding IGES entities
   Standard_EXPORT Standard_Boolean WriteAttributes (const TDF_LabelSequence& labels);

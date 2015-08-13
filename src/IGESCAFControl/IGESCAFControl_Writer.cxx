@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IGESCAFControl.hxx>
 #include <IGESCAFControl_Writer.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -151,31 +150,19 @@ Standard_Boolean IGESCAFControl_Writer::Transfer (const Handle(TDocStd_Document)
   STool->GetFreeShapes ( labels );
   return Transfer (labels);
 }  
-  
+
 //=======================================================================
-//function : Perform
+//function : Transfer
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Writer::Perform (const Handle(TDocStd_Document) &doc,
-						 const Standard_CString filename)
+Standard_Boolean IGESCAFControl_Writer::Transfer (const TDF_Label& label)
 {
-  if ( ! Transfer ( doc ) ) return Standard_False;
-  return Write ( filename ) == IFSelect_RetDone;
+  TDF_LabelSequence labels;
+  labels.Append( label );
+  return Transfer( labels );
 }
-  
-//=======================================================================
-//function : Perform
-//purpose  : 
-//=======================================================================
 
-Standard_Boolean IGESCAFControl_Writer::Perform (const Handle(TDocStd_Document) &doc,
-						 const TCollection_AsciiString &filename)
-{
-  if ( ! Transfer ( doc ) ) return Standard_False;
-  return Write ( filename.ToCString() ) == IFSelect_RetDone;
-}
-  
 //=======================================================================
 //function : Transfer
 //purpose  : 
@@ -210,6 +197,30 @@ Standard_Boolean IGESCAFControl_Writer::Transfer (const TDF_LabelSequence& label
   return Standard_True;
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean IGESCAFControl_Writer::Perform (const Handle(TDocStd_Document) &doc,
+						 const Standard_CString filename)
+{
+  if ( ! Transfer ( doc ) ) return Standard_False;
+  return Write ( filename ) == IFSelect_RetDone;
+}
+  
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean IGESCAFControl_Writer::Perform (const Handle(TDocStd_Document) &doc,
+						 const TCollection_AsciiString &filename)
+{
+  if ( ! Transfer ( doc ) ) return Standard_False;
+  return Write ( filename.ToCString() ) == IFSelect_RetDone;
+}
+  
 //=======================================================================
 //function : WriteAttributes
 //purpose  : 

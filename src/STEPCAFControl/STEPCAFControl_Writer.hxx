@@ -73,16 +73,16 @@ public:
   //! Provided for use like single-file writer
   Standard_EXPORT IFSelect_ReturnStatus Write (const Standard_CString filename);
   
-  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
-  
   //! Transfers a document (or single label) to a STEP model
   //! The mode of translation of shape is AsIs
   //! If multi is not null pointer, it switches to multifile
   //! mode (with external refs), and string pointed by <multi>
   //! gives prefix for names of extern files (can be empty string)
   //! Returns True if translation is OK
+  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& L, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
   Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& L, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
-  
+
   Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc, const TCollection_AsciiString& filename);
   
   //! Transfers a document and writes it to a STEP file
