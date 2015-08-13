@@ -931,7 +931,7 @@ void _osd_wnt_set_error ( OSD_Error& err, OSD_WhoAmI who, ... ) {
  Standard_Character buffer[ 2048 ];
  va_list            arg_ptr;
 
- va_start ( arg_ptr, err );
+ va_start ( arg_ptr, who);
 
  errCode = GetLastError ();
 
