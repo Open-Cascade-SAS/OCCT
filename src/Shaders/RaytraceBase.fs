@@ -951,7 +951,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       else
       {
         vec4 aGlColor = ComputeOpenGlColor();
-        aColor = vec4 (BackgroundColor().rgb * aGlColor.w + ComputeOpenGlColor().rgb, aGlColor.w);
+        aColor = vec4 (mix (aGlColor.rgb, BackgroundColor().rgb, aGlColor.w), aGlColor.w);
       }
 
       aResult += aWeight.xyz * aColor.xyz; aWeight.w *= aColor.w;
