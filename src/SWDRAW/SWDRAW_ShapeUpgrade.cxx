@@ -1273,25 +1273,79 @@ static Standard_Integer removeloc (Draw_Interpretor& di,
   return 0;
 }
 
+static ShapeUpgrade_UnifySameDomain& Unifier() {
+  static ShapeUpgrade_UnifySameDomain sUnifier;
+  return sUnifier;
+}
+
 //=======================================================================
 // unifysamedom
 //=======================================================================
-static Standard_Integer unifysamedom(Draw_Interpretor& , Standard_Integer n, const char** a)
+static Standard_Integer unifysamedom(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 3)
+  if (n < 3 || n > 6)
+  {
+    di << "Use unifysamedom result shape [-f] [-e] [+b]\n";
+    di << "where [-f]. [-e], [+b] is available options\n";
+    di << "[-f] to switch off 'unify-faces' mode \n";
+    di << "[-e] to switch off 'unify-edges' mode\n";
+    di << "[+b] to switch on a 'concat bspline' mode\n";
+    di << "'unify-faces' and 'unify-edges' modes are switched on by default";
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
     return 1;
 
-  ShapeUpgrade_UnifySameDomain Unifier(aShape);
-  Unifier.Build();
-  TopoDS_Shape Result = Unifier.Shape();
+  // default values
+  Standard_Boolean anUFaces = Standard_True;
+  Standard_Boolean anUEdges = Standard_True;
+  Standard_Boolean anConBS = Standard_False;
+
+  if (n > 3)
+    for ( int i = 3; i < n; i++ ) 
+    {
+      if ( !strcmp(a[i], "-f")) 
+        anUFaces = Standard_False;
+      else if (!strcmp(a[i], "-e"))
+        anUEdges = Standard_False;
+      else if (!strcmp(a[i], "+b"))
+        anConBS = Standard_True;
+    }
+
+  Unifier().Initialize(aShape, anUEdges, anUFaces, anConBS);
+  Unifier().Build();
+  TopoDS_Shape Result = Unifier().Shape();
 
   DBRep::Set(a[1], Result);
   return 0;
 }
+
+Standard_Integer unifysamedomgen (Draw_Interpretor& di, 
+                                  Standard_Integer n, 
+                                  const char** a)
+{
+  if (n!=3) {
+    di << "use unifysamedomgen newshape oldshape";
+    return 0;
+  }
+  TopoDS_Shape aShape;
+  aShape=DBRep::Get(a[2]);
+  if (aShape.IsNull()) {
+    di<<" null shape is not allowed here\n";
+    return 1;
+  }
+  TopoDS_Shape ResShape = Unifier().Generated(aShape);
+  if (ResShape.IsNull()) {
+    di << " null shape\n";
+  }
+  else {
+    DBRep::Set(a[1], ResShape);
+  }
+  return 0;
+}
+
 
 static Standard_Integer copytranslate(Draw_Interpretor& di, 
                                    Standard_Integer argc, 
@@ -1415,7 +1469,12 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
   theCommands.Add ("removeloc","result shape",__FILE__,removeloc,g);
   
   theCommands.Add ("unifysamedom",
-                   "unifysamedom result shape",__FILE__,unifysamedom,g);
+                   "unifysamedom result shape [-f] [-e] [+b]", __FILE__,unifysamedom,g);
+
+  theCommands.Add ("unifysamedomgen",
+                   "unifysamedomgen newshape oldshape : get new shape generated "
+                   "by unifysamedom command from the old one",
+                   __FILE__,unifysamedomgen,g);
   
   theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
 }

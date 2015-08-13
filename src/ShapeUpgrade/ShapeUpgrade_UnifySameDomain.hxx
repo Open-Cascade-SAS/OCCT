@@ -23,6 +23,7 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 #include <MMgt_TShared.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
 
@@ -82,6 +83,7 @@ private:
   Standard_Boolean myConcatBSplines;
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
+  TopTools_DataMapOfShapeShape myOldShapes; 
 
 
 };
