@@ -68,6 +68,9 @@ endif()
 if (APPLE)
   set (USE_GLX OFF CACHE BOOL "${USE_GLX_DESCR}")
 endif()
+if (WIN32)
+  set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
+endif()
 
 set (USE_VTK OFF CACHE BOOL "${USE_VTK_DESCR}")
 
@@ -89,6 +92,10 @@ set (BUILD_DOC_OcctOverview OFF CACHE BOOL "${BUILD_DOC_OcctOverview_DESCR}")
 if (NOT USE_VTK)
   list (REMOVE_ITEM Visualization_TOOLKITS TKIVtk)
   list (REMOVE_ITEM Draw_TOOLKITS TKIVtkDraw)
+endif()
+
+if (NOT USE_D3D)
+  list (REMOVE_ITEM Visualization_TOOLKITS TKD3DHost)
 endif()
 
 # accumulate used toolkits (first level) in BUILD_TOOLKITS variable
@@ -180,6 +187,14 @@ if (USE_VTK)
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")
   OCCT_CHECK_AND_UNSET ("INSTALL_VTK")
+endif()
+
+# D3D
+if (USE_D3D)
+  add_definitions (-DHAVE_D3D)
+  #if(MSVC_VERSION LESS 1700)
+  #OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/d3d")
+  #endif()
 endif()
 
 # GLX

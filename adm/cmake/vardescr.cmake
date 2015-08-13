@@ -106,6 +106,8 @@ VTK by means of its dedicated VIS component (VTK Integration Services).")
 
 set (USE_GLX_DESCR "Indicates whether X11 OpenGl on OSX is used or not")
 
+set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
+
 macro (BUILD_MODULE MODULE_NAME)
   set (BUILD_MODULE_${MODULE_NAME} ON CACHE BOOL "${BUILD_MODULE_${MODULE_NAME}_DESCR}")
 endmacro()

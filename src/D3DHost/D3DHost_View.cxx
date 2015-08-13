@@ -51,8 +51,9 @@ D3DHost_View::D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myRefreshRate (D3DPRESENT_RATE_DEFAULT),
   myIsD3dEx     (false)
 {
-  myD3dParams = {};
-  myCurrMode  = {};
+  memset(&myD3dParams, 0, sizeof(myD3dParams));
+  memset(&myCurrMode,  0, sizeof(myCurrMode));
+
   myD3dParams.Windowed         = TRUE;
   myD3dParams.SwapEffect       = D3DSWAPEFFECT_DISCARD;
   myD3dParams.BackBufferFormat = D3DFMT_X8R8G8B8;
