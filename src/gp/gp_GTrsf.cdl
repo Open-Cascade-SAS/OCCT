@@ -223,14 +223,14 @@ is
         --        T1.Transforms(P2);                  //using T1 then T2
         --        T2.Transforms(P2);                  // P1 = P2 !!!
     	---C++: inline
-        -- C++: alias operator *
+        ---C++: alias operator *
 
 
   Multiply (me : in out; T : GTrsf)          is static;
         --- Purpose :
         --  Computes the transformation composed with <me> and T.
         --  <me> = <me> * T
-        -- C++: alias operator *=
+        ---C++: alias operator *=
 
   PreMultiply (me : in out; T : GTrsf)  is static;
 
