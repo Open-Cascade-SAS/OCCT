@@ -531,6 +531,7 @@ proc OCCDoc_GetModulesList { {theProductsDir ""} } {
     source "[OCCDoc_GetSourceDir $theProductsDir]/VAS/Products.tcl"
     # load a command from this file
     set modules [VAS:Products]
+	set modules [lsearch -not -all -inline $modules "VAS"]
   }
 
   return $modules
@@ -540,7 +541,7 @@ proc OCCDoc_GetModulesList { {theProductsDir ""} } {
 proc OCCDoc_GetHeadersList { theDesiredContent thePackageName {theProductsDir ""} } {
 
   # Get list of header files with path
-  set files_list [split [glob -nocomplain -type f -directory "[OCCDoc_GetIncDir $theProductsDir]" "${thePackageName}.hxx" "${thePackageName}_*.hxx"]]
+  set files_list [split [glob -nocomplain -type f -directory "[OCCDoc_GetSourceDir $theProductsDir]/$thePackageName" "${thePackageName}.hxx" "${thePackageName}_*.hxx"]]
 
   # Get content according to desired type ('p' for path and 'f' for filenames only)
   if { $theDesiredContent == "p" } {

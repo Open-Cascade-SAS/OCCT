@@ -166,7 +166,7 @@ proc gendoc {args} {
       if { $DOCTYPE_COMBO_FLAG != 1 } { 
         set DOC_TYPE "REFMAN"
         set DOCTYPE_COMBO_FLAG 1
-        if { [file exists [pwd]/src/VAS/Products.tcl] } {
+        if { [info exists env(PRODROOT)] && [file exists $::env(PRODROOT)/src/VAS/Products.tcl] } {
           set GENERATE_PRODUCTS_REFMAN "YES"
         }
       } else {
@@ -190,13 +190,6 @@ proc gendoc {args} {
         puts ""
       }
       
-      if { $GENERATE_PRODUCTS_REFMAN == "YES" } {
-        if { [ lsearch $args_names "m" ] == -1 } {
-          puts "\nError: Cannot generate Reference Manual for the whole set of OCC Products."
-          puts "Aborting..."
-          return -1
-        }
-      }
     } elseif {$arg_n == "v"} {
       set VERB_MODE "YES"
     } elseif {$arg_n == "ug"} {
@@ -306,9 +299,8 @@ proc gendoc {args} {
   puts ""
 
   # Clean logfiles
-  set OUTDIR  [OCCDoc_GetRootDir]/doc/
-  set DOXYLOG $OUTDIR/doxygen_warnings_and_errors.log
-  set PDFLOG  $OUTDIR/pdflatex_warnings_and_errors.log
+  set DOXYLOG [OCCDoc_GetRootDir]/doc/doxygen_warnings_and_errors.log
+  set PDFLOG  [OCCDoc_GetRootDir]/doc/pdflatex_warnings_and_errors.log
 
   file delete -force $PDFLOG
   file delete -force $DOXYLOG
@@ -338,7 +330,7 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
 
   set PRODPATH   ""
   if { [string compare -nocase $generateProductsRefman "YES"] == 0 } {
-    set PRODPATH [pwd]
+    set PRODPATH "$::env(PRODROOT)"
   }
 
   set ROOTDIR    [OCCDoc_GetRootDir $PRODPATH]
@@ -351,7 +343,7 @@ proc OCCDoc_Main {docType {docfiles {}} {modules {}} generatorMode verboseMode s
   set HTMLDIR    $OUTDIR/overview/html
   set LATEXDIR   $OUTDIR/overview/latex
   set DOXYFILE   $OUTDIR/OCCT.cfg
-
+ 
   # Create or cleanup the output folders
   if { [string compare -nocase $generateProductsRefman "YES"] != 0 } {
     if { ![file exists $OUTDIR] } {
