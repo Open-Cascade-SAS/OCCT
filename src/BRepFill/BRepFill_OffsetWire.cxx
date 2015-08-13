@@ -1587,7 +1587,7 @@ void BRepFill_OffsetWire::FixHoles()
     Pf = BRep_Tool::Pnt(Vf);
     Pl = BRep_Tool::Pnt(Vl);
     Standard_Real DistF = RealLast(), DistL = RealLast();
-    Standard_Integer IndexF = 1, IndexL = 1;
+    Standard_Integer IndexF = 0, IndexL = 0;
     Standard_Boolean IsFirstF = Standard_False, IsFirstL = Standard_False;
     for (Standard_Integer i = 2; i <= UnclosedWires.Length(); i++)
     {
@@ -1638,6 +1638,10 @@ void BRepFill_OffsetWire::FixHoles()
         IsFirstL = Standard_False;
       }
     }
+    if (DistF > MaxTol)
+      IndexF = 0;
+    if (DistL > MaxTol)
+      IndexL = 0;
     TopoDS_Wire theWire;
     TopoDS_Edge theEdge;
     TopoDS_Vertex theVertex;

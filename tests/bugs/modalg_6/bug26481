@@ -8,7 +8,7 @@ puts ""
 
 smallview
 
-restore [locate_data_file OCC26481-linesarc.brep] a
+restore [locate_data_file bug26296_linesarc.brep] a
 fit
 openoffset r a 4 10.
 fit
