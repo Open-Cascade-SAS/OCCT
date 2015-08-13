@@ -160,8 +160,8 @@ public:
   //! Returns the constructed wire; or the part of the wire
   //! under construction already built.
   //! Exceptions StdFail_NotDone if a wire is not built.
-  Standard_EXPORT const TopoDS_Wire& Wire() const;
-Standard_EXPORT operator TopoDS_Wire() const;
+  Standard_EXPORT const TopoDS_Wire& Wire();
+  Standard_EXPORT operator TopoDS_Wire();
   
   //! Returns the last edge added to the wire under construction.
   //! Warning

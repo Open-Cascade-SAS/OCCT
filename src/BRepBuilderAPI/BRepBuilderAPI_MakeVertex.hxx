@@ -50,8 +50,8 @@ public:
   Standard_EXPORT BRepBuilderAPI_MakeVertex(const gp_Pnt& P);
   
   //! Returns the constructed vertex.
-  Standard_EXPORT const TopoDS_Vertex& Vertex() const;
-Standard_EXPORT operator TopoDS_Vertex() const;
+  Standard_EXPORT const TopoDS_Vertex& Vertex();
+  Standard_EXPORT operator TopoDS_Vertex();
 
 
 

@@ -39,7 +39,7 @@ BRepLib_MakeVertex::BRepLib_MakeVertex(const gp_Pnt& P)
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Vertex&  BRepLib_MakeVertex::Vertex()const 
+const TopoDS_Vertex&  BRepLib_MakeVertex::Vertex() 
 {
   return TopoDS::Vertex(Shape());
 }
@@ -51,7 +51,7 @@ const TopoDS_Vertex&  BRepLib_MakeVertex::Vertex()const
 //=======================================================================
 
 
-BRepLib_MakeVertex::operator TopoDS_Vertex() const
+BRepLib_MakeVertex::operator TopoDS_Vertex()
 {
   return Vertex();
 }

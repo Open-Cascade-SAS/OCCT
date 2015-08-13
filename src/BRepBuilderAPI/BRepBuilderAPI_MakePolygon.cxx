@@ -236,7 +236,7 @@ const TopoDS_Edge&  BRepBuilderAPI_MakePolygon::Edge()const
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Wire&  BRepBuilderAPI_MakePolygon::Wire()const 
+const TopoDS_Wire&  BRepBuilderAPI_MakePolygon::Wire()
 {
   return myMakePolygon.Wire();
 }
@@ -256,7 +256,7 @@ BRepBuilderAPI_MakePolygon::operator TopoDS_Edge() const
 //purpose  : 
 //=======================================================================
 
-BRepBuilderAPI_MakePolygon::operator TopoDS_Wire() const
+BRepBuilderAPI_MakePolygon::operator TopoDS_Wire()
 {
   return Wire();
 }

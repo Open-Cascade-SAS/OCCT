@@ -36,8 +36,8 @@ public:
   
   Standard_EXPORT BRepLib_MakeVertex(const gp_Pnt& P);
   
-  Standard_EXPORT const TopoDS_Vertex& Vertex() const;
-Standard_EXPORT operator TopoDS_Vertex() const;
+  Standard_EXPORT const TopoDS_Vertex& Vertex();
+  Standard_EXPORT operator TopoDS_Vertex();
 
 
 

@@ -1528,7 +1528,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadSymmetricalEdges (BRepAlgoAPI_Boo
 //function : ISWRCase2
 //purpose  : 
 //=======================================================================
-Standard_Boolean QANewBRepNaming_BooleanOperationFeat::IsWRCase2(const BRepAlgoAPI_BooleanOperation& MS) {
+Standard_Boolean QANewBRepNaming_BooleanOperationFeat::IsWRCase2(BRepAlgoAPI_BooleanOperation& MS) {
   const TopoDS_Shape& Result = MS.Shape();
   const TopAbs_ShapeEnum& ResType = ShapeType(Result);
   if(ResType  == TopAbs_COMPOUND || ResType >= TopAbs_FACE) return Standard_False;

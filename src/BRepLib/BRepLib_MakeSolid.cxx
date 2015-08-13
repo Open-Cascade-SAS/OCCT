@@ -170,7 +170,7 @@ void  BRepLib_MakeSolid::Add(const TopoDS_Shell& S)
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Solid&  BRepLib_MakeSolid::Solid()const 
+const TopoDS_Solid&  BRepLib_MakeSolid::Solid()
 {
   return TopoDS::Solid(Shape());
 }
@@ -182,7 +182,7 @@ const TopoDS_Solid&  BRepLib_MakeSolid::Solid()const
 //purpose  : 
 //=======================================================================
 
-BRepLib_MakeSolid::operator TopoDS_Solid() const
+BRepLib_MakeSolid::operator TopoDS_Solid()
 {
   return TopoDS::Solid(Shape());
 }

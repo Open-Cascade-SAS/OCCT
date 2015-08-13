@@ -155,7 +155,7 @@ Standard_Boolean BRepBuilderAPI_MakeSolid::IsDone() const
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Solid&  BRepBuilderAPI_MakeSolid::Solid()const 
+const TopoDS_Solid&  BRepBuilderAPI_MakeSolid::Solid()
 {
   return myMakeSolid.Solid();
 }
@@ -167,7 +167,7 @@ const TopoDS_Solid&  BRepBuilderAPI_MakeSolid::Solid()const
 //purpose  : 
 //=======================================================================
 
-BRepBuilderAPI_MakeSolid::operator TopoDS_Solid() const
+BRepBuilderAPI_MakeSolid::operator TopoDS_Solid()
 {
   return Solid();
 }

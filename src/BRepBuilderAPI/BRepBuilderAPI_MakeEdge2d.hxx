@@ -149,8 +149,8 @@ public:
   //! Returns the error description when NotDone.
   Standard_EXPORT BRepBuilderAPI_EdgeError Error() const;
   
-  Standard_EXPORT const TopoDS_Edge& Edge() const;
-Standard_EXPORT operator TopoDS_Edge() const;
+  Standard_EXPORT const TopoDS_Edge& Edge();
+  Standard_EXPORT operator TopoDS_Edge();
   
   //! Returns the first vertex of the edge. May be Null.
   Standard_EXPORT const TopoDS_Vertex& Vertex1() const;

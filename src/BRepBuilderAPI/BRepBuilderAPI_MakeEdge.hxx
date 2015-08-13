@@ -250,8 +250,8 @@ public:
 
   //! Returns the constructed edge.
   //! Exceptions StdFail_NotDone if the edge is not built.
-  Standard_EXPORT const TopoDS_Edge& Edge() const;
-Standard_EXPORT operator TopoDS_Edge() const;
+  Standard_EXPORT const TopoDS_Edge& Edge();
+  Standard_EXPORT operator TopoDS_Edge();
   
   //! Returns the first vertex of the edge. May be Null.
   Standard_EXPORT const TopoDS_Vertex& Vertex1() const;

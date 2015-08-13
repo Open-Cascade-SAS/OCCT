@@ -117,8 +117,8 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
   
   //! Returns the new Solid.
-  Standard_EXPORT const TopoDS_Solid& Solid() const;
-Standard_EXPORT operator TopoDS_Solid() const;
+  Standard_EXPORT const TopoDS_Solid& Solid();
+  Standard_EXPORT operator TopoDS_Solid();
   
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& S) Standard_OVERRIDE;
 

@@ -58,7 +58,7 @@ public:
   //! Set the Progress Indicator object.
   Standard_EXPORT void SetProgressIndicator (const Handle(Message_ProgressIndicator)& theObj);
   
-  Standard_EXPORT virtual const TopoDS_Shape& Shape() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const TopoDS_Shape& Shape() Standard_OVERRIDE;
 
 
 

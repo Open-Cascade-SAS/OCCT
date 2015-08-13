@@ -64,8 +64,8 @@ public:
   Standard_EXPORT void Add (const TopoDS_Shell& S);
   
   //! Returns the new Solid.
-  Standard_EXPORT const TopoDS_Solid& Solid() const;
-Standard_EXPORT operator TopoDS_Solid() const;
+  Standard_EXPORT const TopoDS_Solid& Solid();
+  Standard_EXPORT operator TopoDS_Solid();
   
   //! returns the status of the Face after
   //! the shape creation.

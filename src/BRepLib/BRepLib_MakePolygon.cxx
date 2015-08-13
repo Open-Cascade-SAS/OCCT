@@ -271,7 +271,7 @@ const TopoDS_Edge&  BRepLib_MakePolygon::Edge()const
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Wire&  BRepLib_MakePolygon::Wire()const 
+const TopoDS_Wire&  BRepLib_MakePolygon::Wire() 
 {
   return TopoDS::Wire(Shape());
 }
@@ -291,7 +291,7 @@ BRepLib_MakePolygon::operator TopoDS_Edge() const
 //purpose  : 
 //=======================================================================
 
-BRepLib_MakePolygon::operator TopoDS_Wire() const
+BRepLib_MakePolygon::operator TopoDS_Wire()
 {
   return Wire();
 }

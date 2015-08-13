@@ -73,7 +73,7 @@ public:
   Standard_EXPORT static Standard_Boolean IsWRCase (const BRepAlgoAPI_BooleanOperation& theMS);
   
   //! Returns true if workaround case identified
-  Standard_EXPORT static Standard_Boolean IsWRCase2 (const BRepAlgoAPI_BooleanOperation& theMS);
+  Standard_EXPORT static Standard_Boolean IsWRCase2 (BRepAlgoAPI_BooleanOperation& MS);
 
 
 

@@ -50,8 +50,8 @@ Standard_EXPORT virtual ~BRepBuilderAPI_MakeShape(){Delete() ; }
   
   //! Returns a shape built by the shape construction algorithm.
   //! Raises exception StdFail_NotDone if the shape was not built.
-  Standard_EXPORT virtual const TopoDS_Shape& Shape() const;
-Standard_EXPORT operator TopoDS_Shape() const;
+  Standard_EXPORT virtual const TopoDS_Shape& Shape();
+  Standard_EXPORT operator TopoDS_Shape();
   
   //! Returns the  list   of shapes generated   from the
   //! shape <S>.

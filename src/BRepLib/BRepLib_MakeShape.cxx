@@ -43,7 +43,7 @@ void BRepLib_MakeShape::Build()
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Shape&  BRepLib_MakeShape::Shape() const
+const TopoDS_Shape&  BRepLib_MakeShape::Shape()
 {
   if (!IsDone()) {
     // the following is const cast away
@@ -59,7 +59,7 @@ const TopoDS_Shape&  BRepLib_MakeShape::Shape() const
 //purpose  : 
 //=======================================================================
 
-BRepLib_MakeShape::operator TopoDS_Shape() const
+BRepLib_MakeShape::operator TopoDS_Shape()
 {
   return Shape();
 }

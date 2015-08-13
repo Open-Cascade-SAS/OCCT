@@ -117,8 +117,8 @@ public:
   Standard_EXPORT BRepLib_WireError Error() const;
   
   //! Returns the new wire.
-  Standard_EXPORT const TopoDS_Wire& Wire() const;
-Standard_EXPORT operator TopoDS_Wire() const;
+  Standard_EXPORT const TopoDS_Wire& Wire();
+  Standard_EXPORT operator TopoDS_Wire();
   
   //! Returns the last edge added to the wire.
   Standard_EXPORT const TopoDS_Edge& Edge() const;

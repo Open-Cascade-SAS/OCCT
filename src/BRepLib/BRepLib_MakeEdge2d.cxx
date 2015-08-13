@@ -738,7 +738,7 @@ BRepLib_EdgeError BRepLib_MakeEdge2d::Error() const
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Edge&  BRepLib_MakeEdge2d::Edge()const 
+const TopoDS_Edge&  BRepLib_MakeEdge2d::Edge()
 {
   return TopoDS::Edge(Shape());
 }
@@ -774,7 +774,7 @@ const TopoDS_Vertex&  BRepLib_MakeEdge2d::Vertex2()const
 //purpose  : 
 //=======================================================================
 
-BRepLib_MakeEdge2d::operator TopoDS_Edge() const
+BRepLib_MakeEdge2d::operator TopoDS_Edge()
 {
   return Edge();
 }

@@ -168,8 +168,8 @@ Standard_EXPORT operator TopoDS_Edge() const;
   //! Exceptions
   //! StdFail_NotDone if the wire is not built, i.e. if fewer than
   //! two vertices have been chained together by this construction algorithm.
-  Standard_EXPORT const TopoDS_Wire& Wire() const;
-Standard_EXPORT operator TopoDS_Wire() const;
+  Standard_EXPORT const TopoDS_Wire& Wire();
+  Standard_EXPORT operator TopoDS_Wire();
 
 
 

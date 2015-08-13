@@ -118,7 +118,7 @@ void BRepAlgoAPI_Algo::UserBreak() const
 //function : Shape
 //purpose  : 
 //=======================================================================
-const TopoDS_Shape& BRepAlgoAPI_Algo::Shape() const
+const TopoDS_Shape& BRepAlgoAPI_Algo::Shape()
 {
   return myShape;
 }

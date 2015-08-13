@@ -396,7 +396,7 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Wire&  BRepLib_MakeWire::Wire()const 
+const TopoDS_Wire&  BRepLib_MakeWire::Wire()
 {
   return TopoDS::Wire(Shape());
 }
@@ -429,7 +429,7 @@ const TopoDS_Vertex&  BRepLib_MakeWire::Vertex()const
 //purpose  : 
 //=======================================================================
 
-BRepLib_MakeWire::operator TopoDS_Wire() const
+BRepLib_MakeWire::operator TopoDS_Wire()
 {
   return Wire();
 }

@@ -41,7 +41,7 @@ BRepBuilderAPI_MakeVertex::BRepBuilderAPI_MakeVertex(const gp_Pnt& P)
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Vertex&  BRepBuilderAPI_MakeVertex::Vertex()const 
+const TopoDS_Vertex&  BRepBuilderAPI_MakeVertex::Vertex()
 {
   return myMakeVertex.Vertex();
 }
@@ -53,7 +53,7 @@ const TopoDS_Vertex&  BRepBuilderAPI_MakeVertex::Vertex()const
 //=======================================================================
 
 
-BRepBuilderAPI_MakeVertex::operator TopoDS_Vertex() const
+BRepBuilderAPI_MakeVertex::operator TopoDS_Vertex()
 {
   return Vertex();
 }

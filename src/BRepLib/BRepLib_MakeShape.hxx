@@ -49,8 +49,8 @@ public:
   //! may be redefined.
   Standard_EXPORT void Build();
   
-  Standard_EXPORT const TopoDS_Shape& Shape() const;
-Standard_EXPORT operator TopoDS_Shape() const;
+  Standard_EXPORT const TopoDS_Shape& Shape();
+  Standard_EXPORT operator TopoDS_Shape();
   
   //! returns the status of the Face after
   //! the shape creation.

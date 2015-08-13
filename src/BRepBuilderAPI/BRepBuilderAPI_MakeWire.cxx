@@ -175,7 +175,7 @@ void  BRepBuilderAPI_MakeWire::Add(const TopTools_ListOfShape& L)
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Wire&  BRepBuilderAPI_MakeWire::Wire()const 
+const TopoDS_Wire&  BRepBuilderAPI_MakeWire::Wire()
 {
   return myMakeWire.Wire();
 }
@@ -208,7 +208,7 @@ const TopoDS_Vertex&  BRepBuilderAPI_MakeWire::Vertex()const
 //purpose  : 
 //=======================================================================
 
-BRepBuilderAPI_MakeWire::operator TopoDS_Wire() const
+BRepBuilderAPI_MakeWire::operator TopoDS_Wire()
 {
   return Wire();
 }

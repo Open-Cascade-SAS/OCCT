@@ -87,8 +87,8 @@ public:
   Standard_EXPORT const TopoDS_Edge& Edge() const;
 Standard_EXPORT operator TopoDS_Edge() const;
   
-  Standard_EXPORT const TopoDS_Wire& Wire() const;
-Standard_EXPORT operator TopoDS_Wire() const;
+  Standard_EXPORT const TopoDS_Wire& Wire();
+  Standard_EXPORT operator TopoDS_Wire();
 
 
 

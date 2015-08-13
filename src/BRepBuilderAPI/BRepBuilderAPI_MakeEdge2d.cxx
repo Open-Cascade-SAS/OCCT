@@ -617,7 +617,7 @@ BRepBuilderAPI_EdgeError BRepBuilderAPI_MakeEdge2d::Error() const
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Edge&  BRepBuilderAPI_MakeEdge2d::Edge()const 
+const TopoDS_Edge&  BRepBuilderAPI_MakeEdge2d::Edge()
 {
   return myMakeEdge2d.Edge();
 }
@@ -651,7 +651,7 @@ const TopoDS_Vertex&  BRepBuilderAPI_MakeEdge2d::Vertex2()const
 //purpose  : 
 //=======================================================================
 
-BRepBuilderAPI_MakeEdge2d::operator TopoDS_Edge() const
+BRepBuilderAPI_MakeEdge2d::operator TopoDS_Edge()
 {
   return Edge();
 }
