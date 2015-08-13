@@ -2090,6 +2090,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
     puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
   } else {
     puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-std=c++0x\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-mmmx\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-msse\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-msse2\" />"
@@ -2147,6 +2148,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
     puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
   } else {
     puts $aFile "\t\t\t\t\t<Add option=\"-O0\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-std=c++0x\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-g\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-mmmx\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-msse\" />"
