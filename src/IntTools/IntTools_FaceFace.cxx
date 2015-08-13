@@ -162,7 +162,9 @@ static
            const Standard_Integer ilprm);
 
 static 
-  Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine);
+  Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)       &theWLine,
+                                            const Handle(GeomAdaptor_HSurface) &theS1,
+                                            const Handle(GeomAdaptor_HSurface) &theS2);
 
 static 
   Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine,
@@ -680,7 +682,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   {
     const Standard_Real UVMaxStep = 0.001;
     const Standard_Real Deflection = (hasCone) ? 0.085 : 0.1;
-    myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
+  myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
   }
   
   if((myHS1->IsUClosed() && !myHS1->IsUPeriodic()) || 
@@ -876,7 +878,7 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
 //function :ComputeTolReached3d 
 //purpose  : 
 //=======================================================================
-void IntTools_FaceFace::ComputeTolReached3d()
+  void IntTools_FaceFace::ComputeTolReached3d()
 {
   Standard_Integer aNbLin;
   GeomAbs_SurfaceType aType1, aType2;
@@ -923,9 +925,9 @@ void IntTools_FaceFace::ComputeTolReached3d()
   Standard_Real aDMax = ComputeTolerance();
   if (aDMax > myTolReached3d)
   {
-    myTolReached3d = aDMax;
+      myTolReached3d = aDMax;
+    }
   }
-}
 
 //=======================================================================
 //function : MakeCurve
@@ -963,14 +965,12 @@ void IntTools_FaceFace::ComputeTolReached3d()
     Handle(IntPatch_Line) anewL;
     //
     Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast(L));
-    //DumpWLine(aWLine);
-
-    anewL = ComputePurgedWLine(aWLine);
+    anewL = ComputePurgedWLine(aWLine, myHS1, myHS2);
     if(anewL.IsNull()) {
       return;
     }
     L = anewL;
-    
+
     //Handle(IntPatch_WLine) aWLineX (Handle(IntPatch_WLine)::DownCast(L));
     //DumpWLine(aWLineX);
 
@@ -1884,9 +1884,11 @@ void IntTools_FaceFace::ComputeTolReached3d()
               }
               //
               mySeqOfCurve.Append(aCurve);
+
             }//if(typs1 == GeomAbs_Plane) {
             
-            else if(typs2 == GeomAbs_Plane) { 
+            else if(typs2 == GeomAbs_Plane)
+            {
               const AppParCurves_MultiBSpCurve& mbspc = theapp3d.Value(j);
               nbpoles = mbspc.NbPoles();
               
@@ -1995,6 +1997,7 @@ void IntTools_FaceFace::ComputeTolReached3d()
               } else {
                 mySeqOfCurve.Append(aCurve);
               }
+
             }// else if(typs2 == GeomAbs_Plane)
             //
             else { //typs2 != GeomAbs_Plane && typs1 != GeomAbs_Plane
@@ -2788,15 +2791,53 @@ Standard_Boolean IsDegeneratedZone(const gp_Pnt2d& aP2d,
   return !bFlag;
 }
 
+// Check if aNextPnt lies inside of tube build on aBasePnt and aBaseVec.
+// In 2d space.
+static Standard_Boolean IsInsideIn2d(const gp_Pnt2d& aBasePnt,
+                                     const gp_Vec2d& aBaseVec,
+                                     const gp_Pnt2d& aNextPnt,
+                                     const Standard_Real aSquareMaxDist)
+{
+  gp_Vec2d aVec2d(aBasePnt, aNextPnt);
+
+  //d*d = (basevec^(nextpnt-basepnt))**2 / basevec**2
+  Standard_Real aCross = aVec2d.Crossed(aBaseVec);
+  Standard_Real aSquareDist = aCross * aCross
+                            / aBaseVec.SquareMagnitude();
+
+  return (aSquareDist <= aSquareMaxDist);
+}
+
+// Check if aNextPnt lies inside of tube build on aBasePnt and aBaseVec.
+// In 3d space.
+static Standard_Boolean IsInsideIn3d(const gp_Pnt& aBasePnt,
+                                     const gp_Vec& aBaseVec,
+                                     const gp_Pnt& aNextPnt,
+                                     const Standard_Real aSquareMaxDist)
+{
+  gp_Vec aVec(aBasePnt, aNextPnt);
+
+  //d*d = (basevec^(nextpnt-basepnt))**2 / basevec**2
+  Standard_Real aSquareDist = aVec.CrossSquareMagnitude(aBaseVec)
+                            / aBaseVec.SquareMagnitude();
+
+  return (aSquareDist <= aSquareMaxDist);
+}
+
 //=========================================================================
 // static function : ComputePurgedWLine
 // purpose : Removes equal points (leave one of equal points) from theWLine
 //           and recompute vertex parameters.
+//           Removes exceed points using tube criteria:
+//           delete 7D point if it lies near to expected lines in 2d and 3d.
+//           Each task (2d, 2d, 3d) have its own tolerance and checked separately.
 //           Returns new WLine or null WLine if the number
 //           of the points is less than 2.
 //=========================================================================
-Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine) {
- 
+Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)       &theWLine,
+                                          const Handle(GeomAdaptor_HSurface) &theS1,
+                                          const Handle(GeomAdaptor_HSurface) &theS2)
+{
   Standard_Integer i, k, v, nb, nbvtx;
   Handle(IntPatch_WLine) aResult;
   nbvtx = theWLine->NbVertex();
@@ -2820,7 +2861,6 @@ Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine
   for(v = 1; v <= nbvtx; v++) {
     aLocalWLine->AddVertex(theWLine->Vertex(v));
   }
-  
   for(i = 1; i <= aLineOn2S->NbPoints(); i++) {
     Standard_Integer aStartIndex = i + 1;
     Standard_Integer anEndIndex = i + 5;
@@ -2838,10 +2878,24 @@ Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine
         IntSurf_PntOn2S p1 = aLineOn2S->Value(i);
         IntSurf_PntOn2S p2 = aLineOn2S->Value(k);
         
-        if(p1.Value().IsEqual(p2.Value(), gp::Resolution())) {
+        Standard_Real UV[8];
+        p1.Parameters(UV[0], UV[1], UV[2], UV[3]);
+        p2.Parameters(UV[4], UV[5], UV[6], UV[7]);
+
+        Standard_Real aMax = Abs(UV[0]);
+        for(Standard_Integer anIdx = 1; anIdx < 8; anIdx++)
+        {
+          if (aMax < Abs(UV[anIdx]))
+            aMax = Abs(UV[anIdx]);
+        }
+
+        if(p1.Value().IsEqual(p2.Value(), gp::Resolution()) ||
+           Abs(UV[0] - UV[4]) + Abs(UV[1] - UV[5]) < 1.0e-16 * aMax ||
+           Abs(UV[2] - UV[6]) + Abs(UV[3] - UV[7]) < 1.0e-16 * aMax )
+        {
           aTmpWLine = aLocalWLine;
           aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
-
+          
           for(v = 1; v <= aTmpWLine->NbVertex(); v++) {
             IntPatch_Point aVertex = aTmpWLine->Vertex(v);
             Standard_Integer avertexindex = (Standard_Integer)aVertex.ParameterOnLine();
@@ -2860,7 +2914,211 @@ Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine
     }
   }
 
-  if(aLineOn2S->NbPoints() > 1) {
+  if (aLineOn2S->NbPoints() <= 2)
+  {
+    if (aLineOn2S->NbPoints() == 2)
+      return aLocalWLine;
+    else
+      return aResult;
+  }
+
+  const Standard_Integer aMinNbBadDistr = 15;
+  const Standard_Integer aNbSingleBezier = 30;
+  // Avoid purge in case of C0 continuity:
+  // Intersection approximator may produce invalid curve after purge, example:
+  // bugs modalg_5 bug24731,
+  // Do not run purger when base number of points is too small.
+  if (theS1->UContinuity() == GeomAbs_C0 ||
+      theS1->VContinuity() == GeomAbs_C0 ||
+      theS2->UContinuity() == GeomAbs_C0 ||
+      theS2->VContinuity() == GeomAbs_C0 ||
+      nb < aNbSingleBezier)
+  {
+    return aLocalWLine;
+  }
+
+  // 1 - Delete point.
+  // 0 - Store point.
+  // -1 - Vertex point (not delete).
+  NCollection_Array1<Standard_Integer> aNewPointsHash(1, aLineOn2S->NbPoints());
+  for(i = 1; i <= aLineOn2S->NbPoints(); i++)
+    aNewPointsHash.SetValue(i, 0);
+
+  for(v = 1; v <= aLocalWLine->NbVertex(); v++) 
+  {
+    IntPatch_Point aVertex = aLocalWLine->Vertex(v);
+    Standard_Integer avertexindex = (Standard_Integer)aVertex.ParameterOnLine();
+    aNewPointsHash.SetValue(avertexindex, -1);
+  }
+
+  // Workaround to handle case of small amount points after purge.
+  // Test "boolean boptuc_complex B5" and similar.
+  Standard_Integer aNbPnt = 0;
+
+  // Inital computations.
+  Standard_Real UonS1[3], VonS1[3], UonS2[3], VonS2[3];
+  aLineOn2S->Value(1).ParametersOnS1(UonS1[0], VonS1[0]);
+  aLineOn2S->Value(2).ParametersOnS1(UonS1[1], VonS1[1]);
+  aLineOn2S->Value(1).ParametersOnS2(UonS2[0], VonS2[0]);
+  aLineOn2S->Value(2).ParametersOnS2(UonS2[1], VonS2[1]);
+
+  gp_Pnt2d aBase2dPnt1(UonS1[0], VonS1[0]);
+  gp_Pnt2d aBase2dPnt2(UonS2[0], VonS2[0]);
+  gp_Vec2d aBase2dVec1(UonS1[1] - UonS1[0], VonS1[1] - VonS1[0]);
+  gp_Vec2d aBase2dVec2(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]);
+  gp_Pnt   aBase3dPnt = aLineOn2S->Value(1).Value();
+  gp_Vec   aBase3dVec(aLineOn2S->Value(1).Value(), aLineOn2S->Value(2).Value());
+
+  // Choose base tolerance and scale it to pipe algorithm.
+  const Standard_Real aBaseTolerance = Precision::Approximation();
+  Standard_Real aResS1Tol = Min(theS1->UResolution(aBaseTolerance),
+                                theS1->VResolution(aBaseTolerance));
+  Standard_Real aResS2Tol = Min(theS2->UResolution(aBaseTolerance),
+                                theS2->VResolution(aBaseTolerance));
+  Standard_Real aTol1 = aResS1Tol * aResS1Tol;
+  Standard_Real aTol2 = aResS2Tol * aResS2Tol;
+  Standard_Real aTol3d = aBaseTolerance * aBaseTolerance;
+
+  const Standard_Real aLimitCoeff = 0.99 * 0.99;
+  for(i = 3; i <= aLineOn2S->NbPoints(); i++)
+  {
+    Standard_Boolean isDeleteState = Standard_False;
+
+    aLineOn2S->Value(i).ParametersOnS1(UonS1[2], VonS1[2]);
+    aLineOn2S->Value(i).ParametersOnS2(UonS2[2], VonS2[2]);
+    gp_Pnt2d aPnt2dOnS1(UonS1[2], VonS1[2]);
+    gp_Pnt2d aPnt2dOnS2(UonS2[2], VonS2[2]);
+    const gp_Pnt& aPnt3d = aLineOn2S->Value(i).Value();
+
+    if (aNewPointsHash(i - 1) != - 1 &&
+        IsInsideIn2d(aBase2dPnt1, aBase2dVec1, aPnt2dOnS1, aTol1) &&
+        IsInsideIn2d(aBase2dPnt2, aBase2dVec2, aPnt2dOnS2, aTol2) &&
+        IsInsideIn3d(aBase3dPnt, aBase3dVec, aPnt3d, aTol3d) )
+    {
+      // Handle possible uneven parametrization on one of 2d subspaces.
+      // Delete point only when expected lengths are close to each other (aLimitCoeff).
+      // Example:
+      // c2d1 - line
+      // c3d - line
+      // c2d2 - geometrically line, but have uneven parametrization -> c2d2 is bspline.
+      gp_XY aPntOnS1[2]= { gp_XY(UonS1[1] - UonS1[0], VonS1[1] - VonS1[0])
+                         , gp_XY(UonS1[2] - UonS1[1], VonS1[2] - VonS1[1])};
+      gp_XY aPntOnS2[2]= { gp_XY(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0])
+                         , gp_XY(UonS2[2] - UonS2[1], VonS2[2] - VonS2[1])};
+
+      Standard_Real aStepOnS1 = aPntOnS1[0].SquareModulus() / aPntOnS1[1].SquareModulus();
+      Standard_Real aStepOnS2 = aPntOnS2[0].SquareModulus() / aPntOnS2[1].SquareModulus();
+
+      Standard_Real aStepCoeff = Min(aStepOnS1, aStepOnS2) / Max(aStepOnS1, aStepOnS2);
+
+      if (aStepCoeff > aLimitCoeff)
+      {
+        // Set hash flag to "Delete" state.
+        isDeleteState = Standard_True;
+        aNewPointsHash.SetValue(i - 1, 1);
+
+        // Change middle point.
+        UonS1[1] = UonS1[2];
+        UonS2[1] = UonS2[2];
+        VonS1[1] = VonS1[2];
+        VonS2[1] = VonS2[2];
+      }
+    }
+
+    if (!isDeleteState)
+    {
+      // Compute new pipe parameters.
+      UonS1[0] = UonS1[1];
+      VonS1[0] = VonS1[1];
+      UonS2[0] = UonS2[1];
+      VonS2[0] = VonS2[1];
+
+      UonS1[1] = UonS1[2];
+      VonS1[1] = VonS1[2];
+      UonS2[1] = UonS2[2];
+      VonS2[1] = VonS2[2];
+
+      aBase2dPnt1.SetCoord(UonS1[0], VonS1[0]);
+      aBase2dPnt2.SetCoord(UonS2[0], VonS2[0]);
+      aBase2dVec1.SetCoord(UonS1[1] - UonS1[0], VonS1[1] - VonS1[0]);
+      aBase2dVec2.SetCoord(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]);
+      aBase3dPnt = aLineOn2S->Value(i - 1).Value();
+      aBase3dVec = gp_Vec(aLineOn2S->Value(i - 1).Value(), aLineOn2S->Value(i).Value());
+
+      aNbPnt++;
+    }
+  }
+
+  // Workaround to handle case of small amount of points after purge.
+  // Test "boolean boptuc_complex B5" and similar.
+  // This is possible since there are at least two points.
+  if (aNewPointsHash(1) == -1 &&
+      aNewPointsHash(2) == -1 &&
+      aNbPnt <= 3)
+  {
+    // Delete first.
+    aNewPointsHash(1) = 1;
+  }
+  if (aNewPointsHash(aLineOn2S->NbPoints() - 1) == -1 &&
+      aNewPointsHash(aLineOn2S->NbPoints()    ) == -1 &&
+      aNbPnt <= 3)
+  {
+    // Delete last.
+    aNewPointsHash(aLineOn2S->NbPoints() ) = 1;
+  }
+
+  // Purgre when too small amount of points left.
+  if (aNbPnt <= 2)
+  {
+    for(i = aNewPointsHash.Lower(); i <= aNewPointsHash.Upper(); i++)
+    {
+      if (aNewPointsHash(i) != -1)
+      {
+        aNewPointsHash(i) = 1;
+      }
+    }
+  }
+
+  // Handle possible bad distribution of points, 
+  // which are will converted into one single bezier curve (less than 30 points).
+  // Make distribution more even:
+  // max step will be nearly to 0.1 of param distance.
+  if (aNbPnt + 2 > aMinNbBadDistr &&
+      aNbPnt + 2 < aNbSingleBezier )
+  {
+    for(Standard_Integer anIdx = 1; anIdx <= 8; anIdx++)
+    {
+      Standard_Integer aHashIdx = 
+        Standard_Integer(anIdx * aLineOn2S->NbPoints() / 9);
+
+      //Store this point.
+      aNewPointsHash(aHashIdx) = 0;
+    }
+  }
+
+  aTmpWLine = aLocalWLine;
+  Handle(IntSurf_LineOn2S) aPurgedLineOn2S = new IntSurf_LineOn2S();
+  aLocalWLine = new IntPatch_WLine(aPurgedLineOn2S, Standard_False);
+  Standard_Integer anOldLineIdx = 1, aVertexIdx = 1;
+  for(i = 1; i <= aNewPointsHash.Upper(); i++)
+  {
+    if (aNewPointsHash(i) == 0)
+    {
+      // Store this point.
+      aPurgedLineOn2S->Add(aLineOn2S->Value(i));
+      anOldLineIdx++;
+    }
+    else if (aNewPointsHash(i) == -1)
+    {
+      // Add vertex.
+      IntPatch_Point aVertex = aTmpWLine->Vertex(aVertexIdx++);
+      aVertex.SetParameter(anOldLineIdx++);
+      aLocalWLine->AddVertex(aVertex);
+      aPurgedLineOn2S->Add(aLineOn2S->Value(i));
+    }
+  }
+
+  if(aPurgedLineOn2S->NbPoints() > 1) {
     aResult = aLocalWLine;
   }
   return aResult;

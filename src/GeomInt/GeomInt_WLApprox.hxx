@@ -90,7 +90,10 @@ protected:
 
 private:
 
-  
+  Standard_EXPORT Standard_Integer CorrectFinishIdx(const Standard_Integer theMinIdx,
+                                                    const Standard_Integer theMaxIdx,
+                                                    const Handle(IntPatch_WLine)& theline);
+
   Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& Surf1, const IntSurf_Quadric& Surf2, const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ, const Standard_Boolean ApproxU1V1, const Standard_Boolean ApproxU2V2, const Standard_Integer indicemin, const Standard_Integer indicemax);
   
   Standard_EXPORT void Perform (const IntSurf_Quadric& Surf1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ, const Standard_Boolean ApproxU1V1, const Standard_Boolean ApproxU2V2, const Standard_Integer indicemin, const Standard_Integer indicemax);

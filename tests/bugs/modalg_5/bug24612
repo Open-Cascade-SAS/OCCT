@@ -6,7 +6,7 @@ puts ""
 # Wrong pcurve of the section curve
 ###########################################################
 
-set MaxTol 5.0e-7
+set MaxTol 7.0e-5
 set NbCurv_OK 1
 restore [locate_data_file bug24612_b1.brep] b1
 restore [locate_data_file bug24612_b2.brep] b2

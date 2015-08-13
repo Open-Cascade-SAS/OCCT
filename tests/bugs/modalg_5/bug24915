@@ -1,4 +1,11 @@
 puts "TODO OCC25929 ALL: Error: Tolerance is too big!"
+
+puts "TODO OCC21564 Linux: Error : T=0.464646	 D=0.000326627"
+puts "TODO OCC21564 Linux: Error : T=0.464646	 D=0.00032747"
+
+puts "TODO OCC21564 Windows: Error : T=0.464646	 D=0.000326671"
+puts "TODO OCC21564 Windows: Error : T=0.464646	 D=0.000327516"
+
 puts "========="
 puts "CR24915"
 puts "========="

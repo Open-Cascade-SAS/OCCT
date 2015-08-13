@@ -768,26 +768,38 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	    }
 
 	    Standard_Boolean refined = Standard_False;
-	    if (refine[ip]) {
-	      //------------------------------------------------------------------------
-	      //-- On a trouve un point 2d approche Ua,Va  intersection de la ligne
-	      //-- de cheminement et de la restriction. 
-	      //--
-	      //-- On injecte ce point ds les intersections Courbe-Surface
-	      //-- 
-	      IntPatch_CSFunction thefunc(OtherSurf,arc,Surf);
-	      // MSV: extend UV bounds to not miss solution near the boundary
-	      Standard_Real margCoef = 0.004;
-	      IntPatch_CurvIntSurf IntCS(U,V,W,thefunc,edgeTol,margCoef);
-	      if (IntCS.IsDone()) {
-		if (!IntCS.IsEmpty()) {
-		  ptsommet = IntCS.Point();
-		  IntCS.ParameterOnSurface(U2,V2);
-		  paramarc = IntCS.ParameterOnCurve();
-		  refined = Standard_True;
-		}
-	      }
-	    }
+            if (refine[ip])
+            {
+              //------------------------------------------------------------------------
+              //-- On a trouve un point 2d approche Ua,Va  intersection de la ligne
+              //-- de cheminement et de la restriction. 
+              //--
+              //-- On injecte ce point ds les intersections Courbe-Surface
+              //-- 
+              IntPatch_CSFunction thefunc(OtherSurf,arc,Surf);
+              // MSV: extend UV bounds to not miss solution near the boundary
+              Standard_Real margCoef = 0.004;
+              IntPatch_CurvIntSurf IntCS(U,V,W,thefunc,edgeTol,margCoef);
+              if (IntCS.IsDone())
+              {
+                if (!IntCS.IsEmpty())
+                {
+                  ptsommet = IntCS.Point();
+                  IntCS.ParameterOnSurface(U2,V2);
+                  gp_Pnt anOldPnt, aNewPnt;
+                  OtherSurf->D0(U,V, anOldPnt);
+                  OtherSurf->D0(U2,V2, aNewPnt);
+                  if (anOldPnt.SquareDistance(aNewPnt) < Precision::Confusion()
+                    * Precision::Confusion())
+                  {
+                    U2 = U;
+                    V2 = V;
+                  }
+                  paramarc = IntCS.ParameterOnCurve();
+                  refined = Standard_True;
+                }
+              }
+            }
 	    else {
 	      U2 = U; V2 = V;
 	      paramarc = W;

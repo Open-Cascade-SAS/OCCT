@@ -12,7 +12,7 @@ restore [locate_data_file bug23884_fz124] b2
 bop b1 b2
 bopfuse result
 
-set square 2415.65
+set square 2368.48
 set 2dviewer 0
 
 

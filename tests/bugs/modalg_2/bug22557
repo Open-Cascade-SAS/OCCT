@@ -1,3 +1,6 @@
+puts "TODO OCC21564 ALL: The square of result shape is"
+puts "TODO OCC21564 ALL: Result shape is WRONG because it must contains"
+
 puts "============"
 puts "OCC22557"
 puts "============"

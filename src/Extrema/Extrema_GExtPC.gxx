@@ -105,12 +105,14 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       // Workaround to work with:
       // blend, where knots may be moved from param space.
       Standard_Real aPeriodJump = 0.0;
+      // Avoid prolem with too close knots.
+      const Standard_Real aTolCoeff = (myusup - myuinf) * Precision::PConfusion();
       if (TheCurveTool::IsPeriodic(aCurve))
       {
         Standard_Integer aPeriodShift =
           Standard_Integer ((myuinf - aKnots(aFirstIdx)) / TheCurveTool::Period(aCurve));
         
-        if (myuinf < aKnots(aFirstIdx))
+        if (myuinf < aKnots(aFirstIdx) - aTolCoeff)
           aPeriodShift--;
 
         aPeriodJump = TheCurveTool::Period(aCurve) * aPeriodShift;
@@ -124,7 +126,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       for(anIdx = aFirstIdx; anIdx <= aLastIdx; anIdx++)
       {
         Standard_Real aKnot = aKnots(anIdx) + aPeriodJump;
-        if (myuinf >= aKnot)
+        if (myuinf >= aKnot - aTolCoeff)
           aFirstUsedKnot = anIdx;
         else
           break;
@@ -133,7 +135,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       for(anIdx = aLastIdx; anIdx >= aFirstIdx; anIdx--)
       {
         Standard_Real aKnot = aKnots(anIdx) + aPeriodJump;
-        if (myusup <= aKnot)
+        if (myusup <= aKnot + aTolCoeff)
           aLastUsedKnot = anIdx;
         else
           break;

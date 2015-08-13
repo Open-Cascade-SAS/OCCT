@@ -332,13 +332,16 @@ void ApproxInt_Approx::Perform(const Handle(TheWLine)& theline,
 	  nbmc++) { 
 	myBezToBSpl.Append(myComputeLineBezier.Value(nbmc));
       }
-      if(imax<indicemax) { 
-	imin = imax;    
-	imax = imin+nbpntbez;
-	OtherInter = Standard_True;
-	if((indicemax-imax)<(nbpntbez/2)) { 
-	  imax = indicemax;
-	}
+      if(imax<indicemax)
+      { 
+        imin = imax;    
+        imax = imin+nbpntbez;
+        OtherInter = Standard_True;
+        if((indicemax-imax)<(nbpntbez/2))
+        {
+          imax = indicemax;
+        }
+        imax = CorrectFinishIdx(imin, imax, theline);
       }
     }
   }
@@ -567,14 +570,17 @@ void ApproxInt_Approx::Perform(const ThePSurface& Surf1,
 	  nbmc++) { 
 	  myBezToBSpl.Append(myComputeLineBezier.Value(nbmc));
 	}
-	if(imax<indicemax) { 
-	  imin = imax;    
-	  imax = imin+nbpntbez;
-	  OtherInter = Standard_True;
-	  if((indicemax-imax)<(nbpntbez/2)) { 
-	    imax = indicemax;
-	  }
-	}
+        if(imax<indicemax)
+        {
+          imin = imax;
+          imax = imin+nbpntbez;
+          OtherInter = Standard_True;
+          if((indicemax-imax)<(nbpntbez/2))
+          {
+            imax = indicemax;
+          }
+          imax = CorrectFinishIdx(imin, imax, theline);
+        }
       }
     }
     while(OtherInter);
@@ -903,13 +909,16 @@ void ApproxInt_Approx::Perform(const ThePSurface& PSurf,
 	  nbmc++) { 
 	myBezToBSpl.Append(myComputeLineBezier.Value(nbmc));
       }
-      if(imax<indicemax) { 
-	imin = imax;    
-	imax = imin+nbpntbez;
-	OtherInter = Standard_True;
-	if((indicemax-imax)<(nbpntbez/2)) { 
-	  imax = indicemax;
-	}
+      if(imax<indicemax)
+      {
+        imin = imax;
+        imax = imin+nbpntbez;
+        OtherInter = Standard_True;
+        if((indicemax-imax)<(nbpntbez/2))
+        {
+          imax = indicemax;
+        }
+        imax = CorrectFinishIdx(imin, imax, theline);
       }
     }
   }
@@ -1117,21 +1126,26 @@ void ApproxInt_Approx::Perform(const TheISurface& ISurf,
       }
     }
     OtherInter = Standard_False;
-    if(myApproxBez) { 
-      for(Standard_Integer nbmc = 1; 
-	  nbmc <= myComputeLineBezier.NbMultiCurves() ;
-	  nbmc++) { 
-	myBezToBSpl.Append(myComputeLineBezier.Value(nbmc));
+    if(myApproxBez)
+    {
+      for(Standard_Integer nbmc = 1;
+        nbmc <= myComputeLineBezier.NbMultiCurves() ;
+        nbmc++)
+      { 
+          myBezToBSpl.Append(myComputeLineBezier.Value(nbmc));
       }
-      if(imax<indicemax) { 
-	imin = imax;    
-	imax = imin+nbpntbez;
-	OtherInter = Standard_True;
-	if((indicemax-imax)<(nbpntbez/2)) { 
-	  imax = indicemax;
-	}
+      if(imax<indicemax)
+      {
+        imin = imax;
+        imax = imin+nbpntbez;
+        OtherInter = Standard_True;
+        if((indicemax-imax)<(nbpntbez/2))
+        {
+          imax = indicemax;
+        }
+        imax = CorrectFinishIdx(imin, imax, theline);
       }
-    } 
+    }
   }
   while(OtherInter); 
   if(myApproxBez) { 
@@ -1207,4 +1221,32 @@ const AppParCurves_MultiBSpCurve& ApproxInt_Approx::Value(const Standard_Integer
   else { 
     return(myComputeLine.Value());
   }
+}
+//--------------------------------------------------------------------------------
+Standard_Integer ApproxInt_Approx::CorrectFinishIdx(const Standard_Integer theMinIdx,
+                                                    const Standard_Integer theMaxIdx,
+                                                    const Handle(TheWLine)& theline)
+{
+  const Standard_Real aNullCoeff = 1.0e-16;
+  Standard_Real aLimitMaxCoeff = 1.0 / 2500.0;
+  Standard_Real aDist = theline->Point(theMinIdx).Value().SquareDistance(
+                        theline->Point(theMinIdx + 1).Value());
+
+  for(Standard_Integer anIdx = theMinIdx + 1; anIdx < theMaxIdx - 1; anIdx++)
+  {
+    Standard_Real aNextDist = theline->Point(anIdx).Value().SquareDistance(
+                              theline->Point(anIdx + 1).Value());
+    Standard_Real aCoeff = Min (aNextDist, aDist) / Max (aNextDist, aDist);
+
+    //
+    if (aCoeff < aLimitMaxCoeff &&        // Base criteria.
+        aNextDist > aDist &&              // Step increasing.
+        aNextDist > aNullCoeff &&         // Avoid separation in case of too small step.
+        aDist > aNullCoeff)               // Usually found when purger not invoked (blend).
+    {
+      return anIdx;
+    }
+    aDist = aNextDist;
+  }
+  return theMaxIdx;
 }

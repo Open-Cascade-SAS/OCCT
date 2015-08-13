@@ -1,8 +1,3 @@
-puts "TODO OCC25929 ALL: ERROR in bopargcheck res1"
-puts "TODO OCC25929 ALL: ERROR. res1 with continuity C0"
-puts "TODO OCC25929 ALL: ERROR in bopargcheck res2"
-puts "TODO OCC25929 ALL: ERROR. res2 with continuity C0"
-
 puts "========"
 puts "OCC26310"
 puts "========"

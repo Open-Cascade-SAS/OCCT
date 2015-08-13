@@ -61,10 +61,10 @@ regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFace
 regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxEdgeTolerance
 regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxVertexTolerance
 
-if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 } {
-    puts "Faulty : Tolerance of shape is more then 1.0"
+if { $MaxFaceTolerance > 2 || $MaxEdgeTolerance > 2 || $MaxVertexTolerance > 2 } {
+    puts "Faulty : Tolerance of shape is more then 2.0"
 } else {
-    puts "Tolerance of shape is less then 1.0"
+    puts "Tolerance of shape is less then 2.0"
 }
-set square 2.34799e+007
+set square 1.74934e+007
 set 2dviewer 0

@@ -33,5 +33,5 @@ if { $MaxFaceTolerance > 1 || $MaxEdgeTolerance > 1 || $MaxVertexTolerance > 1 }
     puts "Tolerance of shape is less then 1.0"
 }
 
-set square 4.60842e+07
+set square 4.10276e+007
 set 2dviewer 0
