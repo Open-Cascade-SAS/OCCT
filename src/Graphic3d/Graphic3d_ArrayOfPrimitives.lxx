@@ -288,7 +288,7 @@ inline void Graphic3d_ArrayOfPrimitives::VertexColor (const Standard_Integer the
   }
   Standard_Integer aColorInt = 0;
   VertexColor (theIndex, aColorInt);
-  const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(aColorInt);
+  const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(&aColorInt);
   theR = Standard_Real(aColor.r()) / 255.0;
   theG = Standard_Real(aColor.g()) / 255.0;
   theB = Standard_Real(aColor.b()) / 255.0;
