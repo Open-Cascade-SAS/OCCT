@@ -24,15 +24,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>__VCVEREXT__</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>__VCVEREXT__</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>__VCVEREXT__</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>__VCVEREXT__</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -52,17 +56,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\win32\vc10\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\win32\vc10\obj\__TKNAM__\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\win32\__VCVER__\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\win32\__VCVER__\obj\__TKNAM__\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\win32\vc10\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\win32\vc10\objd\__TKNAM__\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\win32\__VCVER__\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\win32\__VCVER__\objd\__TKNAM__\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\win64\vc10\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\win64\vc10\obj\__TKNAM__\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\win64\__VCVER__\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\win64\__VCVER__\obj\__TKNAM__\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\win64\vc10\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\win64\vc10\objd\__TKNAM__\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\win64\__VCVER__\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\win64\__VCVER__\objd\__TKNAM__\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,7 +75,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\..\..\..\win32\vc10\bin\__TKNAM__.tlb</TypeLibraryName>
+      <TypeLibraryName>.\..\..\..\win32\__VCVER__\bin\__TKNAM__.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -86,14 +90,13 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <AssemblerListingLocation>.\..\..\..\win32\vc10\obj\__TKNAM__/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\win32\vc10\obj\__TKNAM__/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\win32\vc10\obj\__TKNAM__/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\..\win32\__VCVER__\obj\__TKNAM__/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\..\win32\__VCVER__\obj\__TKNAM__/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\..\win32\__VCVER__\obj\__TKNAM__/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>__VCMPL32__
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\..\..\inc;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -101,12 +104,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>__TKDEP__;ws2_32.lib;vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\..\win32\vc10\bin\__TKNAM__.dll</OutputFile>
+      <OutputFile>.\..\..\..\win32\__VCVER__\bin\__TKNAM__.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\win32\vc10\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\..\..\..\win32\vc10\bin\__TKNAM__.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>..\..\..\win32\__VCVER__\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>.\..\..\..\win32\__VCVER__\bin\__TKNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
-      <ImportLibrary>..\..\..\win32\vc10\lib\__TKNAM__.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\win32\__VCVER__\lib\__TKNAM__.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +118,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\..\..\..\win32\vc10\bind\__TKNAM__.tlb</TypeLibraryName>
+      <TypeLibraryName>.\..\..\..\win32\__VCVER__\bind\__TKNAM__.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -128,17 +131,16 @@
       <PreprocessorDefinitions>DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AssemblerListingLocation>.\..\..\..\win32\vc10\objd\__TKNAM__/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\win32\vc10\objd\__TKNAM__/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\win32\vc10\objd\__TKNAM__/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\..\win32\__VCVER__\objd\__TKNAM__/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\..\win32\__VCVER__\objd\__TKNAM__/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\..\win32\__VCVER__\objd\__TKNAM__/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>__VCMPL32__
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\..\..\inc;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -146,13 +148,13 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>__TKDEP__;ws2_32.lib;vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\..\win32\vc10\bind\__TKNAM__.dll</OutputFile>
+      <OutputFile>.\..\..\..\win32\__VCVER__\bind\__TKNAM__.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\win32\vc10\libd;$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\win32\__VCVER__\libd;$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>..\..\..\win32\vc10\bind\__TKNAM__.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>..\..\..\win32\__VCVER__\bind\__TKNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
-      <ImportLibrary>..\..\..\win32\vc10\libd\__TKNAM__.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\win32\__VCVER__\libd\__TKNAM__.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,7 +163,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>x64</TargetEnvironment>
-      <TypeLibraryName>.\..\..\..\win64\vc10\bin\__TKNAM__.tlb</TypeLibraryName>
+      <TypeLibraryName>.\..\..\..\win64\__VCVER__\bin\__TKNAM__.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -176,13 +178,13 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <AssemblerListingLocation>.\..\..\..\win64\vc10\obj\__TKNAM__/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\win64\vc10\obj\__TKNAM__/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\win64\vc10\obj\__TKNAM__/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\..\win64\__VCVER__\obj\__TKNAM__/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\..\win64\__VCVER__\obj\__TKNAM__/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\..\win64\__VCVER__\obj\__TKNAM__/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>__VCMPL64__
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\..\..\inc;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -190,12 +192,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>__TKDEP__;ws2_32.lib;vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\..\win64\vc10\bin\__TKNAM__.dll</OutputFile>
+      <OutputFile>.\..\..\..\win64\__VCVER__\bin\__TKNAM__.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\win64\vc10\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\..\..\..\win64\vc10\bin\__TKNAM__.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>..\..\..\win64\__VCVER__\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>.\..\..\..\win64\__VCVER__\bin\__TKNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
-      <ImportLibrary>..\..\..\win64\vc10\lib\__TKNAM__.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\win64\__VCVER__\lib\__TKNAM__.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -204,7 +206,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>x64</TargetEnvironment>
-      <TypeLibraryName>.\..\..\..\win64\vc10\bind\__TKNAM__.tlb</TypeLibraryName>
+      <TypeLibraryName>.\..\..\..\win64\__VCVER__\bind\__TKNAM__.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -217,16 +219,16 @@
       <PreprocessorDefinitions>DEB;_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AssemblerListingLocation>.\..\..\..\win64\vc10\objd\__TKNAM__/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\win64\vc10\objd\__TKNAM__/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\win64\vc10\objd\__TKNAM__/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\..\win64\__VCVER__\objd\__TKNAM__/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\..\win64\__VCVER__\objd\__TKNAM__/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\..\win64\__VCVER__\objd\__TKNAM__/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>__VCMPL64__
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\..\..\inc;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -234,13 +236,13 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>__TKDEP__;ws2_32.lib;vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\..\win64\vc10\bind\__TKNAM__.dll</OutputFile>
+      <OutputFile>.\..\..\..\win64\__VCVER__\bind\__TKNAM__.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\win64\vc10\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\win64\__VCVER__\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>..\..\..\win64\vc10\bind\__TKNAM__.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>..\..\..\win64\__VCVER__\bind\__TKNAM__.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
-      <ImportLibrary>..\..\..\win64\vc10\libd\__TKNAM__.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\win64\__VCVER__\libd\__TKNAM__.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

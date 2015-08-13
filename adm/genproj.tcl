@@ -1,6 +1,6 @@
 # =======================================================================
 # This script generates project files for different IDEs:
-#      "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "cbp" "amk" "xcd"
+#      "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "amk" "xcd"
 #
 # Example:
 #      genproj -path=D:/occt -target=vc10
@@ -89,7 +89,7 @@ proc _get_used_files { pk {inc true} {src true} } {
 # Wrapper-function to generate VS project files
 proc genproj { args } {
   global path targetStation
-  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "cbp" "amk" "xcd" }
+  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "amk" "xcd" }
   set anArgs $args
 
   # Setting default IDE.
@@ -169,6 +169,7 @@ proc genproj { args } {
       vc10  -  Visual Studio 2010
       vc11  -  Visual Studio 2012
       vc12  -  Visual Studio 2013
+      vc14  -  Visual Studio 2015
       cbp   -  CodeBlocks
       xcd   -  XCode
       amk   -  AutoMake"
@@ -260,7 +261,7 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theIDE ""} {theLibType "dynamic"} {thePlatform ""} } {
   global path targetStation
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "cbp" "amk" "xcd" }
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "cbp" "amk" "xcd" }
 
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
@@ -275,7 +276,7 @@ proc OS:MKPRC { {theOutDir {}} {theIDE ""} {theLibType "dynamic"} {thePlatform "
   # Create output directory
   set aWokStation "$targetStation"
 
-  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12} $theIDE] != -1 } {
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12 vc14} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
 
@@ -329,7 +330,8 @@ proc OS:MKPRC { {theOutDir {}} {theIDE ""} {theLibType "dynamic"} {thePlatform "
     "vc9"   -
     "vc10"   -
     "vc11"   -
-    "vc12"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
+    "vc12"   -
+    "vc14"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
     "xcd"   {
@@ -757,6 +759,10 @@ proc osutils:vcsolution:header { vcversion } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 13.00\n" \
       "# Visual Studio 2013\n"
+  } elseif { "$vcversion" == "vc14" } {
+    append var \
+      "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
+      "# Visual Studio 14\n"
   } else {
     puts stderr "Error: Visual Studio version $vcversion is not supported by this function!"
   }
@@ -767,10 +773,8 @@ proc osutils:vcsolution:header { vcversion } {
 proc osutils:vcproj:ext { vcversion } {
   if { "$vcversion" == "vc7" || "$vcversion" == "vc8" || "$vcversion" == "vc9" } {
     return "vcproj"
-  } elseif { "$vcversion" == "vc10" || "$vcversion" == "vc11" || "$vcversion" == "vc12" } {
-    return "vcxproj"
   } else {
-    puts stderr "Error: Visual Studio version $vc is not supported by this function!"
+    return "vcxproj"
   }
 }
 # Generate start of configuration section of VS solution file
@@ -784,9 +788,7 @@ proc osutils:vcsolution:config:begin { vcversion } {
       "\t\tRelease = Release\n" \
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ProjectConfiguration) = postSolution\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" ||
-             "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
-             "$vcversion" == "vc12" } {
+  } else {
     append var \
       "Global\n" \
       "\tGlobalSection(SolutionConfigurationPlatforms) = preSolution\n" \
@@ -796,8 +798,6 @@ proc osutils:vcsolution:config:begin { vcversion } {
       "\t\tRelease|x64 = Release|x64\n" \
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ProjectConfigurationPlatforms) = postSolution\n"
-  } else {
-    puts stderr "Error: Visual Studio version $vcversion is not supported by this function!"
   }
   return $var
 }
@@ -810,9 +810,7 @@ proc osutils:vcsolution:config:project { vcversion guid } {
       "\t\t$guid.Debug.Build.0 = Debug|Win32\n" \
       "\t\t$guid.Release.ActiveCfg = Release|Win32\n" \
       "\t\t$guid.Release.Build.0 = Release|Win32\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" ||
-             "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
-             "$vcversion" == "vc12" } {
+  } else {
     append var \
       "\t\t$guid.Debug|Win32.ActiveCfg = Debug|Win32\n" \
       "\t\t$guid.Debug|Win32.Build.0 = Debug|Win32\n" \
@@ -822,8 +820,6 @@ proc osutils:vcsolution:config:project { vcversion guid } {
       "\t\t$guid.Debug|x64.Build.0 = Debug|x64\n" \
       "\t\t$guid.Release|x64.ActiveCfg = Release|x64\n" \
       "\t\t$guid.Release|x64.Build.0 = Release|x64\n"
-  } else {
-    puts stderr "Error: Visual Studio version $vcversion is not supported by this function!"
   }
   return $var
 }
@@ -837,16 +833,12 @@ proc osutils:vcsolution:config:end { vcversion } {
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ExtensibilityAddIns) = postSolution\n" \
       "\tEndGlobalSection\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" ||
-             "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
-             "$vcversion" == "vc12" } {
+  } else {
     append var \
       "\tEndGlobalSection\n" \
       "\tGlobalSection(SolutionProperties) = preSolution\n" \
       "\t\tHideSolutionNode = FALSE\n" \
       "\tEndGlobalSection\n"
-  } else {
-    puts stderr "Error: Visual Studio version $vcversion is not supported by this function!"
   }
   return $var
 }
@@ -993,14 +985,31 @@ proc OS:vcproj { theVcVer theModules theOutDir theGuidsMap } {
 }
 # generate template name and load it for given version of Visual Studio and platform
 
-proc osutils:vcproj:readtemplate {vc isexec} {
-  set ext $vc
-  set what "$vc"
+proc osutils:vcproj:readtemplate {theVcVer isexec} {
+  set anExt $theVcVer
+  if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
+    set anExt vc10
+  }
+
+  set what "$theVcVer"
+  set aVerExt [string range $theVcVer 2 end]
+  set aVerExt "v${aVerExt}0"
+  set aCmpl32 ""
+  set aCmpl64 ""
   if { $isexec } {
-    set ext "${ext}x"
+    set anExt "${anExt}x"
     set what "$what executable"
   }
-  return [osutils:readtemplate $ext "MS VC++ project ($what)"]
+  if { "$theVcVer" == "vc10" } {
+    # SSE2 is enabled by default in vc11+, but not in vc10 for 32-bit target
+    set aCmpl32 "\n      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>"
+  }
+  set aTmpl [osutils:readtemplate $anExt "MS VC++ project ($what)"]
+  regsub -all -- {__VCVER__}    $aTmpl $theVcVer aTmpl
+  regsub -all -- {__VCVEREXT__} $aTmpl $aVerExt  aTmpl
+  regsub -all -- {__VCMPL32__}  $aTmpl $aCmpl32  aTmpl
+  regsub -all -- {__VCMPL64__}  $aTmpl $aCmpl64  aTmpl
+  return $aTmpl
 }
 
 proc osutils:readtemplate {ext what} {
@@ -1437,7 +1446,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
 
   # and put this list to project file
   #puts "$theToolKit requires  $aUsedToolKits"
-  if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+  if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
     set aUsedToolKits [join $aUsedToolKits {;}]
   }
   regsub -all -- {__TKDEP__} $theProjTmpl $aUsedToolKits theProjTmpl
@@ -1482,8 +1491,8 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
       set needparam "$needparam $partopt"
     }
 
-    # Format of projects in vc10 and vc11 is different from vc7-9
-    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+    # Format of projects in vc10+ is different from vc7-9
+    if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
       foreach aSrcFile [lsort $aSrcFiles] {
         if { ![info exists written([file tail $aSrcFile])] } {
           set written([file tail $aSrcFile]) 1
@@ -1525,10 +1534,12 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   puts $aFile $theProjTmpl
   close $aFile
 
-  # write filters file for vc10 and vc11
-  if { "$theVcVer" == "vc10" } {
+  # write filters file for vc10+
+  if { "$theVcVer" == "vc7" || "$theVcVer" == "vc8" || "$theVcVer" == "vc9" } {
+    # nothing
+  } elseif { "$theVcVer" == "vc10" } {
     lappend aVcFiles [osutils:vcxproj:filters $theOutDir $theToolKit aVcFilesX]
-  } elseif { "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+  } else {
     lappend aVcFiles [osutils:vcx1proj:filters $theOutDir $theToolKit aVcFilesX]
   }
 
@@ -1653,7 +1664,7 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     regsub -all -- {vc[0-9]+} $aUsedToolKits $theVcVer aUsedToolKits
 
 #    puts "$aProjName requires  $aUsedToolKits"
-    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+    if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
       set aUsedToolKits [join $aUsedToolKits {;}]
     }
     regsub -all -- {__TKDEP__} $aProjTmpl $aUsedToolKits aProjTmpl
@@ -1664,7 +1675,7 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     if { ![info exists written([file tail $f])] } {
       set written([file tail $f]) 1
 
-      if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+      if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
         append aFilesSection [osutils:vcxproj:file $theVcVer $f ""]
         if { ! [info exists aVcFilesX($theToolKit)] } { lappend aVcFilesX(units) $theToolKit }
         lappend aVcFilesX($theToolKit) $f
@@ -1697,22 +1708,26 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     lappend aVcFiles $aVcFilePath
 
     # write filters file for vc10
-    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+    if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
       lappend aVcFiles [osutils:vcxproj:filters $theOutDir $aProjName aVcFilesX]
     }
 
     set aCommonSettingsFileTmpl ""
-    if { "$theVcVer" == "vc9" } {
-      set aCommonSettingsFileTmpl "$path/adm/templates/vcproj.user.vc9x"
-    } elseif { "$theVcVer" == "vc10" } {
-      set aCommonSettingsFileTmpl "$path/adm/templates/vcxproj.user.vc10x"
-    } elseif { "$theVcVer" == "vc11" } {
-      set aCommonSettingsFileTmpl "$path/adm/templates/vcxproj.user.vc11x"
-    } elseif { "$theVcVer" == "vc12" } {
-      set aCommonSettingsFileTmpl "$path/adm/templates/vcxproj.user.vc12x"
+    if { "$theVcVer" == "vc7" || "$theVcVer" == "vc8" } {
+      # nothing
+    } elseif { "$theVcVer" == "vc9" } {
+      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$path/adm/templates/vcproj.user.vc9x"]
+    } else {
+      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$path/adm/templates/vcxproj.user.vc10x"]
     }
     if { "$aCommonSettingsFileTmpl" != "" } {
-      file copy -force -- "$aCommonSettingsFileTmpl" "$aCommonSettingsFile"
+      regsub -all -- {__VCVER__} $aCommonSettingsFileTmpl $theVcVer aCommonSettingsFileTmpl
+
+      set aFile [open [set aVcFilePath "$aCommonSettingsFile"] w]
+      fconfigure $aFile -translation crlf
+      puts $aFile $aCommonSettingsFileTmpl
+      close $aFile
+
       lappend aVcFiles "$aCommonSettingsFile"
     }
   }
