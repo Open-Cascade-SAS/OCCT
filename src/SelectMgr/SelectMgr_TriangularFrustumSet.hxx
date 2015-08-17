@@ -44,34 +44,34 @@ public:
   //! Meshes polygon bounded by polyline. Than organizes a set of triangular frustums,
   //! where each triangle's projection onto near and far view frustum planes is
   //! considered as a frustum base
-  virtual void Build (const TColgp_Array1OfPnt2d& thePoints) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build (const TColgp_Array1OfPnt2d& thePoints) Standard_OVERRIDE;
 
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
 
-  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                     const SelectMgr_Vec3& theMaxPnt,
-                                     Standard_Boolean* theInside) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
+                                                     const SelectMgr_Vec3& theMaxPnt,
+                                                     Standard_Boolean* theInside) Standard_OVERRIDE;
 
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                     Select3D_TypeOfSensitivity theSensType,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                                     Select3D_TypeOfSensitivity theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                     const gp_Pnt& thePt2,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                                     const gp_Pnt& thePt2,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                     const gp_Pnt& thePt2,
-                                     const gp_Pnt& thePt3,
-                                     Select3D_TypeOfSensitivity theSensType,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
+                                                     const gp_Pnt& thePt2,
+                                                     const gp_Pnt& thePt3,
+                                                     Select3D_TypeOfSensitivity theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
 private:
 

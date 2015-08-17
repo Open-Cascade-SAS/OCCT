@@ -36,78 +36,78 @@ public:
   SelectMgr_RectangularFrustum() {};
 
   //! Builds volume according to the point and given pixel tolerance
-  virtual void Build (const gp_Pnt2d& thePoint) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build (const gp_Pnt2d& thePoint) Standard_OVERRIDE;
 
   //! Builds volume according to the selected rectangle
-  virtual void Build (const gp_Pnt2d& theMinPnt,
-                      const gp_Pnt2d& theMaxPnt) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build (const gp_Pnt2d& theMinPnt,
+                                      const gp_Pnt2d& theMaxPnt) Standard_OVERRIDE;
 
   //! Returns a copy of the frustum transformed according to the matrix given
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
 
   //! IMPORTANT: Makes sense only for frustum built on a single point!
   //! Returns a copy of the frustum resized according to the scale factor given
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> Scale (const Standard_Real theScaleFactor) Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> Scale (const Standard_Real theScaleFactor) Standard_OVERRIDE;
 
 
   // SAT Tests for different objects
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                     const SelectMgr_Vec3& theBoxMax,
-                                     Standard_Boolean*     theInside = NULL) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                     const SelectMgr_Vec3& theBoxMax,
+                                                     Standard_Boolean*     theInside = NULL) Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                     Select3D_TypeOfSensitivity theSensType,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                                                     Select3D_TypeOfSensitivity theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                     const gp_Pnt& thePnt2,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                                     const gp_Pnt& thePnt2,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                     const gp_Pnt& thePnt2,
-                                     const gp_Pnt& thePnt3,
-                                     Select3D_TypeOfSensitivity theSensType,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                                     const gp_Pnt& thePnt2,
+                                                     const gp_Pnt& thePnt3,
+                                                     Select3D_TypeOfSensitivity theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
-  virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) Standard_OVERRIDE;
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
-  virtual SelectMgr_Vec3 DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
+  Standard_EXPORT virtual SelectMgr_Vec3 DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
   //! Checks if the point of sensitive in which selection was detected belongs
   //! to the region defined by clipping planes
-  virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                      const Standard_Real theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean IsClipped (const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                                      const Standard_Real theDepth) Standard_OVERRIDE;
 
 protected:
 
-  void segmentSegmentDistance (const gp_Pnt& theSegPnt1,
-                               const gp_Pnt& theSegPnt2,
-                               Standard_Real& theDepth);
+  Standard_EXPORT void segmentSegmentDistance (const gp_Pnt& theSegPnt1,
+                                               const gp_Pnt& theSegPnt2,
+                                               Standard_Real& theDepth);
 
-  void segmentPlaneIntersection (const SelectMgr_Vec3& thePlane,
-                                 const gp_Pnt& thePntOnPlane,
-                                 Standard_Real& theDepth);
+  Standard_EXPORT void segmentPlaneIntersection (const SelectMgr_Vec3& thePlane,
+                                                 const gp_Pnt& thePntOnPlane,
+                                                 Standard_Real& theDepth);
 
 private:
 

@@ -37,38 +37,38 @@ class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet<Standard_Real, 3>
 
 public:
 
-  SelectMgr_SensitiveEntitySet();
+  Standard_EXPORT SelectMgr_SensitiveEntitySet();
 
   virtual ~SelectMgr_SensitiveEntitySet() {};
 
   //! Adds new entity to the set and marks BVH tree for rebuild
-  void Append (const Handle(SelectMgr_SensitiveEntity)& theEntity);
+  Standard_EXPORT void Append (const Handle(SelectMgr_SensitiveEntity)& theEntity);
 
   //! Adds every entity of selection theSelection to the set and marks
   //! BVH tree for rebuild
-  void Append (const Handle(SelectMgr_Selection)& theSelection);
+  Standard_EXPORT void Append (const Handle(SelectMgr_Selection)& theSelection);
 
   //! Removes every entity of selection theSelection from the set
   //! and marks BVH tree for rebuild
-  void Remove (const Handle(SelectMgr_Selection)& theSelection);
+  Standard_EXPORT void Remove (const Handle(SelectMgr_Selection)& theSelection);
 
   //! Returns bounding box of entity with index theIdx
-  virtual Select3D_BndBox3d Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Select3D_BndBox3d Box (const Standard_Integer theIndex) const Standard_OVERRIDE;
 
   //! Returns geometry center of sensitive entity index theIdx
   //! along the given axis theAxis
-  virtual Standard_Real Center (const Standard_Integer theIndex,
-                                const Standard_Integer theAxis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Center (const Standard_Integer theIndex,
+                                                const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Swaps items with indexes theIdx1 and theIdx2
-  virtual void Swap (const Standard_Integer theIndex1,
-                     const Standard_Integer theIndex2) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Swap (const Standard_Integer theIndex1,
+                                     const Standard_Integer theIndex2) Standard_OVERRIDE;
 
   //! Returns the amount of entities
-  virtual Standard_Integer Size() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns the entity with index theIndex in the set
-  const Handle(SelectMgr_SensitiveEntity)& GetSensitiveById (const Standard_Integer theIndex) const;
+  Standard_EXPORT const Handle(SelectMgr_SensitiveEntity)& GetSensitiveById (const Standard_Integer theIndex) const;
 
 private:
 

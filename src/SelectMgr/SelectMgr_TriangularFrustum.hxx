@@ -31,56 +31,56 @@ public:
   //! theP2 and theP3 projections onto near and far view frustum planes
   SelectMgr_TriangularFrustum() {};
 
-  ~SelectMgr_TriangularFrustum();
+  Standard_EXPORT ~SelectMgr_TriangularFrustum();
 
   //! Creates new triangular frustum with bases of triangles with vertices theP1, theP2 and theP3
   //! projections onto near and far view frustum planes (only for triangular frustums)
-  virtual void Build (const gp_Pnt2d& theP1,
-                      const gp_Pnt2d& theP2,
-                      const gp_Pnt2d& theP3) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build (const gp_Pnt2d& theP1,
+                                      const gp_Pnt2d& theP2,
+                                      const gp_Pnt2d& theP3) Standard_OVERRIDE;
 
   //! Returns a copy of the frustum transformed according to the matrix given
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
 
   // SAT Tests for different objects
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
-                                     const SelectMgr_Vec3& theMaxPt,
-                                     Standard_Boolean* theInside) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPt,
+                                                     const SelectMgr_Vec3& theMaxPt,
+                                                     Standard_Boolean* theInside) Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                     Select3D_TypeOfSensitivity theSensType,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                                                     Select3D_TypeOfSensitivity theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                     const gp_Pnt& thePnt2,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                                     const gp_Pnt& thePnt2,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                     const gp_Pnt& thePnt2,
-                                     const gp_Pnt& thePnt3,
-                                     Select3D_TypeOfSensitivity theSensType,
-                                     Standard_Real& theDepth) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                                     const gp_Pnt& thePnt2,
+                                                     const gp_Pnt& thePnt3,
+                                                     Select3D_TypeOfSensitivity theSensType,
+                                                     Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
-  void Clear();
+  Standard_EXPORT void Clear();
 
   DEFINE_STANDARD_RTTI(SelectMgr_TriangularFrustum,Standard_Transient)
 };

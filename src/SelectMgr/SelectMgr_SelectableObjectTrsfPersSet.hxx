@@ -85,9 +85,9 @@ public:
   }
 
   //! Returns BVH tree for the given world view projection (builds it if necessary).
-  const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& BVH (const Graphic3d_Mat4d& theProjectionMatrix,
-                                                              const Graphic3d_Mat4d& theWorldViewMatrix,
-                                                              const Graphic3d_WorldViewProjState& theWVPState);
+  Standard_EXPORT const NCollection_Handle<BVH_Tree<Standard_Real, 3> >& BVH (const Graphic3d_Mat4d& theProjectionMatrix,
+                                                                              const Graphic3d_Mat4d& theWorldViewMatrix,
+                                                                              const Graphic3d_WorldViewProjState& theWVPState);
 
 private:
 

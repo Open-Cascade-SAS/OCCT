@@ -76,7 +76,7 @@ public:
   //! The default setting 0 is the selection mode for a shape in its entirety.
   Standard_EXPORT SelectMgr_Selection (const Standard_Integer theModeIdx = 0);
 
-  ~SelectMgr_Selection();
+  Standard_EXPORT ~SelectMgr_Selection();
 
   Standard_EXPORT void Destroy();
 
@@ -137,7 +137,7 @@ public:
 protected:
 
   //! Returns sensitive entity stored by index theIdx in entites vector
-  Handle(SelectMgr_SensitiveEntity)& GetEntityById (const Standard_Integer theIdx);
+  Standard_EXPORT Handle(SelectMgr_SensitiveEntity)& GetEntityById (const Standard_Integer theIdx);
 
 private:
 

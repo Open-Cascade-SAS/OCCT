@@ -33,46 +33,46 @@ public:
   SelectMgr_FrustumBuilder();
 
   //! Stores current world view transformation matrix
-  void SetWorldViewMatrix (const Graphic3d_Mat4d& theWorldViewMatrix);
+  Standard_EXPORT void SetWorldViewMatrix (const Graphic3d_Mat4d& theWorldViewMatrix);
 
   //! @return current world view transformation matrix
-  const Graphic3d_Mat4d& WorldViewMatrix() const;
+  Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
 
   //! Stores current projection matrix
-  void SetProjectionMatrix (const Graphic3d_Mat4d& theProjection);
+  Standard_EXPORT void SetProjectionMatrix (const Graphic3d_Mat4d& theProjection);
 
   //! @return current projection matrix
-  const Graphic3d_Mat4d& ProjectionMatrix() const;
+  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
 
   //! Stores current world view projection matrix state for the orientation and projection matrices
-  void SetWorldViewProjState (const Graphic3d_WorldViewProjState& theState);
+  Standard_EXPORT void SetWorldViewProjState (const Graphic3d_WorldViewProjState& theState);
 
   //! @return current world view projection state
-  const Graphic3d_WorldViewProjState& WorldViewProjState() const;
+  Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
 
   //! Stores current window width and height
-  void SetWindowSize (const Standard_Integer theWidth,
-                      const Standard_Integer theHeight);
+  Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth,
+                                      const Standard_Integer theHeight);
 
   //! Stores current viewport coordinates
-  void SetViewport (const Standard_Real theX,
-                    const Standard_Real theY,
-                    const Standard_Real theWidth,
-                    const Standard_Real theHeight);
+  Standard_EXPORT void SetViewport (const Standard_Real theX,
+                                    const Standard_Real theY,
+                                    const Standard_Real theWidth,
+                                    const Standard_Real theHeight);
 
-  void InvalidateViewport();
+  Standard_EXPORT void InvalidateViewport();
 
   //! Calculates signed distance between plane with equation
   //! theEq and point thePnt
-  Standard_Real SignedPlanePntDist (const SelectMgr_Vec3& theEq,
-                                   const SelectMgr_Vec3& thePnt) const;
+  Standard_EXPORT Standard_Real SignedPlanePntDist (const SelectMgr_Vec3& theEq,
+                                                    const SelectMgr_Vec3& thePnt) const;
 
   //! Projects 2d screen point onto view frustum plane:
   //! theZ = 0 - near plane,
   //! theZ = 1 - far plane
-  SelectMgr_Vec3 ProjectPntOnViewPlane (const Standard_Real& theX,
-                                        const Standard_Real& theY,
-                                        const Standard_Real& theZ) const;
+  Standard_EXPORT SelectMgr_Vec3 ProjectPntOnViewPlane (const Standard_Real& theX,
+                                                        const Standard_Real& theY,
+                                                        const Standard_Real& theZ) const;
 
   DEFINE_STANDARD_RTTI(SelectMgr_FrustumBuilder, Standard_Transient)
 
