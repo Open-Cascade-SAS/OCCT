@@ -1014,15 +1014,31 @@ void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& t
 
   AIS_Selection::SetCurrentSelection (myCurrentName.ToCString());
   Handle(AIS_Selection) aCurSel = AIS_Selection::Selection (myCurrentName.ToCString());
+  NCollection_IndexedMap<Handle(AIS_InteractiveObject)> anObjToClear;
   for (aCurSel->Init(); aCurSel->More(); aCurSel->Next())
   {
     const Handle(SelectMgr_EntityOwner) anOwner =
       Handle(SelectMgr_EntityOwner)::DownCast (aCurSel->Value());
     if (!anOwner->HasSelectable())
       continue;
-    const Standard_Integer aHiMode = anObject->HasHilightMode() ? anObject->HilightMode() : 0;
-    anOwner->Unhilight (myMainPM, aHiMode);
+    const Handle(AIS_InteractiveObject) anInteractive =
+      Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    if (anOwner->IsAutoHilight())
+    {
+      const Standard_Integer aHiMode = anInteractive->HasHilightMode() ? anInteractive->HilightMode() : 0;
+      anOwner->Unhilight (myMainPM, aHiMode);
+    }
+    else
+    {
+      if (!anObjToClear.Contains (anInteractive))
+        anObjToClear.Add (anInteractive);
+    }
     anOwner->State (0);
+  }
+  while (!anObjToClear.IsEmpty())
+  {
+    anObjToClear.FindKey (anObjToClear.Size())->ClearSelected();
+    anObjToClear.RemoveLast();
   }
 
   AIS_Selection::ClearAndSelect (theOwner);
