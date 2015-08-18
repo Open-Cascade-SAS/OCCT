@@ -14,8 +14,6 @@
 
 #include <BOPAlgo_Section.ixx>
 
-#include <NCollection_IncAllocator.hxx>
-
 #include <TopAbs_ShapeEnum.hxx>
 
 #include <TopoDS_Compound.hxx>

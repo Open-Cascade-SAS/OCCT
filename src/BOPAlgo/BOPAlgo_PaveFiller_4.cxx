@@ -17,8 +17,6 @@
 
 #include <BOPAlgo_PaveFiller.ixx>
 //
-#include <NCollection_IncAllocator.hxx>
-//
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
@@ -249,9 +247,10 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
   Standard_Integer i, aNbS,aNbEEs, nF, nV, iFlag;
   Standard_Real aT1, aT2;
   BOPCol_ListIteratorOfListOfInteger aItLI;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   //
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPCol_ListOfInteger aLIV(aAllocator), aLIF(aAllocator);
   BOPCol_MapOfInteger aMI(100, aAllocator);
   BOPDS_MapOfPaveBlock aMPBF(100, aAllocator);
@@ -322,6 +321,4 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
       }
     }
   }
-  //
-  aAllocator.Nullify();
 }

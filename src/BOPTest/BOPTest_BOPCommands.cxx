@@ -25,7 +25,6 @@
 #include <Draw.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_IncAllocator.hxx>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
@@ -161,7 +160,8 @@ Standard_Integer bop(Draw_Interpretor& di,
     delete pPF;
     pPF=NULL;
   }
-  Handle(NCollection_BaseAllocator)aAL=new NCollection_IncAllocator;
+  Handle(NCollection_BaseAllocator)aAL=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   pPF=new BOPAlgo_PaveFiller(aAL);
   //
   pPF->SetArguments(aLC);
@@ -492,7 +492,8 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aTol=BOPTest_Objects::FuzzyValue();
   bRunParallel = BOPTest_Objects::RunParallel();
   //
-  Handle(NCollection_BaseAllocator)aAL=new NCollection_IncAllocator;
+  Handle(NCollection_BaseAllocator)aAL=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   //---------------------------------------------------------------
   BOPAlgo_PaveFiller aPF(aAL);

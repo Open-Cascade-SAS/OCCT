@@ -24,7 +24,6 @@
 #include <BRep_Tool.hxx>
 
 #include <NCollection_UBTreeFiller.hxx>
-#include <NCollection_IncAllocator.hxx>
 
 #include <BOPCol_BoxBndTree.hxx>
 #include <BOPDS_IndexRange.hxx>
@@ -90,11 +89,12 @@ void BOPDS_IteratorSI::Intersect()
   Standard_Integer aNbS, i, aNbB;
   Standard_Integer aNbSD, iX, j, iDS, jB;
   TopAbs_ShapeEnum aTi, aTj;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfInteger aIt;
   //
   //-----------------------------------------------------scope_1 f
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_DataMapOfShapeInteger aMSI(100, aAllocator);
   BOPCol_DataMapOfIntegerInteger aMII(100, aAllocator);
@@ -204,6 +204,5 @@ void BOPDS_IteratorSI::Intersect()
   aMPKXB.Clear();
   aMSB.Clear();
   //
-  aAllocator.Nullify();
   //-----------------------------------------------------scope_1 t
 }

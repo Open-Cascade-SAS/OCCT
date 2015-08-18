@@ -17,8 +17,6 @@
 
 #include <BOPAlgo_PaveFiller.ixx>
 
-#include <NCollection_IncAllocator.hxx>
-//
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 //
 #include <Bnd_Box.hxx>
@@ -152,15 +150,15 @@ void BOPAlgo_PaveFiller::PerformEF()
   Standard_Integer nE, nF, aDiscretize, i, aNbCPrts, iX, nV[2];
   Standard_Integer aNbEdgeFace, k;
   Standard_Real aTolE, aTolF, aTS1, aTS2, aT1, aT2, aDeflection;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   TopAbs_ShapeEnum aType;
   BOPDS_ListIteratorOfListOfPaveBlock aIt;
   BOPAlgo_VectorOfEdgeFace aVEdgeFace; 
   BRep_Builder aBB;
   //-----------------------------------------------------scope f
   //
-  ////aAllocator=new NCollection_IncAllocator();
-  
+  aAllocator=NCollection_BaseAllocator::CommonBaseAllocator();
+  //
   BOPCol_MapOfInteger aMIEFC(100, aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);
   BOPDS_IndexedDataMapOfPaveBlockListOfInteger aMPBLI(100, aAllocator);

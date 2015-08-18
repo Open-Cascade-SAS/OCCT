@@ -17,9 +17,27 @@
 
 #include <BOPAlgo_PaveFiller.ixx>
 
-#include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
-#include <BOPCol_IndexedMapOfShape.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+
+#include <BRepBndLib.hxx>
+
+#include <BRep_Tool.hxx>
+#include <BRep_Builder.hxx>
+
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom2d_Curve.hxx>
+
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_Parallel.hxx>
 #include <BOPCol_MapOfShape.hxx>

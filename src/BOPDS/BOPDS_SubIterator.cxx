@@ -16,7 +16,6 @@
 //
 #include <Bnd_Box.hxx>
 //
-#include <NCollection_IncAllocator.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 //
 #include <TopoDS.hxx>
@@ -141,7 +140,7 @@
 // purpose: 
 //=======================================================================
   void BOPDS_SubIterator::Value(Standard_Integer& theI1,
-				Standard_Integer& theI2) const
+                                Standard_Integer& theI2) const
 {
   Standard_Integer iT1, iT2, n1, n2;
   //
@@ -181,12 +180,13 @@
   void BOPDS_SubIterator::Intersect()
 {
   Standard_Integer i, aNbB, aNbSD, j, iDS, jB;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfInteger aIt, aIt1, aIt2;
   BOPDS_PassKeyBoolean aPKXB; 
   //
   //-----------------------------------------------------scope_1 f
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_DataMapOfShapeInteger aMSI(100, aAllocator);
   BOPCol_DataMapOfIntegerInteger aMII(100, aAllocator);
@@ -243,7 +243,7 @@
       //
       aPKXB.SetIds(i, j);
       if (aMPKXB.Add(aPKXB)) {
-	myList.Append(aPKXB);
+        myList.Append(aPKXB);
       }// if (aMPKXB.Add(aPKXB)) {
     }// for (; aIt.More(); aIt.Next()) {
   }
@@ -253,6 +253,5 @@
   aMPKXB.Clear();
   aMSB.Clear();
   //
-  aAllocator.Nullify();
   //-----------------------------------------------------scope_1 t
 }

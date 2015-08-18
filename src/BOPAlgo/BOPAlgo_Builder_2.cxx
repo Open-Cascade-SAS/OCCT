@@ -17,8 +17,6 @@
 
 #include <BOPAlgo_Builder.ixx>
 //
-#include <NCollection_IncAllocator.hxx>
-//
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
@@ -68,11 +66,11 @@ static
   void FillMap(const TopoDS_Shape& aS1,
                const TopoDS_Shape& aS2,
                BOPCol_IndexedDataMapOfShapeListOfShape& aDMSLS,
-               Handle(NCollection_IncAllocator)& aAllocator);
+               Handle(NCollection_BaseAllocator)& aAllocator);
 static
   void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
                      BOPCol_DataMapOfIntegerListOfShape& aMBlocks,
-                     Handle(NCollection_IncAllocator)& aAllocator);
+                     Handle(NCollection_BaseAllocator)& aAllocator);
 //
 typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
 //
@@ -269,7 +267,8 @@ void BOPAlgo_Builder::BuildSplitFaces()
   myErrorStatus=0;
   //
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope f
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPCol_ListOfShape aLE(aAllocator);
   BOPCol_MapOfShape aMDE(100, aAllocator);
@@ -443,7 +442,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
     mySplits.Bind(aF, aLFIm); 
   }// for (k=0; k<aNbBF; ++k) {
   //
-  aAllocator.Nullify();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope t
 }
 //=======================================================================
@@ -454,7 +452,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
 {
   Standard_Boolean bFlag;
   Standard_Integer i, j, k, aNbFFs, aNbCurves, aNbPoints, nF1, nF2, aNbS;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfShape aItF;
   BOPCol_MapOfShape aMFence;
   BOPAlgo_IndexedDataMapOfSetInteger aIDMSS;
@@ -603,7 +601,8 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   //================================================================
   BOPAlgo_BuilderSDFaceCnt::Perform(myRunParallel, aVPSB, myContext);
   //================================================================
-  aAllocator=new NCollection_IncAllocator();
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS(100, aAllocator);
   BOPCol_DataMapOfIntegerListOfShape aMBlocks(100, aAllocator);
   //
@@ -647,7 +646,6 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   }
   aMBlocks.Clear();
   aDMSLS.Clear();
-  aAllocator.Nullify();
 }
 //=======================================================================
 // function: FillImagesFaces1
@@ -753,7 +751,7 @@ void BOPAlgo_Builder::FillImagesFaces1()
 //=======================================================================
 void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
                    BOPCol_DataMapOfIntegerListOfShape& aMBlocks,
-                   Handle(NCollection_IncAllocator)& aAllocator)
+                   Handle(NCollection_BaseAllocator)& aAllocator)
 {
   Standard_Integer aNbV, aNbVS, aNbVP, aNbEC, k, i, j;
   BOPCol_ListIteratorOfListOfShape aItLI;
@@ -835,7 +833,7 @@ void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
 void FillMap(const TopoDS_Shape& aS1,
              const TopoDS_Shape& aS2,
              BOPCol_IndexedDataMapOfShapeListOfShape& aDMSLS,
-             Handle(NCollection_IncAllocator)& aAllocator)
+             Handle(NCollection_BaseAllocator)& aAllocator)
 {
   if (aDMSLS.Contains(aS1)) {
     BOPCol_ListOfShape& aLS=aDMSLS.ChangeFromKey(aS1);

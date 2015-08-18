@@ -39,7 +39,7 @@
 #include <Extrema_LocateExtPC.hxx>
 
 #include <Geom2d_Curve.hxx>
-#include <NCollection_IncAllocator.hxx>
+
 #include <IntTools_SurfaceRangeLocalizeData.hxx>
 
 
@@ -49,7 +49,7 @@
 //=======================================================================
 IntTools_Context::IntTools_Context()
 :
-  myAllocator(new NCollection_IncAllocator()),
+  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myFClass2dMap(100, myAllocator),
   myProjPSMap(100, myAllocator),
   myProjPCMap(100, myAllocator),

@@ -38,7 +38,6 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 
 #include <BRep_Tool.hxx>
-#include <NCollection_IncAllocator.hxx>
 //
 #include <BOPTools_Set.hxx>
 #include <BOPTools_SetMapHasher.hxx>
@@ -361,7 +360,8 @@ void BOPAlgo_BOP::Perform()
     }
   }
   //
-  aAllocator=new NCollection_IncAllocator;
+  aAllocator=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPCol_ListOfShape aLS(aAllocator);
   //
   aItLS.Initialize(myArguments);

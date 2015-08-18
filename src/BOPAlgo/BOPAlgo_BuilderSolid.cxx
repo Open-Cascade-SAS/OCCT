@@ -15,30 +15,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 //
-#include <BOPAlgo_BuilderSolid.hxx>
-#include <BOPAlgo_ShellSplitter.hxx>
-#include <BOPCol_BoxBndTree.hxx>
-#include <BOPCol_DataMapOfShapeListOfShape.hxx>
-#include <BOPCol_DataMapOfShapeShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeShape.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPCol_MapOfOrientedShape.hxx>
-#include <BOPCol_MapOfShape.hxx>
-#include <BOPCol_NCVector.hxx>
-#include <BOPCol_Parallel.hxx>
-#include <BOPTools.hxx>
-#include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
-#include <BOPTools_CoupleOfShape.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
+#include <BOPAlgo_BuilderSolid.ixx>
+//
+#include <NCollection_List.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_UBTreeFiller.hxx>
+//
+#include <gp_Pnt2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 //
@@ -65,6 +50,23 @@
 #include <IntTools_Context.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_UBTreeFiller.hxx>
+
+#include <BOPAlgo_ShellSplitter.hxx>
+#include <BOPCol_BoxBndTree.hxx>
+#include <BOPCol_MapOfOrientedShape.hxx>
+#include <BOPCol_IndexedMapOfShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_Parallel.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <BOPTools.hxx>
+#include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <TopExp_Explorer.hxx>
 
 //
 static
@@ -441,7 +443,8 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   myErrorStatus=0;
   myLoops.Clear();
   //
-  aAlr=new NCollection_IncAllocator();
+  aAlr=
+    NCollection_BaseAllocator::CommonBaseAllocator();
   BOPAlgo_ShellSplitter aSSp(aAlr);
   //
   // 1. Shells Usual

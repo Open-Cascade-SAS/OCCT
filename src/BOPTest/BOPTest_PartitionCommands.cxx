@@ -16,9 +16,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-#include <NCollection_IncAllocator.hxx>
-
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <Draw_Color.hxx>

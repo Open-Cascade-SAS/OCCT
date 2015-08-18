@@ -148,6 +148,10 @@ is
     PerformZZ(me:out) 
       is virtual protected;  
       --Purpose: Computes Solid/Solid interferences  
+  
+    PerformSZ(me:out; 
+        aTS:ShapeEnum from TopAbs) 
+      is virtual protected;
  
     TreatVerticesEE(me:out) 
       is protected; 
