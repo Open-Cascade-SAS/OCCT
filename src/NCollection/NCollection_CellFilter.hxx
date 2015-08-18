@@ -291,8 +291,8 @@ protected:
     //! Assignment operator: ensure that list is not deleted twice
     void operator = (const Cell& theOther)
     {
-      Standard_Integer myDim = Standard_Integer(theOther.index.Size());
-      for(Standard_Integer anIdx = 0; anIdx < myDim; anIdx++)
+      Standard_Integer aDim = Standard_Integer(theOther.index.Size());
+      for(Standard_Integer anIdx = 0; anIdx < aDim; anIdx++)
         index[anIdx] = theOther.index[anIdx];
 
       Objects = theOther.Objects;
@@ -311,8 +311,8 @@ protected:
     //! Compare cell with other one
     Standard_Boolean IsEqual (const Cell& theOther) const
     {
-      Standard_Integer myDim = Standard_Integer(theOther.index.Size());
-      for (int i=0; i < myDim; i++) 
+      Standard_Integer aDim = Standard_Integer(theOther.index.Size());
+      for (int i=0; i < aDim; i++) 
         if ( index[i] != theOther.index[i] ) return Standard_False;
       return Standard_True;
     }
@@ -321,10 +321,10 @@ protected:
     Standard_Integer HashCode (const Standard_Integer theUpper) const
     {
       // number of bits per each dimension in the hash code
-      Standard_Integer myDim = Standard_Integer(index.Size());
-      const Standard_Size aShiftBits = (BITS(long)-1) / myDim;
+      Standard_Integer aDim = Standard_Integer(index.Size());
+      const Standard_Size aShiftBits = (BITS(long)-1) / aDim;
       long aCode=0;
-      for (int i=0; i < myDim; i++)
+      for (int i=0; i < aDim; i++)
         aCode = ( aCode << aShiftBits ) ^ index[i];
       return (unsigned)aCode % theUpper;
     }
