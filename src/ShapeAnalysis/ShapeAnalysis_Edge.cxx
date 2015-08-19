@@ -32,6 +32,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -1027,4 +1028,45 @@ Standard_Boolean ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge
    
   theTolOverlap = aresTol;
    return isOverlap;
+}
+
+//=======================================================================
+//function : CheckPCurveRange
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean ShapeAnalysis_Edge::CheckPCurveRange (const Standard_Real theFirst, 
+                                                       const Standard_Real theLast,
+                                                       const Handle(Geom2d_Curve)& thePC)
+{
+  const Standard_Real eps = Precision::PConfusion();
+  Standard_Boolean isValid = Standard_True; 
+  Standard_Boolean IsPeriodic = thePC->IsPeriodic();
+  Standard_Real aPeriod = RealLast();
+  if(IsPeriodic)
+  {
+    aPeriod = thePC->Period();
+  }
+  Standard_Real fp = thePC->FirstParameter(), lp = thePC->LastParameter();
+  if (thePC->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
+  {
+    const Handle(Geom2d_Curve)& aC = Handle(Geom2d_TrimmedCurve)::DownCast (thePC)->BasisCurve(); 
+    fp = aC->FirstParameter();
+    lp = aC->LastParameter();
+    IsPeriodic = aC->IsPeriodic();
+    if(IsPeriodic)
+    {
+      aPeriod = aC->Period();
+    }
+  }
+  if(IsPeriodic && (theLast - theFirst > aPeriod + eps))
+  {
+    isValid = Standard_False;
+  }
+  else if(!IsPeriodic && (theFirst < fp - eps || theLast > lp + eps))
+  {
+    isValid = Standard_False;
+  }
+
+  return isValid;
 }

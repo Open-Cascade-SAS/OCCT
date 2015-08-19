@@ -971,14 +971,27 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
 
     if(aCCheck->IsPeriodic())
     {
-      TC = new Geom2d_TrimmedCurve( CurvePtr, FirstOnCurve, LastOnCurve );
+      if(Abs(LastOnCurve - FirstOnCurve) > Precision::PConfusion())
+      {
+        TC = new Geom2d_TrimmedCurve( CurvePtr, FirstOnCurve, LastOnCurve );
+      }
+      else
+      {
+        TC = new Geom2d_TrimmedCurve( CurvePtr, CurvePtr->FirstParameter(), CurvePtr->LastParameter() );
+      }
     }
     else
     {
       const Standard_Real Udeb = Max(CurvePtr->FirstParameter(), FirstOnCurve);
       const Standard_Real Ufin = Min(CurvePtr->LastParameter(), LastOnCurve);
-
-      TC = new Geom2d_TrimmedCurve( CurvePtr, Udeb, Ufin );
+      if(Abs(Ufin - Udeb) > Precision::PConfusion())
+      {
+        TC = new Geom2d_TrimmedCurve( CurvePtr, Udeb, Ufin );
+      }
+      else
+      {
+        TC = new Geom2d_TrimmedCurve( CurvePtr, CurvePtr->FirstParameter(), CurvePtr->LastParameter());
+      }
     }
 
     //

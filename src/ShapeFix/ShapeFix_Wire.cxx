@@ -794,11 +794,25 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
       if(sae.HasPCurve(sbwd->Edge(i),face)) {
         Handle(Geom2d_Curve) C2d;
         Standard_Real fp2d,lp2d;
-        if(sae.PCurve(sbwd->Edge(i),face,C2d,fp2d,lp2d)) {
+        if(sae.PCurve(sbwd->Edge(i),face,C2d,fp2d,lp2d, Standard_False)) {
           if( fabs(First-fp2d)>Precision::PConfusion() ||
-              fabs(Last-lp2d)>Precision::PConfusion() ) {
+              fabs(Last-lp2d)>Precision::PConfusion()    ) 
+          {
             BRep_Builder B;
             B.SameRange(sbwd->Edge(i),Standard_False);
+          }
+          else if(!sae.CheckPCurveRange(First, Last, C2d))
+          {
+            //Replace pcurve
+            TopLoc_Location L;
+            const Handle(Geom_Surface)& S = BRep_Tool::Surface(face, L);
+            ShapeBuild_Edge().RemovePCurve (sbwd->Edge(i),  S, L);
+            myFixEdge->FixAddPCurve ( sbwd->Edge(i), face, sbwd->IsSeam(i), 
+			 myAnalyzer->Surface(), Precision() );
+            if ( myFixEdge->Status ( ShapeExtend_DONE ) ) 
+              myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
+            if ( myFixEdge->Status ( ShapeExtend_FAIL ) ) 
+              myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL3 );
           }
         }
       }

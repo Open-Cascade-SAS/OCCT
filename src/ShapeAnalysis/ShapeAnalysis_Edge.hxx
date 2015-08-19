@@ -170,7 +170,12 @@ public:
   //! If deviation is greater than tolerance of the edge (i.e.
   //! incorrect flag) returns False, else returns True.
   Standard_EXPORT Standard_Boolean CheckSameParameter (const TopoDS_Edge& theEdge, const TopoDS_Face& theFace, Standard_Real& theMaxdev, const Standard_Integer theNbControl = 23);
-  
+
+  //! Checks possibility for pcurve thePC to have range [theFirst, theLast] (edge range)
+  //! having respect to real first, last parameters of thePC 
+  Standard_EXPORT Standard_Boolean CheckPCurveRange (const Standard_Real theFirst, const Standard_Real theLast,
+                                                     const Handle(Geom2d_Curve)& thePC);
+
   //! Computes the maximal deviation between the two curve
   //! representations.
   //! dev is an input/output parameter and contains the computed

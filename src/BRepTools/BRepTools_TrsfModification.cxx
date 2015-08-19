@@ -180,6 +180,17 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d
   if(!NewC->IsPeriodic()) {
     if(fc - f > Precision::PConfusion()) f = fc;
     if(l - lc > Precision::PConfusion()) l = lc;
+    if(Abs(l - f) < Precision::PConfusion())
+    {
+      if(Abs(f - fc) < Precision::PConfusion())
+      {
+        l = lc;
+      }
+      else
+      {
+        f = fc;
+      }
+    }
   }
 
   newf = f;

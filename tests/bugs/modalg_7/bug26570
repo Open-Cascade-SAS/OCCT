@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC26570"
+puts "========"
+puts ""
+#####################################
+# Crash on attempt to rotate a shape
+#####################################
+
+restore [locate_data_file bug26570.brep] s
+
+fixshape result s
+trotate result 0 0 0 500 0 0 180 -copy
+checkshape result
+
+

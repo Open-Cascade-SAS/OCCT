@@ -1,6 +1,6 @@
 puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_"
 
-puts "TODO OCC24251 ALL: ERROR: OCC24251 is reproduced."
+#puts "TODO OCC24251 ALL: ERROR: OCC24251 is reproduced."
 
 puts "========"
 puts "OCC24251"
