@@ -36,7 +36,6 @@
 #include <BRepFill.hxx>
 #include <BRepGProp.hxx>
 #include <BRepLib_MakeFace.hxx>
-#include <BRepOffset_MakeOffset.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepTools.hxx>
