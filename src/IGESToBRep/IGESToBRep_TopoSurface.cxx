@@ -144,7 +144,6 @@
 #include <IGESGeom_CircularArc.hxx>
 #include <ElCLib.hxx>
 
-#include <BRepOffset_MakeOffset.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <ShapeAlgo.hxx>
