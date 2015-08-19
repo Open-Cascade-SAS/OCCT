@@ -40,6 +40,7 @@ class XCAFDoc_DimTolTool;
 class XCAFDoc_LayerTool;
 class XCAFDoc_MaterialTool;
 class XCAFDoc_GraphNode;
+class XCAFDoc_Editor;
 
 
 //! Definition of general structure of DECAF document
@@ -130,6 +131,7 @@ friend class XCAFDoc_DimTolTool;
 friend class XCAFDoc_LayerTool;
 friend class XCAFDoc_MaterialTool;
 friend class XCAFDoc_GraphNode;
+friend class XCAFDoc_Editor;
 
 };
 

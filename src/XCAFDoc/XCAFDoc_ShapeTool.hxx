@@ -409,7 +409,12 @@ public:
   //! from upper_usage componet to next_usage
   //! Returns null attribute if no SHUO found
   Standard_EXPORT static Standard_Boolean FindSHUO (const TDF_LabelSequence& Labels, Handle(XCAFDoc_GraphNode)& theSHUOAttr);
+  
+  //! Convert Shape (compound) to assembly
+  Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape) ;
 
+    //! Make subshape for Part from Shape
+  Standard_EXPORT void makeSubShape (const TDF_Label& Part, const TopoDS_Shape& Shape) ;
 
 
 

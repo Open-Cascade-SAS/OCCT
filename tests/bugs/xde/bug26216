@@ -1,0 +1,49 @@
+puts "========"
+puts "OCC26216"
+puts "========"
+puts ""
+#######################################################################
+# Convert compound to assembly
+#######################################################################
+
+pload ALL
+
+box b1 0 0 0 10 10 10
+box b2 0 0 0 10 10 10
+box b3 0 0 0 10 10 10
+compound  b1 b2 b3 c
+
+XNewDoc D
+XAddShape D c 0
+explode c
+XSetColor D c_1 1 0 0
+XSetColor D c_2 0 1 0
+XSetColor D c_3 0 0 1
+XExpand D c
+
+if { [regexp "ASSEMBLY COMPOUND 0:1:1:1 \"COMPOUND\"" [Xdump D]] != 1 } {
+ puts "ERROR: Structure of document is wrong."
+} else {
+  if { [regexp "RED" [XGetShapeColor D 0:1:1:2]] != 1 } {
+    puts "ERROR: Structure of document is wrong."
+  } else {
+    if { [regexp "GREEN" [XGetShapeColor D 0:1:1:3]] != 1 } {
+      puts "ERROR: Structure of document is wrong."
+    } else {
+      if { [regexp "BLUE1" [XGetShapeColor D 0:1:1:4]] != 1 } {
+        puts "ERROR: Structure of document is wrong."
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+

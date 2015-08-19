@@ -25,6 +25,8 @@ XCAFDoc_DimTolTool.cxx
 XCAFDoc_DimTolTool.hxx
 XCAFDoc_DocumentTool.cxx
 XCAFDoc_DocumentTool.hxx
+XCAFDoc_Editor.cxx
+XCAFDoc_Editor.hxx
 XCAFDoc_GraphNode.cxx
 XCAFDoc_GraphNode.hxx
 XCAFDoc_GraphNodeSequence.hxx

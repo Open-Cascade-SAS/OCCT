@@ -45,6 +45,13 @@
 #include <XSDRAWSTEP.hxx>
 #include <DDF.hxx>
 
+#include <DBRep.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_Editor.hxx>
+#include <TDF_Tool.hxx>
+#include <TopoDS_Shape.hxx>
+
 #include <stdio.h>
 //============================================================
 // Support for several models in DRAW
@@ -465,6 +472,53 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
   return 0;
 }
 
+static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di<<"Use: "<<argv[0]<<" Doc recurs(0/1) or Doc recurs(0/1) label1 label2 ... or Doc recurs(0/1 shape1 shape2 ..."<<"\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;   
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  Standard_Boolean recurs = Standard_False;
+  if(atoi(argv[2]) != 0)
+    recurs = Standard_True;
+
+  if (argc == 3)
+  {
+    if(!XCAFDoc_Editor::Expand(Doc->Main(), recurs)){
+      di << "The shape is assembly or not compaund" << "\n";
+      return 1;
+    }
+  }
+  else 
+  {
+    for (Standard_Integer i = 3; i < argc; i++)
+    {
+      TDF_Label aLabel;
+      TDF_Tool::Label(Doc->GetData(), argv[i], aLabel);
+      if(aLabel.IsNull()){
+        TopoDS_Shape aShape;
+        aShape = DBRep::Get(argv[i]);
+        aLabel = aShapeTool->FindShape(aShape);
+      }
+
+      if (!aLabel.IsNull()){
+        if(!XCAFDoc_Editor::Expand(Doc->Main(), aLabel, recurs)){
+          di << "The shape is assembly or not compaund" << "\n";
+          return 1;
+        }
+      }
+      else
+      { di << argv[i] << " is not a shape" << "\n"; return 1; }
+    }
+  }
+  return 0;
+}
+
 void XDEDRAW_Common::InitCommands(Draw_Interpretor& di) {
 
   static Standard_Boolean initactor = Standard_False;
@@ -481,5 +535,8 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di) {
   di.Add("XFileCur", ": returns name of file which is set as current",__FILE__, GetCurWS, g);
   di.Add("XFileSet", "filename: Set the specified file to be the current one",__FILE__, SetCurWS, g);
   di.Add("XFromShape", "shape: do fromshape command for all the files",__FILE__, FromShape, g);
+
+  di.Add("XExpand", "XExpand Doc recursively(0/1) or XExpand Doc recursively(0/1) label1 abel2 ..."  
+          "or XExpand Doc recursively(0/1) shape1 shape2 ...",__FILE__, Expand, g);
 
 }
