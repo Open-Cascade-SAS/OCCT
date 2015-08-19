@@ -21,13 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-class Geom2d_BSplineCurve;
-class Adaptor2d_HCurve2d;
+#include <Geom2d_BSplineCurve.hxx>
 
+class Adaptor2d_HCurve2d;
 
 //! Makes  an  approximation  for  HCurve2d  from  Adaptor3d
 class Approx_Curve2d 
@@ -49,18 +46,7 @@ public:
   
   Standard_EXPORT Standard_Real MaxError2dV() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Handle(Geom2d_BSplineCurve) myCurve;
   Standard_Boolean myIsDone;
@@ -68,13 +54,6 @@ private:
   Standard_Real myMaxError2dU;
   Standard_Real myMaxError2dV;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Approx_Curve2d_HeaderFile

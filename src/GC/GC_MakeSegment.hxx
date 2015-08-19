@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_TrimmedCurve;
+#include <Geom_TrimmedCurve.hxx>
+
 class StdFail_NotDone;
 class gp_Pnt;
 class gp_Lin;
@@ -66,30 +66,12 @@ public:
   
   //! Returns the constructed line segment.
   Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
-operator const Handle(Geom_TrimmedCurve)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_TrimmedCurve)& () const { return Value(); }
+  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_TrimmedCurve) TheSegment;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeSegment_HeaderFile

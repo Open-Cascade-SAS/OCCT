@@ -22,9 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GCE2d_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class Geom2d_TrimmedCurve;
+#include <Geom2d_TrimmedCurve.hxx>
+
 class StdFail_NotDone;
 class gp_Hypr2d;
 class gp_Pnt2d;
@@ -64,30 +63,12 @@ public:
   
   //! Returns the constructed arc of hyperbola.
   Standard_EXPORT const Handle(Geom2d_TrimmedCurve)& Value() const;
-operator const Handle(Geom2d_TrimmedCurve)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom2d_TrimmedCurve)& () const { return Value(); }
+  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom2d_TrimmedCurve) TheArc;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeArcOfHyperbola_HeaderFile

@@ -14,9 +14,10 @@
 #
 # Alternatively, this file may be used under the terms of Open CASCADE
 # commercial license or contractual agreement.
-# 
-# Brief: This script contains auxilary functions which can be used 
-#         in documentation generation process
+ 
+# =======================================================================
+# This script contains auxilary functions which can be used 
+# in documentation generation process
 # =======================================================================
 
 # ==============================================

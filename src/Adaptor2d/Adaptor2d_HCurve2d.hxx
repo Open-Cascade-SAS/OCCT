@@ -34,15 +34,12 @@
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
 #include <gp_Parab2d.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class Standard_NotImplemented;
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+
 class Adaptor2d_Curve2d;
 class gp_Pnt2d;
 class gp_Vec2d;
-class Geom2d_BezierCurve;
-class Geom2d_BSplineCurve;
 
 
 class Adaptor2d_HCurve2d;
@@ -122,27 +119,9 @@ public:
     virtual Handle(Geom2d_BSplineCurve) BSpline() const;
 
 
-
-
   DEFINE_STANDARD_RTTI(Adaptor2d_HCurve2d,MMgt_TShared)
-
-protected:
-
-
-
-
-private:
-
-
-
-
 };
 
-
 #include <Adaptor2d_HCurve2d.lxx>
-
-
-
-
 
 #endif // _Adaptor2d_HCurve2d_HeaderFile

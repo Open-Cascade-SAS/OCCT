@@ -22,10 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class Geom_TrimmedCurve;
-class StdFail_NotDone;
+#include <Geom_TrimmedCurve.hxx>
+
 class gp_Circ;
 class gp_Pnt;
 class gp_Vec;
@@ -88,30 +86,12 @@ public:
   //! Returns the constructed arc of circle.
   //! Exceptions StdFail_NotDone if no arc of circle is constructed.
   Standard_EXPORT const Handle(Geom_TrimmedCurve)& Value() const;
-operator const Handle(Geom_TrimmedCurve)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_TrimmedCurve)& () const { return Value(); }
+  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_TrimmedCurve) TheArc;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeArcOfCircle_HeaderFile

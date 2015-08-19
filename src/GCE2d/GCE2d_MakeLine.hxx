@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GCE2d_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom2d_Line;
+#include <Geom2d_Line.hxx>
+
 class StdFail_NotDone;
 class gp_Ax2d;
 class gp_Lin2d;
@@ -75,30 +75,12 @@ public:
   //! Returns the constructed line.
   //! Exceptions StdFail_NotDone if no line is constructed.
   Standard_EXPORT const Handle(Geom2d_Line)& Value() const;
-operator const Handle(Geom2d_Line)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom2d_Line)& () const { return Value(); }
+  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom2d_Line) TheLine;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeLine_HeaderFile

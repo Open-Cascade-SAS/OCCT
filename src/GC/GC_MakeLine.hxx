@@ -22,7 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-class Geom_Line;
+#include <Geom_Line.hxx>
+
 class StdFail_NotDone;
 class gp_Ax1;
 class gp_Lin;
@@ -75,30 +76,12 @@ public:
   //! Returns the constructed line.
   //! Exceptions StdFail_NotDone if no line is constructed.
   Standard_EXPORT const Handle(Geom_Line)& Value() const;
-operator const Handle(Geom_Line)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_Line)& () const { return Value(); }
+  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_Line) TheLine;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeLine_HeaderFile

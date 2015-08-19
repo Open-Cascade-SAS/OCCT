@@ -22,9 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GCE2d_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class Geom2d_Parabola;
+#include <Geom2d_Parabola.hxx>
+
 class StdFail_NotDone;
 class gp_Parab2d;
 class gp_Ax22d;
@@ -105,30 +104,12 @@ public:
   //! Returns the constructed parabola.
   //! Exceptions StdFail_NotDone if no parabola is constructed.
   Standard_EXPORT const Handle(Geom2d_Parabola)& Value() const;
-operator const Handle(Geom2d_Parabola)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom2d_Parabola)& () const { return Value(); }
+  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom2d_Parabola) TheParabola;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeParabola_HeaderFile

@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_CylindricalSurface;
+#include <Geom_CylindricalSurface.hxx>
+
 class StdFail_NotDone;
 class gp_Ax2;
 class gp_Cylinder;
@@ -111,30 +111,12 @@ public:
   //! Returns the constructed cylinder.
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
   Standard_EXPORT const Handle(Geom_CylindricalSurface)& Value() const;
-operator const Handle(Geom_CylindricalSurface)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_CylindricalSurface)& () const { return Value(); }
+  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_CylindricalSurface) TheCylinder;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeCylindricalSurface_HeaderFile

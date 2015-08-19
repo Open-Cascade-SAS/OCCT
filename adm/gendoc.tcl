@@ -14,9 +14,14 @@
 #
 # Alternatively, this file may be used under the terms of Open CASCADE
 # commercial license or contractual agreement.
-# 
-# Brief:  This script compiles OCCT documents from *.md files to HTML pages
+ 
 # =======================================================================
+# This script defines command gendoc compiling OCCT documents 
+# from *.md files to HTML pages
+# =======================================================================
+
+# load auxiliary tools
+source [file join [file dirname [info script]] occaux.tcl]
 
 # ======================================
 #  Common functions

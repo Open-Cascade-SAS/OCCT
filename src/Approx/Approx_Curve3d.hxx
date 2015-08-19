@@ -21,17 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_OStream.hxx>
-class Geom_BSplineCurve;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
+#include <Geom_BSplineCurve.hxx>
+
 class Adaptor3d_HCurve;
-
-
 
 class Approx_Curve3d 
 {
@@ -62,31 +55,13 @@ public:
   //! Print on the stream  o  information about the object
   Standard_EXPORT void Dump (Standard_OStream& o) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Boolean myIsDone;
   Standard_Boolean myHasResult;
   Handle(Geom_BSplineCurve) myBSplCurve;
   Standard_Real myMaxError;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Approx_Curve3d_HeaderFile

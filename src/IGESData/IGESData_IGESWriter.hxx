@@ -33,6 +33,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
+
 class IGESData_IGESModel;
 class Interface_InterfaceMismatch;
 class Interface_FloatWriter;
@@ -42,7 +43,6 @@ class IGESData_IGESEntity;
 class TCollection_HAsciiString;
 class gp_XY;
 class gp_XYZ;
-
 
 //! manages atomic file writing, under control of IGESModel :
 //! prepare text to be sent then sends it
@@ -147,7 +147,15 @@ public:
   //! If <val> is Null, "0" will be sent
   //! If <negative> is True, "Pointer" is sent as negative
   Standard_EXPORT void Send (const Handle(IGESData_IGESEntity)& val, const Standard_Boolean negative = Standard_False);
-template <class T> void Send (const Handle(T)& val, Standard_Boolean negative = Standard_False, typename std::enable_if<std::is_base_of<IGESData_IGESEntity, T>::value>::type * = 0) { Send ((const Handle(IGESData_IGESEntity)&)val, negative); }
+
+  //! Helper method to avoid ambiguity of calls to above methods Send() for
+  //! classes derived from IGESData_IGESEntity, for VC++ 10 and 11 compillers
+  template <class T> 
+  void Send (const Handle(T)& val, Standard_Boolean negative = Standard_False, 
+             typename std::enable_if<std::is_base_of<IGESData_IGESEntity, T>::value>::type * = 0)
+  { 
+    Send ((const Handle(IGESData_IGESEntity)&)val, negative);
+  }
   
   //! sends a parameter under its exact form given as a string
   Standard_EXPORT void SendString (const Handle(TCollection_HAsciiString)& val);
@@ -170,17 +178,7 @@ template <class T> void Send (const Handle(T)& val, Standard_Boolean negative = 
   //! Takes WriteMode into account
   Standard_EXPORT Standard_Boolean Print (Standard_OStream& S) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
   
   //! Basic action of adding a string to current parameter list as a
   //! line; manages size limit (64 or 72 according Sestion G or P)
@@ -203,6 +201,8 @@ private:
   Standard_EXPORT void AddChar (const Standard_Character val, const Standard_Integer more = 0);
 
 
+private:
+  
   Handle(IGESData_IGESModel) themodel;
   Handle(TColStd_HSequenceOfHAsciiString) thestar;
   Handle(TColStd_HSequenceOfHAsciiString) thehead;
@@ -216,14 +216,6 @@ private:
   Interface_LineBuffer thecurr;
   Standard_Integer themodew;
   Interface_FloatWriter thefloatw;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_IGESWriter_HeaderFile

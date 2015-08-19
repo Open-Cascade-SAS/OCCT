@@ -18,22 +18,18 @@
 #define _ShapeFix_Shell_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
+#include <Message_ProgressIndicator.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Compound.hxx>
-#include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
-#include <Standard_Real.hxx>
+
 class ShapeFix_Face;
 class TopoDS_Shell;
-class Message_ProgressIndicator;
 class TopoDS_Shape;
 class TopoDS_Compound;
 class ShapeExtend_BasicMsgRegistrator;
-
 
 class ShapeFix_Shell;
 DEFINE_STANDARD_HANDLE(ShapeFix_Shell, ShapeFix_Root)

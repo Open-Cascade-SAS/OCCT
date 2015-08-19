@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_Plane;
+#include <Geom_Plane.hxx>
+
 class StdFail_NotDone;
 class gp_Ax2;
 class gp_Pln;
@@ -100,30 +100,12 @@ public:
   //! Returns the constructed plane.
   //! Exceptions StdFail_NotDone if no plane is constructed.
   Standard_EXPORT const Handle(Geom_Plane)& Value() const;
-operator const Handle(Geom_Plane)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_Plane)& () const { return Value(); }
+  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_Plane) ThePlane;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakePlane_HeaderFile

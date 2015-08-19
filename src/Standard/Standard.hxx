@@ -88,5 +88,8 @@ public:
 
 };
 
+// include definition of handle to make it always visible
+// (put at the and of the file due to cyclic dependency between headers)
+#include <Standard_Transient.hxx>
 
 #endif // _Standard_HeaderFile

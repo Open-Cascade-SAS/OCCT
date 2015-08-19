@@ -44,6 +44,7 @@ UDLIST      eol=lf
 tests/*     eol=lf
 tests/*/*   eol=lf
 tests/*/*/* eol=lf
+adm/upgrade.dat eol=lf
 *.bat       eol=crlf
 *.cmd       eol=crlf
 *.rc        eol=crlf

@@ -22,9 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GCE2d_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class Geom2d_Circle;
+#include <Geom2d_Circle.hxx>
+
 class StdFail_NotDone;
 class gp_Circ2d;
 class gp_Ax2d;
@@ -102,30 +101,12 @@ public:
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
   Standard_EXPORT const Handle(Geom2d_Circle)& Value() const;
-operator const Handle(Geom2d_Circle)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom2d_Circle)& () const { return Value(); }
+  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom2d_Circle) TheCircle;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeCircle_HeaderFile

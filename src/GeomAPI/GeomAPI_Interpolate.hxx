@@ -28,9 +28,8 @@
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_Array1OfVec.hxx>
-class Geom_BSplineCurve;
-class StdFail_NotDone;
-class Standard_ConstructionError;
+#include <Geom_BSplineCurve.hxx>
+
 class gp_Vec;
 
 

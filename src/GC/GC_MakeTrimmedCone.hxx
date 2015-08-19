@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_RectangularTrimmedSurface;
+#include <Geom_RectangularTrimmedSurface.hxx>
+
 class StdFail_NotDone;
 class gp_Pnt;
 
@@ -75,30 +75,12 @@ public:
   //! Returns the constructed trimmed cone.
   //! StdFail_NotDone if no trimmed cone is constructed.
   Standard_EXPORT const Handle(Geom_RectangularTrimmedSurface)& Value() const;
-operator const Handle(Geom_RectangularTrimmedSurface)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_RectangularTrimmedSurface)& () const { return Value(); }
+  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_RectangularTrimmedSurface) TheCone;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeTrimmedCone_HeaderFile

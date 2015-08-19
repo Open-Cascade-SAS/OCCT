@@ -87,6 +87,7 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   CHECK(theDI, cpLine == aLine,  "equality of const pointer and handle");
   CHECK(theDI, &rLine == aLine,  "equality of reference and handle");
   CHECK(theDI, &crLine == aLine,  "equality of reference and handle");
+  CHECK(theDI, aLine, "cast to bool");
 
   Handle(Geom_Line) aLin2;
   CHECK(theDI, aLine != aLin2, "inequality of handle to the same type handle");
@@ -120,9 +121,12 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   // currently allowed for compatibility
   gunc (aLine);
   Handle(Geom_Curve)& aCurve2 = aLine; // cast to base non-const ref
-  (void)aCurve2;
 
   Handle(Geom_Line) qLine = cpLine; // constructor from const pointer -- could be made explicit...
+
+  // check whether compiler will destroy reference to temporary handle
+  Handle(Geom_Curve)& aTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
+  CHECK(theDI, ! aTmpRef.IsNull(),  "local reference of handle to base type to temporary handle object");
 
   Handle(Geom_Surface) aSurf;
   (void)aSurf;

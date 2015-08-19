@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_Circle;
+#include <Geom_Circle.hxx>
+
 class StdFail_NotDone;
 class gp_Circ;
 class gp_Ax2;
@@ -99,30 +99,12 @@ public:
   //! Exceptions
   //! StdFail_NotDone if no circle is constructed.
   Standard_EXPORT const Handle(Geom_Circle)& Value() const;
-operator const Handle(Geom_Circle)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_Circle)& () const { return Value(); }
+  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_Circle) TheCircle;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeCircle_HeaderFile

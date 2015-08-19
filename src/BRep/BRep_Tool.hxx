@@ -21,25 +21,21 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-class Standard_NullObject;
-class Standard_NoSuchObject;
+#include <Geom_Surface.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Poly_Polygon3D.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+
 class TopoDS_Shape;
-class Geom_Surface;
 class TopoDS_Face;
 class TopLoc_Location;
-class Poly_Triangulation;
 class TopoDS_Edge;
-class Geom_Curve;
-class Poly_Polygon3D;
-class Geom2d_Curve;
-class Poly_Polygon2D;
-class Poly_PolygonOnTriangulation;
-class gp_Pnt2d;
-class gp_Pnt;
 class TopoDS_Vertex;
 
 
@@ -241,27 +237,6 @@ public:
   //! Returns the parameters of the vertex on the face.
   Standard_EXPORT static gp_Pnt2d Parameters (const TopoDS_Vertex& V, const TopoDS_Face& F);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BRep_Tool_HeaderFile

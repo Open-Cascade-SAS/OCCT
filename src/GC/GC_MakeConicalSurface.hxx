@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_ConicalSurface;
+#include <Geom_ConicalSurface.hxx>
+
 class StdFail_NotDone;
 class gp_Ax2;
 class gp_Cone;
@@ -123,30 +123,12 @@ public:
   //! Exceptions
   //! StdFail_NotDone if no cone is constructed.
   Standard_EXPORT const Handle(Geom_ConicalSurface)& Value() const;
-operator const Handle(Geom_ConicalSurface)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_ConicalSurface)& () const { return Value(); }
+  operator const Handle(Geom_Surface)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_ConicalSurface) TheCone;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeConicalSurface_HeaderFile

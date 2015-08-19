@@ -161,6 +161,13 @@ namespace opencascade {
       return left != right.get();
     }
 
+    //! Compare operator for possible use in std::map<> etc. 
+    template <class T2>
+    bool operator< (const handle<T2>& theHandle) const
+    { 
+      return get() < theHandle.get();
+    }
+
     //! Down casting operator
     template <class T2>
     static handle DownCast (const handle<T2>& theObject)
@@ -175,6 +182,25 @@ namespace opencascade {
       return handle (dynamic_cast<T*>(const_cast<T2*>(thePtr)));
     }
 
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800) || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 6)
+
+    //! Conversion to bool for use in conditional expressions
+    explicit operator bool () const
+    { 
+      return entity != nullptr;
+    }
+
+#else /* fallback version for compilers not supporting explicit conversion operators (VC10, VC11, GCC below 4.5) */
+
+    //! Conversion to bool-compatible type for use in conditional expressions
+    operator Standard_Transient* handle::* () const
+    { 
+      return entity ? &handle::entity : 0;
+    }
+
+#endif
+
+    //! Upcast to const reference to base type.
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800) || (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3)
 
     //! Upcast to const reference to base type.
@@ -185,7 +211,7 @@ namespace opencascade {
     }
 
     //! Upcast to non-const reference to base type.
-    //! NB: this cast can be dangerous, see #26377
+    //! NB: this cast can be dangerous, but required for legacy code; see #26377
     template <class T2, typename = typename std::enable_if<std::is_base_of<T2, T>::value>::type>
     operator handle<T2>& ()
     {
@@ -207,7 +233,7 @@ namespace opencascade {
     }
 
     //! Upcast to non-const reference to base type.
-    //! NB: this cast can be dangerous, see #26377
+    //! NB: this cast can be dangerous, but required for legacy code; see #26377
     template <class T2>
     operator handle<T2>& ()
     {
@@ -264,7 +290,7 @@ inline Standard_Integer HashCode (const Handle(T)& theHandle, const Standard_Int
 }
 
 //! For compatibility with previous versions of OCCT, defines typedef opencascade::handle<Class> Handle(Class)
-#define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) typedef Handle(C1) Handle_##C1;
+#define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) class C1; typedef Handle(C1) Handle_##C1;
 #define DEFINE_STANDARD_HANDLE(C1,C2) DEFINE_STANDARD_HANDLECLASS(C1,C2,Standard_Transient)
 #define DEFINE_STANDARD_PHANDLE(C1,C2) DEFINE_STANDARD_HANDLECLASS(C1,C2,Standard_Persistent)
 

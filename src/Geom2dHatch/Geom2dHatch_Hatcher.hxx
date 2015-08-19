@@ -18,28 +18,22 @@
 #define _Geom2dHatch_Hatcher_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Intersector.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <Geom2dHatch_Elements.hxx>
 #include <Geom2dHatch_Hatchings.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <HatchGen_ErrorStatus.hxx>
+
 class Standard_NoSuchObject;
 class Standard_OutOfRange;
 class StdFail_NotDone;
 class Geom2dHatch_Intersector;
 class Geom2dHatch_Element;
-class Geom2dAdaptor_Curve;
 class Geom2dHatch_Hatching;
 class HatchGen_PointOnHatching;
 class HatchGen_Domain;
-
-
 
 class Geom2dHatch_Hatcher 
 {
@@ -97,6 +91,13 @@ public:
   //! Adds an element to the hatcher and returns its index.
   Standard_EXPORT Standard_Integer AddElement (const Geom2dAdaptor_Curve& Curve, const TopAbs_Orientation Orientation = TopAbs_FORWARD);
   
+  //! Adds an element to the hatcher and returns its index.
+  Standard_Integer AddElement (const Handle(Geom2d_Curve)& Curve, const TopAbs_Orientation Orientation = TopAbs_FORWARD)
+  {
+    Geom2dAdaptor_Curve aGAC (Curve);
+    return AddElement (aGAC, Orientation);
+  }
+
   //! Removes the IndE-th element from the hatcher.
   Standard_EXPORT void RemElement (const Standard_Integer IndE);
   

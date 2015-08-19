@@ -22,9 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GCE2d_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class Geom2d_Hyperbola;
+#include <Geom2d_Hyperbola.hxx>
+
 class StdFail_NotDone;
 class gp_Hypr2d;
 class gp_Ax2d;
@@ -107,30 +106,12 @@ public:
   //! Returns the constructed hyperbola.
   //! Exceptions: StdFail_NotDone if no hyperbola is constructed.
   Standard_EXPORT const Handle(Geom2d_Hyperbola)& Value() const;
-operator const Handle(Geom2d_Hyperbola)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom2d_Hyperbola)& () const { return Value(); }
+  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom2d_Hyperbola) TheHyperbola;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeHyperbola_HeaderFile

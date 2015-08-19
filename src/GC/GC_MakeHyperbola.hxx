@@ -22,8 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GC_Root.hxx>
-#include <Standard_Real.hxx>
-class Geom_Hyperbola;
+#include <Geom_Hyperbola.hxx>
+
 class StdFail_NotDone;
 class gp_Hypr;
 class gp_Ax2;
@@ -87,30 +87,12 @@ public:
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
   Standard_EXPORT const Handle(Geom_Hyperbola)& Value() const;
-operator const Handle(Geom_Hyperbola)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom_Hyperbola)& () const { return Value(); }
+  operator const Handle(Geom_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom_Hyperbola) TheHyperbola;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GC_MakeHyperbola_HeaderFile

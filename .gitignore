@@ -29,6 +29,7 @@ Release
 /adm/mac
 /adm/make
 *.vcproj*user
+*.vcxproj*user
 *.csproj*user
 *.ncb
 *.suo

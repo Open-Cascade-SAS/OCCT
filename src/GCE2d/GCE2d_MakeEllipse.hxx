@@ -22,9 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GCE2d_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class Geom2d_Ellipse;
+#include <Geom2d_Ellipse.hxx>
+
 class StdFail_NotDone;
 class gp_Elips2d;
 class gp_Ax2d;
@@ -87,30 +86,12 @@ public:
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const Handle(Geom2d_Ellipse)& Value() const;
-operator const Handle(Geom2d_Ellipse)& () const { return Value(); }
 
-
-
-
-protected:
-
-
-
-
+  operator const Handle(Geom2d_Ellipse)& () const { return Value(); }
+  operator const Handle(Geom2d_Curve)& () const { return Value(); }
 
 private:
-
-
-
   Handle(Geom2d_Ellipse) TheEllipse;
-
-
 };
-
-
-
-
-
-
 
 #endif // _GCE2d_MakeEllipse_HeaderFile
