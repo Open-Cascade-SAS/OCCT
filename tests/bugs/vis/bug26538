@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC26538"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - Infinite growth of maxtrix stack in OpenGl_Structure::Render
+#######################################################################
+
+box b1 1 1 1
+box b2 1 1 1
+
+vinit
+vdisplay b1
+vdisplay b2
+vsetlocation b2 10 10 10
+vfit
+
+set listmem {}
+
+set i_max 3
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+   vfps 1000
+   lappend listmem [meminfo h]
+   checktrend $listmem 0 1 "Memory leak detected"
+}
+
+vdump ${imagedir}/${casename}.png

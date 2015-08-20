@@ -538,22 +538,21 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 
   // Apply local transformation
-  OpenGl_Mat4 aModelWorld;
   if (myTransformation)
   {
-    OpenGl_Transposemat3 ((OpenGl_Matrix*)aModelWorld.ChangeData(), myTransformation);
+    OpenGl_Matrix aModelWorld;
+    OpenGl_Transposemat3 (&aModelWorld, myTransformation);
+    aCtx->ModelWorldState.Push();
+    aCtx->ModelWorldState.SetCurrent (OpenGl_Mat4::Map ((Standard_ShortReal* )aModelWorld.mat));
 
-    Standard_ShortReal aScaleX = OpenGl_Vec3 (aModelWorld.GetValue (0, 0),
-                                              aModelWorld.GetValue (1, 0),
-                                              aModelWorld.GetValue (2, 0)).SquareModulus();
+    Standard_ShortReal aScaleX = OpenGl_Vec3 (myTransformation->mat[0][0],
+                                              myTransformation->mat[0][1],
+                                              myTransformation->mat[0][2]).SquareModulus();
     // Scale transform detected.
     if (Abs (aScaleX - 1.f) > Precision::Confusion())
     {
       aCtx->SetGlNormalizeEnabled (Standard_True);
     }
-
-    aCtx->ModelWorldState.Push();
-    aCtx->ModelWorldState.SetCurrent (aModelWorld);
   }
   if (TransformPersistence.Flags)
   {
@@ -567,11 +566,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     aCtx->WorldViewState.SetCurrent (aWorldView);
     aCtx->ApplyProjectionMatrix();
   }
-  if (aModelWorld || TransformPersistence.Flags)
-  {
-    aCtx->ApplyModelViewMatrix();
-  }
 
+  // Take into account transform persistence
+  aCtx->ApplyModelViewMatrix();
 
   // Apply aspects
   const OpenGl_AspectLine *anAspectLine = theWorkspace->AspectLine (Standard_False);
@@ -681,7 +678,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 
   // Restore local transformation
-  if (!aModelWorld.IsIdentity())
+  if (myTransformation)
   {
     aCtx->ModelWorldState.Pop();
     aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
@@ -691,10 +688,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     aCtx->ProjectionState.Pop();
     aCtx->WorldViewState.Pop();
     aCtx->ApplyProjectionMatrix();
-  }
-  if (!aModelWorld.IsIdentity() || TransformPersistence.Flags)
-  {
-    aCtx->ApplyWorldViewMatrix();
   }
 
   // Restore highlight color
