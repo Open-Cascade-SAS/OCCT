@@ -1032,9 +1032,9 @@ TDF_Label STEPCAFControl_Reader::FindInstance (const Handle(StepRepr_NextAssembl
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSession) &WS,
-						   Handle(TDocStd_Document)& Doc,
-						   const STEPCAFControl_DataMapOfPDExternFile &PDFileMap,
-						   const XCAFDoc_DataMapOfShapeLabel &ShapeLabelMap) const
+                                                   Handle(TDocStd_Document)& Doc,
+                                                   const STEPCAFControl_DataMapOfPDExternFile &PDFileMap,
+                                                   const XCAFDoc_DataMapOfShapeLabel &ShapeLabelMap) const
 {
   // get starting data
   Handle(Interface_InterfaceModel) Model = WS->Model();
@@ -1057,7 +1057,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSe
     if ( enti->DynamicType() == tNAUO ) {
       L.Nullify();
       Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO = 
-	Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(enti);
+        Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(enti);
       if(NAUO.IsNull()) continue;
       Interface_EntityIterator subs = WS->Graph().Sharings(NAUO);
       for (subs.Start(); subs.More(); subs.Next()) {
@@ -1083,12 +1083,17 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSe
     if ( enti->DynamicType() == tPD ) {
       L.Nullify();
       Handle(StepBasic_ProductDefinition) PD = 
-	Handle(StepBasic_ProductDefinition)::DownCast(enti);
+        Handle(StepBasic_ProductDefinition)::DownCast(enti);
       if(PD.IsNull()) continue;
-      Handle(StepBasic_Product) Prod = PD->Formation()->OfProduct();
-      if(!Prod->Name().IsNull() && Prod->Name()->UsefullLength()>0) name = Prod->Name();
-      else if (!Prod->Id().IsNull()) name = Prod->Id();
-      else name = new TCollection_HAsciiString;
+      Handle(StepBasic_Product) Prod = (!PD->Formation().IsNull() ? PD->Formation()->OfProduct() : NULL);
+      if (Prod.IsNull())
+        name = new TCollection_HAsciiString;
+      else if (!Prod->Name().IsNull() && Prod->Name()->UsefullLength() > 0) 
+        name = Prod->Name();
+      else if (!Prod->Id().IsNull()) 
+        name = Prod->Id();
+      else 
+        name = new TCollection_HAsciiString;
       L = GetLabelFromPD ( PD, STool, TP, PDFileMap, ShapeLabelMap );
       if ( L.IsNull() ) continue;
       TCollection_ExtendedString str ( name->String() );
