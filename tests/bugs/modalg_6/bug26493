@@ -13,18 +13,18 @@ prj res wire plate 0 0 -1
 
 renamevar res_1 result
 
-set length 1003.94
+set length 1189.91
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 2
- EDGE      : 1
+ VERTEX    : 3
+ EDGE      : 2
  WIRE      : 1
  FACE      : 0
  SHELL     : 0
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 0
- SHAPE     : 4
+ SHAPE     : 6
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "fuzzy booleans with multiple tools"
