@@ -238,5 +238,7 @@ fields
     
     myMakeLoops      : MakeLoops from BRepOffset;
     myBadShape       : Shape     from TopoDS;
+    myIsPerformSewing: Boolean   from Standard; -- Handle bad walls in thicksolid mode.
+
     
 end MakeOffset;

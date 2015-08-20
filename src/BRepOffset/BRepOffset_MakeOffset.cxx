@@ -119,6 +119,8 @@
 // POP for NT
 #include <stdio.h>
 #include <NCollection_Vector.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <Geom_Line.hxx>
 
 #ifdef DRAW
 
@@ -532,6 +534,7 @@ void BRepOffset_MakeOffset::Initialize(const TopoDS_Shape&    S,
   myJoin       = Join;
   myThickening = Thickening;
   myDone     = Standard_False;
+  myIsPerformSewing = Standard_False;
   Clear();
 }
 
@@ -667,6 +670,7 @@ static void EvalMax(const TopoDS_Shape& S, Standard_Real& Tol)
   }
 }
 
+
 //=======================================================================
 //function : MakeOffsetShape
 //purpose  : 
@@ -768,6 +772,14 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
   }
 
   CorrectConicalFaces();
+
+  if (myIsPerformSewing)
+  {
+    BRepBuilderAPI_Sewing aSew(myTol);
+    aSew.Add(myOffsetShape);
+    aSew.Perform();
+    myOffsetShape = aSew.SewedShape();
+  }
 
   myDone = Standard_True;
 }
@@ -2482,7 +2494,6 @@ static void UpdateInitOffset (BRepAlgo_Image&         myInitOffset,
 //function : MakeMissingWalls
 //purpose  : 
 //=======================================================================
-
 void BRepOffset_MakeOffset::MakeMissingWalls ()
 {
   TopTools_DataMapOfShapeListOfShape Contours; //Start vertex + list of connected edges (free boundary)
@@ -2501,23 +2512,59 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
       Standard_Boolean FirstStep = Standard_True;
       TopoDS_Edge PrevEdge;
       TopoDS_Vertex PrevVertex = StartVertex;
+    Standard_Boolean isBuildFromScratch = Standard_False; // Problems with edges.
       for (; itl.More(); itl.Next())
 	{
 	  TopoDS_Edge anEdge = TopoDS::Edge(itl.Value());
+
+      // Check for offset existence.
 	  if (!myInitOffsetEdge.HasImage(anEdge))
 	    continue;
-	  //if (BRep_Tool::Degenerated(anEdge))
-	    //continue;
-	  TopoDS_Face aFace = TopoDS::Face(MapEF(anEdge));
-	  //TopoDS_Edge OE = TopoDS::Edge(myInitOffsetEdge.Image(anEdge).First());
+
+      // Check for existence of two different vertices.
 	  TopTools_ListOfShape LOE, LOE2;
 	  myInitOffsetEdge.LastImage( anEdge, LOE );
 	  myImageOffset.LastImage( LOE.Last(), LOE2 );
 	  TopoDS_Edge OE = TopoDS::Edge( LOE2.Last() );
-	  ////////////////////////////////////////////////////////////////////////
 	  TopoDS_Vertex V1, V2, V3, V4;
-	  TopExp::Vertices(anEdge, V1, V2/*, Standard_True*/);
-	  TopExp::Vertices(OE,     V4, V3/*, Standard_True*/);
+      TopExp::Vertices(OE,     V4, V3);
+      TopExp::Vertices(anEdge, V1, V2);
+      Standard_Real aF, aL;
+      const Handle(Geom_Curve) &aC = BRep_Tool::Curve(anEdge, aF, aL);
+      if (!aC.IsNull() &&
+         (!aC->IsClosed() && !aC->IsPeriodic()))
+      {
+        gp_Pnt aPntF = BRep_Tool::Pnt(V1);
+        gp_Pnt aPntL = BRep_Tool::Pnt(V2);
+        Standard_Real aDistE = aPntF.SquareDistance(aPntL);
+        if ( aDistE < Precision::SquareConfusion())
+        {
+          // Bad case: non closed, but vertexes mapped to same 3d point.
+          continue;
+        }
+
+        Standard_Real anEdgeTol = BRep_Tool::Tolerance(anEdge);
+        if (aDistE < anEdgeTol)
+        {
+          // Potential problems not detected via checkshape.
+          gp_Pnt aPntOF = BRep_Tool::Pnt(V4);
+          gp_Pnt aPntOL = BRep_Tool::Pnt(V3);
+          if (aPntOF.SquareDistance(aPntOL) > gp::Resolution())
+          {
+            Standard_Real anAngle =  gp_Vec(aPntF, aPntL).Angle(gp_Vec(aPntOF, aPntOL));
+            if (aC->DynamicType() == STANDARD_TYPE(Geom_Line) &&
+                Abs (anAngle - M_PI_2) < anEdgeTol) // For small values sin is equal to its argument.
+            {
+              // anEdge near perpendicular to offseting surface.
+              isBuildFromScratch = Standard_True;
+              myIsPerformSewing = Standard_True;
+              continue;
+            }
+          }
+        }
+      }
+
+      TopoDS_Face aFace = TopoDS::Face(MapEF(anEdge));
 	  Standard_Boolean ToReverse = Standard_False;
 	  if (!V1.IsSame(PrevVertex))
 	    {
@@ -2525,23 +2572,30 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
 	      aVtx = V3; V3 = V4; V4 = aVtx;
 	      ToReverse = Standard_True;
 	    }
-	  //Temporary
-	  //anEdge.Reverse();
+
 	  OE.Orientation(TopAbs::Reverse(anEdge.Orientation()));
 	  TopoDS_Edge E3, E4;
-	  if (FirstStep)
+      Standard_Boolean ArcOnV2 = ((myJoin == GeomAbs_Arc) && (myInitOffsetEdge.HasImage(V2)));
+      if (FirstStep || isBuildFromScratch)
 	    {
 	      E4 = BRepLib_MakeEdge( V1, V4 );
+        if (FirstStep)
 	      StartEdge = E4;
 	    }
 	  else
 	    E4 = PrevEdge;
-	  Standard_Boolean ArcOnV2 = ((myJoin == GeomAbs_Arc) && (myInitOffsetEdge.HasImage(V2)));
 	  if (V2.IsSame(StartVertex) && !ArcOnV2)
 	    E3 = StartEdge;
 	  else
 	    E3 = BRepLib_MakeEdge( V2, V3 );
 	  E4.Reverse();
+
+      if (isBuildFromScratch)
+      {
+        E3.Reverse();
+        E4.Reverse();
+      }
+
 	  TopoDS_Shape localAnEdge = anEdge.Oriented(TopAbs_FORWARD);
 	  const TopoDS_Edge& anEdgeFWD = TopoDS::Edge(localAnEdge);
 	  Standard_Real ParV1 = BRep_Tool::Parameter(V1, anEdgeFWD);
@@ -2563,6 +2617,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
 	      BB.Add(theWire, OE);
 	      BB.Add(theWire, E4);
 	    }
+
 	  BRepLib::BuildCurves3d( theWire, myTol );
 	  theWire.Closed(Standard_True);
 	  TopoDS_Face NewFace;
@@ -2842,9 +2897,18 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
 	    }
 	  else
 	    {
+        if (isBuildFromScratch)
+        {
+          PrevEdge = TopoDS::Edge(E4);
+          PrevVertex = V1;
+          isBuildFromScratch = Standard_False;
+        }
+        else
+        {
 	      PrevEdge = E3;
 	      PrevVertex = V2;
 	    }
+      }
 	  FirstStep = Standard_False;
 	}
     }
