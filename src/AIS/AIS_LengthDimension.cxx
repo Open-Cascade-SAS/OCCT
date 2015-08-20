@@ -188,8 +188,11 @@ void AIS_LengthDimension::SetMeasuredShapes (const TopoDS_Shape& theFirstShape,
 //=======================================================================
 Standard_Boolean AIS_LengthDimension::CheckPlane (const gp_Pln& thePlane) const
 {
-  if (!thePlane.Contains (myFirstPoint, Precision::Confusion()) &&
-      !thePlane.Contains (mySecondPoint, Precision::Confusion()))
+  Standard_Boolean anIsFaultyNormal =
+    thePlane.Axis().Direction().IsParallel(gce_MakeDir (myFirstPoint, mySecondPoint), Precision::Angular());
+
+  if ((!thePlane.Contains (myFirstPoint, Precision::Confusion()) && !thePlane.Contains (mySecondPoint, Precision::Confusion()))
+   || anIsFaultyNormal)
   {
     return Standard_False;
   }

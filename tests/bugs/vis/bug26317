@@ -1,0 +1,21 @@
+puts "============"
+puts "CR26317"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization, AIS_LengthDimension::CheckPlane is incorrect"
+##########################################################################################
+
+pload VISUALIZATION MODELING
+
+box b 100 200 300
+vinit View1
+vclear
+vaxo
+explode b F
+vdisplay b_1 b_2
+vdimension len -length -shapes b_1 b_2 -plane zox
+vfit
+
+vdump ${imagedir}/${casename}.png
