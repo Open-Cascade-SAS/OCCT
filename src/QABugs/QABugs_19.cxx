@@ -4048,6 +4048,53 @@ static Standard_Integer OCC26485 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//=======================================================================
+//function : OCC26553
+//purpose  :
+//=======================================================================
+#include <BRepBuilderAPI_MakeWire.hxx>
+
+static Standard_Integer OCC26553 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc < 2)
+  {
+    theDI << "Error: path to file with shell is missing\n";
+    return 1;
+  }
+
+  BRep_Builder aBuilder;
+  TopoDS_Shape aShell;
+  BRepTools::Read(aShell, theArgv[1], aBuilder);
+
+  if (aShell.IsNull())
+  {
+    theDI << "Error: shell not loaded\n";
+    return 1;
+  }
+
+  TopoDS_Edge aPipeEdge = BRepBuilderAPI_MakeEdge (gp_Pnt (0, 0, 0), gp_Pnt (0, 0, 10));
+  TopoDS_Wire aPipeWire = BRepBuilderAPI_MakeWire(aPipeEdge).Wire();
+
+  BRepOffsetAPI_MakePipe aPipeBuilder(aPipeWire, aShell);
+  if (!aPipeBuilder.IsDone())
+  {
+    theDI << "Error: failed to create pipe\n";
+    return 1;
+  }
+
+  for (TopExp_Explorer aShapeExplorer(aShell, TopAbs_EDGE); aShapeExplorer.More(); aShapeExplorer.Next ()) {
+    const TopoDS_Shape& aGeneratedShape = aPipeBuilder.Generated(aPipeEdge, aShapeExplorer.Current());
+    if (aGeneratedShape.IsNull())
+    {
+      theDI << "Error: null shape\n";
+      return 1;
+    }
+  }
+
+  theDI << "History returned successfully\n";
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4124,5 +4171,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
   theCommands.Add ("OCC26448", "OCC26448: check method Prepend() of sequence", __FILE__, OCC26448, group);
   theCommands.Add ("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
+  theCommands.Add ("OCC26553", "OCC26553 file_path", __FILE__, OCC26553, group);
   return;
 }

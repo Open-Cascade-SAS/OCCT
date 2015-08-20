@@ -798,14 +798,14 @@ Standard_Integer BRepFill_Pipe::FindEdge(const TopoDS_Shape& S,
 	  
   case TopAbs_WIRE :
     {
-      Standard_Integer ii = InitialLength+1;
       Handle(BRepFill_ShapeLaw) Section = 
-	new (BRepFill_ShapeLaw) (TopoDS::Wire(S), Standard_False);
-      InitialLength += Section->NbLaw();
-     
-      for (; (ii<=InitialLength) && (!result); ii++) {
-	if (E.IsSame(Section->Edge(ii)) ) result = ii;
+        new (BRepFill_ShapeLaw) (TopoDS::Wire(S), Standard_False);
+      Standard_Integer NbLaw = Section->NbLaw();
+
+      for (Standard_Integer ii = 1; (ii<=NbLaw) && (!result); ii++) {
+        if (E.IsSame(Section->Edge(ii)) ) result = InitialLength + ii;
       }
+      InitialLength += NbLaw;
       break;
     }
 
