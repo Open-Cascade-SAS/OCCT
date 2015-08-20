@@ -61,6 +61,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <UnitsMethods.hxx>
+#include <Standard_Failure.hxx>
 
 //#include <StepGeom_Polyline.hxx>
 //#include <TransferBRep.hxx>
@@ -501,11 +502,19 @@ Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
   const Handle(StepRepr_DefinitionalRepresentation) DRI = PCU->ReferenceToCurve();
   if( DRI.IsNull()) return C2d;
   const Handle(StepGeom_Curve) StepCurve = Handle(StepGeom_Curve)::DownCast(DRI->ItemsValue(1));
-  C2d = StepToGeom::MakeCurve2d (StepCurve);
-  if (! C2d.IsNull()) {
+  try
+  {
+    C2d = StepToGeom::MakeCurve2d (StepCurve);
+    if (! C2d.IsNull()) {
     // -- if the surface is a RectangularTrimmedSurface, 
     // -- send the BasisSurface.
-    C2d = UnitsMethods::DegreeToRadian(C2d, ConvSurf);
+     C2d = UnitsMethods::DegreeToRadian(C2d, ConvSurf);
+    }
+    
+  }
+  catch(Standard_Failure)
+  {
+    return C2d;
   }
   return C2d;
 }
