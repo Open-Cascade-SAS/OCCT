@@ -1,4 +1,5 @@
 puts "TODO OCC23068 ALL: Error : The offset is not valid"
+puts "TODO OCC26556 ALL: ERROR. offsetperform operation not done."
 # Original bug : hkg60144
 # Date : 17Juillet98
 

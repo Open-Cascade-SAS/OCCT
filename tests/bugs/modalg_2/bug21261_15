@@ -1,5 +1,6 @@
-puts "TODO OCC25916 ALL: \\*\\* Exception"
-puts "TODO OCC25916 ALL: An exception was caught"
+puts "TODO OCC25916 ALL: ERROR. C0 continuity of input data."
+puts "TODO OCC26556 ALL: result is not a topological shape!!!"
+puts "TODO OCC26556 ALL: Error: object with name 'result' does not exist!"
 puts "TODO OCC25916 ALL: TEST INCOMPLETE"
 puts "========"
 puts "OCC21261"

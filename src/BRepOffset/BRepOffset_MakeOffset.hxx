@@ -76,7 +76,7 @@ public:
   
   Standard_EXPORT const TopoDS_Shape& Shape() const;
   
-  //! returns information if IsDone() = FALSE.
+  //! returns information about offset state.
   Standard_EXPORT BRepOffset_Error Error() const;
   
   //! Returns <Image> containing links between initials
@@ -92,6 +92,18 @@ public:
   
   //! Returns the list of closing faces stores by AddFace
   Standard_EXPORT const TopTools_IndexedMapOfShape& ClosingFaces() const;
+
+  //! Makes pre analysis of possibility offset perform. Use method Error() to get more information.
+  //! Finds first error. List of checks:
+  //! 1) Check for existence object with non-null offset.
+  //! 2) Check for connectivity in offset shell.
+  //! 3) Check continuity of input surfaces.
+  //! 4) Check for normals existence on grid.
+  //! @return True if possible make computations and false otherwise.
+  Standard_EXPORT Standard_Boolean CheckInputData();
+
+  //! Return bad shape, which obtained in CheckInputData.
+  Standard_EXPORT const TopoDS_Shape& GetBadShape() const;
 
 
 
@@ -162,6 +174,7 @@ private:
   BRepOffset_Error myError;
   BRepOffset_MakeLoops myMakeLoops;
   Standard_Boolean myIsPerformSewing; // Handle bad walls in thicksolid mode.
+  TopoDS_Shape myBadShape;
 
 
 };

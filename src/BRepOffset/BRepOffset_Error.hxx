@@ -21,11 +21,11 @@
 enum BRepOffset_Error
 {
 BRepOffset_NoError,
-BRepOffset_OffsetSurfaceFailed,
-BRepOffset_UnCorrectClosingFace,
-BRepOffset_ExtentFaceFailed,
-BRepOffset_RadiusEqualOffset,
-BRepOffset_UnknownError
+BRepOffset_UnknownError,
+BRepOffset_BadNormalsOnGeometry,
+BRepOffset_C0Geometry,
+BRepOffset_NullOffset,
+BRepOffset_NotConnectedShell
 };
 
 #endif // _BRepOffset_Error_HeaderFile

@@ -340,7 +340,48 @@ static Standard_Integer CONTROL(Draw_Interpretor& theCommands,
   }
   return 0;
 }
-      
+
+//=======================================================================
+//function : reportOffsetState
+//purpose  : Print state of offset operation by error code.
+//=======================================================================
+static void reportOffsetState(Draw_Interpretor& theCommands,
+                              const BRepOffset_Error theErrorCode)
+{
+  switch(theErrorCode)
+  {
+  case BRepOffset_NoError:
+    {
+      theCommands << "OK. Offset performed succesfully.";
+      break;
+    }
+  case BRepOffset_BadNormalsOnGeometry:
+    {
+      theCommands << "ERROR. Degenerated normal on input data.";
+      break;
+    }
+  case BRepOffset_C0Geometry:
+    {
+      theCommands << "ERROR. C0 continuity of input data.";
+      break;
+    }
+  case BRepOffset_NullOffset:
+    {
+      theCommands << "ERROR. Null offset of all faces.";
+      break;
+    }
+  case BRepOffset_NotConnectedShell:
+    {
+      theCommands << "ERROR. Incorrect set of faces to remove, the remaining shell is not connected.";
+      break;
+    }
+  default:
+    {
+      theCommands << "ERROR. offsetperform operation not done.";
+      break;
+    }
+  }
+}
 
 //=======================================================================
 //function : PRW
@@ -801,13 +842,9 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
 //function : thickshell
 //purpose  : 
 //=======================================================================
-
-Standard_Integer thickshell(Draw_Interpretor& ,
-			    Standard_Integer n, const char** a)
+Standard_Integer thickshell(Draw_Interpretor& theCommands,
+  Standard_Integer n, const char** a)
 {
-
-  //OSD_Chronometer Clock;
-  
   if ( n < 4) return 1;
   TopoDS_Shape  S  = DBRep::Get(a[2]);
   if (S.IsNull()) return 1;
@@ -816,13 +853,13 @@ Standard_Integer thickshell(Draw_Interpretor& ,
 
   GeomAbs_JoinType JT= GeomAbs_Arc;
   if (n > 4)
-    {
-      if (!strcmp(a[4],"i"))
-	JT = GeomAbs_Intersection;
-      if (!strcmp(a[4],"t"))
-	JT = GeomAbs_Tangent;
-    }
-  
+  {
+    if (!strcmp(a[4],"i"))
+      JT = GeomAbs_Intersection;
+    if (!strcmp(a[4],"t"))
+      JT = GeomAbs_Tangent;
+  }
+
   Standard_Boolean Inter = Standard_False; //Standard_True;
   Standard_Real    Tol = Precision::Confusion();
   if (n > 5)
@@ -831,15 +868,12 @@ Standard_Integer thickshell(Draw_Interpretor& ,
   BRepOffset_MakeOffset B;
   B.Initialize(S,Of,Tol,BRepOffset_Skin,Inter,0,JT, Standard_True);
 
-//  Clock.Start();
-
   B.MakeOffsetShape();
-  //B.MakeThickSolid ();
 
-//  Clock.Show();
+  const BRepOffset_Error aRetCode = B.Error();
+  reportOffsetState(theCommands, aRetCode);
 
   DBRep::Set(a[1],B.Shape());
-
   return 0;
 }
 
@@ -848,12 +882,9 @@ Standard_Integer thickshell(Draw_Interpretor& ,
 //purpose  : 
 //=======================================================================
 
-Standard_Integer offsetshape(Draw_Interpretor& ,
-			     Standard_Integer n, const char** a)
+Standard_Integer offsetshape(Draw_Interpretor& theCommands,
+                             Standard_Integer n, const char** a)
 {
-
-  //OSD_Chronometer Clock;
-  
   if ( n < 4) return 1;
   TopoDS_Shape  S  = DBRep::Get(a[2]);
   if (S.IsNull()) return 1;
@@ -861,7 +892,8 @@ Standard_Integer offsetshape(Draw_Interpretor& ,
   Standard_Real    Of    = Draw::Atof(a[3]);
   Standard_Boolean Inter = (!strcmp(a[0],"offsetcompshape"));
   GeomAbs_JoinType JT= GeomAbs_Arc;
-  if (!strcmp(a[0],"offsetinter")) {
+  if (!strcmp(a[0],"offsetinter"))
+  {
     JT    = GeomAbs_Intersection;
     Inter = Standard_True;
   }
@@ -869,9 +901,11 @@ Standard_Integer offsetshape(Draw_Interpretor& ,
   BRepOffset_MakeOffset B;
   Standard_Integer      IB  = 4;
   Standard_Real         Tol = Precision::Confusion();
-  if (n > 4) {
+  if (n > 4)
+  {
     TopoDS_Shape  SF  = DBRep::Get(a[4],TopAbs_FACE);
-    if (SF.IsNull()) {
+    if (SF.IsNull())
+    {
       IB  = 5;
       Tol = Draw::Atof(a[4]);
     }
@@ -882,19 +916,21 @@ Standard_Integer offsetshape(Draw_Interpretor& ,
   //----------------------------------------
   Standard_Boolean YaBouchon = Standard_False;
 
-  for (Standard_Integer i = IB ; i < n; i++) {
+  for (Standard_Integer i = IB ; i < n; i++)
+  {
     TopoDS_Shape  SF  = DBRep::Get(a[i],TopAbs_FACE);
-    if (!SF.IsNull()) {
+    if (!SF.IsNull())
+    {
       YaBouchon = Standard_True;
       B.AddFace(TopoDS::Face(SF));
     }
   }
 
-//  Clock.Start();
-
   if (!YaBouchon)  B.MakeOffsetShape();
   else             B.MakeThickSolid ();
-//  Clock.Show();
+
+  const BRepOffset_Error aRetCode = B.Error();
+  reportOffsetState(theCommands, aRetCode);
 
   DBRep::Set(a[1],B.Shape());
 
@@ -1031,8 +1067,8 @@ Standard_Integer offsetperform(Draw_Interpretor& theCommands,
     }
   else
     {
-    theCommands << "ERROR. offsetperform operation not done.";
-    return 1;
+      const BRepOffset_Error aRetCode = TheOffset.Error();
+      reportOffsetState(theCommands, aRetCode);
     }
 
   return 0;
