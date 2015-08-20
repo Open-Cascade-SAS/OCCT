@@ -556,6 +556,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 	  while (lastpcurve > 0) {
 	    C2d1 = myTranEdge.MakePCurve (StepPCurve,ConvSurf);
 	    if (C2d1.IsNull()) {
+         TP->AddWarning(EC,"Incorrect pcurve is not translated. Pcurve definition is not correct");
 	      hasPcurve = Standard_False;
 	      break;
 	    }

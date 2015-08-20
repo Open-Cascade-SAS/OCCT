@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC26289"
+puts "============"
+puts ""
+#######################################################################
+# STEP import/export produces an empty shape
+#######################################################################
+
+restore [locate_data_file bug26289_solid_3.brep] a1
+
+set aFile ${imagedir}/bug26289.stp
+catch { file delete ${aFile} }
+
+stepwrite a a1 ${aFile}
+
+stepread ${aFile} b *
+
+checknbshapes b_1 -vertex 338 -edge 673 -wire 337 -face 337 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 1687 -m "Shape"
+
+vinit View1
+vdisplay a1
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+vinit View2
+vdisplay b_1
+vfit
+vdump ${imagedir}/${casename}_2.png
