@@ -118,6 +118,7 @@
 #include <BRepGProp.hxx>
 // POP for NT
 #include <stdio.h>
+#include <NCollection_Vector.hxx>
 
 #ifdef DRAW
 
@@ -682,29 +683,12 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
     RemoveCorks (myShape,myFaces);
   }
 
-  if (! IsConnectedShell(myShape))
-    Standard_ConstructionError::Raise("BRepOffset_MakeOffset : Incorrect set of faces to remove, the remaining shell is not connected");
-
-  if (Abs(myOffset) <= myTol)
+  if (!CheckInputData())
   {
-    // Check for face with non-null offset value.
-    Standard_Boolean isFound = Standard_False;
-    TopTools_DataMapIteratorOfDataMapOfShapeReal anIter(myFaceOffset);
-    for( ; anIter.More(); anIter.Next())
-    {
-      if (Abs(anIter.Value()) > myTol)
-      {
-        isFound = Standard_True;
-        break;
-      }
-    }
-
-    if (!isFound)
-    {
-      // No face with non-null offset found.
+    // There is error in input data.
+    // Check Error() method.
       return;
     }
-  }
 
   TopAbs_State       Side = TopAbs_IN;
   if (myOffset < 0.) Side = TopAbs_OUT;
@@ -3399,4 +3383,177 @@ void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList)
     }
   }
   theSol = aNewSol;
+}
+
+//=======================================================================
+//function : CheckInputData
+//purpose  : Check input data for possiblity of offset perform.
+//=======================================================================
+Standard_Boolean BRepOffset_MakeOffset::CheckInputData()
+{
+  // Set initial error state.
+  myError = BRepOffset_NoError;
+  TopoDS_Shape aTmpShape;
+  myBadShape = aTmpShape;
+
+  // Non-null offset.
+  if (Abs(myOffset) <= myTol)
+  {
+    Standard_Boolean isFound = Standard_False;
+    TopTools_DataMapIteratorOfDataMapOfShapeReal anIter(myFaceOffset);
+    for( ; anIter.More(); anIter.Next())
+    {
+      if (Abs(anIter.Value()) > myTol)
+      {
+        isFound = Standard_True;
+        break;
+      }
+    }
+
+    if (!isFound)
+    {
+      // No face with non-null offset found.
+      myError = BRepOffset_NullOffset;
+      return Standard_False;
+    }
+  }
+
+  // Connectivity of input shape.
+  if (!IsConnectedShell(myShape))
+  {
+    myError = BRepOffset_NotConnectedShell;
+    return Standard_False;
+  }
+
+
+  // Normals check and continuity check.
+  const Standard_Integer aPntPerDim = 20; // 21 points on each dimension.
+  Standard_Real aUmin, aUmax, aVmin, aVmax;
+  TopExp_Explorer anExpSF(myShape, TopAbs_FACE);
+  TopLoc_Location L;
+  gp_Pnt2d aPnt2d;
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V;
+  for( ; anExpSF.More(); anExpSF.Next())
+  {
+    const TopoDS_Face& aF = TopoDS::Face(anExpSF.Current());
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(aF, L);
+    BRepTools::UVBounds(aF, aUmin, aUmax, aVmin, aVmax);
+
+    // Continuity check.
+    if (aSurf->Continuity() == GeomAbs_C0)
+    {
+      myError = BRepOffset_C0Geometry;
+      return Standard_False;
+    }
+
+    // Get degenerated points, to avoid check them.
+    NCollection_Vector<gp_Pnt> aBad3dPnts;
+    TopExp_Explorer anExpFE(aF, TopAbs_EDGE);
+    for( ; anExpFE.More(); anExpFE.Next())
+    {
+      const TopoDS_Edge &aE = TopoDS::Edge(anExpFE.Current());
+      if (BRep_Tool::Degenerated(aE))
+      {
+        aBad3dPnts.Append(BRep_Tool::Pnt((TopExp::FirstVertex(aE))));
+      }
+    }
+
+    // Geometry grid check.
+    for(Standard_Integer i = 0; i <= aPntPerDim; i++)
+    {
+      Standard_Real aUParam = aUmin + (aUmax - aUmin) * i / aPntPerDim;
+      for(Standard_Integer j = 0; j <= aPntPerDim; j++)
+      {
+        Standard_Real aVParam = aVmin + (aVmax - aVmin) * j / aPntPerDim;
+
+        aSurf->D1(aUParam, aVParam, aPnt, aD1U, aD1V);
+
+        if (aD1U.SquareMagnitude() < Precision::SquareConfusion() ||
+            aD1V.SquareMagnitude() < Precision::SquareConfusion() )
+        {
+          Standard_Boolean isKnownBadPnt = Standard_False;
+          for(Standard_Integer anIdx  = aBad3dPnts.Lower();
+                               anIdx <= aBad3dPnts.Upper();
+                             ++anIdx)
+          {
+            if (aPnt.SquareDistance(aBad3dPnts(anIdx)) < Precision::SquareConfusion())
+            {
+              isKnownBadPnt = Standard_True;
+              break;
+            }
+          } // for(Standard_Integer anIdx  = aBad3dPnts.Lower();
+
+          if (!isKnownBadPnt)
+          {
+            myError = BRepOffset_BadNormalsOnGeometry;
+            return Standard_False;
+          }
+          else
+            continue;
+        } //  if (aD1U.SquareMagnitude() < Precision::SquareConfusion() ||
+
+
+        Standard_Real anAngle = aD1U.Angle(aD1V);
+        if (Abs (anAngle) < Precision::Confusion())
+        {
+          myError = BRepOffset_BadNormalsOnGeometry;
+          return Standard_False;
+        }
+      }
+    }
+
+    // Vertex list check.
+    TopExp_Explorer anExpFV(aF, TopAbs_VERTEX);
+    for( ; anExpFV.More(); anExpFV.Next())
+    {
+      const TopoDS_Vertex &aV = TopoDS::Vertex(anExpFV.Current());
+
+      aPnt2d = BRep_Tool::Parameters(aV, aF);
+      aSurf->D1(aPnt2d.X(), aPnt2d.Y(), aPnt, aD1U, aD1V);
+
+      if (aD1U.SquareMagnitude() < Precision::SquareConfusion() ||
+          aD1V.SquareMagnitude() < Precision::SquareConfusion() )
+      {
+        Standard_Boolean isKnownBadPnt = Standard_False;
+        for(Standard_Integer anIdx  = aBad3dPnts.Lower();
+          anIdx <= aBad3dPnts.Upper();
+          ++anIdx)
+        {
+          if (aPnt.SquareDistance(aBad3dPnts(anIdx)) < Precision::SquareConfusion())
+          {
+            isKnownBadPnt = Standard_True;
+            break;
+          }
+        } // for(Standard_Integer anIdx  = aBad3dPnts.Lower();
+
+        if (!isKnownBadPnt)
+        {
+          myError = BRepOffset_BadNormalsOnGeometry;
+          return Standard_False;
+        }
+        else
+          continue;
+      } //  if (aD1U.SquareMagnitude() < Precision::SquareConfusion() ||
+
+      Standard_Real anAngle = aD1U.Angle(aD1V);
+      if ( Abs (anAngle) < Precision::Confusion())
+      {
+        myError = BRepOffset_BadNormalsOnGeometry;
+        return Standard_False;
+      }
+    }
+  }
+
+  return Standard_True;
+}
+
+
+//=======================================================================
+//function : CheckInputData
+//purpose  : Check input data for possiblity of offset perform.
+//=======================================================================
+const TopoDS_Shape& BRepOffset_MakeOffset::GetBadShape() const
+{
+  return myBadShape;
 }

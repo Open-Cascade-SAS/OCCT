@@ -72,7 +72,11 @@ is
 	UnCorrectClosingFace,
         ExtentFaceFailed,
 	RadiusEqualOffset,
-	UnknownError
+	UnknownError,
+	BadNormalsOnGeometry,
+	C0Geometry,
+	NullOffset,
+	NotConnectedShell
     end Error;
     
     class MakeOffset;

@@ -1,5 +1,4 @@
-puts "TODO OCC23190 ALL: An exception was caught.*Offset with no C1 Surface"
-puts "TODO OCC23190 ALL: \\*\\* Exception \\*\\*.*Offset with no C1 Surface"
+puts "TODO OCC23190 ALL: result is not a topological shape!!!"
 puts "TODO OCC23068 ALL: TEST INCOMPLETE"
 # Original bug : cts21271
 # Date : 11Sept98

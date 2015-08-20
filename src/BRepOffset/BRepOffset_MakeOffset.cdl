@@ -136,6 +136,19 @@ is
     returns IndexedMapOfShape from TopTools
     is static;
 
+    CheckInputData(me: in out) returns Boolean;
+        ---Purpose: Makes pre analysis of possibility offset perform. Use method Error() to get more information.
+        ---         Finds first error. List of checks:
+        ---         1) Check for existence object with non-null offset.
+        ---         2) Check for connectivity in offset shell.
+        ---         3) Check continuity of input surfaces.
+        ---         4) Check for normals existence on grid.
+        ---         @return 1 if possible make computations and 0 if not possible.
+
+    GetBadShape (me) returns Shape from TopoDS;
+        ---Purpose: Return bad shape, which obtained in CheckInputData.
+        ---C++: return const &
+
 ---Category: private methods
 
     BuildOffsetByArc ( me : in out )
@@ -224,5 +237,6 @@ fields
     myError          : Error    from BRepOffset;
     
     myMakeLoops      : MakeLoops from BRepOffset;
+    myBadShape       : Shape     from TopoDS;
     
 end MakeOffset;

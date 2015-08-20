@@ -1031,7 +1031,38 @@ Standard_Integer offsetperform(Draw_Interpretor& theCommands,
     }
   else
     {
-    theCommands << "ERROR. offsetperform operation not done.";
+      // Return state of problem.
+      BRepOffset_Error anError = TheOffset.Error();
+
+      switch(anError)
+      {
+      case BRepOffset_BadNormalsOnGeometry:
+        {
+          theCommands << "ERROR. Degenerated normal on input data.";
+          break;
+        }
+      case BRepOffset_C0Geometry:
+        {
+          theCommands << "ERROR. C0 continuity of input data.";
+          break;
+        }
+      case BRepOffset_NullOffset:
+        {
+          theCommands << "ERROR. Null offset of all faces.";
+          break;
+        }
+      case BRepOffset_NotConnectedShell:
+        {
+          theCommands << "ERROR. Incorrect set of faces to remove, the remaining shell is not connected.";
+          break;
+        }
+
+      default:
+        {
+          theCommands << "ERROR. offsetperform operation not done.";
+          break;
+        }
+      }
     return 1;
     }
 
