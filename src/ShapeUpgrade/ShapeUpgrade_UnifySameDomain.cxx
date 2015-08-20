@@ -848,12 +848,6 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
       }
     }
   }
-  if(aChain.Length()<SeqEdges1.Length()) {
-#ifdef OCCT_DEBUG
-    cout<<"can not create correct chain..."<<endl;
-#endif
-    return Standard_False;
-  }
 
   Standard_Boolean IsClosed = Standard_False;
   if (VF.IsSame ( VL ))

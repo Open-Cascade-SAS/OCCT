@@ -279,15 +279,15 @@ unifysamedom p p
 
 set nbshapes_after_simplify "
 Number of shapes in shape
- VERTEX    : 84
- EDGE      : 127
+ VERTEX    : 82
+ EDGE      : 125
  WIRE      : 51
  FACE      : 44
  SHELL     : 1
  SOLID     : 1
  COMPSOLID : 0
  COMPOUND  : 0
- SHAPE     : 308
+ SHAPE     : 304
 "
 checknbshapes p -ref ${nbshapes_after_simplify} -t -m "result after attempt to simplify the model"
 
