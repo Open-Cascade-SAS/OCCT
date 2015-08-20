@@ -1,7 +1,7 @@
 # tcl
 
 if (NOT DEFINED INSTALL_TCL)
-  set (INSTALL_TCL OFF CACHE BOOL "Is tcl lib required to be copied into install directory")
+  set (INSTALL_TCL OFF CACHE BOOL "${INSTALL_TCL_DESCR}")
 endif()
 
 # tcl directory
@@ -314,7 +314,7 @@ if (INSTALL_TCL)
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
     install (FILES ${TCL_DLLS} ${TK_DLLS}
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
     install (FILES ${TCL_DLLS} ${TK_DLLS}
              CONFIGURATIONS Debug
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
@@ -325,7 +325,7 @@ if (INSTALL_TCL)
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
     install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
     install (FILES ${3RDPARTY_TCL_LIBRARY_REALPATH}
              CONFIGURATIONS Debug
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
@@ -336,7 +336,7 @@ if (INSTALL_TCL)
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
     install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
     install (FILES ${3RDPARTY_TK_LIBRARY_REALPATH}
              CONFIGURATIONS Debug
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")

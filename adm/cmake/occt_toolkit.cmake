@@ -1,0 +1,144 @@
+# script for each OCCT toolkit
+
+# Get all used packages from toolkit
+foreach (TOOLKIT_MODULE ${TOOLKIT_MODULES})
+  if (WIN32)
+    list (APPEND PRECOMPILED_DEFS "-D__${TOOLKIT_MODULE}_DLL")
+  endif()
+  list (APPEND COMPILER_DIRECTORIES "${OCCT_SOURCE_DIR}/src/${TOOLKIT_MODULE}")
+endforeach()
+string (REGEX REPLACE ";" " " PRECOMPILED_DEFS "${PRECOMPILED_DEFS}")
+
+# Get from toolkits EXTERNLIB all used libs
+OCCT_TOOLKIT_DEP (${PROJECT_NAME} ${PROJECT_NAME}_DEPS)
+foreach (PROJECT_DEP ${${PROJECT_NAME}_DEPS})
+  IS_OCCT_TOOLKIT (${PROJECT_DEP} OCCT_MODULES FOUND_TOOLKIT)
+  if ("${FOUND_TOOLKIT}" STREQUAL "ON")
+    list (APPEND USED_LIBS "${PROJECT_DEP}")
+  endif()
+endforeach()
+
+# Get all source files from used packages
+foreach (CMP_DIR ${COMPILER_DIRECTORIES})
+  get_filename_component (CMP_DIR_NAME ${CMP_DIR} NAME)
+
+  set (SOURCE_FILES)
+  set (HEADER_FILES)
+
+  # Generate Flex and Bison files
+  if (${REBUILD_PLATFORM_DEPENDENT_CODE})
+
+    # flex files
+    file (GLOB SOURCE_FILES_FLEX "${CMP_DIR}/*[.]lex") 
+    list (LENGTH SOURCE_FILES_FLEX SOURCE_FILES_FLEX_LEN)
+    list (SORT SOURCE_FILES_FLEX)
+
+    # bison files
+    file (GLOB SOURCE_FILES_BISON "${CMP_DIR}/*[.]yacc") 
+    list (LENGTH SOURCE_FILES_BISON SOURCE_FILES_BISON_LEN)
+    list (SORT SOURCE_FILES_BISON)
+
+    if (${SOURCE_FILES_FLEX_LEN} EQUAL ${SOURCE_FILES_BISON_LEN} AND NOT ${SOURCE_FILES_FLEX_LEN} EQUAL 0)
+
+      math (EXPR SOURCE_FILES_FLEX_LEN "${SOURCE_FILES_FLEX_LEN} - 1")
+      foreach (FLEX_FILE_INDEX RANGE ${SOURCE_FILES_FLEX_LEN})
+
+        list (GET SOURCE_FILES_FLEX ${FLEX_FILE_INDEX} CURRENT_FLEX_FILE)
+        get_filename_component (CURRENT_FLEX_FILE_NAME ${CURRENT_FLEX_FILE} NAME_WE)
+
+        list (GET SOURCE_FILES_BISON ${FLEX_FILE_INDEX} CURRENT_BISON_FILE)
+        get_filename_component (CURRENT_BISON_FILE_NAME ${CURRENT_BISON_FILE} NAME_WE)
+        
+        string (COMPARE EQUAL ${CURRENT_FLEX_FILE_NAME} ${CURRENT_BISON_FILE_NAME} ARE_FILES_EQUAL)
+
+        if (EXISTS "${CURRENT_FLEX_FILE}" AND EXISTS "${CURRENT_BISON_FILE}" AND ${ARE_FILES_EQUAL})
+          set (BISON_OUTPUT_FILE ${CURRENT_BISON_FILE_NAME}.tab.c)
+          set (FLEX_OUTPUT_FILE lex.${CURRENT_FLEX_FILE_NAME}.c)
+          BISON_TARGET (Parser_${CURRENT_BISON_FILE_NAME} ${CURRENT_BISON_FILE} ${CMP_DIR}/${BISON_OUTPUT_FILE} COMPILE_FLAGS "-p ${CURRENT_BISON_FILE_NAME}")
+          FLEX_TARGET  (Scanner_${CURRENT_FLEX_FILE_NAME} ${CURRENT_FLEX_FILE} ${CMP_DIR}/${FLEX_OUTPUT_FILE} COMPILE_FLAGS "-P${CURRENT_FLEX_FILE_NAME}")
+          ADD_FLEX_BISON_DEPENDENCY (Scanner_${CURRENT_FLEX_FILE_NAME} Parser_${CURRENT_BISON_FILE_NAME})
+
+          list (APPEND SOURCE_FILES ${BISON_OUTPUT_FILE} ${FLEX_OUTPUT_FILE})
+        endif()
+      endforeach()
+    endif()
+  endif()
+
+  # header files 
+  file (STRINGS "${CMP_DIR}/FILES" HEADER_FILES_M   REGEX ".+[.]h")
+  file (STRINGS "${CMP_DIR}/FILES" HEADER_FILES_LXX REGEX ".+[.]lxx")
+  file (STRINGS "${CMP_DIR}/FILES" HEADER_FILES_GXX REGEX ".+[.]gxx")
+  list (APPEND HEADER_FILES ${HEADER_FILES_M} ${HEADER_FILES_LXX} ${SOURCE_FILES_GXX})
+
+  foreach(HEADER_FILE ${HEADER_FILES})
+    list (APPEND USED_INCFILES ${CMP_DIR}/${HEADER_FILE})
+    SOURCE_GROUP ("Header Files\\${CMP_DIR_NAME}" FILES ${CMP_DIR}/${HEADER_FILE})
+  endforeach()
+
+  # source files
+  file (STRINGS "${CMP_DIR}/FILES" SOURCE_FILES_C REGEX ".+[.]c")
+  list (APPEND SOURCE_FILES ${SOURCE_FILES_C})
+
+  if(APPLE)
+    file (STRINGS "${CMP_DIR}/FILES" SOURCE_FILES_M REGEX ".+[.]mm")
+    list (APPEND SOURCE_FILES ${SOURCE_FILES_M})
+  endif()
+
+  foreach(SOURCE_FILE ${SOURCE_FILES})
+    list (APPEND USED_SRCFILES ${CMP_DIR}/${SOURCE_FILE})
+    SOURCE_GROUP ("Source Files\\${CMP_DIR_NAME}" FILES ${CMP_DIR}/${SOURCE_FILE})
+  endforeach()
+endforeach()
+
+# Create project for toolkit
+list (FIND BUILD_TOOLKITS ${PROJECT_NAME} CURRENT_PROJECT_IS_BUILT)
+if ("${BUILD_TOOLKITS}" STREQUAL "" OR NOT ${CURRENT_PROJECT_IS_BUILT} EQUAL -1)
+
+  foreach (OCCT_MODULE ${OCCT_MODULES})
+    list (FIND ${OCCT_MODULE}_TOOLKITS ${PROJECT_NAME} CURRENT_PROJECT_IS_BUILT)
+    if (NOT ${CURRENT_PROJECT_IS_BUILT} EQUAL -1)
+      set (CURRENT_MODULE ${OCCT_MODULE})
+    endif()
+  endforeach()
+  
+  if ("${PROJECT_NAME}" STREQUAL "DRAWEXE")
+    add_executable (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES})
+
+    install (TARGETS ${PROJECT_NAME}
+             CONFIGURATIONS Release
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+    install (TARGETS ${PROJECT_NAME}
+             CONFIGURATIONS RelWithDebInfo
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
+    install (TARGETS ${PROJECT_NAME}
+             CONFIGURATIONS Debug
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+  else()
+    add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES})
+
+    install (TARGETS ${PROJECT_NAME}
+             CONFIGURATIONS Release
+             RUNTIME DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin"
+             ARCHIVE DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             LIBRARY DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (TARGETS ${PROJECT_NAME}
+             CONFIGURATIONS RelWithDebInfo
+             RUNTIME DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini"
+             ARCHIVE DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
+             LIBRARY DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi")
+    install (TARGETS ${PROJECT_NAME}
+             CONFIGURATIONS Debug
+             RUNTIME DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind"
+             ARCHIVE DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd"
+             LIBRARY DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libd")
+    if (MSVC)
+      install (FILES  ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bind/${PROJECT_NAME}.pdb
+               CONFIGURATIONS Debug
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
+    endif()
+  endif()
+
+  set_property (TARGET ${PROJECT_NAME} PROPERTY FOLDER "Modules/${CURRENT_MODULE}")
+  set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}")
+  target_link_libraries (${PROJECT_NAME} ${USED_LIBS})
+endif()

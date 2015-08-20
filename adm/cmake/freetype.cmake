@@ -1,7 +1,7 @@
 # freetype
 
 if (NOT DEFINED INSTALL_FREETYPE)
-  set (INSTALL_FREETYPE OFF CACHE BOOL "Is freetype required to be copied into install directory")
+  set (INSTALL_FREETYPE OFF CACHE BOOL "${INSTALL_FREETYPE_DESCR}")
 endif()
 
 if (NOT DEFINED 3RDPARTY_FREETYPE_DIR)
@@ -215,7 +215,7 @@ if (INSTALL_FREETYPE)
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
     install (FILES "${3RDPARTY_FREETYPE_DLL}"
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
     install (FILES "${3RDPARTY_FREETYPE_DLL}"
              CONFIGURATIONS Debug
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
@@ -229,7 +229,7 @@ if (INSTALL_FREETYPE)
              RENAME ${FREETYPELIB}.6)
     install (FILES "${ABS_PATH}"
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
              RENAME ${FREETYPELIB}.6)
     install (FILES "${ABS_PATH}"
              CONFIGURATIONS Debug

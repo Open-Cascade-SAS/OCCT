@@ -36,6 +36,8 @@ for i in $*
 do
   if [ "$i" == "d" ] || [ "$i" == "debug" ]; then
     export CASDEB="d"
+  elif [ "$i" == "i" ] || [ "$i" == "relwithdeb" ]; then
+    export CASDEB="i"
   elif [ "$i" == "cbp" ]; then
     export TARGET="cbp";
   elif [ "$i" == "xcd" ] || [ "$i" == "xcode" ]; then
@@ -74,11 +76,15 @@ if [ "${TARGET}" == "cbp" ]; then
   export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libd"
   export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/lib"
   export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/lib"
+  export CSF_OPT_LIB32I="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libi"
+  export CSF_OPT_LIB64I="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libi"
 elif [ "${TARGET}" == "xcd" ]; then
   export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Debug"
   export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Debug"
   export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Release"
   export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Release"
+  export CSF_OPT_LIB32I="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/RelWithDebInfo"
+  export CSF_OPT_LIB64I="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/RelWithDebInfo"
 fi
 
 export CSF_OPT_CMPL=""
@@ -122,11 +128,15 @@ if [ "$ARCH" == "32" ]; then
   declare -a aPartiesLibs=($*)
   set -- "$CSF_OPT_LIB32D"
   declare -a aPartiesLibsDeb=($*)
+  set -- "$CSF_OPT_LIB32I"
+  declare -a aPartiesLibsRelWithDebInfo=($*)
 else
   set -- "$CSF_OPT_LIB64"
   declare -a aPartiesLibs=($*)
   set -- "$CSF_OPT_LIB64D"
   declare -a aPartiesLibsDeb=($*)
+  set -- "$CSF_OPT_LIB64I"
+  declare -a aPartiesLibsRelWithDebInfo=($*)
 fi
 
 # Turn back value
@@ -136,6 +146,12 @@ OPT_LINKER_OPTIONS_DEB=""
 for anItem in ${aPartiesLibsDeb[*]}
 do
   OPT_LINKER_OPTIONS_DEB="${OPT_LINKER_OPTIONS_DEB} -L${anItem}"
+done
+
+OPT_LINKER_OPTIONS_REL_WITH_DEB_INFO=""
+for anItem in ${aPartiesLibsRelWithDebInfo[*]}
+do
+  OPT_LINKER_OPTIONS_REL_WITH_DEB_INFO="${OPT_LINKER_OPTIONS_REL_WITH_DEB_INFO} -L${anItem}"
 done
 
 OPT_LINKER_OPTIONS=""
@@ -152,9 +168,11 @@ done
 if [ "$ARCH" == "64" ]; then
   export CSF_OPT_LNK64="$OPT_LINKER_OPTIONS"
   export CSF_OPT_LNK64D="$OPT_LINKER_OPTIONS_DEB"
+  export CSF_OPT_LNK64I="$OPT_LINKER_OPTIONS_REL_WITH_DEB_INFO"
 else
   export CSF_OPT_LNK32="$OPT_LINKER_OPTIONS"
   export CSF_OPT_LNK32D="$OPT_LINKER_OPTIONS_DEB"
+  export CSF_OPT_LNK32I="$OPT_LINKER_OPTIONS_REL_WITH_DEB_INFO"
 fi
 
 

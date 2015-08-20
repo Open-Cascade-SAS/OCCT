@@ -13,4 +13,4 @@ else()
   endforeach()
 endif()
 
-include(${OCCT_SOURCE_DIR}/adm/cmake/BuildToolkit.cmake)
+include(${OCCT_SOURCE_DIR}/adm/cmake/occt_toolkit.cmake)

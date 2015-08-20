@@ -13,15 +13,8 @@ you need to:
    - \subpage occt_dev_guides__building_3rdparty_linux
    - \subpage occt_dev_guides__building_3rdparty_osx
 
-2. If you use bare OCCT sources from Git repository or made some changes affecting
-   CDL files or dependencies of OCCT toolkits, you need to update header files generated
-   from \ref occt_dev_guides__cdl "CDL", and regenerate build scripts for your environment using WOK.
-   See \subpage occt_dev_guides__building_wok for details.
 
-   Skip to step 3 if you use complete source package (e.g. official OCCT 
-   release) without changes in CDL.
-
-3. Build using your preferred build tool.
+2. Build using your preferred build tool.
    - \subpage occt_dev_guides__building_automake "Building on Linux with Autotools"
    - \subpage occt_dev_guides__building_cmake "Building with CMake (cross-platform)"
    - \subpage occt_dev_guides__building_android "Building with CMake and ADT for Android (cross-platform)"

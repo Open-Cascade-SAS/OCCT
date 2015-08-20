@@ -20,7 +20,12 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
   endif()
 
   if (NOT DEFINED INSTALL_${PRODUCT_NAME})
-    set (INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "Is ${PRODUCT_NAME} required to be copied into install directory")
+    message (STATUS "${INSTALL_${PRODUCT_NAME}_DESCR}")
+    if (NOT "${INSTALL_${PRODUCT_NAME}_DESCR}" STREQUAL "")
+      set (INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "${INSTALL_${PRODUCT_NAME}_DESCR}")
+    else()
+      set (INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "Is ${PRODUCT_NAME} required to be copied into install directory")
+    endif()
   endif()
 
   # search for include directory
@@ -138,7 +143,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
                DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
       install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
                CONFIGURATIONS RelWithDebInfo
-               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+               DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
       install (FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" 
                CONFIGURATIONS Debug
                DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
@@ -153,7 +158,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
                  RENAME ${FREEIMLIB}.3)
                  install (FILES "${ABS_PATH}"
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
                  RENAME ${FREEIMLIB}.3)
         install (FILES "${ABS_PATH}"
                  CONFIGURATIONS Debug
@@ -168,7 +173,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
                  RENAME ${GL2PSLIB}.1)
         install (FILES "${ABS_PATH}"
                  CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+                 DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
                  RENAME ${GL2PSLIB}.1)
         install (FILES "${ABS_PATH}"
                  CONFIGURATIONS Debug

@@ -1,7 +1,7 @@
 # tbb
 
 if (NOT DEFINED INSTALL_TBB)
-  set (INSTALL_TBB OFF CACHE BOOL "Is tbb required to be copied into install directory")
+  set (INSTALL_TBB OFF CACHE BOOL "${INSTALL_TBB_DESCR}")
 endif()
 
 # tbb directory
@@ -204,7 +204,7 @@ if (INSTALL_TBB)
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
     install (FILES ${3RDPARTY_TBB_DLL} ${3RDPARTY_TBBMALLOC_DLL}
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
     install (FILES ${3RDPARTY_TBB_DLL} ${3RDPARTY_TBBMALLOC_DLL}
              CONFIGURATIONS Debug
              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
@@ -218,7 +218,7 @@ if (INSTALL_TBB)
              RENAME ${TBBLIB}.2)
     install (FILES ${3RDPARTY_TBB_LIBRARY}.2
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
              RENAME ${TBBLIB}.2)
     install (FILES ${3RDPARTY_TBB_LIBRARY}.2
              CONFIGURATIONS Debug
@@ -231,7 +231,7 @@ if (INSTALL_TBB)
              RENAME ${TBBMALLOCLIB}.2)
     install (FILES ${3RDPARTY_TBBMALLOC_LIBRARY}.2
              CONFIGURATIONS RelWithDebInfo
-             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+             DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
              RENAME ${TBBMALLOCLIB}.2)
     install (FILES ${3RDPARTY_TBBMALLOC_LIBRARY}.2
              CONFIGURATIONS Debug

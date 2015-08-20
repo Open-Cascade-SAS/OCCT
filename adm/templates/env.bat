@@ -42,12 +42,18 @@ if /I ["%ARCH%"] == ["win32"] set "ARCH=32"
 if /I ["%ARCH%"] == ["win64"] set "ARCH=64"
 if /I ["%3"]     == ["debug"] set "CASDEB=d"
 if /I ["%3"]     == ["d"]     set "CASDEB=d"
+if /I ["%3"]     == ["i"]     set "CASDEB=i"
+if /I ["%3"]     == ["relwithdeb"] set "CASDEB=i"
 
 set "CSF_OPT_INC=%CSF_OPT_INC%;%CASROOT%\inc"
 set "CSF_OPT_LIB32D=%CSF_OPT_LIB32%;%CASROOT%\win32\%VCVER%\libd"
 set "CSF_OPT_LIB64D=%CSF_OPT_LIB64%;%CASROOT%\win64\%VCVER%\libd"
 set "CSF_OPT_BIN32D=%CSF_OPT_BIN32%;%CASROOT%\win32\%VCVER%\bind"
 set "CSF_OPT_BIN64D=%CSF_OPT_BIN64%;%CASROOT%\win64\%VCVER%\bind"
+set "CSF_OPT_LIB32I=%CSF_OPT_LIB32%;%CASROOT%\win32\%VCVER%\libi"
+set "CSF_OPT_LIB64I=%CSF_OPT_LIB64%;%CASROOT%\win64\%VCVER%\libi"
+set "CSF_OPT_BIN32I=%CSF_OPT_BIN32%;%CASROOT%\win32\%VCVER%\bini"
+set "CSF_OPT_BIN64I=%CSF_OPT_BIN64%;%CASROOT%\win64\%VCVER%\bini"
 set "CSF_OPT_LIB32=%CSF_OPT_LIB32%;%CASROOT%\win32\%VCVER%\lib"
 set "CSF_OPT_LIB64=%CSF_OPT_LIB64%;%CASROOT%\win64\%VCVER%\lib"
 set "CSF_OPT_BIN32=%CSF_OPT_BIN32%;%CASROOT%\win32\%VCVER%\bin"
@@ -93,23 +99,24 @@ for %%a in ("%CSF_OPT_LIB64:;=";"%") do (
   if not ["%%~a"] == [""] call :concatLib64 %%~a
 )
 
-set "CSF_OPT_LNK32="
-set "CSF_OPT_LNK64="
-set "CSF_OPT_LNK32D="
-set "CSF_OPT_LNK64D="
 set "CSF_OPT_LNK32=%CSF_OPT_LNK32% %OPT_LIB32%"
-set "CSF_OPT_LNK32D=%CSF_OPT_LNK32D% %OPT_LIB32%"
 set "CSF_OPT_LNK64=%CSF_OPT_LNK64% %OPT_LIB64%"
+set "CSF_OPT_LNK32D=%CSF_OPT_LNK32D% %OPT_LIB32%"
 set "CSF_OPT_LNK64D=%CSF_OPT_LNK64D% %OPT_LIB64%"
+set "CSF_OPT_LNK32I=%CSF_OPT_LNK32I% %OPT_LIB32%"
+set "CSF_OPT_LNK64I=%CSF_OPT_LNK64I% %OPT_LIB64%"
 
 set "CASBIN=win%ARCH%\%VCVER%"
 
 rem ----- Set path to 3rd party and OCCT libraries -----
 set "PATH=%SCRIPTROOT%\%CASBIN%\bin%CASDEB%;%PATH%"
-if     ["%CASDEB%"] == [""] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32%;%PATH%"
-if     ["%CASDEB%"] == [""] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64%;%PATH%"
-if not ["%CASDEB%"] == [""] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32D%;%PATH%"
-if not ["%CASDEB%"] == [""] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64D%;%PATH%"
+if ["%CASDEB%"] == [""] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32%;%PATH%"
+if ["%CASDEB%"] == [""] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64%;%PATH%"
+if ["%CASDEB%"] == ["d"] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32D%;%PATH%"
+if ["%CASDEB%"] == ["d"] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64D%;%PATH%"
+
+if ["%CASDEB%"] == ["i"] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32I%;%PATH%"
+if ["%CASDEB%"] == ["i"] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64I%;%PATH%"
 
 rem ----- Set envoronment variables used by OCCT -----
 set CSF_LANGUAGE=us

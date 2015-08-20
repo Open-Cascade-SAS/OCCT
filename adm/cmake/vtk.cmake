@@ -1,7 +1,7 @@
 # vtk
 
 if (NOT DEFINED INSTALL_VTK)
-  set (INSTALL_VTK OFF CACHE BOOL "Is vtk required to be copied into install directory")
+  set (INSTALL_VTK OFF CACHE BOOL "${INSTALL_VTK_DESCR}")
 endif()
 
 # vtk directory
@@ -144,7 +144,7 @@ if (INSTALL_VTK)
                    DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
           install (FILES ${3RDPARTY_VTK_DLL}
                    CONFIGURATIONS RelWithDebInfo
-                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin")
+                   DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bini")
           install (FILES ${3RDPARTY_VTK_DLL}
                    CONFIGURATIONS Debug
                    DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bind")
@@ -161,7 +161,7 @@ if (INSTALL_VTK)
               RENAME "lib${VTK_DLL_NAME}")
       install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
               CONFIGURATIONS RelWithDebInfo
-              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib"
+              DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/libi"
               RENAME "lib${VTK_DLL_NAME}")
       install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}"
               CONFIGURATIONS Debug
