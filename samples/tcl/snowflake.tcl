@@ -137,7 +137,7 @@ vfit
 
 # add dimension
 explode snowflake v
-vdimension length -length -shapes snowflake_93 snowflake_15 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
+vdimension length -length -shapes snowflake_89 snowflake_15 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
 
 if { [regexp HAVE_GL2PS [dversion]] } {
     puts "You can use command vexport to generate PDF: vexport your_file_path.pdf"
