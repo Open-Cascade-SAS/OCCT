@@ -74,6 +74,8 @@
 #include <BRep_Tool.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <Precision.hxx>
+#include <StepGeom_RectangularTrimmedSurface.hxx>
+#include <StepGeom_ToroidalSurface.hxx>
 
 //  Provisoire, pour VertexLoop
 #include <Geom_SphericalSurface.hxx>
@@ -115,6 +117,18 @@ StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace
 // Method  : Init
 // Purpose : Init with a FaceSurface and a Tool
 // ============================================================================
+
+static inline Standard_Boolean isReversed(const Handle(StepGeom_Surface)& theStepSurf)
+{
+  Handle(StepGeom_ToroidalSurface) aStepTorSur;
+  if(theStepSurf->IsKind(STANDARD_TYPE(StepGeom_RectangularTrimmedSurface)))
+    return isReversed(Handle(StepGeom_RectangularTrimmedSurface)::DownCast(theStepSurf)->BasisSurface());
+  
+  else
+    aStepTorSur = Handle(StepGeom_ToroidalSurface)::DownCast(theStepSurf);
+  
+  return (!aStepTorSur.IsNull() && aStepTorSur->MajorRadius() < 0 ? Standard_True : Standard_False);
+}
 
 void StepToTopoDS_TranslateFace::Init
 (const Handle(StepShape_FaceSurface)& FS, StepToTopoDS_Tool& aTool, StepToTopoDS_NMTool& NMTool)
@@ -187,8 +201,12 @@ void StepToTopoDS_TranslateFace::Init
     }
   }
     
-  Standard_Boolean sameSense = FS->SameSense();
+  Standard_Boolean sameSenseFace = FS->SameSense();
 
+  //fix for bug 0026376 Solid Works wrote face based on toroidal surface having negative major radius
+  //seems that such case is interpreted  by "Solid Works" and "ProE" as face having reversed orientation.
+  Standard_Boolean sameSense = (isReversed(StepSurf) ? !sameSenseFace : sameSenseFace);
+  
   // -- Statistics --
   aTool.AddContinuity (GeomSurf);
   
