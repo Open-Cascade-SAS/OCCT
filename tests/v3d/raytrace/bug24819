@@ -21,7 +21,7 @@ vsetmaterial b2 Pewter
 vsettransparency b2 0.8
 
 # brep text
-text2brep t "text" "Arial" 8
+text2brep t "text" -font "Arial" -height 8
 vdisplay t
 
 # overlay objects

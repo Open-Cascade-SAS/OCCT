@@ -18,6 +18,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <Font_TextFormatter.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <GC_MakeSegment.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -462,58 +463,4 @@ Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
 
   myCache.Bind (theChar, theShape);
   return !theShape.IsNull();
-}
-
-// =======================================================================
-// function : RenderText
-// purpose  :
-// =======================================================================
-TopoDS_Shape Font_BRepFont::RenderText (const NCollection_String& theString)
-{
-  if (theString.IsEmpty())
-  {
-    return TopoDS_Shape();
-  }
-
-  gp_Trsf          aTrsf;
-  gp_XYZ           aPen;
-  Standard_Integer aLine = 0;
-  TopoDS_Shape     aGlyphShape;
-  TopoDS_Compound  aResult;
-  myBuilder.MakeCompound (aResult);
-  Standard_Mutex::Sentry aSentry (myMutex);
-  for (NCollection_Utf8Iter anIter = theString.Iterator(); *anIter != 0;)
-  {
-    const Standard_Utf32Char aCharCurr =   *anIter;
-    const Standard_Utf32Char aCharNext = *++anIter;
-    if (aCharCurr == '\x0D' // CR  (carriage return)
-     || aCharCurr == '\a'   // BEL (alarm)
-     || aCharCurr == '\f'   // FF  (form feed) NP (new page)
-     || aCharCurr == '\b'   // BS  (backspace)
-     || aCharCurr == '\v')  // VT  (vertical tab)
-    {
-      continue; // skip unsupported carriage control codes
-    }
-    else if (aCharCurr == ' ' || aCharCurr == '\t')
-    {
-      aPen.SetX (aPen.X() + AdvanceX (aCharCurr, aCharNext));
-      continue;
-    }
-    else if (aCharCurr == '\n')
-    {
-      ++aLine;
-      aPen.SetX (0.0);
-      aPen.SetY (-Standard_Real(aLine) * LineSpacing());
-      continue;
-    }
-
-    if (renderGlyph (aCharCurr, aGlyphShape))
-    {
-      aTrsf.SetTranslation (gp_Vec (aPen));
-      aGlyphShape.Move (aTrsf);
-      myBuilder.Add (aResult, aGlyphShape);
-    }
-    aPen.SetX (aPen.X() + AdvanceX (aCharCurr, aCharNext));
-  }
-  return aResult;
 }

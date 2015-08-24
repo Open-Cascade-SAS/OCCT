@@ -298,11 +298,18 @@ void Font_TextFormatter::Format()
   if (myAlignY == Graphic3d_VTA_BOTTOM)
   {
     myBndTop = -myLineSpacing - myPenCurrLine;
-    moveY (myCorners, myBndTop, 0, myRectsNb - 1);
   }
   else if (myAlignY == Graphic3d_VTA_CENTER)
   {
     myBndTop = 0.5f * (myLineSpacing * Standard_ShortReal(myLinesNb));
+  }
+  else if (myAlignY == Graphic3d_VTA_TOPFIRSTLINE)
+  {
+    myBndTop = myAscender;
+  }
+
+  if (myAlignY != Graphic3d_VTA_TOP)
+  {
     moveY (myCorners, myBndTop, 0, myRectsNb - 1);
   }
 }

@@ -96,7 +96,7 @@ thrusections -N thread 1 0 tw1 tw2
 puts "Putting together and writing \"Open CASCADE\"..."
 
 # define text
-text2brep text2d OpenCASCADE Times-Roman 8 bold composite=0
+text2brep text2d OpenCASCADE -font Times-Roman -height 8 -aspect bold -composite off
 prism text text2d 0 0 2
 trotate    text 0 0 0 0 1 0 90
 ttranslate text 24.75 -2 65

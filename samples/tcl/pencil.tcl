@@ -27,7 +27,7 @@ bcommon body b e
 bcut body body c
 bcommon core cx e
 
-text2brep text "CAD Assistant" Times 10
+text2brep text "CAD Assistant" -font Times -height 10
 ttranslate text 10 -4 10
 prism tr text 0 0 -1
 bfuse body body tr

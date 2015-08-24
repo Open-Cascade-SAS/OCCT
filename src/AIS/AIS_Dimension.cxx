@@ -24,6 +24,7 @@
 #include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
 #include <Font_BRepFont.hxx>
+#include <Font_BRepTextBuilder.hxx>
 #include <GC_MakeCircle.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -422,7 +423,9 @@ void AIS_Dimension::DrawText (const Handle(Prs3d_Presentation)& thePresentation,
     // creating TopoDS_Shape for text
     Font_BRepFont aFont (aFontName, aFontAspect, aFontHeight);
     NCollection_Utf8String anUTFString = (Standard_Utf16Char* )theText.ToExtString();
-    TopoDS_Shape aTextShape = aFont.RenderText (anUTFString);
+
+    Font_BRepTextBuilder aBuilder;
+    TopoDS_Shape aTextShape = aBuilder.Perform (aFont, anUTFString);
 
     // compute text width with kerning
     Standard_Real aTextWidth  = 0.0;

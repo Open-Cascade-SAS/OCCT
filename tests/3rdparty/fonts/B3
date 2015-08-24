@@ -18,8 +18,8 @@ zxcvbnm,./
 ZXCVBNM<>?§
 }
 
-text2brep aBTextN $THE_TEXT $THE_FONT_NAME $THE_FONT_SIZE regular composite=0
-text2brep aBTextC $THE_TEXT $THE_FONT_NAME $THE_FONT_SIZE regular composite=1
+text2brep aBTextN $THE_TEXT -font $THE_FONT_NAME -height $THE_FONT_SIZE -aspect regular -composite off
+text2brep aBTextC $THE_TEXT -font $THE_FONT_NAME -height $THE_FONT_SIZE -aspect regular -composite on
 checkshape aBTextN
 checkshape aBTextC
 

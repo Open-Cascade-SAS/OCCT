@@ -107,13 +107,13 @@ polyline t9 154 -80 0 154 -60 0
 compound frame t1 t2 t3 t4 t5 t6 t7 t8 t9 lines
 
 # add text
-text2brep sample "SAMPLE" Arial 10 x=90 y=-55 bolditalic
-text2brep occ "Open CASCADE" Times 6 x=125 y=-95 
-text2brep name "Snowflake" Courier 7 x=65 y=-75 italic
-text2brep material "Ice" Courier 7 x=75 y=-95 italic
-text2brep sheets "Sheets 1" Courier 3.5 x=145 y=-83 italic
-text2brep scale "Scale\n\n1:100" Courier 3.5 x=157 y=-63 italic
-text2brep mass "Mass\n\n1 mg" Courier 3.5 x=140 y=-63 italic
+text2brep sample "SAMPLE" -font Arial -height 10 -pos 90 -55 0 -aspect bolditalic
+text2brep occ "Open CASCADE" -font Times -height 6 -pos 125 -95 0
+text2brep name "Snowflake" -font Courier -height 7 -pos 65 -75 0 -aspect italic
+text2brep material "Ice" -font Courier -height 7 -pos 75 -95 0 -aspect italic
+text2brep sheets "Sheets 1" -font Courier -height 3.5 -pos 145 -83 0 -aspect italic
+text2brep scale "Scale\n\n1:100" -font Courier -height 3.5 -pos 157 -63 0 -aspect italic -valign topfirstline
+text2brep mass "Mass\n\n1 mg" -font Courier -height 3.5 -pos 140 -63 0 -aspect italic -valign topfirstline
 eval compound [explode sample w] sample
 eval compound [explode occ w] occ
 eval compound [explode name w] name

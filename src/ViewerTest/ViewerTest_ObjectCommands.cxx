@@ -23,6 +23,7 @@
 #include <DBRep.hxx>
 
 #include <Font_BRepFont.hxx>
+#include <Font_BRepTextBuilder.hxx>
 #include <Font_FontMgr.hxx>
 #include <OSD_Chronometer.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -148,6 +149,8 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
                                            Standard_Boolean theReplaceIfExists = Standard_True);
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext();
+extern Standard_Boolean parseOnOff (Standard_CString  theArg,
+                                    Standard_Boolean& theIsOn);
 
 
 //==============================================================================
@@ -2543,6 +2546,10 @@ static int VDrawText (Draw_Interpretor& theDI,
       else if (aType == "bottom")
       {
         aTextPrs->SetVJustification (Graphic3d_VTA_BOTTOM);
+      }
+      else if (aType == "topfirstline")
+      {
+        aTextPrs->SetVJustification (Graphic3d_VTA_TOPFIRSTLINE);
       }
       else
       {
@@ -5265,69 +5272,210 @@ static TCollection_AsciiString fontStyleString (const Font_FontAspect theAspect)
 //function : TextToBrep
 //purpose  : Tool for conversion text to occt-shapes
 //=======================================================================
-
 static int TextToBRep (Draw_Interpretor& /*theDI*/,
                        Standard_Integer  theArgNb,
                        const char**      theArgVec)
 {
   // Check arguments
-  if (theArgNb < 5)
+  if (theArgNb < 3)
   {
     std::cerr << "Error: " << theArgVec[0] << " - invalid syntax\n";
     return 1;
   }
 
-  Standard_Integer    anArgIter = 1;
-  Standard_CString    aResName  = theArgVec[anArgIter++];
-  Standard_CString    aText     = theArgVec[anArgIter++];
-  Standard_CString    aFontName = theArgVec[anArgIter++];
-  const Standard_Real aSize     = Atof (theArgVec[anArgIter++]);
+  Standard_Integer anArgIt = 1;
+  Standard_CString aName   = theArgVec[anArgIt++];
+  Standard_CString aText   = theArgVec[anArgIt++];
 
-  Font_BRepFont    aFont;
-  Font_FontAspect  aFontAspect      = Font_FA_Regular;
-  Standard_Boolean isCompositeCurve = Standard_False;
-  gp_Ax3           aPenAx3 (gp::XOY());
-  gp_Pnt           aPenLoc;
-  while (anArgIter < theArgNb)
+  Font_BRepFont           aFont;
+  TCollection_AsciiString aFontName ("Courier");
+  Standard_Real           aTextHeight        = 16.0;
+  Font_FontAspect         aFontAspect        = Font_FA_Regular;
+  Standard_Boolean        anIsCompositeCurve = Standard_False;
+  gp_Ax3                  aPenAx3    (gp::XOY());
+  gp_Dir                  aNormal    (0.0, 0.0, 1.0);
+  gp_Dir                  aDirection (1.0, 0.0, 0.0);
+  gp_Pnt                  aPenLoc;
+
+  Graphic3d_HorizontalTextAlignment aHJustification = Graphic3d_HTA_LEFT;
+  Graphic3d_VerticalTextAlignment   aVJustification = Graphic3d_VTA_BOTTOM;
+
+  for (; anArgIt < theArgNb; ++anArgIt)
   {
-    const TCollection_AsciiString anArg (theArgVec[anArgIter++]);
-    TCollection_AsciiString anArgCase (anArg);
-    anArgCase.LowerCase();
-    if (anArgCase.Search ("x=") > -1)
+    TCollection_AsciiString aParam (theArgVec[anArgIt]);
+    aParam.LowerCase();
+
+    if (aParam == "-pos"
+     || aParam == "-position")
     {
-      aPenLoc.SetX (anArg.Token ("=", 2).RealValue());
+      if (anArgIt + 3 >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aPenLoc.SetX (Draw::Atof(theArgVec[++anArgIt]));
+      aPenLoc.SetY (Draw::Atof(theArgVec[++anArgIt]));
+      aPenLoc.SetZ (Draw::Atof(theArgVec[++anArgIt]));
     }
-    else if (anArgCase.Search ("y=") > -1)
+    else if (aParam == "-halign")
     {
-      aPenLoc.SetY (anArg.Token ("=", 2).RealValue());
+      if (++anArgIt >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      aType.LowerCase();
+      if (aType == "left")
+      {
+        aHJustification = Graphic3d_HTA_LEFT;
+      }
+      else if (aType == "center")
+      {
+        aHJustification = Graphic3d_HTA_CENTER;
+      }
+      else if (aType == "right")
+      {
+        aHJustification = Graphic3d_HTA_RIGHT;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
     }
-    else if (anArgCase.Search ("z=") > -1)
+    else if (aParam == "-valign")
     {
-      aPenLoc.SetZ (anArg.Token ("=", 2).RealValue());
+      if (++anArgIt >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      aType.LowerCase();
+      if (aType == "top")
+      {
+        aVJustification = Graphic3d_VTA_TOP;
+      }
+      else if (aType == "center")
+      {
+        aVJustification = Graphic3d_VTA_CENTER;
+      }
+      else if (aType == "bottom")
+      {
+        aVJustification = Graphic3d_VTA_BOTTOM;
+      }
+      else if (aType == "topfirstline")
+      {
+        aVJustification = Graphic3d_VTA_TOPFIRSTLINE;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
     }
-    else if (anArgCase.Search ("composite=") > -1)
+    else if (aParam == "-height")
     {
-      isCompositeCurve = (anArg.Token ("=", 2).IntegerValue() == 1);
+      if (++anArgIt >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aTextHeight = Draw::Atof(theArgVec[anArgIt]);
     }
-    else if (parseFontStyle (anArgCase, aFontAspect))
+    else if (aParam == "-aspect")
     {
-      //
+      if (++anArgIt >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString anOption (theArgVec[anArgIt]);
+      anOption.LowerCase();
+
+      if (anOption.IsEqual ("regular"))
+      {
+        aFontAspect = Font_FA_Regular;
+      }
+      else if (anOption.IsEqual ("bold"))
+      {
+        aFontAspect = Font_FA_Bold;
+      }
+      else if (anOption.IsEqual ("italic"))
+      {
+        aFontAspect = Font_FA_Italic;
+      }
+      else if (anOption.IsEqual ("bolditalic"))
+      {
+        aFontAspect = Font_FA_BoldItalic;
+      }
+      else
+      {
+        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+    }
+    else if (aParam == "-font")
+    {
+      if (++anArgIt >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      aFontName = theArgVec[anArgIt];
+    }
+    else if (aParam == "-composite")
+    {
+      if (++anArgIt >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      parseOnOff (theArgVec[anArgIt], anIsCompositeCurve);
+    }
+    else if (aParam == "-plane")
+    {
+      if (anArgIt + 6 >= theArgNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      Standard_Real aX = Draw::Atof (theArgVec[++anArgIt]);
+      Standard_Real aY = Draw::Atof (theArgVec[++anArgIt]);
+      Standard_Real aZ = Draw::Atof (theArgVec[++anArgIt]);
+      aNormal.SetCoord (aX, aY, aZ);
+
+      aX = Draw::Atof (theArgVec[++anArgIt]);
+      aY = Draw::Atof (theArgVec[++anArgIt]);
+      aZ = Draw::Atof (theArgVec[++anArgIt]);
+      aDirection.SetCoord (aX, aY, aZ);
     }
     else
     {
-      std::cerr << "Warning! Unknown argument '" << anArg.ToCString() << "'\n";
+      std::cerr << "Warning! Unknown argument '" << aParam << "'\n";
     }
   }
 
-  aFont.SetCompositeCurveMode (isCompositeCurve);
-  if (!aFont.Init (aFontName, aFontAspect, aSize))
+  aFont.SetCompositeCurveMode (anIsCompositeCurve);
+  if (!aFont.Init (aFontName.ToCString(), aFontAspect, aTextHeight))
   {
     std::cerr << "Font initialization error\n";
     return 1;
   }
 
-  aPenAx3.SetLocation (aPenLoc);
-  DBRep::Set (aResName, aFont.RenderText (aText, aPenAx3));
+  aPenAx3 = gp_Ax3 (aPenLoc, aNormal, aDirection);
+
+  Font_BRepTextBuilder aBuilder;
+  DBRep::Set (aName, aBuilder.Perform (aFont, aText, aPenAx3, aHJustification, aVJustification));
   return 0;
 }
 
@@ -6118,7 +6266,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-pos X=0 Y=0 Z=0]"
                    "\n\t\t: [-color {R G B|name}=yellow]"
                    "\n\t\t: [-halign {left|center|right}=left]"
-                   "\n\t\t: [-valign {top|center|bottom}=bottom}]"
+                   "\n\t\t: [-valign {top|center|bottom|topfirstline}=bottom}]"
                    "\n\t\t: [-angle angle=0]"
                    "\n\t\t: [-zoom {0|1}=0]"
                    "\n\t\t: [-height height=16]"
@@ -6236,7 +6384,15 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    __FILE__, VMarkersTest, group);
 
   theCommands.Add ("text2brep",
-                   "text2brep: res text fontName fontSize [x=0.0 y=0.0 z=0.0 composite=1 {regular,bold,italic,bolditalic=regular}]\n",
+                   "text2brep: name text"
+                   "\n\t\t: [-pos X=0 Y=0 Z=0]"
+                   "\n\t\t: [-halign {left|center|right}=left]"
+                   "\n\t\t: [-valign {top|center|bottom|topfirstline}=bottom}]"
+                   "\n\t\t: [-height height=16]"
+                   "\n\t\t: [-aspect {regular|bold|italic|bolditalic}=regular]"
+                   "\n\t\t: [-font font=Courier]"
+                   "\n\t\t: [-composite {on|off}=off]"
+                   "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]",
                    __FILE__, TextToBRep, group);
   theCommands.Add ("vfont",
                             "vfont [add pathToFont [fontName] [regular,bold,italic,bolditalic=undefined]]"

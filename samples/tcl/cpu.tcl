@@ -77,10 +77,10 @@ set font "Arial Unicode MS"
 #text2brep title $text "Arial Unicode MS" 1.7 x=10 y=24 z=4.51
 # alternative variant to work-around issue #25852
 set text "i\u20dd\u20dd11\nINTEL\u20dd CORE\u2122 i7-4790\nSR1QF 3.60GHZ\nMALAY\nL411B540 \u20dd"
-text2brep title0 $text $font 1.7 x=10 y=24 z=4.51
-text2brep title1 "    M    C" $font 0.77 x=10 y=24.2 z=4.51
-text2brep title2 "R" $font 0.77 x=15.3 y=21.9 z=4.51
-text2brep title3 "e4" $font 0.7 x=18.6 y=15.1 z=4.51
+text2brep title0 $text -font $font -height 1.7 -pos 10 24 4.51 -valign topfirstline
+text2brep title1 "    M    C" -font $font -height 0.77 -pos 10 24.2 4.51
+text2brep title2 "R" -font $font -height 0.77 -pos 15.3 21.9 4.51
+text2brep title3 "e4" -font $font -height 0.7 -pos 18.6 15.1 4.51
 compound title0 title1 title2 title3 title
 
 puts "Adding contact pads..."

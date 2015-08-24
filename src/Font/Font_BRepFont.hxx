@@ -18,6 +18,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <Font_FTFont.hxx>
+#include <Font_TextFormatter.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <gp_Ax3.hxx>
@@ -97,27 +98,6 @@ public:
 
 public:
 
-  //! Render text as BRep shape.
-  //! @param theString text in UTF-8 encoding
-  //! @return result shape within XOY plane and start position (0,0,0) on the baseline
-  Standard_EXPORT TopoDS_Shape RenderText (const NCollection_String& theString);
-
-  //! Render text as BRep shape.
-  //! @param theString text in UTF-8 encoding
-  //! @param thePenLoc start position and orientation on the baseline
-  //! @return result shape with pen transformation applied as shape location
-  TopoDS_Shape RenderText (const NCollection_String& theString,
-                           const gp_Ax3&             thePenLoc)
-  {
-    TopoDS_Shape aResult = RenderText (theString);
-    gp_Trsf aTrsf;
-    aTrsf.SetTransformation (thePenLoc, gp_Ax3 (gp::XOY()));
-    aResult.Move (aTrsf);
-    return aResult;
-  }
-
-public:
-
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
   Standard_Real Ascender() const
   {
@@ -172,6 +152,18 @@ public:
     return myScaleUnits * Standard_Real(Font_FTFont::AdvanceY (theUChar, theUCharNext));
   }
 
+  //! Returns scaling factor for current font size.
+  Standard_Real Scale() const
+  {
+    return myScaleUnits;
+  }
+
+  //! Returns mutex.
+  Standard_Mutex& Mutex()
+  {
+    return myMutex;
+  }
+
 protected:
 
   //! Render single glyph as TopoDS_Shape. This method does not lock the mutex.
@@ -205,7 +197,7 @@ protected: //! @name Protected fields
   Handle(Geom_Surface) mySurface;          //!< surface to place glyphs on to
   Standard_Real        myPrecision;        //!< algorithm precision
   Standard_Real        myScaleUnits;       //!< scale font rendering units into model units
-  Standard_Boolean     myIsCompositeCurve; //!< flag to merge C1 curves of each contour into single C0 curve, ON by default
+  Standard_Boolean     myIsCompositeCurve; //!< flag to merge C1 curves of each contour into single C0 curve, OFF by default
 
 protected: //! @name Shared temporary variables for glyph construction
 
