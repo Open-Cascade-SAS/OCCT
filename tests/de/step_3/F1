@@ -1,5 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR26597 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
@@ -9,12 +9,12 @@ set filename tr9_r0601-ct.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 125  ( 22 )  Summary  = 125  ( 22 )
+TPSTAT      : Faulties = 1  ( 0 )  Warnings = 126  ( 21 )  Summary  = 127  ( 21 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 4252  ( 61 )  Face     = 4252  ( 4252 )   Summary  = 58212  ( 51172 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 4252  ( 61 )  Face     = 4252  ( 4252 )   FreeWire = 0  ( 1 )   FreeEdge  = 2854 ( 2854 )   SharedEdge = 20022  ( 20024 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 4251  ( 61 )  Face     = 4251  ( 4252 )   Summary  = 58202  ( 51172 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 4251  ( 61 )  Face     = 4251  ( 4252 )   FreeWire = 0  ( 1 )   FreeEdge  = 2854 ( 2854 )   SharedEdge = 20018  ( 20024 )
 TOLERANCE   : MaxTol   =   0.8498047902  (  0.01572488678 )  AvgTol   =  5.25293974e-005  (  2.100507096e-005 )
-LABELS      : N0Labels = 3  ( 3 )  N1Labels = 7107  ( 7169 )  N2Labels = 0  ( 0 )   TotalLabels = 7110  ( 7172 )   NameLabels = 5  ( 5 )   ColorLabels = 7105  ( 7105 )   LayerLabels = 7105  ( 7167 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 7106  ( 7169 )  N2Labels = 0  ( 0 )   TotalLabels = 7109  ( 7172 )   NameLabels = 5  ( 5 )   ColorLabels = 7104  ( 7105 )   LayerLabels = 7104  ( 7167 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
 COLORS      : Colors   = RED WHITE YELLOW  ( RED WHITE YELLOW )
