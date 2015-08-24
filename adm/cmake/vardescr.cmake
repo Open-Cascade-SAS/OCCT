@@ -18,6 +18,10 @@ set (REBUILD_PLATFORM_DEPENDENT_CODE_DESCR
 ExprIntrp functionality are generated automatically with Flex/Bison. Checking this options
 leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files")
 
+set (OCCT_ALGO_EXTENDED_OUTPUT_DESCR
+"Enables extended messages of many OCCT algorithms, usually printed to cout. 
+These include messages on internal errors and special cases encountered, timing etc")
+
 # install variables
 set (INSTALL_DIR_DESCR 
 "The place where built OCCT libraries, headers, test cases (INSTALL_OCCT_TEST_CASES variable),

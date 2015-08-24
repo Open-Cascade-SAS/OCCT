@@ -41,6 +41,11 @@ if (DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE) # single-configuration ge
   set (CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
+# enable extended messages of many OCCT algorithms
+set (OCCT_ALGO_EXTENDED_OUTPUT OFF CACHE BOOL "${OCCT_ALGO_EXTENDED_OUTPUT_DESCR}")
+if (OCCT_ALGO_EXTENDED_OUTPUT_DESCR)
+  add_definitions (-DOCCT_DEBUG)
+endif()
 
 # Rebuild *.yacc and *.lex files
 set (REBUILD_PLATFORM_DEPENDENT_CODE OFF CACHE BOOL "${REBUILD_PLATFORM_DEPENDENT_CODE_DESCR}")
