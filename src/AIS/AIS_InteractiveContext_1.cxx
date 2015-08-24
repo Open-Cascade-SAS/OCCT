@@ -245,16 +245,10 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     myLastPicked.Nullify();
   }
 
-  if (toUpdateViewer)
+  if (toUpdateViewer
+   && theToRedrawOnUpdate)
   {
-    if (theToRedrawOnUpdate)
-    {
-      theView->Viewer()->Update();
-    }
-    else
-    {
-      theView->Viewer()->Invalidate();
-    }
+    theView->Viewer()->Update();
   }
 
   mylastmoveview = theView;
