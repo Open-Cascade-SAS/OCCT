@@ -534,6 +534,8 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
       }
       if (!mgrSelector->IsActivated (theIObj, theSelectionMode))
       {
+        if (!aStatus->IsSModeIn (theSelectionMode))
+          aStatus->AddSelectionMode (theSelectionMode);
         mgrSelector->Activate (theIObj, theSelectionMode, myMainSel);
       }
     }
