@@ -2396,6 +2396,11 @@ Standard_Boolean OpenGl_View::runRaytraceShaders (const Graphic3d_CView&        
 
   if (myRaytraceParameters.GlobalIllumination)
   {
+    if (myAccumFrames == 0)
+    {
+      myRNG.SetSeed();
+    }
+
     // Set frame accumulation weight
     myRaytraceProgram->SetUniform (theGlContext,
       myUniformLocations[0][OpenGl_RT_uSampleWeight], 1.f / (myAccumFrames + 1));

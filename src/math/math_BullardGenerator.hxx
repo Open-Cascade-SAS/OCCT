@@ -24,14 +24,21 @@ class math_BullardGenerator
 public:
 
   //! Creates new Xorshift 64-bit RNG.
-  Standard_EXPORT math_BullardGenerator(unsigned int theSeed = 1)
-    : myStateHi (theSeed)
+  math_BullardGenerator (unsigned int theSeed = 1)
+  : myStateHi (theSeed)
   {
+    SetSeed (theSeed);
+  }
+
+  //! Setup new seed / reset defaults.
+  void SetSeed (unsigned int theSeed = 1)
+  {
+    myStateHi = theSeed;
     myStateLo = theSeed ^ 0x49616E42;
   }
 
   //! Generates new 64-bit integer value.
-  Standard_EXPORT unsigned int NextInt()
+  unsigned int NextInt()
   {
     myStateHi = (myStateHi >> 2) + (myStateHi << 2);
 
@@ -42,7 +49,7 @@ public:
   }
 
   //! Generates new floating-point value.
-  Standard_EXPORT Standard_Real NextReal()
+  Standard_Real NextReal()
   {
     return NextInt() / static_cast<Standard_Real> (0xFFFFFFFFu);
   }
