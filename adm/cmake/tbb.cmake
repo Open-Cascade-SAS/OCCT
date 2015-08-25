@@ -58,6 +58,11 @@ if (WIN32 AND NOT DEFINED 3RDPARTY_TBBMALLOC_DLL_DIR)
   set (3RDPARTY_TBBMALLOC_DLL_DIR "" CACHE FILEPATH "The directory containing tbb malloc shared library")
 endif()
 
+if (MSVC)
+  add_definitions (-D__TBB_NO_IMPLICIT_LINKAGE)
+  add_definitions (-D__TBBMALLOC_NO_IMPLICIT_LINKAGE)
+endif()
+
 # include occt macros. compiler_bitness, os_wiht_bit, compiler
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
