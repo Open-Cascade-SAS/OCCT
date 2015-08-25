@@ -325,6 +325,7 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)&      aWindow,
   MyView->SetWindow(aWindow, aContext, aDisplayCB, aClientData) ;
   MyView->SetContext(MyViewContext) ;
   MyView->SetBackground(MyBackground) ;
+  MyView->SetGradientBackground (MyGradientBackground, Standard_False);
   MyViewer->SetViewOn(this) ;
   MyView->Redraw() ;
 }
