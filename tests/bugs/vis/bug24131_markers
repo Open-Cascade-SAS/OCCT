@@ -26,6 +26,8 @@ set aCustom1 [locate_data_file images/marker_box1.png]
 set aCustom2 [locate_data_file images/marker_box2.png]
 set aCustom3 [locate_data_file images/marker_dot.png]
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 # draw box in advance which should fit all our markers
 box b -8 -8 0 16 16 2
 puts "hI"
@@ -47,7 +49,7 @@ for { set aMode 0 } { $aMode <= 1 } { incr aMode } {
     set aRow [expr $aMarkerType - 7]
     set aCol 5
     set aName [lindex $aMarkerTypeNames $aMarkerType]
-    vdrawtext "$aName" "$aName" -pos 0 [expr $aRow + 0.5] 0 -color 0.5 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 12 -aspect bold -font Arial
+    vdrawtext "$aName" "$aName" -pos 0 [expr $aRow + 0.5] 0 -color 0.5 1.0 1.0 -halign center -valign center -angle 000 -zoom 0 -height 12 -aspect bold -font SansFont
     if { $aMarkerType == 13 } {
       vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom1
       set aCol [expr $aCol - 1]

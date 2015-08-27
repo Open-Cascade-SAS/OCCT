@@ -8,11 +8,13 @@ puts ""
 #######################################################################
 pload VISUALIZATION
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit
 vpoint angleP1 0 0 0
 vpoint angleP2 50 50 50
 vpoint angleP3 50 50 100
-vdimension dim1 -angle -shapes angleP1 angleP2 angleP3
+vdimension dim1 -angle -shapes angleP1 angleP2 angleP3 -font SansFont
 vfit
 vmoveto 249 206
 
@@ -26,7 +28,7 @@ if { $stat != 1 } {
 }
 vinit Viewer2/View2
 vdisplay angleP1 angleP2 angleP3
-vdimension dim2 -angle -text 3d -shapes angleP1 angleP2 angleP3
+vdimension dim2 -angle -text 3d -shapes angleP1 angleP2 angleP3 -font SansFont
 vfit
 vmoveto 263 251
 

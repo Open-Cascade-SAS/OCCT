@@ -6,12 +6,14 @@ puts ""
 # Visualization - the same text is rendered with shift at second time
 #######################################################################
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit
 vclear
 vaxo
-vdrawtext text0 "This program" -pos 0 0 0 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font Arial
+vdrawtext text0 "This program" -pos 0 0 0 -color 0.0 1.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font SansFont
 
-vdrawtext text1 "This program" -pos 0 0 0 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font Arial
+vdrawtext text1 "This program" -pos 0 0 0 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font SansFont
 
 set x 346
 set y 190

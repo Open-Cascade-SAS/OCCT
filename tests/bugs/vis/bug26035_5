@@ -6,6 +6,8 @@ puts ""
 #  Drawing dimension between edge and point
 #######################################################################
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit View1
 vclear
 vaxo
@@ -17,7 +19,7 @@ vdisplay e
 
 vpoint p 10 0 10
 
-vdimension len -length -shapes e p -plane yoz
+vdimension len -length -shapes e p -plane yoz -font SansFont
 
 vfit
 

@@ -7,6 +7,8 @@ puts ""
 #######################################################################
 pload VISUALIZATION
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit
 vright
 
@@ -22,28 +24,28 @@ vpoint  circle1_p1 0  0 30
 vpoint  circle1_p2 30 0  0
 vpoint  circle1_p3 60 0 30
 vcircle circle1 circle1_p1 circle1_p2 circle1_p3 0
-vdimension rad1 -radius -shapes circle1 -text 3d -plane zox -label hfit -flyout 0 -arrow internal
+vdimension rad1 -radius -shapes circle1 -text 3d -plane zox -label hfit -flyout 0 -arrow internal -font SansFont
 
 # test forced external arrow orientation
 vpoint  circle2_p1 100 0 35
 vpoint  circle2_p2 135 0  0
 vpoint  circle2_p3 170 0 35
 vcircle circle2 circle2_p1 circle2_p2 circle2_p3 0
-vdimension rad2 -radius -shapes circle2 -text 3d -plane zox -label hfit -flyout 0 -arrow external
+vdimension rad2 -radius -shapes circle2 -text 3d -plane zox -label hfit -flyout 0 -arrow external -font SansFont
 
 # test that auto-fit for arrow places them externally for small geometry
 vpoint  circle3_p1 0  0 113
 vpoint  circle3_p2 33 0  80
 vpoint  circle3_p3 66 0 113
 vcircle circle3 circle3_p1 circle3_p2 circle3_p3 0
-vdimension rad3 -radius -shapes circle3 -text 3d -plane zox -label hcenter -flyout 0 -arrow fit
+vdimension rad3 -radius -shapes circle3 -text 3d -plane zox -label hcenter -flyout 0 -arrow fit -font SansFont
 
 # test that auto-fit for text places the label externally for small geometry
 vpoint  circle4_p1 120 0 95
 vpoint  circle4_p2 135 0 80
 vpoint  circle4_p3 150 0 95
 vcircle circle4 circle4_p1 circle4_p2 circle4_p3 0
-vdimension rad4 -radius -shapes circle4 -text 3d -plane zox -label hfit -flyout 0 -arrow fit
+vdimension rad4 -radius -shapes circle4 -text 3d -plane zox -label hfit -flyout 0 -arrow fit -font SansFont
 vfit
 
 # ------------------------------------------------
@@ -69,7 +71,7 @@ for {set r 0} {$r < 3} {incr r} {
 
     set dimension r_$idx
 
-    vdimension $dimension -radius -shapes $circle -text 3d -plane zox -label [lindex $hpos $c] [lindex $vpos $r] -arrow external -flyout 0.0
+    vdimension $dimension -radius -shapes $circle -text 3d -plane zox -label [lindex $hpos $c] [lindex $vpos $r] -arrow external -flyout 0.0 -font SansFont
     vdisplay $dimension
 
     incr idx

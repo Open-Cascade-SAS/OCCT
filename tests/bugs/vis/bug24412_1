@@ -8,6 +8,8 @@ puts ""
 #######################################################################
 pload ALL
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 set anImage1 $imagedir/${casename}_1.png
 set anImage2 $imagedir/${casename}_2.png
 
@@ -17,7 +19,7 @@ vpoint  circ_p2 30 10  0
 vpoint  circ_p3 60 10 30
 vcircle circ circ_p1 circ_p2 circ_p3 0
 vdisplay circ
-vdimension diam -diameter -shapes circ
+vdimension diam -diameter -shapes circ -font SansFont
 # Change text position
 vmovedim diam 15 15 15
 vfit

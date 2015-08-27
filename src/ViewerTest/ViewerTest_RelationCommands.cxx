@@ -39,6 +39,7 @@
 #include <Draw_Window.hxx>
 #include <DBRep.hxx>
 #include <ElSLib.hxx>
+#include <Font_FontMgr.hxx>
 #include <GC_MakePlane.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Circle.hxx>
@@ -296,6 +297,16 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
         }
       }
       while (anIt + 1 < theArgNum && theArgVec[anIt + 1][0] != '-');
+    }
+    else if (aParam.IsEqual ("-font"))
+    {
+      if (anIt + 1 >= theArgNum)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      theAspect->TextAspect()->SetFont (theArgVec[++anIt]);
     }
     else if (aParam.IsEqual ("-label"))
     {
@@ -2762,6 +2773,7 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vdimension",
       "vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape3]]\n"
       "[-text 3d|2d wf|sh|wireframe|shading IntegerSize]\n"
+      "[-font FontName]\n"
       "[-label left|right|hcenter|hfit top|bottom|vcenter|vfit]\n"
       "[-arrow external|internal|fit]\n"
       "[{-arrowlength|-arlen} RealArrowLength]\n"
@@ -2779,6 +2791,7 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vdimparam",
     "vdimparam name"
     "[-text 3d|2d wf|sh|wireframe|shading IntegerSize]\n"
+    "[-font FontName]\n"
     "[-label left|right|hcenter|hfit top|bottom|vcenter|vfit]\n"
     "[-arrow external|internal|fit]\n"
     "[{-arrowlength|-arlen} RealArrowLength]\n"

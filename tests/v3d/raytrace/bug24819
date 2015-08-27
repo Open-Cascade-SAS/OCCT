@@ -2,6 +2,8 @@ puts "========"
 puts "OCC24819: TKOpenGl - extend the ray-tracing core by visualization of lines, text and point sprites"
 puts "========"
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 # setup 3D viewer content
 vinit name=View1 w=512 h=512
 vglinfo
@@ -21,11 +23,11 @@ vsetmaterial b2 Pewter
 vsettransparency b2 0.8
 
 # brep text
-text2brep t "text" -font "Arial" -height 8
+text2brep t "text" -font "SansFont" -height 8
 vdisplay t
 
 # overlay objects
-vdrawtext t1 "Overlay text!" -2d -perspos -1 1 -pos 200 -440 0 -height 40
+vdrawtext t1 "Overlay text!" -2d -perspos -1 1 -pos 200 -440 0 -height 40 -font SansFont
 
 # markers
 vpoint p 1 1 1
@@ -33,7 +35,7 @@ vdisplay p
 vmarkerstest mTest 7 -3 0 PointsOnSide=5 MarkerType=5
 
 # 3d text
-vdrawtext text0 3D_Text -pos 1 2 2 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular
+vdrawtext text0 3D_Text -pos 1 2 2 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular -font SansFont
 
 vlight change 0 pos -1 1 1
 

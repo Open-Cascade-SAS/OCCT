@@ -6,6 +6,8 @@ puts ""
 #  Drawing dimension between edge and vertex
 #######################################################################
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit View1
 vclear
 vaxo
@@ -18,7 +20,7 @@ vdisplay e
 vertex v3 10 0 10
 vdisplay v3
 
-vdimension len -length -shapes e v3 -plane yoz
+vdimension len -length -shapes e v3 -plane yoz -font SansFont
 
 vfit
 

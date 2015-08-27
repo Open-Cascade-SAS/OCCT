@@ -8,10 +8,12 @@ puts ""
 #######################################################################
 pload VISUALIZATION
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit
 vpoint lengthP1 0 0 0
 vpoint lengthP2 50 50 50
-vdimension dim1 -length -plane xoy -shapes lengthP1 lengthP2
+vdimension dim1 -length -plane xoy -shapes lengthP1 lengthP2 -font SansFont
 vfit
 vmoveto 82 254
 

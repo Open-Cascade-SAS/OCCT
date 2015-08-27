@@ -6,10 +6,12 @@ puts ""
 # Possibility to display multi-line text in 3D
 #######################################################################
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 set BugNumber OCC22796
 
 vinit
-vdrawtext text0 "TestString\nHello,\tWorld!" -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular
+vdrawtext text0 "TestString\nHello,\tWorld!" -pos 0 0 0 -color 1.0 1.0 1.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular -font SansFont
 vexport $imagedir/${test_image}.pdf PDF
 
 set only_screen 1

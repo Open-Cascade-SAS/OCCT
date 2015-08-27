@@ -9,8 +9,10 @@ puts ""
 pload QAcommands
 pload VISUALIZATION
 
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
 vinit
-vdrawtext text0 "ANOTHERBUG" -pos 100 100 100 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect regular
+vdrawtext text0 "ANOTHERBUG" -pos 100 100 100 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 1 -height 50 -aspect SansFont
 vtrihedron trihedron
 
 set x 239
