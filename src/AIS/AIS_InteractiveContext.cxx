@@ -523,7 +523,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
     if (aStatus->IsHilighted())
     {
       const Standard_Integer aHiMod = theIObj->HasHilightMode() ? theIObj->HilightMode() : theDispMode;
-      myMainPM->Highlight (theIObj, aHiMod);
+      myMainPM->Color (theIObj, aStatus->HilightColor(), aHiMod);
     }
     if (theSelectionMode != -1)
     {

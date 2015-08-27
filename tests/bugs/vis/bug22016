@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC22016"
+puts "========"
+puts ""
+#########################################################################################
+# Incorrect selection color after displaying a selected object
+#########################################################################################
+
+pload MODELING VISUALIZATION
+box b1 0 0 0 1 2 3
+box b2 3 0 0 2 3 1
+vinit View1
+vclear
+vaxo
+vdisplay -noupdate b1 b2
+vaspects b1 b2 -setWidth 4
+vfit
+vselect 0 0 500 500
+vdisplay b2
+set aColor1 [vreadpixel 104  32 rgb name]
+set aColor2 [vreadpixel 255 350 rgb name]
+
+if {$aColor1 != "GRAY80" || $aColor2 != "GRAY80" } {
+  puts "ERROR: OCC22016 is reproduced. Incorrect selection color after displaying a selected object."
+}
+
+vdump ${imagedir}/${casename}.png
