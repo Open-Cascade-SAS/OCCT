@@ -687,7 +687,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse)
                            dot (aTrsfRow2, aTexCoord));
 
       vec3 aTexColor = textureLod (
-        uTextureSamplers[int (aMaterial.Kd.w)], aTexCoord.st, 0.f).rgb;
+        sampler2D (uTextureSamplers[int (aMaterial.Kd.w)]), aTexCoord.st, 0.f).rgb;
 
       aMaterial.Kd.rgb *= aTexColor;
     }

@@ -365,27 +365,27 @@ public:
 
 public:
 
-  //! Specifies the value of the 64-bit unsigned integer uniform variable.
+  //! Specifies the value of the unsigned integer uniform 2D vector (uvec2).
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                const GLchar*                 theName,
-                                               GLuint64                      theValue);
+                                               const OpenGl_Vec2u&           theValue);
 
-  //! Specifies the value of the 64-bit unsigned integer uniform variable.
+  //! Specifies the value of the unsigned integer uniform 2D vector (uvec2).
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
-                                               GLuint64                      theValue);
+                                               const OpenGl_Vec2u&           theValue);
 
-  //! Specifies the value of the 64-bit unsigned integer uniform array.
+  //! Specifies the value of the uvec2 uniform array
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                const GLchar*                 theName,
                                                const GLsizei                 theCount,
-                                               const GLuint64*               theValue);
+                                               const OpenGl_Vec2u*           theValue);
 
-  //! Specifies the value of the 64-bit unsigned integer uniform array.
+  //! Specifies the value of the uvec2 uniform array
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const GLsizei                 theCount,
-                                               const GLuint64*               theValue);
+                                               const OpenGl_Vec2u*           theValue);
 
 public:
 

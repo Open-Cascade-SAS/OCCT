@@ -144,7 +144,7 @@ public:
   //! Is node a leaf (outer)?
   Standard_Boolean IsOuter (const Standard_Integer theNodeIndex) const
   {
-    return BVH::Array<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).x() > 0;
+    return BVH::Array<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).x() != 0;
   }
 
   //! Sets node type to 'outer'.

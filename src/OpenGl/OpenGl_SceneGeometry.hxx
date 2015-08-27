@@ -22,6 +22,7 @@
 #include <NCollection_StdAllocator.hxx>
 #include <OpenGl_TextureBufferArb.hxx>
 #include <OpenGl_Texture.hxx>
+#include <OpenGl_Sampler.hxx>
 
 class  OpenGl_Element;
 struct OpenGl_ElementNode;
@@ -331,6 +332,16 @@ public: //! @name methods related to texture management
     return !myTextures.IsEmpty();
   }
 
+  //! Releases OpenGL resources.
+  void ReleaseResources (const Handle(OpenGl_Context)& theContext)
+  {
+    if (!myTextureSampler.IsNull())
+    {
+      myTextureSampler->Release (theContext.operator->());
+      myTextureSampler.Nullify();
+    }
+  }
+
 public: //! @name auxiliary methods
 
   //! Returns depth of high-level scene BVH from last build.
@@ -348,6 +359,7 @@ public: //! @name auxiliary methods
 protected:
 
   NCollection_Vector<Handle(OpenGl_Texture)> myTextures;             //!< Array of texture maps shared between rendered objects
+  Handle(OpenGl_Sampler)                     myTextureSampler;       //!< Sampler object providing fixed sampling params for texures
   std::vector<GLuint64>                      myTextureHandles;       //!< Array of unique 64-bit texture handles obtained from OpenGL
   Standard_Integer                           myHighLevelTreeDepth;   //!< Depth of high-level scene BVH from last build
   Standard_Integer                           myBottomLevelTreeDepth; //!< Maximum depth of bottom-level scene BVHs from last build

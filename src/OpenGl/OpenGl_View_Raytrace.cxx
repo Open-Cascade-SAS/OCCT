@@ -1216,8 +1216,7 @@ Handle(OpenGl_ShaderProgram) OpenGl_View::initProgram (const Handle(OpenGl_Conte
   }
   else if (theGlContext->caps->glslWarnings)
   {
-    myRaytraceProgram->FetchInfoLog (theGlContext, aLinkLog);
-
+    aProgram->FetchInfoLog (theGlContext, aLinkLog);
     if (!aLinkLog.IsEmpty() && !aLinkLog.IsEqual ("No errors.\n"))
     {
       const TCollection_ExtendedString aMessage = TCollection_ExtendedString (
@@ -1657,6 +1656,8 @@ void OpenGl_View::releaseRaytraceResources (const Handle(OpenGl_Context)& theGlC
 
   nullifyResource (theGlContext, myRaytraceLightSrcTexture);
   nullifyResource (theGlContext, myRaytraceMaterialTexture);
+
+  myRaytraceGeometry.ReleaseResources (theGlContext);
 
   if (myRaytraceScreenQuad.IsValid())
     myRaytraceScreenQuad.Release (theGlContext.operator->());
@@ -2257,8 +2258,10 @@ Standard_Boolean OpenGl_View::setUniformState (const Graphic3d_CView&        the
   // Set array of 64-bit texture handles
   if (theGlContext->arbTexBindless != NULL && myRaytraceGeometry.HasTextures())
   {
+    const std::vector<GLuint64>& aTextures = myRaytraceGeometry.TextureHandles();
+
     theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uTexSamplersArray],
-      static_cast<GLsizei> (myRaytraceGeometry.TextureHandles().size()), &myRaytraceGeometry.TextureHandles()[0]);
+      static_cast<GLsizei> (aTextures.size()), (OpenGl_Vec2u* )&aTextures.front());
   }
 
   // Set background colors (only gradient background supported)

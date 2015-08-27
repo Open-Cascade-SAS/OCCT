@@ -1089,7 +1089,10 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
 
     case Visual3d_TOD_ENVIRONMENT:
       theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-      theWorkspace->EnableTexture (myTextureEnv);
+      if (theCView.RenderParams.Method != Graphic3d_RM_RAYTRACING)
+      {
+        theWorkspace->EnableTexture (myTextureEnv);
+      }
       // Render the view
       RenderStructs (theWorkspace, theReadDrawFbo, theCView, theToDrawImmediate);
       theWorkspace->DisableTexture();
@@ -1106,7 +1109,10 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       if (theWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
       {
         theWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
-        theWorkspace->EnableTexture (myTextureEnv);
+        if (theCView.RenderParams.Method != Graphic3d_RM_RAYTRACING)
+        {
+          theWorkspace->EnableTexture (myTextureEnv);
+        }
 
         // Remember OpenGl properties
         GLint aSaveBlendDst = GL_ONE_MINUS_SRC_ALPHA, aSaveBlendSrc = GL_SRC_ALPHA;

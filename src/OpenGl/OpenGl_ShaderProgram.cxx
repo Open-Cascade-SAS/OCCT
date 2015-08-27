@@ -26,6 +26,7 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
 
+#include <OpenGl_GlCore32.hxx>
 
 OpenGl_VariableSetterSelector OpenGl_ShaderProgram::mySetterSelector = OpenGl_VariableSetterSelector();
 
@@ -791,30 +792,30 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
 // =======================================================================
 // function : SetUniform
-// purpose  : Specifies the value of the 64-bit unsigned uniform variable
+// purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    const GLchar*                 theName,
-                                                   GLuint64                      theValue)
+                                                   const OpenGl_Vec2u&           theValue)
 {
   return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
 // function : SetUniform
-// purpose  : Specifies the value of the 64-bit unsigned uniform variable
+// purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
-                                                   GLuint64                      theValue)
+                                                   const OpenGl_Vec2u&           theValue)
 {
-  if (theCtx->arbTexBindless == NULL || myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  if (theCtx->core32 == NULL || myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
     return Standard_False;
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  theCtx->arbTexBindless->glUniformHandleui64ARB (theLocation, theValue);
+  theCtx->core32->glUniform2uiv (theLocation, 1, theValue.GetData());
 #endif
 
   return Standard_True;
@@ -822,32 +823,32 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
 // =======================================================================
 // function : SetUniform
-// purpose  : Specifies the value of the 64-bit unsigned uniform array
+// purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    const GLchar*                 theName,
                                                    const GLsizei                 theCount,
-                                                   const GLuint64*               theValue)
+                                                   const OpenGl_Vec2u*           theValue)
 {
   return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theCount, theValue);
 }
 
 // =======================================================================
 // function : SetUniform
-// purpose  : Specifies the value of the 64-bit unsigned uniform array
+// purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    const GLsizei                 theCount,
-                                                   const GLuint64*               theValue)
+                                                   const OpenGl_Vec2u*           theValue)
 {
-  if (theCtx->arbTexBindless == NULL || myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  if (theCtx->core32 == NULL || myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
     return Standard_False;
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  theCtx->arbTexBindless->glUniformHandleui64vARB (theLocation, theCount, theValue);
+  theCtx->core32->glUniform2uiv (theLocation, theCount, theValue->GetData());
 #endif
 
   return Standard_True;

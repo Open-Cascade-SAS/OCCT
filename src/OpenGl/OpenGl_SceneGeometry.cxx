@@ -236,7 +236,7 @@ struct OpenGL_BVHParallelBuilder
 Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 {
 #ifdef RAY_TRACE_PRINT_INFO
-    OSD_Timer aTimer;
+  OSD_Timer aTimer;
 #endif
 
   MarkDirty(); // force BVH rebuilding
@@ -260,6 +260,18 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
     Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
       "Error! Failed to update bottom-level BVH of OpenGL element", Standard_False);
+
+    NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> > aBVH = aTriangleSet->BVH();
+
+    // correct data array of bottom-level BVH to set special flag for outer
+    // nodes in order to distinguish them from outer nodes of top-level BVH
+    for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
+    {
+      if (aBVH->IsOuter (aNodeIdx))
+      {
+        aBVH->NodeInfoBuffer()[aNodeIdx].x() = -1;
+      }
+    }
 
     myBottomLevelTreeDepth = Max (myBottomLevelTreeDepth, aTriangleSet->BVH()->Depth());
   }
@@ -475,13 +487,23 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles (const Handle(Ope
     return Standard_False;
   }
 
+  if (myTextureSampler.IsNull())
+  {
+    myTextureSampler = new OpenGl_Sampler();
+    myTextureSampler->Init (*theContext.operator->());
+    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_WRAP_S,     GL_REPEAT);
+    myTextureSampler->SetParameter (*theContext.operator->(), GL_TEXTURE_WRAP_T,     GL_REPEAT);
+  }
+
   myTextureHandles.clear();
 
 #if !defined(GL_ES_VERSION_2_0)
   for (Standard_Integer anIdx = 0; anIdx < myTextures.Size(); ++anIdx)
   {
-    const GLuint64 aHandle = theContext->arbTexBindless->glGetTextureHandleARB (
-      myTextures.Value (anIdx)->TextureId());
+    const GLuint64 aHandle = theContext->arbTexBindless->glGetTextureSamplerHandleARB (
+      myTextures.Value (anIdx)->TextureId(), myTextureSampler->SamplerID());
 
     if (glGetError() != GL_NO_ERROR)
     {
