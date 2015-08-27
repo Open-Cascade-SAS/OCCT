@@ -222,6 +222,8 @@ static void MakeOffset
  const GeomAbs_JoinType                      theJoinType,
   const TopoDS_Vertex *                       Ends);
 
+Standard_Boolean CheckSmallParamOnEdge(const TopoDS_Edge& anEdge);
+
 //=======================================================================
 //function : KPartCircle
 //purpose  : 
@@ -1379,6 +1381,8 @@ void BRepFill_OffsetWire::MakeWires()
       TopExp::Vertices (E,V1,V2);
       if (V1.IsSame(V2) && IsSmallClosedEdge(E, V1))
         continue; //remove small closed edges
+      if (!CheckSmallParamOnEdge(E))
+        continue;
       if (!MVE.Contains(V1)) {
         TopTools_ListOfShape empty;
         MVE.Add(V1,empty);
@@ -2755,4 +2759,19 @@ static void QuasiFleche(const Adaptor3d_Curve& C,
       Parameters,Points);
   }
 }
+
+Standard_Boolean CheckSmallParamOnEdge(const TopoDS_Edge& anEdge)
+{  
+  const BRep_ListOfCurveRepresentation& aList = ((Handle(BRep_TEdge)::DownCast(anEdge.TShape()))->Curves());
+  if (!aList.IsEmpty())
+  {
+    Handle( BRep_CurveRepresentation ) CRep = ((Handle(BRep_TEdge)::DownCast(anEdge.TShape()))->Curves()).First();
+    Standard_Real f = (Handle(BRep_GCurve)::DownCast(CRep))->First();
+    Standard_Real l = (Handle(BRep_GCurve)::DownCast(CRep))->Last();
+    if (Abs (l - f) < Precision::PConfusion())
+      return Standard_False;
+  }
+  return Standard_True;
+}
+
 
