@@ -26,8 +26,6 @@ StdPrs_ToolPoint.hxx
 StdPrs_ToolRFace.cxx
 StdPrs_ToolRFace.hxx
 StdPrs_ToolTriangulatedShape.cxx
-StdPrs_ToolTriangulatedShape.cxx
-StdPrs_ToolTriangulatedShape.hxx
 StdPrs_ToolTriangulatedShape.hxx
 StdPrs_ToolVertex.cxx
 StdPrs_ToolVertex.hxx
@@ -39,7 +37,6 @@ StdPrs_WFDeflectionSurface.cxx
 StdPrs_WFDeflectionSurface.hxx
 StdPrs_WFPoleSurface.cxx
 StdPrs_WFPoleSurface.hxx
-StdPrs_WFRestrictedFace.cxx
 StdPrs_WFRestrictedFace.cxx
 StdPrs_WFRestrictedFace.hxx
 StdPrs_WFShape.cxx

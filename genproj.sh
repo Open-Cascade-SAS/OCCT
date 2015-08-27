@@ -33,7 +33,7 @@ source "${aScriptPath}/custom.sh"
 
 if [ -e "${aScriptPath}/env.sh" ]; then source "${aScriptPath}/env.sh"; fi
 
-tclsh "${aScriptPath}/adm/genproj.tcl" -path="${aScriptPath}" -target=${aTarget} $anOpt2 $anOpt3 $anOpt4 $anOpt5
+tclsh "${aScriptPath}/adm/start.tcl" genproj -path="${aScriptPath}" -target=${aTarget} $anOpt2 $anOpt3 $anOpt4 $anOpt5
 
 export PATH="$anOldPath"
 export LD_LIBRARY_PATH="$anOldLd"
