@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC26461"
+puts "============"
+puts ""
+#####################################################
+# STEP Import interface crashes
+#####################################################
+
+ReadStep D [locate_data_file bug26461_test_ap227.stp]
+
+
