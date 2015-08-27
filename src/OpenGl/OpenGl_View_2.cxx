@@ -173,12 +173,14 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
     aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
   }
 
-  aCtx->WorldViewState.Push();
   aCtx->ProjectionState.Push();
-  aCtx->WorldViewState.SetIdentity();
+  aCtx->WorldViewState.Push();
+  aCtx->ModelWorldState.Push();
   aCtx->ProjectionState.SetIdentity();
+  aCtx->WorldViewState.SetIdentity();
+  aCtx->ModelWorldState.SetIdentity();
   aCtx->ApplyProjectionMatrix();
-  aCtx->ApplyWorldViewMatrix();
+  aCtx->ApplyModelViewMatrix();
 
   // Drawing background gradient if:
   // - gradient fill type is not Aspect_GFM_NONE and
@@ -234,10 +236,11 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
     theWorkspace->SetAspectFace (anOldAspectFace);
   }
 
+  aCtx->ModelWorldState.Pop();
   aCtx->WorldViewState.Pop();
   aCtx->ProjectionState.Pop();
   aCtx->ApplyProjectionMatrix();
-  aCtx->ApplyWorldViewMatrix();
+  aCtx->ApplyModelViewMatrix();
 
   if (wasUsedZBuffer)
   {
