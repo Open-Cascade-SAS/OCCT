@@ -120,7 +120,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 
       Standard_Integer anIdx;
 
-      // Find first and last used knot
+      // Find first and last used knot.
       Standard_Integer aFirstUsedKnot = aFirstIdx,
                         aLastUsedKnot = aLastIdx;
       for(anIdx = aFirstIdx; anIdx <= aLastIdx; anIdx++)
@@ -139,6 +139,16 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
           aLastUsedKnot = anIdx;
         else
           break;
+      }
+
+      if (aFirstUsedKnot == aLastUsedKnot)
+      {
+        // Degenerated case:
+        // Some bounds lies out of curve param space.
+        // In this case build one interval with [myuinf, myusup].
+        // Parameters of these indexes will be redefined.
+        aFirstUsedKnot = aFirstIdx;
+        aLastUsedKnot  = aFirstIdx + 1;
       }
 
       mysample = (TheCurveTool::BSpline(aCurve))->Degree() + 1;
