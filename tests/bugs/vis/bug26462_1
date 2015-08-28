@@ -1,0 +1,51 @@
+puts "============"
+puts "CR26462"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - selection does not adapt to line width change"
+##########################################################################################
+
+pload VISUALIZATION MODELING
+
+vinit
+box b1 10 10 10
+box b2 10 10 10
+
+vdisplay b1 b2
+vsetlocation b1 10 10 0
+vfit
+
+vaspects b1 b2 -setWidth 3
+
+vselmode 2 1
+# try to select b1 and b2
+vselect 305 322 1
+vselect 103 322 1
+# check that both boxes were not selected with default tolerance value
+set aNbSelected [vnbselected]
+if {$aNbSelected != "0"} {
+  puts "ERROR: no boxes must be selected!"
+}
+
+# increase tolerance for b1
+vaspects b1 -setSensitivity 2 4
+
+# select edge of b1
+vselect 305 322
+# check that b1's edge was selected
+set aNbSelected [vnbselected]
+if {$aNbSelected != "1"} {
+  puts "ERROR: b1 was not selected"
+}
+# try to select b2
+vselect 103 322 1
+# check that increase of tolerance for b1 doesn't influence
+# on b2
+set aNbSelected [vnbselected]
+if {$aNbSelected != "1"} {
+  puts "ERROR: b2 is selected after b1's tolerance increased"
+}
+
+set only_screen 1

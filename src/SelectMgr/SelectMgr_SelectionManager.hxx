@@ -118,8 +118,12 @@ public:
   //! Sets type of update of selection with theMode of theObject to the given theType.
   Standard_EXPORT void SetUpdateMode (const Handle(SelectMgr_SelectableObject)& theObject, const Standard_Integer theMode, const SelectMgr_TypeOfUpdate theType);
 
-
-
+  //! Allows to manage sensitivity of a particular selection of interactive object theObject and
+  //! changes previous sensitivity value of all sensitive entities in selection with theMode
+  //! to the given theNewSensitivity.
+  Standard_EXPORT void SetSelectionSensitivity (const Handle(SelectMgr_SelectableObject)& theObject,
+                                                const Standard_Integer theMode,
+                                                const Standard_Integer theNewSens);
 
   DEFINE_STANDARD_RTTI(SelectMgr_SelectionManager,MMgt_TShared)
 

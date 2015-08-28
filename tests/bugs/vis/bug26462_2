@@ -1,0 +1,15 @@
+puts "============"
+puts "CR26462"
+puts "============"
+puts ""
+
+##########################################################################################
+puts "Visualization - selection does not adapt to line width change"
+##########################################################################################
+
+pload VISUALIZATION QAcommands
+
+vinit
+OCC26462
+
+set only_screen 1

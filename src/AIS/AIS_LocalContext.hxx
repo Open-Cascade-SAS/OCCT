@@ -317,7 +317,14 @@ public:
   
   //! Returns the pixel tolerance.
   Standard_EXPORT Standard_Integer PixelTolerance() const;
-  
+
+  //! Allows to manage sensitivity of a particular selection of interactive object theObject
+  //! and changes previous sensitivity value of all sensitive entities in selection with theMode
+  //! to the given theNewSensitivity.
+  Standard_EXPORT void SetSelectionSensitivity (const Handle(AIS_InteractiveObject)& theObject,
+                                                const Standard_Integer theMode,
+                                                const Standard_Integer theNewSensitivity);
+
   //! Resets the transient list of presentations previously displayed in immediate mode
   //! and begins accumulation of new list by following AddToImmediateList()/Color()/Highlight() calls.
   Standard_EXPORT Standard_Boolean BeginImmediateDraw();

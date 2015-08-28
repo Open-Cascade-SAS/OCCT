@@ -58,6 +58,9 @@ public:
   //! a specific entity in selection algorithms
   //! useful for small sized entities.
   Standard_EXPORT Standard_Integer SensitivityFactor() const;
+
+  //! Allows to manage sensitivity of a particular sensitive entity
+  Standard_EXPORT void SetSensitivityFactor (const Standard_Integer theNewSens);
   
   //! Returns the number of sub-entities or elements in
   //! sensitive entity. Is used to determine if entity is
@@ -87,9 +90,6 @@ public:
 protected:
 
   Standard_EXPORT SelectBasics_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId);
-
-  //! Allows to manage the sensitivity of the entity
-    void SetSensitivityFactor (const Standard_Integer theSensFactor);
 
   Handle(SelectBasics_EntityOwner) myOwnerId;
 

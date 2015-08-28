@@ -4034,6 +4034,61 @@ static Standard_Integer OCC26195 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//=======================================================================
+//function : OCC26462
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*theArgNb*/, const char** /*theArgVec*/)
+{
+  if (ViewerTest::GetAISContext().IsNull())
+  {
+    std::cerr << "Error: No opened context!\n";
+    return 1;
+  }
+
+  BRepPrimAPI_MakeBox aBuilder1 (gp_Pnt (10.0, 10.0, 0.0), 10.0, 10.0, 10.0);
+  BRepPrimAPI_MakeBox aBuilder2 (10.0, 10.0, 10.0);
+  Handle(AIS_InteractiveObject) aBox1 = new AIS_Shape (aBuilder1.Shape());
+  Handle(AIS_InteractiveObject) aBox2 = new AIS_Shape (aBuilder2.Shape());
+
+  const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  aCtx->OpenLocalContext();
+  aCtx->Display (aBox1, 0, 2);
+  aCtx->Display (aBox2, 0, 2);
+  ViewerTest::CurrentView()->FitAll();
+  aCtx->SetWidth (aBox1, 3);
+  aCtx->SetWidth (aBox2, 3);
+
+  aCtx->MoveTo (305, 322, ViewerTest::CurrentView());
+  aCtx->ShiftSelect();
+  aCtx->MoveTo (103, 322, ViewerTest::CurrentView());
+  aCtx->ShiftSelect();
+  if (aCtx->NbSelected() != 0)
+  {
+    theDI << "ERROR: no boxes must be selected!\n";
+    return 1;
+  }
+
+  aCtx->SetSelectionSensitivity (aBox1, 2, 5);
+
+  aCtx->MoveTo (305, 322, ViewerTest::CurrentView());
+  aCtx->ShiftSelect();
+  if (aCtx->NbSelected() != 1)
+  {
+    theDI << "ERROR: b1 was not selected\n";
+    return 1;
+  }
+  aCtx->MoveTo (103, 322, ViewerTest::CurrentView());
+  aCtx->ShiftSelect();
+  if (aCtx->NbSelected() != 1)
+  {
+    theDI << "ERROR: b2 is selected after b1's tolerance increased\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4118,5 +4173,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "\n\t\t: [toPrintPixelCoord 0|1] - prints 3d projection of pixel coordinate or center of"
                    "\n\t\t: selecting rectangle onto near and far view frustum planes",
                    __FILE__, OCC26195, group);
+  theCommands.Add ("OCC26462",
+                   "OCC26462: Checks the ability to manage sensitivity of a particular selection mode in local context",
+                   __FILE__, OCC26462, group);
   return;
 }

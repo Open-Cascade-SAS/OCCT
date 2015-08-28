@@ -1474,6 +1474,10 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer         ToSetMaxParamValue;
   Standard_Real            MaxParamValue;
 
+  Standard_Integer         ToSetSensitivity;
+  Standard_Integer         SelectionMode;
+  Standard_Integer         Sensitivity;
+
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
   : ToSetVisibility   (0),
@@ -1495,7 +1499,10 @@ struct ViewerTest_AspectsChangeSet
     FreeBoundaryColor          (DEFAULT_FREEBOUNDARY_COLOR),
     ToEnableIsoOnTriangulation (-1),
     ToSetMaxParamValue (0),
-    MaxParamValue (500000) {}
+    MaxParamValue (500000),
+    ToSetSensitivity (0),
+    SelectionMode (-1),
+    Sensitivity (-1) {}
 
   //! @return true if no changes have been requested
   Standard_Boolean IsEmpty() const
@@ -1508,7 +1515,8 @@ struct ViewerTest_AspectsChangeSet
         && ToSetShowFreeBoundary  == 0
         && ToSetFreeBoundaryColor == 0
         && ToSetFreeBoundaryWidth == 0
-        && ToSetMaxParamValue     == 0;
+        && ToSetMaxParamValue     == 0
+        && ToSetSensitivity       == 0;
   }
 
   //! @return true if properties are valid
@@ -1553,6 +1561,11 @@ struct ViewerTest_AspectsChangeSet
     if (MaxParamValue < 0.0)
     {
       std::cout << "Error: the max parameter value should be greater than zero (specified " << MaxParamValue << ")\n";
+      isOk = Standard_False;
+    }
+    if (Sensitivity <= 0 && ToSetSensitivity)
+    {
+      std::cout << "Error: sensitivity parameter value should be positive (specified " << Sensitivity << ")\n";
       isOk = Standard_False;
     }
     return isOk;
@@ -2120,6 +2133,29 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetMaxParamValue = 1;
       aChangeSet->MaxParamValue = Draw::Atof (theArgVec[anArgIter]);
     }
+    else if (anArg == "-setsensitivity")
+    {
+      if (isDefaults)
+      {
+        std::cout << "Error: wrong syntax. -setSensitivity can not be used together with -defaults call!\n";
+        return 1;
+      }
+
+      if (aNames.IsEmpty())
+      {
+        std::cout << "Error: object and selection mode should specified explicitly when -setSensitivity is used!\n";
+        return 1;
+      }
+
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetSensitivity = 1;
+      aChangeSet->SelectionMode = Draw::Atoi (theArgVec[++anArgIter]);
+      aChangeSet->Sensitivity = Draw::Atoi (theArgVec[++anArgIter]);
+    }
     else
     {
       std::cout << "Error: wrong syntax at " << anArg << "\n";
@@ -2293,6 +2329,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         aCtx->IsoOnTriangulation (aChangeSet->ToEnableIsoOnTriangulation == 1, aPrs);
         toRedisplay = Standard_True;
       }
+      else if (aChangeSet->ToSetSensitivity != 0)
+      {
+        aCtx->SetSelectionSensitivity (aPrs, aChangeSet->SelectionMode, aChangeSet->Sensitivity);
+      }
       if (!aDrawer.IsNull())
       {
         if (aChangeSet->ToSetShowFreeBoundary == 1)
@@ -2367,6 +2407,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
           {
             Handle(AIS_ColoredDrawer) aCurColDrawer = aColoredPrs->CustomAspects (aSubShape);
             aCurColDrawer->SetMaximalParameterValue (aChangeSet->MaxParamValue);
+          }
+          if (aChangeSet->ToSetSensitivity != 0)
+          {
+            aCtx->SetSelectionSensitivity (aPrs, aChangeSet->SelectionMode, aChangeSet->Sensitivity);
           }
         }
       }
@@ -5541,6 +5585,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
       "\n\t\t:          [-isoontriangulation 0|1]"
       "\n\t\t:          [-setMaxParamValue {value}]"
+      "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."
