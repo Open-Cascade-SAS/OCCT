@@ -175,7 +175,7 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle (const Handle(SelectBasics_En
 Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& theOwnerId,
                                                    const Handle(TColgp_HArray1OfPnt)& thePnts3d,
                                                    const Standard_Boolean theIsFilled)
-: Select3D_SensitivePoly (theOwnerId, thePnts3d, !theIsFilled),
+: Select3D_SensitivePoly (theOwnerId, thePnts3d, (Standard_Boolean )!theIsFilled),
   myStart (0),
   myEnd (0)
 {
