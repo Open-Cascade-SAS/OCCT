@@ -30,13 +30,17 @@
 
 #include <errno.h>
 
-#define END      0
-#define EMPTY    1
-#define COMMENT  2
-#define RESOURCE 3
-#define ERROR   -1
+//! Auxiliary enumeration for function WhatKindOfLine().
+enum Resource_KindOfLine
+{
+  Resource_KOL_End,
+  Resource_KOL_Empty,
+  Resource_KOL_Comment,
+  Resource_KOL_Resource,
+  Resource_KOL_Error
+};
 
-static Standard_Integer WhatKindOfLine(OSD_File& aFile,
+static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
 				       TCollection_AsciiString& aToken1,
 				       TCollection_AsciiString& aToken2);
 
@@ -102,7 +106,7 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 void Resource_Manager::Load(TCollection_AsciiString& aPath,
                             Resource_DataMapOfAsciiStringAsciiString& aMap)
 {
-  Standard_Integer Kind;
+  Resource_KindOfLine aKind;
   TCollection_AsciiString Token1, Token2;
   TCollection_AsciiString Directory, Name;
   TCollection_AsciiString FileName;
@@ -115,16 +119,17 @@ void Resource_Manager::Load(TCollection_AsciiString& aPath,
     return;
   }
   Standard_Integer LineNumber = 1;
-  while ((Kind = WhatKindOfLine(File, Token1, Token2)) != END) {
-    switch (Kind) {
-    case COMMENT :
-    case EMPTY :
+  while ((aKind = WhatKindOfLine(File, Token1, Token2)) != Resource_KOL_End) {
+    switch (aKind) {
+    case Resource_KOL_End: // just to silence compiler warning...
+    case Resource_KOL_Comment:
+    case Resource_KOL_Empty:
       break ;
-    case RESOURCE :
+    case Resource_KOL_Resource:
       if (!aMap.Bind(Token1,Token2))
         aMap(Token1) = Token2;
       break;
-    case ERROR :
+    case Resource_KOL_Error:
       if (myVerbose)
 	cout << "Resource Manager: Syntax error at line "
 	  << LineNumber << " in file : " << FileName << endl;
@@ -138,7 +143,7 @@ void Resource_Manager::Load(TCollection_AsciiString& aPath,
          << " file \"" << FileName << "\" loaded" << endl;
 }
 
-static Standard_Integer WhatKindOfLine(OSD_File& aFile,
+static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
 				       TCollection_AsciiString& aToken1,
 				       TCollection_AsciiString& aToken2)
 {
@@ -147,18 +152,18 @@ static Standard_Integer WhatKindOfLine(OSD_File& aFile,
   TCollection_AsciiString Line ;
 
   if (!GetLine(aFile,Line))
-    return END;
+    return Resource_KOL_End;
 
   if (Line.Value(1) == '!')
-    return COMMENT;
+    return Resource_KOL_Comment;
 
   Pos1 = Line.FirstLocationNotInSet(WhiteSpace, 1, Line.Length());
   if (Line.Value(Pos1) == '\n')
-    return EMPTY;
+    return Resource_KOL_Empty;
 
   Pos2 = Line.Location(1,':',Pos1,Line.Length());
   if (!Pos2 || Pos1 == Pos2)
-    return ERROR;
+    return Resource_KOL_Error;
 
   for (Pos = Pos2-1; Line.Value(Pos) == '\t' || Line.Value(Pos) == ' ' ; Pos--);
   aToken1 = Line.SubString(Pos1, Pos);
@@ -186,7 +191,7 @@ static Standard_Integer WhatKindOfLine(OSD_File& aFile,
   }
   if (Debug)
     cout << "'\t Value = '" << aToken2 << "'" << endl << flush;
-  return RESOURCE;
+  return Resource_KOL_Resource;
 }
 
 // Retourne 0 (EOF) ou une ligne toujours terminee par <NL>.
