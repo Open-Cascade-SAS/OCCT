@@ -57,16 +57,16 @@ public:
   //! Projects 2d screen point onto view frustum plane:
   //! theZ = 0 - near plane,
   //! theZ = 1 - far plane
-  SelectMgr_Vec3 ProjectPntOnViewPlane (const Standard_Real& theX,
-                                        const Standard_Real& theY,
-                                        const Standard_Real& theZ) const;
+  gp_Pnt ProjectPntOnViewPlane (const Standard_Real& theX,
+                                const Standard_Real& theY,
+                                const Standard_Real& theZ) const;
 
   DEFINE_STANDARD_RTTI(SelectMgr_FrustumBuilder)
 
 private:
 
   //! Unprojects point from NDC coords to 3d world space
-  SelectMgr_Vec3 unProject (const gp_Pnt& thePnt) const;
+  gp_Pnt unProject (const gp_Pnt& thePnt) const;
 
 private:
 

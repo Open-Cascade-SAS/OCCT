@@ -19,7 +19,8 @@ deferred class SensitiveEntity from SelectBasics inherits TShared from MMgt
   ---Purpose: root class; the inheriting classes will be able to give
   --          sensitive Areas for the dynamic selection algorithms
 
-uses 
+uses
+    Trsf from gp,
     EntityOwner,
     BndBox3d from Select3D,
     PickResult,
@@ -29,7 +30,7 @@ is
 
 
     Initialize (theOwnerId       : EntityOwner;
-                theSensFactor    : Real from Standard = 2.0);
+                theSensFactor    : Integer from Standard = 2);
 
     Set (me : mutable;
          theOwnerId : EntityOwner)
@@ -55,7 +56,7 @@ is
     --          current selecting volume
 
     SensitivityFactor (me)
-      returns Real from Standard;
+      returns Integer from Standard;
     ---C++: inline
     ---Purpose: allows a better sensitivity for
     --          a specific entity in selection algorithms
@@ -78,8 +79,20 @@ is
     Clear (me : mutable) is deferred;
     ---Purpose: Clears up all the resources and memory allocated
 
+    HasInitLocation (me)
+      returns Boolean from Standard
+      is deferred;
+    ---Purpose: Returns true if the shape corresponding to the entity
+    --          has init location.
+
+    InvInitLocation (me)
+      returns Trsf from gp
+      is deferred;
+    ---Purpose: Returns inversed location transformation matrix if the shape corresponding
+    --          to this entity has init location set. Otherwise, returns identity matrix.
+
     SetSensitivityFactor (me : mutable;
-                          theSensFactor :Real from Standard)
+                          theSensFactor : Integer from Standard)
       is protected;
     ---C++: inline
     ---Purpose: Allows to manage the sensitivity of the entity
@@ -88,5 +101,5 @@ is
 fields
     
     myOwnerId       : EntityOwner from SelectBasics is protected;
-    mySFactor       : Real from Standard;
+    mySFactor       : Integer from Standard;
 end SensitiveEntity;

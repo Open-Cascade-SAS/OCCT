@@ -250,9 +250,8 @@ Standard_Boolean Select3D_SensitivePoly::elementIsInside (SelectBasics_Selecting
 {
   const Standard_Integer aSegmentIdx = mySegmentIndexes->Value (theElemIdx);
 
-  Standard_Real aDummy;
-  return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0), aDummy)
-      && theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 1), aDummy);
+  return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0))
+      && theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 1));
 }
 
 //==================================================

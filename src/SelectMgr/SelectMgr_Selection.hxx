@@ -131,7 +131,7 @@ public:
   Standard_EXPORT void SetSelectionState (const SelectMgr_StateOfSelection theState) const;
 
   //! Returns sensitivity of the selection
-  Standard_EXPORT Standard_Real Sensitivity() const;
+  Standard_EXPORT Standard_Integer Sensitivity() const;
 
   DEFINE_STANDARD_RTTI (SelectMgr_Selection)
 
@@ -148,7 +148,7 @@ private:
   SelectMgr_TypeOfUpdate                                          myUpdateStatus;
   mutable SelectMgr_StateOfSelection                              mySelectionState;
   mutable SelectMgr_TypeOfBVHUpdate                               myBVHUpdateStatus;
-  Standard_Real                                                   mySensFactor;
+  Standard_Integer                                                mySensFactor;
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_Selection, MMgt_TShared)

@@ -29,7 +29,7 @@ SelectMgr_Selection::SelectMgr_Selection (const Standard_Integer theModeIdx)
 : myMode (theModeIdx),
   mySelectionState (SelectMgr_SOS_Unknown),
   myBVHUpdateStatus (SelectMgr_TBU_None),
-  mySensFactor (2.0)
+  mySensFactor (2)
 {}
 
 SelectMgr_Selection::~SelectMgr_Selection()
@@ -48,7 +48,7 @@ void SelectMgr_Selection::Destroy()
     Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anEntityIdx);
     anEntity->BaseSensitive()->Set (NULL);
   }
-  mySensFactor = 2.0;
+  mySensFactor = 2;
 }
 
 //==================================================
@@ -134,7 +134,7 @@ void SelectMgr_Selection::SetSelectionState (const SelectMgr_StateOfSelection th
 // function: Sensitivity
 // purpose : Returns sensitivity of the selection
 //==================================================
-Standard_Real SelectMgr_Selection::Sensitivity() const
+Standard_Integer SelectMgr_Selection::Sensitivity() const
 {
   return mySensFactor;
 }

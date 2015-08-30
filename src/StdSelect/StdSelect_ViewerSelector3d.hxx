@@ -48,10 +48,10 @@ public:
   Standard_EXPORT StdSelect_ViewerSelector3d();
 
   //! Sets the pixel tolerance <theTolerance>.
-  Standard_EXPORT void SetPixelTolerance (const Standard_Real theTolerance);
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTolerance);
 
   //! Returns the pixel tolerance.
-  Standard_Real PixelTolerance() const;
+  inline Standard_Integer PixelTolerance() const;
 
   //! Picks the sensitive entity at the pixel coordinates of
   //! the mouse <theXPix> and <theYPix>. The selector looks for touched areas and owners.

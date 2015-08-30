@@ -12,9 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline Standard_Real SelectMgr_ViewerSelector::Sensitivity() const
+inline Standard_Integer SelectMgr_ViewerSelector::Sensitivity() const
 {
-  return mytolerance;
+  return myTolerances.Tolerance();
 }
 
 inline void SelectMgr_ViewerSelector::Init() 

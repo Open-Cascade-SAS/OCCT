@@ -428,8 +428,8 @@ is
 -- Removes selection mode from Interactive Objects.
 -- aMode provides the selection mode index of the entity aniobj.
 
-    SetPixelTolerance(me:mutable;
-			aPrecision: Real from Standard = 2.0);
+    SetPixelTolerance (me:mutable;
+                       aPrecision: Integer from Standard = 2);
     ---Level: Public
     ---Purpose: Disables the mechanism of adaptive tolerance calculation in SelectMgr_ViewerSelector and
     --          sets the given tolerance for ALL sensitive entities activated. For more information, see
@@ -437,7 +437,7 @@ is
     --  Warning: When a local context is open the sensitivity is apply on it 
     --          instead on the main context.
 
-    PixelTolerance(me) returns Real from Standard;
+    PixelTolerance(me) returns Integer from Standard;
     ---Level: Public 
     ---Purpose: Returns the pixel tolerance.
 

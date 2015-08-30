@@ -16,7 +16,7 @@
 // function : SetSensitivityFactor
 // purpose  : Allows to manage the sensitivity of the entity
 //=======================================================================
-inline void SelectBasics_SensitiveEntity::SetSensitivityFactor (const Standard_Real theSensFactor)
+inline void SelectBasics_SensitiveEntity::SetSensitivityFactor (const Standard_Integer theSensFactor)
 {
   mySFactor = theSensFactor;
 }
@@ -25,7 +25,7 @@ inline void SelectBasics_SensitiveEntity::SetSensitivityFactor (const Standard_R
 // function : SensitivityFactor
 // purpose  : Gets sensitivity factor for the entity
 //=======================================================================
-inline Standard_Real SelectBasics_SensitiveEntity::SensitivityFactor() const
+inline Standard_Integer SelectBasics_SensitiveEntity::SensitivityFactor() const
 {
   return mySFactor;
 }

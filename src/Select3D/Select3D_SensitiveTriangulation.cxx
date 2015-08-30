@@ -56,6 +56,7 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
   myInitLocation (theInitLoc),
   myDetectedTr (-1)
 {
+  myInvInitLocation = myInitLocation.Transformation().Inverted();
   mySensType = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
   const Poly_Array1OfTriangle& aTriangles = myTriangul->Triangles();
   const TColgp_Array1OfPnt& aNodes = myTriangul->Nodes();
@@ -148,6 +149,7 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
   myFreeEdges (theFreeEdges),
   myDetectedTr (-1)
 {
+  myInvInitLocation = myInitLocation.Transformation().Inverted();
   mySensType = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
   myPrimitivesNb = theIsInterior ? theTrg->Triangles().Length() : theFreeEdges->Length() / 2;
   myBVHPrimIndexes = new TColStd_HArray1OfInteger(0, myPrimitivesNb - 1);
@@ -187,19 +189,15 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box (const Standard_Integer t
   Standard_Integer aPrimIdx = myBVHPrimIndexes->Value (theIdx);
   SelectMgr_Vec3 aMinPnt (RealLast());
   SelectMgr_Vec3 aMaxPnt (RealFirst());
-  Standard_Boolean hasInitLoc = HasInitLocation();
 
   if (mySensType == Select3D_TOS_INTERIOR)
   {
     Standard_Integer aNode1, aNode2, aNode3;
     myTriangul->Triangles() (aPrimIdx + 1).Get (aNode1, aNode2, aNode3);
 
-    gp_Pnt aPnt1 = hasInitLoc ? myTriangul->Nodes().Value (aNode1).Transformed (myInitLocation.Transformation())
-                              : myTriangul->Nodes().Value (aNode1);
-    gp_Pnt aPnt2 = hasInitLoc ? myTriangul->Nodes().Value (aNode2).Transformed (myInitLocation.Transformation())
-                              : myTriangul->Nodes().Value (aNode2);
-    gp_Pnt aPnt3 = hasInitLoc ? myTriangul->Nodes().Value (aNode3).Transformed (myInitLocation.Transformation())
-                              : myTriangul->Nodes().Value (aNode3);
+    gp_Pnt aPnt1 = myTriangul->Nodes().Value (aNode1);
+    gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
+    gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
 
     aMinPnt = SelectMgr_Vec3 (Min (aPnt1.X(), Min (aPnt2.X(), aPnt3.X())),
                               Min (aPnt1.Y(), Min (aPnt2.Y(), aPnt3.Y())),
@@ -212,10 +210,8 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box (const Standard_Integer t
   {
     Standard_Integer aNodeIdx1 = myFreeEdges->Value (myFreeEdges->Lower() + aPrimIdx);
     Standard_Integer aNodeIdx2 = myFreeEdges->Value (myFreeEdges->Lower() + aPrimIdx + 1);
-    gp_Pnt aNode1 = hasInitLoc ? myTriangul->Nodes().Value (aNodeIdx1).Transformed (myInitLocation.Transformation())
-                               : myTriangul->Nodes().Value (aNodeIdx1);
-    gp_Pnt aNode2 = hasInitLoc ? myTriangul->Nodes().Value (aNodeIdx2).Transformed (myInitLocation.Transformation())
-                               : myTriangul->Nodes().Value (aNodeIdx2);
+    gp_Pnt aNode1 = myTriangul->Nodes().Value (aNodeIdx1);
+    gp_Pnt aNode2 = myTriangul->Nodes().Value (aNodeIdx2);
 
     aMinPnt = SelectMgr_Vec3 (Min (aNode1.X(), aNode2.X()),
                               Min (aNode1.Y(), aNode2.Y()),
@@ -266,17 +262,14 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
                                                                    Standard_Real& theMatchDepth)
 {
   const Standard_Integer& aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
-  Standard_Boolean hasInitLoc = HasInitLocation();
 
   if (mySensType == Select3D_TOS_BOUNDARY)
   {
     Standard_Integer aSegmStartIdx = myFreeEdges->Value (aPrimitiveIdx * 2 + 1);
     Standard_Integer aSegmEndIdx = myFreeEdges->Value (aPrimitiveIdx * 2 + 2);
     Handle(TColgp_HArray1OfPnt) anEdgePnts = new TColgp_HArray1OfPnt (1, 2);
-    gp_Pnt aSegmStart = hasInitLoc ? myTriangul->Nodes().Value (aSegmStartIdx).Transformed (myInitLocation.Transformation())
-                                   : myTriangul->Nodes().Value (aSegmStartIdx);
-    gp_Pnt aSegmEnd   = hasInitLoc ? myTriangul->Nodes().Value (aSegmEndIdx).Transformed (myInitLocation.Transformation())
-                                   : myTriangul->Nodes().Value (aSegmEndIdx);
+    gp_Pnt aSegmStart = myTriangul->Nodes().Value (aSegmStartIdx);
+    gp_Pnt aSegmEnd   = myTriangul->Nodes().Value (aSegmEndIdx);
     anEdgePnts->SetValue (1, aSegmStart);
     anEdgePnts->SetValue (2, aSegmEnd);
     Standard_Boolean isMatched = theMgr.Overlaps (anEdgePnts, Select3D_TOS_BOUNDARY, theMatchDepth);
@@ -288,12 +281,9 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
     const Poly_Array1OfTriangle& aTriangles = myTriangul->Triangles();
     Standard_Integer aNode1, aNode2, aNode3;
     aTriangles (aPrimitiveIdx + 1).Get (aNode1, aNode2, aNode3);
-    gp_Pnt aPnt1 = hasInitLoc ? myTriangul->Nodes().Value (aNode1).Transformed (myInitLocation.Transformation())
-                              : myTriangul->Nodes().Value (aNode1);
-    gp_Pnt aPnt2 = hasInitLoc ? myTriangul->Nodes().Value (aNode2).Transformed (myInitLocation.Transformation())
-                              : myTriangul->Nodes().Value (aNode2);
-    gp_Pnt aPnt3 = hasInitLoc ? myTriangul->Nodes().Value (aNode3).Transformed (myInitLocation.Transformation())
-                              : myTriangul->Nodes().Value (aNode3);
+    gp_Pnt aPnt1 = myTriangul->Nodes().Value (aNode1);
+    gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
+    gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
     return theMgr.Overlaps (aPnt1, aPnt2, aPnt3, Select3D_TOS_INTERIOR, theMatchDepth);
   }
 }
@@ -305,8 +295,6 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
 Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
                                                                    const Standard_Integer               theElemIdx)
 {
-  Standard_Real aDummy;
-
   const Standard_Integer& aPrimitiveIdx = myBVHPrimIndexes->Value (theElemIdx);
 
   if (mySensType == Select3D_TOS_BOUNDARY)
@@ -314,13 +302,7 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
     gp_Pnt aSegmPnt1 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 1));
     gp_Pnt aSegmPnt2 = myTriangul->Nodes().Value (myFreeEdges->Value (aPrimitiveIdx * 2 + 2));
 
-    if (HasInitLocation()) // Note: Should be removed (by transforming frustum)
-    {
-      aSegmPnt1.Transform (myInitLocation.Transformation());
-      aSegmPnt2.Transform (myInitLocation.Transformation());
-    }
-
-    return theMgr.Overlaps (aSegmPnt1, aDummy) && theMgr.Overlaps (aSegmPnt2, aDummy);
+    return theMgr.Overlaps (aSegmPnt1) && theMgr.Overlaps (aSegmPnt2);
   }
   else
   {
@@ -334,16 +316,9 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
     gp_Pnt aPnt2 = myTriangul->Nodes().Value (aNode2);
     gp_Pnt aPnt3 = myTriangul->Nodes().Value (aNode3);
 
-    if (HasInitLocation()) // Note: Should be removed (by transforming frustum)
-    {
-      aPnt1.Transform (myInitLocation.Transformation());
-      aPnt2.Transform (myInitLocation.Transformation());
-      aPnt3.Transform (myInitLocation.Transformation());
-    }
-
-    return theMgr.Overlaps (aPnt1, aDummy)
-        && theMgr.Overlaps (aPnt2, aDummy)
-        && theMgr.Overlaps (aPnt3, aDummy);
+    return theMgr.Overlaps (aPnt1)
+        && theMgr.Overlaps (aPnt2)
+        && theMgr.Overlaps (aPnt3);
   }
 }
 
@@ -390,7 +365,7 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::applyTransformation()
         gp_Pnt aVertex = gp_Pnt (aX == 0 ? myBndBox.CornerMin().x() : myBndBox.CornerMax().x(),
                                  aY == 0 ? myBndBox.CornerMin().y() : myBndBox.CornerMax().y(),
                                  aZ == 0 ? myBndBox.CornerMin().z() : myBndBox.CornerMax().z());
-        aVertex.Transform (myInitLocation);
+        aVertex.Transform (myInitLocation.Transformation());
         aBndBox.Add (Select3D_Vec3 (aVertex.X(), aVertex.Y(), aVertex.Z()));
       }
     }
@@ -431,7 +406,7 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::BoundingBox()
 //=======================================================================
 gp_Pnt Select3D_SensitiveTriangulation::CenterOfGeometry() const
 {
-  return HasInitLocation() ? myCDG3D.Transformed (myInitLocation) : myCDG3D;
+  return myCDG3D;
 }
 
 //=======================================================================
@@ -441,4 +416,22 @@ gp_Pnt Select3D_SensitiveTriangulation::CenterOfGeometry() const
 Standard_Integer Select3D_SensitiveTriangulation::NbSubElements()
 {
   return myTriangul->Nodes().Length();
+}
+
+//=======================================================================
+//function : HasInitLocation
+//purpose  :
+//=======================================================================
+Standard_Boolean Select3D_SensitiveTriangulation::HasInitLocation() const
+{
+  return !myInitLocation.IsIdentity();
+}
+
+//=======================================================================
+//function : InvInitLocation
+//purpose  :
+//=======================================================================
+gp_Trsf Select3D_SensitiveTriangulation::InvInitLocation() const
+{
+  return myInvInitLocation;
 }

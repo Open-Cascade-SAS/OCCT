@@ -48,6 +48,10 @@ public:
 
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Standard_Boolean HasInitLocation() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual gp_Trsf InvInitLocation() const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTI(MeshVS_DummySensitiveEntity)
 };
 

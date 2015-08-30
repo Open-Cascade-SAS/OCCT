@@ -304,8 +304,6 @@ inline gp_XYZ operator* (const Standard_Real Scalar, const gp_XYZ& Coord1) {
   return Coord1.Multiplied (Scalar);
 }
 
+inline const Standard_Real* gp_XYZ::GetData() const { return (&x); }
 
-
-
-
-
+inline Standard_Real* gp_XYZ::ChangeData() { return (&x); }

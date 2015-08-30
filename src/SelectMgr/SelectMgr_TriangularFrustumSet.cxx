@@ -102,17 +102,24 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
 }
 
 // =======================================================================
-// function : Transform
-// purpose  : Returns a copy of the frustum with all sub-volumes transformed
-//            according to the matrix given
+// function : ScaleAndTransform
+// purpose  : IMPORTANT: Scaling makes sense only for frustum built on a single point!
+//            Note that this method does not perform any checks on type of the frustum.
+//            Returns a copy of the frustum resized according to the scale factor given
+//            and transforms it using the matrix given.
+//            There are no default parameters, but in case if:
+//                - transformation only is needed: @theScaleFactor must be initialized
+//                  as any negative value;
+//                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
-NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustumSet::Transform (const gp_Trsf& theTrsf)
+NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustumSet::ScaleAndTransform (const Standard_Integer theScale,
+                                                                                             const gp_Trsf& theTrsf)
 {
   SelectMgr_TriangularFrustumSet* aRes = new SelectMgr_TriangularFrustumSet();
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    aRes->myFrustums.Append (NCollection_Handle<SelectMgr_TriangularFrustum>::DownCast (anIter.Value()->Transform (theTrsf)));
+    aRes->myFrustums.Append (NCollection_Handle<SelectMgr_TriangularFrustum>::DownCast (anIter.Value()->ScaleAndTransform (theScale, theTrsf)));
   }
 
   return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
@@ -122,12 +129,13 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustumSet::Transf
 // function : Overlaps
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
+                                                           const SelectMgr_Vec3& theMaxPnt,
                                                            Standard_Real& theDepth)
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theBox, theDepth))
+    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, theDepth))
       return Standard_True;
   }
 

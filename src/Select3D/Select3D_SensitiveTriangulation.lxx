@@ -24,15 +24,6 @@ inline const Handle(Poly_Triangulation)& Select3D_SensitiveTriangulation::Triang
 }
 
 //=======================================================================
-//function : HasInitLocation
-//purpose  :
-//=======================================================================
-inline Standard_Boolean Select3D_SensitiveTriangulation::HasInitLocation() const
-{
-  return !myInitLocation.IsIdentity();
-}
-
-//=======================================================================
 //function : GetInitLocation
 //purpose  :
 //=======================================================================

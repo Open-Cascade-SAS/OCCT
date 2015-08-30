@@ -22,7 +22,7 @@
 // purpose  : Creates new empty sensitive entity instance
 //=======================================================================
 SelectBasics_SensitiveEntity::SelectBasics_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId,
-                                                            const Standard_Real theSensFactor)
+                                                            const Standard_Integer theSensFactor)
 : myOwnerId (theOwnerId),
   mySFactor (theSensFactor) {}
 

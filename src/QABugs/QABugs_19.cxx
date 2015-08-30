@@ -4095,6 +4095,118 @@ static Standard_Integer OCC26553 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+//=======================================================================
+//function : OCC26195
+//purpose  :
+//=======================================================================
+#include <AIS_Line.hxx>
+#include <Aspect_Window.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <SelectMgr_SelectingVolumeManager.hxx>
+#include <Visual3d_View.hxx>
+static Standard_Integer OCC26195 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb < 3)
+  {
+    std::cerr << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  if (ViewerTest::GetAISContext().IsNull())
+  {
+    std::cerr << "Error: No opened context!\n";
+    return 1;
+  }
+
+  gp_Pnt2d aPxPnt1, aPxPnt2;
+  aPxPnt1.SetX (Draw::Atof (theArgVec[1]));
+  aPxPnt1.SetY (Draw::Atof (theArgVec[2]));
+  if (theArgNb > 4)
+  {
+    aPxPnt2.SetX (Draw::Atof (theArgVec[3]));
+    aPxPnt2.SetY (Draw::Atof (theArgVec[4]));
+  }
+  Standard_Boolean toPrint = Standard_False;
+  if (theArgNb % 2 == 0)
+  {
+    toPrint = Draw::Atoi (theArgVec[theArgNb - 1]);
+  }
+
+  SelectMgr_SelectingVolumeManager* aMgr = new SelectMgr_SelectingVolumeManager();
+  aMgr->SetActiveSelectionType (theArgNb > 4 ?
+    SelectMgr_SelectingVolumeManager::Box : SelectMgr_SelectingVolumeManager::Point);
+  aMgr->SetCamera (ViewerTest::CurrentView()->Camera());
+  aMgr->SetPixelTolerance (ViewerTest::GetAISContext()->PixelTolerance());
+  Standard_Integer aWidth, aHeight;
+  ViewerTest::CurrentView()->View()->Window()->Size (aWidth, aHeight);
+  aMgr->SetWindowSize (aWidth, aHeight);
+  if (theArgNb > 4)
+  {
+    aMgr->BuildSelectingVolume (aPxPnt1, aPxPnt2);
+  }
+  else
+  {
+    aMgr->BuildSelectingVolume (aPxPnt1);
+  }
+  const gp_Pnt* aVerts = aMgr->GetVertices();
+  gp_Pnt aNearPnt = aMgr->GetNearPnt();
+  gp_Pnt aFarPnt  = aMgr->GetFarPnt();
+  BRepBuilderAPI_MakePolygon aWireBldrs[4];
+
+  aWireBldrs[0].Add (gp_Pnt (aVerts[0].X(), aVerts[0].Y(), aVerts[0].Z()));
+  aWireBldrs[0].Add (gp_Pnt (aVerts[4].X(), aVerts[4].Y(), aVerts[4].Z()));
+  aWireBldrs[0].Add (gp_Pnt (aVerts[6].X(), aVerts[6].Y(), aVerts[6].Z()));
+  aWireBldrs[0].Add (gp_Pnt (aVerts[2].X(), aVerts[2].Y(), aVerts[2].Z()));
+  aWireBldrs[0].Add (gp_Pnt (aVerts[0].X(), aVerts[0].Y(), aVerts[0].Z()));
+
+  aWireBldrs[1].Add (gp_Pnt (aVerts[4].X(), aVerts[4].Y(), aVerts[4].Z()));
+  aWireBldrs[1].Add (gp_Pnt (aVerts[5].X(), aVerts[5].Y(), aVerts[5].Z()));
+  aWireBldrs[1].Add (gp_Pnt (aVerts[7].X(), aVerts[7].Y(), aVerts[7].Z()));
+  aWireBldrs[1].Add (gp_Pnt (aVerts[6].X(), aVerts[6].Y(), aVerts[6].Z()));
+  aWireBldrs[1].Add (gp_Pnt (aVerts[4].X(), aVerts[4].Y(), aVerts[4].Z()));
+
+  aWireBldrs[2].Add (gp_Pnt (aVerts[1].X(), aVerts[1].Y(), aVerts[1].Z()));
+  aWireBldrs[2].Add (gp_Pnt (aVerts[5].X(), aVerts[5].Y(), aVerts[5].Z()));
+  aWireBldrs[2].Add (gp_Pnt (aVerts[7].X(), aVerts[7].Y(), aVerts[7].Z()));
+  aWireBldrs[2].Add (gp_Pnt (aVerts[3].X(), aVerts[3].Y(), aVerts[3].Z()));
+  aWireBldrs[2].Add (gp_Pnt (aVerts[1].X(), aVerts[1].Y(), aVerts[1].Z()));
+
+  aWireBldrs[3].Add (gp_Pnt (aVerts[0].X(), aVerts[0].Y(), aVerts[0].Z()));
+  aWireBldrs[3].Add (gp_Pnt (aVerts[1].X(), aVerts[1].Y(), aVerts[1].Z()));
+  aWireBldrs[3].Add (gp_Pnt (aVerts[3].X(), aVerts[3].Y(), aVerts[3].Z()));
+  aWireBldrs[3].Add (gp_Pnt (aVerts[2].X(), aVerts[2].Y(), aVerts[2].Z()));
+  aWireBldrs[3].Add (gp_Pnt (aVerts[0].X(), aVerts[0].Y(), aVerts[0].Z()));
+
+  TopoDS_Compound aComp;
+  BRep_Builder    aCompBuilder;
+  aCompBuilder.MakeCompound (aComp);
+  for (Standard_Integer aWireIdx = 0; aWireIdx < 4; ++aWireIdx)
+  {
+    aCompBuilder.Add (aComp, aWireBldrs[aWireIdx].Shape());
+  }
+  DBRep::Set ("c", aComp);
+
+  Handle(AIS_InteractiveObject) aCmp = new AIS_Shape (aComp);
+  aCmp->SetColor (Quantity_NOC_GREEN);
+  ViewerTest::Display ("c", aCmp, Standard_True, Standard_True);
+
+  Handle(Geom_CartesianPoint) aPnt1 = new Geom_CartesianPoint (aNearPnt);
+  Handle(Geom_CartesianPoint) aPnt2 = new Geom_CartesianPoint (aFarPnt);
+
+  Handle(AIS_Line) aLine = new AIS_Line (aPnt1, aPnt2);
+  ViewerTest::Display ("l", aLine, Standard_True, Standard_True);
+
+  if (toPrint)
+  {
+    theDI << "Near: " << aNearPnt.X() << " " << aNearPnt.Y() << " " << aNearPnt.Z() << "\n";
+    theDI << "Far: " << aFarPnt.X() << " " << aFarPnt.Y() << " " << aFarPnt.Z() << "\n";
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4172,5 +4284,13 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26448", "OCC26448: check method Prepend() of sequence", __FILE__, OCC26448, group);
   theCommands.Add ("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
   theCommands.Add ("OCC26553", "OCC26553 file_path", __FILE__, OCC26553, group);
+  theCommands.Add ("OCC26195",
+                   "OCC26195: x1_pix y1_pix [x2_pix y2_pix] [toPrintPixelCoord 0|1]"
+                   "\n\t\t: Draws rectangular selecting frustum defined by point selection in pixel coordinates"
+                   "\n\t\t: [x1_pix, y1_pix] or rectangular selection in pixel coordinates [x1_pix, y1_pix,"
+                   "\n\t\t: x2_pix, y2_pix]."
+                   "\n\t\t: [toPrintPixelCoord 0|1] - prints 3d projection of pixel coordinate or center of"
+                   "\n\t\t: selecting rectangle onto near and far view frustum planes",
+                   __FILE__, OCC26195, group);
   return;
 }

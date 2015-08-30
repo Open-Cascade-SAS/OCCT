@@ -83,10 +83,6 @@ public:
 
   const Handle_Poly_Triangulation& Triangulation() const;
 
-  Standard_Boolean HasInitLocation() const;
-
-  const TopLoc_Location& GetInitLocation() const;
-
   //! Returns the length of array of triangles or edges
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
@@ -109,6 +105,15 @@ public:
   //! Returns center of triangulation. If location transformation
   //! is set, it will be applied
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
+
+  //! Returns true if the shape corresponding to the entity has init location
+  Standard_EXPORT virtual Standard_Boolean HasInitLocation() const Standard_OVERRIDE;
+
+  //! Returns inversed location transformation matrix if the shape corresponding
+  //! to this entity has init location set. Otherwise, returns identity matrix.
+  Standard_EXPORT virtual gp_Trsf InvInitLocation() const Standard_OVERRIDE;
+
+  inline const TopLoc_Location& GetInitLocation() const;
 
 public:
   DEFINE_STANDARD_RTTI(Select3D_SensitiveTriangulation)
@@ -134,20 +139,18 @@ private:
   virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
                                             const Standard_Integer               theElemIdx) Standard_OVERRIDE;
 
-public:
-  Standard_Real myBVHBuildTime;
-
 private:
 
   Handle_Poly_Triangulation       myTriangul;
-  TopLoc_Location                 myInitLocation;
-  gp_Pnt                          myCDG3D;              //!< Center of the whole triangulation
+  TopLoc_Location                  myInitLocation;
+  gp_Pnt                           myCDG3D;              //!< Center of the whole triangulation
   Handle_TColStd_HArray1OfInteger myFreeEdges;
-  Standard_Boolean                mySensType;            //!< Type of sensitivity: boundary or interior
-  Standard_Integer                myDetectedTr;
-  Standard_Integer                myPrimitivesNb;       //!< Amount of free edges or triangles depending on sensitivity type
+  Standard_Boolean                 mySensType;            //!< Type of sensitivity: boundary or interior
+  Standard_Integer                 myDetectedTr;
+  Standard_Integer                 myPrimitivesNb;       //!< Amount of free edges or triangles depending on sensitivity type
   Handle_TColStd_HArray1OfInteger myBVHPrimIndexes;     //!< Indexes of edges or triangles for BVH build
-  mutable Select3D_BndBox3d       myBndBox;             //!< Bounding box of the whole triangulation
+  mutable Select3D_BndBox3d        myBndBox;             //!< Bounding box of the whole triangulation
+  gp_Trsf                          myInvInitLocation;
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveTriangulation, Select3D_SensitiveSet)

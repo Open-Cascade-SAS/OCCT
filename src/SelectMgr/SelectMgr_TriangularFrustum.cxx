@@ -15,10 +15,6 @@
 
 #include <SelectMgr_TriangularFrustum.hxx>
 
-#define DOT(A, B) (A.x() * B.x() + A.y() * B.y() + A.z() * B.z())
-#define DOTp(A, B) (A.x() * B.X() + A.y() * B.Y() + A.z() * B.Z())
-#define LENGTH(A) (std::sqrt (A.x() * A.x() + A.y() * A.y() + A.z() * A.z()))
-
 SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
 {
   Clear();
@@ -26,23 +22,55 @@ SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
 
 namespace
 {
-  void computeFrustumNormals (const SelectMgr_Vec3* theVertices, SelectMgr_Vec3* theNormals)
+  void computeFrustumNormals (const gp_Vec* theEdges, gp_Vec* theNormals)
   {
     // V0V1
-    theNormals[0] = SelectMgr_Vec3::Cross (theVertices[3] - theVertices[0],
-                                           theVertices[4] - theVertices[0]);
+    theNormals[0] = theEdges[0].Crossed (theEdges[1]);
     // V1V2
-    theNormals[1] = SelectMgr_Vec3::Cross (theVertices[4] - theVertices[1],
-                                           theVertices[5] - theVertices[1]);
+    theNormals[1] = theEdges[1].Crossed (theEdges[2]);
     // V0V2
-    theNormals[2] = SelectMgr_Vec3::Cross (theVertices[3] - theVertices[0],
-                                           theVertices[5] - theVertices[0]);
+    theNormals[2] = theEdges[0].Crossed (theEdges[2]);
     // Near
-    theNormals[3] = SelectMgr_Vec3::Cross (theVertices[1] - theVertices[0],
-                                           theVertices[2] - theVertices[0]);
+    theNormals[3] = theEdges[3].Crossed (theEdges[5]);
     // Far
-    theNormals[4] = SelectMgr_Vec3::Cross (theVertices[4] - theVertices[3],
-                                           theVertices[5] - theVertices[3]);
+    theNormals[4] = -theNormals[3];
+  }
+}
+
+// =======================================================================
+// function : cacheVertexProjections
+// purpose  : Caches projection of frustum's vertices onto its plane directions
+//            and {i, j, k}
+// =======================================================================
+void SelectMgr_TriangularFrustum::cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum)
+{
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
+  {
+    Standard_Real aMax = -DBL_MAX;
+    Standard_Real aMin =  DBL_MAX;
+    const gp_XYZ& aPlane = theFrustum->myPlanes[aPlaneIdx].XYZ();
+    for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
+    {
+      Standard_Real aProjection = aPlane.Dot (theFrustum->myVertices[aVertIdx].XYZ());
+      aMax = Max (aMax, aProjection);
+      aMin = Min (aMin, aProjection);
+    }
+    theFrustum->myMaxVertsProjections[aPlaneIdx] = aMax;
+    theFrustum->myMinVertsProjections[aPlaneIdx] = aMin;
+  }
+
+  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
+  {
+    Standard_Real aMax = -DBL_MAX;
+    Standard_Real aMin =  DBL_MAX;
+    for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
+    {
+      Standard_Real aProjection = theFrustum->myVertices[aVertIdx].XYZ().GetData()[aDim];
+      aMax = Max (aMax, aProjection);
+      aMin = Min (aMin, aProjection);
+    }
+    theFrustum->myMaxOrthoVertsProjections[aDim] = aMax;
+    theFrustum->myMinOrthoVertsProjections[aDim] = aMin;
   }
 }
 
@@ -69,131 +97,71 @@ void SelectMgr_TriangularFrustum::Build (const gp_Pnt2d& theP1,
   // V2_Far
   myVertices[5] = myBuilder->ProjectPntOnViewPlane (theP3.X(), theP3.Y(), 1.0);
 
-  computeFrustumNormals (myVertices, myPlanes);
-
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    const SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aPlane, myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    myMaxVertsProjections[aPlaneIdx] = aMax;
-    myMinVertsProjections[aPlaneIdx] = aMin;
-  }
-
-  SelectMgr_Vec3 aDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aDimensions[aDim], myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    myMaxOrthoVertsProjections[aDim] = aMax;
-    myMinOrthoVertsProjections[aDim] = aMin;
-  }
-
   // V0_Near - V0_Far
-  myEdgeDirs[0] = myVertices[0] - myVertices[3];
+  myEdgeDirs[0] = myVertices[0].XYZ() - myVertices[3].XYZ();
   // V1_Near - V1_Far
-  myEdgeDirs[1] = myVertices[1] - myVertices[4];
+  myEdgeDirs[1] = myVertices[1].XYZ() - myVertices[4].XYZ();
   // V2_Near - V1_Far
-  myEdgeDirs[2] = myVertices[2] - myVertices[5];
+  myEdgeDirs[2] = myVertices[2].XYZ() - myVertices[5].XYZ();
   // V1_Near - V0_Near
-  myEdgeDirs[3] = myVertices[1] - myVertices[0];
+  myEdgeDirs[3] = myVertices[1].XYZ() - myVertices[0].XYZ();
   // V2_Near - V1_Near
-  myEdgeDirs[4] = myVertices[2] - myVertices[1];
+  myEdgeDirs[4] = myVertices[2].XYZ() - myVertices[1].XYZ();
   // V1_Near - V0_Near
-  myEdgeDirs[5] = myVertices[2] - myVertices[0];
+  myEdgeDirs[5] = myVertices[2].XYZ() - myVertices[0].XYZ();
+
+  computeFrustumNormals (myEdgeDirs, myPlanes);
+
+  cacheVertexProjections (this);
 }
 
 //=======================================================================
-// function : Transform
-// purpose  : Returns a copy of the frustum transformed according to the matrix given
+// function : ScaleAndTransform
+// purpose  : IMPORTANT: Scaling makes sense only for frustum built on a single point!
+//            Note that this method does not perform any checks on type of the frustum.
+//            Returns a copy of the frustum resized according to the scale factor given
+//            and transforms it using the matrix given.
+//            There are no default parameters, but in case if:
+//                - transformation only is needed: @theScaleFactor must be initialized
+//                  as any negative value;
+//                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
-NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::Transform (const gp_Trsf& theTrsf)
+NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::ScaleAndTransform (const Standard_Integer /*theScale*/,
+                                                                                          const gp_Trsf& theTrsf)
 {
   SelectMgr_TriangularFrustum* aRes = new SelectMgr_TriangularFrustum();
 
   // V0_Near
-  aRes->myVertices[0] = SelectMgr_MatOp::Transform (theTrsf, myVertices[0]);
+  aRes->myVertices[0] = myVertices[0].Transformed (theTrsf);
   // V1_Near
-  aRes->myVertices[1] = SelectMgr_MatOp::Transform (theTrsf, myVertices[1]);
+  aRes->myVertices[1] = myVertices[1].Transformed (theTrsf);
   // V2_Near
-  aRes->myVertices[2] = SelectMgr_MatOp::Transform (theTrsf, myVertices[2]);
+  aRes->myVertices[2] = myVertices[2].Transformed (theTrsf);
   // V0_Far
-  aRes->myVertices[3] = SelectMgr_MatOp::Transform (theTrsf, myVertices[3]);
+  aRes->myVertices[3] = myVertices[3].Transformed (theTrsf);
   // V1_Far
-  aRes->myVertices[4] = SelectMgr_MatOp::Transform (theTrsf, myVertices[4]);
+  aRes->myVertices[4] = myVertices[4].Transformed (theTrsf);
   // V2_Far
-  aRes->myVertices[5] = SelectMgr_MatOp::Transform (theTrsf, myVertices[5]);
+  aRes->myVertices[5] = myVertices[5].Transformed (theTrsf);
 
   aRes->myIsOrthographic = myIsOrthographic;
 
-  computeFrustumNormals (aRes->myVertices, aRes->myPlanes);
-
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    const SelectMgr_Vec3 aPlane = aRes->myPlanes[aPlaneIdx];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aPlane, aRes->myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    aRes->myMaxVertsProjections[aPlaneIdx] = aMax;
-    aRes->myMinVertsProjections[aPlaneIdx] = aMin;
-  }
-
-  SelectMgr_Vec3 aDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aDimensions[aDim], aRes->myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    aRes->myMaxOrthoVertsProjections[aDim] = aMax;
-    aRes->myMinOrthoVertsProjections[aDim] = aMin;
-  }
-
   // V0_Near - V0_Far
-  aRes->myEdgeDirs[0] = aRes->myVertices[0] - aRes->myVertices[3];
+  aRes->myEdgeDirs[0] = aRes->myVertices[0].XYZ() - aRes->myVertices[3].XYZ();
   // V1_Near - V1_Far
-  aRes->myEdgeDirs[1] = aRes->myVertices[1] - aRes->myVertices[4];
+  aRes->myEdgeDirs[1] = aRes->myVertices[1].XYZ() - aRes->myVertices[4].XYZ();
   // V2_Near - V1_Far
-  aRes->myEdgeDirs[2] = aRes->myVertices[2] - aRes->myVertices[5];
+  aRes->myEdgeDirs[2] = aRes->myVertices[2].XYZ() - aRes->myVertices[5].XYZ();
   // V1_Near - V0_Near
-  aRes->myEdgeDirs[3] = aRes->myVertices[1] - aRes->myVertices[0];
+  aRes->myEdgeDirs[3] = aRes->myVertices[1].XYZ() - aRes->myVertices[0].XYZ();
   // V2_Near - V1_Near
-  aRes->myEdgeDirs[4] = aRes->myVertices[2] - aRes->myVertices[1];
+  aRes->myEdgeDirs[4] = aRes->myVertices[2].XYZ() - aRes->myVertices[1].XYZ();
   // V1_Near - V0_Near
-  aRes->myEdgeDirs[5] = aRes->myVertices[2] - aRes->myVertices[0];
+  aRes->myEdgeDirs[5] = aRes->myVertices[2].XYZ() - aRes->myVertices[0].XYZ();
+
+  computeFrustumNormals (aRes->myEdgeDirs, aRes->myPlanes);
+
+  cacheVertexProjections (aRes);
 
   return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
 }
@@ -203,10 +171,11 @@ NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_TriangularFrustum::Transform
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const SelectMgr_Vec3& theMinPt,
+                                                        const SelectMgr_Vec3& theMaxPt,
                                                         Standard_Real& /*theDepth*/)
 {
-  return hasOverlap (theBox.CornerMin(), theBox.CornerMax());
+  return hasOverlap (theMinPt, theMaxPt);
 }
 
 // =======================================================================
@@ -261,7 +230,7 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const Handle(TColgp_HArr
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    SelectMgr_Vec3 aNorm (RealLast());
+    gp_Vec aNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
     return hasOverlap (theArrayOfPnts, aNorm);
   }
 
@@ -302,7 +271,7 @@ Standard_Boolean SelectMgr_TriangularFrustum::Overlaps (const gp_Pnt& thePnt1,
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    SelectMgr_Vec3 aNorm (RealLast());
+    gp_Vec aNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
     return hasOverlap (thePnt1, thePnt2, thePnt3, aNorm);
   }
 

@@ -54,10 +54,9 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
   Standard_Real aDistToCOG = RealLast();
   if (!theMgr.IsOverlapAllowed())
   {
-    Standard_Real aDummy;
-    return theMgr.Overlaps (myPoints[0], aDummy)
-        && theMgr.Overlaps (myPoints[1], aDummy)
-        && theMgr.Overlaps (myPoints[2], aDummy);
+    return theMgr.Overlaps (myPoints[0])
+        && theMgr.Overlaps (myPoints[1])
+        && theMgr.Overlaps (myPoints[2]);
   }
 
   if (!theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, aDepth))

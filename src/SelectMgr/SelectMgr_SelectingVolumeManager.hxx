@@ -37,12 +37,16 @@ public:
 
   Standard_EXPORT virtual ~SelectMgr_SelectingVolumeManager() {};
 
-  //! Returns a copy of active frustum transformed according to the matrix given
-  Standard_EXPORT virtual SelectMgr_SelectingVolumeManager Transform (const gp_Trsf& theTrsf);
-
-  //! IMPORTANT: Makes sense only for point selection!
+  //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
+  //!            Note that this method does not perform any checks on type of the frustum.
+  //!
   //! Returns a copy of the frustum resized according to the scale factor given
-  Standard_EXPORT virtual SelectMgr_SelectingVolumeManager Scale (const Standard_Real theScaleFactor);
+  //! and transforms it using the matrix given.
+  //! There are no default parameters, but in case if:
+  //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
+  //!    - scale only is needed: @theTrsf must be set to gp_Identity.
+  Standard_EXPORT virtual SelectMgr_SelectingVolumeManager ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                              const gp_Trsf& theTrsf);
 
   Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
 
@@ -63,7 +67,7 @@ public:
                                     const Standard_Real theHeight);
 
   //! Updates pixel tolerance in all selecting volumes
-  Standard_EXPORT void SetPixelTolerance (const Standard_Real theTolerance);
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTolerance);
 
   //! Updates window size in all selecting volumes
   Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth, const Standard_Integer theHeight);
@@ -81,7 +85,8 @@ public:
 
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                      const SelectMgr_Vec3& theBoxMax,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
@@ -91,8 +96,11 @@ public:
                                                       Standard_Boolean*     theInside = NULL) Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
+
+  //! Intersection test between defined volume and given point
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
@@ -102,16 +110,16 @@ public:
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                                     const gp_Pnt& thePt2,
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                                     const gp_Pnt& thePnt2,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  Standard_EXPORT  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                                      const gp_Pnt& thePt2,
-                                                      const gp_Pnt& thePt3,
+  Standard_EXPORT  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                                      const gp_Pnt& thePnt2,
+                                                      const gp_Pnt& thePnt3,
                                                       Standard_Integer theSensType,
                                                       Standard_Real& theDepth) Standard_OVERRIDE;
 
@@ -122,7 +130,7 @@ public:
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth. Is valid for point
   //! selection only
-  Standard_EXPORT virtual NCollection_Vec3<Standard_Real> DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
   //! Checks if the point of sensitive in which selection was detected belongs
   //! to the region defined by clipping planes
@@ -135,6 +143,13 @@ public:
   Standard_EXPORT virtual void AllowOverlapDetection (const Standard_Boolean theIsToAllow);
 
   Standard_EXPORT virtual Standard_Boolean IsOverlapAllowed() const Standard_OVERRIDE;
+
+  //! A set of helper functions that return rectangular selecting frustum data
+  Standard_EXPORT const gp_Pnt* GetVertices() const;
+
+  Standard_EXPORT gp_Pnt GetNearPnt() const;
+
+  Standard_EXPORT gp_Pnt GetFarPnt() const;
 
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes

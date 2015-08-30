@@ -25,7 +25,7 @@
 //=======================================================================
 SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 {
-  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 32> (1, 32, Standard_False);
+  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 4> (1, 32, Standard_True);
 }
 
 //=======================================================================

@@ -71,3 +71,21 @@ void MeshVS_DummySensitiveEntity::BVH()
 //================================================================
 void MeshVS_DummySensitiveEntity::Clear()
 {}
+
+//=======================================================================
+//function : HasInitLocation
+//purpose  :
+//=======================================================================
+Standard_Boolean MeshVS_DummySensitiveEntity::HasInitLocation() const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+//function : InvInitLocation
+//purpose  :
+//=======================================================================
+inline gp_Trsf MeshVS_DummySensitiveEntity::InvInitLocation() const
+{
+  return gp_Trsf();
+}

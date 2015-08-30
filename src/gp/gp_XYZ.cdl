@@ -101,6 +101,17 @@ is
         ---C++: inline
         ---Purpose: Returns the Z coordinate
 
+  GetData (me) returns Real
+        --- Purpose : Returns a const ptr to coordinates location.
+        --            Is useful for algorithms, but DOES NOT PERFORM ANY CHECKS!
+        ---C++: return const *
+     is static;
+
+  ChangeData (me : in out) returns Real;
+        --- Purpose : Returns a ptr to coordinates location.
+        --            Is useful for algorithms, but DOES NOT PERFORM ANY CHECKS!
+        ---C++: return *
+
   Modulus (me)         returns Real    is static;
         --- Purpose : computes Sqrt (X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ object.
         ---C++: inline

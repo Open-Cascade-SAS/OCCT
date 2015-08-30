@@ -16,8 +16,6 @@
 #ifndef _SelectMgr_BaseFrustum_HeaderFile
 #define _SelectMgr_BaseFrustum_HeaderFile
 
-#include <Bnd_Box.hxx>
-
 #include <gp_Pnt.hxx>
 #include <gp_Pln.hxx>
 
@@ -56,7 +54,7 @@ public:
                                   const Graphic3d_Mat4d& theOrientation,
                                   const Standard_Integer theIsOrthographic);
 
-  Standard_EXPORT void SetPixelTolerance (const Standard_Real theTol);
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTol);
 
   Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth, 
                                       const Standard_Integer theHeight);
@@ -86,14 +84,19 @@ public:
   //! Builds selecting volumes set according to polyline points
   virtual void Build (const TColgp_Array1OfPnt2d& /*thePoints*/) {}
 
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& /*theTrsf*/) { return NULL; }
-
-  //! IMPORTANT: Makes sense only for frustum built on a single point!
+  //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
+  //!            Note that this method does not perform any checks on type of the frustum.
   //! Returns a copy of the frustum resized according to the scale factor given
-  virtual NCollection_Handle<SelectMgr_BaseFrustum> Scale (const Standard_Real /*theScaleFactor*/) { return NULL; }
+  //! and transforms it using the matrix given.
+  //! There are no default parameters, but in case if:
+  //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
+  //!    - scale only is needed: @theTrsf must be set to gp_Identity.
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer /*theScaleFactor*/,
+                                                                                       const gp_Trsf& /*theTrsf*/) { return NULL; }
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
+  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                     const SelectMgr_Vec3& theBoxMax,
                                      Standard_Real& theDepth);
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
@@ -103,19 +106,25 @@ public:
                                      Standard_Boolean*     theInside = NULL);
 
   //! Intersection test between defined volume and given point
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
                                      Standard_Real& theDepth);
+
+  //! Intersection test between defined volume and given point
+  //! Does not perform depth calculation, so this method is defined as
+  //! helper function for inclusion test. Therefore, its implementation
+  //! makes sense only for rectangular frustum with box selection mode activated.
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt);
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+  virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
                                      Select3D_TypeOfSensitivity theSensType,
                                      Standard_Real& theDepth);
 
   //! Checks if line segment overlaps selecting frustum
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt1,
-                                     const gp_Pnt& thePt2,
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                                     const gp_Pnt& thePnt2,
                                      Standard_Real& theDepth);
 
   //! SAT intersection test between defined volume and given triangle. The test may
@@ -131,7 +140,7 @@ public:
   //! screen point and given point theCOG
   virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG);
 
-  virtual SelectMgr_Vec3 DetectedPoint (const Standard_Real theDepth) const;
+  virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const;
 
   //! Checks if the point of sensitive in which selection was detected belongs
   //! to the region defined by clipping planes
@@ -139,8 +148,8 @@ public:
                                       const Standard_Real theDepth);
 
 protected:
-  Standard_Real    myPixelTolerance;      //!< Pixel tolerance
-  Standard_Boolean myIsOrthographic;      //!< Defines if current camera is orthographic
+  Standard_Integer    myPixelTolerance;      //!< Pixel tolerance
+  Standard_Boolean    myIsOrthographic;      //!< Defines if current camera is orthographic
 
   Handle(SelectMgr_FrustumBuilder) myBuilder; //!< A tool implementing methods for volume build
 };

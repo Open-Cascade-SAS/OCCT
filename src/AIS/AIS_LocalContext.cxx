@@ -1140,12 +1140,12 @@ Standard_Boolean AIS_LocalContext::IsImmediateModeOn() const
   return myMainPM->IsImmediateModeOn();
 }
 
-void AIS_LocalContext::SetPixelTolerance(const Standard_Real aPrecision) {
+void AIS_LocalContext::SetPixelTolerance(const Standard_Integer aPrecision) {
 
   myMainVS->SetPixelTolerance(aPrecision);
 }
 
-Standard_Real AIS_LocalContext::PixelTolerance() const {
+Standard_Integer AIS_LocalContext::PixelTolerance() const {
 
   return myMainVS->PixelTolerance();
 }

@@ -100,7 +100,7 @@ Standard_Boolean Select3D_SensitiveBox::Matches (SelectBasics_SelectingVolumeMan
   }
 
   Standard_Real aDepth;
-  if (!theMgr.Overlaps (myBox, aDepth)) // check for overlap
+  if (!theMgr.Overlaps (myBox.CornerMin(), myBox.CornerMax(), aDepth)) // check for overlap
   {
     return Standard_False;
   }

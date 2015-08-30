@@ -437,13 +437,13 @@ is
                 HiCol     : out NameOfColor from Quantity)
     returns Boolean from Standard;
 
-    SetPixelTolerance(me:mutable;
-                        aPrecision: Real from Standard = 2);
+    SetPixelTolerance (me:mutable;
+                       aPrecision: Integer from Standard = 2);
     ---Level: Public
     ---Purpose: Define the current selection sensitivity for
     --          this local context according to the view size.
 
-    PixelTolerance(me) returns Real from Standard;
+    PixelTolerance(me) returns Integer from Standard;
     ---Level: Public 
     ---Purpose: Returns the pixel tolerance.
 

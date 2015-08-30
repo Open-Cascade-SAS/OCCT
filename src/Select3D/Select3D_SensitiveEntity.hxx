@@ -80,6 +80,13 @@ public:
   //! Clears up all resources and memory
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
+  //! Returns true if the shape corresponding to the entity has init location
+  Standard_EXPORT virtual Standard_Boolean HasInitLocation() const Standard_OVERRIDE;
+
+  //! Returns inversed location transformation matrix if the shape corresponding
+  //! to this entity has init location set. Otherwise, returns identity matrix.
+  Standard_EXPORT virtual gp_Trsf InvInitLocation() const;
+
   DEFINE_STANDARD_RTTI(Select3D_SensitiveEntity)
 
 protected:

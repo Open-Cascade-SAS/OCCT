@@ -18,6 +18,8 @@
 
 #include <BVH_Box.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 #include <SelectMgr_BaseFrustum.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -75,39 +77,39 @@ protected:
 
   //! SAT intersection test between frustum given and planar convex polygon represented as ordered point set
   Standard_Boolean hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                               SelectMgr_Vec3& theNormal);
+                               gp_Vec& theNormal);
 
   //! SAT intersection test between defined volume and given triangle
   Standard_Boolean hasOverlap (const gp_Pnt& thePnt1,
                                const gp_Pnt& thePnt2,
                                const gp_Pnt& thePnt3,
-                               SelectMgr_Vec3& theNormal);
+                               gp_Vec& theNormal);
 
 private:
 
   //! Checks if AABB and frustum are separated along the given axis
   Standard_Boolean isSeparated (const SelectMgr_Vec3& theBoxMin,
                                 const SelectMgr_Vec3& theBoxMax,
-                                const SelectMgr_Vec3& theDirect,
+                                const gp_XYZ&         theDirect,
                                 Standard_Boolean*     theInside) const;
 
   //! Checks if triangle and frustum are separated along the given axis
   Standard_Boolean isSeparated (const gp_Pnt& thePnt1,
                                 const gp_Pnt& thePnt2,
                                 const gp_Pnt& thePnt3,
-                                const SelectMgr_Vec3& theAxis) const;
+                                const gp_XYZ& theAxis) const;
 
 protected:
 
-  SelectMgr_Vec3 myPlanes[N + 2];        //!< Plane equations
-  SelectMgr_Vec3 myVertices[N * 2];      //!< Vertices coordinates
+  gp_Vec myPlanes[N + 2];        //!< Plane equations
+  gp_Pnt myVertices[N * 2];      //!< Vertices coordinates
 
   Standard_Real myMaxVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
   Standard_Real myMinVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
   Standard_Real myMaxOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
   Standard_Real myMinOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
 
-  SelectMgr_Vec3 myEdgeDirs[6];                    //!< Cached edge directions
+  gp_Vec myEdgeDirs[6];                    //!< Cached edge directions
 };
 
 #include <SelectMgr_Frustum.lxx>

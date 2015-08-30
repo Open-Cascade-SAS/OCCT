@@ -17,8 +17,8 @@
 #define _SelectBasics_SelectingVolumeManager_HeaderFile
 
 #include <BVH_Box.hxx>
+#include <gp_Pnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <NCollection_Vec3.hxx>
 
 class Bnd_Box;
 class gp_Pnt;
@@ -44,7 +44,8 @@ public:
   virtual Standard_Integer GetActiveSelectionType() const = 0;
 
   //! Returns true if selecting volume is overlapped by box theBox
-  virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+  virtual Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theBoxMin,
+                                     const NCollection_Vec3<Standard_Real>& theBoxMax,
                                      Standard_Real& theDepth) = 0;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box with minimum
@@ -53,9 +54,14 @@ public:
                                      const NCollection_Vec3<Standard_Real>& theBoxMax,
                                      Standard_Boolean*                      theInside = NULL) = 0;
 
-  //! Returns true if selecting volume is overlapped by point thePt
-  virtual Standard_Boolean Overlaps (const gp_Pnt& thePt,
+  //! Returns true if selecting volume is overlapped by point thePnt
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
                                      Standard_Real& theDepth) = 0;
+
+  //! Returns true if selecting volume is overlapped by point thePnt.
+  //! Does not perform depth calculation, so this method is defined as
+  //! helper function for inclusion test.
+  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) = 0;
 
   //! Returns true if selecting volume is overlapped by planar convex polygon, which points
   //! are stored in theArrayOfPts, taking into account sensitivity type theSensType
@@ -81,7 +87,7 @@ public:
   //! to the given point theCOG
   virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) = 0;
 
-  virtual NCollection_Vec3<Standard_Real> DetectedPoint (const Standard_Real theDepth) const = 0;
+  virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const = 0;
 
   virtual Standard_Boolean IsOverlapAllowed() const = 0;
 

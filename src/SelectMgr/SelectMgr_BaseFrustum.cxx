@@ -68,7 +68,7 @@ void SelectMgr_BaseFrustum::SetViewport (const Standard_Real theX,
 // function : SetPixelTolerance
 // purpose  :
 //=======================================================================
-void SelectMgr_BaseFrustum::SetPixelTolerance (const Standard_Real theTol)
+void SelectMgr_BaseFrustum::SetPixelTolerance (const Standard_Integer theTol)
 {
   myPixelTolerance = theTol;
 }
@@ -97,7 +97,8 @@ void SelectMgr_BaseFrustum::SetBuilder (const Handle(SelectMgr_FrustumBuilder)& 
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const BVH_Box<Standard_Real, 3>& /*theBndBox*/,
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBoxMin*/,
+                                                  const SelectMgr_Vec3& /*theBoxMax*/,
                                                   Standard_Real& /*theDepth*/)
 {
   return Standard_False;
@@ -118,8 +119,17 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const SelectMgr_Vec3& /*theBox
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePt*/,
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/,
                                                   Standard_Real& /*theDepth*/)
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  : Intersection test between defined volume and given point
+//=======================================================================
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt*/)
 {
   return Standard_False;
 }
@@ -131,7 +141,7 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePt*/,
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& /*theArrayOfPts*/,
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const Handle(TColgp_HArray1OfPnt)& /*theArrayOfPnts*/,
                                                   Select3D_TypeOfSensitivity /*theSensType*/,
                                                   Standard_Real& /*theDepth*/)
 {
@@ -158,8 +168,8 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePt1*/,
 // function : Overlaps
 // purpose  : Checks if line segment overlaps selecting volume
 //=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePt1*/,
-                                                  const gp_Pnt& /*thePt2*/,
+Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt1*/,
+                                                  const gp_Pnt& /*thePnt2*/,
                                                   Standard_Real& /*theDepth*/)
 {
   return Standard_False;
@@ -175,9 +185,9 @@ Standard_Real SelectMgr_BaseFrustum::DistToGeometryCenter (const gp_Pnt& /*theCO
   return DBL_MAX;
 }
 
-SelectMgr_Vec3 SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) const
+gp_Pnt SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) const
 {
-  return SelectMgr_Vec3 (RealLast());
+  return gp_Pnt (RealLast(), RealLast(), RealLast());
 }
 
 //=======================================================================

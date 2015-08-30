@@ -127,7 +127,7 @@ static NCollection_Vec4<Standard_Real> safePointCast (const gp_Pnt& thePnt)
 // function : unProject
 // purpose  : Unprojects point from NDC coords to 3d world space
 //=======================================================================
-SelectMgr_Vec3 SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
+gp_Pnt SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
 {
   Graphic3d_Mat4d aInvView;
   Graphic3d_Mat4d aInvProj;
@@ -135,7 +135,7 @@ SelectMgr_Vec3 SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
   // this case should never happen
   if (!myOrientation.Inverted (aInvView) || !myProjection.Inverted (aInvProj))
   {
-    return SelectMgr_Vec3 (0.0, 0.0, 0.0);
+    return gp_Pnt (0.0, 0.0, 0.0);
   }
 
   // use compatible type of point
@@ -146,7 +146,7 @@ SelectMgr_Vec3 SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
 
   const Standard_Real aInvW = 1.0 / Standard_Real (aPnt.w());
 
-  return SelectMgr_Vec3 (aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
+  return gp_Pnt (aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
 // =======================================================================
@@ -155,9 +155,9 @@ SelectMgr_Vec3 SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
 //            theZ = 0 - near plane,
 //            theZ = 1 - far plane
 // =======================================================================
-SelectMgr_Vec3 SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& theX,
-                                                                const Standard_Real& theY,
-                                                                const Standard_Real& theZ) const
+gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& theX,
+                                                        const Standard_Real& theY,
+                                                        const Standard_Real& theZ) const
 {
   Standard_Real aX, anY, aZ;
 

@@ -32,7 +32,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
   myCurve (theCurve)
 {
   loadPoints (theCurve, theNbPnts);
-  SetSensitivityFactor (3.0);
+  SetSensitivityFactor (3);
 }
 
 //==================================================
@@ -44,7 +44,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
 : Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True)
 
 {
-  SetSensitivityFactor (3.0);
+  SetSensitivityFactor (3);
 }
 
 //==================================================
@@ -55,7 +55,7 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectBasics_Enti
                                                   const TColgp_Array1OfPnt& thePoints)
 : Select3D_SensitivePoly (theOwnerId, thePoints, Standard_True)
 {
-  SetSensitivityFactor (3.0);
+  SetSensitivityFactor (3);
 }
 
 //==================================================

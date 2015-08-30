@@ -29,7 +29,7 @@ Select3D_SensitivePoint::Select3D_SensitivePoint (const Handle(SelectBasics_Enti
                                                   const gp_Pnt& thePoint)
 : Select3D_SensitiveEntity (theOwner)
 {
-  SetSensitivityFactor (12.0);
+  SetSensitivityFactor (12);
   myPoint = thePoint;
 }
 

@@ -25,10 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveEntity, SelectBasics_SensitiveEntit
 
 //=======================================================================
 //function : Select3D_SensitiveEntity
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Select3D_SensitiveEntity::Select3D_SensitiveEntity(const Handle(SelectBasics_EntityOwner)& theOwnerId)
+Select3D_SensitiveEntity::Select3D_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 : SelectBasics_SensitiveEntity (theOwnerId) {}
 
 //=======================================================================
@@ -70,4 +69,23 @@ void Select3D_SensitiveEntity::BVH()
 void Select3D_SensitiveEntity::Clear()
 {
   Set (NULL);
+}
+
+//=======================================================================
+// function : HasInitLocation
+// purpose  : Returns true if the shape corresponding to the entity has init location
+//=======================================================================
+Standard_Boolean Select3D_SensitiveEntity::HasInitLocation() const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : InvInitLocation
+// purpose  : Returns inversed location transformation matrix if the shape corresponding
+//            to this entity has init location set. Otherwise, returns identity matrix.
+//=======================================================================
+gp_Trsf Select3D_SensitiveEntity::InvInitLocation() const
+{
+  return gp_Trsf();
 }

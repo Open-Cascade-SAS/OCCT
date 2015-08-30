@@ -17,9 +17,6 @@
 #include <Poly_Array1OfTriangle.hxx>
 #include <Standard_Assert.hxx>
 
-#define DOT(A, B) (A.x() * B.x() + A.y() * B.y() + A.z() * B.z())
-#define DOTp(A, B) (A.x() * B.X() + A.y() * B.Y() + A.z() * B.Z())
-
 // =======================================================================
 // function : isSeparated
 // purpose  : Checks if AABB and frustum are separated along the given axis.
@@ -27,18 +24,18 @@
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const SelectMgr_Vec3& theBoxMin,
                                                     const SelectMgr_Vec3& theBoxMax,
-                                                    const SelectMgr_Vec3& theDirect,
+                                                    const gp_XYZ&         theDirect,
                                                     Standard_Boolean*     theInside) const
 {
   const Standard_Real aMinB =
-    theDirect.x() * (theDirect.x() < 0.0 ? theBoxMax.x() : theBoxMin.x()) +
-    theDirect.y() * (theDirect.y() < 0.0 ? theBoxMax.y() : theBoxMin.y()) +
-    theDirect.z() * (theDirect.z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
+    theDirect.X() * (theDirect.X() < 0.0 ? theBoxMax.x() : theBoxMin.x()) +
+    theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMax.y() : theBoxMin.y()) +
+    theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
 
   const Standard_Real aMaxB =
-    theDirect.x() * (theDirect.x() < 0.0 ? theBoxMin.x() : theBoxMax.x()) +
-    theDirect.y() * (theDirect.y() < 0.0 ? theBoxMin.y() : theBoxMax.y()) +
-    theDirect.z() * (theDirect.z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
+    theDirect.X() * (theDirect.X() < 0.0 ? theBoxMin.x() : theBoxMax.x()) +
+    theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMin.y() : theBoxMax.y()) +
+    theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
 
   Standard_ASSERT_RAISE (aMaxB >= aMinB, "Error! Failed to project box");
 
@@ -48,7 +45,7 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const SelectMgr_Vec3& theBox
 
   for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
-    const Standard_Real aProj = DOT (myVertices[aVertIdx], theDirect);
+    const Standard_Real aProj = myVertices[aVertIdx].XYZ().Dot (theDirect);
 
     aMinF = Min (aMinF, aProj);
     aMaxF = Max (aMaxF, aProj);
@@ -83,7 +80,7 @@ template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const gp_Pnt& thePnt1,
                                                     const gp_Pnt& thePnt2,
                                                     const gp_Pnt& thePnt3,
-                                                    const SelectMgr_Vec3& theAxis) const
+                                                    const gp_XYZ& theAxis) const
 {
   // frustum projection
   Standard_Real aMinF = RealLast();
@@ -95,21 +92,21 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const gp_Pnt& thePnt1,
 
   Standard_Real aTriangleProj;
 
-  aTriangleProj = DOTp (theAxis, thePnt1);
+  aTriangleProj = theAxis.Dot (thePnt1.XYZ());
   aMinTr = Min (aMinTr, aTriangleProj);
   aMaxTr = Max (aMaxTr, aTriangleProj);
 
-  aTriangleProj = DOTp (theAxis, thePnt2);
+  aTriangleProj = theAxis.Dot (thePnt2.XYZ());
   aMinTr = Min (aMinTr, aTriangleProj);
   aMaxTr = Max (aMaxTr, aTriangleProj);
 
-  aTriangleProj = DOTp (theAxis, thePnt3);
+  aTriangleProj = theAxis.Dot (thePnt3.XYZ());
   aMinTr = Min (aMinTr, aTriangleProj);
   aMaxTr = Max (aMaxTr, aTriangleProj);
 
   for (Standard_Integer aVertIter = 0; aVertIter < N * 2; ++aVertIter)
   {
-    const Standard_Real aProj = DOT (myVertices[aVertIter], theAxis);
+    const Standard_Real aProj = myVertices[aVertIter].XYZ().Dot (theAxis);
 
     aMinF = Min (aMinF, aProj);
     aMaxF = Max (aMaxF, aProj);
@@ -152,17 +149,17 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinP
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
-    SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
+    const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
 
     const Standard_Real aBoxProjMin =
-      aPlane.x() * (aPlane.x() < 0.f ? theMaxPnt.x() : theMinPnt.x()) +
-      aPlane.y() * (aPlane.y() < 0.f ? theMaxPnt.y() : theMinPnt.y()) +
-      aPlane.z() * (aPlane.z() < 0.f ? theMaxPnt.z() : theMinPnt.z());
+      aPlane.X() * (aPlane.X() < 0.f ? theMaxPnt.x() : theMinPnt.x()) +
+      aPlane.Y() * (aPlane.Y() < 0.f ? theMaxPnt.y() : theMinPnt.y()) +
+      aPlane.Z() * (aPlane.Z() < 0.f ? theMaxPnt.z() : theMinPnt.z());
 
     const Standard_Real aBoxProjMax =
-      aPlane.x() * (aPlane.x() < 0.f ? theMinPnt.x() : theMaxPnt.x()) +
-      aPlane.y() * (aPlane.y() < 0.f ? theMinPnt.y() : theMaxPnt.y()) +
-      aPlane.z() * (aPlane.z() < 0.f ? theMinPnt.z() : theMaxPnt.z());
+      aPlane.X() * (aPlane.X() < 0.f ? theMinPnt.x() : theMaxPnt.x()) +
+      aPlane.Y() * (aPlane.Y() < 0.f ? theMinPnt.y() : theMaxPnt.y()) +
+      aPlane.Z() * (aPlane.Z() < 0.f ? theMinPnt.z() : theMaxPnt.z());
 
     Standard_ASSERT_RAISE (aBoxProjMax >= aBoxProjMin, "Error! Failed to project box");
 
@@ -180,13 +177,16 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinP
 
   for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
   {
-    SelectMgr_Vec3 anEdge1 (aDim == 0, aDim == 1, aDim == 2);
-
+    // the following code performs a speedup of cross-product
+    // of vector with 1.0 at the position aDim and myEdgeDirs[aVolDir]
+    const Standard_Integer aNext = (aDim + 1) % 3;
+    const Standard_Integer aNextNext = (aDim + 2) % 3;
     for (Standard_Integer aVolDir = 0, aDirectionsNb = myIsOrthographic ? 4 : 6; aVolDir < aDirectionsNb; ++aVolDir)
     {
-      SelectMgr_Vec3 aDirection (anEdge1.y() * myEdgeDirs[aVolDir].z() - anEdge1.z() * myEdgeDirs[aVolDir].y(),
-                                 anEdge1.z() * myEdgeDirs[aVolDir].x() - anEdge1.x() * myEdgeDirs[aVolDir].z(),
-                                 anEdge1.x() * myEdgeDirs[aVolDir].y() - anEdge1.y() * myEdgeDirs[aVolDir].x());
+      gp_XYZ aDirection (DBL_MAX, DBL_MAX, DBL_MAX);
+      aDirection.ChangeData()[aDim]      = 0;
+      aDirection.ChangeData()[aNext]     = -myEdgeDirs[aVolDir].XYZ().GetData()[aNextNext];
+      aDirection.ChangeData()[aNextNext] = myEdgeDirs[aVolDir].XYZ().GetData()[aNext];
 
       if (isSeparated (theMinPnt, theMaxPnt, aDirection, theInside))
       {
@@ -209,11 +209,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt)
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
-    const Select3D_Vec3& aPlane = myPlanes[aPlaneIdx];
-
-    const Standard_Real aPointProj = aPlane.x() * thePnt.X() +
-                                     aPlane.y() * thePnt.Y() +
-                                     aPlane.z() * thePnt.Z();
+    const Standard_Real aPointProj = myPlanes[aPlaneIdx].XYZ().Dot (thePnt.XYZ());
 
     if (aPointProj > myMaxVertsProjections[aPlaneIdx]
      || aPointProj < myMinVertsProjections[aPlaneIdx])
@@ -233,10 +229,8 @@ template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
                                                    const gp_Pnt& theEndPnt)
 {
-  const SelectMgr_Vec3& aDir = SelectMgr_Vec3 (theEndPnt.X() - theStartPnt.X(),
-                                               theEndPnt.Y() - theStartPnt.Y(),
-                                               theEndPnt.Z() - theStartPnt.Z());
-  if (std::sqrt (aDir.x() * aDir.x() + aDir.y() * aDir.y() + aDir.z () * aDir.z()) < Precision::Confusion())
+  const gp_XYZ& aDir = theEndPnt.XYZ() - theStartPnt.XYZ();
+  if (aDir.Modulus() < Precision::Confusion())
     return Standard_True;
 
   const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
@@ -244,10 +238,9 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
   {
     Standard_Real aMinSegm = RealLast(), aMaxSegm = RealFirst();
     Standard_Real aMinF    = RealLast(), aMaxF    = RealFirst();
-    SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
 
-    Standard_Real aProj1 = DOTp (aPlane, theStartPnt);
-    Standard_Real aProj2 = DOTp (aPlane, theEndPnt);
+    Standard_Real aProj1 = myPlanes[aPlaneIdx].XYZ().Dot (theStartPnt.XYZ());
+    Standard_Real aProj2 = myPlanes[aPlaneIdx].XYZ().Dot (theEndPnt.XYZ());
     aMinSegm = Min (aProj1, aProj2);
     aMaxSegm = Max (aProj1, aProj2);
 
@@ -265,12 +258,12 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
   Standard_Real aMin2 = DBL_MAX, aMax2 = -DBL_MAX;
   for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
-    Standard_Real aProjection = DOT (aDir, myVertices[aVertIdx]);
+    Standard_Real aProjection = aDir.Dot (myVertices[aVertIdx].XYZ());
     aMax2 = Max (aMax2, aProjection);
     aMin2 = Min (aMin2, aProjection);
   }
-  Standard_Real aProj1 = DOTp (aDir, theStartPnt);
-  Standard_Real aProj2 = DOTp (aDir, theEndPnt);
+  Standard_Real aProj1 = aDir.Dot (theStartPnt.XYZ());
+  Standard_Real aProj2 = aDir.Dot (theEndPnt.XYZ());
   aMin1 = Min (aProj1, aProj2);
   aMax1 = Max (aProj1, aProj2);
   if (aMin1 > aMax2
@@ -285,18 +278,16 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
     Standard_Real aMinSegm = DBL_MAX, aMaxSegm = -DBL_MAX;
     Standard_Real aMinF    = DBL_MAX, aMaxF    = -DBL_MAX;
 
-    SelectMgr_Vec3 aTestDir = SelectMgr_Vec3 (aDir.y() * myEdgeDirs[aEdgeDirIdx].z() - aDir.z() * myEdgeDirs[aEdgeDirIdx].y(),
-      aDir.z() * myEdgeDirs[aEdgeDirIdx].x() - aDir.x() * myEdgeDirs[aEdgeDirIdx].z(),
-      aDir.x() * myEdgeDirs[aEdgeDirIdx].y() - aDir.y() * myEdgeDirs[aEdgeDirIdx].x());
+    const gp_XYZ aTestDir = aDir.Crossed (myEdgeDirs[aEdgeDirIdx].XYZ());
 
-    Standard_Real Proj1 = DOTp (aTestDir, theStartPnt);
-    Standard_Real Proj2 = DOTp (aTestDir, theEndPnt);
+    Standard_Real Proj1 = aTestDir.Dot (theStartPnt.XYZ());
+    Standard_Real Proj2 = aTestDir.Dot (theEndPnt.XYZ());
     aMinSegm = Min (Proj1, Proj2);
     aMaxSegm = Max (Proj1, Proj2);
 
     for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
     {
-      Standard_Real aProjection = DOT (aTestDir, myVertices[aVertIdx]);
+      Standard_Real aProjection = aTestDir.Dot (myVertices[aVertIdx].XYZ());
       aMaxF = Max (aMaxF, aProjection);
       aMinF = Min (aMinF, aProjection);
     }
@@ -318,26 +309,25 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
 // =======================================================================
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                                   SelectMgr_Vec3& theNormal)
+                                                   gp_Vec& theNormal)
 {
   Standard_Integer aStartIdx = theArrayOfPnts->Lower();
   Standard_Integer anEndIdx = theArrayOfPnts->Upper();
 
-  const gp_Pnt& aPnt1 = theArrayOfPnts->Value (aStartIdx);
-  const gp_Pnt& aPnt2 = theArrayOfPnts->Value (aStartIdx + 1);
-  const gp_Pnt& aPnt3 = theArrayOfPnts->Value (aStartIdx + 2);
-  const gp_XYZ aVec1 = aPnt1.XYZ() - aPnt2.XYZ();
-  const gp_XYZ aVec2 = aPnt3.XYZ() - aPnt2.XYZ();
-  theNormal = SelectMgr_Vec3 (aVec2.Y() * aVec1.Z() - aVec2.Z() * aVec1.Y(),
-                              aVec2.Z() * aVec1.X() - aVec2.X() * aVec1.Z(),
-                              aVec2.X() * aVec1.Y() - aVec2.Y() * aVec1.X());
-  Standard_Real aPolygProjection = DOTp (theNormal, aPnt1);
+  const gp_XYZ& aPnt1 = theArrayOfPnts->Value (aStartIdx).XYZ();
+  const gp_XYZ& aPnt2 = theArrayOfPnts->Value (aStartIdx + 1).XYZ();
+  const gp_XYZ& aPnt3 = theArrayOfPnts->Value (aStartIdx + 2).XYZ();
+  const gp_XYZ aVec1 = aPnt1 - aPnt2;
+  const gp_XYZ aVec2 = aPnt3 - aPnt2;
+  theNormal = aVec2.Crossed (aVec1);
+  const gp_XYZ& aNormal = theNormal.XYZ();
+  Standard_Real aPolygProjection = aNormal.Dot (aPnt1);
 
   Standard_Real aMax = RealFirst();
   Standard_Real aMin = RealLast();
   for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
   {
-    Standard_Real aProjection = DOT (theNormal, myVertices[aVertIdx]);
+    Standard_Real aProjection = aNormal.Dot (myVertices[aVertIdx].XYZ());
     aMax = Max (aMax, aProjection);
     aMin = Min (aMin, aProjection);
   }
@@ -347,17 +337,17 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1Of
     return Standard_False;
   }
 
-  Standard_Integer aPlanesNb = N == 4 ? N + 2 : N + 1;
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < aPlanesNb; ++aPlaneIdx)
+  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx <  N + 1; aPlaneIdx += anIncFactor)
   {
     Standard_Real aMaxF = RealFirst();
     Standard_Real aMinF = RealLast();
     Standard_Real aMaxPolyg = RealFirst();
     Standard_Real aMinPolyg = RealLast();
-    SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
+    const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
     for (Standard_Integer aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
     {
-      Standard_Real aProjection = DOTp (aPlane, theArrayOfPnts->Value (aPntIter));
+      Standard_Real aProjection = aPlane.Dot (theArrayOfPnts->Value (aPntIter).XYZ());
       aMaxPolyg = Max (aMaxPolyg, aProjection);
       aMinPolyg = Min (aMinPolyg, aProjection);
     }
@@ -371,30 +361,28 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const Handle(TColgp_HArray1Of
   }
 
   Standard_Integer aDirectionsNb = myIsOrthographic ? 4 : 6;
-  for (Standard_Integer aPntsIter = aStartIdx; aPntsIter <= anEndIdx; ++aPntsIter)
+  for (Standard_Integer aPntsIter = 0, aLastIdx = anEndIdx - aStartIdx, aLen = theArrayOfPnts->Length(); aPntsIter <= aLastIdx; ++aPntsIter)
   {
-    const gp_XYZ aSegmDir = aPntsIter == anEndIdx ? theArrayOfPnts->Value (aStartIdx).XYZ() - theArrayOfPnts->Value (anEndIdx).XYZ()
-                                             : theArrayOfPnts->Value (aPntsIter + 1).XYZ() - theArrayOfPnts->Value (aPntsIter).XYZ();
+    const gp_XYZ aSegmDir = theArrayOfPnts->Value ((aPntsIter + 1) % aLen + aStartIdx).XYZ()
+      - theArrayOfPnts->Value (aPntsIter + aStartIdx).XYZ();
     for (Standard_Integer aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
     {
       Standard_Real aMaxPolyg = RealFirst();
       Standard_Real aMinPolyg = RealLast();
       Standard_Real aMaxF = RealFirst();
       Standard_Real aMinF = RealLast();
-      SelectMgr_Vec3 aTestDir = SelectMgr_Vec3 (aSegmDir.Y() * myEdgeDirs[aVolDir].z() - aSegmDir.Z() * myEdgeDirs[aVolDir].y(),
-                                                aSegmDir.Z() * myEdgeDirs[aVolDir].x() - aSegmDir.X() * myEdgeDirs[aVolDir].z(),
-                                                aSegmDir.X() * myEdgeDirs[aVolDir].y() - aSegmDir.Y() * myEdgeDirs[aVolDir].x());
+      const gp_XYZ aTestDir = aSegmDir.Crossed (myEdgeDirs[aVolDir].XYZ());
 
       for (Standard_Integer aPntIter = aStartIdx; aPntIter <= anEndIdx; ++aPntIter)
       {
-        Standard_Real aProjection = DOTp (aTestDir, theArrayOfPnts->Value (aPntIter));
+        Standard_Real aProjection = aTestDir.Dot (theArrayOfPnts->Value (aPntIter).XYZ());
         aMaxPolyg = Max (aMaxPolyg, aProjection);
         aMinPolyg = Min (aMinPolyg, aProjection);
       }
 
       for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
       {
-        Standard_Real aProjection = DOT (aTestDir, myVertices[aVertIdx]);
+        Standard_Real aProjection = aTestDir.Dot (myVertices[aVertIdx].XYZ());
         aMaxF = Max (aMaxF, aProjection);
         aMinF = Min (aMinF, aProjection);
       }
@@ -418,31 +406,27 @@ template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
                                                    const gp_Pnt& thePnt2,
                                                    const gp_Pnt& thePnt3,
-                                                   SelectMgr_Vec3& theNormal)
+                                                   gp_Vec& theNormal)
 {
-
-  SelectMgr_Vec3 aPnt1 (thePnt1.X(), thePnt1.Y(), thePnt1.Z());
-  SelectMgr_Vec3 aPnt2 (thePnt2.X(), thePnt2.Y(), thePnt2.Z());
-  SelectMgr_Vec3 aPnt3 (thePnt3.X(), thePnt3.Y(), thePnt3.Z());
-  SelectMgr_Vec3 aTrEdges[3] = { aPnt2 - aPnt1,
-                                 aPnt3 - aPnt2,
-                                 aPnt1 - aPnt3 };
+  const gp_XYZ aTrEdges[3] = { thePnt2.XYZ() - thePnt1.XYZ(),
+                               thePnt3.XYZ() - thePnt2.XYZ(),
+                               thePnt1.XYZ() - thePnt3.XYZ() };
 
   const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
-    SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
+    const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
     Standard_Real aTriangleProj;
 
-    aTriangleProj = DOT (aPlane, aPnt1);
+    aTriangleProj = aPlane.Dot (thePnt1.XYZ());
     Standard_Real aTriangleProjMin = aTriangleProj;
     Standard_Real aTriangleProjMax = aTriangleProj;
 
-    aTriangleProj = DOT (aPlane, aPnt2);
+    aTriangleProj = aPlane.Dot (thePnt2.XYZ());
     aTriangleProjMin = Min (aTriangleProjMin, aTriangleProj);
     aTriangleProjMax = Max (aTriangleProjMax, aTriangleProj);
 
-    aTriangleProj = DOT (aPlane, aPnt3);
+    aTriangleProj = aPlane.Dot (thePnt3.XYZ());
     aTriangleProjMin = Min (aTriangleProjMin, aTriangleProj);
     aTriangleProjMax = Max (aTriangleProjMax, aTriangleProj);
 
@@ -455,10 +439,8 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
     }
   }
 
-  theNormal = SelectMgr_Vec3 (aTrEdges[2].y() * aTrEdges[0].z() - aTrEdges[2].z() * aTrEdges[0].y(),
-                              aTrEdges[2].z() * aTrEdges[0].x() - aTrEdges[2].x() * aTrEdges[0].z(),
-                              aTrEdges[2].x() * aTrEdges[0].y() - aTrEdges[2].y() * aTrEdges[0].x());
-  if (isSeparated (thePnt1, thePnt2, thePnt3, theNormal))
+  theNormal = aTrEdges[2].Crossed (aTrEdges[0]);
+  if (isSeparated (thePnt1, thePnt2, thePnt3, theNormal.XYZ()))
   {
     return Standard_False;
   }
@@ -468,12 +450,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
   {
     for (Standard_Integer aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
     {
-      SelectMgr_Vec3 anEdge1 = myEdgeDirs[aVolDir];
-      SelectMgr_Vec3 anEdge2 = aTrEdges[aTriangleEdgeIdx];
-      SelectMgr_Vec3 aTestDirection = SelectMgr_Vec3 (
-        anEdge1.y() * anEdge2.z() - anEdge1.z() * anEdge2.y(),
-        anEdge1.z() * anEdge2.x() - anEdge1.x() * anEdge2.z(),
-        anEdge1.x() * anEdge2.y() - anEdge1.y() * anEdge2.x());
+      const gp_XYZ& aTestDirection =  myEdgeDirs[aVolDir].XYZ().Crossed (aTrEdges[aTriangleEdgeIdx]);
 
       if (isSeparated (thePnt1, thePnt2, thePnt3, aTestDirection))
       {
@@ -484,6 +461,3 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
 
   return Standard_True;
 }
-
-#undef DOT
-#undef DOTp

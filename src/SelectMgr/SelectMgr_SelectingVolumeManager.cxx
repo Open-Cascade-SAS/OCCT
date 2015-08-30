@@ -32,10 +32,19 @@ SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager (Standard_Boo
 }
 
 //=======================================================================
-// function : Transform
-// purpose  : Returns a copy of active frustum transformed according to the matrix given
+// function : ScaleAndTransform
+// purpose  : IMPORTANT: Scaling makes sense only for frustum built on a single point!
+//            Note that this method does not perform any checks on type of the frustum.
+//
+//            Returns a copy of the frustum resized according to the scale factor given
+//            and transforms it using the matrix given.
+//            There are no default parameters, but in case if:
+//                - transformation only is needed: @theScaleFactor must be initialized
+//                  as any negative value;
+//                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
-SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Transform (const gp_Trsf& theTrsf)
+SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                                      const gp_Trsf& theTrsf)
 {
   SelectMgr_SelectingVolumeManager aMgr (Standard_False);
 
@@ -44,27 +53,9 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Transform (co
 
   aMgr.myActiveSelectionType = myActiveSelectionType;
 
-  aMgr.mySelectingVolumes[myActiveSelectionType / 2] = mySelectingVolumes[myActiveSelectionType / 2]->Transform (theTrsf);
+  aMgr.mySelectingVolumes[myActiveSelectionType / 2]
+    = mySelectingVolumes[myActiveSelectionType / 2]->ScaleAndTransform (theScaleFactor, theTrsf);
   aMgr.myToAllowOverlap = myToAllowOverlap;
-
-  return aMgr;
-}
-
-//=======================================================================
-// function : Scale
-// purpose  : IMPORTANT: Makes sense only for point selection!
-//            Returns a copy of the frustum resized according to the scale factor given
-//=======================================================================
-SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::Scale (const Standard_Real theScaleFactor)
-{
-  if (myActiveSelectionType != Point)
-    return SelectMgr_SelectingVolumeManager (Standard_False);
-
-  SelectMgr_SelectingVolumeManager aMgr (Standard_False);
-
-  aMgr.myActiveSelectionType = Point;
-
-  aMgr.mySelectingVolumes[Point] = mySelectingVolumes[Point]->Scale (theScaleFactor);
 
   return aMgr;
 }
@@ -147,7 +138,7 @@ void SelectMgr_SelectingVolumeManager::SetWindowSize (const Standard_Integer the
 // function : SetPixelTolerance
 // purpose  : Updates pixel tolerance in all selecting volumes
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::SetPixelTolerance (const Standard_Real theTolerance)
+void SelectMgr_SelectingVolumeManager::SetPixelTolerance (const Standard_Integer theTolerance)
 {
   for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
   {
@@ -198,13 +189,14 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const TColgp_Array1
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const BVH_Box<Standard_Real, 3>& theBndBox,
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                             const SelectMgr_Vec3& theBoxMax,
                                                              Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBndBox, theDepth);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBoxMin, theBoxMax, theDepth);
 }
 
 //=======================================================================
@@ -225,14 +217,26 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
 // function : Overlaps
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt,
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt,
                                                              Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt,
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePnt,
                                                                   theDepth);
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  : Intersection test between defined volume and given point
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt)
+{
+  if (myActiveSelectionType == Unknown)
+    return Standard_False;
+
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePnt);
 }
 
 //=======================================================================
@@ -242,14 +246,14 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
                                                              Standard_Integer theSensType,
                                                              Standard_Real& theDepth)
 {
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPts,
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts,
                                                                   (Select3D_TypeOfSensitivity)theSensType,
                                                                   theDepth);
 }
@@ -310,10 +314,10 @@ Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_P
 //            the run of selection algo by given depth. Is valid for point
 //            selection only
 // =======================================================================
-NCollection_Vec3<Standard_Real> SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theDepth) const
+gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theDepth) const
 {
   if (myActiveSelectionType != Point)
-    return NCollection_Vec3<Standard_Real> (RealLast());
+    return gp_Pnt (RealLast(), RealLast(), RealLast());
 
   return mySelectingVolumes[Frustum]->DetectedPoint (theDepth);
 }
@@ -350,4 +354,46 @@ void SelectMgr_SelectingVolumeManager::AllowOverlapDetection (const Standard_Boo
 Standard_Boolean SelectMgr_SelectingVolumeManager::IsOverlapAllowed() const
 {
   return myActiveSelectionType != Box || myToAllowOverlap;
+}
+
+//=======================================================================
+// function : GetVertices
+// purpose  :
+//=======================================================================
+const gp_Pnt* SelectMgr_SelectingVolumeManager::GetVertices() const
+{
+  if (myActiveSelectionType == Polyline)
+    return NULL;
+
+  const SelectMgr_RectangularFrustum* aFr =
+    reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].Access());
+  return aFr->GetVertices();
+}
+
+//=======================================================================
+// function : GetNearPnt
+// purpose  :
+//=======================================================================
+gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPnt() const
+{
+  if (myActiveSelectionType == Polyline)
+    return gp_Pnt();
+
+   const SelectMgr_RectangularFrustum* aFr =
+     reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].Access());
+  return aFr->GetNearPnt();
+}
+
+//=======================================================================
+// function : GetFarPnt
+// purpose  :
+//=======================================================================
+gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPnt() const
+{
+  if (myActiveSelectionType == Polyline)
+    return gp_Pnt();
+
+   const SelectMgr_RectangularFrustum* aFr =
+     reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].Access());
+  return aFr->GetFarPnt();
 }
