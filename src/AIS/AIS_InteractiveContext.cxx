@@ -2705,7 +2705,7 @@ Standard_Boolean AIS_InteractiveContext::IsoOnTriangulation() const
 //           sensitive entities activated. For more information, see
 //           SelectMgr_ViewerSelector.hxx
 //=======================================================================
-void AIS_InteractiveContext::SetPixelTolerance (const Standard_Real thePrecision)
+void AIS_InteractiveContext::SetPixelTolerance (const Standard_Integer thePrecision)
 {
   if (HasOpenedContext())
   {
@@ -2721,7 +2721,7 @@ void AIS_InteractiveContext::SetPixelTolerance (const Standard_Real thePrecision
 //function : PixelTolerance
 //purpose  :
 //=======================================================================
-Standard_Real AIS_InteractiveContext::PixelTolerance() const
+Standard_Integer AIS_InteractiveContext::PixelTolerance() const
 {
   return HasOpenedContext()
        ? myLocalContexts (myCurLocalIndex)->PixelTolerance()
@@ -2786,7 +2786,7 @@ void AIS_InteractiveContext::InitAttributes()
   aLineAspect->SetTypeOfLine (Aspect_TOL_DASH);
 
   // tolerance to 2 pixels...
-  SetPixelTolerance (2.0);
+  SetPixelTolerance (2);
 
   // Customizing the drawer for trihedrons and planes...
   Handle(Prs3d_DatumAspect) aTrihAspect = myDefaultDrawer->DatumAspect();

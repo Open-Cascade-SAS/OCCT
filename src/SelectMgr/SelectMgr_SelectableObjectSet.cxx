@@ -25,7 +25,7 @@
 //=======================================================================
 SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 {
-  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 32> (1, 32, Standard_False);
+  myBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 4> (1, 32, Standard_True);
 }
 
 //=======================================================================
@@ -109,15 +109,7 @@ Standard_Real SelectMgr_SelectableObjectSet::Center (const Standard_Integer theI
 void SelectMgr_SelectableObjectSet::Swap (const Standard_Integer theIndex1,
                                           const Standard_Integer theIndex2)
 {
-  const Standard_Integer aIndex1 = theIndex1 + 1;
-  const Standard_Integer aIndex2 = theIndex2 + 1;
-
-  Handle(SelectMgr_SelectableObject) anObject1 = myObjects.FindKey (aIndex1);
-  Handle(SelectMgr_SelectableObject) anObject2 = myObjects.FindKey (aIndex2);
-
-  myObjects.Substitute (aIndex1, EMPTY_OBJ);
-  myObjects.Substitute (aIndex2, anObject1);
-  myObjects.Substitute (aIndex1, anObject2);
+  myObjects.Swap (theIndex1 + 1, theIndex2 + 1);
 }
 
 //=======================================================================

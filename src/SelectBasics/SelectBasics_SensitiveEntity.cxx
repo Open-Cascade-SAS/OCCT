@@ -24,10 +24,9 @@
 // function : SelectBasics_SensitiveEntity
 // purpose  : Creates new empty sensitive entity instance
 //=======================================================================
-SelectBasics_SensitiveEntity::SelectBasics_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId,
-                                                            const Standard_Real theSensFactor)
+SelectBasics_SensitiveEntity::SelectBasics_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId)
 : myOwnerId (theOwnerId),
-  mySFactor (theSensFactor) {}
+  mySFactor (2) {}
 
 //=======================================================================
 // function : Set

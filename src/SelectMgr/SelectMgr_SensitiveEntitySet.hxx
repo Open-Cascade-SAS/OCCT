@@ -33,8 +33,6 @@ typedef NCollection_IndexedMap<Handle(SelectMgr_SensitiveEntity)> SelectMgr_Inde
 //! the performance of searching for overlap among sensitives of one selectable object
 class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet<Standard_Real, 3>
 {
-  Handle(SelectMgr_SensitiveEntity) EMPTY_ENT;
-
 public:
 
   Standard_EXPORT SelectMgr_SensitiveEntitySet();

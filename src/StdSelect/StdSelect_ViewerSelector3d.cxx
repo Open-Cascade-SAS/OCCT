@@ -91,11 +91,11 @@ StdSelect_ViewerSelector3d::StdSelect_ViewerSelector3d() {}
 // Function: SetPixelTolerance
 // Purpose :
 //=======================================================================
-void StdSelect_ViewerSelector3d::SetPixelTolerance (const Standard_Real theTolerance)
+void StdSelect_ViewerSelector3d::SetPixelTolerance (const Standard_Integer theTolerance)
 {
   if (myTolerances.Tolerance() != theTolerance)
   {
-    if (theTolerance < 0.0)
+    if (theTolerance < 0)
       myTolerances.ResetDefaults();
     else
       myTolerances.SetCustomTolerance (theTolerance);

@@ -80,6 +80,16 @@ public:
     Standard_Real& ChangeCoord (const Standard_Integer theIndex);
   
     void Coord (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
+
+    //! Returns a const ptr to coordinates location.
+    //! Is useful for algorithms, but DOES NOT PERFORM
+    //! ANY CHECKS!
+    inline const Standard_Real* GetData() const { return (&x); }
+
+    //! Returns a ptr to coordinates location.
+    //! Is useful for algorithms, but DOES NOT PERFORM
+    //! ANY CHECKS!
+    inline Standard_Real* ChangeData() { return (&x); }
   
   //! Returns the X coordinate
     Standard_Real X() const;

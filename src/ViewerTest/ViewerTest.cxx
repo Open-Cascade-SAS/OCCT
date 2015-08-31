@@ -749,11 +749,11 @@ static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char
     anArg.LowerCase();
     if (anArg == "-unset")
     {
-      aContext->SetPixelTolerance (-1.0);
+      aContext->SetPixelTolerance (-1);
     }
     else
     {
-      aContext->SetPixelTolerance (anArg.RealValue());
+      aContext->SetPixelTolerance (anArg.IntegerValue());
     }
   }
 
@@ -4365,11 +4365,12 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       const Handle(SelectBasics_SensitiveEntity)& anEntity = aSelector->DetectedEntity();
       Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
       Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-      SelectMgr_SelectingVolumeManager aMgr = anObj->HasTransformation() ? aSelector->GetManager().Transform (anObj->InversedTransformation())
-                                                                         : aSelector->GetManager();
+      SelectMgr_SelectingVolumeManager aMgr =
+        anObj->HasTransformation() ? aSelector->GetManager().ScaleAndTransform (1, anObj->InversedTransformation())
+                                   : aSelector->GetManager();
       SelectBasics_PickResult aResult;
       anEntity->Matches (aMgr, aResult);
-      NCollection_Vec3<Standard_Real> aDetectedPnt = aMgr.DetectedPoint (aResult.Depth());
+      gp_Pnt aDetectedPnt = aMgr.DetectedPoint (aResult.Depth());
 
       TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
       aName.LeftJustify (20, ' ');
@@ -4378,7 +4379,7 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
                " Depth: %+.3f Distance: %+.3f Point: %+.3f %+.3f %+.3f",
                aResult.Depth(),
                aResult.DistToGeomCenter(),
-               aDetectedPnt.x(), aDetectedPnt.y(), aDetectedPnt.z());
+               aDetectedPnt.X(), aDetectedPnt.Y(), aDetectedPnt.Z());
       theDI << "  " << aName
             << anInfoStr
             << " (" << anEntity->DynamicType()->Name() << ")"

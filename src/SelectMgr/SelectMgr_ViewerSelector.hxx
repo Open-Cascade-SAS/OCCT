@@ -54,6 +54,8 @@ typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), NCollection_Hand
 typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer> SelectMgr_MapOfOwnerDetectedEntities;
 typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer>::Iterator SelectMgr_MapOfOwnerDetectedEntitiesIterator;
 
+typedef NCollection_DataMap<Standard_Integer, SelectMgr_SelectingVolumeManager> SelectMgr_FrustumCache;
+
 //! An internal class for calculation of current largest tolerance value which will be applied
 //! for creation of selecting frustum by default. Each time the selection set is deactivated,
 //! maximum tolerance value will be recalculated. If a user enables custom precision using
@@ -70,31 +72,31 @@ public:
 
   //! Adds the value given to map, checks if the current tolerance value
   //! should be replaced by theTolerance
-  Standard_EXPORT void Add (const Standard_Real& theTolerance);
+  Standard_EXPORT void Add (const Standard_Integer& theTolerance);
 
   //! Decrements a counter of the tolerance given, checks if the current tolerance value
   //! should be recalculated
-  Standard_EXPORT void Decrement (const Standard_Real& theTolerance);
+  Standard_EXPORT void Decrement (const Standard_Integer& theTolerance);
 
   //! Returns a current tolerance that must be applied
-  inline Standard_Real Tolerance() const;
+  inline Standard_Integer Tolerance() const;
 
   //! Sets tolerance to the given one and disables adaptive checks
-  inline void SetCustomTolerance (const Standard_Real theTolerance);
+  inline void SetCustomTolerance (const Standard_Integer theTolerance);
 
   //! Unsets a custom tolerance and enables adaptive checks
   inline void ResetDefaults();
 
   //! Returns the value of custom tolerance regardless of it validity
-  inline Standard_Real CustomTolerance() const;
+  inline Standard_Integer CustomTolerance() const;
 
   //! Returns true if custom tolerance value is greater than zero
   inline Standard_Boolean IsCustomTolSet() const;
 
 private:
-  NCollection_DataMap<Standard_Real, Standard_Integer> myTolerances;
-  Standard_Real                                        myLargestKey;
-  Standard_Real                                        myCustomTolerance;
+  NCollection_DataMap<Standard_Integer, Standard_Integer> myTolerances;
+  Standard_Integer                                        myLargestKey;
+  Standard_Integer                                        myCustomTolerance;
 };
 
 //! A framework to define finding, sorting the sensitive
@@ -295,11 +297,7 @@ private:
 
   //! In case if custom tolerance is set, this method will return sum of entity sensitivity and
   //! custom tolerance. Otherwise, pure entity sensitivity factor will be returned.
-  Standard_Real sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const;
-
-  //! Applies given scale and transformation matrices to the default selecting volume manager
-  SelectMgr_SelectingVolumeManager scaleAndTransform (const Standard_Real theScale,
-                                                      const gp_Trsf& theTrsf);
+  Standard_Integer sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const;
 
   void Activate (const Handle(SelectMgr_Selection)& theSelection);
 
@@ -307,6 +305,14 @@ private:
 
   //! removes a Selection from the Selector
   void Remove (const Handle(SelectMgr_Selection)& aSelection);
+
+  //! Internal function that checks if a current selecting frustum
+  //! needs to be scaled and transformed for the entity and performs
+  //! necessary calculations
+  void computeFrustum (const Handle(SelectBasics_SensitiveEntity)& theEnt,
+                       const gp_Trsf&                              theInvTrsf,
+                       SelectMgr_FrustumCache&                     theCachedMgrs,
+                       SelectMgr_SelectingVolumeManager&           theResMgr);
 
 protected:
 

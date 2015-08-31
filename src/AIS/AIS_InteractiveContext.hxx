@@ -367,10 +367,10 @@ public:
   //! SelectMgr_ViewerSelector documentation
   //! Warning: When a local context is open the sensitivity is apply on it
   //! instead on the main context.
-  Standard_EXPORT void SetPixelTolerance (const Standard_Real aPrecision = 2.0);
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer aPrecision = 2);
   
   //! Returns the pixel tolerance.
-  Standard_EXPORT Standard_Real PixelTolerance() const;
+  Standard_EXPORT Standard_Integer PixelTolerance() const;
   
   //! Puts the location aLocation on the initial graphic
   //! representation and the selection for the entity aniobj.

@@ -40,12 +40,14 @@ public:
                                       const gp_Pnt2d& theP3) Standard_OVERRIDE;
 
   //! Returns a copy of the frustum transformed according to the matrix given
-  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> Transform (const gp_Trsf& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual NCollection_Handle<SelectMgr_BaseFrustum> ScaleAndTransform (const Standard_Integer theScale,
+                                                                                       const gp_Trsf& theTrsf) Standard_OVERRIDE;
 
   // SAT Tests for different objects
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
+                                                     const SelectMgr_Vec3& theMaxPnt,
                                                      Standard_Real& theDepth) Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
@@ -81,6 +83,10 @@ public:
 
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
   Standard_EXPORT void Clear();
+
+private:
+
+  void cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum);
 
   DEFINE_STANDARD_RTTI(SelectMgr_TriangularFrustum,Standard_Transient)
 };

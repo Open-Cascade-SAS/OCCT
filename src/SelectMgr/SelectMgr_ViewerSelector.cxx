@@ -66,8 +66,8 @@ namespace {
 //=======================================================================
 SelectMgr_ToleranceMap::SelectMgr_ToleranceMap()
 {
-  myLargestKey = -1.0;
-  myCustomTolerance = -1.0;
+  myLargestKey = -1;
+  myCustomTolerance = -1;
 }
 
 //=======================================================================
@@ -84,7 +84,7 @@ SelectMgr_ToleranceMap::~SelectMgr_ToleranceMap()
 // purpose : Adds the value given to map, checks if the current tolerance value
 //           should be replaced by theTolerance
 //=======================================================================
-void SelectMgr_ToleranceMap::Add (const Standard_Real& theTolerance)
+void SelectMgr_ToleranceMap::Add (const Standard_Integer& theTolerance)
 {
   if (myTolerances.IsBound (theTolerance))
   {
@@ -113,7 +113,7 @@ void SelectMgr_ToleranceMap::Add (const Standard_Real& theTolerance)
 // purpose : Decrements a counter of the tolerance given, checks if the current tolerance value
 //           should be recalculated
 //=======================================================================
-void SelectMgr_ToleranceMap::Decrement (const Standard_Real& theTolerance)
+void SelectMgr_ToleranceMap::Decrement (const Standard_Integer& theTolerance)
 {
   if (myTolerances.IsBound (theTolerance))
   {
@@ -122,8 +122,8 @@ void SelectMgr_ToleranceMap::Decrement (const Standard_Real& theTolerance)
 
     if (Abs (theTolerance - myLargestKey) < Precision::Confusion() && aFreq == 0)
     {
-      myLargestKey = 0.0;
-      for (NCollection_DataMap<Standard_Real, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
+      myLargestKey = 0;
+      for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
       {
         if (anIter.Value() != 0)
           myLargestKey = Max (myLargestKey, anIter.Key());
@@ -200,34 +200,11 @@ Standard_Boolean SelectMgr_ViewerSelector::isToScaleFrustum (const Handle(Select
 }
 
 //=======================================================================
-// function: scaleAndTransform
-// purpose : Applies given scale and transformation matrices to the default selecting volume manager
-//=======================================================================
-SelectMgr_SelectingVolumeManager SelectMgr_ViewerSelector::scaleAndTransform (const Standard_Real theScale,
-                                                                              const gp_Trsf& theTrsf)
-{
-  SelectMgr_SelectingVolumeManager aMgr;
-
-  if (theScale > Precision::Angular())
-  {
-    aMgr = mySelectingVolumeMgr.Scale (theScale);
-  }
-
-  if (theTrsf.Form() != gp_Identity)
-  {
-    aMgr = aMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Unknown ?
-      mySelectingVolumeMgr.Transform (theTrsf) : aMgr.Transform (theTrsf);
-  }
-
-  return aMgr;
-}
-
-//=======================================================================
 // function: sensitivity
 // purpose : In case if custom tolerance is set, this method will return sum of entity
 //           sensitivity and custom tolerance.
 //=======================================================================
-Standard_Real SelectMgr_ViewerSelector::sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const
+Standard_Integer SelectMgr_ViewerSelector::sensitivity (const Handle(SelectBasics_SensitiveEntity)& theEntity) const
 {
   return myTolerances.IsCustomTolSet() ?
     theEntity->SensitivityFactor() + myTolerances.CustomTolerance() : theEntity->SensitivityFactor();
@@ -259,7 +236,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
 
       Standard_Integer aPriority = anOwner->Priority();
 
-      SelectMgr_SortCriterion aCriterion (aPriority, aPickResult.Depth(), aPickResult.DistToGeomCenter(), theEntity->SensitivityFactor() / 33, preferclosest);
+      SelectMgr_SortCriterion aCriterion (aPriority, aPickResult.Depth(), aPickResult.DistToGeomCenter(), theEntity->SensitivityFactor() / 33.0, preferclosest);
       if (mystored.Contains (anOwner))
       {
         if (theMgr.GetActiveSelectionType() != 1)
@@ -278,6 +255,40 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(SelectBasics_Sensitive
         myMapOfDetected.Bind (anOwner, theEntityIdx);
       }
     }
+  }
+}
+
+//=======================================================================
+// function: computeFrustum
+// purpose : Internal function that checks if a current selecting frustum
+//           needs to be scaled and transformed for the entity and performs
+//           necessary calculations
+//=======================================================================
+void SelectMgr_ViewerSelector::computeFrustum (const Handle(SelectBasics_SensitiveEntity)& theEnt,
+                                               const gp_Trsf&                              theInvTrsf,
+                                               SelectMgr_FrustumCache&                     theCachedMgrs,
+                                               SelectMgr_SelectingVolumeManager&           theResMgr)
+{
+  Standard_Integer aScale = 1;
+  const Standard_Boolean toScale = isToScaleFrustum (theEnt);
+  if (toScale)
+  {
+    aScale = sensitivity (theEnt);
+  }
+  if (theEnt->HasInitLocation())
+  {
+    theResMgr =
+      mySelectingVolumeMgr.ScaleAndTransform (aScale, theEnt->InvInitLocation() * theInvTrsf);
+  }
+  else if (toScale)
+  {
+    if (!theCachedMgrs.IsBound (aScale))
+    {
+      theCachedMgrs.Bind (aScale,
+        mySelectingVolumeMgr.ScaleAndTransform(aScale, theInvTrsf));
+    }
+
+    theResMgr = theCachedMgrs.Find (aScale);
   }
 }
 
@@ -321,10 +332,10 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   }
 
   SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
-                                        ? mySelectingVolumeMgr.Transform (aInversedTrsf)
+                                        ? mySelectingVolumeMgr.ScaleAndTransform (1, aInversedTrsf)
                                         : mySelectingVolumeMgr;
 
-  NCollection_DataMap<Handle(Standard_Type), SelectMgr_SelectingVolumeManager> aScaledTrnsfFrustums;
+  SelectMgr_FrustumCache aScaledTrnsfFrustums;
 
   Standard_Integer aNode = 0; // a root node
   if (!aMgr.Overlaps (aSensitivesTree->MinPoint (0),
@@ -379,16 +390,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
         {
           const Handle(SelectBasics_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
           SelectMgr_SelectingVolumeManager aTmpMgr = aMgr;
-          if (isToScaleFrustum (anEnt))
-          {
-            if (!aScaledTrnsfFrustums.IsBound (anEnt->DynamicType()))
-            {
-              aScaledTrnsfFrustums.Bind (anEnt->DynamicType(),
-                                         scaleAndTransform (sensitivity (anEnt), aInversedTrsf));
-            }
-
-            aTmpMgr = aScaledTrnsfFrustums.Find (anEnt->DynamicType());
-          }
+          computeFrustum (anEnt, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
           checkOverlap (anEnt, anIdx, aTmpMgr);
         }
       }

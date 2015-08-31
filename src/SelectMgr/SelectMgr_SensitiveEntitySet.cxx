@@ -122,12 +122,7 @@ Standard_Real SelectMgr_SensitiveEntitySet::Center (const Standard_Integer theIn
 void SelectMgr_SensitiveEntitySet::Swap (const Standard_Integer theIndex1,
                                          const Standard_Integer theIndex2)
 {
-  const Handle(SelectMgr_SensitiveEntity) anEntity1 = GetSensitiveById (theIndex1);
-  const Handle(SelectMgr_SensitiveEntity) anEntity2 = GetSensitiveById (theIndex2);
-
-  mySensitives.Substitute (theIndex1 + 1, EMPTY_ENT);
-  mySensitives.Substitute (theIndex2 + 1, anEntity1);
-  mySensitives.Substitute (theIndex1 + 1, anEntity2);
+  mySensitives.Swap (theIndex1 + 1, theIndex2 + 1);
 }
 
 //=======================================================================

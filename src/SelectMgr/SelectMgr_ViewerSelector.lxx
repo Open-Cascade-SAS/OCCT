@@ -16,19 +16,19 @@
 // function: Tolerance
 // purpose : Returns a current tolerance that must be applied
 //=======================================================================
-inline Standard_Real SelectMgr_ToleranceMap::Tolerance() const
+inline Standard_Integer SelectMgr_ToleranceMap::Tolerance() const
 {
   if (myLargestKey < Precision::Confusion())
-    return 2.0; // default tolerance value
+    return 2; // default tolerance value
 
-  return myCustomTolerance < 0.0 ? myLargestKey : myLargestKey + myCustomTolerance;
+  return myCustomTolerance < 0 ? myLargestKey : myLargestKey + myCustomTolerance;
 }
 
 //=======================================================================
 // function: SetCustomTolerance
 // purpose : Sets tolerance to the given one and disables adaptive checks
 //=======================================================================
-inline void SelectMgr_ToleranceMap::SetCustomTolerance (const Standard_Real theTolerance)
+inline void SelectMgr_ToleranceMap::SetCustomTolerance (const Standard_Integer theTolerance)
 {
   myCustomTolerance = theTolerance;
 }
@@ -37,7 +37,7 @@ inline void SelectMgr_ToleranceMap::SetCustomTolerance (const Standard_Real theT
 // function: CustomTolerance
 // purpose : Returns current value of custom tolerance regardless of it is set or not
 //=======================================================================
-inline Standard_Real SelectMgr_ToleranceMap::CustomTolerance() const
+inline Standard_Integer SelectMgr_ToleranceMap::CustomTolerance() const
 {
   return myCustomTolerance;
 }
@@ -48,7 +48,7 @@ inline Standard_Real SelectMgr_ToleranceMap::CustomTolerance() const
 //=======================================================================
 inline Standard_Boolean SelectMgr_ToleranceMap::IsCustomTolSet() const
 {
-  return myCustomTolerance > 0.0;
+  return myCustomTolerance > 0;
 }
 
 //=======================================================================
@@ -57,7 +57,7 @@ inline Standard_Boolean SelectMgr_ToleranceMap::IsCustomTolSet() const
 //=======================================================================
 inline void SelectMgr_ToleranceMap::ResetDefaults()
 {
-  myCustomTolerance = -1.0;
+  myCustomTolerance = -1;
 }
 
 inline Standard_Real SelectMgr_ViewerSelector::Sensitivity() const

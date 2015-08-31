@@ -18,11 +18,6 @@
 
 #include <SelectMgr_RectangularFrustum.hxx>
 
-#define DOT(A, B) (A.x() * B.x() + A.y() * B.y() + A.z() * B.z())
-#define DOTp(A, B) (A.x() * B.X() + A.y() * B.Y() + A.z() * B.Z())
-#define DISTANCE(A, B) (std::sqrt ((A.x() - B.x()) * (A.x() - B.x()) + (A.y() - B.y()) * (A.y() - B.y()) + (A.z() - B.z()) * (A.z() - B.z())))
-#define DISTANCEp(A, B) (std::sqrt ((A.x() - B.X()) * (A.x() - B.X()) + (A.y() - B.Y()) * (A.y() - B.Y()) + (A.z() - B.Z()) * (A.z() - B.Z())))
-
 // =======================================================================
 // function : segmentSegmentDistance
 // purpose  :
@@ -31,18 +26,15 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
                                                            const gp_Pnt& theSegPnt2,
                                                            Standard_Real& theDepth)
 {
-  SelectMgr_Vec3 anU = SelectMgr_Vec3 (theSegPnt2.X() - theSegPnt1.X(),
-                                       theSegPnt2.Y() - theSegPnt1.Y(),
-                                       theSegPnt2.Z() - theSegPnt1.Z());
-  SelectMgr_Vec3 aV = myViewRayDir;
-  SelectMgr_Vec3 aW = SelectMgr_Vec3 (theSegPnt1.X() - myNearPickedPnt.x(),
-                                      theSegPnt1.Y() - myNearPickedPnt.y(),
-                                      theSegPnt1.Z() - myNearPickedPnt.z());
-  Standard_Real anA = DOT (anU, anU);
-  Standard_Real aB = DOT (anU, aV);
-  Standard_Real aC = DOT (aV, aV);
-  Standard_Real aD = DOT (anU, aW);
-  Standard_Real anE = DOT (aV, aW);
+  gp_XYZ anU = theSegPnt2.XYZ() - theSegPnt1.XYZ();
+  gp_XYZ aV = myViewRayDir.XYZ();
+  gp_XYZ aW = theSegPnt1.XYZ() - myNearPickedPnt.XYZ();
+
+  Standard_Real anA = anU.Dot (anU);
+  Standard_Real aB = anU.Dot (aV);
+  Standard_Real aC = aV.Dot (aV);
+  Standard_Real aD = anU.Dot (aW);
+  Standard_Real anE = aV.Dot (aW);
   Standard_Real aCoef = anA * aC - aB * aB;
   Standard_Real aSn = aCoef;
   Standard_Real aTc, aTn, aTd = aCoef;
@@ -78,24 +70,22 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
   }
   aTc = (Abs (aTn) < Precision::Confusion() ? 0.0 : aTn / aTd);
 
-  SelectMgr_Vec3 aClosestPnt = myNearPickedPnt + myViewRayDir * aTc;
-  theDepth = DISTANCE (myNearPickedPnt, aClosestPnt);
+  gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTc;
+  theDepth = myNearPickedPnt.Distance (aClosestPnt);
 }
 
 // =======================================================================
 // function : segmentPlaneIntersection
 // purpose  :
 // =======================================================================
-void SelectMgr_RectangularFrustum::segmentPlaneIntersection (const SelectMgr_Vec3& thePlane,
+void SelectMgr_RectangularFrustum::segmentPlaneIntersection (const gp_Vec& thePlane,
                                                              const gp_Pnt& thePntOnPlane,
                                                              Standard_Real& theDepth)
 {
-  SelectMgr_Vec3 anU = myViewRayDir;
-  SelectMgr_Vec3 aW = SelectMgr_Vec3 (myNearPickedPnt.x() - thePntOnPlane.X(),
-                                      myNearPickedPnt.y() - thePntOnPlane.Y(),
-                                      myNearPickedPnt.z() - thePntOnPlane.Z());
-  Standard_Real aD = DOT (thePlane, anU);
-  Standard_Real aN = -DOT (thePlane, aW);
+  gp_XYZ anU = myViewRayDir.XYZ();
+  gp_XYZ aW = myNearPickedPnt.XYZ() - thePntOnPlane.XYZ();
+  Standard_Real aD = thePlane.Dot (anU);
+  Standard_Real aN = -thePlane.Dot (aW);
 
   if (Abs (aD) < Precision::Confusion())
   {
@@ -118,36 +108,144 @@ void SelectMgr_RectangularFrustum::segmentPlaneIntersection (const SelectMgr_Vec
     return;
   }
 
-  SelectMgr_Vec3 aClosestPnt = myNearPickedPnt + anU * aParam;
-  theDepth = DISTANCE (myNearPickedPnt, aClosestPnt);
+  gp_Pnt aClosestPnt = myNearPickedPnt.XYZ() + anU * aParam;
+  theDepth = myNearPickedPnt.Distance (aClosestPnt);
 }
 
 namespace
 {
   // =======================================================================
+  // function : computeFrustum
+  // purpose  : Computes base frustum data: its vertices and edge directions
+  // =======================================================================
+  void computeFrustum (const gp_Pnt2d theMinPnt, const gp_Pnt2d& theMaxPnt,
+                       const Handle(SelectMgr_FrustumBuilder)& theBuilder,
+                       gp_Pnt* theVertices, gp_Vec* theEdges)
+  {
+    // LeftTopNear
+    theVertices[0] = theBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
+                                                        theMaxPnt.Y(),
+                                                        0.0);
+    // LeftTopFar
+    theVertices[1] = theBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
+                                                        theMaxPnt.Y(),
+                                                        1.0);
+    // LeftBottomNear
+    theVertices[2] = theBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
+                                                        theMinPnt.Y(),
+                                                        0.0);
+    // LeftBottomFar
+    theVertices[3] = theBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
+                                                        theMinPnt.Y(),
+                                                        1.0);
+    // RightTopNear
+    theVertices[4] = theBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
+                                                        theMaxPnt.Y(),
+                                                        0.0);
+    // RightTopFar
+    theVertices[5] = theBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
+                                                        theMaxPnt.Y(),
+                                                        1.0);
+    // RightBottomNear
+    theVertices[6] = theBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
+                                                        theMinPnt.Y(),
+                                                        0.0);
+    // RightBottomFar
+    theVertices[7] = theBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
+                                                        theMinPnt.Y(),
+                                                        1.0);
+
+    // Horizontal
+    theEdges[0] = theVertices[4].XYZ() - theVertices[0].XYZ();
+    // Vertical
+    theEdges[1] = theVertices[2].XYZ() - theVertices[0].XYZ();
+    // LeftLower
+    theEdges[2] = theVertices[2].XYZ() - theVertices[3].XYZ();
+    // RightLower
+    theEdges[3] = theVertices[6].XYZ() - theVertices[7].XYZ();
+    // LeftUpper
+    theEdges[4] = theVertices[0].XYZ() - theVertices[1].XYZ();
+    // RightUpper
+    theEdges[5] = theVertices[4].XYZ() - theVertices[5].XYZ();
+  }
+
+  // =======================================================================
   // function : computeNormals
   // purpose  : Computes normals to frustum faces
   // =======================================================================
-  void computeNormals (const SelectMgr_Vec3* theVertices, SelectMgr_Vec3* theNormals)
+  void computeNormals (const gp_Vec* theEdges, gp_Vec* theNormals)
   {
     // Top
-    theNormals[0] = SelectMgr_Vec3::Cross (theVertices[1] - theVertices[0],
-                                           theVertices[4] - theVertices[0]);
+    theNormals[0] = theEdges[0].Crossed (theEdges[4]);
     // Bottom
-    theNormals[1] = SelectMgr_Vec3::Cross (theVertices[3] - theVertices[2],
-                                           theVertices[6] - theVertices[2]);
+    theNormals[1] = theEdges[2].Crossed (theEdges[3]);
     // Left
-    theNormals[2] = SelectMgr_Vec3::Cross (theVertices[1] - theVertices[0],
-                                           theVertices[2] - theVertices[0]);
+    theNormals[2] = theEdges[4].Crossed (theEdges[1]);
     // Right
-    theNormals[3] = SelectMgr_Vec3::Cross (theVertices[5] - theVertices[4],
-                                           theVertices[6] - theVertices[4]);
+    theNormals[3] = theEdges[5].Crossed (theEdges[3]);
     // Near
-    theNormals[4] = SelectMgr_Vec3::Cross (theVertices[6] - theVertices[4],
-                                           theVertices[0] - theVertices[4]);
+    theNormals[4] = theEdges[0].Crossed (theEdges[1]);
     // Far
-    theNormals[5] = SelectMgr_Vec3::Cross (theVertices[7] - theVertices[5],
-                                           theVertices[1] - theVertices[5]);
+    theNormals[5] = -theNormals[4];
+  }
+}
+
+// =======================================================================
+// function : cacheVertexProjections
+// purpose  : Caches projection of frustum's vertices onto its plane directions
+//            and {i, j, k}
+// =======================================================================
+void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum)
+{
+  if (theFrustum->myIsOrthographic)
+  {
+    // project vertices onto frustum normals
+    // Since orthographic view volume's faces are always a pairwise translation of
+    // one another, only 2 vertices that belong to opposite faces can be projected
+    // to simplify calculations.
+    Standard_Integer aVertIdxs[6] = { LeftTopNear, LeftBottomNear,       // opposite planes in height direction
+                                      LeftBottomNear, RightBottomNear,   // opposite planes in width direcion
+                                      LeftBottomFar, RightBottomNear };  // opposite planes in depth direction
+    for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; aPlaneIdx += 2)
+    {
+      Standard_Real aProj1 = theFrustum->myPlanes[aPlaneIdx].XYZ().Dot (theFrustum->myVertices[aVertIdxs[aPlaneIdx]].XYZ());
+      Standard_Real aProj2 = theFrustum->myPlanes[aPlaneIdx].XYZ().Dot (theFrustum->myVertices[aVertIdxs[aPlaneIdx + 1]].XYZ());
+      theFrustum->myMinVertsProjections[aPlaneIdx] = Min (aProj1, aProj2);
+      theFrustum->myMaxVertsProjections[aPlaneIdx] = Max (aProj1, aProj2);
+    }
+  }
+  else
+  {
+    // project all vertices onto frustum normals
+    for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
+    {
+      Standard_Real aMax = -DBL_MAX;
+      Standard_Real aMin = DBL_MAX;
+      const gp_XYZ& aPlane = theFrustum->myPlanes[aPlaneIdx].XYZ();
+      for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
+      {
+        Standard_Real aProjection = aPlane.Dot (theFrustum->myVertices[aVertIdx].XYZ());
+        aMin = Min (aMin, aProjection);
+        aMax = Max (aMax, aProjection);
+      }
+      theFrustum->myMinVertsProjections[aPlaneIdx] = aMin;
+      theFrustum->myMaxVertsProjections[aPlaneIdx] = aMax;
+    }
+  }
+
+  // project vertices onto {i, j, k}
+  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
+  {
+    Standard_Real aMax = -DBL_MAX;
+    Standard_Real aMin = DBL_MAX;
+    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
+    {
+      const gp_XYZ& aVert = theFrustum->myVertices[aVertIdx].XYZ();
+      aMax = Max (aVert.GetData()[aDim], aMax);
+      aMin = Min (aVert.GetData()[aDim], aMin);
+    }
+    theFrustum->myMaxOrthoVertsProjections[aDim] = aMax;
+    theFrustum->myMinOrthoVertsProjections[aDim] = aMin;
   }
 }
 
@@ -159,94 +257,24 @@ namespace
 void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d &thePoint)
 {
   myNearPickedPnt = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 0.0);
-  myFarPickedPnt  = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 1.0);
-  myViewRayDir = myFarPickedPnt - myNearPickedPnt;
+  myFarPickedPnt = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 1.0);
+  myViewRayDir = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ();
   myMousePos = thePoint;
 
-  // LeftTopNear
-  myVertices[0] = myBuilder->ProjectPntOnViewPlane (thePoint.X() - myPixelTolerance / 2.0,
-                                                    thePoint.Y() + myPixelTolerance / 2.0,
-                                                    0.0);
-  // LeftTopFar
-  myVertices[1] = myBuilder->ProjectPntOnViewPlane (thePoint.X() - myPixelTolerance / 2.0,
-                                                    thePoint.Y() + myPixelTolerance / 2.0,
-                                                    1.0);
-  // LeftBottomNear
-  myVertices[2] = myBuilder->ProjectPntOnViewPlane (thePoint.X() - myPixelTolerance / 2.0,
-                                                    thePoint.Y() - myPixelTolerance / 2.0,
-                                                    0.0);
-  // LeftBottomFar
-  myVertices[3] = myBuilder->ProjectPntOnViewPlane (thePoint.X() - myPixelTolerance / 2.0,
-                                                    thePoint.Y() - myPixelTolerance / 2.0,
-                                                    1.0);
-  // RightTopNear
-  myVertices[4] = myBuilder->ProjectPntOnViewPlane (thePoint.X() + myPixelTolerance / 2.0,
-                                                    thePoint.Y() + myPixelTolerance / 2.0,
-                                                    0.0);
-  // RightTopFar
-  myVertices[5] = myBuilder->ProjectPntOnViewPlane (thePoint.X() + myPixelTolerance / 2.0,
-                                                    thePoint.Y() + myPixelTolerance / 2.0,
-                                                    1.0);
-  // RightBottomNear
-  myVertices[6] = myBuilder->ProjectPntOnViewPlane (thePoint.X() + myPixelTolerance / 2.0,
-                                                    thePoint.Y() - myPixelTolerance / 2.0,
-                                                    0.0);
-  // RightBottomFar
-  myVertices[7] = myBuilder->ProjectPntOnViewPlane (thePoint.X() + myPixelTolerance / 2.0,
-                                                    thePoint.Y() - myPixelTolerance / 2.0,
-                                                    1.0);
+  gp_Pnt2d aMinPnt (thePoint.X() - myPixelTolerance * 0.5,
+                    thePoint.Y() - myPixelTolerance * 0.5);
+  gp_Pnt2d aMaxPnt (thePoint.X() + myPixelTolerance * 0.5,
+                    thePoint.Y() + myPixelTolerance * 0.5);
+
+  // calculate base frustum characteristics: vertices and edge directions
+  computeFrustum (aMinPnt, aMaxPnt, myBuilder, myVertices, myEdgeDirs);
 
   // compute frustum normals
-  computeNormals (myVertices, myPlanes);
+  computeNormals (myEdgeDirs, myPlanes);
 
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    const SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aPlane, myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    myMaxVertsProjections[aPlaneIdx] = aMax;
-    myMinVertsProjections[aPlaneIdx] = aMin;
-  }
-
-  SelectMgr_Vec3 aDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aDimensions[aDim], myVertices[aVertIdx]);
-      aMax = Max (aProjection, aMax);
-      aMin = Min (aProjection, aMin);
-    }
-    myMaxOrthoVertsProjections[aDim] = aMax;
-    myMinOrthoVertsProjections[aDim] = aMin;
-  }
-
-  // Horizontal
-  myEdgeDirs[0] = myVertices[4] - myVertices[0];
-  // Vertical
-  myEdgeDirs[1] = myVertices[2] - myVertices[0];
-  // LeftLower
-  myEdgeDirs[2] = myVertices[2] - myVertices[3];
-  // RightLower
-  myEdgeDirs[3] = myVertices[6] - myVertices[7];
-  // LeftUpper
-  myEdgeDirs[4] = myVertices[0] - myVertices[1];
-  // RightUpper
-  myEdgeDirs[5] = myVertices[4] - myVertices[5];
+  // compute vertices projections onto frustum normals and
+  // {i, j, k} vectors and store them to corresponding class fields
+  cacheVertexProjections (this);
 }
 
 // =======================================================================
@@ -262,278 +290,104 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
   myFarPickedPnt = myBuilder->ProjectPntOnViewPlane ((theMinPnt.X() + theMaxPnt.X()) * 0.5,
                                                      (theMinPnt.Y() + theMaxPnt.Y()) * 0.5,
                                                      1.0);
-  myViewRayDir = myFarPickedPnt - myNearPickedPnt;
+  myViewRayDir = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ();
 
-  // LeftTopNear
-  myVertices[0] = myBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
-                                                    theMaxPnt.Y(),
-                                                    0.0);
-  // LeftTopFar
-  myVertices[1] = myBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
-                                                    theMaxPnt.Y(),
-                                                    1.0);
-  // LeftBottomNear
-  myVertices[2] = myBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
-                                                    theMinPnt.Y(),
-                                                    0.0);
-  // LeftBottomFar
-  myVertices[3] = myBuilder->ProjectPntOnViewPlane (theMinPnt.X(),
-                                                    theMinPnt.Y(),
-                                                    1.0);
-  // RightTopNear
-  myVertices[4] = myBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
-                                                    theMaxPnt.Y(),
-                                                    0.0);
-  // RightTopFar
-  myVertices[5] = myBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
-                                                    theMaxPnt.Y(),
-                                                    1.0);
-  // RightBottomNear
-  myVertices[6] = myBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
-                                                    theMinPnt.Y(),
-                                                    0.0);
-  // RightBottomFar
-  myVertices[7] = myBuilder->ProjectPntOnViewPlane (theMaxPnt.X(),
-                                                    theMinPnt.Y(),
-                                                    1.0);
+  // calculate base frustum characteristics: vertices and edge directions
+  computeFrustum (theMinPnt, theMaxPnt, myBuilder, myVertices, myEdgeDirs);
 
   // compute frustum normals
-  computeNormals (myVertices, myPlanes);
+  computeNormals (myEdgeDirs, myPlanes);
 
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    const SelectMgr_Vec3 aPlane = myPlanes[aPlaneIdx];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aPlane, myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    myMaxVertsProjections[aPlaneIdx] = aMax;
-    myMinVertsProjections[aPlaneIdx] = aMin;
-  }
-
-  SelectMgr_Vec3 aDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aDimensions[aDim], myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    myMaxOrthoVertsProjections[aDim] = aMax;
-    myMinOrthoVertsProjections[aDim] = aMin;
-  }
-
-  // Horizontal
-  myEdgeDirs[0] = myVertices[4] - myVertices[0];
-  // Vertical
-  myEdgeDirs[1] = myVertices[2] - myVertices[0];
-  // LeftLower
-  myEdgeDirs[2] = myVertices[2] - myVertices[3];
-  // RightLower
-  myEdgeDirs[3] = myVertices[6] - myVertices[7];
-  // LeftUpper
-  myEdgeDirs[4] = myVertices[0] - myVertices[1];
-  // RightUpper
-  myEdgeDirs[5] = myVertices[4] - myVertices[5];
+  // compute vertices projections onto frustum normals and
+  // {i, j, k} vectors and store them to corresponding class fields
+  cacheVertexProjections (this);
 }
 
 // =======================================================================
-// function : Transform
-// purpose  : Returns a copy of the frustum transformed according to the matrix given
-// =======================================================================
-NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Transform (const gp_Trsf& theTrsf)
-{
-  SelectMgr_RectangularFrustum* aRes = new SelectMgr_RectangularFrustum();
-
-  aRes->myNearPickedPnt = SelectMgr_MatOp::Transform (theTrsf, myNearPickedPnt);
-  aRes->myFarPickedPnt  = SelectMgr_MatOp::Transform (theTrsf, myFarPickedPnt);
-  aRes->myViewRayDir    = aRes->myFarPickedPnt - aRes->myNearPickedPnt;
-
-  aRes->myIsOrthographic = myIsOrthographic;
-
-  // LeftTopNear
-  aRes->myVertices[0] = SelectMgr_MatOp::Transform (theTrsf, myVertices[0]);
-  // LeftTopFar
-  aRes->myVertices[1] = SelectMgr_MatOp::Transform (theTrsf, myVertices[1]);
-  // LeftBottomNear
-  aRes->myVertices[2] = SelectMgr_MatOp::Transform (theTrsf, myVertices[2]);
-  // LeftBottomFar
-  aRes->myVertices[3] = SelectMgr_MatOp::Transform (theTrsf, myVertices[3]);
-  // RightTopNear
-  aRes->myVertices[4] = SelectMgr_MatOp::Transform (theTrsf, myVertices[4]);
-  // RightTopFar
-  aRes->myVertices[5] = SelectMgr_MatOp::Transform (theTrsf, myVertices[5]);
-  // RightBottomNear
-  aRes->myVertices[6] = SelectMgr_MatOp::Transform (theTrsf, myVertices[6]);
-  // RightBottomFar
-  aRes->myVertices[7] = SelectMgr_MatOp::Transform (theTrsf, myVertices[7]);
-
-  // compute frustum normals
-  computeNormals (aRes->myVertices, aRes->myPlanes);
-
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    const SelectMgr_Vec3 aPlane = aRes->myPlanes[aPlaneIdx];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aPlane, aRes->myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    aRes->myMaxVertsProjections[aPlaneIdx] = aMax;
-    aRes->myMinVertsProjections[aPlaneIdx] = aMin;
-  }
-
-  SelectMgr_Vec3 aDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aDimensions[aDim], aRes->myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    aRes->myMaxOrthoVertsProjections[aDim] = aMax;
-    aRes->myMinOrthoVertsProjections[aDim] = aMin;
-  }
-
-  // Horizontal
-  aRes->myEdgeDirs[0] = aRes->myVertices[4] - aRes->myVertices[0];
-  // Vertical
-  aRes->myEdgeDirs[1] = aRes->myVertices[2] - aRes->myVertices[0];
-  // LeftLower
-  aRes->myEdgeDirs[2] = aRes->myVertices[2] - aRes->myVertices[3];
-  // RightLower
-  aRes->myEdgeDirs[3] = aRes->myVertices[6] - aRes->myVertices[7];
-  // LeftUpper
-  aRes->myEdgeDirs[4] = aRes->myVertices[0] - aRes->myVertices[1];
-  // RightUpper
-  aRes->myEdgeDirs[5] = aRes->myVertices[4] - aRes->myVertices[5];
-
-  return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
-}
-
-// =======================================================================
-// function : Scale
-// purpose  : IMPORTANT: Makes sense only for frustum built on a single point!
+// function : ScaleAndTransform
+// purpose  : IMPORTANT: Scaling makes sense only for frustum built on a single point!
+//            Note that this method does not perform any checks on type of the frustum.
 //            Returns a copy of the frustum resized according to the scale factor given
+//            and transforms it using the matrix given.
+//            There are no default parameters, but in case if:
+//                - transformation only is needed: @theScaleFactor must be initialized
+//                  as any negative value;
+//                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
-NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::Scale (const Standard_Real theScaleFactor)
+NCollection_Handle<SelectMgr_BaseFrustum> SelectMgr_RectangularFrustum::ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                                           const gp_Trsf& theTrsf)
 {
-  SelectMgr_RectangularFrustum* aRes = new SelectMgr_RectangularFrustum();
+  Standard_ASSERT_RAISE (theScaleFactor > 0,
+    "Error! Pixel tolerance for selection should be greater than zero");
 
-  aRes->myNearPickedPnt = myNearPickedPnt;
-  aRes->myFarPickedPnt  = myFarPickedPnt;
-  aRes->myViewRayDir    = myViewRayDir;
+  SelectMgr_RectangularFrustum* aRes = new SelectMgr_RectangularFrustum();
+  const Standard_Boolean isToScale = theScaleFactor != 1;
+  const Standard_Boolean isToTrsf  = theTrsf.Form() != gp_Identity;
+
+  if (!isToScale && !isToTrsf)
+    return aRes;
 
   aRes->myIsOrthographic = myIsOrthographic;
+  SelectMgr_RectangularFrustum* aRef = this;
 
-    // LeftTopNear
-  aRes->myVertices[0] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
-                                                          myMousePos.Y() + theScaleFactor / 2.0,
-                                                          0.0);
-  // LeftTopFar
-  aRes->myVertices[1] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
-                                                          myMousePos.Y() + theScaleFactor / 2.0,
-                                                          1.0);
-  // LeftBottomNear
-  aRes->myVertices[2] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
-                                                          myMousePos.Y() - theScaleFactor / 2.0,
-                                                          0.0);
-  // LeftBottomFar
-  aRes->myVertices[3] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() - theScaleFactor / 2.0,
-                                                          myMousePos.Y() - theScaleFactor / 2.0,
-                                                          1.0);
-  // RightTopNear
-  aRes->myVertices[4] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
-                                                          myMousePos.Y() + theScaleFactor / 2.0,
-                                                          0.0);
-  // RightTopFar
-  aRes->myVertices[5] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
-                                                          myMousePos.Y() + theScaleFactor / 2.0,
-                                                          1.0);
-  // RightBottomNear
-  aRes->myVertices[6] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
-                                                          myMousePos.Y() - theScaleFactor / 2.0,
-                                                          0.0);
-  // RightBottomFar
-  aRes->myVertices[7] = myBuilder->ProjectPntOnViewPlane (myMousePos.X() + theScaleFactor / 2.0,
-                                                          myMousePos.Y() - theScaleFactor / 2.0,
-                                                          1.0);
+  if (isToScale)
+  {
+    aRes->myNearPickedPnt = myNearPickedPnt;
+    aRes->myFarPickedPnt  = myFarPickedPnt;
+    aRes->myViewRayDir    = myViewRayDir;
+
+    const gp_Pnt2d aMinPnt (myMousePos.X() - theScaleFactor * 0.5,
+                            myMousePos.Y() - theScaleFactor * 0.5);
+    const gp_Pnt2d aMaxPnt (myMousePos.X() + theScaleFactor * 0.5,
+                            myMousePos.Y() + theScaleFactor * 0.5);
+
+    // recompute base frustum characteristics from scratch
+    computeFrustum (aMinPnt, aMaxPnt, myBuilder, aRes->myVertices, aRes->myEdgeDirs);
+
+    aRef = aRes;
+  }
+
+  if (isToTrsf)
+  {
+    aRes->myNearPickedPnt = aRef->myNearPickedPnt.Transformed (theTrsf);
+    aRes->myFarPickedPnt  = aRef->myFarPickedPnt.Transformed (theTrsf);
+    aRes->myViewRayDir    = aRes->myFarPickedPnt.XYZ() - aRes->myNearPickedPnt.XYZ();
+
+      // LeftTopNear
+    aRes->myVertices[0] = aRef->myVertices[0].Transformed (theTrsf);
+    // LeftTopFar
+    aRes->myVertices[1] = aRef->myVertices[1].Transformed (theTrsf);
+    // LeftBottomNear
+    aRes->myVertices[2] = aRef->myVertices[2].Transformed (theTrsf);
+    // LeftBottomFar
+    aRes->myVertices[3] = aRef->myVertices[3].Transformed (theTrsf);
+    // RightTopNear
+    aRes->myVertices[4] = aRef->myVertices[4].Transformed (theTrsf);
+    // RightTopFar
+    aRes->myVertices[5] = aRef->myVertices[5].Transformed (theTrsf);
+    // RightBottomNear
+    aRes->myVertices[6] = aRef->myVertices[6].Transformed (theTrsf);
+    // RightBottomFar
+    aRes->myVertices[7] = aRef->myVertices[7].Transformed (theTrsf);
+
+    // Horizontal
+    aRes->myEdgeDirs[0] = aRes->myVertices[4].XYZ() - aRes->myVertices[0].XYZ();
+    // Vertical
+    aRes->myEdgeDirs[1] = aRes->myVertices[2].XYZ() - aRes->myVertices[0].XYZ();
+    // LeftLower
+    aRes->myEdgeDirs[2] = aRes->myVertices[2].XYZ() - aRes->myVertices[3].XYZ();
+    // RightLower
+    aRes->myEdgeDirs[3] = aRes->myVertices[6].XYZ() - aRes->myVertices[7].XYZ();
+    // LeftUpper
+    aRes->myEdgeDirs[4] = aRes->myVertices[0].XYZ() - aRes->myVertices[1].XYZ();
+    // RightUpper
+    aRes->myEdgeDirs[5] = aRes->myVertices[4].XYZ() - aRes->myVertices[5].XYZ();
+  }
+
   // compute frustum normals
-  computeNormals (aRes->myVertices, aRes->myPlanes);
+  computeNormals (aRes->myEdgeDirs, aRes->myPlanes);
 
-  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    const SelectMgr_Vec3 aPlane = aRes->myPlanes[aPlaneIdx];
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aPlane, aRes->myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    aRes->myMaxVertsProjections[aPlaneIdx] = aMax;
-    aRes->myMinVertsProjections[aPlaneIdx] = aMin;
-  }
-
-  SelectMgr_Vec3 aDimensions[3] =
-  {
-    SelectMgr_Vec3 (1.0, 0.0, 0.0),
-    SelectMgr_Vec3 (0.0, 1.0, 0.0),
-    SelectMgr_Vec3 (0.0, 0.0, 1.0)
-  };
-
-  for (Standard_Integer aDim = 0; aDim < 3; ++aDim)
-  {
-    Standard_Real aMax = -DBL_MAX;
-    Standard_Real aMin =  DBL_MAX;
-    for (Standard_Integer aVertIdx = 0; aVertIdx < 8; ++aVertIdx)
-    {
-      Standard_Real aProjection = DOT (aDimensions[aDim], aRes->myVertices[aVertIdx]);
-      aMax = Max (aMax, aProjection);
-      aMin = Min (aMin, aProjection);
-    }
-    aRes->myMaxOrthoVertsProjections[aDim] = aMax;
-    aRes->myMinOrthoVertsProjections[aDim] = aMin;
-  }
-
-  // Horizontal
-  aRes->myEdgeDirs[0] = aRes->myVertices[4] - aRes->myVertices[0];
-  // Vertical
-  aRes->myEdgeDirs[1] = aRes->myVertices[2] - aRes->myVertices[0];
-  // LeftLower
-  aRes->myEdgeDirs[2] = aRes->myVertices[2] - aRes->myVertices[3];
-  // RightLower
-  aRes->myEdgeDirs[3] = aRes->myVertices[6] - aRes->myVertices[7];
-  // LeftUpper
-  aRes->myEdgeDirs[4] = aRes->myVertices[0] - aRes->myVertices[1];
-  // RightUpper
-  aRes->myEdgeDirs[5] = aRes->myVertices[4] - aRes->myVertices[5];
+  cacheVertexProjections (aRes);
 
   return NCollection_Handle<SelectMgr_BaseFrustum> (aRes);
 }
@@ -556,20 +410,19 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const BVH_Box<Standard_Real, 3>& theBox,
+Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& theBoxMin,
+                                                         const SelectMgr_Vec3& theBoxMax,
                                                          Standard_Real& theDepth)
 {
-  const SelectMgr_Vec3& aMinPnt = theBox.CornerMin();
-  const SelectMgr_Vec3& aMaxPnt = theBox.CornerMax();
-  if (!hasOverlap (aMinPnt, aMaxPnt))
+  if (!hasOverlap (theBoxMin, theBoxMax))
     return Standard_False;
 
-  SelectMgr_Vec3 aNearestPnt = SelectMgr_Vec3 (RealLast(), RealLast(), RealLast());
-  aNearestPnt.x() = Max (Min (myNearPickedPnt.x(), aMaxPnt.x()), aMinPnt.x());
-  aNearestPnt.y() = Max (Min (myNearPickedPnt.y(), aMaxPnt.y()), aMinPnt.y());
-  aNearestPnt.z() = Max (Min (myNearPickedPnt.z(), aMaxPnt.z()), aMinPnt.z());
+  gp_Pnt aNearestPnt (RealLast(), RealLast(), RealLast());
+  aNearestPnt.SetX (Max (Min (myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
+  aNearestPnt.SetY (Max (Min (myNearPickedPnt.Y(), theBoxMax.y()), theBoxMin.y()));
+  aNearestPnt.SetZ (Max (Min (myNearPickedPnt.Z(), theBoxMax.z()), theBoxMin.z()));
 
-  theDepth = DISTANCE (aNearestPnt, myNearPickedPnt);
+  theDepth = aNearestPnt.Distance (myNearPickedPnt);
 
   return Standard_True;
 }
@@ -584,13 +437,22 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
   if (!hasOverlap (thePnt))
     return Standard_False;
 
-  SelectMgr_Vec3 aPnt (thePnt.X(), thePnt.Y(), thePnt.Z());
-  SelectMgr_Vec3 aV = aPnt - myNearPickedPnt;
-  SelectMgr_Vec3 aDetectedPnt = myNearPickedPnt + myViewRayDir * (DOT (aV, myViewRayDir) / DOT (myViewRayDir, myViewRayDir));
+  gp_XYZ aV = thePnt.XYZ() - myNearPickedPnt.XYZ();
+  gp_Pnt aDetectedPnt =
+    myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * (aV.Dot (myViewRayDir.XYZ()) / myViewRayDir.Dot (myViewRayDir));
 
-  theDepth = DISTANCE (aDetectedPnt, myNearPickedPnt);
+  theDepth = aDetectedPnt.Distance (myNearPickedPnt);
 
   return Standard_True;
+}
+
+// =======================================================================
+// function : Overlaps
+// purpose  : Intersection test between defined volume and given point
+// =======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt)
+{
+  return hasOverlap (thePnt);
 }
 
 // =======================================================================
@@ -647,7 +509,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const Handle(TColgp_HAr
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    SelectMgr_Vec3 aPolyNorm (RealLast());
+    gp_Vec aPolyNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
     if (!hasOverlap (theArrayOfPnts, aPolyNorm))
       return Standard_False;
 
@@ -683,21 +545,20 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
-    SelectMgr_Vec3 aTriangleNormal (RealLast());
+    gp_Vec aTriangleNormal (gp_XYZ (RealLast(), RealLast(), RealLast()));
     if (!hasOverlap (thePnt1, thePnt2, thePnt3, aTriangleNormal))
       return Standard_False;
 
     // check if intersection point belongs to triangle's interior part
-    SelectMgr_Vec3 aPnt1 (thePnt1.X(), thePnt1.Y(), thePnt1.Z());
-    SelectMgr_Vec3 aTrEdges[3] = { SelectMgr_Vec3 (thePnt2.X() - thePnt1.X(), thePnt2.Y() - thePnt1.Y(), thePnt2.Z() - thePnt1.Z()),
-                                   SelectMgr_Vec3 (thePnt3.X() - thePnt2.X(), thePnt3.Y() - thePnt2.Y(), thePnt3.Z() - thePnt2.Z()),
-                                   SelectMgr_Vec3 (thePnt1.X() - thePnt3.X(), thePnt1.Y() - thePnt3.Y(), thePnt1.Z() - thePnt3.Z()) };
+    gp_XYZ aTrEdges[3] = { thePnt2.XYZ() - thePnt1.XYZ(),
+                           thePnt3.XYZ() - thePnt2.XYZ(),
+                           thePnt1.XYZ() - thePnt3.XYZ() };
 
-    Standard_Real anAlpha = DOT (aTriangleNormal, myViewRayDir);
+    Standard_Real anAlpha = aTriangleNormal.Dot (myViewRayDir);
     if (Abs (anAlpha) < gp::Resolution())
     {
       // handle degenerated triangles: in this case, there is no possible way to detect overlap correctly.
-      if (aTriangleNormal.SquareModulus() < gp::Resolution())
+      if (aTriangleNormal.SquareMagnitude() < gp::Resolution())
       {
         theDepth = std::numeric_limits<Standard_Real>::max();
         return Standard_False;
@@ -705,44 +566,38 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 
       // handle the case when triangle normal and selecting frustum direction are orthogonal: for this case, overlap
       // is detected correctly, and distance to triangle's plane can be measured as distance to its arbitrary vertex.
-      const SelectMgr_Vec3 aDiff = myNearPickedPnt - aPnt1;
-      theDepth = DOT (aTriangleNormal, aDiff);
+      const gp_XYZ aDiff = myNearPickedPnt.XYZ() - thePnt1.XYZ();
+      theDepth = aTriangleNormal.Dot (aDiff);
       return Standard_True;
     }
 
-    SelectMgr_Vec3 anEdge = (aPnt1 - myNearPickedPnt) * (1.0 / anAlpha);
+    gp_XYZ anEdge = (thePnt1.XYZ() - myNearPickedPnt.XYZ()) * (1.0 / anAlpha);
 
-    Standard_Real aTime = DOT (aTriangleNormal, anEdge);
+    Standard_Real aTime = aTriangleNormal.Dot (anEdge);
 
-    SelectMgr_Vec3 aVec = SelectMgr_Vec3 (myViewRayDir.y() * anEdge.z() - myViewRayDir.z() * anEdge.y(),
-                                          myViewRayDir.z() * anEdge.x() - myViewRayDir.x() * anEdge.z(),
-                                          myViewRayDir.x() * anEdge.y() - myViewRayDir.y() * anEdge.x());
+    gp_XYZ aVec = myViewRayDir.XYZ().Crossed (anEdge);
 
-    Standard_Real anU = DOT (aVec, aTrEdges[2]);
-    Standard_Real aV  = DOT (aVec, aTrEdges[0]);
+    Standard_Real anU = aVec.Dot (aTrEdges[2]);
+    Standard_Real aV  = aVec.Dot (aTrEdges[0]);
 
     Standard_Boolean isInterior = (aTime >= 0.0) && (anU >= 0.0) && (aV >= 0.0) && (anU + aV <= 1.0);
 
     if (isInterior)
     {
-      SelectMgr_Vec3 aDetectedPnt = myNearPickedPnt + myViewRayDir * aTime;
-      theDepth = DISTANCE (myNearPickedPnt, aDetectedPnt);
+      gp_Pnt aDetectedPnt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTime;
+      theDepth = myNearPickedPnt.Distance (aDetectedPnt);
       return Standard_True;
     }
 
     gp_Pnt aPnts[3] = {thePnt1, thePnt2, thePnt3};
     Standard_Real aMinDist = RealLast();
     Standard_Integer aNearestEdgeIdx = -1;
-    SelectMgr_Vec3 aPtOnPlane = myNearPickedPnt + myViewRayDir * aTime;
+    gp_Pnt aPtOnPlane = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aTime;
     for (Standard_Integer anEdgeIdx = 0; anEdgeIdx < 3; ++anEdgeIdx)
     {
-      SelectMgr_Vec3 aW = SelectMgr_Vec3 (aPtOnPlane.x() - aPnts[anEdgeIdx].X(),
-                                          aPtOnPlane.y() - aPnts[anEdgeIdx].Y(),
-                                          aPtOnPlane.z() - aPnts[anEdgeIdx].Z());
-      Standard_Real aCoef = DOT (aTrEdges[anEdgeIdx], aW) / DOT (aTrEdges[anEdgeIdx], aTrEdges[anEdgeIdx]);
-      Standard_Real aDist = DISTANCE (aPtOnPlane, SelectMgr_Vec3 (aPnts[anEdgeIdx].X() + aCoef * aTrEdges[anEdgeIdx].x(),
-                                                                  aPnts[anEdgeIdx].Y() + aCoef * aTrEdges[anEdgeIdx].y(),
-                                                                  aPnts[anEdgeIdx].Z() + aCoef * aTrEdges[anEdgeIdx].z()));
+      gp_XYZ aW = aPtOnPlane.XYZ() - aPnts[anEdgeIdx].XYZ();
+      Standard_Real aCoef = aTrEdges[anEdgeIdx].Dot (aW) / aTrEdges[anEdgeIdx].Dot (aTrEdges[anEdgeIdx]);
+      Standard_Real aDist = aPtOnPlane.Distance (aPnts[anEdgeIdx].XYZ() + aCoef * aTrEdges[anEdgeIdx]);
       if (aMinDist > aDist)
       {
         aMinDist = aDist;
@@ -762,8 +617,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 // =======================================================================
 Standard_Real SelectMgr_RectangularFrustum::DistToGeometryCenter (const gp_Pnt& theCOG)
 {
-  const SelectMgr_Vec3& aCOG = SelectMgr_Vec3 (theCOG.X(), theCOG.Y(), theCOG.Z());
-  return DISTANCE (aCOG, myNearPickedPnt);
+  return theCOG.Distance (myNearPickedPnt);
 }
 
 // =======================================================================
@@ -771,9 +625,9 @@ Standard_Real SelectMgr_RectangularFrustum::DistToGeometryCenter (const gp_Pnt& 
 // purpose  : Calculates the point on a view ray that was detected during
 //            the run of selection algo by given depth
 // =======================================================================
-SelectMgr_Vec3 SelectMgr_RectangularFrustum::DetectedPoint (const Standard_Real theDepth) const
+gp_Pnt SelectMgr_RectangularFrustum::DetectedPoint (const Standard_Real theDepth) const
 {
-  return myNearPickedPnt + myViewRayDir.Normalized() * theDepth;
+  return myNearPickedPnt.XYZ() + myViewRayDir.Normalized().XYZ() * theDepth;
 }
 
 // =======================================================================
@@ -800,8 +654,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_Sequen
 
     const gp_XYZ& aPlaneDirXYZ = aGeomPlane.Axis().Direction().XYZ();
 
-    Standard_Real aDotProduct = DOTp (myViewRayDir, aPlaneDirXYZ);
-    Standard_Real aDistance = - (DOTp (myNearPickedPnt, aPlaneDirXYZ) + aPlaneD);
+    Standard_Real aDotProduct = myViewRayDir.XYZ().Dot (aPlaneDirXYZ);
+    Standard_Real aDistance = - myNearPickedPnt.XYZ().Dot (aPlaneDirXYZ) +
+                                aPlaneD;
 
     // check whether the pick line is parallel to clip plane
     if (Abs (aDotProduct) < Precision::Angular())
@@ -820,8 +675,8 @@ Standard_Boolean SelectMgr_RectangularFrustum::IsClipped (const Graphic3d_Sequen
       continue;
     }
 
-    const SelectMgr_Vec3 anIntersectionPt = myNearPickedPnt + myViewRayDir * aParam;
-    const Standard_Real aDistToPln = DISTANCE (anIntersectionPt, myNearPickedPnt);
+    const gp_Pnt anIntersectionPt = myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * aParam;
+    const Standard_Real aDistToPln = anIntersectionPt.Distance (myNearPickedPnt);
 
     // change depth limits for case of opposite and directed planes
     if (aDotProduct < 0.0)

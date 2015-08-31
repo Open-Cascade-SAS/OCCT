@@ -29,8 +29,6 @@
 //! binned BVH builder is used with 32 bins and 1 element per leaf.
 class SelectMgr_SelectableObjectSet : public BVH_PrimitiveSet<Standard_Real, 3>
 {
-  Handle(SelectMgr_SelectableObject) EMPTY_OBJ;
-
 public:
 
   //! Creates new empty objects set and initializes BVH tree

@@ -17,6 +17,8 @@
 #ifndef _SelectBasics_SensitiveEntity_HeaderFile
 #define _SelectBasics_SensitiveEntity_HeaderFile
 
+#include <gp_Trsf.hxx>
+
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
@@ -27,6 +29,7 @@
 #include <SelectBasics_PickResult.hxx>
 #include <Standard_Integer.hxx>
 #include <Select3D_BndBox3d.hxx>
+
 class SelectBasics_EntityOwner;
 
 
@@ -49,51 +52,51 @@ public:
   
   //! Checks whether the sensitive entity is overlapped by
   //! current selecting volume
-  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr, SelectBasics_PickResult& thePickResult) = 0;
+  virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr, SelectBasics_PickResult& thePickResult) = 0;
   
   //! allows a better sensitivity for
   //! a specific entity in selection algorithms
   //! useful for small sized entities.
-  Standard_EXPORT Standard_Real SensitivityFactor() const;
+  Standard_EXPORT Standard_Integer SensitivityFactor() const;
   
   //! Returns the number of sub-entities or elements in
   //! sensitive entity. Is used to determine if entity is
   //! complex and needs to pre-build BVH at the creation of
   //! sensitive entity step or is light-weighted so the tree
   //! can be build on demand with unnoticeable delay
-  Standard_EXPORT virtual Standard_Integer NbSubElements() = 0;
+  virtual Standard_Integer NbSubElements() = 0;
   
   //! Returns bounding box of sensitive entity
-  Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() = 0;
+  virtual Select3D_BndBox3d BoundingBox() = 0;
   
   //! Builds BVH tree for sensitive if it is needed
-  Standard_EXPORT virtual void BVH() = 0;
+  virtual void BVH() = 0;
   
   //! Clears up all the resources and memory allocated
-  Standard_EXPORT virtual void Clear() = 0;
+  virtual void Clear() = 0;
 
+  //! Returns true if the shape corresponding to the entity has init location
+  virtual Standard_Boolean HasInitLocation() const = 0;
 
-
+  //! Returns inversed location transformation matrix if the shape corresponding
+  //! to this entity has init location set. Otherwise, returns identity matrix.
+  virtual gp_Trsf InvInitLocation() const = 0;
 
   DEFINE_STANDARD_RTTI(SelectBasics_SensitiveEntity,MMgt_TShared)
 
 protected:
 
-  
-  Standard_EXPORT SelectBasics_SensitiveEntity(const Handle(SelectBasics_EntityOwner)& theOwnerId, const Standard_Real theSensFactor = 2.0);
-  
+  Standard_EXPORT SelectBasics_SensitiveEntity (const Handle(SelectBasics_EntityOwner)& theOwnerId);
+
   //! Allows to manage the sensitivity of the entity
-    void SetSensitivityFactor (const Standard_Real theSensFactor);
+    void SetSensitivityFactor (const Standard_Integer theSensFactor);
 
   Handle(SelectBasics_EntityOwner) myOwnerId;
 
 
 private:
 
-
-  Standard_Real mySFactor;
-
-
+  Standard_Integer mySFactor;
 };
 
 

@@ -313,10 +313,10 @@ public:
   
   //! Define the current selection sensitivity for
   //! this local context according to the view size.
-  Standard_EXPORT void SetPixelTolerance (const Standard_Real aPrecision = 2);
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer aPrecision = 2);
   
   //! Returns the pixel tolerance.
-  Standard_EXPORT Standard_Real PixelTolerance() const;
+  Standard_EXPORT Standard_Integer PixelTolerance() const;
   
   //! Resets the transient list of presentations previously displayed in immediate mode
   //! and begins accumulation of new list by following AddToImmediateList()/Color()/Highlight() calls.
