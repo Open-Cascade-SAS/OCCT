@@ -396,10 +396,11 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
     aEpsT=Precision::PConfusion();
     //
     Geom2dHatch_Intersector aIntr(aTolArcIntr, aTolTangfIntr);
-    pHatcher=new Geom2dHatch_Hatcher(aIntr,
-                                     aTolHatch2D, aTolHatch3D,
-                                     Standard_True, Standard_False);
-    
+    pHatcher=(Geom2dHatch_Hatcher*)
+      myAllocator->Allocate(sizeof(Geom2dHatch_Hatcher));
+    new (pHatcher) Geom2dHatch_Hatcher(aIntr,
+                                       aTolHatch2D, aTolHatch3D,
+                                       Standard_True, Standard_False);
     //
     aFF=aF;
     aFF.Orientation(TopAbs_FORWARD);
@@ -445,7 +446,9 @@ IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData
   IntTools_SurfaceRangeLocalizeData* pSData;
   //
   if (!myProjSDataMap.IsBound(aF)) {
-    pSData=new IntTools_SurfaceRangeLocalizeData
+    pSData=(IntTools_SurfaceRangeLocalizeData*)
+      myAllocator->Allocate(sizeof(IntTools_SurfaceRangeLocalizeData));
+    new (pSData) IntTools_SurfaceRangeLocalizeData
       (3, 
        3, 
        10. * Precision::PConfusion(), 
