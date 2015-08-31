@@ -133,6 +133,11 @@ public:
   //! Returns sensitivity of the selection
   Standard_EXPORT Standard_Integer Sensitivity() const;
 
+  //! Changes sensitivity of the selection and all its entities to the given value.
+  //! IMPORTANT: This method does not update any outer selection structures, so for
+  //! proper updates use SelectMgr_SelectionManager::SetSelectionSensitivity method.
+  Standard_EXPORT void SetSensitivity (const Standard_Integer theNewSens);
+
   DEFINE_STANDARD_RTTI (SelectMgr_Selection)
 
 protected:
@@ -149,6 +154,7 @@ private:
   mutable SelectMgr_StateOfSelection                              mySelectionState;
   mutable SelectMgr_TypeOfBVHUpdate                               myBVHUpdateStatus;
   Standard_Integer                                                mySensFactor;
+  Standard_Boolean                                                myIsCustomSens;
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_Selection, MMgt_TShared)

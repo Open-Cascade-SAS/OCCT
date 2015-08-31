@@ -201,7 +201,14 @@ is
       is static;
     ---Purpose: Sets type of update of selection with theMode of theObject to the given theType.
 
-
+    SetSelectionSensitivity (me : mutable;
+                             theObject : SelectableObject from SelectMgr;
+                             theMode : Integer from Standard;
+                             theNewSens : Integer from Standard)
+      is static;
+    ---Purpose: Allows to manage sensitivity of a particular selection of interactive object theObject and
+    --          changes previous sensitivity value of all sensitive entities in selection with theMode
+    --          to the given theNewSensitivity.
 
 
 

@@ -2623,6 +2623,23 @@ Standard_Integer AIS_InteractiveContext::PixelTolerance() const
 }
 
 //=======================================================================
+//function : SetSelectionSensitivity
+//purpose  : Allows to manage sensitivity of a particular selection of interactive object theObject
+//=======================================================================
+void AIS_InteractiveContext::SetSelectionSensitivity (const Handle(AIS_InteractiveObject)& theObject,
+                                                      const Standard_Integer theMode,
+                                                      const Standard_Integer theNewSensitivity)
+{
+  if (HasOpenedContext())
+  {
+    myLocalContexts (myCurLocalIndex)->SetSelectionSensitivity (theObject, theMode, theNewSensitivity);
+    return;
+  }
+
+  mgrSelector->SetSelectionSensitivity (theObject, theMode, theNewSensitivity);
+}
+
+//=======================================================================
 //function : IsInLocal
 //purpose  :
 //=======================================================================

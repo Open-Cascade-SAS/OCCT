@@ -1149,3 +1149,14 @@ Standard_Integer AIS_LocalContext::PixelTolerance() const {
 
   return myMainVS->PixelTolerance();
 }
+
+//=======================================================================
+//function : SetSelectionSensitivity
+//purpose  : Allows to manage sensitivity of a particular selection of interactive object theObject
+//=======================================================================
+void AIS_LocalContext::SetSelectionSensitivity (const Handle(AIS_InteractiveObject)& theObject,
+                                                const Standard_Integer theMode,
+                                                const Standard_Integer theNewSensitivity)
+{
+  mySM->SetSelectionSensitivity (theObject, theMode, theNewSensitivity);
+}

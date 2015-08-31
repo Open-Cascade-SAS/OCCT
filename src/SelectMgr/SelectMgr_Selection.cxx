@@ -29,7 +29,8 @@ SelectMgr_Selection::SelectMgr_Selection (const Standard_Integer theModeIdx)
 : myMode (theModeIdx),
   mySelectionState (SelectMgr_SOS_Unknown),
   myBVHUpdateStatus (SelectMgr_TBU_None),
-  mySensFactor (2)
+  mySensFactor (2),
+  myIsCustomSens (Standard_False)
 {}
 
 SelectMgr_Selection::~SelectMgr_Selection()
@@ -73,8 +74,15 @@ void SelectMgr_Selection::Add (const Handle(SelectBasics_SensitiveEntity)& theSe
       anEntity->SetActiveForSelection();
     }
 
-    mySensFactor = Max (mySensFactor,
-                        anEntity->BaseSensitive()->SensitivityFactor());
+    if (myIsCustomSens)
+    {
+      anEntity->BaseSensitive()->SetSensitivityFactor (mySensFactor);
+    }
+    else
+    {
+      mySensFactor = Max (mySensFactor,
+                          anEntity->BaseSensitive()->SensitivityFactor());
+    }
   }
 }	
 
@@ -137,4 +145,21 @@ void SelectMgr_Selection::SetSelectionState (const SelectMgr_StateOfSelection th
 Standard_Integer SelectMgr_Selection::Sensitivity() const
 {
   return mySensFactor;
+}
+
+//==================================================
+// function: SetSensitivity
+// purpose : Changes sensitivity of the selection and all its entities to the given value.
+//           IMPORTANT: This method does not update any outer selection structures, so for
+//           proper updates use SelectMgr_SelectionManager::SetSelectionSensitivity method.
+//==================================================
+void SelectMgr_Selection::SetSensitivity (const Standard_Integer theNewSens)
+{
+  mySensFactor = theNewSens;
+  myIsCustomSens = Standard_True;
+  for (Standard_Integer anIdx = 0; anIdx < myEntities.Size(); ++anIdx)
+  {
+    Handle(SelectMgr_SensitiveEntity)& anEntity = myEntities.ChangeValue (anIdx);
+    anEntity->BaseSensitive()->SetSensitivityFactor (theNewSens);
+  }
 }

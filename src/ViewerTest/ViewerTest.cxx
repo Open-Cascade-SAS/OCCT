@@ -1498,6 +1498,10 @@ struct ViewerTest_AspectsChangeSet
   Standard_Integer         ToSetFreeBoundaryColor;
   Quantity_Color           FreeBoundaryColor;
 
+  Standard_Integer         ToSetSensitivity;
+  Standard_Integer         SelectionMode;
+  Standard_Integer         Sensitivity;
+
   //! Empty constructor
   ViewerTest_AspectsChangeSet()
   : ToSetVisibility   (0),
@@ -1514,7 +1518,10 @@ struct ViewerTest_AspectsChangeSet
     ToSetFreeBoundaryWidth (0),
     FreeBoundaryWidth      (1.0),
     ToSetFreeBoundaryColor (0),
-    FreeBoundaryColor      (DEFAULT_FREEBOUNDARY_COLOR) {}
+    FreeBoundaryColor          (DEFAULT_FREEBOUNDARY_COLOR),
+    ToSetSensitivity (0),
+    SelectionMode (-1),
+    Sensitivity (-1) {}
 
   //! @return true if no changes have been requested
   Standard_Boolean IsEmpty() const
@@ -1526,7 +1533,8 @@ struct ViewerTest_AspectsChangeSet
         && ToSetMaterial          == 0
         && ToSetShowFreeBoundary  == 0
         && ToSetFreeBoundaryColor == 0
-        && ToSetFreeBoundaryWidth == 0;
+        && ToSetFreeBoundaryWidth == 0
+        && ToSetSensitivity       == 0;
   }
 
   //! @return true if properties are valid
@@ -1566,6 +1574,11 @@ struct ViewerTest_AspectsChangeSet
      || FreeBoundaryWidth >  10.0)
     {
       std::cout << "Error: the free boundary width should be within [1; 10] range (specified " << FreeBoundaryWidth << ")\n";
+      isOk = Standard_False;
+    }
+    if (Sensitivity <= 0 && ToSetSensitivity)
+    {
+      std::cout << "Error: sensitivity parameter value should be positive (specified " << Sensitivity << ")\n";
       isOk = Standard_False;
     }
     return isOk;
@@ -2056,6 +2069,29 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetFreeBoundaryWidth = -1;
       aChangeSet->FreeBoundaryWidth = 1.0;
     }
+    else if (anArg == "-setsensitivity")
+    {
+      if (isDefaults)
+      {
+        std::cout << "Error: wrong syntax. -setSensitivity can not be used together with -defaults call!\n";
+        return 1;
+      }
+
+      if (aNames.IsEmpty())
+      {
+        std::cout << "Error: object and selection mode should specified explicitly when -setSensitivity is used!\n";
+        return 1;
+      }
+
+      if (anArgIter + 2 >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetSensitivity = 1;
+      aChangeSet->SelectionMode = Draw::Atoi (theArgVec[++anArgIter]);
+      aChangeSet->Sensitivity = Draw::Atoi (theArgVec[++anArgIter]);
+    }
     else
     {
       std::cout << "Error: wrong syntax at " << anArg << "\n";
@@ -2208,6 +2244,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aCtx->UnsetWidth (aPrs, Standard_False);
       }
+      else if (aChangeSet->ToSetSensitivity != 0)
+      {
+        aCtx->SetSelectionSensitivity (aPrs, aChangeSet->SelectionMode, aChangeSet->Sensitivity);
+      }
       if (!aDrawer.IsNull())
       {
         if (aChangeSet->ToSetShowFreeBoundary == 1)
@@ -2264,6 +2304,10 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
            || aChangeSet->ToSetLineWidth == -1)
           {
             aColoredPrs->UnsetCustomAspects (aSubShape, Standard_True);
+          }
+          if (aChangeSet->ToSetSensitivity != 0)
+          {
+            aCtx->SetSelectionSensitivity (aPrs, aChangeSet->SelectionMode, aChangeSet->Sensitivity);
           }
         }
       }
@@ -5321,6 +5365,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
       "\n\t\t:          [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"
       "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
+      "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."

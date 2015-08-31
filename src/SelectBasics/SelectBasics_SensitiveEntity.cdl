@@ -46,6 +46,12 @@ is
     ---C++: return const&
     ---Purpose: Returns pointer to owner of the entity
 
+    SetSensitivityFactor (me : mutable;
+                          theSensFactor : Integer from Standard)
+      is static;
+    ---Level: Public
+    ---Purpose: Allows to manage the sensitivity of the entity
+
 
     Matches (me           : mutable;
             theMgr        : out SelectingVolumeManager from SelectBasics;
@@ -90,12 +96,6 @@ is
       is deferred;
     ---Purpose: Returns inversed location transformation matrix if the shape corresponding
     --          to this entity has init location set. Otherwise, returns identity matrix.
-
-    SetSensitivityFactor (me : mutable;
-                          theSensFactor : Integer from Standard)
-      is protected;
-    ---C++: inline
-    ---Purpose: Allows to manage the sensitivity of the entity
 
 
 fields

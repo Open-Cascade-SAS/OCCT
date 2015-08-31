@@ -903,3 +903,51 @@ void SelectMgr_SelectionManager::SetUpdateMode (const Handle(SelectMgr_Selectabl
     theObject->Selection (theMode)->UpdateStatus (theType);
 }
 
+//=======================================================================
+//function : SetSelectionSensitivity
+//purpose  : Allows to manage sensitivity of a particular selection of interactive object theObject and
+//           changes previous sensitivity value of all sensitive entities in selection with theMode
+//           to the given theNewSensitivity.
+//=======================================================================
+void SelectMgr_SelectionManager::SetSelectionSensitivity (const Handle(SelectMgr_SelectableObject)& theObject,
+                                                          const Standard_Integer theMode,
+                                                          const Standard_Integer theNewSens)
+{
+  Standard_ASSERT_RAISE (theNewSens > 0,
+    "Error! Selection sensitivity have positive value.");
+
+  if (theObject.IsNull() || !theObject->HasSelection (theMode))
+    return;
+
+  Handle(SelectMgr_Selection) aSel = theObject->Selection (theMode);
+  const Standard_Integer aPrevSens = aSel->Sensitivity();
+  aSel->SetSensitivity (theNewSens);
+
+  if (!(myGlobal.Contains (theObject) || myLocal.IsBound (theObject)))
+    return;
+
+if (myGlobal.Contains (theObject))
+  {
+    for (TColStd_MapIteratorOfMapOfTransient aSelectorsIter (mySelectors); aSelectorsIter.More(); aSelectorsIter.Next())
+    {
+      Handle(SelectMgr_ViewerSelector) aSelector = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectorsIter.Key());
+      if (aSelector->Contains (theObject))
+      {
+        aSelector->myTolerances.Decrement (aPrevSens);
+        aSelector->myTolerances.Add (theNewSens);
+        aSelector->myToUpdateTolerance = Standard_True;
+      }
+    }
+  }
+  if (myLocal.IsBound (theObject))
+  {
+    const SelectMgr_SequenceOfSelector& aSelectors = myLocal (theObject);
+    for (Standard_Integer aSelectorsIdx = 1; aSelectorsIdx <= aSelectors.Length(); aSelectorsIdx++)
+    {
+      Handle(SelectMgr_ViewerSelector) aCurSel = Handle(SelectMgr_ViewerSelector)::DownCast (aSelectors (aSelectorsIdx));
+      aCurSel->myTolerances.Decrement (aPrevSens);
+      aCurSel->myTolerances.Add (theNewSens);
+      aCurSel->myToUpdateTolerance = Standard_True;
+    }
+  }
+}

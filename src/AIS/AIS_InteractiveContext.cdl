@@ -442,7 +442,15 @@ is
     ---Purpose: Returns the pixel tolerance.
 
 		   ---Category: put locations on objects....
-		   --           
+		   --
+
+    SetSelectionSensitivity (me                : mutable;
+                             theObject         : InteractiveObject from AIS;
+                             theMode           : Integer from Standard;
+                             theNewSensitivity : Integer from Standard);
+    ---Purpose: Allows to manage sensitivity of a particular selection of interactive object theObject and
+    --          changes previous sensitivity value of all sensitive entities in selection with theMode to
+    --          the given theNewSensitivity.          
 
     SetLocation(me:mutable;
     	    	aniobj : InteractiveObject from AIS;
