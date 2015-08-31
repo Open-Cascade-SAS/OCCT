@@ -25,19 +25,19 @@
 ! ------------------------------------------------------------------------------
 ! Messages for sequence of operators
 ! 
-.Sequence.MSG0
+.SP.Sequence.Info.Seq
 Sequence d'operateurs: %s
 !
-.Sequence.MSG5
+.SP.Sequence.Info.Operator
 Operateur %d/%d: %s
 !
-.Sequence.MSG1
+.SP.Sequence.Error.NoOp
 Error: Operator %s is not found
 !
-.Sequence.MSG2
+.SP.Sequence.Error.Except
 Error: Operator %s failed with exception %s
 !
-.Sequence.MSG3
+.SP.Sequence.Warn.NoSeq
 Warning: Shape Processing: sequence not defined for %s
 !
 ! ------------------------------------------------------------------------------

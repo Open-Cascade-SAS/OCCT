@@ -129,7 +129,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
       time++;
     }
 #endif
-    // if FromSTEP or FromIGES, do default ShapeFix
+    // if reading, do default ShapeFix
     if ( ! strncmp ( pseq, "read.", 5 ) ) {
       try {
         OCC_CATCH_SIGNALS
@@ -157,11 +157,8 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
       }  
       return context->Result();
     }
-    // if ToSTEP or ToIGES, define sequence of DirectFaces
-    else if ( ! strcmp ( pseq, "write.step.sequence" ) ) {
-      rsc->SetResource ( str.ToCString(), "DirectFaces" );
-    }
-    else if ( ! strcmp ( pseq, "write.iges.sequence" ) ) {
+    // for writing, define default sequence of DirectFaces
+    else if ( ! strncmp ( pseq, "write.", 6 ) ) {
       rsc->SetResource ( str.ToCString(), "DirectFaces" );
     }
   }
@@ -171,7 +168,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
   rsc->SetResource ( "Runtime.MaxTolerance", maxTol );
 
   if ( !ShapeProcess::Perform(context, seq) )
-    return TopoDS_Shape(); // Null shape
+    return shape; // return original shape
 
   return context->Result();
 }

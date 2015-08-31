@@ -26,20 +26,20 @@
 ! ------------------------------------------------------------------------------
 ! Messages for sequence of operators
 ! 
-.Sequence.MSG0
-Info: Sequence of operators: %s
+.SP.Sequence.Info.Seq
+Info: Shape Processing: Sequence of operators: %s
 !
-.Sequence.MSG5
-Error: Operator %d/%d: %s
+.SP.Sequence.Info.Operator
+Info: Shape Processing: Operator %d/%d: %s
 !
-.Sequence.MSG1
-Error: Operator %s is not found
+.SP.Sequence.Error.NoOp
+Error: Shape Processing: Operator %s is not found
 !
-.Sequence.MSG2
-Error: Operator %s failed with exception %s
+.SP.Sequence.Error.Except
+Error: Shape Processing: Operator %s failed with exception %s
 !
-.Sequence.MSG3
-Warning: Shape Processing: sequence not defined for %s
+.SP.Sequence.Warn.NoSeq
+Warning: Shape Processing: Sequence not defined for %s, nothing to do
 !
 ! ------------------------------------------------------------------------------
 ! Messages for printing results of shape processing
