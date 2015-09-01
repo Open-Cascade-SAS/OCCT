@@ -88,7 +88,7 @@ void IntPolyh_Intersection::Perform() {
     isAdvDone = PerformAdv(aPMaillageFF,aPMaillageFR,aPMaillageRF,aPMaillageRR,nbCouplesAdv);
 
     // advanced interference found
-    if(isAdvDone && nbCouplesAdv > 10) {
+    if(isAdvDone && nbCouplesAdv > 0) {
       aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
       aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
       aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);

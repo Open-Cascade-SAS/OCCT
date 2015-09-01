@@ -85,7 +85,7 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& Upars1,
                             aPMaillageRR,nbCouplesAdv);
       
     // advanced interference found
-    if(isAdvDone && nbCouplesAdv > 10) {
+    if(isAdvDone && nbCouplesAdv > 0) {
       aPMaillageFF->StartPointsChain(TSectionLines,TTangentZones);
       aPMaillageFR->StartPointsChain(TSectionLines,TTangentZones);
       aPMaillageRF->StartPointsChain(TSectionLines,TTangentZones);
@@ -169,7 +169,7 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const Standard_Boolean i
      (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
       FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
     return Standard_False;
-}
+  }
 */
 //IFV test for parallel surf
   if(FinTTC > 200) {
@@ -248,7 +248,7 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
      (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
       FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
     return Standard_False;
-}
+  }
 */
 //IFV test for parallel surf
   if(FinTTC > 200) {
