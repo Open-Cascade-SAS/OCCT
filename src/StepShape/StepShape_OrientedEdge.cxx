@@ -69,6 +69,8 @@ Handle(StepShape_Vertex) StepShape_OrientedEdge::EdgeStart() const
 {
 	// WARNING : the field is redefined.
 	// method body is not yet automaticly wrote
+  if (edgeElement.IsNull())
+    return NULL;
   if (Orientation()) {
     return edgeElement->EdgeStart();
   }
@@ -88,7 +90,8 @@ Handle(StepShape_Vertex) StepShape_OrientedEdge::EdgeEnd() const
 {
 	// WARNING : the field is redefined.
 	// method body is not yet automaticly wrote
-
+  if (edgeElement.IsNull())
+    return NULL;
   if (Orientation()) {
     return edgeElement->EdgeEnd();
   }
