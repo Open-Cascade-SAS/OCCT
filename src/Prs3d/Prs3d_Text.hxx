@@ -25,6 +25,8 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TextAspect.hxx>
 
+#include <gp_Ax2.hxx>
+
 class Prs3d_Presentation;
 class TCollection_ExtendedString;
 class gp_Pnt;
@@ -46,6 +48,13 @@ public:
   //! anAspect, const TCollection_ExtendedString& aText,
   //! const gp_Pnt& AttachmentPoint);
   Standard_EXPORT static void Draw (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const TCollection_ExtendedString& aText, const gp_Pnt& AttachmentPoint);
+
+  //! Draws theText label with the location and the orientation
+  //! specified in the model 3D space through theOrientation argument.
+  Standard_EXPORT static void Draw (const Handle(Prs3d_Presentation)& thePresentation,
+                                    const Handle(Prs3d_TextAspect)&   theAspect,
+                                    const TCollection_ExtendedString& theText,
+                                    const gp_Ax2&                     theOrientation);
   
   //! Defines the display of the text aText at the point
   //! AttachmentPoint.

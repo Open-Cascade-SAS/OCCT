@@ -46,13 +46,13 @@
 #include <Graphic3d_BoundBuffer.hxx>
 #include <Standard_Address.hxx>
 #include <Graphic3d_GroupAspect.hxx>
+#include <gp_Ax2.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 class Graphic3d_Structure;
 class Graphic3d_GroupDefinitionError;
 class Standard_OutOfRange;
-class TCollection_ExtendedString;
 class Graphic3d_ArrayOfPrimitives;
-class gp_Ax2;
 
 
 class Graphic3d_Group;
@@ -86,6 +86,8 @@ DEFINE_STANDARD_HANDLE(Graphic3d_Group, MMgt_TShared)
 //!
 //! Developers are strongly recommended to take all the above into account when filling Graphic3d_Group
 //! with aspects and primitives and choose the group usage model beforehand out of application needs.
+//! Note that some Graphic3d_Group class virtual methods contain only base implementation
+//! that is extended by the descendant class in OpenGl package.
 class Graphic3d_Group : public MMgt_TShared
 {
 
@@ -215,6 +217,27 @@ public:
   //! AHta    : HTA_LEFT
   //! AVta    : VTA_BOTTOM
   Standard_EXPORT void Text (const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
+
+  //! Creates the string <theText> at orientation <theOrientation> in 3D space.
+  Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
+                                     const gp_Ax2&                           theOrientation,
+                                     const Standard_Real                     theHeight,
+                                     const Quantity_PlaneAngle               theAngle,
+                                     const Graphic3d_TextPath                theTp,
+                                     const Graphic3d_HorizontalTextAlignment theHTA,
+                                     const Graphic3d_VerticalTextAlignment   theVTA,
+                                     const Standard_Boolean                  theToEvalMinMax = Standard_True);
+
+  //! Creates the string <theText> at orientation <theOrientation> in 3D space.
+  Standard_EXPORT virtual void Text (const TCollection_ExtendedString&       theText,
+                                     const gp_Ax2&                           theOrientation,
+                                     const Standard_Real                     theHeight,
+                                     const Quantity_PlaneAngle               theAngle,
+                                     const Graphic3d_TextPath                theTp,
+                                     const Graphic3d_HorizontalTextAlignment theHTA,
+                                     const Graphic3d_VerticalTextAlignment   theVTA,
+                                     const Standard_Boolean                  theToEvalMinMax = Standard_True);
+
 
   //! Adds an array of primitives for display
   Standard_EXPORT virtual void AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType, const Handle(Graphic3d_IndexBuffer)& theIndices, const Handle(Graphic3d_Buffer)& theAttribs, const Handle(Graphic3d_BoundBuffer)& theBounds, const Standard_Boolean theToEvalMinMax = Standard_True);

@@ -27,6 +27,8 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 
+#include <gp_Ax2.hxx>
+
 class OpenGl_PrinterContext;
 
 //! Text rendering
@@ -38,6 +40,11 @@ public:
   //! Main constructor
   Standard_EXPORT OpenGl_Text (const Standard_Utf8Char* theText,
                                const OpenGl_Vec3&       thePoint,
+                               const OpenGl_TextParam&  theParams);
+
+  //! Creates new text in 3D space.
+  Standard_EXPORT OpenGl_Text (const Standard_Utf8Char* theText,
+                               const gp_Ax2&            theOrientation,
                                const OpenGl_TextParam&  theParams);
 
   //! Setup new string and position
@@ -139,6 +146,7 @@ protected:
 
   mutable OpenGl_Mat4d myProjMatrix;
   mutable OpenGl_Mat4d myModelMatrix;
+  mutable OpenGl_Mat4d myOrientationMatrix;
   mutable GLint    myViewport[4];
   mutable GLdouble myWinX;
   mutable GLdouble myWinY;
@@ -152,6 +160,8 @@ protected:
   NCollection_String myString;
   OpenGl_Vec3        myPoint;
   bool               myIs2d;
+  gp_Ax2             myOrientation; //!< Text orientation in 3D space.
+  bool               myHasPlane;    //!< Check if text have orientation in 3D space.
 
 public:
 

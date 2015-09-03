@@ -77,6 +77,16 @@ public:
                                      const Graphic3d_VerticalTextAlignment   theVta,
                                      const Standard_Boolean                  theToEvalMinMax);
 
+  //! Add text element in 3D space.
+  Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
+                                     const gp_Ax2&                           theOrientation,
+                                     const Standard_Real                     theHeight,
+                                     const Quantity_PlaneAngle               theAngle,
+                                     const Graphic3d_TextPath                theTp,
+                                     const Graphic3d_HorizontalTextAlignment theHTA,
+                                     const Graphic3d_VerticalTextAlignment   theVTA,
+                                     const Standard_Boolean                  theToEvalMinMax) Standard_OVERRIDE;
+
   //! Add UserDraw element using obsolete API
   Standard_EXPORT virtual void UserDraw (const Standard_Address theObject,
                                          const Standard_Boolean theToEvalMinMax,

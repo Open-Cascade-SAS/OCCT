@@ -21,6 +21,7 @@
 #include <OpenGl_ShaderStates.hxx>
 #include <OpenGl_Text.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <OpenGl_View.hxx>
 
 #include <Font_FontMgr.hxx>
 #include <Graphic3d_TransformUtils.hxx>
@@ -146,7 +147,8 @@ OpenGl_Text::OpenGl_Text()
   myWinZ (0.0f),
   myScaleHeight (1.0f),
   myPoint  (0.0f, 0.0f, 0.0f),
-  myIs2d   (false)
+  myIs2d   (false),
+  myHasPlane (false)
 {
   myParams.Height = 10;
   myParams.HAlign = Graphic3d_HTA_LEFT;
@@ -168,9 +170,34 @@ OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
   myParams (theParams),
   myString (theText),
   myPoint  (thePoint),
-  myIs2d   (false)
+  myIs2d   (false),
+  myHasPlane (false)
 {
   //
+}
+
+// =======================================================================
+// function : OpenGl_Text
+// purpose  :
+// =======================================================================
+OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
+                          const gp_Ax2&            theOrientation,
+                          const OpenGl_TextParam&  theParams)
+: myWinX         (0.0),
+  myWinY         (0.0),
+  myWinZ         (0.0),
+  myScaleHeight  (1.0),
+  myExportHeight (1.0),
+  myParams       (theParams),
+  myString       (theText),
+  myIs2d         (false),
+  myOrientation  (theOrientation),
+  myHasPlane     (true)
+{
+  const gp_Pnt& aPoint = theOrientation.Location();
+  myPoint = OpenGl_Vec3 (static_cast<Standard_ShortReal> (aPoint.X()),
+                         static_cast<Standard_ShortReal> (aPoint.Y()),
+                         static_cast<Standard_ShortReal> (aPoint.Z()));
 }
 
 // =======================================================================
@@ -389,6 +416,9 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
       aTextAspect, aTextAspect->ShaderProgramRes (aCtx));
   }
 
+  myOrientationMatrix = theWorkspace->ActiveView()->Camera()->OrientationMatrix();
+  myProjMatrix.Convert (aCtx->ProjectionState.Current());
+
   // use highlight color or colors from aspect
   if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
   {
@@ -443,6 +473,16 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                                const OpenGl_Vec3                    theDVec) const
 {
   OpenGl_Mat4d aModViewMat;
+  OpenGl_Mat4d aProjectMat;
+
+  if (myHasPlane)
+  {
+    aProjectMat = myProjMatrix * myOrientationMatrix;
+  }
+  else
+  {
+    aProjectMat = myProjMatrix;
+  }
 
   if (myIs2d)
   {
@@ -459,14 +499,28 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                                                         std::floor (myWinY + theDVec.y()),
                                                         myWinZ + theDVec.z(),
                                                         OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
-                                                        OpenGl_Mat4d::Map (myProjMatrix),
+                                                        OpenGl_Mat4d::Map (aProjectMat),
                                                         myViewport,
                                                         anObjX,
                                                         anObjY,
                                                         anObjZ);
 
-    Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
-    Graphic3d_TransformUtils::Rotate<GLdouble>    (aModViewMat, theTextAspect.Angle(), 0.0, 0.0, 1.0);
+    if (myHasPlane)
+    {
+      const gp_Dir& aVectorDir   = myOrientation.XDirection();
+      const gp_Dir& aVectorUp    = myOrientation.Direction();
+      const gp_Dir& aVectorRight = myOrientation.YDirection();
+
+      aModViewMat.SetColumn (3, OpenGl_Vec3d (anObjX, anObjY, anObjZ));
+      aModViewMat.SetColumn (2, OpenGl_Vec3d (aVectorUp.X(), aVectorUp.Y(), aVectorUp.Z()));
+      aModViewMat.SetColumn (1, OpenGl_Vec3d (aVectorRight.X(), aVectorRight.Y(), aVectorRight.Z()));
+      aModViewMat.SetColumn (0, OpenGl_Vec3d (aVectorDir.X(), aVectorDir.Y(), aVectorDir.Z()));
+    }
+    else
+    {
+      Graphic3d_TransformUtils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
+      Graphic3d_TransformUtils::Rotate<GLdouble> (aModViewMat, theTextAspect.Angle(), 0.0, 0.0, 1.0);
+    }
 
     if (!theTextAspect.IsZoomable())
     {
@@ -490,6 +544,12 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   theCtx->WorldViewState.SetCurrent<Standard_Real> (aModViewMat);
   theCtx->ApplyWorldViewMatrix();
+
+  if (!myIs2d)
+  {
+    theCtx->ProjectionState.SetCurrent<Standard_Real> (aProjectMat);
+    theCtx->ApplyProjectionMatrix();
+  }
 
   if (!theCtx->ActiveProgram().IsNull())
   {
@@ -692,7 +752,6 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   if (!myIs2d)
   {
     glGetIntegerv (GL_VIEWPORT,          myViewport);
-    myProjMatrix.Convert (theCtx->ProjectionState.Current());
 
     Graphic3d_TransformUtils::Project<Standard_Real> (myPoint.x(),
                                                       myPoint.y(),
@@ -831,6 +890,12 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorText.rgb);
   setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
   drawText    (thePrintCtx, theCtx, theTextAspect);
+
+  if (!myIs2d)
+  {
+    theCtx->ProjectionState.SetCurrent<Standard_Real> (myProjMatrix);
+    theCtx->ApplyProjectionMatrix();
+  }
 
 #if !defined(GL_ES_VERSION_2_0)
   if (theCtx->core11 != NULL)

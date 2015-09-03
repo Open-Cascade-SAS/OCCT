@@ -2434,6 +2434,12 @@ static int VDrawText (Draw_Interpretor& theDI,
   gp_Pnt aTPPosition;
   Aspect_TypeOfDisplayText aDisplayType = Aspect_TODT_NORMAL;
 
+
+  Standard_Boolean aHasPlane = Standard_False;
+  gp_Dir           aNormal;
+  gp_Dir           aDirection;
+  gp_Pnt           aPos;
+
   for (; anArgIt < theArgsNb; ++anArgIt)
   {
     TCollection_AsciiString aParam (theArgVec[anArgIt]);
@@ -2452,7 +2458,6 @@ static int VDrawText (Draw_Interpretor& theDI,
         return 1;
       }
 
-      gp_Pnt aPos;
       aPos.SetX (Draw::Atof (theArgVec[++anArgIt]));
       aPos.SetY (Draw::Atof (theArgVec[++anArgIt]));
       aPos.SetZ (Draw::Atof (theArgVec[++anArgIt]));
@@ -2624,6 +2629,26 @@ static int VDrawText (Draw_Interpretor& theDI,
 
       aTextPrs->SetFont (theArgVec[anArgIt]);
     }
+    else if (aParam == "-plane")
+    {
+      if (anArgIt + 6 >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+
+      Standard_Real aX = Draw::Atof (theArgVec[++anArgIt]);
+      Standard_Real aY = Draw::Atof (theArgVec[++anArgIt]);
+      Standard_Real aZ = Draw::Atof (theArgVec[++anArgIt]);
+      aNormal.SetCoord (aX, aY, aZ);
+
+      aX = Draw::Atof (theArgVec[++anArgIt]);
+      aY = Draw::Atof (theArgVec[++anArgIt]);
+      aZ = Draw::Atof (theArgVec[++anArgIt]);
+      aDirection.SetCoord (aX, aY, aZ);
+
+      aHasPlane = Standard_True;
+    }
     else if (aParam == "-disptype"
           || aParam == "-displaytype")
     {
@@ -2730,14 +2755,19 @@ static int VDrawText (Draw_Interpretor& theDI,
     }
   }
 
+  if (aHasPlane)
+  {
+    aTextPrs->SetOrientation3D (gp_Ax2 (aPos, aNormal, aDirection));
+  }
+
   if (aTrsfPersFlags != Graphic3d_TMF_None)
   {
     aTextPrs->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
     aTextPrs->SetDisplayType (aDisplayType);
     aTextPrs->SetZLayer(Graphic3d_ZLayerId_TopOSD);
-    if (aTextPrs->GetPosition().Z() != 0)
+    if (aTextPrs->Position().Z() != 0)
     {
-      aTextPrs->SetPosition (gp_Pnt(aTextPrs->GetPosition().X(), aTextPrs->GetPosition().Y(), 0));
+      aTextPrs->SetPosition (gp_Pnt(aTextPrs->Position().X(), aTextPrs->Position().Y(), 0));
     }
   }
   else if (aTrsfPersFlags != aTextPrs->TransformPersistence().Flags)
@@ -6280,6 +6310,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-disptype {blend|decal|subtitle|dimension|normal}=normal}"
                    "\n\t\t: [-subcolor {R G B|name}=white]"
                    "\n\t\t: [-noupdate]"
+                   "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]"
                    "\n\t\t: Display text label at specified position.",
     __FILE__, VDrawText, group);
 

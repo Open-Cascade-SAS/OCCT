@@ -231,6 +231,46 @@ void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
 }
 
 // =======================================================================
+// function : Text
+// purpose  :
+// =======================================================================
+void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
+                         const gp_Ax2&                           theOrientation,
+                         const Standard_Real                     theHeight,
+                         const Quantity_PlaneAngle               theAngle,
+                         const Graphic3d_TextPath                theTp,
+                         const Graphic3d_HorizontalTextAlignment theHTA,
+                         const Graphic3d_VerticalTextAlignment   theVTA,
+                         const Standard_Boolean                  theToEvalMinMax)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  OpenGl_TextParam  aParams;
+  OpenGl_Structure* aStruct = GlStruct();
+
+  aParams.Height      = int ((theHeight < 2.0) ? aStruct->GlDriver()->DefaultTextHeight() : theHeight);
+  aParams.HAlign      = theHTA;
+  aParams.VAlign      = theVTA;
+
+  OpenGl_Text* aText = new OpenGl_Text (theTextUtf, theOrientation, aParams);
+
+  AddElement (aText);
+
+  Graphic3d_Group::Text (theTextUtf,
+                         theOrientation,
+                         theHeight,
+                         theAngle,
+                         theTp,
+                         theHTA,
+                         theVTA,
+                         theToEvalMinMax);
+
+}
+
+// =======================================================================
 // function : UserDraw
 // purpose  :
 // =======================================================================

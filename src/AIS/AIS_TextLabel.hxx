@@ -18,6 +18,7 @@
 #include <AIS_InteractiveObject.hxx>
 
 #include <gp_Pnt.hxx>
+#include <gp_Ax2.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Font_FontAspect.hxx>
@@ -43,9 +44,6 @@ public:
   //! Setup position.
   Standard_EXPORT void SetPosition (const gp_Pnt& thePosition);
 
-  //! Get position.
-  Standard_EXPORT gp_Pnt GetPosition () {return myPosition;};
-
   //! Setup horizontal justification.
   Standard_EXPORT void SetHJustification (const Graphic3d_HorizontalTextAlignment theHJust);
 
@@ -66,6 +64,21 @@ public:
 
   //! Setup font.
   Standard_EXPORT void SetFont (Standard_CString theFont);
+
+  //! Setup label orientation in the model 3D space.
+  Standard_EXPORT void SetOrientation3D (const gp_Ax2& theOrientation);
+
+  //! Reset label orientation in the model 3D space.
+  Standard_EXPORT void UnsetOrientation3D ();
+
+  //! Returns position.
+  Standard_EXPORT const gp_Pnt& Position() const;
+
+  //! Returns label orientation in the model 3D space.
+  Standard_EXPORT const gp_Ax2& Orientation3D() const;
+
+  //! Returns true if the current text placement mode uses text orientation in the model 3D space.
+  Standard_EXPORT Standard_Boolean HasOrientation3D() const;
 
   //! Define the display type of the text.
   //!
@@ -94,9 +107,10 @@ private:
 protected:
 
   TCollection_ExtendedString myText;
-  gp_Pnt                     myPosition;
   TCollection_AsciiString    myFont;
   Font_FontAspect            myFontAspect;
+  gp_Ax2                     myOrientation3D;
+  Standard_Boolean           myHasOrientation3D;
 
 public:
 

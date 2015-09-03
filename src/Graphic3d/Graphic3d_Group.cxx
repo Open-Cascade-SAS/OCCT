@@ -1167,6 +1167,59 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
 // function : Text
 // purpose  :
 // =======================================================================
+void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
+                            const gp_Ax2&                           theOrientation,
+                            const Standard_Real                     theHeight,
+                            const Quantity_PlaneAngle               theAngle,
+                            const Graphic3d_TextPath                theTP,
+                            const Graphic3d_HorizontalTextAlignment theHTA,
+                            const Graphic3d_VerticalTextAlignment   theVTA,
+                            const Standard_Boolean                  theToEvalMinMax)
+{
+  const NCollection_String aText ((Standard_Utf16Char*)(theText.ToExtString()));
+  Text (aText.ToCString(),
+        theOrientation,
+        theHeight,
+        theAngle,
+        theTP,
+        theHTA,
+        theVTA,
+        theToEvalMinMax);
+}
+
+// =======================================================================
+// function : Text
+// purpose  :
+// =======================================================================
+void Graphic3d_Group::Text (const Standard_CString                  /*theText*/,
+                            const gp_Ax2&                           theOrientation,
+                            const Standard_Real                     /*theHeight*/,
+                            const Quantity_PlaneAngle               /*theAngle*/,
+                            const Graphic3d_TextPath                /*theTp*/,
+                            const Graphic3d_HorizontalTextAlignment /*theHta*/,
+                            const Graphic3d_VerticalTextAlignment   /*theVta*/,
+                            const Standard_Boolean                  theToEvalMinMax)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  if (theToEvalMinMax)
+  {
+    myStructure->CStructure()->Is2dText = Standard_False;
+    myBounds.Add (Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theOrientation.Location().X()),
+                                  static_cast<Standard_ShortReal> (theOrientation.Location().Y()),
+                                  static_cast<Standard_ShortReal> (theOrientation.Location().Z()),
+                                  1.0f));
+  }
+  Update();
+}
+
+// =======================================================================
+// function : Text
+// purpose  :
+// =======================================================================
 void Graphic3d_Group::Text (const TCollection_ExtendedString& theText,
                             const Graphic3d_Vertex&           thePoint,
                             const Standard_Real               theHeight,
