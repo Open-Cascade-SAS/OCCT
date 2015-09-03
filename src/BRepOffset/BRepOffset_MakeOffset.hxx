@@ -161,6 +161,7 @@ private:
   Standard_Boolean myDone;
   BRepOffset_Error myError;
   BRepOffset_MakeLoops myMakeLoops;
+  Standard_Boolean myIsPerformSewing; // Handle bad walls in thicksolid mode.
 
 
 };

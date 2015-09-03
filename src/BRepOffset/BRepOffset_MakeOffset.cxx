@@ -109,6 +109,8 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <Geom_Line.hxx>
 
 #include <stdio.h>
 // POP for NT
@@ -524,6 +526,7 @@ void BRepOffset_MakeOffset::Initialize(const TopoDS_Shape&    S,
   myJoin       = Join;
   myThickening = Thickening;
   myDone     = Standard_False;
+  myIsPerformSewing = Standard_False;
   Clear();
 }
 
@@ -659,6 +662,7 @@ static void EvalMax(const TopoDS_Shape& S, Standard_Real& Tol)
   }
 }
 
+
 //=======================================================================
 //function : MakeOffsetShape
 //purpose  : 
@@ -777,6 +781,21 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
   }
 
   CorrectConicalFaces();
+
+  // Result solid should be computed in MakeOffset scope.
+  if (myThickening &&
+      myIsPerformSewing)
+  {
+    BRepBuilderAPI_Sewing aSew(myTol);
+    aSew.Add(myOffsetShape);
+    aSew.Perform();
+    myOffsetShape = aSew.SewedShape();
+
+    // Rebuild solid.
+    // Offset shape expected to be really closed after sewing.
+    myOffsetShape.Closed(Standard_True);
+    MakeSolid();
+  }
 
   myDone = Standard_True;
 }
@@ -2491,7 +2510,6 @@ static void UpdateInitOffset (BRepAlgo_Image&         myInitOffset,
 //function : MakeMissingWalls
 //purpose  : 
 //=======================================================================
-
 void BRepOffset_MakeOffset::MakeMissingWalls ()
 {
   TopTools_DataMapOfShapeListOfShape Contours; //Start vertex + list of connected edges (free boundary)
@@ -2502,361 +2520,416 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
 
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape iter(Contours);
   for (; iter.More(); iter.Next())
+  {
+    TopoDS_Vertex StartVertex = TopoDS::Vertex(iter.Key());
+    TopoDS_Edge StartEdge;
+    const TopTools_ListOfShape& aContour = iter.Value();
+    TopTools_ListIteratorOfListOfShape itl(aContour);
+    Standard_Boolean FirstStep = Standard_True;
+    TopoDS_Edge PrevEdge;
+    TopoDS_Vertex PrevVertex = StartVertex;
+    Standard_Boolean isBuildFromScratch = Standard_False; // Problems with edges.
+    for (; itl.More(); itl.Next())
     {
-      TopoDS_Vertex StartVertex = TopoDS::Vertex(iter.Key());
-      TopoDS_Edge StartEdge;
-      const TopTools_ListOfShape& aContour = iter.Value();
-      TopTools_ListIteratorOfListOfShape itl(aContour);
-      Standard_Boolean FirstStep = Standard_True;
-      TopoDS_Edge PrevEdge;
-      TopoDS_Vertex PrevVertex = StartVertex;
-      for (; itl.More(); itl.Next())
-	{
-	  TopoDS_Edge anEdge = TopoDS::Edge(itl.Value());
-	  if (!myInitOffsetEdge.HasImage(anEdge))
-	    continue;
-	  //if (BRep_Tool::Degenerated(anEdge))
-	    //continue;
-	  TopoDS_Face aFace = TopoDS::Face(MapEF(anEdge));
-	  //TopoDS_Edge OE = TopoDS::Edge(myInitOffsetEdge.Image(anEdge).First());
-	  TopTools_ListOfShape LOE, LOE2;
-	  myInitOffsetEdge.LastImage( anEdge, LOE );
-	  myImageOffset.LastImage( LOE.Last(), LOE2 );
-	  TopoDS_Edge OE = TopoDS::Edge( LOE2.Last() );
-	  ////////////////////////////////////////////////////////////////////////
-	  TopoDS_Vertex V1, V2, V3, V4;
-	  TopExp::Vertices(anEdge, V1, V2/*, Standard_True*/);
-	  TopExp::Vertices(OE,     V4, V3/*, Standard_True*/);
-	  Standard_Boolean ToReverse = Standard_False;
-	  if (!V1.IsSame(PrevVertex))
-	    {
-	      TopoDS_Vertex aVtx = V1; V1 = V2; V2 = aVtx;
-	      aVtx = V3; V3 = V4; V4 = aVtx;
-	      ToReverse = Standard_True;
-	    }
-	  //Temporary
-	  //anEdge.Reverse();
-	  OE.Orientation(TopAbs::Reverse(anEdge.Orientation()));
-	  TopoDS_Edge E3, E4;
-	  if (FirstStep)
-	    {
-	      E4 = BRepLib_MakeEdge( V1, V4 );
-	      StartEdge = E4;
-	    }
-	  else
-	    E4 = PrevEdge;
-	  Standard_Boolean ArcOnV2 = ((myJoin == GeomAbs_Arc) && (myInitOffsetEdge.HasImage(V2)));
-	  if (V2.IsSame(StartVertex) && !ArcOnV2)
-	    E3 = StartEdge;
-	  else
-	    E3 = BRepLib_MakeEdge( V2, V3 );
-	  E4.Reverse();
-	  TopoDS_Shape localAnEdge = anEdge.Oriented(TopAbs_FORWARD);
-	  const TopoDS_Edge& anEdgeFWD = TopoDS::Edge(localAnEdge);
-	  Standard_Real ParV1 = BRep_Tool::Parameter(V1, anEdgeFWD);
-	  Standard_Real ParV2 = BRep_Tool::Parameter(V2, anEdgeFWD);
-	  BRep_Builder BB;
-	  TopoDS_Wire theWire;
-	  BB.MakeWire(theWire);
-	  if (ToReverse)
-	    {
-	      BB.Add(theWire, anEdge.Reversed());
-	      BB.Add(theWire, E3.Reversed());
-	      BB.Add(theWire, OE.Reversed());
-	      BB.Add(theWire, E4.Reversed());
-	    }
-	  else
-	    {
-	      BB.Add(theWire, anEdge);
-	      BB.Add(theWire, E3);
-	      BB.Add(theWire, OE);
-	      BB.Add(theWire, E4);
-	    }
-	  BRepLib::BuildCurves3d( theWire, myTol );
-	  theWire.Closed(Standard_True);
-	  TopoDS_Face NewFace;
-	  Handle(Geom_Surface) theSurf;
-	  BRepAdaptor_Curve BAcurve(anEdge);
-	  BRepAdaptor_Curve BAcurveOE(OE);
-	  Standard_Real fpar = BAcurve.FirstParameter();
-	  Standard_Real lpar = BAcurve.LastParameter();
-	  gp_Pnt PonE  = BAcurve.Value(fpar);
-	  gp_Pnt PonOE = BAcurveOE.Value(fpar);
-	  gp_Dir OffsetDir = gce_MakeDir( PonE, PonOE );
-	  Handle(Geom2d_Line) EdgeLine2d, OELine2d, aLine2d, aLine2d2;
-	  Standard_Boolean IsPlanar = Standard_False;
-	  if (BAcurve.GetType() == GeomAbs_Circle &&
-	      BAcurveOE.GetType() == GeomAbs_Circle)
+      TopoDS_Edge anEdge = TopoDS::Edge(itl.Value());
+
+      // Check for offset existence.
+      if (!myInitOffsetEdge.HasImage(anEdge))
+        continue;
+
+      // Check for existence of two different vertices.
+      TopTools_ListOfShape LOE, LOE2;
+      myInitOffsetEdge.LastImage( anEdge, LOE );
+      myImageOffset.LastImage( LOE.Last(), LOE2 );
+      TopoDS_Edge OE = TopoDS::Edge( LOE2.Last() );
+      TopoDS_Vertex V1, V2, V3, V4;
+      TopExp::Vertices(OE,     V4, V3);
+      TopExp::Vertices(anEdge, V1, V2);
+      Standard_Real aF, aL;
+      const Handle(Geom_Curve) aC = BRep_Tool::Curve(anEdge, aF, aL);
+      if (!aC.IsNull() &&
+         (!aC->IsClosed() && !aC->IsPeriodic()))
+      {
+        gp_Pnt aPntF = BRep_Tool::Pnt(V1);
+        gp_Pnt aPntL = BRep_Tool::Pnt(V2);
+        Standard_Real aDistE = aPntF.SquareDistance(aPntL);
+        if ( aDistE < Precision::SquareConfusion())
+        {
+          // Bad case: non closed, but vertexes mapped to same 3d point.
+          continue;
+        }
+
+        Standard_Real anEdgeTol = BRep_Tool::Tolerance(anEdge);
+        if (aDistE < anEdgeTol)
+        {
+          // Potential problems not detected via checkshape.
+          gp_Pnt aPntOF = BRep_Tool::Pnt(V4);
+          gp_Pnt aPntOL = BRep_Tool::Pnt(V3);
+          if (aPntOF.SquareDistance(aPntOL) > gp::Resolution())
           {
-            gp_Circ aCirc = BAcurve.Circle();
-            gp_Circ aCircOE = BAcurveOE.Circle();
-            gp_Lin anAxisLine(aCirc.Axis());
-            gp_Dir CircAxisDir = aCirc.Axis().Direction();
-            if (aCirc.Axis().IsParallel(aCircOE.Axis(), Precision::Confusion()) &&
-                anAxisLine.Contains(aCircOE.Location(), Precision::Confusion()))
-            { //cylinder, plane or cone
-              if (Abs(aCirc.Radius() - aCircOE.Radius()) <= Precision::Confusion()) //case of cylinder
-                theSurf = GC_MakeCylindricalSurface(aCirc).Value();
-              else if (aCirc.Location().Distance(aCircOE.Location()) <= Precision::Confusion()) {//case of plane
-                IsPlanar = Standard_True;
+            // To avoid computation of complex analytical continuation of Sin / ArcSin.
+            Standard_Real aSinValue = Min(2 * anEdgeTol / aPntOF.Distance(aPntOL), 1.0);
+            Standard_Real aMaxAngle = Min(Abs(ASin(aSinValue)), M_PI_4); // Maximal angle.
+            Standard_Real aCurrentAngle =  gp_Vec(aPntF, aPntL).Angle(gp_Vec(aPntOF, aPntOL));
+            if (aC->IsKind(STANDARD_TYPE(Geom_Line)) &&
+                Abs (aCurrentAngle) > aMaxAngle)
+            {
+              // anEdge not collinear to offset edge.
+              isBuildFromScratch = Standard_True;
+              myIsPerformSewing = Standard_True;
+              continue;
+            }
+          }
+        }
+      }
+
+      Standard_Boolean ToReverse = Standard_False;
+      if (!V1.IsSame(PrevVertex))
+      {
+        TopoDS_Vertex aVtx = V1; V1 = V2; V2 = aVtx;
+        aVtx = V3; V3 = V4; V4 = aVtx;
+        ToReverse = Standard_True;
+      }
+
+      OE.Orientation(TopAbs::Reverse(anEdge.Orientation()));
+      TopoDS_Edge E3, E4;
+      Standard_Boolean ArcOnV2 = ((myJoin == GeomAbs_Arc) && (myInitOffsetEdge.HasImage(V2)));
+      if (FirstStep || isBuildFromScratch)
+      {
+        E4 = BRepLib_MakeEdge( V1, V4 );
+        if (FirstStep)
+          StartEdge = E4;
+      }
+      else
+        E4 = PrevEdge;
+      if (V2.IsSame(StartVertex) && !ArcOnV2)
+        E3 = StartEdge;
+      else
+        E3 = BRepLib_MakeEdge( V2, V3 );
+      E4.Reverse();
+
+      if (isBuildFromScratch)
+      {
+        E3.Reverse();
+        E4.Reverse();
+      }
+
+      TopoDS_Shape localAnEdge = anEdge.Oriented(TopAbs_FORWARD);
+      const TopoDS_Edge& anEdgeFWD = TopoDS::Edge(localAnEdge);
+      Standard_Real ParV1 = BRep_Tool::Parameter(V1, anEdgeFWD);
+      Standard_Real ParV2 = BRep_Tool::Parameter(V2, anEdgeFWD);
+      BRep_Builder BB;
+      TopoDS_Wire theWire;
+      BB.MakeWire(theWire);
+      if (ToReverse)
+      {
+        BB.Add(theWire, anEdge.Reversed());
+        BB.Add(theWire, E3.Reversed());
+        BB.Add(theWire, OE.Reversed());
+        BB.Add(theWire, E4.Reversed());
+      }
+      else
+      {
+        BB.Add(theWire, anEdge);
+        BB.Add(theWire, E3);
+        BB.Add(theWire, OE);
+        BB.Add(theWire, E4);
+      }
+
+      BRepLib::BuildCurves3d( theWire, myTol );
+      theWire.Closed(Standard_True);
+      TopoDS_Face NewFace;
+      Handle(Geom_Surface) theSurf;
+      BRepAdaptor_Curve BAcurve(anEdge);
+      BRepAdaptor_Curve BAcurveOE(OE);
+      Standard_Real fpar = BAcurve.FirstParameter();
+      Standard_Real lpar = BAcurve.LastParameter();
+      gp_Pnt PonE  = BAcurve.Value(fpar);
+      gp_Pnt PonOE = BAcurveOE.Value(fpar);
+      gp_Dir OffsetDir = gce_MakeDir( PonE, PonOE );
+      Handle(Geom2d_Line) EdgeLine2d, OELine2d, aLine2d, aLine2d2;
+      Standard_Boolean IsPlanar = Standard_False;
+      if (BAcurve.GetType() == GeomAbs_Circle &&
+        BAcurveOE.GetType() == GeomAbs_Circle)
+      {
+        gp_Circ aCirc = BAcurve.Circle();
+        gp_Circ aCircOE = BAcurveOE.Circle();
+        gp_Lin anAxisLine(aCirc.Axis());
+        gp_Dir CircAxisDir = aCirc.Axis().Direction();
+        if (aCirc.Axis().IsParallel(aCircOE.Axis(), Precision::Confusion()) &&
+          anAxisLine.Contains(aCircOE.Location(), Precision::Confusion()))
+        { //cylinder, plane or cone
+          if (Abs(aCirc.Radius() - aCircOE.Radius()) <= Precision::Confusion()) //case of cylinder
+            theSurf = GC_MakeCylindricalSurface(aCirc).Value();
+          else if (aCirc.Location().Distance(aCircOE.Location()) <= Precision::Confusion()) {//case of plane
+            IsPlanar = Standard_True;
+            //
+            gp_Pnt PonEL = BAcurve.Value(lpar);
+            if (PonEL.Distance(PonE) <= Precision::PConfusion()) {
+              Standard_Boolean bIsHole;
+              TopoDS_Edge aE1, aE2;
+              TopoDS_Wire aW1, aW2;
+              Handle(Geom_Plane) aPL;
+              IntTools_FClass2d aClsf;
+              //
+              if (aCirc.Radius()>aCircOE.Radius()) {
+                aE1 = anEdge;
+                aE2 = OE;
+              } else {
+                aE1 = OE;
+                aE2 = anEdge;
+              }
+              //
+              BB.MakeWire(aW1);
+              BB.Add(aW1, aE1);
+              BB.MakeWire(aW2);
+              BB.Add(aW2, aE2);
+              //
+              aPL = new Geom_Plane(aCirc.Location(), CircAxisDir);
+              for (Standard_Integer i = 0; i < 2; ++i) {
+                TopoDS_Wire& aW = (i==0) ? aW1 : aW2;
+                TopoDS_Edge& aE = (i==0) ? aE1 : aE2;
                 //
-                gp_Pnt PonEL = BAcurve.Value(lpar);
-                if (PonEL.Distance(PonE) <= Precision::PConfusion()) {
-                  Standard_Boolean bIsHole;
-                  TopoDS_Edge aE1, aE2;
-                  TopoDS_Wire aW1, aW2;
-                  Handle(Geom_Plane) aPL;
-                  IntTools_FClass2d aClsf;
-                  //
-                  if (aCirc.Radius()>aCircOE.Radius()) {
-                    aE1 = anEdge;
-                    aE2 = OE;
-                  } else {
-                    aE1 = OE;
-                    aE2 = anEdge;
-                  }
-                  //
-                  BB.MakeWire(aW1);
-                  BB.Add(aW1, aE1);
-                  BB.MakeWire(aW2);
-                  BB.Add(aW2, aE2);
-                  //
-                  aPL = new Geom_Plane(aCirc.Location(), CircAxisDir);
-                  for (Standard_Integer i = 0; i < 2; ++i) {
-                    TopoDS_Wire& aW = (i==0) ? aW1 : aW2;
-                    TopoDS_Edge& aE = (i==0) ? aE1 : aE2;
-                    //
-                    TopoDS_Face aFace;
-                    BB.MakeFace(aFace, aPL, Precision::Confusion());
-                    BB.Add (aFace, aW);
-                    aClsf.Init(aFace, Precision::Confusion());
-                    bIsHole=aClsf.IsHole();
-                    if ((bIsHole && !i) || (!bIsHole && i)) {
-                      aW.Nullify();
-                      BB.MakeWire(aW);
-                      BB.Add(aW, aE.Reversed());
-                    }
-                  }
-                  //
-                  BB.MakeFace(NewFace, aPL, Precision::Confusion());
-                  BB.Add(NewFace, aW1);
-                  BB.Add(NewFace, aW2);
+                TopoDS_Face aFace;
+                BB.MakeFace(aFace, aPL, Precision::Confusion());
+                BB.Add (aFace, aW);
+                aClsf.Init(aFace, Precision::Confusion());
+                bIsHole=aClsf.IsHole();
+                if ((bIsHole && !i) || (!bIsHole && i)) {
+                  aW.Nullify();
+                  BB.MakeWire(aW);
+                  BB.Add(aW, aE.Reversed());
                 }
               }
-              else //case of cone
+              //
+              BB.MakeFace(NewFace, aPL, Precision::Confusion());
+              BB.Add(NewFace, aW1);
+              BB.Add(NewFace, aW2);
+            }
+          }
+          else //case of cone
+          {
+            gp_Cone theCone = gce_MakeCone(aCirc.Location(), aCircOE.Location(),
+              aCirc.Radius(), aCircOE.Radius());
+            gp_Ax3 theAx3(aCirc.Position());
+            if (CircAxisDir * theCone.Axis().Direction() < 0.)
+            {
+              theAx3.ZReverse();
+              CircAxisDir.Reverse();
+            }
+            theCone.SetPosition(theAx3);
+            theSurf = new Geom_ConicalSurface(theCone);
+          }
+          if (!IsPlanar) {
+            TopLoc_Location Loc;
+            EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.));
+            BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
+            Standard_Real Coeff = (OffsetDir * CircAxisDir > 0.)? 1. : -1.;
+            OELine2d = new Geom2d_Line(gp_Pnt2d(0., OffsetVal*Coeff), gp_Dir2d(1., 0.));
+            BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
+            aLine2d  = new Geom2d_Line(gp_Pnt2d(ParV2, 0.), gp_Dir2d(0., Coeff));
+            aLine2d2 = new Geom2d_Line(gp_Pnt2d(ParV1, 0.), gp_Dir2d(0., Coeff));
+            if (E3.IsSame(E4))
+            {
+              if (Coeff > 0.)
+                BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());
+              else
               {
-                gp_Cone theCone = gce_MakeCone(aCirc.Location(), aCircOE.Location(),
-                                               aCirc.Radius(), aCircOE.Radius());
-                gp_Ax3 theAx3(aCirc.Position());
-                if (CircAxisDir * theCone.Axis().Direction() < 0.)
-                {
-                  theAx3.ZReverse();
-                  CircAxisDir.Reverse();
-                }
-                theCone.SetPosition(theAx3);
-                theSurf = new Geom_ConicalSurface(theCone);
+                BB.UpdateEdge(E3, aLine2d2, aLine2d, theSurf, Loc, Precision::Confusion());
+                theWire.Nullify();
+                BB.MakeWire(theWire);
+                BB.Add(theWire, anEdge.Oriented(TopAbs_REVERSED));
+                BB.Add(theWire, E4);
+                BB.Add(theWire, OE.Oriented(TopAbs_FORWARD));
+                BB.Add(theWire, E3);
+                theWire.Closed(Standard_True);
               }
-              if (!IsPlanar) {
-                TopLoc_Location Loc;
-                EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.));
-                BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
-                Standard_Real Coeff = (OffsetDir * CircAxisDir > 0.)? 1. : -1.;
-                OELine2d = new Geom2d_Line(gp_Pnt2d(0., OffsetVal*Coeff), gp_Dir2d(1., 0.));
-                BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
-                aLine2d  = new Geom2d_Line(gp_Pnt2d(ParV2, 0.), gp_Dir2d(0., Coeff));
-                aLine2d2 = new Geom2d_Line(gp_Pnt2d(ParV1, 0.), gp_Dir2d(0., Coeff));
-                if (E3.IsSame(E4))
-                {
-                  if (Coeff > 0.)
-                    BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());
-                  else
-                  {
-                    BB.UpdateEdge(E3, aLine2d2, aLine2d, theSurf, Loc, Precision::Confusion());
-                    theWire.Nullify();
-                    BB.MakeWire(theWire);
-                    BB.Add(theWire, anEdge.Oriented(TopAbs_REVERSED));
-                    BB.Add(theWire, E4);
-                    BB.Add(theWire, OE.Oriented(TopAbs_FORWARD));
-                    BB.Add(theWire, E3);
-                    theWire.Closed(Standard_True);
-                  }
-                }
-                else
-                {
-                  BB.SameParameter(E3, Standard_False);
-                  BB.SameRange(E3, Standard_False);
-                  BB.SameParameter(E4, Standard_False);
-                  BB.SameRange(E4, Standard_False);
-                  BB.UpdateEdge(E3, aLine2d,  theSurf, Loc, Precision::Confusion());
-                  BB.Range(E3, theSurf, Loc, 0., OffsetVal);
-                  BB.UpdateEdge(E4, aLine2d2, theSurf, Loc, Precision::Confusion());
-                  BB.Range(E4, theSurf, Loc, 0., OffsetVal);
-                }
-                NewFace = BRepLib_MakeFace(theSurf, theWire);
-              }
-            } //cylinder or cone
-          } //if both edges are arcs of circles
-	  if (NewFace.IsNull())
-	    {
-	      BRepLib_MakeFace MF(theWire, Standard_True); //Only plane
-	      if (MF.Error() == BRepLib_FaceDone)
-		{
-		  NewFace = MF.Face();
-		  IsPlanar = Standard_True;
-		}
-	      else //Extrusion (by thrusections)
-		{
-		  Handle(Geom_Curve) EdgeCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
-		  Handle(Geom_TrimmedCurve) TrEdgeCurve =
-		    new Geom_TrimmedCurve( EdgeCurve, fpar, lpar );
-		  Standard_Real fparOE, lparOE;
-		  Handle(Geom_Curve) OffsetCurve = BRep_Tool::Curve(OE, fparOE, lparOE);
-		  Handle(Geom_TrimmedCurve) TrOffsetCurve =
-		    new Geom_TrimmedCurve( OffsetCurve, fparOE, lparOE );
-		  GeomFill_Generator ThrusecGenerator;
-		  ThrusecGenerator.AddCurve( TrEdgeCurve );
-		  ThrusecGenerator.AddCurve( TrOffsetCurve );
-		  ThrusecGenerator.Perform( Precision::PConfusion() );
-		  theSurf = ThrusecGenerator.Surface();
-		  //theSurf = new Geom_SurfaceOfLinearExtrusion( TrOffsetCurve, OffsetDir );
-		  Standard_Real Uf, Ul, Vf, Vl;
-		  theSurf->Bounds(Uf, Ul, Vf, Vl);
-		  TopLoc_Location Loc;
-		  EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(1., 0.));
-		  BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
-		  OELine2d = new Geom2d_Line(gp_Pnt2d(0., Vl), gp_Dir2d(1., 0.));
-		  BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
-		  Standard_Real UonV1 = (ToReverse)? Ul : Uf;
-		  Standard_Real UonV2 = (ToReverse)? Uf : Ul;
-		  aLine2d  = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(0., 1.));
-		  aLine2d2 = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(0., 1.));
-		  if (E3.IsSame(E4))
-		    {
-		      BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());
-		      Handle(Geom_Curve) BSplC34 = theSurf->UIso( Uf );
-		      BB.UpdateEdge(E3, BSplC34, Precision::Confusion());
-		      BB.Range(E3, Vf, Vl);
-		    }
-		  else
-		    {
-		      BB.SameParameter(E3, Standard_False);
-		      BB.SameRange(E3, Standard_False);
-		      BB.SameParameter(E4, Standard_False);
-		      BB.SameRange(E4, Standard_False);
-		      BB.UpdateEdge(E3, aLine2d,  theSurf, Loc, Precision::Confusion());
-		      BB.Range(E3, theSurf, Loc, Vf, Vl);
-		      BB.UpdateEdge(E4, aLine2d2, theSurf, Loc, Precision::Confusion());
-		      BB.Range(E4, theSurf, Loc, Vf, Vl);
-		      Handle(Geom_Curve) BSplC3 = theSurf->UIso( UonV2 );
-		      BB.UpdateEdge(E3, BSplC3, Precision::Confusion());
-		      BB.Range(E3, Vf, Vl, Standard_True); //only for 3d curve
-		      Handle(Geom_Curve) BSplC4 = theSurf->UIso( UonV1 );
-		      BB.UpdateEdge(E4, BSplC4, Precision::Confusion());
-		      BB.Range(E4, Vf, Vl, Standard_True); //only for 3d curve
-		    }
-		  NewFace = BRepLib_MakeFace(theSurf, theWire);
-		}
-	    }
-	  if (!IsPlanar)
-	    {
-	      Standard_Real fparOE = BAcurveOE.FirstParameter();
-	      Standard_Real lparOE = BAcurveOE.LastParameter();
-	      TopLoc_Location Loc;
-	      if (Abs(fpar - fparOE) > Precision::Confusion())
-		{
-		  const TopoDS_Edge& anE4 = (ToReverse)? E3 : E4;
-		  gp_Pnt2d fp2d   = EdgeLine2d->Value(fpar);
-		  gp_Pnt2d fp2dOE = OELine2d->Value(fparOE);
-		  aLine2d2 = GCE2d_MakeLine( fp2d, fp2dOE ).Value();
-		  Handle(Geom_Curve) aCurve;
-		  Standard_Real FirstPar = 0., LastPar = fp2d.Distance(fp2dOE);
-		  Geom2dAdaptor_Curve AC2d( aLine2d2, FirstPar, LastPar );
-		  GeomAdaptor_Surface GAsurf( theSurf );
-		  Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
-		  Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
-		  Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
-		  Standard_Real max_deviation = 0., average_deviation;
-		  GeomLib::BuildCurve3d(Precision::Confusion(),
-					ConS, FirstPar, LastPar,
-					aCurve, max_deviation, average_deviation);
-		  BB.UpdateEdge( anE4, aCurve, max_deviation );
-		  BB.UpdateEdge( anE4, aLine2d2, theSurf, Loc, max_deviation );
-		  BB.Range( anE4, FirstPar, LastPar );
-		}
-	      if (Abs(lpar - lparOE) > Precision::Confusion())
-		{
-		  const TopoDS_Edge& anE3 = (ToReverse)? E4 : E3;
-		  gp_Pnt2d lp2d   = EdgeLine2d->Value(lpar);
-		  gp_Pnt2d lp2dOE = OELine2d->Value(lparOE);
-		  aLine2d = GCE2d_MakeLine( lp2d, lp2dOE ).Value();
-		  Handle(Geom_Curve) aCurve;
-		  Standard_Real FirstPar = 0., LastPar = lp2d.Distance(lp2dOE);
-		  Geom2dAdaptor_Curve AC2d( aLine2d, FirstPar, LastPar );
-		  GeomAdaptor_Surface GAsurf( theSurf );
-		  Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
-		  Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
-		  Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
-		  Standard_Real max_deviation = 0., average_deviation;
-		  GeomLib::BuildCurve3d(Precision::Confusion(),
-					ConS, FirstPar, LastPar,
-					aCurve, max_deviation, average_deviation);
-		  BB.UpdateEdge( anE3, aCurve, max_deviation );
-		  BB.UpdateEdge( anE3, aLine2d, theSurf, Loc, max_deviation );
-		  BB.Range( anE3, FirstPar, LastPar );
-		}
-	    }
-	  BRepLib::SameParameter(NewFace);
-	  BRepTools::Update(NewFace);
-	  myWalls.Append(NewFace);
-	  if (ArcOnV2)
-	    {
-	      TopoDS_Edge anArc = TopoDS::Edge(myInitOffsetEdge.Image(V2).First());
-	      TopoDS_Vertex arcV1, arcV2;
-	      TopExp::Vertices(anArc, arcV1, arcV2);
-	      Standard_Boolean ArcReverse = Standard_False;
-	      if (!arcV1.IsSame(V3))
-		{
-		  TopoDS_Vertex aVtx = arcV1; arcV1 = arcV2; arcV2 = aVtx;
-		  ArcReverse = Standard_True;
-		}
-	      TopoDS_Edge EA1, EA2;
-	      //EA1 = (ToReverse)? E3 : TopoDS::Edge(E3.Reversed());
-	      EA1 = E3;
-	      EA1.Reverse();
-	      if (ToReverse)
-		EA1.Reverse();
-	      //////////////////////////////////////////////////////
-	      if (V2.IsSame(StartVertex))
-		EA2 = StartEdge;
-	      else
-		EA2 = BRepLib_MakeEdge( V2, arcV2 );
-	      anArc.Orientation( ((ArcReverse)? TopAbs_REVERSED : TopAbs_FORWARD) );
-	      if (EA1.Orientation() == TopAbs_REVERSED)
-		anArc.Reverse();
-	      EA2.Orientation(TopAbs::Reverse(EA1.Orientation()));
-	      TopoDS_Wire arcWire;
-	      BB.MakeWire(arcWire);
-	      BB.Add(arcWire, EA1);
-	      BB.Add(arcWire, anArc);
-	      BB.Add(arcWire, EA2);
-	      BRepLib::BuildCurves3d( arcWire, myTol );
-	      arcWire.Closed(Standard_True);
-	      TopoDS_Face arcFace = BRepLib_MakeFace(arcWire, Standard_True);
-	      BRepTools::Update(arcFace);
-	      myWalls.Append(arcFace);
-	      TopoDS_Shape localEA2 = EA2.Oriented(TopAbs_FORWARD);
-	      const TopoDS_Edge& CEA2 = TopoDS::Edge(localEA2);
-	      PrevEdge = CEA2;
-	      PrevVertex = V2;
-	    }
-	  else
-	    {
-	      PrevEdge = E3;
-	      PrevVertex = V2;
-	    }
-	  FirstStep = Standard_False;
-	}
+            }
+            else
+            {
+              BB.SameParameter(E3, Standard_False);
+              BB.SameRange(E3, Standard_False);
+              BB.SameParameter(E4, Standard_False);
+              BB.SameRange(E4, Standard_False);
+              BB.UpdateEdge(E3, aLine2d,  theSurf, Loc, Precision::Confusion());
+              BB.Range(E3, theSurf, Loc, 0., OffsetVal);
+              BB.UpdateEdge(E4, aLine2d2, theSurf, Loc, Precision::Confusion());
+              BB.Range(E4, theSurf, Loc, 0., OffsetVal);
+            }
+            NewFace = BRepLib_MakeFace(theSurf, theWire);
+          }
+        } //cylinder or cone
+      } //if both edges are arcs of circles
+      if (NewFace.IsNull())
+      {
+        BRepLib_MakeFace MF(theWire, Standard_True); //Only plane
+        if (MF.Error() == BRepLib_FaceDone)
+        {
+          NewFace = MF.Face();
+          IsPlanar = Standard_True;
+        }
+        else //Extrusion (by thrusections)
+        {
+          Handle(Geom_Curve) EdgeCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+          Handle(Geom_TrimmedCurve) TrEdgeCurve =
+            new Geom_TrimmedCurve( EdgeCurve, fpar, lpar );
+          Standard_Real fparOE, lparOE;
+          Handle(Geom_Curve) OffsetCurve = BRep_Tool::Curve(OE, fparOE, lparOE);
+          Handle(Geom_TrimmedCurve) TrOffsetCurve =
+            new Geom_TrimmedCurve( OffsetCurve, fparOE, lparOE );
+          GeomFill_Generator ThrusecGenerator;
+          ThrusecGenerator.AddCurve( TrEdgeCurve );
+          ThrusecGenerator.AddCurve( TrOffsetCurve );
+          ThrusecGenerator.Perform( Precision::PConfusion() );
+          theSurf = ThrusecGenerator.Surface();
+          //theSurf = new Geom_SurfaceOfLinearExtrusion( TrOffsetCurve, OffsetDir );
+          Standard_Real Uf, Ul, Vf, Vl;
+          theSurf->Bounds(Uf, Ul, Vf, Vl);
+          TopLoc_Location Loc;
+          EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., Vf), gp_Dir2d(1., 0.));
+          BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
+          OELine2d = new Geom2d_Line(gp_Pnt2d(0., Vl), gp_Dir2d(1., 0.));
+          BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
+          Standard_Real UonV1 = (ToReverse)? Ul : Uf;
+          Standard_Real UonV2 = (ToReverse)? Uf : Ul;
+          aLine2d  = new Geom2d_Line(gp_Pnt2d(UonV2, 0.), gp_Dir2d(0., 1.));
+          aLine2d2 = new Geom2d_Line(gp_Pnt2d(UonV1, 0.), gp_Dir2d(0., 1.));
+          if (E3.IsSame(E4))
+          {
+            BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());
+            Handle(Geom_Curve) BSplC34 = theSurf->UIso( Uf );
+            BB.UpdateEdge(E3, BSplC34, Precision::Confusion());
+            BB.Range(E3, Vf, Vl);
+          }
+          else
+          {
+            BB.SameParameter(E3, Standard_False);
+            BB.SameRange(E3, Standard_False);
+            BB.SameParameter(E4, Standard_False);
+            BB.SameRange(E4, Standard_False);
+            BB.UpdateEdge(E3, aLine2d,  theSurf, Loc, Precision::Confusion());
+            BB.Range(E3, theSurf, Loc, Vf, Vl);
+            BB.UpdateEdge(E4, aLine2d2, theSurf, Loc, Precision::Confusion());
+            BB.Range(E4, theSurf, Loc, Vf, Vl);
+            Handle(Geom_Curve) BSplC3 = theSurf->UIso( UonV2 );
+            BB.UpdateEdge(E3, BSplC3, Precision::Confusion());
+            BB.Range(E3, Vf, Vl, Standard_True); //only for 3d curve
+            Handle(Geom_Curve) BSplC4 = theSurf->UIso( UonV1 );
+            BB.UpdateEdge(E4, BSplC4, Precision::Confusion());
+            BB.Range(E4, Vf, Vl, Standard_True); //only for 3d curve
+          }
+          NewFace = BRepLib_MakeFace(theSurf, theWire);
+        }
+      }
+      if (!IsPlanar)
+      {
+        Standard_Real fparOE = BAcurveOE.FirstParameter();
+        Standard_Real lparOE = BAcurveOE.LastParameter();
+        TopLoc_Location Loc;
+        if (Abs(fpar - fparOE) > Precision::Confusion())
+        {
+          const TopoDS_Edge& anE4 = (ToReverse)? E3 : E4;
+          gp_Pnt2d fp2d   = EdgeLine2d->Value(fpar);
+          gp_Pnt2d fp2dOE = OELine2d->Value(fparOE);
+          aLine2d2 = GCE2d_MakeLine( fp2d, fp2dOE ).Value();
+          Handle(Geom_Curve) aCurve;
+          Standard_Real FirstPar = 0., LastPar = fp2d.Distance(fp2dOE);
+          Geom2dAdaptor_Curve AC2d( aLine2d2, FirstPar, LastPar );
+          GeomAdaptor_Surface GAsurf( theSurf );
+          Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
+          Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
+          Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
+          Standard_Real max_deviation = 0., average_deviation;
+          GeomLib::BuildCurve3d(Precision::Confusion(),
+            ConS, FirstPar, LastPar,
+            aCurve, max_deviation, average_deviation);
+          BB.UpdateEdge( anE4, aCurve, max_deviation );
+          BB.UpdateEdge( anE4, aLine2d2, theSurf, Loc, max_deviation );
+          BB.Range( anE4, FirstPar, LastPar );
+        }
+        if (Abs(lpar - lparOE) > Precision::Confusion())
+        {
+          const TopoDS_Edge& anE3 = (ToReverse)? E4 : E3;
+          gp_Pnt2d lp2d   = EdgeLine2d->Value(lpar);
+          gp_Pnt2d lp2dOE = OELine2d->Value(lparOE);
+          aLine2d = GCE2d_MakeLine( lp2d, lp2dOE ).Value();
+          Handle(Geom_Curve) aCurve;
+          Standard_Real FirstPar = 0., LastPar = lp2d.Distance(lp2dOE);
+          Geom2dAdaptor_Curve AC2d( aLine2d, FirstPar, LastPar );
+          GeomAdaptor_Surface GAsurf( theSurf );
+          Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
+          Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
+          Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
+          Standard_Real max_deviation = 0., average_deviation;
+          GeomLib::BuildCurve3d(Precision::Confusion(),
+            ConS, FirstPar, LastPar,
+            aCurve, max_deviation, average_deviation);
+          BB.UpdateEdge( anE3, aCurve, max_deviation );
+          BB.UpdateEdge( anE3, aLine2d, theSurf, Loc, max_deviation );
+          BB.Range( anE3, FirstPar, LastPar );
+        }
+      }
+      BRepLib::SameParameter(NewFace);
+      BRepTools::Update(NewFace);
+      myWalls.Append(NewFace);
+      if (ArcOnV2)
+      {
+        TopoDS_Edge anArc = TopoDS::Edge(myInitOffsetEdge.Image(V2).First());
+        TopoDS_Vertex arcV1, arcV2;
+        TopExp::Vertices(anArc, arcV1, arcV2);
+        Standard_Boolean ArcReverse = Standard_False;
+        if (!arcV1.IsSame(V3))
+        {
+          TopoDS_Vertex aVtx = arcV1; arcV1 = arcV2; arcV2 = aVtx;
+          ArcReverse = Standard_True;
+        }
+        TopoDS_Edge EA1, EA2;
+        //EA1 = (ToReverse)? E3 : TopoDS::Edge(E3.Reversed());
+        EA1 = E3;
+        EA1.Reverse();
+        if (ToReverse)
+          EA1.Reverse();
+        //////////////////////////////////////////////////////
+        if (V2.IsSame(StartVertex))
+          EA2 = StartEdge;
+        else
+          EA2 = BRepLib_MakeEdge( V2, arcV2 );
+        anArc.Orientation( ((ArcReverse)? TopAbs_REVERSED : TopAbs_FORWARD) );
+        if (EA1.Orientation() == TopAbs_REVERSED)
+          anArc.Reverse();
+        EA2.Orientation(TopAbs::Reverse(EA1.Orientation()));
+        TopoDS_Wire arcWire;
+        BB.MakeWire(arcWire);
+        BB.Add(arcWire, EA1);
+        BB.Add(arcWire, anArc);
+        BB.Add(arcWire, EA2);
+        BRepLib::BuildCurves3d( arcWire, myTol );
+        arcWire.Closed(Standard_True);
+        TopoDS_Face arcFace = BRepLib_MakeFace(arcWire, Standard_True);
+        BRepTools::Update(arcFace);
+        myWalls.Append(arcFace);
+        TopoDS_Shape localEA2 = EA2.Oriented(TopAbs_FORWARD);
+        const TopoDS_Edge& CEA2 = TopoDS::Edge(localEA2);
+        PrevEdge = CEA2;
+        PrevVertex = V2;
+      }
+      else
+      {
+        if (isBuildFromScratch)
+        {
+          PrevEdge = TopoDS::Edge(E4);
+          PrevVertex = V1;
+          isBuildFromScratch = Standard_False;
+        }
+        else
+        {
+          PrevEdge = E3;
+          PrevVertex = V2;
+        }
+      }
+      FirstStep = Standard_False;
     }
+  }
 }
 
 //=======================================================================
