@@ -129,12 +129,22 @@ public:
   //! By default cell size is 0, which is invalid; thus if default
   //! constructor is used, the tool must be initialized later with
   //! appropriate cell size by call to Reset()
+  //! Constructor when dimension count is unknown at compilation time.
   NCollection_CellFilter (const Standard_Integer theDim,
                           const Standard_Real theCellSize = 0,
                           const Handle(NCollection_IncAllocator)& theAlloc = 0)
   : myCellSize(0, theDim - 1)
   {
     myDim = theDim;
+    Reset (theCellSize, theAlloc);
+  }
+
+  //! Constructor when dimenstion count is known at compilation time.
+  NCollection_CellFilter (const Standard_Real theCellSize = 0,
+                          const Handle(NCollection_IncAllocator)& theAlloc = 0)
+  : myCellSize(0, Inspector::Dimension - 1)
+  {
+    myDim = Inspector::Dimension;
     Reset (theCellSize, theAlloc);
   }
 

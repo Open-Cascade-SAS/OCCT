@@ -210,7 +210,7 @@ void Extrema_GenExtCC::Perform()
                                       anIntervals2.Upper() - anIntervals2.Lower())
                                   * Precision::PConfusion() / (2.0 * Sqrt(2.0));
   Extrema_CCPointsInspector anInspector(Precision::PConfusion());
-  NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(Extrema_CCPointsInspector::Dimension, aCellSize);
+  NCollection_CellFilter<Extrema_CCPointsInspector> aFilter(aCellSize);
   NCollection_Vector<gp_XY> aPnts;
 
   Standard_Integer i,j,k;

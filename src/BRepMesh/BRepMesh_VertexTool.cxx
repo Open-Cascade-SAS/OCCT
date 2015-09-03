@@ -59,7 +59,7 @@ BRepMesh_VertexTool::BRepMesh_VertexTool(
   const Standard_Integer                  theReservedSize,
   const Handle(NCollection_IncAllocator)& theAllocator)
   : myAllocator (theAllocator),
-    myCellFilter(BRepMesh_VertexInspector::Dimension, 0., myAllocator),
+    myCellFilter(0., myAllocator),
     mySelector  (Max(theReservedSize, 64),myAllocator)
 {
   const Standard_Real aTol = Precision::Confusion();

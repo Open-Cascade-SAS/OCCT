@@ -284,7 +284,7 @@ void BRepBuilderAPI_FastSewing::Perform(void)
       Standard_Real aRange = Compute3DRange();
       Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
       NCollection_CellFilter<NodeInspector> 
-        aCells(NodeInspector::Dimension, Max(myTolerance, aRange/IntegerLast()), anAlloc);
+        aCells(Max(myTolerance, aRange/IntegerLast()), anAlloc);
 
       for(Standard_Integer i = myFaceVec.Lower(); i <= myFaceVec.Upper(); i++)
       {

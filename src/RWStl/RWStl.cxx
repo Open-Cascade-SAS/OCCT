@@ -391,7 +391,7 @@ Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
   ReadMesh->AddDomain ();
 
   // Filter unique vertices to share the nodes of the mesh.
-  BRepBuilderAPI_CellFilter uniqueVertices(BRepBuilderAPI_VertexInspector::Dimension, Precision::Confusion());
+  BRepBuilderAPI_CellFilter uniqueVertices(Precision::Confusion());
   BRepBuilderAPI_VertexInspector inspector(Precision::Confusion());
   
   for (ifacet=1; ifacet<=NBFACET; ++ifacet) {
@@ -480,7 +480,7 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
   ReadMesh->AddDomain();
 
   // Filter unique vertices to share the nodes of the mesh.
-  BRepBuilderAPI_CellFilter uniqueVertices(BRepBuilderAPI_VertexInspector::Dimension, Precision::Confusion());
+  BRepBuilderAPI_CellFilter uniqueVertices(Precision::Confusion());
   BRepBuilderAPI_VertexInspector inspector(Precision::Confusion());
   
   // main reading
