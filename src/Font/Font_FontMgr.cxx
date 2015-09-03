@@ -203,9 +203,14 @@ static Handle(Font_SystemFont) checkFont (const Handle(Font_FTLibrary)& theFTLib
     anAspect = Font_FA_Bold;
   }
 
-  Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (aFontFace->family_name);
-  Handle(TCollection_HAsciiString) aFontPath = new TCollection_HAsciiString (theFontPath);
-  Handle(Font_SystemFont) aResult = new Font_SystemFont (aFontName, anAspect, aFontPath);
+  Handle(Font_SystemFont) aResult;
+  if (aFontFace->family_name != NULL                           // skip broken fonts (error in FreeType?)
+   && FT_Select_Charmap (aFontFace, ft_encoding_unicode) == 0) // Font_FTFont supports only UNICODE fonts
+  {
+    Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (aFontFace->family_name);
+    Handle(TCollection_HAsciiString) aFontPath = new TCollection_HAsciiString (theFontPath);
+    aResult = new Font_SystemFont (aFontName, anAspect, aFontPath);
+  }
 
   FT_Done_Face (aFontFace);
 
