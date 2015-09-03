@@ -753,7 +753,8 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
   GeomAbs_CurveType aType;
   Geom2dAdaptor_Curve aGAC2D(aC2D);
   aType=aGAC2D.GetType();
-  if (aType==GeomAbs_BSplineCurve || aType==GeomAbs_BezierCurve) {
+  if (aType==GeomAbs_BSplineCurve || 
+      aType==GeomAbs_BezierCurve) {
     dt=1.1*dt;
   }
   if (fabs (aTV-aFirst) < fabs(aTV - aLast)) {
@@ -763,10 +764,25 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
     aTV1=aTV - dt;
   }
   //
-  aC2D->D0 (aTV1, aPV1);
-  aC2D->D0 (aTV, aPV);
+  if (aType==GeomAbs_Circle) {
+    Standard_Real aTM;
+    TopAbs_Orientation aOrE;
+    gp_Pnt2d aPM;
+    //
+    aTM=0.5*(aTV1+aTV);
+    //
+    aC2D->D1(aTM, aPM, aV2D);
+    aOrE=anEdge.Orientation();
+    if (aOrE==TopAbs_REVERSED) {
+      aV2D.Reverse();
+    }
+  }
+  else {
+    aC2D->D0 (aTV1, aPV1);
+    aC2D->D0 (aTV, aPV);
   //
   aV2D = bIsIN ? gp_Vec2d(aPV1, aPV) : gp_Vec2d(aPV, aPV1);
+  }
   //
   gp_Dir2d aDir2D(aV2D);
   anAngle=Angle(aDir2D);
