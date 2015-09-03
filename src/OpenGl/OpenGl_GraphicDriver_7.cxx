@@ -96,8 +96,6 @@ void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& theCView)
 }
 
 void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView,
-                                   const Aspect_CLayer2d& ACUnderLayer,
-                                   const Aspect_CLayer2d& ACOverLayer,
                                    const Standard_Integer /*x*/,
                                    const Standard_Integer /*y*/,
                                    const Standard_Integer /*width*/,
@@ -123,18 +121,16 @@ void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView,
     else
       aCView->WS->RedrawArea(ACView, ACUnderLayer, ACOverLayer, x, y, width, height);*/
     // Always do full redraw
-    aCView->WS->Redraw(ACView, ACUnderLayer, ACOverLayer);
+    aCView->WS->Redraw(ACView);
   }
 }
 
-void OpenGl_GraphicDriver::RedrawImmediate (const Graphic3d_CView& theCView,
-                                            const Aspect_CLayer2d& theCUnderLayer,
-                                            const Aspect_CLayer2d& theCOverLayer)
+void OpenGl_GraphicDriver::RedrawImmediate (const Graphic3d_CView& theCView)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
   if (aCView != NULL)
   {
-    aCView->WS->RedrawImmediate (theCView, theCUnderLayer, theCOverLayer);
+    aCView->WS->RedrawImmediate (theCView);
   }
 }
 
@@ -464,7 +460,6 @@ void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
       OpenGl_Structure* aStruct = aStructIt.ChangeValue();
       aStruct->ReleaseGlResources (aCtx);
     }
-    myTempText->Release (aCtx.operator->());
     myDeviceLostFlag = !myMapOfStructure.IsEmpty();
   }
 

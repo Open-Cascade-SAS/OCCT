@@ -38,7 +38,6 @@
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_TypeMismatch.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_LayerMgr.hxx>
 #include <V3d_Light.hxx>
 #include <V3d_UnMapped.hxx>
 #include <V3d_View.hxx>
@@ -65,9 +64,4 @@ const Graphic3d_RenderingParams& V3d_View::RenderingParams() const
 Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
 {
   return static_cast<Graphic3d_CView*> (MyView->CView())->RenderParams;
-}
-
-void V3d_View::SetLayerMgr(const Handle(V3d_LayerMgr)& aMgr)
-{
-  MyLayerMgr = aMgr;
 }

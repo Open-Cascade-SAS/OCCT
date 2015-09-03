@@ -29,7 +29,6 @@
 #include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Graphic3d_BufferType.hxx>
 
-#include <Aspect_CLayer2d.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Aspect_PolygonOffsetMode.hxx>
@@ -156,14 +155,10 @@ public:
   Standard_Integer ActiveViewId() const { return myViewId; }
 
   //! Redraw the window.
-  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView,
-                                       const Aspect_CLayer2d& theCUnderLayer,
-                                       const Aspect_CLayer2d& theCOverLayer);
+  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView);
 
   Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
-  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView,
-                                                const Aspect_CLayer2d& theCUnderLayer,
-                                                const Aspect_CLayer2d& theCOverLayer);
+  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView);
 
   //! Mark cached view content invalid (e.g. complete view redraw should be performed on next frame).
   void Invalidate() { myBackBufferRestored = Standard_False; }
@@ -175,8 +170,6 @@ public:
   //! System-specific and currently only Win platform implemented.
   Standard_Boolean Print (const Handle(OpenGl_PrinterContext)& thePrintContext,
                           const Graphic3d_CView& theCView,
-                          const Aspect_CLayer2d& theCUnderLayer,
-                          const Aspect_CLayer2d& theCOverLayer,
                           const Aspect_Handle    theHPrintDC,
                           const Standard_Boolean theToShowBackground,
                           const Standard_CString theFileName,
@@ -307,8 +300,6 @@ protected:
   Standard_EXPORT virtual Standard_Boolean Activate();
 
   void redraw1 (const Graphic3d_CView&               theCView,
-                const Aspect_CLayer2d&               theCUnderLayer,
-                const Aspect_CLayer2d&               theCOverLayer,
                 OpenGl_FrameBuffer*                  theReadDrawFbo,
                 const Graphic3d_Camera::Projection   theProjection);
 
@@ -327,8 +318,6 @@ protected:
   //!
   //! @return false if immediate structures has been rendered directly into FrontBuffer and Buffer Swap should not be called.
   bool redrawImmediate (const Graphic3d_CView& theCView,
-                        const Aspect_CLayer2d& theCUnderLayer,
-                        const Aspect_CLayer2d& theCOverLayer,
                         OpenGl_FrameBuffer*    theReadFbo,
                         const Graphic3d_Camera::Projection theProjection,
                         OpenGl_FrameBuffer*    theDrawFbo,

@@ -64,7 +64,6 @@
 #include <Graphic3d_Structure.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
-#include <Visual3d_Layer.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 
@@ -340,32 +339,9 @@ void Visual3d_ViewManager::Redraw() const
     return;
   }
 
-  if (!MyUnderLayer.IsNull() || !MyOverLayer.IsNull())
-  {
-    Standard_Integer aWidth = 0, aHeight = 0;
-    Standard_Integer aWidthMax  = 0;
-    Standard_Integer aHeightMax = 0;
-
-    for(int i=1; i<=MyDefinedView.Length(); i++)
-    {
-      MyDefinedView.Value(i)->Window()->Size (aWidth, aHeight);
-      aWidthMax  = Max (aWidthMax,  aWidth);
-      aHeightMax = Max (aHeightMax, aHeight);
-    }
-
-    if (!MyUnderLayer.IsNull())
-    {
-      MyUnderLayer->SetViewport (aWidthMax, aHeightMax);
-    }
-    if (!MyOverLayer.IsNull())
-    {
-      MyOverLayer->SetViewport (aWidthMax, aHeightMax);
-    }
-  }
-
   for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    MyDefinedView.Value(i)->Redraw (MyUnderLayer, MyOverLayer);
+    MyDefinedView.Value(i)->Redraw ();
   }
 }
 
@@ -384,7 +360,7 @@ void Visual3d_ViewManager::RedrawImmediate() const
   // update all activated views
   for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    MyDefinedView.Value(i)->RedrawImmediate (MyUnderLayer, MyOverLayer);
+    MyDefinedView.Value(i)->RedrawImmediate ();
   }
 }
 
@@ -580,28 +556,6 @@ void Visual3d_ViewManager::SetZBufferAuto (const Standard_Boolean AFlag)
 Standard_Boolean Visual3d_ViewManager::ZBufferAuto () const
 {
   return (MyZBufferAuto);
-}
-
-void Visual3d_ViewManager::SetLayer (const Handle(Visual3d_Layer)& ALayer) {
-	if (ALayer->Type () == Aspect_TOL_OVERLAY) {
-		MyOverLayer = ALayer;
-	}
-	else {
-		MyUnderLayer = ALayer;
-	}
-
-}
-
-const Handle(Visual3d_Layer)& Visual3d_ViewManager::UnderLayer () const {
-
-	return (MyUnderLayer);
-
-}
-
-const Handle(Visual3d_Layer)& Visual3d_ViewManager::OverLayer () const {
-
-	return (MyOverLayer);
-
 }
 
 //=======================================================================

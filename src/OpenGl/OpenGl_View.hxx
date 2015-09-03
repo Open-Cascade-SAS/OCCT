@@ -27,7 +27,6 @@
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
-#include <Aspect_CLayer2d.hxx>
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
@@ -160,8 +159,6 @@ class OpenGl_View : public MMgt_TShared
                OpenGl_FrameBuffer*                  theReadDrawFbo,
                Graphic3d_Camera::Projection         theProjection,
                const Graphic3d_CView&               theCView,
-               const Aspect_CLayer2d&               theCUnderLayer,
-               const Aspect_CLayer2d&               theCOverLayer,
                const Standard_Boolean               theToDrawImmediate);
 
   void DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
@@ -198,11 +195,6 @@ protected:
                       OpenGl_FrameBuffer*             theReadDrawFbo,
                       const Graphic3d_CView&          theCView,
                       const Standard_Boolean          theToDrawImmediate);
-
-  void RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                      const Handle(OpenGl_Workspace)&      theWorkspace,
-                      const Graphic3d_CView&               theCView,
-                      const Aspect_CLayer2d&               theCLayer);
 
   void RedrawTrihedron (const Handle(OpenGl_Workspace) &theWorkspace);
 

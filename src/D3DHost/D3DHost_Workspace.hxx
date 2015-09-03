@@ -41,14 +41,10 @@ public:
   Standard_EXPORT virtual void Resize (const CALL_DEF_WINDOW& theCWindow) Standard_OVERRIDE;
 
   //! Redraw the all content.
-  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView,
-                                       const Aspect_CLayer2d& theCUnderLayer,
-                                       const Aspect_CLayer2d& theCOverLayer) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView) Standard_OVERRIDE;
 
   //! Redraw only immediate layer.
-  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView,
-                                                const Aspect_CLayer2d& theCUnderLayer,
-                                                const Aspect_CLayer2d& theCOverLayer) Standard_OVERRIDE;
+  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView) Standard_OVERRIDE;
 
 public:
 

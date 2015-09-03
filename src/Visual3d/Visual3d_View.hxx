@@ -131,21 +131,11 @@ public:
   //! area is given by his xy min corner and size in pixel coordinates
   Standard_EXPORT void Redraw (const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height);
   
-  //! Updates screen in all cases.
-  Standard_EXPORT void Redraw (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer);
-  
-  //! Updates layer of immediate presentations.
-  Standard_EXPORT void RedrawImmediate (const Handle(Visual3d_Layer)& theUnderLayer, const Handle(Visual3d_Layer)& theOverLayer);
-  
   //! Invalidates view content but does not redraw it.
   Standard_EXPORT void Invalidate();
 
   //! Returns true if cached view content has been invalidated.
   Standard_EXPORT Standard_Boolean IsInvalidated() const;
-
-  //! Updates screen area in all cases.
-  //! area is given by his xy min corner and size in pixel coordinates
-  Standard_EXPORT void Redraw (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height);
   
   //! Deletes and erases the view <me>.
   //! Warning: No more graphic operations in <me> after this call.
@@ -279,7 +269,7 @@ public:
   
   //! Updates screen in function of modifications of
   //! the structures.
-  Standard_EXPORT void Update (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer);
+  Standard_EXPORT void Update ();
   
   //! Sets the automatic z-fit mode and its parameters.
   //! The auto z-fit has extra parameters which can controlled from application level
@@ -443,22 +433,6 @@ public:
   //! Returns the associated GraphicDriver.
   Standard_EXPORT const Handle(Graphic3d_GraphicDriver)& GraphicDriver() const;
   
-  //! print the contents of all layers of the view to the printer.
-  //! <hPrnDC> : Pass the PrinterDeviceContext (HDC),
-  //! <showBackground> : When set to FALSE then print the view without background color
-  //! (background is white)
-  //! else set to TRUE for printing with current background color.
-  //! <filename>: If != NULL, then the view will be printed to a file.
-  //! <printAlgo>: Select print algorithm: stretch, tile.
-  //! <theScaleFactor>: Scaling coefficient, used internally to scale the
-  //! printings accordingly to the scale factor selected in the printer
-  //! properties dialog.
-  //! Returns Standard_True if the data is passed to the printer, otherwise
-  //! Standard_False if the print operation failed due to printer error
-  //! or insufficient memory.
-  //! Warning: Works only under Windows.
-  Standard_EXPORT Standard_Boolean Print (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer, const Aspect_Handle hPrnDC, const Standard_Boolean showBackground, const Standard_CString filename, const Aspect_PrintAlgo printAlgorithm = Aspect_PA_STRETCH, const Standard_Real theScaleFactor = 1.0) const;
-  
   //! print the contents of the view to printer.
   //! <hPrnDC> : Pass the PrinterDeviceContext (HDC),
   //! <showBackground> : When set to FALSE then print the view without background color
@@ -474,12 +448,6 @@ public:
   //! or insufficient memory.
   //! Warning: Works only under Windows.
   Standard_EXPORT Standard_Boolean Print (const Aspect_Handle hPrnDC, const Standard_Boolean showBackground, const Standard_CString filename, const Aspect_PrintAlgo printAlgorithm = Aspect_PA_STRETCH, const Standard_Real theScaleFactor = 1.0) const;
-  
-  //! Returns the underlay of the view <me>.
-  Standard_EXPORT const Handle(Visual3d_Layer)& UnderLayer() const;
-  
-  //! Returns the underlay of the view <me>.
-  Standard_EXPORT const Handle(Visual3d_Layer)& OverLayer() const;
   
   //! Reads depths of shown pixels of the given rectangle
   Standard_EXPORT void ReadDepths (const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height, const Standard_Address buffer) const;

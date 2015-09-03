@@ -274,8 +274,6 @@ static void initBufferTiling (Standard_Integer& theFrameWidth,
 Standard_Boolean OpenGl_Workspace::Print
   (const Handle(OpenGl_PrinterContext)& thePrintContext,
    const Graphic3d_CView& ACView,
-   const Aspect_CLayer2d& ACUnderLayer,
-   const Aspect_CLayer2d& ACOverLayer,
    const Aspect_Handle    hPrintDC,// const Aspect_Drawable hPrintDC,
    const Standard_Boolean showBackground,
    const Standard_CString filename,
@@ -570,13 +568,13 @@ Standard_Boolean OpenGl_Workspace::Print
   {
     myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
                               (GLfloat )aFrameHeight/viewHeight);
-    redraw1 (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer, aProjectType);
+    redraw1 (ACView, aFrameBuffer, aProjectType);
     if (!myTransientDrawToFront)
     {
       // render to FBO only if allowed to render to back buffer
       myBackBufferRestored = Standard_True;
       myIsImmediateDrawn   = Standard_False;
-      redrawImmediate (ACView, ACUnderLayer, ACOverLayer, NULL, aProjectType, aFrameBuffer);
+      redrawImmediate (ACView, NULL, aProjectType, aFrameBuffer);
       myBackBufferRestored = Standard_False;
       myIsImmediateDrawn   = Standard_False;
     }
@@ -684,13 +682,13 @@ Standard_Boolean OpenGl_Workspace::Print
                                      aFrameHeight;
 
         // draw to the offscreen buffer and capture the result
-        redraw1 (ACView, ACUnderLayer, ACOverLayer, aFrameBuffer, aProjectType);
+        redraw1 (ACView, aFrameBuffer, aProjectType);
         if (!myTransientDrawToFront)
         {
           // render to FBO only if forces to render to back buffer
           myBackBufferRestored = Standard_True;
           myIsImmediateDrawn   = Standard_False;
-          redrawImmediate (ACView, ACUnderLayer, ACOverLayer, NULL, aProjectType, aFrameBuffer);
+          redrawImmediate (ACView, NULL, aProjectType, aFrameBuffer);
           myBackBufferRestored = Standard_False;
           myIsImmediateDrawn   = Standard_False;
         }

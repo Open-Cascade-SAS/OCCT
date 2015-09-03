@@ -96,13 +96,11 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_LayerMgr.hxx>
 #include <V3d_Light.hxx>
 #include <V3d_StereoDumpOptions.hxx>
 #include <V3d_UnMapped.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_Layer.hxx>
 #include <Visual3d_Light.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
@@ -464,9 +462,6 @@ void V3d_View::DoMapping()
 //=============================================================================
 void V3d_View::MustBeResized()
 {
-  if ( !MyLayerMgr.IsNull() )
-    MyLayerMgr->Resized();
-
   if( MyView->IsDefined() ) {
     MyView->Resized() ;
     MyView->Redraw();
@@ -496,9 +491,6 @@ void V3d_View::SetBackgroundColor(const Quantity_Color &Color)
   MyBackground.SetColor( Color );
   if ( MyView->IsDefined() )
     MyView->SetBackground( MyBackground );
-  //szv: Why?
-  if ( !MyLayerMgr.IsNull() )
-    MyLayerMgr->Resized();
 }
 
 //=============================================================================
@@ -2919,12 +2911,6 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   if (theToKeepAspect)
   {
     myCamera->SetAspect ((Standard_Real) aFBOVPSizeX / aFBOVPSizeY);
-  }
-
-  //workaround for rendering list of Over and Under Layers
-  if (!MyLayerMgr.IsNull())
-  {
-    MyLayerMgr->Compute();
   }
 
   Redraw();

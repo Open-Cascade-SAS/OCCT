@@ -23,7 +23,6 @@
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Image_AlienPixMap.hxx>
-#include <Visual3d_Layer.hxx>
 
 #include <NCollection_Mat4.hxx>
 
@@ -257,8 +256,6 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
                           OpenGl_FrameBuffer*                  theOutputFBO,
                           Graphic3d_Camera::Projection         theProjection,
                           const Graphic3d_CView&               theCView,
-                          const Aspect_CLayer2d&               theCUnderLayer,
-                          const Aspect_CLayer2d&               theCOverLayer,
                           const Standard_Boolean               theToDrawImmediate)
 {
   // ==================================
@@ -325,15 +322,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
 #endif
 
   // =================================
-  //      Step 3: Draw underlayer
-  // =================================
-  if (!theToDrawImmediate)
-  {
-    RedrawLayer2d (thePrintContext, theWorkspace, theCView, theCUnderLayer);
-  }
-
-  // =================================
-  //      Step 4: Redraw main plane
+  //      Step 3: Redraw main plane
   // =================================
 
   // Setup face culling
@@ -435,7 +424,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   RedrawScene (thePrintContext, theWorkspace, theOutputFBO, theCView, theToDrawImmediate);
 
   // ===============================
-  //      Step 5: Trihedron
+  //      Step 4: Trihedron
   // ===============================
 
   // Resetting GL parameters according to the default aspects
@@ -475,21 +464,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     }
   }
 
-  // ===============================
-  //      Step 6: Redraw overlay
-  // ===============================
-  if (!theToDrawImmediate)
-  {
-    const int aMode = 0;
-    theWorkspace->DisplayCallback (theCView, (aMode | OCC_PRE_OVERLAY));
-
-    RedrawLayer2d (thePrintContext, theWorkspace, theCView, theCOverLayer);
-
-    theWorkspace->DisplayCallback (theCView, aMode);
-  }
-
   // ==============================================================
-  //      Step 7: Keep shader manager informed about last View
+  //      Step 5: Keep shader manager informed about last View
   // ==============================================================
 
   if (!aManager.IsNull())
@@ -646,150 +622,6 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
     // Set flag that scene was redrawn by standard pipeline
     theCView.WasRedrawnGL = Standard_True;
   }
-}
-
-/*----------------------------------------------------------------------*/
-
-//call_togl_redraw_layer2d
-void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                                 const Handle(OpenGl_Workspace)&      theWorkspace,
-                                 const Graphic3d_CView&               /*ACView*/,
-                                 const Aspect_CLayer2d&               ACLayer)
-{
-#if !defined(GL_ES_VERSION_2_0)
-  if (&ACLayer == NULL
-   || ACLayer.ptrLayer == NULL
-   || ACLayer.ptrLayer->listIndex == 0) return;
-
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
-  if (aContext->core11 == NULL)
-  {
-    return;
-  }
-
-  GLsizei dispWidth  = (GLsizei )ACLayer.viewport[0];
-  GLsizei dispHeight = (GLsizei )ACLayer.viewport[1];
-
-  aContext->WorldViewState.Push();
-  aContext->ProjectionState.Push();
-
-  aContext->WorldViewState.SetIdentity();
-  aContext->ProjectionState.SetIdentity();
-
-  aContext->ApplyWorldViewMatrix();
-  aContext->ApplyProjectionMatrix();
-
-  if (!ACLayer.sizeDependent)
-    aContext->core11fwd->glViewport (0, 0, dispWidth, dispHeight);
-
-  float left = ACLayer.ortho[0];
-  float right = ACLayer.ortho[1];
-  float bottom = ACLayer.ortho[2];
-  float top = ACLayer.ortho[3];
-
-  int attach = ACLayer.attach;
-
-  const float ratio = !ACLayer.sizeDependent
-                    ? float(dispWidth) / float(dispHeight)
-                    : float(theWorkspace->Width()) / float(theWorkspace->Height());
-
-  float delta;
-  if (ratio >= 1.0) {
-    delta = (float )((top - bottom)/2.0);
-    switch (attach) {
-      case 0: /* Aspect_TOC_BOTTOM_LEFT */
-        top = bottom + 2*delta/ratio;
-        break;
-      case 1: /* Aspect_TOC_BOTTOM_RIGHT */
-        top = bottom + 2*delta/ratio;
-        break;
-      case 2: /* Aspect_TOC_TOP_LEFT */
-        bottom = top - 2*delta/ratio;
-        break;
-      case 3: /* Aspect_TOC_TOP_RIGHT */
-        bottom = top - 2*delta/ratio;
-        break;
-    }
-  }
-  else {
-    delta = (float )((right - left)/2.0);
-    switch (attach) {
-      case 0: /* Aspect_TOC_BOTTOM_LEFT */
-        right = left + 2*delta*ratio;
-        break;
-      case 1: /* Aspect_TOC_BOTTOM_RIGHT */
-        left = right - 2*delta*ratio;
-        break;
-      case 2: /* Aspect_TOC_TOP_LEFT */
-        right = left + 2*delta*ratio;
-        break;
-      case 3: /* Aspect_TOC_TOP_RIGHT */
-        left = right - 2*delta*ratio;
-        break;
-    }
-  }
-
-#ifdef _WIN32
-  // Check printer context that exists only for print operation
-  if (!thePrintContext.IsNull())
-  {
-    // additional transformation matrix could be applied to
-    // render only those parts of viewport that will be
-    // passed to a printer as a current "frame" to provide
-    // tiling; scaling of graphics by matrix helps render a
-    // part of a view (frame) in same viewport, but with higher
-    // resolution
-
-    // set printing scale/tiling transformation
-    aContext->ProjectionState.SetCurrent (thePrintContext->ProjTransformation());
-    aContext->ApplyProjectionMatrix();
-
-    // printing operation also assumes other viewport dimension
-    // to comply with transformation matrix or graphics scaling
-    // factors for tiling for layer redraw
-    GLsizei anViewportX = 0;
-    GLsizei anViewportY = 0;
-    thePrintContext->GetLayerViewport (anViewportX, anViewportY);
-    if (anViewportX != 0 && anViewportY != 0)
-      aContext->core11fwd->glViewport (0, 0, anViewportX, anViewportY);
-  }
-#endif
-
-  glOrtho (left, right, bottom, top, -1.0, 1.0);
-
-  glPushAttrib (
-    GL_LIGHTING_BIT | GL_LINE_BIT | GL_POLYGON_BIT |
-    GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT );
-
-  glDisable (GL_DEPTH_TEST);
-  glDisable (GL_TEXTURE_1D);
-  glDisable (GL_TEXTURE_2D);
-  glDisable (GL_LIGHTING);
-
-  // TODO: Obsolete code, the display list is always empty now, to be removed
-  glCallList (ACLayer.ptrLayer->listIndex);
-
-  //calling dynamic render of LayerItems
-  if ( ACLayer.ptrLayer->layerData )
-  {
-    InitLayerProp (ACLayer.ptrLayer->listIndex);
-    ((Visual3d_Layer*)ACLayer.ptrLayer->layerData)->RenderLayerItems();
-    InitLayerProp (0);
-  }
-
-  glPopAttrib ();
-
-  aContext->WorldViewState.Pop();
-  aContext->ProjectionState.Pop();
-
-  aContext->ApplyProjectionMatrix();
-  aContext->ApplyWorldViewMatrix();
-
-  if (!ACLayer.sizeDependent)
-    aContext->core11fwd->glViewport (0, 0, theWorkspace->Width(), theWorkspace->Height());
-
-  glFlush ();
-#endif
 }
 
 /*----------------------------------------------------------------------*/

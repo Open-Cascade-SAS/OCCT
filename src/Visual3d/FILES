@@ -7,11 +7,7 @@ Visual3d_ContextView.hxx
 Visual3d_DepthCueingDefinitionError.hxx
 Visual3d_HSequenceOfLight.hxx
 Visual3d_HSequenceOfView.hxx
-Visual3d_Layer.cxx
-Visual3d_Layer.hxx
 Visual3d_LayerDefinitionError.hxx
-Visual3d_LayerItem.cxx
-Visual3d_LayerItem.hxx
 Visual3d_Light.cxx
 Visual3d_Light.hxx
 Visual3d_LightDefinitionError.hxx

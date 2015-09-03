@@ -385,3 +385,52 @@ TCollection_Array1OfReal aValues = ...;
 std::stable_sort (aValues->begin(), aValues->end());
 ~~~~~
 
+@subsection upgrade_occt700_2dlayers New implementation of 2d-layers
+
+In latest OCCT version API that provided old implementation of 2d-layers was removed. Classes Aspect_Clayer2d, OpenGl_GrahpicDriver_Layer, Visual3d_Layer, Visual3d_LayerItem, V3d_LayerMgr, V3d_LayerMgrPointer were deleted.
+
+Now 2d-layers are implemented through Z-layers. In order to create a 2d-object it is necessary to follow several steps:
+1. Create an AIS interactive object
+2. Set a Z-layer for it to determine in which layer this object will be displayed (layer system provides order of displaying objects, ones in the lower layer will be displayed behind the others in the higher layer)
+3. Set transform persistence (flag Graphic3d_TMF_2d or Graphic3d_TMF_2d_IsTopDown and a gp_Pnt point, where X and Y are used to set the coordinates’ origin in 2d space of the view and Z coordinate defines the gap from border of view window, except center position)
+
+One more feature of new 2d-layers imlementation is a ColorScale based on  a new class AIS_ColorScale. Old implementation of ColorScale as a global property of V3d_View has been removed with associated methods V3d_View::ColorScaleDisplay(), V3d_View::ColorScaleErase(), V3d_View::ColorScaleIsDisplayed(), V3d_View::ColorScale() and classes V3d_ColorScale, V3d_ColorScaleLayerItem, Aspect_ColorScale.
+
+New interactive object AIS_ColorScale provides the same configuration API as previously Aspect_ColorScale and V3d_ColorScale. It should be used in the following way to display a 2D presentation of ColorScale:
+
+~~~~~
+Handle(AIS_ColorScale) aCS = new AIS_ColorScale();
+// configuring
+aCS->SetHeight            (0.95);
+aCS->SetRange             (0.0, 10.0);
+aCS->SetNumberOfIntervals (10);
+// displaying
+aCS->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+aCS->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0));
+aCS->SetToUpdate();
+theContextAIS->Display (aCS);
+~~~~~
+
+To see how 2d objects are realized in OCCT you can call draw commands vcolorscale, vlayerline or vdrawtext (with -2d option). Draw command vcolorscale now requires a name of ColorScale object as an argument. To display this object use command vdisplay. Example:
+
+~~~~~
+pload VISUALIZATION
+vinit
+vcolorscale cs –demo
+pload MODELING
+box b 100 100 100
+vdisplay b
+vsetdispmode 1
+vfit
+vlayerline 0 300 300 300 10
+vdrawtext t "2D-TEXT" -2d -pos 0 150 0 -color red
+~~~~~
+
+Here is a small example in c++ how to display a custom AIS object in 2d:
+~~~~~
+Handle(AIS_InteractiveContext) aContext = ...; //get AIS context
+Handle(AIS_InteractiveObject) anObj =...; //create an AIS object
+anObj->SetZLayer(Graphic3d_ZLayerId_TopOSD); //display object in overlay
+anObj->SetTransformPersistence (Graphic3d_TMF_2d, gp_Pnt (-1,-1,0)); //set 2d flag, coordinate origin is set to down-left corner
+aContext->Display (anObj); //display the object
+~~~~~

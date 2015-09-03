@@ -8,10 +8,6 @@ V3d_CircularGrid.hxx
 V3d_Coordinate.hxx
 V3d_DirectionalLight.cxx
 V3d_DirectionalLight.hxx
-V3d_LayerMgr.cxx
-V3d_LayerMgr.hxx
-V3d_LayerMgr.lxx
-V3d_LayerMgrPointer.hxx
 V3d_Light.cxx
 V3d_Light.hxx
 V3d_ListOfTransient.hxx

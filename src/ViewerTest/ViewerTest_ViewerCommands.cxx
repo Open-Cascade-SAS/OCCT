@@ -39,8 +39,6 @@
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_DirectionalLight.hxx>
-#include <V3d_LayerMgr.hxx>
-#include <V3d_LayerMgrPointer.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
 #include <NCollection_DoubleMap.hxx>
@@ -59,7 +57,6 @@
 #include <TColStd_HSequenceOfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_MapOfAsciiString.hxx>
-#include <Visual3d_LayerItem.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Image_Diff.hxx>
 #include <Aspect_DisplayConnection.hxx>
@@ -79,7 +76,6 @@
 #undef DrawText
 #endif
 
-#include <Visual3d_Layer.hxx>
 #include <cstdlib>
 
 #if defined(_WIN32)

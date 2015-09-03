@@ -28,7 +28,6 @@
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_Layer.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 

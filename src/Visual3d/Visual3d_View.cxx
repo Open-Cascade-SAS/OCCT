@@ -34,7 +34,6 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <Visual3d_ContextView.hxx>
 #include <Visual3d_DepthCueingDefinitionError.hxx>
-#include <Visual3d_Layer.hxx>
 #include <Visual3d_Light.hxx>
 #include <Visual3d_TransformError.hxx>
 #include <Visual3d_View.hxx>
@@ -918,39 +917,14 @@ void Visual3d_View::Deactivate()
 // =======================================================================
 void Visual3d_View::Redraw()
 {
-  Redraw (myViewManager->UnderLayer(), myViewManager->OverLayer(), 0, 0, 0, 0);
+  Redraw (0, 0, 0, 0);
 }
 
 // =======================================================================
 // function : Redraw
 // purpose  :
 // =======================================================================
-void Visual3d_View::Redraw (const Standard_Integer theX,
-                            const Standard_Integer theY,
-                            const Standard_Integer theWidth,
-                            const Standard_Integer theHeight)
-{
-  Redraw (myViewManager->UnderLayer(), myViewManager->OverLayer(),
-          theX, theY, theWidth, theHeight);
-}
-
-// =======================================================================
-// function : Redraw
-// purpose  :
-// =======================================================================
-void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
-                            const Handle(Visual3d_Layer)& theOverLayer)
-{
-  Redraw (theUnderLayer, theOverLayer, 0, 0, 0, 0);
-}
-
-// =======================================================================
-// function : Redraw
-// purpose  :
-// =======================================================================
-void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
-                            const Handle(Visual3d_Layer)& theOverLayer,
-                            const Standard_Integer        theX,
+void Visual3d_View::Redraw (const Standard_Integer        theX,
                             const Standard_Integer        theY,
                             const Standard_Integer        theWidth,
                             const Standard_Integer        theHeight)
@@ -962,11 +936,6 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
   {
     return;
   }
-
-  Aspect_CLayer2d anOverCLayer, anUnderCLayer;
-  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
-  if (!theOverLayer .IsNull()) anOverCLayer  = theOverLayer ->CLayer();
-  if (!theUnderLayer.IsNull()) anUnderCLayer = theUnderLayer->CLayer();
 
   for (Standard_Integer aRetryIter = 0; aRetryIter < 2; ++aRetryIter)
   {
@@ -982,7 +951,7 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
       myStructuresUpdated = Standard_False;
     }
 
-    myGraphicDriver->Redraw (MyCView, anUnderCLayer, anOverCLayer, theX, theY, theWidth, theHeight);
+    myGraphicDriver->Redraw (MyCView, theX, theY, theWidth, theHeight);
     if (!myGraphicDriver->IsDeviceLost())
     {
       return;
@@ -994,17 +963,7 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
 // function : RedrawImmediate
 // purpose  :
 // =======================================================================
-void Visual3d_View::RedrawImmediate()
-{
-  RedrawImmediate (myViewManager->UnderLayer(), myViewManager->OverLayer());
-}
-
-// =======================================================================
-// function : RedrawImmediate
-// purpose  :
-// =======================================================================
-void Visual3d_View::RedrawImmediate (const Handle(Visual3d_Layer)& theUnderLayer,
-                                     const Handle(Visual3d_Layer)& theOverLayer)
+void Visual3d_View::RedrawImmediate ()
 {
   if (IsDeleted()
    || !IsDefined()
@@ -1014,11 +973,7 @@ void Visual3d_View::RedrawImmediate (const Handle(Visual3d_Layer)& theUnderLayer
     return;
   }
 
-  Aspect_CLayer2d anOverCLayer, anUnderCLayer;
-  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
-  if (!theOverLayer .IsNull()) anOverCLayer  = theOverLayer ->CLayer();
-  if (!theUnderLayer.IsNull()) anUnderCLayer = theUnderLayer->CLayer();
-  myGraphicDriver->RedrawImmediate (MyCView, anUnderCLayer, anOverCLayer);
+  myGraphicDriver->RedrawImmediate (MyCView);
 }
 
 // =======================================================================
@@ -1049,7 +1004,7 @@ void Visual3d_View::Update (Aspect_TypeOfUpdate theUpdateMode)
   if (theUpdateMode == Aspect_TOU_ASAP)
   {
     Compute();
-    Redraw (myViewManager->UnderLayer(), myViewManager->OverLayer(), 0, 0, 0, 0);
+    Redraw (0, 0, 0, 0);
   }
 }
 
@@ -1057,12 +1012,11 @@ void Visual3d_View::Update (Aspect_TypeOfUpdate theUpdateMode)
 // function : Update
 // purpose  :
 // =======================================================================
-void Visual3d_View::Update (const Handle(Visual3d_Layer)& theUnderLayer,
-                            const Handle(Visual3d_Layer)& theOverLayer)
+void Visual3d_View::Update ()
 {
   Compute();
   myStructuresUpdated = Standard_True;
-  Redraw (theUnderLayer, theOverLayer, 0, 0, 0, 0);
+  Redraw (0, 0, 0, 0);
 }
 
 // ========================================================================
@@ -2051,24 +2005,6 @@ void Visual3d_View::GraduatedTrihedronErase()
 }
 
 // =======================================================================
-// function : UnderLayer
-// purpose  :
-// =======================================================================
-const Handle(Visual3d_Layer)& Visual3d_View::UnderLayer() const
-{
-  return myViewManager->UnderLayer();
-}
-
-// =======================================================================
-// function : OverLayer
-// purpose  :
-// =======================================================================
-const Handle(Visual3d_Layer)& Visual3d_View::OverLayer() const
-{
-  return myViewManager->OverLayer();
-}
-
-// =======================================================================
 // function : LightLimit
 // purpose  :
 // =======================================================================
@@ -2341,23 +2277,11 @@ Standard_Boolean Visual3d_View::Export (const Standard_CString       theFileName
                                         const Standard_Address       theProgressBarFunc,
                                         const Standard_Address       theProgressObject) const
 {
-  Handle(Visual3d_Layer) anUnderLayer = myViewManager->UnderLayer();
-  Handle(Visual3d_Layer) anOverLayer  = myViewManager->OverLayer();
-
-  Aspect_CLayer2d anOverCLayer;
-  Aspect_CLayer2d anUnderCLayer;
-  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
-
-  if (!anOverLayer.IsNull())
-    anOverCLayer = anOverLayer->CLayer();
-  if (!anUnderLayer.IsNull())
-    anUnderCLayer = anUnderLayer->CLayer();
-
   Standard_Integer aWidth, aHeight;
   Window()->Size (aWidth, aHeight);
 
   return myGraphicDriver->Export (theFileName, theFormat, theSortType,
-                                  aWidth, aHeight, MyCView, anUnderCLayer, anOverCLayer,
+                                  aWidth, aHeight, MyCView,
                                   thePrecision, theProgressBarFunc, theProgressObject);
 }
 
@@ -2403,26 +2327,7 @@ void Visual3d_View::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructur
 // function : Print
 // purpose  :
 // =======================================================================
-Standard_Boolean Visual3d_View::Print (const Aspect_Handle    thePrintDC, 
-                                       const Standard_Boolean theToShowBackground,
-                                       const Standard_CString theFilename,
-                                       const Aspect_PrintAlgo thePrintAlgorithm,
-                                       const Standard_Real    theScaleFactor) const
-{
-  return Print (myViewManager->UnderLayer(),
-                myViewManager->OverLayer(),
-                thePrintDC, theToShowBackground,
-                theFilename, thePrintAlgorithm, 
-                theScaleFactor);
-}
-
-// =======================================================================
-// function : Print
-// purpose  :
-// =======================================================================
-Standard_Boolean Visual3d_View::Print (const Handle(Visual3d_Layer)& theUnderLayer,
-                                       const Handle(Visual3d_Layer)& theOverLayer,
-                                       const Aspect_Handle           thePrintDC,
+Standard_Boolean Visual3d_View::Print (const Aspect_Handle           thePrintDC,
                                        const Standard_Boolean        theToShowBackground,
                                        const Standard_CString        theFilename,
                                        const Aspect_PrintAlgo        thePrintAlgorithm,
@@ -2436,14 +2341,8 @@ Standard_Boolean Visual3d_View::Print (const Handle(Visual3d_Layer)& theUnderLay
     return Standard_False;
   }
 
-  Aspect_CLayer2d anOverCLayer;
-  Aspect_CLayer2d anUnderCLayer;
-  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
-  if (!theOverLayer.IsNull())  anOverCLayer  = theOverLayer->CLayer();
-  if (!theUnderLayer.IsNull()) anUnderCLayer = theUnderLayer->CLayer();
-  return myGraphicDriver->Print (MyCView, anUnderCLayer, anOverCLayer,
-                                 thePrintDC, theToShowBackground, theFilename,
-                                 thePrintAlgorithm, theScaleFactor);
+  return myGraphicDriver->Print (MyCView, thePrintDC, theToShowBackground,
+                                 theFilename, thePrintAlgorithm, theScaleFactor);
 }
 
 //=============================================================================

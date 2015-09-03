@@ -262,9 +262,7 @@ bool D3DHost_Workspace::d3dSwap()
 // function : Redraw
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::Redraw (const Graphic3d_CView& theCView,
-                                const Aspect_CLayer2d& theCUnderLayer,
-                                const Aspect_CLayer2d& theCOverLayer)
+void D3DHost_Workspace::Redraw (const Graphic3d_CView& theCView)
 {
   if (!Activate()
     || myD3dDevice == NULL)
@@ -274,7 +272,7 @@ void D3DHost_Workspace::Redraw (const Graphic3d_CView& theCView,
 
   myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (myGlContext);
-  OpenGl_Workspace::Redraw (theCView, theCUnderLayer, theCOverLayer);
+  OpenGl_Workspace::Redraw (theCView);
   myD3dWglFbo->UnlockSurface (myGlContext);
   myToFlipOutput = Standard_False;
   if (myGlContext->caps->buffersNoSwap)
@@ -298,15 +296,13 @@ void D3DHost_Workspace::Redraw (const Graphic3d_CView& theCView,
 // function : RedrawImmediate
 // purpose  :
 // =======================================================================
-void D3DHost_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
-                                         const Aspect_CLayer2d& theCUnderLayer,
-                                         const Aspect_CLayer2d& theCOverLayer)
+void D3DHost_Workspace::RedrawImmediate (const Graphic3d_CView& theCView)
 {
   if (!myTransientDrawToFront
    || !myBackBufferRestored
    || (myGlContext->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
   {
-    Redraw (theCView, theCUnderLayer, theCOverLayer);
+    Redraw (theCView);
     return;
   }
   else if (!Activate()
@@ -317,7 +313,7 @@ void D3DHost_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
 
   myToFlipOutput = Standard_True;
   myD3dWglFbo->LockSurface   (myGlContext);
-  OpenGl_Workspace::RedrawImmediate (theCView, theCUnderLayer, theCOverLayer);
+  OpenGl_Workspace::RedrawImmediate (theCView);
   myD3dWglFbo->UnlockSurface (myGlContext);
   myToFlipOutput = Standard_False;
   if (myGlContext->caps->buffersNoSwap)

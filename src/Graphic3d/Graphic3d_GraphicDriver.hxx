@@ -29,7 +29,6 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Standard_CString.hxx>
 #include <Aspect_FillMethod.hxx>
-#include <Aspect_CLayer2d.hxx>
 #include <Standard_Size.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Real.hxx>
@@ -120,10 +119,10 @@ public:
   Standard_EXPORT virtual void RatioWindow (const Graphic3d_CView& ACView) = 0;
   
   //! Redraw content of the view
-  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView, const Aspect_CLayer2d& theCUnderLayer, const Aspect_CLayer2d& theCOverLayer, const Standard_Integer theX = 0, const Standard_Integer theY = 0, const Standard_Integer theWidth = 0, const Standard_Integer theHeight = 0) = 0;
+  Standard_EXPORT virtual void Redraw (const Graphic3d_CView& theCView, const Standard_Integer theX = 0, const Standard_Integer theY = 0, const Standard_Integer theWidth = 0, const Standard_Integer theHeight = 0) = 0;
   
   //! Redraw layer of immediate presentations
-  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView, const Aspect_CLayer2d& theCUnderLayer, const Aspect_CLayer2d& theCOverLayer) = 0;
+  Standard_EXPORT virtual void RedrawImmediate (const Graphic3d_CView& theCView) = 0;
   
   //! Invalidates content of the view but does not redraw it
   Standard_EXPORT virtual void Invalidate (const Graphic3d_CView& theCView) = 0;
@@ -195,68 +194,6 @@ public:
   //! @return previous mode.
   Standard_EXPORT virtual Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView, const Standard_Boolean theDrawToFrontBuffer) = 0;
 
-  //! call_togl_layer2d
-  Standard_EXPORT virtual void Layer (Aspect_CLayer2d& ACLayer) = 0;
-  
-  //! call_togl_removelayer2d
-  Standard_EXPORT virtual void RemoveLayer (const Aspect_CLayer2d& ACLayer) = 0;
-  
-  //! call_togl_begin_layer2d
-  Standard_EXPORT virtual void BeginLayer (const Aspect_CLayer2d& ACLayer) = 0;
-  
-  //! call_togl_begin_polygon2d
-  Standard_EXPORT virtual void BeginPolygon2d() = 0;
-  
-  //! call_togl_begin_polyline2d
-  Standard_EXPORT virtual void BeginPolyline2d() = 0;
-  
-  //! call_togl_clear_layer2d
-  Standard_EXPORT virtual void ClearLayer (const Aspect_CLayer2d& ACLayer) = 0;
-  
-  //! call_togl_draw2d
-  Standard_EXPORT virtual void Draw (const Standard_ShortReal X, const Standard_ShortReal Y) = 0;
-  
-  //! call_togl_edge2d
-  Standard_EXPORT virtual void Edge (const Standard_ShortReal X, const Standard_ShortReal Y) = 0;
-  
-  //! call_togl_end_layer2d
-  Standard_EXPORT virtual void EndLayer() = 0;
-  
-  //! call_togl_end_polygon2d
-  Standard_EXPORT virtual void EndPolygon2d() = 0;
-  
-  //! call_togl_end_polyline2d
-  Standard_EXPORT virtual void EndPolyline2d() = 0;
-  
-  //! call_togl_move2d
-  Standard_EXPORT virtual void Move (const Standard_ShortReal X, const Standard_ShortReal Y) = 0;
-  
-  //! call_togl_rectangle2d
-  Standard_EXPORT virtual void Rectangle (const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Width, const Standard_ShortReal Height) = 0;
-  
-  //! call_togl_set_color
-  Standard_EXPORT virtual void SetColor (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B) = 0;
-  
-  //! call_togl_set_transparency
-  Standard_EXPORT virtual void SetTransparency (const Standard_ShortReal ATransparency) = 0;
-  
-  //! call_togl_unset_transparency
-  Standard_EXPORT virtual void UnsetTransparency() = 0;
-  
-  //! call_togl_set_line_attributes
-  Standard_EXPORT virtual void SetLineAttributes (const Standard_Integer Type, const Standard_ShortReal Width) = 0;
-  
-  //! Set text attributes for under-/overlayer.
-  //! <Font> argument defines the name of the font to be used,
-  //! <Type> argument defines the display type of the text,
-  //! <R> <G> <B> values define the color of decal or subtitle background.
-  //! To set the color of the text you can use the SetColor method.
-  Standard_EXPORT virtual void SetTextAttributes (const Standard_CString Font, const Standard_Integer Type, const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B) = 0;
-  
-  //! call_togl_text2d
-  //! If AHeight < 0 default text height is used by driver (DefaultTextHeight method)
-  Standard_EXPORT virtual void Text (const Standard_CString AText, const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal AHeight) = 0;
-  
   Standard_EXPORT virtual Standard_ShortReal DefaultTextHeight() const = 0;
   
   //! call_togl_textsize2d
@@ -304,13 +241,13 @@ public:
   //! Returns Standard_True if the data is passed to the printer, otherwise
   //! Standard_False if the print operation failed due to the printer errors,
   //! or insufficient system memory available.
-  Standard_EXPORT virtual Standard_Boolean Print (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Aspect_Handle hPrnDC, const Standard_Boolean showBackground, const Standard_CString filename, const Aspect_PrintAlgo printAlgorithm = Aspect_PA_STRETCH, const Standard_Real theScaleFactor = 1.0) const = 0;
+  Standard_EXPORT virtual Standard_Boolean Print (const Graphic3d_CView& ACView, const Aspect_Handle hPrnDC, const Standard_Boolean showBackground, const Standard_CString filename, const Aspect_PrintAlgo printAlgorithm = Aspect_PA_STRETCH, const Standard_Real theScaleFactor = 1.0) const = 0;
   
 
   //! Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
   //! In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits on printing to laser printer).
   //! Notice however that results may differ a lot and do not contain some elements.
-  Standard_EXPORT virtual Standard_Boolean Export (const Standard_CString theFileName, const Graphic3d_ExportFormat theFormat, const Graphic3d_SortType theSortType, const Standard_Integer theWidth, const Standard_Integer theHeight, const Graphic3d_CView& theView, const Aspect_CLayer2d& theLayerUnder, const Aspect_CLayer2d& theLayerOver, const Standard_Real thePrecision = 0.005, const Standard_Address theProgressBarFunc = NULL, const Standard_Address theProgressObject = NULL) = 0;
+  Standard_EXPORT virtual Standard_Boolean Export (const Standard_CString theFileName, const Graphic3d_ExportFormat theFormat, const Graphic3d_SortType theSortType, const Standard_Integer theWidth, const Standard_Integer theHeight, const Graphic3d_CView& theView, const Standard_Real thePrecision = 0.005, const Standard_Address theProgressBarFunc = NULL, const Standard_Address theProgressObject = NULL) = 0;
   
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.

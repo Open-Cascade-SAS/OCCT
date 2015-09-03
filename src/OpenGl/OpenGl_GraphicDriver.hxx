@@ -31,7 +31,6 @@
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_FillMethod.hxx>
-#include <Aspect_CLayer2d.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
 #include <Aspect_TypeOfTriedronEcho.hxx>
 #include <Aspect_Handle.hxx>
@@ -146,15 +145,11 @@ public:
   Standard_EXPORT void DepthCueing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT void RatioWindow (const Graphic3d_CView& ACView);
   Standard_EXPORT void Redraw (const Graphic3d_CView& theCView,
-                               const Aspect_CLayer2d& theCUnderLayer,
-                               const Aspect_CLayer2d& theCOverLayer,
                                const Standard_Integer theX = 0,
                                const Standard_Integer theY = 0,
                                const Standard_Integer theWidth  = 0,
                                const Standard_Integer theHeight = 0);
-  Standard_EXPORT void RedrawImmediate (const Graphic3d_CView& theCView,
-                                        const Aspect_CLayer2d& theCUnderLayer,
-                                        const Aspect_CLayer2d& theCOverLayer);
+  Standard_EXPORT void RedrawImmediate (const Graphic3d_CView& theCView);
   Standard_EXPORT void Invalidate (const Graphic3d_CView& theCView);
   Standard_EXPORT Standard_Boolean IsInvalidated (const Graphic3d_CView& theCView) const;
   Standard_EXPORT void RemoveView (const Graphic3d_CView& ACView);
@@ -196,35 +191,6 @@ public:
   Standard_EXPORT void GraduatedTrihedronMinMaxValues (const Graphic3d_CView& theView,
                                                        const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax);
 
-  Standard_EXPORT void Layer (Aspect_CLayer2d& ACLayer);
-  Standard_EXPORT void RemoveLayer (const Aspect_CLayer2d& ACLayer);
-  Standard_EXPORT void BeginLayer (const Aspect_CLayer2d& ACLayer);
-  Standard_EXPORT void BeginPolygon2d ();
-  Standard_EXPORT void BeginPolyline2d ();
-  Standard_EXPORT void ClearLayer (const Aspect_CLayer2d& ACLayer);
-  Standard_EXPORT void Draw (const Standard_ShortReal X,const Standard_ShortReal Y);
-  Standard_EXPORT void Edge (const Standard_ShortReal X,const Standard_ShortReal Y);
-  Standard_EXPORT void EndLayer ();
-  Standard_EXPORT void EndPolygon2d ();
-  Standard_EXPORT void EndPolyline2d ();
-  Standard_EXPORT void Move (const Standard_ShortReal X,const Standard_ShortReal Y);
-  Standard_EXPORT void Rectangle (const Standard_ShortReal X,const Standard_ShortReal Y,const Standard_ShortReal Width,const Standard_ShortReal Height);
-  Standard_EXPORT void SetColor (const Standard_ShortReal R,const Standard_ShortReal G,const Standard_ShortReal B);
-  Standard_EXPORT void SetTransparency (const Standard_ShortReal ATransparency);
-  Standard_EXPORT void UnsetTransparency ();
-  Standard_EXPORT void SetLineAttributes (const Standard_Integer Type,const Standard_ShortReal Width);
-
-  //! Set text attributes for under-/overlayer.
-  //! @param theFontName the name of the font to be used
-  //! @param theType     the display type of the text
-  //! theR theG theB values define the color of decal or subtitle background
-  //! To set the color of the text you can use the SetColor method.
-  Standard_EXPORT void SetTextAttributes (const Standard_CString   theFontName,
-                                          const Standard_Integer   theType,
-                                          const Standard_ShortReal theR,
-                                          const Standard_ShortReal theG,
-                                          const Standard_ShortReal theB);
-  Standard_EXPORT void Text (const Standard_CString AText,const Standard_ShortReal X,const Standard_ShortReal Y,const Standard_ShortReal AHeight);
   Standard_EXPORT void TextSize (const Standard_CString AText,const Standard_ShortReal AHeight,Standard_ShortReal& AWidth,Standard_ShortReal& AnAscent,Standard_ShortReal& ADescent) const;
   Standard_EXPORT void SetBackFacingModel (const Graphic3d_CView& aView);
 
@@ -239,8 +205,6 @@ public:
   //! All this errors are indicated by the message boxes (on level of OpenGl_GraphicDriver).
   //! Warning: This function can reuse FBO assigned to the view, please take it into account if you use it for your purposes.
   Standard_EXPORT Standard_Boolean Print (const Graphic3d_CView& theCView,
-                                          const Aspect_CLayer2d& theCUnderLayer,
-                                          const Aspect_CLayer2d& theCOverLayer,
                                           const Aspect_Handle    thePrinterDC,
                                           const Standard_Boolean theToShowBackground,
                                           const Standard_CString theFileName,
@@ -274,7 +238,7 @@ public:
 
   Standard_EXPORT void FBOChangeViewport(const Graphic3d_CView& view,Graphic3d_PtrFrameBuffer& fboPtr,const Standard_Integer width,const Standard_Integer height);
 
-  Standard_EXPORT Standard_Boolean Export(const Standard_CString theFileName,const Graphic3d_ExportFormat theFormat,const Graphic3d_SortType theSortType,const Standard_Integer theWidth,const Standard_Integer theHeight,const Graphic3d_CView& theView,const Aspect_CLayer2d& theLayerUnder,const Aspect_CLayer2d& theLayerOver,const Standard_Real thePrecision = 0.005,const Standard_Address theProgressBarFunc = NULL,const Standard_Address theProgressObject = NULL);
+  Standard_EXPORT Standard_Boolean Export(const Standard_CString theFileName,const Graphic3d_ExportFormat theFormat,const Graphic3d_SortType theSortType,const Standard_Integer theWidth,const Standard_Integer theHeight,const Graphic3d_CView& theView,const Standard_Real thePrecision = 0.005,const Standard_Address theProgressBarFunc = NULL,const Standard_Address theProgressObject = NULL);
 
   //! Add a new top-level z layer with ID theLayerId for the view. Z layers allow drawing structures in higher layers in foreground of structures in lower layers.
   //! To add a structure to desired layer on display it is necessary to set the layer index for the structure.
@@ -376,7 +340,6 @@ protected:
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
   mutable Handle(OpenGl_PrinterContext)                           myPrintContext;
   OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
-  OpenGl_Text*                                                    myTempText;         //!< variable for compatibility (drawing text in layers)
 
 public:
 

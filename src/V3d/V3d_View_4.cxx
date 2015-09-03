@@ -30,7 +30,6 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <V3d_BadValue.hxx>
 #include <V3d_CircularGrid.hxx>
-#include <V3d_LayerMgr.hxx>
 #include <V3d_Light.hxx>
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_UnMapped.hxx>

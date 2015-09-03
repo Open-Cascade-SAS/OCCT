@@ -1002,9 +1002,7 @@ void OpenGl_Workspace::drawStereoPair (const Graphic3d_CView& theCView)
 // function : Redraw
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
-                               const Aspect_CLayer2d& theCUnderLayer,
-                               const Aspect_CLayer2d& theCOverLayer)
+void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView)
 {
   if (!Activate())
   {
@@ -1128,14 +1126,13 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   #if !defined(GL_ES_VERSION_2_0)
     myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
-    redraw1 (theCView, theCUnderLayer, theCOverLayer,
-             aMainFbos[0], Graphic3d_Camera::Projection_MonoLeftEye);
+    redraw1 (theCView, aMainFbos[0], Graphic3d_Camera::Projection_MonoLeftEye);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
   #if !defined(GL_ES_VERSION_2_0)
     myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
   #endif
-    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aMainFbos[0], aProjectType, anImmFbos[0]))
+    if (!redrawImmediate (theCView, aMainFbos[0], aProjectType, anImmFbos[0]))
     {
       toSwap = false;
     }
@@ -1148,11 +1145,10 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   #if !defined(GL_ES_VERSION_2_0)
     myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
   #endif
-    redraw1 (theCView, theCUnderLayer, theCOverLayer,
-             aMainFbos[1], Graphic3d_Camera::Projection_MonoRightEye);
+    redraw1 (theCView, aMainFbos[1], Graphic3d_Camera::Projection_MonoRightEye);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aMainFbos[1], aProjectType, anImmFbos[1]))
+    if (!redrawImmediate (theCView, aMainFbos[1], aProjectType, anImmFbos[1]))
     {
       toSwap = false;
     }
@@ -1179,11 +1175,10 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       myGlContext->SetReadDrawBuffer (GL_BACK);
     }
   #endif
-    redraw1 (theCView, theCUnderLayer, theCOverLayer,
-             aMainFbo != NULL ? aMainFbo : aFrameBuffer, aProjectType);
+    redraw1 (theCView, aMainFbo != NULL ? aMainFbo : aFrameBuffer, aProjectType);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
-    if (!redrawImmediate (theCView, theCOverLayer, theCUnderLayer, aMainFbo, aProjectType, anImmFbo))
+    if (!redrawImmediate (theCView, aMainFbo, aProjectType, anImmFbo))
     {
       toSwap = false;
     }
@@ -1239,8 +1234,6 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 // purpose  :
 // =======================================================================
 void OpenGl_Workspace::redraw1 (const Graphic3d_CView&               theCView,
-                                const Aspect_CLayer2d&               theCUnderLayer,
-                                const Aspect_CLayer2d&               theCOverLayer,
                                 OpenGl_FrameBuffer*                  theReadDrawFbo,
                                 const Graphic3d_Camera::Projection   theProjection)
 {
@@ -1288,7 +1281,7 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView&               theCView,
   glClear (toClear);
 
   Handle(OpenGl_Workspace) aWS (this);
-  myView->Render (myPrintContext, aWS, theReadDrawFbo, theProjection, theCView, theCUnderLayer, theCOverLayer, Standard_False);
+  myView->Render (myPrintContext, aWS, theReadDrawFbo, theProjection, theCView, Standard_False);
 }
 
 // =======================================================================
@@ -1377,15 +1370,13 @@ void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
 // function : RedrawImmediate
 // purpose  :
 // =======================================================================
-void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
-                                        const Aspect_CLayer2d& theCUnderLayer,
-                                        const Aspect_CLayer2d& theCOverLayer)
+void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView)
 {
   if (!myTransientDrawToFront
    || !myBackBufferRestored
    || (myGlContext->caps->buffersNoSwap && !myMainSceneFbos[0]->IsValid()))
   {
-    Redraw (theCView, theCUnderLayer, theCOverLayer);
+    Redraw (theCView);
     return;
   }
   else if (!Activate())
@@ -1443,7 +1434,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
       myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
     }
   #endif
-    toSwap = redrawImmediate (theCView, theCUnderLayer, theCOverLayer,
+    toSwap = redrawImmediate (theCView,
                               aMainFbos[0],
                               Graphic3d_Camera::Projection_MonoLeftEye,
                               anImmFbos[0],
@@ -1465,7 +1456,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
       myGlContext->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
     }
   #endif
-    toSwap = redrawImmediate (theCView, theCUnderLayer, theCOverLayer,
+    toSwap = redrawImmediate (theCView,
                               aMainFbos[1],
                               Graphic3d_Camera::Projection_MonoRightEye,
                               anImmFbos[1],
@@ -1490,7 +1481,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
       myGlContext->SetReadDrawBuffer (GL_BACK);
     }
   #endif
-    toSwap = redrawImmediate (theCView, theCUnderLayer, theCOverLayer,
+    toSwap = redrawImmediate (theCView,
                               aMainFbo,
                               aProjectType,
                               anImmFbo,
@@ -1521,8 +1512,6 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
 // purpose  :
 // =======================================================================
 bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
-                                        const Aspect_CLayer2d& theCUnderLayer,
-                                        const Aspect_CLayer2d& theCOverLayer,
                                         OpenGl_FrameBuffer*    theReadFbo,
                                         const Graphic3d_Camera::Projection theProjection,
                                         OpenGl_FrameBuffer*    theDrawFbo,
@@ -1582,7 +1571,7 @@ bool OpenGl_Workspace::redrawImmediate (const Graphic3d_CView& theCView,
 #endif
 
   myView->Render (myPrintContext, aWS, theDrawFbo, theProjection,
-                  theCView, theCUnderLayer, theCOverLayer, Standard_True);
+                  theCView, Standard_True);
 
   return !toCopyBackToFront;
 }

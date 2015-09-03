@@ -32,8 +32,6 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
                                                const Standard_Integer theWidth,
                                                const Standard_Integer theHeight,
                                                const Graphic3d_CView& theView,
-                                               const Aspect_CLayer2d& theLayerUnder,
-                                               const Aspect_CLayer2d& theLayerOver,
                                                const Standard_Real    /*thePrecision*/,
                                                const Standard_Address /*theProgressBarFunc*/,
                                                const Standard_Address /*theProgressObject*/)
@@ -114,7 +112,7 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
         fclose (aFileH);
       break;
     }
-    Redraw (theView, theLayerUnder, theLayerOver);
+    Redraw (theView);
 
     anErrCode = gl2psEndPage();
     if (aFileH != NULL)
@@ -134,8 +132,6 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString /*theFileN
                                                const Standard_Integer /*theWidth*/,
                                                const Standard_Integer /*theHeight*/,
                                                const Graphic3d_CView& /*theView*/,
-                                               const Aspect_CLayer2d& /*theLayerUnder*/,
-                                               const Aspect_CLayer2d& /*theLayerOver*/,
                                                const Standard_Real    /*thePrecision*/,
                                                const Standard_Address /*theProgressBarFunc*/,
                                                const Standard_Address /*theProgressObject*/)

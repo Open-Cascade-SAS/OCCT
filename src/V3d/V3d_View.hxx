@@ -1058,7 +1058,6 @@ private:
   Standard_Integer MyZoomAtPointY;
   Handle(Aspect_Grid) MyGrid;
   gp_Ax3 MyPlane;
-  Handle(V3d_LayerMgr) MyLayerMgr;
   TColStd_Array2OfReal MyTrsf;
   Handle(Graphic3d_Structure) MyGridEchoStructure;
   Handle(Graphic3d_Group) MyGridEchoGroup;

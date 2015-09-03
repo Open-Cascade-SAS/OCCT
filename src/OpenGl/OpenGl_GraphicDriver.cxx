@@ -61,8 +61,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myUserDrawCallback (NULL),
-  myTempText (new OpenGl_Text())
+  myUserDrawCallback (NULL)
 {
 #if !defined(_WIN32) && !defined(__ANDROID__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (myDisplayConnection.IsNull())
@@ -137,7 +136,6 @@ void OpenGl_GraphicDriver::ReleaseContext()
     OpenGl_Structure* aStruct = aStructIt.ChangeValue();
     aStruct->ReleaseGlResources (aCtxShared);
   }
-  myTempText->Release (aCtxShared.operator->());
   myDeviceLostFlag = myDeviceLostFlag || !myMapOfStructure.IsEmpty();
 
   for (NCollection_Map<Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
@@ -418,8 +416,6 @@ Standard_Boolean OpenGl_GraphicDriver::SetImmediateModeDrawToFront (const Graphi
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_GraphicDriver::Print (const Graphic3d_CView& theCView,
-                                              const Aspect_CLayer2d& theCUnderLayer,
-                                              const Aspect_CLayer2d& theCOverLayer,
                                               const Aspect_Handle    thePrintDC,
                                               const Standard_Boolean theToShowBackground,
                                               const Standard_CString theFilename,
@@ -438,8 +434,6 @@ Standard_Boolean OpenGl_GraphicDriver::Print (const Graphic3d_CView& theCView,
 #ifdef _WIN32
   isPrinted = aCView->WS->Print (myPrintContext,
                                  theCView,
-                                 theCUnderLayer,
-                                 theCOverLayer,
                                  thePrintDC,
                                  theToShowBackground,
                                  theFilename,
@@ -625,4 +619,45 @@ void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Graphic3d_CView
 void OpenGl_GraphicDriver::SetBuffersNoSwap (const Standard_Boolean theIsNoSwap)
 {
   myCaps->buffersNoSwap = theIsNoSwap;
+}
+
+// =======================================================================
+// function : TextSize
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::TextSize (const Standard_CString   theText,
+                                     const Standard_ShortReal theHeight,
+                                     Standard_ShortReal&      theWidth,
+                                     Standard_ShortReal&      theAscent,
+                                     Standard_ShortReal&      theDescent) const
+{
+  const Handle(OpenGl_Context)& aCtx = GetSharedContext();
+  if (aCtx.IsNull())
+  {
+    return;
+  }
+
+  const Standard_ShortReal aHeight = (theHeight < 2.0f) ? DefaultTextHeight() : theHeight;
+  OpenGl_TextParam aTextParam;
+  aTextParam.Height = (int )aHeight;
+  OpenGl_AspectText aTextAspect;
+  CALL_DEF_CONTEXTTEXT aDefaultContextText =
+  {
+    1, //IsDef
+    1, //IsSet
+    "Courier", //Font
+    0.3F, //Space
+    1.F, //Expan
+    { 1.F, 1.F, 1.F }, //Color
+    (int)Aspect_TOST_NORMAL, //Style
+    (int)Aspect_TODT_NORMAL, //DisplayType
+    { 1.F, 1.F, 1.F }, //ColorSubTitle
+    0, //TextZoomable
+    0.F, //TextAngle
+    (int)Font_FA_Regular //TextFontAspect
+  };
+  aTextAspect.SetAspect(aDefaultContextText);
+  TCollection_ExtendedString anExtText = theText;
+  NCollection_String aText = (Standard_Utf16Char* )anExtText.ToExtString();
+  OpenGl_Text::StringSize (aCtx, aText, aTextAspect, aTextParam, theWidth, theAscent, theDescent);
 }

@@ -117,7 +117,6 @@ OpenGl_GraphicDriver_4.cxx
 OpenGl_GraphicDriver_7.cxx
 OpenGl_GraphicDriver_713.cxx
 OpenGl_GraphicDriver_Export.cxx
-OpenGl_GraphicDriver_Layer.cxx
 OpenGl_IndexBuffer.cxx
 OpenGl_IndexBuffer.hxx
 OpenGl_Layer.cxx

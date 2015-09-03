@@ -187,12 +187,6 @@ public:
   //! the associated view.
   Standard_EXPORT Standard_Boolean ViewExists (const Handle(Aspect_Window)& AWindow, Graphic3d_CView& TheCView) const;
   
-  //! Returns the underlay of the viewer <me>.
-  Standard_EXPORT const Handle(Visual3d_Layer)& UnderLayer() const;
-  
-  //! Returns the underlay of the viewer <me>.
-  Standard_EXPORT const Handle(Visual3d_Layer)& OverLayer() const;
-  
   //! Forces a new construction of the structure <AStructure>
   //! if <AStructure> is displayed and TOS_COMPUTED.
   Standard_EXPORT void ReCompute (const Handle(Graphic3d_Structure)& AStructure) Standard_OVERRIDE;
@@ -230,12 +224,7 @@ private:
   //! make the layer lists consistent.
   Standard_EXPORT void InstallZLayers (const Handle(Visual3d_View)& theView) const;
   
-  //! Adds a new layer in all the views of <me>.
-  Standard_EXPORT void SetLayer (const Handle(Visual3d_Layer)& ALayer);
-
   Visual3d_SequenceOfView MyDefinedView;
-  Handle(Visual3d_Layer) MyUnderLayer;
-  Handle(Visual3d_Layer) MyOverLayer;
   Aspect_GenId MyViewGenId;
   Handle(Graphic3d_GraphicDriver) MyGraphicDriver;
   Standard_Boolean MyZBufferAuto;
