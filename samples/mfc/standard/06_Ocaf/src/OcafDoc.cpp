@@ -87,7 +87,7 @@ COcafDoc::~COcafDoc()
  Handle(TOcaf_Application) OcafApp= ((COcafApp*)AfxGetApp())->GetApp(); \n\
   \n\
  //  Creating the new document \n\
- OcafApp->NewDocument(\"Ocaf-Sample\", myOcafDoc); \n\
+ OcafApp->NewDocument(\"MDTV-Standard\", myOcafDoc); \n\
   \n\
  //  Creation of a new TPrsStd_AISViewer connected to the current V3d_Viewer\n\
  TPrsStd_AISViewer::New(myOcafDoc->Main(),myViewer); \n\
@@ -1068,7 +1068,7 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	else
 	{
 		// The document must be saved in standard format
-		myOcafDoc->ChangeStorageFormat("Ocaf-Sample");
+		myOcafDoc->ChangeStorageFormat("MDTV-Standard");
 	}
 
    try
