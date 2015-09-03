@@ -50,11 +50,12 @@ namespace
   // relative z-range tolerance compatible with for floating point.
   static Standard_Real zEpsilon (const Standard_Real theValue)
   {
-    if (theValue == 0)
+    Standard_Real anAbsValue = Abs (theValue);
+    if (anAbsValue <= (double)FLT_MIN)
     {
-      return FLT_EPSILON;
+      return FLT_MIN;
     }
-    Standard_Real aLogRadix = Log10 (Abs (theValue)) / Log10 (FLT_RADIX);
+    Standard_Real aLogRadix = Log10 (anAbsValue) / Log10 (FLT_RADIX);
     Standard_Real aExp = Floor (aLogRadix);
     return FLT_EPSILON * Pow (FLT_RADIX, aExp);
   };

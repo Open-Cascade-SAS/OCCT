@@ -26,12 +26,14 @@
 #include <TopoDS_Vertex.hxx>
 #include <Poly_Triangulation.hxx>
 
+namespace {
+
 //! Tool class implementing necessary functionality for copying geometry
 class BRepBuilderAPI_Copy_Modification : public BRepTools_Modification 
 {
 public:
   BRepBuilderAPI_Copy_Modification (const Standard_Boolean copyGeom,
-                                    const Standard_Boolean copyMesh = Standard_False)
+                                    const Standard_Boolean copyMesh)
     : myCopyGeom(copyGeom),
       myCopyMesh(copyMesh)
   {
@@ -66,7 +68,8 @@ public:
     if (T.IsNull())
       return Standard_False;
 
-    T = T->Copy();
+    if (myCopyGeom)
+      T = T->Copy();
     return Standard_True;
   }
 
@@ -143,6 +146,7 @@ private:
 
 DEFINE_STANDARD_HANDLE(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
 
+} // anonymous namespace
 
 //=======================================================================
 //function : BRepBuilderAPI_Copy
@@ -151,7 +155,7 @@ DEFINE_STANDARD_HANDLE(BRepBuilderAPI_Copy_Modification, BRepTools_Modification)
 
 BRepBuilderAPI_Copy::BRepBuilderAPI_Copy ()
 {
-  myModification = new BRepBuilderAPI_Copy_Modification(Standard_True);
+  myModification = new BRepBuilderAPI_Copy_Modification(Standard_True, Standard_False);
 }
 
 
