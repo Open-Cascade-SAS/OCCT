@@ -614,24 +614,48 @@ static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& aChain, Topo
     Handle(Geom_Circle) Cir = Handle(Geom_Circle)::DownCast(c3d);
 
     TopoDS_Vertex V1 = sae.FirstVertex(FE);
-    gp_Pnt PV1 = BRep_Tool::Pnt(V1);
     TopoDS_Vertex V2 = sae.LastVertex(TopoDS::Edge(aChain.Last()));
-    gp_Pnt PV2 = BRep_Tool::Pnt(V2);
-    TopoDS_Vertex VM = sae.LastVertex(FE);
-    gp_Pnt PVM = BRep_Tool::Pnt(VM);
-    GC_MakeCircle MC (PV1,PVM,PV2);
     TopoDS_Edge E;
-    if (!MC.IsDone() || MC.Value().IsNull()) {
-      // jfa for Mantis issue 0020228
-      if (PV1.Distance(PV2) > Precision::Confusion())
-        return Standard_False;
+    if (V1.IsSame(V2)) {
       // closed chain
-      B.MakeEdge (E,Cir,Precision::Confusion());
-      B.Add(E,V1);
-      B.Add(E,V2);
-      E.Orientation(FE.Orientation());
+      BRepAdaptor_Curve adef(FE);
+      Handle(Geom_Circle) Cir1;
+      double FP, LP;
+      if ( FE.Orientation() == TopAbs_FORWARD)
+      {
+        FP = adef.FirstParameter();
+        LP = adef.LastParameter();
+      }
+      else
+      {
+        FP = adef.LastParameter();
+        LP = adef.FirstParameter();
+      }
+      if (Abs(FP) < Precision::PConfusion())
+      {
+        B.MakeEdge (E,Cir, Precision::Confusion());
+        B.Add(E,V1);
+        B.Add(E,V2);
+        E.Orientation(FE.Orientation());
+      }
+      else
+      {
+        GC_MakeCircle MC1 (adef.Value(FP), adef.Value((FP + LP) * 0.5), adef.Value(LP));
+        if (MC1.IsDone())
+          Cir1 = MC1.Value();
+        else
+          return Standard_False;
+        B.MakeEdge (E, Cir1, Precision::Confusion());
+        B.Add(E,V1);
+        B.Add(E,V2);
+      }
     }
     else {
+      gp_Pnt PV1 = BRep_Tool::Pnt(V1);
+      gp_Pnt PV2 = BRep_Tool::Pnt(V2);
+      TopoDS_Vertex VM = sae.LastVertex(FE);
+      gp_Pnt PVM = BRep_Tool::Pnt(VM);
+      GC_MakeCircle MC (PV1,PVM,PV2);
       Handle(Geom_Circle) C = MC.Value();
       gp_Pnt P0 = C->Location();
       gp_Dir D1(gp_Vec(P0,PV1));
