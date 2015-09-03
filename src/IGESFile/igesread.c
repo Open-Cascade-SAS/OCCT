@@ -70,13 +70,13 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
   for(;;) {
     numl ++;
     i = iges_lire(lefic,&numsec,ligne,modefnes);
-    if (i <= 0) {
+    if (i <= 0 || i < i0) {
       if (i  == 0) break;
       /* Sending of message : Syntax error */
       {
-	str[1] = '\0';
-	str[0] = sects[i0];
-	IGESFile_Check2 (0,"XSTEP_18",numl,str); /* //gka 15 Sep 98: str instead of sects[i0]); */
+        str[1] = '\0';
+        str[0] = sects[i0];
+        IGESFile_Check2 (0,"XSTEP_18",numl,str); /* //gka 15 Sep 98: str instead of sects[i0]); */
       }
     
       if (i0 == 0) return -1;
@@ -98,21 +98,21 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
     if (i == 2) {                                   /* Header (Global sect) */
       iges_setglobal();
       for (;;) {
-	if (lesect[i] == 1) {    /* Separation specifique */
-	  int n0 = 0;
-	  if (ligne[0] != ',') {  c_separ = ligne[2]; n0 = 3;  }
-	  if (ligne[n0+1] != c_separ) { c_fin = ligne[n0+3]; }
-	}
-	iges_param(&Pstat,ligne,c_separ,c_fin,72);
-	if (Pstat != 2) break;
+        if (lesect[i] == 1) {    /* Separation specifique */
+          int n0 = 0;
+          if (ligne[0] != ',') {  c_separ = ligne[2]; n0 = 3;  }
+          if (ligne[n0+1] != c_separ) { c_fin = ligne[n0+3]; }
+        }
+        iges_param(&Pstat,ligne,c_separ,c_fin,72);
+        if (Pstat != 2) break;
       }
     }
     if (i == 3) iges_Dsect(&Dstat,numsec,ligne);    /* Directory  (Dsect) */
     if (i == 4) {                                   /* Parametres (Psect) */
       iges_Psect(numsec,ligne);
       for (;;) {
-	iges_param(&Pstat,ligne,c_separ,c_fin,64);
-	if (Pstat != 2) break;
+        iges_param(&Pstat,ligne,c_separ,c_fin,64);
+        if (Pstat != 2) break;
       }
     }
   }

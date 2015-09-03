@@ -1,14 +1,18 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
 set filename frame.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 9879 )  Warnings = 0  ( 2629 )  Summary  = 0  ( 12508 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 5005 )  Warnings = 0  ( 1 )  Summary  = 0  ( 5006 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 6  ( 0 )  Summary  = 6  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   Summary  = 2830  ( 2830 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 0  ( 0 )   FreeWire = 0  ( 0 )   FreeEdge  = 944 ( 944 )   SharedEdge = 944  ( 944 )
-TOLERANCE   : MaxTol   =          1e-07  (          1e-07 )  AvgTol   =           1e-07  (           1e-07 )
-LABELS      : N0Labels = 944  ( 944 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 944  ( 944 )   NameLabels = 944  ( 944 )   ColorLabels = 944  ( 944 )   LayerLabels = 0  ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 410  ( 410 )   Summary  = 11585  ( 11585 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 410  ( 410 )   FreeWire = 410  ( 410 )   FreeEdge  = 2910 ( 2910 )   SharedEdge = 4569  ( 4569 )
+TOLERANCE   : MaxTol   =   0.6309534605  (   0.6309534603 )  AvgTol   =   0.01007170672  (    0.0100718085 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1651  ( 2063 )  N2Labels = 0  ( 0 )   TotalLabels = 1652  ( 2064 )   NameLabels = 1652  ( 2053 )   ColorLabels = 1651  ( 2063 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )
 COLORS      : Colors   = WHITE  ( WHITE )

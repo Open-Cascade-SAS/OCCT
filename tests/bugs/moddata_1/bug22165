@@ -23,7 +23,7 @@ if { ${LogLength} < 21 } {
     puts "Faulty ${BugNumber}"
 } else {
     regexp -all {1[ \t]*F: Syntax error in IGES file at line ([-0-9.+eE]+) in section ([A-Z]).} $Log full word1 word2
-    if { ${word1} != "206" || ${word2} != "P" } {
+    if { ${word1} != "204" || ${word2} != "P" } {
 	puts "Faulty ${BugNumber}"
     }
 }

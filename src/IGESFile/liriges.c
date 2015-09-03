@@ -67,10 +67,7 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
         while ( fgets ( ligne, 2, lefic ) && ( ligne[0] == '\r' || ligne[0] == '\n' ) )
         {
         }
-
-
-      fgets(&ligne[1],80,lefic);
-/*     	fgets(ligne,81,lefic); */
+        fgets(&ligne[1],80,lefic);
       }
     }
 
@@ -96,42 +93,66 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
   iges_fautrelire = 0;
   if (ligne[0] == '\0' || ligne[0] == '\n' || ligne[0] == '\r')
     return iges_lire(lefic,numsec,ligne,modefnes); /* 0 */
-  if (sscanf(&ligne[73],"%d",&result) == 0)
-    return -1;
-/*  { printf("Erreur, ligne n0.%d :\n%s\n",*numl,ligne); return (*numsec > 0 ? -1 : -2); } */
-  *numsec = result;
-  typesec = ligne[72];
-  switch (typesec) {
-   case 'S' :  ligne[72] = '\0'; return (1);
-   case 'G' :  ligne[72] = '\0'; return (2);
-   case 'D' :  ligne[72] = '\0'; return (3);
-   case 'P' :  ligne[72] = '\0'; return (4);
-   case 'T' :  ligne[72] = '\0'; return (5);
-   default  :; /* printf("Ligne incorrecte, ignoree n0.%d :\n%s\n",*numl,ligne); */
-  }
-  /* the column 72 is empty, try to check the neghbour*/
-  if(strlen(ligne)==80 
-     && (ligne[79]=='\n' || ligne[79]=='\r') && (ligne[0]<='9' && ligne[0]>='0')) {
-    /*check if the case of losted .*/
-    int index;
-    for(index = 1; ligne[index]<='9' && ligne[index]>='0'; index++);
-    if (ligne[index]=='D' || ligne[index]=='d') {
-      for(index = 79; index > 0; index--)
-	ligne[index] = ligne[index-1];
-      ligne[0]='.';
-    }
-      
+
+  if (!sscanf(&ligne[73],"%d",&result) == 0) {
+    *numsec = result;
     typesec = ligne[72];
     switch (typesec) {
-    case 'S' :  ligne[72] = '\0'; return (1);
-    case 'G' :  ligne[72] = '\0'; return (2);
-    case 'D' :  ligne[72] = '\0'; return (3);
-    case 'P' :  ligne[72] = '\0'; return (4);
-    case 'T' :  ligne[72] = '\0'; return (5);
-    default  :; /* printf("Ligne incorrecte, ignoree n0.%d :\n%s\n",*numl,ligne); */
+     case 'S' :  ligne[72] = '\0'; return (1);
+     case 'G' :  ligne[72] = '\0'; return (2);
+     case 'D' :  ligne[72] = '\0'; return (3);
+     case 'P' :  ligne[72] = '\0'; return (4);
+     case 'T' :  ligne[72] = '\0'; return (5);
+     default  :;
+    }
+    /* the column 72 is empty, try to check the neighbour*/
+    if(strlen(ligne)==80 
+        && (ligne[79]=='\n' || ligne[79]=='\r') && (ligne[0]<='9' && ligne[0]>='0')) {
+       /*check if the case of losted .*/
+       int index;
+       for(index = 1; ligne[index]<='9' && ligne[index]>='0'; index++);
+       if (ligne[index]=='D' || ligne[index]=='d') {
+         for(index = 79; index > 0; index--)
+           ligne[index] = ligne[index-1];
+         ligne[0]='.';
+       }
+       typesec = ligne[72];
+       switch (typesec) {
+       case 'S' :  ligne[72] = '\0'; return (1);
+       case 'G' :  ligne[72] = '\0'; return (2);
+       case 'D' :  ligne[72] = '\0'; return (3);
+       case 'P' :  ligne[72] = '\0'; return (4);
+       case 'T' :  ligne[72] = '\0'; return (5);
+       default  :;
+      }
     }
   }
 
+  // the line is not conform to standard, try to read it (if there are some missing spaces)
+  // find the number end
+  i = (int)strlen(ligne);
+  while ((ligne[i] == '\0' || ligne[i] == '\n' || ligne[i] == '\r' || ligne[i] == ' ') && i > 0)
+    i--;
+  if (i != (int)strlen(ligne))
+    ligne[i + 1] = '\0';
+  // find the number start
+  while (ligne[i] >= '0' && ligne[i] <= '9' && i > 0)
+    i--;
+  if (sscanf(&ligne[i + 1],"%d",&result) == 0)
+    return -1;
+  *numsec = result;
+  // find type of line
+  while (ligne[i] == ' ' && i > 0)
+    i--;
+  typesec = ligne[i];
+  switch (typesec) {
+    case 'S' :  ligne[i] = '\0'; return (1);
+    case 'G' :  ligne[i] = '\0'; return (2);
+    case 'D' :  ligne[i] = '\0'; return (3);
+    case 'P' :  ligne[i] = '\0'; return (4);
+    case 'T' :  ligne[i] = '\0'; return (5);
+    default  :; /* printf("Ligne incorrecte, ignoree n0.%d :\n%s\n",*numl,ligne); */
+  }
   return -1;
 }
 
