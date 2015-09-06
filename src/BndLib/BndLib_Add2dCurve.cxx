@@ -584,7 +584,7 @@ void BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D,
 				Bnd_Box2d& aBox2D)
 {
   Standard_Integer i, aNbT;
-  Standard_Real pT[10], aT, aTwoPI, aT1x, aT2x, dT, aT1z, aT2z, aEps;
+  Standard_Real pT[10], aT, aTwoPI, dT, aEps;
   gp_Pnt2d aP2D;
   //
   aNbT=Compute(aConic2D, aType, pT);
@@ -605,53 +605,28 @@ void BndLib_Box2dCurve::Compute(const Handle(Geom2d_Conic)& aConic2D,
   aTwoPI=2.*M_PI;
   dT=aT2-aT1;
   //
-  aT1z=aT1;
-  aT2z=aT2;
-  if (aT1z>=aTwoPI) {
-    aT1z=AdjustToPeriod(aT1z, aTwoPI);
-    aT2z=aT1z+dT;
-  }
+  Standard_Real aT1z = AdjustToPeriod (aT1, aTwoPI);
   if (fabs(aT1z)<aEps) {
     aT1z=0.;
   }
   //
+  Standard_Real aT2z = aT1z + dT;
   if (fabs(aT2z-aTwoPI)<aEps) {
     aT2z=aTwoPI;
   }
-    //
+  //
   for (i=0; i<aNbT; ++i) {
-    aT=pT[i];
-    if (aT>=aT1z && aT<=aT2z) {
+    aT = pT[i];
+    // adjust aT to range [aT1z, aT1z + 2*PI]; note that pT[i] and aT1z
+    // are adjusted to range [0, 2*PI], but aT2z can be greater than 2*PI
+    aT = (aT < aT1z ? aT + aTwoPI : aT);
+    if (aT <= aT2z) {
       D0(aT, aP2D);
       aBox2D.Add(aP2D);
     }
   }
-  //
-  aT1x=AdjustToPeriod(aT1, aTwoPI);
-  aT2x=aT1x+dT;
-  //
-  if (aT1x < aTwoPI && aT2x > aTwoPI) {
-    aT1z=aT1x;
-    aT2z=aTwoPI;
-    for (i=0; i<aNbT; ++i) {
-      aT=pT[i];
-      if (aT>=aT1z && aT<=aT2z) {
-	D0(aT, aP2D);
-	aBox2D.Add(aP2D);
-      }
-    }
-    //
-    aT1z=0.;
-    aT2z=aT2x-aTwoPI;
-    for (i=0; i<aNbT; ++i) {
-      aT=pT[i];
-      if (aT>=aT1z && aT<=aT2z) {
-	D0(aT, aP2D);
-	aBox2D.Add(aP2D);
-      }
-    }
-  }
 }
+
 //=======================================================================
 //function : Compute
 //purpose  : 
