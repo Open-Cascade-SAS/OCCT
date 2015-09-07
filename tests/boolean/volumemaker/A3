@@ -2,7 +2,6 @@
 # plane unstable
 
 puts "TODO OCC26020 ALL: Error: bopcheck failed"
-puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 # planar face 
 plane pln_f1 0 -870 -1.3877787807814457e-014 0 1 1.1102230246251565e-016
@@ -37,5 +36,5 @@ mkface f6 pln_f6 -1000000 1000000 -1000000 1000000
 # make volume operation 
 mkvolume result f1 f2 f3 f4 f5 f6
 
-set square 2.4e+013
+set square 1183220.
 
