@@ -50,7 +50,7 @@ BRepMesh_CircleTool::BRepMesh_CircleTool(
   const Handle(NCollection_IncAllocator)& theAllocator)
 : myTolerance (Precision::PConfusion() * Precision::PConfusion()),
   myAllocator (theAllocator),
-  myCellFilter(10, theAllocator),
+  myCellFilter(10.0, theAllocator),
   mySelector  (myTolerance, 64, theAllocator)
 {
 }
@@ -64,7 +64,7 @@ BRepMesh_CircleTool::BRepMesh_CircleTool(
   const Handle(NCollection_IncAllocator)& theAllocator)
 : myTolerance (Precision::PConfusion() * Precision::PConfusion()),
   myAllocator (theAllocator),
-  myCellFilter(10, theAllocator),
+  myCellFilter(10.0, theAllocator),
   mySelector  (myTolerance, Max(theReservedSize, 64), theAllocator)
 {
 }
