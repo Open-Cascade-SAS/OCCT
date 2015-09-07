@@ -105,19 +105,19 @@ proc axo {} {
 	view 1 AXON 465 20 800 800
 #    }
 }
-help axo ", One axonometric view" "DRAW Graphic Commands"
+help axo ", One axonometric view. Orientation +X-Y+Z" "DRAW Graphic Commands"
 
 proc haxo {} {
     delete
     view 1 AXON 465 20 800 800*20.4/29.1
 }
-help haxo ", One axonometric horizontal view" "DRAW Graphic Commands"
+help haxo ", One axonometric horizontal view. Orientation +X-Y+Z" "DRAW Graphic Commands"
 
 proc vaxo {} {
     delete
     view 1 AXON 705 20 800*20.4/29.1 800
 }
-help vaxo ", One axonometric vertical view" "DRAW Graphic Commands"
+help vaxo ", One axonometric vertical view. Orientation +X-Y+Z" "DRAW Graphic Commands"
 
 proc pers {} {
     delete
@@ -141,109 +141,109 @@ proc front {} {
     delete
     view 1 +X+Z 465 20 800 800
 }
-help front ", One front view" "DRAW Graphic Commands"
+help front ", One front view. Orientation +X+Z" "DRAW Graphic Commands"
 
 proc hfront {} {
     delete
     view 1 +X+Z 465 20 800 800*20.4/29.1
 }
-help hfront ", One front horizontal view" "DRAW Graphic Commands"
+help hfront ", One front horizontal view. Orientation +X+Z" "DRAW Graphic Commands"
 
 proc vfront {} {
     delete
     view 1 +X+Z 705 20 800*20.4/29.1 800
 }
-help vfront ", One front vertical view" "DRAW Graphic Commands"
+help vfront ", One front vertical view. Orientation +X+Z" "DRAW Graphic Commands"
 
 proc top {} {
     delete
     view 1 +X+Y 465 20 800 800
 }
-help top ", One top view" "DRAW Graphic Commands"
+help top ", One top view. Orientation +X+Y" "DRAW Graphic Commands"
 
 proc htop {} {
     delete
     view 1 +X+Y 465 20 800 800*20.4/29.1
 }
-help htop ", One top horizontal view" "DRAW Graphic Commands"
+help htop ", One top horizontal view. Orientation +X+Y" "DRAW Graphic Commands"
 
 proc vtop {} {
     delete
     view 1 +X+Y 705 20 800*20.4/29.1 800
 }
-help vtop ", One top vertical view" "DRAW Graphic Commands"
+help vtop ", One top vertical view. Orientation +X+Y" "DRAW Graphic Commands"
 
 proc left {} {
     delete
     view 1 -Y+Z 465 20 800 800
 }
-help left ", One left view" "DRAW Graphic Commands"
+help left ", One left view. Orientation -Y+Z" "DRAW Graphic Commands"
 
 proc hleft {} {
     delete
     view 1 -Y+Z 465 20 800 800*20.4/29.1
 }
-help hleft ", One left horizontal view" "DRAW Graphic Commands"
+help hleft ", One left horizontal view. Orientation -Y+Z" "DRAW Graphic Commands"
 
 proc vleft {} {
     delete
     view 1 -Y+Z 705 20 800*20.4/29.1 800
 }
-help vleft ", One left vertical view" "DRAW Graphic Commands"
+help vleft ", One left vertical view. Orientation -Y+Z" "DRAW Graphic Commands"
 
 proc back {} {
     delete
     view 1 -X+Z 465 20 800 800
 }
-help back ", One back view" "DRAW Graphic Commands"
+help back ", One back view. Orientation -X+Z" "DRAW Graphic Commands"
 
 proc hback {} {
     delete
     view 1 -X+Z 465 20 800 800*20.4/29.1
 }
-help hback ", One back horizontal view" "DRAW Graphic Commands"
+help hback ", One back horizontal view. Orientation -X+Z" "DRAW Graphic Commands"
 
 proc vback {} {
     delete
     view 1 -X+Z 705 20 800*20.4/29.1 800
 }
-help vback ", One back vertical view" "DRAW Graphic Commands"
+help vback ", One back vertical view. Orientation -X+Z" "DRAW Graphic Commands"
 
 proc right {} {
     delete
     view 1 +Y+Z 465 20 800 800
 }
-help right ", One right view" "DRAW Graphic Commands"
+help right ", One right view. Orientation +Y+Z" "DRAW Graphic Commands"
 
 proc hright {} {
     delete
     view 1 +Y+Z 465 20 800 800*20.4/29.1
 }
-help hright ", One right horizontal view" "DRAW Graphic Commands"
+help hright ", One right horizontal view. Orientation +Y+Z" "DRAW Graphic Commands"
 
 proc vright {} {
     delete
     view 1 +Y+Z 705 20 800*20.4/29.1 800
 }
-help vright ", One right vertical view" "DRAW Graphic Commands"
+help vright ", One right vertical view. Orientation +Y+Z" "DRAW Graphic Commands"
 
 proc bottom {} {
     delete
-    view 1 +X-Z 465 20 800 800
+    view 1 +X-Y 465 20 800 800
 }
-help bottom ", One bottom view" "DRAW Graphic Commands"
+help bottom ", One bottom view. Orientation +X-Y" "DRAW Graphic Commands"
 
 proc hbottom {} {
     delete
-    view 1 +X-Z 465 20 800 800*20.4/29.1
+    view 1 +X-Y 465 20 800 800*20.4/29.1
 }
-help hbottom ", One bottom horizontal view" "DRAW Graphic Commands"
+help hbottom ", One bottom horizontal view. Orientation +X-Y" "DRAW Graphic Commands"
 
 proc vbottom {} {
     delete
-    view 1 +X-Z 705 20 800*20.4/29.1 800
+    view 1 +X-Y 705 20 800*20.4/29.1 800
 }
-help vbottom ", One bottom vertical view" "DRAW Graphic Commands"
+help vbottom ", One bottom vertical view. Orientation +X-Y" "DRAW Graphic Commands"
 
 proc v2d {} {
     delete

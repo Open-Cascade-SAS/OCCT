@@ -5,7 +5,7 @@ puts "============"
 puts ""
 
 vtrihedron trihedr
-vright
+vfront
 
 vsetdispmode 1
 

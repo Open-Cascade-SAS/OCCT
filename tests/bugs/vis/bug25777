@@ -1,0 +1,114 @@
+puts "============"
+puts "OCC25777: Draw Harness, ViewerTest - make commands defining standard views to match their names"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b0 -70 -70 -70 140 140 140
+
+# Top View
+text2brep top Top -height 30 -aspect bold -halign center -valign center -pos 0 30 70 -plane 0 0 1 1 0 0 -composite on
+explode top Sh
+prism ptop top 0 0 -10
+
+# Bottom View
+text2brep bottom Bottom -height 30 -aspect bold -halign center -valign center -pos 0 -30 -70 -plane 0 0 -1 1 0 0 -composite on
+explode bottom Sh
+prism pbottom bottom 0 0 10
+
+# Front View
+text2brep front Front -height 30 -aspect bold -halign left -valign top -pos -70 -70 65 -plane 0 -1 0 1 0 0 -composite on
+explode front Sh
+prism pfront front 0 10 0
+
+# Back View
+text2brep back Back -height 30 -aspect bold -halign left -valign bottom -pos 70 70 -60 -plane 0 1 0 -1 0 0 -composite on
+explode back Sh
+prism pback back 0 -10 0
+
+# Right View
+text2brep right Right -height 30 -aspect bold -halign left -valign top -pos 70 -60 65 -plane 1 0 0 0 1 0 -composite on
+explode right Sh
+prism pright right -10 0 0
+
+# Left View
+text2brep left Left -height 30 -aspect bold -halign left -valign bottom -pos -70 60 -60 -plane -1 0 0 0 -1 0 -composite on
+explode left Sh
+prism pleft left 10 0 0
+
+# Cut operations
+bcut cutbox b0 ptop
+bcut cutbox cutbox pbottom
+bcut cutbox cutbox pfront
+bcut cutbox cutbox pback
+bcut cutbox cutbox pleft
+bcut cutbox cutbox pright
+
+vclear
+vclose all
+vinit
+
+vtrihedron tr
+vdisplay cutbox
+
+vfit
+
+# Axo View
+vaxo
+vdump $imagedir/${casename}_new_0_axo.png
+
+axo
+fit
+xwd $imagedir/${casename}_old_0_axo.png
+
+vsetdispmode 1
+vmoveto 200 200
+
+# Front View
+vfront
+vdump $imagedir/${casename}_new_1_front.png
+
+front
+fit
+xwd $imagedir/${casename}_old_1_front.png
+
+# Back View
+vback
+vdump $imagedir/${casename}_new_2_back.png
+
+back
+fit
+xwd $imagedir/${casename}_old_2_back.png
+
+# Right View
+vright
+vdump $imagedir/${casename}_new_3_right.png
+
+right
+fit
+xwd $imagedir/${casename}_old_3_right.png
+
+# Left View
+vleft
+vdump $imagedir/${casename}_new_4_left.png
+
+left
+fit
+xwd $imagedir/${casename}_old_4_left.png
+
+# Top View
+vtop
+vdump $imagedir/${casename}_new_5_top.png
+
+top
+fit
+xwd $imagedir/${casename}_old_5_top.png
+
+# Bottom View
+vbottom
+vdump $imagedir/${casename}_new_6_bottom.png
+
+bottom
+fit
+xwd $imagedir/${casename}_old_6_bottom.png

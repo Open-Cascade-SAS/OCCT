@@ -28,7 +28,7 @@ vsetmaterial wall3 pewter
 vsetcolor wall1 red
 vsetcolor wall2 green
 
-vright
+vfront
 vturnview 0 -0.3 0
 vfit
 

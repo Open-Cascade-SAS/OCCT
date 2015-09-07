@@ -9,7 +9,7 @@ puts ""
 restore [locate_data_file OCC25841_Curve_2.brep] a
 vinit
 vclear
-vfront
+vright
 vdisplay a
 vfit
 set only_screen 1

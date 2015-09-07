@@ -15,7 +15,7 @@ set anImage2 $imagedir/${casename}_Closed.png
 vinit
 meshfromstl aMesh [locate_data_file sh1.stl]
 vsetdispmode aMesh 2
-vright
+vfront
 vfit
 
 vclipplane create aClipPlane

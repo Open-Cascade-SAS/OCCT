@@ -14,7 +14,7 @@ vclear
 
 box b 10 10 10
 vdisplay b
-vright
+vfront
 vfit
 
 vviewparams -size 22

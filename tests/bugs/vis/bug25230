@@ -29,7 +29,7 @@ for {set x 0} {$x<7} {incr x} {
 vtop
 vcamera -persp
 vfit
-vback
+vleft
 vtop
 
 #check rectagle selection

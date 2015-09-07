@@ -16,7 +16,7 @@ box b 1 1 1
 explode b FACE 
 vdisplay b_1 b_2 b_3 b_5 b_6
 
-vright
+vfront
 vfit
 
 vsetmaterial b_1 plastic

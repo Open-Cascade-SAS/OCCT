@@ -11,7 +11,7 @@ restore [locate_data_file bug24842_10265.brep] b
 vinit
 vdisplay b
 
-vright
+vfront
 
 vfit
 vhlr on

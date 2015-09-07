@@ -67,7 +67,7 @@ vsettransparency B1 0.8
 vsettransparency B2 0.8
 vsettransparency B3 0.8
 
-vright
+vfront
 vturnview 0 -0.3 0
 vfit
 vlight change 0 pos 1 1 1

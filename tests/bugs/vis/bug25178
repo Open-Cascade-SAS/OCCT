@@ -10,7 +10,7 @@ restore [locate_data_file bug25179_nurbs-with-partial-seam.brep] a
 
 vinit
 vdisplay a
-vback
+vleft
 vfit
 
 set only_screen 1

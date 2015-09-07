@@ -1804,7 +1804,7 @@ static int VBottom(Draw_Interpretor& di, Standard_Integer , const char** )
 
 static int VLeft(Draw_Interpretor& di, Standard_Integer , const char** )
 {
-  return ViewProject(di, V3d_Ypos);
+  return ViewProject(di, V3d_Xneg);
 }
 
 //==============================================================================
@@ -1815,7 +1815,7 @@ static int VLeft(Draw_Interpretor& di, Standard_Integer , const char** )
 
 static int VRight(Draw_Interpretor& di, Standard_Integer , const char** )
 {
-  return ViewProject(di, V3d_Yneg);
+  return ViewProject(di, V3d_Xpos);
 }
 
 //==============================================================================
@@ -1826,7 +1826,7 @@ static int VRight(Draw_Interpretor& di, Standard_Integer , const char** )
 
 static int VFront(Draw_Interpretor& di, Standard_Integer , const char** )
 {
-  return ViewProject(di, V3d_Xpos);
+  return ViewProject(di, V3d_Yneg);
 }
 
 //==============================================================================
@@ -1837,7 +1837,7 @@ static int VFront(Draw_Interpretor& di, Standard_Integer , const char** )
 
 static int VBack(Draw_Interpretor& di, Standard_Integer , const char** )
 {
-  return ViewProject(di, V3d_Xneg);
+  return ViewProject(di, V3d_Ypos);
 }
 
 //==============================================================================
@@ -8729,25 +8729,25 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vhelp            : display help on the viewer commands",
     __FILE__,VHelp,group);
   theCommands.Add("vtop" ,
-    "vtop or <T>      : Top view" ,
+    "vtop or <T>      : Top view. Orientation +X+Y" ,
     __FILE__,VTop,group);
   theCommands.Add("vbottom" ,
-    "vbottom          : Bottom view" ,
+    "vbottom          : Bottom view. Orientation +X-Y" ,
     __FILE__,VBottom,group);
   theCommands.Add("vleft" ,
-    "vleft            : Left view" ,
+    "vleft            : Left view. Orientation -Y+Z" ,
     __FILE__,VLeft,group);
   theCommands.Add("vright" ,
-    "vright           : Right view" ,
+    "vright           : Right view. Orientation +Y+Z" ,
     __FILE__,VRight,group);
   theCommands.Add("vaxo" ,
-    " vaxo or <A>     : Axonometric view ",
+    " vaxo or <A>     : Axonometric view. Orientation +X-Y+Z",
     __FILE__,VAxo,group);
   theCommands.Add("vfront" ,
-    "vfront           : Front view" ,
+    "vfront           : Front view. Orientation +X+Z" ,
     __FILE__,VFront,group);
   theCommands.Add("vback" ,
-    "vback            : Back view" ,
+    "vback            : Back view. Orientation -X+Z" ,
     __FILE__,VBack,group);
   theCommands.Add("vpick" ,
     "vpick           : vpick X Y Z [shape subshape] ( all variables as string )",

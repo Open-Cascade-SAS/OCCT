@@ -10,7 +10,7 @@ pload VISUALIZATION
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 
 vinit
-vright
+vfront
 
 set hpos "left hcenter"
 set vpos "above vcenter below"
@@ -53,7 +53,7 @@ vfit
 # ------------------------------------------------
 
 vinit Viewer2/View2
-vright
+vfront
 
 set idx 0
 for {set r 0} {$r < 3} {incr r} {
