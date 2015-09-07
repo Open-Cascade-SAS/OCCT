@@ -1,5 +1,2 @@
-puts "TODO ?OCC26017 Linux: TEST INCOMPLETE"
-puts "TODO ?OCC26017 Linux: \\*\\* Exception"
-puts "TODO ?OCC26017 Linux: An exception was caught"
 source [locate_data_file 401-ta6001-3.prt.1.gdml.tcl]
 

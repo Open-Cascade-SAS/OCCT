@@ -1,9 +1,9 @@
 # test script on make volume operation
 # cylinder plane unstable
 
-puts "TODO ?OCC26019 ALL: Error: bopcheck failed"
-puts "TODO ?OCC26019 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC26019 ALL: Error : The area of the resulting shape is"
+puts "TODO OCC26020 ALL: Error: bopcheck failed"
+puts "TODO OCC26020 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC26020 ALL: Error : The area of the resulting shape is"
 
 # planar face 
 plane pln_f1 -2591.6564295634707 -1492.5 -1185.6605612884966 0.46174861323503397 1.1102230246251565e-016 -0.88701083317822171

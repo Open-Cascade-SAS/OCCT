@@ -1,11 +1,12 @@
 # ? - because sometimes test is killed by elapsed time
-puts "TODO OCC26018 ALL: TEST INCOMPLETE"
-puts "TODO ?OCC26018 ALL: Process killed by CPU limit"
-puts "TODO ?OCC26017 Linux: \\*\\* Exception"
-puts "TODO ?OCC26017 Linux: An exception was caught"
-puts "TODO ?OCC26017 ALL: Tcl Exception:"
-puts "TODO ?OCC26017 ALL: Error: sh141385A0_copy is not a valid shape"
-puts "TODO ?OCC26017 ALL Error: sh59D36470_copy is not a valid shape"
+cpulimit 1000
+puts "TODO ?OCC26018 Windows: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC26018 Linux: TEST INCOMPLETE"
+puts "TODO ?OCC26018 Linux: Process killed by CPU limit"
+puts "TODO ?OCC26018 ALL: Tcl Exception:"
+puts "TODO OCC26018 Linux: Error: sh59D36470_copy is not a valid shape"
+puts "TODO ?OCC26018 Windows: Error: sh59D36470_copy is not a valid shape"
+puts "TODO ?OCC26018 Windows: TEST INCOMPLETE"
 
 source [locate_data_file 20000_asm-gene.asm.6.gdml.tcl]
 

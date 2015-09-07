@@ -1,8 +1,2 @@
-puts "TODO ?OCC26017 Linux: TEST INCOMPLETE"
-puts "TODO ?OCC26017 Linux: \\*\\* Exception"
-puts "TODO ?OCC26017 Linux: An exception was caught"
-puts "TODO ?OCC26017 Linux: X Error of failed request"
-puts "TODO ?OCC26017 Linux: XIO:  fatal IO error 11"
-puts "TODO ?OCC26017 Linux: Process killed by CPU limit"
 source [locate_data_file voile_3.asm.1.gdml.tcl]
 
