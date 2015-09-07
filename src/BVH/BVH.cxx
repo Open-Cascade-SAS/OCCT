@@ -25,6 +25,10 @@
 
 // Specific instantiations of struct templates to avoid compilation warnings
 
+template class NCollection_Vec2<Standard_Real>;
+template class NCollection_Vec3<Standard_Real>;
+template class NCollection_Vec4<Standard_Real>;
+
 template class BVH_Box<Standard_Real, 2>;
 template class BVH_Box<Standard_Real, 3>;
 template class BVH_Box<Standard_Real, 4>;
