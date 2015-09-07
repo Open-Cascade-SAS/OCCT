@@ -43,7 +43,7 @@ endif()
 
 # enable extended messages of many OCCT algorithms
 set (OCCT_ALGO_EXTENDED_OUTPUT OFF CACHE BOOL "${OCCT_ALGO_EXTENDED_OUTPUT_DESCR}")
-if (OCCT_ALGO_EXTENDED_OUTPUT_DESCR)
+if (OCCT_ALGO_EXTENDED_OUTPUT)
   add_definitions (-DOCCT_DEBUG)
 endif()
 
