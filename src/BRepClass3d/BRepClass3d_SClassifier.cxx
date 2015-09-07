@@ -33,6 +33,9 @@
 #include <math_BullardGenerator.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 
+#include <vector>
+
+// modified by NIZHNY-MKK  Mon Jun 21 15:13:40 2004
 static
   Standard_Boolean FaceNormal (const TopoDS_Face& aF,
                                const Standard_Real U,
@@ -102,25 +105,32 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   myFace.Nullify();
   myState=2;
 
-  aSE.InitShell();
-  if (aSE.MoreShell())
+  // Collect faces in sequence to iterate
+  std::vector<TopoDS_Face> aFaces;
+  for (aSE.InitShell(); aSE.MoreShell(); aSE.NextShell())
   {
-    aSE.InitFace();
-    if (aSE.MoreFace())
+    for (aSE.InitFace(); aSE.MoreFace(); aSE.NextFace())
     {
-      TopoDS_Face aF = aSE.CurrentFace();
+      aFaces.push_back (aSE.CurrentFace());
+    }
+  }
+
+  // iteratively try up to 10 probing points from each face
+  const int NB_MAX_POINTS_PER_FACE = 10;
+  for (int itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
+  {
+    for (std::vector<TopoDS_Face>::iterator iFace = aFaces.begin(); iFace != aFaces.end(); ++iFace)
+    {
+      TopoDS_Face aF = *iFace;
+
       TopAbs_State aState = TopAbs_OUT;
       IntCurveSurface_TransitionOnCurve aTransition = IntCurveSurface_Tangent;
-      TopoDS_Face MinFace = aF;
-      for (;;)
-      {
+
         aParam = 0.1 + 0.8 * aRandomGenerator.NextReal(); // random number in range [0.1, 0.9]
         bFound = aSE.FindAPointInTheFace(aF, aPoint, aU, aV, aParam);
-        if (!bFound)
-          return;
+      if (!bFound || !FaceNormal(aF, aU, aV, aDN))
+        continue;
 
-        if (!FaceNormal(aF, aU, aV, aDN))
-          continue;
         gp_Lin aLin(aPoint, -aDN);
         Standard_Real parmin = RealLast();
         for (aSE.InitShell();aSE.MoreShell();aSE.NextShell()) { 
@@ -141,7 +151,6 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
                     parmin = Intersector3d.WParameter(imin);
                     aState = Intersector3d.State(imin);
                     aTransition = Intersector3d.Transition(imin);
-                    MinFace = CurFace;
                   }
                 }
               }
@@ -164,11 +173,9 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
             return;
           }
         }
-        aF = MinFace;
+    } // iteration by faces
+  } // iteration by points
       }
-    } //if (aSE.MoreFace())
-  } //if (aSE.MoreShell())
-}
 
 //=======================================================================
 //function : Perform
