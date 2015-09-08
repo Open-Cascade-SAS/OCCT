@@ -1089,12 +1089,11 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     set aLibsMap(CSF_advapi32)     "advapi32.lib"
     set aLibsMap(CSF_gdi32)        "gdi32.lib"
     set aLibsMap(CSF_user32)       "user32.lib"
-    set aLibsMap(CSF_glu32)        "glu32.lib"
     set aLibsMap(CSF_opengl32)     "opengl32.lib"
     set aLibsMap(CSF_wsock32)      "wsock32.lib"
     set aLibsMap(CSF_netapi32)     "netapi32.lib"
     set aLibsMap(CSF_AviLibs)      "ws2_32.lib vfw32.lib"
-    set aLibsMap(CSF_OpenGlLibs)   "opengl32.lib glu32.lib"
+    set aLibsMap(CSF_OpenGlLibs)   "opengl32.lib"
 
     set aLibsMap(CSF_QT)           "QtCore4.lib QtGui4.lib"
 
@@ -1111,7 +1110,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aFrmsMap(CSF_TclTkLibs)  "Tk"
     } else {
       set aLibsMap(CSF_ThreadLibs) "pthread rt"
-      set aLibsMap(CSF_OpenGlLibs) "GLU GL"
+      set aLibsMap(CSF_OpenGlLibs) "GL"
       set aLibsMap(CSF_TclLibs)    "tcl8.6"
       set aLibsMap(CSF_TclTkLibs)  "X11 tk8.6"
       set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"

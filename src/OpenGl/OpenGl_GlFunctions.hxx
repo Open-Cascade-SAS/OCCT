@@ -43,7 +43,6 @@
     #include <OpenGLES/ES2/gl.h>
   #else
     #include <OpenGL/gl.h>
-    #include <OpenGL/glu.h>
   #endif
   #define __X_GL_H // prevent chaotic gl.h inclusions to avoid compile errors
 #elif defined(HAVE_GLES2) || defined(__ANDROID__)
@@ -51,7 +50,6 @@
   //#include <GLES3/gl3.h>
 #else
   #include <GL/gl.h>
-  #include <GL/glu.h>
 #endif
 
 #if defined(GL_ES_VERSION_2_0)

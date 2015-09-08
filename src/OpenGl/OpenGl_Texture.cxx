@@ -18,6 +18,7 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore15.hxx>
 #include <Graphic3d_TextureParams.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Standard_Assert.hxx>
 #include <Image_PixMap.hxx>
 
@@ -381,15 +382,58 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   const GLsizei aHeight    = theSizeY;
   const GLsizei aMaxSize   = theCtx->MaxTextureSize();
 
-  // Notice that formally general NPOT textures are required by OpenGL 2.0 specifications
-  // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
-  // Trying to create NPOT textures on such hardware will not fail
-  // but driver will fall back into software rendering,
-  const bool    toForceP2  = !theCtx->IsGlGreaterEqual (3, 0) && !theCtx->arbNPTW;
-  const GLsizei aWidthOut  = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aWidth,  aMaxSize) : Min (aWidth,  aMaxSize);
-  const GLsizei aHeightOut = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize) : Min (aHeight, aMaxSize);
-  const GLenum  aFilter    = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
-  const GLenum  aWrapMode  = myParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
+  if (aWidth > aMaxSize || aHeight > aMaxSize)
+  {
+    TCollection_ExtendedString aWarnMessage = TCollection_ExtendedString ("Error: Texture dimension - ")
+      + aWidth + "x" + aHeight + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")";
+
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
+    Release (theCtx.operator->());
+    return false;
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  else if (!theCtx->IsGlGreaterEqual (3, 0) && !theCtx->arbNPTW)
+  {
+    // Notice that formally general NPOT textures are required by OpenGL 2.0 specifications
+    // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
+    // Trying to create NPOT textures on such hardware will not fail
+    // but driver will fall back into software rendering,
+    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (aWidth, aMaxSize);
+    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize);
+
+    if (aWidth != aWidthP2 || (theType != Graphic3d_TOT_1D && aHeight != aHeightP2))
+    {
+      TCollection_ExtendedString aWarnMessage =
+        TCollection_ExtendedString ("Error: NPOT Textures (") + aWidth + "x" + aHeight + ") are not supported by hardware.";
+
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
+
+      Release (theCtx.operator->());
+      return false;
+    }
+  }
+#else
+  else if (!theCtx->IsGlGreaterEqual (3, 0) && theType == Graphic3d_TOT_2D_MIPMAP)
+  {
+    // Mipmap NPOT textures are not supported by OpenGL ES 2.0.
+    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (aWidth, aMaxSize);
+    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize);
+
+    if (aWidth != aWidthP2 || aHeight != aHeightP2)
+    {
+      TCollection_ExtendedString aWarnMessage =
+        TCollection_ExtendedString ("Error: Mipmap NPOT Textures (") + aWidth + "x" + aHeight + ") are not supported by OpenGL ES 2.0";
+
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
+
+      Release (theCtx.operator->());
+      return false;
+    }
+  }
+#endif
+
+  const GLenum  aFilter   = (myParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
+  const GLenum  aWrapMode = myParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
 
 #if !defined(GL_ES_VERSION_2_0)
   GLint aTestWidth  = 0;
@@ -399,6 +443,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
   // setup the alignment
   OpenGl_UnpackAlignmentSentry anUnpackSentry;
+  (void)anUnpackSentry; // avoid compiler warning
+
   if (aDataPtr != NULL)
   {
     const GLint anAligment = Min ((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
@@ -423,31 +469,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
 
-      Image_PixMap aCopy;
-      if (aDataPtr != NULL)
-      {
-        if (aWidth != aWidthOut)
-        {
-          glPixelStorei (GL_PACK_ALIGNMENT,  1);
-          glPixelStorei (GL_PACK_ROW_LENGTH, 0);
-          if (!aCopy.InitTrash (theImage->Format(), Standard_Size(aWidthOut), 1)
-            || gluScaleImage (thePixelFormat,
-                              aWidth,    1, theDataType, theImage->Data(),
-                              aWidthOut, 1, theDataType, aCopy.ChangeData()) != 0)
-          {
-            Unbind (theCtx);
-            Release (theCtx.operator->());
-            return false;
-          }
-
-          aDataPtr = (GLvoid* )aCopy.Data();
-          anUnpackSentry.Reset();
-        }
-      }
-
       // use proxy to check texture could be created or not
       glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
-                    aWidthOut, 0,
+                    aWidth, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
       if (aTestWidth == 0)
@@ -459,7 +483,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       glTexImage1D (GL_TEXTURE_1D, 0, anIntFormat,
-                    aWidthOut, 0,
+                    aWidth, 0,
                     thePixelFormat, theDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
       {
@@ -468,12 +492,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = aWidthOut;
+      mySizeX = aWidth;
       mySizeY = 1;
 
       Unbind (theCtx);
       return true;
     #else
+      Release (theCtx.operator->());
       return false;
     #endif
     }
@@ -486,39 +511,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
 
-      Image_PixMap aCopy;
-      if (aDataPtr != NULL)
-      {
-        if (aWidth != aWidthOut || aHeight != aHeightOut)
-        {
-        #if !defined(GL_ES_VERSION_2_0)
-          // scale texture
-          glPixelStorei (GL_PACK_ALIGNMENT,  1);
-          glPixelStorei (GL_PACK_ROW_LENGTH, 0);
-          if (!aCopy.InitTrash (theImage->Format(), Standard_Size(aWidthOut), Standard_Size(aHeightOut))
-            || gluScaleImage (thePixelFormat,
-                              aWidth,    aHeight,    theDataType, theImage->Data(),
-                              aWidthOut, aHeightOut, theDataType, aCopy.ChangeData()) != 0)
-          {
-            Unbind (theCtx);
-            Release (theCtx.operator->());
-            return false;
-          }
-
-          aDataPtr = (GLvoid* )aCopy.Data();
-          anUnpackSentry.Reset();
-        #else
-          Unbind (theCtx);
-          Release (theCtx.operator->());
-          return false;
-        #endif
-        }
-      }
-
     #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
       glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                    aWidthOut, aHeightOut, 0,
+                    aWidth, aHeight, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
@@ -532,7 +528,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     #endif
 
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                    aWidthOut, aHeightOut, 0,
+                    aWidth, aHeight, 0,
                     thePixelFormat, theDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
       {
@@ -541,8 +537,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = aWidthOut;
-      mySizeY = aHeightOut;
+      mySizeX = aWidth;
+      mySizeY = aHeight;
 
       Unbind (theCtx);
       return true;
@@ -569,65 +565,62 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
 
-      if (theCtx->arbFBO != NULL
-       && aWidth == aWidthOut && aHeight == aHeightOut)
+    #if !defined(GL_ES_VERSION_2_0)
+      // use proxy to check texture could be created or not
+      glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
+                    aWidth, aHeight, 0,
+                    thePixelFormat, theDataType, NULL);
+      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
+      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
+      if (aTestWidth == 0 || aTestHeight == 0)
       {
-      #if !defined(GL_ES_VERSION_2_0)
-        // use proxy to check texture could be created or not
-        glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                      aWidthOut, aHeightOut, 0,
-                      thePixelFormat, theDataType, NULL);
-        glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
-        glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
-        if (aTestWidth == 0 || aTestHeight == 0)
-        {
-          // no memory or broken input parameters
-          Unbind (theCtx);
-          Release (theCtx.operator->());
-          return false;
-        }
-      #endif
+        // no memory or broken input parameters
+        Unbind (theCtx);
+        Release (theCtx.operator->());
+        return false;
+      }
+    #endif
 
-        // upload main picture
-        glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                      aWidthOut, aHeightOut, 0,
-                      thePixelFormat, theDataType, theImage->Data());
+      // upload main picture
+      glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
+                    aWidth, aHeight, 0,
+                    thePixelFormat, theDataType, theImage->Data());
+      if (glGetError() != GL_NO_ERROR)
+      {
+        Unbind (theCtx);
+        Release (theCtx.operator->());
+        return false;
+      }
+
+      mySizeX = aWidth;
+      mySizeY = aHeight;
+
+      if (theCtx->arbFBO != NULL)
+      {
+        // generate mipmaps
+        //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+        theCtx->arbFBO->glGenerateMipmap (GL_TEXTURE_2D);
+
         if (glGetError() != GL_NO_ERROR)
         {
           Unbind (theCtx);
           Release (theCtx.operator->());
           return false;
         }
-
-        mySizeX = aWidthOut;
-        mySizeY = aHeightOut;
-
-        // generate mipmaps
-        //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-        theCtx->arbFBO->glGenerateMipmap (GL_TEXTURE_2D);
-
-        Unbind (theCtx);
-        return true;
       }
       else
       {
-      #if !defined(GL_ES_VERSION_2_0)
-        bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, anIntFormat,
-                                            aWidth, aHeight,
-                                            thePixelFormat, theDataType, theImage->Data()) == 0;
-        if (isCreated)
-        {
-          glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &mySizeX);
-          glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &mySizeY);
-        }
+        const TCollection_ExtendedString aWarnMessage ("Warning: generating mipmaps requires GL_ARB_framebuffer_object extension which is missing.");
+
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aWarnMessage);
 
         Unbind (theCtx);
-        return isCreated;
-      #else
-        Unbind (theCtx);
+        Release (theCtx.operator->());
         return false;
-      #endif
       }
+
+      Unbind (theCtx);
+      return true;
     }
     default:
     {

@@ -11,6 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+// required for correct APIENTRY definition
+#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+#endif
+
+#if defined(__APPLE__)
+  #include <OpenGL/glu.h>
+#else
+  #include <GL/glu.h>
+#endif
+
 #include "VoxelClient_VisDrawer.h"
 
 #include <OpenGl_GlCore11.hxx>
