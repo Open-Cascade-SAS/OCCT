@@ -44,12 +44,9 @@ TOcaf_Application::TOcaf_Application()
 //=======================================================================
 
 void TOcaf_Application::Formats(TColStd_SequenceOfExtendedString& Formats) 
-{  
-  //Formats.Append(TCollection_ExtendedString ("Ocaf-Sample"));    
-  Formats.Append(TCollection_ExtendedString ("MDTV-Standard"));
+{
   Formats.Append(TCollection_ExtendedString("BinOcaf"));
   Formats.Append(TCollection_ExtendedString("XmlOcaf"));
-
 }
 
 

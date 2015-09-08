@@ -69,7 +69,7 @@ COcafDoc::~COcafDoc()
  	Handle(TOcaf_Application) OcafApp = ((COcafApp*)AfxGetApp())->GetApp();
  
  	// Create a new Ocaf document
- 	OcafApp->NewDocument("MDTV-Standard",myOcafDoc);
+ 	OcafApp->NewDocument("BinOcaf",myOcafDoc);
  	TPrsStd_AISViewer::New(myOcafDoc->Main(),myViewer);
  
  	Handle(AIS_InteractiveContext) CTX;
@@ -87,7 +87,7 @@ COcafDoc::~COcafDoc()
  Handle(TOcaf_Application) OcafApp= ((COcafApp*)AfxGetApp())->GetApp(); \n\
   \n\
  //  Creating the new document \n\
- OcafApp->NewDocument(\"Ocaf-Sample\", myOcafDoc); \n\
+ OcafApp->NewDocument(\"BinOcaf\", myOcafDoc); \n\
   \n\
  //  Creation of a new TPrsStd_AISViewer connected to the current V3d_Viewer\n\
  TPrsStd_AISViewer::New(myOcafDoc->Main(),myViewer); \n\
@@ -904,17 +904,13 @@ void COcafDoc::OnFileSaveAs()
 	CString Filter;
 
 	if (TPathName.SearchFromEnd(".xml") > 0){
-		Filter = "OCAFSample(XML) (*.xml)|*.xml|OCAFSample(STD) (*.std)|*.std|OCAFSample(Binary) (*.cbf)|*.cbf||";
-	}
-	else if (TPathName.SearchFromEnd(".cbf") > 0){
-		Filter = "OCAFSample(Binary) (*.cbf)|*.cbf|OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml||";
-	}
-	else{
-		Filter = "OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||";
+		Filter = "OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||";
+	} else {
+		Filter = "OCAFSample(Binary) (*.cbf)|*.cbf|OCAFSample(XML) (*.xml)|*.xml||";
 	}
 	
 	CFileDialog dlg(FALSE,
-			L"std",
+			L"cbf",
 			GetTitle(),
 			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 			Filter,
@@ -943,11 +939,6 @@ void COcafDoc::OnFileSaveAs()
 		{
 			// The document must be saved in binary format
 			myOcafDoc->ChangeStorageFormat("BinOcaf");
-		}
-		else
-		{
-			// The document must be saved in standard format
-			myOcafDoc->ChangeStorageFormat("MDTV-Standard");
 		}
 
 		try
@@ -1005,11 +996,6 @@ void COcafDoc::OnFileSave()
 			// The document must be saved in binary format
 			myOcafDoc->ChangeStorageFormat("BinOcaf");
 		}
-		else
-		{
-			// The document must be saved in standard format
-			myOcafDoc->ChangeStorageFormat("MDTV-Standard");
-		}
 
 		try
 		{
@@ -1038,10 +1024,10 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	}
 
 	CFileDialog dlg(FALSE,
-			L"std",
+			L"cbf",
 			GetTitle(),
 			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-			L"OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||",
+			L"OCAFSample(Binary) (*.cbf)|*.cbf|OCAFSample(XML) (*.xml)|*.xml||",
 			NULL );
 
 	if (dlg.DoModal() != IDOK) return;
@@ -1064,11 +1050,6 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	{
 	  // The document must be saved in binary format
 	  myOcafDoc->ChangeStorageFormat("BinOcaf");
-	}
-	else
-	{
-		// The document must be saved in standard format
-		myOcafDoc->ChangeStorageFormat("Ocaf-Sample");
 	}
 
    try

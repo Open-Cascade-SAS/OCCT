@@ -137,7 +137,7 @@ BOOL COcafApp::IsViewExisting(CDocument * pDoc, CRuntimeClass * pViewClass, CVie
 void COcafApp::OnFileOpen() 
 {
 	CFileDialog aDlg(TRUE, NULL, NULL, OFN_FILEMUSTEXIST|OFN_HIDEREADONLY,
-	   L"OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||");
+	   L"OCAFSample(Binary) (*.cbf)|*.cbf|OCAFSample(XML) (*.xml)|*.xml||");
 
 	if (aDlg.DoModal() != IDOK) 
         return;
