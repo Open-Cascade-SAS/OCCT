@@ -622,8 +622,7 @@ Standard_Integer BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     theLSNew = theLS;
     return iErr;
   }
-  //
-  BOPCol_ListIteratorOfListOfShape aIt;
+  //  
   TopExp_Explorer aExp;
   //
   TopAbs_ShapeEnum aType = theLS.First().ShapeType();
@@ -638,8 +637,7 @@ Standard_Integer BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     BOPTools_AlgoTools::MakeContainer
       ((aType == TopAbs_FACE) ? TopAbs_SHELL : TopAbs_WIRE, aShape);
     //
-    aIt.Initialize(theLS);
-    for (; aIt.More(); aIt.Next()) {
+    for (BOPCol_ListIteratorOfListOfShape aIt(theLS); aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aS = aIt.Value();
       aBB.Add(aShape, aS);
     }
@@ -671,9 +669,9 @@ Standard_Integer BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     aNb = aMG.Extent();
     for (i = 1; i <= aNb; ++i) {
       const TopoDS_Shape& aSS = aMG(i);
-      const TopoDS_Shape& aSNew = anUnify.Generated(aSS);
-      if (!aSNew.IsNull() && !aSS.IsSame(aSNew)) {
-        myMapGenerated.Bind(aSS, aSNew);
+      const TopoDS_Shape& aSGen = anUnify.Generated(aSS);
+      if (!aSGen.IsNull() && !aSS.IsSame(aSGen)) {
+        myMapGenerated.Bind(aSS, aSGen);
       }
     }
   }
@@ -681,8 +679,7 @@ Standard_Integer BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     // build all solids from the faces
     BOPCol_ListOfShape aLSF;
     //
-    aIt.Initialize(theLS);
-    for (; aIt.More(); aIt.Next()) {
+    for (BOPCol_ListIteratorOfListOfShape aIt(theLS); aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aS = aIt.Value();
       //
       aExp.Init(aS, TopAbs_FACE);
@@ -712,8 +709,7 @@ Standard_Integer BOPAlgo_CellsBuilder::RemoveInternals(const BOPCol_ListOfShape&
     Standard_Integer i, aNb;
     //
     // map faces and solids
-    BOPCol_ListIteratorOfListOfShape aIt(theLSNew);
-    for (; aIt.More(); aIt.Next()) {
+    for (BOPCol_ListIteratorOfListOfShape aIt(theLSNew); aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aS = aIt.Value();
       //
       aExp.Init(aS, TopAbs_FACE);

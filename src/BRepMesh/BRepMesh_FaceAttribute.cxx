@@ -18,6 +18,12 @@
 #include <BRepMesh_ShapeTool.hxx>
 #include <BRepMesh_Classifier.hxx>
 #include <BRepTools.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <BRep_Tool.hxx>
 
 
 //=======================================================================
@@ -32,7 +38,9 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute()
     myVMax            (0.),
     myDeltaX          (1.),
     myDeltaY          (1.),
-    myStatus          (BRepMesh_NoError)
+    myMinStep         (-1.),
+    myStatus          (BRepMesh_NoError),
+    myAdaptiveMin     (Standard_False)
 {
   init();
 }
@@ -44,7 +52,8 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute()
 BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
   const TopoDS_Face&                    theFace,
   const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
-  const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints)
+  const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints,
+  const Standard_Boolean theAdaptiveMin)
   : myDefFace         (0.),
     myUMin            (0.),
     myUMax            (0.),
@@ -52,7 +61,9 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
     myVMax            (0.),
     myDeltaX          (1.),
     myDeltaY          (1.),
+    myMinStep         (-1.),
     myStatus          (BRepMesh_NoError),
+    myAdaptiveMin     (theAdaptiveMin),
     myBoundaryVertices(theBoundaryVertices),
     myBoundaryPoints  (theBoundaryPoints),
     myFace            (theFace)
@@ -86,6 +97,32 @@ void BRepMesh_FaceAttribute::init()
   myFace.Orientation(TopAbs_FORWARD);
   BRepTools::UVBounds(myFace, myUMin, myUMax, myVMin, myVMax);
 
+  if (myAdaptiveMin) 
+  {
+    // compute minimal UV distance
+    // between vertices
+
+    myMinStep = RealLast();
+    for (TopExp_Explorer anExp(myFace, TopAbs_WIRE); anExp.More(); anExp.Next()) 
+    {
+      TopoDS_Wire aWire = TopoDS::Wire(anExp.Current());
+
+      for (TopoDS_Iterator aWireExp(aWire); aWireExp.More(); aWireExp.Next()) 
+      {
+        TopoDS_Edge anEdge = TopoDS::Edge(aWireExp.Value());
+        if (BRep_Tool::IsClosed(anEdge))
+          continue;
+
+        // Get end points on 2d curve
+        gp_Pnt2d aFirst2d, aLast2d;
+        BRep_Tool::UVPoints(anEdge, myFace, aFirst2d, aLast2d);
+        Standard_Real aDist =aFirst2d.Distance(aLast2d);
+        if (aDist < myMinStep) 
+          myMinStep = aDist;
+      }
+    }
+  }
+  
   BRepAdaptor_Surface aSurfAdaptor(myFace, Standard_False);
   mySurface = new BRepAdaptor_HSurface(aSurfAdaptor);
 }
@@ -111,7 +148,11 @@ Standard_Real BRepMesh_FaceAttribute::computeParametricTolerance(
   const Standard_Real theLastParam) const
 {
   const Standard_Real aDeflectionUV = 1.e-05;
-  return Max(Precision::PConfusion(), (theLastParam - theFirstParam) * aDeflectionUV);
+  Standard_Real aPreci = (theLastParam - theFirstParam) * aDeflectionUV;
+  if(myAdaptiveMin && myMinStep < aPreci)
+    aPreci = myMinStep;
+
+  return Max(Precision::PConfusion(), aPreci);
 }
 
 //=======================================================================

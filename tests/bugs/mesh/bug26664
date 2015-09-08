@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC26664"
+puts "========"
+puts ""
+#################################
+# Triangulating a very small polygon fails
+#################################
+
+restore [locate_data_file bug26664_f.brep] a
+
+#1
+vinit
+vsetdispmode 1
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+#2
+incmesh a 1e-4
+vdisplay a
+vdump ${imagedir}/${casename}_2.png
+
+#3
+set log2 [incmesh a 1e-4 -adaptive]
+vdisplay a
+vdump ${imagedir}/${casename}_3.png
+
+if { [regexp "NoError" ${log2}] == 1 } {
+   puts "OK : Triangulating a very small polygon is good"
+} else {
+   puts "Error : Triangulating a very small polygon fails"
+}

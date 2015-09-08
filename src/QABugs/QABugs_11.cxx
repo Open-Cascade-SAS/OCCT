@@ -1351,7 +1351,11 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
     if(aShape.IsNull()) {di << "OCC369 FAULTY. Entry shape is NULL \n"; return 0;}
 
     // 3. Build mesh
-    BRepMesh_IncrementalMesh aMesh(aShape, 0.2, Standard_True, M_PI / 6);
+    BRepMesh_FastDiscret::Parameters aMeshParams;
+    aMeshParams.Relative = Standard_True;
+    aMeshParams.Deflection = 0.2;
+    aMeshParams.Angle = M_PI / 6;
+    BRepMesh_IncrementalMesh aMesh(aShape, aMeshParams);
 
   }
   catch (Standard_Failure) {di << "OCC369 Exception \n" ;return 0;}

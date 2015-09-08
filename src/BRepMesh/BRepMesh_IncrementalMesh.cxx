@@ -66,11 +66,9 @@ namespace
 //purpose  : 
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
-: myRelative  (Standard_False),
-  myInParallel(Standard_False),
-  myMinSize   (Precision::Confusion()),
-  myInternalVerticesMode(Standard_True),
-  myIsControlSurfaceDeflection(Standard_True)
+: myMaxShapeSize(0.),
+  myModified(Standard_False),
+  myStatus(0)
 {
 }
 
@@ -78,20 +76,34 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 //function : Constructor
 //purpose  : 
 //=======================================================================
-BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(
-  const TopoDS_Shape&    theShape,
-  const Standard_Real    theLinDeflection,
-  const Standard_Boolean isRelative,
-  const Standard_Real    theAngDeflection,
-  const Standard_Boolean isInParallel)
-  : myRelative  (isRelative),
-    myInParallel(isInParallel),
-    myMinSize   (Precision::Confusion()),
-    myInternalVerticesMode(Standard_True),
-    myIsControlSurfaceDeflection(Standard_True)
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh( const TopoDS_Shape&    theShape,
+                                                    const Standard_Real    theLinDeflection,
+                                                    const Standard_Boolean isRelative,
+                                                    const Standard_Real    theAngDeflection,
+                                                    const Standard_Boolean isInParallel,
+                                                    const Standard_Boolean adaptiveMin)
+: myMaxShapeSize(0.),
+  myModified(Standard_False),
+  myStatus(0)
 {
-  myDeflection  = theLinDeflection;
-  myAngle       = theAngDeflection;
+  myParameters.Deflection = theLinDeflection;
+  myParameters.Relative = isRelative;
+  myParameters.Angle = theAngDeflection;
+  myParameters.InParallel = isInParallel;
+  myParameters.AdaptiveMin = adaptiveMin;
+
+  myShape = theShape;
+  Perform();
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(const TopoDS_Shape& theShape,
+                                                   const BRepMesh_FastDiscret::Parameters& theParameters)
+  : myParameters(theParameters)
+{
   myShape       = theShape;
   
   Perform();
@@ -142,11 +154,8 @@ void BRepMesh_IncrementalMesh::init()
 
   BRepMesh_ShapeTool::BoxMaxDimension(aBox, myMaxShapeSize);
 
-  myMesh = new BRepMesh_FastDiscret(myDeflection, 
-    myAngle, aBox, Standard_True, Standard_True, 
-    myRelative, Standard_True, myInParallel, myMinSize,
-    myInternalVerticesMode, myIsControlSurfaceDeflection);
-
+  myMesh = new BRepMesh_FastDiscret (aBox, myParameters);
+  
   myMesh->InitSharedFaces(myShape);
 }
 
@@ -217,7 +226,7 @@ void BRepMesh_IncrementalMesh::update()
     update(aFaceIt.Value());
 
   // Mesh faces
-  OSD_Parallel::ForEach(myFaces.begin(), myFaces.end(), *myMesh, !myInParallel);
+  OSD_Parallel::ForEach(myFaces.begin(), myFaces.end(), *myMesh, !myParameters.InParallel);
 
   commit();
   clear();
@@ -244,8 +253,8 @@ void BRepMesh_IncrementalMesh::discretizeFreeEdges()
 
     BRepAdaptor_Curve aCurve(aEdge);
     GCPnts_TangentialDeflection aDiscret(aCurve, aCurve.FirstParameter(),
-      aCurve.LastParameter(), myAngle, aEdgeDeflection, 2, 
-      Precision::PConfusion(), myMinSize);
+      aCurve.LastParameter(), myParameters.Angle, aEdgeDeflection, 2,
+      Precision::PConfusion(), myParameters.MinSize);
 
     Standard_Integer aNodesNb = aDiscret.NbPoints();
     TColgp_Array1OfPnt   aNodes  (1, aNodesNb);
@@ -257,7 +266,7 @@ void BRepMesh_IncrementalMesh::discretizeFreeEdges()
     }
     
     aPoly3D = new Poly_Polygon3D(aNodes, aUVNodes);
-    aPoly3D->Deflection(myDeflection);
+    aPoly3D->Deflection(myParameters.Deflection);
 
     BRep_Builder aBuilder;
     aBuilder.UpdateEdge(aEdge, aPoly3D);
@@ -275,14 +284,14 @@ Standard_Real BRepMesh_IncrementalMesh::edgeDeflection(
     return myEdgeDeflection(theEdge);
 
   Standard_Real aEdgeDeflection;
-  if (myRelative) 
+  if ( myParameters.Relative ) 
   {
     Standard_Real aScale;
     aEdgeDeflection = BRepMesh_ShapeTool::RelativeEdgeDeflection(theEdge, 
-      myDeflection, myMaxShapeSize, aScale);
+      myParameters.Deflection, myMaxShapeSize, aScale);
   }
   else
-    aEdgeDeflection = myDeflection;
+    aEdgeDeflection = myParameters.Deflection;
 
   myEdgeDeflection.Bind(theEdge, aEdgeDeflection);
   return aEdgeDeflection;
@@ -295,8 +304,8 @@ Standard_Real BRepMesh_IncrementalMesh::edgeDeflection(
 Standard_Real BRepMesh_IncrementalMesh::faceDeflection(
   const TopoDS_Face& theFace)
 {
-  if (!myRelative)
-    return myDeflection;
+  if ( !myParameters.Relative )
+    return myParameters.Deflection;
 
   Standard_Integer aEdgesNb        = 0;
   Standard_Real    aFaceDeflection = 0.;
@@ -308,7 +317,7 @@ Standard_Real BRepMesh_IncrementalMesh::faceDeflection(
     aFaceDeflection += edgeDeflection(aEdge);
   }
 
-  return (aEdgesNb == 0) ? myDeflection : (aFaceDeflection / aEdgesNb);
+  return (aEdgesNb == 0) ? myParameters.Deflection : (aFaceDeflection / aEdgesNb);
 }
 
 //=======================================================================
@@ -546,10 +555,10 @@ Standard_Integer BRepMesh_IncrementalMesh::Discret(
   BRepMesh_DiscretRoot* &theAlgo)
 {
   BRepMesh_IncrementalMesh* anAlgo = new BRepMesh_IncrementalMesh();
-  anAlgo->SetDeflection(theDeflection);
-  anAlgo->SetAngle     (theAngle);
+  anAlgo->ChangeParameters().Deflection = theDeflection;
+  anAlgo->ChangeParameters().Angle = theAngle;
+  anAlgo->ChangeParameters().InParallel = IS_IN_PARALLEL;
   anAlgo->SetShape     (theShape);
-  anAlgo->SetParallel  (IS_IN_PARALLEL);
   theAlgo = anAlgo;
   return 0; // no error
 }

@@ -53,45 +53,68 @@ class BRepMesh_FaceAttribute;
 class BRepMesh_FastDiscret : public Standard_Transient
 {
 public:
-  
-  Standard_EXPORT BRepMesh_FastDiscret(
-    const Standard_Real defle,
-    const Standard_Real angle,
-    const Bnd_Box& B,
-    const Standard_Boolean withShare = Standard_True,
-    const Standard_Boolean inshape = Standard_False,
-    const Standard_Boolean relative = Standard_False,
-    const Standard_Boolean shapetrigu = Standard_False,
-    const Standard_Boolean isInParallel = Standard_False,
-    const Standard_Real    theMinSize   = Precision::Confusion(),
-    const Standard_Boolean isInternalVerticesMode = Standard_True,
-    const Standard_Boolean isControlSurfaceDeflection = Standard_True);
 
-  //! if the boolean <relative> is True, the <br>
-  //! deflection used for the polygonalisation of <br>
-  //! each edge will be <defle> * Size of Edge. <br>
-  //! the deflection used for the faces will be the maximum <br>
-  //! deflection of their edges. <br>
-  //! <br>
-  //! if <shapetrigu> is True, the triangulation, if exists <br>
-  //! with a correct deflection, can be used to re-triangulate <br>
-  //! the shape. <br>
-  //! <br>
-  //! if <inshape> is True, the calculated <br>
-  //! triangulation will be stored in the shape. <br>
-  Standard_EXPORT BRepMesh_FastDiscret(
-    const TopoDS_Shape& shape,
-    const Standard_Real defle,
-    const Standard_Real angle,
-    const Bnd_Box& B,
-    const Standard_Boolean withShare = Standard_True,
-    const Standard_Boolean inshape = Standard_False,
-    const Standard_Boolean relative = Standard_False,
-    const Standard_Boolean shapetrigu = Standard_False,
-    const Standard_Boolean isInParallel = Standard_False,
-    const Standard_Real    theMinSize   = Precision::Confusion(),
-    const Standard_Boolean isInternalVerticesMode = Standard_True,
-    const Standard_Boolean isControlSurfaceDeflection = Standard_True);
+
+  //! Structure storing meshing parameters
+  struct Parameters {
+
+    //! Default constructor
+    Parameters()
+      :
+     Angle(0.1),
+     Deflection(0.001),
+     MinSize(Precision::Confusion()),
+     InParallel(Standard_False),
+     Relative(Standard_False),
+     AdaptiveMin(Standard_False),
+     InternalVerticesMode(Standard_True),
+     ControlSurfaceDeflection(Standard_True)
+     {
+     }
+    
+    //! Angular deflection
+    Standard_Real                                    Angle;
+    
+    //! Deflection
+    Standard_Real                                    Deflection;  
+
+    //! Minimal allowed size of mesh element
+    Standard_Real                                    MinSize; 
+
+    //! Switches on/off multy thread computation
+    Standard_Boolean                                 InParallel; 
+
+    //! Switches on/off relative computation of edge tolerance<br>
+    //! If trur, deflection used for the polygonalisation of each edge will be 
+    //! <defle> * Size of Edge. The deflection used for the faces will be the 
+    //! maximum deflection of their edges.
+    Standard_Boolean                                 Relative;
+
+    //! Adaptive parametric tolerance flag. <br>
+    //! If this flag is set to true the minimal parametric tolerance
+    //! is computed taking minimal parametric distance between vertices
+    //! into account
+    Standard_Boolean                                 AdaptiveMin;
+
+    //! Mode to take or ont to take internal face vertices into account
+    //! in triangulation process
+    Standard_Boolean                                 InternalVerticesMode;
+
+    //! Prameter to check the deviation of triangulation and interior of
+    //! the face
+    Standard_Boolean                                 ControlSurfaceDeflection;
+  };
+
+public:
+  
+  
+  //! Constructor. 
+  //! Sets the meshing parameters and updates
+  //! relative defletion according to bounding box
+  //! @param B - bounding box encompasing shape
+  //! @param theParams - meshing algo parameters    
+  Standard_EXPORT BRepMesh_FastDiscret (const Bnd_Box& B,
+                                        const Parameters& theParams);
 
   //! Build triangulation on the whole shape.
   Standard_EXPORT void Perform(const TopoDS_Shape& shape);
@@ -106,51 +129,24 @@ public:
   //! parallel threads.
   Standard_EXPORT void Process(const TopoDS_Face& face) const;
 
-  void operator ()(const TopoDS_Face& face) const
+  void operator () (const TopoDS_Face& face) const
   {
     Process(face);
   }
   
-  //! Request algorithm to launch in multiple threads <br>
-  //! to improve performance (should be supported by plugin). <br>
-  inline void SetParallel(const Standard_Boolean theInParallel)
+  //! Returns parameters of meshing
+  inline const Parameters& MeshParameters() const
   {
-    myInParallel = theInParallel;
-  }
-  
-  //! Returns the multi-threading usage flag. <br>
-  inline Standard_Boolean IsParallel() const
-  {
-    return myInParallel;
-  }
-  
-  //! returns the deflection value. <br>
-  inline Standard_Real GetDeflection() const
-  {
-    return myDeflection;
+    return myParameters;
   }
 
-  //! returns the deflection value. <br>
-  inline Standard_Real GetAngle() const
+  //! Returns modificable mesh parameters
+  inline Parameters& ChangeMeshParameters()
   {
-    return myAngle;
+    return myParameters;
   }
+    
   
-  inline Standard_Boolean WithShare() const
-  {
-    return myWithShare;
-  }
-  
-  inline Standard_Boolean InShape() const
-  {
-    return myInshape;
-  }
-  
-  inline Standard_Boolean ShapeTrigu() const
-  {
-    return myShapetrigu;
-  }
-
   Standard_EXPORT void InitSharedFaces(const TopoDS_Shape& theShape);
 
   inline const TopTools_IndexedDataMapOfShapeListOfShape& SharedFaces() const
@@ -348,16 +344,9 @@ private:
 private:
 
   TopoDS_Face                                      myFace;
-  Standard_Real                                    myAngle;
-  Standard_Real                                    myDeflection;
-  Standard_Real                                    myDtotale;
-  Standard_Boolean                                 myWithShare;
-  Standard_Boolean                                 myInParallel;
+
   BRepMesh::DMapOfShapePairOfPolygon               myEdges;
   BRepMesh::DMapOfFaceAttribute                    myAttributes;
-  Standard_Boolean                                 myRelative;
-  Standard_Boolean                                 myShapetrigu;
-  Standard_Boolean                                 myInshape;
   TopTools_DataMapOfShapeReal                      myMapdefle;
 
   // Data shared for whole shape
@@ -368,9 +357,9 @@ private:
   Handle(BRepMesh_FaceAttribute)                   myAttribute;
   TopTools_IndexedDataMapOfShapeListOfShape        mySharedFaces;
 
-  Standard_Real                                    myMinSize;
-  Standard_Boolean                                 myInternalVerticesMode;
-  Standard_Boolean                                 myIsControlSurfaceDeflection;
+  Parameters                                       myParameters;
+
+  Standard_Real                                    myDtotale;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_FastDiscret, Standard_Transient)

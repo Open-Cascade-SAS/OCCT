@@ -128,7 +128,8 @@ options:\n\
                         (enabled by default)\n\
         -surf_def_off   disables control of deflection of mesh from real\n\
                         surface (enabled by default)\n\
-        -parallel       enables parallel execution (switched off by default)\n";
+        -parallel       enables parallel execution (switched off by default)\n\
+        -adaptive       enables adaptive computation of minimal value in parametric space\n";
     return 0;
   }
 
@@ -146,6 +147,7 @@ options:\n\
   Standard_Boolean isInParallel    = Standard_False;
   Standard_Boolean isIntVertices   = Standard_True;
   Standard_Boolean isControlSurDef = Standard_True;
+  Standard_Boolean isAdaptiveMin   = Standard_False;
 
   if (nbarg > 3)
   {
@@ -165,6 +167,8 @@ options:\n\
         isIntVertices = Standard_False;
       else if (aOpt == "-surf_def_off")
         isControlSurDef = Standard_False;
+      else if (aOpt == "-adaptive")
+        isAdaptiveMin   = Standard_True;
       else if (i < nbarg)
       {
         Standard_Real aVal = Draw::Atof(argv[i++]);
@@ -181,16 +185,17 @@ options:\n\
   di << "Incremental Mesh, multi-threading "
      << (isInParallel ? "ON" : "OFF") << "\n";
 
-  BRepMesh_IncrementalMesh aMesher;
-  aMesher.SetShape     (aShape);
-  aMesher.SetDeflection(aLinDeflection);
-  aMesher.SetRelative  (isRelative);
-  aMesher.SetAngle     (aAngDeflection);
-  aMesher.SetParallel  (isInParallel);
-  aMesher.SetMinSize   (aMinSize);
-  aMesher.SetInternalVerticesMode(isIntVertices);
-  aMesher.SetControlSurfaceDeflection(isControlSurDef);
-  aMesher.Perform();
+  BRepMesh_FastDiscret::Parameters aMeshParams;
+  aMeshParams.Deflection = aLinDeflection;
+  aMeshParams.Angle = aAngDeflection;
+  aMeshParams.Relative =  isRelative;
+  aMeshParams.InParallel = isInParallel;
+  aMeshParams.MinSize = aMinSize;
+  aMeshParams.InternalVerticesMode = isIntVertices;
+  aMeshParams.ControlSurfaceDeflection = isControlSurDef;
+  aMeshParams.AdaptiveMin = isAdaptiveMin;
+  
+  BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams);
 
   di << "Meshing statuses: ";
   Standard_Integer statusFlags = aMesher.GetStatusFlags();
@@ -261,12 +266,12 @@ static Standard_Integer fastdiscret(Draw_Interpretor& di, Standard_Integer nbarg
 
   const Standard_Real d = Draw::Atof(argv[2]);
 
-  Standard_Boolean WithShare = Standard_True;
-  if (nbarg > 3) WithShare = Draw::Atoi(argv[3]);
-
   Bnd_Box B;
   BRepBndLib::Add(S,B);
-  BRepMesh_FastDiscret MESH(d,0.5,B,WithShare,Standard_True,Standard_False,Standard_True);
+  BRepMesh_FastDiscret::Parameters aParams;
+  aParams.Deflection = d;
+  aParams.Angle = 0.5;
+  BRepMesh_FastDiscret MESH(B,aParams);
 
   //Standard_Integer NbIterations = MESH.NbIterations();
   //if (nbarg > 4) NbIterations = Draw::Atoi(argv[4]);
@@ -275,8 +280,6 @@ static Standard_Integer fastdiscret(Draw_Interpretor& di, Standard_Integer nbarg
   di<<"Starting FastDiscret with :"<<"\n";
   di<<"  Deflection="<<d<<"\n";
   di<<"  Angle="<<0.5<<"\n";
-  di<<"  SharedMode="<< (Standard_Integer) WithShare<<"\n";
-  //di<<"  NbIterations="<<NbIterations<<"\n";
 
   Handle(Poly_Triangulation) T;
   BRep_Builder aBuilder;
@@ -1618,7 +1621,7 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("incmesh","Builds triangular mesh for the shape, run w/o args for help",__FILE__, incrementalmesh, g);
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
-  theCommands.Add("fastdiscret","fastdiscret shape deflection [shared [nbiter]]",__FILE__, fastdiscret, g);
+  theCommands.Add("fastdiscret","fastdiscret shape deflection",__FILE__, fastdiscret, g);
   theCommands.Add("mesh","mesh result Shape deflection",__FILE__, triangule, g);
   theCommands.Add("addshape","addshape meshname Shape [deflection]",__FILE__, addshape, g);
   //theCommands.Add("smooth","smooth meshname",__FILE__, smooth, g);

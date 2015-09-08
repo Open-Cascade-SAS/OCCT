@@ -29,19 +29,19 @@ class BRepMesh_FaceAttribute : public Standard_Transient
 {
 public:
 
-  //! Default constructor.
-  Standard_EXPORT BRepMesh_FaceAttribute();
-
   //! Constructor.
   //! @param theFace face the attribute is created for. 
   //! Used for default initialization. Attribute keeps reference 
   //! to the source face with forward orientation.
   //! @param theBoundaryVertices shared map of shape vertices.
   //! @param theBoundaryPoints shared discretization points of shape boundaries.
+  //! @param theAdaptiveMin switches on adaptive computation of minimal parametric
+  //! tolerance (if true).
   Standard_EXPORT BRepMesh_FaceAttribute(
     const TopoDS_Face&                    theFace,
     const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
-    const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints);
+    const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints,
+    const Standard_Boolean theAdaptiveMin);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_FaceAttribute();
@@ -54,11 +54,6 @@ public: //! @name main geometrical properties.
     return mySurface;
   }
 
-  //! Sets reference face.
-  inline void SetFace(const TopoDS_Face& theFace)
-  {
-    myFace = theFace;
-  }
 
   //! Returns forward oriented face to be used for calculations.
   inline const TopoDS_Face& Face() const
@@ -326,6 +321,9 @@ public: //! @name Auxiliary methods
 
 private:
 
+  //! Default constructor.
+  BRepMesh_FaceAttribute();
+
   //! Assignment operator.
   void operator =(const BRepMesh_FaceAttribute& /*theOther*/)
   {
@@ -360,7 +358,9 @@ private:
   Standard_Real                           myVMax;          //!< Describes maximal value in V domain
   Standard_Real                           myDeltaX;
   Standard_Real                           myDeltaY;
+  Standard_Real                           myMinStep;
   Standard_Integer                        myStatus;
+  Standard_Boolean                        myAdaptiveMin;
 
   BRepMesh::HDMapOfVertexInteger          myBoundaryVertices;
   BRepMesh::HDMapOfIntegerPnt             myBoundaryPoints;

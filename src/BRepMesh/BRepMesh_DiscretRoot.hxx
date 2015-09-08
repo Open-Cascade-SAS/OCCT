@@ -28,30 +28,6 @@ public:
   //! Destructor
   Standard_EXPORT virtual ~BRepMesh_DiscretRoot();
 
-  //! Setup linear deflection.
-  inline void SetDeflection(const Standard_Real theDeflection)
-  {
-    myDeflection = theDeflection;
-  }
-  
-  //! Returns linear deflection.
-  inline Standard_Real Deflection() const
-  {
-    return myDeflection;
-  }
-  
-  //! Setup angular deflection.
-  inline void SetAngle(const Standard_Real theAngle)
-  {
-    myAngle = theAngle;
-  }
-  
-  //! Returns angular deflection.
-  inline Standard_Real Angle() const
-  {
-    return myAngle;
-  }
-  
   //! Set the shape to triangulate.
   inline void SetShape(const TopoDS_Shape& theShape)
   {
@@ -94,8 +70,6 @@ protected:
   
   Standard_EXPORT virtual void init();
 
-  Standard_Real     myDeflection;
-  Standard_Real     myAngle;
   TopoDS_Shape      myShape;
   Standard_Boolean  myIsDone;
 };
