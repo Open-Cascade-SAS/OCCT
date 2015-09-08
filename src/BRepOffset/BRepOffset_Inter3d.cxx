@@ -214,7 +214,7 @@ void BRepOffset_Inter3d::CompletInt(const TopTools_ListOfShape& SetOfFaces,
   // Calculate the intersections of offset faces 
   // Distinction of intersection between faces // tangents.
   //---------------------------------------------------------------
-  TopoDS_Face                        F1,F2;
+  TopoDS_Face                        F2;
   TopTools_ListIteratorOfListOfShape it;
 
   //---------------------------------------------------------------
@@ -591,7 +591,6 @@ void BRepOffset_Inter3d::ContextIntByInt
  TopTools_DataMapOfShapeShape&          Build,
  TopTools_ListOfShape&                  Failed)
 {
-  TopTools_ListOfShape             LInt1,LInt2;
   TopTools_MapOfShape              MV;
   TopExp_Explorer                  exp;
   TopoDS_Face                      OF,NF,WCF;
@@ -845,11 +844,11 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
 	    //			   LInt1,LInt2);
 	    LInt1.Clear(); LInt1.Append(OE);
 	    LInt2.Clear();    
-	    TopAbs_Orientation O1,O2;
-	    BRepOffset_Tool::OrientSection(OE,CF,OF1,O1,O2);      
+	    TopAbs_Orientation anOri1, anOri2;
+	    BRepOffset_Tool::OrientSection(OE,CF,OF1, anOri1,anOri2);
 //	    if (mySide == TopAbs_OUT);
-	    O1 = TopAbs::Reverse(O1);
-	    LInt1.First().Orientation(O1);
+            anOri1 = TopAbs::Reverse(anOri1);
+	    LInt1.First().Orientation(anOri1);
 	    Store(CF,OF1,LInt1,LInt2);
 	  }
 	}

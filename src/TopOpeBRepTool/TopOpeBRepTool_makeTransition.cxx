@@ -338,8 +338,8 @@ Standard_Boolean TopOpeBRepTool_makeTransition::MkT2donE(TopAbs_State& Stb,TopAb
   if (quadE && quadES) { // should return INT/EXT
     TopAbs_State sta = TopAbs_UNKNOWN;
     Standard_Integer mkt = FUN_mkT2dquad(curvE,curvES);
-    Standard_Boolean ok  = FUN_mkT2dquad(myE,mypb,mypa,mypE, myES,mypES, mkt,xxES,myfactor,sta);
-    if (ok) {
+    Standard_Boolean isOK  = FUN_mkT2dquad(myE,mypb,mypa,mypE, myES,mypES, mkt,xxES,myfactor,sta);
+    if (isOK) {
       Stb = Sta = sta;
       return Standard_True;
     }
@@ -551,8 +551,8 @@ Standard_Boolean TopOpeBRepTool_makeTransition::MkT3onE(TopAbs_State& Stb,TopAbs
     ok = FUN_mkT3dquad(myE,mypb,mypa,mypE, myFS,myuv, tgE,ntFS, mkt,myfactor,sta); 
     if (ok) {
       if (hasES) {
-	gp_Dir xxES; Standard_Boolean ok = TopOpeBRepTool_TOOL::XX(myuv,myFS, mypES,myES, xxES);
-	if (!ok) return Standard_False;
+	gp_Dir xxES; Standard_Boolean isOK = TopOpeBRepTool_TOOL::XX(myuv,myFS, mypES,myES, xxES);
+	if (!isOK) return Standard_False;
 	Stb = FUN_stawithES(tgE,xxES,BEFORE,sta);
 	Sta = FUN_stawithES(tgE,xxES,AFTER,sta);
       }

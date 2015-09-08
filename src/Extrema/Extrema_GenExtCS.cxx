@@ -248,9 +248,9 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   // Pre-compute curve sample points.
   TColgp_HArray1OfPnt aCurvPnts (0, mytsample);
 
-  Standard_Real aCU = aMinTUV(1);
-  for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU += aStepCU)
-    aCurvPnts.SetValue (aCUI, C.Value (aCU));
+  Standard_Real aCU1 = aMinTUV(1);
+  for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU1 += aStepCU)
+    aCurvPnts.SetValue (aCUI, C.Value (aCU1));
 
   PSO_Particle* aParticle = aParticles.GetWorstParticle();
   // Select specified number of particles from pre-computed set of samples
@@ -260,18 +260,18 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
     Standard_Real aSV = aMinTUV(3);
     for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
     {
-      Standard_Real aCU = aMinTUV(1);
-      for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU += aStepCU)
+      Standard_Real aCU2 = aMinTUV(1);
+      for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU2 += aStepCU)
       {
         Standard_Real aSqDist = mySurfPnts->Value(aSUI, aSVI).SquareDistance(aCurvPnts.Value(aCUI)); 
 
         if (aSqDist < aParticle->Distance)
         {
-          aParticle->Position[0] = aCU;
+          aParticle->Position[0] = aCU2;
           aParticle->Position[1] = aSU;
           aParticle->Position[2] = aSV;
 
-          aParticle->BestPosition[0] = aCU;
+          aParticle->BestPosition[0] = aCU2;
           aParticle->BestPosition[1] = aSU;
           aParticle->BestPosition[2] = aSV;
 

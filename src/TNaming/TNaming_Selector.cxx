@@ -270,8 +270,8 @@ Standard_Boolean TNaming_Selector::IsIdentified (const TDF_Label& L,
 	FindGenerated(NS, aS, aList);
 	Ident.NextArg();
 	while(Ident.MoreArgs()) {
-	  const TopoDS_Shape& aS = Ident.ShapeArg();
-	  FindGenerated(NS, aS, aList);
+	  const TopoDS_Shape& aShape = Ident.ShapeArg();
+	  FindGenerated(NS, aShape, aList);
 	  Ident.NextArg();
 	}
 	const TopoDS_Shape& aC = MS (1);

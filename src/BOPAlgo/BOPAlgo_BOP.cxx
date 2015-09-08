@@ -504,7 +504,6 @@ void BOPAlgo_BOP::BuildRC()
   Standard_Integer aDmin;
   TopAbs_ShapeEnum aTmin;
   TopoDS_Compound aC;
-  TopoDS_Shape aSAIm, aSTIm;
   BRep_Builder aBB;
   TopExp_Explorer aExp;
   BOPCol_DataMapOfShapeShape aDMSSA;
@@ -581,9 +580,9 @@ void BOPAlgo_BOP::BuildRC()
   const BOPCol_ListOfShape& aLT=(!bFlag1) ? myArguments : myTools;
   aItLS.Initialize(aLT);
   for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aST=aItLS.Value();
-    if (myImages.IsBound(aST)){
-      const BOPCol_ListOfShape& aLSTIm=myImages.Find(aST);
+    const TopoDS_Shape& aTShape =aItLS.Value();
+    if (myImages.IsBound(aTShape)){
+      const BOPCol_ListOfShape& aLSTIm=myImages.Find(aTShape);
       aItIm.Initialize(aLSTIm);
       for (; aItIm.More(); aItIm.Next()) {
         const TopoDS_Shape& aSTIm=aItIm.Value();
@@ -614,7 +613,7 @@ void BOPAlgo_BOP::BuildRC()
       }
     }// if (myImages.IsBound(aST)){
     else {
-      aExp.Init(aST, aTmin);
+      aExp.Init(aTShape, aTmin);
       for (; aExp.More(); aExp.Next()) {
         const TopoDS_Shape aSIm=aExp.Current();
         // skip degenerated edges

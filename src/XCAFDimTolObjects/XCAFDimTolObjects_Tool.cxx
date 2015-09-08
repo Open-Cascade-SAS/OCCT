@@ -140,13 +140,13 @@ Standard_Boolean XCAFDimTolObjects_Tool::GetRefGeomTolerances(const TopoDS_Shape
         if( aSeq.Value(i).FindAttribute(XCAFDoc_GeomTolerance::GetID(),aGeomTolerance))
         {
           theGeomToleranceObjectSequence.Append(aGeomTolerance->GetObject());
-          TDF_LabelSequence aSeq;
-          if(myDimTolTool->GetDatumOfTolerLabels(aGeomTolerance->Label(), aSeq))
+          TDF_LabelSequence aLocalSeq;
+          if(myDimTolTool->GetDatumOfTolerLabels(aGeomTolerance->Label(), aLocalSeq))
           {
-            for(Standard_Integer i = 1; i <= aSeq.Length(); i++)
+            for(Standard_Integer j = 1; j <= aLocalSeq.Length(); j++)
             {
               Handle(XCAFDoc_Datum) aDatum;
-              if(aSeq.Value(i).FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+              if(aLocalSeq.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
               {
                 theDatumSequence.Append(aDatum->GetObject());
                 theMap.Bind(theGeomToleranceObjectSequence.Last(), theDatumSequence.Last());

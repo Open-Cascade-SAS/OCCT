@@ -725,8 +725,8 @@ void BRepFill_OffsetWire::PerformWithBiLo
   const Standard_Real             Alt)
 {
   myIsDone     = Standard_False;
-  TopoDS_Shape aLocalShape = Spine.Oriented(TopAbs_FORWARD);
-  myWorkSpine  = TopoDS::Face(aLocalShape);
+  TopoDS_Shape aLocalShapeWork = Spine.Oriented(TopAbs_FORWARD);
+  myWorkSpine  = TopoDS::Face(aLocalShapeWork);
   //  myWorkSpine  = TopoDS::Face(Spine.Oriented(TopAbs_FORWARD));
   myJoinType   = Join;
   myOffset     = Offset ;
@@ -1042,7 +1042,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
 
     myMap(j).Clear();
     if (MapBis.IsBound(CurrentEdge)) {
-      TopTools_SequenceOfShape S;
+      TopTools_SequenceOfShape aSeqOfShape;
       if (!MapBis(CurrentEdge).IsEmpty()) {
         Standard_Integer IndOfE = 0;
         if (myIsOpenResult)
@@ -1058,9 +1058,9 @@ void BRepFill_OffsetWire::PerformWithBiLo
           Detromp  (CurrentSpine),
           MapBis   (CurrentEdge) ,  
           MapVerPar(CurrentEdge) ,
-          S, MapVV, IndOfE);
-        for ( k = 1; k <= S.Length(); k++) {
-          myMap(j).Append(S.Value(k));
+          aSeqOfShape, MapVV, IndOfE);
+        for ( k = 1; k <= aSeqOfShape.Length(); k++) {
+          myMap(j).Append(aSeqOfShape.Value(k));
         }
       }
       else {
@@ -1123,15 +1123,15 @@ void BRepFill_OffsetWire::PerformWithBiLo
   TopExp_Explorer Explo( myShape, TopAbs_EDGE );
   for (; Explo.More(); Explo.Next())
   {
-    TopoDS_Edge E = TopoDS::Edge( Explo.Current() );
+    TopoDS_Edge anEdge = TopoDS::Edge( Explo.Current() );
     TopoDS_Vertex V1, V2;
-    TopExp::Vertices( E, V1, V2 );
+    TopExp::Vertices(anEdge, V1, V2 );
     Handle(BRep_TVertex)& TV1 = *((Handle(BRep_TVertex)*) &(V1).TShape());
     Handle(BRep_TVertex)& TV2 = *((Handle(BRep_TVertex)*) &(V2).TShape());
 
     TopLoc_Location loc;
     Standard_Real f, l;
-    Handle( Geom_Curve ) theCurve = BRep_Tool::Curve( E, loc, f, l );
+    Handle( Geom_Curve ) theCurve = BRep_Tool::Curve(anEdge, loc, f, l );
     theCurve = Handle( Geom_Curve )::DownCast( theCurve->Copy() );
     theCurve->Transform( loc.Transformation() );
     gp_Pnt f3d = theCurve->Value( f );
@@ -1531,7 +1531,6 @@ void BRepFill_OffsetWire::FixHoles()
   TopTools_SequenceOfShape ClosedWires, UnclosedWires, IsolatedWires;
 
   Standard_Real MaxTol = 0.;
-  Standard_Integer i;
   BRep_Builder BB;
 
   TopExp_Explorer Explo( mySpine, TopAbs_VERTEX );
@@ -1807,6 +1806,7 @@ void BRepFill_OffsetWire::FixHoles()
   {
     TopoDS_Compound R;
     BB.MakeCompound( R );
+    Standard_Integer i;
     for (i = 1; i <= ClosedWires.Length(); i++)
       BB.Add( R, ClosedWires(i) );
     for (i = 1; i <= IsolatedWires.Length(); i++)

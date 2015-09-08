@@ -2409,12 +2409,12 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch (TopTools_SequenceOfShape &faces,
       TopAbs_State stPoint = clas.Perform (unp,Standard_False);
       if(stPoint == TopAbs_ON || stPoint == TopAbs_UNKNOWN) {
 
-        TopoDS_Edge ed = TopoDS::Edge ( ew.Value() );
-        Standard_Real cf, cl;
-        Handle(Geom2d_Curve) cw = BRep_Tool::CurveOnSurface ( ed, pf, cf, cl );
+        TopoDS_Edge anEdge = TopoDS::Edge ( ew.Value() );
+        Standard_Real aCF, aCL;
+        Handle(Geom2d_Curve) aCW = BRep_Tool::CurveOnSurface ( anEdge, pf, aCF, aCL);
         // handle tangential case (ON)
         while ( stPoint == TopAbs_ON || stPoint == TopAbs_UNKNOWN ) {
-          stPoint = clas.Perform ( cw->Value(cl), Standard_False );
+          stPoint = clas.Perform (aCW->Value(aCL), Standard_False );
           if ( ! ew.More() ) break;
           ew.Next();
           if ( ! ew.More() ) break;
@@ -2422,8 +2422,8 @@ void ShapeFix_ComposeShell::MakeFacesOnPatch (TopTools_SequenceOfShape &faces,
 	  if(edge.Orientation() !=TopAbs_FORWARD &&
 	     edge.Orientation() !=TopAbs_REVERSED)
 	    continue;
-          Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface ( edge, pf, cf, cl );
-          if ( ! c2d.IsNull() ) cw = c2d;
+          Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface ( edge, pf, aCF, aCL );
+          if ( ! c2d.IsNull() ) aCW = c2d;
         }
       }
       TopAbs_State stInfin = clas.PerformInfinitePoint();

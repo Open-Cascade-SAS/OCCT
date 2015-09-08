@@ -106,21 +106,21 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                 ElCLib::D1(Ufirst(1),L1,point1,Tan1);
                                 Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
                                 gp_Vec2d Tan3(OnLine.Direction().XY());
-                                gp_Pnt2d point3(OnLine.Location().XY()+Ufirst(3)*Tan3.XY());
-                                Standard_Real dist1 = point3.Distance(point1);
-                                Standard_Real dist2 = point3.Distance(point2);
+                                gp_Pnt2d point3new(OnLine.Location().XY()+Ufirst(3)*Tan3.XY());
+                                Standard_Real dist1 = point3new.Distance(point1);
+                                Standard_Real dist2 = point3new.Distance(point2);
                                 if ( Abs(dist1-dist2)/2. <= Tol) {
-                                  cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
+                                  cirsol = gp_Circ2d(gp_Ax2d(point3new,dirx),(dist1+dist2)/2.);
                                   Standard_Real normetan2 = Tan2.Magnitude();
-                                  gp_Vec2d Vec1(point1,point3);
-                                  gp_Vec2d Vec2(point2,point3);
+                                  gp_Vec2d Vec1(point1,point3new);
+                                  gp_Vec2d Vec2(point2,point3new);
                                   Standard_Real normevec2 = Vec2.Magnitude();
                                   Standard_Real angle2;
                                   if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
                                     angle2 = Vec2.Angle(Tan2);
                                   }
                                   else { angle2 = 0.; }
-                                  Standard_Real pscal=point3.XY().Dot(gp_XY(-L1.Direction().Y(),
+                                  Standard_Real pscal=point3new.XY().Dot(gp_XY(-L1.Direction().Y(),
                                     L1.Direction().X()));
                                   if (Qualified1.IsUnqualified() ||
                                     (Qualified1.IsOutside() && pscal <= 0.) ||
@@ -137,7 +137,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                           pnttg2sol = point2;
                                           pararg2 = Ufirst(2);
                                           par2sol = ElCLib::Parameter(cirsol,pnttg2sol);
-                                          pntcen  = point3;
+                                          pntcen  = point3new;
                                           parcen3 = Ufirst(3);
                                           WellDone = Standard_True;
                                       }
@@ -207,15 +207,15 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                 Geom2dGcc_CurveTool::D1(Cu1,Ufirst(1),point1,Tan1);
                                 Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
                                 gp_Vec2d Tan3(OnLine.Direction().XY());
-                                gp_Pnt2d point3(OnLine.Location().XY()+Ufirst(3)*Tan3.XY());
-                                Standard_Real dist1 = point3.Distance(point1);
-                                Standard_Real dist2 = point3.Distance(point2);
+                                gp_Pnt2d point3new(OnLine.Location().XY()+Ufirst(3)*Tan3.XY());
+                                Standard_Real dist1 = point3new.Distance(point1);
+                                Standard_Real dist2 = point3new.Distance(point2);
                                 if ( Abs(dist1-dist2)/2. <= Tol) {
-                                  cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
+                                  cirsol = gp_Circ2d(gp_Ax2d(point3new,dirx),(dist1+dist2)/2.);
                                   Standard_Real normetan1 = Tan1.Magnitude();
                                   Standard_Real normetan2 = Tan2.Magnitude();
-                                  gp_Vec2d Vec1(point1,point3);
-                                  gp_Vec2d Vec2(point2,point3);
+                                  gp_Vec2d Vec1(point1,point3new);
+                                  gp_Vec2d Vec2(point2,point3new);
                                   Standard_Real normevec1 = Vec1.Magnitude();
                                   Standard_Real normevec2 = Vec2.Magnitude();
                                   Standard_Real angle1,angle2;
@@ -243,7 +243,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                           pnttg2sol = point2;
                                           pararg2 = Ufirst(2);
                                           par2sol = ElCLib::Parameter(cirsol,pnttg2sol);
-                                          pntcen  = point3;
+                                          pntcen  = point3new;
                                           parcen3 = Ufirst(3);
                                           WellDone = Standard_True;
                                       }
@@ -300,16 +300,16 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
-                                gp_Pnt2d point1,point3;
+                                gp_Pnt2d point1new,point3new;
                                 gp_Vec2d Tan1,Tan3;
-                                Geom2dGcc_CurveTool::D1(Cu1,Ufirst(1),point1,Tan1);
-                                ElCLib::D1(Ufirst(2),OnLine,point3,Tan3);
-                                Standard_Real dist1 = point3.Distance(point1);
-                                Standard_Real dist2 = point3.Distance(Point2);
+                                Geom2dGcc_CurveTool::D1(Cu1,Ufirst(1),point1new,Tan1);
+                                ElCLib::D1(Ufirst(2),OnLine,point3new,Tan3);
+                                Standard_Real dist1 = point3new.Distance(point1new);
+                                Standard_Real dist2 = point3new.Distance(Point2);
                                 if ( Abs(dist1-dist2)/2. <= Tol) {
-                                  cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
+                                  cirsol = gp_Circ2d(gp_Ax2d(point3new,dirx),(dist1+dist2)/2.);
                                   Standard_Real normetan1 = Tan1.Magnitude();
-                                  gp_Vec2d Vec1(point1,point3);
+                                  gp_Vec2d Vec1(point1new,point3new);
                                   Standard_Real normevec1 = Vec1.Magnitude();
                                   Standard_Real angle1;
                                   if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
@@ -322,13 +322,13 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                     (Qualified1.IsEnclosed() && angle1 <= 0.)) {
                                       qualifier1 = Qualified1.Qualifier();
                                       qualifier2 = GccEnt_noqualifier;
-                                      pnttg1sol = point1;
+                                      pnttg1sol = point1new;
                                       pararg1 = Ufirst(1);
                                       par1sol = ElCLib::Parameter(cirsol,pnttg1sol);
                                       pnttg2sol = Point2;
                                       pararg2 = Ufirst(2);
                                       par2sol = ElCLib::Parameter(cirsol,pnttg2sol);
-                                      pntcen  = point3;
+                                      pntcen  = point3new;
                                       parcen3 = Ufirst(3);
                                       WellDone = Standard_True;
                                   }
@@ -607,21 +607,21 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
-                                gp_Pnt2d point1,point2;
+                                gp_Pnt2d point1new,point2new;
                                 gp_Vec2d Tan1,Tan2;
-                                ElCLib::D1(Ufirst(1),L1,point1,Tan1);
-                                Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
+                                ElCLib::D1(Ufirst(1),L1,point1new,Tan1);
+                                Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2new,Tan2);
 #ifdef OCCT_DEBUG
                                 gp_Vec2d Tan3(-Sin(Ufirst(3)),Cos(Ufirst(3)));
 #endif
                                 point3 = ElCLib::Value(Ufirst(3),OnCirc);
-                                Standard_Real dist1 = point3.Distance(point1);
-                                Standard_Real dist2 = point3.Distance(point2);
+                                Standard_Real dist1 = point3.Distance(point1new);
+                                Standard_Real dist2 = point3.Distance(point2new);
                                 if ( Abs(dist1-dist2)/2. <= Tol) {
                                   cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
                                   Standard_Real normetan2 = Tan2.Magnitude();
-                                  gp_Vec2d Vec1(point1,point3);
-                                  gp_Vec2d Vec2(point2,point3);
+                                  gp_Vec2d Vec1(point1new,point3);
+                                  gp_Vec2d Vec2(point2new,point3);
                                   Standard_Real normevec2 = Vec2.Magnitude();
                                   Standard_Real angle2;
                                   if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
@@ -639,10 +639,10 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                         (Qualified2.IsEnclosed() && angle2 <= 0.)) {
                                           qualifier1 = Qualified1.Qualifier();
                                           qualifier2 = Qualified2.Qualifier();
-                                          pnttg1sol = point1;
+                                          pnttg1sol = point1new;
                                           pararg1 = Ufirst(1);
                                           par1sol = ElCLib::Parameter(cirsol,pnttg1sol);
-                                          pnttg2sol = point2;
+                                          pnttg2sol = point2new;
                                           pararg2 = Ufirst(2);
                                           par2sol = ElCLib::Parameter(cirsol,pnttg2sol);
                                           pntcen  = point3;
@@ -813,16 +813,16 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve&  Qualified1 ,
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
-                                gp_Pnt2d point1,point3;
+                                gp_Pnt2d point1new,point3new;
                                 gp_Vec2d Tan1,Tan3;
-                                Geom2dGcc_CurveTool::D1(Cu1,Ufirst(1),point1,Tan1);
-                                ElCLib::D1(Ufirst(2),OnCirc,point3,Tan3);
-                                Standard_Real dist1 = point3.Distance(point1);
-                                Standard_Real dist2 = point3.Distance(Point2);
+                                Geom2dGcc_CurveTool::D1(Cu1,Ufirst(1),point1new,Tan1);
+                                ElCLib::D1(Ufirst(2),OnCirc,point3new,Tan3);
+                                Standard_Real dist1 = point3new.Distance(point1new);
+                                Standard_Real dist2 = point3new.Distance(Point2);
                                 if ( Abs(dist1-dist2)/2. <= Tol) {
-                                  cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
+                                  cirsol = gp_Circ2d(gp_Ax2d(point3new,dirx),(dist1+dist2)/2.);
                                   Standard_Real normetan1 = Tan1.Magnitude();
-                                  gp_Vec2d Vec1(point1,point3);
+                                  gp_Vec2d Vec1(point1new,point3new);
                                   Standard_Real normevec1 = Vec1.Magnitude();
                                   Standard_Real angle1;
                                   if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
@@ -835,13 +835,13 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve&  Qualified1 ,
                                     (Qualified1.IsEnclosed() && angle1 <= 0.)) {
                                       qualifier1 = Qualified1.Qualifier();
                                       qualifier2 = GccEnt_noqualifier;
-                                      pnttg1sol = point1;
+                                      pnttg1sol = point1new;
                                       pararg1 = Ufirst(1);
                                       par1sol = ElCLib::Parameter(cirsol,pnttg1sol);
                                       pnttg2sol = Point2;
                                       pararg2 = 0.;
                                       par2sol = ElCLib::Parameter(cirsol,pnttg2sol);
-                                      pntcen  = point3;
+                                      pntcen  = point3new;
                                       parcen3 = Ufirst(3);
                                       WellDone = Standard_True;
                                   }

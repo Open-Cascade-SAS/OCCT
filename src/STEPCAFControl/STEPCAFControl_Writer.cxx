@@ -767,10 +767,10 @@ static Standard_Integer FindEntities (const Handle(Transfer_FinderProcess) &FP,
   if ( TransientListBinder.IsNull() && S.ShapeType() == TopAbs_COMPOUND) 
   {
     for ( TopoDS_Iterator it(S); it.More(); it.Next() ) {
-      Handle(StepRepr_RepresentationItem) item = STEPConstruct::FindEntity ( FP, it.Value(), L );
-      if ( item.IsNull() ) continue;
+      Handle(StepRepr_RepresentationItem) aLocalItem = STEPConstruct::FindEntity ( FP, it.Value(), L );
+      if (aLocalItem.IsNull() ) continue;
       nres++;
-      seqRI.Append ( item );
+      seqRI.Append (aLocalItem);
     }
   }
   else
@@ -2248,10 +2248,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
         Model->AddEntity(VR);
         Handle(StepShape_ShapeDimensionRepresentation) SDimR =
           new StepShape_ShapeDimensionRepresentation;
-        Handle(StepRepr_HArray1OfRepresentationItem) HARI =
+        Handle(StepRepr_HArray1OfRepresentationItem) aHARI =
           new StepRepr_HArray1OfRepresentationItem(1,1);
-        HARI->SetValue(1,VR);
-        SDimR->Init(aName,HARI,RC);
+        aHARI->SetValue(1,VR);
+        SDimR->Init(aName,aHARI,RC);
         Model->AddWithRefs(SDimR);
         Handle(StepShape_DimensionalCharacteristicRepresentation) DimCharR =
           new StepShape_DimensionalCharacteristicRepresentation;

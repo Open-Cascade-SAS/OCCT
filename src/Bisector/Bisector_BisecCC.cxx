@@ -823,8 +823,8 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt (const Standard_Real  U,
   if (SolRoot.IsDone()) {
     for (Standard_Integer j = 1; j <= SolRoot.NbSolutions(); j++) {
       USol        = SolRoot.Value(j);
-      gp_Pnt2d P2 = curve2->Value(USol);
-      gp_Vec2d P2P1(P1.X() - P2.X(),P1.Y() - P2.Y());
+      gp_Pnt2d P2Curve2 = curve2->Value(USol);
+      gp_Vec2d P2P1(P1.X() - P2Curve2.X(),P1.Y() - P2Curve2.Y());
       Standard_Real SquareP2P1 = P2P1.SquareMagnitude();
       Standard_Real N1P2P1     = N1.Dot(P2P1);
 

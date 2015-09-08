@@ -217,8 +217,8 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
     // F is reversed it will be added in myOffC.
     // and myOffC will be reversed in the final result.
     //-----------------------------------------------
-    TopoDS_Shape aLocalShape = F.Reversed();
-    if (InSide) Loops.Init(TopoDS::Face(aLocalShape));
+    TopoDS_Shape aReversedF = F.Reversed();
+    if (InSide) Loops.Init(TopoDS::Face(aReversedF));
 //    if (InSide) Loops.Init(TopoDS::Face(F.Reversed()));
     else        Loops.Init(F);
     //--------------------------------------------------------
@@ -232,9 +232,9 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
       if (Analyse.HasAncestor(CE)) {
 	// the stop of cups except for the connectivity stops between caps.
 	//      if (!AsDes->HasAscendant(CE)) {
-	aLocalShape = CE.Reversed();
+        TopoDS_Shape aReversedE = CE.Reversed();
 	if (InSide) Loops.AddConstEdge(CE);
-	else        Loops.AddConstEdge(TopoDS::Edge(aLocalShape));
+	else        Loops.AddConstEdge(TopoDS::Edge(aReversedE));
 //	else        Loops.AddConstEdge(TopoDS::Edge(CE.Reversed()));
       }
     }
@@ -263,8 +263,8 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
 	  if (InSide) Loops.AddConstEdge(TopoDS::Edge(CE));
 	  else
 	    {
-	      TopoDS_Shape aLocalShape = CE.Reversed();
-	      Loops.AddConstEdge(TopoDS::Edge(aLocalShape));
+	      TopoDS_Shape aReversedE = CE.Reversed();
+	      Loops.AddConstEdge(TopoDS::Edge(aReversedE));
 	    }
 //	  else        Loops.AddConstEdge(TopoDS::Edge(CE.Reversed()));
 	}

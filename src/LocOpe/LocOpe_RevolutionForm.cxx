@@ -162,9 +162,9 @@ void LocOpe_RevolutionForm::IntPerf()
 
   if (myIsTrans) {
     // m-a-j des descendants
-    TopExp_Explorer exp;
-    for (exp.Init(myBase,TopAbs_EDGE);exp.More();exp.Next()) {
-      const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
+    TopExp_Explorer anExp;
+    for (anExp.Init(myBase,TopAbs_EDGE); anExp.More(); anExp.Next()) {
+      const TopoDS_Edge& edg = TopoDS::Edge(anExp.Current());
       const TopoDS_Edge& edgbis = TopoDS::Edge(Modif.ModifiedShape(edg));
       if (!edgbis.IsSame(edg) && myMap.IsBound(edgbis)) {
 	myMap.Bind(edg,myMap(edgbis));

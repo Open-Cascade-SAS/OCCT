@@ -520,7 +520,6 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
       PasU = (PasU - U0) / (myusample - 1);
       U0 = U0/2. + myumin;
       myUParams = new TColStd_HArray1OfReal(1,myusample );
-      Standard_Integer NoU;
       Standard_Real U = U0;
       for ( NoU = 1 ; NoU <= myusample; NoU++, U += PasU) 
         myUParams->SetValue(NoU, U);
@@ -534,7 +533,6 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
       V0 = V0/2. + myvmin;
       
       myVParams = new TColStd_HArray1OfReal(1,myvsample );
-      Standard_Integer  NoV;
       Standard_Real V = V0;
      
       for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)

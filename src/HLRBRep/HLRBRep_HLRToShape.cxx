@@ -96,10 +96,10 @@ HLRBRep_HLRToShape::InternalCompound (const Standard_Integer typ,
 	     Exp.Next()) {
 	  Standard_Integer ie = Edges.FindIndex(Exp.Current());
 	  if (ie != 0) {
-	    HLRBRep_EdgeData& ed = DS->EDataArray().ChangeValue(ie);
-	    if (!ed.Used()) {
-	      DrawEdge(visible,Standard_False,typ,ed,Result,added,In3d);
-	      ed.Used(Standard_True);
+	    HLRBRep_EdgeData& EDataIE = DS->EDataArray().ChangeValue(ie);
+	    if (!EDataIE.Used()) {
+	      DrawEdge(visible,Standard_False,typ, EDataIE,Result,added,In3d);
+	      EDataIE.Used(Standard_True);
 	    }
 	  }
 	}
@@ -111,13 +111,13 @@ HLRBRep_HLRToShape::InternalCompound (const Standard_Integer typ,
 	DrawFace(visible,typ,iface,DS,Result,added,In3d);
 
       if (typ >= 3) {
-	HLRBRep_EdgeData* ed = &(DS->EDataArray().ChangeValue(e1 - 1));
+	HLRBRep_EdgeData* EDataE11 = &(DS->EDataArray().ChangeValue(e1 - 1));
 	
 	for (Standard_Integer ie = e1; ie <= e2; ie++) {
-	  ed++;
-	  if (!ed->Used()) {
-	    DrawEdge(visible,Standard_False,typ,*ed,Result,added,In3d);
-	    ed->Used(Standard_True);
+          EDataE11++;
+	  if (!EDataE11->Used()) {
+	    DrawEdge(visible,Standard_False,typ,*EDataE11,Result,added,In3d);
+	    EDataE11->Used(Standard_True);
 	  }
 	}
       }

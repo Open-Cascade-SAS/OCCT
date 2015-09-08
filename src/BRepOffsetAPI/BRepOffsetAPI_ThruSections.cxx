@@ -804,7 +804,6 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     if (vClosed) {
 
       TopoDS_Solid solid;
-      BRep_Builder B;
       B.MakeSolid(solid); 
       B.Add(solid, shell);
 
@@ -889,8 +888,8 @@ static Handle(Geom_BSplineCurve) EdgeToBSpline (const TopoDS_Edge& theEdge)
     // special treatment of conic curve
     if (aTrimCurve->BasisCurve()->IsKind(STANDARD_TYPE(Geom_Conic)))
     {
-      const Handle(Geom_Curve)& aCurve = aTrimCurve; // to avoid ambiguity
-      GeomConvert_ApproxCurve anAppr (aCurve, Precision::Confusion(), GeomAbs_C1, 16, 14);
+      const Handle(Geom_Curve)& aCurveTrimmed = aTrimCurve; // to avoid ambiguity
+      GeomConvert_ApproxCurve anAppr (aCurveTrimmed, Precision::Confusion(), GeomAbs_C1, 16, 14);
       if (anAppr.HasResult())
         aBSCurve = anAppr.Curve();
     }
@@ -937,7 +936,6 @@ Handle(Geom_BSplineSurface) BRepOffsetAPI_ThruSections::
   Handle(Geom_BSplineSurface) surface;
   Handle(Geom_BSplineCurve) BS, BS1;
   Handle(Geom_TrimmedCurve) curvTrim;
-  Handle(Geom_BSplineCurve) curvBS;
 
   if (w1Point) {
     jdeb++;

@@ -921,15 +921,15 @@ static Standard_Integer cfindp (Draw_Interpretor& , Standard_Integer n, const ch
     if (!DBs.IsNull())
       DBs->FindPole( x, y, d, 5, Index);
     else {
-      Handle(DrawTrSurf_BezierCurve2d) DBz = 
+      Handle(DrawTrSurf_BezierCurve2d) DBz2d = 
 	Handle(DrawTrSurf_BezierCurve2d)::DownCast(D);
-      if( !DBz.IsNull())
-	DBz->FindPole( x, y, d, 5, Index);
+      if( !DBz2d.IsNull())
+	DBz2d->FindPole( x, y, d, 5, Index);
       else {
-	Handle(DrawTrSurf_BSplineCurve2d) DBs = 
+	Handle(DrawTrSurf_BSplineCurve2d) DBs2d = 
 	  Handle(DrawTrSurf_BSplineCurve2d)::DownCast(D);
-	if (!DBs.IsNull())
-	  DBs->FindPole( x, y, d, 5, Index);
+	if (!DBs2d.IsNull())
+	  DBs2d->FindPole( x, y, d, 5, Index);
 	else 
 	  return 1;
       }

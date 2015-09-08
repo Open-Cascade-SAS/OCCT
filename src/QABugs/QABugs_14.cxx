@@ -214,8 +214,8 @@ static Standard_Integer BUC60854 (Draw_Interpretor& /*di*/, Standard_Integer arg
 	}
 	TopAbs_ShapeEnum wtyp = W.ShapeType();
 	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && pick) {
-	  Standard_Real u,v;
-	  DBRep_DrawableShape::LastPick(W,u,v);
+	  Standard_Real aTempU, aTempV;
+	  DBRep_DrawableShape::LastPick(W, aTempU, aTempV);
 	  wtyp = W.ShapeType();
 	}
 	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE) {

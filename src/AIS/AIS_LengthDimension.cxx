@@ -645,10 +645,10 @@ Standard_Boolean AIS_LengthDimension::InitTwoShapesPoints (const TopoDS_Shape& t
       else if (theSecondShape.ShapeType() == TopAbs_EDGE)
       {
         myGeometryType = GeometryType_EdgeVertex;
-        Standard_Boolean isSuccess =  InitEdgeVertexLength (TopoDS::Edge(theSecondShape),
-                                                            TopoDS::Vertex(theFirstShape),
-                                                            aDirAttach,
-                                                            isInfinite);
+        isSuccess =  InitEdgeVertexLength (TopoDS::Edge(theSecondShape),
+                                           TopoDS::Vertex(theFirstShape),
+                                           aDirAttach,
+                                           isInfinite);
         if (isSuccess)
         {
           theComputedPlane = ComputePlane (aDirAttach);

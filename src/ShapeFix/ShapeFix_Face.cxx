@@ -2434,8 +2434,8 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
       const TopTools_ListOfShape& IntWires = MapWires.Find(wire);
       TopTools_ListIteratorOfListOfShape liter(IntWires);
       for( ; liter.More(); liter.Next()) {
-        TopoDS_Shape aShape = tmpFace.EmptyCopied();
-        TopoDS_Face aFace = TopoDS::Face ( aShape );
+        TopoDS_Shape aShapeEmptyCopied = tmpFace.EmptyCopied();
+        TopoDS_Face aFace = TopoDS::Face ( aShapeEmptyCopied);
         aFace.Orientation ( TopAbs_FORWARD );
         B.Add (aFace,liter.Value());
         BRepTopAdaptor_FClass2d clas (aFace,::Precision::PConfusion());

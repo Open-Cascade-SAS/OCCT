@@ -474,10 +474,10 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
       Standard_Integer anUpper = anIndices.Upper();
 
       Standard_Integer aPrevNode = -1;
-      for (Standard_Integer i = aLower; i <= anUpper; ++i)
+      for (Standard_Integer j = aLower; j <= anUpper; ++j)
       {
-        Standard_Integer aNodeIdx = anIndices.Value(i);
-        if (i != aLower)
+        Standard_Integer aNodeIdx = anIndices.Value(j);
+        if (j != aLower)
         {
           BRepMesh_Edge aLink(aPrevNode, aNodeIdx, BRepMesh_Frontier);
           aBoundaryEdgeMap.Add(aLink);
@@ -499,10 +499,10 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
       const Poly_Triangle& aTri = aTris(aTriIndx);
       Standard_Integer aTriNodes[3] = { aTri.Value(1), aTri.Value(2), aTri.Value(3)};
 
-      for (Standard_Integer i = 1; i <= 3; ++i)
+      for (Standard_Integer j = 1; j <= 3; ++j)
       {
-        Standard_Integer aLastId  = aTriNodes[i % 3];
-        Standard_Integer aFirstId = aTriNodes[i - 1];
+        Standard_Integer aLastId  = aTriNodes[j % 3];
+        Standard_Integer aFirstId = aTriNodes[j - 1];
 
         BRepMesh_Edge aLink(aFirstId, aLastId, BRepMesh_Free);
         if (!aBoundaryEdgeMap.Contains(aLink))

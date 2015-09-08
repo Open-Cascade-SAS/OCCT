@@ -144,8 +144,8 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape& S1,const
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
-    for (Standard_Integer i = 1; i <= 2; i++)
-      cout<<"B("<<i<<") = ("<<UV(i,1)<<" "<<UV(i,3)<<" "<<UV(i,2)<<" "<<UV(i,4)<<")"<<endl;
+    for (Standard_Integer j = 1; j <= 2; j++)
+      cout<<"B("<<j<<") = ("<<UV(j,1)<<" "<<UV(j,3)<<" "<<UV(j,2)<<" "<<UV(j,4)<<")"<<endl;
   }
 #endif
 
@@ -374,8 +374,8 @@ Standard_Boolean TopOpeBRepTool_CLASSI::Classilist(const TopTools_ListOfShape& l
 
   TopTools_ListOfShape lw; lw.Assign(lS);
   mapgreasma.Clear();
-  TopTools_ListIteratorOfListOfShape itw(lS);
-  for (; itw.More(); itw.Next()) mapgreasma.Bind(itw.Value(),null);
+  TopTools_ListIteratorOfListOfShape anIterW(lS);
+  for (; anIterW.More(); anIterW.Next()) mapgreasma.Bind(anIterW.Value(),null);
   
   Standard_Integer nw = lw.Extent();
   if (nw <= 1) return Standard_True;

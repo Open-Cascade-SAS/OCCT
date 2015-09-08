@@ -175,14 +175,14 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
   {
     const TopoDS_Compound& aComp = aStyleGroupIter.Value();
     TopoDS_Iterator aShapeIter (aComp);
-    TopoDS_Shape aShape = aShapeIter.Value();
+    TopoDS_Shape aShapeCur = aShapeIter.Value();
     aShapeIter.Next();
     if (aShapeIter.More())
     {
-      aShape = aComp;
+      aShapeCur = aComp;
     }
 
-    Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (aShape);
+    Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (aShapeCur);
     const XCAFPrs_Style& aStyle = aStyleGroupIter.Key();
     aDrawer->SetHidden (!aStyle.IsVisible());
 

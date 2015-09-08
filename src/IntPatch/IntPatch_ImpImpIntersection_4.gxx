@@ -1450,14 +1450,14 @@ static Standard_Boolean SearchOnVBounds(const SearchBoundType theSBType,
 
     if(anError > anErrorPrev)
     {//Method diverges. Keep the best result
-      const Standard_Real aSinU1 = sin(aMainVarPrev),
-                          aCosU1 = cos(aMainVarPrev),
-                          aSinU2 = sin(aU2Prev),
-                          aCosU2 = cos(aU2Prev);
-      aMSum -= (theCoeffs.mVecA1*aCosU1 + 
-                theCoeffs.mVecB1*aSinU1 +
-                theCoeffs.mVecA2*aCosU2 +
-                theCoeffs.mVecB2*aSinU2 +
+      const Standard_Real aSinU1Last = sin(aMainVarPrev),
+                          aCosU1Last = cos(aMainVarPrev),
+                          aSinU2Last = sin(aU2Prev),
+                          aCosU2Last = cos(aU2Prev);
+      aMSum -= (theCoeffs.mVecA1*aCosU1Last + 
+                theCoeffs.mVecB1*aSinU1Last +
+                theCoeffs.mVecA2*aCosU2Last +
+                theCoeffs.mVecB2*aSinU2Last +
                 theCoeffs.mVecD);
       const Standard_Real aSQNorm = aMSum.Norm2();
       return (aSQNorm < aTol2);
@@ -2529,10 +2529,10 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
           {
             anU1 = anU1crit[i];
 
-            for(Standard_Integer i = 0; i < aNbWLines; i++)
+            for(Standard_Integer j = 0; j < aNbWLines; j++)
             {
-              aWLFindStatus[i] = WLFStatus_Broken;
-              anUexpect[i] = anU1;
+              aWLFindStatus[j] = WLFStatus_Broken;
+              anUexpect[j] = anU1;
             }
 
             break;
@@ -3120,10 +3120,10 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
       if(!CylCylComputeParameters(anUl, i, anEquationCoeffs, anU2t))
         continue;
 
-      const Standard_Real aDU = Abs(anU2t - aCurU2);
-      if(aDU < aDelta)
+      const Standard_Real aDU2 = Abs(anU2t - aCurU2);
+      if(aDU2 < aDelta)
       {
-        aDelta = aDU; 
+        aDelta = aDU2; 
         anIndex = i;
       }
     }

@@ -852,9 +852,9 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection, const 
     TopTools_DataMapOfOrientedShapeShape aMap;
     Standard_Integer Up(0);
     TopAbs_ShapeEnum aStopType(TopAbs_COMPOUND);
-    TopoDS_Iterator it(Selection);
-    for(;it.More(); it.Next()) {
-      const TopoDS_Shape& aS = it.Value(); 
+    TopoDS_Iterator anIter(Selection);
+    for(; anIter.More(); anIter.Next()) {
+      const TopoDS_Shape& aS = anIter.Value();
       if(aS.ShapeType() > aStopType)
 	aStopType = aS.ShapeType();	
       Up++;
@@ -888,12 +888,12 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection, const 
       if(num1 == num2 && num2)
 	return Context;
       else {
-	TopoDS_Iterator it(CompShape);
+	TopoDS_Iterator anIt(CompShape);
 	Standard_Integer n(0);
 	TopoDS_Shape aCmp;
-	for(;it.More();it.Next()) {
+	for(; anIt.More(); anIt.Next()) {
 	    n++;
-	    aCmp = it.Value();
+	    aCmp = anIt.Value();
 	}
 	if(n == 1) {
 #ifdef OCCT_DEBUG_FSET

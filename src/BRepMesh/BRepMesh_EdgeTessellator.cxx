@@ -59,7 +59,6 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
   else
     myCOnS.Initialize(theEdge, theFaceAttribute->Face());
 
-  TopLoc_Location aLoc;
   const GeomAbs_CurveType aCurveType = myCOnS.GetType();
   Standard_Integer aMinPntNb = (aCurveType == GeomAbs_Circle) ? 4 : 2; //OCC287
 

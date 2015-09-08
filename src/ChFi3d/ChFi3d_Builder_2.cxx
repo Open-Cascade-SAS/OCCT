@@ -955,10 +955,10 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
 				   Stripe->OrientationOnFace1(),
 				   Stripe->OrientationOnFace2(),
 				   RC);
-          const Handle(Adaptor3d_HSurface)& HSon1 = HS1; // to avoid ambiguity
-          const Handle(Adaptor3d_HSurface)& HSon2 = HS2; // to avoid ambiguity
-	  I1->Initialize(HSon1);
-	  I2->Initialize(HSon2);
+          const Handle(Adaptor3d_HSurface)& HSon1new = HS1; // to avoid ambiguity
+          const Handle(Adaptor3d_HSurface)& HSon2new = HS2; // to avoid ambiguity
+	  I1->Initialize(HSon1new);
+	  I2->Initialize(HSon2new);
 	  if(PerformFirstSection(Spine,HGuide,Choix,HS1,HS2,
 				 I1,I2,w,SolDep,Pos1,Pos2)){
 	    P1.SetCoord(SolDep(1),SolDep(2));

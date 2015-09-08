@@ -288,9 +288,9 @@ void Voxel_OctBoolDS::OptimizeMemory()
       const Standard_Integer ix = itrix.Value();
       const Standard_Integer iy = itriy.Value();
       const Standard_Integer iz = itriz.Value();
-      const Standard_Integer value = itrvalues.Value();
+      const Standard_Integer aValue = itrvalues.Value();
 
-      Set(ix, iy, iz, (value ? Standard_True : Standard_False));
+      Set(ix, iy, iz, (aValue ? Standard_True : Standard_False));
       UnSplit(ix, iy, iz);
   }
 

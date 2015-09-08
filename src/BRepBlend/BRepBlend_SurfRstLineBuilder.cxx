@@ -985,17 +985,17 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
 
     Solinv(3) = pmin;
   
-    math_FunctionSetRoot rsnld(FinvC,toler,30);
-    rsnld.Perform(FinvC,Solinv,infb,supb);
+    math_FunctionSetRoot aRsnld(FinvC,toler,30);
+    aRsnld.Perform(FinvC,Solinv,infb,supb);
 
-    if (!rsnld.IsDone()) {
+    if (!aRsnld.IsDone()) {
 #ifdef OCCT_DEBUG
       cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
 #endif
     }
     else {
       // It is necessary to check the value of the function
-      rsnld.Root(Solinv);
+      aRsnld.Root(Solinv);
       recadre = FinvC.IsSolution(Solinv,tolesp);
     }
   }  

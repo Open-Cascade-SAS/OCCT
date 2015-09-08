@@ -430,7 +430,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
   if (!isready) {
     return;
   }
-  Standard_Integer i, j, k, Ci, Nincx, i2, k1, k2;
+  Standard_Integer i, j, k, Ci, i2, k1, k2;
   Standard_Integer nbpol1 = nbpoles-1, Ninc1 = Ninc-1;
   Standard_Real AD1, A0;
 //  gp_Pnt Pt;
@@ -523,7 +523,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
   // cas de tangence:
   // ===========================================================
 
-  Nincx = resfin-resinit+1;
+  Standard_Integer Nincx = resfin-resinit+1;
   Standard_Integer deport = 0, Nincx2 = 2*Nincx;
   
   math_IntegerVector InternalIndex(1, Nincx);

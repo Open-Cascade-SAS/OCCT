@@ -169,8 +169,8 @@ Standard_Integer DNaming_PrismDriver::Execute(TFunction_Logbook& theLog) const {
   }
   
   const TopoDS_Shape& aResult = aMakePrism.Shape();
-  BRepCheck_Analyzer aCheck(aResult);
-  if (!aCheck.IsValid(aResult)) {
+  BRepCheck_Analyzer aCheckAnalyzer(aResult);
+  if (!aCheckAnalyzer.IsValid(aResult)) {
     aFunction->SetFailure(RESULT_NOT_VALID);
 #ifdef OCCT_DEBUG
     Standard_CString aFileName = "PrismResult.brep";

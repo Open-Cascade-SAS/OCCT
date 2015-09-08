@@ -1939,7 +1939,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
     const BOPCol_ListOfInteger& aFaces = aCB1->Faces();
     aIt.Initialize(aLPB);
     for (; aIt.More(); aIt.Next()) {
-      const Handle(BOPDS_PaveBlock)& aPB = aIt.Value();
+      const Handle(BOPDS_PaveBlock)& aPBValue = aIt.Value();
       //
       aCB = new BOPDS_CommonBlock;
       aIt1.Initialize(aLPB1);
@@ -1948,9 +1948,9 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
         nE = aPB2->OriginalEdge();
         //
         aPB2n = new BOPDS_PaveBlock;
-        aPB2n->SetPave1(aPB->Pave1());
-        aPB2n->SetPave2(aPB->Pave2());
-        aPB2n->SetEdge(aPB->Edge());
+        aPB2n->SetPave1(aPBValue->Pave1());
+        aPB2n->SetPave2(aPBValue->Pave2());
+        aPB2n->SetEdge(aPBValue->Edge());
         aPB2n->SetOriginalEdge(nE);
         aCB->AddPaveBlock(aPB2n);
         myDS->SetCommonBlock(aPB2n, aCB);
@@ -1997,8 +1997,8 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
   //
   aIt.Initialize(aLPB);
   for (; aIt.More(); aIt.Next()) {
-    Handle(BOPDS_PaveBlock)& aPB = aIt.ChangeValue();
-    const TopoDS_Edge& aE = *(TopoDS_Edge*)&myDS->Shape(aPB->Edge());
+    Handle(BOPDS_PaveBlock)& aPBChangeValue = aIt.ChangeValue();
+    const TopoDS_Edge& aE = *(TopoDS_Edge*)&myDS->Shape(aPBChangeValue->Edge());
     aTolE = BRep_Tool::Tolerance(aE);
     //
     IntTools_EdgeFace anEF;
@@ -2006,7 +2006,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
     anEF.SetFace(aF);
     anEF.SetTolE(aTolE);
     anEF.SetTolF(aTolF);
-    anEF.SetRange(aPB->Pave1().Parameter(), aPB->Pave2().Parameter());
+    anEF.SetRange(aPBChangeValue->Pave1().Parameter(), aPBChangeValue->Pave2().Parameter());
     anEF.SetContext(myContext);
     anEF.Perform();
     //
@@ -2015,15 +2015,15 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
       Standard_Boolean bCoinc = (aCPrts(1).Type() == TopAbs_EDGE);
       if (bCoinc) {
         if (bCB) {
-          aCB = myDS->CommonBlock(aPB);
+          aCB = myDS->CommonBlock(aPBChangeValue);
         } else {
           aCB = new BOPDS_CommonBlock;
-          aCB->AddPaveBlock(aPB);
-          myDS->SetCommonBlock(aPB, aCB);
+          aCB->AddPaveBlock(aPBChangeValue);
+          myDS->SetCommonBlock(aPBChangeValue, aCB);
         }
         aCB->AddFace(nF);
         //
-        aMPBIn.Add(aPB);
+        aMPBIn.Add(aPBChangeValue);
       }
     }
   }

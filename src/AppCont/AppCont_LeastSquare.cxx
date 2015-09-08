@@ -101,7 +101,6 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 {
   myDone = Standard_False;
   myDegre = Deg;
-  math_Matrix InvM(1, Deg+1, 1, Deg + 1);
   Standard_Integer i, j, k, c, i2;
   Standard_Integer classe = Deg + 1, cl1 = Deg;
   Standard_Real U, dU, Coeff, Coeff2;

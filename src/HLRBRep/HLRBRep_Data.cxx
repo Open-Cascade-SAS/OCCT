@@ -826,12 +826,12 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	myFEOutLine  = myFaceItr1.OutLine    ();
 	myFEInternal = myFaceItr1.Internal   ();
 	myFEDouble   = myFaceItr1.Double     ();
-	HLRBRep_EdgeData* ed = &(myEData(myFE));
+	HLRBRep_EdgeData* EDataFE1 = &(myEData(myFE));
 	if (!myFEDouble &&
 	    (myFEOri == TopAbs_FORWARD ||
 	     myFEOri == TopAbs_REVERSED)) {
-	  myFEGeom = &(ed->ChangeGeometry());
-	  const HLRBRep_Curve& EC = ed->Geometry();
+	  myFEGeom = &(EDataFE1->ChangeGeometry());
+	  const HLRBRep_Curve& EC = EDataFE1->Geometry();
 	  p = EC.Parameter3d((EC.LastParameter () +
 			      EC.FirstParameter()) / 2);
 	  if (HLRBRep_EdgeFaceTool::UVPoint(p,myFEGeom,iFaceGeom,pu,pv)) {
@@ -890,9 +890,9 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
 	 myFaceItr1.MoreEdge();
 	 myFaceItr1.NextEdge()) {
       myFE = myFaceItr1.Edge();
-      HLRBRep_EdgeData* ed = &(myEData(myFE));
-      if (!fd->Simple()) ed->AutoIntersectionDone(Standard_False);
-      HLRAlgo::DecodeMinMax(ed->MinMax(),
+      HLRBRep_EdgeData* EDataFE2 = &(myEData(myFE));
+      if (!fd->Simple()) EDataFE2->AutoIntersectionDone(Standard_False);
+      HLRAlgo::DecodeMinMax(EDataFE2->MinMax(),
 			    (Standard_Address)EdgeMin,
 			    (Standard_Address)EdgeMax);
       if (myFaceItr1.BeginningOfWire())

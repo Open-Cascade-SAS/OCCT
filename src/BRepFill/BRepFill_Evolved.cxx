@@ -502,8 +502,8 @@ void BRepFill_Evolved::PrivatePerform(const TopoDS_Face&     Spine,
       // Calculate the map to the right of the current wire.
       //----------------------------------------------
       BRepLib_MakeFace B(gp_Pln(0.,0.,1.,0.));
-      TopoDS_Shape aLocalShape = SpineExp.Current().Reversed();
-      B.Add(TopoDS::Wire(aLocalShape));
+      TopoDS_Shape aLocalShapeRev = SpineExp.Current().Reversed();
+      B.Add(TopoDS::Wire(aLocalShapeRev));
 //      B.Add(TopoDS::Wire(SpineExp.Current().Reversed()));
       Face = B.Face();
       BRepMAT2d_Explorer Exp(Face);
@@ -750,8 +750,6 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
   }
 #endif
 
-  TopoDS_Vertex  VF,VL;
-  
   //---------------------------------------------------
   // Construction of edges associated to bissectrices.
   //---------------------------------------------------
@@ -1109,14 +1107,14 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 	  //------------------------------------------------------------
 	  // No connected face in the volevo => no parallel edge.
 	  //------------------------------------------------------------
-	  TopTools_SequenceOfShape S;
+	  TopTools_SequenceOfShape aSeqOfShape;
 	  TrimEdge (CurrentEdge,
 		    MapBis   (FaceControle), 
 		    MapBis   (CurrentEdge) ,  
-		    MapVerPar(CurrentEdge) , S);
+		    MapVerPar(CurrentEdge) , aSeqOfShape);
 	  
-	  for ( k = 1; k <= S.Length(); k++) {
-	    myMap(CurrentSpine)(VCF).Append(S.Value(k));
+	  for ( k = 1; k <= aSeqOfShape.Length(); k++) {
+	    myMap(CurrentSpine)(VCF).Append(aSeqOfShape.Value(k));
 	    
 #ifdef DRAW	    
 	    if (AffichEdge) {
@@ -1147,14 +1145,14 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
       // the number of element of the list allows to know
       // if the edges have already been done (closed profile) .
       if (YaFace && myMap(CurrentSpine)(VCL).Extent()<= 1) {
-	TopTools_SequenceOfShape S;
+	TopTools_SequenceOfShape aSeqOfShape;
 	TrimEdge (CurrentEdge, 
 		  MapBis   (FaceControle), 
 		  MapBis   (CurrentEdge) , 
-		  MapVerPar(CurrentEdge) , S);
+		  MapVerPar(CurrentEdge) , aSeqOfShape);
 	
-	for ( k = 1; k <= S.Length(); k++) {
-	  myMap(CurrentSpine)(VCL).Append(S.Value(k));
+	for ( k = 1; k <= aSeqOfShape.Length(); k++) {
+	  myMap(CurrentSpine)(VCL).Append(aSeqOfShape.Value(k));
 	  
 #ifdef DRAW	    
 	  if (AffichEdge) {	  
@@ -1214,13 +1212,13 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 	}
 	
 	//Cut of the face.
-	TopTools_SequenceOfShape  S;
+	TopTools_SequenceOfShape  aSeqOfShape;
 
-	TrimFace (CurrentFace, MapBis(CurrentFace), S);
+	TrimFace (CurrentFace, MapBis(CurrentFace), aSeqOfShape);
 
-	for (Standard_Integer ii = 1; ii <= S.Length(); ii++) {
-	  myBuilder.Add (myShape,S.Value(ii));
-	  myMap(CurrentSpine)(CurrentProf).Append(S.Value(ii));
+	for (Standard_Integer ii = 1; ii <= aSeqOfShape.Length(); ii++) {
+	  myBuilder.Add (myShape, aSeqOfShape.Value(ii));
+	  myMap(CurrentSpine)(CurrentProf).Append(aSeqOfShape.Value(ii));
 	}
       }
     }
@@ -1260,8 +1258,8 @@ void BRepFill_Evolved::PlanarPerform (const TopoDS_Face&              Sp,
 					    BRepMAT2d_LinkTopoBilo&   Link,
 				      const GeomAbs_JoinType          Join)
 {
-  TopoDS_Shape aLocalShape = Sp.Oriented(TopAbs_FORWARD);
-  mySpine   = TopoDS::Face(aLocalShape);
+  TopoDS_Shape aLocalShapeOriented = Sp.Oriented(TopAbs_FORWARD);
+  mySpine   = TopoDS::Face(aLocalShapeOriented);
 //  mySpine   = TopoDS::Face(Sp.Oriented(TopAbs_FORWARD));
   myProfile = Pr;
   myMap.Clear();
@@ -1271,7 +1269,6 @@ void BRepFill_Evolved::PlanarPerform (const TopoDS_Face&              Sp,
    
   BRepTools_WireExplorer             ProfExp;
   TopExp_Explorer                    Exp,exp1,exp2;
-  TopoDS_Shape                       Rest;
   TopTools_DataMapOfShapeListOfShape EmptyMap;
   TopTools_ListOfShape               EmptyList;
   TopTools_DataMapOfShapeShape       MapVP;
@@ -1436,8 +1433,8 @@ void BRepFill_Evolved::VerticalPerform (const TopoDS_Face&              Sp,
       
       // MAJ myMap
       for (Exp.Init(Base,TopAbs_EDGE); Exp.More(); Exp.Next()) {
-	const TopoDS_Edge&  E  = TopoDS::Edge(Exp.Current());
-	const TopoDS_Shape& AE =  OffAnc.Ancestor(E);
+	const TopoDS_Edge&  anEdge = TopoDS::Edge(Exp.Current());
+	const TopoDS_Shape& AE =  OffAnc.Ancestor(anEdge);
 	if (!myMap.IsBound(AE)) {
 	  myMap.Bind(AE,EmptyMap);
 	}
@@ -1445,7 +1442,7 @@ void BRepFill_Evolved::VerticalPerform (const TopoDS_Face&              Sp,
 	  TopTools_ListOfShape L;
 	  myMap(AE).Bind(V1,L);
 	}
-	myMap(AE)(V1).Append(E);
+	myMap(AE)(V1).Append(anEdge);
       }
       First = Standard_False;
     }
@@ -2116,7 +2113,7 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
     Loop.Perform();
     Loop.WiresToFaces();
     const TopTools_ListOfShape& L = Loop.NewFaces();
-    TopTools_ListIteratorOfListOfShape itL(L);
+    TopTools_ListIteratorOfListOfShape anIterL(L);
     
     // Maj of myTop and myBottom for the history
     // and addition of constructed faces.
@@ -2125,12 +2122,12 @@ void BRepFill_Evolved::AddTopAndBottom(BRepTools_Quilt& Glue)
     B.MakeCompound(Bouchon);
     Standard_Integer j = 0;
 
-    for (itL.Initialize(L); itL.More(); itL.Next()) {
+    for (anIterL.Initialize(L); anIterL.More(); anIterL.Next()) {
       j++;
-      Glue.Add(itL.Value());
-      if (j ==1 && i == 0) myTop    = itL.Value();
-      if (j ==1 && i == 1) myBottom = itL.Value();
-      B.Add(Bouchon,itL.Value());
+      Glue.Add(anIterL.Value());
+      if (j ==1 && i == 0) myTop    = anIterL.Value();
+      if (j ==1 && i == 1) myBottom = anIterL.Value();
+      B.Add(Bouchon,anIterL.Value());
     }
     if (i == 0 && j > 1) myTop    = Bouchon;
     if (i == 1 && j > 1) myBottom = Bouchon;

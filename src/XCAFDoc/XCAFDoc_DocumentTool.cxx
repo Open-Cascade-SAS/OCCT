@@ -291,10 +291,10 @@ void XCAFDoc_DocumentTool::Init() const
   Handle(TDataStd_TreeNode) aRootNode, aLabNode;
 
   if (!RootL.FindAttribute (aRefGuid, aRootNode)) {
-    Handle(TDataStd_TreeNode) aRootNode = TDataStd_TreeNode::Set (RootL, aRefGuid);
+    Handle(TDataStd_TreeNode) aRootNodeNew = TDataStd_TreeNode::Set (RootL, aRefGuid);
     Handle(TDataStd_TreeNode) aLNode = TDataStd_TreeNode::Set (DocL, aRefGuid);
-    aLNode->SetFather (aRootNode);
-    aRootNode->SetFirst (aLNode);
+    aLNode->SetFather (aRootNodeNew);
+    aRootNodeNew->SetFirst (aLNode);
   }
 }
 

@@ -101,8 +101,8 @@ void UnifyBySettingMiddleKnots(TColGeom_SequenceOfCurve& theCurves)
     Standard_Real aMidKnot = 0.;
     for (i = 1; i <= theCurves.Length(); i++)
     {
-      Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
-      aMidKnot += C->Knot(j);
+      Handle(Geom_BSplineCurve) Ctemp = Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+      aMidKnot += Ctemp->Knot(j);
     }
     aMidKnot /= theCurves.Length();
     NewKnots(j) = aMidKnot;
@@ -110,8 +110,8 @@ void UnifyBySettingMiddleKnots(TColGeom_SequenceOfCurve& theCurves)
 
   for (i = 1; i <= theCurves.Length(); i++)
   {
-    Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
-    C->SetKnots(NewKnots);
+    Handle(Geom_BSplineCurve) Cres = Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+    Cres->SetKnots(NewKnots);
   }
 }
 

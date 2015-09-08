@@ -104,7 +104,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
   Message_Msg doneMsg("FixEdge.SameParameter.MSG0");
 
   // Start progress scope (no need to check if progress exists -- it is safe)
-  Message_ProgressSentry aPSentry(theProgress, "Fixing same parameter problem", 0, 2, 1);
+  Message_ProgressSentry aPSentryForSameParam(theProgress, "Fixing same parameter problem", 0, 2, 1);
 
   {
     // Start progress scope (no need to check if progress exists -- it is safe)
@@ -155,7 +155,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
 
   }
   // Switch to "Update tolerances" step
-  aPSentry.Next();
+  aPSentryForSameParam.Next();
 
   {
     // Start progress scope (no need to check if progress exists -- it is safe)

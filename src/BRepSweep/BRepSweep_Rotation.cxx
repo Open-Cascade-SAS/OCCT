@@ -518,9 +518,9 @@ void  BRepSweep_Rotation::SetGeneratingPCurve
     L.SetDirection(gp::DY2d());
   }
   else{
-    Standard_Real u = 0;
-    if (aDirV.Index() == 2) u = myAng;
-    L.SetLocation(gp_Pnt2d(u,0));
+    Standard_Real anAngleTemp = 0;
+    if (aDirV.Index() == 2) anAngleTemp = myAng;
+    L.SetLocation(gp_Pnt2d(anAngleTemp,0));
     L.SetDirection(gp::DY2d());
   }
   Handle(Geom2d_Line) GL = new Geom2d_Line(L);

@@ -237,8 +237,8 @@ Standard_Boolean Voxel_CollisionDetection::Compute()
 	  {
 	    for (ishape = 1; ishape < nb_shapes; ishape++) // start with second shape
 	    {
-	      Voxel_BoolDS& voxels = ((Voxel_BoolDS*)myVoxels)[ishape];
-	      if (voxels.Get(ix, iy, iz))
+	      Voxel_BoolDS& anOtherVoxels = ((Voxel_BoolDS*)myVoxels)[ishape];
+	      if (anOtherVoxels.Get(ix, iy, iz))
 	      {
 		myCollisions.Set(ix, iy, iz, Standard_True);
 		if (!myHasCollisions)

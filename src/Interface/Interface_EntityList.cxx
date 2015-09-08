@@ -37,9 +37,9 @@ Interface_EntityList::Interface_EntityList ()    {  }
 {
   if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityList Append");
   if (theval.IsNull()) {  theval = ent;  return;  }
-  Handle(Interface_EntityCluster) ec =
+  Handle(Interface_EntityCluster) aValEC =
     Handle(Interface_EntityCluster)::DownCast(theval);
-  if (!ec.IsNull()) ec->Append(ent);    // EntityCluster
+  if (!aValEC.IsNull()) aValEC->Append(ent);    // EntityCluster
   else {                                // reste InterfaceEntity ...
     Handle(Interface_EntityCluster) ec = new Interface_EntityCluster(theval);
     ec->Append(ent);
@@ -57,11 +57,11 @@ Interface_EntityList::Interface_EntityList ()    {  }
 {
   if (ent.IsNull()) Standard_NullObject::Raise("Interface_EntityList Add");
   if (theval.IsNull()) {  theval = ent;  return;  }
-  Handle(Interface_EntityCluster) ec =
+  Handle(Interface_EntityCluster) aValEC =
     Handle(Interface_EntityCluster)::DownCast(theval);
-  if (!ec.IsNull()) {               // EntityCluster
-    if (ec->IsLocalFull()) theval = new Interface_EntityCluster(ent,ec);
-    else ec->Append (ent);
+  if (!aValEC.IsNull()) {               // EntityCluster
+    if (aValEC->IsLocalFull()) theval = new Interface_EntityCluster(ent, aValEC);
+    else aValEC->Append (ent);
   } else {                          // reste InterfaceEntity ...
     Handle(Interface_EntityCluster) ec = new Interface_EntityCluster(theval);
     ec->Append(ent);

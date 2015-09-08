@@ -322,9 +322,9 @@ Standard_Boolean FEmTool_Assembly::Solve()
 	if(GHGt->IsInProfile(k, i)) {
 	  Standard_Real m = 0.; // m = M(k,i)
 	
-	  const FEmTool_ListOfVectors& L = G.Value(k);
+	  const FEmTool_ListOfVectors& aL = G.Value(k);
 	
-	  for(Iter.Initialize(L); Iter.More(); Iter.Next()) {
+	  for(Iter.Initialize(aL); Iter.More(); Iter.Next()) {
 
 	    const Handle(TColStd_HArray1OfReal)& a = Iter.Value();
 	    for(j = a->Lower(); j <= a->Upper(); j++) m += qi(j) * a->Value(j); // scalar product of
@@ -486,7 +486,6 @@ void FEmTool_Assembly::AddConstraint(const Standard_Integer IndexofConstraint,
   }
   else {
     FEmTool_ListIteratorOfListOfVectors Iter(L);
-    Standard_Integer i;
     Standard_Real  s1 = 0, s2 = 0;
     Handle(TColStd_HArray1OfReal) Aux1, Aux2;
     for(i=1; Iter.More(); Iter.Next(), i++) {

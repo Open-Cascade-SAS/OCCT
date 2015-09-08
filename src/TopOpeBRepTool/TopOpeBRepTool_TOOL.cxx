@@ -857,14 +857,14 @@ static Standard_Boolean FUN_analyticcS(const gp_Pnt2d& uv0, const Handle(Geom_Su
       direct = toto.Direct();
     }
     Standard_Real prod = axis.Dot(tg0);
-    Standard_Boolean maxAcurv  = FUN_nullprodv(1-Abs(prod));
+    Standard_Boolean isMaxAcurv  = FUN_nullprodv(1-Abs(prod));
     Standard_Boolean nullcurv = FUN_nullprodv(prod);
 
     Standard_Real prod2 = ngS.Dot(tg0);
     if (cyl || cone) nullcurv = nullcurv || FUN_nullprodv(1-Abs(prod2));
 
     if (nullcurv) {curv = 0.; curvdone = Standard_True;}
-    if (maxAcurv)  {
+    if (isMaxAcurv)  {
       GeomLProp_SLProps slprops(S,uv0.X(),uv0.Y(),2,Precision::Confusion());
       Standard_Boolean curdef = slprops.IsCurvatureDefined();
       if (curdef) {
@@ -1561,8 +1561,8 @@ Standard_Boolean TopOpeBRepTool_TOOL::EdgeONFace(const Standard_Real par,const T
   gp_Vec tge; Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(par,ed,tge);  
   if (!ok) return Standard_False;
   gp_Vec ngf = FUN_tool_nggeomF(uv,fa);
-  Standard_Real prod = tge.Dot(ngf);
-  Standard_Boolean etgf = Abs(prod) < tola;
+  Standard_Real aProdDot = tge.Dot(ngf);
+  Standard_Boolean etgf = Abs(aProdDot) < tola;
   if (!etgf) return Standard_True;
 
   BRepAdaptor_Surface bs(fa);

@@ -758,12 +758,12 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletSegment(const Standard_Real radi
 
   // Make a line parallel to segment and
   // passing near the "near" point.
-  gp_Vec2d d2(v2);
-  gp_Lin2d line(p22, -d2);
-  d2.Rotate(M_PI_2);
-  line.Translate(radius * d2);
+  gp_Vec2d aD2Vec(v2);
+  gp_Lin2d line(p22, -aD2Vec);
+  aD2Vec.Rotate(M_PI_2);
+  line.Translate(radius * aD2Vec);
   if (line.Distance(nearPoint) > radius)
-    line.Translate(-2.0 * radius * d2);
+    line.Translate(-2.0 * radius * aD2Vec);
 
   // Make a circle of radius of the arc +/- fillet radius.
   gp_Ax2d axes(pc1, gp::DX2d());

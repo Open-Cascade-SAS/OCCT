@@ -852,7 +852,6 @@ Standard_Boolean AIS_AngleDimension::InitTwoEdgesAngle (gp_Pln& theComputedPlane
     // Compute geometry for this plane and edges
   Standard_Boolean isInfinite1,isInfinite2;
   gp_Pnt aFirstPoint1, aLastPoint1, aFirstPoint2, aLastPoint2;
-  gp_Lin2d aFirstLin2d, aSecondLin2d;
 
   if (!AIS::ComputeGeometry (aFirstEdge, aSecondEdge,
                              aFirstLine, aSecondLine,
@@ -924,15 +923,15 @@ Standard_Boolean AIS_AngleDimension::InitTwoFacesAngle()
   TopoDS_Face aSecondFace = TopoDS::Face (mySecondShape);
 
   gp_Dir aFirstDir, aSecondDir;
-  gp_Pln aFirstPlane, aSecondPlane;
+  gp_Pln aFirstPln, aSecondPln;
   Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
   AIS_KindOfSurface aFirstSurfType, aSecondSurfType;
   Standard_Real aFirstOffset, aSecondOffset;
 
-  AIS::GetPlaneFromFace (aFirstFace, aFirstPlane,
+  AIS::GetPlaneFromFace (aFirstFace, aFirstPln,
                          aFirstBasisSurf,aFirstSurfType,aFirstOffset);
 
-  AIS::GetPlaneFromFace (aSecondFace, aSecondPlane,
+  AIS::GetPlaneFromFace (aSecondFace, aSecondPln,
                          aSecondBasisSurf, aSecondSurfType, aSecondOffset);
 
   if (aFirstSurfType == AIS_KOS_Plane && aSecondSurfType == AIS_KOS_Plane)
@@ -975,15 +974,15 @@ Standard_Boolean AIS_AngleDimension::InitTwoFacesAngle (const gp_Pnt thePointOnF
   TopoDS_Face aSecondFace = TopoDS::Face (mySecondShape);
 
   gp_Dir aFirstDir, aSecondDir;
-  gp_Pln aFirstPlane, aSecondPlane;
+  gp_Pln aFirstPln, aSecondPln;
   Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
   AIS_KindOfSurface aFirstSurfType, aSecondSurfType;
   Standard_Real aFirstOffset, aSecondOffset;
 
-  AIS::GetPlaneFromFace (aFirstFace, aFirstPlane,
+  AIS::GetPlaneFromFace (aFirstFace, aFirstPln,
                          aFirstBasisSurf,aFirstSurfType,aFirstOffset);
 
-  AIS::GetPlaneFromFace (aSecondFace, aSecondPlane,
+  AIS::GetPlaneFromFace (aSecondFace, aSecondPln,
                          aSecondBasisSurf, aSecondSurfType, aSecondOffset);
 
   myFirstPoint = thePointOnFirstFace;

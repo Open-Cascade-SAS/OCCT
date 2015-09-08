@@ -464,8 +464,8 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
       }
     }
     orface = exp.Current().Orientation();
-    TopoDS_Shape aLocalFace = fac.EmptyCopied();
-    newface = TopoDS::Face(aLocalFace);
+    TopoDS_Shape aLocalFaceEmptyCopied = fac.EmptyCopied();
+    newface = TopoDS::Face(aLocalFaceEmptyCopied);
 //    newface = TopoDS::Face(fac.EmptyCopied());
     newface.Orientation(TopAbs_FORWARD);
     S = BRep_Tool::Surface(fac);
@@ -818,7 +818,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 	      includeinw = Standard_True;
 	    }
 	    else {
-	      Standard_Boolean includeinw = Standard_False;
+	      Standard_Boolean isIncludedInW = Standard_False;
 	      if (exp2.More()) {
 		for (exp2.ReInit(); exp2.More(); exp2.Next()) {
 		  if (!toRemove.Contains(exp2.Current())) {
@@ -832,11 +832,11 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		       exp4.More(); exp4.Next()) {
 		    if (exp4.Current().IsSame(VF) ||
 			exp4.Current().IsSame(VL)) {
-		      includeinw = Standard_True;
+                      isIncludedInW = Standard_True;
 		      break;
 		    }
 		  }
-		  if (includeinw) {
+		  if (isIncludedInW) {
 		    break;
 		  }
 		}

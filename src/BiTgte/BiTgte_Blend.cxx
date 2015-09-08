@@ -731,8 +731,8 @@ static void CutEdge (const TopoDS_Edge&          E,
 		     const TopTools_ListOfShape& VOnE,
 		           TopTools_ListOfShape& NE   )
 {
-  TopoDS_Shape aLocalShape = E.Oriented(TopAbs_FORWARD);
-  TopoDS_Edge WE = TopoDS::Edge(aLocalShape);
+  TopoDS_Shape aLocalShapeOrientedE = E.Oriented(TopAbs_FORWARD);
+  TopoDS_Edge WE = TopoDS::Edge(aLocalShapeOrientedE);
 //  TopoDS_Edge WE = TopoDS::Edge(E.Oriented(TopAbs_FORWARD));
 
   Standard_Real                      U1,U2;
@@ -1656,10 +1656,10 @@ void BiTgte_Blend::ComputeCenters()
       if (Anc.Extent() == 2) {
 	const BRepOffset_ListOfInterval& L = myAnalyse.Type(E);
 	if (!L.IsEmpty() && L.First().Type() == OT) {
-	  TopoDS_Shape aLocalShape = myMapSF(Anc.First()).Generated(E);
-	  TopoDS_Edge EOn1 = TopoDS::Edge(aLocalShape);
-	  aLocalShape = myMapSF(Anc.Last()) .Generated(E);
-	  TopoDS_Edge EOn2 = TopoDS::Edge(aLocalShape);
+	  TopoDS_Shape aLocalShapeGen = myMapSF(Anc.First()).Generated(E);
+	  TopoDS_Edge EOn1 = TopoDS::Edge(aLocalShapeGen);
+    aLocalShapeGen = myMapSF(Anc.Last()) .Generated(E);
+	  TopoDS_Edge EOn2 = TopoDS::Edge(aLocalShapeGen);
 //	  TopoDS_Edge EOn1 = TopoDS::Edge(myMapSF(Anc.First()).Generated(E));
 //	  TopoDS_Edge EOn2 = TopoDS::Edge(myMapSF(Anc.Last()) .Generated(E));
 	  // find if exits tangent edges in the original shape
@@ -2128,15 +2128,15 @@ void BiTgte_Blend::ComputeSurfaces()
       // are not actually tangent ( Cf: Approximation of lines 
       // of intersection that add noise.)
       // ----------------------------------------------------------
-      TopoDS_Vertex V1,V2;
+      TopoDS_Vertex aVertex1, aVertex2;
       if ( E1f.IsNull() && !VfOnE1.IsNull() && !VfOnE2.IsNull()) {
 	TopTools_MapIteratorOfMapOfShape it(MapOnV1f);
 	for ( ; it.More(); it.Next()) {
 	  const TopoDS_Edge& E = TopoDS::Edge(it.Key());
 	  if ( !E.IsNull()) {
-	    TopExp::Vertices(E,V1,V2);
-	    if ((V1.IsSame(VfOnE1) && V2.IsSame(VfOnE2)) ||
-		(V2.IsSame(VfOnE1) && V1.IsSame(VfOnE2))   ) {
+	    TopExp::Vertices(E, aVertex1, aVertex2);
+	    if ((aVertex1.IsSame(VfOnE1) && aVertex2.IsSame(VfOnE2)) ||
+		(aVertex2.IsSame(VfOnE1) && aVertex1.IsSame(VfOnE2))   ) {
 	      E1f = E;
 	      break;
 	    }
@@ -2148,9 +2148,9 @@ void BiTgte_Blend::ComputeSurfaces()
 	for ( ; it.More(); it.Next()) {
 	  const TopoDS_Edge& E = TopoDS::Edge(it.Key());
 	  if ( !E.IsNull()) {
-	    TopExp::Vertices(E,V1,V2);
-	    if ((V1.IsSame(VlOnE1) && V2.IsSame(VlOnE2)) ||
-		(V2.IsSame(VlOnE1) && V1.IsSame(VlOnE2))   ) {
+	    TopExp::Vertices(E, aVertex1, aVertex2);
+	    if ((aVertex1.IsSame(VlOnE1) && aVertex2.IsSame(VlOnE2)) ||
+		(aVertex2.IsSame(VlOnE1) && aVertex1.IsSame(VlOnE2))   ) {
 	      E1l = E;
 	      break;
 	    }
@@ -2251,15 +2251,15 @@ void BiTgte_Blend::ComputeSurfaces()
   // ---------------------------------------------------
   TopTools_IndexedDataMapOfShapeListOfShape Map;
   TopExp::MapShapesAndAncestors(Co,TopAbs_VERTEX,TopAbs_EDGE,Map);
-
-  for ( Standard_Integer i = 1; i <= Map.Extent(); i++) {
-    const TopoDS_Vertex& V = TopoDS::Vertex(Map.FindKey(i));
-    if ( Map(i).Extent() != 3) continue;
+  
+  for ( Standard_Integer j = 1; j <= Map.Extent(); j++) {
+    const TopoDS_Vertex& V = TopoDS::Vertex(Map.FindKey(j));
+    if ( Map(j).Extent() != 3) continue;
 
     TopTools_ListOfShape LOE;
     TopTools_ListIteratorOfListOfShape it;
     
-    for (it.Initialize(Map(i)) ; it.More(); it.Next()) {
+    for (it.Initialize(Map(j)) ; it.More(); it.Next()) {
       Standard_Boolean Reverse = Standard_True;
       if ( Reverse) 
 	LOE.Append(myMapSF(it.Value()).Generated(V).Reversed());
@@ -2466,9 +2466,9 @@ void BiTgte_Blend::ComputeShape()
 	    TopoDS_Edge OE;
 	    if ( MapSS.IsBound(E)) { // this is an edge of cutting 
 	      OE = TopoDS::Edge(MapSS(E));
-	      TopoDS_Shape aLocalShape = E.Reversed();
+	      TopoDS_Shape aLocalShapeReversedE = E.Reversed();
 	      Handle(Geom2d_Curve) C2d_1 = 
-		BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShape),Face,f,l);
+		BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShapeReversedE),Face,f,l);
 //	      Handle(Geom2d_Curve) C2d_1 = 
 //		BRep_Tool::CurveOnSurface(TopoDS::Edge(E.Reversed()),
 //					  Face,f,l);

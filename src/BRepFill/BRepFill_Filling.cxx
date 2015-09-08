@@ -386,8 +386,6 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
 //======================================================================
 void BRepFill_Filling::BuildWires( TopTools_ListOfShape& EdgeList, TopTools_ListOfShape& WireList )
 {
-  TopoDS_Wire CurWire;
-  TopoDS_Edge CurEdge;
   TopTools_ListIteratorOfListOfShape Itl;
   Standard_Integer i, j;
 

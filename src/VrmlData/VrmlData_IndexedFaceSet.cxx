@@ -180,18 +180,18 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
         {
           for (i = 0; i < (int)myNbPolygons; i++) 
           {
-            const Standard_Integer * arrNodes;
-            if (Polygon(i, arrNodes) == 3 && 
-                arrNodes[0] >= 0 &&
-                arrNodes[0] < nNodes &&
-                arrNodes[1] < nNodes &&
-                arrNodes[2] < nNodes)  // check to avoid previously skipped faces
+            const Standard_Integer * anArrNodes;
+            if (Polygon(i, anArrNodes) == 3 &&
+              anArrNodes[0] >= 0 &&
+              anArrNodes[0] < nNodes &&
+              anArrNodes[1] < nNodes &&
+              anArrNodes[2] < nNodes)  // check to avoid previously skipped faces
             {
               const Standard_Integer * arrIndice;
               if (IndiceNormals(i, arrIndice) == 3) {
                 for (Standard_Integer j = 0; j < 3; j++) {
                   const gp_XYZ& aNormal = myNormals->Normal (arrIndice[j]);
-                  Standard_Integer anInd = (mapNodeId(arrNodes[j]) - 1) * 3 + 1;
+                  Standard_Integer anInd = (mapNodeId(anArrNodes[j]) - 1) * 3 + 1;
                   Normals->SetValue (anInd + 0, Standard_ShortReal (aNormal.X()));
                   Normals->SetValue (anInd + 1, Standard_ShortReal (aNormal.Y()));
                   Normals->SetValue (anInd + 2, Standard_ShortReal (aNormal.Z()));

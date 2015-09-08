@@ -1087,21 +1087,21 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
       TopoDS_Vertex OnVertex;
       Standard_Real intpar;
       for(; ex1.More(); ex1.Next()) {
-        const TopoDS_Face& f = TopoDS::Face(ex1.Current());
+        const TopoDS_Face& aCurFace = TopoDS::Face(ex1.Current());
         GeomAdaptor_Curve aGAC (curve);
-        inter.Init (f, aGAC, BRep_Tool::Tolerance(f));
+        inter.Init (aCurFace, aGAC, BRep_Tool::Tolerance(aCurFace));
         if(!inter.More()) continue;
         for(; inter.More(); inter.Next()) {
           gp_Pnt thePoint = inter.Pnt();
           if(!FirstVertex.IsNull()) {
             gp_Pnt point = BRep_Tool::Pnt(FirstVertex);
-            if(point.Distance(thePoint) <= BRep_Tool::Tolerance(f)) {
+            if(point.Distance(thePoint) <= BRep_Tool::Tolerance(aCurFace)) {
               continue;
             }
           }
           intpar = IntPar(curve, thePoint);
           theEdge = E;
-          theFace = f;
+          theFace = aCurFace;
           B.MakeVertex(theVertex, thePoint, Precision::Confusion());       
           if(!FirstOK) {
             if(thePoint.Distance(P2) <= Precision::Confusion()) {
@@ -1110,7 +1110,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
           }
 
 // ---Find thepoint on an edge or a vertex of face f
-          PtOnEdgeVertex(RevolRib, f, thePoint, FirstVertex, LastVertex,
+          PtOnEdgeVertex(RevolRib, aCurFace, thePoint, FirstVertex, LastVertex,
                          PtOnEdge,OnEdge,PtOnVertex,OnVertex);
 
 

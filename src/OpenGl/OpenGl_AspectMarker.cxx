@@ -1705,7 +1705,6 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
           Standard_Integer aWidth, aHeight, anOffset, aNumOfBytes;
           GetMarkerBitMapParam (Aspect_TOM_O, aScale, aWidth, aHeight, anOffset, aNumOfBytes);
 
-          const Standard_ShortReal aDelta = 0.1f;
           NCollection_Vec4<Standard_Real> aColor (Standard_Real (theColor.rgb[0]),
                                                   Standard_Real (theColor.rgb[1]),
                                                   Standard_Real (theColor.rgb[2]),
@@ -1850,7 +1849,6 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Context)&
         }
         case Aspect_TOM_BALL:
         {
-          const Standard_ShortReal aDelta = 0.1f;
           NCollection_Vec4<Standard_Real> aColor (Standard_Real (theColor.rgb[0]),
                                                   Standard_Real (theColor.rgb[1]),
                                                   Standard_Real (theColor.rgb[2]),

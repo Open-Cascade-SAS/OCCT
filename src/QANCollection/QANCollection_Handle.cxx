@@ -125,7 +125,7 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   Handle(Geom_Line) qLine = cpLine; // constructor from const pointer -- could be made explicit...
 
   // check whether compiler will destroy reference to temporary handle
-  Handle(Geom_Curve)& aTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
+  const Handle(Geom_Curve)& aTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
   CHECK(theDI, ! aTmpRef.IsNull(),  "local reference of handle to base type to temporary handle object");
 
   Handle(Geom_Surface) aSurf;

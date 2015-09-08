@@ -450,7 +450,7 @@ void BOPAlgo_PaveFiller::PerformEE()
           BOPTools_AlgoTools::MakeNewVertex(aE1, aT1, aE2, aT2, aVnew);
           // <-LXBR
           {
-            Standard_Integer nVS[2], iFound, k;
+            Standard_Integer nVS[2], iFound;
             Standard_Real aTolVx, aTolVnew, aD2, aDT2;
             BOPCol_MapOfInteger aMV;
             gp_Pnt aPnew, aPx;
@@ -472,8 +472,8 @@ void BOPAlgo_PaveFiller::PerformEE()
             aTolVnew=BRep_Tool::Tolerance(aVnew);
             aPnew=BRep_Tool::Pnt(aVnew);
             //
-            for (k=0; k<=j; ++k) {
-              const TopoDS_Vertex& aVx= *(TopoDS_Vertex*)&(myDS->Shape(nVS[k]));
+            for (Standard_Integer k1=0; k1<=j; ++k1) {
+              const TopoDS_Vertex& aVx= *(TopoDS_Vertex*)&(myDS->Shape(nVS[k1]));
               aTolVx=BRep_Tool::Tolerance(aVx);
               aPx=BRep_Tool::Pnt(aVx);
               aD2=aPnew.SquareDistance(aPx);
@@ -588,7 +588,6 @@ Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEE
   //
   Standard_Integer nVx, iV, j, nE, iFlag, iX, i, aNb; 
   Standard_Real aT;
-  TopoDS_Shape aV;
   BOPCol_ListIteratorOfListOfShape aItLS;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;

@@ -198,7 +198,7 @@ void CSLib_Offset::D3(const gp_Pnt2d&  theBasePoint,
       (theOffset * (6.0*Dr*Dr/R4 + 6.0*Dr*D2r/R4 - 15.0*Dr*Dr*Dr/R6 - D3r))));
     D3Ndir.Multiply (theOffset/R);
     // V2 = P" (U) :
-    Standard_Real R4 = R2 * R2;
+    R4 = R2 * R2;
     D2Ndir.Subtract (DNdir.Multiplied (2.0 * Dr / R2));
     D2Ndir.Subtract (Ndir.Multiplied (((3.0 * Dr * Dr)/R4) - (D2r/R2)));
     D2Ndir.Multiply (theOffset / R);
@@ -339,7 +339,7 @@ void CSLib_Offset::D2(const gp_Pnt&    theBasePoint,
     //We try another computation but the stability is not very good
     //dixit ISG.
     // V2 = P" (U) :
-    Standard_Real R4 = R2 * R2;
+    R4 = R2 * R2;
     D2Ndir.Subtract (DNdir.Multiplied (2.0 * Dr / R2));
     D2Ndir.Add (Ndir.Multiplied (((3.0 * Dr * Dr)/R4) - (D2r/R2)));
     D2Ndir.Multiply (theOffsetValue / R);
@@ -423,7 +423,7 @@ void CSLib_Offset::D3(const gp_Pnt&    theBasePoint,
     D3Ndir.Add (Ndir.Multiplied (6.0*Dr*Dr/R4 + 6.0*Dr*D2r/R4 - 15.0*Dr*Dr*Dr/R6 - D3r));
     D3Ndir.Multiply (theOffsetValue/R);
     // V2 = P" (U) :
-    Standard_Real R4 = R2 * R2;
+    R4 = R2 * R2;
     D2Ndir.Subtract (DNdir.Multiplied (2.0 * Dr / R2));
     D2Ndir.Subtract (Ndir.Multiplied ((3.0 * Dr * Dr / R4) - (D2r / R2)));
     D2Ndir.Multiply (theOffsetValue / R);

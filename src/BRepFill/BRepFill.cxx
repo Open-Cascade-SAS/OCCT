@@ -816,7 +816,7 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
   Standard_Boolean NewVertex = Standard_False;
   Standard_Real theparam = 1.e101, angle;
   TopoDS_Vertex V ;
-  TopoDS_Edge E, Eref, E1 , E2;
+  TopoDS_Edge E, Eref;
   BRep_Builder B;
 // Class BRep_Tool without fields and without Constructor :
 //  BRep_Tool BT;

@@ -1726,8 +1726,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
             if(!DimCharR.IsNull()) {
               Handle(StepShape_ShapeDimensionRepresentation) SDimR = DimCharR->Representation();
               if(!SDimR.IsNull() && SDimR->NbItems()>0) {
-                Handle(StepRepr_RepresentationItem) RI = SDimR->ItemsValue(1);
-                Handle(StepRepr_ValueRange) VR = Handle(StepRepr_ValueRange)::DownCast(RI);
+                Handle(StepRepr_RepresentationItem) aRI = SDimR->ItemsValue(1);
+                Handle(StepRepr_ValueRange) VR = Handle(StepRepr_ValueRange)::DownCast(aRI);
                 if(!VR.IsNull()) {
                   aName = VR->Name();
                   //StepRepr_CompoundItemDefinition CID = VR->ItemElement();

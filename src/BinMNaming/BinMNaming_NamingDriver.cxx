@@ -256,14 +256,14 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	}
     if(BinMNaming::DocumentVersion() > 4 && BinMNaming::DocumentVersion() < 7) {
           // Orientation processing - converting from old format
-      Handle(TNaming_NamedShape) aNS;
-      if(anAtt->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
+      Handle(TNaming_NamedShape) aNShape;
+      if(anAtt->Label().FindAttribute(TNaming_NamedShape::GetID(), aNShape)) {
             //const TDF_Label& aLab = aNS->Label();
-        TNaming_Iterator itL (aNS);
+        TNaming_Iterator itL (aNShape);
         for (; itL.More(); itL.Next()) {
           const TopoDS_Shape& S = itL.NewShape();
           if (S.IsNull()) continue;
-          if(aNS->Evolution() == TNaming_SELECTED) {
+          if(aNShape->Evolution() == TNaming_SELECTED) {
             if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX &&
                   !itL.OldShape().IsNull() && itL.OldShape().ShapeType() == TopAbs_VERTEX ) {//OR-N
               TopAbs_Orientation OrientationToApply = itL.OldShape().Orientation();

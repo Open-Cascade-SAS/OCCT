@@ -749,7 +749,6 @@ void DNaming::LoadAndOrientModifiedShapes (BRepBuilderAPI_MakeShape&    MS,
 { 
   TopTools_MapOfShape View;
   TopExp_Explorer ShapeExplorer (ShapeIn, KindOfShape);
-  TopTools_ListOfShape Shapes;
   for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {
     const TopoDS_Shape& Root = ShapeExplorer.Current ();
     if (!View.Add(Root)) continue;

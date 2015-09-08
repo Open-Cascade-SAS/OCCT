@@ -4121,7 +4121,6 @@ void BRepBuilderAPI_Sewing::CreateSewedShape()
           if (IndexMerged.Contains(i)) continue;
           TopoDS_Shell shell = TopoDS::Shell(OldShells.FindKey(i));
           if (NewShell.IsNull()) {
-            BRep_Builder aB;
             aB.MakeShell(NewShell);
             TopoDS_Iterator aItSS(shell) ;
             for( ; aItSS.More(); aItSS.Next())

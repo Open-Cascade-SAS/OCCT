@@ -251,8 +251,8 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	  pos = AdC.Line().Location();
 	  dist = AdC.Value(first2).Distance(AdC.Value(last2));
 	  gp_Vec vec(AdC.Value(first2),AdC.Value(last2));
-	  gp_Dir dir(vec);
-	  axe = gp_Ax1(AdC.Value(first2),dir);
+	  gp_Dir aDir(vec);
+	  axe = gp_Ax1(AdC.Value(first2), aDir);
 	  if (axe.IsParallel(axe1,Precision::Angular())) {
 	    // parallel straight line
 	    if (Abs(dist-dist1)<Precision::Confusion()) {

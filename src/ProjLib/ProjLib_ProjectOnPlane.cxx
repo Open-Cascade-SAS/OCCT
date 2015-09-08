@@ -728,9 +728,9 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
 	else if ( Xc.IsNormal(Yc,Precision::Angular())) {
 	  myType = GeomAbs_Parabola;
 	  Standard_Real F = Parab.Focal() / Xc.Magnitude();
-	  gp_Parab Parab = gp_Parab( gp_Ax2(P,Xc^Yc,Xc), F);
+	  gp_Parab aParab = gp_Parab( gp_Ax2(P,Xc^Yc,Xc), F);
           Handle(Geom_Parabola) GeomParabolaPtr =
-	    new Geom_Parabola(Parab) ;
+	    new Geom_Parabola(aParab) ;
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
 	  GeomAdaptor_Curve aGACurve(GeomParabolaPtr);
 	  myResult = new GeomAdaptor_HCurve(aGACurve);
@@ -760,14 +760,14 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
       gp_Vec Xc = ProjectVec(myPlane,myDirection,gp_Vec(AxeRef.XDirection()));
       gp_Vec Yc = ProjectVec(myPlane,myDirection,gp_Vec(AxeRef.YDirection()));
       gp_Pnt P  = ProjectPnt(myPlane,myDirection,AxeRef.Location());
-      Standard_Real R1 = Hypr.MajorRadius();
-      Standard_Real R2 = Hypr.MinorRadius();
+      Standard_Real aR1 = Hypr.MajorRadius();
+      Standard_Real aR2 = Hypr.MinorRadius();
       gp_Dir Z = myPlane.Direction();
 
       if ( Xc.Magnitude() < Precision::Confusion()) {
 	myType   = GeomAbs_Hyperbola;
 	gp_Dir X = gp_Dir(Yc) ^ Z;
-	Hypr   = gp_Hypr(gp_Ax2( P, Z, X), 0., R2 * Yc.Magnitude());
+	Hypr   = gp_Hypr(gp_Ax2( P, Z, X), 0., aR2 * Yc.Magnitude());
         GeomHyperbolaPtr =
 	  new Geom_Hyperbola(Hypr) ;
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
@@ -778,7 +778,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
       else if ( Yc.Magnitude() < Precision::Confusion()) {
 	myType = GeomAbs_Hyperbola;
 	Hypr = 
-	   gp_Hypr(gp_Ax2(P, Z, gp_Dir(Xc)), R1 * Xc.Magnitude(), 0.);
+	   gp_Hypr(gp_Ax2(P, Z, gp_Dir(Xc)), aR1 * Xc.Magnitude(), 0.);
         GeomHyperbolaPtr =
 	  new Geom_Hyperbola(Hypr) ;
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
@@ -789,7 +789,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
       else if ( Xc.IsNormal(Yc,Precision::Angular())) {
 	myType = GeomAbs_Hyperbola;
 	Hypr = gp_Hypr( gp_Ax2( P, gp_Dir( Xc ^ Yc), gp_Dir( Xc)),
-		       R1 * Xc.Magnitude(), R2 * Yc.Magnitude() );
+		       aR1 * Xc.Magnitude(), aR2 * Yc.Magnitude() );
 	GeomHyperbolaPtr =
 	  new Geom_Hyperbola(Hypr) ;
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin

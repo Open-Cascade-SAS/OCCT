@@ -1749,7 +1749,7 @@ static Standard_Integer OCC1642 (Draw_Interpretor& di, Standard_Integer argc, co
       (Standard_Integer) advWA->CheckSelfIntersectingEdge(j, points2d, points3d);
 
 
-    ShapeExtend_Status status = ShapeExtend_FAIL1;
+    status = ShapeExtend_FAIL1;
     if(advWA->StatusSelfIntersection(status))
 
       status = ShapeExtend_FAIL2;

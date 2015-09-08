@@ -282,15 +282,15 @@ static void JoinWLines(IntPatch_SequenceOfLine& theSlin,
     }
 
     const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
-    const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
-    const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+    const IntSurf_PntOn2S& aPntFW1 = aWLine1->Point(1);
+    const IntSurf_PntOn2S& aPntLW1 = aWLine1->Point(aNbPntsWL1);
 
     for(Standard_Integer aNPt = 1; aNPt <= theSPnt.Length(); aNPt++)
     {
       const IntSurf_PntOn2S aPntCur = theSPnt.Value(aNPt).PntOn2S();
 
-      if( aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
-        aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
+      if( aPntCur.IsSame(aPntFW1, Precision::Confusion()) ||
+        aPntCur.IsSame(aPntLW1, Precision::Confusion()))
       {
         theSPnt.Remove(aNPt);
         aNPt--;

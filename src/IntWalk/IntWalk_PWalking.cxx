@@ -2172,11 +2172,11 @@ DistanceMinimizeByGradient( const Handle(Adaptor3d_HSurface)& theASurf1,
         theASurf1->D1(theU1, theV1, aPt1, aD1u, aD1v);
         theASurf2->D1(theU2, theV2, aPt2, aD2U, aD2V);
 
-        gp_Vec aP12(aPt1, aPt2);
-        aGradFu = -aP12.Dot(aD1u);
-        aGradFv = -aP12.Dot(aD1v);
-        aGradFU = aP12.Dot(aD2U);
-        aGradFV = aP12.Dot(aD2V);
+        gp_Vec aPt12(aPt1, aPt2);
+        aGradFu = -aPt12.Dot(aD1u);
+        aGradFv = -aPt12.Dot(aD1v);
+        aGradFU = aPt12.Dot(aD2U);
+        aGradFV = aPt12.Dot(aD2V);
         aSTEPuv = theStep0U1V1;
         aStepUV = theStep0U2V2;
       }

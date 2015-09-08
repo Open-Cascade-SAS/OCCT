@@ -404,8 +404,8 @@ static Standard_Integer TrueKind (const Standard_Integer kind)
     void  StepData_Field::SetEntity
   (const Standard_Integer num, const Handle(Standard_Transient)& val)
 {
-  DeclareAndCast(TColStd_HArray1OfTransient,ht,theany);
-  if (!ht.IsNull()) { ht->SetValue (num,val); return; }
+  DeclareAndCast(TColStd_HArray1OfTransient,aHt,theany);
+  if (!aHt.IsNull()) { aHt->SetValue (num,val); return; }
   DeclareAndCast(TColStd_HArray1OfInteger,hi,theany);
   if (!hi.IsNull()) {
     Standard_Integer low = hi->Lower(), up = hi->Upper();

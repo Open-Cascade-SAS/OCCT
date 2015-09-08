@@ -266,14 +266,14 @@ void ChFi2d_FilletAlgo::FillPoint(FilletPoint* thePoint, const Standard_Real the
       aValid2 = !IsRadiusIntersected(myCurve1, myStart1, myEnd1, aCenter, aProj.Point(a), Standard_False);
 
     // checking the right parameter
-    Standard_Real aParam = aProj.Parameter(a);
-    while(myCurve2->IsPeriodic() && aParam < myStart2)
-      aParam += myCurve2->Period();
+    Standard_Real aParamProj = aProj.Parameter(a);
+    while(myCurve2->IsPeriodic() && aParamProj < myStart2)
+      aParamProj += myCurve2->Period();
 
     const Standard_Real d = aProj.Distance(a);
-    thePoint->appendValue(d * d - myRadius * myRadius, (aParam >= myStart2 && aParam <= myEnd2 && aValid2));
+    thePoint->appendValue(d * d - myRadius * myRadius, (aParamProj >= myStart2 && aParamProj <= myEnd2 && aValid2));
     if (Abs(d - myRadius) < Precision::Confusion())
-      thePoint->setParam2(aParam);
+      thePoint->setParam2(aParamProj);
   }
 }
 

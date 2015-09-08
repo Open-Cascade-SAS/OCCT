@@ -1075,8 +1075,8 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
     case IntPatch_Analytic :
       {
 	Handle(IntPatch_ALine) alin (Handle(IntPatch_ALine)::DownCast (lin));
-	Standard_Boolean ok = alin->FindParameter(Psurf,para);
-	if (ok) {
+	Standard_Boolean FindIsOk = alin->FindParameter(Psurf,para);
+	if (FindIsOk) {
 	  pt = alin->Value(para);
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
@@ -1093,13 +1093,13 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 //	  Standard_Real anpara=para;
 //#endif
 	  gp_Pnt CopiePsurf=Psurf;
-	  Standard_Boolean ok=IntersectionWithAnArc(CopiePsurf,alin,para,thearc,theparamonarc,thepointonarc,QuadSurf,lower,upper,dist);
+	  Standard_Boolean IntersectIsOk=IntersectionWithAnArc(CopiePsurf,alin,para,thearc,theparamonarc,thepointonarc,QuadSurf,lower,upper,dist);
 
 	  //--printf("\nIntersectionWithAnArc   %d \n Psurf(%g,%g,%g)->(%g,%g,%g)  dist=%g\n para(%g)->(%g)\n paraonarc(%g)->(%g)",
 	  //--   ok,Psurf.X(),Psurf.Y(),Psurf.Z(),thepointonarc.X(),thepointonarc.Y(),thepointonarc.Z(),dist,
 	  //--    anpara,para,theparameteronarc,theparamonarc);
 	  dist = CopiePsurf.Distance(Psurf);
-	  if(ok) {
+	  if(IntersectIsOk) {
 	    if(dist<Tol) { 
 	      theparameteronarc = theparamonarc;
 	      Psurf = thepointonarc;

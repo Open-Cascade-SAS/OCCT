@@ -150,14 +150,14 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
       ++aShapesNb;
 
     // Open progress indication scope for sub-shape fixing
-    Message_ProgressSentry aPSentry(theProgress, "Fixing sub-shape", 0, aShapesNb, 1);
-    for ( TopoDS_Iterator anIter(S); anIter.More() && aPSentry.More(); anIter.Next(), aPSentry.Next() )
+    Message_ProgressSentry aPSentrySubShape(theProgress, "Fixing sub-shape", 0, aShapesNb, 1);
+    for ( TopoDS_Iterator anIter(S); anIter.More() && aPSentrySubShape.More(); anIter.Next(), aPSentrySubShape.Next() )
     {
       myShape = anIter.Value();
       if ( Perform(theProgress) )
         status = Standard_True;
     }
-    if ( !aPSentry.More() )
+    if ( !aPSentrySubShape.More() )
       return Standard_False; // aborted execution
 
     myFixSameParameterMode = savFixSameParameterMode;

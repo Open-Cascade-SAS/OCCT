@@ -718,10 +718,10 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
 		if (Abs(fpar-Seq2(j)) <= Precision::Confusion())
 		  break;
 	      NewE.Orientation( TopAbs_FORWARD );
-	      TopoDS_Shape aLocalShape = SeqVer(j).Oriented(TopAbs_FORWARD);
-	      BB.Add( NewE, TopoDS::Vertex( aLocalShape ) );
-	      aLocalShape = SeqVer(j+1).Oriented(TopAbs_REVERSED);
-	      BB.Add( NewE, TopoDS::Vertex( aLocalShape ) );
+	      TopoDS_Shape aLocalShapeCur = SeqVer(j).Oriented(TopAbs_FORWARD);
+	      BB.Add( NewE, TopoDS::Vertex( aLocalShapeCur) );
+	      aLocalShapeCur = SeqVer(j+1).Oriented(TopAbs_REVERSED);
+	      BB.Add( NewE, TopoDS::Vertex( aLocalShapeCur ) );
 	      //BB.Add( NewE, TopoDS::Vertex( SeqVer(j).Oriented(TopAbs_FORWARD) ) );
 	      //BB.Add( NewE, TopoDS::Vertex( SeqVer(j+1).Oriented(TopAbs_REVERSED) ) );
 	      NewEdges.Append( NewE );

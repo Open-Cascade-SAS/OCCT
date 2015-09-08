@@ -255,8 +255,8 @@ Standard_Boolean TopOpeBRepTool_REGUS::SplitF(const TopoDS_Face& Fanc, TopTools_
   // prequesitory : All edges have already been splitted, there is no 
   //                internal vertex on edge, except for internal edge.
   TopAbs_Orientation oAnc = Fanc.Orientation();
-  TopoDS_Shape aLocalShape = Fanc.Oriented(TopAbs_FORWARD);
-  TopoDS_Face aFace = TopoDS::Face(aLocalShape);
+  TopoDS_Shape aLocalShapeFromFace = Fanc.Oriented(TopAbs_FORWARD);
+  TopoDS_Face aFace = TopoDS::Face(aLocalShapeFromFace);
 //  TopoDS_Face aFace = TopoDS::Face(Fanc.Oriented(TopAbs_FORWARD));
   
   FSplits.Clear();
@@ -592,9 +592,9 @@ Standard_Boolean TopOpeBRepTool_REGUS::NextinBlock()
     TopTools_MapIteratorOfMapOfShape itc(myedstoconnect);
     for (; itc.More(); itc.Next()){
       const TopoDS_Shape& e = itc.Key();
-      Standard_Boolean isb = mymapeFs.IsBound(e);
+      Standard_Boolean isBound = mymapeFs.IsBound(e);
       // all ancestor faces of <e> have been stored
-      if (!isb)    {myedstoconnect.Remove(e); continue;}
+      if (!isBound)    {myedstoconnect.Remove(e); continue;}
 
       const TopTools_ListOfShape& lof = mymapeFs.Find(e); Standard_Integer nf = lof.Extent();
       if (nf == 0) {myedstoconnect.Remove(e); mymapeFs.UnBind(e);

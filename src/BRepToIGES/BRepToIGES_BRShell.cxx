@@ -298,15 +298,13 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
 
   // returns the TrimmedSurface
   // --------------------------
-  Standard_Boolean Flag = Standard_True; 
   Handle(IGESGeom_TrimmedSurface) TrimmedSurf = new IGESGeom_TrimmedSurface;
   if (BRep_Tool::NaturalRestriction(start)) {
     //if face bounds and surface bounds are same, outer wire is unnecessary
-    Standard_Boolean Flag = Standard_False; 
-    TrimmedSurf-> Init (ISurf, Flag, NULL, Tab);
+    TrimmedSurf-> Init (ISurf, Standard_False, NULL, Tab);
   }
   else
-    TrimmedSurf-> Init (ISurf, Flag, IOuter, Tab);
+    TrimmedSurf-> Init (ISurf, Standard_True, IOuter, Tab);
 
   res = TrimmedSurf;
   SetShapeResult ( start, res );

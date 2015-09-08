@@ -396,8 +396,6 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
     Geom2dAdaptor_Curve   G2dAC(C2d, f2d, l2d);
     Handle(Geom2dAdaptor_HCurve) G2dAHC = new Geom2dAdaptor_HCurve(G2dAC);
     
-    TopLoc_Location Loc;
-    Handle(Geom_Curve) C3d = BRep_Tool::Curve(E, Loc, f3d,l3d);
     if(!newE.IsNull()) {
       C3d = BRep_Tool::Curve(newE, f3d, l3d);
     }
@@ -493,7 +491,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
     }
     if (!itled.More()) { // on stocke l`edge et la curve2d
       Handle(Geom2d_Curve) C2dBis;
-      Standard_Real f3d,l3d,f2dBis,l2dBis;
+      Standard_Real f2dBis,l2dBis;
       C2d = new Geom2d_TrimmedCurve(C2d, f2d, l2d);
       Geom2dAdaptor_Curve G2dAC(C2d, f2d, l2d);
       Handle(Geom2dAdaptor_HCurve) G2dAHC = new Geom2dAdaptor_HCurve(G2dAC);
@@ -505,8 +503,6 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       Geom2dAdaptor_Curve   G2dACBis(C2dBis, f2dBis, l2dBis); 
       Handle(Geom2dAdaptor_HCurve) G2dAHCBis = new Geom2dAdaptor_HCurve(G2dACBis);
       
-      TopLoc_Location Loc;
-      Handle(Geom_Curve) C3d = BRep_Tool::Curve(E, f3d,l3d);
       if(C3d.IsNull()) {
          if(isConvert2d) {
            Curve2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());

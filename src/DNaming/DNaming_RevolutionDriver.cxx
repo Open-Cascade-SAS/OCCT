@@ -180,8 +180,8 @@ Standard_Integer DNaming_RevolutionDriver::Execute(TFunction_Logbook& theLog) co
       return -1;
     }
     const TopoDS_Shape aResult = aMakeRevol.Shape();
-    BRepCheck_Analyzer aCheck(aResult);
-    if (!aCheck.IsValid(aResult)) {
+    BRepCheck_Analyzer aCheckAnalyzer(aResult);
+    if (!aCheckAnalyzer.IsValid(aResult)) {
       aFunction->SetFailure(RESULT_NOT_VALID);
       return -1;
     }
@@ -223,8 +223,8 @@ Standard_Integer DNaming_RevolutionDriver::Execute(TFunction_Logbook& theLog) co
       return -1;
     }
     const TopoDS_Shape aResult = aMakeRevol.Shape();
-    BRepCheck_Analyzer aCheck(aResult);
-    if (!aCheck.IsValid(aResult)) {
+    BRepCheck_Analyzer aCheckAnalyzer(aResult);
+    if (!aCheckAnalyzer.IsValid(aResult)) {
       aFunction->SetFailure(RESULT_NOT_VALID);
       return -1;
     }
@@ -453,8 +453,8 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	if(StartShape.ShapeType() != TopAbs_FACE) {
 	  TopoDS_Iterator it(StartShape);
 	  for (; it.More(); it.Next()) {
-	    TNaming_Builder Builder(theResultLabel.NewChild());
-	    Builder.Generated(it.Value());
+	    TNaming_Builder aBuilder(theResultLabel.NewChild());
+	    aBuilder.Generated(it.Value());
 	  }
 	}
       } else {
@@ -478,8 +478,8 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	if(EndShape.ShapeType() != TopAbs_FACE) {
 	  TopoDS_Iterator it(EndShape);
 	  for (; it.More(); it.Next()) {
-	    TNaming_Builder Builder(theResultLabel.NewChild());
-	    Builder.Generated(it.Value());
+	    TNaming_Builder aBuilder(theResultLabel.NewChild());
+	    aBuilder.Generated(it.Value());
 	  }
 	}
       } else {

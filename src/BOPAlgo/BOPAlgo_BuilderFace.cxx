@@ -619,7 +619,6 @@ void BOPAlgo_BuilderFace::PerformAreas()
       }
       //
       if (anUnUsedHoles.Extent()) {
-        TopoDS_Face aFace;
         aBB.MakeFace(aFace, aS, aLoc, aTol);
         aMSH.Add(aFace, anUnUsedHoles);
         //

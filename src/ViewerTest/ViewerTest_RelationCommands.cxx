@@ -333,12 +333,12 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     }
     else if (aParam.IsEqual ("-arrow"))
     {
-      TCollection_AsciiString aParam (theArgVec[++anIt]);
-      aParam.LowerCase();
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+      aLocalParam.LowerCase();
 
-      if (aParam == "external") { theAspect->SetArrowOrientation (Prs3d_DAO_External); }
-      if (aParam == "internal") { theAspect->SetArrowOrientation (Prs3d_DAO_Internal); }
-      if (aParam == "fit")      { theAspect->SetArrowOrientation (Prs3d_DAO_Fit); }
+      if (aLocalParam == "external") { theAspect->SetArrowOrientation (Prs3d_DAO_External); }
+      if (aLocalParam == "internal") { theAspect->SetArrowOrientation (Prs3d_DAO_Internal); }
+      if (aLocalParam == "fit")      { theAspect->SetArrowOrientation (Prs3d_DAO_Fit); }
     }
     else if (aParam.IsEqual ("-arrowlength") || aParam.IsEqual ("-arlen"))
     {
@@ -366,13 +366,13 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     }
     else if (aParam.IsEqual ("-extension"))
     {
-      TCollection_AsciiString aParam (theArgVec[++anIt]);
-      if (!aParam.IsRealValue())
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+      if (!aLocalParam.IsRealValue())
       {
         std::cerr << "Error: extension size for dimension should be real value.\n";
         return 1;
       }
-      theAspect->SetExtensionSize (Draw::Atof (aParam.ToCString()));
+      theAspect->SetExtensionSize (Draw::Atof (aLocalParam.ToCString()));
     }
     else if (aParam.IsEqual ("-plane"))
     {
@@ -401,37 +401,37 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     }
     else if (aParam.IsEqual ("-flyout"))
     {
-      TCollection_AsciiString aParam (theArgVec[++anIt]);
-      if (!aParam.IsRealValue())
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+      if (!aLocalParam.IsRealValue())
       {
         std::cerr << "Error: flyout for dimension should be real value.\n";
         return 1;
       }
 
-      theRealParams.Bind ("flyout", Draw::Atof (aParam.ToCString()));
+      theRealParams.Bind ("flyout", Draw::Atof (aLocalParam.ToCString()));
     }
     else if (aParam.IsEqual ("-value"))
     {
-      TCollection_AsciiString aParam (theArgVec[++anIt]);
-      if (!aParam.IsRealValue())
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
+      if (!aLocalParam.IsRealValue())
       {
         std::cerr << "Error: dimension value for dimension should be real value.\n";
         return 1;
       }
 
-      theRealParams.Bind ("value", Draw::Atof (aParam.ToCString()));
+      theRealParams.Bind ("value", Draw::Atof (aLocalParam.ToCString()));
     }
     else if (aParam.IsEqual ("-modelunits"))
     {
-      TCollection_AsciiString aParam (theArgVec[++anIt]);
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
 
-      theStringParams.Bind ("modelunits", aParam);
+      theStringParams.Bind ("modelunits", aLocalParam);
     }
     else if (aParam.IsEqual ("-dispunits"))
     {
-      TCollection_AsciiString aParam (theArgVec[++anIt]);
+      TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
 
-      theStringParams.Bind ("dispunits", aParam);
+      theStringParams.Bind ("dispunits", aLocalParam);
     }
     else
     {

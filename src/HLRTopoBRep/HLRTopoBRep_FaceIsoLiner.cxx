@@ -226,13 +226,13 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 
 	for (Standard_Integer IDom = 1; IDom <= NbDom; IDom++) {
 	  const HatchGen_Domain& Dom = Hatcher.Domain (IndH, IDom);
-	  Standard_Real U1 = Dom.HasFirstPoint()  ? 
+	  Standard_Real U11 = Dom.HasFirstPoint()  ? 
 	    Dom.FirstPoint().Parameter()  : VMin - Infinite;
-	  Standard_Real U2 = Dom.HasSecondPoint() ? 
+	  Standard_Real U21 = Dom.HasSecondPoint() ? 
 	    Dom.SecondPoint().Parameter() : VMax + Infinite;
-	  IsoLine->D0 (U1, P);
+	  IsoLine->D0 (U11, P);
 	  Surface.D0 (P.X(), P.Y(), P1);
-	  IsoLine->D0 (U2, P);
+	  IsoLine->D0 (U21, P);
 	  Surface.D0 (P.X(), P.Y(), P2);
 	  if (Dom.HasFirstPoint()) { // Iso U - Premier point
 	    const HatchGen_PointOnHatching& PntH = Dom.FirstPoint();
@@ -262,7 +262,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 	  }
 	  if(!V1U.IsNull() && !V2U.IsNull())
 	    HLRTopoBRep_FaceIsoLiner::MakeIsoLine
-	      (F,IsoLine,V1U,V2U,U1,U2,Tolerance,DS);
+	      (F,IsoLine,V1U,V2U,U11,U21,Tolerance,DS);
 	}
       }
       
@@ -320,13 +320,13 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 
 	for (Standard_Integer IDom = 1; IDom <= NbDom; IDom++) {
 	  const HatchGen_Domain& Dom = Hatcher.Domain (IndH, IDom);
-	  Standard_Real U1 = Dom.HasFirstPoint()  ? 
+	  Standard_Real U12 = Dom.HasFirstPoint()  ? 
 	    Dom.FirstPoint().Parameter()  : VMin - Infinite;
-	  Standard_Real U2 = Dom.HasSecondPoint() ? 
+	  Standard_Real U22 = Dom.HasSecondPoint() ? 
 	    Dom.SecondPoint().Parameter() : VMax + Infinite;
-	  IsoLine->D0 (U1, P);
+	  IsoLine->D0 (U12, P);
 	  Surface.D0 (P.X(), P.Y(), P1);
-	  IsoLine->D0 (U2, P);
+	  IsoLine->D0 (U22, P);
 	  Surface.D0 (P.X(), P.Y(), P2);
 	  if (Dom.HasFirstPoint()) { // Iso V - Premier point
 	    const HatchGen_PointOnHatching& PntH = Dom.FirstPoint();
@@ -357,7 +357,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 	  }
 	  if(!V1V.IsNull() && !V2V.IsNull())
 	    HLRTopoBRep_FaceIsoLiner::MakeIsoLine
-	      (F,IsoLine,V1V,V2V,U1,U2,Tolerance,DS);
+	      (F,IsoLine,V1V,V2V,U12,U22,Tolerance,DS);
 	}
       }
       

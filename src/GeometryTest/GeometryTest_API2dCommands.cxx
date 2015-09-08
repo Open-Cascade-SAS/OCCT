@@ -131,11 +131,11 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
     
     dout << mark;
     
-    for (Standard_Integer i = 2; i<=Nb; i++) {
+    for (Standard_Integer j = 2; j<=Nb; j++) {
       dout.Select(id,XX,YY,b);
-      Points(i) = gp_Pnt2d( ((Standard_Real)XX)/zoom, 
+      Points(j) = gp_Pnt2d( ((Standard_Real)XX)/zoom, 
 			    ((Standard_Real)YY)/zoom );
-      mark = new Draw_Marker2D( Points(i), Draw_X, Draw_vert); 
+      mark = new Draw_Marker2D( Points(j), Draw_X, Draw_vert); 
       dout << mark;
     }
   }    

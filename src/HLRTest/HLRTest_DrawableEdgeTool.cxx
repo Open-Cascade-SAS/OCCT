@@ -94,15 +94,15 @@ HLRTest_DrawableEdgeTool::InternalDraw (Draw_Display& D,
     if (typ >= 3) {
       iCB = 1;
       e2 = 0;
-      HLRBRep_EdgeData* ed = &(DS->EDataArray().ChangeValue(0));
-      ed++;
+      HLRBRep_EdgeData* anEdgeData = &(DS->EDataArray().ChangeValue(0));
+      anEdgeData++;
       
-      for (Standard_Integer ie = 1; ie <= ne; ie++) {
-	if (!ed->Used()) {
-	  DrawEdge(D,Standard_False,typ,nCB,ie,e2,iCB,*ed);
-	  ed->Used(Standard_True);
+      for (Standard_Integer i = 1; i <= ne; i++) {
+	if (!anEdgeData->Used()) {
+	  DrawEdge(D,Standard_False,typ,nCB,i,e2,iCB,*anEdgeData);
+          anEdgeData->Used(Standard_True);
 	}
-	ed++;
+        anEdgeData++;
       }
     }
   }

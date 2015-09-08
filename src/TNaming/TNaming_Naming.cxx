@@ -500,10 +500,10 @@ static Standard_Boolean TestSolution(const TNaming_Scope&      MDF,
 	      MS.Remove(exp.Current());
 	    }
 	  } else {
-	    TColStd_MapIteratorOfMapOfInteger itm(aView);
-	    for(;itm.More();itm.Next()) {
-	      TopAbs_ShapeEnum aType = (TopAbs_ShapeEnum)itm.Key();
-	      for (exp.Init(Res,aType) ; exp.More(); exp.Next()) {
+	    TColStd_MapIteratorOfMapOfInteger aMapIter(aView);
+	    for(; aMapIter.More(); aMapIter.Next()) {
+	      TopAbs_ShapeEnum aCurType = (TopAbs_ShapeEnum)aMapIter.Key();
+	      for (exp.Init(Res, aCurType) ; exp.More(); exp.Next()) {
 		if (MS.Contains(exp.Current())) {
 		  MS.Remove(exp.Current());
 		}
@@ -1669,7 +1669,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 						 const Standard_Boolean BNProblem)
 
 {
-  Handle(TNaming_NamedShape) NS;
+  Handle(TNaming_NamedShape) aNamedShape;
   if (KeepOrientation) {
 #ifdef OCCT_DEBUG_INNS
     cout <<"KeepOR = 1: "; Print_Entry(F);
@@ -1704,9 +1704,9 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 	theName.Type(TNaming_ORIENTATION);
 	theName.Orientation(S.Orientation());
 
-	if (!TNaming_Selector::IsIdentified (F, S, NS, Geom)) 
-	  NS = TNaming_Naming::Name(Naming->Label(),S,Context,Geom,0);
-	theName.Append (NS);
+	if (!TNaming_Selector::IsIdentified (F, S, aNamedShape, Geom))
+    aNamedShape = TNaming_Naming::Name(Naming->Label(),S,Context,Geom,0);
+	theName.Append (aNamedShape);
 #ifdef MDTV_OR
 	cout << " Sel Label ==> "; Print_Entry(NS->Label());
 #endif
@@ -1735,12 +1735,12 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 	if(S.ShapeType() == TopAbs_COMPOUND && Arr->Length() > 1) {
 	  // N arguments: to be optimized to avoid duplication of the same Context shape
 	  for(Standard_Integer i = Arr->Lower(); i <= Arr->Upper(); i++) {
-	    NS = TNaming_Naming::Name(Naming->Label(), Arr->Value(i), Context, Geom, 1, aBNproblem);
-	    theName.Append (NS);
+      aNamedShape = TNaming_Naming::Name(Naming->Label(), Arr->Value(i), Context, Geom, 1, aBNproblem);
+	    theName.Append (aNamedShape);
 	  }
 	} else {	  
-	  NS = TNaming_Naming::Name(Naming->Label(),UC,Context, Geom, 1, aBNproblem);
-	  theName.Append (NS);
+    aNamedShape = TNaming_Naming::Name(Naming->Label(),UC,Context, Geom, 1, aBNproblem);
+	  theName.Append (aNamedShape);
 #ifdef MDTV_OR
 	cout << " Cont Label ==> "; Print_Entry(NS->Label());
 #endif
@@ -1749,23 +1749,23 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 	TNaming_Scope MDF;
 	BuildScope (MDF,Context,F);
 	Naming->GetName().Solve(Naming->Label(),MDF.GetValid());
-	Naming->Label().FindAttribute(TNaming_NamedShape::GetID(),NS);
-	theName.ContextLabel(NS->Label());
-	if (Geom) return NS;
-	if(NS.IsNull()) {
+	Naming->Label().FindAttribute(TNaming_NamedShape::GetID(), aNamedShape);
+	theName.ContextLabel(aNamedShape->Label());
+	if (Geom) return aNamedShape;
+	if(aNamedShape.IsNull()) {
 	cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<endl;
 	return BuildNS (F,S, TNaming_UNKNOWN);
       }
 
-        if (!Geom && TestSolution(MDF,NS,S)) return NS;      
+        if (!Geom && TestSolution(MDF, aNamedShape,S)) return aNamedShape;
 	cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<endl;
 
 	// Naming n is  unsatisfactory
 	return BuildNS (F,S, TNaming_UNKNOWN);
       }
     } else
-      if (TNaming_Selector::IsIdentified (F, S, NS, Geom))
-	return NS;
+      if (TNaming_Selector::IsIdentified (F, S, aNamedShape, Geom))
+	return aNamedShape;
   }
 
   //------------------------------------------------------------

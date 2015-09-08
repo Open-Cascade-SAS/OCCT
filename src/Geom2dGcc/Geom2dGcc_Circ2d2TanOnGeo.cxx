@@ -389,7 +389,7 @@ parcen3(1,8)
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
               //            =======================================================
 #ifdef OCCT_DEBUG
-              gp_Dir2d dc1(center1.XY()-Center.XY());
+              gp_Dir2d aDC1(center1.XY()-Center.XY());
 #endif
               gp_Dir2d dc2(origin2.XY()-Center.XY());
               Standard_Real distcc1 = Center.Distance(center1);

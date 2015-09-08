@@ -96,8 +96,8 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep
 	  Standard_Integer nbj3 = data->NbParams(data->ParamNumber(nsub3,1));
 	  aControlPointsList = new StepGeom_HArray2OfCartesianPoint (1, nbi3, 1, nbj3);
 	  for (Standard_Integer i3 = 1; i3 <= nbi3; i3 ++) {
-	    Standard_Integer nsi3;
-	    if (data->ReadSubList (nsub3,i3,"sub-part(control_points_list)",ach,nsi3)) {
+	    Standard_Integer nsi3temp;
+	    if (data->ReadSubList (nsub3,i3,"sub-part(control_points_list)",ach,nsi3temp)) {
 	      Standard_Integer nsi3 = data->ParamNumber(nsub3,i3);
 	      for (Standard_Integer j3 =1; j3 <= nbj3; j3 ++) {
 		//szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
@@ -252,8 +252,8 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep
 	  Standard_Integer nbj13 = data->NbParams(data->ParamNumber(nsub13,1));
 	  aWeightsData = new TColStd_HArray2OfReal (1,nbi13,1,nbj13);
 	  for (Standard_Integer i13 = 1; i13 <= nbi13; i13 ++) {
-	    Standard_Integer nsi13;
-	    if (data->ReadSubList (nsub13,i13,"sub-part(weights_data)",ach,nsi13)) {
+	    Standard_Integer nsi13temp;
+	    if (data->ReadSubList (nsub13,i13,"sub-part(weights_data)",ach,nsi13temp)) {
 	      Standard_Integer nsi13 = data->ParamNumber(nsub13,i13);
 	      for (Standard_Integer j13 =1; j13 <= nbj13; j13 ++) {
 		//szv#4:S4163:12Mar99 `Standard_Boolean stat13 =` not needed

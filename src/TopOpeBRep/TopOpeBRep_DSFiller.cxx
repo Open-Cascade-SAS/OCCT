@@ -281,9 +281,9 @@ static
     }
 
     const TopOpeBRepDS_ListOfInterference& lie1 = BDS.ShapeInterferences(e1);
-    TopOpeBRepDS_ListIteratorOfListOfInterference it1(lie1);
-    for (; it1.More(); it1.Next()){
-      const Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    TopOpeBRepDS_ListIteratorOfListOfInterference iter1(lie1);
+    for (; iter1.More(); iter1.Next()){
+      const Handle(TopOpeBRepDS_Interference)& I1 = iter1.Value();
       Standard_Integer S1 = I1->Support(); TopOpeBRepDS_Kind ST1 = I1->SupportType();
       if (ST1 != TopOpeBRepDS_EDGE) continue;
       const TopoDS_Edge& e2 = TopoDS::Edge(BDS.Shape(S1));
@@ -747,9 +747,9 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
   
   TopoDS_Shape S1 = aS1; 
   TopoDS_Shape S2 = aS2; 
-  TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  BDS.AddShape(S1,1);
-  BDS.AddShape(S2,2);
+  TopOpeBRepDS_DataStructure& BDS1 = HDS->ChangeDS();
+  BDS1.AddShape(S1,1);
+  BDS1.AddShape(S2,2);
   
   TopoDS_Shape lFF1, lFF2;
   Standard_Boolean isFFsamdom = Standard_False;
@@ -785,9 +785,9 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
 	unfill = Standard_False;
       }
       if (unfill) {
-	TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
+	TopOpeBRepDS_DataStructure& BDS2 = HDS->ChangeDS();
 	if(!lFF1.IsNull() && !lFF2.IsNull())
-	  BDS.UnfillShapesSameDomain(lFF1,lFF2);
+	  BDS2.UnfillShapesSameDomain(lFF1,lFF2);
       }
     }
     
@@ -795,7 +795,7 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
       isFFsamdom = Standard_True;
       myShapeIntersector2d.ChangeEdgesIntersector().SetFaces(gs1,gs2);
       lFF1 = gs1; lFF2 = gs2;
-      BDS.FillShapesSameDomain(gs1,gs2);
+      BDS1.FillShapesSameDomain(gs1,gs2);
     }
     else if ((t1 == TopAbs_EDGE) && (t2 == TopAbs_EDGE)) {
       TopOpeBRep_EdgesIntersector& EE = myShapeIntersector2d.ChangeEdgesIntersector();

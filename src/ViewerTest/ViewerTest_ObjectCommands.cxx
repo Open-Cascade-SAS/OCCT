@@ -3025,11 +3025,11 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
         Nor = gp_Dir(eqPlan);
       else
         Nor = gp_Dir(0., 0., 1.);
-
-      Standard_Integer j = (i - PointsOfArray.Lower()) * 3;
-      Normals->SetValue(j + 1, (Standard_ShortReal)Nor.X());
-      Normals->SetValue(j + 2, (Standard_ShortReal)Nor.Y());
-      Normals->SetValue(j + 3, (Standard_ShortReal)Nor.Z());
+      
+      Standard_Integer k = (i - PointsOfArray.Lower()) * 3;
+      Normals->SetValue(k + 1, (Standard_ShortReal)Nor.X());
+      Normals->SetValue(k + 2, (Standard_ShortReal)Nor.Y());
+      Normals->SetValue(k + 3, (Standard_ShortReal)Nor.Z());
   }
 
   delete pc;
@@ -3922,8 +3922,8 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
     }
     else
     {
-      Standard_CString aName = anOriginObjectName.ToCString();
-      TopoDS_Shape aTDShape = DBRep::Get (aName);
+      Standard_CString aOriginName = anOriginObjectName.ToCString();
+      TopoDS_Shape aTDShape = DBRep::Get (aOriginName);
       if (aTDShape.IsNull())
       {
         std::cout << "vconnect error: object " << anOriginObjectName << " doesn't exist\n";
@@ -4028,8 +4028,8 @@ static Standard_Integer VConnectTo (Draw_Interpretor& /*di*/,
   }
   else
   {
-    Standard_CString aName = anOriginObjectName.ToCString();
-    TopoDS_Shape aTDShape = DBRep::Get (aName);
+    Standard_CString aOriginName = anOriginObjectName.ToCString();
+    TopoDS_Shape aTDShape = DBRep::Get (aOriginName);
     if (aTDShape.IsNull())
     {
       std::cout << "vconnect error: object " << anOriginObjectName << " doesn't exist\n";
@@ -4274,8 +4274,8 @@ static Standard_Integer VListConnected (Draw_Interpretor& /*di*/,
   {
     if (GetMapOfAIS().IsBound1 (anIter.Value()))
     {
-      TCollection_AsciiString aName = GetMapOfAIS().Find1 (anIter.Value());
-      std::cout << aCounter << ")  " << aName << "    (" << anIter.Value()->DynamicType()->Name() << ")";
+      TCollection_AsciiString aCuurrentName = GetMapOfAIS().Find1 (anIter.Value());
+      std::cout << aCounter << ")  " << aCuurrentName << "    (" << anIter.Value()->DynamicType()->Name() << ")";
     }
 
     std::cout << aCounter << ")  " << anIter.Value()->DynamicType()->Name();

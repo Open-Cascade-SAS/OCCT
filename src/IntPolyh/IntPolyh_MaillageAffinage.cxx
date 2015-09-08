@@ -669,7 +669,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfEdges
   PntInit=NbSamplesV+1;
   //To provide recursion I associate a point with three edges  
   for(Standard_Integer BoucleMeshU=1; BoucleMeshU<NbSamplesU-1; BoucleMeshU++){
-    for(Standard_Integer BoucleMeshV=1; BoucleMeshV<NbSamplesV-1;BoucleMeshV++){
+    for(BoucleMeshV=1; BoucleMeshV<NbSamplesV-1;BoucleMeshV++){
       TEdges[CpteurTabEdges].SetFirstPoint(PntInit);                // U V
       TEdges[CpteurTabEdges].SetSecondPoint(PntInit+1);             // U V+1
       TEdges[CpteurTabEdges].SetFirstTriangle((NbSamplesV-1)*2*(BoucleMeshU-1)+BoucleMeshV*2+1);
@@ -1057,7 +1057,6 @@ void IntPolyh_MaillageAffinage::TrianglesDeflectionsRefinementBSB()
         //The criterion of refining for surface2 depends on the size of Be1
         //As it is known that this criterion should be minimized, 
         //the smallest side of the bounding box is taken
-        Standard_Real x0,x1,y0,y1,z0,z1;
         MyBox1.Get(x0,y0,z0,x1,y1,z1);
         Standard_Real dx=Abs(x1-x0);
         Standard_Real dy=Abs(y1-y0);
@@ -1201,7 +1200,6 @@ void IntPolyh_MaillageAffinage::TrianglesDeflectionsRefinementBSB()
         //The criterion of refining for surface1 depends on the size of Be2
         //As this criterion should be minimized, 
         //the smallest side of the bounding box is taken
-        Standard_Real x0,x1,y0,y1,z0,z1;
         MyBox2.Get(x0,y0,z0,x1,y1,z1);
         Standard_Real dx=Abs(x1-x0);
         Standard_Real dy=Abs(y1-y0);

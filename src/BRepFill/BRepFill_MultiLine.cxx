@@ -370,14 +370,14 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&     Face1,
 
   if ( myBis.GetType() == GeomAbs_Line) {
     Standard_Real DeltaU = myBis.LastParameter()  - myBis.FirstParameter();
-    gp_Pnt2d P1 = ValueOnF1(myBis.FirstParameter() + 0.1*DeltaU);
-    gp_Pnt2d P2 = ValueOnF1(myBis.FirstParameter() + 0.9*DeltaU);
+    gp_Pnt2d aPnt1 = ValueOnF1(myBis.FirstParameter() + 0.1*DeltaU);
+    gp_Pnt2d aPnt2 = ValueOnF1(myBis.FirstParameter() + 0.9*DeltaU);
     if ( myIsoU1) {
-      if ( Abs(P1.Y() - P2.Y()) < Precision::Confusion())
+      if ( Abs(aPnt1.Y() - aPnt2.Y()) < Precision::Confusion())
 	myKPart = 1;
     }
     else {
-      if ( Abs(P1.X() - P2.X()) < Precision::Confusion())
+      if ( Abs(aPnt1.X() - aPnt2.X()) < Precision::Confusion())
 	myKPart = 1;
     }
     

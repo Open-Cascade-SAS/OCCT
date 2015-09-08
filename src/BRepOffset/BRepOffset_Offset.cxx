@@ -574,7 +574,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	{
 	  const Standard_Real TolApex = 1.e-5;
           //define the iso of singularity (u or v)
-          const TopoDS_Edge& theDegEdge = TopoDS::Edge(DegEdges(1));
+          TopoDS_Edge theDegEdge = TopoDS::Edge(DegEdges(1));
           Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface(theDegEdge, Face, fpar, lpar);
           gp_Pnt2d fp2d = aCurve->Value(fpar);
           gp_Pnt2d lp2d = aCurve->Value(lpar);
@@ -590,8 +590,6 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	    }
 	  else //DegEdges.Length() == 1
 	    {
-	      const TopoDS_Edge& theDegEdge = TopoDS::Edge(DegEdges(1));
-	      Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface(theDegEdge, Face, fpar, lpar);
               if (UisoDegen)
               {
                 if (Abs(fp2d.X() - uf1) <= Precision::Confusion())
@@ -804,8 +802,8 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
   TopTools_DataMapOfShapeShape MapSS;
 
   // mise a jour de la map sur les vertex deja crees
-  TopoDS_Shape aLocalShape = Face.Oriented(TopAbs_FORWARD);
-  TopoDS_Face CurFace = TopoDS::Face(aLocalShape);
+  TopoDS_Shape aLocalShapeOriented = Face.Oriented(TopAbs_FORWARD);
+  TopoDS_Face CurFace = TopoDS::Face(aLocalShapeOriented);
 //  TopoDS_Face CurFace = TopoDS::Face(Face.Oriented(TopAbs_FORWARD));
 
   TopTools_MapOfShape VonDegen;
@@ -970,9 +968,9 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	    myBuilder.Range(OE, myFace, f, l);
 	    if (!BRep_Tool::Degenerated(E) && TheSurf->IsUClosed())
 	      {
-		TopoDS_Shape aLocalShape = E.Reversed();
+		TopoDS_Shape aLocalShapeReversedE = E.Reversed();
 		Handle(Geom2d_Curve) C2d_1 = 
-		  BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShape),CurFace,f,l);
+		  BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShapeReversedE),CurFace,f,l);
 		P2d1 = C2d_1->Value(BRep_Tool::Parameter(V1,E,CurFace));
 		P2d2 = C2d_1->Value(BRep_Tool::Parameter(V2,E,CurFace));
 		if (VonDegen.Contains(V1))

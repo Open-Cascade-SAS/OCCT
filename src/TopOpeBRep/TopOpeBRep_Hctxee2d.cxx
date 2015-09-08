@@ -115,8 +115,8 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
       gp_Pnt pt2 = BRep_Tool::Pnt(v2);
       gp_Pnt2d uv2; Standard_Real d; Standard_Boolean ok = FUN_tool_projPonF(pt2,F1,uv2,d);
       if (!ok) return;//nyiRaise
-      Handle(Geom_Surface) S1 = BRep_Tool::Surface(F1);
-      Standard_Boolean apex = FUN_tool_onapex(uv2,S1);
+      Handle(Geom_Surface) aS1 = BRep_Tool::Surface(F1);
+      Standard_Boolean apex = FUN_tool_onapex(uv2,aS1);
       if (apex) {
         TopoDS_Vertex vf,vl; TopExp::Vertices(myEdge1,vf,vl);
         gp_Pnt ptf = BRep_Tool::Pnt(vf); Standard_Real df = pt2.Distance(ptf); 
@@ -154,8 +154,8 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
         cout<<"------------ projection de curve"<<endl;
         cout<<"--- Curve : "<<endl;GeomTools_CurveSet::PrintCurve(NC,cout);
         cout<<"--- nouvelle PCurve : "<<endl;GeomTools_Curve2dSet::PrintCurve2d(PC2on1,cout);
-        Handle(Geom_Surface) S1 = BRep_Tool::Surface(F1);
-        cout<<"--- sur surface : "<<endl;GeomTools_SurfaceSet::PrintSurface(S1,cout);
+        Handle(Geom_Surface) aS1 = BRep_Tool::Surface(F1);
+        cout<<"--- sur surface : "<<endl;GeomTools_SurfaceSet::PrintSurface(aS1,cout);
         cout<<endl;
       }
 #endif

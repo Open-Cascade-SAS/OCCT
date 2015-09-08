@@ -1463,8 +1463,8 @@ static void MakeFace(TopoDS_Face& F,
   while (!alldone) {
     TopoDS_Wire Wnew;
     B.MakeWire(Wnew);
-    TopoDS_Shape aLocalShape = ledg.First();
-    const TopoDS_Edge& edg = TopoDS::Edge(aLocalShape);
+    TopoDS_Shape aLocalShapeCur = ledg.First();
+    const TopoDS_Edge& edg = TopoDS::Edge(aLocalShapeCur);
 //    const TopoDS_Edge& edg = TopoDS::Edge(ledg.First());
     TopoDS_Vertex VFirst,VLast;
     if (edg.Orientation() == TopAbs_FORWARD) {

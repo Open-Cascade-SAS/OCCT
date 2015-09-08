@@ -866,13 +866,13 @@ void Law_BSpline::Segment(const Standard_Real U1,
   InsertKnots( Knots, Mults, Eps);
   
   if (periodic) { // set the origine at NewU1
-    Standard_Integer index = 0;
+    Standard_Integer index0 = 0;
     BSplCLib::LocateParameter(deg,knots->Array1(),mults->Array1(),
 			      U1,periodic,knots->Lower(),knots->Upper(),
-			      index,U);
-    if ( Abs(knots->Value(index+1)-U) < Eps)
-      index++;
-    SetOrigin(index);
+			      index0,U);
+    if ( Abs(knots->Value(index0+1)-U) < Eps)
+      index0++;
+    SetOrigin(index0);
     SetNotPeriodic();
   }
   

@@ -813,10 +813,10 @@ void Voxel_FastConverter::ComputeVoxelsNearTriangle(const gp_Pln&          plane
 		  ElSLib::Parameters(plane, pc, uc, vc);
 		  p2dc.SetCoord(uc, vc);
 
-		  gp_Vec2d v2dct(p2dc, p2dt);
-		  dv = v2dct.Magnitude() - Precision::Confusion();
+		  gp_Vec2d aVec2dct1(p2dc, p2dt);
+		  dv = aVec2dct1.Magnitude() - Precision::Confusion();
 		  Lv.SetLocation(p2dc);
-		  Lv.SetDirection(v2dct);
+		  Lv.SetDirection(aVec2dct1);
 
 		  // Side 1:
 		  if (mayIntersect(p2d1, p2d2, p2dc, p2dt))
@@ -881,10 +881,10 @@ void Voxel_FastConverter::ComputeVoxelsNearTriangle(const gp_Pln&          plane
 		      ElSLib::Parameters(plane, pc, uc, vc);
 		      p2dc.SetCoord(uc, vc);
 
-		      gp_Vec2d v2dct(p2dc, p2dt);
-		      dv = v2dct.Magnitude() - Precision::Confusion();
+		      gp_Vec2d aVec2dct2(p2dc, p2dt);
+		      dv = aVec2dct2.Magnitude() - Precision::Confusion();
 		      Lv.SetLocation(p2dc);
-		      Lv.SetDirection(v2dct);
+		      Lv.SetDirection(aVec2dct2);
 		      
 		      // Side 1:
 		      if (mayIntersect(p2d1, p2d2, p2dc, p2dt))
@@ -1069,18 +1069,18 @@ static bool TriBoxOverlap(const gp_Pnt & p1, const gp_Pnt & p2, const gp_Pnt & p
   gp_Vec v2(center, p3);
   
   // First, test overlap in the {x,y,z}-directions
-  double min,max;
+  double aMin,aMax;
   // Find min, max of the triangle in x-direction, and test for overlap in X
-  FINDMINMAX(v0.X(), v1.X(), v2.X(), min, max);
-  if(min>extents.X() || max<-extents.X()) return false;
+  FINDMINMAX(v0.X(), v1.X(), v2.X(), aMin, aMax);
+  if(aMin>extents.X() || aMax<-extents.X()) return false;
   
   // Same for Y
-  FINDMINMAX(v0.Y(), v1.Y(), v2.Y(), min, max);
-  if(min>extents.Y() || max<-extents.Y()) return false;
+  FINDMINMAX(v0.Y(), v1.Y(), v2.Y(), aMin, aMax);
+  if(aMin>extents.Y() || aMax<-extents.Y()) return false;
   
   // Same for Z
-  FINDMINMAX(v0.Z(), v1.Z(), v2.Z(), min, max);
-  if(min>extents.Z() || max<-extents.Z()) return false;
+  FINDMINMAX(v0.Z(), v1.Z(), v2.Z(), aMin, aMax);
+  if(aMin>extents.Z() || aMax<-extents.Z()) return false;
   
   // 2) Test if the box intersects the plane of the triangle
   // compute plane equation of triangle: normal*x+d=0

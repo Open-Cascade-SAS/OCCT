@@ -311,19 +311,19 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     FuncInv.Set(OnFirst,thecur);
     FuncInv.GetBounds(infb,supb);
     FuncInv.GetTolerance(toler,tolesp/10);//Il vaut mieux garder un peu de marge
-    math_FunctionSetRoot rsnld(FuncInv,toler,35);
+    math_FunctionSetRoot aRsnld(FuncInv,toler,35);
     toler *= 10; // Mais on fait les tests correctements
     // Resolution...
-    rsnld.Perform(FuncInv,solrst,infb,supb);
+    aRsnld.Perform(FuncInv,solrst,infb,supb);
   
-    if (!rsnld.IsDone()) {
+    if (!aRsnld.IsDone()) {
 #ifdef OCCT_DEBUG
       cout << "Walking::Recadre : RSNLD not done " << endl;
 #endif
       recadre = Standard_False;
     }
     else {
-      rsnld.Root(solrst);
+      aRsnld.Root(solrst);
       recadre = FuncInv.IsSolution(solrst,tolesp);
     }
   }

@@ -839,8 +839,8 @@ void BOPAlgo_ArgumentAnalyzer::TestContinuity()
     aExp.Init(aS, TopAbs_FACE);
     for (; aExp.More(); aExp.Next()) {
       const TopoDS_Face& aF = *(TopoDS_Face*)&aExp.Current();
-      const Handle(Geom_Surface)& aS = BRep_Tool::Surface(aF);
-      if (aS->Continuity() == GeomAbs_C0) {
+      Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aF);
+      if (aSurf->Continuity() == GeomAbs_C0) {
         aMS.Add(aF);
       }
     }

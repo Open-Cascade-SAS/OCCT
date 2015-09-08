@@ -91,8 +91,8 @@ Standard_Integer bmodified(Draw_Interpretor& di,
   aBB.MakeCompound(aRes);
   TopTools_ListIteratorOfListOfShape aIt(aLS);
   for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    aBB.Add(aRes, aS);
+    const TopoDS_Shape& aShape = aIt.Value();
+    aBB.Add(aRes, aShape);
   }
   //
   DBRep::Set(a[1], aRes);
@@ -140,8 +140,8 @@ Standard_Integer bgenerated(Draw_Interpretor& di,
   aBB.MakeCompound(aRes);
   TopTools_ListIteratorOfListOfShape aIt(aLS);
   for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    aBB.Add(aRes, aS);
+    const TopoDS_Shape& aShape = aIt.Value();
+    aBB.Add(aRes, aShape);
   }
   //
   DBRep::Set(a[1], aRes);

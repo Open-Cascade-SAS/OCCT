@@ -715,8 +715,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
       // NOTE: aNMBinder is connected now with this SDR. It will be added to the resulting
       //       binder in the end of this invocation of TransferShape
       for (Standard_Integer i = 1; i <= aNMItemsNb; i++) {
-        Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper( FP, RepItemSeq->Value(i) );
-        TransferShape(mapper, sdr, FP, NonManifoldGroup, Standard_False);
+        Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper( FP, RepItemSeq->Value(i) );
+        TransferShape(aMapper, sdr, FP, NonManifoldGroup, Standard_False);
       }
 
       // Nothing else needed for pure non-manifold topology, return

@@ -139,8 +139,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   myListOfEdges.Clear();
   mySlface.Clear();
 
-  TopoDS_Shape aLocalShape = W.Oriented(TopAbs_FORWARD);
-  myWire = TopoDS::Wire(aLocalShape);
+  TopoDS_Shape aLocalShapeW = W.Oriented(TopAbs_FORWARD);
+  myWire = TopoDS::Wire(aLocalShapeW);
 //  myWire = TopoDS::Wire(W.Oriented(TopAbs_FORWARD));
   myDir  = Direc;
   myDir1 = Direc1;
@@ -499,7 +499,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 	  counter++;
 	}
 	else {
-	  Standard_Real f, l;
 	  Handle(Geom_Curve) cc = BRep_Tool::Curve(E, f, l);
 	  gp_Pnt pf = BRep_Tool::Pnt(TopExp::FirstVertex(E,Standard_True));
 	  gp_Pnt pl = myLastPnt;
@@ -638,7 +637,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     SlidMap.Clear();
     
     if(Sliding && counter1 > counter) {
-      TopTools_ListIteratorOfListOfShape it;
       TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm;
       TopExp_Explorer EX2(w, TopAbs_EDGE);
       Standard_Integer ii = 0;
@@ -742,7 +740,6 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     
     TopoDS_Shape comp;
     
-    BRep_Builder BB;
     BB.MakeShell(TopoDS::Shell(comp));
     
     for(; it.More(); it.Next()) {

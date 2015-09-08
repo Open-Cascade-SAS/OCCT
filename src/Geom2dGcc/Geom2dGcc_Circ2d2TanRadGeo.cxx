@@ -837,7 +837,7 @@ pararg2(1,aNbSolMAX)
       firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C1),thefirst);
       lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C1),thelast);
 #ifdef OCCT_DEBUG
-      IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C1,firstparam),firstparam,Tol,
+      IntRes2d_Domain D2C1(Geom2dGcc_CurveToolGeo::Value(C1,firstparam),firstparam,Tol,
         Geom2dGcc_CurveToolGeo::Value(C1,lastparam),lastparam,Tol);
 #else
       Geom2dGcc_CurveToolGeo::Value(C1,firstparam);
@@ -849,7 +849,7 @@ pararg2(1,aNbSolMAX)
         firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
         lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
 #ifdef OCCT_DEBUG
-        IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
+        IntRes2d_Domain D2C2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
           Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
 #else
         Geom2dGcc_CurveToolGeo::Value(C2,firstparam);

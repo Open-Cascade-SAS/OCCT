@@ -279,9 +279,9 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
       }
     }
 
-    TopExp_Explorer exp(mySbase, TopAbs_FACE);
-    for(; exp.More(); exp.Next()) {
-      const TopoDS_Face& ff = TopoDS::Face(exp.Current());
+    TopExp_Explorer anExp(mySbase, TopAbs_FACE);
+    for(; anExp.More(); anExp.Next()) {
+      const TopoDS_Face& ff = TopoDS::Face(anExp.Current());
       if(ToFuse(ff, FFace)) {
         TopTools_DataMapOfShapeListOfShape sl;
         if(!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace)) 

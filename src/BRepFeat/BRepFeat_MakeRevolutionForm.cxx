@@ -236,8 +236,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     if(tol > myTol) myTol = tol;
   }
 
-  TopoDS_Shape aLocalShape = W.Oriented(TopAbs_FORWARD);
-  myWire = TopoDS::Wire(aLocalShape);
+  TopoDS_Shape aLocalShapeW = W.Oriented(TopAbs_FORWARD);
+  myWire = TopoDS::Wire(aLocalShapeW);
 //  myWire = TopoDS::Wire(W.Oriented(TopAbs_FORWARD));
   myPln = Plane;
   myHeight1 = H1;
@@ -619,7 +619,6 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 	  counter++;
 	}
 	else {
-	  Standard_Real f, l;
 	  Handle(Geom_Curve) cc = BRep_Tool::Curve(E, f, l);
 	  gp_Pnt pf = BRep_Tool::Pnt(TopExp::FirstVertex(E,Standard_True));
 	  gp_Pnt pl = myLastPnt;
@@ -755,7 +754,6 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     SlidMap.Clear();
     
     if(Sliding && counter1 > counter) {
-      TopTools_ListIteratorOfListOfShape it;
       TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm;
       TopExp_Explorer EX2(w, TopAbs_EDGE);
       Standard_Integer ii = 0;
@@ -846,7 +844,6 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
       Handle(Geom2d_Curve) l2d = GeomAPI::To2d(ln, Plane->Pln());
       Geom2dAPI_InterCurveCurve intcc(l2d, ln2d, Precision::Confusion());
       TopoDS_Vertex VV; VV.Nullify();
-      TopoDS_Edge ee1, ee2;
 
       if(intcc.NbPoints() > 0) {
 	gp_Pnt2d P = intcc.Point(1);
@@ -900,10 +897,10 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
       BRepAlgoAPI_Cut c(BndFace, NewBndFace);     
       //modified by NIZNHY-PKV Fri Mar 22 16:52:57 2002 t
       TopExp_Explorer exp(c.Shape(), TopAbs_WIRE);
-      const TopoDS_Wire& w = TopoDS::Wire(exp.Current());
+      const TopoDS_Wire& aCurWire = TopoDS::Wire(exp.Current());
       // akm 13/02/02 : we know the plane. Why not to use it?
       // BRepLib_MakeFace ff(w);
-      BRepLib_MakeFace ff(myPln->Pln(), w, Standard_True);
+      BRepLib_MakeFace ff(myPln->Pln(), aCurWire, Standard_True);
       NewBndFace = TopoDS::Face(ff.Shape());
     }
    
@@ -962,7 +959,6 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     
     TopoDS_Shape comp;
     
-    BRep_Builder BB;
     BB.MakeShell(TopoDS::Shell(comp));
     
     for(; it.More(); it.Next()) {
@@ -1486,9 +1482,9 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
     }
 
     for (ex.Init(CurrentFace, TopAbs_EDGE); ex.More(); ex.Next()) {
-      const TopoDS_Edge& e = TopoDS::Edge(ex.Current());
+      const TopoDS_Edge& aCurEdge = TopoDS::Edge(ex.Current());
 
-      BRepExtrema_ExtPC projF(v1, e);
+      BRepExtrema_ExtPC projF(v1, aCurEdge);
 
       if(projF.IsDone() && projF.NbExt() >=1) {
 	Standard_Real dist2min = RealLast();
@@ -1500,8 +1496,8 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
 	  }
 	}
 	if (index != 0) {
-	  if (dist2min <= BRep_Tool::Tolerance(e) * BRep_Tool::Tolerance(e)) {
-	    FirstEdge = e;
+	  if (dist2min <= BRep_Tool::Tolerance(aCurEdge) * BRep_Tool::Tolerance(aCurEdge)) {
+	    FirstEdge = aCurEdge;
 	    break;
 	  }
 	}
@@ -1590,8 +1586,8 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
     }
     
     for (ex.Init(CurrentFace, TopAbs_EDGE); ex.More(); ex.Next()) {
-      const TopoDS_Edge& e = TopoDS::Edge(ex.Current());
-      BRepExtrema_ExtPC projF(v2, e);
+      const TopoDS_Edge& aCurEdge = TopoDS::Edge(ex.Current());
+      BRepExtrema_ExtPC projF(v2, aCurEdge);
 
       if(projF.IsDone() && projF.NbExt() >=1) {
 	Standard_Real dist2min = RealLast();
@@ -1603,8 +1599,8 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
 	  }
 	}
 	if (index != 0) {
-	  if (dist2min <= BRep_Tool::Tolerance(e) * BRep_Tool::Tolerance(e)) {
-	    FirstEdge = e;
+	  if (dist2min <= BRep_Tool::Tolerance(aCurEdge) * BRep_Tool::Tolerance(aCurEdge)) {
+	    FirstEdge = aCurEdge;
 	    break;
 	  }
 	}

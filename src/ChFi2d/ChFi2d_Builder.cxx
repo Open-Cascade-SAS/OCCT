@@ -1041,8 +1041,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     if (OE1 == TopAbs_REVERSED) {
       vec1.Reverse();
     } // if (OE1 ...
-    Standard_Real cross = vec1*vec;
-    Standard_Boolean Sense = cross > 0.;
+    Standard_Boolean Sense = ( vec1*vec ) > 0.;
     if (U1 > Vv1 && U1 > 2.*M_PI) {
       ElCLib::AdjustPeriodic(0.,2.*M_PI,Precision::Confusion(),U1,Vv1);
     } // if (U1 ... 

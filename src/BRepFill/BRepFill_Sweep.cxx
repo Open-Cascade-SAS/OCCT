@@ -2303,12 +2303,12 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       exuv = ExchUV(isec, ipath);
       S->Bounds(UFirst, ULast, VFirst, VLast);
       if (UReverse(isec, ipath)) {
-	Standard_Real aux;
+	Standard_Real aux2;
 	if (exuv) {
-	  aux = VFirst; VFirst = VLast; VLast = aux;	  
+	  aux2 = VFirst; VFirst = VLast; VLast = aux2;	  
 	}
 	else {
-	  aux = UFirst; UFirst = ULast; ULast = aux;
+	  aux2 = UFirst; UFirst = ULast; ULast = aux2;
 	}
       }
 
@@ -2617,7 +2617,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     //(4.2) // General case => Tweezers 
     Standard_Boolean isG1;
     TopoDS_Face FF;
-    TopoDS_Edge E;
+    TopoDS_Edge anEdge;
  
     for (isec=1; isec <=  NbLaw+1; isec++) {
       if (isec>1) isG1 = 
@@ -2646,8 +2646,8 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	if (isG1) { 
 	  if (ipath==NbPath+1) FF = TopoDS::Face(myFaces->Value(isec, 1));
 	  else  FF = TopoDS::Face(myFaces->Value(isec, IPath));
-	  E = TopoDS::Edge(myVEdges->Value(isec, IPath));
-	  BRepLib::EncodeRegularity(E, FF,
+          anEdge = TopoDS::Edge(myVEdges->Value(isec, IPath));
+	  BRepLib::EncodeRegularity(anEdge, FF,
 				    TopoDS::Face(myFaces->Value(isec, IPath-1)),
 				    myTolAngular);
 	}

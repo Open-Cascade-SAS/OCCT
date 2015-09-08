@@ -1080,7 +1080,7 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch
 {
   Standard_Real aTF, aTL, Tol, U1f, U1l, V1f, V1l, af, al,aDist2, aMinDist2;
   Standard_Boolean theflag=Standard_False;
-  Standard_Integer aNbExt, i, iLower ;
+  Standard_Integer aNbExt, iLower;
 
   aCP.Range1(aTF, aTL);
 
@@ -1118,7 +1118,7 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch
       
       if(aNbExt > 0) {
  iLower=1;
- for (i=1; i<=aNbExt; i++) {
+ for (Standard_Integer i=1; i<=aNbExt; i++) {
    aDist2=anExtrema.SquareDistance(i);
    if (aDist2 < aMinDist2) {
      aMinDist2=aDist2;
@@ -1141,9 +1141,7 @@ Standard_Boolean IntTools_EdgeFace::CheckTouch
  anExactIntersector.Perform(aCurve, aSurface);
 
  if(anExactIntersector.IsDone()) {
-   Standard_Integer i = 0;
-
-   for(i = 1; i <= anExactIntersector.NbPoints(); i++) {
+   for(Standard_Integer i = 1; i <= anExactIntersector.NbPoints(); i++) {
      const IntCurveSurface_IntersectionPoint& aPoint = anExactIntersector.Point(i);
       
      if((aPoint.W() >= aTF) && (aPoint.W() <= aTL)) {

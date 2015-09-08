@@ -786,7 +786,6 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
 	}
 	TopAbs_ShapeEnum wtyp = W.ShapeType();
 	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && wtyp != TopAbs_COMPOUND && pick) {
-	  Standard_Real u,v;
 	  DBRep_DrawableShape::LastPick(W,u,v);
 	  wtyp = W.ShapeType();
 	}

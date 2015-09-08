@@ -1183,7 +1183,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
     addEPI = Standard_True; 
   } 
   else { // EPIfound
-    TopAbs_Orientation otransEdge = transEdge.Orientation(TopAbs_IN);
+    TopAbs_Orientation anOtransEdge = transEdge.Orientation(TopAbs_IN);
 
     Standard_Boolean opporifound,memorifound; opporifound = memorifound = Standard_False;
     TopOpeBRepDS_ListOfInterference loIfound; 
@@ -1196,8 +1196,8 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
       // - il n'en existe pas deja une d'orientation identique a TransEdge
       for (; PI.More(); PI.Next()){
 	TopAbs_Orientation oEPI = PI.Value()->Transition().Orientation(TopAbs_IN);
-	if (!memorifound) memorifound = ( oEPI == otransEdge );
-	if (!opporifound) opporifound = ( oEPI == TopAbs::Complement(otransEdge) );
+	if (!memorifound) memorifound = ( oEPI == anOtransEdge);
+	if (!opporifound) opporifound = ( oEPI == TopAbs::Complement(anOtransEdge) );
 	addEPI = (opporifound && ! memorifound);
 	if (addEPI) break;
       }

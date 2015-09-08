@@ -354,12 +354,12 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
 	cout << "Warning: IGESToBRep_IGESBoundary: Curves " << i - 1 << " and " << i << " cannot be connected" << endl;
 #endif
         Gsewd3d = new ShapeExtend_WireData;
-        for (Standard_Integer i = 1; i <= len3d; i++) {
+        for (Standard_Integer j = 1; j <= len3d; j++) {
           if (usescurve)
-            Gsewd3d->Add (scurve3d->Edge (i));
+            Gsewd3d->Add (scurve3d->Edge (j));
           else {
             TopoDS_Shape Sh =
-              TC.TransferTopoCurve (Handle(IGESData_IGESEntity)::DownCast (seq3d->Value (i)));
+              TC.TransferTopoCurve (Handle(IGESData_IGESEntity)::DownCast (seq3d->Value (j)));
             if (!Sh.IsNull()) Gsewd3d->Add (Sh);
           }
         }
@@ -367,8 +367,8 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
           ReverseCurves3d(Gsewd3d);
         }
         Gsewd2d = new ShapeExtend_WireData;
-        for (Standard_Integer i = 1; i <= len2d; i++) {
-          TopoDS_Shape Sh = TC.Transfer2dTopoCurve (Handle(IGESData_IGESEntity)::DownCast (seq2d->Value (i)),
+        for (Standard_Integer k = 1; k <= len2d; k++) {
+          TopoDS_Shape Sh = TC.Transfer2dTopoCurve (Handle(IGESData_IGESEntity)::DownCast (seq2d->Value (k)),
                                                     myface, mytrsf, myuFact);
           if (!Sh.IsNull()) Gsewd2d->Add (Sh);
         }

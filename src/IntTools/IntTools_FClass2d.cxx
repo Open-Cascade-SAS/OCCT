@@ -198,8 +198,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
         degenerated = Standard_True;
         for (Standard_Integer i=0; i <= NBSTEPS; i++)
         {
-          Standard_Real u = pfbid + i * du / NBSTEPS;
-          gp_Pnt P3db = C3d.Value (u);
+          Standard_Real U = pfbid + i * du / NBSTEPS;
+          gp_Pnt P3db = C3d.Value (U);
           Standard_Real aR2 = P3da.SquareDistance (P3db);
           if (aR2 > aPrec2) {
             degenerated = Standard_False;

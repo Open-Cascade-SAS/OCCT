@@ -225,7 +225,7 @@ void BOPAlgo_WireSplitter::MakeConnexityBlocks()
     }
     //
     if (bRegular) {
-      Standard_Integer k, aNbVR, aNbER;
+      Standard_Integer aNbVR, aNbER;
       //
       aNbVR=aMVER.Extent();
       for (k=1; k<=aNbVR; ++k) {

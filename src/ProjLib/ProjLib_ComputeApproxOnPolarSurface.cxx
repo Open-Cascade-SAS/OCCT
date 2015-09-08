@@ -1270,13 +1270,13 @@ Handle(Adaptor2d_HCurve2d)
             }
           }
 	  if(!myProjIsDone && uperiod) {
-	    Standard_Real Uinf, Usup, Uaux;
-	    Uinf = Surf->Surface().FirstUParameter();
-	    Usup = Surf->Surface().LastUParameter();
-	    if((Usup - U0) > (U0 - Uinf)) 
-	      Uaux = 2*Uinf - U0 + uperiod;
+	    Standard_Real aUinf, aUsup, Uaux;
+	    aUinf = Surf->Surface().FirstUParameter();
+	    aUsup = Surf->Surface().LastUParameter();
+	    if((aUsup - U0) > (U0 - aUinf)) 
+	      Uaux = 2*aUinf - U0 + uperiod;
 	    else 
-	      Uaux = 2*Usup - U0 - uperiod;
+	      Uaux = 2*aUsup - U0 - uperiod;
 	    Extrema_GenLocateExtPS  locext(pntproj, 
 					   Surf->Surface(), 
 					   Uaux, V0, TolU, TolV);
@@ -1284,7 +1284,7 @@ Handle(Adaptor2d_HCurve2d)
 	      if (locext.SquareDistance() < DistTol3d * DistTol3d) {  //OCC217
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
 		(locext.Point()).Parameter(u,v);
-		if((Usup - U0) > (U0 - Uinf)) 
+		if((aUsup - U0) > (U0 - aUinf)) 
 		  usens--;
 		else 
 		  usens++;
@@ -1296,13 +1296,13 @@ Handle(Adaptor2d_HCurve2d)
 	      }
 	  }
 	  if(!myProjIsDone && vperiod) {
-	    Standard_Real Vinf, Vsup, Vaux;
-	    Vinf = Surf->Surface().FirstVParameter();
-	    Vsup = Surf->Surface().LastVParameter();
-	    if((Vsup - V0) > (V0 - Vinf)) 
-	      Vaux = 2*Vinf - V0 + vperiod;
+	    Standard_Real aVinf, aVsup, Vaux;
+	    aVinf = Surf->Surface().FirstVParameter();
+	    aVsup = Surf->Surface().LastVParameter();
+	    if((aVsup - V0) > (V0 - aVinf)) 
+	      Vaux = 2*aVinf - V0 + vperiod;
 	    else 
-	      Vaux = 2*Vsup - V0 - vperiod;
+	      Vaux = 2*aVsup - V0 - vperiod;
 	    Extrema_GenLocateExtPS  locext(pntproj, 
 					   Surf->Surface(), 
 					   U0, Vaux, TolU, TolV) ;
@@ -1310,7 +1310,7 @@ Handle(Adaptor2d_HCurve2d)
 	      if (locext.SquareDistance() < DistTol3d * DistTol3d) {  //OCC217
 	      //if (locext.SquareDistance() < Tol3d * Tol3d) {
 		(locext.Point()).Parameter(u,v);
-		if((Vsup - V0) > (V0 - Vinf)) 
+		if((aVsup - V0) > (V0 - aVinf)) 
 		  vsens--;
 		else 
 		  vsens++;
@@ -1357,15 +1357,15 @@ Handle(Adaptor2d_HCurve2d)
 	    Extrema_ExtPS ext(pntproj, Surf->Surface(), TolU, TolV) ;
 	    if (ext.IsDone()) {
 	      Dist2Min = ext.SquareDistance(1);
-	      Standard_Integer GoodValue = 1;
+	      Standard_Integer aGoodValue = 1;
 	      for ( j = 2 ; j <= ext.NbExt() ; j++ )
 		if( Dist2Min > ext.SquareDistance(j)) {
 		  Dist2Min = ext.SquareDistance(j);
-		  GoodValue = j;
+		  aGoodValue = j;
 		}
 	      if (Dist2Min < DistTol3d * DistTol3d) {
 	      //if (Dist2Min < Tol3d * Tol3d) {
-		(ext.Point(GoodValue)).Parameter(u,v);
+		(ext.Point(aGoodValue)).Parameter(u,v);
 		if(uperiod) {
 		  if((U0 - u) > (2*uperiod/3)) {
 		    usens++;
@@ -1772,14 +1772,14 @@ Handle(Geom2d_BSplineCurve)
 			    Standard_True);
 
   if(Fit.IsAllApproximated()) {
-    Standard_Integer i;
+    Standard_Integer j;
     Standard_Integer NbCurves = Fit.NbMultiCurves();
     Standard_Integer MaxDeg = 0;
     // To transform the MultiCurve into BSpline, it is required that all  
     // Bezier constituing it have the same degree -> Calculation of MaxDeg
     Standard_Integer NbPoles  = 1;
-    for (i = 1; i <= NbCurves; i++) {
-      Standard_Integer Deg = Fit.Value(i).Degree();
+    for (j = 1; j <= NbCurves; j++) {
+      Standard_Integer Deg = Fit.Value(j).Degree();
       MaxDeg = Max ( MaxDeg, Deg);
     }
 
@@ -1804,15 +1804,15 @@ Handle(Geom2d_BSplineCurve)
 	BSplCLib::IncreaseDegree( MaxDeg, Poles2d, PLib::NoWeights(), 
 			 TempPoles, PLib::NoWeights());
 	//update of tops of the PCurve
-	for (Standard_Integer j = 1 ; j <= MaxDeg + 1; j++) {
-	  Poles.SetValue( Compt, TempPoles( j));
+	for (Standard_Integer k = 1 ; k <= MaxDeg + 1; k++) {
+	  Poles.SetValue( Compt, TempPoles( k));
 	  Compt++;
 	}
       }
       else {
 	//update of tops of the PCurve
-	for (Standard_Integer j = 1 ; j <= MaxDeg + 1; j++) {
-	  Poles.SetValue( Compt, Poles2d( j));
+	for (Standard_Integer k = 1 ; k <= MaxDeg + 1; k++) {
+	  Poles.SetValue( Compt, Poles2d( k));
 	  Compt++;
 	}
       } 

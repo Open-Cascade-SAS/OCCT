@@ -333,7 +333,6 @@ static void Descendants(const TopoDS_Shape&,
       else {// else X0
         // Only solids are preserved
         TopoDS_Shape theGShape;
-        BRep_Builder B;
         B.MakeCompound(TopoDS::Compound(theGShape));
         for (; exp.More(); exp.Next()) {
           B.Add(theGShape,exp.Current());
@@ -619,7 +618,6 @@ static void Descendants(const TopoDS_Shape&,
       }
       // Only solids are preserved
       theGShape.Nullify();
-      BRep_Builder B;
       B.MakeCompound(TopoDS::Compound(theGShape));
       for (; exp.More(); exp.Next()) {
         B.Add(theGShape,exp.Current());
@@ -977,7 +975,6 @@ static void Descendants(const TopoDS_Shape&,
         Standard_Real min, max, pmin, pmax;
         Standard_Boolean flag2;
         TopoDS_Shape Compo;
-        BRep_Builder B;
         B.MakeCompound(TopoDS::Compound(Compo));
         for (it.Initialize(lshape); it.More(); it.Next()) {
           BRepFeat::ParametricMinMax(it.Value(),C, 

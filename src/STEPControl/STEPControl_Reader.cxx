@@ -317,8 +317,7 @@ void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLength
   const Interface_Graph& graph = WS()->Graph();
   TColStd_MapOfAsciiString aMapUnits[3];
 
-  Standard_Integer i =1;
-  for( ; i <= nbroots; i++)
+  for(Standard_Integer i = 1; i <= nbroots; i++)
   {
     Handle(Standard_Transient) anEnt = theroots(i);
     Standard_Integer num   = graph.EntityNumber(anEnt);
@@ -394,8 +393,8 @@ void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLength
     Handle(Interface_InterfaceModel) aModel = WS()->Model();
     if(aModel.IsNull())
       return;
-    Standard_Integer i = 1, nb = aModel->NbEntities();
-    for( ; i <= nb; i++)
+    Standard_Integer nb = aModel->NbEntities();
+    for(Standard_Integer i = 1; i <= nb; i++)
     {
       Handle(Standard_Transient) anEnt = aModel->Value(i);
       Handle(StepRepr_RepresentationContext) aRepCont = Handle(StepRepr_RepresentationContext)::DownCast(anEnt);

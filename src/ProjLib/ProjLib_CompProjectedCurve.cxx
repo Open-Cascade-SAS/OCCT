@@ -735,9 +735,9 @@ void ProjLib_CompProjectedCurve::Init()
         {
           //Search for exact boundary point
           Tol = Min(myTolU, myTolV);
-          gp_Vec2d D;
-          d1(Triple.X(), Triple.Y(), Triple.Z(), D, myCurve, mySurface);
-          Tol /= Max(Abs(D.X()), Abs(D.Y()));
+          gp_Vec2d aD;
+          d1(Triple.X(), Triple.Y(), Triple.Z(), aD, myCurve, mySurface);
+          Tol /= Max(Abs(aD.X()), Abs(aD.Y()));
 
           if(!ExactBound(Triple, t - Step, Tol, 
             myTolU, myTolV, myCurve, mySurface)) 
@@ -931,11 +931,11 @@ void ProjLib_CompProjectedCurve::Init()
   for(i = 1; i <= myNbCurves; i++)
     for(j = 1; j <= mySequence->Value(i)->Length(); j++) 
     {
-      gp_Pnt POnC, POnS, Triple;
+      gp_Pnt POnC, POnS, aTriple;
       Standard_Real Distance;
-      Triple = mySequence->Value(i)->Value(j);
-      myCurve->D0(Triple.X(), POnC);
-      mySurface->D0(Triple.Y(), Triple.Z(), POnS);
+      aTriple = mySequence->Value(i)->Value(j);
+      myCurve->D0(aTriple.X(), POnC);
+      mySurface->D0(aTriple.Y(), aTriple.Z(), POnS);
       Distance = POnC.Distance(POnS);
       if (myMaxDistance->Value(i) < Distance)
         myMaxDistance->ChangeValue(i) = Distance;
@@ -1245,12 +1245,12 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U,gp_Pnt2d& P) const
     Extrema_ExtPS aExtPS(thePoint, mySurface->Surface(), myTolU, myTolV);
     if (aExtPS.IsDone() && aExtPS.NbExt()) 
     {
-      Standard_Integer i, Nend, imin = 1;
+      Standard_Integer k, Nend, imin = 1;
       // Search for the nearest solution which is also a normal projection
       Nend = aExtPS.NbExt();
-      for(i = 2; i <= Nend; i++)
-        if (aExtPS.SquareDistance(i) < aExtPS.SquareDistance(imin))
-          imin = i;
+      for(k = 2; k <= Nend; k++)
+        if (aExtPS.SquareDistance(k) < aExtPS.SquareDistance(imin))
+          imin = k;
       const Extrema_POnSurf& POnS = aExtPS.Point(imin);
       Standard_Real ParU,ParV;
       POnS.Parameter(ParU, ParV);

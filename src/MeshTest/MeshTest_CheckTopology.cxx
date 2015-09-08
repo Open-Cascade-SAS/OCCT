@@ -169,14 +169,14 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
 	}
       }
     }
-
+    
     // check of free nodes
     Standard_Integer aNbNodes = aT->NbNodes();
-    for (Standard_Integer i = 1; i <= aNbNodes; i++)
-      if ( ! aUsedNodes.Contains(i) )
+    for (Standard_Integer k = 1; k <= aNbNodes; k++)
+      if ( ! aUsedNodes.Contains(k) )
       {
 	myFreeNodeFaces.Append (iF);
-	myFreeNodeNums.Append (i);
+	myFreeNodeNums.Append (k);
       }
   }
 }

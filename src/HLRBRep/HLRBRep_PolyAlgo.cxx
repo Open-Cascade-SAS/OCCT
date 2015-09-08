@@ -938,9 +938,9 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	  if (ShapeMap1.Add(E)) {
 	    Standard_Integer e = myEMap.FindIndex(E);
 	    ES(e) = iShell;
-	    Standard_Integer i = EF.FindIndex(E);
-	    if (i > 0) {
-	      TopTools_ListOfShape& LS = EF(i);
+	    Standard_Integer anIndexE = EF.FindIndex(E);
+	    if (anIndexE > 0) {
+	      TopTools_ListOfShape& LS = EF(anIndexE);
 	      InitBiPointsWithConnexity(e,E,List,PID,LS,Standard_True);
 	    }
 	    else {
@@ -1312,10 +1312,10 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	    Nod11Indices = Nod12Indices;
 	    Nod11RValues = Nod12RValues;
 	    i1p2 = Pol1(iPol);
-	    const Handle(HLRAlgo_PolyInternalNode)* pi1p2 =
+	    const Handle(HLRAlgo_PolyInternalNode)* pi1p2iPol =
 	      &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(iPol)));
-	    Nod12Indices = (*pi1p2)->Indices();
-	    Nod12RValues = (*pi1p2)->RValues();
+	    Nod12Indices = (*pi1p2iPol)->Indices();
+	    Nod12RValues = (*pi1p2iPol)->RValues();
 #ifdef OCCT_DEBUG
 	    if (DoError) {
 	      if (Nod11NrmX*Nod12NrmX +
@@ -1387,7 +1387,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	const TColStd_Array1OfInteger&      Pol1 = HPol[0]->Nodes();
 	const TColStd_Array1OfInteger&      Pol2 = HPol[1]->Nodes();
 	const Handle(TColStd_HArray1OfReal)& par = HPol[0]->Parameters();
-	Standard_Integer nbPol = Pol1.Upper();
+	Standard_Integer nbPol1 = Pol1.Upper();
 	Standard_Address TData1 = &pid1->TData();
 	Standard_Address PISeg1 = &pid1->PISeg();
 	Standard_Address PINod1 = &pid1->PINod();
@@ -1402,16 +1402,16 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	  &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(1    )));
 	Nod11Indices = (*pi1p1)->Indices();
 	Nod11RValues = (*pi1p1)->RValues();
-	const Handle(HLRAlgo_PolyInternalNode)* pi1p2 =
-	  &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(nbPol)));
-	Nod12Indices = (*pi1p2)->Indices();
-	Nod12RValues = (*pi1p2)->RValues();
+	const Handle(HLRAlgo_PolyInternalNode)* pi1p2nbPol1 =
+	  &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(nbPol1)));
+	Nod12Indices = (*pi1p2nbPol1)->Indices();
+	Nod12RValues = (*pi1p2nbPol1)->RValues();
 	const Handle(HLRAlgo_PolyInternalNode)* pi2p1 =
 	  &(((HLRAlgo_Array1OfPINod*)PINod2)->ChangeValue(Pol2(1    )));
 	Nod21Indices = (*pi2p1)->Indices();
 	Nod21RValues = (*pi2p1)->RValues();
 	const Handle(HLRAlgo_PolyInternalNode)* pi2p2 =
-	  &(((HLRAlgo_Array1OfPINod*)PINod2)->ChangeValue(Pol2(nbPol)));
+	  &(((HLRAlgo_Array1OfPINod*)PINod2)->ChangeValue(Pol2(nbPol1)));
 	Nod22Indices = (*pi2p2)->Indices();
 	Nod22RValues = (*pi2p2)->RValues();
 	Nod11Flag |=  NMskVert;
@@ -1419,7 +1419,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	Nod21Flag |=  NMskVert;
 	Nod22Flag |=  NMskVert;
 	
-	for (iPol = 1; iPol <= nbPol; iPol++) {
+	for (iPol = 1; iPol <= nbPol1; iPol++) {
 	  const Handle(HLRAlgo_PolyInternalNode)* pi1pA =
 	    &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(iPol)));
 	  Standard_Address Nod1AIndices = (*pi1pA)->Indices();
@@ -1467,22 +1467,22 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	Nod12Flag |= NMskEdge;
 	Nod22Flag |= NMskEdge;
 	TIMultiply(XTI2,YTI2,ZTI2);
-	if (Pol1(1) == Pol1(nbPol) && myPC.IsPeriodic())
+	if (Pol1(1) == Pol1(nbPol1) && myPC.IsPeriodic())
 	  U2 = U2 - myPC.Period();
 	
-	if (nbPol == 2 && BRep_Tool::Degenerated(E)) {
+	if (nbPol1 == 2 && BRep_Tool::Degenerated(E)) {
 	  CheckDegeneratedSegment(Nod11Indices,Nod11RValues,
 				  Nod12Indices,Nod12RValues);
 	  CheckDegeneratedSegment(Nod21Indices,Nod21RValues,
 				  Nod22Indices,Nod22RValues);
 	  UpdateAroundNode(Pol1(1    ),Nod11Indices,TData1,PISeg1,PINod1);
-	  UpdateAroundNode(Pol1(nbPol),Nod12Indices,TData1,PISeg1,PINod1);
+	  UpdateAroundNode(Pol1(nbPol1),Nod12Indices,TData1,PISeg1,PINod1);
 	  UpdateAroundNode(Pol2(1    ),Nod21Indices,TData2,PISeg2,PINod2);
-	  UpdateAroundNode(Pol2(nbPol),Nod22Indices,TData2,PISeg2,PINod2);
+	  UpdateAroundNode(Pol2(nbPol1),Nod22Indices,TData2,PISeg2,PINod2);
 	}
 	else {
 
-	  for (iPol = 2; iPol <= nbPol; iPol++) {
+	  for (iPol = 2; iPol <= nbPol1; iPol++) {
 	    i1p1 = i1p2;
 	    Nod11Indices = Nod12Indices;
 	    Nod11RValues = Nod12RValues;
@@ -1490,15 +1490,15 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	    Nod21Indices = Nod22Indices;
 	    Nod21RValues = Nod22RValues;
 	    i1p2 = Pol1(iPol);
-	    const Handle(HLRAlgo_PolyInternalNode)* pi1p2 =
+	    const Handle(HLRAlgo_PolyInternalNode)* pi1p2iPol =
 	      &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(iPol)));
-	    Nod12Indices = (*pi1p2)->Indices();
-	    Nod12RValues = (*pi1p2)->RValues();
+	    Nod12Indices = (*pi1p2iPol)->Indices();
+	    Nod12RValues = (*pi1p2iPol)->RValues();
 	    i2p2 = Pol2(iPol);
-	    const Handle(HLRAlgo_PolyInternalNode)* pi2p2 =
+	    const Handle(HLRAlgo_PolyInternalNode)* pi2p2iPol =
 	      &(((HLRAlgo_Array1OfPINod*)PINod2)->ChangeValue(Pol2(iPol)));
-	    Nod22Indices = (*pi2p2)->Indices();
-	    Nod22RValues = (*pi2p2)->RValues();
+	    Nod22Indices = (*pi2p2iPol)->Indices();
+	    Nod22RValues = (*pi2p2iPol)->RValues();
 #ifdef OCCT_DEBUG
 	    if (DoError) {
 	      if (Nod11NrmX*Nod12NrmX +
@@ -1582,7 +1582,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
       TTMa[2][0] = ttma.Value(3,1);
       TTMa[2][1] = ttma.Value(3,2);
       TTMa[2][2] = ttma.Value(3,3);
-      Standard_Integer nbPol = Pol.Upper();
+      Standard_Integer nbPol1 = Pol.Upper();
       const gp_XYZ& P1 = Pol(1).XYZ();
       X2 = P1.X();
       Y2 = P1.Y();
@@ -1593,14 +1593,14 @@ InitBiPointsWithConnexity (const Standard_Integer e,
       ZTI2 = Z2;
       TIMultiply(XTI2,YTI2,ZTI2);
       
-      for (Standard_Integer iPol = 2; iPol <= nbPol; iPol++) {
+      for (Standard_Integer jPol = 2; jPol <= nbPol1; jPol++) {
 	X1   = X2;
 	Y1   = Y2;
 	Z1   = Z2;
 	XTI1 = XTI2;
 	YTI1 = YTI2;
 	ZTI1 = ZTI2;
-	const gp_XYZ& P2 = Pol(iPol).XYZ();
+	const gp_XYZ& P2 = Pol(jPol).XYZ();
 	X2 = P2.X();
 	Y2 = P2.Y();
 	Z2 = P2.Z();

@@ -350,7 +350,6 @@ Standard_Integer  IGESConvGeom::SplineSurfaceFromIGES
     XPoly = st->XPolynomial(USeg, VSeg);
     YPoly = st->YPolynomial(USeg, VSeg);
     ZPoly = st->ZPolynomial(USeg, VSeg);
-    Standard_Real ParamU, ParamV;
     ParamU = 1.;
     for (i=Coef.LowerRow(); i<=Coef.UpperRow(); i++) {
       ParamV = 1.;
@@ -368,35 +367,35 @@ Standard_Integer  IGESConvGeom::SplineSurfaceFromIGES
     PLib::CoefficientsPoles(Coef,PLib::NoWeights2(),BzPole,PLib::NoWeights2());
 
     //  C0 check and correction for poles lying on isoparametrics U=0 & V=0
-    Standard_Integer  iBs = BsPole.LowerRow() + (USeg-1)*DegreeU;
-    Standard_Integer  jBs = BsPole.LowerCol();
+    Standard_Integer  iBsPole = BsPole.LowerRow() + (USeg-1)*DegreeU;
+    Standard_Integer  jBsPole = BsPole.LowerCol();
     iBz = BzPole.LowerRow();
     for (jBz=BzPole.LowerCol(); jBz<=BzPole.UpperCol(); jBz++) {
-     if (!BzPole.Value(iBz,jBz).IsEqual(BsPole.Value(iBs,jBs), epsgeom)) {
+     if (!BzPole.Value(iBz,jBz).IsEqual(BsPole.Value(iBsPole,jBsPole), epsgeom)) {
 	wasC0=Standard_False;
 	gp_Pnt MidPoint;
 	Standard_Real  XCoord = 
-	  0.5 * (BzPole.Value(iBz,jBz).X() + BsPole.Value(iBs,jBs).X());
+	  0.5 * (BzPole.Value(iBz,jBz).X() + BsPole.Value(iBsPole,jBsPole).X());
 	Standard_Real  YCoord = 
-	  0.5 * (BzPole.Value(iBz,jBz).Y() + BsPole.Value(iBs,jBs).Y());
+	  0.5 * (BzPole.Value(iBz,jBz).Y() + BsPole.Value(iBsPole,jBsPole).Y());
 	Standard_Real  ZCoord = 
-	  0.5 * (BzPole.Value(iBz,jBz).Z() + BsPole.Value(iBs,jBs).Z());
+	  0.5 * (BzPole.Value(iBz,jBz).Z() + BsPole.Value(iBsPole,jBsPole).Z());
 	MidPoint.SetCoord(XCoord, YCoord, ZCoord);
-	BsPole.SetValue(iBs, jBs++, MidPoint);
+	BsPole.SetValue(iBsPole, jBsPole++, MidPoint);
       }
       else {
-	BsPole.SetValue(iBs, jBs++, BzPole.Value(iBz,jBz));
+	BsPole.SetValue(iBsPole, jBsPole++, BzPole.Value(iBz,jBz));
       }
     }
     
     //  Other poles (no check about C0) :
-    iBs++;
-    jBs = BsPole.LowerCol();
+    iBsPole++;
+    jBsPole = BsPole.LowerCol();
     for (iBz=BzPole.LowerRow()+1; iBz<=BzPole.UpperRow(); iBz++) {
       for (jBz=BzPole.LowerCol(); jBz<=BzPole.UpperCol(); jBz++)
-	BsPole.SetValue(iBs, jBs++, BzPole.Value(iBz,jBz));
-      iBs++;
-      jBs = BsPole.LowerCol();
+	BsPole.SetValue(iBsPole, jBsPole++, BzPole.Value(iBz,jBz));
+      iBsPole++;
+      jBsPole = BsPole.LowerCol();
     }
   }
       
@@ -410,7 +409,6 @@ Standard_Integer  IGESConvGeom::SplineSurfaceFromIGES
     XPoly = st->XPolynomial(USeg, VSeg);
     YPoly = st->YPolynomial(USeg, VSeg);
     ZPoly = st->ZPolynomial(USeg, VSeg);
-    Standard_Real ParamU, ParamV;
     ParamU = 1.;
     for (i=Coef.LowerRow(); i<=Coef.UpperRow(); i++) {
       ParamV = 1.;
@@ -468,7 +466,6 @@ Standard_Integer  IGESConvGeom::SplineSurfaceFromIGES
       XPoly = st->XPolynomial(USeg, VSeg);
       YPoly = st->YPolynomial(USeg, VSeg);
       ZPoly = st->ZPolynomial(USeg, VSeg);
-      Standard_Real ParamU, ParamV;
       ParamU = 1.;
       for (i=Coef.LowerRow(); i<=Coef.UpperRow(); i++) {
 	ParamV = 1.;

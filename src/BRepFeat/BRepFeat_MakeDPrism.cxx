@@ -268,9 +268,9 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
       }
     }
     
-    TopExp_Explorer exp(mySbase, TopAbs_FACE);
-    for(; exp.More(); exp.Next()) {
-      const TopoDS_Face& ff = TopoDS::Face(exp.Current());
+    TopExp_Explorer anExp(mySbase, TopAbs_FACE);
+    for(; anExp.More(); anExp.Next()) {
+      const TopoDS_Face& ff = TopoDS::Face(anExp.Current());
       if(ToFuse(ff, FFace)) {
 	TopTools_DataMapOfShapeListOfShape sl;
 	break;
@@ -1073,7 +1073,6 @@ void BRepFeat_MakeDPrism::BossEdges (const Standard_Integer signature)
 	for (itLS.Initialize(theLastShape);itLS.More();itLS.Next()) {
 	  const TopoDS_Face& TopFace = TopoDS::Face(itLS.Value());
 	  if (!FF.IsSame(TopFace)) {
-	    TopExp_Explorer ExpE;
 	    for (ExpE.Init(FF,TopAbs_EDGE);ExpE.More() && !Found ;ExpE.Next()) {
 	      const TopoDS_Edge& E1 = TopoDS::Edge(ExpE.Current());
 	      TopoDS_Vertex V1,V2;

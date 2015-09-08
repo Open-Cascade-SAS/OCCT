@@ -1464,9 +1464,9 @@ void Contap_Contour::Perform
     //IFV begin
     if(solrst.NbSegments() <= 0) {
       if(mySFunc.FunctionType() == Contap_ContourStd) {
-        const Handle(Adaptor3d_HSurface)& Surf = mySFunc.Surface();
-        if(Adaptor3d_HSurfaceTool::GetType(Surf) == GeomAbs_Torus) {
-          gp_Torus aTor = Adaptor3d_HSurfaceTool::Torus(Surf);
+        const Handle(Adaptor3d_HSurface)& SurfToCheck = mySFunc.Surface();
+        if(Adaptor3d_HSurfaceTool::GetType(SurfToCheck) == GeomAbs_Torus) {
+          gp_Torus aTor = Adaptor3d_HSurfaceTool::Torus(SurfToCheck);
           gp_Dir aTorDir = aTor.Axis().Direction();
           gp_Dir aProjDir = mySFunc.Direction();
 

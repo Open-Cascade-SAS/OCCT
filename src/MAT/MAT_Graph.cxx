@@ -298,10 +298,10 @@ void MAT_Graph::FusionOfBasicElts(const Standard_Integer  IndexElt1,
   EA1 = Elt1->EndArc();
 
   if ( EA1 != SA1 ) {
-    Handle(MAT_BasicElt) E1 = EA1->FirstElement ();
-    Handle(MAT_BasicElt) E2 = EA1->SecondElement();
-    Handle(MAT_BasicElt) E3 = SA1->FirstElement ();
-    Handle(MAT_BasicElt) E4 = SA1->SecondElement();
+    E1 = EA1->FirstElement ();
+    E2 = EA1->SecondElement();
+    E3 = SA1->FirstElement ();
+    E4 = SA1->SecondElement();
 
     Standard_Boolean OnFig = (EA1->FirstNode() ->OnBasicElt() ||
 			      EA1->SecondNode()->OnBasicElt() ||

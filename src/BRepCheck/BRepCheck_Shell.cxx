@@ -598,8 +598,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 	    }
 	    
 	    //JR/Hp :
-	    Standard_Integer iorf = MapOfShapeOrientation.Find(Fcur) ;
-	    orf = (TopAbs_Orientation) iorf ;
+	    Standard_Integer anOriFCur = MapOfShapeOrientation.Find(Fcur) ;
+	    orf = (TopAbs_Orientation)anOriFCur;
 	    //	orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
 	    Fcur.Orientation(orf);
 	    
@@ -757,8 +757,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 	    }
 
 //JR/Hp :
-            Standard_Integer iorf = MapOfShapeOrientation.Find(Fcur) ;
-	    orf = (TopAbs_Orientation) iorf ;
+            Standard_Integer anOriFCur = MapOfShapeOrientation.Find(Fcur) ;
+	    orf = (TopAbs_Orientation)anOriFCur;
 //	    orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
 	    Fcur.Orientation(orf);
 

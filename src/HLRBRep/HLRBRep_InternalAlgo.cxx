@@ -865,7 +865,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 */
     //-- ======================================================================
     if(nf>2)  {
-      Standard_Integer i,ir,j,l;
+      Standard_Integer i,ir,k,l;
       Standard_Integer rra;
       l=(nf>>1)+1;
       ir=nf;
@@ -882,28 +882,28 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	  }
 	}
 	i=l;
-	j=l+l;
-	while(j<=ir) { 
-	  if(j<ir) { 
-	    if(Val(Index(j)) > Val(Index(j+1)))
-	      j++;
-	    else if(Val(Index(j)) == Val(Index(j+1))) { 
-	      if(Size(Index(j)) > Size(Index(j+1))) 
-		j++;
+	k=l+l;
+	while(k<=ir) { 
+	  if(k<ir) { 
+	    if(Val(Index(k)) > Val(Index(k+1)))
+	      k++;
+	    else if(Val(Index(k)) == Val(Index(k+1))) { 
+	      if(Size(Index(k)) > Size(Index(k+1))) 
+		k++;
 	    }
 	  }
-	  if(Val(rra) > Val(Index(j))) { 
-	    Index(i)=Index(j);
-	    i=j;
-	    j<<=1;
+	  if(Val(rra) > Val(Index(k))) { 
+	    Index(i)=Index(k);
+	    i=k;
+	    k<<=1;
 	  }
-	  else if((Val(rra) == Val(Index(j))) && (Size(rra) > Size(Index(j)))) { 
-	    Index(i)=Index(j);
-	    i=j;
-	    j<<=1;
+	  else if((Val(rra) == Val(Index(k))) && (Size(rra) > Size(Index(k)))) { 
+	    Index(i)=Index(k);
+	    i=k;
+	    k<<=1;
 	  }
 	  else {  
-	    j=ir+1;
+	    k=ir+1;
 	  }
 	}
 	Index(i)=rra;

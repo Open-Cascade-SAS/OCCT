@@ -130,17 +130,17 @@ void LocOpe_BuildWires::Perform(const TopTools_ListOfShape& L,
     
     while (!(mapV.Contains(VL) || Bords.Contains(VL))) {
       Standard_Integer ind = theMapVE.FindIndex(VL);
-      TopTools_ListIteratorOfListOfShape itl(theMapVE(ind));
-      for (; itl.More(); itl.Next()) {
-	if (!mapE.Contains(itl.Value())) {
+      TopTools_ListIteratorOfListOfShape anIterl(theMapVE(ind));
+      for (; anIterl.More(); anIterl.Next()) {
+	if (!mapE.Contains(anIterl.Value())) {
 	  break;
 	}
       }
 
-      if (!itl.More()) {
+      if (!anIterl.More()) {
 	Standard_ConstructionError::Raise();
       }
-      const TopoDS_Edge& theEdge = TopoDS::Edge(itl.Value());
+      const TopoDS_Edge& theEdge = TopoDS::Edge(anIterl.Value());
       TopoDS_Vertex Vf,Vl;
       TopExp::Vertices(theEdge,Vf,Vl);
       mapV.Add(VL);

@@ -50,11 +50,11 @@ Standard_Boolean STEPSelections_SelectGSCurves::Explore(const Standard_Integer /
 	  isInGeomSet = Standard_True; 
 	}
       if(isInGeomSet) {
-	Interface_EntityIterator subs = G.Shareds(start);
-	subs.Start();
-	Standard_Boolean isSome = subs.More();
-	for (; subs.More(); subs.Next()) 
-	  explored.AddItem (subs.Value());
+	Interface_EntityIterator aSubsShareds = G.Shareds(start);
+        aSubsShareds.Start();
+	Standard_Boolean isSome = aSubsShareds.More();
+	for (; aSubsShareds.More(); aSubsShareds.Next())
+	  explored.AddItem (aSubsShareds.Value());
 	return isSome;
       } else
 	return Standard_False;

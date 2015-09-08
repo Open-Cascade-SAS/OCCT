@@ -752,7 +752,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   if(!Recognize(sr))
     return shbinder;
   isBound = Standard_False;
-  Standard_Integer i,nb = sr->NbItems();
+  Standard_Integer nb = sr->NbItems();
   // Used in XSAlgo::AlgoContainer()->ProcessShape (ssv; 13.11.2010)
   Standard_Integer nbTPitems = TP->NbMapped();
   Handle(Message_Messenger) sout = TP->Messenger();
@@ -803,7 +803,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   myNMTool.SetActive(!isManifold && isNMMode);
   // [END] Proceed with non-manifold topology (ssv; 12.11.2010)
 
-  for (i = 1; i <= nb && PS.More(); i ++,PS.Next()) {
+  for (Standard_Integer i = 1; i <= nb && PS.More(); i ++,PS.Next()) {
   //for (i = 1; i <= nb ; i ++) {
     #ifdef TRANSLOG
     if (TP->TraceLevel() > 2) 
@@ -855,7 +855,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
       // Make compound to store closed Shells
       TopoDS_Compound compWithClosings;
       brepBuilder.MakeCompound(compWithClosings);
-
+      
       // Attempt to close Shells one-by-one
       for (Standard_Integer i = 1; i <= shellClosingsMap.Extent(); i++) {
         TopoDS_Shell adjustedShell = this->closeIDEASShell( TopoDS::Shell( shellClosingsMap.FindKey(i) ),

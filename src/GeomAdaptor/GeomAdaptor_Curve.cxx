@@ -262,8 +262,6 @@ Standard_Integer GeomAdaptor_Curve::NbIntervals(const GeomAbs_Shape S) const
           else if ( S == GeomAbs_C2) Cont = 2;
           else if ( S == GeomAbs_C3) Cont = 3;
           else                       Cont = myBspl->Degree();
-          Standard_Integer FirstIndex = myBspl->FirstUKnotIndex();
-          Standard_Integer LastIndex  = myBspl->LastUKnotIndex();
           Standard_Integer Degree = myBspl->Degree();
           Standard_Integer NbKnots = myBspl->NbKnots();
           TColStd_Array1OfInteger Mults (1, NbKnots);
@@ -386,8 +384,6 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 	    else if ( S == GeomAbs_C2) Cont = 2;
 	    else if ( S == GeomAbs_C3) Cont = 3;
 	    else                       Cont = myBspl->Degree();
-	    Standard_Integer FirstIndex = myBspl->FirstUKnotIndex();
-	    Standard_Integer LastIndex  = myBspl->LastUKnotIndex();
 	    Standard_Integer Degree = myBspl->Degree();
 	    Standard_Integer NbKnots = myBspl->NbKnots();
 	    TColStd_Array1OfInteger Mults (1, NbKnots);

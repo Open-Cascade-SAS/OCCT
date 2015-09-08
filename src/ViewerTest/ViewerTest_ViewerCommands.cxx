@@ -597,10 +597,10 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   // Change name of current active window
   if (!ViewerTest::CurrentView().IsNull())
   {
-    TCollection_AsciiString aTitle("3D View - ");
-    aTitle = aTitle
+    TCollection_AsciiString anActiveWindowTitle("3D View - ");
+    anActiveWindowTitle = anActiveWindowTitle
       + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
-    SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+    SetWindowTitle (ViewerTest::CurrentView()->Window(), anActiveWindowTitle.ToCString());
   }
 
   // Create viewer
@@ -3566,14 +3566,14 @@ static int VColorScale (Draw_Interpretor& theDI,
         std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
-      TCollection_AsciiString anArg (theArgVec[anArgIter + 1]);
-      if (!anArg.IsIntegerValue())
+      TCollection_AsciiString aFontArg(theArgVec[anArgIter + 1]);
+      if (!aFontArg.IsIntegerValue())
       {
         std::cout << "Error: HeightFont value should be integer!\n";
         return 1;
       }
 
-      aTextHeight = anArg.IntegerValue();
+      aTextHeight = aFontArg.IntegerValue();
       anArgIter += 1;
     }
     else if (aFlag == "-textpos")
@@ -3583,27 +3583,27 @@ static int VColorScale (Draw_Interpretor& theDI,
         std::cout << "Error: wrong syntax at argument '" << anArg << "'!\n";
         return 1;
       }
-      TCollection_AsciiString anArg (theArgVec[++anArgIter]);
-      anArg.LowerCase();
-      if (anArg == "none")
+      TCollection_AsciiString aTextPosArg(theArgVec[++anArgIter]);
+      aTextPosArg.LowerCase();
+      if (aTextPosArg == "none")
       {
         aLabPosition = Aspect_TOCSP_NONE;
       }
-      else if (anArg == "left")
+      else if (aTextPosArg == "left")
       {
         aLabPosition = Aspect_TOCSP_LEFT;
       }
-      else if (anArg == "right")
+      else if (aTextPosArg == "right")
       {
         aLabPosition = Aspect_TOCSP_RIGHT;
       }
-      else if (anArg == "center")
+      else if (aTextPosArg == "center")
       {
         aLabPosition = Aspect_TOCSP_CENTER;
       }
       else
       {
-        std::cout << "Error: unknown position '" << anArg << "'!\n";
+        std::cout << "Error: unknown position '" << aTextPosArg << "'!\n";
         return 1;
       }
     }

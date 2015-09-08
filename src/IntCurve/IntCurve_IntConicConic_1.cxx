@@ -1452,7 +1452,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	  
 
 	  if((!ResultIsAPoint) && (Pos1a!=IntRes2d_Middle || Pos2a!=IntRes2d_Middle)) {
-	    IntRes2d_Transition T1b,T2b;
 	    if(ProdVectTan>=TOLERANCE_ANGULAIRE) { //&&&&&&&&&&&&&&
 	      T1b.SetValue(Standard_False,Pos1b,IntRes2d_Out);
 	      T2b.SetValue(Standard_False,Pos2b,IntRes2d_In);
@@ -1599,7 +1598,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	      PtSeg1.SetValues(ElCLib::Value(U2,L2),U1,U2,T1a,T2a,Standard_False);
 	      
 	      if((Pos1b!=IntRes2d_Middle || Pos2b!=IntRes2d_Middle)) {
-		IntRes2d_Transition T1b,T2b;
 		if(ProdVectTan>=TOLERANCE_ANGULAIRE) {
 		  T1b.SetValue(Standard_False,Pos1b,IntRes2d_Out);
 		  T2b.SetValue(Standard_False,Pos2b,IntRes2d_In);

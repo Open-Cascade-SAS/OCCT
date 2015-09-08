@@ -877,16 +877,16 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
       TopoDS_Edge aNextEdge;
       if (nbPoss == 1) {
         aNextEdge = TopoDS::Edge (PossE.FindKey (1));
-        TopoDS_Shape aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
+        TopoDS_Shape aLocalFaceTemp  = FaceRef.Oriented(wfirst.Orientation());
         C2d = BRep_Tool::CurveOnSurface(aNextEdge,
-                                        TopoDS::Face(aLocalFace), f, l);
-        Standard_Real dpar = (l - f)*0.01;
+                                        TopoDS::Face(aLocalFaceTemp), f, l);
+        Standard_Real dparnew = (l - f)*0.01;
 
         if (aNextEdge.Orientation() == TopAbs_FORWARD) {
           C2d->D1(l,plast,dlast);
           if (dlast.Magnitude() < gp::Resolution())
           {
-            gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
+            gp_Pnt2d PrevPnt = C2d->Value(l - dparnew);
             dlast.SetXY(plast.XY() - PrevPnt.XY());
           }
         }
@@ -894,7 +894,7 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
           C2d->D1(f,plast,dlast);
           if (dlast.Magnitude() < gp::Resolution())
           {
-            gp_Pnt2d NextPnt = C2d->Value(f + dpar);
+            gp_Pnt2d NextPnt = C2d->Value(f + dparnew);
             dlast.SetXY(NextPnt.XY() - plast.XY());
           }
           dlast.Reverse();
@@ -902,9 +902,9 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
       }
       else if (nbPoss > 1) {
         // Faire choix en U,V...
-        TopoDS_Shape aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
+        TopoDS_Shape aLocalFaceTemp  = FaceRef.Oriented(wfirst.Orientation());
         
-        ChoixUV(LastEdge, TopoDS::Face(aLocalFace), PossE,
+        ChoixUV(LastEdge, TopoDS::Face(aLocalFaceTemp), PossE,
                 aNextEdge, plast, dlast, toll);
       }
 

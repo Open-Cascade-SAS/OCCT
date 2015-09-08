@@ -368,8 +368,8 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
       if (!ok) 
 	return;//nyiRaise
 
-      Handle(Geom_Surface) S1 = BRep_Tool::Surface(myFace1);
-      Standard_Boolean apex = FUN_tool_onapex(uv2,S1);
+      Handle(Geom_Surface) aSurf1 = BRep_Tool::Surface(myFace1);
+      Standard_Boolean apex = FUN_tool_onapex(uv2, aSurf1);
       if (apex) {
 	TopoDS_Vertex vf,vl; TopExp::Vertices(myEdge1,vf,vl);
 	gp_Pnt ptf = BRep_Tool::Pnt(vf); Standard_Real df = pt2.Distance(ptf); 
@@ -422,9 +422,9 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 	GeomTools_CurveSet::PrintCurve(NC,cout);
 	cout<<"--- nouvelle PCurve : "<<endl;
 	GeomTools_Curve2dSet::PrintCurve2d(PC2on1,cout);
-	Handle(Geom_Surface) S1 = BRep_Tool::Surface(myFace1);
+	Handle(Geom_Surface) aS1 = BRep_Tool::Surface(myFace1);
 	cout<<"--- sur surface : "<<endl;
-	GeomTools_SurfaceSet::PrintSurface(S1,cout);
+	GeomTools_SurfaceSet::PrintSurface(aS1,cout);
 	cout<<endl;
       }
 #endif

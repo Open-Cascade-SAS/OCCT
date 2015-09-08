@@ -220,13 +220,13 @@ void V3d_CircularGrid::DefineLines ()
   Standard_Real alpha = M_PI / aDivision;
   LineAttrib->SetColor (myTenthColor);
   myGroup->SetGroupPrimitivesAspect (LineAttrib);
-  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2*nbpnts);
+  Handle(Graphic3d_ArrayOfSegments) aPrims1 = new Graphic3d_ArrayOfSegments(2*nbpnts);
   const gp_Pnt p0(0., 0., -myOffSet);
   for (Standard_Integer i=1; i<=nbpnts; i++) {
-    aPrims->AddVertex(p0);
-    aPrims->AddVertex(Cos(alpha*i)*myRadius, Sin(alpha*i)*myRadius, -myOffSet);
+    aPrims1->AddVertex(p0);
+    aPrims1->AddVertex(Cos(alpha*i)*myRadius, Sin(alpha*i)*myRadius, -myOffSet);
   }
-  myGroup->AddPrimitiveArray(aPrims, Standard_False);
+  myGroup->AddPrimitiveArray(aPrims1, Standard_False);
 
   // circles
   nbpnts = 2 * Division + 1;
@@ -246,13 +246,13 @@ void V3d_CircularGrid::DefineLines ()
     myGroup->SetGroupPrimitivesAspect (LineAttrib);
     Standard_Integer n, np;
     const Standard_Integer nbl = aSeqTenth.Length() / nbpnts;
-    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(aSeqTenth.Length(),nbl);
+    Handle(Graphic3d_ArrayOfPolylines) aPrims2 = new Graphic3d_ArrayOfPolylines(aSeqTenth.Length(),nbl);
     for (np = 1, n=0; n<nbl; n++) {
-      aPrims->AddBound(nbpnts);
+      aPrims2->AddBound(nbpnts);
       for (Standard_Integer i=0; i<nbpnts; i++, np++)
-        aPrims->AddVertex(aSeqTenth(np));
+        aPrims2->AddVertex(aSeqTenth(np));
   }
-    myGroup->AddPrimitiveArray(aPrims, Standard_False);
+    myGroup->AddPrimitiveArray(aPrims2, Standard_False);
   }
   if (aSeqLines.Length())
   {
@@ -260,13 +260,13 @@ void V3d_CircularGrid::DefineLines ()
     myGroup->SetPrimitivesAspect (LineAttrib);
     Standard_Integer n, np;
     const Standard_Integer nbl = aSeqLines.Length() / nbpnts;
-    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(aSeqLines.Length(),nbl);
+    Handle(Graphic3d_ArrayOfPolylines) aPrims3 = new Graphic3d_ArrayOfPolylines(aSeqLines.Length(),nbl);
     for (np = 1, n=0; n<nbl; n++) {
-      aPrims->AddBound(nbpnts);
+      aPrims3->AddBound(nbpnts);
       for (Standard_Integer i=0; i<nbpnts; i++, np++)
-        aPrims->AddVertex(aSeqLines(np));
+        aPrims3->AddVertex(aSeqLines(np));
   }
-    myGroup->AddPrimitiveArray(aPrims, Standard_False);
+    myGroup->AddPrimitiveArray(aPrims3, Standard_False);
   }
 
   myGroup->SetMinMaxValues(-myRadius, -myRadius, 0.0, myRadius, myRadius, 0.0);

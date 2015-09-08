@@ -372,7 +372,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 
   // Faces
   Handle(Poly_Triangulation) Tr;
-  TopLoc_Location l;
+  TopLoc_Location aTempLoc;
   TopLoc_Location loc;
 
   DBRep_ListIteratorOfListOfFace itf(myFaces);
@@ -382,23 +382,23 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
     const Handle(DBRep_Face)& F = itf.Value();
     dis.SetColor(F->Color());
 
-    const Handle(Geom_Surface)& S = BRep_Tool::Surface(F->Face(),l);
+    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(F->Face(), aTempLoc);
 
-    if (!S.IsNull()) {
+    if (!aSurf.IsNull()) {
 
       Standard_Boolean restriction = Standard_False;
-      if(S->IsUPeriodic() || S->IsVPeriodic()) {
+      if(aSurf->IsUPeriodic() || aSurf->IsVPeriodic()) {
         Standard_Real SU1 = 0., SU2 = 0., SV1 = 0., SV2 = 0.;
         Standard_Real FU1 = 0., FU2 = 0., FV1 = 0., FV2 = 0.;
-        S->Bounds(SU1,SU2,SV1,SV2);
+        aSurf->Bounds(SU1,SU2,SV1,SV2);
         BRepTools::UVBounds (F->Face(),FU1,FU2,FV1,FV2);
-        if(S->IsUPeriodic()) {
+        if(aSurf->IsUPeriodic()) {
           if(FU1 < SU1 || FU1 > SU2)
             restriction = Standard_True;
           if(!restriction && (FU2 < SU1 || FU2 > SU2))
             restriction = Standard_True;
         }
-        if(!restriction && S->IsVPeriodic()) {
+        if(!restriction && aSurf->IsVPeriodic()) {
           if(FV1 < SV1 || FV1 > SV2)
             restriction = Standard_True;
           if(!restriction && (FV2 < SV1 || FV2 > SV2))
@@ -604,7 +604,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
     // trace des eventuelles triangulations.
     //=====================================
 
-    if (S.IsNull() || mytriangulations) {
+    if (aSurf.IsNull() || mytriangulations) {
       Tr = BRep_Tool::Triangulation(F->Face(), loc);
       if (!Tr.IsNull()) {
 	Display(Tr, loc.Transformation(), dis);
@@ -627,12 +627,12 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 
     // display geometrical curve if exists.
     Standard_Boolean isgeom = BRep_Tool::IsGeometric(E->Edge());
-    Standard_Real U1,U2;
+    Standard_Real aCheckU1, aCheckU2;
 
     if (isgeom) {
       // check the range (to report bad edges)
-      BRep_Tool::Range(E->Edge(),U1,U2);
-      if (U2 < U1) {
+      BRep_Tool::Range(E->Edge(), aCheckU1, aCheckU2);
+      if (aCheckU2 < aCheckU1) {
 	// bad orientation
 	cout << "DBRep_DrawableShape : Bad parameters on edge."<<endl;
 	BRepTools::Dump(E->Edge(),cout);
@@ -719,13 +719,13 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
       
       if (myDispOr) {
 	// display an arrow at the end
-	gp_Pnt P;
+	gp_Pnt aPnt;
 	gp_Vec V;
-	C.D1(l,P,V);
+	C.D1(l, aPnt,V);
 	gp_Pnt2d p1,p2;
-	dis.Project(P,p1);
-	P.Translate(V);
-	dis.Project(P,p2);
+	dis.Project(aPnt,p1);
+  aPnt.Translate(V);
+	dis.Project(aPnt,p2);
 	gp_Vec2d v(p1,p2);
 	if (v.Magnitude() > gp::Resolution()) {
 	  Standard_Real L = 20 / dis.Zoom();
@@ -769,12 +769,12 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
       else {
 
 	// Polygone sur triangulation:
-	Handle(Poly_Triangulation) Tr;
+	Handle(Poly_Triangulation) PolyTr;
 	Handle(Poly_PolygonOnTriangulation) Poly;
-	BRep_Tool::PolygonOnTriangulation(E->Edge(), Poly, Tr, loc);
+	BRep_Tool::PolygonOnTriangulation(E->Edge(), Poly, PolyTr, loc);
 	if (!Poly.IsNull()) {
 	  const TColStd_Array1OfInteger& Indices = Poly->Nodes();
-	  const TColgp_Array1OfPnt& Nodes = Tr->Nodes();
+	  const TColgp_Array1OfPnt& Nodes = PolyTr->Nodes();
 	  for (i=Indices.Lower()+1; i<=Indices.Upper(); i++) {
 	    dis.Draw(Nodes(Indices(i-1)).Transformed(loc),
 		     Nodes(Indices(i)).Transformed(loc));

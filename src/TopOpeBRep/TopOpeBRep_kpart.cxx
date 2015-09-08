@@ -288,8 +288,8 @@ Standard_Boolean FUNBREP_topowalki_new
       //                  lastonentre && onsort, 
       //                  first VP is first walking point (PIfound == 1.0),
       //                  current VP is the second one on walking and not the last.
-      const Handle(TopOpeBRepDS_Interference)& I = DSCIL.First();     
-      const TopOpeBRepDS_Transition& lasttransLine = I->Transition();
+      const Handle(TopOpeBRepDS_Interference)& anI = DSCIL.First();     
+      const TopOpeBRepDS_Transition& lasttransLine = anI->Transition();
       // xpu12-12-97 : line is built on only 2 vp,
       //  DSCIL->First() == DSCIL->Last()          
       //  lasttransLine = DSCIL's first transition

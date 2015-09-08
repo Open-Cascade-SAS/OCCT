@@ -116,12 +116,12 @@ Standard_EXPORT Standard_Boolean FUN_tool_correctCLO(TopoDS_Edge& E, const TopoD
     Standard_Real dot = dxx.Dot(dxx1);
     if (dot < 0.) continue;
 
-    gp_Vec2d dxx; Standard_Real dd=0;
-    if (inU) {dd = o2d1.X()-o2d.X(); dxx = gp_Vec2d(dd,0.);}
-    else     {dd = o2d1.Y()-o2d.Y(); dxx = gp_Vec2d(0.,dd);}        
+    gp_Vec2d aDxx; Standard_Real dd=0;
+    if (inU) {dd = o2d1.X()-o2d.X(); aDxx = gp_Vec2d(dd,0.);}
+    else     {dd = o2d1.Y()-o2d.Y(); aDxx = gp_Vec2d(0.,dd);}
 
     if (Abs(dd)<tolx) return Standard_False;
-    TopOpeBRepTool_TOOL::TrslUVModifE(dxx,FFOR,E); //FUN_tool_ttranslate(dxx,FFOR,E);
+    TopOpeBRepTool_TOOL::TrslUVModifE(aDxx,FFOR,E); //FUN_tool_ttranslate(dxx,FFOR,E);
   } // ex(FFOR)
   return Standard_False;
 }

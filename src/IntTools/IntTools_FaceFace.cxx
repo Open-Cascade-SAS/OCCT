@@ -747,8 +747,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       myListOfPnts.Clear(); // to use LineConstructor
     }
     //
-    const Standard_Integer aNbLin = myIntersector.NbLines();
-    for (Standard_Integer i=1; i <= aNbLin; ++i) {
+    const Standard_Integer aNbLinIntersector = myIntersector.NbLines();
+    for (Standard_Integer i=1; i <= aNbLinIntersector; ++i) {
       MakeCurve(i, dom1, dom2);
     }
     //
@@ -757,8 +757,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     if (bReverse) {
       Handle(Geom2d_Curve) aC2D1, aC2D2;
       //
-      const Standard_Integer aNbLin=mySeqOfCurve.Length();
-      for (Standard_Integer i=1; i<=aNbLin; ++i)
+      const Standard_Integer aNbLinSeqOfCurve =mySeqOfCurve.Length();
+      for (Standard_Integer i=1; i<=aNbLinSeqOfCurve; ++i)
       {
         IntTools_Curve& aIC=mySeqOfCurve(i);
         aC2D1=aIC.FirstCurve2d();

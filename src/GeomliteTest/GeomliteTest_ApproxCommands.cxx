@@ -161,9 +161,9 @@ static Standard_Integer PointsByPick
    AppDef_MultiPointConstraint mpc(1,0);
    MPC->ChangeArray1().Init(mpc);
    for (i=1; i<=ThePoints.Length(); i++) {
-      AppDef_MultiPointConstraint mpc(1,0);
-      mpc.SetPoint(1, ThePoints.Value(i));
-      MPC->SetValue(i, mpc); 
+      AppDef_MultiPointConstraint aLocalMpc(1,0);
+      aLocalMpc.SetPoint(1, ThePoints.Value(i));
+      MPC->SetValue(i, aLocalMpc);
    }  
  }
  

@@ -373,7 +373,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt& FirstPnt,
               D2Px(1, Ordre), D2Py(1, Ordre), D2W(1, Ordre);
  
   Standard_Integer ii;
-  Standard_Real aux, daux, b, b2, c, c2, bpr, bsc;
+  Standard_Real daux, b, b2, c, c2, bpr, bsc;
   gp_Vec V1(Center, FirstPnt), V1Prim, V1Secn, V2;
 
   // Calcul des  transformations
@@ -481,7 +481,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt& FirstPnt,
 	+ 2*betaprim * tan_b * dtan_b;
       b2 = tan_b - beta;
       b += beta / (3*b2);
-      aux =  betaprim*tan_b - beta*dtan_b;
+      Standard_Real aux =  betaprim*tan_b - beta*dtan_b;
       bpr += aux / (3*b2*b2);
       daux =  betasecn*tan_b - beta*d2tan_b;
       bsc += (daux - 2*aux*betaprim*tan_b*tan_b/b2)/(3*b2*b2);

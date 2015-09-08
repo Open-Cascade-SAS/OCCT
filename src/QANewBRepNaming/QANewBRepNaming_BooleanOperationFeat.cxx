@@ -1532,7 +1532,6 @@ Standard_Boolean QANewBRepNaming_BooleanOperationFeat::IsWRCase2(BRepAlgoAPI_Boo
   const TopoDS_Shape& Result = MS.Shape();
   const TopAbs_ShapeEnum& ResType = ShapeType(Result);
   if(ResType  == TopAbs_COMPOUND || ResType >= TopAbs_FACE) return Standard_False;
-  TopTools_ListOfShape aList;
 
   TopExp_Explorer anExp(Result, TopAbs_FACE);
   for(;anExp.More();anExp.Next()) {
@@ -1564,7 +1563,6 @@ void QANewBRepNaming_BooleanOperationFeat::LoadWRCase(BRepAlgoAPI_BooleanOperati
   const TopoDS_Shape& Result = MS.Shape();
   const TopAbs_ShapeEnum& ResType = ShapeType(Result);
   if(ResType  == TopAbs_COMPOUND || ResType >= TopAbs_FACE) return;
-  TopTools_ListOfShape aList;
 
   TopExp_Explorer anExp(Result, TopAbs_FACE);
   for(;anExp.More();anExp.Next()) {

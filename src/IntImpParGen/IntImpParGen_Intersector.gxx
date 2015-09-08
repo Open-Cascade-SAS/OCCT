@@ -43,153 +43,153 @@
 
 //======================================================================
 void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(const ImpTool& TheImpTool,
-			      const ParCurve& TheParCurve,
-			      const IntRes2d_Domain& TheImpCurveDomain,
-			      const IntRes2d_Domain& TheParCurveDomain,
-			      Standard_Integer& NbResultats,
-		      	      TColStd_Array1OfReal& Inter2_And_Domain2,
-			      TColStd_Array1OfReal& Inter1,
-			      TColStd_Array1OfReal& Resultat1,
-		      	      TColStd_Array1OfReal& Resultat2,
-			      const Standard_Real EpsNul) const {
+  const ParCurve& TheParCurve,
+  const IntRes2d_Domain& TheImpCurveDomain,
+  const IntRes2d_Domain& TheParCurveDomain,
+  Standard_Integer& NbResultats,
+  TColStd_Array1OfReal& Inter2_And_Domain2,
+  TColStd_Array1OfReal& Inter1,
+  TColStd_Array1OfReal& Resultat1,
+  TColStd_Array1OfReal& Resultat2,
+  const Standard_Real EpsNul) const {
 
-  
-  Standard_Integer Nb_Bornes_Intersection=NbResultats;
-  NbResultats=0;
-  
-  for(Standard_Integer i=1; i<=Nb_Bornes_Intersection; i+=2) {
-    Standard_Real param1=Inter1.Value(i);
-    Standard_Real param2=Inter1.Value(i+1);
 
-    Standard_Integer indice_1=i;
-    Standard_Integer indice_2=i+1;
+  Standard_Integer Nb_Bornes_Intersection = NbResultats;
+  NbResultats = 0;
 
-    if(param1>param2) {
-      Standard_Real t=param1; param1=param2; param2=t;
-      indice_1=i+1;
-      indice_2=i;
+  for (Standard_Integer i = 1; i <= Nb_Bornes_Intersection; i += 2) {
+    Standard_Real param1 = Inter1.Value(i);
+    Standard_Real param2 = Inter1.Value(i + 1);
+
+    Standard_Integer indice_1 = i;
+    Standard_Integer indice_2 = i + 1;
+
+    if (param1>param2) {
+      Standard_Real t = param1; param1 = param2; param2 = t;
+      indice_1 = i + 1;
+      indice_2 = i;
     }
 
-    gp_Pnt2d Pt1=TheImpTool.Value(param1);
-    gp_Pnt2d Pt2=TheImpTool.Value(param2);
+    gp_Pnt2d Pt1 = TheImpTool.Value(param1);
+    gp_Pnt2d Pt2 = TheImpTool.Value(param2);
     gp_Pnt2d Pt;
 
-    Standard_Boolean IsOnTheImpCurveDomain1=Standard_True;
+    Standard_Boolean IsOnTheImpCurveDomain1 = Standard_True;
 
-    Standard_Boolean IsOnTheImpCurveDomain2=Standard_True;
+    Standard_Boolean IsOnTheImpCurveDomain2 = Standard_True;
     //--------------------------------------------------------------------
-    if(TheImpCurveDomain.HasFirstPoint()) { 
-      if(param1<TheImpCurveDomain.FirstParameter()) {             
-	if(Pt1.Distance(TheImpCurveDomain.FirstPoint()) 
-	   > TheImpCurveDomain.FirstTolerance()) {
-	  IsOnTheImpCurveDomain1=Standard_False; 
-	}
+    if (TheImpCurveDomain.HasFirstPoint()) {
+      if (param1<TheImpCurveDomain.FirstParameter()) {
+        if (Pt1.Distance(TheImpCurveDomain.FirstPoint())
+      > TheImpCurveDomain.FirstTolerance()) {
+          IsOnTheImpCurveDomain1 = Standard_False;
+        }
       }
     }
-    if(IsOnTheImpCurveDomain1 && TheImpCurveDomain.HasLastPoint()) {
-      if(param1>TheImpCurveDomain.LastParameter()) {
-	if(Pt1.Distance(TheImpCurveDomain.LastPoint()) 
-	   > TheImpCurveDomain.FirstTolerance()) {
-	  IsOnTheImpCurveDomain1=Standard_False; 
-	}
+    if (IsOnTheImpCurveDomain1 && TheImpCurveDomain.HasLastPoint()) {
+      if (param1>TheImpCurveDomain.LastParameter()) {
+        if (Pt1.Distance(TheImpCurveDomain.LastPoint())
+     > TheImpCurveDomain.FirstTolerance()) {
+          IsOnTheImpCurveDomain1 = Standard_False;
+        }
       }
     }
     //--------------------------------------------------------------------
-    if(TheImpCurveDomain.HasFirstPoint()) { 
-      if(param2<TheImpCurveDomain.FirstParameter()) {             
-	if(Pt2.Distance(TheImpCurveDomain.FirstPoint()) 
-	   > TheImpCurveDomain.FirstTolerance()) {
-	  IsOnTheImpCurveDomain2=Standard_False; 
-	}
+    if (TheImpCurveDomain.HasFirstPoint()) {
+      if (param2<TheImpCurveDomain.FirstParameter()) {
+        if (Pt2.Distance(TheImpCurveDomain.FirstPoint())
+      > TheImpCurveDomain.FirstTolerance()) {
+          IsOnTheImpCurveDomain2 = Standard_False;
+        }
       }
     }
-    if(IsOnTheImpCurveDomain2 && TheImpCurveDomain.HasLastPoint()) {
-      if(param2>TheImpCurveDomain.LastParameter()) {
-	if(Pt2.Distance(TheImpCurveDomain.LastPoint()) 
-	   > TheImpCurveDomain.FirstTolerance()) {
-	  IsOnTheImpCurveDomain2=Standard_False; 
-	}
+    if (IsOnTheImpCurveDomain2 && TheImpCurveDomain.HasLastPoint()) {
+      if (param2>TheImpCurveDomain.LastParameter()) {
+        if (Pt2.Distance(TheImpCurveDomain.LastPoint())
+     > TheImpCurveDomain.FirstTolerance()) {
+          IsOnTheImpCurveDomain2 = Standard_False;
+        }
       }
     }
 
-    if(IsOnTheImpCurveDomain1) {
+    if (IsOnTheImpCurveDomain1) {
       //------------------------------------------------------------------
       //---                 la borne 1 est sur le domaine               --
       NbResultats++;
-      Resultat1.SetValue(NbResultats,Inter1.Value(indice_1));
-      Resultat2.SetValue(NbResultats,Inter2_And_Domain2.Value(indice_1));
+      Resultat1.SetValue(NbResultats, Inter1.Value(indice_1));
+      Resultat2.SetValue(NbResultats, Inter2_And_Domain2.Value(indice_1));
       //---               la borne2 est aussi sur le domaine           ---
-      if(IsOnTheImpCurveDomain2) {
-	NbResultats++;
-	Resultat1.SetValue(NbResultats,Inter1.Value(indice_2));
-	Resultat2.SetValue(NbResultats,Inter2_And_Domain2.Value(indice_2));
+      if (IsOnTheImpCurveDomain2) {
+        NbResultats++;
+        Resultat1.SetValue(NbResultats, Inter1.Value(indice_2));
+        Resultat2.SetValue(NbResultats, Inter2_And_Domain2.Value(indice_2));
       }
       else {
-	//---    Borne1 sur domaine et Borne 2 Hors Domaine           ---
-	Standard_Real t;
-	NbResultats++;
-	t=TheImpCurveDomain.LastParameter();  
-	Resultat1.SetValue(NbResultats,t);
-//	Standard_Real popResult = FindV(t,Pt,TheImpTool,TheParCurve,
-//								  TheParCurveDomain,
-//								  Inter2_And_Domain2.Value(indice_1),
-//								  Inter2_And_Domain2.Value(indice_2),
-//								  EpsNul);
-//	
-//	Resultat2.SetValue(NbResultats,popResult);
-	Resultat2.SetValue(NbResultats,
-			   IntImpParGen_Intersector::FindV(t,Pt,TheImpTool,TheParCurve,
-							   TheParCurveDomain,
-							   Inter2_And_Domain2.Value(indice_1),
-							   Inter2_And_Domain2.Value(indice_2),
-							   EpsNul));
+        //---    Borne1 sur domaine et Borne 2 Hors Domaine           ---
+        Standard_Real t;
+        NbResultats++;
+        t = TheImpCurveDomain.LastParameter();
+        Resultat1.SetValue(NbResultats, t);
+        //	Standard_Real popResult = FindV(t,Pt,TheImpTool,TheParCurve,
+        //								  TheParCurveDomain,
+        //								  Inter2_And_Domain2.Value(indice_1),
+        //								  Inter2_And_Domain2.Value(indice_2),
+        //								  EpsNul);
+        //	
+        //	Resultat2.SetValue(NbResultats,popResult);
+        Resultat2.SetValue(NbResultats,
+          IntImpParGen_Intersector::FindV(t, Pt, TheImpTool, TheParCurve,
+            TheParCurveDomain,
+            Inter2_And_Domain2.Value(indice_1),
+            Inter2_And_Domain2.Value(indice_2),
+            EpsNul));
       }
     }
     else { //======= la borne1 n est pas sur le domaine ========
-      if(IsOnTheImpCurveDomain2) {
-	Standard_Real t;
-	NbResultats++;
-	t=TheImpCurveDomain.FirstParameter(); 
-	
-	Resultat1.SetValue(NbResultats,t);
-	Resultat2.SetValue(NbResultats,
-			   IntImpParGen_Intersector::FindV(t,Pt,TheImpTool,TheParCurve,
-				 TheParCurveDomain,
-				 Inter2_And_Domain2.Value(indice_1),
-				 Inter2_And_Domain2.Value(indice_2),
-				 EpsNul));
-	
-	NbResultats++;
-	Resultat1.SetValue(NbResultats,Inter1.Value(indice_2));
-	Resultat2.SetValue(NbResultats,Inter2_And_Domain2.Value(indice_2));
+      if (IsOnTheImpCurveDomain2) {
+        Standard_Real t;
+        NbResultats++;
+        t = TheImpCurveDomain.FirstParameter();
+
+        Resultat1.SetValue(NbResultats, t);
+        Resultat2.SetValue(NbResultats,
+          IntImpParGen_Intersector::FindV(t, Pt, TheImpTool, TheParCurve,
+            TheParCurveDomain,
+            Inter2_And_Domain2.Value(indice_1),
+            Inter2_And_Domain2.Value(indice_2),
+            EpsNul));
+
+        NbResultats++;
+        Resultat1.SetValue(NbResultats, Inter1.Value(indice_2));
+        Resultat2.SetValue(NbResultats, Inter2_And_Domain2.Value(indice_2));
       }
       else {  //====== la borne2 et la borne1 sont hors domaine =====
-	if(param1<TheImpCurveDomain.FirstParameter()
-	   && param2>TheImpCurveDomain.LastParameter()) {
-	  Standard_Real t;
-	  NbResultats++;
-	  t=TheImpCurveDomain.FirstParameter();
-	  Resultat1.SetValue(NbResultats,t);
-	  Resultat2.SetValue(NbResultats,
-			     IntImpParGen_Intersector::FindV(t,Pt,TheImpTool,TheParCurve,
-							     TheParCurveDomain,
-							     Inter2_And_Domain2.Value(indice_1),
-							     Inter2_And_Domain2.Value(indice_2),
-							     EpsNul));
+        if (param1<TheImpCurveDomain.FirstParameter()
+          && param2>TheImpCurveDomain.LastParameter()) {
+          Standard_Real t;
+          NbResultats++;
+          t = TheImpCurveDomain.FirstParameter();
+          Resultat1.SetValue(NbResultats, t);
+          Resultat2.SetValue(NbResultats,
+            IntImpParGen_Intersector::FindV(t, Pt, TheImpTool, TheParCurve,
+              TheParCurveDomain,
+              Inter2_And_Domain2.Value(indice_1),
+              Inter2_And_Domain2.Value(indice_2),
+              EpsNul));
 
 
-	  
-	  NbResultats++;
-	  t=TheImpCurveDomain.LastParameter();
-	  Resultat1.SetValue(NbResultats,t);
-	  Resultat2.SetValue(NbResultats,
-			     IntImpParGen_Intersector::FindV(t,Pt,TheImpTool,TheParCurve,
-				   TheParCurveDomain,
-				   Inter2_And_Domain2.Value(indice_1),
-				   Inter2_And_Domain2.Value(indice_2),
-				   EpsNul));
-	  
-	}
+
+          NbResultats++;
+          t = TheImpCurveDomain.LastParameter();
+          Resultat1.SetValue(NbResultats, t);
+          Resultat2.SetValue(NbResultats,
+            IntImpParGen_Intersector::FindV(t, Pt, TheImpTool, TheParCurve,
+              TheParCurveDomain,
+              Inter2_And_Domain2.Value(indice_1),
+              Inter2_And_Domain2.Value(indice_2),
+              EpsNul));
+
+        }
       }
     }
   }
@@ -197,139 +197,139 @@ void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(const ImpTool& T
 //======================================================================
 //--     C o n s t r u c t e u r s     e t     P e r f o r m 
 IntImpParGen_Intersector::IntImpParGen_Intersector() {
-  done=Standard_False;
+  done = Standard_False;
 }
 //----------------------------------------------------------------------
 //--
 IntImpParGen_Intersector::IntImpParGen_Intersector(const ImpTool& TheImpTool,
-                                        const IntRes2d_Domain& TheImpCurveDomain,
-                                        const ParCurve& TheParCurve,
-                                        const IntRes2d_Domain& TheParCurveDomain,
-					const Standard_Real TolConf,
-					const Standard_Real Tol) {
-  Perform(TheImpTool,TheImpCurveDomain,TheParCurve,TheParCurveDomain,TolConf,Tol);
+  const IntRes2d_Domain& TheImpCurveDomain,
+  const ParCurve& TheParCurve,
+  const IntRes2d_Domain& TheParCurveDomain,
+  const Standard_Real TolConf,
+  const Standard_Real Tol) {
+  Perform(TheImpTool, TheImpCurveDomain, TheParCurve, TheParCurveDomain, TolConf, Tol);
 }
 //----------------------------------------------------------------------
 //--
 void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
-                                        const IntRes2d_Domain& TheImpCurveDomain,
-                                        const ParCurve& TheParCurve,
-                                        const IntRes2d_Domain& TheParCurveDomain,
-					const Standard_Real TolConf,
-					const Standard_Real Tol) {
+  const IntRes2d_Domain& TheImpCurveDomain,
+  const ParCurve& TheParCurve,
+  const IntRes2d_Domain& TheParCurveDomain,
+  const Standard_Real TolConf,
+  const Standard_Real Tol) {
 
 
-  Standard_Integer i,nb_segments_solution, nb_points_solution;
-  Standard_Real param1,param2,EpsX, EpsNul, EpsDist;
-  
-  IntRes2d_Transition Trans1,Trans2;
-  gp_Pnt2d pt1,pt2;
-  gp_Vec2d Tan1,Tan2,Norm1,Norm2;
-  IntRes2d_Position Pos1,Pos2;
+  Standard_Integer i, nb_segments_solution, nb_points_solution;
+  Standard_Real param1, param2, EpsX, EpsNul, EpsDist;
+
+  IntRes2d_Transition Trans1, Trans2;
+  gp_Pnt2d pt1, pt2;
+  gp_Vec2d Tan1, Tan2, Norm1, Norm2;
+  IntRes2d_Position Pos1, Pos2;
 
 
   //----------------------------------------------
   //-- On teste apres appel aux maths si les bornes 
   //-- des domaines sont des solutions
   //-- 
-  Standard_Boolean HeadOnImp =Standard_False;
-  Standard_Boolean HeadOnPar =Standard_False;
-  Standard_Boolean EndOnImp  =Standard_False;
-  Standard_Boolean EndOnPar  =Standard_False;
+  Standard_Boolean HeadOnImp = Standard_False;
+  Standard_Boolean HeadOnPar = Standard_False;
+  Standard_Boolean EndOnImp = Standard_False;
+  Standard_Boolean EndOnPar = Standard_False;
 
   this->ResetFields();
 
-  IntImpParGen_MyImpParTool TheImpParTool(TheImpTool,TheParCurve);
+  IntImpParGen_MyImpParTool TheImpParTool(TheImpTool, TheParCurve);
 
-  if (! (TheParCurveDomain.HasFirstPoint() &&
-         TheParCurveDomain.HasLastPoint())) {
+  if (!(TheParCurveDomain.HasFirstPoint() &&
+    TheParCurveDomain.HasLastPoint())) {
     Standard_ConstructionError::Raise("Domaine sur courbe incorrect");
-    }
-  
+  }
+
   Standard_Integer nb_echantillons = ParTool::NbSamples(TheParCurve,
-							TheParCurveDomain.FirstParameter(),
-							TheParCurveDomain.LastParameter());
+    TheParCurveDomain.FirstParameter(),
+    TheParCurveDomain.LastParameter());
 
   EpsX = EPSX;
-  if(EpsX>1.0e-10) EpsX = 1.0e-10;
-  EpsNul=(TolConf<=1.0e-10)? 1.0e-10: TolConf;
-  EpsDist=(Tol<=1.0e-10)? 1.0e-10: Tol;
-  
-  Standard_Real Tolerance_Angulaire=EpsDist;  
-  
+  if (EpsX>1.0e-10) EpsX = 1.0e-10;
+  EpsNul = (TolConf <= 1.0e-10) ? 1.0e-10 : TolConf;
+  EpsDist = (Tol <= 1.0e-10) ? 1.0e-10 : Tol;
+
+  Standard_Real Tolerance_Angulaire = EpsDist;
 
 
-  if((TheParCurveDomain.LastParameter() - TheParCurveDomain.FirstParameter()) < 100.0*EpsX) {
+
+  if ((TheParCurveDomain.LastParameter() - TheParCurveDomain.FirstParameter()) < 100.0*EpsX) {
     EpsX = (TheParCurveDomain.LastParameter() - TheParCurveDomain.FirstParameter())*0.01;
   }
 
-    math_FunctionSample Sample2(TheParCurveDomain.FirstParameter(),
-				TheParCurveDomain.LastParameter(),
-				nb_echantillons);
-    
-    math_FunctionAllRoots Sol(TheImpParTool,
-			      Sample2,
-			      EpsX,
-			      EpsDist,
-			      EpsNul);
-    
-    if(!Sol.IsDone()) {done = Standard_False; return; }
-    
-    nb_segments_solution=Sol.NbIntervals();
-    nb_points_solution=Sol.NbPoints();
-    
-    //--------------------------------------------------------------------
+  math_FunctionSample Sample2(TheParCurveDomain.FirstParameter(),
+    TheParCurveDomain.LastParameter(),
+    nb_echantillons);
+
+  math_FunctionAllRoots Sol(TheImpParTool,
+    Sample2,
+    EpsX,
+    EpsDist,
+    EpsNul);
+
+  if (!Sol.IsDone()) { done = Standard_False; return; }
+
+  nb_segments_solution = Sol.NbIntervals();
+  nb_points_solution = Sol.NbPoints();
+
+  //--------------------------------------------------------------------
   //--   T r a i t e m e n t    d e s   P o i n t s   S o l u t i o n s
-  for(i=1; i<=nb_points_solution; i++) {
+  for (i = 1; i <= nb_points_solution; i++) {
     gp_Pnt2d Pt;
-    param2=Sol.GetPoint(i);
-    param1=FindU(param2,Pt,TheParCurve,TheImpTool);
-  
-    if(TheImpCurveDomain.IsClosed()) {
-      param1 = IntImpParGen::NormalizeOnDomain( param1
-				 ,TheImpCurveDomain);
+    param2 = Sol.GetPoint(i);
+    param1 = FindU(param2, Pt, TheParCurve, TheImpTool);
+
+    if (TheImpCurveDomain.IsClosed()) {
+      param1 = IntImpParGen::NormalizeOnDomain(param1
+        , TheImpCurveDomain);
     }
-    
-    Standard_Boolean IsOnTheImpCurveDomain=Standard_True;
-    if(TheImpCurveDomain.HasFirstPoint()) { 
-      if(param1<TheImpCurveDomain.FirstParameter()) {             
-	if(Pt.Distance(TheImpCurveDomain.FirstPoint()) 
-	   > TheImpCurveDomain.FirstTolerance()) {
-	  IsOnTheImpCurveDomain=Standard_False; 
-	}
+
+    Standard_Boolean IsOnTheImpCurveDomain = Standard_True;
+    if (TheImpCurveDomain.HasFirstPoint()) {
+      if (param1<TheImpCurveDomain.FirstParameter()) {
+        if (Pt.Distance(TheImpCurveDomain.FirstPoint())
+      > TheImpCurveDomain.FirstTolerance()) {
+          IsOnTheImpCurveDomain = Standard_False;
+        }
       }
     }
-    if(IsOnTheImpCurveDomain && TheImpCurveDomain.HasLastPoint()) {
-      if(param1>TheImpCurveDomain.LastParameter()) {
-	if(Pt.Distance(TheImpCurveDomain.LastPoint()) 
-	   > TheImpCurveDomain.FirstTolerance()) {
-	  IsOnTheImpCurveDomain=Standard_False; 
-	}
+    if (IsOnTheImpCurveDomain && TheImpCurveDomain.HasLastPoint()) {
+      if (param1>TheImpCurveDomain.LastParameter()) {
+        if (Pt.Distance(TheImpCurveDomain.LastPoint())
+     > TheImpCurveDomain.FirstTolerance()) {
+          IsOnTheImpCurveDomain = Standard_False;
+        }
       }
     }
-    
-    if(IsOnTheImpCurveDomain) {
-      TheImpTool.D2(param1,pt1,Tan1,Norm1);
-      ParTool::D2(TheParCurve,param2,pt2,Tan2,Norm2);
-      
-      IntImpParGen::DeterminePosition(Pos1,TheImpCurveDomain,pt1,param1);
-      IntImpParGen::DeterminePosition(Pos2,TheParCurveDomain,pt2,param2);
-      
-      if(Pos1==IntRes2d_End)  EndOnImp  = Standard_True;
-      else if(Pos1==IntRes2d_Head) HeadOnImp = Standard_True;
-      if(Pos2==IntRes2d_End)  EndOnPar  = Standard_True;
-      else if(Pos2==IntRes2d_Head) HeadOnPar = Standard_True;
 
-      IntImpParGen::DetermineTransition(Pos1,Tan1,Norm1,Trans1,
-			   Pos2,Tan2,Norm2,Trans2,
-			   Tolerance_Angulaire);
+    if (IsOnTheImpCurveDomain) {
+      TheImpTool.D2(param1, pt1, Tan1, Norm1);
+      ParTool::D2(TheParCurve, param2, pt2, Tan2, Norm2);
 
-      IntRes2d_IntersectionPoint IP(pt1,param1,param2
-				    ,Trans1,Trans2
-				    ,ReversedParameters());
+      IntImpParGen::DeterminePosition(Pos1, TheImpCurveDomain, pt1, param1);
+      IntImpParGen::DeterminePosition(Pos2, TheParCurveDomain, pt2, param2);
+
+      if (Pos1 == IntRes2d_End)  EndOnImp = Standard_True;
+      else if (Pos1 == IntRes2d_Head) HeadOnImp = Standard_True;
+      if (Pos2 == IntRes2d_End)  EndOnPar = Standard_True;
+      else if (Pos2 == IntRes2d_Head) HeadOnPar = Standard_True;
+
+      IntImpParGen::DetermineTransition(Pos1, Tan1, Norm1, Trans1,
+        Pos2, Tan2, Norm2, Trans2,
+        Tolerance_Angulaire);
+
+      IntRes2d_IntersectionPoint IP(pt1, param1, param2
+        , Trans1, Trans2
+        , ReversedParameters());
       Insert(IP);
     }
-  } 
+  }
   //-- F i n   d u   T r a i t e m e n t   d e s   P t s   S o l.
 
 
@@ -341,46 +341,45 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
   //--    -->2N segments si la courbe en U est fermee
   //--   
 
-  TColStd_Array1OfReal Inter2_and_Domaine2(1,2+8*nb_segments_solution);
-  TColStd_Array1OfReal Inter1(1,2+8*nb_segments_solution);
+  TColStd_Array1OfReal Inter2_and_Domaine2(1, 2 + 8 * nb_segments_solution);
+  TColStd_Array1OfReal Inter1(1, 2 + 8 * nb_segments_solution);
 
-  Standard_Integer nb_segments_crees=0;
+  Standard_Integer nb_segments_crees = 0;
 
-  for (Standard_Integer j2=1,j=1;j<=nb_segments_solution;j++,j2+=2) {
-    Standard_Real param2_inf,param2_sup;
-    Standard_Real param1_inf,param1_sup;
-    gp_Pnt2d Ptemp;
-    
-    Sol.GetInterval(j,param2_inf,param2_sup);
+  for (Standard_Integer j2 = 1, j = 1; j <= nb_segments_solution; j++, j2 += 2) {
+    Standard_Real param2_inf, param2_sup;
+    Standard_Real param1_inf, param1_sup;
+	gp_Pnt2d Ptemp;
+
+    Sol.GetInterval(j, param2_inf, param2_sup);
     param1_inf=FindU(param2_inf,Ptemp,TheParCurve,TheImpTool);
     param1_sup=FindU(param2_sup,Ptemp,TheParCurve,TheImpTool);    
 
     //----------------------------------------------------------------------
     //--         C o u r b e    I m p l i c i t e    F e r m e e 
 
-    if(TheImpCurveDomain.IsClosed()) {
+    if (TheImpCurveDomain.IsClosed()) {
 
-      gp_Pnt2d Ptemp;
-      gp_Vec2d T1,T2,N1,N2;
-      Standard_Real param1_origine,param1_fin;
+      gp_Vec2d T1, T2, N1, N2;
+      Standard_Real param1_origine, param1_fin;
 
-      TheImpCurveDomain.EquivalentParameters(param1_origine,param1_fin);
-      Standard_Real Periode=param1_fin-param1_origine;
+      TheImpCurveDomain.EquivalentParameters(param1_origine, param1_fin);
+      Standard_Real Periode = param1_fin - param1_origine;
 
-      while(param1_inf<param1_origine) { param1_inf+=Periode; }
-      while(param1_sup<param1_origine) { param1_sup+=Periode; }      
+      while (param1_inf<param1_origine) { param1_inf += Periode; }
+      while (param1_sup<param1_origine) { param1_sup += Periode; }
 
       ParTool::D2(TheParCurve,param2_inf,Ptemp,T2,N2);
       TheImpTool.D2(param1_inf,Ptemp,T1,N1);
-      if(T1.Magnitude()<=gp::Resolution()) T1=N1;
-      if(T2.Magnitude()<=gp::Resolution()) T2=N2;
+      if (T1.Magnitude() <= gp::Resolution()) T1 = N1;
+      if (T2.Magnitude() <= gp::Resolution()) T2 = N2;
 
-      if(T1.Dot(T2) >=0.0) {
-	//---  param1_inf designe un point entrant (et T1 est vers la matiere)
-	if(param1_inf>=param1_sup) {    param1_sup+=Periode;	}
+      if (T1.Dot(T2) >= 0.0) {
+        //---  param1_inf designe un point entrant (et T1 est vers la matiere)
+        if (param1_inf >= param1_sup) { param1_sup += Periode; }
       }
       else { //---  param1_inf : point sortant (et T1 est Hors matiere)
-	if(param1_inf<=param1_sup) {    param1_inf+=Periode;     }
+        if (param1_inf <= param1_sup) { param1_inf += Periode; }
       }
       //--- On cree un nouveau segment decale de Periode
       //--  Exemple de Pb : Domaine PI/4  PI/2   et intervalle 0,PI
@@ -396,57 +395,57 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
       //--
       //
 
-      if(TheImpCurveDomain.LastParameter() 
-	 > ((param1_inf>param1_sup)? (param1_sup+Periode): 
-	                              (param1_inf+Periode))) {
-	Inter2_and_Domaine2.SetValue(j2,param2_inf);
-	Inter1.SetValue(j2,param1_inf+Periode);
-      
-	Inter2_and_Domaine2.SetValue(j2+1,param2_sup);
-	Inter1.SetValue(j2+1,param1_sup+Periode);     
-	j2+=2;
-	nb_segments_crees++;
+      if (TheImpCurveDomain.LastParameter()
+      > ((param1_inf>param1_sup) ? (param1_sup + Periode) :
+        (param1_inf + Periode))) {
+        Inter2_and_Domaine2.SetValue(j2, param2_inf);
+        Inter1.SetValue(j2, param1_inf + Periode);
+
+        Inter2_and_Domaine2.SetValue(j2 + 1, param2_sup);
+        Inter1.SetValue(j2 + 1, param1_sup + Periode);
+        j2 += 2;
+        nb_segments_crees++;
       }
-								       
-      if(TheImpCurveDomain.FirstParameter() 
-	 <((param1_inf<param1_sup)? (param1_sup-Periode): (param1_inf-Periode))) {
-	Inter2_and_Domaine2.SetValue(j2,param2_inf);
-	Inter1.SetValue(j2,param1_inf-Periode);
-	
-	Inter2_and_Domaine2.SetValue(j2+1,param2_sup);
-	Inter1.SetValue(j2+1,param1_sup-Periode);     
-	j2+=2;
-	nb_segments_crees++;
+
+      if (TheImpCurveDomain.FirstParameter()
+        <((param1_inf<param1_sup) ? (param1_sup - Periode) : (param1_inf - Periode))) {
+        Inter2_and_Domaine2.SetValue(j2, param2_inf);
+        Inter1.SetValue(j2, param1_inf - Periode);
+
+        Inter2_and_Domaine2.SetValue(j2 + 1, param2_sup);
+        Inter1.SetValue(j2 + 1, param1_sup - Periode);
+        j2 += 2;
+        nb_segments_crees++;
       }
     }
     //--   F i n     C o u r b e    I m p l i c i t e    F e r m e e 
     //----------------------------------------------------------------------
 
 
-    Inter2_and_Domaine2.SetValue(j2,param2_inf);
-    Inter1.SetValue(j2,param1_inf);
-    
-    Inter2_and_Domaine2.SetValue(j2+1,param2_sup);
-    Inter1.SetValue(j2+1,param1_sup);
-  } 
-  
+    Inter2_and_Domaine2.SetValue(j2, param2_inf);
+    Inter1.SetValue(j2, param1_inf);
+
+    Inter2_and_Domaine2.SetValue(j2 + 1, param2_sup);
+    Inter1.SetValue(j2 + 1, param1_sup);
+  }
+
   //------------------------------------------------------------------
   //--  INTER2_DOMAINE2 : Intersection AND CurveDomain : Function of PARAM2
   //--    INTER1        : Intersection AND CurveDomain : Function of PARAM1
   //------------------------------------------------------------------  
   //--
-  TColStd_Array1OfReal Resultat1(1,2+(1+nb_segments_solution)*2);
-  TColStd_Array1OfReal Resultat2(1,2+(1+nb_segments_solution)*2);
-  nb_segments_solution+=nb_segments_crees;
-  Standard_Integer NbResultats=nb_segments_solution*2;
+  TColStd_Array1OfReal Resultat1(1, 2 + (1 + nb_segments_solution) * 2);
+  TColStd_Array1OfReal Resultat2(1, 2 + (1 + nb_segments_solution) * 2);
+  nb_segments_solution += nb_segments_crees;
+  Standard_Integer NbResultats = nb_segments_solution * 2;
 
   And_Domaine_Objet1_Intersections(TheImpTool,
-				   TheParCurve,
-				   TheImpCurveDomain,
-				   TheParCurveDomain,
-				   NbResultats,
-				   Inter2_and_Domaine2,Inter1,
-				   Resultat1,Resultat2,EpsNul);
+    TheParCurve,
+    TheImpCurveDomain,
+    TheParCurveDomain,
+    NbResultats,
+    Inter2_and_Domaine2, Inter1,
+    Resultat1, Resultat2, EpsNul);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //Calcule_Toutes_Transitions(NbResultats,
@@ -460,44 +459,41 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
   //~~~~~       D acces aux methodes Protected APPEND
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   {
-    IntRes2d_Position Pos1,Pos2;
-    IntRes2d_Transition Trans1,Trans2;
-    gp_Vec2d Tan1,Tan2,Norm1,Norm2;
-    gp_Pnt2d Pt1_on1,Pt2_on1,Pt1_on2,Pt2_on2;
-    Standard_Real Param1_on1,Param2_on1,Param1_on2,Param2_on2;
-    
-    Standard_Real Dist_Mini_ImpCurve=EPSNUL;
-    Standard_Real Tolerance_Angulaire=Dist_Mini_ImpCurve; 
-    
-    
-    for(Standard_Integer i=1; i<=NbResultats ; i+=2) {
-      Standard_Integer ip1=i+1;
-      Standard_Boolean OnlyOnePoint=Standard_False;
-      
-      Param1_on1=Resultat1.Value(i);
-      Param1_on2=Resultat2.Value(i);
-      Param2_on1=Resultat1.Value(ip1);
-      Param2_on2=Resultat2.Value(ip1);
+    gp_Pnt2d Pt1_on1, Pt2_on1, Pt1_on2, Pt2_on2;
+    Standard_Real Param1_on1, Param2_on1, Param1_on2, Param2_on2;
 
-      Pt1_on1=TheImpTool.Value(Param1_on1);
-      Pt2_on1=TheImpTool.Value(Param2_on1);
-      Pt1_on2=ParTool::Value(TheParCurve,Param1_on2);
-      Pt2_on2=ParTool::Value(TheParCurve,Param2_on2);
-      
-      if(!TheImpCurveDomain.IsClosed()) { 
-	if( Pt1_on1.Distance(Pt2_on1) <= Dist_Mini_ImpCurve ) {
-	  if( Pt1_on2.Distance(Pt2_on2) <= Dist_Mini_ImpCurve ) {
-	    OnlyOnePoint=Standard_True;
-	  }
-	}
-      }  
+    Standard_Real Dist_Mini_ImpCurve = EPSNUL;
+    Standard_Real ToleranceAngulaireDistMini = Dist_Mini_ImpCurve;
 
-      Param1_on1=IntImpParGen::NormalizeOnDomain(Param1_on1,TheImpCurveDomain);
-      Param1_on2=IntImpParGen::NormalizeOnDomain(Param1_on2,TheParCurveDomain);
+
+    for (Standard_Integer k = 1; k <= NbResultats; k += 2) {
+      Standard_Integer ip1 = k + 1;
+      Standard_Boolean OnlyOnePoint = Standard_False;
+
+      Param1_on1 = Resultat1.Value(k);
+      Param1_on2 = Resultat2.Value(k);
+      Param2_on1 = Resultat1.Value(ip1);
+      Param2_on2 = Resultat2.Value(ip1);
+
+      Pt1_on1 = TheImpTool.Value(Param1_on1);
+      Pt2_on1 = TheImpTool.Value(Param2_on1);
+      Pt1_on2 = ParTool::Value(TheParCurve, Param1_on2);
+      Pt2_on2 = ParTool::Value(TheParCurve, Param2_on2);
+
+      if (!TheImpCurveDomain.IsClosed()) {
+        if (Pt1_on1.Distance(Pt2_on1) <= Dist_Mini_ImpCurve) {
+          if (Pt1_on2.Distance(Pt2_on2) <= Dist_Mini_ImpCurve) {
+            OnlyOnePoint = Standard_True;
+          }
+        }
+      }
+
+      Param1_on1 = IntImpParGen::NormalizeOnDomain(Param1_on1, TheImpCurveDomain);
+      Param1_on2 = IntImpParGen::NormalizeOnDomain(Param1_on2, TheParCurveDomain);
 
       TheImpTool.D2(Param1_on1,Pt1_on1,Tan1,Norm1);
       ParTool::D2(TheParCurve,Param1_on2,Pt1_on2,Tan2,Norm2);
-      
+
       IntImpParGen::DeterminePosition(Pos1,TheImpCurveDomain,Pt1_on1,Param1_on1);
       IntImpParGen::DeterminePosition(Pos2,TheParCurveDomain,Pt1_on2,Param1_on2);
 
@@ -505,20 +501,20 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
       else if(Pos1==IntRes2d_Head) HeadOnImp = Standard_True;
       if(Pos2==IntRes2d_End)  EndOnPar  = Standard_True;
       else if(Pos2==IntRes2d_Head) HeadOnPar = Standard_True;
-      
+
 
       IntImpParGen::DetermineTransition(Pos1,Tan1,Norm1,Trans1,
 			   Pos2,Tan2,Norm2,Trans2,
-			   Tolerance_Angulaire);
-      
+			   ToleranceAngulaireDistMini);
+
       //============== Detection du cas : L intersection est en bout
       //==============  sur les 2 domaines
-      
+
       if(Pos1!=IntRes2d_Middle && Pos2!=IntRes2d_Middle) {
-	Standard_Real m=0.5*(Pt1_on1.X() + Pt1_on2.X());
-	Pt1_on1.SetX(m);
-	m=0.5*(Pt1_on1.Y() + Pt1_on2.Y());
-	Pt1_on1.SetY(m);
+        Standard_Real m = 0.5*(Pt1_on1.X() + Pt1_on2.X());
+        Pt1_on1.SetX(m);
+        m = 0.5*(Pt1_on1.Y() + Pt1_on2.Y());
+        Pt1_on1.SetY(m);
       }
 
       IntRes2d_IntersectionPoint new_p1(Pt1_on1
@@ -526,17 +522,17 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
 					,Trans1,Trans2
 					,ReversedParameters());
       if(!OnlyOnePoint) {
-	IntRes2d_IntersectionPoint new_p2;
+        IntRes2d_IntersectionPoint new_p2;
 
-	Param2_on1=IntImpParGen::NormalizeOnDomain(Param2_on1,TheImpCurveDomain);
-	Param2_on2=IntImpParGen::NormalizeOnDomain(Param2_on2,TheParCurveDomain);
+        Param2_on1 = IntImpParGen::NormalizeOnDomain(Param2_on1, TheImpCurveDomain);
+        Param2_on2 = IntImpParGen::NormalizeOnDomain(Param2_on2, TheParCurveDomain);
 
 	TheImpTool.D2(Param2_on1,Pt2_on1,Tan1,Norm1);
 	ParTool::D2(TheParCurve,Param2_on2,Pt2_on2,Tan2,Norm2);
-	
+
 	IntImpParGen::DeterminePosition(Pos1,TheImpCurveDomain,Pt2_on1,Param2_on1);
 	IntImpParGen::DeterminePosition(Pos2,TheParCurveDomain,Pt2_on2,Param2_on2);
-	
+
 	if(Pos1==IntRes2d_End)  EndOnImp  = Standard_True;
 	else if(Pos1==IntRes2d_Head) HeadOnImp = Standard_True;
 	if(Pos2==IntRes2d_End)  EndOnPar  = Standard_True;
@@ -544,114 +540,114 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
 
 	IntImpParGen::DetermineTransition(Pos1,Tan1,Norm1,Trans1,
 					  Pos2,Tan2,Norm2,Trans2,
-					  Tolerance_Angulaire);
-	
-	
-	//============== Detection du cas : L intersection est en bout
-	//==============  sur les 2 domaines 
-	
-	if(Pos1!=IntRes2d_Middle && Pos2!=IntRes2d_Middle) {
-	  Standard_Real m=0.5*(Pt2_on1.X() + Pt2_on2.X() );
-	  Pt2_on1.SetX(m);
-	  m=0.5*(Pt2_on1.Y() + Pt2_on2.Y());
-	  Pt2_on1.SetY(m);
-	}
+					  ToleranceAngulaireDistMini);
 
-	new_p2.SetValues(Pt2_on1,Param2_on1,Param2_on2
+
+        //============== Detection du cas : L intersection est en bout
+        //==============  sur les 2 domaines 
+
+	if(Pos1!=IntRes2d_Middle && Pos2!=IntRes2d_Middle) {
+          Standard_Real m = 0.5*(Pt2_on1.X() + Pt2_on2.X());
+          Pt2_on1.SetX(m);
+          m = 0.5*(Pt2_on1.Y() + Pt2_on2.Y());
+          Pt2_on1.SetY(m);
+        }
+
+        new_p2.SetValues(Pt2_on1, Param2_on1, Param2_on2
 			 ,Trans1,Trans2
 			 ,ReversedParameters());
 
 	Standard_Boolean segopposite=((Tan1.Dot(Tan2) < 0.0)? 
-				      Standard_True : Standard_False);
-	
-	IntRes2d_IntersectionSegment new_seg(new_p1,new_p2
-					     ,segopposite
-					     ,ReversedParameters());
-	Append(new_seg);
+          Standard_True : Standard_False);
+
+        IntRes2d_IntersectionSegment new_seg(new_p1, new_p2
+          , segopposite
+          , ReversedParameters());
+        Append(new_seg);
       }
       else {
-	Insert(new_p1); 
+        Insert(new_p1);
       }
     }
   } //~~~~~~~~~~~~  Fin du corps de la fonction Calc...Transitions~~~~~~~~~~
-  
-  //-------------------------------------------
-  //-- On teste les points en bouts solutions
-  //-- 
-  if(!HeadOnImp && TheImpCurveDomain.HasFirstPoint()) { 
-    if(!HeadOnPar) { 
-      if(TheImpCurveDomain.FirstPoint().Distance(TheParCurveDomain.FirstPoint()) 
-	 <= Max(TheImpCurveDomain.FirstTolerance(),TheParCurveDomain.FirstTolerance())) { 
-	param1 = TheImpCurveDomain.FirstParameter();
-	param2 = TheParCurveDomain.FirstParameter();
-	TheImpTool.D2(param1,pt1,Tan1,Norm1);
-	ParTool::D2(TheParCurve,param2,pt2,Tan2,Norm2);
-	IntImpParGen::DetermineTransition(IntRes2d_Head,Tan1,Norm1,Trans1,
-					  IntRes2d_Head,Tan2,Norm2,Trans2,
-					  Tolerance_Angulaire);
-	IntRes2d_IntersectionPoint IP(TheImpCurveDomain.FirstPoint(),
-				      param1,param2,
-				      Trans1,Trans2,
-				      ReversedParameters());
-	Insert(IP);
+
+    //-------------------------------------------
+    //-- On teste les points en bouts solutions
+    //-- 
+  if (!HeadOnImp && TheImpCurveDomain.HasFirstPoint()) {
+    if (!HeadOnPar) {
+      if (TheImpCurveDomain.FirstPoint().Distance(TheParCurveDomain.FirstPoint())
+        <= Max(TheImpCurveDomain.FirstTolerance(), TheParCurveDomain.FirstTolerance())) {
+        param1 = TheImpCurveDomain.FirstParameter();
+        param2 = TheParCurveDomain.FirstParameter();
+        TheImpTool.D2(param1, pt1, Tan1, Norm1);
+        ParTool::D2(TheParCurve, param2, pt2, Tan2, Norm2);
+        IntImpParGen::DetermineTransition(IntRes2d_Head, Tan1, Norm1, Trans1,
+          IntRes2d_Head, Tan2, Norm2, Trans2,
+          Tolerance_Angulaire);
+        IntRes2d_IntersectionPoint IP(TheImpCurveDomain.FirstPoint(),
+          param1, param2,
+          Trans1, Trans2,
+          ReversedParameters());
+        Insert(IP);
       }
     }
-    if(!EndOnPar) { 
-      if(TheImpCurveDomain.FirstPoint().Distance(TheParCurveDomain.LastPoint()) 
-	 <= Max(TheImpCurveDomain.FirstTolerance(),TheParCurveDomain.LastTolerance())) { 
-	param1 = TheImpCurveDomain.FirstParameter();
-	param2 = TheParCurveDomain.LastParameter();
-	TheImpTool.D2(param1,pt1,Tan1,Norm1);
-	ParTool::D2(TheParCurve,param2,pt2,Tan2,Norm2);
-	IntImpParGen::DetermineTransition(IntRes2d_Head,Tan1,Norm1,Trans1,
-					  IntRes2d_End ,Tan2,Norm2,Trans2,
-					  Tolerance_Angulaire);
-	IntRes2d_IntersectionPoint IP(TheImpCurveDomain.FirstPoint(),
-				      param1,param2,
-				      Trans1,Trans2,
-				      ReversedParameters());
-	Insert(IP);
-      }
-    }
-  }
-  
-  if(!EndOnImp && TheImpCurveDomain.HasLastPoint()) { 
-    if(!HeadOnPar) { 
-      if(TheImpCurveDomain.LastPoint().Distance(TheParCurveDomain.FirstPoint()) 
-	 <= Max(TheImpCurveDomain.LastTolerance(),TheParCurveDomain.FirstTolerance())) {
-	param1 = TheImpCurveDomain.LastParameter();
-	param2 = TheParCurveDomain.FirstParameter();
-	TheImpTool.D2(param1,pt1,Tan1,Norm1);
-	ParTool::D2(TheParCurve,param2,pt2,Tan2,Norm2);
-	IntImpParGen::DetermineTransition(IntRes2d_End,Tan1,Norm1,Trans1,
-					  IntRes2d_Head,Tan2,Norm2,Trans2,
-					  Tolerance_Angulaire);
-	IntRes2d_IntersectionPoint IP(TheImpCurveDomain.LastPoint(),
-				      param1,param2,
-				      Trans1,Trans2,
-				      ReversedParameters());
-	Insert(IP);
-      }
-    }
-    if(!EndOnPar) { 
-      if(TheImpCurveDomain.LastPoint().Distance(TheParCurveDomain.LastPoint()) 
-	 <= Max(TheImpCurveDomain.LastTolerance(),TheParCurveDomain.LastTolerance())) {
-	param1 = TheImpCurveDomain.LastParameter();
-	param2 = TheParCurveDomain.LastParameter();
-	TheImpTool.D2(param1,pt1,Tan1,Norm1);
-	ParTool::D2(TheParCurve,param2,pt2,Tan2,Norm2);
-	IntImpParGen::DetermineTransition(IntRes2d_End,Tan1,Norm1,Trans1,
-					  IntRes2d_End,Tan2,Norm2,Trans2,
-					  Tolerance_Angulaire);
-	IntRes2d_IntersectionPoint IP(TheImpCurveDomain.LastPoint(),
-				      param1,param2,
-				      Trans1,Trans2,
-				      ReversedParameters());
-	Insert(IP);
+    if (!EndOnPar) {
+      if (TheImpCurveDomain.FirstPoint().Distance(TheParCurveDomain.LastPoint())
+        <= Max(TheImpCurveDomain.FirstTolerance(), TheParCurveDomain.LastTolerance())) {
+        param1 = TheImpCurveDomain.FirstParameter();
+        param2 = TheParCurveDomain.LastParameter();
+        TheImpTool.D2(param1, pt1, Tan1, Norm1);
+        ParTool::D2(TheParCurve, param2, pt2, Tan2, Norm2);
+        IntImpParGen::DetermineTransition(IntRes2d_Head, Tan1, Norm1, Trans1,
+          IntRes2d_End, Tan2, Norm2, Trans2,
+          Tolerance_Angulaire);
+        IntRes2d_IntersectionPoint IP(TheImpCurveDomain.FirstPoint(),
+          param1, param2,
+          Trans1, Trans2,
+          ReversedParameters());
+        Insert(IP);
       }
     }
   }
-  done=Standard_True; 
+
+  if (!EndOnImp && TheImpCurveDomain.HasLastPoint()) {
+    if (!HeadOnPar) {
+      if (TheImpCurveDomain.LastPoint().Distance(TheParCurveDomain.FirstPoint())
+        <= Max(TheImpCurveDomain.LastTolerance(), TheParCurveDomain.FirstTolerance())) {
+        param1 = TheImpCurveDomain.LastParameter();
+        param2 = TheParCurveDomain.FirstParameter();
+        TheImpTool.D2(param1, pt1, Tan1, Norm1);
+        ParTool::D2(TheParCurve, param2, pt2, Tan2, Norm2);
+        IntImpParGen::DetermineTransition(IntRes2d_End, Tan1, Norm1, Trans1,
+          IntRes2d_Head, Tan2, Norm2, Trans2,
+          Tolerance_Angulaire);
+        IntRes2d_IntersectionPoint IP(TheImpCurveDomain.LastPoint(),
+          param1, param2,
+          Trans1, Trans2,
+          ReversedParameters());
+        Insert(IP);
+      }
+    }
+    if (!EndOnPar) {
+      if (TheImpCurveDomain.LastPoint().Distance(TheParCurveDomain.LastPoint())
+        <= Max(TheImpCurveDomain.LastTolerance(), TheParCurveDomain.LastTolerance())) {
+        param1 = TheImpCurveDomain.LastParameter();
+        param2 = TheParCurveDomain.LastParameter();
+        TheImpTool.D2(param1, pt1, Tan1, Norm1);
+        ParTool::D2(TheParCurve, param2, pt2, Tan2, Norm2);
+        IntImpParGen::DetermineTransition(IntRes2d_End, Tan1, Norm1, Trans1,
+          IntRes2d_End, Tan2, Norm2, Trans2,
+          Tolerance_Angulaire);
+        IntRes2d_IntersectionPoint IP(TheImpCurveDomain.LastPoint(),
+          param1, param2,
+          Trans1, Trans2,
+          ReversedParameters());
+        Insert(IP);
+      }
+    }
+  }
+  done = Standard_True;
 }
 
 
@@ -660,41 +656,41 @@ void IntImpParGen_Intersector::Perform(const ImpTool& TheImpTool,
 
 
 Standard_Real IntImpParGen_Intersector::FindU(const Standard_Real parameter
-					      ,gp_Pnt2d& point
-					      ,const ParCurve& TheParCurve
-					      ,const ImpTool& TheImpTool) const 
+  , gp_Pnt2d& point
+  , const ParCurve& TheParCurve
+  , const ImpTool& TheImpTool) const
 {
-  point=ParTool::Value(TheParCurve,parameter);
+  point = ParTool::Value(TheParCurve, parameter);
   return(TheImpTool.FindParameter(point));
 }
 
 Standard_Real IntImpParGen_Intersector::FindV(const Standard_Real parameter
-		  ,gp_Pnt2d& point
-		  ,const ImpTool& TheImpTool
-		  ,const ParCurve& TheParCurve
-		  ,const IntRes2d_Domain& TheParCurveDomain
-		  ,const Standard_Real V0
-		  ,const Standard_Real V1
-		  ,const Standard_Real Tolerance) const 
+  , gp_Pnt2d& point
+  , const ImpTool& TheImpTool
+  , const ParCurve& TheParCurve
+  , const IntRes2d_Domain& TheParCurveDomain
+  , const Standard_Real V0
+  , const Standard_Real V1
+  , const Standard_Real Tolerance) const
 {
-  point=TheImpTool.Value(parameter);
-  if(TheParCurveDomain.IsClosed()) {
+  point = TheImpTool.Value(parameter);
+  if (TheParCurveDomain.IsClosed()) {
     Standard_Real V = ProjectOnPCurveTool::FindParameter(TheParCurve,
-							 point,
-							 Tolerance);
-    return(IntImpParGen::NormalizeOnDomain(V,TheParCurveDomain));
+      point,
+      Tolerance);
+    return(IntImpParGen::NormalizeOnDomain(V, TheParCurveDomain));
   }
   else {
     Standard_Real VV0 = V0;
     Standard_Real VV1 = V1;
-    if(V1<V0) { VV0 = V1; VV1 = V0; } 
+    if (V1<V0) { VV0 = V1; VV1 = V0; }
     //-- ??????????????????????????????????????????????????????????????????????
     //-- Modif le 15 Septembre 1992 : On Teste le parametre retourne 
     //--??????????????????????????????????????????????????????????????????????
     Standard_Real X = ProjectOnPCurveTool::FindParameter(TheParCurve,
-							 point,
-							 VV0,VV1,Tolerance);
-    if(X>VV1) X=VV1; else if(X<VV0) X=VV0;
+      point,
+      VV0, VV1, Tolerance);
+    if (X>VV1) X = VV1; else if (X<VV0) X = VV0;
     return(X);
   }
 }

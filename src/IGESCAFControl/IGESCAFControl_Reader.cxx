@@ -155,7 +155,6 @@ static void AddCompositeShape (const Handle(XCAFDoc_ShapeTool)& theSTool,
   {
     theSTool->AddShape( aSimpleShape,  Standard_False, Standard_False  );
     TopoDS_Compound aNewShape;
-    BRep_Builder aB;
     aB.MakeCompound(aNewShape);
     aB.Add(aNewShape, aSimpleShape);
     aB.Add(aNewShape,aCompShape);

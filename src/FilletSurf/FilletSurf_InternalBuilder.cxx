@@ -239,15 +239,15 @@ Standard_Integer  FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
   }
   if(!periodic && yatrou) return 2;
   if(periodic && yatrou){
-    Standard_Boolean vraitrou = 0, debut = 0;
+    Standard_Boolean vraitrou = 0, aLocalDebut = 0;
     for(Standard_Integer i = sp->NbEdges(); i > yatrou; i--){
       TopoDS_Edge cured = sp->Edges(i);
       if(isinlist(cured,E)){
 	if(vraitrou) return 2;
 	newsp->PutInFirst(cured);
       }
-      else if(debut) vraitrou = 1;
-      debut = 1;
+      else if(aLocalDebut) vraitrou = 1;
+      aLocalDebut = 1;
     }
   }
 

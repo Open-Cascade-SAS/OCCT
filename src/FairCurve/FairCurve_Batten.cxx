@@ -425,16 +425,16 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
    } 
 
    NewBS -> InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);
-   Handle(TColgp_HArray1OfPnt2d) NPoles = 
+   Handle(TColgp_HArray1OfPnt2d) NewNPoles =
       new  TColgp_HArray1OfPnt2d(1, NewBS->NbPoles());
-   NewBS -> Poles( NPoles->ChangeArray1() );
+   NewBS -> Poles(NewNPoles->ChangeArray1() );
    NewBS -> Multiplicities( NMults->ChangeArray1() );
    NewBS -> Knots( NKnots->ChangeArray1() );
    Handle(TColStd_HArray1OfReal) FKnots  =
       new TColStd_HArray1OfReal (1, NewBS->NbPoles() + Degree+1);
    NewBS -> KnotSequence( FKnots->ChangeArray1()); 
 
-   Poles = NPoles;
+   Poles = NewNPoles;
    Mults = NMults;
    Knots = NKnots;
    Flatknots = FKnots;		      

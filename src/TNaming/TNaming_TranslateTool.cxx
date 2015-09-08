@@ -251,7 +251,6 @@ void TNaming_TranslateTool::UpdateEdge
   BRep_ListIteratorOfListOfCurveRepresentation itcr(TTE1->Curves());
   BRep_ListOfCurveRepresentation& lcr = TTE2->ChangeCurves();
   lcr.Clear();
-  Handle(BRep_CurveRepresentation) CR;
 
   Handle(BRep_GCurve) GC;
   Standard_Real f, l;

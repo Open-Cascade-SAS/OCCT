@@ -362,16 +362,16 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer         theVertexIn
     Standard_Boolean isSensOK = (aDist12 > 0. && aDist23 > 0.);
     if (isSensOK)
     {
-      Standard_Integer anEdges[3];
+      Standard_Integer anEdgeIds[3];
       Standard_Boolean anEdgesOri[3];
       for ( Standard_Integer aTriLinkIt = 0; aTriLinkIt < 3; ++aTriLinkIt )
       {
         const Standard_Integer& anEdgeInfo = anEdgesInfo[aTriLinkIt];
-        anEdges[aTriLinkIt]    = Abs( anEdgeInfo );
+        anEdgeIds[aTriLinkIt]    = Abs( anEdgeInfo );
         anEdgesOri[aTriLinkIt] = anEdgeInfo > 0;
       }
 
-      addTriangle( anEdges, anEdgesOri, aNodes );
+      addTriangle(anEdgeIds, anEdgesOri, aNodes );
     }
     else
     {

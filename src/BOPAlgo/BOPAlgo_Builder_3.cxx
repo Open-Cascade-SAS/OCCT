@@ -664,7 +664,7 @@ void BOPAlgo_Builder::FillIn3DParts
     BOPAlgo_FillIn3DParts& aFIP=aVFIP(k);
     bHasImage=aFIP.HasImage();
     const TopoDS_Solid& aSolid=aFIP.Solid();
-    const TopoDS_Solid& aSD=aFIP.DraftSolid();
+    const TopoDS_Solid& aSDraft =aFIP.DraftSolid();
     const BOPCol_ListOfShape& aLFIN=aFIP.LFIN();
     const BOPCol_ListOfShape& aLIF=aFIP.LIF();
     //
@@ -689,7 +689,7 @@ void BOPAlgo_Builder::FillIn3DParts
     }
     //
     if (aNbFIN || bHasImage) {
-      theDraftSolids.Bind(aSolid, aSD);
+      theDraftSolids.Bind(aSolid, aSDraft);
     }
   }
 }

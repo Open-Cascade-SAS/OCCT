@@ -1147,9 +1147,9 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
     const TopoDS_Shape& FI  = Exp.Current();
     const TopoDS_Shape& OFI = MapSF(FI).Face();
     if (MES.IsBound(OFI)) {
-      const TopoDS_Face& NF = TopoDS::Face(MES(OFI));
-      LFE.Append(NF);
-      IMOE.SetRoot(NF);
+      const TopoDS_Face& aLocalFace = TopoDS::Face(MES(OFI));
+      LFE.Append(aLocalFace);
+      IMOE.SetRoot(aLocalFace);
     }
   }
   
@@ -1499,10 +1499,10 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
 	  Standard_Real CurOffset = myOffset;
 	  if ( myFaceOffset.IsBound(Anc.First()))
 	    CurOffset = myFaceOffset(Anc.First());
-	  TopoDS_Shape aLocalShape = MapSF(Anc.First()).Generated(E);
-	  TopoDS_Edge EOn1 = TopoDS::Edge(aLocalShape);
-	  aLocalShape = MapSF(Anc.Last()).Generated(E);
-	  TopoDS_Edge EOn2 = TopoDS::Edge(aLocalShape);
+	  TopoDS_Shape aLocalShapeGen = MapSF(Anc.First()).Generated(E);
+	  TopoDS_Edge EOn1 = TopoDS::Edge(aLocalShapeGen);
+	  aLocalShapeGen = MapSF(Anc.Last()).Generated(E);
+	  TopoDS_Edge EOn2 = TopoDS::Edge(aLocalShapeGen);
 //	  TopoDS_Edge EOn1 = TopoDS::Edge(MapSF(Anc.First()).Generated(E));
 //	  TopoDS_Edge EOn2 = TopoDS::Edge(MapSF(Anc.Last()) .Generated(E));
 	  // find if exits tangent edges in the original shape
@@ -3312,7 +3312,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     }
     else if ( Type1 == TopAbs_EDGE && Type2 == TopAbs_EDGE) {
       TopTools_ListOfShape LV;
-      TopExp_Explorer exp1,exp2;
+      TopExp_Explorer exp1;
       for (exp1.Init(Root1,TopAbs_VERTEX); exp1.More(); exp1.Next()) {
 	TopExp_Explorer exp2(F2,TopAbs_EDGE);
 	for (exp2.Init(Root2,TopAbs_VERTEX); exp2.More(); exp2.Next()) {

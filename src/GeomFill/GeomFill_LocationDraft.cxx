@@ -612,14 +612,14 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 	  E.DerivTX(DN, myAngle, D2EDTDX); // d2E/dtdx
 
 	  math_Vector D2SDT2(1,3,0); // d2s/dt2
-	  math_Matrix T(1,3,1,3,0);
-	  D2EDX2.Multiply(DSDT,T);
+	  math_Matrix aT(1,3,1,3,0);
+	  D2EDX2.Multiply(DSDT,aT);
    
 	  // resolution du syst. lin. 
 	  math_Gauss Ga1 (DEDX);
 	  if (Ga1.IsDone()) 
 	    {
-	      Ga1.Solve ( -T*DSDT - 2*D2EDTDX*DSDT - D2EDT2 , D2SDT2); 
+	      Ga1.Solve ( -aT*DSDT - 2*D2EDTDX*DSDT - D2EDT2 , D2SDT2); 
 	      gp_Vec2d d2p (D2SDT2(2), D2SDT2(3));  // surface
 	      gp_Vec2d d2q (D2SDT2(1), 0);          // courbe
 	      D2Poles2d.SetValue(1, d2p);

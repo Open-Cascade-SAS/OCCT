@@ -363,10 +363,10 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
     Handle(Geom_Surface) Surf = Strim->BasisSurface();
     UFirst = U1;  ULast = U2; VFirst = V1; VLast = V2;
     if (Surf->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) {
-      Handle(Geom_OffsetSurface) OffsetSur = 
+      Handle(Geom_OffsetSurface) OffsetSurBasis =
         Handle(Geom_OffsetSurface)::DownCast(Surf);
 
-      S = OffsetSur->Surface();
+      S = OffsetSurBasis->Surface();
       if (!S.IsNull()) {
         Surf = S;
       } 
@@ -374,11 +374,11 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
     }
 
     if  (Surf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
-      Handle(Geom_RectangularTrimmedSurface) Strim = new 
+      Handle(Geom_RectangularTrimmedSurface) aStrim = new 
         (Geom_RectangularTrimmedSurface) (Surf, 
         UFirst, ULast, 
         VFirst, VLast);
-      return SurfaceToBSplineSurface(Strim);
+      return SurfaceToBSplineSurface(aStrim);
     }
 
     if (Surf->IsKind(STANDARD_TYPE(Geom_Plane))) {

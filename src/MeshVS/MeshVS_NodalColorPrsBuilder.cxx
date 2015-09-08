@@ -297,17 +297,16 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       Quantity_Color aNColor;
 
       Standard_Boolean isValid = Standard_True;
-      Standard_Integer i;
       
       if (myUseTexture)
       {
-        for (i = 1; i <= NbNodes && isValid; ++i)
-          isValid = myTextureCoords.IsBound (aNodes (i));
+        for (Standard_Integer k = 1; k <= NbNodes && isValid; ++k)
+          isValid = myTextureCoords.IsBound (aNodes (k));
       }
       else
       {
-        for (i = 1; i <= NbNodes && isValid; ++i)
-          isValid = GetColor (aNodes (i), aNColor);
+        for (Standard_Integer k = 1; k <= NbNodes && isValid; ++k)
+          isValid = GetColor (aNodes (k), aNColor);
       }
 
       if (!isValid)

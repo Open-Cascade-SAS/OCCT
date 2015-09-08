@@ -220,11 +220,10 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)& a
 
 #ifdef WNT
   //windows is not case sensitive
-  Standard_ExtCharacter   echar;
   //make the extension lower case
   for(int i = 1; i <= xn.Length(); i++)
   {
-	echar = xn.Value(i);
+	Standard_ExtCharacter echar = xn.Value(i);
 	echar = towlower(echar);
 	xn.SetValue(i, echar);
   }
@@ -235,11 +234,10 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)& a
   if (e.Length() > 0) {
 #ifdef WNT
     //windows is not case sensitive
-    Standard_ExtCharacter   echar;
     //make the extension lower case
     for(int i = 1; i <= xe.Length(); i++)
     {
-	  echar = xe.Value(i);
+	  Standard_ExtCharacter echar = xe.Value(i);
 	  echar = towlower(echar);
 	  xe.SetValue(i, echar);
     }

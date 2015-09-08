@@ -1054,13 +1054,13 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge& S1, const TopoDS_Face& S
         TopoDS_Vertex V1 = BRepBuilderAPI_MakeVertex(aPnt);
 
         BRepExtrema_ExtPF ExtPF(V1,S2);
-        const Standard_Integer NbExtrema = ExtPF.IsDone()? ExtPF.NbExt() : 0;
-        if ( NbExtrema > 0 )
+        const Standard_Integer NbExtremaPF = ExtPF.IsDone()? ExtPF.NbExt() : 0;
+        if (NbExtremaPF > 0 )
         {
           // Search minimum distance Dstmin
           Standard_Integer ii;
           Standard_Real Dstmin = ExtPF.SquareDistance(1);
-          for (ii = 2; ii <= NbExtrema; ii++)
+          for (ii = 2; ii <= NbExtremaPF; ii++)
           {
             const Standard_Real sDst = ExtPF.SquareDistance(ii);
             if (sDst<Dstmin)
@@ -1070,7 +1070,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge& S1, const TopoDS_Face& S
 
           if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin-myDstRef) < myEps))
           {
-            for (ii = 1; ii <= NbExtrema; ii++)
+            for (ii = 1; ii <= NbExtremaPF; ii++)
             { 
               if (fabs(Dstmin-sqrt(ExtPF.SquareDistance(ii)))<myEps)
               { 
@@ -1199,13 +1199,13 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Face& S1, const TopoDS_Edge& S
         TopoDS_Vertex V1 = BRepBuilderAPI_MakeVertex(aPnt);
 
         BRepExtrema_ExtPF ExtPF(V1,S1);
-        const Standard_Integer NbExtrema = ExtPF.IsDone()? ExtPF.NbExt() : 0;
-        if ( NbExtrema > 0 )
+        const Standard_Integer NbExtremaPF = ExtPF.IsDone()? ExtPF.NbExt() : 0;
+        if (NbExtremaPF > 0 )
         {
           // Search minimum distance Dstmin
           Standard_Integer ii;
           Standard_Real Dstmin = ExtPF.SquareDistance(1);
-          for (ii = 2; ii <= NbExtrema; ii++)
+          for (ii = 2; ii <= NbExtremaPF; ii++)
           {
             const Standard_Real sDst = ExtPF.SquareDistance(ii);
             if (sDst<Dstmin)
@@ -1215,7 +1215,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Face& S1, const TopoDS_Edge& S
 
           if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin-myDstRef) < myEps))
           {
-            for (ii = 1; ii <= NbExtrema; ii++)
+            for (ii = 1; ii <= NbExtremaPF; ii++)
             { 
               if (fabs(Dstmin-sqrt(ExtPF.SquareDistance(ii)))<myEps)
               { 

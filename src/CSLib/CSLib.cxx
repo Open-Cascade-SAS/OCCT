@@ -321,13 +321,13 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
                while(n<=FindRoots.NbSolutions())
                {
 	          Standard_Real ASOL=FindRoots.Value(n);
-	          Standard_Integer i=n-1;
-	          while((i>=1) && (Sol0(i)> ASOL))
+	          Standard_Integer j=n-1;
+	          while((j>=1) && (Sol0(j)> ASOL))
                   {
-	             Sol0(i+1)=Sol0(i);
-	             i--;
+	             Sol0(j+1)=Sol0(j);
+	             j--;
 	          }
-	          Sol0(i+1)=ASOL;
+	          Sol0(j+1)=ASOL;
 	          n++;
                }//end while(n
                //Add limits of the domains 

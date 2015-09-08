@@ -261,19 +261,19 @@ Standard_Integer reguso(Draw_Interpretor& di, Standard_Integer n, const char** a
     TopTools_ListOfShape splits; 
     SheToSo.MakeSolids(so,splits);
     
-    BRep_Builder BB;
-    TopoDS_Compound CC; BB.MakeCompound(CC);
+    BRep_Builder aBBuilder;
+    TopoDS_Compound aCompound; aBBuilder.MakeCompound(aCompound);
     Standard_Integer nSo = 0;
     TopTools_ListIteratorOfListOfShape itSo(splits);
     for (; itSo.More(); itSo.Next()) {
       const TopoDS_Shape& spli = itSo.Value();
-      BB.Add(CC,spli);
+      aBBuilder.Add(aCompound,spli);
       nSo++;
     } 
     di<<"so gives "<<nSo<<" new solids"<<"\n";
     di<<"resulting compound is cmp"<<"\n";
     TCollection_AsciiString aa = TCollection_AsciiString("cmp");
-    FUN_draw(aa,CC);  
+    FUN_draw(aa, aCompound);
   }
   return 0;
 }

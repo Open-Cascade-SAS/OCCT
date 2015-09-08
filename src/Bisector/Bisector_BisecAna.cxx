@@ -754,7 +754,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     else {
       gp_Lin2d l(apoint,gp_Dir2d(Direc2.XY()-Direc1.XY()));
       Handle(GccInt_Bisec) solution = new GccInt_BLine(l);
-      Standard_Boolean ok;
+      Standard_Boolean isOk;
       sense = Standard_False;
 //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration Begin
 //       distanceptsol = Distance(apoint,solution,
@@ -763,13 +763,13 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
       if (oncurve)
 	distanceptsol = Distance(apoint,solution,
 				 tan2,tan1,LineBisVec,
-				 adirection,parameter,sense,ok);
+				 adirection,parameter,sense, isOk);
       else
 	distanceptsol = Distance(apoint,solution,
 				 afirstvector,asecondvector,LineBisVec,
-				 adirection,parameter,sense,ok, Standard_True);
+				 adirection,parameter,sense, isOk, Standard_True);
 //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration End
-      if (ok || !oncurve) {
+      if (isOk || !oncurve) {
 	thesense = sense;
 	distancemini = distanceptsol;
       }
@@ -827,27 +827,27 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 
   Standard_Integer cas = 0;
 
-  Handle(Standard_Type) type = afirstcurve->DynamicType();
+  Handle(Standard_Type) aFirstCurveType = afirstcurve->DynamicType();
 
-  if (type == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
+  if (aFirstCurveType == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
     curve = Handle(Geom2d_TrimmedCurve)::DownCast (afirstcurve)->BasisCurve();
   }
   else {
     curve = afirstcurve;
   }
 
-  type = curve->DynamicType();
+  aFirstCurveType = curve->DynamicType();
 #ifdef OCCT_DEBUG
   gp_Pnt2d Point(asecondpoint->Pnt2d());
 #else
   asecondpoint->Pnt2d();
 #endif
-  if (type == STANDARD_TYPE(Geom2d_Circle)) {
+  if (aFirstCurveType == STANDARD_TYPE(Geom2d_Circle)) {
     cas = 1;
     Handle(Geom2d_Circle) C1 = Handle(Geom2d_Circle)::DownCast(curve);
     circle = C1->Circ2d();
   }
-  else if (type == STANDARD_TYPE(Geom2d_Line)) {
+  else if (aFirstCurveType == STANDARD_TYPE(Geom2d_Line)) {
     cas = 2;
     Handle(Geom2d_Line) L1 = Handle(Geom2d_Line)::DownCast(curve);
     line   = L1->Lin2d();
@@ -882,9 +882,9 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 	  }
 	}
 	if (!TheSol.IsNull()) {
-	  GccInt_IType type = TheSol->ArcType();
+	  GccInt_IType aSolType = TheSol->ArcType();
 	  Handle(Geom2d_Curve) bisectorcurve;
-	  if (type == GccInt_Lin) { 
+	  if (aSolType == GccInt_Lin) {
 
 // ----------------------------------------------------------------------------
 // If the bisectrice is a line 
@@ -921,7 +921,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 						  secondparameter);
 
 	  }
-	  else if (type == GccInt_Cir) { 
+	  else if (aSolType == GccInt_Cir) {
 	    bisectorcurve = new Geom2d_Circle(TheSol->Circle());
 	    if (!thesense)
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
@@ -934,7 +934,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 						    firstparameter+2.0*M_PI,
 						    thesense);
 	  }
-	  else if (type == GccInt_Hpr) {
+	  else if (aSolType == GccInt_Hpr) {
 	    bisectorcurve=new Geom2d_Hyperbola(TheSol->Hyperbola());
 	    if (!thesense)
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
@@ -945,7 +945,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 						    firstparameter,
 						    Precision::Infinite());
 	  }
-	  else if (type == GccInt_Ell) {
+	  else if (aSolType == GccInt_Ell) {
 	    bisectorcurve = new Geom2d_Ellipse(TheSol->Ellipse());
 	    if (!thesense)
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,

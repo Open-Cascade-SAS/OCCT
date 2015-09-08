@@ -158,14 +158,14 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         Handle(XCAFDoc_GraphNode) aNode;
         if(aGDTs.Value(j).FindAttribute(XCAFDoc::DatumTolRefGUID(), aNode) && aNode->NbChildren() > 0)
         {
-          for(Standard_Integer i = 1; i<=aNode->NbChildren(); i++)
+          for(Standard_Integer k = 1; k<=aNode->NbChildren(); k++)
           {
             Handle(XCAFDoc_Datum) aDatum;
-            if(aNode->GetChild(i)->Label().FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+            if(aNode->GetChild(k)->Label().FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
             {
-              TCollection_AsciiString Entry;
-              TDF_Tool::Entry(aNode->GetChild(i)->Label(), Entry);
-              di << "\n \t \t " << Entry;
+              TCollection_AsciiString anEntry;
+              TDF_Tool::Entry(aNode->GetChild(k)->Label(), anEntry);
+              di << "\n \t \t " << anEntry;
               di << " Datum";
             }
           }

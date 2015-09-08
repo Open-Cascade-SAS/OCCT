@@ -630,8 +630,6 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                 if (Qualified1.IsUnqualified() || 
                                   (Qualified1.IsOutside() && pscal <= 0.) ||
                                   (Qualified1.IsEnclosed() && pscal >= 0.)) {
-                                    Standard_Real pscal=centre.XY().Dot(gp_XY(-L1.Direction().Y(),
-                                      L1.Direction().X()));
                                     gp_Vec2d Tan1(L1.Direction().XY());
                                     gp_Vec2d Tan2(L2.Direction().XY());
                                     Standard_Real normetan1 = Tan1.Magnitude();

@@ -810,9 +810,9 @@ static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
     isOk = IsMergingPossible(edge1, edge2, Tol, DegEdgeVrt);
     if (!isOk)
     {
-      SubSequenceOfEdges SubSeq;
-      SubSeq.SeqsEdges.Append(edge2);
-      SeqOfSubSeqOfEdges.Append(SubSeq);
+      SubSequenceOfEdges aSubSeq;
+      aSubSeq.SeqsEdges.Append(edge2);
+      SeqOfSubSeqOfEdges.Append(aSubSeq);
     }
     else
       SeqOfSubSeqOfEdges.ChangeLast().SeqsEdges.Append(edge2);
