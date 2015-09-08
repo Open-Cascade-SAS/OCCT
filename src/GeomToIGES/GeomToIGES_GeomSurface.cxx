@@ -274,7 +274,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
     Vmin += vShift;
     Vmax += vShift;
   }
-  if ( Abs(uShift) > Precision::PConfusion() || Abs(vShift) > Precision::PConfusion()) {
+  if (PeriodU || PeriodV) {
     Standard_Boolean isNeedSegment = Standard_True;
     isNeedSegment = Abs(Umax-Umin) > Precision::PConfusion() && 
                     Abs(Vmax-Vmin) > Precision::PConfusion();
@@ -283,7 +283,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
     vMaxShift = ShapeAnalysis::AdjustToPeriod(Vfin, V0, V1);
     isNeedSegment &= 
       (PeriodU && Abs(uShift - uMaxShift) > Precision::PConfusion()) ||
-      (PeriodV && Abs(vShift - vMaxShift) > Precision::PConfusion());           
+      (PeriodV && Abs(vShift - vMaxShift) > Precision::PConfusion());
     if (isNeedSegment) {
       try {
         OCC_CATCH_SIGNALS
@@ -294,7 +294,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
             PeriodU = Standard_False;
           if ((V1 - V0) - (Vmax - Vmin) > Precision::PConfusion())
             PeriodV = Standard_False;
-	        mysurface = bspl;
+            mysurface = bspl;
         }
       }
       catch ( Standard_Failure ) {
@@ -303,10 +303,9 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
         cout << "Warning: Exception in Segment(): " ;
         Standard_Failure::Caught()->Print(cout);
         #endif
-    }
+      }
     }
   }
-
   //unperiodize surface to get neccessary for IGES standard number of knots and mults
   if ( mysurface->IsUPeriodic() ) {
     mysurface->SetUNotPeriodic();

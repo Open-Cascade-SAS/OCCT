@@ -132,13 +132,19 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
     BRep_Builder B;
     TopLoc_Location aLoc;
     Handle(Geom_Surface) aSurf = BRep_Tool::Surface(start, aLoc);
+    while (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    {
+      // take basis surface, because pcurves will be transformed, so trim will be shifted,
+      // accorded to new face bounds
+      Handle(Geom_RectangularTrimmedSurface) aTrimmedSurf = 
+        Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurf);
+      aSurf = aTrimmedSurf->BasisSurface();
+    }
     aSurf = aSurf->UReversed();
-    Standard_Real U1, U2, V1, V2;
-    aSurf->Bounds(U1, U2, V1, V2);
     Standard_Real aTol = BRep_Tool::Tolerance(start);
     B.MakeFace(myface, aSurf, aLoc ,aTol);
     // set specifics flags of a Face
-	  B.NaturalRestriction(myface, BRep_Tool::NaturalRestriction(start));
+    B.NaturalRestriction(myface, BRep_Tool::NaturalRestriction(start));
     //add wires
     TopoDS_Wire anOuter = TopoDS::Wire(ShapeAlgo::AlgoContainer()->OuterWire(start));
     TopExp_Explorer ex;
@@ -155,7 +161,14 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
         B.Add(myface, W);
       }
     }
+
     // mirror pcurves
+    Standard_Real U1, U2, V1, V2;
+    aSurf->Bounds(U1, U2, V1, V2);
+    Standard_Real aCenter = 0.5 * (U1 + U2);
+    gp_Trsf2d T;
+    gp_Ax2d axis(gp_Pnt2d(aCenter, V1), gp_Dir2d(0.,1.));
+    T.SetMirror(axis);
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap (101, new NCollection_IncAllocator);
     for (ex.Init(myface,TopAbs_EDGE);ex.More(); ex.Next()) {
       TopoDS_Edge anEdge = TopoDS::Edge(ex.Current());
@@ -166,9 +179,6 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
       Handle(Geom2d_Curve) aCurve1, aCurve2;
       aCurve1 = BRep_Tool::CurveOnSurface(anEdge, start, f, l);
       aTol = BRep_Tool::Tolerance(anEdge);
-      gp_Trsf2d T;
-      gp_Ax2d axis(gp_Pnt2d(0.5 * (U1 + U2), V1), gp_Dir2d(0.,1.));
-      T.SetMirror(axis);
       if (!aCurve1.IsNull()) {
         aCurve1 = Handle(Geom2d_Curve)::DownCast(aCurve1->Transformed(T));
         if (BRepTools::IsReallyClosed(anEdge, start)) {
@@ -176,7 +186,10 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
           aCurve2 = BRep_Tool::CurveOnSurface(revEdge, start, f, l);
           if (!aCurve2.IsNull()) {
             aCurve2 = Handle(Geom2d_Curve)::DownCast(aCurve2->Transformed(T));
-            B.UpdateEdge(anEdge, aCurve1, aCurve2, myface, aTol);
+            if (anEdge.Orientation() == TopAbs_FORWARD)
+              B.UpdateEdge(anEdge, aCurve1, aCurve2, myface, aTol);
+            else
+              B.UpdateEdge(anEdge, aCurve2, aCurve1, myface, aTol);
           }
           else {
             B.UpdateEdge(anEdge, aCurve1, myface, aTol);

@@ -94,7 +94,7 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
   if (ligne[0] == '\0' || ligne[0] == '\n' || ligne[0] == '\r')
     return iges_lire(lefic,numsec,ligne,modefnes); /* 0 */
 
-  if (!sscanf(&ligne[73],"%d",&result) == 0) {
+  if (sscanf(&ligne[73],"%d",&result) != 0) {
     *numsec = result;
     typesec = ligne[72];
     switch (typesec) {
