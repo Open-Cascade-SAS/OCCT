@@ -203,14 +203,14 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape& S,
                                 Standard_Real& prbmin,
                                 Standard_Real& prbmax,
                                 Standard_Boolean& flag,
-                                const Standard_Boolean Ori)
+                                const Standard_Boolean theOri)
 {
   LocOpe_CSIntersector ASI(S);
   TColGeom_SequenceOfCurve scur;
   scur.Append(CC);
   ASI.Perform(scur);
   if(ASI.IsDone() && ASI.NbPoints(1) >=1) {
-    if (!Ori) {
+    if (!theOri) {
       prmin = Min(ASI.Point(1,1).Parameter(), 
                   ASI.Point(1, ASI.NbPoints(1)).Parameter());
       prmax = Max(ASI.Point(1,1).Parameter(), 

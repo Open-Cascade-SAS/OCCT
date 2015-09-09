@@ -1679,8 +1679,8 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
                                            const Standard_Real TolTang,
                                            IntSurf_ListOfPntOn2S& ListOfPnts,
                                            const Standard_Boolean RestrictLine,
-                                           const GeomAbs_SurfaceType typs1,
-                                           const GeomAbs_SurfaceType typs2,
+                                           const GeomAbs_SurfaceType theTyps1,
+                                           const GeomAbs_SurfaceType theTyps2,
                                            const Standard_Boolean theIsReqToKeepRLine)
 {
   IntPatch_ImpImpIntersection interii(theS1,theD1,theS2,theD2,
@@ -1701,11 +1701,11 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
         const Handle(IntPatch_Line)& line = interii.Line(i);
         if (line->ArcType() == IntPatch_Analytic)
         {
-          const GeomAbs_SurfaceType typs1 = theS1->GetType();
-          const GeomAbs_SurfaceType typs2 = theS2->GetType();
+          const GeomAbs_SurfaceType aTyps1 = theS1->GetType();
+          const GeomAbs_SurfaceType aTyps2 = theS2->GetType();
           IntSurf_Quadric Quad1,Quad2;
           
-          switch(typs1)
+          switch(aTyps1)
           {
           case GeomAbs_Plane:
             Quad1.SetValue(theS1->Plane());
@@ -1731,7 +1731,7 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
             break;
           }
 
-          switch(typs2)
+          switch(aTyps2)
           {
           case GeomAbs_Plane:
             Quad2.SetValue(theS2->Plane());
@@ -1772,7 +1772,7 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
   }
   else
     ParamParamPerfom(theS1, theD1, theS2, theD2, 
-                TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+                TolArc, TolTang, ListOfPnts, RestrictLine, theTyps1, theTyps2);
 }
 
 //=======================================================================

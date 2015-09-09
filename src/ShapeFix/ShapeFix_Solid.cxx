@@ -254,12 +254,12 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
 //purpose  : 
 //=======================================================================
 
-static Standard_Boolean CreateSolids(const TopoDS_Shape aShape,TopTools_IndexedMapOfShape& aMapSolids)
+static Standard_Boolean CreateSolids(const TopoDS_Shape theShape,TopTools_IndexedMapOfShape& aMapSolids)
 {
   TopTools_SequenceOfShape aSeqShells;
   Standard_Boolean isDone = Standard_False;
 
-  for(TopExp_Explorer aExpShell(aShape,TopAbs_SHELL); aExpShell.More(); aExpShell.Next()) {
+  for(TopExp_Explorer aExpShell(theShape,TopAbs_SHELL); aExpShell.More(); aExpShell.Next()) {
     aSeqShells.Append(aExpShell.Current());
   }
   TopTools_IndexedDataMapOfShapeListOfShape aMapShellHoles;
@@ -336,14 +336,14 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape aShape,TopTools_IndexedM
   }
   //Creation of compsolid from shells containing shared faces. 
   TopTools_IndexedDataMapOfShapeListOfShape aMapFaceShells;
-  TopExp::MapShapesAndAncestors(aShape,TopAbs_FACE,TopAbs_SHELL,aMapFaceShells); 
+  TopExp::MapShapesAndAncestors(theShape,TopAbs_FACE,TopAbs_SHELL,aMapFaceShells);
   for(Standard_Integer i =1; i <= aMapFaceShells.Extent(); i++) {
     const TopTools_ListOfShape& lshells = aMapFaceShells.FindFromIndex(i);
     if(lshells.Extent() <2) continue;
     TopoDS_CompSolid aCompSolid;
     BRep_Builder aB;
     aB.MakeCompSolid(aCompSolid);
-    isDone = (aShape.ShapeType() != TopAbs_COMPSOLID || isDone);
+    isDone = (theShape.ShapeType() != TopAbs_COMPSOLID || isDone);
     Standard_Integer nbSol = 0;
 
     for(TopTools_ListIteratorOfListOfShape lItSh(lshells);lItSh.More(); lItSh.Next()) {

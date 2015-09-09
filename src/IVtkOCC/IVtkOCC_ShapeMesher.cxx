@@ -484,18 +484,18 @@ static void DrawCurve (Adaptor3d_Curve&      theCurve,
       Standard_Integer anI, aJ;
       TColStd_Array1OfReal aParams(1, aNbInter+1);
       theCurve.Intervals(aParams, GeomAbs_C1);
-      Standard_Real theU1, theU2;
+      Standard_Real anU1, anU2;
       Standard_Integer NumberOfPoints;
 
       for (aJ = 1; aJ <= aNbInter; aJ++)
       {
-        theU1 = aParams (aJ); theU2 = aParams (aJ + 1);
-        if (theU2 > theU1 && theU1 < theU2)
+        anU1 = aParams (aJ); anU2 = aParams (aJ + 1);
+        if (anU2 > anU1 && anU1 < anU2)
         {
-          theU1 = Max(theU1, theU1);
-          theU2 = Min(theU2, theU2);
+          anU1 = Max(anU1, anU1);
+          anU2 = Min(anU2, anU2);
 
-          GCPnts_TangentialDeflection anAlgo (theCurve, theU1, theU2, theAngle, theDeflection);
+          GCPnts_TangentialDeflection anAlgo (theCurve, anU1, anU2, theAngle, theDeflection);
           NumberOfPoints = anAlgo.NbPoints();
 
           if (NumberOfPoints > 0)

@@ -3105,16 +3105,16 @@ UpdateAroundNode (const Standard_Integer iNode,
 	&(((HLRAlgo_Array1OfPINod*)PINod)->ChangeValue(Tri1Node2));
       const Handle(HLRAlgo_PolyInternalNode)* PN3 = 
 	&(((HLRAlgo_Array1OfPINod*)PINod)->ChangeValue(Tri1Node3));
-      const Standard_Address Nod1Indices = (*PN1)->Indices();
-      const Standard_Address Nod2Indices = (*PN2)->Indices();
-      const Standard_Address Nod3Indices = (*PN3)->Indices();
-      const Standard_Address Nod1RValues = (*PN1)->RValues();
-      const Standard_Address Nod2RValues = (*PN2)->RValues();
-      const Standard_Address Nod3RValues = (*PN3)->RValues();
+      const Standard_Address aNod1Indices = (*PN1)->Indices();
+      const Standard_Address aNod2Indices = (*PN2)->Indices();
+      const Standard_Address aNod3Indices = (*PN3)->Indices();
+      const Standard_Address aNod1RValues = (*PN1)->RValues();
+      const Standard_Address aNod2RValues = (*PN2)->RValues();
+      const Standard_Address aNod3RValues = (*PN3)->RValues();
       OrientTriangle(iTri1,Tri1Indices,
-		     Nod1Indices,Nod1RValues,
-		     Nod2Indices,Nod2RValues,
-		     Nod3Indices,Nod3RValues);
+		     aNod1Indices,aNod1RValues,
+		     aNod2Indices,aNod2RValues,
+		     aNod3Indices,aNod3RValues);
     }
     if ( iTri2 != 0) {
       const Standard_Address Tri2Indices =
@@ -3125,16 +3125,16 @@ UpdateAroundNode (const Standard_Integer iNode,
 	&(((HLRAlgo_Array1OfPINod*)PINod)->ChangeValue(Tri2Node2));
       const Handle(HLRAlgo_PolyInternalNode)* PN3 = 
 	&(((HLRAlgo_Array1OfPINod*)PINod)->ChangeValue(Tri2Node3));
-      const Standard_Address Nod1Indices = (*PN1)->Indices();
-      const Standard_Address Nod2Indices = (*PN2)->Indices();
-      const Standard_Address Nod3Indices = (*PN3)->Indices();
-      const Standard_Address Nod1RValues = (*PN1)->RValues();
-      const Standard_Address Nod2RValues = (*PN2)->RValues();
-      const Standard_Address Nod3RValues = (*PN3)->RValues();
+      const Standard_Address aNod1Indices = (*PN1)->Indices();
+      const Standard_Address aNod2Indices = (*PN2)->Indices();
+      const Standard_Address aNod3Indices = (*PN3)->Indices();
+      const Standard_Address aNod1RValues = (*PN1)->RValues();
+      const Standard_Address aNod2RValues = (*PN2)->RValues();
+      const Standard_Address aNod3RValues = (*PN3)->RValues();
       OrientTriangle(iTri2,Tri2Indices,
-		     Nod1Indices,Nod1RValues,
-		     Nod2Indices,Nod2RValues,
-		     Nod3Indices,Nod3RValues);
+		     aNod1Indices,aNod1RValues,
+		     aNod2Indices,aNod2RValues,
+		     aNod3Indices,aNod3RValues);
     }
     if (Seg1LstSg1 == iNode) iiii = Seg1NxtSg1;
     else                     iiii = Seg1NxtSg2;

@@ -39,7 +39,7 @@ IGESDimen_ToolOrdinateDimension::IGESDimen_ToolOrdinateDimension ()    {  }
 
 
 void IGESDimen_ToolOrdinateDimension::ReadOwnParams
-  (const Handle(IGESDimen_OrdinateDimension)& ent,
+  (const Handle(IGESDimen_OrdinateDimension)& theEnt,
    const Handle(IGESData_IGESReaderData)& IR, IGESData_ParamReader& PR) const
 {
   Handle(IGESDimen_GeneralNote) tempNote;
@@ -50,7 +50,7 @@ void IGESDimen_ToolOrdinateDimension::ReadOwnParams
   PR.ReadEntity(IR,PR.Current(),"General Note",
 		STANDARD_TYPE(IGESDimen_GeneralNote),tempNote);
 
-  if (ent->FormNumber() == 0)
+  if (theEnt->FormNumber() == 0)
     {
       Handle(IGESData_IGESEntity) ent;
       if (!PR.ReadEntity(IR,PR.Current(),"Line or Leader", ent)) { }    // WARNING : Two possible Types allowed :
@@ -74,8 +74,8 @@ void IGESDimen_ToolOrdinateDimension::ReadOwnParams
 		    STANDARD_TYPE(IGESDimen_LeaderArrow), leadArr);
     }
 
-  DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
-  ent->Init ( tempNote, isLine, witLine, leadArr);
+  DirChecker(theEnt).CheckTypeAndForm(PR.CCheck(), theEnt);
+  theEnt->Init ( tempNote, isLine, witLine, leadArr);
 }
 
 void IGESDimen_ToolOrdinateDimension::WriteOwnParams

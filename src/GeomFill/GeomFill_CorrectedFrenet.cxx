@@ -198,13 +198,13 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
 // Function : FindPlane
 // Purpose : 
 //===============================================================
-static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
-				    Handle( Geom_Plane )& P )
+static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& theC,
+				    Handle( Geom_Plane )& theP )
 {
   Standard_Boolean found = Standard_True;
   Handle(TColgp_HArray1OfPnt) TabP;
 
-  switch (c->GetType()) {
+  switch (theC->GetType()) {
     
   case GeomAbs_Line:
     {
@@ -213,24 +213,24 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
     break;
     
   case GeomAbs_Circle:
-    P = new Geom_Plane(gp_Ax3(c->Circle().Position()));
+    theP = new Geom_Plane(gp_Ax3(theC->Circle().Position()));
     break;
     
   case GeomAbs_Ellipse:
-    P = new Geom_Plane(gp_Ax3(c->Ellipse().Position()));
+    theP = new Geom_Plane(gp_Ax3(theC->Ellipse().Position()));
     break;
     
   case GeomAbs_Hyperbola:
-    P = new Geom_Plane(gp_Ax3(c->Hyperbola().Position()));
+    theP = new Geom_Plane(gp_Ax3(theC->Hyperbola().Position()));
     break;
     
   case GeomAbs_Parabola:
-    P = new Geom_Plane(gp_Ax3(c->Parabola().Position()));
+    theP = new Geom_Plane(gp_Ax3(theC->Parabola().Position()));
     break;
     
   case GeomAbs_BezierCurve:
     {
-      Handle(Geom_BezierCurve) GC = c->Bezier();
+      Handle(Geom_BezierCurve) GC = theC->Bezier();
       Standard_Integer nbp = GC->NbPoles();
       if ( nbp < 2) 
 	found = Standard_False;
@@ -246,7 +246,7 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
     
   case GeomAbs_BSplineCurve:
     {
-      Handle(Geom_BSplineCurve) GC = c->BSpline();
+      Handle(Geom_BSplineCurve) GC = theC->BSpline();
       Standard_Integer nbp = GC->NbPoles();
       if ( nbp < 2) 
 	found = Standard_False;
@@ -262,16 +262,16 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
     
   default:
     { // On utilise un echantillonage
-      Standard_Integer nbp = 15 + c->NbIntervals(GeomAbs_C3);
+      Standard_Integer nbp = 15 + theC->NbIntervals(GeomAbs_C3);
       Standard_Real f, l, t, inv;
       Standard_Integer ii;
-      f = c->FirstParameter();
-      l = c->LastParameter();
+      f = theC->FirstParameter();
+      l = theC->LastParameter();
       inv = 1./(nbp-1);
       for (ii=1; ii<=nbp; ii++) {
 	t = ( f*(nbp-ii) + l*(ii-1));
 	t *= inv;
-	TabP->SetValue(ii, c->Value(t));
+	TabP->SetValue(ii, theC->Value(t));
       }
     }
   }
@@ -284,7 +284,7 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
       found = Standard_False;
     }
     else {
-      P = new Geom_Plane(inertia);
+      theP = new Geom_Plane(inertia);
     }
     if (found)
       {
@@ -292,7 +292,7 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
 //	Standard_Boolean isOnPlane;
 	Standard_Real a,b,c,d, dist;
 	Standard_Integer ii;
-	P->Coefficients(a,b,c,d);
+  theP->Coefficients(a,b,c,d);
 	for (ii=1; ii<=TabP->Length() && found; ii++) {
 	  const gp_XYZ& xyz = TabP->Value(ii).XYZ();
 	  dist = a*xyz.X() + b*xyz.Y() + c*xyz.Z() + d;

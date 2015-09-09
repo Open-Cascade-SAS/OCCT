@@ -42,14 +42,14 @@
 //purpose  : 
 //=======================================================================
 static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
-		      const TopoDS_Shape& fac,
+		      const TopoDS_Shape& theFac,
 		      TopTools_MapOfShape& mapF)
 {
-  if (mapF.Contains(fac))
+  if (mapF.Contains(theFac))
   {
     return;
   }
-  mapF.Add(fac);  // attention, if oriented == Standard_True, fac should
+  mapF.Add(theFac);  // attention, if oriented == Standard_True, fac should
                   // be FORWARD or REVERSED. It is not checked.
 
   TopTools_MapIteratorOfMapOfShape itf(mapF);
