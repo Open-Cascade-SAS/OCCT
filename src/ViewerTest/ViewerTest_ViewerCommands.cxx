@@ -8952,7 +8952,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
             "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}]"
-    "\n\t\t:       [-compatibleContext {0|1}]"
+    "\n\t\t:       [-compatibleProfile {0|1}]"
     "\n\t\t:       [-vsync {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
