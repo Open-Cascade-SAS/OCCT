@@ -549,12 +549,12 @@ void DomainIntersection(const IntRes2d_Domain& Domain
   
   if(Domain.HasFirstPoint()) {
     if(U1sup < (Domain.FirstParameter()-Domain.FirstTolerance())) {
-      Res1inf=1; Res1sup=-1; 
-      return;
-    }
+       Res1inf=1; Res1sup=-1; 
+       return;
+  }
     if(U1inf>(Domain.FirstParameter()+Domain.FirstTolerance())) {
-      Res1inf=U1inf;
-      PosInf=IntRes2d_Middle;
+  Res1inf=U1inf;
+  PosInf=IntRes2d_Middle;
     }
     else {
       Res1inf=Domain.FirstParameter(); 
@@ -572,8 +572,8 @@ void DomainIntersection(const IntRes2d_Domain& Domain
       return;
     }
     if(U1sup<(Domain.LastParameter()-Domain.LastTolerance())) {
-      Res1sup=U1sup; 
-      PosSup=IntRes2d_Middle;
+  Res1sup=U1sup;
+  PosSup=IntRes2d_Middle;
     }
     else {
       Res1sup=Domain.LastParameter();
@@ -599,9 +599,9 @@ void DomainIntersection(const IntRes2d_Domain& Domain
   /*if(PosInf==IntRes2d_Head) {
     if(Res1sup <= (Res1inf+Domain.FirstTolerance())) {
       Res1sup=Res1inf;
-      PosSup=IntRes2d_Head;
-    }
+        PosSup=IntRes2d_Head;
   }
+}
   if(PosSup==IntRes2d_End) {
     if(Res1inf >= (Res1sup-Domain.LastTolerance())) {
       Res1inf=Res1sup;
@@ -1190,6 +1190,30 @@ static Standard_Boolean computeIntPoint(const IntRes2d_Domain& theCurDomain,
   return Standard_True;
 }
 
+//=======================================================================
+//function : CheckLLCoincidence
+//purpose  : Returns true if input are trimmed curves and they coincide
+//           within tolerance
+//=======================================================================
+static Standard_Boolean CheckLLCoincidence(const gp_Lin2d& L1,
+                                           const gp_Lin2d& L2,
+                                           const IntRes2d_Domain& Domain1,
+                                           const IntRes2d_Domain& Domain2,
+                                           const Standard_Real theTol)
+{
+  Standard_Boolean isFirst1 = (Domain1.HasFirstPoint() &&
+    L2.Distance(Domain1.FirstPoint()) < theTol);
+  Standard_Boolean isLast1 = (Domain1.HasLastPoint() &&
+    L2.Distance(Domain1.LastPoint()) < theTol);
+  if (isFirst1 && isLast1)
+    return Standard_True;
+  Standard_Boolean isFirst2 = (Domain2.HasFirstPoint() &&
+    L1.Distance(Domain2.FirstPoint()) < theTol);
+  Standard_Boolean isLast2 = (Domain2.HasLastPoint() &&
+    L1.Distance(Domain2.LastPoint()) < theTol);
+  return isFirst2 && isLast2;
+}
+
 //----------------------------------------------------------------------
 void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 				      ,const IntRes2d_Domain& Domain1
@@ -1219,6 +1243,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
   Standard_Boolean Opposite=(aCosT1T2 < 0.0)? Standard_True : Standard_False;
 
   done=Standard_True;
+
+  if(nbsol==1 && CheckLLCoincidence(L1, L2, Domain1, Domain2, Tol))
+    nbsol = 2;
 
   if(nbsol==1) {
     //---------------------------------------------------
@@ -1318,7 +1345,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
         //------------------------------------------------------
       
     
-    }  //---------------   Fin du cas  :   1 seul point --------------------
+      }  //---------------   Fin du cas  :   1 seul point --------------------
       
       else {
 	//-- Intersection AND Domain1  --------> Segment ---------------------
@@ -1619,13 +1646,13 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	  //-- Attention Res1sup peut etre  different de  U2
 	  //--   Mais on a Res1sup-Res1inf < Tol 
 
-    //gka #0022833
+          //gka #0022833
     IntRes2d_TypeTrans aCurTrans = ( ProdVectTan >= TOLERANCE_ANGULAIRE ? 
            IntRes2d_In : ( ProdVectTan <= -TOLERANCE_ANGULAIRE ? IntRes2d_Out : IntRes2d_Undecided ) );
 
-    IntRes2d_IntersectionPoint NewPoint1;
+          IntRes2d_IntersectionPoint NewPoint1;
     if( computeIntPoint(Domain2, Domain1, L2, L1, aCosT1T2, U2, U1, Res2inf, Res2sup, 2, aCurTrans, NewPoint1 ) )
-      Append(NewPoint1);
+            Append(NewPoint1);
 	
 	}
       }
