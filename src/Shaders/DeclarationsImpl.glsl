@@ -16,8 +16,8 @@
 // This file includes implementation of common functions and properties accessors
 
 // arrays of light sources
-uniform ivec2 occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types
-uniform vec4  occLightSources[THE_MAX_LIGHTS * 4];  //!< packed light sources parameters
+uniform THE_PREC_ENUM ivec2 occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types
+uniform               vec4  occLightSources[THE_MAX_LIGHTS * 4];  //!< packed light sources parameters
 
 // light source properties accessors
 int   occLight_Type              (in int theId) { return occLightSourcesTypes[theId].x; }

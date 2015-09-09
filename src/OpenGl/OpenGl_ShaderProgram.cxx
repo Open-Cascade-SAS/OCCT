@@ -227,7 +227,9 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       #if defined(GL_ES_VERSION_2_0)
         TCollection_AsciiString aPrefix (theCtx->hasHighp
                                        ? "precision highp float;\n"
-                                       : "precision mediump float;\n");
+                                         "precision highp int;\n"
+                                       : "precision mediump float;\n"
+                                         "precision mediump int;\n");
         aSource = aHeader + aPrefix + aSource;
       #else
         aSource = aHeader + aSource;
