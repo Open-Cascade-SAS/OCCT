@@ -33,6 +33,12 @@
   #define occTexture2D   texture2D
 #endif
 
+#ifdef GL_ES
+  #define THE_PREC_ENUM lowp // enumerations should fit into lowp range
+#else
+  #define THE_PREC_ENUM
+#endif
+
 // Vertex attributes
 #ifdef VERTEX_SHADER
   THE_ATTRIBUTE vec4 occVertex;
@@ -68,8 +74,8 @@ const int OccLightType_Point  = 2; //!< isotropic point light source
 const int OccLightType_Spot   = 3; //!< spot            light source
 
 // Light sources
-uniform vec4 occLightAmbient;                    //!< Cumulative ambient color
-uniform int  occLightSourcesCount;               //!< Total number of light sources
+uniform               vec4 occLightAmbient;      //!< Cumulative ambient color
+uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sources
 int   occLight_Type              (in int theId); //!< Type of light source
 int   occLight_IsHeadlight       (in int theId); //!< Is light a headlight?
 vec4  occLight_Diffuse           (in int theId); //!< Diffuse intensity for specified light source
@@ -97,17 +103,17 @@ vec4  occBackMaterial_Specular(void);      //!< Specular reflection
 float occBackMaterial_Shininess(void);     //!< Specular exponent
 float occBackMaterial_Transparency(void);  //!< Transparency coefficient
 
-uniform vec4      occColor;                //!< color value (in case of disabled lighting)
-uniform int       occDistinguishingMode;   //!< Are front and back faces distinguished?
-uniform int       occTextureEnable;        //!< Is texture enabled?
-uniform sampler2D occActiveSampler;        //!< Current active sampler
-uniform float     occPointSize;            //!< point size
+uniform               vec4      occColor;              //!< color value (in case of disabled lighting)
+uniform THE_PREC_ENUM int       occDistinguishingMode; //!< Are front and back faces distinguished?
+uniform THE_PREC_ENUM int       occTextureEnable;      //!< Is texture enabled?
+uniform               sampler2D occActiveSampler;      //!< Current active sampler
+uniform               float     occPointSize;          //!< point size
 
 // clipping planes state
 const int OccEquationCoords_View  = 0; //!< view-space  clipping plane
 const int OccEquationCoords_World = 1; //!< world-space clipping plane
 
 //! Parameters of clipping planes
-uniform vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];
-uniform int  occClipPlaneSpaces   [THE_MAX_CLIP_PLANES];
-uniform int  occClipPlaneCount;   //!< Total number of clip planes
+uniform               vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];
+uniform THE_PREC_ENUM int  occClipPlaneSpaces   [THE_MAX_CLIP_PLANES];
+uniform THE_PREC_ENUM int  occClipPlaneCount;   //!< Total number of clip planes
