@@ -1072,22 +1072,16 @@ static void putIntWires(TopoDS_Shape& theFace, TopTools_SequenceOfShape& theWire
 
 void ShapeUpgrade_UnifySameDomain::UnifyFaces()
 {
-  //Handle(ShapeBuild_ReShape) myContext = new ShapeBuild_ReShape;
-  TopoDS_Shape aResShape = myContext->Apply(myShape);
-
+  // creating map of edge faces
+  TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
+  TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
   // processing each shell
   TopExp_Explorer exps;
   for (exps.Init(myShape, TopAbs_SHELL); exps.More(); exps.Next()) {
     TopoDS_Shell aShell = TopoDS::Shell(exps.Current());
-
-    // creating map of edge faces
-    TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
-    TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
-
+    
     // map of processed shapes
     TopTools_MapOfShape aProcessed;
-
-    //Handle(ShapeBuild_ReShape) aContext = new ShapeBuild_ReShape;
 
     Standard_Integer NbModif = 0;
     Standard_Boolean hasFailed = Standard_False;
