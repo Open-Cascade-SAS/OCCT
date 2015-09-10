@@ -45,6 +45,8 @@
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -495,12 +497,20 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 
   TopLoc_Location L;
   Handle(Geom_Surface) S = BRep_Tool::Surface(Face,L);
-
   // On detrime les surfaces, evite des recopies dans les extensions.
   Handle(Geom_RectangularTrimmedSurface) RT = 
     Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
   if (!RT.IsNull()) S = RT->BasisSurface();
-
+  Standard_Boolean IsTransformed = Standard_False;
+  if ((S->IsKind(STANDARD_TYPE(Geom_BSplineSurface)) || 
+      S->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)) ||
+      S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)) ||
+      S->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) && !L.IsIdentity())
+  {
+    S = Handle(Geom_Surface)::DownCast(S->Copy());
+    S->Transform(L.Transformation());
+    IsTransformed = Standard_True;
+  }
   // particular case of cone
   Handle(Geom_ConicalSurface) Co;
   Co = Handle(Geom_ConicalSurface)::DownCast(S);
@@ -786,7 +796,10 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 
   BRep_Builder myBuilder;
   myBuilder.MakeFace(myFace);
-  myBuilder.UpdateFace(myFace,TheSurf,L,BRep_Tool::Tolerance(Face));
+  if  (!IsTransformed)
+    myBuilder.UpdateFace(myFace,TheSurf, L, BRep_Tool::Tolerance(Face));
+  else
+    myBuilder.UpdateFace(myFace,TheSurf, TopLoc_Location(), BRep_Tool::Tolerance(Face));
 
   TopTools_DataMapOfShapeShape MapSS;
 
@@ -870,7 +883,8 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	else
 	  {
 	    TheSurf->D0(P2d1.X(),P2d1.Y(),P1);
-	    P1.Transform(L.Transformation());
+	    if (!L.IsIdentity() && !IsTransformed)
+	      P1.Transform(L.Transformation());
 	    vstart = P2d1.Y();
 	  }
 	if (VonDegen.Contains(V2))
@@ -887,7 +901,8 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	else
 	  {
 	    TheSurf->D0(P2d2.X(),P2d2.Y(),P2);
-	    P2.Transform(L.Transformation());
+	    if (!L.IsIdentity() && !IsTransformed)
+	      P2.Transform(L.Transformation());
 	    vend = P2d2.Y();
 	  }
 	// E a-t-il ume image dans la Map des Created ?
