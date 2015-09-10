@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC26313"
+puts "============"
+puts ""
+#######################################################################
+# Method BRepBuilderAPI_GTransform::ModifiedShape(...) thows exception
+#######################################################################
+
+pload QAcommands
+
+box bb 100 100 100
+OCC26313 rr bb
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 8
+ EDGE      : 12
+ WIRE      : 6
+ FACE      : 6
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 34
+"
+checknbshapes rr -ref ${nbshapes_expected} -t -m "Modified Shape"

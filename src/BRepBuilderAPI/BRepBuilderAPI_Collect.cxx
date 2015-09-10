@@ -209,8 +209,13 @@ void BRepBuilderAPI_Collect::Add (const TopoDS_Shape& SI,
   TopTools_DataMapOfShapeShape ModBack;
   BuildBack (myGen, GenBack);   // Vraiment pas optimum a Revoir
   BuildBack (myMod, ModBack);
-  
+
+  Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_COMPOUND);
+  Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_COMPSOLID);
+  Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_SOLID);
+  Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_SHELL);
   Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_FACE);
+  Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_WIRE);
   Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_EDGE);
   Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_VERTEX);
 
