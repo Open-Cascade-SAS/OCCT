@@ -724,11 +724,17 @@ void AIS_InteractiveContext::EraseSelected (const Standard_Boolean theToUpdateVi
 
   Standard_Boolean      isFound  = Standard_False;
   Handle(AIS_Selection) aSelIter = AIS_Selection::Selection(myCurrentName.ToCString());
-  for (aSelIter->Init(); aSelIter->More(); aSelIter->Next())
+
+  aSelIter->Init();
+  while (aSelIter->More())
   {
-    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelIter->Value());
+    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aSelIter->Value());
+    Handle(AIS_InteractiveObject) anObj   = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+
     Erase (anObj, Standard_False);
     isFound = Standard_True;
+
+    aSelIter->Init();
   }
 
   if (isFound && theToUpdateViewer)

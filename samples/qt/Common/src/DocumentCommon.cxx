@@ -234,8 +234,7 @@ void DocumentCommon::onTransparency()
 
 void DocumentCommon::onDelete()
 {
-    for ( myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent() )
-        myContext->Erase( myContext->Current(), false);
+    myContext->EraseSelected (Standard_False);
     myContext->ClearSelected();
     getApplication()->onSelectionChanged();
 }

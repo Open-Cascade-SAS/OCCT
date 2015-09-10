@@ -188,14 +188,17 @@ void CHLRDoc::Fit()
 void CHLRDoc::OnObjectErase()
 {
   Standard_Boolean toUpdateDisplayable = Standard_False;
-  for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+  myAISContext->InitCurrent();
+  while (myAISContext->MoreCurrent())
   {
-    myAISContext->Erase (myAISContext->Current(), Standard_True);
     if (myAISContext->Current()->Type() == AIS_KOI_Shape && myCSelectionDialogIsCreated)
     {
       myCSelectionDialog->DiplayableShape()->Remove (Handle(AIS_Shape)::DownCast (myAISContext->Current())->Shape());
       toUpdateDisplayable = Standard_True;
     }
+
+    myAISContext->Erase (myAISContext->Current(), Standard_True);
+    myAISContext->InitCurrent();
   }
 
   myAISContext->ClearCurrents();
