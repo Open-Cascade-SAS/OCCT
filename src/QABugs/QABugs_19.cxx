@@ -4089,6 +4089,50 @@ static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*th
   return 0;
 }
 
+
+#include <BRepBuilderAPI_GTransform.hxx>
+static Standard_Integer OCC26313(Draw_Interpretor& di,Standard_Integer n,const char** a)
+{
+  if (n <= 1) return 1;
+  
+  gp_Trsf T;
+  gp_GTrsf GT(T);
+  
+  gp_Mat rot( 1.0, 0.0, 0.0,
+              0.0, 2.0, 0.0,
+              0.0, 0.0, 3.0);
+  
+  GT.SetVectorialPart(rot);
+  BRepBuilderAPI_GTransform gtrf(GT);
+
+  TopoDS_Shape aSrcShape = DBRep::Get(a[2]);
+  if (aSrcShape.IsNull()) {
+    di << a[2] << " is not a valid shape" << "\n";
+    return 1;
+  }
+
+  
+  gtrf.Perform(aSrcShape);
+  if (gtrf.IsDone())
+  {
+    try
+    {
+      DBRep::Set(a[1], gtrf.ModifiedShape(aSrcShape));
+    }
+    catch(Standard_Failure)
+    {
+      di << "Error: Exception is thrown\n";
+    }
+  }
+  else
+  {
+    di << "Error: Result is not done\n";
+    return 1;
+  }
+  
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4176,5 +4220,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC26462",
                    "OCC26462: Checks the ability to manage sensitivity of a particular selection mode in local context",
                    __FILE__, OCC26462, group);
+
+  theCommands.Add ("OCC26313", "OCC26313 result shape", __FILE__, OCC26313, group);
+
   return;
 }
