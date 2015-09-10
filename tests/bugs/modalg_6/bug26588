@@ -1,0 +1,19 @@
+puts "================"
+puts "CR26588"
+puts "================"
+puts ""
+###############################################
+## SIGSEGV in BRepFeat_MakeDPrism::Perform()
+###############################################
+
+pload DCAF
+
+Open [locate_data_file bug26588_Study1_new_GEOM.cbf] D
+
+GetShape D 0:1:8:1:1:2 s
+GetShape D 0:1:27:1:1:2 a
+
+featdprism s a a 25 0 1
+featperformval dprism result 200
+
+set 2dviewer 1

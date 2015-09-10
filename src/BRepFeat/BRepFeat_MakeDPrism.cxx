@@ -98,10 +98,6 @@ static Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
 
 static Handle(Geom_Curve) TestCurve(const TopoDS_Face&);
 
-static Standard_Boolean ToFuse(const TopoDS_Face& ,
-			       const TopoDS_Face&);
-
-
 
 //=======================================================================
 //function : Init
@@ -257,36 +253,6 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
     NotDone();
     myStatusError = BRepFeat_InvFirstShape;
     return;
-  }
-
-  TopoDS_Face FFace;
-  
-  Standard_Boolean found = Standard_False;
-
-  if(!mySkface.IsNull() || !mySlface.IsEmpty()) {
-    if(myLShape.ShapeType() == TopAbs_WIRE) {
-      TopExp_Explorer ex1(VraiDPrism, TopAbs_FACE);
-      for(; ex1.More(); ex1.Next()) {
-	TopExp_Explorer ex2(ex1.Current(), TopAbs_WIRE);
-	for(; ex2.More(); ex2.Next()) {
-	  if(ex2.Current().IsSame(myLShape)) {
-	    FFace = TopoDS::Face(ex1.Current());
-	    found = Standard_True;
-	    break;
-	  }
-	}
-	if(found) break;
-      }
-    }
-    
-    TopExp_Explorer exp(mySbase, TopAbs_FACE);
-    for(; exp.More(); exp.Next()) {
-      const TopoDS_Face& ff = TopoDS::Face(exp.Current());
-      if(ToFuse(ff, FFace)) {
-	TopTools_DataMapOfShapeListOfShape sl;
-	break;
-      }
-    }
   }
 
 // management of gluing faces 
@@ -1306,71 +1272,4 @@ static Handle(Geom_Curve) TestCurve(const TopoDS_Face& Base)
   Handle(Geom_Line) theLin = new Geom_Line(theAx);
   return theLin;
 }
-
-
-
-
-
-//=======================================================================
-//function : ToFuse
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean ToFuse(const TopoDS_Face& F1,
-			const TopoDS_Face& F2)
-{
-  if (F1.IsNull() || F2.IsNull()) {
-    return Standard_False;
-  }
-
-  Handle(Geom_Surface) S1,S2;
-  TopLoc_Location loc1, loc2;
-  Handle(Standard_Type) typS1,typS2;
-  const Standard_Real tollin = Precision::Confusion();
-  const Standard_Real tolang = Precision::Angular();
-
-  S1 = BRep_Tool::Surface(F1,loc1);
-  S2 = BRep_Tool::Surface(F2,loc2);
-
-  typS1 = S1->DynamicType();
-  typS2 = S2->DynamicType();
-
-  if (typS1 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S1 =  (*((Handle(Geom_RectangularTrimmedSurface)*)&S1))->BasisSurface();
-    typS1 = S1->DynamicType();
-  }
-
-  if (typS2 == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-    S2 =  (*((Handle(Geom_RectangularTrimmedSurface)*)&S2))->BasisSurface();
-    typS2 = S2->DynamicType();
-  }
-
-  if (typS1 != typS2) {
-    return Standard_False;
-  }
-
-
-  Standard_Boolean ValRet = Standard_False;
-  if (typS1 == STANDARD_TYPE(Geom_Plane)) {
-    S1 = BRep_Tool::Surface(F1);  // to apply the location.
-    S2 = BRep_Tool::Surface(F2);
-    gp_Pln pl1( (*((Handle(Geom_Plane)*)&S1))->Pln());
-    gp_Pln pl2( (*((Handle(Geom_Plane)*)&S2))->Pln());
-
-    if (pl1.Position().IsCoplanar(pl2.Position(),tollin,tolang)) {
-      ValRet = Standard_True;
-    }
-  }
-
-  return ValRet;
-}
-
-
-
-
-
-
-
-
-
 
