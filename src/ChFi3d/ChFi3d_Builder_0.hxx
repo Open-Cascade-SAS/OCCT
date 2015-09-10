@@ -551,10 +551,19 @@ void ChFi3d_ChercheBordsLibres(const  ChFiDS_Map & myVEMap,
                                 TopoDS_Edge & edgelibre1,
                                 TopoDS_Edge & edgelibre2);
 
+Standard_Boolean ChFi3d_isTangentFaces(const TopoDS_Edge &theEdge,
+                                       const TopoDS_Face &theFace1,
+                                       const TopoDS_Face &theFace2,
+                                       const GeomAbs_Shape Order = GeomAbs_G1);
+
 Standard_Integer ChFi3d_NbNotDegeneratedEdges (const TopoDS_Vertex& Vtx,
 				      const ChFiDS_Map& VEMap);
 Standard_Integer ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx,
 				      const ChFiDS_Map& VEMap);
+
+Standard_Integer ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
+                                           const ChFiDS_Map& VEMap,
+                                           const ChFiDS_Map& EFmap);
 
 void ChFi3d_cherche_vertex (const TopoDS_Edge & E1,
 			    const TopoDS_Edge & E2,
