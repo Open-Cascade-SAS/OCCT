@@ -216,6 +216,7 @@ Standard_Boolean ShapeFix_IntersectionTool::CutEdge(const TopoDS_Edge &edge,
 
         return Standard_True;
       }
+     
     }
     return Standard_False;
   }
@@ -1644,7 +1645,11 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
                   if(Abs(pend-p11)>Abs(pend-p12)) cut=p12;
                     else cut=p11;
                   Standard_Boolean IsCutLine;
-                  CutEdge(edge1, pend, cut, face, IsCutLine);
+                  if(!CutEdge(edge1, pend, cut, face, IsCutLine))
+                  {
+                    IsModified1 = Standard_False;
+                    continue;
+                  }
                   if(newtol>BRep_Tool::Tolerance(NewV)) {
                     B.UpdateVertex(NewV,newtol*1.00001);
                   }
@@ -1691,14 +1696,20 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
                   if(Abs(pend-p21)>Abs(pend-p22)) cut=p22;
                   else cut=p21;
                   Standard_Boolean IsCutLine;
-                  CutEdge(edge2, pend, cut, face, IsCutLine);
+                  if(!CutEdge(edge2, pend, cut, face, IsCutLine))
+                  {
+                    IsModified2 = Standard_False;
+                    continue;
+
+                  }
                   if(newtol>BRep_Tool::Tolerance(NewV)) {
                     B.UpdateVertex(NewV,newtol*1.00001);
                   }
                 }
 
                 if( IsModified1 || IsModified2 ) {
-                  //num2--;
+                  //necessary to make intersect with the same pair of the edges once again with modified ranges
+                  num2--;
                   hasModifWire = Standard_True; //gka 06.09.04
                   continue;
                 }

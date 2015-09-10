@@ -1660,52 +1660,73 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     ws.Append ( w2 );
   }
   
+  // Check consistency of orientations of the two wires that need to be connected by a seam
+  Standard_Real uf=SUF, vf=SVF;  
+  Standard_Integer coord = ( ismodeu ? 1 : 0 );
+  Standard_Integer isneg = ( ismodeu ? ismodeu : -ismodev );
+  Standard_Real period = ( ismodeu ? URange : VRange );
+  TopoDS_Shape S;
+  Standard_Real m1[2][2], m2[2][2];
+  S = myFace.EmptyCopied();
+  B.Add ( S, w1 );
+  ShapeAnalysis::GetFaceUVBounds (TopoDS::Face(S), m1[0][0], m1[0][1], m1[1][0], m1[1][1]);
+  S = myFace.EmptyCopied();
+  B.Add ( S, w2 );
+  ShapeAnalysis::GetFaceUVBounds (TopoDS::Face(S), m2[0][0], m2[0][1], m2[1][0], m2[1][1]);
+   
+  // For the case when surface is closed only in one direction it is necesary to check
+  // validity of orientation of the open wires in parametric space. 
+  // In case of U closed surface wire with minimal V coordinate should be directed in positive direction by U
+  // In case of V closed surface wire with minimal U coordinate should be directed in negative direction by V
+  if (!vclosed || !uclosed)
+  {
+    Standard_Real deltaOther = 0.5 * (m2[coord][0] + m2[coord][1]) - 0.5 * (m1[coord][0] + m1[coord][1]);
+    if (deltaOther  * isneg < 0)
+    {
+      w1.Reverse();
+      w2.Reverse();
+    }
+  }
+
   // sort original wires
   Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
   sfw->SetFace ( myFace );
   sfw->SetPrecision ( Precision() );
-
   Handle(ShapeExtend_WireData) wd1 = new ShapeExtend_WireData ( w1 );
   Handle(ShapeExtend_WireData) wd2 = new ShapeExtend_WireData ( w2 );
-
-  // sorting
-//  Standard_Boolean degenerated = ( secondDeg != firstDeg );
-//  if ( ! degenerated ) {
-    sfw->Load ( wd1 );
-    sfw->FixReorder();
-//  }
+  sfw->Load ( wd1 );
+  sfw->FixReorder();
   sfw->Load ( wd2 );
   sfw->FixReorder();
-
+  TopoDS_Wire w11 = wd1->Wire();
+  TopoDS_Wire w21 = wd2->Wire();
+ 
   //:abv 29.08.01: reconstruct face taking into account reversing
   TopoDS_Shape dummy = myFace.EmptyCopied();
   TopoDS_Face tmpF = TopoDS::Face ( dummy );
   tmpF.Orientation ( TopAbs_FORWARD );
   for ( i=1; i <= ws.Length(); i++ ) {
     TopoDS_Wire wire = TopoDS::Wire ( ws.Value(i) );
-    if ( wire.IsSame ( w1 ) ) wire = w1;
-    else if ( wire.IsSame ( w2 ) ) wire = w2;
+    if ( wire.IsSame ( w1 ) ) wire = w11;
+    else if ( wire.IsSame ( w2 ) ) wire = w21;
+    else
+    {
+      // other wires (not boundary) are considered as holes; make sure to have them oriented accordingly
+      TopoDS_Shape curface = tmpF.EmptyCopied();
+      B.Add(curface,wire);
+      curface.Orientation ( myFace.Orientation() );
+      if( ShapeAnalysis::IsOuterBound(TopoDS::Face(curface)))
+        wire.Reverse();
+    }
     B.Add ( tmpF, wire );
   }
+ 
   tmpF.Orientation ( myFace.Orientation() );
-  
-  Standard_Real uf=SUF, vf=SVF;
-  
+
   // A special kind of FixShifted is necessary for torus-like
   // surfaces to adjust wires by period ALONG the missing SEAM direction
   // tr9_r0501-ug.stp #187640
   if ( uclosed && vclosed ) {
-    Standard_Integer coord = ( ismodeu ? 1 : 0 );
-    Standard_Integer isneg = ( ismodeu ? ismodeu : -ismodev );
-    Standard_Real period = ( ismodeu ? URange : VRange );
-    TopoDS_Shape S;
-    Standard_Real m1[2][2], m2[2][2];
-    S = tmpF.EmptyCopied();
-    B.Add ( S, w1 );
-    ShapeAnalysis::GetFaceUVBounds (TopoDS::Face(S), m1[0][0], m1[0][1], m1[1][0], m1[1][1]);
-    S = tmpF.EmptyCopied();
-    B.Add ( S, w2 );
-    ShapeAnalysis::GetFaceUVBounds (TopoDS::Face(S), m2[0][0], m2[0][1], m2[1][0], m2[1][1]);
     Standard_Real shiftw2 = 
       ShapeAnalysis::AdjustByPeriod ( 0.5 * ( m2[coord][0] + m2[coord][1] ),
                                       0.5 * ( m1[coord][0] + m1[coord][1]  +
@@ -1717,9 +1738,10 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
       if(it.Value().ShapeType() != TopAbs_WIRE)
         continue;
       TopoDS_Wire w = TopoDS::Wire ( it.Value() );
-      if ( w == w1 ) continue;
+      if ( w == w11 ) continue;
       Standard_Real shift;
-      if ( w == w2 ) shift = shiftw2;
+      if ( w == w21 ) shift = shiftw2;
+
       else {
 	S = tmpF.EmptyCopied();
 	B.Add ( S, w );
