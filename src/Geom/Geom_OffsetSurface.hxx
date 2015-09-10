@@ -113,11 +113,13 @@ public:
   Standard_EXPORT void SetOffsetValue (const Standard_Real D);
   
   //! Returns the offset value of this offset surface.
-  Standard_EXPORT Standard_Real Offset() const;
+  inline Standard_Real Offset() const
+  { return offsetValue; }
   
   //! Returns the basis surface of this offset surface.
   //! Note: The basis surface can be an offset surface.
-  Standard_EXPORT Handle(Geom_Surface) BasisSurface() const;
+  inline const Handle(Geom_Surface) & BasisSurface() const
+  { return basisSurf; }
   
   //! Changes the orientation of this offset surface in the u
   //! parametric direction. The bounds of the surface
@@ -385,17 +387,10 @@ public:
   Standard_EXPORT Standard_Boolean VOsculatingSurface (const Standard_Real U, const Standard_Real V, Standard_Boolean& IsOpposite, Handle(Geom_BSplineSurface)& VOsculSurf) const;
   
   //! Returns continuity of the basis surface.
-  Standard_EXPORT GeomAbs_Shape GetBasisSurfContinuity() const;
-
-
-
+  inline GeomAbs_Shape GetBasisSurfContinuity() const
+  { return myBasisSurfContinuity; }
 
   DEFINE_STANDARD_RTTI(Geom_OffsetSurface,Geom_Surface)
-
-protected:
-
-
-
 
 private:
 
@@ -429,14 +424,6 @@ private:
   Standard_Real offsetValue;
   Geom_OsculatingSurface myOscSurf;
   GeomAbs_Shape myBasisSurfContinuity;
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_OffsetSurface_HeaderFile

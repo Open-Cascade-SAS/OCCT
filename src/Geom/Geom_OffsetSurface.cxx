@@ -71,15 +71,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 
-typedef Geom_OffsetCurve           OffsetCurve;
-typedef Geom_OffsetSurface         OffsetSurface;
-typedef gp_Dir  Dir;
-typedef gp_Vec  Vec;
-typedef gp_Pnt  Pnt;
-typedef gp_Trsf Trsf;
-typedef gp_XYZ  XYZ;
-
 static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
+
 //=======================================================================
 //function : derivatives
 //purpose  : 
@@ -197,22 +190,16 @@ static void derivatives(Standard_Integer MaxOrder,
 
 }
 
-
 //=======================================================================
 //function : Copy
 //purpose  : 
 //=======================================================================
 
-Handle(Geom_Geometry) Geom_OffsetSurface::Copy () const {
-
-  Handle(Geom_OffsetSurface) S;
-  S = new OffsetSurface (basisSurf, offsetValue);
+Handle(Geom_Geometry) Geom_OffsetSurface::Copy () const
+{
+  Handle(Geom_OffsetSurface) S(new Geom_OffsetSurface(basisSurf, offsetValue, Standard_True));
   return S;
 }
-
-
-
-
 
 //=======================================================================
 //function : Geom_OffsetSurface
@@ -222,12 +209,10 @@ Handle(Geom_Geometry) Geom_OffsetSurface::Copy () const {
 
 Geom_OffsetSurface::Geom_OffsetSurface (const Handle(Geom_Surface)& theSurf, 
   const Standard_Real theOffset,
-  const Standard_Boolean isTheNotCheckC0) 
+  const Standard_Boolean isNotCheckC0) 
   : offsetValue (theOffset) 
 {
-
-  SetBasisSurface(theSurf, isTheNotCheckC0);
-
+  SetBasisSurface(theSurf, isNotCheckC0);
 }
 
 //=======================================================================
@@ -245,7 +230,7 @@ void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
   Standard_Boolean isTrimmed = Standard_False;
 
   while(aCheckingSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)) ||
-    aCheckingSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+        aCheckingSurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     if (aCheckingSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
@@ -264,11 +249,9 @@ void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
     }
   }
 
-
   myBasisSurfContinuity = aCheckingSurf->Continuity();
 
-  Standard_Boolean isC0 = !isNotCheckC0 &&
-    (myBasisSurfContinuity == GeomAbs_C0);
+  Standard_Boolean isC0 = !isNotCheckC0 && (myBasisSurfContinuity == GeomAbs_C0);
 
   // Basis surface must be at least C1
   if (isC0)
@@ -289,7 +272,7 @@ void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
     if(!aCurve.IsNull())
     {
       while(aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)) ||
-        aCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
+            aCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
       {
         if (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
         {
@@ -307,7 +290,7 @@ void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
       }
     }
 
-    Standard_Real aUIsoPar = (aUf + aUl)/2.0, aVIsoPar = (aVf + aVl)/2.0;
+    const Standard_Real aUIsoPar = (aUf + aUl)/2.0, aVIsoPar = (aVf + aVl)/2.0;
     Standard_Boolean isUG1 = Standard_False, isVG1 = Standard_False;
  
     const Handle(Geom_Curve) aCurv1 = aCurve.IsNull() ? aCheckingSurf->UIso(aUIsoPar) : aCurve;
@@ -354,20 +337,17 @@ void Geom_OffsetSurface::SetBasisSurface (const Handle(Geom_Surface)& S,
   // et la mettre en champ, on pourrait utiliser par exemple pour l'extraction d'iso 
   // et aussi pour les singularite. Pour les surfaces osculatrices, on l'utilise pour
   // detecter si une iso est degeneree.
-  Standard_Real Tol = Precision::Confusion(); //0.0001;
+  const Standard_Real Tol = Precision::Confusion(); //0.0001;
   myOscSurf.Init(basisSurf,Tol);
-
 }
-
-
 
 //=======================================================================
 //function : SetOffsetValue
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::SetOffsetValue (const Standard_Real D) {
-
+void Geom_OffsetSurface::SetOffsetValue (const Standard_Real D)
+{
   offsetValue = D;
   equivSurf = Surface();
 }
@@ -377,112 +357,91 @@ void Geom_OffsetSurface::SetOffsetValue (const Standard_Real D) {
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::UReverse () { 
-
+void Geom_OffsetSurface::UReverse ()
+{
   basisSurf->UReverse(); 
   offsetValue = -offsetValue;
   if(!equivSurf.IsNull()) equivSurf->UReverse();
 }
-
 
 //=======================================================================
 //function : UReversedParameter
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_OffsetSurface::UReversedParameter( const Standard_Real U) const {
-
-  return basisSurf->UReversedParameter( U); 
+Standard_Real Geom_OffsetSurface::UReversedParameter(const Standard_Real U) const
+{
+  return basisSurf->UReversedParameter(U);
 }
-
 
 //=======================================================================
 //function : VReverse
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::VReverse () {
-
+void Geom_OffsetSurface::VReverse ()
+{
   basisSurf->VReverse();
   offsetValue = -offsetValue;
   if(!equivSurf.IsNull()) equivSurf->VReverse();
 }
-
 
 //=======================================================================
 //function : VReversedParameter
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_OffsetSurface::VReversedParameter( const Standard_Real V) const {
-
-  return basisSurf->VReversedParameter( V);
-}
-
-//=======================================================================
-//function : BasisSurface
-//purpose  : 
-//=======================================================================
-
-Handle(Geom_Surface) Geom_OffsetSurface::BasisSurface () const 
+Standard_Real Geom_OffsetSurface::VReversedParameter(const Standard_Real V) const
 {
-  return basisSurf;
+  return basisSurf->VReversedParameter(V);
 }
-
 
 //=======================================================================
 //function : Bounds
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::Bounds (Standard_Real& U1, 
-  Standard_Real& U2, 
-  Standard_Real& V1, 
-  Standard_Real& V2) const {
-
-    basisSurf->Bounds (U1, U2 ,V1, V2);
+void Geom_OffsetSurface::Bounds (Standard_Real& U1, Standard_Real& U2, 
+                                 Standard_Real& V1, Standard_Real& V2) const
+{
+  basisSurf->Bounds (U1, U2 ,V1, V2);
 }
-
 
 //=======================================================================
 //function : Continuity
 //purpose  : 
 //=======================================================================
 
-GeomAbs_Shape Geom_OffsetSurface::Continuity () const {
-
-  GeomAbs_Shape OffsetShape=GeomAbs_C0;
+GeomAbs_Shape Geom_OffsetSurface::Continuity () const
+{
   switch (myBasisSurfContinuity) {
-  case GeomAbs_C0 :        OffsetShape = GeomAbs_C0; break;
-  case GeomAbs_G1 :        OffsetShape = GeomAbs_C0; break;
-  case GeomAbs_C1 :        OffsetShape = GeomAbs_C0; break;
-  case GeomAbs_G2 :        OffsetShape = GeomAbs_C0; break;
-  case GeomAbs_C2 :        OffsetShape = GeomAbs_C1; break;
-  case GeomAbs_C3 :        OffsetShape = GeomAbs_C2; break;
-  case GeomAbs_CN :        OffsetShape = GeomAbs_CN; break;
+    case GeomAbs_C2 : return GeomAbs_C1;
+    case GeomAbs_C3 : return GeomAbs_C2;
+    case GeomAbs_CN : return GeomAbs_CN;
+    default : break;
   }
-  return OffsetShape;
+  return GeomAbs_C0;
 }
-
 
 //=======================================================================
 //function : D0
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::D0 (const Standard_Real U, const Standard_Real V, Pnt& P) const {
-
-  Vec D1U, D1V;
+void Geom_OffsetSurface::D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const
+{
+  gp_Vec D1U, D1V;
 #ifdef CHECK  
-  if (myBasisSurfContinuity == GeomAbs_C0) Geom_UndefinedValue::Raise();
+  if (myBasisSurfContinuity == GeomAbs_C0)
+    Geom_UndefinedValue::Raise();
 #endif
   if (equivSurf.IsNull()){ 
     basisSurf->D1(U, V, P, D1U, D1V);
     SetD0(U,V,P,D1U,D1V);
   }
-  else equivSurf->D0(U,V,P); 
+  else
+    equivSurf->D0(U,V,P);
 }
-
 
 //=======================================================================
 //function : D1
@@ -490,28 +449,23 @@ void Geom_OffsetSurface::D0 (const Standard_Real U, const Standard_Real V, Pnt& 
 //=======================================================================
 
 void Geom_OffsetSurface::D1 (const Standard_Real U, const Standard_Real V, 
-  Pnt& P, 
-  Vec& D1U, Vec& D1V) const 
+  gp_Pnt& P, 
+  gp_Vec& D1U, gp_Vec& D1V) const 
 {
-
 #ifdef CHECK  
-  if (myBasisSurfContinuity==GeomAbs_C0 || 
-    myBasisSurfContinuity==GeomAbs_C1) { 
-      Geom_UndefinedDerivative::Raise();
-  }
+  if (myBasisSurfContinuity == GeomAbs_C0 ||
+      myBasisSurfContinuity == GeomAbs_C1)
+    Geom_UndefinedDerivative::Raise();
 #endif
   if (equivSurf.IsNull()) 
   {
     gp_Vec d2u, d2v, d2uv;
-    basisSurf->D2(U, V, P, D1U, D1V,  d2u, d2v, d2uv);
-    SetD1(U,V,P,D1U,D1V,d2u, d2v, d2uv);
+    basisSurf->D2(U, V, P, D1U, D1V, d2u, d2v, d2uv);
+    SetD1(U,V,P,D1U,D1V,d2u,d2v,d2uv);
   }
-  else {
+  else
     equivSurf->D1(U,V,P,D1U,D1V);
-  }
 }
-
-
 
 //=======================================================================
 //function : D2
@@ -519,68 +473,59 @@ void Geom_OffsetSurface::D1 (const Standard_Real U, const Standard_Real V,
 //=======================================================================
 
 void Geom_OffsetSurface::D2 (const Standard_Real U, const Standard_Real V, 
-  Pnt& P, 
-  Vec& D1U, Vec& D1V,
-  Vec& D2U, Vec& D2V, Vec& D2UV) const {
-
+  gp_Pnt& P, 
+  gp_Vec& D1U, gp_Vec& D1V,
+  gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const
+{
 #ifdef CHECK  
-    if (myBasisSurfContinuity == GeomAbs_C0 ||
+  if (myBasisSurfContinuity == GeomAbs_C0 ||
       myBasisSurfContinuity == GeomAbs_C1 ||
       myBasisSurfContinuity == GeomAbs_C2)
-    {
-      Geom_UndefinedDerivative::Raise();
-    }
+    Geom_UndefinedDerivative::Raise();
 #endif
-    if (equivSurf.IsNull())
-    {
-      gp_Vec d3u, d3uuv, d3uvv, d3v;
-      basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV,
-        d3u,d3v, d3uuv, d3uvv);
-
-      SetD2(U,V,P,D1U,D1V,D2U,D2V,D2UV,d3u,d3v, d3uuv, d3uvv);
-    }
-    else equivSurf->D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
+  if (equivSurf.IsNull())
+  {
+    gp_Vec d3u, d3uuv, d3uvv, d3v;
+    basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, d3u, d3v, d3uuv, d3uvv);
+    SetD2(U,V,P,D1U,D1V,D2U,D2V,D2UV,d3u,d3v,d3uuv,d3uvv);
+  }
+  else
+    equivSurf->D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
 }
-
 
 //=======================================================================
 //function : D3
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::D3   (const Standard_Real U, const Standard_Real V, 
-  Pnt& P, 
-  Vec& D1U, Vec& D1V, 
-  Vec& D2U, Vec& D2V, Vec& D2UV,
-  Vec& D3U, Vec& D3V, Vec& D3UUV, Vec& D3UVV) const {
+void Geom_OffsetSurface::D3 (const Standard_Real U, const Standard_Real V,
+  gp_Pnt& P, 
+  gp_Vec& D1U, gp_Vec& D1V, 
+  gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV,
+  gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const
+{
 #ifdef CHECK  
-    if (!(basisSurf->IsCNu (4) && basisSurf->IsCNv (4))) { 
-      Geom_UndefinedDerivative::Raise();
-    }
+  if (!(basisSurf->IsCNu (4) && basisSurf->IsCNv (4))) { 
+    Geom_UndefinedDerivative::Raise();
+  }
 #endif
-    if (equivSurf.IsNull())
-    {
-
-      basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV,
-        D3U, D3V, D3UUV, D3UVV);
-      SetD3(U, V, P, D1U, D1V, D2U, D2V, D2UV,
-        D3U, D3V, D3UUV, D3UVV);
-    }
-    else equivSurf->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+  if (equivSurf.IsNull())
+  {
+    basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+    SetD3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  }
+  else
+    equivSurf->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
 }
-
-
-
 
 //=======================================================================
 //function : DN
 //purpose  : 
 //=======================================================================
 
-Vec Geom_OffsetSurface::DN ( const Standard_Real    U , const Standard_Real    V, 
-  const Standard_Integer Nu, const Standard_Integer Nv) const 
+gp_Vec Geom_OffsetSurface::DN (const Standard_Real    U, const Standard_Real    V,
+  const Standard_Integer Nu, const Standard_Integer Nv) const
 {
-
   Standard_RangeError_Raise_if (Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");
 #ifdef CHECK  
   if (!(basisSurf->IsCNu (Nu) && basisSurf->IsCNv (Nv))) { 
@@ -591,13 +536,14 @@ Vec Geom_OffsetSurface::DN ( const Standard_Real    U , const Standard_Real    V
 
   if (equivSurf.IsNull())
   {
-    Pnt P;
-    Vec D1U,D1V;
+    gp_Pnt P;
+    gp_Vec D1U,D1V;
     basisSurf->D1 (U, V, P, D1U, D1V);
 
     D = SetDN(U,V,Nu,Nv,D1U,D1V);
   }
-  else D=equivSurf->DN(U,V,Nu,Nv);
+  else
+    D = equivSurf->DN(U,V,Nu,Nv);
   return D; 
 }
 
@@ -608,50 +554,47 @@ Vec Geom_OffsetSurface::DN ( const Standard_Real    U , const Standard_Real    V
 
 void Geom_OffsetSurface::D1 
   (const Standard_Real U,  const Standard_Real V,
-  Pnt& P,        Pnt& Pbasis, 
-  Vec& D1U,      Vec& D1V,      Vec& D1Ubasis , Vec& D1Vbasis,
-  Vec& D2Ubasis, Vec& D2Vbasis, Vec& D2UVbasis) const {
-
-    if (basisSurf->Continuity() == GeomAbs_C0 ||
-      basisSurf->Continuity() == GeomAbs_C1) { 
-        Geom_UndefinedDerivative::Raise();
-    }
-    basisSurf->D2 (U, V, Pbasis, D1Ubasis, D1Vbasis, D2Ubasis, D2Vbasis,
-      D2UVbasis);
-    Vec Ndir = D1Ubasis.Crossed (D1Vbasis);
-    Standard_Real R2  = Ndir.SquareMagnitude();
-    Standard_Real R   = Sqrt (R2);
-    Standard_Real R3  = R * R2;
-    Vec DUNdir = D2Ubasis.Crossed (D1Vbasis);
-    DUNdir.Add (D1Ubasis.Crossed (D2UVbasis));
-    Vec DVNdir = D2UVbasis.Crossed (D1Vbasis);
-    DVNdir.Add (D1Ubasis.Crossed (D2Vbasis));
-    Standard_Real DRu = Ndir.Dot (DUNdir);
-    Standard_Real DRv = Ndir.Dot (DVNdir);
-    if (R3 <= gp::Resolution()) {
-      if (R2 <= gp::Resolution())  Geom_UndefinedDerivative::Raise();
-      DUNdir.Multiply(R);
-      DUNdir.Subtract (Ndir.Multiplied (DRu/R));
-      DUNdir.Multiply (offsetValue/R2);
-      D1U = D1Ubasis.Added (DUNdir);
-      DVNdir.Multiply(R);
-      DVNdir.Subtract (Ndir.Multiplied (DRv/R));
-      DVNdir.Multiply (offsetValue/R2);
-      D1V = D1Vbasis.Added (DVNdir);
-    }
-    else {
-      DUNdir.Multiply (offsetValue / R);
-      DUNdir.Subtract (Ndir.Multiplied (offsetValue*DRu/R3));
-      D1U = D1Ubasis.Added (DUNdir);
-      DVNdir.Multiply (offsetValue / R);
-      DVNdir.Subtract (Ndir.Multiplied (offsetValue*DRv/R3));
-      D1V = D1Vbasis.Added (DVNdir);
-    }
-    Ndir.Multiply (offsetValue/R);
-    P.SetXYZ ((Ndir.XYZ()).Added (Pbasis.XYZ()));
+   gp_Pnt& P,        gp_Pnt& Pbasis, 
+   gp_Vec& D1U,      gp_Vec& D1V,      gp_Vec& D1Ubasis, gp_Vec& D1Vbasis,
+   gp_Vec& D2Ubasis, gp_Vec& D2Vbasis, gp_Vec& D2UVbasis) const
+{
+  const GeomAbs_Shape basisCont = basisSurf->Continuity();
+  if (basisCont == GeomAbs_C0 || basisCont == GeomAbs_C1)
+    Geom_UndefinedDerivative::Raise();
+  basisSurf->D2 (U, V, Pbasis, D1Ubasis, D1Vbasis, D2Ubasis, D2Vbasis, D2UVbasis);
+  gp_Vec Ndir = D1Ubasis.Crossed (D1Vbasis);
+  const Standard_Real R2  = Ndir.SquareMagnitude();
+  const Standard_Real R   = Sqrt (R2);
+  const Standard_Real R3  = R * R2;
+  gp_Vec DUNdir = D2Ubasis.Crossed (D1Vbasis);
+  DUNdir.Add (D1Ubasis.Crossed (D2UVbasis));
+  gp_Vec DVNdir = D2UVbasis.Crossed (D1Vbasis);
+  DVNdir.Add (D1Ubasis.Crossed (D2Vbasis));
+  const Standard_Real DRu = Ndir.Dot (DUNdir);
+  const Standard_Real DRv = Ndir.Dot (DVNdir);
+  if (R3 <= gp::Resolution()) {
+    if (R2 <= gp::Resolution())
+      Geom_UndefinedDerivative::Raise();
+    DUNdir.Multiply(R);
+    DUNdir.Subtract (Ndir.Multiplied (DRu/R));
+    DUNdir.Multiply (offsetValue/R2);
+    D1U = D1Ubasis.Added (DUNdir);
+    DVNdir.Multiply(R);
+    DVNdir.Subtract (Ndir.Multiplied (DRv/R));
+    DVNdir.Multiply (offsetValue/R2);
+    D1V = D1Vbasis.Added (DVNdir);
+  }
+  else {
+    DUNdir.Multiply (offsetValue / R);
+    DUNdir.Subtract (Ndir.Multiplied (offsetValue*DRu/R3));
+    D1U = D1Ubasis.Added (DUNdir);
+    DVNdir.Multiply (offsetValue / R);
+    DVNdir.Subtract (Ndir.Multiplied (offsetValue*DRv/R3));
+    D1V = D1Vbasis.Added (DVNdir);
+  }
+  Ndir.Multiply (offsetValue/R);
+  P.SetXYZ ((Ndir.XYZ()).Added (Pbasis.XYZ()));
 }
-
-
 
 //=======================================================================
 //function : D2
@@ -660,118 +603,103 @@ void Geom_OffsetSurface::D1
 
 void Geom_OffsetSurface::D2 
   (const Standard_Real U, const Standard_Real V,
-  Pnt& P, Pnt& Pbasis,
-  Vec& D1U, Vec& D1V, Vec& D2U, Vec& D2V, Vec& D2UV,
-  Vec& D1Ubasis, Vec& D1Vbasis,
-  Vec& D2Ubasis, Vec& D2Vbasis, Vec& D2UVbasis, 
-  Vec& D3Ubasis, Vec& D3Vbasis, Vec& D3UUVbasis, Vec& D3UVVbasis) const {
+   gp_Pnt& P, gp_Pnt& Pbasis,
+   gp_Vec& D1U, gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV,
+   gp_Vec& D1Ubasis, gp_Vec& D1Vbasis,
+   gp_Vec& D2Ubasis, gp_Vec& D2Vbasis, gp_Vec& D2UVbasis, 
+   gp_Vec& D3Ubasis, gp_Vec& D3Vbasis, gp_Vec& D3UUVbasis, gp_Vec& D3UVVbasis) const
+{
+  const GeomAbs_Shape basisCont = basisSurf->Continuity();
+  if (basisCont == GeomAbs_C0 || basisCont == GeomAbs_C1 || basisCont == GeomAbs_C2)
+    Geom_UndefinedDerivative::Raise();
+  basisSurf->D3 (U, V, P, D1Ubasis, D1Vbasis, D2Ubasis, D2Vbasis, D2UVbasis, D3Ubasis, D3Vbasis, D3UUVbasis, D3UVVbasis);
+  gp_Vec Ndir = D1Ubasis.Crossed (D1Vbasis);
+  const Standard_Real R2  = Ndir.SquareMagnitude();
+  const Standard_Real R   = Sqrt (R2);
+  const Standard_Real R3  = R2 * R;
+  const Standard_Real R4  = R2 * R2;
+  const Standard_Real R5  = R3 * R2;
+  gp_Vec DUNdir = D2Ubasis.Crossed (D1Vbasis);
+  DUNdir.Add (D1Ubasis.Crossed (D2UVbasis));
+  gp_Vec DVNdir = D2UVbasis.Crossed (D1Vbasis);
+  DVNdir.Add (D1Ubasis.Crossed (D2Vbasis));
+  const Standard_Real DRu = Ndir.Dot (DUNdir);
+  const Standard_Real DRv = Ndir.Dot (DVNdir);
+  gp_Vec D2UNdir = D3Ubasis.Crossed (D1Vbasis);
+  D2UNdir.Add (D1Ubasis.Crossed (D3UUVbasis));
+  D2UNdir.Add (2.0 * (D2Ubasis.Crossed (D2UVbasis)));
+  gp_Vec D2VNdir = D3UVVbasis.Crossed (D1Vbasis);
+  D2VNdir.Add (D1Ubasis.Crossed (D3Vbasis));
+  D2VNdir.Add (2.0 * (D2UVbasis.Crossed (D2Vbasis)));
+  gp_Vec D2UVNdir = D2UVbasis.Crossed (D1Vbasis); 
+  D2UVNdir.Add (D1Ubasis.Crossed (D3UVVbasis));
+  D2UVNdir.Add (D2Ubasis.Crossed (D2Vbasis));
+  const Standard_Real D2Ru = Ndir.Dot (D2UNdir) + DUNdir.Dot (DUNdir);
+  const Standard_Real D2Rv = Ndir.Dot (D2VNdir) + DVNdir.Dot (DVNdir);
+  const Standard_Real D2Ruv = DVNdir.Dot (DUNdir) + Ndir.Dot (D2UVNdir);
 
+  if (R5 <= gp::Resolution()) {
+    //We try another computation but the stability is not very good
+    //dixit ISG.
+    if (R4 <= gp::Resolution()) Geom_UndefinedDerivative::Raise();
+    // V2 = P" (U) :
+    // Standard_Real R4 = R2 * R2;
+    D2UNdir.Subtract (DUNdir.Multiplied (2.0 * DRu / R2));
+    D2UNdir.Subtract (Ndir.Multiplied (D2Ru/R2));
+    D2UNdir.Add (Ndir.Multiplied (3.0 * DRu * DRu / R4));
+    D2UNdir.Multiply (offsetValue / R);
+    D2U = D2Ubasis.Added (D2UNdir);
+    D2VNdir.Subtract (DVNdir.Multiplied (2.0 * DRv / R2));
+    D2VNdir.Subtract (Ndir.Multiplied (D2Rv/R2));
+    D2VNdir.Add (Ndir.Multiplied (3.0 * DRv * DRv / R4));
+    D2VNdir.Multiply (offsetValue / R);
+    D2V = D2Vbasis.Added (D2VNdir);
 
-    GeomAbs_Shape Continuity = basisSurf->Continuity();
-    if (Continuity == GeomAbs_C0 || Continuity == GeomAbs_C1 ||
-      Continuity == GeomAbs_C2) { Geom_UndefinedDerivative::Raise(); }
-    //     Vec D3U, D3V, D3UVV, D3UUV;
-    basisSurf->D3 (U, V, P, D1Ubasis, D1Vbasis, D2Ubasis, D2Vbasis, D2UVbasis,
-      D3Ubasis, D3Vbasis, D3UUVbasis, D3UVVbasis);
-    Vec Ndir = D1Ubasis.Crossed (D1Vbasis);
-    Standard_Real R2  = Ndir.SquareMagnitude();
-    Standard_Real R   = Sqrt (R2);
-    Standard_Real R3  = R2 * R;
-    Standard_Real R4  = R2 * R2;
-    Standard_Real R5  = R3 * R2;
-    Vec DUNdir = D2Ubasis.Crossed (D1Vbasis);
-    DUNdir.Add (D1Ubasis.Crossed (D2UVbasis));
-    Vec DVNdir = D2UVbasis.Crossed (D1Vbasis);
-    DVNdir.Add (D1Ubasis.Crossed (D2Vbasis));
-    Standard_Real DRu = Ndir.Dot (DUNdir);
-    Standard_Real DRv = Ndir.Dot (DVNdir);
-    Vec D2UNdir = D3Ubasis.Crossed (D1Vbasis);
-    D2UNdir.Add (D1Ubasis.Crossed (D3UUVbasis));
-    D2UNdir.Add (2.0 * (D2Ubasis.Crossed (D2UVbasis)));
-    Vec D2VNdir = D3UVVbasis.Crossed (D1Vbasis);
-    D2VNdir.Add (D1Ubasis.Crossed (D3Vbasis));
-    D2VNdir.Add (2.0 * (D2UVbasis.Crossed (D2Vbasis)));
-    Vec D2UVNdir = D2UVbasis.Crossed (D1Vbasis); 
-    D2UVNdir.Add (D1Ubasis.Crossed (D3UVVbasis));
-    D2UVNdir.Add (D2Ubasis.Crossed (D2Vbasis));
-    Standard_Real D2Ru = Ndir.Dot (D2UNdir) + DUNdir.Dot (DUNdir);
-    Standard_Real D2Rv = Ndir.Dot (D2VNdir) + DVNdir.Dot (DVNdir);
-    Standard_Real D2Ruv = DVNdir.Dot (DUNdir) + Ndir.Dot (D2UVNdir);
+    D2UVNdir.Subtract (DUNdir.Multiplied (DRv / R2));
+    D2UVNdir.Subtract (DVNdir.Multiplied (DRu / R2));
+    D2UVNdir.Subtract (Ndir.Multiplied (D2Ruv / R2));
+    D2UVNdir.Add (Ndir.Multiplied (3.0 * DRu * DRv / R4));
+    D2UVNdir.Multiply (offsetValue / R);
+    D2UV = D2UVbasis.Added (D2UVNdir);
 
-    if (R5 <= gp::Resolution()) {
-      //We try another computation but the stability is not very good
-      //dixit ISG.
-      if (R4 <= gp::Resolution()) Geom_UndefinedDerivative::Raise();
-      // V2 = P" (U) :
-      // Standard_Real R4 = R2 * R2;
-      D2UNdir.Subtract (DUNdir.Multiplied (2.0 * DRu / R2));
-      D2UNdir.Subtract (Ndir.Multiplied (D2Ru/R2));
-      D2UNdir.Add (Ndir.Multiplied (3.0 * DRu * DRu / R4));
-      D2UNdir.Multiply (offsetValue / R);
-      D2U = D2Ubasis.Added (D2UNdir);
-      D2VNdir.Subtract (DVNdir.Multiplied (2.0 * DRv / R2));
-      D2VNdir.Subtract (Ndir.Multiplied (D2Rv/R2));
-      D2VNdir.Add (Ndir.Multiplied (3.0 * DRv * DRv / R4));
-      D2VNdir.Multiply (offsetValue / R);
-      D2V = D2Vbasis.Added (D2VNdir);
+    DUNdir.Multiply(R);
+    DUNdir.Subtract (Ndir.Multiplied (DRu/R));
+    DUNdir.Multiply (offsetValue/R2);
+    D1U = D1Ubasis.Added (DUNdir);
+    DVNdir.Multiply(R);
+    DVNdir.Subtract (Ndir.Multiplied (DRv/R));
+    DVNdir.Multiply (offsetValue/R2);
+    D1V = D1Vbasis.Added (DVNdir);
+  }
+  else {
+    D2UNdir.Multiply (offsetValue/R);
+    D2UNdir.Subtract (DUNdir.Multiplied (2.0 * offsetValue * DRu / R3));
+    D2UNdir.Subtract (Ndir.Multiplied (offsetValue * D2Ru / R3));
+    D2UNdir.Add (Ndir.Multiplied (offsetValue * 3.0 * DRu * DRu / R5));
+    D2U = D2Ubasis.Added (D2UNdir);
 
-      D2UVNdir.Subtract (DUNdir.Multiplied (DRv / R2));
-      D2UVNdir.Subtract (DVNdir.Multiplied (DRu / R2));
-      D2UVNdir.Subtract (Ndir.Multiplied (D2Ruv / R2));
-      D2UVNdir.Add (Ndir.Multiplied (3.0 * DRu * DRv / R4));
-      D2UVNdir.Multiply (offsetValue / R);
-      D2UV = D2UVbasis.Added (D2UVNdir);
+    D2VNdir.Multiply (offsetValue/R);
+    D2VNdir.Subtract (DVNdir.Multiplied (2.0 * offsetValue * DRv / R3));
+    D2VNdir.Subtract (Ndir.Multiplied (offsetValue * D2Rv / R3));
+    D2VNdir.Add (Ndir.Multiplied (offsetValue * 3.0 * DRv * DRv / R5));
+    D2V = D2Vbasis.Added (D2VNdir);
 
-      DUNdir.Multiply(R);
-      DUNdir.Subtract (Ndir.Multiplied (DRu/R));
-      DUNdir.Multiply (offsetValue/R2);
-      D1U = D1Ubasis.Added (DUNdir);
-      DVNdir.Multiply(R);
-      DVNdir.Subtract (Ndir.Multiplied (DRv/R));
-      DVNdir.Multiply (offsetValue/R2);
-      D1V = D1Vbasis.Added (DVNdir);
-    }
-    else {
-      D2UNdir.Multiply (offsetValue/R);
-      D2UNdir.Subtract (DUNdir.Multiplied (2.0 * offsetValue * DRu / R3));
-      D2UNdir.Subtract (Ndir.Multiplied (offsetValue * D2Ru / R3));
-      D2UNdir.Add (Ndir.Multiplied (offsetValue * 3.0 * DRu * DRu / R5));
-      D2U = D2Ubasis.Added (D2UNdir);
+    D2UVNdir.Multiply (offsetValue/R);
+    D2UVNdir.Subtract (DUNdir.Multiplied (offsetValue * DRv / R3));
+    D2UVNdir.Subtract (DVNdir.Multiplied (offsetValue * DRu / R3));
+    D2UVNdir.Subtract (Ndir.Multiplied (offsetValue * D2Ruv / R3));
+    D2UVNdir.Add (Ndir.Multiplied (3.0 * offsetValue * DRu * DRv / R5));
+    D2UV = D2UVbasis.Added (D2UVNdir);
 
-      D2VNdir.Multiply (offsetValue/R);
-      D2VNdir.Subtract (DVNdir.Multiplied (2.0 * offsetValue * DRv / R3));
-      D2VNdir.Subtract (Ndir.Multiplied (offsetValue * D2Rv / R3));
-      D2VNdir.Add (Ndir.Multiplied (offsetValue * 3.0 * DRv * DRv / R5));
-      D2V = D2Vbasis.Added (D2VNdir);
-
-      D2UVNdir.Multiply (offsetValue/R);
-      D2UVNdir.Subtract (DUNdir.Multiplied (offsetValue * DRv / R3));
-      D2UVNdir.Subtract (DVNdir.Multiplied (offsetValue * DRu / R3));
-      D2UVNdir.Subtract (Ndir.Multiplied (offsetValue * D2Ruv / R3));
-      D2UVNdir.Add (Ndir.Multiplied (3.0 * offsetValue * DRu * DRv / R5));
-      D2UV = D2UVbasis.Added (D2UVNdir);
-
-      DUNdir.Multiply (offsetValue / R);
-      DUNdir.Subtract (Ndir.Multiplied (offsetValue*DRu/R3));
-      D1U = D1Ubasis.Added (DUNdir);
-      DVNdir.Multiply (offsetValue / R);
-      DVNdir.Subtract (Ndir.Multiplied (offsetValue*DRv/R3));
-      D1V = D1Vbasis.Added (DVNdir);
-    }
-    Ndir.Multiply (offsetValue/R);
-    P.SetXYZ ((Ndir.XYZ()).Added (Pbasis.XYZ()));
-}
-
-
-
-//=======================================================================
-//function : Offset
-//purpose  : 
-//=======================================================================
-
-Standard_Real Geom_OffsetSurface::Offset () const { 
-
-  return offsetValue; 
+    DUNdir.Multiply (offsetValue / R);
+    DUNdir.Subtract (Ndir.Multiplied (offsetValue*DRu/R3));
+    D1U = D1Ubasis.Added (DUNdir);
+    DVNdir.Multiply (offsetValue / R);
+    DVNdir.Subtract (Ndir.Multiplied (offsetValue*DRv/R3));
+    D1V = D1Vbasis.Added (DVNdir);
+  }
+  Ndir.Multiply (offsetValue/R);
+  P.SetXYZ ((Ndir.XYZ()).Added (Pbasis.XYZ()));
 }
 
 //=======================================================================
@@ -779,38 +707,33 @@ Standard_Real Geom_OffsetSurface::Offset () const {
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::LocalD0 (const Standard_Real    U,
-  const Standard_Real    V, 
-  const Standard_Integer USide,
-  const Standard_Integer VSide,
-  gp_Pnt&          P     )  const
+void Geom_OffsetSurface::LocalD0 (const Standard_Real U, const Standard_Real V,
+  const Standard_Integer USide, const Standard_Integer VSide,
+  gp_Pnt& P) const
 {
   if (equivSurf.IsNull()) {
-    Vec D1U, D1V;
+    gp_Vec D1U, D1V;
     Handle(Geom_Surface) Basis = basisSurf;
 
     // if Basis is Trimmed we take the basis's basis
-    Handle(Geom_RectangularTrimmedSurface) RTS; 
-    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis); 
-    if (!RTS.IsNull()) {
+    Handle(Geom_RectangularTrimmedSurface) RTS =
+      Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis);
+    if (!RTS.IsNull())
       Basis = RTS->BasisSurface();
-    }
 
     // BSpline case 
-    Handle(Geom_BSplineSurface) BSplS; 
-    BSplS = Handle(Geom_BSplineSurface)::DownCast(Basis);
+    Handle(Geom_BSplineSurface) BSplS =
+      Handle(Geom_BSplineSurface)::DownCast(Basis);
     if (!BSplS.IsNull()) {
-      Vec D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV; 
-      LocateSides(U,V,USide,VSide,BSplS,1,P,D1U,D1V,D2U,D2V,D2UV,
-        D3U,D3V,D3UUV,D3UVV);
+      gp_Vec D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV; 
+      LocateSides(U,V,USide,VSide,BSplS,1,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       SetD0(U,V,P,D1U,D1V);
       return;
     }
 
     // Extrusion case 
-    Handle( Geom_SurfaceOfLinearExtrusion) SE;
-    SE= Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
-
+    Handle( Geom_SurfaceOfLinearExtrusion) SE =
+      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
     if (!SE.IsNull()) {
       SE->LocalD1(U,V,USide,P,D1U,D1V);
       SetD0(U,V,P,D1U,D1V);
@@ -818,17 +741,17 @@ void Geom_OffsetSurface::LocalD0 (const Standard_Real    U,
     }
 
     // Revolution case 
-    Handle(Geom_SurfaceOfRevolution) SR;
-    SR = Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
+    Handle(Geom_SurfaceOfRevolution) SR =
+      Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
     if (!SR.IsNull()) {
-      SR->LocalD1(U,V, VSide,P,D1U,D1V);
-      SetD0(U,V, P, D1U,D1V);
+      SR->LocalD1(U,V,VSide,P,D1U,D1V);
+      SetD0(U,V,P,D1U,D1V);
       return;
     }
 
     // General cases
     basisSurf->D1(U, V, P, D1U, D1V);
-    SetD0(U,V, P, D1U,D1V);
+    SetD0(U,V,P,D1U,D1V);
   }
   else
     equivSurf-> D0(U,V,P);
@@ -839,40 +762,34 @@ void Geom_OffsetSurface::LocalD0 (const Standard_Real    U,
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::LocalD1 (const Standard_Real    U, 
-  const Standard_Real    V,
-  const Standard_Integer USide, 
-  const Standard_Integer VSide,
-  gp_Pnt&          P,
-  gp_Vec&          D1U, 
-  gp_Vec&          D1V)     const
+void Geom_OffsetSurface::LocalD1 (const Standard_Real U, const Standard_Real V,
+  const Standard_Integer USide, const Standard_Integer VSide,
+  gp_Pnt& P,
+  gp_Vec& D1U, gp_Vec& D1V) const
 {
   if (equivSurf.IsNull()) {
-    Vec D2U,D2V,D2UV ;
+    gp_Vec D2U,D2V,D2UV ;
     Handle(Geom_Surface) Basis = basisSurf;
 
     // if Basis is Trimmed we take the basis's basis
-    Handle(Geom_RectangularTrimmedSurface) RTS;
-    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis); 
-    if (!RTS.IsNull()) {
+    Handle(Geom_RectangularTrimmedSurface) RTS =
+      Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis);
+    if (!RTS.IsNull())
       Basis = RTS->BasisSurface();
-    }
 
     // BSpline case 
-    Handle(Geom_BSplineSurface) BSplS; 
-    BSplS = Handle(Geom_BSplineSurface)::DownCast(Basis);
+    Handle(Geom_BSplineSurface) BSplS =
+      Handle(Geom_BSplineSurface)::DownCast(Basis);
     if (!BSplS.IsNull()) {
-      Vec D3U,D3V,D3UUV,D3UVV; 
-      LocateSides(U,V,USide,VSide,BSplS,2,P,D1U,D1V,D2U,D2V,D2UV,
-        D3U,D3V,D3UUV,D3UVV);
+      gp_Vec D3U,D3V,D3UUV,D3UVV; 
+      LocateSides(U,V,USide,VSide,BSplS,2,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       SetD1(U,V,P,D1U,D1V,D2U,D2V,D2UV);
       return;
     }
 
     // Extrusion case 
-    Handle( Geom_SurfaceOfLinearExtrusion) SE;
-    SE= Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
-
+    Handle( Geom_SurfaceOfLinearExtrusion) SE =
+      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
     if (!SE.IsNull()) {
       SE->LocalD2(U,V,USide,P,D1U,D1V,D2U,D2V,D2UV);
       SetD1(U,V,P,D1U,D1V,D2U,D2V,D2UV);
@@ -880,20 +797,20 @@ void Geom_OffsetSurface::LocalD1 (const Standard_Real    U,
     }
 
     // Revolution case 
-    Handle(Geom_SurfaceOfRevolution) SR;
-    SR = Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
+    Handle(Geom_SurfaceOfRevolution) SR =
+      Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
     if (!SR.IsNull()) {
-      SR->LocalD2(U,V, VSide,P,D1U,D1V,D2U,D2V,D2UV);
-      SetD1(U,V, P, D1U,D1V,D2U,D2V,D2UV);
+      SR->LocalD2(U,V,VSide,P,D1U,D1V,D2U,D2V,D2UV);
+      SetD1(U,V,P,D1U,D1V,D2U,D2V,D2UV);
       return;
     }
 
     // General cases
-    basisSurf->D2(U, V, P, D1U, D1V,D2U,D2V,D2UV);
-    SetD1(U,V, P, D1U,D1V,D2U,D2V,D2UV);
+    basisSurf->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+    SetD1(U,V,P,D1U,D1V,D2U,D2V,D2UV);
   }
   else
-    equivSurf-> D1(U,V,P,D1U,D1V); 
+    equivSurf->D1(U,V,P,D1U,D1V); 
 }
 
 //=======================================================================
@@ -901,133 +818,111 @@ void Geom_OffsetSurface::LocalD1 (const Standard_Real    U,
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::LocalD2 (const Standard_Real    U,
-  const Standard_Real    V,
-  const Standard_Integer USide, 
-  const Standard_Integer VSide,
-  gp_Pnt&          P,
-  gp_Vec&          D1U,
-  gp_Vec&          D1V,
-  gp_Vec&          D2U,
-  gp_Vec&          D2V,
-  gp_Vec&          D2UV) const
+void Geom_OffsetSurface::LocalD2 (const Standard_Real U, const Standard_Real V,
+  const Standard_Integer USide, const Standard_Integer VSide,
+  gp_Pnt& P,
+  gp_Vec& D1U, gp_Vec& D1V,
+  gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV) const
 {
   if (equivSurf.IsNull()) {
     Handle(Geom_Surface) Basis = basisSurf;
-    Vec D3U,D3V,D3UUV,D3UVV;
+    gp_Vec D3U,D3V,D3UUV,D3UVV;
 
     // if Basis is Trimmed we take the basis's basis
-    Handle(Geom_RectangularTrimmedSurface) RTS;
-    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis); 
-    if (!RTS.IsNull()) {
+    Handle(Geom_RectangularTrimmedSurface) RTS =
+      Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis);
+    if (!RTS.IsNull())
       Basis = RTS->BasisSurface();
-    }
 
     // BSpline case 
-    Handle(Geom_BSplineSurface) BSplS; 
-    BSplS = Handle(Geom_BSplineSurface)::DownCast(Basis);
+    Handle(Geom_BSplineSurface) BSplS =
+      Handle(Geom_BSplineSurface)::DownCast(Basis);
     if (!BSplS.IsNull()) {
-      LocateSides(U,V,USide,VSide,BSplS,3,P,D1U,D1V,D2U,D2V,D2UV,
-        D3U,D3V,D3UUV,D3UVV);
+      LocateSides(U,V,USide,VSide,BSplS,3,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       SetD2(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       return;
     }
 
-    // Extrusion case 
-    Handle( Geom_SurfaceOfLinearExtrusion) SE;
-    SE= Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
-
+    // Extrusion case
+    Handle(Geom_SurfaceOfLinearExtrusion) SE =
+      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
     if (!SE.IsNull()) {
-      SE->LocalD3(U,V,USide,P,D1U,D1V,
-        D2U,D2V,D2UV,
-        D3U,D3V,D3UUV,D3UVV);
+      SE->LocalD3(U,V,USide,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       SetD2(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       return;
     }
 
     // Revolution case 
-    Handle(Geom_SurfaceOfRevolution) SR;
-    SR = Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
+    Handle(Geom_SurfaceOfRevolution) SR =
+      Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
     if (!SR.IsNull()) {
-      SR->LocalD3(U,V, VSide,P,D1U,D1V, D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV);
-      SetD2(U,V, P, D1U,D1V, D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV);
+      SR->LocalD3(U,V,VSide,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+      SetD2(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       return;
     }
 
     // General cases
-    basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV,D3U, D3V, D3UUV, D3UVV);
-    SetD2(U,V, P, D1U,D1V, D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV);
+    basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+    SetD2(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
   }  
   else
-    equivSurf->  D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
+    equivSurf->D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
 }
+
 //=======================================================================
 //function : LocalD3
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::LocalD3 (const Standard_Real     U, 
-  const Standard_Real    V,
-  const Standard_Integer USide, 
-  const Standard_Integer VSide,
-  gp_Pnt&          P,
-  gp_Vec&          D1U,
-  gp_Vec&          D1V, 
-  gp_Vec&          D2U, 
-  gp_Vec&          D2V, 
-  gp_Vec&          D2UV, 
-  gp_Vec&          D3U,
-  gp_Vec&          D3V,
-  gp_Vec&          D3UUV,
-  gp_Vec&          D3UVV) const
+void Geom_OffsetSurface::LocalD3 (const Standard_Real U, const Standard_Real V,
+  const Standard_Integer USide, const Standard_Integer VSide,
+  gp_Pnt& P,
+  gp_Vec& D1U, gp_Vec& D1V, 
+  gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, 
+  gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const
 {
   if (equivSurf.IsNull()) {
     Handle(Geom_Surface) Basis = basisSurf;
 
     // if Basis is Trimmed we take the basis's basis
-    Handle(Geom_RectangularTrimmedSurface) RTS;
-    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis); 
-    if (!RTS.IsNull()) {
+    Handle(Geom_RectangularTrimmedSurface) RTS =
+      Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis);
+    if (!RTS.IsNull())
       Basis = RTS->BasisSurface();
-    }
 
     // BSpline case 
-    Handle(Geom_BSplineSurface) BSplS; 
-    BSplS = Handle(Geom_BSplineSurface)::DownCast(Basis);
+    Handle(Geom_BSplineSurface) BSplS =
+      Handle(Geom_BSplineSurface)::DownCast(Basis);
     if (!BSplS.IsNull()) {
-      LocateSides(U,V,USide,VSide,BSplS,3,P,D1U,D1V,D2U,D2V,D2UV,
-        D3U,D3V,D3UUV,D3UVV);
+      LocateSides(U,V,USide,VSide,BSplS,3,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       SetD3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       return;
     }
 
     // Extrusion case 
-    Handle( Geom_SurfaceOfLinearExtrusion) SE;
-    SE= Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
-
+    Handle(Geom_SurfaceOfLinearExtrusion) SE =
+      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
     if (!SE.IsNull()) {
-      SE->LocalD3(U,V,USide,P,D1U,D1V,
-        D2U,D2V,D2UV,
-        D3U,D3V,D3UUV,D3UVV);
+      SE->LocalD3(U,V,USide,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       SetD3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       return;
     }
 
     // Revolution case 
-    Handle(Geom_SurfaceOfRevolution) SR;
-    SR = Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
+    Handle(Geom_SurfaceOfRevolution) SR =
+      Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
     if (!SR.IsNull()) {
-      SR->LocalD3(U,V, VSide,P,D1U,D1V, D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV);
-      SetD3(U,V, P, D1U,D1V, D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV);
+      SR->LocalD3(U,V,VSide,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+      SetD3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
       return;
     }
 
     // General cases
-    basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV,D3U, D3V, D3UUV, D3UVV);
-    SetD3(U,V, P, D1U,D1V, D2U,D2V,D2UV, D3U,D3V,D3UUV,D3UVV);
+    basisSurf->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+    SetD3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
   }
   else
-    equivSurf-> D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
+    equivSurf->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
 }
 
 //=======================================================================
@@ -1035,93 +930,78 @@ void Geom_OffsetSurface::LocalD3 (const Standard_Real     U,
 //purpose  : 
 //=======================================================================
 
-gp_Vec Geom_OffsetSurface::LocalDN  (const Standard_Real    U, 
-  const Standard_Real    V,
-  const Standard_Integer USide,
-  const Standard_Integer VSide,
-  const Standard_Integer Nu,
-  const Standard_Integer Nv) const
+gp_Vec Geom_OffsetSurface::LocalDN  (const Standard_Real U, const Standard_Real V,
+  const Standard_Integer USide, const Standard_Integer VSide,
+  const Standard_Integer Nu, const Standard_Integer Nv) const
 {  
-  gp_Vec D(0,0,0);
-
   if(equivSurf.IsNull()) {
 
-    Vec D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV; 
-    Pnt P;
+    gp_Vec D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV; 
+    gp_Pnt P;
     Handle(Geom_Surface) Basis = basisSurf;
 
-    //   if Basis is Trimmed we make the basis`s basis
-    Handle(Geom_RectangularTrimmedSurface) RTS;
-    RTS = Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis);
-
-    if (!RTS.IsNull())  {
+    // if Basis is Trimmed we make the basis`s basis
+    Handle(Geom_RectangularTrimmedSurface) RTS =
+      Handle(Geom_RectangularTrimmedSurface)::DownCast(Basis);
+    if (!RTS.IsNull())
       Basis = RTS -> BasisSurface();
-    }
 
     //BSpline case 
-    Handle(Geom_BSplineSurface) BSplS;
-    BSplS = Handle(Geom_BSplineSurface)::DownCast(Basis);
-
+    Handle(Geom_BSplineSurface) BSplS =
+      Handle(Geom_BSplineSurface)::DownCast(Basis);
     if(!BSplS.IsNull()) {
       LocateSides(U,V,USide,VSide,BSplS,1,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV);
-      return  D = SetDN(U,V,Nu,Nv,D1U,D1V);
+      return SetDN(U,V,Nu,Nv,D1U,D1V);
     }
 
     //Extrusion case
-    Handle( Geom_SurfaceOfLinearExtrusion) SE;
-    SE = Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
-
+    Handle( Geom_SurfaceOfLinearExtrusion) SE =
+      Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(Basis);
     if(!SE.IsNull()) {
-
       SE->LocalD1(U,V,USide,P,D1U,D1V);
-      D = SetDN(U,V,Nu,Nv,D1U,D1V);
-      return D;
+      return SetDN(U,V,Nu,Nv,D1U,D1V);
     }
 
     //Revolution case
-    Handle(Geom_SurfaceOfRevolution) SR;
-    SR = Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
-
+    Handle(Geom_SurfaceOfRevolution) SR =
+      Handle(Geom_SurfaceOfRevolution)::DownCast(Basis);
     if(!SR.IsNull()) {
-      D = SR->LocalDN(U,V,VSide,Nu,Nv);
-      return D = SetDN(U,V,Nu,Nv,D1U,D1V);
+      SR->LocalDN(U,V,VSide,Nu,Nv);
+      return SetDN(U,V,Nu,Nv,D1U,D1V);
     }
 
     //General cases 
-    D = basisSurf->DN(U,V,Nu,Nv);
-    return D = SetDN(U,V,Nu,Nv,D1U,D1V);
+    basisSurf->DN(U,V,Nu,Nv);
+    return SetDN(U,V,Nu,Nv,D1U,D1V);
   }
   else 
-    return D = equivSurf->DN(U,V,Nu,Nv);
+    return equivSurf->DN(U,V,Nu,Nv);
 }
 
 //=======================================================================
 //function : LocateSides
 //purpose  : 
 //=======================================================================
-void Geom_OffsetSurface::LocateSides(const Standard_Real U,
-  const Standard_Real V,
-  const Standard_Integer USide,
-  const Standard_Integer VSide,
+
+void Geom_OffsetSurface::LocateSides(const Standard_Real U, const Standard_Real V,
+  const Standard_Integer USide, const Standard_Integer VSide,
   const Handle(Geom_BSplineSurface)& BSplS,
   const Standard_Integer NDir,
   gp_Pnt& P,
   gp_Vec& D1U,gp_Vec& D1V,
   gp_Vec& D2U,gp_Vec& D2V,gp_Vec& D2UV,
-  gp_Vec& D3U,gp_Vec& D3V,gp_Vec& D3UUV,gp_Vec& D3UVV   ) const
+  gp_Vec& D3U,gp_Vec& D3V,gp_Vec& D3UUV,gp_Vec& D3UVV) const
 {
-  Standard_Boolean UIsKnot=Standard_False, VIsKnot=Standard_False ;
+  Standard_Boolean UIsKnot=Standard_False, VIsKnot=Standard_False;
   Standard_Integer Ideb, Ifin, IVdeb, IVfin;
-  Standard_Real ParTol=Precision::PConfusion()/10.;
+  const Standard_Real ParTol=Precision::PConfusion()/10.;
   BSplS->Geom_BSplineSurface::LocateU(U,ParTol,Ideb, Ifin, Standard_False); 
   BSplS->Geom_BSplineSurface::LocateV(V,ParTol,IVdeb,IVfin,Standard_False);   
 
   if(Ideb == Ifin ) { //knot
 
     if(USide == 1) {Ifin++; UIsKnot=Standard_True;}
-
     else if(USide == -1) {Ideb--; UIsKnot=Standard_True;}
-
     else {Ideb--; Ifin++;} //USide == 0
 
   }
@@ -1130,13 +1010,10 @@ void Geom_OffsetSurface::LocateSides(const Standard_Real U,
 
   if(Ifin > BSplS->LastUKnotIndex()) {Ifin = BSplS->LastUKnotIndex(); Ideb = Ifin - 1;}
 
-
   if(IVdeb == IVfin ) { //knot
 
     if(VSide == 1) {IVfin++; VIsKnot=Standard_True;}
-
     else if(VSide == -1) {IVdeb--; VIsKnot=Standard_True;}
-
     else {IVdeb--; IVfin++;} //VSide == 0
 
   }
@@ -1145,23 +1022,23 @@ void Geom_OffsetSurface::LocateSides(const Standard_Real U,
 
   if(IVfin > BSplS->LastVKnotIndex()) {IVfin = BSplS->LastVKnotIndex(); IVdeb = IVfin - 1;}
 
-
   if((UIsKnot)||(VIsKnot))
     switch(NDir)
-  {
-    case 0 :  BSplS->Geom_BSplineSurface::LocalD0(U,V,Ideb,Ifin,IVdeb,IVfin,P); break;
-    case 1 :  BSplS->Geom_BSplineSurface::LocalD1(U,V,Ideb,Ifin,IVdeb,IVfin,P,D1U,D1V); break;
-    case 2 :  BSplS->Geom_BSplineSurface::LocalD2(U,V,Ideb,Ifin,IVdeb,IVfin,P,D1U,D1V,D2U,D2V,D2UV); break;
-    case 3 :  BSplS->Geom_BSplineSurface::LocalD3(U,V,Ideb,Ifin,IVdeb,IVfin,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); break;
-  }else   switch(NDir) 
-  {
-  case 0 :  basisSurf->D0(U,V,P); break;
-  case 1 :  basisSurf->D1(U,V,P,D1U,D1V); break;
-  case 2 :  basisSurf->D2(U,V,P,D1U,D1V,D2U,D2V,D2UV); break;
-  case 3 :  basisSurf->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); break;
-  }
+    {
+      case 0 : BSplS->Geom_BSplineSurface::LocalD0(U,V,Ideb,Ifin,IVdeb,IVfin,P); break;
+      case 1 : BSplS->Geom_BSplineSurface::LocalD1(U,V,Ideb,Ifin,IVdeb,IVfin,P,D1U,D1V); break;
+      case 2 : BSplS->Geom_BSplineSurface::LocalD2(U,V,Ideb,Ifin,IVdeb,IVfin,P,D1U,D1V,D2U,D2V,D2UV); break;
+      case 3 : BSplS->Geom_BSplineSurface::LocalD3(U,V,Ideb,Ifin,IVdeb,IVfin,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); break;
+    }
+  else
+    switch(NDir) 
+    {
+      case 0 : basisSurf->D0(U,V,P); break;
+      case 1 : basisSurf->D1(U,V,P,D1U,D1V); break;
+      case 2 : basisSurf->D2(U,V,P,D1U,D1V,D2U,D2V,D2UV); break;
+      case 3 : basisSurf->D3(U,V,P,D1U,D1V,D2U,D2V,D2UV,D3U,D3V,D3UUV,D3UVV); break;
+    }
 }
-
 
 ////*************************************************
 ////
@@ -1172,8 +1049,7 @@ void Geom_OffsetSurface::LocateSides(const Standard_Real U,
 class Geom_OffsetSurface_UIsoEvaluator : public AdvApprox_EvaluatorFunction
 {
 public:
-  Geom_OffsetSurface_UIsoEvaluator (const Handle(Geom_Surface)& theSurface,
-    Standard_Real theU)
+  Geom_OffsetSurface_UIsoEvaluator (const Handle(Geom_Surface)& theSurface, const Standard_Real theU)
     : CurrentSurface(theSurface), IsoPar(theU) {}
 
   virtual void Evaluate (Standard_Integer *Dimension,
@@ -1198,23 +1074,24 @@ void Geom_OffsetSurface_UIsoEvaluator::Evaluate(Standard_Integer *,/*Dimension*/
   gp_Pnt P;
   if (*DerivativeRequest == 0) {
     P = CurrentSurface->Value(IsoPar,*Parameter);
-    for (Standard_Integer i = 0; i < 3; i++) 
-      Result[i] = P.Coord(i+1);
+    Result[0] = P.X();
+    Result[1] = P.Y();
+    Result[2] = P.Z();
   }
   else {
     gp_Vec DU,DV;
     CurrentSurface->D1(IsoPar,*Parameter,P,DU,DV);
-    for (Standard_Integer i = 0; i < 3; i++)
-      Result[i] = DV.Coord(i+1);
+    Result[0] = DV.X();
+    Result[1] = DV.Y();
+    Result[2] = DV.Z();
   }
-  *ReturnCode = 0 ;
+  *ReturnCode = 0;
 }
 
 class Geom_OffsetSurface_VIsoEvaluator : public AdvApprox_EvaluatorFunction
 {
 public:
-  Geom_OffsetSurface_VIsoEvaluator (const Handle(Geom_Surface)& theSurface,
-    Standard_Real theV)
+  Geom_OffsetSurface_VIsoEvaluator (const Handle(Geom_Surface)& theSurface, const Standard_Real theV)
     : CurrentSurface(theSurface), IsoPar(theV) {}
 
   virtual void Evaluate (Standard_Integer *Dimension,
@@ -1239,16 +1116,18 @@ void Geom_OffsetSurface_VIsoEvaluator::Evaluate(Standard_Integer *,/*Dimension*/
   gp_Pnt P;
   if (*DerivativeRequest == 0) {
     P = CurrentSurface->Value(*Parameter,IsoPar);
-    for (Standard_Integer i = 0; i < 3; i++) 
-      Result[i] = P.Coord(i+1);
+    Result[0] = P.X();
+    Result[1] = P.Y();
+    Result[2] = P.Z();
   }
   else {
     gp_Vec DU,DV;
     CurrentSurface->D1(*Parameter,IsoPar,P,DU,DV);
-    for (Standard_Integer i = 0; i < 3; i++)
-      Result[i] = DU.Coord(i+1);
+    Result[0] = DU.X();
+    Result[1] = DU.Y();
+    Result[2] = DU.Z();
   }
-  *ReturnCode = 0 ;
+  *ReturnCode = 0;
 }
 
 //=======================================================================
@@ -1262,29 +1141,22 @@ void Geom_OffsetSurface_VIsoEvaluator::Evaluate(Standard_Integer *,/*Dimension*/
 Handle(Geom_Curve) Geom_OffsetSurface::UIso (const Standard_Real UU) const 
 {
   if (equivSurf.IsNull()) {
-    Standard_Integer Num1 = 0;
-    Standard_Integer Num2 = 0;
-    Standard_Integer Num3 = 1;
-    Handle(TColStd_HArray1OfReal) T1;
-    Handle(TColStd_HArray1OfReal) T2;
-    Handle(TColStd_HArray1OfReal) T3 =
-      new TColStd_HArray1OfReal(1,Num3);
+    const Standard_Integer Num1 = 0, Num2 = 0, Num3 = 1;
+    Handle(TColStd_HArray1OfReal) T1, T2, T3 = new TColStd_HArray1OfReal(1,Num3);
     T3->Init(Precision::Approximation());
     Standard_Real U1,U2,V1,V2;
     Bounds(U1,U2,V1,V2);
-    GeomAbs_Shape Cont = GeomAbs_C1;
-    Standard_Integer MaxSeg = 100, MaxDeg =14;
+    const GeomAbs_Shape Cont = GeomAbs_C1;
+    const Standard_Integer MaxSeg = 100, MaxDeg = 14;
 
     Handle(Geom_OffsetSurface) me (this);
     Geom_OffsetSurface_UIsoEvaluator ev (me, UU);
     AdvApprox_ApproxAFunction Approx(Num1, Num2, Num3, T1, T2, T3,
-      V1, V2, Cont,
-      MaxDeg,MaxSeg, ev);
+      V1, V2, Cont, MaxDeg, MaxSeg, ev);
 
-    Standard_ConstructionError_Raise_if (!Approx.IsDone(),
-      " Geom_OffsetSurface : UIso");
+    Standard_ConstructionError_Raise_if (!Approx.IsDone(), " Geom_OffsetSurface : UIso");
 
-    Standard_Integer NbPoles = Approx.NbPoles();
+    const Standard_Integer NbPoles = Approx.NbPoles();
 
     TColgp_Array1OfPnt      Poles( 1, NbPoles);
     TColStd_Array1OfReal    Knots( 1, Approx.NbKnots());
@@ -1302,25 +1174,21 @@ Handle(Geom_Curve) Geom_OffsetSurface::UIso (const Standard_Real UU) const
     return equivSurf->UIso(UU);
 }
 
-
 //=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
 
 void Geom_OffsetSurface::Value 
-  ( const Standard_Real U,  const Standard_Real V,
-  //          Pnt& P,        Pnt& Pbasis, 
-  Pnt& P,        Pnt& , 
-  Vec& D1Ubasis, Vec& D1Vbasis) const {
+  (const Standard_Real U,  const Standard_Real V,
+   gp_Pnt& P,        gp_Pnt& , 
+   gp_Vec& D1Ubasis, gp_Vec& D1Vbasis) const
+{
+  if (myBasisSurfContinuity == GeomAbs_C0)  
+    Geom_UndefinedValue::Raise();
 
-    if (myBasisSurfContinuity == GeomAbs_C0)  
-      Geom_UndefinedValue::Raise();
-
-    SetD0(U,V,P,D1Ubasis,D1Vbasis);
+  SetD0(U,V,P,D1Ubasis,D1Vbasis);
 }
-
-
 
 //=======================================================================
 //function : VIso
@@ -1330,26 +1198,20 @@ void Geom_OffsetSurface::Value
 Handle(Geom_Curve) Geom_OffsetSurface::VIso (const Standard_Real VV) const 
 {
   if (equivSurf.IsNull()) {
-    Standard_Integer Num1 = 0;
-    Standard_Integer Num2 = 0;
-    Standard_Integer Num3 = 1;
-    Handle(TColStd_HArray1OfReal) T1;
-    Handle(TColStd_HArray1OfReal) T2;
-    Handle(TColStd_HArray1OfReal) T3 =
-      new TColStd_HArray1OfReal(1,Num3);
+    const Standard_Integer Num1 = 0, Num2 = 0, Num3 = 1;
+    Handle(TColStd_HArray1OfReal) T1, T2, T3 = new TColStd_HArray1OfReal(1,Num3);
     T3->Init(Precision::Approximation());
     Standard_Real U1,U2,V1,V2;
     Bounds(U1,U2,V1,V2);
-    GeomAbs_Shape Cont = GeomAbs_C1;
-    Standard_Integer MaxSeg = 100, MaxDeg =14;  
+    const GeomAbs_Shape Cont = GeomAbs_C1;
+    const Standard_Integer MaxSeg = 100, MaxDeg = 14;
 
     Handle(Geom_OffsetSurface) me (this);
     Geom_OffsetSurface_VIsoEvaluator ev (me, VV);
     AdvApprox_ApproxAFunction Approx (Num1, Num2, Num3, T1, T2, T3,
       U1, U2, Cont, MaxDeg, MaxSeg, ev);
 
-    Standard_ConstructionError_Raise_if (!Approx.IsDone(),
-      " Geom_OffsetSurface : VIso");
+    Standard_ConstructionError_Raise_if (!Approx.IsDone(), " Geom_OffsetSurface : VIso");
 
     TColgp_Array1OfPnt      Poles( 1, Approx.NbPoles());
     TColStd_Array1OfReal    Knots( 1, Approx.NbKnots());
@@ -1367,30 +1229,27 @@ Handle(Geom_Curve) Geom_OffsetSurface::VIso (const Standard_Real VV) const
     return equivSurf->VIso(VV);
 }
 
-
 //=======================================================================
 //function : IsCNu
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Geom_OffsetSurface::IsCNu (const Standard_Integer N) const {
-
+Standard_Boolean Geom_OffsetSurface::IsCNu (const Standard_Integer N) const
+{
   Standard_RangeError_Raise_if (N < 0, " ");
   return basisSurf->IsCNu (N+1);
 }
-
 
 //=======================================================================
 //function : IsCNv
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Geom_OffsetSurface::IsCNv (const Standard_Integer N) const {
-
+Standard_Boolean Geom_OffsetSurface::IsCNv (const Standard_Integer N) const
+{
   Standard_RangeError_Raise_if (N < 0, " ");
   return basisSurf->IsCNv (N+1);
 }
-
 
 //=======================================================================
 //function : IsUPeriodic
@@ -1402,7 +1261,6 @@ Standard_Boolean Geom_OffsetSurface::IsUPeriodic () const
   return basisSurf->IsUPeriodic();
 }
 
-
 //=======================================================================
 //function : UPeriod
 //purpose  : 
@@ -1412,7 +1270,6 @@ Standard_Real Geom_OffsetSurface::UPeriod() const
 {
   return basisSurf->UPeriod();
 }
-
 
 //=======================================================================
 //function : IsVPeriodic
@@ -1424,7 +1281,6 @@ Standard_Boolean Geom_OffsetSurface::IsVPeriodic () const
   return basisSurf->IsVPeriodic();
 }
 
-
 //=======================================================================
 //function : VPeriod
 //purpose  : 
@@ -1435,14 +1291,13 @@ Standard_Real Geom_OffsetSurface::VPeriod() const
   return basisSurf->VPeriod();
 }
 
-
 //=======================================================================
 //function : IsUClosed
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Geom_OffsetSurface::IsUClosed () const { 
-
+Standard_Boolean Geom_OffsetSurface::IsUClosed () const
+{
   Standard_Boolean UClosed;
   Handle(Geom_Surface) SBasis = BasisSurface();
 
@@ -1488,14 +1343,13 @@ Standard_Boolean Geom_OffsetSurface::IsUClosed () const {
   return UClosed;
 }
 
-
 //=======================================================================
 //function : IsVClosed
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Geom_OffsetSurface::IsVClosed () const {  
-
+Standard_Boolean Geom_OffsetSurface::IsVClosed () const
+{
   Standard_Boolean VClosed;
   Handle(Geom_Surface) SBasis = BasisSurface();
 
@@ -1518,13 +1372,12 @@ Standard_Boolean Geom_OffsetSurface::IsVClosed () const {
   return VClosed;
 }
 
-
 //=======================================================================
 //function : Transform
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::Transform (const Trsf& T) 
+void Geom_OffsetSurface::Transform (const gp_Trsf& T)
 {
   basisSurf->Transform (T);
   offsetValue *= T.ScaleFactor();
@@ -1536,10 +1389,8 @@ void Geom_OffsetSurface::Transform (const Trsf& T)
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::TransformParameters(Standard_Real& U,
-  Standard_Real& V,
-  const gp_Trsf& T) 
-  const
+void Geom_OffsetSurface::TransformParameters(Standard_Real& U, Standard_Real& V,
+  const gp_Trsf& T) const
 {
   basisSurf->TransformParameters(U,V,T);
   if(!equivSurf.IsNull()) equivSurf->TransformParameters(U,V,T);
@@ -1550,8 +1401,7 @@ void Geom_OffsetSurface::TransformParameters(Standard_Real& U,
 //purpose  : 
 //=======================================================================
 
-gp_GTrsf2d Geom_OffsetSurface::ParametricTransformation
-  (const gp_Trsf& T) const
+gp_GTrsf2d Geom_OffsetSurface::ParametricTransformation (const gp_Trsf& T) const
 {
   return basisSurf->ParametricTransformation(T);
 }
@@ -1561,6 +1411,7 @@ gp_GTrsf2d Geom_OffsetSurface::ParametricTransformation
 //purpose  : Trouve si elle existe, une surface non offset, equivalente
 //           a l'offset surface.
 //=======================================================================
+
 Handle(Geom_Surface) Geom_OffsetSurface::Surface() const 
 {
   if (offsetValue == 0.0) return  basisSurf; // Cas direct 
@@ -1709,42 +1560,45 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
   return Result;
 }
 
-Standard_Boolean Geom_OffsetSurface::UOsculatingSurface(const Standard_Real U,
-  const Standard_Real V,
-  Standard_Boolean& t,
-  Handle(Geom_BSplineSurface)& L) const
+//=======================================================================
+//function : UOsculatingSurface
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Geom_OffsetSurface::UOsculatingSurface(const Standard_Real U, const Standard_Real V,
+  Standard_Boolean& t, Handle(Geom_BSplineSurface)& L) const
 {
   return myOscSurf.UOscSurf(U,V,t,L);
 }
 
-Standard_Boolean Geom_OffsetSurface::VOsculatingSurface(const Standard_Real U,
-  const Standard_Real V,
-  Standard_Boolean& t,
-  Handle(Geom_BSplineSurface)& L) const
+//=======================================================================
+//function : VOsculatingSurface
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Geom_OffsetSurface::VOsculatingSurface(const Standard_Real U, const Standard_Real V,
+  Standard_Boolean& t, Handle(Geom_BSplineSurface)& L) const
 {
   return myOscSurf.VOscSurf(U,V,t,L);
 }
-
 
 //=======================================================================
 //function : 
 //purpose  : private
 //=======================================================================
+
 void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V, 
-  Pnt& P,
-  const Vec& D1U, const Vec& D1V)const 
+                               gp_Pnt& P,
+                               const gp_Vec& D1U, const gp_Vec& D1V) const
 {
-  Standard_Boolean AlongU = Standard_False,
-    AlongV = Standard_False;
   Handle(Geom_BSplineSurface) L;
   Standard_Boolean IsOpposite=Standard_False;
-  Standard_Real signe = 1.;
-  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
-  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
-  if ((AlongV || AlongU) && IsOpposite) signe = -1;
+  const Standard_Boolean AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
+  const Standard_Boolean AlongV = VOsculatingSurface(U,V,IsOpposite,L);
+  const Standard_Real signe = ((AlongV || AlongU) && IsOpposite)? -1. : 1.;
 
-  Standard_Real MagTol=0.000000001;
-  Dir Normal;
+  const Standard_Real MagTol=0.000000001;
+  gp_Dir Normal;
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
 
@@ -1754,7 +1608,7 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
   }
   else 
   {
-    Standard_Integer MaxOrder=3;
+    const Standard_Integer MaxOrder=3;
     TColgp_Array2OfVec DerNUV(0,MaxOrder,0,MaxOrder);
     TColgp_Array2OfVec DerSurf(0,MaxOrder+1,0,MaxOrder+1);
     Standard_Integer OrderU,OrderV;
@@ -1781,7 +1635,6 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
       }
       Geom_UndefinedValue::Raise();
     }
-
   }
 }
 
@@ -1789,28 +1642,25 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
 //function : 
 //purpose  : private
 //=======================================================================/
-void Geom_OffsetSurface::SetD1(const Standard_Real U,
-                               const Standard_Real V, 
-                               Pnt& P,
-                               Vec& D1U, Vec& D1V, // First derivative
-                               const Vec& D2UU, const Vec& D2VV, const Vec& D2UV ) const // Second derivative
+
+void Geom_OffsetSurface::SetD1(const Standard_Real U, const Standard_Real V,
+                               gp_Pnt& P,
+                               gp_Vec& D1U, gp_Vec& D1V, // First derivative
+                               const gp_Vec& D2UU, const gp_Vec& D2VV, const gp_Vec& D2UV) const // Second derivative
 {
-  Standard_Real MagTol=0.000000001;
+  const Standard_Real MagTol=0.000000001;
 
   // Check offset side.
   Handle(Geom_BSplineSurface) L;
-  Standard_Boolean AlongU = Standard_False,
-                   AlongV = Standard_False;
   Standard_Boolean IsOpposite=Standard_False;
-  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
-  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
-  Standard_Real signe = 1.0;
-  if ((AlongV || AlongU) && IsOpposite) 
-    signe = -1.0;
+  const Standard_Boolean AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
+  const Standard_Boolean AlongV = VOsculatingSurface(U,V,IsOpposite,L);
+  const Standard_Real signe = ((AlongV || AlongU) && IsOpposite)? -1. : 1.;
 
-  Dir Normal;
+  gp_Dir Normal;
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
+
   Standard_Integer MaxOrder;
   if (NStatus == CSLib_Defined) 
   {
@@ -1880,22 +1730,21 @@ void Geom_OffsetSurface::SetD1(const Standard_Real U,
 //function : 
 //purpose  : private
 //=======================================================================/
+
 void Geom_OffsetSurface::SetD2(const Standard_Real U, const Standard_Real V, 
-  Pnt& P, 
-  Vec& D1U, Vec& D1V,
-  Vec& D2U, Vec& D2V, Vec& D2UV,
-  const Vec& d3u, const Vec& d3v,
-  const Vec& d3uuv, const Vec& d3uvv  ) const 
+  gp_Pnt& P, 
+  gp_Vec& D1U, gp_Vec& D1V,
+  gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV,
+  const gp_Vec& d3u, const gp_Vec& d3v,
+  const gp_Vec& d3uuv, const gp_Vec& d3uvv) const
 {
-  Standard_Real MagTol=0.000000001;
-  Dir Normal;
+  const Standard_Real MagTol=0.000000001;
+
+  gp_Dir Normal;
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
-  Standard_Integer MaxOrder;
-  if (NStatus == CSLib_Defined) 
-    MaxOrder=0;
-  else 
-    MaxOrder=3;
+
+  const Standard_Integer MaxOrder = (NStatus == CSLib_Defined)? 0 : 3;
   Standard_Integer OrderU,OrderV;
   TColgp_Array2OfVec DerNUV(0,MaxOrder+2,0,MaxOrder+2);
   TColgp_Array2OfVec DerSurf(0,MaxOrder+3,0,MaxOrder+3);
@@ -1913,18 +1762,14 @@ void Geom_OffsetSurface::SetD2(const Standard_Real U, const Standard_Real V,
   //*********************
 
   Handle(Geom_BSplineSurface) L;
-  Standard_Boolean AlongU = Standard_False,
-    AlongV = Standard_False;
   Standard_Boolean IsOpposite=Standard_False;
-  Standard_Real signe = 1.;
-  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
-  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
-  if ((AlongV || AlongU) && IsOpposite) signe = -1;    
+  const Standard_Boolean AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
+  const Standard_Boolean AlongV = VOsculatingSurface(U,V,IsOpposite,L);
+  const Standard_Real signe = ((AlongV || AlongU) && IsOpposite)? -1. : 1.;
   derivatives(MaxOrder,3,U,V,basisSurf,2,2,AlongU,AlongV,L,DerNUV,DerSurf);
 
   CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,NStatus,Normal,OrderU,OrderV);
   if (NStatus != CSLib_Defined) Geom_UndefinedValue::Raise();
-
 
   P.SetXYZ(P.XYZ() + offsetValue * signe * Normal.XYZ());
 
@@ -1941,26 +1786,23 @@ void Geom_OffsetSurface::SetD2(const Standard_Real U, const Standard_Real V,
     + signe * offsetValue * CSLib::DNNormal(1,1,DerNUV,OrderU,OrderV);
 }
 
-
 //=======================================================================
 //function : 
 //purpose  : private
 //=======================================================================/
+
 void Geom_OffsetSurface::SetD3(const Standard_Real U, const Standard_Real V, 
-  Pnt& P, 
-  Vec& D1U, Vec& D1V, 
-  Vec& D2U, Vec& D2V, Vec& D2UV,
-  Vec& D3U, Vec& D3V, Vec& D3UUV, Vec& D3UVV ) const 
+  gp_Pnt& P, 
+  gp_Vec& D1U, gp_Vec& D1V, 
+  gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV,
+  gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV, gp_Vec& D3UVV) const
 {
-  Standard_Real MagTol=0.000000001;
-  Dir Normal;
+  const Standard_Real MagTol=0.000000001;
+
+  gp_Dir Normal;
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
-  Standard_Integer MaxOrder;
-  if (NStatus == CSLib_Defined) 
-    MaxOrder=0;
-  else 
-    MaxOrder=3;
+  const Standard_Integer MaxOrder = (NStatus == CSLib_Defined)? 0 : 3;
   Standard_Integer OrderU,OrderV;
   TColgp_Array2OfVec DerNUV(0,MaxOrder+3,0,MaxOrder+3);
   TColgp_Array2OfVec DerSurf(0,MaxOrder+4,0,MaxOrder+4);
@@ -1980,18 +1822,14 @@ void Geom_OffsetSurface::SetD3(const Standard_Real U, const Standard_Real V,
 
   //*********************
   Handle(Geom_BSplineSurface) L;
-  Standard_Boolean AlongU = Standard_False,
-    AlongV = Standard_False;
   Standard_Boolean IsOpposite=Standard_False;
-  Standard_Real signe = 1.;
-  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
-  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
-  if ((AlongV || AlongU) && IsOpposite) signe = -1;
+  const Standard_Boolean AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
+  const Standard_Boolean AlongV = VOsculatingSurface(U,V,IsOpposite,L);
+  const Standard_Real signe = ((AlongV || AlongU) && IsOpposite)? -1. : 1.;
   derivatives(MaxOrder,3,U,V,basisSurf,3,3,AlongU,AlongV,L,DerNUV,DerSurf);
 
   CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,NStatus,Normal,OrderU,OrderV);
   if (NStatus != CSLib_Defined) Geom_UndefinedValue::Raise();
-
 
   P.SetXYZ(P.XYZ() + offsetValue * signe * Normal.XYZ());
 
@@ -2016,26 +1854,21 @@ void Geom_OffsetSurface::SetD3(const Standard_Real U, const Standard_Real V,
     + signe * offsetValue * CSLib::DNNormal(1,2,DerNUV,OrderU,OrderV);
 }
 
-
 //=======================================================================
 //function : SetDN
 //purpose  : 
 //=======================================================================
 
-Vec Geom_OffsetSurface::SetDN ( const Standard_Real    U , const Standard_Real    V, 
+gp_Vec Geom_OffsetSurface::SetDN ( const Standard_Real U, const Standard_Real V,
   const Standard_Integer Nu, const Standard_Integer Nv,
-  const Vec& D1U, const Vec& D1V) const 
+  const gp_Vec& D1U, const gp_Vec& D1V) const 
 {
-  gp_Vec D(0,0,0);
-  Standard_Real MagTol=0.000000001;
-  Dir Normal;
+  const Standard_Real MagTol=0.000000001;
+
+  gp_Dir Normal;
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
-  Standard_Integer MaxOrder;
-  if (NStatus == CSLib_Defined) 
-    MaxOrder=0;
-  else 
-    MaxOrder=3;
+  const Standard_Integer MaxOrder = (NStatus == CSLib_Defined)? 0 : 3;
   Standard_Integer OrderU,OrderV;
   TColgp_Array2OfVec DerNUV(0,MaxOrder+Nu,0,MaxOrder+Nu);
   TColgp_Array2OfVec DerSurf(0,MaxOrder+Nu+1,0,MaxOrder+Nv+1);
@@ -2044,31 +1877,21 @@ Vec Geom_OffsetSurface::SetDN ( const Standard_Real    U , const Standard_Real  
 
   DerSurf.SetValue(1, 0, D1U);
   DerSurf.SetValue(0, 1, D1V);
+
   //*********************
   Handle(Geom_BSplineSurface) L;
-  Standard_Boolean AlongU = Standard_False, AlongV = Standard_False;
   //   Is there any osculatingsurface along U or V;
   Standard_Boolean IsOpposite=Standard_False;
-  Standard_Real signe = 1.;
-  AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
-  AlongV = VOsculatingSurface(U,V,IsOpposite,L);
-  if ((AlongV || AlongU) && IsOpposite) signe = -1;
+  const Standard_Boolean AlongU = UOsculatingSurface(U,V,IsOpposite,L); 
+  const Standard_Boolean AlongV = VOsculatingSurface(U,V,IsOpposite,L);
+  const Standard_Real signe = ((AlongV || AlongU) && IsOpposite)? -1. : 1.;
   derivatives(MaxOrder,1,U,V,basisSurf,Nu,Nv,AlongU,AlongV,L,DerNUV,DerSurf);
 
   CSLib::Normal(MaxOrder,DerNUV,MagTol,U,V,Umin,Umax,Vmin,Vmax,NStatus,Normal,OrderU,OrderV);
   if (NStatus != CSLib_Defined) Geom_UndefinedValue::Raise();
 
-  D = basisSurf->DN(U,V,Nu,Nv)
+  gp_Vec D = basisSurf->DN(U,V,Nu,Nv)
     + signe * offsetValue * CSLib::DNNormal(Nu,Nv,DerNUV,OrderU,OrderV);
 
   return D;
-}
-
-//=======================================================================
-//function : GetBasisCurveContinuity
-//purpose  : 
-//=======================================================================
-GeomAbs_Shape Geom_OffsetSurface::GetBasisSurfContinuity() const
-{
-  return myBasisSurfContinuity;
 }
