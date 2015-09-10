@@ -39,11 +39,11 @@ Number of shapes in shape
  EDGE      : 4
  WIRE      : 1
  FACE      : 1
- SHELL     : 1
+ SHELL     : 0
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 0
- SHAPE     : 11
+ SHAPE     : 10
 "
 checknbshapes x1 -ref ${nbshapes_expected} -t -m "x1 result provided by the class ShapeUpgrade_UnifySameDomain"
 checknbshapes x2 -ref ${nbshapes_expected} -t -m "x2 result provided by the class ShapeUpgrade_UnifySameDomain"
