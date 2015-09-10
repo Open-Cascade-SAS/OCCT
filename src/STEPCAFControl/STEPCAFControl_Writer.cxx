@@ -445,28 +445,57 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
     if ( shape.IsNull() ) continue;
     
     // write shape either as a whole, or as multifile (with extern refs)
-    if ( ! multi /* || ! XCAFDoc_ShapeTool::IsAssembly ( L ) */ ) {
+    if ( ! multi  ) {
       Actor->SetStdMode ( Standard_False );
 
-      // fill sequence of (sub) shapes for which attributes should be written
-      // and set actor to handle assemblies in a proper way
       TDF_LabelSequence comp;
-      XCAFDoc_ShapeTool::GetComponents ( L, comp, Standard_True );
+
+      //for case when only part of assemby structure should be written in the document
+      //if specified label is component of the assembly then
+      //in order to save location of this component in the high-level assembly
+      //and save name of high-level assembly it is necessary to represent structure of high-level assembly 
+      //as assembly with one component specified by current label. 
+      //For that compound containing only specified component is binded to the label of the high-level assembly.
+      //The such way full structure of high-level assembly was replaced on the assembly contaning one component.
+      if ( XCAFDoc_ShapeTool::IsComponent ( L ) )
+      {
+        TopoDS_Compound aComp;
+        BRep_Builder aB;
+        aB.MakeCompound(aComp);
+        aB.Add(aComp, shape);
+        shape = aComp; 
+        comp.Append(L);
+        TDF_Label ref;
+        if ( XCAFDoc_ShapeTool::GetReferredShape ( L, ref ) )
+        {
+          if(XCAFDoc_ShapeTool::IsAssembly ( ref))
+            XCAFDoc_ShapeTool::GetComponents ( ref, comp, Standard_True );
+        }
+        L = L.Father();
+      }
+      else
+      {
+        // fill sequence of (sub) shapes for which attributes should be written
+        // and set actor to handle assemblies in a proper way
+        if(XCAFDoc_ShapeTool::IsAssembly ( L ))
+          XCAFDoc_ShapeTool::GetComponents ( L, comp, Standard_True );
+      }
+      
       for ( Standard_Integer k=1; k <= comp.Length(); k++ ) {
-	TDF_Label ref;
-	if ( ! XCAFDoc_ShapeTool::GetReferredShape ( comp(k), ref ) ) continue;
-	if ( ! myLabels.IsBound ( ref ) ) {
-	  TopoDS_Shape refS = XCAFDoc_ShapeTool::GetShape ( ref );
-	  myLabels.Bind ( ref, refS );
-	  sublabels.Append ( ref );
-	  if ( XCAFDoc_ShapeTool::IsAssembly ( ref ) )
-	    Actor->RegisterAssembly ( refS );
-	}
+        TDF_Label ref;
+        if ( ! XCAFDoc_ShapeTool::GetReferredShape ( comp(k), ref ) ) continue;
+        if ( ! myLabels.IsBound ( ref ) ) {
+          TopoDS_Shape refS = XCAFDoc_ShapeTool::GetShape ( ref );
+          myLabels.Bind ( ref, refS );
+          sublabels.Append ( ref );
+          if ( XCAFDoc_ShapeTool::IsAssembly ( ref ) )
+            Actor->RegisterAssembly ( refS );
+        }
       }
       myLabels.Bind ( L, shape );
       sublabels.Append ( L );
       if ( XCAFDoc_ShapeTool::IsAssembly ( L ) )
-	Actor->RegisterAssembly ( shape );
+        Actor->RegisterAssembly ( shape );
 
       writer.Transfer(shape,mode,Standard_False);
       Actor->SetStdMode ( Standard_True ); // restore default behaviour
@@ -615,11 +644,10 @@ TopoDS_Shape STEPCAFControl_Writer::TransferExternFiles (const TDF_Label &L,
   TopoDS_Compound C;
   BRep_Builder B;
   B.MakeCompound ( C );
-  labels.Append ( L );
-
+  //labels.Append ( L ); 
   // if not assembly, write to separate file
-  if ( ! XCAFDoc_ShapeTool::IsAssembly ( L ) ) {
-
+  if ( ! XCAFDoc_ShapeTool::IsAssembly ( L ) && !XCAFDoc_ShapeTool::IsComponent ( L )) {
+    labels.Append ( L );
     // prepare for transfer
     Handle(XSControl_WorkSession) newWS = new XSControl_WorkSession;
     newWS->SelectNorm ( "STEP" );
@@ -660,11 +688,21 @@ TopoDS_Shape STEPCAFControl_Writer::TransferExternFiles (const TDF_Label &L,
     myLabels.Bind ( L, C );
     return C;
   }
-
+  TDF_LabelSequence comp;
+  TDF_Label aCurL = L;
+  //if specified shape is component then high-level assembly is considered
+  //to get valid structure with location
+  if ( XCAFDoc_ShapeTool::IsComponent ( L ) )
+  {
+    comp.Append(L);
+    aCurL = L.Father();
+  }
   // else iterate on components add create structure of empty compounds
   // representing the assembly
-  TDF_LabelSequence comp;
-  XCAFDoc_ShapeTool::GetComponents ( L, comp, Standard_False );
+  else if (XCAFDoc_ShapeTool::IsAssembly ( L ))
+    XCAFDoc_ShapeTool::GetComponents ( L, comp, Standard_False );
+
+  labels.Append ( aCurL );
   for ( Standard_Integer k=1; k <= comp.Length(); k++ ) {
     TDF_Label lab = comp(k);
     TDF_Label ref;
@@ -673,7 +711,7 @@ TopoDS_Shape STEPCAFControl_Writer::TransferExternFiles (const TDF_Label &L,
     Scomp.Location ( XCAFDoc_ShapeTool::GetLocation ( lab ) );
     B.Add ( C, Scomp );
   }
-  myLabels.Bind ( L, C );
+  myLabels.Bind ( aCurL, C );
   return C;
 }
 

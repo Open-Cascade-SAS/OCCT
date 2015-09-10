@@ -50,7 +50,7 @@ class STEPCAFControl_Writer
 public:
 
   DEFINE_STANDARD_ALLOC
-
+  
   
   //! Creates a writer with an empty
   //! STEP model and sets ColorMode, LayerMode, NameMode and
@@ -80,8 +80,9 @@ public:
   //! gives prefix for names of extern files (can be empty string)
   //! Returns True if translation is OK
   Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& L, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& L, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
+  
+  //! Method to transfer part of the document specified by label
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& L, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0 );
 
   Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc, const TCollection_AsciiString& filename);
   
@@ -146,12 +147,13 @@ public:
 
 
 protected:
-
+  //! Mehod to writing sequence of root assemblies or part of the file specified by use by one label 
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& L, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0);
   
   //! Transfers labels to a STEP model
   //! Returns True if translation is OK
   //! isExternFile setting from TransferExternFiles method
-  Standard_EXPORT Standard_Boolean Transfer (STEPControl_Writer& wr, const TDF_LabelSequence& labels, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0, const Standard_Boolean isExternFile = Standard_False);
+  Standard_EXPORT Standard_Boolean Transfer (STEPControl_Writer& wr, const TDF_LabelSequence& labels, const STEPControl_StepModelType mode = STEPControl_AsIs, const Standard_CString multi = 0, const Standard_Boolean isExternFile = Standard_False) ;
   
   //! Parses assembly structure of label L, writes all the simple
   //! shapes each to its own file named by name of its label plus
@@ -186,8 +188,7 @@ protected:
   //! Write SHUO assigned to specified component, to STEP model
   Standard_EXPORT Standard_Boolean WriteSHUOs (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels);
 
-
-
+  
 
 private:
 
@@ -208,9 +209,6 @@ private:
 
 
 };
-
-
-
 
 
 

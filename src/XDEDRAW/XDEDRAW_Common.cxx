@@ -43,6 +43,7 @@
 #include <XSDRAW_Vars.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
+#include <DDF.hxx>
 
 #include <stdio.h>
 //============================================================
@@ -360,10 +361,13 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
 static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if ( argc <3 ) {
-    di << "Use: " << argv[0] << " Doc filename [mode=a [multifile_prefix]]: write document to the STEP file" << "\n";
-    di << "Parameter mode can be:       a or 0 : AsIs (default)" << "\n";
-    di << "f or 1 : FacettedBRep        s or 2 : ShellBasedSurfaceModel" << "\n";
-    di << "m or 3 : ManifoldSolidBrep   w or 4 : GeometricCurveSet/WireFrame" << "\n";
+    di << "Use: " << argv[0] << " Doc filename [mode [multifile_prefix [label]]]: write document to the STEP file" << "\n";
+    di << "mode can be: a or 0 : AsIs (default)" << "\n";
+    di << "             f or 1 : FacettedBRep        s or 2 : ShellBasedSurfaceModel\n";
+    di << "             m or 3 : ManifoldSolidBrep   w or 4 : GeometricCurveSet/WireFrame\n";
+    di << "multifile_prefix: triggers writing assembly components as separate files,\n";
+    di << "                  and defines common prefix for their names\n";
+    di << "label: tag of the sub-assembly label to save only that sub-assembly\n";
     return 0;
   }
   
@@ -373,16 +377,16 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
     di << argv[1] << " is not a document" << "\n";
     return 1;
   }
+  Standard_CString multifile = 0;
   
-  Standard_CString multifile = ( argc >4 ? argv[4] : 0 );
-  
+  Standard_Integer k = 3;
   DeclareAndCast(STEPControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("STEP");
   STEPCAFControl_Writer writer ( XSDRAW::Session(), Standard_True );
-
+   
   STEPControl_StepModelType mode = STEPControl_AsIs;
-  if ( argc >3 ) {
-    switch (argv[3][0]) {
+  if ( argc > k ) {
+    switch (argv[k][0]) {
     case 'a' :
     case '0' : mode = STEPControl_AsIs;                    break;
     case 'f' :
@@ -396,7 +400,7 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
     default :  di<<"3st arg = mode, incorrect [give fsmw]"<<"\n"; return 1;
     }
     Standard_Boolean wrmode = Standard_True;
-    for ( Standard_Integer i = 0; argv[3][i] ; i++ ) 
+    for ( Standard_Integer i = 0; argv[k][i] ; i++ ) 
       switch (argv[3][i]) {
       case '-' : wrmode = Standard_False; break;
       case '+' : wrmode = Standard_True; break;
@@ -405,13 +409,44 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
       case 'l' : writer.SetLayerMode (wrmode); break;
       case 'v' : writer.SetPropsMode (wrmode); break;
       }
+    k++;
+  }
+
+  TDF_Label label;
+  if( argc > k)
+  {
+    TCollection_AsciiString aStr(argv[k]);
+    if( aStr.Search(":") ==-1)
+      multifile = argv[k++];
     
   }
-  
-  di << "Translating document " << argv[1] << " to STEP" << "\n";
-  if ( ! writer.Transfer ( Doc, mode, multifile ) ) {
-    di << "The document cannot be translated or gives no result" << "\n";
+  if( argc > k)
+  {
+      
+    if( !DDF::FindLabel(Doc->Main().Data(), argv[k], label) || label.IsNull()) {  
+      di << "No label for entry"  << "\n";
+      return 1; 
+      
+    }
   }
+  if( !label.IsNull())
+  {  
+    di << "Translating label "<< argv[k]<<" of document " << argv[1] << " to STEP" << "\n";
+    if(!writer.Transfer ( label, mode, multifile )) 
+    {
+      di << "The label of document cannot be translated or gives no result" << "\n";
+      return 1;
+    }
+
+  }
+  else
+  {
+    di << "Translating document " << argv[1] << " to STEP" << "\n";
+    if ( ! writer.Transfer ( Doc, mode, multifile ) ) {
+      di << "The document cannot be translated or gives no result" << "\n";
+    }
+  }
+  
 
   di << "Writing STEP file " << argv[2] << "\n";
   IFSelect_ReturnStatus stat = writer.Write(argv[2]);
@@ -440,7 +475,7 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di) {
   di.Add("ReadIges" , "Doc filename: Read IGES file to DECAF document" ,__FILE__, ReadIges, g);
   di.Add("WriteIges" , "Doc filename: Write DECAF document to IGES file" ,__FILE__, WriteIges, g);
   di.Add("ReadStep" , "Doc filename: Read STEP file to DECAF document" ,__FILE__, ReadStep, g);
-  di.Add("WriteStep" , "Doc filename: Write DECAF document to STEP file" ,__FILE__, WriteStep, g);  
+  di.Add("WriteStep" , "Doc filename [mode=a [multifile_prefix] [label]]: Write DECAF document to STEP file" ,__FILE__, WriteStep, g);  
   
   di.Add("XFileList","Print list of files that was transfered by the last transfer" ,__FILE__, GetDicWSList , g);
   di.Add("XFileCur", ": returns name of file which is set as current",__FILE__, GetCurWS, g);
