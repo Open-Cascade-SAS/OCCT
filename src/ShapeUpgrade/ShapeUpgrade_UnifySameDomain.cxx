@@ -78,6 +78,7 @@
 #include <ShapeFix_Shell.hxx>
 #include <ShapeUpgrade_RemoveLocations.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 
 
 //=======================================================================
@@ -780,6 +781,37 @@ void ShapeUpgrade_UnifySameDomain::Initialize(const TopoDS_Shape& aShape,
 }
 
 //=======================================================================
+//function : putIntWires
+//purpose  : Add internal wires that are classified inside the face as a subshape,
+//           and remove them from the sequence
+//=======================================================================
+static void putIntWires(TopoDS_Shape& theFace, TopTools_SequenceOfShape& theWires)
+{
+  TopoDS_Face& aFace = TopoDS::Face(theFace);
+  for (Standard_Integer i=1; i <= theWires.Length(); i++)
+  {
+    TopoDS_Shape aWire = theWires(i);
+    gp_Pnt2d aP2d;
+    Standard_Boolean isP2d = Standard_False;
+    for (TopoDS_Iterator it(aWire); it.More() && !isP2d; it.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(it.Value());
+      Standard_Real aFirst, aLast;
+      Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
+      aC2d->D0((aFirst + aLast) * 0.5, aP2d);
+      isP2d = Standard_True;
+    }
+    BRepClass_FaceClassifier aClass(aFace, aP2d, Precision::PConfusion());
+    if (aClass.State() == TopAbs_IN)
+    {
+      BRep_Builder().Add(aFace, aWire);
+      theWires.Remove(i);
+      i--;
+    }
+  }
+}
+
+//=======================================================================
 //function : UnifyFaces
 //purpose  : 
 //=======================================================================
@@ -893,6 +925,8 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
 
           TopoDS_Edge anEdge = TopoDS::Edge(edges(1));
           edges.Remove(1);
+          // collect internal edges in separate wires
+          Standard_Boolean isInternal = (anEdge.Orientation() == TopAbs_INTERNAL);
 
           isEdge3d |= !BRep_Tool::Degenerated(anEdge);
           B.Add(aWire,anEdge);
@@ -906,6 +940,10 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             isNewFound = Standard_False;
             for(Standard_Integer j = 1; j <= edges.Length(); j++) {
               anEdge = TopoDS::Edge(edges(j));
+              // check if the current edge orientation corresponds to the first one
+              Standard_Boolean isCurrInternal = (anEdge.Orientation() == TopAbs_INTERNAL);
+              if (isCurrInternal != isInternal)
+                continue;
               TopExp::Vertices(anEdge,V1,V2);
               if(aVertices.Contains(V1) || aVertices.Contains(V2)) {
                 isEdge3d |= !BRep_Tool::Degenerated(anEdge);
@@ -1052,13 +1090,26 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
           //CompShell.SetContext( aContext );
           CompShell.SetContext( myContext );
 
-          TopTools_SequenceOfShape parts;
+          TopTools_SequenceOfShape parts, anIntWires;
           ShapeFix_SequenceOfWireSegment wires;
           for(TopExp_Explorer W_Exp(aCurrent,TopAbs_WIRE);W_Exp.More();W_Exp.Next()) {
+            const TopoDS_Wire& aWire = TopoDS::Wire(W_Exp.Current());
+            // check if the wire is ordinary (contains non-internal edges)
+            Standard_Boolean isInternal = Standard_True;
+            for (TopoDS_Iterator it(aWire); it.More() && isInternal; it.Next())
+              isInternal = (it.Value().Orientation() == TopAbs_INTERNAL);
+            if (isInternal)
+            {
+              // place internal wire separately
+              anIntWires.Append(aWire);
+            }
+            else
+            {
             Handle(ShapeExtend_WireData) sbwd =
-              new ShapeExtend_WireData ( TopoDS::Wire(W_Exp.Current() ));
+                new ShapeExtend_WireData (aWire);
             ShapeFix_WireSegment seg ( sbwd, TopAbs_REVERSED );
             wires.Append(seg);
+          }
           }
 
           CompShell.DispatchWires ( parts,wires );
@@ -1067,10 +1118,12 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             //aFixOrient.SetContext(aContext);
             aFixOrient.SetContext(myContext);
             aFixOrient.FixOrientation();
+            // put internal wires to faces
+            putIntWires(parts(j), anIntWires);
           }
 
           TopoDS_Shape CompRes;
-          if ( faces.Length() !=1 ) {
+          if ( parts.Length() !=1 ) {
             TopoDS_Shell S;
             B.MakeShell ( S );
             for ( i=1; i <= parts.Length(); i++ )
