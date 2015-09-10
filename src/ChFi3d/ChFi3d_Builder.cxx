@@ -163,7 +163,8 @@ void ChFi3d_Builder::ExtentAnalyse ()
   for (Standard_Integer iv = 1; iv <= myVDataMap.Extent(); iv++) {
     nbs = myVDataMap(iv).Extent();
     const TopoDS_Vertex& Vtx = myVDataMap.FindKey(iv);
-    nbedges = ChFi3d_NumberOfEdges(Vtx, myVEMap); 
+    //nbedges = ChFi3d_NumberOfEdges(Vtx, myVEMap); 
+    nbedges = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap); 
     switch (nbs) {
     case 1 :
       ExtentOneCorner(Vtx, myVDataMap.FindFromIndex(iv).First());
@@ -692,7 +693,7 @@ void ChFi3d_Builder::PerformFilletOnVertex
     if (BRep_Tool::Degenerated(cur)) nba--;
   }
   nba=nba/2;*/
-  Standard_Integer nba = ChFi3d_NumberOfEdges(Vtx, myVEMap);
+  Standard_Integer nba = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap);
 
   if (nondegenere) { // Normal processing
     switch (i) {

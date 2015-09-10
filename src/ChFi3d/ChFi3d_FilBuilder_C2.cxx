@@ -782,6 +782,20 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       curvopsam->D1(uintpcsam,PPfacsam,VVfacsam);
       BRepAdaptor_Curve2d PCArcFac(Arcopdif,Fopsam);
       PCArcFac.D0(cpopdif.ParameterOnArc(),ppfacdif);
+      //jgv for OCC26173
+      BRepAdaptor_Surface SurFopsam(Fopsam);
+      if (SurFopsam.IsUClosed())
+      {
+        Standard_Real Uperiod = SurFopsam.LastUParameter() - SurFopsam.FirstUParameter();
+        if (Abs(ppfacsam.X() - ppfacdif.X()) > Uperiod/2)
+        {
+          if (ppfacdif.X() < ppfacsam.X())
+            ppfacdif.SetX(ppfacdif.X() + Uperiod);
+          else
+            ppfacdif.SetX(ppfacdif.X() - Uperiod);
+        }
+      }
+      //////////////////
       BRepAdaptor_Curve CArcFac(Arcopdif);
       CArcFac.D1(cpopdif.ParameterOnArc(),PPfacdif,VVfacdif);
       Handle(BRepAdaptor_HSurface) HBRFopsam = new BRepAdaptor_HSurface();

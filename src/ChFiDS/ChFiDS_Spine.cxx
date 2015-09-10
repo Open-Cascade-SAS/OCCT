@@ -87,14 +87,19 @@ Handle(ChFiDS_HElSpine) ChFiDS_Spine::ElSpine(const Standard_Integer IE) const
 
 Handle(ChFiDS_HElSpine) ChFiDS_Spine::ElSpine(const Standard_Real W) const 
 {
-  ChFiDS_ListIteratorOfListOfHElSpine It(elspines);
-  for (; It.More(); It.Next()) {
-    Handle(ChFiDS_HElSpine) cur = It.Value();
-    Standard_Real uf = cur->FirstParameter();
-    Standard_Real ul = cur->LastParameter();
-    if(uf <= W && W <= ul) return cur;
-  }  
-  return Handle(ChFiDS_HElSpine)();
+  if (elspines.Extent() == 1)
+    return elspines.First();
+  else
+  {
+    ChFiDS_ListIteratorOfListOfHElSpine It(elspines);
+    for (; It.More(); It.Next()) {
+      Handle(ChFiDS_HElSpine) cur = It.Value();
+      Standard_Real uf = cur->FirstParameter();
+      Standard_Real ul = cur->LastParameter();
+      if(uf <= W && W <= ul) return cur;
+    }  
+    return Handle(ChFiDS_HElSpine)();
+  }
 }
 
 //=======================================================================

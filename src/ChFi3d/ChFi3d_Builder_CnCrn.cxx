@@ -127,11 +127,6 @@ extern void ChFi3d_InitChron(OSD_Chronometer& ch);
 extern void ChFi3d_ResultChron(OSD_Chronometer & ch,Standard_Real& time);
 #endif
 
-//  Modified by Sergey KHROMOV - Fri Dec 21 17:08:19 2001 Begin
-Standard_Boolean isTangentFaces(const TopoDS_Edge &theEdge,
-				const TopoDS_Face &theFace1,
-				const TopoDS_Face &theFace2);
-//  Modified by Sergey KHROMOV - Fri Dec 21 17:08:19 2001 End
 
 //=======================================================================
 //function : Indices
@@ -1241,7 +1236,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:11:02 2001 Begin
 // 	regul.SetValue(ic,BRep_Tool::Continuity(TopoDS::Edge(Evive.Value(ic)),F1,F2)
 // 		     !=GeomAbs_C0); 
-	regul.SetValue(ic,isTangentFaces(TopoDS::Edge(Evive.Value(ic)),F1,F2)); 
+	regul.SetValue(ic, ChFi3d_isTangentFaces(TopoDS::Edge(Evive.Value(ic)),F1,F2)); 
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:11:07 2001 End
       }
     }
