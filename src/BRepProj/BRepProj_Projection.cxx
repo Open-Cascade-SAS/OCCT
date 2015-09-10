@@ -16,7 +16,7 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAlgoAPI_Section.hxx>
+#include <BRepAlgo_Section.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepFill_Generator.hxx>
 #include <BRepLib_MakeEdge.hxx>
@@ -126,7 +126,8 @@ void BRepProj_Projection::BuildSection (const TopoDS_Shape& theShape,
     Standard_ConstructionError::Raise(__FILE__": target shape has no faces");
 
   // build section computing pcurves on the shape
-  BRepAlgoAPI_Section aSectionTool (aShape, theTool, Standard_False);
+//  BRepAlgoAPI_Section aSectionTool (aShape, theTool, Standard_False);
+  BRepAlgo_Section aSectionTool (aShape, theTool, Standard_False);
   aSectionTool.Approximation (Standard_True);
   aSectionTool.ComputePCurveOn1 (Standard_True);
   aSectionTool.Build();
