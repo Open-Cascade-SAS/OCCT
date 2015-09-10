@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC26621"
+puts "========"
+puts ""
+###########################################
+# Boolean Cut does not work on two solids
+###########################################
+
+set nb_v_good 186
+set nb_e_good 360
+set nb_w_good 174
+set nb_f_good 174
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 897
+
+smallview
+
+restore [locate_data_file OCC26621-body.brep] body
+restore [locate_data_file OCC26621-cutter.brep] cutter
+
+bopargcheck body
+bopargcheck cutter
+bcut result body cutter
+donly result
+fit
+nbshapes result
+
+set only_screen_axo 1

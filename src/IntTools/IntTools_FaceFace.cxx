@@ -682,7 +682,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   {
     const Standard_Real UVMaxStep = 0.001;
     const Standard_Real Deflection = (hasCone) ? 0.085 : 0.1;
-  myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
+    myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
   }
   
   if((myHS1->IsUClosed() && !myHS1->IsUPeriodic()) || 
@@ -1593,7 +1593,7 @@ Standard_Real IntTools_FaceFace::ComputeTolerance()
       Handle(IntPatch_WLine)::DownCast(L);
 
 #ifdef OCCT_DEBUG
-    //WL->Dump();
+    //WL->Dump(0);
 #endif
 
     //

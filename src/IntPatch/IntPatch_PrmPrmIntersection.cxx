@@ -70,6 +70,188 @@ static void AddWLine(IntPatch_SequenceOfLine      &theLines,
                      const Handle(IntPatch_WLine) &theWLine,
                      const Standard_Real           Deflection);
 
+static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
+                                    const Handle(Adaptor3d_HSurface)& theSurf2,
+                                    const IntPatch_SequenceOfLine& theSLin,
+                                    const Standard_Real* const thePeriodsArr,
+                                    const IntSurf_TypeTrans theTrans1,
+                                    const IntSurf_TypeTrans theTrans2,
+                                    const Standard_Real theTol,
+                                    Handle(IntPatch_WLine)& theWLline)
+{
+  if(theSLin.Length() == 0)
+    return;
+
+  Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
+
+  const Standard_Real aTol2D = 1.e-4;
+  Standard_Integer cnbV = theWLline->NbVertex();
+  Standard_Integer ciV;
+  for( ciV = 1; ciV <= cnbV; ciV++ )
+  {
+    Standard_Real pntDMin = 1.e+100;
+    Standard_Integer VDMin = 0;
+    Standard_Integer WLDMin = 0;
+    gp_Pnt cPV = theWLline->Vertex(ciV).Value();
+    theWLline->Vertex(ciV).Parameters(aU1, aV1, aU2, aV2);
+    const gp_Pnt2d aPCS1(aU1, aV1), aPCS2(aU2, aV2);
+    Standard_Integer iL;
+    for( iL = 1; iL <= theSLin.Length(); iL++)
+    {
+      const Handle(IntPatch_Line)& aSLine = theSLin.Value(iL);
+      IntPatch_IType aType = aSLine->ArcType();
+      if( aType != IntPatch_Walking)
+        continue;
+      const Handle(IntPatch_WLine) aWLine = Handle(IntPatch_WLine)::DownCast(aSLine);
+      Standard_Integer tnbV = aWLine->NbVertex();
+      Standard_Integer tiV;
+      for( tiV = 1; tiV <= tnbV; tiV++ )
+      {
+        gp_Pnt tPV = aWLine->Vertex(tiV).Value();
+
+        aWLine->Vertex(tiV).Parameters(aU1, aV1, aU2, aV2);
+        const gp_Pnt2d aPTS1(aU1, aV1), aPTS2(aU2, aV2);
+
+        Standard_Real tDistance = cPV.Distance(tPV);
+        Standard_Real uRs1 = theSurf1->Surface().UResolution(tDistance);
+        Standard_Real vRs1 = theSurf1->Surface().VResolution(tDistance);
+        Standard_Real uRs2 = theSurf2->Surface().UResolution(tDistance);
+        Standard_Real vRs2 = theSurf2->Surface().VResolution(tDistance);
+        Standard_Real RmaxS1 = Max(uRs1,vRs1);
+        Standard_Real RmaxS2 = Max(uRs2,vRs2);
+        if((aPCS1.SquareDistance(aPTS1) < RmaxS1*RmaxS1) && (aPCS2.SquareDistance(aPTS2) < RmaxS2*RmaxS2))
+        {
+          if(RmaxS1 < aTol2D && RmaxS2 < aTol2D)
+          {
+            if( pntDMin > tDistance && tDistance > 1.e-9)
+            {
+              pntDMin = tDistance;
+              VDMin = tiV;
+              WLDMin = iL;
+            }
+          }
+        }
+      }
+    }
+
+    if( VDMin != 0 )
+    {
+      const Handle(IntPatch_Line)& aSLine = theSLin.Value(WLDMin);
+      const Handle(IntPatch_WLine) aWLine = Handle(IntPatch_WLine)::DownCast(aSLine);
+      Standard_Integer tiVpar = (Standard_Integer)aWLine->Vertex(VDMin).ParameterOnLine();
+      Standard_Integer ciVpar = (Standard_Integer)theWLline->Vertex(ciV).ParameterOnLine();
+      Standard_Real u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
+      Standard_Real u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
+      theWLline->Point(ciVpar).Parameters(u11,v11,u12,v12);
+      aWLine->Point(tiVpar).Parameters(u21,v21,u22,v22);
+
+      Handle(IntSurf_LineOn2S) newL2s = new IntSurf_LineOn2S();
+      IntSurf_PntOn2S replacePnt = aWLine->Point(tiVpar);
+      Standard_Integer cNbP = theWLline->NbPnts();
+
+      TColStd_SequenceOfInteger VPold;
+      Standard_Integer iPo;
+      for( iPo = 1; iPo <= cnbV; iPo++ )
+      {
+        Standard_Real Po = theWLline->Vertex(iPo).ParameterOnLine();
+        Standard_Integer IPo = (Standard_Integer) Po;
+        VPold.Append(IPo);
+      }
+
+      Standard_Boolean removeNext = Standard_False;
+      Standard_Boolean removePrev = Standard_False;
+      if( ciV == 1)
+      {
+        Standard_Integer dPar = Abs( VPold.Value(ciV) - VPold.Value(ciV+1));
+        if(dPar > 10)
+        {
+          removeNext = Standard_True;
+          for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
+            VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
+        }
+      }
+      else if( ciV == cnbV)
+      {
+        Standard_Integer dPar = Abs( VPold.Value(ciV) - VPold.Value(ciV-1));
+        if(dPar > 10)
+        {
+          removePrev = Standard_True;
+          VPold.SetValue(ciV, VPold.Value(ciV) - 1 );
+        }
+      }
+      else
+      {
+        Standard_Integer dParMi = Abs( VPold.Value(ciV) - VPold.Value(ciV-1));
+        Standard_Integer dParMa = Abs( VPold.Value(ciV) - VPold.Value(ciV+1));
+        if(dParMi > 10)
+        {
+          removePrev = Standard_True;
+          VPold.SetValue(ciV, VPold.Value(ciV) - 1 );
+        }
+
+        if(dParMa > 10)
+        {
+          removeNext = Standard_True;
+          for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
+          {
+            if(dParMi > 10)
+              VPold.SetValue(iPo, VPold.Value(iPo) - 2 );
+            else
+              VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
+          }
+        }
+        else
+        {
+          if(dParMi > 10)
+            for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
+              VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
+        } 
+      }
+
+      Standard_Integer pI = ciVpar;
+
+      Standard_Integer iP;
+      for( iP = 1; iP <= cNbP; iP++)
+      {
+        if( pI == iP )
+        {
+          IntSurf_PntOn2S newPnt = MakeNewPoint(replacePnt, theWLline->Point(iP), thePeriodsArr);
+          newL2s->Add(newPnt);
+        }
+        else if(removeNext && iP == (pI + 1))
+          continue;
+        else if(removePrev && iP == (pI - 1))
+          continue;
+        else
+          newL2s->Add(theWLline->Point(iP));
+      }
+
+      IntPatch_Point newVtx;
+      gp_Pnt Pnt3dV = aWLine->Vertex(VDMin).Value();
+      newVtx.SetValue(Pnt3dV,theTol,Standard_False);
+      newVtx.SetParameters(u21,v21,u22,v22);
+      newVtx.SetParameter(VPold.Value(ciV));
+
+      Handle(IntPatch_WLine) NWLine = new IntPatch_WLine(newL2s,Standard_False,theTrans1,theTrans2);
+
+      Standard_Integer iV;
+      for( iV = 1; iV <= cnbV; iV++ )
+      {
+        if( iV == ciV )
+          NWLine->AddVertex(newVtx);
+        else
+        {
+          IntPatch_Point theVtx = theWLline->Vertex(iV);
+          theVtx.SetParameter(VPold.Value(iV));
+          NWLine->AddVertex(theVtx);
+        }
+      }
+
+      theWLline = NWLine;
+    }//if( VDMin != 0 )
+  }//for( ciV = 1; ciV <= cnbV; ciV++ )
+}
+
 //=======================================================================
 //function : DublicateOfLinesProcessing
 //purpose  : Decides, if rejecting current line is necessary
@@ -1608,144 +1790,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                 wline->AddVertex(vtx);
               }              
 
-              Standard_Integer slinlen = SLin.Length();
-              if( slinlen > 0 ) {
-                Standard_Integer cnbV = wline->NbVertex();
-                Standard_Integer ciV;
-                for( ciV = 1; ciV <= cnbV; ciV++ ) {
-                  Standard_Real pntDMin = 1.e+100;
-                  Standard_Integer VDMin = 0;
-                  Standard_Integer WLDMin = 0;
-                  gp_Pnt cPV = wline->Vertex(ciV).Value();
-                  Standard_Integer iL;
-                  for( iL = 1; iL <= slinlen; iL++) {
-                    const Handle(IntPatch_Line)& aSLine = SLin.Value(iL);
-                    IntPatch_IType aType = aSLine->ArcType();
-                    if( aType != IntPatch_Walking)
-                      continue;
-                    Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
-                    Standard_Integer tnbV = aWLine->NbVertex();
-                    Standard_Integer tiV;
-                    for( tiV = 1; tiV <= tnbV; tiV++ ) {
-                      gp_Pnt tPV = aWLine->Vertex(tiV).Value();
-                      Standard_Real tDistance = cPV.Distance(tPV);
-                      Standard_Real uRs1 = Surf1->Surface().UResolution(tDistance);
-                      Standard_Real vRs1 = Surf1->Surface().VResolution(tDistance);
-                      Standard_Real uRs2 = Surf2->Surface().UResolution(tDistance);
-                      Standard_Real vRs2 = Surf2->Surface().VResolution(tDistance);
-                      Standard_Real RmaxS1 = Max(uRs1,vRs1);
-                      Standard_Real RmaxS2 = Max(uRs2,vRs2);
-                      if(RmaxS1 < 1.e-4 && RmaxS2 < 1.e-4) {
-                        if( pntDMin > tDistance && tDistance > 1.e-9) {
-                          pntDMin = tDistance;
-                          VDMin = tiV;
-                          WLDMin = iL;
-                        }
-                      }
-                    }
-                  }
-
-                  if( VDMin != 0 ) {
-                    const Handle(IntPatch_Line)& aSLine = SLin.Value(WLDMin);
-                    Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
-                    Standard_Integer tiVpar = (Standard_Integer)aWLine->Vertex(VDMin).ParameterOnLine();
-                    Standard_Integer ciVpar = (Standard_Integer)wline->Vertex(ciV).ParameterOnLine();
-                    Standard_Real u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
-                    Standard_Real u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
-                    wline->Point(ciVpar).Parameters(u11,v11,u12,v12);
-                    aWLine->Point(tiVpar).Parameters(u21,v21,u22,v22);
-
-                    Handle(IntSurf_LineOn2S) newL2s = new IntSurf_LineOn2S();
-                    IntSurf_PntOn2S replacePnt = aWLine->Point(tiVpar);
-                    Standard_Integer cNbP = wline->NbPnts();
-
-                    TColStd_SequenceOfInteger VPold;
-                    Standard_Integer iPo;
-                    for( iPo = 1; iPo <= cnbV; iPo++ ) {
-                      Standard_Real Po = wline->Vertex(iPo).ParameterOnLine();
-                      Standard_Integer IPo = (Standard_Integer) Po;
-                      VPold.Append(IPo);
-                    }
-
-                    Standard_Boolean removeNext = Standard_False;
-                    Standard_Boolean removePrev = Standard_False;
-                    if( ciV == 1) {
-                      Standard_Integer dPar = Abs( VPold.Value(ciV) - VPold.Value(ciV+1));
-                      if(dPar > 10) {
-                        removeNext = Standard_True;
-                        for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
-                          VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
-                      }
-                    }
-                    else if( ciV == cnbV) {
-                      Standard_Integer dPar = Abs( VPold.Value(ciV) - VPold.Value(ciV-1));
-                      if(dPar > 10) {
-                        removePrev = Standard_True;
-                        VPold.SetValue(ciV, VPold.Value(ciV) - 1 );
-                      }
-                    }
-                    else {
-                      Standard_Integer dParMi = Abs( VPold.Value(ciV) - VPold.Value(ciV-1));
-                      Standard_Integer dParMa = Abs( VPold.Value(ciV) - VPold.Value(ciV+1));
-                      if(dParMi > 10) {
-                        removePrev = Standard_True;
-                        VPold.SetValue(ciV, VPold.Value(ciV) - 1 );
-                      }
-                      if(dParMa > 10) {
-                        removeNext = Standard_True;
-                        for( iPo = (ciV+1); iPo <= cnbV; iPo++ ) {
-                          if(dParMi > 10)
-                            VPold.SetValue(iPo, VPold.Value(iPo) - 2 );
-                          else
-                            VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
-                        }
-                      }
-                      else {
-                        if(dParMi > 10)
-                          for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
-                            VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
-                      } 
-                    }
-                    Standard_Integer pI = (Standard_Integer) ciVpar;
-
-                    Standard_Integer iP;
-                    for( iP = 1; iP <= cNbP; iP++) {
-                      if( pI == iP )
-                      {
-                        IntSurf_PntOn2S newPnt = MakeNewPoint(replacePnt, wline->Point(iP), Periods);
-                        newL2s->Add(newPnt);
-                      }
-                      else if(removeNext && iP == (pI + 1))
-                        continue;
-                      else if(removePrev && iP == (pI - 1))
-                        continue;
-                      else
-                        newL2s->Add(wline->Point(iP));
-                    }
-
-                    IntPatch_Point newVtx;
-                    gp_Pnt Pnt3dV = aWLine->Vertex(VDMin).Value();
-                    newVtx.SetValue(Pnt3dV,TolTang,Standard_False);
-                    newVtx.SetParameters(u21,v21,u22,v22);
-                    newVtx.SetParameter(VPold.Value(ciV));
-
-                    Handle(IntPatch_WLine) NWLine = new IntPatch_WLine(newL2s,Standard_False,trans1,trans2);
-
-                    Standard_Integer iV;
-                    for( iV = 1; iV <= cnbV; iV++ ) {
-                      if( iV == ciV )
-                        NWLine->AddVertex(newVtx);
-                      else {
-                        IntPatch_Point theVtx = wline->Vertex(iV);
-                        theVtx.SetParameter(VPold.Value(iV));
-                        NWLine->AddVertex(theVtx);
-                      }
-                    }
-
-                    wline = NWLine;
-                  }
-                }
-              }// SLin.Length > 0
+              SeveralWlinesProcessing(Surf1, Surf2, SLin, Periods, trans1, trans2, TolTang, wline);
 
               AddWLine(SLin, wline, Deflection);
               empt = Standard_False;
@@ -2425,166 +2470,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
                       lignetrouvee = Standard_True;
 
-                      Standard_Integer slinlen = SLin.Length();
-                      if( slinlen > 0 )
-                      {
-                        Standard_Integer cnbV = wline->NbVertex();
-                        Standard_Integer ciV;
-                        for( ciV = 1; ciV <= cnbV; ciV++ )
-                        {
-                          Standard_Real pntDMin = 1.e+100;
-                          Standard_Integer VDMin = 0;
-                          Standard_Integer WLDMin = 0;
-                          gp_Pnt cPV = wline->Vertex(ciV).Value();
-                          Standard_Integer iL;
-                          for( iL = 1; iL <= slinlen; iL++)
-                          {
-                            const Handle(IntPatch_Line)& aSLine = SLin.Value(iL);
-                            IntPatch_IType aType = aSLine->ArcType();
-                            if( aType != IntPatch_Walking)
-                              continue;
-                            Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
-                            Standard_Integer tnbV = aWLine->NbVertex();
-                            Standard_Integer tiV;
-                            for( tiV = 1; tiV <= tnbV; tiV++ )
-                            {
-                              gp_Pnt tPV = aWLine->Vertex(tiV).Value();
-                              Standard_Real tDistance = cPV.Distance(tPV);
-                              Standard_Real uRs1 = Surf1->Surface().UResolution(tDistance);
-                              Standard_Real vRs1 = Surf1->Surface().VResolution(tDistance);
-                              Standard_Real uRs2 = Surf2->Surface().UResolution(tDistance);
-                              Standard_Real vRs2 = Surf2->Surface().VResolution(tDistance);
-                              Standard_Real RmaxS1 = Max(uRs1,vRs1);
-                              Standard_Real RmaxS2 = Max(uRs2,vRs2);
-                              if(RmaxS1 < 1.e-4 && RmaxS2 < 1.e-4)
-                              {
-                                if( pntDMin > tDistance && tDistance > 1.e-9)
-                                {
-                                  pntDMin = tDistance;
-                                  VDMin = tiV;
-                                  WLDMin = iL;
-                                }
-                              }
-                            }
-                          }
-
-                          if( VDMin != 0 )
-                          {
-                            const Handle(IntPatch_Line)& aSLine = SLin.Value(WLDMin);
-                            Handle(IntPatch_WLine) aWLine (Handle(IntPatch_WLine)::DownCast (aSLine));
-                            Standard_Integer tiVpar = (Standard_Integer)aWLine->Vertex(VDMin).ParameterOnLine();
-                            Standard_Integer ciVpar = (Standard_Integer)wline->Vertex(ciV).ParameterOnLine();
-                            Standard_Real u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
-                            Standard_Real u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
-                            wline->Point(ciVpar).Parameters(u11,v11,u12,v12);
-                            aWLine->Point(tiVpar).Parameters(u21,v21,u22,v22);
-
-                            Handle(IntSurf_LineOn2S) newL2s = new IntSurf_LineOn2S();
-                            IntSurf_PntOn2S replacePnt = aWLine->Point(tiVpar);
-                            Standard_Integer cNbP = wline->NbPnts();
-
-                            TColStd_SequenceOfInteger VPold;
-                            Standard_Integer iPo;
-                            for( iPo = 1; iPo <= cnbV; iPo++ )
-                            {
-                              Standard_Real Po = wline->Vertex(iPo).ParameterOnLine();
-                              Standard_Integer IPo = (Standard_Integer) Po;
-                              VPold.Append(IPo);
-                            }
-
-                            Standard_Boolean removeNext = Standard_False;
-                            Standard_Boolean removePrev = Standard_False;
-                            if( ciV == 1)
-                            {
-                              Standard_Integer dPar = Abs( VPold.Value(ciV) - VPold.Value(ciV+1));
-                              if(dPar > 10)
-                              {
-                                removeNext = Standard_True;
-                                for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
-                                  VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
-                              }
-                            }
-                            else if( ciV == cnbV)
-                            {
-                              Standard_Integer dPar = Abs( VPold.Value(ciV) - VPold.Value(ciV-1));
-                              if(dPar > 10)
-                              {
-                                removePrev = Standard_True;
-                                VPold.SetValue(ciV, VPold.Value(ciV) - 1 );
-                              }
-                            }
-                            else
-                            {
-                              Standard_Integer dParMi = Abs( VPold.Value(ciV) - VPold.Value(ciV-1));
-                              Standard_Integer dParMa = Abs( VPold.Value(ciV) - VPold.Value(ciV+1));
-                              if(dParMi > 10)
-                              {
-                                removePrev = Standard_True;
-                                VPold.SetValue(ciV, VPold.Value(ciV) - 1 );
-                              }
-
-                              if(dParMa > 10)
-                              {
-                                removeNext = Standard_True;
-                                for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
-                                {
-                                  if(dParMi > 10)
-                                    VPold.SetValue(iPo, VPold.Value(iPo) - 2 );
-                                  else
-                                    VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
-                                }
-                              }
-                              else
-                              {
-                                if(dParMi > 10)
-                                  for( iPo = (ciV+1); iPo <= cnbV; iPo++ )
-                                    VPold.SetValue(iPo, VPold.Value(iPo) - 1 );
-                              } 
-                            }
-
-                            Standard_Integer pI = ciVpar;
-
-                            Standard_Integer iP;
-                            for( iP = 1; iP <= cNbP; iP++)
-                            {
-                              if( pI == iP )
-                              {
-                                IntSurf_PntOn2S newPnt = MakeNewPoint(replacePnt, wline->Point(iP), Periods);
-                                newL2s->Add(newPnt);
-                              }
-                              else if(removeNext && iP == (pI + 1))
-                                continue;
-                              else if(removePrev && iP == (pI - 1))
-                                continue;
-                              else
-                                newL2s->Add(wline->Point(iP));
-                            }
-
-                            IntPatch_Point newVtx;
-                            gp_Pnt Pnt3dV = aWLine->Vertex(VDMin).Value();
-                            newVtx.SetValue(Pnt3dV,TolTang,Standard_False);
-                            newVtx.SetParameters(u21,v21,u22,v22);
-                            newVtx.SetParameter(VPold.Value(ciV));
-
-                            Handle(IntPatch_WLine) NWLine = new IntPatch_WLine(newL2s,Standard_False,trans1,trans2);
-
-                            Standard_Integer iV;
-                            for( iV = 1; iV <= cnbV; iV++ )
-                            {
-                              if( iV == ciV )
-                                NWLine->AddVertex(newVtx);
-                              else
-                              {
-                                IntPatch_Point theVtx = wline->Vertex(iV);
-                                theVtx.SetParameter(VPold.Value(iV));
-                                NWLine->AddVertex(theVtx);
-                              }
-                            }
-
-                            wline = NWLine;
-                          }//if( VDMin != 0 )
-                        }//for( ciV = 1; ciV <= cnbV; ciV++ )
-                      }// SLin.Length > 0
+                      SeveralWlinesProcessing(Surf1, Surf2, SLin, Periods, trans1, trans2, TolTang, wline);
 
                       AddWLine(SLin, wline, Deflection);
                       empt = Standard_False;
