@@ -1143,6 +1143,8 @@ void BRepFill_CompatibleWires::
 	  }
 	}
       } //end of for(; itW.More(); itW.Next())
+    if (Esol.IsNull())
+      Standard_ConstructionError::Raise("BRepFill :: profiles are inconsistent");
     MW.Add(Esol);
 
     TopTools_ListOfShape ConnectedEdges;

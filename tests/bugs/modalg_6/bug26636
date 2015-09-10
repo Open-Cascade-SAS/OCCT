@@ -1,0 +1,27 @@
+puts "=========="
+puts "OCC26636"
+puts "=========="
+puts ""
+############################################################
+# BRepOffsetAPI_ThruSections algorithm crashes on two inconsistent wires
+############################################################
+
+restore [locate_data_file bug26636_w1.brep] w1
+restore [locate_data_file bug26636_w2.brep] w2
+
+decho off
+dlog reset
+dlog on
+
+catch {thrusections result 0 1 w1 w2}
+
+set info [dlog get]
+dlog reset
+dlog off
+decho on
+
+if { [regexp "Standard_ConstructionError\\: BRepFill \\:\\: profiles are inconsistent" ${info}] == 1  } {
+   puts "OK : Exeption is correct"
+} else {
+   puts "Error : Exeption is not correct"
+}
