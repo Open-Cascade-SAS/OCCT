@@ -293,10 +293,7 @@ void OCC_3dBaseDoc::OnUpdateObjectColor(CCmdUI* pCmdUI)
 
 void OCC_3dBaseDoc::OnObjectErase() 
 {
-  for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
-  {
-    myAISContext->Erase (myAISContext->Current(), Standard_True);
-  }
+  myAISContext->EraseSelected();
   myAISContext->ClearCurrents();
 }
 void OCC_3dBaseDoc::OnUpdateObjectErase(CCmdUI* pCmdUI) 

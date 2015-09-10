@@ -642,10 +642,8 @@ public:
     {
       return;
     }
-    for(myAISContext()->InitCurrent(); myAISContext()->MoreCurrent(); myAISContext()->NextCurrent())
-    {
-      myAISContext()->Erase (myAISContext()->Current(), Standard_True);
-    }
+
+    myAISContext()->EraseSelected (Standard_True);
     myAISContext()->ClearCurrents();
   }
 
