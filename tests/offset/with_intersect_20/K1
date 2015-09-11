@@ -1,0 +1,4 @@
+restore [locate_data_file bug26663_test_offset_K1.brep] s
+OFFSETSHAPE ${off_param} {} ${calcul} ${type}
+checknbshapes result -ref [lrange [nbshapes s] 8 19]
+

@@ -96,6 +96,9 @@ if { [isdraw result] && $mist == 0} {
 		puts "The resulting shape contains $ll_w wires"
 	    }
 	}
+    } elseif {[info exists command] && [string compare $command "withintersect"] == 0} {
+	regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+  checkshape result
     } else {
 	regexp {Mass +: +([-0-9.+eE]+)} [vprops s] full sm
 	regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full m
@@ -123,14 +126,15 @@ if { [isdraw result] && $mist == 0} {
 		}
 	    }
 	}
-	
-	if { $volume > 0 } {
-	    puts "The expected volume is $volume"
-	}
-	#check of change of volume is < 1%
-	if { ($volume > 0 && [expr 1.*abs($volume - $m)/$volume] > 0.01) || ($volume == 0 && $m != 0 && $sm != $m) } {
-	    puts "Error : The volume of the resulting shape is $m"
-	}
+	if {[info exists volume]} {
+    if { $volume > 0 } {
+        puts "The expected volume is $volume"
+    }
+    #check of change of volume is < 1%
+    if { ($volume > 0 && [expr 1.*abs($volume - $m)/$volume] > 0.01) || ($volume == 0 && $m != 0 && $sm != $m) } {
+        puts "Error : The volume of the resulting shape is $m"
+    }
+  }
     }
     if { $m > 0 } {
 	clear
