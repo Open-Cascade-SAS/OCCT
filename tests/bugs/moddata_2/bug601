@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty OCC601: function BLEND works wrongly"
-
 puts "========================"
 puts " OCC601 "
 puts "SAM1542"
@@ -17,9 +15,9 @@ explode a e
 if [catch {blend result a 13 a_41 } res] {
     puts "Faulty OCC601: function BLEND works wrongly"
 } else {
-    puts "OCC601 OK: function BLEND works without exception"
+    puts "OCC601 OK: function BLEND works good"
     checkshape result
     
-    set square 10
+    set square 32486.0
     set 2dviewer 0
 }
