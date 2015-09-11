@@ -4,7 +4,7 @@ set filename Z1MDT6.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 29  ( 195 )  Summary  = 29  ( 195 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 372  ( 372 )   Summary  = 2869  ( 2869 )
 STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 384  ( 384 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1244  ( 1244 )
 TOLERANCE   : MaxTol   = 0.0007170960464  ( 0.0007171032164 )  AvgTol   =  1.914460687e-005  (  2.129229514e-005 )

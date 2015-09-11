@@ -6,7 +6,7 @@ set filename Z8INV5.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 114  ( 619 )  Summary  = 114  ( 619 )
-CHECKSHAPE  : Wires    = 17  ( 17 )  Faces    = 18  ( 19 )  Shells   = 1  ( 1 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 17  ( 17 )  Faces    = 18  ( 20 )  Shells   = 1  ( 1 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 22  ( 22 )  Shell    = 24  ( 24 )  Face     = 1520  ( 1520 )   Summary  = 11210  ( 11195 )
 STATSHAPE   : Solid    = 22  ( 22 )  Shell    = 24  ( 24 )  Face     = 1520  ( 1520 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 4784  ( 4774 )
 TOLERANCE   : MaxTol   =     7.33063502  (    7.159520237 )  AvgTol   =   0.03499829069  (   0.03222638333 )
