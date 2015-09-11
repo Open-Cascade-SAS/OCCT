@@ -1,7 +1,7 @@
 # OK: Exception appears and does not kill DRAWEXE (TEST COMPLETED)
-puts "TODO ?OCC670 ALL: An exception was caught"
-puts "TODO ?OCC670 ALL: \\*\\* Exception \\*\\*"
-puts "TODO ?OCC670 ALL: TEST INCOMPLETE"
+puts "TODO OCC670 ALL: An exception was caught"
+puts "TODO OCC670 ALL: \\*\\* Exception \\*\\*"
+puts "TODO OCC670 ALL: TEST INCOMPLETE"
 
 puts "========"
 puts "OCC670"
