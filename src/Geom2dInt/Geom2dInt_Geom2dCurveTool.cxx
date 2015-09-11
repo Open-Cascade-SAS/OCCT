@@ -40,7 +40,19 @@ Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& 
     nbs*= C.Degree();
     Standard_Real anb = t1/t * nbs;
     nbs = (Standard_Integer)anb;
-    if(nbs < 4.0) nbs=4;
+    if(nbs < 4) nbs=4;
+  }
+  else if (typC == GeomAbs_Circle)
+  {
+    //Try to reach deflection = eps*R, eps = 0.01
+    const Standard_Real minR = 1.; //eps = 0.01
+    Standard_Real R = C.Circle().Radius();
+    if(R > minR)
+    {
+      Standard_Real angl = 0.283079; //2.*ACos(1. - eps);
+      Standard_Integer n = RealToInt(Abs(U1 - U0) / angl);
+      nbs = Max(n, nbs);
+    }
   }
 
   if(nbs>300)
@@ -50,7 +62,22 @@ Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& 
 }
 //============================================================
 Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& C) { 
-    return C.NbSamples();
+  Standard_Integer nbs = C.NbSamples();
+  GeomAbs_CurveType typC = C.GetType();
+  if (typC == GeomAbs_Circle)
+  {
+    //Try to reach deflection = eps*R, eps = 0.01
+    const Standard_Real minR = 1.; //eps = 0.01
+    Standard_Real R = C.Circle().Radius();
+    if(R > minR)
+    {
+      Standard_Real angl = 0.283079; //2.*ACos(1. - eps);
+      Standard_Integer n = RealToInt((C.LastParameter()-C.FirstParameter()) / angl);
+      nbs = Max(n, nbs);
+    }
+  }
+
+  return nbs;
  }
 
 
