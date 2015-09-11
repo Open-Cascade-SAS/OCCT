@@ -1,0 +1,6 @@
+puts "TODO OCC26677 All:An exception was caught"
+puts "TODO OCC26677 All:\\*\\* Exception \\*\\*"
+puts "TODO OCC26677 All:TEST INCOMPLETE"
+restore [locate_data_file bug26606_002_extract_C301-full_014_offset.brep] plate
+restore [locate_data_file bug26606_002_extract_C301-full_014_marker_1.brep] marker
+set prlist [prj pr marker plate 0.008936 -0.001151 0.999959]

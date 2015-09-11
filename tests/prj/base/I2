@@ -1,0 +1,3 @@
+restore [locate_data_file bug26606_007_extract_2015-01-7108_010_offset.brep] plate
+restore [locate_data_file bug26606_007_extract_2015-01-7108_010_marker_1.brep] marker
+set prlist [prj pr marker plate -0.274540 -0.924457 0.264589]
