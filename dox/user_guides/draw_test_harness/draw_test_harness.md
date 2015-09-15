@@ -1282,7 +1282,11 @@ Syntax:
 ~~~~~
 vinit 
 ~~~~~
-Creates the 3D viewer window 
+Creates new View window with specified name view_name.
+By default the new view is created in the viewer and in graphic driver shared with active view.
+* *name* = {driverName/viewerName/viewName | viewerName/viewName | viewName}.
+If driverName isn't specified the driver will be shared with active view.
+If viewerName isn't specified the viewer will be shared with active view.
 
 @subsubsection occt_draw_4_2_2 vhelp
 
@@ -1299,7 +1303,7 @@ Syntax:
 vtop 
 ~~~~~
 
-Displays top view in the 3D viewer window. 
+Displays top view in the 3D viewer window. Orientation +X+Y.
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -1317,7 +1321,7 @@ Syntax:
 vaxo 
 ~~~~~
 
-Displays axonometric view in the 3D viewer window. 
+Displays axonometric view in the 3D viewer window. Orientation +X-Y+Z.
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -1357,7 +1361,7 @@ Syntax:
 ~~~~~
 vrepaint 
 ~~~~~
-Forcedly redisplays the shape in the 3D viewer window. 
+Forcebly redisplays the shape in the 3D viewer window. 
 
 @subsubsection occt_draw_4_2_8 vfit
 
@@ -1389,7 +1393,7 @@ Read pixel value for active view.
 
 Syntax:     
 ~~~~~
-vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [shift_selection = 0|1]
+vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [-allowoverlap 0|1] [shift_selection = 0|1]
 ~~~~~
 
 Emulates different types of selection:
@@ -1397,6 +1401,7 @@ Emulates different types of selection:
   * single mouse click selection
   * selection with a rectangle having the upper left and bottom right corners in <i>(x1,y1)</i> and <i>(x2,y2)</i> respectively
   * selection with a polygon having the corners in pixel positions <i>(x1,y1), (x2,y2),…, (xn,yn)</i>
+  * -allowoverlap manages overlap and inclusion detection in rectangular selection. If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined rectangle will be detected, otherwise algorithm will chose only fully included sensitives. Default behavior is to detect only full inclusion.
   * any of these selections if shift_selection is set to 1.
 
 @subsubsection occt_draw_4_2_12  vmoveto
@@ -1412,9 +1417,18 @@ Emulates cursor movement to pixel position (x,y).
 
 Syntax:     
 ~~~~~
-vviewparams [scale center_X center_Y proj_X proj_Y proj_Z up_X up_Y up_Z at_X at_Y at_Z]
+vviewparams [-scale [s]] [-eye [x y z]] [-at [x y z]] [-up [x y z]] [-proj [x y z]] [-center x y] [-size sx]
 ~~~~~
-Gets or sets the current view characteristics.
+Gets or sets current view parameters.
+* If called without arguments, all view parameters are printed.
+* The options are:
+*   -scale [s]    : prints or sets viewport relative scale.
+*   -eye [x y z]  : prints or sets eye location.
+*   -at [x y z]   : prints or sets center of look.
+*   -up [x y z]   : prints or sets direction of up vector.
+*   -proj [x y z] : prints or sets direction of look.
+*   -center x y   : sets location of center of the screen in pixels.
+*   -size [sx]    : prints viewport projection width and height sizes or changes the size of its maximum dimension.
 
 @subsubsection occt_draw_4_2_14  vchangeselected
 
@@ -1463,9 +1477,11 @@ Removes structures which do not belong to objects displayed in neutral point.
 
 Syntax:     
 ~~~~~
-vhlr is_enabled={on|off}
+vhlr is_enabled={on|off} [show_hidden={1|0}]
 ~~~~~
-Switches hidden line removal (computed) mode on/off.
+Hidden line removal algorithm:
+ * is_enabled: if is on HLR algorithm is applied.
+ * show_hidden: if equals to 1, hidden lines are drawn as dotted ones.
 
 @subsubsection occt_draw_4_2_20  vhlrtype
 
@@ -1485,10 +1501,30 @@ If no shape is specified through the command arguments, the given HLR algorithm_
 
 Syntax:
 ~~~~~
-vcamera
+vcamera [-ortho] [-projtype]
+        [-persp]
+        [-fovy   [Angle]] [-distance [Distance]]
+        [-stereo] [-leftEye] [-rightEye]
+        [-iod [Distance]] [-iodType    [absolute|relative]]
+        [-zfocus [Value]] [-zfocusType [absolute|relative]]
 ~~~~~
 
-Manages camera parameters.
+Manage camera parameters.
+Prints current value when option called without argument.
+Orthographic camera:
+ * -ortho activate orthographic projection
+Perspective camera:
+ * -persp activate perspective  projection (mono)
+ * -fovy  field of view in y axis, in degrees
+ * -distance distance of eye from camera center
+Stereoscopic camera:
+ * -stereo perspective  projection (stereo)
+ * -leftEye perspective  projection (left  eye)
+ * -rightEye perspective  projection (right eye)
+ * -iod intraocular distance value
+ * -iodType distance type, absolute or relative
+ * -zfocus stereographic focus value
+ * -zfocusType focus type, absolute or relative"
 
 **Example:**
 ~~~~~
@@ -1503,10 +1539,20 @@ vcamera -persp
 
 Syntax:
 ~~~~~
-vstereo [0:1]
+vstereo [0|1] [-mode Mode] [-reverse {0|1}] [-anaglyph Filter]
 ~~~~~
 
-Turns stereo usage On/Off.
+Control stereo output mode.
+Available modes for -mode:
+ * quadBuffer - OpenGL QuadBuffer stereo, requires driver support. Should be called BEFORE vinit!
+ * anaglyph         - Anaglyph glasses
+ * rowInterlaced    - row-interlaced display
+ * columnInterlaced - column-interlaced display
+ * chessBoard       - chess-board output
+ * sideBySide       - horizontal pair
+ * overUnder        - vertical pair
+Available Anaglyph filters for -anaglyph:
+ * redCyan, redCyanSimple, yellowBlue, yellowBlueSimple, greenMagentaSimple
 
 **Example:**
 ~~~~~
@@ -1536,11 +1582,33 @@ Enables/disables objects clipping.
 
 Syntax: 
 ~~~~~                 
-vdisplay [-noupdate|-update] [-local] [-mutable] name1 [name2] … [name n]
+vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]
+         [-trsfPers {pan|zoom|rotate|trihedron|full|none}=none] [-trsfPersPos X Y [Z]] [-3d|-2d|-2dTopDown]
+         [-dispMode mode] [-highMode mode]
+         [-layer index] [-top|-topmost|-overlay|-underlay]
+         [-redisplay]
+         name1 [name2] ... [name n]
 ~~~~~
 
-Displays named objects. Automatically redraws view by default.
-Redraw can be suppressed by -noupdate option.
+Displays named objects.
+Option -local enables displaying of objects in local selection context.
+Local selection context will be opened if there is not any.
+
+* *noupdate* suppresses viewer redraw call.
+* *mutable* enables optimizations for mutable objects.
+* *neutral* draws objects in main viewer.
+* *layer* sets z-layer for objects. It can use '-overlay|-underlay|-top|-topmost' instead of '-layer index' for the default z-layers.
+* *top* draws objects on top of main presentations but below topmost.
+* *topmost* draws in overlay for 3D presentations with independent Depth.
+* *overlay* draws objects in overlay for 2D presentations (On-Screen-Display).
+* *underlay* draws objects in underlay for 2D presentations (On-Screen-Display).
+* *selectable|-noselect* controls selection of objects.
+* *trsfPers* sets a transform persistence flags. Flag 'full' is pan, zoom and rotate.
+* *trsfPersPos* sets an anchor point for transform persistence.
+* *2d|-2dTopDown* displays object in screen coordinates.
+* *dispmode* sets display mode for objects.
+* *highmode* sets hilight mode for objects.
+* *redisplay* recomputes presentation of objects.
 
 **Example:** 
 ~~~~~ 
@@ -1555,7 +1623,7 @@ vfit
 
 Syntax:                  
 ~~~~~
-vdonly [name1] … [name n]
+vdonly [-noupdate|-update] [name1] ...  [name n]
 ~~~~~ 
 
 Displays only selected or named objects. If there are no selected or named objects, nothing is done. 
@@ -1573,10 +1641,11 @@ vfit
 
 Syntax:                  
 ~~~~~ 
-vdisplayall 
+vdisplayall [-local]
 ~~~~~ 
 
-Displays all created objects. 
+Displays all erased interactive objects (see vdir and vstate).
+Option -local enables displaying of the objects in local selection context.
 
 **Example:** 
 ~~~~~ 
@@ -1688,18 +1757,30 @@ Makes a list of known types and signatures in AIS.
 
 Syntax:
 ~~~~~
-vaspects [-noupdate|-update] [name1 [name2 [...]]]
-         [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]
-         [-setmaterial MatName] [-unsetmaterial]
-         [-settransparency Transp] [-unsettransparency]
-         [-setwidth LineWidth] [-unsetwidth]
+vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]
+         [-setVisibility 0|1]
+         [-setColor ColorName] [-setcolor R G B] [-unsetColor]
+         [-setMaterial MatName] [-unsetMaterial]
+         [-setTransparency Transp] [-unsetTransparency]
+         [-setWidth LineWidth] [-unsetWidth]
+         [-setLineType {solid|dash|dot|dotDash}] [-unsetLineType]
+         [-freeBoundary {off/on | 0/1}]
+         [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]
+         [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]
          [-subshapes subname1 [subname2 [...]]]
+         [-isoontriangulation 0|1]
+         [-setMaxParamValue {value}]
 
 ~~~~~
+
+Manage presentation properties of all, selected or named objects.
+When *-subshapes* is specified than following properties will be assigned to specified sub-shapes.
+When *-defaults* is specified than presentation properties will be assigned to all objects that have not their own specified properties and to all objects to be displayed in the future.
+If *-defaults* is used there should not be any objects' names and -subshapes specifier.
 
 Aliases:
 ~~~~~
-vsetcolor [shapename] colorname
+vsetcolor [-noupdate|-update] [name] ColorName
 
 ~~~~~
 
@@ -1778,7 +1859,7 @@ Syntax:
 vunsetshading [shapename]
 ~~~~~ 
 
-Sets default deflection coefficient (0.0008) that defines the quality of the shape’s representation in the shading mode. Default coefficient is 0.0008. 
+Sets default deflection coefficient (0.0008) that defines the quality of the shape’s representation in the shading mode.
 
 @subsubsection occt_draw_4_3_13 vsetam
 
@@ -1819,7 +1900,10 @@ Deactivates all selection modes for all shapes.
 
 Syntax:                  
 ~~~~~
-vdump <filename>.{png|bmp|jpg|gif}
+vdump <filename>.{png|bmp|jpg|gif} [-width Width -height Height]
+      [-buffer rgb|rgba|depth=rgb]
+      [-stereo mono|left|right|blend|sideBySide|overUnder=mono]
+
 ~~~~~ 
 
 Extracts the contents of the viewer window to a image file.
@@ -1852,24 +1936,6 @@ vfit
 vsetdispmode 1 
 vsub b 1
 ~~~~~ 
-
-@subsubsection occt_draw_4_3_18 vardis
-
-Syntax:                  
-~~~~~
-vardis
-~~~~~ 
-
-Displays active areas (for each activated sensitive entity, one or several 2D bounding boxes are displayed, depending on the implementation of a particular entity). 
-
-@subsubsection occt_draw_4_3_19 varera
-
-Syntax:                  
-~~~~~
-varera
-~~~~~ 
-
-Erases active areas. 
 
 @subsubsection occt_draw_4_3_20 vsensdis
 
@@ -1939,10 +2005,12 @@ vr myshape.brep
 
 Syntax:                  
 ~~~~~
-vstate [name1] … [name n]
+vstate [-entities] [-hasSelected] [name1] ... [nameN]
 ~~~~~ 
 
-Makes a list of the status (**Displayed** or **Not Displayed**) of some selected or named objects. 
+Reports show/hidden state for selected or named objects
+ * *entities* - print low-level information about detected entities
+ * *hasSelected* - prints 1 if context has selected shape and 0 otherwise
 
 @subsubsection occt_draw_4_3_25 vraytrace
 
@@ -1957,18 +2025,27 @@ Turns on/off ray tracing renderer.
 
 Syntax:
 ~~~~~
-vrenderparams
+vrenderparams [-rayTrace|-raster] [-rayDepth 0..10] [-shadows {on|off}]
+              [-reflections {on|off}] [-fsaa {on|off}] [-gleam {on|off}]
+              [-gi {on|off}] [-brng {on|off}] [-env {on|off}]
+              [-shadin {color|flat|gouraud|phong}]
 ~~~~~
 
 Manages rendering parameters:
-* rayTrace
-* raster
-* rayDepth
-* shadows
-* reflections
-* fsaa
-* gleam
-* shadingModel
+* rayTrace     - Enables  GPU ray-tracing
+* raster       - Disables GPU ray-tracing
+* rayDepth     - Defines maximum ray-tracing depth
+* shadows      - Enables/disables shadows rendering
+* reflections  - Enables/disables specular reflections
+* fsaa         - Enables/disables adaptive anti-aliasing
+* gleam        - Enables/disables transparency shadow effects
+* gi           - Enables/disables global illumination effects
+* brng         - Enables/disables blocked RNG (fast coherent PT)
+* env          - Enables/disables environment map background
+* shadingModel - Controls shading model from enumeration color, flat, gouraud, phong
+
+Unlike vcaps, these parameters dramatically change visual properties.
+Command is intended to control presentation quality depending on hardware capabilities and performance.
 
 **Example:**
 ~~~~~
@@ -1983,7 +2060,9 @@ vrenderparams -shadows 1 -reflections 1 -fsaa 1
 
 Syntax:
 ~~~~~
-vshaderprog [name] pathToVertexShader pathToFragmentShader
+   'vshaderprog [name] pathToVertexShader pathToFragmentShader'
+or 'vshaderprog [name] off'   to disable GLSL program
+or 'vshaderprog [name] phong' to enable per-pixel lighting calculations
 ~~~~~
 
 Enables rendering using a shader program.
@@ -2027,7 +2106,7 @@ Syntax:
 vplanetri name
 ~~~~~ 
 
-Creates a plane from a trihedron selection. 
+Create a plane from a trihedron selection. If no arguments are set, the default 
 
 
 @subsubsection occt_draw_4_4_3 vsize
@@ -2067,7 +2146,7 @@ vaxis axe1 0 0 0 1 0 0
 
 Syntax:                  
 ~~~~~
-vaxispara nom
+vaxispara name
 ~~~~~ 
 
 Creates an axis by interactive selection of an edge and a vertex. 
@@ -2106,7 +2185,10 @@ vplane name [PlaneName] [PointName]
 ~~~~~ 
 
 Creates a plane from named or interactively selected entities.
- 
+TypeOfSensitivity:
+ * 0 - Interior
+ * 1 - Boundary
+
 **Example:** 
 ~~~~~
 vinit 
@@ -2187,11 +2269,24 @@ Creates a plane with a 2D trihedron from an interactively selected face.
 
 Syntax:                  
 ~~~~~
-vselmode [object] mode On/Off
+vselmode [object] mode_number is_turned_on=(1|0)
 ~~~~~ 
 
 Sets the selection mode for an object. If the object value is not defined, the selection mode is set for all displayed objects. 
-Value *On* is defined as 1 and *Off* – as 0. 
+*Mode_number* is non-negative integer that has different meaning for different interactive object classes.
+For shapes the following *mode_number* values are allowed:
+ * 0 - shape
+ * 1 - vertex
+ * 2 - edge
+ * 3 - wire
+ * 4 - face
+ * 5 - shell
+ * 6 - solid
+ * 7 - compsolid
+ * 8 - compound
+*is_turned_on* is:
+ * 1 if mode is to be switched on
+ * 0 if mode is to be switched off
 
 **Example:** 
 ~~~~~
@@ -2202,16 +2297,14 @@ vpoint p3 25 40 0
 vtriangle triangle1 p1 p2 p3 
 ~~~~~
 
-@subsubsection occt_draw_4_4_15 vconnect, vconnectsh
+@subsubsection occt_draw_4_4_15 vconnect
 
 Syntax:                  
 ~~~~~
-vconnect name object Xo Yo Zo Xu Xv Xw Zu Zv Zw 
-vconnectsh name shape Xo Yo Zo Xu Xv Xw Zu Zv Zw
+vconnect vconnect name Xo Yo Zo object1 object2 ... [color=NAME]
 ~~~~~ 
 
-Creates and displays an object with input location connected to a named entity. 
-The difference between these two commands is that the object created by *vconnect* does not support the selection modes different from 0. 
+Creates and displays AIS_ConnectedInteractive object from input object and location
 
 **Example:** 
 ~~~~~
@@ -2221,7 +2314,7 @@ vpoint p2 50 0 0
 vsegment segment p1 p2 
 restore CrankArm.brep obj 
 vdisplay obj 
-vconnectsh new obj 100100100 1 0 0 0 0 1
+vconnect new obj 100100100 1 0 0 0 0 1
 ~~~~~ 
 
 @subsubsection occt_draw_4_4_16 vtriangle
@@ -2263,15 +2356,23 @@ vsegment segment p1 p2
 
 Syntax:
 ~~~~~
-vpointcloud name shape
+vpointcloud name shape [-randColor] [-normals] [-noNormals]
 ~~~~~
 
 Creates an interactive object for an arbitary set of points from the triangulated shape.
+Additional options:
+ * *randColor* - generate random color per point
+ * *normals*   - generate normal per point (default)
+ * *noNormals* - do not generate normal per point
 
 ~~~~~
-vpointcloud name x y z r npts {surface|volume}
+vpointcloud name x y z r npts {surface|volume} [-randColor] [-normals] [-noNormals]
 ~~~~~
 Creates an arbitrary set of points (npts) randomly distributed on a spheric surface or within a spheric volume (x y z r).
+Additional options:
+ * *randColor* - generate random color per point
+ * *normals*   - generate normal per point (default)
+ * *noNormals* - do not generate normal per point
 
 **Example:**
 ~~~~~

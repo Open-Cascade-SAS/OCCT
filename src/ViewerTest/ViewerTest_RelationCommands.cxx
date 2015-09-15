@@ -2862,8 +2862,10 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
 		  __FILE__,VSymmetricBuilder ,group);
 
   theCommands.Add("vmovedim",
-		  "vmovedim [name] [x y z]: moves picked or named (if name defined) "
-          "dimension to picked mouse position or input point.",
+      "vmovedim : vmovedim [name] [x y z]"
+      "\n\t\t: Moves picked or named (if name defined)"
+      "\n\t\t: dimension to picked mouse position or input point."
+      "\n\t\t: Text label of dimension 'name' is moved to position, another parts of dimensionare adjusted.",
 		  __FILE__,VMoveDim,group);
 
 }
