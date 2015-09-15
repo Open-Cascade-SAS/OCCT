@@ -595,7 +595,6 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorSurf) ) type = "Surface Color Link";
     else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorCurv) ) type = "Curve Color Link";
     else if ( att->ID() == XCAFDoc::DimTolRefGUID() ) type = "DGT Link";
-    else if ( att->ID() == XCAFDoc::GeomToleranceRefGUID() ) type = "GeomTolerance Link";
     else if ( att->ID() == XCAFDoc::DatumRefGUID() ) type = "Datum Link";
     else if ( att->ID() == XCAFDoc::MaterialRefGUID() ) type = "Material Link";
     Handle(TDataStd_TreeNode) TN = Handle(TDataStd_TreeNode)::DownCast(att);
@@ -763,8 +762,14 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     else if ( att->ID() == XCAFDoc::DatumTolRefGUID() ) {
       type = "DatumToler Link";
     }
-    else if ( att->ID() == XCAFDoc::DimensionRefGUID() ) {
-      type = "Dimension Link";
+    else if ( att->ID() == XCAFDoc::DimensionRefFirstGUID() ) {
+      type = "Dimension Link First";
+    }
+    else if ( att->ID() == XCAFDoc::DimensionRefSecondGUID() ) {
+      type = "Dimension Link Second";
+    }
+    else if ( att->ID() == XCAFDoc::GeomToleranceRefGUID() ){
+      type = "GeomTolerance Link";
     }
     else return 0;
 

@@ -12,6 +12,8 @@ STEPConstruct_DataMapOfAsciiStringTransient.hxx
 STEPConstruct_DataMapOfPointTransient.hxx
 STEPConstruct_ExternRefs.cxx
 STEPConstruct_ExternRefs.hxx
+STEPConstruct_GDTProperty.cxx
+STEPConstruct_GDTProperty.hxx
 STEPConstruct_Part.cxx
 STEPConstruct_Part.hxx
 STEPConstruct_PointHasher.cxx

@@ -15,6 +15,7 @@
 #include <Standard_Transient.hxx>
 #include <StepShape_PrecisionQualifier.hxx>
 #include <StepShape_TypeQualifier.hxx>
+#include <StepShape_ValueFormatTypeQualifier.hxx>
 #include <StepShape_ValueQualifier.hxx>
 
 StepShape_ValueQualifier::StepShape_ValueQualifier  ()    {  }
@@ -33,3 +34,6 @@ Handle(StepShape_PrecisionQualifier)  StepShape_ValueQualifier::PrecisionQualifi
 
 Handle(StepShape_TypeQualifier)  StepShape_ValueQualifier::TypeQualifier () const
 {  return Handle(StepShape_TypeQualifier)::DownCast(Value());  }
+
+Handle(StepShape_ValueFormatTypeQualifier)  StepShape_ValueQualifier::ValueFormatTypeQualifier () const
+{  return Handle(StepShape_ValueFormatTypeQualifier)::DownCast(Value());  }

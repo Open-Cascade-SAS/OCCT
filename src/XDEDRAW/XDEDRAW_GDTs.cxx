@@ -123,7 +123,7 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         {
           TCollection_AsciiString Entry;
           TDF_Tool::Entry(aLabels.Value(i), Entry);
-          di << "\n " << Entry;
+          di << "\n " << Entry << " Shape" << "."<< i;
           flag = Standard_False;
         }
         TCollection_AsciiString Entry;
@@ -131,7 +131,54 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         di << "\n \t " << Entry;
         flag = Standard_False;
 
-        di << " Dimension";
+        di << " Dimension" << "."<< i << "."<< j;
+        if (argc > 3)
+        {
+          di <<" (";
+          di << " T " << aDimTolObj->GetType();
+          if(aDimTolObj->IsDimWithRange())
+          {
+            di << ", LB " << aDimTolObj->GetLowerBound();
+            di << ", UB " << aDimTolObj->GetUpperBound();
+          }
+          else
+          {
+            di << ", V " << aDimTolObj->GetValue();
+            if (aDimTolObj->IsDimWithPlusMinusTolerance())
+            {
+              di << ", VL " << aDimTolObj->GetLowerTolValue();
+              di << ", VU " << aDimTolObj->GetUpperTolValue();
+            }
+            else if (aDimTolObj->IsDimWithClassOfTolerance())
+            {
+              Standard_Boolean isH;
+              XCAFDimTolObjects_DimensionFormVariance aFV;
+              XCAFDimTolObjects_DimensionGrade aG;
+              aDimTolObj->GetClassOfTolerance(isH, aFV, aG);
+              di << ", H " << (Standard_Integer)isH<< " F " << aFV << " G " << aG;
+            }
+          }
+          if (aDimTolObj->HasQualifier())
+            di << ", Q " << aDimTolObj->GetQualifier();
+          if (aDimTolObj->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented)
+          {
+            gp_Dir aD;
+            aDimTolObj->GetDirection(aD);
+            di << ", D (" << aD.X() << ", " << aD.Y() << ", " << aD.Z() << ")";
+          }
+          XCAFDimTolObjects_DimensionModifiersSequence aModif = 
+            aDimTolObj->GetModifiers();
+          if (!aModif.IsEmpty())
+          {
+            di << ",";
+            for (Standard_Integer k = aModif.Lower(); k <= aModif.Upper(); k++)
+            {
+              di << " M " << aModif.Value(k);
+            }
+          }
+          di << ", P " << (Standard_Integer)!aDimTolObj->GetPath().IsNull();
+          di << " )";
+        }
       }
     }
     aGDTs.Clear();
@@ -146,7 +193,7 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         {
           TCollection_AsciiString Entry;
           TDF_Tool::Entry(aLabels.Value(i), Entry);
-          di << "\n " << Entry;
+          di << "\n " << Entry << " Shape" << "."<< i;
           flag = Standard_False;
         }
         TCollection_AsciiString Entry;
@@ -154,7 +201,50 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
         di << "\n \t " << Entry;
         flag = Standard_False;
 
-        di << " GeomTolerance";
+        di << " GeomTolerance" << "."<< i << "."<< j;
+        if (argc > 3)
+        {
+          di <<" (";
+          di << " T " << aDimTolObj->GetType();
+          di << " TV " << aDimTolObj->GetTypeOfValue();
+          di << ", V " << aDimTolObj->GetValue();
+
+          if (aDimTolObj->HasAxis())
+          {
+            gp_Ax2 anAx = aDimTolObj->GetAxis();
+            di << ", A ( L (" << anAx.Location().X() << anAx.Location().Y() << anAx.Location().Z()
+              << "), XD (" << anAx.XDirection().X() << anAx.XDirection().Y() << anAx.XDirection().Z()
+              << "), RD (" << anAx.YDirection().X() << anAx.YDirection().Y() << anAx.YDirection().Z() << "))";
+          }
+          XCAFDimTolObjects_GeomToleranceModifiersSequence aModif = 
+            aDimTolObj->GetModifiers();
+          if (!aModif.IsEmpty())
+          {
+            di << ",";
+            for (Standard_Integer k = aModif.Lower(); k <= aModif.Upper(); k++)
+            {
+              di << " M " << aModif.Value(k);
+            }
+          }
+          if (aDimTolObj->GetMaterialRequirementModifier() != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
+          {
+            di << ", MR " << aDimTolObj->GetMaterialRequirementModifier();
+          }
+          if (aDimTolObj->GetMaxValueModifier() > 0)
+          {
+            di << "MaxV " << aDimTolObj->GetMaxValueModifier();
+          }
+          if ( aDimTolObj->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_None)
+          {
+            di << ", ZM " << aDimTolObj->GetZoneModifier();
+            if (aDimTolObj->GetValueOfZoneModifier() > 0)
+            {
+              di << " ZMV " <<aDimTolObj->GetValueOfZoneModifier();
+            }
+          }
+
+          di << " )";
+        }
         Handle(XCAFDoc_GraphNode) aNode;
         if(aGDTs.Value(j).FindAttribute(XCAFDoc::DatumTolRefGUID(), aNode) && aNode->NbChildren() > 0)
         {
@@ -163,37 +253,150 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
             Handle(XCAFDoc_Datum) aDatum;
             if(aNode->GetChild(k)->Label().FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
             {
+              Handle(XCAFDimTolObjects_DatumObject) aDatumObj = aDatum->GetObject();
               TCollection_AsciiString anEntry;
               TDF_Tool::Entry(aNode->GetChild(k)->Label(), anEntry);
               di << "\n \t \t " << anEntry;
-              di << " Datum";
+              di << " Datum" << "."<< i << "."<< j << "."<< k;
+              if (argc > 3)
+              {
+                di <<" (";
+                XCAFDimTolObjects_DatumModifiersSequence aModif = 
+                  aDatumObj->GetModifiers();
+                if (!aModif.IsEmpty())
+                {
+                  di << ",";
+                  for (Standard_Integer k = aModif.Lower(); k <= aModif.Upper(); k++)
+                  {
+                    di << " M " << aModif.Value(k);
+                  }
+                }
+                XCAFDimTolObjects_DatumModifWithValue aM;
+                Standard_Real aV;
+                aDatumObj->GetModifierWithValue(aM, aV);
+                if (aM != XCAFDimTolObjects_DatumModifWithValue_None)
+                {
+                  di << ", MV" << aM << " " << aV; 
+                }
+                di << " )";
+              }
             }
           }
         }
       }
     }
-    TDF_Label aDatumL;
+    TDF_LabelSequence aDatumL;
     if (aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatumL))
     {
-      Handle(XCAFDoc_Datum) aDatum;
-      if(aDatumL.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
+      for(Standard_Integer j = aDatumL.Lower(); j <= aDatumL.Upper(); j++)
       {
-        if(flag)
+        Handle(XCAFDoc_Datum) aDatum;
+        if(aDatumL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDatum) && 
+           aDatum->GetObject()->IsDatumTarget())
         {
+          Handle(XCAFDimTolObjects_DatumObject) aDatumObj = aDatum->GetObject();
+          if(flag)
+          {
+            TCollection_AsciiString Entry;
+            TDF_Tool::Entry(aLabels.Value(i), Entry);
+            di << "\n " << Entry << " Shape" << "."<< i;
+            flag = Standard_False;
+          }
           TCollection_AsciiString Entry;
-          TDF_Tool::Entry(aLabels.Value(i), Entry);
-          di << "\n " << Entry;
+          TDF_Tool::Entry(aDatumL.First(), Entry);
+          di << "\n \t " << Entry;
           flag = Standard_False;
-        }
-        TCollection_AsciiString Entry;
-        TDF_Tool::Entry(aDatumL, Entry);
-        di << "\n \t " << Entry;
-        flag = Standard_False;
 
-        di << " Datum";
+          di << " Datum target" << "."<< i << "."<< j;
+          if (argc > 3)
+          {
+            di <<" (";
+            di << " T " << aDatumObj->GetDatumTargetType();
+            if (aDatumObj->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Area)
+            {
+              gp_Ax2 anAx = aDatumObj->GetDatumTargetAxis();
+               di << ", A ( L (" << anAx.Location().X() << anAx.Location().Y() << anAx.Location().Z()
+                << "), XD (" << anAx.XDirection().X() << anAx.XDirection().Y() << anAx.XDirection().Z()
+                << "), RD (" << anAx.YDirection().X() << anAx.YDirection().Y() << anAx.YDirection().Z() << "))";
+              if (aDatumObj->GetDatumTargetType() != XCAFDimTolObjects_DatumTargetType_Point)
+              {
+                di << ", L " << aDatumObj->GetDatumTargetLength() ;
+                if (aDatumObj->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Rectangle)
+                {
+                  di << ", W " << aDatumObj->GetDatumTargetWidth() ;
+                }
+              }
+            }
+            di << " )";
+          }
+        }
       }
     }
   }
+  return 0;
+}
+
+static Standard_Integer DumpNbDGTs (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 2) {
+    di<<"Use: "<<"XDumpNbDGTs Doc";
+    return 1;
+  }
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  Handle(XCAFDoc_DimTolTool) aDimTolTool= XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
+  Handle(XCAFDoc_ShapeTool) aShapeTool= XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+
+  TDF_LabelSequence aLabels;
+  aShapeTool->GetShapes(aLabels);
+  for ( Standard_Integer i=1; i <= aLabels.Length(); i++ )
+  {
+    aShapeTool->GetSubShapes(aLabels.Value(i), aLabels);
+  }
+
+  TDF_LabelSequence aGDTs;
+  aDimTolTool->GetDimensionLabels(aGDTs);
+  di << "\n NbOfDimensions          : " << aGDTs.Length();
+
+  aGDTs.Clear();
+  aDimTolTool->GetGeomToleranceLabels(aGDTs);
+  di << "\n NbOfTolerances          : " << aGDTs.Length();
+
+  Standard_Integer aCounter = 0;
+  Standard_Integer aCounter1 = 0;
+   Standard_Integer aCounter2 = 0;
+
+  for ( Standard_Integer i=1; i <= aLabels.Length(); i++ )
+  {
+    Standard_Boolean isDatum = Standard_False;
+    TDF_LabelSequence aDatL;
+    if(aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatL))
+    {
+      for(Standard_Integer j = aDatL.Lower(); j <= aDatL.Upper(); j++)
+      {
+        Handle(XCAFDoc_Datum) aDat;
+        if(aDatL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDat))
+        {
+          if(aDat->GetObject()->IsDatumTarget())
+          {
+            aCounter1++;
+          }
+          else
+          {
+            aCounter2++;
+            isDatum = Standard_True;
+          }
+        }
+      }
+      if(isDatum)
+        aCounter++;
+    }
+  }
+  di << "\n NbOfDatumFeature        : " << aCounter;
+  di << "\n NbOfAttachedDatum       : " << aCounter2;
+  di << "\n NbOfDatumTarget         : " << aCounter1;
+
   return 0;
 }
 
@@ -378,25 +581,16 @@ static Standard_Integer getDatum (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  TDF_Label aD;
+  TDF_LabelSequence aD;
   if(!aDimTolTool->GetRefDatumLabel(aLabel, aD))
   {
-    TDF_LabelSequence aDS;
-    if(aDimTolTool->GetDatumOfTolerLabels(aLabel, aDS))
-    {
-      for(Standard_Integer i = 1; i<=aDS.Length();i++)
-      {
-        if(i>1) di<<", ";
-        TCollection_AsciiString Entry;
-        TDF_Tool::Entry(aDS.Value(i), Entry);
-        di<<Entry;
-      }
-    }
+    aDimTolTool->GetDatumOfTolerLabels(aLabel, aD);
   }
-  else
+  for(Standard_Integer i = aD.Lower(); i <= aD.Upper(); i++)
   {
+    if(i>1) di<<", ";
     TCollection_AsciiString Entry;
-    TDF_Tool::Entry(aD, Entry);
+    TDF_Tool::Entry(aD.Value(i), Entry);
     di<<Entry;
   }
   return 0;
@@ -1889,6 +2083,9 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
 
   di.Add ("XDumpDGTs","XDumpDGTs Doc shape/label/all ",
     __FILE__, DumpDGTs, g);
+
+  di.Add ("XDumpNbDGTs","XDumpDGTs Doc",
+    __FILE__, DumpNbDGTs, g);
 
   di.Add ("XAddDimension","XAddDimension Doc shape/label [shape/label]",
     __FILE__, addDim, g);

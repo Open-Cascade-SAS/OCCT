@@ -313,10 +313,10 @@ Standard_Boolean XCAFDimTolObjects_DimensionObject::GetClassOfTolerance (Standar
   XCAFDimTolObjects_DimensionFormVariance& theFormVariance,
   XCAFDimTolObjects_DimensionGrade& theGrade)  const
 {
+  theFormVariance = myFormVariance;
   if(myFormVariance != XCAFDimTolObjects_DimensionFormVariance_None)
   {
     theHole = myIsHole;
-    theFormVariance = myFormVariance;
     theGrade = myGrade;
     return Standard_True;
   }

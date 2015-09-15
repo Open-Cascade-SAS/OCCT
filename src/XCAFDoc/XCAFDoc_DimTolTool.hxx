@@ -69,6 +69,9 @@ public:
   Standard_EXPORT void GetDimensionLabels (TDF_LabelSequence& theLabels) const;
   
   //! Sets a link with GUID
+  Standard_EXPORT void SetDimension (const TDF_LabelSequence& theFirstLS, const TDF_LabelSequence& theSecondLS, const TDF_Label& theDimTolL) const;
+
+  //! Sets a link with GUID
   Standard_EXPORT void SetDimension (const TDF_Label& theFirstL, const TDF_Label& theSecondL, const TDF_Label& theDimTolL) const;
   
   //! Sets a link with GUID
@@ -90,6 +93,9 @@ public:
   
   //! Sets a link with GUID
   Standard_EXPORT void SetGeomTolerance (const TDF_Label& theL, const TDF_Label& theDimTolL) const;
+
+  //! Sets a link with GUID
+  Standard_EXPORT void SetGeomTolerance (const TDF_LabelSequence& theL, const TDF_Label& theDimTolL) const;
   
   //! Returns all GeomTolerance labels defined for label ShapeL
   Standard_EXPORT Standard_Boolean GetRefGeomToleranceLabels (const TDF_Label& theShapeL, TDF_LabelSequence& theDimTols) const;
@@ -126,7 +132,7 @@ public:
   
   //! Returns ShapeL defined for label DimTolL
   //! Returns False if the DimTolL is not in DGTtable
-  Standard_EXPORT Standard_Boolean GetRefShapeLabel (const TDF_Label& DimTolL, TDF_LabelSequence& ShapeL) const;
+  Standard_EXPORT Standard_Boolean GetRefShapeLabel (const TDF_Label& DimTolL, TDF_LabelSequence& ShapeLFirst, TDF_LabelSequence& ShapeLSecond) const;
   
   //! Returns all DimTol labels defined for label ShapeL
   Standard_EXPORT Standard_Boolean GetRefDGTLabels (const TDF_Label& ShapeL, TDF_LabelSequence& DimTols) const;
@@ -175,7 +181,7 @@ public:
   Standard_EXPORT   Standard_Boolean GetTolerOfDatumLabels (const TDF_Label& theDatumL, TDF_LabelSequence& theTols)  const;
 
   //! Returns Datum label defined for label ShapeL
-  Standard_EXPORT   Standard_Boolean GetRefDatumLabel (const TDF_Label& theShapeL, TDF_Label& theDatum)  const;
+  Standard_EXPORT   Standard_Boolean GetRefDatumLabel (const TDF_Label& theShapeL, TDF_LabelSequence& theDatum)  const;
   
   Standard_EXPORT const Standard_GUID& ID() const;
   

@@ -9,6 +9,7 @@ XCAFDimTolObjects_Tool.cxx
 XCAFDimTolObjects_Tool.hxx
 XCAFDimTolObjects_DatumModifWithValue.hxx
 XCAFDimTolObjects_DatumSingleModif.hxx
+XCAFDimTolObjects_DatumTargetType.hxx
 XCAFDimTolObjects_DimensionModif.hxx
 XCAFDimTolObjects_DimensionFormVariance.hxx
 XCAFDimTolObjects_DimensionGrade.hxx

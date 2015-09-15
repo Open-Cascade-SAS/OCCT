@@ -288,6 +288,7 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 #include <StepBasic_SecurityClassificationLevel.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
+#include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 #include <StepRepr_ShapeAspectTransition.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
@@ -1411,6 +1412,7 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp), 699);
   types.Bind (STANDARD_TYPE(StepRepr_IntegerRepresentationItem), 700);
   types.Bind (STANDARD_TYPE(StepRepr_ValueRepresentationItem), 701);
+  types.Bind (STANDARD_TYPE(StepRepr_FeatureForDatumTargetRelationship), 702);
 }
 
 //=======================================================================

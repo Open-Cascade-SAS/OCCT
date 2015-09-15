@@ -1,0 +1,124 @@
+# Set flag dump_file to 1 in order to regenerate script files with actual data
+# used as reference. In this mode all tests intentionaly report failure. 
+set dump_file 0
+########################################################################
+set mist 0;
+set nbTol 0;
+set nbDim 0;
+set nbDat 0;
+set nbDatT 0;
+set nbAttDat 0;
+###################################################################
+set ref_Compare 0
+set todo_msg ""
+set todo_mask "puts \"TODO CR23096 ALL: "
+set Mandriva_todo_mask "puts \"TODO CR23096 ALL:"
+set end_line "\" \n"
+##################################################################
+
+# Read original file
+if { [string length $filename] > 1} {
+    set path_file [locate_data_file $filename]
+    if { [catch { ReadStep D_First $path_file } catch_result] } {
+        set err_msg "Error: First - file was not read - exception "
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+        set mist 1
+    }
+
+} else {
+  set mist 1
+}
+
+# Get information about translation
+if { $mist < 1} {           
+    puts ""
+   
+    set xst [ XDumpNbDGTs D_First ] 
+
+    if { [llength $xst] > 0 } {
+	regexp {NbOfDimensions +: +([-0-9.+eE]+)} $xst full nbDim
+	regexp {NbOfTolerances +: +([-0-9.+eE]+)} $xst full nbTol
+	regexp {NbOfDatumFeature +: +([-0-9.+eE]+)} $xst full nbDat
+	regexp {NbOfAttachedDatum +: +([-0-9.+eE]+)} $xst full nbAttDat
+	regexp {NbOfDatumTarget +: +([-0-9.+eE]+)} $xst full nbDatT
+    } else {
+	puts " GDT information was NOT provided"
+    }
+    set xstruct [ XDumpDGTs D_First all 1] 
+}
+
+if { $mist != 1 } {  
+  puts "" 
+  set result ""
+  append result [format $xst]
+  append result [format "\n"]
+  append result [format $xstruct]
+}
+
+set err_compare_ref ""
+
+if { [catch { Close D_First } catch_result] } {
+    set err_msg "Error : cannot close a document D_First - exception"  
+    puts $err_msg
+}
+
+
+# Put reference data to the test script file if option "dump" is set
+if { $dump_file == 1 } { 
+    set fd_stream  [open $dirname/$groupname/$gridname/$casename w] 
+    puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
+    puts $fd_stream "set filename $filename"
+    if { $mist != 1 } {
+        puts $fd_stream "" 
+        puts $fd_stream "set ref_data \{"
+        puts $fd_stream $result
+        puts $fd_stream "\}"
+    }
+    close $fd_stream 
+} elseif { $mist != 1 } {
+    puts "========================== Comparision with reference data ========"
+    puts ""
+    # Comparision of reference data with obtained result
+    set ref_list [split $ref_data \n]
+    set cur_list [split $result \n]
+    set nb_ref [llength $ref_list]
+    set nb_cur [llength $cur_list]
+    for { set i 0 } { $i < $nb_cur } { incr i } {
+        set j [expr $i +1]
+	set refstr [lindex $ref_list $j]
+	set curstr [lindex $cur_list $i]
+        set isOK 1; 
+
+        if {[string equal $refstr $curstr] == 0} {
+            set isOK 0 
+        }
+
+	if { $isOK == 0}  {
+	    incr ref_Compare
+	    append err_compare_ref " Reference data - $refstr\n"
+	    append err_compare_ref " Current data   - $curstr\n"
+	    append err_compare_ref "--------------------------------------------------------------------\n"
+	}
+    }
+}
+ 
+if { $dump_file != 0 } {
+    puts "Error : Running in regeneration mode, comparision was not performed!"
+    if { $mist != 1 } {
+      	 puts "Generation of test file $groupname/$gridname/$casename successful"
+    } else {
+      	 puts "Generation of reference data failed"
+    }
+} else {
+    if { $ref_Compare > 0} {
+        puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
+    } else {
+        puts "Comparision of current result with reference data - OK\n"
+    }    
+}
+
+puts "--------------------------------------------------------------------"
+puts ""
+
+puts "TEST COMPLETED"

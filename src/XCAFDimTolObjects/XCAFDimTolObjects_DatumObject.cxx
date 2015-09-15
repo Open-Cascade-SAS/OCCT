@@ -21,6 +21,7 @@
 
 XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject()
 {
+  myIsDTarget = Standard_False;
 }
 
 //=======================================================================
@@ -35,6 +36,9 @@ XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject(const Handle(XCAFDi
   myModifierWithValue = theObj->myModifierWithValue;
   myValueOfModifier = theObj->myValueOfModifier;
   myDatumTarget = theObj->myDatumTarget;
+  myIsDTarget = theObj->myIsDTarget;
+  myAxis = theObj->myAxis;
+  myDTargetType = theObj->myDTargetType;
 }
 
 //=======================================================================
@@ -132,11 +136,122 @@ void XCAFDimTolObjects_DatumObject::SetDatumTarget (const TopoDS_Shape& theShape
 }
   
 //=======================================================================
+//function : GetPosition
+//purpose  : 
+//=======================================================================
+
+Standard_Integer XCAFDimTolObjects_DatumObject::GetPosition() const
+{
+  return myPosition;
+}
+
+//=======================================================================
+//function : SetName
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetPosition(const Standard_Integer thePosition)
+{
+  myPosition = thePosition;
+}
+
+//=======================================================================
 //function : IsDatumTarget
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean XCAFDimTolObjects_DatumObject::IsDatumTarget()  const
+Standard_Boolean XCAFDimTolObjects_DatumObject::IsDatumTarget() const
 {
-  return !myDatumTarget.IsNull();
+  return myIsDTarget;
+}
+
+//=======================================================================
+//function : IsDatumTarget
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::IsDatumTarget(const Standard_Boolean theIsDT)
+{
+  myIsDTarget = theIsDT;
+}
+
+//=======================================================================
+//function : GetDatumTargetType
+//purpose  : 
+//=======================================================================
+
+XCAFDimTolObjects_DatumTargetType XCAFDimTolObjects_DatumObject::GetDatumTargetType() const
+{
+  return myDTargetType;
+}
+
+//=======================================================================
+//function : SetDatumTargetType
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetDatumTargetType(const XCAFDimTolObjects_DatumTargetType theType)
+{
+  myDTargetType = theType;
+}
+
+//=======================================================================
+//function : GetDatumTargetAxis
+//purpose  : 
+//=======================================================================
+
+gp_Ax2 XCAFDimTolObjects_DatumObject::GetDatumTargetAxis() const
+{
+  return myAxis;
+}
+
+//=======================================================================
+//function : SetDatumTargetAxis
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetDatumTargetAxis(const gp_Ax2& theAxis)
+{
+  myAxis = theAxis;
+}
+
+//=======================================================================
+//function : GetDatumTargetLength
+//purpose  : 
+//=======================================================================
+
+Standard_Real XCAFDimTolObjects_DatumObject::GetDatumTargetLength() const
+{
+  return myLength;
+}
+
+//=======================================================================
+//function : SetDatumTargetLength
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetDatumTargetLength(const Standard_Real theLength)
+{
+  myLength = theLength;
+}
+
+
+//=======================================================================
+//function : GetDatumTargetWidth
+//purpose  : 
+//=======================================================================
+
+Standard_Real XCAFDimTolObjects_DatumObject::GetDatumTargetWidth() const
+{
+  return myWidth;
+}
+
+//=======================================================================
+//function : SetDatumTargetWidth
+//purpose  : 
+//=======================================================================
+
+void XCAFDimTolObjects_DatumObject::SetDatumTargetWidth(const Standard_Real theWidth)
+{
+  myWidth = theWidth;
 }

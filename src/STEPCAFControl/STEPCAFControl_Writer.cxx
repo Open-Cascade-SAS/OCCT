@@ -2079,7 +2079,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   for(i=1; i<=DGTLabels.Length(); i++) {
     TDF_Label DatumL = DGTLabels.Value(i);
     TDF_LabelSequence ShapeL;
-    if(!DGTTool->GetRefShapeLabel(DatumL,ShapeL)) continue;
+    TDF_LabelSequence aNullSeq;
+    if(!DGTTool->GetRefShapeLabel(DatumL,ShapeL,aNullSeq)) continue;
     // find target shape
     TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(ShapeL.Value(1));
     TopLoc_Location Loc;
@@ -2160,7 +2161,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   for(i=1; i<=DGTLabels.Length(); i++) {
     TDF_Label DimTolL = DGTLabels.Value(i);
     TDF_LabelSequence ShapeL;
-    if(!DGTTool->GetRefShapeLabel(DimTolL,ShapeL)) continue;
+    TDF_LabelSequence aNullSeq;
+    if(!DGTTool->GetRefShapeLabel(DimTolL,ShapeL,aNullSeq)) continue;
     // find target shape
     TopoDS_Shape aShape = XCAFDoc_ShapeTool::GetShape(ShapeL.Value(1));
     TopLoc_Location Loc;

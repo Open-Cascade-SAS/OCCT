@@ -17,12 +17,15 @@
 #include <BRep_Builder.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
+#include <StepData_StepModel.hxx>
+#include <HeaderSection_FileSchema.hxx>
 #include <Interface_Static.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_Path.hxx>
 #include <Quantity_Color.hxx>
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
@@ -51,6 +54,9 @@
 #include <STEPConstruct_UnitContext.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
 #include <STEPControl_Reader.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
+#include <StepGeom_Axis2Placement3d.hxx>
+#include <StepGeom_Direction.hxx>
 #include <StepDimTol_AngularityTolerance.hxx>
 #include <StepDimTol_CircularRunoutTolerance.hxx>
 #include <StepDimTol_CoaxialityTolerance.hxx>
@@ -59,23 +65,38 @@
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_DatumFeature.hxx>
 #include <StepDimTol_DatumReference.hxx>
+#include <StepDimTol_DatumReferenceElement.hxx>
+#include <StepDimTol_DatumReferenceCompartment.hxx>
+#include <StepDimTol_DatumSystem.hxx>
 #include <StepDimTol_FlatnessTolerance.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
 #include <StepDimTol_HArray1OfDatumReference.hxx>
 #include <StepDimTol_LineProfileTolerance.hxx>
 #include <StepDimTol_ModifiedGeometricTolerance.hxx>
 #include <StepDimTol_ParallelismTolerance.hxx>
 #include <StepDimTol_PerpendicularityTolerance.hxx>
 #include <StepDimTol_PositionTolerance.hxx>
+#include <StepDimTol_ProjectedZoneDefinition.hxx>
 #include <StepDimTol_RoundnessTolerance.hxx>
+#include <StepDimTol_RunoutZoneDefinition.hxx>
 #include <StepDimTol_StraightnessTolerance.hxx>
 #include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepDimTol_SymmetryTolerance.hxx>
+#include <StepDimTol_ToleranceZone.hxx>
+#include <StepDimTol_ToleranceZoneForm.hxx>
 #include <StepDimTol_TotalRunoutTolerance.hxx>
+#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
+#include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
+#include <StepDimTol_PlacedDatumTargetFeature.hxx>
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <StepRepr_CharacterizedDefinition.hxx>
+#include <StepRepr_CompoundRepresentationItem.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
@@ -85,21 +106,39 @@
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
+#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationRelationship.hxx>
 #include <StepRepr_RepresentedDefinition.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>
 #include <StepRepr_SequenceOfRepresentationItem.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+#include <StepRepr_CompositeShapeAspect.hxx>
+#include <StepRepr_AllAroundShapeAspect.hxx>
+#include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 #include <StepRepr_SpecifiedHigherUsageOccurrence.hxx>
 #include <StepRepr_ValueRange.hxx>
+#include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 #include <StepShape_AdvancedFace.hxx>
+#include <StepShape_AdvancedBrepShapeRepresentation.hxx>
+#include <StepShape_AngleRelator.hxx>
+#include <StepShape_AngularSize.hxx>
+#include <StepShape_AngularLocation.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
+#include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepShape_DimensionalCharacteristicRepresentation.hxx>
+#include <StepShape_DimensionalSizeWithPath.hxx>
+#include <StepShape_DimensionalLocationWithPath.hxx>
+#include <StepShape_ShapeDimensionRepresentationItem.hxx>
+#include <StepShape_ShapeRepresentationWithParameters.hxx>
+#include <StepShape_HArray1OfShapeDimensionRepresentationItem.hxx>
 #include <StepShape_DimensionalSize.hxx>
+#include <StepShape_DimensionalLocation.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_GeometricSet.hxx>
@@ -107,14 +146,20 @@
 #include <StepShape_HArray1OfFaceBound.hxx>
 #include <StepShape_HArray1OfOrientedEdge.hxx>
 #include <StepShape_HArray1OfShell.hxx>
+#include <StepShape_LimitsAndFits.hxx>
 #include <StepShape_Loop.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
+#include <StepShape_PlusMinusTolerance.hxx>
+#include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeDimensionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepShape_SolidModel.hxx>
+#include <StepShape_ToleranceMethodDefinition.hxx>
+#include <StepShape_ToleranceValue.hxx>
+#include <StepShape_ValueFormatTypeQualifier.hxx>
 #include <StepShape_Vertex.hxx>
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_LayeredItem.hxx>
@@ -122,6 +167,7 @@
 #include <StepVisual_PresentationStyleByContext.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
 #include <StepVisual_StyledItem.hxx>
+#include <StepShape_TypeQualifier.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -138,6 +184,7 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
@@ -153,15 +200,25 @@
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DataMapOfShapeLabel.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
+#include <XCAFDoc_Dimension.hxx>
+#include <XCAFDoc_Datum.hxx>
+#include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_MaterialTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Volume.hxx>
+#include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>
+#include <XCAFDimTolObjects_GeomToleranceType.hxx>
+#include <XCAFDimTolObjects_DimensionObject.hxx>
+#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
+#include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
-
+#include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <STEPConstruct_GDTProperty.hxx>
 // skl 21.08.2003 for reading G&DT
 //#include <StepRepr_CompoundItemDefinition.hxx>
 //#include <StepRepr_CompoundItemDefinitionMember.hxx>
@@ -1567,15 +1624,44 @@ static Standard_Boolean GetLengthConversionFactor(Handle(StepBasic_NamedUnit)& N
       Handle(StepBasic_SiUnit) SU = Handle(StepBasic_SiUnit)::DownCast(NU2);
       if(SU->Name()==StepBasic_sunMetre) {
         if(SU->HasPrefix()) 
-	  afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
-	// convert m to mm
-	afact *= 1000.;
+          afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
+        // convert m to mm
+        afact *= 1000.;
       }
     }
   }
   return Standard_True;
 }
 
+
+//=======================================================================
+//function : GetAngleConversionFactor
+//purpose  : 
+//=======================================================================
+static Standard_Boolean GetAngleConversionFactor(Handle(StepBasic_NamedUnit)& NU,
+                                                  Standard_Real& afact)
+{
+  afact=1.;
+  if( !NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)) ) return Standard_False;
+  Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit) CBULU =
+    Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)::DownCast(NU);
+  Handle(StepBasic_MeasureWithUnit) MWUCBU = CBULU->ConversionFactor();
+  afact = MWUCBU->ValueComponent();
+  StepBasic_Unit anUnit2 = MWUCBU->UnitComponent();
+  if(anUnit2.CaseNum(anUnit2.Value())==1) {
+    Handle(StepBasic_NamedUnit) NU2 = anUnit2.NamedUnit();
+    if(NU2->IsKind(STANDARD_TYPE(StepBasic_SiUnit))) {
+      Handle(StepBasic_SiUnit) SU = Handle(StepBasic_SiUnit)::DownCast(NU2);
+      if(SU->Name()==StepBasic_sunRadian) {
+        if(SU->HasPrefix()) 
+          afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
+        // convert radian to deg
+        afact *= 180/M_PI;
+      }
+    }
+  }
+  return Standard_True;
+}
 
 //=======================================================================
 //function : GetMassConversionFactor
@@ -1597,7 +1683,7 @@ static Standard_Boolean GetMassConversionFactor(Handle(StepBasic_NamedUnit)& NU,
       Handle(StepBasic_SiUnit) SU = Handle(StepBasic_SiUnit)::DownCast(NU2);
       if(SU->Name()==StepBasic_sunGram) {
         if(SU->HasPrefix())
-	  afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
+          afact *= STEPConstruct_UnitContext::ConvertSiPrefix (SU->Prefix());
       }
     }
   }
@@ -1668,234 +1754,1439 @@ static Standard_Boolean ReadDatums(const Handle(XCAFDoc_ShapeTool) &STool,
 
 
 //=======================================================================
-//function : ReadGDTs
+//function : setDatumToXCAF
 //purpose  : 
 //=======================================================================
-
-Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSession) &WS,
-                                                 Handle(TDocStd_Document)& Doc) const
+static Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
+                                        const TDF_Label theGDTL,
+                                        const Standard_Integer thePositionCounter,
+                                        const XCAFDimTolObjects_DatumModifiersSequence& aXCAFModifiers,
+                                        const XCAFDimTolObjects_DatumModifWithValue aXCAFModifWithVal,
+                                        const Standard_Real aModifValue,
+                                        const Handle(TDocStd_Document)& theDoc,
+                                        const Handle(XSControl_WorkSession)& theWS)
 {
-  Handle(Interface_InterfaceModel) Model = WS->Model();
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( Doc->Main() );
-  Handle(XSControl_TransferReader) TR = WS->TransferReader();
-  Handle(Transfer_TransientProcess) TP = TR->TransientProcess();
-  Handle(XCAFDoc_DimTolTool) DGTTool = XCAFDoc_DocumentTool::DimTolTool( Doc->Main() );
-  if ( DGTTool.IsNull() ) return Standard_False;
-  
-  Standard_Integer nb = Model->NbEntities();
-  const Interface_Graph& graph = TP->Graph();
-  for(Standard_Integer i=1; i<=nb; i++) {
-    Handle(Standard_Transient) ent = Model->Value(i);
-    if(ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))) {
-      Handle(StepRepr_ShapeAspect) SA = Handle(StepRepr_ShapeAspect)::DownCast(ent);
-      // find RepresentationItem for current ShapeAspect
-      Handle(StepRepr_RepresentationItem) RI;
-      Handle(StepRepr_PropertyDefinition) PropD;
-      Interface_EntityIterator subs3 = graph.Sharings(SA);
-      for(subs3.Start(); subs3.More() && PropD.IsNull(); subs3.Next()) {
-        PropD = Handle(StepRepr_PropertyDefinition)::DownCast(subs3.Value());
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  Handle(XCAFDoc_Datum) aDat;
+  TDF_Label aShL;
+  Standard_Boolean aRefShapeIsFound = Standard_False;
+  Standard_Boolean aFirstStep = Standard_True;
+  Interface_EntityIterator anIterD = aGraph.Sharings(theDat);
+  for(anIterD.Start(); anIterD.More(); anIterD.Next()) {
+    Handle(StepRepr_ShapeAspectRelationship) aSAR = 
+      Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIterD.Value());
+    if(aSAR.IsNull()) continue;
+
+    Handle(StepRepr_ShapeAspect) aSA = aSAR->RelatingShapeAspect();
+    if (aSA.IsNull()) continue;
+    Handle(StepAP242_GeometricItemSpecificUsage) aPGISU;
+    if(aSA->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
+    {
+      //processing for complex entity
+      Interface_EntityIterator anIterC = aGraph.Sharings(aSA);
+      for(anIterC.Start(); anIterC.More(); anIterC.Next()) {
+        Handle(StepRepr_ShapeAspectRelationship) SAR = 
+          Handle(StepRepr_ShapeAspectRelationship)::DownCast(anIterC.Value());
+        if(SAR.IsNull()) continue;
+        Handle(StepRepr_ShapeAspect) aS = 
+          Handle(StepRepr_ShapeAspect)::DownCast(SAR->RelatedShapeAspect());
+        if(aS.IsNull()) continue;
+        Interface_EntityIterator anIterSA = aGraph.Sharings(aS);
+        for(anIterSA.Start(); anIterSA.More() && aPGISU.IsNull(); anIterSA.Next()) {
+          aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterSA.Value());
+        }
+        if(!aPGISU.IsNull()){
+          aSA = aS;
+          break;
+        }
       }
-      if(PropD.IsNull()) continue;
-      Interface_EntityIterator subs4 = graph.Sharings(PropD);
-      for(subs4.Start(); subs4.More(); subs4.Next()) {
-        Handle(StepShape_ShapeDefinitionRepresentation) SDR = 
-          Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs4.Value());
-        if(!SDR.IsNull()) {
-          Handle(StepRepr_Representation) Repr = SDR->UsedRepresentation();
-          if( !Repr.IsNull() && Repr->NbItems()>0 ) {
-            RI = Repr->ItemsValue(1);
+    }
+    else if(aSA->IsKind(STANDARD_TYPE(StepDimTol_PlacedDatumTargetFeature)))
+    {
+      //processing for datum target
+      Interface_EntityIterator anIterDTF = aGraph.Shareds(aSA);
+      for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
+        if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepRepr_FeatureForDatumTargetRelationship)))
+        {
+          Interface_EntityIterator anIterFFD = aGraph.Shareds(anIterDTF.Value());
+          for(anIterFFD.Start(); anIterFFD.More(); anIterFFD.Next()) {
+            if(anIterFFD.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+            {
+              aSA = Handle(StepRepr_ShapeAspect)::DownCast(anIterFFD.Value());
+            }
           }
         }
       }
-      if(RI.IsNull()) continue;
-      // read DGT entities:
-      subs3 = graph.Sharings(SA);
-      for(subs3.Start(); subs3.More(); subs3.Next()) {
-        if(subs3.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
-          // read dimensions
-          Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(RI);
-          if(EC.IsNull()) continue;
-          Handle(TCollection_HAsciiString) aName;
-          Handle(StepShape_DimensionalSize) DimSize = 
-            Handle(StepShape_DimensionalSize)::DownCast(subs3.Value());
-          Standard_Real dim1=-1.,dim2=-1.;
-          subs4 = graph.Sharings(DimSize);
-          for(subs4.Start(); subs4.More(); subs4.Next()) {
-            Handle(StepShape_DimensionalCharacteristicRepresentation) DimCharR = 
-              Handle(StepShape_DimensionalCharacteristicRepresentation)::DownCast(subs4.Value());
-            if(!DimCharR.IsNull()) {
-              Handle(StepShape_ShapeDimensionRepresentation) SDimR = DimCharR->Representation();
-              if(!SDimR.IsNull() && SDimR->NbItems()>0) {
-                Handle(StepRepr_RepresentationItem) aRI = SDimR->ItemsValue(1);
-                Handle(StepRepr_ValueRange) VR = Handle(StepRepr_ValueRange)::DownCast(aRI);
-                if(!VR.IsNull()) {
-                  aName = VR->Name();
-                  //StepRepr_CompoundItemDefinition CID = VR->ItemElement();
-                  //if(CID.IsNull()) continue;
-                  //Handle(StepRepr_CompoundItemDefinitionMember) CIDM = 
-                  //  Handle(StepRepr_CompoundItemDefinitionMember)::DownCast(CID.Value());
-                  //if(CIDM.IsNull()) continue;
-                  //if(CIDM->ArrTransient().IsNull()) continue;
-                  //Handle(StepRepr_HArray1OfRepresentationItem) HARI;
-                  //if(CID.CaseMem(CIDM)==1)
-                  //  HARI = CID.ListRepresentationItem();
-                  //if(CID.CaseMem(CIDM)==2)
-                  //  HARI = CID.SetRepresentationItem();
-                  Handle(StepRepr_HArray1OfRepresentationItem) HARI = VR->ItemElement();
-                  if(HARI.IsNull()) continue;
-                  if(HARI->Length()>0) {
-                    Handle(StepRepr_RepresentationItem) RI1 =
-                      Handle(StepRepr_RepresentationItem)::DownCast(HARI->Value(1));
-                    if(RI1.IsNull()) continue;
-                    if(RI1->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
-                      Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) RILMWU =
-                        Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(RI1);
-                      dim1 = RILMWU->GetMeasureWithUnit()->ValueComponent();
-                      StepBasic_Unit anUnit = RILMWU->GetMeasureWithUnit()->UnitComponent();
-                      Standard_Real afact=1.;
-                      if(anUnit.IsNull()) continue;
-                      if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
-                      Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                      if(GetLengthConversionFactor(NU,afact)) dim1=dim1*afact;
-                    }
-                  }
-                  if(HARI->Length()>1) {
-                    Handle(StepRepr_RepresentationItem) RI2 =
-                      Handle(StepRepr_RepresentationItem)::DownCast(HARI->Value(2));
-                    if(RI2.IsNull()) continue;
-                    if(RI2->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
-                      Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) RILMWU =
-                        Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(RI2);
-                      dim2 = RILMWU->GetMeasureWithUnit()->ValueComponent();
-                      StepBasic_Unit anUnit = RILMWU->GetMeasureWithUnit()->UnitComponent();
-                      Standard_Real afact=1.;
-                      if(anUnit.IsNull()) continue;
-                      if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
-                      Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-                      if(GetLengthConversionFactor(NU,afact)) dim2 = dim2*afact;
+    }
+    if (aSA.IsNull()) continue;
+    Interface_EntityIterator anIterDSWP = aGraph.Sharings(aSA);
+    for(anIterDSWP.Start(); anIterDSWP.More() && aPGISU.IsNull(); anIterDSWP.Next()) {
+      aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
+    }
+    if(aPGISU.IsNull()) continue;
+    // get representation item
+    Handle(StepRepr_RepresentationItem) aRI;
+    for(Standard_Integer i = 1 ; i <= aPGISU->NbIdentifiedItem() && aRI.IsNull(); i++)
+    {
+      aRI = Handle(StepRepr_RepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(i));
+    }
+    if(aRI.IsNull()) continue;
+    Standard_Integer index = aTP->MapIndex(aRI);
+    TopoDS_Shape aSh;
+    if(index >0) {
+      Handle(Transfer_Binder) binder = aTP->MapItem(index);
+      aSh = TransferBRep::ShapeResult(binder);
+    }
+    if(aSh.IsNull()) continue; 
+    if( !aSTool->Search(aSh, aShL, Standard_True, Standard_True, Standard_True) ) continue;
+    Handle(TDataStd_TreeNode) aNode;
+    if(aFirstStep && aShL.FindAttribute(XCAFDoc::DatumRefGUID(),aNode) && aNode->HasFirst() &&
+       aNode->First()->Label().FindAttribute(XCAFDoc_Datum::GetID(),aDat))
+    {
+      //if datums already attached, not need add datum target
+      aRefShapeIsFound = Standard_True;
+    }
+    aFirstStep = Standard_False;
+    Handle(XCAFDimTolObjects_DatumObject) aDatObj;
+    if(aSA->IsKind(STANDARD_TYPE(StepDimTol_PlacedDatumTargetFeature)))
+    {
+      if(!aRefShapeIsFound)
+      {
+        //if datum targers not yet added
+        TDF_Label aDatL = aDGTTool->AddDatum();
+        aDat = XCAFDoc_Datum::Set(aDatL);
+        aDGTTool->SetDatum(aShL, aDatL);
+        aDatObj = aDat->GetObject();
+        aDatObj->SetName(theDat->Identification());
+        aDatObj->IsDatumTarget(Standard_True);
+        XCAFDimTolObjects_DatumTargetType aType;
+        if(STEPConstruct_GDTProperty::GetDatumTargetType(aSA->Description(),aType))
+        {
+          aDatObj->SetDatumTargetType(aType);
+          if(aType == XCAFDimTolObjects_DatumTargetType_Area)
+          {
+            Interface_EntityIterator anIterDTF = aGraph.Shareds(aSA);
+            for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
+              if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepAP242_GeometricItemSpecificUsage)))
+              {
+                Handle(StepAP242_GeometricItemSpecificUsage) aGISU
+                  = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
+                Handle(StepRepr_RepresentationItem) aRI;
+                if(aPGISU->NbIdentifiedItem() > 0) {
+                  aRI = Handle(StepRepr_RepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(1));
+                }
+                if(aRI.IsNull()) continue;
+                Standard_Integer index = aTP->MapIndex(aRI);
+                TopoDS_Shape aSh;
+                if(index >0) {
+                  Handle(Transfer_Binder) binder = aTP->MapItem(index);
+                  aSh = TransferBRep::ShapeResult(binder);
+                  aDatObj->SetDatumTarget(aSh);
+                }
+              }
+            }
+          }
+          else
+          {
+            Interface_EntityIterator anIterDTF = aGraph.Shareds(aSA);
+            for(anIterDTF.Start(); anIterDTF.More(); anIterDTF.Next()) {
+              if(anIterDTF.Value()->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition)))
+              {
+                Interface_EntityIterator anIterPD = aGraph.Shareds(anIterDTF.Value());
+                for(anIterPD.Start(); anIterPD.More(); anIterPD.Next()) {
+                  if(anIterPD.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+                  {
+                    Interface_EntityIterator anIterSDR = aGraph.Sharings(anIterPD.Value());
+                    for(anIterSDR.Start(); anIterSDR.More(); anIterSDR.Next()) {
+                      if(anIterSDR.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentationWithParameters)))
+                      {
+                        Handle(StepShape_ShapeRepresentationWithParameters) aSRWP
+                          = Handle(StepShape_ShapeRepresentationWithParameters)::DownCast(anIterSDR.Value());
+                        for(Standard_Integer r = aSRWP->Items()->Lower(); r <= aSRWP->Items()->Upper(); r++)
+                        {
+                          if(aSRWP->ItemsValue(r)->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+                          {
+                            Handle(StepGeom_Axis2Placement3d) anAx
+                              = Handle(StepGeom_Axis2Placement3d)::DownCast(aSRWP->ItemsValue(r));
+                            Handle(TColStd_HArray1OfReal) aDirArr = anAx->Axis()->DirectionRatios();
+                            Handle(TColStd_HArray1OfReal) aDirRArr = anAx->RefDirection()->DirectionRatios();
+                            Handle(TColStd_HArray1OfReal) aLocArr = anAx->Location()->Coordinates();
+                            gp_Dir aDir;
+                            gp_Dir aDirR;
+                            gp_Pnt aPnt;
+                            if(!aDirArr.IsNull() && aDirArr->Length() > 2 &&
+                              !aDirRArr.IsNull() && aDirRArr->Length() > 2 && 
+                              !aLocArr.IsNull() && aLocArr->Length() > 2)
+                            {
+                              aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower()+1, aDirArr->Lower()+2);
+                              aDirR.SetCoord(aDirRArr->Lower(), aDirRArr->Lower()+1, aDirRArr->Lower()+2);
+                              aPnt.SetCoord(aLocArr->Lower(), aLocArr->Lower()+1, aLocArr->Lower()+2);
+                              gp_Ax2 anA(aPnt, aDir, aDirR);
+                              aDatObj->SetDatumTargetAxis(anA);
+                            }
+                          }
+                          else if(aSRWP->ItemsValue(r)->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit)))
+                          {
+                            Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) aM =
+                              Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(aSRWP->ItemsValue(r)); 
+                            Standard_Real aVal = aM->GetMeasureWithUnit()->ValueComponent();
+                            StepBasic_Unit anUnit = aM->GetMeasureWithUnit()->UnitComponent();
+                            Standard_Real aFact=1.;
+                            if(anUnit.IsNull()) continue;
+                            if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+                            Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+                            if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+                            if(aM->Name()->String().IsEqual("target length") ||
+                              aM->Name()->String().IsEqual("target diameter"))
+                              aDatObj->SetDatumTargetLength(aVal);
+                            else
+                              aDatObj->SetDatumTargetWidth(aVal);
+                          }
+                        }
+                      }
                     }
                   }
                 }
               }
             }
           }
-          if(dim1<0) continue;
-          if(dim2<0) dim2=dim1;
-          //cout<<"DimensionalSize: dim1="<<dim1<<"  dim2="<<dim2<<endl;
-          // now we know edge_curve and value range therefore
-          // we can create corresponding D&GT labels
-          Standard_Integer index = TP->MapIndex(EC);
-          TopoDS_Shape aSh;
-          if(index >0) {
-            Handle(Transfer_Binder) binder = TP->MapItem(index);
-            aSh = TransferBRep::ShapeResult(binder);
-          }
-          if(aSh.IsNull()) continue; 
-          TDF_Label shL;
-          if( !STool->Search(aSh, shL, Standard_True, Standard_True, Standard_True) ) continue;
-          Handle(TColStd_HArray1OfReal) arr = new TColStd_HArray1OfReal(1,2);
-          arr->SetValue(1,dim1);
-          arr->SetValue(2,dim2);
-          DGTTool->SetDimTol(shL,1,arr,aName,DimSize->Name());
         }
-        // read tolerances and datums
-        else if(subs3.Value()->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) {
-          Handle(StepDimTol_GeometricTolerance) GT =
-            Handle(StepDimTol_GeometricTolerance)::DownCast(subs3.Value());
-          // read common data for tolerance
-          //Standard_Real dim = GT->Magnitude()->ValueComponent();
-          Handle (StepBasic_MeasureWithUnit) dim3 = GT->Magnitude();
-          if(dim3.IsNull()) continue;
-          Standard_Real dim = dim3->ValueComponent();
-          StepBasic_Unit anUnit = GT->Magnitude()->UnitComponent();
-          Standard_Real afact=1.;
-          if(anUnit.IsNull()) continue;
-          if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
-          Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-          if(GetLengthConversionFactor(NU,afact)) dim = dim*afact;
-          //cout<<"GeometricTolerance: Magnitude = "<<dim<<endl;
-          Handle(TColStd_HArray1OfReal) arr = new TColStd_HArray1OfReal(1,1);
-          arr->SetValue(1,dim);
-          Handle(TCollection_HAsciiString) aName = GT->Name();
-          Handle(TCollection_HAsciiString) aDescription = GT->Description();
-          Handle(StepShape_AdvancedFace) AF = Handle(StepShape_AdvancedFace)::DownCast(RI);
-          if(AF.IsNull()) continue;
-          Standard_Integer index = TP->MapIndex(AF);
-          TopoDS_Shape aSh;
-          if(index >0) {
-            Handle(Transfer_Binder) binder = TP->MapItem(index);
-            aSh = TransferBRep::ShapeResult(binder);
-          }
-          if(aSh.IsNull()) continue; 
-          TDF_Label shL;
-          if( !STool->Search(aSh, shL, Standard_True, Standard_True, Standard_True) ) continue;
-          // read specific data for tolerance
-          if(GT->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol))) {
-            Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol) GTComplex =
-              Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)::DownCast(subs3.Value());
-            Standard_Integer kind=20;
-            Handle(StepDimTol_ModifiedGeometricTolerance) MGT = 
-              GTComplex->GetModifiedGeometricTolerance();
-            if(!MGT.IsNull()) {
-              kind = kind + MGT->Modifier()+1;
+      }
+    }
+    else
+    {
+      //processing for darum feature
+      TDF_Label aDatL = aDGTTool->AddDatum();
+      aDat = XCAFDoc_Datum::Set(aDatL);
+      aDGTTool->SetDatum(aShL, aDatL);
+      aDatObj = aDat->GetObject();
+      aDatObj->SetName(theDat->Identification());
+      aDatObj->SetPosition (thePositionCounter);
+      if(!aXCAFModifiers.IsEmpty())
+        aDatObj->SetModifiers(aXCAFModifiers);
+      if (aXCAFModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None) 
+        aDatObj->SetModifierWithValue(aXCAFModifWithVal, aModifValue);
+      aDGTTool->SetDatumToGeomTol(aDatL, theGDTL);
+    }
+    if(!aDatObj.IsNull())
+      aDat->SetObject(aDatObj);
+  }
+  return !aDat.IsNull();
+}
+
+
+//=======================================================================
+//function : ReadDatums
+//purpose  : auxilary
+//=======================================================================
+static Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt,
+                                        const TDF_Label theGDTL,
+                                        const Handle(TDocStd_Document)& theDoc,
+                                        const Handle(XSControl_WorkSession)& theWS)
+{
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+
+  Interface_EntityIterator anIter = aGraph.Shareds(theEnt);
+  for(anIter.Start(); anIter.More(); anIter.Next()) {
+    Handle(Standard_Transient) anAtr = anIter.Value();
+    if(anAtr->IsKind(STANDARD_TYPE(StepDimTol_DatumSystem)))
+    {
+      Standard_Integer aPositionCounter = 0;//position on frame 
+      Handle(StepDimTol_DatumSystem) aDS = Handle(StepDimTol_DatumSystem)::DownCast(anAtr);
+      Interface_EntityIterator anIterDS = aGraph.Sharings(aDS);
+      for(anIterDS.Start(); anIterDS.More(); anIterDS.Next()) {
+        Handle(Standard_Transient) anAtrDS = anIterDS.Value();
+        if(anAtrDS->IsKind(STANDARD_TYPE(StepAP242_GeometricItemSpecificUsage)))
+        {
+          //get axis
+          Handle(StepAP242_GeometricItemSpecificUsage)aAxGISUI
+            = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anAtrDS);
+          if (aAxGISUI->IdentifiedItemValue(1)->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+          {
+            Handle(StepGeom_Axis2Placement3d) anAx
+              = Handle(StepGeom_Axis2Placement3d)::DownCast(aAxGISUI->IdentifiedItemValue(1));
+            Handle(XCAFDoc_GeomTolerance) aTol;
+            if(theGDTL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aTol))
+            {
+              Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aTol->GetObject();
+              Handle(TColStd_HArray1OfReal) aDirArr = anAx->Axis()->DirectionRatios();
+              Handle(TColStd_HArray1OfReal) aDirRArr = anAx->RefDirection()->DirectionRatios();
+              Handle(TColStd_HArray1OfReal) aLocArr = anAx->Location()->Coordinates();
+              gp_Dir aDir;
+              gp_Dir aDirR;
+              gp_Pnt aPnt;
+              if(!aDirArr.IsNull() && aDirArr->Length() > 2 &&
+                !aDirRArr.IsNull() && aDirRArr->Length() > 2 && 
+                !aLocArr.IsNull() && aLocArr->Length() > 2)
+              {
+                aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower()+1, aDirArr->Lower()+2);
+                aDirR.SetCoord(aDirRArr->Lower(), aDirRArr->Lower()+1, aDirRArr->Lower()+2);
+                aPnt.SetCoord(aLocArr->Lower(), aLocArr->Lower()+1, aLocArr->Lower()+2);
+                gp_Ax2 anA(aPnt, aDir, aDirR);
+                anObj->SetAxis(anA);
+                aTol->SetObject(anObj);
+              }
             }
-            TDF_Label TolerL = DGTTool->SetDimTol(shL,kind,arr,aName,aDescription);
-            // translate datums connected with this tolerance
-            Handle(StepDimTol_GeometricToleranceWithDatumReference) GTWDR =
-              GTComplex->GetGeometricToleranceWithDatumReference();
-            if(!GTWDR.IsNull()) {
-              ReadDatums(STool,DGTTool,graph,TP,TolerL,GTWDR);
+          }
+        }
+      }
+      if (aDS->NbConstituents() > 0)
+      {
+        //get datum feature and datum target from datum system
+        Handle(StepDimTol_HArray1OfDatumReferenceCompartment) aDRCA = aDS->Constituents();
+        if(!aDRCA.IsNull())
+        {
+          for(Standard_Integer i = aDRCA->Lower(); i <= aDRCA->Upper(); i++)
+          {
+            Handle(StepDimTol_DatumReferenceCompartment) aDRC
+              = Handle(StepDimTol_DatumReferenceCompartment)::DownCast(aDRCA->Value(i));
+            //gete modifiers
+            Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModif = aDRC->Modifiers();
+            XCAFDimTolObjects_DatumModifiersSequence aXCAFModifiers;
+            XCAFDimTolObjects_DatumModifWithValue aXCAFModifWithVal = XCAFDimTolObjects_DatumModifWithValue_None;
+            Standard_Real aModifValue = 0;
+            if(!aModif.IsNull())
+            {
+              for(Standard_Integer m = aModif->Lower(); m <= aModif->Upper(); m++)
+              {
+                if(aModif->Value(m).CaseNumber() == 2)
+                  aXCAFModifiers.Append(
+                  (XCAFDimTolObjects_DatumSingleModif)aModif->Value(m).
+                  SimpleDatumReferenceModifierMember()->Value());
+                else if (aModif->Value(m).CaseNumber() == 1)
+                {
+                  aXCAFModifWithVal = (XCAFDimTolObjects_DatumModifWithValue)(aModif->Value(m).DatumReferenceModifierWithValue()->ModifierType() + 1);
+                  Standard_Real aVal = aModif->Value(m).DatumReferenceModifierWithValue()->ModifierValue()->ValueComponent();
+                  StepBasic_Unit anUnit = aModif->Value(m).DatumReferenceModifierWithValue()->ModifierValue()->UnitComponent();
+                  Standard_Real aFact=1.;
+                  if(anUnit.IsNull()) continue;
+                  if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+                  Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+                  if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+                  aModifValue = aVal;
+                }
+              }
             }
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithDatumReference))) {
-            Handle(StepDimTol_GeometricToleranceWithDatumReference) GTWDR =
-              Handle(StepDimTol_GeometricToleranceWithDatumReference)::DownCast(subs3.Value());
-            if(GTWDR.IsNull()) continue;
-            Standard_Integer kind = 0;
-            if     (GTWDR->IsKind(STANDARD_TYPE(StepDimTol_AngularityTolerance)))       kind = 24;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_CircularRunoutTolerance)))   kind = 25;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_CoaxialityTolerance)))       kind = 26;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_ConcentricityTolerance)))    kind = 27;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_ParallelismTolerance)))      kind = 28;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_PerpendicularityTolerance))) kind = 29;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_SymmetryTolerance)))         kind = 30;
-            else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_TotalRunoutTolerance)))      kind = 31;
-            //cout<<"GTWDR: kind="<<kind<<endl;
-            TDF_Label TolerL = DGTTool->SetDimTol(shL,kind,arr,aName,aDescription);
-            ReadDatums(STool,DGTTool,graph,TP,TolerL,GTWDR);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_ModifiedGeometricTolerance))) {
-            Handle(StepDimTol_ModifiedGeometricTolerance) MGT =
-              Handle(StepDimTol_ModifiedGeometricTolerance)::DownCast(subs3.Value());
-            Standard_Integer kind = 35 + MGT->Modifier();
-            DGTTool->SetDimTol(shL,kind,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_CylindricityTolerance))) {
-            DGTTool->SetDimTol(shL,38,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_FlatnessTolerance))) {
-            DGTTool->SetDimTol(shL,39,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_LineProfileTolerance))) {
-            DGTTool->SetDimTol(shL,40,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_PositionTolerance))) {
-            DGTTool->SetDimTol(shL,41,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_RoundnessTolerance))) {
-            DGTTool->SetDimTol(shL,42,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_StraightnessTolerance))) {
-            DGTTool->SetDimTol(shL,43,arr,aName,aDescription);
-          }
-          else if(GT->IsKind(STANDARD_TYPE(StepDimTol_SurfaceProfileTolerance))) {
-            DGTTool->SetDimTol(shL,44,arr,aName,aDescription);
+            aPositionCounter++;
+            Interface_EntityIterator anIterDRC = aGraph.Shareds(aDRC);
+            for(anIterDRC.Start(); anIterDRC.More(); anIterDRC.Next()) {
+              
+              if(anIterDRC.Value()->IsKind(STANDARD_TYPE(StepDimTol_Datum)))
+              {
+                Handle(StepDimTol_Datum) aD = Handle(StepDimTol_Datum)::DownCast(anIterDRC.Value());
+                setDatumToXCAF(aD, theGDTL, aPositionCounter, aXCAFModifiers, aXCAFModifWithVal, aModifValue,theDoc, theWS);
+              }
+              else if(anIterDRC.Value()->IsKind(STANDARD_TYPE(StepDimTol_DatumReferenceElement)))
+              {
+                Handle(StepDimTol_DatumReferenceElement) aDRE 
+                  = Handle(StepDimTol_DatumReferenceElement)::DownCast(anIterDRC.Value());
+                //get modifiers from group of datums
+                Handle(StepDimTol_HArray1OfDatumReferenceModifier) aModifE = aDRE->Modifiers();
+                if(!aModifE.IsNull())
+                {
+                  for(Standard_Integer k = aModifE->Lower(); k <= aModifE->Upper(); k++)
+                  {
+                    if(aModifE->Value(k).CaseNumber() == 1)
+                      aXCAFModifiers.Append(
+                      (XCAFDimTolObjects_DatumSingleModif)aModifE->Value(k).
+                      SimpleDatumReferenceModifierMember()->Value());
+                    else if (aModifE->Value(k).CaseNumber() == 2)
+                    {
+                      aXCAFModifWithVal = (XCAFDimTolObjects_DatumModifWithValue)(aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierType() + 1);
+                      Standard_Real aVal = aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierValue()->ValueComponent();
+                      StepBasic_Unit anUnit = aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierValue()->UnitComponent();
+                      Standard_Real aFact=1.;
+                      if(anUnit.IsNull()) continue;
+                      if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+                      Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+                      if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+                      aModifValue = aVal;
+                    }
+                  }
+                }
+                Interface_EntityIterator anIterDRE = aGraph.Shareds(aDRE);
+                for(anIterDRE.Start(); anIterDRE.More(); anIterDRE.Next()) {
+                  if(anIterDRE.Value()->IsKind(STANDARD_TYPE(StepDimTol_Datum)))
+                  {
+                    Handle(StepDimTol_Datum) aD = Handle(StepDimTol_Datum)::DownCast(anIterDRE.Value());
+                    setDatumToXCAF(aD, theGDTL, aPositionCounter, aXCAFModifiers, aXCAFModifWithVal, aModifValue,theDoc, theWS);
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
   }
+  return Standard_True;
+}
 
+//=======================================================================
+//function : craeteGeomTolObjectInXCAF
+//purpose  : 
+//=======================================================================
+static TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
+                                               const Handle(TDocStd_Document)& theDoc,
+                                               const Handle(XSControl_WorkSession)& theWS)
+{
+  TDF_Label aGDTL;
+  if(!theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)) &&
+     !theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)) && 
+     !theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+  {
+    return aGDTL;
+  }
+
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  Standard_Boolean isAllAround = Standard_False;
+  Standard_Boolean isAllOver = Standard_False;
+  
+  // find RepresentationItem for current Ent
+  NCollection_Sequence<Handle(Standard_Transient)> aSeqRI1, aSeqRI2;
+
+  Interface_EntityIterator anIter = aGraph.Shareds(theEnt);
+  for(anIter.Start(); anIter.More(); anIter.Next()) {
+    Handle(Standard_Transient) anAtr = anIter.Value();
+    NCollection_Sequence<Handle(StepRepr_ShapeAspect)> aSAs;
+    if(anAtr->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
+    {
+      //if associating tolerances with part (All-Over)
+      Interface_EntityIterator anIterSDR = aGraph.Sharings(anAtr);
+      for(anIterSDR.Start(); anIterSDR.More(); anIterSDR.Next()) 
+      {
+        Handle(Standard_Transient) anAtrSDR = anIterSDR.Value();
+        if(anAtrSDR->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+        {
+          isAllOver = Standard_True;
+          Interface_EntityIterator anIterABSR = aGraph.Shareds(anAtrSDR);
+          for(anIterABSR.Start(); anIterABSR.More(); anIterABSR.Next()) 
+          {
+            Handle(Standard_Transient) anAtrABSR = anIterABSR.Value();
+            if(anAtrABSR->IsKind(STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation)))
+            {
+              aSeqRI1.Append(anAtrABSR);
+            }
+          }
+        }
+      }
+    }
+    else if(anAtr->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)) || 
+      anAtr->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+    {
+      //if tolerance attached to dimension
+      Interface_EntityIterator anIterDim = aGraph.Shareds(anAtr);
+      for(anIterDim.Start(); anIterDim.More(); anIterDim.Next()) 
+      {
+        Handle(Standard_Transient) anAtrDim = anIterDim.Value();
+        if(anAtrDim->IsKind(STANDARD_TYPE(StepRepr_CompositeShapeAspect)) || 
+          anAtrDim->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
+        {
+          Interface_EntityIterator anIterCSA = aGraph.Sharings(anAtrDim);
+          for(anIterCSA.Start(); anIterCSA.More(); anIterCSA.Next()) {
+            if (anIterCSA.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))){
+              Interface_EntityIterator anIterSAR = aGraph.Shareds(anIterCSA.Value());
+              for(anIterSAR.Start(); anIterSAR.More(); anIterSAR.Next()) {
+                if (anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))){
+                  aSAs.Append(Handle(StepRepr_ShapeAspect)::DownCast(anIterSAR.Value()));
+                }
+              }
+            }
+          }
+        }
+        else if(anAtrDim->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+        {
+          aSAs.Append( Handle(StepRepr_ShapeAspect)::DownCast(anAtrDim));
+        }
+      }
+    }
+    else if(anAtr->IsKind(STANDARD_TYPE(StepRepr_CompositeShapeAspect)) || 
+      anAtr->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
+    {
+      //processing for composite entity
+      Handle(Standard_Transient) anAtrTmp = anAtr;
+      if(anAtr->IsKind(STANDARD_TYPE(StepRepr_AllAroundShapeAspect)))
+      {
+        // if applyed AllAround Modifier
+        isAllAround = Standard_True;
+        Interface_EntityIterator anIterAASA = aGraph.Sharings(anAtrTmp);
+        for(anIterAASA.Start(); anIterAASA.More(); anIterAASA.Next()) {
+          if (anIterAASA.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))){
+            Interface_EntityIterator anIterSAR = aGraph.Shareds(anIterAASA.Value());
+            for(anIterSAR.Start(); anIterSAR.More(); anIterSAR.Next()) {
+              if ((anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_CompositeShapeAspect)) || 
+                anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp))) &&
+                anAtrTmp != anIterSAR.Value()){
+                  anAtrTmp = anIterSAR.Value();
+                  break;
+              }
+            }
+          }
+        }
+      }
+      Interface_EntityIterator anIterCSA = aGraph.Sharings(anAtrTmp);
+      for(anIterCSA.Start(); anIterCSA.More(); anIterCSA.Next()) {
+        if (anIterCSA.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship))){
+          Interface_EntityIterator anIterSAR = aGraph.Shareds(anIterCSA.Value());
+          for(anIterSAR.Start(); anIterSAR.More(); anIterSAR.Next()) {
+            if (anIterSAR.Value()->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect))){
+              aSAs.Append(Handle(StepRepr_ShapeAspect)::DownCast(anIterSAR.Value()));
+            }
+          }
+        }
+      }
+    }
+    else if(anAtr->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+    {
+      //default
+      aSAs.Append( Handle(StepRepr_ShapeAspect)::DownCast(anAtr));
+    }
+    if(!aSAs.IsEmpty())
+    {
+      //get representation items
+      NCollection_Sequence<Handle(Standard_Transient)> aSeqRI;
+      for(Standard_Integer i = aSAs.Lower(); i <= aSAs.Upper(); i++)
+      {
+        Interface_EntityIterator anIterSA = aGraph.Sharings(aSAs.Value(i));
+        Handle(StepAP242_GeometricItemSpecificUsage) aGISU;
+        Handle(StepRepr_PropertyDefinition) PropD;
+        for(anIterSA.Start(); anIterSA.More() && aGISU.IsNull() && PropD.IsNull(); anIterSA.Next()) {
+          aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterSA.Value());
+          PropD = Handle(StepRepr_PropertyDefinition)::DownCast(anIterSA.Value());
+        }
+        if(!PropD.IsNull())//for old version
+        {
+          Handle(StepRepr_RepresentationItem) RI;
+          Interface_EntityIterator subs4 = aGraph.Sharings(PropD);
+          for(subs4.Start(); subs4.More(); subs4.Next()) {
+            Handle(StepShape_ShapeDefinitionRepresentation) SDR = 
+              Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs4.Value());
+            if(!SDR.IsNull()) {
+              Handle(StepRepr_Representation) Repr = SDR->UsedRepresentation();
+              if( !Repr.IsNull() && Repr->NbItems()>0 ) {
+                RI = Repr->ItemsValue(1);
+              }
+            }
+          }
+          if(RI.IsNull()) continue;
+
+          if(theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
+            // read dimensions
+            Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(RI);
+            if(EC.IsNull()) continue;
+            Handle(TCollection_HAsciiString) aName;
+            Handle(StepShape_DimensionalSize) DimSize = 
+              Handle(StepShape_DimensionalSize)::DownCast(theEnt);
+            Standard_Real dim1=-1.,dim2=-1.;
+            subs4 = aGraph.Sharings(DimSize);
+            for(subs4.Start(); subs4.More(); subs4.Next()) {
+              Handle(StepShape_DimensionalCharacteristicRepresentation) DimCharR = 
+                Handle(StepShape_DimensionalCharacteristicRepresentation)::DownCast(subs4.Value());
+              if(!DimCharR.IsNull()) {
+                Handle(StepShape_ShapeDimensionRepresentation) SDimR = DimCharR->Representation();
+                if(!SDimR.IsNull() && SDimR->NbItems()>0) {
+                  Handle(StepRepr_RepresentationItem) aRI = SDimR->ItemsValue(1);
+                  Handle(StepRepr_ValueRange) VR = Handle(StepRepr_ValueRange)::DownCast(aRI);
+                  if(!VR.IsNull()) {
+                    aName = VR->Name();
+                    //StepRepr_CompoundItemDefinition CID = VR->ItemElement();
+                    //if(CID.IsNull()) continue;
+                    //Handle(StepRepr_CompoundItemDefinitionMember) CIDM = 
+                    //  Handle(StepRepr_CompoundItemDefinitionMember)::DownCast(CID.Value());
+                    //if(CIDM.IsNull()) continue;
+                    //if(CIDM->ArrTransient().IsNull()) continue;
+                    //Handle(StepRepr_HArray1OfRepresentationItem) HARI;
+                    //if(CID.CaseMem(CIDM)==1)
+                    //  HARI = CID.ListRepresentationItem();
+                    //if(CID.CaseMem(CIDM)==2)
+                    //  HARI = CID.SetRepresentationItem();
+                    Handle(StepRepr_HArray1OfRepresentationItem) HARI = VR->ItemElement();
+                    if(HARI.IsNull()) continue;
+                    if(HARI->Length()>0) {
+                      Handle(StepRepr_RepresentationItem) RI1 =
+                        Handle(StepRepr_RepresentationItem)::DownCast(HARI->Value(1));
+                      if(RI1.IsNull()) continue;
+                      if(RI1->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
+                        Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) RILMWU =
+                          Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(RI1);
+                        dim1 = RILMWU->GetMeasureWithUnit()->ValueComponent();
+                        StepBasic_Unit anUnit = RILMWU->GetMeasureWithUnit()->UnitComponent();
+                        Standard_Real afact=1.;
+                        if(anUnit.IsNull()) continue;
+                        if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+                        Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+                        if(GetLengthConversionFactor(NU,afact)) dim1=dim1*afact;
+                      }
+                    }
+                    if(HARI->Length()>1) {
+                      Handle(StepRepr_RepresentationItem) RI2 =
+                        Handle(StepRepr_RepresentationItem)::DownCast(HARI->Value(2));
+                      if(RI2.IsNull()) continue;
+                      if(RI2->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
+                        Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) RILMWU =
+                          Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(RI2);
+                        dim2 = RILMWU->GetMeasureWithUnit()->ValueComponent();
+                        StepBasic_Unit anUnit = RILMWU->GetMeasureWithUnit()->UnitComponent();
+                        Standard_Real afact=1.;
+                        if(anUnit.IsNull()) continue;
+                        if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+                        Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+                        if(GetLengthConversionFactor(NU,afact)) dim2 = dim2*afact;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            if(dim1<0) continue;
+            if(dim2<0) dim2=dim1;
+            //cout<<"DimensionalSize: dim1="<<dim1<<"  dim2="<<dim2<<endl;
+            // now we know edge_curve and value range therefore
+            // we can create corresponding D&GT labels
+            Standard_Integer index = aTP->MapIndex(EC);
+            TopoDS_Shape aSh;
+            if(index >0) {
+              Handle(Transfer_Binder) binder = aTP->MapItem(index);
+              aSh = TransferBRep::ShapeResult(binder);
+            }
+            if(aSh.IsNull()) continue; 
+            TDF_Label shL;
+            if( !aSTool->Search(aSh, shL, Standard_True, Standard_True, Standard_True) ) continue;
+            Handle(TColStd_HArray1OfReal) arr = new TColStd_HArray1OfReal(1,2);
+            arr->SetValue(1,dim1);
+            arr->SetValue(2,dim2);
+            aDGTTool->SetDimTol(shL,1,arr,aName,DimSize->Name());
+          }
+          // read tolerances and datums
+          else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) {
+            Handle(StepDimTol_GeometricTolerance) GT =
+              Handle(StepDimTol_GeometricTolerance)::DownCast(theEnt);
+            // read common data for tolerance
+            //Standard_Real dim = GT->Magnitude()->ValueComponent();
+            Handle (StepBasic_MeasureWithUnit) dim3 = GT->Magnitude();
+            if(dim3.IsNull()) continue;
+            Standard_Real dim = dim3->ValueComponent();
+            StepBasic_Unit anUnit = GT->Magnitude()->UnitComponent();
+            Standard_Real afact=1.;
+            if(anUnit.IsNull()) continue;
+            if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+            Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+            if(GetLengthConversionFactor(NU,afact)) dim = dim*afact;
+            //cout<<"GeometricTolerance: Magnitude = "<<dim<<endl;
+            Handle(TColStd_HArray1OfReal) arr = new TColStd_HArray1OfReal(1,1);
+            arr->SetValue(1,dim);
+            Handle(TCollection_HAsciiString) aName = GT->Name();
+            Handle(TCollection_HAsciiString) aDescription = GT->Description();
+            Handle(StepShape_AdvancedFace) AF = Handle(StepShape_AdvancedFace)::DownCast(RI);
+            if(AF.IsNull()) continue;
+            Standard_Integer index = aTP->MapIndex(AF);
+            TopoDS_Shape aSh;
+            if(index >0) {
+              Handle(Transfer_Binder) binder = aTP->MapItem(index);
+              aSh = TransferBRep::ShapeResult(binder);
+            }
+            if(aSh.IsNull()) continue; 
+            TDF_Label shL;
+            if( !aSTool->Search(aSh, shL, Standard_True, Standard_True, Standard_True) ) continue;
+            // read specific data for tolerance
+            if(GT->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol))) {
+              Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol) GTComplex =
+                Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)::DownCast(theEnt);
+              Standard_Integer kind=20;
+              Handle(StepDimTol_ModifiedGeometricTolerance) MGT = 
+                GTComplex->GetModifiedGeometricTolerance();
+              if(!MGT.IsNull()) {
+                kind = kind + MGT->Modifier()+1;
+              }
+              TDF_Label TolerL = aDGTTool->SetDimTol(shL,kind,arr,aName,aDescription);
+              // translate datums connected with this tolerance
+              Handle(StepDimTol_GeometricToleranceWithDatumReference) GTWDR =
+                GTComplex->GetGeometricToleranceWithDatumReference();
+              if(!GTWDR.IsNull()) {
+                ReadDatums(aSTool,aDGTTool,aGraph,aTP,TolerL,GTWDR);
+              }
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithDatumReference))) {
+              Handle(StepDimTol_GeometricToleranceWithDatumReference) GTWDR =
+                Handle(StepDimTol_GeometricToleranceWithDatumReference)::DownCast(theEnt);
+              if(GTWDR.IsNull()) continue;
+              Standard_Integer kind = 0;
+              if     (GTWDR->IsKind(STANDARD_TYPE(StepDimTol_AngularityTolerance)))       kind = 24;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_CircularRunoutTolerance)))   kind = 25;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_CoaxialityTolerance)))       kind = 26;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_ConcentricityTolerance)))    kind = 27;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_ParallelismTolerance)))      kind = 28;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_PerpendicularityTolerance))) kind = 29;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_SymmetryTolerance)))         kind = 30;
+              else if(GTWDR->IsKind(STANDARD_TYPE(StepDimTol_TotalRunoutTolerance)))      kind = 31;
+              //cout<<"GTWDR: kind="<<kind<<endl;
+              TDF_Label TolerL = aDGTTool->SetDimTol(shL,kind,arr,aName,aDescription);
+              ReadDatums(aSTool,aDGTTool,aGraph,aTP,TolerL,GTWDR);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_ModifiedGeometricTolerance))) {
+              Handle(StepDimTol_ModifiedGeometricTolerance) MGT =
+                Handle(StepDimTol_ModifiedGeometricTolerance)::DownCast(theEnt);
+              Standard_Integer kind = 35 + MGT->Modifier();
+              aDGTTool->SetDimTol(shL,kind,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_CylindricityTolerance))) {
+              aDGTTool->SetDimTol(shL,38,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_FlatnessTolerance))) {
+              aDGTTool->SetDimTol(shL,39,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_LineProfileTolerance))) {
+              aDGTTool->SetDimTol(shL,40,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_PositionTolerance))) {
+              aDGTTool->SetDimTol(shL,41,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_RoundnessTolerance))) {
+              aDGTTool->SetDimTol(shL,42,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_StraightnessTolerance))) {
+              aDGTTool->SetDimTol(shL,43,arr,aName,aDescription);
+            }
+            else if(GT->IsKind(STANDARD_TYPE(StepDimTol_SurfaceProfileTolerance))) {
+              aDGTTool->SetDimTol(shL,44,arr,aName,aDescription);
+            }
+          }
+        }
+        else
+        {
+          if(aGISU.IsNull()) continue;
+          if(aGISU->NbIdentifiedItem() > 0) {
+            aSeqRI.Append(aGISU->IdentifiedItemValue(1));
+          }
+        }
+      }
+      if(!aSeqRI.IsEmpty())
+      {
+        if(aSeqRI1.IsEmpty())
+          aSeqRI1 = aSeqRI;
+        else 
+          aSeqRI2 = aSeqRI;
+      }
+    }
+  }
+  if(aSeqRI1.IsEmpty()) return aGDTL;
+
+  TDF_LabelSequence aShLS1, aShLS2;
+
+  for(Standard_Integer i = aSeqRI1.Lower(); i <= aSeqRI1.Upper() ;i++)
+  {
+    Standard_Integer anIndex = aTP->MapIndex(aSeqRI1.Value(i));
+    TopoDS_Shape aSh;
+    if(anIndex >0) {
+      Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
+      aSh = TransferBRep::ShapeResult(aBinder);
+    }
+    if(!aSh.IsNull())
+    {
+      TDF_Label aShL;
+      aSTool->Search(aSh, aShL, Standard_True, Standard_True, Standard_True);
+      aShLS1.Append(aShL);
+    }
+  }
+  if (!aSeqRI2.IsEmpty())
+  {
+    //for dimensional location
+    for(Standard_Integer i = aSeqRI2.Lower(); i <= aSeqRI2.Upper() ;i++)
+    {
+      Standard_Integer anIndex = aTP->MapIndex(aSeqRI2.Value(i));
+      TopoDS_Shape aSh;
+      if(anIndex >0) {
+        Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
+        aSh = TransferBRep::ShapeResult(aBinder);
+      }
+      if(!aSh.IsNull())
+      {
+        TDF_Label aShL;
+        aSTool->Search(aSh, aShL, Standard_True, Standard_True, Standard_True);
+        aShLS2.Append(aShL);
+      }
+    }
+  }
+
+  if(!aShLS1.IsEmpty())
+  {
+    // add to XCAF
+    if(!theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+    {
+      aGDTL = aDGTTool->AddDimension();
+      Handle(XCAFDoc_Dimension) aDim = XCAFDoc_Dimension::Set(aGDTL);
+      TCollection_AsciiString aStr("DGT:Dimensional_");
+      if(theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)))
+      {
+        aStr.AssignCat("Size");
+      }
+      else if(theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)))
+      {
+        aStr.AssignCat("Location");
+      }
+      TDataStd_Name::Set(aGDTL, aStr);
+
+      if(!aShLS2.IsEmpty())
+      {
+        aDGTTool->SetDimension(aShLS1, aShLS2, aGDTL);
+      }
+      else
+      {
+        TDF_LabelSequence aEmptySeq;
+        aDGTTool->SetDimension(aShLS1, aEmptySeq, aGDTL);
+      }
+    }
+    else
+    {
+      aGDTL = aDGTTool->AddGeomTolerance();
+      Handle(XCAFDoc_GeomTolerance) aGTol = XCAFDoc_GeomTolerance::Set(aGDTL);
+      TCollection_AsciiString aStr("DGT:GeomTolerance");
+      TDataStd_Name::Set(aGDTL, aStr);
+      aDGTTool->SetGeomTolerance(aShLS1, aGDTL);
+      Handle(XCAFDimTolObjects_GeomToleranceObject) anObj = aGTol->GetObject();
+      if(isAllAround)
+        anObj->AddModifier(XCAFDimTolObjects_GeomToleranceModif_All_Around);
+      else if(isAllOver)
+        anObj->AddModifier(XCAFDimTolObjects_GeomToleranceModif_All_Over);
+      aGTol->SetObject(anObj);
+    }
+    readDatumsAP242(theEnt, aGDTL, theDoc, theWS);
+  }
+  return aGDTL;
+}
+
+//=======================================================================
+//function : setDimObjectToXCAF
+//purpose  : 
+//=======================================================================
+static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
+                                           const TDF_Label& aDimL,
+                                           const Handle(TDocStd_Document)& theDoc,
+                                           const Handle(XSControl_WorkSession)& theWS)
+{
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  Handle(XCAFDimTolObjects_DimensionObject) aDimObj;
+  if(!theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)) &&
+    !theEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))) 
+    return;
+
+  Handle(StepShape_DimensionalSize) aDimSize = 
+    Handle(StepShape_DimensionalSize)::DownCast(theEnt);
+  Handle(StepShape_DimensionalLocation) aDimLocation = 
+    Handle(StepShape_DimensionalLocation)::DownCast(theEnt);
+
+  Standard_Real aDim1=-1.,aDim2=-1.,aDim3=-1.;
+  Handle(StepShape_TypeQualifier) aTQ;
+  Handle(StepShape_ValueFormatTypeQualifier) aVFTQ;
+  Handle(StepShape_ToleranceValue) aTV;
+  Handle(StepShape_LimitsAndFits) aLAF;
+  Handle(StepRepr_CompoundRepresentationItem) aCRI;
+  Handle(StepGeom_Axis2Placement3d) anAP;
+
+  Interface_EntityIterator anIterDim;
+  if(!aDimSize.IsNull())
+  {
+    anIterDim = aGraph.Sharings(aDimSize);
+  }
+  else
+  {
+    anIterDim = aGraph.Sharings(aDimLocation);
+  }
+  for(anIterDim.Start(); anIterDim.More(); anIterDim.Next()) {
+    Handle(StepShape_DimensionalCharacteristicRepresentation) aDCR = 
+      Handle(StepShape_DimensionalCharacteristicRepresentation)::DownCast(anIterDim.Value());
+    Handle(StepShape_PlusMinusTolerance) aPMT = 
+      Handle(StepShape_PlusMinusTolerance)::DownCast(anIterDim.Value());
+    if(!aDCR.IsNull()) {
+      Handle(StepShape_ShapeDimensionRepresentation) aSDR = aDCR->Representation();
+      if(!aSDR.IsNull()) {
+        Handle(StepRepr_HArray1OfRepresentationItem) aHARI = aSDR->Items();
+
+        if(!aHARI.IsNull())
+        {
+          for(Standard_Integer nr = aHARI->Lower(); nr <= aHARI->Upper(); nr++)
+          {
+            Handle(StepRepr_RepresentationItem) aDRI =
+              Handle(StepRepr_RepresentationItem)::DownCast(aHARI->Value(nr));
+            if(aDRI.IsNull()) continue;
+
+            if(aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))) {
+              //get values
+              Handle(StepRepr_ReprItemAndLengthMeasureWithUnit) aRILMWU =
+                Handle(StepRepr_ReprItemAndLengthMeasureWithUnit)::DownCast(aDRI);
+              Standard_Real aVal = aRILMWU->GetMeasureWithUnit()->ValueComponent();
+              StepBasic_Unit anUnit = aRILMWU->GetMeasureWithUnit()->UnitComponent();
+              Standard_Real aFact=1.;
+              if(anUnit.IsNull()) continue;
+              if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+              Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+              if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+              if(aDim2 > 0)
+              {
+                if(aDim1 > aDim2)
+                {
+                  Standard_Real aTmp = aDim1;
+                  aDim1 = aDim2;
+                  aDim2 = aTmp;
+                }
+                if(aVal < aDim1)
+                  aDim1 = aVal;
+                else if(aVal > aDim2)
+                  aDim2 = aVal;
+              }
+              else if(aDim1 > 0)
+              {
+                if (aVal > aDim1)
+                  aDim2 = aVal;
+                else
+                {
+                  aDim2 = aDim1;
+                  aDim1 = aVal;
+                }
+              }
+              else
+                aDim1 = aVal;
+            }
+            else if(aDRI->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit))) {
+              //get values
+              Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit) aRIPAMWU =
+                Handle(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit)::DownCast(aDRI);
+              Standard_Real aVal = aRIPAMWU->GetMeasureWithUnit()->ValueComponent();
+              StepBasic_Unit anUnit = aRIPAMWU->GetMeasureWithUnit()->UnitComponent();
+              Standard_Real aFact=1.;
+              if(anUnit.IsNull()) continue;
+              if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+              Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+              if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
+              if(aDim2 > 0)
+              {
+                if(aDim1 > aDim2)
+                {
+                  Standard_Real aTmp = aDim1;
+                  aDim1 = aDim2;
+                  aDim2 = aTmp;
+                }
+                if(aVal < aDim1)
+                  aDim1 = aVal;
+                else if(aVal > aDim2)
+                  aDim2 = aVal;
+              }
+              else if(aDim1 > 0)
+              {
+                if (aVal > aDim1)
+                  aDim2 = aVal;
+                else
+                {
+                  aDim2 = aDim1;
+                  aDim1 = aVal;
+                }
+              }
+              else
+                aDim1 = aVal;
+            }
+            else if(aDRI->IsKind(STANDARD_TYPE(StepShape_QualifiedRepresentationItem))) {
+              //get qualifier
+              Handle(StepShape_QualifiedRepresentationItem) aQRI =
+                Handle(StepShape_QualifiedRepresentationItem)::DownCast(aDRI);
+              for(Standard_Integer l = 1; l <= aQRI->NbQualifiers(); l++)
+              {
+                aTQ = aQRI->Qualifiers()->Value(l).TypeQualifier();
+                aVFTQ = aQRI->Qualifiers()->Value(l).ValueFormatTypeQualifier();
+              }
+            }
+            else if(aDRI->IsKind(STANDARD_TYPE(StepRepr_CompoundRepresentationItem))) {
+              aCRI = Handle(StepRepr_CompoundRepresentationItem)::DownCast(aDRI);
+            }
+            else if(aDRI->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+            {
+              anAP = Handle(StepGeom_Axis2Placement3d)::DownCast(aDRI);
+            }
+          }
+        }
+      }
+    }
+    else if (!aPMT.IsNull())
+    {
+      StepShape_ToleranceMethodDefinition aTMD = aPMT->Range();
+      if(aPMT.IsNull()) continue;
+      if(aTMD.CaseNumber() == 1)
+        //! 1 -> ToleranceValue from StepShape
+        //! 2 -> LimitsAndFits from StepShape
+      {
+        //plus minus tolerance 
+        aTV = aTMD.ToleranceValue();
+        if (aTV.IsNull()) continue;
+
+        Standard_Real aVal = aTV->UpperBound()->ValueComponent();
+        StepBasic_Unit anUnit = aTV->UpperBound()->UnitComponent();
+        Standard_Real aFact=1.;
+        if(anUnit.IsNull()) continue;
+        if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+        Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+        if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+        aDim3 = aVal;
+
+        aVal = aTV->LowerBound()->ValueComponent();
+        anUnit = aTV->LowerBound()->UnitComponent();
+        aFact=1.;
+        if(anUnit.IsNull()) continue;
+        if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+        NU = anUnit.NamedUnit();
+        if(GetLengthConversionFactor(NU,aFact)) aVal=aVal*aFact;
+        aDim2 = Abs(aVal);
+      }
+      else
+      {
+        // calss of tolerance
+        aLAF = aTMD.LimitsAndFits();
+      }
+    }
+  }
+
+  if(aDim1<0) return;
+
+  aDimObj = new XCAFDimTolObjects_DimensionObject();
+  if(aDim2 < 0)
+    aDimObj->SetValue(aDim1);
+  else if (aDim3 < 0)
+  {
+    Handle(TColStd_HArray1OfReal) anArr = new TColStd_HArray1OfReal(1,2);
+    anArr->SetValue(1,aDim1);
+    anArr->SetValue(2,aDim2);
+    aDimObj->SetValues(anArr);
+  }
+  else
+  {
+    Handle(TColStd_HArray1OfReal) anArr = new TColStd_HArray1OfReal(1,3);
+    anArr->SetValue(1,aDim1);
+    anArr->SetValue(2,aDim2);
+    anArr->SetValue(3,aDim3);
+    aDimObj->SetValues(anArr);
+  }
+  if(!aTQ.IsNull()) 
+  {
+    XCAFDimTolObjects_DimensionQualifier aQ;
+    if (STEPConstruct_GDTProperty::GetDimQualifierType(aTQ->Name(), aQ))
+    {
+        aDimObj->SetQualifier(aQ);
+    }
+  }
+
+  if (!aVFTQ.IsNull())
+  {
+    //A typical value would be ‘NR2 2.2’
+    TCollection_HAsciiString aFormat = aVFTQ->FormatType();
+    Standard_Integer i = aFormat.Location(1,' ',1,aFormat.Length());
+    aFormat.SubString(i+1,i+1)->IntegerValue();
+    aDimObj->SetNbOfDecimalPlaces(aFormat.SubString(i+1,i+1)->IntegerValue(),
+      aFormat.SubString(i+3,i+3)->IntegerValue());
+  }
+
+  if (!aLAF.IsNull())
+  { 
+    //get class of tolerance
+    Standard_Boolean aHolle = Standard_False;
+    XCAFDimTolObjects_DimensionFormVariance aFV = XCAFDimTolObjects_DimensionFormVariance_None;
+    XCAFDimTolObjects_DimensionGrade aG = XCAFDimTolObjects_DimensionGrade_IT01;
+    STEPConstruct_GDTProperty::GetDimClassOfTolerance(aLAF, aHolle, aFV, aG);
+    aDimObj->SetClassOfTolerance(aHolle, aFV, aG);
+  }
+
+  if (!aCRI.IsNull() && aCRI->ItemElement()->Length() > 0)
+  {
+    //get modifiers
+    XCAFDimTolObjects_DimensionModifiersSequence aModifiers;
+    STEPConstruct_GDTProperty::GetDimModifiers(aCRI, aModifiers);
+    if(aModifiers.Length() > 0)
+      aDimObj->SetModifiers(aModifiers);
+  }
+
+  Handle(TCollection_HAsciiString) aName;
+  if(!aDimSize.IsNull())
+  {
+    aName = aDimSize->Name();
+  }
+  else
+  {
+    aName = aDimLocation->Name();
+  }
+  XCAFDimTolObjects_DimensionType aType = XCAFDimTolObjects_DimensionType_Location_None;
+  if (!STEPConstruct_GDTProperty::GetDimType(aName, aType))
+  {
+    if(!aDimSize.IsNull())
+    {
+      Handle(StepShape_AngularSize) anAngSize= 
+        Handle(StepShape_AngularSize)::DownCast(aDimSize);
+      if(!anAngSize.IsNull())
+      {
+        //get qualifier for angular value
+        aType = XCAFDimTolObjects_DimensionType_Size_Angular;
+        if(anAngSize->AngleSelection() == StepShape_Equal)
+          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Avg);
+        else if (anAngSize->AngleSelection() == StepShape_Large)
+          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Max);
+        else if (anAngSize->AngleSelection() == StepShape_Small)
+          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Min);
+      }
+    }
+    else
+    {
+      Handle(StepShape_AngularLocation) anAngLoc= 
+        Handle(StepShape_AngularLocation)::DownCast(aDimLocation);
+      if(!anAngLoc.IsNull())
+      {
+        //get qualifier for angular value
+        aType = XCAFDimTolObjects_DimensionType_Location_Angular;
+        if(anAngLoc->AngleSelection() == StepShape_Equal)
+          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Avg);
+        else if (anAngLoc->AngleSelection() == StepShape_Large)
+          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Max);
+        else if (anAngLoc->AngleSelection() == StepShape_Small)
+          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Min);
+      }
+    }
+    if(aType == XCAFDimTolObjects_DimensionType_Location_None)
+    {
+      Handle(StepRepr_ShapeAspect) aPSA;
+      if(!aDimSize.IsNull())
+      {
+        Handle(StepShape_DimensionalSizeWithPath) aDimSizeWithPath= 
+          Handle(StepShape_DimensionalSizeWithPath)::DownCast(aDimSize);
+        if (!aDimSizeWithPath.IsNull())
+        {
+          aType = XCAFDimTolObjects_DimensionType_Size_WithPath;
+          aPSA = aDimSizeWithPath->Path();
+        }
+      }
+      else
+      {
+        Handle(StepShape_DimensionalLocationWithPath) aDimLocWithPath= 
+          Handle(StepShape_DimensionalLocationWithPath)::DownCast(aDimLocation);
+        if (!aDimLocWithPath.IsNull())
+        {
+          aType = XCAFDimTolObjects_DimensionType_Location_WithPath;
+          aPSA = aDimLocWithPath->Path();
+        }
+      }
+
+      if(!aPSA.IsNull())
+      {
+        //for DimensionalLocationWithPath
+        Handle(StepGeom_GeometricRepresentationItem) aGRI;
+        Handle(StepAP242_GeometricItemSpecificUsage) aPGISU;
+        Interface_EntityIterator anIterDSWP = aGraph.Sharings(aPSA);
+        for(anIterDSWP.Start(); anIterDSWP.More() && aPGISU.IsNull(); anIterDSWP.Next()) {
+          aPGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDSWP.Value());
+        }
+        if(aPGISU.IsNull()) return;
+        if(aPGISU->NbIdentifiedItem() > 0) {
+          aGRI = Handle(StepGeom_GeometricRepresentationItem)::DownCast(aPGISU->IdentifiedItemValue(1));
+        }
+        if(aGRI.IsNull()) return;
+        Handle(StepRepr_RepresentationItem) aPRI;
+        Interface_EntityIterator anIterGRI = aGraph.Sharings(aGRI);
+        for(anIterGRI.Start(); anIterGRI.More() && aPGISU.IsNull(); anIterGRI.Next()) {
+          aPRI = Handle(StepRepr_RepresentationItem)::DownCast(anIterGRI.Value());
+        }
+        Standard_Integer anIndex = aTP->MapIndex(aPRI);
+        TopoDS_Edge aSh;
+        if(anIndex >0) {
+          Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
+          aSh = TopoDS::Edge(TransferBRep::ShapeResult(aBinder));
+        }
+        if(aSh.IsNull()) return; 
+        aDimObj->SetPath(aSh);
+      }
+      else if(!anAP.IsNull())
+      {
+        if(anAP->Name()->String().IsEqual("orientation") && !anAP->Axis().IsNull())
+        {
+          //for Oriented Dimensional Location
+          Handle(TColStd_HArray1OfReal) aDirArr = anAP->RefDirection()->DirectionRatios();
+          gp_Dir aDir;
+          if(!aDirArr.IsNull() && aDirArr->Length() > 2)
+          {
+            aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower()+1, aDirArr->Lower()+2);
+            aDimObj->SetDirection(aDir);
+          }
+          else if(aDirArr->Length() > 1)
+          {
+            aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower()+1, 0);
+            aDimObj->SetDirection(aDir);
+          }
+        }
+      }
+    }
+  }
+  aDimObj->SetType(aType);
+
+  if(!aDimObj.IsNull())
+  {
+    Handle(XCAFDoc_Dimension) aDim;
+    if(aDimL.FindAttribute(XCAFDoc_Dimension::GetID(),aDim))
+    {
+      aDim->SetObject(aDimObj);
+    }
+  }
+}
+
+//=======================================================================
+//function : getTolType
+//purpose  : 
+//=======================================================================
+static Standard_Boolean getTolType(const Handle(Standard_Transient)& theEnt,
+                       XCAFDimTolObjects_GeomToleranceType& theType)
+{
+  if(!theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) 
+    return Standard_False;
+  theType = XCAFDimTolObjects_GeomToleranceType_None;
+  if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRef)))
+  {
+    Handle(StepDimTol_GeoTolAndGeoTolWthDatRef) anE = Handle(StepDimTol_GeoTolAndGeoTolWthDatRef)::DownCast(theEnt);
+    theType = (XCAFDimTolObjects_GeomToleranceType)anE->GetToleranceType();
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_AngularityTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Angularity;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_CircularRunoutTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_CircularRunout;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_RoundnessTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_CircularityOrRoundness;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_CoaxialityTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Coaxiality;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_ConcentricityTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Concentricity;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_CylindricityTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Cylindricity;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_FlatnessTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Flatness;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_ParallelismTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Parallelism;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_PerpendicularityTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Perpendicularity;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_PositionTolerance)) || 
+     theEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Position;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_LineProfileTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_ProfileOfLine;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_SurfaceProfileTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_ProfileOfSurface;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_StraightnessTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Straightness;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_SymmetryTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_Symmetry;
+  }
+  else if(theEnt->IsKind(STANDARD_TYPE(StepDimTol_TotalRunoutTolerance)))
+  {
+    theType = XCAFDimTolObjects_GeomToleranceType_TotalRunout;
+  }
+  return Standard_True;
+}
+//=======================================================================
+//function : setGeomTolObjectToXCAF
+//purpose  : 
+//=======================================================================
+static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
+                                           const TDF_Label& theTolL,
+                                           const Handle(TDocStd_Document)& theDoc,
+                                           const Handle(XSControl_WorkSession)& theWS)
+{
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  const Interface_Graph& aGraph = aTP->Graph();
+  Handle(XCAFDoc_GeomTolerance) aGTol;
+  if(!theTolL.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTol))
+  {
+    return;
+  }
+  Handle(XCAFDimTolObjects_GeomToleranceObject) aTolObj = aGTol->GetObject();
+  Handle(StepDimTol_GeometricTolerance) aTolEnt = Handle(StepDimTol_GeometricTolerance)::DownCast(theEnt);
+
+  XCAFDimTolObjects_GeomToleranceType aType = XCAFDimTolObjects_GeomToleranceType_None;
+  getTolType(theEnt, aType);
+  aTolObj->SetType(aType);
+  if(!aTolEnt->Magnitude().IsNull()){
+    //get value
+    Standard_Real aVal = aTolEnt->Magnitude()->ValueComponent();
+    StepBasic_Unit anUnit = aTolEnt->Magnitude()->UnitComponent();
+    Standard_Real aFact=1.;
+    if(anUnit.IsNull()) return;
+    if( !(anUnit.CaseNum(anUnit.Value())==1) ) return;
+    Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+    if(GetLengthConversionFactor(NU,aFact))
+      aVal=aVal*aFact;
+    aTolObj->SetValue(aVal);
+  }
+  //get modifiers
+  XCAFDimTolObjects_GeomToleranceTypeValue aTypeV = XCAFDimTolObjects_GeomToleranceTypeValue_None;
+  Interface_EntityIterator anIter = aGraph.Sharings(aTolEnt);
+  for(anIter.Start(); anIter.More(); anIter.Next()) {
+    if(anIter.Value()->IsKind(STANDARD_TYPE(StepDimTol_ToleranceZone))){
+      Handle(StepDimTol_ToleranceZoneForm) aForm 
+                            = Handle(StepDimTol_ToleranceZone)::DownCast(anIter.Value())->Form();
+      STEPConstruct_GDTProperty::GetTolValueType(aForm->Name(), aTypeV);
+      Interface_EntityIterator anIt = aGraph.Sharings(anIter.Value());
+      for(anIt.Start(); anIt.More(); anIt.Next()) {
+        if(anIt.Value()->IsKind(STANDARD_TYPE(StepDimTol_ProjectedZoneDefinition))){
+          Handle(StepDimTol_ProjectedZoneDefinition) aPZone
+                              = Handle(StepDimTol_ProjectedZoneDefinition)::DownCast(anIt.Value());
+          if(!aPZone->ProjectionLength().IsNull())
+          {
+            Standard_Real aVal = aPZone->ProjectionLength()->ValueComponent();
+            StepBasic_Unit anUnit = aPZone->ProjectionLength()->UnitComponent();
+            Standard_Real aFact=1.;
+            if(anUnit.IsNull()) return;
+            if( !(anUnit.CaseNum(anUnit.Value())==1) ) return;
+            Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+            if(GetLengthConversionFactor(NU,aFact))
+              aVal=aVal*aFact;
+            aTolObj->SetValueOfZoneModifier(aVal);
+          }
+        }
+        else if (anIt.Value()->IsKind(STANDARD_TYPE(StepDimTol_RunoutZoneDefinition)))
+        {
+          Handle(StepDimTol_RunoutZoneDefinition) aRZone
+                                = Handle(StepDimTol_RunoutZoneDefinition)::DownCast(anIt.Value());
+          if(!aRZone->Orientation().IsNull())
+          {
+            Standard_Real aVal = aRZone->Orientation()->Angle()->ValueComponent();
+            StepBasic_Unit anUnit = aRZone->Orientation()->Angle()->UnitComponent();
+            Standard_Real aFact=1.;
+            if(anUnit.IsNull()) continue;
+            if( !(anUnit.CaseNum(anUnit.Value())==1) ) continue;
+            Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+            if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
+            aTolObj->SetValueOfZoneModifier(aVal);
+          }
+        }
+      }
+      aTolObj->SetTypeOfValue(aTypeV);
+    }
+  }
+  Handle(StepDimTol_HArray1OfGeometricToleranceModifier) aModifiers;
+  if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithModifiers)))
+  {
+    aModifiers = Handle(StepDimTol_GeometricToleranceWithModifiers)::DownCast(aTolEnt)->Modifiers();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)))
+  {
+    aModifiers = Handle(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)
+                            ::DownCast(aTolEnt)->GetGeometricToleranceWithModifiers()->Modifiers();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMod)))
+  {
+    aModifiers = Handle(StepDimTol_GeoTolAndGeoTolWthMod)
+                             ::DownCast(aTolEnt)->GetGeometricToleranceWithModifiers()->Modifiers();
+  }
+  if(!aModifiers.IsNull())
+  {
+    for(Standard_Integer i = aModifiers->Lower(); i <= aModifiers->Upper(); i++)
+    {
+      if(aModifiers->Value(i) == StepDimTol_GTMLeastMaterialRequirement)
+        aTolObj->SetMaterialRequirementModifier(XCAFDimTolObjects_GeomToleranceMatReqModif_L);
+      else if (aModifiers->Value(i) == StepDimTol_GTMMaximumMaterialRequirement)
+        aTolObj->SetMaterialRequirementModifier(XCAFDimTolObjects_GeomToleranceMatReqModif_M);
+      else
+        aTolObj->AddModifier((XCAFDimTolObjects_GeomToleranceModif)aModifiers->Value(i));
+    }
+  }
+  if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithMaximumTolerance)))
+  {
+    Handle(StepDimTol_GeometricToleranceWithMaximumTolerance) aMax = Handle(StepDimTol_GeometricToleranceWithMaximumTolerance)::DownCast(aTolEnt);
+    Standard_Real aVal = aMax->MaximumUpperTolerance()->ValueComponent();
+    StepBasic_Unit anUnit = aMax->MaximumUpperTolerance()->UnitComponent();
+    Standard_Real aFact=1.;
+    if(anUnit.IsNull()) return;
+    if( !(anUnit.CaseNum(anUnit.Value())==1) ) return;
+    Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
+    if(GetAngleConversionFactor(NU,aFact)) aVal=aVal*aFact;
+    aTolObj->SetMaxValueModifier(aVal);
+  }
+
+  aGTol->SetObject(aTolObj);
+}
+
+//=======================================================================
+//function : ReadGDTs
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSession)& theWS,
+                                                 Handle(TDocStd_Document)& theDoc) const
+{
+  Handle(Interface_InterfaceModel) aModel = theWS->Model();
+  Handle(StepData_StepModel) aSM = Handle(StepData_StepModel)::DownCast(aModel);
+  Interface_EntityIterator anI = aSM->Header();
+  Handle(HeaderSection_FileSchema) aH;
+  for(anI.Start(); anI.More() && aH.IsNull();anI.Next())
+    aH = Handle(HeaderSection_FileSchema)::DownCast(anI.Value());
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool( theDoc->Main() );
+  Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
+  Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
+  Handle(XCAFDoc_DimTolTool) aDGTTool = XCAFDoc_DocumentTool::DimTolTool( theDoc->Main() );
+  if ( aDGTTool.IsNull() ) return Standard_False;
+
+  Standard_Integer nb = aModel->NbEntities();
+  for(Standard_Integer i=1; i<=nb; i++) {
+    Handle(Standard_Transient) anEnt = aModel->Value(i);
+    if(anEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalSize)) || 
+       anEnt->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation)) ||
+       anEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))) {
+      TDF_Label aGDTL = createGDTObjectInXCAF(anEnt,theDoc,theWS);
+      if(!aGDTL.IsNull()){
+        if(anEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance))){
+          setGeomTolObjectToXCAF(anEnt, aGDTL,theDoc,theWS);
+        }
+        else {
+          setDimObjectToXCAF(anEnt, aGDTL,theDoc,theWS);
+        }
+      }
+    }
+  }
   return Standard_True;
 }
 

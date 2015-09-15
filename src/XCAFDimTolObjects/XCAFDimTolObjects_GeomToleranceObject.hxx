@@ -29,6 +29,7 @@
 #include <XCAFDimTolObjects_GeomToleranceModifiersSequence.hxx>
 #include <Standard_Transient.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
+#include <gp_Ax2.hxx>
 
 class XCAFDimTolObjects_GeomToleranceObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_GeomToleranceObject, Standard_Transient)
@@ -77,6 +78,12 @@ public:
   
   Standard_EXPORT Standard_Real GetMaxValueModifier() const;
 
+  Standard_EXPORT void SetAxis (const gp_Ax2 theAxis);
+  
+  Standard_EXPORT gp_Ax2 GetAxis() const;
+   
+  Standard_EXPORT Standard_Boolean HasAxis () const;
+
   DEFINE_STANDARD_RTTI(XCAFDimTolObjects_GeomToleranceObject,Standard_Transient)
 
 private: 
@@ -89,8 +96,8 @@ private:
   Standard_Real myValueOfZoneModif;
   XCAFDimTolObjects_GeomToleranceModifiersSequence myModifiers;
   Standard_Real myMaxValueModif;
-
-
+  gp_Ax2 myAxis;
+  Standard_Boolean myHasAxis;
 };
 
 

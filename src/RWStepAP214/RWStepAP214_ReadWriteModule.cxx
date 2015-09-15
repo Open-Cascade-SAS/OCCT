@@ -295,6 +295,7 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <StepBasic_SecurityClassificationLevel.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
+#include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 #include <StepRepr_ShapeAspectTransition.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
@@ -686,6 +687,7 @@ Handle(atype) result = Handle(atype)::DownCast (start)
 #include <RWStepBasic_RWSecurityClassificationLevel.hxx>
 #include <RWStepRepr_RWShapeAspect.hxx>
 #include <RWStepRepr_RWShapeAspectRelationship.hxx>
+#include <RWStepRepr_RWFeatureForDatumTargetRelationship.hxx>
 #include <RWStepRepr_RWShapeAspectTransition.hxx>
 #include <RWStepShape_RWShapeDefinitionRepresentation.hxx>
 #include <RWStepShape_RWShapeRepresentation.hxx>
@@ -9100,6 +9102,13 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
       tool.ReadStep (data,num,ach,anent);
     }
     break;
+  case 702:
+    {
+      DeclareAndCast(StepRepr_FeatureForDatumTargetRelationship,anent,ent);
+      RWStepRepr_RWFeatureForDatumTargetRelationship tool;
+      tool.ReadStep (data,num,ach,anent);
+    }
+    break;
 
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
@@ -13798,6 +13807,13 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     {
       DeclareAndCast(StepRepr_ValueRepresentationItem,anent,ent);
       RWStepRepr_RWValueRepresentationItem tool;
+      tool.WriteStep (SW,anent);
+    }
+    break;
+  case 702:
+    {
+      DeclareAndCast(StepRepr_FeatureForDatumTargetRelationship,anent,ent);
+      RWStepRepr_RWFeatureForDatumTargetRelationship tool;
       tool.WriteStep (SW,anent);
     }
     break;

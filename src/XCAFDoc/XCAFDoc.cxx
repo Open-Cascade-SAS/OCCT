@@ -94,9 +94,20 @@ Standard_GUID XCAFDoc::DimTolRefGUID()
 //purpose  : 
 //=======================================================================
 
-Standard_GUID XCAFDoc::DimensionRefGUID()
+Standard_GUID XCAFDoc::DimensionRefFirstGUID()
 {
   static Standard_GUID ID("efd212e3-6dfd-11d4-b9c8-0060b0ee281b");
+  return ID;
+}
+
+//=======================================================================
+//function : DimensionRefGUID
+//purpose  : 
+//=======================================================================
+
+Standard_GUID XCAFDoc::DimensionRefSecondGUID()
+{
+  static Standard_GUID ID("efd212e0-6dfd-11d4-b9c8-0060b0ee281b");
   return ID;
 }
 

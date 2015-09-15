@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <XCAFDimTolObjects_DatumObjectSequence.hxx>
+#include <XCAFDimTolObjects_DatumTargetType.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
@@ -29,6 +30,7 @@
 #include <Standard_Transient.hxx>
 #include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <Standard_Boolean.hxx>
+#include <gp_Ax2.hxx>
 
 class XCAFDimTolObjects_DatumObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_DatumObject, Standard_Transient)
@@ -60,8 +62,30 @@ public:
   Standard_EXPORT TopoDS_Shape GetDatumTarget() const;
   
   Standard_EXPORT void SetDatumTarget (const TopoDS_Shape& theShape);
+
+  Standard_EXPORT Standard_Integer GetPosition () const;
+  
+  Standard_EXPORT void SetPosition (const Standard_Integer thePosition);
   
   Standard_EXPORT Standard_Boolean IsDatumTarget() const;
+
+  Standard_EXPORT void IsDatumTarget(const Standard_Boolean theIsDT);
+
+  Standard_EXPORT XCAFDimTolObjects_DatumTargetType GetDatumTargetType() const;
+
+  Standard_EXPORT void SetDatumTargetType (const XCAFDimTolObjects_DatumTargetType theType);
+
+  Standard_EXPORT gp_Ax2 GetDatumTargetAxis() const;
+
+  Standard_EXPORT void SetDatumTargetAxis (const gp_Ax2& theAxis);
+
+  Standard_EXPORT Standard_Real GetDatumTargetLength() const;
+
+  Standard_EXPORT void SetDatumTargetLength (const Standard_Real theLength);
+
+  Standard_EXPORT Standard_Real GetDatumTargetWidth() const;
+
+  Standard_EXPORT void SetDatumTargetWidth (const Standard_Real theWidth);
 
 
   DEFINE_STANDARD_RTTI(XCAFDimTolObjects_DatumObject,Standard_Transient)
@@ -73,6 +97,13 @@ private:
   XCAFDimTolObjects_DatumModifWithValue myModifierWithValue;
   Standard_Real myValueOfModifier;
   TopoDS_Shape myDatumTarget;
+  Standard_Integer myPosition;
+  Standard_Boolean myIsDTarget;
+  XCAFDimTolObjects_DatumTargetType myDTargetType;
+  gp_Ax2 myAxis;
+  Standard_Real myLength;
+  Standard_Real myWidth;
+  
 
 };
 

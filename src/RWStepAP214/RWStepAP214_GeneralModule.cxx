@@ -385,6 +385,7 @@
 #include <RWStepRepr_RWReprItemAndLengthMeasureWithUnit.hxx>
 #include <RWStepRepr_RWShapeAspect.hxx>
 #include <RWStepRepr_RWShapeAspectRelationship.hxx>
+#include <RWStepRepr_RWFeatureForDatumTargetRelationship.hxx>
 #include <RWStepRepr_RWShapeAspectTransition.hxx>
 #include <RWStepRepr_RWShapeRepresentationRelationshipWithTransformation.hxx>
 #include <RWStepRepr_RWSpecifiedHigherUsageOccurrence.hxx>
@@ -923,6 +924,7 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_ShapeAspectDerivingRelationship.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
+#include <StepRepr_FeatureForDatumTargetRelationship.hxx>
 #include <StepRepr_ShapeAspectTransition.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 #include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
@@ -4970,6 +4972,12 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
       tool.Share(anent,iter);
     }
     break;
+  case 702:
+    {
+      DeclareAndCast(StepRepr_FeatureForDatumTargetRelationship,anent,ent);
+      RWStepRepr_RWFeatureForDatumTargetRelationship tool;
+      tool.Share(anent,iter);
+    }
 
     default : break;
     }
@@ -6916,6 +6924,9 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
     break;
   case 701:
     ent = new StepRepr_ValueRepresentationItem;
+    break;
+  case 702:
+    ent = new StepRepr_FeatureForDatumTargetRelationship;
     break;
 
   default: 
