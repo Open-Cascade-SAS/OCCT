@@ -31,7 +31,7 @@
 #include <TopoDS_Shape.hxx>
 
 static Handle(HLRBRep_Algo) hider;
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

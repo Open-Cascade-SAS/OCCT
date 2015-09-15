@@ -53,7 +53,7 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #define EXCEPTION ...
 #else
 #define EXCEPTION Standard_Failure

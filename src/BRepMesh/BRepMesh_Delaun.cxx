@@ -2350,7 +2350,7 @@ Standard_Real BRepMesh_Delaun::polyArea(const BRepMesh::SequenceOfInteger& thePo
   return aArea / 2.;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //=======================================================================
 //function : BRepMesh_DumpPoly
 //purpose  : 

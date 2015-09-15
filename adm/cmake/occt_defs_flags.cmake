@@ -13,11 +13,11 @@ endif()
 
 add_definitions (-DCSFDB)
 if (WIN32)
-  add_definitions (/DWNT -wd4996)
+  add_definitions (-wd4996)
 elseif (APPLE)
-  add_definitions (-fexceptions -fPIC -DOCC_CONVERT_SIGNALS -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H)
+  add_definitions (-fexceptions -fPIC -DOCC_CONVERT_SIGNALS)
 else()
-  add_definitions (-fexceptions -fPIC -DOCC_CONVERT_SIGNALS -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -DLIN)
+  add_definitions (-fexceptions -fPIC -DOCC_CONVERT_SIGNALS)
 endif()
 
 # enable structured exceptions for MSVC
@@ -26,6 +26,34 @@ if (ISFLAG)
   string (REGEX REPLACE "EHsc" "EHa" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 elseif (WIN32)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -EHa")
+endif()
+
+# remove _WINDOWS flag if it exists
+string (REGEX MATCH "/D_WINDOWS" IS_WINDOWSFLAG "${CMAKE_CXX_FLAGS}")
+if (IS_WINDOWSFLAG)
+  message (STATUS "/D_WINDOWS has been removed from CMAKE_CXX_FLAGS")
+  string (REGEX REPLACE "/D_WINDOWS" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+endif()
+
+# remove WIN32 flag if it exists
+string (REGEX MATCH "/DWIN32" IS_WIN32FLAG "${CMAKE_CXX_FLAGS}")
+if (IS_WIN32FLAG)
+  message (STATUS "/DWIN32 has been removed from CMAKE_CXX_FLAGS")
+  string (REGEX REPLACE "/DWIN32" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+endif()
+
+# remove _WINDOWS flag if it exists
+string (REGEX MATCH "/D_WINDOWS" IS_WINDOWSFLAG "${CMAKE_C_FLAGS}")
+if (IS_WINDOWSFLAG)
+  message (STATUS "/D_WINDOWS has been removed from CMAKE_C_FLAGS")
+  string (REGEX REPLACE "/D_WINDOWS" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+endif()
+
+# remove WIN32 flag if it exists
+string (REGEX MATCH "/DWIN32" IS_WIN32FLAG "${CMAKE_C_FLAGS}")
+if (IS_WIN32FLAG)
+  message (STATUS "/DWIN32 has been removed from CMAKE_C_FLAGS")
+  string (REGEX REPLACE "/DWIN32" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 # remove DEBUG flag if it exists
@@ -65,6 +93,3 @@ endif()
 
 set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNo_Exception")
 set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNo_Exception")
-
-set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEB")
-set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEB")

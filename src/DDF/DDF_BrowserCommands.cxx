@@ -33,7 +33,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <OSD_File.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
 #endif
 

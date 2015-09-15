@@ -620,7 +620,6 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
 
   nbV = mapS.Extent();
 
-//#ifndef WNT
   Standard_SStream sss;
   sss << "\n## Tolerances on the shape " << a[1] << "  (nbFaces:" << nbF
       << "  nbEdges:" << nbE << " nbVtx:" << nbV << ")\n" ;
@@ -630,7 +629,7 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
   if(TmE<=TME) sss << "\n    Edge   : Min " << setw(8) << TmE <<"    Max  " << setw(8) << TME << " \n ";
   if(TmV<=TMV) sss << "\n    Vertex : Min " << setw(8) << TmV <<"    Max  " << setw(8) << TMV << " \n ";
   theCommands << sss;
-  //#endif*/
+
   return 0;
 }
 

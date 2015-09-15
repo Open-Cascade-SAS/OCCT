@@ -27,9 +27,7 @@
 static Standard_Real MinimumStep = 1.e-3 ;
 static Standard_Real Ratio       = 200.0 ;
 
-//#ifdef WNT
 extern Draw_Viewer dout;
-//#endif
 
 //=======================================================================
 // Function : Draw_Grid

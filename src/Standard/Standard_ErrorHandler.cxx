@@ -22,7 +22,7 @@
 #include <Standard_Mutex.hxx>
 #include <Standard.hxx>
 
-#ifndef WNT
+#ifndef _WIN32
 #include <pthread.h>
 #else
 #include <windows.h>
@@ -47,7 +47,7 @@ static Standard_Mutex theMutex;
 
 static inline Standard_ThreadId GetThreadID()
 {
-#ifndef WNT
+#ifndef _WIN32
   return pthread_self();
 #else
   return GetCurrentThreadId();

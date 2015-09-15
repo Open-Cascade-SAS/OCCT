@@ -42,7 +42,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
 #endif
 

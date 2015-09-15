@@ -82,10 +82,8 @@
 #include <DBRep.hxx>
 #include <Geom_Curve.hxx>
 
-//#ifdef WNT
 #include <stdio.h>
 #ifdef _WIN32
-//#define strcasecmp strcmp Already defined
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

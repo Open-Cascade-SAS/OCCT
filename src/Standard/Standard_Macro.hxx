@@ -33,11 +33,6 @@
 // Windows-specific definitions
 //======================================================
 
-// check if WNT macro is not defined but compiler is MSVC
-#if defined(_MSC_VER) && !defined(WNT)
-#error "Wrong compiler options has been detected. Add /DWNT option for proper compilation!!!!!"
-#endif
-
 # if defined(_WIN32) && !defined(HAVE_NO_DLL)
 
 #  ifndef Standard_EXPORT
@@ -94,7 +89,7 @@
 #define NOIME NOIME
 #endif
 
-# else  /* WNT */
+# else  /* UNIX */
 
 //======================================================
 // UNIX definitions
@@ -123,14 +118,13 @@
 #define	_MEMORY_H
 #endif
 
-# endif  /* WNT */
+# endif  /* _WIN32 */
 
 //======================================================
 // Other
 //======================================================
 
 # ifndef __Standard_API
-//#  ifdef WNT
 #   if !defined(_WIN32) || defined(__Standard_DLL) || defined(__FSD_DLL) || defined(__MMgt_DLL) || defined(__OSD_DLL) || defined(__Plugin_DLL) || defined(__Quantity_DLL) || defined(__Resource_DLL) || defined(__SortTools_DLL) || defined(__StdFail_DLL) || defined(__Storage_DLL) || defined(__TColStd_DLL) || defined(__TCollection_DLL) || defined(__TShort_DLL) || defined(__Units_DLL) || defined(__UnitsAPI_DLL) || defined(__Dico_DLL)
 #    define __Standard_API Standard_EXPORT
 #    define __Standard_APIEXTERN Standard_EXPORTEXTERN
@@ -138,9 +132,6 @@
 #    define __Standard_API Standard_IMPORT
 #    define __Standard_APIEXTERN Standard_IMPORT
 #   endif  // __Standard_DLL
-//#  else
-//#   define __Standard_API
-//#  endif  // WNT
 # endif  // __Standard_API
 
 #endif  

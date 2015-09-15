@@ -25,11 +25,7 @@
 //purpose  : 
 //=======================================================================
 
-//#ifndef WNT
-//inline  static Standard_Integer TDF_LabelMapHasher::HashCode
-//#else
-inline         Standard_Integer TDF_LabelMapHasher::HashCode
-//#endif
+inline Standard_Integer TDF_LabelMapHasher::HashCode
 (const TDF_Label& aLab, const Standard_Integer Upper) 
 { return 1 + ( (int) (labs((long int) aLab.myLabelNode) % Upper) ); }
 
@@ -39,10 +35,6 @@ inline         Standard_Integer TDF_LabelMapHasher::HashCode
 //purpose  : 
 //=======================================================================
 
-//#ifndef WNT
-//inline  static Standard_Boolean TDF_LabelMapHasher::IsEqual
-//#else
-inline         Standard_Boolean TDF_LabelMapHasher::IsEqual
-//#endif
+inline Standard_Boolean TDF_LabelMapHasher::IsEqual
 (const TDF_Label& aLab1,const TDF_Label& aLab2) 
 { return aLab1.IsEqual(aLab2); }

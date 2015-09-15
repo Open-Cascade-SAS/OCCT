@@ -77,10 +77,10 @@ extern "C" int getpagesize() ;
 #elif defined(__APPLE__)
 #define MMAP_BASE_ADDRESS  0x80000000
 #define MMAP_FLAGS (MAP_ANON | MAP_PRIVATE)
-#elif defined(LIN)
+#elif defined(__linux__)
 #define MMAP_BASE_ADDRESS 0x20000000
 #define MMAP_FLAGS (MAP_PRIVATE)
-#elif defined(WNT)
+#elif defined(_WIN32)
 //static HANDLE myhMap;
 #else
 #define MMAP_BASE_ADDRESS 0x60000000
@@ -197,7 +197,7 @@ void Standard_MMgrOpt::Initialize()
     myNbPages = 1000;
   
   // get system-dependent page size
-#ifndef WNT
+#ifndef _WIN32
   myPageSize = getpagesize();
   if ( ! myPageSize )
     myMMap = 0;
@@ -247,7 +247,7 @@ void Standard_MMgrOpt::Initialize()
       perror("ERR_MEMRY_FAIL");
 #endif
     
-#if defined(IRIX) || defined(__sgi) || defined(SOLARIS) || defined(__sun) || defined(LIN) || defined(linux) || defined(__FreeBSD__) || defined(__ANDROID__)
+#if defined(IRIX) || defined(__sgi) || defined(SOLARIS) || defined(__sun) || defined(__linux__) || defined(linux) || defined(__FreeBSD__) || defined(__ANDROID__)
     if ((myMMap = open ("/dev/zero", O_RDWR)) < 0) {
       if ((myMMap = open ("/dev/null", O_RDWR)) < 0){
         myMMap = 0;
@@ -505,7 +505,7 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )
   // release memory pools containing no busy memory;
   // for that for each pool count the summary size of blocks
   // got from the free lists allocated from this pool
-#ifndef WNT
+#ifndef _WIN32
   const Standard_Size PoolSize = myPageSize * myNbPages;
 #else
   const Standard_Size PoolSize =
@@ -708,7 +708,7 @@ retry:
 
   // if MMap option is ON, allocate using memory mapped files
   if (myMMap) {
-#ifndef WNT
+#ifndef _WIN32
 
     // align size to page size
     const Standard_Size AlignedSize = PAGE_ALIGN(Size, myPageSize);
@@ -730,7 +730,7 @@ retry:
     // save actually allocated size into argument
     Size = AlignedSize;
 
-#else /* WNT */
+#else /* _WIN32 */
 
     // align size to page size, taking into account additional space needed to
     // store handle to the memory map
@@ -797,14 +797,14 @@ retry:
 
 void Standard_MMgrOpt::FreeMemory (Standard_Address aBlock, 
                                    const Standard_Size
-#ifndef WNT                                   
+#ifndef _WIN32                                   
                                    aSize
 #endif
                                   )
 {
   // release memory (either free or unmap)
   if ( myMMap ) {
-#ifndef WNT
+#ifndef _WIN32
     // align size to page size, just the same as in AllocMemory()
     const Standard_Size AlignedSize = PAGE_ALIGN(aSize, myPageSize);
     munmap((char*)aBlock, AlignedSize);

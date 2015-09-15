@@ -84,7 +84,7 @@
 #include <stdio.h>
 //epa Memory leaks test
 //OAN: for triepoints
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

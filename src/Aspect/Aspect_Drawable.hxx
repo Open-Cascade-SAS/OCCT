@@ -22,10 +22,10 @@
 #ifndef _Aspect_Drawable_HeaderFile
 #define _Aspect_Drawable_HeaderFile
 
-#ifdef WNT
+#ifdef _WIN32
  typedef void*        Aspect_Drawable;	/* HDC under WNT */
 #else
  typedef unsigned long Aspect_Drawable;	/* Window or Pixmap under UNIX */
-#endif /* WNT */
+#endif /* _WIN32 */
 
 #endif /* _Aspect_Drawable_HeaderFile */

@@ -24,9 +24,8 @@
 #include <TopExp_Explorer.hxx>
 #include <BRepTest.hxx>
 #include <TopoDS.hxx>
-//#ifdef WNT
 #include <stdio.h>
-//#endif
+
 static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char** a)
 { 
   char newname[255];

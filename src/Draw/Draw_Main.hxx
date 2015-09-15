@@ -30,7 +30,7 @@
 
 typedef void (*FDraw_InitAppli)(Draw_Interpretor&);
 
-#ifndef WNT
+#ifndef _WIN32
 Standard_EXPORT Standard_Integer _main_ (Standard_Integer argc, 
 					 Standard_PCharacter argv[], 
 					 const FDraw_InitAppli Draw_InitAppli);
@@ -49,7 +49,7 @@ Standard_EXPORT Standard_Integer _main_ (int argc,
 #endif
 
 // Declarations of macros DRAW_MAIN to be used in executables instead of explicit main/WinMain
-#ifndef WNT
+#ifndef _WIN32
 // main()
 #define DRAW_MAIN int main (Standard_Integer argc, char* argv[])\
 {return _main_ (argc, argv, Draw_InitAppli);}

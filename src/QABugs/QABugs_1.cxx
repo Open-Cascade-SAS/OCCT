@@ -39,7 +39,7 @@
 #include <Draw_Viewer.hxx>
 #include <Draw.hxx>
 
-#ifndef WNT
+#ifndef _WIN32
 extern Draw_Viewer dout;
 #else
 Standard_IMPORT Draw_Viewer dout;
@@ -51,7 +51,7 @@ Standard_IMPORT Draw_Viewer dout;
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <TopoDS.hxx>
 
-#if ! defined(WNT)
+#if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #else
 Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();

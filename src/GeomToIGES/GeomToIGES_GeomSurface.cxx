@@ -298,7 +298,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
         }
       }
       catch ( Standard_Failure ) {
-        #ifdef DEB
+        #ifdef OCCT_DEBUG
         cout << "Warning: GeomToIGES_GeomSurface: can't trim bspline" << endl;
         cout << "Warning: Exception in Segment(): " ;
         Standard_Failure::Caught()->Print(cout);

@@ -33,7 +33,7 @@
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_BoundedSurface.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
 //#define strcasecmp strcmp Already defined
 #endif

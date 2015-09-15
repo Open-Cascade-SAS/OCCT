@@ -62,7 +62,7 @@
 
 #include <stdio.h>
 //#include <ShapeCustom.hxx>
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdlib.h>
 #else
 #include <errno.h>

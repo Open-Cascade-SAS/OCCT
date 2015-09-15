@@ -33,7 +33,7 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
 
-//#ifdef WNT
+//#ifdef _MSC_VER
 #include <stdio.h>
 //#endif
 

@@ -27,8 +27,6 @@
 #include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
-//#ifdef WNT
-//#endif
 #define ITMAX  100
 #define EPS    1e-14
 #define EPSEPS 2e-14

@@ -457,7 +457,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     aVis = XGetVisualInfo (aDisp, aVisInfoMask, &aVisInfo, &aNbItems);
   }
 
-#if defined(__linux) || defined(Linux) || defined(__APPLE__)
+#if defined(__linux__) || defined(Linux) || defined(__APPLE__)
   if (aVis != NULL)
   {
     // check Visual for OpenGl context's parameters compatibility

@@ -17,7 +17,7 @@
 #include <Standard_Boolean.hxx>
 
 #ifndef __Blend_API
-# if defined(WNT) && !defined(HAVE_NO_DLL)
+# if defined(_WIN32) && !defined(HAVE_NO_DLL)
 #  ifdef __Blend_DLL
 #   define __Blend_API __declspec( dllexport )
 #  else
@@ -25,7 +25,7 @@
 #  endif /*__Blend_DLL*/
 # else
 #  define __Blend_API
-# endif /*WNT*/
+# endif /*_WIN32*/
 #endif /*__Blend_API*/
 
 //*************************************************

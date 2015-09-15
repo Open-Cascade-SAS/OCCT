@@ -34,7 +34,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #define EXCEPTION ...
 #else
 #define EXCEPTION Standard_Failure

@@ -18,7 +18,7 @@
 
 #include <TopOpeBRep.hxx>
 
-//#ifdef WNT
+//#ifdef _WIN32
 //#define strcasecmp strcmp Already defined
 //#endif
 //=======================================================================

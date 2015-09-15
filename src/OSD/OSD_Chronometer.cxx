@@ -19,7 +19,7 @@
 #include <Standard_Stream.hxx>
 
 // ====================== PLATFORM-SPECIFIC PART ========================
-#ifndef WNT
+#ifndef _WIN32
 
 //---------- Systemes autres que WNT : ----------------------------------
 
@@ -57,7 +57,7 @@
 //=======================================================================
 void OSD_Chronometer::GetProcessCPU (Standard_Real& UserSeconds, Standard_Real& SystemSeconds)
 {
-#if defined(LIN) || defined(linux) || defined(__FreeBSD__) || defined(__ANDROID__)
+#if defined(__linux__) || defined(linux) || defined(__FreeBSD__) || defined(__ANDROID__)
   static const long aCLK_TCK = sysconf(_SC_CLK_TCK);
 #else
   static const long aCLK_TCK = CLK_TCK;
@@ -154,7 +154,7 @@ void OSD_Chronometer::GetThreadCPU (Standard_Real& UserSeconds, Standard_Real& S
   SystemSeconds = 0.0000001 * EncodeFILETIME (&ftKernel);
 }
 
-#endif /* WNT */
+#endif /* _WIN32 */
 
 // ====================== PLATFORM-INDEPENDENT PART ========================
 

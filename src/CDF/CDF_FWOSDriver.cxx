@@ -25,9 +25,9 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <tchar.h>
-#endif  // WNT
+#endif  // _MSC_VER
 
 
 //==============================================================================
@@ -35,11 +35,11 @@
 //purpose  :
 //==============================================================================
 static void PutSlash (TCollection_ExtendedString& anXSTRING) {
-#ifdef WNT
+#ifdef _WIN32
   anXSTRING+="\\";
 #else
   anXSTRING+="/";
-#endif  // WNT
+#endif  // _WIN32
 }
 
 //==============================================================================
@@ -169,7 +169,7 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
   TCollection_ExtendedString theDefaultFolder;
   if (theDefaultFolder.Length() == 0) {
     
-#ifdef WNT
+#ifdef _WIN32
     TCollection_ExtendedString hd=UTL::xgetenv("HOMEDRIVE");
     if(hd.Length() != NULL) {
       theDefaultFolder=hd;
@@ -218,7 +218,7 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)& a
   
   TCollection_ExtendedString xn(aName), n(aName);
 
-#ifdef WNT
+#ifdef _WIN32
   //windows is not case sensitive
   //make the extension lower case
   for(int i = 1; i <= xn.Length(); i++)
@@ -232,7 +232,7 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)& a
   TCollection_ExtendedString e (aDocument->FileExtension());
   TCollection_ExtendedString xe(e);
   if (e.Length() > 0) {
-#ifdef WNT
+#ifdef _WIN32
     //windows is not case sensitive
     //make the extension lower case
     for(int i = 1; i <= xe.Length(); i++)

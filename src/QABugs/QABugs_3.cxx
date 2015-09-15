@@ -125,7 +125,7 @@ static int BUC60614(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 #include<BRepAdaptor_HSurface.hxx>
 #include<TopOpeBRep_PointClassifier.hxx>
 #include<Precision.hxx>
-#ifdef WNT
+#ifdef _MSC_VER
 #include<stdio.h>
 #endif
 

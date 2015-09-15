@@ -18,7 +18,7 @@
 
 // Platform-dependent definition of the thread identifier type
 
-#ifdef WNT
+#ifdef _WIN32
 
 #include <windows.h>
 typedef DWORD Standard_ThreadId;

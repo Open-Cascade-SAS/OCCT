@@ -30,7 +30,7 @@
 #include <TopOpeBRepDS_Dumper.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #pragma warning(4:4190)
 #endif
 

@@ -46,7 +46,7 @@
 #include <VrmlData_WorldInfo.hxx>
 #include <VrmlData_Geometry.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)
 #endif
@@ -177,7 +177,7 @@ void VrmlData_Scene::SetVrmlDir (const TCollection_ExtendedString& theDir)
   const Standard_ExtCharacter aTerminator = aDir.Value(aDir.Length());
   if (aTerminator != Standard_ExtCharacter('\\') &&
       aTerminator != Standard_ExtCharacter('/'))
-#ifdef WNT
+#ifdef _WIN32
     aDir += TCollection_ExtendedString ("\\");
 #else
     aDir += TCollection_ExtendedString ("/");

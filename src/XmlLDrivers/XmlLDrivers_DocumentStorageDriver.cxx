@@ -380,7 +380,7 @@ Handle(XmlMDF_ADriverTable) XmlLDrivers_DocumentStorageDriver::AttributeDrivers
 #include <sys/timeb.h>
 #include <sys/types.h>
 #include <stdio.h>
-#ifndef WNT
+#ifndef _WIN32
 extern "C" int ftime (struct timeb *tp);
 #endif
 struct timeb  tmbuf0;

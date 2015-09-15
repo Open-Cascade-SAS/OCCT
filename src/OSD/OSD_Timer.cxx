@@ -21,7 +21,7 @@
 
 #include <OSD_Timer.hxx>
 
-#ifndef WNT
+#ifndef _WIN32
 
 //---------- No Windows NT Systems ----------------------------------
 
@@ -65,7 +65,7 @@ static inline Standard_Real GetWallClockTime ()
          0.001 * GetTickCount();
 }
 
-#endif /* WNT */
+#endif /* _WIN32 */
 
 // ====================== PLATFORM-INDEPENDENT PART ========================
 

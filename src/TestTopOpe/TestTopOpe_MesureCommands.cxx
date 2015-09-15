@@ -29,7 +29,7 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

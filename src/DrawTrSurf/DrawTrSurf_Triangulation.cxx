@@ -29,8 +29,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 
 #include <stdio.h>
-//#ifdef WNT
-//#endif
 //=======================================================================
 //function : DrawTrSurf_Triangulation
 //purpose  : 

@@ -31,11 +31,11 @@ namespace
                                  TCollection_AsciiString& theLibName)
   {
     theLibName = "";
-  #ifndef WNT
+  #ifndef _WIN32
     theLibName += "lib";
   #endif
     theLibName += theDefaultName;
-  #ifdef WNT
+  #ifdef _WIN32
     theLibName += ".dll";
   #elif __APPLE__
     theLibName += ".dylib";

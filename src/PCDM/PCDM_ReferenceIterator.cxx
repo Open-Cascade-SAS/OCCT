@@ -27,9 +27,9 @@
 #include <Storage_Data.hxx>
 #include <UTL.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 # include <tchar.h>
-#endif  // WNT
+#endif  // _MSC_VER
 
 //=======================================================================
 //function : PCDM_ReferenceIterator
@@ -99,7 +99,7 @@ Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(const Standard_Boolean ) c
   TCollection_ExtendedString theFolder,theName;
   TCollection_ExtendedString theFile=myReferences(myIterator).FileName();
   TCollection_ExtendedString f(theFile);
-#ifndef WNT
+#ifndef _WIN32
   
   Standard_Integer i= f.SearchFromEnd("/");
   TCollection_ExtendedString n = f.Split(i); 
@@ -136,7 +136,7 @@ Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(const Standard_Boolean ) c
   }
   theFolder = dirRet;
   theName   = UTL::Name(p); theName+= UTL::Extension(p);
-#endif  // WNT
+#endif  // _WIN32
   
   return CDM_MetaData::LookUp(theFolder,theName,theFile,theFile,UTL::IsReadOnly(theFile));
 }

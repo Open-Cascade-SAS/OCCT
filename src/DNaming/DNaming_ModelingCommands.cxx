@@ -71,7 +71,7 @@
 #include <DNaming_SphereDriver.hxx>
 #include <DNaming_PointDriver.hxx>
 #include <DNaming_Line3DDriver.hxx>
-#ifdef WNT
+#ifdef _WIN32
 #define EXCEPTION ...
 #else
 #define EXCEPTION Standard_Failure

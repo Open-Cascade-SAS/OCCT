@@ -15,10 +15,10 @@
 #ifndef __OSD_WNT_BREAK_HXX
 # define __OSD_WNT_BREAK_HXX
 
-# ifdef WNT
+# ifdef _WIN32
 #  include <OSD.hxx>
 #  define _TSTBRK() OSD :: ControlBreak ()
-# endif  // WNT
+# endif  // _WIN32
 
 #endif  // __OSD_WNT_BREAK_HXX
 

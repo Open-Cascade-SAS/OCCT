@@ -32,7 +32,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #include <OSD_Exception.hxx>
 #else
 #include <OSD_Signal.hxx>
@@ -49,7 +49,7 @@ static void raisecheck (Handle(Interface_Check)& ach)
   sprintf (mess,"** Exception Raised during Check : %s **",
 	   afail->DynamicType()->Name());
   ach->AddFail(mess);
-#ifdef WNT
+#ifdef _WIN32
   if (afail->IsKind(STANDARD_TYPE(OSD_Exception)))
 #else
   if (afail->IsKind(STANDARD_TYPE(OSD_Signal)))

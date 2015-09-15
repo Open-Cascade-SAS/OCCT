@@ -1232,7 +1232,7 @@ static Standard_Integer DDataStd_KeepUTF (Draw_Interpretor& di,
     DDF::AddLabel(DF, arg[2], L);
     Standard_CString aFileName(arg[3]);
 
-#ifdef WNT
+#ifdef _MSC_VER
       ifstream anIS (aFileName, ios::in | ios::binary);
 #else
       ifstream anIS (aFileName);
@@ -1304,7 +1304,7 @@ static Standard_Integer DDataStd_GetUTFtoFile (Draw_Interpretor& di,
 
     Standard_CString aFileName(arg[3]);
 
-#ifdef WNT
+#ifdef _MSC_VER
     ofstream anOS (aFileName, ios::in | ios::binary | ios::ate);
 #else
     ofstream anOS (aFileName, ios::ate);

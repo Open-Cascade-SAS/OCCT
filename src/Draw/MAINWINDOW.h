@@ -19,7 +19,7 @@
 /**  MainWindow.h
 */ 
 /*\****************************************************/ 
-#ifdef WNT
+#ifdef _WIN32
 
 #define CLIENTWND 0
 

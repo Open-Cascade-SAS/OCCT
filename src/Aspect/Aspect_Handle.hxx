@@ -21,11 +21,11 @@
 #ifndef _Aspect_Handle_HeaderFile
 #define _Aspect_Handle_HeaderFile
 
-#ifdef WNT
+#ifdef _WIN32
  typedef void*         HANDLE;
  typedef HANDLE        Aspect_Handle;
 #else
  typedef unsigned long Aspect_Handle;
-#endif /* WNT */
+#endif /* _WIN32 */
 
 #endif /* _Aspect_Handle_HeaderFile */

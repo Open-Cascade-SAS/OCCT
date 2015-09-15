@@ -55,7 +55,7 @@ IMPLEMENT_DOMSTRING (LastRealArrIndex,   "lastRA")
 IMPLEMENT_DOMSTRING (ExtString, "string")
 IMPLEMENT_DOMSTRING (Value,     "value")
 
-#ifdef WNT
+#ifdef _WIN32
 #define EXCEPTION ...
 #else
 #define EXCEPTION Standard_Failure

@@ -25,8 +25,6 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 #include <stdio.h>
-//#if defined(WNT) || defined(LIN)
-//#endif  // WNT
 //-- ================================================================================
 //--  lbr le 27 fev 97
 //--  

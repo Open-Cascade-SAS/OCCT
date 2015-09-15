@@ -20,7 +20,7 @@
 #include <Standard_Real.hxx>
 
 #ifndef __math_API
-# if defined(WNT) && !defined(HAVE_NO_DLL)
+# if defined(_WIN32) && !defined(HAVE_NO_DLL)
 #  ifdef __math_DLL
 #   define __math_API __declspec( dllexport )
 #  else
@@ -28,7 +28,7 @@
 #  endif  /* __math_DLL */
 # else
 #  define __math_API
-# endif  /* WNT */
+# endif  /* _WIN32 */
 #endif  /* __math_API */
 
 class math_IntegerVector;

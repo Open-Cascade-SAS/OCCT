@@ -52,7 +52,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;WNT;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 				StringPooling="true"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -73,7 +73,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\inc;$(CSF_OPT_INC)"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;WNT;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -150,7 +150,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -173,7 +173,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\inc;$(CSF_OPT_INC)"
-				PreprocessorDefinitions="DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -248,7 +248,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="NDEBUG;WIN64;_WINDOWS;WNT;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 				StringPooling="true"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -268,7 +268,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\inc;$(CSF_OPT_INC)"
-				PreprocessorDefinitions="NDEBUG;WIN64;_WINDOWS;WNT;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="NDEBUG;No_Exception;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -343,7 +343,7 @@
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="DEB;_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -365,7 +365,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\inc;$(CSF_OPT_INC)"
-				PreprocessorDefinitions="DEB;_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+				PreprocessorDefinitions="_DEBUG;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"

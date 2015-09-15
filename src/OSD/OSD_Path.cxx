@@ -43,7 +43,7 @@ static OSD_SysType whereAmI(){
 #elif defined(vax) || defined(__vms)
   return OSD_VMS;
 }
-#elif defined(__linux__) || defined(LIN)
+#elif defined(__linux__) || defined(__linux)
   return OSD_LinuxREDHAT;
 }
 #elif defined(_AIX) || defined(AIX)

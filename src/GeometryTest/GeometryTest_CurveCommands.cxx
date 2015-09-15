@@ -130,7 +130,7 @@
 #include <GCPnts_UniformAbscissa.hxx>
 #include <DBRep.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

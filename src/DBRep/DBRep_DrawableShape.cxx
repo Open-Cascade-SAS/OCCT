@@ -69,7 +69,7 @@ static Standard_Integer PlotCount = 0;    // PlotEdge and PlotIso for cases of "
                                           // PlotEdge or PlotIso
 static TopoDS_Shape  pickshape;
 static Standard_Real upick,vpick;
-#ifdef WNT
+#ifdef _WIN32
 extern Draw_Viewer dout;
 #endif
 

@@ -61,9 +61,12 @@
 #include <DrawTrSurf_BezierSurface.hxx>
 #include <DrawTrSurf_BSplineSurface.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
 //#define strcasecmp strcmp Already defined
+#endif
+
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

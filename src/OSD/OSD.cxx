@@ -68,7 +68,7 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
 //purpose  : Cause the process to sleep during a amount of seconds 
 //=======================================================================
 
-#ifdef WNT
+#ifdef _WIN32
 # include <Windows.h>
 #if !defined(__CYGWIN32__) && !defined(__MINGW32__)
 //# include <Mapiwin.h>
@@ -214,7 +214,7 @@ Standard_Integer OSD::AvailableMemory()
 #  define SIZE_MAX  0x7fffffff
 # elif defined(__osf__)  || defined(DECOSF1)        
 #  define SIZE_MAX  0x10000000000 
-# elif defined(WNT)
+# elif defined(_WIN32)
 #  define SIZE_MAX 0x7ffdefff
 # else
 #  define SIZE_MAX  0xffffffff

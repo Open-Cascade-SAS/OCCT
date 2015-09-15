@@ -28,10 +28,10 @@
 
 #include <stdio.h>
 
-#ifdef WNT
+#ifdef _MSC_VER
 # include <stdlib.h>
 # include <io.h>
-#endif  /* WNT */
+#endif  /* _MSC_VER */
 
 
 

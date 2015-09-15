@@ -36,7 +36,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_TypeMismatch.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #include <OSD_Exception.hxx>
 #else
 #include <OSD_Signal.hxx>
@@ -385,7 +385,7 @@ void Interface_FileReaderTool::LoadModel
       num0 = thereader->FindNextRecord(num); //:g9 abv 28 May 98: tr8_as2_ug.stp - infinite cycle: (0);
 
       Handle(Standard_Failure) afail = Standard_Failure::Caught();
-#ifdef WNT
+#ifdef _WIN32
       if (afail.IsNull() || afail->IsKind(STANDARD_TYPE(OSD_Exception))) ierr = 2;
 #else
       if (afail.IsNull() || afail->IsKind(STANDARD_TYPE(OSD_Signal))) ierr = 2;

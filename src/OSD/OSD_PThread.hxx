@@ -18,7 +18,7 @@
 
 // Platform-dependent definition of the thread handle type
 
-#ifdef WNT
+#ifdef _WIN32
 
 #include <windows.h>
 typedef HANDLE OSD_PThread;

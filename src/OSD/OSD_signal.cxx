@@ -513,7 +513,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 	sigaction(SIGBUS,&oact,&oact);
 #endif
 
-#if (!defined (linux)) && (!defined(LININTEL))
+#if (!defined (linux)) && (!defined(__linux__))
   sigaction(SIGSYS,&act,&oact);   // ...... bad argument to system call
 
 # ifdef OBJS

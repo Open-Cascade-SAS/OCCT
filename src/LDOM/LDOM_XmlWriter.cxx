@@ -409,7 +409,7 @@ LDOM_XmlWriter& LDOM_XmlWriter::operator<<     (const LDOM_Node& theNodeToWrite)
       break;
     }
   default:
-#ifndef WNT
+#ifndef _MSC_VER
       cerr << "Unrecognized node type = "
         << (long)theNodeToWrite.getNodeType() << endl
 #endif

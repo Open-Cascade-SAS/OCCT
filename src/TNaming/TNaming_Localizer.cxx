@@ -60,7 +60,7 @@ static void LWrite(const TopoDS_Shape& shape,
 {
   char buf[256];
   if(strlen(filename) > 256) return;
-#if defined WNT 
+#if defined _MSC_VER
   strcpy_s (buf, filename);
 #else
   strcpy (buf, filename);

@@ -76,7 +76,7 @@ Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
 // *******************************************************************
 // read an init file
 // *******************************************************************
-#ifdef WNT
+#ifdef _WIN32
 extern console_semaphore_value volatile console_semaphore;
 extern char console_command[1000];
 #endif
@@ -84,7 +84,7 @@ extern char console_command[1000];
 static void ReadInitFile (const TCollection_AsciiString& theFileName)
 {
   TCollection_AsciiString aPath = theFileName;
-#ifdef WNT
+#ifdef _WIN32
   if (!Draw_Batch) {
     try {
       aPath.ChangeAll ('\\', '/');
@@ -104,7 +104,7 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
     Sprintf (com, "source %s", aPath.ToCString());
     Draw_Interprete (com);
     delete [] com;
-#ifdef WNT
+#ifdef _WIN32
   }
 #endif
 }
@@ -123,7 +123,7 @@ Handle(Draw_ProgressIndicator) Draw::GetProgressBar()
   return PInd;
 }
 
-#ifndef WNT
+#ifndef _WIN32
 /*--------------------------------------------------------*\
 |  exitProc: finalization handler for Tcl/Tk thread. Forces parent process to die
 \*--------------------------------------------------------*/
@@ -254,12 +254,12 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // *****************************************************************
   // init X window and create display
   // *****************************************************************
-#ifdef WNT
+#ifdef _WIN32
   HWND hWnd = NULL;
 #endif
 
   if (!Draw_Batch)
-#ifdef WNT
+#ifdef _WIN32
     Draw_Batch=!Init_Appli(hInst, hPrevInst, nShow, hWnd);
 #else
     Draw_Batch=!Init_Appli();
@@ -294,7 +294,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // *****************************************************************
   Draw_InitAppli(theCommands);
 
-#ifndef WNT
+#ifndef _WIN32
   Tcl_CreateExitHandler(exitProc, 0);
 #endif
 
@@ -307,7 +307,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   {
     if (getenv ("CASROOT") == NULL)
     {
-#ifdef WNT
+#ifdef _WIN32
       ReadInitFile ("ddefault");
 #else
       cout << " the CASROOT variable is mandatory to Run OpenCascade "<< endl;
@@ -331,7 +331,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     ReadInitFile (aRunFile);
     // provide a clean exit, this is useful for some analysis tools
     if ( ! isInteractiveForced )
-#ifndef WNT
+#ifndef _WIN32
       return;
 #else
       ExitProcess(0);
@@ -343,7 +343,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     Draw_Interprete (aCommand.ToCString());
     // provide a clean exit, this is useful for some analysis tools
     if ( ! isInteractiveForced )
-#ifndef WNT
+#ifndef _WIN32
       return;
 #else
       ExitProcess(0);
@@ -354,7 +354,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // X loop
   // *****************************************************************
   if (XLoop) {
-#ifdef WNT
+#ifdef _WIN32
     Run_Appli(hWnd);
 #else
     Run_Appli(Draw_Interprete);
@@ -372,7 +372,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
       cmd[i] = '\0';
     } while (Draw_Interprete(cmd) != (unsigned int ) -2);
   }
-#ifdef WNT
+#ifdef _WIN32
   // Destruction de l'application
   Destroy_Appli(hInst);
 #endif
@@ -491,11 +491,11 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
     }
 
     TCollection_AsciiString aPluginLibrary("");
-#ifndef WNT
+#ifndef _WIN32
     aPluginLibrary += "lib";
 #endif
     aPluginLibrary +=  aPluginResource->Value(theKey.ToCString());
-#ifdef WNT
+#ifdef _WIN32
     aPluginLibrary += ".dll";
 #elif __APPLE__
     aPluginLibrary += ".dylib";

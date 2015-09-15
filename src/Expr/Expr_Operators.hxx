@@ -26,7 +26,7 @@
 #include <Expr_Division.hxx>
 
 #ifndef __Expr_API
-# if defined(WNT) && !defined(HAVE_NO_DLL)
+# if defined(_WIN32) && !defined(HAVE_NO_DLL)
 #  ifdef __Expr_DLL
 #   define __Expr_API __declspec( dllexport )
 #  else
@@ -34,7 +34,7 @@
 #  endif  // __Expr_DLL
 # else
 #   define __Expr_API
-# endif  // WNT
+# endif  // _WIN32
 #endif  // __Expr_API
 
 //__Expr_API Handle(Expr_Sum) operator+(const Handle(Expr_GeneralExpression)& x,const Handle(Expr_GeneralExpression)& y);

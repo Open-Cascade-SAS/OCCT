@@ -16,7 +16,7 @@
 #ifndef __OPENGL_AVIWRITER_H
 #define __OPENGL_AVIWRITER_H
 
-#ifdef WNT
+#ifdef _MSC_VER
 #define THIS void 
 
 #include <InterfaceGraphic.hxx>
@@ -185,5 +185,5 @@ Standard_EXPORT void OpenGl_AVIWriter_AVIWriter(void * pp,
 
 Standard_EXPORT Standard_Boolean OpenGl_AVIWriter_AllowWriting(void * hWin);
 
-#endif // WNT
+#endif // _MSC_VER
 #endif

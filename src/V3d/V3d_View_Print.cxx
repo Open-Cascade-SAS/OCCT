@@ -18,7 +18,7 @@
 /* Includes                                                             */
 /************************************************************************/
 
-#ifdef WNT
+#ifdef _WIN32
 #include <windows.h>
 #pragma comment( lib, "comdlg32.lib"  )
 #endif
@@ -44,7 +44,7 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 struct Device
 {
 	Device();
@@ -88,7 +88,7 @@ Standard_Boolean V3d_View::Print (const Aspect_Handle    thePrintDC,
                                   const Standard_CString theFilename,
                                   const Aspect_PrintAlgo thePrintAlgorithm) const
 {
-#ifdef WNT
+#ifdef _WIN32
   if (myView->IsDefined())
   {
     if (thePrintDC != NULL)

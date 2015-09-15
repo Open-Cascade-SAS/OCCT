@@ -59,11 +59,11 @@ Handle(Standard_Transient) Plugin::Load (const Standard_GUID& aGUID,
     }
     
     TCollection_AsciiString thePluginLibrary("");
-#ifndef WNT
+#ifndef _WIN32
     thePluginLibrary += "lib";
 #endif
     thePluginLibrary +=  PluginResource->Value(theResource.ToCString());
-#ifdef WNT
+#ifdef _WIN32
     thePluginLibrary += ".dll";
 #elif defined(__APPLE__)
     thePluginLibrary += ".dylib";

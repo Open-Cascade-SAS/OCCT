@@ -82,10 +82,10 @@
 // Add this line:
 #include <algorithm>
 
-#if defined(WNT)
+#if defined(_MSC_VER)
 # include <stdio.h>
 # include <stdarg.h>
-#endif  /* WNT */
+#endif  /* _MSC_VER */
 
 //
 //=======================================================================

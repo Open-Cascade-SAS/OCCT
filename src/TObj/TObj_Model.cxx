@@ -43,7 +43,7 @@
 #include <Message_Msg.hxx>
 #include <OSD_OpenFile.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
   #include <io.h>
 #else
   #include <unistd.h>

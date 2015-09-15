@@ -54,7 +54,7 @@ static Standard_Integer RemoveExtraSeparator(TCollection_AsciiString& aString) {
   Standard_Integer i, j, len ;
 
   len = aString.Length() ;
-#ifdef WNT
+#ifdef _WIN32
   // Case of network path, such as \\MACHINE\dir
   for (i = j = 2 ; j <= len ; i++,j++) {
 #else
@@ -75,7 +75,7 @@ static TCollection_AsciiString AbsolutePath(
                             const TCollection_AsciiString& aRelFilePath)
 {
   TCollection_AsciiString EmptyString = "" ;
-#ifdef WNT
+#ifdef _WIN32
   if (aRelFilePath.Search(":") == 2 ||
       (aRelFilePath.Search("\\") == 1 && aRelFilePath.Value(2) == '\\'))
 #else
@@ -86,7 +86,7 @@ static TCollection_AsciiString AbsolutePath(
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath  ;
   Standard_Integer i,len ;
   
-#ifdef WNT
+#ifdef _WIN32
   if(DirPath.Search(":") != 2 &&
      (DirPath.Search("\\") != 1 || DirPath.Value(2) != '\\'))
 #else
@@ -94,7 +94,7 @@ static TCollection_AsciiString AbsolutePath(
 #endif
     return EmptyString ;
 
-#ifdef WNT
+#ifdef _WIN32
   DirPath.ChangeAll('\\','/') ;
   RelFilePath.ChangeAll('\\','/') ;      
 #endif
@@ -125,7 +125,7 @@ static TCollection_AsciiString GetDirFromFile(const TCollection_ExtendedString& 
   TCollection_AsciiString theCFile(aFileName);
   TCollection_AsciiString theDirectory;
   Standard_Integer i=theCFile.SearchFromEnd("/");
-#ifdef WNT    
+#ifdef _WIN32    
 //    if(i==-1) i=theCFile.SearchFromEnd("\\");
   if(theCFile.SearchFromEnd("\\") > i)
     i=theCFile.SearchFromEnd("\\");

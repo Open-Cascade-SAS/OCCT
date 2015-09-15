@@ -64,9 +64,8 @@
 #include <GC_MakeSegment.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 
-//#ifdef WNT
 #include <stdio.h>
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 Standard_IMPORT Draw_Color DrawTrSurf_CurveColor(const Draw_Color);

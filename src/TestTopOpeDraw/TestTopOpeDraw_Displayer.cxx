@@ -31,7 +31,7 @@
 #include <DBRep.hxx>
 #include <DBRep_DrawableShape.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

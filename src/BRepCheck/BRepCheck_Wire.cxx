@@ -74,9 +74,6 @@
 #include <TopTools_MapOfShape.hxx>
 
 #include <stdio.h>
-//Patch
-//#ifdef WNT
-//#endif
 static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape&,
                       const TopoDS_Shape&,   // edge
                       TopTools_MapOfShape&); // mapofedge

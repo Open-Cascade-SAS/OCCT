@@ -29,7 +29,7 @@
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Draw_Color.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #include <windows.h>
 #if !defined(__Draw_API) && !defined(HAVE_NO_DLL)
 # ifdef __Draw_DLL
@@ -56,7 +56,7 @@ class Draw_Viewer {
 				 const Standard_Integer X, const Standard_Integer Y, 
 				 const Standard_Integer W, const Standard_Integer H);
   // build a view on a given window
-#ifdef WNT
+#ifdef _WIN32
   __Draw_API void MakeView    (const Standard_Integer id,
 			       const char*   typ,
 			       const Standard_Integer X, const Standard_Integer Y,
@@ -108,7 +108,7 @@ class Draw_Viewer {
   __Draw_API void   ClearView   (const Standard_Integer id) const;
   __Draw_API void   RemoveView  (const Standard_Integer id) ;
   __Draw_API void   RepaintView (const Standard_Integer id) const;
-#ifdef WNT
+#ifdef _WIN32
   __Draw_API void   ResizeView  (const Standard_Integer id) const;
   __Draw_API void   UpdateView  (const Standard_Integer id, const Standard_Boolean forced = Standard_False) const;
 #endif  

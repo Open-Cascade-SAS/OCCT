@@ -598,4 +598,4 @@ LONG _osd_debug ( void ) {
 #undef __finally
 #undef __leave
 #endif
-#endif // WNT
+#endif // _WIN32

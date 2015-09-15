@@ -52,7 +52,7 @@
 #include <DDataStd_DrawPresentation.hxx>
 #include <DDataStd_DrawDriver.hxx>
 
-#ifndef WNT
+#ifndef _WIN32
 extern Draw_Viewer dout;
 #else
 Standard_IMPORT Draw_Viewer dout;

@@ -222,7 +222,7 @@ ostream* myOStream;
 
 };
 
-#ifdef WNT
+#ifdef _MSC_VER
 #pragma warning (default : 4275)
 #endif
 

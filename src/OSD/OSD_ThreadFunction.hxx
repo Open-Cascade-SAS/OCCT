@@ -31,7 +31,7 @@
 // that the thread function returns just integer (casted to void*). 
 // This shall work on all platforms.
 
-//#ifdef WNT
+//#ifdef _WIN32
 //#include <windows.h>
 //typedef LPTHREAD_START_ROUTINE OSD_ThreadFunction;
 //#else

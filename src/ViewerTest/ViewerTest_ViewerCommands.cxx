@@ -70,7 +70,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Root.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #undef DrawText
 #endif
 
@@ -196,7 +196,7 @@ Standard_Boolean DragFirst = Standard_False;
 
 //==============================================================================
 
-#ifdef WNT
+#ifdef _WIN32
 static LRESULT WINAPI ViewerWindowProc(
                                        HWND hwnd,
                                        UINT uMsg,
@@ -1864,7 +1864,7 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   return 0;
 }
 
-#ifdef WNT
+#ifdef _WIN32
 
 static Standard_Boolean Ppick = 0;
 static Standard_Integer Pargc = 0;
@@ -2489,7 +2489,7 @@ static void OSWindowSetup()
   XSynchronize(aDisplay, 0);
 
 #else
-  // WNT
+  // _WIN32
 #endif
 
 }
@@ -4202,8 +4202,8 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
 static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
                        const char** argv)
 {
-#ifndef WNT
-  di << "Printing implemented only for wnt!\n";
+#ifndef _WIN32
+  di << "Printing implemented only for WNT!\n";
   return 0;
 #else
 

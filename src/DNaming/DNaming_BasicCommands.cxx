@@ -53,7 +53,7 @@
 #include <gp_Trsf.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
-//#ifdef WNT
+//#ifdef _MSC_VER
 #include <stdio.h>
 //#endif
 

@@ -164,7 +164,7 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
 {
   if ( defPersonAndOrganization.IsNull() ) {
     // get IP address as a unique id of organization
-#ifdef WNT // adapted for NT which lacks gethostent()
+#ifdef _WIN32 // adapted for NT which lacks gethostent()
     char hostname[1024];
     hostname[0] = '\0';
     gethostname ( hostname, 1020 );

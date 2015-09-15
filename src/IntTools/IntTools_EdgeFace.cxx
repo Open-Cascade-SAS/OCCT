@@ -1545,6 +1545,6 @@ Standard_Integer AdaptiveDiscret (const Standard_Integer iDiscret,
 }
 
 
-#ifdef WNT
+#ifdef _MSC_VER
 #pragma warning ( default : 4101 )
 #endif

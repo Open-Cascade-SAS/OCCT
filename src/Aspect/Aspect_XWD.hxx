@@ -89,5 +89,5 @@ typedef struct _xcolor {
 
                } XColor;
 
-# endif /* WNT */
+# endif /* _WIN32 */
 #endif  /* __Aspect_WNTXWD_HXX */

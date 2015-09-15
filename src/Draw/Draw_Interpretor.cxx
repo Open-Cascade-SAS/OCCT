@@ -198,7 +198,7 @@ static Standard_Integer CommandCmd
     cout << "An exception was caught " << E << endl;
 
     if (cc && Draw::Atoi(cc)) {
-#ifdef WNT
+#ifdef _WIN32
       Tcl_Exit(0);
 #else      
       Tcl_Eval(interp,"exit");
@@ -566,7 +566,7 @@ Draw_Interpretor::~Draw_Interpretor()
 #endif
   }
 #else
-#ifdef WNT
+#ifdef _WIN32
   Tcl_Exit(0);
 #endif  
 #endif

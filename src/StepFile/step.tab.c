@@ -97,8 +97,8 @@
 */
 
 /* ABV 19.12.00: merging porting modifications by POP (for WNT, AIX) */
-#if defined(WNT) && !defined(MSDOS)
-#define MSDOS WNT
+#if defined(_WIN32) && !defined(MSDOS)
+#define MSDOS _WIN32
 #endif
 #if defined(_AIX)
 #include <malloc.h>

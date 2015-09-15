@@ -42,7 +42,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <DrawTrSurf.hxx>
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
 #endif
 //=======================================================================

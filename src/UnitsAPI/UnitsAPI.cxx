@@ -31,7 +31,7 @@ static UnitsAPI_SystemUnits localSystem = UnitsAPI_SI;
 static UnitsAPI_SystemUnits currentSystem = UnitsAPI_DEFAULT;
 static OSD_Environment env1("CSF_UnitsLexicon");
 static OSD_Environment env2("CSF_UnitsDefinition");
-#ifdef WNT
+#ifdef _WIN32
 static OSD_Environment env3("CSF_CurrentUnits");
 static OSD_Environment env4("CSF_MDTVCurrentUnits");
 #endif
@@ -79,7 +79,7 @@ void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
       case UnitsAPI_SI :  
         currentSystem = UnitsAPI_SI; 
         if( SICurrentUnits.IsNull() ) {
-#ifdef WNT
+#ifdef _WIN32
           TCollection_AsciiString csfcurrent (env3.Value());
           if( csfcurrent.Length() > 0 )
                 SICurrentUnits = new Resource_Manager(csfcurrent.ToCString());
@@ -95,7 +95,7 @@ void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
       case UnitsAPI_MDTV :  
         currentSystem = UnitsAPI_MDTV; 
         if( MDTVCurrentUnits.IsNull() )  {
-#ifdef WNT
+#ifdef _WIN32
           TCollection_AsciiString csfmdtvcurrent (env4.Value());
           if( csfmdtvcurrent.Length() > 0 )
                 MDTVCurrentUnits = new Resource_Manager(csfmdtvcurrent.ToCString());

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 // include windows.h first to have all definitions available
-#ifdef WNT
+#ifdef _WIN32
 #include <windows.h>
 #endif
 

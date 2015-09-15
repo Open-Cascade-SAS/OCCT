@@ -114,7 +114,7 @@ void Draw_Viewer::MakeView(const Standard_Integer id,
   }
 }
 
-#ifdef WNT
+#ifdef _WIN32
 //=======================================================================
 //function : MakeView
 //purpose  :
@@ -590,7 +590,7 @@ void Draw_Viewer::RepaintView (const Standard_Integer id) const
 }
 
 
-#ifdef WNT
+#ifdef _WIN32
 //=======================================================================
 //function : ResizeView
 //purpose  : WNT re-drawing optimization

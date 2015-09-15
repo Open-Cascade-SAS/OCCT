@@ -40,9 +40,9 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 # include <tchar.h>
-#endif  // WNT
+#endif  // _MSC_VER
 
 #include <locale.h>
 #include <Standard_Failure.hxx>
@@ -66,7 +66,7 @@ static Standard_Integer RemoveExtraSeparator(TCollection_AsciiString& aString) {
   Standard_Integer i, j, len ;
 
   len = aString.Length() ;
-#ifdef WNT
+#ifdef _WIN32
   // Case of network path, such as \\MACHINE\dir
   for (i = j = 2 ; j <= len ; i++,j++) {
 #else
@@ -86,7 +86,7 @@ static TCollection_AsciiString GetDirFromFile(const TCollection_ExtendedString& 
   TCollection_AsciiString theCFile=UTL::CString(aFileName);
   TCollection_AsciiString theDirectory;
   Standard_Integer i=theCFile.SearchFromEnd("/");
-#ifdef WNT    
+#ifdef _WIN32    
 //    if(i==-1) i=theCFile.SearchFromEnd("\\");
   if(theCFile.SearchFromEnd("\\") > i)
     i=theCFile.SearchFromEnd("\\");
@@ -100,7 +100,7 @@ static TCollection_AsciiString AbsolutePath(
                             const TCollection_AsciiString& aRelFilePath)
 {
   TCollection_AsciiString EmptyString = "" ;
-#ifdef WNT
+#ifdef _WIN32
   if (aRelFilePath.Search(":") == 2 ||
       (aRelFilePath.Search("\\") == 1 && aRelFilePath.Value(2) == '\\'))
 #else
@@ -111,7 +111,7 @@ static TCollection_AsciiString AbsolutePath(
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath  ;
   Standard_Integer i,len ;
   
-#ifdef WNT
+#ifdef _WIN32
   if(DirPath.Search(":") != 2 &&
      (DirPath.Search("\\") != 1 || DirPath.Value(2) != '\\'))
 #else
@@ -119,7 +119,7 @@ static TCollection_AsciiString AbsolutePath(
 #endif
     return EmptyString ;
 
-#ifdef WNT
+#ifdef _WIN32
   DirPath.ChangeAll('\\','/') ;
   RelFilePath.ChangeAll('\\','/') ;      
 #endif
@@ -323,7 +323,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     TCollection_ExtendedString theFolder,theName;
         //TCollection_ExtendedString theFile=myReferences(myIterator).FileName();
         TCollection_ExtendedString f(aPath);
-#ifndef WNT
+#ifndef _WIN32
         
         Standard_Integer i= f.SearchFromEnd("/");
         TCollection_ExtendedString n = f.Split(i); 
@@ -360,7 +360,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         }
         theFolder = dirRet;
         theName   = UTL::Name(p); theName+= UTL::Extension(p);
-#endif  // WNT
+#endif  // _WIN32
         
         Handle(CDM_MetaData) aMetaData =  CDM_MetaData::LookUp(theFolder,theName,aPath,aPath,UTL::IsReadOnly(aFileName));
 ////////////
@@ -476,7 +476,7 @@ Handle(XmlMDF_ADriverTable) XmlLDrivers_DocumentRetrievalDriver::AttributeDriver
 #include <sys/timeb.h>
 #include <sys/types.h>
 #include <stdio.h>
-#ifndef WNT
+#ifndef _WIN32
 extern "C" int ftime (struct timeb *tp);
 #endif
 extern struct timeb  tmbuf0;

@@ -53,7 +53,7 @@
 
 #include <tcl.h>
 
-#ifdef WNT
+#ifdef _WIN32
 #include <sys/stat.h>
 #include <Draw_Window.hxx>
 
@@ -78,7 +78,7 @@ Standard_IMPORT Standard_Boolean Draw_Interprete(const char* command); //for C30
 static FDraw_InitAppli theDraw_InitAppli; //pointer to the Draw_InitAppli
 #endif
 
-#ifdef WNT
+#ifdef _WIN32
 //=======================================================================
 //NOTE: OCC11
 //     On Windows NT, both console (UNIX-like) and windowed (classical on 

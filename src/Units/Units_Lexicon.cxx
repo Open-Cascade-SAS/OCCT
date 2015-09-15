@@ -24,11 +24,11 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
-#ifdef WNT
+#ifdef _MSC_VER
 # include <stdio.h>
 #else
 #include <Standard_Stream.hxx>
-#endif  // WNT
+#endif  // _MSC_VER
 
 //=======================================================================
 //function : Units_Lexicon

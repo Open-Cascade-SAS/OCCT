@@ -1348,7 +1348,7 @@ static Standard_Integer OCC24051 (Draw_Interpretor& di, Standard_Integer argc, c
 	Standard_Integer nbThreads = 5;
 	Voxel_FastConverter fcp(shape, theVoxels, deflection, nbx, nby, nbz, nbThreads, Standard_True);
 	
-	#ifdef WNT
+	#ifdef _MSC_VER
 	#pragma omp parallel for
         for(int i = 0; i < nbThreads; i++)
 			fcp.ConvertUsingSAT(progress, i+1);
@@ -3241,7 +3241,7 @@ static Standard_Integer OCC26139 (Draw_Interpretor& theDI,
 #include <OSD.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeExtend_Status.hxx>
-#ifdef WNT
+#ifdef _WIN32
 #define EXCEPTION ...
 #else
 #define EXCEPTION Standard_Failure

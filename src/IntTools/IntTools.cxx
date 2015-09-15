@@ -377,6 +377,6 @@ namespace {
   return 1;
 }
 
-#ifdef WNT
+#ifdef _MSC_VER
 #pragma warning ( default : 4101 )
 #endif

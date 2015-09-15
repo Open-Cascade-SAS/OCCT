@@ -317,7 +317,7 @@ Standard_Boolean LDOMBasicString::GetInteger (Standard_Integer& aResult) const
 }
 
 #ifdef OCCT_DEBUG
-#ifndef WNT
+#ifndef _MSC_VER
 //=======================================================================
 // Debug Function for DBX: use "print -p <Variable> or pp <Variable>"
 //=======================================================================

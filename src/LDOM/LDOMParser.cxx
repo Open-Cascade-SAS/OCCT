@@ -26,7 +26,7 @@
 #include <TCollection_ExtendedString.hxx>
 
 #include <fcntl.h>
-#ifdef WNT
+#ifdef _MSC_VER
 #include <io.h>
 #else
 #include <unistd.h>
@@ -63,7 +63,7 @@ inline
 #ifdef LDOM_PARSER_TRACE
   static FILE * ff = NULL;
   TCollection_AsciiString aTraceFileName;
-#ifdef WNT
+#ifdef _WIN32
   aTraceFileName = TCollection_AsciiString (getenv("TEMP")) + "\\ldom.trace";
 #else
   aTraceFileName = "/tmp/ldom.trace";

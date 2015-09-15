@@ -34,7 +34,7 @@ static void WriteS(const TopoDS_Shape& shape,
 {
   char buf[256];
   if(strlen(filename) > 255) return;
-#ifdef WNT
+#ifdef _MSC_VER
   strcpy_s (buf, filename);
 #else
   strcpy (buf, filename);

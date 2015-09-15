@@ -25,7 +25,7 @@
 
 #include <string.h>
 #include <errno.h>
-#ifdef WNT
+#ifdef _MSC_VER
 #include <io.h>
 #else
 #include <unistd.h>

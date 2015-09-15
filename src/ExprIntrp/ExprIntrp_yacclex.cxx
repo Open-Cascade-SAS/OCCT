@@ -20,11 +20,11 @@
 static TCollection_AsciiString ExprIntrp_curres;
 static int ExprIntrp_degree;
 
-#ifndef WNT
+#ifndef _WIN32
 extern char* ExprIntrptext;
 #else
 extern "C" char* ExprIntrptext;
-#endif  // WNT
+#endif  // _WIN32
 
 
 extern "C" void ExprIntrp_SetResult()

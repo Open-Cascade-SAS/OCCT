@@ -2007,12 +2007,8 @@ proc osutils:cbpx { theOutDir theToolKit } {
     # extra macros
     lappend aTKDefines "CSFDB"
     if { "$aWokStation" == "wnt" } {
-      lappend aTKDefines "WNT"
       lappend aTKDefines "_CRT_SECURE_NO_DEPRECATE"
     } else {
-      if { "$aWokStation" == "lin" } {
-        lappend aTKDefines "LIN"
-      }
       lappend aTKDefines "OCC_CONVERT_SIGNALS"
       #lappend aTKDefines "_GNU_SOURCE=1"
     }
@@ -2283,12 +2279,8 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
   # extra macros
   lappend aTKDefines "CSFDB"
   if { "$aWokStation" == "wnt" } {
-    lappend aTKDefines "WNT"
     lappend aTKDefines "_CRT_SECURE_NO_DEPRECATE"
   } else {
-    if { "$aWokStation" == "lin" } {
-      lappend aTKDefines "LIN"
-    }
     lappend aTKDefines "OCC_CONVERT_SIGNALS"
     #lappend aTKDefines "_GNU_SOURCE=1"
   }

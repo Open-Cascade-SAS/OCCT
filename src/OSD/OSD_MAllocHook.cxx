@@ -15,7 +15,7 @@
 
 #include <OSD_MAllocHook.hxx>
 
-#ifndef WNT
+#ifndef _MSC_VER
 #if !defined __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
@@ -82,7 +82,7 @@ OSD_MAllocHook::CollectBySize* OSD_MAllocHook::GetCollectBySize()
 // Platform-dependent methods
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <crtdbg.h>
 
 #if _MSC_VER >= 1500  /* VS 2008 */
@@ -174,7 +174,7 @@ void OSD_MAllocHook::SetCallback(Callback* theCB)
     _CrtSetAllocHook(MyAllocHook);
 }
 
-#else // ! WNT
+#else // ! _MSC_VER
 
 // Not yet implemented for non-WNT platform
 
@@ -183,7 +183,7 @@ void OSD_MAllocHook::SetCallback(Callback* theCB)
   MypCurrentCallback = theCB;
 }
 
-#endif // WNT
+#endif // _MSC_VER
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // LogFileHandler handler methods

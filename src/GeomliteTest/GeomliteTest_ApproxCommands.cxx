@@ -60,8 +60,11 @@
 #include <AppDef_Array1OfMultiPointConstraint.hxx>
 #include <math_Vector.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
+#endif
+
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

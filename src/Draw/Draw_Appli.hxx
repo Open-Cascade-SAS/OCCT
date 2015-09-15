@@ -29,7 +29,7 @@
 
 typedef void (*FDraw_InitAppli)(Draw_Interpretor&);
 
-#ifdef WNT
+#ifdef _WIN32
 #include <windows.h>
 //extern void Draw_Appli(HINSTANCE,HINSTANCE,LPSTR,int);
 Standard_EXPORT void Draw_Appli(HINSTANCE,HINSTANCE,LPSTR,int,
@@ -41,7 +41,7 @@ extern void Draw_Appli(Standard_Integer argc, char** argv,
 
 
 
-#if defined(WNT) && !defined(HAVE_NO_DLL)
+#if defined(_WIN32) && !defined(HAVE_NO_DLL)
 #ifndef __Draw_API
 # ifdef __Draw_DLL
 #  define __Draw_API __declspec ( dllexport )
@@ -54,7 +54,7 @@ extern void Draw_Appli(Standard_Integer argc, char** argv,
 #endif
 
 
-#ifndef WNT
+#ifndef _WIN32
 extern Draw_Viewer dout;
 extern Standard_Boolean Draw_Batch;
 #endif

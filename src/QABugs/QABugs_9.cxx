@@ -71,7 +71,7 @@ static Standard_Integer BUC60857 (Draw_Interpretor& di, Standard_Integer /*argc*
 #include <SelectMgr_Selection.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
-#if ! defined(WNT)
+#if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #else
 Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();

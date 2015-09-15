@@ -46,9 +46,6 @@
 #include <TCollection_ExtendedString.hxx>
 
 #include <stdio.h>
-//pop pour NT
-//#if WNT
-//#endif
 //=======================================================================
 //function : Add
 //purpose  : 

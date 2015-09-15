@@ -80,7 +80,7 @@
 #include <TDocStd_Document.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-#if ! defined(WNT)
+#if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #else
 Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();

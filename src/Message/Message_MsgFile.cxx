@@ -63,7 +63,7 @@ Standard_Boolean Message_MsgFile::Load (const Standard_CString theDirName,
   {
     TCollection_AsciiString aFileName = aDirList.Token (" \t\n", i);
     if (aFileName.IsEmpty()) break;
-#ifdef WNT
+#ifdef _WIN32
     aFileName += '\\';
 #else
     aFileName += '/';

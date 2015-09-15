@@ -18,7 +18,7 @@
 #include <Standard_Real.hxx>
 
 //#ifndef __AppCont_API
-//#if defined(WNT) && !defined(HAVE_NO_DLL)
+//#if defined(_WIN32) && !defined(HAVE_NO_DLL)
 //#  ifdef __AppCont_DLL
 //#   define __AppCont_API __declspec( dllexport )
 //#  else
@@ -26,7 +26,7 @@
 //#  endif  /* __AppCont_DLL */
 //# else
 //#  define __AppCont_API
-//# endif  /* WNT */
+//# endif  /* _WIN32 */
 //#endif  /* __AppCont_API */
 
 

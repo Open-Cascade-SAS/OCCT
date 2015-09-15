@@ -69,7 +69,7 @@
 #include <TopOpeBRepDS_Transition.hxx>
 
 #include <stdio.h>
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

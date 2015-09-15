@@ -17,7 +17,7 @@
 
 #include <Standard_Type.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 #include <windows.h>
 #else
 typedef struct {

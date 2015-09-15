@@ -35,7 +35,7 @@ void TDocStd_PathParser::Parse()
 	temp.Trunc(PointPosition-1);
 	Standard_Boolean isFileName = (temp.Length()) ? Standard_True : Standard_False;
 	Standard_Boolean isTrek = Standard_True;
-#ifdef WNT
+#ifdef _WIN32
 	PointPosition = temp.SearchFromEnd(TCollection_ExtendedString("\\"));
 	if (!(PointPosition>0))
 		PointPosition = temp.SearchFromEnd(TCollection_ExtendedString("/"));
@@ -59,12 +59,12 @@ void TDocStd_PathParser::Parse()
 	  else
 	    return;
 	}
-#endif //WNT
+#endif //_WIN32
 	if(isTrek) {
 	  temp.Trunc(PointPosition-1);
 	  myTrek = temp;
 	} else 
-#ifdef WNT
+#ifdef _WIN32
 	  myTrek = ".\\";
 #else
 	myTrek = "./";

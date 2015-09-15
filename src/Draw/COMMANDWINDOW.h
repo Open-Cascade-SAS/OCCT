@@ -14,7 +14,7 @@
  commercial license or contractual agreement.
 */
 
-#ifdef WNT
+#ifdef _WIN32
 
 
 #define COMMANDCLASS "COMMANDWINDOW"

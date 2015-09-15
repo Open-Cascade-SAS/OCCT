@@ -1190,7 +1190,7 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(IntPatch_SequenceOfLine&   
   if (!anWLine.IsNull()) {
     theSlin.Clear();
     theSlin.Append(anWLine);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction " 
          << ((WLineRank == 1) ? "S1" : "S2") << " to WLine***" << endl;
 #endif

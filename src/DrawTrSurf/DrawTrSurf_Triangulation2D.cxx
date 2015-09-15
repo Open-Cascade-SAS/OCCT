@@ -29,7 +29,7 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #include <stdio.h>
 #endif
 

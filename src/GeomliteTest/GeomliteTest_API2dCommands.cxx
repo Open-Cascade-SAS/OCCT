@@ -44,7 +44,7 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 
 #include <stdio.h>
-#ifdef WNT
+#ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

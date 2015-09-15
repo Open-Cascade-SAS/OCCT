@@ -19,7 +19,7 @@
 #include <BOPDS_PassKey.hxx>
 
 #include <stdio.h>
-#ifdef WNT
+#ifdef _MSC_VER
 #pragma warning( disable : 4101) 
 #endif
 

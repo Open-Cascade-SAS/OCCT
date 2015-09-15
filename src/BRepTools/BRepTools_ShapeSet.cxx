@@ -58,7 +58,7 @@
 
 #ifdef MacOS
 #define strcasecmp(p,q) strcmp(p,q)
-#elseif WNT
+#elseif _WIN32
 #define strcasecmp strcmp
 #elseif AIX
 #include <string.h>

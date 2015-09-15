@@ -33,7 +33,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <VrmlData_ArrayVec3d.hxx>
 
-#ifdef WNT
+#ifdef _MSC_VER
 #define _CRT_SECURE_NO_DEPRECATE
 #pragma warning (disable:4996)
 #endif
